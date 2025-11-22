@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
+import TestimonyVideo from "@/components/TestimonyVideo";
 import AboutNick from "@/components/AboutNick";
 import Doctrine from "@/components/Doctrine";
 import FeaturedExercises from "@/components/FeaturedExercises";
@@ -16,6 +17,7 @@ export default function Home() {
       <Header />
       <main>
         <HeroSection />
+        <TestimonyVideo />
         <AboutNick />
         <Doctrine />
         <FeaturedExercises />
