@@ -286,6 +286,9 @@ interface BookStudioContextValue {
   checkExportReadiness: () => Promise<void>;
   exportBook: (format: 'pdf' | 'epub' | 'docx' | 'html') => Promise<string | null>;
   isExporting: boolean;
+  
+  brainProjectId?: string;
+  bookTitle: string;
 }
 
 const BookStudioContext = createContext<BookStudioContextValue | null>(null);
@@ -1494,6 +1497,10 @@ export function BookStudioProvider({ children, initialProjectId }: { children: R
     isExporting: exportBookMutation.isPending,
     exportReadiness,
     checkExportReadiness,
+    
+    // Author Brain integration
+    brainProjectId: project?.brainProjectId,
+    bookTitle: bookOutline?.title || project?.title || 'Untitled Book',
   };
 
   return (

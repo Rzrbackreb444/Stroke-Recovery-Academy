@@ -57,6 +57,7 @@ export interface BookProject {
     writingHabits?: string[];
   };
   knowledgeVersion?: number;
+  brainProjectId?: string;
   lastEditedAt: string;
   createdAt: string;
 }
