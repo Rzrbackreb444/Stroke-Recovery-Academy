@@ -1,201 +1,118 @@
-import { ReactNode, useState, useCallback } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import ProjectNavigator, { NavigatorItem, NavigatorSection } from "./ProjectNavigator";
-import ContextPanel from "./ContextPanel";
-import ToolPanel from "./ToolPanel";
-import WorkspaceCanvas from "./WorkspaceCanvas";
-import { useBookStudio } from "@/lib/contexts/BookStudioContext";
 import { cn } from "@/lib/utils";
-import {
-  PanelLeft,
-  PanelRight,
-  Loader2,
-  Save,
-  Sparkles,
-  Layers,
-} from "lucide-react";
+import ProjectNavigator from "./ProjectNavigator";
+import IntelligenceHUD from "./IntelligenceHUD";
+import ProfessionalEditor from "../ui/ProfessionalEditor";
 
-interface WorkspaceShellProps {
-  children: ReactNode;
-}
+export default function WorkspaceShell({ children }: { children?: ReactNode }) {
+  const [leftCollapsed, setLeftCollapsed] = useState(false);
+  const [rightCollapsed, setRightCollapsed] = useState(false);
+  const [activePane, setActivePane] = useState<'navigator' | 'forge' | 'hud'>('forge');
 
-export default function WorkspaceShell({ children }: WorkspaceShellProps) {
-  const { 
-    bookOutline, 
-    setCurrentStep, 
-    isSaving, 
-    lastSaved,
-    generationProgress 
-  } = useBookStudio();
-  
-  const [selectedItem, setSelectedItem] = useState<NavigatorItem | null>(null);
-  const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(false);
-  const [rightPanelCollapsed, setRightPanelCollapsed] = useState(false);
-  const [viewMode, setViewMode] = useState<'workflow' | 'files' | 'workspace'>('workflow');
-
-  const handleSelectItem = useCallback((item: NavigatorItem | null) => {
-    setSelectedItem(item);
-    
-    if (item?.type === 'chapter' && item.chapterIndex !== undefined) {
-      setCurrentStep('build');
-    }
-  }, [setCurrentStep]);
-
-  const handleCreateItem = useCallback((section: NavigatorSection, type: NavigatorItem['type']) => {
-    console.log('Create item:', section, type);
+  // KEYBOARD SHORTCUTS FOR ZEN MODE (⌘.)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === '.') {
+        setLeftCollapsed(prev => !prev);
+        setRightCollapsed(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-background/50 backdrop-blur-sm">
-        <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="sm"
-            className={cn("h-7 px-2", !leftPanelCollapsed && "bg-accent")}
-            onClick={() => setLeftPanelCollapsed(!leftPanelCollapsed)}
-            data-testid="button-toggle-left-panel"
-          >
-            <PanelLeft className="w-4 h-4" />
-          </Button>
-          
-          <Separator orientation="vertical" className="h-5" />
-          
-          <div className="flex items-center gap-1">
-            <Button
-              variant={viewMode === 'workflow' ? 'secondary' : 'ghost'}
-              size="sm"
-              className="h-7 text-xs"
-              onClick={() => setViewMode('workflow')}
-              data-testid="button-view-workflow"
-            >
-              Workflow
-            </Button>
-            <Button
-              variant={viewMode === 'files' ? 'secondary' : 'ghost'}
-              size="sm"
-              className="h-7 text-xs"
-              onClick={() => setViewMode('files')}
-              data-testid="button-view-files"
-            >
-              Files
-            </Button>
-            <Button
-              variant={viewMode === 'workspace' ? 'secondary' : 'ghost'}
-              size="sm"
-              className="h-7 text-xs gap-1"
-              onClick={() => setViewMode('workspace')}
-              data-testid="button-view-workspace"
-            >
-              <Layers className="w-3.5 h-3.5" />
-              Workspace
-            </Button>
-          </div>
-        </div>
+    <div className="flex h-screen w-full bg-[#0A0A0A] text-zinc-400 overflow-hidden font-sans selection:bg-orange-500/30">
+      <ResizablePanelGroup direction="horizontal" className="h-full w-full">
         
-        <div className="flex items-center gap-3">
-          {bookOutline && (
-            <div className="hidden md:flex items-center gap-2">
-              <span className="text-xs font-serif font-medium text-foreground truncate max-w-[200px]">
-                {bookOutline.title}
-              </span>
-              <Badge variant="outline" className="text-[10px]">
-                {bookOutline.chapters?.length || 0} ch
-              </Badge>
-            </div>
+        {/* LEFT PANE: THE STUDIO NAVIGATOR */}
+        <ResizablePanel 
+          defaultSize={15} 
+          collapsible={true}
+          minSize={10}
+          onCollapse={() => setLeftCollapsed(true)}
+          onExpand={() => setLeftCollapsed(false)}
+          onClick={() => setActivePane('navigator')}
+          className={cn(
+            "bg-[#121212] border-r border-zinc-800/50 transition-all duration-500 ease-in-out",
+            activePane === 'navigator' ? "ring-1 ring-inset ring-orange-500/20" : "opacity-80",
+            leftCollapsed && "min-w-[60px]"
           )}
-          
-          <Separator orientation="vertical" className="h-5" />
-          
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            {isSaving ? (
-              <>
-                <Loader2 className="w-3 h-3 animate-spin" />
-                <span className="hidden sm:inline">Saving...</span>
-              </>
-            ) : lastSaved ? (
-              <>
-                <Save className="w-3 h-3 text-green-600" />
-                <span className="hidden sm:inline">Saved</span>
-              </>
-            ) : null}
+        >
+          <div className="h-full flex flex-col backdrop-blur-md">
+            <ProjectNavigator collapsed={leftCollapsed} active={activePane === 'navigator'} />
           </div>
-          
-          {generationProgress.isGenerating && (
-            <Badge className="bg-primary/10 text-primary border-primary/30 text-[10px]">
-              <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-              {generationProgress.currentChapter}/{generationProgress.totalChapters}
-            </Badge>
-          )}
-          
-          <Button
-            variant="ghost"
-            size="sm"
-            className={cn("h-7 px-2", !rightPanelCollapsed && "bg-accent")}
-            onClick={() => setRightPanelCollapsed(!rightPanelCollapsed)}
-            data-testid="button-toggle-right-panel"
-          >
-            <PanelRight className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
+        </ResizablePanel>
 
-      {viewMode === 'workspace' ? (
-        <WorkspaceCanvas />
-      ) : (
-        <ResizablePanelGroup direction="horizontal" className="flex-1">
-          {!leftPanelCollapsed && (
-            <>
-              <ResizablePanel 
-                defaultSize={viewMode === 'workflow' ? 16 : 20} 
-                minSize={14} 
-                maxSize={28}
-                className="min-w-[180px]"
-              >
-                {viewMode === 'workflow' ? (
-                  <ToolPanel />
-                ) : (
-                  <ProjectNavigator
-                    selectedItem={selectedItem}
-                    onSelectItem={handleSelectItem}
-                    onCreateItem={handleCreateItem}
-                  />
-                )}
-              </ResizablePanel>
-              
-              <ResizableHandle className="bg-border hover:bg-primary/20 transition-colors w-1" />
-            </>
+        <ResizableHandle withHandle className="bg-zinc-800 hover:bg-orange-500/50 transition-colors w-[2px]" />
+
+        {/* CENTER PANE: THE FORGE (MANUSCRIPT COMMAND) */}
+        <ResizablePanel 
+          defaultSize={60} 
+          minSize={30} 
+          onClick={() => setActivePane('forge')}
+          className={cn(
+            "relative bg-[#1A1A1A] transition-all duration-300",
+            activePane === 'forge' && "shadow-[inset_0_0_40px_rgba(0,0,0,0.5)]"
           )}
-          
-          <ResizablePanel defaultSize={leftPanelCollapsed && rightPanelCollapsed ? 100 : 64}>
-            <div className="h-full overflow-hidden bg-background">
-              {children}
+        >
+          {/* PRECISION RULER OVERLAY */}
+          <div className="absolute top-0 left-0 w-full h-8 bg-black/20 border-b border-zinc-800/30 flex items-center px-4 text-[10px] font-mono tracking-widest text-zinc-600 uppercase">
+            <span>Precision Mode // KDP Pre-Flight Enabled</span>
+            <div className="ml-auto flex gap-4">
+              <span>Gutter: 0.125"</span>
+              <span>Bleed: 0.25"</span>
             </div>
-          </ResizablePanel>
-          
-          {!rightPanelCollapsed && (
-            <>
-              <ResizableHandle className="bg-border hover:bg-primary/20 transition-colors w-1" />
-              
-              <ResizablePanel 
-                defaultSize={20} 
-                minSize={16} 
-                maxSize={30}
-                className="min-w-[200px]"
-              >
-                <ContextPanel
-                  selectedItem={selectedItem}
-                  isCollapsed={false}
-                  onToggleCollapse={() => setRightPanelCollapsed(true)}
-                />
-              </ResizablePanel>
-            </>
+          </div>
+
+          <div className="h-full flex flex-col items-center overflow-y-auto pt-16 pb-32 px-4 sm:px-12 scrollbar-hide">
+            <div className={cn(
+              "w-full max-w-3xl rounded-sm transition-transform duration-700 ease-out",
+              activePane === 'forge' ? "scale-100 opacity-100" : "scale-[0.98] opacity-60"
+            )}>
+              {children || <ProfessionalEditor />}
+            </div>
+          </div>
+
+          {/* SYSTEM PULSE STATUS BAR */}
+          <div className="absolute bottom-0 left-0 w-full h-10 bg-[#121212] border-t border-zinc-800/50 flex items-center px-6 text-[10px] font-mono tracking-tighter text-zinc-500">
+            <div className="flex items-center gap-2 text-orange-500/80">
+              <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+              <span>DOCTRINE SYNC: 100%</span>
+            </div>
+            <div className="mx-auto flex gap-8">
+              <span>PAGES: 412 / 200,000 WORDS</span>
+              <span>HEALTH: OPTIMAL</span>
+            </div>
+            <div className="flex gap-4">
+              <span>AUTOSAVE: SUCCESS</span>
+              <span className="text-zinc-700">|</span>
+              <span className="hover:text-orange-500 cursor-help">SYSTEM INFO</span>
+            </div>
+          </div>
+        </ResizablePanel>
+
+        <ResizableHandle withHandle className="bg-zinc-800 hover:bg-orange-500/50 transition-colors w-[2px]" />
+
+        {/* RIGHT PANE: INTELLIGENCE HUD */}
+        <ResizablePanel 
+          defaultSize={25} 
+          collapsible={true}
+          minSize={15}
+          onCollapse={() => setRightCollapsed(true)}
+          onExpand={() => setRightCollapsed(false)}
+          onClick={() => setActivePane('hud')}
+          className={cn(
+            "bg-[#121212] border-l border-zinc-800/50 transition-all duration-500 ease-in-out",
+            activePane === 'hud' ? "ring-1 ring-inset ring-orange-500/20" : "opacity-80",
+            rightCollapsed && "min-w-[60px]"
           )}
-        </ResizablePanelGroup>
-      )}
+        >
+          <IntelligenceHUD collapsed={rightCollapsed} active={activePane === 'hud'} />
+        </ResizablePanel>
+
+      </ResizablePanelGroup>
     </div>
   );
 }
