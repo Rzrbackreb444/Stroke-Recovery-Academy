@@ -23,6 +23,7 @@ import FrontBackMatter from "./FrontBackMatter";
 import CharacterDialogue from "./CharacterDialogue";
 import ConsistencyMonitor from "./ConsistencyMonitor";
 import SplitPaneEditor from "./SplitPaneEditor";
+import AIDiscussionPanel from "./AIDiscussionPanel";
 import {
   Plus,
   Upload,
@@ -58,6 +59,7 @@ import {
   BookMarked,
   Printer,
   PanelRightOpen,
+  MessagesSquare,
 } from "lucide-react";
 
 interface WorkspaceDocument {
@@ -140,6 +142,7 @@ export default function WorkspaceCanvas() {
   const [isFrontBackOpen, setIsFrontBackOpen] = useState(false);
   const [isConsistencyOpen, setIsConsistencyOpen] = useState(false);
   const [isDoctrineOpen, setIsDoctrineOpen] = useState(false);
+  const [isDiscussionOpen, setIsDiscussionOpen] = useState(false);
   const [manuscriptContent, setManuscriptContent] = useState("");
   const [currentChapter, setCurrentChapter] = useState(1);
 
@@ -310,6 +313,20 @@ export default function WorkspaceCanvas() {
     }
   }, [selectedDocs, documents, bookOutline, createDocument, toast]);
 
+  const arrayBufferToBase64 = useCallback((buffer: ArrayBuffer): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const blob = new Blob([buffer]);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const dataUrl = reader.result as string;
+        const base64 = dataUrl.split(',')[1] || '';
+        resolve(base64);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }, []);
+
   const handleFileDrop = useCallback(async (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
@@ -329,15 +346,47 @@ export default function WorkspaceCanvas() {
           createDocument('draft', file.name.replace(/\.[^/.]+$/, ''), reader.result as string);
         };
         reader.readAsText(file);
+      } else if (
+        file.type === 'application/pdf' || 
+        file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+        file.name.endsWith('.pdf') || 
+        file.name.endsWith('.docx') ||
+        file.name.endsWith('.html')
+      ) {
+        try {
+          const buffer = await file.arrayBuffer();
+          const base64 = await arrayBufferToBase64(buffer);
+          
+          const response = await apiRequest('POST', '/api/documents/parse', {
+            content: base64,
+            filename: file.name,
+            mimeType: file.type,
+          });
+          
+          const data = await response.json();
+          const docTitle = file.name.replace(/\.[^/.]+$/, '');
+          createDocument('draft', docTitle, data.content);
+          
+          toast({
+            title: "Document imported",
+            description: `${docTitle} (${data.metadata.wordCount.toLocaleString()} words)`,
+          });
+        } catch (error) {
+          toast({ 
+            title: "Failed to parse document", 
+            description: `${file.name} could not be processed`,
+            variant: "destructive" 
+          });
+        }
       } else {
         toast({ 
           title: "Unsupported file", 
-          description: `${file.name} - Try .txt, .md, or image files`,
+          description: `${file.name} - Try PDF, DOCX, TXT, MD, or image files`,
           variant: "destructive" 
         });
       }
     }
-  }, [createDocument, toast]);
+  }, [createDocument, toast, arrayBufferToBase64]);
 
   const commands: CommandItem[] = useMemo(() => [
     { id: 'new-note', title: 'New Note', description: 'Create a quick note', icon: Lightbulb, category: 'create', shortcut: '⌘N', action: () => { setNewDocType('note'); setIsCreatingDoc(true); }},
@@ -360,6 +409,7 @@ export default function WorkspaceCanvas() {
     { id: 'front-back-matter', title: 'Front/Back Matter', description: 'Generate dedication, TOC, etc', icon: BookMarked, category: 'create', action: () => setIsFrontBackOpen(true) },
     { id: 'consistency-check', title: 'Consistency Monitor', description: 'Track 200k+ words for conflicts', icon: Shield, category: 'ai', action: () => setIsConsistencyOpen(true) },
     { id: 'doctrine-check', title: 'Doctrine Checker', description: 'Validate against source of truth', icon: BookOpen, category: 'ai', action: () => setIsDoctrineOpen(true) },
+    { id: 'ai-discussion', title: 'AI Discussion', description: 'Chat to build your book', icon: MessagesSquare, category: 'ai', shortcut: '⌘⇧D', action: () => setIsDiscussionOpen(true) },
   ], [handleSynthesizeSelected, toast]);
 
   const visibleDocuments = documents.filter(d => !d.isMinimized);
@@ -469,6 +519,17 @@ export default function WorkspaceCanvas() {
         </div>
 
         <div className="flex items-center gap-3">
+          <Button
+            variant={isDiscussionOpen ? "secondary" : "outline"}
+            size="sm"
+            onClick={() => setIsDiscussionOpen(!isDiscussionOpen)}
+            title="AI Discussion Panel"
+            data-testid="button-ai-discussion"
+            className="gap-2"
+          >
+            <MessagesSquare className="w-4 h-4" />
+            <span className="hidden sm:inline">Discuss</span>
+          </Button>
           <Select value={workspaceLanguage} onValueChange={setWorkspaceLanguage}>
             <SelectTrigger className="w-[140px] h-8 text-xs">
               <Languages className="w-3.5 h-3.5 mr-2" />
@@ -522,12 +583,13 @@ export default function WorkspaceCanvas() {
         </div>
       )}
 
-      <div 
-        ref={canvasRef}
-        className={cn(
-          "flex-1 relative overflow-hidden",
-          isDragOver && "bg-primary/5 ring-2 ring-primary/20 ring-inset"
-        )}
+      <div className="flex flex-1 overflow-hidden">
+        <div 
+          ref={canvasRef}
+          className={cn(
+            "flex-1 relative overflow-hidden",
+            isDragOver && "bg-primary/5 ring-2 ring-primary/20 ring-inset"
+          )}
         onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
         onDragLeave={() => setIsDragOver(false)}
         onDrop={handleFileDrop}
@@ -659,7 +721,7 @@ export default function WorkspaceCanvas() {
 
         {activeTab === 'split' && (
           <SplitPaneEditor
-            manuscript={manuscriptContent}
+            manuscriptContent={manuscriptContent}
             onManuscriptChange={handleManuscriptChange}
             currentChapter={currentChapter}
             onChapterChange={setCurrentChapter}
@@ -668,8 +730,28 @@ export default function WorkspaceCanvas() {
 
         {activeTab === 'kdp' && (
           <KDPPreview
-            manuscriptContent={manuscriptContent}
-            bookTitle={bookTitle || "Untitled Book"}
+            content={manuscriptContent}
+            title={bookTitle || "Untitled Book"}
+          />
+        )}
+      </div>
+      
+        {isDiscussionOpen && (
+          <AIDiscussionPanel
+            className="w-[400px] shrink-0"
+            manuscriptContext={manuscriptContent}
+            onInsertToManuscript={(content) => {
+              handleManuscriptChange(manuscriptContent + '\n\n' + content);
+            }}
+            onContentGenerated={(content, type) => {
+              if (type === 'outline') {
+                createDocument('outline', 'AI Generated Outline', content);
+              } else if (type === 'chapter') {
+                createDocument('chapter', 'AI Generated Chapter', content);
+              } else {
+                createDocument('draft', 'AI Generated Content', content);
+              }
+            }}
           />
         )}
       </div>
@@ -695,7 +777,7 @@ export default function WorkspaceCanvas() {
         type="file"
         className="hidden"
         multiple
-        accept=".txt,.md,.doc,.docx,.rtf,image/*"
+        accept=".txt,.md,.doc,.docx,.rtf,.pdf,.html,image/*,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         onChange={(e) => {
           const files = e.target.files;
           if (files) {
