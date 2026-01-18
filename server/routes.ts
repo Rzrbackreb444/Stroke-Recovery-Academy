@@ -1302,6 +1302,384 @@ Include recovery metaphors and triumphant imagery.`;
     }
   });
 
+  // ============ BOOK STUDIO CHUNKED PROCESSING (200K+ WORDS) ============
+
+  // Parse document into logical chunks (chapters/sections)
+  app.post('/api/book-studio/chunk-plan', async (req, res) => {
+    try {
+      const { content, title } = req.body;
+      if (!content) {
+        return res.status(400).json({ message: "Content is required" });
+      }
+
+      const totalWords = content.split(/\s+/).filter((w: string) => w).length;
+      
+      // Parse by chapter headings, section breaks, or size
+      const chapterPatterns = [
+        /^(Chapter\s+\d+[.:]*\s*.*)$/gim,
+        /^(Part\s+\d+[.:]*\s*.*)$/gim,
+        /^(#{1,2}\s+.+)$/gm,
+        /^(\d+\.\s+.+)$/gm,
+      ];
+      
+      let chunks: Array<{id: string, title: string, start: number, end: number, wordCount: number, content: string}> = [];
+      let matches: Array<{index: number, title: string}> = [];
+      
+      for (const pattern of chapterPatterns) {
+        let match;
+        while ((match = pattern.exec(content)) !== null) {
+          matches.push({ index: match.index, title: match[1].trim() });
+        }
+        if (matches.length > 0) break;
+      }
+      
+      // Sort matches by position
+      matches.sort((a, b) => a.index - b.index);
+      
+      if (matches.length > 1) {
+        // Split by found headings
+        for (let i = 0; i < matches.length; i++) {
+          const start = matches[i].index;
+          const end = i < matches.length - 1 ? matches[i + 1].index : content.length;
+          const chunkContent = content.substring(start, end).trim();
+          const wordCount = chunkContent.split(/\s+/).filter((w: string) => w).length;
+          
+          chunks.push({
+            id: `chunk-${i + 1}`,
+            title: matches[i].title.substring(0, 100),
+            start,
+            end,
+            wordCount,
+            content: chunkContent,
+          });
+        }
+      } else {
+        // No clear structure - split by ~8000 words (safe for AI context)
+        const words = content.split(/\s+/);
+        const chunkSize = 8000;
+        let currentPos = 0;
+        let chunkNum = 1;
+        
+        while (currentPos < words.length) {
+          const chunkWords = words.slice(currentPos, currentPos + chunkSize);
+          const chunkContent = chunkWords.join(' ');
+          
+          chunks.push({
+            id: `chunk-${chunkNum}`,
+            title: `Section ${chunkNum}`,
+            start: currentPos,
+            end: Math.min(currentPos + chunkSize, words.length),
+            wordCount: chunkWords.length,
+            content: chunkContent,
+          });
+          
+          currentPos += chunkSize;
+          chunkNum++;
+        }
+      }
+      
+      // Initialize book memory for consistency tracking
+      const bookMemory = {
+        title: title || 'Untitled Manuscript',
+        totalWords,
+        totalChunks: chunks.length,
+        genre: '',
+        tone: '',
+        mainCharacters: [] as string[],
+        themes: [] as string[],
+        styleGuide: '',
+        pacingNotes: '',
+        lastUpdated: new Date().toISOString(),
+      };
+      
+      res.json({
+        chunks: chunks.map(c => ({ ...c, content: c.content.substring(0, 500) + '...' })), // Send preview only
+        fullChunks: chunks, // Full content for processing
+        bookMemory,
+        totalWords,
+        estimatedProcessingTime: Math.ceil(chunks.length * 15), // ~15 sec per chunk
+      });
+    } catch (error) {
+      console.error("Error planning chunks:", error);
+      res.status(500).json({ message: "Failed to plan document chunks" });
+    }
+  });
+
+  // Analyze a single chunk with book memory context
+  app.post('/api/book-studio/chunk-analyze', async (req, res) => {
+    try {
+      const { chunkId, chunkContent, chunkTitle, bookMemory, adjacentContext, analysisType } = req.body;
+      
+      const prompt = `You are analyzing chunk "${chunkTitle}" of a ${bookMemory?.totalWords?.toLocaleString() || 'large'}-word manuscript titled "${bookMemory?.title || 'Untitled'}".
+
+BOOK CONTEXT (maintain consistency with this):
+${bookMemory?.styleGuide ? `Style Guide: ${bookMemory.styleGuide}` : ''}
+${bookMemory?.mainCharacters?.length ? `Main Characters: ${bookMemory.mainCharacters.join(', ')}` : ''}
+${bookMemory?.themes?.length ? `Themes: ${bookMemory.themes.join(', ')}` : ''}
+${bookMemory?.pacingNotes ? `Pacing Notes: ${bookMemory.pacingNotes}` : ''}
+
+${adjacentContext ? `ADJACENT SECTION CONTEXT:\n${adjacentContext}\n` : ''}
+
+CHUNK CONTENT:
+"""
+${chunkContent}
+"""
+
+Analyze this section for:
+1. **Content Summary** - Key events/points in this section
+2. **Characters/Elements** - Who/what appears (for consistency tracking)
+3. **Pacing Assessment** - How does the pacing feel? Too fast/slow?
+4. **Flow Quality** - Does it flow smoothly from previous section?
+5. **Voice Consistency** - Is the tone/style consistent with the book?
+6. **Formatting Issues** - Any structural or formatting problems?
+7. **Specific Improvements** - Actionable edits for this section
+
+Also extract and return in a structured way:
+- New characters introduced
+- Key plot points
+- Recommended pacing adjustments
+- Style/voice observations`;
+
+      const result = await generateCoachResponse(prompt, []);
+      
+      // Extract knowledge updates from analysis
+      const knowledgePrompt = `From this analysis, extract key facts in JSON:
+${result.response}
+
+Return JSON: {"characters":[],"themes":[],"pacingNote":"","styleNote":""}`;
+      
+      let knowledgeUpdate = {};
+      try {
+        const knowledgeResult = await generateCoachResponse(knowledgePrompt, []);
+        const jsonMatch = knowledgeResult.response.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          knowledgeUpdate = JSON.parse(jsonMatch[0]);
+        }
+      } catch (e) { /* ignore extraction errors */ }
+      
+      res.json({
+        chunkId,
+        analysis: result.response,
+        knowledgeUpdate,
+        processedAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error("Error analyzing chunk:", error);
+      res.status(500).json({ message: "Failed to analyze chunk" });
+    }
+  });
+
+  // Edit a chunk with multi-pass editing
+  app.post('/api/book-studio/chunk-edit', async (req, res) => {
+    try {
+      const { chunkId, chunkContent, chunkTitle, bookMemory, passType, adjacentContext } = req.body;
+      
+      const passInstructions: Record<string, string> = {
+        developmental: `DEVELOPMENTAL EDIT: Focus on structure, narrative arc, pacing, and story logic. Ensure this section serves the overall book. Rewrite sections that don't work narratively.`,
+        line: `LINE EDIT: Improve sentence-level writing. Enhance clarity, rhythm, and impact. Vary sentence structure. Strengthen verbs. Remove redundancy while preserving voice.`,
+        copy: `COPY EDIT: Fix grammar, punctuation, spelling. Ensure consistency in names, dates, facts. Standardize formatting. Fix awkward phrasing.`,
+        proofread: `PROOFREAD: Final polish. Catch any remaining typos, formatting issues, or minor errors. Ensure professional quality.`,
+        full: `COMPREHENSIVE EDIT: Apply developmental, line, and copy editing in one pass. Transform this into polished, publication-ready prose.`,
+      };
+      
+      const prompt = `You are editing chunk "${chunkTitle}" of "${bookMemory?.title || 'Untitled'}" (${bookMemory?.totalWords?.toLocaleString() || 'large'} words total).
+
+${passInstructions[passType] || passInstructions.full}
+
+STYLE GUIDE TO FOLLOW:
+${bookMemory?.styleGuide || 'Maintain consistent, professional prose throughout.'}
+${bookMemory?.tone ? `Tone: ${bookMemory.tone}` : ''}
+
+${adjacentContext ? `CONTEXT FROM ADJACENT SECTIONS (ensure smooth transitions):\n${adjacentContext}\n` : ''}
+
+ORIGINAL CHUNK:
+"""
+${chunkContent}
+"""
+
+Return the FULLY EDITED version of this chunk. Maintain the author's voice while improving quality. The edited version should be complete and ready to replace the original.`;
+
+      const result = await generateCoachResponse(prompt, []);
+      
+      // Calculate edit stats
+      const originalWords = chunkContent.split(/\s+/).length;
+      const editedWords = result.response.split(/\s+/).length;
+      
+      res.json({
+        chunkId,
+        editedContent: result.response,
+        passType,
+        stats: {
+          originalWords,
+          editedWords,
+          changePercent: Math.round(Math.abs(editedWords - originalWords) / originalWords * 100),
+        },
+        processedAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error("Error editing chunk:", error);
+      res.status(500).json({ message: "Failed to edit chunk" });
+    }
+  });
+
+  // Synthesize all chunk analyses into unified assessment
+  app.post('/api/book-studio/synthesize', async (req, res) => {
+    try {
+      const { analyses, bookMemory, editedChunks } = req.body;
+      
+      const analysisSum = analyses?.map((a: any, i: number) => 
+        `Chunk ${i + 1}: ${a.analysis?.substring(0, 500) || 'No analysis'}...`
+      ).join('\n\n') || 'No analyses provided';
+      
+      const prompt = `You are synthesizing the analysis of a complete ${bookMemory?.totalWords?.toLocaleString() || 'large'}-word manuscript titled "${bookMemory?.title || 'Untitled'}".
+
+CHUNK ANALYSES:
+${analysisSum}
+
+BOOK MEMORY:
+- Characters: ${bookMemory?.mainCharacters?.join(', ') || 'Unknown'}
+- Themes: ${bookMemory?.themes?.join(', ') || 'Unknown'}
+- Style: ${bookMemory?.styleGuide || 'Not established'}
+
+Provide a UNIFIED MANUSCRIPT ASSESSMENT:
+
+1. **Overall Quality Score** (0-100%) with justification
+2. **Narrative Arc Assessment** - Does the full story work?
+3. **Pacing Analysis** - Where does it drag or rush?
+4. **Character Consistency** - Any contradictions across chapters?
+5. **Voice/Tone Consistency** - Is the style unified throughout?
+6. **Structural Recommendations** - Should sections be reordered, cut, or expanded?
+7. **Publication Readiness Checklist** - Specific items needed before publishing
+8. **Priority Edits** - Top 5 most impactful changes to make
+
+Be thorough but actionable. This is the final assessment before publication.`;
+
+      const result = await generateCoachResponse(prompt, []);
+      
+      res.json({
+        synthesis: result.response,
+        bookMemory,
+        processedAt: new Date().toISOString(),
+        totalChunksProcessed: analyses?.length || 0,
+      });
+    } catch (error) {
+      console.error("Error synthesizing:", error);
+      res.status(500).json({ message: "Failed to synthesize analysis" });
+    }
+  });
+
+  // Generate full book from outline (chunked generation)
+  app.post('/api/book-studio/generate-full-book', async (req, res) => {
+    try {
+      const { outline, title, genre, targetWordCount, style, bookMemory } = req.body;
+      
+      if (!outline) {
+        return res.status(400).json({ message: "Outline is required" });
+      }
+      
+      // Parse outline into chapters
+      const chapters = outline.chapters || [];
+      if (chapters.length === 0) {
+        return res.status(400).json({ message: "Outline must have chapters" });
+      }
+      
+      const wordsPerChapter = Math.ceil((targetWordCount || 50000) / chapters.length);
+      
+      res.json({
+        message: "Book generation plan created",
+        plan: {
+          title: title || outline.title,
+          genre,
+          totalChapters: chapters.length,
+          targetWordCount: targetWordCount || 50000,
+          wordsPerChapter,
+          chapters: chapters.map((ch: any, i: number) => ({
+            number: i + 1,
+            title: ch.title,
+            description: ch.description,
+            targetWords: wordsPerChapter,
+            status: 'pending',
+          })),
+        },
+        bookMemory: {
+          ...bookMemory,
+          title: title || outline.title,
+          genre,
+          styleGuide: style || bookMemory?.styleGuide || '',
+        },
+      });
+    } catch (error) {
+      console.error("Error planning book generation:", error);
+      res.status(500).json({ message: "Failed to plan book generation" });
+    }
+  });
+
+  // Chat endpoint for AI Discussion Panel
+  app.post('/api/book-studio/chat', async (req, res) => {
+    try {
+      const { message, context, uploadedContent, isInitialAnalysis, bookMemory } = req.body;
+      
+      const totalWords = uploadedContent ? uploadedContent.split(/\s+/).filter((w: string) => w).length : 0;
+      const isLargeDocument = totalWords > 20000;
+      
+      let prompt = '';
+      
+      if (isInitialAnalysis && uploadedContent) {
+        if (isLargeDocument) {
+          // For large documents, provide chunking guidance
+          prompt = `A user has uploaded a ${totalWords.toLocaleString()}-word manuscript. This is a large document that will benefit from chunked processing.
+
+Here's a sample of the content (first 15,000 characters):
+"""
+${uploadedContent.substring(0, 15000)}
+"""
+
+Provide:
+1. **Initial Impressions** - What type of content is this?
+2. **Structure Detection** - How is it organized (chapters, sections)?
+3. **Estimated Scope** - What kind of book is this (novel, memoir, guide)?
+4. **Recommended Approach** - Since this is ${totalWords.toLocaleString()} words, suggest using the "Process Full Manuscript" feature for comprehensive analysis
+5. **Quick Observations** - 2-3 things that stand out from the sample
+
+Encourage the user to use the full manuscript processing for detailed chapter-by-chapter analysis and editing.`;
+        } else {
+          prompt = `A user has uploaded content (${totalWords.toLocaleString()} words):
+"""
+${uploadedContent.substring(0, 30000)}
+"""
+
+Analyze this content and provide helpful feedback. Include:
+1. What type of content this appears to be
+2. Strengths you notice
+3. Suggestions for improvement
+4. How you can help develop this further`;
+        }
+      } else {
+        prompt = `${message}
+
+${context ? `Context:\n${context.substring(0, 10000)}` : ''}
+
+${bookMemory ? `Book Memory: ${JSON.stringify(bookMemory).substring(0, 2000)}` : ''}
+
+Respond helpfully as a book development assistant.`;
+      }
+      
+      const result = await generateCoachResponse(prompt, []);
+      
+      res.json({
+        response: result.response,
+        isLargeDocument,
+        totalWords,
+        suggestChunkedProcessing: isLargeDocument,
+      });
+    } catch (error) {
+      console.error("Error in book studio chat:", error);
+      res.status(500).json({ 
+        response: "I'd be happy to help with your manuscript! Could you share what you're working on?",
+      });
+    }
+  });
+
   // ============ BOOK STUDIO CHAT ANALYSIS ROUTES ============
   
   // Interactive AI chat for manuscript analysis
