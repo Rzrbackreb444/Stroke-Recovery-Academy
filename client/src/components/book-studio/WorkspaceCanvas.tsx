@@ -17,6 +17,12 @@ import { cn } from "@/lib/utils";
 import DocumentWindow, { DocumentType, DocumentWindowProps } from "./DocumentWindow";
 import CommandPalette, { CommandItem } from "./CommandPalette";
 import ResearchPanel from "./ResearchPanel";
+import KDPPreview from "./KDPPreview";
+import DoctrineChecker from "./DoctrineChecker";
+import FrontBackMatter from "./FrontBackMatter";
+import CharacterDialogue from "./CharacterDialogue";
+import ConsistencyMonitor from "./ConsistencyMonitor";
+import SplitPaneEditor from "./SplitPaneEditor";
 import {
   Plus,
   Upload,
@@ -47,6 +53,11 @@ import {
   Layers,
   PanelLeft,
   X,
+  Shield,
+  MessageSquare,
+  BookMarked,
+  Printer,
+  PanelRightOpen,
 } from "lucide-react";
 
 interface WorkspaceDocument {
@@ -109,7 +120,7 @@ export default function WorkspaceCanvas() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [documents, setDocuments] = useState<WorkspaceDocument[]>([]);
-  const [activeTab, setActiveTab] = useState<'canvas' | 'grid' | 'focus'>('canvas');
+  const [activeTab, setActiveTab] = useState<'canvas' | 'grid' | 'focus' | 'split' | 'kdp'>('canvas');
   const [isCommandOpen, setIsCommandOpen] = useState(false);
   const [isResearchOpen, setIsResearchOpen] = useState(false);
   const [isQuickNoteOpen, setIsQuickNoteOpen] = useState(false);
@@ -124,6 +135,18 @@ export default function WorkspaceCanvas() {
   const [isDragOver, setIsDragOver] = useState(false);
   const [highestZ, setHighestZ] = useState(10);
   const [minimizedDock, setMinimizedDock] = useState<WorkspaceDocument[]>([]);
+  
+  const [isDialogueOpen, setIsDialogueOpen] = useState(false);
+  const [isFrontBackOpen, setIsFrontBackOpen] = useState(false);
+  const [isConsistencyOpen, setIsConsistencyOpen] = useState(false);
+  const [isDoctrineOpen, setIsDoctrineOpen] = useState(false);
+  const [manuscriptContent, setManuscriptContent] = useState("");
+  const [currentChapter, setCurrentChapter] = useState(1);
+
+  const handleManuscriptChange = useCallback((content: string) => {
+    setManuscriptContent(content);
+    setManuscriptHtml(content);
+  }, [setManuscriptHtml]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -331,6 +354,12 @@ export default function WorkspaceCanvas() {
     { id: 'canvas-view', title: 'Canvas View', description: 'Free-form document layout', icon: LayoutGrid, category: 'view', action: () => setActiveTab('canvas') },
     { id: 'grid-view', title: 'Grid View', description: 'Organized grid layout', icon: Grid3X3, category: 'view', action: () => setActiveTab('grid') },
     { id: 'focus-view', title: 'Focus Mode', description: 'Distraction-free writing', icon: Eye, category: 'view', action: () => setActiveTab('focus') },
+    { id: 'split-view', title: 'Split Pane Editor', description: 'Manuscript with research panels', icon: PanelRightOpen, category: 'view', action: () => setActiveTab('split') },
+    { id: 'kdp-preview', title: 'KDP Preview', description: 'Live print-ready preview', icon: Printer, category: 'view', action: () => setActiveTab('kdp') },
+    { id: 'dialogue-engine', title: 'Deep Dialogue Engine', description: 'Roleplay with characters', icon: MessageSquare, category: 'ai', action: () => setIsDialogueOpen(true) },
+    { id: 'front-back-matter', title: 'Front/Back Matter', description: 'Generate dedication, TOC, etc', icon: BookMarked, category: 'create', action: () => setIsFrontBackOpen(true) },
+    { id: 'consistency-check', title: 'Consistency Monitor', description: 'Track 200k+ words for conflicts', icon: Shield, category: 'ai', action: () => setIsConsistencyOpen(true) },
+    { id: 'doctrine-check', title: 'Doctrine Checker', description: 'Validate against source of truth', icon: BookOpen, category: 'ai', action: () => setIsDoctrineOpen(true) },
   ], [handleSynthesizeSelected, toast]);
 
   const visibleDocuments = documents.filter(d => !d.isMinimized);
@@ -357,6 +386,7 @@ export default function WorkspaceCanvas() {
               size="sm"
               onClick={() => setActiveTab('canvas')}
               data-testid="view-canvas"
+              title="Canvas View"
             >
               <Layers className="w-4 h-4" />
             </Button>
@@ -365,6 +395,7 @@ export default function WorkspaceCanvas() {
               size="sm"
               onClick={() => setActiveTab('grid')}
               data-testid="view-grid"
+              title="Grid View"
             >
               <Grid3X3 className="w-4 h-4" />
             </Button>
@@ -373,8 +404,66 @@ export default function WorkspaceCanvas() {
               size="sm"
               onClick={() => setActiveTab('focus')}
               data-testid="view-focus"
+              title="Focus Mode"
             >
               <Eye className="w-4 h-4" />
+            </Button>
+            <Button
+              variant={activeTab === 'split' ? 'secondary' : 'ghost'}
+              size="sm"
+              onClick={() => setActiveTab('split')}
+              data-testid="view-split"
+              title="Split Pane Editor"
+            >
+              <PanelRightOpen className="w-4 h-4" />
+            </Button>
+            <Button
+              variant={activeTab === 'kdp' ? 'secondary' : 'ghost'}
+              size="sm"
+              onClick={() => setActiveTab('kdp')}
+              data-testid="view-kdp"
+              title="KDP Preview"
+            >
+              <Printer className="w-4 h-4" />
+            </Button>
+          </div>
+          
+          <div className="hidden lg:flex items-center gap-1 ml-2 pl-2 border-l">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsDialogueOpen(true)}
+              title="Deep Dialogue Engine"
+              data-testid="button-dialogue-engine"
+            >
+              <MessageSquare className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsConsistencyOpen(true)}
+              title="Consistency Monitor"
+              data-testid="button-consistency-monitor"
+            >
+              <Shield className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsFrontBackOpen(true)}
+              title="Front/Back Matter"
+              data-testid="button-front-back-matter"
+            >
+              <BookMarked className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsDoctrineOpen(true)}
+              title="Doctrine Checker"
+              data-testid="button-doctrine-checker"
+            >
+              <BookOpen className="w-4 h-4" />
             </Button>
           </div>
         </div>
@@ -561,9 +650,27 @@ export default function WorkspaceCanvas() {
                 placeholder="Start writing... Focus mode removes distractions."
                 className="min-h-[60vh] text-lg leading-relaxed resize-none border-none shadow-none focus-visible:ring-0"
                 data-testid="focus-textarea"
+                value={manuscriptContent}
+                onChange={(e) => handleManuscriptChange(e.target.value)}
               />
             </div>
           </div>
+        )}
+
+        {activeTab === 'split' && (
+          <SplitPaneEditor
+            manuscript={manuscriptContent}
+            onManuscriptChange={handleManuscriptChange}
+            currentChapter={currentChapter}
+            onChapterChange={setCurrentChapter}
+          />
+        )}
+
+        {activeTab === 'kdp' && (
+          <KDPPreview
+            manuscriptContent={manuscriptContent}
+            bookTitle={bookTitle || "Untitled Book"}
+          />
         )}
       </div>
 
@@ -703,6 +810,38 @@ export default function WorkspaceCanvas() {
           </div>
         </SheetContent>
       </Sheet>
+
+      <CharacterDialogue
+        isOpen={isDialogueOpen}
+        onClose={() => setIsDialogueOpen(false)}
+      />
+
+      <FrontBackMatter
+        isOpen={isFrontBackOpen}
+        onClose={() => setIsFrontBackOpen(false)}
+        onInsert={(content) => {
+          const newContent = manuscriptContent + '\n\n' + content;
+          handleManuscriptChange(newContent);
+          toast({ title: "Content inserted into manuscript" });
+        }}
+      />
+
+      <DoctrineChecker
+        manuscriptContent={manuscriptContent}
+        isOpen={isDoctrineOpen}
+        onClose={() => setIsDoctrineOpen(false)}
+      />
+
+      <ConsistencyMonitor
+        manuscriptContent={manuscriptContent}
+        chapters={bookOutline?.chapters?.map(ch => ({ title: ch.title, content: ch.content || '' })) || []}
+        isOpen={isConsistencyOpen}
+        onClose={() => setIsConsistencyOpen(false)}
+        onNavigateToConflict={(chapter) => {
+          setCurrentChapter(chapter);
+          setActiveTab('split');
+        }}
+      />
     </div>
   );
 }
