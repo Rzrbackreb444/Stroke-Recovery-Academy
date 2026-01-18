@@ -1,14 +1,15 @@
 import { ReactNode, useState, useEffect } from "react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { cn } from "@/lib/utils";
-import ProjectNavigator from "./ProjectNavigator";
+import ProjectNavigator, { NavigatorItem, NavigatorSection } from "./ProjectNavigator";
 import IntelligenceHUD from "./IntelligenceHUD";
-import ProfessionalEditor from "../ui/ProfessionalEditor";
+import ProfessionalEditor from "../ProfessionalEditor";
 
 export default function WorkspaceShell({ children }: { children?: ReactNode }) {
   const [leftCollapsed, setLeftCollapsed] = useState(false);
   const [rightCollapsed, setRightCollapsed] = useState(false);
   const [activePane, setActivePane] = useState<'navigator' | 'forge' | 'hud'>('forge');
+  const [selectedItem, setSelectedItem] = useState<NavigatorItem | null>(null);
 
   // KEYBOARD SHORTCUTS FOR ZEN MODE (⌘.)
   useEffect(() => {
@@ -41,7 +42,10 @@ export default function WorkspaceShell({ children }: { children?: ReactNode }) {
           )}
         >
           <div className="h-full flex flex-col backdrop-blur-md">
-            <ProjectNavigator collapsed={leftCollapsed} active={activePane === 'navigator'} />
+            <ProjectNavigator 
+              selectedItem={selectedItem} 
+              onSelectItem={setSelectedItem}
+            />
           </div>
         </ResizablePanel>
 
