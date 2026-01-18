@@ -138,8 +138,9 @@ export default function CreatorLanding() {
               </h1>
               
               <p className="text-xl sm:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-                Books. Music. Videos. Courses. You don't need Hollywood or Silicon Valley. 
-                <span className="text-foreground font-medium"> Just AI and your ideas.</span>
+                Books. Music. Videos. Courses. We've just unlocked Chunked Processing for 200k+ word manuscripts. 
+                <span className="text-foreground font-medium"> 
+                Just AI and your ideas.</span>
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
