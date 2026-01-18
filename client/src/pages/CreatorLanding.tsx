@@ -132,9 +132,8 @@ export default function CreatorLanding() {
                 <br />
                 <span className="text-foreground">From </span>
                 <span className="bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">Anywhere</span>
-                <span className="text-foreground">.
-                FASTER THAN EVER.
-</span>
+                <span className="text-foreground">. 
+                FASTER THAN EVER.</span>
               </h1>
               
               <p className="text-xl sm:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
