@@ -125,16 +125,16 @@ export default function CreatorLanding() {
                 AI-Powered Creator Platform
               </Badge>
               
-              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight mb-6" data-testid="text-hero-title">
-                <span className="text-foreground">Create </span>
-                <span className="bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">Anything</span>
-                <span className="text-foreground">.</span>
-                <br />
-                <span className="text-foreground">From </span>
-                <span className="bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">Anywhere</span>
-                <span className="text-foreground">. 
-                FASTER THAN EVER.</span>
-              </h1>
+             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight mb-6" data-testid="text-hero-title">
+  <span className="text-foreground">Create </span>
+  <span className="bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">Anything</span>
+  <span className="text-foreground">.</span>
+  <br />
+  <span className="text-foreground">From </span>
+  <span className="bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">Anywhere</span>
+  <span className="text-[#201009]">. FASTER THAN EVER.</span>
+</h1>
+            
               
               <p className="text-xl sm:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
                 Books. Music. Videos. Courses. We've just unlocked Chunked Processing for 200k+ word manuscripts. 
