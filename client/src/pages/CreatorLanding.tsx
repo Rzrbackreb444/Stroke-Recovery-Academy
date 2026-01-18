@@ -109,7 +109,6 @@ export default function CreatorLanding() {
   return (
     <div className="min-h-screen bg-background">
       <CreatorHeader />
-      
       <main>
         {/* Hero Section */}
         <section className="relative overflow-hidden">
@@ -196,9 +195,7 @@ export default function CreatorLanding() {
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
                 One Platform. Unlimited Creativity.
               </h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Everything you need to create, publish, and monetize your content. AI does the heavy lifting.
-              </p>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">Turn your core ideas into professional books, high-fidelity soundtracks, and cinematic courses in one unified workspace. Build your empire, then monetize it in the KreAItorverse</p>
             </div>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -393,7 +390,6 @@ export default function CreatorLanding() {
           </div>
         </section>
       </main>
-      
       <Footer />
     </div>
   );
