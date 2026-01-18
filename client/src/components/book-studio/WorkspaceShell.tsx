@@ -3,7 +3,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/componen
 import { cn } from "@/lib/utils";
 import ProjectNavigator, { NavigatorItem, NavigatorSection } from "./ProjectNavigator";
 import IntelligenceHUD from "./IntelligenceHUD";
-import ProfessionalEditor from "../ProfessionalEditor";
+import ProfessionalEditor from "../ui/ProfessionalEditor";
 
 export default function WorkspaceShell({ children }: { children?: ReactNode }) {
   const [leftCollapsed, setLeftCollapsed] = useState(false);
