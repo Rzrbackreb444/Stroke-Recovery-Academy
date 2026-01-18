@@ -75,6 +75,16 @@ Icons: lucide-react only (no emoji)
   - `generateBlurb()` - AI-powered marketing copy generation (short/medium/long)
   - `generateKeywords()` - Amazon-optimized keyword generation
   - `exportBook()` - KDP-ready export (PDF, EPUB, DOCX formats)
+- **Book Studio Workspace** (professional publishing workspace at /book-studio):
+  - **5 View Modes**: Canvas (floating windows), Grid (card layout), Focus (distraction-free), Split (manuscript+panels), KDP (print preview)
+  - **SplitPaneEditor**: Manuscript editing with dockable left panel (chapters/outline) and right panel (research/characters/worldbuilding)
+  - **KDPPreview**: Live print preview with 8 trim sizes, margin guides, bleed settings, page navigation, 6 automated guardrail checks
+  - **DoctrineChecker**: AI validates manuscript against source of truth doctrine with 8 consistency rule categories
+  - **CharacterDialogue**: Deep Dialogue Engine for AI roleplay where characters maintain voice, personality, speech patterns
+  - **ConsistencyMonitor**: Recursive tracking across 200k+ words detecting conflicts in character attributes, timeline, locations
+  - **FrontBackMatter**: One-click AI generation of dedication, foreword, TOC, acknowledgments, epilogue, etc (11 section types)
+  - **CommandPalette**: Quick access to all features via ⌘K shortcut
+  - **Multi-language support**: 20+ languages with language selector in toolbar
 
 ## External Dependencies
 
