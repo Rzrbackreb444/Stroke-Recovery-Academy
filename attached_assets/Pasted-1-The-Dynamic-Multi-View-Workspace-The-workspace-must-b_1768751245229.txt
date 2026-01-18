@@ -1,0 +1,33 @@
+1. The Dynamic Multi-View Workspace
+The workspace must be an OS-level environment that adapts to the task at hand. Instead of switching tabs, the user reconfigures their view.
+
+Split-Pane Drafting: View the Manuscript on the left while keeping Research Notes and the Character Codex open on the right.
+
+Floating "Vibe" Windows: Minimize rough drafts or research snippets into taskbar icons and "pop them up" only when needed for AI synthesis.
+
+Live KDP Preview: A persistent pane that shows the actual print-ready PDF as you type, ensuring margins and gutters are perfect from word one.
+
+2. The "Author Brain" Semantic Integration
+Your platform shouldn’t just store text; it should understand it.
+
+Doctrine-to-Manuscript: The AI uses the THE_LAUNDROMAT_DOCTRINE.md as a "Source of Truth." If you write something that contradicts your core doctrine, the AI flags it instantly.
+
+Subtext-Driven Dialogue: Use the Deep Dialogue Engine to roleplay with characters. The AI adopts their specific speech patterns and "jams" with you to find the most natural flow.
+
+Recursive Editing: The AI monitors consistency across 200k+ words. If a character’s hair color changes in Chapter 15, the system prompts you to update previous chapters or keep the change.
+
+3. Professional KDP Automation (The "Steroids")
+This is where we beat Atticus and Vellum.
+
+Smart Front/Back Matter: One-click generation for Dedication, Foreword, TOC, Appendices, and Epilogues using context from your manuscript.
+
+AI Image Drag-and-Drop: Generate professional visuals in the Image Studio and drag them directly into the manuscript. The AI will handle Optimal Sizing and text-wrapping automatically.
+
+KDP Guardrails: Real-time checks for 300 DPI resolution, font embedding, and 0.125" bleed so your upload never fails.
+
+4. Expansion into the "KreAItorverse"
+A book is just the beginning. The workspace should be a launchpad.
+
+Branching to Courses: Once the manuscript is finalized, click one button to generate a full Course Curriculum and student quizzes based on the book's content.
+
+Soundtrack Scoring: Use Google Lyria to create a bespoke ambient soundtrack that matches the emotional beats of your audiobook.

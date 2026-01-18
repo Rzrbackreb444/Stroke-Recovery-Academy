@@ -12942,6 +12942,253 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   });
 
   // ============================================================================
+  // AUTHOR BRAIN - Semantic Memory System
+  // ============================================================================
+
+  // POST /api/author-brain/projects - Create project context
+  app.post('/api/author-brain/projects', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { projectName, projectType, globalTone } = req.body;
+      
+      if (!projectName || !projectType) {
+        return res.status(400).json({ message: "Project name and type are required" });
+      }
+      
+      const { createProjectContext } = await import('./authorBrainService');
+      const project = await createProjectContext({
+        userId,
+        projectName,
+        projectType,
+        globalTone,
+      });
+      
+      res.json(project);
+    } catch (error) {
+      console.error("Error creating project context:", error);
+      res.status(500).json({ message: "Failed to create project context" });
+    }
+  });
+
+  // GET /api/author-brain/projects - List user's project contexts
+  app.get('/api/author-brain/projects', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { getProjectContexts } = await import('./authorBrainService');
+      const projects = await getProjectContexts(userId);
+      res.json(projects);
+    } catch (error) {
+      console.error("Error fetching project contexts:", error);
+      res.status(500).json({ message: "Failed to fetch projects" });
+    }
+  });
+
+  // GET /api/author-brain/projects/:id - Get single project context
+  app.get('/api/author-brain/projects/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const projectId = req.params.id;
+      const { getProjectContext } = await import('./authorBrainService');
+      const project = await getProjectContext(projectId, userId);
+      
+      if (!project) {
+        return res.status(404).json({ message: "Project not found" });
+      }
+      
+      res.json(project);
+    } catch (error) {
+      console.error("Error fetching project context:", error);
+      res.status(500).json({ message: "Failed to fetch project" });
+    }
+  });
+
+  // PATCH /api/author-brain/projects/:id - Update project context
+  app.patch('/api/author-brain/projects/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const projectId = req.params.id;
+      const { projectName, globalTone } = req.body;
+      
+      const { updateProjectContext } = await import('./authorBrainService');
+      const project = await updateProjectContext(projectId, userId, { projectName, globalTone });
+      
+      res.json(project);
+    } catch (error) {
+      console.error("Error updating project context:", error);
+      res.status(500).json({ message: "Failed to update project" });
+    }
+  });
+
+  // DELETE /api/author-brain/projects/:id - Delete project context
+  app.delete('/api/author-brain/projects/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const projectId = req.params.id;
+      
+      const { deleteProjectContext } = await import('./authorBrainService');
+      await deleteProjectContext(projectId, userId);
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting project context:", error);
+      res.status(500).json({ message: "Failed to delete project" });
+    }
+  });
+
+  // POST /api/author-brain/memories - Add memory to project
+  app.post('/api/author-brain/memories', isAuthenticated, async (req: any, res) => {
+    try {
+      const { projectId, contentType, rawText, metadata } = req.body;
+      
+      if (!projectId || !contentType || !rawText) {
+        return res.status(400).json({ message: "Project ID, content type, and text are required" });
+      }
+      
+      const { addMemory } = await import('./authorBrainService');
+      const memory = await addMemory({ projectId, contentType, rawText, metadata });
+      
+      res.json(memory);
+    } catch (error) {
+      console.error("Error adding memory:", error);
+      res.status(500).json({ message: "Failed to add memory" });
+    }
+  });
+
+  // GET /api/author-brain/memories - Get memories for project
+  app.get('/api/author-brain/memories', isAuthenticated, async (req: any, res) => {
+    try {
+      const { projectId, contentType } = req.query;
+      
+      if (!projectId) {
+        return res.status(400).json({ message: "Project ID is required" });
+      }
+      
+      const { getMemories } = await import('./authorBrainService');
+      const memories = await getMemories(projectId as string, contentType as string | undefined);
+      
+      res.json(memories);
+    } catch (error) {
+      console.error("Error fetching memories:", error);
+      res.status(500).json({ message: "Failed to fetch memories" });
+    }
+  });
+
+  // GET /api/author-brain/memories/:id - Get single memory
+  app.get('/api/author-brain/memories/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const memoryId = req.params.id;
+      const { getMemory } = await import('./authorBrainService');
+      const memory = await getMemory(memoryId);
+      
+      if (!memory) {
+        return res.status(404).json({ message: "Memory not found" });
+      }
+      
+      res.json(memory);
+    } catch (error) {
+      console.error("Error fetching memory:", error);
+      res.status(500).json({ message: "Failed to fetch memory" });
+    }
+  });
+
+  // PATCH /api/author-brain/memories/:id - Update memory
+  app.patch('/api/author-brain/memories/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const memoryId = req.params.id;
+      const { rawText, metadata } = req.body;
+      
+      const { updateMemory } = await import('./authorBrainService');
+      const memory = await updateMemory(memoryId, { rawText, metadata });
+      
+      res.json(memory);
+    } catch (error) {
+      console.error("Error updating memory:", error);
+      res.status(500).json({ message: "Failed to update memory" });
+    }
+  });
+
+  // DELETE /api/author-brain/memories/:id - Delete memory
+  app.delete('/api/author-brain/memories/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const memoryId = req.params.id;
+      const { deleteMemory } = await import('./authorBrainService');
+      await deleteMemory(memoryId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting memory:", error);
+      res.status(500).json({ message: "Failed to delete memory" });
+    }
+  });
+
+  // GET /api/author-brain/search - Search memories
+  app.get('/api/author-brain/search', isAuthenticated, async (req: any, res) => {
+    try {
+      const { projectId, query, contentTypes, limit } = req.query;
+      
+      if (!projectId || !query) {
+        return res.status(400).json({ message: "Project ID and query are required" });
+      }
+      
+      const { searchMemories } = await import('./authorBrainService');
+      const types = contentTypes ? (contentTypes as string).split(',') : undefined;
+      const results = await searchMemories(
+        projectId as string, 
+        query as string, 
+        types,
+        parseInt(limit as string) || 10
+      );
+      
+      res.json(results);
+    } catch (error) {
+      console.error("Error searching memories:", error);
+      res.status(500).json({ message: "Failed to search memories" });
+    }
+  });
+
+  // GET /api/author-brain/context - Get relevant context for chapter
+  app.get('/api/author-brain/context', isAuthenticated, async (req: any, res) => {
+    try {
+      const { projectId, chapterTitle, chapterDescription, limit } = req.query;
+      
+      if (!projectId) {
+        return res.status(400).json({ message: "Project ID is required" });
+      }
+      
+      const { getRelevantContext } = await import('./authorBrainService');
+      const context = await getRelevantContext(
+        projectId as string,
+        (chapterTitle as string) || '',
+        (chapterDescription as string) || '',
+        parseInt(limit as string) || 5
+      );
+      
+      res.json(context);
+    } catch (error) {
+      console.error("Error getting context:", error);
+      res.status(500).json({ message: "Failed to get context" });
+    }
+  });
+
+  // GET /api/author-brain/stats - Get memory statistics
+  app.get('/api/author-brain/stats', isAuthenticated, async (req: any, res) => {
+    try {
+      const { projectId } = req.query;
+      
+      if (!projectId) {
+        return res.status(400).json({ message: "Project ID is required" });
+      }
+      
+      const { getMemoryStats } = await import('./authorBrainService');
+      const stats = await getMemoryStats(projectId as string);
+      
+      res.json(stats);
+    } catch (error) {
+      console.error("Error getting stats:", error);
+      res.status(500).json({ message: "Failed to get stats" });
+    }
+  });
+
+  // ============================================================================
   // DOC HUB - Document Upload, Parsing & Merging
   // ============================================================================
 

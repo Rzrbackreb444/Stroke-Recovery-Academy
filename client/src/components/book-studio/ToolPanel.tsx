@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useBookStudio, WorkflowStep } from "@/lib/contexts/BookStudioContext";
+import ResearchPanel from "./ResearchPanel";
 import {
   Lightbulb,
   FileText,
@@ -12,6 +14,7 @@ import {
   Check,
   Loader2,
   Save,
+  Brain,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -48,8 +51,12 @@ export default function ToolPanel() {
     brainstormIdeas,
     isSaving,
     lastSaved,
-    generationProgress
+    generationProgress,
+    brainProjectId,
+    bookTitle
   } = useBookStudio();
+  
+  const [isResearchPanelOpen, setIsResearchPanelOpen] = useState(false);
 
   return (
     <div className="flex flex-col h-full bg-sidebar border-r border-sidebar-border">
@@ -61,6 +68,24 @@ export default function ToolPanel() {
         <p className="text-xs text-muted-foreground mt-1">
           Follow the steps to create your book
         </p>
+        
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full mt-4 justify-start gap-2"
+          onClick={() => setIsResearchPanelOpen(true)}
+          data-testid="button-open-research"
+        >
+          <Brain className="w-4 h-4 text-primary" />
+          <span>Project Brain</span>
+        </Button>
+        
+        <ResearchPanel
+          isOpen={isResearchPanelOpen}
+          onClose={() => setIsResearchPanelOpen(false)}
+          projectId={brainProjectId}
+          bookTitle={bookTitle}
+        />
       </div>
 
       <nav className="flex-1 p-4 space-y-2" data-testid="workflow-nav">
