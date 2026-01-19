@@ -1,164 +1,117 @@
-import { cn } from "@/lib/utils"
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import { Image } from '@tiptap/extension-image';
-import { Underline } from '@tiptap/extension-underline';
-import { Highlight } from '@tiptap/extension-highlight';
-import Blockquote from '@tiptap/extension-blockquote';
-import BulletList from '@tiptap/extension-bullet-list';
-import OrderedList from '@tiptap/extension-ordered-list';
-import ListItem from '@tiptap/extension-list-item';
-import Placeholder from '@tiptap/extension-placeholder';
-import CharacterCount from '@tiptap/extension-character-count';
-import Typography from '@tiptap/extension-typography';
-import Link from '@tiptap/extension-link';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { useEditor, EditorContent, BubbleMenu, FloatingMenu } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
 import { 
-  Bold, Italic, Underline as UnderlineIcon, 
-  List, ListOrdered, Quote, Undo, Redo, 
-  Download, Sparkles
-} from 'lucide-react';
+  Bold, Italic, List, ListOrdered, 
+  AlignLeft, AlignCenter, AlignRight, 
+  Highlighter, Quote, Undo, Redo, 
+  Download, Sparkles, Wand2, FileText,
+  MoreVertical, CheckCircle2, Cloud
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import { cn } from "@/lib/utils"
 
 export default function ProfessionalEditor() {
   const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Underline,
-      Typography,
-      Placeholder.configure({ 
-        placeholder: 'Start forging your 200,000 word manuscript...' 
-      }),
-      CharacterCount.configure({ limit: 200000 }),
-      Highlight,
-      Link,
-      Image,
-      Blockquote,
-      BulletList,
-      OrderedList,
-      ListItem,
-    ],
-    content: '',
-  });
+    extensions: [StarterKit],
+    content: `
+      <h2>Chapter 6: The Softmount Protocol</h2>
+      <p>The vibration was the first thing you noticed. Not the noise—the noise you could ignore. But the vibration of a forty-pound hardmount washer spinning at 100 G-force was something you felt in your teeth.</p>
+      <p>My grandfather, Jerry, used to say that a laundromat was a living thing. "If the machines aren't shaking," he'd tell me, pointing a grease-stained finger at the row of Dexters, "then the money isn't moving."</p>
+      <blockquote>
+        <strong>DOCTRINE PRINCIPLE #4:</strong><br/>
+        "Stability is an illusion. Your business is either growing or decaying. There is no standing still."
+      </blockquote>
+      <p>I looked at the lease agreement on the table. Ten years. Two five-year options. A personal guarantee that would take my house if I failed.</p>
+      <p>I picked up the pen.</p>
+    `,
+    editorProps: {
+      attributes: {
+        class: 'prose prose-zinc max-w-none focus:outline-none font-serif text-lg leading-loose text-zinc-800 min-h-[800px] selection:bg-orange-200',
+      },
+    },
+  })
 
-  if (!editor) return null;
+  if (!editor) return null
 
   return (
-    <div className="flex flex-col w-full max-w-5xl mx-auto bg-white shadow-[0_0_50px_rgba(0,0,0,0.1)] rounded-sm border border-zinc-200 overflow-hidden min-h-[90vh]">
-      {/* INDUSTRIAL STUDIO TOOLBAR */}
-      <div className="flex flex-wrap items-center gap-1 p-3 bg-zinc-50 border-b border-zinc-200 sticky top-0 z-30 backdrop-blur-md bg-white/90">
-        <div className="flex items-center gap-1 px-2 border-r border-zinc-200">
-          <Button 
-            variant="ghost" size="sm" 
-            onClick={() => editor.chain().focus().toggleBold().run()}
-            className={cn("h-8 w-8 p-0", editor.isActive('bold') && "bg-orange-100 text-orange-600")}
-          >
-            <Bold className="h-4 w-4" />
+    <div className="relative flex flex-col w-full h-full">
+      
+      {/* --- FLOATING COMMAND DECK --- */}
+      {/* A floating glass bar that sits above the content */}
+      <div className="sticky top-6 z-50 mx-auto mb-8 flex items-center gap-1 rounded-full border border-zinc-200/60 bg-white/80 p-1.5 shadow-xl backdrop-blur-xl transition-all hover:scale-[1.01] hover:shadow-2xl hover:border-orange-500/20 w-fit">
+        
+        {/* Text Formatting Group */}
+        <div className="flex items-center gap-0.5 px-1">
+          <Button variant="ghost" size="icon" onClick={() => editor.chain().focus().toggleBold().run()} className={cn("h-8 w-8 rounded-full hover:bg-zinc-100 hover:text-orange-600", editor.isActive('bold') && "bg-orange-50 text-orange-600 shadow-sm")}>
+            <Bold className="h-4 w-4" strokeWidth={2.5} />
           </Button>
-          <Button 
-            variant="ghost" size="sm" 
-            onClick={() => editor.chain().focus().toggleItalic().run()}
-            className={cn("h-8 w-8 p-0", editor.isActive('italic') && "bg-orange-100 text-orange-600")}
-          >
-            <Italic className="h-4 w-4" />
+          <Button variant="ghost" size="icon" onClick={() => editor.chain().focus().toggleItalic().run()} className={cn("h-8 w-8 rounded-full hover:bg-zinc-100 hover:text-orange-600", editor.isActive('italic') && "bg-orange-50 text-orange-600 shadow-sm")}>
+            <Italic className="h-4 w-4" strokeWidth={2.5} />
           </Button>
-          <Button 
-            variant="ghost" size="sm" 
-            onClick={() => editor.chain().focus().toggleUnderline().run()}
-            className={cn("h-8 w-8 p-0", editor.isActive('underline') && "bg-orange-100 text-orange-600")}
-          >
-            <UnderlineIcon className="h-4 w-4" />
+           <Button variant="ghost" size="icon" onClick={() => editor.chain().focus().toggleStrike().run()} className={cn("h-8 w-8 rounded-full hover:bg-zinc-100 hover:text-orange-600", editor.isActive('strike') && "bg-orange-50 text-orange-600 shadow-sm")}>
+            <Highlighter className="h-4 w-4" strokeWidth={2.5} />
           </Button>
         </div>
 
-        <div className="flex items-center gap-1 px-2 border-r border-zinc-200">
-          <Button 
-            variant="ghost" size="sm" 
-            onClick={() => editor.chain().focus().toggleBlockquote().run()}
-            className={cn("h-8 w-8 p-0", editor.isActive('blockquote') && "bg-orange-100 text-orange-600")}
-          >
-            <Quote className="h-4 w-4" />
+        <div className="h-4 w-[1px] bg-zinc-300 mx-1" />
+
+        {/* Structure Group */}
+        <div className="flex items-center gap-0.5 px-1">
+          <Button variant="ghost" size="icon" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} className={cn("h-8 w-8 rounded-full hover:bg-zinc-100", editor.isActive('heading', { level: 2 }) && "bg-zinc-100 text-zinc-900")}>
+            <span className="font-serif font-black text-xs">H2</span>
           </Button>
-          <Button 
-            variant="ghost" size="sm" 
-            onClick={() => editor.chain().focus().toggleBulletList().run()}
-            className={cn("h-8 w-8 p-0", editor.isActive('bulletList') && "text-orange-600")}
-          >
-            <List className="h-4 w-4" />
+           <Button variant="ghost" size="icon" onClick={() => editor.chain().focus().toggleBulletList().run()} className={cn("h-8 w-8 rounded-full hover:bg-zinc-100", editor.isActive('bulletList') && "bg-zinc-100 text-zinc-900")}>
+            <List className="h-4 w-4" strokeWidth={2.5} />
           </Button>
-          <Button 
-            variant="ghost" size="sm" 
-            onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            className={cn("h-8 w-8 p-0", editor.isActive('orderedList') && "text-orange-600")}
-          >
-            <ListOrdered className="h-4 w-4" />
+          <Button variant="ghost" size="icon" onClick={() => editor.chain().focus().toggleBlockquote().run()} className={cn("h-8 w-8 rounded-full hover:bg-zinc-100", editor.isActive('blockquote') && "bg-zinc-100 text-zinc-900")}>
+            <Quote className="h-4 w-4" strokeWidth={2.5} />
           </Button>
         </div>
 
-        <div className="flex items-center gap-1 px-2 border-r border-zinc-200">
-          <Button 
-            variant="ghost" size="sm" 
-            onClick={() => editor.chain().focus().undo().run()}
-            className="h-8 w-8 p-0"
-          >
-            <Undo className="h-4 w-4" />
-          </Button>
-          <Button 
-            variant="ghost" size="sm" 
-            onClick={() => editor.chain().focus().redo().run()}
-            className="h-8 w-8 p-0"
-          >
-            <Redo className="h-4 w-4" />
-          </Button>
-        </div>
+        <div className="h-4 w-[1px] bg-zinc-300 mx-1" />
 
-        <div className="ml-auto flex items-center gap-3">
-          <div className="flex items-center gap-2 px-3 py-1 bg-orange-50 rounded-full border border-orange-100">
-            <Sparkles className="h-3 w-3 text-orange-500 animate-pulse" />
-            <span className="text-[10px] font-mono font-bold text-orange-700 uppercase tracking-tighter">AI Analysis Active</span>
-          </div>
-          <Button variant="outline" size="sm" className="h-8 gap-2 text-[10px] font-bold uppercase border-zinc-300">
-            <Download className="h-3.5 w-3.5" /> Export KDP
+        {/* AI & Actions Group */}
+        <div className="flex items-center gap-1 pl-1">
+           <Button variant="ghost" size="sm" className="h-8 gap-2 rounded-full bg-orange-50 px-3 text-[10px] font-bold uppercase tracking-wide text-orange-600 hover:bg-orange-100 hover:text-orange-700 transition-colors">
+            <Sparkles className="h-3 w-3 animate-pulse" />
+            AI Edit
+          </Button>
+          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900">
+            <MoreVertical className="h-4 w-4" />
           </Button>
         </div>
       </div>
 
-      {/* THE MANUSCRIPT FORGE */}
-      <div className="relative flex-1 p-16 md:p-24 overflow-y-auto bg-[#fafafa]">
-        <div className="absolute top-0 left-0 w-full h-1 bg-orange-500/20" />
-        <EditorContent 
-          editor={editor} 
-          className="prose prose-zinc max-w-none focus:outline-none font-serif text-xl leading-[1.8] text-zinc-900" 
-        />
+      {/* --- THE PAPER SURFACE --- */}
+      <div className="flex-1 px-8 pb-32">
+        <EditorContent editor={editor} />
       </div>
 
-      {/* STATUS HUD */}
-      <div className="flex items-center justify-between px-8 py-4 bg-white border-t border-zinc-200 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] z-20">
-        <div className="flex items-center gap-6">
-          <div className="flex flex-col">
-            <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">Progress</span>
-            <span className="text-xs font-mono font-bold text-zinc-800">
-              {editor.storage.characterCount.words()} / 200,000 WORDS
-            </span>
+       {/* --- LIVE TELEMETRY FOOTER --- */}
+       {/* Anchored to the bottom of the "paper" container, not the screen */}
+       <div className="sticky bottom-0 mt-auto flex items-center justify-between border-t border-zinc-100 bg-white/95 px-6 py-2 backdrop-blur-sm text-[10px] font-mono text-zinc-400 uppercase tracking-wider">
+          
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1.5 text-emerald-600">
+              <Cloud className="h-3 w-3" />
+              <span className="font-bold">Saved</span>
+            </div>
+            <div className="h-3 w-[1px] bg-zinc-200" />
+            <span>{editor.storage.characterCount.words()} Words</span>
+            <span>{editor.storage.characterCount.characters()} Chars</span>
           </div>
-          <div className="w-32 h-1.5 bg-zinc-100 rounded-full overflow-hidden border border-zinc-200">
-            <div 
-              className="h-full bg-orange-500 transition-all duration-1000" 
-              style={{ width: `${(editor.storage.characterCount.words() / 200000) * 100}%` }}
-            />
-          </div>
-        </div>
 
-        <div className="flex items-center gap-4">
-          <Badge variant="outline" className="text-[9px] font-bold border-zinc-300 px-3 py-1 text-zinc-500">
-            DRAFT V1.0 // THE LAUNDROMAT DOCTRINE
-          </Badge>
-          <div className="flex items-center gap-1.5 text-green-600">
-            <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-ping" />
-            <span className="text-[9px] font-black uppercase tracking-widest">Cloud Sync Live</span>
+          <div className="flex items-center gap-2">
+            <span className="text-zinc-300">Readability:</span>
+            <Badge variant="outline" className="border-zinc-200 bg-zinc-50 px-1.5 py-0 text-[9px] font-bold text-zinc-600 rounded-sm">
+              GRADE 8
+            </Badge>
           </div>
-        </div>
-      </div>
+
+       </div>
+
     </div>
-  );
+  )
 }
