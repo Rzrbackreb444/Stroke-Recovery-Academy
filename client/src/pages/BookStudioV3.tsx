@@ -3,44 +3,16 @@ import RecoveryHeader from "@/components/RecoveryHeader";
 import { usePlatform } from "@/lib/hooks/usePlatform";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
-import WorkspaceShell from "@/components/book-studio/WorkspaceShell";
-import StartStep from "@/components/book-studio/steps/StartStep";
-import PlanStep from "@/components/book-studio/steps/PlanStep";
-import GenerateStep from "@/components/book-studio/steps/GenerateStep";
-import BuildStep from "@/components/book-studio/steps/BuildStep";
-import PublishStep from "@/components/book-studio/steps/PublishStep";
-import { BookStudioProvider, useBookStudio } from "@/lib/contexts/BookStudioContext";
+import KreAIteStudio from "@/components/book-studio/KreAIteStudio";
+import { BookStudioProvider } from "@/lib/contexts/BookStudioContext";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2, LogIn } from "lucide-react";
 
-function StepRenderer() {
-  const { currentStep } = useBookStudio();
-
-  switch (currentStep) {
-    case 'start':
-      return <StartStep />;
-    case 'plan':
-      return <PlanStep />;
-    case 'generate':
-      return <GenerateStep />;
-    case 'build':
-      return <BuildStep />;
-    case 'publish':
-      return <PublishStep />;
-    default:
-      return <StartStep />;
-  }
-}
-
 function BookStudioContent() {
-  return (
-    <WorkspaceShell>
-      <StepRenderer />
-    </WorkspaceShell>
-  );
+  return <KreAIteStudio />;
 }
 
 function LoadingState() {
@@ -133,17 +105,14 @@ export default function BookStudioV3() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <>
       <SEO 
         title={seoTitle}
         description={seoDescription}
       />
-      <Header />
-      <main className="flex-1 flex overflow-hidden" data-testid="book-studio-main">
-        <BookStudioProvider>
-          <BookStudioContent />
-        </BookStudioProvider>
-      </main>
-    </div>
+      <BookStudioProvider>
+        <BookStudioContent />
+      </BookStudioProvider>
+    </>
   );
 }
