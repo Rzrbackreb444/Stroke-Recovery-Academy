@@ -8214,6 +8214,43 @@ Respond in JSON format:
     }
   });
 
+  // POST /api/admin/stripe/sync - Manually trigger Stripe sync
+  app.post('/api/admin/stripe/sync', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      if (user?.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+      
+      console.log('Manually triggering Stripe sync...');
+      const stripeSync = await getStripeSync();
+      await stripeSync.syncBackfill();
+      console.log('Stripe sync complete');
+      res.json({ success: true, message: 'Stripe data synced successfully' });
+    } catch (error) {
+      console.error("Error syncing Stripe:", error);
+      res.status(500).json({ message: "Failed to sync Stripe data", error: String(error) });
+    }
+  });
+
+  // GET /api/admin/stripe/products - List all Stripe products (admin)
+  app.get('/api/admin/stripe/products', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      if (user?.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+      
+      const products = await stripeService.listProductsWithPrices(true, 100, 0);
+      res.json({ success: true, products });
+    } catch (error) {
+      console.error("Error fetching Stripe products:", error);
+      res.status(500).json({ message: "Failed to fetch products" });
+    }
+  });
+
   // ============================================================================
   // SEO PAGES
   // ============================================================================
