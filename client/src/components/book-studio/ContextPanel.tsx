@@ -58,13 +58,13 @@ export default function ContextPanel({
           <ChevronRight className="w-4 h-4 rotate-180" />
         </Button>
         <div className="flex flex-col gap-2 mt-4">
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Outline">
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Outline" aria-label="Outline" data-testid="button-outline">
             <BookOpen className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="AI Suggestions">
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="AI Suggestions" aria-label="AI Suggestions" data-testid="button-ai-suggestions">
             <Sparkles className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Notes">
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Notes" aria-label="Notes" data-testid="button-notes">
             <FileText className="w-4 h-4" />
           </Button>
         </div>

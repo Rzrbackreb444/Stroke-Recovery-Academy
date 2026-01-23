@@ -193,7 +193,13 @@ export default function RiverNavigator({
           </h2>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-6 w-6 p-0"
+                aria-label="File options"
+                data-testid="button-file-options"
+              >
                 <MoreHorizontal className="h-4 w-4 text-zinc-400" />
               </Button>
             </DropdownMenuTrigger>
