@@ -104,6 +104,41 @@ Icons: lucide-react only (no emoji)
   - **Cornerstone Content**: Flag important posts for enhanced internal linking
   - **Schema Types**: Article, BlogPosting, NewsArticle, HowTo support
 
+### Lulu Publishing Integration (Professional Print-on-Demand)
+- **API Service**: Full OAuth2 client credentials flow with automatic token refresh
+- **Book Templates**: 12 professional templates for recovery memoirs, workbooks, photo books, children's books, cookbooks
+- **Trim Sizes**: 12 industry-standard sizes from pocket (4.25x6.87") to landscape large (11x8.5")
+- **Binding Types**: Perfect bound, case wrap, dust jacket, coil, saddle stitch, linen wrap
+- **Print Types**: B&W, standard color, premium color
+- **Paper Types**: 60# white/cream, 80# white/coated, 100# coated premium
+- **Cover Finishes**: Matte, gloss
+- **API Routes** (`/api/lulu/*`):
+  - `GET /templates` - All book templates
+  - `GET /templates/category/:category` - Templates by category
+  - `GET /specifications` - Full print specs (trim sizes, bindings, papers)
+  - `POST /projects` - Create publishing project
+  - `POST /calculate-cost` - Get printing cost estimate
+  - `GET /cover-specs/:podPackageId/:pageCount` - Cover dimensions/bleed
+  - `POST /print-jobs` - Create print order
+  - `GET /print-jobs/:jobId` - Track order status
+  - `POST /webhooks/setup` - Configure Lulu webhooks (admin)
+  - `POST /webhooks/lulu` - Webhook endpoint for order updates
+
+### Stroke Recovery Academy (Powered by Stroke Lyfe Inc)
+- **Recovery Creator Profiles**: Extended user profiles with stroke type, affected areas, credentials
+- **Monetization**: Tips, subscriptions, premium content (85/15 revenue split)
+- **Recovery Stories**: Journey narratives with story types (journey, milestone, tip, inspiration)
+- **Journey Milestones**: Personal achievement tracking with celebration counts
+- **Support Groups**: Community spaces with roles (admin, moderator, member)
+- **Resources**: Curated exercises, guides, videos by category and difficulty
+
+### Stripe Products & Subscription Tiers
+- **KreAIte Tiers**: Free (100 credits), Creator $29/mo (2,500 credits), Pro $79/mo (10,000 credits), Enterprise $299/mo (unlimited)
+- **Recovery Academy Tiers**: Free, Survivor $14.99/mo, Creator $29.99/mo
+- **Credit Packs**: 500/$9.99, 2,000/$29.99, 5,000/$59.99, 20,000/$199.99
+- **Publishing Add-ons**: Basic $99, Premium $299, Cover Design $49, ISBN $25
+- **Seed Script**: `server/seedStripeProducts.ts` - Run to create Stripe products
+
 ## External Dependencies
 
 1.  **Replit Auth (OpenID Connect)**: User authentication and identity.
@@ -121,3 +156,4 @@ Icons: lucide-react only (no emoji)
 13. **Drizzle ORM / Drizzle Kit**: Type-safe database queries and migrations.
 14. **mammoth / pdf-parse**: Document parsing.
 15. **SERP API**: Trending topics, keyword research (integrated into SERP Research Hub).
+16. **Lulu API**: Professional print-on-demand book publishing (OAuth2, webhooks).
