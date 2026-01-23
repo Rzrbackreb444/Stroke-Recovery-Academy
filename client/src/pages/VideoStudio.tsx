@@ -287,7 +287,7 @@ export default function VideoStudio() {
                 <div className="p-2 bg-primary/20 rounded-lg">
                   <Video className="w-8 h-8 text-primary" />
                 </div>
-                <Badge variant="outline" className="border-orange-500/50 text-primary" data-testid="badge-ai-powered">
+                <Badge variant="outline" className="border-[#C9941A]/50 text-primary" data-testid="badge-ai-powered">
                   <Sparkles className="w-3 h-3 mr-1" />
                   AI-Powered
                 </Badge>
@@ -295,7 +295,7 @@ export default function VideoStudio() {
               <h1 className="text-4xl md:text-5xl font-black text-foreground tracking-tight" data-testid="text-hero-title">
                 VIDEO STUDIO
               </h1>
-              <p className="text-gray-400 text-lg mt-2 max-w-xl" data-testid="text-hero-description">
+              <p className="text-white/60 text-lg mt-2 max-w-xl" data-testid="text-hero-description">
                 Professional video editing with AI-powered tools. Create TikToks, Reels, 
                 and YouTube content with auto-captions, background removal, and smart editing.
               </p>
@@ -323,10 +323,10 @@ export default function VideoStudio() {
 
       <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-gray-900 border border-gray-800 p-1">
+          <TabsList className="bg-[#1A1A1A] border border-[#C9941A]/30 p-1 rounded-none">
             <TabsTrigger
               value="upload"
-              className="data-[state=active]:bg-orange-500 data-[state=active]:text-black"
+              className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black rounded-none"
               data-testid="tab-upload"
             >
               <Upload className="w-4 h-4 mr-2" />
@@ -334,7 +334,7 @@ export default function VideoStudio() {
             </TabsTrigger>
             <TabsTrigger
               value="templates"
-              className="data-[state=active]:bg-orange-500 data-[state=active]:text-black"
+              className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black rounded-none"
               data-testid="tab-templates"
             >
               <Clapperboard className="w-4 h-4 mr-2" />
@@ -342,7 +342,7 @@ export default function VideoStudio() {
             </TabsTrigger>
             <TabsTrigger
               value="projects"
-              className="data-[state=active]:bg-orange-500 data-[state=active]:text-black"
+              className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black rounded-none"
               data-testid="tab-projects"
             >
               <Film className="w-4 h-4 mr-2" />
@@ -350,7 +350,7 @@ export default function VideoStudio() {
             </TabsTrigger>
             <TabsTrigger
               value="editor"
-              className="data-[state=active]:bg-orange-500 data-[state=active]:text-black"
+              className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black rounded-none"
               data-testid="tab-editor"
             >
               <Scissors className="w-4 h-4 mr-2" />
@@ -365,10 +365,10 @@ export default function VideoStudio() {
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className={`relative border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-all ${
+              className={`relative border-2 border-dashed rounded-none p-12 text-center cursor-pointer transition-all ${
                 isDragging
-                  ? "border-orange-500 bg-primary/10"
-                  : "border-gray-700 hover:border-orange-500/50 bg-gray-900/50"
+                  ? "border-[#C9941A] bg-[#C9941A]/10"
+                  : "border-[#C9941A]/30 hover:border-[#C9941A]/60 bg-[#1A1A1A]/50"
               }`}
               data-testid="dropzone-upload"
             >
@@ -389,11 +389,11 @@ export default function VideoStudio() {
                   <h3 className="text-xl font-semibold text-foreground mb-2">
                     Drop your videos here
                   </h3>
-                  <p className="text-gray-400">
+                  <p className="text-white/60">
                     or click to browse • Supports MP4, MOV, AVI, WebM
                   </p>
                 </div>
-                <div className="flex items-center gap-4 text-sm text-gray-500">
+                <div className="flex items-center gap-4 text-sm text-white/50">
                   <span className="flex items-center gap-1">
                     <Video className="w-4 h-4" />
                     Video
@@ -411,7 +411,7 @@ export default function VideoStudio() {
             </div>
 
             {uploadedFiles.length > 0 && (
-              <Card className="bg-gray-900 border-gray-800">
+              <Card className="industrial-card">
                 <CardHeader>
                   <CardTitle className="text-foreground flex items-center gap-2">
                     <FileVideo className="w-5 h-5 text-primary" />
@@ -423,14 +423,14 @@ export default function VideoStudio() {
                     {uploadedFiles.map((file, index) => (
                       <div
                         key={index}
-                        className="relative group bg-gray-800 rounded-lg p-3 hover-elevate"
+                        className="relative group bg-[#1A1A1A] rounded-lg p-3 hover-elevate"
                         data-testid={`uploaded-file-${index}`}
                       >
-                        <div className="aspect-video bg-gray-700 rounded flex items-center justify-center mb-2">
-                          <Video className="w-8 h-8 text-gray-500" />
+                        <div className="aspect-video bg-[#2A2A2A] rounded flex items-center justify-center mb-2">
+                          <Video className="w-8 h-8 text-white/50" />
                         </div>
                         <p className="text-sm text-foreground truncate">{file.name}</p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-white/50">
                           {(file.size / (1024 * 1024)).toFixed(1)} MB
                         </p>
                         <Button
@@ -463,7 +463,7 @@ export default function VideoStudio() {
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="bg-gray-900 border-gray-800 hover-elevate">
+              <Card className="industrial-card hover-elevate">
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary/20 rounded-lg">
@@ -487,7 +487,7 @@ export default function VideoStudio() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gray-900 border-gray-800 hover-elevate">
+              <Card className="industrial-card hover-elevate">
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-blue-500/20 rounded-lg">
@@ -510,7 +510,7 @@ export default function VideoStudio() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gray-900 border-gray-800 hover-elevate">
+              <Card className="industrial-card hover-elevate">
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-amber-500/20 rounded-lg">
@@ -540,22 +540,22 @@ export default function VideoStudio() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
                 <h2 className="text-2xl font-bold text-foreground">Video Templates</h2>
-                <p className="text-gray-400">Start with a template optimized for your platform</p>
+                <p className="text-white/60">Start with a template optimized for your platform</p>
               </div>
               <div className="flex items-center gap-3">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" />
                   <Input
                     placeholder="Search templates..."
-                    className="pl-10 bg-gray-900 border-gray-700 text-foreground w-64"
+                    className="pl-10 bg-[#1A1A1A] border-[#C9941A]/30 text-foreground w-64"
                     data-testid="input-search-templates"
                   />
                 </div>
                 <Select defaultValue="all">
-                  <SelectTrigger className="w-40 bg-gray-900 border-gray-700 text-foreground" data-testid="select-template-category">
+                  <SelectTrigger className="w-40 bg-[#1A1A1A] border-[#C9941A]/30 text-foreground" data-testid="select-template-category">
                     <SelectValue placeholder="Category" />
                   </SelectTrigger>
-                  <SelectContent className="bg-gray-900 border-gray-700">
+                  <SelectContent className="bg-[#1A1A1A] border-[#C9941A]/30">
                     <SelectItem value="all">All Categories</SelectItem>
                     <SelectItem value="social">Social Media</SelectItem>
                     <SelectItem value="youtube">YouTube</SelectItem>
@@ -570,14 +570,14 @@ export default function VideoStudio() {
               {templates.map((template) => (
                 <Card
                   key={template.id}
-                  className={`bg-gray-900 border-gray-800 cursor-pointer transition-all hover-elevate ${
+                  className={`industrial-card cursor-pointer transition-all hover-elevate ${
                     selectedTemplate === template.id ? "ring-2 ring-orange-500" : ""
                   }`}
                   onClick={() => setSelectedTemplate(template.id)}
                   data-testid={`template-${template.id}`}
                 >
                   <CardContent className="p-4">
-                    <div className="relative aspect-[9/16] bg-gray-800 rounded-lg mb-3 flex items-center justify-center">
+                    <div className="relative aspect-[9/16] bg-[#1A1A1A] rounded-lg mb-3 flex items-center justify-center">
                       {template.aspectRatio === "16:9" ? (
                         <RectangleHorizontal className="w-12 h-12 text-gray-600" />
                       ) : template.aspectRatio === "9:16" ? (
@@ -594,16 +594,16 @@ export default function VideoStudio() {
                       )}
                     </div>
                     <h3 className="font-semibold text-foreground text-sm">{template.name}</h3>
-                    <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
+                    <div className="flex items-center gap-2 mt-1 text-xs text-white/50">
                       <span>{template.aspectRatio}</span>
                       <span>•</span>
                       <span>{template.duration}</span>
                     </div>
                     {template.category === "social" && (
                       <div className="flex items-center gap-1 mt-2">
-                        {template.name.includes("TikTok") && <SiTiktok className="w-3 h-3 text-gray-400" />}
-                        {template.name.includes("YouTube") && <Youtube className="w-3 h-3 text-gray-400" />}
-                        {template.name.includes("Instagram") && <Instagram className="w-3 h-3 text-gray-400" />}
+                        {template.name.includes("TikTok") && <SiTiktok className="w-3 h-3 text-white/60" />}
+                        {template.name.includes("YouTube") && <Youtube className="w-3 h-3 text-white/60" />}
+                        {template.name.includes("Instagram") && <Instagram className="w-3 h-3 text-white/60" />}
                       </div>
                     )}
                   </CardContent>
@@ -629,13 +629,13 @@ export default function VideoStudio() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
                 <h2 className="text-2xl font-bold text-foreground">My Projects</h2>
-                <p className="text-gray-400">Continue working on your video projects</p>
+                <p className="text-white/60">Continue working on your video projects</p>
               </div>
               <div className="flex items-center gap-3">
-                <Button variant="outline" size="icon" className="border-gray-700" data-testid="button-view-grid">
+                <Button variant="outline" size="icon" className="border-[#C9941A]/30" data-testid="button-view-grid">
                   <Grid className="w-4 h-4" />
                 </Button>
-                <Button variant="outline" size="icon" className="border-gray-700" data-testid="button-view-list">
+                <Button variant="outline" size="icon" className="border-[#C9941A]/30" data-testid="button-view-list">
                   <List className="w-4 h-4" />
                 </Button>
               </div>
@@ -645,11 +645,11 @@ export default function VideoStudio() {
               {[1, 2, 3, 4].map((project) => (
                 <Card
                   key={project}
-                  className="bg-gray-900 border-gray-800 hover-elevate cursor-pointer"
+                  className="industrial-card hover-elevate cursor-pointer"
                   data-testid={`project-${project}`}
                 >
                   <CardContent className="p-0">
-                    <div className="relative aspect-video bg-gray-800 rounded-t-lg flex items-center justify-center">
+                    <div className="relative aspect-video bg-[#1A1A1A] rounded-t-lg flex items-center justify-center">
                       <Video className="w-12 h-12 text-gray-600" />
                       <div className="absolute bottom-2 right-2 bg-black/70 px-2 py-1 rounded text-xs text-foreground">
                         02:45
@@ -657,7 +657,7 @@ export default function VideoStudio() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute top-2 right-2 text-gray-400 hover:text-foreground"
+                        className="absolute top-2 right-2 text-white/60 hover:text-foreground"
                         data-testid={`button-project-menu-${project}`}
                       >
                         <MoreHorizontal className="w-4 h-4" />
@@ -665,12 +665,12 @@ export default function VideoStudio() {
                     </div>
                     <div className="p-4">
                       <h3 className="font-semibold text-foreground">Project {project}</h3>
-                      <p className="text-sm text-gray-500 mt-1">Edited 2 hours ago</p>
+                      <p className="text-sm text-white/50 mt-1">Edited 2 hours ago</p>
                       <div className="flex items-center gap-2 mt-3">
-                        <Badge variant="outline" className="border-gray-700 text-gray-400 text-xs">
+                        <Badge variant="outline" className="border-[#C9941A]/30 text-white/60 text-xs">
                           TikTok
                         </Badge>
-                        <Badge variant="outline" className="border-gray-700 text-gray-400 text-xs">
+                        <Badge variant="outline" className="border-[#C9941A]/30 text-white/60 text-xs">
                           Draft
                         </Badge>
                       </div>
@@ -680,7 +680,7 @@ export default function VideoStudio() {
               ))}
             </div>
 
-            <div className="text-center text-gray-500 py-8">
+            <div className="text-center text-white/50 py-8">
               <Film className="w-12 h-12 mx-auto mb-4 text-gray-600" />
               <p>Create your first video project to see it here</p>
             </div>
@@ -689,7 +689,7 @@ export default function VideoStudio() {
           <TabsContent value="editor" className="space-y-4">
             <div className="grid grid-cols-12 gap-4 h-[calc(100vh-300px)] min-h-[600px]">
               {showAIPanel && (
-                <div className="col-span-2 bg-gray-900 rounded-lg border border-gray-800 overflow-hidden">
+                <div className="col-span-2 bg-[#1A1A1A] rounded-lg border border-gray-800 overflow-hidden">
                   <div className="p-3 border-b border-gray-800 flex items-center justify-between">
                     <h3 className="font-semibold text-foreground text-sm flex items-center gap-2">
                       <Wand2 className="w-4 h-4 text-primary" />
@@ -729,23 +729,23 @@ export default function VideoStudio() {
                             )}
                             <div className="flex-1 text-left">
                               <div className="text-sm font-medium">{tool.name}</div>
-                              <div className="text-xs text-gray-500">{tool.description}</div>
+                              <div className="text-xs text-white/50">{tool.description}</div>
                             </div>
-                            <Badge className="text-[10px] bg-gray-800 text-gray-400">{tool.badge}</Badge>
+                            <Badge className="text-[10px] bg-[#1A1A1A] text-white/60">{tool.badge}</Badge>
                           </div>
                         </Button>
                       ))}
                     </div>
-                    <Separator className="bg-gray-800 my-2" />
+                    <Separator className="bg-[#1A1A1A] my-2" />
                     <div className="p-2">
-                      <h4 className="text-xs font-semibold text-gray-500 uppercase px-3 mb-2">Effects</h4>
+                      <h4 className="text-xs font-semibold text-white/50 uppercase px-3 mb-2">Effects</h4>
                       <div className="grid grid-cols-2 gap-1">
                         {effects.map((effect) => (
                           <Button
                             key={effect.id}
                             variant="ghost"
                             size="sm"
-                            className="justify-start text-gray-400 text-xs"
+                            className="justify-start text-white/60 text-xs"
                             data-testid={`button-effect-${effect.id}`}
                           >
                             {effect.name}
@@ -758,31 +758,31 @@ export default function VideoStudio() {
               )}
 
               <div className={`${showAIPanel ? "col-span-7" : "col-span-9"} flex flex-col gap-4`}>
-                <Card className="bg-gray-900 border-gray-800 flex-1">
+                <Card className="industrial-card flex-1">
                   <CardContent className="p-0 h-full flex flex-col">
                     <div className="flex-1 bg-background rounded-t-lg flex items-center justify-center relative">
-                      <div className="aspect-video w-full max-w-3xl bg-gray-800 rounded flex items-center justify-center">
+                      <div className="aspect-video w-full max-w-3xl bg-[#1A1A1A] rounded flex items-center justify-center">
                         <Video className="w-24 h-24 text-gray-600" />
                       </div>
                       <div className="absolute top-4 left-4 flex items-center gap-2">
-                        <Badge variant="outline" className="border-gray-700 text-gray-400">
+                        <Badge variant="outline" className="border-[#C9941A]/30 text-white/60">
                           16:9
                         </Badge>
-                        <Badge variant="outline" className="border-gray-700 text-gray-400">
+                        <Badge variant="outline" className="border-[#C9941A]/30 text-white/60">
                           1080p
                         </Badge>
                       </div>
                       <div className="absolute top-4 right-4 flex items-center gap-1">
-                        <Button variant="ghost" size="icon" className="text-gray-400" data-testid="button-zoom-in">
+                        <Button variant="ghost" size="icon" className="text-white/60" data-testid="button-zoom-in">
                           <ZoomIn className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="text-gray-400" data-testid="button-zoom-out">
+                        <Button variant="ghost" size="icon" className="text-white/60" data-testid="button-zoom-out">
                           <ZoomOut className="w-4 h-4" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="text-gray-400"
+                          className="text-white/60"
                           onClick={() => setIsFullscreen(!isFullscreen)}
                           data-testid="button-fullscreen"
                         >
@@ -791,10 +791,10 @@ export default function VideoStudio() {
                       </div>
                     </div>
 
-                    <div className="p-3 bg-gray-900 border-t border-gray-800">
+                    <div className="p-3 bg-[#1A1A1A] border-t border-gray-800">
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-1">
-                          <Button variant="ghost" size="icon" className="text-gray-400" data-testid="button-skip-back">
+                          <Button variant="ghost" size="icon" className="text-white/60" data-testid="button-skip-back">
                             <SkipBack className="w-4 h-4" />
                           </Button>
                           <Button
@@ -806,12 +806,12 @@ export default function VideoStudio() {
                           >
                             {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
                           </Button>
-                          <Button variant="ghost" size="icon" className="text-gray-400" data-testid="button-skip-forward">
+                          <Button variant="ghost" size="icon" className="text-white/60" data-testid="button-skip-forward">
                             <SkipForward className="w-4 h-4" />
                           </Button>
                         </div>
                         <div className="flex-1 flex items-center gap-3">
-                          <span className="text-xs text-gray-400 font-mono w-12">{formatTime(currentTime)}</span>
+                          <span className="text-xs text-white/60 font-mono w-12">{formatTime(currentTime)}</span>
                           <Slider
                             value={[currentTime]}
                             max={duration}
@@ -820,13 +820,13 @@ export default function VideoStudio() {
                             className="flex-1"
                             data-testid="slider-timeline"
                           />
-                          <span className="text-xs text-gray-400 font-mono w-12">{formatTime(duration)}</span>
+                          <span className="text-xs text-white/60 font-mono w-12">{formatTime(duration)}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="text-gray-400"
+                            className="text-white/60"
                             onClick={() => setIsMuted(!isMuted)}
                             data-testid="button-mute"
                           >
@@ -848,29 +848,29 @@ export default function VideoStudio() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gray-900 border-gray-800 h-48">
+                <Card className="industrial-card h-48">
                   <CardContent className="p-0 h-full">
                     <div className="flex items-center justify-between px-3 py-2 border-b border-gray-800">
                       <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-gray-400" data-testid="button-add-track">
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-white/60" data-testid="button-add-track">
                           <Plus className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-gray-400" data-testid="button-undo">
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-white/60" data-testid="button-undo">
                           <RotateCcw className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-gray-400" data-testid="button-redo">
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-white/60" data-testid="button-redo">
                           <RotateCw className="w-4 h-4" />
                         </Button>
-                        <Separator orientation="vertical" className="h-5 bg-gray-700" />
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-gray-400" data-testid="button-split">
+                        <Separator orientation="vertical" className="h-5 bg-[#2A2A2A]" />
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-white/60" data-testid="button-split">
                           <Scissors className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-gray-400" data-testid="button-delete-clip">
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-white/60" data-testid="button-delete-clip">
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-500">Zoom:</span>
+                        <span className="text-xs text-white/50">Zoom:</span>
                         <Slider
                           value={[zoom]}
                           min={50}
@@ -879,7 +879,7 @@ export default function VideoStudio() {
                           className="w-24"
                           data-testid="slider-zoom"
                         />
-                        <span className="text-xs text-gray-400 w-10">{zoom}%</span>
+                        <span className="text-xs text-white/60 w-10">{zoom}%</span>
                       </div>
                     </div>
 
@@ -888,7 +888,7 @@ export default function VideoStudio() {
                         {tracks.map((track) => (
                           <div key={track.id} className="flex items-center gap-2" data-testid={`track-${track.id}`}>
                             <div className="w-24 flex items-center gap-1 shrink-0">
-                              <Button variant="ghost" size="icon" className="h-6 w-6 text-gray-500">
+                              <Button variant="ghost" size="icon" className="h-6 w-6 text-white/50">
                                 <GripVertical className="w-3 h-3" />
                               </Button>
                               <Button
@@ -903,14 +903,14 @@ export default function VideoStudio() {
                                 data-testid={`button-track-visibility-${track.id}`}
                               >
                                 {track.visible ? (
-                                  <Eye className="w-3 h-3 text-gray-400" />
+                                  <Eye className="w-3 h-3 text-white/60" />
                                 ) : (
                                   <EyeOff className="w-3 h-3 text-gray-600" />
                                 )}
                               </Button>
-                              <span className="text-xs text-gray-400 truncate">{track.name}</span>
+                              <span className="text-xs text-white/60 truncate">{track.name}</span>
                             </div>
-                            <div className="flex-1 h-8 bg-gray-800 rounded relative">
+                            <div className="flex-1 h-8 bg-[#1A1A1A] rounded relative">
                               {track.clips.map((clip) => (
                                 <div
                                   key={clip.id}
@@ -940,12 +940,12 @@ export default function VideoStudio() {
                 </Card>
               </div>
 
-              <div className="col-span-3 bg-gray-900 rounded-lg border border-gray-800 overflow-hidden">
+              <div className="col-span-3 bg-[#1A1A1A] rounded-lg border border-gray-800 overflow-hidden">
                 <Tabs defaultValue="properties" className="h-full flex flex-col">
-                  <TabsList className="bg-gray-800 rounded-none border-b border-gray-700 justify-start p-0">
+                  <TabsList className="bg-[#1A1A1A] rounded-none border-b border-[#C9941A]/30 justify-start p-0">
                     <TabsTrigger
                       value="properties"
-                      className="rounded-none data-[state=active]:bg-gray-900"
+                      className="rounded-none data-[state=active]:bg-[#1A1A1A]"
                       data-testid="tab-properties"
                     >
                       <SlidersHorizontal className="w-4 h-4 mr-1" />
@@ -953,7 +953,7 @@ export default function VideoStudio() {
                     </TabsTrigger>
                     <TabsTrigger
                       value="export"
-                      className="rounded-none data-[state=active]:bg-gray-900"
+                      className="rounded-none data-[state=active]:bg-[#1A1A1A]"
                       data-testid="tab-export"
                     >
                       <Download className="w-4 h-4 mr-1" />
@@ -963,56 +963,56 @@ export default function VideoStudio() {
 
                   <TabsContent value="properties" className="flex-1 p-4 space-y-4 overflow-auto m-0">
                     <div>
-                      <Label className="text-gray-400 text-xs uppercase">Transform</Label>
+                      <Label className="text-white/60 text-xs uppercase">Transform</Label>
                       <div className="grid grid-cols-2 gap-2 mt-2">
                         <div>
-                          <Label className="text-gray-500 text-xs">Position X</Label>
+                          <Label className="text-white/50 text-xs">Position X</Label>
                           <Input
                             type="number"
                             defaultValue="0"
-                            className="bg-gray-800 border-gray-700 text-foreground h-8"
+                            className="bg-[#1A1A1A] border-[#C9941A]/30 text-foreground h-8"
                             data-testid="input-position-x"
                           />
                         </div>
                         <div>
-                          <Label className="text-gray-500 text-xs">Position Y</Label>
+                          <Label className="text-white/50 text-xs">Position Y</Label>
                           <Input
                             type="number"
                             defaultValue="0"
-                            className="bg-gray-800 border-gray-700 text-foreground h-8"
+                            className="bg-[#1A1A1A] border-[#C9941A]/30 text-foreground h-8"
                             data-testid="input-position-y"
                           />
                         </div>
                         <div>
-                          <Label className="text-gray-500 text-xs">Scale</Label>
+                          <Label className="text-white/50 text-xs">Scale</Label>
                           <Input
                             type="number"
                             defaultValue="100"
-                            className="bg-gray-800 border-gray-700 text-foreground h-8"
+                            className="bg-[#1A1A1A] border-[#C9941A]/30 text-foreground h-8"
                             data-testid="input-scale"
                           />
                         </div>
                         <div>
-                          <Label className="text-gray-500 text-xs">Rotation</Label>
+                          <Label className="text-white/50 text-xs">Rotation</Label>
                           <Input
                             type="number"
                             defaultValue="0"
-                            className="bg-gray-800 border-gray-700 text-foreground h-8"
+                            className="bg-[#1A1A1A] border-[#C9941A]/30 text-foreground h-8"
                             data-testid="input-rotation"
                           />
                         </div>
                       </div>
                     </div>
 
-                    <Separator className="bg-gray-800" />
+                    <Separator className="bg-[#1A1A1A]" />
 
                     <div>
-                      <Label className="text-gray-400 text-xs uppercase">Color Correction</Label>
+                      <Label className="text-white/60 text-xs uppercase">Color Correction</Label>
                       <div className="space-y-3 mt-2">
                         <div className="flex items-center gap-3">
-                          <Sun className="w-4 h-4 text-gray-500" />
+                          <Sun className="w-4 h-4 text-white/50" />
                           <div className="flex-1">
-                            <div className="flex justify-between text-xs text-gray-500 mb-1">
+                            <div className="flex justify-between text-xs text-white/50 mb-1">
                               <span>Brightness</span>
                               <span>0</span>
                             </div>
@@ -1020,9 +1020,9 @@ export default function VideoStudio() {
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
-                          <Contrast className="w-4 h-4 text-gray-500" />
+                          <Contrast className="w-4 h-4 text-white/50" />
                           <div className="flex-1">
-                            <div className="flex justify-between text-xs text-gray-500 mb-1">
+                            <div className="flex justify-between text-xs text-white/50 mb-1">
                               <span>Contrast</span>
                               <span>0</span>
                             </div>
@@ -1030,9 +1030,9 @@ export default function VideoStudio() {
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
-                          <Droplets className="w-4 h-4 text-gray-500" />
+                          <Droplets className="w-4 h-4 text-white/50" />
                           <div className="flex-1">
-                            <div className="flex justify-between text-xs text-gray-500 mb-1">
+                            <div className="flex justify-between text-xs text-white/50 mb-1">
                               <span>Saturation</span>
                               <span>0</span>
                             </div>
@@ -1040,9 +1040,9 @@ export default function VideoStudio() {
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
-                          <Thermometer className="w-4 h-4 text-gray-500" />
+                          <Thermometer className="w-4 h-4 text-white/50" />
                           <div className="flex-1">
-                            <div className="flex justify-between text-xs text-gray-500 mb-1">
+                            <div className="flex justify-between text-xs text-white/50 mb-1">
                               <span>Temperature</span>
                               <span>0</span>
                             </div>
@@ -1052,21 +1052,21 @@ export default function VideoStudio() {
                       </div>
                     </div>
 
-                    <Separator className="bg-gray-800" />
+                    <Separator className="bg-[#1A1A1A]" />
 
                     <div>
-                      <Label className="text-gray-400 text-xs uppercase">Quick Actions</Label>
+                      <Label className="text-white/60 text-xs uppercase">Quick Actions</Label>
                       <div className="grid grid-cols-4 gap-2 mt-2">
-                        <Button variant="outline" size="icon" className="border-gray-700" data-testid="button-flip-h">
+                        <Button variant="outline" size="icon" className="border-[#C9941A]/30" data-testid="button-flip-h">
                           <FlipHorizontal className="w-4 h-4" />
                         </Button>
-                        <Button variant="outline" size="icon" className="border-gray-700" data-testid="button-flip-v">
+                        <Button variant="outline" size="icon" className="border-[#C9941A]/30" data-testid="button-flip-v">
                           <FlipVertical className="w-4 h-4" />
                         </Button>
-                        <Button variant="outline" size="icon" className="border-gray-700" data-testid="button-crop">
+                        <Button variant="outline" size="icon" className="border-[#C9941A]/30" data-testid="button-crop">
                           <Crop className="w-4 h-4" />
                         </Button>
-                        <Button variant="outline" size="icon" className="border-gray-700" data-testid="button-move">
+                        <Button variant="outline" size="icon" className="border-[#C9941A]/30" data-testid="button-move">
                           <Move className="w-4 h-4" />
                         </Button>
                       </div>
@@ -1075,12 +1075,12 @@ export default function VideoStudio() {
 
                   <TabsContent value="export" className="flex-1 p-4 space-y-4 overflow-auto m-0">
                     <div>
-                      <Label className="text-gray-400 text-xs uppercase mb-2 block">Export Format</Label>
+                      <Label className="text-white/60 text-xs uppercase mb-2 block">Export Format</Label>
                       <Select value={exportFormat} onValueChange={setExportFormat}>
-                        <SelectTrigger className="bg-gray-800 border-gray-700 text-foreground" data-testid="select-export-format">
+                        <SelectTrigger className="bg-[#1A1A1A] border-[#C9941A]/30 text-foreground" data-testid="select-export-format">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-gray-900 border-gray-700">
+                        <SelectContent className="bg-[#1A1A1A] border-[#C9941A]/30">
                           <SelectItem value="mp4">MP4 (H.264)</SelectItem>
                           <SelectItem value="webm">WebM (VP9)</SelectItem>
                           <SelectItem value="gif">GIF (Animated)</SelectItem>
@@ -1090,12 +1090,12 @@ export default function VideoStudio() {
                     </div>
 
                     <div>
-                      <Label className="text-gray-400 text-xs uppercase mb-2 block">Quality</Label>
+                      <Label className="text-white/60 text-xs uppercase mb-2 block">Quality</Label>
                       <Select value={exportQuality} onValueChange={setExportQuality}>
-                        <SelectTrigger className="bg-gray-800 border-gray-700 text-foreground" data-testid="select-export-quality">
+                        <SelectTrigger className="bg-[#1A1A1A] border-[#C9941A]/30 text-foreground" data-testid="select-export-quality">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-gray-900 border-gray-700">
+                        <SelectContent className="bg-[#1A1A1A] border-[#C9941A]/30">
                           <SelectItem value="4k">4K (2160p)</SelectItem>
                           <SelectItem value="1080p">Full HD (1080p)</SelectItem>
                           <SelectItem value="720p">HD (720p)</SelectItem>
@@ -1105,11 +1105,11 @@ export default function VideoStudio() {
                     </div>
 
                     <div>
-                      <Label className="text-gray-400 text-xs uppercase mb-2 block">Preset</Label>
+                      <Label className="text-white/60 text-xs uppercase mb-2 block">Preset</Label>
                       <div className="grid grid-cols-1 gap-2">
                         <Button
                           variant="outline"
-                          className="justify-start border-gray-700 text-foreground"
+                          className="justify-start border-[#C9941A]/30 text-foreground"
                           data-testid="button-preset-tiktok"
                         >
                           <SiTiktok className="w-4 h-4 mr-2" />
@@ -1117,7 +1117,7 @@ export default function VideoStudio() {
                         </Button>
                         <Button
                           variant="outline"
-                          className="justify-start border-gray-700 text-foreground"
+                          className="justify-start border-[#C9941A]/30 text-foreground"
                           data-testid="button-preset-youtube"
                         >
                           <Youtube className="w-4 h-4 mr-2" />
@@ -1125,7 +1125,7 @@ export default function VideoStudio() {
                         </Button>
                         <Button
                           variant="outline"
-                          className="justify-start border-gray-700 text-foreground"
+                          className="justify-start border-[#C9941A]/30 text-foreground"
                           data-testid="button-preset-instagram"
                         >
                           <Instagram className="w-4 h-4 mr-2" />
@@ -1134,21 +1134,21 @@ export default function VideoStudio() {
                       </div>
                     </div>
 
-                    <Separator className="bg-gray-800" />
+                    <Separator className="bg-[#1A1A1A]" />
 
                     <div className="flex items-center justify-between">
-                      <Label className="text-gray-400 text-sm">Include Captions</Label>
+                      <Label className="text-white/60 text-sm">Include Captions</Label>
                       <Switch data-testid="switch-include-captions" />
                     </div>
                     <div className="flex items-center justify-between">
-                      <Label className="text-gray-400 text-sm">Optimize for Web</Label>
+                      <Label className="text-white/60 text-sm">Optimize for Web</Label>
                       <Switch defaultChecked data-testid="switch-optimize-web" />
                     </div>
 
                     {isExporting && (
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-sm">
-                          <span className="text-gray-400">Exporting...</span>
+                          <span className="text-white/60">Exporting...</span>
                           <span className="text-primary">{exportProgress}%</span>
                         </div>
                         <Progress value={exportProgress} className="h-2" />
@@ -1177,7 +1177,7 @@ export default function VideoStudio() {
                     <div className="flex gap-2">
                       <Button
                         variant="outline"
-                        className="flex-1 border-gray-700 text-foreground"
+                        className="flex-1 border-[#C9941A]/30 text-foreground"
                         data-testid="button-save-project"
                       >
                         <Save className="w-4 h-4 mr-2" />
@@ -1185,7 +1185,7 @@ export default function VideoStudio() {
                       </Button>
                       <Button
                         variant="outline"
-                        className="flex-1 border-gray-700 text-foreground"
+                        className="flex-1 border-[#C9941A]/30 text-foreground"
                         data-testid="button-share"
                       >
                         <Share2 className="w-4 h-4 mr-2" />

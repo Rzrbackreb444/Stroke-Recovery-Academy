@@ -543,14 +543,14 @@ export default function ImageStudio() {
           <h1 className="text-4xl md:text-6xl font-black text-foreground mb-4 tracking-tight" data-testid="text-title">
             IMAGE <span className="text-primary">STUDIO</span>
           </h1>
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-8" data-testid="text-description">
+          <p className="text-lg text-white/60 max-w-2xl mx-auto mb-8" data-testid="text-description">
             Professional AI-powered image editing tools. Remove backgrounds, enhance photos, 
             generate images from text, apply filters, and export in multiple formats.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button
               size="lg"
-              className="bg-orange-500 hover:bg-orange-600 text-black font-semibold gap-2"
+              className="bg-[#C9941A] hover:bg-[#B8860B] text-black font-semibold gap-2"
               onClick={() => fileInputRef.current?.click()}
               data-testid="button-upload-hero"
             >
@@ -573,10 +573,10 @@ export default function ImageStudio() {
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-gray-900 border border-gray-800 p-1" data-testid="tabs-main">
+          <TabsList className="bg-[#1A1A1A] border border-[#C9941A]/30 p-1" data-testid="tabs-main">
             <TabsTrigger
               value="edit"
-              className="data-[state=active]:bg-orange-500 data-[state=active]:text-black gap-2"
+              className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black gap-2"
               data-testid="tab-edit"
             >
               <Sliders className="w-4 h-4" />
@@ -584,7 +584,7 @@ export default function ImageStudio() {
             </TabsTrigger>
             <TabsTrigger
               value="generate"
-              className="data-[state=active]:bg-orange-500 data-[state=active]:text-black gap-2"
+              className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black gap-2"
               data-testid="tab-generate"
             >
               <Wand2 className="w-4 h-4" />
@@ -592,7 +592,7 @@ export default function ImageStudio() {
             </TabsTrigger>
             <TabsTrigger
               value="my-images"
-              className="data-[state=active]:bg-orange-500 data-[state=active]:text-black gap-2"
+              className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black gap-2"
               data-testid="tab-my-images"
             >
               <FolderOpen className="w-4 h-4" />
@@ -600,7 +600,7 @@ export default function ImageStudio() {
             </TabsTrigger>
             <TabsTrigger
               value="batch"
-              className="data-[state=active]:bg-orange-500 data-[state=active]:text-black gap-2"
+              className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black gap-2"
               data-testid="tab-batch"
             >
               <Grid className="w-4 h-4" />
@@ -611,7 +611,7 @@ export default function ImageStudio() {
           <TabsContent value="edit" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
               <div className="lg:col-span-3 space-y-4">
-                <Card className="bg-gray-900 border-gray-800">
+                <Card className="industrial-card">
                   <CardContent className="p-4">
                     {selectedImage ? (
                       <div className="relative">
@@ -625,7 +625,7 @@ export default function ImageStudio() {
                             >
                               <ZoomOut className="w-4 h-4" />
                             </Button>
-                            <span className="text-sm text-gray-400 w-12 text-center" data-testid="text-zoom-level">{zoom}%</span>
+                            <span className="text-sm text-white/60 w-12 text-center" data-testid="text-zoom-level">{zoom}%</span>
                             <Button
                               size="icon"
                               variant="ghost"
@@ -673,7 +673,7 @@ export default function ImageStudio() {
                             </Button>
                             <Button
                               size="sm"
-                              className="bg-orange-500 hover:bg-orange-600 text-black gap-1"
+                              className="bg-[#C9941A] hover:bg-[#B8860B] text-black gap-1"
                               onClick={() => setShowExportModal(true)}
                               data-testid="button-export"
                             >
@@ -691,7 +691,7 @@ export default function ImageStudio() {
                             data-testid="img-canvas"
                           />
                         </div>
-                        <div className="flex items-center justify-between mt-4 text-sm text-gray-400">
+                        <div className="flex items-center justify-between mt-4 text-sm text-white/60">
                           <span data-testid="text-image-name">{selectedImage.name}</span>
                           <span data-testid="text-image-dimensions">{selectedImage.width} × {selectedImage.height} • {selectedImage.format}</span>
                         </div>
@@ -699,7 +699,7 @@ export default function ImageStudio() {
                     ) : (
                       <div
                         className={`flex flex-col items-center justify-center min-h-[500px] border-2 border-dashed rounded-lg transition-colors cursor-pointer ${
-                          isDragging ? "border-orange-500 bg-primary/10" : "border-gray-700 hover:border-gray-600"
+                          isDragging ? "border-[#C9941A] bg-primary/10" : "border-[#C9941A]/30 hover:border-[#C9941A]/50"
                         }`}
                         onDragOver={handleDragOver}
                         onDragLeave={handleDragLeave}
@@ -709,8 +709,8 @@ export default function ImageStudio() {
                       >
                         <Upload className="w-16 h-16 text-gray-600 mb-4" />
                         <h3 className="text-xl font-semibold text-foreground mb-2">Drop images here</h3>
-                        <p className="text-gray-400 mb-4">or click to browse files</p>
-                        <Badge variant="outline" className="border-gray-700 text-gray-400">
+                        <p className="text-white/60 mb-4">or click to browse files</p>
+                        <Badge variant="outline" className="border-[#C9941A]/30 text-white/60">
                           Supports PNG, JPG, WebP, GIF
                         </Badge>
                       </div>
@@ -719,7 +719,7 @@ export default function ImageStudio() {
                 </Card>
 
                 {selectedImage && (
-                  <Card className="bg-gray-900 border-gray-800">
+                  <Card className="industrial-card">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-lg text-foreground flex items-center gap-2">
                         <Palette className="w-5 h-5 text-primary" />
@@ -735,20 +735,20 @@ export default function ImageStudio() {
                               onClick={() => applyFilter(filter)}
                               className={`flex flex-col items-center gap-2 p-3 rounded-lg transition-all min-w-[80px] ${
                                 selectedFilter === filter.id
-                                  ? "bg-primary/20 border border-orange-500"
-                                  : "bg-gray-800 border border-gray-700 hover:border-gray-600"
+                                  ? "bg-primary/20 border border-[#C9941A]"
+                                  : "bg-[#1A1A1A] border border-[#C9941A]/30 hover:border-[#C9941A]/50"
                               }`}
                               data-testid={`button-filter-${filter.id}`}
                             >
                               <div className={`w-12 h-12 rounded-md flex items-center justify-center ${
-                                selectedFilter === filter.id ? "bg-orange-500" : "bg-gray-700"
+                                selectedFilter === filter.id ? "bg-[#C9941A]" : "bg-gray-700"
                               }`}>
                                 <filter.icon className={`w-6 h-6 ${
                                   selectedFilter === filter.id ? "text-black" : "text-gray-300"
                                 }`} />
                               </div>
                               <span className={`text-xs font-medium ${
-                                selectedFilter === filter.id ? "text-primary" : "text-gray-400"
+                                selectedFilter === filter.id ? "text-primary" : "text-white/60"
                               }`}>
                                 {filter.name}
                               </span>
@@ -762,7 +762,7 @@ export default function ImageStudio() {
               </div>
 
               <div className="space-y-4">
-                <Card className="bg-gray-900 border-gray-800">
+                <Card className="industrial-card">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg text-foreground flex items-center gap-2">
                       <Sparkles className="w-5 h-5 text-primary" />
@@ -772,7 +772,7 @@ export default function ImageStudio() {
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <Button
-                      className="w-full justify-start gap-3 bg-gray-800 hover:bg-gray-700 text-foreground"
+                      className="w-full justify-start gap-3 bg-[#1A1A1A] hover:bg-gray-700 text-foreground"
                       onClick={handleRemoveBackground}
                       disabled={!selectedImage || isProcessing}
                       data-testid="button-remove-bg"
@@ -780,11 +780,11 @@ export default function ImageStudio() {
                       <Eraser className="w-5 h-5 text-primary" />
                       <div className="text-left">
                         <div className="font-medium">Remove Background</div>
-                        <div className="text-xs text-gray-400">AI-powered extraction</div>
+                        <div className="text-xs text-white/60">AI-powered extraction</div>
                       </div>
                     </Button>
                     <Button
-                      className="w-full justify-start gap-3 bg-gray-800 hover:bg-gray-700 text-foreground"
+                      className="w-full justify-start gap-3 bg-[#1A1A1A] hover:bg-gray-700 text-foreground"
                       onClick={handleEnhanceImage}
                       disabled={!selectedImage || isProcessing}
                       data-testid="button-enhance"
@@ -792,11 +792,11 @@ export default function ImageStudio() {
                       <Wand2 className="w-5 h-5 text-primary" />
                       <div className="text-left">
                         <div className="font-medium">Auto Enhance</div>
-                        <div className="text-xs text-gray-400">Color & clarity boost</div>
+                        <div className="text-xs text-white/60">Color & clarity boost</div>
                       </div>
                     </Button>
                     <Button
-                      className="w-full justify-start gap-3 bg-gray-800 hover:bg-gray-700 text-foreground"
+                      className="w-full justify-start gap-3 bg-[#1A1A1A] hover:bg-gray-700 text-foreground"
                       onClick={handleUpscaleImage}
                       disabled={!selectedImage || isProcessing}
                       data-testid="button-upscale"
@@ -804,11 +804,11 @@ export default function ImageStudio() {
                       <Maximize2 className="w-5 h-5 text-primary" />
                       <div className="text-left">
                         <div className="font-medium">Upscale 4x</div>
-                        <div className="text-xs text-gray-400">AI resolution boost</div>
+                        <div className="text-xs text-white/60">AI resolution boost</div>
                       </div>
                     </Button>
                     <Button
-                      className="w-full justify-start gap-3 bg-primary/20 hover:bg-orange-500/30 text-foreground border border"
+                      className="w-full justify-start gap-3 bg-primary/20 hover:bg-[#C9941A]/30 text-foreground border border"
                       onClick={handleAnalyzeImage}
                       disabled={!selectedImage || isProcessing || isAnalyzing}
                       data-testid="button-analyze-ai"
@@ -820,11 +820,11 @@ export default function ImageStudio() {
                       )}
                       <div className="text-left">
                         <div className="font-medium">Analyze with AI</div>
-                        <div className="text-xs text-gray-400">Labels, objects, text, faces</div>
+                        <div className="text-xs text-white/60">Labels, objects, text, faces</div>
                       </div>
                     </Button>
                     {(isProcessing || isAnalyzing) && (
-                      <div className="space-y-2 p-3 bg-gray-800 rounded-lg" data-testid="container-processing">
+                      <div className="space-y-2 p-3 bg-[#1A1A1A] rounded-lg" data-testid="container-processing">
                         <div className="flex items-center gap-2 text-sm text-primary">
                           <Loader2 className="w-4 h-4 animate-spin" />
                           {processingMessage}
@@ -836,7 +836,7 @@ export default function ImageStudio() {
                 </Card>
 
                 {selectedImage && (
-                  <Card className="bg-gray-900 border-gray-800">
+                  <Card className="industrial-card">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-lg text-foreground flex items-center gap-2">
                         <Sliders className="w-5 h-5 text-primary" />
@@ -846,8 +846,8 @@ export default function ImageStudio() {
                     <CardContent className="space-y-5">
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <Label className="text-gray-400">Brightness</Label>
-                          <span className="text-sm text-gray-500" data-testid="text-brightness-value">{brightness}%</span>
+                          <Label className="text-white/60">Brightness</Label>
+                          <span className="text-sm text-white/50" data-testid="text-brightness-value">{brightness}%</span>
                         </div>
                         <Slider
                           value={[brightness]}
@@ -861,8 +861,8 @@ export default function ImageStudio() {
                       </div>
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <Label className="text-gray-400">Contrast</Label>
-                          <span className="text-sm text-gray-500" data-testid="text-contrast-value">{contrast}%</span>
+                          <Label className="text-white/60">Contrast</Label>
+                          <span className="text-sm text-white/50" data-testid="text-contrast-value">{contrast}%</span>
                         </div>
                         <Slider
                           value={[contrast]}
@@ -876,8 +876,8 @@ export default function ImageStudio() {
                       </div>
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <Label className="text-gray-400">Saturation</Label>
-                          <span className="text-sm text-gray-500" data-testid="text-saturation-value">{saturation}%</span>
+                          <Label className="text-white/60">Saturation</Label>
+                          <span className="text-sm text-white/50" data-testid="text-saturation-value">{saturation}%</span>
                         </div>
                         <Slider
                           value={[saturation]}
@@ -891,8 +891,8 @@ export default function ImageStudio() {
                       </div>
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <Label className="text-gray-400">Hue Rotate</Label>
-                          <span className="text-sm text-gray-500" data-testid="text-hue-value">{hue}°</span>
+                          <Label className="text-white/60">Hue Rotate</Label>
+                          <span className="text-sm text-white/50" data-testid="text-hue-value">{hue}°</span>
                         </div>
                         <Slider
                           value={[hue]}
@@ -906,8 +906,8 @@ export default function ImageStudio() {
                       </div>
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <Label className="text-gray-400">Blur</Label>
-                          <span className="text-sm text-gray-500" data-testid="text-blur-value">{blur}px</span>
+                          <Label className="text-white/60">Blur</Label>
+                          <span className="text-sm text-white/50" data-testid="text-blur-value">{blur}px</span>
                         </div>
                         <Slider
                           value={[blur]}
@@ -924,7 +924,7 @@ export default function ImageStudio() {
                 )}
 
                 {showAnalysisPanel && analysisResults && (
-                  <Card className="bg-gray-900 border-gray-800" data-testid="card-analysis-results">
+                  <Card className="industrial-card" data-testid="card-analysis-results">
                     <CardHeader className="pb-2">
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-lg text-foreground flex items-center gap-2">
@@ -949,7 +949,7 @@ export default function ImageStudio() {
                               <h4 className="text-sm font-medium text-primary mb-2">Labels</h4>
                               <div className="flex flex-wrap gap-1">
                                 {analysisResults.labels.slice(0, 10).map((label, i) => (
-                                  <Badge key={i} variant="outline" className="border-gray-700 text-gray-300 text-xs" data-testid={`badge-label-${i}`}>
+                                  <Badge key={i} variant="outline" className="border-[#C9941A]/30 text-gray-300 text-xs" data-testid={`badge-label-${i}`}>
                                     {label.description} ({Math.round(label.score * 100)}%)
                                   </Badge>
                                 ))}
@@ -977,12 +977,12 @@ export default function ImageStudio() {
                                 {analysisResults.colors.slice(0, 6).map((color, i) => (
                                   <div key={i} className="flex items-center gap-2" data-testid={`color-swatch-${i}`}>
                                     <div
-                                      className="w-6 h-6 rounded border border-gray-600"
+                                      className="w-6 h-6 rounded border border-[#C9941A]/50"
                                       style={{
                                         backgroundColor: `rgb(${color.color.red}, ${color.color.green}, ${color.color.blue})`
                                       }}
                                     />
-                                    <span className="text-xs text-gray-400">
+                                    <span className="text-xs text-white/60">
                                       {Math.round(color.pixelFraction * 100)}%
                                     </span>
                                   </div>
@@ -996,7 +996,7 @@ export default function ImageStudio() {
                               <h4 className="text-sm font-medium text-primary mb-2">Faces Detected</h4>
                               <p className="text-sm text-gray-300">{analysisResults.faces.length} face(s) found</p>
                               {analysisResults.faces.slice(0, 3).map((face, i) => (
-                                <div key={i} className="text-xs text-gray-400 mt-1" data-testid={`face-info-${i}`}>
+                                <div key={i} className="text-xs text-white/60 mt-1" data-testid={`face-info-${i}`}>
                                   Confidence: {Math.round((face.detectionConfidence || 0) * 100)}%
                                   {face.joyLikelihood && face.joyLikelihood !== 'UNKNOWN' && ` • Joy: ${face.joyLikelihood}`}
                                   {face.surpriseLikelihood && face.surpriseLikelihood !== 'UNKNOWN' && ` • Surprise: ${face.surpriseLikelihood}`}
@@ -1008,7 +1008,7 @@ export default function ImageStudio() {
                           {analysisResults.fullText && (
                             <div data-testid="section-text">
                               <h4 className="text-sm font-medium text-primary mb-2">Text Detected</h4>
-                              <p className="text-xs text-gray-400 bg-gray-800 p-2 rounded max-h-24 overflow-y-auto">
+                              <p className="text-xs text-white/60 bg-[#1A1A1A] p-2 rounded max-h-24 overflow-y-auto">
                                 {analysisResults.fullText.slice(0, 500)}
                                 {analysisResults.fullText.length > 500 && '...'}
                               </p>
@@ -1021,7 +1021,7 @@ export default function ImageStudio() {
                               <div className="grid grid-cols-2 gap-2 text-xs">
                                 {Object.entries(safeSearchResults).map(([key, value]) => (
                                   <div key={key} className="flex justify-between">
-                                    <span className="text-gray-400 capitalize">{key}:</span>
+                                    <span className="text-white/60 capitalize">{key}:</span>
                                     <Badge
                                       variant="outline"
                                       className={`text-xs ${
@@ -1056,7 +1056,7 @@ export default function ImageStudio() {
                   data-testid="input-file"
                 />
                 <Button
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-black font-semibold gap-2"
+                  className="w-full bg-[#C9941A] hover:bg-[#B8860B] text-black font-semibold gap-2"
                   onClick={() => fileInputRef.current?.click()}
                   data-testid="button-upload-sidebar"
                 >
@@ -1069,7 +1069,7 @@ export default function ImageStudio() {
 
           <TabsContent value="generate" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-gray-900 border-gray-800">
+              <Card className="industrial-card">
                 <CardHeader>
                   <CardTitle className="text-foreground flex items-center gap-2">
                     <Wand2 className="w-5 h-5 text-primary" />
@@ -1079,23 +1079,23 @@ export default function ImageStudio() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label className="text-gray-400">Prompt</Label>
+                    <Label className="text-white/60">Prompt</Label>
                     <Textarea
                       placeholder="A majestic mountain landscape at sunset with vibrant orange and amber skies..."
                       value={generatePrompt}
                       onChange={(e) => setGeneratePrompt(e.target.value)}
-                      className="min-h-[120px] bg-gray-800 border-gray-700 text-foreground resize-none"
+                      className="min-h-[120px] bg-[#1A1A1A] border-[#C9941A]/30 text-foreground resize-none"
                       data-testid="textarea-prompt"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-gray-400">Style</Label>
+                      <Label className="text-white/60">Style</Label>
                       <Select value={generateStyle} onValueChange={setGenerateStyle}>
-                        <SelectTrigger className="bg-gray-800 border-gray-700 text-foreground" data-testid="select-style">
+                        <SelectTrigger className="bg-[#1A1A1A] border-[#C9941A]/30 text-foreground" data-testid="select-style">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-gray-900 border-gray-800">
+                        <SelectContent className="industrial-card">
                           <SelectItem value="photorealistic">Photorealistic</SelectItem>
                           <SelectItem value="artistic">Artistic</SelectItem>
                           <SelectItem value="anime">Anime</SelectItem>
@@ -1108,12 +1108,12 @@ export default function ImageStudio() {
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-gray-400">Aspect Ratio</Label>
+                      <Label className="text-white/60">Aspect Ratio</Label>
                       <Select value={generateAspectRatio} onValueChange={setGenerateAspectRatio}>
-                        <SelectTrigger className="bg-gray-800 border-gray-700 text-foreground" data-testid="select-aspect-ratio">
+                        <SelectTrigger className="bg-[#1A1A1A] border-[#C9941A]/30 text-foreground" data-testid="select-aspect-ratio">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-gray-900 border-gray-800">
+                        <SelectContent className="industrial-card">
                           <SelectItem value="1:1">Square (1:1)</SelectItem>
                           <SelectItem value="16:9">Landscape (16:9)</SelectItem>
                           <SelectItem value="9:16">Portrait (9:16)</SelectItem>
@@ -1124,7 +1124,7 @@ export default function ImageStudio() {
                     </div>
                   </div>
                   <Button
-                    className="w-full bg-orange-500 hover:bg-orange-600 text-black font-semibold gap-2"
+                    className="w-full bg-[#C9941A] hover:bg-[#B8860B] text-black font-semibold gap-2"
                     onClick={handleGenerateImage}
                     disabled={isGenerating || !generatePrompt.trim()}
                     data-testid="button-generate"
@@ -1144,13 +1144,13 @@ export default function ImageStudio() {
                   {isGenerating && (
                     <div className="space-y-2">
                       <Progress value={processingProgress} className="h-2" />
-                      <p className="text-sm text-gray-400 text-center" data-testid="text-generating-status">{processingMessage}</p>
+                      <p className="text-sm text-white/60 text-center" data-testid="text-generating-status">{processingMessage}</p>
                     </div>
                   )}
                 </CardContent>
               </Card>
 
-              <Card className="bg-gray-900 border-gray-800">
+              <Card className="industrial-card">
                 <CardHeader>
                   <CardTitle className="text-foreground flex items-center gap-2">
                     <ImagePlus className="w-5 h-5 text-primary" />
@@ -1159,7 +1159,7 @@ export default function ImageStudio() {
                   <CardDescription>Your AI-generated images will appear here</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex items-center justify-center min-h-[300px] bg-gray-800 rounded-lg border border-dashed border-gray-700 overflow-hidden">
+                  <div className="flex items-center justify-center min-h-[300px] bg-[#1A1A1A] rounded-lg border border-dashed border-[#C9941A]/30 overflow-hidden">
                     {generatedImageUrl ? (
                       <div className="relative w-full h-full">
                         <img 
@@ -1196,7 +1196,7 @@ export default function ImageStudio() {
                     ) : (
                       <div className="text-center">
                         <ImageIcon className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                        <p className="text-gray-400" data-testid="text-preview-placeholder">Your generated images will appear here</p>
+                        <p className="text-white/60" data-testid="text-preview-placeholder">Your generated images will appear here</p>
                       </div>
                     )}
                   </div>
@@ -1204,7 +1204,7 @@ export default function ImageStudio() {
               </Card>
             </div>
 
-            <Card className="bg-gray-900 border-gray-800">
+            <Card className="industrial-card">
               <CardHeader>
                 <CardTitle className="text-foreground flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-primary" />
@@ -1224,7 +1224,7 @@ export default function ImageStudio() {
                     <button
                       key={index}
                       onClick={() => setGeneratePrompt(suggestion)}
-                      className="p-3 text-left text-sm text-gray-400 bg-gray-800 rounded-lg border border-gray-700 hover:border-orange-500/50 hover:text-foreground transition-colors"
+                      className="p-3 text-left text-sm text-white/60 bg-[#1A1A1A] rounded-lg border border-[#C9941A]/30 hover:border-[#C9941A]/50 hover:text-foreground transition-colors"
                       data-testid={`button-suggestion-${index}`}
                     >
                       {suggestion}
@@ -1236,7 +1236,7 @@ export default function ImageStudio() {
           </TabsContent>
 
           <TabsContent value="my-images" className="space-y-6">
-            <Card className="bg-gray-900 border-gray-800">
+            <Card className="industrial-card">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
@@ -1247,7 +1247,7 @@ export default function ImageStudio() {
                     <CardDescription>All your uploaded and generated images</CardDescription>
                   </div>
                   <Button
-                    className="bg-orange-500 hover:bg-orange-600 text-black gap-2"
+                    className="bg-[#C9941A] hover:bg-[#B8860B] text-black gap-2"
                     onClick={() => fileInputRef.current?.click()}
                     data-testid="button-upload-gallery"
                   >
@@ -1260,7 +1260,7 @@ export default function ImageStudio() {
                 {uploadedImages.length === 0 ? (
                   <div
                     className={`flex flex-col items-center justify-center min-h-[300px] border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
-                      isDragging ? "border-orange-500 bg-primary/10" : "border-gray-700 hover:border-gray-600"
+                      isDragging ? "border-[#C9941A] bg-primary/10" : "border-[#C9941A]/30 hover:border-[#C9941A]/50"
                     }`}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
@@ -1270,7 +1270,7 @@ export default function ImageStudio() {
                   >
                     <Upload className="w-12 h-12 text-gray-600 mb-4" />
                     <h3 className="text-lg font-semibold text-foreground mb-2">No images yet</h3>
-                    <p className="text-gray-400">Drop images here or click to upload</p>
+                    <p className="text-white/60">Drop images here or click to upload</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -1279,8 +1279,8 @@ export default function ImageStudio() {
                         key={image.id}
                         className={`relative group cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
                           selectedImage?.id === image.id
-                            ? "border-orange-500"
-                            : "border-transparent hover:border-gray-600"
+                            ? "border-[#C9941A]"
+                            : "border-transparent hover:border-[#C9941A]/50"
                         }`}
                         onClick={() => {
                           setSelectedImage(image);
@@ -1315,7 +1315,7 @@ export default function ImageStudio() {
                         </div>
                         {selectedImage?.id === image.id && (
                           <div className="absolute top-2 right-2">
-                            <Badge className="bg-orange-500 text-black">Selected</Badge>
+                            <Badge className="bg-[#C9941A] text-black">Selected</Badge>
                           </div>
                         )}
                       </div>
@@ -1327,7 +1327,7 @@ export default function ImageStudio() {
           </TabsContent>
 
           <TabsContent value="batch" className="space-y-6">
-            <Card className="bg-gray-900 border-gray-800">
+            <Card className="industrial-card">
               <CardHeader>
                 <CardTitle className="text-foreground flex items-center gap-2">
                   <Grid className="w-5 h-5 text-primary" />
@@ -1350,8 +1350,8 @@ export default function ImageStudio() {
                           key={image.id}
                           className={`relative cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
                             batchImages.includes(image.id)
-                              ? "border-orange-500"
-                              : "border-gray-700 hover:border-gray-600"
+                              ? "border-[#C9941A]"
+                              : "border-[#C9941A]/30 hover:border-[#C9941A]/50"
                           }`}
                           onClick={() => {
                             if (batchImages.includes(image.id)) {
@@ -1375,7 +1375,7 @@ export default function ImageStudio() {
                         </div>
                       ))}
                       {uploadedImages.length === 0 && (
-                        <div className="col-span-3 text-center py-8 text-gray-400">
+                        <div className="col-span-3 text-center py-8 text-white/60">
                           No images uploaded yet
                         </div>
                       )}
@@ -1385,7 +1385,7 @@ export default function ImageStudio() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="border-gray-700 text-gray-400"
+                          className="border-[#C9941A]/30 text-white/60"
                           onClick={() => setBatchImages(uploadedImages.map(i => i.id))}
                           data-testid="button-select-all"
                         >
@@ -1394,7 +1394,7 @@ export default function ImageStudio() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="border-gray-700 text-gray-400"
+                          className="border-[#C9941A]/30 text-white/60"
                           onClick={() => setBatchImages([])}
                           data-testid="button-clear-selection"
                         >
@@ -1408,7 +1408,7 @@ export default function ImageStudio() {
                     <Label className="text-foreground">Batch Operations</Label>
                     <div className="space-y-3">
                       <Button
-                        className="w-full justify-start gap-3 bg-gray-800 hover:bg-gray-700 text-foreground"
+                        className="w-full justify-start gap-3 bg-[#1A1A1A] hover:bg-gray-700 text-foreground"
                         disabled={batchImages.length === 0 || isProcessing}
                         onClick={handleBatchProcess}
                         data-testid="button-batch-remove-bg"
@@ -1416,11 +1416,11 @@ export default function ImageStudio() {
                         <Eraser className="w-5 h-5 text-primary" />
                         <div className="text-left">
                           <div className="font-medium">Remove All Backgrounds</div>
-                          <div className="text-xs text-gray-400">AI-powered batch extraction</div>
+                          <div className="text-xs text-white/60">AI-powered batch extraction</div>
                         </div>
                       </Button>
                       <Button
-                        className="w-full justify-start gap-3 bg-gray-800 hover:bg-gray-700 text-foreground"
+                        className="w-full justify-start gap-3 bg-[#1A1A1A] hover:bg-gray-700 text-foreground"
                         disabled={batchImages.length === 0 || isProcessing}
                         onClick={handleBatchProcess}
                         data-testid="button-batch-enhance"
@@ -1428,11 +1428,11 @@ export default function ImageStudio() {
                         <Wand2 className="w-5 h-5 text-primary" />
                         <div className="text-left">
                           <div className="font-medium">Enhance All</div>
-                          <div className="text-xs text-gray-400">Batch color & clarity boost</div>
+                          <div className="text-xs text-white/60">Batch color & clarity boost</div>
                         </div>
                       </Button>
                       <Button
-                        className="w-full justify-start gap-3 bg-gray-800 hover:bg-gray-700 text-foreground"
+                        className="w-full justify-start gap-3 bg-[#1A1A1A] hover:bg-gray-700 text-foreground"
                         disabled={batchImages.length === 0 || isProcessing}
                         onClick={handleBatchProcess}
                         data-testid="button-batch-resize"
@@ -1440,11 +1440,11 @@ export default function ImageStudio() {
                         <Maximize2 className="w-5 h-5 text-primary" />
                         <div className="text-left">
                           <div className="font-medium">Resize All</div>
-                          <div className="text-xs text-gray-400">Batch resize to target dimensions</div>
+                          <div className="text-xs text-white/60">Batch resize to target dimensions</div>
                         </div>
                       </Button>
                       <Button
-                        className="w-full justify-start gap-3 bg-gray-800 hover:bg-gray-700 text-foreground"
+                        className="w-full justify-start gap-3 bg-[#1A1A1A] hover:bg-gray-700 text-foreground"
                         disabled={batchImages.length === 0 || isProcessing}
                         onClick={handleBatchProcess}
                         data-testid="button-batch-convert"
@@ -1452,12 +1452,12 @@ export default function ImageStudio() {
                         <FileImage className="w-5 h-5 text-primary" />
                         <div className="text-left">
                           <div className="font-medium">Convert Format</div>
-                          <div className="text-xs text-gray-400">Batch convert to PNG/JPG/WebP</div>
+                          <div className="text-xs text-white/60">Batch convert to PNG/JPG/WebP</div>
                         </div>
                       </Button>
                     </div>
                     {isProcessing && (
-                      <div className="space-y-2 p-4 bg-gray-800 rounded-lg">
+                      <div className="space-y-2 p-4 bg-[#1A1A1A] rounded-lg">
                         <div className="flex items-center gap-2 text-primary">
                           <Loader2 className="w-4 h-4 animate-spin" />
                           <span className="text-sm">{processingMessage}</span>
@@ -1475,7 +1475,7 @@ export default function ImageStudio() {
 
       {showExportModal && (
         <div className="fixed inset-0 bg-background/80 flex items-center justify-center z-50" data-testid="modal-export">
-          <Card className="bg-gray-900 border-gray-800 w-full max-w-md mx-4">
+          <Card className="industrial-card w-full max-w-md mx-4">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-foreground flex items-center gap-2">
@@ -1494,7 +1494,7 @@ export default function ImageStudio() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-3">
-                <Label className="text-gray-400">Format</Label>
+                <Label className="text-white/60">Format</Label>
                 <div className="grid grid-cols-3 gap-3">
                   {exportFormats.map((format) => (
                     <button
@@ -1502,15 +1502,15 @@ export default function ImageStudio() {
                       onClick={() => setExportFormat(format.id)}
                       className={`p-3 rounded-lg border transition-all text-center ${
                         exportFormat === format.id
-                          ? "border-orange-500 bg-primary/10"
-                          : "border-gray-700 bg-gray-800 hover:border-gray-600"
+                          ? "border-[#C9941A] bg-primary/10"
+                          : "border-[#C9941A]/30 bg-[#1A1A1A] hover:border-[#C9941A]/50"
                       }`}
                       data-testid={`button-format-${format.id}`}
                     >
                       <div className={`font-bold ${exportFormat === format.id ? "text-primary" : "text-foreground"}`}>
                         {format.label}
                       </div>
-                      <div className="text-xs text-gray-400 mt-1">{format.description}</div>
+                      <div className="text-xs text-white/60 mt-1">{format.description}</div>
                     </button>
                   ))}
                 </div>
@@ -1519,8 +1519,8 @@ export default function ImageStudio() {
               {exportFormat !== "png" && (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <Label className="text-gray-400">Quality</Label>
-                    <span className="text-sm text-gray-500" data-testid="text-quality-value">{exportQuality}%</span>
+                    <Label className="text-white/60">Quality</Label>
+                    <span className="text-sm text-white/50" data-testid="text-quality-value">{exportQuality}%</span>
                   </div>
                   <Slider
                     value={[exportQuality]}
@@ -1537,14 +1537,14 @@ export default function ImageStudio() {
               <div className="flex gap-3">
                 <Button
                   variant="outline"
-                  className="flex-1 border-gray-700"
+                  className="flex-1 border-[#C9941A]/30"
                   onClick={() => setShowExportModal(false)}
                   data-testid="button-cancel-export"
                 >
                   Cancel
                 </Button>
                 <Button
-                  className="flex-1 bg-orange-500 hover:bg-orange-600 text-black font-semibold gap-2"
+                  className="flex-1 bg-[#C9941A] hover:bg-[#B8860B] text-black font-semibold gap-2"
                   onClick={handleExport}
                   data-testid="button-confirm-export"
                 >

@@ -288,3 +288,83 @@
     inset: -1px;
   }
 }
+
+/* ========================================
+   STONE & INK INDUSTRIAL THEME SYSTEM
+   Premium high-contrast studio styling
+   ======================================== */
+
+:root {
+  --stone-bg: #FAF8F3;
+  --ink-black: #1A1A1A;
+  --gold-primary: #C9941A;
+  --gold-muted: rgba(201, 148, 26, 0.1);
+  --gold-glow: rgba(201, 148, 26, 0.3);
+}
+
+/* Industrial Dark Cards - High contrast white text */
+.industrial-card {
+  background-color: var(--ink-black);
+  border: 2px solid rgba(201, 148, 26, 0.2);
+  border-radius: 0;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.industrial-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 30px rgba(201, 148, 26, 0.15);
+}
+
+.industrial-card .stat-label {
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--gold-primary);
+}
+
+.industrial-card .stat-value {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  letter-spacing: -0.05em;
+}
+
+.industrial-card .stat-muted {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Stone background with ink text */
+.stone-ink-bg {
+  background-color: var(--stone-bg);
+  color: var(--ink-black);
+}
+
+/* Gold accent utilities */
+.gold-glow {
+  box-shadow: 0 0 20px var(--gold-glow);
+}
+
+.gold-border-glow {
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 15px var(--gold-glow);
+}
+
+/* Navigation active state with gold underglow */
+.nav-link-active {
+  color: var(--gold-primary) !important;
+  border-bottom: 2px solid var(--gold-primary);
+  box-shadow: 0 4px 12px rgba(201, 148, 26, 0.3);
+}
+
+/* Industrial typography */
+.industrial-heading {
+  color: var(--ink-black);
+  letter-spacing: -0.05em;
+  font-weight: 900;
+}
+
+.dark .industrial-heading {
+  color: #FFFFFF;
+}
