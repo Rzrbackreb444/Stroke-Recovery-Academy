@@ -1331,8 +1331,8 @@ export const recoveryStories = pgTable("recovery_stories", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-// Recovery Milestones - Track specific achievements in recovery journey
-export const recoveryMilestones = pgTable("recovery_milestones", {
+// Journey Milestones - Track specific achievements in personal recovery journey
+export const journeyMilestones = pgTable("journey_milestones", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
