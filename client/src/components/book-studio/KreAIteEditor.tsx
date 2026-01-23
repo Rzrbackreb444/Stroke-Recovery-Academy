@@ -40,6 +40,7 @@ import {
   Loader2,
   Zap,
   Pen,
+  Type,
 } from "lucide-react";
 import type { PolishProgress } from "@/lib/contexts/BookStudioContext";
 
@@ -54,6 +55,8 @@ interface KreAIteEditorProps {
   onGenerateChapter?: () => void;
   onPolish?: () => void;
   polishProgress?: PolishProgress;
+  minimal?: boolean;
+  theme?: 'stone' | 'ink';
 }
 
 export default function KreAIteEditor({
@@ -67,7 +70,11 @@ export default function KreAIteEditor({
   onGenerateChapter,
   onPolish,
   polishProgress,
+  minimal = false,
+  theme = 'stone',
 }: KreAIteEditorProps) {
+  const isDark = theme === 'ink';
+  
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -76,7 +83,7 @@ export default function KreAIteEditor({
       Underline,
       Typography,
       Placeholder.configure({ 
-        placeholder: 'Start writing your chapter...',
+        placeholder: 'Begin writing your story...',
         emptyEditorClass: 'is-editor-empty',
       }),
       CharacterCount.configure({ limit: 500000 }),
@@ -103,8 +110,14 @@ export default function KreAIteEditor({
 
   if (!editor) {
     return (
-      <div className="flex items-center justify-center h-full bg-white">
-        <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
+      <div className={cn(
+        "flex items-center justify-center h-full",
+        isDark ? "bg-stone-950" : "bg-[#FFFEF9]"
+      )}>
+        <Loader2 className={cn(
+          "h-6 w-6 animate-spin",
+          isDark ? "text-amber-500" : "text-amber-600"
+        )} />
       </div>
     );
   }
@@ -132,8 +145,16 @@ export default function KreAIteEditor({
           onClick={onClick}
           disabled={disabled}
           className={cn(
-            "h-7 w-7 p-0 rounded text-stone-500 hover:text-blue-600 hover:bg-blue-50",
-            isActive && "bg-blue-100 text-blue-700"
+            "h-7 w-7 p-0 rounded-md",
+            isDark 
+              ? cn(
+                  "text-stone-500 hover:text-stone-200 hover:bg-stone-800",
+                  isActive && "bg-amber-500/20 text-amber-400"
+                )
+              : cn(
+                  "text-stone-500 hover:text-stone-800 hover:bg-stone-100",
+                  isActive && "bg-amber-100 text-amber-800"
+                )
           )}
         >
           <Icon className="h-3.5 w-3.5" />
@@ -145,12 +166,69 @@ export default function KreAIteEditor({
     </Tooltip>
   );
 
+  // Minimal Focus Mode
+  if (minimal) {
+    return (
+      <div className="flex flex-col h-full">
+        <ScrollArea className="flex-1">
+          <div className="max-w-2xl mx-auto py-16">
+            <div className="mb-8">
+              <Badge variant="outline" className={cn(
+                "text-[10px] mb-2",
+                isDark ? "border-stone-700 text-stone-500" : ""
+              )}>
+                Chapter {chapterNumber}
+              </Badge>
+              <h1 className={cn(
+                "text-3xl font-serif font-bold tracking-tight",
+                isDark ? "text-stone-100" : "text-stone-900"
+              )}>
+                {chapterTitle}
+              </h1>
+            </div>
+            <EditorContent 
+              editor={editor} 
+              className={cn(
+                "prose max-w-none",
+                isDark ? "prose-invert" : "prose-stone",
+                "prose-p:text-lg prose-p:leading-[1.9] prose-p:font-serif prose-p:mb-6",
+                "prose-headings:font-serif prose-headings:font-bold",
+                "prose-blockquote:border-l-amber-500 prose-blockquote:italic",
+                "[&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)]",
+                "[&_.is-editor-empty:first-child::before]:text-stone-400",
+                "[&_.is-editor-empty:first-child::before]:float-left",
+                "[&_.is-editor-empty:first-child::before]:h-0",
+                "[&_.is-editor-empty:first-child::before]:pointer-events-none",
+                "[&_.is-editor-empty:first-child::before]:italic"
+              )}
+              data-testid="kreaite-editor-content"
+            />
+          </div>
+        </ScrollArea>
+        <div className={cn(
+          "flex items-center justify-center py-2 text-[10px]",
+          isDark ? "text-stone-600" : "text-stone-400"
+        )}>
+          {editor.storage.characterCount.words().toLocaleString()} words
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col h-full bg-white">
-      {/* ══════════════════════════════════════════════════════════════════════
-          FORMATTING TOOLBAR - Modern Clean
-      ══════════════════════════════════════════════════════════════════════ */}
-      <div className="flex items-center gap-0.5 px-2 py-1 border-b border-stone-150 bg-stone-50/50 overflow-x-auto">
+    <div className={cn(
+      "flex flex-col h-full transition-colors duration-300",
+      isDark ? "bg-stone-950" : "bg-[#FFFEF9]"
+    )}>
+      {/* ══════════════════════════════════════════════════════════════════════════════
+          FORMATTING TOOLBAR - Glassmorphism Design
+      ══════════════════════════════════════════════════════════════════════════════ */}
+      <div className={cn(
+        "flex items-center gap-0.5 px-3 py-1.5 border-b backdrop-blur-xl overflow-x-auto",
+        isDark 
+          ? "bg-stone-900/50 border-stone-800/50" 
+          : "bg-white/80 border-stone-200/50"
+      )}>
         {/* Text Formatting */}
         <div className="flex items-center">
           <ToolbarButton
@@ -179,7 +257,7 @@ export default function KreAIteEditor({
           />
         </div>
 
-        <div className="w-px h-4 bg-stone-200 mx-1" />
+        <div className={cn("w-px h-4 mx-1", isDark ? "bg-stone-800" : "bg-stone-200")} />
 
         {/* Headings */}
         <div className="flex items-center">
@@ -203,7 +281,7 @@ export default function KreAIteEditor({
           />
         </div>
 
-        <div className="w-px h-4 bg-stone-200 mx-1" />
+        <div className={cn("w-px h-4 mx-1", isDark ? "bg-stone-800" : "bg-stone-200")} />
 
         {/* Lists */}
         <div className="flex items-center">
@@ -227,7 +305,7 @@ export default function KreAIteEditor({
           />
         </div>
 
-        <div className="w-px h-4 bg-stone-200 mx-1" />
+        <div className={cn("w-px h-4 mx-1", isDark ? "bg-stone-800" : "bg-stone-200")} />
 
         {/* Alignment */}
         <div className="flex items-center">
@@ -257,7 +335,7 @@ export default function KreAIteEditor({
           />
         </div>
 
-        <div className="w-px h-4 bg-stone-200 mx-1" />
+        <div className={cn("w-px h-4 mx-1", isDark ? "bg-stone-800" : "bg-stone-200")} />
 
         {/* Extras */}
         <div className="flex items-center">
@@ -284,19 +362,28 @@ export default function KreAIteEditor({
         {/* Right - Status */}
         <div className="ml-auto flex items-center gap-1.5">
           {isGenerating && (
-            <Badge className="h-5 bg-blue-100 text-blue-700 border-blue-200 gap-1 text-[9px] font-medium rounded">
+            <Badge className={cn(
+              "h-5 gap-1 text-[9px] font-medium rounded-full px-2",
+              isDark ? "bg-blue-500/20 text-blue-400 border-blue-500/30" : "bg-blue-100 text-blue-700 border-blue-200"
+            )}>
               <Loader2 className="h-2.5 w-2.5 animate-spin" />
               Generating
             </Badge>
           )}
           {polishProgress?.isPolishing && (
-            <Badge className="h-5 bg-violet-100 text-violet-700 border-violet-200 gap-1 text-[9px] font-medium rounded">
+            <Badge className={cn(
+              "h-5 gap-1 text-[9px] font-medium rounded-full px-2",
+              isDark ? "bg-violet-500/20 text-violet-400 border-violet-500/30" : "bg-violet-100 text-violet-700 border-violet-200"
+            )}>
               <Sparkles className="h-2.5 w-2.5 animate-pulse" />
               {polishProgress.currentPass || 'Polishing'}
             </Badge>
           )}
           {!isGenerating && !polishProgress?.isPolishing && (
-            <Badge variant="outline" className="h-5 bg-emerald-50 border-emerald-200 text-emerald-700 gap-1 text-[9px] rounded">
+            <Badge variant="outline" className={cn(
+              "h-5 gap-1 text-[9px] rounded-full px-2",
+              isDark ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" : "bg-emerald-50 border-emerald-200 text-emerald-700"
+            )}>
               <Zap className="h-2.5 w-2.5" />
               Ready
             </Badge>
@@ -304,64 +391,86 @@ export default function KreAIteEditor({
         </div>
       </div>
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          CHAPTER HEADER - Clean & Modern
-      ══════════════════════════════════════════════════════════════════════ */}
-      <div className="px-12 pt-8 pb-5 bg-gradient-to-b from-stone-50/80 to-white border-b border-stone-100">
+      {/* ══════════════════════════════════════════════════════════════════════════════
+          CHAPTER HEADER - Elegant Design with Progress
+      ══════════════════════════════════════════════════════════════════════════════ */}
+      <div className={cn(
+        "px-12 pt-10 pb-6 border-b",
+        isDark 
+          ? "bg-gradient-to-b from-stone-900/50 to-stone-950 border-stone-800/30" 
+          : "bg-gradient-to-b from-white to-[#FFFEF9] border-stone-100"
+      )}>
         <div className="max-w-2xl mx-auto">
-          <div className="flex items-center gap-1.5 mb-2">
-            <Badge variant="outline" className="text-[9px] h-5 bg-blue-50 border-blue-200 text-blue-700 rounded">
+          <div className="flex items-center gap-2 mb-3">
+            <Badge variant="outline" className={cn(
+              "text-[10px] rounded-full px-2.5",
+              isDark ? "border-stone-700 text-stone-400" : "bg-amber-50 border-amber-200 text-amber-700"
+            )}>
               Chapter {chapterNumber}
             </Badge>
             {progress >= 100 && (
-              <Badge variant="outline" className="text-[9px] h-5 bg-emerald-50 border-emerald-200 text-emerald-700 rounded">
-                Complete
+              <Badge className="text-[9px] bg-emerald-500/20 text-emerald-500 border-emerald-500/30 rounded-full px-2">
+                Target Complete
               </Badge>
             )}
           </div>
           
-          <h1 className="text-2xl font-bold text-stone-900 tracking-tight mb-3">
+          <h1 className={cn(
+            "text-2xl font-bold tracking-tight mb-4 font-serif",
+            isDark ? "text-stone-100" : "text-stone-900"
+          )}>
             {chapterTitle}
           </h1>
           
-          <div className="flex items-center gap-4 text-[11px] text-stone-500">
-            <span className="flex items-center gap-1">
-              <FileText className="h-3 w-3" />
+          <div className={cn(
+            "flex items-center gap-5 text-xs",
+            isDark ? "text-stone-500" : "text-stone-500"
+          )}>
+            <span className="flex items-center gap-1.5">
+              <Type className="h-3.5 w-3.5" />
               {wordCount.toLocaleString()} words
             </span>
-            <span className="flex items-center gap-1">
-              <Target className="h-3 w-3" />
+            <span className="flex items-center gap-1.5">
+              <Target className="h-3.5 w-3.5" />
               {targetWordCount.toLocaleString()} target
             </span>
-            <span className="flex items-center gap-1">
-              <Clock className="h-3 w-3" />
-              ~{Math.ceil(wordCount / 200)} min
+            <span className="flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5" />
+              ~{Math.ceil(wordCount / 200)} min read
             </span>
           </div>
 
-          {/* Progress */}
-          <div className="mt-3 flex items-center gap-2">
-            <div className="flex-1 h-1 bg-stone-200 rounded-full overflow-hidden">
+          {/* Progress Bar */}
+          <div className="mt-4 flex items-center gap-3">
+            <div className={cn(
+              "flex-1 h-1.5 rounded-full overflow-hidden",
+              isDark ? "bg-stone-800" : "bg-stone-200"
+            )}>
               <div 
                 className={cn(
-                  "h-full transition-all duration-300",
-                  progress >= 100 ? "bg-emerald-500" : "bg-blue-500"
+                  "h-full transition-all duration-500 rounded-full",
+                  progress >= 100 
+                    ? "bg-gradient-to-r from-emerald-500 to-teal-500" 
+                    : "bg-gradient-to-r from-amber-500 to-orange-500"
                 )}
                 style={{ width: `${progress}%` }}
               />
             </div>
-            <span className="text-[10px] font-medium text-stone-500 w-8 text-right">
+            <span className={cn(
+              "text-[10px] font-semibold w-10 text-right",
+              isDark ? "text-stone-500" : "text-stone-500"
+            )}>
               {Math.round(progress)}%
             </span>
           </div>
 
-          {/* Generate CTA */}
+          {/* Generate CTA for empty chapters */}
           {wordCount === 0 && onGenerateChapter && (
-            <div className="mt-5 flex items-center gap-2">
+            <div className="mt-6 flex items-center gap-3">
               <Button
                 onClick={onGenerateChapter}
                 disabled={isGenerating}
-                className="h-8 bg-blue-600 hover:bg-blue-700 text-white shadow-sm gap-1.5 text-xs rounded"
+                className="h-9 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg shadow-amber-500/20 gap-2 text-xs rounded-lg"
                 data-testid="generate-chapter-inline"
               >
                 {isGenerating ? (
@@ -371,56 +480,79 @@ export default function KreAIteEditor({
                 )}
                 Generate Chapter
               </Button>
-              <span className="text-[10px] text-stone-400">or start writing</span>
+              <span className={cn(
+                "text-[11px]",
+                isDark ? "text-stone-600" : "text-stone-400"
+              )}>or start writing manually</span>
             </div>
           )}
         </div>
       </div>
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          EDITOR - Writing Canvas
-      ══════════════════════════════════════════════════════════════════════ */}
+      {/* ══════════════════════════════════════════════════════════════════════════════
+          EDITOR CONTENT - Professional Writing Canvas
+      ══════════════════════════════════════════════════════════════════════════════ */}
       <ScrollArea className="flex-1">
-        <div className="max-w-2xl mx-auto px-12 py-8">
+        <div className="max-w-2xl mx-auto px-12 py-10">
           <EditorContent 
             editor={editor} 
-            className="prose prose-stone max-w-none
-              prose-p:text-stone-700 prose-p:leading-relaxed prose-p:text-[15px] prose-p:mb-4
-              prose-headings:text-stone-900 prose-headings:font-semibold
-              prose-h1:text-2xl prose-h1:mt-8 prose-h1:mb-4
-              prose-h2:text-xl prose-h2:mt-6 prose-h2:mb-3
-              prose-h3:text-lg prose-h3:mt-5 prose-h3:mb-2
-              prose-blockquote:border-l-blue-400 prose-blockquote:bg-blue-50/50 prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:italic prose-blockquote:text-stone-600 prose-blockquote:rounded-r
-              prose-strong:text-stone-900 prose-strong:font-semibold
-              prose-em:text-stone-700
-              prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
-              prose-ul:my-3 prose-ol:my-3
-              prose-li:text-stone-700 prose-li:mb-0.5
-              [&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] 
-              [&_.is-editor-empty:first-child::before]:text-stone-400 
-              [&_.is-editor-empty:first-child::before]:float-left 
-              [&_.is-editor-empty:first-child::before]:h-0 
-              [&_.is-editor-empty:first-child::before]:pointer-events-none 
-              [&_.is-editor-empty:first-child::before]:italic"
+            className={cn(
+              "prose max-w-none",
+              isDark ? "prose-invert" : "prose-stone",
+              "prose-p:leading-[1.85] prose-p:text-[16px] prose-p:font-serif prose-p:mb-5",
+              isDark ? "prose-p:text-stone-300" : "prose-p:text-stone-700",
+              "prose-headings:font-serif prose-headings:font-bold prose-headings:tracking-tight",
+              isDark ? "prose-headings:text-stone-100" : "prose-headings:text-stone-900",
+              "prose-h1:text-2xl prose-h1:mt-10 prose-h1:mb-5",
+              "prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-4",
+              "prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-3",
+              isDark 
+                ? "prose-blockquote:border-l-amber-500 prose-blockquote:bg-stone-800/50" 
+                : "prose-blockquote:border-l-amber-400 prose-blockquote:bg-amber-50/50",
+              "prose-blockquote:py-3 prose-blockquote:px-5 prose-blockquote:italic prose-blockquote:rounded-r-lg",
+              isDark ? "prose-blockquote:text-stone-400" : "prose-blockquote:text-stone-600",
+              isDark ? "prose-strong:text-stone-100" : "prose-strong:text-stone-900",
+              "prose-strong:font-semibold",
+              isDark ? "prose-em:text-stone-300" : "prose-em:text-stone-700",
+              "prose-a:text-amber-500 prose-a:no-underline hover:prose-a:underline",
+              "prose-ul:my-4 prose-ol:my-4",
+              isDark ? "prose-li:text-stone-300" : "prose-li:text-stone-700",
+              "prose-li:mb-1",
+              "[&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)]",
+              isDark ? "[&_.is-editor-empty:first-child::before]:text-stone-700" : "[&_.is-editor-empty:first-child::before]:text-stone-400",
+              "[&_.is-editor-empty:first-child::before]:float-left",
+              "[&_.is-editor-empty:first-child::before]:h-0",
+              "[&_.is-editor-empty:first-child::before]:pointer-events-none",
+              "[&_.is-editor-empty:first-child::before]:italic",
+              "[&_.is-editor-empty:first-child::before]:font-serif"
+            )}
             data-testid="kreaite-editor-content"
           />
         </div>
         
-        <div className="h-24" />
+        {/* Bottom padding for comfortable scrolling */}
+        <div className="h-32" />
       </ScrollArea>
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          FOOTER - Stats
-      ══════════════════════════════════════════════════════════════════════ */}
-      <div className="flex items-center justify-between px-3 py-1 border-t border-stone-150 bg-stone-50/50 text-[9px] text-stone-500">
+      {/* ══════════════════════════════════════════════════════════════════════════════
+          FOOTER STATUS - Character & Word Stats
+      ══════════════════════════════════════════════════════════════════════════════ */}
+      <div className={cn(
+        "flex items-center justify-between px-4 py-1.5 border-t text-[10px]",
+        isDark 
+          ? "bg-stone-900/50 border-stone-800/50 text-stone-600" 
+          : "bg-white/80 border-stone-200/50 text-stone-500"
+      )}>
         <div className="flex items-center gap-3">
-          <span>{editor.storage.characterCount.characters().toLocaleString()} chars</span>
-          <span className="text-stone-300">|</span>
+          <span>{editor.storage.characterCount.characters().toLocaleString()} characters</span>
+          <span className={isDark ? "text-stone-800" : "text-stone-300"}>|</span>
           <span>{editor.storage.characterCount.words().toLocaleString()} words</span>
-          <span className="text-stone-300">|</span>
+          <span className={isDark ? "text-stone-800" : "text-stone-300"}>|</span>
           <span>~{Math.ceil(editor.storage.characterCount.words() / 250)} pages</span>
         </div>
-        <span>Line Height: 1.6</span>
+        <div className="flex items-center gap-3">
+          <span>Serif • 16px • 1.85 line height</span>
+        </div>
       </div>
     </div>
   );
