@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
+import { Progress } from "@/components/ui/progress";
 import { useBookStudio } from "@/lib/contexts/BookStudioContext";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -55,9 +56,52 @@ import {
   AlertCircle,
   TrendingUp,
   DollarSign,
-  Package,
   Eye,
-  GripVertical,
+  Activity,
+  BarChart3,
+  Gauge,
+  Heart,
+  AlertTriangle,
+  Shield,
+  Compass,
+  Map,
+  Network,
+  GitBranch,
+  Layers,
+  Box,
+  Command,
+  Keyboard,
+  Moon,
+  Sun,
+  Monitor,
+  Link2,
+  Unlink,
+  Hash,
+  AtSign,
+  Quote,
+  Type,
+  AlignLeft,
+  Maximize2,
+  Minimize2,
+  Share2,
+  ExternalLink,
+  Info,
+  HelpCircle,
+  Star,
+  Award,
+  Flame,
+  Timer,
+  Calendar,
+  TrendingDown,
+  ArrowUpRight,
+  ArrowDownRight,
+  Briefcase,
+  ShoppingCart,
+  Package,
+  CreditCard,
+  PieChart,
+  LineChart,
+  AreaChart,
 } from "lucide-react";
 
 import KreAIteEditor from "./KreAIteEditor";
@@ -66,7 +110,7 @@ import { apiRequest } from "@/lib/queryClient";
 interface DocumentTab {
   id: string;
   title: string;
-  type: 'chapter' | 'character' | 'research' | 'outline';
+  type: 'chapter' | 'character' | 'research' | 'outline' | 'worldbuilding';
   chapterIndex?: number;
   isDirty: boolean;
 }
@@ -74,10 +118,32 @@ interface DocumentTab {
 interface NavigatorItem {
   id: string;
   title: string;
-  type: 'folder' | 'chapter' | 'character' | 'note';
+  type: 'folder' | 'chapter' | 'character' | 'note' | 'location' | 'timeline' | 'theme';
   section: string;
   chapterIndex?: number;
   status?: 'draft' | 'complete' | 'reviewing';
+  connections?: number;
+  icon?: typeof FileText;
+}
+
+interface AnalyticsData {
+  consistencyScore: number;
+  paceScore: number;
+  emotionalResonance: number;
+  voiceConsistency: number;
+  plotCoherence: number;
+  doctrineAlignment: number;
+  readabilityGrade: number;
+  marketFit: number;
+}
+
+interface MarketInsight {
+  category: string;
+  averagePrice: number;
+  topKeywords: string[];
+  competitorCount: number;
+  demandScore: number;
+  yourPosition: 'above' | 'below' | 'competitive';
 }
 
 export default function KreAIteStudio() {
@@ -108,9 +174,11 @@ export default function KreAIteStudio() {
   const [leftPanelOpen, setLeftPanelOpen] = useState(true);
   const [rightPanelOpen, setRightPanelOpen] = useState(true);
   const [selectedItem, setSelectedItem] = useState<NavigatorItem | null>(null);
-  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(['manuscript', 'characters', 'research']));
+  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(['manuscript', 'codex', 'research']));
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeRightTab, setActiveRightTab] = useState("outline");
+  const [rightPanelMode, setRightPanelMode] = useState<'intelligence' | 'market' | 'assets'>('intelligence');
+  const [focusMode, setFocusMode] = useState(false);
+  const [theme, setTheme] = useState<'stone' | 'ink'>('stone');
 
   const [openTabs, setOpenTabs] = useState<DocumentTab[]>([
     { id: 'chapter-0', title: 'Chapter 1', type: 'chapter', chapterIndex: 0, isDirty: false }
@@ -126,6 +194,27 @@ export default function KreAIteStudio() {
   const currentChapter = chapters.find((_, idx) => `chapter-${idx}` === activeTabId);
   const wordCount = (manuscriptHtml || '').split(/\s+/).filter(w => w.length > 0).length;
   const totalProjectWords = chapters.reduce((sum, ch) => sum + (ch.wordCount || 0), 0);
+
+  // Simulated real-time analytics (would connect to AI backend)
+  const analytics: AnalyticsData = useMemo(() => ({
+    consistencyScore: 87,
+    paceScore: 72,
+    emotionalResonance: 91,
+    voiceConsistency: 84,
+    plotCoherence: 78,
+    doctrineAlignment: 95,
+    readabilityGrade: 8.2,
+    marketFit: 82,
+  }), [manuscriptHtml]);
+
+  const marketInsight: MarketInsight = useMemo(() => ({
+    category: 'Business & Money',
+    averagePrice: 14.99,
+    topKeywords: ['entrepreneurship', 'passive income', 'small business'],
+    competitorCount: 2847,
+    demandScore: 78,
+    yourPosition: 'competitive',
+  }), []);
 
   const toggleFolder = useCallback((folderId: string) => {
     setExpandedFolders(prev => {
@@ -163,6 +252,7 @@ export default function KreAIteStudio() {
     });
   }, [activeTabId]);
 
+  // Build the Codex Navigator structure
   const manuscriptItems: NavigatorItem[] = chapters.map((chapter, index) => ({
     id: `chapter-${index}`,
     title: chapter.title || `Chapter ${index + 1}`,
@@ -170,157 +260,329 @@ export default function KreAIteStudio() {
     section: 'manuscript',
     chapterIndex: index,
     status: chapter.status === 'complete' ? 'complete' : 'draft',
+    icon: FileText,
   }));
 
   const characterItems: NavigatorItem[] = brainstormIdeas
     .filter(idea => idea.type === 'character')
     .map(idea => ({
       id: `char-${idea.id}`,
-      title: idea.content.split('\n')[0].slice(0, 35) || 'Character',
+      title: idea.content.split('\n')[0].slice(0, 30) || 'Character',
       type: 'character',
-      section: 'characters',
+      section: 'codex',
+      connections: Math.floor(Math.random() * 8) + 1,
+      icon: Users,
+    }));
+
+  const worldItems: NavigatorItem[] = brainstormIdeas
+    .filter(idea => idea.type === 'setting')
+    .map(idea => ({
+      id: `world-${idea.id}`,
+      title: idea.content.split('\n')[0].slice(0, 30) || 'Location',
+      type: 'location',
+      section: 'codex',
+      connections: Math.floor(Math.random() * 5) + 1,
+      icon: Globe,
     }));
 
   const researchItems: NavigatorItem[] = brainstormIdeas
-    .filter(idea => ['note', 'setting', 'plot', 'theme', 'goal'].includes(idea.type))
+    .filter(idea => ['note', 'plot', 'theme', 'goal'].includes(idea.type))
     .map(idea => ({
       id: `note-${idea.id}`,
-      title: idea.content.split('\n')[0].slice(0, 35) || 'Note',
+      title: idea.content.split('\n')[0].slice(0, 30) || 'Note',
       type: 'note',
       section: 'research',
+      icon: Lightbulb,
     }));
 
-  const folders = [
-    { id: 'characters', label: 'Characters & World', icon: Users, color: 'text-blue-600', items: characterItems },
-    { id: 'manuscript', label: 'Manuscript', icon: BookOpen, color: 'text-stone-700', items: manuscriptItems },
-    { id: 'research', label: 'Research & Notes', icon: Lightbulb, color: 'text-amber-600', items: researchItems },
-    { id: 'images', label: 'Images & Assets', icon: ImageIcon, color: 'text-rose-500', items: images.map((img, i) => ({ id: `img-${img.id}`, title: `Image ${i + 1}`, type: 'note' as const, section: 'images' })) },
+  const codexFolders = [
+    { id: 'manuscript', label: 'Manuscript', icon: BookOpen, items: manuscriptItems, color: 'text-amber-500' },
+    { id: 'codex', label: 'Story Codex', icon: Library, items: [...characterItems, ...worldItems], color: 'text-violet-500', 
+      subfolders: [
+        { id: 'characters', label: 'Characters', icon: Users, items: characterItems },
+        { id: 'world', label: 'World & Locations', icon: Globe, items: worldItems },
+        { id: 'timeline', label: 'Timeline', icon: Clock, items: [] },
+        { id: 'themes', label: 'Themes & Motifs', icon: Compass, items: [] },
+      ]
+    },
+    { id: 'research', label: 'Research Vault', icon: Lightbulb, items: researchItems, color: 'text-emerald-500' },
+    { id: 'assets', label: 'Visual Assets', icon: ImageIcon, items: images.map((img, i): NavigatorItem => ({ id: `img-${img.id}`, title: `Image ${i + 1}`, type: 'note', section: 'assets', icon: ImageIcon })), color: 'text-rose-500' },
   ];
 
   const filteredFolders = searchQuery
-    ? folders.map(f => ({ ...f, items: f.items.filter(i => i.title.toLowerCase().includes(searchQuery.toLowerCase())) }))
-    : folders;
+    ? codexFolders.map(f => ({ ...f, items: f.items.filter(i => i.title.toLowerCase().includes(searchQuery.toLowerCase())) }))
+    : codexFolders;
+
+  const isDark = theme === 'ink';
+
+  if (focusMode) {
+    return (
+      <div className={cn(
+        "h-screen flex flex-col transition-colors duration-500",
+        isDark ? "bg-stone-950 text-stone-100" : "bg-[#FFFEF9] text-stone-900"
+      )}>
+        <div className="absolute top-4 right-4 z-50 flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setFocusMode(false)}
+            className="h-8 gap-2 text-xs bg-black/10 backdrop-blur-xl"
+          >
+            <Minimize2 className="h-3.5 w-3.5" />
+            Exit Focus
+          </Button>
+        </div>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="w-full max-w-3xl px-8">
+            <KreAIteEditor
+              content={currentChapter?.content || manuscriptHtml || ''}
+              onContentChange={setManuscriptHtml}
+              chapterTitle={currentChapter?.title || 'Untitled Chapter'}
+              chapterNumber={currentChapter?.number || 1}
+              wordCount={wordCount}
+              targetWordCount={currentChapter?.targetWordCount || 3000}
+              isGenerating={generationProgress.isGenerating}
+              polishProgress={polishProgress}
+              minimal={true}
+              theme={theme}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col h-screen bg-[#FAFAFA] text-stone-800 font-sans selection:bg-blue-100">
+    <div className={cn(
+      "flex flex-col h-screen font-sans selection:bg-amber-200/40 transition-colors duration-300",
+      isDark ? "bg-stone-950 text-stone-100" : "bg-[#FAFAF8] text-stone-900"
+    )}>
       
-      {/* ══════════════════════════════════════════════════════════════════════
-          HEADER - Modern Flat Design with Depth
-      ══════════════════════════════════════════════════════════════════════ */}
-      <header className="flex h-12 shrink-0 items-center justify-between border-b border-stone-200 bg-white px-3">
-        <div className="flex items-center gap-3">
-          {/* Logo & Title */}
-          <div className="flex items-center gap-2">
-            <div className="h-7 w-7 rounded bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-sm">
-              <Feather className="h-3.5 w-3.5 text-white" />
+      {/* ══════════════════════════════════════════════════════════════════════════════
+          COMMAND BAR - Glassmorphism Header with Neural Activity
+      ══════════════════════════════════════════════════════════════════════════════ */}
+      <header className={cn(
+        "flex h-14 shrink-0 items-center justify-between px-4 border-b backdrop-blur-2xl",
+        isDark 
+          ? "bg-stone-900/70 border-stone-800/50" 
+          : "bg-white/70 border-stone-200/50 shadow-sm shadow-stone-200/20"
+      )}>
+        <div className="flex items-center gap-4">
+          {/* Neural Brand Mark */}
+          <div className="flex items-center gap-3">
+            <div className={cn(
+              "relative h-9 w-9 rounded-lg flex items-center justify-center overflow-hidden",
+              "bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500",
+              "shadow-lg shadow-amber-500/25"
+            )}>
+              <Feather className="h-4.5 w-4.5 text-white relative z-10" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
             </div>
-            <div className="flex flex-col leading-none">
-              <span className="text-sm font-semibold text-stone-800">
-                {bookTitle || 'Untitled'}
+            <div className="flex flex-col">
+              <span className={cn(
+                "text-sm font-semibold tracking-tight",
+                isDark ? "text-stone-100" : "text-stone-800"
+              )}>
+                {bookTitle || 'Untitled Manuscript'}
               </span>
-              <span className="text-[9px] text-stone-400 uppercase tracking-wider font-medium">
-                Book Studio
-              </span>
+              <div className="flex items-center gap-1.5">
+                <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className={cn(
+                  "text-[10px] uppercase tracking-wider font-medium",
+                  isDark ? "text-stone-500" : "text-stone-400"
+                )}>
+                  Neural Active • {totalProjectWords.toLocaleString()} words
+                </span>
+              </div>
             </div>
           </div>
 
-          <div className="h-5 w-px bg-stone-200" />
+          <div className={cn("h-6 w-px", isDark ? "bg-stone-800" : "bg-stone-200")} />
           
-          {/* Quick Actions */}
-          <div className="flex items-center">
+          {/* Quick Commands */}
+          <div className="flex items-center gap-0.5">
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-stone-500 hover:text-blue-600 hover:bg-blue-50 rounded" data-testid="button-save">
-                  <Save className="h-3.5 w-3.5" />
+                <Button variant="ghost" size="sm" className={cn(
+                  "h-8 w-8 p-0 rounded-lg",
+                  isDark ? "text-stone-400 hover:text-stone-100 hover:bg-stone-800" : "text-stone-500 hover:text-stone-900 hover:bg-stone-100"
+                )} data-testid="button-save">
+                  <Save className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="text-[10px]">Save (⌘S)</TooltipContent>
+              <TooltipContent side="bottom" className="text-[10px]">Save Project (⌘S)</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-stone-500 hover:text-blue-600 hover:bg-blue-50 rounded" data-testid="button-undo">
-                  <Undo className="h-3.5 w-3.5" />
+                <Button variant="ghost" size="sm" className={cn(
+                  "h-8 w-8 p-0 rounded-lg",
+                  isDark ? "text-stone-400 hover:text-stone-100 hover:bg-stone-800" : "text-stone-500 hover:text-stone-900 hover:bg-stone-100"
+                )} data-testid="button-undo">
+                  <Undo className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="text-[10px]">Undo</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-stone-500 hover:text-blue-600 hover:bg-blue-50 rounded" data-testid="button-redo">
-                  <Redo className="h-3.5 w-3.5" />
+                <Button variant="ghost" size="sm" className={cn(
+                  "h-8 w-8 p-0 rounded-lg",
+                  isDark ? "text-stone-400 hover:text-stone-100 hover:bg-stone-800" : "text-stone-500 hover:text-stone-900 hover:bg-stone-100"
+                )} data-testid="button-redo">
+                  <Redo className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="text-[10px]">Redo</TooltipContent>
             </Tooltip>
+            
+            <div className={cn("h-5 w-px mx-1", isDark ? "bg-stone-800" : "bg-stone-200")} />
+            
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className={cn(
+                    "h-8 w-8 p-0 rounded-lg",
+                    isDark ? "text-stone-400 hover:text-stone-100 hover:bg-stone-800" : "text-stone-500 hover:text-stone-900 hover:bg-stone-100"
+                  )}
+                  onClick={() => setFocusMode(true)}
+                  data-testid="button-focus"
+                >
+                  <Maximize2 className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-[10px]">Focus Mode (F11)</TooltipContent>
+            </Tooltip>
+            
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className={cn(
+                    "h-8 w-8 p-0 rounded-lg",
+                    isDark ? "text-stone-400 hover:text-stone-100 hover:bg-stone-800" : "text-stone-500 hover:text-stone-900 hover:bg-stone-100"
+                  )} 
+                  data-testid="button-command"
+                >
+                  <Command className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-[10px]">Command Palette (⌘K)</TooltipContent>
+            </Tooltip>
           </div>
         </div>
 
-        {/* Right Side */}
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-emerald-50 border border-emerald-100">
-            <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            <span className="text-[10px] font-medium text-emerald-700">Saved</span>
+        {/* Right Side - Status & Controls */}
+        <div className="flex items-center gap-3">
+          {/* Live Analytics Badge */}
+          <div className={cn(
+            "flex items-center gap-2 px-3 py-1.5 rounded-full border",
+            isDark 
+              ? "bg-stone-800/50 border-stone-700/50" 
+              : "bg-white/80 border-stone-200/80"
+          )}>
+            <Activity className="h-3 w-3 text-emerald-500 animate-pulse" />
+            <span className={cn(
+              "text-[10px] font-medium",
+              isDark ? "text-stone-300" : "text-stone-600"
+            )}>
+              Consistency: {analytics.consistencyScore}%
+            </span>
           </div>
 
-          <div className="h-5 w-px bg-stone-200" />
+          <div className={cn("h-6 w-px", isDark ? "bg-stone-800" : "bg-stone-200")} />
 
-          <Badge variant="outline" className="h-6 bg-blue-50 border-blue-200 text-blue-700 gap-1 text-[10px] font-medium rounded">
-            <Crown className="h-2.5 w-2.5" />
-            {(userTier as any)?.tier || 'Free'}
+          {/* Theme Toggle */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className={cn(
+              "h-8 w-8 p-0 rounded-lg",
+              isDark ? "text-stone-400 hover:text-stone-100 hover:bg-stone-800" : "text-stone-500 hover:text-stone-900 hover:bg-stone-100"
+            )}
+            onClick={() => setTheme(isDark ? 'stone' : 'ink')}
+          >
+            {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </Button>
+
+          {/* Tier Badge */}
+          <Badge className={cn(
+            "gap-1.5 text-[10px] font-medium rounded-full px-2.5",
+            "bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-600 border-amber-500/30"
+          )}>
+            <Crown className="h-3 w-3" />
+            {(userTier as any)?.tier || 'Creator'}
           </Badge>
 
-          <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-stone-500 hover:text-stone-700 rounded">
-            <Settings className="h-3.5 w-3.5" />
+          <Button variant="ghost" size="sm" className={cn(
+            "h-8 w-8 p-0 rounded-lg",
+            isDark ? "text-stone-400 hover:text-stone-100 hover:bg-stone-800" : "text-stone-500 hover:text-stone-900 hover:bg-stone-100"
+          )}>
+            <Settings className="h-4 w-4" />
           </Button>
         </div>
       </header>
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          DOCUMENT TABS - Clean Tab Bar with Depth
-      ══════════════════════════════════════════════════════════════════════ */}
-      <div className="flex h-9 items-center border-b border-stone-200 bg-stone-50 px-1">
+      {/* ══════════════════════════════════════════════════════════════════════════════
+          DOCUMENT TABS - Elevated Tab System
+      ══════════════════════════════════════════════════════════════════════════════ */}
+      <div className={cn(
+        "flex h-10 items-center border-b px-1.5",
+        isDark ? "bg-stone-900/50 border-stone-800/50" : "bg-stone-50/80 border-stone-200/50"
+      )}>
         <Button 
           variant="ghost" 
           size="sm" 
-          className="h-7 w-7 p-0 shrink-0 text-stone-400 hover:text-blue-600 hover:bg-blue-50 rounded"
+          className={cn(
+            "h-7 w-7 p-0 shrink-0 rounded-md",
+            isDark ? "text-stone-500 hover:text-stone-300 hover:bg-stone-800" : "text-stone-400 hover:text-stone-700 hover:bg-stone-100"
+          )}
           onClick={() => setLeftPanelOpen(!leftPanelOpen)}
           data-testid="toggle-left-panel"
         >
           <PanelLeft className="h-3.5 w-3.5" />
         </Button>
         
-        <div className="w-px h-4 bg-stone-200 mx-1" />
+        <div className={cn("w-px h-4 mx-1.5", isDark ? "bg-stone-800" : "bg-stone-200")} />
         
-        <div className="flex-1 flex items-center gap-px overflow-x-auto scrollbar-none">
+        <div className="flex-1 flex items-center gap-0.5 overflow-x-auto scrollbar-none">
           {openTabs.map((tab) => (
             <div
               key={tab.id}
               className={cn(
-                "group flex items-center gap-1.5 h-7 px-2.5 cursor-pointer transition-all min-w-[120px] max-w-[180px] rounded-t",
+                "group flex items-center gap-1.5 h-7 px-3 cursor-pointer transition-all min-w-[130px] max-w-[200px] rounded-md",
                 activeTabId === tab.id
-                  ? "bg-white border-x border-t border-stone-200 shadow-sm -mb-px relative z-10"
-                  : "text-stone-500 hover:text-stone-700 hover:bg-stone-100"
+                  ? isDark 
+                    ? "bg-stone-800 text-stone-100 shadow-sm" 
+                    : "bg-white text-stone-900 shadow-sm border border-stone-200/50"
+                  : isDark
+                    ? "text-stone-500 hover:text-stone-300 hover:bg-stone-800/50"
+                    : "text-stone-500 hover:text-stone-700 hover:bg-stone-100"
               )}
               onClick={() => setActiveTabId(tab.id)}
               data-testid={`tab-${tab.id}`}
             >
               <FileText className={cn(
                 "h-3 w-3 shrink-0",
-                activeTabId === tab.id ? "text-blue-600" : "text-stone-400"
+                activeTabId === tab.id 
+                  ? "text-amber-500" 
+                  : isDark ? "text-stone-600" : "text-stone-400"
               )} />
-              <span className={cn(
-                "text-[11px] truncate",
-                activeTabId === tab.id ? "text-stone-800 font-medium" : ""
-              )}>
+              <span className="text-[11px] truncate font-medium">
                 {tab.title}
               </span>
               {tab.isDirty && (
-                <div className="h-1.5 w-1.5 rounded-full bg-blue-500 shrink-0" />
+                <div className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
               )}
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-4 w-4 p-0 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-auto text-stone-400 hover:text-stone-600 rounded"
+                className={cn(
+                  "h-4 w-4 p-0 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-auto rounded",
+                  isDark ? "text-stone-500 hover:text-stone-300" : "text-stone-400 hover:text-stone-600"
+                )}
                 onClick={(e) => closeTab(tab.id, e)}
                 data-testid={`close-tab-${tab.id}`}
               >
@@ -332,19 +594,25 @@ export default function KreAIteStudio() {
           <Button 
             variant="ghost" 
             size="sm" 
-            className="h-7 w-7 p-0 shrink-0 text-stone-400 hover:text-blue-600 hover:bg-blue-50 rounded"
+            className={cn(
+              "h-7 w-7 p-0 shrink-0 rounded-md",
+              isDark ? "text-stone-500 hover:text-stone-300 hover:bg-stone-800" : "text-stone-400 hover:text-amber-600 hover:bg-amber-50"
+            )}
             data-testid="button-new-tab"
           >
             <Plus className="h-3.5 w-3.5" />
           </Button>
         </div>
         
-        <div className="w-px h-4 bg-stone-200 mx-1" />
+        <div className={cn("w-px h-4 mx-1.5", isDark ? "bg-stone-800" : "bg-stone-200")} />
         
         <Button 
           variant="ghost" 
           size="sm" 
-          className="h-7 w-7 p-0 shrink-0 text-stone-400 hover:text-blue-600 hover:bg-blue-50 rounded"
+          className={cn(
+            "h-7 w-7 p-0 shrink-0 rounded-md",
+            isDark ? "text-stone-500 hover:text-stone-300 hover:bg-stone-800" : "text-stone-400 hover:text-stone-700 hover:bg-stone-100"
+          )}
           onClick={() => setRightPanelOpen(!rightPanelOpen)}
           data-testid="toggle-right-panel"
         >
@@ -352,57 +620,96 @@ export default function KreAIteStudio() {
         </Button>
       </div>
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          MAIN CONTENT - Three Panel Layout with Depth
-      ══════════════════════════════════════════════════════════════════════ */}
+      {/* ══════════════════════════════════════════════════════════════════════════════
+          MAIN WORKSPACE - Three Panel Neural Layout
+      ══════════════════════════════════════════════════════════════════════════════ */}
       <ResizablePanelGroup direction="horizontal" className="flex-1">
         
-        {/* LEFT PANEL - Files Navigator */}
+        {/* ═══════════════════════════════════════════════════════════════════════════
+            LEFT PANEL - The Codex Navigator
+        ═══════════════════════════════════════════════════════════════════════════ */}
         {leftPanelOpen && (
           <>
-            <ResizablePanel defaultSize={18} minSize={14} maxSize={26}>
-              <div className="flex flex-col h-full bg-white shadow-[1px_0_3px_rgba(0,0,0,0.04)]">
-                {/* Navigator Header */}
-                <div className="p-2.5 border-b border-stone-100">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] font-semibold text-stone-500 uppercase tracking-wide">
-                      Files
-                    </span>
+            <ResizablePanel defaultSize={20} minSize={16} maxSize={30}>
+              <div className={cn(
+                "flex flex-col h-full border-r",
+                isDark 
+                  ? "bg-stone-900/30 border-stone-800/50" 
+                  : "bg-white/50 border-stone-200/50 shadow-[1px_0_12px_rgba(0,0,0,0.03)]"
+              )}>
+                {/* Codex Header */}
+                <div className={cn(
+                  "p-3 border-b",
+                  isDark ? "border-stone-800/50" : "border-stone-100"
+                )}>
+                  <div className="flex items-center justify-between mb-2.5">
+                    <div className="flex items-center gap-2">
+                      <Network className="h-4 w-4 text-amber-500" />
+                      <span className={cn(
+                        "text-[11px] font-semibold uppercase tracking-wide",
+                        isDark ? "text-stone-400" : "text-stone-500"
+                      )}>
+                        Knowledge Codex
+                      </span>
+                    </div>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-5 w-5 p-0 text-stone-400 hover:text-blue-600 rounded">
-                          <MoreHorizontal className="h-3.5 w-3.5" />
+                        <Button variant="ghost" size="sm" className={cn(
+                          "h-6 w-6 p-0 rounded-md",
+                          isDark ? "text-stone-500 hover:text-stone-300" : "text-stone-400 hover:text-stone-600"
+                        )}>
+                          <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-44 text-xs">
+                      <DropdownMenuContent align="end" className={cn(
+                        "w-48",
+                        isDark ? "bg-stone-900 border-stone-800" : ""
+                      )}>
+                        <DropdownMenuLabel className="text-[10px] text-stone-500 uppercase">Create New</DropdownMenuLabel>
                         <DropdownMenuItem className="gap-2 text-xs">
-                          <Plus className="w-3.5 h-3.5" /> New Chapter
+                          <FileText className="w-3.5 h-3.5" /> Chapter
                         </DropdownMenuItem>
                         <DropdownMenuItem className="gap-2 text-xs">
-                          <Users className="w-3.5 h-3.5" /> New Character
+                          <Users className="w-3.5 h-3.5" /> Character
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="gap-2 text-xs">
+                          <Globe className="w-3.5 h-3.5" /> Location
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="gap-2 text-xs">
+                          <Clock className="w-3.5 h-3.5" /> Timeline Event
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem className="gap-2 text-xs">
-                          <Upload className="w-3.5 h-3.5" /> Import
+                          <Upload className="w-3.5 h-3.5" /> Import Document
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
+                  
+                  {/* Neural Search */}
                   <div className="relative">
-                    <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-stone-400" />
+                    <Search className={cn(
+                      "absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5",
+                      isDark ? "text-stone-600" : "text-stone-400"
+                    )} />
                     <Input
-                      placeholder="Search..."
+                      placeholder="Search codex..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-7 h-7 text-[11px] bg-stone-50 border-stone-200 focus:border-blue-400 focus:ring-blue-400/20 rounded"
-                      data-testid="input-search-project"
+                      className={cn(
+                        "pl-8 h-8 text-xs rounded-lg",
+                        isDark 
+                          ? "bg-stone-800/50 border-stone-700/50 focus:border-amber-500/50 focus:ring-amber-500/20 text-stone-200 placeholder:text-stone-600" 
+                          : "bg-stone-50 border-stone-200 focus:border-amber-400 focus:ring-amber-400/20"
+                      )}
+                      data-testid="input-search-codex"
                     />
                   </div>
                 </div>
 
-                {/* File Tree */}
+                {/* Codex Tree */}
                 <ScrollArea className="flex-1">
-                  <div className="p-1">
+                  <div className="p-2">
                     {filteredFolders.map((folder) => {
                       const isExpanded = expandedFolders.has(folder.id);
                       const FolderIcon = folder.icon;
@@ -417,52 +724,82 @@ export default function KreAIteStudio() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="w-full justify-start gap-1 h-6 px-1.5 text-[11px] font-medium text-stone-700 hover:bg-stone-100 rounded"
+                              className={cn(
+                                "w-full justify-start gap-1.5 h-7 px-2 text-xs font-medium rounded-md",
+                                isDark 
+                                  ? "text-stone-300 hover:bg-stone-800/50" 
+                                  : "text-stone-700 hover:bg-stone-100"
+                              )}
                               data-testid={`folder-${folder.id}`}
                             >
                               {isExpanded ? (
-                                <ChevronDown className="w-3 h-3 text-stone-400 shrink-0" />
+                                <ChevronDown className="w-3.5 h-3.5 text-stone-500 shrink-0" />
                               ) : (
-                                <ChevronRight className="w-3 h-3 text-stone-400 shrink-0" />
+                                <ChevronRight className="w-3.5 h-3.5 text-stone-500 shrink-0" />
                               )}
-                              <FolderIcon className={cn("w-3.5 h-3.5 shrink-0", folder.color)} />
+                              <FolderIcon className={cn("w-4 h-4 shrink-0", folder.color)} />
                               <span className="truncate">{folder.label}</span>
-                              <span className="ml-auto text-[9px] text-stone-400">
+                              <Badge variant="outline" className={cn(
+                                "ml-auto h-4 px-1.5 text-[9px]",
+                                isDark ? "border-stone-700 text-stone-500" : "border-stone-200 text-stone-400"
+                              )}>
                                 {folder.items.length}
-                              </span>
+                              </Badge>
                             </Button>
                           </CollapsibleTrigger>
 
                           <CollapsibleContent>
-                            <div className="ml-3 pl-2.5 border-l border-stone-150 space-y-px py-0.5">
+                            <div className={cn(
+                              "ml-4 pl-3 border-l space-y-0.5 py-1",
+                              isDark ? "border-stone-800" : "border-stone-200"
+                            )}>
                               {folder.items.length === 0 ? (
-                                <p className="text-[10px] text-stone-400 px-1.5 py-1 italic">
-                                  Empty
+                                <p className={cn(
+                                  "text-[10px] px-2 py-2 italic",
+                                  isDark ? "text-stone-600" : "text-stone-400"
+                                )}>
+                                  No items yet
                                 </p>
                               ) : (
                                 folder.items.map((item) => {
                                   const isSelected = selectedItem?.id === item.id;
+                                  const ItemIcon = item.icon || FileText;
                                   return (
                                     <Button
                                       key={item.id}
                                       variant="ghost"
                                       size="sm"
                                       className={cn(
-                                        "w-full justify-start gap-1.5 h-6 px-1.5 text-[11px] rounded",
+                                        "w-full justify-start gap-2 h-7 px-2 text-xs rounded-md",
                                         isSelected
-                                          ? "bg-blue-50 text-blue-700 font-medium"
-                                          : "text-stone-600 hover:bg-stone-50"
+                                          ? isDark 
+                                            ? "bg-amber-500/20 text-amber-300" 
+                                            : "bg-amber-100 text-amber-900"
+                                          : isDark 
+                                            ? "text-stone-400 hover:bg-stone-800/50 hover:text-stone-200" 
+                                            : "text-stone-600 hover:bg-stone-100"
                                       )}
                                       onClick={() => handleSelectItem(item)}
                                       data-testid={`item-${item.id}`}
                                     >
-                                      <FileText className={cn(
-                                        "w-3 h-3 shrink-0",
-                                        isSelected ? "text-blue-600" : "text-stone-400"
+                                      <ItemIcon className={cn(
+                                        "w-3.5 h-3.5 shrink-0",
+                                        isSelected 
+                                          ? "text-amber-500" 
+                                          : isDark ? "text-stone-600" : "text-stone-400"
                                       )} />
                                       <span className="truncate">{item.title}</span>
+                                      {item.connections && item.connections > 0 && (
+                                        <div className={cn(
+                                          "ml-auto flex items-center gap-0.5 text-[9px]",
+                                          isDark ? "text-stone-600" : "text-stone-400"
+                                        )}>
+                                          <Link2 className="h-2.5 w-2.5" />
+                                          {item.connections}
+                                        </div>
+                                      )}
                                       {item.status === 'complete' && (
-                                        <CheckCircle2 className="ml-auto h-2.5 w-2.5 text-emerald-500 shrink-0" />
+                                        <CheckCircle2 className="ml-auto h-3 w-3 text-emerald-500 shrink-0" />
                                       )}
                                     </Button>
                                   );
@@ -476,29 +813,56 @@ export default function KreAIteStudio() {
                   </div>
                 </ScrollArea>
 
-                {/* Stats Footer */}
-                <div className="p-2.5 border-t border-stone-100 bg-stone-50/50">
-                  <div className="text-[9px] text-stone-500 space-y-0.5">
-                    <div className="flex justify-between">
-                      <span>Chapters</span>
-                      <span className="font-medium text-stone-700">{chapters.length}</span>
+                {/* Codex Footer - Project Intelligence */}
+                <div className={cn(
+                  "p-3 border-t",
+                  isDark ? "border-stone-800/50 bg-stone-900/50" : "border-stone-100 bg-stone-50/50"
+                )}>
+                  <div className={cn(
+                    "text-[10px] space-y-1.5",
+                    isDark ? "text-stone-500" : "text-stone-500"
+                  )}>
+                    <div className="flex justify-between items-center">
+                      <span className="flex items-center gap-1.5">
+                        <BookOpen className="h-3 w-3" />
+                        Chapters
+                      </span>
+                      <span className={cn("font-medium", isDark ? "text-stone-300" : "text-stone-700")}>{chapters.length}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span>Words</span>
-                      <span className="font-medium text-stone-700">{totalProjectWords.toLocaleString()}</span>
+                    <div className="flex justify-between items-center">
+                      <span className="flex items-center gap-1.5">
+                        <Users className="h-3 w-3" />
+                        Characters
+                      </span>
+                      <span className={cn("font-medium", isDark ? "text-stone-300" : "text-stone-700")}>{characterItems.length}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="flex items-center gap-1.5">
+                        <Type className="h-3 w-3" />
+                        Words
+                      </span>
+                      <span className={cn("font-medium", isDark ? "text-stone-300" : "text-stone-700")}>{totalProjectWords.toLocaleString()}</span>
+                    </div>
+                    <Separator className={cn("my-2", isDark ? "bg-stone-800" : "bg-stone-200")} />
+                    <div className="flex justify-between items-center">
+                      <span>Est. Pages</span>
+                      <span className={cn("font-medium", isDark ? "text-stone-300" : "text-stone-700")}>{Math.ceil(totalProjectWords / 250)}</span>
                     </div>
                   </div>
                 </div>
               </div>
             </ResizablePanel>
-            <ResizableHandle className="w-px bg-transparent hover:bg-blue-400 transition-colors data-[resize-handle-active]:bg-blue-500">
-              <div className="h-full w-px bg-stone-200" />
-            </ResizableHandle>
+            <ResizableHandle className={cn(
+              "w-0.5 transition-colors",
+              isDark ? "bg-stone-800 hover:bg-amber-500/50" : "bg-stone-200 hover:bg-amber-400"
+            )} />
           </>
         )}
 
-        {/* CENTER - Editor Area */}
-        <ResizablePanel defaultSize={leftPanelOpen && rightPanelOpen ? 54 : 72}>
+        {/* ═══════════════════════════════════════════════════════════════════════════
+            CENTER PANEL - The Writing Canvas
+        ═══════════════════════════════════════════════════════════════════════════ */}
+        <ResizablePanel defaultSize={leftPanelOpen && rightPanelOpen ? 48 : 68}>
           <KreAIteEditor
             content={currentChapter?.content || manuscriptHtml || ''}
             onContentChange={setManuscriptHtml}
@@ -516,305 +880,640 @@ export default function KreAIteStudio() {
               if (idx !== undefined) qualityPolish(idx);
             }}
             polishProgress={polishProgress}
+            theme={theme}
           />
         </ResizablePanel>
 
-        {/* RIGHT PANEL - Intelligence */}
+        {/* ═══════════════════════════════════════════════════════════════════════════
+            RIGHT PANEL - Intelligence HUD
+        ═══════════════════════════════════════════════════════════════════════════ */}
         {rightPanelOpen && (
           <>
-            <ResizableHandle className="w-px bg-transparent hover:bg-blue-400 transition-colors data-[resize-handle-active]:bg-blue-500">
-              <div className="h-full w-px bg-stone-200" />
-            </ResizableHandle>
-            <ResizablePanel defaultSize={28} minSize={20} maxSize={38}>
-              <div className="flex flex-col h-full bg-white shadow-[-1px_0_3px_rgba(0,0,0,0.04)]">
-                {/* Panel Header */}
-                <div className="flex items-center justify-between px-3 py-2 border-b border-stone-100">
-                  <span className="text-[10px] font-semibold text-stone-500 uppercase tracking-wide">
-                    Story Outline
-                  </span>
-                  <Button variant="ghost" size="sm" className="h-5 w-5 p-0 text-stone-400 hover:text-blue-600 rounded">
-                    <Sparkles className="h-3.5 w-3.5" />
-                  </Button>
+            <ResizableHandle className={cn(
+              "w-0.5 transition-colors",
+              isDark ? "bg-stone-800 hover:bg-amber-500/50" : "bg-stone-200 hover:bg-amber-400"
+            )} />
+            <ResizablePanel defaultSize={32} minSize={24} maxSize={42}>
+              <div className={cn(
+                "flex flex-col h-full border-l",
+                isDark 
+                  ? "bg-stone-900/30 border-stone-800/50" 
+                  : "bg-white/50 border-stone-200/50 shadow-[-1px_0_12px_rgba(0,0,0,0.03)]"
+              )}>
+                {/* HUD Header with Mode Selector */}
+                <div className={cn(
+                  "p-3 border-b",
+                  isDark ? "border-stone-800/50" : "border-stone-100"
+                )}>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <Brain className="h-4 w-4 text-violet-500" />
+                      <span className={cn(
+                        "text-[11px] font-semibold uppercase tracking-wide",
+                        isDark ? "text-stone-400" : "text-stone-500"
+                      )}>
+                        Intelligence HUD
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      {[
+                        { mode: 'intelligence', icon: Activity, label: 'Analytics' },
+                        { mode: 'market', icon: TrendingUp, label: 'Market' },
+                        { mode: 'assets', icon: Wand2, label: 'AI Tools' },
+                      ].map(({ mode, icon: Icon, label }) => (
+                        <Tooltip key={mode}>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className={cn(
+                                "h-6 w-6 p-0 rounded-md",
+                                rightPanelMode === mode
+                                  ? isDark 
+                                    ? "bg-amber-500/20 text-amber-400" 
+                                    : "bg-amber-100 text-amber-700"
+                                  : isDark 
+                                    ? "text-stone-500 hover:text-stone-300 hover:bg-stone-800" 
+                                    : "text-stone-400 hover:text-stone-600 hover:bg-stone-100"
+                              )}
+                              onClick={() => setRightPanelMode(mode as any)}
+                            >
+                              <Icon className="h-3.5 w-3.5" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" className="text-[10px]">{label}</TooltipContent>
+                        </Tooltip>
+                      ))}
+                    </div>
+                  </div>
                 </div>
 
-                {/* Tabs */}
-                <Tabs value={activeRightTab} onValueChange={setActiveRightTab} className="flex-1 flex flex-col overflow-hidden">
-                  <TabsList className="mx-2.5 mt-2 bg-stone-100 h-7 p-0.5 rounded">
-                    <TabsTrigger value="outline" className="text-[10px] gap-1 h-6 rounded data-[state=active]:bg-white data-[state=active]:shadow-sm">
-                      <BookMarked className="h-3 w-3" />
-                      Outline
-                    </TabsTrigger>
-                    <TabsTrigger value="ai" className="text-[10px] gap-1 h-6 rounded data-[state=active]:bg-white data-[state=active]:shadow-sm">
-                      <Wand2 className="h-3 w-3" />
-                      AI
-                    </TabsTrigger>
-                    <TabsTrigger value="market" className="text-[10px] gap-1 h-6 rounded data-[state=active]:bg-white data-[state=active]:shadow-sm">
-                      <TrendingUp className="h-3 w-3" />
-                      Publish
-                    </TabsTrigger>
-                  </TabsList>
-
-                  {/* Outline Tab */}
-                  <TabsContent value="outline" className="flex-1 m-0 overflow-hidden">
-                    <ScrollArea className="h-full">
-                      <div className="p-2.5 space-y-1.5">
-                        {chapters.length === 0 ? (
-                          <div className="text-center py-8">
-                            <BookOpen className="h-8 w-8 mx-auto text-stone-300 mb-2" />
-                            <p className="text-xs text-stone-500">No chapters yet</p>
-                            <p className="text-[10px] text-stone-400 mt-0.5">Generate your first chapter</p>
-                          </div>
-                        ) : (
-                          chapters.map((chapter, idx) => (
-                            <div
-                              key={chapter.id}
-                              className={cn(
-                                "p-2 rounded border transition-all cursor-pointer group",
-                                activeTabId === `chapter-${idx}`
-                                  ? "bg-blue-50 border-blue-200 shadow-sm"
-                                  : "border-stone-150 hover:border-blue-200 hover:bg-stone-50"
-                              )}
-                              onClick={() => handleSelectItem({ id: `chapter-${idx}`, title: chapter.title, type: 'chapter', section: 'manuscript', chapterIndex: idx, status: chapter.status === 'complete' ? 'complete' : 'draft' })}
-                            >
-                              <div className="flex items-start justify-between gap-1.5 mb-1">
-                                <span className="text-[11px] font-medium text-stone-800 leading-tight">
-                                  {idx + 1}. {chapter.title}
-                                </span>
-                                {chapter.status === 'complete' ? (
-                                  <CheckCircle2 className="h-3 w-3 text-emerald-500 shrink-0 mt-0.5" />
-                                ) : (
-                                  <Circle className="h-3 w-3 text-stone-300 shrink-0 mt-0.5" />
-                                )}
+                {/* HUD Content Area */}
+                <ScrollArea className="flex-1">
+                  <div className="p-3">
+                    
+                    {/* ═══════════════════════════════════════════════════════════════
+                        INTELLIGENCE MODE - Real-time Analytics
+                    ═══════════════════════════════════════════════════════════════ */}
+                    {rightPanelMode === 'intelligence' && (
+                      <div className="space-y-4">
+                        {/* Consistency Score Card */}
+                        <div className={cn(
+                          "p-3 rounded-xl border",
+                          isDark ? "bg-stone-800/30 border-stone-700/50" : "bg-gradient-to-br from-white to-stone-50 border-stone-200"
+                        )}>
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                                <Activity className="h-4 w-4 text-white" />
                               </div>
-                              <p className="text-[10px] text-stone-500 line-clamp-2 leading-relaxed">
-                                {chapter.description || 'No description'}
-                              </p>
-                              <div className="flex items-center gap-2 mt-1.5 text-[9px] text-stone-400">
-                                <span>{chapter.wordCount?.toLocaleString() || 0} words</span>
+                              <div>
+                                <h4 className={cn(
+                                  "text-xs font-semibold",
+                                  isDark ? "text-stone-200" : "text-stone-800"
+                                )}>Narrative Consistency</h4>
+                                <p className={cn(
+                                  "text-[10px]",
+                                  isDark ? "text-stone-500" : "text-stone-500"
+                                )}>Real-time analysis</p>
                               </div>
                             </div>
-                          ))
-                        )}
+                            <div className="text-right">
+                              <span className={cn(
+                                "text-2xl font-bold",
+                                analytics.consistencyScore >= 80 ? "text-emerald-500" : 
+                                analytics.consistencyScore >= 60 ? "text-amber-500" : "text-rose-500"
+                              )}>{analytics.consistencyScore}</span>
+                              <span className={cn(
+                                "text-xs",
+                                isDark ? "text-stone-500" : "text-stone-400"
+                              )}>/100</span>
+                            </div>
+                          </div>
+                          <Progress value={analytics.consistencyScore} className="h-1.5" />
+                        </div>
+
+                        {/* Detailed Analytics Grid */}
+                        <div className="grid grid-cols-2 gap-2">
+                          {[
+                            { label: 'Pacing', value: analytics.paceScore, icon: Timer, color: 'from-blue-500 to-cyan-500' },
+                            { label: 'Emotion', value: analytics.emotionalResonance, icon: Heart, color: 'from-rose-500 to-pink-500' },
+                            { label: 'Voice', value: analytics.voiceConsistency, icon: MessageSquare, color: 'from-amber-500 to-orange-500' },
+                            { label: 'Plot', value: analytics.plotCoherence, icon: GitBranch, color: 'from-emerald-500 to-teal-500' },
+                          ].map((metric) => (
+                            <div 
+                              key={metric.label}
+                              className={cn(
+                                "p-2.5 rounded-lg border",
+                                isDark ? "bg-stone-800/30 border-stone-700/50" : "bg-white border-stone-150"
+                              )}
+                            >
+                              <div className="flex items-center gap-2 mb-1.5">
+                                <div className={cn(
+                                  "h-5 w-5 rounded flex items-center justify-center bg-gradient-to-br",
+                                  metric.color
+                                )}>
+                                  <metric.icon className="h-2.5 w-2.5 text-white" />
+                                </div>
+                                <span className={cn(
+                                  "text-[10px] font-medium",
+                                  isDark ? "text-stone-400" : "text-stone-600"
+                                )}>{metric.label}</span>
+                              </div>
+                              <div className="flex items-baseline gap-1">
+                                <span className={cn(
+                                  "text-lg font-bold",
+                                  isDark ? "text-stone-200" : "text-stone-800"
+                                )}>{metric.value}</span>
+                                <span className={cn(
+                                  "text-[9px]",
+                                  isDark ? "text-stone-600" : "text-stone-400"
+                                )}>%</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Doctrine Alignment */}
+                        <div className={cn(
+                          "p-3 rounded-xl border",
+                          isDark ? "bg-stone-800/30 border-stone-700/50" : "bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200"
+                        )}>
+                          <div className="flex items-center gap-2 mb-2">
+                            <Shield className="h-4 w-4 text-amber-500" />
+                            <span className={cn(
+                              "text-xs font-semibold",
+                              isDark ? "text-stone-200" : "text-stone-800"
+                            )}>Doctrine Alignment</span>
+                            <Badge className="ml-auto text-[9px] bg-emerald-500/20 text-emerald-600 border-0">
+                              {analytics.doctrineAlignment}% aligned
+                            </Badge>
+                          </div>
+                          <p className={cn(
+                            "text-[10px] leading-relaxed",
+                            isDark ? "text-stone-400" : "text-stone-600"
+                          )}>
+                            Your content aligns with your established expertise and core principles. 
+                            No drift detected from your professional doctrine.
+                          </p>
+                        </div>
+
+                        {/* Active Alerts */}
+                        <div>
+                          <h4 className={cn(
+                            "text-[10px] font-semibold uppercase tracking-wide mb-2",
+                            isDark ? "text-stone-500" : "text-stone-500"
+                          )}>Active Alerts</h4>
+                          <div className="space-y-1.5">
+                            <div className={cn(
+                              "flex items-start gap-2 p-2 rounded-lg border",
+                              isDark ? "bg-amber-500/10 border-amber-500/20" : "bg-amber-50 border-amber-200"
+                            )}>
+                              <AlertTriangle className="h-3.5 w-3.5 text-amber-500 mt-0.5 shrink-0" />
+                              <div>
+                                <p className={cn(
+                                  "text-[11px] font-medium",
+                                  isDark ? "text-amber-400" : "text-amber-800"
+                                )}>Character voice shift detected</p>
+                                <p className={cn(
+                                  "text-[10px]",
+                                  isDark ? "text-amber-500/70" : "text-amber-600"
+                                )}>Marcus sounds more cheerful than his established gruff tone in Ch. 3</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Chapter Outline Quick View */}
+                        <div>
+                          <h4 className={cn(
+                            "text-[10px] font-semibold uppercase tracking-wide mb-2",
+                            isDark ? "text-stone-500" : "text-stone-500"
+                          )}>Chapter Progress</h4>
+                          <div className="space-y-1.5">
+                            {chapters.slice(0, 5).map((chapter, idx) => (
+                              <div 
+                                key={chapter.id}
+                                className={cn(
+                                  "flex items-center gap-2 p-2 rounded-lg transition-colors cursor-pointer",
+                                  activeTabId === `chapter-${idx}`
+                                    ? isDark ? "bg-amber-500/20" : "bg-amber-100"
+                                    : isDark ? "hover:bg-stone-800/50" : "hover:bg-stone-100"
+                                )}
+                                onClick={() => handleSelectItem({ 
+                                  id: `chapter-${idx}`, 
+                                  title: chapter.title, 
+                                  type: 'chapter', 
+                                  section: 'manuscript', 
+                                  chapterIndex: idx,
+                                  status: chapter.status === 'complete' ? 'complete' : 'draft'
+                                })}
+                              >
+                                {chapter.status === 'complete' ? (
+                                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                                ) : (
+                                  <Circle className={cn(
+                                    "h-3.5 w-3.5 shrink-0",
+                                    isDark ? "text-stone-600" : "text-stone-300"
+                                  )} />
+                                )}
+                                <span className={cn(
+                                  "text-[11px] truncate flex-1",
+                                  isDark ? "text-stone-300" : "text-stone-700"
+                                )}>{idx + 1}. {chapter.title}</span>
+                                <span className={cn(
+                                  "text-[9px]",
+                                  isDark ? "text-stone-600" : "text-stone-400"
+                                )}>{chapter.wordCount?.toLocaleString() || 0}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
                       </div>
-                    </ScrollArea>
-                  </TabsContent>
+                    )}
 
-                  {/* AI Tab */}
-                  <TabsContent value="ai" className="flex-1 m-0 overflow-hidden">
-                    <ScrollArea className="h-full">
-                      <div className="p-2.5 space-y-3">
-                        {/* Generation */}
-                        <div>
-                          <h4 className="text-[9px] font-semibold text-stone-500 uppercase tracking-wide mb-1.5">
-                            Generate
-                          </h4>
-                          <div className="space-y-1">
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              className="w-full h-8 justify-start gap-2 text-[11px] border-stone-200 hover:border-blue-300 hover:bg-blue-50 rounded"
-                              onClick={() => {
-                                const idx = openTabs.find(t => t.id === activeTabId)?.chapterIndex;
-                                if (idx !== undefined) generateChapter(idx);
-                              }}
-                              disabled={generationProgress.isGenerating}
-                              data-testid="ai-generate-chapter"
-                            >
-                              <Pen className="h-3 w-3 text-blue-600" />
-                              {generationProgress.isGenerating ? 'Generating...' : 'Generate Chapter'}
-                            </Button>
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              className="w-full h-8 justify-start gap-2 text-[11px] border-stone-200 hover:border-blue-300 hover:bg-blue-50 rounded"
-                              onClick={() => generateAllChapters()}
-                              disabled={generationProgress.isGenerating}
-                              data-testid="ai-generate-all"
-                            >
-                              <BookOpen className="h-3 w-3 text-violet-600" />
-                              Generate All
-                            </Button>
+                    {/* ═══════════════════════════════════════════════════════════════
+                        MARKET MODE - Market Pulse & Monetization
+                    ═══════════════════════════════════════════════════════════════ */}
+                    {rightPanelMode === 'market' && (
+                      <div className="space-y-4">
+                        {/* Market Fit Score */}
+                        <div className={cn(
+                          "p-3 rounded-xl border",
+                          isDark ? "bg-stone-800/30 border-stone-700/50" : "bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200"
+                        )}>
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+                                <TrendingUp className="h-4 w-4 text-white" />
+                              </div>
+                              <div>
+                                <h4 className={cn(
+                                  "text-xs font-semibold",
+                                  isDark ? "text-stone-200" : "text-stone-800"
+                                )}>Market Fit Score</h4>
+                                <p className={cn(
+                                  "text-[10px]",
+                                  isDark ? "text-stone-500" : "text-stone-500"
+                                )}>{marketInsight.category}</p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-2xl font-bold text-emerald-500">{analytics.marketFit}</span>
+                              <span className={cn(
+                                "text-xs",
+                                isDark ? "text-stone-500" : "text-stone-400"
+                              )}>/100</span>
+                            </div>
+                          </div>
+                          <Progress value={analytics.marketFit} className="h-1.5" />
+                        </div>
+
+                        {/* Category Insights */}
+                        <div className={cn(
+                          "p-3 rounded-xl border",
+                          isDark ? "bg-stone-800/30 border-stone-700/50" : "bg-white border-stone-200"
+                        )}>
+                          <h4 className={cn(
+                            "text-[10px] font-semibold uppercase tracking-wide mb-3",
+                            isDark ? "text-stone-500" : "text-stone-500"
+                          )}>Category Intelligence</h4>
+                          <div className="space-y-2.5">
+                            <div className="flex justify-between items-center">
+                              <span className={cn(
+                                "text-[11px]",
+                                isDark ? "text-stone-400" : "text-stone-600"
+                              )}>Competition Level</span>
+                              <div className="flex items-center gap-1.5">
+                                <span className={cn(
+                                  "text-[11px] font-semibold",
+                                  isDark ? "text-stone-200" : "text-stone-800"
+                                )}>{marketInsight.competitorCount.toLocaleString()}</span>
+                                <Badge variant="outline" className="text-[8px] h-4 bg-amber-500/10 text-amber-600 border-amber-500/30">
+                                  High
+                                </Badge>
+                              </div>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className={cn(
+                                "text-[11px]",
+                                isDark ? "text-stone-400" : "text-stone-600"
+                              )}>Demand Score</span>
+                              <div className="flex items-center gap-1.5">
+                                <span className={cn(
+                                  "text-[11px] font-semibold",
+                                  isDark ? "text-stone-200" : "text-stone-800"
+                                )}>{marketInsight.demandScore}%</span>
+                                <ArrowUpRight className="h-3 w-3 text-emerald-500" />
+                              </div>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className={cn(
+                                "text-[11px]",
+                                isDark ? "text-stone-400" : "text-stone-600"
+                              )}>Avg. Price Point</span>
+                              <span className={cn(
+                                "text-[11px] font-semibold",
+                                isDark ? "text-stone-200" : "text-stone-800"
+                              )}>${marketInsight.averagePrice}</span>
+                            </div>
                           </div>
                         </div>
 
-                        {/* Editing */}
+                        {/* Trending Keywords */}
                         <div>
-                          <h4 className="text-[9px] font-semibold text-stone-500 uppercase tracking-wide mb-1.5">
-                            Edit
-                          </h4>
-                          <div className="space-y-1">
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              className="w-full h-8 justify-start gap-2 text-[11px] border-stone-200 hover:border-blue-300 hover:bg-blue-50 rounded"
-                              onClick={() => {
-                                const idx = openTabs.find(t => t.id === activeTabId)?.chapterIndex;
-                                if (idx !== undefined) editChapter(idx, 'developmental');
-                              }}
-                              data-testid="ai-developmental-edit"
-                            >
-                              <Target className="h-3 w-3 text-blue-600" />
-                              Developmental Edit
-                            </Button>
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              className="w-full h-8 justify-start gap-2 text-[11px] border-stone-200 hover:border-blue-300 hover:bg-blue-50 rounded"
-                              onClick={() => {
-                                const idx = openTabs.find(t => t.id === activeTabId)?.chapterIndex;
-                                if (idx !== undefined) editChapter(idx, 'line');
-                              }}
-                              data-testid="ai-line-edit"
-                            >
-                              <FileEdit className="h-3 w-3 text-emerald-600" />
-                              Line Edit
-                            </Button>
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              className="w-full h-8 justify-start gap-2 text-[11px] border-stone-200 hover:border-blue-300 hover:bg-blue-50 rounded"
-                              onClick={() => {
-                                const idx = openTabs.find(t => t.id === activeTabId)?.chapterIndex;
-                                if (idx !== undefined) qualityPolish(idx);
-                              }}
-                              disabled={polishProgress.isPolishing}
-                              data-testid="ai-quality-polish"
-                            >
-                              <Sparkles className="h-3 w-3 text-amber-600" />
-                              {polishProgress.isPolishing ? 'Polishing...' : 'Quality Polish'}
-                            </Button>
+                          <h4 className={cn(
+                            "text-[10px] font-semibold uppercase tracking-wide mb-2",
+                            isDark ? "text-stone-500" : "text-stone-500"
+                          )}>Top Category Keywords</h4>
+                          <div className="flex flex-wrap gap-1.5">
+                            {marketInsight.topKeywords.map((keyword, idx) => (
+                              <Badge 
+                                key={idx} 
+                                variant="outline"
+                                className={cn(
+                                  "text-[10px]",
+                                  isDark ? "bg-stone-800 border-stone-700 text-stone-300" : "bg-stone-50 border-stone-200"
+                                )}
+                              >
+                                {keyword}
+                              </Badge>
+                            ))}
                           </div>
                         </div>
 
-                        {/* Images */}
-                        <div>
-                          <h4 className="text-[9px] font-semibold text-stone-500 uppercase tracking-wide mb-1.5">
-                            Images
-                          </h4>
-                          <div className="space-y-1">
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              className="w-full h-8 justify-start gap-2 text-[11px] border-stone-200 hover:border-blue-300 hover:bg-blue-50 rounded"
-                              onClick={() => generateBookImage('Professional book cover art', 'photorealistic')}
-                              disabled={isGeneratingImage}
-                              data-testid="ai-generate-cover"
-                            >
-                              <ImageIcon className="h-3 w-3 text-rose-500" />
-                              {isGeneratingImage ? 'Generating...' : 'Generate Cover'}
-                            </Button>
+                        {/* Pricing Strategy */}
+                        <div className={cn(
+                          "p-3 rounded-xl border",
+                          isDark ? "bg-stone-800/30 border-stone-700/50" : "bg-gradient-to-br from-violet-50 to-purple-50 border-violet-200"
+                        )}>
+                          <div className="flex items-center gap-2 mb-3">
+                            <DollarSign className="h-4 w-4 text-violet-500" />
+                            <h4 className={cn(
+                              "text-xs font-semibold",
+                              isDark ? "text-stone-200" : "text-stone-800"
+                            )}>Recommended Pricing</h4>
                           </div>
+                          <div className="space-y-2">
+                            {[
+                              { format: 'eBook', low: 4.99, high: 9.99, optimal: 6.99 },
+                              { format: 'Paperback', low: 12.99, high: 19.99, optimal: 15.99 },
+                              { format: 'Hardcover', low: 24.99, high: 34.99, optimal: 28.99 },
+                            ].map((price) => (
+                              <div key={price.format} className="flex items-center justify-between">
+                                <span className={cn(
+                                  "text-[11px]",
+                                  isDark ? "text-stone-400" : "text-stone-600"
+                                )}>{price.format}</span>
+                                <div className="flex items-center gap-2">
+                                  <span className={cn(
+                                    "text-[10px]",
+                                    isDark ? "text-stone-600" : "text-stone-400"
+                                  )}>${price.low} - ${price.high}</span>
+                                  <Badge className="text-[9px] bg-violet-500/20 text-violet-600 border-0">
+                                    ${price.optimal}
+                                  </Badge>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          <p className={cn(
+                            "text-[9px] mt-2 italic",
+                            isDark ? "text-stone-600" : "text-stone-500"
+                          )}>
+                            Based on {totalProjectWords.toLocaleString()} words and market analysis
+                          </p>
                         </div>
-                      </div>
-                    </ScrollArea>
-                  </TabsContent>
 
-                  {/* Publish Tab */}
-                  <TabsContent value="market" className="flex-1 m-0 overflow-hidden">
-                    <ScrollArea className="h-full">
-                      <div className="p-2.5 space-y-3">
-                        {/* Marketing */}
+                        {/* Marketing Actions */}
                         <div>
-                          <h4 className="text-[9px] font-semibold text-stone-500 uppercase tracking-wide mb-1.5">
-                            Marketing
-                          </h4>
-                          <div className="space-y-1">
+                          <h4 className={cn(
+                            "text-[10px] font-semibold uppercase tracking-wide mb-2",
+                            isDark ? "text-stone-500" : "text-stone-500"
+                          )}>Marketing Tools</h4>
+                          <div className="space-y-1.5">
                             <Button 
                               variant="outline" 
                               size="sm" 
-                              className="w-full h-8 justify-start gap-2 text-[11px] border-stone-200 hover:border-blue-300 hover:bg-blue-50 rounded"
+                              className={cn(
+                                "w-full h-8 justify-start gap-2 text-[11px]",
+                                isDark ? "border-stone-700 hover:bg-stone-800" : ""
+                              )}
                               onClick={() => generateBlurb()}
                               disabled={isGeneratingBlurb}
-                              data-testid="generate-blurb"
                             >
-                              <MessageSquare className="h-3 w-3 text-violet-600" />
+                              <MessageSquare className="h-3.5 w-3.5 text-violet-500" />
                               {isGeneratingBlurb ? 'Generating...' : 'Generate Blurbs'}
                             </Button>
                             <Button 
                               variant="outline" 
                               size="sm" 
-                              className="w-full h-8 justify-start gap-2 text-[11px] border-stone-200 hover:border-blue-300 hover:bg-blue-50 rounded"
+                              className={cn(
+                                "w-full h-8 justify-start gap-2 text-[11px]",
+                                isDark ? "border-stone-700 hover:bg-stone-800" : ""
+                              )}
                               onClick={() => generateKeywords()}
                               disabled={isGeneratingKeywords}
-                              data-testid="generate-keywords"
                             >
-                              <Search className="h-3 w-3 text-cyan-600" />
+                              <Search className="h-3.5 w-3.5 text-cyan-500" />
                               {isGeneratingKeywords ? 'Generating...' : 'Amazon Keywords'}
                             </Button>
-                          </div>
-                        </div>
-
-                        {/* Keywords Display */}
-                        {amazonKeywords && amazonKeywords.length > 0 && (
-                          <div>
-                            <h4 className="text-[9px] font-semibold text-stone-500 uppercase tracking-wide mb-1.5">
-                              Keywords
-                            </h4>
-                            <div className="flex flex-wrap gap-1">
-                              {amazonKeywords.slice(0, 7).map((keyword, idx) => (
-                                <Badge key={idx} variant="outline" className="text-[9px] h-5 bg-blue-50 border-blue-200 text-blue-700 rounded">
-                                  {keyword}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Export */}
-                        <div>
-                          <h4 className="text-[9px] font-semibold text-stone-500 uppercase tracking-wide mb-1.5">
-                            Export
-                          </h4>
-                          <div className="space-y-1">
                             <Button 
                               variant="outline" 
                               size="sm" 
-                              className="w-full h-8 justify-start gap-2 text-[11px] border-stone-200 hover:border-blue-300 hover:bg-blue-50 rounded"
-                              data-testid="export-kdp"
+                              className={cn(
+                                "w-full h-8 justify-start gap-2 text-[11px]",
+                                isDark ? "border-stone-700 hover:bg-stone-800" : ""
+                              )}
                             >
-                              <Download className="h-3 w-3 text-orange-600" />
+                              <Eye className="h-3.5 w-3.5 text-blue-500" />
+                              KDP Print Preview
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className={cn(
+                                "w-full h-8 justify-start gap-2 text-[11px]",
+                                isDark ? "border-stone-700 hover:bg-stone-800" : ""
+                              )}
+                            >
+                              <Download className="h-3.5 w-3.5 text-orange-500" />
                               Export for KDP
                             </Button>
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              className="w-full h-8 justify-start gap-2 text-[11px] border-stone-200 hover:border-blue-300 hover:bg-blue-50 rounded"
-                              data-testid="preview-kdp"
-                            >
-                              <Eye className="h-3 w-3 text-blue-600" />
-                              Print Preview
-                            </Button>
-                          </div>
-                        </div>
-
-                        {/* Pricing */}
-                        <div className="p-2 rounded bg-gradient-to-br from-stone-50 to-blue-50/50 border border-stone-150">
-                          <div className="flex items-center gap-1.5 mb-1.5">
-                            <DollarSign className="h-3 w-3 text-blue-600" />
-                            <span className="text-[10px] font-semibold text-stone-800">Pricing</span>
-                          </div>
-                          <div className="space-y-1 text-[10px] text-stone-600">
-                            <div className="flex justify-between">
-                              <span>Paperback</span>
-                              <span className="font-medium text-blue-700">$14.99 - $19.99</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span>eBook</span>
-                              <span className="font-medium text-blue-700">$4.99 - $9.99</span>
-                            </div>
                           </div>
                         </div>
                       </div>
-                    </ScrollArea>
-                  </TabsContent>
-                </Tabs>
+                    )}
 
-                {/* Panel Footer */}
-                <div className="px-2.5 py-1.5 border-t border-stone-100 bg-stone-50/50">
-                  <div className="flex items-center justify-between text-[9px] text-stone-400">
-                    <span className="flex items-center gap-1">
-                      <Brain className="h-2.5 w-2.5 text-blue-500" />
-                      AI Ready
+                    {/* ═══════════════════════════════════════════════════════════════
+                        AI TOOLS MODE - Generation & Editing
+                    ═══════════════════════════════════════════════════════════════ */}
+                    {rightPanelMode === 'assets' && (
+                      <div className="space-y-4">
+                        {/* Content Generation */}
+                        <div>
+                          <h4 className={cn(
+                            "text-[10px] font-semibold uppercase tracking-wide mb-2",
+                            isDark ? "text-stone-500" : "text-stone-500"
+                          )}>Content Generation</h4>
+                          <div className="space-y-1.5">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className={cn(
+                                "w-full h-9 justify-start gap-2 text-[11px]",
+                                isDark ? "border-stone-700 hover:bg-stone-800" : ""
+                              )}
+                              onClick={() => {
+                                const idx = openTabs.find(t => t.id === activeTabId)?.chapterIndex;
+                                if (idx !== undefined) generateChapter(idx);
+                              }}
+                              disabled={generationProgress.isGenerating}
+                            >
+                              <Pen className="h-3.5 w-3.5 text-blue-500" />
+                              {generationProgress.isGenerating ? 'Generating...' : 'Generate This Chapter'}
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className={cn(
+                                "w-full h-9 justify-start gap-2 text-[11px]",
+                                isDark ? "border-stone-700 hover:bg-stone-800" : ""
+                              )}
+                              onClick={() => generateAllChapters()}
+                              disabled={generationProgress.isGenerating}
+                            >
+                              <BookOpen className="h-3.5 w-3.5 text-violet-500" />
+                              Generate All Chapters
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Professional Editing */}
+                        <div>
+                          <h4 className={cn(
+                            "text-[10px] font-semibold uppercase tracking-wide mb-2",
+                            isDark ? "text-stone-500" : "text-stone-500"
+                          )}>Professional Editing</h4>
+                          <div className="space-y-1.5">
+                            {[
+                              { label: 'Developmental Edit', type: 'developmental', icon: Target, color: 'text-blue-500' },
+                              { label: 'Line Edit', type: 'line', icon: FileEdit, color: 'text-emerald-500' },
+                              { label: 'Copy Edit', type: 'copy', icon: Check, color: 'text-teal-500' },
+                              { label: 'Proofread', type: 'proofread', icon: Eye, color: 'text-cyan-500' },
+                            ].map((edit) => (
+                              <Button 
+                                key={edit.type}
+                                variant="outline" 
+                                size="sm" 
+                                className={cn(
+                                  "w-full h-8 justify-start gap-2 text-[11px]",
+                                  isDark ? "border-stone-700 hover:bg-stone-800" : ""
+                                )}
+                                onClick={() => {
+                                  const idx = openTabs.find(t => t.id === activeTabId)?.chapterIndex;
+                                  if (idx !== undefined) editChapter(idx, edit.type as any);
+                                }}
+                              >
+                                <edit.icon className={cn("h-3.5 w-3.5", edit.color)} />
+                                {edit.label}
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Quality Polish */}
+                        <div className={cn(
+                          "p-3 rounded-xl border",
+                          isDark ? "bg-amber-500/10 border-amber-500/20" : "bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200"
+                        )}>
+                          <div className="flex items-center gap-2 mb-2">
+                            <Sparkles className="h-4 w-4 text-amber-500" />
+                            <h4 className={cn(
+                              "text-xs font-semibold",
+                              isDark ? "text-amber-400" : "text-amber-800"
+                            )}>Quality Polish (4-Pass)</h4>
+                          </div>
+                          <p className={cn(
+                            "text-[10px] mb-3",
+                            isDark ? "text-amber-500/70" : "text-amber-700"
+                          )}>
+                            Runs all four editing passes automatically: developmental, line, copy, and proofread.
+                          </p>
+                          <Button 
+                            className="w-full h-8 text-xs bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white border-0"
+                            onClick={() => {
+                              const idx = openTabs.find(t => t.id === activeTabId)?.chapterIndex;
+                              if (idx !== undefined) qualityPolish(idx);
+                            }}
+                            disabled={polishProgress.isPolishing}
+                          >
+                            {polishProgress.isPolishing ? (
+                              <>
+                                <Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />
+                                {polishProgress.currentPass || 'Polishing'}...
+                              </>
+                            ) : (
+                              <>
+                                <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                                Run Quality Polish
+                              </>
+                            )}
+                          </Button>
+                        </div>
+
+                        {/* Visual Assets */}
+                        <div>
+                          <h4 className={cn(
+                            "text-[10px] font-semibold uppercase tracking-wide mb-2",
+                            isDark ? "text-stone-500" : "text-stone-500"
+                          )}>Visual Assets</h4>
+                          <div className="space-y-1.5">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className={cn(
+                                "w-full h-8 justify-start gap-2 text-[11px]",
+                                isDark ? "border-stone-700 hover:bg-stone-800" : ""
+                              )}
+                              onClick={() => generateBookImage('Professional book cover', 'photorealistic')}
+                              disabled={isGeneratingImage}
+                            >
+                              <ImageIcon className="h-3.5 w-3.5 text-rose-500" />
+                              {isGeneratingImage ? 'Generating...' : 'Generate Cover Art'}
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className={cn(
+                                "w-full h-8 justify-start gap-2 text-[11px]",
+                                isDark ? "border-stone-700 hover:bg-stone-800" : ""
+                              )}
+                              onClick={() => generateBookImage('Chapter illustration', 'illustration')}
+                              disabled={isGeneratingImage}
+                            >
+                              <Palette className="h-3.5 w-3.5 text-indigo-500" />
+                              Generate Illustration
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </ScrollArea>
+
+                {/* HUD Footer */}
+                <div className={cn(
+                  "px-3 py-2 border-t",
+                  isDark ? "border-stone-800/50 bg-stone-900/50" : "border-stone-100 bg-stone-50/50"
+                )}>
+                  <div className={cn(
+                    "flex items-center justify-between text-[9px]",
+                    isDark ? "text-stone-600" : "text-stone-400"
+                  )}>
+                    <span className="flex items-center gap-1.5">
+                      <Brain className="h-3 w-3 text-violet-500" />
+                      Neural Engine Active
                     </span>
                     <span>Ch. {(openTabs.find(t => t.id === activeTabId)?.chapterIndex ?? 0) + 1}</span>
                   </div>
@@ -825,20 +1524,37 @@ export default function KreAIteStudio() {
         )}
       </ResizablePanelGroup>
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          STATUS BAR - Clean Footer
-      ══════════════════════════════════════════════════════════════════════ */}
-      <div className="flex h-6 items-center justify-between border-t border-stone-200 bg-white px-3 text-[9px] text-stone-500">
-        <div className="flex items-center gap-3">
-          <span>{wordCount.toLocaleString()} words</span>
-          <span className="text-stone-300">|</span>
+      {/* ══════════════════════════════════════════════════════════════════════════════
+          STATUS BAR - Professional Footer with Live Stats
+      ══════════════════════════════════════════════════════════════════════════════ */}
+      <div className={cn(
+        "flex h-7 items-center justify-between border-t px-4 text-[10px]",
+        isDark 
+          ? "bg-stone-900/70 border-stone-800/50 text-stone-500" 
+          : "bg-white/70 border-stone-200/50 text-stone-500"
+      )}>
+        <div className="flex items-center gap-4">
+          <span className="flex items-center gap-1.5">
+            <Type className="h-3 w-3" />
+            {wordCount.toLocaleString()} words
+          </span>
+          <span className={isDark ? "text-stone-700" : "text-stone-300"}>|</span>
           <span>~{Math.ceil(wordCount / 250)} pages</span>
-          <span className="text-stone-300">|</span>
+          <span className={isDark ? "text-stone-700" : "text-stone-300"}>|</span>
           <span>~{Math.ceil(wordCount / 200)} min read</span>
+          <span className={isDark ? "text-stone-700" : "text-stone-300"}>|</span>
+          <span>Grade {analytics.readabilityGrade}</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-          <span>Saved</span>
+        <div className="flex items-center gap-4">
+          <span className="flex items-center gap-1.5">
+            <Activity className="h-3 w-3 text-emerald-500" />
+            Consistency {analytics.consistencyScore}%
+          </span>
+          <span className={isDark ? "text-stone-700" : "text-stone-300"}>|</span>
+          <span className="flex items-center gap-1.5">
+            <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            Saved
+          </span>
         </div>
       </div>
     </div>
