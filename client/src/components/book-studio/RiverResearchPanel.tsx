@@ -102,7 +102,13 @@ export default function RiverResearchPanel() {
           <Brain className="h-4 w-4 text-blue-500" />
           <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Story Guide</span>
         </div>
-        <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="h-7 w-7 p-0"
+          aria-label="Add story guide item"
+          data-testid="button-add-story-guide"
+        >
           <Plus className="h-4 w-4 text-zinc-500" />
         </Button>
       </div>

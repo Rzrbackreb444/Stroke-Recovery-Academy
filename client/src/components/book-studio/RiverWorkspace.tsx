@@ -54,15 +54,16 @@ export default function RiverWorkspace() {
 
   const handleSelectItem = useCallback((item: NavigatorItem | null) => {
     setSelectedItem(item);
-    if (item && item.type === 'chapter' && item.chapterIndex !== undefined) {
-      const tabId = `chapter-${item.chapterIndex}`;
+    const chapterIdx = item?.chapterIndex;
+    if (item && item.type === 'chapter' && chapterIdx !== undefined) {
+      const tabId = `chapter-${chapterIdx}`;
       const existingTab = openTabs.find(t => t.id === tabId);
       if (!existingTab) {
         setOpenTabs(prev => [...prev, {
           id: tabId,
           title: item.title,
           type: 'chapter',
-          content: chapters[item.chapterIndex]?.content || '',
+          content: chapters[chapterIdx]?.content || '',
           isDirty: false
         }]);
       }
@@ -138,13 +139,13 @@ export default function RiverWorkspace() {
           
           <div className="h-5 w-px bg-zinc-200 dark:bg-zinc-700" />
           
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" aria-label="Search" data-testid="button-search">
             <Search className="h-4 w-4 text-zinc-500" />
           </Button>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" aria-label="Settings" data-testid="button-settings">
             <Settings className="h-4 w-4 text-zinc-500" />
           </Button>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" aria-label="Help" data-testid="button-help">
             <HelpCircle className="h-4 w-4 text-zinc-500" />
           </Button>
           

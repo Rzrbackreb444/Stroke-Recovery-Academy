@@ -130,12 +130,14 @@ export default function KreAIteEditor({
     disabled = false,
     icon: Icon, 
     tooltip,
+    testId,
   }: { 
     onClick: () => void; 
     isActive?: boolean; 
     disabled?: boolean;
     icon: typeof Bold;
     tooltip: string;
+    testId?: string;
   }) => (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -144,6 +146,8 @@ export default function KreAIteEditor({
           size="sm"
           onClick={onClick}
           disabled={disabled}
+          aria-label={tooltip}
+          data-testid={testId || `button-${tooltip.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
           className={cn(
             "h-7 w-7 p-0 rounded-md",
             isDark 

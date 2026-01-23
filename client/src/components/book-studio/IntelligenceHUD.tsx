@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
@@ -20,6 +21,7 @@ import {
   BarChart3,
   Globe,
   DollarSign,
+  Loader2,
 } from "lucide-react"
 
 interface IntelligenceHUDProps {
@@ -28,11 +30,47 @@ interface IntelligenceHUDProps {
   isDark?: boolean;
 }
 
+interface RevenuePulseData {
+  success: boolean;
+  earnings: {
+    total: number;
+    pending: number;
+    available: number;
+    totalSales: number;
+    profitMargin: number;
+    lastUpdated: string;
+  };
+  pricing: {
+    ebook: { min: number; max: number; recommended: number };
+    paperback: { min: number; max: number; recommended: number };
+    hardcover: { min: number; max: number; recommended: number };
+    audiobook: { min: number; max: number; recommended: number };
+  };
+  market: {
+    demandScore: number;
+    trending: boolean;
+    seasonalBoost: number;
+  };
+}
+
 export default function IntelligenceHUD({ 
   collapsed = false, 
   active = true,
   isDark = false 
 }: IntelligenceHUDProps) {
+  // Fetch live revenue pulse data
+  const { data: revenuePulse, isLoading: revenueLoading } = useQuery<RevenuePulseData>({
+    queryKey: ['/api/book-studio/revenue-pulse'],
+    refetchInterval: 30000, // Refresh every 30 seconds
+    staleTime: 10000,
+  });
+
+  // Fetch entities
+  const { data: entitiesData, isLoading: entitiesLoading } = useQuery({
+    queryKey: ['/api/book-studio/entities'],
+    staleTime: 60000,
+  });
+
   if (collapsed) return null
 
   return (
@@ -288,103 +326,163 @@ export default function IntelligenceHUD({
 
             {/* MARKET PANEL */}
             <TabsContent value="market" className="m-0 space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-500">
-               {/* Target Audience Match */}
-               <div className={cn(
-                 "rounded-sm border p-4",
-                 isDark ? "border-[#C9941A]/20 bg-[#C9941A]/5" : "border-[#C9941A]/20 bg-[#C9941A]/5"
-               )}>
-                 <div className="flex items-center gap-2 mb-2">
-                   <Target className="h-4 w-4 text-[#C9941A]" />
-                   <h3 className="text-[10px] font-black uppercase tracking-widest text-[#C9941A]">Target Audience Match</h3>
+               {revenueLoading ? (
+                 <div className="flex items-center justify-center py-8">
+                   <Loader2 className="h-6 w-6 animate-spin text-[#C9941A]" />
                  </div>
-                 <div className={cn(
-                   "text-2xl font-black mb-1",
-                   isDark ? "text-white" : "text-[#1A1A1A]"
-                 )}>98%</div>
-                 <div className={cn(
-                   "text-[10px] mb-4",
-                   isDark ? "text-stone-400" : "text-[#1A1A1A]/50"
-                 )}>Strong fit for "Small Business Entrepreneurship"</div>
-                 
-                 <div className="space-y-2">
-                   {[
-                     { label: "Readability", value: "Grade 8" },
-                     { label: "Sentiment", value: "Positive" },
-                     { label: "Keywords", value: "High Value" },
-                   ].map((item, i) => (
-                     <div key={i} className={cn(
-                       "flex justify-between text-[9px] uppercase font-bold",
-                       isDark ? "text-stone-500" : "text-[#1A1A1A]/40"
-                     )}>
-                       <span>{item.label}</span>
-                       <span>{item.value}</span>
+               ) : (
+                 <>
+                   {/* Revenue Pulse Card */}
+                   <div className={cn(
+                     "rounded-sm border p-4",
+                     isDark ? "border-emerald-500/20 bg-emerald-500/5" : "border-emerald-500/20 bg-emerald-50"
+                   )}>
+                     <div className="flex items-center justify-between mb-3">
+                       <div className="flex items-center gap-2">
+                         <DollarSign className="h-4 w-4 text-emerald-500" />
+                         <h3 className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Revenue Pulse</h3>
+                       </div>
+                       <Badge variant="outline" className="text-[8px] border-emerald-500/30 text-emerald-600">
+                         {revenuePulse?.earnings?.profitMargin || 85}% MARGIN
+                       </Badge>
                      </div>
-                   ))}
-                 </div>
-               </div>
-
-               {/* Pricing Recommendations */}
-               <div>
-                 <div className="flex items-center gap-2 mb-3">
-                   <DollarSign className="h-3 w-3 text-emerald-500" />
-                   <span className={cn(
-                     "text-[10px] font-bold uppercase tracking-widest",
-                     isDark ? "text-stone-400" : "text-[#1A1A1A]/50"
-                   )}>Optimal Pricing</span>
-                 </div>
-                 <div className="grid grid-cols-3 gap-2">
-                   {[
-                     { format: "eBook", price: "$9.99" },
-                     { format: "Paperback", price: "$19.99" },
-                     { format: "Hardcover", price: "$34.99" },
-                   ].map((item, i) => (
-                     <div 
-                       key={i}
-                       className={cn(
-                         "text-center p-2 rounded-sm border",
-                         isDark 
-                           ? "border-stone-800 bg-stone-900/30" 
-                           : "border-[#C9941A]/10 bg-white/50"
-                       )}
-                     >
+                     <div className={cn(
+                       "text-2xl font-black mb-1",
+                       isDark ? "text-white" : "text-[#1A1A1A]"
+                     )}>${(revenuePulse?.earnings?.total || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+                     <div className={cn(
+                       "text-[10px] mb-3",
+                       isDark ? "text-stone-400" : "text-[#1A1A1A]/50"
+                     )}>Total Earnings • {revenuePulse?.earnings?.totalSales || 0} Sales</div>
+                     
+                     <div className="grid grid-cols-2 gap-2">
                        <div className={cn(
-                         "text-[9px] uppercase tracking-wider mb-1",
-                         isDark ? "text-stone-500" : "text-[#1A1A1A]/40"
-                       )}>{item.format}</div>
+                         "p-2 rounded-sm",
+                         isDark ? "bg-stone-900/50" : "bg-white/50"
+                       )}>
+                         <div className={cn("text-[9px] uppercase", isDark ? "text-stone-500" : "text-[#1A1A1A]/40")}>Pending</div>
+                         <div className={cn("text-sm font-bold", isDark ? "text-stone-200" : "text-[#1A1A1A]")}>
+                           ${(revenuePulse?.earnings?.pending || 0).toFixed(2)}
+                         </div>
+                       </div>
                        <div className={cn(
-                         "text-sm font-bold",
-                         isDark ? "text-stone-200" : "text-[#1A1A1A]"
-                       )}>{item.price}</div>
+                         "p-2 rounded-sm",
+                         isDark ? "bg-stone-900/50" : "bg-white/50"
+                       )}>
+                         <div className={cn("text-[9px] uppercase", isDark ? "text-stone-500" : "text-[#1A1A1A]/40")}>Available</div>
+                         <div className={cn("text-sm font-bold text-emerald-600")}>
+                           ${(revenuePulse?.earnings?.available || 0).toFixed(2)}
+                         </div>
+                       </div>
                      </div>
-                   ))}
-                 </div>
-               </div>
-
-               {/* Trend Velocity */}
-               <div className="space-y-2">
-                 <h4 className={cn(
-                   "text-[9px] font-bold uppercase tracking-widest mb-2",
-                   isDark ? "text-stone-500" : "text-[#1A1A1A]/40"
-                 )}>Trend Velocity</h4>
-                 <div className={cn(
-                   "flex items-center gap-3 p-3 rounded-sm border",
-                   isDark 
-                     ? "border-stone-800 bg-stone-900/40" 
-                     : "border-[#C9941A]/10 bg-white/50"
-                 )}>
-                   <TrendingUp className="h-4 w-4 text-emerald-500" />
-                   <div>
-                     <div className={cn(
-                       "text-xs font-bold",
-                       isDark ? "text-stone-200" : "text-[#1A1A1A]"
-                     )}>Laundromat Investment</div>
-                     <div className={cn(
-                       "text-[9px]",
-                       isDark ? "text-stone-500" : "text-[#1A1A1A]/40"
-                     )}>+14% Search Volume (MoM)</div>
                    </div>
-                 </div>
-               </div>
+
+                   {/* Market Demand Score */}
+                   <div className={cn(
+                     "rounded-sm border p-4",
+                     isDark ? "border-[#C9941A]/20 bg-[#C9941A]/5" : "border-[#C9941A]/20 bg-[#C9941A]/5"
+                   )}>
+                     <div className="flex items-center gap-2 mb-2">
+                       <Target className="h-4 w-4 text-[#C9941A]" />
+                       <h3 className="text-[10px] font-black uppercase tracking-widest text-[#C9941A]">Market Demand Score</h3>
+                     </div>
+                     <div className="flex items-end gap-2 mb-2">
+                       <div className={cn(
+                         "text-2xl font-black",
+                         isDark ? "text-white" : "text-[#1A1A1A]"
+                       )}>{revenuePulse?.market?.demandScore || 75}</div>
+                       <span className={cn("text-sm mb-1", isDark ? "text-stone-400" : "text-[#1A1A1A]/50")}>/100</span>
+                       {revenuePulse?.market?.trending && (
+                         <Badge className="bg-emerald-500/20 text-emerald-600 border-emerald-500/30 text-[8px] mb-1">
+                           TRENDING
+                         </Badge>
+                       )}
+                     </div>
+                     <div className={cn(
+                       "h-2 w-full rounded-full overflow-hidden mb-2",
+                       isDark ? "bg-stone-800" : "bg-[#C9941A]/10"
+                     )}>
+                       <div 
+                         className="h-full bg-gradient-to-r from-[#C9941A] to-amber-500 transition-all duration-500" 
+                         style={{ width: `${revenuePulse?.market?.demandScore || 75}%` }}
+                       />
+                     </div>
+                     {revenuePulse?.market?.seasonalBoost && revenuePulse.market.seasonalBoost > 1 && (
+                       <div className={cn(
+                         "text-[9px] flex items-center gap-1",
+                         isDark ? "text-amber-400" : "text-amber-600"
+                       )}>
+                         <Zap className="h-3 w-3" />
+                         Holiday Season Boost Active (+{((revenuePulse.market.seasonalBoost - 1) * 100).toFixed(0)}%)
+                       </div>
+                     )}
+                   </div>
+
+                   {/* Pricing Recommendations */}
+                   <div>
+                     <div className="flex items-center gap-2 mb-3">
+                       <BarChart3 className="h-3 w-3 text-[#C9941A]" />
+                       <span className={cn(
+                         "text-[10px] font-bold uppercase tracking-widest",
+                         isDark ? "text-stone-400" : "text-[#1A1A1A]/50"
+                       )}>Optimal Pricing</span>
+                     </div>
+                     <div className="grid grid-cols-2 gap-2">
+                       {[
+                         { format: "eBook", price: revenuePulse?.pricing?.ebook?.recommended || 4.99 },
+                         { format: "Paperback", price: revenuePulse?.pricing?.paperback?.recommended || 17.99 },
+                         { format: "Hardcover", price: revenuePulse?.pricing?.hardcover?.recommended || 29.99 },
+                         { format: "Audiobook", price: revenuePulse?.pricing?.audiobook?.recommended || 19.99 },
+                       ].map((item, i) => (
+                         <div 
+                           key={i}
+                           className={cn(
+                             "text-center p-2 rounded-sm border",
+                             isDark 
+                               ? "border-stone-800 bg-stone-900/30" 
+                               : "border-[#C9941A]/10 bg-white/50"
+                           )}
+                         >
+                           <div className={cn(
+                             "text-[9px] uppercase tracking-wider mb-1",
+                             isDark ? "text-stone-500" : "text-[#1A1A1A]/40"
+                           )}>{item.format}</div>
+                           <div className={cn(
+                             "text-sm font-bold",
+                             isDark ? "text-stone-200" : "text-[#1A1A1A]"
+                           )}>${item.price.toFixed(2)}</div>
+                         </div>
+                       ))}
+                     </div>
+                   </div>
+
+                   {/* Trend Velocity */}
+                   <div className="space-y-2">
+                     <h4 className={cn(
+                       "text-[9px] font-bold uppercase tracking-widest mb-2",
+                       isDark ? "text-stone-500" : "text-[#1A1A1A]/40"
+                     )}>Market Intelligence</h4>
+                     <div className={cn(
+                       "flex items-center gap-3 p-3 rounded-sm border",
+                       isDark 
+                         ? "border-stone-800 bg-stone-900/40" 
+                         : "border-[#C9941A]/10 bg-white/50"
+                     )}>
+                       <TrendingUp className="h-4 w-4 text-emerald-500" />
+                       <div>
+                         <div className={cn(
+                           "text-xs font-bold",
+                           isDark ? "text-stone-200" : "text-[#1A1A1A]"
+                         )}>85/15 Revenue Split Active</div>
+                         <div className={cn(
+                           "text-[9px]",
+                           isDark ? "text-stone-500" : "text-[#1A1A1A]/40"
+                         )}>Creator-first monetization • Instant payouts</div>
+                       </div>
+                     </div>
+                   </div>
+                 </>
+               )}
             </TabsContent>
 
           </div>
