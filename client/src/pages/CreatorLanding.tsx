@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import CreatorHeader from "@/components/CreatorHeader";
 import Footer from "@/components/Footer";
+import heroImage from "@/assets/hero-ai-creator.png";
 import { 
   BookOpen, 
   Music, 
@@ -119,55 +120,72 @@ export default function CreatorLanding() {
           </div>
           
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
-            <div className="text-center max-w-4xl mx-auto">
-              <Badge className="mb-6 bg-primary/20 text-primary border hover:bg-orange-500/30">
-                <Sparkles className="w-3 h-3 mr-1" />
-                AI-Powered Creator Platform
-              </Badge>
-              
-             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight mb-6" data-testid="text-hero-title">
-  <span className="text-foreground">Create </span>
-  <span className="bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">Anything</span>
-  <span className="text-foreground">.</span>
-  <br />
-  <span className="text-foreground">From </span>
-  <span className="bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">Anywhere</span>
-  <span className="text-[#201009]">. FASTER THAN EVER.</span>
-</h1>
-            
-              
-              <p className="text-xl sm:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-                Books. Music. Videos. Courses. We've just unlocked Chunked Processing for 200k+ word manuscripts. 
-                <span className="text-foreground font-medium"> 
-                Just AI and your ideas.</span>
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  size="lg" 
-                  className="bg-orange-500 hover:bg-orange-600 text-black font-bold text-lg px-8 gap-2"
-                  data-testid="button-start-creating"
-                  onClick={() => window.location.href = '/api/login'}
-                >
-                  Start Creating Free
-                  <ArrowRight className="w-5 h-5" />
-                </Button>
-                <Link href="/marketplace">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="text-center lg:text-left">
+                <Badge className="mb-6 bg-primary/20 text-primary border hover:bg-orange-500/30">
+                  <Sparkles className="w-3 h-3 mr-1" />
+                  AI-Powered Creator Platform
+                </Badge>
+                
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6" data-testid="text-hero-title">
+                  <span className="text-foreground">Create </span>
+                  <span className="bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">Anything</span>
+                  <span className="text-foreground">.</span>
+                  <br />
+                  <span className="text-foreground">From </span>
+                  <span className="bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">Anywhere</span>
+                  <span className="text-foreground">.</span>
+                  <br />
+                  <span className="text-primary font-black">FASTER THAN EVER.</span>
+                </h1>
+                
+                <p className="text-xl sm:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto lg:mx-0">
+                  Books. Music. Videos. Courses. We've just unlocked Chunked Processing for 200k+ word manuscripts. 
+                  <span className="text-foreground font-medium"> 
+                  Just AI and your ideas.</span>
+                </p>
+                
+                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <Button 
                     size="lg" 
-                    variant="outline" 
-                    className="border text-foreground hover:bg-primary/10 font-semibold text-lg px-8 gap-2"
-                    data-testid="button-explore-marketplace"
+                    className="bg-orange-500 hover:bg-orange-600 text-black font-bold text-lg px-8 gap-2"
+                    data-testid="button-start-creating"
+                    onClick={() => window.location.href = '/api/login'}
                   >
-                    <Play className="w-5 h-5" />
-                    Explore Marketplace
+                    Start Creating Free
+                    <ArrowRight className="w-5 h-5" />
                   </Button>
-                </Link>
+                  <Link href="/marketplace">
+                    <Button 
+                      size="lg" 
+                      variant="outline" 
+                      className="border text-foreground hover:bg-primary/10 font-semibold text-lg px-8 gap-2"
+                      data-testid="button-explore-marketplace"
+                    >
+                      <Play className="w-5 h-5" />
+                      Explore Marketplace
+                    </Button>
+                  </Link>
+                </div>
+                
+                <p className="mt-6 text-sm text-muted-foreground">
+                  No credit card required. Start with free credits.
+                </p>
               </div>
               
-              <p className="mt-6 text-sm text-muted-foreground">
-                No credit card required. Start with free credits.
-              </p>
+              <div className="relative hidden lg:block">
+                <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-primary/20">
+                  <img 
+                    src={heroImage} 
+                    alt="AI Creator Platform - Professional workspace with AI technology" 
+                    className="w-full h-auto object-cover"
+                    data-testid="img-hero"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+                </div>
+                <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-primary/30 rounded-full blur-2xl" />
+                <div className="absolute -top-4 -left-4 w-24 h-24 bg-blue-500/30 rounded-full blur-2xl" />
+              </div>
             </div>
           </div>
         </section>
