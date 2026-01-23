@@ -49,7 +49,7 @@ const CATEGORIES = [
 ] as const;
 
 const CATEGORY_COLORS: Record<string, string> = {
-  lyric: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+  lyric: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
   manuscript: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
   doctrine: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
   idea: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',

@@ -889,7 +889,7 @@ export function PodcastStudio() {
                                     {formatTime(episode.duration)}
                                   </span>
                                   {episode.transcriptionStatus === "completed" && (
-                                    <Badge className="text-[10px] bg-purple-500/20 text-purple-400">
+                                    <Badge className="text-[10px] bg-amber-500/20 text-amber-400">
                                       Transcribed
                                     </Badge>
                                   )}
@@ -1114,7 +1114,7 @@ export function PodcastStudio() {
                             <Button
                               onClick={() => transcribeMutation.mutate(selectedEpisode.id)}
                               disabled={transcribeMutation.isPending}
-                              className="w-full bg-purple-600 hover:bg-purple-700"
+                              className="w-full bg-amber-600 hover:bg-amber-700"
                               data-testid="button-transcribe"
                             >
                               {transcribeMutation.isPending ? (

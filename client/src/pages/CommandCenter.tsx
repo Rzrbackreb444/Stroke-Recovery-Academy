@@ -383,7 +383,7 @@ export default function CommandCenter() {
                         {todayCheckin?.sleepHours || "-"}h
                       </p>
                     </div>
-                    <Moon className="w-10 h-10 text-purple-500" />
+                    <Moon className="w-10 h-10 text-amber-500" />
                   </div>
                 </CardContent>
               </Card>
@@ -519,7 +519,7 @@ export default function CommandCenter() {
                           {reminder.type === "medication" && <Pill className="w-5 h-5 text-red-400" />}
                           {reminder.type === "hydration" && <Droplets className="w-5 h-5 text-blue-400" />}
                           {reminder.type === "exercise" && <Activity className="w-5 h-5 text-green-400" />}
-                          {reminder.type === "appointment" && <Calendar className="w-5 h-5 text-purple-400" />}
+                          {reminder.type === "appointment" && <Calendar className="w-5 h-5 text-amber-400" />}
                           {reminder.type === "stand" && <Footprints className="w-5 h-5 text-primary" />}
                           <div>
                             <p className="text-foreground font-medium">{reminder.title}</p>

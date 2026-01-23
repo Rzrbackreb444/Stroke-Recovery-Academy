@@ -207,7 +207,7 @@ export default function QuickCreate() {
         <section className="relative overflow-hidden py-16 px-4">
           <div className="absolute inset-0">
             <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl" />
-            <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-20 right-10 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl" />
           </div>
           
           <div className="relative max-w-6xl mx-auto text-center mb-12">
@@ -290,16 +290,7 @@ export default function QuickCreate() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <AISettingsPanel
-                    selectedTier={selectedTier}
-                    setSelectedTier={setSelectedTier}
-                    selectedVoice={selectedVoice}
-                    setSelectedVoice={setSelectedVoice}
-                    customVoice={customVoice}
-                    setCustomVoice={setCustomVoice}
-                    userCredits={userCredits}
-                    showGenre={selectedAction.category === 'book'}
-                  />
+                  <AISettingsPanel />
                   
                   {selectedAction.id === "hum-to-song" || selectedAction.id === "voice-clone" ? (
                     <div className="flex flex-col items-center gap-4 p-8 border-2 border-dashed border rounded-lg">

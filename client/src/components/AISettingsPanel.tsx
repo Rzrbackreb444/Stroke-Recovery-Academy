@@ -13,7 +13,7 @@ import {
   Settings, Brain, ShieldCheck, Zap, Globe, Lock, 
   Key, Database, Cpu, BarChart3, Cloud, Save, RefreshCcw,
   Network, Fingerprint, Activity, Terminal, Eye, MessageSquare,
-  Package, Layout, FileText, Share2, AlertTriangle, CheckCircle2
+  Package, Layout, FileText, Share2, AlertTriangle, CheckCircle2, Users
 } from "lucide-react";
 
 /**
@@ -303,7 +303,7 @@ export default function AISettingsPanel() {
                   <Button variant="outline" className="w-full h-16 border-2 border-[#1A1A1A] text-[11px] font-black uppercase tracking-widest rounded-none hover:bg-[#1A1A1A] hover:text-white transition-all">
                     Download Security Audit Log
                   </Button>
-                  <Button variant="link" className="w-full text-[10px] uppercase font-black tracking-widest text-[#C9941A]">
+                  <Button variant="ghost" className="w-full text-[10px] uppercase font-black tracking-widest text-[#C9941A]">
                     Revoke All Active Sessions
                   </Button>
                 </div>
@@ -386,7 +386,7 @@ export default function AISettingsPanel() {
                 <p className="text-[12px] opacity-60 leading-relaxed font-serif italic">
                   Institutional members see a 42% higher net margin compared to standard creators using legacy platforms.
                 </p>
-                <Button variant="link" className="p-0 text-[10px] font-black uppercase tracking-widest text-[#C9941A]">
+                <Button variant="ghost" className="p-0 text-[10px] font-black uppercase tracking-widest text-[#C9941A]">
                   View Yield Report →
                 </Button>
               </div>

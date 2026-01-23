@@ -38,15 +38,15 @@ import kreaiteLogo from "@assets/KreAIte1_1766574083851.png";
 const studios = [
   { href: "/book-studio", label: "Book Studio", icon: BookOpen, description: "Write & publish books with AI", badge: null, enabled: true },
   { href: "/music-studio", label: "Music Studio", icon: Music, description: "Create AI music & audio", badge: null, enabled: true },
-  { href: "/video-studio", label: "Video Studio", icon: Video, description: "Professional video editing with AI", badge: "Coming Soon", enabled: false },
-  { href: "/course-studio", label: "Course Studio", icon: GraduationCap, description: "Build online courses", badge: "Coming Soon", enabled: false },
-  { href: "/image-studio", label: "Image Studio", icon: Image, description: "AI images & editing", badge: "Coming Soon", enabled: false },
-  { href: "/publishing", label: "Doctrine Engine", icon: FileText, description: "Structure your expertise", badge: "Coming Soon", enabled: false },
+  { href: "/video-studio", label: "Video Studio", icon: Video, description: "Professional video editing with AI", badge: null, enabled: true },
+  { href: "/course-studio", label: "Course Studio", icon: GraduationCap, description: "Build online courses", badge: null, enabled: true },
+  { href: "/image-studio", label: "Image Studio", icon: Image, description: "AI images & editing", badge: null, enabled: true },
+  { href: "/publishing", label: "Doctrine Engine", icon: FileText, description: "Structure your expertise", badge: null, enabled: true },
 ];
 
 const quickActions = [
   { href: "/quick-create", label: "Quick Create", icon: Zap, description: "1-click magic tools", enabled: true },
-  { href: "/ai-consultant", label: "AI Consultant", icon: Bot, description: "Train AI on your content", badge: "Coming Soon", enabled: false },
+  { href: "/ai-consultant", label: "AI Consultant", icon: Bot, description: "Train AI on your content", badge: null, enabled: true },
 ];
 
 const productionTools: { href: string; label: string; icon: any; description: string; badge?: string; enabled: boolean }[] = [];

@@ -513,8 +513,8 @@ export default function VideoStudio() {
               <Card className="bg-gray-900 border-gray-800 hover-elevate">
                 <CardHeader>
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-purple-500/20 rounded-lg">
-                      <Film className="w-6 h-6 text-purple-500" />
+                    <div className="p-2 bg-amber-500/20 rounded-lg">
+                      <Film className="w-6 h-6 text-[#C9941A]" />
                     </div>
                     <div>
                       <CardTitle className="text-foreground">Recent Projects</CardTitle>
@@ -525,7 +525,7 @@ export default function VideoStudio() {
                 <CardContent>
                   <Button
                     variant="outline"
-                    className="w-full border-purple-500/30 text-foreground"
+                    className="w-full border-amber-500/30 text-foreground"
                     onClick={() => setActiveTab("projects")}
                     data-testid="button-view-projects"
                   >

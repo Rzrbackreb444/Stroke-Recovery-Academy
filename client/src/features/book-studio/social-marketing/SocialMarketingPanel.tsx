@@ -27,7 +27,7 @@ import { apiRequest } from "@/lib/queryClient";
 const platforms = [
   { id: "twitter", label: "Twitter/X", icon: SiX, maxLength: 280, color: "bg-background" },
   { id: "linkedin", label: "LinkedIn", icon: SiLinkedin, maxLength: 3000, color: "bg-blue-700" },
-  { id: "instagram", label: "Instagram", icon: SiInstagram, maxLength: 2200, color: "bg-gradient-to-r from-purple-500 to-pink-500" },
+  { id: "instagram", label: "Instagram", icon: SiInstagram, maxLength: 2200, color: "bg-gradient-to-r from-amber-500 to-pink-500" },
   { id: "facebook", label: "Facebook", icon: SiFacebook, maxLength: 63206, color: "bg-blue-600" },
   { id: "tiktok", label: "TikTok", icon: SiTiktok, maxLength: 2200, color: "bg-background" },
 ];

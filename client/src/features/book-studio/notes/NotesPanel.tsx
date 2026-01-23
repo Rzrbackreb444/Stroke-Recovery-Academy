@@ -34,7 +34,7 @@ const noteTypes = [
   { value: "research", label: "Research", icon: Search, color: "bg-blue-500" },
   { value: "todo", label: "To-Do", icon: ListTodo, color: "bg-orange-500" },
   { value: "idea", label: "Idea", icon: Lightbulb, color: "bg-yellow-500" },
-  { value: "revision", label: "Revision", icon: Edit3, color: "bg-purple-500" },
+  { value: "revision", label: "Revision", icon: Edit3, color: "bg-amber-500" },
   { value: "general", label: "General", icon: FileText, color: "bg-gray-500" },
 ];
 

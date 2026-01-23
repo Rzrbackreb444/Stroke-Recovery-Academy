@@ -178,7 +178,7 @@ export function WritingCoachOverlay({
             <p className="text-[10px] text-gray-400">{currentSuggestion.explanation}</p>
 
             {currentSuggestion.literaryTechnique && (
-              <Badge className="text-[10px] bg-purple-500/20 text-purple-300">
+              <Badge className="text-[10px] bg-amber-500/20 text-amber-300">
                 Technique: {currentSuggestion.literaryTechnique}
               </Badge>
             )}

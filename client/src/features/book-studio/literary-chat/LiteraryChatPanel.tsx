@@ -202,7 +202,7 @@ export function LiteraryChatPanel({
                           <div className="flex items-center gap-1 mb-1">
                             <Badge variant="outline" className="text-[9px] px-1">{s.type}</Badge>
                             {s.literaryTechnique && (
-                              <Badge className="text-[9px] px-1 bg-purple-500/20 text-purple-300">
+                              <Badge className="text-[9px] px-1 bg-amber-500/20 text-amber-300">
                                 {s.literaryTechnique}
                               </Badge>
                             )}

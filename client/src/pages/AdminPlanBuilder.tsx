@@ -194,7 +194,7 @@ export default function AdminPlanBuilder() {
     switch (category) {
       case "diet": return <Apple className="w-5 h-5 text-green-400" />;
       case "exercise": return <Dumbbell className="w-5 h-5 text-blue-400" />;
-      case "cognitive": return <Brain className="w-5 h-5 text-purple-400" />;
+      case "cognitive": return <Brain className="w-5 h-5 text-amber-400" />;
       case "recovery": return <Heart className="w-5 h-5 text-red-400" />;
       default: return <Target className="w-5 h-5 text-primary" />;
     }

@@ -409,7 +409,7 @@ export const movieStyles = {
   scifi: {
     lighting: "neon, high tech",
     camera: "wide establishing, smooth tracking",
-    color: "cyan, purple, high contrast"
+    color: "cyan, gold, high contrast"
   },
   thriller: {
     lighting: "chiaroscuro, noir",

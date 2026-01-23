@@ -35,7 +35,7 @@ const editingPhases = [
     icon: Layers,
     credits: 10,
     description: "Structure, pacing, character arcs, plot holes",
-    color: "bg-purple-500",
+    color: "bg-amber-500",
   },
   {
     id: "line",

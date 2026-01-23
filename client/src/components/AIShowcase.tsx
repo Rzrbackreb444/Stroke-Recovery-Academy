@@ -126,7 +126,7 @@ export default function AIShowcase() {
               <span className="font-medium">Google Cloud</span>
             </div>
             <div className="flex items-center gap-2 text-[#D0D0D0] opacity-70 hover:opacity-100 transition-opacity">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-500 to-blue-600 flex items-center justify-center">
                 <span className="text-foreground text-xs font-bold">V</span>
               </div>
               <span className="font-medium">Vertex AI</span>

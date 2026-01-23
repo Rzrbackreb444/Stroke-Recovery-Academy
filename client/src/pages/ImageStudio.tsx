@@ -1081,7 +1081,7 @@ export default function ImageStudio() {
                   <div className="space-y-2">
                     <Label className="text-gray-400">Prompt</Label>
                     <Textarea
-                      placeholder="A majestic mountain landscape at sunset with vibrant orange and purple skies..."
+                      placeholder="A majestic mountain landscape at sunset with vibrant orange and amber skies..."
                       value={generatePrompt}
                       onChange={(e) => setGeneratePrompt(e.target.value)}
                       className="min-h-[120px] bg-gray-800 border-gray-700 text-foreground resize-none"
