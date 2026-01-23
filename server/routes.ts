@@ -4,6 +4,7 @@ import express from "express";
 import path from "path";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import luluRoutes from "./luluRoutes";
 import { stripeService } from "./stripeService";
 import { getStripeSync, getStripePublishableKey } from "./stripeClient";
 import { runMigrations } from "stripe-replit-sync";
@@ -250,6 +251,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Serve stock images from attached_assets
   app.use('/stock_images', express.static(path.join(process.cwd(), 'attached_assets', 'stock_images')));
+
+  // Lulu Publishing API Routes
+  app.use('/api/lulu', luluRoutes);
 
   // SEO: Dynamic Sitemap.xml
   app.get('/sitemap.xml', async (req, res) => {

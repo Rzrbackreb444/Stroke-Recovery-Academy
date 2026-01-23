@@ -3163,6 +3163,135 @@ export const insertBookImagePlacementSchema = createInsertSchema(bookImagePlacem
 export type InsertBookImagePlacement = z.infer<typeof insertBookImagePlacementSchema>;
 export type BookImagePlacement = typeof bookImagePlacements.$inferSelect;
 
+// ============================================================================
+// LULU PUBLISHING - Print-on-Demand Integration
+// ============================================================================
+
+// Book Publishing Projects - Links to Lulu print jobs
+export const bookPublishingProjects = pgTable("book_publishing_projects", {
+  id: serial("id").primaryKey(),
+  bookProjectId: integer("book_project_id").notNull().references(() => bookProjects.id, { onDelete: "cascade" }),
+  ownerId: varchar("owner_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  
+  // Template selection
+  templateId: text("template_id"), // From BOOK_TEMPLATES
+  customPodPackageId: text("custom_pod_package_id"), // Custom configuration
+  
+  // Print specifications
+  trimSizeCode: text("trim_size_code").notNull(), // e.g., '0600X0900'
+  trimSizeName: text("trim_size_name"), // e.g., 'US Trade'
+  bindingType: text("binding_type").notNull().default("PB"), // PB, CW, DJ, CO, SS, LW
+  printType: text("print_type").notNull().default("BW"), // BW, FC, PC
+  paperType: text("paper_type").notNull().default("060UC444"),
+  coverFinish: text("cover_finish").notNull().default("M"), // M, G
+  pageCount: integer("page_count").notNull(),
+  
+  // Files
+  interiorPdfUrl: text("interior_pdf_url"),
+  coverPdfUrl: text("cover_pdf_url"),
+  interiorFileStatus: text("interior_file_status").default("pending"), // pending, uploaded, validated, error
+  coverFileStatus: text("cover_file_status").default("pending"),
+  validationErrors: jsonb("validation_errors").default([]),
+  
+  // Cover specifications (from Lulu API)
+  coverWidth: real("cover_width"), // inches
+  coverHeight: real("cover_height"),
+  spineWidth: real("spine_width"),
+  bleed: real("bleed"),
+  safetyMargin: real("safety_margin"),
+  
+  // ISBN & Publishing Details
+  isbn: text("isbn"),
+  isbnBarcode: boolean("isbn_barcode").default(true),
+  publisherName: text("publisher_name").default("Stroke Lyfe Publishing"),
+  copyrightYear: integer("copyright_year"),
+  edition: text("edition"),
+  
+  // Pricing
+  estimatedPrintCost: integer("estimated_print_cost"), // cents per unit
+  retailPrice: integer("retail_price"), // cents
+  wholesalePrice: integer("wholesale_price"), // cents
+  royalty: integer("royalty"), // cents per sale
+  currency: text("currency").default("USD"),
+  
+  // Distribution
+  distributionChannels: text("distribution_channels").array().default([]),
+  amazonListing: boolean("amazon_listing").default(false),
+  luluStoreListing: boolean("lulu_store_listing").default(false),
+  ingramDistribution: boolean("ingram_distribution").default(false),
+  
+  // Status
+  status: text("status").notNull().default("draft"), // draft, files_uploaded, validated, ready, published, error
+  publishedAt: timestamp("published_at"),
+  luluProductId: text("lulu_product_id"), // Lulu's product ID once published
+  
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Lulu Webhooks - Track webhook configurations
+export const luluWebhooks = pgTable("lulu_webhooks", {
+  id: serial("id").primaryKey(),
+  luluWebhookId: text("lulu_webhook_id").notNull().unique(),
+  callbackUrl: text("callback_url").notNull(),
+  events: text("events").array().notNull(),
+  signingKey: text("signing_key"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Book Cover Designs - Store cover design iterations
+export const bookCoverDesigns = pgTable("book_cover_designs", {
+  id: serial("id").primaryKey(),
+  publishingProjectId: integer("publishing_project_id").notNull().references(() => bookPublishingProjects.id, { onDelete: "cascade" }),
+  
+  // Design metadata
+  name: text("name").notNull().default("Untitled Design"),
+  version: integer("version").notNull().default(1),
+  isActive: boolean("is_active").default(false), // Currently selected design
+  
+  // Cover elements
+  frontCoverImageUrl: text("front_cover_image_url"),
+  backCoverImageUrl: text("back_cover_image_url"),
+  spineImageUrl: text("spine_image_url"),
+  fullWrapImageUrl: text("full_wrap_image_url"), // Combined cover
+  
+  // Design data (for editor)
+  designData: jsonb("design_data").default({}), // Canvas/editor state
+  backgroundColor: text("background_color"),
+  titleText: text("title_text"),
+  subtitleText: text("subtitle_text"),
+  authorText: text("author_text"),
+  spineText: text("spine_text"),
+  backCoverText: text("back_cover_text"),
+  
+  // Fonts and styling
+  titleFont: text("title_font"),
+  titleColor: text("title_color"),
+  authorFont: text("author_font"),
+  authorColor: text("author_color"),
+  
+  // Generation
+  aiGenerated: boolean("ai_generated").default(false),
+  aiPrompt: text("ai_prompt"),
+  
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Insert schemas for Lulu Publishing
+export const insertBookPublishingProjectSchema = createInsertSchema(bookPublishingProjects).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertBookPublishingProject = z.infer<typeof insertBookPublishingProjectSchema>;
+export type BookPublishingProject = typeof bookPublishingProjects.$inferSelect;
+
+export const insertLuluWebhookSchema = createInsertSchema(luluWebhooks).omit({ id: true, createdAt: true });
+export type InsertLuluWebhook = z.infer<typeof insertLuluWebhookSchema>;
+export type LuluWebhook = typeof luluWebhooks.$inferSelect;
+
+export const insertBookCoverDesignSchema = createInsertSchema(bookCoverDesigns).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertBookCoverDesign = z.infer<typeof insertBookCoverDesignSchema>;
+export type BookCoverDesign = typeof bookCoverDesigns.$inferSelect;
+
 // Insert schemas for ultra-premium features
 export const insertVoiceCloneSchema = createInsertSchema(voiceClones).omit({
   id: true,
