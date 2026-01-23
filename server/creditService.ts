@@ -123,10 +123,12 @@ export async function deductCredits(
   return { success: true, newBalance: newTotal };
 }
 
+export type CreditTransactionType = 'purchase' | 'refund' | 'bonus' | 'earning' | 'subscription' | 'admin';
+
 export async function addCredits(
   userId: string,
   amount: number,
-  transactionType: 'purchase' | 'refund' | 'bonus' | 'earning',
+  transactionType: CreditTransactionType,
   description: string,
   metadata?: Record<string, any>
 ): Promise<{ success: boolean; newBalance: number }> {

@@ -85,6 +85,24 @@ Icons: lucide-react only (no emoji)
   - **FrontBackMatter**: One-click AI generation of dedication, foreword, TOC, acknowledgments, epilogue, etc (11 section types)
   - **CommandPalette**: Quick access to all features via ⌘K shortcut
   - **Multi-language support**: 20+ languages with language selector in toolbar
+- **Premium Blog SEO Suite** (enterprise-grade 100/100 optimization):
+  - **Meta Tag Optimization**: 70-char meta titles, 160-char descriptions with validation and auto-truncation
+  - **Focus Keyphrase Tracking**: Primary keyphrase scoring, presence in title/description/content
+  - **Canonical URLs**: Custom canonical support for syndicated/republished content
+  - **Breadcrumb Schema**: Short breadcrumb titles, full BreadcrumbList schema.org markup
+  - **Featured Image SEO**: Alt text, captions, custom OG/Twitter images, Pinterest pins
+  - **Internal Linking Intelligence**: AI-powered suggestions, relevance scoring, automatic related posts
+  - **External Authority Links**: Link validation, nofollow control, domain authority tracking
+  - **AEO (Answer Engine Optimization)**: FAQ schema, HowTo schema, Speakable schema for voice search
+  - **E-E-A-T Signals**: Author credentials, reviewer info, fact-checking, source citations
+  - **Geo-Targeting**: Hreflang tags for 7+ languages, LocalBusiness schema, country targeting
+  - **Technical SEO**: noindex/nofollow controls, sitemap priority, change frequency
+  - **100-Point SEO Scoring**: 7-category audit (meta, content, media, linking, E-E-A-T, technical, geo)
+  - **Auto-Optimization**: One-click optimization for missing fields with score recalculation
+  - **Blog Sitemap**: Dedicated blog sitemap.xml with priority and frequency settings
+  - **Readability Analysis**: Flesch-Kincaid scoring with paragraph length optimization
+  - **Cornerstone Content**: Flag important posts for enhanced internal linking
+  - **Schema Types**: Article, BlogPosting, NewsArticle, HowTo support
 
 ## External Dependencies
 

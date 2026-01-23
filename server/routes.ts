@@ -23,6 +23,11 @@ import { analyzeVideo, getVideoAnalysisResult } from "./videoIntelligenceService
 import { translateText, detectLanguage, getSupportedLanguages, SUPPORTED_LANGUAGES } from "./translationService";
 import { searchGifs, getTrendingGifs } from "./tenorService";
 import { createTalkingAvatar, getAvatarVideoStatus, getStockPresenters, getAvailableVoices as getAvatarVoices } from "./didAvatarService";
+import { seedSubscriptionTiers, getUserTier, hasFeatureAccess, getUserLimit, getAllTiers, getUserSubscription, upgradeTier } from "./subscriptionTierService";
+import { checkAiGenerationLimit, checkExportLimit, checkUploadLimit, checkProjectLimit, getRateLimitStatus } from "./rateLimitService";
+import { processMonthlyCredits, grantSubscriptionCredits, checkCreditReplenishment } from "./creditReplenishmentService";
+import { organizationSchema, websiteSchema, platformFAQSchema, howToSchemas, generateSitemap, corePages, trustSignals, aggregateRatingSchema, softwareApplicationSchema, generateBreadcrumbs } from "./seoService";
+import { auditBlogPostSEO, suggestInternalLinks, validateExternalLinks, analyzeAEO, generateBlogPostSchema, autoOptimizeBlogPost, generateBlogSitemap, generateHreflangTags, generateGeoSchema, addLinksSchema, addExternalLinksSchema, updateEEATSchema, updateMetaSchema } from "./blogSeoService";
 import { 
   isSpotifyConfigured, 
   searchTracks, 
@@ -346,6 +351,9 @@ Allow: /
   
   // Seed workflow categories
   await seedWorkflowCategories();
+  
+  // Seed subscription tiers
+  await seedSubscriptionTiers();
 
   // Auth routes
   app.get('/api/auth/user', async (req: any, res) => {
@@ -8252,6 +8260,202 @@ Respond in JSON format:
   });
 
   // ============================================================================
+  // SUBSCRIPTION TIERS & FEATURE GATING
+  // ============================================================================
+
+  // GET /api/subscription/tiers - Get all subscription tiers
+  app.get('/api/subscription/tiers', async (req, res) => {
+    try {
+      const tiers = await getAllTiers();
+      res.json({ success: true, tiers });
+    } catch (error) {
+      console.error("Error fetching tiers:", error);
+      res.status(500).json({ message: "Failed to fetch subscription tiers" });
+    }
+  });
+
+  // GET /api/subscription/current - Get user's current subscription
+  app.get('/api/subscription/current', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const subscription = await getUserSubscription(userId);
+      res.json({ success: true, subscription });
+    } catch (error) {
+      console.error("Error fetching subscription:", error);
+      res.status(500).json({ message: "Failed to fetch subscription" });
+    }
+  });
+
+  // GET /api/subscription/feature/:feature - Check feature access
+  app.get('/api/subscription/feature/:feature', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const feature = req.params.feature;
+      const hasAccess = await hasFeatureAccess(userId, feature);
+      const tier = await getUserTier(userId);
+      res.json({ success: true, hasAccess, currentTier: tier, feature });
+    } catch (error) {
+      console.error("Error checking feature access:", error);
+      res.status(500).json({ message: "Failed to check feature access" });
+    }
+  });
+
+  // POST /api/admin/subscription/seed-tiers - Seed subscription tiers
+  app.post('/api/admin/subscription/seed-tiers', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      if (user?.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+      
+      await seedSubscriptionTiers();
+      const tiers = await getAllTiers();
+      res.json({ success: true, message: 'Subscription tiers seeded', tiers });
+    } catch (error) {
+      console.error("Error seeding tiers:", error);
+      res.status(500).json({ message: "Failed to seed subscription tiers" });
+    }
+  });
+
+  // ============================================================================
+  // RATE LIMITING
+  // ============================================================================
+
+  // GET /api/rate-limits/status - Get user's rate limit status
+  app.get('/api/rate-limits/status', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const status = await getRateLimitStatus(userId);
+      res.json({ success: true, ...status });
+    } catch (error) {
+      console.error("Error fetching rate limit status:", error);
+      res.status(500).json({ message: "Failed to fetch rate limit status" });
+    }
+  });
+
+  // GET /api/rate-limits/ai-generation - Check AI generation limit
+  app.get('/api/rate-limits/ai-generation', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const result = await checkAiGenerationLimit(userId);
+      res.json({ success: true, ...result });
+    } catch (error) {
+      console.error("Error checking AI limit:", error);
+      res.status(500).json({ message: "Failed to check rate limit" });
+    }
+  });
+
+  // GET /api/rate-limits/export - Check export limit
+  app.get('/api/rate-limits/export', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const result = await checkExportLimit(userId);
+      res.json({ success: true, ...result });
+    } catch (error) {
+      console.error("Error checking export limit:", error);
+      res.status(500).json({ message: "Failed to check rate limit" });
+    }
+  });
+
+  // POST /api/admin/credits/process-monthly - Process monthly credit grants
+  app.post('/api/admin/credits/process-monthly', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      if (user?.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+      
+      const result = await processMonthlyCredits();
+      res.json({ success: true, ...result });
+    } catch (error) {
+      console.error("Error processing monthly credits:", error);
+      res.status(500).json({ message: "Failed to process monthly credits" });
+    }
+  });
+
+  // ============================================================================
+  // SEO, AEO & E-E-A-T
+  // ============================================================================
+
+  // GET /api/seo/schema/organization - Get organization schema
+  app.get('/api/seo/schema/organization', (req, res) => {
+    res.json(organizationSchema);
+  });
+
+  // GET /api/seo/schema/website - Get website schema
+  app.get('/api/seo/schema/website', (req, res) => {
+    res.json(websiteSchema);
+  });
+
+  // GET /api/seo/schema/faq - Get FAQ schema for AEO
+  app.get('/api/seo/schema/faq', (req, res) => {
+    res.json(platformFAQSchema);
+  });
+
+  // GET /api/seo/schema/howto/:type - Get HowTo schemas for AEO
+  app.get('/api/seo/schema/howto/:type', (req, res) => {
+    const type = req.params.type as keyof typeof howToSchemas;
+    if (howToSchemas[type]) {
+      res.json(howToSchemas[type]);
+    } else {
+      res.status(404).json({ message: "HowTo schema not found" });
+    }
+  });
+
+  // GET /api/seo/schema/software - Get software application schema
+  app.get('/api/seo/schema/software', (req, res) => {
+    res.json(softwareApplicationSchema);
+  });
+
+  // GET /api/seo/schema/rating - Get aggregate rating schema
+  app.get('/api/seo/schema/rating', (req, res) => {
+    res.json(aggregateRatingSchema);
+  });
+
+  // GET /api/seo/trust-signals - Get E-E-A-T trust signals
+  app.get('/api/seo/trust-signals', (req, res) => {
+    res.json(trustSignals);
+  });
+
+  // GET /api/seo/breadcrumbs - Generate breadcrumb schema for path
+  app.get('/api/seo/breadcrumbs', (req, res) => {
+    const path = req.query.path as string || '/';
+    res.json(generateBreadcrumbs(path));
+  });
+
+  // GET /api/sitemap.xml - Dynamic sitemap
+  app.get('/api/sitemap.xml', async (req, res) => {
+    try {
+      // Add marketplace items and other dynamic content to sitemap
+      const dynamicEntries = [...corePages];
+      
+      // Could add marketplace products, author pages, etc. here
+      const sitemap = generateSitemap(dynamicEntries);
+      res.set('Content-Type', 'application/xml');
+      res.send(sitemap);
+    } catch (error) {
+      console.error("Error generating sitemap:", error);
+      res.status(500).send('Error generating sitemap');
+    }
+  });
+
+  // GET /api/robots.txt - Dynamic robots.txt
+  app.get('/api/robots.txt', (req, res) => {
+    const robotsTxt = `User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /admin/
+
+Sitemap: https://kreaite.xyz/sitemap.xml
+`;
+    res.set('Content-Type', 'text/plain');
+    res.send(robotsTxt);
+  });
+
+  // ============================================================================
   // SEO PAGES
   // ============================================================================
 
@@ -8425,6 +8629,283 @@ Respond in JSON format:
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ message: "Failed to delete comment" });
+    }
+  });
+
+  // ============================================================================
+  // PREMIUM BLOG SEO SUITE - AEO, E-E-A-T, GEO, LINKING INTELLIGENCE
+  // ============================================================================
+
+  // GET /api/blog/:id/seo/audit - Full SEO audit with 100-point scoring
+  app.get('/api/blog/:id/seo/audit', isAuthenticated, async (req: any, res) => {
+    try {
+      const postId = parseInt(req.params.id);
+      const audit = await auditBlogPostSEO(postId);
+      res.json(audit);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message || "Failed to audit post SEO" });
+    }
+  });
+
+  // POST /api/blog/:id/seo/optimize - Auto-optimize post for 100/100 SEO
+  app.post('/api/blog/:id/seo/optimize', isAuthenticated, async (req: any, res) => {
+    try {
+      const postId = parseInt(req.params.id);
+      const result = await autoOptimizeBlogPost(postId);
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message || "Failed to optimize post" });
+    }
+  });
+
+  // GET /api/blog/:id/seo/schema - Generate complete schema.org markup
+  app.get('/api/blog/:id/seo/schema', async (req, res) => {
+    try {
+      const postId = parseInt(req.params.id);
+      const schemas = await generateBlogPostSchema(postId);
+      res.json(schemas);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message || "Failed to generate schema" });
+    }
+  });
+
+  // GET /api/blog/:id/seo/aeo - Answer Engine Optimization analysis
+  app.get('/api/blog/:id/seo/aeo', async (req, res) => {
+    try {
+      const postId = parseInt(req.params.id);
+      const post = await storage.getBlogPost(postId);
+      if (!post) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+      const aeoAnalysis = analyzeAEO(post);
+      res.json(aeoAnalysis);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message || "Failed to analyze AEO" });
+    }
+  });
+
+  // GET /api/blog/:id/links/suggestions - Internal link suggestions
+  app.get('/api/blog/:id/links/suggestions', isAuthenticated, async (req: any, res) => {
+    try {
+      const postId = parseInt(req.params.id);
+      const limit = parseInt(req.query.limit as string) || 10;
+      const suggestions = await suggestInternalLinks(postId, limit);
+      res.json(suggestions);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message || "Failed to get link suggestions" });
+    }
+  });
+
+  // POST /api/blog/:id/links/internal - Add internal links to post
+  app.post('/api/blog/:id/links/internal', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const postId = parseInt(req.params.id);
+      const existing = await storage.getBlogPost(postId);
+      if (!existing || existing.authorId !== userId) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      // Validate request body with Zod
+      const validation = addLinksSchema.safeParse(req.body);
+      if (!validation.success) {
+        return res.status(400).json({ message: "Invalid request", errors: validation.error.format() });
+      }
+      
+      const { links } = validation.data;
+      const currentLinks = (existing.internalLinks as any[]) || [];
+      const updatedLinks = [...currentLinks, ...links];
+      await storage.updateBlogPost(postId, { internalLinks: updatedLinks });
+      res.json({ success: true, totalLinks: updatedLinks.length });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message || "Failed to add internal links" });
+    }
+  });
+
+  // POST /api/blog/:id/links/external - Add external links to post
+  app.post('/api/blog/:id/links/external', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const postId = parseInt(req.params.id);
+      const existing = await storage.getBlogPost(postId);
+      if (!existing || existing.authorId !== userId) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      // Validate request body with Zod
+      const validation = addExternalLinksSchema.safeParse(req.body);
+      if (!validation.success) {
+        return res.status(400).json({ message: "Invalid request", errors: validation.error.format() });
+      }
+      
+      const { links } = validation.data;
+      const currentLinks = (existing.externalLinks as any[]) || [];
+      const updatedLinks = [...currentLinks, ...links];
+      await storage.updateBlogPost(postId, { externalLinks: updatedLinks });
+      res.json({ success: true, totalLinks: updatedLinks.length });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message || "Failed to add external links" });
+    }
+  });
+
+  // GET /api/blog/:id/links/validate - Validate external links
+  app.get('/api/blog/:id/links/validate', isAuthenticated, async (req: any, res) => {
+    try {
+      const postId = parseInt(req.params.id);
+      const validation = await validateExternalLinks(postId);
+      res.json(validation);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message || "Failed to validate links" });
+    }
+  });
+
+  // GET /api/blog/:id/geo - Get geo-targeting hreflang tags
+  app.get('/api/blog/:id/geo', async (req, res) => {
+    try {
+      const postId = parseInt(req.params.id);
+      const post = await storage.getBlogPost(postId);
+      if (!post) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+      const languages = (req.query.languages as string)?.split(',') || ['en', 'es', 'fr', 'de', 'pt', 'zh', 'ja'];
+      const hreflangTags = generateHreflangTags(post.slug, languages);
+      const geoSchema = generateGeoSchema({
+        targetCountries: ['US', 'UK', 'CA', 'AU'],
+        targetLanguages: languages,
+        hreflangTags: languages.map(l => ({ lang: l, url: `/${l}/blog/${post.slug}` }))
+      }, `/blog/${post.slug}`);
+      res.json({ hreflangTags, geoSchema });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message || "Failed to generate geo tags" });
+    }
+  });
+
+  // GET /api/blog/sitemap.xml - Blog-specific sitemap
+  app.get('/api/blog/sitemap.xml', async (req, res) => {
+    try {
+      const sitemap = await generateBlogSitemap();
+      res.setHeader('Content-Type', 'application/xml');
+      res.send(sitemap);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message || "Failed to generate blog sitemap" });
+    }
+  });
+
+  // POST /api/blog/:id/eeat - Update E-E-A-T signals
+  app.post('/api/blog/:id/eeat', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const postId = parseInt(req.params.id);
+      const existing = await storage.getBlogPost(postId);
+      if (!existing || existing.authorId !== userId) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      // Validate request body with Zod
+      const validation = updateEEATSchema.safeParse(req.body);
+      if (!validation.success) {
+        return res.status(400).json({ message: "Invalid request", errors: validation.error.format() });
+      }
+      
+      const { authorBio, authorCredentials, reviewedBy, factChecked, sources } = validation.data;
+      const updates: any = {};
+      if (authorBio !== undefined) updates.authorBio = authorBio;
+      if (authorCredentials !== undefined) updates.authorCredentials = authorCredentials;
+      if (reviewedBy !== undefined) {
+        updates.reviewedBy = reviewedBy;
+        updates.reviewedAt = new Date();
+      }
+      if (factChecked !== undefined) {
+        updates.factChecked = factChecked;
+        if (factChecked) updates.lastFactCheckAt = new Date();
+      }
+      if (sources !== undefined) updates.sources = sources;
+      
+      await storage.updateBlogPost(postId, updates);
+      res.json({ success: true, message: "E-E-A-T signals updated" });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message || "Failed to update E-E-A-T" });
+    }
+  });
+
+  // POST /api/blog/:id/meta - Update meta tags with validation
+  app.post('/api/blog/:id/meta', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const postId = parseInt(req.params.id);
+      const existing = await storage.getBlogPost(postId);
+      if (!existing || existing.authorId !== userId) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      // Validate request body with Zod
+      const validation = updateMetaSchema.safeParse(req.body);
+      if (!validation.success) {
+        return res.status(400).json({ message: "Invalid request", errors: validation.error.format() });
+      }
+      
+      const { 
+        metaTitle, metaDescription, metaKeywords, canonicalUrl, breadcrumbTitle,
+        featuredImageAlt, featuredImageCaption, ogImageUrl, twitterImageUrl,
+        focusKeyphrase, socialTitle, socialDescription, noIndex, noFollow,
+        indexPriority, changeFrequency, schemaType, primaryCategory, secondaryCategories
+      } = validation.data;
+      
+      const updates: any = {};
+      const warnings: string[] = [];
+      
+      // Validate meta title (max 70 chars)
+      if (metaTitle !== undefined) {
+        if (metaTitle.length > 70) {
+          warnings.push(`Meta title truncated from ${metaTitle.length} to 70 characters`);
+          updates.metaTitle = metaTitle.substring(0, 70);
+        } else {
+          updates.metaTitle = metaTitle;
+        }
+      }
+      
+      // Validate meta description (max 160 chars)
+      if (metaDescription !== undefined) {
+        if (metaDescription.length > 160) {
+          warnings.push(`Meta description truncated from ${metaDescription.length} to 160 characters`);
+          updates.metaDescription = metaDescription.substring(0, 160);
+        } else {
+          updates.metaDescription = metaDescription;
+        }
+      }
+      
+      // Other fields
+      if (metaKeywords !== undefined) updates.metaKeywords = metaKeywords;
+      if (canonicalUrl !== undefined) updates.canonicalUrl = canonicalUrl;
+      if (breadcrumbTitle !== undefined) updates.breadcrumbTitle = breadcrumbTitle;
+      if (featuredImageAlt !== undefined) updates.featuredImageAlt = featuredImageAlt;
+      if (featuredImageCaption !== undefined) updates.featuredImageCaption = featuredImageCaption;
+      if (ogImageUrl !== undefined) updates.ogImageUrl = ogImageUrl;
+      if (twitterImageUrl !== undefined) updates.twitterImageUrl = twitterImageUrl;
+      if (focusKeyphrase !== undefined) updates.focusKeyphrase = focusKeyphrase;
+      if (socialTitle !== undefined) updates.socialTitle = socialTitle;
+      if (socialDescription !== undefined) updates.socialDescription = socialDescription;
+      if (noIndex !== undefined) updates.noIndex = noIndex;
+      if (noFollow !== undefined) updates.noFollow = noFollow;
+      if (indexPriority !== undefined) updates.indexPriority = indexPriority;
+      if (changeFrequency !== undefined) updates.changeFrequency = changeFrequency;
+      if (schemaType !== undefined) updates.schemaType = schemaType;
+      if (primaryCategory !== undefined) updates.primaryCategory = primaryCategory;
+      if (secondaryCategories !== undefined) updates.secondaryCategories = secondaryCategories;
+      
+      await storage.updateBlogPost(postId, updates);
+      
+      // Re-run SEO audit
+      const audit = await auditBlogPostSEO(postId);
+      
+      res.json({ 
+        success: true, 
+        warnings, 
+        seoScore: audit.score,
+        grade: audit.grade 
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message || "Failed to update meta tags" });
     }
   });
 
