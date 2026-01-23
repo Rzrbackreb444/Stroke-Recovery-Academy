@@ -5,6 +5,7 @@
  */
 
 import axios, { AxiosInstance } from 'axios';
+import crypto from 'crypto';
 
 // Lulu API Configuration
 const LULU_API_BASE = process.env.NODE_ENV === 'production' 
@@ -750,3 +751,29 @@ export const luluPublishingService = new LuluPublishingService();
 
 // Export types
 export type { PrintJobRequest, PrintJobLineItem, ShippingAddress, PrintJob, CostEstimate, CostCalculationRequest };
+
+// Webhook signature verification utility (uses crypto imported at top of file)
+export function verifyWebhookSignature(
+  payload: string,
+  signature: string,
+  signingKey: string
+): boolean {
+  if (!signature || !signingKey) {
+    return false;
+  }
+  
+  try {
+    const expectedSignature = crypto
+      .createHmac('sha256', signingKey)
+      .update(payload, 'utf8')
+      .digest('hex');
+    
+    return crypto.timingSafeEqual(
+      Buffer.from(signature),
+      Buffer.from(expectedSignature)
+    );
+  } catch (error) {
+    console.error('Webhook signature verification error:', error);
+    return false;
+  }
+}

@@ -24,7 +24,8 @@ import {
   PAPER_TYPES, 
   COVER_FINISHES,
   SHIPPING_LEVELS,
-  generatePodPackageId
+  generatePodPackageId,
+  verifyWebhookSignature
 } from './luluPublishingService';
 
 const router = Router();
@@ -441,10 +442,36 @@ router.post('/print-jobs/:jobId/cancel', async (req: Request, res: Response) => 
   }
 });
 
-// Lulu webhook endpoint
+// Lulu webhook endpoint with signature verification
 router.post('/webhooks/lulu', async (req: Request, res: Response) => {
   try {
     const event = req.body;
+    const signature = req.headers['x-lulu-signature'] as string;
+    
+    // Get the signing key from the database (stored during webhook setup)
+    const [webhookConfig] = await db
+      .select()
+      .from(luluWebhooks)
+      .where(eq(luluWebhooks.isActive, true))
+      .limit(1);
+    
+    // Enforce signature verification when signing key is configured
+    if (webhookConfig?.signingKey) {
+      // Reject if signature header is missing
+      if (!signature) {
+        console.warn('Missing Lulu webhook signature - request rejected');
+        return res.status(401).json({ error: 'Missing webhook signature' });
+      }
+      
+      // Use raw body if available, otherwise stringify (less secure fallback)
+      const rawBody = (req as any).rawBody || JSON.stringify(req.body);
+      const isValid = verifyWebhookSignature(rawBody, signature, webhookConfig.signingKey);
+      
+      if (!isValid) {
+        console.warn('Invalid Lulu webhook signature - request rejected');
+        return res.status(401).json({ error: 'Invalid webhook signature' });
+      }
+    }
     
     console.log('Lulu webhook received:', event.type || event.event_type);
     
