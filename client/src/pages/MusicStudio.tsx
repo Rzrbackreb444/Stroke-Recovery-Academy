@@ -232,7 +232,7 @@ export default function MusicStudio() {
   const [tracks, setTracks] = useState<Track[]>([
     { id: "1", name: "Drums", type: "drums", volume: 80, pan: 50, muted: false, solo: false, color: "bg-red-500" },
     { id: "2", name: "Bass", type: "bass", volume: 75, pan: 50, muted: false, solo: false, color: "bg-blue-500" },
-    { id: "3", name: "Synth Lead", type: "synth", volume: 70, pan: 45, muted: false, solo: false, color: "bg-purple-500" },
+    { id: "3", name: "Synth Lead", type: "synth", volume: 70, pan: 45, muted: false, solo: false, color: "bg-amber-500" },
     { id: "4", name: "Guitar", type: "guitar", volume: 65, pan: 55, muted: false, solo: false, color: "bg-orange-500" },
   ]);
 
@@ -449,7 +449,7 @@ export default function MusicStudio() {
 
   const addTrack = (type: Track["type"]) => {
     const colors: Record<string, string> = {
-      drums: "bg-red-500", bass: "bg-blue-500", synth: "bg-purple-500",
+      drums: "bg-red-500", bass: "bg-blue-500", synth: "bg-amber-500",
       guitar: "bg-orange-500", vocals: "bg-green-500", ai: "bg-primary",
     };
     const newTrack: Track = {
@@ -1058,13 +1058,13 @@ export default function MusicStudio() {
           <div className="flex-1 p-4 overflow-hidden">
             <Tabs defaultValue="create" className="h-full flex flex-col">
               <TabsList className="mb-4 flex-wrap gap-1">
-                <TabsTrigger value="melody-magic" data-testid="tab-melody-magic" className="bg-gradient-to-r from-orange-500/20 to-purple-500/20">
+                <TabsTrigger value="melody-magic" data-testid="tab-melody-magic" className="bg-gradient-to-r from-amber-500/20 to-amber-600/20">
                   <Sparkles className="w-4 h-4 mr-1" /> Melody Magic
                 </TabsTrigger>
                 <TabsTrigger value="stem-separator" data-testid="tab-stems" className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20">
                   <Waves className="w-4 h-4 mr-1" /> Stem Separator
                 </TabsTrigger>
-                <TabsTrigger value="voice-library" data-testid="tab-voice-library" className="bg-gradient-to-r from-purple-500/20 to-pink-500/20">
+                <TabsTrigger value="voice-library" data-testid="tab-voice-library" className="bg-gradient-to-r from-amber-500/20 to-rose-500/20">
                   <Users className="w-4 h-4 mr-1" /> Voice Library
                 </TabsTrigger>
                 <TabsTrigger value="mastering" data-testid="tab-mastering" className="bg-gradient-to-r from-green-500/20 to-teal-500/20">
@@ -1090,13 +1090,13 @@ export default function MusicStudio() {
               <TabsContent value="melody-magic" className="flex-1 overflow-auto">
                 <div className="space-y-6">
                   {/* Hero Section with Mode Selector */}
-                  <div className="text-center py-6 bg-gradient-to-r from-orange-500/10 via-purple-500/10 to-pink-500/10 rounded-xl border border">
+                  <div className="text-center py-6 bg-gradient-to-r from-amber-500/10 via-amber-400/10 to-amber-500/10 rounded-xl border border">
                     <div className="flex items-center justify-center gap-2 mb-2">
                       <Sparkles className="w-8 h-8 text-primary animate-pulse" />
-                      <h2 className="text-3xl font-bold bg-gradient-to-r from-orange-500 to-purple-500 bg-clip-text text-transparent">
+                      <h2 className="text-3xl font-bold bg-gradient-to-r from-[#C9941A] to-amber-500 bg-clip-text text-transparent">
                         MELODY MAGIC STUDIO
                       </h2>
-                      <Sparkles className="w-8 h-8 text-purple-500 animate-pulse" />
+                      <Sparkles className="w-8 h-8 text-[#C9941A] animate-pulse" />
                     </div>
                     
                     {/* Mode Selector */}
@@ -1112,7 +1112,7 @@ export default function MusicStudio() {
                       <Button 
                         variant={mashupMode === "voice-swap" ? "default" : "outline"}
                         onClick={() => { setMashupMode("voice-swap"); setMelodyMagicStep(0); }}
-                        className={`${mashupMode === "voice-swap" && melodyMagicStep === 0 ? "bg-gradient-to-r from-purple-500 to-pink-500 border-0" : ""}`}
+                        className={`${mashupMode === "voice-swap" && melodyMagicStep === 0 ? "bg-gradient-to-r from-[#C9941A] to-amber-500 border-0" : ""}`}
                         data-testid="button-mode-voiceswap"
                       >
                         <Users className="w-4 h-4 mr-2" /> Voice Swap
@@ -1143,17 +1143,17 @@ export default function MusicStudio() {
                     </p>
                     <div className="flex items-center justify-center gap-4 mt-4 text-sm text-muted-foreground flex-wrap">
                       <Badge variant="outline" className="bg-primary/10">Rapid-Fire Rap → Country Ballad</Badge>
-                      <Badge variant="outline" className="bg-purple-500/10">Pop Hit + Rock Anthem = Epic Mashup</Badge>
+                      <Badge variant="outline" className="bg-amber-500/10">Pop Hit + Rock Anthem = Epic Mashup</Badge>
                       <Badge variant="outline" className="bg-pink-500/10">Any Voice + Any Genre = Magic</Badge>
                     </div>
                   </div>
 
                   {/* MASHUP / VOICE SWAP / REIMAGINE MODE */}
                   {melodyMagicStep === 0 && (
-                    <Card className="border-purple-500/20">
+                    <Card className="border-amber-500/20">
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          {mashupMode === "voice-swap" && <><Users className="w-6 h-6 text-purple-500" /> Voice Swap Studio</>}
+                          {mashupMode === "voice-swap" && <><Users className="w-6 h-6 text-amber-500" /> Voice Swap Studio</>}
                           {mashupMode === "mashup" && <><Disc className="w-6 h-6 text-blue-500" /> Mashup Creator</>}
                           {mashupMode === "reimagine" && <><Wand2 className="w-6 h-6 text-green-500" /> Song Reimaginer</>}
                         </CardTitle>
@@ -1213,7 +1213,7 @@ export default function MusicStudio() {
                                       onClick={() => setTargetArtistStyle(style.value)}
                                       className={`p-3 rounded-lg border-2 text-left transition-all
                                         ${targetArtistStyle === style.value 
-                                          ? 'border-purple-500 bg-purple-500/10' 
+                                          ? 'border-amber-500 bg-amber-500/10' 
                                           : 'border-muted hover:border-primary/50'}`}
                                       data-testid={`button-style-${style.value}`}
                                     >
@@ -1285,7 +1285,7 @@ export default function MusicStudio() {
                             <Button 
                               onClick={generateMashupConcept}
                               disabled={isGeneratingMashup || !sourceSongDescription.trim()}
-                              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 mt-4"
+                              className="w-full bg-gradient-to-r from-amber-500 to-pink-500 mt-4"
                               size="lg"
                               data-testid="button-generate-mashup"
                             >
@@ -1300,7 +1300,7 @@ export default function MusicStudio() {
 
                         {/* Results */}
                         {mashupResult && (
-                          <div className="mt-6 p-6 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-xl border border-purple-500/20">
+                          <div className="mt-6 p-6 bg-gradient-to-r from-amber-500/10 to-pink-500/10 rounded-xl border border-amber-500/20">
                             <h3 className="text-xl font-bold mb-2">{mashupResult.title}</h3>
                             <p className="text-muted-foreground mb-4">{mashupResult.description}</p>
                             
@@ -1323,7 +1323,7 @@ export default function MusicStudio() {
                                 <Button variant="outline" onClick={() => setMashupResult(null)}>
                                   <RotateCcw className="w-4 h-4 mr-2" /> Try Different Settings
                                 </Button>
-                                <Button className="bg-gradient-to-r from-orange-500 to-purple-500" data-testid="button-produce-mashup">
+                                <Button className="bg-gradient-to-r from-orange-500 to-amber-500" data-testid="button-produce-mashup">
                                   <Music className="w-4 h-4 mr-2" /> Produce This Track
                                 </Button>
                               </div>
@@ -1348,7 +1348,7 @@ export default function MusicStudio() {
                         <button
                           onClick={() => setMelodyMagicStep(s.step)}
                           className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-all
-                            ${melodyMagicStep === s.step ? 'bg-gradient-to-r from-orange-500 to-purple-500 text-foreground shadow-lg shadow-orange-500/30' : 
+                            ${melodyMagicStep === s.step ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-foreground shadow-lg shadow-orange-500/30' : 
                               melodyMagicStep > s.step ? 'bg-green-500/80 text-foreground' : 'bg-muted text-muted-foreground'}`}
                           data-testid={`button-melody-step-${s.step}`}
                         >
@@ -1392,7 +1392,7 @@ export default function MusicStudio() {
                               ) : (
                                 <div className="text-center">
                                   <p className="text-muted-foreground mb-4">Click to start recording your melody</p>
-                                  <Button onClick={startMelodyRecording} size="lg" className="bg-gradient-to-r from-orange-500 to-purple-500" data-testid="button-start-melody">
+                                  <Button onClick={startMelodyRecording} size="lg" className="bg-gradient-to-r from-orange-500 to-amber-500" data-testid="button-start-melody">
                                     <Mic className="w-5 h-5 mr-2" /> Start Recording
                                   </Button>
                                 </div>
@@ -1414,7 +1414,7 @@ export default function MusicStudio() {
                                 <Button variant="outline" onClick={() => { setRecordedMelodyUrl(null); setMelodyAnalysis(null); }} data-testid="button-rerecord">
                                   <RotateCcw className="w-4 h-4 mr-2" /> Re-record
                                 </Button>
-                                <Button onClick={analyzeMelody} disabled={isAnalyzingMelody} className="bg-gradient-to-r from-orange-500 to-purple-500" data-testid="button-analyze-melody">
+                                <Button onClick={analyzeMelody} disabled={isAnalyzingMelody} className="bg-gradient-to-r from-orange-500 to-amber-500" data-testid="button-analyze-melody">
                                   {isAnalyzingMelody ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Brain className="w-4 h-4 mr-2" />}
                                   Analyze with AI
                                 </Button>
@@ -1429,7 +1429,7 @@ export default function MusicStudio() {
                             <p className="font-medium">Hum a Tune</p>
                           </div>
                           <div className="p-3 bg-muted/50 rounded-lg">
-                            <Mic className="w-6 h-6 mx-auto mb-1 text-purple-500" />
+                            <Mic className="w-6 h-6 mx-auto mb-1 text-amber-500" />
                             <p className="font-medium">Sing Lyrics</p>
                           </div>
                           <div className="p-3 bg-muted/50 rounded-lg">
@@ -1443,10 +1443,10 @@ export default function MusicStudio() {
 
                   {/* Step 2: Transform Settings */}
                   {melodyMagicStep === 2 && (
-                    <Card className="border-purple-500/20">
+                    <Card className="border-amber-500/20">
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <Wand2 className="w-6 h-6 text-purple-500" /> Step 2: Choose Your Transformation
+                          <Wand2 className="w-6 h-6 text-amber-500" /> Step 2: Choose Your Transformation
                         </CardTitle>
                         <CardDescription>
                           AI detected your melody! Now pick how you want it transformed.
@@ -1465,7 +1465,7 @@ export default function MusicStudio() {
                                 <p className="text-xs text-muted-foreground">BPM</p>
                               </div>
                               <div className="text-center p-3 bg-background/50 rounded">
-                                <p className="text-2xl font-bold text-purple-500">{melodyAnalysis.detectedKey}</p>
+                                <p className="text-2xl font-bold text-amber-500">{melodyAnalysis.detectedKey}</p>
                                 <p className="text-xs text-muted-foreground">Key</p>
                               </div>
                               <div className="text-center p-3 bg-background/50 rounded">
@@ -1486,12 +1486,12 @@ export default function MusicStudio() {
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                             {[
                               { value: "metal", label: "Death Metal", icon: Zap, color: "from-red-500 to-orange-500" },
-                              { value: "rap", label: "Hip Hop / Rap", icon: Mic, color: "from-purple-500 to-pink-500" },
+                              { value: "rap", label: "Hip Hop / Rap", icon: Mic, color: "from-amber-500 to-pink-500" },
                               { value: "pop", label: "Pop", icon: Music, color: "from-blue-500 to-cyan-500" },
                               { value: "country", label: "Country", icon: Guitar, color: "from-amber-500 to-yellow-500" },
                               { value: "edm", label: "EDM / Electronic", icon: Waves, color: "from-green-500 to-teal-500" },
                               { value: "rock", label: "Rock", icon: Radio, color: "from-gray-500 to-slate-500" },
-                              { value: "jazz", label: "Jazz / Blues", icon: Piano, color: "from-indigo-500 to-purple-500" },
+                              { value: "jazz", label: "Jazz / Blues", icon: Piano, color: "from-indigo-500 to-amber-500" },
                               { value: "orchestral", label: "Orchestral", icon: Disc, color: "from-rose-500 to-red-500" },
                             ].map((genre) => (
                               <button
@@ -1542,7 +1542,7 @@ export default function MusicStudio() {
 
                         <div className="flex gap-2 justify-end">
                           <Button variant="outline" onClick={() => setMelodyMagicStep(1)}>Back</Button>
-                          <Button onClick={() => setMelodyMagicStep(3)} className="bg-gradient-to-r from-orange-500 to-purple-500" data-testid="button-next-lyrics">
+                          <Button onClick={() => setMelodyMagicStep(3)} className="bg-gradient-to-r from-orange-500 to-amber-500" data-testid="button-next-lyrics">
                             Continue to Lyrics <FastForward className="w-4 h-4 ml-2" />
                           </Button>
                         </div>
@@ -1567,7 +1567,7 @@ export default function MusicStudio() {
                             <Button 
                               onClick={generateMelodyLyrics} 
                               disabled={isGeneratingLyrics}
-                              className="w-full bg-gradient-to-r from-pink-500 to-purple-500"
+                              className="w-full bg-gradient-to-r from-pink-500 to-amber-500"
                               data-testid="button-generate-melody-lyrics"
                             >
                               {isGeneratingLyrics ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Wand2 className="w-4 h-4 mr-2" />}
@@ -1588,7 +1588,7 @@ export default function MusicStudio() {
                               <p className="font-medium mb-1">🎵 Transformation Preview:</p>
                               <p className="text-muted-foreground">
                                 Your melody in <span className="text-primary font-bold">{melodyAnalysis?.detectedKey} {melodyAnalysis?.detectedScale}</span> at{' '}
-                                <span className="text-purple-500 font-bold">{melodyAnalysis?.detectedBpm} BPM</span> → 
+                                <span className="text-amber-500 font-bold">{melodyAnalysis?.detectedBpm} BPM</span> → 
                                 <span className="text-pink-500 font-bold"> {targetGenre.toUpperCase()}</span> with{' '}
                                 <span className="text-blue-500 font-bold">{targetVoiceStyle}</span> vocals
                               </p>
@@ -1616,7 +1616,7 @@ export default function MusicStudio() {
                             <Button 
                               onClick={recomposeMelody} 
                               disabled={isRecomposing}
-                              className="bg-gradient-to-r from-orange-500 to-purple-500"
+                              className="bg-gradient-to-r from-orange-500 to-amber-500"
                               data-testid="button-recompose"
                             >
                               {isRecomposing ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
@@ -1642,7 +1642,7 @@ export default function MusicStudio() {
                       <CardContent className="space-y-6">
                         {isRecomposing ? (
                           <div className="flex flex-col items-center justify-center py-12">
-                            <div className="w-24 h-24 rounded-full bg-gradient-to-r from-orange-500 to-purple-500 flex items-center justify-center animate-pulse mb-4">
+                            <div className="w-24 h-24 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 flex items-center justify-center animate-pulse mb-4">
                               <Sparkles className="w-12 h-12 text-foreground animate-spin" />
                             </div>
                             <p className="text-xl font-bold">Creating Magic...</p>
@@ -1652,7 +1652,7 @@ export default function MusicStudio() {
                         ) : recomposedTrack ? (
                           <div className="space-y-6">
                             <div className="p-6 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-xl border border-green-500/20 text-center">
-                              <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-r from-orange-500 to-purple-500 flex items-center justify-center mb-4">
+                              <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-r from-orange-500 to-amber-500 flex items-center justify-center mb-4">
                                 <Music className="w-10 h-10 text-foreground" />
                               </div>
                               <h3 className="text-2xl font-bold">{recomposedTrack.title}</h3>
@@ -1681,7 +1681,7 @@ export default function MusicStudio() {
                               <Button variant="outline" onClick={() => setMelodyMagicStep(2)}>
                                 <Wand2 className="w-4 h-4 mr-2" /> Try Different Genre
                               </Button>
-                              <Button className="bg-gradient-to-r from-orange-500 to-purple-500" data-testid="button-add-to-project">
+                              <Button className="bg-gradient-to-r from-orange-500 to-amber-500" data-testid="button-add-to-project">
                                 <Plus className="w-4 h-4 mr-2" /> Add to Project
                               </Button>
                               <Button variant="outline" data-testid="button-download-recomposed">
@@ -1801,7 +1801,7 @@ export default function MusicStudio() {
                             {[
                               { name: "Vocals", icon: Mic, color: "text-pink-500", stem: separatedStems.vocals },
                               { name: "Drums", icon: Drum, color: "text-primary", stem: separatedStems.drums },
-                              { name: "Bass", icon: Waves, color: "text-purple-500", stem: separatedStems.bass },
+                              { name: "Bass", icon: Waves, color: "text-amber-500", stem: separatedStems.bass },
                               { name: "Other (Guitar/Keys)", icon: Guitar, color: "text-yellow-500", stem: separatedStems.other },
                               { name: "Instrumental", icon: Music, color: "text-green-500", stem: separatedStems.instrumental },
                             ].map((s) => (
@@ -1862,10 +1862,10 @@ export default function MusicStudio() {
               {/* AI VOICE LIBRARY TAB */}
               <TabsContent value="voice-library" className="flex-1 overflow-auto">
                 <div className="space-y-6">
-                  <div className="text-center py-6 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-rose-500/10 rounded-xl border border-purple-500/20">
+                  <div className="text-center py-6 bg-gradient-to-r from-amber-500/10 via-pink-500/10 to-rose-500/10 rounded-xl border border-amber-500/20">
                     <div className="flex items-center justify-center gap-2 mb-2">
-                      <Users className="w-8 h-8 text-purple-500 animate-pulse" />
-                      <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+                      <Users className="w-8 h-8 text-amber-500 animate-pulse" />
+                      <h2 className="text-3xl font-bold bg-gradient-to-r from-amber-500 to-pink-500 bg-clip-text text-transparent">
                         AI VOICE LIBRARY
                       </h2>
                       <Users className="w-8 h-8 text-pink-500 animate-pulse" />
@@ -1878,7 +1878,7 @@ export default function MusicStudio() {
                       <Card>
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
-                            <Users className="w-5 h-5 text-purple-500" /> Voice Models
+                            <Users className="w-5 h-5 text-amber-500" /> Voice Models
                           </CardTitle>
                           <CardDescription>Select from our library of AI voice archetypes</CardDescription>
                         </CardHeader>
@@ -1902,8 +1902,8 @@ export default function MusicStudio() {
                                 key={voice.id}
                                 className={`p-4 rounded-lg border-2 text-left transition-all ${
                                   selectedVoiceModel === voice.id 
-                                    ? 'border-purple-500 bg-purple-500/10' 
-                                    : 'border-border hover:border-purple-500/50'
+                                    ? 'border-amber-500 bg-amber-500/10' 
+                                    : 'border-border hover:border-amber-500/50'
                                 }`}
                                 onClick={() => setSelectedVoiceModel(voice.id)}
                                 data-testid={`button-voice-${voice.id}`}
@@ -1939,7 +1939,7 @@ export default function MusicStudio() {
                             <p className="text-xs text-muted-foreground mt-1">Best results with clean vocals</p>
                           </div>
                           <Button 
-                            className="w-full bg-gradient-to-r from-purple-500 to-pink-500"
+                            className="w-full bg-gradient-to-r from-amber-500 to-pink-500"
                             disabled={isTrainingVoice || !customVoiceName}
                             data-testid="button-train-voice"
                           >
@@ -1955,7 +1955,7 @@ export default function MusicStudio() {
                       <Card>
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
-                            <Play className="w-5 h-5 text-purple-500" /> Preview Voice
+                            <Play className="w-5 h-5 text-amber-500" /> Preview Voice
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
@@ -2164,7 +2164,7 @@ export default function MusicStudio() {
                             { id: "deezer", name: "Deezer", color: "bg-orange-500" },
                             { id: "soundcloud", name: "SoundCloud", color: "bg-orange-600" },
                             { id: "tiktok", name: "TikTok", color: "bg-pink-600" },
-                            { id: "instagram", name: "Instagram", color: "bg-purple-500" },
+                            { id: "instagram", name: "Instagram", color: "bg-amber-500" },
                           ].map((platform) => (
                             <button
                               key={platform.id}
@@ -3270,7 +3270,7 @@ Repeat the hook...`}
                                 <div className="text-xs text-muted-foreground">Suggested BPM</div>
                               </div>
                               <div className="p-3 bg-muted/50 rounded-lg text-center">
-                                <div className="text-2xl font-bold text-purple-500">3:24</div>
+                                <div className="text-2xl font-bold text-amber-500">3:24</div>
                                 <div className="text-xs text-muted-foreground">Video Duration</div>
                               </div>
                             </div>
@@ -3357,7 +3357,7 @@ Repeat the hook...`}
                         <CardContent>
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                             {[
-                              { id: "gaming", name: "Gaming", desc: "Reacts to gameplay intensity", IconComponent: Zap, color: "text-purple-500" },
+                              { id: "gaming", name: "Gaming", desc: "Reacts to gameplay intensity", IconComponent: Zap, color: "text-amber-500" },
                               { id: "streaming", name: "Streaming", desc: "Matches chat energy", IconComponent: Radio, color: "text-pink-500" },
                               { id: "meditation", name: "Meditation", desc: "Calming ambient sounds", IconComponent: Sparkles, color: "text-green-500" },
                               { id: "workout", name: "Workout", desc: "Pumps up intensity", IconComponent: Activity, color: "text-primary" },
@@ -3484,7 +3484,7 @@ Repeat the hook...`}
                         </CardHeader>
                         <CardContent className="space-y-3">
                           <Button variant="outline" className="w-full justify-start gap-2" data-testid="button-connect-obs">
-                            <span className="w-6 h-6 bg-purple-500 rounded flex items-center justify-center text-foreground text-xs">OBS</span>
+                            <span className="w-6 h-6 bg-amber-500 rounded flex items-center justify-center text-foreground text-xs">OBS</span>
                             Connect to OBS
                           </Button>
                           <Button variant="outline" className="w-full justify-start gap-2" data-testid="button-connect-discord">
@@ -3492,7 +3492,7 @@ Repeat the hook...`}
                             Discord Bot
                           </Button>
                           <Button variant="outline" className="w-full justify-start gap-2" data-testid="button-connect-twitch">
-                            <span className="w-6 h-6 bg-purple-600 rounded flex items-center justify-center text-foreground text-xs">TV</span>
+                            <span className="w-6 h-6 bg-amber-600 rounded flex items-center justify-center text-foreground text-xs">TV</span>
                             Twitch Integration
                           </Button>
                         </CardContent>

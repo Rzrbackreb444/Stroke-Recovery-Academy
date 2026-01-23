@@ -207,8 +207,8 @@ export default function TherapistDashboard() {
           </Card>
           <Card className="bg-gray-900 border-gray-800 p-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-purple-400" />
+              <div className="w-12 h-12 rounded-lg bg-amber-500/20 flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-amber-400" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground">

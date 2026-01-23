@@ -184,7 +184,7 @@ function OrderStatusBadge({ status }: { status: string }) {
   const statusConfig: Record<string, { color: string; icon: React.ComponentType<{ className?: string }> }> = {
     pending: { color: 'text-yellow-500 border-yellow-500/30', icon: Clock },
     processing: { color: 'text-blue-500 border-blue-500/30', icon: Package },
-    printing: { color: 'text-purple-500 border-purple-500/30', icon: Printer },
+    printing: { color: 'text-amber-500 border-amber-500/30', icon: Printer },
     shipped: { color: 'text-cyan-500 border-cyan-500/30', icon: Truck },
     delivered: { color: 'text-green-500 border-green-500/30', icon: CheckCircle },
     completed: { color: 'text-green-500 border-green-500/30', icon: CheckCircle },

@@ -34,7 +34,7 @@ const statusConfig: Record<string, { label: string; color: string; icon: any }> 
   pending: { label: "Pending", color: "bg-yellow-500/20 text-yellow-400", icon: Clock },
   paid: { label: "Paid", color: "bg-green-500/20 text-green-400", icon: CheckCircle2 },
   processing: { label: "Processing", color: "bg-blue-500/20 text-blue-400", icon: Package },
-  printing: { label: "Printing", color: "bg-purple-500/20 text-purple-400", icon: Printer },
+  printing: { label: "Printing", color: "bg-amber-500/20 text-amber-400", icon: Printer },
   shipped: { label: "Shipped", color: "bg-teal-500/20 text-teal-400", icon: Truck },
   delivered: { label: "Delivered", color: "bg-green-500/20 text-green-400", icon: CheckCircle2 },
   cancelled: { label: "Cancelled", color: "bg-red-500/20 text-red-400", icon: AlertCircle },

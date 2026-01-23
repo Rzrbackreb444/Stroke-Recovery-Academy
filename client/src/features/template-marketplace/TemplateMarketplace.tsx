@@ -214,7 +214,7 @@ export function TemplateMarketplace() {
                     {listing.coverImageUrl ? (
                       <img src={listing.coverImageUrl} alt={listing.title} className="h-32 w-full object-cover" />
                     ) : (
-                      <div className="h-32 bg-gradient-to-br from-orange-500/20 to-purple-500/20 flex items-center justify-center">
+                      <div className="h-32 bg-gradient-to-br from-orange-500/20 to-amber-500/20 flex items-center justify-center">
                         <CategoryIcon className="w-12 h-12 text-primary/50" />
                       </div>
                     )}

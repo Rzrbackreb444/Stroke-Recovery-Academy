@@ -135,7 +135,7 @@ const curriculumParts = [
 const tierConfig: Record<string, { name: string; icon: typeof Star; color: string }> = {
   explorer: { name: "Explorer", icon: Star, color: "text-blue-400" },
   warrior: { name: "Warrior", icon: Shield, color: "text-green-400" },
-  champion: { name: "Champion", icon: Crown, color: "text-purple-400" },
+  champion: { name: "Champion", icon: Crown, color: "text-amber-400" },
   platinum: { name: "Platinum", icon: Sparkles, color: "text-amber-400" },
 };
 

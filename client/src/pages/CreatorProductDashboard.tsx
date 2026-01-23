@@ -210,7 +210,7 @@ function ProductTypeIcon({ type }: { type: Product["type"] }) {
 function ProductTypeBadge({ type }: { type: Product["type"] }) {
   const colors = {
     book: "bg-blue-500/10 text-blue-400 border-blue-500/30",
-    course: "bg-purple-500/10 text-purple-400 border-purple-500/30",
+    course: "bg-amber-500/10 text-amber-400 border-amber-500/30",
     music: "bg-green-500/10 text-green-400 border-green-500/30",
     video: "bg-red-500/10 text-red-400 border-red-500/30",
   };

@@ -25,7 +25,7 @@ import RecoveryHeader from "@/components/RecoveryHeader";
 
 const CATEGORIES = [
   { id: "upper_extremity", name: "Upper Extremity", icon: Hand, description: "Hand, arm, and shoulder exercises", color: "text-primary" },
-  { id: "cognitive", name: "Cognitive", icon: Brain, description: "Memory, attention, and problem-solving", color: "text-purple-400" },
+  { id: "cognitive", name: "Cognitive", icon: Brain, description: "Memory, attention, and problem-solving", color: "text-amber-400" },
   { id: "speech_language", name: "Speech & Language", icon: MessageSquare, description: "Aphasia and communication exercises", color: "text-blue-400" },
   { id: "balance_gait", name: "Balance & Gait", icon: Footprints, description: "Walking, posture, and balance", color: "text-green-400" },
 ];
@@ -170,8 +170,8 @@ export default function Exercises() {
           </Card>
           <Card className="bg-gray-900 border-gray-800 p-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                <BarChart3 className="w-6 h-6 text-purple-400" />
+              <div className="w-12 h-12 rounded-lg bg-amber-500/20 flex items-center justify-center">
+                <BarChart3 className="w-6 h-6 text-amber-400" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground">{calculateTotalProgress()}%</p>
@@ -482,7 +482,7 @@ function MemoryGame({ onComplete, pointsValue }: { onComplete: (score: number, a
     const accuracy = Math.round((round / (round + 1)) * 100);
     return (
       <div className="text-center">
-        <Brain className="w-16 h-16 text-purple-500 mx-auto mb-4" />
+        <Brain className="w-16 h-16 text-amber-500 mx-auto mb-4" />
         <p className="text-3xl font-bold text-foreground mb-2">Round {round - 1} Complete!</p>
         <p className="text-gray-400 mb-4">Score: {score} | Accuracy: {accuracy}%</p>
         <Button onClick={() => onComplete(score, accuracy)} className="bg-primary hover:bg-primary/90">
@@ -495,7 +495,7 @@ function MemoryGame({ onComplete, pointsValue }: { onComplete: (score: number, a
   if (sequence.length === 0) {
     return (
       <div className="text-center">
-        <Brain className="w-16 h-16 text-purple-500 mx-auto mb-4" />
+        <Brain className="w-16 h-16 text-amber-500 mx-auto mb-4" />
         <p className="text-xl text-foreground mb-4">Memory Sequence Game</p>
         <p className="text-gray-400 mb-6">Watch the sequence and repeat it back!</p>
         <Button onClick={startRound} className="bg-primary hover:bg-primary/90">

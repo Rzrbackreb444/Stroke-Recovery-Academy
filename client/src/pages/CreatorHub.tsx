@@ -43,7 +43,7 @@ const studios: StudioCard[] = [
     description: "Full DAW with 8-genre Lyria generation",
     icon: Music,
     route: "/music-studio",
-    color: "from-purple-500 to-pink-600",
+    color: "from-amber-500 to-amber-600",
     features: ["8-Band EQ", "Compressor", "Lyria AI", "Voice Cloning"]
   },
   {
@@ -80,7 +80,7 @@ const studios: StudioCard[] = [
     description: "AI image generation with style presets",
     icon: Image,
     route: "/image-studio",
-    color: "from-indigo-500 to-violet-600",
+    color: "from-[#C9941A] to-amber-600",
     features: ["Grok Imagine", "Style Presets", "Batch Generation", "Consistency Tools"]
   }
 ];
@@ -100,7 +100,7 @@ const ultraPremiumTools = [
     description: "Create talking head videos with D-ID",
     icon: Users,
     route: "/avatar-studio",
-    color: "from-purple-500 to-pink-600"
+    color: "from-[#C9941A] to-amber-600"
   },
   {
     id: "templates",
@@ -124,7 +124,7 @@ const ultraPremiumTools = [
     description: "Book → TTS narration → mastering pipeline",
     icon: FileAudio,
     route: "/audiobook-factory",
-    color: "from-indigo-500 to-violet-600"
+    color: "from-[#C9941A] to-amber-600"
   },
   {
     id: "dj-studio",

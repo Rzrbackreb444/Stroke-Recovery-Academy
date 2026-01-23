@@ -43,7 +43,7 @@ const PROVIDERS = [
   { id: "fitbit", name: "Fitbit", icon: Watch, color: "text-teal-400", bgColor: "bg-teal-500/10" },
   { id: "apple_health", name: "Apple Health", icon: Heart, color: "text-red-400", bgColor: "bg-red-500/10" },
   { id: "garmin", name: "Garmin", icon: Watch, color: "text-yellow-400", bgColor: "bg-yellow-500/10" },
-  { id: "oura", name: "Oura Ring", icon: Moon, color: "text-purple-400", bgColor: "bg-purple-500/10" },
+  { id: "oura", name: "Oura Ring", icon: Moon, color: "text-amber-400", bgColor: "bg-amber-500/10" },
 ];
 
 export default function Wearables() {
@@ -218,7 +218,7 @@ export default function Wearables() {
               <Card className="bg-gray-900 border-gray-800">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
-                    <Moon className="w-8 h-8 text-purple-400" />
+                    <Moon className="w-8 h-8 text-amber-400" />
                     <Badge className="bg-blue-500/20 text-blue-400 text-xs">Good</Badge>
                   </div>
                   <p className="text-gray-400 text-sm">Sleep</p>
@@ -411,7 +411,7 @@ export default function Wearables() {
                         <div className="flex items-center gap-3">
                           {metric.metricType === "steps" && <Footprints className="w-5 h-5 text-blue-400" />}
                           {metric.metricType === "heart_rate" && <Heart className="w-5 h-5 text-red-400" />}
-                          {metric.metricType === "sleep" && <Moon className="w-5 h-5 text-purple-400" />}
+                          {metric.metricType === "sleep" && <Moon className="w-5 h-5 text-amber-400" />}
                           {metric.metricType === "calories" && <Flame className="w-5 h-5 text-primary" />}
                           {metric.metricType === "active_minutes" && <Zap className="w-5 h-5 text-yellow-400" />}
                           <div>

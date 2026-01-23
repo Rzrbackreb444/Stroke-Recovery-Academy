@@ -41,7 +41,7 @@ const studios = [
     description: "Create professional music, voice clones, and audio content. No musical experience required.",
     features: ["AI music generation", "Voice cloning", "Sound effects", "Podcast editing"],
     href: "/music-studio",
-    color: "from-purple-500 to-purple-600",
+    color: "from-amber-500 to-amber-600",
   },
   {
     icon: Video,

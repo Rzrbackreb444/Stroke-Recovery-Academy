@@ -193,9 +193,9 @@ const calloutTemplates = {
     icon: Code,
     label: "Example",
     description: "Practical example or demonstration",
-    color: "purple",
-    html: `<div class="callout callout-example border-l-4 border-purple-500 bg-purple-500/10 dark:bg-purple-500/20 p-4 my-4 rounded">
-  <p class="flex items-center gap-2 font-semibold text-purple-600 dark:text-purple-400 mb-2">
+    color: "amber",
+    html: `<div class="callout callout-example border-l-4 border-amber-500 bg-amber-500/10 dark:bg-amber-500/20 p-4 my-4 rounded">
+  <p class="flex items-center gap-2 font-semibold text-amber-600 dark:text-amber-400 mb-2">
     <strong>[EXAMPLE]</strong>
   </p>
   <p class="text-foreground">Describe your example here...</p>
@@ -403,8 +403,8 @@ const chartTemplates = {
     icon: LineChart,
     label: "Line Chart",
     description: "Trend or progression over time",
-    html: `<div data-chart-type="line" class="chart-placeholder border-2 border-dashed border-purple-500 bg-purple-500/5 dark:bg-purple-500/10 p-8 my-4 rounded-lg text-center">
-  <p class="text-purple-600 dark:text-purple-400 font-semibold mb-2">[LINE CHART] Placeholder</p>
+    html: `<div data-chart-type="line" class="chart-placeholder border-2 border-dashed border-amber-500 bg-amber-500/5 dark:bg-amber-500/10 p-8 my-4 rounded-lg text-center">
+  <p class="text-amber-600 dark:text-amber-400 font-semibold mb-2">[LINE CHART] Placeholder</p>
   <p class="text-muted-foreground text-sm">Replace with your line chart data</p>
   <p class="text-muted-foreground/70 text-xs mt-2">Timeline: Week 1-4 | Progress: 20%, 45%, 70%, 90%</p>
 </div>`,
@@ -506,7 +506,7 @@ const listTemplates = {
     icon: Star,
     label: "Key Takeaways",
     description: "Summary of main points",
-    html: `<div class="key-takeaways my-4 p-5 bg-gradient-to-br from-primary/10 to-purple-500/10 dark:from-primary/20 dark:to-purple-500/20 rounded-lg border border-primary/20">
+    html: `<div class="key-takeaways my-4 p-5 bg-gradient-to-br from-primary/10 to-amber-500/10 dark:from-primary/20 dark:to-amber-500/20 rounded-lg border border-primary/20">
   <p class="font-bold text-lg mb-3 text-primary">[KEY TAKEAWAYS]</p>
   <ul class="list-none p-0 leading-loose text-foreground">
     <li class="pl-6 relative">
@@ -587,8 +587,8 @@ const bookElementTemplates = {
     icon: Lightbulb,
     label: "Did You Know",
     description: "Interesting facts and trivia",
-    html: `<aside class="did-you-know my-6 p-5 bg-purple-500/10 border border-purple-500/30 rounded-lg">
-  <p class="font-bold text-base mb-2 text-purple-600 dark:text-purple-400 flex items-center gap-2">
+    html: `<aside class="did-you-know my-6 p-5 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+  <p class="font-bold text-base mb-2 text-amber-600 dark:text-amber-400 flex items-center gap-2">
     [DID YOU KNOW?]
   </p>
   <p class="text-foreground leading-relaxed">
@@ -732,7 +732,7 @@ function example() {
     icon: FlaskConical,
     label: "Formula Card",
     description: "Scientific or technical formula",
-    html: `<div class="formula-card my-6 p-5 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-lg">
+    html: `<div class="formula-card my-6 p-5 bg-gradient-to-r from-blue-500/10 to-amber-500/10 border border-blue-500/30 rounded-lg">
   <p class="font-bold text-base mb-3 text-blue-600 dark:text-blue-400">[FORMULA] Name</p>
   <div class="bg-white dark:bg-slate-800 rounded p-4 text-center font-mono text-lg mb-3">
     A = &pi;r<sup>2</sup>

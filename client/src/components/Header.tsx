@@ -47,11 +47,24 @@ export default function EliteHeader() {
         </div>
         
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" className="relative hover:bg-[#C9941A]/10 text-black/60 rounded-none">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="relative hover:bg-[#C9941A]/10 text-black/60 rounded-none"
+            aria-label="Notifications"
+            data-testid="button-notifications"
+          >
             <Bell className="w-5 h-5" />
             <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-600 rounded-full border-2 border-white"></span>
           </Button>
-          <Button variant="ghost" size="icon" className="hover:bg-[#C9941A]/10 text-black/60 rounded-none" onClick={() => window.location.href='/settings'}>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="hover:bg-[#C9941A]/10 text-black/60 rounded-none" 
+            onClick={() => window.location.href='/settings'}
+            aria-label="Settings"
+            data-testid="button-settings"
+          >
             <Settings className="w-5 h-5" />
           </Button>
           <div className="w-11 h-11 bg-[#1A1A1A] text-white flex items-center justify-center font-black text-xs cursor-pointer hover:bg-[#C9941A] transition-all shadow-lg">

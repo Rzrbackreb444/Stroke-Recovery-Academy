@@ -59,7 +59,7 @@ const milestoneTypes = [
   { value: "career", label: "Career", icon: Briefcase, color: "bg-green-500/20 text-green-400" },
   { value: "relationship", label: "Relationship", icon: Heart, color: "bg-red-500/20 text-red-400" },
   { value: "achievement", label: "Achievement", icon: Trophy, color: "bg-yellow-500/20 text-yellow-400" },
-  { value: "challenge", label: "Challenge", icon: Mountain, color: "bg-purple-500/20 text-purple-400" },
+  { value: "challenge", label: "Challenge", icon: Mountain, color: "bg-amber-500/20 text-amber-400" },
   { value: "growth", label: "Growth", icon: Sprout, color: "bg-emerald-500/20 text-emerald-400" },
 ];
 

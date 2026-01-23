@@ -32,7 +32,7 @@ const categoryColors: Record<string, string> = {
   physical: "text-green-400",
   emotional: "text-pink-400",
   cognitive: "text-blue-400",
-  social: "text-purple-400",
+  social: "text-amber-400",
   streak: "text-primary",
 };
 
@@ -40,7 +40,7 @@ const categoryBgColors: Record<string, string> = {
   physical: "bg-green-500/20 border-green-500/40",
   emotional: "bg-pink-500/20 border-pink-500/40",
   cognitive: "bg-blue-500/20 border-blue-500/40",
-  social: "bg-purple-500/20 border-purple-500/40",
+  social: "bg-amber-500/20 border-amber-500/40",
   streak: "bg-primary/20 border",
 };
 

@@ -297,7 +297,7 @@ function MusicPlayer({ track, onClose }: { track: CreatorContent | null; onClose
       )}
       <div className="container mx-auto flex items-center gap-4">
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-purple-500 rounded-lg flex items-center justify-center shrink-0">
+          <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center shrink-0">
             <Music className="w-6 h-6 text-foreground" />
           </div>
           <div className="min-w-0">
@@ -602,12 +602,12 @@ function ContentCard({ content, onPlay }: { content: CreatorContent; onPlay: (co
   const getGradient = () => {
     switch (content.type) {
       case "music": return "from-orange-500 to-pink-500";
-      case "video": return "from-blue-500 to-purple-500";
+      case "video": return "from-blue-500 to-cyan-500";
       case "movie": return "from-red-500 to-orange-500";
       case "course": return "from-green-500 to-teal-500";
-      case "book": return "from-purple-500 to-indigo-500";
+      case "book": return "from-amber-500 to-amber-600";
       case "image": return "from-yellow-500 to-orange-500";
-      default: return "from-orange-500 to-purple-500";
+      default: return "from-amber-500 to-amber-600";
     }
   };
 
@@ -690,7 +690,7 @@ function FeaturedCarousel({ items, onPlay }: { items: CreatorContent[]; onPlay: 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {featured.slice(0, 3).map(item => (
           <Card key={item.id} className="overflow-hidden group cursor-pointer hover-elevate" onClick={() => onPlay(item)}>
-            <div className={`relative h-48 bg-gradient-to-br from-orange-500 via-purple-500 to-pink-500 flex items-center justify-center`}>
+            <div className={`relative h-48 bg-gradient-to-br from-orange-500 via-amber-500 to-pink-500 flex items-center justify-center`}>
               <div className="text-foreground">
                 <Music className="w-16 h-16 opacity-30" />
               </div>
@@ -724,7 +724,7 @@ function FeaturedCarousel({ items, onPlay }: { items: CreatorContent[]; onPlay: 
 
 function CreatorStats() {
   return (
-    <Card className="mb-8 bg-gradient-to-r from-orange-500/10 via-purple-500/10 to-pink-500/10 border">
+    <Card className="mb-8 bg-gradient-to-r from-amber-500/10 via-amber-400/10 to-amber-500/10 border">
       <CardContent className="py-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           <div>
@@ -751,7 +751,7 @@ function CreatorStats() {
 
 function BecomeCreatorCTA() {
   return (
-    <Card className="bg-gradient-to-r from-orange-500 to-purple-600 border-0 text-foreground overflow-hidden relative">
+    <Card className="bg-gradient-to-r from-[#C9941A] to-amber-600 border-0 text-foreground overflow-hidden relative">
       <div className="absolute inset-0 bg-black/20" />
       <CardContent className="py-12 relative z-10">
         <div className="text-center max-w-2xl mx-auto">
@@ -890,7 +890,7 @@ export default function Marketplace() {
         <section className="mb-8">
           <div className="text-center mb-8">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-orange-500 to-purple-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#C9941A] to-amber-500 bg-clip-text text-transparent">
                 KreAIte Marketplace
               </span>
             </h1>
@@ -1010,7 +1010,7 @@ export default function Marketplace() {
             )}
             
             <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <BookOpen className="w-6 h-6 text-purple-500" /> Published Books
+              <BookOpen className="w-6 h-6 text-[#C9941A]" /> Published Books
             </h2>
             {booksLoading ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

@@ -173,6 +173,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className="hover-elevate active-elevate-2 p-2 rounded-md text-muted-foreground hover:text-primary"
+              aria-label="Follow us on X (Twitter)"
               data-testid="social-link-x"
             >
               <SiX className="h-5 w-5" />
@@ -182,6 +183,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className="hover-elevate active-elevate-2 p-2 rounded-md text-muted-foreground hover:text-primary"
+              aria-label="Follow us on TikTok"
               data-testid="social-link-tiktok"
             >
               <SiTiktok className="h-5 w-5" />
@@ -191,6 +193,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className="hover-elevate active-elevate-2 p-2 rounded-md text-muted-foreground hover:text-primary"
+              aria-label="Follow us on Instagram"
               data-testid="social-link-instagram"
             >
               <SiInstagram className="h-5 w-5" />
@@ -200,6 +203,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className="hover-elevate active-elevate-2 p-2 rounded-md text-muted-foreground hover:text-primary"
+              aria-label="Subscribe on YouTube"
               data-testid="social-link-youtube"
             >
               <SiYoutube className="h-5 w-5" />

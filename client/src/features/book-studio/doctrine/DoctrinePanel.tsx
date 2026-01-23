@@ -27,7 +27,7 @@ import { queryClient } from "@/lib/queryClient";
 import { bookStudioApi, DoctrineOutline, DoctrineNode } from "../api";
 
 const nodeTypes = [
-  { value: "theme", label: "Theme", icon: Target, color: "bg-purple-500" },
+  { value: "theme", label: "Theme", icon: Target, color: "bg-amber-500" },
   { value: "topic", label: "Topic", icon: FileText, color: "bg-blue-500" },
   { value: "concept", label: "Concept", icon: Lightbulb, color: "bg-yellow-500" },
   { value: "chapter", label: "Chapter", icon: BookOpen, color: "bg-green-500" },
