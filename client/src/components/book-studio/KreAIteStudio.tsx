@@ -297,7 +297,7 @@ export default function KreAIteStudio() {
 
   const codexFolders = [
     { id: 'manuscript', label: 'Manuscript', icon: BookOpen, items: manuscriptItems, color: 'text-amber-500' },
-    { id: 'codex', label: 'Story Codex', icon: Library, items: [...characterItems, ...worldItems], color: 'text-violet-500', 
+    { id: 'codex', label: 'Story Codex', icon: Library, items: [...characterItems, ...worldItems], color: 'text-[#C9941A]', 
       subfolders: [
         { id: 'characters', label: 'Characters', icon: Users, items: characterItems },
         { id: 'world', label: 'World & Locations', icon: Globe, items: worldItems },
@@ -406,7 +406,7 @@ export default function KreAIteStudio() {
                 <Button variant="ghost" size="sm" className={cn(
                   "h-8 w-8 p-0 rounded-lg",
                   isDark ? "text-stone-400 hover:text-stone-100 hover:bg-stone-800" : "text-stone-500 hover:text-stone-900 hover:bg-stone-100"
-                )} data-testid="button-save">
+                )} data-testid="button-save" aria-label="Save project">
                   <Save className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
@@ -417,7 +417,7 @@ export default function KreAIteStudio() {
                 <Button variant="ghost" size="sm" className={cn(
                   "h-8 w-8 p-0 rounded-lg",
                   isDark ? "text-stone-400 hover:text-stone-100 hover:bg-stone-800" : "text-stone-500 hover:text-stone-900 hover:bg-stone-100"
-                )} data-testid="button-undo">
+                )} data-testid="button-undo" aria-label="Undo">
                   <Undo className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
@@ -428,7 +428,7 @@ export default function KreAIteStudio() {
                 <Button variant="ghost" size="sm" className={cn(
                   "h-8 w-8 p-0 rounded-lg",
                   isDark ? "text-stone-400 hover:text-stone-100 hover:bg-stone-800" : "text-stone-500 hover:text-stone-900 hover:bg-stone-100"
-                )} data-testid="button-redo">
+                )} data-testid="button-redo" aria-label="Redo">
                   <Redo className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
@@ -448,6 +448,7 @@ export default function KreAIteStudio() {
                   )}
                   onClick={() => setFocusMode(true)}
                   data-testid="button-focus"
+                  aria-label="Focus mode"
                 >
                   <Maximize2 className="h-4 w-4" />
                 </Button>
@@ -465,6 +466,7 @@ export default function KreAIteStudio() {
                     isDark ? "text-stone-400 hover:text-stone-100 hover:bg-stone-800" : "text-stone-500 hover:text-stone-900 hover:bg-stone-100"
                   )} 
                   data-testid="button-command"
+                  aria-label="Command palette"
                 >
                   <Command className="h-4 w-4" />
                 </Button>
@@ -503,6 +505,8 @@ export default function KreAIteStudio() {
               isDark ? "text-stone-400 hover:text-stone-100 hover:bg-stone-800" : "text-stone-500 hover:text-stone-900 hover:bg-stone-100"
             )}
             onClick={() => setTheme(isDark ? 'stone' : 'ink')}
+            data-testid="button-theme-toggle"
+            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
           >
             {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </Button>
@@ -519,7 +523,7 @@ export default function KreAIteStudio() {
           <Button variant="ghost" size="sm" className={cn(
             "h-8 w-8 p-0 rounded-lg",
             isDark ? "text-stone-400 hover:text-stone-100 hover:bg-stone-800" : "text-stone-500 hover:text-stone-900 hover:bg-stone-100"
-          )}>
+          )} data-testid="button-settings" aria-label="Settings">
             <Settings className="h-4 w-4" />
           </Button>
         </div>
@@ -541,6 +545,7 @@ export default function KreAIteStudio() {
           )}
           onClick={() => setLeftPanelOpen(!leftPanelOpen)}
           data-testid="toggle-left-panel"
+          aria-label="Toggle left panel"
         >
           <PanelLeft className="h-3.5 w-3.5" />
         </Button>
@@ -615,6 +620,7 @@ export default function KreAIteStudio() {
           )}
           onClick={() => setRightPanelOpen(!rightPanelOpen)}
           data-testid="toggle-right-panel"
+          aria-label="Toggle right panel"
         >
           <PanelRight className="h-3.5 w-3.5" />
         </Button>
@@ -907,10 +913,10 @@ export default function KreAIteStudio() {
                 )}>
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <Brain className="h-4 w-4 text-violet-500" />
+                      <Brain className="h-4 w-4 text-[#C9941A]" />
                       <span className={cn(
                         "text-[11px] font-semibold uppercase tracking-wide",
-                        isDark ? "text-stone-400" : "text-stone-500"
+                        isDark ? "text-stone-400" : "text-[#1A1A1A]/50"
                       )}>
                         Intelligence HUD
                       </span>
@@ -930,11 +936,11 @@ export default function KreAIteStudio() {
                                 "h-6 w-6 p-0 rounded-md",
                                 rightPanelMode === mode
                                   ? isDark 
-                                    ? "bg-amber-500/20 text-amber-400" 
-                                    : "bg-amber-100 text-amber-700"
+                                    ? "bg-[#C9941A]/20 text-[#C9941A]" 
+                                    : "bg-[#C9941A]/10 text-[#C9941A]"
                                   : isDark 
                                     ? "text-stone-500 hover:text-stone-300 hover:bg-stone-800" 
-                                    : "text-stone-400 hover:text-stone-600 hover:bg-stone-100"
+                                    : "text-[#1A1A1A]/40 hover:text-[#1A1A1A]/60 hover:bg-[#C9941A]/5"
                               )}
                               onClick={() => setRightPanelMode(mode as any)}
                             >
@@ -964,7 +970,7 @@ export default function KreAIteStudio() {
                         )}>
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center gap-2">
-                              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#C9941A] to-amber-600 flex items-center justify-center">
                                 <Activity className="h-4 w-4 text-white" />
                               </div>
                               <div>
@@ -1245,10 +1251,10 @@ export default function KreAIteStudio() {
                         {/* Pricing Strategy */}
                         <div className={cn(
                           "p-3 rounded-xl border",
-                          isDark ? "bg-stone-800/30 border-stone-700/50" : "bg-gradient-to-br from-violet-50 to-purple-50 border-violet-200"
+                          isDark ? "bg-stone-800/30 border-stone-700/50" : "bg-gradient-to-br from-[#FAF8F3] to-amber-50 border-[#C9941A]/20"
                         )}>
                           <div className="flex items-center gap-2 mb-3">
-                            <DollarSign className="h-4 w-4 text-violet-500" />
+                            <DollarSign className="h-4 w-4 text-[#C9941A]" />
                             <h4 className={cn(
                               "text-xs font-semibold",
                               isDark ? "text-stone-200" : "text-stone-800"
@@ -1270,7 +1276,7 @@ export default function KreAIteStudio() {
                                     "text-[10px]",
                                     isDark ? "text-stone-600" : "text-stone-400"
                                   )}>${price.low} - ${price.high}</span>
-                                  <Badge className="text-[9px] bg-violet-500/20 text-violet-600 border-0">
+                                  <Badge className="text-[9px] bg-[#C9941A]/20 text-[#C9941A] border-0">
                                     ${price.optimal}
                                   </Badge>
                                 </div>
@@ -1302,7 +1308,7 @@ export default function KreAIteStudio() {
                               onClick={() => generateBlurb()}
                               disabled={isGeneratingBlurb}
                             >
-                              <MessageSquare className="h-3.5 w-3.5 text-violet-500" />
+                              <MessageSquare className="h-3.5 w-3.5 text-[#C9941A]" />
                               {isGeneratingBlurb ? 'Generating...' : 'Generate Blurbs'}
                             </Button>
                             <Button 
@@ -1383,7 +1389,7 @@ export default function KreAIteStudio() {
                               onClick={() => generateAllChapters()}
                               disabled={generationProgress.isGenerating}
                             >
-                              <BookOpen className="h-3.5 w-3.5 text-violet-500" />
+                              <BookOpen className="h-3.5 w-3.5 text-[#C9941A]" />
                               Generate All Chapters
                             </Button>
                           </div>
@@ -1512,7 +1518,7 @@ export default function KreAIteStudio() {
                     isDark ? "text-stone-600" : "text-stone-400"
                   )}>
                     <span className="flex items-center gap-1.5">
-                      <Brain className="h-3 w-3 text-violet-500" />
+                      <Brain className="h-3 w-3 text-[#C9941A]" />
                       Neural Engine Active
                     </span>
                     <span>Ch. {(openTabs.find(t => t.id === activeTabId)?.chapterIndex ?? 0) + 1}</span>
