@@ -1238,6 +1238,237 @@ export const videoSessionParticipants = pgTable("video_session_participants", {
 });
 
 // ============================================================================
+// STROKE RECOVERY ACADEMY - Powered by Stroke Lyfe Inc
+// Recovery journeys, creative expression, community monetization
+// ============================================================================
+
+// Recovery Creator Profiles (extended user profile for stroke survivors)
+export const recoveryCreatorProfiles = pgTable("recovery_creator_profiles", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }).unique(),
+  displayName: text("display_name").notNull(),
+  bio: text("bio"),
+  profileImageUrl: text("profile_image_url"),
+  coverImageUrl: text("cover_image_url"),
+  recoveryStartDate: timestamp("recovery_start_date"), // When their stroke occurred
+  recoveryType: text("recovery_type"), // ischemic, hemorrhagic, tia, other
+  affectedAreas: text("affected_areas").array(), // mobility, speech, cognitive, vision, etc.
+  
+  // Creator monetization
+  isMonetized: boolean("is_monetized").notNull().default(false),
+  stripeConnectId: text("stripe_connect_id"), // For payouts
+  tipJarEnabled: boolean("tip_jar_enabled").notNull().default(false),
+  subscriptionEnabled: boolean("subscription_enabled").notNull().default(false),
+  monthlySubscriptionPrice: integer("monthly_subscription_price"), // In cents
+  
+  // Social/engagement
+  followerCount: integer("follower_count").notNull().default(0),
+  followingCount: integer("following_count").notNull().default(0),
+  totalViews: integer("total_views").notNull().default(0),
+  totalTips: integer("total_tips").notNull().default(0), // In cents
+  
+  // Verification & credentials
+  isVerified: boolean("is_verified").notNull().default(false),
+  verificationDate: timestamp("verification_date"),
+  credentials: text("credentials").array(), // survivor, caregiver, therapist, advocate
+  websiteUrl: text("website_url"),
+  socialLinks: jsonb("social_links").default({}), // {instagram, youtube, twitter, etc}
+  
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Recovery Journey Stories - Main content type for sharing experiences
+export const recoveryStories = pgTable("recovery_stories", {
+  id: serial("id").primaryKey(),
+  authorId: varchar("author_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  slug: text("slug").notNull().unique(),
+  title: text("title").notNull(),
+  subtitle: text("subtitle"),
+  content: text("content").notNull(),
+  excerpt: text("excerpt"),
+  
+  // Story classification
+  storyType: text("story_type").notNull().default("journey"), // journey, milestone, tip, inspiration, creative
+  category: text("category"), // mobility, speech, cognitive, emotional, lifestyle, creative
+  tags: text("tags").array(),
+  
+  // Media
+  coverImageUrl: text("cover_image_url"),
+  coverImageAlt: text("cover_image_alt"),
+  mediaGallery: jsonb("media_gallery").default([]), // [{type, url, caption}]
+  videoUrl: text("video_url"), // YouTube/Vimeo embed
+  audioUrl: text("audio_url"), // For audio stories/podcasts
+  
+  // Timeline/milestones
+  recoveryStage: text("recovery_stage"), // acute, subacute, chronic, long-term
+  daysPostStroke: integer("days_post_stroke"), // Days since stroke when story was written
+  milestonesAchieved: text("milestones_achieved").array(),
+  
+  // Publishing
+  status: text("status").notNull().default("draft"), // draft, published, archived, premium
+  visibility: text("visibility").notNull().default("public"), // public, subscribers, private
+  isPremium: boolean("is_premium").notNull().default(false), // Premium/paywalled content
+  premiumPrice: integer("premium_price"), // One-time price in cents
+  
+  // Engagement
+  viewCount: integer("view_count").notNull().default(0),
+  likeCount: integer("like_count").notNull().default(0),
+  commentCount: integer("comment_count").notNull().default(0),
+  shareCount: integer("share_count").notNull().default(0),
+  bookmarkCount: integer("bookmark_count").notNull().default(0),
+  
+  // SEO (inherits from premium blog suite)
+  metaTitle: text("meta_title"),
+  metaDescription: text("meta_description"),
+  focusKeyphrase: text("focus_keyphrase"),
+  seoScore: integer("seo_score"),
+  
+  // Timestamps
+  publishedAt: timestamp("published_at"),
+  featuredAt: timestamp("featured_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Recovery Milestones - Track specific achievements in recovery journey
+export const recoveryMilestones = pgTable("recovery_milestones", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  description: text("description"),
+  category: text("category").notNull(), // mobility, speech, cognitive, emotional, daily-living, social
+  achievedAt: timestamp("achieved_at").notNull(),
+  daysPostStroke: integer("days_post_stroke"),
+  
+  // Evidence/celebration
+  imageUrl: text("image_url"),
+  videoUrl: text("video_url"),
+  
+  // Sharing
+  isPublic: boolean("is_public").notNull().default(true),
+  linkedStoryId: integer("linked_story_id").references(() => recoveryStories.id),
+  
+  // Engagement
+  celebrationCount: integer("celebration_count").notNull().default(0), // Like equivalent
+  
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Story Reactions & Engagement
+export const recoveryStoryReactions = pgTable("recovery_story_reactions", {
+  id: serial("id").primaryKey(),
+  storyId: integer("story_id").notNull().references(() => recoveryStories.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  reactionType: text("reaction_type").notNull().default("heart"), // heart, inspire, strong, support, celebrate
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Story Comments
+export const recoveryStoryComments = pgTable("recovery_story_comments", {
+  id: serial("id").primaryKey(),
+  storyId: integer("story_id").notNull().references(() => recoveryStories.id, { onDelete: "cascade" }),
+  authorId: varchar("author_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  parentId: integer("parent_id"),
+  content: text("content").notNull(),
+  isEdited: boolean("is_edited").notNull().default(false),
+  likeCount: integer("like_count").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Creator Following/Subscriptions
+export const recoveryCreatorFollows = pgTable("recovery_creator_follows", {
+  id: serial("id").primaryKey(),
+  followerId: varchar("follower_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  creatorId: varchar("creator_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  isSubscribed: boolean("is_subscribed").notNull().default(false), // Paid subscriber
+  subscriptionStartDate: timestamp("subscription_start_date"),
+  subscriptionEndDate: timestamp("subscription_end_date"),
+  notificationsEnabled: boolean("notifications_enabled").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Tips/Donations
+export const recoveryCreatorTips = pgTable("recovery_creator_tips", {
+  id: serial("id").primaryKey(),
+  fromUserId: varchar("from_user_id").references(() => users.id, { onDelete: "set null" }),
+  toCreatorId: varchar("to_creator_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  storyId: integer("story_id").references(() => recoveryStories.id, { onDelete: "set null" }),
+  amount: integer("amount").notNull(), // In cents
+  currency: text("currency").notNull().default("USD"),
+  message: text("message"),
+  isAnonymous: boolean("is_anonymous").notNull().default(false),
+  stripePaymentId: text("stripe_payment_id"),
+  status: text("status").notNull().default("pending"), // pending, completed, failed, refunded
+  platformFee: integer("platform_fee"), // 15% platform cut
+  creatorPayout: integer("creator_payout"), // 85% to creator
+  paidOutAt: timestamp("paid_out_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Premium Content Purchases
+export const recoveryPremiumPurchases = pgTable("recovery_premium_purchases", {
+  id: serial("id").primaryKey(),
+  buyerId: varchar("buyer_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  storyId: integer("story_id").notNull().references(() => recoveryStories.id, { onDelete: "cascade" }),
+  amount: integer("amount").notNull(),
+  currency: text("currency").notNull().default("USD"),
+  stripePaymentId: text("stripe_payment_id"),
+  status: text("status").notNull().default("completed"),
+  platformFee: integer("platform_fee"),
+  creatorPayout: integer("creator_payout"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Recovery Resources (curated content, exercises, tips)
+export const recoveryResources = pgTable("recovery_resources", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  content: text("content"),
+  resourceType: text("resource_type").notNull(), // exercise, guide, video, audio, document, link
+  category: text("category").notNull(), // mobility, speech, cognitive, emotional, nutrition, lifestyle
+  difficultyLevel: text("difficulty_level"), // beginner, intermediate, advanced
+  duration: integer("duration"), // In minutes
+  mediaUrl: text("media_url"),
+  thumbnailUrl: text("thumbnail_url"),
+  externalUrl: text("external_url"),
+  authorId: varchar("author_id").references(() => users.id),
+  isOfficial: boolean("is_official").notNull().default(false), // Created by Stroke Lyfe Inc
+  isPremium: boolean("is_premium").notNull().default(false),
+  viewCount: integer("view_count").notNull().default(0),
+  saveCount: integer("save_count").notNull().default(0),
+  tags: text("tags").array(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Support Groups/Communities
+export const recoverySupportGroups = pgTable("recovery_support_groups", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),
+  description: text("description"),
+  coverImageUrl: text("cover_image_url"),
+  category: text("category").notNull(), // condition-specific, age-group, location, topic
+  isPrivate: boolean("is_private").notNull().default(false),
+  memberCount: integer("member_count").notNull().default(0),
+  postCount: integer("post_count").notNull().default(0),
+  createdById: varchar("created_by_id").notNull().references(() => users.id),
+  isOfficial: boolean("is_official").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const recoverySupportGroupMembers = pgTable("recovery_support_group_members", {
+  id: serial("id").primaryKey(),
+  groupId: integer("group_id").notNull().references(() => recoverySupportGroups.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  role: text("role").notNull().default("member"), // admin, moderator, member
+  joinedAt: timestamp("joined_at").notNull().defaultNow(),
+});
+
+// ============================================================================
 // SEO & CONTENT PAGES
 // ============================================================================
 
