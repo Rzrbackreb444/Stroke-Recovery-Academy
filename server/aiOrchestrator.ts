@@ -1,5 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import OpenAI from "openai";
+import Anthropic from "@anthropic-ai/sdk";
 import crypto from "crypto";
 import { db } from "./db";
 import { aiProviderUsage } from "@shared/schema";
@@ -7,11 +8,22 @@ import { eq, and, gte, sql } from "drizzle-orm";
 
 // Provider configurations with cost per 1M tokens (in cents)
 const PROVIDER_COSTS = {
+  // Google Models
   "gemini-2.5-flash": { input: 35, output: 105 },      // $0.35/$1.05 per 1M - PRIMARY WORKHORSE
   "gemini-2.5-pro": { input: 125, output: 500 },       // $1.25/$5.00 per 1M - Complex reasoning
+  // OpenAI Models
+  "gpt-4o": { input: 250, output: 1000 },              // $2.50/$10.00 per 1M - Premium
+  "gpt-4o-mini": { input: 15, output: 60 },            // $0.15/$0.60 per 1M - Cheap
   "gpt-5-mini": { input: 150, output: 600 },           // $1.50/$6.00 per 1M - Quality refinement
   "gpt-5-nano": { input: 10, output: 40 },             // $0.10/$0.40 per 1M - Ultra cheap tasks
-  "gpt-4o-mini": { input: 15, output: 60 },            // $0.15/$0.60 per 1M - Fallback cheap
+  // Anthropic Models
+  "claude-sonnet-4-20250514": { input: 300, output: 1500 }, // $3.00/$15.00 per 1M - Best quality
+  "claude-3-5-sonnet": { input: 300, output: 1500 },   // $3.00/$15.00 per 1M - High quality
+  "claude-3-haiku": { input: 25, output: 125 },        // $0.25/$1.25 per 1M - Fast/cheap
+  // Grok Models
+  "grok-beta": { input: 500, output: 1500 },           // xAI Grok
+  // Perplexity Models
+  "llama-3.1-sonar-large-128k-online": { input: 100, output: 100 }, // Perplexity with search
 } as const;
 
 // Task complexity routing
@@ -52,9 +64,9 @@ interface CacheEntry {
 const responseCache = new Map<string, CacheEntry>();
 const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
 
-// Initialize clients
+// Initialize clients - prioritize user's custom keys, fallback to Replit AI integrations
 const gemini = new GoogleGenAI({
-  apiKey: process.env.AI_INTEGRATIONS_GEMINI_API_KEY || "",
+  apiKey: process.env.GEMINI_API_KEY || process.env.AI_INTEGRATIONS_GEMINI_API_KEY || "",
   httpOptions: {
     apiVersion: "",
     baseUrl: process.env.AI_INTEGRATIONS_GEMINI_BASE_URL,
@@ -62,9 +74,37 @@ const gemini = new GoogleGenAI({
 });
 
 const openai = new OpenAI({
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY || "",
+  apiKey: process.env.OPENAI_API_KEY || process.env.AI_INTEGRATIONS_OPENAI_API_KEY || "",
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
 });
+
+// Anthropic client using user's API key
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY || "",
+});
+
+// Grok client (xAI uses OpenAI-compatible API)
+const grok = new OpenAI({
+  apiKey: process.env.GROK_API_KEY || process.env.XAI_API_KEY || "",
+  baseURL: "https://api.x.ai/v1",
+});
+
+// Perplexity client (OpenAI-compatible API)
+const perplexity = new OpenAI({
+  apiKey: process.env.PERPLEXITY_API_KEY || "",
+  baseURL: "https://api.perplexity.ai",
+});
+
+// Check which providers are available
+export function getAvailableProviders(): string[] {
+  const providers: string[] = [];
+  if (process.env.GEMINI_API_KEY || process.env.AI_INTEGRATIONS_GEMINI_API_KEY) providers.push("gemini");
+  if (process.env.OPENAI_API_KEY || process.env.AI_INTEGRATIONS_OPENAI_API_KEY) providers.push("openai");
+  if (process.env.ANTHROPIC_API_KEY) providers.push("anthropic");
+  if (process.env.GROK_API_KEY || process.env.XAI_API_KEY) providers.push("grok");
+  if (process.env.PERPLEXITY_API_KEY) providers.push("perplexity");
+  return providers;
+}
 
 // Generate cache key from prompt hash
 function getCacheKey(prompt: string, systemPrompt: string, model: string): string {
