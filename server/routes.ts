@@ -17,6 +17,12 @@ import { generateImage, generateMovieScript, generateStoryboard, isVideoServiceC
 import { createGoogleDoc, getGoogleDoc, updateGoogleDoc, createGoogleSlides, createGoogleSheet, createGoogleForm, exportDocument, isGoogleWorkspaceConfigured, getWorkspaceStatus } from "./googleWorkspaceService";
 import { synthesizeSpeechTTS, synthesizeChapter, audiobookStyles, narratorVoices, estimateAudioDuration, estimateTTSCost, isTTSConfigured } from "./textToSpeechService";
 import { getAllPresets, getMusicalScales, getMusicalKeys, calculateSyncedDelay } from "./audioProcessingService";
+import { API_PRICING, getAllPricing, getPricingByCategory, chargeForAPIUsage, calculateCost } from "./apiPricingService";
+import { transcribeAudio, synthesizeSpeech as synthesizeSpeechGoogle, getAvailableVoices } from "./speechService";
+import { analyzeVideo, getVideoAnalysisResult } from "./videoIntelligenceService";
+import { translateText, detectLanguage, getSupportedLanguages, SUPPORTED_LANGUAGES } from "./translationService";
+import { searchGifs, getTrendingGifs } from "./tenorService";
+import { createTalkingAvatar, getAvatarVideoStatus, getStockPresenters, getAvailableVoices as getAvatarVoices } from "./didAvatarService";
 import { 
   isSpotifyConfigured, 
   searchTracks, 
@@ -16348,6 +16354,292 @@ Format as structured JSON with clear sections.`;
     } catch (error: any) {
       console.error("Error converting lyrics to music:", error);
       res.status(500).json({ message: error.message || "Failed to convert lyrics to music" });
+    }
+  });
+
+  // =============================================
+  // API PRICING & BILLING ENDPOINTS
+  // =============================================
+  
+  // GET /api/pricing - Get all API pricing information
+  app.get('/api/pricing', async (req, res) => {
+    try {
+      res.json({ pricing: getAllPricing() });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // GET /api/pricing/:category - Get pricing by category
+  app.get('/api/pricing/:category', async (req, res) => {
+    try {
+      const category = req.params.category as any;
+      res.json({ pricing: getPricingByCategory(category) });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // POST /api/pricing/calculate - Calculate cost before action
+  app.post('/api/pricing/calculate', async (req, res) => {
+    try {
+      const { featureKey, units } = req.body;
+      const cost = calculateCost(featureKey, units || 1);
+      const pricing = API_PRICING[featureKey];
+      res.json({ 
+        featureKey, 
+        units: units || 1, 
+        costPerUnit: pricing?.creditsPerUnit || 0,
+        totalCost: cost,
+        pricing 
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // =============================================
+  // SPEECH SERVICES (Speech-to-Text, Text-to-Speech)
+  // =============================================
+
+  // POST /api/speech/transcribe - Transcribe audio to text
+  app.post('/api/speech/transcribe', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ message: 'Not authenticated' });
+
+      const { audioBase64, languageCode, enableWordTimeOffsets, model, encoding } = req.body;
+      if (!audioBase64) return res.status(400).json({ message: 'Audio data required' });
+
+      const result = await transcribeAudio(userId, audioBase64, {
+        languageCode,
+        enableWordTimeOffsets,
+        model,
+        encoding
+      });
+
+      if (!result.success) {
+        return res.status(400).json({ message: result.error });
+      }
+
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // POST /api/speech/synthesize - Text to speech
+  app.post('/api/speech/synthesize', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ message: 'Not authenticated' });
+
+      const { text, languageCode, voiceName, ssmlGender, speakingRate, pitch, audioEncoding } = req.body;
+      if (!text) return res.status(400).json({ message: 'Text required' });
+
+      const result = await synthesizeSpeechGoogle(userId, text, {
+        languageCode,
+        voiceName,
+        ssmlGender,
+        speakingRate,
+        pitch,
+        audioEncoding
+      });
+
+      if (!result.success) {
+        return res.status(400).json({ message: result.error });
+      }
+
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // GET /api/speech/voices - Get available voices
+  app.get('/api/speech/voices', async (req, res) => {
+    try {
+      const { languageCode } = req.query;
+      const voices = await getAvailableVoices(languageCode as string);
+      res.json({ voices });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // =============================================
+  // VIDEO INTELLIGENCE SERVICES
+  // =============================================
+
+  // POST /api/video-intelligence/analyze - Start video analysis
+  app.post('/api/video-intelligence/analyze', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ message: 'Not authenticated' });
+
+      const { videoUri, detectScenes, detectLabels, transcribe, detectExplicitContent, languageCode } = req.body;
+      if (!videoUri) return res.status(400).json({ message: 'Video URI required' });
+
+      const result = await analyzeVideo(userId, videoUri, {
+        detectScenes,
+        detectLabels,
+        transcribe,
+        detectExplicitContent,
+        languageCode
+      });
+
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // GET /api/video-intelligence/result/:operationName - Get analysis result
+  app.get('/api/video-intelligence/result/:operationName', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ message: 'Not authenticated' });
+
+      const { operationName } = req.params;
+      const { estimatedMinutes } = req.query;
+
+      const result = await getVideoAnalysisResult(userId, operationName, parseInt(estimatedMinutes as string) || 1);
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // =============================================
+  // TRANSLATION SERVICES
+  // =============================================
+
+  // POST /api/translate - Translate text
+  app.post('/api/translate', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ message: 'Not authenticated' });
+
+      const { text, targetLanguage, sourceLanguage } = req.body;
+      if (!text || !targetLanguage) {
+        return res.status(400).json({ message: 'Text and target language required' });
+      }
+
+      const result = await translateText(userId, text, targetLanguage, sourceLanguage);
+      if (!result.success) {
+        return res.status(400).json({ message: result.error });
+      }
+
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // POST /api/translate/detect - Detect language
+  app.post('/api/translate/detect', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ message: 'Not authenticated' });
+
+      const { text } = req.body;
+      if (!text) return res.status(400).json({ message: 'Text required' });
+
+      const result = await detectLanguage(userId, text);
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // GET /api/translate/languages - Get supported languages
+  app.get('/api/translate/languages', async (req, res) => {
+    res.json({ languages: SUPPORTED_LANGUAGES });
+  });
+
+  // =============================================
+  // TENOR GIF SERVICES (Free)
+  // =============================================
+
+  // GET /api/gifs/search - Search GIFs
+  app.get('/api/gifs/search', async (req, res) => {
+    try {
+      const { q, limit, next, contentFilter } = req.query;
+      if (!q) return res.status(400).json({ message: 'Query required' });
+
+      const result = await searchGifs(q as string, {
+        limit: parseInt(limit as string) || 20,
+        next: next as string,
+        contentFilter: contentFilter as any
+      });
+
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // GET /api/gifs/trending - Get trending GIFs
+  app.get('/api/gifs/trending', async (req, res) => {
+    try {
+      const { limit, next } = req.query;
+      const result = await getTrendingGifs({
+        limit: parseInt(limit as string) || 20,
+        next: next as string
+      });
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // =============================================
+  // D-ID AVATAR VIDEO SERVICES
+  // =============================================
+
+  // POST /api/avatar/create - Create talking avatar video
+  app.post('/api/avatar/create', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ message: 'Not authenticated' });
+
+      const { text, presenterId, voiceId, language } = req.body;
+      if (!text) return res.status(400).json({ message: 'Text required' });
+
+      const result = await createTalkingAvatar(userId, { text, presenterId, voiceId, language });
+      if (!result.success) {
+        return res.status(400).json({ message: result.error });
+      }
+
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // GET /api/avatar/status/:videoId - Get avatar video status
+  app.get('/api/avatar/status/:videoId', async (req, res) => {
+    try {
+      const { videoId } = req.params;
+      const result = await getAvatarVideoStatus(videoId);
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // GET /api/avatar/presenters - Get stock presenters
+  app.get('/api/avatar/presenters', async (req, res) => {
+    res.json({ presenters: getStockPresenters() });
+  });
+
+  // GET /api/avatar/voices - Get available avatar voices
+  app.get('/api/avatar/voices', async (req, res) => {
+    try {
+      const result = await getAvatarVoices();
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
     }
   });
 
