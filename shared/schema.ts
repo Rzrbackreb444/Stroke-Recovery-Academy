@@ -1282,6 +1282,63 @@ export const blogPosts = pgTable("blog_posts", {
   publishedAt: timestamp("published_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  
+  // ========== PREMIUM SEO FIELDS ==========
+  // Meta tags (optimized lengths)
+  metaTitle: text("meta_title"), // Max 70 chars
+  metaDescription: text("meta_description"), // Max 160 chars
+  metaKeywords: text("meta_keywords").array(), // Focus keywords
+  
+  // Canonical & URLs
+  canonicalUrl: text("canonical_url"), // Custom canonical if different
+  breadcrumbTitle: text("breadcrumb_title"), // Short title for breadcrumbs
+  
+  // Featured image SEO
+  featuredImageAlt: text("featured_image_alt"), // Alt text for hero image
+  featuredImageCaption: text("featured_image_caption"),
+  ogImageUrl: text("og_image_url"), // Custom Open Graph image
+  twitterImageUrl: text("twitter_image_url"), // Custom Twitter card image
+  
+  // Schema.org / Structured Data
+  schemaType: text("schema_type").default("Article"), // Article, BlogPosting, NewsArticle, HowTo
+  primaryCategory: text("primary_category"), // Main category for schema
+  secondaryCategories: text("secondary_categories").array(),
+  
+  // Internal/External Linking
+  internalLinks: jsonb("internal_links").default([]), // [{url, anchor, context}]
+  externalLinks: jsonb("external_links").default([]), // [{url, anchor, nofollow}]
+  relatedPostIds: integer("related_post_ids").array(), // Related posts for internal linking
+  
+  // Advanced SEO
+  focusKeyphrase: text("focus_keyphrase"), // Primary SEO keyphrase
+  keyphraseScore: integer("keyphrase_score"), // SEO score 0-100
+  readabilityScore: integer("readability_score"), // Flesch-Kincaid score
+  seoScore: integer("seo_score"), // Overall SEO score 0-100
+  cornerstone: boolean("cornerstone").default(false), // Cornerstone content marker
+  
+  // Social sharing
+  socialTitle: text("social_title"), // Title for social sharing
+  socialDescription: text("social_description"), // Description for social sharing
+  pinterestImageUrl: text("pinterest_image_url"),
+  
+  // Technical SEO
+  noIndex: boolean("no_index").default(false),
+  noFollow: boolean("no_follow").default(false),
+  indexPriority: real("index_priority").default(0.7), // Sitemap priority 0.0-1.0
+  changeFrequency: text("change_frequency").default("weekly"), // always, hourly, daily, weekly, monthly, yearly, never
+  
+  // Author E-E-A-T
+  authorBio: text("author_bio"), // Author bio for this post
+  authorCredentials: text("author_credentials").array(), // Expertise signals
+  reviewedBy: text("reviewed_by"), // Expert reviewer name
+  reviewedAt: timestamp("reviewed_at"),
+  factChecked: boolean("fact_checked").default(false),
+  lastFactCheckAt: timestamp("last_fact_check_at"),
+  sources: jsonb("sources").default([]), // [{title, url, accessDate}]
+  
+  // Timestamps for freshness signals
+  contentLastUpdated: timestamp("content_last_updated"),
+  seoLastAuditedAt: timestamp("seo_last_audited_at"),
 });
 
 export const blogPostReactions = pgTable("blog_post_reactions", {
