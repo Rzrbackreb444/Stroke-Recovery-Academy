@@ -258,7 +258,7 @@ export default function RiverResearchPanel() {
           <ScrollArea className="h-full">
             <div className="p-4 space-y-4">
               <div className="text-center py-6">
-                <div className="h-12 w-12 mx-auto rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center mb-3">
+                <div className="h-12 w-12 mx-auto rounded-xl bg-gradient-to-br from-[#C9941A] to-amber-600 flex items-center justify-center mb-3">
                   <Sparkles className="h-6 w-6 text-white" />
                 </div>
                 <h3 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">AI Writing Assistant</h3>
@@ -299,7 +299,7 @@ export default function RiverResearchPanel() {
                   className="w-full h-9 text-xs justify-start gap-2"
                   data-testid="ai-character-voice"
                 >
-                  <Users className="h-3.5 w-3.5 text-purple-500" />
+                  <Users className="h-3.5 w-3.5 text-[#C9941A]" />
                   Check character voice
                 </Button>
               </div>

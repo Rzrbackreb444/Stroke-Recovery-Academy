@@ -84,8 +84,8 @@ const CATEGORY_COLORS: Record<string, string> = {
   character: 'text-blue-500',
   location: 'text-green-500',
   timeline: 'text-orange-500',
-  object: 'text-purple-500',
-  plot: 'text-pink-500',
+  object: 'text-[#C9941A]',
+  plot: 'text-amber-600',
 };
 
 export default function ConsistencyMonitor({
