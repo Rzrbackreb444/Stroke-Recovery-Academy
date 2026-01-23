@@ -381,42 +381,42 @@ export default function CourseStudio() {
               <h2 className="text-2xl font-bold text-foreground mb-2" data-testid="text-step-title">
                 Course Details
               </h2>
-              <p className="text-gray-400">Start with the basics of your course</p>
+              <p className="text-white/60">Start with the basics of your course</p>
             </div>
 
             <div className="space-y-4">
               <div>
-                <Label htmlFor="course-title" className="text-gray-300">Course Title</Label>
+                <Label htmlFor="course-title" className="text-white/70">Course Title</Label>
                 <Input
                   id="course-title"
                   data-testid="input-course-title"
                   value={courseTitle}
                   onChange={(e) => setCourseTitle(e.target.value)}
                   placeholder="e.g., Complete Stroke Recovery Protocol"
-                  className="bg-gray-900 border-gray-700 text-foreground mt-1"
+                  className="bg-[#1A1A1A] border-[#C9941A]/30 text-foreground mt-1"
                 />
               </div>
 
               <div>
-                <Label htmlFor="course-description" className="text-gray-300">Course Description</Label>
+                <Label htmlFor="course-description" className="text-white/70">Course Description</Label>
                 <Textarea
                   id="course-description"
                   data-testid="input-course-description"
                   value={courseDescription}
                   onChange={(e) => setCourseDescription(e.target.value)}
                   placeholder="Describe what students will learn..."
-                  className="bg-gray-900 border-gray-700 text-foreground mt-1 min-h-[120px]"
+                  className="bg-[#1A1A1A] border-[#C9941A]/30 text-foreground mt-1 min-h-[120px]"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label className="text-gray-300">Category</Label>
+                  <Label className="text-white/70">Category</Label>
                   <Select value={courseCategory} onValueChange={setCourseCategory}>
-                    <SelectTrigger data-testid="select-category" className="bg-gray-900 border-gray-700 text-foreground mt-1">
+                    <SelectTrigger data-testid="select-category" className="bg-[#1A1A1A] border-[#C9941A]/30 text-foreground mt-1">
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-900 border-gray-700">
+                    <SelectContent className="bg-[#1A1A1A] border-[#C9941A]/30">
                       {categories.map((cat) => (
                         <SelectItem key={cat.value} value={cat.value} className="text-foreground">
                           {cat.label}
@@ -427,12 +427,12 @@ export default function CourseStudio() {
                 </div>
 
                 <div>
-                  <Label className="text-gray-300">Level</Label>
+                  <Label className="text-white/70">Level</Label>
                   <Select value={courseLevel} onValueChange={setCourseLevel}>
-                    <SelectTrigger data-testid="select-level" className="bg-gray-900 border-gray-700 text-foreground mt-1">
+                    <SelectTrigger data-testid="select-level" className="bg-[#1A1A1A] border-[#C9941A]/30 text-foreground mt-1">
                       <SelectValue placeholder="Select level" />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-900 border-gray-700">
+                    <SelectContent className="bg-[#1A1A1A] border-[#C9941A]/30">
                       {levels.map((level) => (
                         <SelectItem key={level.value} value={level.value} className="text-foreground">
                           {level.label}
@@ -444,11 +444,11 @@ export default function CourseStudio() {
               </div>
 
               <div>
-                <Label htmlFor="course-thumbnail" className="text-gray-300">Thumbnail Image</Label>
-                <div className="mt-1 border-2 border-dashed border-gray-700 rounded-lg p-8 text-center hover:border-orange-500/50 transition-colors cursor-pointer">
-                  <Upload className="w-10 h-10 text-gray-500 mx-auto mb-3" />
-                  <p className="text-gray-400 text-sm">Click to upload or drag and drop</p>
-                  <p className="text-gray-500 text-xs mt-1">PNG, JPG up to 5MB (1280x720 recommended)</p>
+                <Label htmlFor="course-thumbnail" className="text-white/70">Thumbnail Image</Label>
+                <div className="mt-1 border-2 border-dashed border-[#C9941A]/30 rounded-lg p-8 text-center hover:border-orange-500/50 transition-colors cursor-pointer">
+                  <Upload className="w-10 h-10 text-white/50 mx-auto mb-3" />
+                  <p className="text-white/60 text-sm">Click to upload or drag and drop</p>
+                  <p className="text-white/50 text-xs mt-1">PNG, JPG up to 5MB (1280x720 recommended)</p>
                   <Input
                     id="course-thumbnail"
                     type="file"
@@ -474,7 +474,7 @@ export default function CourseStudio() {
               <h2 className="text-2xl font-bold text-foreground mb-2" data-testid="text-step-title">
                 Course Structure
               </h2>
-              <p className="text-gray-400">Organize your course into modules and lessons</p>
+              <p className="text-white/60">Organize your course into modules and lessons</p>
             </div>
 
             <div className="flex items-center justify-between mb-4">
@@ -482,10 +482,10 @@ export default function CourseStudio() {
                 <Badge variant="outline" className="border-orange-500/50 text-primary">
                   {modules.length} Modules
                 </Badge>
-                <Badge variant="outline" className="border-gray-600 text-gray-400">
+                <Badge variant="outline" className="border-gray-600 text-white/60">
                   {getTotalLessons()} Lessons
                 </Badge>
-                <Badge variant="outline" className="border-gray-600 text-gray-400">
+                <Badge variant="outline" className="border-gray-600 text-white/60">
                   <Clock className="w-3 h-3 mr-1" />
                   {getTotalDuration()} min
                 </Badge>
@@ -521,11 +521,11 @@ export default function CourseStudio() {
             <ScrollArea className="h-[400px] pr-4">
               <div className="space-y-4">
                 {modules.map((module, moduleIndex) => (
-                  <Card key={module.id} className="bg-gray-900 border-gray-800" data-testid={`card-module-${module.id}`}>
+                  <Card key={module.id} className="industrial-card" data-testid={`card-module-${module.id}`}>
                     <CardHeader className="pb-2">
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2 flex-1">
-                          <GripVertical className="w-5 h-5 text-gray-600 cursor-move" />
+                          <GripVertical className="w-5 h-5 text-white/40 cursor-move" />
                           <Input
                             value={module.title}
                             data-testid={`input-module-title-${module.id}`}
@@ -544,7 +544,7 @@ export default function CourseStudio() {
                             data-testid={`button-move-up-${module.id}`}
                             onClick={() => moveModule(moduleIndex, "up")}
                             disabled={moduleIndex === 0}
-                            className="h-8 w-8 text-gray-400 hover:text-foreground"
+                            className="h-8 w-8 text-white/60 hover:text-foreground"
                           >
                             <ArrowUp className="w-4 h-4" />
                           </Button>
@@ -554,7 +554,7 @@ export default function CourseStudio() {
                             data-testid={`button-move-down-${module.id}`}
                             onClick={() => moveModule(moduleIndex, "down")}
                             disabled={moduleIndex === modules.length - 1}
-                            className="h-8 w-8 text-gray-400 hover:text-foreground"
+                            className="h-8 w-8 text-white/60 hover:text-foreground"
                           >
                             <ArrowDown className="w-4 h-4" />
                           </Button>
@@ -563,7 +563,7 @@ export default function CourseStudio() {
                             size="icon"
                             data-testid={`button-toggle-module-${module.id}`}
                             onClick={() => toggleModuleExpand(module.id)}
-                            className="h-8 w-8 text-gray-400 hover:text-foreground"
+                            className="h-8 w-8 text-white/60 hover:text-foreground"
                           >
                             <ChevronRight className={`w-4 h-4 transition-transform ${module.expanded ? "rotate-90" : ""}`} />
                           </Button>
@@ -572,7 +572,7 @@ export default function CourseStudio() {
                             size="icon"
                             data-testid={`button-delete-module-${module.id}`}
                             onClick={() => removeModule(module.id)}
-                            className="h-8 w-8 text-gray-400 hover:text-red-500"
+                            className="h-8 w-8 text-white/60 hover:text-red-500"
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
@@ -587,7 +587,7 @@ export default function CourseStudio() {
                           ));
                         }}
                         placeholder="Module description..."
-                        className="bg-transparent border-none text-gray-400 text-sm p-0 h-auto focus-visible:ring-0"
+                        className="bg-transparent border-none text-white/60 text-sm p-0 h-auto focus-visible:ring-0"
                       />
                     </CardHeader>
                     
@@ -601,7 +601,7 @@ export default function CourseStudio() {
                               data-testid={`lesson-${lesson.id}`}
                             >
                               <div className="flex items-center gap-3">
-                                <GripVertical className="w-4 h-4 text-gray-600 cursor-move opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <GripVertical className="w-4 h-4 text-white/40 cursor-move opacity-0 group-hover:opacity-100 transition-opacity" />
                                 {lesson.type === "video" && <Video className="w-4 h-4 text-primary" />}
                                 {lesson.type === "text" && <FileText className="w-4 h-4 text-blue-500" />}
                                 {lesson.type === "quiz" && <ListChecks className="w-4 h-4 text-green-500" />}
@@ -625,7 +625,7 @@ export default function CourseStudio() {
                                 />
                               </div>
                               <div className="flex items-center gap-2">
-                                <Badge variant="outline" className="border-gray-700 text-gray-500 text-xs">
+                                <Badge variant="outline" className="border-[#C9941A]/30 text-white/50 text-xs">
                                   {lesson.duration} min
                                 </Badge>
                                 <Button
@@ -633,7 +633,7 @@ export default function CourseStudio() {
                                   size="icon"
                                   data-testid={`button-delete-lesson-${lesson.id}`}
                                   onClick={() => removeLesson(module.id, lesson.id)}
-                                  className="h-7 w-7 text-gray-500 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                  className="h-7 w-7 text-white/50 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
                                 >
                                   <Trash2 className="w-3 h-3" />
                                 </Button>
@@ -647,7 +647,7 @@ export default function CourseStudio() {
                               size="sm"
                               data-testid={`button-add-video-${module.id}`}
                               onClick={() => addLesson(module.id, "video")}
-                              className="border-gray-700 text-gray-400 hover:text-foreground hover:border-orange-500/50"
+                              className="border-[#C9941A]/30 text-white/60 hover:text-foreground hover:border-orange-500/50"
                             >
                               <Video className="w-3 h-3 mr-1" />
                               Video
@@ -657,7 +657,7 @@ export default function CourseStudio() {
                               size="sm"
                               data-testid={`button-add-text-${module.id}`}
                               onClick={() => addLesson(module.id, "text")}
-                              className="border-gray-700 text-gray-400 hover:text-foreground hover:border-blue-500/50"
+                              className="border-[#C9941A]/30 text-white/60 hover:text-foreground hover:border-blue-500/50"
                             >
                               <FileText className="w-3 h-3 mr-1" />
                               Text
@@ -667,7 +667,7 @@ export default function CourseStudio() {
                               size="sm"
                               data-testid={`button-add-quiz-${module.id}`}
                               onClick={() => addLesson(module.id, "quiz")}
-                              className="border-gray-700 text-gray-400 hover:text-foreground hover:border-green-500/50"
+                              className="border-[#C9941A]/30 text-white/60 hover:text-foreground hover:border-green-500/50"
                             >
                               <ListChecks className="w-3 h-3 mr-1" />
                               Quiz
@@ -690,33 +690,33 @@ export default function CourseStudio() {
               <h2 className="text-2xl font-bold text-foreground mb-2" data-testid="text-step-title">
                 Content & Media
               </h2>
-              <p className="text-gray-400">Upload videos and create content for your lessons</p>
+              <p className="text-white/60">Upload videos and create content for your lessons</p>
             </div>
 
             <Tabs defaultValue="video" className="w-full">
-              <TabsList className="bg-gray-900 border border-gray-800 mb-4">
-                <TabsTrigger value="video" data-testid="tab-video-upload" className="data-[state=active]:bg-orange-500 data-[state=active]:text-black">
+              <TabsList className="bg-[#1A1A1A] border border-[#C9941A]/30 mb-4">
+                <TabsTrigger value="video" data-testid="tab-video-upload" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black">
                   <Video className="w-4 h-4 mr-2" />
                   Video Upload
                 </TabsTrigger>
-                <TabsTrigger value="text" data-testid="tab-text-editor" className="data-[state=active]:bg-orange-500 data-[state=active]:text-black">
+                <TabsTrigger value="text" data-testid="tab-text-editor" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black">
                   <FileText className="w-4 h-4 mr-2" />
                   Text Editor
                 </TabsTrigger>
-                <TabsTrigger value="quiz" data-testid="tab-quiz-builder" className="data-[state=active]:bg-orange-500 data-[state=active]:text-black">
+                <TabsTrigger value="quiz" data-testid="tab-quiz-builder" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black">
                   <ListChecks className="w-4 h-4 mr-2" />
                   Quiz Builder
                 </TabsTrigger>
               </TabsList>
 
               <TabsContent value="video">
-                <Card className="bg-gray-900 border-gray-800">
+                <Card className="industrial-card">
                   <CardContent className="p-6">
-                    <div className="border-2 border-dashed border-gray-700 rounded-lg p-12 text-center hover:border-orange-500/50 transition-colors cursor-pointer">
-                      <Upload className="w-16 h-16 text-gray-500 mx-auto mb-4" />
+                    <div className="border-2 border-dashed border-[#C9941A]/30 rounded-lg p-12 text-center hover:border-orange-500/50 transition-colors cursor-pointer">
+                      <Upload className="w-16 h-16 text-white/50 mx-auto mb-4" />
                       <h3 className="text-xl font-semibold text-foreground mb-2">Upload Video Lessons</h3>
-                      <p className="text-gray-400 mb-4">Drag and drop your video files or click to browse</p>
-                      <p className="text-gray-500 text-sm">Supports MP4, MOV, WebM up to 2GB</p>
+                      <p className="text-white/60 mb-4">Drag and drop your video files or click to browse</p>
+                      <p className="text-white/50 text-sm">Supports MP4, MOV, WebM up to 2GB</p>
                       <Button
                         data-testid="button-upload-video"
                         className="mt-6 bg-orange-500 hover:bg-orange-600 text-black"
@@ -734,7 +734,7 @@ export default function CourseStudio() {
                           </div>
                           <div>
                             <p className="text-foreground font-medium">welcome_video.mp4</p>
-                            <p className="text-gray-500 text-sm">145 MB • Uploaded</p>
+                            <p className="text-white/50 text-sm">145 MB • Uploaded</p>
                           </div>
                         </div>
                         <Badge className="bg-green-500/20 text-green-500 border-green-500/30">
@@ -748,31 +748,31 @@ export default function CourseStudio() {
               </TabsContent>
 
               <TabsContent value="text">
-                <Card className="bg-gray-900 border-gray-800">
+                <Card className="industrial-card">
                   <CardContent className="p-6">
-                    <div className="flex items-center gap-2 mb-4 border-b border-gray-800 pb-4">
-                      <Button variant="ghost" size="sm" data-testid="button-bold" className="text-gray-400 hover:text-foreground">
+                    <div className="flex items-center gap-2 mb-4 border-b border-[#C9941A]/30 pb-4">
+                      <Button variant="ghost" size="sm" data-testid="button-bold" className="text-white/60 hover:text-foreground">
                         <span className="font-bold">B</span>
                       </Button>
-                      <Button variant="ghost" size="sm" data-testid="button-italic" className="text-gray-400 hover:text-foreground">
+                      <Button variant="ghost" size="sm" data-testid="button-italic" className="text-white/60 hover:text-foreground">
                         <span className="italic">I</span>
                       </Button>
                       <Separator orientation="vertical" className="h-6 bg-gray-700" />
-                      <Button variant="ghost" size="sm" data-testid="button-heading" className="text-gray-400 hover:text-foreground">
+                      <Button variant="ghost" size="sm" data-testid="button-heading" className="text-white/60 hover:text-foreground">
                         H1
                       </Button>
-                      <Button variant="ghost" size="sm" data-testid="button-list" className="text-gray-400 hover:text-foreground">
+                      <Button variant="ghost" size="sm" data-testid="button-list" className="text-white/60 hover:text-foreground">
                         <ListChecks className="w-4 h-4" />
                       </Button>
                       <Separator orientation="vertical" className="h-6 bg-gray-700" />
-                      <Button variant="ghost" size="sm" data-testid="button-image" className="text-gray-400 hover:text-foreground">
+                      <Button variant="ghost" size="sm" data-testid="button-image" className="text-white/60 hover:text-foreground">
                         <Image className="w-4 h-4" />
                       </Button>
                     </div>
                     <Textarea
                       data-testid="textarea-lesson-content"
                       placeholder="Write your lesson content here..."
-                      className="bg-gray-800 border-gray-700 text-foreground min-h-[300px]"
+                      className="bg-gray-800 border-[#C9941A]/30 text-foreground min-h-[300px]"
                     />
                     <div className="flex justify-end mt-4">
                       <Button
@@ -790,7 +790,7 @@ export default function CourseStudio() {
               </TabsContent>
 
               <TabsContent value="quiz">
-                <Card className="bg-gray-900 border-gray-800">
+                <Card className="industrial-card">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between mb-6">
                       <h3 className="text-lg font-semibold text-foreground">Quiz Questions</h3>
@@ -808,7 +808,7 @@ export default function CourseStudio() {
                     <ScrollArea className="h-[350px] pr-4">
                       <div className="space-y-6">
                         {quizQuestions.map((question, qIndex) => (
-                          <Card key={question.id} className="bg-gray-800 border-gray-700" data-testid={`card-question-${question.id}`}>
+                          <Card key={question.id} className="bg-gray-800 border-[#C9941A]/30" data-testid={`card-question-${question.id}`}>
                             <CardContent className="p-4">
                               <div className="flex items-start justify-between gap-4 mb-4">
                                 <div className="flex items-center gap-2">
@@ -821,7 +821,7 @@ export default function CourseStudio() {
                                   size="icon"
                                   data-testid={`button-delete-question-${question.id}`}
                                   onClick={() => removeQuizQuestion(question.id)}
-                                  className="h-8 w-8 text-gray-500 hover:text-red-500"
+                                  className="h-8 w-8 text-white/50 hover:text-red-500"
                                 >
                                   <Trash2 className="w-4 h-4" />
                                 </Button>
@@ -832,7 +832,7 @@ export default function CourseStudio() {
                                 data-testid={`input-question-${question.id}`}
                                 onChange={(e) => updateQuizQuestion(question.id, "question", e.target.value)}
                                 placeholder="Enter your question..."
-                                className="bg-gray-900 border-gray-700 text-foreground mb-4"
+                                className="bg-[#1A1A1A] border-[#C9941A]/30 text-foreground mb-4"
                               />
 
                               <div className="space-y-2">
@@ -846,7 +846,7 @@ export default function CourseStudio() {
                                       className={`h-8 w-8 ${
                                         question.correctAnswer === optIndex
                                           ? "bg-green-500 hover:bg-green-600 text-foreground"
-                                          : "border-gray-700 text-gray-500"
+                                          : "border-[#C9941A]/30 text-white/50"
                                       }`}
                                     >
                                       {String.fromCharCode(65 + optIndex)}
@@ -856,20 +856,20 @@ export default function CourseStudio() {
                                       data-testid={`input-option-${question.id}-${optIndex}`}
                                       onChange={(e) => updateQuizOption(question.id, optIndex, e.target.value)}
                                       placeholder={`Option ${String.fromCharCode(65 + optIndex)}`}
-                                      className="bg-gray-900 border-gray-700 text-foreground"
+                                      className="bg-[#1A1A1A] border-[#C9941A]/30 text-foreground"
                                     />
                                   </div>
                                 ))}
                               </div>
 
                               <div className="mt-4">
-                                <Label className="text-gray-400 text-sm">Explanation (shown after answer)</Label>
+                                <Label className="text-white/60 text-sm">Explanation (shown after answer)</Label>
                                 <Textarea
                                   value={question.explanation}
                                   data-testid={`textarea-explanation-${question.id}`}
                                   onChange={(e) => updateQuizQuestion(question.id, "explanation", e.target.value)}
                                   placeholder="Explain why this answer is correct..."
-                                  className="bg-gray-900 border-gray-700 text-foreground mt-1 min-h-[60px]"
+                                  className="bg-[#1A1A1A] border-[#C9941A]/30 text-foreground mt-1 min-h-[60px]"
                                 />
                               </div>
                             </CardContent>
@@ -891,11 +891,11 @@ export default function CourseStudio() {
               <h2 className="text-2xl font-bold text-foreground mb-2" data-testid="text-step-title">
                 Pricing & Settings
               </h2>
-              <p className="text-gray-400">Set your course price and configure options</p>
+              <p className="text-white/60">Set your course price and configure options</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card className="bg-gray-900 border-gray-800">
+              <Card className="industrial-card">
                 <CardHeader>
                   <CardTitle className="text-foreground flex items-center gap-2">
                     <DollarSign className="w-5 h-5 text-primary" />
@@ -904,23 +904,23 @@ export default function CourseStudio() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label className="text-gray-300">Course Price (USD)</Label>
+                    <Label className="text-white/70">Course Price (USD)</Label>
                     <div className="relative mt-1">
-                      <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/50" />
                       <Input
                         type="number"
                         value={coursePrice}
                         data-testid="input-course-price"
                         onChange={(e) => setCoursePrice(Number(e.target.value))}
-                        className="bg-gray-800 border-gray-700 text-foreground pl-10 text-2xl font-bold"
+                        className="bg-gray-800 border-[#C9941A]/30 text-foreground pl-10 text-2xl font-bold"
                       />
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t border-gray-800">
+                  <div className="pt-4 border-t border-[#C9941A]/30">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-400">Platform fee (10%)</span>
-                      <span className="text-gray-400">-${(coursePrice * 0.1).toFixed(2)}</span>
+                      <span className="text-white/60">Platform fee (10%)</span>
+                      <span className="text-white/60">-${(coursePrice * 0.1).toFixed(2)}</span>
                     </div>
                     <div className="flex items-center justify-between text-lg font-semibold mt-2">
                       <span className="text-foreground">Your earnings</span>
@@ -930,7 +930,7 @@ export default function CourseStudio() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gray-900 border-gray-800">
+              <Card className="industrial-card">
                 <CardHeader>
                   <CardTitle className="text-foreground flex items-center gap-2">
                     <Settings className="w-5 h-5 text-primary" />
@@ -941,7 +941,7 @@ export default function CourseStudio() {
                   <div className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
                     <div>
                       <p className="text-foreground font-medium">Drip Content</p>
-                      <p className="text-gray-500 text-sm">Release modules over time</p>
+                      <p className="text-white/50 text-sm">Release modules over time</p>
                     </div>
                     <Switch
                       checked={enableDrip}
@@ -954,7 +954,7 @@ export default function CourseStudio() {
                   <div className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
                     <div>
                       <p className="text-foreground font-medium">Completion Certificate</p>
-                      <p className="text-gray-500 text-sm">Award certificate on completion</p>
+                      <p className="text-white/50 text-sm">Award certificate on completion</p>
                     </div>
                     <Switch
                       checked={enableCertificate}
@@ -967,7 +967,7 @@ export default function CourseStudio() {
               </Card>
             </div>
 
-            <Card className="bg-gray-900 border-gray-800">
+            <Card className="industrial-card">
               <CardHeader>
                 <CardTitle className="text-foreground flex items-center gap-2">
                   <Target className="w-5 h-5 text-primary" />
@@ -977,15 +977,15 @@ export default function CourseStudio() {
               <CardContent>
                 <div className="grid grid-cols-3 gap-6 text-center">
                   <div className="p-4 bg-gray-800 rounded-lg">
-                    <p className="text-gray-400 text-sm mb-1">10 Students</p>
+                    <p className="text-white/60 text-sm mb-1">10 Students</p>
                     <p className="text-2xl font-bold text-foreground">${(coursePrice * 10 * 0.9).toFixed(0)}</p>
                   </div>
                   <div className="p-4 bg-gray-800 rounded-lg border-2 border">
-                    <p className="text-gray-400 text-sm mb-1">100 Students</p>
+                    <p className="text-white/60 text-sm mb-1">100 Students</p>
                     <p className="text-2xl font-bold text-primary">${(coursePrice * 100 * 0.9).toFixed(0)}</p>
                   </div>
                   <div className="p-4 bg-gray-800 rounded-lg">
-                    <p className="text-gray-400 text-sm mb-1">1,000 Students</p>
+                    <p className="text-white/60 text-sm mb-1">1,000 Students</p>
                     <p className="text-2xl font-bold text-foreground">${(coursePrice * 1000 * 0.9).toFixed(0)}</p>
                   </div>
                 </div>
@@ -1001,18 +1001,18 @@ export default function CourseStudio() {
               <h2 className="text-2xl font-bold text-foreground mb-2" data-testid="text-step-title">
                 Preview & Publish
               </h2>
-              <p className="text-gray-400">Review your course before publishing</p>
+              <p className="text-white/60">Review your course before publishing</p>
             </div>
 
-            <Card className="bg-gray-900 border-gray-800">
+            <Card className="industrial-card">
               <CardContent className="p-0">
                 <div className="aspect-video bg-gray-800 rounded-t-lg flex items-center justify-center relative overflow-hidden">
                   {courseThumbnail ? (
                     <img src={courseThumbnail} alt="Course thumbnail" className="w-full h-full object-cover" />
                   ) : (
                     <div className="text-center">
-                      <GraduationCap className="w-16 h-16 text-gray-600 mx-auto mb-2" />
-                      <p className="text-gray-500">Course Thumbnail</p>
+                      <GraduationCap className="w-16 h-16 text-white/40 mx-auto mb-2" />
+                      <p className="text-white/50">Course Thumbnail</p>
                     </div>
                   )}
                   <Badge className="absolute top-4 left-4 bg-orange-500 text-black">
@@ -1024,35 +1024,35 @@ export default function CourseStudio() {
                   <h3 className="text-2xl font-bold text-foreground mb-2" data-testid="text-preview-title">
                     {courseTitle || "Your Course Title"}
                   </h3>
-                  <p className="text-gray-400 mb-4">
+                  <p className="text-white/60 mb-4">
                     {courseDescription || "Your course description will appear here..."}
                   </p>
                   
                   <div className="flex items-center gap-4 mb-6">
-                    <Badge variant="outline" className="border-gray-700 text-gray-400">
+                    <Badge variant="outline" className="border-[#C9941A]/30 text-white/60">
                       {levels.find(l => l.value === courseLevel)?.label || "Level"}
                     </Badge>
-                    <Badge variant="outline" className="border-gray-700 text-gray-400">
+                    <Badge variant="outline" className="border-[#C9941A]/30 text-white/60">
                       <Clock className="w-3 h-3 mr-1" />
                       {getTotalDuration()} min
                     </Badge>
-                    <Badge variant="outline" className="border-gray-700 text-gray-400">
+                    <Badge variant="outline" className="border-[#C9941A]/30 text-white/60">
                       <BookOpen className="w-3 h-3 mr-1" />
                       {getTotalLessons()} lessons
                     </Badge>
                   </div>
 
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-800">
+                  <div className="flex items-center justify-between pt-4 border-t border-[#C9941A]/30">
                     <div>
                       <span className="text-3xl font-bold text-foreground">${coursePrice}</span>
-                      <span className="text-gray-500 ml-2">one-time</span>
+                      <span className="text-white/50 ml-2">one-time</span>
                     </div>
                     <div className="flex gap-2">
                       <Button
                         variant="outline"
                         data-testid="button-preview-course"
                         onClick={() => setShowPreview(true)}
-                        className="border-gray-700 text-foreground"
+                        className="border-[#C9941A]/30 text-foreground"
                       >
                         <Eye className="w-4 h-4 mr-2" />
                         Full Preview
@@ -1078,7 +1078,7 @@ export default function CourseStudio() {
               </CardContent>
             </Card>
 
-            <Card className="bg-gray-900 border-gray-800">
+            <Card className="industrial-card">
               <CardHeader>
                 <CardTitle className="text-foreground">Course Checklist</CardTitle>
               </CardHeader>
@@ -1095,9 +1095,9 @@ export default function CourseStudio() {
                       {item.done ? (
                         <CheckCircle className="w-5 h-5 text-green-500" />
                       ) : (
-                        <AlertCircle className="w-5 h-5 text-gray-500" />
+                        <AlertCircle className="w-5 h-5 text-white/50" />
                       )}
-                      <span className={item.done ? "text-foreground" : "text-gray-500"}>
+                      <span className={item.done ? "text-foreground" : "text-white/50"}>
                         {item.label}
                       </span>
                     </div>
@@ -1130,11 +1130,11 @@ export default function CourseStudio() {
             <h1 className="text-4xl md:text-6xl font-black text-foreground uppercase tracking-tight mb-4" data-testid="text-hero-title">
               Course <span className="text-primary">Studio</span>
             </h1>
-            <p className="text-lg text-gray-400 mb-8" data-testid="text-hero-description">
+            <p className="text-lg text-white/60 mb-8" data-testid="text-hero-description">
               Transform your expertise into profitable online courses. AI-powered content generation, 
               beautiful video lessons, interactive quizzes, and built-in monetization.
             </p>
-            <div className="flex items-center justify-center gap-6 text-sm text-gray-500">
+            <div className="flex items-center justify-center gap-6 text-sm text-white/50">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-primary" />
                 <span>AI Content Generation</span>
@@ -1154,11 +1154,11 @@ export default function CourseStudio() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="bg-gray-900 border border-gray-800 mb-8 w-full justify-start">
+          <TabsList className="bg-[#1A1A1A] border border-[#C9941A]/30 mb-8 w-full justify-start">
             <TabsTrigger
               value="my-courses"
               data-testid="tab-my-courses"
-              className="data-[state=active]:bg-orange-500 data-[state=active]:text-black"
+              className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black"
             >
               <BookOpen className="w-4 h-4 mr-2" />
               My Courses
@@ -1166,7 +1166,7 @@ export default function CourseStudio() {
             <TabsTrigger
               value="create"
               data-testid="tab-create"
-              className="data-[state=active]:bg-orange-500 data-[state=active]:text-black"
+              className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black"
             >
               <Plus className="w-4 h-4 mr-2" />
               Create New
@@ -1174,7 +1174,7 @@ export default function CourseStudio() {
             <TabsTrigger
               value="analytics"
               data-testid="tab-analytics"
-              className="data-[state=active]:bg-orange-500 data-[state=active]:text-black"
+              className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black"
             >
               <BarChart3 className="w-4 h-4 mr-2" />
               Analytics
@@ -1186,18 +1186,18 @@ export default function CourseStudio() {
               {myCourses.map((course) => (
                 <Card
                   key={course.id}
-                  className="bg-gray-900 border-gray-800 hover-elevate cursor-pointer"
+                  className="industrial-card hover-elevate cursor-pointer"
                   data-testid={`card-course-${course.id}`}
                 >
                   <div className="aspect-video bg-gray-800 rounded-t-lg flex items-center justify-center relative">
-                    <GraduationCap className="w-12 h-12 text-gray-600" />
+                    <GraduationCap className="w-12 h-12 text-white/40" />
                     <Badge
                       className={`absolute top-3 right-3 ${
                         course.status === "published"
                           ? "bg-green-500/20 text-green-500 border-green-500/30"
                           : course.status === "draft"
                           ? "bg-yellow-500/20 text-yellow-500 border-yellow-500/30"
-                          : "bg-gray-500/20 text-gray-500 border-gray-500/30"
+                          : "bg-gray-500/20 text-white/50 border-gray-500/30"
                       }`}
                     >
                       {course.status.charAt(0).toUpperCase() + course.status.slice(1)}
@@ -1207,11 +1207,11 @@ export default function CourseStudio() {
                     <h3 className="font-semibold text-foreground mb-2" data-testid={`text-course-title-${course.id}`}>
                       {course.title}
                     </h3>
-                    <p className="text-gray-500 text-sm mb-4 line-clamp-2">{course.description}</p>
+                    <p className="text-white/50 text-sm mb-4 line-clamp-2">{course.description}</p>
                     
                     <div className="flex items-center justify-between text-sm">
                       <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-1 text-gray-400">
+                        <div className="flex items-center gap-1 text-white/60">
                           <Users className="w-4 h-4" />
                           {course.students}
                         </div>
@@ -1226,9 +1226,9 @@ export default function CourseStudio() {
                     </div>
 
                     {course.revenue > 0 && (
-                      <div className="mt-4 pt-4 border-t border-gray-800">
+                      <div className="mt-4 pt-4 border-t border-[#C9941A]/30">
                         <div className="flex items-center justify-between">
-                          <span className="text-gray-500 text-sm">Total Revenue</span>
+                          <span className="text-white/50 text-sm">Total Revenue</span>
                           <span className="text-green-500 font-semibold">${course.revenue.toLocaleString()}</span>
                         </div>
                       </div>
@@ -1238,7 +1238,7 @@ export default function CourseStudio() {
               ))}
 
               <Card
-                className="bg-gray-900/50 border-gray-800 border-dashed hover-elevate cursor-pointer"
+                className="bg-[#1A1A1A]/50 border-[#C9941A]/30 border-dashed hover-elevate cursor-pointer"
                 onClick={() => setActiveTab("create")}
                 data-testid="card-create-new"
               >
@@ -1247,7 +1247,7 @@ export default function CourseStudio() {
                     <Plus className="w-8 h-8 text-primary" />
                   </div>
                   <h3 className="font-semibold text-foreground mb-2">Create New Course</h3>
-                  <p className="text-gray-500 text-sm text-center">
+                  <p className="text-white/50 text-sm text-center">
                     Start building your next course with AI assistance
                   </p>
                 </CardContent>
@@ -1267,7 +1267,7 @@ export default function CourseStudio() {
                             ? "bg-orange-500 text-black"
                             : step < wizardStep
                             ? "bg-green-500 text-foreground"
-                            : "bg-gray-800 text-gray-500"
+                            : "bg-gray-800 text-white/50"
                         }`}
                         data-testid={`step-indicator-${step}`}
                       >
@@ -1279,24 +1279,24 @@ export default function CourseStudio() {
                     </div>
                   ))}
                 </div>
-                <Badge variant="outline" className="border-gray-700 text-gray-400">
+                <Badge variant="outline" className="border-[#C9941A]/30 text-white/60">
                   Step {wizardStep} of {totalSteps}
                 </Badge>
               </div>
               <Progress value={wizardProgress} className="h-2 bg-gray-800" data-testid="progress-wizard" />
             </div>
 
-            <Card className="bg-gray-900/50 border-gray-800">
+            <Card className="bg-[#1A1A1A]/50 border-[#C9941A]/30">
               <CardContent className="p-8">
                 {renderWizardStep()}
 
-                <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-800">
+                <div className="flex items-center justify-between mt-8 pt-6 border-t border-[#C9941A]/30">
                   <Button
                     variant="outline"
                     data-testid="button-prev-step"
                     onClick={() => setWizardStep(Math.max(1, wizardStep - 1))}
                     disabled={wizardStep === 1}
-                    className="border-gray-700 text-foreground"
+                    className="border-[#C9941A]/30 text-foreground"
                   >
                     <ChevronLeft className="w-4 h-4 mr-2" />
                     Previous
@@ -1333,53 +1333,53 @@ export default function CourseStudio() {
                 { label: "Avg. Rating", value: "4.8", change: "+0.2", icon: Star },
                 { label: "Completion Rate", value: "78%", change: "+5%", icon: Trophy },
               ].map((stat, index) => (
-                <Card key={index} className="bg-gray-900 border-gray-800" data-testid={`card-stat-${index}`}>
+                <Card key={index} className="industrial-card" data-testid={`card-stat-${index}`}>
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between mb-4">
-                      <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                        <stat.icon className="w-5 h-5 text-primary" />
+                      <div className="w-10 h-10 rounded-none bg-[#C9941A]/20 flex items-center justify-center">
+                        <stat.icon className="w-5 h-5 text-[#C9941A]" />
                       </div>
-                      <Badge className="bg-green-500/20 text-green-500 border-green-500/30">
+                      <Badge className="bg-[#C9941A]/10 text-green-400 border-none text-[10px] font-bold">
                         {stat.change}
                       </Badge>
                     </div>
-                    <p className="text-gray-500 text-sm mb-1">{stat.label}</p>
-                    <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                    <p className="stat-label">{stat.label}</p>
+                    <p className="stat-value">{stat.value}</p>
                   </CardContent>
                 </Card>
               ))}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-gray-900 border-gray-800">
+              <Card className="industrial-card">
                 <CardHeader>
-                  <CardTitle className="text-foreground">Revenue Over Time</CardTitle>
+                  <CardTitle className="text-white">Revenue Over Time</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="h-64 flex items-center justify-center text-gray-500">
-                    <BarChart3 className="w-12 h-12" />
+                  <div className="h-64 flex items-center justify-center text-white/60">
+                    <BarChart3 className="w-12 h-12 text-[#C9941A]" />
                     <span className="ml-4">Revenue chart visualization</span>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-gray-900 border-gray-800">
+              <Card className="industrial-card">
                 <CardHeader>
-                  <CardTitle className="text-foreground">Top Performing Courses</CardTitle>
+                  <CardTitle className="text-white">Top Performing Courses</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     {myCourses
                       .filter(c => c.status === "published")
                       .map((course, index) => (
-                        <div key={course.id} className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                        <div key={course.id} className="flex items-center justify-between p-3 bg-white/5 rounded-none border border-[#C9941A]/20">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold">
+                            <div className="w-8 h-8 rounded-none bg-[#C9941A]/20 flex items-center justify-center text-[#C9941A] font-semibold">
                               {index + 1}
                             </div>
                             <div>
-                              <p className="text-foreground font-medium">{course.title}</p>
-                              <p className="text-gray-500 text-sm">{course.students} students</p>
+                              <p className="text-white font-medium">{course.title}</p>
+                              <p className="text-white/60 text-sm">{course.students} students</p>
                             </div>
                           </div>
                           <span className="text-green-500 font-semibold">${course.revenue.toLocaleString()}</span>
