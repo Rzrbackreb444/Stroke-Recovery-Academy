@@ -373,7 +373,7 @@ export default function KreAIteEditor({
           {polishProgress?.isPolishing && (
             <Badge className={cn(
               "h-5 gap-1 text-[9px] font-medium rounded-full px-2",
-              isDark ? "bg-violet-500/20 text-violet-400 border-violet-500/30" : "bg-violet-100 text-violet-700 border-violet-200"
+              isDark ? "bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30" : "bg-amber-100 text-amber-700 border-amber-200"
             )}>
               <Sparkles className="h-2.5 w-2.5 animate-pulse" />
               {polishProgress.currentPass || 'Polishing'}

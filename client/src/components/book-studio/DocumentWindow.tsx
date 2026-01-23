@@ -72,9 +72,9 @@ export interface DocumentWindowProps {
 const TYPE_CONFIG: Record<DocumentType, { icon: typeof FileText; label: string; color: string }> = {
   note: { icon: Lightbulb, label: 'Note', color: 'text-yellow-500' },
   chapter: { icon: FileText, label: 'Chapter', color: 'text-blue-500' },
-  character: { icon: Users, label: 'Character', color: 'text-purple-500' },
+  character: { icon: Users, label: 'Character', color: 'text-[#C9941A]' },
   research: { icon: Search, label: 'Research', color: 'text-green-500' },
-  image: { icon: Image, label: 'Image', color: 'text-pink-500' },
+  image: { icon: Image, label: 'Image', color: 'text-amber-500' },
   draft: { icon: Edit, label: 'Draft', color: 'text-orange-500' },
   outline: { icon: FileText, label: 'Outline', color: 'text-cyan-500' },
   worldbuilding: { icon: Globe, label: 'World', color: 'text-emerald-500' },

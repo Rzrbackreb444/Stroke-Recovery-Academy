@@ -137,7 +137,7 @@ export default function RiverNavigator({
       label: 'Characters & World-Building',
       icon: Users,
       openIcon: Users,
-      color: 'text-purple-500',
+      color: 'text-[#C9941A]',
       items: [...characterItems, ...worldBuildingItems],
     },
     {

@@ -69,7 +69,7 @@ const AI_ACTIONS: AIAction[] = [
 ];
 
 const QUALITY_PASSES = [
-  { id: 'developmental', label: 'Developmental', icon: BrainCircuit, color: 'text-violet-500' },
+  { id: 'developmental', label: 'Developmental', icon: BrainCircuit, color: 'text-[#C9941A]' },
   { id: 'line', label: 'Line Edit', icon: PenTool, color: 'text-blue-500' },
   { id: 'copy', label: 'Copy Edit', icon: Edit3, color: 'text-emerald-500' },
   { id: 'proofread', label: 'Proofread', icon: CheckCircle2, color: 'text-amber-500' },
@@ -166,12 +166,12 @@ export default function ProAIToolbar({
             className={cn(
               "gap-2 h-8 px-3 text-xs font-semibold rounded-sm",
               isDark 
-                ? "text-stone-300 hover:bg-stone-800/50 hover:text-violet-400" 
-                : "text-[#1A1A1A]/70 hover:bg-violet-50 hover:text-violet-600"
+                ? "text-stone-300 hover:bg-stone-800/50 hover:text-[#C9941A]" 
+                : "text-[#1A1A1A]/70 hover:bg-[#C9941A]/10 hover:text-[#C9941A]"
             )}
             data-testid="dropdown-quality-polish"
           >
-            <Wand2 className="h-4 w-4 text-violet-500" />
+            <Wand2 className="h-4 w-4 text-[#C9941A]" />
             <span>Quality Polish</span>
             <ChevronDown className="h-3 w-3 opacity-50" />
           </Button>
@@ -355,7 +355,7 @@ export default function ProAIToolbar({
           tierLevel === 'publisher' 
             ? "border-[#C9941A] text-[#C9941A] bg-[#C9941A]/10"
             : tierLevel === 'author'
-              ? "border-violet-500 text-violet-500 bg-violet-500/10"
+              ? "border-amber-500 text-amber-600 bg-amber-500/10"
               : isDark ? "border-stone-700 text-stone-500" : "border-[#C9941A]/30 text-[#1A1A1A]/50"
         )}
       >
