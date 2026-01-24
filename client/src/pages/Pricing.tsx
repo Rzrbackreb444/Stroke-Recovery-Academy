@@ -38,7 +38,20 @@ import {
   Infinity,
   Clock,
   Shield,
+  Award,
+  TrendingUp,
+  ChevronDown,
+  BadgeCheck,
+  Flame,
+  Heart,
+  Gift,
 } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const creatorTiers = [
   {
@@ -213,6 +226,69 @@ const apiCosts = [
   { service: "Image Generation", cost: "$0.02 per image" },
 ];
 
+const faqs = [
+  {
+    question: "Can I cancel my subscription anytime?",
+    answer: "Yes, absolutely. You can cancel your subscription at any time from your dashboard. Your access continues until the end of your billing period, and you keep all content you've created."
+  },
+  {
+    question: "What's included in the free plan?",
+    answer: "The free plan includes 3 AI generations per day, basic access to Book, Music, and Image studios, marketplace access, and one daily spin on Beat the Sasquatch games. It's perfect for trying out the platform."
+  },
+  {
+    question: "How do credits work?",
+    answer: "Credits are used for premium AI features and Beat the Sasquatch games. Monthly subscribers receive a credit allowance each month. Credits can also be earned through referrals, marketplace sales, or game wins (redeemable for platform services only)."
+  },
+  {
+    question: "What's the 85/15 revenue split?",
+    answer: "When you sell content on our marketplace, you keep 85% of every sale. We only take 15% to cover platform and payment processing costs. This is one of the best creator revenue shares in the industry."
+  },
+  {
+    question: "Do I own the content I create?",
+    answer: "Yes! All content you create on KreAIte belongs to you. Pro and Enterprise plans include full commercial licenses, meaning you can sell, publish, and monetize your creations however you want."
+  },
+  {
+    question: "Can I upgrade or downgrade my plan?",
+    answer: "Yes, you can change your plan at any time. Upgrades take effect immediately with prorated billing. Downgrades take effect at the end of your current billing period."
+  },
+  {
+    question: "Is there a money-back guarantee?",
+    answer: "Yes! All paid plans come with a 14-day money-back guarantee. If you're not completely satisfied, contact us for a full refund, no questions asked."
+  },
+  {
+    question: "What payment methods do you accept?",
+    answer: "We accept all major credit cards (Visa, Mastercard, American Express, Discover), as well as Apple Pay and Google Pay. Enterprise customers can also pay via invoice."
+  },
+];
+
+const testimonials = [
+  {
+    name: "Sarah M.",
+    role: "Self-Published Author",
+    quote: "I published 3 books in 6 months using the Book Studio. The AI helped me overcome writer's block and the marketplace got me real sales.",
+    avatar: "SM",
+  },
+  {
+    name: "Marcus T.",
+    role: "Music Producer",
+    quote: "Lyria music generation is insane. I create background tracks for my YouTube videos in minutes instead of hours.",
+    avatar: "MT",
+  },
+  {
+    name: "Jennifer K.",
+    role: "Course Creator",
+    quote: "From zero to a complete online course with slides and quizzes in one weekend. The Pro plan paid for itself after my first student enrolled.",
+    avatar: "JK",
+  },
+];
+
+const trustBadges = [
+  { icon: Shield, label: "Secure Payments" },
+  { icon: Heart, label: "501(c)(3) Nonprofit" },
+  { icon: Award, label: "14-Day Guarantee" },
+  { icon: Users, label: "10K+ Creators" },
+];
+
 export default function Pricing() {
   const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
@@ -280,23 +356,39 @@ export default function Pricing() {
           </div>
           
           <div className="relative max-w-7xl mx-auto text-center">
-            <Badge className="mb-6 bg-primary/20 text-primary border" data-testid="badge-pricing">
-              <Sparkles className="w-3 h-3 mr-1" />
-              Simple, Transparent Pricing
-            </Badge>
+            <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full bg-gradient-to-r from-orange-500/20 to-amber-500/20 border border-orange-500/30">
+              <Flame className="w-4 h-4 text-orange-400" />
+              <span className="text-sm font-semibold text-orange-300">Save up to 28% with annual billing</span>
+              <Flame className="w-4 h-4 text-orange-400" />
+            </div>
             
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 text-foreground" data-testid="heading-pricing">
-              Create Without
-              <span className="bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent"> Limits</span>
+              Turn Your Ideas Into
+              <span className="bg-gradient-to-r from-orange-400 via-amber-500 to-orange-600 bg-clip-text text-transparent"> Income</span>
             </h1>
             
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8" data-testid="text-pricing-subtitle">
-              From your first AI-generated book to your hundredth hit song. 
-              Scale your creative output with plans that grow with you.
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-4" data-testid="text-pricing-subtitle">
+              The all-in-one AI platform that helps you create books, music, courses, and more.
+              <span className="text-foreground font-semibold"> Keep 85% of every sale.</span>
             </p>
             
-            <div className="flex items-center justify-center gap-4 mb-12">
-              <Label htmlFor="billing-toggle" className={!isAnnual ? "text-foreground" : "text-muted-foreground"}>
+            <div className="flex flex-wrap items-center justify-center gap-4 mb-8 text-sm text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <Check className="w-4 h-4 text-green-400" />
+                <span>No credit card required</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Check className="w-4 h-4 text-green-400" />
+                <span>14-day money-back guarantee</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Check className="w-4 h-4 text-green-400" />
+                <span>Cancel anytime</span>
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <Label htmlFor="billing-toggle" className={!isAnnual ? "text-foreground font-semibold" : "text-muted-foreground"}>
                 Monthly
               </Label>
               <Switch
@@ -305,14 +397,27 @@ export default function Pricing() {
                 onCheckedChange={setIsAnnual}
                 data-testid="switch-billing-toggle"
               />
-              <Label htmlFor="billing-toggle" className={isAnnual ? "text-foreground" : "text-muted-foreground"}>
+              <Label htmlFor="billing-toggle" className={isAnnual ? "text-foreground font-semibold" : "text-muted-foreground"}>
                 Annual
               </Label>
               {isAnnual && (
-                <Badge className="bg-green-500/20 text-green-400 border-green-500/30" data-testid="badge-save-annual">
-                  Save up to 28%
+                <Badge className="bg-green-500/20 text-green-400 border-green-500/30 font-bold" data-testid="badge-save-annual">
+                  <Gift className="w-3 h-3 mr-1" />
+                  Save 28%
                 </Badge>
               )}
+            </div>
+            
+            <div className="flex flex-wrap justify-center gap-6">
+              {trustBadges.map((badge, index) => {
+                const TrustIcon = badge.icon;
+                return (
+                  <div key={index} className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <TrustIcon className="w-4 h-4 text-primary/70" />
+                    <span>{badge.label}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -356,22 +461,28 @@ export default function Pricing() {
                       <div className="text-center mb-6">
                         <div className="flex items-baseline justify-center gap-1">
                           <span className="text-4xl font-black text-foreground" data-testid={`text-tier-price-${tier.name}`}>
-                            {formatPrice(price)}
+                            {isAnnual && price > 0 ? formatPrice(Math.round(price / 12)) : formatPrice(price)}
                           </span>
                           {price > 0 && (
                             <span className="text-muted-foreground">
-                              /{isAnnual ? 'year' : 'month'}
+                              /month
                             </span>
                           )}
                         </div>
+                        {isAnnual && price > 0 && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Billed annually ({formatPrice(price)}/year)
+                          </p>
+                        )}
                         {isAnnual && savings > 0 && (
-                          <p className="text-sm text-green-400 mt-1" data-testid={`text-tier-savings-${tier.name}`}>
-                            Save {savings}% vs monthly
+                          <p className="text-sm text-green-400 mt-1 font-semibold" data-testid={`text-tier-savings-${tier.name}`}>
+                            <Gift className="w-3 h-3 inline mr-1" />
+                            Save {savings}% annually
                           </p>
                         )}
                         {tier.credits > 0 && (
                           <p className="text-xs text-muted-foreground mt-2">
-                            {tier.credits.toLocaleString()} credits/month
+                            {tier.credits.toLocaleString()} credits/month included
                           </p>
                         )}
                       </div>
@@ -400,7 +511,7 @@ export default function Pricing() {
                     
                     <CardFooter>
                       <Button 
-                        className={`w-full ${tier.popular ? 'bg-orange-500 hover:bg-orange-600 text-black' : ''}`}
+                        className={`w-full ${tier.popular ? 'bg-orange-500 text-black' : ''}`}
                         variant={tier.popular ? "default" : tier.ctaVariant}
                         size="lg"
                         onClick={() => handleSelectPlan(tier)}
@@ -512,65 +623,144 @@ export default function Pricing() {
         </section>
 
         <section className="py-20 px-4 border-t border-zinc-800">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-4 text-foreground">
-              Powered by <span className="text-primary">Enterprise AI</span>
-            </h2>
-            <p className="text-muted-foreground mb-8">
-              We use the same AI infrastructure as Fortune 500 companies
-            </p>
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <Badge className="mb-4 bg-primary/10 text-primary border-primary/30">
+                <Star className="w-3 h-3 mr-1" />
+                Creator Success Stories
+              </Badge>
+              <h2 className="text-3xl font-bold text-foreground" data-testid="heading-testimonials">
+                Trusted by <span className="text-primary">10,000+ Creators</span>
+              </h2>
+            </div>
             
-            <div className="flex flex-wrap justify-center gap-8 opacity-60">
-              <div className="flex items-center gap-2 text-foreground">
-                <Globe className="w-5 h-5" />
-                <span>Google Cloud</span>
-              </div>
-              <div className="flex items-center gap-2 text-foreground">
-                <Sparkles className="w-5 h-5" />
-                <span>Vertex AI</span>
-              </div>
-              <div className="flex items-center gap-2 text-foreground">
-                <Music className="w-5 h-5" />
-                <span>Lyria Music</span>
-              </div>
-              <div className="flex items-center gap-2 text-foreground">
-                <Mic className="w-5 h-5" />
-                <span>Cloud TTS</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+              {testimonials.map((testimonial, index) => (
+                <Card key={index} className="bg-zinc-900/50 border-zinc-800" data-testid={`card-testimonial-${index}`}>
+                  <CardContent className="pt-6">
+                    <div className="flex items-center gap-1 mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                      ))}
+                    </div>
+                    <p className="text-zinc-300 mb-4 italic">"{testimonial.quote}"</p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">
+                        {testimonial.avatar}
+                      </div>
+                      <div>
+                        <p className="text-foreground font-medium">{testimonial.name}</p>
+                        <p className="text-xs text-muted-foreground">{testimonial.role}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-foreground mb-4">
+                Powered by <span className="text-primary">Enterprise AI</span>
+              </h3>
+              <div className="flex flex-wrap justify-center gap-8 opacity-60">
+                <div className="flex items-center gap-2 text-foreground">
+                  <Globe className="w-5 h-5" />
+                  <span>Google Cloud</span>
+                </div>
+                <div className="flex items-center gap-2 text-foreground">
+                  <Sparkles className="w-5 h-5" />
+                  <span>Vertex AI</span>
+                </div>
+                <div className="flex items-center gap-2 text-foreground">
+                  <Music className="w-5 h-5" />
+                  <span>Lyria Music</span>
+                </div>
+                <div className="flex items-center gap-2 text-foreground">
+                  <Mic className="w-5 h-5" />
+                  <span>Cloud TTS</span>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="py-20 px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-6 text-foreground">
-              Ready to <span className="text-primary">Start Creating</span>?
+        <section className="py-20 px-4 bg-zinc-900/30">
+          <div className="max-w-3xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-foreground" data-testid="heading-faq">
+                Frequently Asked <span className="text-primary">Questions</span>
+              </h2>
+              <p className="text-muted-foreground mt-2">
+                Everything you need to know about KreAIte
+              </p>
+            </div>
+            
+            <Accordion type="single" collapsible className="w-full">
+              {faqs.map((faq, index) => (
+                <AccordionItem key={index} value={`item-${index}`} className="border-zinc-800" data-testid={`faq-item-${index}`}>
+                  <AccordionTrigger className="text-foreground hover:text-primary text-left">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </section>
+
+        <section className="py-20 px-4 bg-gradient-to-b from-background to-zinc-900/50">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="inline-flex items-center gap-2 mb-6 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/30">
+              <TrendingUp className="w-4 h-4 text-green-400" />
+              <span className="text-sm text-green-400 font-medium">Join 10,000+ creators earning with AI</span>
+            </div>
+            
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
+              Ready to <span className="bg-gradient-to-r from-orange-400 to-amber-500 bg-clip-text text-transparent">Turn Ideas Into Income</span>?
             </h2>
-            <p className="text-xl text-muted-foreground mb-8">
-              Join thousands of creators who are building their empires with AI.
-              No Silicon Valley required.
+            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Start free. No credit card required. Upgrade when you're ready to scale.
+              Your creativity deserves a platform that pays.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               <Button 
                 size="lg" 
-                className="bg-orange-500 hover:bg-orange-600 text-black font-bold text-lg px-8 gap-2"
+                className="bg-orange-500 text-black font-bold gap-2"
                 onClick={() => window.location.href = '/api/login'}
                 data-testid="button-start-free-bottom"
               >
                 Start Creating Free
                 <ArrowRight className="w-5 h-5" />
               </Button>
-              <Link href="/creator">
+              <Link href="/games">
                 <Button 
                   size="lg" 
                   variant="outline"
-                  className="border text-foreground hover:bg-primary/10 font-semibold text-lg px-8"
-                  data-testid="button-explore-studios"
+                  className="gap-2"
+                  data-testid="button-play-games"
                 >
-                  Explore Studios
+                  <Sparkles className="w-5 h-5" />
+                  Play Beat the Sasquatch
                 </Button>
               </Link>
+            </div>
+            
+            <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4 text-green-400" />
+                <span>14-day money-back guarantee</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Award className="w-4 h-4 text-primary" />
+                <span>85% revenue share on sales</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Heart className="w-4 h-4 text-red-400" />
+                <span>Supporting Stroke Lyfe Inc 501(c)(3)</span>
+              </div>
             </div>
           </div>
         </section>
