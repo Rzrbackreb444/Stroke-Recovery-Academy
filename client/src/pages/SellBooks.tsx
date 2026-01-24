@@ -85,13 +85,42 @@ const genres = [
   "Health", "Cooking", "Travel", "Religion", "Art"
 ];
 
-const themes = [
-  { id: "classic", name: "Classic", description: "Elegant and timeless" },
-  { id: "modern", name: "Modern", description: "Clean and minimalist" },
-  { id: "dark", name: "Dark", description: "Bold and dramatic" },
-  { id: "elegant", name: "Elegant", description: "Sophisticated and refined" },
-  { id: "bold", name: "Bold", description: "Eye-catching and impactful" },
-];
+interface BookWebsiteTemplate {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  previewImageUrl: string;
+  theme: {
+    primaryColor: string;
+    accentColor: string;
+    backgroundColor: string;
+    textColor: string;
+    fontFamily: string;
+    headingFont: string;
+  };
+  sampleContent: {
+    tagline: string;
+    description: string;
+    ctaText: string;
+    testimonialPlaceholder: string;
+  };
+}
+
+const categoryLabels: Record<string, string> = {
+  fiction: "Fiction",
+  non_fiction: "Non-Fiction",
+  children: "Children's Books",
+  memoir: "Memoir",
+  business: "Business",
+  romance: "Romance",
+  thriller: "Thriller",
+  self_help: "Self-Help",
+  cookbook: "Cookbook",
+  poetry: "Poetry",
+  academic: "Academic",
+  religious: "Religious"
+};
 
 export default function SellBooks() {
   const { user, isLoading: authLoading } = useAuth();
@@ -100,6 +129,12 @@ export default function SellBooks() {
   const [activeTab, setActiveTab] = useState("listings");
   const [showNewListingDialog, setShowNewListingDialog] = useState(false);
   const [showNewWebsiteDialog, setShowNewWebsiteDialog] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<BookWebsiteTemplate | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+
+  const { data: templates, isLoading: templatesLoading } = useQuery<BookWebsiteTemplate[]>({
+    queryKey: ["/api/book-website-templates"],
+  });
 
   const { data: listings, isLoading: listingsLoading } = useQuery<BookListing[]>({
     queryKey: ["/api/marketplace/my-books"],
@@ -229,6 +264,10 @@ export default function SellBooks() {
               <Globe className="h-4 w-4 mr-2" />
               Book Websites
             </TabsTrigger>
+            <TabsTrigger value="templates" data-testid="tab-templates">
+              <LayoutTemplate className="h-4 w-4 mr-2" />
+              Website Templates
+            </TabsTrigger>
             <TabsTrigger value="analytics" data-testid="tab-analytics">
               <TrendingUp className="h-4 w-4 mr-2" />
               Analytics
@@ -313,6 +352,146 @@ export default function SellBooks() {
             )}
           </TabsContent>
 
+          <TabsContent value="templates">
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-semibold">Book Website Templates</h2>
+                  <p className="text-muted-foreground">Choose a professionally designed template for your book</p>
+                </div>
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <SelectTrigger className="w-48" data-testid="select-template-category">
+                    <SelectValue placeholder="All Categories" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Categories</SelectItem>
+                    {Object.entries(categoryLabels).map(([value, label]) => (
+                      <SelectItem key={value} value={value}>{label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {templatesLoading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[1, 2, 3, 4, 5, 6].map(i => (
+                    <Card key={i} className="animate-pulse">
+                      <CardContent className="pt-6">
+                        <div className="h-48 bg-muted rounded mb-4" />
+                        <div className="h-4 bg-muted rounded w-3/4 mb-2" />
+                        <div className="h-4 bg-muted rounded w-1/2" />
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {templates
+                    ?.filter(t => selectedCategory === "all" || t.category === selectedCategory)
+                    .map(template => (
+                      <Card 
+                        key={template.id} 
+                        className="overflow-hidden hover-elevate cursor-pointer group"
+                        onClick={() => {
+                          setSelectedTemplate(template);
+                          setShowNewWebsiteDialog(true);
+                        }}
+                        data-testid={`template-card-${template.id}`}
+                      >
+                        <div 
+                          className="h-48 relative"
+                          style={{ 
+                            background: `linear-gradient(135deg, ${template.theme.backgroundColor} 0%, ${template.theme.primaryColor}20 100%)` 
+                          }}
+                        >
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div 
+                              className="w-24 h-36 rounded-lg shadow-xl transform group-hover:scale-105 transition-transform"
+                              style={{ 
+                                backgroundColor: template.theme.backgroundColor,
+                                border: `3px solid ${template.theme.primaryColor}`
+                              }}
+                            >
+                              <div className="p-2">
+                                <div 
+                                  className="h-2 rounded mb-1"
+                                  style={{ backgroundColor: template.theme.primaryColor, width: '60%' }}
+                                />
+                                <div 
+                                  className="h-1 rounded mb-2"
+                                  style={{ backgroundColor: template.theme.accentColor, width: '80%' }}
+                                />
+                                <div className="space-y-1">
+                                  {[1,2,3,4].map(i => (
+                                    <div 
+                                      key={i}
+                                      className="h-0.5 rounded"
+                                      style={{ backgroundColor: template.theme.textColor, opacity: 0.3, width: `${70 + Math.random() * 30}%` }}
+                                    />
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="absolute top-3 right-3">
+                            <Badge variant="secondary" className="text-xs">
+                              {categoryLabels[template.category] || template.category}
+                            </Badge>
+                          </div>
+                        </div>
+                        <CardContent className="pt-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <h3 className="font-semibold">{template.name}</h3>
+                            <div className="flex gap-1">
+                              <div 
+                                className="w-4 h-4 rounded-full border"
+                                style={{ backgroundColor: template.theme.primaryColor }}
+                                title="Primary Color"
+                              />
+                              <div 
+                                className="w-4 h-4 rounded-full border"
+                                style={{ backgroundColor: template.theme.accentColor }}
+                                title="Accent Color"
+                              />
+                            </div>
+                          </div>
+                          <p className="text-sm text-muted-foreground line-clamp-2">
+                            {template.description}
+                          </p>
+                        </CardContent>
+                        <CardFooter className="pt-0">
+                          <Button 
+                            className="w-full"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedTemplate(template);
+                              setShowNewWebsiteDialog(true);
+                            }}
+                            data-testid={`button-use-template-${template.id}`}
+                          >
+                            <Sparkles className="h-4 w-4 mr-2" />
+                            Use This Template
+                          </Button>
+                        </CardFooter>
+                      </Card>
+                    ))}
+                </div>
+              )}
+
+              {templates && templates.filter(t => selectedCategory === "all" || t.category === selectedCategory).length === 0 && (
+                <Card className="py-12">
+                  <CardContent className="text-center">
+                    <LayoutTemplate className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">No Templates Found</h3>
+                    <p className="text-muted-foreground">
+                      No templates available for this category. Try selecting a different category.
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </TabsContent>
+
           <TabsContent value="analytics">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
@@ -383,7 +562,11 @@ export default function SellBooks() {
         
         <NewWebsiteDialog 
           open={showNewWebsiteDialog} 
-          onOpenChange={setShowNewWebsiteDialog}
+          onOpenChange={(open) => {
+            setShowNewWebsiteDialog(open);
+            if (!open) setSelectedTemplate(null);
+          }}
+          selectedTemplate={selectedTemplate}
         />
       </main>
 
@@ -668,15 +851,26 @@ function NewListingDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
   );
 }
 
-function NewWebsiteDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+function NewWebsiteDialog({ 
+  open, 
+  onOpenChange, 
+  selectedTemplate 
+}: { 
+  open: boolean; 
+  onOpenChange: (open: boolean) => void;
+  selectedTemplate?: BookWebsiteTemplate | null;
+}) {
   const { toast } = useToast();
   const { user } = useAuth();
   const [formData, setFormData] = useState({
     title: "",
     authorName: user?.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : "",
     slug: "",
-    theme: "classic",
-    genre: "",
+    theme: selectedTemplate?.id || "classic",
+    genre: selectedTemplate?.category || "",
+    primaryColor: selectedTemplate?.theme.primaryColor || "#C9941A",
+    accentColor: selectedTemplate?.theme.accentColor || "#1a1a1a",
+    tagline: selectedTemplate?.sampleContent.tagline || "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -698,12 +892,21 @@ function NewWebsiteDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
 
     setIsSubmitting(true);
     try {
-      const response = await apiRequest("POST", "/api/book-websites", formData);
+      await apiRequest("POST", "/api/book-websites", formData);
 
       toast({ title: "Book website created!" });
       queryClient.invalidateQueries({ queryKey: ["/api/book-websites"] });
       onOpenChange(false);
-      setFormData({ title: "", authorName: "", slug: "", theme: "classic", genre: "" });
+      setFormData({ 
+        title: "", 
+        authorName: "", 
+        slug: "", 
+        theme: "classic", 
+        genre: "",
+        primaryColor: "#C9941A",
+        accentColor: "#1a1a1a",
+        tagline: ""
+      });
     } catch (error: any) {
       toast({ title: error.message || "Failed to create website", variant: "destructive" });
     } finally {
