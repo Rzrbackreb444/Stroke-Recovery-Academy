@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -226,11 +229,54 @@ const fontPairings = [
 
 export default function WebsiteStudio() {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("templates");
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [previewDevice, setPreviewDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [showEditor, setShowEditor] = useState(false);
   const [editorPanel, setEditorPanel] = useState<"components" | "design" | "seo" | "settings">("components");
+
+  const { data: templatesData } = useQuery<{ templates: typeof websiteTemplates }>({
+    queryKey: ['/api/website-builder/templates'],
+  });
+
+  const { data: userWebsites } = useQuery<{ websites: any[] }>({
+    queryKey: ['/api/website-builder/websites'],
+    enabled: !!user,
+  });
+
+  const createWebsiteMutation = useMutation({
+    mutationFn: async (data: any) => {
+      return apiRequest('/api/website-builder/websites', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/website-builder/websites'] });
+      toast({ title: "Website Created", description: "Your website project has been created successfully." });
+    },
+    onError: (error: any) => {
+      toast({ title: "Error", description: error.message || "Failed to create website", variant: "destructive" });
+    },
+  });
+
+  const publishWebsiteMutation = useMutation({
+    mutationFn: async ({ websiteId, slug }: { websiteId: number; slug: string }) => {
+      return apiRequest(`/api/website-builder/publish/${websiteId}`, {
+        method: 'POST',
+        body: JSON.stringify({ slug }),
+      });
+    },
+    onSuccess: (data: any) => {
+      toast({ title: "Website Published!", description: `Your site is now live at ${data.url}` });
+    },
+    onError: (error: any) => {
+      toast({ title: "Publish Failed", description: error.message || "Could not publish website", variant: "destructive" });
+    },
+  });
+
+  const templates = templatesData?.templates || websiteTemplates;
   
   const [websiteData, setWebsiteData] = useState({
     name: "",
@@ -853,7 +899,7 @@ export default function WebsiteStudio() {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {websiteTemplates.map((template) => (
+              {templates.map((template) => (
                 <Card 
                   key={template.id}
                   className={`group cursor-pointer overflow-hidden hover-elevate ${
