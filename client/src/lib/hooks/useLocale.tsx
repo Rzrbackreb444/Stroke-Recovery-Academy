@@ -102,20 +102,11 @@ export function LocaleProvider({ children }: LocaleProviderProps) {
   const translationsQuery = useTranslations(locale);
 
   useEffect(() => {
-    const savedLocale = localStorage.getItem('kreaite_locale');
-    if (savedLocale) {
-      setLocaleState(savedLocale);
-    }
+    // Force English as default - always reset to English on load
+    setLocaleState('en');
+    localStorage.setItem('kreaite_locale', 'en');
     setIsInitialized(true);
   }, []);
-
-  // Always default to English - user can manually switch via LanguageSwitcher
-  useEffect(() => {
-    if (isInitialized && !localStorage.getItem('kreaite_locale')) {
-      setLocaleState('en');
-      localStorage.setItem('kreaite_locale', 'en');
-    }
-  }, [isInitialized]);
 
   const setLocale = (newLocale: string) => {
     setLocaleState(newLocale);
