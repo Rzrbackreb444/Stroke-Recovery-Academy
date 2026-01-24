@@ -1,7 +1,7 @@
 export interface BookWebsiteTemplate {
   id: string;
   name: string;
-  category: "fiction" | "non_fiction" | "children" | "memoir" | "business" | "romance" | "thriller" | "self_help" | "cookbook" | "poetry" | "academic" | "religious";
+  category: "fiction" | "non_fiction" | "children" | "memoir" | "business" | "romance" | "thriller" | "self_help" | "cookbook" | "poetry" | "academic" | "religious" | "author_portfolio" | "fantasy" | "ebook";
   description: string;
   previewImageUrl: string;
   theme: {
@@ -734,6 +734,249 @@ export const BOOK_WEBSITE_TEMPLATES: BookWebsiteTemplate[] = [
       description: "The playbook for building category-defining companies in the age of AI and innovation.",
       ctaText: "Pre-Order Now",
       testimonialPlaceholder: "Essential reading for every founder. Practical and actionable. - Y Combinator Partner"
+    }
+  },
+  {
+    id: "author_sage",
+    name: "Sage Author",
+    category: "author_portfolio",
+    description: "Elegant author portfolio with sage green accents, split layout, and sophisticated typography - inspired by premium author websites",
+    previewImageUrl: "/templates/author-sage.jpg",
+    theme: {
+      primaryColor: "#8FAE8B",
+      accentColor: "#B5C9B1",
+      backgroundColor: "#FAF9F7",
+      textColor: "#2D2D2D",
+      fontFamily: "Cormorant Garamond, serif",
+      headingFont: "Playfair Display, serif"
+    },
+    layout: {
+      heroStyle: "split",
+      navigationStyle: "fixed",
+      sectionOrder: ["hero", "about_me", "books", "blog", "press", "contact", "newsletter"]
+    },
+    sections: [
+      { id: "hero", name: "Welcome", enabled: true, order: 0, style: { layout: "split_photo", showSocial: "true" } },
+      { id: "about_me", name: "About Me", enabled: true, order: 1, style: { layout: "elegant_bio", showPhoto: "true" } },
+      { id: "books", name: "My Books", enabled: true, order: 2, style: { layout: "cover_gallery", showBuyLinks: "true" } },
+      { id: "blog", name: "Blog", enabled: true, order: 3, style: { layout: "recent_posts" } },
+      { id: "press", name: "Press", enabled: true, order: 4, style: { layout: "logo_bar", showQuotes: "true" } },
+      { id: "contact", name: "Contact", enabled: true, order: 5, style: { layout: "simple_form" } },
+      { id: "newsletter", name: "Newsletter", enabled: true, order: 6, style: { layout: "elegant_signup" } }
+    ],
+    sampleContent: {
+      tagline: "Hello, I'm [Author Name]",
+      description: "Welcome to my website. Here you'll find information about all my books and links to all my social media.",
+      ctaText: "About Me",
+      testimonialPlaceholder: "A masterful storyteller with an elegant prose style. - The Literary Review"
+    }
+  },
+  {
+    id: "manuscript_romance",
+    name: "Manuscript",
+    category: "romance",
+    description: "Romantic author template with dusty rose accents, elegant script typography, and newsletter-focused design",
+    previewImageUrl: "/templates/manuscript-romance.jpg",
+    theme: {
+      primaryColor: "#C5A3A3",
+      accentColor: "#E8D5D5",
+      backgroundColor: "#FBF8F8",
+      textColor: "#4A3F3F",
+      fontFamily: "Cormorant Garamond, serif",
+      headingFont: "Playfair Display, serif"
+    },
+    layout: {
+      heroStyle: "full_cover",
+      navigationStyle: "sticky",
+      sectionOrder: ["hero", "what_i_write", "newsletter", "about", "books", "contact"]
+    },
+    sections: [
+      { id: "hero", name: "Welcome Banner", enabled: true, order: 0, style: { layout: "romantic_hero", showTagline: "true" } },
+      { id: "what_i_write", name: "What I Write", enabled: true, order: 1, style: { layout: "elegant_description" } },
+      { id: "newsletter", name: "Newsletter Signup", enabled: true, order: 2, style: { layout: "featured_signup", showIncentive: "true" } },
+      { id: "about", name: "Hello There", enabled: true, order: 3, style: { layout: "personal_intro", showPhoto: "true" } },
+      { id: "books", name: "My Books", enabled: true, order: 4, style: { layout: "book_carousel" } },
+      { id: "contact", name: "Get in Touch", enabled: true, order: 5, style: { layout: "contact_form" } }
+    ],
+    sampleContent: {
+      tagline: "Love Stories in the Making",
+      description: "I write page-turning swoon-worthy moments, slow-burn tension, and happily-ever-afters.",
+      ctaText: "Join My Newsletter",
+      testimonialPlaceholder: "Your new favorite partner-in-swoon and certified provider of late-night book hangovers."
+    }
+  },
+  {
+    id: "kinfolk_fantasy",
+    name: "Kinfolk Fantasy",
+    category: "fantasy",
+    description: "Elegant fantasy novel landing page with book mockup, ethereal typography, and mystical aesthetics",
+    previewImageUrl: "/templates/kinfolk-fantasy.jpg",
+    theme: {
+      primaryColor: "#2C3E50",
+      accentColor: "#8B7355",
+      backgroundColor: "#F5F3EF",
+      textColor: "#2C3E50",
+      fontFamily: "EB Garamond, serif",
+      headingFont: "Cinzel, serif"
+    },
+    layout: {
+      heroStyle: "split",
+      navigationStyle: "hidden",
+      sectionOrder: ["hero", "synopsis", "world", "characters", "excerpt", "author", "buy"]
+    },
+    sections: [
+      { id: "hero", name: "Book Launch", enabled: true, order: 0, style: { layout: "device_mockup", showSocial: "true" } },
+      { id: "synopsis", name: "The Story", enabled: true, order: 1, style: { layout: "dramatic_text" } },
+      { id: "world", name: "The World", enabled: true, order: 2, style: { layout: "map_and_lore" } },
+      { id: "characters", name: "Characters", enabled: true, order: 3, style: { layout: "character_cards" } },
+      { id: "excerpt", name: "Read a Chapter", enabled: true, order: 4, style: { layout: "parchment_style" } },
+      { id: "author", name: "About the Author", enabled: true, order: 5, style: { layout: "elegant" } },
+      { id: "buy", name: "Discover More Books", enabled: true, order: 6, style: { layout: "elegant_cta" } }
+    ],
+    sampleContent: {
+      tagline: "An Epic Fantasy Adventure",
+      description: "Write a short and striking summary of your book to capture the reader's attention. This is a great way to introduce your book.",
+      ctaText: "Buy on Amazon",
+      testimonialPlaceholder: "A richly imagined world with unforgettable characters. - Fantasy Book Review"
+    }
+  },
+  {
+    id: "bookstore_modern",
+    name: "Modern Bookstore",
+    category: "ebook",
+    description: "Clean bookstore-style landing page with multiple book showcases, categories, and e-commerce integration",
+    previewImageUrl: "/templates/bookstore-modern.jpg",
+    theme: {
+      primaryColor: "#E85A5A",
+      accentColor: "#5AC8C8",
+      backgroundColor: "#FFFFFF",
+      textColor: "#333333",
+      fontFamily: "Open Sans, sans-serif",
+      headingFont: "Poppins, sans-serif"
+    },
+    layout: {
+      heroStyle: "full_cover",
+      navigationStyle: "fixed",
+      sectionOrder: ["hero", "featured", "categories", "new_releases", "bestsellers", "newsletter", "footer"]
+    },
+    sections: [
+      { id: "hero", name: "This Month", enabled: true, order: 0, style: { layout: "featured_books", showDiscount: "true" } },
+      { id: "featured", name: "Order E-Books Online", enabled: true, order: 1, style: { layout: "promo_cards" } },
+      { id: "categories", name: "Browse by Genre", enabled: true, order: 2, style: { layout: "category_grid" } },
+      { id: "new_releases", name: "New Releases", enabled: true, order: 3, style: { layout: "book_slider" } },
+      { id: "bestsellers", name: "Bestsellers", enabled: true, order: 4, style: { layout: "book_grid" } },
+      { id: "newsletter", name: "Stay Updated", enabled: true, order: 5, style: { layout: "inline_signup" } },
+      { id: "footer", name: "Footer", enabled: true, order: 6, style: { showShop: "true" } }
+    ],
+    sampleContent: {
+      tagline: "Discover Your Next Favorite Book",
+      description: "Browse our collection of bestselling ebooks and new releases. Instant digital delivery.",
+      ctaText: "Read More",
+      testimonialPlaceholder: "The best online bookstore experience. Fast delivery and great selection! - Happy Reader"
+    }
+  },
+  {
+    id: "author_minimal",
+    name: "Author Minimal",
+    category: "author_portfolio",
+    description: "Ultra-clean minimalist author website with focus on the writing, large typography, and subtle animations",
+    previewImageUrl: "/templates/author-minimal.jpg",
+    theme: {
+      primaryColor: "#1A1A1A",
+      accentColor: "#666666",
+      backgroundColor: "#FFFFFF",
+      textColor: "#1A1A1A",
+      fontFamily: "Inter, sans-serif",
+      headingFont: "Libre Baskerville, serif"
+    },
+    layout: {
+      heroStyle: "minimal",
+      navigationStyle: "fixed",
+      sectionOrder: ["hero", "latest_book", "about", "all_books", "newsletter", "contact"]
+    },
+    sections: [
+      { id: "hero", name: "Introduction", enabled: true, order: 0, style: { layout: "text_centered", animation: "fade" } },
+      { id: "latest_book", name: "Latest Work", enabled: true, order: 1, style: { layout: "full_width_feature" } },
+      { id: "about", name: "About", enabled: true, order: 2, style: { layout: "minimal_bio" } },
+      { id: "all_books", name: "Bibliography", enabled: true, order: 3, style: { layout: "minimal_list" } },
+      { id: "newsletter", name: "Subscribe", enabled: true, order: 4, style: { layout: "simple_input" } },
+      { id: "contact", name: "Contact", enabled: true, order: 5, style: { layout: "email_only" } }
+    ],
+    sampleContent: {
+      tagline: "Writer. Storyteller.",
+      description: "Exploring the human condition through fiction.",
+      ctaText: "Read More",
+      testimonialPlaceholder: "Sparse prose that packs an emotional punch. - The New Yorker"
+    }
+  },
+  {
+    id: "canva_landing",
+    name: "Canva-Style Landing",
+    category: "ebook",
+    description: "Professional Canva-inspired landing page for digital products with mockup displays and conversion optimization",
+    previewImageUrl: "/templates/canva-landing.jpg",
+    theme: {
+      primaryColor: "#00C4CC",
+      accentColor: "#7B68EE",
+      backgroundColor: "#F8F8F8",
+      textColor: "#2D2D2D",
+      fontFamily: "Nunito Sans, sans-serif",
+      headingFont: "DM Sans, sans-serif"
+    },
+    layout: {
+      heroStyle: "split",
+      navigationStyle: "hidden",
+      sectionOrder: ["hero", "features", "mockups", "what_you_get", "testimonials", "pricing", "faq"]
+    },
+    sections: [
+      { id: "hero", name: "Product Showcase", enabled: true, order: 0, style: { layout: "device_mockup", showBadges: "true" } },
+      { id: "features", name: "Key Features", enabled: true, order: 1, style: { layout: "icon_grid" } },
+      { id: "mockups", name: "Preview", enabled: true, order: 2, style: { layout: "laptop_showcase" } },
+      { id: "what_you_get", name: "What's Included", enabled: true, order: 3, style: { layout: "checklist" } },
+      { id: "testimonials", name: "Reviews", enabled: true, order: 4, style: { layout: "card_carousel" } },
+      { id: "pricing", name: "Get It Now", enabled: true, order: 5, style: { layout: "pricing_card", showGuarantee: "true" } },
+      { id: "faq", name: "FAQ", enabled: true, order: 6, style: { layout: "accordion" } }
+    ],
+    sampleContent: {
+      tagline: "Hosted on Canva • No Coding • Includes Website Design Tips",
+      description: "A professionally designed template that makes creating your author website effortless.",
+      ctaText: "Get Instant Access",
+      testimonialPlaceholder: "This template saved me hours of work! So easy to customize. - Bestselling Author"
+    }
+  },
+  {
+    id: "biography_elegant",
+    name: "Biography Elegance",
+    category: "memoir",
+    description: "Sophisticated biography and memoir template with timeline, photo galleries, and life story sections",
+    previewImageUrl: "/templates/biography-elegant.jpg",
+    theme: {
+      primaryColor: "#8B7355",
+      accentColor: "#C4B49A",
+      backgroundColor: "#FAF8F5",
+      textColor: "#3D3D3D",
+      fontFamily: "Crimson Pro, serif",
+      headingFont: "Cormorant Garamond, serif"
+    },
+    layout: {
+      heroStyle: "full_cover",
+      navigationStyle: "fixed",
+      sectionOrder: ["hero", "introduction", "timeline", "gallery", "legacy", "book", "contact"]
+    },
+    sections: [
+      { id: "hero", name: "Life Story", enabled: true, order: 0, style: { layout: "portrait_feature", showDates: "true" } },
+      { id: "introduction", name: "The Beginning", enabled: true, order: 1, style: { layout: "narrative_text" } },
+      { id: "timeline", name: "Life Journey", enabled: true, order: 2, style: { layout: "vertical_timeline", showPhotos: "true" } },
+      { id: "gallery", name: "Photo Gallery", enabled: true, order: 3, style: { layout: "masonry_grid" } },
+      { id: "legacy", name: "Legacy", enabled: true, order: 4, style: { layout: "quote_and_text" } },
+      { id: "book", name: "The Book", enabled: true, order: 5, style: { layout: "book_feature" } },
+      { id: "contact", name: "Contact", enabled: true, order: 6, style: { layout: "elegant_form" } }
+    ],
+    sampleContent: {
+      tagline: "A Life Well Lived",
+      description: "The extraordinary journey of perseverance, triumph, and the lessons that shaped a lifetime.",
+      ctaText: "Read the Story",
+      testimonialPlaceholder: "An inspiring account of an remarkable life. - Biography Magazine"
     }
   }
 ];

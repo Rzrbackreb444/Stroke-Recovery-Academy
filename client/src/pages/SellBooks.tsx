@@ -108,10 +108,11 @@ interface BookWebsiteTemplate {
 }
 
 const categoryLabels: Record<string, string> = {
+  author_portfolio: "Author Portfolio",
   fiction: "Fiction",
   non_fiction: "Non-Fiction",
   children: "Children's Books",
-  memoir: "Memoir",
+  memoir: "Memoir & Biography",
   business: "Business",
   romance: "Romance",
   thriller: "Thriller",
@@ -119,7 +120,9 @@ const categoryLabels: Record<string, string> = {
   cookbook: "Cookbook",
   poetry: "Poetry",
   academic: "Academic",
-  religious: "Religious"
+  religious: "Religious",
+  fantasy: "Fantasy",
+  ebook: "Ebook & Digital"
 };
 
 export default function SellBooks() {
