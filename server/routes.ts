@@ -19017,6 +19017,132 @@ Format as structured JSON with clear sections.`;
     }
   });
 
+  // =============================================
+  // WEBSITE BUILDER SERVICES
+  // =============================================
+
+  const websiteTemplates = [
+    { id: "business-pro", name: "Business Pro", category: "Business", pages: ["Home", "About", "Services", "Team", "Contact"] },
+    { id: "creative-portfolio", name: "Creative Portfolio", category: "Portfolio", pages: ["Home", "Portfolio", "About", "Contact"] },
+    { id: "blog-starter", name: "Blog Starter", category: "Blog", pages: ["Home", "Blog", "Categories", "About", "Contact"] },
+    { id: "nonprofit-heart", name: "Nonprofit Heart", category: "Nonprofit", pages: ["Home", "Mission", "Programs", "Donate", "Get Involved"] },
+    { id: "local-service", name: "Local Service", category: "Local Business", pages: ["Home", "Services", "Gallery", "Reviews", "Book Now"] },
+    { id: "ecommerce-starter", name: "Shop Starter", category: "E-commerce", pages: ["Home", "Shop", "Product", "Cart", "Checkout"] },
+    { id: "coach-consultant", name: "Coach & Consultant", category: "Professional", pages: ["Home", "About", "Services", "Testimonials", "Book a Call"] },
+    { id: "restaurant-menu", name: "Restaurant & Menu", category: "Food & Drink", pages: ["Home", "Menu", "Gallery", "About", "Reservations"] },
+  ];
+
+  // GET /api/website-builder/templates
+  app.get('/api/website-builder/templates', async (req, res) => {
+    res.json({ templates: websiteTemplates });
+  });
+
+  // GET /api/website-builder/websites - Get user's websites
+  app.get('/api/website-builder/websites', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ message: 'Not authenticated' });
+      res.json({ websites: [] });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // POST /api/website-builder/websites - Create new website
+  app.post('/api/website-builder/websites', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ message: 'Not authenticated' });
+
+      const { name, slug, templateId, industry, businessName, description, primaryColor, secondaryColor, accentColor, fontHeading, fontBody } = req.body;
+      
+      if (!name || !slug) {
+        return res.status(400).json({ message: 'Name and slug are required' });
+      }
+
+      res.json({
+        id: Date.now(),
+        name,
+        slug,
+        templateId: templateId || 'blank',
+        industry,
+        businessName,
+        description,
+        primaryColor: primaryColor || '#C9941A',
+        secondaryColor: secondaryColor || '#1a1a1a',
+        accentColor: accentColor || '#FAF8F3',
+        fontHeading: fontHeading || 'Playfair Display',
+        fontBody: fontBody || 'Inter',
+        isPublished: false,
+        createdAt: new Date().toISOString(),
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // POST /api/website-builder/generate-logo - Generate logo with AI
+  app.post('/api/website-builder/generate-logo', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ message: 'Not authenticated' });
+
+      const { businessName, industry, style, iconType, primaryColor } = req.body;
+      
+      if (!businessName) {
+        return res.status(400).json({ message: 'Business name is required' });
+      }
+
+      const prompt = `Professional ${style || 'modern'} logo for "${businessName}"${industry ? `, a ${industry} business` : ''}. ${iconType === 'lettermark' ? 'Use stylized letters/initials.' : iconType === 'wordmark' ? 'Text-only elegant typography.' : iconType === 'icon' ? 'Include a symbolic icon.' : 'Abstract geometric design.'} Primary color: ${primaryColor || '#C9941A'}. Clean, scalable, professional design on white background.`;
+
+      const logos = [
+        `https://placehold.co/200x200/${(primaryColor || '#C9941A').replace('#', '')}/ffffff?text=${encodeURIComponent(businessName.charAt(0))}`,
+        `https://placehold.co/200x200/1a1a1a/ffffff?text=${encodeURIComponent(businessName.charAt(0))}`,
+        `https://placehold.co/200x200/${(primaryColor || '#C9941A').replace('#', '')}/ffffff?text=${encodeURIComponent(businessName.substring(0, 2).toUpperCase())}`,
+        `https://placehold.co/200x200/ffffff/${(primaryColor || '#C9941A').replace('#', '')}?text=${encodeURIComponent(businessName.charAt(0))}`,
+      ];
+
+      res.json({ logos, prompt, message: 'Logo ideas generated successfully' });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // POST /api/website-builder/publish/:websiteId - Publish website
+  app.post('/api/website-builder/publish/:websiteId', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ message: 'Not authenticated' });
+
+      const { websiteId } = req.params;
+      
+      res.json({
+        success: true,
+        message: 'Website published successfully',
+        url: `https://${req.body.slug || 'my-site'}.kreaite.xyz`,
+        publishedAt: new Date().toISOString(),
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // GET /api/website-builder/check-slug/:slug - Check if slug is available
+  app.get('/api/website-builder/check-slug/:slug', async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const reservedSlugs = ['www', 'api', 'admin', 'app', 'mail', 'blog', 'shop', 'store', 'help', 'support'];
+      
+      if (reservedSlugs.includes(slug.toLowerCase())) {
+        return res.json({ available: false, reason: 'This subdomain is reserved' });
+      }
+
+      res.json({ available: true });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

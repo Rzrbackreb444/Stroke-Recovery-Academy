@@ -73,6 +73,7 @@ import ProductionDashboard from "@/pages/ProductionDashboard";
 import ScriptStudio from "@/pages/ScriptStudio";
 import LifeStoryEngine from "@/pages/LifeStoryEngine";
 import WhiteLabel from "@/pages/white-label";
+import WebsiteStudio from "@/pages/WebsiteStudio";
 
 // Stroke Recovery Platform Pages (under /recovery/*)
 import StrokeRecoveryLanding from "@/pages/Landing";
@@ -190,6 +191,7 @@ function Router() {
       <Route path="/video-studio" component={VideoStudio} />
       <Route path="/course-studio" component={CourseStudio} />
       <Route path="/image-studio" component={ImageStudio} />
+      <Route path="/website-studio" component={WebsiteStudio} />
       <Route path="/creator-hub">
         <ProtectedRoute>
           <CreatorHub />
