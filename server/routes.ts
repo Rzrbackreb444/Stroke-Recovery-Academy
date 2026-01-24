@@ -438,6 +438,133 @@ Allow: /
     }
   });
 
+  // Email/Password Login route
+  app.post('/api/auth/login', async (req: any, res) => {
+    try {
+      const { email, password } = req.body;
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required" });
+      }
+
+      const { authenticateLocal } = await import('./multiProviderAuth');
+      const user = await authenticateLocal(email, password);
+      
+      if (!user) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+
+      req.login({ 
+        claims: { sub: user.id, email: user.email },
+        access_token: null,
+        refresh_token: null,
+        expires_at: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60)
+      }, (err: any) => {
+        if (err) {
+          console.error("Login error:", err);
+          return res.status(500).json({ message: "Failed to create session" });
+        }
+        res.json({ success: true, user });
+      });
+    } catch (error: any) {
+      console.error("Login error:", error);
+      res.status(500).json({ message: error.message || "Login failed" });
+    }
+  });
+
+  // Email/Password Registration route
+  app.post('/api/auth/register', async (req: any, res) => {
+    try {
+      const { email, password, firstName, lastName } = req.body;
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required" });
+      }
+
+      if (password.length < 8) {
+        return res.status(400).json({ message: "Password must be at least 8 characters" });
+      }
+
+      const { registerLocalUser } = await import('./multiProviderAuth');
+      const user = await registerLocalUser(email, password, firstName, lastName);
+      
+      if (!user) {
+        return res.status(500).json({ message: "Failed to create account" });
+      }
+
+      req.login({ 
+        claims: { sub: user.id, email: user.email },
+        access_token: null,
+        refresh_token: null,
+        expires_at: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60)
+      }, (err: any) => {
+        if (err) {
+          console.error("Registration login error:", err);
+          return res.status(500).json({ message: "Account created but login failed" });
+        }
+        res.json({ success: true, user });
+      });
+    } catch (error: any) {
+      console.error("Registration error:", error);
+      res.status(500).json({ message: error.message || "Registration failed" });
+    }
+  });
+
+  // Logout route
+  app.post('/api/auth/logout', async (req: any, res) => {
+    try {
+      req.logout((err: any) => {
+        if (err) {
+          console.error("Logout error:", err);
+          return res.status(500).json({ message: "Failed to logout" });
+        }
+        res.json({ success: true, message: "Logged out successfully" });
+      });
+    } catch (error: any) {
+      console.error("Logout error:", error);
+      res.status(500).json({ message: error.message || "Logout failed" });
+    }
+  });
+
+  // Get available auth providers
+  app.get('/api/auth/providers', async (req, res) => {
+    try {
+      const { getAvailableProviders } = await import('./multiProviderAuth');
+      const providers = getAvailableProviders();
+      res.json({ providers });
+    } catch (error) {
+      console.error("Error fetching auth providers:", error);
+      res.status(500).json({ message: "Failed to fetch auth providers" });
+    }
+  });
+
+  // OAuth redirect routes (configured when provider credentials are set)
+  app.get('/api/auth/google', (req, res) => {
+    if (!process.env.GOOGLE_CLIENT_ID) {
+      return res.status(503).json({ message: "Google authentication not configured" });
+    }
+    res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(req.protocol + '://' + req.get('host') + '/api/auth/google/callback')}&response_type=code&scope=email%20profile`);
+  });
+
+  app.get('/api/auth/facebook', (req, res) => {
+    if (!process.env.FACEBOOK_APP_ID) {
+      return res.status(503).json({ message: "Facebook authentication not configured" });
+    }
+    res.redirect(`https://www.facebook.com/v18.0/dialog/oauth?client_id=${process.env.FACEBOOK_APP_ID}&redirect_uri=${encodeURIComponent(req.protocol + '://' + req.get('host') + '/api/auth/facebook/callback')}&scope=email,public_profile`);
+  });
+
+  app.get('/api/auth/github', (req, res) => {
+    if (!process.env.GITHUB_CLIENT_ID) {
+      return res.status(503).json({ message: "GitHub authentication not configured" });
+    }
+    res.redirect(`https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(req.protocol + '://' + req.get('host') + '/api/auth/github/callback')}&scope=user:email`);
+  });
+
+  app.get('/api/auth/apple', (req, res) => {
+    if (!process.env.APPLE_CLIENT_ID) {
+      return res.status(503).json({ message: "Apple authentication not configured" });
+    }
+    res.redirect(`https://appleid.apple.com/auth/authorize?client_id=${process.env.APPLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(req.protocol + '://' + req.get('host') + '/api/auth/apple/callback')}&response_type=code%20id_token&scope=name%20email&response_mode=form_post`);
+  });
+
   // Stripe routes
   app.get('/api/stripe/publishable-key', async (req, res) => {
     try {
