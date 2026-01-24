@@ -4725,3 +4725,129 @@ export type BookWebsitePage = typeof bookWebsitePages.$inferSelect;
 export type InsertBookWebsitePage = z.infer<typeof insertBookWebsitePageSchema>;
 export type BookWebsiteLead = typeof bookWebsiteLeads.$inferSelect;
 export type InsertBookWebsiteLead = z.infer<typeof insertBookWebsiteLeadSchema>;
+
+// ============================================================================
+// WEBSITE BUILDER - Full website creation and hosting system
+// ============================================================================
+
+export const userWebsites = pgTable("user_websites", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(), // subdomain: slug.kreaite.xyz
+  customDomain: text("custom_domain"), // for custom domains
+  templateId: text("template_id").notNull().default("blank"),
+  industry: text("industry"), // local-business, portfolio, blog, nonprofit, creator, ecommerce
+  businessName: text("business_name"),
+  businessDescription: text("business_description"),
+  logoUrl: text("logo_url"),
+  faviconUrl: text("favicon_url"),
+  primaryColor: text("primary_color").default("#C9941A"),
+  secondaryColor: text("secondary_color").default("#1a1a1a"),
+  accentColor: text("accent_color").default("#FAF8F3"),
+  fontHeading: text("font_heading").default("Playfair Display"),
+  fontBody: text("font_body").default("Inter"),
+  socialLinks: jsonb("social_links").default({}), // {facebook, twitter, instagram, linkedin, youtube}
+  contactInfo: jsonb("contact_info").default({}), // {email, phone, address, hours}
+  seoTitle: text("seo_title"),
+  seoDescription: text("seo_description"),
+  seoKeywords: text("seo_keywords").array(),
+  ogImageUrl: text("og_image_url"),
+  analyticsId: text("analytics_id"),
+  headerCode: text("header_code"), // custom scripts in <head>
+  footerCode: text("footer_code"), // custom scripts before </body>
+  isPublished: boolean("is_published").notNull().default(false),
+  publishedAt: timestamp("published_at"),
+  viewCount: integer("view_count").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const websitePages = pgTable("website_pages", {
+  id: serial("id").primaryKey(),
+  websiteId: integer("website_id").notNull().references(() => userWebsites.id, { onDelete: "cascade" }),
+  slug: text("slug").notNull(), // /about, /services, /contact
+  title: text("title").notNull(),
+  pageType: text("page_type").notNull().default("page"), // home, about, services, contact, blog, custom
+  metaTitle: text("meta_title"),
+  metaDescription: text("meta_description"),
+  content: jsonb("content").default([]), // Array of section components
+  isVisible: boolean("is_visible").notNull().default(true),
+  isInNavigation: boolean("is_in_navigation").notNull().default(true),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const websiteBlogPosts = pgTable("website_blog_posts", {
+  id: serial("id").primaryKey(),
+  websiteId: integer("website_id").notNull().references(() => userWebsites.id, { onDelete: "cascade" }),
+  slug: text("slug").notNull(),
+  title: text("title").notNull(),
+  excerpt: text("excerpt"),
+  content: text("content"),
+  featuredImageUrl: text("featured_image_url"),
+  authorName: text("author_name"),
+  category: text("category"),
+  tags: text("tags").array(),
+  metaTitle: text("meta_title"),
+  metaDescription: text("meta_description"),
+  isPublished: boolean("is_published").notNull().default(false),
+  publishedAt: timestamp("published_at"),
+  viewCount: integer("view_count").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const generatedLogos = pgTable("generated_logos", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  websiteId: integer("website_id").references(() => userWebsites.id, { onDelete: "set null" }),
+  businessName: text("business_name").notNull(),
+  industry: text("industry"),
+  style: text("style"), // modern, classic, minimal, bold, playful
+  iconType: text("icon_type"), // abstract, lettermark, icon, wordmark
+  primaryColor: text("primary_color"),
+  imageUrl: text("image_url").notNull(),
+  prompt: text("prompt"),
+  isSelected: boolean("is_selected").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const websiteLeads = pgTable("website_leads", {
+  id: serial("id").primaryKey(),
+  websiteId: integer("website_id").notNull().references(() => userWebsites.id, { onDelete: "cascade" }),
+  email: text("email").notNull(),
+  name: text("name"),
+  phone: text("phone"),
+  message: text("message"),
+  source: text("source"), // contact-form, newsletter, popup
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const insertUserWebsiteSchema = createInsertSchema(userWebsites).omit({ 
+  id: true, createdAt: true, updatedAt: true, viewCount: true, publishedAt: true 
+});
+export const insertWebsitePageSchema = createInsertSchema(websitePages).omit({ 
+  id: true, createdAt: true, updatedAt: true 
+});
+export const insertWebsiteBlogPostSchema = createInsertSchema(websiteBlogPosts).omit({ 
+  id: true, createdAt: true, updatedAt: true, viewCount: true, publishedAt: true 
+});
+export const insertGeneratedLogoSchema = createInsertSchema(generatedLogos).omit({ 
+  id: true, createdAt: true 
+});
+export const insertWebsiteLeadSchema = createInsertSchema(websiteLeads).omit({ 
+  id: true, createdAt: true 
+});
+
+export type UserWebsite = typeof userWebsites.$inferSelect;
+export type InsertUserWebsite = z.infer<typeof insertUserWebsiteSchema>;
+export type WebsitePage = typeof websitePages.$inferSelect;
+export type InsertWebsitePage = z.infer<typeof insertWebsitePageSchema>;
+export type WebsiteBlogPost = typeof websiteBlogPosts.$inferSelect;
+export type InsertWebsiteBlogPost = z.infer<typeof insertWebsiteBlogPostSchema>;
+export type GeneratedLogo = typeof generatedLogos.$inferSelect;
+export type InsertGeneratedLogo = z.infer<typeof insertGeneratedLogoSchema>;
+export type WebsiteLead = typeof websiteLeads.$inferSelect;
+export type InsertWebsiteLead = z.infer<typeof insertWebsiteLeadSchema>;

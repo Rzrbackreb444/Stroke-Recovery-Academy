@@ -11,7 +11,7 @@ import {
   ShoppingBag, Users, Settings, Shield, Sparkles,
   FileText, Mic, Palette, Clock, ArrowRight, Plus,
   Loader2, Calendar, Zap, Target, Award, FolderOpen,
-  Copy, Share2, Gift, UserPlus, Search, Gamepad2
+  Copy, Share2, Gift, UserPlus, Search, Gamepad2, Globe
 } from "lucide-react";
 import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
@@ -328,7 +328,7 @@ export default function Dashboard() {
                 <Card>
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-lg">The 6 Studios</CardTitle>
+                      <CardTitle className="text-lg">The 7 Studios</CardTitle>
                       <Link href="/creator-hub">
                         <Button variant="ghost" size="sm">
                           View All <ArrowRight className="h-4 w-4 ml-1" />
@@ -371,6 +371,12 @@ export default function Dashboard() {
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-doctrine-engine">
                         <Brain className="h-5 w-5 text-primary" />
                         <span className="font-medium text-sm">Doctrine Engine</span>
+                      </div>
+                    </Link>
+                    <Link href="/website-studio">
+                      <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-website-studio">
+                        <Globe className="h-5 w-5 text-primary" />
+                        <span className="font-medium text-sm">Website Builder</span>
                       </div>
                     </Link>
                     <Link href="/seo-command-center">
@@ -506,6 +512,13 @@ export default function Dashboard() {
                 icon={Brain}
                 href="/doctrine-engine"
                 tags={['Knowledge', 'Systems', 'Export']}
+              />
+              <StudioCard
+                title="Website Builder"
+                description="Build and host professional websites with SEO and blogging"
+                icon={Globe}
+                href="/website-studio"
+                tags={['Templates', 'SEO', 'Hosting']}
               />
             </div>
 
