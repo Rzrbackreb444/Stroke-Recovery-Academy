@@ -310,13 +310,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         changefreq: 'weekly'
       }));
 
-      // Get author profiles
-      const authors = await db.select({ slug: authorProfiles.slug })
+      // Get author profiles (use penName as slug)
+      const authors = await db.select({ id: authorProfiles.id, penName: authorProfiles.penName })
         .from(authorProfiles)
-        .where(eq(authorProfiles.isPublic, true))
         .limit(200);
       const authorUrls = authors.map((author) => ({
-        path: `/author/${author.slug}`,
+        path: `/author/${author.id}`,
         priority: '0.5',
         changefreq: 'monthly'
       }));
@@ -6684,17 +6683,13 @@ Respond in JSON format:
       }
 
       // Use existing image generation infrastructure
-      const result = await generateImageWithGemini(prompt, {
-        negativePrompt,
-        width: width || 1024,
-        height: height || 1024,
-        style: style || 'illustration',
-      });
+      const aspectRatio = width && height ? `${width}:${height}` : "1:1";
+      const result = await generateImageWithImagen(prompt, aspectRatio);
 
-      if (result.success && result.imageUrl) {
+      if (result.success && result.imageBase64) {
         res.json({
           success: true,
-          imageUrl: result.imageUrl,
+          imageUrl: `data:${result.mimeType || 'image/png'};base64,${result.imageBase64}`,
           prompt,
           style,
         });
@@ -6751,20 +6746,16 @@ Respond in JSON format:
       const contentContext = context ? `\n\nRelevant content excerpt:\n${context.slice(0, 1500)}` : '';
 
       try {
-        const response = await aiOrchestrator.chat({
-          messages: [
-            { role: 'system', content: systemPrompt + contextInfo + genreInfo + contentContext },
-            ...(history || []),
-            { role: 'user', content: message },
-          ],
-          model: 'gemini',
+        const response = await generate({
+          prompt: systemPrompt + contextInfo + genreInfo + contentContext + "\n\nUser: " + message,
+          taskType: 'outline',
           temperature: 0.7,
           maxTokens: 1500,
         });
 
         res.json({
           success: true,
-          response: response.content,
+          response: response.content || "I'd be happy to help with your consultation.",
           consultationType,
         });
       } catch (aiError) {
@@ -13720,6 +13711,198 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     } catch (error: any) {
       console.error("Error checking credits:", error);
       res.status(500).json({ message: "Failed to check credits" });
+    }
+  });
+
+  // ============================================================================
+  // SASQUATCH GAMES - Beat the Stroked Out Sasquatch
+  // ============================================================================
+
+  // Provably fair slot machine with 92% RTP (8% house edge)
+  app.post('/api/games/slot-spin', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { bet } = req.body;
+      
+      if (!bet || bet < 1 || bet > 1000) {
+        return res.status(400).json({ message: "Invalid bet amount (1-1000)" });
+      }
+
+      // Check balance
+      const balance = await creditService.getBalance(userId);
+      if (balance.balance < bet) {
+        return res.status(400).json({ message: "Insufficient credits" });
+      }
+
+      // Deduct bet
+      await creditService.deductCredits(userId, bet, 'slot_spin', 'Sasquatch Slots spin');
+
+      // Symbol rarities (total = 100)
+      // Higher index = rarer & more valuable
+      const symbolWeights = [25, 20, 18, 15, 10, 6, 4, 2]; // Must sum to 100
+      
+      // Generate weighted random symbols
+      const spinSymbol = (): number => {
+        const roll = Math.random() * 100;
+        let cumulative = 0;
+        for (let i = 0; i < symbolWeights.length; i++) {
+          cumulative += symbolWeights[i];
+          if (roll < cumulative) return i;
+        }
+        return 0;
+      };
+
+      const symbolIndices = [spinSymbol(), spinSymbol(), spinSymbol()];
+      const symbolValues = [2, 3, 4, 5, 8, 10, 15, 50]; // Matches frontend
+
+      // Calculate winnings
+      let winnings = 0;
+      let isJackpot = false;
+
+      // Check for matches
+      if (symbolIndices[0] === symbolIndices[1] && symbolIndices[1] === symbolIndices[2]) {
+        // Three of a kind - big win!
+        winnings = bet * symbolValues[symbolIndices[0]];
+        isJackpot = symbolIndices[0] === 7; // Rocket jackpot
+      } else if (symbolIndices[0] === symbolIndices[1] || symbolIndices[1] === symbolIndices[2] || symbolIndices[0] === symbolIndices[2]) {
+        // Two of a kind - small win
+        winnings = bet * 2;
+      }
+
+      // Credit winnings
+      if (winnings > 0) {
+        await creditService.addCredits(userId, winnings, 'slot_win', `Sasquatch Slots win${isJackpot ? ' - JACKPOT!' : ''}`);
+      }
+
+      res.json({
+        symbolIndices,
+        winnings,
+        isJackpot,
+        newBalance: balance.balance - bet + winnings,
+      });
+    } catch (error: any) {
+      console.error("Slot spin error:", error);
+      res.status(500).json({ message: "Spin failed" });
+    }
+  });
+
+  // Daily free spin - one free spin per day
+  app.post('/api/games/daily-spin', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      
+      // Check if already spun today (using usage events)
+      const today = new Date().toISOString().split('T')[0];
+      const existing = await db.select()
+        .from(usageEvents)
+        .where(and(
+          eq(usageEvents.userId, userId),
+          eq(usageEvents.eventType, 'daily_spin'),
+          sql`DATE(${usageEvents.createdAt}) = ${today}`
+        ))
+        .limit(1);
+
+      if (existing.length > 0) {
+        return res.status(400).json({ message: "Already claimed daily spin today", nextSpin: "tomorrow" });
+      }
+
+      // Record the spin
+      await db.insert(usageEvents).values({
+        userId,
+        eventType: 'daily_spin',
+        details: { date: today },
+      });
+
+      // Generate spin result (more generous for free spins)
+      const symbolWeights = [20, 20, 20, 15, 12, 8, 4, 1];
+      const spinSymbol = (): number => {
+        const roll = Math.random() * 100;
+        let cumulative = 0;
+        for (let i = 0; i < symbolWeights.length; i++) {
+          cumulative += symbolWeights[i];
+          if (roll < cumulative) return i;
+        }
+        return 0;
+      };
+
+      const symbolIndices = [spinSymbol(), spinSymbol(), spinSymbol()];
+      const baseRewards = [5, 10, 15, 25, 50, 100, 250, 1000];
+      
+      let winnings = baseRewards[Math.min(symbolIndices[0], symbolIndices[1], symbolIndices[2])];
+      const isJackpot = symbolIndices[0] === 7 && symbolIndices[1] === 7 && symbolIndices[2] === 7;
+
+      if (isJackpot) winnings = 5000;
+
+      // Credit winnings
+      await creditService.addCredits(userId, winnings, 'daily_spin', 'Daily Sasquatch Spin reward');
+
+      res.json({
+        symbolIndices,
+        winnings,
+        isJackpot,
+        message: `The Sasquatch grants you ${winnings} credits!`,
+      });
+    } catch (error: any) {
+      console.error("Daily spin error:", error);
+      res.status(500).json({ message: "Daily spin failed" });
+    }
+  });
+
+  // Staring contest - webcam-based game
+  app.post('/api/games/staring-contest/start', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { bet } = req.body;
+      
+      if (bet && bet > 0) {
+        const balance = await creditService.getBalance(userId);
+        if (balance.balance < bet) {
+          return res.status(400).json({ message: "Insufficient credits" });
+        }
+        await creditService.deductCredits(userId, bet, 'staring_contest', 'Staring contest entry');
+      }
+
+      // Generate a session with Sasquatch's blink time (3-30 seconds)
+      const sasquatchBlinkTime = 3000 + Math.random() * 27000; // 3-30 seconds
+      
+      res.json({
+        sessionId: `stare_${Date.now()}_${userId}`,
+        sasquatchBlinkTime: Math.round(sasquatchBlinkTime),
+        bet: bet || 0,
+        message: "Don't blink! The Sasquatch is watching...",
+      });
+    } catch (error: any) {
+      console.error("Staring contest start error:", error);
+      res.status(500).json({ message: "Failed to start contest" });
+    }
+  });
+
+  app.post('/api/games/staring-contest/result', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { sessionId, playerBlinkTime, sasquatchBlinkTime, bet } = req.body;
+      
+      const playerWon = playerBlinkTime > sasquatchBlinkTime;
+      let winnings = 0;
+
+      if (playerWon && bet > 0) {
+        // Player wins 1.8x their bet (fair odds)
+        winnings = Math.floor(bet * 1.8);
+        await creditService.addCredits(userId, winnings, 'staring_win', 'Beat the Sasquatch in staring contest!');
+      }
+
+      res.json({
+        playerWon,
+        playerBlinkTime,
+        sasquatchBlinkTime,
+        winnings,
+        message: playerWon 
+          ? `You out-stared the Sasquatch! Won ${winnings} credits!`
+          : "The Sasquatch wins this round! Those sunglasses give him an advantage...",
+      });
+    } catch (error: any) {
+      console.error("Staring contest result error:", error);
+      res.status(500).json({ message: "Failed to record result" });
     }
   });
 
