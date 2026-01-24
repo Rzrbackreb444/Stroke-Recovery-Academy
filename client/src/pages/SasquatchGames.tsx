@@ -1,14 +1,13 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Coins, Trophy, Zap, Eye, Music, BookOpen, 
-  Video, GraduationCap, Gamepad2, Gift, Star, 
-  Sparkles, Target, Brain, Puzzle, Grid3X3,
-  Search, Image
+  Coins, Zap, Music, BookOpen, 
+  Video, GraduationCap, Gamepad2, Gift,
+  Sparkles, Image, CircleDot, Spade, Crown, TreePine,
+  Target, Ticket, Grid3X3, Star, ChevronRight
 } from "lucide-react";
 import sasquatchLogo from "../assets/sasquatch-logo.png";
 
@@ -16,68 +15,102 @@ const GAMES = [
   {
     id: "slots",
     name: "Sasquatch Slots",
-    description: "Spin to win credits, free songs, courses, and more!",
+    description: "5-reel premium Vegas-style slots with progressive jackpot",
     icon: Gamepad2,
     href: "/slots",
     status: "live",
-    rtp: "92%",
-    prizes: ["Credits", "Free Songs", "Course Access", "Book Templates"],
+    gradient: "from-orange-500 via-red-500 to-pink-600",
+    bgImage: "radial-gradient(ellipse at 30% 30%, rgba(249, 115, 22, 0.3) 0%, transparent 50%)",
+    prizes: ["100,000 Jackpot", "Free Spins"],
+    hot: true,
   },
   {
-    id: "staring",
-    name: "Staring Contest",
-    description: "Out-stare the Sasquatch using your webcam. Don't blink!",
-    icon: Eye,
-    href: "/staring-contest",
-    status: "coming",
-    rtp: "90%",
-    prizes: ["1.8x Credits", "Image Credits"],
-  },
-  {
-    id: "word-forge",
-    name: "Word Forge",
-    description: "AI-generated crosswords from your book content",
-    icon: Grid3X3,
-    href: "/word-forge",
-    status: "coming",
-    prizes: ["Writing Credits", "AI Tokens"],
-  },
-  {
-    id: "story-search",
-    name: "Story Search",
-    description: "Word search puzzles with literary terms",
-    icon: Search,
-    href: "/story-search",
-    status: "coming",
-    prizes: ["Book Templates", "Publishing Credits"],
-  },
-  {
-    id: "spot-ai",
-    name: "Spot the AI",
-    description: "Find AI-generated images among real photos",
-    icon: Image,
-    href: "/spot-ai",
-    status: "coming",
-    prizes: ["Image Credits", "Stock Photos"],
-  },
-  {
-    id: "creator-quest",
-    name: "Creator Quest",
-    description: "Digital board game - level up your creator journey",
+    id: "powerball",
+    name: "Sasquatch Powerball",
+    description: "Pick your numbers, watch the balls drop - match 5 + Red Ball to win!",
     icon: Target,
-    href: "/creator-quest",
-    status: "coming",
-    prizes: ["Full Courses", "Premium Access"],
+    href: "/powerball",
+    status: "live",
+    gradient: "from-red-600 via-red-500 to-yellow-500",
+    bgImage: "radial-gradient(ellipse at 70% 30%, rgba(239, 68, 68, 0.3) 0%, transparent 50%)",
+    prizes: ["1M Jackpot", "Instant Win"],
+    hot: true,
+  },
+  {
+    id: "scratchoff",
+    name: "Scratch-Offs",
+    description: "Silver, Gold, Platinum & Sasquatch Special scratch cards",
+    icon: Ticket,
+    href: "/scratch-off",
+    status: "live",
+    gradient: "from-purple-500 via-pink-500 to-yellow-400",
+    bgImage: "radial-gradient(ellipse at 50% 70%, rgba(168, 85, 247, 0.3) 0%, transparent 50%)",
+    prizes: ["50,000 Max", "Instant Reveal"],
+    new: true,
+  },
+  {
+    id: "bingo",
+    name: "Sasquatch Bingo",
+    description: "Classic bingo with Line, Corners, X-Pattern & Blackout wins",
+    icon: Grid3X3,
+    href: "/bingo",
+    status: "live",
+    gradient: "from-blue-500 via-purple-500 to-pink-500",
+    bgImage: "radial-gradient(ellipse at 30% 70%, rgba(59, 130, 246, 0.3) 0%, transparent 50%)",
+    prizes: ["25x Blackout", "Auto-Daub"],
+    new: true,
+  },
+  {
+    id: "blackjack",
+    name: "Bigfoot Blackjack",
+    description: "Classic 21 with professional dealer AI and side bets",
+    icon: Spade,
+    href: "/blackjack",
+    status: "live",
+    gradient: "from-emerald-600 to-green-700",
+    bgImage: "radial-gradient(ellipse at 70% 50%, rgba(16, 185, 129, 0.2) 0%, transparent 50%)",
+    prizes: ["3:2 Blackjack", "Insurance"],
+  },
+  {
+    id: "roulette",
+    name: "Sasquatch Roulette",
+    description: "European-style single-zero wheel with inside & outside bets",
+    icon: CircleDot,
+    href: "/roulette",
+    status: "live",
+    gradient: "from-green-600 to-teal-600",
+    bgImage: "radial-gradient(ellipse at 50% 30%, rgba(20, 184, 166, 0.2) 0%, transparent 50%)",
+    prizes: ["35:1 Straight", "Even Money"],
+  },
+  {
+    id: "holdem",
+    name: "Cryptid Hold'em",
+    description: "Texas Hold'em poker vs intelligent AI opponents",
+    icon: Crown,
+    href: "/texas-holdem",
+    status: "live",
+    gradient: "from-amber-500 to-orange-600",
+    bgImage: "radial-gradient(ellipse at 30% 50%, rgba(245, 158, 11, 0.2) 0%, transparent 50%)",
+    prizes: ["Tournament Mode", "All-In"],
+  },
+  {
+    id: "survival",
+    name: "Outlast the Sasquatch",
+    description: "7-day wilderness survival challenge - manage resources, evade the beast",
+    icon: TreePine,
+    href: "/wilderness-survival",
+    status: "live",
+    gradient: "from-green-700 to-emerald-600",
+    bgImage: "radial-gradient(ellipse at 70% 70%, rgba(34, 197, 94, 0.2) 0%, transparent 50%)",
+    prizes: ["5x Survival", "Daily Bonus"],
   },
 ];
 
 const PRIZE_TYPES = [
-  { icon: Coins, name: "Credits", color: "text-yellow-400" },
-  { icon: Music, name: "Free Songs", color: "text-purple-400" },
-  { icon: GraduationCap, name: "Course Access", color: "text-blue-400" },
-  { icon: BookOpen, name: "Book Templates", color: "text-green-400" },
-  { icon: Video, name: "Video Templates", color: "text-red-400" },
-  { icon: Image, name: "Image Credits", color: "text-pink-400" },
+  { icon: Coins, name: "Credits", color: "text-yellow-400", desc: "Use in all studios" },
+  { icon: Music, name: "Music", color: "text-purple-400", desc: "Free song generations" },
+  { icon: BookOpen, name: "Templates", color: "text-green-400", desc: "Premium book templates" },
+  { icon: Image, name: "Images", color: "text-pink-400", desc: "AI image credits" },
 ];
 
 export default function SasquatchGames() {
@@ -86,211 +119,167 @@ export default function SasquatchGames() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-[#1a1a1a] to-black">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-600/20 via-transparent to-orange-600/20" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-orange-500/10 blur-[100px] rounded-full" />
-        
-        <div className="relative max-w-6xl mx-auto px-4 py-12 text-center">
-          <img 
-            src={sasquatchLogo} 
-            alt="Stroked Out Sasquatch" 
-            className="w-32 h-32 mx-auto rounded-full border-4 border-orange-500 shadow-2xl shadow-orange-500/30 mb-6"
-          />
+    <div className="min-h-screen bg-[#050508] relative overflow-hidden">
+      <div 
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `
+            radial-gradient(ellipse at 20% 20%, rgba(249, 115, 22, 0.12) 0%, transparent 40%),
+            radial-gradient(ellipse at 80% 30%, rgba(239, 68, 68, 0.08) 0%, transparent 35%),
+            radial-gradient(ellipse at 50% 80%, rgba(168, 85, 247, 0.08) 0%, transparent 40%)
+          `
+        }}
+      />
+      
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-red-500 to-yellow-500" />
+      
+      <div className="relative max-w-7xl mx-auto px-4 py-8">
+        <div className="flex items-center justify-between mb-8">
+          <Link href="/dashboard">
+            <Button variant="ghost" className="text-gray-400 hover:text-white" data-testid="button-back">
+              Back to Dashboard
+            </Button>
+          </Link>
           
-          <h1 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-white to-orange-400 mb-4">
-            BEAT THE SASQUATCH
-          </h1>
-          
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-6">
-            The gamified creation studio. Win free songs, courses, templates, and credits 
-            while you create. All within the KreAIte ecosystem.
-          </p>
-
-          <div className="flex flex-wrap justify-center gap-3 mb-8">
-            <Badge className="bg-orange-600/20 text-orange-400 border border-orange-500/30 px-4 py-2" data-testid="badge-balance">
-              <Coins className="w-4 h-4 mr-2" />
-              {wallet?.balance?.toLocaleString() ?? 0} Credits
-            </Badge>
-            <Badge className="bg-green-600/20 text-green-400 border border-green-500/30 px-4 py-2">
-              <Gift className="w-4 h-4 mr-2" />
-              Daily Free Spin
-            </Badge>
-            <Badge className="bg-purple-600/20 text-purple-400 border border-purple-500/30 px-4 py-2">
-              <Star className="w-4 h-4 mr-2" />
-              Provably Fair
-            </Badge>
+          <div className="flex items-center gap-4">
+            <Button variant="outline" className="border-yellow-500/30 text-yellow-400" data-testid="button-free-play">
+              <Zap className="w-4 h-4 mr-2" />
+              Free Play Mode
+            </Button>
+            <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-yellow-600/20 to-orange-600/20 border border-yellow-500/30">
+              <Coins className="w-5 h-5 text-yellow-400" />
+              <span className="text-2xl font-black text-white">{wallet?.balance?.toLocaleString() ?? 0}</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Prize Types */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <h2 className="text-center text-gray-500 uppercase tracking-wider text-sm mb-6 flex items-center justify-center gap-2">
-          <Sparkles className="w-4 h-4" />
-          Win Real Prizes
-          <Sparkles className="w-4 h-4" />
-        </h2>
-        
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-          {PRIZE_TYPES.map((prize) => (
-            <div 
-              key={prize.name}
-              className="flex flex-col items-center p-4 rounded-xl bg-gray-900/50 border border-gray-800"
-            >
-              <prize.icon className={`w-8 h-8 ${prize.color} mb-2`} />
-              <span className="text-xs text-gray-400 text-center">{prize.name}</span>
+        <div className="text-center mb-12">
+          <div className="relative inline-block mb-6">
+            <div className="absolute inset-0 blur-3xl bg-orange-500/30 rounded-full" />
+            <img 
+              src={sasquatchLogo} 
+              alt="Sasquatch" 
+              className="relative w-32 h-32 rounded-full border-4 border-orange-500 shadow-2xl shadow-orange-500/30"
+            />
+            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2">
+              <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-1.5 text-sm font-bold shadow-lg animate-pulse">
+                <Gift className="w-4 h-4 mr-1.5" />
+                DAILY BONUS READY
+              </Badge>
             </div>
-          ))}
+          </div>
+          
+          <h1 className="text-5xl md:text-6xl font-black mb-4">
+            <span className="bg-gradient-to-r from-orange-400 via-yellow-300 to-orange-400 bg-clip-text text-transparent">
+              BEAT THE SASQUATCH
+            </span>
+          </h1>
+          
+          <p className="text-gray-400 max-w-2xl mx-auto text-lg mb-8">
+            Premium casino games with real rewards. Win credits to power all 6 creative studios.
+            <span className="text-orange-400 font-semibold"> No cash payouts - credits only.</span>
+          </p>
+          
+          <div className="flex flex-wrap justify-center gap-4">
+            {PRIZE_TYPES.map((prize) => (
+              <div key={prize.name} className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-900/80 border border-gray-800">
+                <prize.icon className={`w-4 h-4 ${prize.color}`} />
+                <span className="text-white font-medium text-sm">{prize.name}</span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Games Grid */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-          <Gamepad2 className="w-6 h-6 text-orange-400" />
-          Sasquatch Games
-        </h2>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mb-12">
           {GAMES.map((game) => (
-            <Card 
-              key={game.id}
-              className={`bg-gray-900/60 border-gray-800 overflow-hidden transition-all hover:border-orange-500/50 ${
-                game.status === "live" ? "hover:shadow-lg hover:shadow-orange-500/10" : "opacity-70"
-              }`}
-            >
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${game.status === "live" ? "bg-orange-600/20" : "bg-gray-800"}`}>
-                      <game.icon className={`w-6 h-6 ${game.status === "live" ? "text-orange-400" : "text-gray-500"}`} />
+            <Link key={game.id} href={game.href}>
+              <Card 
+                className={`group relative bg-gray-900/60 backdrop-blur border-gray-800 overflow-hidden cursor-pointer transition-all duration-300 hover:border-orange-500/60 hover:shadow-2xl hover:shadow-orange-500/10 hover:scale-[1.02] h-full`}
+                data-testid={`game-card-${game.id}`}
+              >
+                <div 
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{ background: game.bgImage }}
+                />
+                
+                <div className={`h-1.5 bg-gradient-to-r ${game.gradient}`} />
+                
+                <CardContent className="relative p-5">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className={`p-3 rounded-xl bg-gradient-to-br ${game.gradient} shadow-lg group-hover:scale-110 transition-transform`}>
+                      <game.icon className="w-7 h-7 text-white" />
                     </div>
-                    <div>
-                      <CardTitle className="text-lg text-white">{game.name}</CardTitle>
-                      {game.rtp && (
-                        <span className="text-xs text-gray-500">{game.rtp} RTP</span>
+                    <div className="flex gap-1.5">
+                      {game.hot && (
+                        <Badge className="bg-red-500 text-white text-xs px-2 py-0.5 animate-pulse">
+                          HOT
+                        </Badge>
+                      )}
+                      {game.new && (
+                        <Badge className="bg-blue-500 text-white text-xs px-2 py-0.5">
+                          NEW
+                        </Badge>
+                      )}
+                      {game.status === "live" && !game.hot && !game.new && (
+                        <Badge className="bg-green-500/20 text-green-400 border-0 text-xs">
+                          LIVE
+                        </Badge>
                       )}
                     </div>
                   </div>
-                  <Badge 
-                    className={game.status === "live" 
-                      ? "bg-green-600/20 text-green-400 border-green-500/30" 
-                      : "bg-gray-700/50 text-gray-500 border-gray-600"
-                    }
-                  >
-                    {game.status === "live" ? "PLAY NOW" : "COMING SOON"}
-                  </Badge>
-                </div>
-              </CardHeader>
-              
-              <CardContent>
-                <p className="text-gray-400 text-sm mb-4">{game.description}</p>
-                
-                <div className="flex flex-wrap gap-1 mb-4">
-                  {game.prizes.map((prize) => (
-                    <Badge 
-                      key={prize} 
-                      variant="outline" 
-                      className="text-xs border-gray-700 text-gray-400"
-                    >
-                      {prize}
-                    </Badge>
-                  ))}
-                </div>
-
-                {game.status === "live" ? (
-                  <Link href={game.href}>
-                    <Button 
-                      className="w-full bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-500 hover:to-orange-600 text-white font-bold"
-                      data-testid={`button-play-${game.id}`}
-                    >
-                      <Zap className="w-4 h-4 mr-2" />
-                      Play Now
-                    </Button>
-                  </Link>
-                ) : (
-                  <Button 
-                    variant="outline" 
-                    className="w-full border-gray-700 text-gray-500"
-                    disabled
-                  >
-                    Coming Soon
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
+                  
+                  <h3 className="text-xl font-bold text-white mb-1 group-hover:text-orange-300 transition-colors">
+                    {game.name}
+                  </h3>
+                  <p className="text-gray-500 text-sm mb-4 line-clamp-2">
+                    {game.description}
+                  </p>
+                  
+                  <div className="flex flex-wrap gap-1.5">
+                    {game.prizes.map((prize, i) => (
+                      <Badge key={i} variant="outline" className="border-gray-700 text-gray-400 text-xs">
+                        {prize}
+                      </Badge>
+                    ))}
+                  </div>
+                  
+                  <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <ChevronRight className="w-5 h-5 text-orange-400" />
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
-      </div>
 
-      {/* How It Works */}
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        <Card className="bg-gradient-to-r from-orange-900/20 to-gray-900/60 border-orange-500/20">
-          <CardContent className="p-8">
-            <h2 className="text-2xl font-bold text-white mb-6 text-center flex items-center justify-center gap-3">
-              <Brain className="w-6 h-6 text-orange-400" />
-              How Beat the Sasquatch Works
-            </h2>
-            
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="w-12 h-12 rounded-full bg-orange-600/20 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-black text-orange-400">1</span>
-                </div>
-                <h3 className="font-bold text-white mb-2">Play Games</h3>
-                <p className="text-gray-400 text-sm">
-                  Use credits to play slots, puzzles, and challenges. Get a free daily spin!
-                </p>
-              </div>
-              
-              <div className="text-center">
-                <div className="w-12 h-12 rounded-full bg-orange-600/20 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-black text-orange-400">2</span>
-                </div>
-                <h3 className="font-bold text-white mb-2">Win Prizes</h3>
-                <p className="text-gray-400 text-sm">
-                  Beat the Sasquatch to win credits, free songs, courses, and premium content.
-                </p>
-              </div>
-              
-              <div className="text-center">
-                <div className="w-12 h-12 rounded-full bg-orange-600/20 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-black text-orange-400">3</span>
-                </div>
-                <h3 className="font-bold text-white mb-2">Create More</h3>
-                <p className="text-gray-400 text-sm">
-                  Redeem prizes across all 6 studios. No cash outs - only creation value!
-                </p>
-              </div>
+        <Card className="bg-gradient-to-r from-orange-600/10 via-red-600/10 to-yellow-600/10 border-orange-500/20">
+          <CardContent className="p-8 text-center">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <Star className="w-8 h-8 text-yellow-400" />
+              <h2 className="text-2xl font-bold text-white">How It Works</h2>
+              <Star className="w-8 h-8 text-yellow-400" />
             </div>
-
-            <div className="mt-8 p-4 bg-gray-900/60 rounded-xl border border-gray-800 text-center">
-              <p className="text-gray-500 text-sm">
-                <strong className="text-orange-400">Fair Play Guaranteed:</strong> All games use provably fair algorithms with transparent odds. 
-                Credits are redeemable only for platform services - never for cash.
-              </p>
+            <p className="text-gray-400 max-w-3xl mx-auto mb-6">
+              All games use platform credits - <span className="text-orange-400 font-semibold">no real money gambling</span>. 
+              Credits you win can be used across all 6 KreAIte studios: Book, Music, Video, Course, Image, and Doctrine Engine.
+              Operated by Stroke Lyfe Inc (501c3) for charitable entertainment.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Badge className="bg-green-500/20 text-green-400 border-0 px-4 py-2">
+                <Sparkles className="w-4 h-4 mr-2" />
+                Free Play Available
+              </Badge>
+              <Badge className="bg-purple-500/20 text-purple-400 border-0 px-4 py-2">
+                <Gift className="w-4 h-4 mr-2" />
+                Daily Bonuses
+              </Badge>
+              <Badge className="bg-blue-500/20 text-blue-400 border-0 px-4 py-2">
+                <Zap className="w-4 h-4 mr-2" />
+                Instant Rewards
+              </Badge>
             </div>
           </CardContent>
         </Card>
-      </div>
-
-      {/* SEO Content */}
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        <div className="prose prose-invert prose-orange max-w-none">
-          <h2 className="text-xl font-bold text-white mb-4">The Gamified Creation Studio</h2>
-          <p className="text-gray-400">
-            KreAIte combines AI-powered content creation with gamification to make the creative process 
-            more engaging. Beat the Stroked Out Sasquatch across multiple games to earn rewards that 
-            directly enhance your creative output - from AI music generation to professional book publishing.
-          </p>
-          <p className="text-gray-500 text-sm mt-4">
-            Unlike traditional gaming platforms, all prizes are redeemable exclusively within the KreAIte 
-            ecosystem. This credit-based reward system encourages creators to explore all 6 studios: 
-            Book, Music, Video, Course, Image, and Doctrine Engine.
-          </p>
-        </div>
       </div>
     </div>
   );

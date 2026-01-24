@@ -1,59 +1,112 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Coins, Sparkles, Trophy, Zap, Crown, Flame, Trees, Mountain, Footprints, Eye, Moon, Star, Tent, Axe } from "lucide-react";
+import { 
+  Coins, Sparkles, Trophy, Zap, Crown, Flame, Trees, Mountain, 
+  Footprints, Eye, Moon, Star, Tent, Axe, Volume2, VolumeX,
+  ChevronLeft, Gift, Gem, Diamond
+} from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "wouter";
 import sasquatchLogo from "../assets/sasquatch-logo.png";
 
-// Sasquatch-themed symbols - Beat the Stroked Out Sasquatch!
 const SYMBOLS = [
-  { icon: Trees, name: "Forest", value: 2, color: "text-green-500", bg: "bg-green-900/30" },
-  { icon: Footprints, name: "Tracks", value: 3, color: "text-amber-600", bg: "bg-amber-900/30" },
-  { icon: Mountain, name: "Mountain", value: 4, color: "text-slate-400", bg: "bg-slate-800/50" },
-  { icon: Tent, name: "Camp", value: 5, color: "text-orange-400", bg: "bg-orange-900/30" },
-  { icon: Moon, name: "Night", value: 8, color: "text-blue-300", bg: "bg-blue-900/30" },
-  { icon: Eye, name: "Spotted", value: 10, color: "text-red-400", bg: "bg-red-900/30" },
-  { icon: Crown, name: "Legend", value: 15, color: "text-yellow-400", bg: "bg-yellow-900/30" },
-  { icon: Axe, name: "SASQUATCH", value: 50, color: "text-orange-500", bg: "bg-orange-800/40" },
+  { icon: "🌲", name: "Forest", value: 2, color: "#22c55e", glow: "0 0 20px #22c55e", isImage: false },
+  { icon: "👣", name: "Tracks", value: 3, color: "#d97706", glow: "0 0 20px #d97706", isImage: false },
+  { icon: "⛰️", name: "Peak", value: 4, color: "#64748b", glow: "0 0 20px #64748b", isImage: false },
+  { icon: "🏕️", name: "Camp", value: 5, color: "#f97316", glow: "0 0 20px #f97316", isImage: false },
+  { icon: "🌙", name: "Night", value: 8, color: "#60a5fa", glow: "0 0 20px #60a5fa", isImage: false },
+  { icon: "👁️", name: "Spotted", value: 12, color: "#ef4444", glow: "0 0 20px #ef4444", isImage: false },
+  { icon: "👑", name: "Crown", value: 20, color: "#fbbf24", glow: "0 0 30px #fbbf24", isImage: false },
+  { icon: "7️⃣", name: "LUCKY 7", value: 35, color: "#ec4899", glow: "0 0 40px #ec4899", isImage: false },
+  { icon: "💎", name: "DIAMOND", value: 75, color: "#06b6d4", glow: "0 0 50px #06b6d4", isImage: false },
+  { icon: "SASQUATCH", name: "BIGFOOT", value: 500, color: "#ff6b35", glow: "0 0 60px #ff6b35, 0 0 100px #ff6b35", isImage: true },
 ];
+
+const REEL_ITEMS = 20;
+const SPIN_DURATION = 2500;
+
+interface Particle {
+  id: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  color: string;
+  life: number;
+}
 
 export default function SlotMachine() {
   const { toast } = useToast();
-  const [spinning, setSpinning] = useState([false, false, false]);
-  const [finalSymbols, setFinalSymbols] = useState([0, 1, 2]);
+  const [reelPositions, setReelPositions] = useState([0, 0, 0, 0, 0]);
+  const [spinning, setSpinning] = useState(false);
+  const [finalSymbols, setFinalSymbols] = useState([0, 1, 2, 3, 4]);
   const [lastWin, setLastWin] = useState<number | null>(null);
   const [betAmount, setBetAmount] = useState(10);
-  const [multiplier, setMultiplier] = useState(1);
   const [streak, setStreak] = useState(0);
   const [showJackpot, setShowJackpot] = useState(false);
-  const [totalSpins, setTotalSpins] = useState(0);
+  const [particles, setParticles] = useState<Particle[]>([]);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [autoSpin, setAutoSpin] = useState(false);
+  const [winLines, setWinLines] = useState<number[]>([]);
+  const [progressiveJackpot, setProgressiveJackpot] = useState(50000);
 
   const { data: wallet } = useQuery<{ balance: number }>({
     queryKey: ["/api/credits/balance"],
   });
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setProgressiveJackpot(prev => prev + Math.random() * 10);
+    }, 100);
+    return () => clearInterval(interval);
+  }, []);
+
+  const createParticles = useCallback((count: number, color: string) => {
+    const newParticles: Particle[] = [];
+    for (let i = 0; i < count; i++) {
+      newParticles.push({
+        id: Date.now() + i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        vx: (Math.random() - 0.5) * 4,
+        vy: -Math.random() * 3 - 2,
+        size: Math.random() * 8 + 4,
+        color,
+        life: 1,
+      });
+    }
+    setParticles(prev => [...prev, ...newParticles]);
+    setTimeout(() => setParticles([]), 2000);
+  }, []);
+
   const spinMutation = useMutation({
     mutationFn: async () => {
-      const res = await apiRequest("POST", "/api/games/slot-spin", { bet: betAmount * multiplier });
+      const res = await apiRequest("POST", "/api/games/slot-spin", { bet: betAmount, reels: 5 });
       return res.json();
     },
     onSuccess: (data) => {
-      setFinalSymbols(data.symbolIndices);
+      setFinalSymbols(data.symbolIndices || [0, 1, 2, 3, 4]);
       setLastWin(data.winnings);
-      setTotalSpins(s => s + 1);
+      setWinLines(data.winLines || []);
       
       if (data.winnings > 0) {
         setStreak(s => s + 1);
+        createParticles(data.winnings > 100 ? 50 : 20, "#fbbf24");
+        
         if (data.isJackpot) {
           setShowJackpot(true);
-          setTimeout(() => setShowJackpot(false), 4000);
+          createParticles(100, "#ff6b35");
+          setTimeout(() => setShowJackpot(false), 5000);
         }
+        
         toast({
-          title: data.isJackpot ? "SASQUATCH JACKPOT!" : "You beat the Sasquatch!",
-          description: `Won ${data.winnings} credits!`,
+          title: data.isJackpot ? "🦶 BIGFOOT JACKPOT!" : "💰 Winner!",
+          description: `Won ${data.winnings.toLocaleString()} credits!`,
         });
       } else {
         setStreak(0);
@@ -63,263 +116,329 @@ export default function SlotMachine() {
     },
     onError: (error: any) => {
       toast({
-        title: "The Sasquatch blocked your spin",
+        title: "Spin Failed",
         description: error.message || "Insufficient credits",
         variant: "destructive",
       });
-      setSpinning([false, false, false]);
     },
   });
 
-  const handleSpin = () => {
-    if (spinning.some(s => s) || !wallet || wallet.balance < betAmount * multiplier) return;
+  const handleSpin = useCallback(() => {
+    if (spinning || !wallet || wallet.balance < betAmount) return;
     
     setLastWin(null);
-    setSpinning([true, true, true]);
+    setWinLines([]);
+    setSpinning(true);
 
-    setTimeout(() => setSpinning([false, true, true]), 600);
-    setTimeout(() => setSpinning([false, false, true]), 1000);
+    const newPositions = reelPositions.map(() => Math.random() * 360 + 720);
+    setReelPositions(newPositions);
+
     setTimeout(() => {
-      setSpinning([false, false, false]);
+      setSpinning(false);
       spinMutation.mutate();
-    }, 1400);
-  };
+    }, SPIN_DURATION);
+  }, [spinning, wallet, betAmount, reelPositions, spinMutation]);
 
-  const ReelSymbol = ({ symbolIndex, isSpinning, reelIndex }: { symbolIndex: number; isSpinning: boolean; reelIndex: number }) => {
-    const [displayIndex, setDisplayIndex] = useState(symbolIndex);
-    
-    useEffect(() => {
-      if (isSpinning) {
-        const interval = setInterval(() => {
-          setDisplayIndex(Math.floor(Math.random() * SYMBOLS.length));
-        }, 60);
-        return () => clearInterval(interval);
-      } else {
-        setDisplayIndex(finalSymbols[reelIndex]);
-      }
-    }, [isSpinning, reelIndex]);
+  useEffect(() => {
+    if (autoSpin && !spinning && wallet && wallet.balance >= betAmount) {
+      const timer = setTimeout(handleSpin, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [autoSpin, spinning, wallet, betAmount, handleSpin]);
 
-    const symbol = SYMBOLS[displayIndex] || SYMBOLS[0];
-    const Icon = symbol.icon;
+  const Reel = ({ index, position }: { index: number; position: number }) => {
+    const symbolIndex = spinning ? Math.floor(Math.random() * SYMBOLS.length) : finalSymbols[index];
+    const symbol = SYMBOLS[symbolIndex] || SYMBOLS[0];
+    const isWinning = !spinning && lastWin && lastWin > 0 && winLines.includes(index);
 
     return (
-      <div className={`relative w-24 h-24 md:w-32 md:h-32 rounded-xl flex flex-col items-center justify-center transition-all duration-200 ${symbol.bg} border-2 ${
-        lastWin && lastWin > 0 && !isSpinning 
-          ? "border-orange-500 shadow-lg shadow-orange-500/40 animate-pulse" 
-          : "border-gray-700"
-      }`}>
-        <Icon className={`w-10 h-10 md:w-14 md:h-14 ${symbol.color} ${isSpinning ? "blur-sm animate-spin" : ""} drop-shadow-lg`} />
-        <span className={`text-[10px] md:text-xs mt-1 font-bold text-gray-300 uppercase tracking-wider ${isSpinning ? "opacity-0" : "opacity-100"}`}>
-          {symbol.name}
-        </span>
-        {!isSpinning && symbol.value >= 15 && (
-          <Star className="absolute -top-1 -right-1 w-5 h-5 text-yellow-400 fill-yellow-400 animate-pulse" />
+      <div className="relative">
+        <div 
+          className={`
+            w-20 h-24 md:w-28 md:h-32 rounded-xl flex items-center justify-center
+            bg-gradient-to-b from-gray-800 via-gray-900 to-black
+            border-2 transition-all duration-300 overflow-hidden
+            ${isWinning ? 'border-yellow-400 shadow-[0_0_30px_rgba(251,191,36,0.6)]' : 'border-gray-700'}
+          `}
+          style={{
+            transform: spinning ? `rotateX(${position}deg)` : 'rotateX(0deg)',
+            transition: spinning ? `transform ${SPIN_DURATION}ms cubic-bezier(0.17, 0.67, 0.12, 0.99)` : 'none',
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-black/30" />
+          
+          {symbol.isImage ? (
+            <img 
+              src={sasquatchLogo} 
+              alt="Bigfoot Jackpot" 
+              className={`w-12 h-12 md:w-16 md:h-16 rounded-full ${spinning ? 'blur-sm animate-pulse' : ''}`}
+              style={{ 
+                filter: isWinning ? `drop-shadow(${symbol.glow})` : 'drop-shadow(0 0 10px #ff6b35)',
+                animation: isWinning ? 'pulse 0.5s infinite' : 'none'
+              }}
+            />
+          ) : (
+            <span 
+              className={`text-4xl md:text-5xl ${spinning ? 'blur-sm animate-pulse' : ''}`}
+              style={{ 
+                filter: isWinning ? `drop-shadow(${symbol.glow})` : 'none',
+                animation: isWinning ? 'pulse 0.5s infinite' : 'none'
+              }}
+            >
+              {symbol.icon}
+            </span>
+          )}
+        </div>
+        
+        {isWinning && (
+          <div className="absolute -inset-1 rounded-xl bg-gradient-to-r from-yellow-400/20 via-orange-500/20 to-yellow-400/20 animate-pulse -z-10" />
         )}
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-[#1a1a1a] to-black relative overflow-hidden">
-      {/* Forest background effect */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-green-900/30 to-transparent" />
+    <div className="min-h-screen bg-[#0a0a0f] relative overflow-hidden">
+      <div 
+        className="absolute inset-0"
+        style={{
+          background: 'radial-gradient(ellipse at 50% 0%, rgba(139, 69, 255, 0.15) 0%, transparent 50%), radial-gradient(ellipse at 80% 80%, rgba(255, 107, 53, 0.1) 0%, transparent 40%), radial-gradient(ellipse at 20% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 40%)'
+        }}
+      />
+      
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-yellow-400 rounded-full animate-pulse"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 2}s`,
+              opacity: 0.3 + Math.random() * 0.4
+            }}
+          />
+        ))}
       </div>
-      
-      {/* Orange glow */}
-      <div className="absolute top-20 left-1/2 -translate-x-1/2 w-96 h-96 bg-orange-600/20 rounded-full blur-3xl" />
-      
-      {/* Jackpot overlay */}
+
+      {particles.map(p => (
+        <div
+          key={p.id}
+          className="absolute rounded-full pointer-events-none animate-ping"
+          style={{
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+            width: p.size,
+            height: p.size,
+            backgroundColor: p.color,
+            boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+          }}
+        />
+      ))}
+
       {showJackpot && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95">
-          <div className="text-center">
-            <img src={sasquatchLogo} alt="Sasquatch" className="w-48 h-48 mx-auto animate-bounce rounded-full" />
-            <h1 className="text-6xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-yellow-500 to-orange-600 mt-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm">
+          <div className="text-center animate-bounce">
+            <div className="relative">
+              <img src={sasquatchLogo} alt="Bigfoot" className="w-40 h-40 mx-auto rounded-full border-4 border-yellow-400 shadow-[0_0_60px_rgba(251,191,36,0.8)]" />
+              <Sparkles className="absolute -top-4 -right-4 w-12 h-12 text-yellow-400 animate-spin" />
+              <Sparkles className="absolute -bottom-4 -left-4 w-12 h-12 text-orange-400 animate-spin" />
+            </div>
+            <h1 className="text-5xl md:text-7xl font-black mt-6 bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500 bg-clip-text text-transparent animate-pulse">
               JACKPOT!
             </h1>
-            <p className="text-3xl text-white mt-4 font-bold">{lastWin?.toLocaleString()} CREDITS!</p>
-            <p className="text-orange-400 mt-2">You defeated the Stroked Out Sasquatch!</p>
+            <p className="text-4xl text-white font-bold mt-4">{lastWin?.toLocaleString()} CREDITS</p>
+            <p className="text-orange-400 mt-2 text-lg">You caught the Bigfoot!</p>
           </div>
         </div>
       )}
 
-      <div className="relative z-10 p-4 md:p-8 max-w-4xl mx-auto">
-        {/* Header with Sasquatch */}
-        <div className="text-center mb-6">
-          <img src={sasquatchLogo} alt="Stroked Out Sasquatch" className="w-24 h-24 mx-auto rounded-full border-4 border-orange-500 shadow-lg shadow-orange-500/30 mb-4" />
-          <h1 className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-gray-200 to-orange-400">
-            BEAT THE SASQUATCH
-          </h1>
-          <p className="text-gray-500 mt-1">Stroked Out Sasquatch Slots • 92% RTP • Provably Fair</p>
+      <div className="relative z-10 p-4 md:p-6 max-w-5xl mx-auto">
+        <div className="flex items-center justify-between mb-4">
+          <Link href="/games">
+            <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white" data-testid="button-back">
+              <ChevronLeft className="w-5 h-5 mr-1" />
+              Games
+            </Button>
+          </Link>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setSoundEnabled(!soundEnabled)}
+            className="text-gray-400"
+            data-testid="button-sound"
+          >
+            {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+          </Button>
         </div>
 
-        {/* Stats bar */}
-        <div className="flex flex-wrap justify-center gap-2 mb-6">
-          <Badge className="bg-gradient-to-r from-orange-600 to-orange-700 text-white px-4 py-2 text-base font-bold" data-testid="badge-balance">
-            <Coins className="w-4 h-4 mr-2" />
+        <div className="text-center mb-6">
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <img src={sasquatchLogo} alt="Sasquatch" className="w-14 h-14 rounded-full border-2 border-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.5)]" />
+            <div>
+              <h1 className="text-2xl md:text-3xl font-black bg-gradient-to-r from-orange-400 via-yellow-300 to-orange-400 bg-clip-text text-transparent">
+                SASQUATCH SLOTS
+              </h1>
+              <p className="text-xs text-gray-500">Beat the Stroked Out Sasquatch</p>
+            </div>
+          </div>
+          
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-900/50 to-pink-900/50 border border-purple-500/30">
+            <Gem className="w-4 h-4 text-purple-400" />
+            <span className="text-sm text-purple-300">Progressive Jackpot:</span>
+            <span className="text-lg font-bold text-purple-200">{Math.floor(progressiveJackpot).toLocaleString()}</span>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-3 mb-6">
+          <Badge className="bg-gradient-to-r from-yellow-600 to-orange-600 text-white px-4 py-2 text-lg font-bold shadow-lg" data-testid="badge-balance">
+            <Coins className="w-5 h-5 mr-2" />
             {wallet?.balance?.toLocaleString() ?? 0}
           </Badge>
           {streak >= 2 && (
-            <Badge className="bg-gradient-to-r from-red-600 to-orange-600 text-white px-4 py-2 text-base animate-pulse" data-testid="badge-streak">
-              <Flame className="w-4 h-4 mr-2" />
-              {streak}x HOT
-            </Badge>
-          )}
-          {totalSpins > 0 && (
-            <Badge variant="outline" className="border-gray-700 text-gray-400 px-3 py-2">
-              <Eye className="w-4 h-4 mr-1" />
-              {totalSpins} hunts
+            <Badge className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-4 py-2 animate-pulse" data-testid="badge-streak">
+              <Flame className="w-5 h-5 mr-2" />
+              {streak}x STREAK
             </Badge>
           )}
         </div>
 
-        {/* Slot machine */}
-        <Card className="bg-gradient-to-b from-gray-900 to-black border-2 border-orange-600/40 shadow-2xl shadow-orange-500/10 overflow-hidden">
-          <div className="h-1 bg-gradient-to-r from-orange-600 via-yellow-500 to-orange-600" />
+        <Card className="bg-gradient-to-b from-gray-900/90 via-gray-900/95 to-black border-2 border-orange-600/50 shadow-[0_0_50px_rgba(249,115,22,0.2)] overflow-hidden">
+          <div className="h-2 bg-gradient-to-r from-orange-600 via-yellow-400 to-orange-600" />
           
-          <CardContent className="p-4 md:p-8">
-            {/* Reels */}
-            <div className="relative bg-black/60 rounded-2xl p-4 md:p-8 border border-gray-800 mb-6">
-              <div className="absolute inset-4 bg-gradient-to-r from-orange-600/10 via-yellow-500/10 to-orange-600/10 blur-2xl rounded-xl" />
+          <div className="absolute top-4 left-4 right-4 flex justify-between text-xs text-gray-500">
+            <span>RTP: 96%</span>
+            <span>5 REELS</span>
+            <span>243 WAYS</span>
+          </div>
+          
+          <CardContent className="p-6 md:p-8 pt-10">
+            <div className="relative bg-black/60 rounded-2xl p-6 md:p-8 border border-gray-800 mb-6 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-b from-purple-900/10 via-transparent to-orange-900/10" />
               
-              <div className="relative flex justify-center gap-3 md:gap-6">
-                {[0, 1, 2].map((reelIndex) => (
-                  <ReelSymbol
-                    key={reelIndex}
-                    symbolIndex={finalSymbols[reelIndex]}
-                    isSpinning={spinning[reelIndex]}
-                    reelIndex={reelIndex}
-                  />
+              <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-28 border-y-2 border-yellow-500/30 pointer-events-none" />
+              
+              <div className="relative flex justify-center gap-2 md:gap-4">
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <Reel key={i} index={i} position={reelPositions[i]} />
                 ))}
               </div>
-
-              <div className="absolute left-2 right-2 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-orange-500/50 to-transparent pointer-events-none" />
             </div>
 
-            {/* Result */}
-            {lastWin !== null && !spinning.some(s => s) && (
-              <div className={`text-center p-4 rounded-xl mb-6 ${
+            {lastWin !== null && !spinning && (
+              <div className={`text-center p-4 rounded-xl mb-6 transition-all ${
                 lastWin > 0 
-                  ? "bg-gradient-to-r from-green-900/40 to-emerald-900/40 border border-green-500/40" 
+                  ? "bg-gradient-to-r from-green-900/50 via-emerald-900/50 to-green-900/50 border border-green-500/50 shadow-[0_0_30px_rgba(34,197,94,0.3)]" 
                   : "bg-gray-900/50 border border-gray-700"
               }`}>
                 {lastWin > 0 ? (
                   <div className="flex items-center justify-center gap-3">
                     <Trophy className="w-8 h-8 text-yellow-400 animate-bounce" />
-                    <span className="text-2xl md:text-3xl font-black text-green-400">
+                    <span className="text-3xl font-black text-green-400">
                       +{lastWin.toLocaleString()} CREDITS
                     </span>
                     <Trophy className="w-8 h-8 text-yellow-400 animate-bounce" />
                   </div>
                 ) : (
-                  <p className="text-gray-500">The Sasquatch wins this round... Try again!</p>
+                  <p className="text-gray-500">No win this spin... Try again!</p>
                 )}
               </div>
             )}
 
-            {/* Bet controls */}
-            <div className="space-y-4">
-              <div className="flex flex-col md:flex-row items-center justify-center gap-3">
-                <span className="text-gray-500 font-medium uppercase text-sm">Bet:</span>
-                <div className="flex gap-2">
-                  {[5, 10, 25, 50, 100].map((amount) => (
-                    <Button
-                      key={amount}
-                      variant={betAmount === amount ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setBetAmount(amount)}
-                      disabled={spinning.some(s => s)}
-                      className={`min-w-[48px] ${
-                        betAmount === amount 
-                          ? "bg-orange-600 hover:bg-orange-700 text-white font-bold border-0" 
-                          : "border-gray-700 text-gray-400 hover:border-orange-500 hover:text-orange-400 bg-transparent"
-                      }`}
-                      data-testid={`button-bet-${amount}`}
-                    >
-                      {amount}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex flex-col md:flex-row items-center justify-center gap-3">
-                <span className="text-gray-500 font-medium uppercase text-sm">Risk:</span>
-                <div className="flex gap-2">
-                  {[1, 2, 5, 10].map((mult) => (
-                    <Button
-                      key={mult}
-                      variant={multiplier === mult ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setMultiplier(mult)}
-                      disabled={spinning.some(s => s)}
-                      className={`min-w-[48px] ${
-                        multiplier === mult 
-                          ? "bg-red-700 hover:bg-red-800 text-white font-bold border-0" 
-                          : "border-gray-700 text-gray-400 hover:border-red-500 hover:text-red-400 bg-transparent"
-                      }`}
-                      data-testid={`button-mult-${mult}`}
-                    >
-                      {mult}x
-                    </Button>
-                  ))}
-                </div>
-              </div>
+            <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+              <span className="text-gray-500 font-medium text-sm mr-2">BET:</span>
+              {[5, 10, 25, 50, 100, 250].map((amount) => (
+                <Button
+                  key={amount}
+                  variant={betAmount === amount ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setBetAmount(amount)}
+                  disabled={spinning}
+                  className={`min-w-[50px] transition-all ${
+                    betAmount === amount 
+                      ? "bg-gradient-to-r from-orange-600 to-yellow-600 text-white font-bold border-0 shadow-lg" 
+                      : "border-gray-700 text-gray-400 hover:border-orange-500 hover:text-orange-400"
+                  }`}
+                  data-testid={`button-bet-${amount}`}
+                >
+                  {amount}
+                </Button>
+              ))}
             </div>
 
-            {/* Spin button */}
-            <Button
-              onClick={handleSpin}
-              disabled={spinning.some(s => s) || !wallet || wallet.balance < betAmount * multiplier}
-              className="w-full h-16 md:h-20 mt-6 text-xl md:text-2xl font-black bg-gradient-to-r from-orange-600 via-orange-500 to-orange-600 hover:from-orange-500 hover:via-orange-400 hover:to-orange-500 text-white shadow-lg shadow-orange-600/30 transition-all hover:scale-[1.02] active:scale-[0.98] border-0"
-              data-testid="button-spin"
-            >
-              {spinning.some(s => s) ? (
-                <div className="flex items-center gap-3">
-                  <Footprints className="w-8 h-8 animate-bounce" />
-                  <span className="animate-pulse">HUNTING...</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-3">
-                  <Zap className="w-8 h-8" />
-                  HUNT ({(betAmount * multiplier).toLocaleString()})
-                  <Zap className="w-8 h-8" />
-                </div>
-              )}
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                onClick={handleSpin}
+                disabled={spinning || !wallet || wallet.balance < betAmount}
+                className="flex-1 h-16 md:h-20 text-xl md:text-2xl font-black bg-gradient-to-r from-orange-600 via-red-500 to-orange-600 hover:from-orange-500 hover:via-red-400 hover:to-orange-500 text-white shadow-[0_0_30px_rgba(249,115,22,0.4)] transition-all hover:shadow-[0_0_50px_rgba(249,115,22,0.6)] border-0"
+                data-testid="button-spin"
+              >
+                {spinning ? (
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span>SPINNING...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <Zap className="w-8 h-8" />
+                    SPIN ({betAmount})
+                    <Zap className="w-8 h-8" />
+                  </div>
+                )}
+              </Button>
+              
+              <Button
+                onClick={() => setAutoSpin(!autoSpin)}
+                variant={autoSpin ? "default" : "outline"}
+                className={`h-16 md:h-20 px-6 ${autoSpin ? 'bg-green-600 hover:bg-green-700' : 'border-gray-700'}`}
+                disabled={!wallet || wallet.balance < betAmount}
+                data-testid="button-auto"
+              >
+                <span className="text-sm font-bold">AUTO</span>
+              </Button>
+            </div>
 
-            {wallet && wallet.balance < betAmount * multiplier && (
+            {wallet && wallet.balance < betAmount && (
               <p className="text-center text-red-400 text-sm mt-3">
-                Need {(betAmount * multiplier).toLocaleString()} credits to hunt
+                Need {betAmount.toLocaleString()} credits to spin
               </p>
             )}
           </CardContent>
 
-          <div className="h-1 bg-gradient-to-r from-orange-600 via-yellow-500 to-orange-600" />
+          <div className="h-2 bg-gradient-to-r from-orange-600 via-yellow-400 to-orange-600" />
         </Card>
 
-        {/* Paytable */}
         <Card className="mt-6 bg-gray-900/60 border-gray-800">
           <CardContent className="p-4">
             <h3 className="text-center text-orange-400 font-bold mb-4 flex items-center justify-center gap-2 uppercase tracking-wider text-sm">
-              <Eye className="w-4 h-4" />
-              Sasquatch Paytable
-              <Eye className="w-4 h-4" />
+              <Crown className="w-4 h-4" />
+              Paytable
+              <Crown className="w-4 h-4" />
             </h3>
-            <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
-              {SYMBOLS.map((symbol, i) => {
-                const Icon = symbol.icon;
-                return (
-                  <div key={i} className={`flex flex-col items-center p-2 rounded-lg ${symbol.bg} border border-gray-800`}>
-                    <Icon className={`w-5 h-5 ${symbol.color}`} />
-                    <span className="text-[10px] text-gray-500 mt-1">{symbol.value}x</span>
-                  </div>
-                );
-              })}
+            <div className="grid grid-cols-5 md:grid-cols-10 gap-2">
+              {SYMBOLS.map((symbol, i) => (
+                <div 
+                  key={i} 
+                  className={`flex flex-col items-center p-2 rounded-lg border transition-colors ${
+                    symbol.isImage 
+                      ? 'bg-orange-900/30 border-orange-500/50 hover:border-orange-400' 
+                      : 'bg-gray-800/50 border-gray-700 hover:border-orange-500/50'
+                  }`}
+                >
+                  {symbol.isImage ? (
+                    <img src={sasquatchLogo} alt="Bigfoot" className="w-8 h-8 rounded-full" />
+                  ) : (
+                    <span className="text-2xl">{symbol.icon}</span>
+                  )}
+                  <span className={`text-[10px] font-bold mt-1 ${symbol.isImage ? 'text-orange-300' : 'text-orange-400'}`}>
+                    {symbol.value}x
+                  </span>
+                </div>
+              ))}
             </div>
-            <div className="text-center text-gray-600 text-xs mt-4">
-              <p>Match 2 = 2× bet • Match 3 = symbol × bet × risk</p>
-              <p className="text-gray-500 mt-1">House Edge: 8% • Fair Play Guaranteed</p>
-            </div>
+            <p className="text-center text-gray-600 text-xs mt-4">
+              Match 3+ symbols left-to-right for wins • Wild substitutes all except Bigfoot
+            </p>
           </CardContent>
         </Card>
       </div>
