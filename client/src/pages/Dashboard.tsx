@@ -11,7 +11,7 @@ import {
   ShoppingBag, Users, Settings, Shield, Sparkles,
   FileText, Mic, Palette, Clock, ArrowRight, Plus,
   Loader2, Calendar, Zap, Target, Award, FolderOpen,
-  Copy, Share2, Gift, UserPlus
+  Copy, Share2, Gift, UserPlus, Search, Gamepad2
 } from "lucide-react";
 import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
@@ -371,6 +371,18 @@ export default function Dashboard() {
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-doctrine-engine">
                         <Brain className="h-5 w-5 text-primary" />
                         <span className="font-medium text-sm">Doctrine Engine</span>
+                      </div>
+                    </Link>
+                    <Link href="/seo-command-center">
+                      <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-seo-command-center">
+                        <Search className="h-5 w-5 text-primary" />
+                        <span className="font-medium text-sm">SEO Command Center</span>
+                      </div>
+                    </Link>
+                    <Link href="/games">
+                      <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border bg-gradient-to-r from-orange-500/10 to-orange-600/5" data-testid="link-sasquatch-games">
+                        <Gamepad2 className="h-5 w-5 text-orange-500" />
+                        <span className="font-medium text-sm">Beat the Sasquatch</span>
                       </div>
                     </Link>
                   </CardContent>
