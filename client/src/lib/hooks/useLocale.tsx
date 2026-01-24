@@ -109,11 +109,13 @@ export function LocaleProvider({ children }: LocaleProviderProps) {
     setIsInitialized(true);
   }, []);
 
+  // Always default to English - user can manually switch via LanguageSwitcher
   useEffect(() => {
-    if (isInitialized && geoQuery.data?.location.language && !localStorage.getItem('kreaite_locale')) {
-      setLocaleState(geoQuery.data.location.language);
+    if (isInitialized && !localStorage.getItem('kreaite_locale')) {
+      setLocaleState('en');
+      localStorage.setItem('kreaite_locale', 'en');
     }
-  }, [geoQuery.data, isInitialized]);
+  }, [isInitialized]);
 
   const setLocale = (newLocale: string) => {
     setLocaleState(newLocale);
