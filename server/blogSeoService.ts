@@ -587,7 +587,7 @@ export function analyzeAEO(post: any): AEOOptimization {
   const faqSchema = hasFAQContent ? {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: faqMatches.slice(0, 10).map(faq => {
+    mainEntity: faqMatches.slice(0, 10).map((faq: string) => {
       const [question, answer] = faq.split(/\n+/);
       return {
         "@type": "Question",
@@ -606,7 +606,7 @@ export function analyzeAEO(post: any): AEOOptimization {
     "@type": "HowTo",
     name: title,
     description: metaDescription,
-    step: howToMatches.slice(0, 10).map((step, i) => ({
+    step: howToMatches.slice(0, 10).map((step: string, i: number) => ({
       "@type": "HowToStep",
       position: i + 1,
       text: step.replace(/^(?:Step \d+[:.]\s*|\d+\.\s*)/i, ''),
@@ -703,7 +703,7 @@ export async function generateBlogPostSchema(postId: number): Promise<object[]> 
   const aeoOptimization = analyzeAEO(p);
   if (aeoOptimization.faqSchema) schemas.push(aeoOptimization.faqSchema);
   if (aeoOptimization.howToSchema) schemas.push(aeoOptimization.howToSchema);
-  schemas.push(aeoOptimization.speakableSchema);
+  if (aeoOptimization.speakableSchema) schemas.push(aeoOptimization.speakableSchema);
 
   return schemas;
 }
