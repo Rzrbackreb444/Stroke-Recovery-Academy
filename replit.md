@@ -6,7 +6,7 @@
 
 ## Overview
 
-KreAIte.xyz is an ultra-premium AI-powered creator platform offering six professional studios for content creation: Book, Video, Music, Course, Image, and Doctrine Engine. Its purpose is to empower creators to produce, publish, and monetize their content across various formats, including a marketplace (KreAItorverse) that offers an 85/15 revenue split for creators. The platform integrates advanced AI for content generation, editing, and analysis, aiming to simplify the creative workflow from concept to publication. Key capabilities include unified media editing, AI-driven content generation, a robust marketplace for templates and finished works, and comprehensive tools for publishing and earning.
+KreAIte.xyz is an ultra-premium AI-powered creator platform offering seven professional studios for content creation: Book, Video, Music, Course, Image, Doctrine Engine, and Website Builder. Its purpose is to empower creators to produce, publish, and monetize their content across various formats, including a marketplace (KreAItorverse) that offers an 85/15 revenue split for creators. The platform integrates advanced AI for content generation, editing, and analysis, aiming to simplify the creative workflow from concept to publication. Key capabilities include unified media editing, AI-driven content generation, a robust marketplace for templates and finished works, comprehensive tools for publishing and earning, and full-featured website hosting with custom subdomains.
 
 ## User Preferences
 
@@ -51,12 +51,12 @@ Icons: lucide-react only (no emoji)
 - Book Studio uses auto-sync state management with 500ms debouncing for persistent user inputs across step navigation.
 
 ### Feature Specifications
-- **The 6 Studios**: Book, Video, Music, Course, Image, Doctrine Engine, each with specialized tools and AI integration.
+- **The 7 Studios**: Book, Video, Music, Course, Image, Doctrine Engine, Website Builder, each with specialized tools and AI integration.
 - **Creator Production Engine**: Content vaults, SERP research hub, batch production, music sandbox, script studio, life story engine, and a unified production dashboard.
 - **Marketplace (KreAItorverse)**: For selling books, courses, music, videos, and templates with an 85% creator revenue share.
 - **Creator Dashboard (/dashboard)**: Unified command center with 5 tabs:
   - *Overview*: Credit Balance, Projects Count, Credits Used, Total Earnings
-  - *Studios*: Quick access to all 6 studios plus additional tools
+  - *Studios*: Quick access to all 7 studios plus additional tools
   - *Earnings*: All users track revenue (Total, Pending, Paid Out, Sales, Revenue Split visualization)
   - *Referrals*: Affiliate system with shareable links, stats, reward breakdown (500 credits referrer/250 friend/10% commission)
   - *Admin* (admin only): Platform revenue + Subscription Analytics (Active, New, Churned, By Tier)
