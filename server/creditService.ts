@@ -154,6 +154,7 @@ export async function addCredits(
     amount,
     balanceAfter: newTotal,
     description,
+    featureKey: transactionType, // Persist for auditability
     metadata: metadata || null,
   });
   
