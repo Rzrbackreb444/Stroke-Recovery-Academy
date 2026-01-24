@@ -2405,6 +2405,126 @@ export class DatabaseStorage implements IStorage {
     const result = await db.delete(podcastEpisodes).where(eq(podcastEpisodes.id, id));
     return (result.rowCount ?? 0) > 0;
   }
+
+  // White Label Configuration Methods
+  async getWhiteLabelConfig(userId: string): Promise<any | undefined> {
+    try {
+      const result = await db.execute(sql`
+        SELECT * FROM white_label_configs WHERE user_id = ${userId} LIMIT 1
+      `);
+      return result.rows?.[0];
+    } catch (error) {
+      console.error("Error getting white label config:", error);
+      return undefined;
+    }
+  }
+
+  async createWhiteLabelConfig(config: any): Promise<any> {
+    try {
+      const result = await db.execute(sql`
+        INSERT INTO white_label_configs (
+          user_id, brand_name, logo_url, favicon_url, primary_color, accent_color, 
+          background_color, custom_domain, openai_api_key, anthropic_api_key, 
+          gemini_api_key, grok_api_key, perplexity_api_key, stability_api_key,
+          remove_bg_api_key, hide_kreaite_branding, custom_footer_text, 
+          custom_terms_url, custom_privacy_url, creator_revenue_share, platform_revenue_share
+        ) VALUES (
+          ${config.userId}, ${config.brandName}, ${config.logoUrl || null}, 
+          ${config.faviconUrl || null}, ${config.primaryColor}, ${config.accentColor},
+          ${config.backgroundColor}, ${config.customDomain || null}, 
+          ${config.openaiApiKey || null}, ${config.anthropicApiKey || null},
+          ${config.geminiApiKey || null}, ${config.grokApiKey || null},
+          ${config.perplexityApiKey || null}, ${config.stabilityApiKey || null},
+          ${config.removeBgApiKey || null}, ${config.hideKreaiteBranding || false},
+          ${config.customFooterText || null}, ${config.customTermsUrl || null},
+          ${config.customPrivacyUrl || null}, ${config.creatorRevenueShare || 85},
+          ${config.platformRevenueShare || 15}
+        ) RETURNING *
+      `);
+      return result.rows?.[0];
+    } catch (error) {
+      console.error("Error creating white label config:", error);
+      throw error;
+    }
+  }
+
+  async updateWhiteLabelConfig(id: number, config: any): Promise<any> {
+    try {
+      const result = await db.execute(sql`
+        UPDATE white_label_configs SET
+          brand_name = ${config.brandName},
+          logo_url = ${config.logoUrl || null},
+          favicon_url = ${config.faviconUrl || null},
+          primary_color = ${config.primaryColor},
+          accent_color = ${config.accentColor},
+          background_color = ${config.backgroundColor},
+          custom_domain = ${config.customDomain || null},
+          openai_api_key = ${config.openaiApiKey || null},
+          anthropic_api_key = ${config.anthropicApiKey || null},
+          gemini_api_key = ${config.geminiApiKey || null},
+          grok_api_key = ${config.grokApiKey || null},
+          perplexity_api_key = ${config.perplexityApiKey || null},
+          stability_api_key = ${config.stabilityApiKey || null},
+          remove_bg_api_key = ${config.removeBgApiKey || null},
+          hide_kreaite_branding = ${config.hideKreaiteBranding || false},
+          custom_footer_text = ${config.customFooterText || null},
+          custom_terms_url = ${config.customTermsUrl || null},
+          custom_privacy_url = ${config.customPrivacyUrl || null},
+          creator_revenue_share = ${config.creatorRevenueShare || 85},
+          platform_revenue_share = ${config.platformRevenueShare || 15},
+          updated_at = NOW()
+        WHERE id = ${id}
+        RETURNING *
+      `);
+      return result.rows?.[0];
+    } catch (error) {
+      console.error("Error updating white label config:", error);
+      throw error;
+    }
+  }
+
+  async updateWhiteLabelDomainStatus(userId: string, domain: string, verified: boolean): Promise<void> {
+    try {
+      await db.execute(sql`
+        UPDATE white_label_configs 
+        SET custom_domain = ${domain}, domain_verified = ${verified}, updated_at = NOW()
+        WHERE user_id = ${userId}
+      `);
+    } catch (error) {
+      console.error("Error updating domain status:", error);
+    }
+  }
+
+  async trackWhiteLabelApiUsage(usage: any): Promise<void> {
+    try {
+      await db.execute(sql`
+        INSERT INTO white_label_api_usage (white_label_id, api_provider, endpoint, tokens_used, cost_usd)
+        VALUES (${usage.whiteLabelId}, ${usage.apiProvider}, ${usage.endpoint || null}, 
+                ${usage.tokensUsed || 0}, ${usage.costUsd || 0})
+      `);
+    } catch (error) {
+      console.error("Error tracking API usage:", error);
+    }
+  }
+
+  async getWhiteLabelApiUsageStats(whiteLabelId: number): Promise<any> {
+    try {
+      const result = await db.execute(sql`
+        SELECT 
+          api_provider,
+          SUM(tokens_used) as total_tokens,
+          SUM(cost_usd) as total_cost,
+          COUNT(*) as request_count
+        FROM white_label_api_usage 
+        WHERE white_label_id = ${whiteLabelId}
+        GROUP BY api_provider
+      `);
+      return { usage: result.rows || [] };
+    } catch (error) {
+      console.error("Error getting usage stats:", error);
+      return { usage: [] };
+    }
+  }
 }
 
 export const storage = new DatabaseStorage();

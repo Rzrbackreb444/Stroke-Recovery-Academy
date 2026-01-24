@@ -62,6 +62,7 @@ import CreatorProductDashboard from "@/pages/CreatorProductDashboard";
 import ProductionDashboard from "@/pages/ProductionDashboard";
 import ScriptStudio from "@/pages/ScriptStudio";
 import LifeStoryEngine from "@/pages/LifeStoryEngine";
+import WhiteLabel from "@/pages/white-label";
 
 // Stroke Recovery Platform Pages (under /recovery/*)
 import StrokeRecoveryLanding from "@/pages/Landing";
@@ -147,6 +148,11 @@ function Router() {
       <Route path="/pricing" component={Pricing} />
       <Route path="/terms" component={TermsOfService} />
       <Route path="/privacy" component={PrivacyPolicy} />
+      <Route path="/white-label">
+        <ProtectedRoute>
+          <WhiteLabel />
+        </ProtectedRoute>
+      </Route>
       
       {/* Magic Link Authentication */}
       <Route path="/magic-link" component={MagicLinkLogin} />
