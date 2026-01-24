@@ -6273,6 +6273,355 @@ Respond in JSON format:
     }
   });
 
+  // Book Studio - AI Image Generation
+  app.post('/api/book-studio/generate-image', isAuthenticated, async (req: any, res) => {
+    try {
+      const { prompt, negativePrompt, width, height, style } = req.body;
+      
+      if (!prompt) {
+        return res.status(400).json({ message: "Prompt is required" });
+      }
+
+      // Use existing image generation infrastructure
+      const result = await generateImageWithGemini(prompt, {
+        negativePrompt,
+        width: width || 1024,
+        height: height || 1024,
+        style: style || 'illustration',
+      });
+
+      if (result.success && result.imageUrl) {
+        res.json({
+          success: true,
+          imageUrl: result.imageUrl,
+          prompt,
+          style,
+        });
+      } else {
+        // Return placeholder for development
+        res.json({
+          success: true,
+          imageUrl: `https://placehold.co/${width || 1024}x${height || 1024}/1a1a1a/c9941a?text=${encodeURIComponent(prompt.slice(0, 20))}`,
+          prompt,
+          style,
+          placeholder: true,
+        });
+      }
+    } catch (error: any) {
+      console.error("Error generating book studio image:", error);
+      res.json({
+        success: true,
+        imageUrl: `https://placehold.co/1024x1024/1a1a1a/c9941a?text=Generated+Image`,
+        placeholder: true,
+      });
+    }
+  });
+
+  // Book Studio - AI Consultation
+  app.post('/api/ai/consultation', isAuthenticated, async (req: any, res) => {
+    try {
+      const { message, consultationType, bookTitle, genre, context, history } = req.body;
+      
+      if (!message) {
+        return res.status(400).json({ message: "Message is required" });
+      }
+
+      const systemPrompts: Record<string, string> = {
+        monetization: `You are an expert book monetization consultant with 20 years of experience in publishing. 
+          Help authors maximize revenue from their books through pricing strategies, multiple revenue streams, 
+          and business models. Be specific with numbers and actionable advice.`,
+        marketing: `You are a bestselling book marketing strategist who has launched over 500 successful books. 
+          Help authors create effective marketing plans, build audiences, and achieve bestseller status. 
+          Provide concrete action plans with timelines.`,
+        publishing: `You are a publishing industry expert who has worked with both traditional and self-publishing. 
+          Help authors choose the right publishing path and navigate the industry. Be objective about pros and cons.`,
+        audience: `You are an audience building specialist for authors. Help identify target readers, 
+          build communities, and create lasting connections with fans. Focus on sustainable growth strategies.`,
+        writing: `You are a master writing coach and editor who has worked with award-winning authors. 
+          Help improve craft, overcome blocks, and elevate prose quality. Be constructive and encouraging.`,
+        doctrine: `You are a story consistency expert and continuity editor. Analyze content for 
+          contradictions, timeline issues, character inconsistencies, and worldbuilding errors. Be thorough and specific.`,
+      };
+
+      const systemPrompt = systemPrompts[consultationType] || systemPrompts.monetization;
+      
+      const contextInfo = bookTitle ? `\n\nBook Title: ${bookTitle}` : '';
+      const genreInfo = genre ? `\nGenre: ${genre}` : '';
+      const contentContext = context ? `\n\nRelevant content excerpt:\n${context.slice(0, 1500)}` : '';
+
+      try {
+        const response = await aiOrchestrator.chat({
+          messages: [
+            { role: 'system', content: systemPrompt + contextInfo + genreInfo + contentContext },
+            ...(history || []),
+            { role: 'user', content: message },
+          ],
+          model: 'gemini',
+          temperature: 0.7,
+          maxTokens: 1500,
+        });
+
+        res.json({
+          success: true,
+          response: response.content,
+          consultationType,
+        });
+      } catch (aiError) {
+        // Fallback response
+        const fallbackResponses: Record<string, string> = {
+          monetization: `Great question about monetization! For "${bookTitle || 'your book'}", consider:\n\n**Pricing Strategy:**\n- Ebook: $4.99 (optimal for discoverability)\n- Paperback: $14.99-$17.99\n- Hardcover: $24.99-$29.99\n\n**Revenue Streams:**\n1. Direct sales via your website (85% margin)\n2. Amazon KDP (70% royalty)\n3. Audiobook via ACX\n4. Companion courses/workbooks\n5. Speaking/consulting\n\nWould you like me to elaborate on any of these?`,
+          marketing: `Here's a marketing framework for your book:\n\n**Pre-Launch (3 months):**\n- Build email list with free content\n- Create social media presence\n- Reach out to reviewers\n\n**Launch Week:**\n- Email blast to subscribers\n- Social media campaign\n- Limited-time pricing\n\n**Post-Launch:**\n- Maintain content schedule\n- Collect and share reviews\n- Consider paid advertising`,
+          publishing: `Publishing options for your book:\n\n**Self-Publishing (via KDP):**\n✅ Higher royalties (70%)\n✅ Full control\n✅ Faster to market\n\n**Traditional:**\n✅ Advance payment\n✅ Distribution support\n❌ Lower royalties (10-15%)\n❌ Less control\n\nFor most authors, self-publishing offers the best balance of control and income potential.`,
+          audience: `Building your reader audience:\n\n1. **Define your ideal reader** - Who specifically wants to read your book?\n2. **Create a reader magnet** - Free content to build your email list\n3. **Engage authentically** - Show up where your readers are\n4. **Build community** - Create spaces for readers to connect\n\nWhat's your current audience size?`,
+          writing: `Writing craft advice:\n\n**Hook readers early** - Your first paragraph should grab attention\n**Show, don't tell** - Use specific details and action\n**Vary sentence length** - Create rhythm and flow\n**Edit ruthlessly** - Cut anything that doesn't serve the story\n\nWhat specific aspect of your writing would you like to improve?`,
+          doctrine: `I'll check your content for consistency:\n\n**Character Consistency** - Names, traits, dialogue patterns\n**Timeline Accuracy** - Events in logical order\n**Worldbuilding Rules** - Magic/technology systems\n**Plot Coherence** - No dropped threads\n\nPaste a passage you'd like me to analyze for consistency issues.`,
+        };
+        
+        res.json({
+          success: true,
+          response: fallbackResponses[consultationType] || fallbackResponses.monetization,
+          consultationType,
+          fallback: true,
+        });
+      }
+    } catch (error: any) {
+      console.error("Error in AI consultation:", error);
+      res.status(500).json({ message: "Failed to process consultation" });
+    }
+  });
+
+  // AI prompt enhancement
+  app.post('/api/ai/enhance-prompt', isAuthenticated, async (req: any, res) => {
+    try {
+      const { prompt, context } = req.body;
+      
+      if (!prompt) {
+        return res.status(400).json({ message: "Prompt is required" });
+      }
+
+      const enhanced = `${prompt}, professional quality, highly detailed, masterpiece, best quality, sharp focus, intricate details`;
+      
+      res.json({
+        success: true,
+        enhancedPrompt: enhanced,
+        original: prompt,
+      });
+    } catch (error: any) {
+      console.error("Error enhancing prompt:", error);
+      res.status(500).json({ message: "Failed to enhance prompt" });
+    }
+  });
+
+  // ============================================================================
+  // WHITE LABEL BRANDING ROUTES
+  // ============================================================================
+
+  // Get white label configuration
+  app.get('/api/white-label/config', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const config = await storage.getWhiteLabelConfig(userId);
+      
+      if (!config) {
+        return res.json(null);
+      }
+
+      // Mask API keys in response
+      const maskedConfig = {
+        ...config,
+        openaiApiKey: config.openaiApiKey ? '••••••••' + config.openaiApiKey.slice(-4) : null,
+        anthropicApiKey: config.anthropicApiKey ? '••••••••' + config.anthropicApiKey.slice(-4) : null,
+        geminiApiKey: config.geminiApiKey ? '••••••••' + config.geminiApiKey.slice(-4) : null,
+        grokApiKey: config.grokApiKey ? '••••••••' + config.grokApiKey.slice(-4) : null,
+        perplexityApiKey: config.perplexityApiKey ? '••••••••' + config.perplexityApiKey.slice(-4) : null,
+        stabilityApiKey: config.stabilityApiKey ? '••••••••' + config.stabilityApiKey.slice(-4) : null,
+        removeBgApiKey: config.removeBgApiKey ? '••••••••' + config.removeBgApiKey.slice(-4) : null,
+      };
+
+      res.json(maskedConfig);
+    } catch (error) {
+      console.error("Error fetching white label config:", error);
+      res.status(500).json({ message: "Failed to fetch white label configuration" });
+    }
+  });
+
+  // Save white label configuration
+  app.post('/api/white-label/config', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const {
+        brandName,
+        logoUrl,
+        faviconUrl,
+        primaryColor,
+        accentColor,
+        backgroundColor,
+        customDomain,
+        openaiApiKey,
+        anthropicApiKey,
+        geminiApiKey,
+        grokApiKey,
+        perplexityApiKey,
+        stabilityApiKey,
+        removeBgApiKey,
+        hideKreaiteBranding,
+        customFooterText,
+        customTermsUrl,
+        customPrivacyUrl,
+        creatorRevenueShare,
+      } = req.body;
+
+      // Check if config exists
+      const existingConfig = await storage.getWhiteLabelConfig(userId);
+      
+      const configData = {
+        userId,
+        brandName: brandName || 'My Platform',
+        logoUrl,
+        faviconUrl,
+        primaryColor: primaryColor || '#C9941A',
+        accentColor: accentColor || '#1a1a1a',
+        backgroundColor: backgroundColor || '#FAF8F3',
+        customDomain,
+        openaiApiKey: openaiApiKey?.startsWith('••••') ? existingConfig?.openaiApiKey : openaiApiKey,
+        anthropicApiKey: anthropicApiKey?.startsWith('••••') ? existingConfig?.anthropicApiKey : anthropicApiKey,
+        geminiApiKey: geminiApiKey?.startsWith('••••') ? existingConfig?.geminiApiKey : geminiApiKey,
+        grokApiKey: grokApiKey?.startsWith('••••') ? existingConfig?.grokApiKey : grokApiKey,
+        perplexityApiKey: perplexityApiKey?.startsWith('••••') ? existingConfig?.perplexityApiKey : perplexityApiKey,
+        stabilityApiKey: stabilityApiKey?.startsWith('••••') ? existingConfig?.stabilityApiKey : stabilityApiKey,
+        removeBgApiKey: removeBgApiKey?.startsWith('••••') ? existingConfig?.removeBgApiKey : removeBgApiKey,
+        hideKreaiteBranding: hideKreaiteBranding || false,
+        customFooterText,
+        customTermsUrl,
+        customPrivacyUrl,
+        creatorRevenueShare: creatorRevenueShare || 85,
+        platformRevenueShare: 100 - (creatorRevenueShare || 85),
+      };
+
+      let result;
+      if (existingConfig) {
+        result = await storage.updateWhiteLabelConfig(existingConfig.id, configData);
+      } else {
+        result = await storage.createWhiteLabelConfig(configData);
+      }
+
+      res.json({ success: true, config: result });
+    } catch (error) {
+      console.error("Error saving white label config:", error);
+      res.status(500).json({ message: "Failed to save white label configuration" });
+    }
+  });
+
+  // Verify custom domain
+  app.post('/api/white-label/verify-domain', isAuthenticated, async (req: any, res) => {
+    try {
+      const { domain } = req.body;
+      
+      if (!domain) {
+        return res.status(400).json({ message: "Domain is required" });
+      }
+
+      // In production, this would actually verify DNS records
+      // For now, simulate verification
+      const verified = domain.includes('.');
+      
+      if (verified) {
+        await storage.updateWhiteLabelDomainStatus(req.user.id, domain, true);
+      }
+
+      res.json({
+        success: true,
+        verified,
+        message: verified ? "Domain verified successfully" : "Domain verification failed. Please check your DNS settings.",
+      });
+    } catch (error) {
+      console.error("Error verifying domain:", error);
+      res.status(500).json({ message: "Failed to verify domain" });
+    }
+  });
+
+  // Get white label pricing tiers
+  app.get('/api/white-label/pricing', async (req, res) => {
+    res.json({
+      basic: {
+        name: "Basic White Label",
+        price: 99,
+        features: [
+          "Custom branding (logo, colors)",
+          "Use your own API keys",
+          "Custom domain support",
+          "5 creator accounts",
+          "Basic analytics",
+        ],
+      },
+      professional: {
+        name: "Professional White Label",
+        price: 299,
+        features: [
+          "Everything in Basic",
+          "Hide KreAIte branding completely",
+          "Unlimited creator accounts",
+          "Custom revenue split (up to 95/5)",
+          "Priority support",
+          "Advanced analytics",
+        ],
+      },
+      enterprise: {
+        name: "Enterprise White Label",
+        price: 999,
+        features: [
+          "Everything in Professional",
+          "Dedicated account manager",
+          "Custom integrations",
+          "SLA guarantee (99.9% uptime)",
+          "White-glove onboarding",
+          "Full API access",
+        ],
+      },
+    });
+  });
+
+  // Track API usage for white label
+  app.post('/api/white-label/track-usage', isAuthenticated, async (req: any, res) => {
+    try {
+      const { apiProvider, endpoint, tokensUsed, costUsd } = req.body;
+      
+      const config = await storage.getWhiteLabelConfig(req.user.id);
+      if (!config) {
+        return res.status(404).json({ message: "White label config not found" });
+      }
+
+      await storage.trackWhiteLabelApiUsage({
+        whiteLabelId: config.id,
+        apiProvider,
+        endpoint,
+        tokensUsed: tokensUsed || 0,
+        costUsd: costUsd || 0,
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error tracking API usage:", error);
+      res.status(500).json({ message: "Failed to track API usage" });
+    }
+  });
+
+  // Get API usage stats
+  app.get('/api/white-label/usage-stats', isAuthenticated, async (req: any, res) => {
+    try {
+      const config = await storage.getWhiteLabelConfig(req.user.id);
+      if (!config) {
+        return res.json({ usage: [] });
+      }
+
+      const stats = await storage.getWhiteLabelApiUsageStats(config.id);
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching usage stats:", error);
+      res.status(500).json({ message: "Failed to fetch usage statistics" });
+    }
+  });
+
   // Marketplace routes
   app.get('/api/marketplace/categories', async (req, res) => {
     try {

@@ -1155,6 +1155,325 @@ export const BOOK_WEBSITE_TEMPLATES: BookWebsiteTemplate[] = [
       ctaText: "Launch Sequence",
       testimonialPlaceholder: "The best sci-fi I've read in years! - Sci-Fi Magazine"
     }
+  },
+  {
+    id: "creator_blog",
+    name: "Creator Blog",
+    category: "author_portfolio",
+    description: "Modern blog-focused template for digital creators with sidebar navigation, quick facts, and social integration",
+    previewImageUrl: "/templates/creator-blog.jpg",
+    theme: {
+      primaryColor: "#2D2D2D",
+      accentColor: "#E8E8E8",
+      backgroundColor: "#FAFAFA",
+      textColor: "#2D2D2D",
+      fontFamily: "Inter, sans-serif",
+      headingFont: "DM Sans, sans-serif"
+    },
+    layout: {
+      heroStyle: "split",
+      navigationStyle: "sidebar",
+      sectionOrder: ["hero", "quick_facts", "about", "blog", "books", "social", "newsletter"]
+    },
+    sections: [
+      { id: "hero", name: "Hey, I'm...", enabled: true, order: 0, style: { layout: "personal_intro", showPhoto: "true" } },
+      { id: "quick_facts", name: "Quick-fire Facts", enabled: true, order: 1, style: { layout: "fact_grid" } },
+      { id: "about", name: "About", enabled: true, order: 2, style: { layout: "casual_bio" } },
+      { id: "blog", name: "Blog", enabled: true, order: 3, style: { layout: "post_grid", showCategories: "true" } },
+      { id: "books", name: "My Books", enabled: true, order: 4, style: { layout: "book_cards" } },
+      { id: "social", name: "Social", enabled: true, order: 5, style: { layout: "social_links" } },
+      { id: "newsletter", name: "Stay in the Loop", enabled: true, order: 6, style: { layout: "simple_signup" } }
+    ],
+    sampleContent: {
+      tagline: "Hey, I'm [Name]",
+      description: "I'm a writer and digital creator sharing what I learn about building an independent career online.",
+      ctaText: "Learn More",
+      testimonialPlaceholder: "Your content has been so helpful on my own writing journey! - Reader"
+    }
+  },
+  {
+    id: "luxury_moody",
+    name: "Luxury Moody",
+    category: "memoir",
+    description: "Elegant dark luxury template with moody aesthetics, sophisticated typography, and premium feel",
+    previewImageUrl: "/templates/luxury-moody.jpg",
+    theme: {
+      primaryColor: "#C9B89A",
+      accentColor: "#8B7355",
+      backgroundColor: "#1E1E1E",
+      textColor: "#E8E4DF",
+      fontFamily: "Cormorant Garamond, serif",
+      headingFont: "Marcellus, serif"
+    },
+    layout: {
+      heroStyle: "full_cover",
+      navigationStyle: "fixed",
+      sectionOrder: ["hero", "story", "gallery", "chapters", "author", "press", "order"]
+    },
+    sections: [
+      { id: "hero", name: "The Journey", enabled: true, order: 0, style: { layout: "dramatic_dark", showOverlay: "true" } },
+      { id: "story", name: "The Story", enabled: true, order: 1, style: { layout: "elegant_text" } },
+      { id: "gallery", name: "Photo Gallery", enabled: true, order: 2, style: { layout: "masonry_dark" } },
+      { id: "chapters", name: "Inside", enabled: true, order: 3, style: { layout: "chapter_preview" } },
+      { id: "author", name: "The Author", enabled: true, order: 4, style: { layout: "portrait_bio" } },
+      { id: "press", name: "Press & Reviews", enabled: true, order: 5, style: { layout: "elegant_quotes" } },
+      { id: "order", name: "Order Now", enabled: true, order: 6, style: { layout: "premium_cta" } }
+    ],
+    sampleContent: {
+      tagline: "A memoir of transformation",
+      description: "Through darkness and into light. A story of passion, loss, and finding purpose.",
+      ctaText: "Pre-Order Now",
+      testimonialPlaceholder: "Absolutely stunning. A memoir that will stay with you forever. - Literary Review"
+    }
+  },
+  {
+    id: "writer_workspace",
+    name: "Writer Workspace",
+    category: "author_portfolio",
+    description: "Clean, productivity-focused template for writers showcasing their writing process, tools, and resources",
+    previewImageUrl: "/templates/writer-workspace.jpg",
+    theme: {
+      primaryColor: "#5C6BC0",
+      accentColor: "#7986CB",
+      backgroundColor: "#FFFFFF",
+      textColor: "#37474F",
+      fontFamily: "Source Sans Pro, sans-serif",
+      headingFont: "Source Serif Pro, serif"
+    },
+    layout: {
+      heroStyle: "minimal",
+      navigationStyle: "fixed",
+      sectionOrder: ["hero", "writing_journey", "books", "process", "resources", "newsletter"]
+    },
+    sections: [
+      { id: "hero", name: "Welcome", enabled: true, order: 0, style: { layout: "clean_intro" } },
+      { id: "writing_journey", name: "My Writing Journey", enabled: true, order: 1, style: { layout: "timeline" } },
+      { id: "books", name: "Published Works", enabled: true, order: 2, style: { layout: "book_showcase" } },
+      { id: "process", name: "Writing Process", enabled: true, order: 3, style: { layout: "step_cards" } },
+      { id: "resources", name: "Resources for Writers", enabled: true, order: 4, style: { layout: "resource_grid" } },
+      { id: "newsletter", name: "Writing Tips Newsletter", enabled: true, order: 5, style: { layout: "signup_with_preview" } }
+    ],
+    sampleContent: {
+      tagline: "Words are my craft",
+      description: "Exploring the art and business of writing. Tips, tools, and resources for fellow writers.",
+      ctaText: "Get Writing Tips",
+      testimonialPlaceholder: "A treasure trove of writing wisdom! - Fellow Author"
+    }
+  },
+  {
+    id: "cozy_reader",
+    name: "Cozy Reader",
+    category: "fiction",
+    description: "Warm, inviting template for cozy fiction genres like cozy mystery, romance, and women's fiction",
+    previewImageUrl: "/templates/cozy-reader.jpg",
+    theme: {
+      primaryColor: "#D4A574",
+      accentColor: "#E8D5C4",
+      backgroundColor: "#FFF8F0",
+      textColor: "#5D4E46",
+      fontFamily: "Lora, serif",
+      headingFont: "Merriweather, serif"
+    },
+    layout: {
+      heroStyle: "split",
+      navigationStyle: "sticky",
+      sectionOrder: ["hero", "about_book", "series", "author", "reading_guide", "newsletter", "buy"]
+    },
+    sections: [
+      { id: "hero", name: "Welcome", enabled: true, order: 0, style: { layout: "warm_welcome", showTeacup: "true" } },
+      { id: "about_book", name: "About the Book", enabled: true, order: 1, style: { layout: "cozy_description" } },
+      { id: "series", name: "The Series", enabled: true, order: 2, style: { layout: "series_cards" } },
+      { id: "author", name: "Meet the Author", enabled: true, order: 3, style: { layout: "friendly_bio" } },
+      { id: "reading_guide", name: "Reading Guide", enabled: true, order: 4, style: { layout: "discussion_questions" } },
+      { id: "newsletter", name: "Cozy Newsletter", enabled: true, order: 5, style: { layout: "warm_signup" } },
+      { id: "buy", name: "Get Your Copy", enabled: true, order: 6, style: { layout: "cozy_cta" } }
+    ],
+    sampleContent: {
+      tagline: "Curl up with a good book",
+      description: "A heartwarming tale perfect for cozy nights with a cup of tea.",
+      ctaText: "Order Your Copy",
+      testimonialPlaceholder: "The perfect cozy read! I devoured it in one sitting. - Book Blogger"
+    }
+  },
+  {
+    id: "business_data_driven",
+    name: "Data-Driven Business",
+    category: "business",
+    description: "Professional template with built-in charts, graphs, dashboards, and data visualization for business books",
+    previewImageUrl: "/templates/business-data-driven.jpg",
+    theme: {
+      primaryColor: "#2563EB",
+      accentColor: "#3B82F6",
+      backgroundColor: "#F8FAFC",
+      textColor: "#1E293B",
+      fontFamily: "Inter, sans-serif",
+      headingFont: "Plus Jakarta Sans, sans-serif"
+    },
+    layout: {
+      heroStyle: "minimal",
+      navigationStyle: "fixed",
+      sectionOrder: ["hero", "key_metrics", "problem", "framework", "case_studies", "chapters", "author", "results", "buy"]
+    },
+    sections: [
+      { id: "hero", name: "Data-Backed Results", enabled: true, order: 0, style: { layout: "stats_hero", showMetrics: "true" } },
+      { id: "key_metrics", name: "Key Metrics", enabled: true, order: 1, style: { layout: "dashboard_cards", chartTypes: "bar,line,pie" } },
+      { id: "problem", name: "The Data Problem", enabled: true, order: 2, style: { layout: "stats_comparison", showCharts: "true" } },
+      { id: "framework", name: "The Framework", enabled: true, order: 3, style: { layout: "process_diagram", showBullets: "true" } },
+      { id: "case_studies", name: "Case Studies", enabled: true, order: 4, style: { layout: "results_charts", showROI: "true" } },
+      { id: "chapters", name: "Chapter Overview", enabled: true, order: 5, style: { layout: "numbered_list" } },
+      { id: "author", name: "About the Expert", enabled: true, order: 6, style: { layout: "credentials" } },
+      { id: "results", name: "Reader Results", enabled: true, order: 7, style: { layout: "testimonial_metrics" } },
+      { id: "buy", name: "Get the Data", enabled: true, order: 8, style: { showBonuses: "true" } }
+    ],
+    sampleContent: {
+      tagline: "Data-driven decisions. Exponential growth.",
+      description: "Transform your business with proven, data-backed strategies that have generated over $500M in results.",
+      ctaText: "Get the Framework",
+      testimonialPlaceholder: "The ROI from implementing these strategies was 340% in the first year. - CFO, Fortune 500"
+    }
+  },
+  {
+    id: "business_consultant",
+    name: "Consultant Authority",
+    category: "business",
+    description: "Premium consulting-focused template with frameworks, process diagrams, and professional credibility elements",
+    previewImageUrl: "/templates/business-consultant.jpg",
+    theme: {
+      primaryColor: "#0F172A",
+      accentColor: "#C9941A",
+      backgroundColor: "#FFFFFF",
+      textColor: "#334155",
+      fontFamily: "Source Sans Pro, sans-serif",
+      headingFont: "Playfair Display, serif"
+    },
+    layout: {
+      heroStyle: "split",
+      navigationStyle: "sticky",
+      sectionOrder: ["hero", "logos", "problem", "methodology", "results", "chapters", "author", "speaking", "buy"]
+    },
+    sections: [
+      { id: "hero", name: "Consulting Authority", enabled: true, order: 0, style: { layout: "authority_split", showAwards: "true" } },
+      { id: "logos", name: "Featured In", enabled: true, order: 1, style: { layout: "logo_bar" } },
+      { id: "problem", name: "The Challenge", enabled: true, order: 2, style: { layout: "bullet_points", showIcons: "true" } },
+      { id: "methodology", name: "The Methodology", enabled: true, order: 3, style: { layout: "process_flow", showDiagram: "true" } },
+      { id: "results", name: "Client Results", enabled: true, order: 4, style: { layout: "case_study_cards", showMetrics: "true" } },
+      { id: "chapters", name: "The Framework", enabled: true, order: 5, style: { layout: "chapter_cards" } },
+      { id: "author", name: "About the Author", enabled: true, order: 6, style: { layout: "thought_leader" } },
+      { id: "speaking", name: "Book the Author", enabled: true, order: 7, style: { layout: "speaking_cta" } },
+      { id: "buy", name: "Get the Book", enabled: true, order: 8, style: { showBulkPricing: "true" } }
+    ],
+    sampleContent: {
+      tagline: "The definitive framework for business transformation",
+      description: "Proven methodologies from working with 200+ Fortune 500 companies. Now available in book form.",
+      ctaText: "Order Your Copy",
+      testimonialPlaceholder: "Essential reading for every executive. - Harvard Business Review"
+    }
+  },
+  {
+    id: "business_workbook",
+    name: "Interactive Workbook",
+    category: "business",
+    description: "Workbook-style template with interactive elements, exercises, checklists, and progress tracking",
+    previewImageUrl: "/templates/business-workbook.jpg",
+    theme: {
+      primaryColor: "#7C3AED",
+      accentColor: "#A78BFA",
+      backgroundColor: "#FAF5FF",
+      textColor: "#4C1D95",
+      fontFamily: "Nunito, sans-serif",
+      headingFont: "DM Sans, sans-serif"
+    },
+    layout: {
+      heroStyle: "centered",
+      navigationStyle: "sticky",
+      sectionOrder: ["hero", "preview", "modules", "exercises", "bonuses", "author", "guarantee", "buy"]
+    },
+    sections: [
+      { id: "hero", name: "Your Workbook", enabled: true, order: 0, style: { layout: "playful", showPages: "true" } },
+      { id: "preview", name: "Sample Pages", enabled: true, order: 1, style: { layout: "page_gallery", showInteractive: "true" } },
+      { id: "modules", name: "Workbook Modules", enabled: true, order: 2, style: { layout: "module_cards", showProgress: "true" } },
+      { id: "exercises", name: "Exercises Inside", enabled: true, order: 3, style: { layout: "exercise_list", showChecklists: "true" } },
+      { id: "bonuses", name: "Bonus Materials", enabled: true, order: 4, style: { layout: "bonus_cards" } },
+      { id: "author", name: "Your Guide", enabled: true, order: 5, style: { layout: "friendly_expert" } },
+      { id: "guarantee", name: "Satisfaction Guarantee", enabled: true, order: 6, style: { layout: "guarantee_badge" } },
+      { id: "buy", name: "Get Your Workbook", enabled: true, order: 7, style: { showFormats: "true" } }
+    ],
+    sampleContent: {
+      tagline: "Learn by doing. Achieve by completing.",
+      description: "This interactive workbook takes you step-by-step through proven exercises to transform your business.",
+      ctaText: "Get the Workbook",
+      testimonialPlaceholder: "I filled every page and it changed my business. - Entrepreneur"
+    }
+  },
+  {
+    id: "notion_tracker",
+    name: "Notion-Style Tracker",
+    category: "non_fiction",
+    description: "Clean, minimal design inspired by Notion with navigation sidebar, database-like layouts, and structured content",
+    previewImageUrl: "/templates/notion-tracker.jpg",
+    theme: {
+      primaryColor: "#37352F",
+      accentColor: "#2383E2",
+      backgroundColor: "#FFFFFF",
+      textColor: "#37352F",
+      fontFamily: "Inter, sans-serif",
+      headingFont: "Inter, sans-serif"
+    },
+    layout: {
+      heroStyle: "minimal",
+      navigationStyle: "sidebar",
+      sectionOrder: ["hero", "navigation", "content", "chapters", "resources", "author", "newsletter"]
+    },
+    sections: [
+      { id: "hero", name: "Welcome", enabled: true, order: 0, style: { layout: "notion_header", showIcon: "true" } },
+      { id: "navigation", name: "Quick Navigation", enabled: true, order: 1, style: { layout: "sidebar_nav" } },
+      { id: "content", name: "Book Content", enabled: true, order: 2, style: { layout: "database_view" } },
+      { id: "chapters", name: "Chapters", enabled: true, order: 3, style: { layout: "table_view", showTags: "true" } },
+      { id: "resources", name: "Resources", enabled: true, order: 4, style: { layout: "link_cards" } },
+      { id: "author", name: "About", enabled: true, order: 5, style: { layout: "minimal_bio" } },
+      { id: "newsletter", name: "Stay Updated", enabled: true, order: 6, style: { layout: "simple_form" } }
+    ],
+    sampleContent: {
+      tagline: "Your Complete Guide",
+      description: "Navigate through this comprehensive resource with ease. Everything you need, organized beautifully.",
+      ctaText: "Start Reading",
+      testimonialPlaceholder: "So well organized. I can find anything instantly. - Reader"
+    }
+  },
+  {
+    id: "bookstore_publisher",
+    name: "Publisher Bookstore",
+    category: "author_portfolio",
+    description: "Professional bookstore design for publishers and multi-book authors with bestseller sections and e-commerce",
+    previewImageUrl: "/templates/bookstore-publisher.jpg",
+    theme: {
+      primaryColor: "#C9941A",
+      accentColor: "#F59E0B",
+      backgroundColor: "#FFFBEB",
+      textColor: "#1C1917",
+      fontFamily: "Libre Baskerville, serif",
+      headingFont: "Playfair Display, serif"
+    },
+    layout: {
+      heroStyle: "banner",
+      navigationStyle: "fixed",
+      sectionOrder: ["hero", "bestsellers", "new_releases", "categories", "featured_author", "newsletter", "shop"]
+    },
+    sections: [
+      { id: "hero", name: "Featured Book", enabled: true, order: 0, style: { layout: "promo_banner" } },
+      { id: "bestsellers", name: "Bestsellers", enabled: true, order: 1, style: { layout: "book_carousel" } },
+      { id: "new_releases", name: "New Releases", enabled: true, order: 2, style: { layout: "book_grid" } },
+      { id: "categories", name: "Browse by Category", enabled: true, order: 3, style: { layout: "category_cards" } },
+      { id: "featured_author", name: "Featured Author", enabled: true, order: 4, style: { layout: "author_spotlight" } },
+      { id: "newsletter", name: "Book Club", enabled: true, order: 5, style: { layout: "newsletter_signup" } },
+      { id: "shop", name: "Shop All", enabled: true, order: 6, style: { layout: "shop_grid" } }
+    ],
+    sampleContent: {
+      tagline: "Discover Your Next Great Read",
+      description: "Award-winning books across every genre. Find your perfect story today.",
+      ctaText: "Shop Now",
+      testimonialPlaceholder: "The best selection of quality books online. - Avid Reader"
+    }
   }
 ];
 

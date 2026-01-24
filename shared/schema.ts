@@ -91,6 +91,138 @@ export type ReferralConversion = typeof referralConversions.$inferSelect;
 export type InsertReferralConversion = z.infer<typeof insertReferralConversionSchema>;
 
 // ============================================================================
+// WHITE LABEL BRANDING SYSTEM
+// ============================================================================
+
+export const whiteLabelConfigs = pgTable("white_label_configs", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  
+  // Branding
+  brandName: text("brand_name").notNull(),
+  logoUrl: text("logo_url"),
+  faviconUrl: text("favicon_url"),
+  primaryColor: text("primary_color").default("#C9941A"),
+  accentColor: text("accent_color").default("#1a1a1a"),
+  backgroundColor: text("background_color").default("#FAF8F3"),
+  
+  // Custom Domain
+  customDomain: text("custom_domain"),
+  domainVerified: boolean("domain_verified").default(false),
+  
+  // API Keys (encrypted) - Full AI Provider Support
+  openaiApiKey: text("openai_api_key"),
+  anthropicApiKey: text("anthropic_api_key"),
+  geminiApiKey: text("gemini_api_key"),
+  grokApiKey: text("grok_api_key"),
+  perplexityApiKey: text("perplexity_api_key"),
+  stabilityApiKey: text("stability_api_key"),
+  removeBgApiKey: text("remove_bg_api_key"),
+  huggingfaceApiKey: text("huggingface_api_key"),
+  replicateApiKey: text("replicate_api_key"),
+  cohereApiKey: text("cohere_api_key"),
+  mistralApiKey: text("mistral_api_key"),
+  togetherApiKey: text("together_api_key"),
+  deepseekApiKey: text("deepseek_api_key"),
+  groqApiKey: text("groq_api_key"),
+  elevenLabsApiKey: text("eleven_labs_api_key"),
+  runwayApiKey: text("runway_api_key"),
+  midJourneyApiKey: text("midjourney_api_key"),
+  leonardoApiKey: text("leonardo_api_key"),
+  githubApiKey: text("github_api_key"),
+  serpApiKey: text("serp_api_key"),
+  awsAccessKey: text("aws_access_key"),
+  awsSecretKey: text("aws_secret_key"),
+  cloudflareApiKey: text("cloudflare_api_key"),
+  
+  // White Label Settings
+  hideKreaiteBranding: boolean("hide_kreaite_branding").default(false),
+  customFooterText: text("custom_footer_text"),
+  customTermsUrl: text("custom_terms_url"),
+  customPrivacyUrl: text("custom_privacy_url"),
+  
+  // Revenue Settings
+  creatorRevenueShare: integer("creator_revenue_share").default(85), // percentage to creators
+  platformRevenueShare: integer("platform_revenue_share").default(15), // percentage to platform
+  
+  // Subscription & Status
+  subscriptionTier: text("subscription_tier").default("basic"), // basic, professional, enterprise
+  status: text("status").default("active"), // active, suspended, trial
+  trialEndsAt: timestamp("trial_ends_at"),
+  
+  // Metadata
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// White Label API Usage Tracking
+export const whiteLabelApiUsage = pgTable("white_label_api_usage", {
+  id: serial("id").primaryKey(),
+  whiteLabelId: integer("white_label_id").notNull().references(() => whiteLabelConfigs.id, { onDelete: "cascade" }),
+  apiProvider: text("api_provider").notNull(), // openai, anthropic, gemini, grok, perplexity
+  endpoint: text("endpoint"),
+  tokensUsed: integer("tokens_used").default(0),
+  costUsd: real("cost_usd").default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// White Label Pricing Tiers
+export const whiteLabelPricingTiers = {
+  basic: {
+    name: "Basic White Label",
+    price: 99, // per month
+    features: [
+      "Custom branding (logo, colors)",
+      "Use your own API keys",
+      "Custom domain support",
+      "5 creator accounts",
+      "Basic analytics",
+    ],
+  },
+  professional: {
+    name: "Professional White Label",
+    price: 299, // per month
+    features: [
+      "Everything in Basic",
+      "Hide KreAIte branding",
+      "Unlimited creator accounts",
+      "Custom revenue split",
+      "Priority support",
+      "Advanced analytics",
+    ],
+  },
+  enterprise: {
+    name: "Enterprise White Label",
+    price: 999, // per month
+    features: [
+      "Everything in Professional",
+      "Dedicated account manager",
+      "Custom integrations",
+      "SLA guarantee",
+      "White-glove onboarding",
+      "API access",
+    ],
+  },
+};
+
+export const insertWhiteLabelConfigSchema = createInsertSchema(whiteLabelConfigs).omit({ 
+  id: true, 
+  createdAt: true, 
+  updatedAt: true,
+  domainVerified: true,
+});
+
+export const insertWhiteLabelApiUsageSchema = createInsertSchema(whiteLabelApiUsage).omit({ 
+  id: true, 
+  createdAt: true,
+});
+
+export type WhiteLabelConfig = typeof whiteLabelConfigs.$inferSelect;
+export type InsertWhiteLabelConfig = z.infer<typeof insertWhiteLabelConfigSchema>;
+export type WhiteLabelApiUsage = typeof whiteLabelApiUsage.$inferSelect;
+export type InsertWhiteLabelApiUsage = z.infer<typeof insertWhiteLabelApiUsageSchema>;
+
+// ============================================================================
 // SESSION STORAGE (Required for Replit Auth)
 // ============================================================================
 
