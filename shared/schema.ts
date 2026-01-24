@@ -3557,6 +3557,24 @@ export const creditWallets = pgTable("credit_wallets", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+// Prize entitlements for gaming rewards (non-credit prizes)
+export const prizeEntitlements = pgTable("prize_entitlements", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  prizeType: text("prize_type").notNull(), // 'free_song', 'course_access', 'book_template', 'image_credits', 'video_template'
+  prizeValue: text("prize_value").notNull(), // The specific item or amount
+  source: text("source").notNull(), // 'slot_win', 'daily_spin', 'staring_contest', 'promotion'
+  sourceId: text("source_id"), // Reference to game session/spin
+  status: text("status").notNull().default("available"), // 'available', 'redeemed', 'expired'
+  redeemedAt: timestamp("redeemed_at"),
+  expiresAt: timestamp("expires_at"),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  index("idx_prize_entitlements_user").on(table.userId),
+  index("idx_prize_entitlements_status").on(table.status),
+]);
+
 // Credit transactions ledger
 export const creditLedger = pgTable("credit_ledger", {
   id: serial("id").primaryKey(),

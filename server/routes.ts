@@ -130,6 +130,7 @@ import {
   insertWorkflowTemplateSchema,
   insertWorkflowReviewSchema,
   blogPosts,
+  prizeEntitlements,
 } from "../shared/schema";
 import { db } from "./db";
 import { eq, and, gte, lte, desc, asc, ilike, or, sql, count } from "drizzle-orm";
@@ -13903,6 +13904,52 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     } catch (error: any) {
       console.error("Staring contest result error:", error);
       res.status(500).json({ message: "Failed to record result" });
+    }
+  });
+
+  // Prize entitlements management
+  app.get('/api/games/prizes', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const prizes = await db.select()
+        .from(prizeEntitlements)
+        .where(eq(prizeEntitlements.userId, userId))
+        .orderBy(desc(prizeEntitlements.createdAt))
+        .limit(50);
+      
+      res.json(prizes);
+    } catch (error: any) {
+      console.error("Error fetching prizes:", error);
+      res.status(500).json({ message: "Failed to fetch prizes" });
+    }
+  });
+
+  app.post('/api/games/prizes/redeem', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { prizeId } = req.body;
+      
+      const [prize] = await db.select()
+        .from(prizeEntitlements)
+        .where(and(
+          eq(prizeEntitlements.id, prizeId),
+          eq(prizeEntitlements.userId, userId),
+          eq(prizeEntitlements.status, 'available')
+        ))
+        .limit(1);
+
+      if (!prize) {
+        return res.status(404).json({ message: "Prize not found or already redeemed" });
+      }
+
+      await db.update(prizeEntitlements)
+        .set({ status: 'redeemed', redeemedAt: new Date() })
+        .where(eq(prizeEntitlements.id, prizeId));
+
+      res.json({ success: true, message: `Redeemed ${prize.prizeType}: ${prize.prizeValue}` });
+    } catch (error: any) {
+      console.error("Error redeeming prize:", error);
+      res.status(500).json({ message: "Failed to redeem prize" });
     }
   });
 
