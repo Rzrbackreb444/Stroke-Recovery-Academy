@@ -9405,6 +9405,279 @@ Sitemap: https://kreaite.xyz/sitemap.xml
   });
 
   // ============================================================================
+  // BOOK WEBSITE GENERATOR API
+  // ============================================================================
+
+  const bookWebsiteService = await import('./bookWebsiteService');
+
+  // Get all book websites for current user
+  app.get('/api/book-websites', isAuthenticated, async (req: any, res) => {
+    try {
+      const authorId = req.user.claims.sub;
+      const websites = await bookWebsiteService.getMyBookWebsites(authorId);
+      res.json(websites);
+    } catch (error) {
+      console.error("Error fetching book websites:", error);
+      res.status(500).json({ message: "Failed to fetch websites" });
+    }
+  });
+
+  // Get single book website
+  app.get('/api/book-websites/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const websiteId = parseInt(req.params.id);
+      const website = await bookWebsiteService.getBookWebsite(websiteId);
+      if (!website) {
+        return res.status(404).json({ message: "Website not found" });
+      }
+      res.json(website);
+    } catch (error) {
+      console.error("Error fetching website:", error);
+      res.status(500).json({ message: "Failed to fetch website" });
+    }
+  });
+
+  // Create new book website
+  app.post('/api/book-websites', isAuthenticated, async (req: any, res) => {
+    try {
+      const authorId = req.user.claims.sub;
+      const { title, subtitle, authorName, slug, theme, coverImageUrl, description, genre } = req.body;
+
+      if (!title || !authorName || !slug) {
+        return res.status(400).json({ message: "Title, author name, and URL slug are required" });
+      }
+
+      const website = await bookWebsiteService.createBookWebsite({
+        authorId,
+        title,
+        subtitle,
+        authorName,
+        slug: slug.toLowerCase().replace(/[^a-z0-9-]/g, '-'),
+        theme,
+        coverImageUrl,
+        description,
+        genre
+      });
+
+      res.json(website);
+    } catch (error: any) {
+      console.error("Error creating website:", error);
+      res.status(400).json({ message: error.message || "Failed to create website" });
+    }
+  });
+
+  // Create website from marketplace listing
+  app.post('/api/book-websites/from-listing/:listingId', isAuthenticated, async (req: any, res) => {
+    try {
+      const authorId = req.user.claims.sub;
+      const listingId = parseInt(req.params.listingId);
+
+      const website = await bookWebsiteService.createWebsiteFromListing(listingId, authorId);
+      res.json(website);
+    } catch (error: any) {
+      console.error("Error creating website from listing:", error);
+      res.status(400).json({ message: error.message || "Failed to create website" });
+    }
+  });
+
+  // Update book website
+  app.patch('/api/book-websites/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const authorId = req.user.claims.sub;
+      const websiteId = parseInt(req.params.id);
+
+      const updated = await bookWebsiteService.updateBookWebsite(websiteId, authorId, req.body);
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Error updating website:", error);
+      res.status(400).json({ message: error.message || "Failed to update website" });
+    }
+  });
+
+  // Publish book website
+  app.post('/api/book-websites/:id/publish', isAuthenticated, async (req: any, res) => {
+    try {
+      const authorId = req.user.claims.sub;
+      const websiteId = parseInt(req.params.id);
+
+      const result = await bookWebsiteService.publishBookWebsite(websiteId, authorId);
+      res.json(result);
+    } catch (error: any) {
+      console.error("Error publishing website:", error);
+      res.status(400).json({ message: error.message || "Failed to publish website" });
+    }
+  });
+
+  // Unpublish book website
+  app.post('/api/book-websites/:id/unpublish', isAuthenticated, async (req: any, res) => {
+    try {
+      const authorId = req.user.claims.sub;
+      const websiteId = parseInt(req.params.id);
+
+      const result = await bookWebsiteService.unpublishBookWebsite(websiteId, authorId);
+      res.json(result);
+    } catch (error: any) {
+      console.error("Error unpublishing website:", error);
+      res.status(400).json({ message: error.message || "Failed to unpublish website" });
+    }
+  });
+
+  // Delete book website
+  app.delete('/api/book-websites/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const authorId = req.user.claims.sub;
+      const websiteId = parseInt(req.params.id);
+
+      const deleted = await bookWebsiteService.deleteBookWebsite(websiteId, authorId);
+      res.json({ success: true, deleted });
+    } catch (error: any) {
+      console.error("Error deleting website:", error);
+      res.status(400).json({ message: error.message || "Failed to delete website" });
+    }
+  });
+
+  // Get website analytics
+  app.get('/api/book-websites/:id/analytics', isAuthenticated, async (req: any, res) => {
+    try {
+      const authorId = req.user.claims.sub;
+      const websiteId = parseInt(req.params.id);
+
+      const analytics = await bookWebsiteService.getWebsiteAnalytics(websiteId, authorId);
+      res.json(analytics);
+    } catch (error: any) {
+      console.error("Error fetching analytics:", error);
+      res.status(400).json({ message: error.message || "Failed to fetch analytics" });
+    }
+  });
+
+  // Get website leads
+  app.get('/api/book-websites/:id/leads', isAuthenticated, async (req: any, res) => {
+    try {
+      const authorId = req.user.claims.sub;
+      const websiteId = parseInt(req.params.id);
+
+      const leads = await bookWebsiteService.getWebsiteLeads(websiteId, authorId);
+      res.json(leads);
+    } catch (error: any) {
+      console.error("Error fetching leads:", error);
+      res.status(400).json({ message: error.message || "Failed to fetch leads" });
+    }
+  });
+
+  // Generate AI content for website
+  app.post('/api/book-websites/:id/generate', isAuthenticated, async (req: any, res) => {
+    try {
+      const authorId = req.user.claims.sub;
+      const websiteId = parseInt(req.params.id);
+      const { contentType } = req.body;
+
+      if (!['tagline', 'description', 'authorBio', 'seoDescription'].includes(contentType)) {
+        return res.status(400).json({ message: "Invalid content type" });
+      }
+
+      const result = await bookWebsiteService.generateWebsiteContent(websiteId, authorId, contentType);
+      res.json(result);
+    } catch (error: any) {
+      console.error("Error generating content:", error);
+      res.status(400).json({ message: error.message || "Failed to generate content" });
+    }
+  });
+
+  // Update website page
+  app.patch('/api/book-websites/:websiteId/pages/:pageId', isAuthenticated, async (req: any, res) => {
+    try {
+      const authorId = req.user.claims.sub;
+      const websiteId = parseInt(req.params.websiteId);
+      const pageId = parseInt(req.params.pageId);
+
+      const updated = await bookWebsiteService.updateWebsitePage(pageId, websiteId, authorId, req.body);
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Error updating page:", error);
+      res.status(400).json({ message: error.message || "Failed to update page" });
+    }
+  });
+
+  // Create new page
+  app.post('/api/book-websites/:id/pages', isAuthenticated, async (req: any, res) => {
+    try {
+      const authorId = req.user.claims.sub;
+      const websiteId = parseInt(req.params.id);
+      const { slug, title, content, sortOrder } = req.body;
+
+      if (!slug || !title) {
+        return res.status(400).json({ message: "Slug and title are required" });
+      }
+
+      const page = await bookWebsiteService.createWebsitePage(websiteId, authorId, { slug, title, content, sortOrder });
+      res.json(page);
+    } catch (error: any) {
+      console.error("Error creating page:", error);
+      res.status(400).json({ message: error.message || "Failed to create page" });
+    }
+  });
+
+  // Delete page
+  app.delete('/api/book-websites/:websiteId/pages/:pageId', isAuthenticated, async (req: any, res) => {
+    try {
+      const authorId = req.user.claims.sub;
+      const websiteId = parseInt(req.params.websiteId);
+      const pageId = parseInt(req.params.pageId);
+
+      const deleted = await bookWebsiteService.deleteWebsitePage(pageId, websiteId, authorId);
+      res.json({ success: true, deleted });
+    } catch (error: any) {
+      console.error("Error deleting page:", error);
+      res.status(400).json({ message: error.message || "Failed to delete page" });
+    }
+  });
+
+  // Get available themes
+  app.get('/api/book-websites/themes', (req, res) => {
+    res.json(bookWebsiteService.WEBSITE_THEMES);
+  });
+
+  // Public book website endpoint (no auth required)
+  app.get('/book/:slug', async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const website = await bookWebsiteService.getBookWebsiteBySlug(slug);
+
+      if (!website || !website.isPublished) {
+        return res.status(404).json({ message: "Book website not found" });
+      }
+
+      res.json(website);
+    } catch (error) {
+      console.error("Error fetching public website:", error);
+      res.status(500).json({ message: "Failed to fetch website" });
+    }
+  });
+
+  // Capture newsletter lead (no auth required)
+  app.post('/book/:slug/subscribe', async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const { email, name } = req.body;
+
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+
+      const website = await bookWebsiteService.getBookWebsiteBySlug(slug);
+      if (!website || !website.isPublished) {
+        return res.status(404).json({ message: "Website not found" });
+      }
+
+      const lead = await bookWebsiteService.captureWebsiteLead(website.id, email, name, 'newsletter');
+      res.json({ success: true, message: "Thank you for subscribing!" });
+    } catch (error) {
+      console.error("Error capturing lead:", error);
+      res.status(500).json({ message: "Failed to subscribe" });
+    }
+  });
+
+  // ============================================================================
   // LULU PRINT-ON-DEMAND API
   // ============================================================================
 

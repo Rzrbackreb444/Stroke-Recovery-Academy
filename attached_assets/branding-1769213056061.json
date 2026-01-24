@@ -1,0 +1,92 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "Arial",
+      "count": 63
+    },
+    {
+      "family": "Roboto",
+      "count": 59
+    },
+    {
+      "family": "sans-serif",
+      "count": 59
+    },
+    {
+      "family": "HelveticaNeue",
+      "count": 51
+    },
+    {
+      "family": "Google Sans",
+      "count": 4
+    }
+  ],
+  "colors": {
+    "primary": "#4285F4",
+    "accent": "#2962FF",
+    "background": "#FFFFFF",
+    "textPrimary": "#2962FF",
+    "link": "#2962FF"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "Roboto",
+      "heading": "Google Sans"
+    },
+    "fontStacks": {
+      "body": [
+        "Roboto",
+        "HelveticaNeue",
+        "Arial",
+        "sans-serif"
+      ],
+      "heading": [
+        "Google Sans",
+        "Roboto",
+        "Arial",
+        "sans-serif"
+      ],
+      "paragraph": [
+        "Roboto",
+        "HelveticaNeue",
+        "Arial",
+        "sans-serif"
+      ]
+    },
+    "fontSizes": {
+      "h1": "18px",
+      "h2": "14px",
+      "body": "13px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "8px"
+  },
+  "components": {},
+  "images": {
+    "logo": null,
+    "favicon": "https://www.gstatic.com/images/branding/searchlogo/ico/favicon.ico",
+    "ogImage": "File saved at: attached_assets/ogImage.jpg"
+  },
+  "__framework_hints": [],
+  "__llm_button_reasoning": {
+    "primary": {
+      "index": -1,
+      "text": "N/A",
+      "reasoning": "LLM failed"
+    },
+    "secondary": {
+      "index": -1,
+      "text": "N/A",
+      "reasoning": "LLM failed"
+    },
+    "confidence": 0
+  },
+  "confidence": {
+    "buttons": 0,
+    "colors": 0,
+    "overall": 0
+  }
+}

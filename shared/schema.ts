@@ -4481,3 +4481,95 @@ export type ScreenplayProject = typeof screenplayProjects.$inferSelect;
 export type InsertScreenplayProject = z.infer<typeof insertScreenplayProjectSchema>;
 export type MusicSandboxProject = typeof musicSandboxProjects.$inferSelect;
 export type InsertMusicSandboxProject = z.infer<typeof insertMusicSandboxProjectSchema>;
+
+// ============================================================================
+// BOOK WEBSITES - Dedicated landing pages for books
+// ============================================================================
+
+export const bookWebsites = pgTable("book_websites", {
+  id: serial("id").primaryKey(),
+  listingId: integer("listing_id").references(() => marketplaceListings.id, { onDelete: "cascade" }),
+  authorId: varchar("author_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  slug: text("slug").notNull().unique(),
+  customDomain: text("custom_domain"),
+  title: text("title").notNull(),
+  subtitle: text("subtitle"),
+  tagline: text("tagline"),
+  description: text("description"),
+  authorBio: text("author_bio"),
+  authorName: text("author_name").notNull(),
+  authorPhotoUrl: text("author_photo_url"),
+  coverImageUrl: text("cover_image_url"),
+  bannerImageUrl: text("banner_image_url"),
+  logoUrl: text("logo_url"),
+  theme: text("theme").notNull().default("classic"), // classic, modern, dark, elegant, bold
+  primaryColor: text("primary_color").default("#C9941A"),
+  accentColor: text("accent_color").default("#1a1a1a"),
+  fontFamily: text("font_family").default("Crimson Pro"),
+  genre: text("genre"),
+  amazonUrl: text("amazon_url"),
+  barnesNobleUrl: text("barnes_noble_url"),
+  appleBooksUrl: text("apple_books_url"),
+  koboUrl: text("kobo_url"),
+  googlePlayUrl: text("google_play_url"),
+  luluUrl: text("lulu_url"),
+  directBuyUrl: text("direct_buy_url"),
+  sampleChapterUrl: text("sample_chapter_url"),
+  testimonials: jsonb("testimonials").default([]), // [{name, text, source, rating}]
+  awards: jsonb("awards").default([]), // [{name, year, organization}]
+  pressQuotes: jsonb("press_quotes").default([]), // [{quote, source, url}]
+  bookDetails: jsonb("book_details").default({}), // {pageCount, isbn, publishDate, language, format}
+  socialLinks: jsonb("social_links").default({}),
+  newsletterEnabled: boolean("newsletter_enabled").notNull().default(false),
+  mailchimpListId: text("mailchimp_list_id"),
+  seoTitle: text("seo_title"),
+  seoDescription: text("seo_description"),
+  seoKeywords: text("seo_keywords").array(),
+  ogImageUrl: text("og_image_url"),
+  analyticsId: text("analytics_id"),
+  facebookPixelId: text("facebook_pixel_id"),
+  viewCount: integer("view_count").notNull().default(0),
+  clickCount: integer("click_count").notNull().default(0),
+  isPublished: boolean("is_published").notNull().default(false),
+  publishedAt: timestamp("published_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const bookWebsitePages = pgTable("book_website_pages", {
+  id: serial("id").primaryKey(),
+  websiteId: integer("website_id").notNull().references(() => bookWebsites.id, { onDelete: "cascade" }),
+  slug: text("slug").notNull(),
+  title: text("title").notNull(),
+  content: text("content"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  isVisible: boolean("is_visible").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const bookWebsiteLeads = pgTable("book_website_leads", {
+  id: serial("id").primaryKey(),
+  websiteId: integer("website_id").notNull().references(() => bookWebsites.id, { onDelete: "cascade" }),
+  email: text("email").notNull(),
+  name: text("name"),
+  source: text("source"), // newsletter, download, contact
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const insertBookWebsiteSchema = createInsertSchema(bookWebsites).omit({ 
+  id: true, createdAt: true, updatedAt: true, viewCount: true, clickCount: true, publishedAt: true 
+});
+export const insertBookWebsitePageSchema = createInsertSchema(bookWebsitePages).omit({ 
+  id: true, createdAt: true, updatedAt: true 
+});
+export const insertBookWebsiteLeadSchema = createInsertSchema(bookWebsiteLeads).omit({ 
+  id: true, createdAt: true 
+});
+
+export type BookWebsite = typeof bookWebsites.$inferSelect;
+export type InsertBookWebsite = z.infer<typeof insertBookWebsiteSchema>;
+export type BookWebsitePage = typeof bookWebsitePages.$inferSelect;
+export type InsertBookWebsitePage = z.infer<typeof insertBookWebsitePageSchema>;
+export type BookWebsiteLead = typeof bookWebsiteLeads.$inferSelect;
+export type InsertBookWebsiteLead = z.infer<typeof insertBookWebsiteLeadSchema>;
