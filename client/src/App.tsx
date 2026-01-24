@@ -27,6 +27,7 @@ import VideoStudio from "@/pages/VideoStudio";
 import CourseStudio from "@/pages/CourseStudio";
 import ImageStudio from "@/pages/ImageStudio";
 import BookMarketplace from "@/pages/BookMarketplace";
+import SellBooks from "@/pages/SellBooks";
 import OrderConfirmation from "@/pages/OrderConfirmation";
 import MyOrders from "@/pages/MyOrders";
 import AuthorDashboard from "@/pages/AuthorDashboard";
@@ -121,6 +122,11 @@ function Router() {
       <Route path="/about-us" component={AboutUs} />
       <Route path="/marketplace" component={Marketplace} />
       <Route path="/marketplace/books" component={BookMarketplace} />
+      <Route path="/sell-books">
+        <ProtectedRoute>
+          <SellBooks />
+        </ProtectedRoute>
+      </Route>
       <Route path="/marketplace/order/:id" component={OrderConfirmation} />
       <Route path="/marketplace/purchase-success" component={OrderConfirmation} />
       <Route path="/marketplace/my-orders" component={MyOrders} />
