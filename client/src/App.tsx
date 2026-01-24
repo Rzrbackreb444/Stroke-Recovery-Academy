@@ -38,6 +38,7 @@ import AudiobookFactory from "@/pages/AudiobookFactory";
 import DJStudio from "@/pages/DJStudio";
 import WorkflowDashboard from "@/pages/WorkflowDashboard";
 import SlotMachine from "@/pages/SlotMachine";
+import SasquatchGames from "@/pages/SasquatchGames";
 import CreatorEarnings from "@/pages/CreatorEarnings";
 import MediaStudioPage from "@/pages/MediaStudioPage";
 import CreatorSettings from "@/pages/CreatorSettings";
@@ -148,6 +149,7 @@ function Router() {
       <Route path="/publishing" component={Publishing} />
       <Route path="/pricing" component={Pricing} />
       <Route path="/slots" component={SlotMachine} />
+      <Route path="/games" component={SasquatchGames} />
       <Route path="/terms" component={TermsOfService} />
       <Route path="/privacy" component={PrivacyPolicy} />
       <Route path="/white-label">

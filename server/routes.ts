@@ -13797,7 +13797,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
         .from(usageEvents)
         .where(and(
           eq(usageEvents.userId, userId),
-          eq(usageEvents.eventType, 'daily_spin'),
+          eq(usageEvents.featureKey, 'daily_spin'),
           sql`DATE(${usageEvents.createdAt}) = ${today}`
         ))
         .limit(1);
@@ -13809,8 +13809,8 @@ Provide a JSON response with track suggestions for each chapter/section.`;
       // Record the spin
       await db.insert(usageEvents).values({
         userId,
-        eventType: 'daily_spin',
-        details: { date: today },
+        featureKey: 'daily_spin',
+        metadata: { date: today },
       });
 
       // Generate spin result (more generous for free spins)
