@@ -978,6 +978,183 @@ export const BOOK_WEBSITE_TEMPLATES: BookWebsiteTemplate[] = [
       ctaText: "Read the Story",
       testimonialPlaceholder: "An inspiring account of an remarkable life. - Biography Magazine"
     }
+  },
+  {
+    id: "epic_fantasy_dark",
+    name: "Epic Fantasy Dark",
+    category: "fantasy",
+    description: "Dramatic dark theme for epic fantasy authors with book series showcase, atmospheric backgrounds, and immersive design",
+    previewImageUrl: "/templates/epic-fantasy-dark.jpg",
+    theme: {
+      primaryColor: "#D4AF37",
+      accentColor: "#8B4513",
+      backgroundColor: "#1A1A1A",
+      textColor: "#E8E8E8",
+      fontFamily: "EB Garamond, serif",
+      headingFont: "Cinzel Decorative, serif"
+    },
+    layout: {
+      heroStyle: "full_cover",
+      navigationStyle: "fixed",
+      sectionOrder: ["hero", "about_author", "book_series", "latest_book", "world", "newsletter", "buy"]
+    },
+    sections: [
+      { id: "hero", name: "Epic Banner", enabled: true, order: 0, style: { layout: "cinematic", showAward: "true" } },
+      { id: "about_author", name: "The Author", enabled: true, order: 1, style: { layout: "split_dark", showPhoto: "true" } },
+      { id: "book_series", name: "View My Books", enabled: true, order: 2, style: { layout: "series_grid", showDescriptions: "true" } },
+      { id: "latest_book", name: "Latest Release", enabled: true, order: 3, style: { layout: "featured_book" } },
+      { id: "world", name: "The World", enabled: true, order: 4, style: { layout: "lore_cards", showMap: "true" } },
+      { id: "newsletter", name: "Start Reading", enabled: true, order: 5, style: { layout: "dark_signup" } },
+      { id: "buy", name: "Available Now On", enabled: true, order: 6, style: { layout: "retailer_logos" } }
+    ],
+    sampleContent: {
+      tagline: "Amazon Editor's Picks: Best Epic Fantasy",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a turpis efficitur ex faucibus porta.",
+      ctaText: "Start Reading",
+      testimonialPlaceholder: "An epic tale of magic and adventure that will leave you breathless. - Fantasy Book Review"
+    }
+  },
+  {
+    id: "series_showcase",
+    name: "Book Series Showcase",
+    category: "fiction",
+    description: "Perfect for authors with multiple books in a series - showcases each book with descriptions, covers, and buy links",
+    previewImageUrl: "/templates/series-showcase.jpg",
+    theme: {
+      primaryColor: "#4A5568",
+      accentColor: "#718096",
+      backgroundColor: "#F7FAFC",
+      textColor: "#2D3748",
+      fontFamily: "Merriweather, serif",
+      headingFont: "Oswald, sans-serif"
+    },
+    layout: {
+      heroStyle: "split",
+      navigationStyle: "sticky",
+      sectionOrder: ["hero", "series_overview", "books", "reading_order", "author", "extras", "buy"]
+    },
+    sections: [
+      { id: "hero", name: "Series Banner", enabled: true, order: 0, style: { layout: "series_hero", showBookCount: "true" } },
+      { id: "series_overview", name: "About the Series", enabled: true, order: 1, style: { layout: "elegant_description" } },
+      { id: "books", name: "The Books", enabled: true, order: 2, style: { layout: "book_cards", showBuyButtons: "true" } },
+      { id: "reading_order", name: "Reading Order", enabled: true, order: 3, style: { layout: "numbered_timeline" } },
+      { id: "author", name: "Meet the Author", enabled: true, order: 4, style: { layout: "centered_bio" } },
+      { id: "extras", name: "Bonus Content", enabled: true, order: 5, style: { layout: "extras_grid" } },
+      { id: "buy", name: "Get the Series", enabled: true, order: 6, style: { layout: "bundle_option" } }
+    ],
+    sampleContent: {
+      tagline: "The Complete [Series Name] Collection",
+      description: "Follow the epic journey across multiple books in this beloved series.",
+      ctaText: "Start with Book 1",
+      testimonialPlaceholder: "This series has become my all-time favorite! - Amazon Reviewer"
+    }
+  },
+  {
+    id: "worldbuilding_fantasy",
+    name: "Fantasy Worldbuilding",
+    category: "fantasy",
+    description: "Immersive template for fantasy authors featuring world maps, character galleries, lore sections, and rich visual storytelling",
+    previewImageUrl: "/templates/worldbuilding-fantasy.jpg",
+    theme: {
+      primaryColor: "#6B4423",
+      accentColor: "#8B7355",
+      backgroundColor: "#F5F0E8",
+      textColor: "#3D2914",
+      fontFamily: "Crimson Pro, serif",
+      headingFont: "Uncial Antiqua, cursive"
+    },
+    layout: {
+      heroStyle: "full_cover",
+      navigationStyle: "fixed",
+      sectionOrder: ["hero", "world_intro", "map", "races", "magic", "characters", "books", "author"]
+    },
+    sections: [
+      { id: "hero", name: "Welcome to the Realm", enabled: true, order: 0, style: { layout: "parchment_style" } },
+      { id: "world_intro", name: "The World", enabled: true, order: 1, style: { layout: "lore_text" } },
+      { id: "map", name: "Interactive Map", enabled: true, order: 2, style: { layout: "map_display", interactive: "true" } },
+      { id: "races", name: "Races & Cultures", enabled: true, order: 3, style: { layout: "culture_cards" } },
+      { id: "magic", name: "Magic System", enabled: true, order: 4, style: { layout: "magic_guide" } },
+      { id: "characters", name: "Characters", enabled: true, order: 5, style: { layout: "character_gallery" } },
+      { id: "books", name: "The Saga", enabled: true, order: 6, style: { layout: "timeline_books" } },
+      { id: "author", name: "The Chronicler", enabled: true, order: 7, style: { layout: "fantasy_bio" } }
+    ],
+    sampleContent: {
+      tagline: "Enter a world of magic and wonder",
+      description: "Discover the rich tapestry of lands, peoples, and ancient mysteries waiting to be explored.",
+      ctaText: "Begin Your Adventure",
+      testimonialPlaceholder: "The worldbuilding in this series is absolutely incredible! - Goodreads"
+    }
+  },
+  {
+    id: "horror_thriller",
+    name: "Dark Horror",
+    category: "thriller",
+    description: "Spine-chilling dark theme for horror and thriller authors with atmospheric design and suspenseful elements",
+    previewImageUrl: "/templates/horror-thriller.jpg",
+    theme: {
+      primaryColor: "#8B0000",
+      accentColor: "#4A0000",
+      backgroundColor: "#0A0A0A",
+      textColor: "#C8C8C8",
+      fontFamily: "Bitter, serif",
+      headingFont: "Nosifer, cursive"
+    },
+    layout: {
+      heroStyle: "full_cover",
+      navigationStyle: "hidden",
+      sectionOrder: ["hero", "tagline", "books", "excerpt", "author", "reviews", "newsletter"]
+    },
+    sections: [
+      { id: "hero", name: "The Cover", enabled: true, order: 0, style: { layout: "horror_reveal" } },
+      { id: "tagline", name: "The Hook", enabled: true, order: 1, style: { layout: "dramatic_quote" } },
+      { id: "books", name: "Nightmares", enabled: true, order: 2, style: { layout: "dark_grid" } },
+      { id: "excerpt", name: "Read If You Dare", enabled: true, order: 3, style: { layout: "scary_excerpt" } },
+      { id: "author", name: "The Author", enabled: true, order: 4, style: { layout: "shadowy_bio" } },
+      { id: "reviews", name: "What Readers Say", enabled: true, order: 5, style: { layout: "horror_quotes" } },
+      { id: "newsletter", name: "Enter the Darkness", enabled: true, order: 6, style: { layout: "creepy_signup" } }
+    ],
+    sampleContent: {
+      tagline: "Some doors should never be opened",
+      description: "A terrifying journey into the darkest corners of the human psyche.",
+      ctaText: "Read Now",
+      testimonialPlaceholder: "I couldn't sleep for a week. Absolutely terrifying! - Horror Reader"
+    }
+  },
+  {
+    id: "scifi_futuristic",
+    name: "Sci-Fi Futuristic",
+    category: "fiction",
+    description: "Sleek futuristic design for science fiction authors with neon accents, tech aesthetics, and space-inspired visuals",
+    previewImageUrl: "/templates/scifi-futuristic.jpg",
+    theme: {
+      primaryColor: "#00D4FF",
+      accentColor: "#FF00FF",
+      backgroundColor: "#0D1117",
+      textColor: "#C9D1D9",
+      fontFamily: "Exo 2, sans-serif",
+      headingFont: "Orbitron, sans-serif"
+    },
+    layout: {
+      heroStyle: "animated",
+      navigationStyle: "fixed",
+      sectionOrder: ["hero", "synopsis", "universe", "characters", "technology", "books", "author", "newsletter"]
+    },
+    sections: [
+      { id: "hero", name: "Launch", enabled: true, order: 0, style: { layout: "space_intro", showStars: "true" } },
+      { id: "synopsis", name: "The Mission", enabled: true, order: 1, style: { layout: "holographic_text" } },
+      { id: "universe", name: "The Universe", enabled: true, order: 2, style: { layout: "galaxy_map" } },
+      { id: "characters", name: "The Crew", enabled: true, order: 3, style: { layout: "crew_cards" } },
+      { id: "technology", name: "Technology", enabled: true, order: 4, style: { layout: "tech_showcase" } },
+      { id: "books", name: "The Series", enabled: true, order: 5, style: { layout: "book_timeline" } },
+      { id: "author", name: "The Creator", enabled: true, order: 6, style: { layout: "futuristic_bio" } },
+      { id: "newsletter", name: "Join the Fleet", enabled: true, order: 7, style: { layout: "comm_signup" } }
+    ],
+    sampleContent: {
+      tagline: "The future of humanity hangs in the balance",
+      description: "A thrilling space opera that explores the boundaries of human evolution and interstellar conflict.",
+      ctaText: "Launch Sequence",
+      testimonialPlaceholder: "The best sci-fi I've read in years! - Sci-Fi Magazine"
+    }
   }
 ];
 
