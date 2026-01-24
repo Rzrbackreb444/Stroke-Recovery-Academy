@@ -37,6 +37,7 @@ import VoiceLibrary from "@/pages/VoiceLibrary";
 import AudiobookFactory from "@/pages/AudiobookFactory";
 import DJStudio from "@/pages/DJStudio";
 import WorkflowDashboard from "@/pages/WorkflowDashboard";
+import SlotMachine from "@/pages/SlotMachine";
 import CreatorEarnings from "@/pages/CreatorEarnings";
 import MediaStudioPage from "@/pages/MediaStudioPage";
 import CreatorSettings from "@/pages/CreatorSettings";
@@ -146,6 +147,7 @@ function Router() {
       <Route path="/author/:slug" component={AuthorStorefront} />
       <Route path="/publishing" component={Publishing} />
       <Route path="/pricing" component={Pricing} />
+      <Route path="/slots" component={SlotMachine} />
       <Route path="/terms" component={TermsOfService} />
       <Route path="/privacy" component={PrivacyPolicy} />
       <Route path="/white-label">
