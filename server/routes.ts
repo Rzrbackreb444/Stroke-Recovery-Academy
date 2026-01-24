@@ -9405,6 +9405,33 @@ Sitemap: https://kreaite.xyz/sitemap.xml
   });
 
   // ============================================================================
+  // BOOK WEBSITE TEMPLATES API
+  // ============================================================================
+
+  const bookWebsiteTemplates = await import('./bookWebsiteTemplates');
+
+  app.get('/api/book-website-templates', (req, res) => {
+    res.json(bookWebsiteTemplates.BOOK_WEBSITE_TEMPLATES);
+  });
+
+  app.get('/api/book-website-templates/categories', (req, res) => {
+    res.json(bookWebsiteTemplates.getAllTemplateCategories());
+  });
+
+  app.get('/api/book-website-templates/category/:category', (req, res) => {
+    const templates = bookWebsiteTemplates.getTemplatesByCategory(req.params.category);
+    res.json(templates);
+  });
+
+  app.get('/api/book-website-templates/:id', (req, res) => {
+    const template = bookWebsiteTemplates.getTemplateById(req.params.id);
+    if (!template) {
+      return res.status(404).json({ message: "Template not found" });
+    }
+    res.json(template);
+  });
+
+  // ============================================================================
   // BOOK WEBSITE GENERATOR API
   // ============================================================================
 
