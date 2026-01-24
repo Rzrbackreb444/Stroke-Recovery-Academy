@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Coins, Sparkles, Trophy, Zap, Crown, Flame, Trees, Mountain, Footprints, Eye, Moon, Star, Tent, Axe } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import sasquatchLogo from "@assets/sasquatch-logo.png";
+import sasquatchLogo from "../assets/sasquatch-logo.png";
 
 // Sasquatch-themed symbols - Beat the Stroked Out Sasquatch!
 const SYMBOLS = [
