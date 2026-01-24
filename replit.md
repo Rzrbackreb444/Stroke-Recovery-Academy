@@ -103,6 +103,22 @@ Icons: lucide-react only (no emoji)
   - **Readability Analysis**: Flesch-Kincaid scoring with paragraph length optimization
   - **Cornerstone Content**: Flag important posts for enhanced internal linking
   - **Schema Types**: Article, BlogPosting, NewsArticle, HowTo support
+- **SEO Command Center** (External Website Optimization):
+  - **Website Analysis**: Full site audit for any external URL with crawl depth control
+  - **Keyword Research**: AI-powered keyword suggestions with search volume estimates
+  - **Content Optimization**: SEO scoring and optimization recommendations for any content
+  - **Competitor Analysis**: Compare domain metrics and keyword gaps
+  - **Backlink Profiling**: Analyze domain backlink structure and quality
+  - **Sitemap Generation**: Generate sitemap.xml for any website
+  - **Robots.txt Builder**: Create optimized robots.txt with custom rules
+  - **Local Business Schema**: Generate LocalBusiness structured data
+  - **Hreflang Tags**: Multi-language tag generation for international SEO
+  - **API Routes** (`/api/seo/*`): analyze-website, research-keywords, optimize-content, analyze-competitors, analyze-backlinks, generate-sitemap, generate-robots-txt, local-business-schema, hreflang-tags
+- **Enhanced Dynamic Sitemaps**:
+  - **Main Sitemap** (`/sitemap.xml`): All static routes + 500 blog posts + 200 marketplace listings + 200 author profiles
+  - **Sitemap Index** (`/sitemap-index.xml`): Links to specialized sitemaps for large sites
+  - **Blog Sitemap** (`/sitemap-blog.xml`): Up to 1,000 blog posts with image sitemap support
+  - **Marketplace Sitemap** (`/sitemap-marketplace.xml`): Up to 1,000 listings with product images
 
 ### Lulu Publishing Integration (Professional Print-on-Demand)
 - **API Service**: Full OAuth2 client credentials flow with automatic token refresh

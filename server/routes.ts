@@ -129,6 +129,7 @@ import {
   userWorkflows,
   insertWorkflowTemplateSchema,
   insertWorkflowReviewSchema,
+  blogPosts,
 } from "../shared/schema";
 import { db } from "./db";
 import { eq, and, gte, lte, desc, asc, ilike, or, sql, count } from "drizzle-orm";
@@ -255,10 +256,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Lulu Publishing API Routes
   app.use('/api/lulu', luluRoutes);
 
-  // SEO: Dynamic Sitemap.xml
+  // SEO: Dynamic Sitemap.xml with all content
   app.get('/sitemap.xml', async (req, res) => {
     const baseUrl = 'https://kreaite.xyz';
-    const routes = [
+    const staticRoutes = [
       { path: '/', priority: '1.0', changefreq: 'weekly' },
       { path: '/marketplace', priority: '0.9', changefreq: 'daily' },
       { path: '/book-studio', priority: '0.9', changefreq: 'weekly' },
@@ -266,6 +267,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       { path: '/video-studio', priority: '0.9', changefreq: 'weekly' },
       { path: '/course-studio', priority: '0.9', changefreq: 'weekly' },
       { path: '/image-studio', priority: '0.9', changefreq: 'weekly' },
+      { path: '/doctrine-engine', priority: '0.9', changefreq: 'weekly' },
+      { path: '/seo-command-center', priority: '0.8', changefreq: 'weekly' },
+      { path: '/blog', priority: '0.9', changefreq: 'daily' },
       { path: '/pricing', priority: '0.8', changefreq: 'monthly' },
       { path: '/about', priority: '0.7', changefreq: 'monthly' },
       { path: '/about-us', priority: '0.7', changefreq: 'monthly' },
@@ -280,23 +284,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
       { path: '/script-studio', priority: '0.8', changefreq: 'weekly' },
       { path: '/life-story', priority: '0.8', changefreq: 'weekly' },
       { path: '/ai-consultant', priority: '0.7', changefreq: 'weekly' },
+      { path: '/white-label', priority: '0.7', changefreq: 'monthly' },
+      { path: '/affiliate', priority: '0.6', changefreq: 'monthly' },
       { path: '/terms', priority: '0.3', changefreq: 'yearly' },
       { path: '/privacy', priority: '0.3', changefreq: 'yearly' },
     ];
 
     try {
+      // Get marketplace listings
       const listings = await storage.getMarketplaceListings?.() || [];
-      const dynamicUrls = listings.slice(0, 100).map((l: any) => ({
+      const listingUrls = listings.slice(0, 200).map((l: any) => ({
         path: `/listing/${l.id}`,
         priority: '0.6',
         changefreq: 'weekly'
       }));
 
-      const allRoutes = [...routes, ...dynamicUrls];
+      // Get blog posts
+      const posts = await db.select({ slug: blogPosts.slug, updatedAt: blogPosts.updatedAt })
+        .from(blogPosts)
+        .where(eq(blogPosts.status, 'published'))
+        .limit(500);
+      const blogUrls = posts.map((post) => ({
+        path: `/blog/${post.slug}`,
+        priority: '0.7',
+        changefreq: 'weekly'
+      }));
+
+      // Get author profiles
+      const authors = await db.select({ slug: authorProfiles.slug })
+        .from(authorProfiles)
+        .where(eq(authorProfiles.isPublic, true))
+        .limit(200);
+      const authorUrls = authors.map((author) => ({
+        path: `/author/${author.slug}`,
+        priority: '0.5',
+        changefreq: 'monthly'
+      }));
+
+      const allRoutes = [...staticRoutes, ...listingUrls, ...blogUrls, ...authorUrls];
       const today = new Date().toISOString().split('T')[0];
       
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
 ${allRoutes.map(r => `  <url>
     <loc>${baseUrl}${r.path}</loc>
     <lastmod>${today}</lastmod>
@@ -306,10 +337,109 @@ ${allRoutes.map(r => `  <url>
 </urlset>`;
 
       res.set('Content-Type', 'application/xml');
+      res.set('Cache-Control', 'public, max-age=3600'); // Cache for 1 hour
       res.send(sitemap);
     } catch (error) {
       console.error('Sitemap generation error:', error);
       res.status(500).send('Error generating sitemap');
+    }
+  });
+
+  // SEO: Sitemap Index for large sites
+  app.get('/sitemap-index.xml', async (req, res) => {
+    const baseUrl = 'https://kreaite.xyz';
+    const today = new Date().toISOString().split('T')[0];
+    
+    const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>${baseUrl}/sitemap.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>${baseUrl}/sitemap-blog.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>${baseUrl}/sitemap-marketplace.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+</sitemapindex>`;
+
+    res.set('Content-Type', 'application/xml');
+    res.send(sitemapIndex);
+  });
+
+  // SEO: Blog-specific sitemap
+  app.get('/sitemap-blog.xml', async (req, res) => {
+    const baseUrl = 'https://kreaite.xyz';
+    
+    try {
+      const posts = await db.select({ 
+        slug: blogPosts.slug, 
+        title: blogPosts.title,
+        updatedAt: blogPosts.updatedAt,
+        heroImageUrl: blogPosts.heroImageUrl
+      })
+        .from(blogPosts)
+        .where(eq(blogPosts.status, 'published'))
+        .orderBy(desc(blogPosts.publishedAt))
+        .limit(1000);
+
+      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+${posts.map((post) => `  <url>
+    <loc>${baseUrl}/blog/${post.slug}</loc>
+    <lastmod>${post.updatedAt ? new Date(post.updatedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>${post.heroImageUrl ? `
+    <image:image>
+      <image:loc>${post.heroImageUrl}</image:loc>
+      <image:title>${post.title}</image:title>
+    </image:image>` : ''}
+  </url>`).join('\n')}
+</urlset>`;
+
+      res.set('Content-Type', 'application/xml');
+      res.set('Cache-Control', 'public, max-age=3600');
+      res.send(sitemap);
+    } catch (error) {
+      console.error('Blog sitemap error:', error);
+      res.status(500).send('Error generating blog sitemap');
+    }
+  });
+
+  // SEO: Marketplace-specific sitemap
+  app.get('/sitemap-marketplace.xml', async (req, res) => {
+    const baseUrl = 'https://kreaite.xyz';
+    
+    try {
+      const listings = await storage.getMarketplaceListings?.() || [];
+      const today = new Date().toISOString().split('T')[0];
+
+      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+${listings.slice(0, 1000).map((listing: any) => `  <url>
+    <loc>${baseUrl}/listing/${listing.id}</loc>
+    <lastmod>${listing.updatedAt ? new Date(listing.updatedAt).toISOString().split('T')[0] : today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>${listing.thumbnailUrl ? `
+    <image:image>
+      <image:loc>${listing.thumbnailUrl}</image:loc>
+      <image:title>${listing.title || 'Marketplace listing'}</image:title>
+    </image:image>` : ''}
+  </url>`).join('\n')}
+</urlset>`;
+
+      res.set('Content-Type', 'application/xml');
+      res.set('Cache-Control', 'public, max-age=3600');
+      res.send(sitemap);
+    } catch (error) {
+      console.error('Marketplace sitemap error:', error);
+      res.status(500).send('Error generating marketplace sitemap');
     }
   });
 
@@ -342,6 +472,150 @@ Allow: /
 `;
     res.set('Content-Type', 'text/plain');
     res.send(robotsTxt);
+  });
+
+  // SEO Command Center API Routes
+  app.post('/api/seo/analyze-website', isAuthenticated, async (req: any, res) => {
+    try {
+      const { url, depth, includeSubpages } = req.body;
+      if (!url) {
+        return res.status(400).json({ message: "URL is required" });
+      }
+      
+      const { analyzeWebsite } = await import('./seoCommandCenterService');
+      const audit = await analyzeWebsite(url, { depth, includeSubpages });
+      res.json(audit);
+    } catch (error: any) {
+      console.error("Website analysis error:", error);
+      res.status(500).json({ message: error.message || "Failed to analyze website" });
+    }
+  });
+
+  app.post('/api/seo/research-keywords', isAuthenticated, async (req: any, res) => {
+    try {
+      const { seedKeywords, country, language } = req.body;
+      if (!seedKeywords || !Array.isArray(seedKeywords) || seedKeywords.length === 0) {
+        return res.status(400).json({ message: "Seed keywords are required" });
+      }
+      
+      const { researchKeywords } = await import('./seoCommandCenterService');
+      const keywords = await researchKeywords(seedKeywords, { country, language });
+      res.json({ keywords });
+    } catch (error: any) {
+      console.error("Keyword research error:", error);
+      res.status(500).json({ message: error.message || "Failed to research keywords" });
+    }
+  });
+
+  app.post('/api/seo/optimize-content', isAuthenticated, async (req: any, res) => {
+    try {
+      const { content, targetKeyword, contentType } = req.body;
+      if (!content || !targetKeyword) {
+        return res.status(400).json({ message: "Content and target keyword are required" });
+      }
+      
+      const { optimizeContent } = await import('./seoCommandCenterService');
+      const optimization = await optimizeContent(content, targetKeyword, contentType || 'blog');
+      res.json(optimization);
+    } catch (error: any) {
+      console.error("Content optimization error:", error);
+      res.status(500).json({ message: error.message || "Failed to optimize content" });
+    }
+  });
+
+  app.post('/api/seo/analyze-competitors', isAuthenticated, async (req: any, res) => {
+    try {
+      const { domain, competitors } = req.body;
+      if (!domain || !competitors || !Array.isArray(competitors)) {
+        return res.status(400).json({ message: "Domain and competitors are required" });
+      }
+      
+      const { analyzeCompetitors } = await import('./seoCommandCenterService');
+      const analysis = await analyzeCompetitors(domain, competitors);
+      res.json({ competitors: analysis });
+    } catch (error: any) {
+      console.error("Competitor analysis error:", error);
+      res.status(500).json({ message: error.message || "Failed to analyze competitors" });
+    }
+  });
+
+  app.post('/api/seo/analyze-backlinks', isAuthenticated, async (req: any, res) => {
+    try {
+      const { domain } = req.body;
+      if (!domain) {
+        return res.status(400).json({ message: "Domain is required" });
+      }
+      
+      const { analyzeBacklinks } = await import('./seoCommandCenterService');
+      const profile = await analyzeBacklinks(domain);
+      res.json(profile);
+    } catch (error: any) {
+      console.error("Backlink analysis error:", error);
+      res.status(500).json({ message: error.message || "Failed to analyze backlinks" });
+    }
+  });
+
+  app.post('/api/seo/generate-sitemap', isAuthenticated, async (req: any, res) => {
+    try {
+      const { pages } = req.body;
+      if (!pages || !Array.isArray(pages)) {
+        return res.status(400).json({ message: "Pages array is required" });
+      }
+      
+      const { generateSitemapXML } = await import('./seoCommandCenterService');
+      const sitemap = generateSitemapXML(pages);
+      res.set('Content-Type', 'application/xml');
+      res.send(sitemap);
+    } catch (error: any) {
+      console.error("Sitemap generation error:", error);
+      res.status(500).json({ message: error.message || "Failed to generate sitemap" });
+    }
+  });
+
+  app.post('/api/seo/generate-robots-txt', isAuthenticated, async (req: any, res) => {
+    try {
+      const { allowAll, disallowPaths, sitemapUrl, crawlDelay } = req.body;
+      
+      const { generateRobotsTxt } = await import('./seoCommandCenterService');
+      const robotsTxt = generateRobotsTxt({ allowAll, disallowPaths, sitemapUrl, crawlDelay });
+      res.set('Content-Type', 'text/plain');
+      res.send(robotsTxt);
+    } catch (error: any) {
+      console.error("Robots.txt generation error:", error);
+      res.status(500).json({ message: error.message || "Failed to generate robots.txt" });
+    }
+  });
+
+  app.post('/api/seo/local-business-schema', isAuthenticated, async (req: any, res) => {
+    try {
+      const { business } = req.body;
+      if (!business) {
+        return res.status(400).json({ message: "Business data is required" });
+      }
+      
+      const { generateLocalBusinessSchema } = await import('./seoCommandCenterService');
+      const schema = generateLocalBusinessSchema(business);
+      res.json(schema);
+    } catch (error: any) {
+      console.error("Local business schema error:", error);
+      res.status(500).json({ message: error.message || "Failed to generate schema" });
+    }
+  });
+
+  app.post('/api/seo/hreflang-tags', isAuthenticated, async (req: any, res) => {
+    try {
+      const { pages } = req.body;
+      if (!pages || !Array.isArray(pages)) {
+        return res.status(400).json({ message: "Pages array is required" });
+      }
+      
+      const { generateHreflangTags: genHreflang } = await import('./seoCommandCenterService');
+      const tags = genHreflang(pages);
+      res.json({ tags });
+    } catch (error: any) {
+      console.error("Hreflang generation error:", error);
+      res.status(500).json({ message: error.message || "Failed to generate hreflang tags" });
+    }
   });
   
   // Setup authentication
