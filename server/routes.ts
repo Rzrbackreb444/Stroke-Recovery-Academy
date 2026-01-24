@@ -13907,6 +13907,578 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
+  // Roulette game
+  app.post('/api/games/roulette-spin', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { bets } = req.body;
+      
+      if (!bets || !Array.isArray(bets) || bets.length === 0) {
+        return res.status(400).json({ message: "No bets placed" });
+      }
+
+      const totalBet = bets.reduce((sum: number, b: any) => sum + b.amount, 0);
+      const balance = await creditService.getBalance(userId);
+      if (balance.balance < totalBet) {
+        return res.status(400).json({ message: "Insufficient credits" });
+      }
+
+      await creditService.deductCredits(userId, totalBet, 'roulette_spin', 'Roulette spin');
+
+      const result = Math.floor(Math.random() * 37);
+      const RED = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
+      const isRed = RED.includes(result);
+      const isBlack = result > 0 && !isRed;
+
+      let totalWin = 0;
+      for (const bet of bets) {
+        let win = 0;
+        switch (bet.type) {
+          case 'number': if (bet.value === result) win = bet.amount * 35; break;
+          case 'red': if (isRed) win = bet.amount * 2; break;
+          case 'black': if (isBlack) win = bet.amount * 2; break;
+          case 'odd': if (result > 0 && result % 2 === 1) win = bet.amount * 2; break;
+          case 'even': if (result > 0 && result % 2 === 0) win = bet.amount * 2; break;
+          case '1-18': if (result >= 1 && result <= 18) win = bet.amount * 2; break;
+          case '19-36': if (result >= 19 && result <= 36) win = bet.amount * 2; break;
+          case '1st12': if (result >= 1 && result <= 12) win = bet.amount * 3; break;
+          case '2nd12': if (result >= 13 && result <= 24) win = bet.amount * 3; break;
+          case '3rd12': if (result >= 25 && result <= 36) win = bet.amount * 3; break;
+        }
+        totalWin += win;
+      }
+
+      if (totalWin > 0) {
+        await creditService.addCredits(userId, totalWin, 'roulette_win', `Roulette win on ${result}`);
+      }
+
+      res.json({ result, totalWin, isRed, isBlack });
+    } catch (error: any) {
+      console.error("Roulette error:", error);
+      res.status(500).json({ message: "Roulette spin failed" });
+    }
+  });
+
+  // Blackjack game
+  const SUITS = ['hearts', 'diamonds', 'clubs', 'spades'];
+  const RANKS = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+  
+  const createDeck = () => {
+    const deck: any[] = [];
+    for (const suit of SUITS) {
+      for (const rank of RANKS) {
+        let value = parseInt(rank);
+        if (isNaN(value)) value = rank === 'A' ? 11 : 10;
+        deck.push({ suit, rank, value });
+      }
+    }
+    return deck.sort(() => Math.random() - 0.5);
+  };
+
+  const handValue = (hand: any[]) => {
+    let total = 0, aces = 0;
+    for (const card of hand) {
+      if (card.hidden) continue;
+      if (card.rank === 'A') { aces++; total += 11; }
+      else if (['K','Q','J'].includes(card.rank)) total += 10;
+      else total += parseInt(card.rank);
+    }
+    while (total > 21 && aces > 0) { total -= 10; aces--; }
+    return total;
+  };
+
+  app.post('/api/games/blackjack-deal', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { bet } = req.body;
+      
+      if (!bet || bet < 1) return res.status(400).json({ message: "Invalid bet" });
+
+      const balance = await creditService.getBalance(userId);
+      if (balance.balance < bet) return res.status(400).json({ message: "Insufficient credits" });
+
+      await creditService.deductCredits(userId, bet, 'blackjack_deal', 'Blackjack deal');
+
+      const deck = createDeck();
+      const playerHand = [deck.pop(), deck.pop()];
+      const dealerHand = [deck.pop(), { ...deck.pop(), hidden: true }];
+
+      const playerTotal = handValue(playerHand);
+      if (playerTotal === 21) {
+        const winAmount = Math.floor(bet * 2.5);
+        await creditService.addCredits(userId, winAmount, 'blackjack_win', 'Blackjack!');
+        return res.json({ 
+          playerHand, 
+          dealerHand: dealerHand.map((c: any) => ({ ...c, hidden: false })),
+          dealerFinalHand: dealerHand.map((c: any) => ({ ...c, hidden: false })),
+          result: 'BLACKJACK!', 
+          winAmount 
+        });
+      }
+
+      res.json({ playerHand, dealerHand });
+    } catch (error: any) {
+      console.error("Blackjack deal error:", error);
+      res.status(500).json({ message: "Deal failed" });
+    }
+  });
+
+  app.post('/api/games/blackjack-action', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { action, playerHand, dealerHand, bet } = req.body;
+
+      const deck = createDeck();
+      let newPlayerHand = [...playerHand];
+      let newDealerHand = dealerHand.map((c: any) => ({ ...c, hidden: false }));
+
+      if (action === 'double') {
+        const balance = await creditService.getBalance(userId);
+        if (balance.balance < bet) return res.status(400).json({ message: "Insufficient credits for double" });
+        await creditService.deductCredits(userId, bet, 'blackjack_double', 'Blackjack double down');
+        newPlayerHand.push(deck.pop());
+      } else if (action === 'hit') {
+        newPlayerHand.push(deck.pop());
+      }
+
+      const playerTotal = handValue(newPlayerHand);
+
+      if (playerTotal > 21) {
+        return res.json({ playerHand: newPlayerHand, dealerHand: newDealerHand, result: 'BUST', winAmount: 0 });
+      }
+
+      if (action === 'stand' || action === 'double' || playerTotal === 21) {
+        let dealerTotal = handValue(newDealerHand);
+        while (dealerTotal < 17) {
+          newDealerHand.push(deck.pop());
+          dealerTotal = handValue(newDealerHand);
+        }
+
+        let result = '', winAmount = 0;
+        const finalBet = action === 'double' ? bet * 2 : bet;
+
+        if (dealerTotal > 21) {
+          result = 'DEALER BUST - YOU WIN!';
+          winAmount = finalBet * 2;
+        } else if (playerTotal > dealerTotal) {
+          result = 'YOU WIN!';
+          winAmount = finalBet * 2;
+        } else if (playerTotal < dealerTotal) {
+          result = 'DEALER WINS';
+          winAmount = 0;
+        } else {
+          result = 'PUSH';
+          winAmount = finalBet;
+        }
+
+        if (winAmount > 0) {
+          await creditService.addCredits(userId, winAmount, 'blackjack_win', result);
+        }
+
+        return res.json({ playerHand: newPlayerHand, dealerHand: newDealerHand, result, winAmount });
+      }
+
+      res.json({ playerHand: newPlayerHand, dealerHand });
+    } catch (error: any) {
+      console.error("Blackjack action error:", error);
+      res.status(500).json({ message: "Action failed" });
+    }
+  });
+
+  // Texas Hold'em
+  app.post('/api/games/holdem-start', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { buyIn } = req.body;
+      
+      if (!buyIn || buyIn < 50) return res.status(400).json({ message: "Minimum buy-in is 50" });
+
+      const balance = await creditService.getBalance(userId);
+      if (balance.balance < buyIn) return res.status(400).json({ message: "Insufficient credits" });
+
+      await creditService.deductCredits(userId, buyIn, 'holdem_buyin', 'Texas Hold\'em buy-in');
+
+      const deck = createDeck();
+      const aiNames = ['Sasquatch Sam', 'Bigfoot Betty', 'Yeti Yolanda', 'Cryptid Carl'];
+      
+      const players = [
+        { name: 'You', cards: [deck.pop(), deck.pop()], chips: buyIn, bet: 0, folded: false, isAI: false },
+        ...aiNames.slice(0, 3).map(name => ({
+          name, cards: [deck.pop(), deck.pop()], chips: buyIn, bet: 0, folded: false, isAI: true
+        }))
+      ];
+
+      const bigBlind = Math.floor(buyIn / 20);
+      players[0].bet = bigBlind;
+      players[0].chips -= bigBlind;
+      players[1].bet = bigBlind / 2;
+      players[1].chips -= bigBlind / 2;
+
+      res.json({ 
+        players, 
+        pot: bigBlind + bigBlind / 2, 
+        bigBlind,
+        communityCards: []
+      });
+    } catch (error: any) {
+      console.error("Hold'em start error:", error);
+      res.status(500).json({ message: "Failed to start game" });
+    }
+  });
+
+  app.post('/api/games/holdem-action', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { action, amount, gameState } = req.body;
+      let { players, communityCards, pot, currentBet, gamePhase } = gameState;
+
+      const player = players[0];
+      
+      if (action === 'fold') {
+        player.folded = true;
+        const activePlayers = players.filter((p: any) => !p.folded);
+        if (activePlayers.length === 1) {
+          const winner = activePlayers[0];
+          if (!winner.isAI) {
+            await creditService.addCredits(userId, pot, 'holdem_win', 'Poker win');
+          }
+          return res.json({ 
+            players, communityCards, pot: 0, currentBet, gamePhase: 'showdown',
+            result: winner.isAI ? `${winner.name} wins!` : 'You win!',
+            winAmount: winner.isAI ? 0 : pot
+          });
+        }
+      } else if (action === 'call' || action === 'check') {
+        const callAmount = currentBet - player.bet;
+        player.chips -= callAmount;
+        player.bet = currentBet;
+        pot += callAmount;
+      } else if (action === 'raise') {
+        const raiseAmount = amount - player.bet;
+        player.chips -= raiseAmount;
+        player.bet = amount;
+        pot += raiseAmount;
+        currentBet = amount;
+      }
+
+      for (const ai of players.filter((p: any) => p.isAI && !p.folded)) {
+        const decision = Math.random();
+        if (decision < 0.2) {
+          ai.folded = true;
+        } else if (decision < 0.7) {
+          const callAmt = currentBet - ai.bet;
+          ai.chips -= Math.min(callAmt, ai.chips);
+          ai.bet = currentBet;
+          pot += callAmt;
+        }
+      }
+
+      const deck = createDeck();
+      const phases = ['preflop', 'flop', 'turn', 'river', 'showdown'];
+      const phaseIndex = phases.indexOf(gamePhase);
+      
+      if (phaseIndex < 4) {
+        gamePhase = phases[phaseIndex + 1];
+        if (gamePhase === 'flop') communityCards = [deck.pop(), deck.pop(), deck.pop()];
+        else if (gamePhase === 'turn' || gamePhase === 'river') communityCards.push(deck.pop());
+      }
+
+      if (gamePhase === 'showdown') {
+        const activePlayers = players.filter((p: any) => !p.folded);
+        const winner = activePlayers[Math.floor(Math.random() * activePlayers.length)];
+        const handRanks = ['High Card', 'Pair', 'Two Pair', 'Three of a Kind', 'Straight', 'Flush', 'Full House', 'Four of a Kind', 'Straight Flush'];
+        const handRank = handRanks[Math.floor(Math.random() * 5)];
+        
+        if (!winner.isAI) {
+          await creditService.addCredits(userId, pot, 'holdem_win', `Poker win - ${handRank}`);
+        }
+
+        return res.json({ 
+          players, communityCards, pot: 0, currentBet, gamePhase,
+          result: winner.isAI ? `${winner.name} wins with ${handRank}!` : `You win with ${handRank}!`,
+          winAmount: winner.isAI ? 0 : pot,
+          handRank
+        });
+      }
+
+      players.forEach((p: any) => p.bet = 0);
+      currentBet = 0;
+
+      res.json({ players, communityCards, pot, currentBet, gamePhase });
+    } catch (error: any) {
+      console.error("Hold'em action error:", error);
+      res.status(500).json({ message: "Action failed" });
+    }
+  });
+
+  // Sasquatch Bingo
+  app.post('/api/games/bingo-card', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { bet } = req.body;
+      
+      if (bet && bet > 0) {
+        const balance = await creditService.getBalance(userId);
+        if (balance.balance < bet) return res.status(400).json({ message: "Insufficient credits" });
+        await creditService.deductCredits(userId, bet, 'bingo_card', 'Bingo card purchase');
+      }
+
+      const generateColumn = (min: number, max: number) => {
+        const nums: number[] = [];
+        while (nums.length < 5) {
+          const n = min + Math.floor(Math.random() * (max - min + 1));
+          if (!nums.includes(n)) nums.push(n);
+        }
+        return nums;
+      };
+
+      const card = {
+        B: generateColumn(1, 15),
+        I: generateColumn(16, 30),
+        N: generateColumn(31, 45),
+        G: generateColumn(46, 60),
+        O: generateColumn(61, 75),
+      };
+      card.N[2] = 0;
+
+      res.json({ card, sessionId: `bingo_${Date.now()}` });
+    } catch (error: any) {
+      console.error("Bingo card error:", error);
+      res.status(500).json({ message: "Failed to generate card" });
+    }
+  });
+
+  // Wilderness Survival - Outlast the Sasquatch
+  app.post('/api/games/survival-start', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { bet } = req.body;
+      
+      if (bet && bet > 0) {
+        const balance = await creditService.getBalance(userId);
+        if (balance.balance < bet) return res.status(400).json({ message: "Insufficient credits" });
+        await creditService.deductCredits(userId, bet, 'survival_entry', 'Wilderness survival entry');
+      }
+
+      res.json({
+        sessionId: `survival_${Date.now()}`,
+        bet: bet || 0,
+        health: 100,
+        warmth: 100,
+        hunger: 100,
+        day: 1,
+        inventory: [],
+        sasquatchDistance: 10,
+        events: ['You wake up in the wilderness. The Sasquatch is hunting you...']
+      });
+    } catch (error: any) {
+      console.error("Survival start error:", error);
+      res.status(500).json({ message: "Failed to start survival" });
+    }
+  });
+
+  app.post('/api/games/survival-action', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { action, gameState, bet } = req.body;
+      let { health, warmth, hunger, day, inventory, sasquatchDistance, events } = gameState;
+
+      const newEvents: string[] = [];
+      
+      switch (action) {
+        case 'forage':
+          if (Math.random() > 0.3) {
+            inventory.push('berries');
+            hunger = Math.min(100, hunger + 20);
+            newEvents.push('Found wild berries! (+20 hunger)');
+          } else {
+            newEvents.push('Found nothing edible.');
+          }
+          sasquatchDistance -= 1;
+          break;
+        case 'fire':
+          if (Math.random() > 0.4) {
+            warmth = Math.min(100, warmth + 40);
+            newEvents.push('Started a fire! (+40 warmth)');
+            if (Math.random() > 0.7) {
+              sasquatchDistance -= 2;
+              newEvents.push('The smoke attracted the Sasquatch!');
+            }
+          } else {
+            newEvents.push('Failed to start fire.');
+          }
+          break;
+        case 'hide':
+          sasquatchDistance += 2;
+          warmth -= 10;
+          newEvents.push('You hide. The Sasquatch loses your trail. (+2 distance, -10 warmth)');
+          break;
+        case 'run':
+          sasquatchDistance += 3;
+          hunger -= 20;
+          health -= 10;
+          newEvents.push('You run! (-20 hunger, -10 health, +3 distance)');
+          break;
+        case 'trap':
+          if (Math.random() > 0.5) {
+            inventory.push('meat');
+            hunger = Math.min(100, hunger + 40);
+            newEvents.push('Trap successful! Caught game. (+40 hunger)');
+          }
+          sasquatchDistance -= 1;
+          break;
+        case 'rest':
+          health = Math.min(100, health + 20);
+          warmth -= 15;
+          hunger -= 10;
+          day += 1;
+          newEvents.push(`Day ${day}. You rested. (+20 health, -15 warmth, -10 hunger)`);
+          break;
+      }
+
+      warmth -= 5;
+      hunger -= 5;
+      
+      if (warmth <= 0) { health -= 20; newEvents.push('Freezing! -20 health'); }
+      if (hunger <= 0) { health -= 15; newEvents.push('Starving! -15 health'); }
+
+      if (sasquatchDistance <= 0) {
+        return res.json({
+          ...gameState, health: 0, events: [...events, ...newEvents, 'The Sasquatch caught you!'],
+          result: 'CAUGHT', winAmount: 0
+        });
+      }
+
+      if (health <= 0) {
+        return res.json({
+          ...gameState, events: [...events, ...newEvents, 'You did not survive...'],
+          result: 'PERISHED', winAmount: 0
+        });
+      }
+
+      if (day >= 7) {
+        const winAmount = bet ? bet * 5 : 100;
+        await creditService.addCredits(userId, winAmount, 'survival_win', 'Outlasted the Sasquatch!');
+        return res.json({
+          ...gameState, day, events: [...events, ...newEvents, 'You survived 7 days! Rescue arrived!'],
+          result: 'SURVIVED', winAmount
+        });
+      }
+
+      res.json({
+        health, warmth, hunger, day, inventory, sasquatchDistance,
+        events: [...events, ...newEvents]
+      });
+    } catch (error: any) {
+      console.error("Survival action error:", error);
+      res.status(500).json({ message: "Action failed" });
+    }
+  });
+
+  // Bingo Start - with credit deduction
+  app.post('/api/games/bingo-start', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { bet } = req.body;
+      
+      if (bet && bet > 0) {
+        const balance = await creditService.getBalance(userId);
+        if (balance.balance < bet) return res.status(400).json({ message: "Insufficient credits" });
+        await creditService.deductCredits(userId, bet, 'bingo_card', 'Bingo card purchase');
+      }
+      
+      res.json({ success: true, sessionId: `bingo_${Date.now()}` });
+    } catch (error: any) {
+      console.error("Bingo start error:", error);
+      res.status(500).json({ message: "Failed to start bingo" });
+    }
+  });
+
+  // Bingo Win
+  app.post('/api/games/bingo-win', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { bet, pattern, multiplier } = req.body;
+      const winAmount = (bet || 10) * multiplier;
+      
+      await creditService.addCredits(userId, winAmount, 'game_win', `Bingo ${pattern} win`);
+      res.json({ success: true, winAmount, pattern });
+    } catch (error: any) {
+      console.error("Bingo win error:", error);
+      res.status(500).json({ message: "Failed to process win" });
+    }
+  });
+
+  // Powerball Play
+  app.post('/api/games/powerball-play', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { bet, numbers, powerball } = req.body;
+      
+      if (bet && bet > 0) {
+        const balance = await creditService.getBalance(userId);
+        if (balance.balance < bet) return res.status(400).json({ message: "Insufficient credits" });
+        await creditService.deductCredits(userId, bet, 'game_bet', 'Powerball ticket');
+      }
+      
+      res.json({ success: true, sessionId: `powerball_${Date.now()}`, numbers, powerball });
+    } catch (error: any) {
+      console.error("Powerball play error:", error);
+      res.status(500).json({ message: "Failed to play powerball" });
+    }
+  });
+
+  // Powerball Win
+  app.post('/api/games/powerball-win', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { bet, winAmount } = req.body;
+      
+      if (winAmount > 0) {
+        await creditService.addCredits(userId, winAmount, 'game_win', 'Powerball win');
+      }
+      res.json({ success: true, winAmount });
+    } catch (error: any) {
+      console.error("Powerball win error:", error);
+      res.status(500).json({ message: "Failed to process win" });
+    }
+  });
+
+  // Scratch-Off Buy
+  app.post('/api/games/scratch-buy', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { cardType, cost } = req.body;
+      
+      if (cost && cost > 0) {
+        const balance = await creditService.getBalance(userId);
+        if (balance.balance < cost) return res.status(400).json({ message: "Insufficient credits" });
+        await creditService.deductCredits(userId, cost, 'game_bet', `Scratch card: ${cardType}`);
+      }
+      
+      res.json({ success: true, sessionId: `scratch_${Date.now()}` });
+    } catch (error: any) {
+      console.error("Scratch-off buy error:", error);
+      res.status(500).json({ message: "Failed to buy scratch card" });
+    }
+  });
+
+  // Scratch-Off Win
+  app.post('/api/games/scratch-win', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { winAmount } = req.body;
+      
+      if (winAmount > 0) {
+        await creditService.addCredits(userId, winAmount, 'game_win', 'Scratch-off win');
+      }
+      res.json({ success: true, winAmount });
+    } catch (error: any) {
+      console.error("Scratch-off win error:", error);
+      res.status(500).json({ message: "Failed to process win" });
+    }
+  });
+
   // Prize entitlements management
   app.get('/api/games/prizes', isAuthenticated, async (req: any, res) => {
     try {

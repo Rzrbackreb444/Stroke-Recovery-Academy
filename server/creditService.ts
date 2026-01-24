@@ -123,7 +123,7 @@ export async function deductCredits(
   return { success: true, newBalance: newTotal };
 }
 
-export type CreditTransactionType = 'purchase' | 'refund' | 'bonus' | 'earning' | 'subscription' | 'admin' | 'slot_spin' | 'slot_win' | 'daily_spin' | 'staring_contest' | 'staring_win' | 'game_bet' | 'game_win';
+export type CreditTransactionType = 'purchase' | 'refund' | 'bonus' | 'earning' | 'subscription' | 'admin' | 'slot_spin' | 'slot_win' | 'daily_spin' | 'staring_contest' | 'staring_win' | 'game_bet' | 'game_win' | 'roulette_spin' | 'roulette_win' | 'blackjack_deal' | 'blackjack_double' | 'blackjack_win' | 'holdem_buyin' | 'holdem_win' | 'bingo_card' | 'survival_entry' | 'survival_win';
 
 export async function addCredits(
   userId: string,

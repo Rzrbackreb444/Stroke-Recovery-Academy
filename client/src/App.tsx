@@ -40,6 +40,13 @@ import WorkflowDashboard from "@/pages/WorkflowDashboard";
 import SlotMachine from "@/pages/SlotMachine";
 import SasquatchGames from "@/pages/SasquatchGames";
 import SEOCommandCenter from "@/pages/SEOCommandCenter";
+import Roulette from "@/pages/Roulette";
+import Blackjack from "@/pages/Blackjack";
+import TexasHoldem from "@/pages/TexasHoldem";
+import WildernessSurvival from "@/pages/WildernessSurvival";
+import Powerball from "@/pages/Powerball";
+import ScratchOff from "@/pages/ScratchOff";
+import Bingo from "@/pages/Bingo";
 import CreatorEarnings from "@/pages/CreatorEarnings";
 import MediaStudioPage from "@/pages/MediaStudioPage";
 import CreatorSettings from "@/pages/CreatorSettings";
@@ -151,6 +158,13 @@ function Router() {
       <Route path="/pricing" component={Pricing} />
       <Route path="/slots" component={SlotMachine} />
       <Route path="/games" component={SasquatchGames} />
+      <Route path="/roulette" component={Roulette} />
+      <Route path="/blackjack" component={Blackjack} />
+      <Route path="/texas-holdem" component={TexasHoldem} />
+      <Route path="/wilderness-survival" component={WildernessSurvival} />
+      <Route path="/powerball" component={Powerball} />
+      <Route path="/scratch-off" component={ScratchOff} />
+      <Route path="/bingo" component={Bingo} />
       <Route path="/seo-command-center" component={SEOCommandCenter} />
       <Route path="/terms" component={TermsOfService} />
       <Route path="/privacy" component={PrivacyPolicy} />
