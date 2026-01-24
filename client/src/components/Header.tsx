@@ -20,6 +20,8 @@ export default function EliteHeader() {
         </div>
         
         <div className="hidden lg:flex items-center gap-8 text-[10px] uppercase tracking-[0.2em] font-black opacity-60">
+          <a href="/book-perfection-suite" className="flex items-center gap-2 hover:text-[#C9941A] transition-colors text-[#C9941A]"><Zap className="w-3.5 h-3.5" /> Book Perfection Suite</a>
+          
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-2 hover:text-[#C9941A] transition-colors outline-none">
               <LayoutGrid className="w-3.5 h-3.5" /> Studios <ChevronDown className="w-3 h-3" />
@@ -29,6 +31,7 @@ export default function EliteHeader() {
               <DropdownMenuItem className="hover:bg-[#C9941A]/10 cursor-pointer text-[10px] font-bold uppercase py-3" onClick={() => window.location.href='/music-studio'}>Music Studio</DropdownMenuItem>
               <DropdownMenuItem className="hover:bg-[#C9941A]/10 cursor-pointer text-[10px] font-bold uppercase py-3" onClick={() => window.location.href='/video-studio'}>Video Studio</DropdownMenuItem>
               <DropdownMenuItem className="hover:bg-[#C9941A]/10 cursor-pointer text-[10px] font-bold uppercase py-3" onClick={() => window.location.href='/course-studio'}>Course Studio</DropdownMenuItem>
+              <DropdownMenuItem className="hover:bg-[#C9941A]/10 cursor-pointer text-[10px] font-bold uppercase py-3" onClick={() => window.location.href='/website-studio'}>Website Builder</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 

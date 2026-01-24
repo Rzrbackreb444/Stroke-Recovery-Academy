@@ -40,6 +40,7 @@ import WorkflowDashboard from "@/pages/WorkflowDashboard";
 import SlotMachine from "@/pages/SlotMachine";
 import SasquatchGames from "@/pages/SasquatchGames";
 import SEOCommandCenter from "@/pages/SEOCommandCenter";
+import BookPerfectionSuite from "@/pages/BookPerfectionSuite";
 import Roulette from "@/pages/Roulette";
 import Blackjack from "@/pages/Blackjack";
 import TexasHoldem from "@/pages/TexasHoldem";
@@ -187,6 +188,7 @@ function Router() {
         </ProtectedRoute>
       </Route>
       <Route path="/book-studio" component={BookStudioV3} />
+      <Route path="/book-perfection-suite" component={BookPerfectionSuite} />
       <Route path="/creator-store" component={CreatorStore} />
       <Route path="/video-studio" component={VideoStudio} />
       <Route path="/course-studio" component={CourseStudio} />
