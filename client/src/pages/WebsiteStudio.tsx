@@ -96,7 +96,7 @@ import {
   Gem,
   RefreshCw,
 } from "lucide-react";
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
 
 const websiteTemplates = [
@@ -841,8 +841,8 @@ export default function WebsiteStudio() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <CreatorHeader />
+    <div className="min-h-screen bg-[#FAF8F3]">
+      <GlobalHeader />
       
       <main className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="text-center mb-12">

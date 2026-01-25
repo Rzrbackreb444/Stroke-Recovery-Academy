@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import SEO, { studioSchemas } from "@/components/SEO";
+import GlobalHeader from "@/components/GlobalHeader";
 import * as Tone from "tone";
 import {
   Play, Pause, Square, SkipBack, SkipForward, Volume2, VolumeX, Mic, MicOff,
@@ -932,14 +933,15 @@ export default function MusicStudio() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-[#FAF8F3] flex flex-col">
+      <GlobalHeader />
       <SEO
         title="Music Studio - AI Music Composition"
         description="Create professional music with AI-powered composition tools. Features AI beat generation, loop libraries, mixing and mastering, voice synthesis, and export to MP3/WAV formats."
         schema={studioSchemas.musicStudio}
       />
-      {/* Header */}
-      <div className="border-b border-border bg-card/50 p-4">
+      {/* Toolbar */}
+      <div className="border-b border-[#C9941A]/10 bg-white/80 backdrop-blur-sm p-4">
         <div className="max-w-[1800px] mx-auto flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">

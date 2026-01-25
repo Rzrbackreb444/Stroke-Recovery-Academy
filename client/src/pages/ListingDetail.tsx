@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRoute, Link } from "wouter";
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -168,8 +168,8 @@ export default function ListingDetail() {
 
   if (listingLoading) {
     return (
-      <div className="min-h-screen bg-background">
-        <CreatorHeader />
+      <div className="min-h-screen bg-[#FAF8F3]">
+        <GlobalHeader />
         <main className="max-w-6xl mx-auto px-4 py-8">
           <div className="grid md:grid-cols-2 gap-8">
             <Skeleton className="aspect-[3/4] rounded-lg" />
@@ -188,8 +188,8 @@ export default function ListingDetail() {
 
   if (!listing) {
     return (
-      <div className="min-h-screen bg-background">
-        <CreatorHeader />
+      <div className="min-h-screen bg-[#FAF8F3]">
+        <GlobalHeader />
         <main className="max-w-6xl mx-auto px-4 py-16 text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">Listing Not Found</h1>
           <p className="text-muted-foreground mb-8">This content may have been removed or is unavailable.</p>
@@ -214,8 +214,8 @@ export default function ListingDetail() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <CreatorHeader />
+    <div className="min-h-screen bg-[#FAF8F3]">
+      <GlobalHeader />
 
       <main className="max-w-6xl mx-auto px-4 py-8">
         <Link href="/marketplace">

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import Landing from "@/pages/Landing";
+import CreatorHome from "@/pages/CreatorHome";
 import Dashboard from "@/pages/Dashboard";
 
 export default function Home() {
@@ -9,16 +9,12 @@ export default function Home() {
   const { toast } = useToast();
   const wasAuthenticated = useRef(false);
 
-  // Track if user was ever authenticated during this session
   useEffect(() => {
     if (isAuthenticated) {
       wasAuthenticated.current = true;
     }
   }, [isAuthenticated]);
 
-  // Page-level protection: redirect to login ONLY if session expires (user was authenticated but now isn't)
-  // This handles session expiry while the component is mounted
-  // First-time unauthenticated users should see the landing page, not be redirected
   useEffect(() => {
     if (!isLoading && !isAuthenticated && wasAuthenticated.current) {
       toast({
@@ -32,11 +28,9 @@ export default function Home() {
     }
   }, [isAuthenticated, isLoading, toast]);
 
-  // Show landing page while loading or not authenticated
   if (isLoading || !isAuthenticated) {
-    return <Landing />;
+    return <CreatorHome />;
   }
 
-  // Show dashboard when authenticated
   return <Dashboard />;
 }

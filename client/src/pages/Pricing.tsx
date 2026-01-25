@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 import RecoveryHeader from "@/components/RecoveryHeader";
 import { usePlatform } from "@/lib/hooks/usePlatform";
 import Footer from "@/components/Footer";
@@ -295,7 +295,7 @@ export default function Pricing() {
   const [isAnnual, setIsAnnual] = useState(true);
   const platform = usePlatform();
   const isRecovery = platform === "recovery";
-  const Header = isRecovery ? RecoveryHeader : CreatorHeader;
+  const Header = isRecovery ? RecoveryHeader : GlobalHeader;
 
   const checkoutMutation = useMutation({
     mutationFn: async (priceId: string) => {

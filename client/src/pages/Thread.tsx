@@ -12,7 +12,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 import type { ForumThread, ForumPost, ForumCategory, User } from "@shared/schema";
 
 function formatRelativeTime(date: Date | string): string {
@@ -154,8 +154,8 @@ export default function Thread() {
 
   if (loadingThread) {
     return (
-      <div className="min-h-screen bg-background">
-        <CreatorHeader />
+      <div className="min-h-screen bg-[#FAF8F3]">
+        <GlobalHeader />
         <main className="container mx-auto px-4 py-8">
           <Skeleton className="h-8 w-64 mb-4" />
           <Skeleton className="h-64 w-full" />
@@ -166,8 +166,8 @@ export default function Thread() {
 
   if (!thread) {
     return (
-      <div className="min-h-screen bg-background">
-        <CreatorHeader />
+      <div className="min-h-screen bg-[#FAF8F3]">
+        <GlobalHeader />
         <main className="container mx-auto px-4 py-8 text-center">
           <h1 className="text-2xl font-bold mb-4">Thread not found</h1>
           <Button onClick={() => setLocation("/community")}>
@@ -179,8 +179,8 @@ export default function Thread() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <CreatorHeader />
+    <div className="min-h-screen bg-[#FAF8F3]">
+      <GlobalHeader />
       
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <Button

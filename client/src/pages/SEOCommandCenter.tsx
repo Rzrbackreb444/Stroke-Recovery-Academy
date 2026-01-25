@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 
 interface AnalysisResult {
   score?: number;
@@ -123,8 +123,8 @@ export default function SEOCommandCenter() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <CreatorHeader />
+    <div className="min-h-screen bg-[#FAF8F3]">
+      <GlobalHeader />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">

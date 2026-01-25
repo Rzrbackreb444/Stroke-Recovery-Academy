@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -235,7 +235,7 @@ export default function ScriptStudio() {
 
   if (authLoading || projectsLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-[#FAF8F3] flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
@@ -243,8 +243,8 @@ export default function ScriptStudio() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-background">
-        <CreatorHeader />
+      <div className="min-h-screen bg-[#FAF8F3]">
+        <GlobalHeader />
         <div className="flex items-center justify-center min-h-[70vh]">
           <Card className="bg-zinc-950 border-zinc-800">
             <CardContent className="p-8 text-center">
@@ -260,8 +260,8 @@ export default function ScriptStudio() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <CreatorHeader />
+    <div className="min-h-screen bg-[#FAF8F3]">
+      <GlobalHeader />
       <div className="flex h-[calc(100vh-64px)]">
         <aside className="w-64 border-r border-zinc-800 bg-zinc-950 flex flex-col" data-testid="sidebar-projects">
           <div className="p-4 border-b border-zinc-800 flex items-center justify-between">

@@ -11,12 +11,12 @@ import {
   ShoppingBag, Users, Settings, Shield, Sparkles,
   FileText, Mic, Palette, Clock, ArrowRight, Plus,
   Loader2, Calendar, Zap, Target, Award, FolderOpen,
-  Copy, Share2, Gift, UserPlus, Search, Gamepad2, Globe
+  Copy, Share2, Gift, UserPlus, Search, Gamepad2, Globe, Smartphone
 } from "lucide-react";
 import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 
 interface CreditBalance {
   balance: number;
@@ -234,8 +234,8 @@ export default function Dashboard() {
   const totalCredits = (creditsQuery.data?.balance || 0) + (creditsQuery.data?.bonusCredits || 0);
 
   return (
-    <div className="min-h-screen bg-background">
-      <CreatorHeader />
+    <div className="min-h-screen bg-[#FAF8F3]">
+      <GlobalHeader />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="mb-6">

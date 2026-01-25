@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -799,8 +799,8 @@ export default function LifeStoryEngine() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col" data-testid="life-story-engine-page">
-      <CreatorHeader />
+    <div className="min-h-screen bg-[#FAF8F3] flex flex-col" data-testid="life-story-engine-page">
+      <GlobalHeader />
       <div className="flex-1 flex">
         <StoryListSidebar
           stories={stories}

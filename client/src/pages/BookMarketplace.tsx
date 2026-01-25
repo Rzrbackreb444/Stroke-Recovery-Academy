@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -489,8 +489,8 @@ export default function BookMarketplace() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <CreatorHeader />
+    <div className="min-h-screen flex flex-col bg-[#FAF8F3]">
+      <GlobalHeader />
       
       <main className="flex-1 container mx-auto px-4 py-8">
         <section className="mb-8">

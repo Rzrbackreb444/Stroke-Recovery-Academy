@@ -1,4 +1,4 @@
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 import RecoveryHeader from "@/components/RecoveryHeader";
 import { usePlatform } from "@/lib/hooks/usePlatform";
 import Footer from "@/components/Footer";
@@ -71,7 +71,7 @@ export default function BookStudioV3() {
   const { isAuthenticated, isLoading } = useAuth();
   const platform = usePlatform();
   const isRecovery = platform === "recovery";
-  const Header = isRecovery ? RecoveryHeader : CreatorHeader;
+  const Header = isRecovery ? RecoveryHeader : GlobalHeader;
 
   const seoTitle = isRecovery 
     ? "Write Your Recovery Story | Stroke Recovery Academy"
@@ -83,7 +83,7 @@ export default function BookStudioV3() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-[#FAF8F3]">
         <Header />
         <LoadingState />
       </div>
@@ -92,7 +92,7 @@ export default function BookStudioV3() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-[#FAF8F3]">
         <SEO 
           title={seoTitle}
           description={seoDescription}

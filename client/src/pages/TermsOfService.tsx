@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { ArrowLeft, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
 
 const sections = [
@@ -26,8 +26,8 @@ export default function TermsOfService() {
   };
 
   return (
-    <div className="min-h-screen bg-background" data-testid="page-terms-of-service">
-      <CreatorHeader />
+    <div className="min-h-screen bg-[#FAF8F3]" data-testid="page-terms-of-service">
+      <GlobalHeader />
       
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="flex items-center justify-between mb-8 print:hidden">

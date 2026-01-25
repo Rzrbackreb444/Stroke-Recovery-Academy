@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
 import heroImage from "@/assets/hero-ai-creator.png";
 import { 
@@ -108,8 +108,8 @@ const testimonials = [
 
 export default function CreatorLanding() {
   return (
-    <div className="min-h-screen bg-background">
-      <CreatorHeader />
+    <div className="min-h-screen bg-[#FAF8F3]">
+      <GlobalHeader />
       <main>
         {/* Hero Section */}
         <section className="relative overflow-hidden">

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useLocation, Link } from "wouter";
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -247,8 +247,8 @@ export default function OrderConfirmation() {
 
   if (authLoading || isLoading) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
-        <CreatorHeader />
+      <div className="min-h-screen bg-[#FAF8F3] flex flex-col">
+        <GlobalHeader />
         <main className="flex-1 container mx-auto px-4 py-12">
           <div className="max-w-2xl mx-auto space-y-6">
             <Skeleton className="h-12 w-64 mx-auto" />
@@ -263,8 +263,8 @@ export default function OrderConfirmation() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
-        <CreatorHeader />
+      <div className="min-h-screen bg-[#FAF8F3] flex flex-col">
+        <GlobalHeader />
         <main className="flex-1 container mx-auto px-4 py-12 flex items-center justify-center">
           <Card className="max-w-md w-full bg-gray-950 border-gray-800">
             <CardContent className="p-6 text-center">
@@ -284,8 +284,8 @@ export default function OrderConfirmation() {
 
   if (error || !order) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
-        <CreatorHeader />
+      <div className="min-h-screen bg-[#FAF8F3] flex flex-col">
+        <GlobalHeader />
         <main className="flex-1 container mx-auto px-4 py-12 flex items-center justify-center">
           <Card className="max-w-md w-full bg-gray-950 border-gray-800">
             <CardContent className="p-6 text-center">
@@ -310,8 +310,8 @@ export default function OrderConfirmation() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <CreatorHeader />
+    <div className="min-h-screen bg-[#FAF8F3] flex flex-col">
+      <GlobalHeader />
       
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-3xl mx-auto">
