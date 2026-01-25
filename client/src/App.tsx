@@ -75,6 +75,7 @@ import ScriptStudio from "@/pages/ScriptStudio";
 import LifeStoryEngine from "@/pages/LifeStoryEngine";
 import WhiteLabel from "@/pages/white-label";
 import WebsiteStudio from "@/pages/WebsiteStudio";
+import MobileStudio from "@/pages/MobileStudio";
 
 // Stroke Recovery Platform Pages (under /recovery/*)
 import StrokeRecoveryLanding from "@/pages/Landing";
@@ -189,6 +190,8 @@ function Router() {
       </Route>
       <Route path="/book-studio" component={BookStudioV3} />
       <Route path="/book-perfection-suite" component={BookPerfectionSuite} />
+      <Route path="/write" component={MobileStudio} />
+      <Route path="/studio" component={MobileStudio} />
       <Route path="/creator-store" component={CreatorStore} />
       <Route path="/video-studio" component={VideoStudio} />
       <Route path="/course-studio" component={CourseStudio} />

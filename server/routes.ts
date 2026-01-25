@@ -11064,6 +11064,65 @@ Respond in JSON format:
     }
   });
 
+  // AI Inline Actions for Mobile Studio
+  app.post('/api/ai/inline-action', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { action, text, context } = req.body;
+
+      if (!action || !text) {
+        return res.status(400).json({ message: "action and text are required" });
+      }
+
+      const contextInfo = context ? `
+Context:
+- Chapter: ${context.chapterTitle || 'Unknown'}
+- Project: ${context.projectTitle || 'Unknown'}
+- Characters: ${context.characters?.join(', ') || 'None specified'}
+- Tone Rules: ${context.toneRules?.join('; ') || 'None specified'}
+` : '';
+
+      let prompt = "";
+      switch (action) {
+        case "continue":
+          prompt = `${contextInfo}\nContinue writing naturally from where this text ends. Match the style, tone, and voice. Write 2-3 paragraphs:\n\n"${text}"\n\nContinuation:`;
+          break;
+        case "rewrite":
+          prompt = `${contextInfo}\nRewrite the following text to improve clarity, flow, and engagement while preserving the core meaning:\n\n"${text}"\n\nRewritten version:`;
+          break;
+        case "expand":
+          prompt = `${contextInfo}\nExpand the following text with more detail, sensory descriptions, and depth while maintaining the same voice and style:\n\n"${text}"\n\nExpanded version:`;
+          break;
+        case "summarize":
+          prompt = `Summarize the following text concisely, capturing the key points:\n\n"${text}"\n\nSummary:`;
+          break;
+        case "fix-tone":
+          prompt = `${contextInfo}\nRevise this text to have a more consistent and polished tone throughout:\n\n"${text}"\n\nRevised version:`;
+          break;
+        case "dialogue":
+          prompt = `${contextInfo}\nWrite a short dialogue scene (2-4 exchanges) that naturally continues from or relates to this text:\n\n"${text}"\n\nDialogue:`;
+          break;
+        case "ideas":
+          prompt = `${contextInfo}\nBased on this text, suggest 5 creative directions the story could go. Include plot twists, character developments, and thematic explorations:\n\n"${text}"\n\nIdeas:`;
+          break;
+        default:
+          return res.status(400).json({ message: "Invalid action" });
+      }
+
+      const result = await generate({
+        prompt,
+        userId,
+        taskType: 'draft',
+        maxTokens: 1500,
+      });
+
+      res.json({ result: result.content });
+    } catch (error: any) {
+      console.error("Error in AI inline action:", error);
+      res.status(500).json({ message: error.message || "Failed to perform AI action" });
+    }
+  });
+
   // AI Tone Revision - rewrite text in a specific tone/style
   app.post('/api/ai/tone-rewrite', isAuthenticated, async (req: any, res) => {
     try {
