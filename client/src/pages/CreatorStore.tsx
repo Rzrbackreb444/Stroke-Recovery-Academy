@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -87,8 +87,8 @@ export default function CreatorStore() {
   });
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <CreatorHeader />
+    <div className="min-h-screen bg-[#FAF8F3] text-foreground">
+      <GlobalHeader />
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto space-y-8">

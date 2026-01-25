@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -162,8 +162,8 @@ export default function CreatorHub() {
   });
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <CreatorHeader />
+    <div className="min-h-screen bg-[#FAF8F3] text-foreground">
+      <GlobalHeader />
       
       <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col gap-2 mb-8">

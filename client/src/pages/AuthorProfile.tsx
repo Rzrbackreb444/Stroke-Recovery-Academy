@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -318,8 +318,8 @@ export default function AuthorProfile() {
 
   if (authLoading || profilesLoading) {
     return (
-      <div className="min-h-screen bg-background">
-        <CreatorHeader />
+      <div className="min-h-screen bg-[#FAF8F3]">
+        <GlobalHeader />
         <main className="container mx-auto px-4 py-8 max-w-6xl">
           <ProfileSkeleton />
         </main>
@@ -330,8 +330,8 @@ export default function AuthorProfile() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-background">
-        <CreatorHeader />
+      <div className="min-h-screen bg-[#FAF8F3]">
+        <GlobalHeader />
         <main className="container mx-auto px-4 py-16 text-center">
           <h1 className="text-3xl font-bold mb-4">Sign in to manage your author profile</h1>
           <p className="text-muted-foreground mb-8">Create your public author storefront and manage your brand</p>
@@ -345,8 +345,8 @@ export default function AuthorProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <CreatorHeader />
+    <div className="min-h-screen bg-[#FAF8F3]">
+      <GlobalHeader />
       
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         <div className="flex items-center justify-between gap-4 mb-8 flex-wrap">

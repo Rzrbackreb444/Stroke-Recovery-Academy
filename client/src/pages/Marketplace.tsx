@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
 import SEO, { createProductSchema } from "@/components/SEO";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -884,9 +884,9 @@ export default function Marketplace() {
           },
         }}
       />
-      <CreatorHeader />
+      <GlobalHeader />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 bg-[#FAF8F3]">
         <section className="mb-8">
           <div className="text-center mb-8">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">

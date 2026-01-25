@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
 import {
   Bot,
@@ -145,8 +145,8 @@ export default function AIConsultant() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <CreatorHeader />
+    <div className="min-h-screen bg-[#FAF8F3] flex flex-col">
+      <GlobalHeader />
       
       <main className="flex-1">
         <section className="relative overflow-hidden py-16 px-4">

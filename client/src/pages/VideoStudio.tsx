@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -276,8 +276,8 @@ export default function VideoStudio() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <CreatorHeader />
+    <div className="min-h-screen bg-[#FAF8F3]">
+      <GlobalHeader />
 
       <section className="relative py-12 px-4 sm:px-6 lg:px-8 border-b border">
         <div className="max-w-7xl mx-auto">

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 import RecoveryHeader from "@/components/RecoveryHeader";
 import { usePlatform } from "@/lib/hooks/usePlatform";
 import Footer from "@/components/Footer";
@@ -291,7 +291,7 @@ export default function BookStudio() {
   const isRecovery = platform === "recovery";
   
   // Platform-specific header
-  const Header = isRecovery ? RecoveryHeader : CreatorHeader;
+  const Header = isRecovery ? RecoveryHeader : GlobalHeader;
   
   const [showProjectSelector, setShowProjectSelector] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -1804,7 +1804,7 @@ Your journey to healing starts here.`);
   // If children's genre is selected, show the dedicated ChildrensBookMode
   if (isChildrensGenre && !uploadedContent) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-[#FAF8F3]">
         <Header />
         <ChildrensBookMode 
           onStoryGenerated={(story) => {
@@ -1822,7 +1822,7 @@ Your journey to healing starts here.`);
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#FAF8F3]">
       <SEO
         title={isRecovery ? "Write Your Recovery Story - Book Studio" : "Book Studio - AI Book Writing"}
         description={isRecovery 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
-import CreatorHeader from "@/components/CreatorHeader";
+import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -528,8 +528,8 @@ export default function CreatorProductDashboard() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex flex-col bg-background">
-        <CreatorHeader />
+      <div className="min-h-screen flex flex-col bg-[#FAF8F3]">
+        <GlobalHeader />
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
           <Card className="max-w-md w-full">
             <CardContent className="p-8 text-center">
@@ -550,8 +550,8 @@ export default function CreatorProductDashboard() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <CreatorHeader />
+    <div className="min-h-screen flex flex-col bg-[#FAF8F3]">
+      <GlobalHeader />
 
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
