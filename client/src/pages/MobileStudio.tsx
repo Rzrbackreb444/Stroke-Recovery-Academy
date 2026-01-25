@@ -63,7 +63,7 @@ interface ProjectSettings {
   fontSize: number;
   fontFamily: string;
   lineHeight: number;
-  chapterStyle: "modern" | "classic" | "minimal";
+  chapterStyle: "modern" | "classic" | "minimal" | "ornate";
 }
 
 const defaultProject: Project = {
@@ -116,6 +116,22 @@ export default function MobileStudio() {
   const [selectedText, setSelectedText] = useState("");
   const [brainTab, setBrainTab] = useState("characters");
   const [newBrainItem, setNewBrainItem] = useState({ title: "", content: "" });
+  const [showSettingsPanel, setShowSettingsPanel] = useState(false);
+
+  const typographyThemes = [
+    { id: "classic", name: "Classic", font: "Georgia", size: 18, lineHeight: 1.8, description: "Timeless serif for novels" },
+    { id: "modern", name: "Modern", font: "Inter", size: 16, lineHeight: 1.7, description: "Clean sans-serif" },
+    { id: "literary", name: "Literary", font: "Crimson Pro", size: 19, lineHeight: 1.9, description: "Premium book feel" },
+    { id: "typewriter", name: "Typewriter", font: "Courier New", size: 16, lineHeight: 1.6, description: "Nostalgic draft mode" },
+    { id: "dyslexia", name: "Dyslexia Friendly", font: "Comic Sans MS", size: 18, lineHeight: 2.0, description: "Enhanced readability" },
+  ];
+
+  const chapterStyles = [
+    { id: "modern", name: "Modern", description: "Clean chapter headers" },
+    { id: "classic", name: "Classic", description: "Traditional numbered chapters" },
+    { id: "minimal", name: "Minimal", description: "Simple text-only breaks" },
+    { id: "ornate", name: "Ornate", description: "Decorative chapter openers" },
+  ];
 
   const currentChapter = project.chapters[currentChapterIndex] || project.chapters[0];
   const isDarkMode = project.settings.theme === "dark";
@@ -131,12 +147,138 @@ export default function MobileStudio() {
     };
   }, []);
 
+  const [cloudProjectId, setCloudProjectId] = useState<string | null>(null);
+  const [syncStatus, setSyncStatus] = useState<"synced" | "syncing" | "offline" | "error">("offline");
+
+  // Load from cloud on mount if authenticated
+  useEffect(() => {
+    if (user && isOnline) {
+      loadFromCloud();
+    }
+  }, [user]);
+
+  // Auto-save every 5 seconds - localStorage + cloud sync
   useEffect(() => {
     const timer = setInterval(() => {
       saveToLocalStorage();
+      if (user && isOnline) {
+        syncToCloud();
+      }
     }, 5000);
     return () => clearInterval(timer);
-  }, [project]);
+  }, [project, user, isOnline]);
+
+  const loadFromCloud = async () => {
+    try {
+      setSyncStatus("syncing");
+      const response = await apiRequest("GET", "/api/author-brain/projects");
+      const projects = await response.json();
+      
+      if (projects.length > 0) {
+        const latest = projects[0];
+        setCloudProjectId(latest.id);
+        
+        // Load memories for this project
+        const memoriesRes = await apiRequest("GET", `/api/author-brain/memories?projectId=${latest.id}`);
+        const memories = await memoriesRes.json();
+        
+        // Map memories to brain structure
+        const brain: ProjectBrain = {
+          characters: memories.filter((m: any) => m.content_type === "character").map((m: any) => ({
+            id: m.id,
+            title: m.metadata?.title || "Character",
+            content: m.raw_text,
+            category: "character"
+          })),
+          plotNotes: memories.filter((m: any) => m.content_type === "plot").map((m: any) => ({
+            id: m.id,
+            title: m.metadata?.title || "Plot Note",
+            content: m.raw_text,
+            category: "plot"
+          })),
+          toneRules: memories.filter((m: any) => m.content_type === "style").map((m: any) => ({
+            id: m.id,
+            title: m.metadata?.title || "Tone Rule",
+            content: m.raw_text,
+            category: "style"
+          })),
+          glossary: memories.filter((m: any) => m.content_type === "lore").map((m: any) => ({
+            id: m.id,
+            title: m.metadata?.title || "Term",
+            content: m.raw_text,
+            category: "lore"
+          })),
+          worldNotes: memories.filter((m: any) => m.content_type === "setting").map((m: any) => ({
+            id: m.id,
+            title: m.metadata?.title || "Location",
+            content: m.raw_text,
+            category: "setting"
+          })),
+        };
+
+        // Merge with localStorage (prefer cloud for brain, local for chapters if newer)
+        const localData = localStorage.getItem("kreAIte_currentProject");
+        if (localData) {
+          const local = JSON.parse(localData);
+          setProject(prev => ({
+            ...prev,
+            title: latest.project_name,
+            brain,
+            chapters: local.chapters || prev.chapters
+          }));
+        } else {
+          setProject(prev => ({ ...prev, title: latest.project_name, brain }));
+        }
+        setSyncStatus("synced");
+      }
+    } catch (error) {
+      console.error("Failed to load from cloud:", error);
+      setSyncStatus("error");
+    }
+  };
+
+  const syncToCloud = async () => {
+    if (!user) return;
+    
+    try {
+      setSyncStatus("syncing");
+      
+      // Create or update project context
+      if (!cloudProjectId) {
+        const response = await apiRequest("POST", "/api/author-brain/projects", {
+          projectName: project.title,
+          projectType: "book",
+          globalTone: "narrative"
+        });
+        const newProject = await response.json();
+        setCloudProjectId(newProject.id);
+      } else {
+        await apiRequest("PATCH", `/api/author-brain/projects/${cloudProjectId}`, {
+          projectName: project.title
+        });
+      }
+      
+      setSyncStatus("synced");
+    } catch (error) {
+      console.error("Sync failed:", error);
+      setSyncStatus("error");
+    }
+  };
+
+  const syncBrainItemToCloud = async (item: BrainItem, contentType: string) => {
+    if (!cloudProjectId || !user) return;
+    
+    try {
+      await apiRequest("POST", "/api/author-brain/memories", {
+        projectId: cloudProjectId,
+        contentType,
+        rawText: item.content,
+        metadata: { title: item.title }
+      });
+    } catch (error) {
+      console.error("Failed to sync brain item:", error);
+    }
+  };
 
   const saveToLocalStorage = useCallback(() => {
     localStorage.setItem("kreAIte_currentProject", JSON.stringify({
@@ -274,9 +416,17 @@ export default function MobileStudio() {
     }
   };
 
-  const addBrainItem = (category: keyof ProjectBrain) => {
+  const addBrainItem = async (category: keyof ProjectBrain) => {
     if (!newBrainItem.title.trim()) return;
     
+    const contentTypeMap: Record<keyof ProjectBrain, string> = {
+      characters: "character",
+      plotNotes: "plot",
+      toneRules: "style",
+      glossary: "lore",
+      worldNotes: "setting"
+    };
+
     const item: BrainItem = {
       id: `brain-${Date.now()}`,
       title: newBrainItem.title,
@@ -293,9 +443,23 @@ export default function MobileStudio() {
     }));
     setNewBrainItem({ title: "", content: "" });
     toast({ title: "Added", description: `${newBrainItem.title} saved to Project Brain` });
+
+    // Sync to cloud if authenticated
+    if (cloudProjectId && user) {
+      try {
+        await apiRequest("POST", "/api/author-brain/memories", {
+          projectId: cloudProjectId,
+          contentType: contentTypeMap[category],
+          rawText: item.content,
+          metadata: { title: item.title }
+        });
+      } catch (error) {
+        console.error("Failed to sync to cloud:", error);
+      }
+    }
   };
 
-  const deleteBrainItem = (category: keyof ProjectBrain, id: string) => {
+  const deleteBrainItem = async (category: keyof ProjectBrain, id: string) => {
     setProject(prev => ({
       ...prev,
       brain: {
@@ -303,6 +467,15 @@ export default function MobileStudio() {
         [category]: prev.brain[category].filter(item => item.id !== id)
       }
     }));
+
+    // Sync deletion to cloud if authenticated
+    if (user && !id.startsWith("brain-")) {
+      try {
+        await apiRequest("DELETE", `/api/author-brain/memories/${id}`);
+      } catch (error) {
+        console.error("Failed to delete from cloud:", error);
+      }
+    }
   };
 
   const handleTextSelection = () => {
@@ -358,6 +531,143 @@ export default function MobileStudio() {
 
   const getTotalWordCount = () => {
     return project.chapters.reduce((sum, ch) => sum + ch.wordCount, 0);
+  };
+
+  const applyTypographyTheme = (themeId: string) => {
+    const theme = typographyThemes.find(t => t.id === themeId);
+    if (theme) {
+      setProject(prev => ({
+        ...prev,
+        settings: {
+          ...prev.settings,
+          fontFamily: theme.font,
+          fontSize: theme.size,
+          lineHeight: theme.lineHeight
+        }
+      }));
+      toast({ title: "Theme Applied", description: `${theme.name} typography applied` });
+    }
+  };
+
+  const applyChapterStyle = (styleId: string) => {
+    setProject(prev => ({
+      ...prev,
+      settings: { ...prev.settings, chapterStyle: styleId }
+    }));
+    toast({ title: "Style Applied", description: `${styleId} chapter style applied` });
+  };
+
+  const adjustFontSize = (delta: number) => {
+    setProject(prev => ({
+      ...prev,
+      settings: {
+        ...prev.settings,
+        fontSize: Math.max(12, Math.min(28, prev.settings.fontSize + delta))
+      }
+    }));
+  };
+
+  const getChapterHeaderStyle = () => {
+    switch (project.settings.chapterStyle) {
+      case "classic":
+        return {
+          header: "text-center py-8 border-b-2 border-[#C9941A]/30",
+          number: "text-sm uppercase tracking-[0.3em] text-[#C9941A] mb-2",
+          title: "text-2xl font-serif italic",
+          separator: "✦"
+        };
+      case "minimal":
+        return {
+          header: "py-4",
+          number: "hidden",
+          title: "text-lg font-medium text-gray-500",
+          separator: ""
+        };
+      case "ornate":
+        return {
+          header: "text-center py-10",
+          number: "text-xs uppercase tracking-[0.5em] text-[#C9941A] mb-3",
+          title: "text-3xl font-serif",
+          separator: "❧ ❧ ❧"
+        };
+      case "modern":
+      default:
+        return {
+          header: "py-6 border-l-4 border-[#C9941A] pl-4",
+          number: "text-xs uppercase tracking-widest text-[#C9941A] mb-1",
+          title: "text-xl font-bold",
+          separator: ""
+        };
+    }
+  };
+
+  const generateExport = (format: string) => {
+    const chapters = project.chapters;
+    const title = project.title;
+    const style = getChapterHeaderStyle();
+    
+    switch (format) {
+      case "html":
+      case "blog": {
+        const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+  <style>
+    body { font-family: ${project.settings.fontFamily}, Georgia, serif; line-height: ${project.settings.lineHeight}; max-width: 700px; margin: 0 auto; padding: 2rem; background: #FAF8F3; color: #1a1a1a; }
+    h1 { text-align: center; color: #C9941A; margin-bottom: 2rem; }
+    .chapter { margin-bottom: 3rem; }
+    .chapter-title { color: #C9941A; border-left: 4px solid #C9941A; padding-left: 1rem; margin-bottom: 1rem; }
+    p { margin-bottom: 1em; text-indent: 1.5em; }
+    .separator { text-align: center; color: #C9941A; margin: 2rem 0; }
+  </style>
+</head>
+<body>
+  <h1>${title}</h1>
+  ${chapters.map(ch => `
+  <div class="chapter">
+    <h2 class="chapter-title">${ch.title}</h2>
+    ${ch.content.split('\n').map(p => p.trim() ? `<p>${p}</p>` : '').join('\n')}
+  </div>
+  <div class="separator">✦ ✦ ✦</div>
+  `).join('\n')}
+</body>
+</html>`;
+        return { content: html, type: "text/html", ext: "html" };
+      }
+      
+      case "epub":
+      case "docx": {
+        const markdown = `# ${title}\n\n${chapters.map(ch => `## ${ch.title}\n\n${ch.content}`).join('\n\n---\n\n')}`;
+        return { content: markdown, type: "text/markdown", ext: "md" };
+      }
+      
+      case "social": {
+        const threads = chapters.map(ch => {
+          const sentences = ch.content.split(/[.!?]+/).filter(s => s.trim().length > 20);
+          return {
+            chapter: ch.title,
+            twitter: sentences.slice(0, 5).map(s => s.trim().substring(0, 280)),
+            linkedin: ch.content.substring(0, 700) + (ch.content.length > 700 ? "..." : ""),
+            instagram: sentences[0]?.trim().substring(0, 150) || ch.title
+          };
+        });
+        const bundle = { title, generated: new Date().toISOString(), threads };
+        return { content: JSON.stringify(bundle, null, 2), type: "application/json", ext: "json" };
+      }
+      
+      case "pdf": {
+        const text = `${title.toUpperCase()}\n${'='.repeat(title.length)}\n\n${chapters.map(ch => `${ch.title}\n${'-'.repeat(ch.title.length)}\n\n${ch.content}`).join('\n\n---\n\n')}`;
+        return { content: text, type: "text/plain", ext: "txt" };
+      }
+      
+      default: {
+        const text = chapters.map(ch => `${ch.title}\n\n${ch.content}`).join('\n\n---\n\n');
+        return { content: text, type: "text/plain", ext: "txt" };
+      }
+    }
   };
 
   const themeClasses = isDarkMode 
@@ -460,9 +770,26 @@ export default function MobileStudio() {
           </div>
 
           <div className="flex items-center gap-1">
-            <Badge variant="outline" className={`text-xs ${isOnline ? "text-green-600 border-green-600" : "text-orange-500 border-orange-500"}`}>
-              {isOnline ? <Cloud className="w-3 h-3 mr-1" /> : <CloudOff className="w-3 h-3 mr-1" />}
-              {isOnline ? "Synced" : "Offline"}
+            <Badge 
+              variant="outline" 
+              className={`text-xs ${
+                syncStatus === "synced" ? "text-green-600 border-green-600" :
+                syncStatus === "syncing" ? "text-blue-500 border-blue-500" :
+                syncStatus === "error" ? "text-red-500 border-red-500" :
+                "text-orange-500 border-orange-500"
+              }`}
+              data-testid="sync-status"
+            >
+              {syncStatus === "syncing" ? (
+                <RefreshCw className="w-3 h-3 mr-1 animate-spin" />
+              ) : syncStatus === "synced" ? (
+                <Cloud className="w-3 h-3 mr-1" />
+              ) : (
+                <CloudOff className="w-3 h-3 mr-1" />
+              )}
+              {syncStatus === "synced" ? "Synced" : 
+               syncStatus === "syncing" ? "Syncing" : 
+               syncStatus === "error" ? "Sync Error" : "Offline"}
             </Badge>
             
             <Button variant="ghost" size="icon" onClick={toggleTheme} data-testid="button-theme-toggle">
@@ -622,13 +949,35 @@ export default function MobileStudio() {
         </div>
 
         <div className="h-full p-4 sm:p-6 md:p-8 max-w-3xl mx-auto">
+          <div className={getChapterHeaderStyle().header}>
+            <div className={getChapterHeaderStyle().number}>
+              Chapter {currentChapterIndex + 1}
+            </div>
+            <Input
+              value={currentChapter.title}
+              onChange={(e) => {
+                const newChapters = [...project.chapters];
+                newChapters[currentChapterIndex] = { ...currentChapter, title: e.target.value };
+                setProject(prev => ({ ...prev, chapters: newChapters }));
+              }}
+              className={`${getChapterHeaderStyle().title} bg-transparent border-0 focus-visible:ring-0 p-0 h-auto ${isDarkMode ? "text-white" : "text-gray-900"}`}
+              placeholder="Chapter Title"
+              data-testid="input-chapter-title"
+            />
+            {getChapterHeaderStyle().separator && (
+              <div className="text-[#C9941A] mt-3 text-lg tracking-widest">
+                {getChapterHeaderStyle().separator}
+              </div>
+            )}
+          </div>
+          
           <Textarea
             ref={editorRef}
             value={currentChapter.content}
             onChange={(e) => updateChapterContent(e.target.value)}
             onSelect={handleTextSelection}
             placeholder="Start writing your story..."
-            className={`w-full h-[calc(100vh-180px)] resize-none border-0 focus-visible:ring-0 text-lg leading-relaxed ${editorThemeClasses}`}
+            className={`w-full h-[calc(100vh-260px)] resize-none border-0 focus-visible:ring-0 text-lg leading-relaxed ${editorThemeClasses}`}
             style={{
               fontSize: `${project.settings.fontSize}px`,
               fontFamily: project.settings.fontFamily,
@@ -692,6 +1041,175 @@ export default function MobileStudio() {
         </DialogContent>
       </Dialog>
 
+      <Dialog open={showSettingsPanel} onOpenChange={setShowSettingsPanel}>
+        <DialogContent className={`max-w-sm mx-auto max-h-[80vh] overflow-y-auto ${isDarkMode ? "bg-gray-800 border-gray-700" : ""}`}>
+          <DialogHeader>
+            <DialogTitle className={`flex items-center gap-2 ${isDarkMode ? "text-white" : ""}`}>
+              <Settings className="w-5 h-5 text-[#C9941A]" />
+              Writing Settings
+            </DialogTitle>
+          </DialogHeader>
+          
+          <Tabs defaultValue="typography" className="w-full">
+            <TabsList className={`grid w-full grid-cols-3 ${isDarkMode ? "bg-gray-700" : ""}`}>
+              <TabsTrigger value="typography" data-testid="tab-typography">Typography</TabsTrigger>
+              <TabsTrigger value="chapters" data-testid="tab-chapters">Chapters</TabsTrigger>
+              <TabsTrigger value="export" data-testid="tab-export">Export</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="typography" className="space-y-4 mt-4">
+              <div className="space-y-2">
+                <label className={`text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
+                  Typography Theme
+                </label>
+                <div className="space-y-2">
+                  {typographyThemes.map((theme) => (
+                    <div
+                      key={theme.id}
+                      onClick={() => applyTypographyTheme(theme.id)}
+                      className={`p-3 rounded-lg border cursor-pointer transition-all ${
+                        project.settings.fontFamily === theme.font
+                          ? "border-[#C9941A] bg-[#C9941A]/10"
+                          : isDarkMode ? "border-gray-600 hover:border-gray-500" : "border-gray-200 hover:border-gray-300"
+                      }`}
+                      data-testid={`theme-${theme.id}`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className={`font-medium ${isDarkMode ? "text-white" : ""}`} style={{ fontFamily: theme.font }}>
+                          {theme.name}
+                        </span>
+                        {project.settings.fontFamily === theme.font && (
+                          <Check className="w-4 h-4 text-[#C9941A]" />
+                        )}
+                      </div>
+                      <p className={`text-xs mt-1 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
+                        {theme.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <label className={`text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
+                  Font Size: {project.settings.fontSize}px
+                </label>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="icon" onClick={() => adjustFontSize(-1)} data-testid="btn-font-decrease">
+                    <ChevronDown className="w-4 h-4" />
+                  </Button>
+                  <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-[#C9941A] transition-all"
+                      style={{ width: `${((project.settings.fontSize - 12) / 16) * 100}%` }}
+                    />
+                  </div>
+                  <Button variant="outline" size="icon" onClick={() => adjustFontSize(1)} data-testid="btn-font-increase">
+                    <ChevronUp className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="chapters" className="space-y-4 mt-4">
+              <div className="space-y-2">
+                <label className={`text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
+                  Chapter Style
+                </label>
+                <div className="space-y-2">
+                  {chapterStyles.map((style) => (
+                    <div
+                      key={style.id}
+                      onClick={() => applyChapterStyle(style.id)}
+                      className={`p-3 rounded-lg border cursor-pointer transition-all ${
+                        project.settings.chapterStyle === style.id
+                          ? "border-[#C9941A] bg-[#C9941A]/10"
+                          : isDarkMode ? "border-gray-600 hover:border-gray-500" : "border-gray-200 hover:border-gray-300"
+                      }`}
+                      data-testid={`style-${style.id}`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className={`font-medium ${isDarkMode ? "text-white" : ""}`}>{style.name}</span>
+                        {project.settings.chapterStyle === style.id && (
+                          <Check className="w-4 h-4 text-[#C9941A]" />
+                        )}
+                      </div>
+                      <p className={`text-xs mt-1 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
+                        {style.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="export" className="space-y-4 mt-4">
+              <div className="space-y-2">
+                <label className={`text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
+                  Export Format
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { id: "pdf", label: "PDF", desc: "Print-ready", icon: FileText },
+                    { id: "epub", label: "ePub", desc: "E-readers", icon: BookOpen },
+                    { id: "docx", label: "Word", desc: "Editing", icon: FileText },
+                    { id: "txt", label: "Plain Text", desc: "Simple", icon: FileText },
+                    { id: "blog", label: "Blog Post", desc: "HTML format", icon: Layers },
+                    { id: "social", label: "Social Bundle", desc: "Multi-platform", icon: Share2 },
+                  ].map((format) => (
+                    <Button
+                      key={format.id}
+                      variant="outline"
+                      className={`flex flex-col items-start p-3 h-auto ${isDarkMode ? "border-gray-600 hover:border-[#C9941A]" : "hover:border-[#C9941A]"}`}
+                      onClick={() => {
+                        toast({ title: "Export Started", description: `Generating ${format.label}...` });
+                        setTimeout(() => {
+                          const result = generateExport(format.id);
+                          const blob = new Blob([result.content], { type: result.type });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement("a");
+                          a.href = url;
+                          a.download = `${project.title}.${result.ext}`;
+                          a.click();
+                          URL.revokeObjectURL(url);
+                          toast({ title: "Export Complete", description: `${format.label} downloaded` });
+                        }, 500);
+                      }}
+                      data-testid={`export-${format.id}`}
+                    >
+                      <format.icon className="w-4 h-4 text-[#C9941A] mb-1" />
+                      <span className="font-medium">{format.label}</span>
+                      <span className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>{format.desc}</span>
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                <Button 
+                  className="w-full bg-[#C9941A] hover:bg-[#B8860B] text-white"
+                  onClick={() => {
+                    const projectData = JSON.stringify(project, null, 2);
+                    const blob = new Blob([projectData], { type: "application/json" });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `${project.title}-backup.json`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    toast({ title: "Backup Created", description: "Project backup downloaded" });
+                  }}
+                  data-testid="btn-backup"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Download Full Backup
+                </Button>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </DialogContent>
+      </Dialog>
+
       <footer className={`fixed bottom-0 left-0 right-0 border-t ${isDarkMode ? "bg-gray-900 border-gray-800" : "bg-white border-gray-200"} safe-area-inset-bottom`}>
         <div className="flex items-center justify-around py-2 px-4">
           <Button 
@@ -725,8 +1243,17 @@ export default function MobileStudio() {
             {isRecording ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
           </Button>
           
-          <Button variant="ghost" size="sm" onClick={() => setShowBrainPanel(true)}>
+          <Button variant="ghost" size="sm" onClick={() => setShowBrainPanel(true)} data-testid="btn-brain">
             <Brain className="w-5 h-5" />
+          </Button>
+          
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => setShowSettingsPanel(true)}
+            data-testid="btn-settings"
+          >
+            <Settings className="w-5 h-5" />
           </Button>
           
           <div className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-400"}`}>
