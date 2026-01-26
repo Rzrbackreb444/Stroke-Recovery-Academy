@@ -257,6 +257,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Lulu Publishing API Routes
   app.use('/api/lulu', luluRoutes);
 
+  // Publishing Platforms API - Universal Distribution Hub
+  app.get('/api/publishing-platforms', async (req, res) => {
+    try {
+      const { PUBLISHING_PLATFORMS, EXPORT_FORMATS, getActivePlatforms } = await import('./publishingPlatforms');
+      res.json({
+        platforms: getActivePlatforms(),
+        formats: EXPORT_FORMATS,
+        totalPlatforms: PUBLISHING_PLATFORMS.length,
+      });
+    } catch (error) {
+      console.error("Error fetching publishing platforms:", error);
+      res.status(500).json({ message: "Failed to fetch publishing platforms" });
+    }
+  });
+
+  app.get('/api/publishing-platforms/:platformId', async (req, res) => {
+    try {
+      const { getPlatformById, getFormatsForPlatform, generatePublishingChecklist, calculateRoyalty } = await import('./publishingPlatforms');
+      const { platformId } = req.params;
+      const { listPrice } = req.query;
+      
+      const platform = getPlatformById(platformId);
+      if (!platform) {
+        return res.status(404).json({ message: "Platform not found" });
+      }
+      
+      const formats = getFormatsForPlatform(platformId);
+      const checklist = generatePublishingChecklist(platformId);
+      const royaltyCalc = listPrice ? calculateRoyalty(platformId, parseFloat(listPrice as string)) : null;
+      
+      res.json({ platform, formats, checklist, royalty: royaltyCalc });
+    } catch (error) {
+      console.error("Error fetching platform details:", error);
+      res.status(500).json({ message: "Failed to fetch platform details" });
+    }
+  });
+
+  app.get('/api/publishing-platforms/formats/:format', async (req, res) => {
+    try {
+      const { EXPORT_FORMATS, getPlatformsForFormat } = await import('./publishingPlatforms');
+      const format = req.params.format as any;
+      
+      const formatSpec = EXPORT_FORMATS.find(f => f.id === format);
+      if (!formatSpec) {
+        return res.status(404).json({ message: "Format not found" });
+      }
+      
+      const platforms = getPlatformsForFormat(format);
+      res.json({ format: formatSpec, platforms });
+    } catch (error) {
+      console.error("Error fetching format details:", error);
+      res.status(500).json({ message: "Failed to fetch format details" });
+    }
+  });
+
+  app.post('/api/publishing-platforms/calculate-royalties', async (req, res) => {
+    try {
+      const { calculateRoyalty, getActivePlatforms } = await import('./publishingPlatforms');
+      const { listPrice, printCost } = req.body;
+      
+      if (!listPrice) {
+        return res.status(400).json({ message: "List price is required" });
+      }
+      
+      const platforms = getActivePlatforms();
+      const royalties = platforms.map(platform => ({
+        platformId: platform.id,
+        platformName: platform.name,
+        ...calculateRoyalty(platform.id, parseFloat(listPrice), printCost ? parseFloat(printCost) : undefined),
+      }));
+      
+      res.json({ listPrice, printCost, royalties });
+    } catch (error) {
+      console.error("Error calculating royalties:", error);
+      res.status(500).json({ message: "Failed to calculate royalties" });
+    }
+  });
+
+  app.get('/api/publishing-platforms/distribution-strategies', async (req, res) => {
+    try {
+      const { DISTRIBUTION_STRATEGIES } = await import('./publishingPlatforms');
+      res.json({ strategies: DISTRIBUTION_STRATEGIES });
+    } catch (error) {
+      console.error("Error fetching distribution strategies:", error);
+      res.status(500).json({ message: "Failed to fetch distribution strategies" });
+    }
+  });
+
   // SEO: Dynamic Sitemap.xml with all content
   app.get('/sitemap.xml', async (req, res) => {
     const baseUrl = 'https://kreaite.xyz';
