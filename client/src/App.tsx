@@ -103,6 +103,10 @@ import MedicalLog from "@/pages/MedicalLog";
 import Compass from "@/pages/Compass";
 import DraftYourLegend from "@/pages/DraftYourLegend";
 import CourseBuilder from "@/pages/CourseBuilder";
+import NeverZero from "@/pages/NeverZero";
+import RecoveryJournal from "@/pages/RecoveryJournal";
+import RecoveryResources from "@/pages/RecoveryResources";
+import AboutNick from "@/pages/AboutNick";
 
 import ProtectedRoute from "@/components/ProtectedRoute";
 import NotFound from "@/pages/not-found";
@@ -448,6 +452,18 @@ function Router() {
           <CourseBuilder />
         </ProtectedRoute>
       </Route>
+      <Route path="/recovery/never-zero">
+        <ProtectedRoute>
+          <NeverZero />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/recovery/journal">
+        <ProtectedRoute>
+          <RecoveryJournal />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/recovery/resources" component={RecoveryResources} />
+      <Route path="/recovery/about-nick" component={AboutNick} />
 
       <Route component={NotFound} />
     </Switch>

@@ -8537,6 +8537,58 @@ Respond in JSON format:
   });
 
   // ============================================================================
+  // NEVER ZERO - Streak Tracking
+  // ============================================================================
+
+  app.get('/api/recovery/never-zero', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const data = await storage.getNeverZeroData(userId);
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching never zero data:", error);
+      res.status(500).json({ message: "Failed to fetch streak data" });
+    }
+  });
+
+  app.post('/api/recovery/never-zero', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const log = await storage.logNeverZero(userId, req.body);
+      res.json(log);
+    } catch (error) {
+      console.error("Error logging never zero:", error);
+      res.status(500).json({ message: "Failed to log action" });
+    }
+  });
+
+  // ============================================================================
+  // RECOVERY JOURNAL
+  // ============================================================================
+
+  app.get('/api/recovery/journal', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const entries = await storage.getJournalEntries(userId);
+      res.json(entries);
+    } catch (error) {
+      console.error("Error fetching journal entries:", error);
+      res.status(500).json({ message: "Failed to fetch journal entries" });
+    }
+  });
+
+  app.post('/api/recovery/journal', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const entry = await storage.createJournalEntry(userId, req.body);
+      res.json(entry);
+    } catch (error) {
+      console.error("Error creating journal entry:", error);
+      res.status(500).json({ message: "Failed to save journal entry" });
+    }
+  });
+
+  // ============================================================================
   // USER SETTINGS
   // ============================================================================
 
