@@ -107,6 +107,10 @@ import NeverZero from "@/pages/NeverZero";
 import RecoveryJournal from "@/pages/RecoveryJournal";
 import RecoveryResources from "@/pages/RecoveryResources";
 import AboutNick from "@/pages/AboutNick";
+import CoursePlayer from "@/pages/CoursePlayer";
+import CourseQuiz from "@/pages/CourseQuiz";
+import CourseCertificate from "@/pages/CourseCertificate";
+import StudentDashboard from "@/pages/StudentDashboard";
 
 import ProtectedRoute from "@/components/ProtectedRoute";
 import NotFound from "@/pages/not-found";
@@ -464,6 +468,17 @@ function Router() {
       </Route>
       <Route path="/recovery/resources" component={RecoveryResources} />
       <Route path="/recovery/about-nick" component={AboutNick} />
+      
+      {/* Course Learning Pages */}
+      <Route path="/course/:courseId" component={CoursePlayer} />
+      <Route path="/course/:courseId/quiz/:quizId" component={CourseQuiz} />
+      <Route path="/certificate/:courseId" component={CourseCertificate} />
+      <Route path="/my-learning">
+        <ProtectedRoute>
+          <StudentDashboard />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/courses" component={StudentDashboard} />
 
       <Route component={NotFound} />
     </Switch>
