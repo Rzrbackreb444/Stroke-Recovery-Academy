@@ -36,7 +36,9 @@ import {
   Loader2,
   ImageIcon,
   Plus,
+  Send,
 } from "lucide-react";
+import PublishingHub from "@/components/PublishingHub";
 import { useToast } from "@/hooks/use-toast";
 
 const trimSizes = [
@@ -178,12 +180,16 @@ export default function PublishStep() {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="mb-4 bg-card/80">
+            <TabsList className="mb-4 bg-card/80 flex-wrap">
               <TabsTrigger value="layout" data-testid="tab-layout">Page Layout</TabsTrigger>
               <TabsTrigger value="front-matter" data-testid="tab-front-matter">Front Matter</TabsTrigger>
               <TabsTrigger value="back-matter" data-testid="tab-back-matter">Back Matter</TabsTrigger>
               <TabsTrigger value="images" data-testid="tab-images">Images</TabsTrigger>
-              <TabsTrigger value="export" data-testid="tab-export">Export & Publish</TabsTrigger>
+              <TabsTrigger value="export" data-testid="tab-export">Export</TabsTrigger>
+              <TabsTrigger value="distribute" data-testid="tab-distribute" className="gap-1">
+                <Send className="w-3 h-3" />
+                Distribute
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="layout" className="space-y-6">
@@ -878,6 +884,10 @@ export default function PublishStep() {
                   </Card>
                 </div>
               </div>
+            </TabsContent>
+
+            <TabsContent value="distribute" className="space-y-6">
+              <PublishingHub />
             </TabsContent>
           </Tabs>
 
