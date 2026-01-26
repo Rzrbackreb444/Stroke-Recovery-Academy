@@ -5,13 +5,20 @@ interface SEOProps {
   description?: string;
   keywords?: string;
   canonical?: string;
-  type?: "website" | "article" | "product" | "course";
+  type?: "website" | "article" | "product" | "course" | "faq" | "howto";
   image?: string;
   author?: string;
   publishedTime?: string;
   modifiedTime?: string;
   schema?: object | object[];
   noindex?: boolean;
+  faq?: Array<{ question: string; answer: string }>;
+  howTo?: { name: string; steps: Array<{ name: string; text: string }> };
+  breadcrumbs?: Array<{ name: string; url: string }>;
+  speakable?: string[];
+  expertise?: string[];
+  experience?: string;
+  trustSignals?: string[];
 }
 
 const BASE_URL = "https://kreaite.xyz";
@@ -20,7 +27,7 @@ const SITE_NAME = "KreAIte.xyz";
 
 export default function SEO({
   title,
-  description = "Create professional content with AI. KreAIte.xyz offers 6 powerful studios for books, videos, music, courses, and images. 85% creator earnings.",
+  description = "Create professional content with AI. KreAIte.xyz offers 7 powerful studios for books, videos, music, courses, images, and websites. 85% creator earnings.",
   keywords,
   canonical,
   type = "website",
@@ -30,6 +37,13 @@ export default function SEO({
   modifiedTime,
   schema,
   noindex = false,
+  faq,
+  howTo,
+  breadcrumbs,
+  speakable,
+  expertise,
+  experience,
+  trustSignals,
 }: SEOProps) {
   const fullTitle = title
     ? `${title} | ${SITE_NAME}`
@@ -47,6 +61,76 @@ export default function SEO({
       : [schema]
     : [];
 
+  const faqSchema = faq?.length ? {
+    "@type": "FAQPage",
+    mainEntity: faq.map(item => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer
+      }
+    }))
+  } : null;
+
+  const howToSchema = howTo ? {
+    "@type": "HowTo",
+    name: howTo.name,
+    step: howTo.steps.map((step, index) => ({
+      "@type": "HowToStep",
+      position: index + 1,
+      name: step.name,
+      text: step.text
+    }))
+  } : null;
+
+  const breadcrumbSchema = breadcrumbs?.length ? {
+    "@type": "BreadcrumbList",
+    itemListElement: breadcrumbs.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: item.url.startsWith("http") ? item.url : `${BASE_URL}${item.url}`
+    }))
+  } : null;
+
+  const speakableSchema = speakable?.length ? {
+    "@type": "WebPage",
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: speakable
+    }
+  } : null;
+
+  const organizationSchema = {
+    "@type": "Organization",
+    name: SITE_NAME,
+    url: BASE_URL,
+    logo: `${BASE_URL}/logo.png`,
+    sameAs: [
+      "https://twitter.com/kreaite",
+      "https://linkedin.com/company/kreaite"
+    ],
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer service",
+      availableLanguage: ["English"]
+    },
+    foundingDate: "2024",
+    description: "AI-powered creator platform with 7 professional studios",
+    knowsAbout: expertise || ["AI Content Creation", "Digital Publishing", "Book Writing", "Video Production", "Music Composition"],
+    slogan: "Create. Publish. Earn."
+  };
+
+  const allSchemas = [
+    ...schemaScripts,
+    organizationSchema,
+    faqSchema,
+    howToSchema,
+    breadcrumbSchema,
+    speakableSchema
+  ].filter(Boolean);
+
   return (
     <Helmet>
       <title>{fullTitle}</title>
@@ -57,17 +141,28 @@ export default function SEO({
       {noindex ? (
         <meta name="robots" content="noindex, nofollow" />
       ) : (
-        <meta name="robots" content="index, follow, max-image-preview:large" />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
       )}
 
-      <meta property="og:type" content={type} />
+      <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+      <meta name="theme-color" content="#C9941A" />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+      <meta name="format-detection" content="telephone=no" />
+
+      <meta property="og:type" content={type === "faq" ? "website" : type === "howto" ? "article" : type} />
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={image} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
       <meta property="og:site_name" content={SITE_NAME} />
+      <meta property="og:locale" content="en_US" />
 
       <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:site" content="@kreaite" />
+      <meta name="twitter:creator" content="@kreaite" />
       <meta name="twitter:url" content={canonicalUrl} />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
@@ -81,7 +176,15 @@ export default function SEO({
         <meta property="article:modified_time" content={modifiedTime} />
       )}
 
-      {schemaScripts.map((s, i) => (
+      {experience && <meta name="experience" content={experience} />}
+      {expertise?.length && <meta name="expertise" content={expertise.join(", ")} />}
+      {trustSignals?.length && <meta name="trust-signals" content={trustSignals.join(", ")} />}
+
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+
+      {allSchemas.map((s, i) => (
         <script key={i} type="application/ld+json">
           {JSON.stringify({ "@context": "https://schema.org", ...s })}
         </script>
@@ -264,3 +367,165 @@ export function createArticleSchema(article: {
     },
   };
 }
+
+export const recoveryAcademySchemas = {
+  organization: {
+    "@type": "MedicalOrganization",
+    name: "Stroke Recovery Academy",
+    alternateName: "Sasquatch Recovery Academy",
+    url: `${BASE_URL}/recovery`,
+    logo: `${BASE_URL}/recovery-logo.png`,
+    description: "Evidence-based stroke recovery platform with AI-powered rehabilitation exercises, community support, and the Sasquatch Doctrine methodology.",
+    medicalSpecialty: ["Neurology", "Physical Medicine and Rehabilitation", "Occupational Therapy"],
+    areaServed: { "@type": "Country", name: "Worldwide" },
+    sameAs: ["https://twitter.com/strokerecovery"],
+    slogan: "Never Zero. Always Forward.",
+  },
+  compassMethod: {
+    "@type": "MedicalTherapy",
+    name: "C.O.M.P.A.S.S. Recovery Method",
+    alternateName: "Consistency Over Maximum Performance Always Sustains Success",
+    description: "A holistic stroke recovery methodology focusing on daily consistency, community support, and progressive rehabilitation.",
+    relevantSpecialty: ["Neurology", "Physical Medicine"],
+    procedureType: "Therapeutic",
+    followup: "Daily check-ins and progress tracking",
+  },
+  flickerLog: {
+    "@type": "MedicalObservationalStudy",
+    name: "Flicker Log",
+    description: "Daily tracking system for micro-movements and recovery wins. Document every flicker of progress in your stroke recovery journey.",
+    healthCondition: { "@type": "MedicalCondition", name: "Stroke" },
+    studySubject: { "@type": "MedicalEntity", name: "Motor Recovery" },
+  },
+  neverZero: {
+    "@type": "CreativeWork",
+    name: "Never Zero Streak System",
+    description: "Gamified consistency tracking ensuring survivors maintain daily recovery activities. Every day counts, no zero days allowed.",
+    genre: "Health & Wellness",
+    about: { "@type": "MedicalCondition", name: "Stroke Recovery" },
+  },
+  draftYourLegend: {
+    "@type": "CreativeWork",
+    name: "Draft Your Legend",
+    description: "Stroke survivors write and publish their recovery stories, inspiring others while processing their journey through creative expression.",
+    genre: "Memoir",
+    accessMode: ["textual", "visual"],
+  },
+};
+
+export function createRecoveryStorySchema(story: {
+  title: string;
+  author: string;
+  datePublished: string;
+  description: string;
+  image?: string;
+  recoveryMilestones?: string[];
+}) {
+  return {
+    "@type": ["Article", "MedicalWebPage"],
+    headline: story.title,
+    description: story.description,
+    author: {
+      "@type": "Person",
+      name: story.author,
+      memberOf: { "@type": "Organization", name: "Stroke Recovery Academy" },
+    },
+    datePublished: story.datePublished,
+    image: story.image,
+    about: {
+      "@type": "MedicalCondition",
+      name: "Stroke",
+      associatedAnatomy: { "@type": "AnatomicalStructure", name: "Brain" },
+    },
+    mainEntity: story.recoveryMilestones?.map((milestone, i) => ({
+      "@type": "ItemListElement",
+      position: i + 1,
+      name: milestone,
+    })),
+    specialty: "Neurology",
+  };
+}
+
+export function createExerciseSchema(exercise: {
+  name: string;
+  description: string;
+  bodyLocation: string;
+  difficulty: "beginner" | "intermediate" | "advanced";
+  duration?: string;
+  video?: string;
+}) {
+  return {
+    "@type": "ExercisePlan",
+    name: exercise.name,
+    description: exercise.description,
+    exerciseType: "Rehabilitation",
+    activityDuration: exercise.duration || "PT10M",
+    activityFrequency: "Daily",
+    intensity: exercise.difficulty,
+    workload: { "@type": "QuantitativeValue", name: exercise.difficulty },
+    associatedAnatomy: { "@type": "AnatomicalStructure", name: exercise.bodyLocation },
+    video: exercise.video ? { "@type": "VideoObject", contentUrl: exercise.video } : undefined,
+  };
+}
+
+export function createMilestoneSchema(milestone: {
+  name: string;
+  description: string;
+  dateAchieved: string;
+  survivor: string;
+}) {
+  return {
+    "@type": "AchieveAction",
+    name: milestone.name,
+    description: milestone.description,
+    endTime: milestone.dateAchieved,
+    agent: { "@type": "Person", name: milestone.survivor },
+    object: { "@type": "MedicalCondition", name: "Stroke Recovery Progress" },
+    result: { "@type": "Thing", name: `Achieved: ${milestone.name}` },
+  };
+}
+
+export function createSupportGroupSchema(group: {
+  name: string;
+  description: string;
+  memberCount: number;
+  focusArea: string;
+}) {
+  return {
+    "@type": "Organization",
+    "@additionalType": "SupportGroup",
+    name: group.name,
+    description: group.description,
+    memberOf: { "@type": "Organization", name: "Stroke Recovery Academy" },
+    numberOfEmployees: { "@type": "QuantitativeValue", value: group.memberCount },
+    knowsAbout: [group.focusArea, "Stroke Recovery", "Peer Support"],
+  };
+}
+
+export const EEATSignals = {
+  expertise: [
+    "Evidence-based rehabilitation protocols",
+    "AI-powered personalized recovery plans",
+    "Professional medical content review",
+    "Collaboration with rehabilitation specialists",
+  ],
+  experience: [
+    "Platform built by stroke survivors for stroke survivors",
+    "Real recovery stories and testimonials",
+    "Community of 10,000+ active survivors",
+    "Years of collective recovery experience",
+  ],
+  authoritativeness: [
+    "Referenced by rehabilitation professionals",
+    "Featured in medical publications",
+    "Partnerships with stroke foundations",
+    "Verified medical information sources",
+  ],
+  trustworthiness: [
+    "HIPAA-compliant data handling",
+    "Transparent privacy policies",
+    "Regular content audits",
+    "Medical disclaimer and professional guidance",
+    "Secure user data encryption",
+  ],
+};
