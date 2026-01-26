@@ -240,7 +240,7 @@ export default function PrivacyPolicy() {
             </ul>
 
             <p className="text-muted-foreground leading-relaxed">
-              To exercise any of these rights, please contact us at <a href="mailto:hello@kreaite.xyz" className="text-primary hover:underline">hello@kreaite.xyz</a>. 
+              To exercise any of these rights, please contact us at <a href="mailto:info@kreaite.xyz" className="text-primary hover:underline">info@kreaite.xyz</a>. 
               We will respond to your request within 30 days (or as required by applicable law).
             </p>
           </section>
@@ -259,7 +259,7 @@ export default function PrivacyPolicy() {
             </p>
             <p className="text-muted-foreground leading-relaxed">
               If you are a parent or guardian and believe your child has provided us with personal information, 
-              please contact us immediately at <a href="mailto:hello@kreaite.xyz" className="text-primary hover:underline">hello@kreaite.xyz</a>.
+              please contact us immediately at <a href="mailto:info@kreaite.xyz" className="text-primary hover:underline">info@kreaite.xyz</a>.
             </p>
           </section>
 
@@ -330,7 +330,7 @@ export default function PrivacyPolicy() {
             <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
               <p className="text-foreground font-semibold mb-2">KreAIte Privacy Team</p>
               <p className="text-muted-foreground mb-4">
-                Email: <a href="mailto:hello@kreaite.xyz" className="text-primary hover:underline" data-testid="link-contact-email">hello@kreaite.xyz</a>
+                Email: <a href="mailto:info@kreaite.xyz" className="text-primary hover:underline" data-testid="link-contact-email">info@kreaite.xyz</a>
               </p>
               <p className="text-muted-foreground text-sm">
                 For GDPR-related inquiries, you may also contact our Data Protection Officer at the above email address.

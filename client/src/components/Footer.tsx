@@ -158,12 +158,12 @@ export default function Footer() {
               © {currentYear} KreAIte. All rights reserved.
             </div>
             <a 
-              href="mailto:hello@kreaite.xyz" 
+              href="mailto:info@kreaite.xyz" 
               className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
               data-testid="link-contact-email"
             >
               <Mail className="h-3 w-3" />
-              hello@kreaite.xyz
+              info@kreaite.xyz
             </a>
           </div>
 

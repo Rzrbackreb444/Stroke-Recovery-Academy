@@ -37,7 +37,7 @@ async function getResendClient() {
   const { apiKey } = await getCredentials();
   return {
     client: new Resend(apiKey),
-    fromEmail: connectionSettings.settings.from_email || 'hello@kreaite.xyz'
+    fromEmail: connectionSettings.settings.from_email || 'info@kreaite.xyz'
   };
 }
 
@@ -384,7 +384,7 @@ export async function sendWelcomeEmail(
         
         <div class="footer">
           <p>KreAIte.xyz - Powered by KremersX</p>
-          <p>Questions? Contact us at hello@kreaite.xyz</p>
+          <p>Questions? Contact us at info@kreaite.xyz</p>
         </div>
       </div>
     </body>
