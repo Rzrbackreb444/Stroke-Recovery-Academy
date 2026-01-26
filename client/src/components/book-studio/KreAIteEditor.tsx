@@ -149,15 +149,15 @@ export default function KreAIteEditor({
           aria-label={tooltip}
           data-testid={testId || `button-${tooltip.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
           className={cn(
-            "h-7 w-7 p-0 rounded-md",
+            "h-8 w-8 p-0 rounded-lg transition-all duration-150",
             isDark 
               ? cn(
-                  "text-stone-500 hover:text-stone-200 hover:bg-stone-800",
-                  isActive && "bg-amber-500/20 text-amber-400"
+                  "text-stone-400 hover-elevate",
+                  isActive && "bg-blue-500/20 text-blue-400 shadow-sm"
                 )
               : cn(
-                  "text-stone-500 hover:text-stone-800 hover:bg-stone-100",
-                  isActive && "bg-amber-100 text-amber-800"
+                  "text-slate-500 hover-elevate",
+                  isActive && "bg-blue-50 text-blue-600 shadow-sm"
                 )
           )}
         >
@@ -221,17 +221,17 @@ export default function KreAIteEditor({
 
   return (
     <div className={cn(
-      "flex flex-col h-full transition-colors duration-300",
-      isDark ? "bg-stone-950" : "bg-[#FFFEF9]"
+      "flex flex-col h-full transition-colors duration-200",
+      isDark ? "bg-stone-950" : "bg-slate-50"
     )}>
       {/* ══════════════════════════════════════════════════════════════════════════════
           FORMATTING TOOLBAR - Glassmorphism Design
       ══════════════════════════════════════════════════════════════════════════════ */}
       <div className={cn(
-        "flex items-center gap-0.5 px-3 py-1.5 border-b backdrop-blur-xl overflow-x-auto",
+        "flex items-center gap-1 px-4 py-2.5 border-b overflow-x-auto",
         isDark 
-          ? "bg-stone-900/50 border-stone-800/50" 
-          : "bg-white/80 border-stone-200/50"
+          ? "bg-stone-900/80 border-stone-800/60" 
+          : "bg-white border-slate-200/80"
       )}>
         {/* Text Formatting */}
         <div className="flex items-center">
@@ -399,29 +399,29 @@ export default function KreAIteEditor({
           CHAPTER HEADER - Elegant Design with Progress
       ══════════════════════════════════════════════════════════════════════════════ */}
       <div className={cn(
-        "px-12 pt-10 pb-6 border-b",
+        "px-12 pt-12 pb-8 border-b",
         isDark 
-          ? "bg-gradient-to-b from-stone-900/50 to-stone-950 border-stone-800/30" 
-          : "bg-gradient-to-b from-white to-[#FFFEF9] border-stone-100"
+          ? "bg-gradient-to-b from-stone-900/80 to-stone-950 border-stone-800/40" 
+          : "bg-gradient-to-b from-white to-slate-50/50 border-slate-200/60"
       )}>
         <div className="max-w-2xl mx-auto">
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-3 mb-4">
             <Badge variant="outline" className={cn(
-              "text-[10px] rounded-full px-2.5",
-              isDark ? "border-stone-700 text-stone-400" : "bg-amber-50 border-amber-200 text-amber-700"
+              "text-[11px] rounded-full px-3 py-0.5 font-medium",
+              isDark ? "border-stone-600 text-stone-400 bg-stone-800/50" : "bg-slate-100 border-slate-300 text-slate-600"
             )}>
               Chapter {chapterNumber}
             </Badge>
             {progress >= 100 && (
-              <Badge className="text-[9px] bg-emerald-500/20 text-emerald-500 border-emerald-500/30 rounded-full px-2">
+              <Badge className="text-[10px] bg-emerald-500/15 text-emerald-600 border-emerald-500/30 rounded-full px-2.5 font-medium">
                 Target Complete
               </Badge>
             )}
           </div>
           
           <h1 className={cn(
-            "text-2xl font-bold tracking-tight mb-4 font-serif",
-            isDark ? "text-stone-100" : "text-stone-900"
+            "text-3xl font-bold tracking-tight mb-5 font-['Playfair_Display',_serif]",
+            isDark ? "text-white" : "text-slate-900"
           )}>
             {chapterTitle}
           </h1>
@@ -501,34 +501,39 @@ export default function KreAIteEditor({
           <EditorContent 
             editor={editor} 
             className={cn(
-              "prose max-w-none",
-              isDark ? "prose-invert" : "prose-stone",
-              "prose-p:leading-[1.85] prose-p:text-[16px] prose-p:font-serif prose-p:mb-5",
-              isDark ? "prose-p:text-stone-300" : "prose-p:text-stone-700",
-              "prose-headings:font-serif prose-headings:font-bold prose-headings:tracking-tight",
-              isDark ? "prose-headings:text-stone-100" : "prose-headings:text-stone-900",
-              "prose-h1:text-2xl prose-h1:mt-10 prose-h1:mb-5",
-              "prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-4",
-              "prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-3",
+              "prose prose-lg max-w-none",
+              isDark ? "prose-invert" : "",
+              "[&_p]:font-['Source_Serif_4',_'Libre_Baskerville',_'Georgia',_serif]",
+              "[&_p]:text-[18px] [&_p]:leading-[1.9] [&_p]:tracking-[-0.01em] [&_p]:mb-6",
+              isDark ? "[&_p]:text-stone-200" : "[&_p]:text-slate-700",
+              "[&_h1]:font-['Playfair_Display',_serif] [&_h1]:font-bold [&_h1]:tracking-tight",
+              "[&_h2]:font-['Playfair_Display',_serif] [&_h2]:font-semibold [&_h2]:tracking-tight",
+              "[&_h3]:font-['Playfair_Display',_serif] [&_h3]:font-medium",
+              isDark ? "[&_h1]:text-white [&_h2]:text-stone-100 [&_h3]:text-stone-200" : "[&_h1]:text-slate-900 [&_h2]:text-slate-800 [&_h3]:text-slate-700",
+              "[&_h1]:text-3xl [&_h1]:mt-12 [&_h1]:mb-6",
+              "[&_h2]:text-2xl [&_h2]:mt-10 [&_h2]:mb-5",
+              "[&_h3]:text-xl [&_h3]:mt-8 [&_h3]:mb-4",
               isDark 
-                ? "prose-blockquote:border-l-amber-500 prose-blockquote:bg-stone-800/50" 
-                : "prose-blockquote:border-l-amber-400 prose-blockquote:bg-amber-50/50",
-              "prose-blockquote:py-3 prose-blockquote:px-5 prose-blockquote:italic prose-blockquote:rounded-r-lg",
-              isDark ? "prose-blockquote:text-stone-400" : "prose-blockquote:text-stone-600",
-              isDark ? "prose-strong:text-stone-100" : "prose-strong:text-stone-900",
-              "prose-strong:font-semibold",
-              isDark ? "prose-em:text-stone-300" : "prose-em:text-stone-700",
-              "prose-a:text-amber-500 prose-a:no-underline hover:prose-a:underline",
-              "prose-ul:my-4 prose-ol:my-4",
-              isDark ? "prose-li:text-stone-300" : "prose-li:text-stone-700",
-              "prose-li:mb-1",
+                ? "[&_blockquote]:border-l-blue-400 [&_blockquote]:bg-blue-950/30" 
+                : "[&_blockquote]:border-l-blue-500 [&_blockquote]:bg-blue-50/60",
+              "[&_blockquote]:py-4 [&_blockquote]:px-6 [&_blockquote]:italic [&_blockquote]:rounded-r-xl [&_blockquote]:my-8",
+              "[&_blockquote]:font-['Source_Serif_4',_serif] [&_blockquote]:text-[17px]",
+              isDark ? "[&_blockquote]:text-blue-200" : "[&_blockquote]:text-blue-900",
+              isDark ? "[&_strong]:text-white" : "[&_strong]:text-slate-900",
+              "[&_strong]:font-semibold",
+              isDark ? "[&_em]:text-stone-300" : "[&_em]:text-slate-600",
+              "[&_a]:text-blue-500 [&_a]:no-underline hover:[&_a]:underline [&_a]:font-medium",
+              "[&_ul]:my-6 [&_ol]:my-6 [&_ul]:pl-6 [&_ol]:pl-6",
+              isDark ? "[&_li]:text-stone-200" : "[&_li]:text-slate-700",
+              "[&_li]:mb-2 [&_li]:leading-[1.8] [&_li]:font-['Source_Serif_4',_serif]",
               "[&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)]",
-              isDark ? "[&_.is-editor-empty:first-child::before]:text-stone-700" : "[&_.is-editor-empty:first-child::before]:text-stone-400",
+              isDark ? "[&_.is-editor-empty:first-child::before]:text-stone-600" : "[&_.is-editor-empty:first-child::before]:text-slate-400",
               "[&_.is-editor-empty:first-child::before]:float-left",
               "[&_.is-editor-empty:first-child::before]:h-0",
               "[&_.is-editor-empty:first-child::before]:pointer-events-none",
               "[&_.is-editor-empty:first-child::before]:italic",
-              "[&_.is-editor-empty:first-child::before]:font-serif"
+              "[&_.is-editor-empty:first-child::before]:font-['Source_Serif_4',_serif]",
+              "[&_::selection]:bg-blue-200 dark:[&_::selection]:bg-blue-800"
             )}
             data-testid="kreaite-editor-content"
           />
@@ -542,20 +547,40 @@ export default function KreAIteEditor({
           FOOTER STATUS - Character & Word Stats
       ══════════════════════════════════════════════════════════════════════════════ */}
       <div className={cn(
-        "flex items-center justify-between px-4 py-1.5 border-t text-[10px]",
+        "flex items-center justify-between gap-4 px-6 py-2.5 border-t text-[11px] font-medium",
         isDark 
-          ? "bg-stone-900/50 border-stone-800/50 text-stone-600" 
-          : "bg-white/80 border-stone-200/50 text-stone-500"
+          ? "bg-stone-900/60 border-stone-800/50 text-stone-500" 
+          : "bg-white border-slate-200/70 text-slate-500"
       )}>
-        <div className="flex items-center gap-3">
-          <span>{editor.storage.characterCount.characters().toLocaleString()} characters</span>
-          <span className={isDark ? "text-stone-800" : "text-stone-300"}>|</span>
-          <span>{editor.storage.characterCount.words().toLocaleString()} words</span>
-          <span className={isDark ? "text-stone-800" : "text-stone-300"}>|</span>
-          <span>~{Math.ceil(editor.storage.characterCount.words() / 250)} pages</span>
+        <div className="flex items-center gap-4">
+          <span className="flex items-center gap-1.5">
+            <span className={isDark ? "text-stone-600" : "text-slate-400"}>Words:</span>
+            {editor.storage.characterCount.words().toLocaleString()}
+          </span>
+          <span className={isDark ? "text-stone-700" : "text-slate-300"}>·</span>
+          <span className="flex items-center gap-1.5">
+            <span className={isDark ? "text-stone-600" : "text-slate-400"}>Characters:</span>
+            {editor.storage.characterCount.characters().toLocaleString()}
+          </span>
+          <span className={isDark ? "text-stone-700" : "text-slate-300"}>·</span>
+          <span className="flex items-center gap-1.5">
+            <span className={isDark ? "text-stone-600" : "text-slate-400"}>Pages:</span>
+            ~{Math.ceil(editor.storage.characterCount.words() / 250)}
+          </span>
         </div>
-        <div className="flex items-center gap-3">
-          <span>Serif • 16px • 1.85 line height</span>
+        <div className="flex items-center gap-2">
+          <span className={cn(
+            "px-2 py-0.5 rounded text-[10px]",
+            isDark ? "bg-stone-800 text-stone-400" : "bg-slate-100 text-slate-500"
+          )}>
+            Source Serif 4
+          </span>
+          <span className={cn(
+            "px-2 py-0.5 rounded text-[10px]",
+            isDark ? "bg-stone-800 text-stone-400" : "bg-slate-100 text-slate-500"
+          )}>
+            18px
+          </span>
         </div>
       </div>
     </div>

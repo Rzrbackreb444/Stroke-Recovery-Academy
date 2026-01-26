@@ -405,7 +405,7 @@ export default function KreAIteStudio() {
               <TooltipTrigger asChild>
                 <Button variant="ghost" size="sm" className={cn(
                   "h-8 w-8 p-0 rounded-lg",
-                  isDark ? "text-stone-400 hover:text-stone-100 hover:bg-stone-800" : "text-stone-500 hover:text-stone-900 hover:bg-stone-100"
+                  isDark ? "text-stone-400 hover-elevate" : "text-slate-500 hover-elevate"
                 )} data-testid="button-save" aria-label="Save project">
                   <Save className="h-4 w-4" />
                 </Button>
@@ -416,7 +416,7 @@ export default function KreAIteStudio() {
               <TooltipTrigger asChild>
                 <Button variant="ghost" size="sm" className={cn(
                   "h-8 w-8 p-0 rounded-lg",
-                  isDark ? "text-stone-400 hover:text-stone-100 hover:bg-stone-800" : "text-stone-500 hover:text-stone-900 hover:bg-stone-100"
+                  isDark ? "text-stone-400 hover-elevate" : "text-slate-500 hover-elevate"
                 )} data-testid="button-undo" aria-label="Undo">
                   <Undo className="h-4 w-4" />
                 </Button>
@@ -427,7 +427,7 @@ export default function KreAIteStudio() {
               <TooltipTrigger asChild>
                 <Button variant="ghost" size="sm" className={cn(
                   "h-8 w-8 p-0 rounded-lg",
-                  isDark ? "text-stone-400 hover:text-stone-100 hover:bg-stone-800" : "text-stone-500 hover:text-stone-900 hover:bg-stone-100"
+                  isDark ? "text-stone-400 hover-elevate" : "text-slate-500 hover-elevate"
                 )} data-testid="button-redo" aria-label="Redo">
                   <Redo className="h-4 w-4" />
                 </Button>
@@ -444,7 +444,7 @@ export default function KreAIteStudio() {
                   size="sm" 
                   className={cn(
                     "h-8 w-8 p-0 rounded-lg",
-                    isDark ? "text-stone-400 hover:text-stone-100 hover:bg-stone-800" : "text-stone-500 hover:text-stone-900 hover:bg-stone-100"
+                    isDark ? "text-stone-400 hover-elevate" : "text-slate-500 hover-elevate"
                   )}
                   onClick={() => setFocusMode(true)}
                   data-testid="button-focus"
@@ -463,7 +463,7 @@ export default function KreAIteStudio() {
                   size="sm" 
                   className={cn(
                     "h-8 w-8 p-0 rounded-lg",
-                    isDark ? "text-stone-400 hover:text-stone-100 hover:bg-stone-800" : "text-stone-500 hover:text-stone-900 hover:bg-stone-100"
+                    isDark ? "text-stone-400 hover-elevate" : "text-slate-500 hover-elevate"
                   )} 
                   data-testid="button-command"
                   aria-label="Command palette"
@@ -502,7 +502,7 @@ export default function KreAIteStudio() {
             size="sm"
             className={cn(
               "h-8 w-8 p-0 rounded-lg",
-              isDark ? "text-stone-400 hover:text-stone-100 hover:bg-stone-800" : "text-stone-500 hover:text-stone-900 hover:bg-stone-100"
+              isDark ? "text-stone-400 hover-elevate" : "text-slate-500 hover-elevate"
             )}
             onClick={() => setTheme(isDark ? 'stone' : 'ink')}
             data-testid="button-theme-toggle"
@@ -522,7 +522,7 @@ export default function KreAIteStudio() {
 
           <Button variant="ghost" size="sm" className={cn(
             "h-8 w-8 p-0 rounded-lg",
-            isDark ? "text-stone-400 hover:text-stone-100 hover:bg-stone-800" : "text-stone-500 hover:text-stone-900 hover:bg-stone-100"
+            isDark ? "text-stone-400 hover-elevate" : "text-slate-500 hover-elevate"
           )} data-testid="button-settings" aria-label="Settings">
             <Settings className="h-4 w-4" />
           </Button>
@@ -541,7 +541,7 @@ export default function KreAIteStudio() {
           size="sm" 
           className={cn(
             "h-7 w-7 p-0 shrink-0 rounded-md",
-            isDark ? "text-stone-500 hover:text-stone-300 hover:bg-stone-800" : "text-stone-400 hover:text-stone-700 hover:bg-stone-100"
+            isDark ? "text-stone-500 hover-elevate" : "text-slate-400 hover-elevate"
           )}
           onClick={() => setLeftPanelOpen(!leftPanelOpen)}
           data-testid="toggle-left-panel"
@@ -563,8 +563,8 @@ export default function KreAIteStudio() {
                     ? "bg-stone-800 text-stone-100 shadow-sm" 
                     : "bg-white text-stone-900 shadow-sm border border-stone-200/50"
                   : isDark
-                    ? "text-stone-500 hover:text-stone-300 hover:bg-stone-800/50"
-                    : "text-stone-500 hover:text-stone-700 hover:bg-stone-100"
+                    ? "text-stone-500 hover-elevate"
+                    : "text-slate-500 hover-elevate"
               )}
               onClick={() => setActiveTabId(tab.id)}
               data-testid={`tab-${tab.id}`}
@@ -586,7 +586,7 @@ export default function KreAIteStudio() {
                 size="sm"
                 className={cn(
                   "h-4 w-4 p-0 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-auto rounded",
-                  isDark ? "text-stone-500 hover:text-stone-300" : "text-stone-400 hover:text-stone-600"
+                  isDark ? "text-stone-500" : "text-slate-400"
                 )}
                 onClick={(e) => closeTab(tab.id, e)}
                 data-testid={`close-tab-${tab.id}`}
@@ -601,7 +601,7 @@ export default function KreAIteStudio() {
             size="sm" 
             className={cn(
               "h-7 w-7 p-0 shrink-0 rounded-md",
-              isDark ? "text-stone-500 hover:text-stone-300 hover:bg-stone-800" : "text-stone-400 hover:text-amber-600 hover:bg-amber-50"
+              isDark ? "text-stone-500 hover-elevate" : "text-slate-400 hover-elevate"
             )}
             data-testid="button-new-tab"
           >
@@ -616,7 +616,7 @@ export default function KreAIteStudio() {
           size="sm" 
           className={cn(
             "h-7 w-7 p-0 shrink-0 rounded-md",
-            isDark ? "text-stone-500 hover:text-stone-300 hover:bg-stone-800" : "text-stone-400 hover:text-stone-700 hover:bg-stone-100"
+            isDark ? "text-stone-500 hover-elevate" : "text-slate-400 hover-elevate"
           )}
           onClick={() => setRightPanelOpen(!rightPanelOpen)}
           data-testid="toggle-right-panel"
@@ -662,7 +662,7 @@ export default function KreAIteStudio() {
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="sm" className={cn(
                           "h-6 w-6 p-0 rounded-md",
-                          isDark ? "text-stone-500 hover:text-stone-300" : "text-stone-400 hover:text-stone-600"
+                          isDark ? "text-stone-500" : "text-slate-400"
                         )}>
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
@@ -685,8 +685,20 @@ export default function KreAIteStudio() {
                           <Clock className="w-3.5 h-3.5" /> Timeline Event
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
+                        <DropdownMenuLabel className="text-[10px] text-stone-500">Import</DropdownMenuLabel>
                         <DropdownMenuItem className="gap-2 text-xs">
-                          <Upload className="w-3.5 h-3.5" /> Import Document
+                          <Upload className="w-3.5 h-3.5" /> Import File
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          className="gap-2 text-xs"
+                          onClick={() => {
+                            toast({
+                              title: "Google Docs Import",
+                              description: "Opening Google Docs picker..."
+                            });
+                          }}
+                        >
+                          <FileText className="w-3.5 h-3.5 text-blue-500" /> Import from Google Docs
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -733,8 +745,8 @@ export default function KreAIteStudio() {
                               className={cn(
                                 "w-full justify-start gap-1.5 h-7 px-2 text-xs font-medium rounded-md",
                                 isDark 
-                                  ? "text-stone-300 hover:bg-stone-800/50" 
-                                  : "text-stone-700 hover:bg-stone-100"
+                                  ? "text-stone-300 hover-elevate" 
+                                  : "text-stone-700 hover-elevate"
                               )}
                               data-testid={`folder-${folder.id}`}
                             >
@@ -782,8 +794,8 @@ export default function KreAIteStudio() {
                                             ? "bg-amber-500/20 text-amber-300" 
                                             : "bg-amber-100 text-amber-900"
                                           : isDark 
-                                            ? "text-stone-400 hover:bg-stone-800/50 hover:text-stone-200" 
-                                            : "text-stone-600 hover:bg-stone-100"
+                                            ? "text-stone-400 hover-elevate hover:text-stone-200" 
+                                            : "text-stone-600 hover-elevate"
                                       )}
                                       onClick={() => handleSelectItem(item)}
                                       data-testid={`item-${item.id}`}
@@ -939,8 +951,8 @@ export default function KreAIteStudio() {
                                     ? "bg-[#C9941A]/20 text-[#C9941A]" 
                                     : "bg-[#C9941A]/10 text-[#C9941A]"
                                   : isDark 
-                                    ? "text-stone-500 hover:text-stone-300 hover:bg-stone-800" 
-                                    : "text-[#1A1A1A]/40 hover:text-[#1A1A1A]/60 hover:bg-[#C9941A]/5"
+                                    ? "text-stone-500 hover-elevate" 
+                                    : "text-slate-400 hover-elevate"
                               )}
                               onClick={() => setRightPanelMode(mode as any)}
                             >
@@ -1104,7 +1116,7 @@ export default function KreAIteStudio() {
                                   "flex items-center gap-2 p-2 rounded-lg transition-colors cursor-pointer",
                                   activeTabId === `chapter-${idx}`
                                     ? isDark ? "bg-amber-500/20" : "bg-amber-100"
-                                    : isDark ? "hover:bg-stone-800/50" : "hover:bg-stone-100"
+                                    : isDark ? "hover-elevate" : "hover-elevate"
                                 )}
                                 onClick={() => handleSelectItem({ 
                                   id: `chapter-${idx}`, 
@@ -1303,7 +1315,7 @@ export default function KreAIteStudio() {
                               size="sm" 
                               className={cn(
                                 "w-full h-8 justify-start gap-2 text-[11px]",
-                                isDark ? "border-stone-700 hover:bg-stone-800" : ""
+                                isDark ? "border-stone-700" : "border-slate-200"
                               )}
                               onClick={() => generateBlurb()}
                               disabled={isGeneratingBlurb}
@@ -1316,7 +1328,7 @@ export default function KreAIteStudio() {
                               size="sm" 
                               className={cn(
                                 "w-full h-8 justify-start gap-2 text-[11px]",
-                                isDark ? "border-stone-700 hover:bg-stone-800" : ""
+                                isDark ? "border-stone-700" : "border-slate-200"
                               )}
                               onClick={() => generateKeywords()}
                               disabled={isGeneratingKeywords}
@@ -1329,7 +1341,7 @@ export default function KreAIteStudio() {
                               size="sm" 
                               className={cn(
                                 "w-full h-8 justify-start gap-2 text-[11px]",
-                                isDark ? "border-stone-700 hover:bg-stone-800" : ""
+                                isDark ? "border-stone-700" : "border-slate-200"
                               )}
                             >
                               <Eye className="h-3.5 w-3.5 text-blue-500" />
@@ -1340,11 +1352,50 @@ export default function KreAIteStudio() {
                               size="sm" 
                               className={cn(
                                 "w-full h-8 justify-start gap-2 text-[11px]",
-                                isDark ? "border-stone-700 hover:bg-stone-800" : ""
+                                isDark ? "border-stone-700" : "border-slate-200"
                               )}
                             >
                               <Download className="h-3.5 w-3.5 text-orange-500" />
                               Export for KDP
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className={cn(
+                                "w-full h-8 justify-start gap-2 text-[11px]",
+                                isDark ? "border-stone-700" : "border-slate-200"
+                              )}
+                              onClick={async () => {
+                                toast({
+                                  title: "Syncing to Google Docs",
+                                  description: "Creating document from your manuscript..."
+                                });
+                                try {
+                                  const response = await apiRequest('/api/book-studio/export-google-docs', {
+                                    method: 'POST',
+                                    body: JSON.stringify({
+                                      title: project?.title || 'Untitled Book',
+                                      chapters: project?.chapters || []
+                                    })
+                                  });
+                                  if (response.documentUrl) {
+                                    toast({
+                                      title: "Exported to Google Docs",
+                                      description: "Opening your document...",
+                                    });
+                                    window.open(response.documentUrl, '_blank');
+                                  }
+                                } catch (error: any) {
+                                  toast({
+                                    title: "Export Failed",
+                                    description: error.message || "Could not export to Google Docs",
+                                    variant: "destructive"
+                                  });
+                                }
+                              }}
+                            >
+                              <FileText className="h-3.5 w-3.5 text-blue-500" />
+                              Sync to Google Docs
                             </Button>
                           </div>
                         </div>
@@ -1368,7 +1419,7 @@ export default function KreAIteStudio() {
                               size="sm" 
                               className={cn(
                                 "w-full h-9 justify-start gap-2 text-[11px]",
-                                isDark ? "border-stone-700 hover:bg-stone-800" : ""
+                                isDark ? "border-stone-700" : "border-slate-200"
                               )}
                               onClick={() => {
                                 const idx = openTabs.find(t => t.id === activeTabId)?.chapterIndex;
@@ -1384,7 +1435,7 @@ export default function KreAIteStudio() {
                               size="sm" 
                               className={cn(
                                 "w-full h-9 justify-start gap-2 text-[11px]",
-                                isDark ? "border-stone-700 hover:bg-stone-800" : ""
+                                isDark ? "border-stone-700" : "border-slate-200"
                               )}
                               onClick={() => generateAllChapters()}
                               disabled={generationProgress.isGenerating}
@@ -1414,7 +1465,7 @@ export default function KreAIteStudio() {
                                 size="sm" 
                                 className={cn(
                                   "w-full h-8 justify-start gap-2 text-[11px]",
-                                  isDark ? "border-stone-700 hover:bg-stone-800" : ""
+                                  isDark ? "border-stone-700" : "border-slate-200"
                                 )}
                                 onClick={() => {
                                   const idx = openTabs.find(t => t.id === activeTabId)?.chapterIndex;
@@ -1480,7 +1531,7 @@ export default function KreAIteStudio() {
                               size="sm" 
                               className={cn(
                                 "w-full h-8 justify-start gap-2 text-[11px]",
-                                isDark ? "border-stone-700 hover:bg-stone-800" : ""
+                                isDark ? "border-stone-700" : "border-slate-200"
                               )}
                               onClick={() => generateBookImage('Professional book cover', 'photorealistic')}
                               disabled={isGeneratingImage}
@@ -1493,7 +1544,7 @@ export default function KreAIteStudio() {
                               size="sm" 
                               className={cn(
                                 "w-full h-8 justify-start gap-2 text-[11px]",
-                                isDark ? "border-stone-700 hover:bg-stone-800" : ""
+                                isDark ? "border-stone-700" : "border-slate-200"
                               )}
                               onClick={() => generateBookImage('Chapter illustration', 'illustration')}
                               disabled={isGeneratingImage}

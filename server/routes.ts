@@ -6624,6 +6624,92 @@ Respond in JSON format:
     }
   });
 
+  // Book Studio - Export to Google Docs
+  app.post('/api/book-studio/export-google-docs', isAuthenticated, async (req: any, res) => {
+    try {
+      const { title, chapters } = req.body;
+      
+      if (!chapters || chapters.length === 0) {
+        return res.status(400).json({ message: "No chapters to export" });
+      }
+
+      const { getUncachableGoogleDocsClient } = await import('./lib/googleDocs');
+      const docs = await getUncachableGoogleDocsClient();
+      
+      const createResponse = await docs.documents.create({
+        requestBody: {
+          title: title || 'Untitled Book'
+        }
+      });
+
+      const documentId = createResponse.data.documentId!;
+      const requests: any[] = [];
+      let currentIndex = 1;
+
+      const addText = (text: string, bold = false, heading = false) => {
+        requests.push({
+          insertText: {
+            location: { index: currentIndex },
+            text: text
+          }
+        });
+        
+        if (bold || heading) {
+          requests.push({
+            updateTextStyle: {
+              range: {
+                startIndex: currentIndex,
+                endIndex: currentIndex + text.length
+              },
+              textStyle: {
+                bold: bold,
+                fontSize: heading ? { magnitude: 24, unit: 'PT' } : undefined
+              },
+              fields: bold && heading ? 'bold,fontSize' : 'bold'
+            }
+          });
+        }
+        
+        currentIndex += text.length;
+      };
+
+      addText(`${title || 'Untitled Book'}\n\n`, true, true);
+
+      for (const chapter of chapters) {
+        addText(`\n${chapter.title || 'Untitled Chapter'}\n\n`, true, false);
+        
+        const cleanContent = (chapter.content || '')
+          .replace(/<[^>]*>/g, '')
+          .replace(/&nbsp;/g, ' ')
+          .replace(/&amp;/g, '&')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>');
+        
+        addText(`${cleanContent}\n\n`, false, false);
+      }
+
+      if (requests.length > 0) {
+        await docs.documents.batchUpdate({
+          documentId,
+          requestBody: { requests }
+        });
+      }
+
+      res.json({
+        success: true,
+        documentId,
+        documentUrl: `https://docs.google.com/document/d/${documentId}/edit`,
+        message: `Exported ${chapters.length} chapters to Google Docs`
+      });
+    } catch (error: any) {
+      console.error("Error exporting to Google Docs:", error);
+      if (error.message?.includes('not connected')) {
+        return res.status(400).json({ message: "Google Docs not connected. Please connect your Google account." });
+      }
+      res.status(500).json({ message: "Failed to export to Google Docs" });
+    }
+  });
+
   // Doctrine Alignment Check - Validates content against source truth
   app.post('/api/book-studio/doctrine-check', isAuthenticated, async (req: any, res) => {
     try {
@@ -7395,6 +7481,56 @@ Respond in JSON format:
     } catch (error) {
       console.error("Error fetching milestones:", error);
       res.status(500).json({ message: "Failed to fetch milestones" });
+    }
+  });
+
+  // Draft Your Legend - Export journal to Google Docs
+  app.post('/api/recovery/export-legend', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      const days = parseInt(req.body.days) || 30;
+      
+      const checkins = await storage.getRecentCheckins(userId, days);
+      
+      if (!checkins || checkins.length === 0) {
+        return res.status(400).json({ message: "No journal entries to export. Start checking in daily to build your legend!" });
+      }
+
+      const { createDraftYourLegendDoc } = await import('./lib/googleDocs');
+      
+      const entries = checkins.map((c: any) => ({
+        date: new Date(c.checkinDate).toLocaleDateString('en-US', { 
+          weekday: 'long', 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        }),
+        whatBuilt: c.winsToday || '',
+        whatBroke: c.challengesToday || '',
+        tomorrowTarget: 'Keep building',
+        gratitude: c.gratitude || ''
+      }));
+
+      const userName = user?.firstName || user?.username || 'Warrior';
+      const result = await createDraftYourLegendDoc(
+        `Draft Your Legend - ${userName}'s Recovery Journey`,
+        entries,
+        userName
+      );
+
+      res.json({
+        success: true,
+        documentId: result.documentId,
+        documentUrl: result.documentUrl,
+        message: `Exported ${entries.length} journal entries to Google Docs`
+      });
+    } catch (error: any) {
+      console.error("Error exporting to Google Docs:", error);
+      if (error.message?.includes('not connected')) {
+        return res.status(400).json({ message: "Google Docs not connected. Please connect your Google account first." });
+      }
+      res.status(500).json({ message: "Failed to export journal to Google Docs" });
     }
   });
 
