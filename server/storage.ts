@@ -2525,6 +2525,208 @@ export class DatabaseStorage implements IStorage {
       return { usage: [] };
     }
   }
+
+  // ============================================================================
+  // SASQUATCH DOCTRINE - FLICKER LOG
+  // ============================================================================
+
+  async getFlickerLogs(userId: string): Promise<any[]> {
+    try {
+      const result = await db.execute(sql`
+        SELECT * FROM flicker_logs 
+        WHERE user_id = ${userId}
+        ORDER BY created_at DESC
+        LIMIT 100
+      `);
+      return result.rows || [];
+    } catch (error) {
+      console.error("Error fetching flicker logs:", error);
+      return [];
+    }
+  }
+
+  async createFlickerLog(userId: string, data: any): Promise<any> {
+    try {
+      const result = await db.execute(sql`
+        INSERT INTO flicker_logs (user_id, moment, body_part, intensity, emotion_before, emotion_after, activity, is_breakthrough, notes, tags)
+        VALUES (${userId}, ${data.moment}, ${data.bodyPart || null}, ${data.intensity || 1}, 
+                ${data.emotionBefore || null}, ${data.emotionAfter || null}, ${data.activity || null},
+                ${data.isBreakthrough || false}, ${data.notes || null}, ${data.tags || null})
+        RETURNING *
+      `);
+      return result.rows?.[0];
+    } catch (error) {
+      console.error("Error creating flicker log:", error);
+      throw error;
+    }
+  }
+
+  // ============================================================================
+  // SASQUATCH DOCTRINE - MEDICAL LOG
+  // ============================================================================
+
+  async getMedicalLogs(userId: string): Promise<any> {
+    try {
+      const [meds, appts, vitals] = await Promise.all([
+        db.execute(sql`SELECT * FROM medications WHERE user_id = ${userId} ORDER BY created_at DESC`),
+        db.execute(sql`SELECT * FROM appointments WHERE user_id = ${userId} ORDER BY appointment_date DESC LIMIT 50`),
+        db.execute(sql`SELECT * FROM vitals_logs WHERE user_id = ${userId} ORDER BY measured_at DESC LIMIT 30`)
+      ]);
+      return {
+        medications: meds.rows || [],
+        appointments: appts.rows || [],
+        vitals: vitals.rows || []
+      };
+    } catch (error) {
+      console.error("Error fetching medical logs:", error);
+      return { medications: [], appointments: [], vitals: [] };
+    }
+  }
+
+  async createMedication(userId: string, data: any): Promise<any> {
+    try {
+      const result = await db.execute(sql`
+        INSERT INTO medications (user_id, name, dosage, frequency, purpose, prescribed_by, start_date, notes, reminder_times)
+        VALUES (${userId}, ${data.name}, ${data.dosage}, ${data.frequency}, ${data.purpose || null}, 
+                ${data.prescribedBy || null}, ${data.startDate || null}, ${data.notes || null}, ${data.reminderTimes || null})
+        RETURNING *
+      `);
+      return result.rows?.[0];
+    } catch (error) {
+      console.error("Error creating medication:", error);
+      throw error;
+    }
+  }
+
+  async createAppointment(userId: string, data: any): Promise<any> {
+    try {
+      const result = await db.execute(sql`
+        INSERT INTO appointments (user_id, title, provider_name, provider_type, location, appointment_date, duration, notes, prep_notes)
+        VALUES (${userId}, ${data.title}, ${data.providerName}, ${data.providerType}, ${data.location || null},
+                ${data.appointmentDate}, ${data.duration || null}, ${data.notes || null}, ${data.prepNotes || null})
+        RETURNING *
+      `);
+      return result.rows?.[0];
+    } catch (error) {
+      console.error("Error creating appointment:", error);
+      throw error;
+    }
+  }
+
+  async logVitals(userId: string, data: any): Promise<any> {
+    try {
+      const result = await db.execute(sql`
+        INSERT INTO vitals_logs (user_id, blood_pressure_systolic, blood_pressure_diastolic, heart_rate, 
+                                 temperature, weight, blood_sugar, oxygen_level, pain_level, sleep_hours, sleep_quality, notes)
+        VALUES (${userId}, ${data.bloodPressureSystolic || null}, ${data.bloodPressureDiastolic || null}, 
+                ${data.heartRate || null}, ${data.temperature || null}, ${data.weight || null},
+                ${data.bloodSugar || null}, ${data.oxygenLevel || null}, ${data.painLevel || null},
+                ${data.sleepHours || null}, ${data.sleepQuality || null}, ${data.notes || null})
+        RETURNING *
+      `);
+      return result.rows?.[0];
+    } catch (error) {
+      console.error("Error logging vitals:", error);
+      throw error;
+    }
+  }
+
+  // ============================================================================
+  // SASQUATCH DOCTRINE - C.O.M.P.A.S.S.
+  // ============================================================================
+
+  async getCompassData(userId: string): Promise<any> {
+    try {
+      const [entries, goals] = await Promise.all([
+        db.execute(sql`
+          SELECT * FROM compass_entries 
+          WHERE user_id = ${userId} 
+          ORDER BY created_at DESC 
+          LIMIT 100
+        `),
+        db.execute(sql`
+          SELECT * FROM compass_goals 
+          WHERE user_id = ${userId} AND status = 'active'
+          ORDER BY created_at DESC
+        `)
+      ]);
+      return {
+        entries: entries.rows || [],
+        goals: goals.rows || []
+      };
+    } catch (error) {
+      console.error("Error fetching compass data:", error);
+      return { entries: [], goals: [] };
+    }
+  }
+
+  async updateCompassPillar(userId: string, data: any): Promise<any> {
+    try {
+      const result = await db.execute(sql`
+        INSERT INTO compass_entries (user_id, pillar, score, reflection, wins, challenges, tomorrows_goal)
+        VALUES (${userId}, ${data.pillar}, ${data.score}, ${data.reflection || null}, 
+                ${data.wins || null}, ${data.challenges || null}, ${data.tomorrowsGoal || null})
+        RETURNING *
+      `);
+      return result.rows?.[0];
+    } catch (error) {
+      console.error("Error updating compass pillar:", error);
+      throw error;
+    }
+  }
+
+  // ============================================================================
+  // SASQUATCH DOCTRINE - DRAFT YOUR LEGEND
+  // ============================================================================
+
+  async getLegend(userId: string): Promise<any> {
+    try {
+      const result = await db.execute(sql`
+        SELECT * FROM legend_drafts 
+        WHERE user_id = ${userId}
+        ORDER BY last_edited_at DESC
+        LIMIT 1
+      `);
+      return result.rows?.[0] || null;
+    } catch (error) {
+      console.error("Error fetching legend:", error);
+      return null;
+    }
+  }
+
+  async saveLegend(userId: string, data: any): Promise<any> {
+    try {
+      const existing = await this.getLegend(userId);
+      
+      if (existing) {
+        const result = await db.execute(sql`
+          UPDATE legend_drafts 
+          SET title = ${data.title || existing.title},
+              subtitle = ${data.subtitle || existing.subtitle},
+              chapters = ${JSON.stringify(data.chapters || existing.chapters)},
+              current_chapter = ${data.currentChapter || existing.current_chapter},
+              total_word_count = ${data.totalWordCount || existing.total_word_count},
+              status = ${data.status || existing.status},
+              last_edited_at = NOW()
+          WHERE id = ${existing.id}
+          RETURNING *
+        `);
+        return result.rows?.[0];
+      } else {
+        const result = await db.execute(sql`
+          INSERT INTO legend_drafts (user_id, title, subtitle, chapters, current_chapter, total_word_count, status)
+          VALUES (${userId}, ${data.title || 'My Recovery Legend'}, ${data.subtitle || null}, 
+                  ${JSON.stringify(data.chapters || [])}, ${data.currentChapter || 1}, 
+                  ${data.totalWordCount || 0}, ${data.status || 'draft'})
+          RETURNING *
+        `);
+        return result.rows?.[0];
+      }
+    } catch (error) {
+      console.error("Error saving legend:", error);
+      throw error;
+    }
+  }
 }
 
 export const storage = new DatabaseStorage();
