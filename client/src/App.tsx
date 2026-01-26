@@ -97,6 +97,13 @@ import TherapistMarketplace from "@/pages/TherapistMarketplace";
 import AdminPlanBuilder from "@/pages/AdminPlanBuilder";
 import RecoveryUniversity from "@/pages/RecoveryUniversity";
 
+// Sasquatch Doctrine Core Pages
+import FlickerLog from "@/pages/FlickerLog";
+import MedicalLog from "@/pages/MedicalLog";
+import Compass from "@/pages/Compass";
+import DraftYourLegend from "@/pages/DraftYourLegend";
+import CourseBuilder from "@/pages/CourseBuilder";
+
 import ProtectedRoute from "@/components/ProtectedRoute";
 import NotFound from "@/pages/not-found";
 import CreatorScribeWidget from "@/components/CreatorScribeWidget";
@@ -414,6 +421,33 @@ function Router() {
         </ProtectedRoute>
       </Route>
       <Route path="/recovery/university" component={RecoveryUniversity} />
+
+      {/* Sasquatch Doctrine Core Tools */}
+      <Route path="/recovery/flicker-log">
+        <ProtectedRoute>
+          <FlickerLog />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/recovery/medical-log">
+        <ProtectedRoute>
+          <MedicalLog />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/recovery/compass">
+        <ProtectedRoute>
+          <Compass />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/recovery/legend">
+        <ProtectedRoute>
+          <DraftYourLegend />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/recovery/course-builder">
+        <ProtectedRoute>
+          <CourseBuilder />
+        </ProtectedRoute>
+      </Route>
 
       <Route component={NotFound} />
     </Switch>

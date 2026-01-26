@@ -1603,6 +1603,338 @@ export const recoverySupportGroupMembers = pgTable("recovery_support_group_membe
 });
 
 // ============================================================================
+// SASQUATCH DOCTRINE - FLICKER LOG
+// Micro-moment tracking for small victories ("I felt my finger twitch!")
+// ============================================================================
+
+export const flickerLogs = pgTable("flicker_logs", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  moment: text("moment").notNull(), // Description of the micro-moment
+  bodyPart: text("body_part"), // affected_hand, affected_leg, speech, cognitive, etc.
+  intensity: integer("intensity").notNull().default(1), // 1-5 scale
+  emotionBefore: text("emotion_before"),
+  emotionAfter: text("emotion_after"),
+  activity: text("activity"), // What were they doing when it happened
+  isBreakthrough: boolean("is_breakthrough").notNull().default(false),
+  notes: text("notes"),
+  mediaUrl: text("media_url"), // Optional video/photo of the moment
+  tags: text("tags").array(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// ============================================================================
+// SASQUATCH DOCTRINE - MEDICAL LOG
+// Medications, appointments, vitals tracking
+// ============================================================================
+
+export const medications = pgTable("medications", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  dosage: text("dosage").notNull(),
+  frequency: text("frequency").notNull(), // once_daily, twice_daily, as_needed, etc.
+  purpose: text("purpose"),
+  prescribedBy: text("prescribed_by"),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  sideEffects: text("side_effects").array(),
+  notes: text("notes"),
+  isActive: boolean("is_active").notNull().default(true),
+  reminderTimes: text("reminder_times").array(), // ["08:00", "20:00"]
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const medicationLogs = pgTable("medication_logs", {
+  id: serial("id").primaryKey(),
+  medicationId: integer("medication_id").notNull().references(() => medications.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  takenAt: timestamp("taken_at").notNull().defaultNow(),
+  skipped: boolean("skipped").notNull().default(false),
+  skipReason: text("skip_reason"),
+  notes: text("notes"),
+});
+
+export const appointments = pgTable("appointments", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  providerName: text("provider_name").notNull(),
+  providerType: text("provider_type").notNull(), // neurologist, PT, OT, speech, PCP, etc.
+  location: text("location"),
+  appointmentDate: timestamp("appointment_date").notNull(),
+  duration: integer("duration"), // minutes
+  notes: text("notes"),
+  prepNotes: text("prep_notes"), // What to bring, questions to ask
+  followUpNotes: text("follow_up_notes"), // After visit notes
+  status: text("status").notNull().default("scheduled"), // scheduled, completed, cancelled, rescheduled
+  reminderSent: boolean("reminder_sent").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const vitalsLogs = pgTable("vitals_logs", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  bloodPressureSystolic: integer("blood_pressure_systolic"),
+  bloodPressureDiastolic: integer("blood_pressure_diastolic"),
+  heartRate: integer("heart_rate"),
+  temperature: text("temperature"),
+  weight: text("weight"),
+  bloodSugar: integer("blood_sugar"),
+  oxygenLevel: integer("oxygen_level"),
+  painLevel: integer("pain_level"), // 1-10
+  sleepHours: text("sleep_hours"),
+  sleepQuality: integer("sleep_quality"), // 1-5
+  notes: text("notes"),
+  measuredAt: timestamp("measured_at").notNull().defaultNow(),
+});
+
+// ============================================================================
+// SASQUATCH DOCTRINE - C.O.M.P.A.S.S. (7 Pillars Navigation System)
+// Community, Optimism, Movement, Purpose, Accountability, Science, Self-care
+// ============================================================================
+
+export const compassEntries = pgTable("compass_entries", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  pillar: text("pillar").notNull(), // community, optimism, movement, purpose, accountability, science, self_care
+  score: integer("score").notNull(), // 1-10 daily rating
+  reflection: text("reflection"),
+  wins: text("wins").array(),
+  challenges: text("challenges").array(),
+  tomorrowsGoal: text("tomorrows_goal"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const compassGoals = pgTable("compass_goals", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  pillar: text("pillar").notNull(),
+  goal: text("goal").notNull(),
+  targetDate: timestamp("target_date"),
+  status: text("status").notNull().default("active"), // active, completed, paused
+  progress: integer("progress").notNull().default(0), // 0-100
+  milestones: jsonb("milestones"), // Array of milestone objects
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  completedAt: timestamp("completed_at"),
+});
+
+// ============================================================================
+// SASQUATCH DOCTRINE - DRAFT YOUR LEGEND (Story Builder)
+// Personal autobiography/memoir building tool
+// ============================================================================
+
+export const legendDrafts = pgTable("legend_drafts", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  title: text("title").notNull().default("My Recovery Legend"),
+  subtitle: text("subtitle"),
+  coverImageUrl: text("cover_image_url"),
+  chapters: jsonb("chapters"), // Array of chapter objects with title, content, order
+  currentChapter: integer("current_chapter").notNull().default(1),
+  totalWordCount: integer("total_word_count").notNull().default(0),
+  status: text("status").notNull().default("draft"), // draft, in_progress, complete
+  publishedToStories: boolean("published_to_stories").notNull().default(false),
+  lastEditedAt: timestamp("last_edited_at").notNull().defaultNow(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const legendPrompts = pgTable("legend_prompts", {
+  id: serial("id").primaryKey(),
+  category: text("category").notNull(), // before_stroke, the_event, early_recovery, breakthrough, wisdom, future
+  prompt: text("prompt").notNull(),
+  order: integer("order").notNull().default(0),
+  isRequired: boolean("is_required").notNull().default(false),
+});
+
+export const legendResponses = pgTable("legend_responses", {
+  id: serial("id").primaryKey(),
+  legendId: integer("legend_id").notNull().references(() => legendDrafts.id, { onDelete: "cascade" }),
+  promptId: integer("prompt_id").notNull().references(() => legendPrompts.id),
+  response: text("response").notNull(),
+  wordCount: integer("word_count").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// ============================================================================
+// SASQUATCH DOCTRINE - NEVER ZERO (Streak Protection)
+// 1 rep = saved streak logic
+// ============================================================================
+
+export const neverZeroLogs = pgTable("never_zero_logs", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  habitId: integer("habit_id").references(() => recoveryHabits.id),
+  action: text("action").notNull(), // What minimal action was taken
+  reps: integer("reps").notNull().default(1), // Number of reps (minimum 1)
+  streakSaved: boolean("streak_saved").notNull().default(true),
+  difficulty: text("difficulty"), // easy, medium, hard (relative to their condition)
+  notes: text("notes"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// ============================================================================
+// RECOVERY JOURNAL (Daily Entries)
+// ============================================================================
+
+export const recoveryJournals = pgTable("recovery_journals", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  title: text("title"),
+  content: text("content").notNull(),
+  mood: integer("mood"), // 1-10
+  energy: integer("energy"), // 1-10
+  gratitude: text("gratitude").array(),
+  wins: text("wins").array(),
+  struggles: text("struggles").array(),
+  tomorrowsIntention: text("tomorrows_intention"),
+  tags: text("tags").array(),
+  isPrivate: boolean("is_private").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// ============================================================================
+// COURSE BUILDER (Kajabi-level)
+// ============================================================================
+
+export const courseBuilderCourses = pgTable("course_builder_courses", {
+  id: serial("id").primaryKey(),
+  creatorId: varchar("creator_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  slug: text("slug").notNull().unique(),
+  description: text("description"),
+  longDescription: text("long_description"),
+  thumbnailUrl: text("thumbnail_url"),
+  promoVideoUrl: text("promo_video_url"),
+  category: text("category"), // recovery, wellness, mindset, movement, etc.
+  difficulty: text("difficulty").notNull().default("beginner"), // beginner, intermediate, advanced
+  estimatedHours: integer("estimated_hours"),
+  price: integer("price").notNull().default(0), // cents, 0 = free
+  isFree: boolean("is_free").notNull().default(false),
+  isPublished: boolean("is_published").notNull().default(false),
+  enrollmentCount: integer("enrollment_count").notNull().default(0),
+  completionRate: integer("completion_rate").notNull().default(0),
+  averageRating: integer("average_rating").notNull().default(0),
+  totalRatings: integer("total_ratings").notNull().default(0),
+  dripEnabled: boolean("drip_enabled").notNull().default(false),
+  dripIntervalDays: integer("drip_interval_days").notNull().default(7),
+  certificateEnabled: boolean("certificate_enabled").notNull().default(true),
+  communityEnabled: boolean("community_enabled").notNull().default(false),
+  tags: text("tags").array(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  publishedAt: timestamp("published_at"),
+});
+
+export const courseBuilderModules = pgTable("course_builder_modules", {
+  id: serial("id").primaryKey(),
+  courseId: integer("course_id").notNull().references(() => courseBuilderCourses.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  description: text("description"),
+  order: integer("order").notNull().default(0),
+  isLocked: boolean("is_locked").notNull().default(false),
+  unlockAfterDays: integer("unlock_after_days"), // For drip content
+  unlockAfterModuleId: integer("unlock_after_module_id"), // Prerequisite module
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const courseBuilderLessons = pgTable("course_builder_lessons", {
+  id: serial("id").primaryKey(),
+  moduleId: integer("module_id").notNull().references(() => courseBuilderModules.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  description: text("description"),
+  lessonType: text("lesson_type").notNull().default("video"), // video, text, quiz, exercise, download, audio
+  content: text("content"), // Rich text content or video embed
+  videoUrl: text("video_url"),
+  videoDuration: integer("video_duration"), // seconds
+  audioUrl: text("audio_url"),
+  downloadUrl: text("download_url"),
+  downloadName: text("download_name"),
+  thumbnailUrl: text("thumbnail_url"),
+  order: integer("order").notNull().default(0),
+  estimatedMinutes: integer("estimated_minutes").notNull().default(10),
+  isPreview: boolean("is_preview").notNull().default(false), // Free preview
+  isRequired: boolean("is_required").notNull().default(true),
+  completionCriteria: text("completion_criteria").notNull().default("view"), // view, quiz_pass, exercise_complete
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const courseBuilderQuizzes = pgTable("course_builder_quizzes", {
+  id: serial("id").primaryKey(),
+  lessonId: integer("lesson_id").notNull().references(() => courseBuilderLessons.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  description: text("description"),
+  passingScore: integer("passing_score").notNull().default(70), // percentage
+  allowRetakes: boolean("allow_retakes").notNull().default(true),
+  maxRetakes: integer("max_retakes"), // null = unlimited
+  shuffleQuestions: boolean("shuffle_questions").notNull().default(false),
+  showCorrectAnswers: boolean("show_correct_answers").notNull().default(true),
+  timeLimitMinutes: integer("time_limit_minutes"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const courseBuilderQuestions = pgTable("course_builder_questions", {
+  id: serial("id").primaryKey(),
+  quizId: integer("quiz_id").notNull().references(() => courseBuilderQuizzes.id, { onDelete: "cascade" }),
+  questionType: text("question_type").notNull().default("multiple_choice"), // multiple_choice, true_false, short_answer, matching
+  question: text("question").notNull(),
+  options: jsonb("options"), // Array of {id, text, isCorrect}
+  correctAnswer: text("correct_answer"),
+  explanation: text("explanation"),
+  points: integer("points").notNull().default(1),
+  order: integer("order").notNull().default(0),
+});
+
+export const courseEnrollments = pgTable("course_enrollments", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  courseId: integer("course_id").notNull().references(() => courseBuilderCourses.id, { onDelete: "cascade" }),
+  enrolledAt: timestamp("enrolled_at").notNull().defaultNow(),
+  startedAt: timestamp("started_at"),
+  completedAt: timestamp("completed_at"),
+  progress: integer("progress").notNull().default(0), // 0-100
+  currentLessonId: integer("current_lesson_id"),
+  lastAccessedAt: timestamp("last_accessed_at"),
+  certificateIssuedAt: timestamp("certificate_issued_at"),
+  certificateUrl: text("certificate_url"),
+});
+
+export const lessonProgress = pgTable("lesson_progress", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  lessonId: integer("lesson_id").notNull().references(() => courseBuilderLessons.id, { onDelete: "cascade" }),
+  status: text("status").notNull().default("not_started"), // not_started, in_progress, completed
+  progressPercent: integer("progress_percent").notNull().default(0),
+  videoWatchTime: integer("video_watch_time").notNull().default(0), // seconds
+  completedAt: timestamp("completed_at"),
+  startedAt: timestamp("started_at"),
+});
+
+export const quizAttempts = pgTable("quiz_attempts", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  quizId: integer("quiz_id").notNull().references(() => courseBuilderQuizzes.id, { onDelete: "cascade" }),
+  score: integer("score").notNull(),
+  passed: boolean("passed").notNull(),
+  answers: jsonb("answers"), // {questionId: userAnswer}
+  timeTaken: integer("time_taken"), // seconds
+  attemptNumber: integer("attempt_number").notNull().default(1),
+  completedAt: timestamp("completed_at").notNull().defaultNow(),
+});
+
+export const courseReviews = pgTable("course_reviews", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  courseId: integer("course_id").notNull().references(() => courseBuilderCourses.id, { onDelete: "cascade" }),
+  rating: integer("rating").notNull(), // 1-5
+  review: text("review"),
+  isVerifiedPurchase: boolean("is_verified_purchase").notNull().default(false),
+  helpfulCount: integer("helpful_count").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// ============================================================================
 // SEO & CONTENT PAGES
 // ============================================================================
 

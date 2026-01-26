@@ -8318,6 +8318,225 @@ Respond in JSON format:
   });
 
   // ============================================================================
+  // RECOVERY ACADEMY PAYMENTS (Separate Stripe Account)
+  // ============================================================================
+
+  app.get('/api/recovery/stripe/status', async (req, res) => {
+    try {
+      const { isRecoveryStripeConfigured } = await import('./recoveryStripeClient');
+      res.json({ configured: isRecoveryStripeConfigured() });
+    } catch (error) {
+      res.json({ configured: false });
+    }
+  });
+
+  app.post('/api/recovery/payments/tip', isAuthenticated, async (req: any, res) => {
+    try {
+      const { recoveryStripeService } = await import('./recoveryStripeService');
+      const { creatorId, amount, storyId } = req.body;
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user?.stripeCustomerId) {
+        const customer = await recoveryStripeService.createCustomer(user?.email || '', userId);
+        await storage.updateUser(userId, { stripeCustomerId: customer.id });
+      }
+      
+      const session = await recoveryStripeService.createTipCheckout(
+        user?.stripeCustomerId || '',
+        creatorId,
+        amount,
+        storyId,
+        `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/dashboard?tip=success`,
+        `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/dashboard`
+      );
+      
+      res.json({ url: session.url });
+    } catch (error: any) {
+      console.error('Recovery tip error:', error);
+      res.status(500).json({ message: error.message || 'Failed to create tip checkout' });
+    }
+  });
+
+  app.post('/api/recovery/payments/subscription', isAuthenticated, async (req: any, res) => {
+    try {
+      const { recoveryStripeService } = await import('./recoveryStripeService');
+      const { tier } = req.body;
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      const session = await recoveryStripeService.createSubscriptionCheckout(
+        user?.stripeCustomerId || '',
+        tier,
+        `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/dashboard?subscription=success`,
+        `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/pricing`
+      );
+      
+      res.json({ url: session.url });
+    } catch (error: any) {
+      console.error('Recovery subscription error:', error);
+      res.status(500).json({ message: error.message || 'Failed to create subscription checkout' });
+    }
+  });
+
+  app.post('/api/recovery/payments/coaching', isAuthenticated, async (req: any, res) => {
+    try {
+      const { recoveryStripeService } = await import('./recoveryStripeService');
+      const { coachingType } = req.body;
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      const session = await recoveryStripeService.createCoachingCheckout(
+        user?.stripeCustomerId || '',
+        coachingType,
+        `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/coaching?booking=success`,
+        `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/coaching`
+      );
+      
+      res.json({ url: session.url });
+    } catch (error: any) {
+      console.error('Recovery coaching error:', error);
+      res.status(500).json({ message: error.message || 'Failed to create coaching checkout' });
+    }
+  });
+
+  app.post('/api/recovery/payments/donate', async (req, res) => {
+    try {
+      const { recoveryStripeService } = await import('./recoveryStripeService');
+      const { amount, isRecurring } = req.body;
+      
+      const session = await recoveryStripeService.createDonationCheckout(
+        null,
+        amount,
+        `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/donate?success=true`,
+        `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/donate`,
+        isRecurring
+      );
+      
+      res.json({ url: session.url });
+    } catch (error: any) {
+      console.error('Recovery donation error:', error);
+      res.status(500).json({ message: error.message || 'Failed to create donation checkout' });
+    }
+  });
+
+  // ============================================================================
+  // SASQUATCH DOCTRINE - FLICKER LOG
+  // ============================================================================
+
+  app.get('/api/recovery/flicker-log', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const entries = await storage.getFlickerLogs(userId);
+      res.json(entries);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch flicker logs" });
+    }
+  });
+
+  app.post('/api/recovery/flicker-log', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const entry = await storage.createFlickerLog(userId, req.body);
+      res.json(entry);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to create flicker log" });
+    }
+  });
+
+  // ============================================================================
+  // SASQUATCH DOCTRINE - MEDICAL LOG
+  // ============================================================================
+
+  app.get('/api/recovery/medical-log', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const data = await storage.getMedicalLogs(userId);
+      res.json(data);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch medical logs" });
+    }
+  });
+
+  app.post('/api/recovery/medications', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const medication = await storage.createMedication(userId, req.body);
+      res.json(medication);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to add medication" });
+    }
+  });
+
+  app.post('/api/recovery/appointments', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const appointment = await storage.createAppointment(userId, req.body);
+      res.json(appointment);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to add appointment" });
+    }
+  });
+
+  app.post('/api/recovery/vitals', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const vitals = await storage.logVitals(userId, req.body);
+      res.json(vitals);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to log vitals" });
+    }
+  });
+
+  // ============================================================================
+  // SASQUATCH DOCTRINE - COMPASS (7 Pillars)
+  // ============================================================================
+
+  app.get('/api/recovery/compass', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const data = await storage.getCompassData(userId);
+      res.json(data);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch compass data" });
+    }
+  });
+
+  app.post('/api/recovery/compass', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const entry = await storage.updateCompassPillar(userId, req.body);
+      res.json(entry);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update compass" });
+    }
+  });
+
+  // ============================================================================
+  // SASQUATCH DOCTRINE - DRAFT YOUR LEGEND
+  // ============================================================================
+
+  app.get('/api/recovery/legend', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const legend = await storage.getLegend(userId);
+      res.json(legend);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch legend" });
+    }
+  });
+
+  app.post('/api/recovery/legend', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const legend = await storage.saveLegend(userId, req.body);
+      res.json(legend);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to save legend" });
+    }
+  });
+
+  // ============================================================================
   // USER SETTINGS
   // ============================================================================
 
