@@ -98,15 +98,15 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
       data-testid="global-header"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 lg:h-18">
+        <div className="flex items-center justify-between gap-4 h-16 lg:h-18">
           <div className="flex items-center gap-8">
             <Link href="/" data-testid="link-home">
               <div className="flex items-center gap-3 group cursor-pointer">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#C9941A] to-[#8B6914] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#C9941A] to-[#8B6914] flex items-center justify-center shadow-lg">
                   <span className="text-white font-black text-lg">K</span>
                 </div>
                 <div className="hidden sm:block">
-                  <div className="text-xl font-black tracking-tight text-gray-900 dark:text-white group-hover:text-[#C9941A] transition-colors">
+                  <div className="text-xl font-black tracking-tight text-gray-900 dark:text-white">
                     KreAIte
                   </div>
                   <div className="text-[9px] font-semibold text-[#C9941A] uppercase tracking-[0.15em]">
@@ -122,7 +122,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="font-semibold text-sm text-gray-700 dark:text-gray-300 gap-1.5 hover:text-[#C9941A] hover:bg-[#C9941A]/5"
+                    className="font-semibold text-sm text-gray-700 dark:text-gray-300 gap-1.5"
                     data-testid="dropdown-studios"
                   >
                     <Sparkles className="w-4 h-4 text-[#C9941A]" />
@@ -138,7 +138,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                     <DropdownMenuItem 
                       key={studio.href} 
                       asChild 
-                      className="cursor-pointer p-3 rounded-lg hover:bg-[#C9941A]/10 focus:bg-[#C9941A]/10"
+                      className="cursor-pointer p-3 rounded-lg"
                     >
                       <Link href={studio.href} className="flex items-center gap-3 w-full">
                         <div className="w-10 h-10 rounded-lg bg-[#C9941A]/10 flex items-center justify-center">
@@ -171,7 +171,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                     <DropdownMenuItem 
                       key={tool.href} 
                       asChild 
-                      className="cursor-pointer p-3 rounded-lg hover:bg-[#C9941A]/10 focus:bg-[#C9941A]/10"
+                      className="cursor-pointer p-3 rounded-lg"
                     >
                       <Link href={tool.href} className="flex items-center gap-3 w-full">
                         <div className="w-8 h-8 rounded-md bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
@@ -193,7 +193,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                   <Button
                     variant="ghost"
                     size="sm"
-                    className={`font-semibold text-sm gap-1.5 hover:text-[#C9941A] hover:bg-[#C9941A]/5 ${
+                    className={`font-semibold text-sm gap-1.5 ${
                       location === link.href 
                         ? "text-[#C9941A] bg-[#C9941A]/5" 
                         : "text-gray-700 dark:text-gray-300"
@@ -221,7 +221,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
             <Button
               variant="ghost"
               size="icon"
-              className="hidden md:flex hover:bg-[#C9941A]/10 text-gray-600 dark:text-gray-400"
+              className="hidden md:flex text-gray-600 dark:text-gray-400"
               data-testid="button-search"
             >
               <Search className="w-5 h-5" />
@@ -231,7 +231,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative hidden md:flex hover:bg-[#C9941A]/10 text-gray-600 dark:text-gray-400"
+                className="relative hidden md:flex text-gray-600 dark:text-gray-400"
                 data-testid="button-notifications"
               >
                 <Bell className="w-5 h-5" />
@@ -244,7 +244,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                 <Button 
                   variant="ghost"
                   size="sm"
-                  className="hidden sm:flex font-semibold text-gray-700 dark:text-gray-300 hover:text-[#C9941A]"
+                  className="hidden sm:flex font-semibold text-gray-700 dark:text-gray-300"
                   onClick={() => window.location.href = "/api/login"}
                   data-testid="button-login"
                 >
@@ -252,7 +252,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                 </Button>
                 <Button 
                   size="sm"
-                  className="bg-[#C9941A] hover:bg-[#A67B15] text-white font-semibold shadow-lg shadow-[#C9941A]/25"
+                  className="bg-[#C9941A] text-white font-semibold shadow-lg shadow-[#C9941A]/25"
                   onClick={() => window.location.href = "/api/login"}
                   data-testid="button-signup"
                 >
@@ -281,19 +281,19 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                     </p>
                   </div>
                   <DropdownMenuSeparator className="bg-[#C9941A]/10" />
-                  <DropdownMenuItem asChild className="cursor-pointer hover:bg-[#C9941A]/10">
+                  <DropdownMenuItem asChild className="cursor-pointer">
                     <Link href="/dashboard" className="flex items-center gap-2">
                       <LayoutDashboard className="w-4 h-4" />
                       Dashboard
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="cursor-pointer hover:bg-[#C9941A]/10">
+                  <DropdownMenuItem asChild className="cursor-pointer">
                     <Link href="/author-dashboard" className="flex items-center gap-2">
                       <DollarSign className="w-4 h-4" />
                       Earnings
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="cursor-pointer hover:bg-[#C9941A]/10">
+                  <DropdownMenuItem asChild className="cursor-pointer">
                     <Link href="/settings" className="flex items-center gap-2">
                       <Settings className="w-4 h-4" />
                       Settings
@@ -301,7 +301,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className="bg-[#C9941A]/10" />
                   <DropdownMenuItem 
-                    className="cursor-pointer text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                    className="cursor-pointer text-red-600"
                     onClick={() => window.location.href = "/api/logout"}
                   >
                     <LogOut className="w-4 h-4 mr-2" />
@@ -316,7 +316,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                 <Button 
                   variant="ghost" 
                   size="icon" 
-                  className="lg:hidden hover:bg-[#C9941A]/10"
+                  className="lg:hidden"
                   data-testid="button-mobile-menu"
                 >
                   <Menu className="w-6 h-6" />
@@ -358,7 +358,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                         <Link key={studio.href} href={studio.href}>
                           <Button
                             variant="ghost"
-                            className="w-full justify-start gap-3 h-auto py-3 hover:bg-[#C9941A]/10"
+                            className="w-full justify-start gap-3 h-auto py-3"
                             onClick={() => setMobileMenuOpen(false)}
                           >
                             <div className="w-8 h-8 rounded-lg bg-[#C9941A]/10 flex items-center justify-center">
@@ -388,7 +388,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                         <Link key={link.href} href={link.href}>
                           <Button
                             variant="ghost"
-                            className="w-full justify-start gap-2 hover:bg-[#C9941A]/10"
+                            className="w-full justify-start gap-2"
                             onClick={() => setMobileMenuOpen(false)}
                           >
                             <link.icon className="w-4 h-4" />
@@ -402,14 +402,14 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                   {!user && (
                     <div className="pt-4 space-y-2">
                       <Button 
-                        className="w-full bg-[#C9941A] hover:bg-[#A67B15] text-white font-semibold"
+                        className="w-full bg-[#C9941A] text-white font-semibold"
                         onClick={() => window.location.href = "/api/login"}
                       >
                         Get Started
                       </Button>
                       <Button 
                         variant="outline"
-                        className="w-full border-[#C9941A]/30 hover:bg-[#C9941A]/10"
+                        className="w-full border-[#C9941A]/30"
                         onClick={() => window.location.href = "/api/login"}
                       >
                         Log In
@@ -421,7 +421,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                     <div className="pt-4 border-t border-[#C9941A]/10">
                       <Button 
                         variant="ghost"
-                        className="w-full justify-start gap-2 text-red-600 hover:bg-red-50"
+                        className="w-full justify-start gap-2 text-red-600"
                         onClick={() => window.location.href = "/api/logout"}
                       >
                         <LogOut className="w-4 h-4" />
