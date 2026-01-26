@@ -169,7 +169,7 @@ export default function MedicalLog() {
             <div className="flex justify-end mb-4">
               <Dialog open={medDialogOpen} onOpenChange={setMedDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="bg-orange-500 hover:bg-orange-600" data-testid="button-add-medication">
+                  <Button className="bg-orange-500" data-testid="button-add-medication">
                     <Plus className="h-4 w-4 mr-2" />
                     Add Medication
                   </Button>
@@ -232,7 +232,7 @@ export default function MedicalLog() {
                     </div>
                     <Button 
                       onClick={() => addMedicationMutation.mutate(medForm)} 
-                      className="w-full bg-orange-500 hover:bg-orange-600"
+                      className="w-full bg-orange-500"
                       disabled={!medForm.name || !medForm.dosage || !medForm.frequency || addMedicationMutation.isPending}
                     >
                       {addMedicationMutation.isPending ? "Adding..." : "Add Medication"}
@@ -280,7 +280,7 @@ export default function MedicalLog() {
             <div className="flex justify-end mb-4">
               <Dialog open={apptDialogOpen} onOpenChange={setApptDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="bg-orange-500 hover:bg-orange-600" data-testid="button-add-appointment">
+                  <Button className="bg-orange-500" data-testid="button-add-appointment">
                     <Plus className="h-4 w-4 mr-2" />
                     Add Appointment
                   </Button>
@@ -353,7 +353,7 @@ export default function MedicalLog() {
                     </div>
                     <Button 
                       onClick={() => addAppointmentMutation.mutate(apptForm)} 
-                      className="w-full bg-orange-500 hover:bg-orange-600"
+                      className="w-full bg-orange-500"
                       disabled={!apptForm.title || !apptForm.providerName || !apptForm.providerType || !apptForm.appointmentDate || addAppointmentMutation.isPending}
                     >
                       {addAppointmentMutation.isPending ? "Adding..." : "Add Appointment"}
@@ -403,7 +403,7 @@ export default function MedicalLog() {
             <div className="flex justify-end mb-4">
               <Dialog open={vitalsDialogOpen} onOpenChange={setVitalsDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="bg-orange-500 hover:bg-orange-600" data-testid="button-log-vitals">
+                  <Button className="bg-orange-500" data-testid="button-log-vitals">
                     <Plus className="h-4 w-4 mr-2" />
                     Log Vitals
                   </Button>
@@ -513,7 +513,7 @@ export default function MedicalLog() {
                     </div>
                     <Button 
                       onClick={() => logVitalsMutation.mutate(vitalsForm)} 
-                      className="w-full bg-orange-500 hover:bg-orange-600"
+                      className="w-full bg-orange-500"
                       disabled={logVitalsMutation.isPending}
                     >
                       {logVitalsMutation.isPending ? "Saving..." : "Log Vitals"}

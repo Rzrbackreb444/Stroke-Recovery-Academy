@@ -119,7 +119,7 @@ export default function FlickerLog() {
           
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-orange-500 hover:bg-orange-600" data-testid="button-add-flicker">
+              <Button className="bg-orange-500" data-testid="button-add-flicker">
                 <Plus className="h-4 w-4 mr-2" />
                 Log a Flicker
               </Button>
@@ -241,7 +241,7 @@ export default function FlickerLog() {
 
                 <Button 
                   onClick={handleSubmit} 
-                  className="w-full bg-orange-500 hover:bg-orange-600"
+                  className="w-full bg-orange-500"
                   disabled={createMutation.isPending}
                   data-testid="button-save-flicker"
                 >
@@ -280,7 +280,7 @@ export default function FlickerLog() {
             </p>
             <Button 
               onClick={() => setIsOpen(true)} 
-              className="bg-orange-500 hover:bg-orange-600"
+              className="bg-orange-500"
             >
               Log Your First Flicker
             </Button>

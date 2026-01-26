@@ -218,7 +218,7 @@ export default function CourseBuilder() {
           
           <Button 
             onClick={() => setNewCourseOpen(true)} 
-            className="bg-orange-500 hover:bg-orange-600"
+            className="bg-orange-500"
             data-testid="button-new-course"
           >
             <Plus className="h-4 w-4 mr-2" />
@@ -373,7 +373,7 @@ export default function CourseBuilder() {
                     <Button 
                       onClick={() => setNewModuleOpen(true)} 
                       size="sm"
-                      className="bg-orange-500 hover:bg-orange-600"
+                      className="bg-orange-500"
                       data-testid="button-add-module"
                     >
                       <Plus className="h-4 w-4 mr-1" />
@@ -601,7 +601,7 @@ export default function CourseBuilder() {
                   setActiveTab("editor");
                   toast({ title: "Course created!", description: "Start adding modules and lessons." });
                 }} 
-                className="w-full bg-orange-500 hover:bg-orange-600"
+                className="w-full bg-orange-500"
                 disabled={!courseForm.title}
               >
                 Create Course
@@ -638,7 +638,7 @@ export default function CourseBuilder() {
               </div>
               <Button 
                 onClick={addModule} 
-                className="w-full bg-orange-500 hover:bg-orange-600"
+                className="w-full bg-orange-500"
                 disabled={!moduleForm.title}
               >
                 Add Module
@@ -727,7 +727,7 @@ export default function CourseBuilder() {
               </div>
               <Button 
                 onClick={addLesson} 
-                className="w-full bg-orange-500 hover:bg-orange-600"
+                className="w-full bg-orange-500"
                 disabled={!lessonForm.title}
               >
                 Add Lesson

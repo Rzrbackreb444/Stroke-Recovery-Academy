@@ -2727,6 +2727,151 @@ export class DatabaseStorage implements IStorage {
       throw error;
     }
   }
+
+  // Never Zero Methods
+  async getNeverZeroData(userId: string): Promise<any> {
+    try {
+      const result = await db.execute(sql`
+        SELECT * FROM never_zero_logs 
+        WHERE user_id = ${userId}
+        ORDER BY created_at DESC
+      `);
+      const logs = result.rows || [];
+      
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      // Get unique dates
+      const logDates = new Set(logs.map((log: any) => {
+        const d = new Date(log.created_at);
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      }));
+      
+      const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+      const loggedToday = logDates.has(todayStr);
+      
+      // Calculate current streak
+      let currentStreak = 0;
+      const sortedDates = Array.from(logDates).sort().reverse();
+      for (let i = 0; i < 365; i++) {
+        const checkDate = new Date(today);
+        checkDate.setDate(checkDate.getDate() - i);
+        const checkStr = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, '0')}-${String(checkDate.getDate()).padStart(2, '0')}`;
+        
+        if (logDates.has(checkStr)) {
+          currentStreak++;
+        } else if (i === 0) {
+          continue; // Allow today to be empty if streak started yesterday
+        } else {
+          break;
+        }
+      }
+      
+      // Calculate longest streak by iterating through all sorted dates
+      let longestStreak = 0;
+      let tempStreak = 0;
+      let prevDate: Date | null = null;
+      
+      for (const dateStr of sortedDates.reverse()) {
+        const [year, month, day] = dateStr.split('-').map(Number);
+        const currentDate = new Date(year, month - 1, day);
+        
+        if (prevDate === null) {
+          tempStreak = 1;
+        } else {
+          const diffTime = prevDate.getTime() - currentDate.getTime();
+          const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+          
+          if (diffDays === 1) {
+            tempStreak++;
+          } else {
+            longestStreak = Math.max(longestStreak, tempStreak);
+            tempStreak = 1;
+          }
+        }
+        prevDate = currentDate;
+      }
+      longestStreak = Math.max(longestStreak, tempStreak, currentStreak);
+      
+      return {
+        currentStreak,
+        longestStreak,
+        totalDays: logDates.size,
+        loggedToday,
+        logs: logs.slice(0, 30),
+      };
+    } catch (error) {
+      console.error("Error fetching never zero data:", error);
+      return { currentStreak: 0, longestStreak: 0, totalDays: 0, loggedToday: false, logs: [] };
+    }
+  }
+
+  async logNeverZero(userId: string, data: any): Promise<any> {
+    try {
+      const result = await db.execute(sql`
+        INSERT INTO never_zero_logs (user_id, action, notes, reps, difficulty)
+        VALUES (${userId}, ${data.action}, ${data.notes || null}, ${data.reps || 1}, ${data.category || 'movement'})
+        RETURNING *
+      `);
+      return result.rows?.[0];
+    } catch (error) {
+      console.error("Error logging never zero:", error);
+      throw error;
+    }
+  }
+
+  // Journal Methods
+  async getJournalEntries(userId: string): Promise<any[]> {
+    try {
+      const result = await db.execute(sql`
+        SELECT * FROM recovery_journals 
+        WHERE user_id = ${userId}
+        ORDER BY created_at DESC
+        LIMIT 100
+      `);
+      return result.rows || [];
+    } catch (error) {
+      console.error("Error fetching journal entries:", error);
+      return [];
+    }
+  }
+
+  async createJournalEntry(userId: string, data: any): Promise<any> {
+    try {
+      // Build content from the various fields
+      const contentParts = [];
+      if (data.reflection) contentParts.push(data.reflection);
+      if (data.wins) contentParts.push(`Wins: ${data.wins}`);
+      if (data.challenges) contentParts.push(`Challenges: ${data.challenges}`);
+      if (data.tomorrowsGoal) contentParts.push(`Tomorrow's Goal: ${data.tomorrowsGoal}`);
+      const content = contentParts.join('\n\n') || 'Journal entry';
+      
+      // Parse mood to integer if it's a string
+      const moodMap: Record<string, number> = {
+        'great': 9, 'good': 7, 'okay': 5, 'struggling': 3, 'difficult': 2
+      };
+      const moodValue = typeof data.mood === 'string' ? moodMap[data.mood] || 5 : (data.mood || 5);
+      
+      const result = await db.execute(sql`
+        INSERT INTO recovery_journals (
+          user_id, content, mood, energy, gratitude, wins, 
+          struggles, tomorrows_intention
+        )
+        VALUES (
+          ${userId}, ${content}, ${moodValue}, ${data.energyLevel || 5}, 
+          ${data.gratitude ? [data.gratitude] : null}, 
+          ${data.wins ? [data.wins] : null}, 
+          ${data.challenges ? [data.challenges] : null}, 
+          ${data.tomorrowsGoal || null}
+        )
+        RETURNING *
+      `);
+      return result.rows?.[0];
+    } catch (error) {
+      console.error("Error creating journal entry:", error);
+      throw error;
+    }
+  }
 }
 
 export const storage = new DatabaseStorage();

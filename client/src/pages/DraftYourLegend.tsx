@@ -113,7 +113,7 @@ export default function DraftYourLegend() {
           
           <Button 
             onClick={handleSave} 
-            className="bg-orange-500 hover:bg-orange-600"
+            className="bg-orange-500"
             disabled={saveMutation.isPending || !hasChanges}
             data-testid="button-save-legend"
           >
