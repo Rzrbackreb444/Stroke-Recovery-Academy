@@ -47,6 +47,7 @@ export interface PlatformRequirements {
   maxPages?: number;
   minCoverWidth?: number;
   minCoverHeight?: number;
+  aggregator?: string;
   coverDPI?: number;
   interiorDPI?: number;
   isbn?: 'required' | 'optional' | 'provided';
@@ -352,24 +353,25 @@ export const PUBLISHING_PLATFORMS: PublishingPlatform[] = [
   },
   {
     id: 'scribd',
-    name: 'Scribd',
+    name: 'Scribd (Everand)',
     type: 'ebook',
     logo: '/platforms/scribd.svg',
-    description: 'Subscription-based reading platform with millions of active subscribers.',
-    royaltyRate: 'Per-page read',
+    description: 'Subscription platform with 100M+ readers. Distribute via Draft2Digital or PublishDrive.',
+    royaltyRate: 'Per-read threshold',
     requirements: {
       isbn: 'optional',
+      aggregator: 'Required - use Draft2Digital, PublishDrive, or Smashwords',
     },
     supportedFormats: ['epub3', 'pdf_web'],
     features: [
       'Subscription model income',
-      'Document sharing',
+      '100M+ monthly readers',
       'Audiobook support',
-      'Large subscriber base',
+      'Everand subscription service',
       'Discovery features',
     ],
     apiAvailable: false,
-    setupUrl: 'https://www.scribd.com',
+    setupUrl: 'https://support.scribd.com/hc/en-us/articles/210134806-My-books-on-Everand',
     status: 'active',
   },
   {
@@ -377,21 +379,22 @@ export const PUBLISHING_PLATFORMS: PublishingPlatform[] = [
     name: 'OverDrive (Libraries)',
     type: 'ebook',
     logo: '/platforms/overdrive.svg',
-    description: 'Reach 90,000+ libraries and schools worldwide through OverDrive.',
+    description: 'Reach 92,000+ libraries via Libby app. Distribute via Draft2Digital or PublishDrive.',
     royaltyRate: 'Per-checkout',
     requirements: {
       isbn: 'required',
+      aggregator: 'Required - use Draft2Digital, Kobo Writing Life, or PublishDrive',
     },
     supportedFormats: ['epub3', 'pdf_web'],
     features: [
-      '90,000+ libraries',
+      '92,000+ libraries worldwide',
       'School distribution',
-      'Libby app integration',
+      'Libby & Sora apps',
       'Institutional sales',
-      'Educational licensing',
+      '115 countries',
     ],
     apiAvailable: false,
-    setupUrl: 'https://company.overdrive.com',
+    setupUrl: 'https://company.overdrive.com/publishers/',
     status: 'active',
   },
 ];
