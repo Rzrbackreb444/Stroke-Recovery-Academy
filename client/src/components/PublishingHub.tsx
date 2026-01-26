@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -17,24 +18,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   Rocket,
   FileDown,
   Globe,
-  DollarSign,
   CheckCircle2,
   ExternalLink,
   BookOpen,
   Printer,
-  Headphones,
-  Loader2,
   Info,
   TrendingUp,
   Store,
@@ -83,18 +73,18 @@ const platformIcons: Record<string, typeof Store> = {
   overdrive: Library,
 };
 
-const platformColors: Record<string, string> = {
-  amazon_kdp: "bg-orange-500",
-  apple_books: "bg-gray-800",
-  barnes_noble: "bg-green-600",
-  lulu: "bg-blue-600",
-  draft2digital: "bg-purple-600",
-  ingram_spark: "bg-red-600",
-  kobo: "bg-teal-600",
-  google_play: "bg-blue-500",
-  smashwords: "bg-indigo-600",
-  scribd: "bg-yellow-600",
-  overdrive: "bg-pink-600",
+const platformColors: Record<string, { bg: string; text: string }> = {
+  amazon_kdp: { bg: "#FF9900", text: "#FFFFFF" },
+  apple_books: { bg: "#1D1D1F", text: "#FFFFFF" },
+  barnes_noble: { bg: "#2E7D32", text: "#FFFFFF" },
+  lulu: { bg: "#1976D2", text: "#FFFFFF" },
+  draft2digital: { bg: "#7B1FA2", text: "#FFFFFF" },
+  ingram_spark: { bg: "#C62828", text: "#FFFFFF" },
+  kobo: { bg: "#00796B", text: "#FFFFFF" },
+  google_play: { bg: "#1A73E8", text: "#FFFFFF" },
+  smashwords: { bg: "#3949AB", text: "#FFFFFF" },
+  scribd: { bg: "#F9A825", text: "#1A1A1A" },
+  overdrive: { bg: "#AD1457", text: "#FFFFFF" },
 };
 
 export default function PublishingHub() {
@@ -156,8 +146,30 @@ export default function PublishingHub() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="space-y-8">
+        <div className="text-center space-y-2">
+          <Skeleton className="h-9 w-64 mx-auto" />
+          <Skeleton className="h-5 w-96 mx-auto" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <Card key={i} className="p-4 space-y-4">
+              <div className="flex items-center gap-3">
+                <Skeleton className="w-10 h-10 rounded-lg" />
+                <div className="space-y-2">
+                  <Skeleton className="h-5 w-32" />
+                  <Skeleton className="h-4 w-20" />
+                </div>
+              </div>
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+              <div className="flex gap-2">
+                <Skeleton className="h-5 w-16" />
+                <Skeleton className="h-5 w-20" />
+              </div>
+            </Card>
+          ))}
+        </div>
       </div>
     );
   }
@@ -228,8 +240,14 @@ export default function PublishingHub() {
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-lg ${platformColors[platform.id] || "bg-gray-500"} flex items-center justify-center`}>
-                          <Icon className="w-5 h-5 text-white" />
+                        <div 
+                          className="w-10 h-10 rounded-lg flex items-center justify-center"
+                          style={{ 
+                            backgroundColor: platformColors[platform.id]?.bg || "hsl(var(--muted))",
+                            color: platformColors[platform.id]?.text || "hsl(var(--muted-foreground))"
+                          }}
+                        >
+                          <Icon className="w-5 h-5" />
                         </div>
                         <div>
                           <CardTitle className="text-base">{platform.name}</CardTitle>
@@ -238,7 +256,7 @@ export default function PublishingHub() {
                               {platform.type}
                             </Badge>
                             {platform.apiAvailable && (
-                              <Badge variant="outline" className="text-xs text-green-600">
+                              <Badge variant="outline" className="text-xs text-green-600 dark:text-green-400">
                                 API
                               </Badge>
                             )}
@@ -258,7 +276,7 @@ export default function PublishingHub() {
                     </p>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Royalty:</span>
-                      <span className="font-semibold text-green-600">{platform.royaltyRate}</span>
+                      <span className="font-semibold text-green-600 dark:text-green-400">{platform.royaltyRate}</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Est. per sale:</span>
@@ -282,6 +300,7 @@ export default function PublishingHub() {
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
                       className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                      data-testid={`link-setup-${platform.id}`}
                     >
                       Setup Account <ExternalLink className="w-3 h-3" />
                     </a>
@@ -344,7 +363,7 @@ export default function PublishingHub() {
             ))}
           </div>
 
-          <Card className="bg-primary/5 border-primary/20">
+          <Card className="bg-primary/5 dark:bg-primary/10 border-primary/20 dark:border-primary/30">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Zap className="w-5 h-5 text-primary" />
@@ -414,16 +433,22 @@ export default function PublishingHub() {
                     <div key={platform.id} className="space-y-2">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className={`w-6 h-6 rounded ${platformColors[platform.id] || "bg-gray-500"} flex items-center justify-center`}>
+                          <div 
+                            className="w-6 h-6 rounded flex items-center justify-center"
+                            style={{ 
+                              backgroundColor: platformColors[platform.id]?.bg || "hsl(var(--muted))",
+                              color: platformColors[platform.id]?.text || "hsl(var(--muted-foreground))"
+                            }}
+                          >
                             {(() => {
                               const Icon = platformIcons[platform.id] || Globe;
-                              return <Icon className="w-3 h-3 text-white" />;
+                              return <Icon className="w-3 h-3" />;
                             })()}
                           </div>
                           <span className="text-sm font-medium">{platform.name}</span>
                           <Badge variant="outline" className="text-xs">{platform.royaltyRate}</Badge>
                         </div>
-                        <span className="font-bold text-green-600">${royalty.toFixed(2)}</span>
+                        <span className="font-bold text-green-600 dark:text-green-400">${royalty.toFixed(2)}</span>
                       </div>
                       <Progress value={percentage} className="h-2" />
                     </div>
@@ -441,10 +466,10 @@ export default function PublishingHub() {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2">
-                      {key === 'wide' && <Globe className="w-5 h-5 text-blue-500" />}
-                      {key === 'kdp_exclusive' && <Crown className="w-5 h-5 text-orange-500" />}
-                      {key === 'hybrid' && <TrendingUp className="w-5 h-5 text-purple-500" />}
-                      {key === 'library_focus' && <Library className="w-5 h-5 text-green-500" />}
+                      {key === 'wide' && <Globe className="w-5 h-5 text-blue-600 dark:text-blue-400" />}
+                      {key === 'kdp_exclusive' && <Crown className="w-5 h-5 text-orange-600 dark:text-orange-400" />}
+                      {key === 'hybrid' && <TrendingUp className="w-5 h-5 text-purple-600 dark:text-purple-400" />}
+                      {key === 'library_focus' && <Library className="w-5 h-5 text-green-600 dark:text-green-400" />}
                       {strategy.name}
                     </CardTitle>
                   </div>
@@ -461,22 +486,22 @@ export default function PublishingHub() {
 
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <p className="font-medium text-green-600 mb-1">Pros:</p>
+                      <p className="font-medium text-green-600 dark:text-green-400 mb-1">Pros:</p>
                       <ul className="space-y-1">
                         {strategy.pros?.map((pro: string, i: number) => (
                           <li key={i} className="flex items-start gap-1">
-                            <CheckCircle2 className="w-3 h-3 mt-1 text-green-500 flex-shrink-0" />
+                            <CheckCircle2 className="w-3 h-3 mt-1 text-green-600 dark:text-green-400 flex-shrink-0" />
                             <span className="text-muted-foreground">{pro}</span>
                           </li>
                         ))}
                       </ul>
                     </div>
                     <div>
-                      <p className="font-medium text-red-600 mb-1">Cons:</p>
+                      <p className="font-medium text-red-600 dark:text-red-400 mb-1">Cons:</p>
                       <ul className="space-y-1">
                         {strategy.cons?.map((con: string, i: number) => (
                           <li key={i} className="flex items-start gap-1">
-                            <Info className="w-3 h-3 mt-1 text-red-500 flex-shrink-0" />
+                            <Info className="w-3 h-3 mt-1 text-red-600 dark:text-red-400 flex-shrink-0" />
                             <span className="text-muted-foreground">{con}</span>
                           </li>
                         ))}
@@ -501,7 +526,7 @@ export default function PublishingHub() {
       </Tabs>
 
       {selectedPlatforms.length > 0 && (
-        <Card className="bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
+        <Card className="bg-gradient-to-r from-primary/10 to-primary/5 dark:from-primary/20 dark:to-primary/10 border-primary/20 dark:border-primary/30">
           <CardContent className="flex flex-col sm:flex-row items-center justify-between gap-4 py-6">
             <div>
               <h3 className="font-bold text-lg">Ready to Publish?</h3>
