@@ -335,7 +335,7 @@ export default function TermsOfService() {
             <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
               <p className="text-foreground font-semibold mb-2">KreAIte Legal Team</p>
               <p className="text-muted-foreground">
-                Email: <a href="mailto:hello@kreaite.xyz" className="text-primary hover:underline" data-testid="link-contact-email">hello@kreaite.xyz</a>
+                Email: <a href="mailto:info@kreaite.xyz" className="text-primary hover:underline" data-testid="link-contact-email">info@kreaite.xyz</a>
               </p>
             </div>
           </section>
