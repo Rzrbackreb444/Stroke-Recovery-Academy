@@ -39,6 +39,7 @@ const navLinks = [
   { href: "/recovery/dashboard", label: "PROGRESS", icon: Target, description: "Track your recovery journey" },
   { href: "/recovery/social", label: "COMMUNITY", icon: Users, description: "Connect with survivors" },
   { href: "/recovery/university", label: "RESOURCES", icon: Building2, description: "Guides and tools" },
+  { href: "https://strokelyfe.org", label: "DONATE", icon: Heart, description: "Support stroke survivors", external: true },
 ];
 
 const quickFeatures = [
@@ -56,13 +57,13 @@ export default function RecoveryHeader() {
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-emerald-700/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between gap-4 h-16">
           <div className="flex items-center gap-4">
             <Link href="/creator-landing" data-testid="link-back-kreate">
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-emerald-400 hover:text-emerald-300 gap-1"
+                className="text-emerald-400 gap-1"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span className="hidden sm:inline text-xs">KreAIte</span>
@@ -123,21 +124,35 @@ export default function RecoveryHeader() {
             </DropdownMenu>
 
             {navLinks.map((link) => (
-              <Link key={link.href} href={link.href}>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  data-testid={`link-${link.label.toLowerCase()}`}
-                  className={`font-medium text-xs tracking-wide gap-1 ${
-                    location === link.href 
-                      ? "text-emerald-400" 
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <link.icon className="w-4 h-4" />
-                  {link.label}
-                </Button>
-              </Link>
+              link.external ? (
+                <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    data-testid={`link-${link.label.toLowerCase()}`}
+                    className="font-medium text-xs tracking-wide gap-1 text-orange-500"
+                  >
+                    <link.icon className="w-4 h-4" />
+                    {link.label}
+                  </Button>
+                </a>
+              ) : (
+                <Link key={link.href} href={link.href}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    data-testid={`link-${link.label.toLowerCase()}`}
+                    className={`font-medium text-xs tracking-wide gap-1 ${
+                      location === link.href 
+                        ? "text-emerald-400" 
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    <link.icon className="w-4 h-4" />
+                    {link.label}
+                  </Button>
+                </Link>
+              )
             ))}
           </nav>
 
@@ -193,7 +208,7 @@ export default function RecoveryHeader() {
                 size="sm"
                 data-testid="button-join"
                 onClick={() => window.location.href = '/api/login'}
-                className="font-semibold text-xs tracking-wide bg-emerald-600 hover:bg-emerald-700 text-foreground"
+                className="font-semibold text-xs tracking-wide bg-emerald-600 text-foreground"
               >
                 JOIN RECOVERY
               </Button>
@@ -286,7 +301,7 @@ export default function RecoveryHeader() {
                 </>
               ) : (
                 <Button
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-foreground"
+                  className="w-full bg-emerald-600 text-foreground"
                   data-testid="mobile-button-join"
                   onClick={() => window.location.href = '/api/login'}
                 >

@@ -46,6 +46,7 @@ export default function RecoveryDashboard() {
     winsToday: "",
     challengesToday: "",
     gratitude: "",
+    tomorrowsTarget: "",
   });
   const [createPodOpen, setCreatePodOpen] = useState(false);
   const [newPodName, setNewPodName] = useState("");
@@ -200,10 +201,15 @@ export default function RecoveryDashboard() {
                 </div>
               </div>
               
-              <div className="flex items-center gap-2 mt-4">
-                <Flame className="h-6 w-6 text-primary" />
-                <span className="text-2xl font-bold text-foreground" data-testid="text-streak">{streak.currentStreak}</span>
-                <span className="text-gray-400">day streak</span>
+              <div className="mt-4 bg-orange-500/10 border border-orange-500/30 rounded-lg p-3">
+                <div className="flex items-center gap-2 mb-1">
+                  <Flame className="h-6 w-6 text-orange-500" />
+                  <span className="text-2xl font-bold text-foreground" data-testid="text-streak">{streak.currentStreak}</span>
+                  <span className="text-gray-400">day streak</span>
+                </div>
+                <p className="text-xs text-orange-400 font-semibold uppercase tracking-wider">
+                  NEVER ZERO - Keep the signal alive
+                </p>
               </div>
             </div>
           </div>
@@ -287,26 +293,45 @@ export default function RecoveryDashboard() {
                   <div className="text-right text-primary font-bold">{checkinForm.painScore}</div>
                 </div>
                 
-                <div>
-                  <label className="text-sm text-gray-400 mb-2 block">Today's Wins</label>
-                  <Textarea
-                    placeholder="What victories did you have today?"
-                    value={checkinForm.winsToday}
-                    onChange={(e) => setCheckinForm({ ...checkinForm, winsToday: e.target.value })}
-                    className="bg-gray-800 border-gray-700 text-foreground"
-                    data-testid="input-wins"
-                  />
-                </div>
-                
-                <div>
-                  <label className="text-sm text-gray-400 mb-2 block">Challenges Faced</label>
-                  <Textarea
-                    placeholder="What challenges did you face?"
-                    value={checkinForm.challengesToday}
-                    onChange={(e) => setCheckinForm({ ...checkinForm, challengesToday: e.target.value })}
-                    className="bg-gray-800 border-gray-700 text-foreground"
-                    data-testid="input-challenges"
-                  />
+                <div className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-4 mb-4">
+                  <h3 className="text-sm font-bold text-orange-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <Flame className="w-4 h-4" />
+                    Sasquatch Daily Audit
+                  </h3>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-sm text-gray-400 mb-2 block">1. What did I BUILD today?</label>
+                      <Textarea
+                        placeholder="Every small action counts - a flicker is still progress..."
+                        value={checkinForm.winsToday}
+                        onChange={(e) => setCheckinForm({ ...checkinForm, winsToday: e.target.value })}
+                        className="bg-gray-800 border-gray-700 text-foreground"
+                        data-testid="input-wins"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="text-sm text-gray-400 mb-2 block">2. What BROKE?</label>
+                      <Textarea
+                        placeholder="Honesty heals faster than denial..."
+                        value={checkinForm.challengesToday}
+                        onChange={(e) => setCheckinForm({ ...checkinForm, challengesToday: e.target.value })}
+                        className="bg-gray-800 border-gray-700 text-foreground"
+                        data-testid="input-challenges"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="text-sm text-gray-400 mb-2 block">3. What's TOMORROW'S TARGET?</label>
+                      <Textarea
+                        placeholder="Your next rep, your next step..."
+                        value={checkinForm.tomorrowsTarget}
+                        onChange={(e) => setCheckinForm({ ...checkinForm, tomorrowsTarget: e.target.value })}
+                        className="bg-gray-800 border-gray-700 text-foreground"
+                        data-testid="input-target"
+                      />
+                    </div>
+                  </div>
                 </div>
                 
                 <div>
@@ -323,7 +348,7 @@ export default function RecoveryDashboard() {
                 <Button 
                   onClick={handleCheckinSubmit}
                   disabled={checkinMutation.isPending}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-foreground font-bold"
+                  className="w-full bg-orange-500 text-foreground font-bold"
                   data-testid="button-checkin-submit"
                 >
                   {checkinMutation.isPending ? "Saving..." : "Complete Check-in"}
@@ -367,7 +392,7 @@ export default function RecoveryDashboard() {
                 )}
                 
                 <Link href="/recovery/academy">
-                  <Button className="w-full bg-orange-500 hover:bg-orange-600 text-foreground font-bold" data-testid="button-continue-learning">
+                  <Button className="w-full bg-orange-500 text-foreground font-bold" data-testid="button-continue-learning">
                     Continue Learning
                   </Button>
                 </Link>
@@ -377,7 +402,7 @@ export default function RecoveryDashboard() {
                 <Target className="h-12 w-12 text-gray-600 mx-auto mb-4" />
                 <p className="text-gray-400 mb-4">Start your personalized recovery journey</p>
                 <Link href="/recovery/builder">
-                  <Button className="bg-orange-500 hover:bg-orange-600 text-foreground font-bold" data-testid="button-start-program">
+                  <Button className="bg-orange-500  text-foreground font-bold" data-testid="button-start-program">
                     Build Your Program
                   </Button>
                 </Link>
@@ -448,7 +473,7 @@ export default function RecoveryDashboard() {
               <div className="text-center py-4">
                 <p className="text-gray-400 mb-3">No habits tracked yet</p>
                 <Link href="/recovery/builder">
-                  <Button variant="outline" className="border-orange-500 text-primary hover:bg-primary/10" data-testid="button-add-habit">
+                  <Button variant="outline" className="border-orange-500 text-primary " data-testid="button-add-habit">
                     Add New Habit
                   </Button>
                 </Link>
@@ -487,7 +512,7 @@ export default function RecoveryDashboard() {
                 <Link href="/achievements">
                   <Button 
                     variant="outline" 
-                    className="w-full mt-4 border-orange-500 text-primary hover:bg-primary/10"
+                    className="w-full mt-4 border-orange-500 text-primary "
                     data-testid="button-view-achievements"
                   >
                     View All Achievements
@@ -501,7 +526,7 @@ export default function RecoveryDashboard() {
                 <Link href="/achievements">
                   <Button 
                     variant="outline" 
-                    className="mt-4 border-orange-500 text-primary hover:bg-primary/10"
+                    className="mt-4 border-orange-500 text-primary "
                     data-testid="button-view-achievements-empty"
                   >
                     View Achievement Center
@@ -617,7 +642,7 @@ export default function RecoveryDashboard() {
                 variant="outline" 
                 onClick={() => leavePodMutation.mutate(userPod.id)}
                 disabled={leavePodMutation.isPending}
-                className="border-gray-700 text-gray-400 hover:text-foreground hover:border-gray-500"
+                className="border-gray-700 text-gray-400 "
                 data-testid="button-leave-pod"
               >
                 <DoorOpen className="h-4 w-4 mr-2" />
@@ -654,7 +679,7 @@ export default function RecoveryDashboard() {
                           size="sm"
                           onClick={() => joinPodMutation.mutate(pod.id)}
                           disabled={joinPodMutation.isPending}
-                          className="bg-orange-500 hover:bg-orange-600 text-foreground"
+                          className="bg-orange-500  text-foreground"
                           data-testid={`button-join-pod-${pod.id}`}
                         >
                           <UserPlus className="h-4 w-4 mr-1" />
@@ -671,7 +696,7 @@ export default function RecoveryDashboard() {
                 <Dialog open={createPodOpen} onOpenChange={setCreatePodOpen}>
                   <DialogTrigger asChild>
                     <Button 
-                      className="bg-orange-500 hover:bg-orange-600 text-foreground"
+                      className="bg-orange-500  text-foreground"
                       data-testid="button-create-pod"
                     >
                       <Plus className="h-4 w-4 mr-2" />
@@ -719,7 +744,7 @@ export default function RecoveryDashboard() {
                       <Button
                         onClick={handleCreatePod}
                         disabled={createPodMutation.isPending || !newPodName.trim()}
-                        className="w-full bg-orange-500 hover:bg-orange-600 text-foreground"
+                        className="w-full bg-orange-500  text-foreground"
                         data-testid="button-confirm-create-pod"
                       >
                         {createPodMutation.isPending ? "Creating..." : "Create Pod"}
@@ -746,11 +771,38 @@ export default function RecoveryDashboard() {
                 ? `Great check-in today! Your mood is at ${todayCheckin.moodScore}/10 and energy at ${todayCheckin.energyScore}/10. ${todayCheckin.moodScore >= 7 ? "You're doing amazing - keep that momentum going!" : "Remember, recovery isn't linear. Every day you show up matters."}`
                 : "Hey warrior! Don't forget to complete your daily check-in. Tracking your progress is key to seeing how far you've come."}
             </p>
-            <Button variant="outline" className="border-orange-500 text-primary hover:bg-primary/10" data-testid="button-chat-coach">
+            <Button variant="outline" className="border-orange-500 text-primary " data-testid="button-chat-coach">
               Chat with Sasquatch Coach
             </Button>
           </div>
         </Card>
+
+        <section className="mb-8">
+          <Card className="bg-gradient-to-r from-orange-500/20 to-emerald-500/20 border-orange-500/30 p-6" data-testid="card-donation-cta">
+            <div className="flex flex-col md:flex-row items-center gap-4">
+              <div className="flex-1">
+                <h3 className="text-xl font-bold text-foreground mb-2">Gift the Rebuild</h3>
+                <p className="text-gray-400 text-sm">
+                  Every donation to The Stroke Recovery Academy funds coaching for a survivor who needs a builder's blueprint.
+                  Gift a survivor one-on-one accountability coaching, motivation, and nutrition-focused advice from the Stroked-Out Sasquatch himself.
+                </p>
+              </div>
+              <div className="flex gap-3">
+                <a href="https://strokelyfe.org" target="_blank" rel="noopener noreferrer">
+                  <Button className="bg-orange-500 text-white font-bold" data-testid="button-donate">
+                    <Heart className="w-4 h-4 mr-2" />
+                    Donate Now
+                  </Button>
+                </a>
+                <a href="https://strokerecoveryacademy.com" target="_blank" rel="noopener noreferrer">
+                  <Button variant="outline" className="border-emerald-500/50 text-emerald-400" data-testid="button-coaching">
+                    Book Coaching
+                  </Button>
+                </a>
+              </div>
+            </div>
+          </Card>
+        </section>
 
         <section className="mb-8">
           <h2 className="text-xl font-bold mb-4 text-foreground">Quick Actions</h2>
