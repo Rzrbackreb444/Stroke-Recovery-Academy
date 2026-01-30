@@ -41,47 +41,184 @@ interface ServiceAccountCredentials {
 // Cache for access token
 let cachedToken: { token: string; expiresAt: number } | null = null;
 
-// Genre-specific prompt templates for production quality
+// Genre-specific prompt templates for production quality (25+ professional genres)
 const genrePrompts: Record<string, { style: string; instruments: string; negative: string }> = {
+  // Hip-Hop & Rap
   rap: {
-    style: "hard-hitting hip-hop beat with punchy 808 bass, crisp snares, and trap hi-hats",
-    instruments: "808 bass, punchy kick drums, crisp snares, trap hi-hats, dark synth pads",
-    negative: "acoustic instruments, soft, gentle, classical"
+    style: "hard-hitting hip-hop beat with punchy 808 bass, crisp snares, and trap hi-hats, professional mix",
+    instruments: "808 bass, punchy kick drums, crisp snares, trap hi-hats, dark synth pads, vocal chops",
+    negative: "acoustic instruments, soft, gentle, classical, lo-fi"
   },
-  pop: {
-    style: "polished modern pop production with catchy hooks, driving rhythm, and synth layers",
-    instruments: "synth bass, electronic drums, layered synths, bright leads, rhythmic pads",
-    negative: "distortion, heavy metal, aggressive, dark"
+  trap: {
+    style: "aggressive modern trap with rolling hi-hats, heavy 808s, dark melodies, and crisp production",
+    instruments: "heavy 808 sub bass, fast hi-hat rolls, snappy snares, dark synth leads, brass stabs",
+    negative: "acoustic, organic, soft, gentle, classical"
   },
-  country: {
-    style: "authentic southern rock with twangy guitars, driving rhythm, and heartland feel",
-    instruments: "electric guitar, acoustic guitar, bass guitar, drums, pedal steel, fiddle",
-    negative: "electronic, synth, EDM, dubstep"
+  lofi: {
+    style: "chill lo-fi hip hop with dusty vinyl texture, mellow chords, and laid-back drums",
+    instruments: "muted piano, vinyl crackle, boom bap drums, warm bass, jazz guitar samples",
+    negative: "heavy bass, aggressive, loud, distorted, fast"
+  },
+  boom_bap: {
+    style: "classic 90s hip-hop with hard-hitting drums, soul samples, and boom bap groove",
+    instruments: "punchy kick, snappy snare, chopped soul samples, upright bass, vinyl texture",
+    negative: "trap, electronic, modern synths, 808s"
+  },
+  
+  // Rock & Metal
+  rock: {
+    style: "powerful rock with driving guitars, thundering drums, and anthemic energy",
+    instruments: "electric guitars with overdrive, powerful drums, bass guitar, rock organ",
+    negative: "electronic, EDM, hip-hop, soft, ambient"
   },
   metal: {
-    style: "brutal death metal with crushing guitars, blast beats, and intense aggression",
-    instruments: "heavily distorted electric guitars, double bass drums, blast beats, growling bass",
-    negative: "soft, gentle, acoustic, peaceful, ambient"
-  },
-  rock: {
-    style: "modern alternative rock with powerful guitars, driving drums, and anthemic energy",
-    instruments: "distorted electric guitars, powerful drums, bass guitar, rock organ",
-    negative: "electronic, EDM, hip-hop, soft"
+    style: "heavy metal with crushing guitars, double bass drums, and intense aggression",
+    instruments: "heavily distorted guitars, double bass drums, growling bass, powerful toms",
+    negative: "soft, gentle, acoustic, peaceful, ambient, pop"
   },
   punk: {
     style: "raw punk rock with fast tempo, aggressive guitars, and rebellious energy",
-    instruments: "distorted power chords, fast drums, punk bass, raw energy",
-    negative: "polished, overproduced, soft, electronic"
+    instruments: "distorted power chords, fast drums, punk bass, driving rhythm",
+    negative: "polished, overproduced, soft, electronic, slow"
   },
+  hardcore: {
+    style: "intense hardcore punk with breakdowns, aggressive riffs, and relentless energy",
+    instruments: "down-tuned guitars, blast beats, heavy breakdowns, pounding bass",
+    negative: "soft, melodic, slow, ambient, electronic"
+  },
+  alternative: {
+    style: "modern alternative rock with dynamic shifts, emotional depth, and atmospheric guitars",
+    instruments: "clean and distorted guitars, dynamic drums, melodic bass, ambient textures",
+    negative: "pop, electronic, classical, country"
+  },
+  
+  // Electronic & Dance
   edm: {
-    style: "high-energy electronic dance music with pounding bass, soaring synths, and euphoric drops",
-    instruments: "synthesizers, 808 bass, electronic drums, arpeggiated leads, sidechain compression",
-    negative: "acoustic, organic, unplugged, classical"
+    style: "high-energy electronic dance music with massive drops, soaring synths, and festival energy",
+    instruments: "supersaw synths, powerful kicks, sidechain compression, build-ups, white noise risers",
+    negative: "acoustic, organic, unplugged, classical, slow"
   },
+  house: {
+    style: "groovy house music with four-on-the-floor beats, funky basslines, and uplifting energy",
+    instruments: "punchy house kick, offbeat hi-hats, funky bass, piano stabs, vocal chops",
+    negative: "heavy metal, aggressive, slow, ambient"
+  },
+  techno: {
+    style: "driving techno with hypnotic rhythms, industrial textures, and dark atmosphere",
+    instruments: "powerful kick drums, industrial synths, acid basslines, mechanical percussion",
+    negative: "acoustic, organic, soft, melodic, pop"
+  },
+  dubstep: {
+    style: "heavy dubstep with aggressive wobble bass, metallic growls, and intense drops",
+    instruments: "wobble bass, growling synths, heavy sub, snappy snares, rhythmic glitches",
+    negative: "acoustic, soft, peaceful, classical, gentle"
+  },
+  drum_and_bass: {
+    style: "fast-paced drum and bass with rolling breaks, deep bass, and energetic atmosphere",
+    instruments: "fast breakbeats, rolling drums, deep sub bass, reese bass, atmospheric pads",
+    negative: "slow, acoustic, classical, soft, gentle"
+  },
+  synthwave: {
+    style: "retro synthwave with nostalgic 80s synths, driving arpeggios, and neon atmosphere",
+    instruments: "analog synths, arpeggiated leads, gated drums, lush pads, retro bass",
+    negative: "acoustic, organic, modern, lo-fi, natural"
+  },
+  
+  // Pop & R&B
+  pop: {
+    style: "polished modern pop with catchy hooks, driving rhythm, and radio-ready production",
+    instruments: "synth bass, electronic drums, layered synths, bright leads, rhythmic pads",
+    negative: "distortion, heavy metal, aggressive, dark, lo-fi"
+  },
+  rnb: {
+    style: "smooth contemporary R&B with lush chords, groovy drums, and soulful atmosphere",
+    instruments: "rhodes piano, smooth bass, tight drums, lush pads, subtle guitar",
+    negative: "aggressive, distorted, heavy, punk, metal"
+  },
+  soul: {
+    style: "classic soul with warm horns, groovy bass, and heartfelt emotion",
+    instruments: "brass section, organ, warm bass, live drums, rhythm guitar",
+    negative: "electronic, synthesizers, aggressive, heavy"
+  },
+  funk: {
+    style: "groovy funk with slap bass, tight drums, and infectious rhythm",
+    instruments: "slap bass, funky guitar, tight drums, brass stabs, clavinet",
+    negative: "ambient, slow, heavy metal, classical"
+  },
+  
+  // Country & Folk
+  country: {
+    style: "authentic country with twangy guitars, driving rhythm, and heartland feel",
+    instruments: "telecaster guitar, acoustic guitar, bass, drums, pedal steel, fiddle",
+    negative: "electronic, synth, EDM, dubstep, heavy"
+  },
+  bluegrass: {
+    style: "energetic bluegrass with fast picking, driving rhythm, and mountain spirit",
+    instruments: "banjo, mandolin, fiddle, acoustic guitar, upright bass",
+    negative: "electronic, drums, synthesizers, distortion"
+  },
+  folk: {
+    style: "warm acoustic folk with fingerpicked guitar, natural tones, and storytelling feel",
+    instruments: "acoustic guitar, harmonica, upright bass, gentle percussion, violin",
+    negative: "electronic, heavy, aggressive, synthesizers"
+  },
+  
+  // Jazz & Blues
+  jazz: {
+    style: "sophisticated jazz with complex harmonies, improvisational feel, and swing rhythm",
+    instruments: "jazz drums, upright bass, piano, saxophone, trumpet",
+    negative: "electronic, heavy, aggressive, distortion, pop"
+  },
+  blues: {
+    style: "soulful blues with expressive guitar, shuffling rhythm, and deep emotion",
+    instruments: "blues guitar, harmonica, organ, drums, bass",
+    negative: "electronic, pop, fast, aggressive, synthesizers"
+  },
+  
+  // World & Specialty
+  reggae: {
+    style: "laid-back reggae with offbeat rhythm, deep bass, and island vibes",
+    instruments: "offbeat guitar skanks, deep bass, one drop drums, organ bubbles",
+    negative: "aggressive, fast, heavy, electronic, distortion"
+  },
+  latin: {
+    style: "vibrant Latin music with infectious rhythms, brass, and dance energy",
+    instruments: "congas, timbales, brass section, piano, bass, guiro",
+    negative: "ambient, slow, heavy, electronic"
+  },
+  
+  // Atmospheric & Healing
   ambient: {
     style: "peaceful therapeutic ambient soundscape for healing and meditation",
     instruments: "soft pads, gentle piano, atmospheric textures, nature sounds, warm drones",
-    negative: "drums, aggressive, fast, heavy, distortion"
+    negative: "drums, aggressive, fast, heavy, distortion, beats"
+  },
+  cinematic: {
+    style: "epic cinematic score with orchestral power, emotional depth, and dramatic tension",
+    instruments: "full orchestra, strings, brass, timpani, choir, piano",
+    negative: "electronic, pop, hip-hop, lo-fi"
+  },
+  orchestral: {
+    style: "classical orchestral arrangement with rich strings, expressive brass, and dynamic range",
+    instruments: "strings ensemble, woodwinds, brass section, percussion, harp",
+    negative: "electronic, drums, guitars, synthesizers, hip-hop"
+  },
+  
+  // Recovery & Motivation (special for Stroke Recovery Academy)
+  recovery: {
+    style: "uplifting therapeutic music for stroke recovery with gentle progression and hopeful energy",
+    instruments: "warm piano, soft strings, gentle percussion, healing pads, nature sounds",
+    negative: "aggressive, fast, heavy, distortion, harsh, loud"
+  },
+  motivation: {
+    style: "powerful motivational anthem with triumphant energy, driving rhythm, and inspiring progression",
+    instruments: "epic drums, soaring synths, powerful bass, brass stabs, piano chords",
+    negative: "sad, slow, ambient, quiet, gentle"
+  },
+  warrior: {
+    style: "intense warrior anthem for overcoming challenges with relentless drive and unstoppable energy",
+    instruments: "pounding drums, aggressive synths, epic brass, powerful bass, battle percussion",
+    negative: "soft, quiet, ambient, peaceful, slow"
   }
 };
 

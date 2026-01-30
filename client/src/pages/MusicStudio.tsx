@@ -26,19 +26,52 @@ import {
   Save, RefreshCw, Upload, Film, Clapperboard, User, Users, Disc, RotateCcw,
   FastForward, Rewind, CircleDot, Square as StopIcon, Activity, Layers, Shuffle,
   Scissors, Target, Disc3, Tv, Settings2, Sliders, CheckCircle, Globe, FileText,
-  Rocket
+  Rocket, Heart
 } from "lucide-react";
 
 // Genre configurations
 const genres = [
-  { value: "rap", label: "Southern Rap", icon: Mic },
-  { value: "pop", label: "Pop", icon: Music },
-  { value: "country", label: "Country Rock", icon: Guitar },
-  { value: "metal", label: "Death Metal", icon: Zap },
-  { value: "rock", label: "Modern Rock", icon: Radio },
-  { value: "punk", label: "Punk", icon: Drum },
-  { value: "edm", label: "EDM / Bassnectar", icon: Waves },
-  { value: "ambient", label: "Ambient Healing", icon: Sparkles },
+  // Hip-Hop & Rap
+  { value: "rap", label: "Hip-Hop", icon: Mic, category: "Hip-Hop" },
+  { value: "trap", label: "Trap", icon: Mic, category: "Hip-Hop" },
+  { value: "lofi", label: "Lo-Fi Hip Hop", icon: Headphones, category: "Hip-Hop" },
+  { value: "boom_bap", label: "Boom Bap", icon: Mic, category: "Hip-Hop" },
+  // Rock & Metal
+  { value: "rock", label: "Rock", icon: Guitar, category: "Rock" },
+  { value: "metal", label: "Metal", icon: Zap, category: "Rock" },
+  { value: "punk", label: "Punk", icon: Drum, category: "Rock" },
+  { value: "hardcore", label: "Hardcore", icon: Zap, category: "Rock" },
+  { value: "alternative", label: "Alternative", icon: Radio, category: "Rock" },
+  // Electronic & Dance
+  { value: "edm", label: "EDM", icon: Waves, category: "Electronic" },
+  { value: "house", label: "House", icon: Disc3, category: "Electronic" },
+  { value: "techno", label: "Techno", icon: Settings2, category: "Electronic" },
+  { value: "dubstep", label: "Dubstep", icon: Waves, category: "Electronic" },
+  { value: "drum_and_bass", label: "Drum & Bass", icon: Drum, category: "Electronic" },
+  { value: "synthwave", label: "Synthwave", icon: Radio, category: "Electronic" },
+  // Pop & R&B
+  { value: "pop", label: "Pop", icon: Music, category: "Pop" },
+  { value: "rnb", label: "R&B", icon: Heart, category: "Pop" },
+  { value: "soul", label: "Soul", icon: Heart, category: "Pop" },
+  { value: "funk", label: "Funk", icon: Disc3, category: "Pop" },
+  // Country & Folk
+  { value: "country", label: "Country", icon: Guitar, category: "Country" },
+  { value: "bluegrass", label: "Bluegrass", icon: Guitar, category: "Country" },
+  { value: "folk", label: "Folk", icon: Guitar, category: "Country" },
+  // Jazz & Blues
+  { value: "jazz", label: "Jazz", icon: Music, category: "Jazz" },
+  { value: "blues", label: "Blues", icon: Guitar, category: "Jazz" },
+  // World
+  { value: "reggae", label: "Reggae", icon: Music, category: "World" },
+  { value: "latin", label: "Latin", icon: Drum, category: "World" },
+  // Cinematic & Healing
+  { value: "ambient", label: "Ambient", icon: Sparkles, category: "Atmospheric" },
+  { value: "cinematic", label: "Cinematic", icon: Film, category: "Atmospheric" },
+  { value: "orchestral", label: "Orchestral", icon: Music, category: "Atmospheric" },
+  // Recovery & Motivation (KreAIte Exclusive)
+  { value: "recovery", label: "Recovery Healing", icon: Heart, category: "Motivation" },
+  { value: "motivation", label: "Motivational", icon: Rocket, category: "Motivation" },
+  { value: "warrior", label: "Warrior Anthem", icon: Zap, category: "Motivation" },
 ];
 
 const keys = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
@@ -84,6 +117,8 @@ export default function MusicStudio() {
   const [selectedKey, setSelectedKey] = useState("C");
   const [selectedScale, setSelectedScale] = useState("minor");
   const [selectedGenre, setSelectedGenre] = useState("rock");
+  const [genreCategory, setGenreCategory] = useState("All");
+  const [lyriaSeed, setLyriaSeed] = useState<number | undefined>(undefined);
   const [projectTitle, setProjectTitle] = useState("Untitled Project");
   const [lyrics, setLyrics] = useState("");
   
@@ -251,12 +286,12 @@ export default function MusicStudio() {
   const timeIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Fetch voice styles
-  const { data: voiceStyles } = useQuery({
+  const { data: voiceStyles } = useQuery<{ styles?: any[] }>({
     queryKey: ['/api/voice/styles'],
   });
 
   // Fetch audio presets
-  const { data: audioPresets } = useQuery({
+  const { data: audioPresets } = useQuery<{ presets?: { eq?: any[] } }>({
     queryKey: ['/api/audio/presets'],
   });
 
@@ -2460,31 +2495,48 @@ Repeat the hook...`}
                         <CardTitle className="flex items-center gap-2">
                           <Music className="w-5 h-5 text-primary" /> Step 2: Choose Your Style
                         </CardTitle>
-                        <CardDescription>Define the sound - genre, tempo, key</CardDescription>
+                        <CardDescription>Define the sound - 32 genres powered by Google Lyria AI</CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-6">
                         <div>
-                          <Label className="mb-3 block">Genre</Label>
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                            {genres.map((g) => {
-                              const Icon = g.icon;
-                              return (
-                                <button
-                                  key={g.value}
-                                  onClick={() => setSelectedGenre(g.value)}
-                                  className={`p-4 rounded-lg border-2 transition-all flex flex-col items-center gap-2 hover-elevate
-                                    ${selectedGenre === g.value ? 'border-primary bg-primary/10' : 'border-border'}`}
-                                  data-testid={`button-genre-${g.value}`}
-                                >
-                                  <Icon className={`w-8 h-8 ${selectedGenre === g.value ? 'text-primary' : ''}`} />
-                                  <span className="font-medium text-sm">{g.label}</span>
-                                </button>
-                              );
-                            })}
+                          <Label className="mb-3 block">Genre Category</Label>
+                          <div className="flex flex-wrap gap-2 mb-4">
+                            {["All", "Hip-Hop", "Rock", "Electronic", "Pop", "Country", "Jazz", "World", "Atmospheric", "Motivation"].map((cat) => (
+                              <Button
+                                key={cat}
+                                variant={genreCategory === cat ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => setGenreCategory(cat)}
+                                data-testid={`button-category-${cat.toLowerCase()}`}
+                              >
+                                {cat}
+                              </Button>
+                            ))}
                           </div>
+                          <ScrollArea className="h-[200px]">
+                            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+                              {genres
+                                .filter((g) => genreCategory === "All" || g.category === genreCategory)
+                                .map((g) => {
+                                  const Icon = g.icon;
+                                  return (
+                                    <button
+                                      key={g.value}
+                                      onClick={() => setSelectedGenre(g.value)}
+                                      className={`p-3 rounded-lg border-2 transition-all flex flex-col items-center gap-1 hover-elevate
+                                        ${selectedGenre === g.value ? 'border-primary bg-primary/10' : 'border-border'}`}
+                                      data-testid={`button-genre-${g.value}`}
+                                    >
+                                      <Icon className={`w-6 h-6 ${selectedGenre === g.value ? 'text-primary' : ''}`} />
+                                      <span className="font-medium text-xs text-center">{g.label}</span>
+                                    </button>
+                                  );
+                                })}
+                            </div>
+                          </ScrollArea>
                         </div>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                           <div>
                             <Label>Tempo (BPM): {bpm}</Label>
                             <Slider 
@@ -2495,8 +2547,8 @@ Repeat the hook...`}
                               data-testid="slider-tempo-creator"
                             />
                             <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                              <span>Slow (60)</span>
-                              <span>Fast (200)</span>
+                              <span>60</span>
+                              <span>200</span>
                             </div>
                           </div>
                           <div>
@@ -2521,6 +2573,31 @@ Repeat the hook...`}
                               </SelectContent>
                             </Select>
                           </div>
+                          <div>
+                            <Label>Seed (Optional)</Label>
+                            <Input 
+                              type="number"
+                              placeholder="Random"
+                              value={lyriaSeed || ""}
+                              onChange={(e) => setLyriaSeed(e.target.value ? parseInt(e.target.value) : undefined)}
+                              className="mt-2"
+                              data-testid="input-lyria-seed"
+                            />
+                            <p className="text-xs text-muted-foreground mt-1">Same seed = same result</p>
+                          </div>
+                        </div>
+
+                        <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Sparkles className="w-5 h-5 text-primary" />
+                            <span className="font-semibold text-sm">Lyria AI Configuration</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Selected: <strong className="text-primary">{genres.find(g => g.value === selectedGenre)?.label}</strong> at <strong className="text-primary">{bpm} BPM</strong> in <strong className="text-primary">{selectedKey} {selectedScale}</strong>
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Cost: <strong className="text-green-500">$0.06</strong> per 30-second generation
+                          </p>
                         </div>
                         
                         <div className="flex justify-between">
@@ -2598,6 +2675,8 @@ Repeat the hook...`}
                                     key: selectedKey,
                                     scale: selectedScale,
                                     mood: songMood,
+                                    description: `${songMood} ${genres.find(g => g.value === selectedGenre)?.label} track${songTheme ? ` about ${songTheme}` : ""}`,
+                                    seed: lyriaSeed,
                                   });
                                   const data = await response.json();
                                   if (data.audioBase64) {
