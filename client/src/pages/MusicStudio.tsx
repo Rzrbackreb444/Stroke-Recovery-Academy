@@ -562,24 +562,22 @@ export default function MusicStudio() {
       drumSynthsRef.current.snare.connect(drumChannelRef.current);
       
       drumSynthsRef.current.hihatClosed = new Tone.MetalSynth({
-        frequency: 200,
         envelope: { attack: 0.001, decay: 0.05, release: 0.01 },
         harmonicity: 5.1,
         modulationIndex: 32,
         resonance: 4000,
         octaves: 1.5,
-      });
+      } as any);
       drumSynthsRef.current.hihatClosed.volume.value = -10;
       drumSynthsRef.current.hihatClosed.connect(drumChannelRef.current);
       
       drumSynthsRef.current.hihatOpen = new Tone.MetalSynth({
-        frequency: 200,
         envelope: { attack: 0.001, decay: 0.3, release: 0.1 },
         harmonicity: 5.1,
         modulationIndex: 32,
         resonance: 4000,
         octaves: 1.5,
-      });
+      } as any);
       drumSynthsRef.current.hihatOpen.volume.value = -10;
       drumSynthsRef.current.hihatOpen.connect(drumChannelRef.current);
       
@@ -598,24 +596,22 @@ export default function MusicStudio() {
       drumSynthsRef.current.tom.connect(drumChannelRef.current);
       
       drumSynthsRef.current.crash = new Tone.MetalSynth({
-        frequency: 300,
         envelope: { attack: 0.001, decay: 1.5, release: 0.5 },
         harmonicity: 5.1,
         modulationIndex: 40,
         resonance: 3000,
         octaves: 1.5,
-      });
+      } as any);
       drumSynthsRef.current.crash.volume.value = -8;
       drumSynthsRef.current.crash.connect(drumChannelRef.current);
       
       drumSynthsRef.current.ride = new Tone.MetalSynth({
-        frequency: 400,
         envelope: { attack: 0.001, decay: 0.4, release: 0.2 },
         harmonicity: 3,
         modulationIndex: 20,
         resonance: 5000,
         octaves: 1,
-      });
+      } as any);
       drumSynthsRef.current.ride.volume.value = -12;
       drumSynthsRef.current.ride.connect(drumChannelRef.current);
       
@@ -764,20 +760,18 @@ export default function MusicStudio() {
     
     setIsGeneratingElevenLabs(true);
     try {
-      const response = await apiRequest('/api/voice/elevenlabs/synthesize', {
-        method: 'POST',
-        body: JSON.stringify({
-          text: elevenLabsText,
-          voiceId: selectedElevenLabsVoice,
-          modelId: elevenLabsModel,
-          stability: elevenLabsStability / 100,
-          similarityBoost: elevenLabsSimilarity / 100,
-          style: elevenLabsStyle / 100,
-        }),
+      const response = await apiRequest("POST", "/api/voice/elevenlabs/synthesize", {
+        text: elevenLabsText,
+        voiceId: selectedElevenLabsVoice,
+        modelId: elevenLabsModel,
+        stability: elevenLabsStability / 100,
+        similarityBoost: elevenLabsSimilarity / 100,
+        style: elevenLabsStyle / 100,
       });
+      const data = await response.json();
       
-      if (response.audioBase64) {
-        const audioUrl = `data:audio/mpeg;base64,${response.audioBase64}`;
+      if (data.audioBase64) {
+        const audioUrl = `data:audio/mpeg;base64,${data.audioBase64}`;
         setElevenLabsAudio(audioUrl);
         toast({ title: "Voice generated!", description: "Your AI voiceover is ready" });
       }
