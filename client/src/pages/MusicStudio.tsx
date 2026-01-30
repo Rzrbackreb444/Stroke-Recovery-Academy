@@ -243,6 +243,71 @@ export default function MusicStudio() {
   const [isLiveMusicActive, setIsLiveMusicActive] = useState(false);
   const [liveEnergyLevel, setLiveEnergyLevel] = useState(50);
   
+  // === BEAT LAB - Professional Music Creation ===
+  // Drum Machine State (16-step sequencer)
+  const [drumPattern, setDrumPattern] = useState<boolean[][]>([
+    // Kick: Classic 4-on-floor
+    [true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false],
+    // Snare: 2 and 4
+    [false, false, false, false, true, false, false, false, false, false, false, false, true, false, false, false],
+    // Hi-Hat closed
+    [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true],
+    // Hi-Hat open
+    [false, false, true, false, false, false, true, false, false, false, true, false, false, false, true, false],
+    // Clap
+    [false, false, false, false, true, false, false, false, false, false, false, false, true, false, false, false],
+    // Tom
+    [false, false, false, false, false, false, false, false, false, false, false, true, false, false, true, false],
+    // Crash
+    [true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+    // Ride
+    [false, false, true, false, false, false, true, false, false, false, true, false, false, false, true, false],
+  ]);
+  const [drumKitType, setDrumKitType] = useState<"hiphop" | "rock" | "electronic" | "trap" | "jazz" | "acoustic">("hiphop");
+  const [drumVolumes, setDrumVolumes] = useState<number[]>([80, 75, 70, 65, 75, 60, 70, 65]);
+  const [isSequencerPlaying, setIsSequencerPlaying] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [swingAmount, setSwingAmount] = useState(0);
+  
+  // Bass Synth State
+  const [bassPattern, setBassPattern] = useState<{note: string; velocity: number; active: boolean}[]>(
+    Array(16).fill(null).map(() => ({ note: "C2", velocity: 80, active: false }))
+  );
+  const [bassSound, setBassSound] = useState<"sub" | "808" | "analog" | "fm" | "reese">("808");
+  const [bassFilter, setBassFilter] = useState(50);
+  const [bassDecay, setBassDecay] = useState(70);
+  const [bassDistortion, setBassDistortion] = useState(0);
+  
+  // Synth Pad State (for chords)
+  const [chordProgression, setChordProgression] = useState<{chord: string; duration: number}[]>([
+    { chord: "Cm7", duration: 4 },
+    { chord: "Fm7", duration: 4 },
+    { chord: "Gm7", duration: 4 },
+    { chord: "Ab", duration: 4 },
+  ]);
+  const [synthType, setSynthType] = useState<"pad" | "lead" | "pluck" | "brass" | "strings">("pad");
+  const [synthAttack, setSynthAttack] = useState(30);
+  const [synthRelease, setSynthRelease] = useState(70);
+  const [synthDetune, setSynthDetune] = useState(0);
+  
+  // Melody Sequencer State
+  const [melodyPattern, setMelodyPattern] = useState<{note: string; step: number; length: number}[]>([]);
+  const [melodyScale, setMelodyScale] = useState<string[]>(["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"]);
+  const [activeOctave, setActiveOctave] = useState(4);
+  
+  // Genre Templates
+  const [activeGenreTemplate, setActiveGenreTemplate] = useState<string | null>(null);
+  
+  // Song Arrangement
+  const [songSections, setSongSections] = useState<{id: string; name: string; bars: number; patterns: string[]}[]>([
+    { id: "intro", name: "Intro", bars: 4, patterns: ["drums"] },
+    { id: "verse1", name: "Verse 1", bars: 8, patterns: ["drums", "bass", "synth"] },
+    { id: "chorus1", name: "Chorus", bars: 8, patterns: ["drums", "bass", "synth", "melody"] },
+    { id: "verse2", name: "Verse 2", bars: 8, patterns: ["drums", "bass", "synth"] },
+    { id: "chorus2", name: "Chorus", bars: 8, patterns: ["drums", "bass", "synth", "melody"] },
+    { id: "outro", name: "Outro", bars: 4, patterns: ["drums", "synth"] },
+  ]);
+  
   // EQ state (8-band parametric) - frequencies match filter chain exactly
   const [eqBands, setEqBands] = useState<EQBand[]>([
     { frequency: 60, gain: 0, Q: 1.5 },    // Sub bass (lowshelf)
@@ -297,6 +362,46 @@ export default function MusicStudio() {
   const [spectrumData, setSpectrumData] = useState<number[]>(new Array(64).fill(-100));
   const [meterLevel, setMeterLevel] = useState(-60);
   const animationFrameRef = useRef<number>(0);
+  
+  // === BEAT LAB Audio Refs ===
+  // Drum machine refs
+  const drumSynthsRef = useRef<{
+    kick: Tone.MembraneSynth | null;
+    snare: Tone.NoiseSynth | null;
+    hihatClosed: Tone.MetalSynth | null;
+    hihatOpen: Tone.MetalSynth | null;
+    clap: Tone.NoiseSynth | null;
+    tom: Tone.MembraneSynth | null;
+    crash: Tone.MetalSynth | null;
+    ride: Tone.MetalSynth | null;
+  }>({
+    kick: null,
+    snare: null,
+    hihatClosed: null,
+    hihatOpen: null,
+    clap: null,
+    tom: null,
+    crash: null,
+    ride: null,
+  });
+  const drumChannelRef = useRef<Tone.Channel | null>(null);
+  
+  // Bass synth refs
+  const bassSynthRef = useRef<Tone.MonoSynth | null>(null);
+  const bassFilterRef = useRef<Tone.Filter | null>(null);
+  const bassChannelRef = useRef<Tone.Channel | null>(null);
+  
+  // Pad/Chord synth refs
+  const padSynthRef = useRef<Tone.PolySynth | null>(null);
+  const padChannelRef = useRef<Tone.Channel | null>(null);
+  
+  // Lead/Melody synth refs
+  const leadSynthRef = useRef<Tone.Synth | null>(null);
+  const leadChannelRef = useRef<Tone.Channel | null>(null);
+  
+  // Sequencer refs
+  const sequencerRef = useRef<Tone.Sequence | null>(null);
+  const sequencerIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Fetch voice styles
   const { data: voiceStyles } = useQuery<{ styles?: any[] }>({
