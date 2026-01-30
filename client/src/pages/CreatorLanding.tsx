@@ -207,14 +207,15 @@ export default function CreatorLanding() {
             </p>
             
             {/* CTA Button */}
-            <Button 
-              size="lg"
-              className="px-10 py-6 text-lg font-semibold rounded-full bg-amber-400 hover:bg-amber-300 text-black transition-all duration-300 shadow-lg shadow-amber-400/20"
-              data-testid="button-start-free"
-              onClick={() => window.location.href = '/api/login'}
-            >
-              Start Free Now
-            </Button>
+            <Link href="/auth">
+              <Button 
+                size="lg"
+                className="px-10 py-6 text-lg font-semibold rounded-full bg-amber-400 hover:bg-amber-300 text-black transition-all duration-300 shadow-lg shadow-amber-400/20"
+                data-testid="button-start-free"
+              >
+                Start Free Now
+              </Button>
+            </Link>
             
             {/* AI Models Bar */}
             <div className="mt-16 flex flex-wrap justify-center gap-6 px-4" data-testid="ai-models-bar">
