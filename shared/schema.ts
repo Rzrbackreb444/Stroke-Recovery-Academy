@@ -237,6 +237,36 @@ export const sessions = pgTable(
 );
 
 // ============================================================================
+// AUTHENTICATION - EMAIL/PASSWORD & MAGIC LINKS
+// ============================================================================
+
+export const magicLinks = pgTable("magic_links", {
+  id: serial("id").primaryKey(),
+  email: varchar("email").notNull(),
+  token: varchar("token").notNull().unique(),
+  expiresAt: timestamp("expires_at").notNull(),
+  usedAt: timestamp("used_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const passwordResetTokens = pgTable("password_reset_tokens", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  token: varchar("token").notNull().unique(),
+  expiresAt: timestamp("expires_at").notNull(),
+  usedAt: timestamp("used_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertMagicLinkSchema = createInsertSchema(magicLinks).omit({ id: true, createdAt: true, usedAt: true });
+export const insertPasswordResetSchema = createInsertSchema(passwordResetTokens).omit({ id: true, createdAt: true, usedAt: true });
+
+export type MagicLink = typeof magicLinks.$inferSelect;
+export type InsertMagicLink = z.infer<typeof insertMagicLinkSchema>;
+export type PasswordResetToken = typeof passwordResetTokens.$inferSelect;
+export type InsertPasswordReset = z.infer<typeof insertPasswordResetSchema>;
+
+// ============================================================================
 // USER MANAGEMENT
 // ============================================================================
 

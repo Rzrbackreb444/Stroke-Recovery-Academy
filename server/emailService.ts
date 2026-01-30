@@ -398,3 +398,104 @@ export async function sendWelcomeEmail(
     text: `Welcome to KreAIte, ${userName}! You now have access to 6 professional AI-powered studios. Start creating and earn 85% of every sale on the KreAItorverse marketplace.`,
   });
 }
+
+export async function sendMagicLinkEmail(
+  email: string,
+  magicLinkUrl: string
+): Promise<{ success: boolean; error?: string }> {
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+      <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+        <div style="text-align: center; margin-bottom: 40px;">
+          <div style="display: inline-block; padding: 12px; background: linear-gradient(135deg, #f59e0b, #ea580c); border-radius: 16px; margin-bottom: 16px;">
+            <span style="font-size: 32px;">✨</span>
+          </div>
+          <h1 style="color: #ffffff; font-size: 28px; margin: 0;">KreAIte</h1>
+          <p style="color: #9ca3af; margin: 8px 0 0;">Create. Publish. Earn.</p>
+        </div>
+        
+        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 32px; text-align: center;">
+          <h2 style="color: #ffffff; font-size: 22px; margin: 0 0 16px;">Sign in to your account</h2>
+          <p style="color: #9ca3af; margin: 0 0 32px; line-height: 1.6;">
+            Click the button below to securely sign in. This link expires in 15 minutes.
+          </p>
+          
+          <a href="${magicLinkUrl}" style="display: inline-block; background: linear-gradient(135deg, #f59e0b, #ea580c); color: #000000; font-weight: 600; text-decoration: none; padding: 16px 48px; border-radius: 12px; font-size: 16px;">
+            Sign In Now
+          </a>
+          
+          <p style="color: #6b7280; font-size: 12px; margin: 32px 0 0;">
+            If you didn't request this email, you can safely ignore it.
+          </p>
+        </div>
+        
+        <div style="text-align: center; margin-top: 40px;">
+          <p style="color: #4b5563; font-size: 12px; margin: 0;">
+            © ${new Date().getFullYear()} KreAIte. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  return sendEmail({
+    to: email,
+    subject: 'Sign in to KreAIte',
+    html,
+    text: `Sign in to KreAIte using this link: ${magicLinkUrl}. This link expires in 15 minutes.`,
+  });
+}
+
+export async function sendPasswordResetEmail(
+  email: string,
+  resetUrl: string
+): Promise<{ success: boolean; error?: string }> {
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+      <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+        <div style="text-align: center; margin-bottom: 40px;">
+          <div style="display: inline-block; padding: 12px; background: linear-gradient(135deg, #f59e0b, #ea580c); border-radius: 16px; margin-bottom: 16px;">
+            <span style="font-size: 32px;">🔐</span>
+          </div>
+          <h1 style="color: #ffffff; font-size: 28px; margin: 0;">KreAIte</h1>
+        </div>
+        
+        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 32px; text-align: center;">
+          <h2 style="color: #ffffff; font-size: 22px; margin: 0 0 16px;">Reset Your Password</h2>
+          <p style="color: #9ca3af; margin: 0 0 32px; line-height: 1.6;">
+            Click the button below to reset your password. This link expires in 1 hour.
+          </p>
+          
+          <a href="${resetUrl}" style="display: inline-block; background: linear-gradient(135deg, #f59e0b, #ea580c); color: #000000; font-weight: 600; text-decoration: none; padding: 16px 48px; border-radius: 12px; font-size: 16px;">
+            Reset Password
+          </a>
+          
+          <p style="color: #6b7280; font-size: 12px; margin: 32px 0 0;">
+            If you didn't request this, you can safely ignore this email.
+          </p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  return sendEmail({
+    to: email,
+    subject: 'Reset your KreAIte password',
+    html,
+    text: `Reset your KreAIte password using this link: ${resetUrl}. This link expires in 1 hour.`,
+  });
+}

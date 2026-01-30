@@ -76,6 +76,9 @@ import LifeStoryEngine from "@/pages/LifeStoryEngine";
 import WhiteLabel from "@/pages/white-label";
 import WebsiteStudio from "@/pages/WebsiteStudio";
 import MobileStudio from "@/pages/MobileStudio";
+import AuthPage from "@/pages/AuthPage";
+import AuthVerify from "@/pages/AuthVerify";
+import ResetPassword from "@/pages/ResetPassword";
 
 // Stroke Recovery Platform Pages (under /recovery/*)
 import StrokeRecoveryLanding from "@/pages/Landing";
@@ -174,6 +177,9 @@ function Router() {
       <Route path="/author/:slug" component={AuthorStorefront} />
       <Route path="/publishing" component={Publishing} />
       <Route path="/pricing" component={Pricing} />
+      <Route path="/auth" component={AuthPage} />
+      <Route path="/auth/verify" component={AuthVerify} />
+      <Route path="/auth/reset-password" component={ResetPassword} />
       <Route path="/slots" component={SlotMachine} />
       <Route path="/games" component={SasquatchGames} />
       <Route path="/roulette" component={Roulette} />
