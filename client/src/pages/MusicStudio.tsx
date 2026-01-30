@@ -296,7 +296,7 @@ export default function MusicStudio() {
   });
 
   // Fetch video styles
-  const { data: videoStyles } = useQuery({
+  const { data: videoStyles } = useQuery<{ styles?: any[] }>({
     queryKey: ['/api/video/styles'],
   });
 
@@ -529,7 +529,8 @@ export default function MusicStudio() {
     try {
       const response = await apiRequest("POST", "/api/music/generate-instrumental", {
         genre: selectedGenre, bpm, key: selectedKey, scale: selectedScale,
-        description: `Production-grade ${selectedGenre} track for stroke recovery motivation`,
+        description: `Production-grade ${genres.find(g => g.value === selectedGenre)?.label || selectedGenre} track`,
+        seed: lyriaSeed,
       });
       const data = await response.json();
       
