@@ -313,7 +313,10 @@ export function isVoiceServiceConfigured(): boolean {
 export async function synthesizeWithElevenLabs(
   text: string,
   voiceId: string = "21m00Tcm4TlvDq8ikWAM", // Rachel - default voice
-  modelId: string = "eleven_multilingual_v2"
+  modelId: string = "eleven_multilingual_v2",
+  stability: number = 0.5,
+  similarityBoost: number = 0.75,
+  style: number = 0.5
 ): Promise<{
   success: boolean;
   audioBase64?: string;
@@ -339,9 +342,9 @@ export async function synthesizeWithElevenLabs(
           text,
           model_id: modelId,
           voice_settings: {
-            stability: 0.5,
-            similarity_boost: 0.75,
-            style: 0.5,
+            stability: stability,
+            similarity_boost: similarityBoost,
+            style: style,
             use_speaker_boost: true
           }
         })
