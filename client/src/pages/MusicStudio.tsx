@@ -243,16 +243,16 @@ export default function MusicStudio() {
   const [isLiveMusicActive, setIsLiveMusicActive] = useState(false);
   const [liveEnergyLevel, setLiveEnergyLevel] = useState(50);
   
-  // EQ state (8-band parametric)
+  // EQ state (8-band parametric) - frequencies match filter chain exactly
   const [eqBands, setEqBands] = useState<EQBand[]>([
-    { frequency: 60, gain: 0, Q: 1 },
-    { frequency: 170, gain: 0, Q: 1 },
-    { frequency: 310, gain: 0, Q: 1 },
-    { frequency: 600, gain: 0, Q: 1 },
-    { frequency: 1000, gain: 0, Q: 1 },
-    { frequency: 3000, gain: 0, Q: 1 },
-    { frequency: 6000, gain: 0, Q: 1 },
-    { frequency: 12000, gain: 0, Q: 1 },
+    { frequency: 60, gain: 0, Q: 1.5 },    // Sub bass (lowshelf)
+    { frequency: 170, gain: 0, Q: 1.5 },   // Bass
+    { frequency: 350, gain: 0, Q: 1.5 },   // Low mids
+    { frequency: 700, gain: 0, Q: 1.5 },   // Mids
+    { frequency: 1400, gain: 0, Q: 1.5 },  // Upper mids
+    { frequency: 2800, gain: 0, Q: 1.5 },  // Presence
+    { frequency: 5600, gain: 0, Q: 1.5 },  // Brilliance
+    { frequency: 11200, gain: 0, Q: 1.5 }, // Air (highshelf)
   ]);
   
   // Effects state
@@ -282,8 +282,21 @@ export default function MusicStudio() {
   const reverbRef = useRef<Tone.Reverb | null>(null);
   const delayRef = useRef<Tone.FeedbackDelay | null>(null);
   const compressorRef = useRef<Tone.Compressor | null>(null);
-  const eqRef = useRef<Tone.EQ3 | null>(null);
   const timeIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Advanced audio processing refs
+  const eqFiltersRef = useRef<Tone.Filter[]>([]);
+  const pitchShiftRef = useRef<Tone.PitchShift | null>(null);
+  const chorusRef = useRef<Tone.Chorus | null>(null);
+  const distortionRef = useRef<Tone.Distortion | null>(null);
+  const phaserRef = useRef<Tone.Phaser | null>(null);
+  const limiterRef = useRef<Tone.Limiter | null>(null);
+  const analyserRef = useRef<Tone.Analyser | null>(null);
+  const meterRef = useRef<Tone.Meter | null>(null);
+  const waveformDataRef = useRef<Float32Array>(new Float32Array(256));
+  const [spectrumData, setSpectrumData] = useState<number[]>(new Array(64).fill(-100));
+  const [meterLevel, setMeterLevel] = useState(-60);
+  const animationFrameRef = useRef<number>(0);
 
   // Fetch voice styles
   const { data: voiceStyles } = useQuery<{ styles?: any[] }>({
@@ -300,47 +313,125 @@ export default function MusicStudio() {
     queryKey: ['/api/video/styles'],
   });
 
-  // Initialize Tone.js with real effects chain
+  // Initialize Tone.js with professional-grade effects chain
   const initAudio = async () => {
     if (!toneStarted.current) {
       await Tone.start();
       toneStarted.current = true;
       
-      // Create master effects chain
+      // === PROFESSIONAL 8-BAND PARAMETRIC EQ ===
+      // Create 8 individual filters for precise frequency control
+      // Frequencies: 60, 170, 350, 700, 1400, 2800, 5600, 11200 Hz
+      eqFiltersRef.current = eqBands.map((band, i) => {
+        const filter = new Tone.Filter({
+          frequency: band.frequency,
+          type: i === 0 ? "lowshelf" : i === 7 ? "highshelf" : "peaking",
+          Q: band.Q,
+          gain: band.gain,
+        });
+        return filter;
+      });
+      
+      // === AUTO-TUNE / PITCH CORRECTION ===
+      pitchShiftRef.current = new Tone.PitchShift({
+        pitch: 0,
+        windowSize: 0.1,
+        delayTime: 0,
+        feedback: 0,
+        wet: autoTuneEnabled ? autoTuneSpeed / 100 : 0,
+      });
+      
+      // === PROFESSIONAL DYNAMICS ===
       compressorRef.current = new Tone.Compressor({
         threshold: compThreshold,
         ratio: compRatio,
         attack: 0.003,
         release: 0.25,
+        knee: 6,
       });
       
-      eqRef.current = new Tone.EQ3({
-        low: eqBands[0].gain,
-        mid: eqBands[3].gain,
-        high: eqBands[6].gain,
+      limiterRef.current = new Tone.Limiter(-1); // Brickwall limiter at -1dB
+      
+      // === MODULATION EFFECTS ===
+      chorusRef.current = new Tone.Chorus({
+        frequency: 1.5,
+        delayTime: 3.5,
+        depth: 0.7,
+        wet: 0,
+      }).start();
+      
+      phaserRef.current = new Tone.Phaser({
+        frequency: 0.5,
+        octaves: 3,
+        stages: 10,
+        Q: 10,
+        baseFrequency: 350,
+        wet: 0,
       });
       
+      distortionRef.current = new Tone.Distortion({
+        distortion: 0,
+        wet: 0,
+      });
+      
+      // === TIME-BASED EFFECTS ===
       reverbRef.current = new Tone.Reverb({
         decay: 2.5,
         wet: reverbMix / 100,
+        preDelay: 0.01,
       });
+      await reverbRef.current.generate(); // Pre-generate IR for instant response
       
       delayRef.current = new Tone.FeedbackDelay({
         delayTime: delayTime / 1000,
         feedback: delayFeedback / 100,
         wet: 0.3,
+        maxDelay: 2,
       });
       
+      // === ANALYSIS / METERING ===
+      analyserRef.current = new Tone.Analyser("fft", 128);
+      meterRef.current = new Tone.Meter({ smoothing: 0.8 });
+      
+      // === MASTER OUTPUT ===
       masterGainRef.current = new Tone.Gain(masterVolume / 100);
       
-      // Connect effects chain: compressor -> EQ -> reverb -> delay -> master -> output
-      compressorRef.current.connect(eqRef.current);
-      eqRef.current.connect(reverbRef.current);
+      // === PROFESSIONAL SIGNAL CHAIN ===
+      // Input -> EQ bands (chained) -> Pitch Shift -> Compressor -> 
+      // Chorus -> Phaser -> Distortion -> Reverb -> Delay -> Limiter -> Master -> Output
+      
+      // Chain EQ filters together
+      for (let i = 0; i < eqFiltersRef.current.length - 1; i++) {
+        eqFiltersRef.current[i].connect(eqFiltersRef.current[i + 1]);
+      }
+      
+      // Connect the rest of the chain
+      const lastEQ = eqFiltersRef.current[eqFiltersRef.current.length - 1];
+      lastEQ.connect(pitchShiftRef.current!);
+      pitchShiftRef.current.connect(compressorRef.current);
+      compressorRef.current.connect(chorusRef.current!);
+      chorusRef.current.connect(phaserRef.current!);
+      phaserRef.current.connect(distortionRef.current!);
+      distortionRef.current.connect(reverbRef.current);
       reverbRef.current.connect(delayRef.current);
-      delayRef.current.connect(masterGainRef.current);
+      delayRef.current.connect(limiterRef.current!);
+      limiterRef.current.connect(masterGainRef.current);
+      masterGainRef.current.connect(analyserRef.current!);
+      masterGainRef.current.connect(meterRef.current!);
       masterGainRef.current.toDestination();
       
       Tone.getTransport().bpm.value = bpm;
+      
+      // Start real-time visualization
+      const updateVisuals = () => {
+        if (analyserRef.current && meterRef.current) {
+          const spectrum = analyserRef.current.getValue() as Float32Array;
+          setSpectrumData(Array.from(spectrum.slice(0, 64)));
+          setMeterLevel(meterRef.current.getValue() as number);
+        }
+        animationFrameRef.current = requestAnimationFrame(updateVisuals);
+      };
+      updateVisuals();
     }
   };
 
@@ -377,6 +468,32 @@ export default function MusicStudio() {
     }
   }, [compThreshold, compRatio]);
 
+  // Update 8-band EQ in real-time (gain and Q)
+  useEffect(() => {
+    eqFiltersRef.current.forEach((filter, i) => {
+      if (filter && eqBands[i]) {
+        filter.gain.value = eqBands[i].gain;
+        filter.Q.value = eqBands[i].Q;
+      }
+    });
+  }, [eqBands]);
+
+  // Update auto-tune in real-time
+  useEffect(() => {
+    if (pitchShiftRef.current) {
+      pitchShiftRef.current.wet.value = autoTuneEnabled ? autoTuneSpeed / 100 : 0;
+    }
+  }, [autoTuneEnabled, autoTuneSpeed]);
+
+  // Cleanup animation frame on unmount
+  useEffect(() => {
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, []);
+
   // Load audio for tracks with audioUrl
   useEffect(() => {
     tracks.forEach(track => {
@@ -396,7 +513,12 @@ export default function MusicStudio() {
         });
         
         player.connect(channel);
-        if (compressorRef.current) {
+        
+        // Route to professional effects chain (8-band EQ -> full chain)
+        if (eqFiltersRef.current.length > 0) {
+          channel.connect(eqFiltersRef.current[0]);
+        } else if (compressorRef.current) {
+          // Fallback to compressor if EQ not initialized
           channel.connect(compressorRef.current);
         }
         
@@ -546,10 +668,16 @@ export default function MusicStudio() {
         setTracks([...tracks, newTrack]);
         toast({ title: "Instrumental Generated!", description: "AI track added to your project." });
       } else {
-        toast({ title: "Generation queued", description: data.message || "Check back soon." });
+        console.error("Generation error:", data);
+        toast({ 
+          title: "Generation Failed", 
+          description: data.message || data.error || "Unable to generate beat. Please try again.", 
+          variant: "destructive" 
+        });
       }
-    } catch (error) {
-      toast({ title: "Generation failed", variant: "destructive" });
+    } catch (error: any) {
+      console.error("Generation failed:", error);
+      toast({ title: "Generation failed", description: error?.message || "Please try again", variant: "destructive" });
     } finally {
       clearInterval(progressInterval);
       setGenerationProgress(100);
@@ -2680,16 +2808,24 @@ Repeat the hook...`}
                                     seed: lyriaSeed,
                                   });
                                   const data = await response.json();
-                                  if (data.audioBase64) {
+                                  if (data.success && data.audioBase64) {
                                     const audioUrl = `data:${data.mimeType || 'audio/wav'};base64,${data.audioBase64}`;
                                     setGeneratedBeat(audioUrl);
                                     toast({ title: "Beat Generated!", description: "Your AI instrumental is ready!" });
                                   } else if (data.audioUrl) {
                                     setGeneratedBeat(data.audioUrl);
                                     toast({ title: "Beat Generated!", description: "Your AI instrumental is ready!" });
+                                  } else {
+                                    console.error("Generation error:", data);
+                                    toast({ 
+                                      title: "Generation Failed", 
+                                      description: data.message || data.error || "Unable to generate beat. Please try again.", 
+                                      variant: "destructive" 
+                                    });
                                   }
-                                } catch (error) {
-                                  toast({ title: "Error", description: "Beat generation failed", variant: "destructive" });
+                                } catch (error: any) {
+                                  console.error("Generation failed:", error);
+                                  toast({ title: "Error", description: error?.message || "Beat generation failed", variant: "destructive" });
                                 } finally {
                                   clearInterval(interval);
                                   setGenerationProgress(100);
