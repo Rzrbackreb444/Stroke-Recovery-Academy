@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { Lock, Eye, EyeOff, Loader2, CheckCircle, Sparkles } from "lucide-react";
+import { Lock, Eye, EyeOff, Loader2, CheckCircle } from "lucide-react";
+import kreaiteLogo from "@assets/Untitled_design.zip_-_1_1769816069353.png";
 
 export default function ResetPassword() {
   const [, setLocation] = useLocation();
@@ -84,11 +85,12 @@ export default function ResetPassword() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-6">
       <div className="w-full max-w-md">
-        <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="p-2 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500">
-            <Sparkles className="w-6 h-6 text-black" />
-          </div>
-          <span className="text-xl font-bold text-white">KreAIte</span>
+        <div className="flex items-center justify-center mb-8">
+          <img 
+            src={kreaiteLogo} 
+            alt="KreAIte" 
+            className="h-10 w-auto object-contain"
+          />
         </div>
         
         <Card className="bg-white/5 border-white/10 backdrop-blur-xl">

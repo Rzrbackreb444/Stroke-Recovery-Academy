@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import kreaiteLogo from "@assets/Untitled_design.zip_-_1_1769816069353.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -122,10 +123,11 @@ export default function AuthPage() {
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
           <div>
             <div className="flex items-center gap-3 mb-12">
-              <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500">
-                <Sparkles className="w-7 h-7 text-black" />
-              </div>
-              <span className="text-2xl font-bold text-white tracking-tight">KreAIte</span>
+              <img 
+                src={kreaiteLogo} 
+                alt="KreAIte" 
+                className="h-12 w-auto object-contain"
+              />
             </div>
             
             <h1 className="text-5xl font-bold text-white mb-6 leading-tight">
@@ -165,11 +167,12 @@ export default function AuthPage() {
       <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
-          <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500">
-              <Sparkles className="w-6 h-6 text-black" />
-            </div>
-            <span className="text-xl font-bold text-white">KreAIte</span>
+          <div className="lg:hidden flex items-center justify-center mb-8">
+            <img 
+              src={kreaiteLogo} 
+              alt="KreAIte" 
+              className="h-10 w-auto object-contain"
+            />
           </div>
           
           <Card className="bg-white/5 border-white/10 backdrop-blur-xl">
