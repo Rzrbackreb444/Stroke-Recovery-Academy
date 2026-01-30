@@ -302,7 +302,157 @@ export async function listVoices(): Promise<{
  * Check if voice service is configured
  */
 export function isVoiceServiceConfigured(): boolean {
-  return !!process.env.CLOUD_TEXT_TO_SPEECH_API_KEY;
+  return !!process.env.CLOUD_TEXT_TO_SPEECH_API_KEY || !!process.env.ELEVENLABS_API_KEY;
+}
+
+// ============== ELEVENLABS INTEGRATION ==============
+
+/**
+ * Synthesize speech using ElevenLabs (premium quality)
+ */
+export async function synthesizeWithElevenLabs(
+  text: string,
+  voiceId: string = "21m00Tcm4TlvDq8ikWAM", // Rachel - default voice
+  modelId: string = "eleven_multilingual_v2"
+): Promise<{
+  success: boolean;
+  audioBase64?: string;
+  error?: string;
+}> {
+  const apiKey = process.env.ELEVENLABS_API_KEY;
+  
+  if (!apiKey) {
+    return { success: false, error: "ElevenLabs API key not configured" };
+  }
+
+  try {
+    const response = await fetch(
+      `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
+      {
+        method: 'POST',
+        headers: {
+          'Accept': 'audio/mpeg',
+          'Content-Type': 'application/json',
+          'xi-api-key': apiKey
+        },
+        body: JSON.stringify({
+          text,
+          model_id: modelId,
+          voice_settings: {
+            stability: 0.5,
+            similarity_boost: 0.75,
+            style: 0.5,
+            use_speaker_boost: true
+          }
+        })
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.text();
+      return { success: false, error: `ElevenLabs TTS failed: ${error}` };
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    const base64Audio = Buffer.from(arrayBuffer).toString('base64');
+    
+    return { success: true, audioBase64: base64Audio };
+  } catch (error) {
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    };
+  }
+}
+
+/**
+ * Get available ElevenLabs voices
+ */
+export async function getElevenLabsVoices(): Promise<{
+  success: boolean;
+  voices?: Array<{ voice_id: string; name: string; category: string }>;
+  error?: string;
+}> {
+  const apiKey = process.env.ELEVENLABS_API_KEY;
+  
+  if (!apiKey) {
+    return { success: false, error: "ElevenLabs API key not configured" };
+  }
+
+  try {
+    const response = await fetch('https://api.elevenlabs.io/v1/voices', {
+      headers: { 'xi-api-key': apiKey }
+    });
+
+    if (!response.ok) {
+      return { success: false, error: "Failed to fetch voices" };
+    }
+
+    const data = await response.json() as { voices: Array<{ voice_id: string; name: string; category: string }> };
+    return { success: true, voices: data.voices };
+  } catch (error) {
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    };
+  }
+}
+
+/**
+ * Clone voice with ElevenLabs (Instant Voice Cloning)
+ */
+export async function cloneVoiceWithElevenLabs(
+  name: string,
+  audioFiles: Buffer[],
+  description?: string
+): Promise<{
+  success: boolean;
+  voiceId?: string;
+  error?: string;
+}> {
+  const apiKey = process.env.ELEVENLABS_API_KEY;
+  
+  if (!apiKey) {
+    return { success: false, error: "ElevenLabs API key not configured" };
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append('name', name);
+    if (description) formData.append('description', description);
+    
+    // Add audio files
+    audioFiles.forEach((buffer, index) => {
+      const blob = new Blob([buffer], { type: 'audio/mpeg' });
+      formData.append('files', blob, `sample_${index}.mp3`);
+    });
+
+    const response = await fetch('https://api.elevenlabs.io/v1/voices/add', {
+      method: 'POST',
+      headers: { 'xi-api-key': apiKey },
+      body: formData
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      return { success: false, error: `Voice cloning failed: ${error}` };
+    }
+
+    const data = await response.json() as { voice_id: string };
+    return { success: true, voiceId: data.voice_id };
+  } catch (error) {
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    };
+  }
+}
+
+/**
+ * Check if ElevenLabs is configured
+ */
+export function isElevenLabsConfigured(): boolean {
+  return !!process.env.ELEVENLABS_API_KEY;
 }
 
 /**

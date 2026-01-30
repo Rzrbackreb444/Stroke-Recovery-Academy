@@ -13,7 +13,7 @@ import { searchAmazonProducts, getAmazonProduct, isConfigured as isAmazonConfigu
 import { generateInstrumental, buildMusicPrompt, isLyriaConfigured, estimateCost } from "./lyriaService";
 import { generateImageWithImagen, isImagenConfigured } from "./imagenService";
 import { analyzeImage, detectFaces, safeSearchCheck, isVisionConfigured } from "./visionService";
-import { synthesizeSpeech, createVoiceClone, synthesizeWithClone, listVoices, isVoiceServiceConfigured, getVoiceStyles, getCharacterPresets, getGoogleVoices } from "./voiceService";
+import { synthesizeSpeech, createVoiceClone, synthesizeWithClone, listVoices, isVoiceServiceConfigured, getVoiceStyles, getCharacterPresets, getGoogleVoices, synthesizeWithElevenLabs, getElevenLabsVoices, isElevenLabsConfigured } from "./voiceService";
 import { generateImage, generateMovieScript, generateStoryboard, isVideoServiceConfigured, getMovieStyles, movieStyles, generateVideo, checkVideoGenerationStatus, isVeoConfigured } from "./videoService";
 import { createGoogleDoc, getGoogleDoc, updateGoogleDoc, createGoogleSlides, createGoogleSheet, createGoogleForm, exportDocument, isGoogleWorkspaceConfigured, getWorkspaceStatus } from "./googleWorkspaceService";
 import { synthesizeSpeechTTS, synthesizeChapter, audiobookStyles, narratorVoices, estimateAudioDuration, estimateTTSCost, isTTSConfigured } from "./textToSpeechService";
@@ -5536,6 +5536,57 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
       }
     } catch (error) {
       res.status(500).json({ error: "Failed to list voices" });
+    }
+  });
+
+  // ============ ELEVENLABS PREMIUM VOICE API ============
+
+  // Check ElevenLabs configuration
+  app.get('/api/voice/elevenlabs/status', (req, res) => {
+    res.json({ 
+      configured: isElevenLabsConfigured(),
+      provider: 'ElevenLabs'
+    });
+  });
+
+  // Get ElevenLabs voices
+  app.get('/api/voice/elevenlabs/voices', isAuthenticated, async (req, res) => {
+    try {
+      const result = await getElevenLabsVoices();
+      if (result.success) {
+        res.json({ success: true, voices: result.voices });
+      } else {
+        res.status(500).json({ success: false, error: result.error });
+      }
+    } catch (error) {
+      console.error("ElevenLabs voices error:", error);
+      res.status(500).json({ error: "Failed to fetch ElevenLabs voices" });
+    }
+  });
+
+  // Synthesize with ElevenLabs (premium quality)
+  app.post('/api/voice/elevenlabs/synthesize', isAuthenticated, async (req: any, res) => {
+    try {
+      const { text, voiceId, modelId } = req.body;
+      
+      if (!text) {
+        return res.status(400).json({ error: "Text is required" });
+      }
+
+      const result = await synthesizeWithElevenLabs(text, voiceId, modelId);
+      
+      if (result.success) {
+        res.json({ 
+          success: true, 
+          audioBase64: result.audioBase64,
+          mimeType: 'audio/mpeg'
+        });
+      } else {
+        res.status(500).json({ success: false, error: result.error });
+      }
+    } catch (error) {
+      console.error("ElevenLabs synthesis error:", error);
+      res.status(500).json({ error: "ElevenLabs synthesis failed" });
     }
   });
 
