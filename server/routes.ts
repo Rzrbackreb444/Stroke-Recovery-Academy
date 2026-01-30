@@ -255,8 +255,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Serve stock images from attached_assets
   app.use('/stock_images', express.static(path.join(process.cwd(), 'attached_assets', 'stock_images')));
 
-  // Email Authentication Routes
-  app.use('/api/email-auth', emailAuthRoutes);
+  // Email Authentication Routes - moved to after setupAuth for session access
 
   // Lulu Publishing API Routes
   app.use('/api/lulu', luluRoutes);
@@ -712,6 +711,9 @@ Allow: /
   
   // Setup authentication
   await setupAuth(app);
+  
+  // Email Authentication Routes (must be after setupAuth for session access)
+  app.use('/api/email-auth', emailAuthRoutes);
   
   // Initialize Stripe
   await initStripe();
