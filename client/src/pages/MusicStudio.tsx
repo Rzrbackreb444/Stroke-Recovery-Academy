@@ -389,6 +389,7 @@ export default function MusicStudio() {
   // Bass synth refs
   const bassSynthRef = useRef<Tone.MonoSynth | null>(null);
   const bassFilterRef = useRef<Tone.Filter | null>(null);
+  const bassDistortionRef = useRef<Tone.Distortion | null>(null); // Dedicated bass distortion
   const bassChannelRef = useRef<Tone.Channel | null>(null);
   
   // Pad/Chord synth refs
@@ -527,6 +528,129 @@ export default function MusicStudio() {
       
       Tone.getTransport().bpm.value = bpm;
       
+      // === BEAT LAB INSTRUMENTS INITIALIZATION ===
+      // Create drum channel
+      drumChannelRef.current = new Tone.Channel({ volume: 0 });
+      drumChannelRef.current.connect(eqFiltersRef.current[0]);
+      
+      // Initialize drum synths with genre-specific sounds
+      drumSynthsRef.current.kick = new Tone.MembraneSynth({
+        pitchDecay: 0.05,
+        octaves: 10,
+        oscillator: { type: "sine" },
+        envelope: { attack: 0.001, decay: 0.4, sustain: 0.01, release: 1.4 },
+      });
+      drumSynthsRef.current.kick.connect(drumChannelRef.current);
+      
+      drumSynthsRef.current.snare = new Tone.NoiseSynth({
+        noise: { type: "white" },
+        envelope: { attack: 0.005, decay: 0.2, sustain: 0, release: 0.1 },
+      });
+      drumSynthsRef.current.snare.connect(drumChannelRef.current);
+      
+      drumSynthsRef.current.hihatClosed = new Tone.MetalSynth({
+        frequency: 200,
+        envelope: { attack: 0.001, decay: 0.05, release: 0.01 },
+        harmonicity: 5.1,
+        modulationIndex: 32,
+        resonance: 4000,
+        octaves: 1.5,
+      });
+      drumSynthsRef.current.hihatClosed.volume.value = -10;
+      drumSynthsRef.current.hihatClosed.connect(drumChannelRef.current);
+      
+      drumSynthsRef.current.hihatOpen = new Tone.MetalSynth({
+        frequency: 200,
+        envelope: { attack: 0.001, decay: 0.3, release: 0.1 },
+        harmonicity: 5.1,
+        modulationIndex: 32,
+        resonance: 4000,
+        octaves: 1.5,
+      });
+      drumSynthsRef.current.hihatOpen.volume.value = -10;
+      drumSynthsRef.current.hihatOpen.connect(drumChannelRef.current);
+      
+      drumSynthsRef.current.clap = new Tone.NoiseSynth({
+        noise: { type: "pink" },
+        envelope: { attack: 0.005, decay: 0.15, sustain: 0, release: 0.08 },
+      });
+      drumSynthsRef.current.clap.connect(drumChannelRef.current);
+      
+      drumSynthsRef.current.tom = new Tone.MembraneSynth({
+        pitchDecay: 0.08,
+        octaves: 4,
+        oscillator: { type: "sine" },
+        envelope: { attack: 0.001, decay: 0.3, sustain: 0, release: 0.3 },
+      });
+      drumSynthsRef.current.tom.connect(drumChannelRef.current);
+      
+      drumSynthsRef.current.crash = new Tone.MetalSynth({
+        frequency: 300,
+        envelope: { attack: 0.001, decay: 1.5, release: 0.5 },
+        harmonicity: 5.1,
+        modulationIndex: 40,
+        resonance: 3000,
+        octaves: 1.5,
+      });
+      drumSynthsRef.current.crash.volume.value = -8;
+      drumSynthsRef.current.crash.connect(drumChannelRef.current);
+      
+      drumSynthsRef.current.ride = new Tone.MetalSynth({
+        frequency: 400,
+        envelope: { attack: 0.001, decay: 0.4, release: 0.2 },
+        harmonicity: 3,
+        modulationIndex: 20,
+        resonance: 5000,
+        octaves: 1,
+      });
+      drumSynthsRef.current.ride.volume.value = -12;
+      drumSynthsRef.current.ride.connect(drumChannelRef.current);
+      
+      // Create bass synth channel with dedicated distortion
+      bassChannelRef.current = new Tone.Channel({ volume: -3 });
+      bassChannelRef.current.connect(eqFiltersRef.current[0]);
+      
+      bassDistortionRef.current = new Tone.Distortion({
+        distortion: 0,
+        wet: 0,
+      });
+      
+      bassFilterRef.current = new Tone.Filter({
+        frequency: 800,
+        type: "lowpass",
+        Q: 2,
+      });
+      
+      bassSynthRef.current = new Tone.MonoSynth({
+        oscillator: { type: "sawtooth" },
+        envelope: { attack: 0.01, decay: 0.3, sustain: 0.4, release: 0.8 },
+        filterEnvelope: { attack: 0.01, decay: 0.2, sustain: 0.5, release: 0.8, baseFrequency: 200, octaves: 2.5 },
+      });
+      // Chain: Bass Synth → Filter → Distortion → Channel → EQ
+      bassSynthRef.current.connect(bassFilterRef.current);
+      bassFilterRef.current.connect(bassDistortionRef.current);
+      bassDistortionRef.current.connect(bassChannelRef.current);
+      
+      // Create pad synth channel
+      padChannelRef.current = new Tone.Channel({ volume: -6 });
+      padChannelRef.current.connect(eqFiltersRef.current[0]);
+      
+      padSynthRef.current = new Tone.PolySynth(Tone.Synth, {
+        oscillator: { type: "sine" },
+        envelope: { attack: 0.5, decay: 0.5, sustain: 0.8, release: 2 },
+      });
+      padSynthRef.current.connect(padChannelRef.current);
+      
+      // Create lead synth channel
+      leadChannelRef.current = new Tone.Channel({ volume: -4 });
+      leadChannelRef.current.connect(eqFiltersRef.current[0]);
+      
+      leadSynthRef.current = new Tone.Synth({
+        oscillator: { type: "square" },
+        envelope: { attack: 0.01, decay: 0.2, sustain: 0.5, release: 0.5 },
+      });
+      leadSynthRef.current.connect(leadChannelRef.current);
+      
       // Start real-time visualization
       const updateVisuals = () => {
         if (analyserRef.current && meterRef.current) {
@@ -589,6 +713,114 @@ export default function MusicStudio() {
       pitchShiftRef.current.wet.value = autoTuneEnabled ? autoTuneSpeed / 100 : 0;
     }
   }, [autoTuneEnabled, autoTuneSpeed]);
+
+  // === BEAT LAB: Wire UI controls to audio engine ===
+  
+  // Update bass synth parameters in real-time
+  useEffect(() => {
+    if (bassFilterRef.current) {
+      // Map 0-100 to 100-5000 Hz frequency range
+      bassFilterRef.current.frequency.value = 100 + (bassFilter / 100) * 4900;
+    }
+    if (bassSynthRef.current) {
+      // Map decay 0-100 to 0.1-2.0 seconds
+      bassSynthRef.current.envelope.decay = 0.1 + (bassDecay / 100) * 1.9;
+      // Update oscillator type based on bass sound selection
+      const oscTypes: Record<string, OscillatorType> = {
+        "808": "sine",
+        "sub": "sine", 
+        "analog": "sawtooth",
+        "fm": "square",
+        "reese": "sawtooth",
+      };
+      bassSynthRef.current.oscillator.type = oscTypes[bassSound] || "sawtooth";
+    }
+  }, [bassFilter, bassDecay, bassSound]);
+  
+  // Update bass distortion (dedicated bass-only distortion)
+  useEffect(() => {
+    if (bassDistortionRef.current) {
+      // Apply distortion only to bass channel
+      const currentDist = bassDistortion / 100 * 0.8; // Max 80% distortion
+      bassDistortionRef.current.distortion = currentDist;
+      bassDistortionRef.current.wet.value = bassDistortion > 0 ? 1 : 0;
+    }
+  }, [bassDistortion]);
+  
+  // Update pad synth parameters in real-time
+  useEffect(() => {
+    if (padSynthRef.current) {
+      // Map attack 0-100 to 0.01-2.0 seconds
+      const attackTime = 0.01 + (synthAttack / 100) * 1.99;
+      // Map release 0-100 to 0.1-4.0 seconds  
+      const releaseTime = 0.1 + (synthRelease / 100) * 3.9;
+      
+      // Update oscillator type based on synth type selection
+      const oscTypes: Record<string, "sine" | "square" | "triangle" | "sawtooth"> = {
+        "pad": "sine",
+        "lead": "square",
+        "pluck": "triangle",
+        "brass": "sawtooth",
+        "strings": "sine",
+      };
+      
+      // Apply all parameters including oscillator type to PolySynth
+      padSynthRef.current.set({
+        oscillator: {
+          type: oscTypes[synthType] || "sine",
+        },
+        envelope: {
+          attack: attackTime,
+          release: releaseTime,
+        },
+        detune: synthDetune * 10, // Map -50 to 50 to -500 to 500 cents
+      });
+    }
+  }, [synthAttack, synthRelease, synthDetune, synthType]);
+  
+  // Update lead synth parameters
+  useEffect(() => {
+    if (leadSynthRef.current) {
+      const oscTypes: Record<string, "sine" | "square" | "triangle" | "sawtooth"> = {
+        "pad": "sine",
+        "lead": "square", 
+        "pluck": "triangle",
+        "brass": "sawtooth",
+        "strings": "sine",
+      };
+      leadSynthRef.current.oscillator.type = oscTypes[synthType] || "square";
+    }
+  }, [synthType]);
+  
+  // Restart sequencer interval when BPM changes during playback
+  useEffect(() => {
+    if (isSequencerPlaying && sequencerIntervalRef.current) {
+      clearInterval(sequencerIntervalRef.current);
+      const stepTime = (60 / bpm / 4) * 1000;
+      let step = currentStep;
+      
+      const playStep = () => {
+        setCurrentStep(step);
+        drumPattern.forEach((row, drumIdx) => {
+          if (row[step]) {
+            triggerDrum(drumIdx);
+          }
+        });
+        if (bassPattern[step]?.active) {
+          playBassNote(bassPattern[step].note);
+        }
+        if (step % 4 === 0) {
+          const chordIndex = Math.floor(step / 4) % chordProgression.length;
+          if (chordProgression[chordIndex]) {
+            playChord(chordProgression[chordIndex].chord);
+          }
+        }
+        step = (step + 1) % 16;
+      };
+      
+      sequencerIntervalRef.current = setInterval(playStep, stepTime);
+    }
+  }, [bpm, isSequencerPlaying]);
 
   // Cleanup animation frame on unmount
   useEffect(() => {
@@ -725,6 +957,295 @@ export default function MusicStudio() {
   };
 
   const removeTrack = (id: string) => setTracks(tracks.filter(t => t.id !== id));
+
+  // === BEAT LAB FUNCTIONS ===
+  
+  // Trigger individual drum sounds (auto-initializes audio on first click)
+  const triggerDrum = useCallback(async (drumIndex: number) => {
+    await initAudio(); // Ensure audio is initialized
+    const drums = drumSynthsRef.current;
+    const now = Tone.now();
+    const velocity = drumVolumes[drumIndex] / 100;
+    
+    switch (drumIndex) {
+      case 0: // Kick
+        drums.kick?.triggerAttackRelease("C1", "8n", now, velocity);
+        break;
+      case 1: // Snare
+        drums.snare?.triggerAttackRelease("8n", now, velocity);
+        break;
+      case 2: // Hi-hat closed
+        drums.hihatClosed?.triggerAttackRelease("C6", "32n", now, velocity * 0.6);
+        break;
+      case 3: // Hi-hat open
+        drums.hihatOpen?.triggerAttackRelease("C6", "16n", now, velocity * 0.6);
+        break;
+      case 4: // Clap
+        drums.clap?.triggerAttackRelease("16n", now, velocity);
+        break;
+      case 5: // Tom
+        drums.tom?.triggerAttackRelease("G2", "8n", now, velocity);
+        break;
+      case 6: // Crash
+        drums.crash?.triggerAttackRelease("C6", "4n", now, velocity * 0.7);
+        break;
+      case 7: // Ride
+        drums.ride?.triggerAttackRelease("C6", "8n", now, velocity * 0.5);
+        break;
+    }
+  }, [drumVolumes]);
+  
+  // Toggle step in drum pattern
+  const toggleDrumStep = useCallback((drumIndex: number, stepIndex: number) => {
+    setDrumPattern(prev => {
+      const newPattern = prev.map(row => [...row]);
+      newPattern[drumIndex][stepIndex] = !newPattern[drumIndex][stepIndex];
+      return newPattern;
+    });
+  }, []);
+  
+  // Play bass note (auto-initializes audio on first click)
+  const playBassNote = useCallback(async (note: string, duration: string = "8n") => {
+    await initAudio();
+    if (!bassSynthRef.current) return;
+    bassSynthRef.current.triggerAttackRelease(note, duration, Tone.now());
+  }, []);
+  
+  // Play chord (auto-initializes audio on first click)
+  const playChord = useCallback(async (chordName: string, duration: string = "2n") => {
+    await initAudio();
+    if (!padSynthRef.current) return;
+    
+    // Parse chord name to notes
+    const chordNotes: Record<string, string[]> = {
+      "C": ["C4", "E4", "G4"],
+      "Cm": ["C4", "Eb4", "G4"],
+      "Cm7": ["C4", "Eb4", "G4", "Bb4"],
+      "Dm": ["D4", "F4", "A4"],
+      "Dm7": ["D4", "F4", "A4", "C5"],
+      "Em": ["E4", "G4", "B4"],
+      "Em7": ["E4", "G4", "B4", "D5"],
+      "F": ["F4", "A4", "C5"],
+      "Fm": ["F4", "Ab4", "C5"],
+      "Fm7": ["F4", "Ab4", "C5", "Eb5"],
+      "G": ["G4", "B4", "D5"],
+      "Gm": ["G4", "Bb4", "D5"],
+      "Gm7": ["G4", "Bb4", "D5", "F5"],
+      "Am": ["A4", "C5", "E5"],
+      "Am7": ["A4", "C5", "E5", "G5"],
+      "Bb": ["Bb4", "D5", "F5"],
+      "Ab": ["Ab4", "C5", "Eb5"],
+    };
+    
+    const notes = chordNotes[chordName] || chordNotes["Cm"];
+    padSynthRef.current.triggerAttackRelease(notes, duration, Tone.now());
+  }, []);
+  
+  // Play melody note (auto-initializes audio on first click)
+  const playMelodyNote = useCallback(async (note: string, duration: string = "8n") => {
+    await initAudio();
+    if (!leadSynthRef.current) return;
+    leadSynthRef.current.triggerAttackRelease(note, duration, Tone.now());
+  }, []);
+  
+  // Start the sequencer
+  const startSequencer = useCallback(async () => {
+    await initAudio();
+    
+    if (isSequencerPlaying) {
+      // Stop
+      if (sequencerIntervalRef.current) {
+        clearInterval(sequencerIntervalRef.current);
+        sequencerIntervalRef.current = null;
+      }
+      Tone.getTransport().stop();
+      setCurrentStep(0);
+      setIsSequencerPlaying(false);
+      return;
+    }
+    
+    // Start
+    Tone.getTransport().bpm.value = bpm;
+    setIsSequencerPlaying(true);
+    
+    // Calculate step interval in ms (16th notes)
+    const stepTime = (60 / bpm / 4) * 1000;
+    let step = 0;
+    
+    const playStep = () => {
+      setCurrentStep(step);
+      
+      // Play drums for this step
+      drumPattern.forEach((row, drumIdx) => {
+        if (row[step]) {
+          triggerDrum(drumIdx);
+        }
+      });
+      
+      // Play bass for this step
+      if (bassPattern[step]?.active) {
+        playBassNote(bassPattern[step].note);
+      }
+      
+      // Play chord progression with proper duration scheduling
+      // Calculate which chord should be playing based on accumulated beat positions
+      let beatPosition = 0;
+      let currentChordIndex = 0;
+      const currentBeat = step / 4; // Convert step to beat position
+      
+      for (let i = 0; i < chordProgression.length; i++) {
+        if (currentBeat >= beatPosition && currentBeat < beatPosition + chordProgression[i].duration) {
+          currentChordIndex = i;
+          break;
+        }
+        beatPosition += chordProgression[i].duration;
+      }
+      
+      // Only trigger chord on first step of its duration
+      const chordStartStep = Math.floor(beatPosition * 4);
+      if (step === chordStartStep || (step === 0 && currentChordIndex === 0)) {
+        const chord = chordProgression[currentChordIndex];
+        if (chord) {
+          // Convert duration from beats to Tone.js notation
+          const durationMap: Record<number, string> = { 1: "4n", 2: "2n", 4: "1n", 8: "1m" };
+          playChord(chord.chord, durationMap[chord.duration] || "2n");
+        }
+      }
+      
+      step = (step + 1) % 16;
+    };
+    
+    // Start immediately
+    playStep();
+    
+    // Continue loop
+    sequencerIntervalRef.current = setInterval(playStep, stepTime);
+  }, [isSequencerPlaying, bpm, drumPattern, bassPattern, chordProgression, triggerDrum, playBassNote, playChord]);
+  
+  // Apply genre template
+  const applyGenreTemplate = useCallback((genreId: string) => {
+    setActiveGenreTemplate(genreId);
+    
+    const templates: Record<string, {
+      drumPattern: boolean[][];
+      bpm: number;
+      bassNotes: string[];
+      chords: {chord: string; duration: number}[];
+    }> = {
+      hiphop: {
+        drumPattern: [
+          [true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false], // Kick
+          [false, false, false, false, true, false, false, false, false, false, false, false, true, false, false, false], // Snare
+          [true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false], // HH closed
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false], // HH open
+          [false, false, false, false, true, false, false, false, false, false, false, false, true, false, false, false], // Clap
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // Tom
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // Crash
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // Ride
+        ],
+        bpm: 90,
+        bassNotes: ["C2", "C2", "C2", "C2", "G1", "G1", "G1", "G1", "Ab1", "Ab1", "Bb1", "Bb1", "C2", "C2", "C2", "C2"],
+        chords: [{ chord: "Cm7", duration: 4 }, { chord: "Gm7", duration: 4 }, { chord: "Ab", duration: 4 }, { chord: "Bb", duration: 4 }],
+      },
+      trap: {
+        drumPattern: [
+          [true, false, false, false, false, false, true, false, false, false, false, false, true, false, false, false], // Kick
+          [false, false, false, false, true, false, false, false, false, false, false, false, true, false, false, false], // Snare
+          [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true], // HH closed (fast rolls)
+          [false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, true], // HH open
+          [false, false, false, false, true, false, false, false, false, false, false, false, true, false, false, false], // Clap
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // Tom
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // Crash
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // Ride
+        ],
+        bpm: 140,
+        bassNotes: ["C1", "", "", "", "C1", "", "C1", "", "", "", "C1", "", "", "", "", ""],
+        chords: [{ chord: "Cm", duration: 8 }, { chord: "Ab", duration: 8 }],
+      },
+      rock: {
+        drumPattern: [
+          [true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false], // Kick
+          [false, false, false, false, true, false, false, false, false, false, false, false, true, false, false, false], // Snare
+          [true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false], // HH closed
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // HH open
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // Clap
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false], // Tom fill
+          [true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // Crash
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // Ride
+        ],
+        bpm: 120,
+        bassNotes: ["E2", "E2", "E2", "E2", "A2", "A2", "A2", "A2", "D2", "D2", "D2", "D2", "E2", "E2", "E2", "E2"],
+        chords: [{ chord: "Em", duration: 4 }, { chord: "Am", duration: 4 }, { chord: "Dm", duration: 4 }, { chord: "Em", duration: 4 }],
+      },
+      edm: {
+        drumPattern: [
+          [true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false], // Kick - 4 on floor
+          [false, false, false, false, true, false, false, false, false, false, false, false, true, false, false, false], // Snare
+          [false, false, true, false, false, false, true, false, false, false, true, false, false, false, true, false], // HH closed (offbeat)
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // HH open
+          [false, false, false, false, true, false, false, false, false, false, false, false, true, false, false, false], // Clap
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // Tom
+          [true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // Crash
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // Ride
+        ],
+        bpm: 128,
+        bassNotes: ["C2", "", "", "", "C2", "", "", "", "G1", "", "", "", "G1", "", "", ""],
+        chords: [{ chord: "Cm", duration: 4 }, { chord: "Ab", duration: 4 }, { chord: "Bb", duration: 4 }, { chord: "Gm", duration: 4 }],
+      },
+      rnb: {
+        drumPattern: [
+          [true, false, false, false, false, false, true, false, false, false, true, false, false, false, false, false], // Kick
+          [false, false, false, false, true, false, false, false, false, false, false, false, true, false, false, false], // Snare
+          [true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false], // HH closed
+          [false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, true], // HH open
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // Clap
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // Tom
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // Crash
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // Ride
+        ],
+        bpm: 85,
+        bassNotes: ["Bb1", "", "Bb1", "", "F2", "", "F2", "", "Eb2", "", "Eb2", "", "Bb1", "", "", ""],
+        chords: [{ chord: "Gm7", duration: 4 }, { chord: "Cm7", duration: 4 }, { chord: "Fm7", duration: 4 }, { chord: "Bb", duration: 4 }],
+      },
+      jazz: {
+        drumPattern: [
+          [true, false, false, false, false, false, true, false, false, false, false, false, true, false, false, false], // Kick (sparse)
+          [false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false], // Snare (ghost notes)
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // HH closed
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // HH open
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // Clap
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // Tom
+          [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false], // Crash
+          [true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false], // Ride (swing pattern)
+        ],
+        bpm: 110,
+        bassNotes: ["C2", "", "E2", "", "G2", "", "Bb2", "", "A2", "", "G2", "", "E2", "", "C2", ""],
+        chords: [{ chord: "Cm7", duration: 4 }, { chord: "Fm7", duration: 4 }, { chord: "Dm7", duration: 4 }, { chord: "Gm7", duration: 4 }],
+      },
+    };
+    
+    const template = templates[genreId];
+    if (template) {
+      setDrumPattern(template.drumPattern);
+      setBpm(template.bpm);
+      setChordProgression(template.chords);
+      setBassPattern(prev => prev.map((step, i) => ({
+        ...step,
+        note: template.bassNotes[i] || "C2",
+        active: template.bassNotes[i] !== "",
+      })));
+      toast({ title: `${genreId.toUpperCase()} Template Applied`, description: `BPM: ${template.bpm}, Pattern loaded` });
+    }
+  }, []);
+  
+  // Cleanup sequencer on unmount
+  useEffect(() => {
+    return () => {
+      if (sequencerIntervalRef.current) {
+        clearInterval(sequencerIntervalRef.current);
+      }
+    };
+  }, []);
 
   // Generate lyrics
   const generateLyrics = async () => {
@@ -1344,6 +1865,9 @@ export default function MusicStudio() {
                 <TabsTrigger value="distribution" data-testid="tab-distribution" className="bg-gradient-to-r from-red-500/20 to-orange-500/20">
                   <Radio className="w-4 h-4 mr-1" /> Distribution
                 </TabsTrigger>
+                <TabsTrigger value="beat-lab" data-testid="tab-beat-lab" className="bg-gradient-to-r from-red-500/20 to-orange-500/20">
+                  <Drum className="w-4 h-4 mr-1" /> Beat Lab
+                </TabsTrigger>
                 <TabsTrigger value="create" data-testid="tab-create">Create Song</TabsTrigger>
                 <TabsTrigger value="mixer" data-testid="tab-mixer">Mixer</TabsTrigger>
                 <TabsTrigger value="effects" data-testid="tab-effects">Effects</TabsTrigger>
@@ -1356,6 +1880,397 @@ export default function MusicStudio() {
                 </TabsTrigger>
                 <TabsTrigger value="movie" data-testid="tab-movie">Movie Studio</TabsTrigger>
               </TabsList>
+
+              {/* === BEAT LAB TAB - Professional Music Creation === */}
+              <TabsContent value="beat-lab" className="flex-1 overflow-auto">
+                <div className="space-y-6">
+                  {/* Header */}
+                  <div className="text-center py-4 bg-gradient-to-r from-red-500/10 via-orange-500/10 to-amber-500/10 rounded-xl border">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <Drum className="w-8 h-8 text-red-500" />
+                      <h2 className="text-3xl font-bold bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
+                        BEAT LAB
+                      </h2>
+                      <Music className="w-8 h-8 text-orange-500" />
+                    </div>
+                    <p className="text-muted-foreground">Create professional beats from Hip Hop to Rock</p>
+                  </div>
+                  
+                  {/* Transport & Genre Templates */}
+                  <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <Button
+                        onClick={startSequencer}
+                        size="lg"
+                        className={isSequencerPlaying ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"}
+                        data-testid="button-sequencer-play"
+                      >
+                        {isSequencerPlaying ? <Square className="w-5 h-5 mr-2" /> : <Play className="w-5 h-5 mr-2" />}
+                        {isSequencerPlaying ? "Stop" : "Play"}
+                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Label className="text-sm font-medium">BPM:</Label>
+                        <Input
+                          type="number"
+                          value={bpm}
+                          onChange={(e) => setBpm(Math.max(40, Math.min(240, parseInt(e.target.value) || 120)))}
+                          className="w-20"
+                          data-testid="input-bpm"
+                        />
+                      </div>
+                    </div>
+                    
+                    {/* Genre Templates */}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Label className="text-sm font-medium">Genre:</Label>
+                      {["hiphop", "trap", "rock", "edm", "rnb", "jazz"].map((genre) => (
+                        <Button
+                          key={genre}
+                          variant={activeGenreTemplate === genre ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => applyGenreTemplate(genre)}
+                          data-testid={`button-genre-${genre}`}
+                        >
+                          {genre.toUpperCase()}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Drum Machine */}
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="flex items-center gap-2">
+                        <Drum className="w-5 h-5 text-red-500" />
+                        16-Step Drum Machine
+                      </CardTitle>
+                      <CardDescription>Click pads to create your beat. Lit steps play on that beat.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="overflow-x-auto">
+                        <div className="min-w-[700px]">
+                          {/* Step indicators */}
+                          <div className="flex gap-1 mb-2 ml-20">
+                            {Array(16).fill(0).map((_, i) => (
+                              <div
+                                key={i}
+                                className={`w-10 h-6 flex items-center justify-center text-xs font-mono rounded ${
+                                  currentStep === i && isSequencerPlaying 
+                                    ? "bg-green-500 text-white" 
+                                    : i % 4 === 0 
+                                    ? "bg-muted text-muted-foreground" 
+                                    : "text-muted-foreground"
+                                }`}
+                              >
+                                {i + 1}
+                              </div>
+                            ))}
+                          </div>
+                          
+                          {/* Drum rows */}
+                          {["Kick", "Snare", "HH Closed", "HH Open", "Clap", "Tom", "Crash", "Ride"].map((name, drumIdx) => (
+                            <div key={drumIdx} className="flex items-center gap-1 mb-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="w-20 justify-start text-xs"
+                                onClick={() => triggerDrum(drumIdx)}
+                                data-testid={`button-drum-${name.toLowerCase().replace(" ", "-")}`}
+                              >
+                                {name}
+                              </Button>
+                              {drumPattern[drumIdx].map((active, stepIdx) => (
+                                <button
+                                  key={stepIdx}
+                                  onClick={() => toggleDrumStep(drumIdx, stepIdx)}
+                                  className={`w-10 h-8 rounded transition-all ${
+                                    active
+                                      ? currentStep === stepIdx && isSequencerPlaying
+                                        ? "bg-green-400 scale-110"
+                                        : drumIdx === 0 ? "bg-red-500" 
+                                        : drumIdx === 1 ? "bg-orange-500"
+                                        : drumIdx < 4 ? "bg-amber-500"
+                                        : "bg-blue-500"
+                                      : currentStep === stepIdx && isSequencerPlaying
+                                        ? "bg-green-200"
+                                        : stepIdx % 4 === 0 ? "bg-muted" : "bg-muted/50"
+                                  } hover:scale-105`}
+                                  data-testid={`drum-step-${drumIdx}-${stepIdx}`}
+                                />
+                              ))}
+                              <Slider
+                                value={[drumVolumes[drumIdx]]}
+                                onValueChange={([v]) => {
+                                  const newVolumes = [...drumVolumes];
+                                  newVolumes[drumIdx] = v;
+                                  setDrumVolumes(newVolumes);
+                                }}
+                                max={100}
+                                className="w-16 ml-2"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  {/* Bass & Chords Row */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {/* Bass Synth */}
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="flex items-center gap-2">
+                          <Waves className="w-5 h-5 text-blue-500" />
+                          Bass Synthesizer
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="flex flex-wrap gap-2">
+                          <Label className="w-full text-sm">Bass Type:</Label>
+                          {(["808", "sub", "analog", "fm", "reese"] as const).map((type) => (
+                            <Button
+                              key={type}
+                              variant={bassSound === type ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => setBassSound(type)}
+                              data-testid={`button-bass-${type}`}
+                            >
+                              {type.toUpperCase()}
+                            </Button>
+                          ))}
+                        </div>
+                        
+                        {/* Bass pattern */}
+                        <div>
+                          <Label className="text-sm mb-2 block">Bass Pattern (click to toggle):</Label>
+                          <div className="flex gap-1 overflow-x-auto pb-2">
+                            {bassPattern.map((step, idx) => (
+                              <button
+                                key={idx}
+                                onClick={() => {
+                                  const newPattern = [...bassPattern];
+                                  newPattern[idx] = { ...step, active: !step.active };
+                                  setBassPattern(newPattern);
+                                }}
+                                className={`w-8 h-10 rounded text-xs font-mono flex items-center justify-center ${
+                                  step.active
+                                    ? currentStep === idx && isSequencerPlaying
+                                      ? "bg-green-400"
+                                      : "bg-blue-500 text-white"
+                                    : currentStep === idx && isSequencerPlaying
+                                      ? "bg-green-200"
+                                      : "bg-muted"
+                                }`}
+                                data-testid={`bass-step-${idx}`}
+                              >
+                                {step.active ? step.note.replace(/\d/, "") : ""}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        
+                        {/* Bass controls */}
+                        <div className="grid grid-cols-3 gap-4">
+                          <div>
+                            <Label className="text-xs">Filter</Label>
+                            <Slider
+                              value={[bassFilter]}
+                              onValueChange={([v]) => setBassFilter(v)}
+                              max={100}
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs">Decay</Label>
+                            <Slider
+                              value={[bassDecay]}
+                              onValueChange={([v]) => setBassDecay(v)}
+                              max={100}
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs">Distortion</Label>
+                            <Slider
+                              value={[bassDistortion]}
+                              onValueChange={([v]) => setBassDistortion(v)}
+                              max={100}
+                            />
+                          </div>
+                        </div>
+                        
+                        {/* Bass keyboard */}
+                        <div>
+                          <Label className="text-sm mb-2 block">Play Bass Notes:</Label>
+                          <div className="flex gap-1 flex-wrap">
+                            {["C2", "D2", "E2", "F2", "G2", "A2", "Bb2", "C3"].map((note) => (
+                              <Button
+                                key={note}
+                                variant="outline"
+                                size="sm"
+                                onClick={() => playBassNote(note)}
+                                className="w-10"
+                                data-testid={`bass-note-${note}`}
+                              >
+                                {note.replace("2", "").replace("3", "")}
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                    
+                    {/* Chord Pad */}
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="flex items-center gap-2">
+                          <Piano className="w-5 h-5 text-amber-500" />
+                          Chord Pad
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="flex flex-wrap gap-2">
+                          <Label className="w-full text-sm">Synth Type:</Label>
+                          {(["pad", "lead", "pluck", "brass", "strings"] as const).map((type) => (
+                            <Button
+                              key={type}
+                              variant={synthType === type ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => setSynthType(type)}
+                              data-testid={`button-synth-${type}`}
+                            >
+                              {type.charAt(0).toUpperCase() + type.slice(1)}
+                            </Button>
+                          ))}
+                        </div>
+                        
+                        {/* Chord progression */}
+                        <div>
+                          <Label className="text-sm mb-2 block">Current Progression:</Label>
+                          <div className="flex gap-2">
+                            {chordProgression.map((chord, idx) => (
+                              <div
+                                key={idx}
+                                className={`px-4 py-3 rounded-lg text-center min-w-[60px] ${
+                                  Math.floor(currentStep / 4) % chordProgression.length === idx && isSequencerPlaying
+                                    ? "bg-amber-500 text-white"
+                                    : "bg-muted"
+                                }`}
+                              >
+                                <div className="font-bold">{chord.chord}</div>
+                                <div className="text-xs text-muted-foreground">{chord.duration} beats</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        
+                        {/* Synth controls */}
+                        <div className="grid grid-cols-3 gap-4">
+                          <div>
+                            <Label className="text-xs">Attack</Label>
+                            <Slider
+                              value={[synthAttack]}
+                              onValueChange={([v]) => setSynthAttack(v)}
+                              max={100}
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs">Release</Label>
+                            <Slider
+                              value={[synthRelease]}
+                              onValueChange={([v]) => setSynthRelease(v)}
+                              max={100}
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs">Detune</Label>
+                            <Slider
+                              value={[synthDetune + 50]}
+                              onValueChange={([v]) => setSynthDetune(v - 50)}
+                              max={100}
+                            />
+                          </div>
+                        </div>
+                        
+                        {/* Chord pads */}
+                        <div>
+                          <Label className="text-sm mb-2 block">Play Chords:</Label>
+                          <div className="grid grid-cols-4 gap-2">
+                            {["Cm", "Cm7", "Dm", "Dm7", "Em", "Em7", "Fm", "Fm7", "Gm", "Gm7", "Am", "Am7", "Bb", "Ab", "F", "G"].map((chord) => (
+                              <Button
+                                key={chord}
+                                variant="outline"
+                                onClick={() => playChord(chord)}
+                                className="h-12"
+                                data-testid={`chord-${chord}`}
+                              >
+                                {chord}
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                  
+                  {/* Melody Keyboard */}
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="flex items-center gap-2">
+                        <Music className="w-5 h-5 text-green-500" />
+                        Melody Keyboard
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center gap-4 mb-4">
+                        <Label>Octave:</Label>
+                        <div className="flex gap-1">
+                          {[2, 3, 4, 5, 6].map((oct) => (
+                            <Button
+                              key={oct}
+                              variant={activeOctave === oct ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => setActiveOctave(oct)}
+                            >
+                              {oct}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex gap-1 overflow-x-auto pb-2">
+                        {/* White keys */}
+                        {["C", "D", "E", "F", "G", "A", "B"].map((note) => (
+                          <Button
+                            key={note}
+                            variant="outline"
+                            className="w-12 h-24 bg-white hover:bg-gray-100 text-black border-2"
+                            onClick={() => playMelodyNote(`${note}${activeOctave}`)}
+                            data-testid={`melody-${note}${activeOctave}`}
+                          >
+                            {note}
+                          </Button>
+                        ))}
+                      </div>
+                      <div className="flex gap-1 -mt-16 ml-7 overflow-x-auto">
+                        {/* Black keys */}
+                        {["C#", "D#", "", "F#", "G#", "A#", ""].map((note, idx) => (
+                          note ? (
+                            <Button
+                              key={note}
+                              className="w-8 h-14 bg-gray-900 hover:bg-gray-800 text-white text-xs z-10"
+                              onClick={() => playMelodyNote(`${note}${activeOctave}`)}
+                              data-testid={`melody-${note}${activeOctave}`}
+                            >
+                              {note}
+                            </Button>
+                          ) : (
+                            <div key={idx} className="w-8" />
+                          )
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
 
               {/* MELODY MAGIC TAB - Record → Analyze → Transform → Recompose */}
               <TabsContent value="melody-magic" className="flex-1 overflow-auto">
