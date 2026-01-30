@@ -243,6 +243,19 @@ export default function MusicStudio() {
   const [isLiveMusicActive, setIsLiveMusicActive] = useState(false);
   const [liveEnergyLevel, setLiveEnergyLevel] = useState(50);
   
+  // === ELEVENLABS AI VOICE STATE ===
+  const [elevenLabsVoices, setElevenLabsVoices] = useState<Array<{ voice_id: string; name: string; category: string }>>([]);
+  const [selectedElevenLabsVoice, setSelectedElevenLabsVoice] = useState("");
+  const [elevenLabsText, setElevenLabsText] = useState("");
+  const [elevenLabsAudio, setElevenLabsAudio] = useState<string | null>(null);
+  const [isGeneratingElevenLabs, setIsGeneratingElevenLabs] = useState(false);
+  const [elevenLabsModel, setElevenLabsModel] = useState("eleven_multilingual_v2");
+  const [elevenLabsStability, setElevenLabsStability] = useState(50);
+  const [elevenLabsSimilarity, setElevenLabsSimilarity] = useState(75);
+  const [elevenLabsStyle, setElevenLabsStyle] = useState(50);
+  const [isElevenLabsConfigured, setIsElevenLabsConfigured] = useState(false);
+  const elevenLabsAudioRef = useRef<HTMLAudioElement | null>(null);
+  
   // === BEAT LAB - Professional Music Creation ===
   // Drum Machine State (16-step sequencer)
   const [drumPattern, setDrumPattern] = useState<boolean[][]>([
@@ -713,6 +726,68 @@ export default function MusicStudio() {
       pitchShiftRef.current.wet.value = autoTuneEnabled ? autoTuneSpeed / 100 : 0;
     }
   }, [autoTuneEnabled, autoTuneSpeed]);
+
+  // === ELEVENLABS: Check configuration and fetch voices ===
+  useEffect(() => {
+    const checkElevenLabsStatus = async () => {
+      try {
+        const response = await fetch('/api/voice/elevenlabs/status');
+        const data = await response.json();
+        setIsElevenLabsConfigured(data.configured);
+        
+        if (data.configured) {
+          const voicesResponse = await fetch('/api/voice/elevenlabs/voices');
+          if (voicesResponse.ok) {
+            const voicesData = await voicesResponse.json();
+            if (voicesData.voices) {
+              setElevenLabsVoices(voicesData.voices);
+              if (voicesData.voices.length > 0) {
+                setSelectedElevenLabsVoice(voicesData.voices[0].voice_id);
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Failed to check ElevenLabs status:", error);
+      }
+    };
+    
+    checkElevenLabsStatus();
+  }, []);
+
+  // Generate speech with ElevenLabs
+  const generateElevenLabsVoice = async () => {
+    if (!elevenLabsText.trim() || !selectedElevenLabsVoice) {
+      toast({ title: "Missing input", description: "Enter text and select a voice", variant: "destructive" });
+      return;
+    }
+    
+    setIsGeneratingElevenLabs(true);
+    try {
+      const response = await apiRequest('/api/voice/elevenlabs/synthesize', {
+        method: 'POST',
+        body: JSON.stringify({
+          text: elevenLabsText,
+          voiceId: selectedElevenLabsVoice,
+          modelId: elevenLabsModel,
+          stability: elevenLabsStability / 100,
+          similarityBoost: elevenLabsSimilarity / 100,
+          style: elevenLabsStyle / 100,
+        }),
+      });
+      
+      if (response.audioBase64) {
+        const audioUrl = `data:audio/mpeg;base64,${response.audioBase64}`;
+        setElevenLabsAudio(audioUrl);
+        toast({ title: "Voice generated!", description: "Your AI voiceover is ready" });
+      }
+    } catch (error) {
+      console.error("ElevenLabs generation error:", error);
+      toast({ title: "Generation failed", description: "Could not generate voice", variant: "destructive" });
+    } finally {
+      setIsGeneratingElevenLabs(false);
+    }
+  };
 
   // === BEAT LAB: Wire UI controls to audio engine ===
   
@@ -1879,6 +1954,9 @@ export default function MusicStudio() {
                   <Radio className="w-4 h-4 mr-1" /> Live Music
                 </TabsTrigger>
                 <TabsTrigger value="movie" data-testid="tab-movie">Movie Studio</TabsTrigger>
+                <TabsTrigger value="ai-voice" data-testid="tab-ai-voice" className="bg-gradient-to-r from-purple-500/20 to-violet-500/20">
+                  <Mic className="w-4 h-4 mr-1" /> AI Voice
+                </TabsTrigger>
               </TabsList>
 
               {/* === BEAT LAB TAB - Professional Music Creation === */}
@@ -4836,6 +4914,231 @@ Repeat the hook...`}
                       </CardContent>
                     </Card>
                   )}
+                </div>
+              </TabsContent>
+
+              {/* === AI VOICE TAB - ElevenLabs Premium Voice Generation === */}
+              <TabsContent value="ai-voice" className="flex-1 overflow-auto">
+                <div className="space-y-6">
+                  {/* AI Models Showcase - Like Artlist */}
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4" data-testid="ai-models-showcase">
+                    <Card className="bg-gradient-to-br from-purple-500/10 to-violet-600/10 border-purple-500/20" data-testid="card-model-elevenlabs">
+                      <CardContent className="p-4 text-center">
+                        <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-purple-500/20 flex items-center justify-center">
+                          <Mic className="w-6 h-6 text-purple-400" />
+                        </div>
+                        <h4 className="font-semibold text-sm" data-testid="text-model-elevenlabs">ElevenLabs</h4>
+                        <p className="text-xs text-muted-foreground">Premium AI Voices</p>
+                        <Badge className="mt-2 bg-purple-500/20 text-purple-300 border-purple-500/30" data-testid="badge-model-elevenlabs">Active</Badge>
+                      </CardContent>
+                    </Card>
+                    <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-600/10 border-blue-500/20" data-testid="card-model-lyria">
+                      <CardContent className="p-4 text-center">
+                        <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-blue-500/20 flex items-center justify-center">
+                          <Brain className="w-6 h-6 text-blue-400" />
+                        </div>
+                        <h4 className="font-semibold text-sm" data-testid="text-model-lyria">Google Lyria</h4>
+                        <p className="text-xs text-muted-foreground">AI Music Generation</p>
+                        <Badge className="mt-2 bg-blue-500/20 text-blue-300 border-blue-500/30" data-testid="badge-model-lyria">Active</Badge>
+                      </CardContent>
+                    </Card>
+                    <Card className="bg-gradient-to-br from-green-500/10 to-emerald-600/10 border-green-500/20" data-testid="card-model-gemini">
+                      <CardContent className="p-4 text-center">
+                        <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-green-500/20 flex items-center justify-center">
+                          <Sparkles className="w-6 h-6 text-green-400" />
+                        </div>
+                        <h4 className="font-semibold text-sm" data-testid="text-model-gemini">Google Gemini</h4>
+                        <p className="text-xs text-muted-foreground">AI Content Creation</p>
+                        <Badge className="mt-2 bg-green-500/20 text-green-300 border-green-500/30" data-testid="badge-model-gemini">Active</Badge>
+                      </CardContent>
+                    </Card>
+                    <Card className="bg-gradient-to-br from-amber-500/10 to-orange-600/10 border-amber-500/20" data-testid="card-model-openai">
+                      <CardContent className="p-4 text-center">
+                        <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-amber-500/20 flex items-center justify-center">
+                          <Wand2 className="w-6 h-6 text-amber-400" />
+                        </div>
+                        <h4 className="font-semibold text-sm" data-testid="text-model-openai">OpenAI</h4>
+                        <p className="text-xs text-muted-foreground">Advanced AI</p>
+                        <Badge className="mt-2 bg-amber-500/20 text-amber-300 border-amber-500/30" data-testid="badge-model-openai">Active</Badge>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* ElevenLabs Voice Generator */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Mic className="w-5 h-5 text-purple-500" />
+                        ElevenLabs AI Voice Generator
+                        {isElevenLabsConfigured ? (
+                          <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Connected</Badge>
+                        ) : (
+                          <Badge variant="destructive">Not Configured</Badge>
+                        )}
+                      </CardTitle>
+                      <CardDescription>
+                        Create studio-quality voiceovers with the world's most advanced AI voice technology
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {!isElevenLabsConfigured ? (
+                        <div className="text-center py-8 text-muted-foreground">
+                          <Mic className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                          <p>ElevenLabs API key not configured</p>
+                          <p className="text-sm">Add your API key to enable AI voice generation</p>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label>Select Voice</Label>
+                              <Select value={selectedElevenLabsVoice} onValueChange={setSelectedElevenLabsVoice}>
+                                <SelectTrigger data-testid="select-elevenlabs-voice">
+                                  <SelectValue placeholder="Choose a voice" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {elevenLabsVoices.map((voice) => (
+                                    <SelectItem key={voice.voice_id} value={voice.voice_id}>
+                                      {voice.name} ({voice.category})
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-2">
+                              <Label>AI Model</Label>
+                              <Select value={elevenLabsModel} onValueChange={setElevenLabsModel}>
+                                <SelectTrigger data-testid="select-elevenlabs-model">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="eleven_multilingual_v2">Eleven Multilingual v2 (Best Quality)</SelectItem>
+                                  <SelectItem value="eleven_turbo_v2_5">Eleven Turbo v2.5 (Fast)</SelectItem>
+                                  <SelectItem value="eleven_monolingual_v1">Eleven Monolingual v1 (English)</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label>Enter Text to Speak</Label>
+                            <Textarea
+                              value={elevenLabsText}
+                              onChange={(e) => setElevenLabsText(e.target.value)}
+                              placeholder="Enter the text you want converted to speech..."
+                              className="min-h-[120px]"
+                              data-testid="textarea-elevenlabs-text"
+                            />
+                          </div>
+
+                          <div className="grid grid-cols-3 gap-4">
+                            <div className="space-y-2">
+                              <Label className="text-sm">Stability: {elevenLabsStability}%</Label>
+                              <Slider
+                                value={[elevenLabsStability]}
+                                onValueChange={([v]) => setElevenLabsStability(v)}
+                                max={100}
+                                data-testid="slider-stability"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label className="text-sm">Similarity: {elevenLabsSimilarity}%</Label>
+                              <Slider
+                                value={[elevenLabsSimilarity]}
+                                onValueChange={([v]) => setElevenLabsSimilarity(v)}
+                                max={100}
+                                data-testid="slider-similarity"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label className="text-sm">Style: {elevenLabsStyle}%</Label>
+                              <Slider
+                                value={[elevenLabsStyle]}
+                                onValueChange={([v]) => setElevenLabsStyle(v)}
+                                max={100}
+                                data-testid="slider-style"
+                              />
+                            </div>
+                          </div>
+
+                          <Button
+                            onClick={generateElevenLabsVoice}
+                            disabled={isGeneratingElevenLabs || !elevenLabsText.trim()}
+                            className="w-full bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700"
+                            data-testid="button-generate-voice"
+                          >
+                            {isGeneratingElevenLabs ? (
+                              <>
+                                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                                Generating Voice...
+                              </>
+                            ) : (
+                              <>
+                                <Sparkles className="w-4 h-4 mr-2" />
+                                Generate AI Voice
+                              </>
+                            )}
+                          </Button>
+
+                          {elevenLabsAudio && (
+                            <div className="p-4 bg-card rounded-lg border space-y-3" data-testid="container-generated-audio">
+                              <div className="flex items-center justify-between">
+                                <span className="font-medium" data-testid="text-generated-audio-label">Generated Audio</span>
+                                <div className="flex gap-2">
+                                  <Button size="sm" variant="outline" asChild data-testid="button-download-audio">
+                                    <a href={elevenLabsAudio} download="ai-voiceover.mp3">
+                                      <Download className="w-4 h-4 mr-1" /> Download
+                                    </a>
+                                  </Button>
+                                </div>
+                              </div>
+                              <audio
+                                ref={elevenLabsAudioRef}
+                                src={elevenLabsAudio}
+                                controls
+                                className="w-full"
+                                data-testid="audio-elevenlabs-preview"
+                              />
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Voice Presets Grid */}
+                  <Card data-testid="card-voice-library">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2" data-testid="text-voice-library-title">
+                        <Users className="w-5 h-5" /> Voice Library
+                      </CardTitle>
+                      <CardDescription data-testid="text-voice-library-desc">Quick access to popular voice styles</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3" data-testid="grid-voice-presets">
+                        {[
+                          { name: "Professional Narrator", icon: User, color: "blue" },
+                          { name: "Warm Storyteller", icon: Heart, color: "rose" },
+                          { name: "Dynamic Presenter", icon: Zap, color: "amber" },
+                          { name: "Calm Meditation", icon: Sparkles, color: "green" },
+                          { name: "Energetic Host", icon: Radio, color: "orange" },
+                          { name: "Documentary Voice", icon: Film, color: "purple" },
+                          { name: "Podcast Style", icon: Mic, color: "cyan" },
+                          { name: "Commercial VO", icon: Tv, color: "pink" },
+                        ].map((preset) => (
+                          <Button
+                            key={preset.name}
+                            variant="outline"
+                            className="h-auto py-4 flex flex-col items-center gap-2 hover-elevate"
+                            data-testid={`button-preset-${preset.name.toLowerCase().replace(/\s/g, '-')}`}
+                          >
+                            <preset.icon className="w-6 h-6" />
+                            <span className="text-xs text-center">{preset.name}</span>
+                          </Button>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
               </TabsContent>
             </Tabs>

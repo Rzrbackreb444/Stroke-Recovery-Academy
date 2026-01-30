@@ -5567,13 +5567,13 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
   // Synthesize with ElevenLabs (premium quality)
   app.post('/api/voice/elevenlabs/synthesize', isAuthenticated, async (req: any, res) => {
     try {
-      const { text, voiceId, modelId } = req.body;
+      const { text, voiceId, modelId, stability, similarityBoost, style } = req.body;
       
       if (!text) {
         return res.status(400).json({ error: "Text is required" });
       }
 
-      const result = await synthesizeWithElevenLabs(text, voiceId, modelId);
+      const result = await synthesizeWithElevenLabs(text, voiceId, modelId, stability, similarityBoost, style);
       
       if (result.success) {
         res.json({ 
