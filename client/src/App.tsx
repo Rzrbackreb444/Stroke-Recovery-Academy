@@ -207,6 +207,7 @@ function Router() {
       <Route path="/book-perfection-suite" component={BookPerfectionSuite} />
       <Route path="/write" component={MobileStudio} />
       <Route path="/studio" component={MobileStudio} />
+      <Route path="/mobile-studio" component={MobileStudio} />
       <Route path="/creator-store" component={CreatorStore} />
       <Route path="/video-studio" component={VideoStudio} />
       <Route path="/course-studio" component={CourseStudio} />
