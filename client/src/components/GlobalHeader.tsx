@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import kreaiteLogo from "@assets/Untitled_design.zip_-_1_1769816069353.png";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -101,18 +102,12 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
         <div className="flex items-center justify-between gap-4 h-16 lg:h-18">
           <div className="flex items-center gap-8">
             <Link href="/" data-testid="link-home">
-              <div className="flex items-center gap-3 group cursor-pointer">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#C9941A] to-[#8B6914] flex items-center justify-center shadow-lg">
-                  <span className="text-white font-black text-lg">K</span>
-                </div>
-                <div className="hidden sm:block">
-                  <div className="text-xl font-black tracking-tight text-gray-900 dark:text-white">
-                    KreAIte
-                  </div>
-                  <div className="text-[9px] font-semibold text-[#C9941A] uppercase tracking-[0.15em]">
-                    Create. Publish. Earn.
-                  </div>
-                </div>
+              <div className="flex items-center gap-2 group cursor-pointer">
+                <img 
+                  src={kreaiteLogo} 
+                  alt="KreAIte" 
+                  className="h-10 w-auto object-contain"
+                />
               </div>
             </Link>
 
@@ -325,10 +320,11 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
               <SheetContent side="right" className="w-[300px] bg-[#FAF8F3] dark:bg-gray-900 p-0">
                 <SheetHeader className="p-4 border-b border-[#C9941A]/10">
                   <SheetTitle className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#C9941A] to-[#8B6914] flex items-center justify-center">
-                      <span className="text-white font-black text-sm">K</span>
-                    </div>
-                    <span className="font-black text-lg">KreAIte</span>
+                    <img 
+                      src={kreaiteLogo} 
+                      alt="KreAIte" 
+                      className="h-8 w-auto object-contain"
+                    />
                   </SheetTitle>
                 </SheetHeader>
                 

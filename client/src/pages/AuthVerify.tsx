@@ -4,7 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Loader2, CheckCircle, XCircle, Sparkles } from "lucide-react";
+import { Loader2, CheckCircle, XCircle } from "lucide-react";
+import kreaiteLogo from "@assets/Untitled_design.zip_-_1_1769816069353.png";
 import { Button } from "@/components/ui/button";
 
 export default function AuthVerify() {
@@ -64,9 +65,12 @@ export default function AuthVerify() {
               </div>
               <h2 className="text-xl font-semibold text-white mb-2">You're in!</h2>
               <p className="text-white/60 mb-6">Redirecting you to your dashboard...</p>
-              <div className="flex items-center justify-center gap-2 text-amber-400">
-                <Sparkles className="w-4 h-4" />
-                <span className="text-sm">Welcome to KreAIte</span>
+              <div className="flex items-center justify-center">
+                <img 
+                  src={kreaiteLogo} 
+                  alt="Welcome to KreAIte" 
+                  className="h-8 w-auto object-contain"
+                />
               </div>
             </>
           )}
