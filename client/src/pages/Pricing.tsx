@@ -16,6 +16,7 @@ import RecoveryHeader from "@/components/RecoveryHeader";
 import { usePlatform } from "@/lib/hooks/usePlatform";
 import Footer from "@/components/Footer";
 import { Link } from "wouter";
+import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import {
   Check,
   X,
@@ -346,7 +347,7 @@ export default function Pricing() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#0D0D0D] text-white">
       <SEO
         title="Pricing Plans - AI Creator Platform Subscriptions"
         description="Explore KreAIte's flexible pricing plans. Free tier to get started, Creator plan for serious creators, Pro for unlimited AI generation, and Enterprise for teams. All plans include Book Studio, Music Studio, and more. Keep 85% of every sale on our marketplace."
@@ -508,17 +509,17 @@ export default function Pricing() {
               <span className="text-foreground font-semibold"> Keep 85% of every sale.</span>
             </p>
             
-            <div className="flex flex-wrap items-center justify-center gap-4 mb-8 text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center justify-center gap-4 mb-8 text-sm text-gray-400">
               <div className="flex items-center gap-1">
-                <Check className="w-4 h-4 text-green-400" />
+                <Check className="w-4 h-4 text-[#C9941A]" />
                 <span>No credit card required</span>
               </div>
               <div className="flex items-center gap-1">
-                <Check className="w-4 h-4 text-green-400" />
+                <Check className="w-4 h-4 text-[#C9941A]" />
                 <span>14-day money-back guarantee</span>
               </div>
               <div className="flex items-center gap-1">
-                <Check className="w-4 h-4 text-green-400" />
+                <Check className="w-4 h-4 text-[#C9941A]" />
                 <span>Cancel anytime</span>
               </div>
             </div>
@@ -537,7 +538,7 @@ export default function Pricing() {
                 Annual
               </Label>
               {isAnnual && (
-                <Badge className="bg-green-500/20 text-green-400 border-green-500/30 font-bold" data-testid="badge-save-annual">
+                <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 font-bold" data-testid="badge-save-annual">
                   <Gift className="w-3 h-3 mr-1" />
                   Save 28%
                 </Badge>
@@ -548,8 +549,8 @@ export default function Pricing() {
               {trustBadges.map((badge, index) => {
                 const TrustIcon = badge.icon;
                 return (
-                  <div key={index} className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <TrustIcon className="w-4 h-4 text-primary/70" />
+                  <div key={index} className="flex items-center gap-2 text-xs text-gray-400">
+                    <TrustIcon className="w-4 h-4 text-[#C9941A]/70" />
                     <span>{badge.label}</span>
                   </div>
                 );
@@ -569,12 +570,12 @@ export default function Pricing() {
                 return (
                   <Card 
                     key={tier.name} 
-                    className={`relative flex flex-col bg-zinc-900 border-zinc-800 ${tier.popular ? 'border-orange-500 ring-2 ring-orange-500/20' : ''}`}
+                    className={`relative flex flex-col bg-[#1a1a1a] border border-[#333] ${tier.popular ? 'border-[#C9941A] border-2 ring-2 ring-[#C9941A]/20' : ''}`}
                     data-testid={`card-tier-${tier.name}`}
                   >
                     {tier.popular && (
                       <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                        <Badge className="px-4 bg-orange-500 text-black font-bold" data-testid="badge-most-popular">
+                        <Badge className="px-4 bg-[#C9941A] text-black font-bold" data-testid="badge-most-popular">
                           <Star className="w-3 h-3 mr-1" />
                           Most Popular
                         </Badge>
@@ -582,13 +583,13 @@ export default function Pricing() {
                     )}
                     
                     <CardHeader className="text-center pb-4">
-                      <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                        <TierIcon className="w-8 h-8 text-primary" />
+                      <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-[#C9941A]/10 flex items-center justify-center">
+                        <TierIcon className="w-8 h-8 text-[#C9941A]" />
                       </div>
-                      <CardTitle className="text-2xl text-foreground" data-testid={`text-tier-name-${tier.name}`}>
+                      <CardTitle className="text-2xl text-white" data-testid={`text-tier-name-${tier.name}`}>
                         {tier.displayName}
                       </CardTitle>
-                      <CardDescription data-testid={`text-tier-description-${tier.name}`}>
+                      <CardDescription className="text-gray-400" data-testid={`text-tier-description-${tier.name}`}>
                         {tier.description}
                       </CardDescription>
                     </CardHeader>
@@ -596,34 +597,34 @@ export default function Pricing() {
                     <CardContent className="flex-1">
                       <div className="text-center mb-6">
                         <div className="flex items-baseline justify-center gap-1">
-                          <span className="text-4xl font-black text-foreground" data-testid={`text-tier-price-${tier.name}`}>
+                          <span className="text-4xl font-black text-white" data-testid={`text-tier-price-${tier.name}`}>
                             {isAnnual && price > 0 ? formatPrice(Math.round(price / 12)) : formatPrice(price)}
                           </span>
                           {price > 0 && (
-                            <span className="text-muted-foreground">
+                            <span className="text-gray-400">
                               /month
                             </span>
                           )}
                         </div>
                         {isAnnual && price > 0 && (
-                          <p className="text-xs text-muted-foreground mt-1">
+                          <p className="text-xs text-gray-500 mt-1">
                             Billed annually ({formatPrice(price)}/year)
                           </p>
                         )}
                         {isAnnual && savings > 0 && (
-                          <p className="text-sm text-green-400 mt-1 font-semibold" data-testid={`text-tier-savings-${tier.name}`}>
+                          <p className="text-sm text-[#C9941A] mt-1 font-semibold" data-testid={`text-tier-savings-${tier.name}`}>
                             <Gift className="w-3 h-3 inline mr-1" />
                             Save {savings}% annually
                           </p>
                         )}
                         {tier.credits > 0 && (
-                          <p className="text-xs text-muted-foreground mt-2">
+                          <p className="text-xs text-gray-500 mt-2">
                             {tier.credits.toLocaleString()} credits/month included
                           </p>
                         )}
                       </div>
                       
-                      <Separator className="my-4 bg-zinc-800" />
+                      <Separator className="my-4 bg-[#333]" />
                       
                       <ul className="space-y-3">
                         {tier.features.map((feature, featureIndex) => (
@@ -633,11 +634,11 @@ export default function Pricing() {
                             data-testid={`feature-${tier.name}-${featureIndex}`}
                           >
                             {feature.included ? (
-                              <Check className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                              <Check className="w-4 h-4 text-[#C9941A] mt-0.5 shrink-0" />
                             ) : (
-                              <X className="w-4 h-4 text-zinc-600 mt-0.5 shrink-0" />
+                              <X className="w-4 h-4 text-gray-600 mt-0.5 shrink-0" />
                             )}
-                            <span className={feature.included ? 'text-zinc-300' : 'text-zinc-600'}>
+                            <span className={feature.included ? 'text-gray-300' : 'text-gray-600'}>
                               {feature.name}
                             </span>
                           </li>
@@ -647,7 +648,7 @@ export default function Pricing() {
                     
                     <CardFooter>
                       <Button 
-                        className={`w-full ${tier.popular ? 'bg-orange-500 text-black' : ''}`}
+                        className={`w-full ${tier.popular ? 'bg-[#C9941A] hover:bg-[#C9941A]/90 text-black font-bold' : tier.ctaVariant === 'outline' ? 'border-[#333] text-white hover:bg-[#333]' : 'bg-white/10 text-white hover:bg-white/20'}`}
                         variant={tier.popular ? "default" : tier.ctaVariant}
                         size="lg"
                         onClick={() => handleSelectPlan(tier)}
@@ -667,44 +668,44 @@ export default function Pricing() {
           </div>
         </section>
 
-        <section className="py-20 px-4 border-t border-zinc-800">
+        <section className="py-20 px-4 border-t border-[#333]">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-4 text-foreground" data-testid="heading-studio-comparison">
-              Studio Features <span className="text-primary">Comparison</span>
+            <h2 className="text-3xl font-bold text-center mb-4 text-white" data-testid="heading-studio-comparison">
+              Studio Features <span className="text-[#C9941A]">Comparison</span>
             </h2>
-            <p className="text-center text-muted-foreground mb-12">
+            <p className="text-center text-gray-400 mb-12">
               See exactly what you get with each plan across all six creative studios
             </p>
             
             <div className="overflow-x-auto">
               <table className="w-full" data-testid="table-feature-comparison">
                 <thead>
-                  <tr className="border-b border-zinc-800">
-                    <th className="text-left py-4 px-4 text-foreground font-medium">Studio</th>
-                    <th className="text-center py-4 px-4 text-muted-foreground">Free</th>
-                    <th className="text-center py-4 px-4 text-muted-foreground">Creator</th>
-                    <th className="text-center py-4 px-4 text-primary font-bold">Pro</th>
+                  <tr className="border-b border-[#333]">
+                    <th className="text-left py-4 px-4 text-white font-medium">Studio</th>
+                    <th className="text-center py-4 px-4 text-gray-400">Free</th>
+                    <th className="text-center py-4 px-4 text-gray-400">Creator</th>
+                    <th className="text-center py-4 px-4 text-[#C9941A] font-bold">Pro</th>
                   </tr>
                 </thead>
                 <tbody>
                   {studioFeatures.map((studio, index) => {
                     const StudioIcon = studio.icon;
                     return (
-                      <tr key={index} className="border-b border-zinc-800/50" data-testid={`row-studio-${index}`}>
+                      <tr key={index} className="border-b border-[#333]/50" data-testid={`row-studio-${index}`}>
                         <td className="py-4 px-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                              <StudioIcon className="w-5 h-5 text-primary" />
+                            <div className="w-10 h-10 rounded-lg bg-[#C9941A]/10 flex items-center justify-center">
+                              <StudioIcon className="w-5 h-5 text-[#C9941A]" />
                             </div>
                             <div>
-                              <p className="text-foreground font-medium">{studio.title}</p>
-                              <p className="text-xs text-muted-foreground">{studio.description}</p>
+                              <p className="text-white font-medium">{studio.title}</p>
+                              <p className="text-xs text-gray-500">{studio.description}</p>
                             </div>
                           </div>
                         </td>
-                        <td className="text-center py-4 px-4 text-sm text-muted-foreground">{studio.free}</td>
-                        <td className="text-center py-4 px-4 text-sm text-zinc-300">{studio.creator}</td>
-                        <td className="text-center py-4 px-4 text-sm text-primary font-medium">{studio.pro}</td>
+                        <td className="text-center py-4 px-4 text-sm text-gray-500">{studio.free}</td>
+                        <td className="text-center py-4 px-4 text-sm text-gray-300">{studio.creator}</td>
+                        <td className="text-center py-4 px-4 text-sm text-[#C9941A] font-medium">{studio.pro}</td>
                       </tr>
                     );
                   })}
@@ -714,26 +715,26 @@ export default function Pricing() {
           </div>
         </section>
 
-        <section className="py-20 px-4 bg-zinc-900/50">
+        <section className="py-20 px-4 bg-[#1a1a1a]/50">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-4 text-foreground" data-testid="heading-api-costs">
-              Transparent <span className="text-primary">API Costs</span>
+            <h2 className="text-3xl font-bold text-center mb-4 text-white" data-testid="heading-api-costs">
+              Transparent <span className="text-[#C9941A]">API Costs</span>
             </h2>
-            <p className="text-center text-muted-foreground mb-12">
+            <p className="text-center text-gray-400 mb-12">
               We use enterprise-grade Google Cloud APIs. Here's exactly what powers your creations.
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {apiCosts.map((item, index) => (
-                <Card key={index} className="bg-zinc-900 border-zinc-800" data-testid={`card-api-cost-${index}`}>
+                <Card key={index} className="bg-[#1a1a1a] border border-[#333]" data-testid={`card-api-cost-${index}`}>
                   <CardContent className="flex items-center justify-between p-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <DollarSign className="w-5 h-5 text-primary" />
+                      <div className="w-10 h-10 rounded-lg bg-[#C9941A]/10 flex items-center justify-center">
+                        <DollarSign className="w-5 h-5 text-[#C9941A]" />
                       </div>
-                      <span className="text-foreground font-medium">{item.service}</span>
+                      <span className="text-white font-medium">{item.service}</span>
                     </div>
-                    <Badge variant="outline" className="border text-primary">
+                    <Badge variant="outline" className="border-[#C9941A]/30 text-[#C9941A]">
                       {item.cost}
                     </Badge>
                   </CardContent>
@@ -741,15 +742,15 @@ export default function Pricing() {
               ))}
             </div>
             
-            <div className="mt-8 p-6 rounded-xl bg-gradient-to-r from-orange-500/10 to-transparent border border">
+            <div className="mt-8 p-6 rounded-xl bg-gradient-to-r from-[#C9941A]/10 to-transparent border border-[#C9941A]/30">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                  <Shield className="w-6 h-6 text-primary" />
+                <div className="w-12 h-12 rounded-full bg-[#C9941A]/20 flex items-center justify-center shrink-0">
+                  <Shield className="w-6 h-6 text-[#C9941A]" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-foreground mb-2">Creator-First Revenue Share</h3>
-                  <p className="text-muted-foreground">
-                    When you sell on our marketplace, you keep <span className="text-primary font-bold">85%</span> of every sale. 
+                  <h3 className="text-lg font-bold text-white mb-2">Creator-First Revenue Share</h3>
+                  <p className="text-gray-400">
+                    When you sell on our marketplace, you keep <span className="text-[#C9941A] font-bold">85%</span> of every sale. 
                     We only take 15% to cover platform costs. Your creativity, your earnings.
                   </p>
                 </div>
@@ -758,35 +759,35 @@ export default function Pricing() {
           </div>
         </section>
 
-        <section className="py-20 px-4 border-t border-zinc-800">
+        <section className="py-20 px-4 border-t border-[#333]">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <Badge className="mb-4 bg-primary/10 text-primary border-primary/30">
+              <Badge className="mb-4 bg-[#C9941A]/10 text-[#C9941A] border-[#C9941A]/30">
                 <Star className="w-3 h-3 mr-1" />
                 Creator Success Stories
               </Badge>
-              <h2 className="text-3xl font-bold text-foreground" data-testid="heading-testimonials">
-                Trusted by <span className="text-primary">10,000+ Creators</span>
+              <h2 className="text-3xl font-bold text-white" data-testid="heading-testimonials">
+                Trusted by <span className="text-[#C9941A]">10,000+ Creators</span>
               </h2>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
               {testimonials.map((testimonial, index) => (
-                <Card key={index} className="bg-zinc-900/50 border-zinc-800" data-testid={`card-testimonial-${index}`}>
+                <Card key={index} className="bg-[#1a1a1a]/50 border border-[#333]" data-testid={`card-testimonial-${index}`}>
                   <CardContent className="pt-6">
                     <div className="flex items-center gap-1 mb-4">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                        <Star key={i} className="w-4 h-4 text-[#C9941A] fill-[#C9941A]" />
                       ))}
                     </div>
-                    <p className="text-zinc-300 mb-4 italic">"{testimonial.quote}"</p>
+                    <p className="text-gray-300 mb-4 italic">"{testimonial.quote}"</p>
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">
+                      <div className="w-10 h-10 rounded-full bg-[#C9941A]/20 flex items-center justify-center text-[#C9941A] font-bold text-sm">
                         {testimonial.avatar}
                       </div>
                       <div>
-                        <p className="text-foreground font-medium">{testimonial.name}</p>
-                        <p className="text-xs text-muted-foreground">{testimonial.role}</p>
+                        <p className="text-white font-medium">{testimonial.name}</p>
+                        <p className="text-xs text-gray-500">{testimonial.role}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -795,23 +796,23 @@ export default function Pricing() {
             </div>
             
             <div className="text-center">
-              <h3 className="text-lg font-semibold text-foreground mb-4">
-                Powered by <span className="text-primary">Enterprise AI</span>
+              <h3 className="text-lg font-semibold text-white mb-4">
+                Powered by <span className="text-[#C9941A]">Enterprise AI</span>
               </h3>
               <div className="flex flex-wrap justify-center gap-8 opacity-60">
-                <div className="flex items-center gap-2 text-foreground">
+                <div className="flex items-center gap-2 text-white">
                   <Globe className="w-5 h-5" />
                   <span>Google Cloud</span>
                 </div>
-                <div className="flex items-center gap-2 text-foreground">
+                <div className="flex items-center gap-2 text-white">
                   <Sparkles className="w-5 h-5" />
                   <span>Vertex AI</span>
                 </div>
-                <div className="flex items-center gap-2 text-foreground">
+                <div className="flex items-center gap-2 text-white">
                   <Music className="w-5 h-5" />
                   <span>Lyria Music</span>
                 </div>
-                <div className="flex items-center gap-2 text-foreground">
+                <div className="flex items-center gap-2 text-white">
                   <Mic className="w-5 h-5" />
                   <span>Cloud TTS</span>
                 </div>
@@ -820,24 +821,24 @@ export default function Pricing() {
           </div>
         </section>
 
-        <section className="py-20 px-4 bg-zinc-900/30">
+        <section className="py-20 px-4 bg-[#1a1a1a]/30">
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-foreground" data-testid="heading-faq">
-                Frequently Asked <span className="text-primary">Questions</span>
+              <h2 className="text-3xl font-bold text-white" data-testid="heading-faq">
+                Frequently Asked <span className="text-[#C9941A]">Questions</span>
               </h2>
-              <p className="text-muted-foreground mt-2">
+              <p className="text-gray-400 mt-2">
                 Everything you need to know about KreAIte
               </p>
             </div>
             
             <Accordion type="single" collapsible className="w-full">
               {faqs.map((faq, index) => (
-                <AccordionItem key={index} value={`item-${index}`} className="border-zinc-800" data-testid={`faq-item-${index}`}>
-                  <AccordionTrigger className="text-foreground hover:text-primary text-left">
+                <AccordionItem key={index} value={`item-${index}`} className="border-[#333]" data-testid={`faq-item-${index}`}>
+                  <AccordionTrigger className="text-white hover:text-[#C9941A] text-left">
                     {faq.question}
                   </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
+                  <AccordionContent className="text-gray-400">
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>
