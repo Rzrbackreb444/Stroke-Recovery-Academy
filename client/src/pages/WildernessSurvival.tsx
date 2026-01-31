@@ -117,9 +117,9 @@ export default function WildernessSurvival() {
 
   const getTimeIcon = () => {
     switch (gameState?.timeOfDay) {
-      case 'dawn': return <Sun className="w-5 h-5 text-orange-400" />;
+      case 'dawn': return <Sun className="w-5 h-5 text-[#C9941A]" />;
       case 'day': return <Sun className="w-5 h-5 text-yellow-400" />;
-      case 'dusk': return <Sun className="w-5 h-5 text-orange-600" />;
+      case 'dusk': return <Sun className="w-5 h-5 text-[#C9941A]" />;
       case 'night': return <Moon className="w-5 h-5 text-blue-400" />;
     }
   };
@@ -173,7 +173,7 @@ export default function WildernessSurvival() {
         </div>
 
         {!gameState ? (
-          <Card className="bg-gray-900/80 border-green-600/30">
+          <Card className="bg-[#1a1a1a]/80 border-green-600/30">
             <CardContent className="p-8 text-center">
               <img src={sasquatchLogo} alt="Sasquatch" className="w-24 h-24 mx-auto rounded-full border-4 border-green-500 mb-6" />
               
@@ -191,7 +191,7 @@ export default function WildernessSurvival() {
                     variant={bet === amount ? "default" : "outline"}
                     size="sm"
                     onClick={() => setBet(amount)}
-                    className={bet === amount ? "bg-green-600" : "border-gray-600"}
+                    className={bet === amount ? "bg-[#C9941A]" : "border-gray-600"}
                     data-testid={`button-bet-${amount}`}
                   >
                     {amount}
@@ -199,7 +199,7 @@ export default function WildernessSurvival() {
                 ))}
               </div>
               
-              <p className="text-green-400 text-sm mb-4">Win 5x your entry if you survive!</p>
+              <p className="text-[#C9941A] text-sm mb-4">Win 5x your entry if you survive!</p>
               
               <Button
                 onClick={() => startMutation.mutate()}
@@ -221,9 +221,9 @@ export default function WildernessSurvival() {
               {gameState.result === 'SURVIVED' ? (
                 <>
                   <Trophy className="w-16 h-16 mx-auto text-yellow-400 mb-4" />
-                  <h2 className="text-3xl font-black text-green-400 mb-2">YOU SURVIVED!</h2>
+                  <h2 className="text-3xl font-black text-[#C9941A] mb-2">YOU SURVIVED!</h2>
                   <p className="text-gray-400 mb-4">You outlasted the Sasquatch for 7 days!</p>
-                  <p className="text-2xl font-bold text-green-400">+{gameState.winAmount} Credits</p>
+                  <p className="text-2xl font-bold text-[#C9941A]">+{gameState.winAmount} Credits</p>
                 </>
               ) : (
                 <>
@@ -253,7 +253,7 @@ export default function WildernessSurvival() {
         ) : (
           <>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-              <Card className="bg-gray-900/80 border-gray-700">
+              <Card className="bg-[#1a1a1a]/80 border-[#333]">
                 <CardContent className="p-3">
                   <div className="flex items-center gap-2 mb-2">
                     <Heart className="w-4 h-4 text-red-400" />
@@ -264,10 +264,10 @@ export default function WildernessSurvival() {
                 </CardContent>
               </Card>
               
-              <Card className="bg-gray-900/80 border-gray-700">
+              <Card className="bg-[#1a1a1a]/80 border-[#333]">
                 <CardContent className="p-3">
                   <div className="flex items-center gap-2 mb-2">
-                    <Flame className="w-4 h-4 text-orange-400" />
+                    <Flame className="w-4 h-4 text-[#C9941A]" />
                     <span className="text-xs text-gray-400">Warmth</span>
                   </div>
                   <Progress value={gameState.warmth} className="h-2" />
@@ -275,10 +275,10 @@ export default function WildernessSurvival() {
                 </CardContent>
               </Card>
               
-              <Card className="bg-gray-900/80 border-gray-700">
+              <Card className="bg-[#1a1a1a]/80 border-[#333]">
                 <CardContent className="p-3">
                   <div className="flex items-center gap-2 mb-2">
-                    <Apple className="w-4 h-4 text-green-400" />
+                    <Apple className="w-4 h-4 text-[#C9941A]" />
                     <span className="text-xs text-gray-400">Hunger</span>
                   </div>
                   <Progress value={gameState.hunger} className="h-2" />
@@ -288,8 +288,8 @@ export default function WildernessSurvival() {
               
               <Card className={`border ${
                 getSasquatchProximity() === 'danger' ? 'bg-red-900/30 border-red-500 animate-pulse' :
-                getSasquatchProximity() === 'warning' ? 'bg-orange-900/30 border-orange-500' :
-                'bg-gray-900/80 border-gray-700'
+                getSasquatchProximity() === 'warning' ? 'bg-orange-900/30 border-[#C9941A]' :
+                'bg-[#1a1a1a]/80 border-[#333]'
               }`}>
                 <CardContent className="p-3">
                   <div className="flex items-center gap-2 mb-2">
@@ -301,7 +301,7 @@ export default function WildernessSurvival() {
                       <div 
                         key={i} 
                         className={`w-2 h-3 rounded-sm ${
-                          i < gameState.sasquatchDistance ? 'bg-green-500' : 'bg-red-500'
+                          i < gameState.sasquatchDistance ? 'bg-[#C9941A]' : 'bg-red-500'
                         }`} 
                       />
                     ))}
@@ -321,7 +321,7 @@ export default function WildernessSurvival() {
               </div>
             </div>
 
-            <Card className="bg-gray-900/80 border-gray-700 mb-4">
+            <Card className="bg-[#1a1a1a]/80 border-[#333] mb-4">
               <CardContent className="p-4">
                 <h3 className="text-sm text-gray-500 uppercase tracking-wider mb-2">Event Log</h3>
                 <div className="max-h-32 overflow-y-auto space-y-1">
@@ -339,12 +339,12 @@ export default function WildernessSurvival() {
                   onClick={() => handleAction(action.id)}
                   disabled={isActing}
                   variant="outline"
-                  className={`h-auto py-4 flex flex-col items-center gap-2 border-gray-700 hover:border-green-500 hover:bg-green-900/20 ${
+                  className={`h-auto py-4 flex flex-col items-center gap-2 border-[#333] hover:border-green-500 hover:bg-green-900/20 ${
                     isActing ? 'opacity-50' : ''
                   }`}
                   data-testid={`button-${action.id}`}
                 >
-                  <action.icon className="w-6 h-6 text-green-400" />
+                  <action.icon className="w-6 h-6 text-[#C9941A]" />
                   <span className="font-bold text-white">{action.name}</span>
                   <span className="text-xs text-gray-500">{action.description}</span>
                 </Button>

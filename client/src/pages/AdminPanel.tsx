@@ -133,14 +133,14 @@ function StatCard({
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-        <Icon className="h-4 w-4 text-muted-foreground" />
+        <CardTitle className="text-sm font-medium text-gray-400">{title}</CardTitle>
+        <Icon className="h-4 w-4 text-gray-400" />
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold" data-testid={`stat-${title.toLowerCase().replace(/\s+/g, '-')}`}>
           {typeof value === 'number' ? value.toLocaleString() : value}
         </div>
-        {subtitle && <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>}
+        {subtitle && <p className="text-xs text-gray-400 mt-1">{subtitle}</p>}
       </CardContent>
     </Card>
   );
@@ -268,9 +268,9 @@ function UserRow({ user, onUpdate }: { user: UserWithCredits; onUpdate: () => vo
       <div className="flex-1 min-w-[200px]">
         <div className="font-medium text-sm">
           {user.firstName} {user.lastName}
-          {user.role === 'admin' && <Crown className="h-3 w-3 inline ml-1 text-primary" />}
+          {user.role === 'admin' && <Crown className="h-3 w-3 inline ml-1 text-[#C9941A]" />}
         </div>
-        <div className="text-xs text-muted-foreground">{user.email}</div>
+        <div className="text-xs text-gray-400">{user.email}</div>
       </div>
 
       <div className="flex items-center gap-2">
@@ -371,10 +371,10 @@ export default function AdminPanel() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#0D0D0D]">
       <div className="max-w-7xl mx-auto p-6 space-y-6">
         <div className="flex items-center gap-3">
-          <Shield className="h-8 w-8 text-primary" />
+          <Shield className="h-8 w-8 text-[#C9941A]" />
           <h1 className="text-3xl font-bold">Admin Panel</h1>
         </div>
 
@@ -454,7 +454,7 @@ export default function AdminPanel() {
           <TabsContent value="revenue" className="space-y-6">
             {revenueQuery.isLoading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
               </div>
             ) : revenueQuery.data ? (
               <>
@@ -487,7 +487,7 @@ export default function AdminPanel() {
                   </CardHeader>
                   <CardContent className="p-0">
                     {revenueQuery.data.recentEvents.length === 0 ? (
-                      <div className="text-center py-8 text-muted-foreground">
+                      <div className="text-center py-8 text-gray-400">
                         No transactions yet
                       </div>
                     ) : (
@@ -498,7 +498,7 @@ export default function AdminPanel() {
                               <div className="font-medium text-sm">
                                 {event.eventType.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
                               </div>
-                              <div className="text-xs text-muted-foreground">
+                              <div className="text-xs text-gray-400">
                                 {event.tierName || event.productType || 'N/A'} - {new Date(event.createdAt).toLocaleDateString()}
                               </div>
                             </div>
@@ -524,21 +524,21 @@ export default function AdminPanel() {
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="text-center p-4 bg-muted/50 rounded-lg">
+                        <div className="text-center p-4 bg-[#1a1a1a]/50 rounded-lg">
                           <div className="text-2xl font-bold">{subscriptionQuery.data.activeSubscriptions}</div>
-                          <div className="text-sm text-muted-foreground">Active</div>
+                          <div className="text-sm text-gray-400">Active</div>
                         </div>
-                        <div className="text-center p-4 bg-muted/50 rounded-lg">
-                          <div className="text-2xl font-bold text-green-500">{subscriptionQuery.data.newThisMonth}</div>
-                          <div className="text-sm text-muted-foreground">New This Month</div>
+                        <div className="text-center p-4 bg-[#1a1a1a]/50 rounded-lg">
+                          <div className="text-2xl font-bold text-[#C9941A]">{subscriptionQuery.data.newThisMonth}</div>
+                          <div className="text-sm text-gray-400">New This Month</div>
                         </div>
-                        <div className="text-center p-4 bg-muted/50 rounded-lg">
+                        <div className="text-center p-4 bg-[#1a1a1a]/50 rounded-lg">
                           <div className="text-2xl font-bold text-red-500">{subscriptionQuery.data.churned}</div>
-                          <div className="text-sm text-muted-foreground">Churned</div>
+                          <div className="text-sm text-gray-400">Churned</div>
                         </div>
-                        <div className="text-center p-4 bg-muted/50 rounded-lg">
+                        <div className="text-center p-4 bg-[#1a1a1a]/50 rounded-lg">
                           <div className="text-2xl font-bold">{subscriptionQuery.data.churnRate}%</div>
-                          <div className="text-sm text-muted-foreground">Churn Rate</div>
+                          <div className="text-sm text-gray-400">Churn Rate</div>
                         </div>
                       </div>
                       {Object.keys(subscriptionQuery.data.byTier).length > 0 && (
@@ -564,7 +564,7 @@ export default function AdminPanel() {
           <TabsContent value="credits" className="space-y-6">
             {creditAnalyticsQuery.isLoading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
               </div>
             ) : creditAnalyticsQuery.data ? (
               <>
@@ -595,7 +595,7 @@ export default function AdminPanel() {
                   </CardHeader>
                   <CardContent>
                     {creditAnalyticsQuery.data.topFeatures.length === 0 ? (
-                      <div className="text-center py-8 text-muted-foreground">
+                      <div className="text-center py-8 text-gray-400">
                         No usage data yet
                       </div>
                     ) : (
@@ -626,9 +626,9 @@ export default function AdminPanel() {
                     <CardContent>
                       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                         {Object.entries(creditAnalyticsQuery.data.byStudio).map(([studio, credits]) => (
-                          <div key={studio} className="text-center p-4 bg-muted/50 rounded-lg">
+                          <div key={studio} className="text-center p-4 bg-[#1a1a1a]/50 rounded-lg">
                             <div className="text-lg font-bold">{credits.toLocaleString()}</div>
-                            <div className="text-xs text-muted-foreground">{studio}</div>
+                            <div className="text-xs text-gray-400">{studio}</div>
                           </div>
                         ))}
                       </div>
@@ -645,7 +645,7 @@ export default function AdminPanel() {
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <CardTitle>User Management</CardTitle>
                   <div className="relative w-full max-w-sm">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <Input
                       placeholder="Search by email or name..."
                       value={search}
@@ -662,10 +662,10 @@ export default function AdminPanel() {
               <CardContent className="p-0">
                 {usersQuery.isLoading ? (
                   <div className="flex items-center justify-center py-12">
-                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                    <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
                   </div>
                 ) : usersQuery.data?.users.length === 0 ? (
-                  <div className="text-center py-12 text-muted-foreground">
+                  <div className="text-center py-12 text-gray-400">
                     No users found
                   </div>
                 ) : (
@@ -687,7 +687,7 @@ export default function AdminPanel() {
                     >
                       <ChevronLeft className="h-4 w-4" />
                     </Button>
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-sm text-gray-400">
                       Page {page + 1} of {totalPages}
                     </span>
                     <Button

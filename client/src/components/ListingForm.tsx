@@ -177,7 +177,7 @@ export default function ListingForm({
 
   return (
     <div className="space-y-6" data-testid="listing-form">
-      <Card className="bg-background border-zinc-800">
+      <Card className="bg-background border-[#333]">
         <CardHeader>
           <CardTitle className="text-foreground">
             {isEditing ? "Edit Listing" : "Create New Listing"}
@@ -199,7 +199,7 @@ export default function ListingForm({
                       <Input
                         {...field}
                         placeholder="Enter listing title"
-                        className="bg-zinc-900/50 border-zinc-700"
+                        className="bg-[#1a1a1a]/50 border-[#333]"
                         disabled={isPending}
                         data-testid="input-title"
                       />
@@ -219,7 +219,7 @@ export default function ListingForm({
                       <Input
                         {...field}
                         placeholder="Enter subtitle"
-                        className="bg-zinc-900/50 border-zinc-700"
+                        className="bg-[#1a1a1a]/50 border-[#333]"
                         disabled={isPending}
                         data-testid="input-subtitle"
                       />
@@ -239,7 +239,7 @@ export default function ListingForm({
                       <Textarea
                         {...field}
                         placeholder="Describe your content..."
-                        className="bg-zinc-900/50 border-zinc-700 min-h-[120px] resize-none"
+                        className="bg-[#1a1a1a]/50 border-[#333] min-h-[120px] resize-none"
                         disabled={isPending}
                         data-testid="input-description"
                       />
@@ -262,13 +262,13 @@ export default function ListingForm({
                     >
                       <FormControl>
                         <SelectTrigger
-                          className="bg-zinc-900/50 border-zinc-700"
+                          className="bg-[#1a1a1a]/50 border-[#333]"
                           data-testid="select-genre"
                         >
                           <SelectValue placeholder="Select content type" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="bg-zinc-900 border-zinc-700">
+                      <SelectContent className="bg-[#1a1a1a] border-[#333]">
                         {genres.map((genre) => {
                           const Icon = genre.icon;
                           return (
@@ -304,7 +304,7 @@ export default function ListingForm({
                       <Input
                         {...field}
                         placeholder="Enter tags separated by commas"
-                        className="bg-zinc-900/50 border-zinc-700"
+                        className="bg-[#1a1a1a]/50 border-[#333]"
                         disabled={isPending}
                         data-testid="input-tags"
                       />
@@ -328,7 +328,7 @@ export default function ListingForm({
                         <Input
                           {...field}
                           placeholder="https://..."
-                          className="bg-zinc-900/50 border-zinc-700"
+                          className="bg-[#1a1a1a]/50 border-[#333]"
                           disabled={isPending}
                           data-testid="input-cover-url"
                         />
@@ -348,7 +348,7 @@ export default function ListingForm({
                         <Input
                           {...field}
                           placeholder="https://..."
-                          className="bg-zinc-900/50 border-zinc-700"
+                          className="bg-[#1a1a1a]/50 border-[#333]"
                           disabled={isPending}
                           data-testid="input-preview-url"
                         />
@@ -363,7 +363,7 @@ export default function ListingForm({
                 control={form.control}
                 name="isDigitalOnly"
                 render={({ field }) => (
-                  <FormItem className="flex items-center justify-between rounded-lg border border-zinc-800 p-4 bg-zinc-900/30">
+                  <FormItem className="flex items-center justify-between rounded-lg border border-[#333] p-4 bg-[#1a1a1a]/30">
                     <div className="space-y-0.5">
                       <FormLabel className="text-foreground">Digital Only</FormLabel>
                       <FormDescription className="text-muted-foreground">
@@ -401,7 +401,7 @@ export default function ListingForm({
             variant="outline"
             onClick={onCancel}
             disabled={isPending}
-            className="border-zinc-700"
+            className="border-[#333]"
             data-testid="button-cancel"
           >
             Cancel
@@ -410,7 +410,7 @@ export default function ListingForm({
         <Button
           onClick={form.handleSubmit(onSubmit)}
           disabled={isPending}
-          className="bg-orange-500 hover:bg-orange-600 text-black gap-2"
+          className="bg-[#C9941A] hover:bg-orange-600 text-black gap-2"
           data-testid="button-save-listing"
         >
           {isPending ? (

@@ -95,9 +95,9 @@ export default function RiverResearchPanel() {
   );
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-zinc-950 border-l border-zinc-200 dark:border-zinc-800">
+    <div className="flex flex-col h-full bg-white dark:bg-zinc-950 border-l border-zinc-200 dark:border-[#333]">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-200 dark:border-zinc-800">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-200 dark:border-[#333]">
         <div className="flex items-center gap-2">
           <Brain className="h-4 w-4 text-blue-500" />
           <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Story Guide</span>
@@ -114,14 +114,14 @@ export default function RiverResearchPanel() {
       </div>
 
       {/* Search */}
-      <div className="px-4 py-2 border-b border-zinc-100 dark:border-zinc-800/50">
+      <div className="px-4 py-2 border-b border-zinc-100 dark:border-[#333]/50">
         <div className="relative">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-400" />
           <Input
             placeholder="Search notes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-8 h-8 text-xs bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700"
+            className="pl-8 h-8 text-xs bg-zinc-50 dark:bg-[#1a1a1a] border-zinc-200 dark:border-[#333]"
             data-testid="input-search-research"
           />
         </div>
@@ -129,7 +129,7 @@ export default function RiverResearchPanel() {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-        <TabsList className="mx-4 mt-3 grid grid-cols-3 h-8 bg-zinc-100 dark:bg-zinc-800">
+        <TabsList className="mx-4 mt-3 grid grid-cols-3 h-8 bg-zinc-100 dark:bg-[#1a1a1a]">
           <TabsTrigger value="outline" className="text-[11px] gap-1" data-testid="tab-outline">
             <ListChecks className="h-3 w-3" />
             Outline
@@ -163,7 +163,7 @@ export default function RiverResearchPanel() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full justify-start gap-1.5 h-auto py-2 px-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                        className="w-full justify-start gap-1.5 h-auto py-2 px-2 text-left hover:bg-zinc-100 dark:hover:bg-[#1a1a1a]"
                         data-testid={`section-${section.id}`}
                       >
                         {isExpanded ? (
@@ -183,15 +183,15 @@ export default function RiverResearchPanel() {
                     </CollapsibleTrigger>
 
                     <CollapsibleContent>
-                      <div className="ml-4 pl-3 border-l border-zinc-200 dark:border-zinc-700 space-y-0.5 py-1">
+                      <div className="ml-4 pl-3 border-l border-zinc-200 dark:border-[#333] space-y-0.5 py-1">
                         {section.children?.map((item) => (
                           <div
                             key={item.id}
-                            className="flex items-start gap-2 py-1.5 px-2 rounded hover:bg-zinc-50 dark:hover:bg-zinc-800/50 cursor-pointer group"
+                            className="flex items-start gap-2 py-1.5 px-2 rounded hover:bg-zinc-50 dark:hover:bg-[#1a1a1a]/50 cursor-pointer group"
                             data-testid={`item-${item.id}`}
                           >
                             {item.completed ? (
-                              <CheckCircle2 className="h-3.5 w-3.5 text-green-500 shrink-0 mt-0.5" />
+                              <CheckCircle2 className="h-3.5 w-3.5 text-[#C9941A] shrink-0 mt-0.5" />
                             ) : (
                               <Circle className="h-3.5 w-3.5 text-zinc-300 dark:text-zinc-600 shrink-0 mt-0.5 group-hover:text-zinc-400" />
                             )}
@@ -228,7 +228,7 @@ export default function RiverResearchPanel() {
                 researchNotes.map((note) => (
                   <div
                     key={note.id}
-                    className="p-3 rounded-lg bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-blue-300 dark:hover:border-blue-700 transition-colors cursor-pointer"
+                    className="p-3 rounded-lg bg-zinc-50 dark:bg-[#1a1a1a] border border-zinc-200 dark:border-[#333] hover:border-blue-300 dark:hover:border-blue-700 transition-colors cursor-pointer"
                     data-testid={`note-${note.id}`}
                   >
                     <div className="flex items-center gap-2 mb-1.5">
@@ -287,7 +287,7 @@ export default function RiverResearchPanel() {
                   className="w-full h-9 text-xs justify-start gap-2"
                   data-testid="ai-improve-dialogue"
                 >
-                  <MessageSquare className="h-3.5 w-3.5 text-green-500" />
+                  <MessageSquare className="h-3.5 w-3.5 text-[#C9941A]" />
                   Improve dialogue
                 </Button>
                 <Button 
@@ -315,7 +315,7 @@ export default function RiverResearchPanel() {
       </Tabs>
 
       {/* Footer */}
-      <div className="px-4 py-2 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
+      <div className="px-4 py-2 border-t border-zinc-200 dark:border-[#333] bg-zinc-50 dark:bg-[#1a1a1a]/50">
         <div className="flex items-center justify-between text-[10px] text-zinc-500">
           <span className="flex items-center gap-1.5">
             <Brain className="h-3 w-3 text-blue-500" />

@@ -346,8 +346,8 @@ export default function MusicStudio() {
   const [tracks, setTracks] = useState<Track[]>([
     { id: "1", name: "Drums", type: "drums", volume: 80, pan: 50, muted: false, solo: false, color: "bg-red-500" },
     { id: "2", name: "Bass", type: "bass", volume: 75, pan: 50, muted: false, solo: false, color: "bg-blue-500" },
-    { id: "3", name: "Synth Lead", type: "synth", volume: 70, pan: 45, muted: false, solo: false, color: "bg-amber-500" },
-    { id: "4", name: "Guitar", type: "guitar", volume: 65, pan: 55, muted: false, solo: false, color: "bg-orange-500" },
+    { id: "3", name: "Synth Lead", type: "synth", volume: 70, pan: 45, muted: false, solo: false, color: "bg-[#C9941A]" },
+    { id: "4", name: "Guitar", type: "guitar", volume: 65, pan: 55, muted: false, solo: false, color: "bg-[#C9941A]" },
   ]);
 
   // Audio refs
@@ -1013,8 +1013,8 @@ export default function MusicStudio() {
 
   const addTrack = (type: Track["type"]) => {
     const colors: Record<string, string> = {
-      drums: "bg-red-500", bass: "bg-blue-500", synth: "bg-amber-500",
-      guitar: "bg-orange-500", vocals: "bg-green-500", ai: "bg-primary",
+      drums: "bg-red-500", bass: "bg-blue-500", synth: "bg-[#C9941A]",
+      guitar: "bg-[#C9941A]", vocals: "bg-[#C9941A]", ai: "bg-primary",
     };
     const newTrack: Track = {
       id: Date.now().toString(),
@@ -1804,7 +1804,7 @@ export default function MusicStudio() {
         <div className="max-w-[1800px] mx-auto flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <Music className="w-6 h-6 text-primary" />
+              <Music className="w-6 h-6 text-[#C9941A]" />
               <span className="font-bold text-xl">Stroke Lyfe Studio</span>
             </div>
             <Input
@@ -1813,7 +1813,7 @@ export default function MusicStudio() {
               className="w-64 bg-background"
               data-testid="input-project-title"
             />
-            <Badge variant="outline" className="text-primary">
+            <Badge variant="outline" className="text-[#C9941A]">
               {selectedGenre.toUpperCase()}
             </Badge>
           </div>
@@ -1840,7 +1840,7 @@ export default function MusicStudio() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label className="text-xs text-muted-foreground">Genre</Label>
+                <Label className="text-xs text-gray-400">Genre</Label>
                 <Select value={selectedGenre} onValueChange={setSelectedGenre}>
                   <SelectTrigger data-testid="select-genre"><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -1850,7 +1850,7 @@ export default function MusicStudio() {
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <Label className="text-xs text-muted-foreground">Key</Label>
+                  <Label className="text-xs text-gray-400">Key</Label>
                   <Select value={selectedKey} onValueChange={setSelectedKey}>
                     <SelectTrigger data-testid="select-key"><SelectValue /></SelectTrigger>
                     <SelectContent>
@@ -1859,7 +1859,7 @@ export default function MusicStudio() {
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">Scale</Label>
+                  <Label className="text-xs text-gray-400">Scale</Label>
                   <Select value={selectedScale} onValueChange={setSelectedScale}>
                     <SelectTrigger data-testid="select-scale"><SelectValue /></SelectTrigger>
                     <SelectContent>
@@ -1869,7 +1869,7 @@ export default function MusicStudio() {
                 </div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">BPM: {bpm}</Label>
+                <Label className="text-xs text-gray-400">BPM: {bpm}</Label>
                 <Slider value={[bpm]} onValueChange={([v]) => setBpm(v)} min={60} max={200} data-testid="slider-bpm" />
               </div>
             </CardContent>
@@ -1878,7 +1878,7 @@ export default function MusicStudio() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm flex items-center gap-2">
-                <Brain className="w-4 h-4 text-primary" /> AI Generation
+                <Brain className="w-4 h-4 text-[#C9941A]" /> AI Generation
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
@@ -1963,9 +1963,9 @@ export default function MusicStudio() {
                       <h2 className="text-3xl font-bold bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
                         BEAT LAB
                       </h2>
-                      <Music className="w-8 h-8 text-orange-500" />
+                      <Music className="w-8 h-8 text-[#C9941A]" />
                     </div>
-                    <p className="text-muted-foreground">Create professional beats from Hip Hop to Rock</p>
+                    <p className="text-gray-400">Create professional beats from Hip Hop to Rock</p>
                   </div>
                   
                   {/* Transport & Genre Templates */}
@@ -1974,7 +1974,7 @@ export default function MusicStudio() {
                       <Button
                         onClick={startSequencer}
                         size="lg"
-                        className={isSequencerPlaying ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"}
+                        className={isSequencerPlaying ? "bg-red-500 hover:bg-red-600" : "bg-[#C9941A] hover:bg-[#C9941A]"}
                         data-testid="button-sequencer-play"
                       >
                         {isSequencerPlaying ? <Square className="w-5 h-5 mr-2" /> : <Play className="w-5 h-5 mr-2" />}
@@ -2028,10 +2028,10 @@ export default function MusicStudio() {
                                 key={i}
                                 className={`w-10 h-6 flex items-center justify-center text-xs font-mono rounded ${
                                   currentStep === i && isSequencerPlaying 
-                                    ? "bg-green-500 text-white" 
+                                    ? "bg-[#C9941A] text-white" 
                                     : i % 4 === 0 
-                                    ? "bg-muted text-muted-foreground" 
-                                    : "text-muted-foreground"
+                                    ? "bg-[#1a1a1a] text-gray-400" 
+                                    : "text-gray-400"
                                 }`}
                               >
                                 {i + 1}
@@ -2060,12 +2060,12 @@ export default function MusicStudio() {
                                       ? currentStep === stepIdx && isSequencerPlaying
                                         ? "bg-green-400 scale-110"
                                         : drumIdx === 0 ? "bg-red-500" 
-                                        : drumIdx === 1 ? "bg-orange-500"
-                                        : drumIdx < 4 ? "bg-amber-500"
+                                        : drumIdx === 1 ? "bg-[#C9941A]"
+                                        : drumIdx < 4 ? "bg-[#C9941A]"
                                         : "bg-blue-500"
                                       : currentStep === stepIdx && isSequencerPlaying
                                         ? "bg-green-200"
-                                        : stepIdx % 4 === 0 ? "bg-muted" : "bg-muted/50"
+                                        : stepIdx % 4 === 0 ? "bg-[#1a1a1a]" : "bg-[#1a1a1a]/50"
                                   } hover:scale-105`}
                                   data-testid={`drum-step-${drumIdx}-${stepIdx}`}
                                 />
@@ -2132,7 +2132,7 @@ export default function MusicStudio() {
                                       : "bg-blue-500 text-white"
                                     : currentStep === idx && isSequencerPlaying
                                       ? "bg-green-200"
-                                      : "bg-muted"
+                                      : "bg-[#1a1a1a]"
                                 }`}
                                 data-testid={`bass-step-${idx}`}
                               >
@@ -2195,7 +2195,7 @@ export default function MusicStudio() {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="flex items-center gap-2">
-                          <Piano className="w-5 h-5 text-amber-500" />
+                          <Piano className="w-5 h-5 text-[#C9941A]" />
                           Chord Pad
                         </CardTitle>
                       </CardHeader>
@@ -2224,12 +2224,12 @@ export default function MusicStudio() {
                                 key={idx}
                                 className={`px-4 py-3 rounded-lg text-center min-w-[60px] ${
                                   Math.floor(currentStep / 4) % chordProgression.length === idx && isSequencerPlaying
-                                    ? "bg-amber-500 text-white"
-                                    : "bg-muted"
+                                    ? "bg-[#C9941A] text-white"
+                                    : "bg-[#1a1a1a]"
                                 }`}
                               >
                                 <div className="font-bold">{chord.chord}</div>
-                                <div className="text-xs text-muted-foreground">{chord.duration} beats</div>
+                                <div className="text-xs text-gray-400">{chord.duration} beats</div>
                               </div>
                             ))}
                           </div>
@@ -2288,7 +2288,7 @@ export default function MusicStudio() {
                   <Card>
                     <CardHeader className="pb-2">
                       <CardTitle className="flex items-center gap-2">
-                        <Music className="w-5 h-5 text-green-500" />
+                        <Music className="w-5 h-5 text-[#C9941A]" />
                         Melody Keyboard
                       </CardTitle>
                     </CardHeader>
@@ -2328,7 +2328,7 @@ export default function MusicStudio() {
                           note ? (
                             <Button
                               key={note}
-                              className="w-8 h-14 bg-gray-900 hover:bg-gray-800 text-white text-xs z-10"
+                              className="w-8 h-14 bg-[#1a1a1a] hover:bg-gray-800 text-white text-xs z-10"
                               onClick={() => playMelodyNote(`${note}${activeOctave}`)}
                               data-testid={`melody-${note}${activeOctave}`}
                             >
@@ -2350,7 +2350,7 @@ export default function MusicStudio() {
                   {/* Hero Section with Mode Selector */}
                   <div className="text-center py-6 bg-gradient-to-r from-amber-500/10 via-amber-400/10 to-amber-500/10 rounded-xl border border">
                     <div className="flex items-center justify-center gap-2 mb-2">
-                      <Sparkles className="w-8 h-8 text-primary animate-pulse" />
+                      <Sparkles className="w-8 h-8 text-[#C9941A] animate-pulse" />
                       <h2 className="text-3xl font-bold bg-gradient-to-r from-[#C9941A] to-amber-500 bg-clip-text text-transparent">
                         MELODY MAGIC STUDIO
                       </h2>
@@ -2393,15 +2393,15 @@ export default function MusicStudio() {
                       </Button>
                     </div>
 
-                    <p className="text-muted-foreground max-w-2xl mx-auto text-sm">
+                    <p className="text-gray-400 max-w-2xl mx-auto text-sm">
                       {melodyMagicStep > 0 ? "Record any melody - hum, sing, or whistle. AI transforms it to any genre!" :
                        mashupMode === "voice-swap" ? "What if your favorite song was sung by a completely different artist style?" :
                        mashupMode === "mashup" ? "Combine two songs into one groundbreaking mashup masterpiece!" :
                        "Completely reimagine a song as if it was born in a different genre and era!"}
                     </p>
-                    <div className="flex items-center justify-center gap-4 mt-4 text-sm text-muted-foreground flex-wrap">
+                    <div className="flex items-center justify-center gap-4 mt-4 text-sm text-gray-400 flex-wrap">
                       <Badge variant="outline" className="bg-primary/10">Rapid-Fire Rap → Country Ballad</Badge>
-                      <Badge variant="outline" className="bg-amber-500/10">Pop Hit + Rock Anthem = Epic Mashup</Badge>
+                      <Badge variant="outline" className="bg-[#C9941A]/10">Pop Hit + Rock Anthem = Epic Mashup</Badge>
                       <Badge variant="outline" className="bg-pink-500/10">Any Voice + Any Genre = Magic</Badge>
                     </div>
                   </div>
@@ -2411,9 +2411,9 @@ export default function MusicStudio() {
                     <Card className="border-amber-500/20">
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          {mashupMode === "voice-swap" && <><Users className="w-6 h-6 text-amber-500" /> Voice Swap Studio</>}
+                          {mashupMode === "voice-swap" && <><Users className="w-6 h-6 text-[#C9941A]" /> Voice Swap Studio</>}
                           {mashupMode === "mashup" && <><Disc className="w-6 h-6 text-blue-500" /> Mashup Creator</>}
-                          {mashupMode === "reimagine" && <><Wand2 className="w-6 h-6 text-green-500" /> Song Reimaginer</>}
+                          {mashupMode === "reimagine" && <><Wand2 className="w-6 h-6 text-[#C9941A]" /> Song Reimaginer</>}
                         </CardTitle>
                         <CardDescription>
                           {mashupMode === "voice-swap" && "Transform any song with a completely different vocal style - imagine your favorite hits performed by different artist archetypes!"}
@@ -2471,12 +2471,12 @@ export default function MusicStudio() {
                                       onClick={() => setTargetArtistStyle(style.value)}
                                       className={`p-3 rounded-lg border-2 text-left transition-all
                                         ${targetArtistStyle === style.value 
-                                          ? 'border-amber-500 bg-amber-500/10' 
-                                          : 'border-muted hover:border-primary/50'}`}
+                                          ? 'border-amber-500 bg-[#C9941A]/10' 
+                                          : 'border-[#333] hover:border-primary/50'}`}
                                       data-testid={`button-style-${style.value}`}
                                     >
                                       <p className="font-bold text-sm">{style.label}</p>
-                                      <p className="text-xs text-muted-foreground">{style.desc}</p>
+                                      <p className="text-xs text-gray-400">{style.desc}</p>
                                     </button>
                                   ))}
                                 </div>
@@ -2517,7 +2517,7 @@ export default function MusicStudio() {
                                 className="mt-2"
                                 data-testid="slider-tempo"
                               />
-                              <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                              <div className="flex justify-between text-xs text-gray-400 mt-1">
                                 <span>Slower (50%)</span>
                                 <span>Original</span>
                                 <span>Faster (150%)</span>
@@ -2533,7 +2533,7 @@ export default function MusicStudio() {
                                 className="mt-2"
                                 data-testid="slider-energy"
                               />
-                              <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                              <div className="flex justify-between text-xs text-gray-400 mt-1">
                                 <span>Chill</span>
                                 <span>Original</span>
                                 <span>Intense</span>
@@ -2560,7 +2560,7 @@ export default function MusicStudio() {
                         {mashupResult && (
                           <div className="mt-6 p-6 bg-gradient-to-r from-amber-500/10 to-pink-500/10 rounded-xl border border-amber-500/20">
                             <h3 className="text-xl font-bold mb-2">{mashupResult.title}</h3>
-                            <p className="text-muted-foreground mb-4">{mashupResult.description}</p>
+                            <p className="text-gray-400 mb-4">{mashupResult.description}</p>
                             
                             <div className="space-y-4">
                               <div>
@@ -2607,15 +2607,15 @@ export default function MusicStudio() {
                           onClick={() => setMelodyMagicStep(s.step)}
                           className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-all
                             ${melodyMagicStep === s.step ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-foreground shadow-lg shadow-orange-500/30' : 
-                              melodyMagicStep > s.step ? 'bg-green-500/80 text-foreground' : 'bg-muted text-muted-foreground'}`}
+                              melodyMagicStep > s.step ? 'bg-[#C9941A]/80 text-foreground' : 'bg-[#1a1a1a] text-gray-400'}`}
                           data-testid={`button-melody-step-${s.step}`}
                         >
                           <s.icon className="w-5 h-5" />
                         </button>
-                        <span className={`ml-2 text-sm hidden md:block ${melodyMagicStep === s.step ? 'text-primary font-bold' : 'text-muted-foreground'}`}>
+                        <span className={`ml-2 text-sm hidden md:block ${melodyMagicStep === s.step ? 'text-[#C9941A] font-bold' : 'text-gray-400'}`}>
                           {s.label}
                         </span>
-                        {i < 3 && <div className={`w-12 md:w-24 h-1 mx-2 rounded ${melodyMagicStep > s.step ? 'bg-gradient-to-r from-green-500 to-green-400' : 'bg-muted'}`} />}
+                        {i < 3 && <div className={`w-12 md:w-24 h-1 mx-2 rounded ${melodyMagicStep > s.step ? 'bg-gradient-to-r from-green-500 to-green-400' : 'bg-[#1a1a1a]'}`} />}
                       </div>
                     ))}
                   </div>
@@ -2625,31 +2625,31 @@ export default function MusicStudio() {
                     <Card className="border">
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <Mic className="w-6 h-6 text-primary" /> Step 1: Record Your Melody
+                          <Mic className="w-6 h-6 text-[#C9941A]" /> Step 1: Record Your Melody
                         </CardTitle>
                         <CardDescription>
                           Hum, sing, whistle, or play any melody. Even "Jingle Bells" can become a Death Metal anthem!
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-6">
-                        <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border rounded-xl bg-orange-500/5">
+                        <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border rounded-xl bg-[#C9941A]/5">
                           {!recordedMelodyUrl ? (
                             <>
                               <div className={`w-32 h-32 rounded-full flex items-center justify-center mb-4 transition-all
-                                ${isRecordingMelody ? 'bg-red-500 animate-pulse shadow-lg shadow-red-500/50' : 'bg-primary/20 hover:bg-orange-500/30'}`}>
-                                <Mic className={`w-16 h-16 ${isRecordingMelody ? 'text-foreground' : 'text-primary'}`} />
+                                ${isRecordingMelody ? 'bg-red-500 animate-pulse shadow-lg shadow-red-500/50' : 'bg-primary/20 hover:bg-[#C9941A]/30'}`}>
+                                <Mic className={`w-16 h-16 ${isRecordingMelody ? 'text-foreground' : 'text-[#C9941A]'}`} />
                               </div>
                               {isRecordingMelody ? (
                                 <div className="text-center">
                                   <p className="text-lg font-bold text-red-500 mb-2 animate-pulse">Recording...</p>
-                                  <p className="text-muted-foreground mb-4">Sing, hum, or whistle your melody</p>
+                                  <p className="text-gray-400 mb-4">Sing, hum, or whistle your melody</p>
                                   <Button onClick={stopMelodyRecording} variant="destructive" size="lg" data-testid="button-stop-melody">
                                     <StopIcon className="w-5 h-5 mr-2" /> Stop Recording
                                   </Button>
                                 </div>
                               ) : (
                                 <div className="text-center">
-                                  <p className="text-muted-foreground mb-4">Click to start recording your melody</p>
+                                  <p className="text-gray-400 mb-4">Click to start recording your melody</p>
                                   <Button onClick={startMelodyRecording} size="lg" className="bg-gradient-to-r from-orange-500 to-amber-500" data-testid="button-start-melody">
                                     <Mic className="w-5 h-5 mr-2" /> Start Recording
                                   </Button>
@@ -2659,12 +2659,12 @@ export default function MusicStudio() {
                           ) : (
                             <div className="w-full space-y-4">
                               <div className="flex items-center justify-center gap-4">
-                                <div className="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center">
+                                <div className="w-16 h-16 rounded-full bg-[#C9941A] flex items-center justify-center">
                                   <Music className="w-8 h-8 text-foreground" />
                                 </div>
                                 <div>
-                                  <p className="font-bold text-green-500">Melody Recorded!</p>
-                                  <p className="text-sm text-muted-foreground">Ready for AI analysis</p>
+                                  <p className="font-bold text-[#C9941A]">Melody Recorded!</p>
+                                  <p className="text-sm text-gray-400">Ready for AI analysis</p>
                                 </div>
                               </div>
                               <audio src={recordedMelodyUrl} controls className="w-full" data-testid="audio-recorded-melody" />
@@ -2682,15 +2682,15 @@ export default function MusicStudio() {
                         </div>
                         
                         <div className="grid grid-cols-3 gap-4 text-center text-sm">
-                          <div className="p-3 bg-muted/50 rounded-lg">
-                            <Music className="w-6 h-6 mx-auto mb-1 text-primary" />
+                          <div className="p-3 bg-[#1a1a1a]/50 rounded-lg">
+                            <Music className="w-6 h-6 mx-auto mb-1 text-[#C9941A]" />
                             <p className="font-medium">Hum a Tune</p>
                           </div>
-                          <div className="p-3 bg-muted/50 rounded-lg">
-                            <Mic className="w-6 h-6 mx-auto mb-1 text-amber-500" />
+                          <div className="p-3 bg-[#1a1a1a]/50 rounded-lg">
+                            <Mic className="w-6 h-6 mx-auto mb-1 text-[#C9941A]" />
                             <p className="font-medium">Sing Lyrics</p>
                           </div>
-                          <div className="p-3 bg-muted/50 rounded-lg">
+                          <div className="p-3 bg-[#1a1a1a]/50 rounded-lg">
                             <Activity className="w-6 h-6 mx-auto mb-1 text-pink-500" />
                             <p className="font-medium">Whistle</p>
                           </div>
@@ -2704,7 +2704,7 @@ export default function MusicStudio() {
                     <Card className="border-amber-500/20">
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <Wand2 className="w-6 h-6 text-amber-500" /> Step 2: Choose Your Transformation
+                          <Wand2 className="w-6 h-6 text-[#C9941A]" /> Step 2: Choose Your Transformation
                         </CardTitle>
                         <CardDescription>
                           AI detected your melody! Now pick how you want it transformed.
@@ -2714,25 +2714,25 @@ export default function MusicStudio() {
                         {/* Analysis Results */}
                         {melodyAnalysis && (
                           <div className="p-4 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-lg border border-green-500/20">
-                            <h4 className="font-bold text-green-500 mb-3 flex items-center gap-2">
+                            <h4 className="font-bold text-[#C9941A] mb-3 flex items-center gap-2">
                               <Brain className="w-5 h-5" /> AI Analysis Results
                             </h4>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                               <div className="text-center p-3 bg-background/50 rounded">
-                                <p className="text-2xl font-bold text-primary">{melodyAnalysis.detectedBpm}</p>
-                                <p className="text-xs text-muted-foreground">BPM</p>
+                                <p className="text-2xl font-bold text-[#C9941A]">{melodyAnalysis.detectedBpm}</p>
+                                <p className="text-xs text-gray-400">BPM</p>
                               </div>
                               <div className="text-center p-3 bg-background/50 rounded">
-                                <p className="text-2xl font-bold text-amber-500">{melodyAnalysis.detectedKey}</p>
-                                <p className="text-xs text-muted-foreground">Key</p>
+                                <p className="text-2xl font-bold text-[#C9941A]">{melodyAnalysis.detectedKey}</p>
+                                <p className="text-xs text-gray-400">Key</p>
                               </div>
                               <div className="text-center p-3 bg-background/50 rounded">
                                 <p className="text-2xl font-bold text-pink-500">{melodyAnalysis.detectedScale}</p>
-                                <p className="text-xs text-muted-foreground">Scale</p>
+                                <p className="text-xs text-gray-400">Scale</p>
                               </div>
                               <div className="text-center p-3 bg-background/50 rounded">
                                 <p className="text-2xl font-bold text-blue-500">{melodyAnalysis.confidence}%</p>
-                                <p className="text-xs text-muted-foreground">Confidence</p>
+                                <p className="text-xs text-gray-400">Confidence</p>
                               </div>
                             </div>
                           </div>
@@ -2758,7 +2758,7 @@ export default function MusicStudio() {
                                 className={`p-4 rounded-xl border-2 transition-all text-left
                                   ${targetGenre === genre.value 
                                     ? `border-transparent bg-gradient-to-r ${genre.color} text-foreground shadow-lg` 
-                                    : 'border-muted hover:border-primary/50 bg-muted/30'}`}
+                                    : 'border-[#333] hover:border-primary/50 bg-[#1a1a1a]/30'}`}
                                 data-testid={`button-genre-${genre.value}`}
                               >
                                 <genre.icon className="w-6 h-6 mb-2" />
@@ -2787,12 +2787,12 @@ export default function MusicStudio() {
                                 onClick={() => setTargetVoiceStyle(voice.value)}
                                 className={`p-3 rounded-lg border-2 transition-all text-left
                                   ${targetVoiceStyle === voice.value 
-                                    ? 'border-orange-500 bg-primary/10' 
-                                    : 'border-muted hover:border-primary/50'}`}
+                                    ? 'border-[#C9941A] bg-primary/10' 
+                                    : 'border-[#333] hover:border-primary/50'}`}
                                 data-testid={`button-voice-${voice.value}`}
                               >
                                 <p className="font-bold">{voice.label}</p>
-                                <p className="text-xs text-muted-foreground">{voice.desc}</p>
+                                <p className="text-xs text-gray-400">{voice.desc}</p>
                               </button>
                             ))}
                           </div>
@@ -2842,11 +2842,11 @@ export default function MusicStudio() {
                               />
                             </div>
                             
-                            <div className="p-3 bg-muted/50 rounded-lg text-sm">
+                            <div className="p-3 bg-[#1a1a1a]/50 rounded-lg text-sm">
                               <p className="font-medium mb-1">🎵 Transformation Preview:</p>
-                              <p className="text-muted-foreground">
-                                Your melody in <span className="text-primary font-bold">{melodyAnalysis?.detectedKey} {melodyAnalysis?.detectedScale}</span> at{' '}
-                                <span className="text-amber-500 font-bold">{melodyAnalysis?.detectedBpm} BPM</span> → 
+                              <p className="text-gray-400">
+                                Your melody in <span className="text-[#C9941A] font-bold">{melodyAnalysis?.detectedKey} {melodyAnalysis?.detectedScale}</span> at{' '}
+                                <span className="text-[#C9941A] font-bold">{melodyAnalysis?.detectedBpm} BPM</span> → 
                                 <span className="text-pink-500 font-bold"> {targetGenre.toUpperCase()}</span> with{' '}
                                 <span className="text-blue-500 font-bold">{targetVoiceStyle}</span> vocals
                               </p>
@@ -2891,7 +2891,7 @@ export default function MusicStudio() {
                     <Card className="border-green-500/20">
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <Sparkles className="w-6 h-6 text-green-500" /> Your Masterpiece is Ready!
+                          <Sparkles className="w-6 h-6 text-[#C9941A]" /> Your Masterpiece is Ready!
                         </CardTitle>
                         <CardDescription>
                           AI transformed your melody into a {targetGenre} masterpiece!
@@ -2904,7 +2904,7 @@ export default function MusicStudio() {
                               <Sparkles className="w-12 h-12 text-foreground animate-spin" />
                             </div>
                             <p className="text-xl font-bold">Creating Magic...</p>
-                            <p className="text-muted-foreground">AI is recomposing your melody as {targetGenre}</p>
+                            <p className="text-gray-400">AI is recomposing your melody as {targetGenre}</p>
                             <Progress value={65} className="w-64 mt-4" />
                           </div>
                         ) : recomposedTrack ? (
@@ -2914,7 +2914,7 @@ export default function MusicStudio() {
                                 <Music className="w-10 h-10 text-foreground" />
                               </div>
                               <h3 className="text-2xl font-bold">{recomposedTrack.title}</h3>
-                              <p className="text-muted-foreground">
+                              <p className="text-gray-400">
                                 {targetGenre.toUpperCase()} • {targetVoiceStyle} vocals • {melodyAnalysis?.detectedBpm} BPM
                               </p>
                             </div>
@@ -2926,7 +2926,7 @@ export default function MusicStudio() {
                             {recomposedTrack.lyrics && (
                               <div>
                                 <Label>Generated Lyrics</Label>
-                                <div className="p-4 bg-muted/30 rounded-lg font-mono text-sm whitespace-pre-wrap max-h-64 overflow-auto">
+                                <div className="p-4 bg-[#1a1a1a]/30 rounded-lg font-mono text-sm whitespace-pre-wrap max-h-64 overflow-auto">
                                   {recomposedTrack.lyrics}
                                 </div>
                               </div>
@@ -2949,7 +2949,7 @@ export default function MusicStudio() {
                           </div>
                         ) : (
                           <div className="text-center py-8">
-                            <p className="text-muted-foreground">Something went wrong. Try again!</p>
+                            <p className="text-gray-400">Something went wrong. Try again!</p>
                             <Button onClick={() => setMelodyMagicStep(1)} className="mt-4">Start Over</Button>
                           </div>
                         )}
@@ -2972,7 +2972,7 @@ export default function MusicStudio() {
                       </h2>
                       <Waves className="w-8 h-8 text-cyan-500 animate-pulse" />
                     </div>
-                    <p className="text-muted-foreground">Upload any song and split it into individual stems</p>
+                    <p className="text-gray-400">Upload any song and split it into individual stems</p>
                     <p className="text-sm text-cyan-400 mt-2">Vocals | Drums | Bass | Guitar | Piano | Synth</p>
                   </div>
                   
@@ -3005,14 +3005,14 @@ export default function MusicStudio() {
                           {stemUploadUrl ? (
                             <div className="space-y-4">
                               <Music className="w-12 h-12 mx-auto text-blue-500" />
-                              <p className="text-sm text-muted-foreground">Song uploaded successfully!</p>
+                              <p className="text-sm text-gray-400">Song uploaded successfully!</p>
                               <audio src={stemUploadUrl} controls className="w-full" />
                             </div>
                           ) : (
                             <div className="space-y-4">
-                              <Upload className="w-12 h-12 mx-auto text-muted-foreground" />
-                              <p className="text-muted-foreground">Click or drag to upload audio</p>
-                              <p className="text-xs text-muted-foreground">MP3, WAV, M4A, FLAC supported</p>
+                              <Upload className="w-12 h-12 mx-auto text-gray-400" />
+                              <p className="text-gray-400">Click or drag to upload audio</p>
+                              <p className="text-xs text-gray-400">MP3, WAV, M4A, FLAC supported</p>
                             </div>
                           )}
                         </div>
@@ -3058,12 +3058,12 @@ export default function MusicStudio() {
                           <div className="space-y-3">
                             {[
                               { name: "Vocals", icon: Mic, color: "text-pink-500", stem: separatedStems.vocals },
-                              { name: "Drums", icon: Drum, color: "text-primary", stem: separatedStems.drums },
-                              { name: "Bass", icon: Waves, color: "text-amber-500", stem: separatedStems.bass },
+                              { name: "Drums", icon: Drum, color: "text-[#C9941A]", stem: separatedStems.drums },
+                              { name: "Bass", icon: Waves, color: "text-[#C9941A]", stem: separatedStems.bass },
                               { name: "Other (Guitar/Keys)", icon: Guitar, color: "text-yellow-500", stem: separatedStems.other },
-                              { name: "Instrumental", icon: Music, color: "text-green-500", stem: separatedStems.instrumental },
+                              { name: "Instrumental", icon: Music, color: "text-[#C9941A]", stem: separatedStems.instrumental },
                             ].map((s) => (
-                              <div key={s.name} className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                              <div key={s.name} className="flex items-center gap-3 p-3 bg-[#1a1a1a]/50 rounded-lg">
                                 <s.icon className={`w-5 h-5 ${s.color}`} />
                                 <span className="flex-1 font-medium">{s.name}</span>
                                 <div className="flex gap-2">
@@ -3084,7 +3084,7 @@ export default function MusicStudio() {
                             </Button>
                           </div>
                         ) : (
-                          <div className="text-center py-12 text-muted-foreground">
+                          <div className="text-center py-12 text-gray-400">
                             <Layers className="w-12 h-12 mx-auto mb-4 opacity-50" />
                             <p>Upload a song to see separated stems here</p>
                           </div>
@@ -3105,10 +3105,10 @@ export default function MusicStudio() {
                           { title: "Sample Elements", desc: "Extract hooks and loops", icon: Scissors },
                           { title: "AI Enhancement", desc: "Upgrade individual stems", icon: Sparkles },
                         ].map((item) => (
-                          <div key={item.title} className="p-4 bg-muted/30 rounded-lg text-center">
+                          <div key={item.title} className="p-4 bg-[#1a1a1a]/30 rounded-lg text-center">
                             <item.icon className="w-8 h-8 mx-auto mb-2 text-blue-500" />
                             <h4 className="font-medium">{item.title}</h4>
-                            <p className="text-xs text-muted-foreground">{item.desc}</p>
+                            <p className="text-xs text-gray-400">{item.desc}</p>
                           </div>
                         ))}
                       </div>
@@ -3122,13 +3122,13 @@ export default function MusicStudio() {
                 <div className="space-y-6">
                   <div className="text-center py-6 bg-gradient-to-r from-amber-500/10 via-pink-500/10 to-rose-500/10 rounded-xl border border-amber-500/20">
                     <div className="flex items-center justify-center gap-2 mb-2">
-                      <Users className="w-8 h-8 text-amber-500 animate-pulse" />
+                      <Users className="w-8 h-8 text-[#C9941A] animate-pulse" />
                       <h2 className="text-3xl font-bold bg-gradient-to-r from-amber-500 to-pink-500 bg-clip-text text-transparent">
                         AI VOICE LIBRARY
                       </h2>
                       <Users className="w-8 h-8 text-pink-500 animate-pulse" />
                     </div>
-                    <p className="text-muted-foreground">200+ pre-trained voice models + train your own</p>
+                    <p className="text-gray-400">200+ pre-trained voice models + train your own</p>
                   </div>
                   
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -3136,7 +3136,7 @@ export default function MusicStudio() {
                       <Card>
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
-                            <Users className="w-5 h-5 text-amber-500" /> Voice Models
+                            <Users className="w-5 h-5 text-[#C9941A]" /> Voice Models
                           </CardTitle>
                           <CardDescription>Select from our library of AI voice archetypes</CardDescription>
                         </CardHeader>
@@ -3160,7 +3160,7 @@ export default function MusicStudio() {
                                 key={voice.id}
                                 className={`p-4 rounded-lg border-2 text-left transition-all ${
                                   selectedVoiceModel === voice.id 
-                                    ? 'border-amber-500 bg-amber-500/10' 
+                                    ? 'border-amber-500 bg-[#C9941A]/10' 
                                     : 'border-border hover:border-amber-500/50'
                                 }`}
                                 onClick={() => setSelectedVoiceModel(voice.id)}
@@ -3168,7 +3168,7 @@ export default function MusicStudio() {
                               >
                                 <div className="text-2xl mb-2">{voice.icon}</div>
                                 <div className="font-medium text-sm">{voice.name}</div>
-                                <div className="text-xs text-muted-foreground">{voice.desc}</div>
+                                <div className="text-xs text-gray-400">{voice.desc}</div>
                               </button>
                             ))}
                           </div>
@@ -3192,9 +3192,9 @@ export default function MusicStudio() {
                             data-testid="input-voice-name"
                           />
                           <div className="border-2 border-dashed border-pink-500/30 rounded-lg p-4 text-center">
-                            <Upload className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                            <p className="text-sm text-muted-foreground">Upload 10+ minutes of audio</p>
-                            <p className="text-xs text-muted-foreground mt-1">Best results with clean vocals</p>
+                            <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                            <p className="text-sm text-gray-400">Upload 10+ minutes of audio</p>
+                            <p className="text-xs text-gray-400 mt-1">Best results with clean vocals</p>
                           </div>
                           <Button 
                             className="w-full bg-gradient-to-r from-amber-500 to-pink-500"
@@ -3213,7 +3213,7 @@ export default function MusicStudio() {
                       <Card>
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
-                            <Play className="w-5 h-5 text-amber-500" /> Preview Voice
+                            <Play className="w-5 h-5 text-[#C9941A]" /> Preview Voice
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
@@ -3248,20 +3248,20 @@ export default function MusicStudio() {
                 <div className="space-y-6">
                   <div className="text-center py-6 bg-gradient-to-r from-green-500/10 via-teal-500/10 to-emerald-500/10 rounded-xl border border-green-500/20">
                     <div className="flex items-center justify-center gap-2 mb-2">
-                      <Headphones className="w-8 h-8 text-green-500 animate-pulse" />
+                      <Headphones className="w-8 h-8 text-[#C9941A] animate-pulse" />
                       <h2 className="text-3xl font-bold bg-gradient-to-r from-green-500 to-teal-500 bg-clip-text text-transparent">
                         AI MASTERING SUITE
                       </h2>
                       <Headphones className="w-8 h-8 text-teal-500 animate-pulse" />
                     </div>
-                    <p className="text-muted-foreground">Professional mastering powered by AI</p>
+                    <p className="text-gray-400">Professional mastering powered by AI</p>
                   </div>
                   
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <Target className="w-5 h-5 text-green-500" /> Mastering Presets
+                          <Target className="w-5 h-5 text-[#C9941A]" /> Mastering Presets
                         </CardTitle>
                         <CardDescription>Choose a preset optimized for your platform</CardDescription>
                       </CardHeader>
@@ -3279,15 +3279,15 @@ export default function MusicStudio() {
                               key={preset.id}
                               className={`p-4 rounded-lg border-2 text-left transition-all ${
                                 masteringPreset === preset.id 
-                                  ? 'border-green-500 bg-green-500/10' 
+                                  ? 'border-green-500 bg-[#C9941A]/10' 
                                   : 'border-border hover:border-green-500/50'
                               }`}
                               onClick={() => setMasteringPreset(preset.id)}
                               data-testid={`button-preset-${preset.id}`}
                             >
-                              <preset.icon className="w-6 h-6 mb-2 text-green-500" />
+                              <preset.icon className="w-6 h-6 mb-2 text-[#C9941A]" />
                               <div className="font-medium">{preset.name}</div>
-                              <div className="text-xs text-muted-foreground">{preset.desc}</div>
+                              <div className="text-xs text-gray-400">{preset.desc}</div>
                             </button>
                           ))}
                         </div>
@@ -3332,21 +3332,21 @@ export default function MusicStudio() {
                         </div>
                         
                         <div className="grid grid-cols-2 gap-3">
-                          <div className="p-3 bg-muted/50 rounded-lg text-center">
-                            <span className="text-xs text-muted-foreground">EQ</span>
-                            <p className="font-medium text-green-500">Auto</p>
+                          <div className="p-3 bg-[#1a1a1a]/50 rounded-lg text-center">
+                            <span className="text-xs text-gray-400">EQ</span>
+                            <p className="font-medium text-[#C9941A]">Auto</p>
                           </div>
-                          <div className="p-3 bg-muted/50 rounded-lg text-center">
-                            <span className="text-xs text-muted-foreground">Compression</span>
-                            <p className="font-medium text-green-500">Adaptive</p>
+                          <div className="p-3 bg-[#1a1a1a]/50 rounded-lg text-center">
+                            <span className="text-xs text-gray-400">Compression</span>
+                            <p className="font-medium text-[#C9941A]">Adaptive</p>
                           </div>
-                          <div className="p-3 bg-muted/50 rounded-lg text-center">
-                            <span className="text-xs text-muted-foreground">Limiter</span>
-                            <p className="font-medium text-green-500">True Peak</p>
+                          <div className="p-3 bg-[#1a1a1a]/50 rounded-lg text-center">
+                            <span className="text-xs text-gray-400">Limiter</span>
+                            <p className="font-medium text-[#C9941A]">True Peak</p>
                           </div>
-                          <div className="p-3 bg-muted/50 rounded-lg text-center">
-                            <span className="text-xs text-muted-foreground">Dithering</span>
-                            <p className="font-medium text-green-500">16-bit</p>
+                          <div className="p-3 bg-[#1a1a1a]/50 rounded-lg text-center">
+                            <span className="text-xs text-gray-400">Dithering</span>
+                            <p className="font-medium text-[#C9941A]">16-bit</p>
                           </div>
                         </div>
                         
@@ -3368,7 +3368,7 @@ export default function MusicStudio() {
                   {masteredTrackUrl && (
                     <Card className="border-green-500">
                       <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-green-500">
+                        <CardTitle className="flex items-center gap-2 text-[#C9941A]">
                           <CheckCircle className="w-5 h-5" /> Mastering Complete!
                         </CardTitle>
                       </CardHeader>
@@ -3397,39 +3397,39 @@ export default function MusicStudio() {
                       <h2 className="text-3xl font-bold bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 bg-clip-text text-transparent">
                         DISTRIBUTION HUB
                       </h2>
-                      <Radio className="w-8 h-8 text-primary animate-pulse" />
+                      <Radio className="w-8 h-8 text-[#C9941A] animate-pulse" />
                     </div>
-                    <p className="text-muted-foreground">Publish to 150+ streaming platforms worldwide</p>
-                    <p className="text-sm text-primary mt-2">Keep 85% of royalties | No annual fees</p>
+                    <p className="text-gray-400">Publish to 150+ streaming platforms worldwide</p>
+                    <p className="text-sm text-[#C9941A] mt-2">Keep 85% of royalties | No annual fees</p>
                   </div>
                   
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <Globe className="w-5 h-5 text-primary" /> Select Platforms
+                          <Globe className="w-5 h-5 text-[#C9941A]" /> Select Platforms
                         </CardTitle>
                         <CardDescription>Choose where to publish your music</CardDescription>
                       </CardHeader>
                       <CardContent>
                         <div className="grid grid-cols-3 gap-3">
                           {[
-                            { id: "spotify", name: "Spotify", color: "bg-green-500" },
+                            { id: "spotify", name: "Spotify", color: "bg-[#C9941A]" },
                             { id: "apple", name: "Apple Music", color: "bg-pink-500" },
                             { id: "youtube", name: "YouTube Music", color: "bg-red-500" },
                             { id: "amazon", name: "Amazon Music", color: "bg-blue-500" },
                             { id: "tidal", name: "Tidal", color: "bg-slate-500" },
-                            { id: "deezer", name: "Deezer", color: "bg-orange-500" },
-                            { id: "soundcloud", name: "SoundCloud", color: "bg-orange-600" },
+                            { id: "deezer", name: "Deezer", color: "bg-[#C9941A]" },
+                            { id: "soundcloud", name: "SoundCloud", color: "bg-[#C9941A]" },
                             { id: "tiktok", name: "TikTok", color: "bg-pink-600" },
-                            { id: "instagram", name: "Instagram", color: "bg-amber-500" },
+                            { id: "instagram", name: "Instagram", color: "bg-[#C9941A]" },
                           ].map((platform) => (
                             <button
                               key={platform.id}
                               className={`p-3 rounded-lg border-2 text-center transition-all ${
                                 distributionPlatforms.includes(platform.id)
-                                  ? 'border-orange-500 bg-primary/10'
-                                  : 'border-border hover:border-orange-500/50'
+                                  ? 'border-[#C9941A] bg-primary/10'
+                                  : 'border-border hover:border-[#C9941A]/50'
                               }`}
                               onClick={() => {
                                 if (distributionPlatforms.includes(platform.id)) {
@@ -3461,7 +3461,7 @@ export default function MusicStudio() {
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <FileText className="w-5 h-5 text-primary" /> Track Metadata
+                          <FileText className="w-5 h-5 text-[#C9941A]" /> Track Metadata
                         </CardTitle>
                         <CardDescription>Fill in your release information</CardDescription>
                       </CardHeader>
@@ -3551,20 +3551,20 @@ export default function MusicStudio() {
                     <CardContent className="py-6">
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                         <div>
-                          <div className="text-3xl font-bold text-primary">150+</div>
-                          <div className="text-sm text-muted-foreground">Platforms</div>
+                          <div className="text-3xl font-bold text-[#C9941A]">150+</div>
+                          <div className="text-sm text-gray-400">Platforms</div>
                         </div>
                         <div>
-                          <div className="text-3xl font-bold text-primary">85%</div>
-                          <div className="text-sm text-muted-foreground">Royalties Kept</div>
+                          <div className="text-3xl font-bold text-[#C9941A]">85%</div>
+                          <div className="text-sm text-gray-400">Royalties Kept</div>
                         </div>
                         <div>
-                          <div className="text-3xl font-bold text-primary">$0</div>
-                          <div className="text-sm text-muted-foreground">Annual Fees</div>
+                          <div className="text-3xl font-bold text-[#C9941A]">$0</div>
+                          <div className="text-sm text-gray-400">Annual Fees</div>
                         </div>
                         <div>
-                          <div className="text-3xl font-bold text-primary">24hr</div>
-                          <div className="text-sm text-muted-foreground">Review Time</div>
+                          <div className="text-3xl font-bold text-[#C9941A]">24hr</div>
+                          <div className="text-sm text-gray-400">Review Time</div>
                         </div>
                       </div>
                     </CardContent>
@@ -3588,16 +3588,16 @@ export default function MusicStudio() {
                         <button
                           onClick={() => setCreatorStep(s.step)}
                           className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all
-                            ${creatorStep === s.step ? 'bg-primary text-primary-foreground' : 
-                              creatorStep > s.step ? 'bg-primary/50 text-foreground' : 'bg-muted text-muted-foreground'}`}
+                            ${creatorStep === s.step ? 'bg-primary text-[#C9941A]-foreground' : 
+                              creatorStep > s.step ? 'bg-primary/50 text-foreground' : 'bg-[#1a1a1a] text-gray-400'}`}
                           data-testid={`button-step-${s.step}`}
                         >
                           {s.step}
                         </button>
-                        <span className={`ml-2 text-sm hidden md:block ${creatorStep === s.step ? 'text-primary font-bold' : 'text-muted-foreground'}`}>
+                        <span className={`ml-2 text-sm hidden md:block ${creatorStep === s.step ? 'text-[#C9941A] font-bold' : 'text-gray-400'}`}>
                           {s.label}
                         </span>
-                        {i < 4 && <div className={`w-8 md:w-16 h-1 mx-2 ${creatorStep > s.step ? 'bg-primary' : 'bg-muted'}`} />}
+                        {i < 4 && <div className={`w-8 md:w-16 h-1 mx-2 ${creatorStep > s.step ? 'bg-primary' : 'bg-[#1a1a1a]'}`} />}
                       </div>
                     ))}
                   </div>
@@ -3607,7 +3607,7 @@ export default function MusicStudio() {
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <PenTool className="w-5 h-5 text-primary" /> Step 1: Write Your Lyrics
+                          <PenTool className="w-5 h-5 text-[#C9941A]" /> Step 1: Write Your Lyrics
                         </CardTitle>
                         <CardDescription>Start with your message. What's the song about?</CardDescription>
                       </CardHeader>
@@ -3714,7 +3714,7 @@ Repeat the hook...`}
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <Music className="w-5 h-5 text-primary" /> Step 2: Choose Your Style
+                          <Music className="w-5 h-5 text-[#C9941A]" /> Step 2: Choose Your Style
                         </CardTitle>
                         <CardDescription>Define the sound - 32 genres powered by Google Lyria AI</CardDescription>
                       </CardHeader>
@@ -3748,7 +3748,7 @@ Repeat the hook...`}
                                         ${selectedGenre === g.value ? 'border-primary bg-primary/10' : 'border-border'}`}
                                       data-testid={`button-genre-${g.value}`}
                                     >
-                                      <Icon className={`w-6 h-6 ${selectedGenre === g.value ? 'text-primary' : ''}`} />
+                                      <Icon className={`w-6 h-6 ${selectedGenre === g.value ? 'text-[#C9941A]' : ''}`} />
                                       <span className="font-medium text-xs text-center">{g.label}</span>
                                     </button>
                                   );
@@ -3767,7 +3767,7 @@ Repeat the hook...`}
                               className="mt-2"
                               data-testid="slider-tempo-creator"
                             />
-                            <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                            <div className="flex justify-between text-xs text-gray-400 mt-1">
                               <span>60</span>
                               <span>200</span>
                             </div>
@@ -3804,20 +3804,20 @@ Repeat the hook...`}
                               className="mt-2"
                               data-testid="input-lyria-seed"
                             />
-                            <p className="text-xs text-muted-foreground mt-1">Same seed = same result</p>
+                            <p className="text-xs text-gray-400 mt-1">Same seed = same result</p>
                           </div>
                         </div>
 
                         <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
                           <div className="flex items-center gap-2 mb-2">
-                            <Sparkles className="w-5 h-5 text-primary" />
+                            <Sparkles className="w-5 h-5 text-[#C9941A]" />
                             <span className="font-semibold text-sm">Lyria AI Configuration</span>
                           </div>
-                          <p className="text-xs text-muted-foreground">
-                            Selected: <strong className="text-primary">{genres.find(g => g.value === selectedGenre)?.label}</strong> at <strong className="text-primary">{bpm} BPM</strong> in <strong className="text-primary">{selectedKey} {selectedScale}</strong>
+                          <p className="text-xs text-gray-400">
+                            Selected: <strong className="text-[#C9941A]">{genres.find(g => g.value === selectedGenre)?.label}</strong> at <strong className="text-[#C9941A]">{bpm} BPM</strong> in <strong className="text-[#C9941A]">{selectedKey} {selectedScale}</strong>
                           </p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            Cost: <strong className="text-green-500">$0.06</strong> per 30-second generation
+                          <p className="text-xs text-gray-400 mt-1">
+                            Cost: <strong className="text-[#C9941A]">$0.06</strong> per 30-second generation
                           </p>
                         </div>
                         
@@ -3838,14 +3838,14 @@ Repeat the hook...`}
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <Disc className="w-5 h-5 text-primary" /> Step 3: Generate Your Beat
+                          <Disc className="w-5 h-5 text-[#C9941A]" /> Step 3: Generate Your Beat
                         </CardTitle>
                         <CardDescription>
                           AI will create a {genres.find(g => g.value === selectedGenre)?.label} instrumental at {bpm} BPM in {selectedKey} {selectedScale}
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-6">
-                        <div className="p-6 bg-muted/50 rounded-lg text-center">
+                        <div className="p-6 bg-[#1a1a1a]/50 rounded-lg text-center">
                           <div className="mb-4">
                             <Badge variant="outline" className="mb-2">{genres.find(g => g.value === selectedGenre)?.label}</Badge>
                             <Badge variant="outline" className="ml-2">{bpm} BPM</Badge>
@@ -3961,7 +3961,7 @@ Repeat the hook...`}
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <Mic className="w-5 h-5 text-primary" /> Step 4: Choose Your Voice & Flow
+                          <Mic className="w-5 h-5 text-[#C9941A]" /> Step 4: Choose Your Voice & Flow
                         </CardTitle>
                         <CardDescription>How should the vocals sound and be delivered?</CardDescription>
                       </CardHeader>
@@ -3986,7 +3986,7 @@ Repeat the hook...`}
                                   data-testid={`button-voice-style-${style.id}`}
                                 >
                                   <div className="font-medium">{style.name}</div>
-                                  <div className="text-sm text-muted-foreground">{style.description}</div>
+                                  <div className="text-sm text-gray-400">{style.description}</div>
                                 </button>
                               ))}
                             </div>
@@ -4011,7 +4011,7 @@ Repeat the hook...`}
                                   data-testid={`button-flow-${flow.id}`}
                                 >
                                   <div className="font-medium">{flow.name}</div>
-                                  <div className="text-sm text-muted-foreground">{flow.desc}</div>
+                                  <div className="text-sm text-gray-400">{flow.desc}</div>
                                 </button>
                               ))}
                             </div>
@@ -4020,11 +4020,11 @@ Repeat the hook...`}
                         
                         <Separator />
                         
-                        <div className="p-4 bg-muted/50 rounded-lg">
+                        <div className="p-4 bg-[#1a1a1a]/50 rounded-lg">
                           <h4 className="font-bold mb-2 flex items-center gap-2">
                             <Mic className="w-4 h-4" /> Clone Your Own Voice (Optional)
                           </h4>
-                          <p className="text-sm text-muted-foreground mb-4">
+                          <p className="text-sm text-gray-400 mb-4">
                             Record 10+ seconds of your voice to create a voice clone using Google Chirp 3 HD
                           </p>
                           <Button variant="outline" onClick={() => {
@@ -4052,7 +4052,7 @@ Repeat the hook...`}
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <Download className="w-5 h-5 text-primary" /> Step 5: Preview & Export
+                          <Download className="w-5 h-5 text-[#C9941A]" /> Step 5: Preview & Export
                         </CardTitle>
                         <CardDescription>Review your song and export</CardDescription>
                       </CardHeader>
@@ -4061,28 +4061,28 @@ Repeat the hook...`}
                           <div className="space-y-4">
                             <h4 className="font-bold">Song Summary</h4>
                             <div className="space-y-2 text-sm">
-                              <div className="flex justify-between p-2 bg-muted/50 rounded">
-                                <span className="text-muted-foreground">Genre:</span>
+                              <div className="flex justify-between p-2 bg-[#1a1a1a]/50 rounded">
+                                <span className="text-gray-400">Genre:</span>
                                 <Badge>{genres.find(g => g.value === selectedGenre)?.label}</Badge>
                               </div>
-                              <div className="flex justify-between p-2 bg-muted/50 rounded">
-                                <span className="text-muted-foreground">Tempo:</span>
+                              <div className="flex justify-between p-2 bg-[#1a1a1a]/50 rounded">
+                                <span className="text-gray-400">Tempo:</span>
                                 <span>{bpm} BPM</span>
                               </div>
-                              <div className="flex justify-between p-2 bg-muted/50 rounded">
-                                <span className="text-muted-foreground">Key:</span>
+                              <div className="flex justify-between p-2 bg-[#1a1a1a]/50 rounded">
+                                <span className="text-gray-400">Key:</span>
                                 <span>{selectedKey} {selectedScale}</span>
                               </div>
-                              <div className="flex justify-between p-2 bg-muted/50 rounded">
-                                <span className="text-muted-foreground">Voice:</span>
+                              <div className="flex justify-between p-2 bg-[#1a1a1a]/50 rounded">
+                                <span className="text-gray-400">Voice:</span>
                                 <span>{voiceStyles?.styles?.find((s: any) => s.id === selectedVoiceStyle)?.name || selectedVoiceStyle}</span>
                               </div>
-                              <div className="flex justify-between p-2 bg-muted/50 rounded">
-                                <span className="text-muted-foreground">Flow:</span>
+                              <div className="flex justify-between p-2 bg-[#1a1a1a]/50 rounded">
+                                <span className="text-gray-400">Flow:</span>
                                 <span className="capitalize">{selectedFlow}</span>
                               </div>
-                              <div className="flex justify-between p-2 bg-muted/50 rounded">
-                                <span className="text-muted-foreground">Mood:</span>
+                              <div className="flex justify-between p-2 bg-[#1a1a1a]/50 rounded">
+                                <span className="text-gray-400">Mood:</span>
                                 <span className="capitalize">{songMood}</span>
                               </div>
                             </div>
@@ -4090,7 +4090,7 @@ Repeat the hook...`}
                           
                           <div className="space-y-4">
                             <h4 className="font-bold">Lyrics Preview</h4>
-                            <div className="p-3 bg-muted/50 rounded-lg max-h-48 overflow-y-auto">
+                            <div className="p-3 bg-[#1a1a1a]/50 rounded-lg max-h-48 overflow-y-auto">
                               <pre className="text-sm whitespace-pre-wrap font-mono">{lyrics.substring(0, 500)}{lyrics.length > 500 && "..."}</pre>
                             </div>
                             
@@ -4161,7 +4161,7 @@ Repeat the hook...`}
                     <ScrollArea className="h-full">
                       <div className="space-y-2">
                         {tracks.map((track) => (
-                          <div key={track.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover-elevate" data-testid={`track-${track.id}`}>
+                          <div key={track.id} className="flex items-center gap-3 p-3 rounded-lg bg-[#1a1a1a]/50 hover-elevate" data-testid={`track-${track.id}`}>
                             <div className={`w-3 h-12 rounded ${track.color}`} />
                             <div className="w-32">
                               <Input value={track.name} onChange={(e) => updateTrack(track.id, { name: e.target.value })}
@@ -4190,7 +4190,7 @@ Repeat the hook...`}
                                 max={100} data-testid={`slider-volume-${track.id}`} />
                             </div>
                             {track.audioUrl && (
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary"
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-[#C9941A]"
                                 onClick={() => {
                                   const link = document.createElement('a');
                                   link.href = track.audioUrl!;
@@ -4203,7 +4203,7 @@ Repeat the hook...`}
                                 <Download className="w-4 h-4" />
                               </Button>
                             )}
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-destructive"
                               onClick={() => removeTrack(track.id)} data-testid={`button-delete-${track.id}`}>
                               <Trash2 className="w-4 h-4" />
                             </Button>
@@ -4221,7 +4221,7 @@ Repeat the hook...`}
                   <CardContent className="p-4 h-full">
                     <div className="flex gap-4 h-full overflow-x-auto">
                       {tracks.map((track) => (
-                        <div key={track.id} className="flex flex-col items-center gap-2 p-3 rounded-lg bg-muted/50 w-24 flex-shrink-0" data-testid={`mixer-channel-${track.id}`}>
+                        <div key={track.id} className="flex flex-col items-center gap-2 p-3 rounded-lg bg-[#1a1a1a]/50 w-24 flex-shrink-0" data-testid={`mixer-channel-${track.id}`}>
                           <span className="text-xs font-medium truncate w-full text-center">{track.name}</span>
                           <div className="flex-1 flex items-center justify-center">
                             <div className="h-40 w-4 bg-background rounded-full border relative overflow-hidden">
@@ -4279,7 +4279,7 @@ Repeat the hook...`}
                               newBands[i].gain = v - 12;
                               setEqBands(newBands);
                             }} min={0} max={24} orientation="vertical" className="h-32" data-testid={`slider-eq-band-${i}`} />
-                            <span className="text-xs text-muted-foreground">{band.frequency >= 1000 ? `${band.frequency/1000}k` : band.frequency}</span>
+                            <span className="text-xs text-gray-400">{band.frequency >= 1000 ? `${band.frequency/1000}k` : band.frequency}</span>
                             <span className="text-xs font-mono">{band.gain > 0 ? '+' : ''}{band.gain}dB</span>
                           </div>
                         ))}
@@ -4289,7 +4289,7 @@ Repeat the hook...`}
 
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {/* Compressor */}
-                    <Card className="bg-muted/50">
+                    <Card className="bg-[#1a1a1a]/50">
                       <CardHeader className="pb-2"><CardTitle className="text-sm">Compressor</CardTitle></CardHeader>
                       <CardContent className="space-y-3">
                         <div>
@@ -4306,7 +4306,7 @@ Repeat the hook...`}
                     </Card>
 
                     {/* Reverb */}
-                    <Card className="bg-muted/50">
+                    <Card className="bg-[#1a1a1a]/50">
                       <CardHeader className="pb-2"><CardTitle className="text-sm">Reverb</CardTitle></CardHeader>
                       <CardContent className="space-y-3">
                         <div>
@@ -4318,7 +4318,7 @@ Repeat the hook...`}
                     </Card>
 
                     {/* Delay */}
-                    <Card className="bg-muted/50">
+                    <Card className="bg-[#1a1a1a]/50">
                       <CardHeader className="pb-2"><CardTitle className="text-sm">Delay</CardTitle></CardHeader>
                       <CardContent className="space-y-3">
                         <div>
@@ -4335,7 +4335,7 @@ Repeat the hook...`}
                     </Card>
 
                     {/* Auto-Tune */}
-                    <Card className="bg-muted/50">
+                    <Card className="bg-[#1a1a1a]/50">
                       <CardHeader className="pb-2">
                         <div className="flex items-center justify-between">
                           <CardTitle className="text-sm">Auto-Tune</CardTitle>
@@ -4361,7 +4361,7 @@ Repeat the hook...`}
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <Mic className="w-5 h-5 text-primary" /> Clone Your Voice
+                        <Mic className="w-5 h-5 text-[#C9941A]" /> Clone Your Voice
                       </CardTitle>
                       <CardDescription>Record 10+ seconds to clone your voice</CardDescription>
                     </CardHeader>
@@ -4384,7 +4384,7 @@ Repeat the hook...`}
                         </div>
                       )}
                       {clonedVoiceKey && (
-                        <Badge variant="outline" className="w-full justify-center py-2 text-green-500">
+                        <Badge variant="outline" className="w-full justify-center py-2 text-[#C9941A]">
                           Voice Cloned Successfully!
                         </Badge>
                       )}
@@ -4395,7 +4395,7 @@ Repeat the hook...`}
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <Sparkles className="w-5 h-5 text-primary" /> Voice Synthesis
+                        <Sparkles className="w-5 h-5 text-[#C9941A]" /> Voice Synthesis
                       </CardTitle>
                       <CardDescription>Generate speech in any style</CardDescription>
                     </CardHeader>
@@ -4456,7 +4456,7 @@ Repeat the hook...`}
                       </h2>
                       <Music className="w-8 h-8 text-blue-500 animate-pulse" />
                     </div>
-                    <p className="text-muted-foreground">Upload a video and AI generates a perfectly synced soundtrack</p>
+                    <p className="text-gray-400">Upload a video and AI generates a perfectly synced soundtrack</p>
                     <p className="text-sm text-indigo-400 mt-2">Scene detection | Mood matching | Beat sync | Transition scoring</p>
                   </div>
                   
@@ -4492,9 +4492,9 @@ Repeat the hook...`}
                             </div>
                           ) : (
                             <div className="space-y-4">
-                              <Film className="w-12 h-12 mx-auto text-muted-foreground" />
-                              <p className="text-muted-foreground">Click or drag to upload video</p>
-                              <p className="text-xs text-muted-foreground">MP4, MOV, AVI, WebM supported</p>
+                              <Film className="w-12 h-12 mx-auto text-gray-400" />
+                              <p className="text-gray-400">Click or drag to upload video</p>
+                              <p className="text-xs text-gray-400">MP4, MOV, AVI, WebM supported</p>
                             </div>
                           )}
                         </div>
@@ -4567,29 +4567,29 @@ Repeat the hook...`}
                         {generatedSoundtrack ? (
                           <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-3">
-                              <div className="p-3 bg-muted/50 rounded-lg text-center">
+                              <div className="p-3 bg-[#1a1a1a]/50 rounded-lg text-center">
                                 <div className="text-2xl font-bold text-indigo-500">12</div>
-                                <div className="text-xs text-muted-foreground">Scene Cuts Detected</div>
+                                <div className="text-xs text-gray-400">Scene Cuts Detected</div>
                               </div>
-                              <div className="p-3 bg-muted/50 rounded-lg text-center">
+                              <div className="p-3 bg-[#1a1a1a]/50 rounded-lg text-center">
                                 <div className="text-2xl font-bold text-blue-500">Epic</div>
-                                <div className="text-xs text-muted-foreground">Mood Detected</div>
+                                <div className="text-xs text-gray-400">Mood Detected</div>
                               </div>
-                              <div className="p-3 bg-muted/50 rounded-lg text-center">
+                              <div className="p-3 bg-[#1a1a1a]/50 rounded-lg text-center">
                                 <div className="text-2xl font-bold text-cyan-500">120</div>
-                                <div className="text-xs text-muted-foreground">Suggested BPM</div>
+                                <div className="text-xs text-gray-400">Suggested BPM</div>
                               </div>
-                              <div className="p-3 bg-muted/50 rounded-lg text-center">
-                                <div className="text-2xl font-bold text-amber-500">3:24</div>
-                                <div className="text-xs text-muted-foreground">Video Duration</div>
+                              <div className="p-3 bg-[#1a1a1a]/50 rounded-lg text-center">
+                                <div className="text-2xl font-bold text-[#C9941A]">3:24</div>
+                                <div className="text-xs text-gray-400">Video Duration</div>
                               </div>
                             </div>
                             
-                            <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
-                              <div className="flex items-center gap-2 text-green-500 font-medium mb-2">
+                            <div className="p-4 bg-[#C9941A]/10 border border-green-500/20 rounded-lg">
+                              <div className="flex items-center gap-2 text-[#C9941A] font-medium mb-2">
                                 <CheckCircle className="w-5 h-5" /> Soundtrack Generated!
                               </div>
-                              <p className="text-sm text-muted-foreground mb-4">
+                              <p className="text-sm text-gray-400 mb-4">
                                 AI created a 3:24 epic orchestral score with builds at 0:45, 1:30, and 2:45 to match your scene transitions.
                               </p>
                               <div className="flex gap-2">
@@ -4603,7 +4603,7 @@ Repeat the hook...`}
                             </div>
                           </div>
                         ) : (
-                          <div className="text-center py-12 text-muted-foreground">
+                          <div className="text-center py-12 text-gray-400">
                             <Brain className="w-12 h-12 mx-auto mb-4 opacity-50" />
                             <p>Upload a video to see AI analysis</p>
                             <p className="text-sm mt-2">We'll detect scenes, mood, and pacing</p>
@@ -4625,13 +4625,13 @@ Repeat the hook...`}
                           { step: "3", title: "Beat Mapping", desc: "Syncs music to action", icon: Activity },
                           { step: "4", title: "Score Generation", desc: "Creates custom soundtrack", icon: Music },
                         ].map((item) => (
-                          <div key={item.step} className="p-4 bg-muted/30 rounded-lg text-center">
+                          <div key={item.step} className="p-4 bg-[#1a1a1a]/30 rounded-lg text-center">
                             <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center mx-auto mb-2 text-foreground font-bold">
                               {item.step}
                             </div>
                             <item.icon className="w-6 h-6 mx-auto mb-2 text-indigo-500" />
                             <h4 className="font-medium text-sm">{item.title}</h4>
-                            <p className="text-xs text-muted-foreground">{item.desc}</p>
+                            <p className="text-xs text-gray-400">{item.desc}</p>
                           </div>
                         ))}
                       </div>
@@ -4649,9 +4649,9 @@ Repeat the hook...`}
                       <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-500 via-red-500 to-orange-500 bg-clip-text text-transparent">
                         LIVE ADAPTIVE MUSIC
                       </h2>
-                      <Zap className="w-8 h-8 text-primary animate-pulse" />
+                      <Zap className="w-8 h-8 text-[#C9941A] animate-pulse" />
                     </div>
-                    <p className="text-muted-foreground">Real-time music that adapts to your content</p>
+                    <p className="text-gray-400">Real-time music that adapts to your content</p>
                     <p className="text-sm text-pink-400 mt-2">Gaming | Streaming | Meditation | Workouts</p>
                   </div>
                   
@@ -4667,10 +4667,10 @@ Repeat the hook...`}
                         <CardContent>
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                             {[
-                              { id: "gaming", name: "Gaming", desc: "Reacts to gameplay intensity", IconComponent: Zap, color: "text-amber-500" },
+                              { id: "gaming", name: "Gaming", desc: "Reacts to gameplay intensity", IconComponent: Zap, color: "text-[#C9941A]" },
                               { id: "streaming", name: "Streaming", desc: "Matches chat energy", IconComponent: Radio, color: "text-pink-500" },
-                              { id: "meditation", name: "Meditation", desc: "Calming ambient sounds", IconComponent: Sparkles, color: "text-green-500" },
-                              { id: "workout", name: "Workout", desc: "Pumps up intensity", IconComponent: Activity, color: "text-primary" },
+                              { id: "meditation", name: "Meditation", desc: "Calming ambient sounds", IconComponent: Sparkles, color: "text-[#C9941A]" },
+                              { id: "workout", name: "Workout", desc: "Pumps up intensity", IconComponent: Activity, color: "text-[#C9941A]" },
                             ].map((mode) => (
                               <button
                                 key={mode.id}
@@ -4684,7 +4684,7 @@ Repeat the hook...`}
                               >
                                 <mode.IconComponent className={`w-8 h-8 mx-auto mb-2 ${mode.color}`} />
                                 <div className="font-medium">{mode.name}</div>
-                                <div className="text-xs text-muted-foreground">{mode.desc}</div>
+                                <div className="text-xs text-gray-400">{mode.desc}</div>
                               </button>
                             ))}
                           </div>
@@ -4746,23 +4746,23 @@ Repeat the hook...`}
                         <CardContent>
                           {isLiveMusicActive ? (
                             <div className="space-y-4">
-                              <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg text-center">
-                                <div className="flex items-center justify-center gap-2 text-green-500 font-medium">
-                                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
+                              <div className="p-4 bg-[#C9941A]/10 border border-green-500/20 rounded-lg text-center">
+                                <div className="flex items-center justify-center gap-2 text-[#C9941A] font-medium">
+                                  <div className="w-3 h-3 bg-[#C9941A] rounded-full animate-pulse" />
                                   LIVE
                                 </div>
                               </div>
                               <div className="grid grid-cols-2 gap-3">
-                                <div className="p-3 bg-muted/50 rounded-lg text-center">
+                                <div className="p-3 bg-[#1a1a1a]/50 rounded-lg text-center">
                                   <div className="text-xl font-bold text-pink-500">124</div>
-                                  <div className="text-xs text-muted-foreground">Current BPM</div>
+                                  <div className="text-xs text-gray-400">Current BPM</div>
                                 </div>
-                                <div className="p-3 bg-muted/50 rounded-lg text-center">
-                                  <div className="text-xl font-bold text-primary">High</div>
-                                  <div className="text-xs text-muted-foreground">Energy Level</div>
+                                <div className="p-3 bg-[#1a1a1a]/50 rounded-lg text-center">
+                                  <div className="text-xl font-bold text-[#C9941A]">High</div>
+                                  <div className="text-xs text-gray-400">Energy Level</div>
                                 </div>
                               </div>
-                              <div className="h-24 bg-muted/30 rounded-lg flex items-center justify-center">
+                              <div className="h-24 bg-[#1a1a1a]/30 rounded-lg flex items-center justify-center">
                                 <div className="flex items-end gap-1 h-16">
                                   {Array.from({ length: 20 }).map((_, i) => (
                                     <div 
@@ -4778,7 +4778,7 @@ Repeat the hook...`}
                               </div>
                             </div>
                           ) : (
-                            <div className="text-center py-8 text-muted-foreground">
+                            <div className="text-center py-8 text-gray-400">
                               <Radio className="w-12 h-12 mx-auto mb-4 opacity-50" />
                               <p>Start live music to see status</p>
                             </div>
@@ -4789,12 +4789,12 @@ Repeat the hook...`}
                       <Card>
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
-                            <Headphones className="w-5 h-5 text-primary" /> Integration
+                            <Headphones className="w-5 h-5 text-[#C9941A]" /> Integration
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
                           <Button variant="outline" className="w-full justify-start gap-2" data-testid="button-connect-obs">
-                            <span className="w-6 h-6 bg-amber-500 rounded flex items-center justify-center text-foreground text-xs">OBS</span>
+                            <span className="w-6 h-6 bg-[#C9941A] rounded flex items-center justify-center text-foreground text-xs">OBS</span>
                             Connect to OBS
                           </Button>
                           <Button variant="outline" className="w-full justify-start gap-2" data-testid="button-connect-discord">
@@ -4818,7 +4818,7 @@ Repeat the hook...`}
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <Film className="w-5 h-5 text-primary" /> AI Movie Generator
+                        <Film className="w-5 h-5 text-[#C9941A]" /> AI Movie Generator
                       </CardTitle>
                       <CardDescription>Create movie scripts and storyboards with AI</CardDescription>
                     </CardHeader>
@@ -4862,7 +4862,7 @@ Repeat the hook...`}
                         <ScrollArea className="h-[400px]">
                           <div className="space-y-4">
                             {generatedScript.scenes?.map((scene: any, i: number) => (
-                              <Card key={i} className="bg-muted/50">
+                              <Card key={i} className="bg-[#1a1a1a]/50">
                                 <CardHeader className="pb-2">
                                   <div className="flex items-center justify-between">
                                     <CardTitle className="text-sm">Scene {i + 1}: {scene.setting}</CardTitle>
@@ -4873,7 +4873,7 @@ Repeat the hook...`}
                                   </div>
                                 </CardHeader>
                                 <CardContent className="space-y-2">
-                                  <p className="text-sm text-muted-foreground">{scene.description}</p>
+                                  <p className="text-sm text-gray-400">{scene.description}</p>
                                   <div className="space-y-1">
                                     {scene.dialogue?.map((line: string, j: number) => (
                                       <p key={j} className="text-sm font-mono">{line}</p>
@@ -4922,7 +4922,7 @@ Repeat the hook...`}
                           <Mic className="w-6 h-6 text-purple-400" />
                         </div>
                         <h4 className="font-semibold text-sm" data-testid="text-model-elevenlabs">ElevenLabs</h4>
-                        <p className="text-xs text-muted-foreground">Premium AI Voices</p>
+                        <p className="text-xs text-gray-400">Premium AI Voices</p>
                         <Badge className="mt-2 bg-purple-500/20 text-purple-300 border-purple-500/30" data-testid="badge-model-elevenlabs">Active</Badge>
                       </CardContent>
                     </Card>
@@ -4932,28 +4932,28 @@ Repeat the hook...`}
                           <Brain className="w-6 h-6 text-blue-400" />
                         </div>
                         <h4 className="font-semibold text-sm" data-testid="text-model-lyria">Google Lyria</h4>
-                        <p className="text-xs text-muted-foreground">AI Music Generation</p>
+                        <p className="text-xs text-gray-400">AI Music Generation</p>
                         <Badge className="mt-2 bg-blue-500/20 text-blue-300 border-blue-500/30" data-testid="badge-model-lyria">Active</Badge>
                       </CardContent>
                     </Card>
                     <Card className="bg-gradient-to-br from-green-500/10 to-emerald-600/10 border-green-500/20" data-testid="card-model-gemini">
                       <CardContent className="p-4 text-center">
-                        <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-green-500/20 flex items-center justify-center">
-                          <Sparkles className="w-6 h-6 text-green-400" />
+                        <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-[#C9941A]/20 flex items-center justify-center">
+                          <Sparkles className="w-6 h-6 text-[#C9941A]" />
                         </div>
                         <h4 className="font-semibold text-sm" data-testid="text-model-gemini">Google Gemini</h4>
-                        <p className="text-xs text-muted-foreground">AI Content Creation</p>
-                        <Badge className="mt-2 bg-green-500/20 text-green-300 border-green-500/30" data-testid="badge-model-gemini">Active</Badge>
+                        <p className="text-xs text-gray-400">AI Content Creation</p>
+                        <Badge className="mt-2 bg-[#C9941A]/20 text-green-300 border-green-500/30" data-testid="badge-model-gemini">Active</Badge>
                       </CardContent>
                     </Card>
                     <Card className="bg-gradient-to-br from-amber-500/10 to-orange-600/10 border-amber-500/20" data-testid="card-model-openai">
                       <CardContent className="p-4 text-center">
-                        <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-amber-500/20 flex items-center justify-center">
-                          <Wand2 className="w-6 h-6 text-amber-400" />
+                        <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-[#C9941A]/20 flex items-center justify-center">
+                          <Wand2 className="w-6 h-6 text-[#C9941A]" />
                         </div>
                         <h4 className="font-semibold text-sm" data-testid="text-model-openai">OpenAI</h4>
-                        <p className="text-xs text-muted-foreground">Advanced AI</p>
-                        <Badge className="mt-2 bg-amber-500/20 text-amber-300 border-amber-500/30" data-testid="badge-model-openai">Active</Badge>
+                        <p className="text-xs text-gray-400">Advanced AI</p>
+                        <Badge className="mt-2 bg-[#C9941A]/20 text-amber-300 border-amber-500/30" data-testid="badge-model-openai">Active</Badge>
                       </CardContent>
                     </Card>
                   </div>
@@ -4965,7 +4965,7 @@ Repeat the hook...`}
                         <Mic className="w-5 h-5 text-purple-500" />
                         ElevenLabs AI Voice Generator
                         {isElevenLabsConfigured ? (
-                          <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Connected</Badge>
+                          <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-green-500/30">Connected</Badge>
                         ) : (
                           <Badge variant="destructive">Not Configured</Badge>
                         )}
@@ -4976,7 +4976,7 @@ Repeat the hook...`}
                     </CardHeader>
                     <CardContent className="space-y-4">
                       {!isElevenLabsConfigured ? (
-                        <div className="text-center py-8 text-muted-foreground">
+                        <div className="text-center py-8 text-gray-400">
                           <Mic className="w-12 h-12 mx-auto mb-4 opacity-50" />
                           <p>ElevenLabs API key not configured</p>
                           <p className="text-sm">Add your API key to enable AI voice generation</p>
@@ -5145,7 +5145,7 @@ Repeat the hook...`}
                 <Button variant="ghost" size="icon" onClick={() => setCurrentTime(0)} data-testid="button-skip-back">
                   <SkipBack className="w-4 h-4" />
                 </Button>
-                <Button size="icon" onClick={handlePlay} className={isPlaying ? "bg-green-600 hover:bg-green-700" : ""}
+                <Button size="icon" onClick={handlePlay} className={isPlaying ? "bg-[#C9941A] hover:bg-[#C9941A]/80" : ""}
                   data-testid="button-play">
                   {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                 </Button>
@@ -5157,7 +5157,7 @@ Repeat the hook...`}
                 </Button>
               </div>
 
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2 text-sm text-gray-400">
                 <span data-testid="text-current-time">{formatTime(currentTime)}</span>
                 <span>/</span>
                 <span data-testid="text-duration">{formatTime(duration)}</span>
@@ -5169,7 +5169,7 @@ Repeat the hook...`}
               </div>
 
               <div className="flex items-center gap-2">
-                <Volume2 className="w-4 h-4 text-muted-foreground" />
+                <Volume2 className="w-4 h-4 text-gray-400" />
                 <Slider value={[masterVolume]} onValueChange={([v]) => setMasterVolume(v)}
                   max={100} className="w-24" data-testid="slider-master-volume-transport" />
               </div>

@@ -58,7 +58,7 @@ function StoryCard({ post }: { post: BlogPost }) {
           )}
         </div>
         <Link href={`/stories/${post.slug}`} data-testid={`link-story-${post.id}`}>
-          <CardTitle className="hover:text-primary transition-colors cursor-pointer line-clamp-2" data-testid={`story-title-${post.id}`}>
+          <CardTitle className="hover:text-[#C9941A] transition-colors cursor-pointer line-clamp-2" data-testid={`story-title-${post.id}`}>
             {post.title}
           </CardTitle>
         </Link>
@@ -67,11 +67,11 @@ function StoryCard({ post }: { post: BlogPost }) {
         </CardDescription>
       </CardHeader>
       <CardFooter className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="flex items-center gap-2 text-sm text-gray-400">
           <Clock className="w-4 h-4" />
           <span data-testid={`story-readtime-${post.id}`}>{post.readingTime} min read</span>
         </div>
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+        <div className="flex items-center gap-4 text-sm text-gray-400">
           <span className="flex items-center gap-1" data-testid={`story-views-${post.id}`}>
             <Eye className="w-4 h-4" />
             {post.viewCount}
@@ -131,14 +131,14 @@ export default function Stories() {
         <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-transparent" />
         <div className="max-w-6xl mx-auto relative">
           <div className="text-center mb-12">
-            <Badge variant="outline" className="mb-4 border-primary text-primary" data-testid="badge-stories">
+            <Badge variant="outline" className="mb-4 border-primary text-[#C9941A]" data-testid="badge-stories">
               <BookOpen className="w-3 h-3 mr-1" />
               Recovery Stories
             </Badge>
             <h1 className="text-4xl md:text-5xl font-black mb-4" data-testid="heading-main">
-              Stories of <span className="text-primary">Triumph</span>
+              Stories of <span className="text-[#C9941A]">Triumph</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-8">
               Real stories from real survivors. Every journey is unique, every victory matters.
               Share your story and inspire others on their path to recovery.
             </p>
@@ -162,7 +162,7 @@ export default function Stories() {
             </div>
 
             <div className="relative max-w-md mx-auto">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
                 placeholder="Search stories..."
                 value={searchQuery}
@@ -179,7 +179,7 @@ export default function Stories() {
         <section className="py-12 px-4 bg-card/50">
           <div className="max-w-6xl mx-auto">
             <div className="flex items-center gap-2 mb-8">
-              <TrendingUp className="w-5 h-5 text-primary" />
+              <TrendingUp className="w-5 h-5 text-[#C9941A]" />
               <h2 className="text-2xl font-bold" data-testid="heading-featured">Featured Stories</h2>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -212,9 +212,9 @@ export default function Stories() {
           ) : (
             <Card className="text-center py-16">
               <CardContent>
-                <BookOpen className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                <BookOpen className="w-16 h-16 mx-auto mb-4 text-gray-400" />
                 <h3 className="text-xl font-bold mb-2">No Stories Yet</h3>
-                <p className="text-muted-foreground mb-6">
+                <p className="text-gray-400 mb-6">
                   Be the first to share your recovery journey with the community.
                 </p>
                 {user && (
@@ -234,9 +234,9 @@ export default function Stories() {
       <section className="py-16 px-4 bg-card/50">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-4" data-testid="heading-cta">
-            Your Story Could Inspire <span className="text-primary">Thousands</span>
+            Your Story Could Inspire <span className="text-[#C9941A]">Thousands</span>
           </h2>
-          <p className="text-muted-foreground mb-8">
+          <p className="text-gray-400 mb-8">
             Every recovery journey has the power to inspire others. Share your wins, 
             your struggles, and your breakthroughs with a community that understands.
           </p>

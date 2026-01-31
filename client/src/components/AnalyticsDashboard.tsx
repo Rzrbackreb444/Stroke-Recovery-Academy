@@ -99,7 +99,7 @@ function AnalyticsSkeleton() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {[1, 2, 3].map((i) => (
-          <Card key={i} className="bg-background border-gray-800">
+          <Card key={i} className="bg-background border-[#333]">
             <CardHeader>
               <Skeleton className="h-5 w-32" />
               <Skeleton className="h-4 w-24" />
@@ -123,7 +123,7 @@ function CreditUsageCard({
 }) {
   if (isLoading) {
     return (
-      <Card className="bg-background border-gray-800" data-testid="card-credit-usage-loading">
+      <Card className="bg-background border-[#333]" data-testid="card-credit-usage-loading">
         <CardHeader>
           <Skeleton className="h-5 w-32" />
           <Skeleton className="h-4 w-24" />
@@ -140,7 +140,7 @@ function CreditUsageCard({
   const featureBreakdown = data?.featureBreakdown || [];
 
   return (
-    <Card className="bg-background border-gray-800" data-testid="card-credit-usage">
+    <Card className="bg-background border-[#333]" data-testid="card-credit-usage">
       <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
         <div>
           <CardTitle className="text-foreground flex items-center gap-2">
@@ -160,7 +160,7 @@ function CreditUsageCard({
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="chart" className="w-full">
-          <TabsList className="bg-gray-900 mb-4">
+          <TabsList className="bg-[#1a1a1a] mb-4">
             <TabsTrigger
               value="chart"
               data-testid="tab-credit-chart"
@@ -271,7 +271,7 @@ function StudioUsageCard({
 }) {
   if (isLoading) {
     return (
-      <Card className="bg-background border-gray-800" data-testid="card-studio-usage-loading">
+      <Card className="bg-background border-[#333]" data-testid="card-studio-usage-loading">
         <CardHeader>
           <Skeleton className="h-5 w-32" />
           <Skeleton className="h-4 w-24" />
@@ -288,7 +288,7 @@ function StudioUsageCard({
   const totalTokens = data?.totalTokens || 0;
 
   return (
-    <Card className="bg-background border-gray-800" data-testid="card-studio-usage">
+    <Card className="bg-background border-[#333]" data-testid="card-studio-usage">
       <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
         <div>
           <CardTitle className="text-foreground flex items-center gap-2">
@@ -302,7 +302,7 @@ function StudioUsageCard({
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <div className="bg-gray-900 rounded-lg p-3">
+          <div className="bg-[#1a1a1a] rounded-lg p-3">
             <p className="text-sm text-gray-400">Total Generations</p>
             <p
               className="text-2xl font-bold text-foreground"
@@ -311,7 +311,7 @@ function StudioUsageCard({
               {totalGenerations.toLocaleString()}
             </p>
           </div>
-          <div className="bg-gray-900 rounded-lg p-3">
+          <div className="bg-[#1a1a1a] rounded-lg p-3">
             <p className="text-sm text-gray-400">Tokens Used</p>
             <p
               className="text-2xl font-bold text-foreground"
@@ -380,7 +380,7 @@ function CreatorEarningsCard() {
 
   if (isLoading) {
     return (
-      <Card className="bg-background border-gray-800" data-testid="card-creator-earnings-loading">
+      <Card className="bg-background border-[#333]" data-testid="card-creator-earnings-loading">
         <CardHeader>
           <Skeleton className="h-5 w-32" />
           <Skeleton className="h-4 w-24" />
@@ -398,7 +398,7 @@ function CreatorEarningsCard() {
   const payoutHistory = earnings?.payoutHistory || [];
 
   return (
-    <Card className="bg-background border-gray-800" data-testid="card-creator-earnings">
+    <Card className="bg-background border-[#333]" data-testid="card-creator-earnings">
       <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
         <div>
           <CardTitle className="text-foreground flex items-center gap-2">
@@ -421,19 +421,19 @@ function CreatorEarningsCard() {
           </p>
         </div>
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-gray-900 rounded-lg p-4 text-center">
+          <div className="bg-[#1a1a1a] rounded-lg p-4 text-center">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <DollarSign className="h-4 w-4 text-green-500" />
+              <DollarSign className="h-4 w-4 text-[#C9941A]" />
               <span className="text-sm text-gray-400">Available</span>
             </div>
             <p
-              className="text-xl font-semibold text-green-500"
+              className="text-xl font-semibold text-[#C9941A]"
               data-testid="text-available-balance"
             >
               ${(availableBalance / 100).toFixed(2)}
             </p>
           </div>
-          <div className="bg-gray-900 rounded-lg p-4 text-center">
+          <div className="bg-[#1a1a1a] rounded-lg p-4 text-center">
             <div className="flex items-center justify-center gap-2 mb-2">
               <Clock className="h-4 w-4 text-amber-500" />
               <span className="text-sm text-gray-400">Pending</span>
@@ -460,7 +460,7 @@ function CreatorEarningsCard() {
               payoutHistory.slice(0, 5).map((payout, index) => (
                 <div
                   key={payout.id}
-                  className="flex items-center justify-between text-sm bg-gray-900 rounded-lg p-2"
+                  className="flex items-center justify-between text-sm bg-[#1a1a1a] rounded-lg p-2"
                   data-testid={`row-sale-${index}`}
                 >
                   <div>
@@ -474,7 +474,7 @@ function CreatorEarningsCard() {
                   <span
                     className={`text-xs px-2 py-1 rounded ${
                       payout.status === "completed"
-                        ? "bg-green-500/20 text-green-400"
+                        ? "bg-[#C9941A]/20 text-[#C9941A]"
                         : "bg-amber-500/20 text-amber-400"
                     }`}
                   >
@@ -570,12 +570,12 @@ export default function AnalyticsDashboard() {
             onValueChange={setTimePeriod}
           >
             <SelectTrigger
-              className="w-40 bg-gray-900 border-gray-700 text-foreground"
+              className="w-40 bg-[#1a1a1a] border-[#333] text-foreground"
               data-testid="select-time-period"
             >
               <SelectValue placeholder="Select period" />
             </SelectTrigger>
-            <SelectContent className="bg-gray-900 border-gray-700">
+            <SelectContent className="bg-[#1a1a1a] border-[#333]">
               <SelectItem value="7" data-testid="option-7-days">
                 Last 7 days
               </SelectItem>

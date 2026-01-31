@@ -105,11 +105,11 @@ function StatCard({
       <CardContent className="p-6">
         <div className="flex items-start justify-between gap-2">
           <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">{title}</p>
+            <p className="text-sm text-gray-400">{title}</p>
             <p className="text-2xl font-bold">{value}</p>
           </div>
           <div className="p-3 rounded-full bg-primary/10">
-            <Icon className="w-5 h-5 text-primary" />
+            <Icon className="w-5 h-5 text-[#C9941A]" />
           </div>
         </div>
       </CardContent>
@@ -335,7 +335,7 @@ export default function AuthorProfile() {
         <GlobalHeader />
         <main className="container mx-auto px-4 py-16 text-center">
           <h1 className="text-3xl font-bold mb-4">Sign in to manage your author profile</h1>
-          <p className="text-muted-foreground mb-8">Create your public author storefront and manage your brand</p>
+          <p className="text-gray-400 mb-8">Create your public author storefront and manage your brand</p>
           <Button asChild>
             <a href="/api/login" data-testid="link-login">Sign In</a>
           </Button>
@@ -368,7 +368,7 @@ export default function AuthorProfile() {
         <div className="flex items-center justify-between gap-4 mb-8 flex-wrap">
           <div>
             <h1 className="text-3xl font-bold font-serif" data-testid="text-page-title">Author Profile</h1>
-            <p className="text-muted-foreground">Manage your author brand and public storefront</p>
+            <p className="text-gray-400">Manage your author brand and public storefront</p>
           </div>
           <div className="flex items-center gap-2">
             {selectedProfile && (
@@ -420,9 +420,9 @@ export default function AuthorProfile() {
         {!selectedProfile && profiles?.length === 0 && (
           <Card className="text-center py-12">
             <CardContent>
-              <User className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+              <User className="w-16 h-16 mx-auto mb-4 text-gray-400" />
               <h2 className="text-xl font-semibold mb-2">No Author Profile Yet</h2>
-              <p className="text-muted-foreground mb-6">Create your first author profile to build your public storefront</p>
+              <p className="text-gray-400 mb-6">Create your first author profile to build your public storefront</p>
               <Button
                 onClick={() => createProfileMutation.mutate({})}
                 disabled={createProfileMutation.isPending}
@@ -912,7 +912,7 @@ export default function AuthorProfile() {
                             variant={selectedGenres.includes(genre) ? "default" : "outline"}
                             className={`cursor-pointer transition-colors ${
                               selectedGenres.includes(genre)
-                                ? "bg-orange-500 hover:bg-orange-600"
+                                ? "bg-[#C9941A] hover:bg-[#C9941A]"
                                 : "hover:bg-primary/10"
                             }`}
                             onClick={() => toggleGenre(genre)}
@@ -957,11 +957,11 @@ export default function AuthorProfile() {
                           {achievements.map((achievement, index) => (
                             <div
                               key={index}
-                              className="flex items-center justify-between gap-2 p-3 bg-muted/50 rounded-md"
+                              className="flex items-center justify-between gap-2 p-3 bg-[#1a1a1a]/50 rounded-md"
                               data-testid={`achievement-${index}`}
                             >
                               <div className="flex items-center gap-2">
-                                <Award className="w-4 h-4 text-primary" />
+                                <Award className="w-4 h-4 text-[#C9941A]" />
                                 <span>{achievement}</span>
                               </div>
                               <Button
@@ -1018,7 +1018,7 @@ export default function AuthorProfile() {
                             <FormLabel>Custom URL Slug</FormLabel>
                             <FormControl>
                               <div className="flex items-center gap-2">
-                                <span className="text-muted-foreground text-sm">/author/</span>
+                                <span className="text-gray-400 text-sm">/author/</span>
                                 <Input
                                   placeholder="your-name"
                                   {...field}
@@ -1117,8 +1117,8 @@ export default function AuthorProfile() {
                       <CardDescription>Your author statistics at a glance</CardDescription>
                     </CardHeader>
                     <CardContent className="text-center py-12">
-                      <BarChart3 className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                      <p className="text-muted-foreground">
+                      <BarChart3 className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+                      <p className="text-gray-400">
                         Detailed analytics will appear here as you publish more books
                       </p>
                     </CardContent>

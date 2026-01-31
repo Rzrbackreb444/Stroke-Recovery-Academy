@@ -493,10 +493,10 @@ export default function Pricing() {
           </div>
           
           <div className="relative max-w-7xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full bg-gradient-to-r from-orange-500/20 to-amber-500/20 border border-orange-500/30">
-              <Flame className="w-4 h-4 text-orange-400" />
+            <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full bg-gradient-to-r from-orange-500/20 to-amber-500/20 border border-[#C9941A]/30">
+              <Flame className="w-4 h-4 text-[#C9941A]" />
               <span className="text-sm font-semibold text-orange-300">Save up to 28% with annual billing</span>
-              <Flame className="w-4 h-4 text-orange-400" />
+              <Flame className="w-4 h-4 text-[#C9941A]" />
             </div>
             
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 text-foreground" data-testid="heading-pricing">
@@ -504,7 +504,7 @@ export default function Pricing() {
               <span className="bg-gradient-to-r from-orange-400 via-amber-500 to-orange-600 bg-clip-text text-transparent"> Income</span>
             </h1>
             
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-4" data-testid="text-pricing-subtitle">
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-4" data-testid="text-pricing-subtitle">
               The all-in-one AI platform that helps you create books, music, courses, and more.
               <span className="text-foreground font-semibold"> Keep 85% of every sale.</span>
             </p>
@@ -525,7 +525,7 @@ export default function Pricing() {
             </div>
             
             <div className="flex items-center justify-center gap-4 mb-8">
-              <Label htmlFor="billing-toggle" className={!isAnnual ? "text-foreground font-semibold" : "text-muted-foreground"}>
+              <Label htmlFor="billing-toggle" className={!isAnnual ? "text-foreground font-semibold" : "text-gray-400"}>
                 Monthly
               </Label>
               <Switch
@@ -534,7 +534,7 @@ export default function Pricing() {
                 onCheckedChange={setIsAnnual}
                 data-testid="switch-billing-toggle"
               />
-              <Label htmlFor="billing-toggle" className={isAnnual ? "text-foreground font-semibold" : "text-muted-foreground"}>
+              <Label htmlFor="billing-toggle" className={isAnnual ? "text-foreground font-semibold" : "text-gray-400"}>
                 Annual
               </Label>
               {isAnnual && (
@@ -849,15 +849,15 @@ export default function Pricing() {
 
         <section className="py-20 px-4 bg-gradient-to-b from-background to-zinc-900/50">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 mb-6 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/30">
-              <TrendingUp className="w-4 h-4 text-green-400" />
-              <span className="text-sm text-green-400 font-medium">Join 10,000+ creators earning with AI</span>
+            <div className="inline-flex items-center gap-2 mb-6 px-3 py-1 rounded-full bg-[#C9941A]/10 border border-green-500/30">
+              <TrendingUp className="w-4 h-4 text-[#C9941A]" />
+              <span className="text-sm text-[#C9941A] font-medium">Join 10,000+ creators earning with AI</span>
             </div>
             
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
               Ready to <span className="bg-gradient-to-r from-orange-400 to-amber-500 bg-clip-text text-transparent">Turn Ideas Into Income</span>?
             </h2>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
               Start free. No credit card required. Upgrade when you're ready to scale.
               Your creativity deserves a platform that pays.
             </p>
@@ -865,7 +865,7 @@ export default function Pricing() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               <Button 
                 size="lg" 
-                className="bg-orange-500 text-black font-bold gap-2"
+                className="bg-[#C9941A] text-black font-bold gap-2"
                 onClick={() => window.location.href = '/api/login'}
                 data-testid="button-start-free-bottom"
               >
@@ -885,13 +885,13 @@ export default function Pricing() {
               </Link>
             </div>
             
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
+            <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-400">
               <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-green-400" />
+                <Shield className="w-4 h-4 text-[#C9941A]" />
                 <span>14-day money-back guarantee</span>
               </div>
               <div className="flex items-center gap-2">
-                <Award className="w-4 h-4 text-primary" />
+                <Award className="w-4 h-4 text-[#C9941A]" />
                 <span>85% revenue share on sales</span>
               </div>
               <div className="flex items-center gap-2">

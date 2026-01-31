@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import RecoveryHeader from "@/components/RecoveryHeader";
+import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import { 
   Pill, Calendar, Activity, Plus, Heart, Thermometer, 
   Clock, Stethoscope, AlertCircle, CheckCircle2
@@ -133,14 +133,12 @@ export default function MedicalLog() {
   const vitals = medicalData?.vitals || [];
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <RecoveryHeader />
-      
+    <div className="min-h-screen bg-[#0D0D0D] text-white">
       <main className="container mx-auto px-4 py-6 max-w-4xl">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
-              <Stethoscope className="h-6 w-6 text-orange-500" />
+              <Stethoscope className="h-6 w-6 text-[#C9941A]" />
               Medical Log
             </h1>
             <p className="text-gray-400 text-sm mt-1">
@@ -150,16 +148,16 @@ export default function MedicalLog() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-zinc-900 border-zinc-800 mb-6">
-            <TabsTrigger value="medications" className="data-[state=active]:bg-orange-500">
+          <TabsList className="bg-[#1a1a1a] border-[#333] mb-6">
+            <TabsTrigger value="medications" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black">
               <Pill className="h-4 w-4 mr-2" />
               Medications
             </TabsTrigger>
-            <TabsTrigger value="appointments" className="data-[state=active]:bg-orange-500">
+            <TabsTrigger value="appointments" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black">
               <Calendar className="h-4 w-4 mr-2" />
               Appointments
             </TabsTrigger>
-            <TabsTrigger value="vitals" className="data-[state=active]:bg-orange-500">
+            <TabsTrigger value="vitals" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black">
               <Activity className="h-4 w-4 mr-2" />
               Vitals
             </TabsTrigger>
@@ -169,12 +167,12 @@ export default function MedicalLog() {
             <div className="flex justify-end mb-4">
               <Dialog open={medDialogOpen} onOpenChange={setMedDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="bg-orange-500" data-testid="button-add-medication">
+                  <Button className="bg-[#C9941A] text-black" data-testid="button-add-medication">
                     <Plus className="h-4 w-4 mr-2" />
                     Add Medication
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                <DialogContent className="bg-[#1a1a1a] border-[#333] text-white">
                   <DialogHeader>
                     <DialogTitle>Add Medication</DialogTitle>
                   </DialogHeader>
@@ -185,7 +183,7 @@ export default function MedicalLog() {
                         placeholder="e.g., Aspirin, Lipitor..."
                         value={medForm.name}
                         onChange={(e) => setMedForm({ ...medForm, name: e.target.value })}
-                        className="bg-zinc-800 border-zinc-700 mt-1"
+                        className="bg-[#1a1a1a] border-[#333] mt-1"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
@@ -195,16 +193,16 @@ export default function MedicalLog() {
                           placeholder="e.g., 100mg"
                           value={medForm.dosage}
                           onChange={(e) => setMedForm({ ...medForm, dosage: e.target.value })}
-                          className="bg-zinc-800 border-zinc-700 mt-1"
+                          className="bg-[#1a1a1a] border-[#333] mt-1"
                         />
                       </div>
                       <div>
                         <Label>Frequency *</Label>
                         <Select value={medForm.frequency} onValueChange={(v) => setMedForm({ ...medForm, frequency: v })}>
-                          <SelectTrigger className="bg-zinc-800 border-zinc-700 mt-1">
+                          <SelectTrigger className="bg-[#1a1a1a] border-[#333] mt-1">
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
-                          <SelectContent className="bg-zinc-900 border-zinc-800">
+                          <SelectContent className="bg-[#1a1a1a] border-[#333]">
                             {frequencies.map((f) => (
                               <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>
                             ))}
@@ -218,7 +216,7 @@ export default function MedicalLog() {
                         placeholder="What is this medication for?"
                         value={medForm.purpose}
                         onChange={(e) => setMedForm({ ...medForm, purpose: e.target.value })}
-                        className="bg-zinc-800 border-zinc-700 mt-1"
+                        className="bg-[#1a1a1a] border-[#333] mt-1"
                       />
                     </div>
                     <div>
@@ -227,12 +225,12 @@ export default function MedicalLog() {
                         placeholder="Doctor's name"
                         value={medForm.prescribedBy}
                         onChange={(e) => setMedForm({ ...medForm, prescribedBy: e.target.value })}
-                        className="bg-zinc-800 border-zinc-700 mt-1"
+                        className="bg-[#1a1a1a] border-[#333] mt-1"
                       />
                     </div>
                     <Button 
                       onClick={() => addMedicationMutation.mutate(medForm)} 
-                      className="w-full bg-orange-500"
+                      className="w-full bg-[#C9941A] text-black"
                       disabled={!medForm.name || !medForm.dosage || !medForm.frequency || addMedicationMutation.isPending}
                     >
                       {addMedicationMutation.isPending ? "Adding..." : "Add Medication"}
@@ -243,21 +241,21 @@ export default function MedicalLog() {
             </div>
 
             {medications.length === 0 ? (
-              <Card className="bg-zinc-900 border-zinc-800 p-8 text-center">
-                <Pill className="h-12 w-12 text-orange-500 mx-auto mb-4" />
+              <Card className="bg-[#1a1a1a] border-[#333] p-8 text-center">
+                <Pill className="h-12 w-12 text-[#C9941A] mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No medications tracked</h3>
                 <p className="text-gray-400">Add your medications to keep track of your prescriptions.</p>
               </Card>
             ) : (
               <div className="space-y-3">
                 {medications.map((med: any) => (
-                  <Card key={med.id} className="bg-zinc-900 border-zinc-800 p-4">
+                  <Card key={med.id} className="bg-[#1a1a1a] border-[#333] p-4">
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="flex items-center gap-2">
-                          <Pill className="h-4 w-4 text-orange-500" />
+                          <Pill className="h-4 w-4 text-[#C9941A]" />
                           <span className="font-semibold">{med.name}</span>
-                          <Badge variant="outline" className="border-zinc-700">{med.dosage}</Badge>
+                          <Badge variant="outline" className="border-[#333]">{med.dosage}</Badge>
                         </div>
                         <p className="text-gray-400 text-sm mt-1">
                           {frequencies.find(f => f.value === med.frequency)?.label}
@@ -265,9 +263,9 @@ export default function MedicalLog() {
                         </p>
                       </div>
                       {med.is_active ? (
-                        <Badge className="bg-green-500/20 text-green-400 border-green-500">Active</Badge>
+                        <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-green-500">Active</Badge>
                       ) : (
-                        <Badge variant="outline" className="border-zinc-700">Inactive</Badge>
+                        <Badge variant="outline" className="border-[#333]">Inactive</Badge>
                       )}
                     </div>
                   </Card>
@@ -280,12 +278,12 @@ export default function MedicalLog() {
             <div className="flex justify-end mb-4">
               <Dialog open={apptDialogOpen} onOpenChange={setApptDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="bg-orange-500" data-testid="button-add-appointment">
+                  <Button className="bg-[#C9941A] text-black" data-testid="button-add-appointment">
                     <Plus className="h-4 w-4 mr-2" />
                     Add Appointment
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                <DialogContent className="bg-[#1a1a1a] border-[#333] text-white">
                   <DialogHeader>
                     <DialogTitle>Schedule Appointment</DialogTitle>
                   </DialogHeader>
@@ -296,7 +294,7 @@ export default function MedicalLog() {
                         placeholder="e.g., PT Session, Neuro Follow-up"
                         value={apptForm.title}
                         onChange={(e) => setApptForm({ ...apptForm, title: e.target.value })}
-                        className="bg-zinc-800 border-zinc-700 mt-1"
+                        className="bg-[#1a1a1a] border-[#333] mt-1"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
@@ -306,16 +304,16 @@ export default function MedicalLog() {
                           placeholder="Dr. Smith"
                           value={apptForm.providerName}
                           onChange={(e) => setApptForm({ ...apptForm, providerName: e.target.value })}
-                          className="bg-zinc-800 border-zinc-700 mt-1"
+                          className="bg-[#1a1a1a] border-[#333] mt-1"
                         />
                       </div>
                       <div>
                         <Label>Provider Type *</Label>
                         <Select value={apptForm.providerType} onValueChange={(v) => setApptForm({ ...apptForm, providerType: v })}>
-                          <SelectTrigger className="bg-zinc-800 border-zinc-700 mt-1">
+                          <SelectTrigger className="bg-[#1a1a1a] border-[#333] mt-1">
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
-                          <SelectContent className="bg-zinc-900 border-zinc-800">
+                          <SelectContent className="bg-[#1a1a1a] border-[#333]">
                             {providerTypes.map((p) => (
                               <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>
                             ))}
@@ -329,7 +327,7 @@ export default function MedicalLog() {
                         type="datetime-local"
                         value={apptForm.appointmentDate}
                         onChange={(e) => setApptForm({ ...apptForm, appointmentDate: e.target.value })}
-                        className="bg-zinc-800 border-zinc-700 mt-1"
+                        className="bg-[#1a1a1a] border-[#333] mt-1"
                       />
                     </div>
                     <div>
@@ -338,7 +336,7 @@ export default function MedicalLog() {
                         placeholder="Clinic address or 'Virtual'"
                         value={apptForm.location}
                         onChange={(e) => setApptForm({ ...apptForm, location: e.target.value })}
-                        className="bg-zinc-800 border-zinc-700 mt-1"
+                        className="bg-[#1a1a1a] border-[#333] mt-1"
                       />
                     </div>
                     <div>
@@ -347,13 +345,13 @@ export default function MedicalLog() {
                         placeholder="What do you need to remember for this appointment?"
                         value={apptForm.prepNotes}
                         onChange={(e) => setApptForm({ ...apptForm, prepNotes: e.target.value })}
-                        className="bg-zinc-800 border-zinc-700 mt-1"
+                        className="bg-[#1a1a1a] border-[#333] mt-1"
                         rows={2}
                       />
                     </div>
                     <Button 
                       onClick={() => addAppointmentMutation.mutate(apptForm)} 
-                      className="w-full bg-orange-500"
+                      className="w-full bg-[#C9941A] text-black"
                       disabled={!apptForm.title || !apptForm.providerName || !apptForm.providerType || !apptForm.appointmentDate || addAppointmentMutation.isPending}
                     >
                       {addAppointmentMutation.isPending ? "Adding..." : "Add Appointment"}
@@ -364,19 +362,19 @@ export default function MedicalLog() {
             </div>
 
             {appointments.length === 0 ? (
-              <Card className="bg-zinc-900 border-zinc-800 p-8 text-center">
-                <Calendar className="h-12 w-12 text-orange-500 mx-auto mb-4" />
+              <Card className="bg-[#1a1a1a] border-[#333] p-8 text-center">
+                <Calendar className="h-12 w-12 text-[#C9941A] mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No appointments scheduled</h3>
                 <p className="text-gray-400">Add your upcoming appointments to stay organized.</p>
               </Card>
             ) : (
               <div className="space-y-3">
                 {appointments.map((appt: any) => (
-                  <Card key={appt.id} className="bg-zinc-900 border-zinc-800 p-4">
+                  <Card key={appt.id} className="bg-[#1a1a1a] border-[#333] p-4">
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4 text-orange-500" />
+                          <Calendar className="h-4 w-4 text-[#C9941A]" />
                           <span className="font-semibold">{appt.title}</span>
                         </div>
                         <p className="text-gray-400 text-sm mt-1">
@@ -385,7 +383,7 @@ export default function MedicalLog() {
                         {appt.location && <p className="text-gray-500 text-sm">{appt.location}</p>}
                       </div>
                       <div className="text-right">
-                        <div className="text-orange-400 font-medium">
+                        <div className="text-[#C9941A] font-medium">
                           {new Date(appt.appointment_date).toLocaleDateString()}
                         </div>
                         <div className="text-gray-500 text-sm">
@@ -403,12 +401,12 @@ export default function MedicalLog() {
             <div className="flex justify-end mb-4">
               <Dialog open={vitalsDialogOpen} onOpenChange={setVitalsDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="bg-orange-500" data-testid="button-log-vitals">
+                  <Button className="bg-[#C9941A] text-black" data-testid="button-log-vitals">
                     <Plus className="h-4 w-4 mr-2" />
                     Log Vitals
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-lg">
+                <DialogContent className="bg-[#1a1a1a] border-[#333] text-white max-w-lg">
                   <DialogHeader>
                     <DialogTitle>Log Today's Vitals</DialogTitle>
                   </DialogHeader>
@@ -421,7 +419,7 @@ export default function MedicalLog() {
                           placeholder="120"
                           value={vitalsForm.bloodPressureSystolic}
                           onChange={(e) => setVitalsForm({ ...vitalsForm, bloodPressureSystolic: e.target.value })}
-                          className="bg-zinc-800 border-zinc-700 mt-1"
+                          className="bg-[#1a1a1a] border-[#333] mt-1"
                         />
                       </div>
                       <div>
@@ -431,7 +429,7 @@ export default function MedicalLog() {
                           placeholder="80"
                           value={vitalsForm.bloodPressureDiastolic}
                           onChange={(e) => setVitalsForm({ ...vitalsForm, bloodPressureDiastolic: e.target.value })}
-                          className="bg-zinc-800 border-zinc-700 mt-1"
+                          className="bg-[#1a1a1a] border-[#333] mt-1"
                         />
                       </div>
                     </div>
@@ -443,7 +441,7 @@ export default function MedicalLog() {
                           placeholder="72"
                           value={vitalsForm.heartRate}
                           onChange={(e) => setVitalsForm({ ...vitalsForm, heartRate: e.target.value })}
-                          className="bg-zinc-800 border-zinc-700 mt-1"
+                          className="bg-[#1a1a1a] border-[#333] mt-1"
                         />
                       </div>
                       <div>
@@ -452,7 +450,7 @@ export default function MedicalLog() {
                           placeholder="165"
                           value={vitalsForm.weight}
                           onChange={(e) => setVitalsForm({ ...vitalsForm, weight: e.target.value })}
-                          className="bg-zinc-800 border-zinc-700 mt-1"
+                          className="bg-[#1a1a1a] border-[#333] mt-1"
                         />
                       </div>
                     </div>
@@ -464,7 +462,7 @@ export default function MedicalLog() {
                           placeholder="100"
                           value={vitalsForm.bloodSugar}
                           onChange={(e) => setVitalsForm({ ...vitalsForm, bloodSugar: e.target.value })}
-                          className="bg-zinc-800 border-zinc-700 mt-1"
+                          className="bg-[#1a1a1a] border-[#333] mt-1"
                         />
                       </div>
                       <div>
@@ -474,7 +472,7 @@ export default function MedicalLog() {
                           placeholder="98"
                           value={vitalsForm.oxygenLevel}
                           onChange={(e) => setVitalsForm({ ...vitalsForm, oxygenLevel: e.target.value })}
-                          className="bg-zinc-800 border-zinc-700 mt-1"
+                          className="bg-[#1a1a1a] border-[#333] mt-1"
                         />
                       </div>
                     </div>
@@ -485,7 +483,7 @@ export default function MedicalLog() {
                           placeholder="7.5"
                           value={vitalsForm.sleepHours}
                           onChange={(e) => setVitalsForm({ ...vitalsForm, sleepHours: e.target.value })}
-                          className="bg-zinc-800 border-zinc-700 mt-1"
+                          className="bg-[#1a1a1a] border-[#333] mt-1"
                         />
                       </div>
                       <div>
@@ -497,7 +495,7 @@ export default function MedicalLog() {
                           placeholder="0"
                           value={vitalsForm.painLevel}
                           onChange={(e) => setVitalsForm({ ...vitalsForm, painLevel: parseInt(e.target.value) || 0 })}
-                          className="bg-zinc-800 border-zinc-700 mt-1"
+                          className="bg-[#1a1a1a] border-[#333] mt-1"
                         />
                       </div>
                     </div>
@@ -507,13 +505,13 @@ export default function MedicalLog() {
                         placeholder="Any observations about how you're feeling..."
                         value={vitalsForm.notes}
                         onChange={(e) => setVitalsForm({ ...vitalsForm, notes: e.target.value })}
-                        className="bg-zinc-800 border-zinc-700 mt-1"
+                        className="bg-[#1a1a1a] border-[#333] mt-1"
                         rows={2}
                       />
                     </div>
                     <Button 
                       onClick={() => logVitalsMutation.mutate(vitalsForm)} 
-                      className="w-full bg-orange-500"
+                      className="w-full bg-[#C9941A] text-black"
                       disabled={logVitalsMutation.isPending}
                     >
                       {logVitalsMutation.isPending ? "Saving..." : "Log Vitals"}
@@ -524,15 +522,15 @@ export default function MedicalLog() {
             </div>
 
             {vitals.length === 0 ? (
-              <Card className="bg-zinc-900 border-zinc-800 p-8 text-center">
-                <Activity className="h-12 w-12 text-orange-500 mx-auto mb-4" />
+              <Card className="bg-[#1a1a1a] border-[#333] p-8 text-center">
+                <Activity className="h-12 w-12 text-[#C9941A] mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No vitals logged</h3>
                 <p className="text-gray-400">Track your daily vitals to monitor your health.</p>
               </Card>
             ) : (
               <div className="space-y-3">
                 {vitals.map((v: any) => (
-                  <Card key={v.id} className="bg-zinc-900 border-zinc-800 p-4">
+                  <Card key={v.id} className="bg-[#1a1a1a] border-[#333] p-4">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-gray-400 text-sm">
                         {new Date(v.measured_at).toLocaleDateString()} at {new Date(v.measured_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -542,7 +540,7 @@ export default function MedicalLog() {
                       {v.blood_pressure_systolic && v.blood_pressure_diastolic && (
                         <div>
                           <div className="text-gray-400 text-xs">Blood Pressure</div>
-                          <div className="text-lg font-semibold text-orange-400">
+                          <div className="text-lg font-semibold text-[#C9941A]">
                             {v.blood_pressure_systolic}/{v.blood_pressure_diastolic}
                           </div>
                         </div>

@@ -101,10 +101,10 @@ function StepIndicator({ currentStep, totalSteps }: { currentStep: number; total
             <div 
               className={`flex items-center justify-center w-10 h-10 rounded-full border-2 font-bold text-sm transition-all ${
                 index + 1 < currentStep 
-                  ? "bg-primary border-primary text-primary-foreground" 
+                  ? "bg-primary border-primary text-[#C9941A]-foreground" 
                   : index + 1 === currentStep 
-                    ? "border-primary text-primary bg-primary/20" 
-                    : "border-muted text-muted-foreground"
+                    ? "border-primary text-[#C9941A] bg-primary/20" 
+                    : "border-[#333] text-gray-400"
               }`}
               data-testid={`step-indicator-${index + 1}`}
               aria-current={index + 1 === currentStep ? "step" : undefined}
@@ -118,7 +118,7 @@ function StepIndicator({ currentStep, totalSteps }: { currentStep: number; total
             {index < totalSteps - 1 && (
               <div 
                 className={`hidden sm:block w-16 md:w-24 lg:w-32 h-0.5 mx-2 ${
-                  index + 1 < currentStep ? "bg-primary" : "bg-muted"
+                  index + 1 < currentStep ? "bg-primary" : "bg-[#1a1a1a]"
                 }`}
                 aria-hidden="true"
               />
@@ -127,7 +127,7 @@ function StepIndicator({ currentStep, totalSteps }: { currentStep: number; total
         ))}
       </div>
       <Progress value={progressPercent} className="h-2" aria-label={`Step ${currentStep} of ${totalSteps}`} />
-      <p className="text-center text-sm text-muted-foreground mt-2">
+      <p className="text-center text-sm text-gray-400 mt-2">
         Step {currentStep} of {totalSteps}
       </p>
     </div>
@@ -139,10 +139,10 @@ function RecoveryCoachTip({ quote }: { quote: string }) {
     <div className="bg-card/50 border border-border rounded-lg p-4 mb-8 max-w-2xl mx-auto">
       <div className="flex items-start gap-3">
         <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-          <Zap className="h-5 w-5 text-primary" aria-hidden="true" />
+          <Zap className="h-5 w-5 text-[#C9941A]" aria-hidden="true" />
         </div>
         <div>
-          <p className="text-sm font-medium text-primary mb-1">Recovery Coach:</p>
+          <p className="text-sm font-medium text-[#C9941A] mb-1">Recovery Coach:</p>
           <p className="text-foreground italic" data-testid="text-recovery-coach-tip">"{quote}"</p>
         </div>
       </div>
@@ -155,7 +155,7 @@ function Step1BasicInfo({ formData, setFormData }: { formData: FormData; setForm
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-xl">
-          <Calendar className="h-5 w-5 text-primary" aria-hidden="true" />
+          <Calendar className="h-5 w-5 text-[#C9941A]" aria-hidden="true" />
           Basic Information
         </CardTitle>
         <CardDescription>
@@ -173,7 +173,7 @@ function Step1BasicInfo({ formData, setFormData }: { formData: FormData; setForm
             className="max-w-xs"
             data-testid="input-stroke-date"
           />
-          <p className="text-xs text-muted-foreground">This helps us understand your recovery timeline</p>
+          <p className="text-xs text-gray-400">This helps us understand your recovery timeline</p>
         </div>
 
         <div className="space-y-3">
@@ -187,28 +187,28 @@ function Step1BasicInfo({ formData, setFormData }: { formData: FormData; setForm
               <RadioGroupItem value="ischemic" id="ischemic" data-testid="radio-ischemic" />
               <Label htmlFor="ischemic" className="cursor-pointer flex-1">
                 <span className="font-medium">Ischemic Stroke</span>
-                <span className="block text-xs text-muted-foreground">Caused by a blood clot blocking blood flow</span>
+                <span className="block text-xs text-gray-400">Caused by a blood clot blocking blood flow</span>
               </Label>
             </div>
             <div className="flex items-center space-x-3 p-3 rounded-lg border border-border hover-elevate">
               <RadioGroupItem value="hemorrhagic" id="hemorrhagic" data-testid="radio-hemorrhagic" />
               <Label htmlFor="hemorrhagic" className="cursor-pointer flex-1">
                 <span className="font-medium">Hemorrhagic Stroke</span>
-                <span className="block text-xs text-muted-foreground">Caused by bleeding in or around the brain</span>
+                <span className="block text-xs text-gray-400">Caused by bleeding in or around the brain</span>
               </Label>
             </div>
             <div className="flex items-center space-x-3 p-3 rounded-lg border border-border hover-elevate">
               <RadioGroupItem value="tia" id="tia" data-testid="radio-tia" />
               <Label htmlFor="tia" className="cursor-pointer flex-1">
                 <span className="font-medium">TIA (Mini-Stroke)</span>
-                <span className="block text-xs text-muted-foreground">Temporary blockage with symptoms lasting less than 24 hours</span>
+                <span className="block text-xs text-gray-400">Temporary blockage with symptoms lasting less than 24 hours</span>
               </Label>
             </div>
             <div className="flex items-center space-x-3 p-3 rounded-lg border border-border hover-elevate">
               <RadioGroupItem value="unknown" id="unknown" data-testid="radio-unknown" />
               <Label htmlFor="unknown" className="cursor-pointer flex-1">
                 <span className="font-medium">Not Sure / Unknown</span>
-                <span className="block text-xs text-muted-foreground">We'll still create a great plan for you</span>
+                <span className="block text-xs text-gray-400">We'll still create a great plan for you</span>
               </Label>
             </div>
           </RadioGroup>
@@ -245,7 +245,7 @@ function Step2Abilities({ formData, setFormData }: { formData: FormData; setForm
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-xl">
-          <Activity className="h-5 w-5 text-primary" aria-hidden="true" />
+          <Activity className="h-5 w-5 text-[#C9941A]" aria-hidden="true" />
           Current Abilities
         </CardTitle>
         <CardDescription>
@@ -327,7 +327,7 @@ function Step3Goals({ formData, setFormData }: { formData: FormData; setFormData
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-xl">
-          <Target className="h-5 w-5 text-primary" aria-hidden="true" />
+          <Target className="h-5 w-5 text-[#C9941A]" aria-hidden="true" />
           Your Recovery Goals
         </CardTitle>
         <CardDescription>
@@ -357,7 +357,7 @@ function Step3Goals({ formData, setFormData }: { formData: FormData; setFormData
                 />
                 <div className="flex items-center gap-2 flex-1">
                   <IconComponent 
-                    className={`h-5 w-5 ${isSelected ? "text-primary" : "text-muted-foreground"}`} 
+                    className={`h-5 w-5 ${isSelected ? "text-[#C9941A]" : "text-gray-400"}`} 
                     aria-hidden="true" 
                   />
                   <Label htmlFor={goal.id} className="cursor-pointer font-medium">
@@ -369,7 +369,7 @@ function Step3Goals({ formData, setFormData }: { formData: FormData; setFormData
           })}
         </div>
         {formData.goals.length > 0 && (
-          <p className="text-sm text-muted-foreground mt-4" data-testid="text-goals-selected">
+          <p className="text-sm text-gray-400 mt-4" data-testid="text-goals-selected">
             {formData.goals.length} goal{formData.goals.length !== 1 ? "s" : ""} selected
           </p>
         )}
@@ -383,7 +383,7 @@ function Step4Time({ formData, setFormData }: { formData: FormData; setFormData:
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-xl">
-          <Clock className="h-5 w-5 text-primary" aria-hidden="true" />
+          <Clock className="h-5 w-5 text-[#C9941A]" aria-hidden="true" />
           Daily Time Commitment
         </CardTitle>
         <CardDescription>
@@ -408,10 +408,10 @@ function Step4Time({ formData, setFormData }: { formData: FormData; setFormData:
               <RadioGroupItem value={option.value} id={option.value} data-testid={`radio-time-${option.value}`} />
               <Label htmlFor={option.value} className="cursor-pointer flex-1">
                 <div className="flex items-center gap-2">
-                  <Timer className={`h-4 w-4 ${formData.dailyTime === option.value ? "text-primary" : "text-muted-foreground"}`} aria-hidden="true" />
+                  <Timer className={`h-4 w-4 ${formData.dailyTime === option.value ? "text-[#C9941A]" : "text-gray-400"}`} aria-hidden="true" />
                   <span className="font-medium">{option.label}</span>
                 </div>
-                <span className="block text-xs text-muted-foreground mt-1">{option.description}</span>
+                <span className="block text-xs text-gray-400 mt-1">{option.description}</span>
               </Label>
             </div>
           ))}
@@ -596,7 +596,7 @@ function ResultsSection({ formData, enrollmentData }: { formData: FormData; enro
           <CardContent className="pt-6">
             <div className="flex flex-col items-center text-center gap-4">
               <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
-                <GraduationCap className="h-8 w-8 text-primary" aria-hidden="true" />
+                <GraduationCap className="h-8 w-8 text-[#C9941A]" aria-hidden="true" />
               </div>
               <div>
                 <Badge variant={getTierBadgeVariant(enrollmentData.tier)} className="mb-2 text-sm">
@@ -605,7 +605,7 @@ function ResultsSection({ formData, enrollmentData }: { formData: FormData; enro
                 <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2" data-testid="text-enrollment-success">
                   You're Enrolled in Recovery University!
                 </h2>
-                <p className="text-muted-foreground max-w-xl">
+                <p className="text-gray-400 max-w-xl">
                   {getTierDescription(enrollmentData.tier)}
                 </p>
               </div>
@@ -625,7 +625,7 @@ function ResultsSection({ formData, enrollmentData }: { formData: FormData; enro
         <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4" data-testid="text-results-title">
           Your Personalized Recovery Protocol
         </h2>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+        <p className="text-lg text-gray-400 max-w-2xl mx-auto">
           Based on your assessment, here's your customized battle plan. Remember: consistency beats intensity.
         </p>
       </div>
@@ -636,7 +636,7 @@ function ResultsSection({ formData, enrollmentData }: { formData: FormData; enro
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Dumbbell className="h-5 w-5 text-primary" aria-hidden="true" />
+              <Dumbbell className="h-5 w-5 text-[#C9941A]" aria-hidden="true" />
               Recommended Exercises
             </CardTitle>
             <CardDescription>Your personalized exercise arsenal</CardDescription>
@@ -646,15 +646,15 @@ function ResultsSection({ formData, enrollmentData }: { formData: FormData; enro
               {exercises.map((exercise, index) => (
                 <div 
                   key={index}
-                  className="flex items-start gap-4 p-4 rounded-lg bg-muted/30 border border-border"
+                  className="flex items-start gap-4 p-4 rounded-lg bg-[#1a1a1a]/30 border border-border"
                   data-testid={`exercise-recommendation-${index}`}
                 >
                   <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                    <span className="text-sm font-bold text-primary">{index + 1}</span>
+                    <span className="text-sm font-bold text-[#C9941A]">{index + 1}</span>
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-foreground">{exercise.name}</h4>
-                    <p className="text-sm text-muted-foreground">{exercise.description}</p>
+                    <p className="text-sm text-gray-400">{exercise.description}</p>
                     <div className="flex items-center gap-3 mt-2">
                       <Badge variant="outline" className="text-xs">
                         <Clock className="h-3 w-3 mr-1" aria-hidden="true" />
@@ -673,17 +673,17 @@ function ResultsSection({ formData, enrollmentData }: { formData: FormData; enro
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
-                <Timer className="h-5 w-5 text-primary" aria-hidden="true" />
+                <Timer className="h-5 w-5 text-[#C9941A]" aria-hidden="true" />
                 Estimated Timeline
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-center">
-                <div className="text-5xl font-black text-primary mb-2" data-testid="text-timeline-weeks">
+                <div className="text-5xl font-black text-[#C9941A] mb-2" data-testid="text-timeline-weeks">
                   {timelineWeeks}
                 </div>
-                <p className="text-muted-foreground">weeks to significant improvement</p>
-                <p className="text-xs text-muted-foreground mt-3">
+                <p className="text-gray-400">weeks to significant improvement</p>
+                <p className="text-xs text-gray-400 mt-3">
                   *Timeline varies based on consistency and individual factors
                 </p>
               </div>
@@ -693,7 +693,7 @@ function ResultsSection({ formData, enrollmentData }: { formData: FormData; enro
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
-                <ShoppingBag className="h-5 w-5 text-primary" aria-hidden="true" />
+                <ShoppingBag className="h-5 w-5 text-[#C9941A]" aria-hidden="true" />
                 Recommended Equipment
               </CardTitle>
             </CardHeader>
@@ -707,7 +707,7 @@ function ResultsSection({ formData, enrollmentData }: { formData: FormData; enro
                   >
                     <div>
                       <p className="font-medium text-sm text-foreground">{item.name}</p>
-                      <p className="text-xs text-muted-foreground">{item.price}</p>
+                      <p className="text-xs text-gray-400">{item.price}</p>
                     </div>
                     <Badge 
                       variant={item.priority === "Essential" ? "default" : "secondary"}
@@ -733,11 +733,11 @@ function ResultsSection({ formData, enrollmentData }: { formData: FormData; enro
         <CardContent className="pt-6">
           <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
             <div className="flex-shrink-0 w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
-              <Trophy className="h-8 w-8 text-primary" aria-hidden="true" />
+              <Trophy className="h-8 w-8 text-[#C9941A]" aria-hidden="true" />
             </div>
             <div className="flex-1">
               <h3 className="text-xl font-bold text-foreground mb-2">Ready to Start Your Recovery Journey?</h3>
-              <p className="text-muted-foreground">
+              <p className="text-gray-400">
                 Access the full Academy with video tutorials, progress tracking, and community support. 
                 Your protocol is waiting.
               </p>
@@ -887,7 +887,7 @@ export default function Builder() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#0D0D0D]">
       <RecoveryHeader />
       
       <main>
@@ -896,7 +896,7 @@ export default function Builder() {
           
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto text-center mb-12">
-              <Badge variant="outline" className="mb-6 text-primary border-primary">
+              <Badge variant="outline" className="mb-6 text-[#C9941A] border-primary">
                 Mission Builder
               </Badge>
               <h1 
@@ -905,24 +905,24 @@ export default function Builder() {
                 data-testid="text-builder-title"
               >
                 Build Your{" "}
-                <span className="text-primary">Recovery Plan</span>
+                <span className="text-[#C9941A]">Recovery Plan</span>
               </h1>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-lg text-gray-400 max-w-2xl mx-auto">
                 Answer a few questions about your situation and goals. 
                 We'll create a personalized protocol based on Nick Kremers' proven recovery methods.
               </p>
             </div>
 
             {!isAuthenticated && !authLoading && (
-              <Card className="max-w-2xl mx-auto mb-8 border-amber-500/50 bg-amber-500/10">
+              <Card className="max-w-2xl mx-auto mb-8 border-amber-500/50 bg-[#C9941A]/10">
                 <CardContent className="pt-6">
                   <div className="flex flex-col sm:flex-row items-center gap-4">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center">
-                      <LogIn className="h-6 w-6 text-amber-500" aria-hidden="true" />
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#C9941A]/20 flex items-center justify-center">
+                      <LogIn className="h-6 w-6 text-[#C9941A]" aria-hidden="true" />
                     </div>
                     <div className="flex-1 text-center sm:text-left">
                       <h3 className="font-semibold text-foreground mb-1">Sign in to save your progress</h3>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-gray-400">
                         Log in to enroll in Recovery University and save your assessment data. You can still complete the assessment without logging in.
                       </p>
                     </div>

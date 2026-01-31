@@ -272,7 +272,7 @@ export default function StrokeLyfeOrg() {
       <NonprofitHeader />
       <SasquatchChatWidget />
       
-      <section className="relative py-20 px-4 bg-gradient-to-br from-[#1B4332] via-[#2D5A4A] to-[#1B4332] overflow-hidden">
+      <section className="relative py-20 px-4 bg-gradient-to-br from-[#C9941A] via-[#2D5A4A] to-[#C9941A] overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-40 h-40 bg-[#C9941A] rounded-full blur-3xl" />
           <div className="absolute bottom-10 right-10 w-60 h-60 bg-[#C9941A] rounded-full blur-3xl" />
@@ -333,19 +333,19 @@ export default function StrokeLyfeOrg() {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div>
-              <div className="text-4xl font-bold text-[#1B4332] mb-2">1,200+</div>
+              <div className="text-4xl font-bold text-[#C9941A] mb-2">1,200+</div>
               <div className="text-gray-600">Survivors Helped</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-[#1B4332] mb-2">$250K+</div>
+              <div className="text-4xl font-bold text-[#C9941A] mb-2">$250K+</div>
               <div className="text-gray-600">Scholarships Awarded</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-[#1B4332] mb-2">50+</div>
+              <div className="text-4xl font-bold text-[#C9941A] mb-2">50+</div>
               <div className="text-gray-600">Countries Reached</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-[#1B4332] mb-2">85%</div>
+              <div className="text-4xl font-bold text-[#C9941A] mb-2">85%</div>
               <div className="text-gray-600">Completion Rate</div>
             </div>
           </div>
@@ -355,8 +355,8 @@ export default function StrokeLyfeOrg() {
       <section className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <Badge className="bg-[#1B4332]/10 text-[#1B4332] mb-4">Our Mission</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#1B4332] mb-4 font-serif">
+            <Badge className="bg-[#C9941A]/10 text-[#C9941A] mb-4">Our Mission</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#C9941A] mb-4 font-serif">
               No Survivor Left Behind
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
@@ -366,36 +366,36 @@ export default function StrokeLyfeOrg() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="border-[#1B4332]/20 hover-elevate">
+            <Card className="border-[#C9941A]/20 hover-elevate">
               <CardHeader>
-                <div className="w-12 h-12 bg-[#1B4332]/10 rounded-lg flex items-center justify-center mb-4">
-                  <GraduationCap className="w-6 h-6 text-[#1B4332]" />
+                <div className="w-12 h-12 bg-[#C9941A]/10 rounded-lg flex items-center justify-center mb-4">
+                  <GraduationCap className="w-6 h-6 text-[#C9941A]" />
                 </div>
-                <CardTitle className="text-[#1B4332]">Academy Scholarships</CardTitle>
+                <CardTitle className="text-[#C9941A]">Academy Scholarships</CardTitle>
                 <CardDescription>
                   Full access to Recovery University for survivors in financial need
                 </CardDescription>
               </CardHeader>
             </Card>
             
-            <Card className="border-[#1B4332]/20 hover-elevate">
+            <Card className="border-[#C9941A]/20 hover-elevate">
               <CardHeader>
                 <div className="w-12 h-12 bg-[#C9941A]/10 rounded-lg flex items-center justify-center mb-4">
                   <Target className="w-6 h-6 text-[#C9941A]" />
                 </div>
-                <CardTitle className="text-[#1B4332]">Accountability Coaching</CardTitle>
+                <CardTitle className="text-[#C9941A]">Accountability Coaching</CardTitle>
                 <CardDescription>
                   Weekly check-ins and goal tracking to keep survivors on their recovery path
                 </CardDescription>
               </CardHeader>
             </Card>
             
-            <Card className="border-[#1B4332]/20 hover-elevate">
+            <Card className="border-[#C9941A]/20 hover-elevate">
               <CardHeader>
-                <div className="w-12 h-12 bg-[#1B4332]/10 rounded-lg flex items-center justify-center mb-4">
-                  <Compass className="w-6 h-6 text-[#1B4332]" />
+                <div className="w-12 h-12 bg-[#C9941A]/10 rounded-lg flex items-center justify-center mb-4">
+                  <Compass className="w-6 h-6 text-[#C9941A]" />
                 </div>
-                <CardTitle className="text-[#1B4332]">Recovery Planning</CardTitle>
+                <CardTitle className="text-[#C9941A]">Recovery Planning</CardTitle>
                 <CardDescription>
                   Personalized 66-Day plans built around the Sasquatch Formula methodology
                 </CardDescription>
@@ -412,7 +412,7 @@ export default function StrokeLyfeOrg() {
               <Heart className="w-3 h-3 mr-1" />
               Make a Difference
             </Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#1B4332] mb-4 font-serif">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#C9941A] mb-4 font-serif">
               Donate to Stroke Lyfe Inc.
             </h2>
             <p className="text-lg text-gray-600">
@@ -420,19 +420,19 @@ export default function StrokeLyfeOrg() {
             </p>
           </div>
           
-          <Card className="border-[#1B4332]/20">
+          <Card className="border-[#C9941A]/20">
             <CardContent className="pt-6">
               <div className="space-y-6">
                 <div>
-                  <Label className="text-[#1B4332] font-semibold mb-3 block">Select Amount</Label>
+                  <Label className="text-[#C9941A] font-semibold mb-3 block">Select Amount</Label>
                   <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
                     {donationAmounts.map((amount) => (
                       <Button
                         key={amount}
                         variant={selectedDonation === amount && !customDonation ? "default" : "outline"}
                         className={selectedDonation === amount && !customDonation 
-                          ? "bg-[#1B4332] hover:bg-[#2D5A4A]" 
-                          : "border-[#1B4332]/30 hover:bg-[#1B4332]/10"
+                          ? "bg-[#C9941A] hover:bg-[#2D5A4A]" 
+                          : "border-[#C9941A]/30 hover:bg-[#C9941A]/10"
                         }
                         onClick={() => {
                           setSelectedDonation(amount);
@@ -447,7 +447,7 @@ export default function StrokeLyfeOrg() {
                 </div>
                 
                 <div>
-                  <Label htmlFor="custom-amount" className="text-[#1B4332] font-semibold mb-2 block">
+                  <Label htmlFor="custom-amount" className="text-[#C9941A] font-semibold mb-2 block">
                     Or Enter Custom Amount
                   </Label>
                   <div className="relative">
@@ -467,7 +467,7 @@ export default function StrokeLyfeOrg() {
                 <div className="flex items-center gap-4">
                   <Button
                     variant={!isRecurring ? "default" : "outline"}
-                    className={!isRecurring ? "bg-[#1B4332]" : ""}
+                    className={!isRecurring ? "bg-[#C9941A]" : ""}
                     onClick={() => setIsRecurring(false)}
                     data-testid="button-one-time"
                   >
@@ -475,7 +475,7 @@ export default function StrokeLyfeOrg() {
                   </Button>
                   <Button
                     variant={isRecurring ? "default" : "outline"}
-                    className={isRecurring ? "bg-[#1B4332]" : ""}
+                    className={isRecurring ? "bg-[#C9941A]" : ""}
                     onClick={() => setIsRecurring(true)}
                     data-testid="button-recurring"
                   >
@@ -514,11 +514,11 @@ export default function StrokeLyfeOrg() {
       <section id="scholarships" className="py-16 px-4 bg-[#FAF8F3]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <Badge className="bg-[#1B4332]/10 text-[#1B4332] mb-4">
+            <Badge className="bg-[#C9941A]/10 text-[#C9941A] mb-4">
               <Gift className="w-3 h-3 mr-1" />
               Gift a Scholarship
             </Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#1B4332] mb-4 font-serif">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#C9941A] mb-4 font-serif">
               Sponsor a Survivor's Recovery
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -529,7 +529,7 @@ export default function StrokeLyfeOrg() {
           <div className="mb-8 max-w-md mx-auto">
             <Card className="border-[#C9941A]/30 bg-[#C9941A]/5">
               <CardContent className="pt-6">
-                <Label htmlFor="recipient-email" className="text-[#1B4332] font-semibold mb-2 block">
+                <Label htmlFor="recipient-email" className="text-[#C9941A] font-semibold mb-2 block">
                   Recipient's Email Address
                 </Label>
                 <Input
@@ -541,7 +541,7 @@ export default function StrokeLyfeOrg() {
                   className="mb-4"
                   data-testid="input-recipient-email"
                 />
-                <Label htmlFor="gift-message" className="text-[#1B4332] font-semibold mb-2 block">
+                <Label htmlFor="gift-message" className="text-[#C9941A] font-semibold mb-2 block">
                   Personal Message (Optional)
                 </Label>
                 <Textarea
@@ -560,7 +560,7 @@ export default function StrokeLyfeOrg() {
             {scholarshipTiers.map((tier) => (
               <Card 
                 key={tier.id} 
-                className={`border-[#1B4332]/20 hover-elevate relative ${tier.popular ? 'ring-2 ring-[#C9941A]' : ''}`}
+                className={`border-[#C9941A]/20 hover-elevate relative ${tier.popular ? 'ring-2 ring-[#C9941A]' : ''}`}
               >
                 {tier.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
@@ -568,10 +568,10 @@ export default function StrokeLyfeOrg() {
                   </div>
                 )}
                 <CardHeader className="text-center">
-                  <div className="w-16 h-16 bg-[#1B4332]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <tier.icon className="w-8 h-8 text-[#1B4332]" />
+                  <div className="w-16 h-16 bg-[#C9941A]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <tier.icon className="w-8 h-8 text-[#C9941A]" />
                   </div>
-                  <CardTitle className="text-[#1B4332]">{tier.name}</CardTitle>
+                  <CardTitle className="text-[#C9941A]">{tier.name}</CardTitle>
                   <div className="text-3xl font-bold text-[#C9941A]">${tier.price}</div>
                   <CardDescription>{tier.description}</CardDescription>
                 </CardHeader>
@@ -579,13 +579,13 @@ export default function StrokeLyfeOrg() {
                   <ul className="space-y-3 mb-6">
                     {tier.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm">
-                        <CheckCircle className="w-4 h-4 text-[#1B4332] mt-0.5 flex-shrink-0" />
+                        <CheckCircle className="w-4 h-4 text-[#C9941A] mt-0.5 flex-shrink-0" />
                         <span>{feature}</span>
                       </li>
                     ))}
                   </ul>
                   <Button
-                    className="w-full bg-[#1B4332] hover:bg-[#2D5A4A]"
+                    className="w-full bg-[#C9941A] hover:bg-[#2D5A4A]"
                     onClick={() => handleGiftScholarship(tier.id)}
                     disabled={scholarshipMutation.isPending}
                     data-testid={`button-gift-${tier.id}`}
@@ -607,7 +607,7 @@ export default function StrokeLyfeOrg() {
               <Target className="w-3 h-3 mr-1" />
               Accountability Coaching
             </Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#1B4332] mb-4 font-serif">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#C9941A] mb-4 font-serif">
               Big Ticket Coaching Packages
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -620,7 +620,7 @@ export default function StrokeLyfeOrg() {
             {coachingPackages.map((pkg) => (
               <Card 
                 key={pkg.id} 
-                className={`border-[#1B4332]/20 hover-elevate relative ${pkg.popular ? 'ring-2 ring-[#C9941A]' : ''}`}
+                className={`border-[#C9941A]/20 hover-elevate relative ${pkg.popular ? 'ring-2 ring-[#C9941A]' : ''}`}
               >
                 {pkg.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
@@ -628,10 +628,10 @@ export default function StrokeLyfeOrg() {
                   </div>
                 )}
                 <CardHeader>
-                  <div className="w-12 h-12 bg-[#1B4332]/10 rounded-lg flex items-center justify-center mb-4">
-                    <pkg.icon className="w-6 h-6 text-[#1B4332]" />
+                  <div className="w-12 h-12 bg-[#C9941A]/10 rounded-lg flex items-center justify-center mb-4">
+                    <pkg.icon className="w-6 h-6 text-[#C9941A]" />
                   </div>
-                  <CardTitle className="text-[#1B4332] text-lg">{pkg.name}</CardTitle>
+                  <CardTitle className="text-[#C9941A] text-lg">{pkg.name}</CardTitle>
                   <div className="flex items-baseline gap-1">
                     <span className="text-3xl font-bold text-[#C9941A]">${pkg.price.toLocaleString()}</span>
                     <span className="text-sm text-gray-500">
@@ -645,13 +645,13 @@ export default function StrokeLyfeOrg() {
                   <ul className="space-y-2 mb-6">
                     {pkg.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm">
-                        <CheckCircle className="w-4 h-4 text-[#1B4332] mt-0.5 flex-shrink-0" />
+                        <CheckCircle className="w-4 h-4 text-[#C9941A] mt-0.5 flex-shrink-0" />
                         <span>{feature}</span>
                       </li>
                     ))}
                   </ul>
                   <Button
-                    className="w-full bg-[#1B4332] hover:bg-[#2D5A4A]"
+                    className="w-full bg-[#C9941A] hover:bg-[#2D5A4A]"
                     onClick={() => handleCoachingCheckout(pkg.id)}
                     disabled={coachingMutation.isPending}
                     data-testid={`button-coaching-${pkg.id}`}
@@ -669,18 +669,18 @@ export default function StrokeLyfeOrg() {
               <CardContent className="py-6">
                 <div className="flex flex-col md:flex-row items-center gap-6">
                   <div className="flex-shrink-0">
-                    <div className="w-20 h-20 bg-[#1B4332] rounded-full flex items-center justify-center">
+                    <div className="w-20 h-20 bg-[#C9941A] rounded-full flex items-center justify-center">
                       <Phone className="w-8 h-8 text-white" />
                     </div>
                   </div>
                   <div className="text-left">
-                    <h3 className="text-xl font-bold text-[#1B4332] mb-2">
+                    <h3 className="text-xl font-bold text-[#C9941A] mb-2">
                       Not Sure Which Package Is Right?
                     </h3>
                     <p className="text-gray-600 mb-4">
                       Book a free 15-minute discovery call with Nick to discuss your recovery goals.
                     </p>
-                    <Button variant="outline" className="border-[#1B4332] text-[#1B4332]" data-testid="button-book-call">
+                    <Button variant="outline" className="border-[#C9941A] text-[#C9941A]" data-testid="button-book-call">
                       <Video className="w-4 h-4 mr-2" />
                       Schedule Free Call
                     </Button>
@@ -692,7 +692,7 @@ export default function StrokeLyfeOrg() {
         </div>
       </section>
 
-      <section className="py-16 px-4 bg-[#1B4332] text-white">
+      <section className="py-16 px-4 bg-[#C9941A] text-white">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6 font-serif">
             Join the Movement
@@ -767,7 +767,7 @@ export default function StrokeLyfeOrg() {
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
+          <div className="border-t border-[#333] pt-8 text-center text-sm text-gray-500">
             <p>&copy; {new Date().getFullYear()} Stroke Lyfe Inc. All rights reserved.</p>
             <p className="mt-2 text-[#C9941A]">REBUILD. REWIRE. RISE.</p>
           </div>

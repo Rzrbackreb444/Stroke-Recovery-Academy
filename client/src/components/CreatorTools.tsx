@@ -74,7 +74,7 @@ export default function CreatorTools({
 
   if (variant === "sidebar") {
     return (
-      <Card className={`bg-zinc-900/50 border-zinc-800 ${className}`}>
+      <Card className={`bg-[#1a1a1a]/50 border-[#333] ${className}`}>
         {showHeader && (
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-foreground flex items-center gap-2">
@@ -154,7 +154,7 @@ function ProductCardCompact({ product }: { product: Product }) {
       href={product.amazonUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex gap-3 p-2 rounded-lg bg-zinc-800/50 hover:bg-zinc-800 transition-colors group"
+      className="flex gap-3 p-2 rounded-lg bg-[#1a1a1a]/50 hover:bg-[#1a1a1a] transition-colors group"
       data-testid={`product-card-${product.id}`}
     >
       <div className="w-12 h-12 rounded bg-zinc-700 flex-shrink-0 overflow-hidden">
@@ -194,10 +194,10 @@ function ProductCardCompact({ product }: { product: Product }) {
 function ProductCardFull({ product }: { product: Product }) {
   return (
     <Card
-      className="bg-zinc-900 border-zinc-800 overflow-hidden group hover:border-[#FF6B35]/30 transition-colors"
+      className="bg-[#1a1a1a] border-[#333] overflow-hidden group hover:border-[#FF6B35]/30 transition-colors"
       data-testid={`product-card-full-${product.id}`}
     >
-      <div className="aspect-square bg-zinc-800 relative overflow-hidden">
+      <div className="aspect-square bg-[#1a1a1a] relative overflow-hidden">
         {product.imageUrl ? (
           <img
             src={product.imageUrl}
@@ -263,10 +263,10 @@ function ProductCardFull({ product }: { product: Product }) {
 function ProductSkeleton() {
   return (
     <div className="flex gap-3 p-2">
-      <Skeleton className="w-12 h-12 rounded bg-zinc-800" />
+      <Skeleton className="w-12 h-12 rounded bg-[#1a1a1a]" />
       <div className="flex-1 space-y-2">
-        <Skeleton className="h-3 w-full bg-zinc-800" />
-        <Skeleton className="h-3 w-1/2 bg-zinc-800" />
+        <Skeleton className="h-3 w-full bg-[#1a1a1a]" />
+        <Skeleton className="h-3 w-1/2 bg-[#1a1a1a]" />
       </div>
     </div>
   );

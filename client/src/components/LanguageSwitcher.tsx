@@ -31,7 +31,7 @@ export function LanguageSwitcher() {
       <Globe className="h-4 w-4 text-muted-foreground" />
       <Select value={locale} onValueChange={setLocale}>
         <SelectTrigger 
-          className="w-auto min-w-[120px] border-zinc-800 bg-background hover-elevate"
+          className="w-auto min-w-[120px] border-[#333] bg-background hover-elevate"
           data-testid="language-select-trigger"
         >
           <SelectValue>
@@ -42,14 +42,14 @@ export function LanguageSwitcher() {
           </SelectValue>
         </SelectTrigger>
         <SelectContent 
-          className="bg-zinc-900 border-zinc-800"
+          className="bg-[#1a1a1a] border-[#333]"
           data-testid="language-select-content"
         >
           {languages.map((lang) => (
             <SelectItem 
               key={lang.code} 
               value={lang.code}
-              className="hover:bg-zinc-800 focus:bg-zinc-800"
+              className="hover:bg-[#1a1a1a] focus:bg-[#1a1a1a]"
               data-testid={`language-option-${lang.code}`}
             >
               <span className="flex items-center gap-2">

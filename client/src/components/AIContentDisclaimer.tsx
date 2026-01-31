@@ -8,7 +8,7 @@ interface AIContentDisclaimerProps {
 export function AIContentDisclaimer({ variant = "subtle", className = "" }: AIContentDisclaimerProps) {
   if (variant === "banner") {
     return (
-      <div className={`bg-zinc-900/50 border border-zinc-800 rounded-lg p-4 ${className}`} data-testid="ai-content-disclaimer-banner">
+      <div className={`bg-[#1a1a1a]/50 border border-[#333] rounded-lg p-4 ${className}`} data-testid="ai-content-disclaimer-banner">
         <div className="flex items-start gap-3">
           <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
             <Sparkles className="w-4 h-4 text-primary" />

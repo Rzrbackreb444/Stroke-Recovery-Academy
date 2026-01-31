@@ -96,8 +96,8 @@ export default function Roulette() {
   };
 
   const getNumberColor = (n: number): string => {
-    if (n === 0) return 'bg-green-600';
-    return RED_NUMBERS.includes(n) ? 'bg-red-600' : 'bg-gray-900';
+    if (n === 0) return 'bg-[#C9941A]';
+    return RED_NUMBERS.includes(n) ? 'bg-red-600' : 'bg-[#1a1a1a]';
   };
 
   return (
@@ -133,7 +133,7 @@ export default function Roulette() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6">
-          <Card className="bg-gray-900/80 border-green-600/30">
+          <Card className="bg-[#1a1a1a]/80 border-green-600/30">
             <CardContent className="p-6">
               <div className="relative w-64 h-64 mx-auto mb-6">
                 <div 
@@ -170,7 +170,7 @@ export default function Roulette() {
                     {result}
                   </div>
                   {lastWin !== null && lastWin > 0 && (
-                    <div className="mt-2 text-green-400 font-bold text-xl flex items-center justify-center gap-2">
+                    <div className="mt-2 text-[#C9941A] font-bold text-xl flex items-center justify-center gap-2">
                       <Trophy className="w-5 h-5" />
                       +{lastWin.toLocaleString()}
                     </div>
@@ -185,7 +185,7 @@ export default function Roulette() {
                     variant={chipAmount === amount ? "default" : "outline"}
                     size="sm"
                     onClick={() => setChipAmount(amount)}
-                    className={chipAmount === amount ? "bg-green-600" : "border-gray-600"}
+                    className={chipAmount === amount ? "bg-[#C9941A]" : "border-gray-600"}
                     data-testid={`button-chip-${amount}`}
                   >
                     {amount}
@@ -215,12 +215,12 @@ export default function Roulette() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gray-900/80 border-green-600/30">
+          <Card className="bg-[#1a1a1a]/80 border-green-600/30">
             <CardContent className="p-4">
               <div className="grid grid-cols-13 gap-1 mb-4">
                 <div 
                   onClick={() => !spinning && placeBet('number', 0)}
-                  className="col-span-1 row-span-3 bg-green-600 hover:bg-green-500 rounded flex items-center justify-center text-white font-bold cursor-pointer h-24 transition-colors"
+                  className="col-span-1 row-span-3 bg-[#C9941A] hover:bg-[#C9941A] rounded flex items-center justify-center text-white font-bold cursor-pointer h-24 transition-colors"
                   data-testid="bet-0"
                 >
                   0
@@ -321,7 +321,7 @@ export default function Roulette() {
                   <h4 className="text-sm text-gray-400 mb-2">Current Bets:</h4>
                   <div className="flex flex-wrap gap-2">
                     {bets.map((bet, i) => (
-                      <Badge key={i} variant="outline" className="border-green-500/50 text-green-400">
+                      <Badge key={i} variant="outline" className="border-green-500/50 text-[#C9941A]">
                         {bet.type === 'number' ? `#${bet.value}` : bet.type}: {bet.amount}
                       </Badge>
                     ))}

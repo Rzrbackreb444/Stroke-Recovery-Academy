@@ -307,7 +307,7 @@ export default function CoverDesigner({
           </div>
         </div>
 
-        <div className="flex justify-center p-6 bg-gray-100 dark:bg-zinc-800 rounded-lg">
+        <div className="flex justify-center p-6 bg-gray-100 dark:bg-[#1a1a1a] rounded-lg">
           <div
             ref={canvasRef}
             className="relative shadow-2xl transition-transform"

@@ -16,7 +16,7 @@ interface QRCodeDesignerProps {
 }
 
 const colorPresets = [
-  { name: "Forest Green", fg: "#1B4332", bg: "#FFFFFF" },
+  { name: "Forest Green", fg: "#C9941A", bg: "#FFFFFF" },
   { name: "Gold Classic", fg: "#C9941A", bg: "#0D0D0D" },
   { name: "Ocean Blue", fg: "#0077B6", bg: "#FFFFFF" },
   { name: "Royal Purple", fg: "#7C3AED", bg: "#FFFFFF" },
@@ -25,7 +25,7 @@ const colorPresets = [
 ];
 
 export default function QRCodeDesigner({ projectId, projectName, onSave }: QRCodeDesignerProps) {
-  const [fgColor, setFgColor] = useState("#1B4332");
+  const [fgColor, setFgColor] = useState("#C9941A");
   const [bgColor, setBgColor] = useState("#FFFFFF");
   const [size, setSize] = useState([256]);
   const [format, setFormat] = useState<"png" | "svg">("png");

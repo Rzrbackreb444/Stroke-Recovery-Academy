@@ -179,7 +179,7 @@ export default function StoryEditor() {
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-muted-foreground">Loading...</div>
+        <div className="animate-pulse text-gray-400">Loading...</div>
       </div>
     );
   }
@@ -202,7 +202,7 @@ export default function StoryEditor() {
             Back to My Stories
           </Button>
           
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-4 text-sm text-gray-400">
             <span className="flex items-center gap-1">
               <Clock className="w-4 h-4" />
               {readingTime} min read

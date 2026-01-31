@@ -46,8 +46,8 @@ const pillars = [
     id: "movement", 
     name: "Movement", 
     icon: Footprints, 
-    color: "text-green-500",
-    bgColor: "bg-green-500/20",
+    color: "text-[#C9941A]",
+    bgColor: "bg-[#C9941A]/20",
     description: "Physical activity and therapy",
     questions: ["What movement did you do today?", "How does your body feel?"]
   },
@@ -64,8 +64,8 @@ const pillars = [
     id: "accountability", 
     name: "Accountability", 
     icon: Scale, 
-    color: "text-orange-500",
-    bgColor: "bg-orange-500/20",
+    color: "text-[#C9941A]",
+    bgColor: "bg-[#C9941A]/20",
     description: "Staying consistent and tracking progress",
     questions: ["Did you stick to your commitments?", "What habits did you maintain?"]
   },
@@ -145,13 +145,13 @@ export default function Compass() {
   const overallScore = pillars.reduce((sum, p) => sum + getPillarScore(p.id), 0) / pillars.length;
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-[#0D0D0D] text-white">
       <RecoveryHeader />
       
       <main className="container mx-auto px-4 py-6 max-w-4xl">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold flex items-center justify-center gap-3 mb-2">
-            <CompassIcon className="h-8 w-8 text-orange-500" />
+            <CompassIcon className="h-8 w-8 text-[#C9941A]" />
             C.O.M.P.A.S.S.
           </h1>
           <p className="text-gray-400">
@@ -159,10 +159,10 @@ export default function Compass() {
           </p>
         </div>
 
-        <Card className="bg-zinc-900 border-zinc-800 p-6 mb-8">
+        <Card className="bg-[#1a1a1a] border-[#333] p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Overall Recovery Score</h2>
-            <span className="text-2xl font-bold text-orange-500">{Math.round(overallScore)}%</span>
+            <span className="text-2xl font-bold text-[#C9941A]">{Math.round(overallScore)}%</span>
           </div>
           <Progress value={overallScore} className="h-3" />
           <p className="text-gray-400 text-sm mt-2">
@@ -178,7 +178,7 @@ export default function Compass() {
             return (
               <Card 
                 key={pillar.id} 
-                className="bg-zinc-900 border-zinc-800 p-4 cursor-pointer hover-elevate transition-all"
+                className="bg-[#1a1a1a] border-[#333] p-4 cursor-pointer hover-elevate transition-all"
                 onClick={() => setSelectedPillar(pillar)}
                 data-testid={`pillar-${pillar.id}`}
               >
@@ -198,9 +198,9 @@ export default function Compass() {
           })}
         </div>
 
-        <Card className="bg-zinc-900 border-zinc-800 p-6">
+        <Card className="bg-[#1a1a1a] border-[#333] p-6">
           <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-orange-500" />
+            <TrendingUp className="h-5 w-5 text-[#C9941A]" />
             Recent Reflections
           </h2>
           {entries.length === 0 ? (
@@ -214,7 +214,7 @@ export default function Compass() {
                 const Icon = pillar?.icon || CompassIcon;
                 
                 return (
-                  <div key={entry.id} className="flex items-start gap-3 p-3 bg-zinc-800/50 rounded-lg">
+                  <div key={entry.id} className="flex items-start gap-3 p-3 bg-[#1a1a1a]/50 rounded-lg">
                     <div className={`p-1.5 rounded ${pillar?.bgColor || 'bg-zinc-700'}`}>
                       <Icon className={`h-4 w-4 ${pillar?.color || 'text-gray-400'}`} />
                     </div>
@@ -240,7 +240,7 @@ export default function Compass() {
         </Card>
 
         <Dialog open={!!selectedPillar} onOpenChange={() => setSelectedPillar(null)}>
-          <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-lg">
+          <DialogContent className="bg-[#1a1a1a] border-[#333] text-white max-w-lg">
             {selectedPillar && (
               <>
                 <DialogHeader>
@@ -274,7 +274,7 @@ export default function Compass() {
                       placeholder="Reflect on your experience..."
                       value={form.reflection}
                       onChange={(e) => setForm({ ...form, reflection: e.target.value })}
-                      className="bg-zinc-800 border-zinc-700 mt-1"
+                      className="bg-[#1a1a1a] border-[#333] mt-1"
                       rows={2}
                     />
                   </div>
@@ -285,7 +285,7 @@ export default function Compass() {
                       placeholder="What went well with this pillar today?"
                       value={form.wins}
                       onChange={(e) => setForm({ ...form, wins: e.target.value })}
-                      className="bg-zinc-800 border-zinc-700 mt-1"
+                      className="bg-[#1a1a1a] border-[#333] mt-1"
                       rows={2}
                     />
                   </div>
@@ -296,7 +296,7 @@ export default function Compass() {
                       placeholder="What was difficult?"
                       value={form.challenges}
                       onChange={(e) => setForm({ ...form, challenges: e.target.value })}
-                      className="bg-zinc-800 border-zinc-700 mt-1"
+                      className="bg-[#1a1a1a] border-[#333] mt-1"
                       rows={2}
                     />
                   </div>
@@ -307,14 +307,14 @@ export default function Compass() {
                       placeholder="What will you focus on tomorrow?"
                       value={form.tomorrowsGoal}
                       onChange={(e) => setForm({ ...form, tomorrowsGoal: e.target.value })}
-                      className="bg-zinc-800 border-zinc-700 mt-1"
+                      className="bg-[#1a1a1a] border-[#333] mt-1"
                       rows={2}
                     />
                   </div>
 
                   <Button 
                     onClick={handleSubmit} 
-                    className="w-full bg-orange-500"
+                    className="w-full bg-[#C9941A]"
                     disabled={updateMutation.isPending}
                     data-testid="button-save-compass"
                   >

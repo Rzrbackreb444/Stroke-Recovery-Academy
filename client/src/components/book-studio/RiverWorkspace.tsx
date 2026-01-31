@@ -86,7 +86,7 @@ export default function RiverWorkspace() {
     <div className="flex flex-col h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 font-sans">
       
       {/* TOP HEADER BAR - River-style clean header */}
-      <header className="flex h-12 shrink-0 items-center justify-between border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3">
+      <header className="flex h-12 shrink-0 items-center justify-between border-b border-zinc-200 dark:border-[#333] bg-white dark:bg-[#1a1a1a] px-3">
         <div className="flex items-center gap-3">
           {/* Logo/Brand */}
           <div className="flex items-center gap-2">
@@ -133,7 +133,7 @@ export default function RiverWorkspace() {
         <div className="flex items-center gap-2">
           {/* Sync Status */}
           <div className="flex items-center gap-1.5 text-xs text-zinc-500">
-            <Cloud className="h-3.5 w-3.5 text-green-500" />
+            <Cloud className="h-3.5 w-3.5 text-[#C9941A]" />
             <span>Saved</span>
           </div>
           
@@ -157,7 +157,7 @@ export default function RiverWorkspace() {
       </header>
 
       {/* DOCUMENT TABS BAR - River-style tabs */}
-      <div className="flex h-10 items-center border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 px-1 gap-1">
+      <div className="flex h-10 items-center border-b border-zinc-200 dark:border-[#333] bg-zinc-50 dark:bg-[#1a1a1a]/50 px-1 gap-1">
         <Button 
           variant="ghost" 
           size="sm" 
@@ -175,8 +175,8 @@ export default function RiverWorkspace() {
               className={cn(
                 "group flex items-center gap-2 h-8 px-3 rounded-t-md cursor-pointer transition-colors min-w-[120px] max-w-[200px]",
                 activeTabId === tab.id
-                  ? "bg-white dark:bg-zinc-800 border-t border-x border-zinc-200 dark:border-zinc-700 -mb-px"
-                  : "bg-zinc-100 dark:bg-zinc-800/50 hover:bg-zinc-200 dark:hover:bg-zinc-700/50"
+                  ? "bg-white dark:bg-[#1a1a1a] border-t border-x border-zinc-200 dark:border-[#333] -mb-px"
+                  : "bg-zinc-100 dark:bg-[#1a1a1a]/50 hover:bg-zinc-200 dark:hover:bg-zinc-700/50"
               )}
               onClick={() => setActiveTabId(tab.id)}
               data-testid={`tab-${tab.id}`}
@@ -238,7 +238,7 @@ export default function RiverWorkspace() {
                 onSelectItem={handleSelectItem}
               />
             </ResizablePanel>
-            <ResizableHandle className="w-px bg-zinc-200 dark:bg-zinc-800 hover:bg-blue-400 transition-colors" />
+            <ResizableHandle className="w-px bg-zinc-200 dark:bg-[#1a1a1a] hover:bg-blue-400 transition-colors" />
           </>
         )}
 
@@ -255,7 +255,7 @@ export default function RiverWorkspace() {
         {/* RIGHT PANEL - Research/Context */}
         {rightPanelOpen && (
           <>
-            <ResizableHandle className="w-px bg-zinc-200 dark:bg-zinc-800 hover:bg-blue-400 transition-colors" />
+            <ResizableHandle className="w-px bg-zinc-200 dark:bg-[#1a1a1a] hover:bg-blue-400 transition-colors" />
             <ResizablePanel defaultSize={30} minSize={20} maxSize={40} className="min-w-[280px]">
               <RiverResearchPanel />
             </ResizablePanel>
@@ -264,7 +264,7 @@ export default function RiverWorkspace() {
       </ResizablePanelGroup>
 
       {/* BOTTOM STATUS BAR */}
-      <div className="flex h-7 items-center justify-between border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 px-3 text-xs text-zinc-500">
+      <div className="flex h-7 items-center justify-between border-t border-zinc-200 dark:border-[#333] bg-zinc-50 dark:bg-[#1a1a1a]/50 px-3 text-xs text-zinc-500">
         <div className="flex items-center gap-4">
           <span>{wordCount.toLocaleString()} words</span>
           <span className="text-zinc-300 dark:text-zinc-700">|</span>
@@ -272,7 +272,7 @@ export default function RiverWorkspace() {
         </div>
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1.5">
-            <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
+            <div className="h-1.5 w-1.5 rounded-full bg-[#C9941A]" />
             All changes saved
           </span>
         </div>

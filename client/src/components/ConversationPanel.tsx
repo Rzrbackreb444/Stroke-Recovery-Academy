@@ -275,7 +275,7 @@ export default function ConversationPanel({
                 {(sessionsQuery.data as ConversationSession[] || []).map((session) => (
                   <div
                     key={session.id}
-                    className="p-3 bg-zinc-800 rounded-lg cursor-pointer hover-elevate"
+                    className="p-3 bg-[#1a1a1a] rounded-lg cursor-pointer hover-elevate"
                     onClick={() => loadSession(session.id)}
                   >
                     <div className="font-medium text-sm text-foreground">{session.title}</div>
@@ -330,7 +330,7 @@ export default function ConversationPanel({
                       {msg.role === "user" ? (
                         <>
                           <AvatarImage src={user?.profileImageUrl || undefined} />
-                          <AvatarFallback className="bg-zinc-800 text-xs">
+                          <AvatarFallback className="bg-[#1a1a1a] text-xs">
                             <User className="w-4 h-4" />
                           </AvatarFallback>
                         </>
@@ -344,7 +344,7 @@ export default function ConversationPanel({
                       className={`flex-1 px-4 py-3 rounded-lg ${
                         msg.role === "user"
                           ? "bg-primary text-primary-foreground"
-                          : "bg-zinc-800 text-foreground"
+                          : "bg-[#1a1a1a] text-foreground"
                       }`}
                     >
                       <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
@@ -366,7 +366,7 @@ export default function ConversationPanel({
                         <Bot className="w-4 h-4" />
                       </AvatarFallback>
                     </Avatar>
-                    <div className="bg-zinc-800 px-4 py-3 rounded-lg">
+                    <div className="bg-[#1a1a1a] px-4 py-3 rounded-lg">
                       <Loader2 className="w-4 h-4 animate-spin text-primary" />
                     </div>
                   </div>
@@ -384,7 +384,7 @@ export default function ConversationPanel({
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && handleSend()}
-                  className="bg-zinc-800 border-zinc-700 text-sm"
+                  className="bg-[#1a1a1a] border-[#333] text-sm"
                   disabled={isStreaming}
                   data-testid="input-chat-message"
                 />
@@ -412,7 +412,7 @@ export default function ConversationPanel({
   if (isExpanded) {
     return (
       <div className="fixed inset-0 z-50 bg-background/90 flex items-center justify-center p-4">
-        <Card className="w-full max-w-4xl h-[80vh] bg-zinc-900 border flex flex-col">
+        <Card className="w-full max-w-4xl h-[80vh] bg-[#1a1a1a] border flex flex-col">
           <div className="absolute top-4 right-4">
             <Button
               variant="ghost"
@@ -430,7 +430,7 @@ export default function ConversationPanel({
 
   return (
     <Card 
-      className={`bg-zinc-900 border flex flex-col ${className}`}
+      className={`bg-[#1a1a1a] border flex flex-col ${className}`}
       data-testid="conversation-panel"
     >
       {panelContent}

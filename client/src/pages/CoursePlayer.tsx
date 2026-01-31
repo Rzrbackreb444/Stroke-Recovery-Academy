@@ -402,12 +402,12 @@ export default function CoursePlayer() {
   
   const getLessonIcon = (type: string, completed: boolean, locked: boolean) => {
     if (locked) return <Lock className="w-4 h-4 text-gray-500" />;
-    if (completed) return <CheckCircle className="w-4 h-4 text-green-500" />;
+    if (completed) return <CheckCircle className="w-4 h-4 text-[#C9941A]" />;
     switch (type) {
       case "video": return <PlayCircle className="w-4 h-4 text-blue-400" />;
       case "text": return <FileText className="w-4 h-4 text-purple-400" />;
-      case "quiz": return <HelpCircle className="w-4 h-4 text-orange-400" />;
-      case "assignment": return <Edit3 className="w-4 h-4 text-green-400" />;
+      case "quiz": return <HelpCircle className="w-4 h-4 text-[#C9941A]" />;
+      case "assignment": return <Edit3 className="w-4 h-4 text-[#C9941A]" />;
       case "download": return <Download className="w-4 h-4 text-cyan-400" />;
       default: return <Circle className="w-4 h-4" />;
     }
@@ -427,7 +427,7 @@ export default function CoursePlayer() {
           <div key={module.id} className="rounded-lg overflow-hidden">
             <button
               onClick={() => toggleModule(module.id)}
-              className="w-full flex items-center justify-between p-3 bg-zinc-800/50 hover:bg-zinc-800 transition-colors"
+              className="w-full flex items-center justify-between p-3 bg-[#1a1a1a]/50 hover:bg-[#1a1a1a] transition-colors"
               data-testid={`module-toggle-${module.id}`}
             >
               <div className="flex items-center gap-3">
@@ -445,7 +445,7 @@ export default function CoursePlayer() {
             </button>
             
             {module.expanded && (
-              <div className="bg-zinc-900/50 divide-y divide-zinc-800">
+              <div className="bg-[#1a1a1a]/50 divide-y divide-zinc-800">
                 {module.lessons.map((lesson) => (
                   <button
                     key={lesson.id}
@@ -453,16 +453,16 @@ export default function CoursePlayer() {
                     disabled={lesson.locked}
                     className={`w-full flex items-center gap-3 p-3 text-left transition-colors ${
                       currentLesson.id === lesson.id
-                        ? 'bg-orange-500/20 border-l-2 border-orange-500'
+                        ? 'bg-[#C9941A]/20 border-l-2 border-[#C9941A]'
                         : lesson.locked
                         ? 'opacity-50 cursor-not-allowed'
-                        : 'hover:bg-zinc-800'
+                        : 'hover:bg-[#1a1a1a]'
                     }`}
                     data-testid={`lesson-${lesson.id}`}
                   >
                     {getLessonIcon(lesson.type, lesson.completed, lesson.locked)}
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm truncate ${currentLesson.id === lesson.id ? 'text-orange-400 font-medium' : 'text-gray-300'}`}>
+                      <p className={`text-sm truncate ${currentLesson.id === lesson.id ? 'text-[#C9941A] font-medium' : 'text-gray-300'}`}>
                         {lesson.title}
                       </p>
                       <p className="text-xs text-gray-500">{lesson.duration} min</p>
@@ -480,7 +480,7 @@ export default function CoursePlayer() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Top Navigation */}
-      <header className="h-14 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between px-4 sticky top-0 z-50">
+      <header className="h-14 bg-[#1a1a1a] border-b border-[#333] flex items-center justify-between px-4 sticky top-0 z-50">
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
@@ -519,7 +519,7 @@ export default function CoursePlayer() {
                 <StickyNote className="w-5 h-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent className="bg-zinc-900 border-zinc-800 w-96">
+            <SheetContent className="bg-[#1a1a1a] border-[#333] w-96">
               <SheetHeader>
                 <SheetTitle className="text-white">My Notes</SheetTitle>
               </SheetHeader>
@@ -529,11 +529,11 @@ export default function CoursePlayer() {
                     value={newNote}
                     onChange={(e) => setNewNote(e.target.value)}
                     placeholder="Add a note at current time..."
-                    className="bg-zinc-800 border-zinc-700 min-h-[80px]"
+                    className="bg-[#1a1a1a] border-[#333] min-h-[80px]"
                     data-testid="input-note"
                   />
                 </div>
-                <Button onClick={addNote} className="w-full bg-orange-500" data-testid="button-save-note">
+                <Button onClick={addNote} className="w-full bg-[#C9941A]" data-testid="button-save-note">
                   <Plus className="w-4 h-4 mr-2" />
                   Save Note at {formatTime(currentTime)}
                 </Button>
@@ -541,11 +541,11 @@ export default function CoursePlayer() {
                 <ScrollArea className="h-[400px]">
                   <div className="space-y-3">
                     {notes.map(note => (
-                      <Card key={note.id} className="bg-zinc-800 border-zinc-700 p-3">
+                      <Card key={note.id} className="bg-[#1a1a1a] border-[#333] p-3">
                         <div className="flex items-center justify-between mb-2">
                           <button
                             onClick={() => goToTimestamp(note.timestamp)}
-                            className="text-orange-400 text-sm font-medium hover:underline"
+                            className="text-[#C9941A] text-sm font-medium hover:underline"
                           >
                             {formatTime(note.timestamp)}
                           </button>
@@ -598,7 +598,7 @@ export default function CoursePlayer() {
                   {/* Buffering indicator */}
                   {isBuffering && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                      <Loader2 className="w-12 h-12 text-orange-500 animate-spin" />
+                      <Loader2 className="w-12 h-12 text-[#C9941A] animate-spin" />
                     </div>
                   )}
                 </>
@@ -619,10 +619,10 @@ export default function CoursePlayer() {
                 </ScrollArea>
               ) : currentLesson.type === "quiz" ? (
                 <div className="text-center p-8">
-                  <HelpCircle className="w-20 h-20 text-orange-500 mx-auto mb-4" />
+                  <HelpCircle className="w-20 h-20 text-[#C9941A] mx-auto mb-4" />
                   <h2 className="text-2xl font-bold mb-2">Module Quiz</h2>
                   <p className="text-gray-400 mb-6">Test your understanding of the material</p>
-                  <Button className="bg-orange-500" data-testid="button-start-quiz">
+                  <Button className="bg-[#C9941A]" data-testid="button-start-quiz">
                     <Zap className="w-4 h-4 mr-2" />
                     Start Quiz
                   </Button>
@@ -643,7 +643,7 @@ export default function CoursePlayer() {
                   className="absolute inset-0 flex items-center justify-center"
                   data-testid="button-play-center"
                 >
-                  <div className="w-20 h-20 rounded-full bg-orange-500/90 flex items-center justify-center hover:scale-110 transition-transform">
+                  <div className="w-20 h-20 rounded-full bg-[#C9941A]/90 flex items-center justify-center hover:scale-110 transition-transform">
                     {isPlaying ? (
                       <Pause className="w-10 h-10 text-white" />
                     ) : (
@@ -716,12 +716,12 @@ export default function CoursePlayer() {
                             {playbackSpeed}x
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent className="bg-zinc-900 border-zinc-700">
+                        <DropdownMenuContent className="bg-[#1a1a1a] border-[#333]">
                           {[0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].map(speed => (
                             <DropdownMenuItem
                               key={speed}
                               onClick={() => setPlaybackSpeed(speed)}
-                              className={playbackSpeed === speed ? 'text-orange-500' : ''}
+                              className={playbackSpeed === speed ? 'text-[#C9941A]' : ''}
                             >
                               {speed}x
                             </DropdownMenuItem>
@@ -736,13 +736,13 @@ export default function CoursePlayer() {
                             <Settings className="w-5 h-5" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent className="bg-zinc-900 border-zinc-700">
+                        <DropdownMenuContent className="bg-[#1a1a1a] border-[#333]">
                           <DropdownMenuItem className="text-xs text-gray-400">Quality</DropdownMenuItem>
                           {["Auto", "1080p", "720p", "480p", "360p"].map(q => (
                             <DropdownMenuItem
                               key={q}
                               onClick={() => setQuality(q)}
-                              className={quality === q ? 'text-orange-500' : ''}
+                              className={quality === q ? 'text-[#C9941A]' : ''}
                             >
                               {q}
                             </DropdownMenuItem>
@@ -751,7 +751,7 @@ export default function CoursePlayer() {
                       </DropdownMenu>
                       
                       <Button variant="ghost" size="icon" onClick={() => setShowSubtitles(!showSubtitles)} data-testid="button-subtitles">
-                        <Subtitles className={`w-5 h-5 ${showSubtitles ? 'text-orange-500' : ''}`} />
+                        <Subtitles className={`w-5 h-5 ${showSubtitles ? 'text-[#C9941A]' : ''}`} />
                       </Button>
                       
                       <Button variant="ghost" size="icon" onClick={toggleFullscreen} data-testid="button-fullscreen">
@@ -770,7 +770,7 @@ export default function CoursePlayer() {
               {/* Lesson Info */}
               <div className="flex items-start justify-between mb-6">
                 <div>
-                  <Badge className="bg-orange-500/20 text-orange-400 mb-2">
+                  <Badge className="bg-[#C9941A]/20 text-[#C9941A] mb-2">
                     {currentLesson.type.charAt(0).toUpperCase() + currentLesson.type.slice(1)} Lesson
                   </Badge>
                   <h1 className="text-2xl font-bold mb-2">{currentLesson.title}</h1>
@@ -792,12 +792,12 @@ export default function CoursePlayer() {
                     Previous
                   </Button>
                   {currentLesson.completed ? (
-                    <Button variant="outline" className="text-green-500 border-green-500" disabled>
+                    <Button variant="outline" className="text-[#C9941A] border-green-500" disabled>
                       <CheckCircle className="w-4 h-4 mr-2" />
                       Completed
                     </Button>
                   ) : (
-                    <Button onClick={markComplete} className="bg-orange-500" data-testid="button-complete">
+                    <Button onClick={markComplete} className="bg-[#C9941A]" data-testid="button-complete">
                       <CheckCircle className="w-4 h-4 mr-2" />
                       Mark Complete
                     </Button>
@@ -811,7 +811,7 @@ export default function CoursePlayer() {
               
               {/* Tabs */}
               <Tabs defaultValue="overview" className="mt-6">
-                <TabsList className="bg-zinc-900 border-zinc-800">
+                <TabsList className="bg-[#1a1a1a] border-[#333]">
                   <TabsTrigger value="overview">Overview</TabsTrigger>
                   <TabsTrigger value="resources">Resources</TabsTrigger>
                   <TabsTrigger value="discussion">Discussion</TabsTrigger>
@@ -819,7 +819,7 @@ export default function CoursePlayer() {
                 </TabsList>
                 
                 <TabsContent value="overview" className="mt-4">
-                  <Card className="bg-zinc-900 border-zinc-800 p-6">
+                  <Card className="bg-[#1a1a1a] border-[#333] p-6">
                     <h3 className="font-semibold mb-3">About This Lesson</h3>
                     <p className="text-gray-400 mb-4">
                       In this lesson, you'll learn the fundamental principles that will guide your entire recovery journey. 
@@ -828,21 +828,21 @@ export default function CoursePlayer() {
                     <h4 className="font-semibold mb-2">What You'll Learn</h4>
                     <ul className="space-y-2 text-gray-400">
                       <li className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                        <CheckCircle className="w-4 h-4 text-[#C9941A]" />
                         Understanding the recovery timeline
                       </li>
                       <li className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                        <CheckCircle className="w-4 h-4 text-[#C9941A]" />
                         Setting realistic and achievable goals
                       </li>
                       <li className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                        <CheckCircle className="w-4 h-4 text-[#C9941A]" />
                         Building daily habits for success
                       </li>
                     </ul>
                   </Card>
                   
-                  <Card className="bg-zinc-900 border-zinc-800 p-6 mt-4">
+                  <Card className="bg-[#1a1a1a] border-[#333] p-6 mt-4">
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center">
                         <GraduationCap className="w-8 h-8 text-white" />
@@ -860,7 +860,7 @@ export default function CoursePlayer() {
                 </TabsContent>
                 
                 <TabsContent value="resources" className="mt-4">
-                  <Card className="bg-zinc-900 border-zinc-800 p-6">
+                  <Card className="bg-[#1a1a1a] border-[#333] p-6">
                     <h3 className="font-semibold mb-4">Downloadable Resources</h3>
                     <div className="space-y-3">
                       {[
@@ -868,9 +868,9 @@ export default function CoursePlayer() {
                         { name: "Exercise Checklist.pdf", size: "128 KB", icon: FileText },
                         { name: "Progress Tracker Template.xlsx", size: "56 KB", icon: FileText },
                       ].map((resource, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-3 bg-zinc-800 rounded-lg">
+                        <div key={idx} className="flex items-center justify-between p-3 bg-[#1a1a1a] rounded-lg">
                           <div className="flex items-center gap-3">
-                            <resource.icon className="w-5 h-5 text-orange-500" />
+                            <resource.icon className="w-5 h-5 text-[#C9941A]" />
                             <div>
                               <p className="font-medium text-sm">{resource.name}</p>
                               <p className="text-xs text-gray-500">{resource.size}</p>
@@ -886,7 +886,7 @@ export default function CoursePlayer() {
                 </TabsContent>
                 
                 <TabsContent value="discussion" className="mt-4">
-                  <Card className="bg-zinc-900 border-zinc-800 p-6">
+                  <Card className="bg-[#1a1a1a] border-[#333] p-6">
                     <div className="flex gap-3 mb-6">
                       <div className="w-10 h-10 rounded-full bg-zinc-700" />
                       <div className="flex-1">
@@ -894,11 +894,11 @@ export default function CoursePlayer() {
                           value={newComment}
                           onChange={(e) => setNewComment(e.target.value)}
                           placeholder="Share your thoughts or ask a question..."
-                          className="bg-zinc-800 border-zinc-700 min-h-[80px]"
+                          className="bg-[#1a1a1a] border-[#333] min-h-[80px]"
                           data-testid="input-comment"
                         />
                         <div className="flex justify-end mt-2">
-                          <Button className="bg-orange-500" data-testid="button-post-comment">
+                          <Button className="bg-[#C9941A]" data-testid="button-post-comment">
                             <Send className="w-4 h-4 mr-2" />
                             Post Comment
                           </Button>
@@ -920,11 +920,11 @@ export default function CoursePlayer() {
                               </div>
                               <p className="text-gray-300 text-sm">{comment.content}</p>
                               <div className="flex items-center gap-4 mt-2">
-                                <button className="flex items-center gap-1 text-xs text-gray-500 hover:text-orange-500">
+                                <button className="flex items-center gap-1 text-xs text-gray-500 hover:text-[#C9941A]">
                                   <ThumbsUp className="w-3 h-3" />
                                   {comment.likes}
                                 </button>
-                                <button className="flex items-center gap-1 text-xs text-gray-500 hover:text-orange-500">
+                                <button className="flex items-center gap-1 text-xs text-gray-500 hover:text-[#C9941A]">
                                   <Reply className="w-3 h-3" />
                                   Reply
                                 </button>
@@ -934,12 +934,12 @@ export default function CoursePlayer() {
                           
                           {/* Replies */}
                           {comment.replies.map(reply => (
-                            <div key={reply.id} className="flex gap-3 ml-12 pl-4 border-l-2 border-zinc-700">
+                            <div key={reply.id} className="flex gap-3 ml-12 pl-4 border-l-2 border-[#333]">
                               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-red-600" />
                               <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-1">
                                   <span className="font-medium text-sm">{reply.userName}</span>
-                                  <Badge className="bg-orange-500/20 text-orange-400 text-xs">Instructor</Badge>
+                                  <Badge className="bg-[#C9941A]/20 text-[#C9941A] text-xs">Instructor</Badge>
                                   <span className="text-xs text-gray-500">1 day ago</span>
                                 </div>
                                 <p className="text-gray-300 text-sm">{reply.content}</p>
@@ -953,26 +953,26 @@ export default function CoursePlayer() {
                 </TabsContent>
                 
                 <TabsContent value="notes" className="mt-4">
-                  <Card className="bg-zinc-900 border-zinc-800 p-6">
+                  <Card className="bg-[#1a1a1a] border-[#333] p-6">
                     <div className="flex gap-3 mb-6">
                       <Textarea
                         value={newNote}
                         onChange={(e) => setNewNote(e.target.value)}
                         placeholder="Take a note..."
-                        className="bg-zinc-800 border-zinc-700"
+                        className="bg-[#1a1a1a] border-[#333]"
                         data-testid="input-note-inline"
                       />
-                      <Button onClick={addNote} className="bg-orange-500">
+                      <Button onClick={addNote} className="bg-[#C9941A]">
                         <Plus className="w-4 h-4" />
                       </Button>
                     </div>
                     
                     <div className="space-y-3">
                       {notes.map(note => (
-                        <div key={note.id} className="flex gap-3 p-3 bg-zinc-800 rounded-lg">
+                        <div key={note.id} className="flex gap-3 p-3 bg-[#1a1a1a] rounded-lg">
                           <button
                             onClick={() => goToTimestamp(note.timestamp)}
-                            className="text-orange-400 text-sm font-mono hover:underline whitespace-nowrap"
+                            className="text-[#C9941A] text-sm font-mono hover:underline whitespace-nowrap"
                           >
                             {formatTime(note.timestamp)}
                           </button>
@@ -988,9 +988,9 @@ export default function CoursePlayer() {
         </div>
         
         {/* Desktop Sidebar */}
-        <aside className={`hidden lg:block fixed right-0 top-14 bottom-0 w-[380px] bg-zinc-900 border-l border-zinc-800 transition-transform ${sidebarOpen ? '' : 'translate-x-full'}`}>
+        <aside className={`hidden lg:block fixed right-0 top-14 bottom-0 w-[380px] bg-[#1a1a1a] border-l border-[#333] transition-transform ${sidebarOpen ? '' : 'translate-x-full'}`}>
           <div className="h-full flex flex-col">
-            <div className="p-4 border-b border-zinc-800">
+            <div className="p-4 border-b border-[#333]">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="font-semibold">Course Content</h2>
                 <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)}>
@@ -1008,9 +1008,9 @@ export default function CoursePlayer() {
             
             <CurriculumContent />
             
-            <div className="p-4 border-t border-zinc-800 bg-gradient-to-r from-orange-500/10 to-transparent">
+            <div className="p-4 border-t border-[#333] bg-gradient-to-r from-orange-500/10 to-transparent">
               <div className="flex items-center gap-3">
-                <Trophy className="w-8 h-8 text-orange-500" />
+                <Trophy className="w-8 h-8 text-[#C9941A]" />
                 <div>
                   <p className="font-semibold text-sm">Earn Your Certificate</p>
                   <p className="text-xs text-gray-400">Complete all lessons to unlock</p>
@@ -1023,7 +1023,7 @@ export default function CoursePlayer() {
         {/* Toggle sidebar button */}
         {!sidebarOpen && (
           <Button
-            className="hidden lg:flex fixed right-4 top-20 bg-zinc-800 border-zinc-700"
+            className="hidden lg:flex fixed right-4 top-20 bg-[#1a1a1a] border-[#333]"
             variant="outline"
             size="icon"
             onClick={() => setSidebarOpen(true)}
@@ -1035,8 +1035,8 @@ export default function CoursePlayer() {
       
       {/* Mobile Sidebar */}
       <Sheet open={mobileSidebarOpen} onOpenChange={setMobileSidebarOpen}>
-        <SheetContent side="right" className="bg-zinc-900 border-zinc-800 w-[320px] p-0">
-          <SheetHeader className="p-4 border-b border-zinc-800">
+        <SheetContent side="right" className="bg-[#1a1a1a] border-[#333] w-[320px] p-0">
+          <SheetHeader className="p-4 border-b border-[#333]">
             <SheetTitle className="text-white text-left">Course Content</SheetTitle>
             <div className="flex items-center gap-3">
               <Progress value={progressPercent} className="flex-1 h-2" />

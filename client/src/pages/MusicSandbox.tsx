@@ -200,13 +200,13 @@ export default function MusicSandbox() {
   const currentTypeInfo = PROJECT_TYPES.find(t => t.value === projectType);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-[#0D0D0D] text-foreground">
       <div className="flex h-screen">
-        <aside className="w-72 border-r border-gray-800 bg-gray-950 flex flex-col">
-          <div className="p-4 border-b border-gray-800">
+        <aside className="w-72 border-r border-[#333] bg-gray-950 flex flex-col">
+          <div className="p-4 border-b border-[#333]">
             <div className="flex items-center justify-between gap-2">
               <h2 className="text-lg font-semibold flex items-center gap-2">
-                <Music className="w-5 h-5 text-primary" />
+                <Music className="w-5 h-5 text-[#C9941A]" />
                 Music Sandbox
               </h2>
               <Button
@@ -252,7 +252,7 @@ export default function MusicSandbox() {
                             : "hover:bg-gray-800"
                         }`}
                       >
-                        <TypeIcon className={`w-4 h-4 ${selectedProjectId === project.id ? "text-primary" : "text-gray-400"}`} />
+                        <TypeIcon className={`w-4 h-4 ${selectedProjectId === project.id ? "text-[#C9941A]" : "text-gray-400"}`} />
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-sm truncate">{project.title}</p>
                           <p className="text-xs text-gray-500 capitalize">{project.projectType}</p>
@@ -268,7 +268,7 @@ export default function MusicSandbox() {
         </aside>
 
         <main className="flex-1 flex flex-col overflow-hidden">
-          <header className="p-4 border-b border-gray-800 flex items-center justify-between gap-4">
+          <header className="p-4 border-b border-[#333] flex items-center justify-between gap-4">
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -293,14 +293,14 @@ export default function MusicSandbox() {
           <div className="flex-1 overflow-auto p-6">
             <div className="max-w-5xl mx-auto space-y-6">
               <Tabs value={projectType} onValueChange={setProjectType} data-testid="tabs-project-type">
-                <TabsList className="bg-gray-900 border border-gray-800">
+                <TabsList className="bg-[#1a1a1a] border border-[#333]">
                   {PROJECT_TYPES.map((type) => {
                     const Icon = type.icon;
                     return (
                       <TabsTrigger
                         key={type.value}
                         value={type.value}
-                        className="data-[state=active]:bg-orange-500 data-[state=active]:text-foreground"
+                        className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-foreground"
                         data-testid={`tab-${type.value}`}
                       >
                         <Icon className="w-4 h-4 mr-2" />
@@ -312,10 +312,10 @@ export default function MusicSandbox() {
 
                 {PROJECT_TYPES.map((type) => (
                   <TabsContent key={type.value} value={type.value} className="mt-6">
-                    <Card className="bg-gray-950 border-gray-800">
+                    <Card className="bg-gray-950 border-[#333]">
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <type.icon className="w-5 h-5 text-primary" />
+                          <type.icon className="w-5 h-5 text-[#C9941A]" />
                           {type.label} Settings
                         </CardTitle>
                       </CardHeader>
@@ -396,7 +396,7 @@ export default function MusicSandbox() {
                               value={lyrics}
                               onChange={(e) => setLyrics(e.target.value)}
                               placeholder="Enter your song lyrics here..."
-                              className="min-h-[200px] bg-gray-900 border-gray-700"
+                              className="min-h-[200px] bg-[#1a1a1a] border-[#333]"
                               data-testid="textarea-lyrics"
                             />
                           </div>
@@ -409,10 +409,10 @@ export default function MusicSandbox() {
 
               <Separator className="bg-gray-800" />
 
-              <Card className="bg-gray-950 border-gray-800">
+              <Card className="bg-gray-950 border-[#333]">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-primary" />
+                    <Sparkles className="w-5 h-5 text-[#C9941A]" />
                     AI Generation
                   </CardTitle>
                 </CardHeader>
@@ -422,7 +422,7 @@ export default function MusicSandbox() {
                       onClick={() => generateBeatMutation.mutate()}
                       disabled={generateBeatMutation.isPending}
                       variant="outline"
-                      className="border-orange-500/50 hover:bg-primary/10"
+                      className="border-[#C9941A]/50 hover:bg-primary/10"
                       data-testid="button-generate-beat"
                     >
                       {generateBeatMutation.isPending ? (
@@ -437,7 +437,7 @@ export default function MusicSandbox() {
                       onClick={() => generateMelodyMutation.mutate()}
                       disabled={generateMelodyMutation.isPending}
                       variant="outline"
-                      className="border-orange-500/50 hover:bg-primary/10"
+                      className="border-[#C9941A]/50 hover:bg-primary/10"
                       data-testid="button-generate-melody"
                     >
                       {generateMelodyMutation.isPending ? (
@@ -452,7 +452,7 @@ export default function MusicSandbox() {
                       onClick={() => lyricsToMusicMutation.mutate()}
                       disabled={lyricsToMusicMutation.isPending || !lyrics.trim()}
                       variant="outline"
-                      className="border-orange-500/50 hover:bg-primary/10"
+                      className="border-[#C9941A]/50 hover:bg-primary/10"
                       data-testid="button-lyrics-to-music"
                     >
                       {lyricsToMusicMutation.isPending ? (
@@ -467,17 +467,17 @@ export default function MusicSandbox() {
               </Card>
 
               {generatedOutput && (
-                <Card className="bg-gray-950 border-gray-800">
+                <Card className="bg-gray-950 border-[#333]">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <FileAudio className="w-5 h-5 text-primary" />
+                      <FileAudio className="w-5 h-5 text-[#C9941A]" />
                       Generated Output
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <ScrollArea className="h-[300px]">
                       <pre
-                        className="text-sm text-gray-300 bg-gray-900 p-4 rounded-md overflow-auto"
+                        className="text-sm text-gray-300 bg-[#1a1a1a] p-4 rounded-md overflow-auto"
                         data-testid="output-display"
                       >
                         {JSON.stringify(generatedOutput, null, 2)}

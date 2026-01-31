@@ -671,7 +671,7 @@ export default function MobileStudio() {
   };
 
   const themeClasses = isDarkMode 
-    ? "bg-gray-900 text-gray-100" 
+    ? "bg-[#1a1a1a] text-gray-100" 
     : "bg-[#FAF8F3] text-gray-900";
 
   const editorThemeClasses = isDarkMode
@@ -680,7 +680,7 @@ export default function MobileStudio() {
 
   return (
     <div className={`min-h-screen ${themeClasses} flex flex-col`}>
-      <header className={`sticky top-0 z-50 border-b ${isDarkMode ? "bg-gray-900/95 border-gray-800" : "bg-white/95 border-gray-200"} backdrop-blur-sm`}>
+      <header className={`sticky top-0 z-50 border-b ${isDarkMode ? "bg-[#1a1a1a]/95 border-[#333]" : "bg-white/95 border-gray-200"} backdrop-blur-sm`}>
         <div className="flex items-center justify-between px-3 py-2">
           <div className="flex items-center gap-2">
             <Sheet open={showChapterDrawer} onOpenChange={setShowChapterDrawer}>
@@ -689,7 +689,7 @@ export default function MobileStudio() {
                   <Menu className="w-5 h-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className={`w-[300px] ${isDarkMode ? "bg-gray-900 border-gray-800" : "bg-white"}`}>
+              <SheetContent side="left" className={`w-[300px] ${isDarkMode ? "bg-[#1a1a1a] border-[#333]" : "bg-white"}`}>
                 <SheetHeader>
                   <SheetTitle className={isDarkMode ? "text-white" : ""}>Chapters</SheetTitle>
                 </SheetHeader>
@@ -697,7 +697,7 @@ export default function MobileStudio() {
                   <Input
                     value={project.title}
                     onChange={(e) => setProject(prev => ({ ...prev, title: e.target.value }))}
-                    className={`font-semibold text-lg mb-4 ${isDarkMode ? "bg-gray-800 border-gray-700" : ""}`}
+                    className={`font-semibold text-lg mb-4 ${isDarkMode ? "bg-gray-800 border-[#333]" : ""}`}
                     placeholder="Book Title"
                     data-testid="input-book-title"
                   />
@@ -776,7 +776,7 @@ export default function MobileStudio() {
                 syncStatus === "synced" ? "text-green-600 border-green-600" :
                 syncStatus === "syncing" ? "text-blue-500 border-blue-500" :
                 syncStatus === "error" ? "text-red-500 border-red-500" :
-                "text-orange-500 border-orange-500"
+                "text-[#C9941A] border-[#C9941A]"
               }`}
               data-testid="sync-status"
             >
@@ -802,7 +802,7 @@ export default function MobileStudio() {
                   <Brain className="w-5 h-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className={`w-[320px] ${isDarkMode ? "bg-gray-900 border-gray-800" : "bg-white"}`}>
+              <SheetContent side="right" className={`w-[320px] ${isDarkMode ? "bg-[#1a1a1a] border-[#333]" : "bg-white"}`}>
                 <SheetHeader>
                   <SheetTitle className={`flex items-center gap-2 ${isDarkMode ? "text-white" : ""}`}>
                     <Brain className="w-5 h-5 text-[#C9941A]" />
@@ -837,13 +837,13 @@ export default function MobileStudio() {
                             placeholder="Title"
                             value={newBrainItem.title}
                             onChange={(e) => setNewBrainItem(prev => ({ ...prev, title: e.target.value }))}
-                            className={isDarkMode ? "bg-gray-800 border-gray-700" : ""}
+                            className={isDarkMode ? "bg-gray-800 border-[#333]" : ""}
                           />
                           <Textarea
                             placeholder="Details..."
                             value={newBrainItem.content}
                             onChange={(e) => setNewBrainItem(prev => ({ ...prev, content: e.target.value }))}
-                            className={`min-h-[80px] ${isDarkMode ? "bg-gray-800 border-gray-700" : ""}`}
+                            className={`min-h-[80px] ${isDarkMode ? "bg-gray-800 border-[#333]" : ""}`}
                           />
                           <Button 
                             onClick={() => addBrainItem(category)} 
@@ -858,7 +858,7 @@ export default function MobileStudio() {
                         <ScrollArea className="h-[300px]">
                           <div className="space-y-2 pr-2">
                             {project.brain[category].map((item) => (
-                              <Card key={item.id} className={`p-3 ${isDarkMode ? "bg-gray-800 border-gray-700" : ""}`}>
+                              <Card key={item.id} className={`p-3 ${isDarkMode ? "bg-gray-800 border-[#333]" : ""}`}>
                                 <div className="flex items-start justify-between">
                                   <div>
                                     <h4 className={`font-medium text-sm ${isDarkMode ? "text-white" : ""}`}>{item.title}</h4>
@@ -895,7 +895,7 @@ export default function MobileStudio() {
                   <MoreVertical className="w-5 h-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className={isDarkMode ? "bg-gray-800 border-gray-700" : ""}>
+              <DropdownMenuContent align="end" className={isDarkMode ? "bg-gray-800 border-[#333]" : ""}>
                 <DropdownMenuItem onClick={saveToLocalStorage}>
                   <Save className="w-4 h-4 mr-2" />
                   Save Now
@@ -989,7 +989,7 @@ export default function MobileStudio() {
       </main>
 
       <div className={`fixed bottom-20 left-1/2 -translate-x-1/2 z-50 transition-all ${showFormatToolbar ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"}`}>
-        <Card className={`flex items-center gap-1 p-2 shadow-xl ${isDarkMode ? "bg-gray-800 border-gray-700" : "bg-white"}`}>
+        <Card className={`flex items-center gap-1 p-2 shadow-xl ${isDarkMode ? "bg-gray-800 border-[#333]" : "bg-white"}`}>
           <Button variant="ghost" size="icon" className="h-8 w-8"><Bold className="w-4 h-4" /></Button>
           <Button variant="ghost" size="icon" className="h-8 w-8"><Italic className="w-4 h-4" /></Button>
           <Button variant="ghost" size="icon" className="h-8 w-8"><Underline className="w-4 h-4" /></Button>
@@ -1004,7 +1004,7 @@ export default function MobileStudio() {
       </div>
 
       <Dialog open={showAIMenu} onOpenChange={setShowAIMenu}>
-        <DialogContent className={`max-w-xs mx-auto ${isDarkMode ? "bg-gray-800 border-gray-700" : ""}`}>
+        <DialogContent className={`max-w-xs mx-auto ${isDarkMode ? "bg-gray-800 border-[#333]" : ""}`}>
           <DialogHeader>
             <DialogTitle className={`flex items-center gap-2 ${isDarkMode ? "text-white" : ""}`}>
               <Sparkles className="w-5 h-5 text-[#C9941A]" />
@@ -1042,7 +1042,7 @@ export default function MobileStudio() {
       </Dialog>
 
       <Dialog open={showSettingsPanel} onOpenChange={setShowSettingsPanel}>
-        <DialogContent className={`max-w-sm mx-auto max-h-[80vh] overflow-y-auto ${isDarkMode ? "bg-gray-800 border-gray-700" : ""}`}>
+        <DialogContent className={`max-w-sm mx-auto max-h-[80vh] overflow-y-auto ${isDarkMode ? "bg-gray-800 border-[#333]" : ""}`}>
           <DialogHeader>
             <DialogTitle className={`flex items-center gap-2 ${isDarkMode ? "text-white" : ""}`}>
               <Settings className="w-5 h-5 text-[#C9941A]" />
@@ -1185,7 +1185,7 @@ export default function MobileStudio() {
                 </div>
               </div>
               
-              <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="pt-4 border-t border-gray-200 dark:border-[#333]">
                 <Button 
                   className="w-full bg-[#C9941A] hover:bg-[#B8860B] text-white"
                   onClick={() => {
@@ -1210,7 +1210,7 @@ export default function MobileStudio() {
         </DialogContent>
       </Dialog>
 
-      <footer className={`fixed bottom-0 left-0 right-0 border-t ${isDarkMode ? "bg-gray-900 border-gray-800" : "bg-white border-gray-200"} safe-area-inset-bottom`}>
+      <footer className={`fixed bottom-0 left-0 right-0 border-t ${isDarkMode ? "bg-[#1a1a1a] border-[#333]" : "bg-white border-gray-200"} safe-area-inset-bottom`}>
         <div className="flex items-center justify-around py-2 px-4">
           <Button 
             variant="ghost" 

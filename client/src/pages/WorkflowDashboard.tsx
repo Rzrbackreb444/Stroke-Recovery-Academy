@@ -97,8 +97,8 @@ export default function WorkflowDashboard() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "completed": return "bg-green-500/20 text-green-400";
-      case "running": return "bg-primary/20 text-primary";
+      case "completed": return "bg-[#C9941A]/20 text-[#C9941A]";
+      case "running": return "bg-primary/20 text-[#C9941A]";
       case "pending": return "bg-blue-500/20 text-blue-400";
       case "failed": return "bg-red-500/20 text-red-400";
       default: return "bg-zinc-500/20 text-zinc-400";
@@ -132,20 +132,20 @@ export default function WorkflowDashboard() {
             <h1 className="text-3xl font-bold">Workflow Orchestration</h1>
             <p className="text-zinc-400">Automate content creation across studios</p>
           </div>
-          <Badge className="ml-auto bg-primary/20 text-primary border">
+          <Badge className="ml-auto bg-primary/20 text-[#C9941A] border">
             <Sparkles className="w-3 h-3 mr-1" /> Ultra-Premium
           </Badge>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-zinc-900 border border-zinc-800">
-            <TabsTrigger value="active" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+          <TabsList className="bg-[#1a1a1a] border border-[#333]">
+            <TabsTrigger value="active" className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]">
               <Zap className="w-4 h-4 mr-2" /> Active ({activeWorkflows.length})
             </TabsTrigger>
-            <TabsTrigger value="templates" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+            <TabsTrigger value="templates" className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]">
               <GitBranch className="w-4 h-4 mr-2" /> Templates
             </TabsTrigger>
-            <TabsTrigger value="history" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+            <TabsTrigger value="history" className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]">
               <Clock className="w-4 h-4 mr-2" /> History
             </TabsTrigger>
           </TabsList>
@@ -156,12 +156,12 @@ export default function WorkflowDashboard() {
                 {activeWorkflows.map((workflow: CreatorWorkflow) => {
                   const Icon = workflowIcons[workflow.type] || GitBranch;
                   return (
-                    <Card key={workflow.id} className="bg-zinc-900/50 border-zinc-800">
+                    <Card key={workflow.id} className="bg-[#1a1a1a]/50 border-[#333]">
                       <CardHeader className="pb-3">
                         <div className="flex items-start justify-between">
                           <div className="flex items-center gap-3">
                             <div className="p-2 rounded-lg bg-primary/20">
-                              <Icon className="w-5 h-5 text-primary" />
+                              <Icon className="w-5 h-5 text-[#C9941A]" />
                             </div>
                             <div>
                               <CardTitle className="text-lg">{workflow.type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</CardTitle>
@@ -203,14 +203,14 @@ export default function WorkflowDashboard() {
                 })}
               </div>
             ) : (
-              <Card className="bg-zinc-900/50 border-zinc-800">
+              <Card className="bg-[#1a1a1a]/50 border-[#333]">
                 <CardContent className="text-center py-12">
                   <GitBranch className="w-16 h-16 mx-auto mb-4 text-zinc-600" />
                   <h3 className="text-xl font-medium mb-2">No Active Workflows</h3>
                   <p className="text-zinc-400 mb-4">Start a workflow to automate your content creation</p>
                   <Button 
                     onClick={() => setActiveTab("templates")}
-                    className="bg-orange-500 hover:bg-orange-600"
+                    className="bg-[#C9941A] hover:bg-[#C9941A]"
                     data-testid="button-browse-templates"
                   >
                     <Plus className="w-4 h-4 mr-2" /> Browse Templates
@@ -227,8 +227,8 @@ export default function WorkflowDashboard() {
                 return (
                   <Card 
                     key={template.type} 
-                    className={`bg-zinc-900/50 border-zinc-800 cursor-pointer transition-all ${
-                      selectedTemplate === template.type ? "border-orange-500" : "hover:border-zinc-600"
+                    className={`bg-[#1a1a1a]/50 border-[#333] cursor-pointer transition-all ${
+                      selectedTemplate === template.type ? "border-[#C9941A]" : "hover:border-zinc-600"
                     }`}
                     onClick={() => setSelectedTemplate(template.type)}
                     data-testid={`card-template-${template.type}`}
@@ -237,7 +237,7 @@ export default function WorkflowDashboard() {
                       <div className="flex items-start justify-between">
                         <div className="flex items-center gap-3">
                           <div className="p-3 rounded-lg bg-primary/20">
-                            <Icon className="w-6 h-6 text-primary" />
+                            <Icon className="w-6 h-6 text-[#C9941A]" />
                           </div>
                           <div>
                             <CardTitle className="text-lg">{template.name}</CardTitle>
@@ -245,7 +245,7 @@ export default function WorkflowDashboard() {
                           </div>
                         </div>
                         {selectedTemplate === template.type && (
-                          <Check className="w-5 h-5 text-primary" />
+                          <Check className="w-5 h-5 text-[#C9941A]" />
                         )}
                       </div>
                     </CardHeader>
@@ -263,7 +263,7 @@ export default function WorkflowDashboard() {
                             <Clock className="w-4 h-4 inline mr-1" />
                             ~{Math.round(template.estimatedDuration / 60)} min
                           </span>
-                          <span className="text-green-400">
+                          <span className="text-[#C9941A]">
                             <DollarSign className="w-4 h-4 inline" />
                             {(template.estimatedCost / 100).toFixed(2)}
                           </span>
@@ -288,7 +288,7 @@ export default function WorkflowDashboard() {
                     onClick={() => startWorkflowMutation.mutate(selectedTemplate)}
                     disabled={startWorkflowMutation.isPending}
                     size="lg"
-                    className="bg-orange-500 hover:bg-orange-600"
+                    className="bg-[#C9941A] hover:bg-[#C9941A]"
                     data-testid="button-start-workflow"
                   >
                     {startWorkflowMutation.isPending ? (
@@ -308,9 +308,9 @@ export default function WorkflowDashboard() {
                 {completedWorkflows.map((workflow: CreatorWorkflow) => {
                   const Icon = workflowIcons[workflow.type] || GitBranch;
                   return (
-                    <Card key={workflow.id} className="bg-zinc-900/50 border-zinc-800">
+                    <Card key={workflow.id} className="bg-[#1a1a1a]/50 border-[#333]">
                       <CardContent className="flex items-center gap-4 py-4">
-                        <div className="p-2 rounded-lg bg-zinc-800">
+                        <div className="p-2 rounded-lg bg-[#1a1a1a]">
                           <Icon className="w-5 h-5 text-zinc-400" />
                         </div>
                         <div className="flex-1">
@@ -327,7 +327,7 @@ export default function WorkflowDashboard() {
                 })}
               </div>
             ) : (
-              <Card className="bg-zinc-900/50 border-zinc-800">
+              <Card className="bg-[#1a1a1a]/50 border-[#333]">
                 <CardContent className="text-center py-12 text-zinc-500">
                   <Clock className="w-16 h-16 mx-auto mb-4 opacity-50" />
                   <p>No workflow history yet</p>

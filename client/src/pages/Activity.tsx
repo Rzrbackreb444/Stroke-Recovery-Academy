@@ -139,16 +139,16 @@ export default function Activity() {
   const getPostTypeBadgeColor = (type: string) => {
     switch (type) {
       case "milestone": return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
-      case "victory": return "bg-primary/20 text-primary border-primary/30";
+      case "victory": return "bg-primary/20 text-[#C9941A] border-primary/30";
       case "goal": return "bg-blue-500/20 text-blue-400 border-blue-500/30";
-      case "question": return "bg-amber-500/20 text-amber-400 border-amber-500/30";
+      case "question": return "bg-[#C9941A]/20 text-[#C9941A] border-amber-500/30";
       default: return "bg-gray-500/20 text-gray-400 border-gray-500/30";
     }
   };
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center">
         <Card className="p-8 text-center">
           <p className="text-gray-400">Please sign in to view the activity feed</p>
         </Card>
@@ -157,7 +157,7 @@ export default function Activity() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-[#0D0D0D] text-foreground">
       <div className="max-w-3xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2" data-testid="text-activity-title">
@@ -168,7 +168,7 @@ export default function Activity() {
           </p>
         </div>
 
-        <Card className="bg-gray-900 border-gray-800 p-6 mb-8">
+        <Card className="bg-[#1a1a1a] border-[#333] p-6 mb-8">
           <div className="flex gap-4">
             <Avatar className="w-12 h-12 border border-primary">
               <AvatarImage src={user.profileImageUrl || undefined} />
@@ -181,13 +181,13 @@ export default function Activity() {
                 value={newPostContent}
                 onChange={(e) => setNewPostContent(e.target.value)}
                 placeholder="Share your recovery win, set a goal, or ask the community..."
-                className="bg-gray-800 border-gray-700 text-foreground resize-none min-h-[100px]"
+                className="bg-gray-800 border-[#333] text-foreground resize-none min-h-[100px]"
                 data-testid="input-new-post"
               />
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <div className="flex items-center gap-3">
                   <Select value={postType} onValueChange={setPostType}>
-                    <SelectTrigger className="w-40 bg-gray-800 border-gray-700 text-foreground" data-testid="select-post-type">
+                    <SelectTrigger className="w-40 bg-gray-800 border-[#333] text-foreground" data-testid="select-post-type">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -202,7 +202,7 @@ export default function Activity() {
                     </SelectContent>
                   </Select>
                   <Select value={visibility} onValueChange={setVisibility}>
-                    <SelectTrigger className="w-32 bg-gray-800 border-gray-700 text-foreground" data-testid="select-visibility">
+                    <SelectTrigger className="w-32 bg-gray-800 border-[#333] text-foreground" data-testid="select-visibility">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -259,7 +259,7 @@ export default function Activity() {
         </Card>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
-          <TabsList className="bg-gray-900 border border-gray-800">
+          <TabsList className="bg-[#1a1a1a] border border-[#333]">
             <TabsTrigger 
               value="all" 
               className="data-[state=active]:bg-primary data-[state=active]:text-foreground"
@@ -293,7 +293,7 @@ export default function Activity() {
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 text-primary animate-spin" />
+            <Loader2 className="w-8 h-8 text-[#C9941A] animate-spin" />
           </div>
         ) : posts && posts.length > 0 ? (
           <div className="space-y-6">
@@ -310,12 +310,12 @@ export default function Activity() {
                 return (
                   <Card 
                     key={post.id} 
-                    className="bg-gray-900 border-gray-800 p-6"
+                    className="bg-[#1a1a1a] border-[#333] p-6"
                     data-testid={`card-post-${post.id}`}
                   >
                     <div className="flex gap-4">
                       <Avatar className="w-12 h-12">
-                        <AvatarFallback className="bg-gray-800 text-primary">
+                        <AvatarFallback className="bg-gray-800 text-[#C9941A]">
                           U
                         </AvatarFallback>
                       </Avatar>
@@ -374,13 +374,13 @@ export default function Activity() {
                         
                         <p className="text-gray-300 mb-4 whitespace-pre-wrap">{post.content}</p>
                         
-                        <div className="flex items-center gap-4 pt-3 border-t border-gray-800">
+                        <div className="flex items-center gap-4 pt-3 border-t border-[#333]">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button 
                                 variant="ghost" 
                                 size="sm" 
-                                className="text-gray-400 hover:text-primary gap-2"
+                                className="text-gray-400 hover:text-[#C9941A] gap-2"
                                 data-testid={`button-react-${post.id}`}
                               >
                                 <Heart className="w-4 h-4" />
@@ -414,7 +414,7 @@ export default function Activity() {
                           <Button 
                             variant="ghost" 
                             size="sm" 
-                            className="text-gray-400 hover:text-green-400 gap-2"
+                            className="text-gray-400 hover:text-[#C9941A] gap-2"
                             data-testid={`button-share-${post.id}`}
                           >
                             <Share2 className="w-4 h-4" />
@@ -423,7 +423,7 @@ export default function Activity() {
                         </div>
 
                         {showComments === post.id && (
-                          <div className="mt-4 pt-4 border-t border-gray-800 space-y-4">
+                          <div className="mt-4 pt-4 border-t border-[#333] space-y-4">
                             <div className="flex gap-3">
                               <Avatar className="w-8 h-8">
                                 <AvatarImage src={user.profileImageUrl || undefined} />
@@ -436,7 +436,7 @@ export default function Activity() {
                                   value={commentText}
                                   onChange={(e) => setCommentText(e.target.value)}
                                   placeholder="Write a comment..."
-                                  className="bg-gray-800 border-gray-700 text-foreground resize-none min-h-[60px]"
+                                  className="bg-gray-800 border-[#333] text-foreground resize-none min-h-[60px]"
                                   data-testid={`input-comment-${post.id}`}
                                 />
                                 <Button
@@ -484,7 +484,7 @@ export default function Activity() {
               })}
           </div>
         ) : (
-          <Card className="bg-gray-900 border-gray-800 p-12 text-center">
+          <Card className="bg-[#1a1a1a] border-[#333] p-12 text-center">
             <MessageCircle className="w-12 h-12 text-gray-600 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-foreground mb-2">No posts yet</h3>
             <p className="text-gray-400 mb-6">

@@ -236,7 +236,7 @@ export default function Powerball() {
               variant={freePlay ? "default" : "outline"}
               size="sm"
               onClick={() => setFreePlay(!freePlay)}
-              className={freePlay ? "bg-green-600" : "border-gray-600"}
+              className={freePlay ? "bg-[#C9941A]" : "border-gray-600"}
               data-testid="button-freeplay"
             >
               {freePlay ? "FREE PLAY" : "BET MODE"}
@@ -269,7 +269,7 @@ export default function Powerball() {
 
         {gameState.phase === 'picking' && (
           <>
-            <Card className="bg-gray-900/80 border-red-600/30 mb-6">
+            <Card className="bg-[#1a1a1a]/80 border-red-600/30 mb-6">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-white font-bold text-lg">Pick 5 Numbers (1-69)</h3>
@@ -318,7 +318,7 @@ export default function Powerball() {
             </Card>
 
             <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="flex items-center gap-2 bg-gray-900/80 rounded-full px-4 py-2">
+              <div className="flex items-center gap-2 bg-[#1a1a1a]/80 rounded-full px-4 py-2">
                 {gameState.playerNumbers.map((num, i) => (
                   <div key={i} className="w-12 h-12 rounded-full bg-gradient-to-br from-white to-gray-200 flex items-center justify-center text-black font-bold text-lg shadow-lg">
                     {num}
@@ -380,7 +380,7 @@ export default function Powerball() {
         )}
 
         {(gameState.phase === 'drawing' || gameState.phase === 'complete') && (
-          <Card className="bg-gray-900/80 border-yellow-600/30">
+          <Card className="bg-[#1a1a1a]/80 border-yellow-600/30">
             <CardContent className="p-8">
               <h3 className="text-center text-white font-bold text-xl mb-6">
                 {gameState.phase === 'drawing' ? 'DRAWING NUMBERS...' : 'RESULTS'}
@@ -476,7 +476,7 @@ export default function Powerball() {
                         {gameState.matches} number{gameState.matches !== 1 ? 's' : ''} 
                         {gameState.powerballMatch ? ' + Powerball' : ''}
                       </p>
-                      <p className="text-4xl font-black text-green-400">
+                      <p className="text-4xl font-black text-[#C9941A]">
                         +{gameState.winAmount.toLocaleString()} {freePlay ? '(Demo)' : 'Credits'}
                       </p>
                     </>
@@ -504,7 +504,7 @@ export default function Powerball() {
           </Card>
         )}
 
-        <Card className="bg-gray-900/50 border-gray-800 mt-8">
+        <Card className="bg-[#1a1a1a]/50 border-[#333] mt-8">
           <CardContent className="p-4">
             <h4 className="text-white font-bold mb-3 text-center">Prize Table</h4>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">

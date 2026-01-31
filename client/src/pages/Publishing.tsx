@@ -189,7 +189,7 @@ function ProjectCard({ project }: { project: PublishingProject }) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+        <div className="flex items-center gap-4 text-sm text-gray-400">
           <div className="flex items-center gap-1.5" data-testid={`text-wordcount-${project.id}`}>
             <FileText className="h-4 w-4" />
             <span>{project.wordCount.toLocaleString()} words</span>
@@ -199,7 +199,7 @@ function ProjectCard({ project }: { project: PublishingProject }) {
             <span>{project.chapterCount} chapters</span>
           </div>
         </div>
-        <div className="flex items-center gap-1.5 mt-3 text-xs text-muted-foreground" data-testid={`text-lastEdited-${project.id}`}>
+        <div className="flex items-center gap-1.5 mt-3 text-xs text-gray-400" data-testid={`text-lastEdited-${project.id}`}>
           <Calendar className="h-3.5 w-3.5" />
           <span>Last edited {format(new Date(project.updatedAt), "MMM d, yyyy")}</span>
         </div>
@@ -419,7 +419,7 @@ function MyProjectsSection() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-3xl font-bold text-foreground">My Projects</h2>
-            <p className="text-muted-foreground mt-1">Your book writing projects</p>
+            <p className="text-gray-400 mt-1">Your book writing projects</p>
           </div>
           <Button onClick={() => setDialogOpen(true)} data-testid="button-create-project">
             <Plus className="h-4 w-4 mr-2" />
@@ -452,10 +452,10 @@ function MyProjectsSection() {
           <Card className="text-center py-12" data-testid="empty-projects-state">
             <CardContent className="flex flex-col items-center">
               <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                <Lightbulb className="h-8 w-8 text-primary" />
+                <Lightbulb className="h-8 w-8 text-[#C9941A]" />
               </div>
               <h3 className="text-xl font-semibold mb-2">No Projects Yet</h3>
-              <p className="text-muted-foreground max-w-md mb-6">
+              <p className="text-gray-400 max-w-md mb-6">
                 Your recovery story deserves to be told. Start your first book project and let AI help you write your legacy.
               </p>
               <Button onClick={() => setDialogOpen(true)} data-testid="button-start-first-project">
@@ -502,7 +502,7 @@ function HeroSection() {
         </h1>
         
         <p 
-          className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10"
+          className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10"
           data-testid="text-hero-subheadline"
         >
           AI-powered book writing studio with ghostwriting assistance and course builder
@@ -537,7 +537,7 @@ function FeaturesSection() {
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             Everything You Need to Publish
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-gray-400 max-w-2xl mx-auto">
             Powerful tools to help you write, format, and sell your story
           </p>
         </div>
@@ -551,7 +551,7 @@ function FeaturesSection() {
             >
               <CardHeader>
                 <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                  <feature.icon className="h-6 w-6 text-primary" />
+                  <feature.icon className="h-6 w-6 text-[#C9941A]" />
                 </div>
                 <CardTitle className="text-xl">{feature.title}</CardTitle>
                 <CardDescription>{feature.description}</CardDescription>
@@ -572,7 +572,7 @@ function HowItWorksSection() {
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             How It Works
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
+          <p className="text-gray-400 max-w-xl mx-auto">
             Three simple steps to publish your story and build income
           </p>
         </div>
@@ -582,18 +582,18 @@ function HowItWorksSection() {
             <div key={index} className="text-center" data-testid={`step-${step.step}`}>
               <div className="relative inline-flex">
                 <div className="h-20 w-20 rounded-full bg-primary/20 flex items-center justify-center mb-6 mx-auto">
-                  <step.icon className="h-10 w-10 text-primary" />
+                  <step.icon className="h-10 w-10 text-[#C9941A]" />
                 </div>
-                <span className="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-primary text-primary-foreground font-bold flex items-center justify-center text-sm">
+                <span className="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-primary text-[#C9941A]-foreground font-bold flex items-center justify-center text-sm">
                   {step.step}
                 </span>
               </div>
               <h3 className="text-xl font-semibold text-foreground mb-2">{step.title}</h3>
-              <p className="text-muted-foreground">{step.description}</p>
+              <p className="text-gray-400">{step.description}</p>
               
               {index < steps.length - 1 && (
                 <div className="hidden md:block absolute top-1/2 right-0 transform translate-x-1/2 -translate-y-1/2">
-                  <ArrowRight className="h-6 w-6 text-muted-foreground/50" />
+                  <ArrowRight className="h-6 w-6 text-gray-400/50" />
                 </div>
               )}
             </div>

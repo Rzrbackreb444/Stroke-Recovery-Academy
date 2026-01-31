@@ -158,7 +158,7 @@ export default function SlotMachine() {
             w-20 h-24 md:w-28 md:h-32 rounded-xl flex items-center justify-center
             bg-gradient-to-b from-gray-800 via-gray-900 to-black
             border-2 transition-all duration-300 overflow-hidden
-            ${isWinning ? 'border-yellow-400 shadow-[0_0_30px_rgba(251,191,36,0.6)]' : 'border-gray-700'}
+            ${isWinning ? 'border-yellow-400 shadow-[0_0_30px_rgba(251,191,36,0.6)]' : 'border-[#333]'}
           `}
           style={{
             transform: spinning ? `rotateX(${position}deg)` : 'rotateX(0deg)',
@@ -242,13 +242,13 @@ export default function SlotMachine() {
             <div className="relative">
               <img src={sasquatchLogo} alt="Bigfoot" className="w-40 h-40 mx-auto rounded-full border-4 border-yellow-400 shadow-[0_0_60px_rgba(251,191,36,0.8)]" />
               <Sparkles className="absolute -top-4 -right-4 w-12 h-12 text-yellow-400 animate-spin" />
-              <Sparkles className="absolute -bottom-4 -left-4 w-12 h-12 text-orange-400 animate-spin" />
+              <Sparkles className="absolute -bottom-4 -left-4 w-12 h-12 text-[#C9941A] animate-spin" />
             </div>
             <h1 className="text-5xl md:text-7xl font-black mt-6 bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500 bg-clip-text text-transparent animate-pulse">
               JACKPOT!
             </h1>
             <p className="text-4xl text-white font-bold mt-4">{lastWin?.toLocaleString()} CREDITS</p>
-            <p className="text-orange-400 mt-2 text-lg">You caught the Bigfoot!</p>
+            <p className="text-[#C9941A] mt-2 text-lg">You caught the Bigfoot!</p>
           </div>
         </div>
       )}
@@ -274,7 +274,7 @@ export default function SlotMachine() {
 
         <div className="text-center mb-6">
           <div className="flex items-center justify-center gap-3 mb-2">
-            <img src={sasquatchLogo} alt="Sasquatch" className="w-14 h-14 rounded-full border-2 border-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.5)]" />
+            <img src={sasquatchLogo} alt="Sasquatch" className="w-14 h-14 rounded-full border-2 border-[#C9941A] shadow-[0_0_20px_rgba(249,115,22,0.5)]" />
             <div>
               <h1 className="text-2xl md:text-3xl font-black bg-gradient-to-r from-orange-400 via-yellow-300 to-orange-400 bg-clip-text text-transparent">
                 SASQUATCH SLOTS
@@ -313,7 +313,7 @@ export default function SlotMachine() {
           </div>
           
           <CardContent className="p-6 md:p-8 pt-10">
-            <div className="relative bg-black/60 rounded-2xl p-6 md:p-8 border border-gray-800 mb-6 overflow-hidden">
+            <div className="relative bg-black/60 rounded-2xl p-6 md:p-8 border border-[#333] mb-6 overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-b from-purple-900/10 via-transparent to-orange-900/10" />
               
               <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-28 border-y-2 border-yellow-500/30 pointer-events-none" />
@@ -329,12 +329,12 @@ export default function SlotMachine() {
               <div className={`text-center p-4 rounded-xl mb-6 transition-all ${
                 lastWin > 0 
                   ? "bg-gradient-to-r from-green-900/50 via-emerald-900/50 to-green-900/50 border border-green-500/50 shadow-[0_0_30px_rgba(34,197,94,0.3)]" 
-                  : "bg-gray-900/50 border border-gray-700"
+                  : "bg-[#1a1a1a]/50 border border-[#333]"
               }`}>
                 {lastWin > 0 ? (
                   <div className="flex items-center justify-center gap-3">
                     <Trophy className="w-8 h-8 text-yellow-400 animate-bounce" />
-                    <span className="text-3xl font-black text-green-400">
+                    <span className="text-3xl font-black text-[#C9941A]">
                       +{lastWin.toLocaleString()} CREDITS
                     </span>
                     <Trophy className="w-8 h-8 text-yellow-400 animate-bounce" />
@@ -357,7 +357,7 @@ export default function SlotMachine() {
                   className={`min-w-[50px] transition-all ${
                     betAmount === amount 
                       ? "bg-gradient-to-r from-orange-600 to-yellow-600 text-white font-bold border-0 shadow-lg" 
-                      : "border-gray-700 text-gray-400 hover:border-orange-500 hover:text-orange-400"
+                      : "border-[#333] text-gray-400 hover:border-[#C9941A] hover:text-[#C9941A]"
                   }`}
                   data-testid={`button-bet-${amount}`}
                 >
@@ -390,7 +390,7 @@ export default function SlotMachine() {
               <Button
                 onClick={() => setAutoSpin(!autoSpin)}
                 variant={autoSpin ? "default" : "outline"}
-                className={`h-16 md:h-20 px-6 ${autoSpin ? 'bg-green-600 hover:bg-green-700' : 'border-gray-700'}`}
+                className={`h-16 md:h-20 px-6 ${autoSpin ? 'bg-[#C9941A] hover:bg-[#C9941A]/80' : 'border-[#333]'}`}
                 disabled={!wallet || wallet.balance < betAmount}
                 data-testid="button-auto"
               >
@@ -408,9 +408,9 @@ export default function SlotMachine() {
           <div className="h-2 bg-gradient-to-r from-orange-600 via-yellow-400 to-orange-600" />
         </Card>
 
-        <Card className="mt-6 bg-gray-900/60 border-gray-800">
+        <Card className="mt-6 bg-[#1a1a1a]/60 border-[#333]">
           <CardContent className="p-4">
-            <h3 className="text-center text-orange-400 font-bold mb-4 flex items-center justify-center gap-2 uppercase tracking-wider text-sm">
+            <h3 className="text-center text-[#C9941A] font-bold mb-4 flex items-center justify-center gap-2 uppercase tracking-wider text-sm">
               <Crown className="w-4 h-4" />
               Paytable
               <Crown className="w-4 h-4" />
@@ -421,8 +421,8 @@ export default function SlotMachine() {
                   key={i} 
                   className={`flex flex-col items-center p-2 rounded-lg border transition-colors ${
                     symbol.isImage 
-                      ? 'bg-orange-900/30 border-orange-500/50 hover:border-orange-400' 
-                      : 'bg-gray-800/50 border-gray-700 hover:border-orange-500/50'
+                      ? 'bg-orange-900/30 border-[#C9941A]/50 hover:border-orange-400' 
+                      : 'bg-gray-800/50 border-[#333] hover:border-[#C9941A]/50'
                   }`}
                 >
                   {symbol.isImage ? (
@@ -430,7 +430,7 @@ export default function SlotMachine() {
                   ) : (
                     <span className="text-2xl">{symbol.icon}</span>
                   )}
-                  <span className={`text-[10px] font-bold mt-1 ${symbol.isImage ? 'text-orange-300' : 'text-orange-400'}`}>
+                  <span className={`text-[10px] font-bold mt-1 ${symbol.isImage ? 'text-orange-300' : 'text-[#C9941A]'}`}>
                     {symbol.value}x
                   </span>
                 </div>

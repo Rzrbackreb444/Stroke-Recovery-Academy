@@ -535,9 +535,9 @@ export default function ChildrensBookMode({ onStoryGenerated, onExport }: Childr
                 onClick={() => setCurrentStep(s.step)}
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
                   currentStep === s.step 
-                    ? "bg-orange-500 text-black" 
+                    ? "bg-[#C9941A] text-black" 
                     : currentStep > s.step
-                      ? "bg-green-500/20 text-green-400"
+                      ? "bg-[#C9941A]/20 text-[#C9941A]"
                       : "bg-white/5 text-muted-foreground hover:bg-white/10"
                 }`}
                 data-testid={`step-${s.step}`}
@@ -582,8 +582,8 @@ export default function ChildrensBookMode({ onStoryGenerated, onExport }: Childr
                       }}
                       className={`p-4 rounded-xl border-2 transition-all text-left ${
                         ageBand === option.value
-                          ? "border-orange-500 bg-primary/10"
-                          : "border-border hover:border-orange-500/50"
+                          ? "border-[#C9941A] bg-primary/10"
+                          : "border-border hover:border-[#C9941A]/50"
                       }`}
                       data-testid={`age-band-${option.value}`}
                     >
@@ -614,7 +614,7 @@ export default function ChildrensBookMode({ onStoryGenerated, onExport }: Childr
                       onClick={() => toggleTheme(theme.value)}
                       className={`cursor-pointer py-2 px-3 ${
                         selectedThemes.includes(theme.value)
-                          ? "bg-orange-500 text-black hover:bg-orange-600"
+                          ? "bg-[#C9941A] text-black hover:bg-orange-600"
                           : "bg-white/5 text-muted-foreground hover:bg-white/10"
                       }`}
                       data-testid={`theme-${theme.value}`}
@@ -650,8 +650,8 @@ export default function ChildrensBookMode({ onStoryGenerated, onExport }: Childr
                       onClick={() => setIllustrationStyle(style.value)}
                       className={`p-3 rounded-lg border transition-all text-left ${
                         illustrationStyle === style.value
-                          ? "border-orange-500 bg-primary/10"
-                          : "border-border hover:border-orange-500/50"
+                          ? "border-[#C9941A] bg-primary/10"
+                          : "border-border hover:border-[#C9941A]/50"
                       }`}
                       data-testid={`style-${style.value}`}
                     >
@@ -731,7 +731,7 @@ export default function ChildrensBookMode({ onStoryGenerated, onExport }: Childr
               <Button
                 size="lg"
                 onClick={() => setCurrentStep(2)}
-                className="bg-orange-500 hover:bg-orange-600 text-black"
+                className="bg-[#C9941A] hover:bg-orange-600 text-black"
                 disabled={selectedThemes.length === 0}
                 data-testid="button-next-step-1"
               >
@@ -769,13 +769,13 @@ export default function ChildrensBookMode({ onStoryGenerated, onExport }: Childr
                       onClick={() => setEditingCharacterId(char.id || null)}
                       className={`w-full p-3 rounded-lg text-left transition-all flex items-center gap-3 ${
                         editingCharacterId === char.id
-                          ? "bg-primary/20 border border-orange-500"
+                          ? "bg-primary/20 border border-[#C9941A]"
                           : "bg-white/5 hover:bg-white/10"
                       }`}
                       data-testid={`character-${char.id}`}
                     >
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold ${
-                        index === 0 ? "bg-orange-500 text-black" : "bg-blue-500 text-foreground"
+                        index === 0 ? "bg-[#C9941A] text-black" : "bg-blue-500 text-foreground"
                       }`}>
                         {char.name?.[0] || "?"}
                       </div>
@@ -784,7 +784,7 @@ export default function ChildrensBookMode({ onStoryGenerated, onExport }: Childr
                         <div className="text-xs text-muted-foreground capitalize">{char.role}</div>
                       </div>
                       {char.illustrationPrompt && (
-                        <Check className="w-4 h-4 text-green-500" />
+                        <Check className="w-4 h-4 text-[#C9941A]" />
                       )}
                     </button>
                   ))}
@@ -942,7 +942,7 @@ export default function ChildrensBookMode({ onStoryGenerated, onExport }: Childr
                       <Button
                         onClick={() => generateCharacterPromptMutation.mutate(editingCharacter.id!)}
                         disabled={!editingCharacter.name || generateCharacterPromptMutation.isPending}
-                        className="w-full bg-orange-500 hover:bg-orange-600 text-black"
+                        className="w-full bg-[#C9941A] hover:bg-orange-600 text-black"
                         data-testid="button-generate-character-prompt"
                       >
                         {generateCharacterPromptMutation.isPending ? (
@@ -953,8 +953,8 @@ export default function ChildrensBookMode({ onStoryGenerated, onExport }: Childr
                       </Button>
 
                       {editingCharacter.illustrationPrompt && (
-                        <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
-                          <div className="text-sm text-green-400 font-medium mb-1">Illustration Prompt Generated</div>
+                        <div className="p-3 bg-[#C9941A]/10 border border-green-500/30 rounded-lg">
+                          <div className="text-sm text-[#C9941A] font-medium mb-1">Illustration Prompt Generated</div>
                           <p className="text-xs text-muted-foreground line-clamp-3">{editingCharacter.illustrationPrompt}</p>
                         </div>
                       )}
@@ -989,7 +989,7 @@ export default function ChildrensBookMode({ onStoryGenerated, onExport }: Childr
                 <Button
                   onClick={() => generateStoryMutation.mutate()}
                   disabled={!storyPremise || !characters[0]?.name || generateStoryMutation.isPending}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-black"
+                  className="w-full bg-[#C9941A] hover:bg-orange-600 text-black"
                   size="lg"
                   data-testid="button-generate-story"
                 >
@@ -1010,7 +1010,7 @@ export default function ChildrensBookMode({ onStoryGenerated, onExport }: Childr
               <Button
                 onClick={() => setCurrentStep(3)}
                 disabled={spreads.length === 0}
-                className="bg-orange-500 hover:bg-orange-600 text-black"
+                className="bg-[#C9941A] hover:bg-orange-600 text-black"
                 data-testid="button-next-step-2"
               >
                 Continue to Pages
@@ -1155,7 +1155,7 @@ export default function ChildrensBookMode({ onStoryGenerated, onExport }: Childr
               </Button>
               <Button
                 onClick={() => setCurrentStep(4)}
-                className="bg-orange-500 hover:bg-orange-600 text-black"
+                className="bg-[#C9941A] hover:bg-orange-600 text-black"
                 data-testid="button-next-step-3"
               >
                 Continue to Illustrations
@@ -1185,7 +1185,7 @@ export default function ChildrensBookMode({ onStoryGenerated, onExport }: Childr
                   <Button
                     onClick={generateAllIllustrations}
                     disabled={generatingAll || generateIllustrationMutation.isPending}
-                    className="bg-orange-500 hover:bg-orange-600 text-black"
+                    className="bg-[#C9941A] hover:bg-orange-600 text-black"
                     data-testid="button-generate-all-illustrations"
                   >
                     {generatingAll ? (
@@ -1227,7 +1227,7 @@ export default function ChildrensBookMode({ onStoryGenerated, onExport }: Childr
                               </div>
                             )}
                             {spread.illustrationUrl && (
-                              <Badge className="absolute top-2 right-2 bg-green-500/80 text-foreground">
+                              <Badge className="absolute top-2 right-2 bg-[#C9941A]/80 text-foreground">
                                 <Check className="w-3 h-3" />
                               </Badge>
                             )}
@@ -1262,7 +1262,7 @@ export default function ChildrensBookMode({ onStoryGenerated, onExport }: Childr
             {/* Generation Stats */}
             <div className="flex items-center justify-center gap-6 text-sm">
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-500">{spreads.filter(s => s.illustrationUrl).length}</div>
+                <div className="text-2xl font-bold text-[#C9941A]">{spreads.filter(s => s.illustrationUrl).length}</div>
                 <div className="text-muted-foreground">Generated</div>
               </div>
               <div className="text-center">
@@ -1282,7 +1282,7 @@ export default function ChildrensBookMode({ onStoryGenerated, onExport }: Childr
               </Button>
               <Button
                 onClick={() => setCurrentStep(5)}
-                className="bg-orange-500 hover:bg-orange-600 text-black"
+                className="bg-[#C9941A] hover:bg-orange-600 text-black"
                 data-testid="button-next-step-4"
               >
                 Preview & Export
@@ -1348,7 +1348,7 @@ export default function ChildrensBookMode({ onStoryGenerated, onExport }: Childr
                           key={i}
                           onClick={() => setCurrentPreviewPage(i)}
                           className={`w-2 h-2 rounded-full transition-all ${
-                            currentPreviewPage === i ? "bg-orange-500 w-4" : "bg-white/30"
+                            currentPreviewPage === i ? "bg-[#C9941A] w-4" : "bg-white/30"
                           }`}
                         />
                       ))}
@@ -1386,7 +1386,7 @@ export default function ChildrensBookMode({ onStoryGenerated, onExport }: Childr
                     <span className="text-xs text-muted-foreground">Amazon publishing</span>
                   </Button>
                   <Button 
-                    className="h-auto py-4 flex-col bg-orange-500 hover:bg-orange-600 text-black" 
+                    className="h-auto py-4 flex-col bg-[#C9941A] hover:bg-orange-600 text-black" 
                     onClick={() => onExport?.({
                       title: bookTitle,
                       ageBand,

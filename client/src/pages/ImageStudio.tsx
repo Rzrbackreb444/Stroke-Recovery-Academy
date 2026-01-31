@@ -536,12 +536,12 @@ export default function ImageStudio() {
 
       <section className="py-16 px-4 border-b border" data-testid="section-hero">
         <div className="max-w-7xl mx-auto text-center">
-          <Badge className="mb-4 bg-primary/10 text-primary border" data-testid="badge-ai-powered">
+          <Badge className="mb-4 bg-primary/10 text-[#C9941A] border" data-testid="badge-ai-powered">
             <Sparkles className="w-3 h-3 mr-1" />
             AI-Powered Image Editing
           </Badge>
           <h1 className="text-4xl md:text-6xl font-black text-foreground mb-4 tracking-tight" data-testid="text-title">
-            IMAGE <span className="text-primary">STUDIO</span>
+            IMAGE <span className="text-[#C9941A]">STUDIO</span>
           </h1>
           <p className="text-lg text-white/60 max-w-2xl mx-auto mb-8" data-testid="text-description">
             Professional AI-powered image editing tools. Remove backgrounds, enhance photos, 
@@ -722,7 +722,7 @@ export default function ImageStudio() {
                   <Card className="industrial-card">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-lg text-foreground flex items-center gap-2">
-                        <Palette className="w-5 h-5 text-primary" />
+                        <Palette className="w-5 h-5 text-[#C9941A]" />
                         Filters & Presets
                       </CardTitle>
                     </CardHeader>
@@ -748,7 +748,7 @@ export default function ImageStudio() {
                                 }`} />
                               </div>
                               <span className={`text-xs font-medium ${
-                                selectedFilter === filter.id ? "text-primary" : "text-white/60"
+                                selectedFilter === filter.id ? "text-[#C9941A]" : "text-white/60"
                               }`}>
                                 {filter.name}
                               </span>
@@ -765,7 +765,7 @@ export default function ImageStudio() {
                 <Card className="industrial-card">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg text-foreground flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 text-primary" />
+                      <Sparkles className="w-5 h-5 text-[#C9941A]" />
                       AI Tools
                     </CardTitle>
                     <CardDescription>Powered by advanced AI</CardDescription>
@@ -777,7 +777,7 @@ export default function ImageStudio() {
                       disabled={!selectedImage || isProcessing}
                       data-testid="button-remove-bg"
                     >
-                      <Eraser className="w-5 h-5 text-primary" />
+                      <Eraser className="w-5 h-5 text-[#C9941A]" />
                       <div className="text-left">
                         <div className="font-medium">Remove Background</div>
                         <div className="text-xs text-white/60">AI-powered extraction</div>
@@ -789,7 +789,7 @@ export default function ImageStudio() {
                       disabled={!selectedImage || isProcessing}
                       data-testid="button-enhance"
                     >
-                      <Wand2 className="w-5 h-5 text-primary" />
+                      <Wand2 className="w-5 h-5 text-[#C9941A]" />
                       <div className="text-left">
                         <div className="font-medium">Auto Enhance</div>
                         <div className="text-xs text-white/60">Color & clarity boost</div>
@@ -801,7 +801,7 @@ export default function ImageStudio() {
                       disabled={!selectedImage || isProcessing}
                       data-testid="button-upscale"
                     >
-                      <Maximize2 className="w-5 h-5 text-primary" />
+                      <Maximize2 className="w-5 h-5 text-[#C9941A]" />
                       <div className="text-left">
                         <div className="font-medium">Upscale 4x</div>
                         <div className="text-xs text-white/60">AI resolution boost</div>
@@ -814,9 +814,9 @@ export default function ImageStudio() {
                       data-testid="button-analyze-ai"
                     >
                       {isAnalyzing ? (
-                        <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                        <Loader2 className="w-5 h-5 text-[#C9941A] animate-spin" />
                       ) : (
-                        <Eye className="w-5 h-5 text-primary" />
+                        <Eye className="w-5 h-5 text-[#C9941A]" />
                       )}
                       <div className="text-left">
                         <div className="font-medium">Analyze with AI</div>
@@ -825,7 +825,7 @@ export default function ImageStudio() {
                     </Button>
                     {(isProcessing || isAnalyzing) && (
                       <div className="space-y-2 p-3 bg-[#1A1A1A] rounded-lg" data-testid="container-processing">
-                        <div className="flex items-center gap-2 text-sm text-primary">
+                        <div className="flex items-center gap-2 text-sm text-[#C9941A]">
                           <Loader2 className="w-4 h-4 animate-spin" />
                           {processingMessage}
                         </div>
@@ -839,7 +839,7 @@ export default function ImageStudio() {
                   <Card className="industrial-card">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-lg text-foreground flex items-center gap-2">
-                        <Sliders className="w-5 h-5 text-primary" />
+                        <Sliders className="w-5 h-5 text-[#C9941A]" />
                         Adjustments
                       </CardTitle>
                     </CardHeader>
@@ -928,7 +928,7 @@ export default function ImageStudio() {
                     <CardHeader className="pb-2">
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-lg text-foreground flex items-center gap-2">
-                          <Eye className="w-5 h-5 text-primary" />
+                          <Eye className="w-5 h-5 text-[#C9941A]" />
                           AI Analysis
                         </CardTitle>
                         <Button
@@ -946,7 +946,7 @@ export default function ImageStudio() {
                         <div className="space-y-4">
                           {analysisResults.labels.length > 0 && (
                             <div data-testid="section-labels">
-                              <h4 className="text-sm font-medium text-primary mb-2">Labels</h4>
+                              <h4 className="text-sm font-medium text-[#C9941A] mb-2">Labels</h4>
                               <div className="flex flex-wrap gap-1">
                                 {analysisResults.labels.slice(0, 10).map((label, i) => (
                                   <Badge key={i} variant="outline" className="border-[#C9941A]/30 text-gray-300 text-xs" data-testid={`badge-label-${i}`}>
@@ -959,7 +959,7 @@ export default function ImageStudio() {
 
                           {analysisResults.objects.length > 0 && (
                             <div data-testid="section-objects">
-                              <h4 className="text-sm font-medium text-primary mb-2">Objects Detected</h4>
+                              <h4 className="text-sm font-medium text-[#C9941A] mb-2">Objects Detected</h4>
                               <div className="flex flex-wrap gap-1">
                                 {analysisResults.objects.slice(0, 10).map((obj, i) => (
                                   <Badge key={i} variant="outline" className="border text-orange-300 text-xs" data-testid={`badge-object-${i}`}>
@@ -972,7 +972,7 @@ export default function ImageStudio() {
 
                           {analysisResults.colors.length > 0 && (
                             <div data-testid="section-colors">
-                              <h4 className="text-sm font-medium text-primary mb-2">Dominant Colors</h4>
+                              <h4 className="text-sm font-medium text-[#C9941A] mb-2">Dominant Colors</h4>
                               <div className="flex gap-2 flex-wrap">
                                 {analysisResults.colors.slice(0, 6).map((color, i) => (
                                   <div key={i} className="flex items-center gap-2" data-testid={`color-swatch-${i}`}>
@@ -993,7 +993,7 @@ export default function ImageStudio() {
 
                           {analysisResults.faces.length > 0 && (
                             <div data-testid="section-faces">
-                              <h4 className="text-sm font-medium text-primary mb-2">Faces Detected</h4>
+                              <h4 className="text-sm font-medium text-[#C9941A] mb-2">Faces Detected</h4>
                               <p className="text-sm text-gray-300">{analysisResults.faces.length} face(s) found</p>
                               {analysisResults.faces.slice(0, 3).map((face, i) => (
                                 <div key={i} className="text-xs text-white/60 mt-1" data-testid={`face-info-${i}`}>
@@ -1007,7 +1007,7 @@ export default function ImageStudio() {
 
                           {analysisResults.fullText && (
                             <div data-testid="section-text">
-                              <h4 className="text-sm font-medium text-primary mb-2">Text Detected</h4>
+                              <h4 className="text-sm font-medium text-[#C9941A] mb-2">Text Detected</h4>
                               <p className="text-xs text-white/60 bg-[#1A1A1A] p-2 rounded max-h-24 overflow-y-auto">
                                 {analysisResults.fullText.slice(0, 500)}
                                 {analysisResults.fullText.length > 500 && '...'}
@@ -1017,7 +1017,7 @@ export default function ImageStudio() {
 
                           {safeSearchResults && (
                             <div data-testid="section-safesearch">
-                              <h4 className="text-sm font-medium text-primary mb-2">Content Safety</h4>
+                              <h4 className="text-sm font-medium text-[#C9941A] mb-2">Content Safety</h4>
                               <div className="grid grid-cols-2 gap-2 text-xs">
                                 {Object.entries(safeSearchResults).map(([key, value]) => (
                                   <div key={key} className="flex justify-between">
@@ -1026,7 +1026,7 @@ export default function ImageStudio() {
                                       variant="outline"
                                       className={`text-xs ${
                                         value === 'VERY_UNLIKELY' || value === 'UNLIKELY'
-                                          ? 'border-green-500/30 text-green-400'
+                                          ? 'border-green-500/30 text-[#C9941A]'
                                           : value === 'POSSIBLE'
                                           ? 'border-yellow-500/30 text-yellow-400'
                                           : 'border-red-500/30 text-red-400'
@@ -1072,7 +1072,7 @@ export default function ImageStudio() {
               <Card className="industrial-card">
                 <CardHeader>
                   <CardTitle className="text-foreground flex items-center gap-2">
-                    <Wand2 className="w-5 h-5 text-primary" />
+                    <Wand2 className="w-5 h-5 text-[#C9941A]" />
                     AI Image Generator
                   </CardTitle>
                   <CardDescription>Describe the image you want to create</CardDescription>
@@ -1153,7 +1153,7 @@ export default function ImageStudio() {
               <Card className="industrial-card">
                 <CardHeader>
                   <CardTitle className="text-foreground flex items-center gap-2">
-                    <ImagePlus className="w-5 h-5 text-primary" />
+                    <ImagePlus className="w-5 h-5 text-[#C9941A]" />
                     Generated Preview
                   </CardTitle>
                   <CardDescription>Your AI-generated images will appear here</CardDescription>
@@ -1207,7 +1207,7 @@ export default function ImageStudio() {
             <Card className="industrial-card">
               <CardHeader>
                 <CardTitle className="text-foreground flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-primary" />
+                  <Sparkles className="w-5 h-5 text-[#C9941A]" />
                   Prompt Suggestions
                 </CardTitle>
               </CardHeader>
@@ -1241,7 +1241,7 @@ export default function ImageStudio() {
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle className="text-foreground flex items-center gap-2">
-                      <FolderOpen className="w-5 h-5 text-primary" />
+                      <FolderOpen className="w-5 h-5 text-[#C9941A]" />
                       My Images
                     </CardTitle>
                     <CardDescription>All your uploaded and generated images</CardDescription>
@@ -1293,7 +1293,7 @@ export default function ImageStudio() {
                           alt={image.name}
                           className="w-full aspect-square object-cover"
                         />
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                        <div className="absolute inset-0 bg-[#0D0D0D]/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                           <Button size="icon" variant="ghost" className="text-foreground" data-testid={`button-edit-${image.id}`}>
                             <Sliders className="w-4 h-4" />
                           </Button>
@@ -1330,7 +1330,7 @@ export default function ImageStudio() {
             <Card className="industrial-card">
               <CardHeader>
                 <CardTitle className="text-foreground flex items-center gap-2">
-                  <Grid className="w-5 h-5 text-primary" />
+                  <Grid className="w-5 h-5 text-[#C9941A]" />
                   Batch Processing
                 </CardTitle>
                 <CardDescription>Apply the same edits to multiple images at once</CardDescription>
@@ -1340,7 +1340,7 @@ export default function ImageStudio() {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <Label className="text-foreground">Select Images</Label>
-                      <Badge variant="outline" className="border text-primary" data-testid="badge-selected-count">
+                      <Badge variant="outline" className="border text-[#C9941A]" data-testid="badge-selected-count">
                         {batchImages.length} selected
                       </Badge>
                     </div>
@@ -1369,7 +1369,7 @@ export default function ImageStudio() {
                           />
                           {batchImages.includes(image.id) && (
                             <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
-                              <Check className="w-8 h-8 text-primary" />
+                              <Check className="w-8 h-8 text-[#C9941A]" />
                             </div>
                           )}
                         </div>
@@ -1413,7 +1413,7 @@ export default function ImageStudio() {
                         onClick={handleBatchProcess}
                         data-testid="button-batch-remove-bg"
                       >
-                        <Eraser className="w-5 h-5 text-primary" />
+                        <Eraser className="w-5 h-5 text-[#C9941A]" />
                         <div className="text-left">
                           <div className="font-medium">Remove All Backgrounds</div>
                           <div className="text-xs text-white/60">AI-powered batch extraction</div>
@@ -1425,7 +1425,7 @@ export default function ImageStudio() {
                         onClick={handleBatchProcess}
                         data-testid="button-batch-enhance"
                       >
-                        <Wand2 className="w-5 h-5 text-primary" />
+                        <Wand2 className="w-5 h-5 text-[#C9941A]" />
                         <div className="text-left">
                           <div className="font-medium">Enhance All</div>
                           <div className="text-xs text-white/60">Batch color & clarity boost</div>
@@ -1437,7 +1437,7 @@ export default function ImageStudio() {
                         onClick={handleBatchProcess}
                         data-testid="button-batch-resize"
                       >
-                        <Maximize2 className="w-5 h-5 text-primary" />
+                        <Maximize2 className="w-5 h-5 text-[#C9941A]" />
                         <div className="text-left">
                           <div className="font-medium">Resize All</div>
                           <div className="text-xs text-white/60">Batch resize to target dimensions</div>
@@ -1449,7 +1449,7 @@ export default function ImageStudio() {
                         onClick={handleBatchProcess}
                         data-testid="button-batch-convert"
                       >
-                        <FileImage className="w-5 h-5 text-primary" />
+                        <FileImage className="w-5 h-5 text-[#C9941A]" />
                         <div className="text-left">
                           <div className="font-medium">Convert Format</div>
                           <div className="text-xs text-white/60">Batch convert to PNG/JPG/WebP</div>
@@ -1458,7 +1458,7 @@ export default function ImageStudio() {
                     </div>
                     {isProcessing && (
                       <div className="space-y-2 p-4 bg-[#1A1A1A] rounded-lg">
-                        <div className="flex items-center gap-2 text-primary">
+                        <div className="flex items-center gap-2 text-[#C9941A]">
                           <Loader2 className="w-4 h-4 animate-spin" />
                           <span className="text-sm">{processingMessage}</span>
                         </div>
@@ -1479,7 +1479,7 @@ export default function ImageStudio() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-foreground flex items-center gap-2">
-                  <Download className="w-5 h-5 text-primary" />
+                  <Download className="w-5 h-5 text-[#C9941A]" />
                   Export Image
                 </CardTitle>
                 <Button
@@ -1507,7 +1507,7 @@ export default function ImageStudio() {
                       }`}
                       data-testid={`button-format-${format.id}`}
                     >
-                      <div className={`font-bold ${exportFormat === format.id ? "text-primary" : "text-foreground"}`}>
+                      <div className={`font-bold ${exportFormat === format.id ? "text-[#C9941A]" : "text-foreground"}`}>
                         {format.label}
                       </div>
                       <div className="text-xs text-white/60 mt-1">{format.description}</div>

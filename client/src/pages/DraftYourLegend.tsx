@@ -96,14 +96,14 @@ export default function DraftYourLegend() {
   const progress = (completedChapters / legend.chapters.length) * 100;
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-[#0D0D0D] text-white">
       <RecoveryHeader />
       
       <main className="container mx-auto px-4 py-6 max-w-5xl">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
-              <BookOpen className="h-6 w-6 text-orange-500" />
+              <BookOpen className="h-6 w-6 text-[#C9941A]" />
               Draft Your Legend
             </h1>
             <p className="text-gray-400 text-sm mt-1">
@@ -113,7 +113,7 @@ export default function DraftYourLegend() {
           
           <Button 
             onClick={handleSave} 
-            className="bg-orange-500"
+            className="bg-[#C9941A]"
             disabled={saveMutation.isPending || !hasChanges}
             data-testid="button-save-legend"
           >
@@ -123,21 +123,21 @@ export default function DraftYourLegend() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Card className="bg-zinc-900 border-zinc-800 p-4">
+          <Card className="bg-[#1a1a1a] border-[#333] p-4">
             <div className="flex items-center gap-2 mb-2">
-              <FileText className="h-4 w-4 text-orange-500" />
+              <FileText className="h-4 w-4 text-[#C9941A]" />
               <span className="text-gray-400 text-sm">Total Words</span>
             </div>
             <div className="text-2xl font-bold">{totalWords.toLocaleString()}</div>
           </Card>
-          <Card className="bg-zinc-900 border-zinc-800 p-4">
+          <Card className="bg-[#1a1a1a] border-[#333] p-4">
             <div className="flex items-center gap-2 mb-2">
               <Trophy className="h-4 w-4 text-yellow-500" />
               <span className="text-gray-400 text-sm">Chapters Complete</span>
             </div>
             <div className="text-2xl font-bold">{completedChapters} / {legend.chapters.length}</div>
           </Card>
-          <Card className="bg-zinc-900 border-zinc-800 p-4">
+          <Card className="bg-[#1a1a1a] border-[#333] p-4">
             <div className="flex items-center gap-2 mb-2">
               <Sparkles className="h-4 w-4 text-purple-500" />
               <span className="text-gray-400 text-sm">Progress</span>
@@ -148,7 +148,7 @@ export default function DraftYourLegend() {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="lg:col-span-1">
-            <Card className="bg-zinc-900 border-zinc-800 p-4">
+            <Card className="bg-[#1a1a1a] border-[#333] p-4">
               <h3 className="font-semibold mb-3 text-sm text-gray-400">CHAPTERS</h3>
               <div className="space-y-2">
                 {legend.chapters.map((ch, idx) => (
@@ -157,17 +157,17 @@ export default function DraftYourLegend() {
                     onClick={() => setCurrentChapter(idx)}
                     className={`w-full text-left p-3 rounded-lg transition-all ${
                       idx === currentChapter 
-                        ? 'bg-orange-500/20 border border-orange-500' 
-                        : 'bg-zinc-800 hover:bg-zinc-700'
+                        ? 'bg-[#C9941A]/20 border border-[#C9941A]' 
+                        : 'bg-[#1a1a1a] hover:bg-zinc-700'
                     }`}
                     data-testid={`chapter-${idx + 1}`}
                   >
                     <div className="flex items-center gap-2">
-                      <span className="text-orange-500 font-bold">{idx + 1}</span>
+                      <span className="text-[#C9941A] font-bold">{idx + 1}</span>
                       <span className="text-sm font-medium truncate">{ch.title}</span>
                     </div>
                     {ch.content && ch.content.length > 100 && (
-                      <Badge className="mt-1 bg-green-500/20 text-green-400 text-xs">
+                      <Badge className="mt-1 bg-[#C9941A]/20 text-[#C9941A] text-xs">
                         Complete
                       </Badge>
                     )}
@@ -178,10 +178,10 @@ export default function DraftYourLegend() {
           </div>
 
           <div className="lg:col-span-3">
-            <Card className="bg-zinc-900 border-zinc-800 p-6">
+            <Card className="bg-[#1a1a1a] border-[#333] p-6">
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
-                  <Badge variant="outline" className="border-orange-500 text-orange-500">
+                  <Badge variant="outline" className="border-[#C9941A] text-[#C9941A]">
                     Chapter {currentChapter + 1}
                   </Badge>
                   <div className="flex gap-2">
@@ -209,15 +209,15 @@ export default function DraftYourLegend() {
                 <p className="text-gray-400">{chapter.subtitle}</p>
               </div>
 
-              <div className="mb-6 p-4 bg-zinc-800/50 rounded-lg">
-                <h4 className="text-sm font-semibold text-orange-400 mb-2 flex items-center gap-2">
+              <div className="mb-6 p-4 bg-[#1a1a1a]/50 rounded-lg">
+                <h4 className="text-sm font-semibold text-[#C9941A] mb-2 flex items-center gap-2">
                   <Sparkles className="h-4 w-4" />
                   Writing Prompts
                 </h4>
                 <ul className="space-y-1">
                   {chapter.prompts?.map((prompt, idx) => (
                     <li key={idx} className="text-gray-400 text-sm flex items-start gap-2">
-                      <span className="text-orange-500">•</span>
+                      <span className="text-[#C9941A]">•</span>
                       {prompt}
                     </li>
                   ))}
@@ -226,14 +226,14 @@ export default function DraftYourLegend() {
 
               <div>
                 <Label className="flex items-center gap-2 mb-2">
-                  <PenTool className="h-4 w-4 text-orange-500" />
+                  <PenTool className="h-4 w-4 text-[#C9941A]" />
                   Your Story
                 </Label>
                 <Textarea
                   placeholder="Start writing your story... Let your journey flow onto the page. This is your legend."
                   value={chapter.content || ""}
                   onChange={(e) => updateChapterContent(e.target.value)}
-                  className="bg-zinc-800 border-zinc-700 min-h-[400px] text-lg leading-relaxed"
+                  className="bg-[#1a1a1a] border-[#333] min-h-[400px] text-lg leading-relaxed"
                   data-testid="textarea-chapter-content"
                 />
                 <div className="flex justify-between items-center mt-2 text-sm text-gray-500">
@@ -241,13 +241,13 @@ export default function DraftYourLegend() {
                     {chapter.content?.split(/\s+/).filter(Boolean).length || 0} words in this chapter
                   </span>
                   {hasChanges && (
-                    <span className="text-orange-400">Unsaved changes</span>
+                    <span className="text-[#C9941A]">Unsaved changes</span>
                   )}
                 </div>
               </div>
             </Card>
 
-            <Card className="bg-zinc-900 border-zinc-800 p-6 mt-4">
+            <Card className="bg-[#1a1a1a] border-[#333] p-6 mt-4">
               <h3 className="font-semibold mb-4">Book Details</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -258,7 +258,7 @@ export default function DraftYourLegend() {
                       setLegend({ ...legend, title: e.target.value });
                       setHasChanges(true);
                     }}
-                    className="bg-zinc-800 border-zinc-700 mt-1"
+                    className="bg-[#1a1a1a] border-[#333] mt-1"
                     placeholder="My Recovery Legend"
                     data-testid="input-legend-title"
                   />
@@ -271,7 +271,7 @@ export default function DraftYourLegend() {
                       setLegend({ ...legend, subtitle: e.target.value });
                       setHasChanges(true);
                     }}
-                    className="bg-zinc-800 border-zinc-700 mt-1"
+                    className="bg-[#1a1a1a] border-[#333] mt-1"
                     placeholder="A Stroke Survivor's Journey"
                     data-testid="input-legend-subtitle"
                   />

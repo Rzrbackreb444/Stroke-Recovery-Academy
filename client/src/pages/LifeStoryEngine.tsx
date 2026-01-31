@@ -57,10 +57,10 @@ import type { LifeStory } from "@shared/schema";
 const milestoneTypes = [
   { value: "birth", label: "Birth", icon: Baby, color: "bg-pink-500/20 text-pink-400" },
   { value: "education", label: "Education", icon: GraduationCap, color: "bg-blue-500/20 text-blue-400" },
-  { value: "career", label: "Career", icon: Briefcase, color: "bg-green-500/20 text-green-400" },
+  { value: "career", label: "Career", icon: Briefcase, color: "bg-[#C9941A]/20 text-[#C9941A]" },
   { value: "relationship", label: "Relationship", icon: Heart, color: "bg-red-500/20 text-red-400" },
   { value: "achievement", label: "Achievement", icon: Trophy, color: "bg-yellow-500/20 text-yellow-400" },
-  { value: "challenge", label: "Challenge", icon: Mountain, color: "bg-amber-500/20 text-amber-400" },
+  { value: "challenge", label: "Challenge", icon: Mountain, color: "bg-[#C9941A]/20 text-[#C9941A]" },
   { value: "growth", label: "Growth", icon: Sprout, color: "bg-emerald-500/20 text-emerald-400" },
 ];
 
@@ -93,12 +93,12 @@ function StoryListSidebar({
   onCreateNew: () => void;
 }) {
   return (
-    <div className="w-72 border-r border-gray-800 bg-gray-950 flex flex-col h-full">
-      <div className="p-4 border-b border-gray-800">
+    <div className="w-72 border-r border-[#333] bg-gray-950 flex flex-col h-full">
+      <div className="p-4 border-b border-[#333]">
         <h2 className="text-lg font-semibold text-foreground mb-3">Life Stories</h2>
         <Button
           onClick={onCreateNew}
-          className="w-full bg-orange-500 hover:bg-orange-600 text-foreground"
+          className="w-full bg-[#C9941A] hover:bg-[#C9941A] text-foreground"
           data-testid="button-create-story"
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -128,7 +128,7 @@ function StoryListSidebar({
                 data-testid={`button-story-${story.id}`}
               >
                 <div className="flex items-start gap-2">
-                  <BookOpen className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                  <BookOpen className="w-4 h-4 text-[#C9941A] mt-0.5 flex-shrink-0" />
                   <div className="min-w-0">
                     <p className="text-foreground font-medium truncate text-sm">
                       {story.title}
@@ -185,7 +185,7 @@ function StoryHeader({
   };
 
   return (
-    <Card className="bg-gray-950 border-gray-800">
+    <Card className="bg-gray-950 border-[#333]">
       <CardHeader>
         <div className="space-y-4">
           <div>
@@ -198,7 +198,7 @@ function StoryHeader({
               onChange={(e) => setTitle(e.target.value)}
               onBlur={handleTitleBlur}
               placeholder="My Life Story"
-              className="mt-1 bg-gray-900 border-gray-700 text-foreground text-xl font-semibold"
+              className="mt-1 bg-[#1a1a1a] border-[#333] text-foreground text-xl font-semibold"
               data-testid="input-story-title"
             />
           </div>
@@ -212,7 +212,7 @@ function StoryHeader({
               onChange={(e) => setSubtitle(e.target.value)}
               onBlur={handleSubtitleBlur}
               placeholder="A journey of growth and discovery..."
-              className="mt-1 bg-gray-900 border-gray-700 text-foreground"
+              className="mt-1 bg-[#1a1a1a] border-[#333] text-foreground"
               data-testid="input-story-subtitle"
             />
           </div>
@@ -223,7 +223,7 @@ function StoryHeader({
                 <Badge
                   key={theme}
                   variant="outline"
-                  className="bg-primary/10 border text-primary"
+                  className="bg-primary/10 border text-[#C9941A]"
                 >
                   {theme}
                   <button
@@ -242,13 +242,13 @@ function StoryHeader({
                 onChange={(e) => setThemeInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleAddTheme()}
                 placeholder="Add theme (e.g., triumph, love, growth)"
-                className="bg-gray-900 border-gray-700 text-foreground"
+                className="bg-[#1a1a1a] border-[#333] text-foreground"
                 data-testid="input-theme"
               />
               <Button
                 onClick={handleAddTheme}
                 variant="outline"
-                className="border-gray-700"
+                className="border-[#333]"
                 data-testid="button-add-theme"
               >
                 <Plus className="w-4 h-4" />
@@ -291,7 +291,7 @@ function TimelineSection({
   );
 
   return (
-    <Card className="bg-gray-950 border-gray-800">
+    <Card className="bg-gray-950 border-[#333]">
       <CardHeader className="flex flex-row items-center justify-between gap-4 pb-4">
         <div>
           <CardTitle className="text-foreground text-lg">Life Timeline</CardTitle>
@@ -302,14 +302,14 @@ function TimelineSection({
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button
-              className="bg-orange-500 hover:bg-orange-600"
+              className="bg-[#C9941A] hover:bg-[#C9941A]"
               data-testid="button-add-milestone"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Milestone
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-gray-950 border-gray-800">
+          <DialogContent className="bg-gray-950 border-[#333]">
             <DialogHeader>
               <DialogTitle className="text-foreground">Add Life Milestone</DialogTitle>
               <DialogDescription className="text-gray-400">
@@ -329,7 +329,7 @@ function TimelineSection({
                       setNewMilestone({ ...newMilestone, year: e.target.value })
                     }
                     placeholder="1990 or June 2020"
-                    className="mt-1 bg-gray-900 border-gray-700 text-foreground"
+                    className="mt-1 bg-[#1a1a1a] border-[#333] text-foreground"
                     data-testid="input-milestone-year"
                   />
                 </div>
@@ -345,12 +345,12 @@ function TimelineSection({
                   >
                     <SelectTrigger
                       id="milestone-type"
-                      className="mt-1 bg-gray-900 border-gray-700 text-foreground"
+                      className="mt-1 bg-[#1a1a1a] border-[#333] text-foreground"
                       data-testid="select-milestone-type"
                     >
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-900 border-gray-700">
+                    <SelectContent className="bg-[#1a1a1a] border-[#333]">
                       {milestoneTypes.map((type) => (
                         <SelectItem
                           key={type.value}
@@ -378,7 +378,7 @@ function TimelineSection({
                     setNewMilestone({ ...newMilestone, title: e.target.value })
                   }
                   placeholder="What happened?"
-                  className="mt-1 bg-gray-900 border-gray-700 text-foreground"
+                  className="mt-1 bg-[#1a1a1a] border-[#333] text-foreground"
                   data-testid="input-milestone-title"
                 />
               </div>
@@ -393,14 +393,14 @@ function TimelineSection({
                     setNewMilestone({ ...newMilestone, description: e.target.value })
                   }
                   placeholder="Tell the story of this moment..."
-                  className="mt-1 bg-gray-900 border-gray-700 text-foreground min-h-[100px]"
+                  className="mt-1 bg-[#1a1a1a] border-[#333] text-foreground min-h-[100px]"
                   data-testid="input-milestone-description"
                 />
               </div>
               <Button
                 onClick={handleAdd}
                 disabled={!newMilestone.year || !newMilestone.title || isAdding}
-                className="w-full bg-orange-500 hover:bg-orange-600"
+                className="w-full bg-[#C9941A] hover:bg-[#C9941A]"
                 data-testid="button-save-milestone"
               >
                 {isAdding ? (
@@ -440,7 +440,7 @@ function TimelineSection({
                     >
                       <Icon className="w-3 h-3" />
                     </div>
-                    <Card className="bg-gray-900/50 border-gray-800 hover-elevate">
+                    <Card className="bg-[#1a1a1a]/50 border-[#333] hover-elevate">
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between gap-4">
                           <div className="min-w-0 flex-1">
@@ -526,10 +526,10 @@ function ChapterGenerator({
   });
 
   return (
-    <Card className="bg-gray-950 border-gray-800">
+    <Card className="bg-gray-950 border-[#333]">
       <CardHeader>
         <CardTitle className="text-foreground text-lg flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-primary" />
+          <Sparkles className="w-5 h-5 text-[#C9941A]" />
           Chapter Generator
         </CardTitle>
         <CardDescription className="text-gray-400">
@@ -546,7 +546,7 @@ function ChapterGenerator({
             value={chapterTitle}
             onChange={(e) => setChapterTitle(e.target.value)}
             placeholder="e.g., The Day Everything Changed"
-            className="mt-1 bg-gray-900 border-gray-700 text-foreground"
+            className="mt-1 bg-[#1a1a1a] border-[#333] text-foreground"
             data-testid="input-chapter-title"
           />
         </div>
@@ -559,14 +559,14 @@ function ChapterGenerator({
             value={chapterContext}
             onChange={(e) => setChapterContext(e.target.value)}
             placeholder="Describe what this chapter should cover, the emotions, events, and lessons..."
-            className="mt-1 bg-gray-900 border-gray-700 text-foreground min-h-[120px]"
+            className="mt-1 bg-[#1a1a1a] border-[#333] text-foreground min-h-[120px]"
             data-testid="input-chapter-context"
           />
         </div>
         <Button
           onClick={() => generateMutation.mutate()}
           disabled={generateMutation.isPending}
-          className="w-full bg-orange-500 hover:bg-orange-600"
+          className="w-full bg-[#C9941A] hover:bg-[#C9941A]"
           data-testid="button-generate-chapter"
         >
           {generateMutation.isPending ? (
@@ -591,11 +591,11 @@ function ChapterGenerator({
                 {chapters.map((chapter) => (
                   <div
                     key={chapter.id}
-                    className="flex items-center justify-between p-3 bg-gray-900/50 rounded-md border border-gray-800"
+                    className="flex items-center justify-between p-3 bg-[#1a1a1a]/50 rounded-md border border-[#333]"
                     data-testid={`chapter-item-${chapter.id}`}
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <FileText className="w-4 h-4 text-primary flex-shrink-0" />
+                      <FileText className="w-4 h-4 text-[#C9941A] flex-shrink-0" />
                       <div className="min-w-0">
                         <p className="text-foreground text-sm font-medium truncate">
                           {chapter.title}
@@ -627,7 +627,7 @@ function ChapterGenerator({
           open={!!selectedChapter}
           onOpenChange={(open) => !open && setSelectedChapter(null)}
         >
-          <DialogContent className="bg-gray-950 border-gray-800 max-w-3xl max-h-[80vh]">
+          <DialogContent className="bg-gray-950 border-[#333] max-w-3xl max-h-[80vh]">
             <DialogHeader>
               <DialogTitle className="text-foreground">
                 {selectedChapter?.title}
@@ -655,7 +655,7 @@ function AttachmentsSection({
   onAddAttachment: (type: string) => void;
 }) {
   return (
-    <Card className="bg-gray-950 border-gray-800">
+    <Card className="bg-gray-950 border-[#333]">
       <CardHeader>
         <CardTitle className="text-foreground text-lg">Attachments</CardTitle>
         <CardDescription className="text-gray-400">
@@ -666,7 +666,7 @@ function AttachmentsSection({
         <div className="grid grid-cols-2 gap-4">
           <button
             onClick={() => onAddAttachment("photo")}
-            className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-gray-700 rounded-lg hover:border-orange-500/50 transition-colors"
+            className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-[#333] rounded-lg hover:border-[#C9941A]/50 transition-colors"
             data-testid="button-add-photo"
           >
             <Image className="w-8 h-8 text-gray-500 mb-2" />
@@ -675,7 +675,7 @@ function AttachmentsSection({
           </button>
           <button
             onClick={() => onAddAttachment("document")}
-            className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-gray-700 rounded-lg hover:border-orange-500/50 transition-colors"
+            className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-[#333] rounded-lg hover:border-[#C9941A]/50 transition-colors"
             data-testid="button-add-document"
           >
             <FileText className="w-8 h-8 text-gray-500 mb-2" />
@@ -688,7 +688,7 @@ function AttachmentsSection({
             {attachments.map((attachment, index) => (
               <div
                 key={index}
-                className="aspect-square bg-gray-900 rounded-md flex items-center justify-center"
+                className="aspect-square bg-[#1a1a1a] rounded-md flex items-center justify-center"
               >
                 {attachment.type === "photo" ? (
                   <Image className="w-6 h-6 text-gray-600" />
@@ -837,7 +837,7 @@ export default function LifeStoryEngine() {
                 <Button
                   onClick={() => createMutation.mutate()}
                   disabled={createMutation.isPending}
-                  className="bg-orange-500 hover:bg-orange-600"
+                  className="bg-[#C9941A] hover:bg-[#C9941A]"
                   data-testid="button-create-first-story"
                 >
                   {createMutation.isPending ? (
@@ -858,7 +858,7 @@ export default function LifeStoryEngine() {
                 <Link href="/book-studio">
                   <Button
                     variant="outline"
-                    className="border text-primary hover:bg-primary/10"
+                    className="border text-[#C9941A] hover:bg-primary/10"
                     data-testid="button-export-to-book"
                   >
                     <ExternalLink className="w-4 h-4 mr-2" />

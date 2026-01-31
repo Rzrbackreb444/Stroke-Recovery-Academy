@@ -59,11 +59,11 @@ export default function MagicLinkLogin() {
 
   if (emailSent) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-green-500/10 flex items-center justify-center">
-              <CheckCircle className="h-6 w-6 text-green-500" />
+            <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-[#C9941A]/10 flex items-center justify-center">
+              <CheckCircle className="h-6 w-6 text-[#C9941A]" />
             </div>
             <CardTitle data-testid="text-success-title">Check your email</CardTitle>
             <CardDescription data-testid="text-success-description">
@@ -71,7 +71,7 @@ export default function MagicLinkLogin() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-sm text-muted-foreground text-center">
+            <p className="text-sm text-gray-400 text-center">
               Click the link in the email to sign in. The link expires in 15 minutes.
             </p>
             <Button
@@ -93,11 +93,11 @@ export default function MagicLinkLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-            <Mail className="h-6 w-6 text-primary" />
+            <Mail className="h-6 w-6 text-[#C9941A]" />
           </div>
           <CardTitle data-testid="text-login-title">Sign in with Magic Link</CardTitle>
           <CardDescription data-testid="text-login-description">
@@ -201,13 +201,13 @@ export function MagicLinkVerify() {
   }, [params.token, navigate, toast]);
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           {status === "verifying" && (
             <>
               <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Loader2 className="h-6 w-6 text-primary animate-spin" />
+                <Loader2 className="h-6 w-6 text-[#C9941A] animate-spin" />
               </div>
               <CardTitle data-testid="text-verifying-title">Verifying magic link...</CardTitle>
               <CardDescription>Please wait while we sign you in.</CardDescription>
@@ -215,8 +215,8 @@ export function MagicLinkVerify() {
           )}
           {status === "success" && (
             <>
-              <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-green-500/10 flex items-center justify-center">
-                <CheckCircle className="h-6 w-6 text-green-500" />
+              <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-[#C9941A]/10 flex items-center justify-center">
+                <CheckCircle className="h-6 w-6 text-[#C9941A]" />
               </div>
               <CardTitle data-testid="text-success-title">Signed in!</CardTitle>
               <CardDescription>Redirecting to your dashboard...</CardDescription>

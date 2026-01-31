@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 const GOLD = "#C9941A";
-const FOREST_GREEN = "#1B4332";
+const FOREST_GREEN = "#C9941A";
 
 interface AnalyticsData {
   totalScans: number;

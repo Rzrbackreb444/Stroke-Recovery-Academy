@@ -410,7 +410,7 @@ export function WorkspaceShell({
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <Activity className="h-3 w-3 text-green-500" />
+                <Activity className="h-3 w-3 text-[#C9941A]" />
                 <span className={cn(
                   "text-[10px] font-mono font-medium",
                   isDark ? "text-stone-300" : "text-[#1A1A1A]/70"

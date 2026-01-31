@@ -35,13 +35,13 @@ export default function Landing() {
       <div className="flex items-center justify-center h-screen p-4" data-testid="loading-state">
         <Card className="w-full max-w-md p-8">
           <div className="flex flex-col items-center gap-6">
-            <Loader2 className="h-12 w-12 animate-spin text-primary" data-testid="spinner" />
+            <Loader2 className="h-12 w-12 animate-spin text-[#C9941A]" data-testid="spinner" />
             <div className="w-full space-y-3">
               <Skeleton className="h-4 w-full" />
               <Skeleton className="h-4 w-3/4" />
               <Skeleton className="h-4 w-5/6" />
             </div>
-            <div className="text-sm font-medium text-muted-foreground">
+            <div className="text-sm font-medium text-gray-400">
               Loading...
             </div>
           </div>
@@ -51,7 +51,7 @@ export default function Landing() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#0D0D0D]">
       <RecoveryHeader />
       <main>
         <HeroSection />

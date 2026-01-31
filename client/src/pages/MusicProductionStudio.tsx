@@ -53,7 +53,7 @@ export default function MusicProductionStudio() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
-      <header className="sticky top-0 z-50 border-b border-gray-800 bg-[#0a0a0a]/95 backdrop-blur">
+      <header className="sticky top-0 z-50 border-b border-[#333] bg-[#0a0a0a]/95 backdrop-blur">
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-4">
             <Link href="/dashboard">
@@ -74,7 +74,7 @@ export default function MusicProductionStudio() {
 
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="hidden md:flex">
-              <Sparkles className="w-3 h-3 mr-1 text-orange-500" />
+              <Sparkles className="w-3 h-3 mr-1 text-[#C9941A]" />
               AI Powered
             </Badge>
             
@@ -98,7 +98,7 @@ export default function MusicProductionStudio() {
               <span className="hidden md:inline ml-2">Export</span>
             </Button>
             
-            <Button size="sm" className="bg-orange-500 hover:bg-orange-600" data-testid="button-share">
+            <Button size="sm" className="bg-[#C9941A] hover:bg-[#C9941A]" data-testid="button-share">
               <Share2 className="w-4 h-4" />
               <span className="hidden md:inline ml-2">Publish</span>
             </Button>
@@ -106,12 +106,12 @@ export default function MusicProductionStudio() {
         </div>
 
         <div className="px-4 pb-2">
-          <div className="flex gap-1 bg-gray-900 p-1 rounded-lg w-fit">
+          <div className="flex gap-1 bg-[#1a1a1a] p-1 rounded-lg w-fit">
             <Button
               size="sm"
               variant={activeView === "dj" ? "default" : "ghost"}
               onClick={() => setActiveView("dj")}
-              className={activeView === "dj" ? "bg-orange-500" : ""}
+              className={activeView === "dj" ? "bg-[#C9941A]" : ""}
               data-testid="button-view-dj"
             >
               <Disc className="w-4 h-4 mr-2" />
@@ -121,7 +121,7 @@ export default function MusicProductionStudio() {
               size="sm"
               variant={activeView === "production" ? "default" : "ghost"}
               onClick={() => setActiveView("production")}
-              className={activeView === "production" ? "bg-orange-500" : ""}
+              className={activeView === "production" ? "bg-[#C9941A]" : ""}
               data-testid="button-view-production"
             >
               <Sliders className="w-4 h-4 mr-2" />
@@ -131,7 +131,7 @@ export default function MusicProductionStudio() {
               size="sm"
               variant={activeView === "ai" ? "default" : "ghost"}
               onClick={() => setActiveView("ai")}
-              className={activeView === "ai" ? "bg-orange-500" : ""}
+              className={activeView === "ai" ? "bg-[#C9941A]" : ""}
               data-testid="button-view-ai"
             >
               <Sparkles className="w-4 h-4 mr-2" />
@@ -196,7 +196,7 @@ export default function MusicProductionStudio() {
         )}
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 border-t border-gray-800 bg-[#0a0a0a]/95 backdrop-blur p-2">
+      <footer className="fixed bottom-0 left-0 right-0 border-t border-[#333] bg-[#0a0a0a]/95 backdrop-blur p-2">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">

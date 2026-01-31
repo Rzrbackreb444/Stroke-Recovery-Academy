@@ -192,11 +192,11 @@ export default function AdminPlanBuilder() {
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case "diet": return <Apple className="w-5 h-5 text-green-400" />;
+      case "diet": return <Apple className="w-5 h-5 text-[#C9941A]" />;
       case "exercise": return <Dumbbell className="w-5 h-5 text-blue-400" />;
-      case "cognitive": return <Brain className="w-5 h-5 text-amber-400" />;
+      case "cognitive": return <Brain className="w-5 h-5 text-[#C9941A]" />;
       case "recovery": return <Heart className="w-5 h-5 text-red-400" />;
-      default: return <Target className="w-5 h-5 text-primary" />;
+      default: return <Target className="w-5 h-5 text-[#C9941A]" />;
     }
   };
 
@@ -217,7 +217,7 @@ export default function AdminPlanBuilder() {
 
   if (user?.role !== "admin") {
     return (
-      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
+      <div className="min-h-screen bg-[#0D0D0D] text-foreground flex items-center justify-center">
         <div className="text-center">
           <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
           <h1 className="text-2xl font-bold mb-2">Access Denied</h1>
@@ -228,7 +228,7 @@ export default function AdminPlanBuilder() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-[#0D0D0D] text-foreground">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -246,7 +246,7 @@ export default function AdminPlanBuilder() {
                 Create Plan
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-gray-900 border-gray-800 max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogContent className="bg-[#1a1a1a] border-[#333] max-w-2xl max-h-[80vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle className="text-foreground">Create Recovery Plan</DialogTitle>
               </DialogHeader>
@@ -258,7 +258,7 @@ export default function AdminPlanBuilder() {
                       value={planForm.name}
                       onChange={(e) => setPlanForm({ ...planForm, name: e.target.value })}
                       placeholder="e.g., 12-Week Upper Body Recovery"
-                      className="bg-gray-800 border-gray-700"
+                      className="bg-gray-800 border-[#333]"
                     />
                   </div>
                   <div className="col-span-2">
@@ -267,7 +267,7 @@ export default function AdminPlanBuilder() {
                       value={planForm.description}
                       onChange={(e) => setPlanForm({ ...planForm, description: e.target.value })}
                       placeholder="Describe the plan and its goals..."
-                      className="bg-gray-800 border-gray-700"
+                      className="bg-gray-800 border-[#333]"
                     />
                   </div>
                   <div>
@@ -276,7 +276,7 @@ export default function AdminPlanBuilder() {
                       value={planForm.category}
                       onValueChange={(v: any) => setPlanForm({ ...planForm, category: v })}
                     >
-                      <SelectTrigger className="bg-gray-800 border-gray-700">
+                      <SelectTrigger className="bg-gray-800 border-[#333]">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -294,7 +294,7 @@ export default function AdminPlanBuilder() {
                       value={planForm.difficulty}
                       onValueChange={(v: any) => setPlanForm({ ...planForm, difficulty: v })}
                     >
-                      <SelectTrigger className="bg-gray-800 border-gray-700">
+                      <SelectTrigger className="bg-gray-800 border-[#333]">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -310,7 +310,7 @@ export default function AdminPlanBuilder() {
                       type="number"
                       value={planForm.duration}
                       onChange={(e) => setPlanForm({ ...planForm, duration: parseInt(e.target.value) })}
-                      className="bg-gray-800 border-gray-700"
+                      className="bg-gray-800 border-[#333]"
                     />
                   </div>
                   <div className="flex items-center gap-4">
@@ -338,7 +338,7 @@ export default function AdminPlanBuilder() {
                       value={newGoal}
                       onChange={(e) => setNewGoal(e.target.value)}
                       placeholder="Add a goal..."
-                      className="bg-gray-800 border-gray-700"
+                      className="bg-gray-800 border-[#333]"
                       onKeyPress={(e) => e.key === "Enter" && addGoal()}
                     />
                     <Button type="button" onClick={addGoal} variant="outline" size="icon">
@@ -370,7 +370,7 @@ export default function AdminPlanBuilder() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-gray-900 mb-6">
+          <TabsList className="bg-[#1a1a1a] mb-6">
             <TabsTrigger value="plans" data-testid="tab-plans">
               Recovery Plans ({plans?.length || 0})
             </TabsTrigger>
@@ -390,7 +390,7 @@ export default function AdminPlanBuilder() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search plans..."
-                  className="pl-10 bg-gray-900 border-gray-800"
+                  className="pl-10 bg-[#1a1a1a] border-[#333]"
                 />
               </div>
               <Button variant="outline">
@@ -401,12 +401,12 @@ export default function AdminPlanBuilder() {
 
             {isLoading ? (
               <div className="flex justify-center py-12">
-                <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                <Loader2 className="w-8 h-8 text-[#C9941A] animate-spin" />
               </div>
             ) : filteredPlans && filteredPlans.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredPlans.map((plan) => (
-                  <Card key={plan.id} className="bg-gray-900 border-gray-800" data-testid={`plan-${plan.id}`}>
+                  <Card key={plan.id} className="bg-[#1a1a1a] border-[#333]" data-testid={`plan-${plan.id}`}>
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between mb-4">
                         {getCategoryIcon(plan.category)}
@@ -414,7 +414,7 @@ export default function AdminPlanBuilder() {
                           {plan.isTemplate && (
                             <Badge variant="outline">Template</Badge>
                           )}
-                          <Badge className={plan.isPublished ? "bg-green-500/20 text-green-400" : "bg-gray-500/20 text-gray-400"}>
+                          <Badge className={plan.isPublished ? "bg-[#C9941A]/20 text-[#C9941A]" : "bg-gray-500/20 text-gray-400"}>
                             {plan.isPublished ? "Published" : "Draft"}
                           </Badge>
                         </div>
@@ -462,7 +462,7 @@ export default function AdminPlanBuilder() {
                 ))}
               </div>
             ) : (
-              <Card className="bg-gray-900 border-gray-800">
+              <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardContent className="py-12 text-center">
                   <FileText className="w-16 h-16 text-gray-600 mx-auto mb-4" />
                   <p className="text-gray-400 text-lg">No recovery plans yet</p>
@@ -477,7 +477,7 @@ export default function AdminPlanBuilder() {
           </TabsContent>
 
           <TabsContent value="templates" className="space-y-6">
-            <Card className="bg-gray-900 border-gray-800">
+            <Card className="bg-[#1a1a1a] border-[#333]">
               <CardHeader>
                 <CardTitle className="text-foreground">Pre-built Templates</CardTitle>
               </CardHeader>
@@ -489,7 +489,7 @@ export default function AdminPlanBuilder() {
                     { name: "Heart-Healthy Diet", category: "diet", duration: 4 },
                     { name: "Full Recovery Program", category: "comprehensive", duration: 16 },
                   ].map((template, i) => (
-                    <Card key={i} className="bg-gray-800 border-gray-700">
+                    <Card key={i} className="bg-gray-800 border-[#333]">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
@@ -513,7 +513,7 @@ export default function AdminPlanBuilder() {
           </TabsContent>
 
           <TabsContent value="assignments" className="space-y-6">
-            <Card className="bg-gray-900 border-gray-800">
+            <Card className="bg-[#1a1a1a] border-[#333]">
               <CardHeader>
                 <CardTitle className="text-foreground">Active Assignments</CardTitle>
               </CardHeader>
@@ -525,7 +525,7 @@ export default function AdminPlanBuilder() {
                         <div className="flex items-center gap-3">
                           <Avatar className="w-10 h-10">
                             <AvatarImage src={u.profileImageUrl} />
-                            <AvatarFallback className="bg-gray-700 text-primary">
+                            <AvatarFallback className="bg-gray-700 text-[#C9941A]">
                               {u.firstName?.[0]}{u.lastName?.[0]}
                             </AvatarFallback>
                           </Avatar>
@@ -552,7 +552,7 @@ export default function AdminPlanBuilder() {
         </Tabs>
 
         <Dialog open={assignPlanOpen} onOpenChange={setAssignPlanOpen}>
-          <DialogContent className="bg-gray-900 border-gray-800 max-w-md">
+          <DialogContent className="bg-[#1a1a1a] border-[#333] max-w-md">
             <DialogHeader>
               <DialogTitle className="text-foreground">
                 Assign: {selectedPlan?.name}
@@ -561,7 +561,7 @@ export default function AdminPlanBuilder() {
             <div className="space-y-4 py-4">
               <Input
                 placeholder="Search users..."
-                className="bg-gray-800 border-gray-700"
+                className="bg-gray-800 border-[#333]"
               />
               <div className="max-h-64 overflow-y-auto space-y-2">
                 {users?.map((u) => (
@@ -569,7 +569,7 @@ export default function AdminPlanBuilder() {
                     <Checkbox id={`user-${u.id}`} />
                     <Avatar className="w-8 h-8">
                       <AvatarImage src={u.profileImageUrl} />
-                      <AvatarFallback className="bg-gray-700 text-primary text-xs">
+                      <AvatarFallback className="bg-gray-700 text-[#C9941A] text-xs">
                         {u.firstName?.[0]}{u.lastName?.[0]}
                       </AvatarFallback>
                     </Avatar>

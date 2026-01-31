@@ -234,7 +234,7 @@ export default function Blackjack() {
                     {result}
                   </span>
                   {winAmount > 0 && (
-                    <span className="text-green-400 font-bold">+{winAmount}</span>
+                    <span className="text-[#C9941A] font-bold">+{winAmount}</span>
                   )}
                 </div>
               </div>

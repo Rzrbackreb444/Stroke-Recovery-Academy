@@ -37,16 +37,16 @@ const navLinks = [
   { href: "/recovery", label: "HOME", icon: Heart, description: "Recovery landing page" },
   { href: "/recovery/academy", label: "COURSES", icon: GraduationCap, description: "Learn recovery techniques" },
   { href: "/recovery/dashboard", label: "PROGRESS", icon: Target, description: "Track your recovery journey" },
-  { href: "/recovery/social", label: "COMMUNITY", icon: Users, description: "Connect with survivors" },
-  { href: "/recovery/university", label: "RESOURCES", icon: Building2, description: "Guides and tools" },
-  { href: "/strokelyfe", label: "DONATE", icon: Heart, description: "Support stroke survivors" },
+  { href: "/recovery/protocols", label: "PROTOCOLS", icon: Activity, description: "Recovery programs" },
+  { href: "/recovery/blog", label: "BLOG", icon: BookOpen, description: "Articles & survivor stories" },
+  { href: "/recovery/center-finder", label: "CENTERS", icon: Building2, description: "Find rehab centers" },
 ];
 
 const quickFeatures = [
-  { href: "/book-studio", label: "Write Your Story", icon: BookOpen, description: "Create your recovery memoir" },
-  { href: "/recovery/dashboard", label: "Progress Tracking", icon: Target, description: "Monitor your milestones" },
-  { href: "/recovery/exercises", label: "Daily Exercises", icon: Activity, description: "Personalized routines" },
-  { href: "/recovery/academy", label: "Brain Training", icon: Brain, description: "Cognitive exercises" },
+  { href: "/my-book", label: "My Book", icon: BookOpen, description: "Write your recovery story" },
+  { href: "/recovery/resources", label: "Resources", icon: Building2, description: "Guides and tools" },
+  { href: "/recovery/exercises", label: "Exercises", icon: Activity, description: "Daily routines" },
+  { href: "/recovery/social", label: "Community", icon: Users, description: "Connect with survivors" },
 ];
 
 export default function RecoveryHeader() {
@@ -64,10 +64,10 @@ export default function RecoveryHeader() {
   }, []);
 
   return (
-    <header className={`sticky top-0 z-50 transition-all duration-500 ${
+    <header className={`sticky top-0 z-50 transition-all duration-300 ${
       scrolled 
-        ? "bg-gradient-to-r from-zinc-950 via-zinc-900 to-black/95 backdrop-blur-xl border-b border-red-600/30 shadow-2xl shadow-red-900/20" 
-        : "bg-gradient-to-r from-zinc-900 via-black to-zinc-950 backdrop-blur-lg border-b border-red-700/20"
+        ? "bg-[#0D0D0D]/95 backdrop-blur-xl border-b border-[#C9941A]/30 shadow-lg shadow-black/50" 
+        : "bg-[#0D0D0D] border-b border-[#333]"
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-4 h-16">
@@ -76,7 +76,7 @@ export default function RecoveryHeader() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-emerald-400 gap-1"
+                className="text-[#C9941A] gap-1"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span className="hidden sm:inline text-xs">KreAIte</span>
@@ -88,14 +88,14 @@ export default function RecoveryHeader() {
                 <img 
                   src={strokeLyfeLogo} 
                   alt="Stroke Recovery Academy" 
-                  className="h-10 w-auto transition-transform duration-300 group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_rgba(220,38,38,0.6)]"
+                  className="h-10 w-auto transition-transform duration-300 group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_rgba(201,148,26,0.6)]"
                   data-testid="img-recovery-logo"
                 />
                 <div className="hidden sm:block">
-                  <div className="text-sm font-black text-white uppercase tracking-widest bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent transition-all duration-300">
+                  <div className="text-sm font-black text-white uppercase tracking-widest bg-gradient-to-r from-[#C9941A] to-[#C9941A] bg-clip-text text-transparent transition-all duration-300">
                     STROKE RECOVERY ACADEMY
                   </div>
-                  <div className="text-[10px] font-semibold text-red-400/70 uppercase tracking-wider">
+                  <div className="text-[10px] font-semibold text-[#C9941A]/70 uppercase tracking-wider">
                     Your Path to Recovery
                   </div>
                 </div>
@@ -109,20 +109,20 @@ export default function RecoveryHeader() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="font-bold text-xs tracking-wider text-white gap-1 hover:text-red-400 transition-colors duration-300"
+                  className="font-bold text-xs tracking-wider text-white gap-1 text-gray-300 transition-colors duration-300"
                   data-testid="dropdown-features"
                 >
-                  <Sparkles className="w-4 h-4 text-red-500 transition-all duration-300 group-hover:animate-spin" />
+                  <Sparkles className="w-4 h-4 text-[#C9941A] transition-all duration-300 group-hover:animate-spin" />
                   FEATURES
                   <ChevronDown className="w-3 h-3 transition-transform duration-300" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-72 bg-gradient-to-b from-zinc-900 to-black border border-red-700/40 backdrop-blur-md shadow-2xl shadow-red-900/40 animate-in fade-in-50 duration-200">
+              <DropdownMenuContent align="start" className="w-72 bg-gradient-to-b from-zinc-900 to-black border border-[#C9941A]/40 backdrop-blur-md shadow-2xl shadow-black/40 animate-in fade-in-50 duration-200">
                 {quickFeatures.map((feature) => (
                   <DropdownMenuItem key={feature.href} asChild>
                     <Link href={feature.href}>
-                      <div className="flex items-start gap-3 py-2 px-1 cursor-pointer w-full hover:bg-red-600/10 rounded-lg transition-all duration-200" data-testid={`link-feature-${feature.label.toLowerCase().replace(" ", "-")}`}>
-                        <feature.icon className="w-5 h-5 text-red-500 mt-0.5 transition-transform duration-300 group-hover:scale-110" />
+                      <div className="flex items-start gap-3 py-2 px-1 cursor-pointer w-full hover-elevate rounded-lg transition-all duration-200" data-testid={`link-feature-${feature.label.toLowerCase().replace(" ", "-")}`}>
+                        <feature.icon className="w-5 h-5 text-[#C9941A] mt-0.5 transition-transform duration-300 group-hover:scale-110" />
                         <div className="flex-1">
                           <div className="font-semibold text-white text-sm">
                             {feature.label}
@@ -143,7 +143,7 @@ export default function RecoveryHeader() {
                     variant="ghost"
                     size="sm"
                     data-testid={`link-${link.label.toLowerCase()}`}
-                    className="font-bold text-xs tracking-wider gap-1 text-red-500 hover:text-red-400 hover:bg-red-500/10 transition-all duration-300 rounded-lg"
+                    className="font-bold text-xs tracking-wider gap-1 text-[#C9941A] text-gray-300 hover:bg-red-500/10 transition-all duration-300 rounded-lg"
                   >
                     <link.icon className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" />
                     {link.label}
@@ -157,8 +157,8 @@ export default function RecoveryHeader() {
                     data-testid={`link-${link.label.toLowerCase()}`}
                     className={`font-bold text-xs tracking-wider gap-1 rounded-lg transition-all duration-300 ${
                       location === link.href 
-                        ? "text-red-500 bg-red-600/20 border border-red-500/30" 
-                        : "text-gray-300 hover:text-red-400 hover:bg-red-600/10 hover:border hover:border-red-500/20"
+                        ? "text-[#C9941A] bg-[#C9941A]/20 border border-red-500/30" 
+                        : "text-gray-300 text-gray-300 hover-elevate hover:border hover:border-red-500/20"
                     }`}
                   >
                     <link.icon className="w-4 h-4 transition-transform duration-300" />
@@ -175,40 +175,40 @@ export default function RecoveryHeader() {
             ) : user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="gap-2 hover:bg-red-600/10 transition-colors duration-300 rounded-lg" data-testid="dropdown-user">
+                  <Button variant="ghost" size="sm" className="gap-2 hover-elevate transition-colors duration-300 rounded-lg" data-testid="dropdown-user">
                     <Avatar className="h-7 w-7 border-2 border-red-500/50 transition-all duration-300 hover:border-red-500">
                       <AvatarImage src={user.profileImageUrl || undefined} />
-                      <AvatarFallback className="bg-red-600/30 text-red-400 text-xs font-bold">
+                      <AvatarFallback className="bg-[#C9941A]/30 text-[#C9941A] text-xs font-bold">
                         {user.firstName?.[0] || user.email?.[0]?.toUpperCase() || 'U'}
                       </AvatarFallback>
                     </Avatar>
                     <ChevronDown className="w-3 h-3 text-gray-400 transition-transform duration-300" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 bg-gradient-to-b from-zinc-900 to-black border border-red-700/40 backdrop-blur-md shadow-2xl shadow-red-900/40">
-                  <div className="px-3 py-2 border-b border-red-700/30">
+                <DropdownMenuContent align="end" className="w-56 bg-gradient-to-b from-zinc-900 to-black border border-[#C9941A]/40 backdrop-blur-md shadow-2xl shadow-black/40">
+                  <div className="px-3 py-2 border-b border-[#C9941A]/30">
                     <div className="font-bold text-white">{user.firstName || 'Survivor'}</div>
                     <div className="text-xs text-gray-400">{user.email}</div>
-                    <Badge variant="outline" className="mt-2 text-[10px] border-red-500/50 text-red-400 bg-red-600/10">
+                    <Badge variant="outline" className="mt-2 text-[10px] border-red-500/50 text-[#C9941A] bg-[#C9941A]/10">
                       <Heart className="w-3 h-3 mr-1" />
                       Recovery Member
                     </Badge>
                   </div>
                   <DropdownMenuItem asChild>
-                    <Link href="/recovery/dashboard" className="cursor-pointer hover:bg-red-600/10 transition-colors duration-200">
-                      <LayoutDashboard className="w-4 h-4 mr-2 text-red-500" />
+                    <Link href="/recovery/dashboard" className="cursor-pointer hover-elevate transition-colors duration-200">
+                      <LayoutDashboard className="w-4 h-4 mr-2 text-[#C9941A]" />
                       My Progress
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/settings" className="cursor-pointer hover:bg-red-600/10 transition-colors duration-200">
-                      <Settings className="w-4 h-4 mr-2 text-red-500" />
+                    <Link href="/settings" className="cursor-pointer hover-elevate transition-colors duration-200">
+                      <Settings className="w-4 h-4 mr-2 text-[#C9941A]" />
                       Settings
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className="bg-red-700/20" />
                   <DropdownMenuItem 
-                    className="cursor-pointer text-red-400 focus:text-red-400 hover:bg-red-600/20 transition-colors duration-200"
+                    className="cursor-pointer text-[#C9941A] focus:text-[#C9941A] hover:bg-[#C9941A]/20 transition-colors duration-200"
                     onClick={() => window.location.href = '/api/logout'}
                   >
                     <LogOut className="w-4 h-4 mr-2" />
@@ -221,7 +221,7 @@ export default function RecoveryHeader() {
                 size="sm"
                 data-testid="button-join"
                 onClick={() => window.location.href = '/api/login'}
-                className="font-bold text-xs tracking-wider bg-gradient-to-r from-red-600 to-red-700 text-white hover:from-red-500 hover:to-red-600 transition-all duration-300 rounded-lg shadow-lg shadow-red-600/50 hover:shadow-xl hover:shadow-red-600/70 border border-red-500/50 hover:border-red-400/80"
+                className="font-bold text-xs tracking-wider bg-gradient-to-r from-red-600 to-red-700 text-white hover:from-red-500 hover:to-[#C9941A] transition-all duration-300 rounded-lg shadow-lg shadow-red-600/50 hover:shadow-xl hover:shadow-red-600/70 border border-red-500/50 hover:border-red-400/80"
               >
                 JOIN RECOVERY
               </Button>
@@ -231,7 +231,7 @@ export default function RecoveryHeader() {
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden text-white hover:text-red-400 hover:bg-red-600/10 transition-all duration-300 rounded-lg"
+            className="lg:hidden text-white text-gray-300 hover-elevate transition-all duration-300 rounded-lg"
             data-testid="button-menu"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
@@ -240,12 +240,12 @@ export default function RecoveryHeader() {
         </div>
 
         {mobileMenuOpen && (
-          <div className="lg:hidden py-4 space-y-2 border-t border-red-700/30 bg-gradient-to-b from-black/50 to-transparent backdrop-blur-md animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="lg:hidden py-4 space-y-2 border-t border-[#C9941A]/30 bg-gradient-to-b from-black/50 to-transparent backdrop-blur-md animate-in fade-in slide-in-from-top-2 duration-300">
             {user && (
-              <div className="flex items-center gap-3 px-3 py-2 mb-2 bg-red-600/10 rounded-lg border border-red-500/20 transition-all duration-300">
+              <div className="flex items-center gap-3 px-3 py-2 mb-2 bg-[#C9941A]/10 rounded-lg border border-red-500/20 transition-all duration-300">
                 <Avatar className="h-10 w-10 border-2 border-red-500/50">
                   <AvatarImage src={user.profileImageUrl || undefined} />
-                  <AvatarFallback className="bg-red-600/30 text-red-400 font-bold">
+                  <AvatarFallback className="bg-[#C9941A]/30 text-[#C9941A] font-bold">
                     {user.firstName?.[0] || user.email?.[0]?.toUpperCase() || 'U'}
                   </AvatarFallback>
                 </Avatar>
@@ -259,7 +259,7 @@ export default function RecoveryHeader() {
             <Link href="/creator-landing">
               <Button
                 variant="ghost"
-                className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-red-600/10 gap-3 mb-2 transition-all duration-300 rounded-lg font-semibold"
+                className="w-full justify-start text-[#C9941A] hover:text-red-300 hover-elevate gap-3 mb-2 transition-all duration-300 rounded-lg font-semibold"
                 onClick={() => setMobileMenuOpen(false)}
                 data-testid="mobile-link-back"
               >
@@ -268,8 +268,8 @@ export default function RecoveryHeader() {
               </Button>
             </Link>
             
-            <div className="border-t border-red-700/30 my-2" />
-            <div className="text-xs font-black text-red-500 uppercase tracking-wider px-3 py-2">
+            <div className="border-t border-[#C9941A]/30 my-2" />
+            <div className="text-xs font-black text-[#C9941A] uppercase tracking-wider px-3 py-2">
               Recovery Navigation
             </div>
             
@@ -279,13 +279,13 @@ export default function RecoveryHeader() {
                   variant="ghost"
                   className={`w-full justify-start gap-3 transition-all duration-300 rounded-lg ${
                     location === link.href 
-                      ? "bg-red-600/20 border border-red-500/30 text-red-400" 
-                      : "hover:bg-red-600/10 hover:text-red-400 text-gray-300"
+                      ? "bg-[#C9941A]/20 border border-red-500/30 text-[#C9941A]" 
+                      : "hover-elevate text-gray-300 text-gray-300"
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                   data-testid={`mobile-link-${link.label.toLowerCase()}`}
                 >
-                  <link.icon className="w-5 h-5 text-red-500 transition-transform duration-300" />
+                  <link.icon className="w-5 h-5 text-[#C9941A] transition-transform duration-300" />
                   <div className="flex-1 text-left">
                     <div className="font-semibold">{link.label}</div>
                     <div className="text-[10px] text-gray-400">{link.description}</div>
@@ -294,13 +294,13 @@ export default function RecoveryHeader() {
               </Link>
             ))}
             
-            <div className="pt-2 space-y-2 border-t border-red-700/30 mt-2">
+            <div className="pt-2 space-y-2 border-t border-[#C9941A]/30 mt-2">
               {user ? (
                 <>
                   <Link href="/settings">
                     <Button
                       variant="outline"
-                      className="w-full border-red-500/30 text-red-400 hover:bg-red-600/10 hover:text-red-300 transition-all duration-300 rounded-lg font-semibold gap-2"
+                      className="w-full border-red-500/30 text-[#C9941A] hover-elevate hover:text-red-300 transition-all duration-300 rounded-lg font-semibold gap-2"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       <Settings className="w-4 h-4" />
@@ -309,7 +309,7 @@ export default function RecoveryHeader() {
                   </Link>
                   <Button
                     variant="outline"
-                    className="w-full border-red-500/40 text-red-400 hover:bg-red-600/20 hover:text-red-300 transition-all duration-300 rounded-lg font-semibold gap-2"
+                    className="w-full border-red-500/40 text-[#C9941A] hover:bg-[#C9941A]/20 hover:text-red-300 transition-all duration-300 rounded-lg font-semibold gap-2"
                     onClick={() => window.location.href = '/api/logout'}
                   >
                     <LogOut className="w-4 h-4" />
@@ -318,7 +318,7 @@ export default function RecoveryHeader() {
                 </>
               ) : (
                 <Button
-                  className="w-full bg-gradient-to-r from-red-600 to-red-700 text-white hover:from-red-500 hover:to-red-600 transition-all duration-300 rounded-lg font-bold shadow-lg shadow-red-600/50 hover:shadow-xl hover:shadow-red-600/70 border border-red-500/50"
+                  className="w-full bg-gradient-to-r from-red-600 to-red-700 text-white hover:from-red-500 hover:to-[#C9941A] transition-all duration-300 rounded-lg font-bold shadow-lg shadow-red-600/50 hover:shadow-xl hover:shadow-red-600/70 border border-red-500/50"
                   data-testid="mobile-button-join"
                   onClick={() => window.location.href = '/api/login'}
                 >

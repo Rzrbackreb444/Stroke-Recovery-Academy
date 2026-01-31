@@ -23,12 +23,12 @@ type AchievementIconType = "target" | "flame" | "book" | "star" | "trophy" | "du
 const getAchievementIcon = (iconType: AchievementIconType) => {
   const iconClass = "w-6 h-6";
   switch (iconType) {
-    case "target": return <Target className={`${iconClass} text-orange-500`} />;
+    case "target": return <Target className={`${iconClass} text-[#C9941A]`} />;
     case "flame": return <Flame className={`${iconClass} text-red-500`} />;
     case "book": return <BookOpen className={`${iconClass} text-blue-500`} />;
     case "star": return <Star className={`${iconClass} text-yellow-500`} />;
-    case "trophy": return <Trophy className={`${iconClass} text-amber-500`} />;
-    case "dumbbell": return <Dumbbell className={`${iconClass} text-green-500`} />;
+    case "trophy": return <Trophy className={`${iconClass} text-[#C9941A]`} />;
+    case "dumbbell": return <Dumbbell className={`${iconClass} text-[#C9941A]`} />;
     case "graduation": return <GraduationCap className={`${iconClass} text-purple-500`} />;
     case "message": return <MessageSquare className={`${iconClass} text-cyan-500`} />;
     default: return <Award className={`${iconClass} text-gray-500`} />;
@@ -170,10 +170,10 @@ export default function StudentDashboard() {
   
   const getActivityIcon = (type: string) => {
     switch (type) {
-      case "lesson_complete": return <CheckCircle className="w-5 h-5 text-green-500" />;
+      case "lesson_complete": return <CheckCircle className="w-5 h-5 text-[#C9941A]" />;
       case "quiz_passed": return <Star className="w-5 h-5 text-yellow-500" />;
       case "certificate": return <Award className="w-5 h-5 text-purple-500" />;
-      case "streak": return <Flame className="w-5 h-5 text-orange-500" />;
+      case "streak": return <Flame className="w-5 h-5 text-[#C9941A]" />;
       case "comment": return <MessageSquare className="w-5 h-5 text-blue-500" />;
       default: return <Zap className="w-5 h-5 text-gray-500" />;
     }
@@ -192,7 +192,7 @@ export default function StudentDashboard() {
         {/* Welcome Section */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-4">
-            <Avatar className="w-16 h-16 border-2 border-orange-500">
+            <Avatar className="w-16 h-16 border-2 border-[#C9941A]">
               <AvatarImage src={mockUser.avatar} />
               <AvatarFallback className="bg-gradient-to-br from-orange-500 to-red-600 text-xl font-bold">
                 {mockUser.name.split(' ').map(n => n[0]).join('')}
@@ -201,12 +201,12 @@ export default function StudentDashboard() {
             <div>
               <h1 className="text-2xl font-bold">Welcome back, {mockUser.name.split(' ')[0]}!</h1>
               <div className="flex items-center gap-3 mt-1">
-                <Badge className="bg-orange-500/20 text-orange-400">
+                <Badge className="bg-[#C9941A]/20 text-[#C9941A]">
                   <Crown className="w-3 h-3 mr-1" />
                   {mockUser.level}
                 </Badge>
                 <span className="text-sm text-gray-400">
-                  <Flame className="w-4 h-4 inline mr-1 text-orange-500" />
+                  <Flame className="w-4 h-4 inline mr-1 text-[#C9941A]" />
                   {mockUser.streak} day streak
                 </span>
               </div>
@@ -220,7 +220,7 @@ export default function StudentDashboard() {
             </Button>
             {inProgressCourses.length > 0 && (
               <Button 
-                className="bg-orange-500" 
+                className="bg-[#C9941A]" 
                 onClick={() => navigate(`/course/${inProgressCourses[0].id}`)}
                 data-testid="button-continue-learning"
               >
@@ -233,29 +233,29 @@ export default function StudentDashboard() {
         
         {/* Quick Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <Card className="bg-zinc-900 border-zinc-800">
+          <Card className="bg-[#1a1a1a] border-[#333]">
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-2">
                 <Clock className="w-5 h-5 text-blue-500" />
-                <TrendingUp className="w-4 h-4 text-green-500" />
+                <TrendingUp className="w-4 h-4 text-[#C9941A]" />
               </div>
               <p className="text-2xl font-bold">{formatDuration(mockUser.totalLearningTime)}</p>
               <p className="text-xs text-gray-400">Total Learning Time</p>
             </CardContent>
           </Card>
           
-          <Card className="bg-zinc-900 border-zinc-800">
+          <Card className="bg-[#1a1a1a] border-[#333]">
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-2">
-                <BookOpen className="w-5 h-5 text-green-500" />
-                <span className="text-xs text-green-500">+1 this week</span>
+                <BookOpen className="w-5 h-5 text-[#C9941A]" />
+                <span className="text-xs text-[#C9941A]">+1 this week</span>
               </div>
               <p className="text-2xl font-bold">{mockUser.coursesCompleted}</p>
               <p className="text-xs text-gray-400">Courses Completed</p>
             </CardContent>
           </Card>
           
-          <Card className="bg-zinc-900 border-zinc-800">
+          <Card className="bg-[#1a1a1a] border-[#333]">
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-2">
                 <Award className="w-5 h-5 text-purple-500" />
@@ -265,11 +265,11 @@ export default function StudentDashboard() {
             </CardContent>
           </Card>
           
-          <Card className="bg-zinc-900 border-zinc-800">
+          <Card className="bg-[#1a1a1a] border-[#333]">
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-2">
-                <Flame className="w-5 h-5 text-orange-500" />
-                <span className="text-xs text-orange-500">Best: 28 days</span>
+                <Flame className="w-5 h-5 text-[#C9941A]" />
+                <span className="text-xs text-[#C9941A]">Best: 28 days</span>
               </div>
               <p className="text-2xl font-bold">{mockUser.streak} days</p>
               <p className="text-xs text-gray-400">Current Streak</p>
@@ -278,35 +278,35 @@ export default function StudentDashboard() {
         </div>
         
         {/* XP Progress */}
-        <Card className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border-orange-500/30 mb-8">
+        <Card className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border-[#C9941A]/30 mb-8">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-orange-500" />
+                <Sparkles className="w-5 h-5 text-[#C9941A]" />
                 <span className="font-semibold">Level Progress</span>
               </div>
               <span className="text-sm text-gray-400">{mockUser.xp} / {mockUser.nextLevelXp} XP</span>
             </div>
             <Progress value={(mockUser.xp / mockUser.nextLevelXp) * 100} className="h-2" />
             <p className="text-xs text-gray-400 mt-2">
-              {mockUser.nextLevelXp - mockUser.xp} XP until next level: <span className="text-orange-400">Recovery Legend</span>
+              {mockUser.nextLevelXp - mockUser.xp} XP until next level: <span className="text-[#C9941A]">Recovery Legend</span>
             </p>
           </CardContent>
         </Card>
         
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-zinc-900 border-zinc-800 mb-6">
-            <TabsTrigger value="overview" className="data-[state=active]:bg-orange-500" data-testid="tab-overview">
+          <TabsList className="bg-[#1a1a1a] border-[#333] mb-6">
+            <TabsTrigger value="overview" className="data-[state=active]:bg-[#C9941A]" data-testid="tab-overview">
               Overview
             </TabsTrigger>
-            <TabsTrigger value="courses" className="data-[state=active]:bg-orange-500" data-testid="tab-courses">
+            <TabsTrigger value="courses" className="data-[state=active]:bg-[#C9941A]" data-testid="tab-courses">
               My Courses
             </TabsTrigger>
-            <TabsTrigger value="achievements" className="data-[state=active]:bg-orange-500" data-testid="tab-achievements">
+            <TabsTrigger value="achievements" className="data-[state=active]:bg-[#C9941A]" data-testid="tab-achievements">
               Achievements
             </TabsTrigger>
-            <TabsTrigger value="certificates" className="data-[state=active]:bg-orange-500" data-testid="tab-certificates">
+            <TabsTrigger value="certificates" className="data-[state=active]:bg-[#C9941A]" data-testid="tab-certificates">
               Certificates
             </TabsTrigger>
           </TabsList>
@@ -316,10 +316,10 @@ export default function StudentDashboard() {
               {/* Left Column */}
               <div className="space-y-6">
                 {/* Continue Learning */}
-                <Card className="bg-zinc-900 border-zinc-800">
+                <Card className="bg-[#1a1a1a] border-[#333]">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg flex items-center gap-2">
-                      <PlayCircle className="w-5 h-5 text-orange-500" />
+                      <PlayCircle className="w-5 h-5 text-[#C9941A]" />
                       Continue Learning
                     </CardTitle>
                   </CardHeader>
@@ -328,12 +328,12 @@ export default function StudentDashboard() {
                       {inProgressCourses.map(course => (
                         <div 
                           key={course.id}
-                          className="flex items-center gap-4 p-4 bg-zinc-800 rounded-lg hover-elevate cursor-pointer"
+                          className="flex items-center gap-4 p-4 bg-[#1a1a1a] rounded-lg hover-elevate cursor-pointer"
                           onClick={() => navigate(`/course/${course.id}`)}
                           data-testid={`course-${course.id}`}
                         >
                           <div className="w-20 h-14 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-lg flex items-center justify-center">
-                            <GraduationCap className="w-8 h-8 text-orange-500" />
+                            <GraduationCap className="w-8 h-8 text-[#C9941A]" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <h3 className="font-semibold truncate">{course.title}</h3>
@@ -343,7 +343,7 @@ export default function StudentDashboard() {
                               <span className="text-xs text-gray-400">{course.progress}%</span>
                             </div>
                           </div>
-                          <Button size="icon" className="bg-orange-500 flex-shrink-0" data-testid={`button-play-${course.id}`}>
+                          <Button size="icon" className="bg-[#C9941A] flex-shrink-0" data-testid={`button-play-${course.id}`}>
                             <Play className="w-4 h-4" />
                           </Button>
                         </div>
@@ -353,10 +353,10 @@ export default function StudentDashboard() {
                 </Card>
                 
                 {/* Recommended */}
-                <Card className="bg-zinc-900 border-zinc-800">
+                <Card className="bg-[#1a1a1a] border-[#333]">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg flex items-center gap-2">
-                      <Target className="w-5 h-5 text-orange-500" />
+                      <Target className="w-5 h-5 text-[#C9941A]" />
                       Recommended For You
                     </CardTitle>
                   </CardHeader>
@@ -366,15 +366,15 @@ export default function StudentDashboard() {
                         { title: "Advanced Mobility Training", instructor: "Nick Kremers", duration: "6 hours", level: "Advanced" },
                         { title: "Mindfulness for Recovery", instructor: "Dr. Maya Patel", duration: "4 hours", level: "Beginner" },
                       ].map((course, idx) => (
-                        <div key={idx} className="p-4 bg-zinc-800 rounded-lg hover-elevate cursor-pointer">
+                        <div key={idx} className="p-4 bg-[#1a1a1a] rounded-lg hover-elevate cursor-pointer">
                           <div className="w-full h-24 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-lg flex items-center justify-center mb-3">
-                            <BookOpen className="w-10 h-10 text-orange-500/50" />
+                            <BookOpen className="w-10 h-10 text-[#C9941A]/50" />
                           </div>
                           <h4 className="font-semibold mb-1">{course.title}</h4>
                           <p className="text-sm text-gray-400">{course.instructor}</p>
                           <div className="flex items-center gap-2 mt-2">
-                            <Badge variant="outline" className="text-xs border-zinc-700">{course.duration}</Badge>
-                            <Badge variant="outline" className="text-xs border-zinc-700">{course.level}</Badge>
+                            <Badge variant="outline" className="text-xs border-[#333]">{course.duration}</Badge>
+                            <Badge variant="outline" className="text-xs border-[#333]">{course.level}</Badge>
                           </div>
                         </div>
                       ))}
@@ -385,11 +385,11 @@ export default function StudentDashboard() {
               
               {/* Right Column - Activity Feed */}
               <div className="space-y-6">
-                <Card className="bg-zinc-900 border-zinc-800">
+                <Card className="bg-[#1a1a1a] border-[#333]">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg flex items-center justify-between">
                       <span className="flex items-center gap-2">
-                        <Zap className="w-5 h-5 text-orange-500" />
+                        <Zap className="w-5 h-5 text-[#C9941A]" />
                         Recent Activity
                       </span>
                       <Button variant="ghost" size="sm" className="text-xs text-gray-400">
@@ -402,7 +402,7 @@ export default function StudentDashboard() {
                       <div className="space-y-4">
                         {mockActivity.map(activity => (
                           <div key={activity.id} className="flex items-start gap-3">
-                            <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center flex-shrink-0">
+                            <div className="w-10 h-10 rounded-full bg-[#1a1a1a] flex items-center justify-center flex-shrink-0">
                               {getActivityIcon(activity.type)}
                             </div>
                             <div className="flex-1 min-w-0">
@@ -418,10 +418,10 @@ export default function StudentDashboard() {
                 </Card>
                 
                 {/* Quick Achievements */}
-                <Card className="bg-zinc-900 border-zinc-800">
+                <Card className="bg-[#1a1a1a] border-[#333]">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg flex items-center gap-2">
-                      <Trophy className="w-5 h-5 text-orange-500" />
+                      <Trophy className="w-5 h-5 text-[#C9941A]" />
                       Latest Achievements
                     </CardTitle>
                   </CardHeader>
@@ -430,7 +430,7 @@ export default function StudentDashboard() {
                       {earnedAchievements.slice(0, 5).map(achievement => (
                         <div
                           key={achievement.id}
-                          className="w-12 h-12 rounded-lg bg-zinc-800 flex items-center justify-center hover:scale-110 transition-transform cursor-pointer"
+                          className="w-12 h-12 rounded-lg bg-[#1a1a1a] flex items-center justify-center hover:scale-110 transition-transform cursor-pointer"
                           title={achievement.title}
                           data-testid={`badge-achievement-${achievement.id}`}
                         >
@@ -439,7 +439,7 @@ export default function StudentDashboard() {
                       ))}
                       <Button
                         variant="ghost"
-                        className="w-12 h-12 rounded-lg border-2 border-dashed border-zinc-700"
+                        className="w-12 h-12 rounded-lg border-2 border-dashed border-[#333]"
                         onClick={() => setActiveTab("achievements")}
                       >
                         <ChevronRight className="w-5 h-5" />
@@ -463,21 +463,21 @@ export default function StudentDashboard() {
                   {inProgressCourses.map(course => (
                     <Card 
                       key={course.id} 
-                      className="bg-zinc-900 border-zinc-800 hover-elevate cursor-pointer overflow-hidden"
+                      className="bg-[#1a1a1a] border-[#333] hover-elevate cursor-pointer overflow-hidden"
                       onClick={() => navigate(`/course/${course.id}`)}
                     >
                       <div className="h-32 bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center">
-                        <GraduationCap className="w-16 h-16 text-orange-500/50" />
+                        <GraduationCap className="w-16 h-16 text-[#C9941A]/50" />
                       </div>
                       <CardContent className="p-4">
-                        <Badge className="bg-zinc-800 text-xs mb-2">{course.category}</Badge>
+                        <Badge className="bg-[#1a1a1a] text-xs mb-2">{course.category}</Badge>
                         <h3 className="font-semibold mb-1 line-clamp-2">{course.title}</h3>
                         <p className="text-sm text-gray-400 mb-3">{course.instructor}</p>
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-xs text-gray-400">
                             {course.completedLessons} / {course.totalLessons} lessons
                           </span>
-                          <span className="text-xs font-semibold text-orange-400">{course.progress}%</span>
+                          <span className="text-xs font-semibold text-[#C9941A]">{course.progress}%</span>
                         </div>
                         <Progress value={course.progress} className="h-1.5" />
                       </CardContent>
@@ -489,18 +489,18 @@ export default function StudentDashboard() {
               {/* Completed */}
               <div>
                 <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
+                  <CheckCircle className="w-5 h-5 text-[#C9941A]" />
                   Completed ({completedCourses.length})
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {completedCourses.map(course => (
                     <Card 
                       key={course.id} 
-                      className="bg-zinc-900 border-zinc-800 hover-elevate cursor-pointer overflow-hidden"
+                      className="bg-[#1a1a1a] border-[#333] hover-elevate cursor-pointer overflow-hidden"
                       onClick={() => navigate(`/course/${course.id}`)}
                     >
                       <div className="h-32 bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center relative">
-                        <GraduationCap className="w-16 h-16 text-green-500/50" />
+                        <GraduationCap className="w-16 h-16 text-[#C9941A]/50" />
                         {course.certificateEarned && (
                           <Badge className="absolute top-2 right-2 bg-purple-500">
                             <Award className="w-3 h-3 mr-1" />
@@ -509,7 +509,7 @@ export default function StudentDashboard() {
                         )}
                       </div>
                       <CardContent className="p-4">
-                        <Badge className="bg-green-500/20 text-green-400 text-xs mb-2">Completed</Badge>
+                        <Badge className="bg-[#C9941A]/20 text-[#C9941A] text-xs mb-2">Completed</Badge>
                         <h3 className="font-semibold mb-1 line-clamp-2">{course.title}</h3>
                         <p className="text-sm text-gray-400 mb-3">{course.instructor}</p>
                         <div className="flex gap-2">
@@ -542,13 +542,13 @@ export default function StudentDashboard() {
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {earnedAchievements.map(achievement => (
-                    <Card key={achievement.id} className="bg-zinc-900 border-zinc-800 p-4 text-center hover-elevate" data-testid={`card-earned-achievement-${achievement.id}`}>
+                    <Card key={achievement.id} className="bg-[#1a1a1a] border-[#333] p-4 text-center hover-elevate" data-testid={`card-earned-achievement-${achievement.id}`}>
                       <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-yellow-500/20 to-orange-500/20 flex items-center justify-center">
                         {getAchievementIcon(achievement.iconType)}
                       </div>
                       <h3 className="font-semibold mb-1">{achievement.title}</h3>
                       <p className="text-xs text-gray-400 mb-2">{achievement.description}</p>
-                      <p className="text-xs text-orange-400">{achievement.earnedAt?.toLocaleDateString()}</p>
+                      <p className="text-xs text-[#C9941A]">{achievement.earnedAt?.toLocaleDateString()}</p>
                     </Card>
                   ))}
                 </div>
@@ -562,8 +562,8 @@ export default function StudentDashboard() {
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {inProgressAchievements.map(achievement => (
-                    <Card key={achievement.id} className="bg-zinc-900 border-zinc-800 p-4 text-center" data-testid={`card-progress-achievement-${achievement.id}`}>
-                      <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-zinc-800 flex items-center justify-center grayscale opacity-50">
+                    <Card key={achievement.id} className="bg-[#1a1a1a] border-[#333] p-4 text-center" data-testid={`card-progress-achievement-${achievement.id}`}>
+                      <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-[#1a1a1a] flex items-center justify-center grayscale opacity-50">
                         {getAchievementIcon(achievement.iconType)}
                       </div>
                       <h3 className="font-semibold mb-1">{achievement.title}</h3>
@@ -580,7 +580,7 @@ export default function StudentDashboard() {
           <TabsContent value="certificates">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {completedCourses.filter(c => c.certificateEarned).map(course => (
-                <Card key={course.id} className="bg-zinc-900 border-zinc-800 overflow-hidden">
+                <Card key={course.id} className="bg-[#1a1a1a] border-[#333] overflow-hidden">
                   <div className="h-40 bg-gradient-to-br from-amber-100 to-yellow-50 p-6 relative">
                     <div className="absolute inset-0 flex items-center justify-center opacity-10">
                       <Award className="w-32 h-32 text-amber-600" />
@@ -604,7 +604,7 @@ export default function StudentDashboard() {
                         <Download className="w-3 h-3 mr-1" />
                         Download
                       </Button>
-                      <Button size="sm" className="flex-1 bg-orange-500">
+                      <Button size="sm" className="flex-1 bg-[#C9941A]">
                         <Share2 className="w-3 h-3 mr-1" />
                         Share
                       </Button>
@@ -615,8 +615,8 @@ export default function StudentDashboard() {
               
               {/* Locked certificates */}
               {inProgressCourses.map(course => (
-                <Card key={course.id} className="bg-zinc-900 border-zinc-800 overflow-hidden opacity-60">
-                  <div className="h-40 bg-zinc-800 p-6 relative">
+                <Card key={course.id} className="bg-[#1a1a1a] border-[#333] overflow-hidden opacity-60">
+                  <div className="h-40 bg-[#1a1a1a] p-6 relative">
                     <div className="absolute inset-0 flex items-center justify-center">
                       <Lock className="w-12 h-12 text-gray-600" />
                     </div>

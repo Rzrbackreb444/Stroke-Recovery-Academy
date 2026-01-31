@@ -11,7 +11,9 @@ KreAIte.xyz is an ultra-premium AI-powered creator platform featuring seven prof
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
-Design mandate: Literary warm palette - cream background (#FAF8F3), antique gold accent (#C9941A)
+Design mandate: 
+- Creator Platform: Literary warm palette - cream background (#FAF8F3), antique gold accent (#C9941A)
+- Stroke Recovery OS: Dark OS theme - black background (#0D0D0D), gold accents (#C9941A), card backgrounds (#1a1a1a), borders (#333)
 Icons: lucide-react only (no emoji)
 
 ## System Architecture
@@ -62,6 +64,17 @@ Icons: lucide-react only (no emoji)
 - **Enhanced Dynamic Sitemaps**: Main, Sitemap Index, Blog, and Marketplace sitemaps with extensive coverage.
 - **Lulu Publishing Integration**: Professional Print-on-Demand via OAuth2 API for book templates, trim sizes, binding types, print types, paper types, cover finishes, project creation, cost calculation, print orders, and webhook management.
 - **Stroke Recovery Academy**: Extended user profiles for recovery creators, monetization (tips, subscriptions, premium content), recovery stories, journey milestones, support groups, and curated resources.
+- **Stroke Recovery OS** (`/recovery/*`): Enterprise-grade recovery platform with dark OS aesthetic (#0D0D0D, #C9941A gold).
+  - **Recovery Dashboard**: Daily check-ins, habit tracking, 60-day tracker, motivational quotes.
+  - **Recovery University**: Course modules for survivors (Physical, Cognitive, Speech, Emotional recovery).
+  - **Recovery Store**: Supplements, equipment, books (Squatch Mix, recovery gear).
+  - **Recovery Center Finder** (`/recovery/center-finder`): ZIP-based search for rehab centers, neurologists, therapists.
+  - **Recovery Blog** (`/recovery/blog`): Survivor stories, recovery tips, expert articles from Nick Kremers.
+  - **Recovery Protocols** (`/recovery/protocols`): Evidence-based programs (Upper Extremity, Gait/Balance, Cognitive, Speech).
+  - **My Book** (`/my-book`): AI-assisted memoir writing with progress tracking.
+  - **Sasquatch Coach**: 24/7 AI companion with ElevenLabs raspy southern voice, Gemini AI backend, accountability focus.
+  - **Recovery Resources**: Curated guides, videos, podcasts, community support.
+  - **Additional features**: Exercises, Medical Log, Flicker Log, Journal, Reminders, Community.
 - **SquatchQR Platform**: Enterprise-grade dynamic QR code system for delivering daily quotes and rituals.
   - **Quote Studio** (`/squatch-qr/studio`): 4-tab dashboard (Projects, Create New, Quote Library, Analytics) with 4-step wizard for AI quote generation.
   - **QR Code Designer**: Customizable QR codes with color presets, logo overlay, PNG/SVG export.

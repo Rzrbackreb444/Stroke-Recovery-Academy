@@ -102,7 +102,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
 
   const headerBg = variant === "transparent" && !scrolled
     ? "bg-transparent"
-    : "bg-[#FAF8F3]/90 dark:bg-gray-900/90 backdrop-blur-2xl";
+    : "bg-[#FAF8F3]/90 dark:bg-[#1a1a1a]/90 backdrop-blur-2xl";
 
   const borderClass = variant === "transparent" && !scrolled
     ? "border-transparent"
@@ -142,7 +142,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                     <ChevronDown className="w-3 h-3 transition-transform duration-300" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-80 p-2 bg-[#FAF8F3] dark:bg-gray-900 border-[#C9941A]/20 animate-scale-in">
+                <DropdownMenuContent align="start" className="w-80 p-2 bg-[#FAF8F3] dark:bg-[#1a1a1a] border-[#C9941A]/20 animate-scale-in">
                   <DropdownMenuLabel className="text-xs font-bold text-[#C9941A] uppercase tracking-wider px-2">
                     Creator Studios
                   </DropdownMenuLabel>
@@ -309,7 +309,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 p-2 bg-[#FAF8F3] dark:bg-gray-900 border-[#C9941A]/20 animate-scale-in">
+                <DropdownMenuContent align="end" className="w-56 p-2 bg-[#FAF8F3] dark:bg-[#1a1a1a] border-[#C9941A]/20 animate-scale-in">
                   <div className="px-3 py-2 mb-2">
                     <p className="font-semibold text-gray-900 dark:text-white">
                       {user.firstName || "Creator"}
@@ -360,7 +360,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                   <Menu className="w-6 h-6 transition-transform duration-300" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] bg-[#FAF8F3] dark:bg-gray-900 p-0 animate-menu-slide-in">
+              <SheetContent side="right" className="w-[300px] bg-[#FAF8F3] dark:bg-[#1a1a1a] p-0 animate-menu-slide-in">
                 <SheetHeader className="p-4 border-b border-[#C9941A]/10">
                   <SheetTitle className="flex items-center gap-2 transition-transform duration-300 hover:scale-105">
                     <img 

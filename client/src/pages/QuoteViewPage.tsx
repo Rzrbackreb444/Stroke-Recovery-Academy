@@ -107,7 +107,7 @@ export default function QuoteViewPage() {
     }
   };
 
-  const brandColor = quoteData?.brandColor || "#1B4332";
+  const brandColor = quoteData?.brandColor || "#C9941A";
 
   if (isLoading) {
     return (
@@ -185,7 +185,7 @@ export default function QuoteViewPage() {
                 disabled={isPlaying}
                 data-testid="button-voice"
               >
-                <Volume2 className={`w-5 h-5 ${isPlaying ? "animate-pulse text-green-400" : ""}`} />
+                <Volume2 className={`w-5 h-5 ${isPlaying ? "animate-pulse text-[#C9941A]" : ""}`} />
               </Button>
               <Button
                 size="icon"

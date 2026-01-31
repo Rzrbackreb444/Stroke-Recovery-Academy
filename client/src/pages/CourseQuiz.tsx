@@ -313,7 +313,7 @@ export default function CourseQuiz() {
   
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case "easy": return "text-green-400 bg-green-500/20";
+      case "easy": return "text-[#C9941A] bg-[#C9941A]/20";
       case "medium": return "text-yellow-400 bg-yellow-500/20";
       case "hard": return "text-red-400 bg-red-500/20";
       default: return "text-gray-400 bg-gray-500/20";
@@ -324,7 +324,7 @@ export default function CourseQuiz() {
   if (!quizStarted) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center p-4">
-        <Card className="max-w-2xl w-full bg-zinc-900 border-zinc-800 p-8">
+        <Card className="max-w-2xl w-full bg-[#1a1a1a] border-[#333] p-8">
           <div className="text-center mb-8">
             <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center">
               <Brain className="w-10 h-10 text-white" />
@@ -334,48 +334,48 @@ export default function CourseQuiz() {
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div className="text-center p-4 bg-zinc-800 rounded-lg">
-              <HelpCircle className="w-6 h-6 text-orange-500 mx-auto mb-2" />
+            <div className="text-center p-4 bg-[#1a1a1a] rounded-lg">
+              <HelpCircle className="w-6 h-6 text-[#C9941A] mx-auto mb-2" />
               <p className="text-2xl font-bold">{totalQuestions}</p>
               <p className="text-xs text-gray-400">Questions</p>
             </div>
-            <div className="text-center p-4 bg-zinc-800 rounded-lg">
+            <div className="text-center p-4 bg-[#1a1a1a] rounded-lg">
               <Clock className="w-6 h-6 text-blue-500 mx-auto mb-2" />
               <p className="text-2xl font-bold">{Math.floor(mockQuiz.timeLimit / 60)}</p>
               <p className="text-xs text-gray-400">Minutes</p>
             </div>
-            <div className="text-center p-4 bg-zinc-800 rounded-lg">
-              <Target className="w-6 h-6 text-green-500 mx-auto mb-2" />
+            <div className="text-center p-4 bg-[#1a1a1a] rounded-lg">
+              <Target className="w-6 h-6 text-[#C9941A] mx-auto mb-2" />
               <p className="text-2xl font-bold">{mockQuiz.passingScore}%</p>
               <p className="text-xs text-gray-400">To Pass</p>
             </div>
-            <div className="text-center p-4 bg-zinc-800 rounded-lg">
+            <div className="text-center p-4 bg-[#1a1a1a] rounded-lg">
               <Star className="w-6 h-6 text-yellow-500 mx-auto mb-2" />
               <p className="text-2xl font-bold">{mockQuiz.questions.reduce((a, q) => a + q.points, 0)}</p>
               <p className="text-xs text-gray-400">Total Points</p>
             </div>
           </div>
           
-          <Card className="bg-zinc-800 border-zinc-700 p-4 mb-8">
+          <Card className="bg-[#1a1a1a] border-[#333] p-4 mb-8">
             <h3 className="font-semibold mb-3 flex items-center gap-2">
               <Lightbulb className="w-5 h-5 text-yellow-500" />
               Quiz Instructions
             </h3>
             <ul className="space-y-2 text-sm text-gray-400">
               <li className="flex items-start gap-2">
-                <Check className="w-4 h-4 text-green-500 mt-0.5" />
+                <Check className="w-4 h-4 text-[#C9941A] mt-0.5" />
                 Read each question carefully before answering
               </li>
               <li className="flex items-start gap-2">
-                <Check className="w-4 h-4 text-green-500 mt-0.5" />
+                <Check className="w-4 h-4 text-[#C9941A] mt-0.5" />
                 You can flag questions to review later
               </li>
               <li className="flex items-start gap-2">
-                <Check className="w-4 h-4 text-green-500 mt-0.5" />
+                <Check className="w-4 h-4 text-[#C9941A] mt-0.5" />
                 Use the navigation to jump between questions
               </li>
               <li className="flex items-start gap-2">
-                <Check className="w-4 h-4 text-green-500 mt-0.5" />
+                <Check className="w-4 h-4 text-[#C9941A] mt-0.5" />
                 Submit when you're ready - you can review answers after
               </li>
               {mockQuiz.allowRetry && (
@@ -398,7 +398,7 @@ export default function CourseQuiz() {
             </Button>
             <Button
               onClick={startQuiz}
-              className="flex-1 bg-orange-500"
+              className="flex-1 bg-[#C9941A]"
               data-testid="button-start-quiz"
             >
               <Zap className="w-4 h-4 mr-2" />
@@ -413,7 +413,7 @@ export default function CourseQuiz() {
   // Results dialog
   const ResultsDialog = () => (
     <Dialog open={showResultsDialog} onOpenChange={setShowResultsDialog}>
-      <DialogContent className="bg-zinc-900 border-zinc-800 max-w-lg">
+      <DialogContent className="bg-[#1a1a1a] border-[#333] max-w-lg">
         <DialogHeader>
           <DialogTitle className="text-center">
             {passed ? (
@@ -421,7 +421,7 @@ export default function CourseQuiz() {
                 <div className="w-20 h-20 mb-4 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
                   <Trophy className="w-10 h-10 text-white" />
                 </div>
-                <span className="text-2xl text-green-500">Congratulations!</span>
+                <span className="text-2xl text-[#C9941A]">Congratulations!</span>
               </div>
             ) : (
               <div className="flex flex-col items-center">
@@ -442,7 +442,7 @@ export default function CourseQuiz() {
           
           <div className="grid grid-cols-3 gap-4 mt-6">
             <div className="text-center">
-              <p className="text-2xl font-bold text-green-500">{results.filter(r => r.isCorrect).length}</p>
+              <p className="text-2xl font-bold text-[#C9941A]">{results.filter(r => r.isCorrect).length}</p>
               <p className="text-xs text-gray-400">Correct</p>
             </div>
             <div className="text-center">
@@ -469,7 +469,7 @@ export default function CourseQuiz() {
           {!passed && mockQuiz.allowRetry && (
             <Button
               onClick={retryQuiz}
-              className="flex-1 bg-orange-500"
+              className="flex-1 bg-[#C9941A]"
               data-testid="button-retry-quiz"
             >
               <RotateCcw className="w-4 h-4 mr-2" />
@@ -479,7 +479,7 @@ export default function CourseQuiz() {
           {passed && (
             <Button
               onClick={() => navigate("/course/1")}
-              className="flex-1 bg-green-500"
+              className="flex-1 bg-[#C9941A]"
               data-testid="button-continue-course"
             >
               <ArrowRight className="w-4 h-4 mr-2" />
@@ -495,7 +495,7 @@ export default function CourseQuiz() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-zinc-900 border-b border-zinc-800">
+      <header className="sticky top-0 z-50 bg-[#1a1a1a] border-b border-[#333]">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button
@@ -514,7 +514,7 @@ export default function CourseQuiz() {
           
           <div className="flex items-center gap-4">
             {!quizCompleted && (
-              <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg ${timeRemaining < 60 ? 'bg-red-500/20 text-red-400' : 'bg-zinc-800'}`}>
+              <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg ${timeRemaining < 60 ? 'bg-red-500/20 text-red-400' : 'bg-[#1a1a1a]'}`}>
                 <Timer className="w-4 h-4" />
                 <span className="font-mono font-semibold">{formatTime(timeRemaining)}</span>
               </div>
@@ -534,15 +534,15 @@ export default function CourseQuiz() {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr,280px] gap-8">
           {/* Question Area */}
           <div>
-            <Card className="bg-zinc-900 border-zinc-800 p-6 mb-6">
+            <Card className="bg-[#1a1a1a] border-[#333] p-6 mb-6">
               {/* Question header */}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <span className="text-3xl font-bold text-orange-500">Q{currentQuestionIndex + 1}</span>
+                  <span className="text-3xl font-bold text-[#C9941A]">Q{currentQuestionIndex + 1}</span>
                   <Badge className={getDifficultyColor(currentQuestion.difficulty)}>
                     {currentQuestion.difficulty}
                   </Badge>
-                  <Badge variant="outline" className="border-zinc-700">
+                  <Badge variant="outline" className="border-[#333]">
                     {currentQuestion.points} pts
                   </Badge>
                 </div>
@@ -581,19 +581,19 @@ export default function CourseQuiz() {
                           className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all ${
                             reviewMode
                               ? isCorrect
-                                ? 'bg-green-500/20 border-green-500'
+                                ? 'bg-[#C9941A]/20 border-green-500'
                                 : isWrong
                                 ? 'bg-red-500/20 border-red-500'
-                                : 'bg-zinc-800 border-zinc-700'
+                                : 'bg-[#1a1a1a] border-[#333]'
                               : answers[currentQuestion.id] === idx
-                              ? 'bg-orange-500/20 border-orange-500'
-                              : 'bg-zinc-800 border-zinc-700 hover:border-zinc-600'
+                              ? 'bg-[#C9941A]/20 border-[#C9941A]'
+                              : 'bg-[#1a1a1a] border-[#333] hover:border-zinc-600'
                           }`}
                           data-testid={`option-${idx}`}
                         >
                           <RadioGroupItem value={idx.toString()} className="border-2" />
                           <span className="flex-1">{option}</span>
-                          {reviewMode && isCorrect && <CheckCircle className="w-5 h-5 text-green-500" />}
+                          {reviewMode && isCorrect && <CheckCircle className="w-5 h-5 text-[#C9941A]" />}
                           {reviewMode && isWrong && <XCircle className="w-5 h-5 text-red-500" />}
                         </label>
                       );
@@ -615,13 +615,13 @@ export default function CourseQuiz() {
                           className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all ${
                             reviewMode
                               ? isCorrect
-                                ? 'bg-green-500/20 border-green-500'
+                                ? 'bg-[#C9941A]/20 border-green-500'
                                 : isWrong
                                 ? 'bg-red-500/20 border-red-500'
-                                : 'bg-zinc-800 border-zinc-700'
+                                : 'bg-[#1a1a1a] border-[#333]'
                               : isSelected
-                              ? 'bg-orange-500/20 border-orange-500'
-                              : 'bg-zinc-800 border-zinc-700 hover:border-zinc-600'
+                              ? 'bg-[#C9941A]/20 border-[#C9941A]'
+                              : 'bg-[#1a1a1a] border-[#333] hover:border-zinc-600'
                           }`}
                           data-testid={`option-${idx}`}
                         >
@@ -639,7 +639,7 @@ export default function CourseQuiz() {
                             }}
                           />
                           <span className="flex-1">{option}</span>
-                          {reviewMode && isCorrect && <CheckCircle className="w-5 h-5 text-green-500" />}
+                          {reviewMode && isCorrect && <CheckCircle className="w-5 h-5 text-[#C9941A]" />}
                           {reviewMode && isWrong && <XCircle className="w-5 h-5 text-red-500" />}
                         </label>
                       );
@@ -653,7 +653,7 @@ export default function CourseQuiz() {
                       onChange={(e) => !reviewMode && handleAnswer(e.target.value)}
                       placeholder="Type your answer..."
                       disabled={reviewMode}
-                      className={`bg-zinc-800 border-zinc-700 text-lg py-6 ${
+                      className={`bg-[#1a1a1a] border-[#333] text-lg py-6 ${
                         reviewMode
                           ? getQuestionResult(currentQuestion.id)?.isCorrect
                             ? 'border-green-500'
@@ -665,7 +665,7 @@ export default function CourseQuiz() {
                     {reviewMode && (
                       <p className="mt-2 text-sm">
                         <span className="text-gray-400">Correct answer: </span>
-                        <span className="text-green-400 font-semibold">{currentQuestion.correctAnswer as string}</span>
+                        <span className="text-[#C9941A] font-semibold">{currentQuestion.correctAnswer as string}</span>
                       </p>
                     )}
                   </div>
@@ -727,7 +727,7 @@ export default function CourseQuiz() {
                   <Button
                     variant="outline"
                     onClick={submitQuiz}
-                    className="border-green-500 text-green-500"
+                    className="border-green-500 text-[#C9941A]"
                     data-testid="button-submit"
                   >
                     <CheckCircle className="w-4 h-4 mr-2" />
@@ -737,7 +737,7 @@ export default function CourseQuiz() {
                 {reviewMode && (
                   <Button
                     onClick={() => navigate("/course/1")}
-                    className="bg-orange-500"
+                    className="bg-[#C9941A]"
                     data-testid="button-finish-review"
                   >
                     Finish Review
@@ -759,7 +759,7 @@ export default function CourseQuiz() {
           
           {/* Question Navigator */}
           <div className="hidden lg:block">
-            <Card className="bg-zinc-900 border-zinc-800 p-4 sticky top-24">
+            <Card className="bg-[#1a1a1a] border-[#333] p-4 sticky top-24">
               <h3 className="font-semibold mb-4">Question Navigator</h3>
               <div className="grid grid-cols-4 gap-2">
                 {mockQuiz.questions.map((q, idx) => {
@@ -773,16 +773,16 @@ export default function CourseQuiz() {
                       onClick={() => goToQuestion(idx)}
                       className={`w-10 h-10 rounded-lg font-semibold text-sm relative transition-all ${
                         currentQuestionIndex === idx
-                          ? 'bg-orange-500 text-white'
+                          ? 'bg-[#C9941A] text-white'
                           : reviewMode
                           ? result?.isCorrect
-                            ? 'bg-green-500/20 text-green-400 border border-green-500/50'
+                            ? 'bg-[#C9941A]/20 text-[#C9941A] border border-green-500/50'
                             : result
                             ? 'bg-red-500/20 text-red-400 border border-red-500/50'
-                            : 'bg-zinc-800 text-gray-400'
+                            : 'bg-[#1a1a1a] text-gray-400'
                           : isAnswered
                           ? 'bg-blue-500/20 text-blue-400 border border-blue-500/50'
-                          : 'bg-zinc-800 text-gray-400 hover:bg-zinc-700'
+                          : 'bg-[#1a1a1a] text-gray-400 hover:bg-zinc-700'
                       }`}
                       data-testid={`nav-question-${idx}`}
                     >
@@ -811,7 +811,7 @@ export default function CourseQuiz() {
               {!quizCompleted && !reviewMode && (
                 <Button
                   onClick={submitQuiz}
-                  className="w-full mt-4 bg-green-500"
+                  className="w-full mt-4 bg-[#C9941A]"
                   disabled={answeredCount < totalQuestions}
                   data-testid="button-submit-sidebar"
                 >

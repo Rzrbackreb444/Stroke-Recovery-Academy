@@ -506,7 +506,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
                   type="color"
                   value={brushColor}
                   onChange={(e) => setBrushColor(e.target.value)}
-                  className="w-8 h-8 rounded cursor-pointer bg-transparent border border-gray-700"
+                  className="w-8 h-8 rounded cursor-pointer bg-transparent border border-[#333]"
                 />
               </div>
             )}
@@ -518,7 +518,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
             <div className="flex items-center gap-2">
               <Label className="text-xs text-gray-400">Font</Label>
               <Select value={fontFamily} onValueChange={setFontFamily}>
-                <SelectTrigger className="w-32 h-8 bg-gray-800 border-gray-700 text-foreground">
+                <SelectTrigger className="w-32 h-8 bg-gray-800 border-[#333] text-foreground">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -576,7 +576,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
                 type="color"
                 value={brushColor}
                 onChange={(e) => setBrushColor(e.target.value)}
-                className="w-8 h-8 rounded cursor-pointer bg-transparent border border-gray-700"
+                className="w-8 h-8 rounded cursor-pointer bg-transparent border border-[#333]"
               />
             </div>
           </div>
@@ -600,7 +600,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
         onChange={handleFileUpload}
       />
 
-      <header className="flex items-center justify-between h-12 px-3 bg-gray-900 border-b border-gray-800">
+      <header className="flex items-center justify-between h-12 px-3 bg-[#1a1a1a] border-b border-[#333]">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <ImageIcon className="w-5 h-5 text-primary" />
@@ -675,7 +675,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
         </div>
       </header>
 
-      <div className="flex items-center h-10 px-3 bg-gray-950 border-b border-gray-800 gap-4">
+      <div className="flex items-center h-10 px-3 bg-gray-950 border-b border-[#333] gap-4">
         {renderToolOptions()}
         <div className="ml-auto flex items-center gap-2">
           <Button
@@ -700,7 +700,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
       </div>
 
       <div className="flex flex-1 overflow-hidden">
-        <div className="w-12 bg-gray-900 border-r border-gray-800 flex flex-col items-center py-2 gap-1">
+        <div className="w-12 bg-[#1a1a1a] border-r border-[#333] flex flex-col items-center py-2 gap-1">
           {tools.map((tool) => (
             <Tooltip key={tool.id}>
               <TooltipTrigger asChild>
@@ -714,7 +714,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
                   <tool.icon className="w-4 h-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="right" className="bg-gray-800 text-foreground border-gray-700">
+              <TooltipContent side="right" className="bg-gray-800 text-foreground border-[#333]">
                 <p>{tool.label} ({tool.shortcut})</p>
               </TooltipContent>
             </Tooltip>
@@ -750,14 +750,14 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
         >
           {showRulers && (
             <>
-              <div className="absolute top-0 left-12 right-64 h-6 bg-gray-800 border-b border-gray-700 flex items-end">
+              <div className="absolute top-0 left-12 right-64 h-6 bg-gray-800 border-b border-[#333] flex items-end">
                 {Array.from({ length: Math.ceil(canvasSize.width / 50) }).map((_, i) => (
                   <div key={i} className="relative" style={{ width: 50 * (zoom / 100) }}>
                     <span className="text-[10px] text-gray-500 absolute left-0">{i * 50}</span>
                   </div>
                 ))}
               </div>
-              <div className="absolute top-6 left-0 w-6 bg-gray-800 border-r border-gray-700 flex flex-col" style={{ height: canvasSize.height * (zoom / 100) }}>
+              <div className="absolute top-6 left-0 w-6 bg-gray-800 border-r border-[#333] flex flex-col" style={{ height: canvasSize.height * (zoom / 100) }}>
                 {Array.from({ length: Math.ceil(canvasSize.height / 50) }).map((_, i) => (
                   <div key={i} className="relative" style={{ height: 50 * (zoom / 100) }}>
                     <span className="text-[10px] text-gray-500 absolute top-0 left-1">{i * 50}</span>
@@ -824,9 +824,9 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
           </div>
         </div>
 
-        <div className="w-64 bg-gray-900 border-l border-gray-800 flex flex-col">
+        <div className="w-64 bg-[#1a1a1a] border-l border-[#333] flex flex-col">
           <Tabs value={rightPanelTab} onValueChange={setRightPanelTab} className="flex flex-col flex-1">
-            <TabsList className="grid grid-cols-4 bg-gray-950 rounded-none border-b border-gray-800 h-10">
+            <TabsList className="grid grid-cols-4 bg-gray-950 rounded-none border-b border-[#333] h-10">
               <TabsTrigger value="layers" className="data-[state=active]:bg-gray-800 text-xs gap-1 px-2">
                 <Layers className="w-3.5 h-3.5" />
               </TabsTrigger>
@@ -842,7 +842,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
             </TabsList>
 
             <TabsContent value="layers" className="flex-1 m-0 overflow-hidden">
-              <div className="p-2 border-b border-gray-800">
+              <div className="p-2 border-b border-[#333]">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-medium text-gray-400 uppercase">Layers</span>
                   <div className="flex gap-1">
@@ -872,7 +872,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
                     <div className="flex items-center gap-2">
                       <Label className="text-xs text-gray-400 w-14">Blend</Label>
                       <Select value={activeLayer.blendMode} onValueChange={(v) => updateLayerBlendMode(activeLayer.id, v)}>
-                        <SelectTrigger className="h-7 text-xs bg-gray-800 border-gray-700">
+                        <SelectTrigger className="h-7 text-xs bg-gray-800 border-[#333]">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -894,7 +894,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
                       className={`flex items-center gap-2 p-2 rounded cursor-pointer transition-colors ${
                         activeLayerId === layer.id 
                           ? 'bg-primary/20 border border-primary/50' 
-                          : 'bg-gray-800 border border-transparent hover:border-gray-700'
+                          : 'bg-gray-800 border border-transparent hover:border-[#333]'
                       }`}
                       onClick={() => setActiveLayerId(layer.id)}
                       data-testid={`layer-item-${layer.id}`}
@@ -942,7 +942,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
                 </div>
               </ScrollArea>
               
-              <div className="p-2 border-t border-gray-800 flex gap-1">
+              <div className="p-2 border-t border-[#333] flex gap-1">
                 <Button size="sm" variant="ghost" className="flex-1 h-7 text-xs" onClick={() => activeLayerId && moveLayerUp(activeLayerId)} data-testid="button-layer-up">
                   <ChevronUp className="w-3.5 h-3.5 mr-1" />
                   Up
@@ -1132,7 +1132,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
                         className={`p-2 rounded text-xs transition-colors ${
                           selectedPresetFilter === filter.id
                             ? 'bg-primary/20 border border-primary text-primary'
-                            : 'bg-gray-800 border border-gray-700 text-gray-300 hover:border-gray-600'
+                            : 'bg-gray-800 border border-[#333] text-gray-300 hover:border-gray-600'
                         }`}
                         data-testid={`button-filter-${filter.id}`}
                       >
@@ -1149,7 +1149,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
                 <span className="text-xs font-medium text-gray-400 uppercase">AI Tools</span>
                 
                 <Button
-                  className="w-full justify-start gap-2 bg-gray-800 hover:bg-gray-700 border border-gray-700"
+                  className="w-full justify-start gap-2 bg-gray-800 hover:bg-gray-700 border border-[#333]"
                   onClick={handleRemoveBackground}
                   disabled={isProcessing || !activeLayer?.imageData}
                   data-testid="button-remove-background"
@@ -1159,7 +1159,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
                 </Button>
 
                 <Button
-                  className="w-full justify-start gap-2 bg-gray-800 hover:bg-gray-700 border border-gray-700"
+                  className="w-full justify-start gap-2 bg-gray-800 hover:bg-gray-700 border border-[#333]"
                   onClick={handleAutoEnhance}
                   disabled={isProcessing || !activeLayer?.imageData}
                   data-testid="button-auto-enhance"
@@ -1169,7 +1169,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
                 </Button>
 
                 <Button
-                  className="w-full justify-start gap-2 bg-gray-800 hover:bg-gray-700 border border-gray-700"
+                  className="w-full justify-start gap-2 bg-gray-800 hover:bg-gray-700 border border-[#333]"
                   onClick={handleGenerateAI}
                   disabled={isProcessing}
                   data-testid="button-generate-ai"
@@ -1192,7 +1192,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
             </TabsContent>
           </Tabs>
 
-          <Collapsible open={isHistoryOpen} onOpenChange={setIsHistoryOpen} className="border-t border-gray-800">
+          <Collapsible open={isHistoryOpen} onOpenChange={setIsHistoryOpen} className="border-t border-[#333]">
             <CollapsibleTrigger className="flex items-center justify-between w-full p-2 hover:bg-gray-800">
               <div className="flex items-center gap-2">
                 <History className="w-4 h-4 text-gray-400" />
@@ -1230,7 +1230,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
         </div>
       </div>
 
-      <footer className="h-7 px-3 bg-gray-950 border-t border-gray-800 flex items-center justify-between text-xs text-gray-500">
+      <footer className="h-7 px-3 bg-gray-950 border-t border-[#333] flex items-center justify-between text-xs text-gray-500">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <span>Zoom:</span>
@@ -1255,7 +1255,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
       </footer>
 
       <Dialog open={isExportDialogOpen} onOpenChange={setIsExportDialogOpen}>
-        <DialogContent className="bg-gray-900 border-gray-800 text-foreground">
+        <DialogContent className="bg-[#1a1a1a] border-[#333] text-foreground">
           <DialogHeader>
             <DialogTitle>Export Image</DialogTitle>
             <DialogDescription className="text-gray-400">
@@ -1267,7 +1267,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
             <div className="space-y-2">
               <Label className="text-gray-300">Format</Label>
               <Select value={exportFormat} onValueChange={setExportFormat}>
-                <SelectTrigger className="bg-gray-800 border-gray-700">
+                <SelectTrigger className="bg-gray-800 border-[#333]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -1301,7 +1301,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
                   type="number"
                   value={exportWidth}
                   onChange={(e) => setExportWidth(parseInt(e.target.value) || 0)}
-                  className="bg-gray-800 border-gray-700"
+                  className="bg-gray-800 border-[#333]"
                 />
               </div>
               <div className="space-y-2">
@@ -1310,7 +1310,7 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
                   type="number"
                   value={exportHeight}
                   onChange={(e) => setExportHeight(parseInt(e.target.value) || 0)}
-                  className="bg-gray-800 border-gray-700"
+                  className="bg-gray-800 border-[#333]"
                 />
               </div>
             </div>

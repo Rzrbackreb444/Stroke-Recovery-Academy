@@ -81,7 +81,7 @@ export default function AffiliateDashboard() {
   const isLoading = codeLoading || statsLoading;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#0D0D0D]">
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-foreground mb-2" data-testid="text-affiliate-title">
@@ -92,7 +92,7 @@ export default function AffiliateDashboard() {
           </p>
         </div>
 
-        <Card className="mb-8 bg-gray-900 border-gray-800">
+        <Card className="mb-8 bg-[#1a1a1a] border-[#333]">
           <CardHeader>
             <CardTitle className="text-foreground flex items-center gap-2">
               <Share2 className="w-5 h-5 text-[#FF6B35]" />
@@ -108,13 +108,13 @@ export default function AffiliateDashboard() {
             ) : (
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <div className="flex-1 bg-gray-800 rounded-lg px-4 py-3 border border-gray-700">
+                  <div className="flex-1 bg-gray-800 rounded-lg px-4 py-3 border border-[#333]">
                     <p className="text-sm text-gray-400 mb-1">Your Code</p>
                     <p className="text-xl font-mono font-bold text-[#FF6B35]" data-testid="text-referral-code">
                       {referralCode?.code || 'Loading...'}
                     </p>
                   </div>
-                  <div className="flex-[2] bg-gray-800 rounded-lg px-4 py-3 border border-gray-700 overflow-hidden">
+                  <div className="flex-[2] bg-gray-800 rounded-lg px-4 py-3 border border-[#333] overflow-hidden">
                     <p className="text-sm text-gray-400 mb-1">Referral Link</p>
                     <p className="text-sm text-foreground font-mono truncate" data-testid="text-referral-link">
                       {referralLink || 'Loading...'}
@@ -144,7 +144,7 @@ export default function AffiliateDashboard() {
                   <Button
                     variant="outline"
                     onClick={shareOnTwitter}
-                    className="border-gray-700 text-foreground hover:bg-gray-800"
+                    className="border-[#333] text-foreground hover:bg-gray-800"
                     data-testid="button-share-twitter"
                   >
                     <Twitter className="w-4 h-4 mr-2" />
@@ -154,7 +154,7 @@ export default function AffiliateDashboard() {
                   <Button
                     variant="outline"
                     onClick={shareOnFacebook}
-                    className="border-gray-700 text-foreground hover:bg-gray-800"
+                    className="border-[#333] text-foreground hover:bg-gray-800"
                     data-testid="button-share-facebook"
                   >
                     <Facebook className="w-4 h-4 mr-2" />
@@ -164,7 +164,7 @@ export default function AffiliateDashboard() {
                   <Button
                     variant="outline"
                     onClick={shareOnLinkedIn}
-                    className="border-gray-700 text-foreground hover:bg-gray-800"
+                    className="border-[#333] text-foreground hover:bg-gray-800"
                     data-testid="button-share-linkedin"
                   >
                     <Linkedin className="w-4 h-4 mr-2" />
@@ -177,7 +177,7 @@ export default function AffiliateDashboard() {
         </Card>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="bg-gray-900 border-gray-800">
+          <Card className="bg-[#1a1a1a] border-[#333]">
             <CardContent className="pt-6">
               {isLoading ? (
                 <Skeleton className="h-20 w-full bg-gray-800" />
@@ -197,7 +197,7 @@ export default function AffiliateDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gray-900 border-gray-800">
+          <Card className="bg-[#1a1a1a] border-[#333]">
             <CardContent className="pt-6">
               {isLoading ? (
                 <Skeleton className="h-20 w-full bg-gray-800" />
@@ -217,14 +217,14 @@ export default function AffiliateDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gray-900 border-gray-800">
+          <Card className="bg-[#1a1a1a] border-[#333]">
             <CardContent className="pt-6">
               {isLoading ? (
                 <Skeleton className="h-20 w-full bg-gray-800" />
               ) : (
                 <div className="flex items-center gap-4">
-                  <div className="p-3 bg-green-500/10 rounded-lg">
-                    <DollarSign className="w-6 h-6 text-green-500" />
+                  <div className="p-3 bg-[#C9941A]/10 rounded-lg">
+                    <DollarSign className="w-6 h-6 text-[#C9941A]" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-400">Paid Out</p>
@@ -238,7 +238,7 @@ export default function AffiliateDashboard() {
           </Card>
         </div>
 
-        <Card className="bg-gray-900 border-gray-800">
+        <Card className="bg-[#1a1a1a] border-[#333]">
           <CardHeader>
             <CardTitle className="text-foreground">Recent Conversions</CardTitle>
             <CardDescription className="text-gray-400">
@@ -257,7 +257,7 @@ export default function AffiliateDashboard() {
                 {stats.conversions.map((conversion) => (
                   <div
                     key={conversion.id}
-                    className="flex flex-wrap items-center justify-between gap-4 p-4 bg-gray-800 rounded-lg border border-gray-700"
+                    className="flex flex-wrap items-center justify-between gap-4 p-4 bg-gray-800 rounded-lg border border-[#333]"
                     data-testid={`conversion-row-${conversion.id}`}
                   >
                     <div className="flex items-center gap-3">
@@ -283,7 +283,7 @@ export default function AffiliateDashboard() {
                       <Badge
                         variant={conversion.status === 'paid' ? 'default' : 'secondary'}
                         className={conversion.status === 'paid' 
-                          ? 'bg-green-500/10 text-green-500 border-green-500/20' 
+                          ? 'bg-[#C9941A]/10 text-[#C9941A] border-green-500/20' 
                           : 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
                         }
                         data-testid={`badge-status-${conversion.id}`}
@@ -306,7 +306,7 @@ export default function AffiliateDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="mt-8 bg-gray-900 border-gray-800">
+        <Card className="mt-8 bg-[#1a1a1a] border-[#333]">
           <CardHeader>
             <CardTitle className="text-foreground">How It Works</CardTitle>
           </CardHeader>

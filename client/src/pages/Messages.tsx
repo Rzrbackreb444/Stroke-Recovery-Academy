@@ -174,9 +174,9 @@ export default function Messages() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-[#0D0D0D] text-foreground">
       <div className="max-w-7xl mx-auto h-screen flex flex-col">
-        <div className="flex items-center justify-between p-4 border-b border-gray-800">
+        <div className="flex items-center justify-between p-4 border-b border-[#333]">
           <h1 className="text-2xl font-bold" data-testid="text-messages-title">Messages</h1>
           <Dialog open={newChatOpen} onOpenChange={setNewChatOpen}>
             <DialogTrigger asChild>
@@ -185,14 +185,14 @@ export default function Messages() {
                 New Message
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-gray-900 border-gray-800">
+            <DialogContent className="bg-[#1a1a1a] border-[#333]">
               <DialogHeader>
                 <DialogTitle className="text-foreground">Start a Conversation</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 py-4">
                 <Input
                   placeholder="Search users..."
-                  className="bg-gray-800 border-gray-700"
+                  className="bg-gray-800 border-[#333]"
                 />
                 <ScrollArea className="h-64">
                   <div className="space-y-2">
@@ -204,7 +204,7 @@ export default function Messages() {
                       >
                         <Avatar>
                           <AvatarImage src={u.profileImageUrl} />
-                          <AvatarFallback className="bg-gray-700 text-primary">
+                          <AvatarFallback className="bg-gray-700 text-[#C9941A]">
                             {u.firstName?.[0]}{u.lastName?.[0]}
                           </AvatarFallback>
                         </Avatar>
@@ -225,7 +225,7 @@ export default function Messages() {
         </div>
 
         <div className="flex flex-1 overflow-hidden">
-          <div className={`w-full md:w-80 lg:w-96 border-r border-gray-800 flex flex-col ${mobileShowChat ? "hidden md:flex" : "flex"}`}>
+          <div className={`w-full md:w-80 lg:w-96 border-r border-[#333] flex flex-col ${mobileShowChat ? "hidden md:flex" : "flex"}`}>
             <div className="p-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -233,7 +233,7 @@ export default function Messages() {
                   placeholder="Search conversations..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-gray-900 border-gray-800"
+                  className="pl-10 bg-[#1a1a1a] border-[#333]"
                 />
               </div>
             </div>
@@ -241,7 +241,7 @@ export default function Messages() {
             <ScrollArea className="flex-1">
               {conversationsLoading ? (
                 <div className="flex justify-center py-8">
-                  <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                  <Loader2 className="w-6 h-6 text-[#C9941A] animate-spin" />
                 </div>
               ) : conversations && conversations.length > 0 ? (
                 <div className="px-2">
@@ -266,7 +266,7 @@ export default function Messages() {
                         <div className="relative">
                           <Avatar className="w-12 h-12">
                             <AvatarImage src={getConversationAvatar(conv)} />
-                            <AvatarFallback className="bg-gray-700 text-primary">
+                            <AvatarFallback className="bg-gray-700 text-[#C9941A]">
                               {getInitials(conv)}
                             </AvatarFallback>
                           </Avatar>
@@ -312,7 +312,7 @@ export default function Messages() {
           <div className={`flex-1 flex flex-col ${!mobileShowChat ? "hidden md:flex" : "flex"}`}>
             {selectedConversation ? (
               <>
-                <div className="flex items-center justify-between p-4 border-b border-gray-800">
+                <div className="flex items-center justify-between p-4 border-b border-[#333]">
                   <div className="flex items-center gap-3">
                     <button
                       onClick={() => setMobileShowChat(false)}
@@ -322,7 +322,7 @@ export default function Messages() {
                     </button>
                     <Avatar>
                       <AvatarImage src={getConversationAvatar(selectedConversation)} />
-                      <AvatarFallback className="bg-gray-700 text-primary">
+                      <AvatarFallback className="bg-gray-700 text-[#C9941A]">
                         {getInitials(selectedConversation)}
                       </AvatarFallback>
                     </Avatar>
@@ -353,7 +353,7 @@ export default function Messages() {
                 <ScrollArea className="flex-1 p-4">
                   {messagesLoading ? (
                     <div className="flex justify-center py-8">
-                      <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                      <Loader2 className="w-6 h-6 text-[#C9941A] animate-spin" />
                     </div>
                   ) : messages && messages.length > 0 ? (
                     <div className="space-y-4">
@@ -368,7 +368,7 @@ export default function Messages() {
                               {!isOwn && (
                                 <Avatar className="w-8 h-8">
                                   <AvatarImage src={message.sender?.profileImageUrl} />
-                                  <AvatarFallback className="bg-gray-700 text-primary text-xs">
+                                  <AvatarFallback className="bg-gray-700 text-[#C9941A] text-xs">
                                     {message.sender?.firstName?.[0]}{message.sender?.lastName?.[0]}
                                   </AvatarFallback>
                                 </Avatar>
@@ -389,7 +389,7 @@ export default function Messages() {
                                   </span>
                                   {isOwn && (
                                     message.isRead ? (
-                                      <CheckCheck className="w-3 h-3 text-primary" />
+                                      <CheckCheck className="w-3 h-3 text-[#C9941A]" />
                                     ) : (
                                       <Check className="w-3 h-3 text-gray-500" />
                                     )
@@ -411,7 +411,7 @@ export default function Messages() {
                   )}
                 </ScrollArea>
 
-                <div className="p-4 border-t border-gray-800">
+                <div className="p-4 border-t border-[#333]">
                   <div className="flex items-center gap-2">
                     <Button size="icon" variant="ghost">
                       <Image className="w-5 h-5" />
@@ -424,7 +424,7 @@ export default function Messages() {
                       onChange={(e) => setNewMessage(e.target.value)}
                       onKeyPress={handleKeyPress}
                       placeholder="Type a message..."
-                      className="flex-1 bg-gray-900 border-gray-800"
+                      className="flex-1 bg-[#1a1a1a] border-[#333]"
                       data-testid="input-message"
                     />
                     <Button

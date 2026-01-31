@@ -208,7 +208,7 @@ export default function CourseBuilder() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
-              <BookOpen className="h-6 w-6 text-orange-500" />
+              <BookOpen className="h-6 w-6 text-[#C9941A]" />
               Course Builder
             </h1>
             <p className="text-gray-400 text-sm mt-1">
@@ -218,7 +218,7 @@ export default function CourseBuilder() {
           
           <Button 
             onClick={() => setNewCourseOpen(true)} 
-            className="bg-orange-500"
+            className="bg-[#C9941A]"
             data-testid="button-new-course"
           >
             <Plus className="h-4 w-4 mr-2" />
@@ -227,16 +227,16 @@ export default function CourseBuilder() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-zinc-900 border-zinc-800 mb-6">
-            <TabsTrigger value="courses" className="data-[state=active]:bg-orange-500">
+          <TabsList className="bg-[#1a1a1a] border-[#333] mb-6">
+            <TabsTrigger value="courses" className="data-[state=active]:bg-[#C9941A]">
               <Layers className="h-4 w-4 mr-2" />
               My Courses
             </TabsTrigger>
-            <TabsTrigger value="editor" className="data-[state=active]:bg-orange-500">
+            <TabsTrigger value="editor" className="data-[state=active]:bg-[#C9941A]">
               <Edit className="h-4 w-4 mr-2" />
               Course Editor
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="data-[state=active]:bg-orange-500">
+            <TabsTrigger value="analytics" className="data-[state=active]:bg-[#C9941A]">
               <Star className="h-4 w-4 mr-2" />
               Analytics
             </TabsTrigger>
@@ -245,7 +245,7 @@ export default function CourseBuilder() {
           <TabsContent value="courses">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <Card 
-                className="bg-zinc-900 border-zinc-800 border-dashed border-2 p-8 flex flex-col items-center justify-center cursor-pointer hover-elevate"
+                className="bg-[#1a1a1a] border-[#333] border-dashed border-2 p-8 flex flex-col items-center justify-center cursor-pointer hover-elevate"
                 onClick={() => setNewCourseOpen(true)}
               >
                 <Plus className="h-12 w-12 text-gray-500 mb-3" />
@@ -253,19 +253,19 @@ export default function CourseBuilder() {
               </Card>
 
               {courseForm.title && (
-                <Card className="bg-zinc-900 border-zinc-800 overflow-hidden">
+                <Card className="bg-[#1a1a1a] border-[#333] overflow-hidden">
                   <div className="h-32 bg-gradient-to-br from-orange-500/20 to-purple-500/20 flex items-center justify-center">
-                    <BookOpen className="h-12 w-12 text-orange-500" />
+                    <BookOpen className="h-12 w-12 text-[#C9941A]" />
                   </div>
                   <div className="p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <Badge className={courseForm.isPublished ? "bg-green-500/20 text-green-400" : "bg-yellow-500/20 text-yellow-400"}>
+                      <Badge className={courseForm.isPublished ? "bg-[#C9941A]/20 text-[#C9941A]" : "bg-yellow-500/20 text-yellow-400"}>
                         {courseForm.isPublished ? "Published" : "Draft"}
                       </Badge>
                       {courseForm.isFree ? (
                         <Badge variant="outline">Free</Badge>
                       ) : (
-                        <Badge className="bg-orange-500/20 text-orange-400">${(courseForm.price / 100).toFixed(2)}</Badge>
+                        <Badge className="bg-[#C9941A]/20 text-[#C9941A]">${(courseForm.price / 100).toFixed(2)}</Badge>
                       )}
                     </div>
                     <h3 className="font-semibold text-lg">{courseForm.title}</h3>
@@ -301,7 +301,7 @@ export default function CourseBuilder() {
           <TabsContent value="editor">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2 space-y-6">
-                <Card className="bg-zinc-900 border-zinc-800 p-6">
+                <Card className="bg-[#1a1a1a] border-[#333] p-6">
                   <h2 className="text-lg font-semibold mb-4">Course Details</h2>
                   <div className="space-y-4">
                     <div>
@@ -316,7 +316,7 @@ export default function CourseBuilder() {
                           });
                         }}
                         placeholder="e.g., Stroke Recovery Fundamentals"
-                        className="bg-zinc-800 border-zinc-700 mt-1"
+                        className="bg-[#1a1a1a] border-[#333] mt-1"
                         data-testid="input-course-title"
                       />
                     </div>
@@ -326,7 +326,7 @@ export default function CourseBuilder() {
                         value={courseForm.description}
                         onChange={(e) => setCourseForm({ ...courseForm, description: e.target.value })}
                         placeholder="A brief overview of your course..."
-                        className="bg-zinc-800 border-zinc-700 mt-1"
+                        className="bg-[#1a1a1a] border-[#333] mt-1"
                         rows={2}
                       />
                     </div>
@@ -337,10 +337,10 @@ export default function CourseBuilder() {
                           value={courseForm.category} 
                           onValueChange={(v) => setCourseForm({ ...courseForm, category: v })}
                         >
-                          <SelectTrigger className="bg-zinc-800 border-zinc-700 mt-1">
+                          <SelectTrigger className="bg-[#1a1a1a] border-[#333] mt-1">
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent className="bg-zinc-900 border-zinc-800">
+                          <SelectContent className="bg-[#1a1a1a] border-[#333]">
                             {categories.map((c) => (
                               <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
                             ))}
@@ -353,10 +353,10 @@ export default function CourseBuilder() {
                           value={courseForm.difficulty} 
                           onValueChange={(v) => setCourseForm({ ...courseForm, difficulty: v })}
                         >
-                          <SelectTrigger className="bg-zinc-800 border-zinc-700 mt-1">
+                          <SelectTrigger className="bg-[#1a1a1a] border-[#333] mt-1">
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent className="bg-zinc-900 border-zinc-800">
+                          <SelectContent className="bg-[#1a1a1a] border-[#333]">
                             <SelectItem value="beginner">Beginner</SelectItem>
                             <SelectItem value="intermediate">Intermediate</SelectItem>
                             <SelectItem value="advanced">Advanced</SelectItem>
@@ -367,13 +367,13 @@ export default function CourseBuilder() {
                   </div>
                 </Card>
 
-                <Card className="bg-zinc-900 border-zinc-800 p-6">
+                <Card className="bg-[#1a1a1a] border-[#333] p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-semibold">Course Content</h2>
                     <Button 
                       onClick={() => setNewModuleOpen(true)} 
                       size="sm"
-                      className="bg-orange-500"
+                      className="bg-[#C9941A]"
                       data-testid="button-add-module"
                     >
                       <Plus className="h-4 w-4 mr-1" />
@@ -392,12 +392,12 @@ export default function CourseBuilder() {
                         <AccordionItem 
                           key={module.id} 
                           value={`module-${module.id}`}
-                          className="bg-zinc-800 rounded-lg border-zinc-700 px-4"
+                          className="bg-[#1a1a1a] rounded-lg border-[#333] px-4"
                         >
                           <AccordionTrigger className="hover:no-underline">
                             <div className="flex items-center gap-3">
                               <GripVertical className="h-4 w-4 text-gray-500" />
-                              <span className="text-orange-500 font-bold">M{idx + 1}</span>
+                              <span className="text-[#C9941A] font-bold">M{idx + 1}</span>
                               <span className="font-medium">{module.title}</span>
                               <Badge variant="outline" className="text-xs">
                                 {module.lessons.length} lessons
@@ -414,9 +414,9 @@ export default function CourseBuilder() {
                                 {module.lessons.map((lesson, lIdx) => {
                                   const LessonIcon = lessonTypes.find(t => t.value === lesson.lessonType)?.icon || FileText;
                                   return (
-                                    <div key={lesson.id} className="flex items-center gap-3 p-2 bg-zinc-900 rounded">
+                                    <div key={lesson.id} className="flex items-center gap-3 p-2 bg-[#1a1a1a] rounded">
                                       <span className="text-gray-500 text-sm">{lIdx + 1}</span>
-                                      <LessonIcon className="h-4 w-4 text-orange-400" />
+                                      <LessonIcon className="h-4 w-4 text-[#C9941A]" />
                                       <span className="flex-1 text-sm">{lesson.title}</span>
                                       <span className="text-gray-500 text-xs">{lesson.estimatedMinutes}m</span>
                                       {lesson.isPreview && (
@@ -448,7 +448,7 @@ export default function CourseBuilder() {
               </div>
 
               <div className="space-y-6">
-                <Card className="bg-zinc-900 border-zinc-800 p-6">
+                <Card className="bg-[#1a1a1a] border-[#333] p-6">
                   <h2 className="text-lg font-semibold mb-4">Course Settings</h2>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
@@ -470,7 +470,7 @@ export default function CourseBuilder() {
                           value={courseForm.price / 100}
                           onChange={(e) => setCourseForm({ ...courseForm, price: parseFloat(e.target.value) * 100 })}
                           placeholder="49.99"
-                          className="bg-zinc-800 border-zinc-700 mt-1"
+                          className="bg-[#1a1a1a] border-[#333] mt-1"
                         />
                       </div>
                     )}
@@ -493,7 +493,7 @@ export default function CourseBuilder() {
                           type="number"
                           value={courseForm.dripIntervalDays}
                           onChange={(e) => setCourseForm({ ...courseForm, dripIntervalDays: parseInt(e.target.value) })}
-                          className="bg-zinc-800 border-zinc-700 mt-1"
+                          className="bg-[#1a1a1a] border-[#333] mt-1"
                         />
                       </div>
                     )}
@@ -511,7 +511,7 @@ export default function CourseBuilder() {
                   </div>
                 </Card>
 
-                <Card className="bg-zinc-900 border-zinc-800 p-6">
+                <Card className="bg-[#1a1a1a] border-[#333] p-6">
                   <h2 className="text-lg font-semibold mb-4">Course Stats</h2>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
@@ -529,7 +529,7 @@ export default function CourseBuilder() {
                   </div>
 
                   <Button 
-                    className="w-full mt-6 bg-green-600 hover:bg-green-700"
+                    className="w-full mt-6 bg-[#C9941A] hover:bg-[#C9941A]/80"
                     onClick={() => {
                       setCourseForm({ ...courseForm, isPublished: !courseForm.isPublished });
                       toast({ 
@@ -557,8 +557,8 @@ export default function CourseBuilder() {
           </TabsContent>
 
           <TabsContent value="analytics">
-            <Card className="bg-zinc-900 border-zinc-800 p-8 text-center">
-              <Star className="h-12 w-12 text-orange-500 mx-auto mb-4" />
+            <Card className="bg-[#1a1a1a] border-[#333] p-8 text-center">
+              <Star className="h-12 w-12 text-[#C9941A] mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">Analytics Coming Soon</h3>
               <p className="text-gray-400">Track enrollments, completion rates, and revenue here.</p>
             </Card>
@@ -567,7 +567,7 @@ export default function CourseBuilder() {
 
         {/* New Course Dialog */}
         <Dialog open={newCourseOpen} onOpenChange={setNewCourseOpen}>
-          <DialogContent className="bg-zinc-900 border-zinc-800 text-white">
+          <DialogContent className="bg-[#1a1a1a] border-[#333] text-white">
             <DialogHeader>
               <DialogTitle>Create New Course</DialogTitle>
             </DialogHeader>
@@ -582,7 +582,7 @@ export default function CourseBuilder() {
                     slug: generateSlug(e.target.value)
                   })}
                   placeholder="e.g., Stroke Recovery Fundamentals"
-                  className="bg-zinc-800 border-zinc-700 mt-1"
+                  className="bg-[#1a1a1a] border-[#333] mt-1"
                 />
               </div>
               <div>
@@ -591,7 +591,7 @@ export default function CourseBuilder() {
                   value={courseForm.description}
                   onChange={(e) => setCourseForm({ ...courseForm, description: e.target.value })}
                   placeholder="What will students learn?"
-                  className="bg-zinc-800 border-zinc-700 mt-1"
+                  className="bg-[#1a1a1a] border-[#333] mt-1"
                   rows={3}
                 />
               </div>
@@ -601,7 +601,7 @@ export default function CourseBuilder() {
                   setActiveTab("editor");
                   toast({ title: "Course created!", description: "Start adding modules and lessons." });
                 }} 
-                className="w-full bg-orange-500"
+                className="w-full bg-[#C9941A]"
                 disabled={!courseForm.title}
               >
                 Create Course
@@ -612,7 +612,7 @@ export default function CourseBuilder() {
 
         {/* New Module Dialog */}
         <Dialog open={newModuleOpen} onOpenChange={setNewModuleOpen}>
-          <DialogContent className="bg-zinc-900 border-zinc-800 text-white">
+          <DialogContent className="bg-[#1a1a1a] border-[#333] text-white">
             <DialogHeader>
               <DialogTitle>Add Module</DialogTitle>
             </DialogHeader>
@@ -623,7 +623,7 @@ export default function CourseBuilder() {
                   value={moduleForm.title}
                   onChange={(e) => setModuleForm({ ...moduleForm, title: e.target.value })}
                   placeholder="e.g., Getting Started"
-                  className="bg-zinc-800 border-zinc-700 mt-1"
+                  className="bg-[#1a1a1a] border-[#333] mt-1"
                 />
               </div>
               <div>
@@ -632,13 +632,13 @@ export default function CourseBuilder() {
                   value={moduleForm.description}
                   onChange={(e) => setModuleForm({ ...moduleForm, description: e.target.value })}
                   placeholder="What does this module cover?"
-                  className="bg-zinc-800 border-zinc-700 mt-1"
+                  className="bg-[#1a1a1a] border-[#333] mt-1"
                   rows={2}
                 />
               </div>
               <Button 
                 onClick={addModule} 
-                className="w-full bg-orange-500"
+                className="w-full bg-[#C9941A]"
                 disabled={!moduleForm.title}
               >
                 Add Module
@@ -649,7 +649,7 @@ export default function CourseBuilder() {
 
         {/* New Lesson Dialog */}
         <Dialog open={newLessonOpen} onOpenChange={setNewLessonOpen}>
-          <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-lg">
+          <DialogContent className="bg-[#1a1a1a] border-[#333] text-white max-w-lg">
             <DialogHeader>
               <DialogTitle>Add Lesson</DialogTitle>
             </DialogHeader>
@@ -660,7 +660,7 @@ export default function CourseBuilder() {
                   value={lessonForm.title}
                   onChange={(e) => setLessonForm({ ...lessonForm, title: e.target.value })}
                   placeholder="e.g., Introduction to Recovery"
-                  className="bg-zinc-800 border-zinc-700 mt-1"
+                  className="bg-[#1a1a1a] border-[#333] mt-1"
                 />
               </div>
               <div>
@@ -669,10 +669,10 @@ export default function CourseBuilder() {
                   value={lessonForm.lessonType} 
                   onValueChange={(v) => setLessonForm({ ...lessonForm, lessonType: v })}
                 >
-                  <SelectTrigger className="bg-zinc-800 border-zinc-700 mt-1">
+                  <SelectTrigger className="bg-[#1a1a1a] border-[#333] mt-1">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-zinc-900 border-zinc-800">
+                  <SelectContent className="bg-[#1a1a1a] border-[#333]">
                     {lessonTypes.map((t) => (
                       <SelectItem key={t.value} value={t.value}>
                         <div className="flex items-center gap-2">
@@ -691,7 +691,7 @@ export default function CourseBuilder() {
                     value={lessonForm.videoUrl}
                     onChange={(e) => setLessonForm({ ...lessonForm, videoUrl: e.target.value })}
                     placeholder="https://youtube.com/... or Vimeo URL"
-                    className="bg-zinc-800 border-zinc-700 mt-1"
+                    className="bg-[#1a1a1a] border-[#333] mt-1"
                   />
                 </div>
               )}
@@ -701,7 +701,7 @@ export default function CourseBuilder() {
                   value={lessonForm.content}
                   onChange={(e) => setLessonForm({ ...lessonForm, content: e.target.value })}
                   placeholder="Lesson content or description..."
-                  className="bg-zinc-800 border-zinc-700 mt-1"
+                  className="bg-[#1a1a1a] border-[#333] mt-1"
                   rows={4}
                 />
               </div>
@@ -712,7 +712,7 @@ export default function CourseBuilder() {
                     type="number"
                     value={lessonForm.estimatedMinutes}
                     onChange={(e) => setLessonForm({ ...lessonForm, estimatedMinutes: parseInt(e.target.value) || 10 })}
-                    className="bg-zinc-800 border-zinc-700 mt-1"
+                    className="bg-[#1a1a1a] border-[#333] mt-1"
                   />
                 </div>
                 <div className="flex items-end">
@@ -727,7 +727,7 @@ export default function CourseBuilder() {
               </div>
               <Button 
                 onClick={addLesson} 
-                className="w-full bg-orange-500"
+                className="w-full bg-[#C9941A]"
                 disabled={!lessonForm.title}
               >
                 Add Lesson
