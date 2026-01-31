@@ -31,11 +31,14 @@ import RecoveryHeader from "@/components/RecoveryHeader";
 import SixtyDayTracker from "@/components/recovery/SixtyDayTracker";
 
 const motivationalQuotes = [
-  "Your recovery is your superpower. Keep pushing.",
-  "One day at a time, one rep at a time.",
+  "The impossible is only impossible until someone proves it's not.",
+  "Every day you show up, you win. Every rep you complete, you rewire.",
+  "I took what the stroke gave me and turned it into rocket fuel.",
+  "You are not your diagnosis. You are your determination.",
+  "0% to 90% wasn't luck. It was relentless action, every single day.",
+  "When doctors said 'never,' I heard 'prove them wrong.'",
   "The comeback is always stronger than the setback.",
-  "You've survived 100% of your worst days.",
-  "Progress, not perfection.",
+  "Your recovery is your superpower. Keep pushing.",
 ];
 
 export default function RecoveryDashboard() {
@@ -227,6 +230,10 @@ export default function RecoveryDashboard() {
               </div>
             </div>
           </div>
+        </section>
+
+        <section className="mb-8" data-testid="section-66day-tracker">
+          <SixtyDayTracker />
         </section>
 
         <div className="grid lg:grid-cols-2 gap-6 mb-8">
