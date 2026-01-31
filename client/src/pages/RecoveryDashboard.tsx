@@ -25,9 +25,10 @@ import { Link } from "wouter";
 import { 
   Flame, Trophy, BookOpen, MessageCircle, Grid3X3, ShoppingBag, Users,
   CheckCircle2, Target, Star, TrendingUp, Calendar, Heart, Zap, LogOut,
-  Plus, UserPlus, DoorOpen, Smile, Activity
+  Plus, UserPlus, DoorOpen, Smile, Activity, Quote, RefreshCw
 } from "lucide-react";
 import RecoveryHeader from "@/components/RecoveryHeader";
+import SixtyDayTracker from "@/components/recovery/SixtyDayTracker";
 
 const motivationalQuotes = [
   "Your recovery is your superpower. Keep pushing.",
