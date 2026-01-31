@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import GlobalHeader from "@/components/GlobalHeader";
+import SEO from "@/components/SEO";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -104,6 +105,17 @@ export default function VoiceLibrary() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F3] text-foreground">
+      <SEO 
+        title="Voice Library | KreAIte"
+        description="Create and manage AI voice clones for content creation. Clone voices, choose from multiple voice types, and build your personal voice library. Share and discover community voices."
+        canonical="/voice-library"
+        keywords="AI voice cloning, voice generator, text to speech, voice synthesis, voice creation"
+        author="KreAIte"
+        expertise={["Voice synthesis technology", "AI audio generation", "Voice personalization"]}
+        experience="Advanced voice cloning technology since 2024"
+        trustSignals={["Secure voice data handling", "Professional audio quality", "Creator-owned voice rights"]}
+        breadcrumbs={[{ name: "Home", url: "/" }, { name: "Voice Library", url: "/voice-library" }]}
+      />
       <GlobalHeader />
       
       <main className="container mx-auto px-4 py-8">

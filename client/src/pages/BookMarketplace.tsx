@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

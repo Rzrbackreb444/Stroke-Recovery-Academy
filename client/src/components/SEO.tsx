@@ -3,8 +3,9 @@ import { Helmet } from "react-helmet-async";
 interface SEOProps {
   title?: string;
   description?: string;
-  keywords?: string;
+  keywords?: string | string[];
   canonical?: string;
+  canonicalUrl?: string;
   type?: "website" | "article" | "product" | "course" | "faq" | "howto";
   image?: string;
   author?: string;
@@ -16,8 +17,10 @@ interface SEOProps {
   howTo?: { name: string; steps: Array<{ name: string; text: string }> };
   breadcrumbs?: Array<{ name: string; url: string }>;
   speakable?: string[];
-  expertise?: string[];
+  expertise?: string | string[];
   experience?: string;
+  authoritativeness?: string;
+  trustworthiness?: string;
   trustSignals?: string[];
 }
 
@@ -30,6 +33,7 @@ export default function SEO({
   description = "Create professional content with AI. KreAIte.xyz offers 7 powerful studios for books, videos, music, courses, images, and websites. 85% creator earnings.",
   keywords,
   canonical,
+  canonicalUrl,
   type = "website",
   image = DEFAULT_IMAGE,
   author,
@@ -43,17 +47,29 @@ export default function SEO({
   speakable,
   expertise,
   experience,
+  authoritativeness,
+  trustworthiness,
   trustSignals,
 }: SEOProps) {
   const fullTitle = title
     ? `${title} | ${SITE_NAME}`
     : `${SITE_NAME} | AI-Powered Creator Studio`;
   
-  const canonicalUrl = canonical
+  const finalCanonicalUrl = canonicalUrl
+    ? canonicalUrl.startsWith("http") 
+      ? canonicalUrl 
+      : `${BASE_URL}${canonicalUrl}`
+    : canonical
     ? `${BASE_URL}${canonical}`
     : typeof window !== "undefined"
     ? `${BASE_URL}${window.location.pathname}`
     : BASE_URL;
+
+  const keywordsString = typeof keywords === "string" 
+    ? keywords 
+    : Array.isArray(keywords) 
+    ? keywords.join(", ") 
+    : undefined;
 
   const schemaScripts = schema
     ? Array.isArray(schema)
@@ -102,6 +118,12 @@ export default function SEO({
     }
   } : null;
 
+  const expertiseArray = Array.isArray(expertise) 
+    ? expertise 
+    : expertise 
+    ? [expertise] 
+    : ["AI Content Creation", "Digital Publishing", "Book Writing", "Video Production", "Music Composition"];
+
   const organizationSchema = {
     "@type": "Organization",
     name: SITE_NAME,
@@ -118,8 +140,11 @@ export default function SEO({
     },
     foundingDate: "2024",
     description: "AI-powered creator platform with 7 professional studios",
-    knowsAbout: expertise || ["AI Content Creation", "Digital Publishing", "Book Writing", "Video Production", "Music Composition"],
-    slogan: "Create. Publish. Earn."
+    knowsAbout: expertiseArray,
+    slogan: "Create. Publish. Earn.",
+    ...(authoritativeness && { authoritativeness }),
+    ...(trustworthiness && { trustworthiness }),
+    ...(experience && { experience })
   };
 
   const allSchemas = [
@@ -135,8 +160,8 @@ export default function SEO({
     <Helmet>
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
-      {keywords && <meta name="keywords" content={keywords} />}
-      <link rel="canonical" href={canonicalUrl} />
+      {keywordsString && <meta name="keywords" content={keywordsString} />}
+      <link rel="canonical" href={finalCanonicalUrl} />
       
       {noindex ? (
         <meta name="robots" content="noindex, nofollow" />
@@ -151,7 +176,7 @@ export default function SEO({
       <meta name="format-detection" content="telephone=no" />
 
       <meta property="og:type" content={type === "faq" ? "website" : type === "howto" ? "article" : type} />
-      <meta property="og:url" content={canonicalUrl} />
+      <meta property="og:url" content={finalCanonicalUrl} />
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={image} />
@@ -163,7 +188,7 @@ export default function SEO({
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:site" content="@kreaite" />
       <meta name="twitter:creator" content="@kreaite" />
-      <meta name="twitter:url" content={canonicalUrl} />
+      <meta name="twitter:url" content={finalCanonicalUrl} />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={image} />
@@ -177,7 +202,10 @@ export default function SEO({
       )}
 
       {experience && <meta name="experience" content={experience} />}
-      {expertise?.length && <meta name="expertise" content={expertise.join(", ")} />}
+      {authoritativeness && <meta name="authoritativeness" content={authoritativeness} />}
+      {trustworthiness && <meta name="trustworthiness" content={trustworthiness} />}
+      {typeof expertise === "string" && <meta name="expertise" content={expertise} />}
+      {Array.isArray(expertise) && expertise.length && <meta name="expertise" content={expertise.join(", ")} />}
       {trustSignals?.length && <meta name="trust-signals" content={trustSignals.join(", ")} />}
 
       <link rel="preconnect" href="https://fonts.googleapis.com" />

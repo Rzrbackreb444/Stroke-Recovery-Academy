@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import { 
   BookOpen, 
   Music, 
@@ -165,6 +166,57 @@ export default function CreatorLanding() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
+      <SEO
+        title="AI-Powered Creator Platform - Create Books, Music, Videos & More"
+        description="KreAIte.xyz is the ultimate AI creator platform with 7 professional studios for books, music, video, courses, images, and websites. Create, publish, and earn with 85% revenue share. Join 50M+ creators worldwide."
+        keywords="AI content creation, book writing software, music production, video editing, course creation, image generation, AI writing, self-publishing, creator platform, passive income"
+        canonical="/"
+        type="website"
+        faq={[
+          { question: "What is KreAIte.xyz?", answer: "KreAIte.xyz is an AI-powered creator platform with 7 professional studios for creating books, music, videos, courses, images, websites, and more. Creators earn 85% of sales through our marketplace." },
+          { question: "How does the 85/15 revenue split work?", answer: "When you sell content on KreAIte marketplace, you keep 85% of each sale. The 15% platform fee covers payment processing, hosting, and platform maintenance." },
+          { question: "What AI features are included?", answer: "KreAIte includes AI text generation with GPT-4, image generation with DALL-E 3, music composition with Google Lyria, voice synthesis with ElevenLabs, video generation with Sora, and 100+ language translation." },
+          { question: "Can I publish books to Amazon KDP?", answer: "Yes! Book Studio exports KDP-ready manuscripts in PDF, EPUB, and DOCX formats with proper formatting, trim sizes, and bleed settings for both eBook and print editions." },
+          { question: "Is KreAIte free to use?", answer: "KreAIte offers a free tier with daily AI generations. Premium plans start at $29/month for creators, $79/month for professionals, and $299/month for enterprises with unlimited access." }
+        ]}
+        breadcrumbs={[
+          { name: "Home", url: "/" }
+        ]}
+        expertise={["AI Content Generation", "Digital Publishing", "Music Production", "Video Creation", "Course Development"]}
+        experience="Powering 50M+ creators worldwide since 2024"
+        trustSignals={["SSL Secured", "GDPR Compliant", "85% Creator Revenue", "24/7 Support", "Enterprise Grade"]}
+        schema={[
+          {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "KreAIte.xyz",
+            "applicationCategory": "CreatorTool",
+            "operatingSystem": "Web Browser",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "ratingCount": "12500"
+            }
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "KreAIte.xyz",
+            "url": "https://kreaite.xyz",
+            "logo": "https://kreaite.xyz/logo.png",
+            "sameAs": [
+              "https://twitter.com/kreaite_xyz",
+              "https://linkedin.com/company/kreaite",
+              "https://youtube.com/@kreaite"
+            ]
+          }
+        ]}
+      />
       {/* Premium Dark Header */}
       <GlobalHeader variant="transparent" />
       

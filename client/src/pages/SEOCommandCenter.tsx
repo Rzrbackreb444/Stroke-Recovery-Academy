@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
+import SEO from "@/components/SEO";
 import { 
   Search, Globe, BarChart3, Link2, FileText, 
   Target, TrendingUp, Mic, MapPin, Languages,
@@ -124,6 +125,18 @@ export default function SEOCommandCenter() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
+      <SEO 
+        title="SEO Command Center"
+        description="Enterprise-grade SEO optimization tools including website analysis, keyword research, content optimization, competitor analysis, and structured data generation for maximum search visibility."
+        canonicalUrl="https://kreaite.xyz/seo-command-center"
+        keywords={["SEO tools", "keyword research", "content optimization", "website analysis", "SEO checker"]}
+        author="KreAIte"
+        expertise="Advanced SEO and search optimization strategies"
+        experience="Platform established 2024 with proven SEO methodologies"
+        authoritativeness="Comprehensive SEO analysis and optimization platform"
+        trustworthiness="Transparent SEO metrics and verified recommendations"
+        breadcrumbs={[{ name: "Home", url: "/" }, { name: "SEO Command Center", url: "/seo-command-center" }]}
+      />
       <GlobalHeader />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

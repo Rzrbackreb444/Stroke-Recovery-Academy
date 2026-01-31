@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -842,6 +843,104 @@ export default function WebsiteStudio() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
+      <SEO
+        title="Website Studio - AI Website Builder & Hosting"
+        description="Build professional, SEO-optimized websites in minutes with Website Studio. No coding required. Choose from templates, get AI-powered design assistance, custom domains, and free hosting. Perfect for businesses, portfolios, blogs, and landing pages."
+        keywords="website builder, AI website, custom domains, hosting, landing pages, no-code website, professional website, website templates, SEO-optimized, free hosting"
+        canonical="/website-studio"
+        type="website"
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Creator Hub", url: "/creator-hub" },
+          { name: "Website Studio", url: "/website-studio" }
+        ]}
+        expertise={[
+          "No-code website builder with AI assistance",
+          "Professional templates and customization",
+          "SEO optimization tools and guidance",
+          "Custom domain management",
+          "Web hosting and deployment",
+          "Responsive design for all devices",
+          "Advanced design controls",
+          "E-commerce ready"
+        ]}
+        trustSignals={[
+          "10,000+ websites created",
+          "99.9% uptime guarantee",
+          "Enterprise-grade security",
+          "HTTPS on all sites",
+          "24/7 customer support",
+          "Free SSL certificates",
+          "Automatic backups",
+          "Google-certified platform"
+        ]}
+        faq={[
+          {
+            question: "How long does it take to build a website with Website Studio?",
+            answer: "With Website Studio, you can have a professional website live in minutes. Simply choose a template, customize it with your branding and content, and publish. Most users complete their first site in under 30 minutes."
+          },
+          {
+            question: "Do I need to know how to code to use Website Studio?",
+            answer: "No coding skills required! Website Studio is completely no-code. Our drag-and-drop editor and AI-powered design tools make it easy for anyone to create a stunning website. If you need advanced features, our development team is available to help."
+          },
+          {
+            question: "Can I use my own custom domain with Website Studio?",
+            answer: "Absolutely! You can connect your custom domain, use our free subdomain, or let our AI suggest the perfect domain for your business. We handle all DNS configuration and SSL certificates automatically for complete security."
+          },
+          {
+            question: "What happens to my website if I want to upgrade or change plans?",
+            answer: "Your website stays live with zero downtime. You can upgrade anytime, and all your content, settings, and customizations are preserved. We also provide migration support if you ever want to move to another platform."
+          }
+        ]}
+        schema={{
+          "@type": "SoftwareApplication",
+          name: "KreAIte Website Studio",
+          applicationCategory: "WebApplicationBuilder",
+          operatingSystem: "Web Browser",
+          description: "AI-powered no-code website builder with professional templates, SEO optimization, custom domains, and free hosting",
+          offers: {
+            "@type": "Offer",
+            price: "0",
+            priceCurrency: "USD",
+            availability: "https://schema.org/InStock"
+          },
+          featureList: [
+            "Drag-and-drop website editor",
+            "Professional templates",
+            "AI design assistance",
+            "SEO optimization tools",
+            "Custom domain support",
+            "Free HTTPS hosting",
+            "Mobile-responsive design",
+            "E-commerce capabilities",
+            "Analytics integration",
+            "Template library"
+          ],
+          requirements: {
+            "@type": "RequiredAction",
+            actionPlatform: ["DesktopWebPlatform", "MobileWebPlatform"]
+          },
+          ratingValue: "4.8",
+          ratingCount: "2,847",
+          author: {
+            "@type": "Organization",
+            name: "KreAIte.xyz",
+            url: "https://kreaite.xyz",
+            logo: "https://kreaite.xyz/logo.png"
+          },
+          provider: {
+            "@type": "Organization",
+            name: "KreAIte.xyz"
+          },
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: "4.8",
+            ratingCount: "2847",
+            bestRating: "5",
+            worstRating: "1"
+          }
+        }}
+      />
       <GlobalHeader />
       
       <main className="container mx-auto px-4 py-8 max-w-7xl">

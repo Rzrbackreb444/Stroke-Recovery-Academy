@@ -17,6 +17,7 @@ import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import GlobalHeader from "@/components/GlobalHeader";
+import SEO from "@/components/SEO";
 
 interface CreditBalance {
   balance: number;

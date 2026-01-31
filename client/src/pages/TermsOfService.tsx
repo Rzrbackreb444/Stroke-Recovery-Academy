@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 
 const sections = [
   { id: "acceptance", title: "1. Acceptance of Terms" },
@@ -27,6 +28,18 @@ export default function TermsOfService() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F3]" data-testid="page-terms-of-service">
+      <SEO 
+        title="Terms of Service"
+        description="Review KreAIte's comprehensive Terms of Service covering user accounts, creator rights, revenue sharing, payment terms, and platform policies for all members."
+        canonicalUrl="https://kreaite.xyz/terms-of-service"
+        keywords={["terms of service", "user agreement", "platform terms", "creator terms", "service terms"]}
+        author="KreAIte"
+        expertise="Legal platform terms and creator agreements"
+        experience="Platform established 2024 with transparent creator terms"
+        authoritativeness="Clear and fair platform policies"
+        trustworthiness="Transparent terms protecting both creators and platform"
+        breadcrumbs={[{ name: "Home", url: "/" }, { name: "Terms of Service", url: "/terms-of-service" }]}
+      />
       <GlobalHeader />
       
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">

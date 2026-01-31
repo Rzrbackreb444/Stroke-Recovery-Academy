@@ -6,6 +6,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import SEO from "@/components/SEO";
 import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
@@ -172,6 +173,18 @@ export default function RecoveryDashboard() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SEO
+        title="Recovery Dashboard | Stroke Recovery Academy"
+        description="Track your stroke recovery progress with comprehensive metrics, daily check-ins, habit tracking, and personalized recovery programs designed by medical professionals."
+        canonical="/recovery/dashboard"
+        keywords="stroke recovery tracking, recovery progress dashboard, rehabilitation progress, stroke survivor tools"
+        author="Stroke Recovery Academy"
+        type="website"
+        expertise={["Stroke recovery protocols", "Neuroplasticity-based rehabilitation", "Medical oversight"]}
+        experience="Supporting stroke survivors since 2024"
+        trustSignals={["Evidence-based recovery programs", "Trusted by healthcare professionals", "Medical expert-reviewed content"]}
+        breadcrumbs={[{ name: "Home", url: "/" }, { name: "Recovery Dashboard", url: "/recovery/dashboard" }]}
+      />
       <RecoveryHeader />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

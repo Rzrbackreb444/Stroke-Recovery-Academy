@@ -16,6 +16,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import GlobalHeader from "@/components/GlobalHeader";
 import RecoveryHeader from "@/components/RecoveryHeader";
 import { usePlatform } from "@/lib/hooks/usePlatform";
+import SEO from "@/components/SEO";
 import type { ForumCategory, ForumThread, User } from "@shared/schema";
 
 function formatRelativeTime(date: Date | string): string {

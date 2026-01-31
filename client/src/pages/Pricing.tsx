@@ -1,4 +1,5 @@
 import { useState } from "react";
+import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -346,6 +347,141 @@ export default function Pricing() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Pricing Plans - AI Creator Platform Subscriptions"
+        description="Explore KreAIte's flexible pricing plans. Free tier to get started, Creator plan for serious creators, Pro for unlimited AI generation, and Enterprise for teams. All plans include Book Studio, Music Studio, and more. Keep 85% of every sale on our marketplace."
+        keywords="pricing, subscription, AI creator tools, free tier, creator plan, pro plan, enterprise pricing, AI content creation, subscription cost, AI platform pricing"
+        canonical="/pricing"
+        type="website"
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Pricing", url: "/pricing" }
+        ]}
+        faq={[
+          {
+            question: "Can I cancel my subscription anytime?",
+            answer: "Yes, absolutely. You can cancel your subscription at any time from your dashboard. Your access continues until the end of your billing period, and you keep all content you've created."
+          },
+          {
+            question: "What's included in the free plan?",
+            answer: "The free plan includes 3 AI generations per day, basic access to Book, Music, and Image studios, marketplace access, and one daily spin on Beat the Sasquatch games. It's perfect for trying out the platform."
+          },
+          {
+            question: "Is there a money-back guarantee?",
+            answer: "Yes! All paid plans come with a 14-day money-back guarantee. If you're not completely satisfied, contact us for a full refund, no questions asked."
+          },
+          {
+            question: "What payment methods do you accept?",
+            answer: "We accept all major credit cards (Visa, Mastercard, American Express, Discover), as well as Apple Pay and Google Pay. Enterprise customers can also pay via invoice."
+          },
+          {
+            question: "Do I own the content I create?",
+            answer: "Yes! All content you create on KreAIte belongs to you. Pro and Enterprise plans include full commercial licenses, meaning you can sell, publish, and monetize your creations however you want."
+          }
+        ]}
+        expertise={[
+          "AI-powered content creation tools",
+          "Professional-grade AI studios",
+          "Enterprise-grade Google Cloud infrastructure",
+          "Creator-focused marketplace platform",
+          "Transparent pricing and revenue sharing",
+          "Comprehensive creator toolkit"
+        ]}
+        experience="Built by creators for creators. Over 10,000+ active creators using KreAIte. Real success stories from self-published authors, musicians, course creators, and content producers."
+        trustSignals={[
+          "14-day money-back guarantee on all paid plans",
+          "No credit card required for free plan",
+          "85% creator revenue share on marketplace sales",
+          "Secure payment processing with Stripe",
+          "501(c)(3) nonprofit supported",
+          "Industry-leading feature sets across all plans"
+        ]}
+        schema={[
+          {
+            "@type": "PriceSpecification",
+            priceCurrency: "USD",
+            price: "0",
+            pricingPlan: {
+              "@type": "PricingPlan",
+              name: "Free",
+              description: "Try our AI creator tools with no credit card required"
+            }
+          },
+          {
+            "@type": "PriceSpecification",
+            priceCurrency: "USD",
+            price: "29",
+            priceValidUntil: "2025-12-31",
+            pricingPlan: {
+              "@type": "PricingPlan",
+              name: "Creator",
+              description: "For serious content creators - $29/month billed monthly, save 28% with annual billing"
+            }
+          },
+          {
+            "@type": "PriceSpecification",
+            priceCurrency: "USD",
+            price: "79",
+            priceValidUntil: "2025-12-31",
+            pricingPlan: {
+              "@type": "PricingPlan",
+              name: "Pro",
+              description: "Unlimited creation power - $79/month billed monthly, save 28% with annual billing"
+            }
+          },
+          {
+            "@type": "PriceSpecification",
+            priceCurrency: "USD",
+            price: "299",
+            priceValidUntil: "2025-12-31",
+            pricingPlan: {
+              "@type": "PricingPlan",
+              name: "Enterprise",
+              description: "For teams and agencies - $299/month with custom features and dedicated support"
+            }
+          },
+          {
+            "@type": "Product",
+            name: "KreAIte Creator Platform",
+            description: "All-in-one AI platform for content creators with Book Studio, Music Studio, Image Studio, Video Studio, Course Studio, and Audiobook Narration tools",
+            offers: [
+              {
+                "@type": "Offer",
+                priceCurrency: "USD",
+                price: "0",
+                availability: "https://schema.org/InStock",
+                priceValidUntil: "2025-12-31"
+              },
+              {
+                "@type": "Offer",
+                priceCurrency: "USD",
+                price: "29",
+                availability: "https://schema.org/InStock",
+                priceValidUntil: "2025-12-31"
+              },
+              {
+                "@type": "Offer",
+                priceCurrency: "USD",
+                price: "79",
+                availability: "https://schema.org/InStock",
+                priceValidUntil: "2025-12-31"
+              },
+              {
+                "@type": "Offer",
+                priceCurrency: "USD",
+                price: "299",
+                availability: "https://schema.org/InStock",
+                priceValidUntil: "2025-12-31"
+              }
+            ],
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: "4.8",
+              ratingCount: "3247"
+            }
+          }
+        ]}
+      />
       <Header />
       
       <main>

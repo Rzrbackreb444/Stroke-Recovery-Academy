@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -88,6 +89,21 @@ export default function CreatorStore() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F3] text-foreground">
+      <SEO 
+        title="Creator Store"
+        description="Discover hand-picked professional tools and resources for creators. Essential software, equipment, and services to help you create better content and grow your audience."
+        canonicalUrl="https://kreaite.xyz/creator-store"
+        keywords={["creator tools", "digital products", "creator resources", "content creation tools", "professional software", "creator equipment"]}
+        author="KreAIte"
+        expertise={["Creator Tools", "Content Creation Resources", "Professional Marketplace", "Creator Equipment"]}
+        experience="Platform established 2024"
+        authoritativeness="Leading creator marketplace with curated product selection and expert recommendations"
+        trustworthiness="Trusted by creators worldwide with verified recommendations and affiliate partnerships"
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Creator Store", url: "/creator-store" }
+        ]}
+      />
       <GlobalHeader />
 
       <main className="container mx-auto px-4 py-8">

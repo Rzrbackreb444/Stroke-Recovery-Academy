@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import SEO from "@/components/SEO";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -179,6 +180,20 @@ export default function TherapistMarketplace() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SEO
+        title="Therapist Marketplace | KreAIte"
+        description="Find licensed therapists and professional coaches specializing in stroke recovery. Browse verified specialists in physical therapy, occupational therapy, speech therapy, and neurological rehabilitation with transparent pricing."
+        canonical="/therapist-marketplace"
+        keywords="therapist marketplace, stroke recovery services, physical therapy, occupational therapy, speech therapy, professional coaches, licensed therapists"
+        author="KreAIte"
+        expertise={["Healthcare Services", "Professional Marketplace", "Therapy & Rehabilitation"]}
+        experience="Connecting patients with verified healthcare professionals since 2024"
+        trustSignals={["All therapists verified and licensed", "Transparent service pricing", "Professional credential verification"]}
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Therapist Marketplace", url: "/therapist-marketplace" }
+        ]}
+      />
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
