@@ -104,6 +104,7 @@ import TherapistMarketplace from "@/pages/TherapistMarketplace";
 import AdminPlanBuilder from "@/pages/AdminPlanBuilder";
 import RecoveryUniversity from "@/pages/RecoveryUniversity";
 import StrokeLyfeOrg from "@/pages/StrokeLyfeOrg";
+import RecoveryStore from "@/pages/RecoveryStore";
 
 // Sasquatch Doctrine Core Pages
 import FlickerLog from "@/pages/FlickerLog";
@@ -459,6 +460,8 @@ function Router() {
       <Route path="/recovery/university" component={RecoveryUniversity} />
       <Route path="/recovery/strokelyfe-org" component={StrokeLyfeOrg} />
       <Route path="/strokelyfe" component={StrokeLyfeOrg} />
+      <Route path="/recovery/store" component={RecoveryStore} />
+      <Route path="/store" component={RecoveryStore} />
 
       {/* Sasquatch Doctrine Core Tools */}
       <Route path="/recovery/flicker-log">

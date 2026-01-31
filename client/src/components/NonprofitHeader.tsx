@@ -24,14 +24,17 @@ import {
   Home,
   BookOpen,
   Phone,
+  ShoppingBag,
+  Bell,
 } from "lucide-react";
 import strokeLyfeLogo from "@assets/stroked-out-sasquatch-logo.png";
 
 const navLinks = [
   { href: "/strokelyfe", label: "HOME", icon: Home },
   { href: "/recovery/academy", label: "ACADEMY", icon: GraduationCap },
+  { href: "/store", label: "STORE", icon: ShoppingBag },
   { href: "/recovery/social", label: "COMMUNITY", icon: Users },
-  { href: "/recovery/about-nick", label: "ABOUT NICK", icon: User },
+  { href: "/recovery/reminders", label: "REMINDERS", icon: Bell },
 ];
 
 export default function NonprofitHeader() {
