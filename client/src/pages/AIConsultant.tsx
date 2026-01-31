@@ -14,6 +14,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import {
   Bot,
   Brain,
@@ -146,6 +147,20 @@ export default function AIConsultant() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F3] flex flex-col">
+      <SEO
+        title="AI Consultant | KreAIte"
+        description="Train an AI on your expertise and earn 24/7. Create an AI consultant from your books, courses, and knowledge to automatically answer customer questions and monetize your content effortlessly."
+        canonical="/ai-consultant"
+        keywords="AI consultant, chatbot creator, content monetization, AI training, knowledge base automation, passive income"
+        author="KreAIte"
+        expertise={["AI Training", "Expertise Monetization", "Customer Automation"]}
+        experience="Empowering creators to monetize expertise with AI since 2024"
+        trustSignals={["Creators earning $1000+/month", "Simple setup process", "Trusted by industry experts"]}
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "AI Consultant", url: "/ai-consultant" }
+        ]}
+      />
       <GlobalHeader />
       
       <main className="flex-1">

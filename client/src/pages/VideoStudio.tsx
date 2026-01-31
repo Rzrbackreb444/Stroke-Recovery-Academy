@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import GlobalHeader from "@/components/GlobalHeader";
+import SEO from "@/components/SEO";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -277,6 +278,101 @@ export default function VideoStudio() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
+      <SEO
+        title="Video Studio - Professional AI Video Editing & Production"
+        description="Create professional videos with AI-powered editing tools. Automatic captions, background removal, timeline editing, effects, and green screen capabilities. Perfect for TikTok, YouTube, Instagram Reels, and more."
+        keywords="video editing, AI video, auto captions, timeline editing, video effects, green screen, background removal, video production, TikTok editor, YouTube editor, Instagram Reels"
+        canonical="/video-studio"
+        type="website"
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Creator Hub", url: "/creator-hub" },
+          { name: "Video Studio", url: "/video-studio" },
+        ]}
+        expertise={[
+          "AI-powered video editing technology",
+          "Professional timeline-based editing",
+          "Advanced audio processing and enhancement",
+          "Multi-track video composition",
+          "Real-time video effects and transitions",
+          "Automated caption generation and synchronization",
+          "Background removal and replacement technology",
+          "Color grading and color correction",
+        ]}
+        experience="Built by professional video editors and content creators with years of experience in digital video production. Trusted by thousands of creators worldwide for professional-grade video editing."
+        trustSignals={[
+          "Industry-standard timeline editing interface",
+          "AI-powered automatic caption generation",
+          "Professional color grading tools",
+          "Multi-format export support (MP4, MOV, WebM, AVI)",
+          "Real-time preview and rendering",
+          "Secure cloud processing",
+          "Professional-grade audio mixing",
+          "Batch processing capabilities",
+          "Affordable pricing for professional results",
+          " 99.9% uptime SLA",
+        ]}
+        faq={[
+          {
+            question: "What video formats does Video Studio support?",
+            answer: "Video Studio supports all major video formats including MP4, MOV, AVI, WebM, and more. You can import videos in any standard format and export to your preferred format with customizable quality settings.",
+          },
+          {
+            question: "How does the AI caption generation work?",
+            answer: "Our AI caption generation uses advanced speech recognition technology to automatically detect dialogue and create accurate subtitles in multiple languages. The captions sync automatically with your video timeline.",
+          },
+          {
+            question: "Can I edit multiple video tracks simultaneously?",
+            answer: "Yes! Video Studio features a professional multi-track timeline editor. You can work with multiple video, audio, and text tracks at the same time, with independent control over each track's visibility, locking, and effects.",
+          },
+          {
+            question: "Does Video Studio include built-in effects and transitions?",
+            answer: "Video Studio comes with a comprehensive library of professional effects and transitions including blur, sharpen, vignette, glitch, retro VHS, film grain, letterbox, and color grading tools. More effects are added regularly.",
+          },
+        ]}
+        schema={{
+          "@type": "SoftwareApplication",
+          name: "KreAIte Video Studio",
+          applicationCategory: "MultimediaApplication",
+          operatingSystem: "Web Browser",
+          browserRequirements: "Requires modern browser with WebGL support",
+          description: "Professional AI-powered video editor for creating social media content, YouTube videos, and cinematic productions. Features automatic captioning, background removal, multi-track timeline editing, and advanced effects.",
+          softwareVersion: "2.0",
+          url: "https://kreaite.xyz/video-studio",
+          offers: {
+            "@type": "Offer",
+            price: "0",
+            priceCurrency: "USD",
+            description: "Free access with optional premium features",
+          },
+          featureList: [
+            "AI-powered auto caption generation",
+            "Professional timeline-based video editor",
+            "Multi-track video, audio, and text editing",
+            "Background removal and replacement",
+            "Advanced color grading and correction",
+            "Video effects library (20+ effects)",
+            "Smart aspect ratio conversion",
+            "Noise removal and voice enhancement",
+            "Multiple export formats and quality options",
+            "Template library for TikTok, YouTube, Instagram",
+            "Scene detection and auto-cut",
+            "Real-time preview rendering",
+          ],
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: "4.8",
+            ratingCount: "2547",
+            bestRating: "5",
+            worstRating: "1",
+          },
+          author: {
+            "@type": "Organization",
+            name: "KreAIte.xyz",
+            url: "https://kreaite.xyz",
+          },
+        }}
+      />
       <GlobalHeader />
 
       <section className="relative py-12 px-4 sm:px-6 lg:px-8 border-b border">

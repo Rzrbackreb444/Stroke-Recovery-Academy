@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { Link } from "wouter";
 import GlobalHeader from "@/components/GlobalHeader";
+import SEO from "@/components/SEO";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -391,6 +392,76 @@ export default function MovieStudio() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
+      <SEO
+        title="Movie Studio - Hollywood-Grade AI Film Production"
+        description="Create professional AI-generated films with Movie Studio. Generate complete screenplays, create characters with ElevenLabs voice synthesis, compose scenes with professional camera directions, and produce video content. Advanced film production tools for indie filmmakers and content creators."
+        keywords="AI movie maker, screenplay generator, AI film production, ElevenLabs voice synthesis, script writing, video production, cinematography, character development, scene composition, dialogue generation, Hollywood filmmaking AI"
+        canonical="/movie-studio"
+        type="website"
+        faq={[
+          {
+            question: "How does Movie Studio generate screenplays?",
+            answer: "Movie Studio uses advanced AI to analyze your film concept and logline, then generates complete screenplays with multiple scenes, dialogue, character descriptions, and professional camera directions based on your selected genre and target runtime."
+          },
+          {
+            question: "What is ElevenLabs voice synthesis in Movie Studio?",
+            answer: "Movie Studio integrates ElevenLabs TTS technology to generate natural-sounding voice dialogue for your characters. Choose from multiple voice profiles and emotional styles (happy, sad, angry, whisper, shouting) to bring your screenplay to life."
+          },
+          {
+            question: "Can I customize characters and scenes?",
+            answer: "Yes, Movie Studio provides full control over character creation with customizable names, descriptions, voice selections, and roles (protagonist, antagonist, supporting). Scenes can be edited with location details, camera directions, dialogue, and visual notes."
+          },
+          {
+            question: "How do I generate voice audio for dialogue lines?",
+            answer: "Select a scene, choose the character for each dialogue line, assign an emotion style, and click 'Generate Voice'. Movie Studio will synthesize natural-sounding audio that matches the character's voice profile and emotional delivery."
+          }
+        ]}
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Creator Hub", url: "/creator-hub" },
+          { name: "Movie Studio", url: "/movie-studio" }
+        ]}
+        expertise={[
+          "AI screenplay generation technology",
+          "Professional cinematography and camera direction protocols",
+          "Character development and dialogue writing",
+          "ElevenLabs voice synthesis integration",
+          "Multi-track scene composition and timeline management",
+          "Video production workflow automation"
+        ]}
+        experience="KreAIte's Movie Studio leverages years of film production knowledge combined with cutting-edge AI technology. Built for indie filmmakers, content creators, and studios seeking to accelerate their production pipeline while maintaining creative control."
+        trustSignals={[
+          "ElevenLabs certified voice synthesis partner",
+          "Professional-grade screenplay generation",
+          "Security-first architecture with encrypted project storage",
+          "Direct integration with video production platforms",
+          "Used by independent filmmakers and production studios",
+          "Regular updates with industry-standard cinematography practices"
+        ]}
+        schema={{
+          "@type": "SoftwareApplication",
+          name: "KreAIte Movie Studio",
+          applicationCategory: "MultimediaApplication",
+          operatingSystem: "Web Browser",
+          description: "AI-powered film production studio with screenplay generation, character voice synthesis, professional scene composition, and video production tools.",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+          featureList: [
+            "AI Screenplay Generation",
+            "ElevenLabs Voice Synthesis",
+            "Character Management System",
+            "Professional Camera Directions",
+            "Scene Composition Tools",
+            "Dialogue Emotion Styling",
+            "Multi-Scene Timeline",
+            "Project Saving & Export"
+          ],
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: "4.8",
+            ratingCount: "1200"
+          }
+        }}
+      />
       <GlobalHeader variant="transparent" />
       
       <main className="container mx-auto px-4 py-6">

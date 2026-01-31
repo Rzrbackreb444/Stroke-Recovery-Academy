@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -261,6 +262,17 @@ export default function ScriptStudio() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
+      <SEO 
+        title="Script Studio | KreAIte"
+        description="AI-powered screenplay and script writing studio. Generate loglines, beat sheets, characters, scenes, and dialogue. Professional formatting for feature films, shorts, TV series, and pilots."
+        canonical="/script-studio"
+        keywords="AI screenplay, script writing, screenwriting software, beat sheet generator, screenplay formatting"
+        author="KreAIte"
+        expertise={["Professional screenplay structure", "AI-assisted writing", "Industry-standard screenplay formatting"]}
+        experience="Professional screenwriting tools since 2024"
+        trustSignals={["Trusted by screenwriters worldwide", "Industry-standard screenplay formatting", "Professional-grade AI writing assistance"]}
+        breadcrumbs={[{ name: "Home", url: "/" }, { name: "Script Studio", url: "/script-studio" }]}
+      />
       <GlobalHeader />
       <div className="flex h-[calc(100vh-64px)]">
         <aside className="w-64 border-r border-zinc-800 bg-zinc-950 flex flex-col" data-testid="sidebar-projects">

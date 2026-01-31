@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import SEO from "@/components/SEO";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -190,6 +191,20 @@ export default function SocialNetwork() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SEO
+        title="Creator Network | KreAIte"
+        description="Connect with thousands of stroke survivors and creators worldwide. Share recovery journeys, build meaningful relationships, and get support from our thriving community of verified healthcare professionals."
+        canonical="/social-network"
+        keywords="creator network, stroke recovery community, social platform, survivor support, community building"
+        author="KreAIte"
+        expertise={["Community Building", "Peer Support Networks", "Health & Wellness Communities"]}
+        experience="Building supportive creator communities since 2024"
+        trustSignals={["Thousands of active members", "Verified healthcare professionals", "Moderated for safety"]}
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Creator Network", url: "/social-network" }
+        ]}
+      />
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>

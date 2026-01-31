@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
+import SEO from "@/components/SEO";
 import {
   Book, Music, Video, GraduationCap, Image, Film, Mic2, Headphones, 
   Disc3, GitBranch, DollarSign, TrendingUp, Play, Clock, Zap, Star,

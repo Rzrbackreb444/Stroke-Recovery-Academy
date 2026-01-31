@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import GlobalHeader from "@/components/GlobalHeader";
+import SEO from "@/components/SEO";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -98,6 +99,17 @@ export default function DJStudio() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F3] text-foreground">
+      <SEO 
+        title="DJ Studio | KreAIte"
+        description="Professional audio mixing and DJ studio with turntable controls, 8-band EQ, compression, effects, and preset management. Create professional music mixes with advanced audio tools."
+        canonical="/dj-studio"
+        keywords="music mixing, DJ software, audio production, EQ mixer, audio mastering, beat production"
+        author="KreAIte"
+        expertise={["Professional audio mixing", "Advanced equalization", "Audio compression and effects"]}
+        experience="Professional audio tools since 2024"
+        trustSignals={["Studio-grade audio quality", "Professional mixing standards", "Industry-standard effects"]}
+        breadcrumbs={[{ name: "Home", url: "/" }, { name: "DJ Studio", url: "/dj-studio" }]}
+      />
       <GlobalHeader />
       
       <main className="container mx-auto px-4 py-8">

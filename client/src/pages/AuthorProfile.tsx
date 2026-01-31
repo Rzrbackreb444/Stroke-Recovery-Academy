@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -346,6 +347,21 @@ export default function AuthorProfile() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
+      <SEO 
+        title="Author Profile"
+        description="Create and manage your author identity, portfolio, and professional profile on KreAIte. Showcase your work, connect with readers, and build your author brand."
+        canonicalUrl="https://kreaite.xyz/author-profile"
+        keywords={["author profile", "portfolio management", "author brand", "creator identity", "author dashboard", "storefront"]}
+        author="KreAIte"
+        expertise={["Author Platform", "Portfolio Management", "Professional Publishing", "Author Branding"]}
+        experience="Platform established 2024"
+        authoritativeness="Leading creator marketplace with professional publishing tools and author resources"
+        trustworthiness="Trusted by creators worldwide with secure authentication and verified author profiles"
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Author Profile", url: "/author-profile" }
+        ]}
+      />
       <GlobalHeader />
       
       <main className="container mx-auto px-4 py-8 max-w-6xl">

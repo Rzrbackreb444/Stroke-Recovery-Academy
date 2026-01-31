@@ -15,6 +15,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import SEO from "@/components/SEO";
 import {
   Headphones, Book, Mic2, Play, Pause, Plus, Upload, Download,
   Wand2, Sparkles, Volume2, ArrowLeft, Loader2, Clock, Sliders,

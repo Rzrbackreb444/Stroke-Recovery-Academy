@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "wouter";
+import SEO from "@/components/SEO";
 import {
   BookOpen,
   Lock,
@@ -160,6 +161,18 @@ export default function RecoveryUniversity() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Recovery University | Stroke Recovery Academy"
+        description="Comprehensive educational curriculum for stroke recovery with 7 parts and 33 chapters covering mindset, physical recovery, cognitive rehabilitation, and life integration strategies."
+        canonical="/recovery/university"
+        keywords="stroke recovery education, recovery curriculum, rehabilitation training, stroke recovery courses"
+        author="Stroke Recovery Academy"
+        type="course"
+        expertise={["Medical rehabilitation science", "Neuroplasticity education", "Comprehensive recovery training"]}
+        experience="Supporting stroke survivors since 2024"
+        trustSignals={["Evidence-based curriculum", "Medical expert-reviewed chapters", "Trusted by healthcare professionals"]}
+        breadcrumbs={[{ name: "Home", url: "/" }, { name: "Recovery University", url: "/recovery/university" }]}
+      />
       <RecoveryHeader />
       <section className="py-16 px-4 border-b border-border">
         <div className="max-w-6xl mx-auto">

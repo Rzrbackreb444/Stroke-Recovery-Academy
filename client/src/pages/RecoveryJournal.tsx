@@ -6,6 +6,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import SEO from "@/components/SEO";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -87,6 +88,18 @@ export default function RecoveryJournal() {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      <SEO
+        title="Recovery Journal | Stroke Recovery Academy"
+        description="Daily journaling tool for stroke recovery. Track your mood, energy levels, wins, and challenges to monitor emotional and physical progress on your recovery journey."
+        canonical="/recovery/journal"
+        keywords="stroke recovery journal, daily reflection, recovery tracking, stroke survivor journaling"
+        author="Stroke Recovery Academy"
+        type="website"
+        expertise={["Stroke recovery psychology", "Mindfulness in recovery", "Progress monitoring"]}
+        experience="Supporting stroke survivors since 2024"
+        trustSignals={["Evidence-based recovery programs", "Therapeutic journaling methods", "Professional recovery support"]}
+        breadcrumbs={[{ name: "Home", url: "/" }, { name: "Recovery Journal", url: "/recovery/journal" }]}
+      />
       <RecoveryHeader />
       
       <main className="container mx-auto px-4 py-6 max-w-4xl">

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RecoveryHeader from "@/components/RecoveryHeader";
+import SEO from "@/components/SEO";
 import { 
   BookOpen, Video, FileText, Headphones, ExternalLink, 
   Search, Heart, Brain, Users, Dumbbell, MessageCircle,
@@ -111,6 +112,18 @@ export default function RecoveryResources() {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      <SEO
+        title="Recovery Resources | Stroke Recovery Academy"
+        description="Curated collection of stroke recovery resources including guides, videos, podcasts, and community support. Access evidence-based tools for your rehabilitation journey."
+        canonical="/recovery/resources"
+        keywords="stroke recovery resources, rehabilitation guides, recovery videos, stroke survivor community"
+        author="Stroke Recovery Academy"
+        type="website"
+        expertise={["Evidence-based recovery methods", "Comprehensive stroke rehabilitation", "Community-driven support"]}
+        experience="Supporting stroke survivors since 2024"
+        trustSignals={["Medical expert-reviewed resources", "Trusted by healthcare professionals", "Survivor-tested content"]}
+        breadcrumbs={[{ name: "Home", url: "/" }, { name: "Recovery Resources", url: "/recovery/resources" }]}
+      />
       <RecoveryHeader />
       
       <main className="container mx-auto px-4 py-6 max-w-5xl">

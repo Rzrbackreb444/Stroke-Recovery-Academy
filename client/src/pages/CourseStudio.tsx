@@ -1,4 +1,5 @@
 import { useState } from "react";
+import SEO from "@/components/SEO";
 import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -1115,6 +1116,76 @@ export default function CourseStudio() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
+      <SEO
+        title="Course Studio - Create & Sell Online Courses with AI"
+        description="Create professional online courses with AI-powered content generation, video lessons, interactive quizzes, and certificates of completion. Build, monetize, and scale your educational content with KreAIte's complete course studio platform. Earn 85% on every sale with built-in payment processing."
+        keywords="online course creation, sell courses, e-learning platform, course builder, video courses, LMS, course platform, create courses online, online education, digital courses, course monetization"
+        canonical="/course-studio"
+        type="website"
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Creator Hub", url: "/creator-hub" },
+          { name: "Course Studio", url: "/course-studio" }
+        ]}
+        faq={[
+          {
+            question: "How do I create a course in Course Studio?",
+            answer: "Simply use our AI-powered wizard to define your course structure, add modules and lessons, create video lessons or text content, design interactive quizzes, and set your pricing. Our platform guides you through the entire process with a user-friendly interface and AI assistance."
+          },
+          {
+            question: "Can I sell my courses and earn money?",
+            answer: "Yes! You can set your own prices for each course and earn 85% of every sale through our built-in payment processing. There are no transaction fees or hidden charges, making it easy to monetize your expertise."
+          },
+          {
+            question: "What types of content can I include in my courses?",
+            answer: "Course Studio supports video lessons, text-based content, interactive quizzes with multiple question types, downloadable resources, drip-feed content scheduling, and automated certificates of completion for enrolled students."
+          },
+          {
+            question: "How do students track their progress and earn certificates?",
+            answer: "Students can track their progress through our built-in student dashboard with completion status for each lesson and module. Upon completing all course requirements and passing quizzes, they automatically receive professional certificates that they can download and share."
+          }
+        ]}
+        expertise={[
+          "AI-powered course outline generation",
+          "Professional curriculum design",
+          "Interactive learning experience design",
+          "Student assessment and analytics",
+          "Course monetization solutions",
+          "Educational platform architecture"
+        ]}
+        experience="Built by creators for creators with years of educational platform experience and thousands of successful courses published worldwide. Our platform combines AI innovation with proven teaching methodologies."
+        trustSignals={[
+          "GDPR and HIPAA-compliant student data protection",
+          "Professional-grade video hosting and streaming",
+          "Secure PCI-DSS payment processing",
+          "Automated certificate verification system",
+          "24/7 customer support for creators",
+          "Regular platform security audits",
+          "Trusted by thousands of educators and course creators"
+        ]}
+        schema={[
+          {
+            "@type": "SoftwareApplication",
+            name: "KreAIte Course Studio",
+            applicationCategory: "EducationalApplication",
+            operatingSystem: "Web Browser",
+            description: "Create professional online courses with AI-powered content generation, video lessons, quizzes, and certificates. Build, monetize, and scale your educational content.",
+            offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+            featureList: [
+              "AI Course Outline Generation",
+              "Video Lesson Editor with Multiple Content Types",
+              "Interactive Quiz and Assessment Builder",
+              "Student Analytics and Progress Tracking",
+              "Automated Certificate Generator",
+              "Built-in Payment Processing (85% Creator Earnings)",
+              "Drip-Feed Content Scheduling",
+              "Student Enrollment Management",
+              "Course Review and Rating System",
+              "Downloadable Resource Management"
+            ]
+          }
+        ]}
+      />
       <GlobalHeader />
 
       <section className="relative py-16 overflow-hidden">

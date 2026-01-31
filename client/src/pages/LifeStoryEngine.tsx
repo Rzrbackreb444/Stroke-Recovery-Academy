@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -800,6 +801,17 @@ export default function LifeStoryEngine() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F3] flex flex-col" data-testid="life-story-engine-page">
+      <SEO 
+        title="Life Story Engine | KreAIte"
+        description="Create your life story and memoir with AI assistance. Document milestones, generate chapters, organize your biography with AI-powered writing tools. Tell your unique story."
+        canonical="/life-story-engine"
+        keywords="memoir writing, life story creator, autobiography, biography writing, personal narrative"
+        author="KreAIte"
+        expertise={["Memoir and biography writing", "Life narrative structuring", "AI-assisted storytelling"]}
+        experience="Life story and memoir tools since 2024"
+        trustSignals={["Trusted for personal stories", "Secure personal data handling", "Professional narrative creation"]}
+        breadcrumbs={[{ name: "Home", url: "/" }, { name: "Life Story Engine", url: "/life-story-engine" }]}
+      />
       <GlobalHeader />
       <div className="flex-1 flex">
         <StoryListSidebar

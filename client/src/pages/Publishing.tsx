@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -209,10 +210,12 @@ function ProjectCard({ project }: { project: PublishingProject }) {
 
 function CreateProjectDialog({ 
   open, 
-  onOpenChange 
+  onOpenChange,
+  children,
 }: { 
   open: boolean; 
   onOpenChange: (open: boolean) => void;
+  children: React.ReactNode;
 }) {
   const { toast } = useToast();
   
@@ -634,6 +637,18 @@ export default function Publishing() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
+      <SEO 
+        title="Publishing Hub"
+        description="Publish your content to global marketplaces with AI-powered tools. Create books, courses, and digital products with professional writing assistance and direct marketplace integration."
+        canonicalUrl="https://kreaite.xyz/publishing"
+        keywords={["content publishing", "book publishing", "marketplace publishing", "self-publishing", "digital publishing"]}
+        author="KreAIte"
+        expertise="Professional content publishing platform"
+        experience="Platform established 2024 with integrated marketplace systems"
+        authoritativeness="Industry-leading publishing tools and marketplace access"
+        trustworthiness="Transparent royalties and secure creator payments"
+        breadcrumbs={[{ name: "Home", url: "/" }, { name: "Publishing", url: "/publishing" }]}
+      />
       <GlobalHeader />
       <main>
         <HeroSection />

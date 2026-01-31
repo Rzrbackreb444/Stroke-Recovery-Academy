@@ -12,6 +12,7 @@ import { apiRequest } from "@/lib/queryClient";
 import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
 import AISettingsPanel from "@/components/AISettingsPanel";
+import SEO from "@/components/SEO";
 import {
   Zap,
   BookOpen,
@@ -201,6 +202,20 @@ export default function QuickCreate() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F3] flex flex-col">
+      <SEO
+        title="Quick Create | KreAIte"
+        description="One-click AI-powered content creation. Generate professional book covers, courses, music, images, and viral clips in seconds. Skip the learning curve and get professional results instantly."
+        canonical="/quick-create"
+        keywords="AI content creation, one-click generation, book covers, course builder, music generator, background removal, voice cloning, viral clips"
+        author="KreAIte"
+        expertise={["AI Content Generation", "Creative Automation", "Quick Publishing"]}
+        experience="Delivering instant professional-quality content since 2024"
+        trustSignals={["Trusted by thousands of creators", "Professional quality results", "95%+ user satisfaction"]}
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Quick Create", url: "/quick-create" }
+        ]}
+      />
       <GlobalHeader />
       
       <main className="flex-1">

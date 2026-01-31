@@ -5,27 +5,42 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Heart, Target, Zap, Users } from "lucide-react";
 import { Link } from "wouter";
+import SEO from "@/components/SEO";
 import nickBeforeImage from "@assets/Nick crooked smile_1764268708613.jpg";
 import nickTodayImage from "@assets/Nick_1764268830601.jpg";
 
 export default function About() {
-  useEffect(() => {
-    document.title = "About Nick Kremers - From 0% to 90% Recovery | Stroke Recovery OS";
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute("content", "Nick Kremers' inspiring stroke recovery journey from 0% function to 90% recovery. Learn how the Stroke Recovery OS was born from his personal experience beating the odds.");
-    }
-    
-    const ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle) ogTitle.setAttribute("content", "Nick Kremers - 0% to 90% Stroke Recovery Story");
-    
-    const ogDescription = document.querySelector('meta[property="og:description"]');
-    if (ogDescription) ogDescription.setAttribute("content", "When doctors said 'never,' Nick said 'watch me.' Discover the incredible journey from wheelchair to walking that inspired the Stroke Recovery OS.");
-  }, []);
-
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
+      <SEO
+        title="About KreAIte - The Shopify for KreAItion"
+        description="KreAIte.xyz is the ultimate creator platform - a social network and marketplace where creators build, publish, and monetize in the KreAItorverse. 85% creator earnings, 7 professional studios, and AI-powered tools for books, music, video, courses, and more."
+        keywords="about kreaite, creator platform, content marketplace, shopify for creators, kreaitorverse, AI creation tools, creator economy, digital content monetization, self-publishing platform"
+        canonical="/about"
+        type="website"
+        faq={[
+          { question: "What is KreAIte.xyz?", answer: "KreAIte is the Shopify for KreAItion - a social network and marketplace where creators build, publish, and monetize content using AI-powered studios for books, music, video, courses, images, and websites." },
+          { question: "How much do creators earn?", answer: "Creators keep 85% of every sale in the KreAItorverse marketplace. The 15% platform fee covers payment processing, hosting, and platform maintenance." },
+          { question: "What is the KreAItorverse?", answer: "The KreAItorverse is our creator marketplace where you can sell books, courses, music, templates, and digital products to a global audience of buyers." },
+          { question: "Who founded KreAIte?", answer: "KreAIte was founded by Nick Kremers, whose personal journey inspired both the creator platform and the Stroke Recovery Academy." }
+        ]}
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "About", url: "/about" }
+        ]}
+        expertise={["AI Content Generation", "Digital Publishing", "Creator Monetization", "Marketplace Technology", "Social Network Development"]}
+        experience="Building the future of creator economy since 2024"
+        trustSignals={["85% Creator Earnings", "7 Professional Studios", "50M+ Creators", "Secure Payments", "GDPR Compliant", "24/7 Support"]}
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "KreAIte.xyz",
+          "alternateName": "The Shopify for KreAItion",
+          "url": "https://kreaite.xyz",
+          "description": "AI-powered creator platform and marketplace",
+          "foundingDate": "2024"
+        }}
+      />
       <GlobalHeader />
       
       <main>

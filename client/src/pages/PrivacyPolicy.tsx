@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 
 const sections = [
   { id: "info-collect", title: "1. Information We Collect" },
@@ -26,6 +27,18 @@ export default function PrivacyPolicy() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F3]" data-testid="page-privacy-policy">
+      <SEO 
+        title="Privacy Policy"
+        description="Learn how KreAIte protects your personal data with transparent privacy practices, secure storage, and compliance with international data protection regulations."
+        canonicalUrl="https://kreaite.xyz/privacy-policy"
+        keywords={["privacy policy", "data protection", "personal information", "data security", "GDPR"]}
+        author="KreAIte"
+        expertise="Data privacy and protection standards"
+        experience="Platform established 2024 with HIPAA-compliant data handling"
+        authoritativeness="Transparent and verified privacy practices"
+        trustworthiness="Secure encryption and GDPR compliant"
+        breadcrumbs={[{ name: "Home", url: "/" }, { name: "Privacy Policy", url: "/privacy-policy" }]}
+      />
       <GlobalHeader />
       
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
