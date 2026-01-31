@@ -444,9 +444,9 @@ function BatchStudioTab() {
         Process multiple content pieces at once. Batch generate images, convert formats, 
         and automate repetitive creative tasks.
       </p>
-      <Badge variant="outline" className="border-[#C9941A]/50 text-[#C9941A]">
-        Coming Soon
-      </Badge>
+      <Button className="bg-[#C9941A] text-black" onClick={() => window.location.href = '/batch-generation'}>
+        Open Batch Studio
+      </Button>
     </div>
   );
 }
@@ -464,9 +464,9 @@ function CrossFormatTab() {
         Transform your content across formats. Turn books into courses, podcasts into blogs, 
         and videos into social posts with AI assistance.
       </p>
-      <Badge variant="outline" className="border-[#C9941A]/50 text-[#C9941A]">
-        Coming Soon
-      </Badge>
+      <Button className="bg-[#C9941A] text-black" onClick={() => window.location.href = '/quick-create'}>
+        Start Transforming
+      </Button>
     </div>
   );
 }

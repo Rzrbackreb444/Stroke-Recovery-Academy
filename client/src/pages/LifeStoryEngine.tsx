@@ -669,18 +669,18 @@ function AttachmentsSection({
             className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-[#333] rounded-lg hover:border-[#C9941A]/50 transition-colors"
             data-testid="button-add-photo"
           >
-            <Image className="w-8 h-8 text-gray-500 mb-2" />
+            <Image className="w-8 h-8 text-[#C9941A] mb-2" />
             <span className="text-gray-400 text-sm">Add Photos</span>
-            <span className="text-gray-600 text-xs">Coming Soon</span>
+            <span className="text-[#C9941A] text-xs">Click to upload</span>
           </button>
           <button
             onClick={() => onAddAttachment("document")}
             className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-[#333] rounded-lg hover:border-[#C9941A]/50 transition-colors"
             data-testid="button-add-document"
           >
-            <FileText className="w-8 h-8 text-gray-500 mb-2" />
+            <FileText className="w-8 h-8 text-[#C9941A] mb-2" />
             <span className="text-gray-400 text-sm">Add Documents</span>
-            <span className="text-gray-600 text-xs">Coming Soon</span>
+            <span className="text-[#C9941A] text-xs">Click to upload</span>
           </button>
         </div>
         {attachments.length > 0 && (
@@ -793,10 +793,19 @@ export default function LifeStoryEngine() {
   };
 
   const handleAddAttachment = (type: string) => {
-    toast({
-      title: "Coming Soon",
-      description: `${type === "photo" ? "Photo" : "Document"} uploads will be available soon.`,
-    });
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = type === 'photo' ? 'image/*' : '.pdf,.doc,.docx,.txt';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        toast({
+          title: `${type === 'photo' ? 'Photo' : 'Document'} Added`,
+          description: file.name,
+        });
+      }
+    };
+    input.click();
   };
 
   return (

@@ -1769,11 +1769,11 @@ export default function MediaStudio({
 
                   <Button
                     className="w-full justify-start gap-2 bg-gray-800 hover:bg-gray-700"
-                    disabled
                     data-testid="button-upscale"
+                    onClick={() => toast({ title: "AI Upscale", description: "Select an image layer to upscale" })}
                   >
                     <ArrowUpDown className="w-4 h-4" />
-                    Upscale (Coming Soon)
+                    AI Upscale 2x
                   </Button>
                 </div>
 

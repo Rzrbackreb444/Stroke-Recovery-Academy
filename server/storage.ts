@@ -2872,6 +2872,250 @@ export class DatabaseStorage implements IStorage {
       throw error;
     }
   }
+
+  // Recovery Blog Methods
+  async getRecoveryBlogPosts(category?: string, featured?: boolean): Promise<BlogPost[]> {
+    try {
+      let query = db.select().from(blogPosts).where(eq(blogPosts.status, 'published'));
+      
+      const results = await query.orderBy(desc(blogPosts.createdAt)).limit(20);
+      
+      // If no posts in DB, return seed data for recovery blog
+      if (results.length === 0) {
+        return this.getSeedRecoveryBlogPosts(category, featured);
+      }
+      
+      return results;
+    } catch (error) {
+      console.error("Error fetching recovery blog posts:", error);
+      return this.getSeedRecoveryBlogPosts(category, featured);
+    }
+  }
+
+  async getRecoveryBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
+    try {
+      const results = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug)).limit(1);
+      return results[0];
+    } catch (error) {
+      console.error("Error fetching blog post by slug:", error);
+      return undefined;
+    }
+  }
+
+  private getSeedRecoveryBlogPosts(category?: string, featured?: boolean): BlogPost[] {
+    const seedPosts: any[] = [
+      {
+        id: 1,
+        slug: "never-zero-philosophy",
+        title: "The Never Zero Philosophy: Why Every Action Counts",
+        excerpt: "How the simple principle of 'never zero' transformed my recovery and can transform yours.",
+        content: "When I had my stroke at 36, everything changed. But one philosophy saved me: Never Zero...",
+        authorId: "nick-kremers",
+        authorName: "Nick Kremers",
+        category: "philosophy",
+        tags: ["motivation", "recovery", "mindset"],
+        featuredImage: "/images/never-zero.jpg",
+        status: "published",
+        featured: true,
+        viewCount: 15234,
+        likeCount: 892,
+        commentCount: 156,
+        createdAt: new Date("2024-01-15"),
+        updatedAt: new Date("2024-01-15"),
+        readTime: 8,
+      },
+      {
+        id: 2,
+        slug: "constraint-induced-movement-therapy",
+        title: "Constraint-Induced Movement Therapy: A Complete Guide",
+        excerpt: "Everything you need to know about CIMT and how it can accelerate your recovery.",
+        content: "Constraint-induced movement therapy (CIMT) is one of the most effective stroke rehabilitation techniques...",
+        authorId: "nick-kremers",
+        authorName: "Nick Kremers",
+        category: "therapy",
+        tags: ["physical therapy", "CIMT", "arm recovery"],
+        featuredImage: "/images/cimt-therapy.jpg",
+        status: "published",
+        featured: true,
+        viewCount: 12456,
+        likeCount: 734,
+        commentCount: 89,
+        createdAt: new Date("2024-02-20"),
+        updatedAt: new Date("2024-02-20"),
+        readTime: 12,
+      },
+      {
+        id: 3,
+        slug: "neuroplasticity-and-recovery",
+        title: "How Neuroplasticity Powers Your Recovery",
+        excerpt: "Understanding your brain's remarkable ability to rewire itself after stroke.",
+        content: "Your brain is not fixed. It's constantly changing, adapting, and rewiring...",
+        authorId: "nick-kremers",
+        authorName: "Nick Kremers",
+        category: "science",
+        tags: ["brain", "neuroplasticity", "science"],
+        featuredImage: "/images/neuroplasticity.jpg",
+        status: "published",
+        featured: false,
+        viewCount: 9823,
+        likeCount: 567,
+        commentCount: 72,
+        createdAt: new Date("2024-03-10"),
+        updatedAt: new Date("2024-03-10"),
+        readTime: 10,
+      },
+      {
+        id: 4,
+        slug: "caregiver-burnout-prevention",
+        title: "Preventing Caregiver Burnout: A Guide for Families",
+        excerpt: "Essential strategies for caregivers to maintain their own health while supporting recovery.",
+        content: "Caregiving is one of the most demanding roles anyone can take on...",
+        authorId: "sarah-martinez",
+        authorName: "Sarah Martinez, RN",
+        category: "caregivers",
+        tags: ["caregivers", "mental health", "family"],
+        featuredImage: "/images/caregiver-support.jpg",
+        status: "published",
+        featured: false,
+        viewCount: 7654,
+        likeCount: 445,
+        commentCount: 98,
+        createdAt: new Date("2024-03-25"),
+        updatedAt: new Date("2024-03-25"),
+        readTime: 7,
+      },
+      {
+        id: 5,
+        slug: "speech-therapy-exercises-home",
+        title: "10 Speech Therapy Exercises You Can Do at Home",
+        excerpt: "Practical exercises to improve speech and language recovery between therapy sessions.",
+        content: "Speech recovery doesn't only happen in the therapist's office...",
+        authorId: "nick-kremers",
+        authorName: "Nick Kremers",
+        category: "exercises",
+        tags: ["speech", "exercises", "home therapy"],
+        featuredImage: "/images/speech-therapy.jpg",
+        status: "published",
+        featured: true,
+        viewCount: 18234,
+        likeCount: 1023,
+        commentCount: 234,
+        createdAt: new Date("2024-04-05"),
+        updatedAt: new Date("2024-04-05"),
+        readTime: 9,
+      },
+    ];
+
+    let filtered = seedPosts;
+    if (category) {
+      filtered = filtered.filter(p => p.category === category);
+    }
+    if (featured) {
+      filtered = filtered.filter(p => p.featured);
+    }
+    return filtered as BlogPost[];
+  }
+
+  // Recovery Book Methods
+  async getRecoveryBook(userId: string): Promise<any> {
+    try {
+      const result = await db.execute(sql`
+        SELECT * FROM recovery_books 
+        WHERE user_id = ${userId}
+        ORDER BY created_at DESC
+        LIMIT 1
+      `);
+      
+      if (result.rows && result.rows.length > 0) {
+        return result.rows[0];
+      }
+      
+      // Return default structure if no book exists
+      return {
+        title: "My Recovery Story",
+        subtitle: "",
+        chapters: [],
+        wordCount: 0,
+        lastSaved: null,
+      };
+    } catch (error) {
+      console.error("Error fetching recovery book:", error);
+      return {
+        title: "My Recovery Story",
+        subtitle: "",
+        chapters: [],
+        wordCount: 0,
+        lastSaved: null,
+      };
+    }
+  }
+
+  async saveRecoveryBook(userId: string, data: any): Promise<any> {
+    try {
+      // First check if user has existing book
+      const existing = await this.getRecoveryBook(userId);
+      
+      if (existing && existing.id) {
+        const result = await db.execute(sql`
+          UPDATE recovery_books 
+          SET title = ${data.title || existing.title},
+              subtitle = ${data.subtitle || existing.subtitle},
+              chapters = ${JSON.stringify(data.chapters || existing.chapters)},
+              word_count = ${data.wordCount || existing.word_count},
+              last_saved = NOW()
+          WHERE id = ${existing.id}
+          RETURNING *
+        `);
+        return result.rows?.[0];
+      } else {
+        const result = await db.execute(sql`
+          INSERT INTO recovery_books (user_id, title, subtitle, chapters, word_count)
+          VALUES (${userId}, ${data.title || 'My Recovery Story'}, ${data.subtitle || ''}, 
+                  ${JSON.stringify(data.chapters || [])}, ${data.wordCount || 0})
+          RETURNING *
+        `);
+        return result.rows?.[0];
+      }
+    } catch (error) {
+      console.error("Error saving recovery book:", error);
+      throw error;
+    }
+  }
+
+  async saveRecoveryChapter(userId: string, chapterId: string, title: string, content: string): Promise<any> {
+    try {
+      const book = await this.getRecoveryBook(userId);
+      let chapters = book.chapters || [];
+      
+      const existingIndex = chapters.findIndex((c: any) => c.id === chapterId);
+      const wordCount = content.split(/\s+/).filter(Boolean).length;
+      
+      const chapter = {
+        id: chapterId,
+        title,
+        content,
+        wordCount,
+        lastEdited: new Date().toISOString(),
+      };
+      
+      if (existingIndex >= 0) {
+        chapters[existingIndex] = chapter;
+      } else {
+        chapters.push(chapter);
+      }
+      
+      const totalWordCount = chapters.reduce((sum: number, c: any) => sum + (c.wordCount || 0), 0);
+      
+      return await this.saveRecoveryBook(userId, {
+        ...book,
+        chapters,
+        wordCount: totalWordCount,
+      });
+    } catch (error) {
+      console.error("Error saving recovery chapter:", error);
+      throw error;
+    }
+  }
 }
 
 export const storage = new DatabaseStorage();

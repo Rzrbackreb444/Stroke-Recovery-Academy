@@ -66,48 +66,6 @@ const categories = [
   { id: "outline", label: "Doctrine Outlines", icon: Layers },
 ];
 
-const mockTemplates: Template[] = [
-  {
-    id: "1",
-    title: "Business Book Blueprint",
-    description: "Complete 12-chapter business book outline with exercises and case study templates",
-    category: "book",
-    price: 15,
-    creatorId: "creator1",
-    creatorName: "Business Pro",
-    downloads: 234,
-    rating: 4.8,
-    tags: ["business", "non-fiction", "how-to"],
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "2",
-    title: "Children's Book Story Arc",
-    description: "Picture book structure with illustration prompts and page layouts",
-    category: "book",
-    price: 10,
-    creatorId: "creator2",
-    creatorName: "Kids Author",
-    downloads: 567,
-    rating: 4.9,
-    tags: ["children", "picture book", "illustrations"],
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "3",
-    title: "Online Course Framework",
-    description: "8-module course structure with quizzes, assignments, and certificate templates",
-    category: "course",
-    price: 25,
-    creatorId: "creator3",
-    creatorName: "Course Master",
-    downloads: 189,
-    rating: 4.7,
-    tags: ["course", "education", "certification"],
-    createdAt: new Date().toISOString(),
-  },
-];
-
 export function TemplateMarketplace() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("browse");
