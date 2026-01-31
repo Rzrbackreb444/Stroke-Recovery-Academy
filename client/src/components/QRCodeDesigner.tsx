@@ -54,6 +54,14 @@ export default function QRCodeDesigner({ projectId, projectName, onSave }: QRCod
     generateQRMutation.mutate();
   }, [projectId]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      generateQRMutation.mutate();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [fgColor, bgColor, size[0], format, logoUrl]);
+
   const handleDownload = () => {
     if (!qrDataUrl) return;
     

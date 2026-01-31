@@ -75,6 +75,11 @@ export default function QuoteViewPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: quoteData.text }),
       });
+
+      if (!response.ok) {
+        throw new Error(`Voice API error: ${response.status} ${response.statusText}`);
+      }
+
       const data = await response.json();
       
       if (data.audioUrl && !data.useBrowserTTS) {
