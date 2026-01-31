@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -24,8 +25,45 @@ import {
   Star,
   Crown,
   Sparkles,
+  HeartPulse,
+  TrendingUp,
+  Rocket,
 } from "lucide-react";
 import RecoveryHeader from "@/components/RecoveryHeader";
+
+// Nick Kremers' Three Recovery Phases from "The Ultimate Stroke Recovery Revolution"
+const recoveryPhases = [
+  {
+    id: "survival",
+    name: "SURVIVAL PHASE",
+    days: "Days 1-22",
+    focus: "Basic function restoration",
+    mindset: "Just get through today",
+    coreActivities: ["PT fundamentals", "Basic mobility", "Mental acceptance"],
+    icon: HeartPulse,
+    partNumbers: [1, 2], // Foundation & Mindset Mastery
+  },
+  {
+    id: "breakthrough",
+    name: "BREAKTHROUGH PHASE",
+    days: "Days 23-44",
+    focus: "Building momentum and consistency",
+    mindset: "I'm making progress",
+    coreActivities: ["Advanced exercises", "Skill-building", "Habit formation"],
+    icon: TrendingUp,
+    partNumbers: [3, 4], // Physical Reclamation & Cognitive Comeback
+  },
+  {
+    id: "optimization",
+    name: "OPTIMIZATION PHASE",
+    days: "Days 45-66",
+    focus: "Mastery and acceleration",
+    mindset: "I am the comeback",
+    coreActivities: ["Advanced protocols", "Combining techniques", "Pushing limits"],
+    icon: Rocket,
+    partNumbers: [5, 6, 7], // Life Integration, Prevention & Optimization, Legacy Building
+  },
+];
 
 const curriculumParts = [
   {
@@ -143,6 +181,7 @@ const tierConfig: Record<string, { name: string; icon: typeof Star; color: strin
 export default function RecoveryUniversity() {
   const { user } = useAuth();
   const userTier = "explorer";
+  const [activePhase, setActivePhase] = useState<string>("all");
 
   const tierOrder = ["explorer", "warrior", "champion", "platinum"];
   const userTierIndex = tierOrder.indexOf(userTier);
@@ -158,6 +197,25 @@ export default function RecoveryUniversity() {
 
   const completedChapters = 3;
   const progressPercentage = Math.round((completedChapters / getTotalChapters()) * 100);
+
+  // Filter curriculum parts by active phase
+  const getFilteredParts = () => {
+    if (activePhase === "all") return curriculumParts;
+    const phase = recoveryPhases.find(p => p.id === activePhase);
+    if (!phase) return curriculumParts;
+    return curriculumParts.filter(part => phase.partNumbers.includes(part.partNumber));
+  };
+
+  // Calculate phase-specific progress
+  const getPhaseProgress = (phaseId: string) => {
+    const phase = recoveryPhases.find(p => p.id === phaseId);
+    if (!phase) return 0;
+    const phaseParts = curriculumParts.filter(part => phase.partNumbers.includes(part.partNumber));
+    const phaseChapters = phaseParts.reduce((sum, part) => sum + part.chapters.length, 0);
+    const phaseCompletedChapters = phaseParts.reduce((sum, part) => 
+      sum + part.chapters.filter(ch => ch.number <= completedChapters).length, 0);
+    return phaseChapters > 0 ? Math.round((phaseCompletedChapters / phaseChapters) * 100) : 0;
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -244,10 +302,147 @@ export default function RecoveryUniversity() {
         </div>
       </section>
 
-      <section className="py-12 px-4">
+      {/* Phase Navigation Section */}
+      <section className="py-8 px-4 border-b border-border" style={{ backgroundColor: '#FAF8F3' }} data-testid="section-phase-navigation">
         <div className="max-w-6xl mx-auto">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold mb-2" data-testid="heading-phases">
+              Nick Kremers' <span style={{ color: '#C9941A' }}>66-Day Recovery Revolution</span>
+            </h2>
+            <p className="text-muted-foreground">
+              Follow the battle-tested three-phase system from "The Ultimate Stroke Recovery Revolution"
+            </p>
+          </div>
+          
+          {/* Phase Tabs */}
+          <div className="flex flex-wrap gap-3 mb-6" data-testid="phase-tabs">
+            <Button
+              variant={activePhase === "all" ? "default" : "outline"}
+              onClick={() => setActivePhase("all")}
+              className={activePhase === "all" ? "" : "border-2"}
+              style={activePhase === "all" ? { backgroundColor: '#C9941A', borderColor: '#C9941A' } : { borderColor: '#C9941A', color: '#C9941A' }}
+              data-testid="tab-all-phases"
+            >
+              <BookOpen className="w-4 h-4 mr-2" />
+              All Phases
+            </Button>
+            {recoveryPhases.map((phase) => {
+              const PhaseIcon = phase.icon;
+              const isActive = activePhase === phase.id;
+              return (
+                <Button
+                  key={phase.id}
+                  variant={isActive ? "default" : "outline"}
+                  onClick={() => setActivePhase(phase.id)}
+                  className={isActive ? "" : "border-2"}
+                  style={isActive ? { backgroundColor: '#C9941A', borderColor: '#C9941A' } : { borderColor: '#C9941A', color: '#C9941A' }}
+                  data-testid={`tab-phase-${phase.id}`}
+                >
+                  <PhaseIcon className="w-4 h-4 mr-2" />
+                  {phase.name}
+                </Button>
+              );
+            })}
+          </div>
+
+          {/* Phase Cards with Progress */}
+          <div className="grid md:grid-cols-3 gap-4" data-testid="phase-cards">
+            {recoveryPhases.map((phase, index) => {
+              const PhaseIcon = phase.icon;
+              const phaseProgress = getPhaseProgress(phase.id);
+              const isActive = activePhase === phase.id;
+              return (
+                <Card 
+                  key={phase.id}
+                  className={`cursor-pointer transition-all ${isActive ? 'ring-2' : 'hover-elevate'}`}
+                  style={isActive ? { ringColor: '#C9941A', borderColor: '#C9941A' } : {}}
+                  onClick={() => setActivePhase(phase.id)}
+                  data-testid={`card-phase-${phase.id}`}
+                >
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center gap-3">
+                      <div 
+                        className="w-10 h-10 rounded-full flex items-center justify-center"
+                        style={{ backgroundColor: 'rgba(201, 148, 26, 0.15)' }}
+                      >
+                        <PhaseIcon className="w-5 h-5" style={{ color: '#C9941A' }} />
+                      </div>
+                      <div>
+                        <Badge 
+                          variant="outline" 
+                          className="mb-1"
+                          style={{ borderColor: '#C9941A', color: '#C9941A' }}
+                          data-testid={`badge-phase-days-${phase.id}`}
+                        >
+                          {phase.days}
+                        </Badge>
+                        <CardTitle className="text-base" data-testid={`text-phase-name-${phase.id}`}>{phase.name}</CardTitle>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground mb-2" data-testid={`text-phase-focus-${phase.id}`}>
+                      <strong>Focus:</strong> {phase.focus}
+                    </p>
+                    <p className="text-sm italic mb-3" style={{ color: '#C9941A' }} data-testid={`text-phase-mindset-${phase.id}`}>
+                      "{phase.mindset}"
+                    </p>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">Phase Progress</span>
+                        <span className="font-semibold" data-testid={`text-phase-progress-${phase.id}`}>{phaseProgress}%</span>
+                      </div>
+                      <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'rgba(201, 148, 26, 0.2)' }}>
+                        <div 
+                          className="h-full rounded-full transition-all"
+                          style={{ width: `${phaseProgress}%`, backgroundColor: '#C9941A' }}
+                          data-testid={`progress-phase-${phase.id}`}
+                        />
+                      </div>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-1">
+                      {phase.coreActivities.map((activity, i) => (
+                        <Badge 
+                          key={i} 
+                          variant="secondary" 
+                          className="text-xs"
+                          data-testid={`badge-activity-${phase.id}-${i}`}
+                        >
+                          {activity}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Curriculum Section */}
+      <section className="py-12 px-4" data-testid="section-curriculum">
+        <div className="max-w-6xl mx-auto">
+          {activePhase !== "all" && (
+            <div className="mb-6 p-4 rounded-lg" style={{ backgroundColor: 'rgba(201, 148, 26, 0.1)', borderLeft: '4px solid #C9941A' }} data-testid="active-phase-indicator">
+              <div className="flex items-center gap-2">
+                {(() => {
+                  const phase = recoveryPhases.find(p => p.id === activePhase);
+                  if (!phase) return null;
+                  const PhaseIcon = phase.icon;
+                  return (
+                    <>
+                      <PhaseIcon className="w-5 h-5" style={{ color: '#C9941A' }} />
+                      <span className="font-semibold" style={{ color: '#C9941A' }}>{phase.name}</span>
+                      <span className="text-muted-foreground">| {phase.days}</span>
+                    </>
+                  );
+                })()}
+              </div>
+            </div>
+          )}
           <Accordion type="multiple" className="space-y-4" data-testid="accordion-curriculum">
-            {curriculumParts.map((part) => {
+            {getFilteredParts().map((part) => {
               const PartIcon = part.icon;
               const hasAccess = canAccess(part.requiredTier);
               const TierInfo = tierConfig[part.requiredTier];

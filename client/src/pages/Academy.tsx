@@ -25,7 +25,8 @@ import {
   Layers,
   RotateCcw,
   Quote,
-  ChevronRight
+  ChevronRight,
+  Flame
 } from "lucide-react";
 import mirrorTherapyImage from "@assets/generated_images/mirror_therapy_exercise.png";
 import baseballBatImage from "@assets/generated_images/baseball_bat_therapy_equipment.png";
@@ -493,6 +494,83 @@ export default function Academy() {
                 </cite>
               </CardContent>
             </Card>
+          </div>
+        </section>
+
+        <section 
+          className="py-20 bg-zinc-900 dark:bg-black relative overflow-hidden"
+          aria-labelledby="sasquatch-creed-title"
+          data-testid="section-sasquatch-creed"
+        >
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#C9941A]/10 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0wIDBoNDB2NDBoLTQweiIvPjxwYXRoIGQ9Ik00MCAyMGgtNDBNMjAgNDB2LTQwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS1vcGFjaXR5PSIuMDMiLz48L2c+PC9zdmc+')] opacity-50" />
+          
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="max-w-4xl mx-auto text-center">
+              <div className="flex justify-center mb-6">
+                <div className="w-20 h-20 rounded-full bg-[#C9941A]/20 border-2 border-[#C9941A] flex items-center justify-center">
+                  <Flame className="h-10 w-10 text-[#C9941A]" aria-hidden="true" />
+                </div>
+              </div>
+              
+              <Badge 
+                variant="outline" 
+                className="mb-4 border-[#C9941A] text-[#C9941A] bg-[#C9941A]/10"
+                data-testid="badge-doctrine"
+              >
+                The Doctrine
+              </Badge>
+              
+              <h2 
+                id="sasquatch-creed-title"
+                className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-2 uppercase tracking-tight"
+                data-testid="text-creed-title"
+              >
+                The Sasquatch <span className="text-[#C9941A]">Creed</span>
+              </h2>
+              
+              <p className="text-xl md:text-2xl font-bold text-[#C9941A] mb-12 tracking-widest uppercase">
+                Rebuild. Rewire. Rise.
+              </p>
+              
+              <div className="space-y-4 mb-12" data-testid="creed-content">
+                <p className="text-2xl md:text-3xl lg:text-4xl font-black text-white uppercase tracking-wide">
+                  I AM A STROKE WARRIOR.
+                </p>
+                <div className="space-y-2 text-lg md:text-xl text-zinc-300 font-medium leading-relaxed">
+                  <p>I will not be defined by what happened to me.</p>
+                  <p>I will be defined by how I respond.</p>
+                </div>
+                <div className="py-4 space-y-2 text-lg md:text-xl text-zinc-300 font-medium leading-relaxed">
+                  <p>Every day I show up, <span className="text-[#C9941A] font-bold">I win.</span></p>
+                  <p>Every rep I complete, <span className="text-[#C9941A] font-bold">I rewire.</span></p>
+                  <p>Every obstacle I face, <span className="text-[#C9941A] font-bold">I overcome.</span></p>
+                </div>
+                <p className="text-lg md:text-xl text-zinc-300 font-medium italic">
+                  The impossible is only impossible until I prove it's not.
+                </p>
+                <div className="pt-4 space-y-2">
+                  <p className="text-xl md:text-2xl text-white font-bold">
+                    I am relentless. I am unstoppable.
+                  </p>
+                  <p className="text-2xl md:text-3xl lg:text-4xl font-black text-[#C9941A] uppercase tracking-wide">
+                    I AM THE COMEBACK.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="border-t border-zinc-700 pt-8">
+                <p className="text-sm text-zinc-500 mb-2">
+                  From the mind and heart of
+                </p>
+                <p className="text-lg font-bold text-white" data-testid="text-author-attribution">
+                  Nicholas "Stroked-Out Sasquatch" Kremers
+                </p>
+                <p className="text-sm text-[#C9941A] font-medium mt-1">
+                  Stroke Lyfe Publishing
+                </p>
+              </div>
+            </div>
           </div>
         </section>
 
