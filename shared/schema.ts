@@ -5213,3 +5213,125 @@ export type GeneratedLogo = typeof generatedLogos.$inferSelect;
 export type InsertGeneratedLogo = z.infer<typeof insertGeneratedLogoSchema>;
 export type WebsiteLead = typeof websiteLeads.$inferSelect;
 export type InsertWebsiteLead = z.infer<typeof insertWebsiteLeadSchema>;
+
+// ============================================================================
+// QUOTE STUDIO - DYNAMIC QR CODE GENERATOR WITH ROTATING QUOTES
+// ============================================================================
+
+// Quote Categories - Industries and niches
+export const quoteCategories = pgTable("quote_categories", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),
+  description: text("description"),
+  icon: text("icon"),
+  parentId: integer("parent_id"),
+  isActive: boolean("is_active").notNull().default(true),
+  order: integer("order").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Quotes - Individual quotes with AI generation metadata
+export const quotes = pgTable("quotes", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  categoryId: integer("category_id").references(() => quoteCategories.id, { onDelete: "set null" }),
+  text: text("text").notNull(),
+  author: text("author"),
+  tone: text("tone").notNull().default("motivational"), // motivational, actionable, witty, professional, inspirational
+  industry: text("industry").notNull(), // e-commerce, coaching, consulting, fitness, real-estate, etc.
+  targetAudience: text("target_audience"), // entrepreneurs, managers, athletes, etc.
+  rating: integer("rating").default(0), // 1-5 stars
+  isApproved: boolean("is_approved").notNull().default(false),
+  isAiGenerated: boolean("is_ai_generated").notNull().default(false),
+  aiModel: text("ai_model"), // gemini, openai, etc.
+  usageCount: integer("usage_count").notNull().default(0),
+  lastUsedAt: timestamp("last_used_at"),
+  tags: text("tags").array(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// QR Code Projects - User's QR code campaigns
+export const qrCodeProjects = pgTable("qr_code_projects", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  slug: text("slug").notNull(),
+  description: text("description"),
+  industry: text("industry").notNull(),
+  targetUrl: text("target_url"), // Optional override - otherwise uses internal landing page
+  backgroundImageUrl: text("background_image_url"),
+  logoUrl: text("logo_url"),
+  qrColor: text("qr_color").default("#000000"),
+  qrBackgroundColor: text("qr_background_color").default("#FFFFFF"),
+  qrStyle: text("qr_style").default("square"), // square, rounded, dots
+  qrSize: integer("qr_size").default(256),
+  generatedQrUrl: text("generated_qr_url"),
+  isPublished: boolean("is_published").notNull().default(false),
+  totalScans: integer("total_scans").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// QR Code Rotation Settings - Configure how quotes rotate
+export const qrCodeRotationSettings = pgTable("qr_code_rotation_settings", {
+  id: serial("id").primaryKey(),
+  projectId: integer("project_id").notNull().references(() => qrCodeProjects.id, { onDelete: "cascade" }),
+  rotationFrequency: text("rotation_frequency").notNull().default("daily"), // hourly, daily, weekly, manual
+  rotationTime: text("rotation_time").default("00:00"), // Time of day for rotation (HH:MM)
+  timezone: text("timezone").default("UTC"),
+  minRating: integer("min_rating").default(0), // Only show quotes with rating >= this
+  onlyApproved: boolean("only_approved").notNull().default(true),
+  currentQuoteId: integer("current_quote_id").references(() => quotes.id),
+  lastRotatedAt: timestamp("last_rotated_at"),
+  nextRotationAt: timestamp("next_rotation_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Project Quote Pool - Which quotes are assigned to which project
+export const projectQuotePool = pgTable("project_quote_pool", {
+  id: serial("id").primaryKey(),
+  projectId: integer("project_id").notNull().references(() => qrCodeProjects.id, { onDelete: "cascade" }),
+  quoteId: integer("quote_id").notNull().references(() => quotes.id, { onDelete: "cascade" }),
+  displayOrder: integer("display_order").default(0),
+  timesDisplayed: integer("times_displayed").notNull().default(0),
+  lastDisplayedAt: timestamp("last_displayed_at"),
+  addedAt: timestamp("added_at").notNull().defaultNow(),
+});
+
+// Quote Scan Analytics - Track QR code scans
+export const quoteScanAnalytics = pgTable("quote_scan_analytics", {
+  id: serial("id").primaryKey(),
+  projectId: integer("project_id").notNull().references(() => qrCodeProjects.id, { onDelete: "cascade" }),
+  quoteId: integer("quote_id").references(() => quotes.id, { onDelete: "set null" }),
+  scanDate: timestamp("scan_date").notNull().defaultNow(),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  country: text("country"),
+  city: text("city"),
+  deviceType: text("device_type"), // mobile, tablet, desktop
+  referrer: text("referrer"),
+});
+
+// Insert schemas for Quote Studio
+export const insertQuoteCategorySchema = createInsertSchema(quoteCategories).omit({ id: true, createdAt: true });
+export const insertQuoteSchema = createInsertSchema(quotes).omit({ id: true, createdAt: true, updatedAt: true, usageCount: true, lastUsedAt: true });
+export const insertQrCodeProjectSchema = createInsertSchema(qrCodeProjects).omit({ id: true, createdAt: true, updatedAt: true, totalScans: true });
+export const insertQrCodeRotationSettingsSchema = createInsertSchema(qrCodeRotationSettings).omit({ id: true, createdAt: true, lastRotatedAt: true });
+export const insertProjectQuotePoolSchema = createInsertSchema(projectQuotePool).omit({ id: true, addedAt: true, timesDisplayed: true, lastDisplayedAt: true });
+export const insertQuoteScanAnalyticsSchema = createInsertSchema(quoteScanAnalytics).omit({ id: true });
+
+// Types for Quote Studio
+export type QuoteCategory = typeof quoteCategories.$inferSelect;
+export type InsertQuoteCategory = z.infer<typeof insertQuoteCategorySchema>;
+export type Quote = typeof quotes.$inferSelect;
+export type InsertQuote = z.infer<typeof insertQuoteSchema>;
+export type QrCodeProject = typeof qrCodeProjects.$inferSelect;
+export type InsertQrCodeProject = z.infer<typeof insertQrCodeProjectSchema>;
+export type QrCodeRotationSettings = typeof qrCodeRotationSettings.$inferSelect;
+export type InsertQrCodeRotationSettings = z.infer<typeof insertQrCodeRotationSettingsSchema>;
+export type ProjectQuotePool = typeof projectQuotePool.$inferSelect;
+export type InsertProjectQuotePool = z.infer<typeof insertProjectQuotePoolSchema>;
+export type QuoteScanAnalytics = typeof quoteScanAnalytics.$inferSelect;
+export type InsertQuoteScanAnalytics = z.infer<typeof insertQuoteScanAnalyticsSchema>;
