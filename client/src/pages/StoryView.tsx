@@ -113,9 +113,9 @@ export default function StoryView() {
       <div className="min-h-screen flex items-center justify-center">
         <Card className="text-center py-16 max-w-md">
           <CardContent>
-            <BookOpen className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+            <BookOpen className="w-16 h-16 mx-auto mb-4 text-gray-400" />
             <h3 className="text-xl font-bold mb-2">Story Not Found</h3>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-gray-400 mb-6">
               This story may have been removed or doesn't exist.
             </p>
             <Link href="/stories">
@@ -162,7 +162,7 @@ export default function StoryView() {
               {post.title}
             </h1>
 
-            <div className="flex items-center justify-between flex-wrap gap-4 text-muted-foreground">
+            <div className="flex items-center justify-between flex-wrap gap-4 text-gray-400">
               <div className="flex items-center gap-4">
                 <Avatar>
                   <AvatarImage src={author?.profileImageUrl || undefined} />
@@ -231,7 +231,7 @@ export default function StoryView() {
             </div>
 
             <div className="flex items-center gap-2" data-testid="share-controls">
-              <span className="text-sm text-muted-foreground mr-2" data-testid="text-share-label">Share:</span>
+              <span className="text-sm text-gray-400 mr-2" data-testid="text-share-label">Share:</span>
               <Button 
                 variant="outline" 
                 size="icon"
@@ -295,7 +295,7 @@ export default function StoryView() {
             ) : (
               <Card className="mb-6 text-center py-8">
                 <CardContent>
-                  <p className="text-muted-foreground mb-4">
+                  <p className="text-gray-400 mb-4">
                     Sign in to leave a comment and join the conversation.
                   </p>
                   <Link href="/api/login">
@@ -333,11 +333,11 @@ export default function StoryView() {
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
                             <span className="font-medium">Community Member</span>
-                            <span className="text-sm text-muted-foreground">
+                            <span className="text-sm text-gray-400">
                               {new Date(comment.createdAt).toLocaleDateString()}
                             </span>
                           </div>
-                          <p className="mt-2 text-muted-foreground">{comment.content}</p>
+                          <p className="mt-2 text-gray-400">{comment.content}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -347,8 +347,8 @@ export default function StoryView() {
             ) : (
               <Card className="text-center py-8">
                 <CardContent>
-                  <MessageCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">
+                  <MessageCircle className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                  <p className="text-gray-400">
                     No comments yet. Be the first to share your thoughts!
                   </p>
                 </CardContent>

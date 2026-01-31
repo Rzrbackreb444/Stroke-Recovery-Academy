@@ -259,7 +259,7 @@ export default function ScratchOff() {
               variant={freePlay ? "default" : "outline"}
               size="sm"
               onClick={() => setFreePlay(!freePlay)}
-              className={freePlay ? "bg-green-600" : "border-gray-600"}
+              className={freePlay ? "bg-[#C9941A]" : "border-gray-600"}
               data-testid="button-freeplay"
             >
               {freePlay ? "FREE PLAY" : "BET MODE"}
@@ -289,7 +289,7 @@ export default function ScratchOff() {
                     selectedCard.id === card.id 
                       ? 'ring-2 ring-yellow-400 scale-105' 
                       : 'hover:scale-102'
-                  } bg-gray-900/80 border-gray-700`}
+                  } bg-[#1a1a1a]/80 border-[#333]`}
                   data-testid={`card-type-${card.id}`}
                 >
                   <CardContent className="p-4 text-center">
@@ -318,7 +318,7 @@ export default function ScratchOff() {
         ) : (
           <div className="space-y-6">
             <Card className={`bg-gradient-to-br ${selectedCard.color} p-1`}>
-              <div className="bg-gray-900 rounded-lg p-6">
+              <div className="bg-[#1a1a1a] rounded-lg p-6">
                 <div className="flex items-center justify-between mb-4">
                   <Badge className="bg-white/20 text-white">{selectedCard.name}</Badge>
                   <span className="text-gray-400 text-sm">Match 3 to Win!</span>
@@ -375,7 +375,7 @@ export default function ScratchOff() {
                       <>
                         <Trophy className="w-12 h-12 mx-auto text-yellow-400 mb-2" />
                         <h3 className="text-2xl font-black text-yellow-400">WINNER!</h3>
-                        <p className="text-3xl font-black text-green-400 mt-2">
+                        <p className="text-3xl font-black text-[#C9941A] mt-2">
                           +{cardData.winAmount.toLocaleString()} {freePlay ? '(Demo)' : 'Credits'}
                         </p>
                       </>

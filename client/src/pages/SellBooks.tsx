@@ -157,7 +157,7 @@ export default function SellBooks() {
   if (authLoading) {
     return (
       <div className="min-h-screen bg-[#FAF8F3] flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#C9941A]" />
       </div>
     );
   }
@@ -179,7 +179,7 @@ export default function SellBooks() {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-bold text-foreground">Sell Your Books</h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-gray-400 mt-1">
               List books in the marketplace or create dedicated websites. Keep 85% of every sale.
             </p>
           </div>
@@ -207,10 +207,10 @@ export default function SellBooks() {
             <CardContent className="pt-6">
               <div className="flex items-center gap-4">
                 <div className="p-3 rounded-full bg-primary/10">
-                  <DollarSign className="h-5 w-5 text-primary" />
+                  <DollarSign className="h-5 w-5 text-[#C9941A]" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Total Earnings</p>
+                  <p className="text-sm text-gray-400">Total Earnings</p>
                   <p className="text-2xl font-bold">${(totalRevenue / 100).toFixed(2)}</p>
                 </div>
               </div>
@@ -219,11 +219,11 @@ export default function SellBooks() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-4">
-                <div className="p-3 rounded-full bg-green-500/10">
+                <div className="p-3 rounded-full bg-[#C9941A]/10">
                   <ShoppingBag className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Total Sales</p>
+                  <p className="text-sm text-gray-400">Total Sales</p>
                   <p className="text-2xl font-bold">{totalSales}</p>
                 </div>
               </div>
@@ -236,7 +236,7 @@ export default function SellBooks() {
                   <BookOpen className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Published Books</p>
+                  <p className="text-sm text-gray-400">Published Books</p>
                   <p className="text-2xl font-bold">{publishedCount}</p>
                 </div>
               </div>
@@ -249,7 +249,7 @@ export default function SellBooks() {
                   <Globe className="h-5 w-5 text-purple-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Book Websites</p>
+                  <p className="text-sm text-gray-400">Book Websites</p>
                   <p className="text-2xl font-bold">{websites?.length || 0}</p>
                 </div>
               </div>
@@ -283,9 +283,9 @@ export default function SellBooks() {
                 {[1, 2, 3].map(i => (
                   <Card key={i} className="animate-pulse">
                     <CardContent className="pt-6">
-                      <div className="h-40 bg-muted rounded mb-4" />
-                      <div className="h-4 bg-muted rounded w-3/4 mb-2" />
-                      <div className="h-4 bg-muted rounded w-1/2" />
+                      <div className="h-40 bg-[#1a1a1a] rounded mb-4" />
+                      <div className="h-4 bg-[#1a1a1a] rounded w-3/4 mb-2" />
+                      <div className="h-4 bg-[#1a1a1a] rounded w-1/2" />
                     </CardContent>
                   </Card>
                 ))}
@@ -293,9 +293,9 @@ export default function SellBooks() {
             ) : listings?.length === 0 ? (
               <Card>
                 <CardContent className="py-12 text-center">
-                  <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2">No Books Listed Yet</h3>
-                  <p className="text-muted-foreground mb-4">
+                  <p className="text-gray-400 mb-4">
                     Start selling your books in the KreAIte marketplace
                   </p>
                   <Button onClick={() => setShowNewListingDialog(true)}>
@@ -325,9 +325,9 @@ export default function SellBooks() {
                 {[1, 2, 3].map(i => (
                   <Card key={i} className="animate-pulse">
                     <CardContent className="pt-6">
-                      <div className="h-40 bg-muted rounded mb-4" />
-                      <div className="h-4 bg-muted rounded w-3/4 mb-2" />
-                      <div className="h-4 bg-muted rounded w-1/2" />
+                      <div className="h-40 bg-[#1a1a1a] rounded mb-4" />
+                      <div className="h-4 bg-[#1a1a1a] rounded w-3/4 mb-2" />
+                      <div className="h-4 bg-[#1a1a1a] rounded w-1/2" />
                     </CardContent>
                   </Card>
                 ))}
@@ -335,9 +335,9 @@ export default function SellBooks() {
             ) : websites?.length === 0 ? (
               <Card>
                 <CardContent className="py-12 text-center">
-                  <Globe className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <Globe className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2">No Book Websites Yet</h3>
-                  <p className="text-muted-foreground mb-4">
+                  <p className="text-gray-400 mb-4">
                     Create a professional landing page for your book
                   </p>
                   <Button onClick={() => setShowNewWebsiteDialog(true)}>
@@ -360,7 +360,7 @@ export default function SellBooks() {
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
                   <h2 className="text-xl font-semibold">Book Website Templates</h2>
-                  <p className="text-muted-foreground">Choose a professionally designed template for your book</p>
+                  <p className="text-gray-400">Choose a professionally designed template for your book</p>
                 </div>
                 <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                   <SelectTrigger className="w-48" data-testid="select-template-category">
@@ -380,9 +380,9 @@ export default function SellBooks() {
                   {[1, 2, 3, 4, 5, 6].map(i => (
                     <Card key={i} className="animate-pulse">
                       <CardContent className="pt-6">
-                        <div className="h-48 bg-muted rounded mb-4" />
-                        <div className="h-4 bg-muted rounded w-3/4 mb-2" />
-                        <div className="h-4 bg-muted rounded w-1/2" />
+                        <div className="h-48 bg-[#1a1a1a] rounded mb-4" />
+                        <div className="h-4 bg-[#1a1a1a] rounded w-3/4 mb-2" />
+                        <div className="h-4 bg-[#1a1a1a] rounded w-1/2" />
                       </CardContent>
                     </Card>
                   ))}
@@ -458,7 +458,7 @@ export default function SellBooks() {
                               />
                             </div>
                           </div>
-                          <p className="text-sm text-muted-foreground line-clamp-2">
+                          <p className="text-sm text-gray-400 line-clamp-2">
                             {template.description}
                           </p>
                         </CardContent>
@@ -484,9 +484,9 @@ export default function SellBooks() {
               {templates && templates.filter(t => selectedCategory === "all" || t.category === selectedCategory).length === 0 && (
                 <Card className="py-12">
                   <CardContent className="text-center">
-                    <LayoutTemplate className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <LayoutTemplate className="h-12 w-12 mx-auto text-gray-400 mb-4" />
                     <h3 className="text-lg font-semibold mb-2">No Templates Found</h3>
-                    <p className="text-muted-foreground">
+                    <p className="text-gray-400">
                       No templates available for this category. Try selecting a different category.
                     </p>
                   </CardContent>
@@ -508,10 +508,10 @@ export default function SellBooks() {
                       <span>Your Share</span>
                       <span className="font-bold text-green-600">85%</span>
                     </div>
-                    <div className="w-full bg-muted rounded-full h-4">
-                      <div className="bg-green-600 h-4 rounded-full" style={{ width: '85%' }} />
+                    <div className="w-full bg-[#1a1a1a] rounded-full h-4">
+                      <div className="bg-[#C9941A] h-4 rounded-full" style={{ width: '85%' }} />
                     </div>
-                    <div className="flex justify-between items-center text-sm text-muted-foreground">
+                    <div className="flex justify-between items-center text-sm text-gray-400">
                       <span>Platform Fee: 15%</span>
                       <span>Your Earnings: ${(totalRevenue * 0.85 / 100).toFixed(2)}</span>
                     </div>
@@ -536,20 +536,20 @@ export default function SellBooks() {
                               className="w-10 h-14 object-cover rounded"
                             />
                           ) : (
-                            <div className="w-10 h-14 bg-muted rounded flex items-center justify-center">
-                              <BookOpen className="h-4 w-4 text-muted-foreground" />
+                            <div className="w-10 h-14 bg-[#1a1a1a] rounded flex items-center justify-center">
+                              <BookOpen className="h-4 w-4 text-gray-400" />
                             </div>
                           )}
                           <div>
                             <p className="font-medium text-sm">{listing.title}</p>
-                            <p className="text-xs text-muted-foreground">{listing.totalSales} sales</p>
+                            <p className="text-xs text-gray-400">{listing.totalSales} sales</p>
                           </div>
                         </div>
                         <span className="font-semibold">${(listing.totalRevenue / 100).toFixed(2)}</span>
                       </div>
                     ))}
                     {(!listings || listings.length === 0) && (
-                      <p className="text-center text-muted-foreground py-4">No sales data yet</p>
+                      <p className="text-center text-gray-400 py-4">No sales data yet</p>
                     )}
                   </div>
                 </CardContent>
@@ -583,7 +583,7 @@ function ListingCard({ listing, onCreateWebsite }: { listing: BookListing; onCre
   const [, navigate] = useLocation();
 
   const statusColors: Record<string, string> = {
-    published: "bg-green-500/10 text-green-700",
+    published: "bg-[#C9941A]/10 text-green-700",
     draft: "bg-yellow-500/10 text-yellow-700",
     pending_review: "bg-blue-500/10 text-blue-700",
     suspended: "bg-red-500/10 text-red-700",
@@ -600,18 +600,18 @@ function ListingCard({ listing, onCreateWebsite }: { listing: BookListing; onCre
               className="w-20 h-28 object-cover rounded shadow"
             />
           ) : (
-            <div className="w-20 h-28 bg-muted rounded flex items-center justify-center">
-              <BookOpen className="h-8 w-8 text-muted-foreground" />
+            <div className="w-20 h-28 bg-[#1a1a1a] rounded flex items-center justify-center">
+              <BookOpen className="h-8 w-8 text-gray-400" />
             </div>
           )}
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2 mb-2">
               <h3 className="font-semibold truncate">{listing.title}</h3>
-              <Badge className={statusColors[listing.status] || "bg-muted"}>
+              <Badge className={statusColors[listing.status] || "bg-[#1a1a1a]"}>
                 {listing.status.replace("_", " ")}
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground mb-2">{listing.genre}</p>
+            <p className="text-sm text-gray-400 mb-2">{listing.genre}</p>
             <div className="flex items-center gap-4 text-sm">
               <span className="flex items-center gap-1">
                 <ShoppingBag className="h-3 w-3" />
@@ -665,17 +665,17 @@ function WebsiteCard({ website }: { website: BookWebsite }) {
             />
           ) : (
             <div className="w-20 h-28 bg-gradient-to-br from-primary/20 to-primary/5 rounded flex items-center justify-center">
-              <Globe className="h-8 w-8 text-primary" />
+              <Globe className="h-8 w-8 text-[#C9941A]" />
             </div>
           )}
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2 mb-2">
               <h3 className="font-semibold truncate">{website.title}</h3>
-              <Badge className={website.isPublished ? "bg-green-500/10 text-green-700" : "bg-yellow-500/10 text-yellow-700"}>
+              <Badge className={website.isPublished ? "bg-[#C9941A]/10 text-green-700" : "bg-yellow-500/10 text-yellow-700"}>
                 {website.isPublished ? "Live" : "Draft"}
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground mb-2">/{website.slug}</p>
+            <p className="text-sm text-gray-400 mb-2">/{website.slug}</p>
             <div className="flex items-center gap-4 text-sm">
               <span className="flex items-center gap-1">
                 <Eye className="h-3 w-3" />
@@ -957,7 +957,7 @@ function NewWebsiteDialog({
           <div className="space-y-2">
             <Label htmlFor="ws-slug">URL Slug *</Label>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">/book/</span>
+              <span className="text-sm text-gray-400">/book/</span>
               <Input 
                 id="ws-slug"
                 value={formData.slug}

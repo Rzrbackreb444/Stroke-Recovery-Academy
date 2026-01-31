@@ -111,7 +111,7 @@ export default function RecoveryResources() {
   const featuredResources = resources.filter(r => r.featured);
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-[#0D0D0D] text-white">
       <SEO
         title="Recovery Resources | Stroke Recovery Academy"
         description="Curated collection of stroke recovery resources including guides, videos, podcasts, and community support. Access evidence-based tools for your rehabilitation journey."
@@ -129,7 +129,7 @@ export default function RecoveryResources() {
       <main className="container mx-auto px-4 py-6 max-w-5xl">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold flex items-center justify-center gap-3 mb-2">
-            <BookOpen className="h-8 w-8 text-orange-500" />
+            <BookOpen className="h-8 w-8 text-[#C9941A]" />
             Recovery Resources
           </h1>
           <p className="text-gray-400">
@@ -143,7 +143,7 @@ export default function RecoveryResources() {
             placeholder="Search resources..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-zinc-900 border-zinc-800 pl-10"
+            className="bg-[#1a1a1a] border-[#333] pl-10"
             data-testid="input-search-resources"
           />
         </div>
@@ -159,11 +159,11 @@ export default function RecoveryResources() {
               return (
                 <Card 
                   key={resource.id} 
-                  className="bg-gradient-to-br from-orange-500/10 to-zinc-900 border-orange-500/30 p-5 hover-elevate cursor-pointer"
+                  className="bg-gradient-to-br from-orange-500/10 to-zinc-900 border-[#C9941A]/30 p-5 hover-elevate cursor-pointer"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="p-3 rounded-lg bg-orange-500/20">
-                      <Icon className="h-6 w-6 text-orange-500" />
+                    <div className="p-3 rounded-lg bg-[#C9941A] text-black/20">
+                      <Icon className="h-6 w-6 text-[#C9941A]" />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
@@ -174,7 +174,7 @@ export default function RecoveryResources() {
                       <div className="flex items-center gap-2">
                         <Badge variant="outline" className="text-xs">{resource.type}</Badge>
                         {resource.tags.map(tag => (
-                          <Badge key={tag} variant="outline" className="text-xs border-zinc-700">
+                          <Badge key={tag} variant="outline" className="text-xs border-[#333]">
                             {tag}
                           </Badge>
                         ))}
@@ -188,14 +188,14 @@ export default function RecoveryResources() {
         </div>
 
         <Tabs value={activeCategory} onValueChange={setActiveCategory}>
-          <TabsList className="bg-zinc-900 border-zinc-800 mb-6 flex-wrap">
+          <TabsList className="bg-[#1a1a1a] border-[#333] mb-6 flex-wrap">
             {categories.map(cat => {
               const Icon = cat.icon;
               return (
                 <TabsTrigger 
                   key={cat.id} 
                   value={cat.id} 
-                  className="data-[state=active]:bg-orange-500"
+                  className="data-[state=active]:bg-[#C9941A] text-black"
                 >
                   <Icon className="h-4 w-4 mr-2" />
                   {cat.label}
@@ -206,7 +206,7 @@ export default function RecoveryResources() {
 
           <TabsContent value={activeCategory}>
             {filteredResources.length === 0 ? (
-              <Card className="bg-zinc-900 border-zinc-800 p-8 text-center">
+              <Card className="bg-[#1a1a1a] border-[#333] p-8 text-center">
                 <Search className="h-12 w-12 text-gray-500 mx-auto mb-3" />
                 <p className="text-gray-400">No resources found matching your search.</p>
               </Card>
@@ -217,12 +217,12 @@ export default function RecoveryResources() {
                   return (
                     <Card 
                       key={resource.id} 
-                      className="bg-zinc-900 border-zinc-800 p-4 hover-elevate cursor-pointer"
+                      className="bg-[#1a1a1a] border-[#333] p-4 hover-elevate cursor-pointer"
                       data-testid={`resource-${resource.id}`}
                     >
                       <div className="flex items-center gap-3 mb-3">
-                        <div className="p-2 rounded-lg bg-zinc-800">
-                          <Icon className="h-5 w-5 text-orange-400" />
+                        <div className="p-2 rounded-lg bg-[#1a1a1a]">
+                          <Icon className="h-5 w-5 text-[#C9941A]" />
                         </div>
                         <Badge variant="outline" className="text-xs">{resource.type}</Badge>
                       </div>
@@ -230,7 +230,7 @@ export default function RecoveryResources() {
                       <p className="text-gray-400 text-sm mb-3 line-clamp-2">{resource.description}</p>
                       <div className="flex flex-wrap gap-1">
                         {resource.tags.map(tag => (
-                          <Badge key={tag} variant="outline" className="text-xs border-zinc-700">
+                          <Badge key={tag} variant="outline" className="text-xs border-[#333]">
                             {tag}
                           </Badge>
                         ))}
@@ -243,9 +243,9 @@ export default function RecoveryResources() {
           </TabsContent>
         </Tabs>
 
-        <Card className="bg-zinc-900 border-zinc-800 p-6 mt-8">
+        <Card className="bg-[#1a1a1a] border-[#333] p-6 mt-8">
           <h3 className="font-semibold mb-3 flex items-center gap-2">
-            <MessageCircle className="h-5 w-5 text-orange-500" />
+            <MessageCircle className="h-5 w-5 text-[#C9941A]" />
             Need More Help?
           </h3>
           <p className="text-gray-400 text-sm mb-4">
@@ -256,7 +256,7 @@ export default function RecoveryResources() {
               <Users className="h-4 w-4 mr-2" />
               Join Community
             </Button>
-            <Button className="bg-orange-500">
+            <Button className="bg-[#C9941A] text-black">
               <MessageCircle className="h-4 w-4 mr-2" />
               Book Coaching
             </Button>

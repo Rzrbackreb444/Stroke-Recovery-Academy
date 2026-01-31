@@ -255,15 +255,15 @@ const stats = [
 function getDifficultyColor(difficulty: Difficulty): string {
   switch (difficulty) {
     case "Beginner":
-      return "bg-green-500/20 text-green-400 border-green-500/30";
+      return "bg-[#C9941A]/20 text-[#C9941A] border-green-500/30";
     case "Intermediate":
-      return "bg-amber-500/20 text-amber-400 border-amber-500/30";
+      return "bg-[#C9941A]/20 text-[#C9941A] border-amber-500/30";
     case "Advanced":
       return "bg-red-500/20 text-red-400 border-red-500/30";
     case "All Levels":
-      return "bg-primary/20 text-primary border-primary/30";
+      return "bg-primary/20 text-[#C9941A] border-primary/30";
     default:
-      return "bg-muted text-muted-foreground";
+      return "bg-[#1a1a1a] text-gray-400";
   }
 }
 
@@ -276,7 +276,7 @@ function ExerciseCard({ exercise }: { exercise: Exercise }) {
         <CardContent className="flex flex-col h-full pt-6">
           <div className="flex items-start justify-between gap-3 mb-4">
             <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/30 transition-colors">
-              <Icon className="h-6 w-6 text-primary" aria-hidden="true" />
+              <Icon className="h-6 w-6 text-[#C9941A]" aria-hidden="true" />
             </div>
             <Badge 
               variant="outline" 
@@ -294,7 +294,7 @@ function ExerciseCard({ exercise }: { exercise: Exercise }) {
           </h3>
           
           <p 
-            className="text-sm text-muted-foreground mb-4 flex-1"
+            className="text-sm text-gray-400 mb-4 flex-1"
             data-testid={`text-exercise-description-${exercise.id}`}
           >
             {exercise.description}
@@ -308,9 +308,9 @@ function ExerciseCard({ exercise }: { exercise: Exercise }) {
             ))}
           </div>
           
-          <div className="flex items-center justify-between text-sm text-muted-foreground mb-4 gap-2">
+          <div className="flex items-center justify-between text-sm text-gray-400 mb-4 gap-2">
             <span className="flex items-center gap-1">
-              <Clock className="h-4 w-4 text-primary" aria-hidden="true" />
+              <Clock className="h-4 w-4 text-[#C9941A]" aria-hidden="true" />
               {exercise.duration}
             </span>
             {exercise.repetitions && (
@@ -320,7 +320,7 @@ function ExerciseCard({ exercise }: { exercise: Exercise }) {
           
           <div className="space-y-2 mb-4">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-muted-foreground">Your Progress</span>
+              <span className="text-gray-400">Your Progress</span>
               <span className="font-medium text-foreground">{exercise.progress}%</span>
             </div>
             <Progress 
@@ -366,7 +366,7 @@ function CategoryFilter({
             variant={isSelected ? "default" : "outline"}
             size="sm"
             onClick={() => onSelectCategory(cat.id)}
-            className={`gap-2 ${isSelected ? "" : "text-muted-foreground"}`}
+            className={`gap-2 ${isSelected ? "" : "text-gray-400"}`}
             role="tab"
             aria-selected={isSelected}
             data-testid={`button-category-${cat.id}`}
@@ -375,7 +375,7 @@ function CategoryFilter({
             <span className="hidden sm:inline">{cat.label}</span>
             <Badge 
               variant="secondary" 
-              className={`text-xs ${isSelected ? "bg-primary-foreground/20 text-primary-foreground" : ""}`}
+              className={`text-xs ${isSelected ? "bg-primary-foreground/20 text-[#C9941A]-foreground" : ""}`}
             >
               {cat.count}
             </Badge>
@@ -471,7 +471,7 @@ export default function SurvivalGrid() {
           
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
-              <Badge variant="outline" className="mb-6 text-primary border-primary">
+              <Badge variant="outline" className="mb-6 text-[#C9941A] border-primary">
                 <Grid3X3 className="h-3 w-3 mr-1" aria-hidden="true" />
                 The Sasquatch Survival System
               </Badge>
@@ -482,10 +482,10 @@ export default function SurvivalGrid() {
                 data-testid="text-survival-grid-title"
               >
                 Survival{" "}
-                <span className="text-primary">Grid</span>
+                <span className="text-[#C9941A]">Grid</span>
               </h1>
               
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+              <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-8">
                 Your Arsenal of Recovery Tools — Battle-tested exercises and protocols 
                 that took Nick from wheelchair to walking. Every technique proven in the 
                 trenches of real recovery.
@@ -504,10 +504,10 @@ export default function SurvivalGrid() {
                 </Link>
               </div>
               
-              <div className="flex flex-wrap justify-center gap-8 text-sm text-muted-foreground">
+              <div className="flex flex-wrap justify-center gap-8 text-sm text-gray-400">
                 {stats.map((stat, index) => (
                   <div key={index} className="flex items-center gap-2">
-                    <stat.icon className="h-4 w-4 text-primary" aria-hidden="true" />
+                    <stat.icon className="h-4 w-4 text-[#C9941A]" aria-hidden="true" />
                     <span>
                       <strong className="text-foreground">{stat.value}</strong> {stat.label}
                     </span>
@@ -523,10 +523,10 @@ export default function SurvivalGrid() {
             <div className="flex flex-col md:flex-row items-center justify-between gap-6 max-w-4xl mx-auto">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
-                  <CheckCircle2 className="h-7 w-7 text-primary" aria-hidden="true" />
+                  <CheckCircle2 className="h-7 w-7 text-[#C9941A]" aria-hidden="true" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Your Arsenal Progress</p>
+                  <p className="text-sm text-gray-400">Your Arsenal Progress</p>
                   <p className="text-2xl font-bold text-foreground">
                     {completedCount} / {exercises.length} Protocols Mastered
                   </p>
@@ -535,8 +535,8 @@ export default function SurvivalGrid() {
               
               <div className="w-full md:w-64">
                 <div className="flex items-center justify-between text-sm mb-2">
-                  <span className="text-muted-foreground">Overall Progress</span>
-                  <span className="font-semibold text-primary">{totalProgress}%</span>
+                  <span className="text-gray-400">Overall Progress</span>
+                  <span className="font-semibold text-[#C9941A]">{totalProgress}%</span>
                 </div>
                 <Progress 
                   value={totalProgress} 
@@ -561,7 +561,7 @@ export default function SurvivalGrid() {
               >
                 Recovery Protocols
               </h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
+              <p className="text-gray-400 max-w-2xl mx-auto mb-8">
                 Filter by category to find the exercises that match your recovery goals. 
                 Each protocol is designed to be practiced regularly for maximum results.
               </p>
@@ -584,7 +584,7 @@ export default function SurvivalGrid() {
             
             {filteredExercises.length === 0 && (
               <div className="text-center py-16">
-                <p className="text-muted-foreground">No exercises found in this category.</p>
+                <p className="text-gray-400">No exercises found in this category.</p>
               </div>
             )}
           </div>
@@ -598,7 +598,7 @@ export default function SurvivalGrid() {
             <Card className="max-w-4xl mx-auto bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-primary/20">
               <CardContent className="py-12 px-8 text-center">
                 <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-6">
-                  <Target className="h-8 w-8 text-primary" aria-hidden="true" />
+                  <Target className="h-8 w-8 text-[#C9941A]" aria-hidden="true" />
                 </div>
                 <h2 
                   id="cta-title"
@@ -606,7 +606,7 @@ export default function SurvivalGrid() {
                 >
                   Ready to Build Your Custom Routine?
                 </h2>
-                <p className="text-muted-foreground max-w-xl mx-auto mb-8">
+                <p className="text-gray-400 max-w-xl mx-auto mb-8">
                   Use our Mission Builder to create a personalized recovery plan combining 
                   your favorite protocols from the Survival Grid. Train like a warrior.
                 </p>

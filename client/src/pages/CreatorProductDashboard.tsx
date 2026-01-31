@@ -176,17 +176,17 @@ function StatCard({
       <CardContent className="p-6">
         <div className="flex items-start justify-between gap-2">
           <div className="space-y-1">
-            <p className="text-sm text-muted-foreground">{title}</p>
+            <p className="text-sm text-gray-400">{title}</p>
             <p className="text-2xl font-bold">{value}</p>
             {trend && (
-              <div className="flex items-center gap-1 text-xs text-green-500">
+              <div className="flex items-center gap-1 text-xs text-[#C9941A]">
                 <TrendingUp className="w-3 h-3" />
                 <span>{trend}</span>
               </div>
             )}
           </div>
           <div className="p-3 rounded-full bg-primary/10">
-            <Icon className="w-5 h-5 text-primary" />
+            <Icon className="w-5 h-5 text-[#C9941A]" />
           </div>
         </div>
       </CardContent>
@@ -210,8 +210,8 @@ function ProductTypeIcon({ type }: { type: Product["type"] }) {
 function ProductTypeBadge({ type }: { type: Product["type"] }) {
   const colors = {
     book: "bg-blue-500/10 text-blue-400 border-blue-500/30",
-    course: "bg-amber-500/10 text-amber-400 border-amber-500/30",
-    music: "bg-green-500/10 text-green-400 border-green-500/30",
+    course: "bg-[#C9941A]/10 text-[#C9941A] border-amber-500/30",
+    music: "bg-[#C9941A]/10 text-[#C9941A] border-green-500/30",
     video: "bg-red-500/10 text-red-400 border-red-500/30",
   };
 
@@ -225,7 +225,7 @@ function ProductTypeBadge({ type }: { type: Product["type"] }) {
 
 function StatusBadge({ status }: { status: Product["status"] }) {
   const colors = {
-    active: "bg-green-500/10 text-green-400 border-green-500/30",
+    active: "bg-[#C9941A]/10 text-[#C9941A] border-green-500/30",
     draft: "bg-yellow-500/10 text-yellow-400 border-yellow-500/30",
     sold: "bg-blue-500/10 text-blue-400 border-blue-500/30",
     inactive: "bg-gray-500/10 text-gray-400 border-gray-500/30",
@@ -341,7 +341,7 @@ function ProductManagementDialog({
           <div className="flex items-center justify-between rounded-lg border p-4">
             <div className="space-y-0.5">
               <Label htmlFor="edit-active">Active Status</Label>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-gray-400">
                 Make this product visible in the marketplace
               </p>
             </div>
@@ -356,8 +356,8 @@ function ProductManagementDialog({
           <div className="space-y-2">
             <Label>Cover Image</Label>
             <div className="flex items-center gap-4">
-              <div className="w-20 h-28 rounded border-2 border-dashed border-muted-foreground/30 flex items-center justify-center bg-muted/30">
-                <ImageIcon className="w-8 h-8 text-muted-foreground/50" />
+              <div className="w-20 h-28 rounded border-2 border-dashed border-[#333]-foreground/30 flex items-center justify-center bg-[#1a1a1a]/30">
+                <ImageIcon className="w-8 h-8 text-gray-400/50" />
               </div>
               <Button variant="outline" data-testid="button-upload-cover">
                 <ImageIcon className="w-4 h-4 mr-2" />
@@ -402,17 +402,17 @@ function ProductAnalyticsDialog({
         <div className="grid grid-cols-3 gap-4 py-4">
           <Card>
             <CardContent className="p-4 text-center">
-              <Eye className="w-6 h-6 mx-auto text-primary mb-2" />
+              <Eye className="w-6 h-6 mx-auto text-[#C9941A] mb-2" />
               <p className="text-2xl font-bold">{product.views.toLocaleString()}</p>
-              <p className="text-xs text-muted-foreground">Total Views</p>
+              <p className="text-xs text-gray-400">Total Views</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="p-4 text-center">
-              <ShoppingCart className="w-6 h-6 mx-auto text-green-500 mb-2" />
+              <ShoppingCart className="w-6 h-6 mx-auto text-[#C9941A] mb-2" />
               <p className="text-2xl font-bold">{product.salesCount}</p>
-              <p className="text-xs text-muted-foreground">Sales</p>
+              <p className="text-xs text-gray-400">Sales</p>
             </CardContent>
           </Card>
 
@@ -420,26 +420,26 @@ function ProductAnalyticsDialog({
             <CardContent className="p-4 text-center">
               <DollarSign className="w-6 h-6 mx-auto text-blue-500 mb-2" />
               <p className="text-2xl font-bold">${(product.revenue / 100).toLocaleString()}</p>
-              <p className="text-xs text-muted-foreground">Revenue</p>
+              <p className="text-xs text-gray-400">Revenue</p>
             </CardContent>
           </Card>
         </div>
 
         <div className="space-y-3 py-2">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Conversion Rate</span>
+            <span className="text-gray-400">Conversion Rate</span>
             <span className="font-medium">
               {product.views > 0 ? ((product.salesCount / product.views) * 100).toFixed(1) : 0}%
             </span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Average Order Value</span>
+            <span className="text-gray-400">Average Order Value</span>
             <span className="font-medium">
               ${product.salesCount > 0 ? (product.revenue / product.salesCount / 100).toFixed(2) : "0.00"}
             </span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Last Updated</span>
+            <span className="text-gray-400">Last Updated</span>
             <span className="font-medium">{new Date(product.updatedAt).toLocaleDateString()}</span>
           </div>
         </div>
@@ -533,9 +533,9 @@ export default function CreatorProductDashboard() {
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
           <Card className="max-w-md w-full">
             <CardContent className="p-8 text-center">
-              <Package className="w-16 h-16 mx-auto text-primary/50 mb-4" />
+              <Package className="w-16 h-16 mx-auto text-[#C9941A]/50 mb-4" />
               <h2 className="text-xl font-semibold mb-2">Sign In Required</h2>
-              <p className="text-muted-foreground mb-4">
+              <p className="text-gray-400 mb-4">
                 Please sign in to access your product dashboard.
               </p>
               <Link href="/api/login">
@@ -559,7 +559,7 @@ export default function CreatorProductDashboard() {
             <h1 className="text-3xl font-bold" data-testid="text-page-title">
               Product Dashboard
             </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-gray-400 mt-1">
               Manage all your marketplace products in one place
             </p>
           </div>
@@ -657,7 +657,7 @@ export default function CreatorProductDashboard() {
             </TabsList>
 
             <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-muted-foreground" />
+              <Filter className="w-4 h-4 text-gray-400" />
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="w-[140px]" data-testid="select-status-filter">
                   <SelectValue placeholder="Status" />
@@ -750,7 +750,7 @@ export default function CreatorProductDashboard() {
                             <TableCell className="text-right">
                               {product.salesCount}
                             </TableCell>
-                            <TableCell className="text-right font-medium text-green-500">
+                            <TableCell className="text-right font-medium text-[#C9941A]">
                               ${(product.revenue / 100).toLocaleString()}
                             </TableCell>
                             <TableCell>
@@ -802,9 +802,9 @@ export default function CreatorProductDashboard() {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <Package className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+                    <Package className="w-16 h-16 mx-auto text-gray-400 mb-4" />
                     <h3 className="text-lg font-semibold mb-2">No Products Found</h3>
-                    <p className="text-muted-foreground mb-4">
+                    <p className="text-gray-400 mb-4">
                       {statusFilter !== "all"
                         ? `No ${statusFilter} products in this category.`
                         : "Start creating products to see them here."}

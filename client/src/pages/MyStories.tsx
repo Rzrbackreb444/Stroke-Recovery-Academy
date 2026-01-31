@@ -93,10 +93,10 @@ function StoryRow({ post }: { post: BlogPost }) {
             <h3 className="font-bold text-lg mb-1">
               {post.title || "Untitled Story"}
             </h3>
-            <p className="text-sm text-muted-foreground line-clamp-2">
+            <p className="text-sm text-gray-400 line-clamp-2">
               {post.excerpt || post.content.substring(0, 100) + '...'}
             </p>
-            <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-4 mt-2 text-sm text-gray-400">
               <span className="flex items-center gap-1">
                 <Clock className="w-4 h-4" />
                 {formattedDate}
@@ -193,7 +193,7 @@ export default function MyStories() {
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-muted-foreground">Loading...</div>
+        <div className="animate-pulse text-gray-400">Loading...</div>
       </div>
     );
   }
@@ -228,10 +228,10 @@ export default function MyStories() {
 
         <div className="mb-8">
           <h1 className="text-3xl font-black mb-2" data-testid="heading-main">
-            <PenSquare className="inline-block mr-3 h-8 w-8 text-primary" />
+            <PenSquare className="inline-block mr-3 h-8 w-8 text-[#C9941A]" />
             My Stories
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-gray-400">
             Manage your recovery stories. Write, edit, and share with the community.
           </p>
         </div>
@@ -253,7 +253,7 @@ export default function MyStories() {
             {drafts.length > 0 && (
               <div>
                 <h2 className="text-xl font-bold mb-4 flex items-center gap-2" data-testid="heading-drafts">
-                  <FileText className="h-5 w-5 text-muted-foreground" />
+                  <FileText className="h-5 w-5 text-gray-400" />
                   Drafts ({drafts.length})
                 </h2>
                 <div className="space-y-4">
@@ -267,7 +267,7 @@ export default function MyStories() {
             {published.length > 0 && (
               <div>
                 <h2 className="text-xl font-bold mb-4 flex items-center gap-2" data-testid="heading-published">
-                  <Send className="h-5 w-5 text-primary" />
+                  <Send className="h-5 w-5 text-[#C9941A]" />
                   Published ({published.length})
                 </h2>
                 <div className="space-y-4">
@@ -281,9 +281,9 @@ export default function MyStories() {
         ) : (
           <Card className="text-center py-16">
             <CardContent>
-              <PenSquare className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+              <PenSquare className="w-16 h-16 mx-auto mb-4 text-gray-400" />
               <h3 className="text-xl font-bold mb-2">No Stories Yet</h3>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-gray-400 mb-6">
                 Start sharing your recovery journey with the community.
               </p>
               <Link href="/stories/new">

@@ -182,7 +182,7 @@ function BookCard({ book }: { book: typeof books[0] }) {
             role="img"
             aria-label={`Book cover for ${book.title}`}
           >
-            <div className="absolute inset-0 bg-black/20 rounded-lg" />
+            <div className="absolute inset-0 bg-[#0D0D0D]/20 rounded-lg" />
             <div className="relative text-center">
               <BookOpen className="h-12 w-12 mx-auto mb-4 text-foreground/90" aria-hidden="true" />
               <h3 className="text-xl font-black text-foreground uppercase tracking-wide leading-tight">
@@ -191,7 +191,7 @@ function BookCard({ book }: { book: typeof books[0] }) {
               <p className="text-sm text-foreground/80 mt-2">by {book.author}</p>
             </div>
             {book.status === "coming-soon" && (
-              <Badge className="absolute top-3 right-3 bg-black/60 text-foreground border-none">
+              <Badge className="absolute top-3 right-3 bg-[#0D0D0D]/60 text-foreground border-none">
                 Coming Soon
               </Badge>
             )}
@@ -203,7 +203,7 @@ function BookCard({ book }: { book: typeof books[0] }) {
             <h4 className="font-semibold text-lg text-foreground mb-2" data-testid={`text-book-title-${book.id}`}>
               {book.title}
             </h4>
-            <p className="text-sm text-muted-foreground" data-testid={`text-book-description-${book.id}`}>
+            <p className="text-sm text-gray-400" data-testid={`text-book-description-${book.id}`}>
               {book.description}
             </p>
           </div>
@@ -216,7 +216,7 @@ function BookCard({ book }: { book: typeof books[0] }) {
             ))}
           </div>
           
-          <div className="flex items-center justify-between text-sm text-muted-foreground">
+          <div className="flex items-center justify-between text-sm text-gray-400">
             <span className="flex items-center gap-1">
               <BookOpen className="h-4 w-4" aria-hidden="true" />
               {book.chapters} Chapters
@@ -229,7 +229,7 @@ function BookCard({ book }: { book: typeof books[0] }) {
           
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-muted-foreground">Course Progress</span>
+              <span className="text-gray-400">Course Progress</span>
               <span className="font-medium text-foreground">{book.progress}%</span>
             </div>
             <Progress value={book.progress} className="h-2" aria-label={`Progress: ${book.progress}%`} />
@@ -285,7 +285,7 @@ function ModuleCard({ module }: { module: typeof featuredModules[0] }) {
           </div>
         </div>
         <CardContent className="pt-4">
-          <p className="text-sm text-muted-foreground mb-3">{module.description}</p>
+          <p className="text-sm text-gray-400 mb-3">{module.description}</p>
           <div className="flex items-center justify-between">
             <Badge variant="outline">{module.difficulty}</Badge>
             <Button size="sm" variant="ghost" className="gap-1" data-testid={`button-module-preview-${module.id}`}>
@@ -362,7 +362,7 @@ export default function Academy() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#0D0D0D]">
       <RecoveryHeader />
       
       <main>
@@ -375,7 +375,7 @@ export default function Academy() {
           
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
-              <Badge variant="outline" className="mb-6 text-primary border-primary">
+              <Badge variant="outline" className="mb-6 text-[#C9941A] border-primary">
                 <GraduationCap className="h-3 w-3 mr-1" aria-hidden="true" />
                 The Sasquatch Learning System
               </Badge>
@@ -386,10 +386,10 @@ export default function Academy() {
                 data-testid="text-academy-title"
               >
                 Stroke Recovery{" "}
-                <span className="text-primary">Academy</span>
+                <span className="text-[#C9941A]">Academy</span>
               </h1>
               
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+              <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-8">
                 Master the art of recovery with comprehensive courses developed by Nick Kremers - 
                 The Stroked Out Sasquatch. From 0% to 90% recovery, these are the exact methods 
                 that changed everything.
@@ -406,17 +406,17 @@ export default function Academy() {
                 </Button>
               </div>
               
-              <div className="flex flex-wrap justify-center gap-8 text-sm text-muted-foreground">
+              <div className="flex flex-wrap justify-center gap-8 text-sm text-gray-400">
                 <div className="flex items-center gap-2">
-                  <Users className="h-4 w-4 text-primary" aria-hidden="true" />
+                  <Users className="h-4 w-4 text-[#C9941A]" aria-hidden="true" />
                   <span>50,000+ Warriors</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <BookOpen className="h-4 w-4 text-primary" aria-hidden="true" />
+                  <BookOpen className="h-4 w-4 text-[#C9941A]" aria-hidden="true" />
                   <span>3 Comprehensive Courses</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Award className="h-4 w-4 text-primary" aria-hidden="true" />
+                  <Award className="h-4 w-4 text-[#C9941A]" aria-hidden="true" />
                   <span>Proven 90% Recovery</span>
                 </div>
               </div>
@@ -442,7 +442,7 @@ export default function Academy() {
               >
                 The Sasquatch <span className="text-[#C9941A]">Formula</span>
               </h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-gray-400 max-w-2xl mx-auto">
                 The battle-tested 5-step system that took Nick from 0% function to 90% recovery. 
                 This isn't theory — it's the exact process forged through years of relentless experimentation.
               </p>
@@ -467,7 +467,7 @@ export default function Academy() {
                     <h3 className="font-black text-lg text-foreground mb-2 uppercase tracking-wide">
                       {step.code}
                     </h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
+                    <p className="text-xs text-gray-400 leading-relaxed">
                       {step.description}
                     </p>
                   </CardContent>
@@ -498,7 +498,7 @@ export default function Academy() {
         </section>
 
         <section 
-          className="py-20 bg-zinc-900 dark:bg-black relative overflow-hidden"
+          className="py-20 bg-[#1a1a1a] dark:bg-[#0D0D0D] relative overflow-hidden"
           aria-labelledby="sasquatch-creed-title"
           data-testid="section-sasquatch-creed"
         >
@@ -559,7 +559,7 @@ export default function Academy() {
                 </div>
               </div>
               
-              <div className="border-t border-zinc-700 pt-8">
+              <div className="border-t border-[#333] pt-8">
                 <p className="text-sm text-zinc-500 mb-2">
                   From the mind and heart of
                 </p>
@@ -587,7 +587,7 @@ export default function Academy() {
               >
                 Recovery Courses by Nick Kremers
               </h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-gray-400 max-w-2xl mx-auto">
                 Each course is packed with real-world experience, practical exercises, 
                 and the mindset shifts you need to write your own comeback story.
               </p>
@@ -615,7 +615,7 @@ export default function Academy() {
                 >
                   Featured Recovery Modules
                 </h2>
-                <p className="text-muted-foreground">
+                <p className="text-gray-400">
                   Preview key techniques from our comprehensive courses
                 </p>
               </div>
@@ -650,7 +650,7 @@ export default function Academy() {
               >
                 Why Choose Our Academy
               </h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-gray-400 max-w-2xl mx-auto">
                 Built by a stroke survivor, for stroke survivors. Every lesson is battle-tested 
                 and designed for real-world recovery success.
               </p>
@@ -661,12 +661,12 @@ export default function Academy() {
                 <Card key={index} className="hover-elevate">
                   <CardContent className="pt-6">
                     <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center mb-4">
-                      <benefit.icon className="h-6 w-6 text-primary" aria-hidden="true" />
+                      <benefit.icon className="h-6 w-6 text-[#C9941A]" aria-hidden="true" />
                     </div>
                     <h3 className="font-semibold text-lg mb-2 text-foreground">
                       {benefit.title}
                     </h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-gray-400">
                       {benefit.description}
                     </p>
                   </CardContent>
@@ -684,7 +684,7 @@ export default function Academy() {
             <Card className="max-w-4xl mx-auto bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-primary/20">
               <CardContent className="py-12 px-8 text-center">
                 <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-6">
-                  <Heart className="h-8 w-8 text-primary" aria-hidden="true" />
+                  <Heart className="h-8 w-8 text-[#C9941A]" aria-hidden="true" />
                 </div>
                 <h2 
                   id="cta-title"
@@ -692,7 +692,7 @@ export default function Academy() {
                 >
                   Ready to Start Your Recovery Journey?
                 </h2>
-                <p className="text-muted-foreground max-w-xl mx-auto mb-8">
+                <p className="text-gray-400 max-w-xl mx-auto mb-8">
                   Join thousands of stroke warriors who are proving the impossible, one rep at a time. 
                   Get notified when our courses launch and receive exclusive early-bird pricing.
                 </p>

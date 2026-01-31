@@ -108,7 +108,7 @@ export default function ContentScheduler({
   const scheduleStatus = getScheduleStatus();
 
   return (
-    <Card className="bg-background border-zinc-800" data-testid="content-scheduler">
+    <Card className="bg-background border-[#333]" data-testid="content-scheduler">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
@@ -149,7 +149,7 @@ export default function ContentScheduler({
                     <Button
                       variant="outline"
                       className={cn(
-                        "justify-start text-left font-normal border-zinc-700 bg-zinc-900/50 flex-1",
+                        "justify-start text-left font-normal border-[#333] bg-[#1a1a1a]/50 flex-1",
                         !scheduledPublishAt && "text-muted-foreground"
                       )}
                       disabled={disabled}
@@ -161,7 +161,7 @@ export default function ContentScheduler({
                         : "Select publish date"}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0 bg-zinc-900 border-zinc-700" align="start">
+                  <PopoverContent className="w-auto p-0 bg-[#1a1a1a] border-[#333]" align="start">
                     <CalendarComponent
                       mode="single"
                       selected={scheduledPublishAt || undefined}
@@ -178,7 +178,7 @@ export default function ContentScheduler({
                     type="time"
                     value={publishTime}
                     onChange={(e) => handlePublishTimeChange(e.target.value)}
-                    className="w-32 bg-zinc-900/50 border-zinc-700"
+                    className="w-32 bg-[#1a1a1a]/50 border-[#333]"
                     disabled={disabled}
                     data-testid="input-publish-time"
                   />
@@ -211,7 +211,7 @@ export default function ContentScheduler({
                       <Button
                         variant="outline"
                         className={cn(
-                          "justify-start text-left font-normal border-zinc-700 bg-zinc-900/50 flex-1",
+                          "justify-start text-left font-normal border-[#333] bg-[#1a1a1a]/50 flex-1",
                           !scheduledUnpublishAt && "text-muted-foreground"
                         )}
                         disabled={disabled}
@@ -223,7 +223,7 @@ export default function ContentScheduler({
                           : "Select unpublish date"}
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0 bg-zinc-900 border-zinc-700" align="start">
+                    <PopoverContent className="w-auto p-0 bg-[#1a1a1a] border-[#333]" align="start">
                       <CalendarComponent
                         mode="single"
                         selected={scheduledUnpublishAt || undefined}
@@ -245,7 +245,7 @@ export default function ContentScheduler({
                       type="time"
                       value={unpublishTime}
                       onChange={(e) => handleUnpublishTimeChange(e.target.value)}
-                      className="w-32 bg-zinc-900/50 border-zinc-700"
+                      className="w-32 bg-[#1a1a1a]/50 border-[#333]"
                       disabled={disabled}
                       data-testid="input-unpublish-time"
                     />
@@ -256,12 +256,12 @@ export default function ContentScheduler({
           </div>
 
           {(scheduledPublishAt || scheduledUnpublishAt) && (
-            <div className="pt-4 border-t border-zinc-800 space-y-3">
+            <div className="pt-4 border-t border-[#333] space-y-3">
               <h4 className="text-sm font-medium text-foreground flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-primary" />
                 Schedule Preview
               </h4>
-              <div className="bg-zinc-900/50 rounded-lg p-4 space-y-3">
+              <div className="bg-[#1a1a1a]/50 rounded-lg p-4 space-y-3">
                 {scheduleStatus && (
                   <div className="flex items-center gap-2">
                     <Badge
@@ -270,7 +270,7 @@ export default function ContentScheduler({
                         scheduleStatus.status === "scheduled" &&
                           "bg-primary/20 text-primary border",
                         scheduleStatus.status === "live" &&
-                          "bg-green-500/20 text-green-500 border-green-500/30",
+                          "bg-[#C9941A]/20 text-[#C9941A] border-green-500/30",
                         scheduleStatus.status === "ended" &&
                           "bg-zinc-500/20 text-zinc-400 border-zinc-500/30"
                       )}
@@ -282,7 +282,7 @@ export default function ContentScheduler({
                 )}
                 {scheduledPublishAt && (
                   <div className="flex items-center gap-3 text-sm" data-testid="preview-publish">
-                    <div className="w-3 h-3 rounded-full bg-green-500" />
+                    <div className="w-3 h-3 rounded-full bg-[#C9941A]" />
                     <span className="text-muted-foreground">Goes live:</span>
                     <span className="text-foreground font-medium">
                       {format(scheduledPublishAt, "PPP 'at' p")}

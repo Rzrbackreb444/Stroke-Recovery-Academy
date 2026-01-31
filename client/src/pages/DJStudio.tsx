@@ -419,14 +419,14 @@ export default function DJStudio() {
     const inputRef = useRef<HTMLInputElement>(null);
 
     return (
-      <Card className="bg-[#1a1a1a] border-zinc-800">
+      <Card className="bg-[#1a1a1a] border-[#333]">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Disc3 className={`w-5 h-5 text-${color}-500`} />
               Deck {deck}
             </div>
-            <Badge variant="outline" className={deckState.isLoaded ? 'border-green-500 text-green-500' : 'border-zinc-600'}>
+            <Badge variant="outline" className={deckState.isLoaded ? 'border-green-500 text-[#C9941A]' : 'border-zinc-600'}>
               {deckState.isLoaded ? 'Ready' : 'Empty'}
             </Badge>
           </CardTitle>
@@ -435,15 +435,15 @@ export default function DJStudio() {
           {/* Turntable Visual */}
           <div className="flex justify-center">
             <div 
-              className={`relative w-48 h-48 rounded-full bg-zinc-900 border-4 border-zinc-700 flex items-center justify-center cursor-pointer transition-all ${deckState.isPlaying ? 'animate-spin' : ''}`}
+              className={`relative w-48 h-48 rounded-full bg-[#1a1a1a] border-4 border-[#333] flex items-center justify-center cursor-pointer transition-all ${deckState.isPlaying ? 'animate-spin' : ''}`}
               style={{ animationDuration: `${60 / (bpm[0] * (deckState.tempo / 100))}s` }}
               data-testid={`turntable-deck-${deck.toLowerCase()}`}
             >
               {/* Vinyl grooves */}
-              <div className="absolute inset-4 rounded-full border border-zinc-700" />
-              <div className="absolute inset-8 rounded-full border border-zinc-700" />
-              <div className="absolute inset-12 rounded-full border border-zinc-700" />
-              <div className="absolute inset-16 rounded-full border border-zinc-700" />
+              <div className="absolute inset-4 rounded-full border border-[#333]" />
+              <div className="absolute inset-8 rounded-full border border-[#333]" />
+              <div className="absolute inset-12 rounded-full border border-[#333]" />
+              <div className="absolute inset-16 rounded-full border border-[#333]" />
               
               {/* Center label */}
               <div className={`w-16 h-16 rounded-full bg-gradient-to-br from-${color}-500/30 to-${color}-600/30 border-2 border-${color}-500 flex items-center justify-center`}>
@@ -612,7 +612,7 @@ export default function DJStudio() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList className="bg-zinc-900 border border-zinc-800">
+          <TabsList className="bg-[#1a1a1a] border border-[#333]">
             <TabsTrigger value="decks" className="data-[state=active]:bg-[#C9941A]/20 data-[state=active]:text-[#C9941A]">
               <Disc3 className="w-4 h-4 mr-2" /> Decks
             </TabsTrigger>
@@ -635,10 +635,10 @@ export default function DJStudio() {
             </div>
 
             {/* Crossfader */}
-            <Card className="bg-[#1a1a1a] border-zinc-800">
+            <Card className="bg-[#1a1a1a] border-[#333]">
               <CardContent className="py-4">
                 <div className="flex items-center gap-4">
-                  <span className="text-orange-500 font-bold text-sm">A</span>
+                  <span className="text-[#C9941A] font-bold text-sm">A</span>
                   <Slider
                     value={crossfader}
                     onValueChange={setCrossfader}
@@ -652,7 +652,7 @@ export default function DJStudio() {
             </Card>
 
             {/* Master controls */}
-            <Card className="bg-[#1a1a1a] border-zinc-800">
+            <Card className="bg-[#1a1a1a] border-[#333]">
               <CardContent className="flex items-center gap-6 py-4">
                 <div className="flex items-center gap-3 flex-1">
                   <Volume2 className="w-5 h-5 text-zinc-400" />
@@ -692,7 +692,7 @@ export default function DJStudio() {
           {/* EFFECTS TAB */}
           <TabsContent value="effects" className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <Card className="bg-[#1a1a1a] border-zinc-800">
+              <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg flex items-center gap-2">
                     <Radio className="w-5 h-5 text-blue-400" /> Reverb
@@ -709,7 +709,7 @@ export default function DJStudio() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-[#1a1a1a] border-zinc-800">
+              <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg flex items-center gap-2">
                     <Waves className="w-5 h-5 text-purple-400" /> Delay
@@ -726,7 +726,7 @@ export default function DJStudio() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-[#1a1a1a] border-zinc-800">
+              <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg flex items-center gap-2">
                     <Zap className="w-5 h-5 text-red-400" /> Distortion
@@ -743,10 +743,10 @@ export default function DJStudio() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-[#1a1a1a] border-zinc-800">
+              <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg flex items-center gap-2">
-                    <Sliders className="w-5 h-5 text-green-400" /> Low-Pass Filter
+                    <Sliders className="w-5 h-5 text-[#C9941A]" /> Low-Pass Filter
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -760,7 +760,7 @@ export default function DJStudio() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-[#1a1a1a] border-zinc-800">
+              <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg flex items-center gap-2">
                     <AudioWaveform className="w-5 h-5 text-cyan-400" /> Flanger
@@ -777,7 +777,7 @@ export default function DJStudio() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-[#1a1a1a] border-zinc-800">
+              <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-yellow-400" /> Phaser
@@ -798,7 +798,7 @@ export default function DJStudio() {
 
           {/* STEMS TAB */}
           <TabsContent value="stems" className="space-y-4">
-            <Card className="bg-[#1a1a1a] border-zinc-800">
+            <Card className="bg-[#1a1a1a] border-[#333]">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Layers className="w-5 h-5 text-[#C9941A]" />
@@ -812,7 +812,7 @@ export default function DJStudio() {
                 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {Object.entries(stems).map(([stem, enabled]) => (
-                    <div key={stem} className="flex items-center justify-between p-3 bg-zinc-900 rounded-lg">
+                    <div key={stem} className="flex items-center justify-between p-3 bg-[#1a1a1a] rounded-lg">
                       <Label className="capitalize">{stem}</Label>
                       <Switch
                         checked={enabled}
@@ -849,7 +849,7 @@ export default function DJStudio() {
           <TabsContent value="voice" className="space-y-4">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Recording */}
-              <Card className="bg-[#1a1a1a] border-zinc-800">
+              <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Mic className="w-5 h-5 text-red-500" />
@@ -878,8 +878,8 @@ export default function DJStudio() {
                   </p>
 
                   {recordedBlob && (
-                    <div className="p-3 bg-zinc-900 rounded-lg">
-                      <p className="text-sm text-green-400 mb-2">Recording saved!</p>
+                    <div className="p-3 bg-[#1a1a1a] rounded-lg">
+                      <p className="text-sm text-[#C9941A] mb-2">Recording saved!</p>
                       <audio controls src={URL.createObjectURL(recordedBlob)} className="w-full" />
                     </div>
                   )}
@@ -887,7 +887,7 @@ export default function DJStudio() {
               </Card>
 
               {/* Autotune */}
-              <Card className="bg-[#1a1a1a] border-zinc-800">
+              <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Wand2 className="w-5 h-5 text-[#C9941A]" />
@@ -949,13 +949,13 @@ export default function DJStudio() {
             </div>
 
             {/* Voice Transformation - ElevenLabs */}
-            <Card className="bg-[#1a1a1a] border-zinc-800">
+            <Card className="bg-[#1a1a1a] border-[#333]">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-purple-500" />
                   AI Voice Transformation
                   {djStatus?.voiceTransformConfigured && (
-                    <Badge className="ml-2 bg-green-600/20 text-green-400 border-green-600">
+                    <Badge className="ml-2 bg-[#C9941A]/20 text-[#C9941A] border-green-600">
                       <Zap className="w-3 h-3 mr-1" /> ElevenLabs Connected
                     </Badge>
                   )}
@@ -967,7 +967,7 @@ export default function DJStudio() {
                 </p>
 
                 {transformedAudioUrl && (
-                  <div className="p-4 bg-zinc-900 rounded-lg border border-purple-500/30">
+                  <div className="p-4 bg-[#1a1a1a] rounded-lg border border-purple-500/30">
                     <p className="text-sm text-purple-400 mb-2">Transformed Audio</p>
                     <audio controls src={transformedAudioUrl} className="w-full" data-testid="audio-transformed" />
                   </div>

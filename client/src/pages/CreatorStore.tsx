@@ -140,14 +140,14 @@ export default function CreatorStore() {
                 placeholder="Search tools..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-zinc-900 border-zinc-800 text-foreground placeholder:text-zinc-500"
+                className="pl-10 bg-[#1a1a1a] border-[#333] text-foreground placeholder:text-zinc-500"
                 data-testid="input-search-products"
               />
             </div>
           </div>
 
           <Tabs defaultValue="all" onValueChange={setSelectedCategory}>
-            <TabsList className="bg-zinc-900 border-zinc-800 flex-wrap h-auto gap-1 p-1">
+            <TabsList className="bg-[#1a1a1a] border-[#333] flex-wrap h-auto gap-1 p-1">
               <TabsTrigger
                 value="all"
                 className="data-[state=active]:bg-[#FF6B35] data-[state=active]:text-foreground"
@@ -156,7 +156,7 @@ export default function CreatorStore() {
                 All Tools
               </TabsTrigger>
               {categoriesLoading ? (
-                <Skeleton className="h-8 w-24 bg-zinc-800" />
+                <Skeleton className="h-8 w-24 bg-[#1a1a1a]" />
               ) : (
                 categories?.map((category) => (
                   <TabsTrigger
@@ -187,7 +187,7 @@ export default function CreatorStore() {
                   ))}
                 </div>
               ) : (
-                <Card className="bg-zinc-900 border-zinc-800">
+                <Card className="bg-[#1a1a1a] border-[#333]">
                   <CardContent className="py-12 text-center">
                     <Package className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold text-foreground mb-2">
@@ -204,7 +204,7 @@ export default function CreatorStore() {
             </TabsContent>
           </Tabs>
 
-          <Card className="bg-zinc-900/50 border-zinc-800">
+          <Card className="bg-[#1a1a1a]/50 border-[#333]">
             <CardContent className="py-8 text-center space-y-4">
               <h3 className="text-xl font-semibold text-foreground">
                 Why These Tools?
@@ -231,7 +231,7 @@ function FeaturedProductCard({ product }: { product: Product }) {
       className="bg-gradient-to-br from-zinc-900 to-zinc-950 border-[#FF6B35]/30 overflow-hidden group hover:border-[#FF6B35]/50 transition-all"
       data-testid={`featured-product-${product.id}`}
     >
-      <div className="aspect-square bg-zinc-800 relative overflow-hidden">
+      <div className="aspect-square bg-[#1a1a1a] relative overflow-hidden">
         {product.imageUrl ? (
           <img
             src={product.imageUrl}
@@ -282,10 +282,10 @@ function FeaturedProductCard({ product }: { product: Product }) {
 function ProductCard({ product }: { product: Product }) {
   return (
     <Card
-      className="bg-zinc-900 border-zinc-800 overflow-hidden group hover:border-zinc-700 transition-colors"
+      className="bg-[#1a1a1a] border-[#333] overflow-hidden group hover:border-[#333] transition-colors"
       data-testid={`product-${product.id}`}
     >
-      <div className="aspect-square bg-zinc-800 relative overflow-hidden">
+      <div className="aspect-square bg-[#1a1a1a] relative overflow-hidden">
         {product.imageUrl ? (
           <img
             src={product.imageUrl}
@@ -346,14 +346,14 @@ function ProductCard({ product }: { product: Product }) {
 
 function ProductSkeleton() {
   return (
-    <Card className="bg-zinc-900 border-zinc-800 overflow-hidden">
-      <Skeleton className="aspect-square bg-zinc-800" />
+    <Card className="bg-[#1a1a1a] border-[#333] overflow-hidden">
+      <Skeleton className="aspect-square bg-[#1a1a1a]" />
       <CardContent className="p-4 space-y-2">
-        <Skeleton className="h-3 w-1/3 bg-zinc-800" />
-        <Skeleton className="h-4 w-full bg-zinc-800" />
-        <Skeleton className="h-4 w-2/3 bg-zinc-800" />
-        <Skeleton className="h-8 w-1/2 bg-zinc-800" />
-        <Skeleton className="h-9 w-full bg-zinc-800" />
+        <Skeleton className="h-3 w-1/3 bg-[#1a1a1a]" />
+        <Skeleton className="h-4 w-full bg-[#1a1a1a]" />
+        <Skeleton className="h-4 w-2/3 bg-[#1a1a1a]" />
+        <Skeleton className="h-8 w-1/2 bg-[#1a1a1a]" />
+        <Skeleton className="h-9 w-full bg-[#1a1a1a]" />
       </CardContent>
     </Card>
   );

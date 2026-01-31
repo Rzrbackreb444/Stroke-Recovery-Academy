@@ -138,7 +138,7 @@ export default function VideoSessions() {
       case "scheduled":
         return <Badge className="bg-blue-500/20 text-blue-400">Scheduled</Badge>;
       case "live":
-        return <Badge className="bg-green-500/20 text-green-400 animate-pulse">Live</Badge>;
+        return <Badge className="bg-[#C9941A]/20 text-[#C9941A] animate-pulse">Live</Badge>;
       case "ended":
         return <Badge className="bg-gray-500/20 text-gray-400">Ended</Badge>;
       case "cancelled":
@@ -151,9 +151,9 @@ export default function VideoSessions() {
   if (inCall && activeSession) {
     return (
       <div className="fixed inset-0 bg-background z-50 flex flex-col">
-        <div className="flex items-center justify-between p-4 bg-gray-900">
+        <div className="flex items-center justify-between p-4 bg-[#1a1a1a]">
           <div className="flex items-center gap-3">
-            <Video className="w-6 h-6 text-primary" />
+            <Video className="w-6 h-6 text-[#C9941A]" />
             <div>
               <p className="text-foreground font-medium">{activeSession.title}</p>
               <p className="text-gray-400 text-sm">{getSessionTypeLabel(activeSession.sessionType)}</p>
@@ -177,7 +177,7 @@ export default function VideoSessions() {
             <div className="text-center z-10">
               <Avatar className="w-24 h-24 mx-auto mb-4">
                 <AvatarImage src={user?.profileImageUrl} />
-                <AvatarFallback className="bg-gray-700 text-primary text-2xl">
+                <AvatarFallback className="bg-gray-700 text-[#C9941A] text-2xl">
                   {user?.firstName?.[0]}{user?.lastName?.[0]}
                 </AvatarFallback>
               </Avatar>
@@ -185,7 +185,7 @@ export default function VideoSessions() {
               <p className="text-gray-400 text-sm">You</p>
             </div>
             {!videoEnabled && (
-              <div className="absolute inset-0 bg-gray-900/80 flex items-center justify-center">
+              <div className="absolute inset-0 bg-[#1a1a1a]/80 flex items-center justify-center">
                 <VideoOff className="w-12 h-12 text-gray-600" />
               </div>
             )}
@@ -195,7 +195,7 @@ export default function VideoSessions() {
             <div className="text-center">
               <Avatar className="w-24 h-24 mx-auto mb-4">
                 <AvatarImage src={activeSession.host?.profileImageUrl} />
-                <AvatarFallback className="bg-gray-700 text-primary text-2xl">
+                <AvatarFallback className="bg-gray-700 text-[#C9941A] text-2xl">
                   {activeSession.host?.firstName?.[0]}{activeSession.host?.lastName?.[0]}
                 </AvatarFallback>
               </Avatar>
@@ -207,7 +207,7 @@ export default function VideoSessions() {
           </div>
         </div>
 
-        <div className="flex items-center justify-center gap-4 p-6 bg-gray-900">
+        <div className="flex items-center justify-center gap-4 p-6 bg-[#1a1a1a]">
           <Button
             size="lg"
             variant={micEnabled ? "outline" : "destructive"}
@@ -251,7 +251,7 @@ export default function VideoSessions() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-[#0D0D0D] text-foreground">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -269,7 +269,7 @@ export default function VideoSessions() {
                 Schedule Session
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-gray-900 border-gray-800 max-w-md">
+            <DialogContent className="bg-[#1a1a1a] border-[#333] max-w-md">
               <DialogHeader>
                 <DialogTitle className="text-foreground">Schedule Video Session</DialogTitle>
               </DialogHeader>
@@ -280,7 +280,7 @@ export default function VideoSessions() {
                     value={sessionForm.sessionType}
                     onValueChange={(v) => setSessionForm({ ...sessionForm, sessionType: v })}
                   >
-                    <SelectTrigger className="bg-gray-800 border-gray-700">
+                    <SelectTrigger className="bg-gray-800 border-[#333]">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -297,7 +297,7 @@ export default function VideoSessions() {
                     value={sessionForm.title}
                     onChange={(e) => setSessionForm({ ...sessionForm, title: e.target.value })}
                     placeholder="Session title..."
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-gray-800 border-[#333]"
                   />
                 </div>
                 <div>
@@ -306,19 +306,19 @@ export default function VideoSessions() {
                     value={sessionForm.description}
                     onChange={(e) => setSessionForm({ ...sessionForm, description: e.target.value })}
                     placeholder="What will be covered..."
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-gray-800 border-[#333]"
                   />
                 </div>
                 <div>
                   <label className="text-sm text-gray-400 mb-2 block">Date & Time</label>
                   <Popover>
                     <PopoverTrigger asChild>
-                      <Button variant="outline" className="w-full justify-start bg-gray-800 border-gray-700">
+                      <Button variant="outline" className="w-full justify-start bg-gray-800 border-[#333]">
                         <CalendarIcon className="w-4 h-4 mr-2" />
                         {selectedDate ? format(selectedDate, "PPP") : "Pick a date"}
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="bg-gray-900 border-gray-800 w-auto p-0">
+                    <PopoverContent className="bg-[#1a1a1a] border-[#333] w-auto p-0">
                       <Calendar
                         mode="single"
                         selected={selectedDate}
@@ -340,7 +340,7 @@ export default function VideoSessions() {
                     onChange={(e) => setSessionForm({ ...sessionForm, maxParticipants: parseInt(e.target.value) })}
                     min={2}
                     max={50}
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-gray-800 border-[#333]"
                   />
                 </div>
                 <Button
@@ -360,20 +360,20 @@ export default function VideoSessions() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="p-3 bg-green-500/20 rounded-xl">
-                    <Video className="w-8 h-8 text-green-400" />
+                  <div className="p-3 bg-[#C9941A]/20 rounded-xl">
+                    <Video className="w-8 h-8 text-[#C9941A]" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="text-xl font-semibold text-foreground">{liveSessions[0].title}</h3>
-                      <Badge className="bg-green-500/20 text-green-400 animate-pulse">Live Now</Badge>
+                      <Badge className="bg-[#C9941A]/20 text-[#C9941A] animate-pulse">Live Now</Badge>
                     </div>
                     <p className="text-gray-400">{getSessionTypeLabel(liveSessions[0].sessionType)}</p>
                   </div>
                 </div>
                 <Button
                   onClick={() => joinSessionMutation.mutate(liveSessions[0].id)}
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-[#C9941A] hover:bg-[#C9941A]/80"
                   data-testid="button-join-live"
                 >
                   <Play className="w-4 h-4 mr-2" />
@@ -385,7 +385,7 @@ export default function VideoSessions() {
         )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-gray-900 mb-6">
+          <TabsList className="bg-[#1a1a1a] mb-6">
             <TabsTrigger value="upcoming" data-testid="tab-upcoming">
               Upcoming ({upcomingSessions.length})
             </TabsTrigger>
@@ -397,16 +397,16 @@ export default function VideoSessions() {
           <TabsContent value="upcoming" className="space-y-4">
             {isLoading ? (
               <div className="flex justify-center py-12">
-                <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                <Loader2 className="w-8 h-8 text-[#C9941A] animate-spin" />
               </div>
             ) : upcomingSessions.length > 0 ? (
               upcomingSessions.map((session) => (
-                <Card key={session.id} className="bg-gray-900 border-gray-800">
+                <Card key={session.id} className="bg-[#1a1a1a] border-[#333]">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <div className="p-3 bg-primary/10 rounded-xl">
-                          <Video className="w-6 h-6 text-primary" />
+                          <Video className="w-6 h-6 text-[#C9941A]" />
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
@@ -461,7 +461,7 @@ export default function VideoSessions() {
           <TabsContent value="past" className="space-y-4">
             {pastSessions.length > 0 ? (
               pastSessions.map((session) => (
-                <Card key={session.id} className="bg-gray-900 border-gray-800">
+                <Card key={session.id} className="bg-[#1a1a1a] border-[#333]">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">

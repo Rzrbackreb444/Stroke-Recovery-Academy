@@ -591,7 +591,7 @@ export default function AIDiscussionPanel({
                   "flex items-center gap-2 p-2 rounded text-xs border",
                   chunk.status === 'pending' && "bg-background",
                   chunk.status === 'analyzing' && "bg-blue-500/10 border-blue-500/30",
-                  chunk.status === 'analyzed' && "bg-green-500/10 border-green-500/30",
+                  chunk.status === 'analyzed' && "bg-[#C9941A]/10 border-green-500/30",
                   chunk.status === 'editing' && "bg-amber-500/10 border-amber-500/30",
                   chunk.status === 'edited' && "bg-primary/10 border-primary/30",
                   chunk.status === 'error' && "bg-destructive/10 border-destructive/30",

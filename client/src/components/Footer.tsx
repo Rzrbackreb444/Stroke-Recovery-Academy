@@ -76,7 +76,7 @@ export default function Footer() {
                 <Input
                   type="email"
                   placeholder="your@email.com"
-                  className="flex-1 border focus:border-orange-500 bg-[#fafafa]"
+                  className="flex-1 border focus:border-[#C9941A] bg-[#fafafa]"
                   data-testid="input-newsletter-email"
                 />
                 <Button 

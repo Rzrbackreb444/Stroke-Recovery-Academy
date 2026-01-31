@@ -1839,7 +1839,7 @@ Your journey to healing starts here.`);
             <img src={publishingLogo} alt="Stroke Lyfe Publishing" className="h-10 sm:h-16 w-auto" />
             <div>
               <h1 className="text-xl sm:text-3xl font-bold text-foreground">Book Studio</h1>
-              <p className="text-xs sm:text-base text-muted-foreground hidden sm:block">Professional book creation from manuscript to KDP-ready</p>
+              <p className="text-xs sm:text-base text-gray-400 hidden sm:block">Professional book creation from manuscript to KDP-ready</p>
             </div>
           </div>
 
@@ -1865,9 +1865,9 @@ Your journey to healing starts here.`);
                     </div>
                   ) : (
                     <div className="flex items-center gap-2 min-w-0">
-                      <BookOpen className="w-5 h-5 text-primary flex-shrink-0" />
+                      <BookOpen className="w-5 h-5 text-[#C9941A] flex-shrink-0" />
                       <span 
-                        className="font-semibold text-foreground truncate cursor-pointer hover:text-primary transition-colors"
+                        className="font-semibold text-foreground truncate cursor-pointer hover:text-[#C9941A] transition-colors"
                         onClick={() => {
                           setEditingTitleValue(bookTitle || "Untitled Book");
                           setIsEditingTitle(true);
@@ -1904,7 +1904,7 @@ Your journey to healing starts here.`);
                         Error
                       </Badge>
                     ) : lastSaved ? (
-                      <Badge variant="outline" className="gap-1 text-muted-foreground">
+                      <Badge variant="outline" className="gap-1 text-gray-400">
                         <Clock className="w-3 h-3" />
                         {formatLastSaved(lastSaved)}
                       </Badge>
@@ -1941,7 +1941,7 @@ Your journey to healing starts here.`);
                             data-testid={`dropdown-project-${p.id}`}
                           >
                             <span className="font-medium truncate max-w-full">{p.title}</span>
-                            <span className="text-xs text-muted-foreground">
+                            <span className="text-xs text-gray-400">
                               {new Date(p.lastEditedAt).toLocaleDateString()} • Step {p.currentStep || 1}
                             </span>
                           </DropdownMenuItem>
@@ -1999,16 +1999,16 @@ Your journey to healing starts here.`);
                   data-testid={`button-step-${s.step}`}
                 >
                   <div className={`w-9 h-9 sm:w-12 sm:h-12 rounded-full flex items-center justify-center font-bold transition-all
-                    ${currentStep === s.step ? 'bg-primary text-primary-foreground' : 
-                      currentStep > s.step ? 'bg-primary/50 text-foreground' : 'bg-muted text-muted-foreground'}`}>
+                    ${currentStep === s.step ? 'bg-primary text-[#C9941A]-foreground' : 
+                      currentStep > s.step ? 'bg-primary/50 text-foreground' : 'bg-[#1a1a1a] text-gray-400'}`}>
                     {currentStep > s.step ? <Check className="w-4 h-4 sm:w-5 sm:h-5" /> : <s.icon className="w-4 h-4 sm:w-5 sm:h-5" />}
                   </div>
-                  <span className={`text-[10px] sm:text-xs font-medium hidden sm:block ${currentStep === s.step ? 'text-primary' : 'text-muted-foreground'}`}>
+                  <span className={`text-[10px] sm:text-xs font-medium hidden sm:block ${currentStep === s.step ? 'text-[#C9941A]' : 'text-gray-400'}`}>
                     {s.label}
                   </span>
                 </button>
                 {i < steps.length - 1 && (
-                  <div className={`w-4 sm:w-8 md:w-16 h-0.5 sm:h-1 mx-0.5 sm:mx-1 ${currentStep > s.step ? 'bg-primary' : 'bg-muted'}`} />
+                  <div className={`w-4 sm:w-8 md:w-16 h-0.5 sm:h-1 mx-0.5 sm:mx-1 ${currentStep > s.step ? 'bg-primary' : 'bg-[#1a1a1a]'}`} />
                 )}
               </div>
             ))}
@@ -2031,7 +2031,7 @@ Your journey to healing starts here.`);
                     <Card className="flex flex-col h-[500px]">
                       <CardHeader className="pb-3">
                         <CardTitle className="flex items-center gap-2">
-                          <MessageCircle className="w-5 h-5 text-primary" /> AI Publishing Assistant
+                          <MessageCircle className="w-5 h-5 text-[#C9941A]" /> AI Publishing Assistant
                         </CardTitle>
                         <CardDescription>Upload your manuscript and chat about it.</CardDescription>
                       </CardHeader>
@@ -2050,7 +2050,7 @@ Your journey to healing starts here.`);
                             className="hidden"
                           />
                           <div className="flex items-center justify-center gap-3">
-                            <FileUp className="w-6 h-6 text-muted-foreground" />
+                            <FileUp className="w-6 h-6 text-gray-400" />
                             <div className="text-left">
                               <p className="font-medium text-sm">
                                 {uploadedFiles.length > 0 
@@ -2065,13 +2065,13 @@ Your journey to healing starts here.`);
                             {chatMessages.map((msg) => (
                               <div key={msg.id} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
                                 <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                                  msg.role === 'assistant' ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                                  msg.role === 'assistant' ? 'bg-primary text-[#C9941A]-foreground' : 'bg-[#1a1a1a]'
                                 }`}>
                                   {msg.role === 'assistant' ? <Bot className="w-4 h-4" /> : <User className="w-4 h-4" />}
                                 </div>
                                 <div className={`flex-1 max-w-[85%] ${msg.role === 'user' ? 'text-right' : ''}`}>
                                   <div className={`rounded-lg px-4 py-3 ${
-                                    msg.role === 'assistant' ? 'bg-muted text-foreground' : 'bg-primary text-primary-foreground ml-auto'
+                                    msg.role === 'assistant' ? 'bg-[#1a1a1a] text-foreground' : 'bg-primary text-[#C9941A]-foreground ml-auto'
                                   }`}>
                                     <div className="text-sm whitespace-pre-wrap">{msg.content}</div>
                                   </div>
@@ -2100,16 +2100,16 @@ Your journey to healing starts here.`);
                       <CardHeader className="pb-3">
                         <div className="flex items-center justify-between gap-2 flex-wrap">
                           <CardTitle className="flex items-center gap-2">
-                            <FileText className="w-5 h-5 text-primary" /> Live Manuscript
+                            <FileText className="w-5 h-5 text-[#C9941A]" /> Live Manuscript
                           </CardTitle>
                           {(() => {
                             const readiness = calculatePublicationReadiness();
                             return readiness.isReady ? (
-                              <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                              <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-green-500/30">
                                 <CheckCircle className="w-3 h-3 mr-1" /> Ready for Publication
                               </Badge>
                             ) : (
-                              <Badge variant="outline" className="border text-primary">
+                              <Badge variant="outline" className="border text-[#C9941A]">
                                 {readiness.score}% Complete
                               </Badge>
                             );
@@ -2136,7 +2136,7 @@ Your journey to healing starts here.`);
                     <Card className="flex flex-col h-full border-0 rounded-none">
                       <CardHeader className="pb-3">
                         <CardTitle className="flex items-center gap-2">
-                          <MessageCircle className="w-5 h-5 text-primary" /> AI Publishing Assistant
+                          <MessageCircle className="w-5 h-5 text-[#C9941A]" /> AI Publishing Assistant
                         </CardTitle>
                         <CardDescription>Upload your manuscript and chat about it. I'll help you analyze and improve your book.</CardDescription>
                       </CardHeader>
@@ -2157,14 +2157,14 @@ Your journey to healing starts here.`);
                             data-testid="input-file-upload"
                           />
                           <div className="flex items-center justify-center gap-3">
-                            <FileUp className="w-6 h-6 text-muted-foreground" />
+                            <FileUp className="w-6 h-6 text-gray-400" />
                             <div className="text-left">
                               <p className="font-medium text-sm">
                                 {uploadedFiles.length > 0 
                                   ? `${uploadedFiles.length} file(s) uploaded - Click to add more`
                                   : 'Drop files or click to upload (multiple allowed)'}
                               </p>
-                              <p className="text-xs text-muted-foreground">
+                              <p className="text-xs text-gray-400">
                                 {uploadedFiles.length > 0 
                                   ? `${uploadedFiles.reduce((sum, f) => sum + f.wordCount, 0).toLocaleString()} words total`
                                   : '.txt, .md, .doc, .docx, .pdf'}
@@ -2182,7 +2182,7 @@ Your journey to healing starts here.`);
                                 className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
                               >
                                 <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                                  msg.role === 'assistant' ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                                  msg.role === 'assistant' ? 'bg-primary text-[#C9941A]-foreground' : 'bg-[#1a1a1a]'
                                 }`}>
                                   {msg.role === 'assistant' ? <Bot className="w-4 h-4" /> : <User className="w-4 h-4" />}
                                 </div>
@@ -2191,14 +2191,14 @@ Your journey to healing starts here.`);
                                     <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/20 mb-2 ${
                                       msg.role === 'user' ? 'ml-auto' : ''
                                     }`}>
-                                      <Paperclip className="w-3 h-3 text-primary" />
-                                      <span className="text-xs font-medium text-primary">{msg.attachmentName}</span>
+                                      <Paperclip className="w-3 h-3 text-[#C9941A]" />
+                                      <span className="text-xs font-medium text-[#C9941A]">{msg.attachmentName}</span>
                                     </div>
                                   )}
                                   <div className={`rounded-lg px-4 py-3 ${
                                     msg.role === 'assistant' 
-                                      ? 'bg-muted text-foreground' 
-                                      : 'bg-primary text-primary-foreground ml-auto'
+                                      ? 'bg-[#1a1a1a] text-foreground' 
+                                      : 'bg-primary text-[#C9941A]-foreground ml-auto'
                                   }`}>
                                     {msg.role === 'assistant' ? (
                                       <div className="text-sm whitespace-pre-wrap prose prose-sm dark:prose-invert max-w-none space-y-1">
@@ -2242,7 +2242,7 @@ Your journey to healing starts here.`);
                                       </div>
                                     )}
                                   </div>
-                                  <span className="text-xs text-muted-foreground mt-1 block">
+                                  <span className="text-xs text-gray-400 mt-1 block">
                                     {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                   </span>
                                 </div>
@@ -2250,10 +2250,10 @@ Your journey to healing starts here.`);
                             ))}
                             {isChatLoading && (
                               <div className="flex gap-3">
-                                <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+                                <div className="w-8 h-8 rounded-full bg-primary text-[#C9941A]-foreground flex items-center justify-center">
                                   <Bot className="w-4 h-4" />
                                 </div>
-                                <div className="bg-muted rounded-lg px-4 py-3">
+                                <div className="bg-[#1a1a1a] rounded-lg px-4 py-3">
                                   <div className="flex items-center gap-2">
                                     <RefreshCw className="w-4 h-4 animate-spin" />
                                     <span className="text-sm">Analyzing...</span>
@@ -2270,7 +2270,7 @@ Your journey to healing starts here.`);
                         <div className="flex items-center justify-between gap-2">
                           <div>
                             <p className="text-sm font-medium">Ready to create your book?</p>
-                            <p className="text-xs text-muted-foreground">Convert this discussion into a full book plan</p>
+                            <p className="text-xs text-gray-400">Convert this discussion into a full book plan</p>
                           </div>
                           <Button 
                             size="sm"
@@ -2294,29 +2294,29 @@ Your journey to healing starts here.`);
                     {manuscriptAnalysis && (
                       <div className="bg-card border rounded-lg p-3 mb-3 space-y-2">
                         <h4 className="font-medium text-sm flex items-center gap-2">
-                          <FileText className="w-4 h-4 text-primary" />
+                          <FileText className="w-4 h-4 text-[#C9941A]" />
                           Manuscript Analysis
                         </h4>
                         <div className="grid grid-cols-2 gap-2 text-xs">
                           <div>
-                            <span className="text-muted-foreground">Words:</span>{' '}
+                            <span className="text-gray-400">Words:</span>{' '}
                             <span className="font-medium">{manuscriptAnalysis.wordCount?.toLocaleString() || 'N/A'}</span>
                           </div>
                           <div>
-                            <span className="text-muted-foreground">Chapters:</span>{' '}
+                            <span className="text-gray-400">Chapters:</span>{' '}
                             <span className="font-medium">{manuscriptAnalysis.chapterCount || 'N/A'}</span>
                           </div>
                           <div>
-                            <span className="text-muted-foreground">Genre:</span>{' '}
+                            <span className="text-gray-400">Genre:</span>{' '}
                             <span className="font-medium">{manuscriptAnalysis.detectedGenre || 'N/A'}</span>
                           </div>
                           <div>
-                            <span className="text-muted-foreground">Tone:</span>{' '}
+                            <span className="text-gray-400">Tone:</span>{' '}
                             <span className="font-medium">{manuscriptAnalysis.tone || 'N/A'}</span>
                           </div>
                         </div>
                         {manuscriptAnalysis.summary && (
-                          <p className="text-xs text-muted-foreground border-t pt-2 mt-2">
+                          <p className="text-xs text-gray-400 border-t pt-2 mt-2">
                             {manuscriptAnalysis.summary}
                           </p>
                         )}
@@ -2398,16 +2398,16 @@ Your journey to healing starts here.`);
                       <div className="p-4 border-b">
                         <div className="flex items-center justify-between gap-2 flex-wrap mb-3">
                           <h3 className="font-semibold text-lg flex items-center gap-2">
-                            <FileText className="w-5 h-5 text-primary" /> Live Manuscript
+                            <FileText className="w-5 h-5 text-[#C9941A]" /> Live Manuscript
                           </h3>
                           {(() => {
                             const readiness = calculatePublicationReadiness();
                             return readiness.isReady ? (
-                              <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                              <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-green-500/30">
                                 <CheckCircle className="w-3 h-3 mr-1" /> Ready for Publication
                               </Badge>
                             ) : (
-                              <Badge variant="outline" className="border text-primary">
+                              <Badge variant="outline" className="border text-[#C9941A]">
                                 {readiness.score}% Complete
                               </Badge>
                             );
@@ -2420,7 +2420,7 @@ Your journey to healing starts here.`);
                           return (
                             <div className="space-y-3">
                               <div className="space-y-1">
-                                <div className="flex justify-between text-xs text-muted-foreground">
+                                <div className="flex justify-between text-xs text-gray-400">
                                   <span>Publication Readiness</span>
                                   <span>{readiness.score}%</span>
                                 </div>
@@ -2477,7 +2477,7 @@ Your journey to healing starts here.`);
                       
                       {/* Book Details Panel (Collapsible) */}
                       {showBookDetailsPanel && (
-                        <div className="p-4 border-b bg-muted/30 space-y-3">
+                        <div className="p-4 border-b bg-[#1a1a1a]/30 space-y-3">
                           <div className="grid grid-cols-2 gap-3">
                             <div>
                               <Label className="text-xs">Book Title *</Label>
@@ -2526,7 +2526,7 @@ Your journey to healing starts here.`);
                       
                       {/* Footer Actions */}
                       <div className="p-4 border-t flex items-center justify-between gap-2">
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-xs text-gray-400">
                           {(() => {
                             const readiness = calculatePublicationReadiness();
                             return `${readiness.wordCount.toLocaleString()} words | ~${readiness.estimatedPages} pages`;
@@ -2549,7 +2549,7 @@ Your journey to healing starts here.`);
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Layers className="w-5 h-5 text-primary" /> Step 2: Structure & Outline
+                    <Layers className="w-5 h-5 text-[#C9941A]" /> Step 2: Structure & Outline
                   </CardTitle>
                   <CardDescription>Organize your chapters and plan your book's structure</CardDescription>
                 </CardHeader>
@@ -2574,7 +2574,7 @@ Your journey to healing starts here.`);
                             >
                               <CardContent className="p-4">
                                 <div className="flex items-start gap-3">
-                                  <GripVertical className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-1 cursor-move" />
+                                  <GripVertical className="w-5 h-5 text-gray-400 flex-shrink-0 mt-1 cursor-move" />
                                   <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-2">
                                       <Badge variant="outline" className="text-xs">Ch. {index + 1}</Badge>
@@ -2600,7 +2600,7 @@ Your journey to healing starts here.`);
                                       onClick={(e) => e.stopPropagation()}
                                       data-testid={`input-chapter-desc-${chapter.id}`}
                                     />
-                                    <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+                                    <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
                                       <span>{chapter.wordCount.toLocaleString()} words</span>
                                       <span>~{Math.ceil(chapter.wordCount / 250)} pages</span>
                                     </div>
@@ -2608,7 +2608,7 @@ Your journey to healing starts here.`);
                                   <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                                    className="h-8 w-8 text-gray-400 hover:text-destructive"
                                     onClick={(e) => { e.stopPropagation(); removeChapter(chapter.id); }}
                                     data-testid={`button-delete-chapter-${chapter.id}`}
                                   >
@@ -2623,28 +2623,28 @@ Your journey to healing starts here.`);
                     </div>
                     
                     <div className="space-y-4">
-                      <Card className="bg-muted/50">
+                      <Card className="bg-[#1a1a1a]/50">
                         <CardHeader className="pb-2">
                           <CardTitle className="text-sm">Book Stats</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">Chapters</span>
+                            <span className="text-gray-400">Chapters</span>
                             <span className="font-bold">{chapters.length}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">Total Words</span>
+                            <span className="text-gray-400">Total Words</span>
                             <span className="font-bold">{totalWordCount.toLocaleString()}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">Est. Pages</span>
+                            <span className="text-gray-400">Est. Pages</span>
                             <span className="font-bold">{estimatedPages}</span>
                           </div>
                           <Separator />
                           <div>
-                            <div className="text-sm text-muted-foreground mb-2">Progress</div>
+                            <div className="text-sm text-gray-400 mb-2">Progress</div>
                             <Progress value={(chapters.filter(c => c.status === "complete").length / chapters.length) * 100} />
-                            <div className="text-xs text-muted-foreground mt-1">
+                            <div className="text-xs text-gray-400 mt-1">
                               {chapters.filter(c => c.status === "complete").length} of {chapters.length} chapters complete
                             </div>
                           </div>
@@ -2654,9 +2654,9 @@ Your journey to healing starts here.`);
                       <Card className="bg-primary/5 border-primary/20">
                         <CardContent className="p-4">
                           <h4 className="font-semibold flex items-center gap-2 mb-2">
-                            <Wand2 className="w-4 h-4 text-primary" /> AI Suggestions
+                            <Wand2 className="w-4 h-4 text-[#C9941A]" /> AI Suggestions
                           </h4>
-                          <ul className="text-sm space-y-2 text-muted-foreground">
+                          <ul className="text-sm space-y-2 text-gray-400">
                             <li>Consider adding an "Introduction" chapter</li>
                             <li>A "Lessons Learned" chapter works well for memoirs</li>
                             <li>End with a "Call to Action" for your readers</li>
@@ -2704,11 +2704,11 @@ Your journey to healing starts here.`);
                               setChapterContent(chapter.content || "");
                             }}
                             className={`w-full p-3 rounded-lg text-left transition-all hover-elevate
-                              ${selectedChapter === chapter.id ? 'bg-primary/20 border-primary border' : 'bg-muted/30 hover:bg-muted/50'}`}
+                              ${selectedChapter === chapter.id ? 'bg-primary/20 border-primary border' : 'bg-[#1a1a1a]/30 hover:bg-[#1a1a1a]/50'}`}
                             data-testid={`button-select-chapter-${chapter.id}`}
                           >
                             <div className="flex items-center justify-between mb-1">
-                              <span className="text-xs text-muted-foreground font-medium">Ch. {index + 1}</span>
+                              <span className="text-xs text-gray-400 font-medium">Ch. {index + 1}</span>
                               <Badge 
                                 variant={chapter.status === "complete" ? "default" : "secondary"}
                                 className="text-[10px] px-1.5 py-0"
@@ -2717,7 +2717,7 @@ Your journey to healing starts here.`);
                               </Badge>
                             </div>
                             <div className="font-medium text-sm truncate">{chapter.title}</div>
-                            <div className="text-xs text-muted-foreground mt-1">
+                            <div className="text-xs text-gray-400 mt-1">
                               {chapter.wordCount.toLocaleString()} words
                             </div>
                           </button>
@@ -2726,8 +2726,8 @@ Your journey to healing starts here.`);
                     </ScrollArea>
                     
                     {/* Chapter Stats */}
-                    <div className="mt-4 p-3 bg-muted/30 rounded-lg">
-                      <div className="text-xs text-muted-foreground space-y-1">
+                    <div className="mt-4 p-3 bg-[#1a1a1a]/30 rounded-lg">
+                      <div className="text-xs text-gray-400 space-y-1">
                         <div className="flex justify-between">
                           <span>Total chapters:</span>
                           <span className="font-medium">{chapters.length}</span>
@@ -2830,7 +2830,7 @@ Your journey to healing starts here.`);
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <ImagePlus className="w-5 h-5 text-primary" /> Step 4: Images & Cover Design
+                    <ImagePlus className="w-5 h-5 text-[#C9941A]" /> Step 4: Images & Cover Design
                   </CardTitle>
                   <CardDescription>Generate illustrations, manage your image library, and create your book cover</CardDescription>
                 </CardHeader>
@@ -2853,9 +2853,9 @@ Your journey to healing starts here.`);
                     
                     {/* Generate Tab */}
                     <TabsContent value="generate" className="space-y-4">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 p-3 bg-muted/30 rounded-lg">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 p-3 bg-[#1a1a1a]/30 rounded-lg">
                         <div>
-                          <Label className="text-xs text-muted-foreground">Style</Label>
+                          <Label className="text-xs text-gray-400">Style</Label>
                           <Select value={illustrationStyle} onValueChange={setIllustrationStyle}>
                             <SelectTrigger className="h-8" data-testid="select-style">
                               <SelectValue />
@@ -2872,7 +2872,7 @@ Your journey to healing starts here.`);
                           </Select>
                         </div>
                         <div>
-                          <Label className="text-xs text-muted-foreground">Purpose</Label>
+                          <Label className="text-xs text-gray-400">Purpose</Label>
                           <Select value={imagePurposeFilter === 'all' ? 'illustration' : imagePurposeFilter} onValueChange={(v) => setImagePurposeFilter(v)}>
                             <SelectTrigger className="h-8" data-testid="select-purpose">
                               <SelectValue />
@@ -2886,7 +2886,7 @@ Your journey to healing starts here.`);
                           </Select>
                         </div>
                         <div>
-                          <Label className="text-xs text-muted-foreground">AI Provider</Label>
+                          <Label className="text-xs text-gray-400">AI Provider</Label>
                           <Select value={selectedAiProvider} onValueChange={(v: "gemini" | "openai" | "xai") => setSelectedAiProvider(v)}>
                             <SelectTrigger className="h-8" data-testid="select-ai-provider">
                               <SelectValue />
@@ -2899,7 +2899,7 @@ Your journey to healing starts here.`);
                           </Select>
                         </div>
                         <div>
-                          <Label className="text-xs text-muted-foreground">For Chapter</Label>
+                          <Label className="text-xs text-gray-400">For Chapter</Label>
                           <Select value={selectedImageChapter || "all"} onValueChange={(v) => setSelectedImageChapter(v === "all" ? null : v)}>
                             <SelectTrigger className="h-8" data-testid="select-chapter">
                               <SelectValue placeholder="Select..." />
@@ -2948,7 +2948,7 @@ Your journey to healing starts here.`);
                           </Button>
                           
                           <div className="space-y-2">
-                            <Label className="text-muted-foreground">Quick Prompts</Label>
+                            <Label className="text-gray-400">Quick Prompts</Label>
                             {(isChildrensBook ? [
                               "A friendly cartoon forest animal helping a child learn to walk",
                               "Colorful brain neurons lighting up like fireworks, kid-friendly",
@@ -2961,7 +2961,7 @@ Your journey to healing starts here.`);
                               <button
                                 key={i}
                                 onClick={() => setImagePrompt(prompt)}
-                                className="w-full p-2 text-left text-sm bg-muted/50 rounded hover-elevate transition-colors"
+                                className="w-full p-2 text-left text-sm bg-[#1a1a1a]/50 rounded hover-elevate transition-colors"
                                 data-testid={`button-quick-prompt-${i}`}
                               >
                                 {prompt}
@@ -2982,7 +2982,7 @@ Your journey to healing starts here.`);
                                       alt={img.name}
                                       className="w-full aspect-square object-cover rounded-lg border"
                                     />
-                                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
+                                    <div className="absolute inset-0 bg-[#0D0D0D]/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
                                       <Button size="icon" variant="secondary" onClick={() => {
                                         setSelectedBookImage(img);
                                         setActiveImageTab('edit');
@@ -2994,16 +2994,16 @@ Your journey to healing starts here.`);
                                       </Button>
                                     </div>
                                     {img.status === 'processing' && (
-                                      <div className="absolute inset-0 bg-black/70 rounded-lg flex items-center justify-center">
-                                        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                                      <div className="absolute inset-0 bg-[#0D0D0D]/70 rounded-lg flex items-center justify-center">
+                                        <Loader2 className="w-6 h-6 animate-spin text-[#C9941A]" />
                                       </div>
                                     )}
                                   </div>
                                 ))
                               ) : (
-                                <div className="col-span-2 aspect-video bg-muted/30 rounded-lg flex flex-col items-center justify-center p-8">
-                                  <Image className="w-16 h-16 text-muted-foreground/50 mb-3" />
-                                  <p className="text-sm text-muted-foreground text-center">No images generated yet</p>
+                                <div className="col-span-2 aspect-video bg-[#1a1a1a]/30 rounded-lg flex flex-col items-center justify-center p-8">
+                                  <Image className="w-16 h-16 text-gray-400/50 mb-3" />
+                                  <p className="text-sm text-gray-400 text-center">No images generated yet</p>
                                 </div>
                               )}
                             </div>
@@ -3047,18 +3047,18 @@ Your journey to healing starts here.`);
                       </div>
                       
                       <div
-                        className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${isDragOver ? 'border-primary bg-primary/5' : 'border-muted-foreground/30'}`}
+                        className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${isDragOver ? 'border-primary bg-primary/5' : 'border-[#333]-foreground/30'}`}
                         onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
                         onDragLeave={() => setIsDragOver(false)}
                         onDrop={handleImageDrop}
                       >
-                        <Upload className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                        <p className="text-sm text-muted-foreground">Drag & drop images here</p>
+                        <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                        <p className="text-sm text-gray-400">Drag & drop images here</p>
                       </div>
                       
                       {isLoadingImages ? (
                         <div className="flex justify-center py-8">
-                          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                          <Loader2 className="w-8 h-8 animate-spin text-[#C9941A]" />
                         </div>
                       ) : (
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -3070,7 +3070,7 @@ Your journey to healing starts here.`);
                                   alt={img.name}
                                   className="w-full h-full object-cover"
                                 />
-                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
+                                <div className="absolute inset-0 bg-[#0D0D0D]/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
                                   <Button size="icon" variant="secondary" onClick={() => {
                                     setSelectedBookImage(img);
                                     setActiveImageTab('edit');
@@ -3085,8 +3085,8 @@ Your journey to healing starts here.`);
                                   </Button>
                                 </div>
                                 {img.status === 'processing' && (
-                                  <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
-                                    <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                                  <div className="absolute inset-0 bg-[#0D0D0D]/70 flex items-center justify-center">
+                                    <Loader2 className="w-6 h-6 animate-spin text-[#C9941A]" />
                                   </div>
                                 )}
                               </div>
@@ -3100,7 +3100,7 @@ Your journey to healing starts here.`);
                             </Card>
                           ))}
                           {filteredBookImages.length === 0 && (
-                            <div className="col-span-full py-12 text-center text-muted-foreground">
+                            <div className="col-span-full py-12 text-center text-gray-400">
                               <Image className="w-12 h-12 mx-auto mb-3 opacity-50" />
                               <p>No images in your library</p>
                               <p className="text-sm">Generate or upload images to get started</p>
@@ -3115,7 +3115,7 @@ Your journey to healing starts here.`);
                       {selectedBookImage ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div className="space-y-4">
-                            <div className="aspect-square rounded-lg border overflow-hidden bg-muted/30">
+                            <div className="aspect-square rounded-lg border overflow-hidden bg-[#1a1a1a]/30">
                               <img 
                                 src={selectedBookImage.editedUrl || selectedBookImage.originalUrl} 
                                 alt={selectedBookImage.name}
@@ -3178,8 +3178,8 @@ Your journey to healing starts here.`);
                             </div>
                             {selectedBookImage.prompt && (
                               <div>
-                                <Label className="text-muted-foreground">Original Prompt</Label>
-                                <p className="text-sm bg-muted/30 p-2 rounded mt-1">{selectedBookImage.prompt}</p>
+                                <Label className="text-gray-400">Original Prompt</Label>
+                                <p className="text-sm bg-[#1a1a1a]/30 p-2 rounded mt-1">{selectedBookImage.prompt}</p>
                               </div>
                             )}
                             <Button 
@@ -3196,7 +3196,7 @@ Your journey to healing starts here.`);
                           </div>
                         </div>
                       ) : (
-                        <div className="py-12 text-center text-muted-foreground">
+                        <div className="py-12 text-center text-gray-400">
                           <Edit3 className="w-12 h-12 mx-auto mb-3 opacity-50" />
                           <p>No image selected</p>
                           <p className="text-sm">Select an image from the Library to edit</p>
@@ -3246,7 +3246,7 @@ Your journey to healing starts here.`);
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Layout className="w-5 h-5 text-primary" /> Step 5: Format for KDP
+                    <Layout className="w-5 h-5 text-[#C9941A]" /> Step 5: Format for KDP
                   </CardTitle>
                   <CardDescription>Set up professional formatting, front/back matter, and KDP-ready layout</CardDescription>
                 </CardHeader>
@@ -3260,9 +3260,9 @@ Your journey to healing starts here.`);
                     
                     <TabsContent value="layout" className="space-y-6">
                       {/* Format Type & Trim Size */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 p-3 bg-muted/30 rounded-lg">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 p-3 bg-[#1a1a1a]/30 rounded-lg">
                         <div>
-                          <Label className="text-xs text-muted-foreground">Format Type</Label>
+                          <Label className="text-xs text-gray-400">Format Type</Label>
                           <Select value={kdpFormat} onValueChange={setKdpFormat}>
                             <SelectTrigger className="h-8" data-testid="select-kdp-format">
                               <SelectValue />
@@ -3275,7 +3275,7 @@ Your journey to healing starts here.`);
                           </Select>
                         </div>
                         <div>
-                          <Label className="text-xs text-muted-foreground">Paper Type</Label>
+                          <Label className="text-xs text-gray-400">Paper Type</Label>
                           <Select value={paperType} onValueChange={setPaperType}>
                             <SelectTrigger className="h-8" data-testid="select-paper-type">
                               <SelectValue />
@@ -3287,7 +3287,7 @@ Your journey to healing starts here.`);
                           </Select>
                         </div>
                         <div>
-                          <Label className="text-xs text-muted-foreground">Bleed</Label>
+                          <Label className="text-xs text-gray-400">Bleed</Label>
                           <Select value={hasBleed ? "yes" : "no"} onValueChange={(v) => setHasBleed(v === "yes")}>
                             <SelectTrigger className="h-8" data-testid="select-bleed">
                               <SelectValue />
@@ -3299,7 +3299,7 @@ Your journey to healing starts here.`);
                           </Select>
                         </div>
                         <div>
-                          <Label className="text-xs text-muted-foreground">Trim Size</Label>
+                          <Label className="text-xs text-gray-400">Trim Size</Label>
                           <Select value={trimSize} onValueChange={setTrimSize}>
                             <SelectTrigger className="h-8" data-testid="select-trim-size">
                               <SelectValue />
@@ -3461,32 +3461,32 @@ Your journey to healing starts here.`);
                         </div>
                       </div>
                       
-                      <Card className="bg-muted/50">
+                      <Card className="bg-[#1a1a1a]/50">
                         <CardContent className="p-4">
                           <h4 className="font-semibold mb-3">KDP Specifications Summary</h4>
                           <div className="grid grid-cols-2 md:grid-cols-6 gap-4 text-sm">
                             <div>
-                              <span className="text-muted-foreground">Format:</span>
+                              <span className="text-gray-400">Format:</span>
                               <div className="font-medium capitalize">{kdpFormat}</div>
                             </div>
                             <div>
-                              <span className="text-muted-foreground">Trim:</span>
+                              <span className="text-gray-400">Trim:</span>
                               <div className="font-medium">{trimSize}</div>
                             </div>
                             <div>
-                              <span className="text-muted-foreground">Font:</span>
+                              <span className="text-gray-400">Font:</span>
                               <div className="font-medium">{fontChoices.find(f => f.value === selectedFont)?.label}</div>
                             </div>
                             <div>
-                              <span className="text-muted-foreground">Pages:</span>
+                              <span className="text-gray-400">Pages:</span>
                               <div className="font-medium">{estimatedPages}</div>
                             </div>
                             <div>
-                              <span className="text-muted-foreground">Spine:</span>
+                              <span className="text-gray-400">Spine:</span>
                               <div className="font-medium">{(estimatedPages * (paperType === 'cream' ? 0.0025 : 0.002252)).toFixed(3)}"</div>
                             </div>
                             <div>
-                              <span className="text-muted-foreground">Gutter:</span>
+                              <span className="text-gray-400">Gutter:</span>
                               <div className="font-medium">{marginInside}"</div>
                             </div>
                           </div>
@@ -3602,14 +3602,14 @@ Your journey to healing starts here.`);
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Rocket className="w-5 h-5 text-primary" /> Step 6: Export & Publish
+                    <Rocket className="w-5 h-5 text-[#C9941A]" /> Step 6: Export & Publish
                   </CardTitle>
                   <CardDescription>Generate your Amazon blurb, keywords, and export in KDP-ready formats</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div className="space-y-4">
-                      <Card className="bg-muted/50">
+                      <Card className="bg-[#1a1a1a]/50">
                         <CardHeader className="pb-2">
                           <CardTitle className="text-lg">Amazon Book Description</CardTitle>
                         </CardHeader>
@@ -3635,13 +3635,13 @@ Your journey to healing starts here.`);
                             className="min-h-[200px]"
                             data-testid="textarea-blurb"
                           />
-                          <div className="text-xs text-muted-foreground">
+                          <div className="text-xs text-gray-400">
                             {bookBlurb.length}/4000 characters (Amazon limit)
                           </div>
                         </CardContent>
                       </Card>
                       
-                      <Card className="bg-muted/50">
+                      <Card className="bg-[#1a1a1a]/50">
                         <CardHeader className="pb-2">
                           <CardTitle className="text-lg">Amazon Keywords</CardTitle>
                         </CardHeader>
@@ -3671,7 +3671,7 @@ Your journey to healing starts here.`);
                               data-testid="input-add-keyword"
                             />
                           </div>
-                          <div className="text-xs text-muted-foreground">
+                          <div className="text-xs text-gray-400">
                             {amazonKeywords.length}/7 keywords (Amazon allows up to 7)
                           </div>
                         </CardContent>
@@ -3682,33 +3682,33 @@ Your journey to healing starts here.`);
                       <Card className="bg-primary/5 border-primary/20">
                         <CardHeader className="pb-2">
                           <CardTitle className="text-lg flex items-center gap-2">
-                            <CheckCircle className="w-5 h-5 text-primary" /> Book Summary
+                            <CheckCircle className="w-5 h-5 text-[#C9941A]" /> Book Summary
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
                           <div className="grid grid-cols-2 gap-4 text-sm">
                             <div>
-                              <span className="text-muted-foreground">Title:</span>
+                              <span className="text-gray-400">Title:</span>
                               <div className="font-medium">{bookTitle || "Untitled"}</div>
                             </div>
                             <div>
-                              <span className="text-muted-foreground">Genre:</span>
+                              <span className="text-gray-400">Genre:</span>
                               <div className="font-medium">{genres.find(g => g.value === selectedGenre)?.label}</div>
                             </div>
                             <div>
-                              <span className="text-muted-foreground">Chapters:</span>
+                              <span className="text-gray-400">Chapters:</span>
                               <div className="font-medium">{chapters.length}</div>
                             </div>
                             <div>
-                              <span className="text-muted-foreground">Word Count:</span>
+                              <span className="text-gray-400">Word Count:</span>
                               <div className="font-medium">{totalWordCount.toLocaleString()}</div>
                             </div>
                             <div>
-                              <span className="text-muted-foreground">Est. Pages:</span>
+                              <span className="text-gray-400">Est. Pages:</span>
                               <div className="font-medium">{estimatedPages}</div>
                             </div>
                             <div>
-                              <span className="text-muted-foreground">Format:</span>
+                              <span className="text-gray-400">Format:</span>
                               <div className="font-medium">{trimSize}</div>
                             </div>
                           </div>
@@ -3724,28 +3724,28 @@ Your journey to healing starts here.`);
                             <FileDown className="w-5 h-5 mr-3" />
                             <div className="text-left">
                               <div className="font-medium">Export PDF for Print</div>
-                              <div className="text-xs text-muted-foreground">KDP-ready with bleeds and margins</div>
+                              <div className="text-xs text-gray-400">KDP-ready with bleeds and margins</div>
                             </div>
                           </Button>
                           <Button className="w-full justify-start" size="lg" variant="outline" data-testid="button-export-epub">
                             <FileDown className="w-5 h-5 mr-3" />
                             <div className="text-left">
                               <div className="font-medium">Export EPUB for Kindle</div>
-                              <div className="text-xs text-muted-foreground">Optimized for eBook readers</div>
+                              <div className="text-xs text-gray-400">Optimized for eBook readers</div>
                             </div>
                           </Button>
                           <Button className="w-full justify-start" size="lg" variant="outline" data-testid="button-preview">
                             <Eye className="w-5 h-5 mr-3" />
                             <div className="text-left">
                               <div className="font-medium">Preview Book</div>
-                              <div className="text-xs text-muted-foreground">See how it looks on Kindle</div>
+                              <div className="text-xs text-gray-400">See how it looks on Kindle</div>
                             </div>
                           </Button>
                           <Button className="w-full justify-start" size="lg" variant="outline" data-testid="button-save-project">
                             <Save className="w-5 h-5 mr-3" />
                             <div className="text-left">
                               <div className="font-medium">Save Project</div>
-                              <div className="text-xs text-muted-foreground">Save to continue later</div>
+                              <div className="text-xs text-gray-400">Save to continue later</div>
                             </div>
                           </Button>
                         </CardContent>
@@ -3754,42 +3754,42 @@ Your journey to healing starts here.`);
                       <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border">
                         <CardHeader className="pb-2">
                           <CardTitle className="text-lg flex items-center gap-2">
-                            <Store className="w-5 h-5 text-primary" /> Publish to Marketplace
+                            <Store className="w-5 h-5 text-[#C9941A]" /> Publish to Marketplace
                           </CardTitle>
                           <CardDescription>Sell your book on Stroke Recovery Academy</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                           <div className="grid grid-cols-2 gap-3 text-sm">
-                            <div className="flex items-center gap-2 text-muted-foreground">
+                            <div className="flex items-center gap-2 text-gray-400">
                               <Printer className="w-4 h-4" />
                               <span>Print-on-demand</span>
                             </div>
-                            <div className="flex items-center gap-2 text-muted-foreground">
+                            <div className="flex items-center gap-2 text-gray-400">
                               <DollarSign className="w-4 h-4" />
                               <span>Set your own price</span>
                             </div>
-                            <div className="flex items-center gap-2 text-muted-foreground">
+                            <div className="flex items-center gap-2 text-gray-400">
                               <Globe className="w-4 h-4" />
                               <span>Worldwide shipping</span>
                             </div>
-                            <div className="flex items-center gap-2 text-muted-foreground">
+                            <div className="flex items-center gap-2 text-gray-400">
                               <Zap className="w-4 h-4" />
                               <span>Instant digital delivery</span>
                             </div>
                           </div>
                           <Separator />
-                          <div className="bg-muted/50 rounded-lg p-3 space-y-2">
+                          <div className="bg-[#1a1a1a]/50 rounded-lg p-3 space-y-2">
                             <div className="flex justify-between text-sm">
-                              <span className="text-muted-foreground">Estimated Print Cost:</span>
+                              <span className="text-gray-400">Estimated Print Cost:</span>
                               <span className="font-medium">${((0.90 + (estimatedPages || 200) * 0.012) || 3.30).toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between text-sm">
-                              <span className="text-muted-foreground">Suggested Retail:</span>
-                              <span className="font-medium text-primary">${Math.max(9.99, ((0.90 + (estimatedPages || 200) * 0.012) * 2.5)).toFixed(2)}</span>
+                              <span className="text-gray-400">Suggested Retail:</span>
+                              <span className="font-medium text-[#C9941A]">${Math.max(9.99, ((0.90 + (estimatedPages || 200) * 0.012) * 2.5)).toFixed(2)}</span>
                             </div>
-                            <div className="flex justify-between text-sm text-muted-foreground">
+                            <div className="flex justify-between text-sm text-gray-400">
                               <span>Your Profit (est.):</span>
-                              <span className="font-medium text-green-500">${(Math.max(9.99, ((0.90 + (estimatedPages || 200) * 0.012) * 2.5)) * 0.85 - (0.90 + (estimatedPages || 200) * 0.012)).toFixed(2)}</span>
+                              <span className="font-medium text-[#C9941A]">${(Math.max(9.99, ((0.90 + (estimatedPages || 200) * 0.012) * 2.5)) * 0.85 - (0.90 + (estimatedPages || 200) * 0.012)).toFixed(2)}</span>
                             </div>
                           </div>
                           <Button 
@@ -3801,7 +3801,7 @@ Your journey to healing starts here.`);
                             <Rocket className="w-5 h-5 mr-2" />
                             Publish to Marketplace
                           </Button>
-                          <p className="text-xs text-muted-foreground text-center">
+                          <p className="text-xs text-gray-400 text-center">
                             Powered by Lulu print-on-demand. No inventory, no upfront costs.
                           </p>
                         </CardContent>

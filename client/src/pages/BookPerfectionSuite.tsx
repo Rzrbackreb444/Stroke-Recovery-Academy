@@ -1245,7 +1245,7 @@ Be specific and actionable in your suggestions. When the author wants to regener
                           onClick={() => handleQualityPolish('line')}
                           disabled={isPolishing}
                         >
-                          <Pencil className="w-6 h-6 mb-2 text-green-500" />
+                          <Pencil className="w-6 h-6 mb-2 text-[#C9941A]" />
                           <span className="font-semibold">Line Edit</span>
                           <span className="text-xs text-gray-500">Prose & flow</span>
                         </Button>
@@ -1255,7 +1255,7 @@ Be specific and actionable in your suggestions. When the author wants to regener
                           onClick={() => handleQualityPolish('copy')}
                           disabled={isPolishing}
                         >
-                          <ClipboardList className="w-6 h-6 mb-2 text-orange-500" />
+                          <ClipboardList className="w-6 h-6 mb-2 text-[#C9941A]" />
                           <span className="font-semibold">Copy Edit</span>
                           <span className="text-xs text-gray-500">Grammar & style</span>
                         </Button>
@@ -1342,7 +1342,7 @@ Be specific and actionable in your suggestions. When the author wants to regener
                             <div className="space-y-2">
                               {consistencyIssues.map((issue, i) => (
                                 <div key={i} className="flex items-start gap-2 p-2 bg-gray-50 rounded text-sm">
-                                  <AlertTriangle className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
+                                  <AlertTriangle className="w-4 h-4 text-[#C9941A] mt-0.5 flex-shrink-0" />
                                   <span>{issue}</span>
                                 </div>
                               ))}

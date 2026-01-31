@@ -54,14 +54,14 @@ function StatCard({
       <CardContent className="p-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-muted-foreground">{title}</p>
+            <p className="text-sm text-gray-400">{title}</p>
             <p className="text-2xl font-bold mt-1" data-testid={`${id}-value`}>{value}</p>
             {subtitle && (
-              <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
+              <p className="text-xs text-gray-400 mt-1">{subtitle}</p>
             )}
           </div>
           <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-            <Icon className="h-5 w-5 text-primary" />
+            <Icon className="h-5 w-5 text-[#C9941A]" />
           </div>
         </div>
       </CardContent>
@@ -90,11 +90,11 @@ function StudioCard({
         <CardContent className="p-5">
           <div className="flex items-start gap-4">
             <div className={`w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0`}>
-              <Icon className="h-6 w-6 text-primary" />
+              <Icon className="h-6 w-6 text-[#C9941A]" />
             </div>
             <div className="min-w-0 flex-1">
               <div className="font-bold text-base">{title}</div>
-              <div className="text-sm text-muted-foreground mt-0.5">{description}</div>
+              <div className="text-sm text-gray-400 mt-0.5">{description}</div>
               <div className="mt-3 flex gap-1.5 flex-wrap">
                 {tags.map(tag => (
                   <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
@@ -126,13 +126,13 @@ function QuickActionCard({
     <Link href={href}>
       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid={id}>
         <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center">
-          <Icon className="h-4 w-4 text-primary" />
+          <Icon className="h-4 w-4 text-[#C9941A]" />
         </div>
         <div className="min-w-0 flex-1">
           <div className="font-medium text-sm">{title}</div>
-          <div className="text-xs text-muted-foreground truncate">{description}</div>
+          <div className="text-xs text-gray-400 truncate">{description}</div>
         </div>
-        <ArrowRight className="h-4 w-4 text-muted-foreground" />
+        <ArrowRight className="h-4 w-4 text-gray-400" />
       </div>
     </Link>
   );
@@ -243,7 +243,7 @@ export default function Dashboard() {
           <h1 className="text-2xl sm:text-3xl font-bold" data-testid="text-dashboard-title">
             Welcome back, {user?.firstName || 'Creator'}
           </h1>
-          <p className="text-muted-foreground mt-1" data-testid="text-dashboard-subtitle">
+          <p className="text-gray-400 mt-1" data-testid="text-dashboard-subtitle">
             Your creative command center for everything on KreAIte
           </p>
         </div>
@@ -294,7 +294,7 @@ export default function Dashboard() {
                 <Card>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg flex items-center gap-2">
-                      <Sparkles className="h-5 w-5 text-primary" />
+                      <Sparkles className="h-5 w-5 text-[#C9941A]" />
                       Quick Create
                     </CardTitle>
                   </CardHeader>
@@ -340,55 +340,55 @@ export default function Dashboard() {
                   <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     <Link href="/book-studio-v2">
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-book-studio">
-                        <BookOpen className="h-5 w-5 text-primary" />
+                        <BookOpen className="h-5 w-5 text-[#C9941A]" />
                         <span className="font-medium text-sm">Book Studio</span>
                       </div>
                     </Link>
                     <Link href="/video-studio">
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-video-studio">
-                        <Film className="h-5 w-5 text-primary" />
+                        <Film className="h-5 w-5 text-[#C9941A]" />
                         <span className="font-medium text-sm">Video Studio</span>
                       </div>
                     </Link>
                     <Link href="/music-studio">
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-music-studio">
-                        <Music className="h-5 w-5 text-primary" />
+                        <Music className="h-5 w-5 text-[#C9941A]" />
                         <span className="font-medium text-sm">Music Studio</span>
                       </div>
                     </Link>
                     <Link href="/course-studio">
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-course-studio">
-                        <GraduationCap className="h-5 w-5 text-primary" />
+                        <GraduationCap className="h-5 w-5 text-[#C9941A]" />
                         <span className="font-medium text-sm">Course Builder</span>
                       </div>
                     </Link>
                     <Link href="/image-studio">
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-image-studio">
-                        <Image className="h-5 w-5 text-primary" />
+                        <Image className="h-5 w-5 text-[#C9941A]" />
                         <span className="font-medium text-sm">Image Studio</span>
                       </div>
                     </Link>
                     <Link href="/doctrine-engine">
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-doctrine-engine">
-                        <Brain className="h-5 w-5 text-primary" />
+                        <Brain className="h-5 w-5 text-[#C9941A]" />
                         <span className="font-medium text-sm">Doctrine Engine</span>
                       </div>
                     </Link>
                     <Link href="/website-studio">
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-website-studio">
-                        <Globe className="h-5 w-5 text-primary" />
+                        <Globe className="h-5 w-5 text-[#C9941A]" />
                         <span className="font-medium text-sm">Website Builder</span>
                       </div>
                     </Link>
                     <Link href="/seo-command-center">
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-seo-command-center">
-                        <Search className="h-5 w-5 text-primary" />
+                        <Search className="h-5 w-5 text-[#C9941A]" />
                         <span className="font-medium text-sm">SEO Command Center</span>
                       </div>
                     </Link>
                     <Link href="/games">
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border bg-gradient-to-r from-orange-500/10 to-orange-600/5" data-testid="link-sasquatch-games">
-                        <Gamepad2 className="h-5 w-5 text-orange-500" />
+                        <Gamepad2 className="h-5 w-5 text-[#C9941A]" />
                         <span className="font-medium text-sm">Beat the Sasquatch</span>
                       </div>
                     </Link>
@@ -404,13 +404,13 @@ export default function Dashboard() {
                   <CardContent>
                     {usageQuery.isLoading ? (
                       <div className="flex items-center justify-center py-6">
-                        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                        <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
                       </div>
                     ) : usageQuery.data?.recent?.length ? (
                       <div className="space-y-3">
                         {usageQuery.data.recent.slice(0, 5).map((item, idx) => (
                           <div key={idx} className="flex items-center justify-between text-sm">
-                            <span className="text-muted-foreground truncate flex-1">
+                            <span className="text-gray-400 truncate flex-1">
                               {item.feature.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
                             </span>
                             <Badge variant="secondary" className="ml-2">
@@ -420,7 +420,7 @@ export default function Dashboard() {
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-6 text-muted-foreground text-sm">
+                      <div className="text-center py-6 text-gray-400 text-sm">
                         No recent activity
                       </div>
                     )}
@@ -434,32 +434,32 @@ export default function Dashboard() {
                   <CardContent className="space-y-2">
                     <Link href="/marketplace">
                       <div className="flex items-center gap-2 p-2 rounded hover-elevate cursor-pointer" data-testid="link-marketplace">
-                        <ShoppingBag className="h-4 w-4 text-muted-foreground" />
+                        <ShoppingBag className="h-4 w-4 text-gray-400" />
                         <span className="text-sm">Marketplace</span>
                       </div>
                     </Link>
                     <Link href="/quick-create">
                       <div className="flex items-center gap-2 p-2 rounded hover-elevate cursor-pointer" data-testid="link-magic-tools">
-                        <Sparkles className="h-4 w-4 text-muted-foreground" />
+                        <Sparkles className="h-4 w-4 text-gray-400" />
                         <span className="text-sm">Magic Tools</span>
                       </div>
                     </Link>
                     <Link href="/production-dashboard">
                       <div className="flex items-center gap-2 p-2 rounded hover-elevate cursor-pointer" data-testid="link-production-hub">
-                        <BarChart3 className="h-4 w-4 text-muted-foreground" />
+                        <BarChart3 className="h-4 w-4 text-gray-400" />
                         <span className="text-sm">Production Hub</span>
                       </div>
                     </Link>
                     <Link href="/settings">
                       <div className="flex items-center gap-2 p-2 rounded hover-elevate cursor-pointer" data-testid="link-settings">
-                        <Settings className="h-4 w-4 text-muted-foreground" />
+                        <Settings className="h-4 w-4 text-gray-400" />
                         <span className="text-sm">Settings</span>
                       </div>
                     </Link>
                     {isAdmin && (
                       <Link href="/admin">
                         <div className="flex items-center gap-2 p-2 rounded hover-elevate cursor-pointer" data-testid="link-admin-panel">
-                          <Shield className="h-4 w-4 text-muted-foreground" />
+                          <Shield className="h-4 w-4 text-gray-400" />
                           <span className="text-sm">Admin Panel</span>
                         </div>
                       </Link>
@@ -530,37 +530,37 @@ export default function Dashboard() {
               <CardContent className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
                 <Link href="/media-studio">
                   <div className="text-center p-4 rounded-lg hover-elevate cursor-pointer border" data-testid="link-media-studio">
-                    <Palette className="h-6 w-6 mx-auto mb-2 text-primary" />
+                    <Palette className="h-6 w-6 mx-auto mb-2 text-[#C9941A]" />
                     <div className="text-sm font-medium">Media Studio</div>
                   </div>
                 </Link>
                 <Link href="/podcast-studio">
                   <div className="text-center p-4 rounded-lg hover-elevate cursor-pointer border" data-testid="link-podcast-studio">
-                    <Mic className="h-6 w-6 mx-auto mb-2 text-primary" />
+                    <Mic className="h-6 w-6 mx-auto mb-2 text-[#C9941A]" />
                     <div className="text-sm font-medium">Podcast Studio</div>
                   </div>
                 </Link>
                 <Link href="/script-studio">
                   <div className="text-center p-4 rounded-lg hover-elevate cursor-pointer border" data-testid="link-script-studio">
-                    <FileText className="h-6 w-6 mx-auto mb-2 text-primary" />
+                    <FileText className="h-6 w-6 mx-auto mb-2 text-[#C9941A]" />
                     <div className="text-sm font-medium">Script Studio</div>
                   </div>
                 </Link>
                 <Link href="/doc-hub">
                   <div className="text-center p-4 rounded-lg hover-elevate cursor-pointer border" data-testid="link-doc-hub">
-                    <FileText className="h-6 w-6 mx-auto mb-2 text-primary" />
+                    <FileText className="h-6 w-6 mx-auto mb-2 text-[#C9941A]" />
                     <div className="text-sm font-medium">Doc Hub</div>
                   </div>
                 </Link>
                 <Link href="/life-story">
                   <div className="text-center p-4 rounded-lg hover-elevate cursor-pointer border" data-testid="link-life-story">
-                    <Clock className="h-6 w-6 mx-auto mb-2 text-primary" />
+                    <Clock className="h-6 w-6 mx-auto mb-2 text-[#C9941A]" />
                     <div className="text-sm font-medium">Life Story</div>
                   </div>
                 </Link>
                 <Link href="/ai-consultant">
                   <div className="text-center p-4 rounded-lg hover-elevate cursor-pointer border" data-testid="link-ai-consultant">
-                    <Brain className="h-6 w-6 mx-auto mb-2 text-primary" />
+                    <Brain className="h-6 w-6 mx-auto mb-2 text-[#C9941A]" />
                     <div className="text-sm font-medium">AI Consultant</div>
                   </div>
                 </Link>
@@ -571,17 +571,17 @@ export default function Dashboard() {
           <TabsContent value="earnings" className="space-y-6">
             {earningsQuery.isLoading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <Loader2 className="h-8 w-8 animate-spin text-[#C9941A]" />
               </div>
             ) : (
               <>
                 {!earningsQuery.data?.summary?.salesCount && (
                   <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg mb-4">
                     <div className="flex items-center gap-2">
-                      <Sparkles className="h-5 w-5 text-primary" />
+                      <Sparkles className="h-5 w-5 text-[#C9941A]" />
                       <span className="font-medium">Start Earning on KreAIte</span>
                     </div>
-                    <p className="text-sm text-muted-foreground mt-1">
+                    <p className="text-sm text-gray-400 mt-1">
                       Sell books, courses, and music on the marketplace. You keep 85% of every sale.
                     </p>
                   </div>
@@ -636,15 +636,15 @@ export default function Dashboard() {
                         </div>
                         <div>
                           <div className="flex items-center justify-between text-sm mb-1">
-                            <span className="text-muted-foreground">Platform Fee (15%)</span>
-                            <span className="text-muted-foreground" data-testid="text-platform-fee">
+                            <span className="text-gray-400">Platform Fee (15%)</span>
+                            <span className="text-gray-400" data-testid="text-platform-fee">
                               {formatCurrency(earningsQuery.data?.summary?.totalPlatformFee ?? 0, true)}
                             </span>
                           </div>
                           <Progress value={15} className="h-2" />
                         </div>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-4">
+                      <p className="text-xs text-gray-400 mt-4">
                         You keep 85% of every sale. Start selling in the marketplace to earn.
                       </p>
                     </CardContent>
@@ -655,7 +655,7 @@ export default function Dashboard() {
                       <CardTitle>Recent Transactions</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-center py-8 text-muted-foreground">
+                      <div className="text-center py-8 text-gray-400">
                         <ShoppingBag className="h-12 w-12 mx-auto mb-3 opacity-50" />
                         <p className="text-sm">No transactions yet</p>
                         <Link href="/marketplace">
@@ -676,25 +676,25 @@ export default function Dashboard() {
                   </CardHeader>
                   <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="p-4 border rounded-lg" data-testid="card-sell-books">
-                      <BookOpen className="h-8 w-8 text-primary mb-3" />
+                      <BookOpen className="h-8 w-8 text-[#C9941A] mb-3" />
                       <h3 className="font-semibold mb-1">Sell Books</h3>
-                      <p className="text-sm text-muted-foreground mb-3">Publish and sell your books on the marketplace</p>
+                      <p className="text-sm text-gray-400 mb-3">Publish and sell your books on the marketplace</p>
                       <Link href="/book-studio-v2">
                         <Button variant="outline" size="sm" data-testid="button-create-book">Create Book</Button>
                       </Link>
                     </div>
                     <div className="p-4 border rounded-lg" data-testid="card-sell-courses">
-                      <GraduationCap className="h-8 w-8 text-primary mb-3" />
+                      <GraduationCap className="h-8 w-8 text-[#C9941A] mb-3" />
                       <h3 className="font-semibold mb-1">Sell Courses</h3>
-                      <p className="text-sm text-muted-foreground mb-3">Turn your knowledge into paid courses</p>
+                      <p className="text-sm text-gray-400 mb-3">Turn your knowledge into paid courses</p>
                       <Link href="/course-studio">
                         <Button variant="outline" size="sm" data-testid="button-build-course">Build Course</Button>
                       </Link>
                     </div>
                     <div className="p-4 border rounded-lg" data-testid="card-sell-music">
-                      <Music className="h-8 w-8 text-primary mb-3" />
+                      <Music className="h-8 w-8 text-[#C9941A] mb-3" />
                       <h3 className="font-semibold mb-1">Sell Music</h3>
-                      <p className="text-sm text-muted-foreground mb-3">License your beats and compositions</p>
+                      <p className="text-sm text-gray-400 mb-3">License your beats and compositions</p>
                       <Link href="/music-studio">
                         <Button variant="outline" size="sm" data-testid="button-create-music">Create Music</Button>
                       </Link>
@@ -742,7 +742,7 @@ export default function Dashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-gray-400">
                   Share your unique link and earn 500 credits for every new user who signs up. 
                   They get 250 bonus credits too!
                 </p>
@@ -764,22 +764,22 @@ export default function Dashboard() {
                     </Button>
                   </div>
                 ) : (
-                  <div className="text-center py-4 text-muted-foreground">
+                  <div className="text-center py-4 text-gray-400">
                     Unable to load referral code
                   </div>
                 )}
                 <div className="grid grid-cols-3 gap-4 pt-4 border-t">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-primary" data-testid="text-referrer-reward">500</div>
-                    <div className="text-xs text-muted-foreground">Credits for You</div>
+                    <div className="text-2xl font-bold text-[#C9941A]" data-testid="text-referrer-reward">500</div>
+                    <div className="text-xs text-gray-400">Credits for You</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-primary" data-testid="text-referee-reward">250</div>
-                    <div className="text-xs text-muted-foreground">Credits for Friend</div>
+                    <div className="text-2xl font-bold text-[#C9941A]" data-testid="text-referee-reward">250</div>
+                    <div className="text-xs text-gray-400">Credits for Friend</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-primary" data-testid="text-commission-rate">10%</div>
-                    <div className="text-xs text-muted-foreground">Purchase Commission</div>
+                    <div className="text-2xl font-bold text-[#C9941A]" data-testid="text-commission-rate">10%</div>
+                    <div className="text-xs text-gray-400">Purchase Commission</div>
                   </div>
                 </div>
               </CardContent>
@@ -796,28 +796,28 @@ export default function Dashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="text-center space-y-2">
                     <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                      <Share2 className="h-6 w-6 text-primary" />
+                      <Share2 className="h-6 w-6 text-[#C9941A]" />
                     </div>
                     <h3 className="font-semibold">1. Share Your Link</h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-gray-400">
                       Copy your unique referral link and share it with friends, on social media, or in your content
                     </p>
                   </div>
                   <div className="text-center space-y-2">
                     <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                      <UserPlus className="h-6 w-6 text-primary" />
+                      <UserPlus className="h-6 w-6 text-[#C9941A]" />
                     </div>
                     <h3 className="font-semibold">2. Friend Signs Up</h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-gray-400">
                       When someone clicks your link and creates an account, they become your referral
                     </p>
                   </div>
                   <div className="text-center space-y-2">
                     <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                      <Gift className="h-6 w-6 text-primary" />
+                      <Gift className="h-6 w-6 text-[#C9941A]" />
                     </div>
                     <h3 className="font-semibold">3. Both Get Rewarded</h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-gray-400">
                       You get 500 credits instantly, plus 10% commission on their first purchase. They get 250 bonus credits!
                     </p>
                   </div>
@@ -836,7 +836,7 @@ export default function Dashboard() {
                       <div key={idx} className="flex items-center justify-between p-4" data-testid={`row-referral-${idx}`}>
                         <div>
                           <div className="font-medium text-sm">New Signup</div>
-                          <div className="text-xs text-muted-foreground">
+                          <div className="text-xs text-gray-400">
                             {new Date(ref.createdAt).toLocaleDateString()}
                           </div>
                         </div>
@@ -897,7 +897,7 @@ export default function Dashboard() {
                     />
                   </>
                 ) : (
-                  <div className="col-span-4 text-center py-8 text-muted-foreground">
+                  <div className="col-span-4 text-center py-8 text-gray-400">
                     Unable to load admin metrics
                   </div>
                 )}
@@ -918,23 +918,23 @@ export default function Dashboard() {
                   ) : subscriptionMetricsQuery.data ? (
                     <div className="space-y-4">
                       <div className="grid grid-cols-3 gap-4">
-                        <div className="text-center p-3 bg-muted/50 rounded-lg">
+                        <div className="text-center p-3 bg-[#1a1a1a]/50 rounded-lg">
                           <div className="text-2xl font-bold" data-testid="text-active-subs">
                             {subscriptionMetricsQuery.data.activeSubscriptions}
                           </div>
-                          <div className="text-xs text-muted-foreground">Active Subscribers</div>
+                          <div className="text-xs text-gray-400">Active Subscribers</div>
                         </div>
-                        <div className="text-center p-3 bg-muted/50 rounded-lg">
+                        <div className="text-center p-3 bg-[#1a1a1a]/50 rounded-lg">
                           <div className="text-2xl font-bold text-green-600" data-testid="text-new-subs">
                             +{subscriptionMetricsQuery.data.newThisMonth}
                           </div>
-                          <div className="text-xs text-muted-foreground">New This Month</div>
+                          <div className="text-xs text-gray-400">New This Month</div>
                         </div>
-                        <div className="text-center p-3 bg-muted/50 rounded-lg">
+                        <div className="text-center p-3 bg-[#1a1a1a]/50 rounded-lg">
                           <div className="text-2xl font-bold text-red-600" data-testid="text-churned-subs">
                             -{subscriptionMetricsQuery.data.churned}
                           </div>
-                          <div className="text-xs text-muted-foreground">Churned</div>
+                          <div className="text-xs text-gray-400">Churned</div>
                         </div>
                       </div>
                       {Object.keys(subscriptionMetricsQuery.data.byTier || {}).length > 0 && (
@@ -952,7 +952,7 @@ export default function Dashboard() {
                       )}
                     </div>
                   ) : (
-                    <div className="text-center py-4 text-muted-foreground">
+                    <div className="text-center py-4 text-gray-400">
                       No subscription data available
                     </div>
                   )}
@@ -987,7 +987,7 @@ export default function Dashboard() {
                             <div className="font-medium text-sm">
                               {event.eventType.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())}
                             </div>
-                            <div className="text-xs text-muted-foreground">
+                            <div className="text-xs text-gray-400">
                               {new Date(event.createdAt).toLocaleDateString()}
                             </div>
                           </div>

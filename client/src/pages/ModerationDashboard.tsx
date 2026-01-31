@@ -83,14 +83,14 @@ const REASON_LABELS: Record<string, { label: string; icon: typeof Flag }> = {
 const STATUS_BADGES: Record<string, { className: string; label: string }> = {
   pending: { className: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30", label: "Pending" },
   reviewed: { className: "bg-blue-500/20 text-blue-400 border-blue-500/30", label: "Reviewed" },
-  resolved: { className: "bg-green-500/20 text-green-400 border-green-500/30", label: "Resolved" },
+  resolved: { className: "bg-[#C9941A]/20 text-[#C9941A] border-green-500/30", label: "Resolved" },
 };
 
 const MODERATION_STATUS_BADGES: Record<string, { className: string; label: string }> = {
   pending: { className: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30", label: "Pending" },
-  approved: { className: "bg-green-500/20 text-green-400 border-green-500/30", label: "Approved" },
+  approved: { className: "bg-[#C9941A]/20 text-[#C9941A] border-green-500/30", label: "Approved" },
   rejected: { className: "bg-red-500/20 text-red-400 border-red-500/30", label: "Rejected" },
-  flagged: { className: "bg-primary/20 text-primary border", label: "Flagged" },
+  flagged: { className: "bg-primary/20 text-[#C9941A] border", label: "Flagged" },
 };
 
 export default function ModerationDashboard() {
@@ -174,7 +174,7 @@ export default function ModerationDashboard() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-background p-6">
+      <div className="min-h-screen bg-[#0D0D0D] p-6">
         <div className="max-w-7xl mx-auto">
           <Skeleton className="h-10 w-64 bg-gray-800 mb-8" />
           <div className="grid gap-4">
@@ -189,8 +189,8 @@ export default function ModerationDashboard() {
 
   if (!user || user.role !== "admin") {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center" data-testid="access-denied">
-        <Card className="bg-gray-900 border-gray-800 max-w-md">
+      <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center" data-testid="access-denied">
+        <Card className="bg-[#1a1a1a] border-[#333] max-w-md">
           <CardContent className="p-8 text-center">
             <Shield className="w-12 h-12 text-[#FF6B35] mx-auto mb-4" />
             <h2 className="text-xl font-bold text-foreground mb-2">Access Denied</h2>
@@ -215,7 +215,7 @@ export default function ModerationDashboard() {
   const resolvedCount = reports?.filter((r) => r.report.status === "resolved").length || 0;
 
   return (
-    <div className="min-h-screen bg-background" data-testid="page-moderation-dashboard">
+    <div className="min-h-screen bg-[#0D0D0D]" data-testid="page-moderation-dashboard">
       <div className="max-w-7xl mx-auto p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-3">
@@ -232,12 +232,12 @@ export default function ModerationDashboard() {
             <Filter className="w-4 h-4 text-gray-400" />
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger
-                className="w-[180px] bg-gray-900 border-gray-700 text-foreground"
+                className="w-[180px] bg-[#1a1a1a] border-[#333] text-foreground"
                 data-testid="select-status-filter"
               >
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
-              <SelectContent className="bg-gray-900 border-gray-700">
+              <SelectContent className="bg-[#1a1a1a] border-[#333]">
                 <SelectItem value="all" className="text-foreground">All Reports</SelectItem>
                 <SelectItem value="pending" className="text-foreground">Pending</SelectItem>
                 <SelectItem value="reviewed" className="text-foreground">Reviewed</SelectItem>
@@ -248,7 +248,7 @@ export default function ModerationDashboard() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Card className="bg-gray-900 border-gray-800">
+          <Card className="bg-[#1a1a1a] border-[#333]">
             <CardContent className="p-4 flex items-center gap-4">
               <div className="p-3 bg-yellow-500/10 rounded-lg">
                 <Clock className="w-6 h-6 text-yellow-400" />
@@ -259,7 +259,7 @@ export default function ModerationDashboard() {
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-gray-900 border-gray-800">
+          <Card className="bg-[#1a1a1a] border-[#333]">
             <CardContent className="p-4 flex items-center gap-4">
               <div className="p-3 bg-blue-500/10 rounded-lg">
                 <Eye className="w-6 h-6 text-blue-400" />
@@ -270,10 +270,10 @@ export default function ModerationDashboard() {
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-gray-900 border-gray-800">
+          <Card className="bg-[#1a1a1a] border-[#333]">
             <CardContent className="p-4 flex items-center gap-4">
-              <div className="p-3 bg-green-500/10 rounded-lg">
-                <Check className="w-6 h-6 text-green-400" />
+              <div className="p-3 bg-[#C9941A]/10 rounded-lg">
+                <Check className="w-6 h-6 text-[#C9941A]" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground" data-testid="text-resolved-count">{resolvedCount}</p>
@@ -299,7 +299,7 @@ export default function ModerationDashboard() {
               return (
                 <Card
                   key={item.report.id}
-                  className="bg-gray-900 border-gray-800"
+                  className="bg-[#1a1a1a] border-[#333]"
                   data-testid={`card-report-${item.report.id}`}
                 >
                   <CardContent className="p-6">
@@ -360,7 +360,7 @@ export default function ModerationDashboard() {
                             <Button
                               size="sm"
                               onClick={() => handleQuickAction(item.listing!.id, "approve")}
-                              className="bg-green-600 hover:bg-green-700 text-foreground"
+                              className="bg-[#C9941A] hover:bg-[#C9941A]/80 text-foreground"
                               disabled={updateListingMutation.isPending}
                               data-testid={`button-approve-${item.report.id}`}
                             >
@@ -372,7 +372,7 @@ export default function ModerationDashboard() {
                               size="sm"
                               variant="outline"
                               onClick={() => handleQuickAction(item.listing!.id, "flag")}
-                              className="border-orange-600 text-primary hover:bg-orange-600/20"
+                              className="border-orange-600 text-[#C9941A] hover:bg-[#C9941A]/20"
                               disabled={updateListingMutation.isPending}
                               data-testid={`button-flag-${item.report.id}`}
                             >
@@ -405,7 +405,7 @@ export default function ModerationDashboard() {
                               <ChevronDown className="w-4 h-4" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent className="bg-gray-900 border-gray-700">
+                          <DropdownMenuContent className="bg-[#1a1a1a] border-[#333]">
                             {item.listing && (
                               <DropdownMenuItem
                                 className="text-foreground hover:bg-gray-800"
@@ -445,7 +445,7 @@ export default function ModerationDashboard() {
             })}
           </div>
         ) : (
-          <Card className="bg-gray-900 border-gray-800">
+          <Card className="bg-[#1a1a1a] border-[#333]">
             <CardContent className="p-12 text-center">
               <Shield className="w-12 h-12 text-gray-600 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-foreground mb-2">No Reports Found</h3>
@@ -463,7 +463,7 @@ export default function ModerationDashboard() {
         open={moderationDialog.isOpen}
         onOpenChange={(open) => !open && setModerationDialog({ isOpen: false, listingId: null, action: "", notes: "" })}
       >
-        <DialogContent className="bg-gray-900 border-gray-800" data-testid="modal-moderation-action">
+        <DialogContent className="bg-[#1a1a1a] border-[#333]" data-testid="modal-moderation-action">
           <DialogHeader>
             <DialogTitle className="text-foreground flex items-center gap-2">
               {moderationDialog.action === "reject" ? (
@@ -473,7 +473,7 @@ export default function ModerationDashboard() {
                 </>
               ) : (
                 <>
-                  <AlertTriangle className="w-5 h-5 text-primary" />
+                  <AlertTriangle className="w-5 h-5 text-[#C9941A]" />
                   Flag for Review
                 </>
               )}
@@ -494,7 +494,7 @@ export default function ModerationDashboard() {
               value={moderationDialog.notes}
               onChange={(e) => setModerationDialog((prev) => ({ ...prev, notes: e.target.value }))}
               placeholder="Add notes about this moderation action..."
-              className="bg-gray-800 border-gray-700 text-foreground mt-2"
+              className="bg-gray-800 border-[#333] text-foreground mt-2"
               data-testid="textarea-moderation-notes"
             />
           </div>
@@ -503,7 +503,7 @@ export default function ModerationDashboard() {
             <Button
               variant="outline"
               onClick={() => setModerationDialog({ isOpen: false, listingId: null, action: "", notes: "" })}
-              className="border-gray-700 text-gray-300"
+              className="border-[#333] text-gray-300"
               data-testid="button-cancel-moderation"
             >
               Cancel
@@ -511,7 +511,7 @@ export default function ModerationDashboard() {
             <Button
               onClick={handleConfirmModeration}
               disabled={updateListingMutation.isPending}
-              className={moderationDialog.action === "reject" ? "bg-red-600 hover:bg-red-700" : "bg-orange-600 hover:bg-orange-700"}
+              className={moderationDialog.action === "reject" ? "bg-red-600 hover:bg-red-700" : "bg-[#C9941A] hover:bg-orange-700"}
               data-testid="button-confirm-moderation"
             >
               {updateListingMutation.isPending ? "Processing..." : "Confirm"}

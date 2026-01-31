@@ -446,7 +446,7 @@ export default function CourseStudio() {
 
               <div>
                 <Label htmlFor="course-thumbnail" className="text-white/70">Thumbnail Image</Label>
-                <div className="mt-1 border-2 border-dashed border-[#C9941A]/30 rounded-lg p-8 text-center hover:border-orange-500/50 transition-colors cursor-pointer">
+                <div className="mt-1 border-2 border-dashed border-[#C9941A]/30 rounded-lg p-8 text-center hover:border-[#C9941A]/50 transition-colors cursor-pointer">
                   <Upload className="w-10 h-10 text-white/50 mx-auto mb-3" />
                   <p className="text-white/60 text-sm">Click to upload or drag and drop</p>
                   <p className="text-white/50 text-xs mt-1">PNG, JPG up to 5MB (1280x720 recommended)</p>
@@ -480,7 +480,7 @@ export default function CourseStudio() {
 
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-4">
-                <Badge variant="outline" className="border-orange-500/50 text-primary">
+                <Badge variant="outline" className="border-[#C9941A]/50 text-[#C9941A]">
                   {modules.length} Modules
                 </Badge>
                 <Badge variant="outline" className="border-gray-600 text-white/60">
@@ -498,7 +498,7 @@ export default function CourseStudio() {
                   data-testid="button-ai-generate"
                   onClick={generateAIOutline}
                   disabled={isGeneratingAI}
-                  className="border-orange-500/50 text-primary hover:bg-primary/10"
+                  className="border-[#C9941A]/50 text-[#C9941A] hover:bg-primary/10"
                 >
                   {isGeneratingAI ? (
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -511,7 +511,7 @@ export default function CourseStudio() {
                   size="sm"
                   data-testid="button-add-module"
                   onClick={addModule}
-                  className="bg-orange-500 hover:bg-orange-600 text-black"
+                  className="bg-[#C9941A] hover:bg-[#C9941A] text-black"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Add Module
@@ -603,9 +603,9 @@ export default function CourseStudio() {
                             >
                               <div className="flex items-center gap-3">
                                 <GripVertical className="w-4 h-4 text-white/40 cursor-move opacity-0 group-hover:opacity-100 transition-opacity" />
-                                {lesson.type === "video" && <Video className="w-4 h-4 text-primary" />}
+                                {lesson.type === "video" && <Video className="w-4 h-4 text-[#C9941A]" />}
                                 {lesson.type === "text" && <FileText className="w-4 h-4 text-blue-500" />}
-                                {lesson.type === "quiz" && <ListChecks className="w-4 h-4 text-green-500" />}
+                                {lesson.type === "quiz" && <ListChecks className="w-4 h-4 text-[#C9941A]" />}
                                 <Input
                                   value={lesson.title}
                                   data-testid={`input-lesson-title-${lesson.id}`}
@@ -648,7 +648,7 @@ export default function CourseStudio() {
                               size="sm"
                               data-testid={`button-add-video-${module.id}`}
                               onClick={() => addLesson(module.id, "video")}
-                              className="border-[#C9941A]/30 text-white/60 hover:text-foreground hover:border-orange-500/50"
+                              className="border-[#C9941A]/30 text-white/60 hover:text-foreground hover:border-[#C9941A]/50"
                             >
                               <Video className="w-3 h-3 mr-1" />
                               Video
@@ -713,14 +713,14 @@ export default function CourseStudio() {
               <TabsContent value="video">
                 <Card className="industrial-card">
                   <CardContent className="p-6">
-                    <div className="border-2 border-dashed border-[#C9941A]/30 rounded-lg p-12 text-center hover:border-orange-500/50 transition-colors cursor-pointer">
+                    <div className="border-2 border-dashed border-[#C9941A]/30 rounded-lg p-12 text-center hover:border-[#C9941A]/50 transition-colors cursor-pointer">
                       <Upload className="w-16 h-16 text-white/50 mx-auto mb-4" />
                       <h3 className="text-xl font-semibold text-foreground mb-2">Upload Video Lessons</h3>
                       <p className="text-white/60 mb-4">Drag and drop your video files or click to browse</p>
                       <p className="text-white/50 text-sm">Supports MP4, MOV, WebM up to 2GB</p>
                       <Button
                         data-testid="button-upload-video"
-                        className="mt-6 bg-orange-500 hover:bg-orange-600 text-black"
+                        className="mt-6 bg-[#C9941A] hover:bg-[#C9941A] text-black"
                       >
                         <Upload className="w-4 h-4 mr-2" />
                         Select Videos
@@ -731,14 +731,14 @@ export default function CourseStudio() {
                       <div className="flex items-center justify-between p-4 bg-gray-800 rounded-lg">
                         <div className="flex items-center gap-3">
                           <div className="w-16 h-10 bg-gray-700 rounded flex items-center justify-center">
-                            <Play className="w-4 h-4 text-primary" />
+                            <Play className="w-4 h-4 text-[#C9941A]" />
                           </div>
                           <div>
                             <p className="text-foreground font-medium">welcome_video.mp4</p>
                             <p className="text-white/50 text-sm">145 MB • Uploaded</p>
                           </div>
                         </div>
-                        <Badge className="bg-green-500/20 text-green-500 border-green-500/30">
+                        <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-green-500/30">
                           <CheckCircle className="w-3 h-3 mr-1" />
                           Complete
                         </Badge>
@@ -780,7 +780,7 @@ export default function CourseStudio() {
                         variant="outline"
                         size="sm"
                         data-testid="button-ai-enhance"
-                        className="border-orange-500/50 text-primary hover:bg-primary/10"
+                        className="border-[#C9941A]/50 text-[#C9941A] hover:bg-primary/10"
                       >
                         <Sparkles className="w-4 h-4 mr-2" />
                         AI Enhance Content
@@ -799,7 +799,7 @@ export default function CourseStudio() {
                         size="sm"
                         data-testid="button-add-question"
                         onClick={addQuizQuestion}
-                        className="bg-orange-500 hover:bg-orange-600 text-black"
+                        className="bg-[#C9941A] hover:bg-[#C9941A] text-black"
                       >
                         <Plus className="w-4 h-4 mr-2" />
                         Add Question
@@ -813,7 +813,7 @@ export default function CourseStudio() {
                             <CardContent className="p-4">
                               <div className="flex items-start justify-between gap-4 mb-4">
                                 <div className="flex items-center gap-2">
-                                  <Badge className="bg-primary/20 text-primary border">
+                                  <Badge className="bg-primary/20 text-[#C9941A] border">
                                     Q{qIndex + 1}
                                   </Badge>
                                 </div>
@@ -846,7 +846,7 @@ export default function CourseStudio() {
                                       onClick={() => updateQuizQuestion(question.id, "correctAnswer", optIndex)}
                                       className={`h-8 w-8 ${
                                         question.correctAnswer === optIndex
-                                          ? "bg-green-500 hover:bg-green-600 text-foreground"
+                                          ? "bg-[#C9941A] hover:bg-[#C9941A] text-foreground"
                                           : "border-[#C9941A]/30 text-white/50"
                                       }`}
                                     >
@@ -899,7 +899,7 @@ export default function CourseStudio() {
               <Card className="industrial-card">
                 <CardHeader>
                   <CardTitle className="text-foreground flex items-center gap-2">
-                    <DollarSign className="w-5 h-5 text-primary" />
+                    <DollarSign className="w-5 h-5 text-[#C9941A]" />
                     Pricing
                   </CardTitle>
                 </CardHeader>
@@ -925,7 +925,7 @@ export default function CourseStudio() {
                     </div>
                     <div className="flex items-center justify-between text-lg font-semibold mt-2">
                       <span className="text-foreground">Your earnings</span>
-                      <span className="text-green-500">${(coursePrice * 0.9).toFixed(2)}</span>
+                      <span className="text-[#C9941A]">${(coursePrice * 0.9).toFixed(2)}</span>
                     </div>
                   </div>
                 </CardContent>
@@ -934,7 +934,7 @@ export default function CourseStudio() {
               <Card className="industrial-card">
                 <CardHeader>
                   <CardTitle className="text-foreground flex items-center gap-2">
-                    <Settings className="w-5 h-5 text-primary" />
+                    <Settings className="w-5 h-5 text-[#C9941A]" />
                     Course Settings
                   </CardTitle>
                 </CardHeader>
@@ -948,7 +948,7 @@ export default function CourseStudio() {
                       checked={enableDrip}
                       data-testid="switch-drip-content"
                       onCheckedChange={setEnableDrip}
-                      className="data-[state=checked]:bg-orange-500"
+                      className="data-[state=checked]:bg-[#C9941A]"
                     />
                   </div>
 
@@ -961,7 +961,7 @@ export default function CourseStudio() {
                       checked={enableCertificate}
                       data-testid="switch-certificate"
                       onCheckedChange={setEnableCertificate}
-                      className="data-[state=checked]:bg-orange-500"
+                      className="data-[state=checked]:bg-[#C9941A]"
                     />
                   </div>
                 </CardContent>
@@ -971,7 +971,7 @@ export default function CourseStudio() {
             <Card className="industrial-card">
               <CardHeader>
                 <CardTitle className="text-foreground flex items-center gap-2">
-                  <Target className="w-5 h-5 text-primary" />
+                  <Target className="w-5 h-5 text-[#C9941A]" />
                   Revenue Projection
                 </CardTitle>
               </CardHeader>
@@ -983,7 +983,7 @@ export default function CourseStudio() {
                   </div>
                   <div className="p-4 bg-gray-800 rounded-lg border-2 border">
                     <p className="text-white/60 text-sm mb-1">100 Students</p>
-                    <p className="text-2xl font-bold text-primary">${(coursePrice * 100 * 0.9).toFixed(0)}</p>
+                    <p className="text-2xl font-bold text-[#C9941A]">${(coursePrice * 100 * 0.9).toFixed(0)}</p>
                   </div>
                   <div className="p-4 bg-gray-800 rounded-lg">
                     <p className="text-white/60 text-sm mb-1">1,000 Students</p>
@@ -1016,7 +1016,7 @@ export default function CourseStudio() {
                       <p className="text-white/50">Course Thumbnail</p>
                     </div>
                   )}
-                  <Badge className="absolute top-4 left-4 bg-orange-500 text-black">
+                  <Badge className="absolute top-4 left-4 bg-[#C9941A] text-black">
                     {categories.find(c => c.value === courseCategory)?.label || "Category"}
                   </Badge>
                 </div>
@@ -1061,14 +1061,14 @@ export default function CourseStudio() {
                       <Button
                         data-testid="button-save-draft"
                         variant="outline"
-                        className="border-orange-500/50 text-primary"
+                        className="border-[#C9941A]/50 text-[#C9941A]"
                       >
                         <Save className="w-4 h-4 mr-2" />
                         Save Draft
                       </Button>
                       <Button
                         data-testid="button-publish-course"
-                        className="bg-orange-500 hover:bg-orange-600 text-black"
+                        className="bg-[#C9941A] hover:bg-[#C9941A] text-black"
                       >
                         <Zap className="w-4 h-4 mr-2" />
                         Publish Course
@@ -1094,7 +1094,7 @@ export default function CourseStudio() {
                   ].map((item, index) => (
                     <div key={index} className="flex items-center gap-3" data-testid={`checklist-item-${index}`}>
                       {item.done ? (
-                        <CheckCircle className="w-5 h-5 text-green-500" />
+                        <CheckCircle className="w-5 h-5 text-[#C9941A]" />
                       ) : (
                         <AlertCircle className="w-5 h-5 text-white/50" />
                       )}
@@ -1194,12 +1194,12 @@ export default function CourseStudio() {
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
-            <Badge className="bg-primary/20 text-primary border mb-4" data-testid="badge-studio">
+            <Badge className="bg-primary/20 text-[#C9941A] border mb-4" data-testid="badge-studio">
               <GraduationCap className="w-3 h-3 mr-1" />
               AI-Powered Course Creation
             </Badge>
             <h1 className="text-4xl md:text-6xl font-black text-foreground uppercase tracking-tight mb-4" data-testid="text-hero-title">
-              Course <span className="text-primary">Studio</span>
+              Course <span className="text-[#C9941A]">Studio</span>
             </h1>
             <p className="text-lg text-white/60 mb-8" data-testid="text-hero-description">
               Transform your expertise into profitable online courses. AI-powered content generation, 
@@ -1207,15 +1207,15 @@ export default function CourseStudio() {
             </p>
             <div className="flex items-center justify-center gap-6 text-sm text-white/50">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-primary" />
+                <Sparkles className="w-4 h-4 text-[#C9941A]" />
                 <span>AI Content Generation</span>
               </div>
               <div className="flex items-center gap-2">
-                <Video className="w-4 h-4 text-primary" />
+                <Video className="w-4 h-4 text-[#C9941A]" />
                 <span>Video Lessons</span>
               </div>
               <div className="flex items-center gap-2">
-                <Trophy className="w-4 h-4 text-primary" />
+                <Trophy className="w-4 h-4 text-[#C9941A]" />
                 <span>Certificates</span>
               </div>
             </div>
@@ -1265,7 +1265,7 @@ export default function CourseStudio() {
                     <Badge
                       className={`absolute top-3 right-3 ${
                         course.status === "published"
-                          ? "bg-green-500/20 text-green-500 border-green-500/30"
+                          ? "bg-[#C9941A]/20 text-[#C9941A] border-green-500/30"
                           : course.status === "draft"
                           ? "bg-yellow-500/20 text-yellow-500 border-yellow-500/30"
                           : "bg-gray-500/20 text-white/50 border-gray-500/30"
@@ -1287,7 +1287,7 @@ export default function CourseStudio() {
                           {course.students}
                         </div>
                         {course.rating > 0 && (
-                          <div className="flex items-center gap-1 text-primary">
+                          <div className="flex items-center gap-1 text-[#C9941A]">
                             <Star className="w-4 h-4 fill-current" />
                             {course.rating}
                           </div>
@@ -1300,7 +1300,7 @@ export default function CourseStudio() {
                       <div className="mt-4 pt-4 border-t border-[#C9941A]/30">
                         <div className="flex items-center justify-between">
                           <span className="text-white/50 text-sm">Total Revenue</span>
-                          <span className="text-green-500 font-semibold">${course.revenue.toLocaleString()}</span>
+                          <span className="text-[#C9941A] font-semibold">${course.revenue.toLocaleString()}</span>
                         </div>
                       </div>
                     )}
@@ -1315,7 +1315,7 @@ export default function CourseStudio() {
               >
                 <CardContent className="flex flex-col items-center justify-center h-full min-h-[300px]">
                   <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-4">
-                    <Plus className="w-8 h-8 text-primary" />
+                    <Plus className="w-8 h-8 text-[#C9941A]" />
                   </div>
                   <h3 className="font-semibold text-foreground mb-2">Create New Course</h3>
                   <p className="text-white/50 text-sm text-center">
@@ -1335,9 +1335,9 @@ export default function CourseStudio() {
                       <div
                         className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
                           step === wizardStep
-                            ? "bg-orange-500 text-black"
+                            ? "bg-[#C9941A] text-black"
                             : step < wizardStep
-                            ? "bg-green-500 text-foreground"
+                            ? "bg-[#C9941A] text-foreground"
                             : "bg-gray-800 text-white/50"
                         }`}
                         data-testid={`step-indicator-${step}`}
@@ -1345,7 +1345,7 @@ export default function CourseStudio() {
                         {step < wizardStep ? <CheckCircle className="w-4 h-4" /> : step}
                       </div>
                       {step < 5 && (
-                        <div className={`w-12 h-1 rounded ${step < wizardStep ? "bg-green-500" : "bg-gray-800"}`} />
+                        <div className={`w-12 h-1 rounded ${step < wizardStep ? "bg-[#C9941A]" : "bg-gray-800"}`} />
                       )}
                     </div>
                   ))}
@@ -1377,7 +1377,7 @@ export default function CourseStudio() {
                     <Button
                       data-testid="button-next-step"
                       onClick={() => setWizardStep(wizardStep + 1)}
-                      className="bg-orange-500 hover:bg-orange-600 text-black"
+                      className="bg-[#C9941A] hover:bg-[#C9941A] text-black"
                     >
                       Next Step
                       <ChevronRight className="w-4 h-4 ml-2" />
@@ -1385,7 +1385,7 @@ export default function CourseStudio() {
                   ) : (
                     <Button
                       data-testid="button-finish-wizard"
-                      className="bg-orange-500 hover:bg-orange-600 text-black"
+                      className="bg-[#C9941A] hover:bg-[#C9941A] text-black"
                     >
                       <Zap className="w-4 h-4 mr-2" />
                       Publish Course
@@ -1410,7 +1410,7 @@ export default function CourseStudio() {
                       <div className="w-10 h-10 rounded-none bg-[#C9941A]/20 flex items-center justify-center">
                         <stat.icon className="w-5 h-5 text-[#C9941A]" />
                       </div>
-                      <Badge className="bg-[#C9941A]/10 text-green-400 border-none text-[10px] font-bold">
+                      <Badge className="bg-[#C9941A]/10 text-[#C9941A] border-none text-[10px] font-bold">
                         {stat.change}
                       </Badge>
                     </div>
@@ -1453,7 +1453,7 @@ export default function CourseStudio() {
                               <p className="text-white/60 text-sm">{course.students} students</p>
                             </div>
                           </div>
-                          <span className="text-green-500 font-semibold">${course.revenue.toLocaleString()}</span>
+                          <span className="text-[#C9941A] font-semibold">${course.revenue.toLocaleString()}</span>
                         </div>
                       ))}
                   </div>

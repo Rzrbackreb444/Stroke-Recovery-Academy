@@ -785,7 +785,7 @@ export default function MediaStudio({
         onChange={handleFileUpload}
       />
 
-      <header className="flex items-center justify-between h-12 px-3 bg-[#1a1a1a] border-b border-gray-800">
+      <header className="flex items-center justify-between h-12 px-3 bg-[#1a1a1a] border-b border-[#333]">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <Film className="w-5 h-5 text-primary" />
@@ -891,7 +891,7 @@ export default function MediaStudio({
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        <aside className="w-14 bg-[#1a1a1a] border-r border-gray-800 flex flex-col items-center py-2 gap-1">
+        <aside className="w-14 bg-[#1a1a1a] border-r border-[#333] flex flex-col items-center py-2 gap-1">
           {tools.map(tool => (
             <Tooltip key={tool.id}>
               <TooltipTrigger asChild>
@@ -946,7 +946,7 @@ export default function MediaStudio({
           <div className="flex-1 flex items-center justify-center p-4 overflow-auto">
             {mode === 'video' ? (
               <div
-                className="relative bg-gray-900 rounded-lg overflow-hidden shadow-2xl"
+                className="relative bg-[#1a1a1a] rounded-lg overflow-hidden shadow-2xl"
                 style={{
                   width: `${(16 * 30) * (canvasZoom / 100)}px`,
                   height: `${(9 * 30) * (canvasZoom / 100)}px`,
@@ -988,7 +988,7 @@ export default function MediaStudio({
               </div>
             ) : (
               <div
-                className="relative bg-gray-900 rounded-lg overflow-hidden shadow-2xl"
+                className="relative bg-[#1a1a1a] rounded-lg overflow-hidden shadow-2xl"
                 style={{
                   width: `${800 * (canvasZoom / 100)}px`,
                   height: `${600 * (canvasZoom / 100)}px`,
@@ -1030,8 +1030,8 @@ export default function MediaStudio({
           </div>
 
           {mode === 'video' && (
-            <div className="bg-[#1a1a1a] border-t border-gray-800">
-              <div className="flex items-center justify-between px-3 py-2 border-b border-gray-800">
+            <div className="bg-[#1a1a1a] border-t border-[#333]">
+              <div className="flex items-center justify-between px-3 py-2 border-b border-[#333]">
                 <div className="flex items-center gap-2">
                   <Button
                     size="icon"
@@ -1115,7 +1115,7 @@ export default function MediaStudio({
                   </Button>
 
                   <Select onValueChange={(v) => addTrack(v as Track['type'])}>
-                    <SelectTrigger className="w-28 h-7 bg-gray-800 border-gray-700">
+                    <SelectTrigger className="w-28 h-7 bg-gray-800 border-[#333]">
                       <Plus className="w-3.5 h-3.5 mr-1" />
                       <SelectValue placeholder="Add Track" />
                     </SelectTrigger>
@@ -1129,7 +1129,7 @@ export default function MediaStudio({
                 </div>
               </div>
 
-              <div className="relative h-8 border-b border-gray-800 bg-gray-900/50 overflow-hidden">
+              <div className="relative h-8 border-b border-[#333] bg-[#1a1a1a]/50 overflow-hidden">
                 <div
                   ref={timelineRef}
                   className="absolute inset-0 cursor-pointer"
@@ -1143,8 +1143,8 @@ export default function MediaStudio({
               <ScrollArea className="h-48">
                 <div className="min-w-max" style={{ width: duration * pixelsPerSecond + 200 }}>
                   {tracks.map(track => (
-                    <div key={track.id} className="flex border-b border-gray-800">
-                      <div className="w-32 flex-shrink-0 px-2 py-1 bg-gray-900 border-r border-gray-800 flex items-center gap-2">
+                    <div key={track.id} className="flex border-b border-[#333]">
+                      <div className="w-32 flex-shrink-0 px-2 py-1 bg-[#1a1a1a] border-r border-[#333] flex items-center gap-2">
                         <div className="w-3 h-3 rounded" style={{ backgroundColor: track.color }} />
                         <span className="text-xs text-gray-400 truncate">{track.name}</span>
                         <div className="flex-1" />
@@ -1176,7 +1176,7 @@ export default function MediaStudio({
                         </Button>
                       </div>
                       <div
-                        className="flex-1 h-10 relative bg-gray-900/30"
+                        className="flex-1 h-10 relative bg-[#1a1a1a]/30"
                         style={{ width: duration * pixelsPerSecond }}
                       >
                         {renderClips(track.id)}
@@ -1193,7 +1193,7 @@ export default function MediaStudio({
                 </div>
               </ScrollArea>
 
-              <div className="flex items-center gap-2 px-3 py-2 border-t border-gray-800">
+              <div className="flex items-center gap-2 px-3 py-2 border-t border-[#333]">
                 <Button
                   size="sm"
                   variant="ghost"
@@ -1251,7 +1251,7 @@ export default function MediaStudio({
                           ));
                         }}
                       >
-                        <SelectTrigger className="w-20 h-7 bg-gray-800 border-gray-700">
+                        <SelectTrigger className="w-20 h-7 bg-gray-800 border-[#333]">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -1268,9 +1268,9 @@ export default function MediaStudio({
           )}
         </main>
 
-        <aside className="w-72 bg-[#1a1a1a] border-l border-gray-800 flex flex-col">
+        <aside className="w-72 bg-[#1a1a1a] border-l border-[#333] flex flex-col">
           <Tabs value={rightPanelTab} onValueChange={setRightPanelTab} className="flex flex-col flex-1">
-            <TabsList className="w-full justify-start rounded-none border-b border-gray-800 bg-transparent h-10 px-2">
+            <TabsList className="w-full justify-start rounded-none border-b border-[#333] bg-transparent h-10 px-2">
               {mode === 'video' ? (
                 <>
                   <TabsTrigger value="clips" className="text-xs data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
@@ -1316,7 +1316,7 @@ export default function MediaStudio({
                                 c.id === selectedClipId ? { ...c, name: e.target.value } : c
                               ));
                             }}
-                            className="h-8 bg-gray-800 border-gray-700"
+                            className="h-8 bg-gray-800 border-[#333]"
                           />
                         </div>
                         <div className="grid grid-cols-2 gap-2">
@@ -1325,7 +1325,7 @@ export default function MediaStudio({
                             <Input
                               value={formatTime(selectedClip.startTime)}
                               readOnly
-                              className="h-7 text-xs bg-gray-800 border-gray-700"
+                              className="h-7 text-xs bg-gray-800 border-[#333]"
                             />
                           </div>
                           <div className="space-y-1">
@@ -1333,7 +1333,7 @@ export default function MediaStudio({
                             <Input
                               value={formatTime(selectedClip.duration)}
                               readOnly
-                              className="h-7 text-xs bg-gray-800 border-gray-700"
+                              className="h-7 text-xs bg-gray-800 border-[#333]"
                             />
                           </div>
                         </div>
@@ -1350,7 +1350,7 @@ export default function MediaStudio({
                                     c.id === selectedClipId ? { ...c, text: e.target.value } : c
                                   ));
                                 }}
-                                className="h-8 bg-gray-800 border-gray-700"
+                                className="h-8 bg-gray-800 border-[#333]"
                               />
                             </div>
                             <div className="space-y-2">
@@ -1383,7 +1383,7 @@ export default function MediaStudio({
                                   ));
                                 }}
                               >
-                                <SelectTrigger className="h-8 bg-gray-800 border-gray-700">
+                                <SelectTrigger className="h-8 bg-gray-800 border-[#333]">
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -1407,7 +1407,7 @@ export default function MediaStudio({
                                       } : c
                                     ));
                                   }}
-                                  className="w-10 h-8 rounded cursor-pointer bg-transparent border border-gray-700"
+                                  className="w-10 h-8 rounded cursor-pointer bg-transparent border border-[#333]"
                                 />
                                 <Input
                                   value={selectedClip.textStyle?.color || '#ffffff'}
@@ -1419,7 +1419,7 @@ export default function MediaStudio({
                                       } : c
                                     ));
                                   }}
-                                  className="h-8 bg-gray-800 border-gray-700 font-mono text-xs"
+                                  className="h-8 bg-gray-800 border-[#333] font-mono text-xs"
                                 />
                               </div>
                             </div>
@@ -1430,7 +1430,7 @@ export default function MediaStudio({
                         <div className="space-y-2">
                           <Label className="text-xs text-gray-400">Transition</Label>
                           <Select defaultValue="none">
-                            <SelectTrigger className="h-8 bg-gray-800 border-gray-700">
+                            <SelectTrigger className="h-8 bg-gray-800 border-[#333]">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -1470,9 +1470,9 @@ export default function MediaStudio({
                             className="flex items-center gap-2 p-2 bg-gray-800 rounded-lg hover:bg-gray-700 cursor-pointer"
                             data-testid={`asset-${asset.id}`}
                           >
-                            <div className="w-10 h-10 bg-gray-900 rounded flex items-center justify-center">
+                            <div className="w-10 h-10 bg-[#1a1a1a] rounded flex items-center justify-center">
                               {asset.type === 'video' && <Video className="w-5 h-5 text-blue-400" />}
-                              {asset.type === 'audio' && <Music className="w-5 h-5 text-green-400" />}
+                              {asset.type === 'audio' && <Music className="w-5 h-5 text-[#C9941A]" />}
                               {asset.type === 'image' && <ImageIcon className="w-5 h-5 text-amber-400" />}
                             </div>
                             <div className="flex-1 min-w-0">
@@ -1539,7 +1539,7 @@ export default function MediaStudio({
                         >
                           {layer.visible ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5 text-gray-500" />}
                         </Button>
-                        <div className="w-8 h-8 bg-gray-900 rounded overflow-hidden">
+                        <div className="w-8 h-8 bg-[#1a1a1a] rounded overflow-hidden">
                           {layer.imageData && (
                             <img src={layer.imageData} alt="" className="w-full h-full object-cover" />
                           )}
@@ -1603,7 +1603,7 @@ export default function MediaStudio({
                               ));
                             }}
                           >
-                            <SelectTrigger className="h-8 bg-gray-800 border-gray-700">
+                            <SelectTrigger className="h-8 bg-gray-800 border-[#333]">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -1787,7 +1787,7 @@ export default function MediaStudio({
       </div>
 
       <Dialog open={isSaveDialogOpen} onOpenChange={setIsSaveDialogOpen}>
-        <DialogContent className="bg-gray-900 border-gray-800">
+        <DialogContent className="bg-[#1a1a1a] border-[#333]">
           <DialogHeader>
             <DialogTitle>Save Project</DialogTitle>
             <DialogDescription>Enter a name for your project</DialogDescription>
@@ -1799,7 +1799,7 @@ export default function MediaStudio({
                 value={projectName}
                 onChange={(e) => setProjectName(e.target.value)}
                 placeholder="My Project"
-                className="bg-gray-800 border-gray-700"
+                className="bg-gray-800 border-[#333]"
               />
             </div>
           </div>
@@ -1814,7 +1814,7 @@ export default function MediaStudio({
       </Dialog>
 
       <Dialog open={isExportDialogOpen} onOpenChange={setIsExportDialogOpen}>
-        <DialogContent className="bg-gray-900 border-gray-800">
+        <DialogContent className="bg-[#1a1a1a] border-[#333]">
           <DialogHeader>
             <DialogTitle>Export {mode === 'video' ? 'Video' : 'Image'}</DialogTitle>
             <DialogDescription>Configure your export settings</DialogDescription>
@@ -1823,7 +1823,7 @@ export default function MediaStudio({
             <div className="space-y-2">
               <Label>Format</Label>
               <Select value={exportFormat} onValueChange={setExportFormat}>
-                <SelectTrigger className="bg-gray-800 border-gray-700">
+                <SelectTrigger className="bg-gray-800 border-[#333]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -1847,7 +1847,7 @@ export default function MediaStudio({
             <div className="space-y-2">
               <Label>Resolution</Label>
               <Select value={exportResolution} onValueChange={setExportResolution}>
-                <SelectTrigger className="bg-gray-800 border-gray-700">
+                <SelectTrigger className="bg-gray-800 border-[#333]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -1883,7 +1883,7 @@ export default function MediaStudio({
       </Dialog>
 
       <Dialog open={isShareDialogOpen} onOpenChange={setIsShareDialogOpen}>
-        <DialogContent className="bg-gray-900 border-gray-800">
+        <DialogContent className="bg-[#1a1a1a] border-[#333]">
           <DialogHeader>
             <DialogTitle>Share Project</DialogTitle>
             <DialogDescription>Share your project with others</DialogDescription>
@@ -1895,7 +1895,7 @@ export default function MediaStudio({
                 <Input
                   value={`https://mediastudio.app/share/${projectId || 'new'}`}
                   readOnly
-                  className="bg-gray-800 border-gray-700"
+                  className="bg-gray-800 border-[#333]"
                 />
                 <Button variant="outline" onClick={handleCopyShareLink}>
                   <Link className="w-4 h-4" />

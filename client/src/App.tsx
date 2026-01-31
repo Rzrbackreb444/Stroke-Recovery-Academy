@@ -115,6 +115,10 @@ import CourseBuilder from "@/pages/CourseBuilder";
 import NeverZero from "@/pages/NeverZero";
 import RecoveryJournal from "@/pages/RecoveryJournal";
 import RecoveryResources from "@/pages/RecoveryResources";
+import RecoveryCenterFinder from "@/pages/RecoveryCenterFinder";
+import RecoveryBlog from "@/pages/RecoveryBlog";
+import RecoveryProtocols from "@/pages/RecoveryProtocols";
+import MyBook from "@/pages/MyBook";
 import AboutNick from "@/pages/AboutNick";
 import CoursePlayer from "@/pages/CoursePlayer";
 import CourseQuiz from "@/pages/CourseQuiz";
@@ -500,6 +504,14 @@ function Router() {
         </ProtectedRoute>
       </Route>
       <Route path="/recovery/resources" component={RecoveryResources} />
+      <Route path="/recovery/center-finder" component={RecoveryCenterFinder} />
+      <Route path="/recovery/blog" component={RecoveryBlog} />
+      <Route path="/recovery/protocols" component={RecoveryProtocols} />
+      <Route path="/my-book">
+        <ProtectedRoute>
+          <MyBook />
+        </ProtectedRoute>
+      </Route>
       <Route path="/recovery/about-nick" component={AboutNick} />
       
       {/* Course Learning Pages */}

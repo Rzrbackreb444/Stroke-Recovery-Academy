@@ -197,10 +197,10 @@ export function ResearchHub() {
         <p className="text-lg text-zinc-400 leading-relaxed">Discover insights with AI-powered research</p>
       </div>
 
-      <Card className="bg-zinc-950 border border-zinc-800/50 shadow-xl">
+      <Card className="bg-zinc-950 border border-[#333]/50 shadow-xl">
         <CardContent className="p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Badge variant="outline" className="border-orange-500/50 text-primary">
+            <Badge variant="outline" className="border-[#C9941A]/50 text-primary">
               <Coins className="w-3 h-3 mr-1" />
               {CREDIT_COST} credit per query
             </Badge>
@@ -213,14 +213,14 @@ export function ResearchHub() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                className="pl-11 h-12 text-lg bg-card border-zinc-700"
+                className="pl-11 h-12 text-lg bg-card border-[#333]"
                 data-testid="input-research-query"
               />
             </div>
             <Button
               onClick={handleSearch}
               disabled={isSearching || !searchQuery.trim()}
-              className="h-12 px-6 bg-orange-500 hover:bg-orange-600"
+              className="h-12 px-6 bg-[#C9941A] hover:bg-orange-600"
               data-testid="button-search"
             >
               {isSearching ? (
@@ -242,7 +242,7 @@ export function ResearchHub() {
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           {currentResults.length > 0 && (
-            <Card className="bg-zinc-950 border border-zinc-800/50 shadow-xl">
+            <Card className="bg-zinc-950 border border-[#333]/50 shadow-xl">
               <CardHeader className="flex flex-row items-center justify-between gap-2">
                 <CardTitle className="text-foreground flex items-center gap-2">
                   <TrendingUp className="w-5 h-5 text-primary" />
@@ -253,7 +253,7 @@ export function ResearchHub() {
                   disabled={insightsMutation.isPending}
                   variant="outline"
                   size="sm"
-                  className="border-orange-500/50 text-primary hover:bg-primary/10"
+                  className="border-[#C9941A]/50 text-primary hover:bg-primary/10"
                   data-testid="button-generate-insights"
                 >
                   {insightsMutation.isPending ? (
@@ -270,7 +270,7 @@ export function ResearchHub() {
                     {currentResults.map((result, index) => (
                       <div
                         key={index}
-                        className="p-4 rounded-lg border border-zinc-800 hover:border-orange-500/50 transition-colors"
+                        className="p-4 rounded-lg border border-[#333] hover:border-[#C9941A]/50 transition-colors"
                         data-testid={`result-card-${index}`}
                       >
                         <div className="flex items-start justify-between gap-2 mb-2">
@@ -313,7 +313,7 @@ export function ResearchHub() {
                   onClick={() => saveToVaultMutation.mutate(currentInsights)}
                   disabled={saveToVaultMutation.isPending}
                   size="sm"
-                  className="bg-orange-500 hover:bg-orange-600"
+                  className="bg-[#C9941A] hover:bg-orange-600"
                   data-testid="button-save-to-vault"
                 >
                   {saveToVaultMutation.isPending ? (
@@ -336,7 +336,7 @@ export function ResearchHub() {
           )}
 
           {!currentResults.length && !isSearching && (
-            <Card className="bg-zinc-950 border border-zinc-800/50 shadow-xl">
+            <Card className="bg-zinc-950 border border-[#333]/50 shadow-xl">
               <CardContent className="p-12 text-center">
                 <Search className="w-16 h-16 mx-auto mb-4 text-zinc-700" />
                 <h3 className="text-xl font-medium text-foreground mb-2">Start Your Research</h3>
@@ -348,14 +348,14 @@ export function ResearchHub() {
           )}
 
           {isSearching && (
-            <Card className="bg-zinc-950 border border-zinc-800/50 shadow-xl">
+            <Card className="bg-zinc-950 border border-[#333]/50 shadow-xl">
               <CardContent className="p-8">
                 <div className="space-y-4">
                   {[1, 2, 3].map((i) => (
-                    <div key={i} className="p-4 rounded-lg border border-zinc-800">
-                      <Skeleton className="h-5 w-3/4 mb-2 bg-zinc-800" />
-                      <Skeleton className="h-4 w-full mb-1 bg-zinc-800" />
-                      <Skeleton className="h-4 w-2/3 bg-zinc-800" />
+                    <div key={i} className="p-4 rounded-lg border border-[#333]">
+                      <Skeleton className="h-5 w-3/4 mb-2 bg-[#1a1a1a]" />
+                      <Skeleton className="h-4 w-full mb-1 bg-[#1a1a1a]" />
+                      <Skeleton className="h-4 w-2/3 bg-[#1a1a1a]" />
                     </div>
                   ))}
                 </div>
@@ -365,7 +365,7 @@ export function ResearchHub() {
         </div>
 
         <div className="space-y-6">
-          <Card className="bg-zinc-950 border border-zinc-800/50 shadow-xl">
+          <Card className="bg-zinc-950 border border-[#333]/50 shadow-xl">
             <CardHeader>
               <CardTitle className="text-foreground flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-primary" />
@@ -374,7 +374,7 @@ export function ResearchHub() {
             </CardHeader>
             <CardContent>
               <Tabs value={activeCategory} onValueChange={setActiveCategory}>
-                <TabsList className="grid grid-cols-4 bg-zinc-900/50 border border-zinc-800/50 mb-4">
+                <TabsList className="grid grid-cols-4 bg-[#1a1a1a]/50 border border-[#333]/50 mb-4">
                   {categories.map((cat) => (
                     <TabsTrigger
                       key={cat.id}
@@ -392,7 +392,7 @@ export function ResearchHub() {
                     {trendingLoading ? (
                       <div className="space-y-2">
                         {[1, 2, 3].map((i) => (
-                          <Skeleton key={i} className="h-16 w-full bg-zinc-800" />
+                          <Skeleton key={i} className="h-16 w-full bg-[#1a1a1a]" />
                         ))}
                       </div>
                     ) : trendingTopics.length > 0 ? (
@@ -402,7 +402,7 @@ export function ResearchHub() {
                             <div
                               key={topic.id}
                               onClick={() => handleTrendingClick(topic)}
-                              className="p-3 rounded-lg border border-zinc-800 hover:border-orange-500/50 cursor-pointer transition-colors"
+                              className="p-3 rounded-lg border border-[#333] hover:border-[#C9941A]/50 cursor-pointer transition-colors"
                               data-testid={`trending-topic-${topic.id}`}
                             >
                               <h5 className="text-sm font-medium text-foreground truncate" data-testid={`trending-title-${topic.id}`}>
@@ -427,7 +427,7 @@ export function ResearchHub() {
             </CardContent>
           </Card>
 
-          <Card className="bg-zinc-950 border border-zinc-800/50 shadow-xl">
+          <Card className="bg-zinc-950 border border-[#333]/50 shadow-xl">
             <CardHeader>
               <CardTitle className="text-foreground flex items-center gap-2">
                 <History className="w-5 h-5 text-primary" />
@@ -438,7 +438,7 @@ export function ResearchHub() {
               {historyLoading ? (
                 <div className="space-y-2">
                   {[1, 2, 3].map((i) => (
-                    <Skeleton key={i} className="h-12 w-full bg-zinc-800" />
+                    <Skeleton key={i} className="h-12 w-full bg-[#1a1a1a]" />
                   ))}
                 </div>
               ) : researchHistory.length > 0 ? (
@@ -447,7 +447,7 @@ export function ResearchHub() {
                     {researchHistory.map((item) => (
                       <div
                         key={item.id}
-                        className="p-3 rounded-lg border border-zinc-800 hover:border-orange-500/50 transition-colors"
+                        className="p-3 rounded-lg border border-[#333] hover:border-[#C9941A]/50 transition-colors"
                         data-testid={`history-item-${item.id}`}
                       >
                         <div className="flex items-center justify-between gap-2">

@@ -110,16 +110,16 @@ function BookCard({
                 data-testid={`img-book-cover-${book.id}`}
               />
             ) : (
-              <BookOpen className="h-16 w-16 text-primary/50" />
+              <BookOpen className="h-16 w-16 text-[#C9941A]/50" />
             )}
             {book.isFeatured && (
-              <Badge className="absolute top-2 left-2 bg-orange-500">
+              <Badge className="absolute top-2 left-2 bg-[#C9941A]">
                 <Sparkles className="w-3 h-3 mr-1" /> Featured
               </Badge>
             )}
           </div>
           
-          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+          <div className="flex items-center gap-2 text-xs text-gray-400 mb-1">
             <User className="w-3 h-3" />
             <span>{book.authorName || "Anonymous Author"}</span>
           </div>
@@ -129,13 +129,13 @@ function BookCard({
           </CardTitle>
           
           {book.subtitle && (
-            <p className="text-sm text-muted-foreground line-clamp-1">{book.subtitle}</p>
+            <p className="text-sm text-gray-400 line-clamp-1">{book.subtitle}</p>
           )}
         </CardHeader>
         
         <CardContent className="flex-1 pb-2">
           {book.description && (
-            <p className="text-sm text-muted-foreground line-clamp-3 mb-3">
+            <p className="text-sm text-gray-400 line-clamp-3 mb-3">
               {book.description}
             </p>
           )}
@@ -145,13 +145,13 @@ function BookCard({
               <div className="flex items-center gap-1">
                 <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
                 <span className="text-sm font-medium">{book.reviewStats.averageRating.toFixed(1)}</span>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs text-gray-400">
                   ({book.reviewStats.totalReviews})
                 </span>
               </div>
             )}
             
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            <div className="flex items-center gap-1 text-xs text-gray-400">
               {hasEbook && (
                 <Badge variant="outline" className="text-[10px] px-1.5 py-0">
                   <FileText className="w-2.5 h-2.5 mr-0.5" /> eBook
@@ -168,8 +168,8 @@ function BookCard({
         
         <CardFooter className="flex items-center justify-between gap-2 pt-2 border-t border-border">
           <div>
-            <span className="text-sm text-muted-foreground">From </span>
-            <span className="text-lg font-bold text-primary" data-testid={`text-price-${book.id}`}>
+            <span className="text-sm text-gray-400">From </span>
+            <span className="text-lg font-bold text-[#C9941A]" data-testid={`text-price-${book.id}`}>
               ${lowestPrice.toFixed(2)}
             </span>
           </div>
@@ -305,12 +305,12 @@ function BookDetailsDialog({
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <BookOpen className="h-24 w-24 text-primary/50" />
+                <BookOpen className="h-24 w-24 text-[#C9941A]/50" />
               )}
             </div>
             
             <div className="flex items-center gap-2">
-              <User className="w-4 h-4 text-muted-foreground" />
+              <User className="w-4 h-4 text-gray-400" />
               <span className="text-sm">By {book.authorName || "Anonymous Author"}</span>
             </div>
 
@@ -323,13 +323,13 @@ function BookDetailsDialog({
                       className={`h-4 w-4 ${
                         star <= Math.round(book.reviewStats!.averageRating) 
                           ? 'fill-yellow-500 text-yellow-500' 
-                          : 'text-muted-foreground'
+                          : 'text-gray-400'
                       }`}
                     />
                   ))}
                 </div>
                 <span className="text-sm font-medium">{book.reviewStats.averageRating.toFixed(1)}</span>
-                <span className="text-sm text-muted-foreground">
+                <span className="text-sm text-gray-400">
                   ({book.reviewStats.totalReviews} reviews)
                 </span>
               </div>
@@ -339,7 +339,7 @@ function BookDetailsDialog({
           <div className="space-y-4">
             <div>
               <h4 className="font-medium mb-2">Description</h4>
-              <p className="text-sm text-muted-foreground">{book.description}</p>
+              <p className="text-sm text-gray-400">{book.description}</p>
             </div>
 
             <Separator />
@@ -353,24 +353,24 @@ function BookDetailsDialog({
                     onClick={() => setSelectedEdition(edition)}
                     className={`w-full p-3 rounded-lg border text-left transition-all ${
                       selectedEdition?.id === edition.id
-                        ? 'border-orange-500 bg-primary/10'
-                        : 'border-border hover:border-orange-500/50'
+                        ? 'border-[#C9941A] bg-primary/10'
+                        : 'border-border hover:border-[#C9941A]/50'
                     }`}
                     data-testid={`button-edition-${edition.id}`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         {edition.editionType.includes('digital') ? (
-                          <FileText className="w-4 h-4 text-primary" />
+                          <FileText className="w-4 h-4 text-[#C9941A]" />
                         ) : (
-                          <Printer className="w-4 h-4 text-primary" />
+                          <Printer className="w-4 h-4 text-[#C9941A]" />
                         )}
                         <span className="font-medium">{formatLabels[edition.editionType] || edition.editionType}</span>
                       </div>
-                      <span className="font-bold text-primary">${(Number(edition.price) / 100).toFixed(2)}</span>
+                      <span className="font-bold text-[#C9941A]">${(Number(edition.price) / 100).toFixed(2)}</span>
                     </div>
                     {edition.editionType.includes('print') && (
-                      <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-3 mt-2 text-xs text-gray-400">
                         <span className="flex items-center gap-1">
                           <Truck className="w-3 h-3" /> Ships in 3-5 days
                         </span>
@@ -380,7 +380,7 @@ function BookDetailsDialog({
                       </div>
                     )}
                     {edition.editionType.includes('digital') && (
-                      <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1 mt-2 text-xs text-gray-400">
                         <Download className="w-3 h-3" /> Instant download
                       </div>
                     )}
@@ -416,15 +416,15 @@ function BookDetailsDialog({
             )}
 
             {selectedEdition && (
-              <div className="p-4 bg-muted/50 rounded-lg">
+              <div className="p-4 bg-[#1a1a1a]/50 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-muted-foreground">Subtotal:</span>
+                  <span className="text-gray-400">Subtotal:</span>
                   <span className="text-xl font-bold">
                     ${((Number(selectedEdition.price) / 100) * quantity).toFixed(2)}
                   </span>
                 </div>
                 {selectedEdition.editionType.includes('print') && (
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-gray-400">
                     Shipping calculated at checkout
                   </p>
                 )}
@@ -496,13 +496,13 @@ export default function BookMarketplace() {
       <main className="flex-1 container mx-auto px-4 py-8">
         <section className="mb-8">
           <div className="text-center max-w-3xl mx-auto mb-8">
-            <Badge className="mb-4 bg-primary/10 text-primary border">
+            <Badge className="mb-4 bg-primary/10 text-[#C9941A] border">
               <BookOpen className="w-3 h-3 mr-1" /> Book Marketplace
             </Badge>
             <h1 className="text-3xl md:text-4xl font-bold mb-4" data-testid="text-page-title">
               Books by Stroke Recovery Experts
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-gray-400">
               Discover inspiring memoirs, practical guides, and expert resources written by 
               survivors who understand your journey. Every purchase supports authors in the 
               stroke recovery community.
@@ -511,7 +511,7 @@ export default function BookMarketplace() {
 
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
             <div className="relative w-full md:max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
                 type="search"
                 placeholder="Search books, authors..."
@@ -584,9 +584,9 @@ export default function BookMarketplace() {
             </div>
           ) : (
             <Card className="p-12 text-center">
-              <BookOpen className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+              <BookOpen className="h-16 w-16 mx-auto text-gray-400 mb-4" />
               <h3 className="text-xl font-semibold mb-2">No books found</h3>
-              <p className="text-muted-foreground mb-4">
+              <p className="text-gray-400 mb-4">
                 {searchQuery 
                   ? `No books match "${searchQuery}"` 
                   : "No books in this category yet. Check back soon!"}
@@ -611,28 +611,28 @@ export default function BookMarketplace() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div>
               <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                <Heart className="w-6 h-6 text-primary" />
+                <Heart className="w-6 h-6 text-[#C9941A]" />
               </div>
               <h3 className="font-semibold mb-2">Support Survivors</h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-gray-400">
                 Every purchase directly supports stroke survivors and recovery experts sharing their knowledge.
               </p>
             </div>
             <div>
               <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                <Globe className="w-6 h-6 text-primary" />
+                <Globe className="w-6 h-6 text-[#C9941A]" />
               </div>
               <h3 className="font-semibold mb-2">Worldwide Delivery</h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-gray-400">
                 Print books shipped globally. eBooks available for instant download anywhere.
               </p>
             </div>
             <div>
               <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                <Printer className="w-6 h-6 text-primary" />
+                <Printer className="w-6 h-6 text-[#C9941A]" />
               </div>
               <h3 className="font-semibold mb-2">Premium Quality</h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-gray-400">
                 Professional print-on-demand ensures every book is printed fresh with the highest quality.
               </p>
             </div>

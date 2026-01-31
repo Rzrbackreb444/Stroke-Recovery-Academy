@@ -285,7 +285,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                         className={`p-4 cursor-pointer transition-all border-2 ${
                           isSelected
                             ? "border-primary bg-primary/10"
-                            : "border-gray-800 bg-gray-900/50 hover:border-gray-700"
+                            : "border-[#333] bg-[#1a1a1a]/50 hover:border-[#333]"
                         }`}
                         onClick={() => handleSelectContentType(type.id)}
                         data-testid={`card-content-type-${type.id}`}
@@ -346,7 +346,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                 <div className="space-y-6">
                   <div className="flex justify-center mb-6">
                     <div className="relative">
-                      <Avatar className="w-24 h-24 border-2 border-gray-700">
+                      <Avatar className="w-24 h-24 border-2 border-[#333]">
                         <AvatarImage src={data.photoUrl} />
                         <AvatarFallback className="bg-muted text-muted-foreground">
                           <User className="w-10 h-10" />
@@ -383,7 +383,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                       placeholder="How should we call you?"
                       value={data.creatorName}
                       onChange={(e) => setData({ ...data, creatorName: e.target.value })}
-                      className="bg-gray-900 border-gray-700 text-foreground placeholder:text-gray-500"
+                      className="bg-[#1a1a1a] border-[#333] text-foreground placeholder:text-gray-500"
                       data-testid="input-creator-name"
                     />
                   </div>
@@ -395,7 +395,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                       placeholder="Tell us about yourself and what you create..."
                       value={data.bio}
                       onChange={(e) => setData({ ...data, bio: e.target.value })}
-                      className="bg-gray-900 border-gray-700 text-foreground placeholder:text-gray-500 min-h-[100px]"
+                      className="bg-[#1a1a1a] border-[#333] text-foreground placeholder:text-gray-500 min-h-[100px]"
                       data-testid="input-creator-bio"
                     />
                   </div>
@@ -440,7 +440,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                   {getQuickStartTips(data.contentType).map((tip, index) => (
                     <Card
                       key={index}
-                      className="p-4 bg-gray-900/50 border-gray-800"
+                      className="p-4 bg-[#1a1a1a]/50 border-[#333]"
                       data-testid={`card-tip-${index + 1}`}
                     >
                       <div className="flex items-start gap-4">

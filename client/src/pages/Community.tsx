@@ -150,10 +150,10 @@ export default function Community() {
       <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-foreground" data-testid="text-page-title">
+            <h1 className="text-3xl font-bold text-white" data-testid="text-page-title">
               {pageTitle}
             </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-gray-400 mt-1">
               {pageSubtitle}
             </p>
           </div>
@@ -275,7 +275,7 @@ export default function Community() {
               <Card className="mt-4 border-primary/20 bg-primary/5">
                 <CardContent className="pt-6">
                   <h3 className="font-semibold mb-2">Join the Community</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
+                  <p className="text-sm text-gray-400 mb-4">
                     Sign in to start discussions, reply to threads, and connect with other survivors.
                   </p>
                   <Button 
@@ -333,11 +333,11 @@ export default function Community() {
                             )}
                           </div>
                           
-                          <h3 className="font-semibold text-lg text-foreground line-clamp-2 group-hover:text-primary transition-colors">
+                          <h3 className="font-semibold text-lg text-white line-clamp-2 group-hover:text-[#C9941A] transition-colors">
                             {thread.title}
                           </h3>
                           
-                          <div className="flex items-center gap-4 mt-3 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-4 mt-3 text-sm text-gray-400">
                             <span className="flex items-center gap-1">
                               <MessageCircle className="h-4 w-4" />
                               {thread.replyCount} replies
@@ -353,7 +353,7 @@ export default function Community() {
                           </div>
                         </div>
                         
-                        <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                        <ChevronRight className="h-5 w-5 text-gray-400 flex-shrink-0" />
                       </div>
                     </CardContent>
                   </Card>
@@ -362,9 +362,9 @@ export default function Community() {
             ) : (
               <Card>
                 <CardContent className="pt-6 text-center py-12">
-                  <MessageSquare className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                  <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-400" />
                   <h3 className="text-lg font-semibold mb-2">No discussions yet</h3>
-                  <p className="text-muted-foreground mb-4">
+                  <p className="text-gray-400 mb-4">
                     {selectedCategory 
                       ? "Be the first to start a discussion in this category!"
                       : "Be the first to start a discussion in our community!"}

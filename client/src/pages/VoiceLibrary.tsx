@@ -132,20 +132,20 @@ export default function VoiceLibrary() {
             <h1 className="text-3xl font-bold">Voice Cloning Library</h1>
             <p className="text-zinc-400">Create and manage reusable AI voices</p>
           </div>
-          <Badge className="ml-auto bg-primary/20 text-primary border">
+          <Badge className="ml-auto bg-primary/20 text-[#C9941A] border">
             <Sparkles className="w-3 h-3 mr-1" /> Ultra-Premium
           </Badge>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-zinc-900 border border-zinc-800">
-            <TabsTrigger value="library" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+          <TabsList className="bg-[#1a1a1a] border border-[#333]">
+            <TabsTrigger value="library" className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]">
               <Mic2 className="w-4 h-4 mr-2" /> My Voices
             </TabsTrigger>
-            <TabsTrigger value="create" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+            <TabsTrigger value="create" className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]">
               <Plus className="w-4 h-4 mr-2" /> Create Voice
             </TabsTrigger>
-            <TabsTrigger value="community" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+            <TabsTrigger value="community" className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]">
               <User className="w-4 h-4 mr-2" /> Community
             </TabsTrigger>
           </TabsList>
@@ -154,11 +154,11 @@ export default function VoiceLibrary() {
             {voices.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {voices.map((voice: VoiceClone) => (
-                  <Card key={voice.id} className="bg-zinc-900/50 border-zinc-800">
+                  <Card key={voice.id} className="bg-[#1a1a1a]/50 border-[#333]">
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
                         <div className="p-2 rounded-lg bg-primary/20">
-                          <Mic2 className="w-5 h-5 text-primary" />
+                          <Mic2 className="w-5 h-5 text-[#C9941A]" />
                         </div>
                         <div className="flex gap-2">
                           {voice.isPublic && (
@@ -204,14 +204,14 @@ export default function VoiceLibrary() {
                 ))}
               </div>
             ) : (
-              <Card className="bg-zinc-900/50 border-zinc-800">
+              <Card className="bg-[#1a1a1a]/50 border-[#333]">
                 <CardContent className="text-center py-12">
                   <Mic2 className="w-16 h-16 mx-auto mb-4 text-zinc-600" />
                   <h3 className="text-xl font-medium mb-2">No Voice Clones Yet</h3>
                   <p className="text-zinc-400 mb-4">Create your first AI voice clone to use across all studios</p>
                   <Button 
                     onClick={() => setActiveTab("create")}
-                    className="bg-orange-500 hover:bg-orange-600"
+                    className="bg-[#C9941A] hover:bg-[#C9941A]"
                     data-testid="button-create-first-voice"
                   >
                     <Plus className="w-4 h-4 mr-2" /> Create Voice Clone
@@ -223,10 +223,10 @@ export default function VoiceLibrary() {
 
           <TabsContent value="create" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-zinc-900/50 border-zinc-800">
+              <Card className="bg-[#1a1a1a]/50 border-[#333]">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Wand2 className="w-5 h-5 text-primary" />
+                    <Wand2 className="w-5 h-5 text-[#C9941A]" />
                     Voice Details
                   </CardTitle>
                 </CardHeader>
@@ -237,7 +237,7 @@ export default function VoiceLibrary() {
                       value={newVoiceName}
                       onChange={(e) => setNewVoiceName(e.target.value)}
                       placeholder="e.g., Epic Narrator"
-                      className="bg-zinc-800 border-zinc-700"
+                      className="bg-[#1a1a1a] border-[#333]"
                       data-testid="input-voice-name"
                     />
                   </div>
@@ -248,7 +248,7 @@ export default function VoiceLibrary() {
                       value={newVoiceDesc}
                       onChange={(e) => setNewVoiceDesc(e.target.value)}
                       placeholder="Describe the voice characteristics..."
-                      className="bg-zinc-800 border-zinc-700"
+                      className="bg-[#1a1a1a] border-[#333]"
                       data-testid="input-voice-desc"
                     />
                   </div>
@@ -256,7 +256,7 @@ export default function VoiceLibrary() {
                   <div>
                     <Label>Voice Type</Label>
                     <Select value={newVoiceType} onValueChange={setNewVoiceType}>
-                      <SelectTrigger className="bg-zinc-800 border-zinc-700" data-testid="select-voice-type">
+                      <SelectTrigger className="bg-[#1a1a1a] border-[#333]" data-testid="select-voice-type">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -271,16 +271,16 @@ export default function VoiceLibrary() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-zinc-900/50 border-zinc-800">
+              <Card className="bg-[#1a1a1a]/50 border-[#333]">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Upload className="w-5 h-5 text-primary" />
+                    <Upload className="w-5 h-5 text-[#C9941A]" />
                     Voice Sample
                   </CardTitle>
                   <CardDescription>Record or upload a voice sample</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="p-8 border-2 border-dashed border-zinc-700 rounded-lg text-center">
+                  <div className="p-8 border-2 border-dashed border-[#333] rounded-lg text-center">
                     <Mic2 className="w-12 h-12 mx-auto mb-4 text-zinc-600" />
                     <p className="text-zinc-400 mb-4">Record a 30-second sample or upload audio</p>
                     <div className="flex gap-3 justify-center">
@@ -307,7 +307,7 @@ export default function VoiceLibrary() {
                       value={sampleText}
                       onChange={(e) => setSampleText(e.target.value)}
                       placeholder="Enter text to preview the voice..."
-                      className="bg-zinc-800 border-zinc-700"
+                      className="bg-[#1a1a1a] border-[#333]"
                       data-testid="input-sample-text"
                     />
                   </div>
@@ -319,7 +319,7 @@ export default function VoiceLibrary() {
               onClick={() => createVoiceMutation.mutate()}
               disabled={createVoiceMutation.isPending || !newVoiceName.trim()}
               size="lg"
-              className="w-full bg-orange-500 hover:bg-orange-600"
+              className="w-full bg-[#C9941A] hover:bg-[#C9941A]"
               data-testid="button-create-voice"
             >
               {createVoiceMutation.isPending ? (
@@ -331,7 +331,7 @@ export default function VoiceLibrary() {
           </TabsContent>
 
           <TabsContent value="community" className="space-y-6">
-            <Card className="bg-zinc-900/50 border-zinc-800">
+            <Card className="bg-[#1a1a1a]/50 border-[#333]">
               <CardHeader>
                 <CardTitle>Community Voices</CardTitle>
                 <CardDescription>Public voice clones shared by other creators</CardDescription>
@@ -340,9 +340,9 @@ export default function VoiceLibrary() {
                 {(publicVoices as any)?.voices?.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {(publicVoices as any).voices.map((voice: VoiceClone) => (
-                      <div key={voice.id} className="p-4 bg-zinc-800/50 rounded-lg">
+                      <div key={voice.id} className="p-4 bg-[#1a1a1a]/50 rounded-lg">
                         <div className="flex items-center gap-3 mb-2">
-                          <Mic2 className="w-5 h-5 text-primary" />
+                          <Mic2 className="w-5 h-5 text-[#C9941A]" />
                           <span className="font-medium">{voice.name}</span>
                         </div>
                         <p className="text-sm text-zinc-400 mb-3">{voice.description}</p>

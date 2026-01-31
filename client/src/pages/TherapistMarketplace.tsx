@@ -179,7 +179,7 @@ export default function TherapistMarketplace() {
   });
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-[#0D0D0D] text-foreground">
       <SEO
         title="Therapist Marketplace | KreAIte"
         description="Find licensed therapists and professional coaches specializing in stroke recovery. Browse verified specialists in physical therapy, occupational therapy, speech therapy, and neurological rehabilitation with transparent pricing."
@@ -207,7 +207,7 @@ export default function TherapistMarketplace() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-gray-900 mb-6">
+          <TabsList className="bg-[#1a1a1a] mb-6">
             <TabsTrigger value="browse" data-testid="tab-browse">Browse Therapists</TabsTrigger>
             <TabsTrigger value="my-products" data-testid="tab-my-products">My Products</TabsTrigger>
             <TabsTrigger value="earnings" data-testid="tab-earnings">Earnings</TabsTrigger>
@@ -219,11 +219,11 @@ export default function TherapistMarketplace() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search therapists or specialties..."
-                className="flex-1 bg-gray-900 border-gray-800"
+                className="flex-1 bg-[#1a1a1a] border-[#333]"
                 data-testid="input-search-therapists"
               />
               <Select value={selectedSpecialty} onValueChange={setSelectedSpecialty}>
-                <SelectTrigger className="w-full md:w-48 bg-gray-900 border-gray-800">
+                <SelectTrigger className="w-full md:w-48 bg-[#1a1a1a] border-[#333]">
                   <SelectValue placeholder="Specialty" />
                 </SelectTrigger>
                 <SelectContent>
@@ -239,14 +239,14 @@ export default function TherapistMarketplace() {
 
             {isLoading ? (
               <div className="flex justify-center py-12">
-                <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                <Loader2 className="w-8 h-8 text-[#C9941A] animate-spin" />
               </div>
             ) : filteredStorefronts && filteredStorefronts.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredStorefronts.map((storefront) => (
                   <Card
                     key={storefront.id}
-                    className="bg-gray-900 border-gray-800 hover:border-primary/50 transition-colors cursor-pointer"
+                    className="bg-[#1a1a1a] border-[#333] hover:border-primary/50 transition-colors cursor-pointer"
                     onClick={() => setSelectedStorefront(storefront)}
                     data-testid={`storefront-${storefront.id}`}
                   >
@@ -254,7 +254,7 @@ export default function TherapistMarketplace() {
                       <div className="flex items-start gap-4 mb-4">
                         <Avatar className="w-16 h-16">
                           <AvatarImage src={storefront.therapist.profileImageUrl} />
-                          <AvatarFallback className="bg-gray-700 text-primary text-xl">
+                          <AvatarFallback className="bg-gray-700 text-[#C9941A] text-xl">
                             {storefront.therapist.firstName?.[0]}{storefront.therapist.lastName?.[0]}
                           </AvatarFallback>
                         </Avatar>
@@ -294,12 +294,12 @@ export default function TherapistMarketplace() {
 
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-2xl font-bold text-primary">
+                          <p className="text-2xl font-bold text-[#C9941A]">
                             ${((storefront.profile.hourlyRate || 0) / 100).toFixed(0)}
                           </p>
                           <p className="text-gray-500 text-xs">per hour</p>
                         </div>
-                        <Badge className={storefront.profile.acceptingPatients ? "bg-green-500/20 text-green-400" : "bg-gray-500/20 text-gray-400"}>
+                        <Badge className={storefront.profile.acceptingPatients ? "bg-[#C9941A]/20 text-[#C9941A]" : "bg-gray-500/20 text-gray-400"}>
                           {storefront.profile.acceptingPatients ? "Accepting Clients" : "Waitlist"}
                         </Badge>
                       </div>
@@ -326,7 +326,7 @@ export default function TherapistMarketplace() {
                     Create Product
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-gray-900 border-gray-800 max-w-lg">
+                <DialogContent className="bg-[#1a1a1a] border-[#333] max-w-lg">
                   <DialogHeader>
                     <DialogTitle className="text-foreground">Create New Product</DialogTitle>
                   </DialogHeader>
@@ -337,7 +337,7 @@ export default function TherapistMarketplace() {
                         value={productForm.productType}
                         onValueChange={(v: any) => setProductForm({ ...productForm, productType: v })}
                       >
-                        <SelectTrigger className="bg-gray-800 border-gray-700">
+                        <SelectTrigger className="bg-gray-800 border-[#333]">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -354,7 +354,7 @@ export default function TherapistMarketplace() {
                         value={productForm.title}
                         onChange={(e) => setProductForm({ ...productForm, title: e.target.value })}
                         placeholder="e.g., 1:1 Recovery Coaching"
-                        className="bg-gray-800 border-gray-700"
+                        className="bg-gray-800 border-[#333]"
                       />
                     </div>
                     <div>
@@ -363,7 +363,7 @@ export default function TherapistMarketplace() {
                         value={productForm.description}
                         onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
                         placeholder="Describe what's included..."
-                        className="bg-gray-800 border-gray-700"
+                        className="bg-gray-800 border-[#333]"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
@@ -373,7 +373,7 @@ export default function TherapistMarketplace() {
                           type="number"
                           value={productForm.price}
                           onChange={(e) => setProductForm({ ...productForm, price: parseFloat(e.target.value) })}
-                          className="bg-gray-800 border-gray-700"
+                          className="bg-gray-800 border-[#333]"
                         />
                       </div>
                       <div>
@@ -382,7 +382,7 @@ export default function TherapistMarketplace() {
                           type="number"
                           value={productForm.duration}
                           onChange={(e) => setProductForm({ ...productForm, duration: parseInt(e.target.value) })}
-                          className="bg-gray-800 border-gray-700"
+                          className="bg-gray-800 border-[#333]"
                         />
                       </div>
                     </div>
@@ -393,7 +393,7 @@ export default function TherapistMarketplace() {
                           type="number"
                           value={productForm.sessionCount}
                           onChange={(e) => setProductForm({ ...productForm, sessionCount: parseInt(e.target.value) })}
-                          className="bg-gray-800 border-gray-700"
+                          className="bg-gray-800 border-[#333]"
                         />
                       </div>
                     )}
@@ -404,7 +404,7 @@ export default function TherapistMarketplace() {
                           value={newFeature}
                           onChange={(e) => setNewFeature(e.target.value)}
                           placeholder="Add a feature..."
-                          className="bg-gray-800 border-gray-700"
+                          className="bg-gray-800 border-[#333]"
                           onKeyPress={(e) => e.key === "Enter" && addFeature()}
                         />
                         <Button type="button" onClick={addFeature} variant="outline" size="icon">
@@ -452,18 +452,18 @@ export default function TherapistMarketplace() {
             {myProducts && myProducts.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {myProducts.map((product) => (
-                  <Card key={product.id} className="bg-gray-900 border-gray-800">
+                  <Card key={product.id} className="bg-[#1a1a1a] border-[#333]">
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between mb-4">
                         <Badge variant="outline">{getProductTypeLabel(product.productType)}</Badge>
-                        <Badge className={product.isActive ? "bg-green-500/20 text-green-400" : "bg-gray-500/20 text-gray-400"}>
+                        <Badge className={product.isActive ? "bg-[#C9941A]/20 text-[#C9941A]" : "bg-gray-500/20 text-gray-400"}>
                           {product.isActive ? "Active" : "Inactive"}
                         </Badge>
                       </div>
                       <h3 className="text-lg font-semibold text-foreground mb-2">{product.title}</h3>
                       <p className="text-gray-400 text-sm line-clamp-2 mb-4">{product.description}</p>
                       <div className="flex items-center justify-between mb-4">
-                        <p className="text-2xl font-bold text-primary">
+                        <p className="text-2xl font-bold text-[#C9941A]">
                           ${(product.price / 100).toFixed(0)}
                         </p>
                         <div className="flex items-center gap-1 text-gray-400 text-sm">
@@ -485,7 +485,7 @@ export default function TherapistMarketplace() {
                 ))}
               </div>
             ) : (
-              <Card className="bg-gray-900 border-gray-800">
+              <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardContent className="py-12 text-center">
                   <Package className="w-16 h-16 text-gray-600 mx-auto mb-4" />
                   <p className="text-gray-400 text-lg">No products yet</p>
@@ -501,11 +501,11 @@ export default function TherapistMarketplace() {
 
           <TabsContent value="earnings" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="bg-gray-900 border-gray-800">
+              <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
-                    <DollarSign className="w-8 h-8 text-green-400" />
-                    <TrendingUp className="w-4 h-4 text-green-400" />
+                    <DollarSign className="w-8 h-8 text-[#C9941A]" />
+                    <TrendingUp className="w-4 h-4 text-[#C9941A]" />
                   </div>
                   <p className="text-gray-400 text-sm">Total Earnings</p>
                   <p className="text-3xl font-bold text-foreground">
@@ -513,7 +513,7 @@ export default function TherapistMarketplace() {
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-gray-900 border-gray-800">
+              <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
                     <Calendar className="w-8 h-8 text-blue-400" />
@@ -524,7 +524,7 @@ export default function TherapistMarketplace() {
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-gray-900 border-gray-800">
+              <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
                     <Clock className="w-8 h-8 text-yellow-400" />
@@ -537,7 +537,7 @@ export default function TherapistMarketplace() {
               </Card>
             </div>
 
-            <Card className="bg-gray-900 border-gray-800">
+            <Card className="bg-[#1a1a1a] border-[#333]">
               <CardHeader>
                 <CardTitle className="text-foreground flex items-center gap-2">
                   <CreditCard className="w-5 h-5" />
@@ -558,14 +558,14 @@ export default function TherapistMarketplace() {
         </Tabs>
 
         <Dialog open={!!selectedStorefront} onOpenChange={() => setSelectedStorefront(null)}>
-          <DialogContent className="bg-gray-900 border-gray-800 max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogContent className="bg-[#1a1a1a] border-[#333] max-w-2xl max-h-[80vh] overflow-y-auto">
             {selectedStorefront && (
               <>
                 <DialogHeader>
                   <div className="flex items-start gap-4">
                     <Avatar className="w-20 h-20">
                       <AvatarImage src={selectedStorefront.therapist.profileImageUrl} />
-                      <AvatarFallback className="bg-gray-700 text-primary text-2xl">
+                      <AvatarFallback className="bg-gray-700 text-[#C9941A] text-2xl">
                         {selectedStorefront.therapist.firstName?.[0]}{selectedStorefront.therapist.lastName?.[0]}
                       </AvatarFallback>
                     </Avatar>
@@ -614,7 +614,7 @@ export default function TherapistMarketplace() {
                     <h4 className="text-foreground font-medium mb-4">Services & Products</h4>
                     <div className="space-y-4">
                       {selectedStorefront.products?.map((product) => (
-                        <Card key={product.id} className="bg-gray-800 border-gray-700">
+                        <Card key={product.id} className="bg-gray-800 border-[#333]">
                           <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                               <div>
@@ -626,7 +626,7 @@ export default function TherapistMarketplace() {
                                 </div>
                               </div>
                               <div className="text-right">
-                                <p className="text-xl font-bold text-primary">
+                                <p className="text-xl font-bold text-[#C9941A]">
                                   ${(product.price / 100).toFixed(0)}
                                 </p>
                                 <Button

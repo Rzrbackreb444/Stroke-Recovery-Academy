@@ -39,7 +39,7 @@ import {
   Target,
 } from "lucide-react";
 
-const FOREST_GREEN = "#1B4332";
+const FOREST_GREEN = "#C9941A";
 const GOLD = "#C9941A";
 
 const toneOptions = [
@@ -224,16 +224,16 @@ export default function SquatchQRStudio() {
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="bg-[#1a1a1a] border border-white/10 mb-8">
-            <TabsTrigger value="projects" className="data-[state=active]:bg-[#1B4332] data-[state=active]:text-white" data-testid="tab-projects">
+            <TabsTrigger value="projects" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-white" data-testid="tab-projects">
               <FolderOpen className="w-4 h-4 mr-2" /> My Projects
             </TabsTrigger>
-            <TabsTrigger value="create" className="data-[state=active]:bg-[#1B4332] data-[state=active]:text-white" data-testid="tab-create">
+            <TabsTrigger value="create" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-white" data-testid="tab-create">
               <Plus className="w-4 h-4 mr-2" /> Create New
             </TabsTrigger>
-            <TabsTrigger value="library" className="data-[state=active]:bg-[#1B4332] data-[state=active]:text-white" data-testid="tab-library">
+            <TabsTrigger value="library" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-white" data-testid="tab-library">
               <BookOpen className="w-4 h-4 mr-2" /> Quote Library
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="data-[state=active]:bg-[#1B4332] data-[state=active]:text-white" data-testid="tab-analytics">
+            <TabsTrigger value="analytics" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-white" data-testid="tab-analytics">
               <BarChart3 className="w-4 h-4 mr-2" /> Analytics
             </TabsTrigger>
           </TabsList>
@@ -263,7 +263,7 @@ export default function SquatchQRStudio() {
                           </Badge>
                         </div>
                         {project.isPublished ? (
-                          <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Live</Badge>
+                          <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-green-500/30">Live</Badge>
                         ) : (
                           <Badge variant="outline" className="text-white/50 border-white/20">Draft</Badge>
                         )}
@@ -550,7 +550,7 @@ export default function SquatchQRStudio() {
                             <Badge variant="outline" className="text-xs text-white/60 border-white/20">{quote.tone}</Badge>
                             {renderStarRating(quote.rating, quote.id)}
                             {quote.isApproved ? (
-                              <Badge className="bg-green-500/20 text-green-400 text-xs">Approved</Badge>
+                              <Badge className="bg-[#C9941A]/20 text-[#C9941A] text-xs">Approved</Badge>
                             ) : (
                               <Badge variant="outline" className="text-xs text-white/50">Pending</Badge>
                             )}
@@ -561,7 +561,7 @@ export default function SquatchQRStudio() {
                             size="icon"
                             variant="ghost"
                             onClick={() => approveQuoteMutation.mutate({ id: quote.id, isApproved: !quote.isApproved })}
-                            className="text-white/50 hover:text-green-400"
+                            className="text-white/50 hover:text-[#C9941A]"
                             data-testid={`approve-quote-${quote.id}`}
                           >
                             <Check className="w-4 h-4" />

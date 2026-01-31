@@ -383,26 +383,26 @@ export default function BookStudioV2() {
           {selectedPlatform && (
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">Formats:</span>
+                <span className="text-sm text-gray-400">Formats:</span>
                 {selectedPlatform.formats.map(fmt => (
                   <Badge key={fmt} variant="secondary">{fmt}</Badge>
                 ))}
               </div>
               
               <div className="space-y-2 text-sm">
-                <div className="flex items-center gap-2 text-green-500">
+                <div className="flex items-center gap-2 text-[#C9941A]">
                   <CheckCircle className="w-4 h-4" />
                   Table of Contents generated
                 </div>
-                <div className="flex items-center gap-2 text-green-500">
+                <div className="flex items-center gap-2 text-[#C9941A]">
                   <CheckCircle className="w-4 h-4" />
                   Copyright page included
                 </div>
-                <div className="flex items-center gap-2 text-green-500">
+                <div className="flex items-center gap-2 text-[#C9941A]">
                   <CheckCircle className="w-4 h-4" />
                   Images optimized for platform
                 </div>
-                <div className="flex items-center gap-2 text-green-500">
+                <div className="flex items-center gap-2 text-[#C9941A]">
                   <CheckCircle className="w-4 h-4" />
                   Formatting validated
                 </div>
@@ -449,7 +449,7 @@ export default function BookStudioV2() {
                   <platform.icon className="w-4 h-4" />
                   <span className="font-medium">{platform.name}</span>
                 </div>
-                <span className="text-xs text-muted-foreground">{platform.subtitle}</span>
+                <span className="text-xs text-gray-400">{platform.subtitle}</span>
               </Button>
             ))}
           </div>

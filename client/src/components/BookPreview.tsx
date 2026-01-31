@@ -257,7 +257,7 @@ function Thumbnail({ content, pageNumber, isActive, onClick, isCover, coverImage
       )}
       <div className={cn(
         "absolute bottom-0.5 right-0.5 text-[8px] px-1 rounded",
-        isActive ? "bg-orange-500 text-foreground" : "bg-gray-200 text-gray-600"
+        isActive ? "bg-[#C9941A] text-foreground" : "bg-gray-200 text-gray-600"
       )}>
         {pageNumber}
       </div>
@@ -514,9 +514,9 @@ export default function BookPreview({
       )}
       data-testid="book-preview-container"
     >
-      <div className="flex items-center justify-between gap-2 px-4 py-2 bg-zinc-900 border-b border-zinc-800">
+      <div className="flex items-center justify-between gap-2 px-4 py-2 bg-[#1a1a1a] border-b border-[#333]">
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="text-xs text-gray-400 border-gray-700">
+          <Badge variant="outline" className="text-xs text-gray-400 border-[#333]">
             {dim.label}
           </Badge>
           <Separator orientation="vertical" className="h-4 bg-zinc-700" />
@@ -717,7 +717,7 @@ export default function BookPreview({
       </div>
 
       {viewMode !== 'thumbnails' && (
-        <div className="flex flex-col gap-2 px-4 py-3 bg-zinc-900 border-t border-zinc-800">
+        <div className="flex flex-col gap-2 px-4 py-3 bg-[#1a1a1a] border-t border-[#333]">
           <div className="flex items-center justify-center gap-4">
             <Button
               size="sm"
@@ -738,7 +738,7 @@ export default function BookPreview({
                 onChange={(e) => setPageInput(e.target.value)}
                 min={1}
                 max={totalPages}
-                className="w-14 h-7 text-xs text-center bg-zinc-800 border-zinc-700"
+                className="w-14 h-7 text-xs text-center bg-[#1a1a1a] border-[#333]"
                 data-testid="input-page-number"
               />
               <span className="text-xs text-gray-400">of {totalPages}</span>

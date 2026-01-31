@@ -123,9 +123,9 @@ export default function CourseCertificate() {
       case "modern":
         return {
           bg: "bg-gradient-to-br from-zinc-900 to-zinc-800",
-          border: "border-orange-500",
+          border: "border-[#C9941A]",
           text: "text-white",
-          accent: "text-orange-500",
+          accent: "text-[#C9941A]",
           secondary: "text-gray-400",
         };
       case "elegant":
@@ -141,7 +141,7 @@ export default function CourseCertificate() {
           bg: "bg-gradient-to-br from-black to-zinc-900",
           border: "border-amber-500",
           text: "text-white",
-          accent: "text-amber-500",
+          accent: "text-[#C9941A]",
           secondary: "text-gray-400",
         };
       default:
@@ -160,7 +160,7 @@ export default function CourseCertificate() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Header */}
-      <header className="bg-zinc-900 border-b border-zinc-800 sticky top-0 z-50">
+      <header className="bg-[#1a1a1a] border-b border-[#333] sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button
@@ -189,7 +189,7 @@ export default function CourseCertificate() {
                   Share
                 </Button>
               </DialogTrigger>
-              <DialogContent className="bg-zinc-900 border-zinc-800">
+              <DialogContent className="bg-[#1a1a1a] border-[#333]">
                 <DialogHeader>
                   <DialogTitle>Share Your Achievement</DialogTitle>
                 </DialogHeader>
@@ -229,7 +229,7 @@ export default function CourseCertificate() {
                       <Input
                         value={`https://strokerecoveryacademy.com/verify/${certificate.credentialId}`}
                         readOnly
-                        className="bg-zinc-800 border-zinc-700 text-sm"
+                        className="bg-[#1a1a1a] border-[#333] text-sm"
                       />
                       <Button onClick={copyLink} variant="outline">
                         {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
@@ -239,7 +239,7 @@ export default function CourseCertificate() {
                 </div>
               </DialogContent>
             </Dialog>
-            <Button onClick={handleDownload} className="bg-orange-500" data-testid="button-download">
+            <Button onClick={handleDownload} className="bg-[#C9941A]" data-testid="button-download">
               <Download className="w-4 h-4 mr-2" />
               Download PDF
             </Button>
@@ -336,13 +336,13 @@ export default function CourseCertificate() {
             </div>
             
             {/* Verification badge */}
-            <Card className="bg-zinc-900 border-zinc-800 p-4 mt-6">
+            <Card className="bg-[#1a1a1a] border-[#333] p-4 mt-6">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
-                  <Verified className="w-6 h-6 text-green-500" />
+                <div className="w-12 h-12 rounded-full bg-[#C9941A]/20 flex items-center justify-center">
+                  <Verified className="w-6 h-6 text-[#C9941A]" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold text-green-500">Verified Certificate</p>
+                  <p className="font-semibold text-[#C9941A]">Verified Certificate</p>
                   <p className="text-sm text-gray-400">
                     This certificate can be verified at strokerecoveryacademy.com/verify
                   </p>
@@ -358,9 +358,9 @@ export default function CourseCertificate() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Template selector */}
-            <Card className="bg-zinc-900 border-zinc-800 p-4">
+            <Card className="bg-[#1a1a1a] border-[#333] p-4">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Image className="w-4 h-4 text-orange-500" />
+                <Image className="w-4 h-4 text-[#C9941A]" />
                 Certificate Template
               </h3>
               <div className="grid grid-cols-2 gap-2">
@@ -370,8 +370,8 @@ export default function CourseCertificate() {
                     onClick={() => setSelectedTemplate(template.id)}
                     className={`p-3 rounded-lg border-2 transition-all ${
                       selectedTemplate === template.id
-                        ? 'border-orange-500'
-                        : 'border-zinc-700 hover:border-zinc-600'
+                        ? 'border-[#C9941A]'
+                        : 'border-[#333] hover:border-zinc-600'
                     }`}
                     data-testid={`template-${template.id}`}
                   >
@@ -383,9 +383,9 @@ export default function CourseCertificate() {
             </Card>
             
             {/* Certificate details */}
-            <Card className="bg-zinc-900 border-zinc-800 p-4">
+            <Card className="bg-[#1a1a1a] border-[#333] p-4">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-orange-500" />
+                <FileText className="w-4 h-4 text-[#C9941A]" />
                 Certificate Details
               </h3>
               <div className="space-y-3 text-sm">
@@ -417,14 +417,14 @@ export default function CourseCertificate() {
             </Card>
             
             {/* Skills earned */}
-            <Card className="bg-zinc-900 border-zinc-800 p-4">
+            <Card className="bg-[#1a1a1a] border-[#333] p-4">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-orange-500" />
+                <Sparkles className="w-4 h-4 text-[#C9941A]" />
                 Skills Earned
               </h3>
               <div className="flex flex-wrap gap-2">
                 {certificate.skills.map((skill, idx) => (
-                  <Badge key={idx} variant="outline" className="border-zinc-700">
+                  <Badge key={idx} variant="outline" className="border-[#333]">
                     {skill}
                   </Badge>
                 ))}
@@ -432,28 +432,28 @@ export default function CourseCertificate() {
             </Card>
             
             {/* Stats */}
-            <Card className="bg-zinc-900 border-zinc-800 p-4">
+            <Card className="bg-[#1a1a1a] border-[#333] p-4">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Trophy className="w-4 h-4 text-orange-500" />
+                <Trophy className="w-4 h-4 text-[#C9941A]" />
                 Achievement Stats
               </h3>
               <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-3 bg-zinc-800 rounded-lg">
+                <div className="text-center p-3 bg-[#1a1a1a] rounded-lg">
                   <Clock className="w-5 h-5 text-blue-500 mx-auto mb-1" />
                   <p className="text-lg font-bold">{formatDuration(certificate.courseDuration)}</p>
                   <p className="text-xs text-gray-400">Learning Time</p>
                 </div>
-                <div className="text-center p-3 bg-zinc-800 rounded-lg">
-                  <BookOpen className="w-5 h-5 text-green-500 mx-auto mb-1" />
+                <div className="text-center p-3 bg-[#1a1a1a] rounded-lg">
+                  <BookOpen className="w-5 h-5 text-[#C9941A] mx-auto mb-1" />
                   <p className="text-lg font-bold">{certificate.lessonsCompleted}</p>
                   <p className="text-xs text-gray-400">Lessons</p>
                 </div>
-                <div className="text-center p-3 bg-zinc-800 rounded-lg">
+                <div className="text-center p-3 bg-[#1a1a1a] rounded-lg">
                   <Star className="w-5 h-5 text-yellow-500 mx-auto mb-1" />
                   <p className="text-lg font-bold">{certificate.quizScore}%</p>
                   <p className="text-xs text-gray-400">Quiz Score</p>
                 </div>
-                <div className="text-center p-3 bg-zinc-800 rounded-lg">
+                <div className="text-center p-3 bg-[#1a1a1a] rounded-lg">
                   <Award className="w-5 h-5 text-purple-500 mx-auto mb-1" />
                   <p className="text-lg font-bold">Top 10%</p>
                   <p className="text-xs text-gray-400">Achiever</p>
@@ -462,7 +462,7 @@ export default function CourseCertificate() {
             </Card>
             
             {/* Add to profile */}
-            <Card className="bg-gradient-to-br from-orange-500/20 to-red-500/20 border-orange-500/30 p-4">
+            <Card className="bg-gradient-to-br from-orange-500/20 to-red-500/20 border-[#C9941A]/30 p-4">
               <div className="flex items-start gap-3">
                 <Linkedin className="w-6 h-6 text-blue-500" />
                 <div>

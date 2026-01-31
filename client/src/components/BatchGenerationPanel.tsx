@@ -201,7 +201,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
   const failedCount = results.filter(r => r.status === 'failed').length;
 
   return (
-    <Card className="bg-background border-zinc-800">
+    <Card className="bg-background border-[#333]">
       <CardHeader className="flex flex-row items-center justify-between gap-4 space-y-0 pb-4">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-primary/10 border border">
@@ -214,7 +214,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
             </CardDescription>
           </div>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900 rounded-full border border-zinc-800">
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#1a1a1a] rounded-full border border-[#333]">
           <Coins className="w-4 h-4 text-primary" />
           <span className="text-sm font-bold text-foreground" data-testid="text-credit-balance">
             {userBalance}
@@ -235,17 +235,17 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
                   data-testid="select-content-type"
                 >
                   <SelectTrigger 
-                    className="bg-zinc-900 border-zinc-700 text-foreground"
+                    className="bg-[#1a1a1a] border-[#333] text-foreground"
                     data-testid="select-content-type-trigger"
                   >
                     <SelectValue placeholder="Select content type" />
                   </SelectTrigger>
-                  <SelectContent className="bg-zinc-900 border-zinc-700">
+                  <SelectContent className="bg-[#1a1a1a] border-[#333]">
                     {contentTypes.map((type) => (
                       <SelectItem 
                         key={type.value} 
                         value={type.value}
-                        className="text-foreground hover:bg-zinc-800"
+                        className="text-foreground hover:bg-[#1a1a1a]"
                       >
                         {type.label}
                       </SelectItem>
@@ -264,7 +264,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
                   max={50}
                   value={quantity}
                   onChange={(e) => setQuantity(Math.min(50, Math.max(1, parseInt(e.target.value) || 1)))}
-                  className="bg-zinc-900 border-zinc-700 text-foreground"
+                  className="bg-[#1a1a1a] border-[#333] text-foreground"
                   data-testid="input-quantity"
                 />
               </div>
@@ -286,8 +286,8 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
                       data-testid={`select-quality-tier-${tier.id}`}
                       className={`p-3 rounded-lg border transition-all text-left ${
                         isSelected 
-                          ? 'border-orange-500 bg-orange-950/30' 
-                          : 'border-zinc-700 bg-zinc-900 hover:border-zinc-600'
+                          ? 'border-[#C9941A] bg-orange-950/30' 
+                          : 'border-[#333] bg-[#1a1a1a] hover:border-zinc-600'
                       } ${!tierAffordable ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover-elevate'}`}
                     >
                       <div className="flex items-center gap-2 mb-1">
@@ -298,7 +298,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
                       </div>
                       <Badge 
                         variant="secondary" 
-                        className={`text-xs ${isSelected ? 'bg-primary/20 text-primary' : 'bg-zinc-800 text-zinc-400'}`}
+                        className={`text-xs ${isSelected ? 'bg-primary/20 text-primary' : 'bg-[#1a1a1a] text-zinc-400'}`}
                       >
                         {tier.creditCost}c each
                       </Badge>
@@ -317,12 +317,12 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
                 onValueChange={(val) => setSelectedVoice(val ? parseInt(val) : null)}
               >
                 <SelectTrigger 
-                  className="bg-zinc-900 border-zinc-700 text-foreground"
+                  className="bg-[#1a1a1a] border-[#333] text-foreground"
                   data-testid="select-voice-preset-trigger"
                 >
                   <SelectValue placeholder="Select voice preset (optional)" />
                 </SelectTrigger>
-                <SelectContent className="bg-zinc-900 border-zinc-700">
+                <SelectContent className="bg-[#1a1a1a] border-[#333]">
                   <SelectItem value="" className="text-zinc-400">
                     No voice preset
                   </SelectItem>
@@ -330,7 +330,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
                     <SelectItem 
                       key={voice.id} 
                       value={voice.id.toString()}
-                      className="text-foreground hover:bg-zinc-800"
+                      className="text-foreground hover:bg-[#1a1a1a]"
                     >
                       {voice.name}
                     </SelectItem>
@@ -345,12 +345,12 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
                 placeholder={`Describe what you want to generate. Use {index} for item numbers.\n\nExample: "Write chapter {index} of a recovery guide focusing on..."`}
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
-                className="min-h-[120px] bg-zinc-900 border-zinc-700 text-foreground placeholder:text-zinc-500"
+                className="min-h-[120px] bg-[#1a1a1a] border-[#333] text-foreground placeholder:text-zinc-500"
                 data-testid="input-template"
               />
             </div>
 
-            <div className="p-4 rounded-lg bg-zinc-900 border border-zinc-800 space-y-3">
+            <div className="p-4 rounded-lg bg-[#1a1a1a] border border-[#333] space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-zinc-400">Estimated Cost</span>
                 <div className="flex items-center gap-2">
@@ -377,7 +377,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
             <Button
               onClick={handleStartGeneration}
               disabled={!canAfford || !template.trim() || createJob.isPending}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-foreground font-semibold"
+              className="w-full bg-[#C9941A] hover:bg-orange-600 text-foreground font-semibold"
               data-testid="button-start-generation"
             >
               {createJob.isPending ? (
@@ -412,7 +412,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
                 </div>
               </div>
               {isConnected && (
-                <Badge variant="secondary" className="bg-green-500/20 text-green-400">
+                <Badge variant="secondary" className="bg-[#C9941A]/20 text-[#C9941A]">
                   Live
                 </Badge>
               )}
@@ -427,13 +427,13 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
               </div>
               <Progress 
                 value={progress} 
-                className="h-3 bg-zinc-800"
+                className="h-3 bg-[#1a1a1a]"
                 data-testid="progress-bar"
               />
             </div>
 
             {job?.data?.currentItem && (
-              <div className="p-3 rounded-lg bg-zinc-900 border border-zinc-800">
+              <div className="p-3 rounded-lg bg-[#1a1a1a] border border-[#333]">
                 <p className="text-sm text-zinc-400">Currently generating:</p>
                 <p className="text-foreground font-medium" data-testid="text-current-item">
                   Item {job.data.currentItem} of {quantity}
@@ -447,11 +447,11 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
                   {results.map((result, index) => (
                     <div 
                       key={result.id || index}
-                      className="flex items-center gap-3 p-2 rounded-lg bg-zinc-900"
+                      className="flex items-center gap-3 p-2 rounded-lg bg-[#1a1a1a]"
                       data-testid={`result-item-${index}`}
                     >
                       {result.status === 'completed' ? (
-                        <CheckCircle2 className="w-4 h-4 text-green-500" />
+                        <CheckCircle2 className="w-4 h-4 text-[#C9941A]" />
                       ) : result.status === 'failed' ? (
                         <XCircle className="w-4 h-4 text-red-500" />
                       ) : (
@@ -477,8 +477,8 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-full bg-green-500/20">
-                  <CheckCircle2 className="w-5 h-5 text-green-500" />
+                <div className="p-2 rounded-full bg-[#C9941A]/20">
+                  <CheckCircle2 className="w-5 h-5 text-[#C9941A]" />
                 </div>
                 <div>
                   <p className="font-medium text-foreground" data-testid="text-completion-status">
@@ -507,10 +507,10 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
                 {results.map((result, index) => (
                   <Card 
                     key={result.id || index} 
-                    className={`bg-zinc-900 ${
+                    className={`bg-[#1a1a1a] ${
                       result.status === 'failed' 
                         ? 'border-red-500/50' 
-                        : 'border-zinc-800'
+                        : 'border-[#333]'
                     }`}
                     data-testid={`result-card-${index}`}
                   >
@@ -519,7 +519,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-2">
                             {result.status === 'completed' ? (
-                              <CheckCircle2 className="w-4 h-4 text-green-500" />
+                              <CheckCircle2 className="w-4 h-4 text-[#C9941A]" />
                             ) : (
                               <XCircle className="w-4 h-4 text-red-500" />
                             )}
@@ -529,7 +529,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
                             <Badge 
                               variant="secondary"
                               className={result.status === 'completed' 
-                                ? 'bg-green-500/20 text-green-400' 
+                                ? 'bg-[#C9941A]/20 text-[#C9941A]' 
                                 : 'bg-red-500/20 text-red-400'
                               }
                             >
@@ -582,14 +582,14 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
             <div className="flex gap-3">
               <Button
                 variant="outline"
-                className="flex-1 border-zinc-700"
+                className="flex-1 border-[#333]"
                 data-testid="button-download-all"
               >
                 <Download className="w-4 h-4 mr-2" />
                 Download All
               </Button>
               <Button
-                className="flex-1 bg-orange-500 hover:bg-orange-600 text-foreground"
+                className="flex-1 bg-[#C9941A] hover:bg-orange-600 text-foreground"
                 data-testid="button-publish-all"
               >
                 <Store className="w-4 h-4 mr-2" />

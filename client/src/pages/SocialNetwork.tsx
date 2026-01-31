@@ -190,7 +190,7 @@ export default function SocialNetwork() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-[#0D0D0D] text-white">
       <SEO
         title="Creator Network | KreAIte"
         description="Connect with thousands of stroke survivors and creators worldwide. Share recovery journeys, build meaningful relationships, and get support from our thriving community of verified healthcare professionals."
@@ -219,12 +219,12 @@ export default function SocialNetwork() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <Card className="bg-gray-900 border-gray-800">
+            <Card className="bg-[#1a1a1a] border-[#333]">
               <CardContent className="p-4">
                 <div className="flex gap-4">
                   <Avatar className="w-12 h-12">
                     <AvatarImage src={user?.profileImageUrl} />
-                    <AvatarFallback className="bg-gray-700 text-primary">
+                    <AvatarFallback className="bg-gray-700 text-[#C9941A]">
                       {user?.firstName?.[0]}{user?.lastName?.[0]}
                     </AvatarFallback>
                   </Avatar>
@@ -233,7 +233,7 @@ export default function SocialNetwork() {
                       value={newPostContent}
                       onChange={(e) => setNewPostContent(e.target.value)}
                       placeholder="Share your recovery journey..."
-                      className="bg-gray-800 border-gray-700 min-h-[100px]"
+                      className="bg-gray-800 border-[#333] min-h-[100px]"
                       data-testid="input-new-post"
                     />
                     <div className="flex items-center justify-between mt-3">
@@ -263,7 +263,7 @@ export default function SocialNetwork() {
             </Card>
 
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="bg-gray-900">
+              <TabsList className="bg-[#1a1a1a]">
                 <TabsTrigger value="feed" data-testid="tab-feed">Feed</TabsTrigger>
                 <TabsTrigger value="followers" data-testid="tab-followers">
                   Followers ({followers?.length || 0})
@@ -276,23 +276,23 @@ export default function SocialNetwork() {
               <TabsContent value="feed" className="mt-6 space-y-4">
                 {feedLoading ? (
                   <div className="flex justify-center py-12">
-                    <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                    <Loader2 className="w-8 h-8 text-[#C9941A] animate-spin" />
                   </div>
                 ) : feed && feed.length > 0 ? (
                   feed.map((post) => (
-                    <Card key={post.id} className="bg-gray-900 border-gray-800" data-testid={`post-${post.id}`}>
+                    <Card key={post.id} className="bg-[#1a1a1a] border-[#333]" data-testid={`post-${post.id}`}>
                       <CardContent className="p-6">
                         <div className="flex items-start gap-4">
                           <Avatar className="w-12 h-12">
                             <AvatarImage src={post.author?.profileImageUrl} />
-                            <AvatarFallback className="bg-gray-700 text-primary">
+                            <AvatarFallback className="bg-gray-700 text-[#C9941A]">
                               {post.author?.firstName?.[0]}{post.author?.lastName?.[0]}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1">
                             <div className="flex items-center justify-between">
                               <div>
-                                <p className="text-foreground font-medium">
+                                <p className="text-white font-medium">
                                   {post.author?.firstName} {post.author?.lastName}
                                 </p>
                                 <p className="text-gray-500 text-sm">{formatTimeAgo(post.createdAt)}</p>
@@ -301,7 +301,7 @@ export default function SocialNetwork() {
                                 <MoreHorizontal className="w-4 h-4" />
                               </Button>
                             </div>
-                            <p className="text-foreground mt-3">{post.content}</p>
+                            <p className="text-white mt-3">{post.content}</p>
                             {post.media && post.media.length > 0 && (
                               <div className="mt-4 rounded-xl overflow-hidden">
                                 {post.media[0].mediaType === "video" ? (
@@ -319,7 +319,7 @@ export default function SocialNetwork() {
                                 <Heart className={`w-5 h-5 ${post.hasLiked ? "fill-current" : ""}`} />
                                 <span>{post.likeCount}</span>
                               </button>
-                              <button className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors">
+                              <button className="flex items-center gap-2 text-gray-400 hover:text-[#C9941A] transition-colors">
                                 <MessageCircle className="w-5 h-5" />
                                 <span>{post.commentCount}</span>
                               </button>
@@ -328,7 +328,7 @@ export default function SocialNetwork() {
                                   setSelectedPost(post);
                                   setShareDialogOpen(true);
                                 }}
-                                className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors"
+                                className="flex items-center gap-2 text-gray-400 hover:text-[#C9941A] transition-colors"
                               >
                                 <Share2 className="w-5 h-5" />
                                 <span>{post.shareCount}</span>
@@ -351,18 +351,18 @@ export default function SocialNetwork() {
               <TabsContent value="followers" className="mt-6 space-y-4">
                 {followers && followers.length > 0 ? (
                   followers.map((follower) => (
-                    <Card key={follower.id} className="bg-gray-900 border-gray-800">
+                    <Card key={follower.id} className="bg-[#1a1a1a] border-[#333]">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
                             <Avatar className="w-12 h-12">
                               <AvatarImage src={follower.profileImageUrl} />
-                              <AvatarFallback className="bg-gray-700 text-primary">
+                              <AvatarFallback className="bg-gray-700 text-[#C9941A]">
                                 {follower.firstName?.[0]}{follower.lastName?.[0]}
                               </AvatarFallback>
                             </Avatar>
                             <div>
-                              <p className="text-foreground font-medium">
+                              <p className="text-white font-medium">
                                 {follower.firstName} {follower.lastName}
                               </p>
                               <p className="text-gray-400 text-sm">
@@ -393,18 +393,18 @@ export default function SocialNetwork() {
               <TabsContent value="following" className="mt-6 space-y-4">
                 {following && following.length > 0 ? (
                   following.map((followed) => (
-                    <Card key={followed.id} className="bg-gray-900 border-gray-800">
+                    <Card key={followed.id} className="bg-[#1a1a1a] border-[#333]">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
                             <Avatar className="w-12 h-12">
                               <AvatarImage src={followed.profileImageUrl} />
-                              <AvatarFallback className="bg-gray-700 text-primary">
+                              <AvatarFallback className="bg-gray-700 text-[#C9941A]">
                                 {followed.firstName?.[0]}{followed.lastName?.[0]}
                               </AvatarFallback>
                             </Avatar>
                             <div>
-                              <p className="text-foreground font-medium">
+                              <p className="text-white font-medium">
                                 {followed.firstName} {followed.lastName}
                               </p>
                               <p className="text-gray-400 text-sm">
@@ -436,9 +436,9 @@ export default function SocialNetwork() {
           </div>
 
           <div className="space-y-6">
-            <Card className="bg-gray-900 border-gray-800">
+            <Card className="bg-[#1a1a1a] border-[#333]">
               <CardHeader>
-                <CardTitle className="text-foreground flex items-center gap-2">
+                <CardTitle className="text-white flex items-center gap-2">
                   <Search className="w-5 h-5" />
                   Find Survivors
                 </CardTitle>
@@ -448,7 +448,7 @@ export default function SocialNetwork() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search by name..."
-                  className="bg-gray-800 border-gray-700 mb-4"
+                  className="bg-gray-800 border-[#333] mb-4"
                   data-testid="input-search-users"
                 />
                 <div className="space-y-3">
@@ -457,12 +457,12 @@ export default function SocialNetwork() {
                       <div className="flex items-center gap-3">
                         <Avatar className="w-10 h-10">
                           <AvatarImage src={u.profileImageUrl} />
-                          <AvatarFallback className="bg-gray-700 text-primary">
+                          <AvatarFallback className="bg-gray-700 text-[#C9941A]">
                             {u.firstName?.[0]}{u.lastName?.[0]}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="text-foreground text-sm font-medium">
+                          <p className="text-white text-sm font-medium">
                             {u.firstName} {u.lastName}
                           </p>
                           <p className="text-gray-500 text-xs">
@@ -500,9 +500,9 @@ export default function SocialNetwork() {
               </CardContent>
             </Card>
 
-            <Card className="bg-gray-900 border-gray-800">
+            <Card className="bg-[#1a1a1a] border-[#333]">
               <CardHeader>
-                <CardTitle className="text-foreground flex items-center gap-2">
+                <CardTitle className="text-white flex items-center gap-2">
                   <Trophy className="w-5 h-5 text-yellow-500" />
                   Top Recoverers
                 </CardTitle>
@@ -514,18 +514,18 @@ export default function SocialNetwork() {
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
                         rank === 1 ? "bg-yellow-500/20 text-yellow-500" :
                         rank === 2 ? "bg-gray-400/20 text-gray-400" :
-                        "bg-primary/20 text-primary"
+                        "bg-primary/20 text-[#C9941A]"
                       }`}>
                         {rank}
                       </div>
                       <Avatar className="w-10 h-10">
-                        <AvatarFallback className="bg-gray-700 text-primary">
+                        <AvatarFallback className="bg-gray-700 text-[#C9941A]">
                           U{rank}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
-                        <p className="text-foreground text-sm font-medium">Top Survivor {rank}</p>
-                        <div className="flex items-center gap-1 text-primary text-xs">
+                        <p className="text-white text-sm font-medium">Top Survivor {rank}</p>
+                        <div className="flex items-center gap-1 text-[#C9941A] text-xs">
                           <Flame className="w-3 h-3" />
                           {100 - rank * 10} day streak
                         </div>
@@ -539,9 +539,9 @@ export default function SocialNetwork() {
         </div>
 
         <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
-          <DialogContent className="bg-gray-900 border-gray-800">
+          <DialogContent className="bg-[#1a1a1a] border-[#333]">
             <DialogHeader>
-              <DialogTitle className="text-foreground">Share to Social Media</DialogTitle>
+              <DialogTitle className="text-white">Share to Social Media</DialogTitle>
             </DialogHeader>
             <div className="grid grid-cols-2 gap-4 py-4">
               <Button

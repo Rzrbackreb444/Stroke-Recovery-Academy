@@ -256,7 +256,7 @@ export default function PublishingHub() {
                               {platform.type}
                             </Badge>
                             {platform.apiAvailable && (
-                              <Badge variant="outline" className="text-xs text-green-600 dark:text-green-400">
+                              <Badge variant="outline" className="text-xs text-green-600 dark:text-[#C9941A]">
                                 API
                               </Badge>
                             )}
@@ -276,7 +276,7 @@ export default function PublishingHub() {
                     </p>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Royalty:</span>
-                      <span className="font-semibold text-green-600 dark:text-green-400">{platform.royaltyRate}</span>
+                      <span className="font-semibold text-green-600 dark:text-[#C9941A]">{platform.royaltyRate}</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Est. per sale:</span>
@@ -448,7 +448,7 @@ export default function PublishingHub() {
                           <span className="text-sm font-medium">{platform.name}</span>
                           <Badge variant="outline" className="text-xs">{platform.royaltyRate}</Badge>
                         </div>
-                        <span className="font-bold text-green-600 dark:text-green-400">${royalty.toFixed(2)}</span>
+                        <span className="font-bold text-green-600 dark:text-[#C9941A]">${royalty.toFixed(2)}</span>
                       </div>
                       <Progress value={percentage} className="h-2" />
                     </div>
@@ -467,9 +467,9 @@ export default function PublishingHub() {
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2">
                       {key === 'wide' && <Globe className="w-5 h-5 text-blue-600 dark:text-blue-400" />}
-                      {key === 'kdp_exclusive' && <Crown className="w-5 h-5 text-orange-600 dark:text-orange-400" />}
+                      {key === 'kdp_exclusive' && <Crown className="w-5 h-5 text-orange-600 dark:text-[#C9941A]" />}
                       {key === 'hybrid' && <TrendingUp className="w-5 h-5 text-purple-600 dark:text-purple-400" />}
-                      {key === 'library_focus' && <Library className="w-5 h-5 text-green-600 dark:text-green-400" />}
+                      {key === 'library_focus' && <Library className="w-5 h-5 text-green-600 dark:text-[#C9941A]" />}
                       {strategy.name}
                     </CardTitle>
                   </div>
@@ -486,11 +486,11 @@ export default function PublishingHub() {
 
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <p className="font-medium text-green-600 dark:text-green-400 mb-1">Pros:</p>
+                      <p className="font-medium text-green-600 dark:text-[#C9941A] mb-1">Pros:</p>
                       <ul className="space-y-1">
                         {strategy.pros?.map((pro: string, i: number) => (
                           <li key={i} className="flex items-start gap-1">
-                            <CheckCircle2 className="w-3 h-3 mt-1 text-green-600 dark:text-green-400 flex-shrink-0" />
+                            <CheckCircle2 className="w-3 h-3 mt-1 text-green-600 dark:text-[#C9941A] flex-shrink-0" />
                             <span className="text-muted-foreground">{pro}</span>
                           </li>
                         ))}

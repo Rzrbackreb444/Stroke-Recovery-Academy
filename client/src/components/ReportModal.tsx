@@ -86,7 +86,7 @@ export function ReportModal({ isOpen, onClose, listingId, listingTitle }: Report
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="bg-background border-gray-800 text-foreground max-w-md" data-testid="modal-report-content">
+      <DialogContent className="bg-background border-[#333] text-foreground max-w-md" data-testid="modal-report-content">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-foreground">
             <Flag className="w-5 h-5 text-[#FF6B35]" />
@@ -109,12 +109,12 @@ export function ReportModal({ isOpen, onClose, listingId, listingTitle }: Report
             <Select value={reason} onValueChange={setReason}>
               <SelectTrigger
                 id="reason"
-                className="bg-gray-900 border-gray-700 text-foreground focus:border-[#FF6B35] focus:ring-[#FF6B35]"
+                className="bg-[#1a1a1a] border-[#333] text-foreground focus:border-[#FF6B35] focus:ring-[#FF6B35]"
                 data-testid="select-report-reason"
               >
                 <SelectValue placeholder="Select a reason" />
               </SelectTrigger>
-              <SelectContent className="bg-gray-900 border-gray-700">
+              <SelectContent className="bg-[#1a1a1a] border-[#333]">
                 {REPORT_REASONS.map((option) => (
                   <SelectItem
                     key={option.value}
@@ -138,12 +138,12 @@ export function ReportModal({ isOpen, onClose, listingId, listingTitle }: Report
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Please provide any additional context that might help us review this content..."
-              className="bg-gray-900 border-gray-700 text-foreground placeholder:text-gray-500 focus:border-[#FF6B35] focus:ring-[#FF6B35] min-h-[100px]"
+              className="bg-[#1a1a1a] border-[#333] text-foreground placeholder:text-gray-500 focus:border-[#FF6B35] focus:ring-[#FF6B35] min-h-[100px]"
               data-testid="textarea-report-description"
             />
           </div>
 
-          <div className="flex items-start gap-2 p-3 bg-gray-900/50 rounded-md border border-gray-800">
+          <div className="flex items-start gap-2 p-3 bg-[#1a1a1a]/50 rounded-md border border-[#333]">
             <AlertTriangle className="w-4 h-4 text-[#FF6B35] mt-0.5 shrink-0" />
             <p className="text-xs text-gray-400">
               False reports may result in action against your account. Please only report content that genuinely violates our community guidelines.
@@ -155,7 +155,7 @@ export function ReportModal({ isOpen, onClose, listingId, listingTitle }: Report
           <Button
             variant="outline"
             onClick={handleClose}
-            className="border-gray-700 text-gray-300 hover:bg-gray-800"
+            className="border-[#333] text-gray-300 hover:bg-gray-800"
             data-testid="button-cancel-report"
           >
             <X className="w-4 h-4 mr-2" />

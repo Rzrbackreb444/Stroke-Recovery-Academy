@@ -53,7 +53,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   manuscript: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
   doctrine: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
   idea: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
-  research: 'bg-green-500/20 text-green-300 border-green-500/30',
+  research: 'bg-[#C9941A]/20 text-green-300 border-green-500/30',
   beat: 'bg-red-500/20 text-red-300 border-red-500/30',
   melody: 'bg-pink-500/20 text-pink-300 border-pink-500/30',
   screenplay: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',

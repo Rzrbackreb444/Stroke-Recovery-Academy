@@ -102,14 +102,14 @@ export default function FlickerLog() {
   const recentCount = logs?.length || 0;
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-[#0D0D0D] text-white">
       <RecoveryHeader />
       
       <main className="container mx-auto px-4 py-6 max-w-4xl">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
-              <Zap className="h-6 w-6 text-orange-500" />
+              <Zap className="h-6 w-6 text-[#C9941A]" />
               Flicker Log
             </h1>
             <p className="text-gray-400 text-sm mt-1">
@@ -119,15 +119,15 @@ export default function FlickerLog() {
           
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-orange-500" data-testid="button-add-flicker">
+              <Button className="bg-[#C9941A] text-black" data-testid="button-add-flicker">
                 <Plus className="h-4 w-4 mr-2" />
                 Log a Flicker
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-lg">
+            <DialogContent className="bg-[#1a1a1a] border-[#333] text-white max-w-lg">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-orange-500" />
+                  <Sparkles className="h-5 w-5 text-[#C9941A]" />
                   Capture Your Moment
                 </DialogTitle>
               </DialogHeader>
@@ -139,7 +139,7 @@ export default function FlickerLog() {
                     placeholder="I felt my finger twitch... My hand opened slightly... I said a word clearly..."
                     value={form.moment}
                     onChange={(e) => setForm({ ...form, moment: e.target.value })}
-                    className="bg-zinc-800 border-zinc-700 mt-1"
+                    className="bg-[#1a1a1a] border-[#333] mt-1"
                     data-testid="input-moment"
                   />
                 </div>
@@ -147,10 +147,10 @@ export default function FlickerLog() {
                 <div>
                   <Label>Body Part</Label>
                   <Select value={form.bodyPart} onValueChange={(v) => setForm({ ...form, bodyPart: v })}>
-                    <SelectTrigger className="bg-zinc-800 border-zinc-700 mt-1" data-testid="select-body-part">
+                    <SelectTrigger className="bg-[#1a1a1a] border-[#333] mt-1" data-testid="select-body-part">
                       <SelectValue placeholder="Select area" />
                     </SelectTrigger>
-                    <SelectContent className="bg-zinc-900 border-zinc-800">
+                    <SelectContent className="bg-[#1a1a1a] border-[#333]">
                       {bodyParts.map((part) => (
                         <SelectItem key={part.value} value={part.value}>
                           {part.label}
@@ -171,7 +171,7 @@ export default function FlickerLog() {
                       step={1}
                       className="flex-1"
                     />
-                    <Badge variant="outline" className="border-orange-500 text-orange-500">
+                    <Badge variant="outline" className="border-[#C9941A] text-[#C9941A]">
                       {form.intensity}
                     </Badge>
                   </div>
@@ -181,10 +181,10 @@ export default function FlickerLog() {
                   <div>
                     <Label>Emotion Before</Label>
                     <Select value={form.emotionBefore} onValueChange={(v) => setForm({ ...form, emotionBefore: v })}>
-                      <SelectTrigger className="bg-zinc-800 border-zinc-700 mt-1">
+                      <SelectTrigger className="bg-[#1a1a1a] border-[#333] mt-1">
                         <SelectValue placeholder="How did you feel?" />
                       </SelectTrigger>
-                      <SelectContent className="bg-zinc-900 border-zinc-800">
+                      <SelectContent className="bg-[#1a1a1a] border-[#333]">
                         {emotions.map((e) => (
                           <SelectItem key={e} value={e}>{e}</SelectItem>
                         ))}
@@ -194,10 +194,10 @@ export default function FlickerLog() {
                   <div>
                     <Label>Emotion After</Label>
                     <Select value={form.emotionAfter} onValueChange={(v) => setForm({ ...form, emotionAfter: v })}>
-                      <SelectTrigger className="bg-zinc-800 border-zinc-700 mt-1">
+                      <SelectTrigger className="bg-[#1a1a1a] border-[#333] mt-1">
                         <SelectValue placeholder="How do you feel now?" />
                       </SelectTrigger>
-                      <SelectContent className="bg-zinc-900 border-zinc-800">
+                      <SelectContent className="bg-[#1a1a1a] border-[#333]">
                         {emotions.map((e) => (
                           <SelectItem key={e} value={e}>{e}</SelectItem>
                         ))}
@@ -212,7 +212,7 @@ export default function FlickerLog() {
                     placeholder="Therapy, exercising, resting, eating..."
                     value={form.activity}
                     onChange={(e) => setForm({ ...form, activity: e.target.value })}
-                    className="bg-zinc-800 border-zinc-700 mt-1"
+                    className="bg-[#1a1a1a] border-[#333] mt-1"
                   />
                 </div>
 
@@ -234,14 +234,14 @@ export default function FlickerLog() {
                     placeholder="Any other details you want to remember..."
                     value={form.notes}
                     onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                    className="bg-zinc-800 border-zinc-700 mt-1"
+                    className="bg-[#1a1a1a] border-[#333] mt-1"
                     rows={2}
                   />
                 </div>
 
                 <Button 
                   onClick={handleSubmit} 
-                  className="w-full bg-orange-500"
+                  className="w-full bg-[#C9941A] text-black"
                   disabled={createMutation.isPending}
                   data-testid="button-save-flicker"
                 >
@@ -253,16 +253,16 @@ export default function FlickerLog() {
         </div>
 
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <Card className="bg-zinc-900 border-zinc-800 p-4 text-center">
-            <div className="text-2xl font-bold text-orange-500">{recentCount}</div>
+          <Card className="bg-[#1a1a1a] border-[#333] p-4 text-center">
+            <div className="text-2xl font-bold text-[#C9941A]">{recentCount}</div>
             <div className="text-sm text-gray-400">Total Flickers</div>
           </Card>
-          <Card className="bg-zinc-900 border-zinc-800 p-4 text-center">
+          <Card className="bg-[#1a1a1a] border-[#333] p-4 text-center">
             <div className="text-2xl font-bold text-yellow-500">{breakthroughs.length}</div>
             <div className="text-sm text-gray-400">Breakthroughs</div>
           </Card>
-          <Card className="bg-zinc-900 border-zinc-800 p-4 text-center">
-            <div className="text-2xl font-bold text-green-500">
+          <Card className="bg-[#1a1a1a] border-[#333] p-4 text-center">
+            <div className="text-2xl font-bold text-[#C9941A]">
               {logs?.[0] ? new Date(logs[0].created_at).toLocaleDateString() : "-"}
             </div>
             <div className="text-sm text-gray-400">Last Logged</div>
@@ -272,15 +272,15 @@ export default function FlickerLog() {
         {isLoading ? (
           <div className="text-center py-12 text-gray-400">Loading your flickers...</div>
         ) : !logs?.length ? (
-          <Card className="bg-zinc-900 border-zinc-800 p-8 text-center">
-            <Sparkles className="h-12 w-12 text-orange-500 mx-auto mb-4" />
+          <Card className="bg-[#1a1a1a] border-[#333] p-8 text-center">
+            <Sparkles className="h-12 w-12 text-[#C9941A] mx-auto mb-4" />
             <h3 className="text-lg font-semibold mb-2">No flickers logged yet</h3>
             <p className="text-gray-400 mb-4">
               Start capturing those micro-moments of recovery. Every twitch, every spark is progress!
             </p>
             <Button 
               onClick={() => setIsOpen(true)} 
-              className="bg-orange-500"
+              className="bg-[#C9941A] text-black"
             >
               Log Your First Flicker
             </Button>
@@ -288,7 +288,7 @@ export default function FlickerLog() {
         ) : (
           <div className="space-y-4">
             {logs.map((log: any) => (
-              <Card key={log.id} className={`bg-zinc-900 border-zinc-800 p-4 ${log.is_breakthrough ? 'border-yellow-500/50' : ''}`}>
+              <Card key={log.id} className={`bg-[#1a1a1a] border-[#333] p-4 ${log.is_breakthrough ? 'border-yellow-500/50' : ''}`}>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
@@ -299,11 +299,11 @@ export default function FlickerLog() {
                         </Badge>
                       )}
                       {log.body_part && (
-                        <Badge variant="outline" className="border-zinc-700">
+                        <Badge variant="outline" className="border-[#333]">
                           {bodyParts.find(b => b.value === log.body_part)?.label || log.body_part}
                         </Badge>
                       )}
-                      <Badge variant="outline" className="border-orange-500/50 text-orange-400">
+                      <Badge variant="outline" className="border-[#C9941A]/50 text-[#C9941A]">
                         Intensity: {log.intensity}/5
                       </Badge>
                     </div>

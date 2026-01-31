@@ -380,13 +380,13 @@ export default function WebsiteStudio() {
             </Button>
             <Separator orientation="vertical" className="h-6" />
             <div className="flex items-center gap-2">
-              <Globe className="w-4 h-4 text-primary" />
+              <Globe className="w-4 h-4 text-[#C9941A]" />
               <span className="font-medium">{websiteData.name || "My Website"}</span>
             </div>
           </div>
           
           <div className="flex items-center gap-2">
-            <div className="flex items-center border rounded-md p-1 bg-muted/50">
+            <div className="flex items-center border rounded-md p-1 bg-[#1a1a1a]/50">
               <Button
                 variant={previewDevice === "desktop" ? "secondary" : "ghost"}
                 size="icon"
@@ -468,9 +468,9 @@ export default function WebsiteStudio() {
                       {pageSections.map((section, index) => (
                         <div
                           key={section.id}
-                          className="flex items-center gap-2 p-2 rounded-md border bg-muted/30 group hover-elevate cursor-move"
+                          className="flex items-center gap-2 p-2 rounded-md border bg-[#1a1a1a]/30 group hover-elevate cursor-move"
                         >
-                          <GripVertical className="w-4 h-4 text-muted-foreground" />
+                          <GripVertical className="w-4 h-4 text-gray-400" />
                           <span className="flex-1 text-sm">{section.title}</span>
                           <Button
                             variant="ghost"
@@ -511,7 +511,7 @@ export default function WebsiteStudio() {
                     <h4 className="text-sm font-medium mb-3">Colors</h4>
                     <div className="space-y-3">
                       <div>
-                        <Label className="text-xs text-muted-foreground">Primary</Label>
+                        <Label className="text-xs text-gray-400">Primary</Label>
                         <div className="flex items-center gap-2 mt-1">
                           <div 
                             className="w-8 h-8 rounded-md border"
@@ -525,7 +525,7 @@ export default function WebsiteStudio() {
                         </div>
                       </div>
                       <div>
-                        <Label className="text-xs text-muted-foreground">Secondary</Label>
+                        <Label className="text-xs text-gray-400">Secondary</Label>
                         <div className="flex items-center gap-2 mt-1">
                           <div 
                             className="w-8 h-8 rounded-md border"
@@ -540,7 +540,7 @@ export default function WebsiteStudio() {
                       </div>
                     </div>
                     <div className="mt-3">
-                      <Label className="text-xs text-muted-foreground">Presets</Label>
+                      <Label className="text-xs text-gray-400">Presets</Label>
                       <div className="grid grid-cols-4 gap-2 mt-1">
                         {colorPresets.map((preset) => (
                           <button
@@ -582,7 +582,7 @@ export default function WebsiteStudio() {
                           <div className="text-sm font-medium" style={{ fontFamily: pair.heading }}>
                             {pair.heading}
                           </div>
-                          <div className="text-xs text-muted-foreground mt-1" style={{ fontFamily: pair.body }}>
+                          <div className="text-xs text-gray-400 mt-1" style={{ fontFamily: pair.body }}>
                             {pair.body} - {pair.style}
                           </div>
                         </button>
@@ -595,11 +595,11 @@ export default function WebsiteStudio() {
               {editorPanel === "seo" && (
                 <div className="p-4 space-y-4">
                   <div className="p-3 rounded-md bg-primary/10 border border-primary/20">
-                    <div className="flex items-center gap-2 text-primary mb-1">
+                    <div className="flex items-center gap-2 text-[#C9941A] mb-1">
                       <Sparkles className="w-4 h-4" />
                       <span className="text-sm font-medium">AI SEO Assistant</span>
                     </div>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-gray-400">
                       Automatically optimize your site for search engines
                     </p>
                     <Button size="sm" className="w-full mt-2" data-testid="button-optimize-seo">
@@ -612,7 +612,7 @@ export default function WebsiteStudio() {
                     <div>
                       <Label className="text-xs">Page Title</Label>
                       <Input placeholder="My Amazing Website | Business Name" className="mt-1" />
-                      <p className="text-xs text-muted-foreground mt-1">60 characters recommended</p>
+                      <p className="text-xs text-gray-400 mt-1">60 characters recommended</p>
                     </div>
                     <div>
                       <Label className="text-xs">Meta Description</Label>
@@ -636,7 +636,7 @@ export default function WebsiteStudio() {
                       <Badge variant="secondary">Good</Badge>
                     </div>
                     <Progress value={75} className="h-2" />
-                    <p className="text-xs text-muted-foreground mt-2">
+                    <p className="text-xs text-gray-400 mt-2">
                       Your site scores 75/100. Add meta descriptions to improve.
                     </p>
                   </div>
@@ -663,15 +663,15 @@ export default function WebsiteStudio() {
                         placeholder="my-site"
                         className="flex-1"
                       />
-                      <span className="text-xs text-muted-foreground">.kreaite.xyz</span>
+                      <span className="text-xs text-gray-400">.kreaite.xyz</span>
                     </div>
                   </div>
                   <Separator />
                   <div>
                     <Label className="text-xs">Favicon</Label>
                     <div className="mt-1 border-2 border-dashed rounded-md p-4 text-center">
-                      <Upload className="w-6 h-6 mx-auto text-muted-foreground mb-2" />
-                      <p className="text-xs text-muted-foreground">Upload favicon (32x32px)</p>
+                      <Upload className="w-6 h-6 mx-auto text-gray-400 mb-2" />
+                      <p className="text-xs text-gray-400">Upload favicon (32x32px)</p>
                     </div>
                   </div>
                   <div>
@@ -683,7 +683,7 @@ export default function WebsiteStudio() {
             </ScrollArea>
           </aside>
 
-          <main className="flex-1 bg-muted/30 p-6 overflow-auto">
+          <main className="flex-1 bg-[#1a1a1a]/30 p-6 overflow-auto">
             <div 
               className={`mx-auto bg-white rounded-lg shadow-lg overflow-hidden transition-all ${
                 previewDevice === "desktop" ? "w-full" :
@@ -712,7 +712,7 @@ export default function WebsiteStudio() {
                     background: `linear-gradient(135deg, ${websiteData.primaryColor} 0%, ${websiteData.secondaryColor} 100%)` 
                   }}
                 >
-                  <div className="absolute inset-0 bg-black/20" />
+                  <div className="absolute inset-0 bg-[#0D0D0D]/20" />
                   <div className="relative z-10 text-center max-w-2xl px-6">
                     <h1 
                       className="text-4xl md:text-5xl font-bold mb-4"
@@ -805,7 +805,7 @@ export default function WebsiteStudio() {
                               </div>
                               <div>
                                 <p className="font-medium text-sm">{testimonial.name}</p>
-                                <p className="text-xs text-muted-foreground">{testimonial.role}</p>
+                                <p className="text-xs text-gray-400">{testimonial.role}</p>
                               </div>
                             </div>
                           </CardContent>
@@ -952,7 +952,7 @@ export default function WebsiteStudio() {
           <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "Playfair Display" }}>
             Build Your Dream Website
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
             Create a stunning, SEO-optimized website in minutes. No coding required.
             Choose a template, customize, and publish with free hosting.
           </p>
@@ -1019,7 +1019,7 @@ export default function WebsiteStudio() {
                         Popular
                       </Badge>
                     )}
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <div className="absolute inset-0 bg-[#0D0D0D]/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                       <Button size="sm" variant="secondary">
                         <Eye className="w-4 h-4 mr-1" />
                         Preview
@@ -1034,7 +1034,7 @@ export default function WebsiteStudio() {
                       <h3 className="font-semibold">{template.name}</h3>
                       <Badge variant="outline" className="text-xs">{template.category}</Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground line-clamp-2">{template.description}</p>
+                    <p className="text-sm text-gray-400 line-clamp-2">{template.description}</p>
                     <div className="flex gap-1 mt-3 flex-wrap">
                       {template.pages.slice(0, 3).map((page) => (
                         <Badge key={page} variant="secondary" className="text-xs">{page}</Badge>
@@ -1051,12 +1051,12 @@ export default function WebsiteStudio() {
             {selectedTemplate && (
               <div className="fixed bottom-0 left-0 right-0 bg-card border-t p-4 flex items-center justify-between z-50">
                 <div className="flex items-center gap-4">
-                  <CheckCircle2 className="w-5 h-5 text-primary" />
+                  <CheckCircle2 className="w-5 h-5 text-[#C9941A]" />
                   <div>
                     <p className="font-medium">
                       {websiteTemplates.find(t => t.id === selectedTemplate)?.name} selected
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-gray-400">
                       Ready to customize your website
                     </p>
                   </div>
@@ -1240,7 +1240,7 @@ export default function WebsiteStudio() {
                           {pair.heading}
                         </div>
                         <div 
-                          className="text-sm text-muted-foreground"
+                          className="text-sm text-gray-400"
                           style={{ fontFamily: pair.body }}
                         >
                           Body: {pair.body}
@@ -1293,7 +1293,7 @@ export default function WebsiteStudio() {
                           onClick={() => setLogoData(prev => ({ ...prev, style: style.id }))}
                         >
                           <div className="font-medium text-sm">{style.name}</div>
-                          <div className="text-xs text-muted-foreground">{style.description}</div>
+                          <div className="text-xs text-gray-400">{style.description}</div>
                         </button>
                       ))}
                     </div>
@@ -1370,7 +1370,7 @@ export default function WebsiteStudio() {
                           className="aspect-square rounded-lg border overflow-hidden cursor-pointer hover-elevate group relative"
                         >
                           <img src={logo} alt={`Logo option ${index + 1}`} className="w-full h-full object-cover" />
-                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                          <div className="absolute inset-0 bg-[#0D0D0D]/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                             <Button size="sm" variant="secondary">
                               <Check className="w-4 h-4 mr-1" />
                               Select
@@ -1381,7 +1381,7 @@ export default function WebsiteStudio() {
                     </div>
                   ) : (
                     <div className="aspect-square rounded-lg border-2 border-dashed flex items-center justify-center">
-                      <div className="text-center text-muted-foreground">
+                      <div className="text-center text-gray-400">
                         <PenTool className="w-12 h-12 mx-auto mb-3 opacity-50" />
                         <p>Generated logos will appear here</p>
                         <p className="text-sm mt-1">Fill out the form and click generate</p>
@@ -1408,7 +1408,7 @@ export default function WebsiteStudio() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-2xl font-bold">My Websites</h2>
-                <p className="text-muted-foreground">Manage and edit your published sites</p>
+                <p className="text-gray-400">Manage and edit your published sites</p>
               </div>
               <Button onClick={() => setActiveTab("templates")} data-testid="button-create-new-site">
                 <Plus className="w-4 h-4 mr-2" />
@@ -1419,11 +1419,11 @@ export default function WebsiteStudio() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               <Card className="border-dashed">
                 <CardContent className="flex flex-col items-center justify-center h-64">
-                  <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
-                    <Plus className="w-8 h-8 text-muted-foreground" />
+                  <div className="w-16 h-16 rounded-full bg-[#1a1a1a] flex items-center justify-center mb-4">
+                    <Plus className="w-8 h-8 text-gray-400" />
                   </div>
                   <h3 className="font-medium mb-2">Create Your First Website</h3>
-                  <p className="text-sm text-muted-foreground text-center mb-4">
+                  <p className="text-sm text-gray-400 text-center mb-4">
                     Choose a template and start building
                   </p>
                   <Button onClick={() => setActiveTab("templates")}>

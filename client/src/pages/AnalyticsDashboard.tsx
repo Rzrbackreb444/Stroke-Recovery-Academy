@@ -93,7 +93,7 @@ function AnalyticsSkeleton() {
     <div className="space-y-6" data-testid="analytics-loading">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
-          <Card key={i} className="bg-card border-gray-800">
+          <Card key={i} className="bg-card border-[#333]">
             <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
               <Skeleton className="h-4 w-24" />
               <Skeleton className="h-8 w-8 rounded" />
@@ -106,7 +106,7 @@ function AnalyticsSkeleton() {
         ))}
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2 bg-card border-gray-800">
+        <Card className="lg:col-span-2 bg-card border-[#333]">
           <CardHeader>
             <Skeleton className="h-5 w-32" />
           </CardHeader>
@@ -114,7 +114,7 @@ function AnalyticsSkeleton() {
             <Skeleton className="h-64 w-full" />
           </CardContent>
         </Card>
-        <Card className="bg-card border-gray-800">
+        <Card className="bg-card border-[#333]">
           <CardHeader>
             <Skeleton className="h-5 w-32" />
           </CardHeader>
@@ -138,7 +138,7 @@ interface SummaryCardProps {
 function SummaryCard({ title, value, change, icon: Icon, testId }: SummaryCardProps) {
   const isPositive = change >= 0;
   return (
-    <Card className="bg-card border-gray-800" data-testid={testId}>
+    <Card className="bg-card border-[#333]" data-testid={testId}>
       <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
         <CardTitle className="text-sm font-medium text-gray-400">{title}</CardTitle>
         <div className="h-8 w-8 rounded bg-[#FF6B35]/10 flex items-center justify-center">
@@ -147,7 +147,7 @@ function SummaryCard({ title, value, change, icon: Icon, testId }: SummaryCardPr
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold text-foreground" data-testid={`${testId}-value`}>{value}</div>
-        <p className={`text-xs flex items-center gap-1 ${isPositive ? "text-green-500" : "text-red-500"}`}>
+        <p className={`text-xs flex items-center gap-1 ${isPositive ? "text-[#C9941A]" : "text-red-500"}`}>
           {isPositive ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
           {Math.abs(change)}% from last period
         </p>
@@ -184,10 +184,10 @@ export default function AnalyticsDashboard() {
           </div>
           <div className="flex items-center gap-3">
             <Select value={timePeriod} onValueChange={setTimePeriod}>
-              <SelectTrigger className="w-40 bg-gray-900 border-gray-700 text-foreground" data-testid="select-time-period">
+              <SelectTrigger className="w-40 bg-[#1a1a1a] border-[#333] text-foreground" data-testid="select-time-period">
                 <SelectValue placeholder="Select period" />
               </SelectTrigger>
-              <SelectContent className="bg-gray-900 border-gray-700">
+              <SelectContent className="bg-[#1a1a1a] border-[#333]">
                 <SelectItem value="7" data-testid="option-7-days">Last 7 days</SelectItem>
                 <SelectItem value="30" data-testid="option-30-days">Last 30 days</SelectItem>
                 <SelectItem value="90" data-testid="option-90-days">Last 90 days</SelectItem>
@@ -233,7 +233,7 @@ export default function AnalyticsDashboard() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-          <Card className="lg:col-span-2 bg-card border-gray-800" data-testid="card-revenue-chart">
+          <Card className="lg:col-span-2 bg-card border-[#333]" data-testid="card-revenue-chart">
             <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
               <div>
                 <CardTitle className="text-foreground flex items-center gap-2">
@@ -288,7 +288,7 @@ export default function AnalyticsDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="bg-card border-gray-800" data-testid="card-sales-breakdown">
+          <Card className="bg-card border-[#333]" data-testid="card-sales-breakdown">
             <CardHeader>
               <CardTitle className="text-foreground flex items-center gap-2">
                 <ShoppingCart className="h-5 w-5 text-[#FF6B35]" />
@@ -336,7 +336,7 @@ export default function AnalyticsDashboard() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="bg-card border-gray-800" data-testid="card-top-products">
+          <Card className="bg-card border-[#333]" data-testid="card-top-products">
             <CardHeader>
               <CardTitle className="text-foreground flex items-center gap-2">
                 <TrendingUp className="h-5 w-5 text-[#FF6B35]" />
@@ -350,7 +350,7 @@ export default function AnalyticsDashboard() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-gray-800">
+                    <tr className="border-b border-[#333]">
                       <th className="text-left py-3 text-gray-400 font-medium">Product</th>
                       <th className="text-left py-3 text-gray-400 font-medium">Type</th>
                       <th className="text-right py-3 text-gray-400 font-medium">Sales</th>
@@ -360,13 +360,13 @@ export default function AnalyticsDashboard() {
                   </thead>
                   <tbody>
                     {mockTopProducts.map((product, index) => (
-                      <tr key={product.id} className="border-b border-gray-800/50" data-testid={`row-product-${index}`}>
+                      <tr key={product.id} className="border-b border-[#333]/50" data-testid={`row-product-${index}`}>
                         <td className="py-3 text-foreground font-medium truncate max-w-[200px]">{product.name}</td>
                         <td className="py-3 text-gray-400">{product.type}</td>
                         <td className="py-3 text-right text-gray-300">{product.sales}</td>
                         <td className="py-3 text-right text-foreground font-medium">${product.revenue}</td>
                         <td className="py-3 text-right">
-                          <span className={`flex items-center justify-end gap-1 ${product.trend >= 0 ? "text-green-500" : "text-red-500"}`}>
+                          <span className={`flex items-center justify-end gap-1 ${product.trend >= 0 ? "text-[#C9941A]" : "text-red-500"}`}>
                             {product.trend >= 0 ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
                             {Math.abs(product.trend)}%
                           </span>
@@ -379,7 +379,7 @@ export default function AnalyticsDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="bg-card border-gray-800" data-testid="card-recent-transactions">
+          <Card className="bg-card border-[#333]" data-testid="card-recent-transactions">
             <CardHeader>
               <CardTitle className="text-foreground flex items-center gap-2">
                 <DollarSign className="h-5 w-5 text-[#FF6B35]" />
@@ -394,7 +394,7 @@ export default function AnalyticsDashboard() {
                 {mockTransactions.map((transaction, index) => (
                   <div
                     key={transaction.id}
-                    className="flex items-center justify-between p-3 bg-gray-900 rounded-lg"
+                    className="flex items-center justify-between p-3 bg-[#1a1a1a] rounded-lg"
                     data-testid={`row-transaction-${index}`}
                   >
                     <div className="flex-1 min-w-0">
@@ -410,8 +410,8 @@ export default function AnalyticsDashboard() {
                       <span
                         className={`text-xs px-2 py-1 rounded ${
                           transaction.status === "completed"
-                            ? "bg-green-500/20 text-green-400"
-                            : "bg-amber-500/20 text-amber-400"
+                            ? "bg-[#C9941A]/20 text-[#C9941A]"
+                            : "bg-[#C9941A]/20 text-[#C9941A]"
                         }`}
                       >
                         {transaction.status}

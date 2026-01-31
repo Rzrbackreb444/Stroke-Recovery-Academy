@@ -44,7 +44,7 @@ interface StorefrontData {
 
 function StorefrontSkeleton() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#0D0D0D]">
       <div className="h-64 bg-gradient-to-r from-orange-500/20 to-orange-600/10" />
       <div className="container mx-auto px-4 -mt-16 max-w-6xl">
         <div className="flex items-end gap-6 mb-8">
@@ -85,7 +85,7 @@ function SocialLink({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
+      className="flex items-center gap-2 text-gray-400 hover:text-[#C9941A] transition-colors"
       data-testid={`link-social-${label.toLowerCase()}`}
     >
       <Icon className="w-5 h-5" />
@@ -106,11 +106,11 @@ function BookCard({ book }: { book: BookProject }) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <BookOpen className="w-16 h-16 text-primary/50" />
+            <BookOpen className="w-16 h-16 text-[#C9941A]/50" />
           </div>
         )}
         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-          <Button size="sm" className="bg-orange-500 hover:bg-orange-600" data-testid={`button-buy-${book.id}`}>
+          <Button size="sm" className="bg-[#C9941A] hover:bg-[#C9941A]" data-testid={`button-buy-${book.id}`}>
             <ShoppingCart className="w-4 h-4 mr-2" />
             Buy Now
           </Button>
@@ -119,7 +119,7 @@ function BookCard({ book }: { book: BookProject }) {
       <CardContent className="p-4">
         <h3 className="font-semibold line-clamp-2" data-testid={`text-book-title-${book.id}`}>{book.title}</h3>
         {book.subtitle && (
-          <p className="text-sm text-muted-foreground line-clamp-1">{book.subtitle}</p>
+          <p className="text-sm text-gray-400 line-clamp-1">{book.subtitle}</p>
         )}
         <div className="flex items-center justify-between mt-3 gap-2">
           {book.genre && (
@@ -128,7 +128,7 @@ function BookCard({ book }: { book: BookProject }) {
             </Badge>
           )}
           {book.price && (
-            <span className="font-bold text-primary" data-testid={`text-book-price-${book.id}`}>
+            <span className="font-bold text-[#C9941A]" data-testid={`text-book-price-${book.id}`}>
               ${(book.price / 100).toFixed(2)}
             </span>
           )}
@@ -181,11 +181,11 @@ export default function AuthorStorefront() {
 
   if (error || !data) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center">
         <div className="text-center">
-          <BookOpen className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+          <BookOpen className="w-16 h-16 mx-auto mb-4 text-gray-400" />
           <h1 className="text-2xl font-bold mb-2">Author Not Found</h1>
-          <p className="text-muted-foreground mb-6">
+          <p className="text-gray-400 mb-6">
             The author you're looking for doesn't exist or their storefront is private.
           </p>
           <Button asChild>
@@ -227,7 +227,7 @@ export default function AuthorStorefront() {
   }), [authorName, profile.bio, profile.photoUrl, params.slug, sameAsLinks]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#0D0D0D]">
       <SEO
         title={`${authorName} - Author Storefront`}
         description={profile.bio || `Explore books and content by ${authorName} on KreAIte.xyz`}
@@ -258,7 +258,7 @@ export default function AuthorStorefront() {
 
       <div className="container mx-auto px-4 -mt-20 max-w-6xl relative z-10">
         <div className="flex flex-col md:flex-row md:items-end gap-6 mb-8">
-          <Avatar className="w-32 h-32 md:w-40 md:h-40 border-4 border-black ring-4 ring-orange-500/20">
+          <Avatar className="w-32 h-32 md:w-40 md:h-40 border-4 border-black ring-4 ring-[#C9941A]/20">
             <AvatarImage src={profile.photoUrl || undefined} data-testid="img-author-photo" />
             <AvatarFallback className="text-4xl bg-primary/20">
               {profile.penName?.charAt(0) || "A"}
@@ -270,7 +270,7 @@ export default function AuthorStorefront() {
               {profile.penName}
             </h1>
             {socialLinks.tagline && (
-              <p className="text-lg text-muted-foreground mt-1" data-testid="text-author-tagline">
+              <p className="text-lg text-gray-400 mt-1" data-testid="text-author-tagline">
                 {socialLinks.tagline}
               </p>
             )}
@@ -280,7 +280,7 @@ export default function AuthorStorefront() {
                 <Badge 
                   key={genre} 
                   variant="outline" 
-                  className="border text-primary"
+                  className="border text-[#C9941A]"
                   data-testid={`badge-genre-${genre.toLowerCase().replace(/\s+/g, "-")}`}
                 >
                   {genre}
@@ -292,7 +292,7 @@ export default function AuthorStorefront() {
           <div className="flex gap-2">
             <Button
               variant={isFollowing ? "outline" : "default"}
-              className={isFollowing ? "" : "bg-orange-500 hover:bg-orange-600"}
+              className={isFollowing ? "" : "bg-[#C9941A] hover:bg-[#C9941A]"}
               onClick={handleFollow}
               data-testid="button-follow"
             >
@@ -310,11 +310,11 @@ export default function AuthorStorefront() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {profile.bio ? (
-                  <p className="text-muted-foreground whitespace-pre-wrap" data-testid="text-author-bio">
+                  <p className="text-gray-400 whitespace-pre-wrap" data-testid="text-author-bio">
                     {profile.bio}
                   </p>
                 ) : (
-                  <p className="text-muted-foreground italic">No biography provided yet.</p>
+                  <p className="text-gray-400 italic">No biography provided yet.</p>
                 )}
 
                 {(socialLinks.audioBioUrl || socialLinks.videoBioUrl) && (
@@ -379,8 +379,8 @@ export default function AuthorStorefront() {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <BookOpen className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                    <p className="text-muted-foreground">No books published yet</p>
+                    <BookOpen className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                    <p className="text-gray-400">No books published yet</p>
                   </div>
                 )}
               </CardContent>
@@ -390,7 +390,7 @@ export default function AuthorStorefront() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Star className="w-5 h-5 text-primary" />
+                    <Star className="w-5 h-5 text-[#C9941A]" />
                     Achievements & Awards
                   </CardTitle>
                 </CardHeader>
@@ -399,10 +399,10 @@ export default function AuthorStorefront() {
                     {(publisherInfo.achievements as string[]).map((achievement, index) => (
                       <li 
                         key={index}
-                        className="flex items-center gap-3 text-muted-foreground"
+                        className="flex items-center gap-3 text-gray-400"
                         data-testid={`text-achievement-${index}`}
                       >
-                        <Star className="w-4 h-4 text-primary flex-shrink-0" />
+                        <Star className="w-4 h-4 text-[#C9941A] flex-shrink-0" />
                         {achievement}
                       </li>
                     ))}
@@ -417,7 +417,7 @@ export default function AuthorStorefront() {
               <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Mail className="w-5 h-5 text-primary" />
+                    <Mail className="w-5 h-5 text-[#C9941A]" />
                     Newsletter
                   </CardTitle>
                   <CardDescription>
@@ -436,7 +436,7 @@ export default function AuthorStorefront() {
                     />
                     <Button 
                       type="submit" 
-                      className="w-full bg-orange-500 hover:bg-orange-600"
+                      className="w-full bg-[#C9941A] hover:bg-[#C9941A]"
                       data-testid="button-newsletter-subscribe"
                     >
                       Subscribe
@@ -456,14 +456,14 @@ export default function AuthorStorefront() {
                     href={profile.websiteUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-3 rounded-md hover:bg-muted/50 transition-colors"
+                    className="flex items-center justify-between p-3 rounded-md hover:bg-[#1a1a1a]/50 transition-colors"
                     data-testid="link-website"
                   >
                     <span className="flex items-center gap-2">
-                      <Globe className="w-4 h-4 text-primary" />
+                      <Globe className="w-4 h-4 text-[#C9941A]" />
                       Official Website
                     </span>
-                    <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                    <ExternalLink className="w-4 h-4 text-gray-400" />
                   </a>
                 )}
                 {socialLinks.amazon && (
@@ -471,14 +471,14 @@ export default function AuthorStorefront() {
                     href={socialLinks.amazon}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-3 rounded-md hover:bg-muted/50 transition-colors"
+                    className="flex items-center justify-between p-3 rounded-md hover:bg-[#1a1a1a]/50 transition-colors"
                     data-testid="link-amazon"
                   >
                     <span className="flex items-center gap-2">
-                      <SiAmazon className="w-4 h-4 text-primary" />
+                      <SiAmazon className="w-4 h-4 text-[#C9941A]" />
                       Amazon Author Page
                     </span>
-                    <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                    <ExternalLink className="w-4 h-4 text-gray-400" />
                   </a>
                 )}
                 {socialLinks.goodreads && (
@@ -486,14 +486,14 @@ export default function AuthorStorefront() {
                     href={socialLinks.goodreads}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-3 rounded-md hover:bg-muted/50 transition-colors"
+                    className="flex items-center justify-between p-3 rounded-md hover:bg-[#1a1a1a]/50 transition-colors"
                     data-testid="link-goodreads"
                   >
                     <span className="flex items-center gap-2">
-                      <SiGoodreads className="w-4 h-4 text-primary" />
+                      <SiGoodreads className="w-4 h-4 text-[#C9941A]" />
                       Goodreads Profile
                     </span>
-                    <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                    <ExternalLink className="w-4 h-4 text-gray-400" />
                   </a>
                 )}
               </CardContent>
@@ -505,8 +505,8 @@ export default function AuthorStorefront() {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <Calendar className="w-10 h-10 mx-auto mb-3 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground">No announcements yet</p>
+                  <Calendar className="w-10 h-10 mx-auto mb-3 text-gray-400" />
+                  <p className="text-sm text-gray-400">No announcements yet</p>
                 </div>
               </CardContent>
             </Card>
@@ -514,9 +514,9 @@ export default function AuthorStorefront() {
         </div>
       </div>
 
-      <footer className="border-t border-gray-800 mt-16 py-8">
+      <footer className="border-t border-[#333] mt-16 py-8">
         <div className="container mx-auto px-4 max-w-6xl text-center">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-gray-400">
             Author page for {profile.penName} powered by KreAIte
           </p>
         </div>

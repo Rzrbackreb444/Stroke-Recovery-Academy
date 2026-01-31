@@ -86,20 +86,20 @@ function StatCard({
       <CardContent className="p-6">
         <div className="flex items-start justify-between">
           <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">{title}</p>
+            <p className="text-sm text-gray-400">{title}</p>
             <p className="text-2xl font-bold">{value}</p>
             {subtitle && (
-              <p className="text-xs text-muted-foreground">{subtitle}</p>
+              <p className="text-xs text-gray-400">{subtitle}</p>
             )}
             {trend && (
-              <div className={`flex items-center gap-1 text-xs ${trendUp ? 'text-green-500' : 'text-red-500'}`}>
+              <div className={`flex items-center gap-1 text-xs ${trendUp ? 'text-[#C9941A]' : 'text-red-500'}`}>
                 <TrendingUp className={`w-3 h-3 ${!trendUp && 'rotate-180'}`} />
                 <span>{trend}</span>
               </div>
             )}
           </div>
           <div className="p-3 rounded-full bg-primary/10">
-            <Icon className="w-5 h-5 text-primary" />
+            <Icon className="w-5 h-5 text-[#C9941A]" />
           </div>
         </div>
       </CardContent>
@@ -122,7 +122,7 @@ function BookPerformanceCard({ book }: { book: BookWithStats }) {
                 className="w-full h-full object-cover rounded"
               />
             ) : (
-              <BookOpen className="w-8 h-8 text-primary/50" />
+              <BookOpen className="w-8 h-8 text-[#C9941A]/50" />
             )}
           </div>
           
@@ -133,9 +133,9 @@ function BookPerformanceCard({ book }: { book: BookWithStats }) {
                 <Badge 
                   variant="outline" 
                   className={`mt-1 ${
-                    book.status === 'published' ? 'text-green-500 border-green-500/30' :
+                    book.status === 'published' ? 'text-[#C9941A] border-green-500/30' :
                     book.status === 'pending_review' ? 'text-yellow-500 border-yellow-500/30' :
-                    'text-muted-foreground'
+                    'text-gray-400'
                   }`}
                 >
                   {book.status === 'published' ? 'Live' : 
@@ -152,15 +152,15 @@ function BookPerformanceCard({ book }: { book: BookWithStats }) {
             
             <div className="grid grid-cols-3 gap-4 mt-3 text-sm">
               <div>
-                <p className="text-muted-foreground">Sales</p>
+                <p className="text-gray-400">Sales</p>
                 <p className="font-medium">{book.salesCount || 0}</p>
               </div>
               <div>
-                <p className="text-muted-foreground">Revenue</p>
+                <p className="text-gray-400">Revenue</p>
                 <p className="font-medium">${((book.revenueTotal || 0) / 100).toFixed(2)}</p>
               </div>
               <div>
-                <p className="text-muted-foreground">Rating</p>
+                <p className="text-gray-400">Rating</p>
                 <p className="font-medium flex items-center gap-1">
                   {rating ? (
                     <>
@@ -168,7 +168,7 @@ function BookPerformanceCard({ book }: { book: BookWithStats }) {
                       {rating}
                     </>
                   ) : (
-                    <span className="text-muted-foreground">-</span>
+                    <span className="text-gray-400">-</span>
                   )}
                 </p>
               </div>
@@ -184,10 +184,10 @@ function OrderStatusBadge({ status }: { status: string }) {
   const statusConfig: Record<string, { color: string; icon: React.ComponentType<{ className?: string }> }> = {
     pending: { color: 'text-yellow-500 border-yellow-500/30', icon: Clock },
     processing: { color: 'text-blue-500 border-blue-500/30', icon: Package },
-    printing: { color: 'text-amber-500 border-amber-500/30', icon: Printer },
+    printing: { color: 'text-[#C9941A] border-amber-500/30', icon: Printer },
     shipped: { color: 'text-cyan-500 border-cyan-500/30', icon: Truck },
-    delivered: { color: 'text-green-500 border-green-500/30', icon: CheckCircle },
-    completed: { color: 'text-green-500 border-green-500/30', icon: CheckCircle },
+    delivered: { color: 'text-[#C9941A] border-green-500/30', icon: CheckCircle },
+    completed: { color: 'text-[#C9941A] border-green-500/30', icon: CheckCircle },
     cancelled: { color: 'text-red-500 border-red-500/30', icon: AlertCircle },
     refunded: { color: 'text-red-500 border-red-500/30', icon: AlertCircle },
   };
@@ -235,9 +235,9 @@ export default function AuthorDashboard() {
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
           <Card className="max-w-md w-full">
             <CardContent className="p-8 text-center">
-              <BookOpen className="w-16 h-16 mx-auto text-primary/50 mb-4" />
+              <BookOpen className="w-16 h-16 mx-auto text-[#C9941A]/50 mb-4" />
               <h2 className="text-xl font-semibold mb-2">Sign In Required</h2>
-              <p className="text-muted-foreground mb-4">
+              <p className="text-gray-400 mb-4">
                 Please sign in to access your author dashboard.
               </p>
               <Link href="/api/login">
@@ -259,7 +259,7 @@ export default function AuthorDashboard() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-bold" data-testid="text-page-title">Author Dashboard</h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-gray-400 mt-1">
               Track your book sales, earnings, and reader engagement
             </p>
           </div>
@@ -338,7 +338,7 @@ export default function AuthorDashboard() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="w-5 h-5 text-primary" />
+                      <TrendingUp className="w-5 h-5 text-[#C9941A]" />
                       Top Performing Books
                     </CardTitle>
                   </CardHeader>
@@ -353,8 +353,8 @@ export default function AuthorDashboard() {
                       ))
                     ) : (
                       <div className="text-center py-8">
-                        <BookOpen className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                        <p className="text-muted-foreground mb-4">No books published yet</p>
+                        <BookOpen className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                        <p className="text-gray-400 mb-4">No books published yet</p>
                         <Link href="/book-studio">
                           <Button variant="outline">Create Your First Book</Button>
                         </Link>
@@ -368,20 +368,20 @@ export default function AuthorDashboard() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Wallet className="w-5 h-5 text-primary" />
+                      <Wallet className="w-5 h-5 text-[#C9941A]" />
                       Earnings Summary
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-muted-foreground">Available</span>
-                        <span className="font-medium text-green-500">
+                        <span className="text-sm text-gray-400">Available</span>
+                        <span className="font-medium text-[#C9941A]">
                           ${((stats?.totalEarnings || 0) / 100).toFixed(2)}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-muted-foreground">Pending</span>
+                        <span className="text-sm text-gray-400">Pending</span>
                         <span className="font-medium text-yellow-500">
                           ${((stats?.pendingEarnings || 0) / 100).toFixed(2)}
                         </span>
@@ -397,7 +397,7 @@ export default function AuthorDashboard() {
                     <Button className="w-full" variant="outline" disabled>
                       Request Payout
                     </Button>
-                    <p className="text-xs text-muted-foreground text-center">
+                    <p className="text-xs text-gray-400 text-center">
                       Minimum $50 for payout requests
                     </p>
                   </CardContent>
@@ -406,7 +406,7 @@ export default function AuthorDashboard() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Star className="w-5 h-5 text-primary" />
+                      <Star className="w-5 h-5 text-[#C9941A]" />
                       Recent Reviews
                     </CardTitle>
                   </CardHeader>
@@ -422,12 +422,12 @@ export default function AuthorDashboard() {
                                 <Star 
                                   key={i}
                                   className={`w-3 h-3 ${
-                                    i < review.rating ? 'fill-yellow-500 text-yellow-500' : 'text-muted-foreground'
+                                    i < review.rating ? 'fill-yellow-500 text-yellow-500' : 'text-gray-400'
                                   }`}
                                 />
                               ))}
                             </div>
-                            <p className="text-muted-foreground line-clamp-2">{review.content}</p>
+                            <p className="text-gray-400 line-clamp-2">{review.content}</p>
                           </div>
                         ))}
                         <Button variant="ghost" size="sm" className="w-full" onClick={() => setActiveTab('reviews')}>
@@ -436,7 +436,7 @@ export default function AuthorDashboard() {
                         </Button>
                       </div>
                     ) : (
-                      <p className="text-sm text-muted-foreground text-center py-4">
+                      <p className="text-sm text-gray-400 text-center py-4">
                         No reviews yet
                       </p>
                     )}
@@ -467,9 +467,9 @@ export default function AuthorDashboard() {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <BookOpen className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+                    <BookOpen className="w-16 h-16 mx-auto text-gray-400 mb-4" />
                     <h3 className="text-lg font-semibold mb-2">No Books Yet</h3>
-                    <p className="text-muted-foreground mb-4">
+                    <p className="text-gray-400 mb-4">
                       Start creating your first book and share your recovery journey.
                     </p>
                     <Link href="/book-studio">
@@ -524,7 +524,7 @@ export default function AuthorDashboard() {
                                order.editionType.includes('digital') ? 'Digital' : order.editionType}
                             </Badge>
                           </TableCell>
-                          <TableCell className="text-muted-foreground">
+                          <TableCell className="text-gray-400">
                             {new Date(order.createdAt).toLocaleDateString()}
                           </TableCell>
                           <TableCell>
@@ -539,9 +539,9 @@ export default function AuthorDashboard() {
                   </Table>
                 ) : (
                   <div className="text-center py-12">
-                    <Package className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+                    <Package className="w-16 h-16 mx-auto text-gray-400 mb-4" />
                     <h3 className="text-lg font-semibold mb-2">No Orders Yet</h3>
-                    <p className="text-muted-foreground">
+                    <p className="text-gray-400">
                       Orders for your books will appear here.
                     </p>
                   </div>
@@ -566,7 +566,7 @@ export default function AuthorDashboard() {
                 ) : reviews && reviews.length > 0 ? (
                   <div className="space-y-4">
                     {reviews.map((review) => (
-                      <Card key={review.id} className="bg-muted/50">
+                      <Card key={review.id} className="bg-[#1a1a1a]/50">
                         <CardContent className="p-4">
                           <div className="flex items-start justify-between gap-4">
                             <div className="flex-1">
@@ -576,13 +576,13 @@ export default function AuthorDashboard() {
                                     <Star 
                                       key={i}
                                       className={`w-4 h-4 ${
-                                        i < review.rating ? 'fill-yellow-500 text-yellow-500' : 'text-muted-foreground'
+                                        i < review.rating ? 'fill-yellow-500 text-yellow-500' : 'text-gray-400'
                                       }`}
                                     />
                                   ))}
                                 </div>
                                 {review.isVerifiedPurchase && (
-                                  <Badge variant="outline" className="text-xs text-green-500 border-green-500/30">
+                                  <Badge variant="outline" className="text-xs text-[#C9941A] border-green-500/30">
                                     <CheckCircle className="w-3 h-3 mr-1" />
                                     Verified
                                   </Badge>
@@ -591,8 +591,8 @@ export default function AuthorDashboard() {
                               {review.title && (
                                 <h4 className="font-medium mb-1">{review.title}</h4>
                               )}
-                              <p className="text-sm text-muted-foreground">{review.content}</p>
-                              <p className="text-xs text-muted-foreground mt-2">
+                              <p className="text-sm text-gray-400">{review.content}</p>
+                              <p className="text-xs text-gray-400 mt-2">
                                 {new Date(review.createdAt).toLocaleDateString()}
                               </p>
                             </div>
@@ -603,9 +603,9 @@ export default function AuthorDashboard() {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <Star className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+                    <Star className="w-16 h-16 mx-auto text-gray-400 mb-4" />
                     <h3 className="text-lg font-semibold mb-2">No Reviews Yet</h3>
-                    <p className="text-muted-foreground">
+                    <p className="text-gray-400">
                       Reader reviews will appear here once customers start leaving feedback.
                     </p>
                   </div>

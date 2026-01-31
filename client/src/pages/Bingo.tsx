@@ -223,7 +223,7 @@ export default function Bingo() {
     if (num <= 15) return 'bg-blue-600';
     if (num <= 30) return 'bg-red-600';
     if (num <= 45) return 'bg-white text-black';
-    if (num <= 60) return 'bg-green-600';
+    if (num <= 60) return 'bg-[#C9941A]';
     return 'bg-yellow-500 text-black';
   };
 
@@ -252,7 +252,7 @@ export default function Bingo() {
               variant={freePlay ? "default" : "outline"}
               size="sm"
               onClick={() => setFreePlay(!freePlay)}
-              className={freePlay ? "bg-green-600" : "border-gray-600"}
+              className={freePlay ? "bg-[#C9941A]" : "border-gray-600"}
               data-testid="button-freeplay"
             >
               {freePlay ? "FREE" : "BET"}
@@ -278,7 +278,7 @@ export default function Bingo() {
             <span className="text-blue-400">B</span>
             <span className="text-red-400">I</span>
             <span className="text-white">N</span>
-            <span className="text-green-400">G</span>
+            <span className="text-[#C9941A]">G</span>
             <span className="text-yellow-400">O</span>
             <span className="text-gray-500 ml-3 text-2xl">SASQUATCH</span>
           </h1>
@@ -286,7 +286,7 @@ export default function Bingo() {
 
         {!gameState ? (
           <div className="max-w-2xl mx-auto">
-            <Card className="bg-gray-900/80 border-purple-600/30">
+            <Card className="bg-[#1a1a1a]/80 border-purple-600/30">
               <CardContent className="p-8">
                 <div className="flex items-center justify-center gap-4 mb-8">
                   <img src={sasquatchLogo} alt="Sasquatch" className="w-20 h-20 rounded-full border-4 border-purple-500" />
@@ -298,7 +298,7 @@ export default function Bingo() {
                 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
                   {PATTERNS.map((pattern) => (
-                    <div key={pattern.name} className="bg-gray-800/50 rounded-xl p-4 text-center border border-gray-700">
+                    <div key={pattern.name} className="bg-gray-800/50 rounded-xl p-4 text-center border border-[#333]">
                       <div className="text-3xl mb-2">{pattern.icon}</div>
                       <div className="text-white font-semibold text-sm">{pattern.name}</div>
                       <Badge className="bg-yellow-600 mt-2">{pattern.multiplier}x</Badge>
@@ -338,7 +338,7 @@ export default function Bingo() {
         ) : (
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
-              <Card className={`bg-gray-900/90 backdrop-blur ${gameState.hasWon ? 'border-2 border-yellow-500 shadow-lg shadow-yellow-500/20' : 'border-gray-700'}`}>
+              <Card className={`bg-[#1a1a1a]/90 backdrop-blur ${gameState.hasWon ? 'border-2 border-yellow-500 shadow-lg shadow-yellow-500/20' : 'border-[#333]'}`}>
                 <CardContent className="p-4 md:p-6">
                   <div className="grid grid-cols-5 gap-1 mb-2">
                     {['B', 'I', 'N', 'G', 'O'].map((letter, i) => (
@@ -348,7 +348,7 @@ export default function Bingo() {
                           i === 0 ? 'bg-blue-600' :
                           i === 1 ? 'bg-red-600' :
                           i === 2 ? 'bg-gray-200 text-black' :
-                          i === 3 ? 'bg-green-600' :
+                          i === 3 ? 'bg-[#C9941A]' :
                           'bg-yellow-500 text-black'
                         }`}
                       >
@@ -386,7 +386,7 @@ export default function Bingo() {
                       <Trophy className="w-16 h-16 mx-auto text-yellow-400 mb-3 animate-bounce" />
                       <h3 className="text-4xl font-black text-yellow-400 mb-2">BINGO!</h3>
                       <p className="text-white text-lg">{gameState.winPattern}</p>
-                      <p className="text-3xl font-black text-green-400 mt-3">+{gameState.winAmount} {freePlay ? '(Demo)' : 'Credits'}</p>
+                      <p className="text-3xl font-black text-[#C9941A] mt-3">+{gameState.winAmount} {freePlay ? '(Demo)' : 'Credits'}</p>
                     </div>
                   )}
                 </CardContent>
@@ -428,7 +428,7 @@ export default function Bingo() {
             </div>
             
             <div className="space-y-4">
-              <Card className="bg-gray-900/80 border-gray-700">
+              <Card className="bg-[#1a1a1a]/80 border-[#333]">
                 <CardContent className="p-6">
                   <h3 className="text-white font-bold mb-4 text-center text-lg">Current Ball</h3>
                   {gameState.currentNumber ? (
@@ -447,7 +447,7 @@ export default function Bingo() {
                 </CardContent>
               </Card>
               
-              <Card className="bg-gray-900/80 border-gray-700">
+              <Card className="bg-[#1a1a1a]/80 border-[#333]">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-white font-bold">Called Numbers</h3>

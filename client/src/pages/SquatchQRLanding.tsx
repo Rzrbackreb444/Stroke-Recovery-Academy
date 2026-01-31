@@ -25,7 +25,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-const FOREST_GREEN = "#1B4332";
+const FOREST_GREEN = "#C9941A";
 const GOLD = "#C9941A";
 const DARK_BASE = "#0D0D0D";
 

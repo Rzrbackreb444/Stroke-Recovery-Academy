@@ -114,13 +114,13 @@ const cameraAngles = [
 
 const emotionStyles = [
   { value: "neutral", label: "Neutral", color: "bg-gray-500" },
-  { value: "happy", label: "Happy", color: "bg-green-500" },
+  { value: "happy", label: "Happy", color: "bg-[#C9941A]" },
   { value: "sad", label: "Sad", color: "bg-blue-500" },
   { value: "angry", label: "Angry", color: "bg-red-500" },
   { value: "scared", label: "Scared", color: "bg-purple-500" },
-  { value: "excited", label: "Excited", color: "bg-amber-500" },
+  { value: "excited", label: "Excited", color: "bg-[#C9941A]" },
   { value: "whisper", label: "Whisper", color: "bg-slate-500" },
-  { value: "shouting", label: "Shouting", color: "bg-orange-500" },
+  { value: "shouting", label: "Shouting", color: "bg-[#C9941A]" },
 ];
 
 export default function MovieStudio() {
@@ -495,9 +495,9 @@ export default function MovieStudio() {
           <div className="col-span-3 bg-white/5 rounded-xl border border-white/10 overflow-hidden flex flex-col">
             <div className="p-4 border-b border-white/10 flex items-center justify-between">
               <h3 className="font-semibold flex items-center gap-2">
-                <Layers className="w-4 h-4 text-amber-400" /> Scenes
+                <Layers className="w-4 h-4 text-[#C9941A]" /> Scenes
               </h3>
-              <Button size="sm" onClick={addScene} className="bg-amber-500 hover:bg-amber-400 text-black" data-testid="button-add-scene">
+              <Button size="sm" onClick={addScene} className="bg-[#C9941A] hover:bg-amber-400 text-black" data-testid="button-add-scene">
                 <Plus className="w-4 h-4" />
               </Button>
             </div>
@@ -516,7 +516,7 @@ export default function MovieStudio() {
                       onClick={() => setSelectedScene(scene.id)}
                       className={`p-3 rounded-lg cursor-pointer transition-all ${
                         selectedScene === scene.id 
-                          ? "bg-amber-500/20 border border-amber-500/50" 
+                          ? "bg-[#C9941A]/20 border border-amber-500/50" 
                           : "bg-white/5 border border-transparent hover:bg-white/10"
                       }`}
                       data-testid={`scene-item-${scene.sceneNumber}`}
@@ -560,16 +560,16 @@ export default function MovieStudio() {
             <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-full">
               <div className="border-b border-white/10">
                 <TabsList className="bg-transparent border-none h-12 px-2">
-                  <TabsTrigger value="script" className="data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400">
+                  <TabsTrigger value="script" className="data-[state=active]:bg-[#C9941A]/20 data-[state=active]:text-[#C9941A]">
                     <FileText className="w-4 h-4 mr-2" /> Script
                   </TabsTrigger>
-                  <TabsTrigger value="scene" className="data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400">
+                  <TabsTrigger value="scene" className="data-[state=active]:bg-[#C9941A]/20 data-[state=active]:text-[#C9941A]">
                     <Camera className="w-4 h-4 mr-2" /> Scene Editor
                   </TabsTrigger>
-                  <TabsTrigger value="dialogue" className="data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400">
+                  <TabsTrigger value="dialogue" className="data-[state=active]:bg-[#C9941A]/20 data-[state=active]:text-[#C9941A]">
                     <Mic2 className="w-4 h-4 mr-2" /> Dialogue
                   </TabsTrigger>
-                  <TabsTrigger value="preview" className="data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400">
+                  <TabsTrigger value="preview" className="data-[state=active]:bg-[#C9941A]/20 data-[state=active]:text-[#C9941A]">
                     <MonitorPlay className="w-4 h-4 mr-2" /> Preview
                   </TabsTrigger>
                 </TabsList>
@@ -601,7 +601,7 @@ export default function MovieStudio() {
                               onClick={() => setSelectedGenre(g.value)}
                               className={`p-2 rounded-lg border text-center transition-all ${
                                 selectedGenre === g.value
-                                  ? "bg-amber-500/20 border-amber-500 text-amber-400"
+                                  ? "bg-[#C9941A]/20 border-amber-500 text-[#C9941A]"
                                   : "bg-white/5 border-white/10 text-white/60 hover:bg-white/10"
                               }`}
                               data-testid={`genre-${g.value}`}
@@ -668,10 +668,10 @@ export default function MovieStudio() {
                 </div>
                 
                 {isGeneratingScript && (
-                  <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                  <div className="p-4 bg-[#C9941A]/10 border border-amber-500/20 rounded-lg">
                     <div className="flex items-center gap-3 mb-2">
-                      <Loader2 className="w-5 h-5 animate-spin text-amber-400" />
-                      <span className="font-medium text-amber-400">{generationStatus}</span>
+                      <Loader2 className="w-5 h-5 animate-spin text-[#C9941A]" />
+                      <span className="font-medium text-[#C9941A]">{generationStatus}</span>
                     </div>
                     <Progress value={generationProgress} className="h-2" />
                   </div>
@@ -751,7 +751,7 @@ export default function MovieStudio() {
                             }}
                             className={`px-2 py-1 text-xs rounded-full transition-all ${
                               currentScene.cameraDirections.includes(angle)
-                                ? "bg-amber-500 text-black"
+                                ? "bg-[#C9941A] text-black"
                                 : "bg-white/10 text-white/60 hover:bg-white/20"
                             }`}
                           >
@@ -793,7 +793,7 @@ export default function MovieStudio() {
                         <Button 
                           size="sm" 
                           onClick={() => addDialogueLine(currentScene.id)}
-                          className="bg-amber-500 hover:bg-amber-400 text-black"
+                          className="bg-[#C9941A] hover:bg-amber-400 text-black"
                           data-testid="button-add-dialogue"
                         >
                           <Plus className="w-4 h-4 mr-1" /> Add Line
@@ -893,7 +893,7 @@ export default function MovieStudio() {
                                     variant="ghost"
                                     onClick={() => generateDialogueVoice(currentScene.id, line.id)}
                                     disabled={isGeneratingVoice || !line.characterId}
-                                    className="text-amber-400 hover:text-amber-300"
+                                    className="text-[#C9941A] hover:text-amber-300"
                                     data-testid={`button-generate-voice-${idx}`}
                                   >
                                     {isGeneratingVoice ? (
@@ -911,7 +911,7 @@ export default function MovieStudio() {
                                         const audio = new Audio(line.audioUrl);
                                         audio.play();
                                       }}
-                                      className="text-green-400 hover:text-green-300"
+                                      className="text-[#C9941A] hover:text-green-300"
                                       data-testid={`button-play-voice-${idx}`}
                                     >
                                       <PlayCircle className="w-4 h-4" />
@@ -981,10 +981,10 @@ export default function MovieStudio() {
               {/* Preview Tab */}
               <TabsContent value="preview" className="flex-1 overflow-auto p-4 m-0">
                 <div className="text-center py-12">
-                  <MonitorPlay className="w-20 h-20 mx-auto mb-4 text-amber-400 opacity-50" />
+                  <MonitorPlay className="w-20 h-20 mx-auto mb-4 text-[#C9941A] opacity-50" />
                   <h3 className="text-xl font-semibold mb-2">Movie Preview</h3>
                   <p className="text-white/60 mb-6">Play through your scenes with generated voices</p>
-                  <Button className="bg-amber-500 hover:bg-amber-400 text-black" data-testid="button-preview-movie">
+                  <Button className="bg-[#C9941A] hover:bg-amber-400 text-black" data-testid="button-preview-movie">
                     <Play className="w-5 h-5 mr-2" /> Preview Full Movie
                   </Button>
                 </div>
@@ -996,7 +996,7 @@ export default function MovieStudio() {
           <div className="col-span-3 bg-white/5 rounded-xl border border-white/10 overflow-hidden flex flex-col">
             <div className="p-4 border-b border-white/10">
               <h3 className="font-semibold flex items-center gap-2">
-                <Users className="w-4 h-4 text-amber-400" /> Cast ({characters.length})
+                <Users className="w-4 h-4 text-[#C9941A]" /> Cast ({characters.length})
               </h3>
             </div>
             <ScrollArea className="flex-1">
@@ -1008,7 +1008,7 @@ export default function MovieStudio() {
                       key={char.id}
                       className={`p-3 rounded-lg cursor-pointer transition-all ${
                         selectedCharacter === char.id
-                          ? "bg-amber-500/20 border border-amber-500/50"
+                          ? "bg-[#C9941A]/20 border border-amber-500/50"
                           : "bg-white/5 border border-transparent hover:bg-white/10"
                       }`}
                       onClick={() => setSelectedCharacter(char.id)}
@@ -1052,7 +1052,7 @@ export default function MovieStudio() {
               </Select>
               <Button 
                 onClick={addCharacter} 
-                className="w-full bg-amber-500 hover:bg-amber-400 text-black text-sm"
+                className="w-full bg-[#C9941A] hover:bg-amber-400 text-black text-sm"
                 disabled={!newCharacterName.trim()}
                 data-testid="button-add-new-character"
               >

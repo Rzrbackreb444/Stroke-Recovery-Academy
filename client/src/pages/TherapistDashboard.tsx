@@ -102,7 +102,7 @@ export default function TherapistDashboard() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center">
         <Card className="p-8 text-center">
           <p className="text-gray-400">Please sign in to access the therapist dashboard</p>
         </Card>
@@ -112,20 +112,20 @@ export default function TherapistDashboard() {
 
   if (profileLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-primary animate-spin" />
+      <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-[#C9941A] animate-spin" />
       </div>
     );
   }
 
   if (!therapistProfile) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="min-h-screen bg-[#0D0D0D] text-foreground">
         <div className="max-w-2xl mx-auto px-4 py-12">
-          <Card className="bg-gray-900 border-gray-800 p-8">
+          <Card className="bg-[#1a1a1a] border-[#333] p-8">
             <div className="text-center mb-8">
               <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
-                <Users className="w-10 h-10 text-primary" />
+                <Users className="w-10 h-10 text-[#C9941A]" />
               </div>
               <h1 className="text-2xl font-bold text-foreground mb-2">Create Therapist Profile</h1>
               <p className="text-gray-400">
@@ -147,7 +147,7 @@ export default function TherapistDashboard() {
   const activePatients = patients?.filter(p => p.status === "active") || [];
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-[#0D0D0D] text-foreground">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -159,10 +159,10 @@ export default function TherapistDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <Badge className={therapistProfile.isVerified ? "bg-green-500/20 text-green-400" : "bg-yellow-500/20 text-yellow-400"}>
+            <Badge className={therapistProfile.isVerified ? "bg-[#C9941A]/20 text-[#C9941A]" : "bg-yellow-500/20 text-yellow-400"}>
               {therapistProfile.isVerified ? "Verified" : "Pending Verification"}
             </Badge>
-            <Button variant="outline" className="border-gray-700" data-testid="button-edit-profile">
+            <Button variant="outline" className="border-[#333]" data-testid="button-edit-profile">
               <Settings className="w-4 h-4 mr-2" />
               Edit Profile
             </Button>
@@ -170,7 +170,7 @@ export default function TherapistDashboard() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card className="bg-gray-900 border-gray-800 p-4">
+          <Card className="bg-[#1a1a1a] border-[#333] p-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center">
                 <Users className="w-6 h-6 text-blue-400" />
@@ -181,10 +181,10 @@ export default function TherapistDashboard() {
               </div>
             </div>
           </Card>
-          <Card className="bg-gray-900 border-gray-800 p-4">
+          <Card className="bg-[#1a1a1a] border-[#333] p-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-primary" />
+                <Calendar className="w-6 h-6 text-[#C9941A]" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground">{upcomingSessions?.length || 0}</p>
@@ -192,10 +192,10 @@ export default function TherapistDashboard() {
               </div>
             </div>
           </Card>
-          <Card className="bg-gray-900 border-gray-800 p-4">
+          <Card className="bg-[#1a1a1a] border-[#333] p-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg bg-green-500/20 flex items-center justify-center">
-                <CheckCircle2 className="w-6 h-6 text-green-400" />
+              <div className="w-12 h-12 rounded-lg bg-[#C9941A]/20 flex items-center justify-center">
+                <CheckCircle2 className="w-6 h-6 text-[#C9941A]" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground">
@@ -205,10 +205,10 @@ export default function TherapistDashboard() {
               </div>
             </div>
           </Card>
-          <Card className="bg-gray-900 border-gray-800 p-4">
+          <Card className="bg-[#1a1a1a] border-[#333] p-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg bg-amber-500/20 flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-amber-400" />
+              <div className="w-12 h-12 rounded-lg bg-[#C9941A]/20 flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-[#C9941A]" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground">
@@ -221,7 +221,7 @@ export default function TherapistDashboard() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-gray-900 border border-gray-800 p-1">
+          <TabsList className="bg-[#1a1a1a] border border-[#333] p-1">
             <TabsTrigger 
               value="patients" 
               className="data-[state=active]:bg-primary data-[state=active]:text-foreground"
@@ -267,20 +267,20 @@ export default function TherapistDashboard() {
             
             {patientsLoading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                <Loader2 className="w-8 h-8 text-[#C9941A] animate-spin" />
               </div>
             ) : activePatients.length > 0 ? (
               <div className="grid gap-4">
                 {activePatients.map((patient) => (
                   <Card 
                     key={patient.id} 
-                    className="bg-gray-900 border-gray-800 p-6"
+                    className="bg-[#1a1a1a] border-[#333] p-6"
                     data-testid={`card-patient-${patient.id}`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <Avatar className="w-12 h-12">
-                          <AvatarFallback className="bg-gray-800 text-primary">
+                          <AvatarFallback className="bg-gray-800 text-[#C9941A]">
                             P
                           </AvatarFallback>
                         </Avatar>
@@ -297,16 +297,16 @@ export default function TherapistDashboard() {
                           <p className="text-sm text-gray-400">Started</p>
                           <p className="text-foreground">{format(new Date(patient.createdAt), "MMM d, yyyy")}</p>
                         </div>
-                        <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                        <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-green-500/30">
                           {patient.status}
                         </Badge>
-                        <Button variant="outline" className="border-gray-700" data-testid={`button-view-patient-${patient.id}`}>
+                        <Button variant="outline" className="border-[#333]" data-testid={`button-view-patient-${patient.id}`}>
                           View Details
                         </Button>
                       </div>
                     </div>
                     {patient.goals && patient.goals.length > 0 && (
-                      <div className="mt-4 pt-4 border-t border-gray-800">
+                      <div className="mt-4 pt-4 border-t border-[#333]">
                         <p className="text-sm text-gray-400 mb-2">Goals</p>
                         <div className="flex flex-wrap gap-2">
                           {patient.goals.map((goal, i) => (
@@ -321,7 +321,7 @@ export default function TherapistDashboard() {
                 ))}
               </div>
             ) : (
-              <Card className="bg-gray-900 border-gray-800 p-12 text-center">
+              <Card className="bg-[#1a1a1a] border-[#333] p-12 text-center">
                 <Users className="w-12 h-12 text-gray-600 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-foreground mb-2">No patients yet</h3>
                 <p className="text-gray-400 mb-6">
@@ -345,7 +345,7 @@ export default function TherapistDashboard() {
                     Schedule Session
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-gray-900 border-gray-800">
+                <DialogContent className="bg-[#1a1a1a] border-[#333]">
                   <DialogHeader>
                     <DialogTitle className="text-foreground">Schedule New Session</DialogTitle>
                     <DialogDescription className="text-gray-400">
@@ -356,7 +356,7 @@ export default function TherapistDashboard() {
                     <div className="space-y-2">
                       <Label className="text-foreground">Patient</Label>
                       <Select onValueChange={setSelectedPatient}>
-                        <SelectTrigger className="bg-gray-800 border-gray-700 text-foreground">
+                        <SelectTrigger className="bg-gray-800 border-[#333] text-foreground">
                           <SelectValue placeholder="Select patient" />
                         </SelectTrigger>
                         <SelectContent>
@@ -371,7 +371,7 @@ export default function TherapistDashboard() {
                     <div className="space-y-2">
                       <Label className="text-foreground">Session Type</Label>
                       <Select>
-                        <SelectTrigger className="bg-gray-800 border-gray-700 text-foreground">
+                        <SelectTrigger className="bg-gray-800 border-[#333] text-foreground">
                           <SelectValue placeholder="Select type" />
                         </SelectTrigger>
                         <SelectContent>
@@ -383,11 +383,11 @@ export default function TherapistDashboard() {
                     </div>
                     <div className="space-y-2">
                       <Label className="text-foreground">Date & Time</Label>
-                      <Input type="datetime-local" className="bg-gray-800 border-gray-700 text-foreground" />
+                      <Input type="datetime-local" className="bg-gray-800 border-[#333] text-foreground" />
                     </div>
                   </div>
                   <div className="flex justify-end gap-3">
-                    <Button variant="outline" onClick={() => setNewSessionOpen(false)} className="border-gray-700">
+                    <Button variant="outline" onClick={() => setNewSessionOpen(false)} className="border-[#333]">
                       Cancel
                     </Button>
                     <Button 
@@ -408,7 +408,7 @@ export default function TherapistDashboard() {
             {upcomingSessions && upcomingSessions.length > 0 ? (
               <div className="space-y-4">
                 {upcomingSessions.map((session) => (
-                  <Card key={session.id} className="bg-gray-900 border-gray-800 p-6">
+                  <Card key={session.id} className="bg-[#1a1a1a] border-[#333] p-6">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center">
@@ -443,7 +443,7 @@ export default function TherapistDashboard() {
                 ))}
               </div>
             ) : (
-              <Card className="bg-gray-900 border-gray-800 p-12 text-center">
+              <Card className="bg-[#1a1a1a] border-[#333] p-12 text-center">
                 <Calendar className="w-12 h-12 text-gray-600 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-foreground mb-2">No upcoming sessions</h3>
                 <p className="text-gray-400">
@@ -455,7 +455,7 @@ export default function TherapistDashboard() {
 
           <TabsContent value="prescriptions" className="space-y-6">
             <h2 className="text-xl font-semibold text-foreground">Exercise Prescriptions</h2>
-            <Card className="bg-gray-900 border-gray-800 p-12 text-center">
+            <Card className="bg-[#1a1a1a] border-[#333] p-12 text-center">
               <ClipboardList className="w-12 h-12 text-gray-600 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-foreground mb-2">Prescribe Exercises</h3>
               <p className="text-gray-400 mb-6">
@@ -470,7 +470,7 @@ export default function TherapistDashboard() {
 
           <TabsContent value="analytics" className="space-y-6">
             <h2 className="text-xl font-semibold text-foreground">Patient Analytics</h2>
-            <Card className="bg-gray-900 border-gray-800 p-12 text-center">
+            <Card className="bg-[#1a1a1a] border-[#333] p-12 text-center">
               <BarChart3 className="w-12 h-12 text-gray-600 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-foreground mb-2">Coming Soon</h3>
               <p className="text-gray-400">
@@ -507,7 +507,7 @@ function TherapistProfileForm({ onSave }: { onSave: (data: any) => void }) {
           <Input
             value={formData.licenseNumber}
             onChange={(e) => setFormData({ ...formData, licenseNumber: e.target.value })}
-            className="bg-gray-800 border-gray-700 text-foreground"
+            className="bg-gray-800 border-[#333] text-foreground"
             placeholder="Enter license number"
           />
         </div>
@@ -516,7 +516,7 @@ function TherapistProfileForm({ onSave }: { onSave: (data: any) => void }) {
           <Input
             value={formData.licenseState}
             onChange={(e) => setFormData({ ...formData, licenseState: e.target.value })}
-            className="bg-gray-800 border-gray-700 text-foreground"
+            className="bg-gray-800 border-[#333] text-foreground"
             placeholder="e.g., CA, NY, TX"
           />
         </div>
@@ -528,7 +528,7 @@ function TherapistProfileForm({ onSave }: { onSave: (data: any) => void }) {
           type="number"
           value={formData.yearsExperience}
           onChange={(e) => setFormData({ ...formData, yearsExperience: e.target.value })}
-          className="bg-gray-800 border-gray-700 text-foreground"
+          className="bg-gray-800 border-[#333] text-foreground"
           placeholder="Years"
         />
       </div>
@@ -538,7 +538,7 @@ function TherapistProfileForm({ onSave }: { onSave: (data: any) => void }) {
         <Textarea
           value={formData.education}
           onChange={(e) => setFormData({ ...formData, education: e.target.value })}
-          className="bg-gray-800 border-gray-700 text-foreground"
+          className="bg-gray-800 border-[#333] text-foreground"
           placeholder="List your degrees, certifications, and credentials"
           rows={3}
         />
@@ -549,7 +549,7 @@ function TherapistProfileForm({ onSave }: { onSave: (data: any) => void }) {
         <Textarea
           value={formData.bio}
           onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-          className="bg-gray-800 border-gray-700 text-foreground"
+          className="bg-gray-800 border-[#333] text-foreground"
           placeholder="Tell patients about your experience and approach to therapy"
           rows={4}
         />

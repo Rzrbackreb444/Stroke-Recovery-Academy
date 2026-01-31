@@ -255,7 +255,7 @@ export default function AISettingsPanel() {
                     <CardDescription className="text-[12px] uppercase font-bold opacity-40 tracking-widest mt-2">Manage encrypted institutional access keys</CardDescription>
                   </div>
                 </div>
-                <Badge className="bg-green-600 text-white px-6 py-2 rounded-none text-[10px] tracking-widest font-black uppercase">
+                <Badge className="bg-[#C9941A] text-white px-6 py-2 rounded-none text-[10px] tracking-widest font-black uppercase">
                   Vault Secured: AES-256
                 </Badge>
               </div>
@@ -328,7 +328,7 @@ export default function AISettingsPanel() {
                       <Label className="text-lg font-black uppercase tracking-widest">Auto-Apply Profit Strategy</Label>
                       <p className="text-[12px] opacity-50 font-serif italic">Dynamically adjusts marketplace pricing based on real-time 2026 industry trends.</p>
                     </div>
-                    <Switch defaultChecked className="data-[state=checked]:bg-green-600 h-10 w-16" />
+                    <Switch defaultChecked className="data-[state=checked]:bg-[#C9941A] h-10 w-16" />
                  </div>
 
                  <div className="grid grid-cols-2 gap-12 pt-10 border-t-2 border-[#C9941A]/10">

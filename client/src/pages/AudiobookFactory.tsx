@@ -121,17 +121,17 @@ export default function AudiobookFactory() {
             <h1 className="text-3xl font-bold">Audiobook Factory</h1>
             <p className="text-zinc-400">Book → TTS narration → mastered audiobook</p>
           </div>
-          <Badge className="ml-auto bg-primary/20 text-primary border">
+          <Badge className="ml-auto bg-primary/20 text-[#C9941A] border">
             <Sparkles className="w-3 h-3 mr-1" /> Ultra-Premium
           </Badge>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-zinc-900 border border-zinc-800">
-            <TabsTrigger value="projects" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+          <TabsList className="bg-[#1a1a1a] border border-[#333]">
+            <TabsTrigger value="projects" className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]">
               <Headphones className="w-4 h-4 mr-2" /> My Audiobooks
             </TabsTrigger>
-            <TabsTrigger value="create" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+            <TabsTrigger value="create" className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]">
               <Plus className="w-4 h-4 mr-2" /> Create Audiobook
             </TabsTrigger>
           </TabsList>
@@ -140,7 +140,7 @@ export default function AudiobookFactory() {
             {audiobooks.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {audiobooks.map((audiobook: AudiobookProject) => (
-                  <Card key={audiobook.id} className="bg-zinc-900/50 border-zinc-800">
+                  <Card key={audiobook.id} className="bg-[#1a1a1a]/50 border-[#333]">
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
                         <div>
@@ -148,8 +148,8 @@ export default function AudiobookFactory() {
                           <CardDescription>Narrator: {audiobook.narrator}</CardDescription>
                         </div>
                         <Badge className={
-                          audiobook.status === "completed" ? "bg-green-500/20 text-green-400" :
-                          audiobook.status === "processing" ? "bg-primary/20 text-primary" :
+                          audiobook.status === "completed" ? "bg-[#C9941A]/20 text-[#C9941A]" :
+                          audiobook.status === "processing" ? "bg-primary/20 text-[#C9941A]" :
                           "bg-zinc-500/20 text-zinc-400"
                         }>
                           {audiobook.status}
@@ -181,14 +181,14 @@ export default function AudiobookFactory() {
                 ))}
               </div>
             ) : (
-              <Card className="bg-zinc-900/50 border-zinc-800">
+              <Card className="bg-[#1a1a1a]/50 border-[#333]">
                 <CardContent className="text-center py-12">
                   <Headphones className="w-16 h-16 mx-auto mb-4 text-zinc-600" />
                   <h3 className="text-xl font-medium mb-2">No Audiobooks Yet</h3>
                   <p className="text-zinc-400 mb-4">Transform your books into professional audiobooks</p>
                   <Button 
                     onClick={() => setActiveTab("create")}
-                    className="bg-orange-500 hover:bg-orange-600"
+                    className="bg-[#C9941A] hover:bg-[#C9941A]"
                     data-testid="button-create-first"
                   >
                     <Plus className="w-4 h-4 mr-2" /> Create Audiobook
@@ -204,10 +204,10 @@ export default function AudiobookFactory() {
                 <div key={step.num} className="flex items-center">
                   <div className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
                     currentStep === step.num 
-                      ? "bg-primary/20 text-primary border border" 
+                      ? "bg-primary/20 text-[#C9941A] border border" 
                       : currentStep > step.num 
-                        ? "bg-green-500/20 text-green-400" 
-                        : "bg-zinc-800 text-zinc-500"
+                        ? "bg-[#C9941A]/20 text-[#C9941A]" 
+                        : "bg-[#1a1a1a] text-zinc-500"
                   }`}>
                     {currentStep > step.num ? (
                       <Check className="w-4 h-4" />
@@ -224,10 +224,10 @@ export default function AudiobookFactory() {
             </div>
 
             {currentStep === 1 && (
-              <Card className="bg-zinc-900/50 border-zinc-800">
+              <Card className="bg-[#1a1a1a]/50 border-[#333]">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Book className="w-5 h-5 text-primary" />
+                    <Book className="w-5 h-5 text-[#C9941A]" />
                     Select Your Book
                   </CardTitle>
                   <CardDescription>Choose a manuscript to convert to audiobook</CardDescription>
@@ -241,19 +241,19 @@ export default function AudiobookFactory() {
                           onClick={() => setSelectedBook(book.id)}
                           className={`p-4 rounded-lg cursor-pointer transition-all ${
                             selectedBook === book.id 
-                              ? "bg-primary/20 border-2 border-orange-500" 
-                              : "bg-zinc-800 border-2 border-transparent hover:border-zinc-600"
+                              ? "bg-primary/20 border-2 border-[#C9941A]" 
+                              : "bg-[#1a1a1a] border-2 border-transparent hover:border-zinc-600"
                           }`}
                           data-testid={`card-book-${book.id}`}
                         >
                           <div className="flex items-center gap-3">
-                            <Book className="w-8 h-8 text-primary" />
+                            <Book className="w-8 h-8 text-[#C9941A]" />
                             <div>
                               <h4 className="font-medium">{book.title}</h4>
                               <p className="text-sm text-zinc-400">{book.wordCount?.toLocaleString()} words</p>
                             </div>
                             {selectedBook === book.id && (
-                              <Check className="w-5 h-5 text-primary ml-auto" />
+                              <Check className="w-5 h-5 text-[#C9941A] ml-auto" />
                             )}
                           </div>
                         </div>
@@ -273,7 +273,7 @@ export default function AudiobookFactory() {
                   {selectedBook && (
                     <Button 
                       onClick={() => setCurrentStep(2)}
-                      className="w-full mt-6 bg-orange-500 hover:bg-orange-600"
+                      className="w-full mt-6 bg-[#C9941A] hover:bg-[#C9941A]"
                       data-testid="button-next-step"
                     >
                       Continue <ChevronRight className="w-4 h-4 ml-2" />
@@ -284,10 +284,10 @@ export default function AudiobookFactory() {
             )}
 
             {currentStep === 2 && (
-              <Card className="bg-zinc-900/50 border-zinc-800">
+              <Card className="bg-[#1a1a1a]/50 border-[#333]">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Mic2 className="w-5 h-5 text-primary" />
+                    <Mic2 className="w-5 h-5 text-[#C9941A]" />
                     Choose Narrator Voice
                   </CardTitle>
                   <CardDescription>Select an AI voice for narration</CardDescription>
@@ -300,13 +300,13 @@ export default function AudiobookFactory() {
                         onClick={() => setSelectedNarrator(voice.value)}
                         className={`p-4 rounded-lg cursor-pointer transition-all ${
                           selectedNarrator === voice.value 
-                            ? "bg-primary/20 border-2 border-orange-500" 
-                            : "bg-zinc-800 border-2 border-transparent hover:border-zinc-600"
+                            ? "bg-primary/20 border-2 border-[#C9941A]" 
+                            : "bg-[#1a1a1a] border-2 border-transparent hover:border-zinc-600"
                         }`}
                         data-testid={`card-narrator-${voice.value}`}
                       >
                         <div className="flex items-center gap-3">
-                          <Mic2 className="w-6 h-6 text-primary" />
+                          <Mic2 className="w-6 h-6 text-[#C9941A]" />
                           <div className="flex-1">
                             <h4 className="font-medium">{voice.label}</h4>
                           </div>
@@ -323,7 +323,7 @@ export default function AudiobookFactory() {
                     </Button>
                     <Button 
                       onClick={() => setCurrentStep(3)}
-                      className="flex-1 bg-orange-500 hover:bg-orange-600"
+                      className="flex-1 bg-[#C9941A] hover:bg-[#C9941A]"
                       data-testid="button-next-step"
                     >
                       Continue <ChevronRight className="w-4 h-4 ml-2" />
@@ -334,10 +334,10 @@ export default function AudiobookFactory() {
             )}
 
             {currentStep === 3 && (
-              <Card className="bg-zinc-900/50 border-zinc-800">
+              <Card className="bg-[#1a1a1a]/50 border-[#333]">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Sliders className="w-5 h-5 text-primary" />
+                    <Sliders className="w-5 h-5 text-[#C9941A]" />
                     Mastering Settings
                   </CardTitle>
                   <CardDescription>Fine-tune the audio output</CardDescription>
@@ -372,7 +372,7 @@ export default function AudiobookFactory() {
                   <div>
                     <Label>Mastering Preset</Label>
                     <Select value={masteringPreset} onValueChange={setMasteringPreset}>
-                      <SelectTrigger className="bg-zinc-800 border-zinc-700" data-testid="select-preset">
+                      <SelectTrigger className="bg-[#1a1a1a] border-[#333]" data-testid="select-preset">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -390,7 +390,7 @@ export default function AudiobookFactory() {
                     </Button>
                     <Button 
                       onClick={() => setCurrentStep(4)}
-                      className="flex-1 bg-orange-500 hover:bg-orange-600"
+                      className="flex-1 bg-[#C9941A] hover:bg-[#C9941A]"
                       data-testid="button-next-step"
                     >
                       Continue <ChevronRight className="w-4 h-4 ml-2" />
@@ -401,16 +401,16 @@ export default function AudiobookFactory() {
             )}
 
             {currentStep === 4 && (
-              <Card className="bg-zinc-900/50 border-zinc-800">
+              <Card className="bg-[#1a1a1a]/50 border-[#333]">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-primary" />
+                    <Sparkles className="w-5 h-5 text-[#C9941A]" />
                     Ready to Generate
                   </CardTitle>
                   <CardDescription>Review your settings and start production</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="p-4 bg-zinc-800/50 rounded-lg space-y-2">
+                  <div className="p-4 bg-[#1a1a1a]/50 rounded-lg space-y-2">
                     <div className="flex justify-between">
                       <span className="text-zinc-400">Narrator</span>
                       <span>{narratorVoices.find(v => v.value === selectedNarrator)?.label}</span>
@@ -429,7 +429,7 @@ export default function AudiobookFactory() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-zinc-400">Cost</span>
-                      <span className="text-green-400">$16.00</span>
+                      <span className="text-[#C9941A]">$16.00</span>
                     </div>
                   </div>
                   
@@ -440,7 +440,7 @@ export default function AudiobookFactory() {
                     <Button
                       onClick={() => startProductionMutation.mutate()}
                       disabled={startProductionMutation.isPending}
-                      className="flex-1 bg-orange-500 hover:bg-orange-600"
+                      className="flex-1 bg-[#C9941A] hover:bg-[#C9941A]"
                       data-testid="button-generate"
                     >
                       {startProductionMutation.isPending ? (

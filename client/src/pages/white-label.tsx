@@ -168,7 +168,7 @@ export default function WhiteLabelPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-[#1a1a1a] font-serif">White Label Branding</h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-gray-400 mt-1">
               Customize and rebrand KreAIte as your own platform
             </p>
           </div>
@@ -195,7 +195,7 @@ export default function WhiteLabelPage() {
                 </CardTitle>
                 <div className="flex items-baseline gap-1">
                   <span className="text-3xl font-bold">${info.price}</span>
-                  <span className="text-muted-foreground">/month</span>
+                  <span className="text-gray-400">/month</span>
                 </div>
               </CardHeader>
               <CardContent>
@@ -355,7 +355,7 @@ export default function WhiteLabelPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <Label>Hide KreAIte Branding</Label>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-gray-400">
                         Remove all KreAIte branding from your platform (Professional tier required)
                       </p>
                     </div>
@@ -403,13 +403,13 @@ export default function WhiteLabelPage() {
               </TabsContent>
 
               <TabsContent value="domain" className="space-y-6">
-                <Card className="bg-muted/50">
+                <Card className="bg-[#1a1a1a]/50">
                   <CardContent className="pt-6">
                     <div className="flex items-start gap-4">
                       <Globe className="w-8 h-8 text-[#C9941A]" />
                       <div>
                         <h3 className="font-semibold">Custom Domain Setup</h3>
-                        <p className="text-sm text-muted-foreground mt-1">
+                        <p className="text-sm text-gray-400 mt-1">
                           Connect your own domain to run your white-labeled platform
                         </p>
                       </div>
@@ -471,12 +471,12 @@ export default function WhiteLabelPage() {
                   
                   return (
                     <div key={category} className="space-y-3">
-                      <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">{category}</h4>
+                      <h4 className="font-semibold text-sm text-gray-400 uppercase tracking-wide">{category}</h4>
                       <div className="grid gap-3">
                         {categoryFields.map(({ key, label, placeholder, icon: Icon }) => (
                           <div key={key} className="flex items-center gap-3">
                             <Label htmlFor={key} className="flex items-center gap-2 min-w-[200px]">
-                              <Icon className="w-4 h-4 text-muted-foreground" />
+                              <Icon className="w-4 h-4 text-gray-400" />
                               {label}
                             </Label>
                             <div className="flex gap-2 flex-1">
@@ -512,8 +512,8 @@ export default function WhiteLabelPage() {
                 })}
 
                 <div className="flex items-center gap-2 pt-4">
-                  <ExternalLink className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">
+                  <ExternalLink className="w-4 h-4 text-gray-400" />
+                  <span className="text-sm text-gray-400">
                     Need API keys? Get them from the provider dashboards: OpenAI, Anthropic, Google AI Studio, Hugging Face, Stability AI, etc.
                   </span>
                 </div>
@@ -549,7 +549,7 @@ export default function WhiteLabelPage() {
                       />
                       <span className="text-sm font-medium w-12 text-right">{config.creatorRevenueShare}%</span>
                     </div>
-                    <p className="text-sm text-muted-foreground mt-1">
+                    <p className="text-sm text-gray-400 mt-1">
                       Your platform keeps {100 - config.creatorRevenueShare}% of sales
                     </p>
                   </div>
@@ -558,20 +558,20 @@ export default function WhiteLabelPage() {
                     <Card>
                       <CardContent className="pt-4 text-center">
                         <p className="text-3xl font-bold text-green-600">{config.creatorRevenueShare}%</p>
-                        <p className="text-sm text-muted-foreground">To Creators</p>
+                        <p className="text-sm text-gray-400">To Creators</p>
                       </CardContent>
                     </Card>
                     <Card>
                       <CardContent className="pt-4 text-center">
                         <p className="text-3xl font-bold text-[#C9941A]">{100 - config.creatorRevenueShare}%</p>
-                        <p className="text-sm text-muted-foreground">Platform Fee</p>
+                        <p className="text-sm text-gray-400">Platform Fee</p>
                       </CardContent>
                     </Card>
                   </div>
 
-                  <div className="bg-muted/50 rounded-lg p-4">
+                  <div className="bg-[#1a1a1a]/50 rounded-lg p-4">
                     <h4 className="font-medium mb-2">Example Revenue Split</h4>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-gray-400">
                       On a $100 sale:
                     </p>
                     <ul className="text-sm mt-2 space-y-1">

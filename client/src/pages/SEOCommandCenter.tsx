@@ -143,11 +143,11 @@ export default function SEOCommandCenter() {
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 rounded-lg bg-primary/10">
-              <Search className="h-6 w-6 text-primary" />
+              <Search className="h-6 w-6 text-[#C9941A]" />
             </div>
             <h1 className="text-3xl font-bold" data-testid="text-page-title">SEO Command Center</h1>
           </div>
-          <p className="text-muted-foreground">
+          <p className="text-gray-400">
             Enterprise-grade SEO and AEO tools for external website optimization
           </p>
         </div>
@@ -208,11 +208,11 @@ export default function SEOCommandCenter() {
                   <CardContent className="p-5">
                     <div className="flex items-start gap-4">
                       <div className="p-2 rounded-lg bg-primary/10 shrink-0">
-                        <tool.icon className="h-5 w-5 text-primary" />
+                        <tool.icon className="h-5 w-5 text-[#C9941A]" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold">{tool.name}</h3>
-                        <p className="text-sm text-muted-foreground mt-1">{tool.description}</p>
+                        <p className="text-sm text-gray-400 mt-1">{tool.description}</p>
                         <Button
                           size="sm"
                           className="mt-3 w-full"
@@ -239,7 +239,7 @@ export default function SEOCommandCenter() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Mic className="h-5 w-5 text-primary" />
+                  <Mic className="h-5 w-5 text-[#C9941A]" />
                   Answer Engine Optimization (AEO)
                 </CardTitle>
                 <CardDescription>
@@ -250,36 +250,36 @@ export default function SEOCommandCenter() {
                 <div className="grid md:grid-cols-3 gap-4">
                   <Card className="border-dashed">
                     <CardContent className="p-4 text-center">
-                      <Brain className="h-8 w-8 mx-auto text-primary mb-2" />
+                      <Brain className="h-8 w-8 mx-auto text-[#C9941A] mb-2" />
                       <h4 className="font-semibold">FAQ Schema</h4>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-xs text-gray-400 mt-1">
                         Structure Q&A for featured snippets
                       </p>
                     </CardContent>
                   </Card>
                   <Card className="border-dashed">
                     <CardContent className="p-4 text-center">
-                      <Eye className="h-8 w-8 mx-auto text-primary mb-2" />
+                      <Eye className="h-8 w-8 mx-auto text-[#C9941A] mb-2" />
                       <h4 className="font-semibold">HowTo Schema</h4>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-xs text-gray-400 mt-1">
                         Step-by-step guides for voice search
                       </p>
                     </CardContent>
                   </Card>
                   <Card className="border-dashed">
                     <CardContent className="p-4 text-center">
-                      <Mic className="h-8 w-8 mx-auto text-primary mb-2" />
+                      <Mic className="h-8 w-8 mx-auto text-[#C9941A] mb-2" />
                       <h4 className="font-semibold">Speakable Schema</h4>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-xs text-gray-400 mt-1">
                         Mark content for text-to-speech
                       </p>
                     </CardContent>
                   </Card>
                 </div>
 
-                <div className="p-4 bg-muted/50 rounded-lg">
+                <div className="p-4 bg-[#1a1a1a]/50 rounded-lg">
                   <h4 className="font-semibold mb-2">E-E-A-T Signals</h4>
-                  <p className="text-sm text-muted-foreground mb-3">
+                  <p className="text-sm text-gray-400 mb-3">
                     Experience, Expertise, Authoritativeness, and Trust signals help your content rank better.
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -298,7 +298,7 @@ export default function SEOCommandCenter() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
+                    <CheckCircle className="h-5 w-5 text-[#C9941A]" />
                     Analysis Results
                   </CardTitle>
                 </CardHeader>
@@ -316,12 +316,12 @@ export default function SEOCommandCenter() {
                   {result.issues && result.issues.length > 0 && (
                     <div className="space-y-2">
                       <h4 className="font-semibold flex items-center gap-2">
-                        <AlertCircle className="h-4 w-4 text-orange-500" />
+                        <AlertCircle className="h-4 w-4 text-[#C9941A]" />
                         Issues Found
                       </h4>
                       <ul className="space-y-1 text-sm">
                         {result.issues.map((issue, i) => (
-                          <li key={i} className="flex items-start gap-2 text-muted-foreground">
+                          <li key={i} className="flex items-start gap-2 text-gray-400">
                             <ArrowRight className="h-4 w-4 mt-0.5 shrink-0" />
                             {issue}
                           </li>
@@ -333,13 +333,13 @@ export default function SEOCommandCenter() {
                   {result.recommendations && result.recommendations.length > 0 && (
                     <div className="space-y-2">
                       <h4 className="font-semibold flex items-center gap-2">
-                        <TrendingUp className="h-4 w-4 text-green-500" />
+                        <TrendingUp className="h-4 w-4 text-[#C9941A]" />
                         Recommendations
                       </h4>
                       <ul className="space-y-1 text-sm">
                         {result.recommendations.map((rec, i) => (
-                          <li key={i} className="flex items-start gap-2 text-muted-foreground">
-                            <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-green-500" />
+                          <li key={i} className="flex items-start gap-2 text-gray-400">
+                            <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-[#C9941A]" />
                             {rec}
                           </li>
                         ))}
@@ -364,7 +364,7 @@ export default function SEOCommandCenter() {
                   {result.content && (
                     <div className="space-y-2">
                       <h4 className="font-semibold">Generated Content</h4>
-                      <pre className="text-xs bg-muted p-4 rounded-lg overflow-auto max-h-64">
+                      <pre className="text-xs bg-[#1a1a1a] p-4 rounded-lg overflow-auto max-h-64">
                         {result.content}
                       </pre>
                     </div>
@@ -374,9 +374,9 @@ export default function SEOCommandCenter() {
             ) : (
               <Card>
                 <CardContent className="py-12 text-center">
-                  <Search className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <Search className="h-12 w-12 mx-auto text-gray-400 mb-4" />
                   <h3 className="font-semibold text-lg">No Results Yet</h3>
-                  <p className="text-muted-foreground mt-1">
+                  <p className="text-gray-400 mt-1">
                     Run an analysis from the SEO Tools tab to see results here
                   </p>
                 </CardContent>

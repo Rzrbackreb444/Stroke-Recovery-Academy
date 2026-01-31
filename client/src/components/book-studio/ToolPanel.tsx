@@ -110,7 +110,7 @@ export default function ToolPanel() {
               <div className={cn(
                 "flex items-center justify-center w-8 h-8 rounded-full border-2 shrink-0",
                 isActive && "border-primary bg-primary/10",
-                status === 'completed' && !isActive && "border-green-600 bg-green-500/10",
+                status === 'completed' && !isActive && "border-green-600 bg-[#C9941A]/10",
                 status === 'upcoming' && !isActive && "border-muted-foreground/30"
               )}>
                 {isGenerating ? (

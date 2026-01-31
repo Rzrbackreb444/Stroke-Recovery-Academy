@@ -87,18 +87,18 @@ export default function AboutUs() {
         <div className="max-w-6xl mx-auto relative">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <Badge variant="outline" className="mb-4 border-primary text-primary" data-testid="badge-founder">
+              <Badge variant="outline" className="mb-4 border-primary text-[#C9941A]" data-testid="badge-founder">
                 <Star className="w-3 h-3 mr-1" />
                 Founder's Story
               </Badge>
               <h1 className="text-4xl md:text-5xl font-black mb-6" data-testid="heading-main">
-                Meet Nick <span className="text-primary">"The Stroked Out Sasquatch"</span> Kremers
+                Meet Nick <span className="text-[#C9941A]">"The Stroked Out Sasquatch"</span> Kremers
               </h1>
-              <p className="text-xl text-muted-foreground mb-6 leading-relaxed" data-testid="text-intro">
+              <p className="text-xl text-gray-400 mb-6 leading-relaxed" data-testid="text-intro">
                 When doctors said I'd never walk again, I didn't just prove them wrong - 
                 I created a system to help thousands of stroke survivors reclaim their lives.
               </p>
-              <p className="text-muted-foreground mb-8 leading-relaxed">
+              <p className="text-gray-400 mb-8 leading-relaxed">
                 From 0% to 90% recovery. From wheelchair to warrior. Now I'm sharing every 
                 protocol, every exercise, every mindset shift that made my "impossible" recovery possible.
               </p>
@@ -129,7 +129,7 @@ export default function AboutUs() {
                 </div>
                 <CardContent className="p-6 text-center">
                   <h3 className="text-xl font-bold">Nick Kremers</h3>
-                  <p className="text-muted-foreground">Stroke Survivor & Recovery Coach</p>
+                  <p className="text-gray-400">Stroke Survivor & Recovery Coach</p>
                   <div className="flex justify-center gap-2 mt-4">
                     <Badge>Stroke Survivor</Badge>
                     <Badge>Author</Badge>
@@ -147,10 +147,10 @@ export default function AboutUs() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center" data-testid={`stat-${index}`}>
-                <div className="text-4xl md:text-5xl font-black text-primary mb-2" data-testid={`stat-value-${index}`}>
+                <div className="text-4xl md:text-5xl font-black text-[#C9941A] mb-2" data-testid={`stat-value-${index}`}>
                   {stat.value}
                 </div>
-                <div className="text-muted-foreground" data-testid={`stat-label-${index}`}>{stat.label}</div>
+                <div className="text-gray-400" data-testid={`stat-label-${index}`}>{stat.label}</div>
               </div>
             ))}
           </div>
@@ -165,9 +165,9 @@ export default function AboutUs() {
               The Journey
             </Badge>
             <h2 className="text-3xl md:text-4xl font-black mb-4" data-testid="heading-timeline">
-              From <span className="text-primary">0% to 90%</span> Recovery
+              From <span className="text-[#C9941A]">0% to 90%</span> Recovery
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
               A timeline of defying the impossible and building something that changes lives.
             </p>
           </div>
@@ -192,7 +192,7 @@ export default function AboutUs() {
                           <CardTitle>{item.title}</CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <p className="text-muted-foreground">{item.description}</p>
+                          <p className="text-gray-400">{item.description}</p>
                         </CardContent>
                       </Card>
                     )}
@@ -208,7 +208,7 @@ export default function AboutUs() {
                           <CardTitle>{item.title}</CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <p className="text-muted-foreground">{item.description}</p>
+                          <p className="text-gray-400">{item.description}</p>
                         </CardContent>
                       </Card>
                     )}
@@ -228,9 +228,9 @@ export default function AboutUs() {
               Our Mission
             </Badge>
             <h2 className="text-3xl md:text-4xl font-black mb-4" data-testid="heading-mission">
-              REBUILD. REWIRE. <span className="text-primary">RISE.</span>
+              REBUILD. REWIRE. <span className="text-[#C9941A]">RISE.</span>
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
               Stroke Recovery Academy exists for one purpose: to prove that your stroke is not your ending - 
               it's your beginning. We combine cutting-edge neuroscience with battle-tested recovery protocols 
               to help survivors exceed every limitation placed upon them.
@@ -242,10 +242,10 @@ export default function AboutUs() {
               <Card key={index} className="text-center" data-testid={`value-card-${index}`}>
                 <CardContent className="pt-8 pb-6">
                   <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <value.icon className="w-7 h-7 text-primary" />
+                    <value.icon className="w-7 h-7 text-[#C9941A]" />
                   </div>
                   <h3 className="font-bold mb-2">{value.title}</h3>
-                  <p className="text-sm text-muted-foreground">{value.description}</p>
+                  <p className="text-sm text-gray-400">{value.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -261,7 +261,7 @@ export default function AboutUs() {
               The Platform
             </Badge>
             <h2 className="text-3xl md:text-4xl font-black mb-4" data-testid="heading-platform">
-              Your Complete <span className="text-primary">Recovery Operating System</span>
+              Your Complete <span className="text-[#C9941A]">Recovery Operating System</span>
             </h2>
           </div>
 
@@ -278,11 +278,11 @@ export default function AboutUs() {
                 <CardContent className="pt-6">
                   <div className="flex items-start gap-4">
                     <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <feature.icon className="w-5 h-5 text-primary" />
+                      <feature.icon className="w-5 h-5 text-[#C9941A]" />
                     </div>
                     <div>
                       <h3 className="font-bold mb-1">{feature.title}</h3>
-                      <p className="text-sm text-muted-foreground">{feature.desc}</p>
+                      <p className="text-sm text-gray-400">{feature.desc}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -297,7 +297,7 @@ export default function AboutUs() {
           <div className="text-center mb-12">
             <Badge variant="outline" className="mb-4">Powered By</Badge>
             <h2 className="text-3xl md:text-4xl font-black mb-4" data-testid="heading-kremersx">
-              About <span className="text-primary">KremersX</span>
+              About <span className="text-[#C9941A]">KremersX</span>
             </h2>
           </div>
 
@@ -309,7 +309,7 @@ export default function AboutUs() {
                 className="h-32 mx-auto mb-6 object-contain rounded-lg"
                 data-testid="img-kremersx-logo"
               />
-              <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
+              <p className="text-lg text-gray-400 mb-6 leading-relaxed">
                 KremersX is the parent company behind Stroke Recovery Academy, dedicated to 
                 building transformative health and wellness platforms. Founded by Nick Kremers, 
                 our mission is to leverage technology and lived experience to help people 
@@ -337,9 +337,9 @@ export default function AboutUs() {
       <section className="py-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-black mb-6" data-testid="heading-cta">
-            Ready to Start <span className="text-primary">Your Recovery?</span>
+            Ready to Start <span className="text-[#C9941A]">Your Recovery?</span>
           </h2>
-          <p className="text-xl text-muted-foreground mb-8">
+          <p className="text-xl text-gray-400 mb-8">
             Join 50,000+ stroke warriors who are proving the impossible every single day.
           </p>
           <div className="flex flex-wrap justify-center gap-4 mb-8">
@@ -356,11 +356,11 @@ export default function AboutUs() {
               </Button>
             </Link>
           </div>
-          <p className="text-muted-foreground">
+          <p className="text-gray-400">
             Questions? Email us at{" "}
             <a 
               href="mailto:info@strokerecoveryacademy.com" 
-              className="text-primary hover:underline"
+              className="text-[#C9941A] hover:underline"
               data-testid="link-email"
             >
               info@strokerecoveryacademy.com

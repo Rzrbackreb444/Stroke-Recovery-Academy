@@ -95,13 +95,13 @@ export default function NeverZero() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-[#0D0D0D] text-white">
       <RecoveryHeader />
       
       <main className="container mx-auto px-4 py-6 max-w-4xl">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold flex items-center justify-center gap-3 mb-2">
-            <Flame className="h-8 w-8 text-orange-500" />
+            <Flame className="h-8 w-8 text-[#C9941A]" />
             Never Zero
           </h1>
           <p className="text-gray-400 text-lg">
@@ -113,40 +113,40 @@ export default function NeverZero() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Card className="bg-gradient-to-br from-orange-500/20 to-red-500/20 border-orange-500/50 p-6 text-center">
-            <Flame className="h-12 w-12 text-orange-500 mx-auto mb-3" />
-            <div className="text-5xl font-bold text-orange-500">{currentStreak}</div>
+          <Card className="bg-gradient-to-br from-orange-500/20 to-red-500/20 border-[#C9941A]/50 p-6 text-center">
+            <Flame className="h-12 w-12 text-[#C9941A] mx-auto mb-3" />
+            <div className="text-5xl font-bold text-[#C9941A]">{currentStreak}</div>
             <div className="text-gray-300 mt-1">Day Streak</div>
             <p className="text-gray-400 text-sm mt-2">{getStreakMessage(currentStreak)}</p>
           </Card>
           
-          <Card className="bg-zinc-900 border-zinc-800 p-6 text-center">
+          <Card className="bg-[#1a1a1a] border-[#333] p-6 text-center">
             <Trophy className="h-10 w-10 text-yellow-500 mx-auto mb-3" />
             <div className="text-3xl font-bold">{longestStreak}</div>
             <div className="text-gray-400">Best Streak</div>
           </Card>
           
-          <Card className="bg-zinc-900 border-zinc-800 p-6 text-center">
-            <Calendar className="h-10 w-10 text-green-500 mx-auto mb-3" />
+          <Card className="bg-[#1a1a1a] border-[#333] p-6 text-center">
+            <Calendar className="h-10 w-10 text-[#C9941A] mx-auto mb-3" />
             <div className="text-3xl font-bold">{totalDays}</div>
             <div className="text-gray-400">Total Days Active</div>
           </Card>
         </div>
 
         {hasLoggedToday ? (
-          <Card className="bg-green-500/10 border-green-500/50 p-6 mb-8 text-center">
-            <CheckCircle2 className="h-12 w-12 text-green-500 mx-auto mb-3" />
-            <h3 className="text-xl font-bold text-green-400">Streak Saved for Today!</h3>
+          <Card className="bg-[#C9941A]/10 border-green-500/50 p-6 mb-8 text-center">
+            <CheckCircle2 className="h-12 w-12 text-[#C9941A] mx-auto mb-3" />
+            <h3 className="text-xl font-bold text-[#C9941A]">Streak Saved for Today!</h3>
             <p className="text-gray-400 mt-2">You did it. Come back tomorrow to keep it going.</p>
           </Card>
         ) : (
-          <Card className="bg-orange-500/10 border-orange-500/50 p-6 mb-8 text-center">
-            <AlertCircle className="h-12 w-12 text-orange-500 mx-auto mb-3" />
-            <h3 className="text-xl font-bold text-orange-400">Don't Break Your Streak!</h3>
+          <Card className="bg-[#C9941A]/10 border-[#C9941A]/50 p-6 mb-8 text-center">
+            <AlertCircle className="h-12 w-12 text-[#C9941A] mx-auto mb-3" />
+            <h3 className="text-xl font-bold text-[#C9941A]">Don't Break Your Streak!</h3>
             <p className="text-gray-400 mt-2 mb-4">Log just ONE action to save today's streak.</p>
             <Button 
               onClick={() => setLogDialogOpen(true)} 
-              className="bg-orange-500 text-lg px-8 py-6"
+              className="bg-[#C9941A] text-lg px-8 py-6"
               data-testid="button-log-action"
             >
               <Zap className="h-5 w-5 mr-2" />
@@ -155,21 +155,21 @@ export default function NeverZero() {
           </Card>
         )}
 
-        <Card className="bg-zinc-900 border-zinc-800 p-6 mb-8">
+        <Card className="bg-[#1a1a1a] border-[#333] p-6 mb-8">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <Target className="h-5 w-5 text-orange-500" />
+            <Target className="h-5 w-5 text-[#C9941A]" />
             The Never Zero Philosophy
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 bg-zinc-800/50 rounded-lg">
-              <h4 className="font-semibold text-orange-400 mb-2">The Rule</h4>
+            <div className="p-4 bg-[#1a1a1a]/50 rounded-lg">
+              <h4 className="font-semibold text-[#C9941A] mb-2">The Rule</h4>
               <p className="text-gray-400 text-sm">
                 Every day, do at least ONE thing for your recovery. One rep. One step. One stretch. 
                 That's all it takes to save your streak.
               </p>
             </div>
-            <div className="p-4 bg-zinc-800/50 rounded-lg">
-              <h4 className="font-semibold text-orange-400 mb-2">Why It Works</h4>
+            <div className="p-4 bg-[#1a1a1a]/50 rounded-lg">
+              <h4 className="font-semibold text-[#C9941A] mb-2">Why It Works</h4>
               <p className="text-gray-400 text-sm">
                 Bad days happen. But doing even the smallest thing keeps you in the game. 
                 1 rep compounds over time into massive progress.
@@ -179,16 +179,16 @@ export default function NeverZero() {
         </Card>
 
         {logs.length > 0 && (
-          <Card className="bg-zinc-900 border-zinc-800 p-6">
+          <Card className="bg-[#1a1a1a] border-[#333] p-6">
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-orange-500" />
+              <TrendingUp className="h-5 w-5 text-[#C9941A]" />
               Recent Activity
             </h3>
             <div className="space-y-3">
               {logs.slice(0, 10).map((log: any) => (
-                <div key={log.id} className="flex items-start gap-3 p-3 bg-zinc-800/50 rounded-lg">
-                  <div className="p-2 rounded bg-orange-500/20">
-                    <CheckCircle2 className="h-4 w-4 text-orange-500" />
+                <div key={log.id} className="flex items-start gap-3 p-3 bg-[#1a1a1a]/50 rounded-lg">
+                  <div className="p-2 rounded bg-[#C9941A]/20">
+                    <CheckCircle2 className="h-4 w-4 text-[#C9941A]" />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
@@ -209,10 +209,10 @@ export default function NeverZero() {
         )}
 
         <Dialog open={logDialogOpen} onOpenChange={setLogDialogOpen}>
-          <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-lg">
+          <DialogContent className="bg-[#1a1a1a] border-[#333] text-white max-w-lg">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
-                <Zap className="h-5 w-5 text-orange-500" />
+                <Zap className="h-5 w-5 text-[#C9941A]" />
                 Log Your 1 Rep
               </DialogTitle>
             </DialogHeader>
@@ -221,10 +221,10 @@ export default function NeverZero() {
               <div>
                 <Label>Category</Label>
                 <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v })}>
-                  <SelectTrigger className="bg-zinc-800 border-zinc-700 mt-1" data-testid="select-category">
+                  <SelectTrigger className="bg-[#1a1a1a] border-[#333] mt-1" data-testid="select-category">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-zinc-900 border-zinc-800">
+                  <SelectContent className="bg-[#1a1a1a] border-[#333]">
                     {categories.map((c) => (
                       <SelectItem key={c.value} value={c.value}>
                         <div>
@@ -243,7 +243,7 @@ export default function NeverZero() {
                   placeholder="e.g., Did 1 arm stretch, Drank a glass of water..."
                   value={form.action}
                   onChange={(e) => setForm({ ...form, action: e.target.value })}
-                  className="bg-zinc-800 border-zinc-700 mt-1"
+                  className="bg-[#1a1a1a] border-[#333] mt-1"
                   data-testid="input-action"
                 />
                 <p className="text-gray-500 text-xs mt-1">
@@ -257,14 +257,14 @@ export default function NeverZero() {
                   placeholder="How did you feel? Any wins to celebrate?"
                   value={form.notes}
                   onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                  className="bg-zinc-800 border-zinc-700 mt-1"
+                  className="bg-[#1a1a1a] border-[#333] mt-1"
                   rows={2}
                 />
               </div>
 
               <Button 
                 onClick={handleSubmit} 
-                className="w-full bg-orange-500 text-lg py-6"
+                className="w-full bg-[#C9941A] text-lg py-6"
                 disabled={logMutation.isPending}
                 data-testid="button-save-action"
               >

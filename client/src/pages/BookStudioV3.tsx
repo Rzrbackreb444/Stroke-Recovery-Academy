@@ -20,13 +20,13 @@ function LoadingState() {
     <div className="flex items-center justify-center h-screen p-4" data-testid="loading-state">
       <Card className="w-full max-w-md p-8 bg-card border">
         <div className="flex flex-col items-center gap-6">
-          <Loader2 className="h-12 w-12 animate-spin text-primary" data-testid="spinner" />
+          <Loader2 className="h-12 w-12 animate-spin text-[#C9941A]" data-testid="spinner" />
           <div className="w-full space-y-3">
             <Skeleton className="h-4 w-full bg-primary/10" />
             <Skeleton className="h-4 w-3/4 bg-primary/10" />
             <Skeleton className="h-4 w-5/6 bg-primary/10" />
           </div>
-          <div className="text-sm font-medium text-muted-foreground">
+          <div className="text-sm font-medium text-gray-400">
             Loading Book Studio...
           </div>
         </div>
@@ -43,10 +43,10 @@ function LoginPrompt() {
     <div className="flex items-center justify-center h-screen p-4" data-testid="login-prompt">
       <Card className="w-full max-w-md p-8 bg-card border text-center">
         <div className="flex flex-col items-center gap-6">
-          <LogIn className="h-12 w-12 text-primary" />
+          <LogIn className="h-12 w-12 text-[#C9941A]" />
           <div>
             <h2 className="text-xl font-bold text-foreground mb-2">Sign In Required</h2>
-            <p className="text-muted-foreground">
+            <p className="text-gray-400">
               {isRecovery 
                 ? "Sign in to start writing your recovery story"
                 : "Sign in to access Book Studio and create your book"
@@ -55,7 +55,7 @@ function LoginPrompt() {
           </div>
           <Button 
             onClick={() => window.location.href = '/api/login'}
-            className="bg-orange-500 hover:bg-orange-600 text-foreground"
+            className="bg-[#C9941A] hover:bg-[#C9941A] text-foreground"
             data-testid="button-login"
           >
             <LogIn className="w-4 h-4 mr-2" />

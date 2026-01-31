@@ -136,17 +136,17 @@ export default function Reminders() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6 text-foreground">
+    <div className="min-h-screen bg-[#0D0D0D] p-6 text-white">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-primary">Wellness & Reminders</h1>
+        <h1 className="text-4xl font-bold mb-8 text-[#C9941A]">Wellness & Reminders</h1>
         <p className="text-gray-400 mb-8">Stay active, hydrated, and on track with your recovery goals</p>
 
         {/* Wellness Trackers */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {/* Stand Goal */}
-          <Card className="bg-gray-900 border-gray-800">
+          <Card className="bg-[#1a1a1a] border-[#333]">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-primary">
+              <CardTitle className="flex items-center gap-2 text-[#C9941A]">
                 <Clock className="w-5 h-5" />
                 Stand Reminder
               </CardTitle>
@@ -154,12 +154,12 @@ export default function Reminders() {
             <CardContent className="space-y-4">
               <div>
                 <p className="text-sm text-gray-400">Today: {standData?.todayCount || 0} stands</p>
-                <p className="text-2xl font-bold text-primary">{standData?.goal?.dailyStandTarget || 12} goal</p>
+                <p className="text-2xl font-bold text-[#C9941A]">{standData?.goal?.dailyStandTarget || 12} goal</p>
               </div>
               <Button
                 onClick={() => logStandMutation.mutate()}
                 disabled={logStandMutation.isPending}
-                className="w-full bg-orange-600 hover:bg-orange-700"
+                className="w-full bg-[#C9941A] hover:bg-orange-700"
                 data-testid="button-log-stand"
               >
                 Log Stand Now
@@ -168,7 +168,7 @@ export default function Reminders() {
           </Card>
 
           {/* Hydration Goal */}
-          <Card className="bg-gray-900 border-gray-800">
+          <Card className="bg-[#1a1a1a] border-[#333]">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-blue-500">
                 <Droplet className="w-5 h-5" />
@@ -192,9 +192,9 @@ export default function Reminders() {
           </Card>
 
           {/* Exercise Goal */}
-          <Card className="bg-gray-900 border-gray-800">
+          <Card className="bg-[#1a1a1a] border-[#333]">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-green-500">
+              <CardTitle className="flex items-center gap-2 text-[#C9941A]">
                 <Activity className="w-5 h-5" />
                 Exercise
               </CardTitle>
@@ -202,12 +202,12 @@ export default function Reminders() {
             <CardContent className="space-y-4">
               <div>
                 <p className="text-sm text-gray-400">Today: {exerciseData?.todayDuration || 0} min</p>
-                <p className="text-2xl font-bold text-green-500">{exerciseData?.goal?.dailyMinutes || 30} min goal</p>
+                <p className="text-2xl font-bold text-[#C9941A]">{exerciseData?.goal?.dailyMinutes || 30} min goal</p>
               </div>
               <Button
                 onClick={() => logExerciseMutation.mutate()}
                 disabled={logExerciseMutation.isPending}
-                className="w-full bg-green-600 hover:bg-green-700"
+                className="w-full bg-[#C9941A] hover:bg-[#C9941A]/80"
                 data-testid="button-log-exercise"
               >
                 Log Exercise
@@ -217,16 +217,16 @@ export default function Reminders() {
         </div>
 
         {/* Reminders List */}
-        <Card className="bg-gray-900 border-gray-800 mb-8">
+        <Card className="bg-[#1a1a1a] border-[#333] mb-8">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
-                <Bell className="w-5 h-5 text-primary" />
+                <Bell className="w-5 h-5 text-[#C9941A]" />
                 Medication & Appointment Reminders
               </CardTitle>
               <Button
                 onClick={() => setOpenDialog(true)}
-                className="bg-orange-600 hover:bg-orange-700 gap-2"
+                className="bg-[#C9941A] hover:bg-orange-700 gap-2"
                 data-testid="button-add-reminder"
               >
                 <Plus className="w-4 h-4" />
@@ -240,7 +240,7 @@ export default function Reminders() {
             ) : (
               <div className="space-y-4">
                 {reminders.map((reminder: any) => (
-                  <div key={reminder.id} className="flex items-center justify-between p-4 bg-gray-800 rounded-lg border border-gray-700">
+                  <div key={reminder.id} className="flex items-center justify-between p-4 bg-gray-800 rounded-lg border border-[#333]">
                     <div className="flex items-center gap-4">
                       {reminder.type === "medication" && <Pill className="w-5 h-5 text-red-500" />}
                       {reminder.type === "appointment" && <Clock className="w-5 h-5 text-blue-500" />}
@@ -268,7 +268,7 @@ export default function Reminders() {
 
       {/* Add Reminder Dialog */}
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogContent className="bg-gray-900 border-gray-800">
+        <DialogContent className="bg-[#1a1a1a] border-[#333]">
           <DialogHeader>
             <DialogTitle>Add Reminder</DialogTitle>
           </DialogHeader>
@@ -281,7 +281,7 @@ export default function Reminders() {
                   <FormItem>
                     <FormLabel>Type</FormLabel>
                     <FormControl>
-                      <select {...field} className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded text-foreground">
+                      <select {...field} className="w-full px-3 py-2 bg-gray-800 border border-[#333] rounded text-white">
                         <option value="medication">Medication</option>
                         <option value="appointment">Appointment</option>
                         <option value="stand">Stand</option>
@@ -299,7 +299,7 @@ export default function Reminders() {
                   <FormItem>
                     <FormLabel>Title</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="e.g., Take medicine" className="bg-gray-800 border-gray-700" data-testid="input-reminder-title" />
+                      <Input {...field} placeholder="e.g., Take medicine" className="bg-gray-800 border-[#333]" data-testid="input-reminder-title" />
                     </FormControl>
                   </FormItem>
                 )}
@@ -311,12 +311,12 @@ export default function Reminders() {
                   <FormItem>
                     <FormLabel>Time</FormLabel>
                     <FormControl>
-                      <Input {...field} type="time" className="bg-gray-800 border-gray-700" data-testid="input-reminder-time" />
+                      <Input {...field} type="time" className="bg-gray-800 border-[#333]" data-testid="input-reminder-time" />
                     </FormControl>
                   </FormItem>
                 )}
               />
-              <Button type="submit" disabled={createReminderMutation.isPending} className="w-full bg-orange-600 hover:bg-orange-700" data-testid="button-submit-reminder">
+              <Button type="submit" disabled={createReminderMutation.isPending} className="w-full bg-[#C9941A] hover:bg-orange-700" data-testid="button-submit-reminder">
                 Create Reminder
               </Button>
             </form>

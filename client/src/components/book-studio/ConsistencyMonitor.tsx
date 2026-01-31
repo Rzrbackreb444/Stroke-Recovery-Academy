@@ -82,7 +82,7 @@ const CATEGORY_ICONS: Record<string, typeof Users> = {
 
 const CATEGORY_COLORS: Record<string, string> = {
   character: 'text-blue-500',
-  location: 'text-green-500',
+  location: 'text-[#C9941A]',
   timeline: 'text-orange-500',
   object: 'text-[#C9941A]',
   plot: 'text-amber-600',
@@ -344,7 +344,7 @@ export default function ConsistencyMonitor({
             <div className="flex items-center gap-2">
               <div className={cn(
                 "w-3 h-3 rounded-full",
-                criticalCount > 0 ? "bg-red-500" : "bg-green-500"
+                criticalCount > 0 ? "bg-red-500" : "bg-[#C9941A]"
               )} />
               <span className="text-sm">
                 {criticalCount > 0 ? `${criticalCount} critical` : "No critical issues"}
@@ -353,7 +353,7 @@ export default function ConsistencyMonitor({
             <div className="flex items-center gap-2">
               <div className={cn(
                 "w-3 h-3 rounded-full",
-                warningCount > 0 ? "bg-yellow-500" : "bg-green-500"
+                warningCount > 0 ? "bg-yellow-500" : "bg-[#C9941A]"
               )} />
               <span className="text-sm">
                 {warningCount > 0 ? `${warningCount} warnings` : "No warnings"}
@@ -443,7 +443,7 @@ export default function ConsistencyMonitor({
                 <div className="space-y-3 pr-4">
                   {unresolvedConflicts.length === 0 ? (
                     <div className="text-center py-12">
-                      <Check className="w-12 h-12 mx-auto mb-3 text-green-500" />
+                      <Check className="w-12 h-12 mx-auto mb-3 text-[#C9941A]" />
                       <h3 className="font-medium mb-2">No Conflicts Found</h3>
                       <p className="text-sm text-muted-foreground max-w-sm mx-auto">
                         {entries.length > 0 
@@ -601,7 +601,7 @@ export default function ConsistencyMonitor({
                 <Card>
                   <CardHeader className="p-4 pb-2">
                     <CardTitle className="text-sm flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-green-500" />
+                      <MapPin className="w-4 h-4 text-[#C9941A]" />
                       Locations
                     </CardTitle>
                   </CardHeader>

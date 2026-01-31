@@ -109,7 +109,7 @@ const GAMES = [
 const PRIZE_TYPES = [
   { icon: Coins, name: "Credits", color: "text-yellow-400", desc: "Use in all studios" },
   { icon: Music, name: "Music", color: "text-purple-400", desc: "Free song generations" },
-  { icon: BookOpen, name: "Templates", color: "text-green-400", desc: "Premium book templates" },
+  { icon: BookOpen, name: "Templates", color: "text-[#C9941A]", desc: "Premium book templates" },
   { icon: Image, name: "Images", color: "text-pink-400", desc: "AI image credits" },
 ];
 
@@ -155,11 +155,11 @@ export default function SasquatchGames() {
 
         <div className="text-center mb-12">
           <div className="relative inline-block mb-6">
-            <div className="absolute inset-0 blur-3xl bg-orange-500/30 rounded-full" />
+            <div className="absolute inset-0 blur-3xl bg-[#C9941A]/30 rounded-full" />
             <img 
               src={sasquatchLogo} 
               alt="Sasquatch" 
-              className="relative w-32 h-32 rounded-full border-4 border-orange-500 shadow-2xl shadow-orange-500/30"
+              className="relative w-32 h-32 rounded-full border-4 border-[#C9941A] shadow-2xl shadow-orange-500/30"
             />
             <div className="absolute -bottom-3 left-1/2 -translate-x-1/2">
               <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-1.5 text-sm font-bold shadow-lg animate-pulse">
@@ -177,12 +177,12 @@ export default function SasquatchGames() {
           
           <p className="text-gray-400 max-w-2xl mx-auto text-lg mb-8">
             Premium casino games with real rewards. Win credits to power all 6 creative studios.
-            <span className="text-orange-400 font-semibold"> No cash payouts - credits only.</span>
+            <span className="text-[#C9941A] font-semibold"> No cash payouts - credits only.</span>
           </p>
           
           <div className="flex flex-wrap justify-center gap-4">
             {PRIZE_TYPES.map((prize) => (
-              <div key={prize.name} className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-900/80 border border-gray-800">
+              <div key={prize.name} className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#1a1a1a]/80 border border-[#333]">
                 <prize.icon className={`w-4 h-4 ${prize.color}`} />
                 <span className="text-white font-medium text-sm">{prize.name}</span>
               </div>
@@ -194,7 +194,7 @@ export default function SasquatchGames() {
           {GAMES.map((game) => (
             <Link key={game.id} href={game.href}>
               <Card 
-                className={`group relative bg-gray-900/60 backdrop-blur border-gray-800 overflow-hidden cursor-pointer transition-all duration-300 hover:border-orange-500/60 hover:shadow-2xl hover:shadow-orange-500/10 hover:scale-[1.02] h-full`}
+                className={`group relative bg-[#1a1a1a]/60 backdrop-blur border-[#333] overflow-hidden cursor-pointer transition-all duration-300 hover:border-[#C9941A]/60 hover:shadow-2xl hover:shadow-orange-500/10 hover:scale-[1.02] h-full`}
                 data-testid={`game-card-${game.id}`}
               >
                 <div 
@@ -221,7 +221,7 @@ export default function SasquatchGames() {
                         </Badge>
                       )}
                       {game.status === "live" && !game.hot && !game.new && (
-                        <Badge className="bg-green-500/20 text-green-400 border-0 text-xs">
+                        <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-0 text-xs">
                           LIVE
                         </Badge>
                       )}
@@ -237,14 +237,14 @@ export default function SasquatchGames() {
                   
                   <div className="flex flex-wrap gap-1.5">
                     {game.prizes.map((prize, i) => (
-                      <Badge key={i} variant="outline" className="border-gray-700 text-gray-400 text-xs">
+                      <Badge key={i} variant="outline" className="border-[#333] text-gray-400 text-xs">
                         {prize}
                       </Badge>
                     ))}
                   </div>
                   
                   <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <ChevronRight className="w-5 h-5 text-orange-400" />
+                    <ChevronRight className="w-5 h-5 text-[#C9941A]" />
                   </div>
                 </CardContent>
               </Card>
@@ -252,7 +252,7 @@ export default function SasquatchGames() {
           ))}
         </div>
 
-        <Card className="bg-gradient-to-r from-orange-600/10 via-red-600/10 to-yellow-600/10 border-orange-500/20">
+        <Card className="bg-gradient-to-r from-orange-600/10 via-red-600/10 to-yellow-600/10 border-[#C9941A]/20">
           <CardContent className="p-8 text-center">
             <div className="flex items-center justify-center gap-3 mb-4">
               <Star className="w-8 h-8 text-yellow-400" />
@@ -260,12 +260,12 @@ export default function SasquatchGames() {
               <Star className="w-8 h-8 text-yellow-400" />
             </div>
             <p className="text-gray-400 max-w-3xl mx-auto mb-6">
-              All games use platform credits - <span className="text-orange-400 font-semibold">no real money gambling</span>. 
+              All games use platform credits - <span className="text-[#C9941A] font-semibold">no real money gambling</span>. 
               Credits you win can be used across all 6 KreAIte studios: Book, Music, Video, Course, Image, and Doctrine Engine.
               Operated by Stroke Lyfe Inc (501c3) for charitable entertainment.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Badge className="bg-green-500/20 text-green-400 border-0 px-4 py-2">
+              <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-0 px-4 py-2">
                 <Sparkles className="w-4 h-4 mr-2" />
                 Free Play Available
               </Badge>

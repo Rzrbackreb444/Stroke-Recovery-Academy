@@ -266,7 +266,7 @@ export default function Thread() {
               )}
             </div>
             
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-4 text-sm text-gray-400">
               <span className="flex items-center gap-1">
                 <MessageCircle className="h-4 w-4" />
                 {thread.replyCount} replies
@@ -313,11 +313,11 @@ export default function Thread() {
                         {index === 0 && (
                           <Badge variant="secondary" className="text-xs">Author</Badge>
                         )}
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs text-gray-400">
                           {formatRelativeTime(post.createdAt)}
                         </span>
                         {post.isEdited && (
-                          <span className="text-xs text-muted-foreground">(edited)</span>
+                          <span className="text-xs text-gray-400">(edited)</span>
                         )}
                       </div>
                       
@@ -423,7 +423,7 @@ export default function Thread() {
           ) : (
             <Card>
               <CardContent className="pt-6 text-center py-8">
-                <p className="text-muted-foreground">No posts yet.</p>
+                <p className="text-gray-400">No posts yet.</p>
               </CardContent>
             </Card>
           )}
@@ -456,10 +456,10 @@ export default function Thread() {
         )}
 
         {thread.isLocked && (
-          <Card className="mt-6 border-muted">
+          <Card className="mt-6 border-[#333]">
             <CardContent className="pt-6 text-center">
-              <Lock className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-              <p className="text-muted-foreground">
+              <Lock className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+              <p className="text-gray-400">
                 This thread is locked. No new replies can be posted.
               </p>
             </CardContent>
@@ -469,7 +469,7 @@ export default function Thread() {
         {!user && (
           <Card className="mt-6 border-primary/20 bg-primary/5">
             <CardContent className="pt-6 text-center">
-              <p className="text-muted-foreground mb-4">
+              <p className="text-gray-400 mb-4">
                 Sign in to join the discussion and share your recovery journey.
               </p>
               <Button onClick={() => setLocation("/api/login")} data-testid="button-login-reply">

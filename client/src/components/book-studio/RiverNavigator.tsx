@@ -161,7 +161,7 @@ export default function RiverNavigator({
       label: 'Marketing & Publishing',
       icon: Package,
       openIcon: Package,
-      color: 'text-green-500',
+      color: 'text-[#C9941A]',
       items: [],
     },
     {
@@ -184,9 +184,9 @@ export default function RiverNavigator({
     : folders;
 
   return (
-    <div className="flex flex-col h-full bg-zinc-50 dark:bg-zinc-900/50 border-r border-zinc-200 dark:border-zinc-800">
+    <div className="flex flex-col h-full bg-zinc-50 dark:bg-[#1a1a1a]/50 border-r border-zinc-200 dark:border-[#333]">
       {/* Header */}
-      <div className="p-3 border-b border-zinc-200 dark:border-zinc-800">
+      <div className="p-3 border-b border-zinc-200 dark:border-[#333]">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
             Files
@@ -227,7 +227,7 @@ export default function RiverNavigator({
             placeholder="Search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-8 h-8 text-xs bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700"
+            className="pl-8 h-8 text-xs bg-white dark:bg-[#1a1a1a] border-zinc-200 dark:border-[#333]"
             data-testid="input-search-navigator"
           />
         </div>
@@ -251,7 +251,7 @@ export default function RiverNavigator({
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="w-full justify-start gap-1.5 h-7 px-2 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200/60 dark:hover:bg-zinc-800"
+                      className="w-full justify-start gap-1.5 h-7 px-2 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200/60 dark:hover:bg-[#1a1a1a]"
                       data-testid={`folder-${folder.id}`}
                     >
                       {isExpanded ? (
@@ -266,7 +266,7 @@ export default function RiverNavigator({
                 </div>
 
                 <CollapsibleContent>
-                  <div className="ml-3 pl-3 border-l border-zinc-200 dark:border-zinc-700 space-y-0.5 py-0.5">
+                  <div className="ml-3 pl-3 border-l border-zinc-200 dark:border-[#333] space-y-0.5 py-0.5">
                     {folder.items.length === 0 ? (
                       <p className="text-[10px] text-zinc-400 px-2 py-1.5 italic">
                         No items
@@ -285,7 +285,7 @@ export default function RiverNavigator({
                               "w-full justify-start gap-2 h-7 px-2 text-xs",
                               isSelected
                                 ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-medium"
-                                : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-zinc-800"
+                                : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-[#1a1a1a]"
                             )}
                             onClick={() => onSelectItem(item)}
                             data-testid={`item-${item.id}`}
@@ -296,7 +296,7 @@ export default function RiverNavigator({
                             )} />
                             <span className="truncate">{item.title}</span>
                             {item.status === 'complete' && (
-                              <div className="ml-auto h-1.5 w-1.5 rounded-full bg-green-500 shrink-0" />
+                              <div className="ml-auto h-1.5 w-1.5 rounded-full bg-[#C9941A] shrink-0" />
                             )}
                           </Button>
                         );
@@ -311,7 +311,7 @@ export default function RiverNavigator({
       </ScrollArea>
 
       {/* Footer Stats */}
-      <div className="p-3 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+      <div className="p-3 border-t border-zinc-200 dark:border-[#333] bg-white dark:bg-[#1a1a1a]">
         <div className="text-[10px] text-zinc-500 space-y-0.5">
           <div className="flex justify-between">
             <span>Total chapters</span>

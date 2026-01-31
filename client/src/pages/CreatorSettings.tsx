@@ -215,7 +215,7 @@ export default function CreatorSettings() {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-6" data-testid="page-creator-settings">
+    <div className="min-h-screen bg-[#0D0D0D] text-foreground p-6" data-testid="page-creator-settings">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center gap-3 mb-8">
           <Settings className="h-8 w-8 text-[#FF6B35]" />
@@ -226,7 +226,7 @@ export default function CreatorSettings() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-zinc-900 border border-zinc-800 p-1">
+          <TabsList className="bg-[#1a1a1a] border border-[#333] p-1">
             <TabsTrigger value="profiles" className="data-[state=active]:bg-[#FF6B35] data-[state=active]:text-foreground" data-testid="tab-profiles">
               <User className="h-4 w-4 mr-2" />
               Author Profiles
@@ -262,7 +262,7 @@ export default function CreatorSettings() {
                     New Profile
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-zinc-900 border-zinc-800 text-foreground max-w-lg">
+                <DialogContent className="bg-[#1a1a1a] border-[#333] text-foreground max-w-lg">
                   <DialogHeader>
                     <DialogTitle>{editingProfile ? "Edit Profile" : "Create Author Profile"}</DialogTitle>
                     <DialogDescription className="text-zinc-400">
@@ -278,7 +278,7 @@ export default function CreatorSettings() {
                           <FormItem>
                             <FormLabel>Pen Name *</FormLabel>
                             <FormControl>
-                              <Input placeholder="Your author name" className="bg-zinc-800 border-zinc-700" {...field} data-testid="input-pen-name" />
+                              <Input placeholder="Your author name" className="bg-[#1a1a1a] border-[#333]" {...field} data-testid="input-pen-name" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -291,7 +291,7 @@ export default function CreatorSettings() {
                           <FormItem>
                             <FormLabel>Real Name (Optional)</FormLabel>
                             <FormControl>
-                              <Input placeholder="For copyright" className="bg-zinc-800 border-zinc-700" {...field} data-testid="input-real-name" />
+                              <Input placeholder="For copyright" className="bg-[#1a1a1a] border-[#333]" {...field} data-testid="input-real-name" />
                             </FormControl>
                           </FormItem>
                         )}
@@ -303,7 +303,7 @@ export default function CreatorSettings() {
                           <FormItem>
                             <FormLabel>Author Bio</FormLabel>
                             <FormControl>
-                              <Textarea placeholder="Tell readers about yourself..." className="bg-zinc-800 border-zinc-700 min-h-24" {...field} data-testid="input-bio" />
+                              <Textarea placeholder="Tell readers about yourself..." className="bg-[#1a1a1a] border-[#333] min-h-24" {...field} data-testid="input-bio" />
                             </FormControl>
                           </FormItem>
                         )}
@@ -316,7 +316,7 @@ export default function CreatorSettings() {
                             <FormItem>
                               <FormLabel>Website</FormLabel>
                               <FormControl>
-                                <Input placeholder="https://..." className="bg-zinc-800 border-zinc-700" {...field} data-testid="input-website" />
+                                <Input placeholder="https://..." className="bg-[#1a1a1a] border-[#333]" {...field} data-testid="input-website" />
                               </FormControl>
                             </FormItem>
                           )}
@@ -328,7 +328,7 @@ export default function CreatorSettings() {
                             <FormItem>
                               <FormLabel>Photo URL</FormLabel>
                               <FormControl>
-                                <Input placeholder="https://..." className="bg-zinc-800 border-zinc-700" {...field} data-testid="input-photo" />
+                                <Input placeholder="https://..." className="bg-[#1a1a1a] border-[#333]" {...field} data-testid="input-photo" />
                               </FormControl>
                             </FormItem>
                           )}
@@ -361,7 +361,7 @@ export default function CreatorSettings() {
             {profilesLoading ? (
               <div className="grid md:grid-cols-2 gap-4">
                 {[1, 2].map((i) => (
-                  <Card key={i} className="bg-zinc-900 border-zinc-800">
+                  <Card key={i} className="bg-[#1a1a1a] border-[#333]">
                     <CardContent className="p-6">
                       <Skeleton className="h-12 w-12 rounded-full mb-4" />
                       <Skeleton className="h-6 w-32 mb-2" />
@@ -371,7 +371,7 @@ export default function CreatorSettings() {
                 ))}
               </div>
             ) : profiles.length === 0 ? (
-              <Card className="bg-zinc-900 border-zinc-800 border-dashed">
+              <Card className="bg-[#1a1a1a] border-[#333] border-dashed">
                 <CardContent className="p-12 text-center">
                   <User className="h-12 w-12 mx-auto text-zinc-600 mb-4" />
                   <h3 className="text-lg font-medium mb-2">No Author Profiles Yet</h3>
@@ -385,7 +385,7 @@ export default function CreatorSettings() {
             ) : (
               <div className="grid md:grid-cols-2 gap-4">
                 {profiles.map((profile) => (
-                  <Card key={profile.id} className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors" data-testid={`card-profile-${profile.id}`}>
+                  <Card key={profile.id} className="bg-[#1a1a1a] border-[#333] hover:border-[#333] transition-colors" data-testid={`card-profile-${profile.id}`}>
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between">
                         <div className="flex items-center gap-4">
@@ -447,7 +447,7 @@ export default function CreatorSettings() {
                     New Preset
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-zinc-900 border-zinc-800 text-foreground max-w-lg">
+                <DialogContent className="bg-[#1a1a1a] border-[#333] text-foreground max-w-lg">
                   <DialogHeader>
                     <DialogTitle>Create Publishing Preset</DialogTitle>
                     <DialogDescription className="text-zinc-400">
@@ -463,7 +463,7 @@ export default function CreatorSettings() {
                           <FormItem>
                             <FormLabel>Preset Name *</FormLabel>
                             <FormControl>
-                              <Input placeholder="e.g., Fiction Paperback" className="bg-zinc-800 border-zinc-700" {...field} data-testid="input-preset-name" />
+                              <Input placeholder="e.g., Fiction Paperback" className="bg-[#1a1a1a] border-[#333]" {...field} data-testid="input-preset-name" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -477,11 +477,11 @@ export default function CreatorSettings() {
                             <FormLabel>Trim Size</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
-                                <SelectTrigger className="bg-zinc-800 border-zinc-700" data-testid="select-trim-size">
+                                <SelectTrigger className="bg-[#1a1a1a] border-[#333]" data-testid="select-trim-size">
                                   <SelectValue placeholder="Select size" />
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent className="bg-zinc-800 border-zinc-700">
+                              <SelectContent className="bg-[#1a1a1a] border-[#333]">
                                 {trimSizes.map((size) => (
                                   <SelectItem key={size.value} value={size.value}>{size.label}</SelectItem>
                                 ))}
@@ -499,11 +499,11 @@ export default function CreatorSettings() {
                               <FormLabel>Font Family</FormLabel>
                               <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
-                                  <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                                  <SelectTrigger className="bg-[#1a1a1a] border-[#333]">
                                     <SelectValue />
                                   </SelectTrigger>
                                 </FormControl>
-                                <SelectContent className="bg-zinc-800 border-zinc-700">
+                                <SelectContent className="bg-[#1a1a1a] border-[#333]">
                                   <SelectItem value="Garamond">Garamond</SelectItem>
                                   <SelectItem value="Times New Roman">Times New Roman</SelectItem>
                                   <SelectItem value="Georgia">Georgia</SelectItem>
@@ -521,7 +521,7 @@ export default function CreatorSettings() {
                             <FormItem>
                               <FormLabel>Font Size (pt)</FormLabel>
                               <FormControl>
-                                <Input type="number" className="bg-zinc-800 border-zinc-700" {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
+                                <Input type="number" className="bg-[#1a1a1a] border-[#333]" {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
                               </FormControl>
                             </FormItem>
                           )}
@@ -536,11 +536,11 @@ export default function CreatorSettings() {
                               <FormLabel>Paper Type</FormLabel>
                               <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
-                                  <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                                  <SelectTrigger className="bg-[#1a1a1a] border-[#333]">
                                     <SelectValue />
                                   </SelectTrigger>
                                 </FormControl>
-                                <SelectContent className="bg-zinc-800 border-zinc-700">
+                                <SelectContent className="bg-[#1a1a1a] border-[#333]">
                                   <SelectItem value="cream">Cream (Recommended)</SelectItem>
                                   <SelectItem value="white">White</SelectItem>
                                 </SelectContent>
@@ -556,11 +556,11 @@ export default function CreatorSettings() {
                               <FormLabel>Binding</FormLabel>
                               <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
-                                  <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                                  <SelectTrigger className="bg-[#1a1a1a] border-[#333]">
                                     <SelectValue />
                                   </SelectTrigger>
                                 </FormControl>
-                                <SelectContent className="bg-zinc-800 border-zinc-700">
+                                <SelectContent className="bg-[#1a1a1a] border-[#333]">
                                   <SelectItem value="paperback">Paperback</SelectItem>
                                   <SelectItem value="hardcover">Hardcover</SelectItem>
                                   <SelectItem value="casewrap">Case Wrap</SelectItem>
@@ -597,13 +597,13 @@ export default function CreatorSettings() {
             {presetsLoading ? (
               <div className="grid md:grid-cols-3 gap-4">
                 {[1, 2, 3].map((i) => (
-                  <Card key={i} className="bg-zinc-900 border-zinc-800">
+                  <Card key={i} className="bg-[#1a1a1a] border-[#333]">
                     <CardContent className="p-6"><Skeleton className="h-24 w-full" /></CardContent>
                   </Card>
                 ))}
               </div>
             ) : publishingPresets.length === 0 ? (
-              <Card className="bg-zinc-900 border-zinc-800 border-dashed">
+              <Card className="bg-[#1a1a1a] border-[#333] border-dashed">
                 <CardContent className="p-12 text-center">
                   <BookOpen className="h-12 w-12 mx-auto text-zinc-600 mb-4" />
                   <h3 className="text-lg font-medium mb-2">No Publishing Presets</h3>
@@ -616,7 +616,7 @@ export default function CreatorSettings() {
             ) : (
               <div className="grid md:grid-cols-3 gap-4">
                 {publishingPresets.map((preset) => (
-                  <Card key={preset.id} className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors" data-testid={`card-preset-${preset.id}`}>
+                  <Card key={preset.id} className="bg-[#1a1a1a] border-[#333] hover:border-[#333] transition-colors" data-testid={`card-preset-${preset.id}`}>
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-2">
@@ -645,7 +645,7 @@ export default function CreatorSettings() {
                           <span className="text-foreground capitalize">{preset.binding}</span>
                         </div>
                       </div>
-                      <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-zinc-800">
+                      <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-[#333]">
                         <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300" onClick={() => deletePresetMutation.mutate(preset.id)}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -670,7 +670,7 @@ export default function CreatorSettings() {
                     New Preset
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-zinc-900 border-zinc-800 text-foreground max-w-lg">
+                <DialogContent className="bg-[#1a1a1a] border-[#333] text-foreground max-w-lg">
                   <DialogHeader>
                     <DialogTitle>Create Course Preset</DialogTitle>
                     <DialogDescription className="text-zinc-400">
@@ -686,7 +686,7 @@ export default function CreatorSettings() {
                           <FormItem>
                             <FormLabel>Preset Name *</FormLabel>
                             <FormControl>
-                              <Input placeholder="e.g., Interactive Course" className="bg-zinc-800 border-zinc-700" {...field} data-testid="input-course-name" />
+                              <Input placeholder="e.g., Interactive Course" className="bg-[#1a1a1a] border-[#333]" {...field} data-testid="input-course-name" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -700,11 +700,11 @@ export default function CreatorSettings() {
                             <FormLabel>Default Quiz Type</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
-                                <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                                <SelectTrigger className="bg-[#1a1a1a] border-[#333]">
                                   <SelectValue />
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent className="bg-zinc-800 border-zinc-700">
+                              <SelectContent className="bg-[#1a1a1a] border-[#333]">
                                 <SelectItem value="multiple_choice">Multiple Choice</SelectItem>
                                 <SelectItem value="true_false">True/False</SelectItem>
                                 <SelectItem value="fill_blank">Fill in the Blank</SelectItem>
@@ -721,7 +721,7 @@ export default function CreatorSettings() {
                           <FormItem>
                             <FormLabel>Passing Score (%)</FormLabel>
                             <FormControl>
-                              <Input type="number" min="0" max="100" className="bg-zinc-800 border-zinc-700" {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
+                              <Input type="number" min="0" max="100" className="bg-[#1a1a1a] border-[#333]" {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
                             </FormControl>
                           </FormItem>
                         )}
@@ -734,11 +734,11 @@ export default function CreatorSettings() {
                             <FormLabel>Lesson Structure</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
-                                <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                                <SelectTrigger className="bg-[#1a1a1a] border-[#333]">
                                   <SelectValue />
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent className="bg-zinc-800 border-zinc-700">
+                              <SelectContent className="bg-[#1a1a1a] border-[#333]">
                                 <SelectItem value="video-reading-quiz">Video → Reading → Quiz</SelectItem>
                                 <SelectItem value="reading-quiz">Reading → Quiz</SelectItem>
                                 <SelectItem value="video-quiz">Video → Quiz</SelectItem>
@@ -775,13 +775,13 @@ export default function CreatorSettings() {
             {coursesLoading ? (
               <div className="grid md:grid-cols-3 gap-4">
                 {[1, 2, 3].map((i) => (
-                  <Card key={i} className="bg-zinc-900 border-zinc-800">
+                  <Card key={i} className="bg-[#1a1a1a] border-[#333]">
                     <CardContent className="p-6"><Skeleton className="h-24 w-full" /></CardContent>
                   </Card>
                 ))}
               </div>
             ) : coursePresets.length === 0 ? (
-              <Card className="bg-zinc-900 border-zinc-800 border-dashed">
+              <Card className="bg-[#1a1a1a] border-[#333] border-dashed">
                 <CardContent className="p-12 text-center">
                   <GraduationCap className="h-12 w-12 mx-auto text-zinc-600 mb-4" />
                   <h3 className="text-lg font-medium mb-2">No Course Presets</h3>
@@ -794,7 +794,7 @@ export default function CreatorSettings() {
             ) : (
               <div className="grid md:grid-cols-3 gap-4">
                 {coursePresets.map((preset) => (
-                  <Card key={preset.id} className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors" data-testid={`card-course-${preset.id}`}>
+                  <Card key={preset.id} className="bg-[#1a1a1a] border-[#333] hover:border-[#333] transition-colors" data-testid={`card-course-${preset.id}`}>
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-2">
@@ -819,7 +819,7 @@ export default function CreatorSettings() {
                           <span className="text-foreground capitalize">{preset.lessonStructure?.replace(/-/g, " → ")}</span>
                         </div>
                       </div>
-                      <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-zinc-800">
+                      <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-[#333]">
                         <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300" onClick={() => deleteCourseMutation.mutate(preset.id)}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -850,7 +850,7 @@ export default function CreatorSettings() {
                 ))}
               </div>
             ) : inspiration.length === 0 ? (
-              <Card className="bg-zinc-900 border-zinc-800 border-dashed">
+              <Card className="bg-[#1a1a1a] border-[#333] border-dashed">
                 <CardContent className="p-12 text-center">
                   <Image className="h-12 w-12 mx-auto text-zinc-600 mb-4" />
                   <h3 className="text-lg font-medium mb-2">No Inspiration Saved</h3>
@@ -863,7 +863,7 @@ export default function CreatorSettings() {
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {inspiration.map((item) => (
-                  <div key={item.id} className="relative group aspect-[3/4] rounded-lg overflow-hidden bg-zinc-800" data-testid={`inspiration-${item.id}`}>
+                  <div key={item.id} className="relative group aspect-[3/4] rounded-lg overflow-hidden bg-[#1a1a1a]" data-testid={`inspiration-${item.id}`}>
                     <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <Button variant="destructive" size="icon" onClick={() => deleteInspirationMutation.mutate(item.id)}>
@@ -886,7 +886,7 @@ export default function CreatorSettings() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
-              <Card className="bg-zinc-900 border-zinc-800">
+              <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Palette className="h-5 w-5 text-[#FF6B35]" />
@@ -897,26 +897,26 @@ export default function CreatorSettings() {
                 <CardContent>
                   <div className="grid grid-cols-4 gap-3">
                     <div className="text-center">
-                      <div className="h-12 w-12 mx-auto rounded-lg bg-[#FF6B35] border border-zinc-700"></div>
+                      <div className="h-12 w-12 mx-auto rounded-lg bg-[#FF6B35] border border-[#333]"></div>
                       <span className="text-xs text-zinc-400 mt-1 block">Primary</span>
                     </div>
                     <div className="text-center">
-                      <div className="h-12 w-12 mx-auto rounded-lg bg-background border border-zinc-700"></div>
+                      <div className="h-12 w-12 mx-auto rounded-lg bg-background border border-[#333]"></div>
                       <span className="text-xs text-zinc-400 mt-1 block">Background</span>
                     </div>
                     <div className="text-center">
-                      <div className="h-12 w-12 mx-auto rounded-lg bg-white border border-zinc-700"></div>
+                      <div className="h-12 w-12 mx-auto rounded-lg bg-white border border-[#333]"></div>
                       <span className="text-xs text-zinc-400 mt-1 block">Text</span>
                     </div>
                     <div className="text-center">
-                      <div className="h-12 w-12 mx-auto rounded-lg bg-zinc-800 border border-zinc-700"></div>
+                      <div className="h-12 w-12 mx-auto rounded-lg bg-[#1a1a1a] border border-[#333]"></div>
                       <span className="text-xs text-zinc-400 mt-1 block">Card</span>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-zinc-900 border-zinc-800">
+              <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Sparkles className="h-5 w-5 text-[#FF6B35]" />
@@ -926,27 +926,27 @@ export default function CreatorSettings() {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-3 gap-4">
-                    <div className="flex flex-col items-center p-3 rounded-lg bg-zinc-800/50">
+                    <div className="flex flex-col items-center p-3 rounded-lg bg-[#1a1a1a]/50">
                       <BookOpen className="h-6 w-6 text-[#FF6B35] mb-2" />
                       <span className="text-xs">Books</span>
                     </div>
-                    <div className="flex flex-col items-center p-3 rounded-lg bg-zinc-800/50">
+                    <div className="flex flex-col items-center p-3 rounded-lg bg-[#1a1a1a]/50">
                       <Music className="h-6 w-6 text-[#FF6B35] mb-2" />
                       <span className="text-xs">Music</span>
                     </div>
-                    <div className="flex flex-col items-center p-3 rounded-lg bg-zinc-800/50">
+                    <div className="flex flex-col items-center p-3 rounded-lg bg-[#1a1a1a]/50">
                       <Video className="h-6 w-6 text-[#FF6B35] mb-2" />
                       <span className="text-xs">Video</span>
                     </div>
-                    <div className="flex flex-col items-center p-3 rounded-lg bg-zinc-800/50">
+                    <div className="flex flex-col items-center p-3 rounded-lg bg-[#1a1a1a]/50">
                       <Film className="h-6 w-6 text-[#FF6B35] mb-2" />
                       <span className="text-xs">Movies</span>
                     </div>
-                    <div className="flex flex-col items-center p-3 rounded-lg bg-zinc-800/50">
+                    <div className="flex flex-col items-center p-3 rounded-lg bg-[#1a1a1a]/50">
                       <GraduationCap className="h-6 w-6 text-[#FF6B35] mb-2" />
                       <span className="text-xs">Courses</span>
                     </div>
-                    <div className="flex flex-col items-center p-3 rounded-lg bg-zinc-800/50">
+                    <div className="flex flex-col items-center p-3 rounded-lg bg-[#1a1a1a]/50">
                       <Camera className="h-6 w-6 text-[#FF6B35] mb-2" />
                       <span className="text-xs">Images</span>
                     </div>

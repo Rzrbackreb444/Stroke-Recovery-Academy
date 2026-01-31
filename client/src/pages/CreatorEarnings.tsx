@@ -152,13 +152,13 @@ export default function CreatorEarnings() {
       case 'pending':
         return <Badge variant="secondary"><Clock className="w-3 h-3 mr-1" />Pending</Badge>;
       case 'available':
-        return <Badge className="bg-green-500/20 text-green-400"><CheckCircle className="w-3 h-3 mr-1" />Available</Badge>;
+        return <Badge className="bg-[#C9941A]/20 text-[#C9941A]"><CheckCircle className="w-3 h-3 mr-1" />Available</Badge>;
       case 'paid':
-        return <Badge className="bg-primary/20 text-primary"><DollarSign className="w-3 h-3 mr-1" />Paid</Badge>;
+        return <Badge className="bg-primary/20 text-[#C9941A]"><DollarSign className="w-3 h-3 mr-1" />Paid</Badge>;
       case 'processing':
         return <Badge className="bg-yellow-500/20 text-yellow-400"><RefreshCw className="w-3 h-3 mr-1 animate-spin" />Processing</Badge>;
       case 'completed':
-        return <Badge className="bg-green-500/20 text-green-400"><CheckCircle className="w-3 h-3 mr-1" />Completed</Badge>;
+        return <Badge className="bg-[#C9941A]/20 text-[#C9941A]"><CheckCircle className="w-3 h-3 mr-1" />Completed</Badge>;
       case 'failed':
         return <Badge variant="destructive"><AlertCircle className="w-3 h-3 mr-1" />Failed</Badge>;
       default:
@@ -174,12 +174,12 @@ export default function CreatorEarnings() {
   const availableEarnings = earningsData?.earnings?.filter(e => e.status === 'available') || [];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#0D0D0D]">
       <div className="container mx-auto py-8 px-4 max-w-6xl">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold" data-testid="text-page-title">Creator Earnings</h1>
-            <p className="text-muted-foreground mt-1">Track your sales and manage payouts</p>
+            <p className="text-gray-400 mt-1">Track your sales and manage payouts</p>
           </div>
           <div className="flex gap-2">
             <Button 
@@ -196,7 +196,7 @@ export default function CreatorEarnings() {
           <Card className="mb-8 border-primary/50">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <CreditCard className="w-5 h-5 text-primary" />
+                <CreditCard className="w-5 h-5 text-[#C9941A]" />
                 Set Up Payouts
               </CardTitle>
               <CardDescription>
@@ -208,11 +208,11 @@ export default function CreatorEarnings() {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <Badge variant="secondary" className="text-lg px-3 py-1">85%</Badge>
-                    <span className="text-sm text-muted-foreground">Creator Share</span>
+                    <span className="text-sm text-gray-400">Creator Share</span>
                     <Badge variant="outline" className="text-lg px-3 py-1 ml-4">15%</Badge>
-                    <span className="text-sm text-muted-foreground">Platform Fee</span>
+                    <span className="text-sm text-gray-400">Platform Fee</span>
                   </div>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-gray-400">
                     We use Stripe for secure, instant payments to over 135 countries.
                   </p>
                 </div>
@@ -238,26 +238,26 @@ export default function CreatorEarnings() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
               <CardTitle className="text-sm font-medium">Total Earnings</CardTitle>
-              <TrendingUp className="w-4 h-4 text-muted-foreground" />
+              <TrendingUp className="w-4 h-4 text-gray-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-primary" data-testid="text-total-earnings">
+              <div className="text-2xl font-bold text-[#C9941A]" data-testid="text-total-earnings">
                 {formatCurrency(summary.totalCreatorShare)}
               </div>
-              <p className="text-xs text-muted-foreground">{summary.salesCount} sales</p>
+              <p className="text-xs text-gray-400">{summary.salesCount} sales</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
               <CardTitle className="text-sm font-medium">Available</CardTitle>
-              <DollarSign className="w-4 h-4 text-green-500" />
+              <DollarSign className="w-4 h-4 text-[#C9941A]" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-500" data-testid="text-available-balance">
+              <div className="text-2xl font-bold text-[#C9941A]" data-testid="text-available-balance">
                 {formatCurrency(summary.availableBalance)}
               </div>
-              <p className="text-xs text-muted-foreground">Ready for payout</p>
+              <p className="text-xs text-gray-400">Ready for payout</p>
             </CardContent>
           </Card>
 
@@ -270,20 +270,20 @@ export default function CreatorEarnings() {
               <div className="text-2xl font-bold text-yellow-500" data-testid="text-pending-balance">
                 {formatCurrency(summary.pendingBalance)}
               </div>
-              <p className="text-xs text-muted-foreground">Clearing period</p>
+              <p className="text-xs text-gray-400">Clearing period</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
               <CardTitle className="text-sm font-medium">Paid Out</CardTitle>
-              <CheckCircle className="w-4 h-4 text-primary" />
+              <CheckCircle className="w-4 h-4 text-[#C9941A]" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold" data-testid="text-paid-out">
                 {formatCurrency(summary.paidOut)}
               </div>
-              <p className="text-xs text-muted-foreground">Total withdrawn</p>
+              <p className="text-xs text-gray-400">Total withdrawn</p>
             </CardContent>
           </Card>
         </div>
@@ -291,7 +291,7 @@ export default function CreatorEarnings() {
         {connectStatus?.onboarded && (
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
-              <Badge className="bg-green-500/20 text-green-400">
+              <Badge className="bg-[#C9941A]/20 text-[#C9941A]">
                 <CheckCircle className="w-3 h-3 mr-1" /> Payouts Enabled
               </Badge>
               <Button variant="ghost" size="sm" onClick={() => loginMutation.mutate()} data-testid="button-stripe-dashboard">
@@ -328,14 +328,14 @@ export default function CreatorEarnings() {
           <TabsContent value="earnings" className="space-y-4">
             {loadingEarnings ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
               </div>
             ) : earningsData?.earnings?.length ? (
               <Card>
                 <CardContent className="p-0">
                   <div className="divide-y divide-border">
                     {earningsData.earnings.map((earning) => (
-                      <div key={earning.id} className="flex items-center justify-between p-4 hover:bg-muted/30">
+                      <div key={earning.id} className="flex items-center justify-between p-4 hover:bg-[#1a1a1a]/30">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                             {getProductIcon(earning.productType)}
@@ -344,7 +344,7 @@ export default function CreatorEarnings() {
                             <p className="font-medium" data-testid={`text-product-title-${earning.id}`}>
                               {earning.productTitle}
                             </p>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-xs text-gray-400">
                               {new Date(earning.createdAt).toLocaleDateString()}
                               {earning.customerEmail && ` • ${earning.customerEmail}`}
                             </p>
@@ -352,10 +352,10 @@ export default function CreatorEarnings() {
                         </div>
                         <div className="flex items-center gap-4">
                           <div className="text-right">
-                            <p className="font-bold text-primary" data-testid={`text-earning-amount-${earning.id}`}>
+                            <p className="font-bold text-[#C9941A]" data-testid={`text-earning-amount-${earning.id}`}>
                               {formatCurrency(earning.creatorShare)}
                             </p>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-xs text-gray-400">
                               Sale: {formatCurrency(earning.saleAmount)}
                             </p>
                           </div>
@@ -369,9 +369,9 @@ export default function CreatorEarnings() {
             ) : (
               <Card>
                 <CardContent className="flex flex-col items-center justify-center py-12">
-                  <DollarSign className="w-12 h-12 text-muted-foreground mb-4" />
+                  <DollarSign className="w-12 h-12 text-gray-400 mb-4" />
                   <h3 className="text-lg font-medium mb-2">No Sales Yet</h3>
-                  <p className="text-sm text-muted-foreground text-center max-w-md">
+                  <p className="text-sm text-gray-400 text-center max-w-md">
                     When customers purchase your content, you'll see your earnings here.
                     Start creating and publishing to begin earning!
                   </p>
@@ -383,21 +383,21 @@ export default function CreatorEarnings() {
           <TabsContent value="payouts" className="space-y-4">
             {loadingPayouts ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
               </div>
             ) : payouts?.length ? (
               <Card>
                 <CardContent className="p-0">
                   <div className="divide-y divide-border">
                     {payouts.map((payout) => (
-                      <div key={payout.id} className="flex items-center justify-between p-4 hover:bg-muted/30">
+                      <div key={payout.id} className="flex items-center justify-between p-4 hover:bg-[#1a1a1a]/30">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center">
-                            <CreditCard className="w-5 h-5 text-green-500" />
+                          <div className="w-10 h-10 rounded-lg bg-[#C9941A]/10 flex items-center justify-center">
+                            <CreditCard className="w-5 h-5 text-[#C9941A]" />
                           </div>
                           <div>
                             <p className="font-medium">Payout #{payout.id}</p>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-xs text-gray-400">
                               {new Date(payout.createdAt).toLocaleDateString()}
                             </p>
                           </div>
@@ -416,9 +416,9 @@ export default function CreatorEarnings() {
             ) : (
               <Card>
                 <CardContent className="flex flex-col items-center justify-center py-12">
-                  <CreditCard className="w-12 h-12 text-muted-foreground mb-4" />
+                  <CreditCard className="w-12 h-12 text-gray-400 mb-4" />
                   <h3 className="text-lg font-medium mb-2">No Payouts Yet</h3>
-                  <p className="text-sm text-muted-foreground text-center max-w-md">
+                  <p className="text-sm text-gray-400 text-center max-w-md">
                     Once you have available earnings and request a payout, your payout history will appear here.
                   </p>
                 </CardContent>
@@ -436,10 +436,10 @@ export default function CreatorEarnings() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm">Creator Share (85%)</span>
-                <span className="font-bold text-primary">{formatCurrency(summary.totalCreatorShare)}</span>
+                <span className="font-bold text-[#C9941A]">{formatCurrency(summary.totalCreatorShare)}</span>
               </div>
               <Progress value={85} className="h-2" />
-              <div className="flex items-center justify-between text-muted-foreground">
+              <div className="flex items-center justify-between text-gray-400">
                 <span className="text-sm">Platform Fee (15%)</span>
                 <span className="font-medium">{formatCurrency(summary.totalPlatformFee)}</span>
               </div>

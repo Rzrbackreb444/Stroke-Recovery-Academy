@@ -190,7 +190,7 @@ export default function CreatorHeader() {
 
           <div className="hidden lg:flex items-center gap-2">
             {isLoading ? (
-              <div className="w-8 h-8 rounded-full bg-zinc-800 animate-pulse" />
+              <div className="w-8 h-8 rounded-full bg-[#1a1a1a] animate-pulse" />
             ) : user ? (
               <>
                 <Link href="/pricing">
@@ -220,7 +220,7 @@ export default function CreatorHeader() {
                     <div className="px-3 py-2 border-b border">
                       <div className="font-medium text-foreground">{user.firstName || 'Creator'}</div>
                       <div className="text-xs text-muted-foreground">{user.email}</div>
-                      <Badge variant="outline" className="mt-2 text-[10px] border-orange-500/50 text-primary">
+                      <Badge variant="outline" className="mt-2 text-[10px] border-[#C9941A]/50 text-primary">
                         <Crown className="w-3 h-3 mr-1" />
                         Pro Creator
                       </Badge>
@@ -292,7 +292,7 @@ export default function CreatorHeader() {
         {mobileMenuOpen && (
           <div className="lg:hidden py-4 space-y-2 border-t border">
             {user && (
-              <div className="flex items-center gap-3 px-3 py-2 mb-2 bg-zinc-900/50 rounded-lg">
+              <div className="flex items-center gap-3 px-3 py-2 mb-2 bg-[#1a1a1a]/50 rounded-lg">
                 <Avatar className="h-10 w-10 border border">
                   <AvatarImage src={user.profileImageUrl || undefined} />
                   <AvatarFallback className="bg-primary/20 text-primary">

@@ -112,7 +112,7 @@ export default function TexasHoldem() {
     
     if (hidden) {
       return (
-        <div className={`${sizeClass} rounded-lg bg-gradient-to-br from-orange-700 to-orange-900 border border-orange-500 shadow-lg flex items-center justify-center`}>
+        <div className={`${sizeClass} rounded-lg bg-gradient-to-br from-orange-700 to-orange-900 border border-[#C9941A] shadow-lg flex items-center justify-center`}>
           <img src={sasquatchLogo} alt="Card back" className="w-6 h-6 rounded opacity-60" />
         </div>
       );
@@ -249,13 +249,13 @@ export default function TexasHoldem() {
                   {result}
                 </h3>
                 {handRank && <p className="text-gray-400 mt-1">{handRank}</p>}
-                {winAmount > 0 && <p className="text-green-400 text-xl font-bold mt-2">+{winAmount}</p>}
+                {winAmount > 0 && <p className="text-[#C9941A] text-xl font-bold mt-2">+{winAmount}</p>}
               </div>
             )}
           </CardContent>
         </Card>
 
-        <Card className="mt-4 bg-gray-900/80 border-gray-700">
+        <Card className="mt-4 bg-[#1a1a1a]/80 border-[#333]">
           <CardContent className="p-4">
             {gamePhase === 'waiting' && (
               <div className="space-y-4">
@@ -309,7 +309,7 @@ export default function TexasHoldem() {
                   <Button
                     onClick={() => actionMutation.mutate({ type: 'call' })}
                     disabled={actionMutation.isPending || (player?.chips || 0) < callAmount}
-                    className="flex-1 h-12 bg-green-600 hover:bg-green-500"
+                    className="flex-1 h-12 bg-[#C9941A] hover:bg-[#C9941A]"
                     data-testid="button-call"
                   >
                     CALL ({callAmount})
@@ -318,7 +318,7 @@ export default function TexasHoldem() {
                 <Button
                   onClick={() => actionMutation.mutate({ type: 'raise', amount: currentBet * 2 })}
                   disabled={actionMutation.isPending || (player?.chips || 0) < currentBet * 2}
-                  className="flex-1 h-12 bg-amber-600 hover:bg-amber-500"
+                  className="flex-1 h-12 bg-amber-600 hover:bg-[#C9941A]"
                   data-testid="button-raise"
                 >
                   RAISE ({currentBet * 2})

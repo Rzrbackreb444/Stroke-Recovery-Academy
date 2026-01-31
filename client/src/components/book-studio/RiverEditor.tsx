@@ -101,7 +101,7 @@ export default function RiverEditor({
   return (
     <div className="flex flex-col h-full bg-white dark:bg-zinc-950">
       {/* FORMATTING TOOLBAR - River-style clean toolbar */}
-      <div className="flex items-center gap-0.5 px-3 py-1.5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 overflow-x-auto">
+      <div className="flex items-center gap-0.5 px-3 py-1.5 border-b border-zinc-200 dark:border-[#333] bg-zinc-50 dark:bg-[#1a1a1a]/50 overflow-x-auto">
         {/* Text Style Group */}
         <div className="flex items-center gap-0.5">
           <ToolbarButton
@@ -191,7 +191,7 @@ export default function RiverEditor({
         </div>
 
         <div className="ml-auto flex items-center gap-2">
-          <Badge variant="outline" className="text-xs gap-1.5 px-2 py-0.5 border-zinc-200 dark:border-zinc-700">
+          <Badge variant="outline" className="text-xs gap-1.5 px-2 py-0.5 border-zinc-200 dark:border-[#333]">
             <Sparkles className="h-3 w-3 text-blue-500" />
             AI Ready
           </Badge>
@@ -199,7 +199,7 @@ export default function RiverEditor({
       </div>
 
       {/* CHAPTER HEADER */}
-      <div className="px-12 pt-8 pb-4 border-b border-zinc-100 dark:border-zinc-800/50">
+      <div className="px-12 pt-8 pb-4 border-b border-zinc-100 dark:border-[#333]/50">
         <h1 className="text-2xl font-serif font-semibold text-zinc-900 dark:text-zinc-100">
           {chapterTitle}
         </h1>
@@ -238,7 +238,7 @@ export default function RiverEditor({
       </ScrollArea>
 
       {/* BOTTOM MINI STATUS */}
-      <div className="flex items-center justify-between px-4 py-1.5 border-t border-zinc-100 dark:border-zinc-800/50 bg-zinc-50/50 dark:bg-zinc-900/30 text-[10px] text-zinc-400">
+      <div className="flex items-center justify-between px-4 py-1.5 border-t border-zinc-100 dark:border-[#333]/50 bg-zinc-50/50 dark:bg-[#1a1a1a]/30 text-[10px] text-zinc-400">
         <div className="flex items-center gap-3">
           <span>{editor.storage.characterCount.characters()} characters</span>
           <span>{editor.storage.characterCount.words()} words</span>

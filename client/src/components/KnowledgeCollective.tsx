@@ -134,7 +134,7 @@ export default function KnowledgeCollective({ onCategorySelect, className }: Kno
                         <span className="flex items-center gap-1">
                           <Clock className="w-3 h-3" /> {cat.lastActive}
                         </span>
-                        <Badge className="bg-green-500/10 text-green-600 border-none px-2 py-0 text-[8px] font-black">
+                        <Badge className="bg-[#C9941A]/10 text-green-600 border-none px-2 py-0 text-[8px] font-black">
                           <TrendingUp className="w-2.5 h-2.5 mr-1" />
                           {cat.growth}
                         </Badge>
@@ -214,7 +214,7 @@ export default function KnowledgeCollective({ onCategorySelect, className }: Kno
                       <span className="text-[9px] opacity-40 uppercase tracking-wider">{user.specialty}</span>
                     </div>
                   </div>
-                  <span className="text-green-400 font-mono text-[11px] font-bold">{user.earnings}</span>
+                  <span className="text-[#C9941A] font-mono text-[11px] font-bold">{user.earnings}</span>
                 </div>
               ))}
             </div>
