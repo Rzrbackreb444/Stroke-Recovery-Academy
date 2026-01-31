@@ -117,7 +117,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import publishingLogo from "@assets/Logo Transparent BG_1764273996198.png";
+import publishingLogo from "@assets/stroke-lyfe-publishing-logo.png";
 
 // Comprehensive genre templates with AI prompts and market positioning
 const genreTemplates = {
