@@ -62,6 +62,15 @@ Icons: lucide-react only (no emoji)
 - **Enhanced Dynamic Sitemaps**: Main, Sitemap Index, Blog, and Marketplace sitemaps with extensive coverage.
 - **Lulu Publishing Integration**: Professional Print-on-Demand via OAuth2 API for book templates, trim sizes, binding types, print types, paper types, cover finishes, project creation, cost calculation, print orders, and webhook management.
 - **Stroke Recovery Academy**: Extended user profiles for recovery creators, monetization (tips, subscriptions, premium content), recovery stories, journey milestones, support groups, and curated resources.
+- **SquatchQR Platform**: Enterprise-grade dynamic QR code system for delivering daily quotes and rituals.
+  - **Quote Studio** (`/squatch-qr/studio`): 4-tab dashboard (Projects, Create New, Quote Library, Analytics) with 4-step wizard for AI quote generation.
+  - **QR Code Designer**: Customizable QR codes with color presets, logo overlay, PNG/SVG export.
+  - **Public Quote Page** (`/q/:projectId`): Landing page for QR scans with streak tracking, voice delivery (ElevenLabs TTS), and social sharing.
+  - **Gamification**: Streak tracking with badges (First Scan, Week Warrior, Consistency King, Century Club) and leaderboard.
+  - **Analytics Dashboard**: Scan metrics, weekly charts, device breakdown, top projects, peak hours.
+  - **White-label Support**: Custom domains, branding removal, custom colors (schema ready).
+  - **Design Theme**: Forest green (#1B4332), gold accent (#C9941A), dark base (#0D0D0D).
+  - **Real Use Cases**: Squatch Mix (stroke recovery supplement), WashBizHub (laundromat community 75K members).
 
 ### Stripe Products & Subscription Tiers
 - **KreAIte Tiers**: Free, Creator, Pro, Enterprise.
@@ -85,3 +94,4 @@ Icons: lucide-react only (no emoji)
 12. **mammoth / pdf-parse**: Document parsing.
 13. **SERP API**: Keyword research.
 14. **Lulu API**: Print-on-demand publishing.
+15. **ElevenLabs API**: Text-to-speech for voice delivery in SquatchQR.
