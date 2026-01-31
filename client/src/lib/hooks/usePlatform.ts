@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-export type Platform = "creator" | "recovery";
+export type Platform = "creator" | "recovery" | "nonprofit";
 
 const RECOVERY_DOMAINS = [
   "strokerecoveryacademy.com",
@@ -12,7 +12,27 @@ const CREATOR_DOMAINS = [
   "www.kreaite.xyz",
 ];
 
+const NONPROFIT_DOMAINS = [
+  "strokelyfe.org",
+  "www.strokelyfe.org",
+];
+
 const RECOVERY_KEYWORDS = ["strokerecovery", "sasquatch"];
+const NONPROFIT_KEYWORDS = ["strokelyfe"];
+
+function isNonprofitHostname(hostname: string): boolean {
+  const lowerHostname = hostname.toLowerCase();
+  
+  if (NONPROFIT_DOMAINS.some(domain => lowerHostname === domain || lowerHostname.endsWith(`.${domain}`))) {
+    return true;
+  }
+  
+  if (NONPROFIT_KEYWORDS.some(keyword => lowerHostname.includes(keyword))) {
+    return true;
+  }
+  
+  return false;
+}
 
 function isRecoveryHostname(hostname: string): boolean {
   const lowerHostname = hostname.toLowerCase();
@@ -32,6 +52,10 @@ export function usePlatform(): Platform {
   return useMemo(() => {
     const hostname = window.location.hostname;
     
+    if (isNonprofitHostname(hostname)) {
+      return "nonprofit";
+    }
+    
     if (isRecoveryHostname(hostname)) {
       return "recovery";
     }
@@ -44,6 +68,10 @@ export function isRecoveryDomain(): boolean {
   return isRecoveryHostname(window.location.hostname);
 }
 
+export function isNonprofitDomain(): boolean {
+  return isNonprofitHostname(window.location.hostname);
+}
+
 export function isCreatorDomain(): boolean {
   const hostname = window.location.hostname.toLowerCase();
   return CREATOR_DOMAINS.some(domain => hostname === domain || hostname.endsWith(`.${domain}`));
@@ -51,6 +79,10 @@ export function isCreatorDomain(): boolean {
 
 export function getPlatformFromHostname(hostname?: string): Platform {
   const h = hostname || window.location.hostname;
+  
+  if (isNonprofitHostname(h)) {
+    return "nonprofit";
+  }
   
   if (isRecoveryHostname(h)) {
     return "recovery";
