@@ -25,9 +25,9 @@ interface Message {
 }
 
 const QUICK_PROMPTS = [
+  "Log my exercises",
   "I'm struggling today",
-  "Give me motivation",
-  "Explain the formula",
+  "Hold me accountable",
   "Celebrate my win",
 ];
 
@@ -42,7 +42,7 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
     {
       id: "welcome",
       role: "coach",
-      content: "Hey warrior! I'm Nick, your Sasquatch Coach. Whether you're having a tough day or celebrating a win, I'm here for you. What's on your mind?",
+      content: "Hey there, warrior! I'm Nick - your Sasquatch Coach. You're here because you're serious about your comeback, and I respect that. Let's talk exercises, celebrate wins, or work through tough days. What did you work on today?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -189,7 +189,7 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
           data-testid="button-open-coach"
           aria-label="Open chat with Coach Nick"
         >
-          <div className="w-16 h-16 rounded-full bg-[#1B4332] shadow-lg flex items-center justify-center overflow-hidden border-2 border-[#C9941A] hover:scale-110 transition-transform">
+          <div className="w-16 h-16 rounded-full bg-[#0D0D0D] shadow-lg flex items-center justify-center overflow-hidden border-2 border-[#C9941A] hover:scale-110 transition-transform">
             <img 
               src={strokeLyfeLogo} 
               alt="Sasquatch Coach" 
@@ -197,7 +197,7 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
             />
           </div>
           <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#C9941A] rounded-full animate-pulse" />
-          <div className="absolute bottom-full right-0 mb-2 px-3 py-1.5 bg-[#1B4332] text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+          <div className="absolute bottom-full right-0 mb-2 px-3 py-1.5 bg-[#0D0D0D] border border-[#C9941A]/30 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
             Chat with Coach Nick
           </div>
         </button>
@@ -208,7 +208,7 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
   if (isMinimized) {
     return (
       <div className="fixed bottom-6 right-6 z-50">
-        <div className="bg-[#1B4332] rounded-full shadow-lg flex items-center gap-2 px-4 py-2 border border-[#C9941A]">
+        <div className="bg-[#0D0D0D] rounded-full shadow-lg flex items-center gap-2 px-4 py-2 border border-[#C9941A]">
           <img src={strokeLyfeLogo} alt="Coach" className="w-8 h-8" />
           <span className="text-white font-medium">Coach Nick</span>
           <Button
@@ -238,10 +238,10 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
 
   return (
     <div className="fixed bottom-4 right-4 z-50 w-full max-w-[380px] sm:bottom-6 sm:right-6">
-      <div className="bg-white rounded-2xl shadow-2xl border border-[#1B4332]/20 overflow-hidden">
-        <div className="bg-gradient-to-r from-[#1B4332] to-[#2D5A4A] px-4 py-3 flex items-center justify-between">
+      <div className="bg-[#0D0D0D] rounded-2xl shadow-2xl border border-[#C9941A]/30 overflow-hidden">
+        <div className="bg-gradient-to-r from-[#1a1a1a] to-[#0D0D0D] px-4 py-3 flex items-center justify-between border-b border-[#C9941A]/20">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center overflow-hidden border border-[#C9941A]/50">
+            <div className="w-10 h-10 rounded-full bg-[#C9941A]/10 flex items-center justify-center overflow-hidden border border-[#C9941A]/50">
               <img src={strokeLyfeLogo} alt="Coach" className="w-8 h-8" />
             </div>
             <div>
@@ -286,7 +286,7 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
           </div>
         </div>
 
-        <ScrollArea className="h-[320px] p-4" ref={scrollRef}>
+        <ScrollArea className="h-[320px] p-4 bg-[#0D0D0D]" ref={scrollRef}>
           <div className="space-y-4">
             {messages.map((message) => (
               <div
@@ -296,8 +296,8 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
                 <div
                   className={`max-w-[85%] rounded-2xl px-4 py-2.5 ${
                     message.role === "user"
-                      ? "bg-[#1B4332] text-white rounded-br-md"
-                      : "bg-gray-100 text-gray-800 rounded-bl-md"
+                      ? "bg-[#C9941A] text-black rounded-br-md"
+                      : "bg-[#1a1a1a] text-gray-100 rounded-bl-md border border-[#333]"
                   }`}
                 >
                   <p className="text-sm leading-relaxed">{message.content}</p>
@@ -305,7 +305,7 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
                     <button
                       onClick={() => playAudioFromBase64(message.audioBase64!, message.id)}
                       className={`mt-2 text-xs flex items-center gap-1 ${
-                        playingId === message.id ? "text-[#C9941A]" : "text-[#1B4332]/60"
+                        playingId === message.id ? "text-[#C9941A]" : "text-gray-400"
                       }`}
                       aria-label="Play audio response"
                       data-testid="button-play-audio"
@@ -319,10 +319,10 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-gray-100 rounded-2xl rounded-bl-md px-4 py-3">
+                <div className="bg-[#1a1a1a] rounded-2xl rounded-bl-md px-4 py-3 border border-[#333]">
                   <div className="flex items-center gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin text-[#1B4332]" />
-                    <span className="text-sm text-gray-500">Coach is thinking...</span>
+                    <Loader2 className="w-4 h-4 animate-spin text-[#C9941A]" />
+                    <span className="text-sm text-gray-400">Coach is thinking...</span>
                   </div>
                 </div>
               </div>
@@ -331,14 +331,14 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
         </ScrollArea>
 
         {messages.length <= 2 && (
-          <div className="px-4 pb-2">
+          <div className="px-4 pb-2 bg-[#0D0D0D]">
             <div className="flex flex-wrap gap-1.5">
               {QUICK_PROMPTS.map((prompt) => (
                 <button
                   key={prompt}
                   onClick={() => handleQuickPrompt(prompt)}
                   disabled={isLoading}
-                  className="px-3 py-1.5 text-xs bg-[#1B4332]/5 hover:bg-[#1B4332]/10 text-[#1B4332] rounded-full transition-colors disabled:opacity-50"
+                  className="px-3 py-1.5 text-xs bg-[#C9941A]/10 hover:bg-[#C9941A]/20 text-[#C9941A] rounded-full transition-colors disabled:opacity-50 border border-[#C9941A]/30"
                   data-testid={`button-quick-${prompt.toLowerCase().replace(/\s+/g, '-')}`}
                 >
                   {prompt}
@@ -348,7 +348,7 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
           </div>
         )}
 
-        <div className="p-3 border-t border-gray-100">
+        <div className="p-3 border-t border-[#333] bg-[#0D0D0D]">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -360,8 +360,8 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask Coach Nick anything..."
-              className="flex-1 bg-gray-50 border-gray-200 focus:border-[#1B4332] text-sm"
+              placeholder="Log exercises, ask for help..."
+              className="flex-1 bg-[#1a1a1a] border-[#333] focus:border-[#C9941A] text-sm text-white placeholder:text-gray-500"
               disabled={isLoading}
               data-testid="input-coach-message"
             />
@@ -369,7 +369,7 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
               type="submit"
               size="icon"
               disabled={isLoading || !input.trim()}
-              className="bg-[#1B4332]"
+              className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black"
               aria-label="Send message"
               data-testid="button-send-message"
             >
