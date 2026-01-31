@@ -7552,8 +7552,8 @@ RESPONSE STYLE:
 
 NEVER: Provide medical advice. Always encourage working with their healthcare team. You're their motivational companion, their cheerleader in dark times, their proof that comebacks happen.`;
 
-  // AI coaching chat endpoint
-  app.post('/api/coach/chat', async (req, res) => {
+  // AI coaching chat endpoint - enhanced with user context
+  app.post('/api/coach/chat', async (req: any, res) => {
     try {
       const { message, history } = req.body;
 
@@ -7561,7 +7561,33 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         return res.status(400).json({ message: 'Message is required' });
       }
 
-      const response = await generateCoachResponse(message, history || [], SASQUATCH_COACH_PROMPT);
+      // Build user context if authenticated
+      let userContext: { name?: string; exerciseCount?: number; streak?: number; lastExercises?: string[]; milestones?: string[] } | undefined;
+      
+      if (req.user?.claims?.sub) {
+        const userId = req.user.claims.sub;
+        try {
+          // Fetch user's recovery context for personalized coaching
+          const [exerciseScores, streakData, milestonesData, userData] = await Promise.all([
+            storage.getExerciseScores(userId).catch(() => []),
+            storage.getUserStreak(userId).catch(() => ({ currentStreak: 0 })),
+            storage.getUserMilestones(userId).catch(() => []),
+            storage.getUser(userId).catch(() => null)
+          ]);
+          
+          userContext = {
+            name: userData?.firstName || userData?.username,
+            exerciseCount: exerciseScores.length,
+            streak: streakData?.currentStreak || 0,
+            lastExercises: exerciseScores.slice(0, 3).map((s: any) => s.exerciseType || 'exercise'),
+            milestones: milestonesData.slice(0, 2).map((m: any) => m.title || m.name)
+          };
+        } catch (e) {
+          console.error('Error fetching user context:', e);
+        }
+      }
+
+      const result = await generateCoachResponse(message, history || [], SASQUATCH_COACH_PROMPT, userContext);
       
       let audioBase64: string | undefined;
       
@@ -7569,7 +7595,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         const isConfigured = await isElevenLabsServiceConfigured();
         if (isConfigured) {
           const elevenlabs = getElevenLabsService();
-          const audioBuffer = await elevenlabs.textToSpeech(response, SASQUATCH_VOICE_ID, {
+          const audioBuffer = await elevenlabs.textToSpeech(result.response, SASQUATCH_VOICE_ID, {
             stability: 0.6,
             similarity_boost: 0.85,
             style: 0.4,
@@ -7581,7 +7607,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         console.error('ElevenLabs TTS error (non-fatal):', audioError);
       }
 
-      res.json({ response, audioBase64 });
+      res.json({ response: result.response, audioBase64 });
     } catch (error) {
       console.error('Coach chat error:', error);
       res.status(500).json({ message: 'Failed to generate coach response' });
