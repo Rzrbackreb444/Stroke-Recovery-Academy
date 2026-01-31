@@ -19254,6 +19254,255 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
     }
   });
 
+  // POST /api/screenplay/:id/voice-readthrough - Generate voice read-through
+  app.post('/api/screenplay/:id/voice-readthrough', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const projectId = parseInt(req.params.id);
+      const { sceneId, characters, speed } = req.body;
+
+      const [project] = await db.select()
+        .from(screenplayProjects)
+        .where(and(eq(screenplayProjects.id, projectId), eq(screenplayProjects.userId, userId)));
+      if (!project) {
+        return res.status(404).json({ message: "Screenplay project not found" });
+      }
+
+      const dialogue = project.dialogue as Record<string, string> || {};
+      const sceneDialogue = sceneId ? dialogue[sceneId] || "" : Object.values(dialogue).join("\n\n");
+      
+      if (!sceneDialogue.trim()) {
+        return res.status(400).json({ message: "No dialogue available for voice read-through" });
+      }
+
+      if (isElevenLabsConfigured()) {
+        const audioResult = await synthesizeWithElevenLabs(sceneDialogue, "eleven_multilingual_v2", {
+          stability: 0.5,
+          similarity_boost: 0.75,
+          style: 0.0,
+          use_speaker_boost: true
+        });
+        
+        res.json({ 
+          audioUrl: audioResult.audioUrl || `/api/audio/${Date.now()}.mp3`,
+          duration: audioResult.duration || sceneDialogue.length * 0.05
+        });
+      } else {
+        res.json({ 
+          audioUrl: null,
+          message: "ElevenLabs not configured. Set ELEVENLABS_API_KEY to enable voice read-through."
+        });
+      }
+    } catch (error: any) {
+      console.error("Error generating voice read-through:", error);
+      res.status(500).json({ message: error.message || "Failed to generate voice read-through" });
+    }
+  });
+
+  // POST /api/screenplay/:id/storyboard - Generate storyboard
+  app.post('/api/screenplay/:id/storyboard', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const projectId = parseInt(req.params.id);
+      const { sceneId, artStyle, framesPerScene, scenes } = req.body;
+
+      const [project] = await db.select()
+        .from(screenplayProjects)
+        .where(and(eq(screenplayProjects.id, projectId), eq(screenplayProjects.userId, userId)));
+      if (!project) {
+        return res.status(404).json({ message: "Screenplay project not found" });
+      }
+
+      const shotTypes = ["wide", "medium", "close-up", "over-shoulder", "pov"];
+      const frames: any[] = [];
+      
+      for (const scene of scenes || []) {
+        for (let i = 0; i < (framesPerScene || 3); i++) {
+          const shotType = shotTypes[i % shotTypes.length];
+          const prompt = `${artStyle || 'cinematic'} storyboard frame, ${shotType} shot: ${scene.description || scene.heading}`;
+          
+          let imageUrl = null;
+          if (isImagenConfigured()) {
+            try {
+              const result = await generateImageWithImagen(prompt, { aspectRatio: "16:9" });
+              imageUrl = result.imageUrl;
+            } catch (imgError) {
+              console.error("Image generation failed:", imgError);
+            }
+          }
+
+          frames.push({
+            id: crypto.randomUUID(),
+            sceneId: scene.id,
+            imageUrl,
+            shotType,
+            description: scene.description || scene.heading,
+            order: frames.length
+          });
+        }
+      }
+      
+      res.json({ frames });
+    } catch (error: any) {
+      console.error("Error generating storyboard:", error);
+      res.status(500).json({ message: error.message || "Failed to generate storyboard" });
+    }
+  });
+
+  // POST /api/screenplay/:id/storyboard/regenerate - Regenerate single frame
+  app.post('/api/screenplay/:id/storyboard/regenerate', isAuthenticated, async (req: any, res) => {
+    try {
+      const { frameId, sceneId, artStyle, shotType } = req.body;
+      
+      const prompt = `${artStyle || 'cinematic'} storyboard frame, ${shotType || 'medium'} shot, regenerated`;
+      
+      let imageUrl = null;
+      if (isImagenConfigured()) {
+        try {
+          const result = await generateImageWithImagen(prompt, { aspectRatio: "16:9" });
+          imageUrl = result.imageUrl;
+        } catch (imgError) {
+          console.error("Image regeneration failed:", imgError);
+        }
+      }
+
+      res.json({ imageUrl, frameId });
+    } catch (error: any) {
+      console.error("Error regenerating storyboard frame:", error);
+      res.status(500).json({ message: error.message || "Failed to regenerate storyboard frame" });
+    }
+  });
+
+  // POST /api/screenplay/:id/export - Export screenplay
+  app.post('/api/screenplay/:id/export', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const projectId = parseInt(req.params.id);
+      const { format, options } = req.body;
+
+      const [project] = await db.select()
+        .from(screenplayProjects)
+        .where(and(eq(screenplayProjects.id, projectId), eq(screenplayProjects.userId, userId)));
+      if (!project) {
+        return res.status(404).json({ message: "Screenplay project not found" });
+      }
+
+      const scenes = (project.scenes as any[]) || [];
+      const characters = (project.characters as any[]) || [];
+      const dialogue = project.dialogue as Record<string, string> || {};
+      const beats = (project.beats as any[]) || [];
+
+      let scriptContent = "";
+      
+      if (options?.includeTitle) {
+        scriptContent += `${project.title.toUpperCase()}\n\n`;
+        if (project.logline) {
+          scriptContent += `${project.logline}\n\n`;
+        }
+        scriptContent += "---\n\n";
+      }
+
+      if (options?.includeCharacterList && characters.length > 0) {
+        scriptContent += "CHARACTERS\n\n";
+        characters.forEach(c => {
+          scriptContent += `${c.name.toUpperCase()}\n`;
+          if (c.description) scriptContent += `${c.description}\n`;
+          scriptContent += "\n";
+        });
+        scriptContent += "---\n\n";
+      }
+
+      scenes.forEach((scene, idx) => {
+        if (options?.includeSceneNumbers) {
+          scriptContent += `SCENE ${idx + 1}\n`;
+        }
+        scriptContent += `${scene.heading}\n\n`;
+        if (scene.description) scriptContent += `${scene.description}\n\n`;
+        if (dialogue[scene.id]) {
+          scriptContent += `${dialogue[scene.id]}\n\n`;
+        }
+      });
+
+      if (options?.includeBeatSheet && beats.length > 0) {
+        scriptContent += "\n---\nBEAT SHEET\n\n";
+        beats.forEach((beat, idx) => {
+          scriptContent += `${idx + 1}. ${beat.title}\n${beat.description}\n\n`;
+        });
+      }
+
+      const downloadUrl = `data:text/plain;charset=utf-8,${encodeURIComponent(scriptContent)}`;
+      
+      res.json({ downloadUrl, filename: `${project.title}.${format || 'txt'}` });
+    } catch (error: any) {
+      console.error("Error exporting screenplay:", error);
+      res.status(500).json({ message: error.message || "Failed to export screenplay" });
+    }
+  });
+
+  // GET /api/screenplay/:id/text - Get script as plain text
+  app.get('/api/screenplay/:id/text', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const projectId = parseInt(req.params.id);
+
+      const [project] = await db.select()
+        .from(screenplayProjects)
+        .where(and(eq(screenplayProjects.id, projectId), eq(screenplayProjects.userId, userId)));
+      if (!project) {
+        return res.status(404).json({ message: "Screenplay project not found" });
+      }
+
+      const scenes = (project.scenes as any[]) || [];
+      const dialogue = project.dialogue as Record<string, string> || {};
+
+      let text = `${project.title.toUpperCase()}\n\n`;
+      if (project.logline) text += `${project.logline}\n\n`;
+
+      scenes.forEach((scene) => {
+        text += `${scene.heading}\n\n`;
+        if (scene.description) text += `${scene.description}\n\n`;
+        if (dialogue[scene.id]) text += `${dialogue[scene.id]}\n\n`;
+      });
+
+      res.json({ text });
+    } catch (error: any) {
+      console.error("Error getting screenplay text:", error);
+      res.status(500).json({ message: error.message || "Failed to get screenplay text" });
+    }
+  });
+
+  // POST /api/movie/from-script - Create movie project from screenplay
+  app.post('/api/movie/from-script', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { screenplayProjectId, title, scenes, characters, dialogue, settings } = req.body;
+
+      const [movieProject] = await db.insert(mediaProjects).values({
+        userId,
+        name: title || "Untitled Movie",
+        type: "movie",
+        status: "draft",
+        settings: {
+          sourceScreenplayId: screenplayProjectId,
+          videoStyle: settings?.videoStyle || "cinematic",
+          aspectRatio: settings?.aspectRatio || "16:9",
+          includeVoiceover: settings?.includeVoiceover ?? true,
+          includeSoundtrack: settings?.includeSoundtrack ?? true,
+          scenes,
+          characters,
+          dialogue
+        },
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }).returning();
+
+      res.json({ projectId: movieProject.id, project: movieProject });
+    } catch (error: any) {
+      console.error("Error creating movie from script:", error);
+      res.status(500).json({ message: error.message || "Failed to create movie project" });
+    }
+  });
+
   // ============================================================================
   // MUSIC SANDBOX API
   // ============================================================================

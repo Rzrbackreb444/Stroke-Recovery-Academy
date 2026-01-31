@@ -46,8 +46,16 @@ import {
   Clapperboard,
   User,
   Edit3,
+  Mic,
+  Grid3X3,
+  Video,
+  Download,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { VoiceReadthrough } from "@/components/script/VoiceReadthrough";
+import { StoryboardGenerator } from "@/components/script/StoryboardGenerator";
+import { ScriptToMovie } from "@/components/script/ScriptToMovie";
+import { ScriptExport } from "@/components/script/ScriptExport";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import type { ScreenplayProject } from "@shared/schema";
@@ -501,6 +509,38 @@ export default function ScriptStudio() {
                       <FileText className="w-4 h-4 mr-2" />
                       Full Script
                     </TabsTrigger>
+                    <TabsTrigger
+                      value="voice"
+                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
+                      data-testid="tab-voice"
+                    >
+                      <Mic className="w-4 h-4 mr-2" />
+                      Voice
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="storyboard"
+                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
+                      data-testid="tab-storyboard"
+                    >
+                      <Grid3X3 className="w-4 h-4 mr-2" />
+                      Storyboard
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="movie"
+                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
+                      data-testid="tab-movie"
+                    >
+                      <Video className="w-4 h-4 mr-2" />
+                      Movie
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="export"
+                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
+                      data-testid="tab-export"
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Export
+                    </TabsTrigger>
                   </TabsList>
 
                   <ScrollArea className="flex-1">
@@ -869,6 +909,45 @@ export default function ScriptStudio() {
                           </div>
                         </CardContent>
                       </Card>
+                    </TabsContent>
+
+                    <TabsContent value="voice" className="p-6 m-0">
+                      <VoiceReadthrough
+                        projectId={selectedProject.id}
+                        characters={characters}
+                        dialogue={dialogue}
+                        scenes={scenes}
+                        onCharacterVoiceUpdate={(characterId, voiceId) => {
+                          const updated = characters.map((c) =>
+                            c.id === characterId ? { ...c, voiceId } : c
+                          );
+                          updateProjectMutation.mutate({ characters: updated as any });
+                        }}
+                      />
+                    </TabsContent>
+
+                    <TabsContent value="storyboard" className="p-6 m-0">
+                      <StoryboardGenerator
+                        projectId={selectedProject.id}
+                        scenes={scenes}
+                      />
+                    </TabsContent>
+
+                    <TabsContent value="movie" className="p-6 m-0">
+                      <ScriptToMovie
+                        projectId={selectedProject.id}
+                        projectTitle={selectedProject.title}
+                        scenes={scenes}
+                        characters={characters}
+                        dialogue={dialogue}
+                      />
+                    </TabsContent>
+
+                    <TabsContent value="export" className="p-6 m-0">
+                      <ScriptExport
+                        projectId={selectedProject.id}
+                        projectTitle={selectedProject.title}
+                      />
                     </TabsContent>
                   </ScrollArea>
                 </Tabs>
