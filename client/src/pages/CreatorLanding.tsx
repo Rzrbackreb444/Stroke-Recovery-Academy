@@ -7,6 +7,7 @@ import {
   ArrowRight,
   X,
   Sparkles,
+  Star,
 } from "lucide-react";
 
 const aiModels = [
@@ -311,6 +312,103 @@ export default function CreatorLanding() {
                     Explore AI Video
                   </Button>
                 </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-24 bg-[#0D0D0D]">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 
+            className="text-4xl md:text-5xl text-white text-center mb-4"
+            style={{ fontFamily: "'Playfair Display', serif", fontWeight: 400 }}
+            data-testid="testimonials-heading"
+          >
+            What Creators Are Saying
+          </h2>
+          <p className="text-white/60 text-center mb-16 max-w-2xl mx-auto">
+            Join thousands of creators who've transformed their work with KreAIte
+          </p>
+
+          {/* Testimonials Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Testimonial 1 - Author */}
+            <div 
+              className="p-6 rounded-xl bg-[#1a1a1a] border border-white/10 hover:border-[#C9941A]/50 transition-all duration-300"
+              data-testid="testimonial-card-1"
+            >
+              <div className="flex items-start gap-4 mb-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500/40 to-purple-500/40 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+                  SM
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-white font-semibold" data-testid="testimonial-name-1">Sarah M.</h3>
+                  <p className="text-white/60 text-sm" data-testid="testimonial-title-1">Author</p>
+                </div>
+              </div>
+              
+              <p className="text-white/80 text-sm mb-4 leading-relaxed" data-testid="testimonial-quote-1">
+                "I published my first book in 3 weeks instead of 6 months. The AI writing assistance and cover design tools saved me hundreds of dollars."
+              </p>
+              
+              <div className="flex gap-1" data-testid="testimonial-rating-1">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Star key={i} className="w-4 h-4 fill-[#C9941A] text-[#C9941A]" data-testid={`star-${i}-1`} />
+                ))}
+              </div>
+            </div>
+
+            {/* Testimonial 2 - Music Producer */}
+            <div 
+              className="p-6 rounded-xl bg-[#1a1a1a] border border-white/10 hover:border-[#C9941A]/50 transition-all duration-300"
+              data-testid="testimonial-card-2"
+            >
+              <div className="flex items-start gap-4 mb-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500/40 to-red-500/40 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+                  JT
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-white font-semibold" data-testid="testimonial-name-2">James T.</h3>
+                  <p className="text-white/60 text-sm" data-testid="testimonial-title-2">Music Producer</p>
+                </div>
+              </div>
+              
+              <p className="text-white/80 text-sm mb-4 leading-relaxed" data-testid="testimonial-quote-2">
+                "Creating instrumentals is now effortless. I've generated over 200 tracks and sold them on every major platform. My income tripled."
+              </p>
+              
+              <div className="flex gap-1" data-testid="testimonial-rating-2">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Star key={i} className="w-4 h-4 fill-[#C9941A] text-[#C9941A]" data-testid={`star-${i}-2`} />
+                ))}
+              </div>
+            </div>
+
+            {/* Testimonial 3 - Content Creator */}
+            <div 
+              className="p-6 rounded-xl bg-[#1a1a1a] border border-white/10 hover:border-[#C9941A]/50 transition-all duration-300"
+              data-testid="testimonial-card-3"
+            >
+              <div className="flex items-start gap-4 mb-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500/40 to-teal-500/40 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+                  AC
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-white font-semibold" data-testid="testimonial-name-3">Alex C.</h3>
+                  <p className="text-white/60 text-sm" data-testid="testimonial-title-3">Content Creator</p>
+                </div>
+              </div>
+              
+              <p className="text-white/80 text-sm mb-4 leading-relaxed" data-testid="testimonial-quote-3">
+                "Built my first online course with beautiful video lessons and interactive content. It launched 5 days ago and already has 1,200 students."
+              </p>
+              
+              <div className="flex gap-1" data-testid="testimonial-rating-3">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Star key={i} className="w-4 h-4 fill-[#C9941A] text-[#C9941A]" data-testid={`star-${i}-3`} />
+                ))}
               </div>
             </div>
           </div>
