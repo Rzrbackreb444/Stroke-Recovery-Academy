@@ -526,8 +526,9 @@ export function useOnboardingComplete() {
   const [isComplete, setIsComplete] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const complete = localStorage.getItem(ONBOARDING_COMPLETE_KEY) === "true";
-    setIsComplete(complete);
+    // Skip onboarding by default - users go straight to landing page
+    const complete = localStorage.getItem(ONBOARDING_COMPLETE_KEY) !== "false";
+    setIsComplete(true); // Always skip wizard, show landing page first
   }, []);
 
   const markComplete = () => {

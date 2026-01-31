@@ -712,3 +712,115 @@
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   ENTERPRISE HEADER ANIMATIONS
+   Premium motion for global header enhancements
+═══════════════════════════════════════════════════════════════════ */
+
+/* Studios dropdown glow and pulse effect */
+@keyframes studios-glow {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(201, 148, 26, 0.3), 0 0 16px rgba(201, 148, 26, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(201, 148, 26, 0.5), 0 0 24px rgba(201, 148, 26, 0.25);
+  }
+}
+
+/* Animated underline for navigation items */
+@keyframes underline-expand {
+  from {
+    width: 0;
+    left: 50%;
+  }
+  to {
+    width: 100%;
+    left: 0;
+  }
+}
+
+/* Search bar slide-out animation */
+@keyframes search-slide-out {
+  from {
+    width: 2.5rem;
+    opacity: 0;
+  }
+  to {
+    width: 20rem;
+    opacity: 1;
+  }
+}
+
+/* Scale animation for interactive elements */
+@keyframes scale-in-smooth {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Mobile menu slide-in from right */
+@keyframes menu-slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Subtle float animation for premium feel */
+@keyframes subtle-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+/* Glow animation for accent elements */
+@keyframes accent-glow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.5);
+  }
+}
+
+/* Utility classes for animations */
+.animate-studios-glow {
+  animation: studios-glow 2s ease-in-out infinite;
+}
+
+.animate-underline-expand {
+  animation: underline-expand 0.3s ease-out forwards;
+}
+
+.animate-search-slide-out {
+  animation: search-slide-out 0.4s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in-smooth 0.3s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+.animate-menu-slide-in {
+  animation: menu-slide-in 0.3s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+.animate-subtle-float {
+  animation: subtle-float 3s ease-in-out infinite;
+}
+
+.animate-accent-glow {
+  animation: accent-glow 2s ease-in-out infinite;
+}

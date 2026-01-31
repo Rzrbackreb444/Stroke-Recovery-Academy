@@ -1,56 +1,95 @@
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Sparkles } from "lucide-react";
+import SEO from "@/components/SEO";
+import { ArrowRight } from "lucide-react";
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-[85vh] flex items-center bg-background overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-        <Badge
-          variant="outline"
-          className="mb-8 px-4 py-2 border-primary text-primary bg-primary/10 font-semibold tracking-wide uppercase"
-          data-testid="badge-hero-tagline"
-        >
-          THE WORLD'S FIRST RECOVERY OPERATING SYSTEM
-        </Badge>
+    <>
+      <SEO
+        title="FROM PARALYSIS TO POWER - Stroke Recovery Academy"
+        description="Heart's still thumpin'? Life's still pumpin'. Join the Sasquatch-style stroke recovery revolution. From paralysis to power."
+        keywords={["stroke recovery", "rehabilitation", "recovery academy", "sasquatch"]}
+        type="website"
+      />
 
-        <h1
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-foreground mb-4 leading-tight tracking-tight"
-          data-testid="text-hero-title"
-        >
-          <span className="block italic">REBUILD YOUR BODY,</span>
-          <span className="block italic">BRAIN, AND BELIEF SYSTEM</span>
-          <span className="block text-primary italic mt-2">— ONE REP AT A TIME.</span>
-        </h1>
-
-        <p
-          className="text-lg sm:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto"
-          data-testid="text-hero-subtitle"
-        >
-          The world's first Recovery OS for Stroke Survivors, Caregivers, and Professionals.
-        </p>
-
-        <div className="flex flex-wrap justify-center gap-4 mb-16">
-          <Button
-            size="lg"
-            className="text-lg font-bold px-8"
-            data-testid="button-start-comeback"
-            onClick={() => window.location.href = '/api/login'}
-          >
-            START YOUR COMEBACK
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="text-lg font-bold px-8 border-muted-foreground/30 text-foreground hover:bg-white/5"
-            data-testid="button-free-assessment"
-            onClick={() => console.log("Free Builder Assessment clicked")}
-          >
-            FREE BUILDER ASSESSMENT
-          </Button>
+      <section className="relative h-screen w-full flex items-center justify-center bg-gradient-to-b from-red-900 via-black to-gray-900 overflow-hidden">
+        {/* Dramatic background effects */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-red-900/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-red-900/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 left-1/4 w-72 h-72 bg-red-800/5 rounded-full blur-3xl" />
         </div>
-      </div>
-    </section>
+
+        {/* Content */}
+        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          {/* Main Tagline */}
+          <h1 className="text-7xl sm:text-8xl lg:text-9xl font-black text-white mb-6 leading-none tracking-tighter">
+            <span className="block text-red-500" data-testid="text-hero-main">
+              FROM PARALYSIS
+            </span>
+            <span className="block mt-2" data-testid="text-hero-power">
+              TO POWER
+            </span>
+          </h1>
+
+          {/* Subtitle */}
+          <p className="text-3xl sm:text-4xl font-bold text-red-400 mb-8 italic tracking-wide" data-testid="text-hero-subtitle">
+            DEFY EVERY 'NEVER' — SASQUATCH STYLE
+          </p>
+
+          {/* Motivational Quote */}
+          <p className="text-xl sm:text-2xl text-gray-200 mb-12 max-w-3xl mx-auto leading-relaxed font-medium" data-testid="text-hero-quote">
+            Heart's still thumpin'? Life's still pumpin'.
+            <br />
+            Stand up six times. Join the revolution.
+          </p>
+
+          {/* CTAs */}
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-6">
+            <Button
+              size="lg"
+              className="bg-red-600 hover:bg-red-700 text-white text-lg font-bold px-8 py-6 transition-transform duration-300 hover:scale-110 active:scale-95 shadow-lg shadow-red-600/50 animate-pulse"
+              data-testid="button-enter-the-fight"
+              onClick={() => {
+                // Navigate to fight/action section
+                window.location.href = "#academy";
+              }}
+            >
+              ENTER THE FIGHT
+              <ArrowRight className="ml-3 h-6 w-6" />
+            </Button>
+
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-2 border-white text-white text-lg font-bold px-8 py-6 transition-transform duration-300 hover:scale-110 active:scale-95 shadow-lg shadow-white/20"
+              data-testid="button-see-the-proof"
+              onClick={() => window.open("https://www.tiktok.com/@nickkremers", "_blank")}
+            >
+              SEE THE PROOF
+              <ArrowRight className="ml-3 h-6 w-6" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce pointer-events-none">
+          <div className="text-gray-400 text-sm font-medium mb-2">Scroll to explore</div>
+          <svg
+            className="w-6 h-6 text-gray-400 mx-auto"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 14l-7 7m0 0l-7-7m7 7V3"
+            />
+          </svg>
+        </div>
+      </section>
+    </>
   );
 }
