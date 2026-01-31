@@ -8666,6 +8666,147 @@ Never provide medical advice. Always encourage working with healthcare professio
     }
   });
 
+  // Gift Scholarship checkout
+  app.post('/api/recovery/payments/gift-scholarship', async (req, res) => {
+    try {
+      const { getRecoveryStripeClient, isRecoveryStripeConfigured } = await import('./recoveryStripeClient');
+      const { tierId, recipientEmail, message } = req.body;
+      
+      if (!isRecoveryStripeConfigured()) {
+        return res.status(503).json({ message: 'Payment processing not configured' });
+      }
+      
+      const scholarshipPrices: Record<string, { amount: number; name: string; description: string }> = {
+        basic: { amount: 9700, name: 'Survivor Scholarship', description: 'Full Recovery Academy access for a stroke survivor' },
+        mentored: { amount: 29700, name: 'Mentored Scholarship', description: 'Academy access + 3 months group coaching' },
+        elite: { amount: 99700, name: 'Elite Scholarship', description: 'Full access + 1-on-1 coaching with Nick Kremers' },
+      };
+      
+      const scholarship = scholarshipPrices[tierId];
+      if (!scholarship) {
+        return res.status(400).json({ message: 'Invalid scholarship tier' });
+      }
+      
+      const stripe = getRecoveryStripeClient();
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [{
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: `Gift: ${scholarship.name}`,
+              description: scholarship.description,
+            },
+            unit_amount: scholarship.amount,
+          },
+          quantity: 1,
+        }],
+        mode: 'payment',
+        success_url: `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/strokelyfe?scholarship=success`,
+        cancel_url: `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/strokelyfe`,
+        metadata: {
+          type: 'scholarship_gift',
+          tierId,
+          recipientEmail,
+          giftMessage: message || '',
+          platform: 'stroke_recovery_academy',
+        },
+      });
+      
+      res.json({ url: session.url });
+    } catch (error: any) {
+      console.error('Scholarship gift error:', error);
+      res.status(500).json({ message: error.message || 'Failed to create scholarship checkout' });
+    }
+  });
+
+  // Coaching package checkout
+  app.post('/api/recovery/payments/coaching-package', isAuthenticated, async (req: any, res) => {
+    try {
+      const { getRecoveryStripeClient, isRecoveryStripeConfigured } = await import('./recoveryStripeClient');
+      const { packageId } = req.body;
+      
+      if (!isRecoveryStripeConfigured()) {
+        return res.status(503).json({ message: 'Payment processing not configured' });
+      }
+      
+      const coachingPackages: Record<string, { amount: number; name: string; description: string; mode: 'payment' | 'subscription'; interval?: 'month' | 'year' }> = {
+        'accountability-monthly': { 
+          amount: 19700, 
+          name: 'Monthly Accountability', 
+          description: 'Weekly check-ins to keep you on track',
+          mode: 'subscription',
+          interval: 'month'
+        },
+        'recovery-intensive': { 
+          amount: 49700, 
+          name: 'Recovery Intensive', 
+          description: 'Deep dive strategy session with Nick',
+          mode: 'payment'
+        },
+        'transformation': { 
+          amount: 199700, 
+          name: '66-Day Transformation', 
+          description: 'Complete guided transformation program',
+          mode: 'payment'
+        },
+        'elite-annual': { 
+          amount: 499700, 
+          name: 'Elite Annual Coaching', 
+          description: 'Year-long transformation with Nick',
+          mode: 'subscription',
+          interval: 'year'
+        },
+      };
+      
+      const pkg = coachingPackages[packageId];
+      if (!pkg) {
+        return res.status(400).json({ message: 'Invalid coaching package' });
+      }
+      
+      const stripe = getRecoveryStripeClient();
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      const sessionParams: any = {
+        payment_method_types: ['card'],
+        line_items: [{
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: pkg.name,
+              description: pkg.description,
+            },
+            unit_amount: pkg.amount,
+            ...(pkg.mode === 'subscription' && pkg.interval && {
+              recurring: { interval: pkg.interval },
+            }),
+          },
+          quantity: 1,
+        }],
+        mode: pkg.mode,
+        success_url: `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/strokelyfe?coaching=success`,
+        cancel_url: `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/strokelyfe`,
+        metadata: {
+          type: 'coaching_package',
+          packageId,
+          userId,
+          platform: 'stroke_recovery_academy',
+        },
+      };
+      
+      if (user?.stripeCustomerId) {
+        sessionParams.customer = user.stripeCustomerId;
+      }
+      
+      const session = await stripe.checkout.sessions.create(sessionParams);
+      res.json({ url: session.url });
+    } catch (error: any) {
+      console.error('Coaching package error:', error);
+      res.status(500).json({ message: error.message || 'Failed to create coaching checkout' });
+    }
+  });
+
   // ============================================================================
   // SASQUATCH DOCTRINE - FLICKER LOG
   // ============================================================================

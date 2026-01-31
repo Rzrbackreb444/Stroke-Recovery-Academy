@@ -39,7 +39,7 @@ const navLinks = [
   { href: "/recovery/dashboard", label: "PROGRESS", icon: Target, description: "Track your recovery journey" },
   { href: "/recovery/social", label: "COMMUNITY", icon: Users, description: "Connect with survivors" },
   { href: "/recovery/university", label: "RESOURCES", icon: Building2, description: "Guides and tools" },
-  { href: "https://strokelyfe.org", label: "DONATE", icon: Heart, description: "Support stroke survivors", external: true },
+  { href: "/strokelyfe", label: "DONATE", icon: Heart, description: "Support stroke survivors" },
 ];
 
 const quickFeatures = [

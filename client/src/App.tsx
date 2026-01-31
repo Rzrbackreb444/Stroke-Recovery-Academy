@@ -103,6 +103,7 @@ import SocialNetwork from "@/pages/SocialNetwork";
 import TherapistMarketplace from "@/pages/TherapistMarketplace";
 import AdminPlanBuilder from "@/pages/AdminPlanBuilder";
 import RecoveryUniversity from "@/pages/RecoveryUniversity";
+import StrokeLyfeOrg from "@/pages/StrokeLyfeOrg";
 
 // Sasquatch Doctrine Core Pages
 import FlickerLog from "@/pages/FlickerLog";
@@ -128,6 +129,10 @@ import { useAnalytics } from "@/hooks/useAnalytics";
 
 function HomeLanding() {
   const platform = usePlatform();
+  
+  if (platform === "nonprofit") {
+    return <StrokeLyfeOrg />;
+  }
   
   if (platform === "recovery") {
     return <StrokeRecoveryLanding />;
@@ -452,6 +457,8 @@ function Router() {
         </ProtectedRoute>
       </Route>
       <Route path="/recovery/university" component={RecoveryUniversity} />
+      <Route path="/recovery/strokelyfe-org" component={StrokeLyfeOrg} />
+      <Route path="/strokelyfe" component={StrokeLyfeOrg} />
 
       {/* Sasquatch Doctrine Core Tools */}
       <Route path="/recovery/flicker-log">
