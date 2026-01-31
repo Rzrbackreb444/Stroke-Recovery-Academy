@@ -600,4 +600,130 @@ router.post("/projects/:id/quotes", isAuthenticated, async (req: any, res: Respo
   }
 });
 
+// PUBLIC: Get today's quote for a project (no auth required - for QR scanning)
+router.get("/public/quote/:projectId", async (req: Request, res: Response) => {
+  try {
+    const projectId = parseInt(req.params.projectId, 10);
+    if (isNaN(projectId)) {
+      return res.status(400).json({ message: "Invalid project ID" });
+    }
+
+    const [project] = await db
+      .select()
+      .from(qrCodeProjects)
+      .where(and(eq(qrCodeProjects.id, projectId), eq(qrCodeProjects.isPublished, true)));
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found or not published" });
+    }
+
+    // Get rotation settings
+    const [settings] = await db
+      .select()
+      .from(qrCodeRotationSettings)
+      .where(eq(qrCodeRotationSettings.projectId, projectId));
+
+    // Get all approved quotes in the pool
+    const poolQuotes = await db
+      .select({
+        quote: quotes,
+        pool: projectQuotePool,
+      })
+      .from(projectQuotePool)
+      .innerJoin(quotes, eq(projectQuotePool.quoteId, quotes.id))
+      .where(and(
+        eq(projectQuotePool.projectId, projectId),
+        eq(quotes.isApproved, true)
+      ))
+      .orderBy(asc(projectQuotePool.displayOrder));
+
+    if (poolQuotes.length === 0) {
+      return res.json({
+        id: 0,
+        text: "No quotes available yet. Check back soon!",
+        projectName: project.name,
+        brandColor: project.brandColor || "#1B4332",
+        isWhiteLabel: project.isWhiteLabel || false,
+        streak: 0,
+        badges: [],
+      });
+    }
+
+    // Determine which quote to show based on rotation
+    const rotationType = settings?.rotationType || "daily";
+    let quoteIndex = 0;
+
+    if (rotationType === "daily") {
+      const today = new Date();
+      const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
+      quoteIndex = dayOfYear % poolQuotes.length;
+    } else if (rotationType === "random") {
+      quoteIndex = Math.floor(Math.random() * poolQuotes.length);
+    } else if (rotationType === "sequential") {
+      // Use current index from settings
+      quoteIndex = (settings?.currentIndex || 0) % poolQuotes.length;
+    }
+
+    const selectedQuote = poolQuotes[quoteIndex].quote;
+
+    // Calculate next quote time for daily rotation
+    let nextQuoteTime: string | undefined;
+    if (rotationType === "daily") {
+      const now = new Date();
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+      const hoursLeft = Math.floor((tomorrow.getTime() - now.getTime()) / (1000 * 60 * 60));
+      const minsLeft = Math.floor(((tomorrow.getTime() - now.getTime()) % (1000 * 60 * 60)) / (1000 * 60));
+      nextQuoteTime = `${hoursLeft}h ${minsLeft}m`;
+    }
+
+    res.json({
+      id: selectedQuote.id,
+      text: selectedQuote.text,
+      author: selectedQuote.author,
+      projectName: project.name,
+      brandColor: project.brandColor || "#1B4332",
+      brandLogo: project.logoUrl,
+      isWhiteLabel: project.isWhiteLabel || false,
+      streak: 0, // TODO: Implement user streak tracking
+      badges: [],
+      nextQuoteTime,
+    });
+  } catch (error) {
+    console.error("Error fetching public quote:", error);
+    res.status(500).json({ message: "Failed to fetch quote" });
+  }
+});
+
+// PUBLIC: Track a scan event (no auth required)
+router.post("/scans", async (req: Request, res: Response) => {
+  try {
+    const { projectId } = req.body;
+    
+    if (!projectId) {
+      return res.status(400).json({ message: "Project ID is required" });
+    }
+
+    const parsedProjectId = parseInt(projectId, 10);
+    if (isNaN(parsedProjectId)) {
+      return res.status(400).json({ message: "Invalid project ID" });
+    }
+
+    // Increment scan count on the project
+    await db
+      .update(qrCodeProjects)
+      .set({ 
+        totalScans: sql`COALESCE(${qrCodeProjects.totalScans}, 0) + 1`,
+        lastScanAt: new Date(),
+      })
+      .where(eq(qrCodeProjects.id, parsedProjectId));
+
+    res.json({ message: "Scan tracked" });
+  } catch (error) {
+    console.error("Error tracking scan:", error);
+    res.status(500).json({ message: "Failed to track scan" });
+  }
+});
+
 export default router;

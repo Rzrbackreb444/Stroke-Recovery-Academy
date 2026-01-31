@@ -269,7 +269,7 @@ export default function SquatchQRLanding() {
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/auth">
+            <Link href="/squatch-qr/studio">
               <Button
                 className="px-8 py-6 h-auto text-base font-semibold rounded-full"
                 style={{ backgroundColor: GOLD, color: DARK_BASE, border: `2px solid ${GOLD}` }}
@@ -513,7 +513,7 @@ export default function SquatchQRLanding() {
           </div>
 
           <div className="text-center mt-16">
-            <Link href="/auth">
+            <Link href="/squatch-qr/studio">
               <Button
                 className="px-8 py-6 h-auto text-base font-semibold rounded-full"
                 style={{ backgroundColor: GOLD, color: DARK_BASE }}
@@ -576,7 +576,7 @@ export default function SquatchQRLanding() {
                       </li>
                     ))}
                   </ul>
-                  <Link href="/auth">
+                  <Link href="/squatch-qr/studio">
                     <Button
                       className="w-full"
                       variant={plan.popular ? "default" : "outline"}
