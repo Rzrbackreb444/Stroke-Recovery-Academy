@@ -11,6 +11,7 @@ import {
   qrCodeRotationSettings,
   projectQuotePool,
   userStreaks,
+  quoteScanAnalytics,
   insertQuoteSchema,
   insertQrCodeProjectSchema,
   insertProjectQuotePoolSchema,
@@ -934,6 +935,158 @@ router.get("/leaderboard", async (_req: Request, res: Response) => {
   } catch (error) {
     console.error("Error fetching leaderboard:", error);
     res.status(500).json({ message: "Failed to fetch leaderboard" });
+  }
+});
+
+// Analytics endpoint - Get real scan data for SquatchQR
+router.get("/analytics", isAuthenticated, async (req: any, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    // Get user's projects first
+    const userProjects = await db
+      .select({ id: qrCodeProjects.id })
+      .from(qrCodeProjects)
+      .where(eq(qrCodeProjects.userId, userId));
+
+    const projectIds = userProjects.map((p) => p.id);
+
+    // If user has no projects, return empty analytics
+    if (projectIds.length === 0) {
+      return res.json({
+        totalScans: 0,
+        uniqueVisitors: 0,
+        avgScansPerDay: 0,
+        topProjects: [],
+        scansByDay: [],
+        deviceBreakdown: [],
+      });
+    }
+
+    // Total scans for user's projects
+    const [totalScansResult] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(quoteScanAnalytics)
+      .where(sql`${quoteScanAnalytics.projectId} = ANY(${projectIds})`);
+
+    const totalScans = totalScansResult?.count || 0;
+
+    // Unique visitors (by IP address)
+    const [uniqueVisitorsResult] = await db
+      .select({ count: sql<number>`count(distinct ${quoteScanAnalytics.ipAddress})::int` })
+      .from(quoteScanAnalytics)
+      .where(sql`${quoteScanAnalytics.projectId} = ANY(${projectIds})`);
+
+    const uniqueVisitors = uniqueVisitorsResult?.count || 0;
+
+    // Calculate average scans per day
+    let avgScansPerDay = 0;
+    if (totalScans > 0) {
+      const [firstScanResult] = await db
+        .select({ firstScan: sql<Date>`min(${quoteScanAnalytics.scanDate})` })
+        .from(quoteScanAnalytics)
+        .where(sql`${quoteScanAnalytics.projectId} = ANY(${projectIds})`);
+
+      if (firstScanResult?.firstScan) {
+        const firstScanDate = new Date(firstScanResult.firstScan);
+        const daysSinceFirst = Math.max(
+          1,
+          Math.ceil((Date.now() - firstScanDate.getTime()) / (1000 * 60 * 60 * 24))
+        );
+        avgScansPerDay = Math.round(totalScans / daysSinceFirst);
+      }
+    }
+
+    // Top projects with scan counts
+    const topProjectsResult = await db
+      .select({
+        projectId: quoteScanAnalytics.projectId,
+        projectName: qrCodeProjects.name,
+        scans: sql<number>`count(*)::int`,
+      })
+      .from(quoteScanAnalytics)
+      .innerJoin(qrCodeProjects, eq(quoteScanAnalytics.projectId, qrCodeProjects.id))
+      .where(sql`${quoteScanAnalytics.projectId} = ANY(${projectIds})`)
+      .groupBy(quoteScanAnalytics.projectId, qrCodeProjects.name)
+      .orderBy(desc(sql`count(*)`))
+      .limit(5);
+
+    const topProjects = topProjectsResult.map((p) => ({
+      name: p.projectName || "Unnamed Project",
+      scans: p.scans,
+    }));
+
+    // Scans by day for last 7 days
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+    sevenDaysAgo.setHours(0, 0, 0, 0);
+
+    const scansByDayResult = await db
+      .select({
+        date: sql<string>`to_char(${quoteScanAnalytics.scanDate}, 'Dy')`,
+        dateOrder: sql<string>`to_char(${quoteScanAnalytics.scanDate}, 'YYYY-MM-DD')`,
+        count: sql<number>`count(*)::int`,
+      })
+      .from(quoteScanAnalytics)
+      .where(
+        and(
+          sql`${quoteScanAnalytics.projectId} = ANY(${projectIds})`,
+          gte(quoteScanAnalytics.scanDate, sevenDaysAgo)
+        )
+      )
+      .groupBy(
+        sql`to_char(${quoteScanAnalytics.scanDate}, 'Dy')`,
+        sql`to_char(${quoteScanAnalytics.scanDate}, 'YYYY-MM-DD')`
+      )
+      .orderBy(sql`to_char(${quoteScanAnalytics.scanDate}, 'YYYY-MM-DD')`);
+
+    // Fill in missing days with zero counts
+    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const scansByDay: { date: string; count: number }[] = [];
+    
+    for (let i = 0; i < 7; i++) {
+      const checkDate = new Date(sevenDaysAgo);
+      checkDate.setDate(sevenDaysAgo.getDate() + i);
+      const dayName = dayNames[checkDate.getDay()];
+      const dateStr = checkDate.toISOString().split("T")[0];
+      
+      const found = scansByDayResult.find((r) => r.dateOrder === dateStr);
+      scansByDay.push({
+        date: dayName,
+        count: found?.count || 0,
+      });
+    }
+
+    // Device breakdown with percentage
+    const deviceResult = await db
+      .select({
+        device: sql<string>`coalesce(${quoteScanAnalytics.deviceType}, 'Unknown')`,
+        count: sql<number>`count(*)::int`,
+      })
+      .from(quoteScanAnalytics)
+      .where(sql`${quoteScanAnalytics.projectId} = ANY(${projectIds})`)
+      .groupBy(quoteScanAnalytics.deviceType)
+      .orderBy(desc(sql`count(*)`));
+
+    const deviceBreakdown = deviceResult.map((d) => ({
+      device: d.device === "mobile" ? "Mobile" : d.device === "tablet" ? "Tablet" : d.device === "desktop" ? "Desktop" : d.device,
+      percentage: totalScans > 0 ? Math.round((d.count / totalScans) * 100) : 0,
+    }));
+
+    res.json({
+      totalScans,
+      uniqueVisitors,
+      avgScansPerDay,
+      topProjects,
+      scansByDay,
+      deviceBreakdown,
+    });
+  } catch (error) {
+    console.error("Error fetching analytics:", error);
+    res.status(500).json({ message: "Failed to fetch analytics" });
   }
 });
 
