@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
+import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import { 
   BookOpen, 
   Music, 
@@ -159,10 +160,10 @@ export default function CreatorHome() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-[#FAF8F3]" data-testid="loading-state">
+      <div className="flex items-center justify-center h-screen bg-[#0D0D0D]" data-testid="loading-state">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#C9941A] to-[#8B6914] flex items-center justify-center animate-pulse">
-            <span className="text-white font-black text-xl">K</span>
+            <span className="text-black font-black text-xl">K</span>
           </div>
           <Loader2 className="h-8 w-8 animate-spin text-[#C9941A]" />
         </div>
@@ -171,22 +172,22 @@ export default function CreatorHome() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3]">
+    <div className="min-h-screen bg-[#0D0D0D] text-white">
       <GlobalHeader variant="transparent" />
       
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#C9941A]/5 via-transparent to-[#C9941A]/10" />
-        <div className="absolute top-20 right-0 w-[600px] h-[600px] bg-[#C9941A]/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#C9941A]/10 rounded-full blur-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#C9941A]/10 via-transparent to-[#C9941A]/5" />
+        <div className="absolute top-20 right-0 w-[600px] h-[600px] bg-[#C9941A]/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#C9941A]/5 rounded-full blur-3xl" />
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
           <div className="text-center max-w-4xl mx-auto">
-            <Badge className="bg-[#C9941A]/10 text-[#C9941A] border-[#C9941A]/20 mb-6 px-4 py-1.5 text-sm font-semibold">
+            <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-6 px-4 py-1.5 text-sm font-semibold">
               <Sparkles className="w-4 h-4 mr-2" />
               Powered by Advanced AI
             </Badge>
             
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-gray-900 mb-6">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white mb-6">
               Create.{" "}
               <span className="bg-gradient-to-r from-[#C9941A] to-[#8B6914] bg-clip-text text-transparent">
                 Publish.
@@ -194,7 +195,7 @@ export default function CreatorHome() {
               Earn.
             </h1>
             
-            <p className="text-xl sm:text-2xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl sm:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
               The ultimate AI creator platform. Write books, compose music, create courses, and earn{" "}
               <span className="font-bold text-[#C9941A]">85% revenue</span> from everything you create.
             </p>
@@ -202,7 +203,7 @@ export default function CreatorHome() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button 
                 size="lg"
-                className="bg-[#C9941A] hover:bg-[#A67B15] text-white font-bold text-lg px-8 py-6 shadow-xl shadow-[#C9941A]/25 group"
+                className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black font-bold text-lg px-8 py-6 shadow-xl shadow-[#C9941A]/25 group"
                 onClick={() => window.location.href = "/api/login"}
                 data-testid="cta-get-started"
               >
@@ -212,7 +213,7 @@ export default function CreatorHome() {
               <Button 
                 variant="outline"
                 size="lg"
-                className="border-2 border-gray-300 hover:border-[#C9941A] hover:bg-[#C9941A]/5 font-semibold text-lg px-8 py-6"
+                className="border-2 border-[#333] hover:border-[#C9941A] hover:bg-[#C9941A]/10 text-white font-semibold text-lg px-8 py-6"
                 onClick={() => window.location.href = "/pricing"}
                 data-testid="cta-view-pricing"
               >
@@ -223,8 +224,8 @@ export default function CreatorHome() {
             <div className="mt-12 flex flex-wrap items-center justify-center gap-8">
               {stats.map((stat, index) => (
                 <div key={index} className="text-center">
-                  <div className="text-3xl font-black text-gray-900">{stat.value}</div>
-                  <div className="text-sm text-gray-500 font-medium">{stat.label}</div>
+                  <div className="text-3xl font-black text-white">{stat.value}</div>
+                  <div className="text-sm text-gray-400 font-medium">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -232,17 +233,17 @@ export default function CreatorHome() {
         </div>
       </section>
 
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-[#1a1a1a]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <Badge className="bg-[#C9941A]/10 text-[#C9941A] border-[#C9941A]/20 mb-4">
+            <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-4">
               7 Professional Studios
             </Badge>
-            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-4">
+            <h2 className="text-4xl sm:text-5xl font-black text-white mb-4">
               Everything You Need to{" "}
               <span className="text-[#C9941A]">Create & Sell</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
               Professional tools that help you create, publish, and monetize your content across every medium.
             </p>
           </div>
@@ -250,7 +251,7 @@ export default function CreatorHome() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {studios.map((studio, index) => (
               <Link key={index} href={studio.href}>
-                <Card className="group h-full hover:shadow-xl hover:shadow-[#C9941A]/10 transition-all duration-300 border-2 border-transparent hover:border-[#C9941A]/20 cursor-pointer overflow-hidden" data-testid={`card-${studio.title.toLowerCase().replace(/\s/g, '-')}`}>
+                <Card className="group h-full bg-[#1a1a1a] border border-[#333] hover:border-[#C9941A]/50 hover:shadow-xl hover:shadow-[#C9941A]/10 transition-all duration-300 cursor-pointer overflow-hidden" data-testid={`card-${studio.title.toLowerCase().replace(/\s/g, '-')}`}>
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4 mb-4">
                       <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${studio.gradient} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
@@ -258,23 +259,23 @@ export default function CreatorHome() {
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-bold text-lg text-gray-900 group-hover:text-[#C9941A] transition-colors">
+                          <h3 className="font-bold text-lg text-white group-hover:text-[#C9941A] transition-colors">
                             {studio.title}
                           </h3>
                           {studio.badge && (
-                            <Badge className="bg-[#C9941A] text-white text-[10px]">
+                            <Badge className="bg-[#C9941A] text-black text-[10px]">
                               {studio.badge}
                             </Badge>
                           )}
                         </div>
-                        <p className="text-gray-600 text-sm leading-relaxed">
+                        <p className="text-gray-400 text-sm leading-relaxed">
                           {studio.description}
                         </p>
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {studio.features.map((feature, i) => (
-                        <Badge key={i} variant="secondary" className="bg-gray-100 text-gray-700 text-xs font-medium">
+                        <Badge key={i} variant="secondary" className="bg-[#0D0D0D] text-gray-300 border border-[#333] text-xs font-medium">
                           {feature}
                         </Badge>
                       ))}
@@ -291,18 +292,18 @@ export default function CreatorHome() {
         </div>
       </section>
 
-      <section className="py-24 bg-[#FAF8F3]">
+      <section className="py-24 bg-[#0D0D0D]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <Badge className="bg-[#C9941A]/10 text-[#C9941A] border-[#C9941A]/20 mb-4">
+              <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-4">
                 Why KreAIte
               </Badge>
-              <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-6">
+              <h2 className="text-4xl sm:text-5xl font-black text-white mb-6">
                 The Creator Platform Built for{" "}
                 <span className="text-[#C9941A]">Earning</span>
               </h2>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              <p className="text-xl text-gray-300 mb-8 leading-relaxed">
                 We believe creators deserve more. That's why we offer industry-leading revenue share, 
                 professional tools, and AI that actually helps you create faster.
               </p>
@@ -310,12 +311,12 @@ export default function CreatorHome() {
               <div className="space-y-6">
                 {features.map((feature, index) => (
                   <div key={index} className="flex gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-[#C9941A]/10 flex items-center justify-center flex-shrink-0">
+                    <div className="w-12 h-12 rounded-xl bg-[#C9941A]/20 flex items-center justify-center flex-shrink-0">
                       <feature.icon className="w-6 h-6 text-[#C9941A]" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg text-gray-900 mb-1">{feature.title}</h3>
-                      <p className="text-gray-600">{feature.description}</p>
+                      <h3 className="font-bold text-lg text-white mb-1">{feature.title}</h3>
+                      <p className="text-gray-400">{feature.description}</p>
                     </div>
                   </div>
                 ))}
@@ -324,32 +325,32 @@ export default function CreatorHome() {
             
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-br from-[#C9941A]/20 to-[#C9941A]/5 rounded-3xl transform rotate-3" />
-              <Card className="relative bg-white shadow-2xl rounded-3xl overflow-hidden">
+              <Card className="relative bg-[#1a1a1a] border border-[#333] shadow-2xl rounded-3xl overflow-hidden">
                 <CardContent className="p-8">
                   <div className="text-center mb-8">
-                    <div className="inline-flex items-center gap-2 bg-[#C9941A]/10 text-[#C9941A] px-4 py-2 rounded-full font-bold text-sm mb-4">
+                    <div className="inline-flex items-center gap-2 bg-[#C9941A]/20 text-[#C9941A] px-4 py-2 rounded-full font-bold text-sm mb-4">
                       <Award className="w-4 h-4" />
                       Creator Success Story
                     </div>
-                    <h3 className="text-3xl font-black text-gray-900 mb-2">$28,000</h3>
-                    <p className="text-gray-600">Earned in first 3 months</p>
+                    <h3 className="text-3xl font-black text-white mb-2">$28,000</h3>
+                    <p className="text-gray-400">Earned in first 3 months</p>
                   </div>
                   
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <span className="text-gray-600">Books Published</span>
-                      <span className="font-bold text-gray-900">4</span>
+                    <div className="flex items-center justify-between p-3 bg-[#0D0D0D] border border-[#333] rounded-lg">
+                      <span className="text-gray-400">Books Published</span>
+                      <span className="font-bold text-white">4</span>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <span className="text-gray-600">Courses Created</span>
-                      <span className="font-bold text-gray-900">2</span>
+                    <div className="flex items-center justify-between p-3 bg-[#0D0D0D] border border-[#333] rounded-lg">
+                      <span className="text-gray-400">Courses Created</span>
+                      <span className="font-bold text-white">2</span>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <span className="text-gray-600">Revenue Share</span>
+                    <div className="flex items-center justify-between p-3 bg-[#0D0D0D] border border-[#333] rounded-lg">
+                      <span className="text-gray-400">Revenue Share</span>
                       <span className="font-bold text-[#C9941A]">85%</span>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-[#C9941A]/10 rounded-lg">
-                      <span className="font-semibold text-gray-900">Total Payout</span>
+                    <div className="flex items-center justify-between p-3 bg-[#C9941A]/20 border border-[#C9941A]/30 rounded-lg">
+                      <span className="font-semibold text-white">Total Payout</span>
                       <span className="font-black text-[#C9941A] text-xl">$23,800</span>
                     </div>
                   </div>
@@ -360,42 +361,42 @@ export default function CreatorHome() {
         </div>
       </section>
 
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-[#1a1a1a]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <Badge className="bg-[#C9941A]/10 text-[#C9941A] border-[#C9941A]/20 mb-4">
+            <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-4">
               Creator Stories
             </Badge>
-            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-4">
+            <h2 className="text-4xl sm:text-5xl font-black text-white mb-4">
               Loved by <span className="text-[#C9941A]">10,000+ Creators</span>
             </h2>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className="bg-[#FAF8F3] border-0 shadow-lg">
+              <Card key={index} className="bg-[#1a1a1a] border border-[#333] shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-1 mb-4">
                     {[...Array(5)].map((_, i) => (
                       <Star key={i} className="w-5 h-5 fill-[#C9941A] text-[#C9941A]" />
                     ))}
                   </div>
-                  <p className="text-gray-700 mb-6 leading-relaxed italic">
+                  <p className="text-gray-300 mb-6 leading-relaxed italic">
                     "{testimonial.quote}"
                   </p>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-[#C9941A] text-white flex items-center justify-center font-bold text-lg">
+                      <div className="w-12 h-12 rounded-full bg-[#C9941A] text-black flex items-center justify-center font-bold text-lg">
                         {testimonial.avatar}
                       </div>
                       <div>
-                        <p className="font-bold text-gray-900">{testimonial.author}</p>
-                        <p className="text-sm text-gray-500">{testimonial.role}</p>
+                        <p className="font-bold text-white">{testimonial.author}</p>
+                        <p className="text-sm text-gray-400">{testimonial.role}</p>
                       </div>
                     </div>
                     <div className="text-right">
                       <p className="font-bold text-[#C9941A] text-lg">{testimonial.earnings}</p>
-                      <p className="text-xs text-gray-500">Earned</p>
+                      <p className="text-xs text-gray-400">Earned</p>
                     </div>
                   </div>
                 </CardContent>
@@ -405,7 +406,7 @@ export default function CreatorHome() {
         </div>
       </section>
 
-      <section className="py-24 bg-gradient-to-br from-gray-900 to-gray-800">
+      <section className="py-24 bg-gradient-to-br from-[#0D0D0D] to-[#1a1a1a]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-6 px-4 py-1.5">
             <Zap className="w-4 h-4 mr-2" />
@@ -421,7 +422,7 @@ export default function CreatorHome() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button 
               size="lg"
-              className="bg-[#C9941A] hover:bg-[#A67B15] text-white font-bold text-lg px-10 py-6 shadow-xl shadow-[#C9941A]/25"
+              className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black font-bold text-lg px-10 py-6 shadow-xl shadow-[#C9941A]/25"
               onClick={() => window.location.href = "/api/login"}
             >
               Get Started Free
@@ -430,7 +431,7 @@ export default function CreatorHome() {
             <Button 
               variant="outline"
               size="lg"
-              className="border-2 border-white/20 text-white hover:bg-white/10 font-semibold text-lg px-10 py-6"
+              className="border-2 border-[#333] text-white hover:border-[#C9941A] hover:bg-[#C9941A]/10 font-semibold text-lg px-10 py-6"
               onClick={() => window.location.href = "/pricing"}
             >
               View Plans
@@ -443,6 +444,7 @@ export default function CreatorHome() {
       </section>
 
       <Footer />
+      <SasquatchChatWidget />
     </div>
   );
 }
