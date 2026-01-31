@@ -80,6 +80,7 @@ import AuthPage from "@/pages/AuthPage";
 import AuthVerify from "@/pages/AuthVerify";
 import ResetPassword from "@/pages/ResetPassword";
 import SquatchQRLanding from "@/pages/SquatchQRLanding";
+import SquatchQRStudio from "@/pages/SquatchQRStudio";
 
 // Stroke Recovery Platform Pages (under /recovery/*)
 import StrokeRecoveryLanding from "@/pages/Landing";
@@ -179,6 +180,11 @@ function Router() {
       <Route path="/publishing" component={Publishing} />
       <Route path="/pricing" component={Pricing} />
       <Route path="/squatch-qr" component={SquatchQRLanding} />
+      <Route path="/squatch-qr/studio">
+        <ProtectedRoute>
+          <SquatchQRStudio />
+        </ProtectedRoute>
+      </Route>
       <Route path="/auth" component={AuthPage} />
       <Route path="/auth/verify" component={AuthVerify} />
       <Route path="/auth/reset-password" component={ResetPassword} />
