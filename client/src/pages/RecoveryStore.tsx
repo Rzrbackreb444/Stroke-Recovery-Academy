@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import NonprofitHeader from "@/components/NonprofitHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -342,12 +341,12 @@ function StarRating({ rating, reviewCount }: { rating: number; reviewCount: numb
                 ? "fill-[#C9941A] text-[#C9941A]"
                 : star <= rating
                 ? "fill-[#C9941A]/50 text-[#C9941A]"
-                : "text-gray-300"
+                : "text-gray-600"
             }`}
           />
         ))}
       </div>
-      <span className="text-sm text-gray-600">
+      <span className="text-sm text-gray-400">
         {rating} ({reviewCount.toLocaleString()} reviews)
       </span>
     </div>
@@ -358,8 +357,8 @@ function ProductCard({ product }: { product: Product }) {
   return (
     <>
       <ProductSchema product={product} />
-      <Card className="group overflow-hidden border-gray-200 hover:border-[#1B4332]/30 hover:shadow-lg transition-all bg-white">
-        <div className="relative aspect-square bg-gray-50 overflow-hidden">
+      <Card className="group overflow-hidden bg-[#1a1a1a] border border-[#333] hover:border-[#C9941A]/30 hover:shadow-lg hover:shadow-[#C9941A]/5 transition-all">
+        <div className="relative aspect-square bg-[#0D0D0D] overflow-hidden">
           <img
             src={product.imageUrl}
             alt={product.name}
@@ -368,13 +367,13 @@ function ProductCard({ product }: { product: Product }) {
           />
           <div className="absolute top-2 left-2 flex flex-col gap-1">
             {product.isNicksPick && (
-              <Badge className="bg-[#1B4332] text-white text-[10px]">
+              <Badge className="bg-[#C9941A] text-black text-[10px] border-0">
                 <Award className="w-3 h-3 mr-1" />
                 Nick's Pick
               </Badge>
             )}
             {product.isBestSeller && (
-              <Badge className="bg-[#C9941A] text-white text-[10px]">
+              <Badge className="bg-[#C9941A]/20 text-[#C9941A] border border-[#C9941A]/30 text-[10px]">
                 <TrendingUp className="w-3 h-3 mr-1" />
                 Best Seller
               </Badge>
@@ -384,46 +383,46 @@ function ProductCard({ product }: { product: Product }) {
         
         <CardContent className="p-4 space-y-3">
           <div>
-            <p className="text-xs text-[#1B4332] font-medium uppercase tracking-wide">
+            <p className="text-xs text-[#C9941A] font-medium uppercase tracking-wide">
               {product.brand}
             </p>
-            <h3 className="font-semibold text-gray-900 line-clamp-2 mt-1">
+            <h3 className="font-semibold text-white line-clamp-2 mt-1">
               {product.name}
             </h3>
           </div>
           
           <StarRating rating={product.rating} reviewCount={product.reviewCount} />
           
-          <p className="text-sm text-gray-600 line-clamp-2">{product.description}</p>
+          <p className="text-sm text-gray-400 line-clamp-2">{product.description}</p>
           
           <div className="flex flex-wrap gap-1">
             {product.tags.slice(0, 3).map((tag) => (
-              <Badge key={tag} variant="outline" className="text-[10px] border-[#1B4332]/20 text-[#1B4332]">
+              <Badge key={tag} variant="outline" className="text-[10px] border-[#333] text-gray-400 bg-transparent">
                 {tag}
               </Badge>
             ))}
           </div>
           
           {product.nickSays && (
-            <div className="bg-[#1B4332]/5 rounded-lg p-3 border-l-2 border-[#C9941A]">
+            <div className="bg-[#C9941A]/10 rounded-lg p-3 border-l-2 border-[#C9941A]">
               <div className="flex items-start gap-2">
                 <Quote className="w-4 h-4 text-[#C9941A] flex-shrink-0 mt-0.5" />
-                <p className="text-xs text-gray-700 italic line-clamp-2">"{product.nickSays}"</p>
+                <p className="text-xs text-gray-300 italic line-clamp-2">"{product.nickSays}"</p>
               </div>
-              <p className="text-[10px] text-[#1B4332] font-medium mt-1">— Nick Kremers</p>
+              <p className="text-[10px] text-[#C9941A] font-medium mt-1">— Nick Kremers</p>
             </div>
           )}
           
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-baseline gap-2">
-              <span className="text-xl font-bold text-[#1B4332]">{product.price}</span>
+              <span className="text-xl font-bold text-[#C9941A]">{product.price}</span>
               {product.originalPrice && (
-                <span className="text-sm text-gray-400 line-through">{product.originalPrice}</span>
+                <span className="text-sm text-gray-500 line-through">{product.originalPrice}</span>
               )}
             </div>
             <Button
               asChild
-              className="bg-[#C9941A] hover:bg-[#B8860B] text-white"
+              className="bg-[#C9941A] hover:bg-[#B8860B] text-black"
               data-testid={`button-buy-${product.id}`}
             >
               <a href={product.amazonUrl} target="_blank" rel="noopener noreferrer">
@@ -433,11 +432,11 @@ function ProductCard({ product }: { product: Product }) {
             </Button>
           </div>
           
-          <div className="pt-2 border-t border-gray-100">
+          <div className="pt-2 border-t border-[#333]">
             <p className="text-xs text-gray-500 font-medium mb-1">Recovery Benefits:</p>
             <div className="flex flex-wrap gap-1">
               {product.recoveryBenefits.map((benefit) => (
-                <span key={benefit} className="text-[10px] bg-green-50 text-green-700 px-2 py-0.5 rounded-full flex items-center gap-1">
+                <span key={benefit} className="text-[10px] bg-[#C9941A]/10 text-[#C9941A] px-2 py-0.5 rounded-full flex items-center gap-1">
                   <CheckCircle className="w-3 h-3" />
                   {benefit}
                 </span>
@@ -514,16 +513,26 @@ export default function RecoveryStore() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3]">
+    <div className="min-h-screen bg-[#0D0D0D] text-white">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(pageSchema) }}
       />
-      
-      <NonprofitHeader />
-      <SasquatchChatWidget />
 
-      <section className="bg-gradient-to-br from-[#1B4332] via-[#2D5A4A] to-[#1B4332] py-16 px-4">
+      <header className="bg-[#0D0D0D] border-b border-[#333] py-4 px-4">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <img src={strokeLyfeLogo} alt="Stroke Lyfe" className="h-10 w-auto" />
+            <span className="text-xl font-bold text-white">Recovery Store</span>
+          </div>
+          <Badge className="bg-[#C9941A]/20 text-[#C9941A] border border-[#C9941A]/30">
+            <Award className="w-3 h-3 mr-1" />
+            Curated by Nick
+          </Badge>
+        </div>
+      </header>
+
+      <section className="bg-gradient-to-br from-[#1a1a1a] via-[#0D0D0D] to-[#1a1a1a] py-16 px-4 border-b border-[#333]">
         <div className="max-w-6xl mx-auto text-center">
           <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-4">
             <Award className="w-3 h-3 mr-1" />
@@ -532,11 +541,11 @@ export default function RecoveryStore() {
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 font-serif">
             Recovery Store
           </h1>
-          <p className="text-xl text-white/80 max-w-2xl mx-auto mb-6">
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-6">
             Every product hand-picked for stroke recovery success. 
             Tested and approved by survivors who've been where you are.
           </p>
-          <div className="flex flex-wrap justify-center gap-6 text-white/70 text-sm">
+          <div className="flex flex-wrap justify-center gap-6 text-gray-400 text-sm">
             <span className="flex items-center gap-2">
               <Shield className="w-4 h-4 text-[#C9941A]" />
               Survivor Tested
@@ -553,13 +562,13 @@ export default function RecoveryStore() {
         </div>
       </section>
 
-      <section className="py-8 px-4 bg-white border-b">
+      <section className="py-8 px-4 bg-[#1a1a1a] border-b border-[#333]">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center gap-3 mb-4">
             <img src={strokeLyfeLogo} alt="Nick's Picks" className="w-10 h-10" />
             <div>
-              <h2 className="text-xl font-bold text-[#1B4332]">Nick's Top Picks</h2>
-              <p className="text-sm text-gray-600">Products I personally use in my recovery</p>
+              <h2 className="text-xl font-bold text-white">Nick's Top Picks</h2>
+              <p className="text-sm text-gray-400">Products I personally use in my recovery</p>
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
@@ -567,14 +576,14 @@ export default function RecoveryStore() {
               <a
                 key={product.id}
                 href={`#${product.id}`}
-                className="bg-[#1B4332]/5 hover:bg-[#1B4332]/10 rounded-lg p-3 text-center transition-colors"
+                className="bg-[#0D0D0D] hover:bg-[#C9941A]/10 border border-[#333] hover:border-[#C9941A]/30 rounded-lg p-3 text-center transition-colors"
               >
                 <img
                   src={product.imageUrl}
                   alt={product.name}
                   className="w-12 h-12 object-contain mx-auto mb-2"
                 />
-                <p className="text-xs font-medium text-[#1B4332] line-clamp-2">{product.name}</p>
+                <p className="text-xs font-medium text-gray-300 line-clamp-2">{product.name}</p>
               </a>
             ))}
           </div>
@@ -584,24 +593,24 @@ export default function RecoveryStore() {
       <main className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row gap-4 items-center mb-8">
           <div className="relative flex-1 w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <Input
               placeholder="Search recovery products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 border-gray-200"
+              className="pl-10 bg-[#1a1a1a] border-[#333] text-white placeholder:text-gray-500"
               data-testid="input-search-store"
             />
           </div>
         </div>
 
         <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
-          <TabsList className="bg-white border border-gray-200 flex-wrap h-auto gap-1 p-1 mb-8">
+          <TabsList className="bg-[#1a1a1a] border border-[#333] flex-wrap h-auto gap-1 p-1 mb-8">
             {CATEGORIES.map((category) => (
               <TabsTrigger
                 key={category.id}
                 value={category.id}
-                className="data-[state=active]:bg-[#1B4332] data-[state=active]:text-white flex items-center gap-2"
+                className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black text-gray-400 flex items-center gap-2"
                 data-testid={`tab-${category.id}`}
               >
                 <category.icon className="w-4 h-4" />
@@ -620,21 +629,21 @@ export default function RecoveryStore() {
                 ))}
               </div>
             ) : (
-              <Card className="border-gray-200 bg-white">
+              <Card className="bg-[#1a1a1a] border border-[#333]">
                 <CardContent className="py-12 text-center">
-                  <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-700 mb-2">No products found</h3>
-                  <p className="text-gray-500">Try adjusting your search or category filter</p>
+                  <Search className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-white mb-2">No products found</h3>
+                  <p className="text-gray-400">Try adjusting your search or category filter</p>
                 </CardContent>
               </Card>
             )}
           </TabsContent>
         </Tabs>
 
-        <section className="mt-16 bg-[#1B4332] rounded-2xl p-8 text-white">
+        <section className="mt-16 bg-[#1a1a1a] border border-[#333] rounded-2xl p-8">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-2xl font-bold mb-4 font-serif">Why These Products?</h2>
-            <p className="text-white/80 mb-6">
+            <h2 className="text-2xl font-bold text-white mb-4 font-serif">Why These Products?</h2>
+            <p className="text-gray-400 mb-6">
               Every product in the Recovery Store has been personally tested by Nick Kremers 
               or recommended by stroke recovery specialists. We only feature products that 
               genuinely help the recovery journey - no paid placements, no compromises.
@@ -644,38 +653,40 @@ export default function RecoveryStore() {
                 <div className="w-12 h-12 bg-[#C9941A]/20 rounded-full flex items-center justify-center mx-auto mb-3">
                   <Shield className="w-6 h-6 text-[#C9941A]" />
                 </div>
-                <h3 className="font-semibold mb-1">Survivor Tested</h3>
-                <p className="text-sm text-white/70">Every product used in real recovery journeys</p>
+                <h3 className="font-semibold text-white mb-1">Survivor Tested</h3>
+                <p className="text-sm text-gray-500">Every product used in real recovery journeys</p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 bg-[#C9941A]/20 rounded-full flex items-center justify-center mx-auto mb-3">
                   <Award className="w-6 h-6 text-[#C9941A]" />
                 </div>
-                <h3 className="font-semibold mb-1">Expert Curated</h3>
-                <p className="text-sm text-white/70">Selected based on therapeutic value</p>
+                <h3 className="font-semibold text-white mb-1">Expert Curated</h3>
+                <p className="text-sm text-gray-500">Selected based on therapeutic value</p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 bg-[#C9941A]/20 rounded-full flex items-center justify-center mx-auto mb-3">
                   <Heart className="w-6 h-6 text-[#C9941A]" />
                 </div>
-                <h3 className="font-semibold mb-1">Community First</h3>
-                <p className="text-sm text-white/70">Affiliate revenue supports survivors</p>
+                <h3 className="font-semibold text-white mb-1">Community First</h3>
+                <p className="text-sm text-gray-500">Affiliate revenue supports survivors</p>
               </div>
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="bg-[#0D0D0D] text-white py-12 px-4">
+      <footer className="bg-[#0D0D0D] border-t border-[#333] text-white py-12 px-4">
         <div className="max-w-6xl mx-auto text-center">
           <img src={strokeLyfeLogo} alt="Stroke Lyfe" className="h-12 w-auto mx-auto mb-4" />
-          <p className="text-gray-400 text-sm max-w-xl mx-auto">
+          <p className="text-gray-500 text-sm max-w-xl mx-auto">
             Stroke Lyfe Recovery Store is part of Stroke Lyfe Inc., a 501(c)(3) nonprofit. 
             Affiliate revenue from purchases supports our scholarship fund and free resources for stroke survivors.
           </p>
           <p className="text-[#C9941A] mt-4 font-semibold">REBUILD. REWIRE. RISE.</p>
         </div>
       </footer>
+
+      <SasquatchChatWidget />
     </div>
   );
 }
