@@ -40,6 +40,7 @@ import {
   Mountain,
 } from "lucide-react";
 import strokeLyfeLogo from "@assets/stroked-out-sasquatch-logo.png";
+import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 
 const donationAmounts = [25, 50, 100, 250, 500, 1000];
 
@@ -269,6 +270,7 @@ export default function StrokeLyfeOrg() {
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
       <NonprofitHeader />
+      <SasquatchChatWidget />
       
       <section className="relative py-20 px-4 bg-gradient-to-br from-[#1B4332] via-[#2D5A4A] to-[#1B4332] overflow-hidden">
         <div className="absolute inset-0 opacity-10">
