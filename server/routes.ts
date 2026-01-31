@@ -1528,25 +1528,7 @@ Allow: /
     }
   });
 
-  // AI Coach routes (Stroked Out Sasquatch)
-  app.post('/api/coach/chat', async (req, res) => {
-    try {
-      const { message, history = [] } = req.body;
-      if (!message) {
-        return res.status(400).json({ message: "Message is required" });
-      }
-
-      const result = await generateCoachResponse(message, history);
-      res.json(result);
-    } catch (error) {
-      console.error("Error in coach chat:", error);
-      res.status(500).json({ 
-        response: "Keep pushing, survivor! Technical difficulties won't stop your comeback!",
-        quote: getRandomQuote()
-      });
-    }
-  });
-
+  // AI Coach quote endpoint (main chat endpoint is below with enhanced user context)
   app.get('/api/coach/quote', async (req, res) => {
     try {
       res.json({ quote: getRandomQuote() });
