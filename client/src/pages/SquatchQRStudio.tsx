@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import SquatchQRAnalytics from "@/components/SquatchQRAnalytics";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -584,14 +585,7 @@ export default function SquatchQRStudio() {
           </TabsContent>
 
           <TabsContent value="analytics">
-            <Card className="bg-[#1a1a1a] border-white/10">
-              <CardContent className="py-16 text-center">
-                <BarChart3 className="w-16 h-16 text-white/30 mx-auto mb-4" />
-                <h3 className="text-xl text-white mb-2">Analytics Dashboard</h3>
-                <p className="text-white/60 mb-2">Track scans, engagement, and quote performance</p>
-                <Badge style={{ backgroundColor: GOLD }} className="text-black">Coming Soon</Badge>
-              </CardContent>
-            </Card>
+            <SquatchQRAnalytics />
           </TabsContent>
         </Tabs>
       </div>
