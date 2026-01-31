@@ -99,15 +99,38 @@ You can generate content directly into their project. When they ask for chapters
 export async function generateCoachResponse(
   userMessage: string,
   conversationHistory: { role: string; content: string }[] = [],
-  context: string = "recovery"
+  context: string = "recovery",
+  userContext?: { name?: string; exerciseCount?: number; streak?: number; lastExercises?: string[]; milestones?: string[] }
 ): Promise<{ response: string; quote?: string }> {
   try {
     const randomQuote = SASQUATCH_QUOTES[Math.floor(Math.random() * SASQUATCH_QUOTES.length)];
     
-    const systemPrompt = context === "creative assistant" ? CREATOR_SYSTEM_PROMPT : SYSTEM_PROMPT;
-    const ackMessage = context === "creative assistant" 
-      ? "I understand. I'm your KreAIte Creative Partner, here to help you create professional content. What would you like to work on?"
-      : "I understand. I'm your recovery coach, here to support your journey. Let's make progress together.";
+    let systemPrompt: string;
+    let ackMessage: string;
+    
+    if (context === "creative assistant") {
+      systemPrompt = CREATOR_SYSTEM_PROMPT;
+      ackMessage = "I understand. I'm your KreAIte Creative Partner, here to help you create professional content. What would you like to work on?";
+    } else if (context.length > 100) {
+      // If context is a long string, use it as the full system prompt (e.g., SASQUATCH_COACH_PROMPT)
+      systemPrompt = context;
+      // Add user context if available
+      if (userContext) {
+        const contextLines: string[] = [];
+        if (userContext.name) contextLines.push(`The user's name is ${userContext.name}.`);
+        if (userContext.exerciseCount) contextLines.push(`They have completed ${userContext.exerciseCount} exercises.`);
+        if (userContext.streak && userContext.streak > 0) contextLines.push(`They're on a ${userContext.streak}-day streak!`);
+        if (userContext.lastExercises?.length) contextLines.push(`Recent exercises: ${userContext.lastExercises.slice(0, 3).join(', ')}.`);
+        if (userContext.milestones?.length) contextLines.push(`Recent milestones: ${userContext.milestones.slice(0, 2).join(', ')}.`);
+        if (contextLines.length > 0) {
+          systemPrompt += `\n\nUSER CONTEXT (personalize your responses):\n${contextLines.join('\n')}`;
+        }
+      }
+      ackMessage = "Hey warrior! I'm here for you. What's on your mind?";
+    } else {
+      systemPrompt = SYSTEM_PROMPT;
+      ackMessage = "I understand. I'm your recovery coach, here to support your journey. Let's make progress together.";
+    }
     
     const contents = [
       { role: "user" as const, parts: [{ text: systemPrompt }] },
