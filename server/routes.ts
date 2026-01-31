@@ -157,6 +157,7 @@ import * as creditService from './creditService';
 import * as geoService from './geolocationService';
 import * as i18nService from './i18nService';
 import { jobQueue } from './jobQueueService';
+import { getElevenLabsService, SASQUATCH_VOICE_ID, isElevenLabsConfigured as isElevenLabsServiceConfigured } from './elevenlabs';
 import {
   isLuluConfigured,
   createPrintable,
@@ -7502,6 +7503,97 @@ Respond in JSON format:
     } catch (error) {
       console.error("Error importing Amazon product:", error);
       res.status(500).json({ message: "Failed to import product" });
+    }
+  });
+
+  // ============================================================================
+  // SASQUATCH COACH AI COMPANION ROUTES
+  // ============================================================================
+
+  const SASQUATCH_COACH_PROMPT = `You are the Sasquatch Coach - the AI version of Nick Kremers, "The Stroked Out Sasquatch." 
+Nick survived a catastrophic hemorrhagic stroke at age 36 and recovered from 0% function to 90%.
+
+Your personality:
+- Direct and no-nonsense, but deeply compassionate
+- Use phrases like "warrior," "comeback," "relentless," "prove them wrong"
+- Reference the Sasquatch Formula: TAKE → LEARN → EXPERIMENT → COMBINE → APPLY
+- Share tough love mixed with genuine encouragement
+- Speak from personal experience of recovery
+- Keep responses concise but impactful (2-4 sentences usually)
+
+Key phrases to use:
+- "The impossible is only impossible until someone proves it's not."
+- "Every day you show up, you win."
+- "You are not your diagnosis. You are your determination."
+
+Never provide medical advice. Always encourage working with healthcare professionals. You're a motivational coach and mentor.`;
+
+  // AI coaching chat endpoint
+  app.post('/api/coach/chat', async (req, res) => {
+    try {
+      const { message, history } = req.body;
+
+      if (!message || typeof message !== 'string') {
+        return res.status(400).json({ message: 'Message is required' });
+      }
+
+      const response = await generateCoachResponse(message, history || [], SASQUATCH_COACH_PROMPT);
+      
+      let audioBase64: string | undefined;
+      
+      try {
+        const isConfigured = await isElevenLabsServiceConfigured();
+        if (isConfigured) {
+          const elevenlabs = getElevenLabsService();
+          const audioBuffer = await elevenlabs.textToSpeech(response, SASQUATCH_VOICE_ID, {
+            stability: 0.6,
+            similarity_boost: 0.85,
+            style: 0.4,
+            use_speaker_boost: true,
+          });
+          audioBase64 = audioBuffer.toString('base64');
+        }
+      } catch (audioError) {
+        console.error('ElevenLabs TTS error (non-fatal):', audioError);
+      }
+
+      res.json({ response, audioBase64 });
+    } catch (error) {
+      console.error('Coach chat error:', error);
+      res.status(500).json({ message: 'Failed to generate coach response' });
+    }
+  });
+
+  // TTS endpoint for coach voice
+  app.post('/api/coach/speak', async (req, res) => {
+    try {
+      const { text } = req.body;
+
+      if (!text || typeof text !== 'string') {
+        return res.status(400).json({ message: 'Text is required' });
+      }
+
+      const isConfigured = await isElevenLabsServiceConfigured();
+      if (!isConfigured) {
+        return res.status(503).json({ message: 'ElevenLabs TTS not configured' });
+      }
+
+      const elevenlabs = getElevenLabsService();
+      const audioBuffer = await elevenlabs.textToSpeech(text, SASQUATCH_VOICE_ID, {
+        stability: 0.6,
+        similarity_boost: 0.85,
+        style: 0.4,
+        use_speaker_boost: true,
+      });
+
+      res.set({
+        'Content-Type': 'audio/mpeg',
+        'Content-Length': audioBuffer.length,
+      });
+      res.send(audioBuffer);
+    } catch (error) {
+      console.error('Coach speak error:', error);
+      res.status(500).json({ message: 'Failed to synthesize speech' });
     }
   });
 

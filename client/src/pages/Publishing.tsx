@@ -58,7 +58,7 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import type { PublishingProject } from "@shared/schema";
 import { format } from "date-fns";
-import publishingLogo from "@assets/Logo Transparent BG_1764273996198.png";
+import strokeLyfePublishingLogo from "@assets/stroke-lyfe-publishing-logo.png";
 
 const createProjectSchema = z.object({
   title: z.string().min(1, "Title is required").max(200, "Title too long"),
@@ -487,7 +487,7 @@ function HeroSection() {
       <div className="max-w-4xl mx-auto text-center relative z-10">
         <div className="flex justify-center mb-8">
           <img 
-            src={publishingLogo} 
+            src={strokeLyfePublishingLogo} 
             alt="Stroke Lyfe Publishing" 
             className="h-32 md:h-40 w-auto"
             data-testid="img-publishing-logo"

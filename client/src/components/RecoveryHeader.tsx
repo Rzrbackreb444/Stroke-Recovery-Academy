@@ -31,7 +31,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import strokeLyfeLogo from "@assets/Stroke Lyfe OS Logo_1763788031983.png";
+import strokeLyfeLogo from "@assets/stroked-out-sasquatch-logo.png";
 
 const navLinks = [
   { href: "/recovery", label: "HOME", icon: Heart, description: "Recovery landing page" },
