@@ -10,6 +10,7 @@ import {
   qrCodeProjects,
   qrCodeRotationSettings,
   projectQuotePool,
+  userStreaks,
   insertQuoteSchema,
   insertQrCodeProjectSchema,
   insertProjectQuotePoolSchema,
@@ -723,6 +724,216 @@ router.post("/scans", async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error tracking scan:", error);
     res.status(500).json({ message: "Failed to track scan" });
+  }
+});
+
+// Get user streak for gamification
+router.get("/streaks", isAuthenticated, async (req: any, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    let [streak] = await db
+      .select()
+      .from(userStreaks)
+      .where(eq(userStreaks.userId, userId));
+
+    if (!streak) {
+      // Create a new streak record
+      [streak] = await db
+        .insert(userStreaks)
+        .values({ userId, currentStreak: 0, longestStreak: 0, totalActiveDays: 0 })
+        .returning();
+    }
+
+    // Calculate badges based on streak
+    const badges: { name: string; icon: string; earned: boolean }[] = [
+      { name: "First Scan", icon: "Star", earned: streak.totalActiveDays >= 1 },
+      { name: "Week Warrior", icon: "Flame", earned: streak.currentStreak >= 7 },
+      { name: "Consistency King", icon: "Crown", earned: streak.currentStreak >= 30 },
+      { name: "Century Club", icon: "Trophy", earned: streak.totalActiveDays >= 100 },
+      { name: "Daily Devotee", icon: "Heart", earned: streak.longestStreak >= 14 },
+    ];
+
+    res.json({
+      currentStreak: streak.currentStreak,
+      longestStreak: streak.longestStreak,
+      totalActiveDays: streak.totalActiveDays,
+      lastActivityDate: streak.lastActivityDate,
+      badges: badges.filter(b => b.earned),
+      nextBadge: badges.find(b => !b.earned) || null,
+    });
+  } catch (error) {
+    console.error("Error fetching streak:", error);
+    res.status(500).json({ message: "Failed to fetch streak" });
+  }
+});
+
+// Record daily activity (call when user views quote)
+router.post("/streaks/activity", isAuthenticated, async (req: any, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    let [streak] = await db
+      .select()
+      .from(userStreaks)
+      .where(eq(userStreaks.userId, userId));
+
+    if (!streak) {
+      // First activity ever
+      [streak] = await db
+        .insert(userStreaks)
+        .values({
+          userId,
+          currentStreak: 1,
+          longestStreak: 1,
+          totalActiveDays: 1,
+          lastActivityDate: today,
+        })
+        .returning();
+      
+      return res.json({
+        currentStreak: 1,
+        isNewStreak: true,
+        message: "Welcome! You've started your first streak!",
+      });
+    }
+
+    const lastActivity = streak.lastActivityDate ? new Date(streak.lastActivityDate) : null;
+    if (lastActivity) {
+      lastActivity.setHours(0, 0, 0, 0);
+    }
+
+    const daysDiff = lastActivity 
+      ? Math.floor((today.getTime() - lastActivity.getTime()) / (1000 * 60 * 60 * 24))
+      : 999;
+
+    let newCurrentStreak = streak.currentStreak;
+    let isNewStreak = false;
+    let message = "";
+
+    if (daysDiff === 0) {
+      // Already logged today
+      message = "You've already checked in today!";
+    } else if (daysDiff === 1) {
+      // Consecutive day - extend streak
+      newCurrentStreak = streak.currentStreak + 1;
+      message = `Amazing! ${newCurrentStreak} day streak!`;
+    } else {
+      // Streak broken - start fresh
+      newCurrentStreak = 1;
+      isNewStreak = true;
+      message = "New streak started! Keep it going!";
+    }
+
+    const newLongestStreak = Math.max(streak.longestStreak, newCurrentStreak);
+    const newTotalDays = daysDiff > 0 ? streak.totalActiveDays + 1 : streak.totalActiveDays;
+
+    await db
+      .update(userStreaks)
+      .set({
+        currentStreak: newCurrentStreak,
+        longestStreak: newLongestStreak,
+        totalActiveDays: newTotalDays,
+        lastActivityDate: today,
+        updatedAt: new Date(),
+      })
+      .where(eq(userStreaks.userId, userId));
+
+    res.json({
+      currentStreak: newCurrentStreak,
+      longestStreak: newLongestStreak,
+      totalActiveDays: newTotalDays,
+      isNewStreak,
+      message,
+    });
+  } catch (error) {
+    console.error("Error recording activity:", error);
+    res.status(500).json({ message: "Failed to record activity" });
+  }
+});
+
+// Text-to-speech using ElevenLabs
+router.post("/voice", async (req: Request, res: Response) => {
+  try {
+    const { text, voiceId = "21m00Tcm4TlvDq8ikWAM" } = req.body; // Default to Rachel voice
+
+    if (!text || typeof text !== "string") {
+      return res.status(400).json({ message: "Text is required" });
+    }
+
+    const apiKey = process.env.ELEVENLABS_API_KEY;
+    if (!apiKey) {
+      // Fallback to browser TTS
+      return res.json({ useBrowserTTS: true, text });
+    }
+
+    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+      method: "POST",
+      headers: {
+        "xi-api-key": apiKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        text,
+        model_id: "eleven_monolingual_v1",
+        voice_settings: {
+          stability: 0.5,
+          similarity_boost: 0.75,
+        },
+      }),
+    });
+
+    if (!response.ok) {
+      console.error("ElevenLabs API error:", response.status);
+      return res.json({ useBrowserTTS: true, text });
+    }
+
+    const audioBuffer = await response.arrayBuffer();
+    const base64Audio = Buffer.from(audioBuffer).toString("base64");
+
+    res.json({
+      audioUrl: `data:audio/mpeg;base64,${base64Audio}`,
+      useBrowserTTS: false,
+    });
+  } catch (error) {
+    console.error("Error generating voice:", error);
+    res.json({ useBrowserTTS: true, text: req.body?.text });
+  }
+});
+
+// Get leaderboard for gamification
+router.get("/leaderboard", async (_req: Request, res: Response) => {
+  try {
+    const topStreaks = await db
+      .select({
+        currentStreak: userStreaks.currentStreak,
+        longestStreak: userStreaks.longestStreak,
+        totalActiveDays: userStreaks.totalActiveDays,
+      })
+      .from(userStreaks)
+      .orderBy(desc(userStreaks.currentStreak))
+      .limit(10);
+
+    res.json({
+      leaderboard: topStreaks.map((s, i) => ({
+        rank: i + 1,
+        currentStreak: s.currentStreak,
+        longestStreak: s.longestStreak,
+        totalActiveDays: s.totalActiveDays,
+      })),
+    });
+  } catch (error) {
+    console.error("Error fetching leaderboard:", error);
+    res.status(500).json({ message: "Failed to fetch leaderboard" });
   }
 });
 

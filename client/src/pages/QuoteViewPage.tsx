@@ -68,9 +68,38 @@ export default function QuoteViewPage() {
   const handleVoice = async () => {
     if (!quoteData?.text) return;
     setIsPlaying(true);
-    const utterance = new SpeechSynthesisUtterance(quoteData.text);
-    utterance.onend = () => setIsPlaying(false);
-    speechSynthesis.speak(utterance);
+    
+    try {
+      const response = await fetch("/api/quote-studio/voice", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: quoteData.text }),
+      });
+      const data = await response.json();
+      
+      if (data.audioUrl && !data.useBrowserTTS) {
+        const audio = new Audio(data.audioUrl);
+        audio.onended = () => setIsPlaying(false);
+        audio.onerror = () => {
+          setIsPlaying(false);
+          // Fallback to browser TTS
+          const utterance = new SpeechSynthesisUtterance(quoteData.text);
+          utterance.onend = () => setIsPlaying(false);
+          speechSynthesis.speak(utterance);
+        };
+        audio.play();
+      } else {
+        // Use browser TTS as fallback
+        const utterance = new SpeechSynthesisUtterance(quoteData.text);
+        utterance.onend = () => setIsPlaying(false);
+        speechSynthesis.speak(utterance);
+      }
+    } catch {
+      // Fallback to browser TTS
+      const utterance = new SpeechSynthesisUtterance(quoteData.text);
+      utterance.onend = () => setIsPlaying(false);
+      speechSynthesis.speak(utterance);
+    }
   };
 
   const brandColor = quoteData?.brandColor || "#1B4332";
