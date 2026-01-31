@@ -2,48 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
-/* KreAIte.xyz - Literary Creator Platform */
-/* Warm literary palette - cream backgrounds, antique gold accents, rich brown text */
+/* Stroke Recovery OS - Dark Theme Platform */
+/* Dark background #0D0D0D, Gold accent #C9941A, Orange highlights */
 :root {
-  --button-outline: rgba(44, 24, 16, .12);
-  --badge-outline: rgba(44, 24, 16, .08);
+  --button-outline: rgba(255,255,255, .10);
+  --badge-outline: rgba(255,255,255, .05);
   --opaque-button-border-intensity: 9;
-  --elevate-1: rgba(44, 24, 16, .03);
-  --elevate-2: rgba(44, 24, 16, .06);
-  --background: 42 28% 97%;
-  --foreground: 18 55% 8%;
-  --border: 37 25% 86%;
-  --card: 39 100% 98%;
-  --card-foreground: 18 50% 10%;
-  --card-border: 37 20% 88%;
-  --sidebar: 35 30% 95%;
-  --sidebar-foreground: 18 50% 12%;
-  --sidebar-border: 37 22% 84%;
-  --sidebar-primary: 43 78% 45%;
+  --elevate-1: rgba(255,255,255, .04);
+  --elevate-2: rgba(255,255,255, .09);
+  --background: 0 0% 5%;
+  --foreground: 0 0% 95%;
+  --border: 0 0% 18%;
+  --card: 0 0% 8%;
+  --card-foreground: 0 0% 92%;
+  --card-border: 0 0% 15%;
+  --sidebar: 0 0% 6%;
+  --sidebar-foreground: 0 0% 88%;
+  --sidebar-border: 0 0% 14%;
+  --sidebar-primary: 43 75% 45%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 35 25% 90%;
-  --sidebar-accent-foreground: 18 50% 12%;
-  --sidebar-ring: 43 78% 45%;
-  --popover: 39 50% 98%;
-  --popover-foreground: 18 50% 10%;
-  --popover-border: 37 25% 85%;
-  --primary: 43 78% 45%;
+  --sidebar-accent: 0 0% 16%;
+  --sidebar-accent-foreground: 0 0% 88%;
+  --sidebar-ring: 43 75% 45%;
+  --popover: 0 0% 10%;
+  --popover-foreground: 0 0% 90%;
+  --popover-border: 0 0% 16%;
+  --primary: 43 75% 45%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 35 20% 88%;
-  --secondary-foreground: 18 50% 12%;
-  --muted: 37 18% 92%;
-  --muted-foreground: 27 30% 35%;
-  --accent: 27 50% 50%;
+  --secondary: 0 0% 20%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 14%;
+  --muted-foreground: 0 0% 60%;
+  --accent: 25 95% 53%;
   --accent-foreground: 0 0% 100%;
-  --destructive: 0 65% 50%;
+  --destructive: 0 72% 45%;
   --destructive-foreground: 0 0% 100%;
-  --input: 37 25% 94%;
-  --ring: 43 78% 45%;
-  --chart-1: 43 78% 45%;
-  --chart-2: 142 50% 45%;
-  --chart-3: 27 50% 50%;
-  --chart-4: 280 45% 55%;
-  --chart-5: 18 60% 55%;
+  --input: 0 0% 20%;
+  --ring: 43 75% 45%;
+  --chart-1: 43 75% 45%;
+  --chart-2: 25 95% 53%;
+  --chart-3: 142 76% 50%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 320 70% 65%;
   --font-sans: 'Inter', 'Open Sans', sans-serif;
   --font-serif: 'Crimson Pro', 'Playfair Display', 'Merriweather', serif;
   --font-mono: Menlo, monospace;
@@ -58,6 +58,14 @@
   --shadow-2xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.50);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
+
+  /* OS Theme specific colors */
+  --os-gold: 43 75% 45%;
+  --os-orange: 25 95% 53%;
+  --os-green: 142 76% 40%;
+  --os-dark: 0 0% 5%;
+  --os-card: 0 0% 10%;
+  --os-border: 0 0% 20%;
 
 /* Fallback for older browsers */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
