@@ -22,6 +22,7 @@ import MyStories from "@/pages/MyStories";
 import Pricing from "@/pages/Pricing";
 import MusicStudio from "@/pages/MusicStudio";
 import MusicSandbox from "@/pages/MusicSandbox";
+import MusicProductionStudio from "@/pages/MusicProductionStudio";
 import BookStudioV3 from "@/pages/BookStudioV3";
 import VideoStudio from "@/pages/VideoStudio";
 import CourseStudio from "@/pages/CourseStudio";
@@ -252,6 +253,11 @@ function Router() {
       <Route path="/dj-studio">
         <ProtectedRoute>
           <DJStudio />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/music-production">
+        <ProtectedRoute>
+          <MusicProductionStudio />
         </ProtectedRoute>
       </Route>
       <Route path="/workflows">
