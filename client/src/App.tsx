@@ -417,9 +417,7 @@ function Router() {
         </ProtectedRoute>
       </Route>
       <Route path="/recovery/exercises">
-        <ProtectedRoute>
-          <Exercises />
-        </ProtectedRoute>
+        <Exercises />
       </Route>
       <Route path="/recovery/therapist">
         <ProtectedRoute>

@@ -42,8 +42,9 @@ const books = [
     gradient: "from-orange-600 via-orange-500 to-amber-500",
     chapters: 12,
     duration: "6+ hours",
-    status: "coming-soon" as const,
+    status: "available" as const,
     progress: 0,
+    courseId: 1,
   },
   {
     id: 2,
@@ -54,8 +55,9 @@ const books = [
     gradient: "from-primary via-orange-500 to-red-600",
     chapters: 24,
     duration: "12+ hours",
-    status: "coming-soon" as const,
+    status: "available" as const,
     progress: 0,
+    courseId: 2,
   },
   {
     id: 3,
@@ -66,8 +68,9 @@ const books = [
     gradient: "from-amber-500 via-orange-400 to-yellow-500",
     chapters: 16,
     duration: "8+ hours",
-    status: "coming-soon" as const,
+    status: "available" as const,
     progress: 0,
+    courseId: 3,
   },
 ];
 
@@ -190,9 +193,9 @@ function BookCard({ book }: { book: typeof books[0] }) {
               </h3>
               <p className="text-sm text-foreground/80 mt-2">by {book.author}</p>
             </div>
-            {book.status === "coming-soon" && (
-              <Badge className="absolute top-3 right-3 bg-[#0D0D0D]/60 text-foreground border-none">
-                Coming Soon
+            {book.status === "new" && (
+              <Badge className="absolute top-3 right-3 bg-[#C9941A] text-black border-none">
+                New
               </Badge>
             )}
           </div>
@@ -239,21 +242,11 @@ function BookCard({ book }: { book: typeof books[0] }) {
         <CardFooter className="pt-0">
           <Button 
             className="w-full gap-2" 
-            variant={book.status === "coming-soon" ? "secondary" : "default"}
-            disabled={book.status === "coming-soon"}
             data-testid={`button-book-${book.id}`}
+            onClick={() => window.location.href = `/recovery/course/${book.courseId}`}
           >
-            {book.status === "coming-soon" ? (
-              <>
-                <Clock className="h-4 w-4" aria-hidden="true" />
-                Coming Soon
-              </>
-            ) : (
-              <>
-                <Play className="h-4 w-4" aria-hidden="true" />
-                View Course
-              </>
-            )}
+            <Play className="h-4 w-4" aria-hidden="true" />
+            Start Course
           </Button>
         </CardFooter>
       </Card>

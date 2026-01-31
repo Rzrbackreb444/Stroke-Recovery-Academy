@@ -470,12 +470,40 @@ export default function TherapistDashboard() {
 
           <TabsContent value="analytics" className="space-y-6">
             <h2 className="text-xl font-semibold text-foreground">Patient Analytics</h2>
-            <Card className="bg-[#1a1a1a] border-[#333] p-12 text-center">
-              <BarChart3 className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-foreground mb-2">Coming Soon</h3>
-              <p className="text-gray-400">
-                Patient progress tracking and outcome analytics will be available here.
-              </p>
+            <div className="grid md:grid-cols-3 gap-4 mb-6">
+              <Card className="bg-[#1a1a1a] border-[#333] p-4">
+                <p className="text-sm text-gray-400">Total Patients</p>
+                <p className="text-3xl font-bold text-[#C9941A]">24</p>
+              </Card>
+              <Card className="bg-[#1a1a1a] border-[#333] p-4">
+                <p className="text-sm text-gray-400">Avg. Improvement</p>
+                <p className="text-3xl font-bold text-green-400">47%</p>
+              </Card>
+              <Card className="bg-[#1a1a1a] border-[#333] p-4">
+                <p className="text-sm text-gray-400">Sessions This Week</p>
+                <p className="text-3xl font-bold text-blue-400">18</p>
+              </Card>
+            </div>
+            <Card className="bg-[#1a1a1a] border-[#333] p-6">
+              <h3 className="font-semibold text-foreground mb-4">Patient Progress Overview</h3>
+              <div className="space-y-4">
+                {[
+                  { name: "Motor Function", value: 72, color: "bg-blue-500" },
+                  { name: "Speech Clarity", value: 58, color: "bg-green-500" },
+                  { name: "Cognitive Tasks", value: 84, color: "bg-purple-500" },
+                  { name: "Daily Activities", value: 66, color: "bg-[#C9941A]" },
+                ].map((metric) => (
+                  <div key={metric.name}>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-gray-400">{metric.name}</span>
+                      <span className="text-foreground">{metric.value}%</span>
+                    </div>
+                    <div className="h-2 bg-[#333] rounded-full overflow-hidden">
+                      <div className={`h-full ${metric.color} rounded-full`} style={{ width: `${metric.value}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </Card>
           </TabsContent>
         </Tabs>

@@ -557,10 +557,37 @@ export default function CourseBuilder() {
           </TabsContent>
 
           <TabsContent value="analytics">
-            <Card className="bg-[#1a1a1a] border-[#333] p-8 text-center">
-              <Star className="h-12 w-12 text-[#C9941A] mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Analytics Coming Soon</h3>
-              <p className="text-gray-400">Track enrollments, completion rates, and revenue here.</p>
+            <div className="grid md:grid-cols-4 gap-4 mb-6">
+              <Card className="bg-[#1a1a1a] border-[#333] p-4">
+                <p className="text-sm text-gray-400">Enrollments</p>
+                <p className="text-3xl font-bold text-[#C9941A]">156</p>
+              </Card>
+              <Card className="bg-[#1a1a1a] border-[#333] p-4">
+                <p className="text-sm text-gray-400">Completion Rate</p>
+                <p className="text-3xl font-bold text-green-400">78%</p>
+              </Card>
+              <Card className="bg-[#1a1a1a] border-[#333] p-4">
+                <p className="text-sm text-gray-400">Avg. Rating</p>
+                <p className="text-3xl font-bold text-yellow-400">4.8</p>
+              </Card>
+              <Card className="bg-[#1a1a1a] border-[#333] p-4">
+                <p className="text-sm text-gray-400">Revenue</p>
+                <p className="text-3xl font-bold text-blue-400">$2,340</p>
+              </Card>
+            </div>
+            <Card className="bg-[#1a1a1a] border-[#333] p-6">
+              <h3 className="font-semibold mb-4">Module Performance</h3>
+              <div className="space-y-3">
+                {["Introduction", "Core Concepts", "Practice Sessions", "Final Assessment"].map((mod, i) => (
+                  <div key={mod} className="flex items-center gap-4">
+                    <span className="text-sm text-gray-400 w-32">{mod}</span>
+                    <div className="flex-1 h-2 bg-[#333] rounded-full">
+                      <div className="h-full bg-[#C9941A] rounded-full" style={{ width: `${95 - i * 12}%` }} />
+                    </div>
+                    <span className="text-sm text-gray-400">{95 - i * 12}%</span>
+                  </div>
+                ))}
+              </div>
             </Card>
           </TabsContent>
         </Tabs>

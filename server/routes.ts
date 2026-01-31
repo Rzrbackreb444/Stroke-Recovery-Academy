@@ -8948,6 +8948,97 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   });
 
   // ============================================================================
+  // RECOVERY CENTER FINDER - Google Places Integration
+  // ============================================================================
+
+  app.get('/api/recovery/centers', async (req, res) => {
+    try {
+      const { zipCode, query, type } = req.query;
+      const { searchRecoveryCenters, isPlacesConfigured } = await import('./placesService');
+      
+      const centers = await searchRecoveryCenters(
+        zipCode as string || '78701',
+        query as string,
+        type as string
+      );
+      
+      res.json({ 
+        centers, 
+        isLive: isPlacesConfigured(),
+        count: centers.length 
+      });
+    } catch (error) {
+      console.error("Error fetching recovery centers:", error);
+      res.status(500).json({ message: "Failed to search centers" });
+    }
+  });
+
+  // ============================================================================
+  // RECOVERY BLOG - Database-backed articles
+  // ============================================================================
+
+  app.get('/api/recovery/blog', async (req, res) => {
+    try {
+      const { category, featured } = req.query;
+      const posts = await storage.getRecoveryBlogPosts(
+        category as string,
+        featured === 'true'
+      );
+      res.json(posts);
+    } catch (error) {
+      console.error("Error fetching recovery blog:", error);
+      res.status(500).json({ message: "Failed to fetch blog posts" });
+    }
+  });
+
+  app.get('/api/recovery/blog/:slug', async (req, res) => {
+    try {
+      const post = await storage.getRecoveryBlogPostBySlug(req.params.slug);
+      if (!post) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+      res.json(post);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch blog post" });
+    }
+  });
+
+  // ============================================================================
+  // MY BOOK - Recovery Memoir Persistence
+  // ============================================================================
+
+  app.get('/api/recovery/my-book', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const bookProject = await storage.getRecoveryBook(userId);
+      res.json(bookProject);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch book" });
+    }
+  });
+
+  app.post('/api/recovery/my-book', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const bookProject = await storage.saveRecoveryBook(userId, req.body);
+      res.json(bookProject);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to save book" });
+    }
+  });
+
+  app.post('/api/recovery/my-book/chapter', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { chapterId, title, content } = req.body;
+      const chapter = await storage.saveRecoveryChapter(userId, chapterId, title, content);
+      res.json(chapter);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to save chapter" });
+    }
+  });
+
+  // ============================================================================
   // NEVER ZERO - Streak Tracking
   // ============================================================================
 
