@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { useState } from "react";
 import { 
   BookOpen, 
   GraduationCap, 
@@ -18,7 +19,13 @@ import {
   Brain,
   Dumbbell,
   Footprints,
-  Heart
+  Heart,
+  Hand,
+  FlaskConical,
+  Layers,
+  RotateCcw,
+  Quote,
+  ChevronRight
 } from "lucide-react";
 import mirrorTherapyImage from "@assets/generated_images/mirror_therapy_exercise.png";
 import baseballBatImage from "@assets/generated_images/baseball_bat_therapy_equipment.png";
@@ -90,6 +97,44 @@ const featuredModules = [
     duration: "60 min",
     difficulty: "All Levels",
     category: "Mobility",
+  },
+];
+
+const sasquatchFormula = [
+  {
+    step: 1,
+    code: "TAKE",
+    title: "Take What The Stroke Gave You",
+    description: "Accept the reality of your situation. Don't fight what happened — use it as your starting point. This isn't surrender, it's strategic positioning.",
+    icon: Hand,
+  },
+  {
+    step: 2,
+    code: "LEARN",
+    title: "Learn From The Experts",
+    description: "Absorb everything from therapists, doctors, and other survivors. Take notes. Ask questions. Become a student of your own recovery.",
+    icon: BookOpen,
+  },
+  {
+    step: 3,
+    code: "EXPERIMENT",
+    title: "Experiment Relentlessly",
+    description: "Try different approaches. What works for others might not work for you. Be your own recovery scientist — test, measure, adjust.",
+    icon: FlaskConical,
+  },
+  {
+    step: 4,
+    code: "COMBINE",
+    title: "Combine What Works",
+    description: "Stack your wins. Take the techniques that move the needle and layer them together into your personalized recovery protocol.",
+    icon: Layers,
+  },
+  {
+    step: 5,
+    code: "APPLY",
+    title: "Apply With Discipline",
+    description: "Consistency beats intensity. Show up every single day. The 66-Day Transformation isn't magic — it's relentless application.",
+    icon: RotateCcw,
   },
 ];
 
@@ -375,6 +420,79 @@ export default function Academy() {
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section 
+          className="py-16 bg-[#FAF8F3] dark:bg-card/50"
+          aria-labelledby="sasquatch-formula-title"
+          data-testid="section-sasquatch-formula"
+        >
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <Badge variant="outline" className="mb-4 border-[#C9941A] text-[#C9941A]">
+                <Zap className="h-3 w-3 mr-1" aria-hidden="true" />
+                The 5-Step System
+              </Badge>
+              <h2 
+                id="sasquatch-formula-title"
+                className="text-3xl md:text-4xl font-black text-foreground mb-4 uppercase tracking-tight"
+                data-testid="text-formula-title"
+              >
+                The Sasquatch <span className="text-[#C9941A]">Formula</span>
+              </h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                The battle-tested 5-step system that took Nick from 0% function to 90% recovery. 
+                This isn't theory — it's the exact process forged through years of relentless experimentation.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-5 gap-4 max-w-6xl mx-auto mb-12">
+              {sasquatchFormula.map((step, index) => (
+                <Card 
+                  key={step.step} 
+                  className="relative hover-elevate overflow-visible border-2 hover:border-[#C9941A] transition-colors"
+                  data-testid={`formula-step-${step.step}`}
+                >
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <Badge className="bg-[#C9941A] text-black font-black text-lg px-3">
+                      {step.step}
+                    </Badge>
+                  </div>
+                  <CardContent className="pt-8 pb-6 text-center">
+                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-[#C9941A]/10 flex items-center justify-center">
+                      <step.icon className="h-6 w-6 text-[#C9941A]" aria-hidden="true" />
+                    </div>
+                    <h3 className="font-black text-lg text-foreground mb-2 uppercase tracking-wide">
+                      {step.code}
+                    </h3>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {step.description}
+                    </p>
+                  </CardContent>
+                  {index < sasquatchFormula.length - 1 && (
+                    <div className="hidden md:block absolute top-1/2 -right-3 -translate-y-1/2 z-10">
+                      <ChevronRight className="h-6 w-6 text-[#C9941A]" aria-hidden="true" />
+                    </div>
+                  )}
+                </Card>
+              ))}
+            </div>
+
+            <Card className="max-w-3xl mx-auto bg-gradient-to-br from-[#C9941A]/10 to-transparent border-[#C9941A]/30">
+              <CardContent className="py-8 px-6 text-center">
+                <Quote className="h-8 w-8 mx-auto mb-4 text-[#C9941A]" aria-hidden="true" />
+                <blockquote className="text-lg md:text-xl font-medium text-foreground mb-4 italic">
+                  "The impossible is only impossible until someone proves it's not. 
+                  I took what the stroke gave me, learned from everyone around me, 
+                  experimented like a madman, combined what worked, and applied it 
+                  every single day. That's the formula. That's how you defy every 'never.'"
+                </blockquote>
+                <cite className="text-[#C9941A] font-bold not-italic">
+                  — Nicholas "Stroked-Out Sasquatch" Kremers
+                </cite>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
