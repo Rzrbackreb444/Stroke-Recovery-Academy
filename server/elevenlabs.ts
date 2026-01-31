@@ -3,6 +3,10 @@ import FormData from "form-data";
 
 const ELEVENLABS_API_URL = "https://api.elevenlabs.io/v1";
 
+// Nick's Sasquatch Coach voice ID - set this after cloning Nick's voice in ElevenLabs
+// Default: 'pNInz6obpgDQGcFmaJgB' (Adam - deep motivational male voice)
+export const SASQUATCH_VOICE_ID = process.env.SASQUATCH_VOICE_ID || 'pNInz6obpgDQGcFmaJgB';
+
 interface VoiceSettings {
   stability: number;
   similarity_boost: number;
@@ -23,27 +27,66 @@ interface VoicesResponse {
   voices: Voice[];
 }
 
-export class ElevenLabsService {
-  private apiKey: string;
+// Get API key from Replit connector or environment variable
+async function getApiKey(): Promise<string> {
+  // Try Replit connector first
+  const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
+  const xReplitToken = process.env.REPL_IDENTITY 
+    ? 'repl ' + process.env.REPL_IDENTITY 
+    : process.env.WEB_REPL_RENEWAL 
+    ? 'depl ' + process.env.WEB_REPL_RENEWAL 
+    : null;
 
-  constructor() {
-    const apiKey = process.env.ELEVENLABS_API_KEY;
-    if (!apiKey) {
-      throw new Error("ELEVENLABS_API_KEY not configured");
+  if (hostname && xReplitToken) {
+    try {
+      const response = await fetch(
+        'https://' + hostname + '/api/v2/connection?include_secrets=true&connector_names=elevenlabs',
+        {
+          headers: {
+            'Accept': 'application/json',
+            'X_REPLIT_TOKEN': xReplitToken
+          }
+        }
+      );
+      const data = await response.json() as any;
+      const connectionSettings = data.items?.[0];
+      if (connectionSettings?.settings?.api_key) {
+        return connectionSettings.settings.api_key;
+      }
+    } catch (e) {
+      console.log('Replit connector not available, falling back to env var');
     }
-    this.apiKey = apiKey;
   }
 
-  private getHeaders(): Record<string, string> {
+  // Fallback to environment variable
+  const apiKey = process.env.ELEVENLABS_API_KEY;
+  if (!apiKey) {
+    throw new Error("ElevenLabs not connected - please set up the integration");
+  }
+  return apiKey;
+}
+
+export class ElevenLabsService {
+  private apiKey: string | null = null;
+
+  private async getApiKey(): Promise<string> {
+    if (!this.apiKey) {
+      this.apiKey = await getApiKey();
+    }
+    return this.apiKey;
+  }
+
+  private async getHeaders(): Promise<Record<string, string>> {
+    const apiKey = await this.getApiKey();
     return {
-      "xi-api-key": this.apiKey,
+      "xi-api-key": apiKey,
       "Content-Type": "application/json",
     };
   }
 
   async getVoices(): Promise<Voice[]> {
     const response = await fetch(`${ELEVENLABS_API_URL}/voices`, {
-      headers: this.getHeaders(),
+      headers: await this.getHeaders(),
     });
 
     if (!response.ok) {
@@ -68,7 +111,7 @@ export class ElevenLabsService {
       `${ELEVENLABS_API_URL}/text-to-speech/${voiceId}`,
       {
         method: "POST",
-        headers: this.getHeaders(),
+        headers: await this.getHeaders(),
         body: JSON.stringify({
           text,
           model_id: "eleven_multilingual_v2",
@@ -110,12 +153,13 @@ export class ElevenLabsService {
       })
     );
 
+    const apiKey = await this.getApiKey();
     const response = await fetch(
       `${ELEVENLABS_API_URL}/speech-to-speech/${voiceId}`,
       {
         method: "POST",
         headers: {
-          "xi-api-key": this.apiKey,
+          "xi-api-key": apiKey,
           ...formData.getHeaders(),
         },
         body: formData,
@@ -147,10 +191,11 @@ export class ElevenLabsService {
       });
     });
 
+    const apiKey = await this.getApiKey();
     const response = await fetch(`${ELEVENLABS_API_URL}/voices/add`, {
       method: "POST",
       headers: {
-        "xi-api-key": this.apiKey,
+        "xi-api-key": apiKey,
         ...formData.getHeaders(),
       },
       body: formData,
@@ -168,7 +213,7 @@ export class ElevenLabsService {
   async deleteVoice(voiceId: string): Promise<void> {
     const response = await fetch(`${ELEVENLABS_API_URL}/voices/${voiceId}`, {
       method: "DELETE",
-      headers: this.getHeaders(),
+      headers: await this.getHeaders(),
     });
 
     if (!response.ok) {
@@ -178,7 +223,7 @@ export class ElevenLabsService {
 
   async getModels(): Promise<any[]> {
     const response = await fetch(`${ELEVENLABS_API_URL}/models`, {
-      headers: this.getHeaders(),
+      headers: await this.getHeaders(),
     });
 
     if (!response.ok) {
@@ -190,7 +235,7 @@ export class ElevenLabsService {
 
   async getUserInfo(): Promise<any> {
     const response = await fetch(`${ELEVENLABS_API_URL}/user`, {
-      headers: this.getHeaders(),
+      headers: await this.getHeaders(),
     });
 
     if (!response.ok) {
@@ -202,7 +247,7 @@ export class ElevenLabsService {
 
   async getSubscriptionInfo(): Promise<any> {
     const response = await fetch(`${ELEVENLABS_API_URL}/user/subscription`, {
-      headers: this.getHeaders(),
+      headers: await this.getHeaders(),
     });
 
     if (!response.ok) {
@@ -222,6 +267,22 @@ export function getElevenLabsService(): ElevenLabsService {
   return elevenlabsService;
 }
 
-export function isElevenLabsConfigured(): boolean {
-  return !!process.env.ELEVENLABS_API_KEY;
+export async function isElevenLabsConfigured(): Promise<boolean> {
+  try {
+    await getApiKey();
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Sasquatch Coach - text to speech with Nick's voice
+export async function sasquatchSpeak(text: string): Promise<Buffer> {
+  const service = getElevenLabsService();
+  return service.textToSpeech(text, SASQUATCH_VOICE_ID, {
+    stability: 0.6,
+    similarity_boost: 0.85,
+    style: 0.4,
+    use_speaker_boost: true,
+  });
 }
