@@ -452,6 +452,82 @@ export async function cloneVoiceWithElevenLabs(
 }
 
 /**
+ * Speech-to-Speech voice transformation with ElevenLabs
+ * Transform your voice to sound like any target voice
+ */
+export async function speechToSpeechWithElevenLabs(
+  audioBuffer: Buffer,
+  voiceId: string,
+  modelId: string = "eleven_english_sts_v2",
+  stability: number = 0.5,
+  similarityBoost: number = 0.75
+): Promise<{
+  success: boolean;
+  audioBase64?: string;
+  error?: string;
+}> {
+  const apiKey = process.env.ELEVENLABS_API_KEY;
+  if (!apiKey) {
+    return { success: false, error: "ElevenLabs API key not configured" };
+  }
+
+  try {
+    const FormData = (await import('form-data')).default;
+    const formData = new FormData();
+    formData.append('audio', audioBuffer, {
+      filename: 'audio.webm',
+      contentType: 'audio/webm',
+    });
+    formData.append('model_id', modelId);
+    formData.append('voice_settings', JSON.stringify({
+      stability,
+      similarity_boost: similarityBoost,
+    }));
+
+    const response = await fetch(
+      `https://api.elevenlabs.io/v1/speech-to-speech/${voiceId}`,
+      {
+        method: 'POST',
+        headers: {
+          'xi-api-key': apiKey,
+          ...formData.getHeaders(),
+        },
+        body: formData as any,
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.text();
+      return { success: false, error: `Speech-to-speech failed: ${error}` };
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    const base64Audio = Buffer.from(arrayBuffer).toString('base64');
+    
+    return {
+      success: true,
+      audioBase64: base64Audio,
+    };
+  } catch (error: any) {
+    return { success: false, error: error.message || "Speech-to-speech transformation failed" };
+  }
+}
+
+/**
+ * Get voice categories for DJ Studio
+ */
+export function getDJVoiceCategories() {
+  return [
+    { id: 'rap', name: 'Rap / Hip Hop', description: 'Urban flow and rhythmic delivery' },
+    { id: 'rnb', name: 'R&B / Soul', description: 'Smooth, soulful vocals' },
+    { id: 'pop', name: 'Pop', description: 'Polished commercial sound' },
+    { id: 'rock', name: 'Rock', description: 'Powerful, gritty vocals' },
+    { id: 'electronic', name: 'Electronic / EDM', description: 'Processed, modern sound' },
+    { id: 'jazz', name: 'Jazz / Blues', description: 'Smooth, expressive delivery' },
+  ];
+}
+
+/**
  * Check if ElevenLabs is configured
  */
 export function isElevenLabsConfigured(): boolean {
