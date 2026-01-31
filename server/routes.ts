@@ -6,6 +6,7 @@ import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import emailAuthRoutes from "./emailAuthRoutes";
 import luluRoutes from "./luluRoutes";
+import quoteStudioRoutes from "./quoteStudioRoutes";
 import { stripeService } from "./stripeService";
 import { getStripeSync, getStripePublishableKey } from "./stripeClient";
 import { runMigrations } from "stripe-replit-sync";
@@ -259,6 +260,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Lulu Publishing API Routes
   app.use('/api/lulu', luluRoutes);
+
+  // Quote Studio API Routes
+  app.use('/api/quote-studio', quoteStudioRoutes);
 
   // Publishing Platforms API - Universal Distribution Hub
   app.get('/api/publishing-platforms', async (req, res) => {
