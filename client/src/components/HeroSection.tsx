@@ -12,19 +12,19 @@ export default function HeroSection() {
         type="website"
       />
 
-      <section className="relative h-screen w-full flex items-center justify-center bg-gradient-to-b from-red-900 via-black to-gray-900 overflow-hidden">
+      <section className="relative h-screen w-full flex items-center justify-center bg-gradient-to-b from-[#0D0D0D] via-[#1a1a1a] to-[#0D0D0D] overflow-hidden">
         {/* Dramatic background effects */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-red-900/20 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-red-900/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 left-1/4 w-72 h-72 bg-red-800/5 rounded-full blur-3xl" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#C9941A]/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#C9941A]/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 left-1/4 w-72 h-72 bg-[#C9941A]/5 rounded-full blur-3xl" />
         </div>
 
         {/* Content */}
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Main Tagline */}
           <h1 className="text-7xl sm:text-8xl lg:text-9xl font-black text-white mb-6 leading-none tracking-tighter">
-            <span className="block text-red-500" data-testid="text-hero-main">
+            <span className="block text-[#C9941A]" data-testid="text-hero-main">
               FROM PARALYSIS
             </span>
             <span className="block mt-2" data-testid="text-hero-power">
@@ -33,7 +33,7 @@ export default function HeroSection() {
           </h1>
 
           {/* Subtitle */}
-          <p className="text-3xl sm:text-4xl font-bold text-red-400 mb-8 italic tracking-wide" data-testid="text-hero-subtitle">
+          <p className="text-3xl sm:text-4xl font-bold text-[#C9941A] mb-8 italic tracking-wide" data-testid="text-hero-subtitle">
             DEFY EVERY 'NEVER' — SASQUATCH STYLE
           </p>
 
@@ -48,7 +48,7 @@ export default function HeroSection() {
           <div className="flex flex-col sm:flex-row justify-center items-center gap-6">
             <Button
               size="lg"
-              className="bg-red-600 hover:bg-red-700 text-white text-lg font-bold px-8 py-6 transition-transform duration-300 hover:scale-110 active:scale-95 shadow-lg shadow-red-600/50 animate-pulse"
+              className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-white text-lg font-bold px-8 py-6 transition-transform duration-300 hover:scale-110 active:scale-95 shadow-lg shadow-[#C9941A]/50 animate-pulse"
               data-testid="button-enter-the-fight"
               onClick={() => {
                 // Navigate to fight/action section
