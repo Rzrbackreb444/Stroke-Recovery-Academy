@@ -14,7 +14,7 @@ import { searchAmazonProducts, getAmazonProduct, isConfigured as isAmazonConfigu
 import { generateInstrumental, buildMusicPrompt, isLyriaConfigured, estimateCost } from "./lyriaService";
 import { generateImageWithImagen, isImagenConfigured } from "./imagenService";
 import { analyzeImage, detectFaces, safeSearchCheck, isVisionConfigured } from "./visionService";
-import { synthesizeSpeech, createVoiceClone, synthesizeWithClone, listVoices, isVoiceServiceConfigured, getVoiceStyles, getCharacterPresets, getGoogleVoices, synthesizeWithElevenLabs, getElevenLabsVoices, isElevenLabsConfigured } from "./voiceService";
+import { synthesizeSpeech, createVoiceClone, synthesizeWithClone, listVoices, isVoiceServiceConfigured, getVoiceStyles, getCharacterPresets, getGoogleVoices, synthesizeWithElevenLabs, getElevenLabsVoices, isElevenLabsConfigured, speechToSpeechWithElevenLabs, getDJVoiceCategories } from "./voiceService";
 import { generateImage, generateMovieScript, generateStoryboard, isVideoServiceConfigured, getMovieStyles, movieStyles, generateVideo, checkVideoGenerationStatus, isVeoConfigured } from "./videoService";
 import { createGoogleDoc, getGoogleDoc, updateGoogleDoc, createGoogleSlides, createGoogleSheet, createGoogleForm, exportDocument, isGoogleWorkspaceConfigured, getWorkspaceStatus } from "./googleWorkspaceService";
 import { synthesizeSpeechTTS, synthesizeChapter, audiobookStyles, narratorVoices, estimateAudioDuration, estimateTTSCost, isTTSConfigured } from "./textToSpeechService";
@@ -5594,6 +5594,99 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
       console.error("ElevenLabs synthesis error:", error);
       res.status(500).json({ error: "ElevenLabs synthesis failed" });
     }
+  });
+
+  // ============ DJ STUDIO - VOICE TRANSFORMATION ============
+
+  // Get DJ voice categories
+  app.get('/api/dj/voice-categories', (req, res) => {
+    res.json({ categories: getDJVoiceCategories() });
+  });
+
+  // Speech-to-Speech voice transformation
+  app.post('/api/dj/voice-transform', isAuthenticated, async (req: any, res) => {
+    try {
+      const { audioBase64, voiceId, stability, similarityBoost } = req.body;
+      
+      if (!audioBase64) {
+        return res.status(400).json({ error: "Audio data is required" });
+      }
+      
+      if (!voiceId) {
+        return res.status(400).json({ error: "Target voice ID is required" });
+      }
+
+      // Validate audio size (max 10MB base64 = ~7.5MB actual)
+      const MAX_AUDIO_SIZE = 10 * 1024 * 1024;
+      if (audioBase64.length > MAX_AUDIO_SIZE) {
+        return res.status(400).json({ error: "Audio file too large. Maximum size is 10MB." });
+      }
+
+      // Validate voiceId format (ElevenLabs uses alphanumeric IDs)
+      if (typeof voiceId !== 'string' || voiceId.length < 5 || voiceId.length > 50) {
+        return res.status(400).json({ error: "Invalid voice ID format" });
+      }
+
+      const audioBuffer = Buffer.from(audioBase64, 'base64');
+      const result = await speechToSpeechWithElevenLabs(
+        audioBuffer, 
+        voiceId,
+        "eleven_english_sts_v2",
+        stability ?? 0.5,
+        similarityBoost ?? 0.75
+      );
+      
+      if (result.success) {
+        res.json({ 
+          success: true, 
+          audioBase64: result.audioBase64,
+          mimeType: 'audio/mpeg'
+        });
+      } else {
+        res.status(500).json({ success: false, error: result.error });
+      }
+    } catch (error: any) {
+      console.error("Voice transformation error:", error);
+      res.status(500).json({ error: error.message || "Voice transformation failed" });
+    }
+  });
+
+  // Get available voices for DJ transformation
+  app.get('/api/dj/voices', isAuthenticated, async (req, res) => {
+    try {
+      const result = await getElevenLabsVoices();
+      if (result.success) {
+        // Filter and categorize voices for DJ use
+        const djVoices = result.voices?.map((voice: any) => ({
+          id: voice.voice_id,
+          name: voice.name,
+          category: voice.category || 'general',
+          preview_url: voice.preview_url,
+          labels: voice.labels
+        })) || [];
+        
+        res.json({ success: true, voices: djVoices });
+      } else {
+        res.status(500).json({ success: false, error: result.error });
+      }
+    } catch (error) {
+      console.error("DJ voices error:", error);
+      res.status(500).json({ error: "Failed to fetch DJ voices" });
+    }
+  });
+
+  // DJ status check
+  app.get('/api/dj/status', (req, res) => {
+    res.json({ 
+      voiceTransformConfigured: isElevenLabsConfigured(),
+      stemSeparationConfigured: false, // Replicate Demucs - to be implemented
+      features: {
+        voiceTransformation: true,
+        stemSeparation: false, // Coming soon
+        autotune: true, // Client-side with Tone.js
+        effects: true // Client-side with Web Audio API
+      }
+    });
   });
 
   // ============ AI AVATAR ROUTES (D-ID) ============
