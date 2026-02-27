@@ -460,6 +460,10 @@ ${allRoutes.map(r => `  <url>
     <loc>${baseUrl}/sitemap-marketplace.xml</loc>
     <lastmod>${today}</lastmod>
   </sitemap>
+  <sitemap>
+    <loc>${baseUrl}/sitemap-recovery.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
 </sitemapindex>`;
 
     res.set('Content-Type', 'application/xml');
@@ -536,6 +540,93 @@ ${listings.slice(0, 1000).map((listing: any) => `  <url>
     } catch (error) {
       console.error('Marketplace sitemap error:', error);
       res.status(500).send('Error generating marketplace sitemap');
+    }
+  });
+
+  // SEO: Stroke Recovery Academy sitemap — covers all 30+ recovery routes
+  app.get('/sitemap-recovery.xml', async (req, res) => {
+    const baseUrl = 'https://strokerecoveryacademy.com';
+    const kreaiteBase = 'https://kreaite.xyz';
+    const today = new Date().toISOString().split('T')[0];
+
+    const recoveryStaticRoutes = [
+      { path: '/', priority: '1.0', changefreq: 'weekly', description: 'Stroke Recovery Academy - Home' },
+      { path: '/recovery', priority: '1.0', changefreq: 'weekly', description: 'Stroke Recovery OS - Platform Hub' },
+      { path: '/recovery/academy', priority: '0.95', changefreq: 'weekly', description: 'Recovery Academy - Nick Kremers Courses' },
+      { path: '/recovery/university', priority: '0.95', changefreq: 'weekly', description: 'Recovery University - 33-Chapter Curriculum' },
+      { path: '/recovery/exercises', priority: '0.95', changefreq: 'daily', description: 'Stroke Recovery Exercises Database' },
+      { path: '/recovery/protocols', priority: '0.95', changefreq: 'weekly', description: 'Evidence-Based Recovery Protocols' },
+      { path: '/recovery/resources', priority: '0.90', changefreq: 'weekly', description: 'Recovery Resources Library' },
+      { path: '/recovery/blog', priority: '0.90', changefreq: 'daily', description: 'Stroke Recovery Blog - Expert Insights' },
+      { path: '/recovery/center-finder', priority: '0.90', changefreq: 'monthly', description: 'Recovery Center Finder' },
+      { path: '/recovery/about-nick', priority: '0.85', changefreq: 'monthly', description: 'About Nick Kremers - Stroke Survivor' },
+      { path: '/recovery/store', priority: '0.85', changefreq: 'weekly', description: 'Recovery Store - Supplements & Equipment' },
+      { path: '/recovery/social', priority: '0.80', changefreq: 'daily', description: 'Recovery Community - Connect with Survivors' },
+      { path: '/recovery/survival-grid', priority: '0.80', changefreq: 'weekly', description: 'Survival Grid - Recovery Tools' },
+      { path: '/recovery/achievements', priority: '0.75', changefreq: 'weekly', description: 'Recovery Milestones & Achievements' },
+      { path: '/recovery/never-zero', priority: '0.80', changefreq: 'weekly', description: 'Never Zero - Daily Consistency Tracker' },
+      { path: '/recovery/legend', priority: '0.75', changefreq: 'weekly', description: 'Draft Your Legend - Recovery Story' },
+      { path: '/recovery/builder', priority: '0.80', changefreq: 'weekly', description: 'Recovery Plan Builder' },
+      { path: '/recovery/compass', priority: '0.75', changefreq: 'weekly', description: 'Recovery Compass - Navigation System' },
+      { path: '/recovery/command-center', priority: '0.70', changefreq: 'weekly', description: 'Recovery Command Center' },
+      { path: '/recovery/wearables', priority: '0.70', changefreq: 'monthly', description: 'Wearables Integration for Recovery' },
+      { path: '/recovery/therapist-marketplace', priority: '0.80', changefreq: 'weekly', description: 'Therapist Marketplace - Find Specialists' },
+      { path: '/recovery/strokelyfe-org', priority: '0.70', changefreq: 'monthly', description: 'StrokeLyfe Organization' },
+      { path: '/my-book', priority: '0.75', changefreq: 'weekly', description: 'My Recovery Book - AI-Assisted Memoir' },
+      { path: '/pricing', priority: '0.85', changefreq: 'monthly', description: 'Recovery Academy Pricing Plans' },
+    ];
+
+    try {
+      // Get recovery blog posts
+      const posts = await db.select({
+        slug: blogPosts.slug,
+        title: blogPosts.title,
+        updatedAt: blogPosts.updatedAt,
+        heroImageUrl: blogPosts.heroImageUrl
+      })
+        .from(blogPosts)
+        .where(eq(blogPosts.status, 'published'))
+        .orderBy(desc(blogPosts.publishedAt))
+        .limit(500);
+
+      const blogUrls = posts.map((post) => ({
+        path: `/recovery/blog/${post.slug}`,
+        priority: '0.70',
+        changefreq: 'weekly',
+        imageUrl: post.heroImageUrl,
+        imageTitle: post.title
+      }));
+
+      const allRoutes = [...recoveryStaticRoutes, ...blogUrls];
+
+      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${allRoutes.map(r => {
+  const loc = r.path.startsWith('http') ? r.path : `${baseUrl}${r.path}`;
+  const altLoc = r.path.startsWith('http') ? r.path : `${kreaiteBase}${r.path}`;
+  return `  <url>
+    <loc>${loc}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${r.changefreq}</changefreq>
+    <priority>${r.priority}</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="${loc}"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="${loc}"/>${(r as any).imageUrl ? `
+    <image:image>
+      <image:loc>${(r as any).imageUrl}</image:loc>
+      <image:title>${(r as any).imageTitle || 'Stroke Recovery Academy'}</image:title>
+    </image:image>` : ''}
+  </url>`;
+}).join('\n')}
+</urlset>`;
+
+      res.set('Content-Type', 'application/xml');
+      res.set('Cache-Control', 'public, max-age=1800');
+      res.send(sitemap);
+    } catch (error) {
+      console.error('Recovery sitemap error:', error);
+      res.status(500).send('Error generating recovery sitemap');
     }
   });
 

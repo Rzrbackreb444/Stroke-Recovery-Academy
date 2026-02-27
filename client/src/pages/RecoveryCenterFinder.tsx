@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import SEO from "@/components/SEO";
+import RecoverySEO, { createLocalBusinessSchema } from "@/components/RecoverySEO";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import { 
   MapPin, Search, Phone, Globe, Star, Clock, 
@@ -93,10 +93,30 @@ export default function RecoveryCenterFinder() {
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
-      <SEO
-        title="Recovery Center Finder | Stroke Recovery Academy"
-        description="Find stroke rehabilitation centers, neurologists, and therapy services near you."
+      <RecoverySEO
+        title="Stroke Recovery Center Finder — Find Rehab Centers, Neurologists & Therapists Near You"
+        description="Search for stroke rehabilitation centers, neurologists, physical therapists, occupational therapists, and speech-language pathologists near you. Find the right stroke recovery specialists using live Google Maps data."
         canonical="/recovery/center-finder"
+        pageType="medical"
+        keywords={[
+          "stroke rehabilitation center near me", "stroke recovery center", "neurologist near me stroke",
+          "physical therapist stroke recovery", "occupational therapist stroke", "speech therapist near me",
+          "inpatient stroke rehab", "outpatient stroke therapy", "stroke specialist", "aphasia therapist near me",
+          "constraint induced movement therapy near me", "stroke support group near me"
+        ]}
+        speakableSelectors={["h1", ".center-finder-intro"]}
+        breadcrumbs={[{ name: "Recovery Hub", url: "/recovery" }, { name: "Center Finder", url: "/recovery/center-finder" }]}
+        additionalSchema={createLocalBusinessSchema({
+          name: "Stroke Recovery Academy — Center Finder",
+          description: "Directory of stroke rehabilitation centers, neurologists, and therapy providers across the United States",
+        })}
+        faq={[
+          { question: "How do I find a stroke rehabilitation center near me?", answer: "Use our Recovery Center Finder tool above — enter your ZIP code to search Google Maps data for inpatient rehabilitation hospitals, outpatient stroke therapy clinics, neurologists, physical therapists, occupational therapists, and speech-language pathologists in your area. You can also contact your hospital's social worker, ask your neurologist for a referral, or call your insurance company for in-network providers." },
+          { question: "What is the difference between inpatient and outpatient stroke rehabilitation?", answer: "Inpatient (acute) rehabilitation is for survivors who need intensive therapy immediately after hospitalization — you live at the facility and receive 3+ hours of therapy daily. Outpatient rehabilitation allows you to live at home while attending therapy sessions 2-5 days per week. Most survivors transition from inpatient to outpatient as they stabilize. The level of care depends on your functional abilities and insurance coverage." },
+          { question: "What should I look for in a stroke rehabilitation center?", answer: "Key factors when choosing a stroke rehab center: CARF accreditation (gold standard), a dedicated stroke program with neurologists and rehabilitation specialists, high volume of stroke patients (more experience = better outcomes), comprehensive team (PT, OT, SLP, neuropsychologist, social worker), availability of advanced therapies (robotic therapy, CIMT, constraint-induced movement therapy), and patient-to-staff ratios. Ask for outcome data — good centers track and share their recovery statistics." },
+          { question: "How do I qualify for inpatient stroke rehabilitation?", answer: "To qualify for inpatient acute rehabilitation, patients generally must be able to participate in at least 3 hours of therapy daily, have a specific diagnosis that benefits from intensive rehab (stroke qualifies), show potential for functional improvement, and have medical stability. Medicare, Medicaid, and most private insurers cover inpatient rehab when medically necessary. A physiatrist will assess your eligibility." },
+          { question: "Is outpatient stroke therapy covered by insurance?", answer: "Most insurance plans including Medicare cover outpatient stroke therapy when medically necessary and ordered by a physician. Medicare Part B covers physical, occupational, and speech therapy with an 80/20 cost split after deductible. Private insurance coverage varies — call your insurer to confirm in-network providers, session limits, and prior authorization requirements. Many therapy centers offer financial assistance for uninsured patients." }
+        ]}
       />
 
       <main className="container mx-auto px-4 py-8 max-w-6xl">

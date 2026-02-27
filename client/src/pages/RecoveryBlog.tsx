@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import SEO from "@/components/SEO";
+import RecoverySEO from "@/components/RecoverySEO";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import { 
   BookOpen, Search, Calendar, Clock, User, ArrowRight,
@@ -89,10 +89,26 @@ export default function RecoveryBlog() {
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
-      <SEO
-        title="Recovery Blog | Stroke Recovery Academy"
-        description="Expert insights, recovery tips, and survivor stories from Nick Kremers and the Stroke Recovery Academy."
+      <RecoverySEO
+        title="Stroke Recovery Blog — Expert Insights & Survivor Stories"
+        description="Evidence-based stroke recovery articles by Nick Kremers — survivor who went from 0% to 90% recovery. Get actionable rehab tips, neuroplasticity strategies, mindset tools, and real survivor stories. Updated weekly."
         canonical="/recovery/blog"
+        keywords={[
+          "stroke recovery blog", "stroke survivor stories", "stroke rehab tips", "neuroplasticity after stroke",
+          "stroke recovery exercises", "post stroke depression tips", "aphasia recovery", "stroke caregiver advice",
+          "mirror therapy stroke", "stroke recovery timeline", "Nick Kremers blog"
+        ]}
+        pageType="article"
+        author="Nick Kremers"
+        speakableSelectors={["h1", ".blog-hero-text", ".featured-article-excerpt"]}
+        breadcrumbs={[{ name: "Recovery Hub", url: "/recovery" }, { name: "Blog", url: "/recovery/blog" }]}
+        faq={[
+          { question: "How long does stroke recovery take?", answer: "Stroke recovery is a lifelong process, but the most significant gains typically happen in the first 3-6 months. However, neuroplasticity allows the brain to continue rewiring for years. Nick Kremers went from 0% to 90% functional recovery over 2+ years of consistent rehabilitation. The key is never stopping — every day of exercise rewires the brain." },
+          { question: "What are the most effective stroke recovery exercises?", answer: "The most effective stroke recovery exercises focus on high repetition and task-specific training: mirror therapy for arm/hand recovery (20-30 minutes daily), constraint-induced movement therapy, finger extension exercises, grip strengthening, gait training with parallel bars, balance exercises, and speech repetition drills. Research shows 400-1,000 repetitions per session drive the strongest neuroplastic changes." },
+          { question: "Can stroke survivors fully recover?", answer: "Many stroke survivors achieve significant, life-changing recovery — some reaching near-full function. The degree of recovery depends on stroke severity, location, rehabilitation intensity, and time since stroke. Nick Kremers is living proof: he went from 0% mobility to 90% function through relentless daily rehabilitation and the Sasquatch Method." },
+          { question: "What is neuroplasticity and why does it matter for stroke recovery?", answer: "Neuroplasticity is the brain's ability to reorganize itself by forming new neural connections throughout life. After a stroke destroys brain tissue, neuroplasticity allows neighboring brain areas to take over lost functions. Every repetitive movement and exercise you do creates new pathways — this is literally how stroke survivors relearn to walk, talk, and use their hands." },
+          { question: "How do I manage post-stroke depression?", answer: "Post-stroke depression affects 30-50% of survivors and is a medical condition, not a personal weakness. Treatment includes working with a mental health professional, exercise (which releases endorphins and promotes neuroplasticity), social connection with other survivors, setting small daily goals, and celebrating every win no matter how small. Never face it alone — our community is here." }
+        ]}
       />
 
       <main className="container mx-auto px-4 py-8 max-w-6xl">

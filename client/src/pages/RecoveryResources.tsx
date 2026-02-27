@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RecoveryHeader from "@/components/RecoveryHeader";
-import SEO from "@/components/SEO";
+import RecoverySEO from "@/components/RecoverySEO";
 import { 
   BookOpen, Video, FileText, Headphones, ExternalLink, 
   Search, Heart, Brain, Users, Dumbbell, MessageCircle,
@@ -112,17 +112,24 @@ export default function RecoveryResources() {
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
-      <SEO
-        title="Recovery Resources | Stroke Recovery Academy"
-        description="Curated collection of stroke recovery resources including guides, videos, podcasts, and community support. Access evidence-based tools for your rehabilitation journey."
+      <RecoverySEO
+        title="Stroke Recovery Resources — Guides, Videos, Podcasts & Community Tools"
+        description="Comprehensive stroke recovery resource library curated by Nick Kremers: evidence-based guides, rehabilitation videos, expert podcasts, caregiver tools, and peer support community. Everything a stroke survivor needs in one place."
         canonical="/recovery/resources"
-        keywords="stroke recovery resources, rehabilitation guides, recovery videos, stroke survivor community"
-        author="Stroke Recovery Academy"
-        type="website"
-        expertise={["Evidence-based recovery methods", "Comprehensive stroke rehabilitation", "Community-driven support"]}
-        experience="Supporting stroke survivors since 2024"
-        trustSignals={["Medical expert-reviewed resources", "Trusted by healthcare professionals", "Survivor-tested content"]}
-        breadcrumbs={[{ name: "Home", url: "/" }, { name: "Recovery Resources", url: "/recovery/resources" }]}
+        keywords={[
+          "stroke recovery resources", "stroke rehabilitation guides", "stroke survivor videos", "stroke recovery podcast",
+          "caregiver stroke resources", "aphasia resources", "stroke support groups", "neuroplasticity resources",
+          "stroke recovery tools", "post stroke care", "stroke community support"
+        ]}
+        speakableSelectors={["h1", ".resources-intro", ".featured-resource-title"]}
+        breadcrumbs={[{ name: "Recovery Hub", url: "/recovery" }, { name: "Resources", url: "/recovery/resources" }]}
+        faq={[
+          { question: "What resources are available for stroke survivors?", answer: "Stroke survivors have access to a wide range of resources: rehabilitation hospitals and outpatient therapy, support groups (in-person and online), books like Nick Kremers' 'The Ultimate Stroke Recovery Bible', educational platforms like Stroke Recovery Academy, aphasia apps, brain training tools, exercise video libraries, caregiver guides, and community forums where survivors share strategies and encouragement." },
+          { question: "What is the best book for stroke recovery?", answer: "Nick Kremers' 'The Ultimate Stroke Recovery Bible' is a comprehensive guide covering neuroplasticity science, physical rehabilitation protocols, cognitive recovery, speech therapy, mindset strategies, and life integration — written by a survivor who achieved 0% to 90% recovery. Other recommended books include 'My Stroke of Insight' by Jill Bolte Taylor and 'Stronger After Stroke' by Peter Levine." },
+          { question: "Are there online communities for stroke survivors?", answer: "Yes — the Stroke Recovery Academy community connects survivors worldwide. Other communities include the American Stroke Association support network, Aphasia Recovery Connection, TalkPath Live, and Facebook groups like 'Stroke Survivors Mentoring Each Other.' Online communities provide 24/7 peer support, shared strategies, and encouragement from people who truly understand the recovery journey." },
+          { question: "What podcasts cover stroke recovery?", answer: "Stroke-focused podcasts include 'Strokecast' by Bill Monroe, 'My Stroke of Insight' content, 'Aphasia Recovery Connection' podcast, and content from Stroke Recovery Academy. These provide interviews with survivors, rehabilitation experts, and caregivers covering all aspects of life after stroke." },
+          { question: "What apps help with stroke recovery?", answer: "Helpful stroke recovery apps include Constant Therapy and Tactus Therapy for cognitive and speech rehab, Rehab-U for exercise guidance, Lumosity and BrainHQ for cognitive training, Cozi for scheduling and medication reminders, and TalkPath Therapy for aphasia practice. The Stroke Recovery Academy app integrates all these functions with AI coaching from Nick Kremers." }
+        ]}
       />
       <RecoveryHeader />
       
