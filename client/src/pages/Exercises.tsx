@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import RecoverySEO, { createRecoveryExerciseSchema } from "@/components/RecoverySEO";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -145,6 +146,38 @@ export default function Exercises() {
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
+      <RecoverySEO
+        title="Stroke Recovery Exercises — Therapeutic Games for Arm, Speech & Cognitive Rehab"
+        description="34 evidence-based stroke recovery exercises designed by Nick Kremers — gamified therapeutic exercises for upper extremity rehab, speech recovery, and cognitive rehabilitation. Track your progress, build streaks, and rewire your brain."
+        canonical="/recovery/exercises"
+        pageType="medical"
+        keywords={[
+          "stroke recovery exercises", "stroke therapy exercises", "stroke arm exercises", "stroke hand exercises",
+          "stroke speech exercises", "cognitive exercises stroke", "neuroplasticity exercises",
+          "stroke finger exercises", "stroke balance exercises", "gamified stroke rehab",
+          "mirror therapy exercises", "stroke grip exercises", "aphasia exercises", "stroke brain exercises"
+        ]}
+        speakableSelectors={["h1", ".exercise-intro", "[data-testid='text-exercises-title']"]}
+        breadcrumbs={[{ name: "Recovery Hub", url: "/recovery" }, { name: "Exercises", url: "/recovery/exercises" }]}
+        additionalSchema={[
+          createRecoveryExerciseSchema({
+            name: "Stroke Recovery Therapeutic Exercise Program",
+            description: "A comprehensive gamified exercise library covering upper extremity rehabilitation, speech recovery, and cognitive training for stroke survivors",
+            bodyLocation: "Brain, Arms, Hands, Speech Centers",
+            difficulty: "beginner",
+            duration: "PT30M",
+            repetitions: 20,
+            sets: 3,
+            benefits: ["Motor function recovery", "Neuroplasticity stimulation", "Cognitive improvement", "Speech rehabilitation"]
+          })
+        ]}
+        faq={[
+          { question: "What exercises are best for stroke arm recovery?", answer: "The best exercises for stroke arm recovery involve high repetition and task-specific training. Key exercises include: finger extension (open/close hand 100 times daily), grip strengthening with therapy putty, wrist curls and rotations, reaching and grasping tasks, mirror therapy (watching the unaffected arm in a mirror while moving both), and arm bike ergometry. Research shows 400-1,000 repetitions per session maximizes neuroplastic gains." },
+          { question: "How many times a day should a stroke survivor exercise?", answer: "For maximum neuroplastic benefit, stroke survivors should aim for 3-6 exercise sessions per day of 15-20 minutes each. Total daily exercise time should be 45-90 minutes minimum. Short frequent sessions are often more effective than one long session. Even 5 minutes counts — the 'Never Zero' principle is critical: do something every single day without exception." },
+          { question: "What cognitive exercises help after stroke?", answer: "Effective cognitive exercises after stroke include: memory games (card matching, word recall), attention training (tracking tasks, concentration drills), number sequencing, puzzle solving, word-finding exercises, and dual-task training (walking while doing mental calculations). Brain training apps like BrainHQ and Lumosity supplement clinical cognitive rehabilitation." },
+          { question: "Are there speech exercises for stroke survivors?", answer: "Yes — speech exercises for stroke aphasia and dysarthria include: word repetition drills (repeating words 50+ times), mouth and tongue strengthening exercises, reading aloud daily, melodic intonation therapy (singing words before speaking them), and conversation practice. Work with a speech-language pathologist for a personalized program — they can assess your specific aphasia type and tailor exercises." }
+        ]}
+      />
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-2" data-testid="text-exercises-title">

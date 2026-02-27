@@ -4,9 +4,23 @@ Disallow: /admin/
 Disallow: /api/
 Disallow: /_
 Disallow: /checkout
+Disallow: /recovery/dashboard
+Disallow: /recovery/journal
+Disallow: /recovery/medical-log
+Disallow: /recovery/flicker-log
 
+# Primary sitemaps
 Sitemap: https://kreaite.xyz/sitemap.xml
+Sitemap: https://kreaite.xyz/sitemap-index.xml
+Sitemap: https://kreaite.xyz/sitemap-blog.xml
+Sitemap: https://kreaite.xyz/sitemap-marketplace.xml
+Sitemap: https://kreaite.xyz/sitemap-recovery.xml
 
+# Stroke Recovery Academy domain sitemaps
+Sitemap: https://strokerecoveryacademy.com/sitemap.xml
+Sitemap: https://strokerecoveryacademy.com/sitemap-recovery.xml
+
+# Major search engines
 User-agent: Googlebot
 Allow: /
 Crawl-delay: 1
@@ -15,17 +29,40 @@ User-agent: Bingbot
 Allow: /
 Crawl-delay: 1
 
+User-agent: Slurp
+Allow: /
+Crawl-delay: 2
+
+User-agent: DuckDuckBot
+Allow: /
+
+# AI / Generative Engine crawlers — explicitly allowed for GEO/AEO visibility
 User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
 Allow: /
 
 User-agent: Claude-Web
 Allow: /
 
-User-agent: PerplexityBot
-Allow: /
-
 User-agent: anthropic-ai
 Allow: /
 
-User-agent: ChatGPT-User
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: ia_archiver
 Allow: /
