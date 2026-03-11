@@ -98,14 +98,19 @@ app.use((req, res, next) => {
 export default async function runApp(
   setup: (app: Express, server: Server) => Promise<void>,
 ) {
-  const server = await registerRoutes(app);
+  let server: Server;
+  try {
+    server = await registerRoutes(app);
+  } catch (err: any) {
+    console.error("[app] registerRoutes failed:", err?.message ?? err);
+    throw err;
+  }
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
 
     res.status(status).json({ message });
-    throw err;
   });
 
   // importantly run the final setup after setting up all the other routes so
