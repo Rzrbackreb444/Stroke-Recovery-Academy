@@ -157,27 +157,32 @@ export type LimitKey = keyof typeof TIER_CONFIGS.free.limits;
 
 /**
  * Seed subscription tiers into the database
+ * Non-fatal: logs warnings and returns if the database is unavailable.
  */
 export async function seedSubscriptionTiers(): Promise<void> {
-  for (const [tierName, config] of Object.entries(TIER_CONFIGS)) {
-    const existing = await db.select().from(subscriptionTiers).where(eq(subscriptionTiers.name, tierName)).limit(1);
-    
-    if (existing.length === 0) {
-      await db.insert(subscriptionTiers).values({
-        name: config.name,
-        displayName: config.displayName,
-        description: config.description,
-        monthlyPrice: config.monthlyPrice,
-        annualPrice: config.annualPrice,
-        monthlyCredits: config.monthlyCredits,
-        maxProjects: config.maxProjects,
-        maxStorageGb: config.maxStorageGb,
-        maxTeamMembers: config.maxTeamMembers,
-        features: config.features,
-        limits: config.limits,
-      });
-      console.log(`Created subscription tier: ${config.displayName}`);
+  try {
+    for (const [tierName, config] of Object.entries(TIER_CONFIGS)) {
+      const existing = await db.select().from(subscriptionTiers).where(eq(subscriptionTiers.name, tierName)).limit(1);
+      
+      if (existing.length === 0) {
+        await db.insert(subscriptionTiers).values({
+          name: config.name,
+          displayName: config.displayName,
+          description: config.description,
+          monthlyPrice: config.monthlyPrice,
+          annualPrice: config.annualPrice,
+          monthlyCredits: config.monthlyCredits,
+          maxProjects: config.maxProjects,
+          maxStorageGb: config.maxStorageGb,
+          maxTeamMembers: config.maxTeamMembers,
+          features: config.features,
+          limits: config.limits,
+        });
+        console.log(`Created subscription tier: ${config.displayName}`);
+      }
     }
+  } catch (err: any) {
+    console.warn("[seedSubscriptionTiers] Database unavailable, skipping tier seed:", err?.message ?? err);
   }
 }
 

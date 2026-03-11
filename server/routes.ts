@@ -814,14 +814,26 @@ Allow: /
   // Initialize Stripe
   await initStripe();
 
-  // Seed creator tool categories
-  await seedCreatorToolCategories();
-  
-  // Seed workflow categories
-  await seedWorkflowCategories();
-  
-  // Seed subscription tiers
-  await seedSubscriptionTiers();
+  // Seed creator tool categories (non-fatal — app continues even if DB unavailable)
+  try {
+    await seedCreatorToolCategories();
+  } catch (err: any) {
+    console.warn("[startup] seedCreatorToolCategories skipped:", err?.message ?? err);
+  }
+
+  // Seed workflow categories (non-fatal)
+  try {
+    await seedWorkflowCategories();
+  } catch (err: any) {
+    console.warn("[startup] seedWorkflowCategories skipped:", err?.message ?? err);
+  }
+
+  // Seed subscription tiers (non-fatal)
+  try {
+    await seedSubscriptionTiers();
+  } catch (err: any) {
+    console.warn("[startup] seedSubscriptionTiers skipped:", err?.message ?? err);
+  }
 
   // Auth routes
   app.get('/api/auth/user', async (req: any, res) => {

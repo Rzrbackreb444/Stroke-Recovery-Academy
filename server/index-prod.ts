@@ -22,6 +22,35 @@ export async function serveStatic(app: Express, _server: Server) {
   });
 }
 
+// Prevent crash-loops from unhandled rejections / uncaught exceptions
+process.on("uncaughtException", (err: Error) => {
+  console.error("[process] Uncaught exception (non-fatal, keeping server alive):", err?.message ?? err);
+});
+
+process.on("unhandledRejection", (reason: unknown) => {
+  console.error("[process] Unhandled rejection (non-fatal, keeping server alive):", reason);
+});
+
 (async () => {
-  await runApp(serveStatic);
+  try {
+    await runApp(serveStatic);
+  } catch (err: any) {
+    console.error("[startup] runApp failed, attempting to serve static files only:", err?.message ?? err);
+    // Last resort: serve static files even if full app initialization failed
+    const fallbackApp = express();
+    const distPath = path.resolve(import.meta.dirname, "public");
+    if (fs.existsSync(distPath)) {
+      fallbackApp.use(express.static(distPath));
+      fallbackApp.use("*", (_req, res) => {
+        res.sendFile(path.resolve(distPath, "index.html"));
+      });
+      const port = parseInt(process.env.PORT || "5000", 10);
+      fallbackApp.listen(port, "0.0.0.0", () => {
+        console.log(`[startup] Fallback static server running on port ${port}`);
+      });
+    } else {
+      console.error("[startup] No build directory found, cannot start fallback server.");
+      process.exit(1);
+    }
+  }
 })();
