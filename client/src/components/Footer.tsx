@@ -1,109 +1,106 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import { Link } from "wouter";
-import { 
-  Mail, 
-  BookOpen, 
-  Music, 
-  Video, 
-  GraduationCap, 
-  Image, 
+import {
+  Mail,
+  GraduationCap,
+  Activity,
+  Brain,
+  Building2,
+  BookOpen,
+  Heart,
+  Target,
   FileText,
-  Store,
-  Users,
-  DollarSign,
-  Sparkles,
-  Zap,
-  ExternalLink,
 } from "lucide-react";
 import { SiTiktok, SiInstagram, SiYoutube, SiX } from "react-icons/si";
-import kreaiteLogo from "@assets/KreAIte1_1766574083851.png";
-import kremersxLogo from "@assets/Kremersx_1766356681995.png";
+import sasquatchLogo from "@assets/stroked-out-sasquatch-logo.png";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
-  const footerLinks = {
-    studios: [
-      { label: "Book Studio", href: "/book-studio", icon: BookOpen },
-      { label: "Music Studio", href: "/music-studio", icon: Music },
-      { label: "Video Studio", href: "/video-studio", icon: Video },
-      { label: "Course Studio", href: "/course-studio", icon: GraduationCap },
-      { label: "Image Studio", href: "/image-studio", icon: Image },
-      { label: "Doctrine Engine", href: "/publishing", icon: FileText },
-    ],
-    platform: [
-      { label: "KreAItorverse", href: "/marketplace", icon: Store },
-      { label: "Community", href: "/community", icon: Users },
-      { label: "Earnings Dashboard", href: "/author-dashboard", icon: DollarSign },
-      { label: "Quick Create", href: "/quick-create", icon: Zap },
-    ],
-    company: [
-      { label: "About", href: "/about" },
-      { label: "Pricing", href: "/pricing" },
-      { label: "Contact", href: "/contact" },
-      { label: "Privacy Policy", href: "/privacy" },
-      { label: "Terms of Service", href: "/terms" },
-    ],
-  };
+  const recoveryLinks = [
+    { label: "Recovery Academy", href: "/recovery/academy", icon: GraduationCap },
+    { label: "Exercises", href: "/recovery/exercises", icon: Activity },
+    { label: "Protocols", href: "/recovery/protocols", icon: Brain },
+    { label: "Center Finder", href: "/recovery/center-finder", icon: Building2 },
+    { label: "Recovery Blog", href: "/recovery/blog", icon: BookOpen },
+    { label: "My Book", href: "/my-book", icon: FileText },
+  ];
+
+  const communityLinks = [
+    { label: "Dashboard", href: "/recovery/dashboard", icon: Target },
+    { label: "Community", href: "/recovery/social", icon: Heart },
+    { label: "Resources", href: "/recovery/resources", icon: BookOpen },
+    { label: "Sasquatch Coach", href: "/recovery/sasquatch-coach", icon: Brain },
+  ];
+
+  const companyLinks = [
+    { label: "About Nick", href: "/recovery/about-nick" },
+    { label: "Pricing", href: "/pricing" },
+    { label: "Contact", href: "/contact" },
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Terms of Service", href: "/terms" },
+  ];
 
   return (
-    <footer className="bg-background border-t border">
+    <footer className="bg-[#080808] border-t border-[#1a1a1a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
+
+          {/* Brand column */}
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-3 mb-6">
-              <img 
-                src={kreaiteLogo}
-                alt="KreAIte"
-                className="h-14 w-auto"
+            <div className="flex items-center gap-3 mb-5">
+              <img
+                src={sasquatchLogo}
+                alt="Stroke Recovery Academy"
+                className="h-12 w-auto"
                 data-testid="img-footer-logo"
               />
             </div>
-            <p className="text-lg font-bold text-primary mb-2">
-              CREATE. PUBLISH. EARN.
+            <p className="text-sm font-semibold uppercase tracking-widest text-[#C9941A] mb-2">
+              From 0% to 90% Recovery
             </p>
-            <p className="text-muted-foreground mb-6 leading-relaxed">
-              The #1 AI-powered creator platform. 6 professional studios, seamless publishing, 
-              and the KreAItorverse marketplace. Keep 85% of everything you earn.
+            <p className="text-gray-400 mb-6 leading-relaxed text-sm">
+              The world's most comprehensive stroke recovery platform — built by a survivor,
+              for survivors. Evidence-based methods, AI coaching, and a community of 50,000+
+              warriors refusing to accept limitations.
             </p>
             <div className="space-y-3">
-              <div className="text-sm font-semibold uppercase tracking-wide text-primary">
-                Join 50,000+ Creators
+              <div className="text-sm font-semibold uppercase tracking-wide text-gray-300">
+                Join the Recovery Revolution
               </div>
               <div className="flex gap-2">
                 <Input
                   type="email"
                   placeholder="your@email.com"
-                  className="flex-1 border focus:border-[#C9941A] bg-[#fafafa]"
+                  className="flex-1 border-[#333] bg-[#111] text-white placeholder:text-gray-600 focus:border-[#C9941A]"
                   data-testid="input-newsletter-email"
                 />
-                <Button 
-                  className="bg-primary hover:bg-primary/80 text-primary-foreground font-semibold"
+                <Button
+                  className="bg-[#C9941A] text-black font-semibold flex-shrink-0"
                   data-testid="button-newsletter-subscribe"
                 >
                   <Mail className="h-4 w-4 mr-2" />
-                  Subscribe
+                  Join
                 </Button>
               </div>
             </div>
           </div>
 
+          {/* Recovery links */}
           <div>
-            <h3 className="font-bold mb-4 text-sm uppercase tracking-wide text-primary flex items-center gap-2">
-              <Sparkles className="w-4 h-4" />
-              Studios
+            <h3 className="font-bold mb-4 text-sm uppercase tracking-wide text-[#C9941A]">
+              Recovery
             </h3>
             <ul className="space-y-2">
-              {footerLinks.studios.map((link) => (
+              {recoveryLinks.map((link) => (
                 <li key={link.href}>
-                  <Link 
+                  <Link
                     href={link.href}
-                    className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 group"
+                    className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm group"
                     data-testid={`footer-link-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
                   >
-                    <link.icon className="w-4 h-4 group-hover:text-primary" />
+                    <link.icon className="w-3.5 h-3.5 text-gray-600 group-hover:text-[#C9941A] transition-colors" />
                     {link.label}
                   </Link>
                 </li>
@@ -111,20 +108,20 @@ export default function Footer() {
             </ul>
           </div>
 
+          {/* Community links */}
           <div>
-            <h3 className="font-bold mb-4 text-sm uppercase tracking-wide text-primary flex items-center gap-2">
-              <Store className="w-4 h-4" />
-              Platform
+            <h3 className="font-bold mb-4 text-sm uppercase tracking-wide text-[#C9941A]">
+              Community
             </h3>
             <ul className="space-y-2">
-              {footerLinks.platform.map((link) => (
+              {communityLinks.map((link) => (
                 <li key={link.href}>
-                  <Link 
+                  <Link
                     href={link.href}
-                    className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 group"
+                    className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm group"
                     data-testid={`footer-link-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
                   >
-                    <link.icon className="w-4 h-4 group-hover:text-primary" />
+                    <link.icon className="w-3.5 h-3.5 text-gray-600 group-hover:text-[#C9941A] transition-colors" />
                     {link.label}
                   </Link>
                 </li>
@@ -132,14 +129,17 @@ export default function Footer() {
             </ul>
           </div>
 
+          {/* Company links */}
           <div>
-            <h3 className="font-bold mb-4 text-sm uppercase tracking-wide text-primary">Company</h3>
+            <h3 className="font-bold mb-4 text-sm uppercase tracking-wide text-[#C9941A]">
+              Company
+            </h3>
             <ul className="space-y-2">
-              {footerLinks.company.map((link) => (
+              {companyLinks.map((link) => (
                 <li key={link.href}>
-                  <Link 
+                  <Link
                     href={link.href}
-                    className="text-muted-foreground hover:text-primary transition-colors block"
+                    className="text-gray-400 hover:text-white transition-colors block text-sm"
                     data-testid={`footer-link-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
                   >
                     {link.label}
@@ -150,78 +150,70 @@ export default function Footer() {
           </div>
         </div>
 
-        <Separator className="mb-8 bg-primary/20" />
-
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex flex-col md:flex-row items-center gap-4">
-            <div className="text-sm text-muted-foreground">
-              © {currentYear} KreAIte. All rights reserved.
+        <div className="border-t border-[#1a1a1a] pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex flex-col md:flex-row items-center gap-4">
+              <div className="text-sm text-gray-500">
+                © {currentYear} Stroke Recovery Academy. All rights reserved.
+              </div>
+              <a
+                href="mailto:nick@strokerecoveryacademy.com"
+                className="text-sm text-gray-500 hover:text-white transition-colors flex items-center gap-1"
+                data-testid="link-contact-email"
+              >
+                <Mail className="h-3 w-3" />
+                nick@strokerecoveryacademy.com
+              </a>
             </div>
-            <a 
-              href="mailto:info@kreaite.xyz" 
-              className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
-              data-testid="link-contact-email"
-            >
-              <Mail className="h-3 w-3" />
-              info@kreaite.xyz
-            </a>
+
+            <div className="flex items-center gap-2">
+              <a
+                href="https://twitter.com/strokedoutsasquatch"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-md text-gray-500 hover:text-white transition-colors"
+                aria-label="Follow on X (Twitter)"
+                data-testid="social-link-x"
+              >
+                <SiX className="h-4 w-4" />
+              </a>
+              <a
+                href="https://www.tiktok.com/@strokedoutsasquatch"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-md text-gray-500 hover:text-white transition-colors"
+                aria-label="Follow on TikTok"
+                data-testid="social-link-tiktok"
+              >
+                <SiTiktok className="h-4 w-4" />
+              </a>
+              <a
+                href="https://instagram.com/strokedoutsasquatch"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-md text-gray-500 hover:text-white transition-colors"
+                aria-label="Follow on Instagram"
+                data-testid="social-link-instagram"
+              >
+                <SiInstagram className="h-4 w-4" />
+              </a>
+              <a
+                href="https://youtube.com/@strokedoutsasquatch"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-md text-gray-500 hover:text-white transition-colors"
+                aria-label="Subscribe on YouTube"
+                data-testid="social-link-youtube"
+              >
+                <SiYoutube className="h-4 w-4" />
+              </a>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <a
-              href="https://twitter.com/kreaite"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover-elevate active-elevate-2 p-2 rounded-md text-muted-foreground hover:text-primary"
-              aria-label="Follow us on X (Twitter)"
-              data-testid="social-link-x"
-            >
-              <SiX className="h-5 w-5" />
-            </a>
-            <a
-              href="https://www.tiktok.com/@kreaite"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover-elevate active-elevate-2 p-2 rounded-md text-muted-foreground hover:text-primary"
-              aria-label="Follow us on TikTok"
-              data-testid="social-link-tiktok"
-            >
-              <SiTiktok className="h-5 w-5" />
-            </a>
-            <a
-              href="https://instagram.com/kreaite"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover-elevate active-elevate-2 p-2 rounded-md text-muted-foreground hover:text-primary"
-              aria-label="Follow us on Instagram"
-              data-testid="social-link-instagram"
-            >
-              <SiInstagram className="h-5 w-5" />
-            </a>
-            <a
-              href="https://youtube.com/@kreaite"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover-elevate active-elevate-2 p-2 rounded-md text-muted-foreground hover:text-primary"
-              aria-label="Subscribe on YouTube"
-              data-testid="social-link-youtube"
-            >
-              <SiYoutube className="h-5 w-5" />
-            </a>
-          </div>
-        </div>
-
-        <Separator className="my-8 bg-primary/20" />
-
-        <div className="flex flex-col items-center gap-4">
-          <div className="flex flex-col items-center gap-2" data-testid="powered-by-kremersx">
-            <span className="text-xs uppercase tracking-wider text-muted-foreground">Powered by</span>
-            <img 
-              src={kremersxLogo}
-              alt="KremersX"
-              className="h-20 w-auto object-contain rounded-lg opacity-80 hover:opacity-100 transition-opacity"
-              data-testid="img-kremersx-logo"
-            />
+          <div className="text-center mt-6">
+            <p className="text-xs text-gray-600">
+              Powered by KremersX · Always consult your healthcare provider before starting any recovery program.
+            </p>
           </div>
         </div>
       </div>

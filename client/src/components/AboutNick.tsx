@@ -1,75 +1,82 @@
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CheckCircle2, ArrowRight } from "lucide-react";
+import { Link } from "wouter";
 import nickPhoto from "@assets/Nick crooked smile_1763787525254.jpg";
 
-export default function AboutNick() {
-  const achievements = [
-    "Massive hemorrhagic stroke with 50 staples in skull",
-    "0% left side function to 90% full recovery",
-    "Created breakthrough techniques not in medical textbooks",
-    "Built million-dollar recovery business",
-    "Helped 50,000+ stroke survivors worldwide",
-  ];
+const achievements = [
+  "Survived a massive hemorrhagic stroke with 50 staples in his skull",
+  "Went from 0% left-side function to 90% full recovery",
+  "Created breakthrough methods not found in any medical textbook",
+  "Built a thriving recovery business while still recovering",
+  "Helped 50,000+ stroke survivors worldwide",
+];
 
+export default function AboutNick() {
   return (
-    <section className="py-20 bg-card" id="about">
+    <section className="py-20 bg-[#080808]" id="about">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="grid md:grid-cols-2 gap-14 items-center">
+
+          {/* Photo */}
           <div className="relative">
-            <div className="aspect-square rounded-lg overflow-hidden">
-              <img 
+            <div className="aspect-[4/5] rounded-2xl overflow-hidden">
+              <img
                 src={nickPhoto}
-                alt="Nick Kremers - The Stroked Out Sasquatch"
-                className="w-full h-full object-cover"
+                alt="Nick Kremers — The Stroked Out Sasquatch, stroke survivor and recovery coach"
+                className="w-full h-full object-cover object-top"
               />
             </div>
-          </div>
-          <div>
-            <Badge variant="outline" className="mb-4" data-testid="badge-about-category">
-              FROM WHEELCHAIR TO WARRIOR
-            </Badge>
-            <h2
-              className="text-4xl font-bold mb-6"
-              data-testid="text-about-title"
-            >
-              Meet Nick &quot;The Stroked Out Sasquatch&quot; Kremers
-            </h2>
-            <div className="space-y-4 text-lg leading-relaxed text-muted-foreground">
-              <p data-testid="text-about-intro">
-                December 3, 2018 - The day everything changed. Hoyer lift. 50 staples.
-                Complete paralysis. Doctors saying &quot;don&apos;t make assumptions until year 1.&quot;
-              </p>
-              <p data-testid="text-about-journey">
-                August 14, 2025 - Typing with both hands, running my business stronger than
-                ever, and teaching breakthrough techniques that combine my street-tested methods
-                with 2025&apos;s revolutionary neuroscience.
-              </p>
-              <p className="font-semibold text-foreground" data-testid="text-about-mission">
-                I&apos;m not a doctor. I&apos;m something better - I&apos;m a stroke survivor who REFUSED to
-                quit.
-              </p>
+            <div className="absolute -bottom-4 -right-4 bg-[#C9941A] text-black rounded-xl p-4 max-w-[180px]">
+              <p className="text-2xl font-black">6+ Years</p>
+              <p className="text-sm font-medium">of proven recovery</p>
             </div>
           </div>
-        </div>
 
-        <Card className="p-8 mt-12">
-          <h3 className="text-2xl font-bold mb-6" data-testid="text-achievements-title">
-            The Journey
-          </h3>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {achievements.map((achievement, index) => (
-              <div
-                key={index}
-                className="flex gap-3"
-                data-testid={`achievement-${index}`}
-              >
-                <CheckCircle2 className="h-6 w-6 text-accent flex-shrink-0 mt-0.5" />
-                <p className="text-base font-medium">{achievement}</p>
-              </div>
-            ))}
+          {/* Copy */}
+          <div>
+            <p className="text-[#C9941A] text-sm font-semibold uppercase tracking-widest mb-4" data-testid="badge-about-category">
+              From Wheelchair to Warrior
+            </p>
+            <h2
+              className="text-4xl sm:text-5xl font-black text-white mb-6 leading-tight"
+              data-testid="text-about-title"
+            >
+              Meet Nick<br />
+              <span className="text-[#C9941A]">"The Stroked Out<br />Sasquatch"</span> Kremers
+            </h2>
+
+            <div className="space-y-4 text-base text-gray-400 leading-relaxed mb-8">
+              <p data-testid="text-about-intro">
+                December 3, 2018 — The day everything changed. Hoyer lift. 50 staples.
+                Complete paralysis on his left side. Doctors making no promises.
+              </p>
+              <p data-testid="text-about-journey">
+                Today, Nick types with both hands, runs his business with full force, and
+                teaches breakthrough techniques that combine street-tested methods with
+                cutting-edge neuroscience — none of which exist in standard medical textbooks.
+              </p>
+              <p className="text-white font-semibold text-lg" data-testid="text-about-mission">
+                "I'm not a doctor. I'm something better — a stroke survivor who refused to quit."
+              </p>
+            </div>
+
+            <div className="space-y-3 mb-10">
+              {achievements.map((achievement, index) => (
+                <div key={index} className="flex gap-3 items-start" data-testid={`achievement-${index}`}>
+                  <CheckCircle2 className="h-5 w-5 text-[#C9941A] flex-shrink-0 mt-0.5" />
+                  <p className="text-gray-300 text-sm">{achievement}</p>
+                </div>
+              ))}
+            </div>
+
+            <Link href="/recovery/about-nick">
+              <Button className="bg-[#C9941A] text-black font-semibold px-8">
+                Nick's Full Story
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            </Link>
           </div>
-        </Card>
+        </div>
       </div>
     </section>
   );
