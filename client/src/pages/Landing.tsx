@@ -1,23 +1,16 @@
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
-import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2 } from "lucide-react";
 import RecoveryHeader from "@/components/RecoveryHeader";
 import RecoverySEO, { NICK_KREMERS_SCHEMA, STROKE_RECOVERY_ORG_SCHEMA, SASQUATCH_METHOD_SCHEMA, STROKE_CONDITION_SCHEMA } from "@/components/RecoverySEO";
 import HeroSection from "@/components/HeroSection";
-import { MedicalCredentialsBanner } from "@/components/MedicalCredentials";
-import VideoIntro from "@/components/VideoIntro";
-import RecoveryPrograms from "@/components/RecoveryPrograms";
-import AIShowcase from "@/components/AIShowcase";
-import RecoveryByDesign from "@/components/RecoveryByDesign";
 import TestimonyVideo from "@/components/TestimonyVideo";
-import AboutNick from "@/components/AboutNick";
-import Doctrine from "@/components/Doctrine";
-import FeaturedExercises from "@/components/FeaturedExercises";
-import RecoveryBooks from "@/components/RecoveryBooks";
 import ProgressTimeline from "@/components/ProgressTimeline";
+import RecoveryPrograms from "@/components/RecoveryPrograms";
+import FeaturedExercises from "@/components/FeaturedExercises";
+import Doctrine from "@/components/Doctrine";
+import AboutNick from "@/components/AboutNick";
 import CommunityStories from "@/components/CommunityStories";
 import CTASection from "@/components/CTASection";
 import FAQ from "@/components/FAQ";
@@ -27,7 +20,6 @@ export default function Landing() {
   const { isLoading, isAuthenticated } = useAuth();
   const [, setLocation] = useLocation();
 
-  // Redirect authenticated users to dashboard
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
       setLocation('/recovery/dashboard');
@@ -36,20 +28,8 @@ export default function Landing() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen p-4" data-testid="loading-state">
-        <Card className="w-full max-w-md p-8">
-          <div className="flex flex-col items-center gap-6">
-            <Loader2 className="h-12 w-12 animate-spin text-[#C9941A]" data-testid="spinner" />
-            <div className="w-full space-y-3">
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-3/4" />
-              <Skeleton className="h-4 w-5/6" />
-            </div>
-            <div className="text-sm font-medium text-gray-400">
-              Loading...
-            </div>
-          </div>
-        </Card>
+      <div className="flex items-center justify-center h-screen bg-[#0D0D0D]" data-testid="loading-state">
+        <Loader2 className="h-12 w-12 animate-spin text-[#C9941A]" data-testid="spinner" />
       </div>
     );
   }
@@ -100,17 +80,12 @@ export default function Landing() {
       <RecoveryHeader />
       <main>
         <HeroSection />
-        <MedicalCredentialsBanner />
-        <VideoIntro />
-        <RecoveryPrograms />
-        <AIShowcase />
-        <RecoveryByDesign />
         <TestimonyVideo />
-        <AboutNick />
-        <Doctrine />
-        <FeaturedExercises />
-        <RecoveryBooks />
         <ProgressTimeline />
+        <RecoveryPrograms />
+        <FeaturedExercises />
+        <Doctrine />
+        <AboutNick />
         <CommunityStories />
         <CTASection />
         <FAQ />
