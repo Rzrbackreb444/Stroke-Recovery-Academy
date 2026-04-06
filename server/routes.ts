@@ -548,7 +548,6 @@ ${listings.slice(0, 1000).map((listing: any) => `  <url>
   // SEO: Stroke Recovery Academy sitemap — covers all 30+ recovery routes
   app.get('/sitemap-recovery.xml', async (req, res) => {
     const baseUrl = 'https://strokerecoveryacademy.com';
-    const kreaiteBase = 'https://kreaite.xyz';
     const today = new Date().toISOString().split('T')[0];
 
     const recoveryStaticRoutes = [
@@ -604,23 +603,14 @@ ${listings.slice(0, 1000).map((listing: any) => `  <url>
       const allRoutes = [...recoveryStaticRoutes, ...blogUrls];
 
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${allRoutes.map(r => {
-  const loc = r.path.startsWith('http') ? r.path : `${baseUrl}${r.path}`;
-  const altLoc = r.path.startsWith('http') ? r.path : `${kreaiteBase}${r.path}`;
+  const loc = `${baseUrl}${r.path}`;
   return `  <url>
     <loc>${loc}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${r.changefreq}</changefreq>
     <priority>${r.priority}</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="${loc}"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="${loc}"/>${(r as any).imageUrl ? `
-    <image:image>
-      <image:loc>${(r as any).imageUrl}</image:loc>
-      <image:title>${(r as any).imageTitle || 'Stroke Recovery Academy'}</image:title>
-    </image:image>` : ''}
   </url>`;
 }).join('\n')}
 </urlset>`;
@@ -634,31 +624,32 @@ ${allRoutes.map(r => {
     }
   });
 
-  // SEO: Robots.txt
+  // SEO: Robots.txt — served dynamically so it always points to the right domain
   app.get('/robots.txt', (req, res) => {
     const robotsTxt = `User-agent: *
 Allow: /
 Disallow: /api/
-Disallow: /dashboard
-Disallow: /creator-settings
-Disallow: /admin
-Disallow: /moderation
+Disallow: /admin/
+Disallow: /recovery/dashboard
+Disallow: /recovery/journal
+Disallow: /recovery/medical-log
+Disallow: /recovery/flicker-log
 
-Sitemap: https://kreaite.xyz/sitemap.xml
+Sitemap: https://strokerecoveryacademy.com/sitemap-index.xml
+Sitemap: https://strokerecoveryacademy.com/sitemap-recovery.xml
+Sitemap: https://strokerecoveryacademy.com/sitemap-blog.xml
 
-# Crawl-delay for respectful crawling
-Crawl-delay: 1
-
-# AI Training Bots
 User-agent: GPTBot
 Allow: /
 User-agent: ChatGPT-User
 Allow: /
+User-agent: Claude-Web
+Allow: /
+User-agent: anthropic-ai
+Allow: /
+User-agent: PerplexityBot
+Allow: /
 User-agent: Google-Extended
-Allow: /
-User-agent: Anthropic-AI
-Allow: /
-User-agent: CCBot
 Allow: /
 `;
     res.set('Content-Type', 'text/plain');
