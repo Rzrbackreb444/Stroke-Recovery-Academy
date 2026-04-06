@@ -355,7 +355,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // SEO: Dynamic Sitemap.xml with all content
   app.get('/sitemap.xml', async (req, res) => {
-    const baseUrl = 'https://kreaite.xyz';
+    const host = req.hostname || '';
+    const isRecovery = host.includes('strokerecovery') || host.includes('strokelyfe');
+    const baseUrl = isRecovery ? 'https://strokerecoveryacademy.com' : 'https://kreaite.xyz';
     const staticRoutes = [
       { path: '/', priority: '1.0', changefreq: 'weekly' },
       { path: '/marketplace', priority: '0.9', changefreq: 'daily' },
@@ -443,7 +445,9 @@ ${allRoutes.map(r => `  <url>
 
   // SEO: Sitemap Index for large sites
   app.get('/sitemap-index.xml', async (req, res) => {
-    const baseUrl = 'https://kreaite.xyz';
+    const host = req.hostname || '';
+    const isRecovery = host.includes('strokerecovery') || host.includes('strokelyfe');
+    const baseUrl = isRecovery ? 'https://strokerecoveryacademy.com' : 'https://kreaite.xyz';
     const today = new Date().toISOString().split('T')[0];
     
     const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
@@ -472,7 +476,9 @@ ${allRoutes.map(r => `  <url>
 
   // SEO: Blog-specific sitemap
   app.get('/sitemap-blog.xml', async (req, res) => {
-    const baseUrl = 'https://kreaite.xyz';
+    const host = req.hostname || '';
+    const isRecovery = host.includes('strokerecovery') || host.includes('strokelyfe');
+    const baseUrl = isRecovery ? 'https://strokerecoveryacademy.com' : 'https://kreaite.xyz';
     
     try {
       const posts = await db.select({ 
@@ -513,7 +519,9 @@ ${posts.map((post) => `  <url>
 
   // SEO: Marketplace-specific sitemap
   app.get('/sitemap-marketplace.xml', async (req, res) => {
-    const baseUrl = 'https://kreaite.xyz';
+    const host = req.hostname || '';
+    const isRecovery = host.includes('strokerecovery') || host.includes('strokelyfe');
+    const baseUrl = isRecovery ? 'https://strokerecoveryacademy.com' : 'https://kreaite.xyz';
     
     try {
       const listings = await storage.getMarketplaceListings?.() || [];

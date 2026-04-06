@@ -9,15 +9,10 @@ Disallow: /recovery/journal
 Disallow: /recovery/medical-log
 Disallow: /recovery/flicker-log
 
-# Primary sitemaps
-Sitemap: https://kreaite.xyz/sitemap.xml
-Sitemap: https://kreaite.xyz/sitemap-index.xml
-Sitemap: https://kreaite.xyz/sitemap-blog.xml
-Sitemap: https://kreaite.xyz/sitemap-marketplace.xml
-Sitemap: https://kreaite.xyz/sitemap-recovery.xml
-
-# Stroke Recovery Academy domain sitemaps
+# Stroke Recovery Academy sitemaps
+Sitemap: https://strokerecoveryacademy.com/sitemap-index.xml
 Sitemap: https://strokerecoveryacademy.com/sitemap.xml
+Sitemap: https://strokerecoveryacademy.com/sitemap-blog.xml
 Sitemap: https://strokerecoveryacademy.com/sitemap-recovery.xml
 
 # Major search engines
