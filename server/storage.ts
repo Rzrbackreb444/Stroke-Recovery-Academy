@@ -3004,6 +3004,183 @@ export class DatabaseStorage implements IStorage {
         updatedAt: new Date("2024-04-05"),
         readTime: 9,
       },
+      {
+        id: 6,
+        slug: "stroke-survivor-income-from-home",
+        title: "How Stroke Survivors Can Generate Real Income From Home",
+        excerpt: "Cognitive and physical limitations don't have to mean financial helplessness. Here's a realistic roadmap for earning while you recover.",
+        content: `After a stroke, many survivors face a brutal double blow: their ability to work is reduced or eliminated just as medical bills start piling up. It feels impossible. But it doesn't have to be.
+
+The key insight is this: traditional employment was built for able-bodied people on a fixed schedule. Recovery doesn't work on a schedule. Your income strategy shouldn't either.
+
+**What Actually Works for Stroke Survivors**
+
+The best income opportunities for survivors share three traits: they require no fixed schedule, have minimal physical demands, and leverage skills or relationships you already have.
+
+**1. Referral Programs**
+
+If you know people — and you do — you can earn money connecting them to services they need. Business loan referral programs like ROK Financial's partner program are a prime example. Business owners constantly need capital. You don't need to sell anything. You introduce someone, their team handles the rest, and you earn a commission when the deal closes.
+
+This works because your network — built over decades before your stroke — doesn't disappear when you have a stroke. It's still there. It's still valuable.
+
+**2. Consulting and Knowledge Work**
+
+Your professional expertise didn't evaporate. If you spent 20 years in accounting, marketing, healthcare, or any other field, that knowledge is still marketable — just in a different format. Short consulting calls, written guides, or answering questions in forums can all generate income.
+
+**3. Selling Digital Products**
+
+Templates, guides, ebooks — once created, these sell while you sleep. The upfront effort is real, but the ongoing demand on your time and body is minimal.
+
+**Starting Point: One Referral**
+
+Don't try to build an empire on day one. Start with one referral through one program. See what the process feels like. Build from there.
+
+The ROK Financial partner program is a good starting point because it's genuinely simple: you give them a name and contact info, they do the rest, and you earn when the deal funds. [Learn more and apply here](/recovery/survivor-income).
+
+Recovery takes time. Financial recovery doesn't have to wait until physical recovery is complete.`,
+        authorId: "nick-kremers",
+        authorName: "Nick Kremers",
+        category: "income",
+        tags: ["income", "financial recovery", "work from home", "stroke survivor"],
+        metaTitle: "How Stroke Survivors Can Earn Real Income From Home | Stroke Recovery Academy",
+        metaDescription: "Cognitive and physical limitations don't have to mean financial helplessness. Nick Kremers shares realistic income strategies built specifically for stroke survivors.",
+        focusKeyphrase: "stroke survivor income from home",
+        featuredImage: "/images/survivor-income.jpg",
+        status: "published",
+        featured: true,
+        viewCount: 4821,
+        likeCount: 312,
+        commentCount: 47,
+        createdAt: new Date("2025-01-10"),
+        updatedAt: new Date("2025-01-10"),
+        readTime: 6,
+      },
+      {
+        id: 7,
+        slug: "business-loan-referrals-passive-income",
+        title: "Business Loan Referrals: The Simplest Passive Income Strategy Most People Overlook",
+        excerpt: "If you know business owners, you have an asset worth money. Here's exactly how the referral model works and what you can expect to earn.",
+        content: `Most people think passive income requires a big upfront investment — money, time, or technical skill. Business loan referrals are different. They require none of those things. They require relationships.
+
+**The Basic Mechanics**
+
+A business loan referral program works like this:
+1. You sign up as a referral partner (free to join)
+2. You refer a business owner who needs funding
+3. The lending company handles everything: application, approval, terms, closing
+4. When the loan funds, you receive a commission
+
+That's the entire model. No licenses, no financial expertise, no selling.
+
+**Who Qualifies as a "Business Owner You Know"?**
+
+Think broader than you might initially. A business owner is:
+- Your neighbor who runs a landscaping company
+- A friend from church who owns a restaurant
+- A former coworker who started a consulting practice
+- Your cousin who runs an e-commerce store
+- Anyone who owns a business with employees, inventory, or commercial space
+
+Most people know 5-15 of these people without realizing it.
+
+**What Does ROK Financial Actually Do?**
+
+ROK Financial works with 75+ commercial lenders to find the best financing for businesses. They handle: SBA loans, business term loans, lines of credit, equipment financing, and more.
+
+Their partner program has a 4.9-star rating on Trustpilot based on 1,000+ reviews. The advisors are real people who handle every step after you make the introduction.
+
+**Commission Expectations**
+
+Commissions vary by deal size. Typical ranges:
+- Small business loan ($25K-$100K): $200-$800 commission
+- Mid-size deal ($100K-$500K): $500-$2,500 commission
+- Larger commercial deal ($500K+): $1,500-$5,000+ commission
+
+For a stroke survivor working from home, one funded referral per month could meaningfully supplement disability income or Social Security benefits.
+
+**Getting Started**
+
+The application takes about 5 minutes. [Apply as a ROK Financial partner here](/recovery/survivor-income). Once approved, you'll have access to their partner portal and can start submitting referrals immediately.`,
+        authorId: "nick-kremers",
+        authorName: "Nick Kremers",
+        category: "income",
+        tags: ["passive income", "business loans", "referral program", "income for survivors"],
+        metaTitle: "Business Loan Referrals: Simple Passive Income for Stroke Survivors | Stroke Recovery Academy",
+        metaDescription: "If you know business owners, you can earn real commissions referring them to commercial financing. Here's exactly how ROK Financial's referral program works for stroke survivors.",
+        focusKeyphrase: "business loan referral passive income",
+        featuredImage: "/images/business-loan-referrals.jpg",
+        status: "published",
+        featured: true,
+        viewCount: 3256,
+        likeCount: 198,
+        commentCount: 29,
+        createdAt: new Date("2025-01-20"),
+        updatedAt: new Date("2025-01-20"),
+        readTime: 7,
+      },
+      {
+        id: 8,
+        slug: "rebuilding-financial-confidence-after-stroke",
+        title: "Rebuilding Financial Confidence After Stroke",
+        excerpt: "A stroke doesn't just affect your body. It hits your identity, your income, and your sense of financial control. Here's how to start rebuilding — one step at a time.",
+        content: `Nobody talks about the financial grief that comes with stroke.
+
+You lose your job, or your hours, or your ability to do the work that defined you. You lose the feeling that you're contributing. You watch savings shrink. Medical bills grow. And on top of all of it, you're supposed to do your exercises and stay positive.
+
+This article is for the person who's done being told to stay positive without being given a plan.
+
+**The Financial Reality of Stroke**
+
+According to the American Stroke Association, stroke is a leading cause of long-term disability in the United States. For working-age survivors, this often means:
+- Partial or full loss of income
+- Increased medical expenses
+- Reduced ability to manage complex financial tasks
+- Dependence that feels humiliating when you're used to providing
+
+These are real problems. Acknowledging them isn't pessimism — it's the first step toward solving them.
+
+**What Financial Recovery Actually Looks Like**
+
+Financial recovery from stroke isn't about getting back to where you were. That may take years — or it may look different than before. It's about building a new foundation that matches your current capabilities.
+
+Start here:
+
+**1. Know what's available to you**
+
+Social Security Disability Insurance (SSDI), Supplemental Security Income (SSI), and state-level programs exist for a reason. Accessing them isn't weakness. It's using systems you've already paid into.
+
+**2. Identify what you can still do**
+
+Your professional network, your knowledge, your relationships — these survived your stroke. They can generate income in new forms. Consulting, referrals, teaching, writing. The format changes. The underlying value doesn't.
+
+**3. Start one small thing**
+
+Financial confidence doesn't come from a plan. It comes from doing one small thing, then another. Sign up for a referral program. Sell one thing. Make one call. Movement matters more than magnitude.
+
+**The Survivor Income Program**
+
+At Stroke Recovery Academy, we've partnered with ROK Financial to give survivors a concrete income starting point. If you know business owners who need financing, you can earn commissions referring them — no experience required, no schedule required, no physical demands.
+
+[Explore the Survivor Income Program here](/recovery/survivor-income).
+
+Your recovery is your job right now. But financial recovery deserves attention too. You don't have to choose between them.`,
+        authorId: "nick-kremers",
+        authorName: "Nick Kremers",
+        category: "income",
+        tags: ["financial recovery", "stroke identity", "income", "SSDI", "financial confidence"],
+        metaTitle: "Rebuilding Financial Confidence After Stroke | Stroke Recovery Academy",
+        metaDescription: "A stroke hits your income, your identity, and your sense of control. Nick Kremers shares a realistic, step-by-step approach to rebuilding financial confidence while still in recovery.",
+        focusKeyphrase: "rebuilding financial confidence after stroke",
+        featuredImage: "/images/financial-recovery.jpg",
+        status: "published",
+        featured: false,
+        viewCount: 2891,
+        likeCount: 241,
+        commentCount: 63,
+        createdAt: new Date("2025-02-05"),
+        updatedAt: new Date("2025-02-05"),
+        readTime: 8,
+      },
     ];
 
     let filtered = seedPosts;
