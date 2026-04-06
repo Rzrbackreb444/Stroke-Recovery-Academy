@@ -358,7 +358,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const host = req.hostname || '';
     const isRecovery = host.includes('strokerecovery') || host.includes('strokelyfe');
     const baseUrl = isRecovery ? 'https://strokerecoveryacademy.com' : 'https://kreaite.xyz';
-    const staticRoutes = [
+
+    const recoveryStaticRoutes = [
+      { path: '/', priority: '1.0', changefreq: 'weekly' },
+      { path: '/recovery', priority: '1.0', changefreq: 'weekly' },
+      { path: '/recovery/university', priority: '0.9', changefreq: 'weekly' },
+      { path: '/recovery/sasquatch-coach', priority: '0.9', changefreq: 'weekly' },
+      { path: '/recovery/protocols', priority: '0.9', changefreq: 'weekly' },
+      { path: '/recovery/exercises', priority: '0.9', changefreq: 'weekly' },
+      { path: '/recovery/blog', priority: '0.9', changefreq: 'daily' },
+      { path: '/recovery/center-finder', priority: '0.8', changefreq: 'monthly' },
+      { path: '/recovery/survivor-income', priority: '0.8', changefreq: 'monthly' },
+      { path: '/recovery/store', priority: '0.8', changefreq: 'weekly' },
+      { path: '/recovery/resources', priority: '0.7', changefreq: 'weekly' },
+      { path: '/recovery/community', priority: '0.8', changefreq: 'daily' },
+      { path: '/pricing', priority: '0.7', changefreq: 'monthly' },
+      { path: '/terms', priority: '0.3', changefreq: 'yearly' },
+      { path: '/privacy', priority: '0.3', changefreq: 'yearly' },
+    ];
+
+    const creatorStaticRoutes = [
       { path: '/', priority: '1.0', changefreq: 'weekly' },
       { path: '/marketplace', priority: '0.9', changefreq: 'daily' },
       { path: '/book-studio', priority: '0.9', changefreq: 'weekly' },
@@ -371,23 +390,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       { path: '/blog', priority: '0.9', changefreq: 'daily' },
       { path: '/pricing', priority: '0.8', changefreq: 'monthly' },
       { path: '/about', priority: '0.7', changefreq: 'monthly' },
-      { path: '/about-us', priority: '0.7', changefreq: 'monthly' },
       { path: '/community', priority: '0.8', changefreq: 'daily' },
-      { path: '/stories', priority: '0.8', changefreq: 'daily' },
       { path: '/publishing', priority: '0.7', changefreq: 'monthly' },
-      { path: '/quick-create', priority: '0.8', changefreq: 'weekly' },
-      { path: '/media-studio', priority: '0.8', changefreq: 'weekly' },
-      { path: '/podcast-studio', priority: '0.8', changefreq: 'weekly' },
-      { path: '/production-dashboard', priority: '0.8', changefreq: 'weekly' },
-      { path: '/music-sandbox', priority: '0.8', changefreq: 'weekly' },
-      { path: '/script-studio', priority: '0.8', changefreq: 'weekly' },
-      { path: '/life-story', priority: '0.8', changefreq: 'weekly' },
-      { path: '/ai-consultant', priority: '0.7', changefreq: 'weekly' },
-      { path: '/white-label', priority: '0.7', changefreq: 'monthly' },
       { path: '/affiliate', priority: '0.6', changefreq: 'monthly' },
       { path: '/terms', priority: '0.3', changefreq: 'yearly' },
       { path: '/privacy', priority: '0.3', changefreq: 'yearly' },
     ];
+
+    const staticRoutes = isRecovery ? recoveryStaticRoutes : creatorStaticRoutes;
 
     try {
       // Get marketplace listings
