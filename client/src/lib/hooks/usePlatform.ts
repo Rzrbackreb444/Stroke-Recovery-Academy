@@ -56,11 +56,8 @@ export function usePlatform(): Platform {
       return "nonprofit";
     }
     
-    if (isRecoveryHostname(hostname)) {
-      return "recovery";
-    }
-    
-    return "creator";
+    // Default to recovery — Stroke Recovery Academy is the primary platform
+    return "recovery";
   }, []);
 }
 
@@ -84,9 +81,6 @@ export function getPlatformFromHostname(hostname?: string): Platform {
     return "nonprofit";
   }
   
-  if (isRecoveryHostname(h)) {
-    return "recovery";
-  }
-  
-  return "creator";
+  // Default to recovery — Stroke Recovery Academy is the primary platform
+  return "recovery";
 }

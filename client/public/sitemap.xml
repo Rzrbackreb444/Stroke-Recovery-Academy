@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
-    <loc>https://kreaite.xyz/sitemap.xml</loc>
-    <lastmod>2026-02-27</lastmod>
+    <loc>https://strokerecoveryacademy.com/sitemap-recovery.xml</loc>
   </sitemap>
   <sitemap>
-    <loc>https://kreaite.xyz/sitemap-blog.xml</loc>
-    <lastmod>2026-02-27</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>https://kreaite.xyz/sitemap-marketplace.xml</loc>
-    <lastmod>2026-02-27</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>https://kreaite.xyz/sitemap-recovery.xml</loc>
-    <lastmod>2026-02-27</lastmod>
+    <loc>https://strokerecoveryacademy.com/sitemap-blog.xml</loc>
   </sitemap>
 </sitemapindex>
