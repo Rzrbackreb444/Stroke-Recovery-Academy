@@ -355,9 +355,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // SEO: Dynamic Sitemap.xml with all content
   app.get('/sitemap.xml', async (req, res) => {
-    const host = req.hostname || '';
-    const isRecovery = host.includes('strokerecovery') || host.includes('strokelyfe');
-    const baseUrl = isRecovery ? 'https://strokerecoveryacademy.com' : 'https://kreaite.xyz';
+    const baseUrl = 'https://strokerecoveryacademy.com';
 
     const recoveryStaticRoutes = [
       { path: '/', priority: '1.0', changefreq: 'weekly' },
@@ -377,27 +375,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       { path: '/privacy', priority: '0.3', changefreq: 'yearly' },
     ];
 
-    const creatorStaticRoutes = [
-      { path: '/', priority: '1.0', changefreq: 'weekly' },
-      { path: '/marketplace', priority: '0.9', changefreq: 'daily' },
-      { path: '/book-studio', priority: '0.9', changefreq: 'weekly' },
-      { path: '/music-studio', priority: '0.9', changefreq: 'weekly' },
-      { path: '/video-studio', priority: '0.9', changefreq: 'weekly' },
-      { path: '/course-studio', priority: '0.9', changefreq: 'weekly' },
-      { path: '/image-studio', priority: '0.9', changefreq: 'weekly' },
-      { path: '/doctrine-engine', priority: '0.9', changefreq: 'weekly' },
-      { path: '/seo-command-center', priority: '0.8', changefreq: 'weekly' },
-      { path: '/blog', priority: '0.9', changefreq: 'daily' },
-      { path: '/pricing', priority: '0.8', changefreq: 'monthly' },
-      { path: '/about', priority: '0.7', changefreq: 'monthly' },
-      { path: '/community', priority: '0.8', changefreq: 'daily' },
-      { path: '/publishing', priority: '0.7', changefreq: 'monthly' },
-      { path: '/affiliate', priority: '0.6', changefreq: 'monthly' },
-      { path: '/terms', priority: '0.3', changefreq: 'yearly' },
-      { path: '/privacy', priority: '0.3', changefreq: 'yearly' },
-    ];
-
-    const staticRoutes = isRecovery ? recoveryStaticRoutes : creatorStaticRoutes;
+    const staticRoutes = recoveryStaticRoutes;
 
     try {
       // Get marketplace listings
@@ -455,15 +433,13 @@ ${allRoutes.map(r => `  <url>
 
   // SEO: Sitemap Index for large sites
   app.get('/sitemap-index.xml', async (req, res) => {
-    const host = req.hostname || '';
-    const isRecovery = host.includes('strokerecovery') || host.includes('strokelyfe');
-    const baseUrl = isRecovery ? 'https://strokerecoveryacademy.com' : 'https://kreaite.xyz';
+    const baseUrl = 'https://strokerecoveryacademy.com';
     const today = new Date().toISOString().split('T')[0];
     
     const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
-    <loc>${baseUrl}/sitemap.xml</loc>
+    <loc>${baseUrl}/sitemap-recovery.xml</loc>
     <lastmod>${today}</lastmod>
   </sitemap>
   <sitemap>
@@ -471,11 +447,7 @@ ${allRoutes.map(r => `  <url>
     <lastmod>${today}</lastmod>
   </sitemap>
   <sitemap>
-    <loc>${baseUrl}/sitemap-marketplace.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/sitemap-recovery.xml</loc>
+    <loc>${baseUrl}/sitemap.xml</loc>
     <lastmod>${today}</lastmod>
   </sitemap>
 </sitemapindex>`;
@@ -486,12 +458,10 @@ ${allRoutes.map(r => `  <url>
 
   // SEO: Blog-specific sitemap
   app.get('/sitemap-blog.xml', async (req, res) => {
-    const host = req.hostname || '';
-    const isRecovery = host.includes('strokerecovery') || host.includes('strokelyfe');
-    const baseUrl = isRecovery ? 'https://strokerecoveryacademy.com' : 'https://kreaite.xyz';
+    const baseUrl = 'https://strokerecoveryacademy.com';
     
     try {
-      const posts = await db.select({ 
+      const dbPosts = await db.select({ 
         slug: blogPosts.slug, 
         title: blogPosts.title,
         updatedAt: blogPosts.updatedAt,
@@ -502,13 +472,29 @@ ${allRoutes.map(r => `  <url>
         .orderBy(desc(blogPosts.publishedAt))
         .limit(1000);
 
+      // Fallback to seeded posts slugs if DB is empty
+      const fallbackSlugs = [
+        { slug: 'stroke-recovery-journey-from-0-to-90-percent', title: 'From 0% to 90%: Nick Kremers Stroke Recovery Journey' },
+        { slug: 'top-stroke-recovery-exercises-at-home', title: 'Top Stroke Recovery Exercises You Can Do at Home' },
+        { slug: 'sasquatch-method-accountability-recovery', title: 'The Sasquatch Method: How Accountability Transforms Recovery' },
+        { slug: 'stroke-recovery-income-opportunities', title: 'Turning Your Stroke Recovery Story Into Income' },
+        { slug: 'rok-financial-survivor-income-program', title: 'ROK Financial Partner Program for Stroke Survivors' },
+        { slug: 'building-passive-income-after-stroke', title: 'Building Passive Income After a Stroke: A Survivors Guide' },
+      ];
+
+      const posts = dbPosts.length > 0 ? dbPosts : fallbackSlugs.map(p => ({
+        slug: p.slug, title: p.title, updatedAt: null, heroImageUrl: null
+      }));
+
+      const today = new Date().toISOString().split('T')[0];
+
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
         xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
 ${posts.map((post) => `  <url>
-    <loc>${baseUrl}/blog/${post.slug}</loc>
-    <lastmod>${post.updatedAt ? new Date(post.updatedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}</lastmod>
+    <loc>${baseUrl}/recovery/blog/${post.slug}</loc>
+    <lastmod>${post.updatedAt ? new Date(post.updatedAt).toISOString().split('T')[0] : today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>${post.heroImageUrl ? `
     <image:image>
@@ -529,9 +515,7 @@ ${posts.map((post) => `  <url>
 
   // SEO: Marketplace-specific sitemap
   app.get('/sitemap-marketplace.xml', async (req, res) => {
-    const host = req.hostname || '';
-    const isRecovery = host.includes('strokerecovery') || host.includes('strokelyfe');
-    const baseUrl = isRecovery ? 'https://strokerecoveryacademy.com' : 'https://kreaite.xyz';
+    const baseUrl = 'https://strokerecoveryacademy.com';
     
     try {
       const listings = await storage.getMarketplaceListings?.() || [];
