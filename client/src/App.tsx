@@ -117,6 +117,8 @@ import RecoveryJournal from "@/pages/RecoveryJournal";
 import RecoveryResources from "@/pages/RecoveryResources";
 import RecoveryCenterFinder from "@/pages/RecoveryCenterFinder";
 import RecoveryBlog from "@/pages/RecoveryBlog";
+import SasquatchCoach from "@/pages/SasquatchCoach";
+import SurvivorIncome from "@/pages/SurvivorIncome";
 import RecoveryProtocols from "@/pages/RecoveryProtocols";
 import MyBook from "@/pages/MyBook";
 import AboutNick from "@/pages/AboutNick";
@@ -505,6 +507,8 @@ function Router() {
       <Route path="/recovery/center-finder" component={RecoveryCenterFinder} />
       <Route path="/recovery/blog" component={RecoveryBlog} />
       <Route path="/recovery/protocols" component={RecoveryProtocols} />
+      <Route path="/recovery/sasquatch-coach" component={SasquatchCoach} />
+      <Route path="/recovery/survivor-income" component={SurvivorIncome} />
       <Route path="/my-book">
         <ProtectedRoute>
           <MyBook />

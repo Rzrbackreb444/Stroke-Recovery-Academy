@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -177,11 +178,27 @@ const tierConfig: Record<string, { name: string; icon: typeof Star; color: strin
   platinum: { name: "Platinum", icon: Sparkles, color: "text-[#C9941A]" },
 };
 
+function getRecoveryTier(subscriptionTier?: string | null): string {
+  switch (subscriptionTier) {
+    case "enterprise": return "platinum";
+    case "pro": return "champion";
+    case "creator":
+    case "survivor": return "warrior";
+    default: return "explorer";
+  }
+}
+
 export default function RecoveryUniversity() {
   const { user } = useAuth();
-  const userTier = "explorer";
   const [activePhase, setActivePhase] = useState<string>("all");
 
+  const { data: enrollment } = useQuery({
+    queryKey: ["/api/recovery/enrollment"],
+    enabled: !!user,
+    retry: false,
+  });
+
+  const userTier = getRecoveryTier((user as any)?.subscriptionTier);
   const tierOrder = ["explorer", "warrior", "champion", "platinum"];
   const userTierIndex = tierOrder.indexOf(userTier);
 
@@ -194,8 +211,11 @@ export default function RecoveryUniversity() {
   const getTotalMinutes = () => curriculumParts.reduce((sum, part) => 
     sum + part.chapters.reduce((chSum, ch) => chSum + ch.estimatedMinutes, 0), 0);
 
-  const completedChapters = 3;
-  const progressPercentage = Math.round((completedChapters / getTotalChapters()) * 100);
+  const rawCompleted = (enrollment as any)?.completedLessonIds?.length ?? (enrollment as any)?.progressPercentage
+    ? Math.round(((enrollment as any).progressPercentage / 100) * getTotalChapters())
+    : 0;
+  const completedChapters = rawCompleted;
+  const progressPercentage = Math.round((completedChapters / Math.max(getTotalChapters(), 1)) * 100);
 
   const getFilteredParts = () => {
     if (activePhase === "all") return curriculumParts;

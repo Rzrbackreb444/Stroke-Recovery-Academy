@@ -15,9 +15,9 @@ import strokeLyfeLogo from "@assets/stroked-out-sasquatch-logo.png";
 
 const navLinks = [
   { href: "/recovery/academy", label: "Academy" },
-  { href: "/recovery/protocols", label: "Protocols" },
+  { href: "/recovery/sasquatch-coach", label: "AI Coach" },
   { href: "/recovery/blog", label: "Blog" },
-  { href: "/recovery/center-finder", label: "Find Centers" },
+  { href: "/recovery/survivor-income", label: "Earn Income" },
 ];
 
 export default function RecoveryHeader() {
