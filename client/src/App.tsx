@@ -83,7 +83,6 @@ import ResetPassword from "@/pages/ResetPassword";
 import SquatchQRLanding from "@/pages/SquatchQRLanding";
 import SquatchQRStudio from "@/pages/SquatchQRStudio";
 import QuoteViewPage from "@/pages/QuoteViewPage";
-import LaundroCalc from "@/pages/LaundroCalc";
 
 // Stroke Recovery Platform Pages (under /recovery/*)
 import StrokeRecoveryLanding from "@/pages/Landing";
@@ -194,7 +193,6 @@ function Router() {
       <Route path="/author/:slug" component={AuthorStorefront} />
       <Route path="/publishing" component={Publishing} />
       <Route path="/pricing" component={Pricing} />
-      <Route path="/washbiz/calculator" component={LaundroCalc} />
       <Route path="/squatch-qr" component={SquatchQRLanding} />
       <Route path="/squatch-qr/studio">
         <ProtectedRoute>
