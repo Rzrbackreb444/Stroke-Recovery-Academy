@@ -370,6 +370,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       { path: '/recovery/store', priority: '0.8', changefreq: 'weekly' },
       { path: '/recovery/resources', priority: '0.7', changefreq: 'weekly' },
       { path: '/recovery/community', priority: '0.8', changefreq: 'daily' },
+      { path: '/washbiz/calculator', priority: '0.9', changefreq: 'monthly' },
       { path: '/pricing', priority: '0.7', changefreq: 'monthly' },
       { path: '/terms', priority: '0.3', changefreq: 'yearly' },
       { path: '/privacy', priority: '0.3', changefreq: 'yearly' },
@@ -577,6 +578,7 @@ ${listings.slice(0, 1000).map((listing: any) => `  <url>
       { path: '/pricing', priority: '0.85', changefreq: 'monthly', description: 'Recovery Academy Pricing Plans' },
       { path: '/recovery/sasquatch-coach', priority: '0.90', changefreq: 'weekly', description: 'Sasquatch Coach - 24/7 AI Stroke Recovery Coach' },
       { path: '/recovery/survivor-income', priority: '0.90', changefreq: 'weekly', description: 'Survivor Income Program - Earn Money After Stroke' },
+      { path: '/washbiz/calculator', priority: '0.90', changefreq: 'monthly', description: 'Laundromat Investment Calculator - Startup Cost & ROI Tool' },
     ];
 
     try {
