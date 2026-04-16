@@ -62,20 +62,6 @@ const books = [
     progress: 0,
     courseId: 2,
   },
-  {
-    id: 3,
-    title: "Wheeled Out",
-    subtitle: "From Wheelchair to Walking",
-    author: "Nick Kremers",
-    description: "The complete mobility recovery guide — equipment, independence strategies, and the step-by-step journey from wheelchair to walking. Written from lived experience, not a textbook.",
-    topics: ["Wheelchair to Walking", "Mobility Recovery", "Equipment Guides", "Independence Training"],
-    gradient: "from-amber-500 via-orange-400 to-yellow-500",
-    chapters: 16,
-    duration: "8+ hours",
-    status: "coming-soon" as const,
-    progress: 0,
-    courseId: 3,
-  },
 ];
 
 const featuredModules = [
@@ -386,14 +372,14 @@ export default function Academy() {
     <div className="min-h-screen bg-[#0D0D0D]">
       <RecoverySEO
         title="Stroke Recovery Academy — Learn the Sasquatch Method from Nick Kremers"
-        description="Master stroke recovery with Nick Kremers — the stroke survivor who went from 0% to 90%. Three comprehensive courses: The Stroked Out Sasquatch, The Ultimate Stroke Recovery Bible, and Wheeled Out. Mirror therapy, baseball bat therapy, drop foot protocols, neuroplasticity training."
+        description="Master stroke recovery with Nick Kremers — the stroke survivor who went from 0% to 90%. Two comprehensive courses: The Stroked Out Sasquatch (personal journey) and The Ultimate Stroke Recovery Revolution (battle-tested protocols). Mirror therapy, baseball bat therapy, drop foot protocols, neuroplasticity training."
         canonical="/recovery/academy"
         pageType="course"
         keywords={[
           "Stroke Recovery Academy", "Nick Kremers stroke", "Sasquatch Method", "stroke recovery courses",
           "stroke rehabilitation training", "mirror therapy course", "baseball bat therapy stroke",
           "drop foot recovery", "neuroplasticity training", "stroke survivor courses",
-          "Stroked Out Sasquatch book", "stroke recovery bible", "Wheeled Out stroke",
+          "Stroked Out Sasquatch book", "stroke recovery revolution", "stroke recovery blueprint",
           "stroke recovery mindset", "stroke warrior training"
         ]}
         speakableSelectors={["#academy-hero-title", "[data-testid='text-academy-title']", "[data-testid='text-academy-subtitle']"]}
@@ -401,19 +387,19 @@ export default function Academy() {
         additionalSchema={[
           createRecoveryCourseSchema({
             name: "The Stroked Out Sasquatch",
-            description: "Nick Kremers' personal journey from 0% to 90% recovery. Learn the Sasquatch mindset and methodology that drove his extraordinary comeback.",
+            description: "Nick Kremers' raw 38-chapter autobiography — from catastrophic stroke to 90%+ recovery. The unfiltered story of ICU hallucinations, learning to walk, TikTok, and building Stroke Recovery Academy.",
             url: "/recovery/academy",
-            numberOfLessons: 12,
-            durationHours: 6,
+            numberOfLessons: 38,
+            durationHours: 8,
             level: "All Levels",
             free: false,
           }),
           createRecoveryCourseSchema({
-            name: "The Ultimate Stroke Recovery Bible",
-            description: "Comprehensive stroke recovery protocols including mirror therapy, baseball bat therapy, drop foot recovery, and neuroplasticity exercises.",
+            name: "The Ultimate Stroke Recovery Revolution",
+            description: "The battle-tested blueprint: 33 chapters covering the Kremers Recovery Formula, neuroplasticity, mirror therapy, baseball bat therapy, drop foot protocols, the 66-Day Transformation, and the complete Sasquatch Doctrine.",
             url: "/recovery/academy",
-            numberOfLessons: 24,
-            durationHours: 12,
+            numberOfLessons: 33,
+            durationHours: 14,
             level: "All Levels",
             free: false,
           }),
@@ -421,7 +407,7 @@ export default function Academy() {
           { "@context": "https://schema.org", ...STROKE_CONDITION_SCHEMA },
         ]}
         faq={[
-          { question: "What is the Stroke Recovery Academy?", answer: "Stroke Recovery Academy is a comprehensive online platform created by Nick Kremers — a stroke survivor who went from 0% to 90% functional recovery. It offers three in-depth courses: 'The Stroked Out Sasquatch' (mindset and personal journey), 'The Ultimate Stroke Recovery Bible' (evidence-based protocols), and 'Wheeled Out' (wheelchair to walking). The Academy also includes a 33-chapter curriculum, AI coaching via Sasquatch Coach, a community of survivors, and evidence-based exercise programs." },
+          { question: "What is the Stroke Recovery Academy?", answer: "Stroke Recovery Academy is a comprehensive online platform created by Nick Kremers — a stroke survivor who went from 0% to 90% functional recovery. It offers two in-depth courses: 'The Stroked Out Sasquatch' (38-chapter autobiography and mindset journey) and 'The Ultimate Stroke Recovery Revolution' (33-chapter battle-tested protocol guide). The Academy also includes AI coaching via Sasquatch Coach, a community of survivors, and evidence-based exercise programs." },
           { question: "What is mirror therapy for stroke recovery?", answer: "Mirror therapy is a stroke rehabilitation technique where you place a mirror along your body's midline. You watch your unaffected arm/hand perform movements in the mirror, creating the visual illusion that your affected arm is moving normally. This visual feedback activates mirror neurons in the brain and stimulates neuroplasticity, helping to restore motor function in the affected limb. Research shows 20-30 minutes of mirror therapy daily significantly improves arm and hand function after stroke." },
           { question: "What is baseball bat therapy for stroke?", answer: "Baseball bat therapy, pioneered by Nick Kremers, uses the weight and grip of a baseball bat to provide progressive resistance training for stroke-affected arms and hands. The familiar shape promotes neural re-engagement and the weight challenges weakened muscles in a functional, task-specific way. Nick used this as part of his daily rehabilitation routine as he recovered from 0% to 90% function." },
           { question: "How do I get started with the Stroke Recovery Academy?", answer: "To get started, create a free account on Stroke Recovery Academy, explore the Recovery University 33-chapter curriculum (available to all members), access the exercise database with 34 therapeutic exercises, and connect with the Sasquatch Coach (AI powered by Nick's methodology). Upgrade to a paid tier for full course access, live coaching, and premium protocol content." }
@@ -477,7 +463,7 @@ export default function Academy() {
                 </div>
                 <div className="flex items-center gap-2">
                   <BookOpen className="h-4 w-4 text-[#C9941A]" aria-hidden="true" />
-                  <span>3 Comprehensive Courses</span>
+                  <span>2 Comprehensive Courses</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Award className="h-4 w-4 text-[#C9941A]" aria-hidden="true" />

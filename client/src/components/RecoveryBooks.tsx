@@ -25,7 +25,7 @@ export default function RecoveryBooks() {
         "The comprehensive technical manual for stroke survivors who refuse to accept limitations. Complete protocols from wheelchair to walking.",
     },
     {
-      title: "The Ultimate Survivor Recovery Bible 2025",
+      title: "The Ultimate Stroke Recovery Revolution",
       subtitle: "From Impossible to Inevitable - The Stroke Survivor Your Mom Warned You About",
       pageCount: 6113,
       chapterCount: 31,

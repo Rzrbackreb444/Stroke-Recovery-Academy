@@ -30,7 +30,7 @@ export default function AboutNick() {
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <RecoverySEO
         title="About Nick Kremers — Stroke Survivor, Author & Founder of Stroke Recovery Academy"
-        description="Nick Kremers suffered a devastating stroke and went from 0% to 90% functional recovery using the Sasquatch Method. Author of 3 stroke recovery books, founder of Stroke Recovery Academy, and 24/7 recovery coach to thousands of survivors worldwide."
+        description="Nick Kremers suffered a devastating hemorrhagic stroke on December 3, 2018, and went from 0% to 90%+ functional recovery using the Sasquatch Method. Author of The Stroked Out Sasquatch and The Ultimate Stroke Recovery Revolution, founder of Stroke Recovery Academy, and 24/7 recovery coach to thousands of survivors worldwide."
         canonical="/recovery/about-nick"
         pageType="article"
         author="Nick Kremers"
@@ -49,10 +49,10 @@ export default function AboutNick() {
           { "@context": "https://schema.org", ...SASQUATCH_METHOD_SCHEMA }
         ]}
         faq={[
-          { question: "Who is Nick Kremers?", answer: "Nick Kremers is a stroke survivor who suffered a life-changing stroke and went from 0% to 90% functional recovery through relentless rehabilitation. He is the founder of Stroke Recovery Academy, author of 'The Stroked Out Sasquatch,' 'The Ultimate Stroke Recovery Bible,' and 'Wheeled Out,' and the creator of the Sasquatch Method — a comprehensive 66-day stroke recovery system used by survivors worldwide." },
+          { question: "Who is Nick Kremers?", answer: "Nick Kremers is a stroke survivor who suffered a massive hemorrhagic stroke on December 3, 2018, and went from 0% to 90%+ functional recovery through relentless rehabilitation. He is the founder of Stroke Recovery Academy, author of 'The Stroked Out Sasquatch' and 'The Ultimate Stroke Recovery Revolution,' and the creator of the Sasquatch Method — a battle-tested recovery system used by survivors worldwide." },
           { question: "How did Nick Kremers recover from his stroke?", answer: "Nick Kremers recovered from his stroke using what he calls the Sasquatch Method: a combination of neuroplasticity-based physical rehabilitation (mirror therapy, baseball bat therapy, drop foot protocols), an unbreakable 'Never Zero' daily consistency commitment, a warrior mindset that rejects the victim mentality, community support, and the C.O.M.P.A.S.S. seven-pillar system. Over 2+ years, he went from 0% to 90% functional ability." },
           { question: "What is the Sasquatch Method for stroke recovery?", answer: "The Sasquatch Method is Nick Kremers' battle-tested 66-day stroke recovery system. It has three phases: Survival (Days 1-22: basic function restoration), Breakthrough (Days 23-44: building momentum), and Optimization (Days 45-66: mastery and acceleration). The method combines neuroplasticity science, physical protocols, mindset mastery, and daily consistency. Its core principles are: Take, Learn, Experiment, Combine, Apply." },
-          { question: "What books has Nick Kremers written about stroke recovery?", answer: "Nick Kremers has written three stroke recovery books: (1) 'The Stroked Out Sasquatch' — his raw personal journey from stroke to 90% recovery; (2) 'The Ultimate Stroke Recovery Bible' — a comprehensive protocol guide covering mirror therapy, baseball bat therapy, drop foot recovery, and neuroplasticity training; (3) 'Wheeled Out' — the story of going from wheelchair to walking, with equipment guides and independence strategies." }
+          { question: "What books has Nick Kremers written about stroke recovery?", answer: "Nick Kremers has written two stroke recovery books: (1) 'The Stroked Out Sasquatch' — his raw, 38-chapter autobiography from catastrophic stroke to 90%+ recovery, covering the ICU, the therapists, TikTok, and building the movement; (2) 'The Ultimate Stroke Recovery Revolution: From 0% to 90%+ and Still Rising' — 33 chapters and 9 appendices covering the Kremers Recovery Formula, neuroplasticity, mirror therapy, baseball bat therapy, drop foot protocols, and the complete Sasquatch Doctrine." }
         ]}
       />
       <RecoveryHeader />
