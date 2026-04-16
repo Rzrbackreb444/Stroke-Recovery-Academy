@@ -37,25 +37,27 @@ const books = [
   {
     id: 1,
     title: "The Stroked Out Sasquatch",
+    subtitle: "A Stroke Recovery Guide Through the Eyes of a Survivor",
     author: "Nick Kremers",
-    description: "Nick's raw, unfiltered personal journey from catastrophic stroke to 90% recovery. Learn the mindset of a warrior and the 'Sasquatch Method' that combines tough love with compassion.",
-    topics: ["Personal Journey", "Mindset & Perseverance", "The Sasquatch Method", "Tough Love Recovery"],
+    description: "Nick's raw, chapter-by-chapter autobiography — from a lifelong athlete benching 400 lbs to lying paralyzed in an ICU with 50 staples in his skull. This is the unfiltered story: the hallucinations, the pureed food, learning to walk again with Michael, TikTok going viral, and building StrokeRecoveryAcademy.com from Fort Smith, Arkansas.",
+    topics: ["December 3, 2018 — The Day It Happened", "ICU, Hallucinations & 50 Staples", "Michael: The Therapist Who Changed Everything", "TikTok Army & Building the Movement"],
     gradient: "from-orange-600 via-orange-500 to-amber-500",
-    chapters: 12,
-    duration: "6+ hours",
+    chapters: 38,
+    duration: "8+ hours",
     status: "available" as const,
     progress: 0,
     courseId: 1,
   },
   {
     id: 2,
-    title: "The Ultimate Stroke Recovery Bible",
+    title: "The Ultimate Stroke Recovery Revolution",
+    subtitle: "From 0% to 90%+ and Still Rising",
     author: "Nick Kremers",
-    description: "The comprehensive guide to stroke recovery protocols and techniques. Evidence-based methods combined with patient-driven innovation from years of real-world recovery experience.",
-    topics: ["Mirror Therapy", "Baseball Bat Therapy", "Drop Foot Protocol", "Neuroplasticity Exercises"],
+    description: "The battle-tested blueprint for defying every 'never.' 33 chapters and 9 appendices covering neuroplasticity, the 66-Day Tracker, Baseball Bat Therapy, Mirror Therapy, Drop Foot Destruction, the Kremers Recovery Formula (TAKE→LEARN→EXPERIMENT→COMBINE→APPLY), and the complete Sasquatch Doctrine. This is the methodology behind the movement.",
+    topics: ["The Kremers Recovery Formula", "Neuroplasticity Revolution", "Baseball Bat & Mirror Therapy", "The 66-Day Transformation"],
     gradient: "from-primary via-orange-500 to-red-600",
-    chapters: 24,
-    duration: "12+ hours",
+    chapters: 33,
+    duration: "14+ hours",
     status: "available" as const,
     progress: 0,
     courseId: 2,
@@ -63,13 +65,14 @@ const books = [
   {
     id: 3,
     title: "Wheeled Out",
+    subtitle: "From Wheelchair to Walking",
     author: "Nick Kremers",
-    description: "Stories and insights from wheelchair to walking. A detailed mobility recovery journey with equipment recommendations and practical usage guides for regaining independence.",
+    description: "The complete mobility recovery guide — equipment, independence strategies, and the step-by-step journey from wheelchair to walking. Written from lived experience, not a textbook.",
     topics: ["Wheelchair to Walking", "Mobility Recovery", "Equipment Guides", "Independence Training"],
     gradient: "from-amber-500 via-orange-400 to-yellow-500",
     chapters: 16,
     duration: "8+ hours",
-    status: "available" as const,
+    status: "coming-soon" as const,
     progress: 0,
     courseId: 3,
   },
@@ -177,9 +180,10 @@ const benefits = [
 ];
 
 function BookCard({ book }: { book: typeof books[0] }) {
+  const isComingSoon = book.status === "coming-soon";
   return (
     <article data-testid={`card-book-${book.id}`}>
-      <Card className="h-full flex flex-col hover-elevate overflow-visible">
+      <Card className={`h-full flex flex-col overflow-visible ${isComingSoon ? "opacity-60" : "hover-elevate"}`}>
         <CardHeader className="pb-0">
           <div 
             className={`relative aspect-[3/4] rounded-lg bg-gradient-to-br ${book.gradient} flex items-center justify-center p-6 mb-4`}
@@ -192,8 +196,16 @@ function BookCard({ book }: { book: typeof books[0] }) {
               <h3 className="text-xl font-black text-foreground uppercase tracking-wide leading-tight">
                 {book.title}
               </h3>
+              {"subtitle" in book && book.subtitle && (
+                <p className="text-xs text-foreground/70 mt-1 italic leading-snug">{book.subtitle}</p>
+              )}
               <p className="text-sm text-foreground/80 mt-2">by {book.author}</p>
             </div>
+            {isComingSoon && (
+              <Badge className="absolute top-3 right-3 bg-gray-700 text-gray-300 border-none">
+                Coming Soon
+              </Badge>
+            )}
             {book.status === "new" && (
               <Badge className="absolute top-3 right-3 bg-[#C9941A] text-black border-none">
                 New
@@ -204,9 +216,12 @@ function BookCard({ book }: { book: typeof books[0] }) {
         
         <CardContent className="flex-1 space-y-4">
           <div>
-            <h4 className="font-semibold text-lg text-foreground mb-2" data-testid={`text-book-title-${book.id}`}>
+            <h4 className="font-semibold text-lg text-foreground mb-1" data-testid={`text-book-title-${book.id}`}>
               {book.title}
             </h4>
+            {"subtitle" in book && book.subtitle && (
+              <p className="text-xs text-[#C9941A] mb-2 italic">{book.subtitle}</p>
+            )}
             <p className="text-sm text-gray-400" data-testid={`text-book-description-${book.id}`}>
               {book.description}
             </p>
@@ -231,23 +246,35 @@ function BookCard({ book }: { book: typeof books[0] }) {
             </span>
           </div>
           
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-gray-400">Course Progress</span>
-              <span className="font-medium text-foreground">{book.progress}%</span>
+          {!isComingSoon && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-400">Course Progress</span>
+                <span className="font-medium text-foreground">{book.progress}%</span>
+              </div>
+              <Progress value={book.progress} className="h-2" aria-label={`Progress: ${book.progress}%`} />
             </div>
-            <Progress value={book.progress} className="h-2" aria-label={`Progress: ${book.progress}%`} />
-          </div>
+          )}
         </CardContent>
         
         <CardFooter className="pt-0">
           <Button 
             className="w-full gap-2" 
             data-testid={`button-book-${book.id}`}
-            onClick={() => window.location.href = `/recovery/course/${book.courseId}`}
+            disabled={isComingSoon}
+            onClick={() => !isComingSoon && (window.location.href = `/recovery/course/${book.courseId}`)}
           >
-            <Play className="h-4 w-4" aria-hidden="true" />
-            Start Course
+            {isComingSoon ? (
+              <>
+                <Clock className="h-4 w-4" aria-hidden="true" />
+                Coming Soon
+              </>
+            ) : (
+              <>
+                <Play className="h-4 w-4" aria-hidden="true" />
+                Start Course
+              </>
+            )}
           </Button>
         </CardFooter>
       </Card>
