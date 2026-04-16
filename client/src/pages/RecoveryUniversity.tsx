@@ -238,7 +238,7 @@ export default function RecoveryUniversity() {
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <RecoverySEO
         title="Recovery University — 7-Part, 33-Chapter Complete Stroke Recovery Curriculum"
-        description="The Ultimate Stroke Recovery Bible: 7 parts, 33 chapters, 16+ hours of content by Nick Kremers. Covers mindset mastery, physical rehabilitation, cognitive recovery, life integration, stroke prevention, and legacy building. From 0% to 90% — your complete roadmap."
+        description="The Ultimate Stroke Recovery Revolution: 7 parts, 33 chapters, 16+ hours of content by Nick Kremers. Covers mindset mastery, physical rehabilitation, cognitive recovery, life integration, stroke prevention, and legacy building. From 0% to 90%+ — your battle-tested blueprint."
         canonical="/recovery/university"
         pageType="course"
         keywords={[
@@ -251,7 +251,7 @@ export default function RecoveryUniversity() {
         breadcrumbs={[{ name: "Recovery Hub", url: "/recovery" }, { name: "Academy", url: "/recovery/academy" }, { name: "University", url: "/recovery/university" }]}
         additionalSchema={[
           createRecoveryCourseSchema({
-            name: "The Ultimate Stroke Recovery Bible — Complete Curriculum",
+            name: "The Ultimate Stroke Recovery Revolution — Complete Curriculum",
             description: "A 7-part, 33-chapter comprehensive stroke recovery curriculum by Nick Kremers covering the complete journey from stroke to extraordinary recovery. Includes neuroplasticity science, physical rehabilitation protocols, cognitive recovery, life integration, and legacy building.",
             url: "/recovery/university",
             numberOfLessons: 33,
@@ -262,7 +262,7 @@ export default function RecoveryUniversity() {
           SASQUATCH_METHOD_SCHEMA
         ]}
         faq={[
-          { question: "What is the Stroke Recovery Academy curriculum?", answer: "The Stroke Recovery Academy curriculum is a 7-part, 33-chapter comprehensive program called 'The Ultimate Stroke Recovery Bible.' It was developed by Nick Kremers from his personal 0%-to-90% recovery experience. The curriculum covers: Part 1 (Foundation), Part 2 (Mindset Mastery), Part 3 (Physical Reclamation), Part 4 (Cognitive Comeback), Part 5 (Life Integration), Part 6 (Prevention & Optimization), and Part 7 (Legacy Building). It follows Nick's 66-Day Recovery Revolution with three phases: Survival (Days 1-22), Breakthrough (Days 23-44), and Optimization (Days 45-66)." },
+          { question: "What is the Stroke Recovery Academy curriculum?", answer: "The Stroke Recovery Academy curriculum is a 7-part, 33-chapter comprehensive program called 'The Ultimate Stroke Recovery Revolution.' It was developed by Nick Kremers from his personal 0%-to-90% recovery experience. The curriculum covers: Part 1 (Foundation), Part 2 (Mindset Mastery), Part 3 (Physical Reclamation), Part 4 (Cognitive Comeback), Part 5 (Life Integration), Part 6 (Prevention & Optimization), and Part 7 (Legacy Building). It follows Nick's 66-Day Recovery Revolution with three phases: Survival (Days 1-22), Breakthrough (Days 23-44), and Optimization (Days 45-66)." },
           { question: "How long does it take to complete the stroke recovery curriculum?", answer: "The complete curriculum includes 33 chapters totaling approximately 16+ hours of content. Most survivors complete it over 8-12 weeks at their own pace. The curriculum is self-paced — you can take as long as you need, and chapters can be revisited at any time. Many survivors cycle through the curriculum multiple times as they progress through their recovery." },
           { question: "Is the Stroke Recovery Academy curriculum evidence-based?", answer: "Yes. The curriculum combines Nick Kremers' first-hand recovery experience with established rehabilitation science including neuroplasticity research, constraint-induced movement therapy (CIMT) studies, mirror therapy evidence, cognitive rehabilitation protocols, and speech-language pathology principles. All content is grounded in real rehabilitation practice and validated through the experiences of thousands of stroke survivors." },
           { question: "Who is the stroke recovery curriculum designed for?", answer: "The curriculum is designed for: stroke survivors at any stage of recovery (from acute to chronic), caregivers and family members supporting a survivor, healthcare professionals seeking patient education resources, and anyone who wants to understand the comprehensive stroke recovery process. The curriculum is structured for all levels — whether you had your stroke yesterday or years ago, there is actionable content for you." }

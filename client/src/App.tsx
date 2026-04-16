@@ -509,11 +509,7 @@ function Router() {
       <Route path="/recovery/protocols" component={RecoveryProtocols} />
       <Route path="/recovery/sasquatch-coach" component={SasquatchCoach} />
       <Route path="/recovery/survivor-income" component={SurvivorIncome} />
-      <Route path="/my-book">
-        <ProtectedRoute>
-          <MyBook />
-        </ProtectedRoute>
-      </Route>
+      <Route path="/my-book" component={MyBook} />
       <Route path="/recovery/about-nick" component={AboutNick} />
       
       {/* Course Learning Pages */}

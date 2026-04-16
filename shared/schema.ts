@@ -2338,7 +2338,7 @@ export type InsertBlogPostReaction = z.infer<typeof insertBlogPostReactionSchema
 export type BlogPostComment = typeof blogPostComments.$inferSelect;
 export type InsertBlogPostComment = z.infer<typeof insertBlogPostCommentSchema>;
 
-// Recovery University Curriculum (from The Ultimate Stroke Recovery Bible)
+// Recovery University Curriculum (from The Ultimate Stroke Recovery Revolution)
 export const curriculumParts = pgTable("curriculum_parts", {
   id: serial("id").primaryKey(),
   partNumber: integer("part_number").notNull(),
