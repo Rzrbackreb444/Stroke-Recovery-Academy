@@ -553,6 +553,7 @@ ${listings.slice(0, 1000).map((listing: any) => `  <url>
     const recoveryStaticRoutes = [
       { path: '/', priority: '1.0', changefreq: 'weekly', description: 'Stroke Recovery Academy - Home' },
       { path: '/recovery', priority: '1.0', changefreq: 'weekly', description: 'Stroke Recovery OS - Platform Hub' },
+      { path: '/recovery/challenge', priority: '1.0', changefreq: 'weekly', description: '66-Day Sasquatch Transformation Challenge - Stroke Recovery' },
       { path: '/recovery/academy', priority: '0.95', changefreq: 'weekly', description: 'Recovery Academy - Nick Kremers Courses' },
       { path: '/recovery/university', priority: '0.95', changefreq: 'weekly', description: 'Recovery University - 33-Chapter Curriculum' },
       { path: '/recovery/exercises', priority: '0.95', changefreq: 'daily', description: 'Stroke Recovery Exercises Database' },

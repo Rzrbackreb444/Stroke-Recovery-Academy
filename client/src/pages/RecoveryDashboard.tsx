@@ -25,7 +25,8 @@ import { Link } from "wouter";
 import { 
   Flame, Trophy, BookOpen, MessageCircle, Grid3X3, ShoppingBag, Users,
   CheckCircle2, Target, Star, TrendingUp, Calendar, Heart, Zap, LogOut,
-  Plus, UserPlus, DoorOpen, Smile, Activity, Quote, RefreshCw
+  Plus, UserPlus, DoorOpen, Smile, Activity, Quote, RefreshCw, ArrowRight,
+  Play
 } from "lucide-react";
 import SixtyDayTracker from "@/components/recovery/SixtyDayTracker";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
@@ -227,6 +228,110 @@ export default function RecoveryDashboard() {
                   NEVER ZERO - Keep the signal alive
                 </p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CHALLENGE COMMAND CENTER */}
+        <section className="mb-8" data-testid="section-challenge-command">
+          <div className="bg-gradient-to-r from-[#C9941A]/15 via-[#1a1a1a] to-[#1a1a1a] border border-[#C9941A]/30 rounded-xl p-6 mb-4">
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-5">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-[#C9941A] flex items-center justify-center">
+                  <Flame className="h-5 w-5 text-black" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-black text-white">66-Day Challenge Command Center</h2>
+                  <p className="text-xs text-gray-400">Your daily mission — no excuses, no exceptions.</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="text-center px-4 py-2 rounded-lg bg-[#0D0D0D] border border-[#333]">
+                  <div className="text-2xl font-black text-[#C9941A]" data-testid="text-command-streak">{streak.currentStreak}</div>
+                  <div className="text-xs text-gray-400 uppercase tracking-wider">Day Streak</div>
+                </div>
+                <div className="text-center px-4 py-2 rounded-lg bg-[#0D0D0D] border border-[#333]">
+                  <div className="text-2xl font-black text-white" data-testid="text-command-score">{recoveryScore}</div>
+                  <div className="text-xs text-gray-400 uppercase tracking-wider">Score</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Daily Mission Cards */}
+            <div className="grid sm:grid-cols-3 gap-3 mb-5">
+              <div className={`rounded-lg p-4 border ${todayCheckin ? "bg-[#C9941A]/10 border-[#C9941A]/40" : "bg-[#0D0D0D] border-[#333]"}`} data-testid="mission-checkin">
+                <div className="flex items-center gap-2 mb-2">
+                  <Calendar className={`h-4 w-4 ${todayCheckin ? "text-[#C9941A]" : "text-gray-500"}`} />
+                  <span className="text-sm font-bold text-white">Daily Check-in</span>
+                  {todayCheckin && <CheckCircle2 className="h-4 w-4 text-[#C9941A] ml-auto" />}
+                </div>
+                <p className="text-xs text-gray-400 mb-3">Log mood, energy, pain. Run your audit.</p>
+                {!todayCheckin && (
+                  <button
+                    className="text-xs text-[#C9941A] font-bold flex items-center gap-1"
+                    onClick={() => {
+                      const el = document.querySelector('[data-testid="card-checkin"]');
+                      el?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    data-testid="button-go-checkin"
+                  >
+                    Do it now <ArrowRight className="h-3 w-3" />
+                  </button>
+                )}
+                {todayCheckin && <span className="text-xs text-[#C9941A] font-bold">Complete</span>}
+              </div>
+
+              <div className={`rounded-lg p-4 border ${habits.some((h: any) => h.logs?.some((l: any) => new Date(l.logDate).toDateString() === new Date().toDateString() && l.isCompleted)) ? "bg-[#C9941A]/10 border-[#C9941A]/40" : "bg-[#0D0D0D] border-[#333]"}`} data-testid="mission-habits">
+                <div className="flex items-center gap-2 mb-2">
+                  <Target className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm font-bold text-white">Habit Stack</span>
+                </div>
+                <p className="text-xs text-gray-400 mb-3">Complete your tracked recovery habits.</p>
+                <Link href="/recovery/builder">
+                  <span className="text-xs text-[#C9941A] font-bold flex items-center gap-1">
+                    Manage habits <ArrowRight className="h-3 w-3" />
+                  </span>
+                </Link>
+              </div>
+
+              <div className="rounded-lg p-4 border bg-[#0D0D0D] border-[#333]" data-testid="mission-lesson">
+                <div className="flex items-center gap-2 mb-2">
+                  <Play className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm font-bold text-white">Today's Lesson</span>
+                </div>
+                <p className="text-xs text-gray-400 mb-3">Continue your Sasquatch curriculum.</p>
+                <Link href="/recovery/academy">
+                  <span className="text-xs text-[#C9941A] font-bold flex items-center gap-1">
+                    Go to Academy <ArrowRight className="h-3 w-3" />
+                  </span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Phase Progress Banner */}
+            <div className="bg-[#0D0D0D] rounded-lg p-4 border border-[#333] flex flex-wrap items-center gap-4">
+              {[
+                { name: "SURVIVAL PHASE", days: "Days 1–22", color: "#C9941A", icon: Target },
+                { name: "BREAKTHROUGH PHASE", days: "Days 23–44", color: "#FF6B35", icon: Flame },
+                { name: "OPTIMIZATION PHASE", days: "Days 45–66", color: "#22C55E", icon: Trophy },
+              ].map(({ name, days, color, icon: Icon }) => {
+                const totalDays = streak.totalActiveDays || 0;
+                const [start, end] = name === "SURVIVAL PHASE" ? [1, 22] : name === "BREAKTHROUGH PHASE" ? [23, 44] : [45, 66];
+                const isActive = totalDays >= start - 1 && totalDays < end;
+                const isComplete = totalDays >= end;
+                return (
+                  <div key={name} className={`flex items-center gap-2 text-xs flex-1 min-w-fit ${isActive ? "opacity-100" : isComplete ? "opacity-60" : "opacity-30"}`} data-testid={`phase-status-${name.toLowerCase().split(" ")[0]}`}>
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center`} style={{ background: isComplete ? color : isActive ? `${color}33` : "#1a1a1a", border: `1px solid ${color}50` }}>
+                      {isComplete ? <CheckCircle2 className="h-3.5 w-3.5" style={{ color }} /> : <Icon className="h-3 w-3" style={{ color }} />}
+                    </div>
+                    <div>
+                      <div className="font-bold" style={{ color: isActive || isComplete ? color : "#666" }}>{name}</div>
+                      <div className="text-gray-500">{days}</div>
+                    </div>
+                    {isActive && <Badge className="ml-auto text-xs border" style={{ background: `${color}20`, color, borderColor: `${color}40` }}>Active</Badge>}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>

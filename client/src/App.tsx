@@ -122,6 +122,7 @@ import SurvivorIncome from "@/pages/SurvivorIncome";
 import RecoveryProtocols from "@/pages/RecoveryProtocols";
 import MyBook from "@/pages/MyBook";
 import AboutNick from "@/pages/AboutNick";
+import Challenge from "@/pages/Challenge";
 import CoursePlayer from "@/pages/CoursePlayer";
 import CourseQuiz from "@/pages/CourseQuiz";
 import CourseCertificate from "@/pages/CourseCertificate";
@@ -510,6 +511,7 @@ function Router() {
       <Route path="/recovery/sasquatch-coach" component={SasquatchCoach} />
       <Route path="/recovery/survivor-income" component={SurvivorIncome} />
       <Route path="/my-book" component={MyBook} />
+      <Route path="/recovery/challenge" component={Challenge} />
       <Route path="/recovery/about-nick" component={AboutNick} />
       
       {/* Course Learning Pages */}
