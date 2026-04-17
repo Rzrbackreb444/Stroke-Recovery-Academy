@@ -809,6 +809,26 @@ function FeedTab({ user, settings }: { user: any; settings: any }) {
   const filtered = filterType === "all" ? posts : posts.filter((p) => p.postType === filterType);
 
   return (
+    <div className="space-y-3">
+      {/* Mobile-only horizontal filter scroll */}
+      <div className="flex gap-2 overflow-x-auto pb-1 lg:hidden">
+        {[{ type: "all", label: "All Posts", icon: Activity }, ...POST_TYPES].map(({ type: t, label, icon: Icon }) => (
+          <button
+            key={t || "all"}
+            onClick={() => setFilterType(t || "all")}
+            className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border flex-shrink-0 transition-colors ${
+              filterType === (t || "all")
+                ? "text-black bg-[#C9941A] border-[#C9941A]"
+                : "text-gray-400 border-[#333] bg-[#1a1a1a]"
+            }`}
+            data-testid={`button-mobile-filter-${t || "all"}`}
+          >
+            <Icon className="w-3 h-3" />
+            {label}
+          </button>
+        ))}
+      </div>
+
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
       <div className="hidden lg:block space-y-3">
         <Card className="bg-[#1a1a1a] border-[#333]">
@@ -874,6 +894,7 @@ function FeedTab({ user, settings }: { user: any; settings: any }) {
           ))
         )}
       </div>
+    </div>
     </div>
   );
 }
@@ -1091,7 +1112,8 @@ export default function RecoveryCommunity() {
         </div>
 
         <Tabs defaultValue="feed">
-          <TabsList className="bg-[#1a1a1a] border border-[#333]">
+          <div className="overflow-x-auto">
+          <TabsList className="bg-[#1a1a1a] border border-[#333] w-full sm:w-auto">
             <TabsTrigger value="feed" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black text-gray-400" data-testid="tab-feed">
               <Activity className="w-4 h-4 mr-1.5" />
               Feed
@@ -1109,6 +1131,7 @@ export default function RecoveryCommunity() {
               Classroom
             </TabsTrigger>
           </TabsList>
+          </div>
 
           <TabsContent value="feed" className="mt-4">
             <FeedTab user={user} settings={settings} />
