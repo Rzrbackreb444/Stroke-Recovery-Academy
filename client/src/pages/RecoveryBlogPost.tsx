@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import RecoveryHeader from "@/components/RecoveryHeader";
+import NewsletterSignupWidget from "@/components/NewsletterSignupWidget";
 import RecoverySEO from "@/components/RecoverySEO";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import {
@@ -337,6 +338,15 @@ export default function RecoveryBlogPost() {
             </div>
           </div>
         </Card>
+
+        {/* Newsletter widget — after author bio */}
+        <div className="mt-10">
+          <NewsletterSignupWidget
+            source="blog"
+            headline="Like what you just read?"
+            subheadline="Nick sends 10 real emails over 67 days — the stuff behind the articles. His worst moments, his protocol, what Year 7 actually feels like. Free."
+          />
+        </div>
 
         {relatedPosts.length > 0 && (
           <div className="mt-12">

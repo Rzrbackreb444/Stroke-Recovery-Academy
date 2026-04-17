@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import RecoveryHeader from "@/components/RecoveryHeader";
 import Footer from "@/components/Footer";
 import RecoverySEO from "@/components/RecoverySEO";
+import NewsletterSignupWidget from "@/components/NewsletterSignupWidget";
 import {
   Flame, Trophy, CheckCircle, Target, Zap, Users, Calendar,
   Star, ArrowRight, Play, Shield, Clock, Heart, ChevronDown, ChevronUp,
@@ -607,6 +608,17 @@ export default function Challenge() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Newsletter capture — before final CTA */}
+      <section className="py-16 px-4" data-testid="section-newsletter">
+        <div className="max-w-xl mx-auto">
+          <NewsletterSignupWidget
+            source="challenge"
+            headline="Not ready to commit yet? Start here."
+            subheadline="10 emails from Nick over 67 days. His real story, the protocol, the hard days. Free. No pitch until the last email."
+          />
         </div>
       </section>
 
