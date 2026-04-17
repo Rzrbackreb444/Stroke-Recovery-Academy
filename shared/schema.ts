@@ -5386,6 +5386,25 @@ export const quoteScanAnalytics = pgTable("quote_scan_analytics", {
   referrer: text("referrer"),
 });
 
+// ============================================================================
+// Push Notification Subscriptions
+// ============================================================================
+
+export const pushSubscriptions = pgTable("push_subscriptions", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  endpoint: text("endpoint").notNull().unique(),
+  p256dh: text("p256dh").notNull(),
+  auth: text("auth").notNull(),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  lastUsed: timestamp("last_used").defaultNow(),
+});
+
+export const insertPushSubscriptionSchema = createInsertSchema(pushSubscriptions).omit({ id: true, createdAt: true, lastUsed: true });
+export type PushSubscription = typeof pushSubscriptions.$inferSelect;
+export type InsertPushSubscription = z.infer<typeof insertPushSubscriptionSchema>;
+
 // Insert schemas for Quote Studio
 export const insertQuoteCategorySchema = createInsertSchema(quoteCategories).omit({ id: true, createdAt: true });
 export const insertQuoteSchema = createInsertSchema(quotes).omit({ id: true, createdAt: true, updatedAt: true, usageCount: true, lastUsedAt: true });

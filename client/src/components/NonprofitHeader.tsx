@@ -33,8 +33,9 @@ const navLinks = [
   { href: "/strokelyfe", label: "HOME", icon: Home },
   { href: "/recovery/academy", label: "ACADEMY", icon: GraduationCap },
   { href: "/store", label: "STORE", icon: ShoppingBag },
-  { href: "/recovery/social", label: "COMMUNITY", icon: Users },
+  { href: "/recovery/community", label: "COMMUNITY", icon: Users },
   { href: "/recovery/reminders", label: "REMINDERS", icon: Bell },
+  { href: "/recovery/gift", label: "GIFT A SURVIVOR", icon: Gift },
 ];
 
 export default function NonprofitHeader() {
@@ -92,20 +93,21 @@ export default function NonprofitHeader() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              className="hidden md:flex border-[#C9941A]/50 text-[#C9941A] hover:bg-[#C9941A]/10"
-              onClick={scrollToScholarships}
-              data-testid="button-header-scholarship"
-            >
-              <Gift className="w-4 h-4 mr-2" />
-              Gift Scholarship
-            </Button>
+            <Link href="/recovery/gift">
+              <Button
+                size="sm"
+                variant="outline"
+                className="hidden md:flex border-white/40 text-white hover:bg-white/10"
+                data-testid="button-header-scholarship"
+              >
+                <Gift className="w-4 h-4 mr-2" />
+                Gift a Survivor
+              </Button>
+            </Link>
             
             <Button
               size="sm"
-              className="bg-[#C9941A] hover:bg-[#B8860B] text-white"
+              className="bg-white text-[#C9941A] font-bold hover:bg-white/90"
               onClick={scrollToDonate}
               data-testid="button-header-donate"
             >
@@ -203,17 +205,15 @@ export default function NonprofitHeader() {
                       <Heart className="w-4 h-4 mr-2" />
                       Donate Now
                     </Button>
-                    <Button
-                      variant="outline"
-                      className="w-full border-[#C9941A]/50 text-[#C9941A] hover:bg-[#C9941A]/10"
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        scrollToScholarships();
-                      }}
-                    >
-                      <Gift className="w-4 h-4 mr-2" />
-                      Gift Scholarship
-                    </Button>
+                    <Link href="/recovery/gift" onClick={() => setMobileMenuOpen(false)}>
+                      <Button
+                        variant="outline"
+                        className="w-full border-white/40 text-white hover:bg-white/10"
+                      >
+                        <Gift className="w-4 h-4 mr-2" />
+                        Gift a Survivor
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </SheetContent>
