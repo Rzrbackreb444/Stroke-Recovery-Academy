@@ -341,7 +341,7 @@ function StarRating({ rating, reviewCount }: { rating: number; reviewCount: numb
                 ? "fill-[#C9941A] text-[#C9941A]"
                 : star <= rating
                 ? "fill-[#C9941A]/50 text-[#C9941A]"
-                : "text-gray-600"
+                : "text-gray-500"
             }`}
           />
         ))}
@@ -631,7 +631,7 @@ export default function RecoveryStore() {
             ) : (
               <Card className="bg-[#1a1a1a] border border-[#333]">
                 <CardContent className="py-12 text-center">
-                  <Search className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+                  <Search className="w-12 h-12 text-gray-500 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-white mb-2">No products found</h3>
                   <p className="text-gray-400">Try adjusting your search or category filter</p>
                 </CardContent>

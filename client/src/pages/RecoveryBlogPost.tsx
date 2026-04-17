@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import RecoveryHeader from "@/components/RecoveryHeader";
+import RecoverySEO from "@/components/RecoverySEO";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import {
   ArrowLeft, Clock, Calendar, User, Eye, Heart,
@@ -213,6 +214,19 @@ export default function RecoveryBlogPost() {
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
+      <RecoverySEO
+        title={`${post.title} — Stroke Recovery Academy`}
+        description={post.excerpt || `Read this article by ${post.authorName || "Nick Kremers"} on Stroke Recovery Academy.`}
+        canonical={`/recovery/blog/${post.slug}`}
+        keywords={[...(post.tags || []), "stroke recovery", "Nick Kremers", post.category]}
+        pageType="article"
+        author={post.authorName || "Nick Kremers"}
+        breadcrumbs={[
+          { name: "Recovery Hub", url: "/recovery" },
+          { name: "Blog", url: "/recovery/blog" },
+          { name: post.title, url: `/recovery/blog/${post.slug}` },
+        ]}
+      />
       <RecoveryHeader />
 
       <div className={`bg-gradient-to-b ${gradient} pt-8 pb-12`}>
