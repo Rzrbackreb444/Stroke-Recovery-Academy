@@ -587,27 +587,51 @@ export default function Challenge() {
               </p>
             </div>
 
-            <Card className="bg-[#1a1a1a] border-[#333] p-6">
-              <h3 className="font-black text-white text-lg mb-4 flex items-center gap-2">
+            <Card className="bg-[#1a1a1a] border-[#333] p-6" data-testid="card-sasquatch-systems">
+              <h3 className="font-black text-white text-lg mb-2 flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-[#C9941A]" />
                 The Sasquatch Method
               </h3>
-              <div className="space-y-3">
+              <p className="text-xs text-gray-400 mb-5 italic">
+                Three integrated systems. Stack them. Run them daily.
+              </p>
+
+              <div className="space-y-5">
                 {[
-                  { step: "T", full: "TAKE", desc: "Take what the therapists give you" },
-                  { step: "A", full: "APPLY", desc: "Apply it immediately, relentlessly" },
-                  { step: "K", full: "KEEP", desc: "Keep tracking what moves the needle" },
-                  { step: "E", full: "EXPERIMENT", desc: "Experiment with combinations others haven't tried" },
-                  { step: "L", full: "LEARN", desc: "Learn from every session — wins and failures" },
-                ].map(({ step, full, desc }) => (
-                  <div key={step} className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-8 h-8 rounded bg-[#C9941A] flex items-center justify-center">
-                      <span className="text-black font-black text-sm">{step}</span>
+                  {
+                    code: "S.A.S.C.H.",
+                    label: "DAILY FORMULA",
+                    desc: "Seize · Absorb · Swing · Combine · Hammer",
+                    sub: "Your daily operating system. The 5-step reps that build recovery.",
+                  },
+                  {
+                    code: "S.O.S.",
+                    label: "DAILY RESET",
+                    desc: "Survive · Organize · Strive",
+                    sub: "When the day breaks you. The 3-step reset to get back on the horse.",
+                  },
+                  {
+                    code: "C.O.M.P.A.S.S.",
+                    label: "ADVANCED NAVIGATION",
+                    desc: "Control · Own · Mutate · Patience · Anger · Small Wins · Stack",
+                    sub: "The 7-pillar builder's compass. The long-game framework for years 2+.",
+                  },
+                ].map(({ code, label, desc, sub }) => (
+                  <div
+                    key={code}
+                    className="border-l-2 border-[#C9941A] pl-4"
+                    data-testid={`system-${code.replace(/\./g, "").toLowerCase()}`}
+                  >
+                    <div className="flex flex-wrap items-baseline gap-2 mb-1">
+                      <span className="text-[#C9941A] font-black text-base tracking-tight">
+                        {code}
+                      </span>
+                      <span className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">
+                        {label}
+                      </span>
                     </div>
-                    <div>
-                      <span className="text-[#C9941A] font-bold text-sm">{full}</span>
-                      <p className="text-gray-400 text-xs">{desc}</p>
-                    </div>
+                    <p className="text-white text-sm font-semibold mb-1 leading-tight">{desc}</p>
+                    <p className="text-gray-400 text-xs leading-relaxed">{sub}</p>
                   </div>
                 ))}
               </div>
