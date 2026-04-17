@@ -75,6 +75,8 @@ Icons: lucide-react only (no emoji)
   - **Sasquatch Coach**: 24/7 AI companion with ElevenLabs raspy southern voice, Gemini AI backend, accountability focus.
   - **Recovery Resources**: Curated guides, videos, podcasts, community support.
   - **Additional features**: Exercises, Medical Log, Flicker Log, Journal, Reminders, Community.
+- **66-Day Sasquatch Transformation Challenge** (`/recovery/challenge`): High-converting sales page with Nick's real copy, live countdown timer, 3-phase breakdown (Survival/Breakthrough/Optimization), testimonials, bonuses ($480 value), pricing with 7-day free trial, FAQ accordion, and final CTA. Wired to dashboard on sign-in.
+- **Challenge Command Center** (inside `/recovery/dashboard`): Top-priority dashboard block showing daily mission cards (check-in, habit stack, today's lesson), streak/score stats, and visual phase progress strip with active/complete/locked states.
 - **SquatchQR Platform**: Enterprise-grade dynamic QR code system for delivering daily quotes and rituals.
   - **Quote Studio** (`/squatch-qr/studio`): 4-tab dashboard (Projects, Create New, Quote Library, Analytics) with 4-step wizard for AI quote generation.
   - **QR Code Designer**: Customizable QR codes with color presets, logo overlay, PNG/SVG export.

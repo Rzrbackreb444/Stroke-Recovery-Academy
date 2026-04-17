@@ -34,15 +34,16 @@ export default function CTASection() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                size="lg"
-                className="bg-[#C9941A] text-black text-lg font-bold px-10 shadow-lg shadow-[#C9941A]/20"
-                data-testid="button-cta-primary"
-                onClick={() => window.location.href = "/api/login"}
-              >
-                Join The Revolution
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+              <Link href="/recovery/challenge">
+                <Button
+                  size="lg"
+                  className="bg-[#C9941A] text-black text-lg font-bold px-10 shadow-lg shadow-[#C9941A]/20"
+                  data-testid="button-cta-primary"
+                >
+                  Join the 66-Day Challenge
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
               <Link href="/recovery/resources">
                 <Button
                   size="lg"
