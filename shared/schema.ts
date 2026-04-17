@@ -1013,6 +1013,18 @@ export const newsletterEditions = pgTable("newsletter_editions", {
 
 export type NewsletterEdition = typeof newsletterEditions.$inferSelect;
 
+// Drip email queue — one row per subscriber per edition
+export const newsletterDripQueue = pgTable("newsletter_drip_queue", {
+  id: serial("id").primaryKey(),
+  subscriberId: integer("subscriber_id").notNull().references(() => newsletterSubscribers.id, { onDelete: "cascade" }),
+  editionNumber: integer("edition_number").notNull(),
+  scheduledFor: timestamp("scheduled_for").notNull(),
+  sentAt: timestamp("sent_at"),
+  status: text("status").notNull().default("pending"), // pending | sent | skipped
+});
+
+export type NewsletterDripQueue = typeof newsletterDripQueue.$inferSelect;
+
 export const standGoals = pgTable("stand_goals", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),

@@ -1095,6 +1095,14 @@ Allow: /
     console.warn("[startup] initRecoveryBlogPosts skipped:", err?.message ?? err);
   }
 
+  // Start newsletter drip scheduler (non-fatal)
+  try {
+    const { startNewsletterScheduler } = await import('./newsletterService');
+    startNewsletterScheduler();
+  } catch (err: any) {
+    console.warn("[startup] newsletter scheduler skipped:", err?.message ?? err);
+  }
+
   // Auth routes
   app.get('/api/auth/user', async (req: any, res) => {
     try {
@@ -1305,6 +1313,136 @@ Allow: /
     } catch (error: any) {
       console.error("OTP verify error:", error);
       res.status(500).json({ message: error.message || "Verification failed" });
+    }
+  });
+
+  // ── Newsletter routes ──────────────────────────────────────────────────────
+
+  // Public subscribe (email capture widget, no auth required)
+  app.post('/api/newsletter/subscribe', async (req, res) => {
+    try {
+      const { email, firstName, source } = req.body;
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ message: 'Valid email address is required.' });
+      }
+      const { subscribeToNewsletter } = await import('./newsletterService');
+      const sub = await subscribeToNewsletter(email.trim().toLowerCase(), firstName?.trim() || undefined, source || 'website');
+      res.json({ success: true, message: 'You\'re in. Watch your inbox — first email arrives in 3 days.' });
+    } catch (err: any) {
+      console.error('[newsletter] subscribe error:', err);
+      res.status(500).json({ message: err.message || 'Subscription failed' });
+    }
+  });
+
+  // Unsubscribe (no auth — token-free for now, email param)
+  app.get('/api/newsletter/unsubscribe', async (req, res) => {
+    try {
+      const { email } = req.query;
+      if (!email || typeof email !== 'string') return res.status(400).json({ message: 'Email required' });
+      const { newsletterSubscribers } = await import('../shared/schema');
+      const { eq } = await import('drizzle-orm');
+      const { db: nsDb } = await import('./db');
+      await nsDb.update(newsletterSubscribers).set({ isActive: false, unsubscribedAt: new Date() }).where(eq(newsletterSubscribers.email, email.toLowerCase()));
+      res.json({ success: true, message: 'You\'ve been unsubscribed. No hard feelings.' });
+    } catch (err: any) {
+      res.status(500).json({ message: err.message || 'Unsubscribe failed' });
+    }
+  });
+
+  // Admin — list subscribers
+  app.get('/api/admin/newsletter/subscribers', async (req: any, res) => {
+    try {
+      const { newsletterSubscribers } = await import('../shared/schema');
+      const { desc } = await import('drizzle-orm');
+      const { db: nsDb } = await import('./db');
+      const subs = await nsDb.select().from(newsletterSubscribers).orderBy(desc(newsletterSubscribers.subscribedAt));
+      res.json(subs);
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  });
+
+  // Admin — list drip editions (metadata only)
+  app.get('/api/admin/newsletter/drip', async (req: any, res) => {
+    try {
+      const { DRIP_EDITIONS } = await import('./newsletterService');
+      res.json(DRIP_EDITIONS.map(({ editionNumber, dayOffset, subject, previewText }) => ({ editionNumber, dayOffset, subject, previewText })));
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  });
+
+  // Admin — get drip queue stats
+  app.get('/api/admin/newsletter/queue-stats', async (req: any, res) => {
+    try {
+      const { newsletterDripQueue } = await import('../shared/schema');
+      const { db: nsDb } = await import('./db');
+      const { sql: rawSql } = await import('drizzle-orm');
+      const stats = await nsDb.execute(rawSql`
+        SELECT status, COUNT(*) as count,
+               MIN(scheduled_for) as earliest,
+               MAX(scheduled_for) as latest
+        FROM newsletter_drip_queue
+        GROUP BY status
+      `);
+      res.json(stats.rows);
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  });
+
+  // Admin — list broadcast editions
+  app.get('/api/admin/newsletter/editions', async (req: any, res) => {
+    try {
+      const { newsletterEditions } = await import('../shared/schema');
+      const { desc } = await import('drizzle-orm');
+      const { db: nsDb } = await import('./db');
+      const editions = await nsDb.select().from(newsletterEditions).orderBy(desc(newsletterEditions.createdAt));
+      res.json(editions);
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  });
+
+  // Admin — create broadcast edition
+  app.post('/api/admin/newsletter/editions', async (req: any, res) => {
+    try {
+      const { subject, preview, htmlContent, textContent, edition } = req.body;
+      if (!subject || !htmlContent) return res.status(400).json({ message: 'subject and htmlContent are required' });
+      const { newsletterEditions } = await import('../shared/schema');
+      const { db: nsDb } = await import('./db');
+      const [row] = await nsDb.insert(newsletterEditions).values({ subject, preview, htmlContent, textContent, edition: edition || 1 }).returning();
+      res.json(row);
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  });
+
+  // Admin — send broadcast edition NOW
+  app.post('/api/admin/newsletter/editions/:id/send', async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { sendBroadcast } = await import('./newsletterService');
+      const result = await sendBroadcast(id);
+      res.json({ success: true, ...result });
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  });
+
+  // Admin — schedule broadcast edition for future date
+  app.patch('/api/admin/newsletter/editions/:id/schedule', async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { scheduledFor } = req.body;
+      if (!scheduledFor) return res.status(400).json({ message: 'scheduledFor date is required' });
+      const { newsletterEditions } = await import('../shared/schema');
+      const { eq } = await import('drizzle-orm');
+      const { db: nsDb } = await import('./db');
+      const [updated] = await nsDb.update(newsletterEditions).set({ sentAt: new Date(scheduledFor) }).where(eq(newsletterEditions.id, id)).returning();
+      res.json(updated);
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
     }
   });
 
