@@ -246,6 +246,36 @@ function detectPlatform(hostname: string): "creator" | "recovery" {
   return "creator";
 }
 
+// ─── Lightweight IP-based rate limiter (no external deps) ───────────────────
+const _rlStore = new Map<string, { count: number; resetAt: number }>();
+function makeRateLimiter(maxRequests: number, windowMs: number) {
+  return (req: any, res: any, next: any) => {
+    const ip = (req.headers['x-forwarded-for'] as string || req.socket?.remoteAddress || 'unknown').split(',')[0].trim();
+    const key = `${req.path}:${ip}`;
+    const now = Date.now();
+    const entry = _rlStore.get(key);
+    if (!entry || now > entry.resetAt) {
+      _rlStore.set(key, { count: 1, resetAt: now + windowMs });
+      return next();
+    }
+    entry.count++;
+    if (entry.count > maxRequests) {
+      res.setHeader('Retry-After', Math.ceil((entry.resetAt - now) / 1000));
+      return res.status(429).json({ message: 'Too many requests. Please wait a moment and try again.' });
+    }
+    next();
+  };
+}
+// Prune stale entries every 10 minutes to avoid unbounded growth
+setInterval(() => {
+  const now = Date.now();
+  for (const [k, v] of _rlStore.entries()) { if (now > v.resetAt) _rlStore.delete(k); }
+}, 10 * 60 * 1000);
+
+const subscribeRateLimit      = makeRateLimiter(5,  60 * 60 * 1000);  // 5 per hour  — newsletter subscribe
+const paymentCheckoutRateLimit = makeRateLimiter(10, 60 * 60 * 1000); // 10 per hour — Stripe checkout sessions
+// ─────────────────────────────────────────────────────────────────────────────
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Platform detection middleware - sets X-Platform header based on host domain
   app.use((req, res, next) => {
@@ -1333,7 +1363,7 @@ Allow: /
   // ── Newsletter routes ──────────────────────────────────────────────────────
 
   // Public subscribe (email capture widget, no auth required)
-  app.post('/api/newsletter/subscribe', async (req, res) => {
+  app.post('/api/newsletter/subscribe', subscribeRateLimit, async (req, res) => {
     try {
       const { email, firstName, source } = req.body;
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -1364,8 +1394,10 @@ Allow: /
   });
 
   // Admin — list subscribers
-  app.get('/api/admin/newsletter/subscribers', async (req: any, res) => {
+  app.get('/api/admin/newsletter/subscribers', isAuthenticated, async (req: any, res) => {
     try {
+      const user = await storage.getUser(req.user.claims.sub);
+      if (!user || user.role !== 'admin') return res.status(403).json({ message: 'Admin access required' });
       const { newsletterSubscribers } = await import('../shared/schema');
       const { desc } = await import('drizzle-orm');
       const { db: nsDb } = await import('./db');
@@ -1377,8 +1409,10 @@ Allow: /
   });
 
   // Admin — list drip editions (metadata only)
-  app.get('/api/admin/newsletter/drip', async (req: any, res) => {
+  app.get('/api/admin/newsletter/drip', isAuthenticated, async (req: any, res) => {
     try {
+      const user = await storage.getUser(req.user.claims.sub);
+      if (!user || user.role !== 'admin') return res.status(403).json({ message: 'Admin access required' });
       const { DRIP_EDITIONS } = await import('./newsletterService');
       res.json(DRIP_EDITIONS.map(({ editionNumber, dayOffset, subject, previewText }) => ({ editionNumber, dayOffset, subject, previewText })));
     } catch (err: any) {
@@ -1387,8 +1421,10 @@ Allow: /
   });
 
   // Admin — get drip queue stats
-  app.get('/api/admin/newsletter/queue-stats', async (req: any, res) => {
+  app.get('/api/admin/newsletter/queue-stats', isAuthenticated, async (req: any, res) => {
     try {
+      const user = await storage.getUser(req.user.claims.sub);
+      if (!user || user.role !== 'admin') return res.status(403).json({ message: 'Admin access required' });
       const { newsletterDripQueue } = await import('../shared/schema');
       const { db: nsDb } = await import('./db');
       const { sql: rawSql } = await import('drizzle-orm');
@@ -1406,8 +1442,10 @@ Allow: /
   });
 
   // Admin — list broadcast editions
-  app.get('/api/admin/newsletter/editions', async (req: any, res) => {
+  app.get('/api/admin/newsletter/editions', isAuthenticated, async (req: any, res) => {
     try {
+      const user = await storage.getUser(req.user.claims.sub);
+      if (!user || user.role !== 'admin') return res.status(403).json({ message: 'Admin access required' });
       const { newsletterEditions } = await import('../shared/schema');
       const { desc } = await import('drizzle-orm');
       const { db: nsDb } = await import('./db');
@@ -1419,8 +1457,10 @@ Allow: /
   });
 
   // Admin — create broadcast edition
-  app.post('/api/admin/newsletter/editions', async (req: any, res) => {
+  app.post('/api/admin/newsletter/editions', isAuthenticated, async (req: any, res) => {
     try {
+      const user = await storage.getUser(req.user.claims.sub);
+      if (!user || user.role !== 'admin') return res.status(403).json({ message: 'Admin access required' });
       const { subject, preview, htmlContent, textContent, edition } = req.body;
       if (!subject || !htmlContent) return res.status(400).json({ message: 'subject and htmlContent are required' });
       const { newsletterEditions } = await import('../shared/schema');
@@ -1433,8 +1473,10 @@ Allow: /
   });
 
   // Admin — send broadcast edition NOW
-  app.post('/api/admin/newsletter/editions/:id/send', async (req: any, res) => {
+  app.post('/api/admin/newsletter/editions/:id/send', isAuthenticated, async (req: any, res) => {
     try {
+      const user = await storage.getUser(req.user.claims.sub);
+      if (!user || user.role !== 'admin') return res.status(403).json({ message: 'Admin access required' });
       const id = parseInt(req.params.id);
       const { sendBroadcast } = await import('./newsletterService');
       const result = await sendBroadcast(id);
@@ -1445,8 +1487,10 @@ Allow: /
   });
 
   // Admin — schedule broadcast edition for future date
-  app.patch('/api/admin/newsletter/editions/:id/schedule', async (req: any, res) => {
+  app.patch('/api/admin/newsletter/editions/:id/schedule', isAuthenticated, async (req: any, res) => {
     try {
+      const user = await storage.getUser(req.user.claims.sub);
+      if (!user || user.role !== 'admin') return res.status(403).json({ message: 'Admin access required' });
       const id = parseInt(req.params.id);
       const { scheduledFor } = req.body;
       if (!scheduledFor) return res.status(400).json({ message: 'scheduledFor date is required' });
@@ -1570,7 +1614,7 @@ Allow: /
     }
   });
 
-  app.post('/api/checkout', isAuthenticated, async (req: any, res) => {
+  app.post('/api/checkout', isAuthenticated, paymentCheckoutRateLimit, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
@@ -9257,7 +9301,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     }
   });
 
-  app.post('/api/recovery/payments/donate', async (req, res) => {
+  app.post('/api/recovery/payments/donate', paymentCheckoutRateLimit, async (req, res) => {
     try {
       const { recoveryStripeService } = await import('./recoveryStripeService');
       const { amount, isRecurring } = req.body;
@@ -9278,7 +9322,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   });
 
   // Gift Scholarship checkout
-  app.post('/api/recovery/payments/gift-scholarship', async (req, res) => {
+  app.post('/api/recovery/payments/gift-scholarship', paymentCheckoutRateLimit, async (req, res) => {
     try {
       const { getRecoveryStripeClient, isRecoveryStripeConfigured } = await import('./recoveryStripeClient');
       const { tierId, recipientEmail, message } = req.body;
@@ -10302,7 +10346,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     }
   });
 
-  app.get('/api/users/search', async (req: any, res) => {
+  app.get('/api/users/search', isAuthenticated, async (req: any, res) => {
     try {
       const { q } = req.query;
       const users = await storage.searchUsers(q as string);
