@@ -542,6 +542,45 @@ export default function Academy() {
                 </cite>
               </CardContent>
             </Card>
+
+            {/* Free Cheat Sheet CTA */}
+            <div className="max-w-3xl mx-auto mt-8 text-center" data-testid="cta-sasch-cheatsheet">
+              <a href="/recovery/sasch" data-testid="link-sasch-landing">
+                <Button
+                  size="lg"
+                  className="font-bold tracking-wide"
+                  style={{ background: "#C9941A", color: "#000" }}
+                >
+                  Get the Free S.A.S.C.H. Cheat Sheet (PDF)
+                </Button>
+              </a>
+              <p className="text-xs mt-3 text-muted-foreground">
+                Free download · Print it · Tape it to the mirror · No credit card
+              </p>
+            </div>
+
+            {/* The 66-Day Truth */}
+            <div
+              className="max-w-3xl mx-auto mt-10 rounded-lg p-6 md:p-8"
+              style={{ background: "#1a1a1a", border: "1px solid #C9941A" }}
+              data-testid="callout-66-day-truth-academy"
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-xs font-bold uppercase tracking-widest text-[#C9941A]">
+                  The 66-Day Truth
+                </span>
+              </div>
+              <p className="text-sm md:text-base leading-relaxed mb-3 text-gray-300">
+                66 days is the average time it takes to turn deliberate effort into a habit.{" "}
+                <strong className="text-white">It is not a guarantee.</strong> Every stroke is
+                different. Every brain is different. Every recovery is different.
+              </p>
+              <p className="text-sm md:text-base leading-relaxed text-gray-300">
+                The S.A.S.C.H. Formula is the blueprint Nick built going from 0% to 90%+. It works
+                when you work it. He's living proof it's possible —{" "}
+                <span className="text-white font-semibold">the rest is up to you.</span>
+              </p>
+            </div>
           </div>
         </section>
 

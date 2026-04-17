@@ -1380,6 +1380,71 @@ Allow: /
     }
   });
 
+  // ── S.A.S.C.H. Cheat Sheet lead magnet ─────────────────────────────────────
+  // Rate limit raw PDF generation: 20/hour per IP — stops DoS via repeated regen
+  const pdfDownloadRateLimit = makeRateLimiter(20, 60 * 60 * 1000);
+
+  // Public PDF download (also served as fallback link in welcome email)
+  app.get('/api/sasch/cheat-sheet.pdf', pdfDownloadRateLimit, async (_req, res) => {
+    try {
+      const { generateSaschCheatSheetPdf } = await import('./saschCheatSheet');
+      const pdf = await generateSaschCheatSheetPdf();
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'attachment; filename="SASCH-Formula-Cheat-Sheet.pdf"');
+      res.setHeader('Cache-Control', 'public, max-age=3600');
+      res.send(pdf);
+    } catch (err: any) {
+      console.error('[sasch] pdf generation error:', err);
+      res.status(500).json({ message: 'Could not generate cheat sheet right now.' });
+    }
+  });
+
+  // Email gate — captures email, subscribes to nurture drip, sends welcome email with PDF
+  app.post('/api/sasch/subscribe', subscribeRateLimit, async (req, res) => {
+    try {
+      const { email, firstName } = req.body;
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ message: 'Enter a valid email so we can send your cheat sheet.' });
+      }
+      const cleanEmail = email.trim().toLowerCase();
+      const cleanName = firstName?.trim() || undefined;
+
+      // Check if subscriber already exists (prevents duplicate welcome+PDF spam on resubmits)
+      const { newsletterSubscribers } = await import('../shared/schema');
+      const { db: nsDb } = await import('./db');
+      const existing = await nsDb
+        .select()
+        .from(newsletterSubscribers)
+        .where(eq(newsletterSubscribers.email, cleanEmail))
+        .limit(1);
+      const isNewSubscriber = existing.length === 0;
+
+      const { subscribeToNewsletter } = await import('./newsletterService');
+      await subscribeToNewsletter(cleanEmail, cleanName, 'sasch_cheatsheet');
+
+      // Only send the welcome email + PDF on the first signup. Re-subscribers can grab
+      // the PDF directly from the public download link. Prevents inbox spam attacks.
+      if (isNewSubscriber) {
+        const { sendSaschWelcomeEmail } = await import('./saschCheatSheet');
+        sendSaschWelcomeEmail(cleanEmail, cleanName).catch((err) =>
+          console.error('[sasch] welcome email background error:', err?.message),
+        );
+      }
+
+      res.json({
+        success: true,
+        alreadySubscribed: !isNewSubscriber,
+        message: isNewSubscriber
+          ? 'Cheat sheet incoming. Check your inbox in the next minute.'
+          : "You're already subscribed. Grab the PDF directly using the download link.",
+        downloadUrl: '/api/sasch/cheat-sheet.pdf',
+      });
+    } catch (err: any) {
+      console.error('[sasch] subscribe error:', err);
+      res.status(500).json({ message: err.message || 'Could not deliver the cheat sheet. Try again.' });
+    }
+  });
+
   // Unsubscribe (no auth — token-free for now, email param)
   app.get('/api/newsletter/unsubscribe', async (req, res) => {
     try {

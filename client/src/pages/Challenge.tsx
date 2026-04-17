@@ -361,10 +361,36 @@ export default function Challenge() {
           <h2 className="text-3xl md:text-4xl font-black text-center mb-4">
             66 Days to Build the Habit. A Lifetime to Use It.
           </h2>
-          <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
+          <p className="text-gray-400 text-center mb-8 max-w-2xl mx-auto">
             The 66-Day Challenge is your entry point — not your exit. Stroke recovery spans years, 
             decades, sometimes a lifetime. This system grows with you.
           </p>
+
+          {/* The 66-Day Truth callout */}
+          <div
+            className="max-w-3xl mx-auto mb-12 rounded-lg p-6 md:p-8"
+            style={{ background: "#1a1a1a", border: "1px solid #C9941A" }}
+            data-testid="callout-66-day-truth"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <span
+                className="text-xs font-bold uppercase tracking-widest"
+                style={{ color: "#C9941A" }}
+              >
+                The 66-Day Truth
+              </span>
+            </div>
+            <p className="text-sm md:text-base leading-relaxed mb-3" style={{ color: "#E5E5E5" }}>
+              66 days is the average time it takes to turn deliberate effort into a habit.{" "}
+              <strong style={{ color: "#FFF" }}>It is not a guarantee.</strong> Every stroke is
+              different. Every brain is different. Every recovery is different.
+            </p>
+            <p className="text-sm md:text-base leading-relaxed" style={{ color: "#E5E5E5" }}>
+              The S.A.S.C.H. Formula is the blueprint Nick built going from 0% to 90%+. It works when
+              you work it. He's living proof it's possible —{" "}
+              <span style={{ color: "#FFF", fontWeight: 600 }}>the rest is up to you.</span>
+            </p>
+          </div>
 
           <div className="space-y-6">
             {PHASES.map((phase) => (

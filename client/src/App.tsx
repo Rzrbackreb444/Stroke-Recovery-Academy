@@ -88,6 +88,7 @@ import QuoteViewPage from "@/pages/QuoteViewPage";
 import StrokeRecoveryLanding from "@/pages/Landing";
 import RecoveryDashboard from "@/pages/RecoveryDashboard";
 import Academy from "@/pages/Academy";
+import SaschLanding from "@/pages/SaschLanding";
 import Builder from "@/pages/Builder";
 import SurvivalGrid from "@/pages/SurvivalGrid";
 import Achievements from "@/pages/Achievements";
@@ -407,6 +408,7 @@ function Router() {
         </ProtectedRoute>
       </Route>
       <Route path="/recovery/academy" component={Academy} />
+      <Route path="/recovery/sasch" component={SaschLanding} />
       <Route path="/recovery/builder" component={Builder} />
       <Route path="/recovery/survival-grid" component={SurvivalGrid} />
       <Route path="/recovery/achievements">
