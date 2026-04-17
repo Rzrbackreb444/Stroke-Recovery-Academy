@@ -88,7 +88,7 @@ Icons: lucide-react only (no emoji)
   - **Real Use Cases**: Squatch Mix (stroke recovery supplement), WashBizHub (laundromat community 75K members).
 
 - **Survivor Community** (`/recovery/community`): Skool-killer social hub with:
-  - **Feed Tab**: Post composer with photo/video upload, 5 post types (Update/Milestone/Question/Tip/Win), 5 reaction types (Like/Love/Celebrate/Fire/Insight), comment threads with author avatars.
+  - **Feed Tab**: Post composer with photo/video upload, 5 post types (Update/Milestone/Question/Tip/Win), 5 reaction types (Like/Love/Celebrate/Fire/Insight), comment threads with author avatars. Mobile-responsive horizontal filter scroll bar for post type filtering on small screens.
   - **Members Tab**: Member grid sorted by streak, showing avatars, screen names, and day counts.
   - **Live Tab**: Live event scheduling and streaming (YouTube embed or external URL), admin "Go Live" control with start/end.
   - **Classroom Tab**: Links to Recovery University courses.
@@ -96,6 +96,14 @@ Icons: lucide-react only (no emoji)
   - **Routes**: `/api/community/posts`, `/api/community/members`, `/api/community/comments/:id`, `/api/live/events`, `/api/upload/media`, `/api/upload/avatar`, `/api/user/settings` GET/PUT.
   - Uploaded files stored in `./uploads/` served statically at `/uploads/`.
   - Live events table created via raw SQL (`CREATE TABLE IF NOT EXISTS live_events`).
+  - **Mobile responsive**: Scrollable tabs on small screens, horizontal filter pill row for feed filtering on mobile.
+
+- **Recovery Blog** (`/recovery/blog` + `/recovery/blog/:slug`): Full blog list + article detail pages.
+  - **Blog List** (`/recovery/blog`): Category filter buttons (Philosophy/Therapy/Science/Exercises/Caregivers/Income), search, featured articles section, clickable card grid.
+  - **Article Detail** (`/recovery/blog/:slug`): Full markdown-rendered article with headers/lists/bold, author bio card, like/share buttons, related posts. SEO-optimized.
+  - **Real Content**: 8+ real articles from Nick Kremers with full long-form content — "Never Zero Philosophy", "CIMT Guide", "Neuroplasticity", "Caregiver Burnout", "Speech Therapy Exercises", plus income/financial articles.
+  - **Seed Fallback**: `getRecoveryBlogPostBySlug` falls back to seed data when DB is empty so articles are always readable.
+  - **Markdown Renderer**: Custom inline markdown renderer (bold, italic, headers, lists, blockquotes, links) without external library dependency.
 
 ### Stripe Products & Subscription Tiers
 - **KreAIte Tiers**: Free, Creator, Pro, Enterprise.

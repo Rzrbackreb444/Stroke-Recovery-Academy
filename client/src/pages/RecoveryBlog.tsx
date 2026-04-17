@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import RecoveryHeader from "@/components/RecoveryHeader";
 import RecoverySEO from "@/components/RecoverySEO";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
-import { 
+import {
   BookOpen, Search, Calendar, Clock, User, ArrowRight,
   Eye, Heart, MessageCircle, TrendingUp, Sparkles
 } from "lucide-react";
@@ -40,6 +42,7 @@ const categories = [
   { id: "science", label: "Science" },
   { id: "exercises", label: "Exercises" },
   { id: "caregivers", label: "Caregivers" },
+  { id: "income", label: "Income" },
 ];
 
 const categoryColors: Record<string, string> = {
@@ -48,6 +51,7 @@ const categoryColors: Record<string, string> = {
   science: "bg-green-500/20 text-green-400 border-green-500/30",
   exercises: "bg-orange-500/20 text-orange-400 border-orange-500/30",
   caregivers: "bg-pink-500/20 text-pink-400 border-pink-500/30",
+  income: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
 };
 
 export default function RecoveryBlog() {
@@ -66,7 +70,7 @@ export default function RecoveryBlog() {
   });
 
   const filteredPosts = posts.filter(post => {
-    const matchesSearch = !searchQuery || 
+    const matchesSearch = !searchQuery ||
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.excerpt?.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesSearch;
@@ -78,7 +82,7 @@ export default function RecoveryBlog() {
     return new Date(dateString).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
-      year: 'numeric'
+      year: 'numeric',
     });
   };
 
@@ -89,40 +93,39 @@ export default function RecoveryBlog() {
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
+      <RecoveryHeader />
       <RecoverySEO
         title="Stroke Recovery Blog — Expert Insights & Survivor Stories"
-        description="Evidence-based stroke recovery articles by Nick Kremers — survivor who went from 0% to 90% recovery. Get actionable rehab tips, neuroplasticity strategies, mindset tools, and real survivor stories. Updated weekly."
+        description="Evidence-based stroke recovery articles by Nick Kremers — survivor who went from 0% to 90% recovery. Get actionable rehab tips, neuroplasticity strategies, mindset tools, and real survivor stories."
         canonical="/recovery/blog"
         keywords={[
           "stroke recovery blog", "stroke survivor stories", "stroke rehab tips", "neuroplasticity after stroke",
           "stroke recovery exercises", "post stroke depression tips", "aphasia recovery", "stroke caregiver advice",
-          "mirror therapy stroke", "stroke recovery timeline", "Nick Kremers blog"
+          "Nick Kremers blog"
         ]}
         pageType="article"
         author="Nick Kremers"
         speakableSelectors={["h1", ".blog-hero-text", ".featured-article-excerpt"]}
         breadcrumbs={[{ name: "Recovery Hub", url: "/recovery" }, { name: "Blog", url: "/recovery/blog" }]}
         faq={[
-          { question: "How long does stroke recovery take?", answer: "Stroke recovery is a lifelong process, but the most significant gains typically happen in the first 3-6 months. However, neuroplasticity allows the brain to continue rewiring for years. Nick Kremers went from 0% to 90% functional recovery over 2+ years of consistent rehabilitation. The key is never stopping — every day of exercise rewires the brain." },
-          { question: "What are the most effective stroke recovery exercises?", answer: "The most effective stroke recovery exercises focus on high repetition and task-specific training: mirror therapy for arm/hand recovery (20-30 minutes daily), constraint-induced movement therapy, finger extension exercises, grip strengthening, gait training with parallel bars, balance exercises, and speech repetition drills. Research shows 400-1,000 repetitions per session drive the strongest neuroplastic changes." },
-          { question: "Can stroke survivors fully recover?", answer: "Many stroke survivors achieve significant, life-changing recovery — some reaching near-full function. The degree of recovery depends on stroke severity, location, rehabilitation intensity, and time since stroke. Nick Kremers is living proof: he went from 0% mobility to 90% function through relentless daily rehabilitation and the Sasquatch Method." },
-          { question: "What is neuroplasticity and why does it matter for stroke recovery?", answer: "Neuroplasticity is the brain's ability to reorganize itself by forming new neural connections throughout life. After a stroke destroys brain tissue, neuroplasticity allows neighboring brain areas to take over lost functions. Every repetitive movement and exercise you do creates new pathways — this is literally how stroke survivors relearn to walk, talk, and use their hands." },
-          { question: "How do I manage post-stroke depression?", answer: "Post-stroke depression affects 30-50% of survivors and is a medical condition, not a personal weakness. Treatment includes working with a mental health professional, exercise (which releases endorphins and promotes neuroplasticity), social connection with other survivors, setting small daily goals, and celebrating every win no matter how small. Never face it alone — our community is here." }
+          { question: "How long does stroke recovery take?", answer: "Stroke recovery is a lifelong process, but the most significant gains typically happen in the first 3-6 months. Nick Kremers went from 0% to 90% functional recovery over 2+ years of consistent rehabilitation." },
+          { question: "What are the most effective stroke recovery exercises?", answer: "The most effective stroke recovery exercises focus on high repetition and task-specific training: mirror therapy, constraint-induced movement therapy, finger extension exercises, and gait training. Research shows 400-1,000 repetitions per session drive the strongest neuroplastic changes." },
+          { question: "Can stroke survivors fully recover?", answer: "Many stroke survivors achieve significant recovery — some reaching near-full function. Nick Kremers went from 0% mobility to 90% function through relentless daily rehabilitation." },
         ]}
       />
 
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold flex items-center justify-center gap-3 mb-3">
-            <BookOpen className="h-10 w-10 text-[#C9941A]" />
+          <h1 className="text-3xl sm:text-4xl font-bold flex items-center justify-center gap-3 mb-3">
+            <BookOpen className="h-8 w-8 sm:h-10 sm:w-10 text-[#C9941A]" />
             Recovery Blog
           </h1>
-          <p className="text-gray-400 text-lg">
+          <p className="text-gray-400 text-base sm:text-lg">
             Expert insights, recovery strategies, and survivor stories from Nick Kremers
           </p>
         </div>
 
-        <div className="relative mb-6">
+        <div className="relative mb-5">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
           <Input
             placeholder="Search articles..."
@@ -138,6 +141,7 @@ export default function RecoveryBlog() {
             <Button
               key={cat.id}
               variant={activeCategory === cat.id ? "default" : "outline"}
+              size="sm"
               onClick={() => setActiveCategory(cat.id)}
               className={activeCategory === cat.id ? "bg-[#C9941A] text-black" : "border-[#333] text-gray-300"}
               data-testid={`button-category-${cat.id}`}
@@ -149,7 +153,7 @@ export default function RecoveryBlog() {
 
         {isLoading && (
           <>
-            <div className="grid md:grid-cols-2 gap-6 mb-10">
+            <div className="grid sm:grid-cols-2 gap-6 mb-10">
               {[1, 2].map((i) => (
                 <Card key={i} className="bg-[#1a1a1a] border-[#333] overflow-hidden">
                   <Skeleton className="h-48 w-full bg-[#333]" />
@@ -162,7 +166,7 @@ export default function RecoveryBlog() {
                 </Card>
               ))}
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3].map((i) => (
                 <Card key={i} className="bg-[#1a1a1a] border-[#333] overflow-hidden">
                   <Skeleton className="h-32 w-full bg-[#333]" />
@@ -183,118 +187,120 @@ export default function RecoveryBlog() {
               <TrendingUp className="h-6 w-6 text-[#C9941A]" />
               Featured Articles
             </h2>
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid sm:grid-cols-2 gap-6">
               {featuredPosts.slice(0, 2).map((post) => (
-                <Card 
-                  key={post.id} 
-                  className="bg-[#1a1a1a] border-[#333] overflow-hidden hover:border-[#C9941A]/30 transition-all duration-200 cursor-pointer group" 
-                  data-testid={`card-featured-${post.id}`}
-                >
-                  <div className="h-48 bg-gradient-to-br from-[#C9941A]/20 to-[#0D0D0D] flex items-center justify-center relative overflow-hidden">
-                    <BookOpen className="h-16 w-16 text-[#C9941A]/50 group-hover:scale-110 transition-transform" />
-                    <div className="absolute top-4 left-4">
-                      <Badge className="bg-[#C9941A] text-black">
-                        <Sparkles className="h-3 w-3 mr-1" />
-                        Featured
+                <Link key={post.id} href={`/recovery/blog/${post.slug}`}>
+                  <Card
+                    className="bg-[#1a1a1a] border-[#333] overflow-hidden hover:border-[#C9941A]/50 transition-all duration-200 cursor-pointer group h-full"
+                    data-testid={`card-featured-${post.id}`}
+                  >
+                    <div className="h-48 bg-gradient-to-br from-[#C9941A]/20 to-[#0D0D0D] flex items-center justify-center relative">
+                      <BookOpen className="h-16 w-16 text-[#C9941A]/50 group-hover:scale-110 transition-transform" />
+                      <div className="absolute top-4 left-4">
+                        <Badge className="bg-[#C9941A] text-black">
+                          <Sparkles className="h-3 w-3 mr-1" />
+                          Featured
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="p-6">
+                      <Badge className={categoryColors[post.category] || "bg-gray-500/20 text-gray-400"}>
+                        {post.category}
                       </Badge>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <Badge className={categoryColors[post.category] || "bg-gray-500/20 text-gray-400"}>
-                      {post.category}
-                    </Badge>
-                    <h3 className="text-xl font-bold mt-3 mb-2 text-white group-hover:text-[#C9941A] transition-colors">
-                      {post.title}
-                    </h3>
-                    <p className="text-gray-400 mb-4 line-clamp-2">{post.excerpt}</p>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
-                        <span className="flex items-center gap-1">
-                          <User className="h-4 w-4" />
-                          {post.authorName}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Calendar className="h-4 w-4" />
-                          {formatDate(post.createdAt)}
+                      <h3 className="text-xl font-bold mt-3 mb-2 text-white group-hover:text-[#C9941A] transition-colors">
+                        {post.title}
+                      </h3>
+                      <p className="text-gray-400 mb-4 line-clamp-2">{post.excerpt}</p>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3 text-sm text-gray-500 flex-wrap gap-y-1">
+                          <span className="flex items-center gap-1">
+                            <User className="h-4 w-4" />
+                            {post.authorName}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Calendar className="h-4 w-4" />
+                            {formatDate(post.createdAt)}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between mt-4 pt-4 border-t border-[#333]">
+                        <div className="flex items-center gap-3 text-sm text-gray-500">
+                          <span className="flex items-center gap-1">
+                            <Eye className="h-4 w-4" />
+                            {formatNumber(post.viewCount)}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Heart className="h-4 w-4" />
+                            {formatNumber(post.likeCount)}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <MessageCircle className="h-4 w-4" />
+                            {post.commentCount}
+                          </span>
+                        </div>
+                        <span className="flex items-center gap-1 text-sm text-gray-500">
+                          <Clock className="h-4 w-4" />
+                          {post.readTime || 5} min read
                         </span>
                       </div>
                     </div>
-                    
-                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-[#333]">
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
-                        <span className="flex items-center gap-1">
-                          <Eye className="h-4 w-4" />
-                          {formatNumber(post.viewCount)}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Heart className="h-4 w-4" />
-                          {formatNumber(post.likeCount)}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <MessageCircle className="h-4 w-4" />
-                          {post.commentCount}
-                        </span>
-                      </div>
-                      <span className="flex items-center gap-1 text-sm text-gray-500">
-                        <Clock className="h-4 w-4" />
-                        {post.readTime || 5} min read
-                      </span>
-                    </div>
-                  </div>
-                </Card>
+                  </Card>
+                </Link>
               ))}
             </div>
           </div>
         )}
 
         {!isLoading && (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredPosts.map((post) => (
-              <Card 
-                key={post.id} 
-                className="bg-[#1a1a1a] border-[#333] overflow-hidden hover:border-[#C9941A]/30 transition-all duration-200 cursor-pointer group" 
-                data-testid={`card-post-${post.id}`}
-              >
-                <div className="h-32 bg-gradient-to-br from-[#C9941A]/10 to-[#0D0D0D] flex items-center justify-center">
-                  <BookOpen className="h-10 w-10 text-[#C9941A]/30 group-hover:scale-110 transition-transform" />
-                </div>
-                <div className="p-5">
-                  <Badge className={categoryColors[post.category] || "bg-gray-500/20 text-gray-400 border-gray-500/30"}>
-                    {post.category}
-                  </Badge>
-                  <h3 className="font-bold mt-2 mb-2 text-white line-clamp-2 group-hover:text-[#C9941A] transition-colors">
-                    {post.title}
-                  </h3>
-                  <p className="text-gray-400 text-sm mb-3 line-clamp-2">{post.excerpt}</p>
-                  
-                  <div className="flex items-center justify-between text-xs text-gray-500">
-                    <span className="flex items-center gap-1">
-                      <User className="h-3 w-3" />
-                      {post.authorName}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Calendar className="h-3 w-3" />
-                      {formatDate(post.createdAt)}
-                    </span>
+              <Link key={post.id} href={`/recovery/blog/${post.slug}`}>
+                <Card
+                  className="bg-[#1a1a1a] border-[#333] overflow-hidden hover:border-[#C9941A]/50 transition-all duration-200 cursor-pointer group h-full flex flex-col"
+                  data-testid={`card-post-${post.id}`}
+                >
+                  <div className="h-32 bg-gradient-to-br from-[#C9941A]/10 to-[#0D0D0D] flex items-center justify-center flex-shrink-0">
+                    <BookOpen className="h-10 w-10 text-[#C9941A]/30 group-hover:scale-110 transition-transform" />
                   </div>
-                  
-                  <div className="flex items-center gap-4 mt-3 pt-3 border-t border-[#333] text-xs text-gray-500">
-                    <span className="flex items-center gap-1">
-                      <Eye className="h-3 w-3" />
-                      {formatNumber(post.viewCount)}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Heart className="h-3 w-3" />
-                      {formatNumber(post.likeCount)}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      {post.readTime || 5} min
-                    </span>
+                  <div className="p-5 flex flex-col flex-1">
+                    <Badge className={`${categoryColors[post.category] || "bg-gray-500/20 text-gray-400 border-gray-500/30"} self-start mb-2`}>
+                      {post.category}
+                    </Badge>
+                    <h3 className="font-bold mb-2 text-white line-clamp-2 group-hover:text-[#C9941A] transition-colors flex-1">
+                      {post.title}
+                    </h3>
+                    <p className="text-gray-400 text-sm mb-3 line-clamp-2">{post.excerpt}</p>
+
+                    <div className="flex items-center justify-between text-xs text-gray-500 mt-auto">
+                      <span className="flex items-center gap-1">
+                        <User className="h-3 w-3" />
+                        {post.authorName}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        {formatDate(post.createdAt)}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-3 mt-3 pt-3 border-t border-[#333] text-xs text-gray-500">
+                      <span className="flex items-center gap-1">
+                        <Eye className="h-3 w-3" />
+                        {formatNumber(post.viewCount)}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Heart className="h-3 w-3" />
+                        {formatNumber(post.likeCount)}
+                      </span>
+                      <span className="flex items-center gap-1 ml-auto">
+                        <Clock className="h-3 w-3" />
+                        {post.readTime || 5} min
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </Card>
+                </Card>
+              </Link>
             ))}
           </div>
         )}
@@ -306,28 +312,27 @@ export default function RecoveryBlog() {
             <p className="text-gray-400 mb-4">
               Try adjusting your search or category filter
             </p>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="border-[#C9941A] text-[#C9941A]"
-              onClick={() => {
-                setActiveCategory("all");
-                setSearchQuery("");
-              }}
+              onClick={() => { setActiveCategory("all"); setSearchQuery(""); }}
             >
               Clear Filters
             </Button>
           </Card>
         )}
 
-        <Card className="bg-gradient-to-br from-[#C9941A]/20 to-[#1a1a1a] border-[#C9941A]/30 p-8 mt-12 text-center">
-          <h2 className="text-2xl font-bold mb-3">Want to Share Your Recovery Story?</h2>
-          <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-            Your journey could inspire thousands of other survivors. Submit your story and help build 
+        <Card className="bg-gradient-to-br from-[#C9941A]/20 to-[#1a1a1a] border-[#C9941A]/30 p-6 sm:p-8 mt-12 text-center">
+          <h2 className="text-xl sm:text-2xl font-bold mb-3">Want to Share Your Recovery Story?</h2>
+          <p className="text-gray-300 mb-6 max-w-2xl mx-auto text-sm sm:text-base">
+            Your journey could inspire thousands of other survivors. Submit your story and help build
             the world's largest collection of stroke recovery experiences.
           </p>
-          <Button className="bg-[#C9941A] text-black font-semibold">
-            Submit Your Story <ArrowRight className="h-4 w-4 ml-2" />
-          </Button>
+          <Link href="/recovery/community">
+            <Button className="bg-[#C9941A] text-black font-semibold">
+              Join the Community <ArrowRight className="h-4 w-4 ml-2" />
+            </Button>
+          </Link>
         </Card>
       </main>
 

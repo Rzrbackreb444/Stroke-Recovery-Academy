@@ -2895,10 +2895,14 @@ export class DatabaseStorage implements IStorage {
   async getRecoveryBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
     try {
       const results = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug)).limit(1);
-      return results[0];
+      if (results[0]) return results[0];
+      // Fall back to seed data if not in DB
+      const seedPosts = this.getSeedRecoveryBlogPosts();
+      return seedPosts.find((p: any) => p.slug === slug) as BlogPost | undefined;
     } catch (error) {
       console.error("Error fetching blog post by slug:", error);
-      return undefined;
+      const seedPosts = this.getSeedRecoveryBlogPosts();
+      return seedPosts.find((p: any) => p.slug === slug) as BlogPost | undefined;
     }
   }
 
@@ -2909,11 +2913,95 @@ export class DatabaseStorage implements IStorage {
         slug: "never-zero-philosophy",
         title: "The Never Zero Philosophy: Why Every Action Counts",
         excerpt: "How the simple principle of 'never zero' transformed my recovery and can transform yours.",
-        content: "When I had my stroke at 36, everything changed. But one philosophy saved me: Never Zero...",
+        content: `I had my stroke at 36 years old.
+
+One day I was coaching youth football, running around a practice field, living a normal life. The next day I woke up and couldn't move the left side of my body.
+
+The doctors told me I had a hemorrhagic stroke. They told me I was lucky to be alive. What they didn't tell me was what came next — the psychological avalanche that hits when you realize your body won't do what you tell it to.
+
+## The Day I Discovered Never Zero
+
+About three months into my recovery, I hit a wall.
+
+I'd been doing my exercises. I'd been going to therapy. But progress had slowed to almost nothing, and depression was creeping in. I remember laying in bed one morning thinking, "What's the point?"
+
+Then something shifted.
+
+I decided that no matter what, I would do at least one rep. One movement. One action. Even if it was the smallest, weakest, most pathetic version of the thing I was supposed to do — I would not do zero.
+
+That day, I did one arm curl with a one-pound weight.
+
+The next day, I did three.
+
+The day after that, I did ten.
+
+**Never Zero became my religion.**
+
+## What Never Zero Actually Means
+
+Never Zero doesn't mean you have to crush every workout. It doesn't mean you have to be at 100% every day. It means you refuse to let the number reach zero.
+
+Zero is where momentum goes to die. Zero is where habits dissolve. Zero is where the brain stops getting the signal that recovery is still happening.
+
+When you do at least one rep — no matter how small — you send your nervous system a message: *We're still fighting. We're still here. We're still working.*
+
+Neuroplasticity is the science behind this. Every single movement you make is literally rewiring your brain. Every repetition creates a neural pathway. Every day you exercise, even minimally, your brain is building the map it needs to restore function.
+
+Zero repetitions = zero rewiring.
+
+One rep = the beginning of everything.
+
+## The Three Situations Where Never Zero Saves You
+
+### 1. Bad Days
+
+You're going to have bad days. Pain flares. Fatigue that won't lift. Frustration that makes you want to throw your resistance band across the room. These are the days Never Zero matters most.
+
+On bad days, your only job is to not reach zero. Do one movement. Sit up once. Squeeze your hand once. That's it.
+
+The bad day passes. Your momentum doesn't — because you never let it hit zero.
+
+### 2. Plateaus
+
+Recovery plateaus are brutal. You've been working hard, and suddenly the progress stops. You're doing the same exercises and getting the same results.
+
+Never Zero keeps you doing *something* through the plateau. And plateaus always end — for the people who keep showing up.
+
+### 3. After Setbacks
+
+Maybe you got sick. Maybe you had a fall. Maybe life happened and you missed a week. The danger after a setback isn't the setback itself — it's the zero streak that forms afterward.
+
+Never Zero gets you back in action immediately. Not perfectly. Not powerfully. Just back in action.
+
+## How to Apply Never Zero Today
+
+Set your absolute minimum. What is the one thing you can do, even on your worst day?
+
+For me early on, it was one arm lift. That's it. One.
+
+Write it down. "My Never Zero is: [one exercise]."
+
+Then commit to it. Not on good days — every day.
+
+The beautiful thing about Never Zero is that it almost always leads to more. You start your one rep and then you do five. You do five and then you do twenty. But even if you don't — even if all you do is your one — you've kept the streak alive and your brain is still receiving the recovery signal.
+
+## The Proof
+
+I went from 0% function on my left side to 90% function over two years.
+
+I'm not going to pretend I know exactly how much of that was Never Zero. But I know this: the people I've seen stop — the ones who take weeks off, who let the zeros pile up — they don't come back with the same momentum. Some of them don't come back at all.
+
+Never Zero isn't just a workout principle. It's a statement about who you are.
+
+You are someone who does not quit.
+
+Not even on bad days.
+
+Not even one.`,
         authorId: "nick-kremers",
         authorName: "Nick Kremers",
         category: "philosophy",
-        tags: ["motivation", "recovery", "mindset"],
+        tags: ["motivation", "recovery", "mindset", "never zero"],
         featuredImage: "/images/never-zero.jpg",
         status: "published",
         featured: true,
@@ -2929,11 +3017,86 @@ export class DatabaseStorage implements IStorage {
         slug: "constraint-induced-movement-therapy",
         title: "Constraint-Induced Movement Therapy: A Complete Guide",
         excerpt: "Everything you need to know about CIMT and how it can accelerate your recovery.",
-        content: "Constraint-induced movement therapy (CIMT) is one of the most effective stroke rehabilitation techniques...",
+        content: `If you've been in stroke rehabilitation for any length of time, you've probably heard about Constraint-Induced Movement Therapy — or CIMT. It's one of the most researched and validated rehabilitation techniques available to stroke survivors. And yet a lot of survivors still don't fully understand how it works or whether it's right for them.
+
+This guide covers everything.
+
+## What Is CIMT?
+
+Constraint-Induced Movement Therapy is a rehabilitation approach that involves:
+
+1. **Restraining your stronger arm** — using a sling, mitt, or cast — for a significant portion of your waking hours
+2. **Intensively using your weaker arm** — through repetitive, task-focused practice
+
+The key insight behind CIMT is that stroke survivors often develop something called "learned non-use." After a stroke, the affected arm doesn't work well, so you naturally start compensating with your stronger arm. This compensation feels like adaptation — but it's actually making the problem worse. Your brain gets the message: *we don't need the weak arm anymore.* And so it stops trying to rebuild those pathways.
+
+CIMT reverses this. By restraining the good arm, you force the brain to start rebuilding the pathways for the affected side.
+
+## The Science Behind It
+
+CIMT works because of neuroplasticity — the brain's ability to reorganize itself by forming new neural connections.
+
+Every time you use your affected arm, even poorly, you're sending a signal to your brain to keep building that pathway. The more repetitions you do, the stronger that pathway gets.
+
+Studies have shown that CIMT produces measurable improvements in arm function even years after stroke. This is critical: CIMT works in the chronic phase of recovery, not just the acute phase. You don't have to be in the first few months after your stroke for this to be effective.
+
+## What Does a CIMT Program Look Like?
+
+Traditional CIMT protocols involve:
+
+- **Restraining the unaffected arm for 90% of waking hours** for 2-3 weeks
+- **6 hours of structured therapy per day** during the treatment period
+- **Task practice**: reaching, grasping, picking up objects, daily life tasks
+
+This intensive format isn't always accessible or practical. Modified CIMT programs have emerged that are less intense but still effective:
+
+- Restraint for 5 hours per day
+- 30 minutes of structured practice per day
+- Spread over a longer period (10-12 weeks)
+
+Both approaches have evidence behind them. If you can access intensive CIMT, go for it. If not, the modified protocol is still worth pursuing.
+
+## What Gains Can You Expect?
+
+This depends on your starting level of function. In general:
+
+- Survivors with *some* active movement in the wrist or hand tend to respond best
+- Improvements are most often seen in speed and quality of arm use, not just strength
+- Many survivors report improved confidence using the affected arm in daily life
+
+What CIMT won't do is restore function that requires completely healed tissue. If there's no movement at all in the hand, CIMT is less effective. But if you have even a flicker of movement — which is exactly the kind of early recovery signal we watch for — CIMT can amplify that significantly.
+
+## How to Access CIMT
+
+### Option 1: Inpatient or Outpatient Rehab Program
+
+Many rehab facilities now offer CIMT or modified CIMT. Ask your physiatrist or neurologist directly: "Do you offer constraint-induced movement therapy?" If they don't, ask for a referral to someone who does.
+
+### Option 2: Home-Based Modified CIMT
+
+You can implement the core principle of CIMT at home with guidance:
+
+- Use a lightweight mitt or sling to restrain your stronger arm during specific daily activities
+- Practice repetitive tasks with the affected arm: picking up sponges, stacking cups, turning doorknobs, pouring water
+- Aim for 300-400 repetitions per session
+
+This won't replace professional CIMT, but it applies the core neuroplasticity principle to your daily routine.
+
+### Option 3: Research Studies
+
+Universities and medical centers frequently conduct CIMT research studies that provide the therapy free of charge. Search clinicaltrials.gov for "constraint-induced movement therapy" to find studies near you.
+
+## The Mental Side of CIMT
+
+I won't pretend CIMT is comfortable. Restraining your good arm is frustrating. Struggling to do simple tasks with an arm that doesn't work well is humiliating.
+
+Here's what I tell people: the frustration is part of the process. Your brain needs to feel the need before it builds the solution. The struggle is the signal.
+
+Embrace it.`,
         authorId: "nick-kremers",
         authorName: "Nick Kremers",
         category: "therapy",
-        tags: ["physical therapy", "CIMT", "arm recovery"],
+        tags: ["physical therapy", "CIMT", "arm recovery", "neuroplasticity"],
         featuredImage: "/images/cimt-therapy.jpg",
         status: "published",
         featured: true,
@@ -2949,11 +3112,83 @@ export class DatabaseStorage implements IStorage {
         slug: "neuroplasticity-and-recovery",
         title: "How Neuroplasticity Powers Your Recovery",
         excerpt: "Understanding your brain's remarkable ability to rewire itself after stroke.",
-        content: "Your brain is not fixed. It's constantly changing, adapting, and rewiring...",
+        content: `When I first heard the word "neuroplasticity" in my rehabilitation, I thought it was just medical jargon. Doctor-speak for something that didn't actually matter to me practically.
+
+I was wrong. Understanding neuroplasticity is the single most important thing a stroke survivor can do — because it completely changes how you think about your recovery and what's actually possible.
+
+## Your Brain Is Not Fixed
+
+For most of medical history, scientists believed that the adult brain was essentially static. Once you lost brain cells, they were gone. Damage was permanent.
+
+This is now understood to be completely wrong.
+
+Your brain is dynamic. It constantly reorganizes itself, forms new connections, and reassigns functions from damaged areas to healthy ones. This is neuroplasticity.
+
+After a stroke destroys brain tissue, the surrounding healthy tissue can literally learn to take over the functions that were lost. This doesn't happen automatically — it requires input. It requires practice. It requires repetition.
+
+But it happens. That's the miracle.
+
+## How Neuroplasticity Works in Practice
+
+Think of it like this: before your stroke, your brain had well-worn paths for every movement and function. These paths were built over years of use. They were efficient, automatic, and fast.
+
+A stroke damages or destroys some of those paths.
+
+Neuroplasticity allows your brain to build new paths — different routes to the same destination. But building new paths requires effort. You have to walk them over and over until they become efficient.
+
+This is why repetition is everything in stroke recovery.
+
+**400-1,000 repetitions per therapy session** is the range supported by research for driving meaningful neuroplastic change. This sounds like a lot. Most traditional therapy sessions achieve 30-50 repetitions.
+
+The gap between what research shows works and what standard therapy delivers is one of the biggest problems in stroke rehabilitation today.
+
+## The Key Principles That Drive Neuroplasticity
+
+### 1. Use It or Lose It
+
+Pathways that aren't used weaken and eventually disappear. This is why learned non-use — compensating with your stronger side — works against your recovery. Your brain gets the message that the affected side isn't needed, and it stops devoting resources to rebuilding it.
+
+### 2. Use It and Improve It
+
+The flip side: pathways that are used regularly strengthen and become more efficient. Every repetition counts. Every movement your affected limb makes sends a signal to your brain: *build this.*
+
+### 3. Specificity
+
+The brain builds what you practice. If you practice lifting a cup, your brain gets better at lifting a cup. If you practice walking, your brain gets better at walking. Generic exercise has some benefit, but task-specific practice drives the most targeted neuroplastic change.
+
+### 4. Intensity Matters
+
+More repetitions within a session drive stronger neuroplastic signals. This is why intensive therapy — even for short bursts — tends to outperform low-intensity therapy stretched over a longer period.
+
+### 5. It's Never Too Late
+
+This is the most important principle. Research has consistently shown neuroplastic changes occurring in stroke survivors who are months and years post-stroke. The brain doesn't stop being plastic.
+
+If someone tells you recovery stops at 6 months or 1 year, they are wrong. The science does not support this. I am living proof — my most significant gains came 18-24 months after my stroke.
+
+## What This Means for You
+
+Every single exercise you do today is not just physical effort — it is literally rewiring your brain.
+
+That's not motivational language. That's neuroscience.
+
+When you do your 400 arm curls, you are building neural pathways. When you practice writing your name, you are reorganizing your motor cortex. When you work on your speech, you are creating new language processing routes.
+
+This is why quitting is so costly. Every day you don't practice, those pathways don't strengthen. Every day you do practice, they do.
+
+## Practical Steps to Maximize Neuroplasticity
+
+- **High repetition**: aim for hundreds of reps per session, not dozens
+- **Task-specific practice**: focus on real movements you need for daily life
+- **Mental rehearsal**: research shows that *imagining* movements activates similar neural pathways as performing them — powerful for days when physical practice is limited
+- **Challenge yourself**: the brain responds most strongly to effortful, slightly difficult tasks. Easy tasks that require no concentration drive less neuroplastic change
+- **Sleep**: neuroplastic consolidation happens during sleep. Prioritizing sleep is not optional.
+
+Your brain is ready to rebuild. Give it the signal.`,
         authorId: "nick-kremers",
         authorName: "Nick Kremers",
         category: "science",
-        tags: ["brain", "neuroplasticity", "science"],
+        tags: ["brain", "neuroplasticity", "science", "recovery principles"],
         featuredImage: "/images/neuroplasticity.jpg",
         status: "published",
         featured: false,
@@ -2969,11 +3204,88 @@ export class DatabaseStorage implements IStorage {
         slug: "caregiver-burnout-prevention",
         title: "Preventing Caregiver Burnout: A Guide for Families",
         excerpt: "Essential strategies for caregivers to maintain their own health while supporting recovery.",
-        content: "Caregiving is one of the most demanding roles anyone can take on...",
-        authorId: "sarah-martinez",
-        authorName: "Sarah Martinez, RN",
+        content: `Nobody warned my wife about what was coming.
+
+She was suddenly the caregiver, the breadwinner, the scheduler, the advocate, the cook, the driver, the emotional support system — all at once. And she was watching her husband fight to relearn how to button a shirt.
+
+This article is for people like her.
+
+## What Caregiver Burnout Actually Is
+
+Caregiver burnout is not laziness. It is not weakness. It is not a sign that you don't love the person you're caring for.
+
+It is a state of physical, emotional, and mental exhaustion that results from the sustained, relentless demands of caregiving without adequate support.
+
+Symptoms include:
+
+- Persistent exhaustion that sleep doesn't fix
+- Increasing resentment or frustration toward the survivor (followed by guilt)
+- Withdrawing from friends, family, and activities
+- Neglecting your own health needs
+- Feeling like you have no life outside of caregiving
+- Physical symptoms: headaches, sleep problems, illness
+
+According to research, over 40% of stroke caregivers experience significant depression within the first year. This is not a small problem.
+
+## Why Caregivers Resist Getting Help
+
+Most caregivers I've encountered have a version of this thought: *"If I take time for myself, I'm abandoning them."*
+
+This is the lie that drives burnout.
+
+The airplane oxygen mask analogy exists for a reason: you cannot help anyone else from a position of depletion. A burned-out caregiver is not a good caregiver. A burned-out caregiver is at risk — for their own health, and for the quality of care they can provide.
+
+Taking care of yourself is part of taking care of the survivor. Not separate from it.
+
+## Practical Strategies for Caregivers
+
+### Build a Team
+
+You were not designed to do this alone. Nobody is.
+
+Make a list of every task you handle for the survivor. Then make a list of people who could help with even one of those tasks. Family, friends, neighbors, church members, volunteers.
+
+Ask specifically. "Can you drive Nick to therapy on Thursdays?" is a request people can say yes to. "Let me know if you can help" gets no response.
+
+### Protect Non-Negotiable Time
+
+Pick two to three hours per week that belong entirely to you. Not recovery errands. Not calls to insurance companies. Time for something you actually want to do.
+
+This time is non-negotiable. Treat it the same way you treat the survivor's therapy appointments.
+
+### Connect With Other Caregivers
+
+Stroke caregiver support groups exist in most cities and in abundance online. Talking with people who actually understand what you're experiencing is genuinely therapeutic in a way that general support cannot be.
+
+The American Stroke Association maintains a list of caregiver support groups at stroke.org.
+
+### Separate Your Identity From the Caregiving Role
+
+You are not just a caregiver. You are a person with interests, needs, relationships, and a future.
+
+Recovery takes years. If you spend those years fully submerged in the caregiver identity, you will emerge from this period not knowing who you are anymore. Keep something — even one small thing — that is yours.
+
+### Name the Grief
+
+Caregivers experience real grief. The loss of the person they knew before the stroke, even when that person is still here. The loss of the plans you had. The loss of the equal partnership.
+
+This grief is valid. It does not make you a bad person. Name it, acknowledge it, and ideally talk about it with a therapist or support group.
+
+## A Note to Stroke Survivors
+
+If you're reading this as a survivor: your caregiver needs your acknowledgment.
+
+I know you're fighting your own battle. I know everything is hard. But the people caring for you are fighting too — mostly invisibly.
+
+Thank them specifically. Name what they do. Ask how they're doing and actually listen. These things cost you nothing and matter enormously.
+
+The strongest recoveries I've seen involve survivors and caregivers who treat each other as partners — not patient and helper.
+
+You're in this together.`,
+        authorId: "nick-kremers",
+        authorName: "Nick Kremers",
         category: "caregivers",
-        tags: ["caregivers", "mental health", "family"],
+        tags: ["caregivers", "mental health", "family", "burnout prevention"],
         featuredImage: "/images/caregiver-support.jpg",
         status: "published",
         featured: false,
@@ -2989,11 +3301,129 @@ export class DatabaseStorage implements IStorage {
         slug: "speech-therapy-exercises-home",
         title: "10 Speech Therapy Exercises You Can Do at Home",
         excerpt: "Practical exercises to improve speech and language recovery between therapy sessions.",
-        content: "Speech recovery doesn't only happen in the therapist's office...",
+        content: `Speech recovery is one of the most emotionally difficult parts of stroke rehabilitation.
+
+You know what you want to say. The words are in your mind. But the path from thought to speech is broken, and watching people struggle to understand you — watching their eyes shift, watching them try to fill in the gap — is its own particular kind of agony.
+
+I know this because I lived it.
+
+The good news: speech recovery doesn't only happen in your therapist's office. Research consistently shows that more practice — not just better practice — drives speech gains. The exercises below are evidence-based practices you can do at home, in between therapy sessions.
+
+## Before You Start
+
+A few guidelines:
+
+- **Consistency beats intensity**: 20 minutes daily outperforms 2 hours once a week
+- **Record yourself**: hearing your speech is uncomfortable but essential for noticing progress
+- **Don't rush**: slow, deliberate production is more effective than fast, sloppy attempts
+- **Rest when fatigued**: speech fatigue is real and counterproductive
+
+## The 10 Exercises
+
+### 1. Tongue Tip Lateralization
+
+Touch the tip of your tongue to your upper right molars. Then move to upper left. Then lower right. Then lower left.
+
+Repeat 10 times in each direction.
+
+This builds the fine motor control that clear speech requires. Do it slowly and deliberately.
+
+### 2. Syllable Repetition Drills
+
+Choose a syllable set: ba-ba-ba, da-da-da, ka-ka-ka, la-la-la, pa-pa-pa.
+
+Say each 20 times with clear articulation. Then progress to: ba-da-ka, pa-ta-ka, ma-na-la.
+
+These are the same drills used in formal speech therapy. They target the muscle coordination needed for consonant clarity.
+
+### 3. Sentence Completion Practice
+
+Have someone start sentences that you complete:
+
+- "I am feeling very ___."
+- "My favorite food is ___."
+- "Tomorrow I want to ___."
+
+This is less intimidating than generating full sentences and activates the word-retrieval network in a supported way.
+
+### 4. Word-to-Category Sorting
+
+Name as many items as you can from a category in 60 seconds.
+
+- Animals
+- Fruits
+- Things in a kitchen
+- Sports
+- Countries
+
+This targets word fluency and lexical retrieval — the process of finding words when you need them.
+
+### 5. Reading Aloud
+
+Choose something to read out loud for 10-15 minutes daily. Start with children's books or short news articles. Progress to more complex material as clarity improves.
+
+Reading aloud engages visual processing, comprehension, and speech production simultaneously — a powerful combination.
+
+### 6. Tongue Strengthening
+
+Stick your tongue out as far as possible. Hold 5 seconds. Retract. Repeat 10 times.
+
+Then push your tongue into each cheek, holding 5 seconds each side.
+
+Tongue strength directly impacts clarity for sounds like L, T, D, N, and TH.
+
+### 7. Melodic Intonation Therapy (Basic Version)
+
+This technique, used in formal therapy, leverages the brain's intact musical processing centers when speech is damaged.
+
+Choose a short phrase: "I want water." Hum it. Then say it with an exaggerated sing-song melody. Then say it normally.
+
+This pathway — hum → melody → speech — can unlock words that feel inaccessible through standard speaking attempts.
+
+### 8. Video Modeling
+
+Find videos of people clearly speaking your target sounds or words. Watch, then mimic immediately.
+
+Mirror neurons in the brain activate when we observe others performing actions, facilitating imitation learning. This is more effective than practicing in isolation.
+
+### 9. Breathing Exercises for Speech
+
+Strong speech requires breath support. Practice:
+
+- Deep diaphragmatic breaths (belly, not chest)
+- Extended vowel sounds on a single breath: "Aaaaaah" for 10 seconds
+- Counting aloud on a single breath: "1, 2, 3, 4, 5..." as far as you can go before needing a breath
+
+These exercises directly improve voice volume and endurance.
+
+### 10. Conversation Simulation
+
+Ask a family member to have a structured 10-minute conversation with you on a specific topic each day.
+
+The topic helps you prepare vocabulary. The structure reduces the overwhelm of open-ended conversation. And the daily repetition builds the habit of communication even when it's hard.
+
+## Tracking Progress
+
+Keep a simple log:
+- Which exercises you did
+- Duration
+- How it felt (easy / moderate / hard)
+
+Progress in speech recovery is often invisible day-to-day and only clear over weeks and months. Your log will show you how far you've come.
+
+## When to Push, When to Rest
+
+Push through mild discomfort. Speech work is inherently fatiguing.
+
+Rest when you notice your speech getting *worse* during practice — this is a sign of genuine fatigue, and pushing through it reinforces errors rather than corrections.
+
+The goal is effortful but successful practice. Not impossible, not too easy.
+
+You have more speech in you than you think. Let's get it out.`,
         authorId: "nick-kremers",
         authorName: "Nick Kremers",
         category: "exercises",
-        tags: ["speech", "exercises", "home therapy"],
+        tags: ["speech", "exercises", "home therapy", "aphasia"],
         featuredImage: "/images/speech-therapy.jpg",
         status: "published",
         featured: true,
