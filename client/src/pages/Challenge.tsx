@@ -8,6 +8,7 @@ import RecoveryHeader from "@/components/RecoveryHeader";
 import Footer from "@/components/Footer";
 import RecoverySEO from "@/components/RecoverySEO";
 import NewsletterSignupWidget from "@/components/NewsletterSignupWidget";
+import icuVideo from "@assets/12746_1776435817591.mp4";
 import {
   Flame, Trophy, CheckCircle, Target, Zap, Users, Calendar,
   Star, ArrowRight, Play, Shield, Clock, Heart, ChevronDown, ChevronUp,
@@ -516,6 +517,42 @@ export default function Challenge() {
       {/* NICK'S STORY */}
       <section className="py-16 px-4 bg-[#111]" data-testid="section-nick-story">
         <div className="max-w-4xl mx-auto">
+          {/* ICU video — the proof moment */}
+          <div className="mb-14 text-center" data-testid="block-icu-video">
+            <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-5 uppercase tracking-widest text-xs">
+              Why I Built This
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-black mb-4 max-w-3xl mx-auto leading-tight">
+              This Is Where I Started.
+            </h2>
+            <p className="text-gray-300 max-w-2xl mx-auto mb-8 text-base md:text-lg leading-relaxed">
+              ICU bed. Weeks after the stroke that should have killed me. The day I found out
+              I was having a son. <span className="text-white font-semibold">That moment is why I never gave up</span>{" "}
+              — and why every tool in this program exists.
+            </p>
+
+            <div
+              className="relative max-w-3xl mx-auto rounded-lg overflow-hidden border border-[#333]"
+              style={{ aspectRatio: "16 / 9", background: "#000" }}
+            >
+              <video
+                src={icuVideo}
+                controls
+                playsInline
+                preload="metadata"
+                className="absolute inset-0 w-full h-full object-contain"
+                data-testid="video-icu"
+              >
+                Your browser does not support the video tag.
+              </video>
+            </div>
+
+            <p className="mt-6 text-sm text-gray-400 italic max-w-xl mx-auto">
+              "If I can come back from that bed, you can come back from yours.
+              That's the whole promise of this challenge."
+            </p>
+          </div>
+
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div>
               <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-4 uppercase tracking-widest text-xs">
