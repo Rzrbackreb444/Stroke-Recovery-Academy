@@ -19,6 +19,7 @@ const navLinks = [
   { href: "/recovery/academy", label: "Academy" },
   { href: "/recovery/sasquatch-coach", label: "AI Coach" },
   { href: "/recovery/blog", label: "Blog" },
+  { href: "/recovery/pricing", label: "Pricing" },
   { href: "/recovery/survivor-income", label: "Earn Income" },
 ];
 

@@ -96,37 +96,62 @@ export class RecoveryStripeService {
 
   async createSubscriptionCheckout(
     customerId: string,
-    tier: 'survivor' | 'creator',
+    tier: 'survivor' | 'creator' | 'warrior_monthly' | 'warrior_annual',
     successUrl: string,
-    cancelUrl: string
+    cancelUrl: string,
+    withTrial: boolean = true
   ) {
     const stripe = getRecoveryStripeClient();
 
-    const priceMap = {
-      survivor: process.env.RECOVERY_SURVIVOR_PRICE_ID,
-      creator: process.env.RECOVERY_CREATOR_PRICE_ID,
+    // Warrior tiers use inline price_data so no env var pre-configuration needed.
+    // Survivor/Creator still fall back to env-var price IDs for backward compat.
+    const inlinePriceMap: Record<string, { amount: number; interval: 'month' | 'year'; name: string }> = {
+      warrior_monthly: { amount: 4700, interval: 'month', name: 'Warrior Monthly Membership — Stroke Recovery Academy' },
+      warrior_annual:  { amount: 39700, interval: 'year',  name: 'Warrior Annual Membership — Stroke Recovery Academy' },
     };
 
-    const priceId = priceMap[tier];
-    if (!priceId) {
-      throw new Error(`Price ID not configured for tier: ${tier}`);
-    }
+    const isInline = tier in inlinePriceMap;
 
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
+    const sessionParams: any = {
       payment_method_types: ['card'],
-      line_items: [{ price: priceId, quantity: 1 }],
       mode: 'subscription',
       success_url: successUrl,
       cancel_url: cancelUrl,
+      allow_promotion_codes: true,
       metadata: {
         type: 'subscription',
         tier,
         platform: 'stroke_recovery_academy',
       },
-    });
+    };
 
-    return session;
+    if (customerId) sessionParams.customer = customerId;
+
+    if (isInline) {
+      const cfg = inlinePriceMap[tier];
+      sessionParams.line_items = [{
+        price_data: {
+          currency: 'usd',
+          product_data: { name: cfg.name },
+          unit_amount: cfg.amount,
+          recurring: { interval: cfg.interval },
+        },
+        quantity: 1,
+      }];
+      if (withTrial) {
+        sessionParams.subscription_data = { trial_period_days: 7 };
+      }
+    } else {
+      const priceMap: Record<string, string | undefined> = {
+        survivor: process.env.RECOVERY_SURVIVOR_PRICE_ID,
+        creator: process.env.RECOVERY_CREATOR_PRICE_ID,
+      };
+      const priceId = priceMap[tier];
+      if (!priceId) throw new Error(`Price ID not configured for tier: ${tier}`);
+      sessionParams.line_items = [{ price: priceId, quantity: 1 }];
+    }
+
+    return await stripe.checkout.sessions.create(sessionParams);
   }
 
   async createCoachingCheckout(

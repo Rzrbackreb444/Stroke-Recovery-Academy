@@ -407,6 +407,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       { path: '/recovery/store', priority: '0.8', changefreq: 'weekly' },
       { path: '/recovery/resources', priority: '0.7', changefreq: 'weekly' },
       { path: '/recovery/community', priority: '0.8', changefreq: 'daily' },
+      { path: '/recovery/pricing', priority: '0.95', changefreq: 'monthly' },
       { path: '/recovery/gift', priority: '0.9', changefreq: 'monthly' },
       { path: '/recovery/challenge', priority: '1.0', changefreq: 'weekly' },
       { path: '/recovery/about-nick', priority: '0.8', changefreq: 'monthly' },
@@ -615,6 +616,7 @@ ${listings.slice(0, 1000).map((listing: any) => `  <url>
       { path: '/recovery/wearables', priority: '0.70', changefreq: 'monthly', description: 'Wearables Integration for Recovery' },
       { path: '/recovery/therapist-marketplace', priority: '0.80', changefreq: 'weekly', description: 'Therapist Marketplace - Find Specialists' },
       { path: '/recovery/strokelyfe-org', priority: '0.80', changefreq: 'monthly', description: 'Stroke Lyfe Inc. — 501(c)(3) Nonprofit' },
+      { path: '/recovery/pricing', priority: '0.95', changefreq: 'monthly', description: 'Warrior Membership Pricing — 7-Day Free Trial' },
       { path: '/recovery/gift', priority: '0.90', changefreq: 'monthly', description: 'Gift a Survivor — Donate a Warrior Membership via Stroke Lyfe Inc.' },
       { path: '/my-book', priority: '0.75', changefreq: 'weekly', description: 'My Recovery Book - AI-Assisted Memoir' },
       { path: '/pricing', priority: '0.85', changefreq: 'monthly', description: 'Recovery Academy Pricing Plans' },
@@ -9259,18 +9261,24 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     }
   });
 
-  app.post('/api/recovery/payments/subscription', isAuthenticated, async (req: any, res) => {
+  app.post('/api/recovery/payments/subscription', isAuthenticated, paymentCheckoutRateLimit, async (req: any, res) => {
     try {
       const { recoveryStripeService } = await import('./recoveryStripeService');
-      const { tier } = req.body;
+      const { tier, withTrial } = req.body;
+      const validTiers = ['survivor', 'creator', 'warrior_monthly', 'warrior_annual'];
+      if (!validTiers.includes(tier)) {
+        return res.status(400).json({ message: `Invalid tier. Must be one of: ${validTiers.join(', ')}` });
+      }
       const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
+      const baseUrl = process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : '';
       
       const session = await recoveryStripeService.createSubscriptionCheckout(
         user?.stripeCustomerId || '',
         tier,
-        `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/dashboard?subscription=success`,
-        `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/pricing`
+        `${baseUrl}/recovery/dashboard?subscription=success`,
+        `${baseUrl}/recovery/pricing`,
+        withTrial !== false
       );
       
       res.json({ url: session.url });
