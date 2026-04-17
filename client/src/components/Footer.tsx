@@ -235,8 +235,45 @@ export default function Footer() {
                 </button>
               </Link>
             </div>
-            <p className="text-xs text-gray-600 text-center mt-4">
-              Powered by KremersX · Always consult your healthcare provider before starting any recovery program. · Not medical advice.
+          </div>
+        </div>
+
+        {/* Prominent medical disclaimer — always visible, never tiny */}
+        <div className="border-t-2 border-[#C9941A]/40 bg-[#1a1a1a] mt-8 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-6">
+          <div className="max-w-5xl mx-auto">
+            <div className="flex items-start gap-3 mb-3">
+              <Heart className="h-5 w-5 text-[#C9941A] flex-shrink-0 mt-0.5" aria-hidden="true" />
+              <div>
+                <p className="text-sm font-bold text-[#C9941A] uppercase tracking-wider mb-1">
+                  Important — Please Read
+                </p>
+                <p className="text-sm text-gray-300 leading-relaxed">
+                  <strong className="text-white">This is not medical advice.</strong> Nick Kremers
+                  is a stroke survivor sharing lived experience — not a doctor, neurologist, or
+                  licensed therapist. Everything on this site is for informational and motivational
+                  purposes only. It is <strong className="text-white">not a substitute</strong> for
+                  professional medical advice, diagnosis, treatment, or supervised rehabilitation.
+                  Individual results vary dramatically.{" "}
+                  <strong className="text-white">
+                    Always consult your physician, neurologist, or licensed therapist before
+                    starting, stopping, or modifying any exercise, supplement, medication, or
+                    rehabilitation program.
+                  </strong>
+                </p>
+                <p className="text-sm text-gray-300 leading-relaxed mt-3">
+                  <strong className="text-white">If you experience new stroke symptoms</strong> —
+                  sudden weakness, vision changes, severe headache, slurred speech, or chest pain —
+                  call <a href="tel:911" className="text-[#C9941A] underline font-bold">911</a>{" "}
+                  immediately.{" "}
+                  <strong className="text-white">If you are in mental-health crisis</strong>, call
+                  or text{" "}
+                  <a href="tel:988" className="text-[#C9941A] underline font-bold">988</a>{" "}
+                  (U.S. Suicide &amp; Crisis Lifeline) any time, day or night.
+                </p>
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 text-center mt-4">
+              Powered by KremersX · &copy; {currentYear} Stroke Recovery Academy
             </p>
           </div>
         </div>

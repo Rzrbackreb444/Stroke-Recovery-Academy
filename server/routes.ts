@@ -8556,7 +8556,34 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       if (!userId) {
         return res.json({ ok: true, guest: true });
       }
-      const { gameType, packId } = req.body || {};
+      const {
+        gameType,
+        packId,
+        difficulty = 'medium',
+        durationSec = 0,
+        hintsUsed = 0,
+        movesOrAttempts = null,
+        accuracyPct = null,
+        isDailyChallenge = false,
+        challengeDate = null,
+      } = req.body || {};
+
+      // Persist the completion record (always — used for stats + leaderboard).
+      const { brainGymCompletions } = await import('../shared/schema');
+      const { db: dbInst } = await import('./db');
+      await dbInst.insert(brainGymCompletions).values({
+        userId,
+        gameType: String(gameType || 'wordsearch'),
+        packId: String(packId || 'unknown'),
+        difficulty: String(difficulty || 'medium'),
+        durationSec: Math.max(0, Math.floor(Number(durationSec) || 0)),
+        hintsUsed: Math.max(0, Math.floor(Number(hintsUsed) || 0)),
+        movesOrAttempts: movesOrAttempts != null ? Math.floor(Number(movesOrAttempts)) : null,
+        accuracyPct: accuracyPct != null ? Math.max(0, Math.min(100, Math.floor(Number(accuracyPct)))) : null,
+        isDailyChallenge: Boolean(isDailyChallenge),
+        challengeDate: challengeDate ? String(challengeDate).slice(0, 10) : null,
+      });
+
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
@@ -8594,6 +8621,444 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     } catch (error) {
       console.error("Error logging brain gym completion:", error);
       res.status(500).json({ message: "Failed to log completion" });
+    }
+  });
+
+  // Brain Gym — personal stats (lifetime totals + per-game breakdown)
+  app.get('/api/recovery/brain-gym/stats', async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      if (!userId) {
+        return res.json({ totalSolved: 0, byGame: {}, fastestSec: null });
+      }
+      const { brainGymCompletions } = await import('../shared/schema');
+      const { db: dbInst } = await import('./db');
+      const { eq, sql: dsql } = await import('drizzle-orm');
+      const rows = await dbInst
+        .select({
+          gameType: brainGymCompletions.gameType,
+          count: dsql<number>`count(*)::int`,
+          fastest: dsql<number>`min(${brainGymCompletions.durationSec})::int`,
+          totalDuration: dsql<number>`sum(${brainGymCompletions.durationSec})::int`,
+        })
+        .from(brainGymCompletions)
+        .where(eq(brainGymCompletions.userId, userId))
+        .groupBy(brainGymCompletions.gameType);
+
+      const byGame: Record<string, { count: number; fastestSec: number | null; avgSec: number | null }> = {};
+      let totalSolved = 0;
+      let fastestOverall: number | null = null;
+      for (const r of rows) {
+        const count = Number(r.count) || 0;
+        const fastest = r.fastest != null ? Number(r.fastest) : null;
+        const total = r.totalDuration != null ? Number(r.totalDuration) : 0;
+        byGame[r.gameType] = {
+          count,
+          fastestSec: fastest,
+          avgSec: count > 0 ? Math.round(total / count) : null,
+        };
+        totalSolved += count;
+        if (fastest != null && (fastestOverall == null || fastest < fastestOverall)) {
+          fastestOverall = fastest;
+        }
+      }
+      res.json({ totalSolved, byGame, fastestSec: fastestOverall });
+    } catch (error) {
+      console.error('Error fetching brain gym stats:', error);
+      res.status(500).json({ message: 'Failed to fetch stats' });
+    }
+  });
+
+  // Brain Gym — daily challenge leaderboard (top 10 fastest for a given date)
+  app.get('/api/recovery/brain-gym/daily/leaderboard', async (req: any, res) => {
+    try {
+      const dateRaw = String(req.query.date || '').slice(0, 10);
+      const dateKey = dateRaw || (() => {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      })();
+      const { brainGymCompletions } = await import('../shared/schema');
+      const { db: dbInst } = await import('./db');
+      const { users: usersTable } = await import('../shared/schema');
+      const { eq, and, asc } = await import('drizzle-orm');
+      const rows = await dbInst
+        .select({
+          userId: brainGymCompletions.userId,
+          durationSec: brainGymCompletions.durationSec,
+          hintsUsed: brainGymCompletions.hintsUsed,
+          completedAt: brainGymCompletions.completedAt,
+          firstName: usersTable.firstName,
+          lastName: usersTable.lastName,
+        })
+        .from(brainGymCompletions)
+        .leftJoin(usersTable, eq(usersTable.id, brainGymCompletions.userId))
+        .where(and(
+          eq(brainGymCompletions.isDailyChallenge, true),
+          eq(brainGymCompletions.challengeDate, dateKey),
+        ))
+        .orderBy(asc(brainGymCompletions.durationSec))
+        .limit(50);
+
+      // Keep only one fastest entry per user
+      const seen = new Set<string>();
+      const top = [] as Array<{ rank: number; name: string; durationSec: number; hintsUsed: number; isYou: boolean }>;
+      const me = req.user?.claims?.sub;
+      for (const r of rows) {
+        if (seen.has(r.userId)) continue;
+        seen.add(r.userId);
+        top.push({
+          rank: top.length + 1,
+          name: (r.firstName || r.lastName || 'Warrior').toString().slice(0, 24),
+          durationSec: Number(r.durationSec),
+          hintsUsed: Number(r.hintsUsed),
+          isYou: me === r.userId,
+        });
+        if (top.length >= 10) break;
+      }
+      res.json({ date: dateKey, leaderboard: top });
+    } catch (error) {
+      console.error('Error fetching brain gym daily leaderboard:', error);
+      res.status(500).json({ message: 'Failed to fetch leaderboard' });
+    }
+  });
+
+  // ─── Survivor Spotlight ─────────────────────────────────────────────────────
+  // Opt-in only. Explicit release-of-likeness consent required. Admin must
+  // approve every monthly pick before it's published.
+
+  // Local admin guard (the global isAdmin is defined later in this file)
+  const requireAdminLocal = async (req: any, res: any, next: any) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ message: 'Authentication required' });
+    const u = await storage.getUser(req.user.claims.sub);
+    if (!u || u.role !== 'admin') return res.status(403).json({ message: 'Admin access required' });
+    next();
+  };
+
+  function spotlightMonthKey(date = new Date()): string {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+  }
+
+  function makeSpotlightSlug(name: string, monthKey: string): string {
+    const base = name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 40) || 'survivor';
+    return `${monthKey}-${base}`;
+  }
+
+  // GET my opt-in status
+  app.get('/api/recovery/spotlight/me', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json({
+        optedIn: !!user?.spotlightOptedIn,
+        consent: !!user?.spotlightConsent,
+        consentAt: user?.spotlightConsentAt ?? null,
+      });
+    } catch (error) {
+      console.error('Error fetching spotlight opt-in:', error);
+      res.status(500).json({ message: 'Failed to fetch status' });
+    }
+  });
+
+  // PUT my opt-in status (must consent if opting in)
+  app.put('/api/recovery/spotlight/me', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const optedIn = Boolean(req.body?.optedIn);
+      const consent = Boolean(req.body?.consent);
+      if (optedIn && !consent) {
+        return res.status(400).json({
+          message: 'Release-of-likeness consent is required to opt in.',
+        });
+      }
+      const { db: dbInst } = await import('./db');
+      const { users: usersTable } = await import('../shared/schema');
+      const { eq } = await import('drizzle-orm');
+      await dbInst
+        .update(usersTable)
+        .set({
+          spotlightOptedIn: optedIn,
+          spotlightConsent: optedIn && consent,
+          spotlightConsentAt: optedIn && consent ? new Date() : null,
+        })
+        .where(eq(usersTable.id, userId));
+      res.json({ ok: true, optedIn, consent: optedIn && consent });
+    } catch (error) {
+      console.error('Error updating spotlight opt-in:', error);
+      res.status(500).json({ message: 'Failed to update status' });
+    }
+  });
+
+  // GET current published spotlight
+  app.get('/api/recovery/spotlight', async (_req, res) => {
+    try {
+      const { db: dbInst } = await import('./db');
+      const { spotlights } = await import('../shared/schema');
+      const { eq, desc } = await import('drizzle-orm');
+      const [current] = await dbInst
+        .select()
+        .from(spotlights)
+        .where(eq(spotlights.status, 'published'))
+        .orderBy(desc(spotlights.publishedAt))
+        .limit(1);
+      res.json(current ?? null);
+    } catch (error) {
+      console.error('Error fetching current spotlight:', error);
+      res.status(500).json({ message: 'Failed to fetch spotlight' });
+    }
+  });
+
+  // GET spotlight archive (published only)
+  app.get('/api/recovery/spotlight/archive', async (_req, res) => {
+    try {
+      const { db: dbInst } = await import('./db');
+      const { spotlights } = await import('../shared/schema');
+      const { eq, desc } = await import('drizzle-orm');
+      const rows = await dbInst
+        .select()
+        .from(spotlights)
+        .where(eq(spotlights.status, 'published'))
+        .orderBy(desc(spotlights.publishedAt))
+        .limit(60);
+      res.json(rows);
+    } catch (error) {
+      console.error('Error fetching spotlight archive:', error);
+      res.status(500).json({ message: 'Failed to fetch archive' });
+    }
+  });
+
+  // GET single spotlight by slug
+  app.get('/api/recovery/spotlight/:slug', async (req, res) => {
+    try {
+      const slug = String(req.params.slug);
+      const { db: dbInst } = await import('./db');
+      const { spotlights } = await import('../shared/schema');
+      const { eq, and } = await import('drizzle-orm');
+      const [row] = await dbInst
+        .select()
+        .from(spotlights)
+        .where(and(eq(spotlights.slug, slug), eq(spotlights.status, 'published')))
+        .limit(1);
+      if (!row) return res.status(404).json({ message: 'Not found' });
+      res.json(row);
+    } catch (error) {
+      console.error('Error fetching spotlight:', error);
+      res.status(500).json({ message: 'Failed to fetch spotlight' });
+    }
+  });
+
+  // ── Admin: spotlight pipeline ──────────────────────────────────────────────
+  // GET pending picks (current month, status pending or approved-not-published)
+  app.get('/api/admin/spotlight/pending', isAuthenticated, requireAdminLocal, async (_req, res) => {
+    try {
+      const { db: dbInst } = await import('./db');
+      const { spotlights } = await import('../shared/schema');
+      const { inArray, desc } = await import('drizzle-orm');
+      const rows = await dbInst
+        .select()
+        .from(spotlights)
+        .where(inArray(spotlights.status, ['pending', 'approved']))
+        .orderBy(desc(spotlights.pickedAt))
+        .limit(20);
+      res.json(rows);
+    } catch (error) {
+      console.error('Error fetching pending spotlights:', error);
+      res.status(500).json({ message: 'Failed to fetch picks' });
+    }
+  });
+
+  // POST select-monthly: weighted-random pick from opted-in + consented users
+  // (paid subscribers count 3x; users already picked this month are excluded)
+  app.post('/api/admin/spotlight/select-monthly', isAuthenticated, requireAdminLocal, async (_req, res) => {
+    try {
+      const { db: dbInst } = await import('./db');
+      const { users: usersTable, spotlights } = await import('../shared/schema');
+      const { and, eq, sql: dsql } = await import('drizzle-orm');
+      const monthKey = spotlightMonthKey();
+
+      // Eligible: opted in + consent on file
+      const eligible = await dbInst
+        .select({
+          id: usersTable.id,
+          firstName: usersTable.firstName,
+          lastName: usersTable.lastName,
+          subscriptionStatus: usersTable.subscriptionStatus,
+        })
+        .from(usersTable)
+        .where(and(
+          eq(usersTable.spotlightOptedIn, true),
+          eq(usersTable.spotlightConsent, true),
+        ));
+
+      // Exclude users already picked this month
+      const alreadyPicked = await dbInst
+        .select({ userId: spotlights.userId })
+        .from(spotlights)
+        .where(eq(spotlights.monthKey, monthKey));
+      const excluded = new Set(alreadyPicked.map((r) => r.userId));
+
+      const pool = eligible.filter((u) => !excluded.has(u.id));
+      if (pool.length === 0) {
+        return res.status(400).json({
+          message: 'No eligible candidates this month. Ask survivors to opt in.',
+        });
+      }
+
+      // Weighted random: paid 3x, free 1x
+      const weighted: Array<{ id: string; firstName: string | null; lastName: string | null; weight: number }> = [];
+      for (const u of pool) {
+        const isPaid = ['active', 'trialing'].includes(String(u.subscriptionStatus));
+        weighted.push({ ...u, weight: isPaid ? 3 : 1 });
+      }
+      const totalWeight = weighted.reduce((s, w) => s + w.weight, 0);
+      let r = Math.random() * totalWeight;
+      let chosen = weighted[0];
+      for (const w of weighted) {
+        if (r < w.weight) {
+          chosen = w;
+          break;
+        }
+        r -= w.weight;
+      }
+
+      const displayName = `${chosen.firstName ?? ''} ${chosen.lastName ?? ''}`.trim() || 'Survivor';
+      const slug = makeSpotlightSlug(displayName, monthKey);
+
+      const [created] = await dbInst.insert(spotlights).values({
+        userId: chosen.id,
+        slug,
+        monthKey,
+        status: 'pending',
+        weight: chosen.weight,
+        displayName,
+      }).returning();
+
+      res.json({ ok: true, pick: created, poolSize: pool.length, totalWeight });
+    } catch (error) {
+      console.error('Error selecting monthly spotlight:', error);
+      res.status(500).json({ message: 'Failed to select pick' });
+    }
+  });
+
+  // POST approve & publish a pick (with editorial fields)
+  app.post('/api/admin/spotlight/:id/approve', isAuthenticated, requireAdminLocal, async (req: any, res) => {
+    try {
+      const id = Number(req.params.id);
+      if (!Number.isFinite(id)) return res.status(400).json({ message: 'Invalid id' });
+      const { headline, story, location, photoUrl, displayName, recoveryDate } = req.body || {};
+      const { db: dbInst } = await import('./db');
+      const { spotlights } = await import('../shared/schema');
+      const { eq } = await import('drizzle-orm');
+      const now = new Date();
+      const [updated] = await dbInst
+        .update(spotlights)
+        .set({
+          status: 'published',
+          approvedAt: now,
+          publishedAt: now,
+          ...(headline ? { headline: String(headline).slice(0, 240) } : {}),
+          ...(story ? { story: String(story).slice(0, 20000) } : {}),
+          ...(location ? { location: String(location).slice(0, 120) } : {}),
+          ...(photoUrl ? { photoUrl: String(photoUrl).slice(0, 500) } : {}),
+          ...(displayName ? { displayName: String(displayName).slice(0, 120) } : {}),
+          ...(recoveryDate ? { recoveryDate: new Date(recoveryDate) } : {}),
+        })
+        .where(eq(spotlights.id, id))
+        .returning();
+      res.json({ ok: true, spotlight: updated });
+    } catch (error) {
+      console.error('Error approving spotlight:', error);
+      res.status(500).json({ message: 'Failed to approve' });
+    }
+  });
+
+  // POST reject a pick
+  app.post('/api/admin/spotlight/:id/reject', isAuthenticated, requireAdminLocal, async (req: any, res) => {
+    try {
+      const id = Number(req.params.id);
+      if (!Number.isFinite(id)) return res.status(400).json({ message: 'Invalid id' });
+      const reason = String(req.body?.reason || 'Editorial discretion').slice(0, 240);
+      const { db: dbInst } = await import('./db');
+      const { spotlights } = await import('../shared/schema');
+      const { eq } = await import('drizzle-orm');
+      const [updated] = await dbInst
+        .update(spotlights)
+        .set({ status: 'rejected', rejectedAt: new Date(), rejectReason: reason })
+        .where(eq(spotlights.id, id))
+        .returning();
+      res.json({ ok: true, spotlight: updated });
+    } catch (error) {
+      console.error('Error rejecting spotlight:', error);
+      res.status(500).json({ message: 'Failed to reject' });
+    }
+  });
+
+  // Send the monthly Spotlight newsletter to all confirmed subscribers
+  app.post('/api/admin/spotlight/broadcast', isAuthenticated, requireAdminLocal, async (_req, res) => {
+    try {
+      const { db: dbInst } = await import('./db');
+      const { spotlights, newsletterSubscribers } = await import('../shared/schema');
+      const { eq, desc, and } = await import('drizzle-orm');
+      const [latest] = await dbInst
+        .select()
+        .from(spotlights)
+        .where(eq(spotlights.status, 'published'))
+        .orderBy(desc(spotlights.publishedAt))
+        .limit(1);
+      if (!latest) return res.status(400).json({ message: 'No published spotlight to broadcast' });
+
+      const { isNull } = await import('drizzle-orm');
+      const subs = await dbInst
+        .select()
+        .from(newsletterSubscribers)
+        .where(and(eq(newsletterSubscribers.isActive, true), isNull(newsletterSubscribers.unsubscribedAt)));
+
+      const { renderEmail } = await import('./emailTemplate');
+      const { sendEmail } = await import('./emailService');
+
+      const baseUrl = process.env.PUBLIC_BASE_URL || `https://${process.env.REPLIT_DOMAINS?.split(',')[0] || 'strokerecoveryacademy.com'}`;
+      const storyHtml = (latest.story || '')
+        .split(/\n{2,}/)
+        .map((p) => `<p class="body-text">${p
+          .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+          .replace(/_([^_]+)_/g, '<em>$1</em>')}</p>`)
+        .join('');
+      const html = renderEmail({
+        eyebrow: 'Survivor Spotlight',
+        headline: latest.displayName,
+        subheadline: latest.headline || 'A real comeback. Read it. Steal what works.',
+        bodyHtml: `${latest.photoUrl ? `<p style="text-align:center;margin:0 0 24px;"><img src="${latest.photoUrl}" alt="${latest.displayName}" style="max-width:240px;border-radius:8px;"/></p>` : ''}${storyHtml}<p class="body-text"><a href="${baseUrl}/recovery/spotlight/${latest.slug}">Read the full spotlight →</a></p>`,
+        ctaText: 'Read on the site',
+        ctaUrl: `${baseUrl}/recovery/spotlight/${latest.slug}`,
+        unsubscribeUrl: `${baseUrl}/api/newsletter/unsubscribe`,
+      });
+
+      let sent = 0, failed = 0;
+      for (const s of subs) {
+        try {
+          const personalUnsub = `${baseUrl}/api/newsletter/unsubscribe?email=${encodeURIComponent(s.email)}`;
+          const personalHtml = html.replace(
+            `${baseUrl}/api/newsletter/unsubscribe`,
+            personalUnsub,
+          );
+          await sendEmail({
+            to: s.email,
+            subject: `Survivor Spotlight: ${latest.displayName}`,
+            html: personalHtml,
+          });
+          sent++;
+        } catch (e) {
+          console.error('[spotlight broadcast] send failed for', s.email, e);
+          failed++;
+        }
+      }
+      res.json({ ok: true, sent, failed, total: subs.length });
+    } catch (error) {
+      console.error('Error broadcasting spotlight:', error);
+      res.status(500).json({ message: 'Failed to broadcast' });
     }
   });
 

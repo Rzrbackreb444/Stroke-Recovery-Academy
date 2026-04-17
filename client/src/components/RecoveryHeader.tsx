@@ -20,6 +20,7 @@ const navLinks = [
   { href: "/recovery/brain-gym", label: "Brain Gym" },
   { href: "/recovery/sasquatch-coach", label: "AI Coach" },
   { href: "/recovery/blog", label: "Blog" },
+  { href: "/recovery/spotlight", label: "Spotlight" },
   { href: "/recovery/pricing", label: "Pricing" },
   { href: "/recovery/survivor-income", label: "Earn Income" },
 ];

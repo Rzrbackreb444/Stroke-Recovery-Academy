@@ -121,6 +121,7 @@ import RecoveryResources from "@/pages/RecoveryResources";
 import RecoveryCenterFinder from "@/pages/RecoveryCenterFinder";
 import RecoveryBlog from "@/pages/RecoveryBlog";
 import RecoveryBlogPost from "@/pages/RecoveryBlogPost";
+import RecoverySpotlight from "@/pages/RecoverySpotlight";
 import RecoveryLogin from "@/pages/RecoveryLogin";
 import SasquatchCoach from "@/pages/SasquatchCoach";
 import SurvivorIncome from "@/pages/SurvivorIncome";
@@ -519,6 +520,8 @@ function Router() {
       <Route path="/recovery/login" component={RecoveryLogin} />
       <Route path="/recovery/blog" component={RecoveryBlog} />
       <Route path="/recovery/blog/:slug" component={RecoveryBlogPost} />
+      <Route path="/recovery/spotlight" component={RecoverySpotlight} />
+      <Route path="/recovery/spotlight/:slug" component={RecoverySpotlight} />
       <Route path="/recovery/protocols" component={RecoveryProtocols} />
       <Route path="/recovery/sasquatch-coach" component={SasquatchCoach} />
       <Route path="/recovery/survivor-income" component={SurvivorIncome} />
