@@ -31,8 +31,11 @@ interface SaveState {
   layoutKey: string;
 }
 
-function speak(text: string) {
-  if (typeof window === "undefined" || isMuted()) return;
+// Singleton audio element — reused so a new "Listen" stops the previous one.
+let _ttsAudio: HTMLAudioElement | null = null;
+
+function fallbackSpeak(text: string) {
+  if (typeof window === "undefined") return;
   if (!("speechSynthesis" in window)) return;
   try {
     window.speechSynthesis.cancel();
@@ -43,6 +46,39 @@ function speak(text: string) {
     window.speechSynthesis.speak(u);
   } catch {
     /* ignore */
+  }
+}
+
+async function speak(text: string) {
+  if (typeof window === "undefined" || isMuted()) return;
+
+  // Stop any in-flight ElevenLabs playback or Web Speech utterance.
+  if (_ttsAudio) {
+    try { _ttsAudio.pause(); } catch { /* ignore */ }
+    _ttsAudio = null;
+  }
+  if ("speechSynthesis" in window) {
+    try { window.speechSynthesis.cancel(); } catch { /* ignore */ }
+  }
+
+  // Try premium ElevenLabs TTS first (Sasquatch voice). Falls back gracefully
+  // to the Web Speech API on auth failure, network error, or unsupported envs.
+  try {
+    const r = await fetch("/api/voice/elevenlabs/synthesize", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ text }),
+    });
+    if (!r.ok) throw new Error(`tts ${r.status}`);
+    const data = await r.json();
+    if (!data?.audioBase64) throw new Error("no audio");
+    const audio = new Audio(`data:${data.mimeType || "audio/mpeg"};base64,${data.audioBase64}`);
+    audio.volume = 0.9;
+    _ttsAudio = audio;
+    await audio.play();
+  } catch {
+    fallbackSpeak(text);
   }
 }
 

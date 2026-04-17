@@ -123,6 +123,8 @@ import RecoveryBlog from "@/pages/RecoveryBlog";
 import RecoveryBlogPost from "@/pages/RecoveryBlogPost";
 import RecoveryOnboarding from "@/pages/RecoveryOnboarding";
 import RecoveryMe from "@/pages/RecoveryMe";
+import RecoveryExercises from "@/pages/RecoveryExercises";
+import RecoveryExerciseDetail from "@/pages/RecoveryExerciseDetail";
 import RecoverySpotlight from "@/pages/RecoverySpotlight";
 import RecoveryLogin from "@/pages/RecoveryLogin";
 import SasquatchCoach from "@/pages/SasquatchCoach";
@@ -522,6 +524,8 @@ function Router() {
       <Route path="/recovery/login" component={RecoveryLogin} />
       <Route path="/recovery/onboarding" component={RecoveryOnboarding} />
       <Route path="/recovery/me" component={RecoveryMe} />
+      <Route path="/recovery/exercises" component={RecoveryExercises} />
+      <Route path="/recovery/exercises/:slug" component={RecoveryExerciseDetail} />
       <Route path="/recovery/blog" component={RecoveryBlog} />
       <Route path="/recovery/blog/:slug" component={RecoveryBlogPost} />
       <Route path="/recovery/spotlight" component={RecoverySpotlight} />
