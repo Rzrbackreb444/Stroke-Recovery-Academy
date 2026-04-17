@@ -4,12 +4,15 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { yearsSinceStroke } from "@shared/strokeAnniversary";
+
+const years = yearsSinceStroke();
 
 const faqs = [
   {
     question: "How is this different from traditional stroke rehabilitation?",
     answer:
-      "Traditional rehab follows conservative timelines based on insurance, not biology. Nick's methods combine proven clinical techniques with patient-driven innovation — refined over 6 years of real recovery — that simply aren't in medical textbooks. You get both cutting-edge neuroscience AND street-tested methods that actually work.",
+      `Traditional rehab follows conservative timelines based on insurance, not biology. Nick's methods combine proven clinical techniques with patient-driven innovation — refined over ${years} years of real recovery — that simply aren't in medical textbooks. You get both cutting-edge neuroscience AND street-tested methods that actually work.`,
   },
   {
     question: "I'm years post-stroke. Is it too late for me?",
@@ -19,7 +22,7 @@ const faqs = [
   {
     question: "What makes the Sasquatch Method unique?",
     answer:
-      "Nick is the only person teaching stroke recovery who personally went from 0% to 90% function. Every technique has been battle-tested for 6 years. He combines Think-Flinch-Existence, Baseball Bat Therapy, Enhanced Mirror Therapy, and plateau-busting strategies that don't exist anywhere else. This isn't theory — it's lived experience.",
+      `Nick is the only person teaching stroke recovery who personally went from 0% to 90% function. Every technique has been battle-tested for ${years} years. The Method runs on three integrated systems — S.A.S.C.H. (daily formula: Seize, Absorb, Swing, Combine, Hammer), S.O.S. (daily reset: Survive, Organize, Strive), and C.O.M.P.A.S.S. (7-pillar long-game navigation) — paired with Baseball Bat Therapy, Enhanced Mirror Therapy, and plateau-busting strategies that don't exist anywhere else. This isn't theory — it's lived experience.`,
   },
   {
     question: "Do I need expensive equipment?",

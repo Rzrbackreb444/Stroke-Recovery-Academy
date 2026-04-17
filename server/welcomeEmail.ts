@@ -53,7 +53,7 @@ export async function sendWelcomeEmail(email: string, firstName?: string): Promi
   <div class="body">
     <p class="greeting">Hey ${name},</p>
 
-    <p>I'm Nick Kremers — stroke survivor, father, and founder of Stroke Recovery Academy. In 2019, at 36 years old, I had a hemorrhagic stroke that left me with 0% function on my left side.</p>
+    <p>I'm Nick Kremers — stroke survivor, father, and founder of Stroke Recovery Academy. On December 3, 2018, at 36 years old, I had a massive hemorrhagic stroke that left me with 0% function on my left side.</p>
 
     <p>Two years later, I was at 90% and coaching youth football again. Not because I found some miracle treatment — but because I refused to do zero. Every single day.</p>
 
