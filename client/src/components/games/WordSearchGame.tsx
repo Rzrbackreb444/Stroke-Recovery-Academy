@@ -319,8 +319,22 @@ export default function WordSearchGame({
             className="inline-grid select-none rounded-md border border-[#1e1e1e] bg-[#0f0f0f] p-2 outline-none focus:ring-2 focus:ring-[#C9941A]/60"
             style={{
               gridTemplateColumns: `repeat(${puzzle.size}, minmax(0, 1fr))`,
+              touchAction: "none",
+              WebkitUserSelect: "none",
+              WebkitTouchCallout: "none",
+              overscrollBehavior: "contain",
             }}
             onMouseLeave={() => setHover(null)}
+            onTouchMove={(e) => {
+              if (start) e.preventDefault();
+              const touch = e.touches[0];
+              if (!touch) return;
+              const el = document.elementFromPoint(touch.clientX, touch.clientY) as HTMLElement | null;
+              const cell = el?.closest('[data-row][data-col]') as HTMLElement | null;
+              if (cell?.dataset.row && cell?.dataset.col) {
+                handleCellEnter(Number(cell.dataset.row), Number(cell.dataset.col));
+              }
+            }}
           >
             {puzzle.grid.map((row, r) =>
               row.map((letter, c) => {
@@ -337,21 +351,14 @@ export default function WordSearchGame({
                     aria-label={`Row ${r + 1} column ${c + 1}: ${letter}${foundCell ? `, part of ${foundCell.word}` : ""}`}
                     onMouseDown={() => handleCellDown(r, c)}
                     onMouseEnter={() => handleCellEnter(r, c)}
-                    onTouchStart={(e) => {
-                      e.preventDefault();
+                    onPointerDown={(e) => {
+                      (e.currentTarget as HTMLElement).releasePointerCapture?.(e.pointerId);
                       handleCellDown(r, c);
-                    }}
-                    onTouchMove={(e) => {
-                      const touch = e.touches[0];
-                      const el = document.elementFromPoint(touch.clientX, touch.clientY) as HTMLElement | null;
-                      if (el?.dataset.row && el?.dataset.col) {
-                        handleCellEnter(Number(el.dataset.row), Number(el.dataset.col));
-                      }
                     }}
                     data-row={r}
                     data-col={c}
                     data-testid={`ws-cell-${r}-${c}`}
-                    className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center text-sm sm:text-base font-bold uppercase transition-colors"
+                    className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center text-base sm:text-lg font-bold uppercase transition-colors"
                     style={{
                       color: foundCell ? "#fff" : active ? "#000" : "#e5e5e5",
                       backgroundColor: foundCell
@@ -362,6 +369,7 @@ export default function WordSearchGame({
                       borderRadius: 4,
                       outline: isCursor ? `2px solid ${accent}` : "none",
                       outlineOffset: isCursor ? 1 : 0,
+                      touchAction: "none",
                     }}
                   >
                     {letter}
