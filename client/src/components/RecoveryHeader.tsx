@@ -15,6 +15,7 @@ import strokeLyfeLogo from "@assets/stroked-out-sasquatch-logo.png";
 
 const navLinks = [
   { href: "/recovery/challenge", label: "66-Day Challenge" },
+  { href: "/recovery/community", label: "Community" },
   { href: "/recovery/academy", label: "Academy" },
   { href: "/recovery/sasquatch-coach", label: "AI Coach" },
   { href: "/recovery/blog", label: "Blog" },

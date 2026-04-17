@@ -940,11 +940,11 @@ export default function RecoveryDashboard() {
               </Card>
             </Link>
             
-            <Link href="/community">
+            <Link href="/recovery/community">
               <Card className="bg-[#1a1a1a] border-[#333] p-4 hover-elevate cursor-pointer" data-testid="action-community">
                 <Users className="h-8 w-8 text-[#C9941A] mb-2" />
                 <div className="font-semibold text-white">Community</div>
-                <div className="text-xs text-gray-400">Connect with Warriors</div>
+                <div className="text-xs text-gray-400">Share Your Progress</div>
               </Card>
             </Link>
             
