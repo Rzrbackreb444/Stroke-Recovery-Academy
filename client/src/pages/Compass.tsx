@@ -19,73 +19,80 @@ import {
 } from "@/components/ui/dialog";
 import RecoveryHeader from "@/components/RecoveryHeader";
 import { 
-  Compass as CompassIcon, Users, Sun, Footprints, Target, 
-  Scale, Beaker, Heart, Plus, TrendingUp, CheckCircle2
+  Compass as CompassIcon, Scale, Footprints, Beaker, Sun, 
+  Flame, CheckCircle2, TrendingUp, Plus
 } from "lucide-react";
 
 const pillars = [
   { 
-    id: "community", 
-    name: "Community", 
-    icon: Users, 
+    id: "control", 
+    name: "Control", 
+    letter: "C",
+    icon: Scale, 
     color: "text-blue-500",
     bgColor: "bg-blue-500/20",
-    description: "Connection with others on the recovery journey",
-    questions: ["Did you connect with someone today?", "How supported do you feel?"]
+    description: "Control what you can — let go of the rest. Focus your energy where it moves the needle.",
+    questions: ["What did you control today?", "What did you choose to let go of?"]
   },
   { 
-    id: "optimism", 
-    name: "Optimism", 
-    icon: Sun, 
-    color: "text-yellow-500",
-    bgColor: "bg-yellow-500/20",
-    description: "Maintaining hope and positive outlook",
-    questions: ["What gave you hope today?", "What are you looking forward to?"]
-  },
-  { 
-    id: "movement", 
-    name: "Movement", 
+    id: "own_pace", 
+    name: "Own Your Pace", 
+    letter: "O",
     icon: Footprints, 
     color: "text-[#C9941A]",
     bgColor: "bg-[#C9941A]/20",
-    description: "Physical activity and therapy",
-    questions: ["What movement did you do today?", "How does your body feel?"]
+    description: "Own your pace. This is your recovery, not a race. Progress on your timeline is still progress.",
+    questions: ["Did you honor your own pace today?", "Did you compare yourself to others?"]
   },
   { 
-    id: "purpose", 
-    name: "Purpose", 
-    icon: Target, 
-    color: "text-purple-500",
-    bgColor: "bg-purple-500/20",
-    description: "Finding meaning and direction",
-    questions: ["What gives your recovery meaning?", "What goals are you working toward?"]
-  },
-  { 
-    id: "accountability", 
-    name: "Accountability", 
-    icon: Scale, 
-    color: "text-[#C9941A]",
-    bgColor: "bg-[#C9941A]/20",
-    description: "Staying consistent and tracking progress",
-    questions: ["Did you stick to your commitments?", "What habits did you maintain?"]
-  },
-  { 
-    id: "science", 
-    name: "Science", 
+    id: "mutate", 
+    name: "Mutate", 
+    letter: "M",
     icon: Beaker, 
     color: "text-cyan-500",
     bgColor: "bg-cyan-500/20",
-    description: "Using evidence-based approaches",
-    questions: ["What new technique did you try?", "What worked well today?"]
+    description: "Mutate — adapt and experiment. What stopped working yesterday is a signal to evolve, not quit.",
+    questions: ["What did you try differently today?", "What are you adapting in your protocol?"]
   },
   { 
-    id: "self_care", 
-    name: "Self-Care", 
-    icon: Heart, 
-    color: "text-pink-500",
-    bgColor: "bg-pink-500/20",
-    description: "Taking care of mind, body, and spirit",
-    questions: ["How did you nurture yourself today?", "What do you need right now?"]
+    id: "patience", 
+    name: "Patience", 
+    letter: "P",
+    icon: Sun, 
+    color: "text-yellow-500",
+    bgColor: "bg-yellow-500/20",
+    description: "Patience + nutrition = fuel. You cannot rush neuroplasticity. Feed the machine and let it work.",
+    questions: ["Did you eat to fuel your recovery today?", "Are you being patient with your progress?"]
+  },
+  { 
+    id: "anger", 
+    name: "Anger is Fuel", 
+    letter: "A",
+    icon: Flame, 
+    color: "text-red-500",
+    bgColor: "bg-red-500/20",
+    description: "Anger is fuel — channel it. Let every 'you can't' and every setback stoke the fire instead of burning you down.",
+    questions: ["What are you angry about?", "How did you use that anger productively today?"]
+  },
+  { 
+    id: "small_wins", 
+    name: "Small Wins", 
+    letter: "S",
+    icon: CheckCircle2, 
+    color: "text-green-500",
+    bgColor: "bg-green-500/20",
+    description: "Small wins are sacred. A twitch, a flicker, one more rep — log it. Celebrate it. Build on it.",
+    questions: ["What small win happened today?", "Did you log your flicker moments?"]
+  },
+  { 
+    id: "stack", 
+    name: "Stack Failures", 
+    letter: "S",
+    icon: TrendingUp, 
+    color: "text-purple-500",
+    bgColor: "bg-purple-500/20",
+    description: "Stack failures into success. Every failed attempt is data. Stack them into your recovery foundation.",
+    questions: ["What didn't work today?", "What did that failure teach you?"]
   },
 ];
 
@@ -154,8 +161,11 @@ export default function Compass() {
             <CompassIcon className="h-8 w-8 text-[#C9941A]" />
             C.O.M.P.A.S.S.
           </h1>
-          <p className="text-gray-400">
-            Your 7-Pillar Navigation System for Recovery
+          <p className="text-gray-400 max-w-xl mx-auto">
+            The Builder's Full Navigation System — Control · Own · Mutate · Patience · Anger · Small Wins · Stack
+          </p>
+          <p className="text-[#C9941A] text-sm font-medium mt-1 italic">
+            "Your advanced recovery compass — used alongside S.A.S.C.H. every day."
           </p>
         </div>
 

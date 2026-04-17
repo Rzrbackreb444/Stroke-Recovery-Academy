@@ -13,7 +13,7 @@ import nickCasual from "@assets/IMG_4824_1776397947955.jpeg";
 const milestones = [
   { year: "2019", title: "Stroke Event", description: "Suffered a life-changing stroke that affected mobility and speech." },
   { year: "2020", title: "Never Zero Born", description: "Developed the 1-rep principle: doing something every single day, no matter how small." },
-  { year: "2021", title: "C.O.M.P.A.S.S. Created", description: "Formalized the 7-pillar recovery system after seeing what worked." },
+  { year: "2021", title: "C.O.M.P.A.S.S. Created", description: "Formalized the 7-pillar builder's navigation system: Control, Own, Mutate, Patience, Anger, Small Wins, Stack." },
   { year: "2022", title: "Community Launch", description: "Started sharing the Sasquatch Doctrine with other survivors." },
   { year: "2023", title: "Academy Founded", description: "Launched the Stroke Recovery Academy to reach more people." },
   { year: "2024", title: "Sasquatch Rises", description: "Continuing to grow, help others, and prove that recovery never stops." },
@@ -21,7 +21,7 @@ const milestones = [
 
 const doctrinePoints = [
   { icon: Flame, title: "Never Zero", description: "1 rep saves your streak. Do something every day." },
-  { icon: Target, title: "C.O.M.P.A.S.S.", description: "7 pillars that guide your recovery journey." },
+  { icon: Target, title: "C.O.M.P.A.S.S.", description: "Control · Own · Mutate · Patience · Anger · Small Wins · Stack — the 7-pillar builder's compass." },
   { icon: Star, title: "Flicker Log", description: "Track micro-moments of progress - every twitch matters." },
   { icon: BookOpen, title: "Draft Your Legend", description: "Write your recovery story. Own your narrative." },
   { icon: Heart, title: "Medical Log", description: "Stay on top of meds, appointments, and vitals." },
@@ -52,9 +52,9 @@ export default function AboutNick() {
         ]}
         faq={[
           { question: "Who is Nick Kremers?", answer: "Nick Kremers is a stroke survivor who suffered a massive hemorrhagic stroke on December 3, 2018, and went from 0% to 90%+ functional recovery through relentless rehabilitation. He is the founder of Stroke Recovery Academy, author of 'The Stroked Out Sasquatch' and 'The Ultimate Stroke Recovery Revolution,' and the creator of the Sasquatch Method — a battle-tested recovery system used by survivors worldwide." },
-          { question: "How did Nick Kremers recover from his stroke?", answer: "Nick Kremers recovered from his stroke using what he calls the Sasquatch Method: a combination of neuroplasticity-based physical rehabilitation (mirror therapy, baseball bat therapy, drop foot protocols), an unbreakable 'Never Zero' daily consistency commitment, a warrior mindset that rejects the victim mentality, community support, and the C.O.M.P.A.S.S. seven-pillar system. Over 2+ years, he went from 0% to 90% functional ability." },
-          { question: "What is the Sasquatch Method for stroke recovery?", answer: "The Sasquatch Method is Nick Kremers' battle-tested 66-day stroke recovery system. It has three phases: Survival (Days 1-22: basic function restoration), Breakthrough (Days 23-44: building momentum), and Optimization (Days 45-66: mastery and acceleration). The method combines neuroplasticity science, physical protocols, mindset mastery, and daily consistency. Its core principles are: Take, Learn, Experiment, Combine, Apply." },
-          { question: "What books has Nick Kremers written about stroke recovery?", answer: "Nick Kremers has written two stroke recovery books: (1) 'The Stroked Out Sasquatch' — his raw, 38-chapter autobiography from catastrophic stroke to 90%+ recovery, covering the ICU, the therapists, TikTok, and building the movement; (2) 'The Ultimate Stroke Recovery Revolution: From 0% to 90%+ and Still Rising' — 33 chapters and 9 appendices covering the Kremers Recovery Formula, neuroplasticity, mirror therapy, baseball bat therapy, drop foot protocols, and the complete Sasquatch Doctrine." }
+          { question: "How did Nick Kremers recover from his stroke?", answer: "Nick Kremers recovered using his three integrated recovery systems: the S.A.S.C.H. Formula (Seize, Absorb, Swing, Combine, Hammer) as his daily operating system; the S.O.S. daily reset (Survive, Organize, Strive); and the C.O.M.P.A.S.S. seven-pillar navigation system (Control, Own, Mutate, Patience, Anger, Small Wins, Stack). Combined with neuroplasticity-based protocols — mirror therapy, baseball bat therapy, drop foot progressions — and the 'Never Zero' consistency commitment, he went from 0% to 90%+ functional ability." },
+          { question: "What is the Sasquatch Method for stroke recovery?", answer: "The Sasquatch Method is Nick Kremers' battle-tested 66-day stroke recovery system built on three core acronym systems. Daily formula: S.A.S.C.H. — Seize, Absorb, Swing, Combine, Hammer. Quick daily reset: S.O.S. — Survive, Organize, Strive. Advanced navigation: C.O.M.P.A.S.S. — Control, Own, Mutate, Patience, Anger, Small Wins, Stack. The three phases are Survival (Days 1-22), Breakthrough (Days 23-44), and Optimization (Days 45-66)." },
+          { question: "What books has Nick Kremers written about stroke recovery?", answer: "Nick Kremers has written two stroke recovery books: (1) 'The Stroked Out Sasquatch' — his raw, 38-chapter autobiography from catastrophic stroke to 90%+ recovery, covering the ICU, the therapists, TikTok, and building the movement; (2) 'The Ultimate Stroke Recovery Revolution: From 0% to 90%+ and Still Rising' — 33 chapters and 9 appendices covering the S.A.S.C.H. Formula (Seize, Absorb, Swing, Combine, Hammer), the S.O.S. daily reset, the C.O.M.P.A.S.S. navigation system, neuroplasticity, mirror therapy, baseball bat therapy, drop foot protocols, and the complete Sasquatch Doctrine." }
         ]}
       />
       <RecoveryHeader />
