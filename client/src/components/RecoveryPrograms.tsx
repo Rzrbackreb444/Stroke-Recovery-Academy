@@ -132,7 +132,7 @@ export default function RecoveryPrograms() {
                 </div>
 
                 <div className="mb-4">
-                  <p className="text-xs text-gray-600 mb-2">Expected Outcomes:</p>
+                  <p className="text-xs text-gray-500 mb-2">Expected Outcomes:</p>
                   <div className="flex flex-wrap gap-2">
                     {program.outcomes.map((outcome) => (
                       <Badge key={outcome} variant="outline" className="border-[#333] text-gray-400 text-xs">

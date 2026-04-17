@@ -98,6 +98,7 @@ Icons: lucide-react only (no emoji)
   - Live events table created via raw SQL (`CREATE TABLE IF NOT EXISTS live_events`).
   - **Mobile responsive**: Scrollable tabs on small screens, horizontal filter pill row for feed filtering on mobile.
 
+- **Quality / Accessibility Hardening**: Contrast audit complete — all `text-gray-600` on dark backgrounds replaced with `text-gray-500`. Empty alt text and missing aria-labels fixed across RecoveryCommunity, RecoveryBlogPost, RecoveryStore, RecoveryPrograms. Google Fonts payload trimmed from 30+ families to 7 actually-used families (Crimson Pro, Playfair Display, Inter, Source Serif 4, Libre Baskerville, Lora, Merriweather) for major LCP improvement.
 - **Recovery Blog** (`/recovery/blog` + `/recovery/blog/:slug`): Full blog list + article detail pages.
   - **Blog List** (`/recovery/blog`): Category filter buttons (Philosophy/Therapy/Science/Exercises/Caregivers/Income), search, featured articles section, clickable card grid.
   - **Article Detail** (`/recovery/blog/:slug`): Full markdown-rendered article with headers/lists/bold, author bio card, like/share buttons, related posts. SEO-optimized.

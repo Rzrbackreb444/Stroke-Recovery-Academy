@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import RecoveryHeader from "@/components/RecoveryHeader";
+import RecoverySEO from "@/components/RecoverySEO";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -218,6 +219,7 @@ function ProfileEditModal({ trigger }: { trigger: React.ReactNode }) {
                 className="absolute -bottom-1 -right-1 h-7 w-7 rounded-full bg-[#C9941A] text-black"
                 onClick={() => fileRef.current?.click()}
                 disabled={uploading}
+                aria-label="Change avatar photo"
                 data-testid="button-change-avatar"
               >
                 <Camera className="w-3 h-3" />
@@ -486,9 +488,9 @@ function PostComposer({ user, settings }: { user: any; settings: any }) {
                     {media.map((m, i) => (
                       <div key={i} className="relative">
                         {m.mediaType === "video" ? (
-                          <video src={m.url} className="w-24 h-24 rounded object-cover" />
+                          <video src={m.url} title="Uploaded video preview" className="w-24 h-24 rounded object-cover" />
                         ) : (
-                          <img src={m.url} alt="" className="w-24 h-24 rounded object-cover" />
+                          <img src={m.url} alt="Uploaded image preview" className="w-24 h-24 rounded object-cover" />
                         )}
                         <button
                           onClick={() => setMedia((prev) => prev.filter((_, idx) => idx !== i))}
@@ -607,7 +609,7 @@ function CommentThread({ postId, currentUser, settings }: { postId: number; curr
                 </p>
                 <p className="text-sm text-gray-200">{c.content}</p>
               </div>
-              <p className="text-xs text-gray-600 mt-0.5 pl-1">{timeAgo(c.createdAt)}</p>
+              <p className="text-xs text-gray-500 mt-0.5 pl-1">{timeAgo(c.createdAt)}</p>
             </div>
           </div>
         ))
@@ -634,6 +636,7 @@ function CommentThread({ postId, currentUser, settings }: { postId: number; curr
             className="bg-[#C9941A] text-black flex-shrink-0"
             onClick={() => commentMutation.mutate()}
             disabled={commentMutation.isPending || !commentText.trim()}
+            aria-label="Send comment"
             data-testid={`button-send-comment-${postId}`}
           >
             <Send className="w-4 h-4" />
@@ -883,9 +886,9 @@ function FeedTab({ user, settings }: { user: any; settings: any }) {
         ) : filtered.length === 0 ? (
           <Card className="bg-[#1a1a1a] border-[#333]">
             <CardContent className="p-10 text-center">
-              <Activity className="w-10 h-10 text-gray-600 mx-auto mb-3" />
+              <Activity className="w-10 h-10 text-gray-500 mx-auto mb-3" />
               <p className="text-gray-400">No posts yet.</p>
-              <p className="text-gray-600 text-sm mt-1">Be the first to share your progress!</p>
+              <p className="text-gray-500 text-sm mt-1">Be the first to share your progress!</p>
             </CardContent>
           </Card>
         ) : (
@@ -1066,9 +1069,9 @@ function LiveTab({ isAdmin }: { isAdmin: boolean }) {
       {liveNow.length === 0 && upcoming.length === 0 && !isLoading && (
         <Card className="bg-[#1a1a1a] border-[#333]">
           <CardContent className="p-10 text-center space-y-3">
-            <Radio className="w-10 h-10 text-gray-600 mx-auto" />
+            <Radio className="w-10 h-10 text-gray-500 mx-auto" />
             <p className="text-gray-400">No live events right now.</p>
-            <p className="text-gray-600 text-sm">Check back soon for live coaching sessions with Nick!</p>
+            <p className="text-gray-500 text-sm">Check back soon for live coaching sessions with Nick!</p>
           </CardContent>
         </Card>
       )}
@@ -1089,6 +1092,13 @@ export default function RecoveryCommunity() {
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
+      <RecoverySEO
+        title="Survivor Community — Stroke Recovery Academy"
+        description="Connect with stroke survivors on the same journey. Share your wins, ask questions, track your progress, and get support from people who truly understand recovery."
+        canonical="/recovery/community"
+        keywords={["stroke survivor community", "stroke recovery support group", "stroke accountability", "stroke recovery peers"]}
+        pageType="website"
+      />
       <RecoveryHeader />
 
       <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
