@@ -115,17 +115,36 @@ export function getCellsBetween(
 ): { row: number; col: number }[] | null {
   const dRow = endRow - startRow;
   const dCol = endCol - startCol;
-  const len = Math.max(Math.abs(dRow), Math.abs(dCol));
-  if (len === 0) return [{ row: startRow, col: startCol }];
-  if (
-    dRow !== 0 &&
-    dCol !== 0 &&
-    Math.abs(dRow) !== Math.abs(dCol)
-  ) {
-    return null;
+  if (dRow === 0 && dCol === 0) return [{ row: startRow, col: startCol }];
+
+  // Snap to nearest valid axis: horizontal, vertical, or 45° diagonal.
+  // Pick the axis that the user's drag is closest to.
+  const absR = Math.abs(dRow);
+  const absC = Math.abs(dCol);
+  const sR = dRow === 0 ? 0 : dRow / absR;
+  const sC = dCol === 0 ? 0 : dCol / absC;
+
+  let stepRow: number;
+  let stepCol: number;
+  let len: number;
+
+  if (absC === 0 || absR / Math.max(absC, 1) >= 2) {
+    // Vertical
+    stepRow = sR;
+    stepCol = 0;
+    len = absR;
+  } else if (absR === 0 || absC / Math.max(absR, 1) >= 2) {
+    // Horizontal
+    stepRow = 0;
+    stepCol = sC;
+    len = absC;
+  } else {
+    // Diagonal — use the smaller of the two so we don't overshoot.
+    stepRow = sR;
+    stepCol = sC;
+    len = Math.min(absR, absC);
   }
-  const stepRow = dRow === 0 ? 0 : dRow / Math.abs(dRow);
-  const stepCol = dCol === 0 ? 0 : dCol / Math.abs(dCol);
+
   const cells: { row: number; col: number }[] = [];
   for (let i = 0; i <= len; i++) {
     cells.push({ row: startRow + stepRow * i, col: startCol + stepCol * i });

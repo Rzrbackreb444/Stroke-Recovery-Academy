@@ -349,12 +349,12 @@ export default function WordSearchGame({
                     role="gridcell"
                     tabIndex={-1}
                     aria-label={`Row ${r + 1} column ${c + 1}: ${letter}${foundCell ? `, part of ${foundCell.word}` : ""}`}
-                    onMouseDown={() => handleCellDown(r, c)}
-                    onMouseEnter={() => handleCellEnter(r, c)}
                     onPointerDown={(e) => {
+                      e.preventDefault();
                       (e.currentTarget as HTMLElement).releasePointerCapture?.(e.pointerId);
                       handleCellDown(r, c);
                     }}
+                    onPointerEnter={() => handleCellEnter(r, c)}
                     data-row={r}
                     data-col={c}
                     data-testid={`ws-cell-${r}-${c}`}
