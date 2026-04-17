@@ -71,6 +71,8 @@ import {
   forumPostMedia, videoSessions, videoSessionParticipants, seoPages,
   blogPosts, blogPostReactions, blogPostComments,
   podcasts, podcastEpisodes,
+  recoveryBlogPosts,
+  type RecoveryBlogPost,
   type AccountabilityPod, type InsertAccountabilityPod,
   type PodMember, type InsertPodMember,
 } from "@shared/schema";
@@ -2874,35 +2876,68 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Recovery Blog Methods
-  async getRecoveryBlogPosts(category?: string, featured?: boolean): Promise<BlogPost[]> {
+  async getRecoveryBlogPosts(category?: string, featured?: boolean): Promise<RecoveryBlogPost[]> {
     try {
-      let query = db.select().from(blogPosts).where(eq(blogPosts.status, 'published'));
-      
-      const results = await query.orderBy(desc(blogPosts.createdAt)).limit(20);
-      
-      // If no posts in DB, return seed data for recovery blog
-      if (results.length === 0) {
-        return this.getSeedRecoveryBlogPosts(category, featured);
-      }
-      
+      const conditions = [eq(recoveryBlogPosts.status, 'published')];
+      if (category) conditions.push(eq(recoveryBlogPosts.category, category));
+      if (featured !== undefined) conditions.push(eq(recoveryBlogPosts.featured, featured));
+      const results = await db
+        .select()
+        .from(recoveryBlogPosts)
+        .where(and(...conditions))
+        .orderBy(desc(recoveryBlogPosts.createdAt))
+        .limit(50);
       return results;
     } catch (error) {
       console.error("Error fetching recovery blog posts:", error);
-      return this.getSeedRecoveryBlogPosts(category, featured);
+      return [];
     }
   }
 
-  async getRecoveryBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
+  async getRecoveryBlogPostBySlug(slug: string): Promise<RecoveryBlogPost | undefined> {
     try {
-      const results = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug)).limit(1);
-      if (results[0]) return results[0];
-      // Fall back to seed data if not in DB
-      const seedPosts = this.getSeedRecoveryBlogPosts();
-      return seedPosts.find((p: any) => p.slug === slug) as BlogPost | undefined;
+      const [result] = await db
+        .select()
+        .from(recoveryBlogPosts)
+        .where(eq(recoveryBlogPosts.slug, slug))
+        .limit(1);
+      return result;
     } catch (error) {
-      console.error("Error fetching blog post by slug:", error);
-      const seedPosts = this.getSeedRecoveryBlogPosts();
-      return seedPosts.find((p: any) => p.slug === slug) as BlogPost | undefined;
+      console.error("Error fetching recovery blog post by slug:", error);
+      return undefined;
+    }
+  }
+
+  async initRecoveryBlogPosts(): Promise<void> {
+    try {
+      const existing = await db.select({ id: recoveryBlogPosts.id }).from(recoveryBlogPosts).limit(1);
+      if (existing.length > 0) return;
+      await this.seedRecoveryBlogPosts();
+      console.log("Recovery blog posts seeded to DB");
+    } catch (error) {
+      console.error("Error initializing recovery blog posts:", error);
+    }
+  }
+
+  private async seedRecoveryBlogPosts(): Promise<void> {
+    const posts = this.getSeedRecoveryBlogPosts();
+    for (const p of posts as any[]) {
+      await db.insert(recoveryBlogPosts).values({
+        slug: p.slug,
+        title: p.title,
+        excerpt: p.excerpt || '',
+        content: p.content,
+        category: p.category || 'philosophy',
+        tags: p.tags || [],
+        heroImageUrl: p.featuredImage || null,
+        authorName: p.authorName || 'Nick Kremers',
+        status: 'published',
+        featured: p.featured || false,
+        viewCount: p.viewCount || 0,
+        likeCount: p.likeCount || 0,
+        commentCount: p.commentCount || 0,
+        readTime: p.readTime || 5,
+      }).onConflictDoNothing();
     }
   }
 

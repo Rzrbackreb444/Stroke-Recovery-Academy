@@ -134,7 +134,7 @@ export default function RecoveryHeader() {
                   variant="ghost"
                   size="sm"
                   className="text-gray-400 hover:text-white text-sm"
-                  onClick={() => (window.location.href = "/api/login")}
+                  onClick={() => (window.location.href = "/recovery/login")}
                   data-testid="button-sign-in"
                 >
                   Sign In
@@ -142,7 +142,7 @@ export default function RecoveryHeader() {
                 <Button
                   size="sm"
                   className="bg-[#C9941A] text-black font-semibold text-sm px-5"
-                  onClick={() => (window.location.href = "/api/login")}
+                  onClick={() => (window.location.href = "/recovery/login?tab=signup")}
                   data-testid="button-join"
                 >
                   Start Free
@@ -204,7 +204,7 @@ export default function RecoveryHeader() {
               ) : (
                 <Button
                   className="w-full bg-[#C9941A] text-black font-semibold"
-                  onClick={() => (window.location.href = "/api/login")}
+                  onClick={() => (window.location.href = "/recovery/login?tab=signup")}
                   data-testid="mobile-button-join"
                 >
                   Start Free
