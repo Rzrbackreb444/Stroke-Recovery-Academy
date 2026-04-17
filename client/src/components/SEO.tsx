@@ -412,11 +412,11 @@ export const recoveryAcademySchemas = {
   compassMethod: {
     "@type": "MedicalTherapy",
     name: "C.O.M.P.A.S.S. Recovery Method",
-    alternateName: "Consistency Over Maximum Performance Always Sustains Success",
-    description: "A holistic stroke recovery methodology focusing on daily consistency, community support, and progressive rehabilitation.",
-    relevantSpecialty: ["Neurology", "Physical Medicine"],
+    alternateName: "Control · Own · Mutate · Patience · Anger · Small Wins · Stack",
+    description: "The Builder's Full Navigation System for stroke recovery. Seven pillars: Control what you can, Own your pace, Mutate and adapt, Patience plus nutrition as fuel, Anger channeled as fuel, Small wins are sacred, Stack failures into success. Used alongside the S.A.S.C.H. Formula as an advanced recovery operating system.",
+    relevantSpecialty: ["Neurology", "Physical Medicine and Rehabilitation"],
     procedureType: "Therapeutic",
-    followup: "Daily check-ins and progress tracking",
+    followup: "Daily pillar check-ins and progress tracking",
   },
   flickerLog: {
     "@type": "MedicalObservationalStudy",

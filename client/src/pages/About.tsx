@@ -151,8 +151,8 @@ export default function About() {
                     <h3 className="text-xl font-semibold mb-2 text-foreground">The System</h3>
                     <p className="text-gray-400">
                       Through years of therapy, experimentation, and relentless consistency, 
-                      I developed the Kremers Recovery Formula: Take what the stroke gives you + 
-                      Learn from therapists + Experiment + Apply to your own recovery. 
+                      I developed the S.A.S.C.H. Formula: Seize your reality + Absorb every lesson + 
+                      Swing and experiment + Combine what works + Hammer it daily. 
                       This became the foundation of the Stroke Recovery OS.
                     </p>
                   </div>

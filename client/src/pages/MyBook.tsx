@@ -79,8 +79,8 @@ const MEMOIR_PROMPTS = [
     id: "rehabilitation",
     title: "The Rehabilitation Journey",
     prompt: "Describe your rehabilitation process. The exercises, the small victories, the setbacks. What worked? What didn't?",
-    nickExcerpt: "Take whatever the stroke gives you. Learn from therapists. Experiment relentlessly. Combine what works. Apply with discipline. That's the formula. TAKE, LEARN, EXPERIMENT, COMBINE, APPLY. It sounds simple. It took me years to figure it out and it saved everything.",
-    nickSource: "Chapter 32 — The Kremers Recovery Formula",
+    nickExcerpt: "Seize where you are — no denial, just raw truth. Absorb everything around you like your life depends on it, because it does. Swing boldly and experiment — try things that feel stupid. Combine what actually works. Then hammer it every single day. S.A.S.C.H. It sounds simple. It took me years to live it. And it saved everything.",
+    nickSource: "Chapter 32 — The S.A.S.C.H. Formula",
   },
   {
     id: "support-system",

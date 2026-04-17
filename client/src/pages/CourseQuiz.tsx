@@ -75,17 +75,17 @@ const mockQuiz = {
     {
       id: "q2",
       type: "multiple" as const,
-      question: "Which of the following are pillars of the C.O.M.P.A.S.S. framework? (Select all that apply)",
+      question: "Which of the following are pillars of the C.O.M.P.A.S.S. navigation system? (Select all that apply)",
       options: [
-        "Cognitive",
-        "Optimism",
-        "Money",
-        "Purpose",
-        "Accountability",
-        "Speed"
+        "Control what you can",
+        "Own your pace",
+        "Money management",
+        "Patience + nutrition",
+        "Anger as fuel",
+        "Speed over consistency"
       ],
       correctAnswer: [0, 1, 3, 4],
-      explanation: "C.O.M.P.A.S.S. stands for Cognitive, Optimism, Movement, Purpose, Accountability, Social, and Safety. 'Money' and 'Speed' are not part of the framework.",
+      explanation: "C.O.M.P.A.S.S. stands for Control · Own your pace · Mutate · Patience · Anger · Small Wins · Stack. 'Money management' and 'Speed over consistency' are not pillars — recovery is about sustainability, not shortcuts.",
       points: 15,
       difficulty: "medium" as const,
     },
@@ -126,15 +126,15 @@ const mockQuiz = {
     {
       id: "q6",
       type: "single" as const,
-      question: "What does the 'S' in C.O.M.P.A.S.S. stand for?",
+      question: "What do the two S's in C.O.M.P.A.S.S. stand for?",
       options: [
         "Strength and Speed",
-        "Social and Safety",
+        "Small Wins and Stack Failures into Success",
         "Success and Strategy",
-        "Sleep and Stress"
+        "Sleep and Stress management"
       ],
       correctAnswer: 1,
-      explanation: "The two S's in C.O.M.P.A.S.S. stand for Social (connection with others) and Safety (feeling secure in your environment). Both are crucial pillars for recovery.",
+      explanation: "The two S's in C.O.M.P.A.S.S. stand for 'Small wins are sacred' and 'Stack failures into success.' Both remind you that every flicker of progress counts and every setback is data to build on.",
       points: 10,
       difficulty: "medium" as const,
     },

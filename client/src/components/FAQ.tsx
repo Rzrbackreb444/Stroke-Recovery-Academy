@@ -29,7 +29,7 @@ const faqs = [
   {
     question: "How does this work alongside my current therapy?",
     answer:
-      "This complements your clinical therapy — it doesn't replace it. Use what your therapists teach, then apply Nick's TAKE→LEARN→EXPERIMENT→COMBINE→APPLY formula on top. Many survivors use these methods alongside traditional rehab and see accelerated progress. Always consult your medical team about new techniques.",
+      "This complements your clinical therapy — it doesn't replace it. Use what your therapists teach, then run Nick's S.A.S.C.H. Formula on top: Seize your reality, Absorb every lesson, Swing and experiment, Combine what works, Hammer it daily. Many survivors use these methods alongside traditional rehab and see accelerated progress. Always consult your medical team about new techniques.",
   },
   {
     question: "What if I'm still in a wheelchair?",

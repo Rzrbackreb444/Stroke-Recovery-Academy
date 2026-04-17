@@ -43,7 +43,7 @@ export const NICK_KREMERS_SCHEMA = {
     "Stroke survivor — 0% to 90% recovery achievement",
     "Author of The Stroked Out Sasquatch",
     "Author of The Ultimate Stroke Recovery Revolution",
-    "Creator of the Kremers Recovery Formula (TAKE-LEARN-EXPERIMENT-COMBINE-APPLY)",
+    "Creator of the S.A.S.C.H. Formula (Seize-Absorb-Swing-Combine-Hammer)",
   ],
   sameAs: [
     "https://www.facebook.com/strokerecoveryacademy",

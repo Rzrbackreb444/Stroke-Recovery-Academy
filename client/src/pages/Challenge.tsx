@@ -87,7 +87,7 @@ const WHATS_INCLUDED = [
   {
     icon: Brain,
     title: "The Complete Sasquatch Formula",
-    description: "The exact battle-tested system Nick used: TAKE-LEARN-EXPERIMENT-COMBINE-APPLY. The 5-step method that drives real neuroplasticity, not just symptom management.",
+    description: "The exact battle-tested system Nick used: S.A.S.C.H. — Seize, Absorb, Swing, Combine, Hammer. The 5-step daily operating system that drives real neuroplasticity, not just symptom management.",
   },
   {
     icon: Calendar,
@@ -508,7 +508,7 @@ export default function Challenge() {
                 </p>
                 <p>
                   I started experimenting. Combining what the therapists taught me with what I was learning about 
-                  neuroplasticity. I built the TAKE-LEARN-EXPERIMENT-COMBINE-APPLY formula. I tracked everything. 
+                  neuroplasticity. I built the S.A.S.C.H. Formula — Seize, Absorb, Swing, Combine, Hammer. I tracked everything. 
                   I showed up every day.
                 </p>
                 <p className="text-white font-bold">

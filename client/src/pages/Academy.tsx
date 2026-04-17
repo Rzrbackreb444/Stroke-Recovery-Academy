@@ -22,9 +22,8 @@ import {
   Footprints,
   Heart,
   Hand,
-  FlaskConical,
   Layers,
-  RotateCcw,
+  Hammer,
   Quote,
   ChevronRight,
   Flame
@@ -53,8 +52,8 @@ const books = [
     title: "The Ultimate Stroke Recovery Revolution",
     subtitle: "From 0% to 90%+ and Still Rising",
     author: "Nick Kremers",
-    description: "The battle-tested blueprint for defying every 'never.' 33 chapters and 9 appendices covering neuroplasticity, the 66-Day Tracker, Baseball Bat Therapy, Mirror Therapy, Drop Foot Destruction, the Kremers Recovery Formula (TAKE→LEARN→EXPERIMENT→COMBINE→APPLY), and the complete Sasquatch Doctrine. This is the methodology behind the movement.",
-    topics: ["The Kremers Recovery Formula", "Neuroplasticity Revolution", "Baseball Bat & Mirror Therapy", "The 66-Day Transformation"],
+    description: "The battle-tested blueprint for defying every 'never.' 33 chapters and 9 appendices covering neuroplasticity, the 66-Day Tracker, Baseball Bat Therapy, Mirror Therapy, Drop Foot Destruction, the S.A.S.C.H. Formula (Seize→Absorb→Swing→Combine→Hammer), and the complete Sasquatch Doctrine. This is the methodology behind the movement.",
+    topics: ["The S.A.S.C.H. Formula", "Neuroplasticity Revolution", "Baseball Bat & Mirror Therapy", "The 66-Day Transformation"],
     gradient: "from-primary via-orange-500 to-red-600",
     chapters: 33,
     duration: "14+ hours",
@@ -97,38 +96,38 @@ const featuredModules = [
 const sasquatchFormula = [
   {
     step: 1,
-    code: "TAKE",
-    title: "Take What The Stroke Gave You",
-    description: "Accept the reality of your situation. Don't fight what happened — use it as your starting point. This isn't surrender, it's strategic positioning.",
-    icon: Hand,
+    code: "SEIZE",
+    title: "Seize Your Reality",
+    description: "Seize exactly where you are — no denial, no wishing it was better. Your flickers, your limitations, your starting point. That's your raw material. You can't build on fantasy.",
+    icon: Target,
   },
   {
     step: 2,
-    code: "LEARN",
-    title: "Learn From The Experts",
-    description: "Absorb everything from therapists, doctors, and other survivors. Take notes. Ask questions. Become a student of your own recovery.",
-    icon: BookOpen,
+    code: "ABSORB",
+    title: "Absorb Everything",
+    description: "Be a sponge. Take in every useful piece of knowledge — therapists, other survivors, science, videos, and your own body's feedback. No judgment. All fuel.",
+    icon: Brain,
   },
   {
     step: 3,
-    code: "EXPERIMENT",
-    title: "Experiment Relentlessly",
-    description: "Try different approaches. What works for others might not work for you. Be your own recovery scientist — test, measure, adjust.",
-    icon: FlaskConical,
+    code: "SWING",
+    title: "Swing Boldly",
+    description: "Experiment. Test things. Try mirror therapy, weight bearing, new angles, different reps. Take action and see what actually moves the needle. Swing even when it feels useless.",
+    icon: Zap,
   },
   {
     step: 4,
     code: "COMBINE",
     title: "Combine What Works",
-    description: "Stack your wins. Take the techniques that move the needle and layer them together into your personalized recovery protocol.",
+    description: "Mix the best pieces together. Mirror therapy + weight bearing + mindset work. Create your personal recovery recipe. Don't follow one method — build your custom system.",
     icon: Layers,
   },
   {
     step: 5,
-    code: "APPLY",
-    title: "Apply With Discipline",
-    description: "Consistency beats intensity. Show up every single day. The 66-Day Transformation isn't magic — it's relentless application.",
-    icon: RotateCcw,
+    code: "HAMMER",
+    title: "Hammer It Daily",
+    description: "Apply it relentlessly. No zero days. Rep after rep, day after day. Hammer when you're tired. Hammer when progress is invisible. Consistency is the hammer that builds empires.",
+    icon: Hammer,
   },
 ];
 
@@ -396,7 +395,7 @@ export default function Academy() {
           }),
           createRecoveryCourseSchema({
             name: "The Ultimate Stroke Recovery Revolution",
-            description: "The battle-tested blueprint: 33 chapters covering the Kremers Recovery Formula, neuroplasticity, mirror therapy, baseball bat therapy, drop foot protocols, the 66-Day Transformation, and the complete Sasquatch Doctrine.",
+            description: "The battle-tested blueprint: 33 chapters covering the S.A.S.C.H. Formula (Seize, Absorb, Swing, Combine, Hammer), neuroplasticity, mirror therapy, baseball bat therapy, drop foot protocols, the 66-Day Transformation, and the complete Sasquatch Doctrine.",
             url: "/recovery/academy",
             numberOfLessons: 33,
             durationHours: 14,
@@ -490,11 +489,11 @@ export default function Academy() {
                 className="text-3xl md:text-4xl font-black text-foreground mb-4 uppercase tracking-tight"
                 data-testid="text-formula-title"
               >
-                The Sasquatch <span className="text-[#C9941A]">Formula</span>
+                The <span className="text-[#C9941A]">S.A.S.C.H.</span> Formula
               </h2>
               <p className="text-gray-400 max-w-2xl mx-auto">
-                The battle-tested 5-step system that took Nick from 0% function to 90% recovery. 
-                This isn't theory — it's the exact process forged through years of relentless experimentation.
+                Your daily recovery operating system. Five steps that replaced theory with action — forged through years of real recovery, not a textbook.
+                <span className="block mt-2 text-[#C9941A] font-semibold italic">"S.A.S.C.H. it every day: Seize → Absorb → Swing → Combine → Hammer."</span>
               </p>
             </div>
 
@@ -534,10 +533,9 @@ export default function Academy() {
               <CardContent className="py-8 px-6 text-center">
                 <Quote className="h-8 w-8 mx-auto mb-4 text-[#C9941A]" aria-hidden="true" />
                 <blockquote className="text-lg md:text-xl font-medium text-foreground mb-4 italic">
-                  "The impossible is only impossible until someone proves it's not. 
-                  I took what the stroke gave me, learned from everyone around me, 
-                  experimented like a madman, combined what worked, and applied it 
-                  every single day. That's the formula. That's how you defy every 'never.'"
+                  "Seize where you are. Absorb everything around you. Swing boldly and experiment. 
+                  Combine what actually works. Then hammer it — every single day, no excuses, no zero days. 
+                  That's S.A.S.C.H. That's how you defy every 'never.'"
                 </blockquote>
                 <cite className="text-[#C9941A] font-bold not-italic">
                   — Nicholas "Stroked-Out Sasquatch" Kremers

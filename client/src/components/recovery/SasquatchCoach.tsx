@@ -18,7 +18,7 @@ interface Message {
 const QUICK_PROMPTS = [
   "I'm struggling today",
   "Give me motivation",
-  "Explain the formula",
+  "Explain S.A.S.C.H.",
   "I need tough love",
   "Celebrate my win",
 ];
