@@ -9171,6 +9171,267 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     }
   });
 
+  // ─── Survivor OS: Sasquatch Scale + AI Plan ─────────────────────────────────
+  // GET /api/recovery/me/state — aggregated personal dashboard state
+  app.get('/api/recovery/me/state', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { db: dbInst } = await import('./db');
+      const { sasquatchAssessments, survivorGoals, survivorPlans } = await import('../shared/schema');
+      const { eq, desc } = await import('drizzle-orm');
+
+      const [latestAssessment] = await dbInst
+        .select()
+        .from(sasquatchAssessments)
+        .where(eq(sasquatchAssessments.userId, userId))
+        .orderBy(desc(sasquatchAssessments.takenAt))
+        .limit(1);
+
+      const history = await dbInst
+        .select()
+        .from(sasquatchAssessments)
+        .where(eq(sasquatchAssessments.userId, userId))
+        .orderBy(desc(sasquatchAssessments.takenAt))
+        .limit(12);
+
+      const goals = await dbInst
+        .select()
+        .from(survivorGoals)
+        .where(eq(survivorGoals.userId, userId))
+        .orderBy(desc(survivorGoals.createdAt));
+
+      const [latestPlan] = await dbInst
+        .select()
+        .from(survivorPlans)
+        .where(eq(survivorPlans.userId, userId))
+        .orderBy(desc(survivorPlans.generatedAt))
+        .limit(1);
+
+      const hasOnboarded = !!latestAssessment;
+      res.json({
+        hasOnboarded,
+        latestAssessment: latestAssessment || null,
+        history,
+        goals,
+        plan: latestPlan?.plan || null,
+        planGeneratedAt: latestPlan?.generatedAt || null,
+      });
+    } catch (error) {
+      console.error('Error fetching recovery state:', error);
+      res.status(500).json({ message: 'Failed to load recovery state' });
+    }
+  });
+
+  // POST /api/recovery/assessment — save a new Sasquatch Scale snapshot
+  app.post('/api/recovery/assessment', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { physical, cognitive, speech, emotional, memory, notes } = req.body || {};
+      const scores = { physical, cognitive, speech, emotional, memory };
+      for (const [k, v] of Object.entries(scores)) {
+        if (typeof v !== 'number' || v < 1 || v > 10) {
+          return res.status(400).json({ message: `Invalid score for ${k} (must be 1–10)` });
+        }
+      }
+      const { db: dbInst } = await import('./db');
+      const { sasquatchAssessments } = await import('../shared/schema');
+      const [row] = await dbInst.insert(sasquatchAssessments).values({
+        userId, physical, cognitive, speech, emotional, memory,
+        notes: notes ? String(notes).slice(0, 1000) : null,
+      }).returning();
+      res.json(row);
+    } catch (error) {
+      console.error('Error saving assessment:', error);
+      res.status(500).json({ message: 'Failed to save assessment' });
+    }
+  });
+
+  // POST /api/recovery/goals — replace user's goal set with provided list
+  app.post('/api/recovery/goals', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const goals = Array.isArray(req.body?.goals) ? req.body.goals : [];
+      if (goals.length === 0 || goals.length > 10) {
+        return res.status(400).json({ message: 'Provide 1–10 goals' });
+      }
+      const validHorizons = new Set(['short', 'long']);
+      const validDomains = new Set(['physical', 'cognitive', 'speech', 'emotional', 'memory', 'other']);
+      for (const g of goals) {
+        if (!validHorizons.has(g.horizon)) return res.status(400).json({ message: 'Invalid horizon' });
+        if (!validDomains.has(g.domain)) return res.status(400).json({ message: 'Invalid domain' });
+        if (!g.goal || typeof g.goal !== 'string' || g.goal.length < 3 || g.goal.length > 240) {
+          return res.status(400).json({ message: 'Goal text must be 3–240 chars' });
+        }
+      }
+      const { db: dbInst } = await import('./db');
+      const { survivorGoals } = await import('../shared/schema');
+      const { eq } = await import('drizzle-orm');
+      await dbInst.delete(survivorGoals).where(eq(survivorGoals.userId, userId));
+      const inserted = await dbInst.insert(survivorGoals).values(
+        goals.map((g: any) => ({
+          userId,
+          horizon: g.horizon,
+          domain: g.domain,
+          goal: String(g.goal).trim().slice(0, 240),
+        }))
+      ).returning();
+      res.json(inserted);
+    } catch (error) {
+      console.error('Error saving goals:', error);
+      res.status(500).json({ message: 'Failed to save goals' });
+    }
+  });
+
+  // POST /api/recovery/plan/generate — call Gemini, store + return structured plan
+  app.post('/api/recovery/plan/generate', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { db: dbInst } = await import('./db');
+      const { sasquatchAssessments, survivorGoals, survivorPlans } = await import('../shared/schema');
+      const { eq, desc } = await import('drizzle-orm');
+
+      const [assessment] = await dbInst
+        .select()
+        .from(sasquatchAssessments)
+        .where(eq(sasquatchAssessments.userId, userId))
+        .orderBy(desc(sasquatchAssessments.takenAt))
+        .limit(1);
+
+      if (!assessment) {
+        return res.status(400).json({ message: 'Take the Sasquatch Scale first.' });
+      }
+
+      const goals = await dbInst
+        .select()
+        .from(survivorGoals)
+        .where(eq(survivorGoals.userId, userId));
+
+      const apiKey = process.env.GEMINI_API_KEY || process.env.AI_INTEGRATIONS_GEMINI_API_KEY;
+      let plan: any;
+
+      if (apiKey) {
+        const prompt = `You are Sasquatch Coach — a hard-edged, deeply caring stroke recovery guide who speaks like a Southern raspy mountain man. Build a 7-day recovery plan for this survivor.
+
+SASQUATCH SCALE (1=lowest, 10=highest):
+- Physical: ${assessment.physical}/10
+- Cognitive: ${assessment.cognitive}/10
+- Speech: ${assessment.speech}/10
+- Emotional: ${assessment.emotional}/10
+- Memory: ${assessment.memory}/10
+${assessment.notes ? `Notes from survivor: ${assessment.notes}` : ''}
+
+GOALS:
+${goals.map((g: any) => `- [${g.horizon}/${g.domain}] ${g.goal}`).join('\n') || '- (none captured)'}
+
+Output STRICT JSON only (no markdown fences). Schema:
+{
+  "summary": "1-2 sentence Sasquatch-voice opener",
+  "focusDomains": ["physical","cognitive",...],   // 2-3 weakest domains to prioritize
+  "exercises": [
+    { "name": "...", "domain": "physical", "sets": 3, "reps": 10, "notes": "form cue" }
+  ],   // 5-8 prescribed exercises, scaled to scores (lower scores = easier baselines)
+  "brainGymMinutes": 15,                           // recommended daily minutes
+  "mealTargets": {                                 // brain-recovery-optimized
+    "omega3Servings": 4,
+    "leafyGreensServings": 14,
+    "hydrationOz": 80,
+    "limit": ["added sugar","ultra-processed foods"]
+  },
+  "weeklySchedule": {
+    "Mon": ["...","..."], "Tue": [...], "Wed": [...], "Thu": [...],
+    "Fri": [...], "Sat": [...], "Sun": ["Active rest","Reflection"]
+  },
+  "tips": ["...","...","..."],                     // 3-5 Sasquatch-voice motivational tips
+  "safetyNote": "Not medical advice. Confirm with your doctor or therapist."
+}`;
+
+        try {
+          const r = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ role: 'user', parts: [{ text: prompt }] }],
+                generationConfig: { temperature: 0.7, responseMimeType: 'application/json' },
+              }),
+            }
+          );
+          if (r.ok) {
+            const j: any = await r.json();
+            const text = j?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+            try {
+              plan = JSON.parse(text);
+            } catch {
+              const m = text.match(/\{[\s\S]*\}/);
+              if (m) plan = JSON.parse(m[0]);
+            }
+          } else {
+            console.error('Gemini plan call failed', r.status, await r.text());
+          }
+        } catch (err) {
+          console.error('Gemini plan error', err);
+        }
+      }
+
+      if (!plan) {
+        // Deterministic fallback so flow is never broken if AI is unavailable.
+        const domains = [
+          ['physical', assessment.physical],
+          ['cognitive', assessment.cognitive],
+          ['speech', assessment.speech],
+          ['emotional', assessment.emotional],
+          ['memory', assessment.memory],
+        ].sort((a, b) => (a[1] as number) - (b[1] as number));
+        const weakest = domains.slice(0, 3).map((d) => d[0]);
+        plan = {
+          summary: "Built you a starter plan. We'll sharpen it together. Never zero — just one rep at a time.",
+          focusDomains: weakest,
+          exercises: [
+            { name: 'Seated marches', domain: 'physical', sets: 3, reps: 12, notes: 'Slow controlled lifts.' },
+            { name: 'Sit-to-stand', domain: 'physical', sets: 3, reps: 8, notes: 'Use a sturdy chair.' },
+            { name: 'Word search drill', domain: 'cognitive', sets: 1, reps: 1, notes: '10 minutes.' },
+            { name: 'Reading aloud', domain: 'speech', sets: 1, reps: 1, notes: '5 minutes from any book.' },
+            { name: 'Box breathing', domain: 'emotional', sets: 4, reps: 4, notes: 'In 4 / hold 4 / out 4 / hold 4.' },
+            { name: 'Memory recall list', domain: 'memory', sets: 1, reps: 1, notes: 'Recite yesterday in order.' },
+          ],
+          brainGymMinutes: 15,
+          mealTargets: {
+            omega3Servings: 4,
+            leafyGreensServings: 14,
+            hydrationOz: 80,
+            limit: ['added sugar', 'ultra-processed foods'],
+          },
+          weeklySchedule: {
+            Mon: ['Physical reps', 'Brain Gym'],
+            Tue: ['Speech reading', 'Walk if able'],
+            Wed: ['Physical reps', 'Memory drill'],
+            Thu: ['Brain Gym', 'Box breathing'],
+            Fri: ['Physical reps', 'Speech reading'],
+            Sat: ['Long walk if able', 'Reflection'],
+            Sun: ['Active rest', 'Plan the week'],
+          },
+          tips: [
+            'Never zero. One rep counts.',
+            'Sleep is recovery — protect it.',
+            'Hydration first. Coffee second.',
+          ],
+          safetyNote: 'Not medical advice. Confirm with your doctor or therapist.',
+        };
+      }
+
+      const [row] = await dbInst.insert(survivorPlans).values({
+        userId,
+        assessmentId: assessment.id,
+        plan,
+      }).returning();
+      res.json({ plan: row.plan, generatedAt: row.generatedAt });
+    } catch (error) {
+      console.error('Error generating plan:', error);
+      res.status(500).json({ message: 'Failed to generate plan' });
+    }
+  });
+
   // Get user milestones
   app.get('/api/recovery/milestones', isAuthenticated, async (req: any, res) => {
     try {
