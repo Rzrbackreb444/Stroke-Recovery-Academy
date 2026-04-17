@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Flame } from "lucide-react";
-import nickPhoto from "@assets/Nick crooked smile_1763787525254.jpg";
+import nickPhoto from "@assets/IMG_0548_1776442127593.jpeg";
 
 const stats = [
   { value: "50", label: "Staples in his skull" },
@@ -90,7 +90,7 @@ export default function HeroSection() {
             <div className="absolute inset-0 bg-gradient-to-r from-[#0D0D0D] via-transparent to-transparent z-10 rounded-2xl pointer-events-none" />
             <img
               src={nickPhoto}
-              alt="Nick Kremers — stroke survivor and founder of Stroke Recovery Academy"
+              alt="Nick Kremers in 2018 — early in stroke recovery, seated next to his walker after a massive hemorrhagic stroke at age 36. Founder of Stroke Recovery Academy and the Sasquatch Method."
               className="w-full rounded-2xl object-cover object-top"
               style={{ maxHeight: "620px" }}
               data-testid="img-nick-hero"

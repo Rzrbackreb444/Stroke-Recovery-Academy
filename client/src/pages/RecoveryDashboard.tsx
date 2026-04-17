@@ -26,7 +26,7 @@ import {
   Flame, Trophy, BookOpen, MessageCircle, Grid3X3, ShoppingBag, Users,
   CheckCircle2, Target, Star, TrendingUp, Calendar, Heart, Zap, LogOut,
   Plus, UserPlus, DoorOpen, Smile, Activity, Quote, RefreshCw, ArrowRight,
-  Play
+  Play, Brain
 } from "lucide-react";
 import SixtyDayTracker from "@/components/recovery/SixtyDayTracker";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
@@ -931,7 +931,7 @@ export default function RecoveryDashboard() {
 
         <section className="mb-8">
           <h2 className="text-xl font-bold mb-4 text-white">Quick Actions</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             <Link href="/survival-grid">
               <Card className="bg-[#1a1a1a] border-[#333] p-4 hover-elevate cursor-pointer" data-testid="action-survival-grid">
                 <Grid3X3 className="h-8 w-8 text-[#C9941A] mb-2" />
@@ -939,7 +939,15 @@ export default function RecoveryDashboard() {
                 <div className="text-xs text-gray-400">Exercises & Protocols</div>
               </Card>
             </Link>
-            
+
+            <Link href="/recovery/brain-gym">
+              <Card className="bg-[#1a1a1a] border-[#333] p-4 hover-elevate cursor-pointer" data-testid="action-brain-gym">
+                <Brain className="h-8 w-8 text-[#C9941A] mb-2" />
+                <div className="font-semibold text-white">Brain Gym</div>
+                <div className="text-xs text-gray-400">Word Search · Crossword · Memory</div>
+              </Card>
+            </Link>
+
             <Link href="/recovery/community">
               <Card className="bg-[#1a1a1a] border-[#333] p-4 hover-elevate cursor-pointer" data-testid="action-community">
                 <Users className="h-8 w-8 text-[#C9941A] mb-2" />

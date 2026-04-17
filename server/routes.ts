@@ -8549,6 +8549,54 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     }
   });
 
+  // Brain Gym — log a completed game (gives streak credit, no-op for guests)
+  app.post('/api/recovery/brain-gym/complete', async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      if (!userId) {
+        return res.json({ ok: true, guest: true });
+      }
+      const { gameType, packId } = req.body || {};
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const streak = await storage.getUserStreak(userId);
+      const last = streak?.lastActivityDate ? new Date(streak.lastActivityDate) : null;
+      if (last) last.setHours(0, 0, 0, 0);
+
+      let newCurrentStreak = streak?.currentStreak || 0;
+      let totalActiveDays = streak?.totalActiveDays || 0;
+
+      if (!last || last.getTime() < today.getTime()) {
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        if (last && last.getTime() === yesterday.getTime()) {
+          newCurrentStreak = (streak?.currentStreak || 0) + 1;
+        } else {
+          newCurrentStreak = 1;
+        }
+        totalActiveDays = totalActiveDays + 1;
+        await storage.createOrUpdateUserStreak(userId, {
+          currentStreak: newCurrentStreak,
+          longestStreak: Math.max(newCurrentStreak, streak?.longestStreak || 0),
+          lastActivityDate: today,
+          totalActiveDays,
+        });
+      }
+
+      res.json({
+        ok: true,
+        gameType,
+        packId,
+        currentStreak: newCurrentStreak,
+        totalActiveDays,
+      });
+    } catch (error) {
+      console.error("Error logging brain gym completion:", error);
+      res.status(500).json({ message: "Failed to log completion" });
+    }
+  });
+
   // Get user milestones
   app.get('/api/recovery/milestones', isAuthenticated, async (req: any, res) => {
     try {

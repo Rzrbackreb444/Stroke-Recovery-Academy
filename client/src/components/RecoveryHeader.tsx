@@ -17,6 +17,7 @@ const navLinks = [
   { href: "/recovery/challenge", label: "66-Day Challenge" },
   { href: "/recovery/community", label: "Community" },
   { href: "/recovery/academy", label: "Academy" },
+  { href: "/recovery/brain-gym", label: "Brain Gym" },
   { href: "/recovery/sasquatch-coach", label: "AI Coach" },
   { href: "/recovery/blog", label: "Blog" },
   { href: "/recovery/pricing", label: "Pricing" },
