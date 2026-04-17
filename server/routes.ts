@@ -9306,8 +9306,79 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         .from(survivorGoals)
         .where(eq(survivorGoals.userId, userId));
 
+      // Pull real catalog so we never invent exercises that don't exist on the platform.
+      const { recoveryExercises } = await import('../shared/schema');
+      const { seedRecoveryExercises } = await import('./lib/seedRecoveryExercises');
+      const { sql: drizzleSql } = await import('drizzle-orm');
+      const [{ count: catCount }] = (await dbInst.execute(
+        drizzleSql`SELECT COUNT(*)::int AS count FROM recovery_exercises`,
+      )).rows as any[];
+      if (Number(catCount) === 0) {
+        await seedRecoveryExercises();
+      }
+      const catalog = await dbInst.select().from(recoveryExercises);
+
+      // Pick exercises matched to the survivor's weakest domains and current level.
+      const ranked = [
+        ['physical', assessment.physical],
+        ['cognitive', assessment.cognitive],
+        ['speech', assessment.speech],
+        ['emotional', assessment.emotional],
+        ['memory', assessment.memory],
+      ].sort((a, b) => (a[1] as number) - (b[1] as number));
+      const physScore = assessment.physical as number;
+      const userLevel: 'beginner' | 'moderate' | 'advanced' =
+        physScore <= 3 ? 'beginner' : physScore <= 6 ? 'moderate' : 'advanced';
+
+      function levelDose(ex: any) {
+        const sets = ex[`${userLevel}Sets`] ?? ex.beginnerSets ?? 2;
+        const reps = ex[`${userLevel}Reps`] ?? ex.beginnerReps ?? 10;
+        const hold = ex[`${userLevel}HoldSec`] ?? ex.beginnerHoldSec ?? 0;
+        return { sets, reps, hold };
+      }
+
+      // Pre-built realistic prescription drawn from the real catalog.
+      function pickFromCatalog(): any[] {
+        const opener = catalog.find((e: any) => e.category === 'spasticity' && e.slug === 'gentle-rocking');
+        const lowerSeated = catalog.filter((e: any) => e.category === 'lower' && e.position === 'seated');
+        const lowerStanding = catalog.filter((e: any) => e.category === 'lower' && e.position === 'standing');
+        const upperSeated = catalog.filter((e: any) => e.category === 'upper' && e.position === 'seated');
+        const hand = catalog.filter((e: any) => e.category === 'hand_fine_motor');
+        const stretches = catalog.filter((e: any) => e.category === 'stretch');
+
+        const picks: any[] = [];
+        if (opener) picks.push(opener);
+        // 2 lower body — seated for low scorers, standing for higher
+        const lowerPool = userLevel === 'beginner' ? lowerSeated : [...lowerSeated, ...lowerStanding];
+        picks.push(...lowerPool.slice(0, 2));
+        // 2 upper body
+        picks.push(...upperSeated.slice(0, 2));
+        // 1 hand/fine motor (always — survivors under-train this)
+        if (hand.length) picks.push(hand[0]);
+        // 1 stretch closer
+        if (stretches.length) picks.push(stretches[0]);
+
+        return picks.filter(Boolean).map((ex: any) => {
+          const { sets, reps, hold } = levelDose(ex);
+          return {
+            exerciseId: ex.id,
+            slug: ex.slug,
+            name: ex.name,
+            domain: ex.domain || 'physical',
+            sets,
+            reps,
+            holdSec: hold,
+            notes: ex.safetyNotes || ex.progressionRule || '',
+          };
+        });
+      }
+
       const apiKey = process.env.GEMINI_API_KEY || process.env.AI_INTEGRATIONS_GEMINI_API_KEY;
       let plan: any;
+
+      const catalogList = catalog
+        .map((e: any) => `- ${e.slug} (${e.category}/${e.position}/${e.level}): ${e.name}`)
+        .join('\n');
 
       if (apiKey) {
         const prompt = `You are Sasquatch Coach — a hard-edged, deeply caring stroke recovery guide who speaks like a Southern raspy mountain man. Build a 7-day recovery plan for this survivor.
@@ -9323,15 +9394,22 @@ ${assessment.notes ? `Notes from survivor: ${assessment.notes}` : ''}
 GOALS:
 ${goals.map((g: any) => `- [${g.horizon}/${g.domain}] ${g.goal}`).join('\n') || '- (none captured)'}
 
+USER LEVEL (derived from physical score): ${userLevel}
+
+CRITICAL RULE: You MUST select exercises ONLY from this real platform catalog (use the slug field).
+Do NOT invent exercise names. Each prescribed exercise must reference a slug from this list:
+
+${catalogList}
+
 Output STRICT JSON only (no markdown fences). Schema:
 {
   "summary": "1-2 sentence Sasquatch-voice opener",
-  "focusDomains": ["physical","cognitive",...],   // 2-3 weakest domains to prioritize
+  "focusDomains": ["physical","cognitive",...],
   "exercises": [
-    { "name": "...", "domain": "physical", "sets": 3, "reps": 10, "notes": "form cue" }
-  ],   // 5-8 prescribed exercises, scaled to scores (lower scores = easier baselines)
-  "brainGymMinutes": 15,                           // recommended daily minutes
-  "mealTargets": {                                 // brain-recovery-optimized
+    { "slug": "<one of the catalog slugs>", "sets": 3, "reps": 10, "holdSec": 0, "notes": "Sasquatch-voice form cue" }
+  ],
+  "brainGymMinutes": 15,
+  "mealTargets": {
     "omega3Servings": 4,
     "leafyGreensServings": 14,
     "hydrationOz": 80,
@@ -9341,9 +9419,11 @@ Output STRICT JSON only (no markdown fences). Schema:
     "Mon": ["...","..."], "Tue": [...], "Wed": [...], "Thu": [...],
     "Fri": [...], "Sat": [...], "Sun": ["Active rest","Reflection"]
   },
-  "tips": ["...","...","..."],                     // 3-5 Sasquatch-voice motivational tips
+  "tips": ["...","...","..."],
   "safetyNote": "Not medical advice. Confirm with your doctor or therapist."
-}`;
+}
+
+For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 upper body, 1 hand/fine motor, 1 stretch closer. Match sets/reps/holdSec to the user level columns of each exercise.`;
 
         try {
           const r = await fetch(
@@ -9429,6 +9509,141 @@ Output STRICT JSON only (no markdown fences). Schema:
     } catch (error) {
       console.error('Error generating plan:', error);
       res.status(500).json({ message: 'Failed to generate plan' });
+    }
+  });
+
+  // ─────────────────────────────────────────────────────────────────
+  // Recovery Exercise Library — real evidence-based catalog
+  // ─────────────────────────────────────────────────────────────────
+
+  // GET /api/recovery/exercises — filterable catalog (public read)
+  app.get('/api/recovery/exercises', async (req: any, res) => {
+    try {
+      const { db: dbInst } = await import('./db');
+      const { recoveryExercises } = await import('../shared/schema');
+      const { asc, and, eq, sql } = await import('drizzle-orm');
+
+      const { seedRecoveryExercises } = await import('./lib/seedRecoveryExercises');
+      // Auto-seed on first request so a fresh DB always has the catalog.
+      const [{ count }] = (await dbInst.execute(
+        sql`SELECT COUNT(*)::int AS count FROM recovery_exercises`,
+      )).rows as any[];
+      if (Number(count) === 0) {
+        await seedRecoveryExercises();
+      }
+
+      const conditions: any[] = [];
+      if (req.query.category) conditions.push(eq(recoveryExercises.category, String(req.query.category)));
+      if (req.query.position) conditions.push(eq(recoveryExercises.position, String(req.query.position)));
+      if (req.query.level) conditions.push(eq(recoveryExercises.level, String(req.query.level)));
+
+      const rows = await dbInst
+        .select()
+        .from(recoveryExercises)
+        .where(conditions.length ? and(...conditions) : undefined)
+        .orderBy(asc(recoveryExercises.sortOrder));
+
+      res.json(rows);
+    } catch (error) {
+      console.error('Error fetching exercises:', error);
+      res.status(500).json({ message: 'Failed to fetch exercises' });
+    }
+  });
+
+  // GET /api/recovery/exercises/:slug — detail (public)
+  app.get('/api/recovery/exercises/:slug', async (req: any, res) => {
+    try {
+      const { db: dbInst } = await import('./db');
+      const { recoveryExercises } = await import('../shared/schema');
+      const { eq } = await import('drizzle-orm');
+      const [row] = await dbInst
+        .select()
+        .from(recoveryExercises)
+        .where(eq(recoveryExercises.slug, req.params.slug))
+        .limit(1);
+      if (!row) return res.status(404).json({ message: 'Exercise not found' });
+      res.json(row);
+    } catch (error) {
+      console.error('Error fetching exercise:', error);
+      res.status(500).json({ message: 'Failed to fetch exercise' });
+    }
+  });
+
+  // POST /api/recovery/exercises/seed — admin-callable manual seed
+  app.post('/api/recovery/exercises/seed', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      if (!user || (user as any).role !== 'admin') {
+        return res.status(403).json({ message: 'Admin only' });
+      }
+      const { seedRecoveryExercises } = await import('./lib/seedRecoveryExercises');
+      const result = await seedRecoveryExercises();
+      res.json(result);
+    } catch (error) {
+      console.error('Error seeding exercises:', error);
+      res.status(500).json({ message: 'Failed to seed' });
+    }
+  });
+
+  // POST /api/recovery/exercise-logs — log a completed set
+  app.post('/api/recovery/exercise-logs', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { db: dbInst } = await import('./db');
+      const { recoveryExerciseLogs, insertRecoveryExerciseLogSchema } = await import('../shared/schema');
+      const data = insertRecoveryExerciseLogSchema.parse({ ...req.body, userId });
+      const [row] = await dbInst.insert(recoveryExerciseLogs).values(data).returning();
+      res.json(row);
+    } catch (error: any) {
+      if (error?.issues) return res.status(400).json({ message: 'Invalid data', issues: error.issues });
+      console.error('Error logging exercise:', error);
+      res.status(500).json({ message: 'Failed to log exercise' });
+    }
+  });
+
+  // GET /api/recovery/exercise-logs/recent — last N days for current user
+  app.get('/api/recovery/exercise-logs/recent', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const days = Math.min(Math.max(parseInt(String(req.query.days || '7')) || 7, 1), 90);
+      const { db: dbInst } = await import('./db');
+      const { recoveryExerciseLogs, recoveryExercises } = await import('../shared/schema');
+      const { and, eq, gte, desc, sql } = await import('drizzle-orm');
+      const since = new Date(Date.now() - days * 86400000);
+      const rows = await dbInst
+        .select({
+          id: recoveryExerciseLogs.id,
+          exerciseId: recoveryExerciseLogs.exerciseId,
+          sets: recoveryExerciseLogs.sets,
+          reps: recoveryExerciseLogs.reps,
+          holdSec: recoveryExerciseLogs.holdSec,
+          perceivedEffort: recoveryExerciseLogs.perceivedEffort,
+          spasticityAfter: recoveryExerciseLogs.spasticityAfter,
+          notes: recoveryExerciseLogs.notes,
+          loggedAt: recoveryExerciseLogs.loggedAt,
+          exerciseName: recoveryExercises.name,
+          exerciseSlug: recoveryExercises.slug,
+          exerciseCategory: recoveryExercises.category,
+        })
+        .from(recoveryExerciseLogs)
+        .leftJoin(recoveryExercises, eq(recoveryExerciseLogs.exerciseId, recoveryExercises.id))
+        .where(and(eq(recoveryExerciseLogs.userId, userId), gte(recoveryExerciseLogs.loggedAt, since)))
+        .orderBy(desc(recoveryExerciseLogs.loggedAt))
+        .limit(200);
+
+      const totalSets = rows.reduce((s, r) => s + (r.sets || 0), 0);
+      const totalReps = rows.reduce((s, r) => s + ((r.sets || 0) * (r.reps || 0)), 0);
+      const uniqueExercises = new Set(rows.map((r) => r.exerciseId)).size;
+
+      res.json({
+        days,
+        logs: rows,
+        summary: { totalSets, totalReps, uniqueExercises, totalLogs: rows.length },
+      });
+    } catch (error) {
+      console.error('Error fetching exercise logs:', error);
+      res.status(500).json({ message: 'Failed to fetch logs' });
     }
   });
 

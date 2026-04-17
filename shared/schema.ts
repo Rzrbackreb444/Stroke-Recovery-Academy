@@ -5553,3 +5553,63 @@ export const insertSurvivorPlanSchema = createInsertSchema(survivorPlans).omit({
 export type SurvivorPlan = typeof survivorPlans.$inferSelect;
 export type InsertSurvivorPlan = z.infer<typeof insertSurvivorPlanSchema>;
 
+// Real evidence-based exercise catalog (seeded from Nick's authored protocols)
+export const recoveryExercises = pgTable("recovery_exercises", {
+  id: serial("id").primaryKey(),
+  slug: varchar("slug", { length: 80 }).notNull().unique(),
+  name: text("name").notNull(),
+  category: text("category").notNull(), // lower | upper | spasticity | stretch | hand_fine_motor
+  position: text("position").notNull(), // seated | standing | either
+  level: text("level").notNull(), // beginner | moderate | advanced (minimum recommended)
+  domain: text("domain").notNull().default("physical"), // physical | cognitive | etc
+  targets: text("targets").array().notNull().default(sql`ARRAY[]::text[]`), // drop_foot, hand_function, balance, spasticity, coordination, hip_flexion, etc
+  description: text("description").notNull(),
+  // Three progression levels — sets x reps x optional hold seconds.
+  beginnerSets: integer("beginner_sets"),
+  beginnerReps: integer("beginner_reps"),
+  beginnerHoldSec: integer("beginner_hold_sec"),
+  moderateSets: integer("moderate_sets"),
+  moderateReps: integer("moderate_reps"),
+  moderateHoldSec: integer("moderate_hold_sec"),
+  advancedSets: integer("advanced_sets"),
+  advancedReps: integer("advanced_reps"),
+  advancedHoldSec: integer("advanced_hold_sec"),
+  safetyNotes: text("safety_notes"),
+  progressionRule: text("progression_rule"),
+  saschPhase: text("sasch_phase"), // S | A | S | C | H — letter from S.A.S.C.H. framework
+  videoUrl: text("video_url"),
+  sortOrder: integer("sort_order").notNull().default(100),
+}, (t) => ({
+  catIdx: index("recovery_exercises_cat_idx").on(t.category, t.position, t.level),
+}));
+
+export const insertRecoveryExerciseSchema = createInsertSchema(recoveryExercises).omit({
+  id: true,
+});
+export type RecoveryExercise = typeof recoveryExercises.$inferSelect;
+export type InsertRecoveryExercise = z.infer<typeof insertRecoveryExerciseSchema>;
+
+// User logs of completed exercise sets — fuels monthly re-score and trends.
+export const recoveryExerciseLogs = pgTable("recovery_exercise_logs", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  exerciseId: integer("exercise_id").notNull().references(() => recoveryExercises.id, { onDelete: "cascade" }),
+  sets: integer("sets").notNull(),
+  reps: integer("reps").notNull(),
+  holdSec: integer("hold_sec").notNull().default(0),
+  perceivedEffort: integer("perceived_effort"), // 1-10 RPE
+  spasticityAfter: integer("spasticity_after"), // 1-10 (1 = loose, 10 = locked)
+  notes: text("notes"),
+  loggedAt: timestamp("logged_at").notNull().defaultNow(),
+}, (t) => ({
+  userIdx: index("recovery_ex_logs_user_idx").on(t.userId, t.loggedAt),
+  exIdx: index("recovery_ex_logs_ex_idx").on(t.exerciseId),
+}));
+
+export const insertRecoveryExerciseLogSchema = createInsertSchema(recoveryExerciseLogs).omit({
+  id: true,
+  loggedAt: true,
+});
+export type RecoveryExerciseLog = typeof recoveryExerciseLogs.$inferSelect;
+export type InsertRecoveryExerciseLog = z.infer<typeof insertRecoveryExerciseLogSchema>;
+
