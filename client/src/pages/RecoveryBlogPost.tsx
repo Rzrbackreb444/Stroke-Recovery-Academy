@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import RecoveryHeader from "@/components/RecoveryHeader";
 import NewsletterSignupWidget from "@/components/NewsletterSignupWidget";
+import nickPhoto from "@assets/IMG_4824_1776397947955.jpeg";
 import RecoverySEO from "@/components/RecoverySEO";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import {

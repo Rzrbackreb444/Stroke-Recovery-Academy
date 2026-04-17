@@ -4,6 +4,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CheckCircle, Loader2, Mail } from "lucide-react";
+import nickPhoto from "@assets/IMG_4824_1776397947955.jpeg";
 
 interface Props {
   source?: string;

@@ -7,6 +7,8 @@ import {
   Heart, Star, Award, Users, BookOpen, Video, 
   Mic, Target, Flame, Mountain, Quote, ArrowRight
 } from "lucide-react";
+import nickPortrait from "@assets/IMG_1750_1776397947955.jpeg";
+import nickCasual from "@assets/IMG_4824_1776397947955.jpeg";
 
 const milestones = [
   { year: "2019", title: "Stroke Event", description: "Suffered a life-changing stroke that affected mobility and speech." },
