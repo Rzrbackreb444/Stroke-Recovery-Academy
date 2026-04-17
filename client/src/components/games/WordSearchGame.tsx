@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Check, RotateCw, Keyboard } from "lucide-react";
+import { Check, RotateCw, Keyboard, Download } from "lucide-react";
 import {
   generateWordSearch,
   getCellsBetween,
@@ -19,6 +19,7 @@ interface Props {
   count: number;
   accent?: string;
   seed?: number;
+  packTitle?: string;
   onComplete?: (stats: GameCompletionStats) => void;
 }
 
@@ -43,6 +44,7 @@ export default function WordSearchGame({
   count,
   accent = "#C9941A",
   seed,
+  packTitle,
   onComplete,
 }: Props) {
   const wordsForPuzzle = useMemo(
@@ -84,6 +86,33 @@ export default function WordSearchGame({
     () => puzzle.placed.map((p) => p.word),
     [puzzle],
   );
+
+  const downloadPdf = useCallback(async () => {
+    try {
+      const res = await fetch("/api/recovery/brain-gym/pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: packTitle || "Brain Gym Word Search",
+          subtitle: `Stroke Recovery Academy · ${difficulty.toUpperCase()} · ${size}×${size}`,
+          words: targetWords,
+          grid: puzzle.grid,
+        }),
+      });
+      if (!res.ok) throw new Error("PDF failed");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${(packTitle || "wordsearch").replace(/[^a-z0-9]+/gi, "_")}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [packTitle, difficulty, size, targetWords, puzzle]);
 
   const saveKey = `wordsearch`;
 
@@ -364,6 +393,18 @@ export default function WordSearchGame({
             >
               <RotateCw className="mr-2 h-4 w-4" />
               New puzzle
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={downloadPdf}
+              data-testid="button-ws-pdf"
+              className="border-[#333] bg-transparent text-gray-300"
+              title="Download printable PDF"
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Print PDF
             </Button>
             <span className="text-sm text-gray-400" data-testid="text-ws-progress">
               {found.length} / {targetWords.length} found

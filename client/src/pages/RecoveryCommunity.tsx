@@ -54,14 +54,28 @@ interface EnrichedComment {
   id: number;
   postId: number;
   authorId: string;
+  parent_id?: number | null;
+  parentId?: number | null;
   content: string;
   likeCount: number;
   createdAt: string;
   firstName?: string;
   lastName?: string;
   displayName?: string;
+  username?: string | null;
   avatarUrl?: string;
   profileImageUrl?: string;
+}
+
+function renderMentions(text: string) {
+  const parts = text.split(/(@[A-Za-z0-9_]+)/g);
+  return parts.map((p, i) =>
+    p.startsWith("@") ? (
+      <span key={i} className="font-semibold" style={{ color: "#C9941A" }}>{p}</span>
+    ) : (
+      <span key={i}>{p}</span>
+    ),
+  );
 }
 
 interface LiveEvent {
@@ -569,6 +583,8 @@ function CommentThread({ postId, currentUser, settings }: { postId: number; curr
   const { toast } = useToast();
   const qc = useQueryClient();
   const [commentText, setCommentText] = useState("");
+  const [replyParentId, setReplyParentId] = useState<number | null>(null);
+  const [replyToHandle, setReplyToHandle] = useState<string>("");
 
   const { data: comments = [], isLoading } = useQuery<EnrichedComment[]>({
     queryKey: [`/api/community/comments/${postId}`],
@@ -576,12 +592,17 @@ function CommentThread({ postId, currentUser, settings }: { postId: number; curr
 
   const commentMutation = useMutation({
     mutationFn: () =>
-      apiRequest("POST", `/api/activity/${postId}/comment`, { content: commentText }),
+      apiRequest("POST", `/api/activity/${postId}/comment`, {
+        content: commentText,
+        parentId: replyParentId ?? undefined,
+      }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: [`/api/community/comments/${postId}`] });
       qc.invalidateQueries({ queryKey: ["/api/community/posts"] });
       setCommentText("");
-      toast({ title: "Comment posted!" });
+      setReplyParentId(null);
+      setReplyToHandle("");
+      toast({ title: replyParentId ? "Reply posted!" : "Comment posted!" });
     },
     onError: () => toast({ title: "Failed to post comment", variant: "destructive" }),
   });
@@ -589,30 +610,92 @@ function CommentThread({ postId, currentUser, settings }: { postId: number; curr
   const avatarSrc = settings?.avatarUrl || currentUser?.profileImageUrl || "";
   const displayName = settings?.displayName || currentUser?.firstName || "Member";
 
+  // Build tree (one level of nesting; deeper replies still attach to first-level parent)
+  const topLevel = comments.filter((c) => !(c.parent_id ?? c.parentId));
+  const childrenOf = (id: number) =>
+    comments.filter((c) => (c.parent_id ?? c.parentId) === id);
+
+  const startReply = (c: EnrichedComment) => {
+    const handle = c.username
+      ? `@${c.username}`
+      : c.displayName
+        ? `@${c.displayName.replace(/\s+/g, "")}`
+        : `@${c.firstName || "member"}`;
+    // Always attach to the top-level parent so the thread stays single-depth and visible.
+    const topLevelParent = (c.parent_id ?? c.parentId) || c.id;
+    setReplyParentId(topLevelParent);
+    setReplyToHandle(handle);
+    setCommentText((prev) => (prev.startsWith(handle) ? prev : `${handle} `));
+  };
+
+  const renderOne = (c: EnrichedComment, isReply: boolean) => (
+    <div key={c.id} className={`flex gap-2.5 ${isReply ? "ml-9" : ""}`}>
+      <Avatar className="w-7 h-7 border border-[#333] flex-shrink-0">
+        <AvatarImage src={c.avatarUrl || c.profileImageUrl || ""} />
+        <AvatarFallback className="bg-[#2a2a2a] text-[#C9941A] text-xs">
+          {(c.displayName || c.firstName || "M")[0]?.toUpperCase()}
+        </AvatarFallback>
+      </Avatar>
+      <div className="flex-1 min-w-0">
+        <div className="bg-[#111] rounded-md px-3 py-2">
+          <p className="text-xs font-semibold text-[#C9941A] mb-0.5">
+            {c.displayName || `${c.firstName || ""} ${c.lastName || ""}`.trim() || "Member"}
+            {c.username && (
+              <span className="ml-1 font-normal text-gray-500">@{c.username}</span>
+            )}
+          </p>
+          <p className="text-sm text-gray-200 whitespace-pre-wrap break-words">
+            {renderMentions(c.content)}
+          </p>
+        </div>
+        <div className="flex items-center gap-3 mt-0.5 pl-1">
+          <p className="text-xs text-gray-500">{timeAgo(c.createdAt)}</p>
+          <button
+            type="button"
+            onClick={() => startReply(c)}
+            className="text-xs font-semibold text-gray-400 hover:text-[#C9941A]"
+            data-testid={`button-reply-${c.id}`}
+          >
+            Reply
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="border-t border-[#2a2a2a] pt-3 mt-2 space-y-3">
       {isLoading ? (
         <p className="text-xs text-gray-500 pl-2">Loading comments...</p>
+      ) : topLevel.length === 0 ? (
+        <p className="text-xs text-gray-500 pl-2">Be the first to comment.</p>
       ) : (
-        comments.map((c) => (
-          <div key={c.id} className="flex gap-2.5">
-            <Avatar className="w-7 h-7 border border-[#333] flex-shrink-0">
-              <AvatarImage src={c.avatarUrl || c.profileImageUrl || ""} />
-              <AvatarFallback className="bg-[#2a2a2a] text-[#C9941A] text-xs">
-                {(c.displayName || c.firstName || "M")[0]?.toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1">
-              <div className="bg-[#111] rounded-md px-3 py-2">
-                <p className="text-xs font-semibold text-[#C9941A] mb-0.5">
-                  {c.displayName || `${c.firstName || ""} ${c.lastName || ""}`.trim() || "Member"}
-                </p>
-                <p className="text-sm text-gray-200">{c.content}</p>
-              </div>
-              <p className="text-xs text-gray-500 mt-0.5 pl-1">{timeAgo(c.createdAt)}</p>
-            </div>
+        topLevel.map((c) => (
+          <div key={c.id} className="space-y-2">
+            {renderOne(c, false)}
+            {childrenOf(c.id).map((child) => renderOne(child, true))}
           </div>
         ))
+      )}
+
+      {replyParentId && (
+        <div className="flex items-center gap-2 ml-9 text-xs text-gray-400">
+          Replying to <span className="font-semibold text-[#C9941A]">{replyToHandle}</span>
+          <button
+            type="button"
+            className="underline hover:text-white"
+            onClick={() => {
+              setReplyParentId(null);
+              setReplyToHandle("");
+              if (commentText.startsWith(replyToHandle)) {
+                setCommentText(commentText.slice(replyToHandle.length).trimStart());
+              }
+            }}
+            data-testid={`button-cancel-reply-${postId}`}
+          >
+            cancel
+          </button>
+        </div>
       )}
 
       <div className="flex gap-2 pt-1">
@@ -625,7 +708,7 @@ function CommentThread({ postId, currentUser, settings }: { postId: number; curr
         <div className="flex-1 flex gap-2">
           <Input
             className="bg-[#111] border-[#333] text-white text-sm"
-            placeholder="Write a comment..."
+            placeholder={replyParentId ? "Write a reply..." : "Write a comment... use @name to mention"}
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey && commentText.trim()) { e.preventDefault(); commentMutation.mutate(); } }}
