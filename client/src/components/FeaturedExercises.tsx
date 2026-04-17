@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Clock, Target } from "lucide-react";
 import { Link } from "wouter";
+import { yearsSinceStroke } from "@shared/strokeAnniversary";
 import baseballBatImage from "@assets/generated_images/baseball_bat_therapy_equipment.png";
 import mirrorTherapyImage from "@assets/generated_images/mirror_therapy_exercise.png";
 import dropFootImage from "@assets/generated_images/drop_foot_recovery_protocol.png";
@@ -58,7 +59,7 @@ export default function FeaturedExercises() {
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto" data-testid="text-exercises-subtitle">
             Battle-tested methods that took Nick from 0% to 90% function.
-            Every technique refined over 6 years of real recovery.
+            Every technique refined over {yearsSinceStroke()} years of real recovery.
           </p>
         </div>
 

@@ -191,7 +191,7 @@ export const SASQUATCH_METHOD_SCHEMA = {
   name: "The Sasquatch Method",
   alternateName: "66-Day Recovery Revolution",
   description:
-    "A comprehensive 3-phase stroke recovery methodology developed by Nick Kremers based on his personal journey from 0% to 90% recovery. The method combines neuroplasticity science, mindset mastery, physical rehabilitation, and community support.",
+    "A comprehensive 3-phase, 66-day stroke recovery methodology developed by Nick Kremers based on his personal journey from 0% to 90%+ recovery. The Method runs on three integrated systems: S.A.S.C.H. (daily formula — Seize, Absorb, Swing, Combine, Hammer), S.O.S. (daily reset — Survive, Organize, Strive), and C.O.M.P.A.S.S. (7-pillar long-game navigation — Control, Own, Mutate, Patience, Anger, Small Wins, Stack). It combines neuroplasticity science, mindset mastery, physical rehabilitation, and community support.",
   relevantSpecialty: [
     "Physical Medicine and Rehabilitation",
     "Neurology",

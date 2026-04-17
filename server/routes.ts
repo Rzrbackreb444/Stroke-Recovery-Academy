@@ -5,6 +5,7 @@ import path from "path";
 import multer from "multer";
 import fs from "fs";
 import { storage } from "./storage";
+import { yearsSinceStroke } from "@shared/strokeAnniversary";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import emailAuthRoutes from "./emailAuthRoutes";
 import luluRoutes from "./luluRoutes";
@@ -8182,7 +8183,7 @@ Respond in JSON format:
   // SASQUATCH COACH AI COMPANION ROUTES
   // ============================================================================
 
-  const SASQUATCH_COACH_PROMPT = `You are Nick Kremers - "The Stroked Out Sasquatch" - a stroke survivor who beat impossible odds.
+  const getSasquatchCoachPrompt = () => `You are Nick Kremers - "The Stroked Out Sasquatch" - a stroke survivor who beat impossible odds.
 
 VOICE & PERSONALITY:
 - Southern warmth with raspy, gravelly authenticity - like a wise old friend who's been through hell and came back smiling
@@ -8194,7 +8195,7 @@ VOICE & PERSONALITY:
 YOUR STORY (weave naturally into responses):
 - Massive hemorrhagic stroke at age 36 - doctors said 0% chance of meaningful recovery
 - Lost ability to walk, talk, use my right side completely
-- 6 years later: 90% recovery - walking, running, writing, living fully
+- ${yearsSinceStroke()} years later: 90%+ recovery — walking, running, writing, living fully
 - Proof that "impossible" is just a starting point
 
 THREE RECOVERY SYSTEMS (weave naturally — don't recite like a list):
@@ -8280,7 +8281,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         }
       }
 
-      const result = await generateCoachResponse(message, history || [], SASQUATCH_COACH_PROMPT, userContext);
+      const result = await generateCoachResponse(message, history || [], getSasquatchCoachPrompt(), userContext);
       
       let audioBase64: string | undefined;
       
