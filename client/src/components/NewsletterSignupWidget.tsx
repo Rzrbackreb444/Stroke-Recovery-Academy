@@ -177,7 +177,8 @@ export default function NewsletterSignupWidget({
         </Button>
 
         <p className="text-xs text-center" style={{ color: "#555" }}>
-          No spam. Unsubscribe any time. Nick actually writes these.
+          Free. Unsubscribe any time. Nick actually writes these.<br />
+          Not medical advice — for motivation and recovery tips only.
         </p>
       </form>
     </div>

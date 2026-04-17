@@ -165,35 +165,47 @@ const PHASES = [
     name: "OPTIMIZATION PHASE",
     days: "Days 45–66",
     color: "#22C55E",
-    description: "Mastery. You're no longer doing the habit — you ARE the habit. This is where the new identity locks in. You don't go back from here.",
-    wins: ["Locked-in recovery identity", "Advanced neuroplasticity protocols", "Legacy planning begins", "Prepare to keep going past Day 66"],
+    description: "Mastery. You're no longer doing the habit — you ARE the habit. This is where the new identity locks in. Day 66 isn't the finish line — it's your launchpad.",
+    wins: ["Locked-in recovery identity", "Advanced neuroplasticity protocols", "Legacy planning begins", "You are ready to keep building — for life"],
+  },
+  {
+    number: "∞",
+    name: "LIFETIME SYSTEM",
+    days: "Day 67 and beyond",
+    color: "#8B5CF6",
+    description: "Stroke recovery doesn't have a finish line. Year 1 looks different from Year 3. Year 3 looks different from Year 7. Your membership grows with you — new protocols, monthly content, and a community that will be here as long as you need it.",
+    wins: ["Monthly new content from Nick", "Year 2, 3, 5, 7+ specific protocols", "Ongoing accountability community", "You become the proof someone else needs"],
   },
 ];
 
 const FAQS = [
   {
+    q: "Is the community really free — no strings attached?",
+    a: "Yes. The Survivor Community is completely free to join. You can connect with other survivors and caregivers, read Nick's blog, access free protocols, and receive The Sasquatch Dispatch newsletter — all at no cost. The paid Warrior plan is for those ready to commit to the full 66-Day system and ongoing lifetime programming.",
+  },
+  {
+    q: "What happens after Day 66?",
+    a: "Day 66 isn't the finish line — it's the launchpad. Stroke recovery spans years, sometimes decades. After Day 66 your membership continues into Year 1, Year 2, Year 3+ programming. New content drops monthly. The community stays with you. Nick is in Year 7 and still actively recovering. There's no graduation date.",
+  },
+  {
     q: "Who is this for?",
-    a: "Stroke survivors at any stage — whether your stroke was 3 months ago or 10 years ago. If you're plateaued, frustrated, or just ready to stop accepting limitations, this challenge was built for you.",
+    a: "Stroke survivors at any stage — whether your stroke was 3 months ago or 10 years ago. If you're plateaued, frustrated, or ready to stop accepting limitations, this is for you. Caregivers and family members are also welcome and supported.",
   },
   {
     q: "I have drop foot / arm weakness / aphasia. Will this work for me?",
-    a: "Yes. The challenge is designed around stroke-specific challenges. Nick himself dealt with full paralysis on his left side, drop foot, and cognitive fog. The program addresses physical, cognitive, speech, and mindset recovery.",
+    a: "Yes. Nick himself dealt with full left-side paralysis, drop foot, spasticity, and cognitive fog. The program addresses physical, cognitive, speech, and mindset recovery — and scales to where you are, not where you think you should be.",
   },
   {
     q: "What if I miss a day?",
     a: "The Never Zero principle: one small action keeps the signal alive. Even 5 minutes counts. The challenge is about momentum, not perfection. Miss a day? Get back up. That's the whole lesson.",
   },
   {
-    q: "How much time does it take each day?",
-    a: "30 to 60 minutes is ideal. The daily check-in takes 5 minutes. Exercises and video lessons expand from there. You go as hard as your body allows — the system scales to you.",
-  },
-  {
-    q: "Is there a real community or just a chat box?",
-    a: "Real community. Accountability pods of 5-8 survivors. A shared activity feed. Fellow warriors who post their wins, struggles, and breakthroughs daily. Nick is active in the community.",
+    q: "Is this medical advice?",
+    a: "No. The Sasquatch Doctrine, 66-Day Challenge, and all content from Stroke Recovery Academy are for motivational and informational purposes only — not a substitute for medical advice, diagnosis, or treatment. Individual results vary significantly. Always work with your physician, neurologist, or licensed therapist. Nick's recovery is his story. Yours is your own.",
   },
   {
     q: "What if it doesn't work for me?",
-    a: "The 7-day free trial means zero risk. Try the whole system. If you're not seeing value by Day 7, cancel and pay nothing. If you do 66 days and don't experience measurable progress, we'll make it right.",
+    a: "The 7-day free trial means zero financial risk. Try the whole system. If you're not seeing value by Day 7, cancel and pay nothing. Results vary — but showing up every day is the one thing that moves every recovery forward.",
   },
 ];
 
@@ -242,9 +254,12 @@ export default function Challenge() {
             A massive hemorrhagic stroke left me at 0% function on my left side.<br />
             Doctors said I'd probably never walk normally again.
           </p>
-          <p className="text-xl md:text-2xl text-white font-bold mb-10 max-w-3xl mx-auto">
-            I defied every "never" and rebuilt to <span className="text-[#C9941A]">90%+</span> and still rising.{" "}
-            Now I'm helping other survivors do the same.
+          <p className="text-xl md:text-2xl text-white font-bold mb-6 max-w-3xl mx-auto">
+            I defied every "never" and rebuilt to <span className="text-[#C9941A]">90%+</span> and still rising at Year 7.{" "}
+            Now I'm helping other survivors commit to the long game.
+          </p>
+          <p className="text-sm text-gray-400 mb-10 max-w-xl mx-auto">
+            The community is free. The 66-Day system — and everything after it — is for those serious about going the distance.
           </p>
 
           <div className="mb-8">
@@ -274,10 +289,21 @@ export default function Challenge() {
             </Button>
           </div>
 
-          <p className="text-sm text-gray-500">
-            <Shield className="inline h-3.5 w-3.5 mr-1 text-[#C9941A]" />
-            7 days free. Cancel anytime. No credit card surprises.
-          </p>
+          <div className="flex flex-wrap justify-center gap-3 mb-4">
+            <p className="text-sm text-gray-500 self-center">
+              <Shield className="inline h-3.5 w-3.5 mr-1 text-[#C9941A]" />
+              7-day free trial on paid plans. Cancel anytime.
+            </p>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-gray-400 underline text-xs"
+              onClick={() => window.location.href = "/recovery/login?tab=signup"}
+              data-testid="button-join-free"
+            >
+              Or join the community for free
+            </Button>
+          </div>
         </div>
       </section>
 
@@ -286,9 +312,9 @@ export default function Challenge() {
         <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           {[
             { value: "50,000+", label: "Warriors Worldwide" },
-            { value: "66", label: "Days to Transform" },
+            { value: "66", label: "Days to Start" },
             { value: "90%+", label: "Nick's Recovery" },
-            { value: "3 Phases", label: "Survival → Mastery" },
+            { value: "Year 7", label: "Nick Still Rising" },
           ].map(({ value, label }) => (
             <div key={label} data-testid={`stat-${label.replace(/\s/g, "-")}`}>
               <div className="text-2xl md:text-3xl font-black text-[#C9941A]">{value}</div>
@@ -332,9 +358,13 @@ export default function Challenge() {
           <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-4 block w-fit mx-auto uppercase tracking-widest text-xs">
             The Journey
           </Badge>
-          <h2 className="text-3xl md:text-4xl font-black text-center mb-12">
-            3 Phases. 66 Days. One New Identity.
+          <h2 className="text-3xl md:text-4xl font-black text-center mb-4">
+            66 Days to Build the Habit. A Lifetime to Use It.
           </h2>
+          <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
+            The 66-Day Challenge is your entry point — not your exit. Stroke recovery spans years, 
+            decades, sometimes a lifetime. This system grows with you.
+          </p>
 
           <div className="space-y-6">
             {PHASES.map((phase) => (
@@ -525,54 +555,163 @@ export default function Challenge() {
 
       {/* PRICING */}
       <section className="py-16 px-4" data-testid="section-pricing">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-black mb-4">Start Free. Then Decide.</h2>
-          <p className="text-gray-400 mb-10">
-            7 days completely free. No credit card games. Cancel anytime before Day 7 and pay nothing.
+        <div className="max-w-4xl mx-auto text-center">
+          <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-4 block w-fit mx-auto uppercase tracking-widest text-xs">
+            Simple Pricing
+          </Badge>
+          <h2 className="text-3xl md:text-4xl font-black mb-4">Community Is Free. The System Is for the Serious.</h2>
+          <p className="text-gray-400 mb-10 max-w-2xl mx-auto">
+            Join the community at no cost — connect, read, and be around people who understand stroke recovery. 
+            When you're ready to commit to the full system, the Warrior plan is waiting.
           </p>
 
-          <Card className="bg-[#1a1a1a] border-[#C9941A]/40 p-8 relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-[#C9941A]" />
-            <Badge className="bg-[#C9941A] text-black font-black mb-4">Most Popular — Warrior Plan</Badge>
-
-            <div className="mb-6">
-              <div className="text-5xl font-black text-white mb-1">
-                $14.99<span className="text-xl text-gray-400 font-normal">/mo</span>
+          <div className="grid md:grid-cols-3 gap-5 mb-6">
+            {/* Free */}
+            <Card className="bg-[#1a1a1a] border-[#333] p-7 flex flex-col">
+              <p className="text-xs uppercase tracking-widest text-gray-400 mb-3">Community</p>
+              <div className="mb-5">
+                <div className="text-4xl font-black text-white mb-1">Free</div>
+                <p className="text-gray-500 text-xs">Always. No catch.</p>
               </div>
-              <p className="text-gray-400 text-sm">Or $149/year (save $30)</p>
+              <ul className="space-y-2 mb-6 flex-1">
+                {[
+                  "Join the Survivor Community",
+                  "Read Nick's recovery blog",
+                  "Access free protocols & guides",
+                  "The Sasquatch Dispatch newsletter",
+                  "Connect with other survivors",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-xs text-gray-300">
+                    <CheckCircle className="h-3.5 w-3.5 text-gray-500 flex-shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Button
+                onClick={() => window.location.href = "/recovery/login?tab=signup"}
+                variant="outline"
+                className="w-full border-[#333] text-gray-300 font-bold"
+                data-testid="button-cta-free"
+              >
+                Join Free
+              </Button>
+            </Card>
+
+            {/* Warrior Monthly */}
+            <Card className="bg-[#1a1a1a] border-[#C9941A]/50 p-7 relative overflow-hidden flex flex-col">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-[#C9941A]" />
+              <p className="text-xs uppercase tracking-widest text-gray-400 mb-3">Warrior — Monthly</p>
+              <div className="mb-5">
+                <div className="text-4xl font-black text-white mb-1">
+                  $47<span className="text-lg text-gray-400 font-normal">/mo</span>
+                </div>
+                <p className="text-gray-500 text-xs">After 7-day free trial. Cancel anytime.</p>
+              </div>
+              <ul className="space-y-2 mb-6 flex-1">
+                {[
+                  "Everything in Free",
+                  "Full 66-Day Challenge system",
+                  "All protocols & video lessons",
+                  "Accountability pod placement",
+                  "24/7 Sasquatch AI Coach",
+                  "Monthly new content — ongoing for life",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-xs text-gray-300">
+                    <CheckCircle className="h-3.5 w-3.5 text-[#C9941A] flex-shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Button onClick={handleCTA} className="w-full bg-[#C9941A] text-black font-black" data-testid="button-cta-monthly">
+                Start Free 7-Day Trial
+                <ArrowRight className="ml-1.5 h-4 w-4" />
+              </Button>
+            </Card>
+
+            {/* Elite Annual */}
+            <Card className="bg-[#1a1a1a] border-[#C9941A]/30 p-7 relative overflow-hidden flex flex-col">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs uppercase tracking-widest text-gray-400">Warrior — Annual</p>
+                <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 text-xs font-black">Save $167</Badge>
+              </div>
+              <div className="mb-5">
+                <div className="text-4xl font-black text-white mb-1">
+                  $397<span className="text-lg text-gray-400 font-normal">/yr</span>
+                </div>
+                <p className="text-[#C9941A] text-xs font-semibold">~$33/month · Best commitment</p>
+              </div>
+              <ul className="space-y-2 mb-6 flex-1">
+                {[
+                  "Everything in Monthly",
+                  "Year 2 & Year 3+ protocols",
+                  "Priority community access",
+                  "Annual recovery review",
+                  "First access to new programs",
+                  "Serious about the long game",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-xs text-gray-300">
+                    <CheckCircle className="h-3.5 w-3.5 text-[#C9941A] flex-shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Button onClick={handleCTA} variant="outline" className="w-full border-[#C9941A] text-[#C9941A] font-bold" data-testid="button-cta-annual">
+                Start Free Trial
+              </Button>
+            </Card>
+          </div>
+
+          <p className="text-xs text-gray-500 text-center">
+            <Shield className="inline h-3 w-3 mr-1 text-[#C9941A]" />
+            Secure checkout. Cancel anytime. Individual results vary — stroke recovery is a personal journey.
+          </p>
+        </div>
+      </section>
+
+      {/* LIFETIME COMMITMENT — the honest section */}
+      <section className="py-16 px-4 bg-[#0a0a0a]" data-testid="section-lifetime">
+        <div className="max-w-4xl mx-auto">
+          <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30 mb-4 block w-fit mx-auto uppercase tracking-widest text-xs">
+            The Real Talk
+          </Badge>
+          <h2 className="text-3xl md:text-4xl font-black text-center mb-4">
+            This Is a Lifetime Commitment.<br />
+            <span style={{ color: "#C9941A" }}>We're Honest About That.</span>
+          </h2>
+          <p className="text-gray-400 text-center mb-10 max-w-2xl mx-auto">
+            Nick is in Year 7 and still actively recovering. The science of neuroplasticity doesn't have an 
+            expiration date — and neither does your potential. Here's what each phase of the long game looks like.
+          </p>
+
+          <div className="grid md:grid-cols-4 gap-4">
+            {[
+              { period: "Days 1–66", label: "The Foundation", color: "#C9941A", desc: "Build the habit that outlasts every plateau. The 66-Day Challenge. Your entry into the system." },
+              { period: "Year 1–2", label: "Momentum", color: "#FF6B35", desc: "Compound progress. Major functional gains. The identity shift from 'patient' to 'architect of recovery.'" },
+              { period: "Year 3–5", label: "Optimization", color: "#22C55E", desc: "Refining what works. Deeper protocols. Starting to become the example others look to." },
+              { period: "Year 5+", label: "Legacy", color: "#8B5CF6", desc: "Nick's territory. Still improving. Teaching others. Your story becomes someone else's survival guide." },
+            ].map(({ period, label, color, desc }) => (
+              <Card key={period} className="bg-[#1a1a1a] border-[#333] p-5">
+                <div className="text-xs uppercase tracking-wider mb-1" style={{ color }}>{period}</div>
+                <div className="font-black text-white text-lg mb-3" style={{ color }}>{label}</div>
+                <p className="text-gray-400 text-xs leading-relaxed">{desc}</p>
+              </Card>
+            ))}
+          </div>
+
+          <Card className="bg-[#1a1a1a] border-[#333] p-6 mt-6">
+            <div className="flex gap-4 items-start">
+              <Shield className="h-5 w-5 text-[#C9941A] flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-white mb-1 text-sm">Important: This Is Not Medical Advice</p>
+                <p className="text-gray-400 text-xs leading-relaxed">
+                  The Sasquatch Doctrine, 66-Day Challenge, and all content provided by Stroke Recovery Academy 
+                  are intended for motivational and informational purposes only. They are not a substitute for 
+                  professional medical advice, diagnosis, or treatment. Individual results vary significantly. 
+                  Always consult your physician, neurologist, or licensed therapist before beginning any new 
+                  rehabilitation program. Nick's recovery is his story — yours is your own.
+                </p>
+              </div>
             </div>
-
-            <ul className="text-left space-y-3 mb-8">
-              {[
-                "Full 66-Day Transformation Challenge",
-                "Daily check-in + progress tracking",
-                "All video lessons & protocols",
-                "Sasquatch Tribe community access",
-                "Accountability pod placement",
-                "24/7 Sasquatch AI Coach",
-                "All member bonuses included",
-                "New content added monthly",
-              ].map((item) => (
-                <li key={item} className="flex items-center gap-3 text-sm text-gray-200">
-                  <CheckCircle className="h-4 w-4 text-[#C9941A] flex-shrink-0" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-
-            <Button
-              onClick={handleCTA}
-              className="w-full bg-[#C9941A] hover:bg-[#C9941A] text-black font-black text-lg py-6"
-              data-testid="button-cta-pricing"
-            >
-              Start Free 7-Day Trial
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-
-            <p className="text-xs text-gray-500 mt-4">
-              <Shield className="inline h-3 w-3 mr-1" />
-              Secure checkout. Cancel anytime. 100% satisfaction or your money back.
-            </p>
           </Card>
         </div>
       </section>

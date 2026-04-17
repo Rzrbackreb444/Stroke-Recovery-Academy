@@ -107,6 +107,12 @@ export async function sendWelcomeEmail(email: string, firstName?: string): Promi
   <div class="footer">
     <p>Stroke Recovery Academy · strokerecoveryacademy.com</p>
     <p>You're receiving this because you created an account. <a href="${DASHBOARD_URL}">Manage preferences</a></p>
+    <p style="font-size:10px;color:#555;line-height:1.6;margin-top:8px;">
+      <strong style="color:#666;">Not medical advice.</strong> Content from Stroke Recovery Academy and Nick Kremers 
+      is for motivational and informational purposes only. It is not a substitute for professional medical advice, 
+      diagnosis, or treatment. Individual results vary. Always consult your physician, neurologist, or licensed therapist 
+      before beginning any rehabilitation program.
+    </p>
   </div>
 </div>
 </body>

@@ -64,6 +64,13 @@ function emailWrapper(content: string, previewText = ''): string {
       Nick Kremers — Stroke Survivor, Year 7<br/><br/>
       You're getting this because you signed up for The Sasquatch Dispatch.<br/>
       <a href="${BRAND.siteUrl}/recovery/newsletter/unsubscribe" style="color:${BRAND.muted};text-decoration:underline;">Unsubscribe</a>
+      <br/><br/>
+      <span style="font-size:10px;color:#555;line-height:1.6;">
+        <strong style="color:#666;">Not medical advice.</strong> Content from Stroke Recovery Academy and Nick Kremers 
+        is for motivational and informational purposes only. It is not a substitute for professional medical advice, 
+        diagnosis, or treatment. Individual results vary. Always consult your physician, neurologist, or licensed therapist 
+        before beginning any rehabilitation program.
+      </span>
     </div>
   </div>
 </div>
