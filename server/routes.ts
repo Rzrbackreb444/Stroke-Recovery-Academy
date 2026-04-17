@@ -1087,7 +1087,7 @@ Allow: /
       const { pool: dbPool } = await import('./db');
       const comments = await dbPool.query(
         `SELECT ac.*, u.first_name, u.last_name, u.profile_image_url,
-                us.display_name, us.avatar_url
+                us.display_name, us.avatar_url, us.username
          FROM activity_comments ac
          LEFT JOIN users u ON u.id = ac.author_id
          LEFT JOIN user_settings us ON us.user_id = ac.author_id
@@ -8719,6 +8719,115 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     } catch (error) {
       console.error('Error fetching brain gym daily leaderboard:', error);
       res.status(500).json({ message: 'Failed to fetch leaderboard' });
+    }
+  });
+
+  // POST /api/recovery/brain-gym/pdf — generate a printable branded word-search PDF
+  app.post('/api/recovery/brain-gym/pdf', isAuthenticated, async (req: any, res) => {
+    try {
+      const { title, subtitle, words, grid } = req.body || {};
+      const MAX_DIM = 25;
+      const MAX_WORDS = 40;
+      if (
+        !Array.isArray(grid) ||
+        !Array.isArray(words) ||
+        grid.length === 0 ||
+        grid.length > MAX_DIM ||
+        words.length > MAX_WORDS
+      ) {
+        return res.status(400).json({ message: 'Invalid puzzle (size/word limits exceeded)' });
+      }
+      const firstRowLen = Array.isArray(grid[0]) ? grid[0].length : 0;
+      if (firstRowLen === 0 || firstRowLen > MAX_DIM) {
+        return res.status(400).json({ message: 'Invalid grid row width' });
+      }
+      for (const row of grid) {
+        if (!Array.isArray(row) || row.length !== firstRowLen) {
+          return res.status(400).json({ message: 'Grid rows must be uniform' });
+        }
+      }
+      const safeTitle = String(title || 'Word Search').slice(0, 80);
+      const safeSubtitle = String(subtitle || 'Stroke Recovery Academy').slice(0, 120);
+      const cleanWords = (words as any[]).map((w) => String(w).toUpperCase().slice(0, 24)).slice(0, MAX_WORDS);
+      const cleanGrid = (grid as any[]).map((row: any[]) =>
+        row.map((c) => String(c || '').toUpperCase().slice(0, 1) || ' '),
+      );
+      const size = cleanGrid.length;
+      const cols = cleanGrid[0]?.length || size;
+
+      const PDFDocument = (await import('pdfkit')).default;
+      const doc = new PDFDocument({ size: 'LETTER', margins: { top: 56, bottom: 56, left: 56, right: 56 } });
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="${safeTitle.replace(/[^a-z0-9]+/gi, '_')}.pdf"`);
+      doc.pipe(res);
+
+      const GOLD = '#C9941A';
+      const INK = '#0D0D0D';
+
+      // Header band
+      doc.rect(0, 0, doc.page.width, 110).fill(INK);
+      doc.fillColor('#FFFFFF').font('Helvetica-Bold').fontSize(26).text(safeTitle.toUpperCase(), 56, 36, { width: doc.page.width - 112 });
+      doc.fillColor(GOLD).font('Helvetica').fontSize(12).text(safeSubtitle, 56, 70, { width: doc.page.width - 112 });
+      doc.fillColor('#000');
+
+      let y = 140;
+      doc.font('Helvetica').fontSize(11).fillColor('#000').text(
+        'Find every word hidden in the grid. Words may be horizontal, vertical, or diagonal — forwards or backwards.',
+        56, y, { width: doc.page.width - 112 },
+      );
+      y += 36;
+
+      // Grid
+      const gridMaxWidth = doc.page.width - 112;
+      const cell = Math.min(28, Math.floor(gridMaxWidth / cols));
+      const gridW = cell * cols;
+      const gridH = cell * size;
+      const gridX = (doc.page.width - gridW) / 2;
+      const gridY = y;
+
+      doc.lineWidth(0.5).strokeColor('#999');
+      for (let r = 0; r < size; r++) {
+        for (let c = 0; c < cols; c++) {
+          doc.rect(gridX + c * cell, gridY + r * cell, cell, cell).stroke();
+          doc
+            .font('Helvetica-Bold')
+            .fontSize(Math.max(10, Math.floor(cell * 0.55)))
+            .fillColor('#000')
+            .text(cleanGrid[r][c], gridX + c * cell, gridY + r * cell + cell * 0.22, {
+              width: cell,
+              align: 'center',
+            });
+        }
+      }
+      y = gridY + gridH + 28;
+
+      // Words to find
+      doc.font('Helvetica-Bold').fontSize(13).fillColor(INK).text('Words to find', 56, y);
+      y += 20;
+      const colCount = 3;
+      const colW = (doc.page.width - 112) / colCount;
+      const rowsNeeded = Math.ceil(cleanWords.length / colCount);
+      doc.font('Helvetica').fontSize(11).fillColor('#000');
+      for (let i = 0; i < cleanWords.length; i++) {
+        const cx = 56 + (i % colCount) * colW;
+        const cy = y + Math.floor(i / colCount) * 18;
+        doc.text(`• ${cleanWords[i]}`, cx, cy, { width: colW - 8 });
+      }
+      y += rowsNeeded * 18 + 24;
+
+      // Footer
+      const footerY = doc.page.height - 56;
+      doc.lineWidth(1).strokeColor(GOLD).moveTo(56, footerY - 14).lineTo(doc.page.width - 56, footerY - 14).stroke();
+      doc.font('Helvetica').fontSize(9).fillColor('#444').text(
+        'strokerecoveryacademy.com  ·  Built by survivors, for survivors  ·  Not medical advice',
+        56, footerY - 6, { width: doc.page.width - 112, align: 'center' },
+      );
+
+      doc.end();
+    } catch (error) {
+      console.error('Error generating word-search PDF:', error);
+      if (!res.headersSent) res.status(500).json({ message: 'Failed to generate PDF' });
     }
   });
 
