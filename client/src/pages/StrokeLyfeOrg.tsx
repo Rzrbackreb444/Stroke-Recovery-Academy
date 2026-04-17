@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import NonprofitHeader from "@/components/NonprofitHeader";
+import RecoverySEO from "@/components/RecoverySEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -269,6 +270,26 @@ export default function StrokeLyfeOrg() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
+      <RecoverySEO
+        title="Stroke Lyfe Inc. — 501(c)(3) Stroke Recovery Nonprofit"
+        description="Stroke Lyfe Inc. is Nick Kremers' nonprofit organization providing stroke survivors with scholarships, coaching, and recovery resources. Donate, gift a survivor's membership, or apply for assistance. Rebuild. Rewire. Rise."
+        canonical="/recovery/strokelyfe-org"
+        keywords={["stroke nonprofit", "stroke recovery charity", "Stroke Lyfe Inc", "stroke survivor scholarship", "stroke recovery donation", "501c3 stroke", "Nick Kremers nonprofit"]}
+        breadcrumbs={[{ name: "Stroke Lyfe Inc.", url: "/recovery/strokelyfe-org" }]}
+        additionalSchema={{
+          "@context": "https://schema.org",
+          "@type": "NGO",
+          name: "Stroke Lyfe Inc.",
+          alternateName: "Stroke Lyfe",
+          url: "https://strokerecoveryacademy.com/recovery/strokelyfe-org",
+          description: "A 501(c)(3) nonprofit founded by stroke survivor Nick Kremers to provide recovery resources, scholarships, and community to stroke survivors regardless of income or insurance status.",
+          slogan: "Rebuild. Rewire. Rise.",
+          founder: { "@type": "Person", name: "Nick Kremers" },
+          areaServed: { "@type": "Country", name: "Worldwide" },
+          nonprofitStatus: "Nonprofit501c3",
+          taxID: "Available upon request",
+        }}
+      />
       <NonprofitHeader />
       <SasquatchChatWidget />
       
