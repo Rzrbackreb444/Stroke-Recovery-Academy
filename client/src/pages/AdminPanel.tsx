@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +24,9 @@ import {
   Repeat,
   ArrowUpRight,
   ArrowDownRight,
+  Star,
+  Check,
+  X as XIcon,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
@@ -320,6 +323,216 @@ function UserRow({ user, onUpdate }: { user: UserWithCredits; onUpdate: () => vo
   );
 }
 
+interface PendingSpotlight {
+  id: number;
+  monthKey: string;
+  displayName: string;
+  email: string | null;
+  status: string;
+  selectedAt: string | null;
+  headline: string | null;
+  story: string | null;
+  photoUrl: string | null;
+  location: string | null;
+  recoveryDate: string | null;
+}
+
+function SpotlightAdminPanel() {
+  const { toast } = useToast();
+  const qc = useQueryClient();
+  const { data: pending, isLoading } = useQuery<PendingSpotlight[]>({
+    queryKey: ["/api/admin/spotlight/pending"],
+  });
+  const [editing, setEditing] = useState<Record<number, Partial<PendingSpotlight>>>({});
+
+  const select = useMutation({
+    mutationFn: async () => apiRequest("POST", "/api/admin/spotlight/select-monthly"),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["/api/admin/spotlight/pending"] });
+      toast({ title: "Candidate selected", description: "Review and approve below." });
+    },
+    onError: (e: any) => toast({ title: "Selection failed", description: e?.message || "Try again", variant: "destructive" }),
+  });
+
+  const approve = useMutation({
+    mutationFn: async ({ id, body }: { id: number; body: any }) =>
+      apiRequest("POST", `/api/admin/spotlight/${id}/approve`, body),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["/api/admin/spotlight/pending"] });
+      qc.invalidateQueries({ queryKey: ["/api/recovery/spotlight"] });
+      toast({ title: "Published", description: "Spotlight is live." });
+    },
+  });
+
+  const reject = useMutation({
+    mutationFn: async (id: number) =>
+      apiRequest("POST", `/api/admin/spotlight/${id}/reject`),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["/api/admin/spotlight/pending"] });
+      toast({ title: "Rejected", description: "You can re-select." });
+    },
+  });
+
+  const sendBroadcast = useMutation({
+    mutationFn: async () =>
+      apiRequest("POST", "/api/admin/spotlight/broadcast"),
+    onSuccess: (res: any) => {
+      toast({
+        title: "Broadcast queued",
+        description: `Sent: ${res?.sent ?? 0}, failed: ${res?.failed ?? 0}`,
+      });
+    },
+    onError: (e: any) => toast({ title: "Broadcast failed", description: e?.message || "Try again", variant: "destructive" }),
+  });
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between gap-3 space-y-0">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <Star className="h-5 w-5 text-[#C9941A]" />
+              Survivor Spotlight Pipeline
+            </CardTitle>
+            <p className="mt-1 text-sm text-gray-400">
+              Pick a candidate (paid 3× weighted), review, then publish.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              size="sm"
+              onClick={() => select.mutate()}
+              disabled={select.isPending}
+              data-testid="button-select-monthly"
+            >
+              {select.isPending ? "Selecting…" : "Pick Candidate for This Month"}
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => sendBroadcast.mutate()}
+              disabled={sendBroadcast.isPending}
+              data-testid="button-spotlight-broadcast"
+            >
+              {sendBroadcast.isPending ? "Sending…" : "Send Monthly Newsletter"}
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {isLoading ? (
+            <p className="text-gray-400">Loading…</p>
+          ) : !pending || pending.length === 0 ? (
+            <p className="text-gray-400">
+              No pending or published spotlights yet. Pick a candidate to start.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {pending.map((s) => {
+                const draft = editing[s.id] || {};
+                const merged = { ...s, ...draft };
+                return (
+                  <div
+                    key={s.id}
+                    className="rounded-md border border-[#333] bg-[#0D0D0D] p-4 space-y-3"
+                    data-testid={`spotlight-row-${s.id}`}
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div>
+                        <p className="text-base font-bold">{merged.displayName}</p>
+                        <p className="text-xs text-gray-500">
+                          {merged.monthKey} · {merged.email || "—"} · status:{" "}
+                          <Badge variant="secondary">{merged.status}</Badge>
+                        </p>
+                      </div>
+                      {s.status === "pending" && (
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            onClick={() =>
+                              approve.mutate({
+                                id: s.id,
+                                body: {
+                                  headline: merged.headline,
+                                  story: merged.story,
+                                  photoUrl: merged.photoUrl,
+                                  location: merged.location,
+                                  recoveryDate: merged.recoveryDate,
+                                },
+                              })
+                            }
+                            disabled={approve.isPending}
+                            data-testid={`button-approve-${s.id}`}
+                          >
+                            <Check className="mr-1 h-4 w-4" /> Approve & Publish
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => reject.mutate(s.id)}
+                            disabled={reject.isPending}
+                            data-testid={`button-reject-${s.id}`}
+                          >
+                            <XIcon className="mr-1 h-4 w-4" /> Reject
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                    {s.status === "pending" && (
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <Input
+                          placeholder="Headline"
+                          value={merged.headline || ""}
+                          onChange={(e) =>
+                            setEditing({ ...editing, [s.id]: { ...draft, headline: e.target.value } })
+                          }
+                          data-testid={`input-headline-${s.id}`}
+                        />
+                        <Input
+                          placeholder="Location"
+                          value={merged.location || ""}
+                          onChange={(e) =>
+                            setEditing({ ...editing, [s.id]: { ...draft, location: e.target.value } })
+                          }
+                          data-testid={`input-location-${s.id}`}
+                        />
+                        <Input
+                          placeholder="Photo URL"
+                          value={merged.photoUrl || ""}
+                          onChange={(e) =>
+                            setEditing({ ...editing, [s.id]: { ...draft, photoUrl: e.target.value } })
+                          }
+                          data-testid={`input-photo-${s.id}`}
+                        />
+                        <Input
+                          type="date"
+                          value={merged.recoveryDate ? merged.recoveryDate.slice(0, 10) : ""}
+                          onChange={(e) =>
+                            setEditing({ ...editing, [s.id]: { ...draft, recoveryDate: e.target.value } })
+                          }
+                          data-testid={`input-date-${s.id}`}
+                        />
+                        <textarea
+                          className="sm:col-span-2 min-h-[160px] rounded-md border border-[#333] bg-[#1a1a1a] p-3 text-sm text-white"
+                          placeholder="Story (markdown allowed: **bold**, _italic_, paragraphs)"
+                          value={merged.story || ""}
+                          onChange={(e) =>
+                            setEditing({ ...editing, [s.id]: { ...draft, story: e.target.value } })
+                          }
+                          data-testid={`textarea-story-${s.id}`}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 export default function AdminPanel() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
@@ -379,12 +592,17 @@ export default function AdminPanel() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-6">
+          <TabsList className="grid w-full grid-cols-5 mb-6">
             <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
             <TabsTrigger value="revenue" data-testid="tab-revenue">Revenue</TabsTrigger>
             <TabsTrigger value="credits" data-testid="tab-credits">Credits</TabsTrigger>
             <TabsTrigger value="users" data-testid="tab-users">Users</TabsTrigger>
+            <TabsTrigger value="spotlight" data-testid="tab-spotlight">Spotlight</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="spotlight" className="space-y-6">
+            <SpotlightAdminPanel />
+          </TabsContent>
 
           <TabsContent value="overview" className="space-y-6">
             {statsQuery.isLoading ? (

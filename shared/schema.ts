@@ -285,6 +285,10 @@ export const users = pgTable("users", {
   stripeConnectAccountId: text("stripe_connect_account_id"),
   stripeConnectOnboarded: boolean("stripe_connect_onboarded").default(false),
   creatorPayoutEnabled: boolean("creator_payout_enabled").default(false),
+  // Survivor Spotlight opt-in (transparent + consented)
+  spotlightOptedIn: boolean("spotlight_opted_in").notNull().default(false),
+  spotlightConsent: boolean("spotlight_consent").notNull().default(false),
+  spotlightConsentAt: timestamp("spotlight_consent_at"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -5426,3 +5430,64 @@ export type ProjectQuotePool = typeof projectQuotePool.$inferSelect;
 export type InsertProjectQuotePool = z.infer<typeof insertProjectQuotePoolSchema>;
 export type QuoteScanAnalytics = typeof quoteScanAnalytics.$inferSelect;
 export type InsertQuoteScanAnalytics = z.infer<typeof insertQuoteScanAnalyticsSchema>;
+
+// ─── Brain Gym ────────────────────────────────────────────────────────────────
+export const brainGymCompletions = pgTable("brain_gym_completions", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  gameType: text("game_type").notNull(), // 'wordsearch' | 'crossword' | 'memory'
+  packId: text("pack_id").notNull(),
+  difficulty: text("difficulty").notNull().default("medium"),
+  durationSec: integer("duration_sec").notNull(),
+  hintsUsed: integer("hints_used").notNull().default(0),
+  movesOrAttempts: integer("moves_or_attempts"),
+  accuracyPct: integer("accuracy_pct"),
+  isDailyChallenge: boolean("is_daily_challenge").notNull().default(false),
+  challengeDate: text("challenge_date"), // YYYY-MM-DD when isDailyChallenge
+  completedAt: timestamp("completed_at").notNull().defaultNow(),
+}, (t) => ({
+  userIdx: index("bgc_user_idx").on(t.userId),
+  challengeIdx: index("bgc_challenge_idx").on(t.challengeDate, t.durationSec),
+}));
+
+export const insertBrainGymCompletionSchema = createInsertSchema(brainGymCompletions).omit({ id: true, completedAt: true });
+export type BrainGymCompletion = typeof brainGymCompletions.$inferSelect;
+export type InsertBrainGymCompletion = z.infer<typeof insertBrainGymCompletionSchema>;
+
+// ─── Survivor Spotlight ───────────────────────────────────────────────────────
+// Monthly featured survivor. Opt-in only, with explicit release-of-likeness
+// consent. Selection is weighted-random with paid users counted 3x; admin
+// must approve before the pick goes public.
+export const spotlights = pgTable("spotlights", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  slug: text("slug").notNull().unique(),
+  monthKey: text("month_key").notNull(), // YYYY-MM
+  status: text("status").notNull().default("pending"), // pending | approved | rejected | published
+  weight: integer("weight").notNull().default(1), // weight at time of pick (1 free, 3 paid)
+  // Editorial content captured at publish time
+  displayName: text("display_name").notNull(),
+  headline: text("headline"),
+  story: text("story"), // long-form, markdown allowed
+  recoveryDate: timestamp("recovery_date"),
+  location: text("location"),
+  photoUrl: text("photo_url"),
+  pickedAt: timestamp("picked_at").notNull().defaultNow(),
+  approvedAt: timestamp("approved_at"),
+  publishedAt: timestamp("published_at"),
+  rejectedAt: timestamp("rejected_at"),
+  rejectReason: text("reject_reason"),
+}, (t) => ({
+  monthIdx: index("spotlight_month_idx").on(t.monthKey),
+  statusIdx: index("spotlight_status_idx").on(t.status),
+}));
+
+export const insertSpotlightSchema = createInsertSchema(spotlights).omit({
+  id: true,
+  pickedAt: true,
+  approvedAt: true,
+  publishedAt: true,
+  rejectedAt: true,
+});
+export type Spotlight = typeof spotlights.$inferSelect;
+export type InsertSpotlight = z.infer<typeof insertSpotlightSchema>;
