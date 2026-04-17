@@ -13,6 +13,7 @@ import {
   Users, Star, Zap, Crown
 } from "lucide-react";
 import strokeLyfeLogo from "@assets/Untitled_design_1776399427612.png";
+import RecoverySEO from "@/components/RecoverySEO";
 
 const GIFT_TIERS = [
   {
@@ -132,6 +133,13 @@ export default function GiftSurvivor() {
   if (success) {
     return (
       <div className="min-h-screen bg-[#0D0D0D] text-white flex items-center justify-center px-4">
+        <RecoverySEO
+          title="Gift a Survivor — Stroke Lyfe Inc."
+          description="Sponsor a stroke survivor's recovery. Donate 1 month ($47), 3 months ($141), or a full year ($397) of Warrior membership through Stroke Lyfe Inc., a 501(c)(3) nonprofit. Gift directly to someone you know or donate to our Survivor Fund."
+          canonical="/recovery/gift"
+          keywords={["gift stroke survivor", "stroke recovery donation", "stroke nonprofit", "Stroke Lyfe Inc", "sponsor stroke recovery", "501c3 stroke charity"]}
+          noindex={false}
+        />
         <div className="max-w-md text-center">
           <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="h-10 w-10 text-green-400" />
@@ -153,6 +161,24 @@ export default function GiftSurvivor() {
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
+      <RecoverySEO
+        title="Gift a Survivor — Stroke Lyfe Inc."
+        description="Sponsor a stroke survivor's recovery through Stroke Lyfe Inc., a 501(c)(3) nonprofit. Gift 1 month ($47), 3 months ($141), or a full year ($397) of Warrior membership. Gift directly or donate to our Survivor Fund. Tax-deductible."
+        canonical="/recovery/gift"
+        keywords={["gift stroke survivor", "stroke recovery donation", "stroke nonprofit donation", "Stroke Lyfe Inc", "sponsor stroke recovery", "501c3 stroke charity", "gift membership stroke", "stroke survivor fund"]}
+        breadcrumbs={[{ name: "Gift a Survivor", url: "/recovery/gift" }]}
+        additionalSchema={{
+          "@context": "https://schema.org",
+          "@type": "DonateAction",
+          name: "Gift a Survivor Warrior Membership",
+          description: "Donate a Stroke Recovery Academy Warrior membership to a stroke survivor in need through Stroke Lyfe Inc., a 501(c)(3) nonprofit.",
+          recipient: {
+            "@type": "NGO",
+            name: "Stroke Lyfe Inc.",
+            url: "https://strokerecoveryacademy.com/recovery/strokelyfe-org",
+          },
+        }}
+      />
 
       {/* HERO */}
       <section className="py-16 px-4 border-b border-[#222]">
