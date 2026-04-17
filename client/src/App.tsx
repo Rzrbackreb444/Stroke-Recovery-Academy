@@ -100,6 +100,7 @@ import Wearables from "@/pages/Wearables";
 import Messages from "@/pages/Messages";
 import VideoSessions from "@/pages/VideoSessions";
 import SocialNetwork from "@/pages/SocialNetwork";
+import RecoveryCommunity from "@/pages/RecoveryCommunity";
 import TherapistMarketplace from "@/pages/TherapistMarketplace";
 import AdminPlanBuilder from "@/pages/AdminPlanBuilder";
 import RecoveryUniversity from "@/pages/RecoveryUniversity";
@@ -452,6 +453,7 @@ function Router() {
           <SocialNetwork />
         </ProtectedRoute>
       </Route>
+      <Route path="/recovery/community" component={RecoveryCommunity} />
       <Route path="/recovery/therapist-marketplace">
         <ProtectedRoute>
           <TherapistMarketplace />

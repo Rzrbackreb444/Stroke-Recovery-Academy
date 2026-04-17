@@ -2,6 +2,8 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import express from "express";
 import path from "path";
+import multer from "multer";
+import fs from "fs";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import emailAuthRoutes from "./emailAuthRoutes";
@@ -256,6 +258,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Serve stock images from attached_assets
   app.use('/stock_images', express.static(path.join(process.cwd(), 'attached_assets', 'stock_images')));
+
+  // Serve user-uploaded media files
+  const uploadsDir = path.join(process.cwd(), 'uploads');
+  if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+  app.use('/uploads', express.static(uploadsDir));
 
   // Email Authentication Routes - moved to after setupAuth for session access
 
@@ -806,7 +813,257 @@ Allow: /
   
   // Email Authentication Routes (must be after setupAuth for session access)
   app.use('/api/email-auth', emailAuthRoutes);
-  
+
+  // ─── Media Upload Routes (must be after setupAuth for isAuthenticated) ────────
+  const multerStorage = multer.diskStorage({
+    destination: (_req, _file, cb) => cb(null, uploadsDir),
+    filename: (_req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      cb(null, uniqueSuffix + path.extname(file.originalname));
+    },
+  });
+  const mediaUpload = multer({
+    storage: multerStorage,
+    limits: { fileSize: 500 * 1024 * 1024 },
+    fileFilter: (_req, file, cb) => {
+      const allowed = /jpeg|jpg|png|gif|webp|mp4|mov|webm|avi|heic/i;
+      if (allowed.test(path.extname(file.originalname)) || allowed.test(file.mimetype)) {
+        cb(null, true);
+      } else {
+        cb(new Error('Only images and videos allowed'));
+      }
+    },
+  });
+  const avatarUpload = multer({
+    storage: multerStorage,
+    limits: { fileSize: 10 * 1024 * 1024 },
+    fileFilter: (_req, file, cb) => {
+      const allowed = /jpeg|jpg|png|gif|webp|heic/i;
+      if (allowed.test(path.extname(file.originalname)) || allowed.test(file.mimetype)) {
+        cb(null, true);
+      } else {
+        cb(new Error('Only image files allowed for avatar'));
+      }
+    },
+  });
+
+  // POST /api/upload/media — upload image or video
+  app.post('/api/upload/media', isAuthenticated, mediaUpload.single('file'), (req: any, res) => {
+    if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
+    const ext = path.extname(req.file.originalname).toLowerCase();
+    const isVideo = /mp4|mov|webm|avi/.test(ext);
+    res.json({
+      url: `/uploads/${req.file.filename}`,
+      mediaType: isVideo ? 'video' : 'image',
+      filename: req.file.filename,
+      size: req.file.size,
+    });
+  });
+
+  // POST /api/upload/avatar — upload avatar image
+  app.post('/api/upload/avatar', isAuthenticated, avatarUpload.single('file'), async (req: any, res) => {
+    if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
+    const url = `/uploads/${req.file.filename}`;
+    try {
+      const userId = req.user.claims.sub;
+      await storage.createOrUpdateUserSettings(userId, { avatarUrl: url });
+      res.json({ url });
+    } catch (error) {
+      res.json({ url });
+    }
+  });
+
+  // GET /api/user/settings
+  app.get('/api/user/settings', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const settings = await storage.getUserSettings(userId);
+      res.json(settings || {});
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to fetch settings' });
+    }
+  });
+
+  // PUT /api/user/settings
+  app.put('/api/user/settings', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { username, displayName, avatarUrl, bio, bannerUrl } = req.body;
+      const settings = await storage.createOrUpdateUserSettings(userId, { username, displayName, avatarUrl, bio, bannerUrl });
+      res.json(settings);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to update settings' });
+    }
+  });
+
+  // GET /api/live/events
+  app.get('/api/live/events', async (req: any, res) => {
+    try {
+      const { pool: dbPool } = await import('./db');
+      await dbPool.query(`
+        CREATE TABLE IF NOT EXISTS live_events (
+          id SERIAL PRIMARY KEY,
+          host_id VARCHAR NOT NULL,
+          title TEXT NOT NULL,
+          description TEXT,
+          stream_url TEXT,
+          scheduled_at TIMESTAMP,
+          started_at TIMESTAMP,
+          ended_at TIMESTAMP,
+          is_live BOOLEAN NOT NULL DEFAULT FALSE,
+          is_active BOOLEAN NOT NULL DEFAULT TRUE,
+          cover_image_url TEXT,
+          viewer_count INTEGER NOT NULL DEFAULT 0,
+          created_at TIMESTAMP NOT NULL DEFAULT NOW()
+        )
+      `);
+      const result = await dbPool.query(
+        `SELECT le.*, u.first_name, u.last_name, u.profile_image_url
+         FROM live_events le
+         LEFT JOIN users u ON u.id = le.host_id
+         WHERE le.is_active = TRUE
+         ORDER BY le.is_live DESC, COALESCE(le.started_at, le.scheduled_at) DESC
+         LIMIT 20`
+      );
+      res.json(result.rows);
+    } catch (error) {
+      console.error('Live events error:', error);
+      res.status(500).json({ message: 'Failed to fetch live events' });
+    }
+  });
+
+  // POST /api/live/events
+  app.post('/api/live/events', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { title, description, streamUrl, scheduledAt, coverImageUrl } = req.body;
+      const { pool: dbPool } = await import('./db');
+      await dbPool.query(`
+        CREATE TABLE IF NOT EXISTS live_events (
+          id SERIAL PRIMARY KEY,
+          host_id VARCHAR NOT NULL,
+          title TEXT NOT NULL,
+          description TEXT,
+          stream_url TEXT,
+          scheduled_at TIMESTAMP,
+          started_at TIMESTAMP,
+          ended_at TIMESTAMP,
+          is_live BOOLEAN NOT NULL DEFAULT FALSE,
+          is_active BOOLEAN NOT NULL DEFAULT TRUE,
+          cover_image_url TEXT,
+          viewer_count INTEGER NOT NULL DEFAULT 0,
+          created_at TIMESTAMP NOT NULL DEFAULT NOW()
+        )
+      `);
+      const result = await dbPool.query(
+        `INSERT INTO live_events (host_id, title, description, stream_url, scheduled_at, cover_image_url)
+         VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+        [userId, title, description, streamUrl, scheduledAt || null, coverImageUrl || null]
+      );
+      res.json(result.rows[0]);
+    } catch (error) {
+      console.error('Create live event error:', error);
+      res.status(500).json({ message: 'Failed to create live event' });
+    }
+  });
+
+  // POST /api/live/events/:id/start
+  app.post('/api/live/events/:id/start', isAuthenticated, async (req: any, res) => {
+    try {
+      const { pool: dbPool } = await import('./db');
+      const { streamUrl } = req.body;
+      const result = await dbPool.query(
+        `UPDATE live_events SET is_live = TRUE, started_at = NOW(), stream_url = COALESCE($1, stream_url) WHERE id = $2 RETURNING *`,
+        [streamUrl || null, req.params.id]
+      );
+      res.json(result.rows[0]);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to start event' });
+    }
+  });
+
+  // POST /api/live/events/:id/end
+  app.post('/api/live/events/:id/end', isAuthenticated, async (req: any, res) => {
+    try {
+      const { pool: dbPool } = await import('./db');
+      const result = await dbPool.query(
+        `UPDATE live_events SET is_live = FALSE, ended_at = NOW() WHERE id = $1 RETURNING *`,
+        [req.params.id]
+      );
+      res.json(result.rows[0]);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to end event' });
+    }
+  });
+
+  // GET /api/community/members
+  app.get('/api/community/members', async (_req, res) => {
+    try {
+      const { pool: dbPool } = await import('./db');
+      const result = await dbPool.query(
+        `SELECT u.id, u.first_name, u.last_name, u.profile_image_url, u.created_at,
+                us.display_name, us.avatar_url, us.username,
+                us2.current_streak
+         FROM users u
+         LEFT JOIN user_settings us ON us.user_id = u.id
+         LEFT JOIN user_streaks us2 ON us2.user_id = u.id
+         ORDER BY COALESCE(us2.current_streak, 0) DESC, u.created_at DESC
+         LIMIT 50`
+      );
+      res.json(result.rows);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to fetch members' });
+    }
+  });
+
+  // GET /api/community/posts — posts enriched with author info
+  app.get('/api/community/posts', async (req, res) => {
+    try {
+      const { pool: dbPool } = await import('./db');
+      const limitVal = parseInt(String(req.query.limit || '20'));
+      const offsetVal = parseInt(String(req.query.offset || '0'));
+      const posts = await dbPool.query(
+        `SELECT ap.*, u.first_name, u.last_name, u.profile_image_url,
+                us.display_name, us.avatar_url, us.username,
+                (SELECT json_agg(json_build_object('id', am.id, 'mediaType', am.media_type, 'mediaUrl', am.media_url, 'thumbnailUrl', am.thumbnail_url)) FROM activity_media am WHERE am.post_id = ap.id) as media,
+                (SELECT json_agg(json_build_object('id', ar.id, 'userId', ar.user_id, 'reactionType', ar.reaction_type)) FROM activity_reactions ar WHERE ar.post_id = ap.id) as reactions,
+                (SELECT COUNT(*) FROM activity_comments ac WHERE ac.post_id = ap.id) as comment_count_real
+         FROM activity_posts ap
+         LEFT JOIN users u ON u.id = ap.author_id
+         LEFT JOIN user_settings us ON us.user_id = ap.author_id
+         WHERE ap.visibility = 'public' OR ap.visibility = 'members'
+         ORDER BY ap.is_pinned DESC, ap.created_at DESC
+         LIMIT $1 OFFSET $2`,
+        [limitVal, offsetVal]
+      );
+      res.json(posts.rows);
+    } catch (error) {
+      console.error('Activity with authors error:', error);
+      res.status(500).json({ message: 'Failed to fetch posts' });
+    }
+  });
+
+  // GET /api/community/comments/:id — comments with author info
+  app.get('/api/community/comments/:id', async (req, res) => {
+    try {
+      const { pool: dbPool } = await import('./db');
+      const comments = await dbPool.query(
+        `SELECT ac.*, u.first_name, u.last_name, u.profile_image_url,
+                us.display_name, us.avatar_url
+         FROM activity_comments ac
+         LEFT JOIN users u ON u.id = ac.author_id
+         LEFT JOIN user_settings us ON us.user_id = ac.author_id
+         WHERE ac.post_id = $1
+         ORDER BY ac.created_at ASC`,
+        [req.params.id]
+      );
+      res.json(comments.rows);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to fetch comments' });
+    }
+  });
+  // ─── End Media Upload & Community Routes ─────────────────────────────────────
+
   // Initialize Stripe
   await initStripe();
 

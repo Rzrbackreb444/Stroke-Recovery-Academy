@@ -87,6 +87,16 @@ Icons: lucide-react only (no emoji)
   - **Design Theme**: Forest green (#1B4332), gold accent (#C9941A), dark base (#0D0D0D).
   - **Real Use Cases**: Squatch Mix (stroke recovery supplement), WashBizHub (laundromat community 75K members).
 
+- **Survivor Community** (`/recovery/community`): Skool-killer social hub with:
+  - **Feed Tab**: Post composer with photo/video upload, 5 post types (Update/Milestone/Question/Tip/Win), 5 reaction types (Like/Love/Celebrate/Fire/Insight), comment threads with author avatars.
+  - **Members Tab**: Member grid sorted by streak, showing avatars, screen names, and day counts.
+  - **Live Tab**: Live event scheduling and streaming (YouTube embed or external URL), admin "Go Live" control with start/end.
+  - **Classroom Tab**: Links to Recovery University courses.
+  - **Profile Edit Modal**: Upload avatar, set screen name (@handle), bio.
+  - **Routes**: `/api/community/posts`, `/api/community/members`, `/api/community/comments/:id`, `/api/live/events`, `/api/upload/media`, `/api/upload/avatar`, `/api/user/settings` GET/PUT.
+  - Uploaded files stored in `./uploads/` served statically at `/uploads/`.
+  - Live events table created via raw SQL (`CREATE TABLE IF NOT EXISTS live_events`).
+
 ### Stripe Products & Subscription Tiers
 - **KreAIte Tiers**: Free, Creator, Pro, Enterprise.
 - **Recovery Academy Tiers**: Free, Survivor, Creator.
