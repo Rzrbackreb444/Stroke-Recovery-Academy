@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { Link } from "wouter";
 import { 
-  Flame, Trophy, BookOpen, MessageCircle, Grid3X3, ShoppingBag, Users,
+  Flame, Trophy, BookOpen, MessageCircle, Grid3X3, ShoppingBag, Users, Sparkles,
   CheckCircle2, Target, Star, TrendingUp, Calendar, Heart, Zap, LogOut,
   Plus, UserPlus, DoorOpen, Smile, Activity, Quote, RefreshCw, ArrowRight,
   Play, Brain
@@ -230,6 +230,30 @@ export default function RecoveryDashboard() {
               </div>
             </div>
           </div>
+        </section>
+
+        {/* SURVIVOR OS PLAN CTA */}
+        <section className="mb-6">
+          <Link href="/recovery/me">
+            <a
+              className="block rounded-xl border border-[#C9941A]/40 bg-gradient-to-r from-[#1a1610] via-[#141414] to-[#1a1610] p-5 hover-elevate"
+              data-testid="link-recovery-me"
+            >
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div className="flex items-center gap-3">
+                  <div className="h-11 w-11 rounded-md bg-[#C9941A] flex items-center justify-center">
+                    <Sparkles className="h-5 w-5 text-black" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9941A]">Survivor OS</p>
+                    <p className="text-base font-bold text-white">Open your personal recovery plan</p>
+                    <p className="text-xs text-gray-500">Sasquatch Scale, AI plan, today's prescription</p>
+                  </div>
+                </div>
+                <span className="text-xs text-[#C9941A] font-semibold uppercase tracking-widest">Open →</span>
+              </div>
+            </a>
+          </Link>
         </section>
 
         {/* CHALLENGE COMMAND CENTER */}

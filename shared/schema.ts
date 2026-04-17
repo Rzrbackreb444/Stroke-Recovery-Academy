@@ -5491,3 +5491,65 @@ export const insertSpotlightSchema = createInsertSchema(spotlights).omit({
 });
 export type Spotlight = typeof spotlights.$inferSelect;
 export type InsertSpotlight = z.infer<typeof insertSpotlightSchema>;
+
+// ─── Sasquatch Scale: 5-domain self-assessment ──────────────────────────────
+// Each domain scored 1–10. Snapshots are kept so we can chart progress over time.
+export const sasquatchAssessments = pgTable("sasquatch_assessments", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  physical: integer("physical").notNull(),
+  cognitive: integer("cognitive").notNull(),
+  speech: integer("speech").notNull(),
+  emotional: integer("emotional").notNull(),
+  memory: integer("memory").notNull(),
+  notes: text("notes"),
+  takenAt: timestamp("taken_at").notNull().defaultNow(),
+}, (t) => ({
+  userIdx: index("sasquatch_assess_user_idx").on(t.userId, t.takenAt),
+}));
+
+export const insertSasquatchAssessmentSchema = createInsertSchema(sasquatchAssessments).omit({
+  id: true,
+  takenAt: true,
+});
+export type SasquatchAssessment = typeof sasquatchAssessments.$inferSelect;
+export type InsertSasquatchAssessment = z.infer<typeof insertSasquatchAssessmentSchema>;
+
+// User's recovery goals (short and long term)
+export const survivorGoals = pgTable("survivor_goals", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  horizon: text("horizon").notNull(), // "short" (30d) | "long" (1yr)
+  domain: text("domain").notNull(), // physical | cognitive | speech | emotional | memory | other
+  goal: text("goal").notNull(),
+  status: text("status").notNull().default("active"), // active | done | dropped
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  userIdx: index("survivor_goals_user_idx").on(t.userId),
+}));
+
+export const insertSurvivorGoalSchema = createInsertSchema(survivorGoals).omit({
+  id: true,
+  createdAt: true,
+});
+export type SurvivorGoal = typeof survivorGoals.$inferSelect;
+export type InsertSurvivorGoal = z.infer<typeof insertSurvivorGoalSchema>;
+
+// Generated AI recovery plan — stored as JSON so we can iterate freely on shape.
+export const survivorPlans = pgTable("survivor_plans", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  assessmentId: integer("assessment_id"),
+  plan: jsonb("plan").notNull(), // { weekly: {...}, exercises: [...], brainGymMinutes, mealTargets, rest, tips: [] }
+  generatedAt: timestamp("generated_at").notNull().defaultNow(),
+}, (t) => ({
+  userIdx: index("survivor_plans_user_idx").on(t.userId, t.generatedAt),
+}));
+
+export const insertSurvivorPlanSchema = createInsertSchema(survivorPlans).omit({
+  id: true,
+  generatedAt: true,
+});
+export type SurvivorPlan = typeof survivorPlans.$inferSelect;
+export type InsertSurvivorPlan = z.infer<typeof insertSurvivorPlanSchema>;
+
