@@ -953,6 +953,66 @@ export const reminderLogs = pgTable("reminder_logs", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+// Recovery Blog Posts — Nick Kremers authored articles, no user FK required
+export const recoveryBlogPosts = pgTable("recovery_blog_posts", {
+  id: serial("id").primaryKey(),
+  slug: text("slug").notNull().unique(),
+  title: text("title").notNull(),
+  excerpt: text("excerpt"),
+  content: text("content").notNull(),
+  category: text("category").notNull().default("philosophy"), // philosophy, therapy, science, exercises, caregivers, income
+  tags: text("tags").array().default([]),
+  heroImageUrl: text("hero_image_url"),
+  authorName: text("author_name").notNull().default("Nick Kremers"),
+  authorBio: text("author_bio"),
+  status: text("status").notNull().default("published"), // published, draft
+  featured: boolean("featured").notNull().default(false),
+  viewCount: integer("view_count").notNull().default(0),
+  likeCount: integer("like_count").notNull().default(0),
+  commentCount: integer("comment_count").notNull().default(0),
+  readTime: integer("read_time").notNull().default(5),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertRecoveryBlogPostSchema = createInsertSchema(recoveryBlogPosts).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertRecoveryBlogPost = typeof insertRecoveryBlogPostSchema._type;
+export type RecoveryBlogPost = typeof recoveryBlogPosts.$inferSelect;
+
+// Newsletter Subscribers
+export const newsletterSubscribers = pgTable("newsletter_subscribers", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  source: text("source").notNull().default("website"), // website, signup, challenge, blog, community
+  isActive: boolean("is_active").notNull().default(true),
+  tags: text("tags").array().default([]), // e.g. ["challenge", "caregiver", "survivor"]
+  subscribedAt: timestamp("subscribed_at").notNull().defaultNow(),
+  unsubscribedAt: timestamp("unsubscribed_at"),
+});
+
+export const insertNewsletterSubscriberSchema = createInsertSchema(newsletterSubscribers).omit({ id: true, subscribedAt: true, unsubscribedAt: true });
+export type InsertNewsletterSubscriber = typeof insertNewsletterSubscriberSchema._type;
+export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
+
+// Newsletter Editions sent to subscribers
+export const newsletterEditions = pgTable("newsletter_editions", {
+  id: serial("id").primaryKey(),
+  subject: text("subject").notNull(),
+  preview: text("preview"), // Preview text shown in email clients
+  htmlContent: text("html_content").notNull(),
+  textContent: text("text_content"),
+  edition: integer("edition").notNull().default(1), // e.g. Edition #12
+  sentAt: timestamp("sent_at"),
+  recipientCount: integer("recipient_count").notNull().default(0),
+  openCount: integer("open_count").notNull().default(0),
+  clickCount: integer("click_count").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export type NewsletterEdition = typeof newsletterEditions.$inferSelect;
+
 export const standGoals = pgTable("stand_goals", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),

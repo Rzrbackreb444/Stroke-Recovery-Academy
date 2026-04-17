@@ -1088,6 +1088,13 @@ Allow: /
     console.warn("[startup] seedSubscriptionTiers skipped:", err?.message ?? err);
   }
 
+  // Seed recovery blog posts to DB (non-fatal)
+  try {
+    await storage.initRecoveryBlogPosts();
+  } catch (err: any) {
+    console.warn("[startup] initRecoveryBlogPosts skipped:", err?.message ?? err);
+  }
+
   // Auth routes
   app.get('/api/auth/user', async (req: any, res) => {
     try {
@@ -1224,16 +1231,80 @@ Allow: /
         access_token: null,
         refresh_token: null,
         expires_at: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60)
-      }, (err: any) => {
+      }, async (err: any) => {
         if (err) {
           console.error("Registration login error:", err);
           return res.status(500).json({ message: "Account created but login failed" });
+        }
+        // Fire-and-forget welcome email
+        try {
+          const { sendWelcomeEmail } = await import('./welcomeEmail');
+          await sendWelcomeEmail(email, firstName);
+        } catch (emailErr) {
+          console.error("[welcome email] failed:", emailErr);
         }
         res.json({ success: true, user });
       });
     } catch (error: any) {
       console.error("Registration error:", error);
       res.status(500).json({ message: error.message || "Registration failed" });
+    }
+  });
+
+  // OTP — send 6-digit code via email
+  app.post('/api/auth/otp/send', async (req, res) => {
+    try {
+      const { email } = req.body;
+      if (!email || typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ message: "Valid email is required" });
+      }
+      const { db: otpDb } = await import('./db');
+      const { magicLinkTokens, users: usersTable } = await import('../shared/schema');
+      const { eq } = await import('drizzle-orm');
+      const otp = String(Math.floor(100000 + Math.random() * 900000));
+      const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 min
+      await otpDb.insert(magicLinkTokens).values({ email: email.toLowerCase(), token: otp, expiresAt });
+      // Look up first name for personalisation
+      const [existingUser] = await otpDb.select().from(usersTable).where(eq(usersTable.email, email.toLowerCase())).limit(1);
+      const { sendOtpEmail } = await import('./welcomeEmail');
+      await sendOtpEmail(email, otp, (existingUser as any)?.firstName);
+      res.json({ success: true, message: "Code sent to your email" });
+    } catch (error: any) {
+      console.error("OTP send error:", error);
+      res.status(500).json({ message: error.message || "Failed to send code" });
+    }
+  });
+
+  // OTP — verify code and log user in (auto-creates account if new)
+  app.post('/api/auth/otp/verify', async (req: any, res) => {
+    try {
+      const { email, otp } = req.body;
+      if (!email || !otp) return res.status(400).json({ message: "Email and code are required" });
+      const { db: otpDb } = await import('./db');
+      const { magicLinkTokens, users: usersTable } = await import('../shared/schema');
+      const { eq, and, gt, isNull } = await import('drizzle-orm');
+      const [tokenRecord] = await otpDb.select().from(magicLinkTokens).where(
+        and(eq(magicLinkTokens.email, email.toLowerCase()), eq(magicLinkTokens.token, otp), gt(magicLinkTokens.expiresAt, new Date()), isNull(magicLinkTokens.usedAt))
+      ).limit(1);
+      if (!tokenRecord) return res.status(400).json({ message: "Invalid or expired code" });
+      await otpDb.update(magicLinkTokens).set({ usedAt: new Date() }).where(eq(magicLinkTokens.id, tokenRecord.id));
+      let [user] = await otpDb.select().from(usersTable).where(eq(usersTable.email, email.toLowerCase())).limit(1);
+      const isNewUser = !user;
+      if (!user) {
+        const [newUser] = await otpDb.insert(usersTable).values({ email: email.toLowerCase(), role: 'member' }).returning();
+        user = newUser;
+        try {
+          const { sendWelcomeEmail } = await import('./welcomeEmail');
+          await sendWelcomeEmail(email);
+        } catch {}
+      }
+      req.login({ claims: { sub: user.id, email: user.email }, access_token: null, refresh_token: null, expires_at: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60) }, (err: any) => {
+        if (err) return res.status(500).json({ message: "Failed to create session" });
+        res.json({ success: true, user, isNewUser });
+      });
+    } catch (error: any) {
+      console.error("OTP verify error:", error);
+      res.status(500).json({ message: error.message || "Verification failed" });
     }
   });
 
