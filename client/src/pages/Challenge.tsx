@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import RecoverySEO from "@/components/RecoverySEO";
 import NewsletterSignupWidget from "@/components/NewsletterSignupWidget";
 import icuVideo from "@assets/12746_1776435817591.mp4";
+import beforeAfterImage from "@assets/2018_1776441983582.png";
 import {
   Flame, Trophy, CheckCircle, Target, Zap, Users, Calendar,
   Star, ArrowRight, Play, Shield, Clock, Heart, ChevronDown, ChevronUp,
@@ -550,6 +551,33 @@ export default function Challenge() {
             <p className="mt-6 text-sm text-gray-400 italic max-w-xl mx-auto">
               "If I can come back from that bed, you can come back from yours.
               That's the whole promise of this challenge."
+            </p>
+          </div>
+
+          {/* Then & Now — visual proof */}
+          <div className="mb-14 text-center" data-testid="block-before-after">
+            <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-5 uppercase tracking-widest text-xs">
+              Then & Now
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-black mb-4 max-w-3xl mx-auto leading-tight">
+              Nine Years. One Decision A Day.
+            </h2>
+            <p className="text-gray-300 max-w-2xl mx-auto mb-8 text-base md:text-lg leading-relaxed">
+              2018: walker, 0% function on my left side, doctors managing expectations.{" "}
+              <span className="text-white font-semibold">2027: standing tall, 90%+ recovered, building the platform you're on right now.</span>{" "}
+              This is what compound reps look like.
+            </p>
+            <div className="max-w-3xl mx-auto rounded-lg overflow-hidden border border-[#333] bg-black">
+              <img
+                src={beforeAfterImage}
+                alt="Nick Kremers stroke recovery before and after — 2018 in a wheelchair next to a walker just weeks after a massive hemorrhagic stroke that left him with 0% function on his left side, compared with 2027 standing strong and smiling at 90%+ recovery, founder of Stroke Recovery Academy and the Sasquatch Method."
+                className="w-full h-auto"
+                loading="lazy"
+                data-testid="img-before-after"
+              />
+            </div>
+            <p className="mt-6 text-sm text-gray-400 italic max-w-xl mx-auto">
+              No miracle. No shortcut. 1 rep a day, every day, for nine years.
             </p>
           </div>
 

@@ -105,6 +105,7 @@ import RecoveryCommunity from "@/pages/RecoveryCommunity";
 import TherapistMarketplace from "@/pages/TherapistMarketplace";
 import AdminPlanBuilder from "@/pages/AdminPlanBuilder";
 import RecoveryUniversity from "@/pages/RecoveryUniversity";
+import BrainGym from "@/pages/BrainGym";
 import StrokeLyfeOrg from "@/pages/StrokeLyfeOrg";
 import RecoveryStore from "@/pages/RecoveryStore";
 
@@ -471,6 +472,7 @@ function Router() {
         </ProtectedRoute>
       </Route>
       <Route path="/recovery/university" component={RecoveryUniversity} />
+      <Route path="/recovery/brain-gym" component={BrainGym} />
       <Route path="/recovery/strokelyfe-org" component={StrokeLyfeOrg} />
       <Route path="/strokelyfe" component={StrokeLyfeOrg} />
       <Route path="/recovery/store" component={RecoveryStore} />
