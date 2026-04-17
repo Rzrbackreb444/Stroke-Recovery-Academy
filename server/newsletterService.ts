@@ -2,18 +2,12 @@ import { db } from './db';
 import { sendEmail } from './emailService';
 import { newsletterSubscribers, newsletterEditions } from '../shared/schema';
 import { eq, and, lte, isNull, sql } from 'drizzle-orm';
+import { renderEmail, EMAIL } from './emailTemplate';
 
-// ─── Nick's voice, tone, and palette ─────────────────────────────────────────
-const BRAND = {
-  bg: '#0D0D0D',
-  card: '#1a1a1a',
-  gold: '#C9941A',
-  text: '#E5E5E5',
-  muted: '#999',
-  border: '#333',
-  siteUrl: 'https://strokerecoveryacademy.com',
-};
+// Backwards-compatible BRAND alias used in edition content strings below.
+const BRAND = { siteUrl: EMAIL.site, muted: EMAIL.muted };
 
+// Legacy wrapper retained for any external callers; new sends use renderEmail directly.
 function emailWrapper(content: string, previewText = ''): string {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -86,6 +80,16 @@ export const DRIP_EDITIONS: Array<{
   subject: string;
   previewText: string;
   content: string;
+  /** Optional small label above the headline ("EDITION 03 · DAY 14"). */
+  eyebrow?: string;
+  /** Optional H1 shown right under the brand header. */
+  headline?: string;
+  /** Optional subheadline under the H1. */
+  subheadline?: string;
+  /** If true, embed the Stroke Lyfe before/after hero image. */
+  showBeforeAfter?: boolean;
+  /** If true, show the 988 Suicide & Crisis Lifeline callout above the disclaimer. */
+  showCrisisCallout?: boolean;
 }> = [
   // ── EDITION 1 — Day 3 ───────────────────────────────────────────────────────
   {
@@ -93,6 +97,10 @@ export const DRIP_EDITIONS: Array<{
     dayOffset: 3,
     subject: 'I wanted to drive into traffic.',
     previewText: "This is the email I wasn't going to send. But you need to hear it.",
+    eyebrow: 'EDITION 01 · DAY 3',
+    headline: 'The email I wasn\u2019t going to send.',
+    subheadline: 'Year 2 after my stroke nearly took me out. Here\u2019s what stopped the spiral.',
+    showCrisisCallout: true,
     content: `
       <p class="body-text">Let me start with something I don't tell most people.</p>
       <div class="quote-block">
@@ -273,6 +281,10 @@ export const DRIP_EDITIONS: Array<{
     dayOffset: 45,
     subject: 'Depression showed up at Year 2. Here\'s what I did.',
     previewText: "Mental health after stroke is the conversation nobody is having. Let's have it.",
+    eyebrow: 'EDITION 07 · DAY 45',
+    headline: 'Post-stroke depression is real. Let\u2019s name it.',
+    subheadline: '30\u201350% of survivors face it. Most never get told what\u2019s actually happening.',
+    showCrisisCallout: true,
     content: `
       <div class="quote-block">
         <div class="quote-text">"Depression wants you parked. Tell it to kick rocks."</div>
@@ -303,6 +315,10 @@ export const DRIP_EDITIONS: Array<{
     dayOffset: 52,
     subject: 'Year 7: what actually changed (and what didn\'t)',
     previewText: "Seven years after my stroke, here's the honest inventory — the wins and the losses.",
+    eyebrow: 'EDITION 08 · DAY 52',
+    headline: 'From walker to 90%. Here\u2019s the honest receipt.',
+    subheadline: 'The before/after, the wins, the things that are still hard.',
+    showBeforeAfter: true,
     content: `
       <div class="quote-block">
         <div class="quote-text">"Still rising at Year 7. Your story isn't over either."</div>
@@ -410,7 +426,15 @@ async function sendDripEdition(queueId: number, editionNumber: number, email: st
     ? edition.content.replace('<p class="body-text">Let me start', `<p class="body-text">Hey ${firstName} — let me start`)
     : edition.content;
 
-  const html = emailWrapper(personalizedContent, edition.previewText);
+  const html = renderEmail({
+    previewText: edition.previewText,
+    eyebrow: edition.eyebrow,
+    headline: edition.headline,
+    subheadline: edition.subheadline,
+    showBeforeAfter: edition.showBeforeAfter,
+    showCrisisCallout: edition.showCrisisCallout,
+    bodyHtml: personalizedContent,
+  });
 
   await sendEmail({
     to: email,
