@@ -1103,6 +1103,15 @@ Allow: /
     console.warn("[startup] newsletter scheduler skipped:", err?.message ?? err);
   }
 
+  // Init push_subscriptions table + start accountability scheduler (non-fatal)
+  try {
+    const { initPushSchema, startAccountabilityScheduler } = await import('./pushNotificationService');
+    await initPushSchema();
+    startAccountabilityScheduler();
+  } catch (err: any) {
+    console.warn("[startup] accountability scheduler skipped:", err?.message ?? err);
+  }
+
   // Auth routes
   app.get('/api/auth/user', async (req: any, res) => {
     try {
@@ -9274,9 +9283,9 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       }
       
       const scholarshipPrices: Record<string, { amount: number; name: string; description: string }> = {
-        basic: { amount: 9700, name: 'Survivor Scholarship', description: 'Full Recovery Academy access for a stroke survivor' },
-        mentored: { amount: 29700, name: 'Mentored Scholarship', description: 'Academy access + 3 months group coaching' },
-        elite: { amount: 99700, name: 'Elite Scholarship', description: 'Full access + 1-on-1 coaching with Nick Kremers' },
+        basic: { amount: 4700, name: 'Gift: 1 Month Warrior Access', description: 'One month of full Warrior membership — 66-Day Challenge, AI Coach, protocols, community' },
+        mentored: { amount: 14100, name: 'Gift: 3 Month Warrior Access', description: '3 months of Warrior membership — covers the full 66-Day Challenge window' },
+        elite: { amount: 39700, name: 'Gift: Full Year Warrior Access', description: 'A full year of Warrior membership — recovery is a long game, give them all of it' },
       };
       
       const scholarship = scholarshipPrices[tierId];
@@ -9299,8 +9308,8 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
           quantity: 1,
         }],
         mode: 'payment',
-        success_url: `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/strokelyfe?scholarship=success`,
-        cancel_url: `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/strokelyfe`,
+        success_url: `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/gift?donated=success`,
+        cancel_url: `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/gift`,
         metadata: {
           type: 'scholarship_gift',
           tierId,
@@ -21018,6 +21027,223 @@ Format as structured JSON with clear sections.`;
       res.json({ available: true });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
+    }
+  });
+
+  // ============================================================
+  // PUSH NOTIFICATION ROUTES
+  // ============================================================
+
+  app.get('/api/push/vapid-key', (_req, res) => {
+    const { VAPID_PUBLIC_KEY } = require('./pushNotificationService');
+    res.json({ publicKey: VAPID_PUBLIC_KEY });
+  });
+
+  app.post('/api/push/subscribe', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      const { endpoint, p256dh, auth, userAgent } = req.body;
+      if (!endpoint || !p256dh || !auth) return res.status(400).json({ message: 'Invalid subscription data' });
+
+      await db.execute(sql`
+        INSERT INTO push_subscriptions (user_id, endpoint, p256dh, auth, user_agent)
+        VALUES (${userId}, ${endpoint}, ${p256dh}, ${auth}, ${userAgent || null})
+        ON CONFLICT (endpoint) DO UPDATE SET last_used = NOW(), user_id = ${userId}
+      `);
+      res.json({ success: true });
+    } catch (err: any) {
+      console.error('Push subscribe error:', err);
+      res.status(500).json({ message: 'Failed to save subscription' });
+    }
+  });
+
+  app.delete('/api/push/unsubscribe', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      const { endpoint } = req.body;
+      await db.execute(sql`DELETE FROM push_subscriptions WHERE user_id = ${userId} AND endpoint = ${endpoint}`);
+      res.json({ success: true });
+    } catch (err: any) {
+      res.status(500).json({ message: 'Failed to remove subscription' });
+    }
+  });
+
+  app.get('/api/push/status', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      const subs = await db.execute(sql`SELECT id, created_at, last_used FROM push_subscriptions WHERE user_id = ${userId}`);
+      res.json({ subscribed: subs.rows.length > 0, count: subs.rows.length });
+    } catch {
+      res.json({ subscribed: false, count: 0 });
+    }
+  });
+
+  app.post('/api/push/test', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      const { sendPushToUser } = await import('./pushNotificationService');
+      await sendPushToUser(userId, {
+        title: "Sasquatch Coach is watching, Warrior.",
+        body: "Test notification working. Your accountability system is live. Never Zero.",
+        type: 'test',
+        url: '/recovery/dashboard',
+        tag: 'test',
+      });
+      res.json({ success: true });
+    } catch (err: any) {
+      res.status(500).json({ message: 'Failed to send test notification' });
+    }
+  });
+
+  // ============================================================
+  // MEDICATIONS API
+  // ============================================================
+
+  app.get('/api/medications', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      const meds = await db.execute(sql`SELECT * FROM medications WHERE user_id = ${userId} AND is_active = true ORDER BY name ASC`);
+      res.json(meds.rows);
+    } catch (err: any) {
+      res.status(500).json({ message: 'Failed to fetch medications' });
+    }
+  });
+
+  app.post('/api/medications', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      const { name, dosage, frequency, purpose, prescribedBy, startDate, notes, reminderTimes } = req.body;
+      if (!name || !dosage || !frequency) return res.status(400).json({ message: 'Name, dosage, and frequency required' });
+
+      const result = await db.execute(sql`
+        INSERT INTO medications (user_id, name, dosage, frequency, purpose, prescribed_by, start_date, notes, reminder_times)
+        VALUES (${userId}, ${name}, ${dosage}, ${frequency}, ${purpose || null}, ${prescribedBy || null}, ${startDate ? new Date(startDate) : null}, ${notes || null}, ${reminderTimes || []})
+        RETURNING *
+      `);
+      res.json(result.rows[0]);
+    } catch (err: any) {
+      console.error('Medication create error:', err);
+      res.status(500).json({ message: 'Failed to add medication' });
+    }
+  });
+
+  app.put('/api/medications/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      const { id } = req.params;
+      const { name, dosage, frequency, purpose, prescribedBy, notes, reminderTimes, isActive } = req.body;
+      await db.execute(sql`
+        UPDATE medications SET
+          name = COALESCE(${name}, name),
+          dosage = COALESCE(${dosage}, dosage),
+          frequency = COALESCE(${frequency}, frequency),
+          purpose = ${purpose ?? null},
+          prescribed_by = ${prescribedBy ?? null},
+          notes = ${notes ?? null},
+          reminder_times = COALESCE(${reminderTimes}, reminder_times),
+          is_active = COALESCE(${isActive}, is_active)
+        WHERE id = ${parseInt(id)} AND user_id = ${userId}
+      `);
+      res.json({ success: true });
+    } catch (err: any) {
+      res.status(500).json({ message: 'Failed to update medication' });
+    }
+  });
+
+  app.delete('/api/medications/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      const { id } = req.params;
+      await db.execute(sql`UPDATE medications SET is_active = false WHERE id = ${parseInt(id)} AND user_id = ${userId}`);
+      res.json({ success: true });
+    } catch (err: any) {
+      res.status(500).json({ message: 'Failed to remove medication' });
+    }
+  });
+
+  app.post('/api/medications/:id/log', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      const { id } = req.params;
+      const { skipped, skipReason, notes } = req.body;
+      await db.execute(sql`
+        INSERT INTO medication_logs (medication_id, user_id, taken_at, skipped, skip_reason, notes)
+        VALUES (${parseInt(id)}, ${userId}, NOW(), ${!!skipped}, ${skipReason || null}, ${notes || null})
+      `);
+      res.json({ success: true });
+    } catch (err: any) {
+      res.status(500).json({ message: 'Failed to log medication' });
+    }
+  });
+
+  // ============================================================
+  // APPOINTMENTS API
+  // ============================================================
+
+  app.get('/api/appointments', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      const appts = await db.execute(sql`
+        SELECT * FROM appointments 
+        WHERE user_id = ${userId} AND status != 'cancelled'
+        ORDER BY appointment_date ASC
+      `);
+      res.json(appts.rows);
+    } catch (err: any) {
+      res.status(500).json({ message: 'Failed to fetch appointments' });
+    }
+  });
+
+  app.post('/api/appointments', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      const { title, providerName, providerType, location, appointmentDate, duration, notes, prepNotes } = req.body;
+      if (!title || !providerName || !appointmentDate) return res.status(400).json({ message: 'Title, provider, and date required' });
+
+      const result = await db.execute(sql`
+        INSERT INTO appointments (user_id, title, provider_name, provider_type, location, appointment_date, duration, notes, prep_notes)
+        VALUES (${userId}, ${title}, ${providerName}, ${providerType || 'other'}, ${location || null}, ${new Date(appointmentDate)}, ${duration || 60}, ${notes || null}, ${prepNotes || null})
+        RETURNING *
+      `);
+      res.json(result.rows[0]);
+    } catch (err: any) {
+      console.error('Appointment create error:', err);
+      res.status(500).json({ message: 'Failed to add appointment' });
+    }
+  });
+
+  app.put('/api/appointments/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      const { id } = req.params;
+      const { title, providerName, providerType, location, appointmentDate, notes, prepNotes, followUpNotes, status } = req.body;
+      await db.execute(sql`
+        UPDATE appointments SET
+          title = COALESCE(${title}, title),
+          provider_name = COALESCE(${providerName}, provider_name),
+          provider_type = COALESCE(${providerType}, provider_type),
+          location = ${location ?? null},
+          appointment_date = COALESCE(${appointmentDate ? new Date(appointmentDate) : null}, appointment_date),
+          notes = ${notes ?? null},
+          prep_notes = ${prepNotes ?? null},
+          follow_up_notes = ${followUpNotes ?? null},
+          status = COALESCE(${status}, status)
+        WHERE id = ${parseInt(id)} AND user_id = ${userId}
+      `);
+      res.json({ success: true });
+    } catch (err: any) {
+      res.status(500).json({ message: 'Failed to update appointment' });
+    }
+  });
+
+  app.delete('/api/appointments/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      const { id } = req.params;
+      await db.execute(sql`UPDATE appointments SET status = 'cancelled' WHERE id = ${parseInt(id)} AND user_id = ${userId}`);
+      res.json({ success: true });
+    } catch (err: any) {
+      res.status(500).json({ message: 'Failed to cancel appointment' });
     }
   });
 

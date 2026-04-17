@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogOut, LayoutDashboard, Settings } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, Settings, Heart } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -84,6 +84,17 @@ export default function RecoveryHeader() {
 
           {/* Right actions */}
           <div className="hidden lg:flex items-center gap-3">
+            <Link href="/recovery/gift">
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-[#C9941A]/50 text-[#C9941A] hover:bg-[#C9941A]/10 font-semibold text-xs"
+                data-testid="button-nav-gift"
+              >
+                <Heart className="w-3.5 h-3.5 mr-1.5" />
+                Gift a Survivor
+              </Button>
+            </Link>
             {isLoading ? (
               <div className="w-8 h-8 rounded-full bg-[#1a1a1a] animate-pulse" />
             ) : user ? (
@@ -184,6 +195,12 @@ export default function RecoveryHeader() {
               </Link>
             ))}
             <div className="pt-3 border-t border-[#1e1e1e] flex flex-col gap-2">
+              <Link href="/recovery/gift">
+                <Button variant="outline" className="w-full border-[#C9941A]/50 text-[#C9941A] justify-start gap-2" data-testid="mobile-button-gift">
+                  <Heart className="h-4 w-4" />
+                  Gift a Survivor
+                </Button>
+              </Link>
               {user ? (
                 <>
                   <Link href="/recovery/dashboard">

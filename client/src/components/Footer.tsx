@@ -11,9 +11,12 @@ import {
   Heart,
   Target,
   FileText,
+  Gift,
+  Users,
 } from "lucide-react";
 import { SiTiktok, SiInstagram, SiYoutube, SiX } from "react-icons/si";
 import sasquatchLogo from "@assets/stroked-out-sasquatch-logo.png";
+import strokeLyfeLogo from "@assets/Untitled_design_1776399427612.png";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -29,13 +32,15 @@ export default function Footer() {
 
   const communityLinks = [
     { label: "Dashboard", href: "/recovery/dashboard", icon: Target },
-    { label: "Community", href: "/recovery/social", icon: Heart },
+    { label: "Community", href: "/recovery/community", icon: Users },
     { label: "Resources", href: "/recovery/resources", icon: BookOpen },
     { label: "Sasquatch Coach", href: "/recovery/sasquatch-coach", icon: Brain },
+    { label: "Gift a Survivor", href: "/recovery/gift", icon: Gift },
   ];
 
   const companyLinks = [
     { label: "About Nick", href: "/recovery/about-nick" },
+    { label: "Stroke Lyfe Inc. (Nonprofit)", href: "/recovery/strokelyfe-org" },
     { label: "Pricing", href: "/pricing" },
     { label: "Contact", href: "/contact" },
     { label: "Privacy Policy", href: "/privacy" },
@@ -210,9 +215,28 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="text-center mt-6">
-            <p className="text-xs text-gray-600">
-              Powered by KremersX · Always consult your healthcare provider before starting any recovery program.
+          <div className="mt-8 pt-6 border-t border-[#1a1a1a]">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <img
+                  src={strokeLyfeLogo}
+                  alt="Stroke Lyfe Inc."
+                  className="h-8 w-auto opacity-60"
+                />
+                <div>
+                  <p className="text-xs font-semibold text-gray-400">Stroke Lyfe Inc.</p>
+                  <p className="text-xs text-gray-600">501(c)(3) Nonprofit · Rebuild. Rewire. Rise.</p>
+                </div>
+              </div>
+              <Link href="/recovery/gift">
+                <button className="flex items-center gap-2 bg-[#C9941A]/10 border border-[#C9941A]/30 text-[#C9941A] text-xs font-semibold px-4 py-2 rounded-md hover:bg-[#C9941A]/20 transition-colors" data-testid="footer-button-gift">
+                  <Gift className="h-3.5 w-3.5" />
+                  Gift a Survivor Access — from $47
+                </button>
+              </Link>
+            </div>
+            <p className="text-xs text-gray-600 text-center mt-4">
+              Powered by KremersX · Always consult your healthcare provider before starting any recovery program. · Not medical advice.
             </p>
           </div>
         </div>
