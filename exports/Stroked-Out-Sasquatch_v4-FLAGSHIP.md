@@ -715,7 +715,7 @@ You will not always get to choose your stroke. You almost always get to choose y
 ## CHAPTER 5 — The Day My Son Was Born
 *Word target: 2,200. Source material: MANIFESTO Ch 3 (lines 466–478), MASTER Ch 22 (line 1218).*
 
-**Opening line:** *"Spring 2019. The day my son was born. The day I took my own first breath back."*
+**Opening line:** *"April 24, 2019. The day my son was born. The day I took my own first breath back."*
 
 **Beats:**
 - Watching from the wheelchair. Couldn't stand for the delivery. Lisa in stirrups; me in a chair; the nurses navigating around me like I was furniture.
