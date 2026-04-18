@@ -175,7 +175,7 @@ export async function sendCreatorSaleNotification(
     <body>
       <div class="container">
         <div class="logo">KreAIte</div>
-        <h1>You made a sale! 🎉</h1>
+        <h1>You made a sale.</h1>
         <p>Congratulations ${creatorName}, someone just purchased your content!</p>
         
         <div class="sale-card">
@@ -208,7 +208,7 @@ export async function sendCreatorSaleNotification(
 
   return sendEmail({
     to: creatorEmail,
-    subject: `🎉 New Sale: ${productTitle}`,
+    subject: `New Sale — ${productTitle}`,
     html,
     text: `Congratulations ${creatorName}! You made a sale of ${productTitle} for ${formattedTotal}. Your earnings: ${formattedShare} (85%).`,
   });
@@ -293,7 +293,7 @@ export async function sendPayoutNotification(
     <body>
       <div class="container">
         <div class="logo">KreAIte</div>
-        <h1>Payout Sent! 💰</h1>
+        <h1>Payout Sent.</h1>
         <p>Great news ${creatorName}! Your earnings are on the way.</p>
         
         <div class="payout-card">
@@ -315,7 +315,7 @@ export async function sendPayoutNotification(
 
   return sendEmail({
     to: creatorEmail,
-    subject: `💰 Payout Sent: ${formattedAmount}`,
+    subject: `Payout Sent — ${formattedAmount}`,
     html,
     text: `Great news ${creatorName}! Your payout of ${formattedAmount} has been sent to your connected bank account.`,
   });

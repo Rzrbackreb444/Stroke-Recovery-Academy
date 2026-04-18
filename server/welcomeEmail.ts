@@ -131,6 +131,7 @@ export async function sendOtpEmail(email: string, otp: string, firstName?: strin
     eyebrow: 'SIGN-IN CODE',
     headline: 'Your one-time code',
     bodyHtml,
+    showCrisisCallout: true,
     whyReceiving: 'You requested a sign-in code for Stroke Recovery Academy.',
     unsubscribeUrl: `${EMAIL.site}/recovery/dashboard`,
   });
