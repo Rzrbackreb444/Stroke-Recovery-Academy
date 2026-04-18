@@ -5537,6 +5537,7 @@ export const userPersonas = pgTable("user_personas", {
   archetypeKey: text("archetype_key").notNull(), // 'sasquatch' | 'phoenix' | 'wolf' | 'bear' | 'anvil' | 'lighthouse'
   name: text("name").notNull(), // e.g. "Cassie the Phoenix"
   creed: text("creed").notNull(), // one-line manifesto in persona voice
+  why: text("why"), // why this archetype matters — persisted so re-forging stays context-aware
   triggerCue: text("trigger_cue"), // physical cue the survivor uses to switch modes (bracelet, song, phrase)
   voicePreset: text("voice_preset"), // ElevenLabs voice id alias
   accentColor: text("accent_color").notNull().default("#C9941A"),
