@@ -45,10 +45,11 @@ const motivationalQuotes = [
 export default function RecoveryDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
-  const { data: personaData } = useQuery<{ persona: { name: string; creed: string; archetypeKey: string; accentColor: string } | null }>({
+  const { data: personaData } = useQuery<{ persona: { name: string; creed: string; archetypeKey: string; accentColor: string; triggerCue: string | null } | null }>({
     queryKey: ['/api/persona/me'],
   });
   const persona = personaData?.persona ?? null;
+  const personaAccent = persona?.accentColor || "#C9941A";
   const [checkinForm, setCheckinForm] = useState({
     moodScore: 5,
     energyScore: 5,
@@ -200,20 +201,34 @@ export default function RecoveryDashboard() {
           <div className="grid md:grid-cols-3 gap-6 items-center">
             <div className="md:col-span-2">
               <h1 className="text-4xl md:text-5xl font-black mb-3" data-testid="text-dashboard-title">
-                Welcome back, <span className="text-[#C9941A]">{persona?.name || user?.firstName || "Warrior"}</span>
+                Welcome back,{" "}
+                <span style={{ color: personaAccent }}>
+                  {persona?.name || user?.firstName || "Warrior"}
+                </span>
               </h1>
               {persona?.creed ? (
                 <p className="text-gray-300 text-lg italic" data-testid="text-persona-creed">"{persona.creed}"</p>
               ) : (
                 <p className="text-gray-300 text-lg italic" data-testid="text-quote">"{randomQuote}"</p>
               )}
-              {!persona && (
+              {persona?.triggerCue && (
+                <p className="text-xs text-gray-500 mt-2" data-testid="text-persona-trigger">
+                  <span className="uppercase tracking-wide" style={{ color: personaAccent }}>Trigger:</span> {persona.triggerCue}
+                </p>
+              )}
+              <div className="mt-3">
                 <Link href="/recovery/forge">
-                  <Button variant="outline" size="sm" className="mt-3 border-[#C9941A]/40 text-[#C9941A] hover:bg-[#C9941A]/10" data-testid="button-forge-persona">
-                    Forge Your Beast
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-[#333] hover:bg-[#1a1a1a]"
+                    style={{ color: personaAccent, borderColor: `${personaAccent}66` }}
+                    data-testid={persona ? "button-reforge-persona" : "button-forge-persona"}
+                  >
+                    {persona ? "Re-forge your beast" : "Forge Your Beast"}
                   </Button>
                 </Link>
-              )}
+              </div>
             </div>
             
             <div className="flex flex-col items-center justify-center p-6 rounded-lg border border-[#333] bg-[#1a1a1a]">

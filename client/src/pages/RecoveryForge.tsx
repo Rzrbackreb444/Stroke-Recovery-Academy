@@ -57,6 +57,7 @@ export default function RecoveryForge() {
         setName(existingData.persona.name);
         setCreed(existingData.persona.creed);
         setTrigger(existingData.persona.triggerCue ?? "");
+        setWhy(existingData.persona.why ?? "");
       }
     }
   }, [existingData, archetypeData]);
@@ -82,6 +83,7 @@ export default function RecoveryForge() {
         archetypeKey: selected?.key,
         name,
         creed,
+        why: why || null,
         triggerCue: trigger || null,
         voicePreset: selected?.voicePreset,
         accentColor: selected?.accentColor,
