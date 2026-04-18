@@ -20,10 +20,13 @@ import {
   Heart,
   Quote,
   ArrowRight,
+  Music,
+  Video as VideoIcon,
 } from "lucide-react";
 import { SiFacebook, SiX, SiWhatsapp } from "react-icons/si";
 
 const VIDEO_SRC = "/videos/squatchy-anthem.mp4";
+const AUDIO_SRC = "/videos/stand-up.mp3";
 const SHARE_URL =
   typeof window !== "undefined" ? `${window.location.origin}/recovery/anthem` : "https://strokerecoveryacademy.com/recovery/anthem";
 const SHARE_TEXT =
@@ -31,6 +34,7 @@ const SHARE_TEXT =
 
 const HASHTAGS = [
   "Squatchy",
+  "StandUp",
   "StrokeRecovery",
   "OvercomingAdversity",
   "NeverGiveUp",
@@ -40,6 +44,38 @@ const HASHTAGS = [
   "RecoveryJourney",
   "InspirationalMusic",
   "KeepSwinging",
+];
+
+type TrackId = "squatchy" | "stand-up";
+
+interface Track {
+  id: TrackId;
+  title: string;
+  kind: "video" | "audio";
+  src: string;
+  poster?: string;
+  badge: string;
+  tagline: string;
+}
+
+const TRACKS: Track[] = [
+  {
+    id: "squatchy",
+    title: "Squatchy",
+    kind: "video",
+    src: VIDEO_SRC,
+    poster: "/videos/squatchy-poster.jpg",
+    badge: "Track 01 · Anthem",
+    tagline: "From wheelchair to warrior. Get up. Get loud. Get Squatchy.",
+  },
+  {
+    id: "stand-up",
+    title: "Stand Up!",
+    kind: "audio",
+    src: AUDIO_SRC,
+    badge: "Track 02 · Recovery Single",
+    tagline: "Knocked down isn't the end. Stand up — every single day.",
+  },
 ];
 
 const VERSES = [
@@ -59,29 +95,46 @@ const VERSES = [
 
 export default function RecoveryAnthem() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [activeTrack, setActiveTrack] = useState<TrackId>("squatchy");
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
   const { toast } = useToast();
 
+  const currentTrack = TRACKS.find((t) => t.id === activeTrack)!;
+  const currentMediaRef = currentTrack.kind === "video" ? videoRef : audioRef;
+
+  const stopAll = () => {
+    [videoRef.current, audioRef.current].forEach((m) => {
+      if (m && !m.paused) {
+        try { m.pause(); } catch { /* ignore */ }
+      }
+    });
+  };
+
+  const switchTrack = (id: TrackId) => {
+    if (id === activeTrack) return;
+    stopAll();
+    setActiveTrack(id);
+    setPlaying(false);
+  };
+
   const togglePlay = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    if (v.paused) {
-      v.play().then(() => setPlaying(true)).catch(() => {
-        // Autoplay/playback blocked — let native controls handle it.
-        setPlaying(!v.paused);
-      });
+    const m = currentMediaRef.current as HTMLMediaElement | null;
+    if (!m) return;
+    if (m.paused) {
+      m.play().then(() => setPlaying(true)).catch(() => setPlaying(!m.paused));
     } else {
-      v.pause();
+      m.pause();
       setPlaying(false);
     }
   };
 
   const toggleMute = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    v.muted = !v.muted;
-    setMuted(v.muted);
+    const m = currentMediaRef.current as HTMLMediaElement | null;
+    if (!m) return;
+    m.muted = !m.muted;
+    setMuted(m.muted);
   };
 
   const goFullscreen = () => {
@@ -148,22 +201,89 @@ export default function RecoveryAnthem() {
         </div>
       </section>
 
-      {/* VIDEO PLAYER */}
+      {/* TRACK SWITCHER + PLAYER */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+        {/* Track tabs */}
+        <div className="mb-5 flex flex-wrap gap-2" role="tablist" aria-label="Available tracks">
+          {TRACKS.map((t) => {
+            const active = t.id === activeTrack;
+            return (
+              <button
+                key={t.id}
+                role="tab"
+                aria-selected={active}
+                onClick={() => switchTrack(t.id)}
+                data-testid={`tab-track-${t.id}`}
+                className={`group flex items-center gap-3 px-4 py-3 rounded-lg border text-left transition-colors ${
+                  active
+                    ? "border-[#C9941A] bg-[#C9941A]/15"
+                    : "border-[#333] bg-[#1a1a1a] hover-elevate"
+                }`}
+              >
+                <div
+                  className={`w-9 h-9 rounded-md flex items-center justify-center flex-shrink-0 ${
+                    active ? "bg-[#C9941A] text-black" : "bg-[#0D0D0D] text-[#C9941A] border border-[#333]"
+                  }`}
+                >
+                  {t.kind === "video" ? <VideoIcon className="h-4 w-4" /> : <Music className="h-4 w-4" />}
+                </div>
+                <div>
+                  <p className={`text-[10px] uppercase tracking-[0.2em] font-bold ${active ? "text-[#C9941A]" : "text-gray-500"}`}>
+                    {t.badge}
+                  </p>
+                  <p className="text-sm font-bold text-white leading-tight">{t.title}</p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Active player */}
         <div className="relative rounded-xl overflow-hidden border border-[#C9941A]/40 bg-black shadow-[0_0_60px_rgba(201,148,26,0.15)]">
-          <video
-            ref={videoRef}
-            src={VIDEO_SRC}
-            className="w-full h-auto block bg-black"
-            playsInline
-            preload="metadata"
-            controls
-            poster="/videos/squatchy-poster.jpg"
-            aria-label="Squatchy — the Stroke Recovery Anthem video by Stroked-Out Sasquatch"
-            data-testid="video-anthem"
-            onPlay={() => setPlaying(true)}
-            onPause={() => setPlaying(false)}
-          />
+          {/* Video stays mounted so play state survives switching back. */}
+          <div className={currentTrack.id === "squatchy" ? "block" : "hidden"}>
+            <video
+              ref={videoRef}
+              src={VIDEO_SRC}
+              className="w-full h-auto block bg-black"
+              playsInline
+              preload="metadata"
+              controls
+              poster="/videos/squatchy-poster.jpg"
+              aria-label="Squatchy — the Stroke Recovery Anthem video by Stroked-Out Sasquatch"
+              data-testid="video-anthem"
+              onPlay={() => setPlaying(true)}
+              onPause={() => setPlaying(false)}
+            />
+          </div>
+          <div className={currentTrack.id === "stand-up" ? "block" : "hidden"}>
+            <div className="relative w-full bg-gradient-to-br from-[#C9941A]/20 via-[#1a1a1a] to-black p-8 sm:p-12">
+              <div className="flex items-center gap-5 mb-6">
+                <div className="w-20 h-20 rounded-xl bg-[#C9941A] flex items-center justify-center flex-shrink-0">
+                  <Music className="h-10 w-10 text-black" />
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9941A] font-bold mb-1">Stroked-Out Sasquatch · Single</p>
+                  <h3 className="text-3xl sm:text-4xl font-black text-white leading-tight" style={{ fontFamily: "Playfair Display, Georgia, serif" }}>
+                    Stand Up!
+                  </h3>
+                </div>
+              </div>
+              <audio
+                ref={audioRef}
+                src={AUDIO_SRC}
+                preload="metadata"
+                controls
+                className="w-full"
+                aria-label="Stand Up! — recovery single by Stroked-Out Sasquatch"
+                data-testid="audio-stand-up"
+                onPlay={() => setPlaying(true)}
+                onPause={() => setPlaying(false)}
+              >
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+          </div>
         </div>
 
         {/* Custom action bar */}
@@ -174,7 +294,7 @@ export default function RecoveryAnthem() {
             data-testid="button-anthem-play"
           >
             {playing ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
-            {playing ? "Pause" : "Play"} Squatchy
+            {playing ? "Pause" : "Play"} {currentTrack.title}
           </Button>
           <Button
             variant="outline"
@@ -185,22 +305,32 @@ export default function RecoveryAnthem() {
             {muted ? <VolumeX className="h-4 w-4 mr-2" /> : <Volume2 className="h-4 w-4 mr-2" />}
             {muted ? "Unmute" : "Mute"}
           </Button>
-          <Button
-            variant="outline"
-            onClick={goFullscreen}
-            className="border-[#333] bg-[#1a1a1a] text-white"
-            data-testid="button-anthem-fullscreen"
+          {currentTrack.kind === "video" && (
+            <Button
+              variant="outline"
+              onClick={goFullscreen}
+              className="border-[#333] bg-[#1a1a1a] text-white"
+              data-testid="button-anthem-fullscreen"
+            >
+              <Maximize2 className="h-4 w-4 mr-2" />
+              Fullscreen
+            </Button>
+          )}
+          <a
+            href={currentTrack.src}
+            download={currentTrack.kind === "video" ? "Squatchy-Anthem.mp4" : "Stand-Up.mp3"}
+            className="ml-auto"
           >
-            <Maximize2 className="h-4 w-4 mr-2" />
-            Fullscreen
-          </Button>
-          <a href={VIDEO_SRC} download="Squatchy-Anthem.mp4" className="ml-auto">
             <Button variant="outline" className="border-[#C9941A]/40 bg-[#1a1a1a] text-[#C9941A]" data-testid="button-anthem-download">
               <Download className="h-4 w-4 mr-2" />
               Download
             </Button>
           </a>
         </div>
+
+        <p className="mt-3 text-sm text-gray-400 italic" data-testid="text-track-tagline">
+          {currentTrack.tagline}
+        </p>
       </section>
 
       {/* STORY + SHARE */}
