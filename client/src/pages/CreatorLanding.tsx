@@ -544,8 +544,8 @@ export default function CreatorLanding() {
               <Link href="/pricing"><span className="hover:text-white cursor-pointer">Pricing</span></Link>
               <Link href="/marketplace"><span className="hover:text-white cursor-pointer">Marketplace</span></Link>
               <Link href="/about"><span className="hover:text-white cursor-pointer">About</span></Link>
-              <Link href="/terms-of-service"><span className="hover:text-white cursor-pointer">Terms</span></Link>
-              <Link href="/privacy-policy"><span className="hover:text-white cursor-pointer">Privacy</span></Link>
+              <Link href="/terms"><span className="hover:text-white cursor-pointer">Terms</span></Link>
+              <Link href="/privacy"><span className="hover:text-white cursor-pointer">Privacy</span></Link>
             </div>
             <span className="text-white/30 text-sm">© 2024 KreAIte. All rights reserved.</span>
           </div>

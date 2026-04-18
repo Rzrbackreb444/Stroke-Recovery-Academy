@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "wouter";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+import { useMutation } from "@tanstack/react-query";
 import {
   Mail,
   GraduationCap,
@@ -20,6 +24,34 @@ import strokeLyfeLogo from "@assets/Untitled_design_1776399427612.png";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const { toast } = useToast();
+  const [email, setEmail] = useState("");
+
+  const subscribe = useMutation({
+    mutationFn: async (emailAddress: string) => {
+      return await apiRequest("POST", "/api/newsletter/subscribe", { email: emailAddress });
+    },
+    onSuccess: () => {
+      toast({ title: "You're in.", description: "Welcome to the recovery revolution." });
+      setEmail("");
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Could not subscribe",
+        description: err?.message || "Please try again in a moment.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSubscribe = () => {
+    const trimmed = email.trim();
+    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      toast({ title: "Enter a valid email", variant: "destructive" });
+      return;
+    }
+    subscribe.mutate(trimmed);
+  };
 
   const recoveryLinks = [
     { label: "Recovery Academy", href: "/recovery/academy", icon: GraduationCap },
@@ -42,7 +74,7 @@ export default function Footer() {
     { label: "About Nick", href: "/recovery/about-nick" },
     { label: "Stroke Lyfe Inc. (Nonprofit)", href: "/recovery/strokelyfe-org" },
     { label: "Pricing", href: "/pricing" },
-    { label: "Contact", href: "/contact" },
+    { label: "Contact", href: "/recovery/about-nick" },
     { label: "Privacy Policy", href: "/privacy" },
     { label: "Terms of Service", href: "/terms" },
   ];
@@ -78,15 +110,26 @@ export default function Footer() {
                 <Input
                   type="email"
                   placeholder="your@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleSubscribe();
+                    }
+                  }}
+                  disabled={subscribe.isPending}
                   className="flex-1 border-[#333] bg-[#111] text-white placeholder:text-gray-500 focus:border-[#C9941A]"
                   data-testid="input-newsletter-email"
                 />
                 <Button
                   className="bg-[#C9941A] text-black font-semibold flex-shrink-0"
                   data-testid="button-newsletter-subscribe"
+                  onClick={handleSubscribe}
+                  disabled={subscribe.isPending}
                 >
                   <Mail className="h-4 w-4 mr-2" />
-                  Join
+                  {subscribe.isPending ? "Joining..." : "Join"}
                 </Button>
               </div>
             </div>
@@ -99,7 +142,7 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2">
               {recoveryLinks.map((link) => (
-                <li key={link.href}>
+                <li key={link.label}>
                   <Link
                     href={link.href}
                     className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm group"
@@ -120,7 +163,7 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2">
               {communityLinks.map((link) => (
-                <li key={link.href}>
+                <li key={link.label}>
                   <Link
                     href={link.href}
                     className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm group"
@@ -141,7 +184,7 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2">
               {companyLinks.map((link) => (
-                <li key={link.href}>
+                <li key={link.label}>
                   <Link
                     href={link.href}
                     className="text-gray-400 hover:text-white transition-colors block text-sm"

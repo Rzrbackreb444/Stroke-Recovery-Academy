@@ -374,7 +374,7 @@ export default function RecoveryUniversity() {
                           </>
                         );
                       })()}
-                      <Link href="/pricing" className="ml-auto">
+                      <Link href="/recovery/pricing" className="ml-auto">
                         <Button variant="ghost" size="sm" className="text-[#C9941A] hover:bg-[#C9941A]/10" data-testid="button-upgrade">
                           Upgrade
                         </Button>
