@@ -1,6 +1,6 @@
 # STROKED-OUT SASQUATCH
 
-### How a 250-Pound Arkansas Boy Got Hit by a Stroke at 35, Was Told He'd Never Walk Right Again, and Spent Seven Years Building the Body, Brain, and Empire That Proved Every "Never" Wrong
+### How a 250-Pound Arkansas Boy Got Hit by a Stroke at 36, Was Told He'd Never Walk Right Again, and Spent Seven Years Building the Body, Brain, and Empire That Proved Every "Never" Wrong
 
 **Nick "Stroked-Out Sasquatch" Kremers**
 
@@ -31,11 +31,12 @@ Nick — this is the master manuscript file. Everything publication-ready lives 
 
 **What's locked in v4 (95+ already):**
 - Front matter (title, copyright, dedication, Author's Note, Introduction)
+- **Biographical facts corrected and locked:** stroke date December 3, 2018; age at stroke 36; height 6'2"; medical reviewer Michael Osterbur, PT (the same Michael who got you walking again at Encompass — bringing it full-circle).
 - Part I memoir — Chapters 1, 2, 3 fully drafted in your voice (~7,800 words)
 - Part II Six Laws — Chapter 11 (Ownership) fully drafted as the structural template (~3,100 words). The other five Laws use the same skeleton.
 - Part IV Master Blueprint — Doctrine + Creed + 66-Day Tracker fully drafted
 - Appendices A, B, C, D — fully drafted
-- References — every floating bracket citation resolved to a real source with DOI/URL, plus a flagged list of any I couldn't verify so you can confirm with your reviewer before print
+- References — every floating bracket citation resolved to a real source with DOI/URL, plus a flagged list of any I couldn't verify so Michael can confirm before print
 
 **What's beat-sheeted (you fill in over 4–6 weeks of focused writing, ~2,500 words/chapter):**
 - Part I Chapters 4–10 (memoir continuation: meeting Michael through the home arena)
@@ -103,7 +104,7 @@ First Edition
 Cover design: [Designer name]
 Interior design: [Designer name]
 Editorial: [Editor name]
-Medical review: [Reviewer name, credentials, institution]
+Medical review: Michael Osterbur, PT — Encompass Health Rehabilitation Hospital, Northwest Arkansas
 
 Printed in the United States of America.
 
@@ -130,8 +131,8 @@ Brother from another mother. The only one who didn't disappear.
 For Karlie —
 You made me feel human when I felt like a burden. Compassion is medicine.
 
-For Michael —
-You said "we're not here to survive — we're here to rebuild" and you handed me back my life one ten-foot lap at a time. You're the reason this book exists.
+For Michael Osterbur, PT —
+You said "we're not here to survive — we're here to rebuild" and you handed me back my life one ten-foot lap at a time. You were a brand-new therapist when you got assigned the sack of oranges in the wheelchair, and you didn't flinch. You're the reason this book exists. You're also the reason it's medically sound — thank you for reading every page and stress-testing every claim.
 
 For Mom and the rest of my family —
 I know it wasn't easy watching. I know I wasn't easy. I love you.
@@ -148,7 +149,7 @@ Keep swinging.
 
 You're about to read a book a doctor probably should have written. They didn't. So I did.
 
-I am not a doctor. I am not a physical therapist. I am not a neurologist. I am a 250-pound Arkansas boy who got blindsided by a hemorrhagic stroke in 2018 at the age of 35, woke up with the left side of his body dead, was told by people in white coats that I'd "probably never walk normally again" and that I'd "lose music recognition forever," and then spent the next seven years systematically proving them wrong.
+I am not a doctor. I am not a physical therapist. I am not a neurologist. I am a 250-pound Arkansas boy who got blindsided by a hemorrhagic stroke in 2018 at the age of 36, woke up with the left side of his body dead, was told by people in white coats that I'd "probably never walk normally again" and that I'd "lose music recognition forever," and then spent the next seven years systematically proving them wrong.
 
 I walk now. I walked my son to his first day of preschool. I sing along to Britney Spears in the truck. I deadlift with both arms. I built a recovery academy that has reached more than fourteen thousand survivors. I am sitting at a kitchen table in Fort Smith, Arkansas, with a beard down to my chest and a Stroke Lyfe crest on my shoulder, typing this with both hands.
 
@@ -160,7 +161,7 @@ The first book is a memoir. It's the chronological story of what happened to me,
 
 The second book is a field manual. Six Laws. Twenty-one chapters of structure. A 66-Day Transformation tracker. Exercise protocols. Nutrition for brain repair. Equipment recommendations. A clinician guide for your therapy team. A wisdom codex of every line that kept me alive. You can read this book front to back like a memoir, or you can crack it open at Chapter 11 and use it like a manual. Both ways work.
 
-A word on the science. Every claim in this book about how the brain heals — neuroplasticity, BDNF, motor imagery, error-based learning, mirror neurons, long-term potentiation, internal locus of control — is footnoted to peer-reviewed research. My medical reviewer, [REVIEWER NAME], [CREDENTIALS, INSTITUTION], read every page and stress-tested every claim. Where the science is settled, I say so. Where it's emerging, I say so. Where I'm telling you my own story and not making a clinical claim, I say so. Trust but verify. The References appendix has the DOIs.
+A word on the science. Every claim in this book about how the brain heals — neuroplasticity, BDNF, motor imagery, error-based learning, mirror neurons, long-term potentiation, internal locus of control — is footnoted to peer-reviewed research. My medical reviewer, **Michael Osterbur, PT** — the physical therapist who walked me out of paralysis at Encompass Health Rehabilitation Hospital in Northwest Arkansas, and who you'll meet by name in Chapter 3 — read every page and stress-tested every claim. Where the science is settled, I say so. Where it's emerging, I say so. Where I'm telling you my own story and not making a clinical claim, I say so. Trust but verify. The References appendix has the DOIs.
 
 A word on what this book is not. It is not a replacement for your therapy team. It is not a guarantee. It is not a promise that you will walk again or talk again or write again or hold your kid again. I cannot promise you that, because nobody can. What I *can* promise is that the protocols and mindset shifts in this book are the same ones I used to climb from "permanent left-side hemiplegia" to ninety percent functional recovery. They worked for me. They've worked for thousands of survivors who've followed them on TikTok and inside the Stroke Recovery Academy. The science says they should work for you too. But you have to do the work. Nobody is coming to do it for you. That's not bad news. That's the whole reason this is possible.
 
@@ -188,13 +189,13 @@ Let's build.
 
 The morning I got hit, I had no business getting hit.
 
-I was thirty-five years old. Six-foot-three. Two hundred fifty pounds, give or take a sandwich. Bench-pressing four plates a side on a good day. Third-generation owner of Kremers Laundry Equipment Company in Fort Smith, Arkansas — the family business my grandfather started, my dad ran, and I was supposed to carry into a fourth generation. I had a fiancée who was pregnant with our first kid, a son. I had a beard, a truck, two dogs, a mortgage, and the kind of low-grade invincibility that only ever shows up in men who haven't been told no by their own bodies yet.
+I was thirty-six years old. Six-foot-two. Two hundred fifty pounds, give or take a sandwich. Bench-pressing four plates a side on a good day. Third-generation owner of Kremers Laundry Equipment Company in Fort Smith, Arkansas — the family business my grandfather started, my dad ran, and I was supposed to carry into a fourth generation. I had a fiancée who was pregnant with our first kid, a son. I had a beard, a truck, two dogs, a mortgage, and the kind of low-grade invincibility that only ever shows up in men who haven't been told no by their own bodies yet.
 
 I had warning signs. I ignored every one of them.
 
 The headaches were getting worse. The blood pressure readings at the cuff machine in the front of the Walmart pharmacy were getting worse. The stress of running a multi-million-dollar equipment business in a shrinking margin industry while planning a wedding while building a nursery was getting worse. I was eating like a college kid, sleeping like an insomniac, drinking like a man who used drinking to turn his brain off because his brain wouldn't turn off any other way. I was a walking arterial event waiting for the right Tuesday morning.
 
-October 4, 2018, was the right Tuesday morning.
+December 3, 2018, was the right Monday morning.
 
 I'm not going to tell you the whole stroke story here. That's Chapter 1. What I want you to understand, before we go anywhere, is the *gap* between two moments.
 
@@ -204,7 +205,7 @@ I lay there with a feeding tube down my throat and I thought: *no.*
 
 Not no like a tantrum. Not no like denial. Just a clean, quiet, total *no*. The same no a man says when somebody tries to sell him a lemon truck. *No, that's not the deal. Show me a different deal.*
 
-**Moment two:** Seven years later. October 4, 2025. The seventh anniversary of the day my brain blew up. I am standing in my own kitchen. Both feet planted. Left hand wrapped around a coffee mug, gripping firmly enough to feel the heat through the ceramic. My son — who was born while I was still in the chair, who I held for the first time with my one good arm because the other one was still dead — is seven years old. He is sitting at the table eating cereal. "Oops!... I Did It Again" is playing on the kitchen radio because some things, the universe just hands back to you with a wink. I am singing along. Both arms working. Mouth working. Brain working. Beard down to my chest. Sasquatch.
+**Moment two:** Seven years later. December 3, 2025. The seventh anniversary of the day my brain blew up. I am standing in my own kitchen. Both feet planted. Left hand wrapped around a coffee mug, gripping firmly enough to feel the heat through the ceramic. My son — who was born while I was still in the chair, who I held for the first time with my one good arm because the other one was still dead — is seven years old. He is sitting at the table eating cereal. "Oops!... I Did It Again" is playing on the kitchen radio because some things, the universe just hands back to you with a wink. I am singing along. Both arms working. Mouth working. Brain working. Beard down to my chest. Sasquatch.
 
 The gap between those two moments is not a miracle.
 It is a method.
@@ -227,7 +228,7 @@ You build who you're about to become.
 
 And here is the secret nobody tells you in the discharge paperwork: the version of you that gets built on the other side of this fight is *better*. Not better in the toxic-positivity, gratitude-journal, "everything-happens-for-a-reason" way that makes you want to throw your inspirational coffee mug at the wall. Better in the way that a steel beam is better than the iron ore it came from. The stroke was the smelter. The construction is what you do with the steel.
 
-I am not better than the man I was at thirty-five because I'm grateful for the stroke. I am not grateful for the stroke. The stroke took my fiancée — we are not romantic anymore, we are co-parents, and that's a wound that will never fully scar over. The stroke took most of my friends — I learned exactly who would stand by me and exactly who would vanish, and the math was uglier than I want to admit. The stroke took two years of my son's babyhood that I'll never get back. The stroke took my body's permission to take itself for granted and replaced it with the constant low hum of "something could go again at any time." If a genie offered me an undo button, I would push it.
+I am not better than the man I was at thirty-six because I'm grateful for the stroke. I am not grateful for the stroke. The stroke took my fiancée — we are not romantic anymore, we are co-parents, and that's a wound that will never fully scar over. The stroke took most of my friends — I learned exactly who would stand by me and exactly who would vanish, and the math was uglier than I want to admit. The stroke took two years of my son's babyhood that I'll never get back. The stroke took my body's permission to take itself for granted and replaced it with the constant low hum of "something could go again at any time." If a genie offered me an undo button, I would push it.
 
 But the genie doesn't offer the undo button. The genie offers a hammer.
 
@@ -304,13 +305,13 @@ Fort Smith, Arkansas
 
 ## CHAPTER 1
 ### The Lights Flickered Out
-*October 4, 2018 — Fort Smith, Arkansas*
+*December 3, 2018 — Fort Smith, Arkansas*
 
 I don't remember everything about the morning it happened. The brain protects you from some things. What I do remember, I remember in pieces — and the pieces have stayed sharp for seven years the way a knife stays sharp when you hone it every week instead of letting it dull in the drawer.
 
 I remember the light over the kitchen sink. Yellow, slightly buzzing, a fluorescent ring my dad had installed back when I was a teenager and that I'd never gotten around to replacing. I remember thinking, *that bulb's flickering again*, and then realizing it wasn't the bulb. It was me.
 
-I remember the coffee. Black, in a cracked Royals mug. I remember setting it down and my left hand not quite letting go of the handle the way my left hand had let go of every other handle for thirty-five years. I remember looking down at my fingers and watching them refuse a simple instruction. *Open. Let go. Open. Let go.* The signal left my brain. The signal did not arrive at my hand. The wire was cut, and I didn't know it yet because I had never had a wire cut before, and you don't believe a wire can be cut until it is.
+I remember the coffee. Black, in a cracked Royals mug. I remember setting it down and my left hand not quite letting go of the handle the way my left hand had let go of every other handle for thirty-six years. I remember looking down at my fingers and watching them refuse a simple instruction. *Open. Let go. Open. Let go.* The signal left my brain. The signal did not arrive at my hand. The wire was cut, and I didn't know it yet because I had never had a wire cut before, and you don't believe a wire can be cut until it is.
 
 I remember the floor coming up at me sideways. Not falling forward. Not falling back. *Sideways*, like the world had tilted on a hinge nobody asked permission to install.
 
@@ -318,7 +319,7 @@ I remember thinking — and this is the thing I want you to hear, because if thi
 
 Don't walk it off. Call 911. Time is brain.
 
-I didn't call 911. Lisa did. Lisa was eight months pregnant with the boy who would become my reason to live, and she walked into the kitchen and saw a two-hundred-fifty-pound man on the linoleum with the left side of his face hanging off his skull like the meat had given up holding onto the bone, and she did the one right thing in the right order: she called.
+I didn't call 911. Lisa did. Lisa was pregnant with the boy who would become my reason to live, and she walked into the kitchen and saw a two-hundred-fifty-pound man on the linoleum with the left side of his face hanging off his skull like the meat had given up holding onto the bone, and she did the one right thing in the right order: she called.
 
 The paramedics asked me my name.
 I knew my name.
@@ -347,7 +348,7 @@ I was airlifted from the regional hospital to a bigger hospital with a neurosurg
 
 Fifty staples.
 
-Sometimes when survivors meet me in person now, after the talks, after the academy events, they reach up and touch the scar through my hair. I let them. The scar is a coastline. It runs from above my right ear, up across the top of my head, almost to the crown. It is the geography of October 4, 2018. It is the border between two countries: the country of the man I was, and the country of the man I had to become.
+Sometimes when survivors meet me in person now, after the talks, after the academy events, they reach up and touch the scar through my hair. I let them. The scar is a coastline. It runs from above my right ear, up across the top of my head, almost to the crown. It is the geography of December 3, 2018. It is the border between two countries: the country of the man I was, and the country of the man I had to become.
 
 I keep my head shaved now mostly because I like the look. But also because the scar reminds people, when they look at me, that the body in front of them was rebuilt. That the standing, the walking, the gripping, the talking, the laughing — none of it is automatic. All of it is a daily renewal of a contract I signed with my own brain in the ICU.
 
@@ -361,7 +362,7 @@ Every flicker since has been a payment on that contract.
 
 A hemorrhagic stroke is what happens when a blood vessel in the brain ruptures and bleeds into surrounding tissue. About thirteen percent of all strokes are hemorrhagic; the other eighty-seven percent are ischemic, caused by a blood clot blocking flow.<sup>2</sup> Hemorrhagic strokes are deadlier in the acute phase but, in survivors who make it through the first month, often produce more dramatic recovery curves — because the surviving brain tissue is intact and just needs to reroute its wiring around the dead zone.
 
-That rerouting is called **neuroplasticity**, and it is the single most important word in this book. Your brain is not a fixed circuit board. It is a living, adaptive network of about eighty-six billion neurons, and those neurons are constantly forming, strengthening, weakening, and pruning their connections to one another based on what you ask them to do. Use a pathway? It strengthens. Ignore a pathway? It atrophies. This is true at age six. It is true at age thirty-five. It is true at age eighty-five. The window does not close. The work gets harder per inch, but the wiring stays plastic until the day you die.<sup>3</sup>
+That rerouting is called **neuroplasticity**, and it is the single most important word in this book. Your brain is not a fixed circuit board. It is a living, adaptive network of about eighty-six billion neurons, and those neurons are constantly forming, strengthening, weakening, and pruning their connections to one another based on what you ask them to do. Use a pathway? It strengthens. Ignore a pathway? It atrophies. This is true at age six. It is true at age thirty-six. It is true at age eighty-six. The window does not close. The work gets harder per inch, but the wiring stays plastic until the day you die.<sup>3</sup>
 
 When a stroke kills a region of motor cortex — the part of your brain that sends *move now* signals to your muscles — the muscles themselves are usually fine. The wire is cut. The bulb still works. The job of recovery is to lay new wire. The new wire is laid by repetition: every time you attempt a movement, even a movement that fails, you send a signal down a nearby surviving pathway, and that pathway slowly strengthens. After enough repetitions, the new pathway becomes the new highway, and the movement returns.<sup>4</sup>
 
@@ -389,7 +390,7 @@ I spent a month in there. A month. Thirty days that felt like three hundred and 
 
 The night janitor did not call my dad. The night janitor went and got a nurse. The nurse increased my sedation. I lost another four hours.
 
-Brain swelling and meds. That's the medical explanation. That's the box on the chart. The real explanation is that your own mind turns against you when you need it most, and there is no protocol for that, and there is no warning for it, and there is no way to prepare a man who has been in charge of his own thoughts for thirty-five years for the experience of being inside a thought he can't trust.
+Brain swelling and meds. That's the medical explanation. That's the box on the chart. The real explanation is that your own mind turns against you when you need it most, and there is no protocol for that, and there is no warning for it, and there is no way to prepare a man who has been in charge of his own thoughts for thirty-six years for the experience of being inside a thought he can't trust.
 
 If you are in the ICU right now and reading this — first of all, how the hell are you reading? Get some rest. Second: the hallucinations are real. The hallucinations are *not* real. Both things are true at the same time. The hallucinations are real in the sense that they are happening in your brain and your brain is the only window you have on the world. The hallucinations are not real in the sense that the things they show you are not happening in the room. Tell a nurse. Tell your person. Don't fight them alone. They will pass.
 
@@ -399,7 +400,7 @@ If you are in the ICU right now and reading this — first of all, how the hell 
 
 Words wouldn't come. Thoughts were clear in my head — sometimes startlingly clear, the way thoughts get when there's nothing else for the brain to do — but my mouth refused to cooperate. The signal left. The signal didn't arrive. The wire cut.
 
-Swallowing? Gone. I started on tube feedings. That damn tube down my throat. One night I woke up choking on it. Lisa was in the chair next to the bed; she was eight and a half months pregnant and she had not gone home in a week. She freaked out. She yelled for help. Response was slow.
+Swallowing? Gone. I started on tube feedings. That damn tube down my throat. One night I woke up choking on it. Lisa was in the chair next to the bed, pregnant with our son, and she had not gone home in a week. She freaked out. She yelled for help. Response was slow.
 
 She didn't wait.
 
@@ -409,7 +410,7 @@ Blood. Chaos. Nurses rushing in. A whole protocol flowchart violated in fifteen 
 
 After tubes came pureed food. Tasted like baby mush. Took an hour to swallow crushed meds in applesauce. The doctors had warned us that the stroke location meant I would probably lose music recognition, probably lose taste discrimination, probably lose the ability to tell a hot dog from a hamburger by sight or sound. They were wrong on all three counts, and I want to tell you the exact moment I knew they were wrong.
 
-It was day eighteen. I had just been moved out of the ICU into a step-down unit. I had just managed, with help, to use a bedside commode for the first time — and "manage" is generous, because what actually happened is that the brain damage had wiped out my bowel control and I pooped myself in the act of trying to *not* poop myself. The nurse was kind. The nurse was professional. The humiliation was complete. I was a thirty-five-year-old man who two months earlier had been bench-pressing four plates a side, and I had just lost a fight with my own intestines in front of a stranger.
+It was day eighteen. I had just been moved out of the ICU into a step-down unit. I had just managed, with help, to use a bedside commode for the first time — and "manage" is generous, because what actually happened is that the brain damage had wiped out my bowel control and I pooped myself in the act of trying to *not* poop myself. The nurse was kind. The nurse was professional. The humiliation was complete. I was a thirty-six-year-old man who two months earlier had been bench-pressing four plates a side, and I had just lost a fight with my own intestines in front of a stranger.
 
 And in the middle of that humiliation, in my head, at full volume, with a clarity that was almost vindictive — *"Oops!... I Did It Again"* started playing. Britney Spears. 1999. The exact track. The exact synth riff. The exact backing vocals. Every word.
 
@@ -429,7 +430,7 @@ That question — *what else are they wrong about?* — became the engine of the
 
 Everything I had ever taken for granted became a problem to be solved by another human being. Rolling over. Reaching the water cup. Adjusting the blanket. Scratching an itch on my own face. Going to the bathroom. Wiping. Brushing my own teeth. Putting on a sock. Ordering food off a menu when my mouth wouldn't form the word *cheeseburger*.
 
-If you have not been there, you cannot fully understand what this does to a person. The closest analogy is being demoted, all at once, from adult to toddler — except that the toddler is six-foot-three and has the muscle memory of a man who used to throw concrete blocks for a living, and the toddler's brain knows it is not a toddler, and the toddler's brain *hates* the body it's stuck in, and the toddler is also bleeding internally and on heavy narcotics and wondering whether he's going to be alive in the morning.
+If you have not been there, you cannot fully understand what this does to a person. The closest analogy is being demoted, all at once, from adult to toddler — except that the toddler is six-foot-two and has the muscle memory of a man who used to throw concrete blocks for a living, and the toddler's brain knows it is not a toddler, and the toddler's brain *hates* the body it's stuck in, and the toddler is also bleeding internally and on heavy narcotics and wondering whether he's going to be alive in the morning.
 
 The dependency was the worst part. Worse than the pain. Pain you can fight. Dependency you have to *accept*, and acceptance felt, at the time, like surrender.
 
@@ -491,7 +492,7 @@ Brutal honesty time, and if you are a caregiver reading this and you don't want 
 
 I wondered if everyone would be better off if I didn't make it.
 
-I wondered if Lisa, eight months pregnant, would be better off raising our son alone with the life insurance and the freedom to find someone who wasn't a burden than she would be raising him with a husband who couldn't lift a spoon.
+I wondered if Lisa, pregnant and exhausted, would be better off raising our son alone with the life insurance and the freedom to find someone who wasn't a burden than she would be raising him with a husband who couldn't lift a spoon.
 
 I wondered if my parents would be better off remembering me as the strong son who used to carry refrigerators up flights of stairs than they would be visiting me, week after week, in a step-down unit watching me drool into a paper bib.
 
@@ -561,7 +562,7 @@ I rolled in on day one in a wheelchair pushed by an aide. Left side dead. Right 
 
 My case manager met me at the door. She was kind. She gave me a folder. She told me about the schedule: physical therapy twice a day, occupational therapy twice a day, speech therapy once a day, recreational therapy three times a week, group sessions in the evenings. She told me my therapist would be by in fifteen minutes to do an initial assessment. I nodded. I tried to say *thank you*. What came out was a sound that meant *thank you* if you were listening hard enough and wanted to hear it.
 
-Fifteen minutes later, Michael walked in.
+Fifteen minutes later, Michael Osterbur walked in.
 
 ---
 
@@ -714,7 +715,7 @@ You will not always get to choose your stroke. You almost always get to choose y
 ## CHAPTER 5 — The Day My Son Was Born
 *Word target: 2,200. Source material: MANIFESTO Ch 3 (lines 466–478), MASTER Ch 22 (line 1218).*
 
-**Opening line:** *"April 24, 2019. The day my son was born. The day I took my own first breath back."*
+**Opening line:** *"Spring 2019. The day my son was born. The day I took my own first breath back."*
 
 **Beats:**
 - Watching from the wheelchair. Couldn't stand for the delivery. Lisa in stirrups; me in a chair; the nurses navigating around me like I was furniture.
@@ -945,7 +946,7 @@ Try the three-question audit for thirty days. It will reorganize your relationsh
 
 Ownership eventually forces a survivor to face a reality that nobody else can force on them, because nobody else has the standing: **sometimes you built your own collapse.**
 
-I had ignored warning signs for years. The blood pressure was bad. The sleep was bad. The diet was bad. The stress was bad. I knew. I drove past the cuff machine at the Walmart pharmacy for two years and chose not to use it. I had a family history of cardiovascular disease and chose not to address it. I was thirty-five years old and treating my body like I was twenty-two, and one Tuesday morning the bill came due.
+I had ignored warning signs for years. The blood pressure was bad. The sleep was bad. The diet was bad. The stress was bad. I knew. I drove past the cuff machine at the Walmart pharmacy for two years and chose not to use it. I had a family history of cardiovascular disease and chose not to address it. I was thirty-six years old and treating my body like I was twenty-two, and one Monday morning the bill came due.
 
 That realization — *I had a hand in this* — hurt more than any of the staples. For about a week. And then it became the most useful realization I have ever had.
 
@@ -1356,7 +1357,7 @@ This book exists because of:
 
 ## ABOUT THE AUTHOR
 
-**Nick "Stroked-Out Sasquatch" Kremers** is a stroke survivor, recovery educator, and founder of Stroke Lyfe Inc., a 501(c)(3) nonprofit dedicated to serving stroke survivors and their families. After a hemorrhagic stroke at age 35 in 2018 left him with left-side hemiplegia and a prognosis of permanent disability, Nick spent seven years rebuilding to ninety percent functional recovery using the methods documented in this book.
+**Nick "Stroked-Out Sasquatch" Kremers** is a stroke survivor, recovery educator, and founder of Stroke Lyfe Inc., a 501(c)(3) nonprofit dedicated to serving stroke survivors and their families. After a hemorrhagic stroke on December 3, 2018, at age 36 left him with left-side hemiplegia and a prognosis of permanent disability, Nick spent seven years rebuilding to ninety percent functional recovery using the methods documented in this book.
 
 He is the founder of:
 
@@ -1724,15 +1725,35 @@ Stroke Lyfe Inc. is a registered 501(c)(3) nonprofit. EIN: [TO BE INSERTED]. Don
 
 **Manuscript word count (this draft):** ~22,500 words of finished prose + structural beat sheets. Filling the Ch 4–10 and Ch 12–21 beat sheets to the listed targets brings final count to **~78,000 words**.
 
-**Photo Insert Manifest (8 pages, glossy, between Part I and Part II):**
-1. Pre-stroke ranch/family photo (you and Lisa, 2017)
-2. ICU bed shot (if available — if not, the post-discharge wheelchair shot)
-3. The 2018 Royals-cap-with-walker photo (provided)
-4. Michael at Encompass Health (with permission)
-5. The day Nicholas Jr. was born — you holding him from the chair
-6. The first standing photo
-7. Year 5 — TikTok beard, transformation in progress
-8. The 2027 Stroke Lyfe king crest photo (provided) — front-facing, both arms, ninety percent
+**Photo Insert Manifest (16 pages, glossy, between Part I and Part II):**
+
+*Part A — Before:*
+1. Pre-stroke personality shot (clean-shaven, suit, Kremers Equipment era — the man before)
+2. Pre-stroke with Lisa (engagement / ranch, 2017–2018)
+
+*Part B — The Hit & The ICU:*
+3. ICU intubated, day 1–3 (ventilator, eyes closed — the worst night)
+4. ICU intubated, family bedside (Lisa pregnant, parents present)
+5. Staples close-up (post-craniotomy, fifty staples across the right side of the skull)
+6. Hospital bed, post-extubation (feeding tube visible, left side slack)
+
+*Part C — Encompass Health & The Walker Year:*
+7. Walker + nurse, first assisted steps (Encompass Health hallway)
+8. The 2018 Royals-cap-with-walker photo (provided)
+9. Wheelchair moment — quiet, head down (the lowest point, kept for honesty)
+10. Wheelchair moment — looking up (the turn)
+
+*Part D — Family & Becoming Dad:*
+11. Lisa with newborn son — first hours
+12. Holding Nicholas Jr. for the first time, from the chair, one good arm
+13. Family of three, first homecoming
+
+*Part E — The Comeback:*
+14. The viral TikTok still — picking up his son standing, both arms (100K+ views)
+15. Year 5–7 — Sasquatch beard, gym, transformation in progress
+16. The 2027 Stroke Lyfe king crest photo (provided) — front-facing, both arms, ninety percent
+
+*Optional bonus (back insert):* Michael Osterbur, PT at Encompass Health (with written permission — referenced in Ch 3 and as medical reviewer).
 
 **Cover image:** The 2018→2027 split (provided). Locked.
 
