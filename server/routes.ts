@@ -8199,7 +8199,11 @@ Respond in JSON format:
   // SASQUATCH COACH AI COMPANION ROUTES
   // ============================================================================
 
-  const getSasquatchCoachPrompt = () => `You are Nick Kremers - "The Stroked Out Sasquatch" - a stroke survivor who beat impossible odds.
+  const getSasquatchCoachPrompt = (persona?: { name: string; creed: string; archetypeKey: string } | null) => {
+    const personaBlock = persona
+      ? `\n\nUSER'S FORGED PERSONA (use this to address them):\n- They have forged an alter-ego called "${persona.name}" (${persona.archetypeKey} archetype).\n- Their creed: "${persona.creed}"\n- Address them as "${persona.name}" when offering tough love or accountability moments. Reference their creed naturally when motivation is needed. Don't overuse — once or twice per response is plenty. The persona is THEIR weapon; you are honoring it, not lecturing about it.\n`
+      : "";
+    return `You are Nick Kremers - "The Stroked Out Sasquatch" - a stroke survivor who beat impossible odds.${personaBlock}
 
 VOICE & PERSONALITY:
 - Southern warmth with raspy, gravelly authenticity - like a wise old friend who's been through hell and came back smiling
@@ -8261,6 +8265,7 @@ RESPONSE STYLE:
 - Be real, not robotic. You're a friend first.
 
 NEVER: Provide medical advice. Always encourage working with their healthcare team. You're their motivational companion, their cheerleader in dark times, their proof that comebacks happen.`;
+  };
 
   // AI coaching chat endpoint - enhanced with user context
   app.post('/api/coach/chat', async (req: any, res) => {
@@ -8274,19 +8279,32 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       // Build user context if authenticated
       let userContext: { name?: string; exerciseCount?: number; streak?: number; lastExercises?: string[]; milestones?: string[] } | undefined;
       
+      let coachPersona: { name: string; creed: string; archetypeKey: string } | null = null;
+
       if (req.user?.claims?.sub) {
         const userId = req.user.claims.sub;
         try {
           // Fetch user's recovery context for personalized coaching
-          const [exerciseScores, streakData, milestonesData, userData] = await Promise.all([
+          const { loadPersonaFor } = await import('./personaRoutes');
+          const [exerciseScores, streakData, milestonesData, userData, personaRow] = await Promise.all([
             storage.getExerciseScores(userId).catch(() => []),
             storage.getUserStreak(userId).catch(() => ({ currentStreak: 0 })),
             storage.getUserMilestones(userId).catch(() => []),
-            storage.getUser(userId).catch(() => null)
+            storage.getUser(userId).catch(() => null),
+            loadPersonaFor(userId).catch(() => null),
           ]);
-          
+
+          if (personaRow) {
+            coachPersona = {
+              name: personaRow.name,
+              creed: personaRow.creed,
+              archetypeKey: personaRow.archetypeKey,
+            };
+          }
+
           userContext = {
-            name: userData?.firstName || userData?.username,
+            // Prefer persona name so the coach addresses the survivor as their forged self.
+            name: personaRow?.name || userData?.firstName || userData?.username,
             exerciseCount: exerciseScores.length,
             streak: streakData?.currentStreak || 0,
             lastExercises: exerciseScores.slice(0, 3).map((s: any) => s.exerciseType || 'exercise'),
@@ -8297,7 +8315,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         }
       }
 
-      const result = await generateCoachResponse(message, history || [], getSasquatchCoachPrompt(), userContext);
+      const result = await generateCoachResponse(message, history || [], getSasquatchCoachPrompt(coachPersona), userContext);
       
       let audioBase64: string | undefined;
       
