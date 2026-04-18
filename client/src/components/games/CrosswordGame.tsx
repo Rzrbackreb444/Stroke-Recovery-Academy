@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Eye, RotateCw, Lightbulb, Volume2 } from "lucide-react";
+import { Eye, RotateCw, Lightbulb, Volume2, Pause, Play } from "lucide-react";
 import {
   buildCellNumberMap,
   generateCrossword,
@@ -29,6 +29,14 @@ interface SaveState {
   hintsUsed: number;
   attempts: number;
   layoutKey: string;
+  pausedMs?: number;
+  paused?: boolean;
+}
+
+function formatClock(sec: number): string {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${m}:${String(s).padStart(2, "0")}`;
 }
 
 // Singleton audio element — reused so a new "Listen" stops the previous one.
@@ -114,6 +122,10 @@ export default function CrosswordGame({
   const [hintsUsed, setHintsUsed] = useState(0);
   const [attempts, setAttempts] = useState(0);
   const [announce, setAnnounce] = useState("");
+  const [paused, setPaused] = useState(false);
+  const [pausedMs, setPausedMs] = useState(0);
+  const [pauseStartedAt, setPauseStartedAt] = useState<number | null>(null);
+  const [tick, setTick] = useState(0);
   const calledComplete = useRef(false);
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
@@ -127,11 +139,22 @@ export default function CrosswordGame({
       setStartedAt(saved.startedAt);
       setHintsUsed(saved.hintsUsed || 0);
       setAttempts(saved.attempts || 0);
+      setPausedMs(saved.pausedMs || 0);
+      if (saved.paused) {
+        setPaused(true);
+        setPauseStartedAt(Date.now());
+      } else {
+        setPaused(false);
+        setPauseStartedAt(null);
+      }
     } else {
       setValues(fresh);
       setStartedAt(Date.now());
       setHintsUsed(0);
       setAttempts(0);
+      setPausedMs(0);
+      setPaused(false);
+      setPauseStartedAt(null);
     }
     setActive(layout.entries[0] ? { row: layout.entries[0].row, col: layout.entries[0].col } : null);
     setDirection("across");
@@ -142,20 +165,52 @@ export default function CrosswordGame({
     calledComplete.current = false;
   }, [layout, layoutKey, packId, difficulty]);
 
-  // Autosave
+  // Live clock — ticks every second while playing
+  useEffect(() => {
+    if (solved || paused) return;
+    const t = setInterval(() => setTick((n) => n + 1), 1000);
+    return () => clearInterval(t);
+  }, [solved, paused]);
+
+  const elapsedSec = Math.max(
+    0,
+    Math.floor((Date.now() - startedAt - pausedMs - (pauseStartedAt ? Date.now() - pauseStartedAt : 0)) / 1000),
+  );
+  void tick;
+
+  function togglePause() {
+    if (solved) return;
+    if (!paused) {
+      setPaused(true);
+      setPauseStartedAt(Date.now());
+      setAnnounce("Crossword paused. Timer stopped.");
+    } else {
+      setPaused(false);
+      if (pauseStartedAt) setPausedMs((m) => m + (Date.now() - pauseStartedAt));
+      setPauseStartedAt(null);
+      setAnnounce("Crossword resumed.");
+    }
+  }
+
+  // Autosave — folds in-progress pause segment into pausedMs so a reload
+  // mid-pause doesn't silently count that gap as active solve time.
   useEffect(() => {
     if (solved) return;
     const t = setInterval(() => {
+      const effectivePausedMs =
+        pausedMs + (paused && pauseStartedAt ? Date.now() - pauseStartedAt : 0);
       saveGame<SaveState>(saveKey, packId, difficulty, {
         values,
         startedAt,
         hintsUsed,
         attempts,
         layoutKey,
+        pausedMs: effectivePausedMs,
+        paused,
       });
     }, 5000);
     return () => clearInterval(t);
-  }, [values, startedAt, hintsUsed, attempts, layoutKey, packId, difficulty, solved]);
+  }, [values, startedAt, hintsUsed, attempts, layoutKey, packId, difficulty, solved, pausedMs, paused, pauseStartedAt]);
 
   // Detect completion
   useEffect(() => {
@@ -175,7 +230,7 @@ export default function CrosswordGame({
     if (allCorrect && !calledComplete.current) {
       calledComplete.current = true;
       setSolved(true);
-      const durationSec = Math.round((Date.now() - startedAt) / 1000);
+      const durationSec = Math.max(1, Math.round((Date.now() - startedAt - pausedMs) / 1000));
       const totalCells = layout.entries.reduce((sum, e) => sum + e.word.length, 0);
       const accuracyPct = revealed
         ? 0
@@ -193,7 +248,7 @@ export default function CrosswordGame({
       clearGame(saveKey, packId, difficulty);
       if (!revealed) onComplete?.(stats);
     }
-  }, [values, layout, onComplete, startedAt, hintsUsed, attempts, revealed, packId, difficulty]);
+  }, [values, layout, onComplete, startedAt, hintsUsed, attempts, revealed, packId, difficulty, pausedMs]);
 
   function focusCell(r: number, c: number) {
     const el = inputRefs.current[`${r},${c}`];
@@ -201,6 +256,7 @@ export default function CrosswordGame({
   }
 
   function activateCell(r: number, c: number) {
+    if (paused) return;
     if (layout.grid[r][c] === null) return;
     if (active && active.row === r && active.col === c) {
       setDirection((d) => (d === "across" ? "down" : "across"));
@@ -231,6 +287,10 @@ export default function CrosswordGame({
   }
 
   function handleKey(e: React.KeyboardEvent<HTMLInputElement>, r: number, c: number) {
+    if (paused) {
+      e.preventDefault();
+      return;
+    }
     if (e.key === "ArrowRight") {
       e.preventDefault();
       const n = nextCell(r, c, "across");
@@ -278,6 +338,7 @@ export default function CrosswordGame({
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>, r: number, c: number) {
+    if (paused) return;
     const raw = e.target.value.toUpperCase().replace(/[^A-Z]/g, "");
     const letter = raw.slice(-1);
     const target = layout.grid[r][c];
@@ -302,6 +363,7 @@ export default function CrosswordGame({
   }
 
   function reveal() {
+    if (paused) return;
     setValues(layout.grid.map((row) => row.map((c) => (c === null ? null : c))));
     setRevealed(true);
   }
@@ -313,6 +375,9 @@ export default function CrosswordGame({
     setHintsUsed(0);
     setAttempts(0);
     setStartedAt(Date.now());
+    setPausedMs(0);
+    setPaused(false);
+    setPauseStartedAt(null);
     calledComplete.current = false;
     clearGame(saveKey, packId, difficulty);
     if (layout.entries[0]) {
@@ -321,6 +386,7 @@ export default function CrosswordGame({
   }
 
   function hintLetter() {
+    if (paused) return;
     if (!active) return;
     const target = layout.grid[active.row][active.col];
     if (!target) return;
@@ -334,6 +400,7 @@ export default function CrosswordGame({
   }
 
   function activateEntry(entry: CrosswordEntry) {
+    if (paused) return;
     setActive({ row: entry.row, col: entry.col });
     setDirection(entry.direction);
     focusCell(entry.row, entry.col);
@@ -402,6 +469,55 @@ export default function CrosswordGame({
     <>
       <div className="grid grid-cols-1 lg:grid-cols-[auto,1fr] gap-6" data-testid="game-crossword">
         <div className="flex flex-col items-center gap-4">
+          {/* Timer + Pause control */}
+          <div className="flex w-full items-center justify-between gap-3">
+            <div
+              className="flex items-center gap-2 rounded-md border border-[#1e1e1e] bg-[#0f0f0f] px-3 py-1.5 font-mono text-sm tabular-nums text-gray-300"
+              data-testid="text-cw-clock"
+              aria-label={`Elapsed time: ${formatClock(elapsedSec)}`}
+            >
+              <span className={`inline-block h-2 w-2 rounded-full ${paused ? "bg-gray-500" : "bg-[#C9941A] animate-pulse"}`} />
+              {formatClock(elapsedSec)}
+              {paused && <span className="ml-1 text-xs uppercase tracking-widest text-gray-500">Paused</span>}
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={togglePause}
+              data-testid="button-cw-pause"
+              className="border-[#333] bg-transparent text-gray-300"
+              disabled={solved}
+              aria-pressed={paused}
+            >
+              {paused ? (
+                <><Play className="mr-2 h-4 w-4" /> Resume</>
+              ) : (
+                <><Pause className="mr-2 h-4 w-4" /> Pause</>
+              )}
+            </Button>
+          </div>
+          <div className="relative">
+          {paused && (
+            <div
+              className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-md bg-[#0a0a0a]/95 backdrop-blur-sm"
+              role="status"
+              aria-live="polite"
+              data-testid="overlay-cw-paused"
+            >
+              <Pause className="mb-3 h-12 w-12" style={{ color: accent }} />
+              <p className="text-lg font-black uppercase tracking-widest text-white">Game Paused</p>
+              <p className="mt-1 text-sm text-gray-400">Take your time. Resume when ready.</p>
+              <Button
+                type="button"
+                onClick={togglePause}
+                className="mt-5 bg-[#C9941A] text-black hover:bg-[#C9941A]"
+                data-testid="button-cw-resume-overlay"
+              >
+                <Play className="mr-2 h-4 w-4" /> Resume
+              </Button>
+            </div>
+          )}
           <div
             className="inline-grid rounded-md border border-[#1e1e1e] bg-[#0f0f0f] p-1"
             style={{ gridTemplateColumns: `repeat(${layout.cols}, minmax(0, 1fr))` }}
@@ -459,6 +575,7 @@ export default function CrosswordGame({
               }),
             )}
           </div>
+          </div>
           <div className="flex flex-wrap items-center justify-center gap-2">
             <Button
               type="button"
@@ -467,6 +584,7 @@ export default function CrosswordGame({
               onClick={hintLetter}
               data-testid="button-cw-hint"
               className="border-[#333] bg-transparent text-gray-300"
+              disabled={paused || solved}
             >
               <Lightbulb className="mr-2 h-4 w-4" />
               Hint letter
@@ -478,6 +596,7 @@ export default function CrosswordGame({
               onClick={reveal}
               data-testid="button-cw-reveal"
               className="border-[#333] bg-transparent text-gray-300"
+              disabled={paused || solved}
             >
               <Eye className="mr-2 h-4 w-4" />
               Reveal all
