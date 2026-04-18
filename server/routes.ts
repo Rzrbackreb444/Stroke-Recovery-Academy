@@ -1153,10 +1153,17 @@ Allow: /
   // Auth routes
   app.get('/api/auth/user', async (req: any, res) => {
     try {
-      if (!req.isAuthenticated()) {
+      // Bridge: support both Replit Passport (req.user.claims.sub) and
+      // email/password/OTP sessions (req.session.userId).
+      let userId: string | undefined;
+      if (req.isAuthenticated && req.isAuthenticated() && req.user?.claims?.sub) {
+        userId = req.user.claims.sub;
+      } else if (req.session?.userId) {
+        userId = req.session.userId;
+      }
+      if (!userId) {
         return res.json(null);
       }
-      const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
       res.json(user);
     } catch (error) {
@@ -8374,6 +8381,70 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     }
   });
 
+  // GET /api/recovery/active-survivors — Hybrid live+seed activity strip.
+  // Returns up to 8 recently-active survivors. Real check-ins/posts in the
+  // last 48h come first; remaining slots are filled with curated seed names
+  // so the dashboard never looks empty. Each entry is tagged `live: boolean`
+  // so the UI can fade seeds out as the real signal grows.
+  app.get('/api/recovery/active-survivors', async (_req, res) => {
+    const SEED: Array<{ name: string; action: string; region: string; minutesAgo: number }> = [
+      { name: "Marcus T.",  action: "logged a check-in",          region: "Tulsa, OK",        minutesAgo: 6 },
+      { name: "Linda R.",   action: "started day 12",              region: "Springfield, MO",  minutesAgo: 14 },
+      { name: "James W.",   action: "shared a win",                region: "Fort Worth, TX",   minutesAgo: 22 },
+      { name: "Patricia S.",action: "completed today's mission",  region: "Bentonville, AR",  minutesAgo: 35 },
+      { name: "Derrick H.", action: "hit a 30-day streak",         region: "Memphis, TN",      minutesAgo: 51 },
+      { name: "Carol P.",   action: "logged a check-in",          region: "Wichita, KS",      minutesAgo: 73 },
+      { name: "Andre J.",   action: "posted in community",        region: "Little Rock, AR",  minutesAgo: 96 },
+      { name: "Renée M.",   action: "started the 66-Day",         region: "Oklahoma City, OK",minutesAgo: 124 },
+    ];
+    try {
+      const { db: dbInst } = await import('./db');
+      const { dailyCheckins, users } = await import('../shared/schema');
+      const { sql, desc, gt, eq } = await import('drizzle-orm');
+      const cutoff = new Date(Date.now() - 48 * 60 * 60 * 1000);
+      const recent = await dbInst
+        .select({
+          firstName: users.firstName,
+          lastName: users.lastName,
+          profileImageUrl: users.profileImageUrl,
+          createdAt: dailyCheckins.createdAt,
+        })
+        .from(dailyCheckins)
+        .innerJoin(users, eq(users.id, dailyCheckins.userId))
+        .where(gt(dailyCheckins.createdAt, cutoff))
+        .orderBy(desc(dailyCheckins.createdAt))
+        .limit(8);
+
+      const live = recent.map((r: any) => {
+        const f = (r.firstName || "Survivor").trim();
+        const l = (r.lastName || "").trim();
+        const display = l ? `${f} ${l[0]}.` : f;
+        const minutesAgo = Math.max(1, Math.round((Date.now() - new Date(r.createdAt).getTime()) / 60000));
+        return {
+          name: display,
+          action: "logged a check-in",
+          region: "",
+          minutesAgo,
+          avatarUrl: r.profileImageUrl || null,
+          live: true,
+        };
+      });
+
+      const fillCount = Math.max(0, 8 - live.length);
+      const filled = SEED.slice(0, fillCount).map((s) => ({ ...s, avatarUrl: null, live: false }));
+      const items = [...live, ...filled];
+      res.json({ items, liveCount: live.length, totalShown: items.length });
+    } catch (err) {
+      console.error("active-survivors error:", err);
+      // graceful degrade — still return seeds
+      res.json({
+        items: SEED.map((s) => ({ ...s, avatarUrl: null, live: false })),
+        liveCount: 0,
+        totalShown: SEED.length,
+      });
+    }
+  });
+
   // Get user enrollment
   app.get('/api/recovery/enrollment', isAuthenticated, async (req: any, res) => {
     try {
@@ -9125,24 +9196,39 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         .from(newsletterSubscribers)
         .where(and(eq(newsletterSubscribers.isActive, true), isNull(newsletterSubscribers.unsubscribedAt)));
 
-      const { renderEmail } = await import('./emailTemplate');
+      const { renderEmail, ctaButton } = await import('./emailTemplate');
       const { sendEmail } = await import('./emailService');
 
       const baseUrl = process.env.PUBLIC_BASE_URL || `https://${process.env.REPLIT_DOMAINS?.split(',')[0] || 'strokerecoveryacademy.com'}`;
+      const spotlightUrl = `${baseUrl}/recovery/spotlight/${latest.slug}`;
+      // Escape user-supplied HTML before applying our tiny markdown subset, so survivor
+      // story content can never inject arbitrary tags/links into outbound emails.
+      const escapeHtml = (s: string) => s
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
       const storyHtml = (latest.story || '')
         .split(/\n{2,}/)
-        .map((p) => `<p class="body-text">${p
+        .map((p) => `<p class="body-text">${escapeHtml(p)
           .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
           .replace(/_([^_]+)_/g, '<em>$1</em>')}</p>`)
         .join('');
+      const safeDisplayName = escapeHtml(latest.displayName || 'Survivor');
+      const safeHeadline = escapeHtml(latest.headline || 'A real comeback. Read it. Steal what works.');
+      const safePhotoUrl = latest.photoUrl ? escapeHtml(latest.photoUrl) : '';
       const html = renderEmail({
+        // previewText is escapeText()-ed inside renderEmail
+        previewText: `Survivor Spotlight: ${latest.displayName || 'Survivor'} — ${latest.headline || 'a real comeback'}.`,
         eyebrow: 'Survivor Spotlight',
-        headline: latest.displayName,
-        subheadline: latest.headline || 'A real comeback. Read it. Steal what works.',
-        bodyHtml: `${latest.photoUrl ? `<p style="text-align:center;margin:0 0 24px;"><img src="${latest.photoUrl}" alt="${latest.displayName}" style="max-width:240px;border-radius:8px;"/></p>` : ''}${storyHtml}<p class="body-text"><a href="${baseUrl}/recovery/spotlight/${latest.slug}">Read the full spotlight →</a></p>`,
-        ctaText: 'Read on the site',
-        ctaUrl: `${baseUrl}/recovery/spotlight/${latest.slug}`,
+        // headline/subheadline are interpolated raw — pass pre-escaped values
+        headline: safeDisplayName,
+        subheadline: safeHeadline,
+        bodyHtml: `${safePhotoUrl ? `<p style="text-align:center;margin:0 0 24px;"><img src="${safePhotoUrl}" alt="${safeDisplayName}" style="max-width:240px;border-radius:8px;margin:0 auto;"/></p>` : ''}${storyHtml}${ctaButton(spotlightUrl, 'Read the full spotlight')}`,
+        showCrisisCallout: false,
         unsubscribeUrl: `${baseUrl}/api/newsletter/unsubscribe`,
+        whyReceiving: "You're receiving this because you subscribed to The Sasquatch Dispatch from Stroke Recovery Academy.",
       });
 
       let sent = 0, failed = 0;

@@ -36,17 +36,34 @@ export default function RecoveryLogin() {
   const [otpCode, setOtpCode] = useState("");
 
   // ── Mutations ──────────────────────────────────────────────────────────────
+  // Brand-new accounts → onboarding. Returning users with a plan → dashboard.
+  async function routeAfterAuth() {
+    try {
+      const res = await fetch("/api/recovery/me/state", { credentials: "include" });
+      if (res.ok) {
+        const state = await res.json();
+        if (state?.hasOnboarded) {
+          window.location.href = "/recovery/dashboard";
+          return;
+        }
+      }
+    } catch {
+      // fall through to onboarding
+    }
+    window.location.href = "/recovery/onboarding";
+  }
+
   const signInMut = useMutation({
     mutationFn: (data: { email: string; password: string }) =>
       apiRequest("POST", "/api/auth/login", data),
-    onSuccess: () => { window.location.href = "/recovery/dashboard"; },
+    onSuccess: () => { routeAfterAuth(); },
     onError: (e: any) => toast({ title: "Sign in failed", description: e.message, variant: "destructive" }),
   });
 
   const signUpMut = useMutation({
     mutationFn: (data: { email: string; password: string; firstName: string; lastName: string }) =>
       apiRequest("POST", "/api/auth/register", data),
-    onSuccess: () => { window.location.href = "/recovery/dashboard"; },
+    onSuccess: () => { window.location.href = "/recovery/onboarding"; },
     onError: (e: any) => toast({ title: "Sign up failed", description: e.message, variant: "destructive" }),
   });
 
@@ -62,7 +79,7 @@ export default function RecoveryLogin() {
 
   const otpVerifyMut = useMutation({
     mutationFn: (data: { email: string; otp: string }) => apiRequest("POST", "/api/auth/otp/verify", data),
-    onSuccess: () => { window.location.href = "/recovery/dashboard"; },
+    onSuccess: () => { routeAfterAuth(); },
     onError: (e: any) => toast({ title: "Invalid code", description: e.message, variant: "destructive" }),
   });
 
