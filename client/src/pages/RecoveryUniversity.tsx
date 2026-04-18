@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,7 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useAuth } from "@/hooks/useAuth";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { Award } from "lucide-react";
 import RecoverySEO, { createRecoveryCourseSchema, SASQUATCH_METHOD_SCHEMA } from "@/components/RecoverySEO";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import {
@@ -188,12 +189,25 @@ function getRecoveryTier(subscriptionTier?: string | null): string {
   }
 }
 
+interface ProgressRow {
+  chapter: number;
+  status: "in_progress" | "read" | "passed";
+  bestScore: number;
+  attempts: number;
+}
+interface CertificateRow {
+  partNumber: number;
+  serial: string;
+  issuedAt: string;
+}
+
 export default function RecoveryUniversity() {
   const { user } = useAuth();
+  const [, setLocation] = useLocation();
   const [activePhase, setActivePhase] = useState<string>("all");
 
-  const { data: enrollment } = useQuery({
-    queryKey: ["/api/recovery/enrollment"],
+  const { data: progressData } = useQuery<{ progress: ProgressRow[]; certificates: CertificateRow[] }>({
+    queryKey: ["/api/recovery/university/progress"],
     enabled: !!user,
     retry: false,
   });
@@ -207,14 +221,27 @@ export default function RecoveryUniversity() {
     return userTierIndex >= requiredIndex;
   };
 
+  const progressByChapter = useMemo(() => {
+    const map = new Map<number, ProgressRow>();
+    (progressData?.progress ?? []).forEach((p) => map.set(p.chapter, p));
+    return map;
+  }, [progressData]);
+
+  const certByPart = useMemo(() => {
+    const map = new Map<number, CertificateRow>();
+    (progressData?.certificates ?? []).forEach((c) => map.set(c.partNumber, c));
+    return map;
+  }, [progressData]);
+
   const getTotalChapters = () => curriculumParts.reduce((sum, part) => sum + part.chapters.length, 0);
-  const getTotalMinutes = () => curriculumParts.reduce((sum, part) => 
+  const getTotalMinutes = () => curriculumParts.reduce((sum, part) =>
     sum + part.chapters.reduce((chSum, ch) => chSum + ch.estimatedMinutes, 0), 0);
 
-  const rawCompleted = (enrollment as any)?.completedLessonIds?.length ?? (enrollment as any)?.progressPercentage
-    ? Math.round(((enrollment as any).progressPercentage / 100) * getTotalChapters())
-    : 0;
-  const completedChapters = rawCompleted;
+  const passedChapters = useMemo(
+    () => Array.from(progressByChapter.values()).filter((p) => p.status === "passed").length,
+    [progressByChapter],
+  );
+  const completedChapters = passedChapters;
   const progressPercentage = Math.round((completedChapters / Math.max(getTotalChapters(), 1)) * 100);
 
   const getFilteredParts = () => {
@@ -229,9 +256,17 @@ export default function RecoveryUniversity() {
     if (!phase) return 0;
     const phaseParts = curriculumParts.filter(part => phase.partNumbers.includes(part.partNumber));
     const phaseChapters = phaseParts.reduce((sum, part) => sum + part.chapters.length, 0);
-    const phaseCompletedChapters = phaseParts.reduce((sum, part) => 
-      sum + part.chapters.filter(ch => ch.number <= completedChapters).length, 0);
+    const phaseCompletedChapters = phaseParts.reduce(
+      (sum, part) => sum + part.chapters.filter(ch => progressByChapter.get(ch.number)?.status === "passed").length,
+      0,
+    );
     return phaseChapters > 0 ? Math.round((phaseCompletedChapters / phaseChapters) * 100) : 0;
+  };
+
+  const partAllPassed = (partNumber: number) => {
+    const part = curriculumParts.find((p) => p.partNumber === partNumber);
+    if (!part) return false;
+    return part.chapters.every((ch) => progressByChapter.get(ch.number)?.status === "passed");
   };
 
   return (
@@ -529,70 +564,112 @@ export default function RecoveryUniversity() {
                   <AccordionContent className="px-6 pb-4">
                     <div className="space-y-3 pt-2">
                       {part.chapters.map((chapter) => {
-                        const isCompleted = chapter.number <= completedChapters;
-                        const isCurrent = chapter.number === completedChapters + 1;
-                        
+                        const chapterProgress = progressByChapter.get(chapter.number);
+                        const isPassed = chapterProgress?.status === "passed";
+                        const isInProgress = chapterProgress?.status === "in_progress" || chapterProgress?.status === "read";
+                        const goToLesson = () => {
+                          if (hasAccess) setLocation(`/recovery/university/lesson/${chapter.number}`);
+                        };
+
                         return (
-                          <div 
+                          <div
                             key={chapter.number}
+                            onClick={goToLesson}
                             className={`flex items-center gap-4 p-4 rounded-lg transition-colors ${
-                              hasAccess 
-                                ? isCurrent 
-                                  ? 'bg-[#C9941A]/10 border border-[#C9941A]/30' 
-                                  : 'bg-[#252525] hover-elevate cursor-pointer'
+                              hasAccess
+                                ? isPassed
+                                  ? 'bg-[#252525] hover-elevate cursor-pointer'
+                                  : isInProgress
+                                    ? 'bg-[#C9941A]/10 border border-[#C9941A]/30 hover-elevate cursor-pointer'
+                                    : 'bg-[#252525] hover-elevate cursor-pointer'
                                 : 'bg-[#1a1a1a] opacity-60'
                             }`}
                             data-testid={`chapter-${chapter.number}`}
                           >
                             <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                              isCompleted ? 'bg-[#C9941A]/20' : 
-                              isCurrent ? 'bg-[#C9941A]/20' : 'bg-[#333]'
+                              isPassed ? 'bg-[#C9941A]/20' :
+                              isInProgress ? 'bg-[#C9941A]/20' : 'bg-[#333]'
                             }`}>
                               {!hasAccess ? (
                                 <Lock className="w-4 h-4 text-gray-500" />
-                              ) : isCompleted ? (
+                              ) : isPassed ? (
                                 <CheckCircle className="w-5 h-5 text-[#C9941A]" />
-                              ) : isCurrent ? (
+                              ) : isInProgress ? (
                                 <Play className="w-4 h-4 text-[#C9941A]" />
                               ) : (
                                 <span className="text-sm font-medium text-gray-500">{chapter.number}</span>
                               )}
                             </div>
-                            
+
                             <div className="flex-1 min-w-0">
                               <h4 className="font-semibold truncate text-white" data-testid={`text-chapter-title-${chapter.number}`}>
                                 Chapter {chapter.number}: {chapter.title}
                               </h4>
                               <p className="text-sm text-gray-400 truncate">{chapter.description}</p>
+                              {isPassed && chapterProgress && (
+                                <p className="text-xs text-[#C9941A] mt-1" data-testid={`text-chapter-score-${chapter.number}`}>
+                                  Passed · best score {chapterProgress.bestScore}%
+                                </p>
+                              )}
                             </div>
-                            
+
                             <div className="flex items-center gap-2 shrink-0">
                               <Clock className="w-4 h-4 text-gray-500" />
                               <span className="text-sm text-gray-400" data-testid={`text-chapter-duration-${chapter.number}`}>
                                 {chapter.estimatedMinutes} min
                               </span>
                             </div>
-                            
+
                             {hasAccess && (
                               <Button
-                                variant={isCurrent ? "default" : isCompleted ? "ghost" : "outline"}
+                                variant={isInProgress ? "default" : isPassed ? "ghost" : "outline"}
                                 size="sm"
+                                onClick={(e) => { e.stopPropagation(); goToLesson(); }}
                                 className={
-                                  isCurrent 
-                                    ? "bg-[#C9941A] hover:bg-[#C9941A]/90 text-black" 
-                                    : isCompleted 
-                                      ? "text-[#C9941A] hover:bg-[#C9941A]/10" 
+                                  isInProgress
+                                    ? "bg-[#C9941A] hover:bg-[#C9941A]/90 text-black"
+                                    : isPassed
+                                      ? "text-[#C9941A] hover:bg-[#C9941A]/10"
                                       : "border-[#333] text-white hover:bg-[#252525]"
                                 }
                                 data-testid={`button-chapter-${chapter.number}`}
                               >
-                                {isCompleted ? "Review" : isCurrent ? "Continue" : "Start"}
+                                {isPassed ? "Review" : isInProgress ? "Continue" : "Start"}
                               </Button>
                             )}
                           </div>
                         );
                       })}
                     </div>
+
+                    {hasAccess && (
+                      <div className="mt-4 p-4 rounded-lg bg-[#0D0D0D] border border-[#C9941A]/20 flex flex-col sm:flex-row sm:items-center gap-3" data-testid={`certificate-cta-${part.partNumber}`}>
+                        <Award className="w-6 h-6 text-[#C9941A] shrink-0" />
+                        <div className="flex-1">
+                          {certByPart.has(part.partNumber) ? (
+                            <>
+                              <p className="font-semibold text-white">Certificate earned</p>
+                              <p className="text-sm text-gray-400">You completed every chapter in {part.title}.</p>
+                            </>
+                          ) : partAllPassed(part.partNumber) ? (
+                            <>
+                              <p className="font-semibold text-white">Certificate ready</p>
+                              <p className="text-sm text-gray-400">Claim your Part {part.partNumber} certificate.</p>
+                            </>
+                          ) : (
+                            <>
+                              <p className="font-semibold text-white">Earn the Part {part.partNumber} certificate</p>
+                              <p className="text-sm text-gray-400">Pass every chapter quiz in {part.title} to unlock.</p>
+                            </>
+                          )}
+                        </div>
+                        <Link href={`/recovery/university/certificate/${part.partNumber}`}>
+                          <Button size="sm" className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black" data-testid={`button-view-certificate-${part.partNumber}`}>
+                            {certByPart.has(part.partNumber) ? "View certificate" : partAllPassed(part.partNumber) ? "Claim certificate" : "View progress"}
+                          </Button>
+                        </Link>
+                      </div>
+                    )}
                     
                     {!hasAccess && (
                       <div className="mt-4 p-4 bg-[#C9941A]/10 rounded-lg border border-[#C9941A]/20">

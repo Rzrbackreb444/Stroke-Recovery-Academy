@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, pgSchema, text, varchar, timestamp, integer, boolean, jsonb, serial, index, real, customType, uuid } from "drizzle-orm/pg-core";
+import { pgTable, pgSchema, text, varchar, timestamp, integer, boolean, jsonb, serial, index, uniqueIndex, real, customType, uuid } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -5430,6 +5430,103 @@ export type ProjectQuotePool = typeof projectQuotePool.$inferSelect;
 export type InsertProjectQuotePool = z.infer<typeof insertProjectQuotePoolSchema>;
 export type QuoteScanAnalytics = typeof quoteScanAnalytics.$inferSelect;
 export type InsertQuoteScanAnalytics = z.infer<typeof insertQuoteScanAnalyticsSchema>;
+
+// ─── Recovery University ─────────────────────────────────────────────────────
+// 7-part / 33-chapter graded curriculum. Each lesson has substantive markdown
+// body + 5 multiple-choice quiz questions. Tier-gated server-side.
+// `chapter` is the global 1..33 chapter number — the URL/key contract with the
+// frontend so survivors can deep-link straight to a lesson.
+export const recoveryUniversityLessons = pgTable("recovery_university_lessons", {
+  id: serial("id").primaryKey(),
+  chapter: integer("chapter").notNull().unique(), // 1..33
+  partNumber: integer("part_number").notNull(), // 1..7
+  title: text("title").notNull(),
+  subtitle: text("subtitle"),
+  requiredTier: text("required_tier").notNull().default("explorer"), // explorer | warrior | champion | platinum
+  estimatedMinutes: integer("estimated_minutes").notNull().default(25),
+  body: text("body").notNull(), // markdown
+  keyTakeaways: text("key_takeaways").array(), // 3-5 bullets
+  passingScore: integer("passing_score").notNull().default(70),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (t) => ({
+  partIdx: index("ru_lesson_part_idx").on(t.partNumber),
+}));
+
+export const recoveryUniversityQuestions = pgTable("recovery_university_questions", {
+  id: serial("id").primaryKey(),
+  lessonId: integer("lesson_id").notNull().references(() => recoveryUniversityLessons.id, { onDelete: "cascade" }),
+  order: integer("order").notNull().default(0),
+  prompt: text("prompt").notNull(),
+  // options shape: [{ id: "a", text: "..." }, ...]
+  options: jsonb("options").notNull(),
+  correctOptionId: text("correct_option_id").notNull(),
+  hint: text("hint").notNull(), // shown when survivor clicks "stuck?" — nudges, doesn't spoil
+  explanation: text("explanation").notNull(), // shown after answer is locked in, regardless of right/wrong
+}, (t) => ({
+  lessonIdx: index("ru_q_lesson_idx").on(t.lessonId),
+}));
+
+export const recoveryUniversityLessonProgress = pgTable("recovery_university_lesson_progress", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  chapter: integer("chapter").notNull(), // 1..33
+  status: text("status").notNull().default("in_progress"), // in_progress | read | passed
+  startedAt: timestamp("started_at").notNull().defaultNow(),
+  readAt: timestamp("read_at"),
+  passedAt: timestamp("passed_at"),
+  bestScore: integer("best_score").notNull().default(0), // 0..100
+  attempts: integer("attempts").notNull().default(0),
+}, (t) => ({
+  userChapterIdx: index("ru_progress_user_chapter_idx").on(t.userId, t.chapter),
+}));
+
+export const recoveryUniversityQuizAttempts = pgTable("recovery_university_quiz_attempts", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  chapter: integer("chapter").notNull(),
+  score: integer("score").notNull(), // 0..100
+  passed: boolean("passed").notNull(),
+  totalQuestions: integer("total_questions").notNull(),
+  correctCount: integer("correct_count").notNull(),
+  hintsUsed: integer("hints_used").notNull().default(0),
+  // answers shape: { [questionId]: { picked: "a", correct: true, usedHint: false } }
+  answers: jsonb("answers"),
+  durationSec: integer("duration_sec"),
+  attemptNumber: integer("attempt_number").notNull().default(1),
+  completedAt: timestamp("completed_at").notNull().defaultNow(),
+}, (t) => ({
+  userIdx: index("ru_attempt_user_idx").on(t.userId),
+  chapterIdx: index("ru_attempt_chapter_idx").on(t.chapter),
+}));
+
+// Issued automatically when a user has `passed` every chapter inside a part.
+export const recoveryUniversityCertificates = pgTable("recovery_university_certificates", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  partNumber: integer("part_number").notNull(), // 1..7, or 0 for full-curriculum
+  serial: text("serial").notNull().unique(), // human-readable cert id
+  issuedAt: timestamp("issued_at").notNull().defaultNow(),
+}, (t) => ({
+  userPartUnique: uniqueIndex("ru_cert_user_part_unique").on(t.userId, t.partNumber),
+}));
+
+export const insertRecoveryUniversityLessonSchema = createInsertSchema(recoveryUniversityLessons).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertRecoveryUniversityQuestionSchema = createInsertSchema(recoveryUniversityQuestions).omit({ id: true });
+export const insertRecoveryUniversityLessonProgressSchema = createInsertSchema(recoveryUniversityLessonProgress).omit({ id: true, startedAt: true });
+export const insertRecoveryUniversityQuizAttemptSchema = createInsertSchema(recoveryUniversityQuizAttempts).omit({ id: true, completedAt: true });
+export const insertRecoveryUniversityCertificateSchema = createInsertSchema(recoveryUniversityCertificates).omit({ id: true, issuedAt: true });
+
+export type RecoveryUniversityLesson = typeof recoveryUniversityLessons.$inferSelect;
+export type InsertRecoveryUniversityLesson = z.infer<typeof insertRecoveryUniversityLessonSchema>;
+export type RecoveryUniversityQuestion = typeof recoveryUniversityQuestions.$inferSelect;
+export type InsertRecoveryUniversityQuestion = z.infer<typeof insertRecoveryUniversityQuestionSchema>;
+export type RecoveryUniversityLessonProgress = typeof recoveryUniversityLessonProgress.$inferSelect;
+export type InsertRecoveryUniversityLessonProgress = z.infer<typeof insertRecoveryUniversityLessonProgressSchema>;
+export type RecoveryUniversityQuizAttempt = typeof recoveryUniversityQuizAttempts.$inferSelect;
+export type InsertRecoveryUniversityQuizAttempt = z.infer<typeof insertRecoveryUniversityQuizAttemptSchema>;
+export type RecoveryUniversityCertificate = typeof recoveryUniversityCertificates.$inferSelect;
+export type InsertRecoveryUniversityCertificate = z.infer<typeof insertRecoveryUniversityCertificateSchema>;
 
 // ─── Brain Gym ────────────────────────────────────────────────────────────────
 export const brainGymCompletions = pgTable("brain_gym_completions", {

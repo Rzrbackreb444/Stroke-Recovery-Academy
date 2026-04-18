@@ -852,6 +852,11 @@ Allow: /
   // Email Authentication Routes (must be after setupAuth for session access)
   app.use('/api/email-auth', emailAuthRoutes);
 
+  // Recovery University — graded lessons + quizzes + certificates
+  // (must be after setupAuth so isAuthenticated middleware is available)
+  const { registerRecoveryUniversityRoutes } = await import('./recoveryUniversityRoutes');
+  registerRecoveryUniversityRoutes(app);
+
   // ─── Media Upload Routes (must be after setupAuth for isAuthenticated) ────────
   const multerStorage = multer.diskStorage({
     destination: (_req, _file, cb) => cb(null, uploadsDir),
