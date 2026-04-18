@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { RotateCw } from "lucide-react";
+import { RotateCw, Pause, Play } from "lucide-react";
 import type { PackEntry } from "@shared/brainGymPacks";
 import { playCorrect, playWrong } from "@/lib/gameAudio";
 import { saveGame, loadGame, clearGame } from "@/lib/gameStorage";
@@ -28,6 +28,14 @@ interface SaveState {
   moves: number;
   startedAt: number;
   seed: number;
+  pausedMs?: number;
+  paused?: boolean;
+}
+
+function formatClock(sec: number): string {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${m}:${String(s).padStart(2, "0")}`;
 }
 
 function shuffle<T>(arr: T[], seed: number): T[] {
@@ -57,6 +65,11 @@ export default function MemoryMatchGame({
   const [modalOpen, setModalOpen] = useState(false);
   const [completionStats, setCompletionStats] = useState<GameCompletionStats | null>(null);
   const [startedAt, setStartedAt] = useState(() => Date.now());
+  const [paused, setPaused] = useState(false);
+  const [pausedMs, setPausedMs] = useState(0);
+  const [pauseStartedAt, setPauseStartedAt] = useState<number | null>(null);
+  const [tick, setTick] = useState(0);
+  const [announce, setAnnounce] = useState("");
 
   const cards = useMemo<Card[]>(() => {
     const chosen = shuffle(entries, seed).slice(0, pairs);
@@ -80,6 +93,14 @@ export default function MemoryMatchGame({
       setStartedAt(saved.startedAt);
       setFlipped([]);
       setSolved(false);
+      setPausedMs(saved.pausedMs || 0);
+      if (saved.paused) {
+        setPaused(true);
+        setPauseStartedAt(Date.now());
+      } else {
+        setPaused(false);
+        setPauseStartedAt(null);
+      }
     } else {
       const fresh = Date.now();
       setSeed(fresh);
@@ -88,30 +109,66 @@ export default function MemoryMatchGame({
       setStartedAt(fresh);
       setFlipped([]);
       setSolved(false);
+      setPausedMs(0);
+      setPaused(false);
+      setPauseStartedAt(null);
     }
     setModalOpen(false);
     setCompletionStats(null);
   }, [packId, difficulty]);
 
-  // Autosave
+  // Live clock — ticks every second while playing
+  useEffect(() => {
+    if (solved || paused) return;
+    const t = setInterval(() => setTick((n) => n + 1), 1000);
+    return () => clearInterval(t);
+  }, [solved, paused]);
+
+  const elapsedSec = Math.max(
+    0,
+    Math.floor((Date.now() - startedAt - pausedMs - (pauseStartedAt ? Date.now() - pauseStartedAt : 0)) / 1000),
+  );
+  void tick;
+
+  function togglePause() {
+    if (solved) return;
+    if (!paused) {
+      setPaused(true);
+      setPauseStartedAt(Date.now());
+      // Hide any in-progress face-up cards so paused screen is a true blackout.
+      setFlipped([]);
+      setAnnounce("Memory match paused. Timer stopped.");
+    } else {
+      setPaused(false);
+      if (pauseStartedAt) setPausedMs((m) => m + (Date.now() - pauseStartedAt));
+      setPauseStartedAt(null);
+      setAnnounce("Memory match resumed.");
+    }
+  }
+
+  // Autosave — folds in-progress pause segment into pausedMs
   useEffect(() => {
     if (solved) return;
     const t = setInterval(() => {
+      const effectivePausedMs =
+        pausedMs + (paused && pauseStartedAt ? Date.now() - pauseStartedAt : 0);
       saveGame<SaveState>(saveKey, packId, difficulty, {
         matched,
         moves,
         startedAt,
         seed,
+        pausedMs: effectivePausedMs,
+        paused,
       });
     }, 5000);
     return () => clearInterval(t);
-  }, [matched, moves, startedAt, seed, packId, difficulty, solved]);
+  }, [matched, moves, startedAt, seed, packId, difficulty, solved, pausedMs, paused, pauseStartedAt]);
 
   // Detect win
   useEffect(() => {
     if (cards.length > 0 && matched.length === cards.length && !solved) {
       setSolved(true);
-      const durationSec = Math.round((Date.now() - startedAt) / 1000);
+      const durationSec = Math.max(1, Math.round((Date.now() - startedAt - pausedMs) / 1000));
       const accuracyPct = moves > 0 ? Math.round((cards.length / 2 / moves) * 100) : 100;
       const stats: GameCompletionStats = {
         durationSec,
@@ -124,7 +181,7 @@ export default function MemoryMatchGame({
       clearGame(saveKey, packId, difficulty);
       onComplete?.(stats);
     }
-  }, [matched, cards, moves, startedAt, packId, difficulty, solved, onComplete]);
+  }, [matched, cards, moves, startedAt, packId, difficulty, solved, onComplete, pausedMs]);
 
   // Process flipped pairs
   useEffect(() => {
@@ -148,6 +205,7 @@ export default function MemoryMatchGame({
   }, [flipped, cards]);
 
   function handleFlip(id: number) {
+    if (paused) return;
     if (flipped.length === 2) return;
     if (matched.includes(id) || flipped.includes(id)) return;
     setFlipped((prev) => [...prev, id]);
@@ -163,6 +221,9 @@ export default function MemoryMatchGame({
     setSolved(false);
     setModalOpen(false);
     setCompletionStats(null);
+    setPausedMs(0);
+    setPaused(false);
+    setPauseStartedAt(null);
     clearGame(saveKey, packId, difficulty);
   }
 
@@ -173,13 +234,40 @@ export default function MemoryMatchGame({
     <>
       <div className="flex flex-col gap-4" data-testid="game-memory-match">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm text-gray-400">
-            Match each <span className="font-semibold" style={{ color: accent }}>word</span> to its definition.
-          </p>
+          <div className="flex items-center gap-3">
+            <p className="text-sm text-gray-400">
+              Match each <span className="font-semibold" style={{ color: accent }}>word</span> to its definition.
+            </p>
+            <div
+              className="flex items-center gap-2 rounded-md border border-[#1e1e1e] bg-[#0f0f0f] px-3 py-1.5 font-mono text-sm tabular-nums text-gray-300"
+              data-testid="text-mm-clock"
+              aria-label={`Elapsed time: ${formatClock(elapsedSec)}`}
+            >
+              <span className={`inline-block h-2 w-2 rounded-full ${paused ? "bg-gray-500" : "bg-[#C9941A] animate-pulse"}`} />
+              {formatClock(elapsedSec)}
+              {paused && <span className="ml-1 text-xs uppercase tracking-widest text-gray-500">Paused</span>}
+            </div>
+          </div>
           <div className="flex items-center gap-3">
             <span className="text-sm text-gray-400" data-testid="text-mm-progress">
               {matched.length / 2} / {cards.length / 2} pairs · {moves} moves
             </span>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={togglePause}
+              data-testid="button-mm-pause"
+              className="border-[#333] bg-transparent text-gray-300"
+              disabled={solved}
+              aria-pressed={paused}
+            >
+              {paused ? (
+                <><Play className="mr-2 h-4 w-4" /> Resume</>
+              ) : (
+                <><Pause className="mr-2 h-4 w-4" /> Pause</>
+              )}
+            </Button>
             <Button
               type="button"
               variant="outline"
@@ -193,6 +281,27 @@ export default function MemoryMatchGame({
             </Button>
           </div>
         </div>
+        <div className="relative">
+        {paused && (
+          <div
+            className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-md bg-[#0a0a0a]/95 backdrop-blur-sm"
+            role="status"
+            aria-live="polite"
+            data-testid="overlay-mm-paused"
+          >
+            <Pause className="mb-3 h-12 w-12" style={{ color: accent }} />
+            <p className="text-lg font-black uppercase tracking-widest text-white">Game Paused</p>
+            <p className="mt-1 text-sm text-gray-400">Cards hidden. Resume when ready.</p>
+            <Button
+              type="button"
+              onClick={togglePause}
+              className="mt-5 bg-[#C9941A] text-black hover:bg-[#C9941A]"
+              data-testid="button-mm-resume-overlay"
+            >
+              <Play className="mr-2 h-4 w-4" /> Resume
+            </Button>
+          </div>
+        )}
         <div
           className={`grid gap-3 ${
             cards.length <= 12
@@ -277,6 +386,10 @@ export default function MemoryMatchGame({
               </button>
             );
           })}
+        </div>
+        </div>
+        <div role="status" aria-live="polite" className="sr-only">
+          {announce}
         </div>
       </div>
 
