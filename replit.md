@@ -6,7 +6,7 @@
 
 ## Overview
 
-KreAIte.xyz is an ultra-premium AI-powered creator platform featuring seven professional studios (Book, Video, Music, Course, Image, Doctrine Engine, Website Builder) to empower creators. It enables content production, publishing, and monetization through an integrated marketplace (KreAItorverse) offering an 85/15 revenue split. The platform leverages advanced AI for content generation, editing, and analysis, streamlining the creative workflow from concept to publication, and includes unified media editing, a robust marketplace for templates and finished works, comprehensive publishing tools, and full-featured website hosting with custom subdomains.
+KreAIte.xyz is an ultra-premium AI-powered creator platform designed to empower creators through seven professional studios (Book, Video, Music, Course, Image, Doctrine Engine, Website Builder). It facilitates content production, publishing, and monetization via an integrated marketplace (KreAItorverse) offering an 85/15 revenue split. The platform leverages advanced AI for content generation, editing, and analysis, streamlining the creative workflow from concept to publication. Key features include unified media editing, a robust marketplace for templates and finished works, comprehensive publishing tools, and full-featured website hosting with custom subdomains. The platform also includes a dedicated Stroke Recovery OS with specialized tools, community features, and a 66-day transformation challenge, alongside an enterprise-grade dynamic QR code system (SquatchQR) for engaging content delivery.
 
 ## User Preferences
 
@@ -22,7 +22,7 @@ Icons: lucide-react only (no emoji)
 - **Framework & Build System**: React 18 with TypeScript, Vite, Wouter, TailwindCSS.
 - **UI Component System**: Shadcn/ui (built on Radix UI) with a literary warm theme, using Crimson Pro/Playfair Display/Inter fonts.
 - **State Management**: TanStack Query for server state, custom hooks for authentication.
-- **Key Design Decisions**: Literary warm theme, mobile-first responsive design, accessibility-first approach.
+- **Key Design Decisions**: Literary warm theme for the main platform, dark OS theme for Stroke Recovery OS, mobile-first responsive design, accessibility-first approach.
 
 ### Backend Architecture
 - **Server Framework**: Express.js with TypeScript.
@@ -32,8 +32,7 @@ Icons: lucide-react only (no emoji)
 ### Data Storage Solutions
 - **Primary Database**: PostgreSQL via Neon serverless driver with pgvector extension.
 - **ORM**: Drizzle ORM for type-safe queries and schema management.
-- **Schema Design**: Comprehensive for users, projects, assets, sessions, credit systems, and an AI Author Brain for semantic memory using pgvector embeddings and HNSW indexing.
-- **Migration Strategy**: Drizzle Kit.
+- **Schema Design**: Comprehensive schemas for users, projects, assets, sessions, credit systems, and an AI Author Brain for semantic memory using pgvector embeddings and HNSW indexing.
 
 ### Global Platform Services
 - **Credit System**: Wallet management, deduction logic, API for balance and transactions.
@@ -42,76 +41,38 @@ Icons: lucide-react only (no emoji)
 - **Analytics**: Per-studio usage tracking, token consumption, feature usage breakdown.
 
 ### UI/UX Decisions
-- Consistent literary warm theme with cream backgrounds (#FAF8F3) and antique gold accents (#C9941A) across all studios and components.
-- **GlobalHeader Component**: Unified premium navigation with `default`, `minimal`, and `transparent` variants, featuring studios dropdown, mobile-responsive menu, credit display, and user account management.
-- Intuitive interfaces for professional tools like the TipTap book editor, MediaStudio (Photoshop-like layers, multi-track timeline), and Cover Designer.
-- Emphasis on responsive design and persistent user inputs (e.g., Book Studio auto-sync).
+- Consistent literary warm theme for the main platform and a dark OS aesthetic for the Stroke Recovery OS.
+- Unified premium navigation with `GlobalHeader` component, mobile-responsive menus, and user account management.
+- Intuitive interfaces for professional tools like the TipTap book editor, MediaStudio, and Cover Designer.
+- Emphasis on responsive design and persistent user inputs.
 
 ### Feature Specifications
-- **The 7 Studios**: Specialized tools and AI integration for Book, Video, Music, Course, Image, Doctrine Engine, and Website Builder.
-- **Creator Production Engine**: Content vaults, SERP research, batch production, music sandbox, script studio, life story engine, unified production dashboard.
-- **Marketplace (KreAItorverse)**: For selling content with an 85% creator revenue share.
-- **Creator Dashboard**: Unified command center with tabs for Overview, Studios, Earnings, Referrals, and Admin (for platform analytics).
-- **Affiliate/Referral System**: APIs for unique referral codes, tracking, and commission payouts.
-- **AI Integration**: Google Gemini, OpenAI, Lyria for music, specialized models for images/video, AI Consultant.
-- **Quick Create**: One-click content generation tools.
-- **Doc Hub**: Document import/parsing, merging, snippet vault, manuscript builder.
-- **Book Projects**: Autosave, chapter management, full workflow persistence, KDP-ready export.
-- **Manuscript Analysis**: AI-powered structure detection, publication readiness scoring.
-- **Book Studio Workspace**: Professional publishing workspace with 5 view modes (Canvas, Grid, Focus, Split, KDP), SplitPaneEditor, KDPPreview, DoctrineChecker, CharacterDialogue, ConsistencyMonitor, FrontBackMatter generation, and a CommandPalette.
-- **Premium Blog SEO Suite**: Enterprise-grade optimization including meta tag optimization, focus keyphrase tracking, canonical URLs, breadcrumb schema, featured image SEO, internal linking intelligence, external authority links, AEO (Answer Engine Optimization), E-E-A-T signals, geo-targeting, technical SEO, 100-point scoring, auto-optimization, blog sitemap, readability analysis, and various Schema Types.
-- **SEO Command Center**: External website optimization tools for website analysis, keyword research, content optimization, competitor analysis, backlink profiling, sitemap generation, robots.txt builder, Local Business Schema, and Hreflang tags.
-- **Enhanced Dynamic Sitemaps**: Main, Sitemap Index, Blog, and Marketplace sitemaps with extensive coverage.
-- **Lulu Publishing Integration**: Professional Print-on-Demand via OAuth2 API for book templates, trim sizes, binding types, print types, paper types, cover finishes, project creation, cost calculation, print orders, and webhook management.
-- **Stroke Recovery Academy**: Extended user profiles for recovery creators, monetization (tips, subscriptions, premium content), recovery stories, journey milestones, support groups, and curated resources.
-- **Stroke Recovery OS** (`/recovery/*`): Enterprise-grade recovery platform with dark OS aesthetic (#0D0D0D, #C9941A gold).
-  - **Recovery Dashboard**: Daily check-ins, habit tracking, 60-day tracker, motivational quotes.
-  - **Recovery University** (`/recovery/university`, `/recovery/university/lesson/:chapter`, `/recovery/university/quiz/:chapter`, `/recovery/university/certificate/:part`): Fully interactive graded curriculum — 33 lessons across 7 parts (seeded at boot from `server/data/recoveryUniversityCurriculum.ts`), each with markdown lesson body + 5-question quiz with hints + per-question explanations. Server-side grading via `POST /api/recovery/university/quiz/:chapter/attempt`. Tier-gated (explorer < warrior < champion < platinum) with shared `loadLessonOrDeny` helper enforcing access on every lesson/quiz/hint route. Per-part certificates auto-issued when all chapters in a part are passed; race-safe via unique index on `(user_id, part_number)` + `onConflictDoNothing`. Hints never reveal the correct option. RU routes registered AFTER `setupAuth` so `isAuthenticated` middleware is bound.
-  - **Recovery Store**: Supplements, equipment, books (Squatch Mix, recovery gear).
-  - **Recovery Center Finder** (`/recovery/center-finder`): ZIP-based search for rehab centers, neurologists, therapists.
-  - **Recovery Blog** (`/recovery/blog`): Survivor stories, recovery tips, expert articles from Nick Kremers.
-  - **Recovery Protocols** (`/recovery/protocols`): Evidence-based programs (Upper Extremity, Gait/Balance, Cognitive, Speech).
-  - **My Book** (`/my-book`): AI-assisted memoir writing with progress tracking.
-  - **Sasquatch Coach**: 24/7 AI companion with ElevenLabs raspy southern voice, Gemini AI backend, accountability focus.
-  - **Recovery Resources**: Curated guides, videos, podcasts, community support.
-  - **Additional features**: Exercises, Medical Log, Flicker Log, Journal, Reminders, Community.
-- **66-Day Sasquatch Transformation Challenge** (`/recovery/challenge`): High-converting sales page with Nick's real copy, live countdown timer, 3-phase breakdown (Survival/Breakthrough/Optimization), testimonials, bonuses ($480 value), pricing with 7-day free trial, FAQ accordion, and final CTA. Wired to dashboard on sign-in.
-- **Challenge Command Center** (inside `/recovery/dashboard`): Top-priority dashboard block showing daily mission cards (check-in, habit stack, today's lesson), streak/score stats, and visual phase progress strip with active/complete/locked states.
-- **Gift a Survivor** (`/recovery/gift`): High-converting standalone donation page powered by Stroke Lyfe Inc. (501(c)(3) nonprofit). Features Stroke Lyfe logo, 3 gift tiers ($47/1mo, $141/3mo, $397/yr), "Gift to specific person" or "Survivor Fund" mode, donor name/email, personal message, Stripe Checkout via `/api/recovery/payments/gift-scholarship`. Success/cancel redirects to `/recovery/gift?donated=success`. Linked from RecoveryHeader (gold CTA button + mobile menu), NonprofitHeader (nav + header button), Footer (Stroke Lyfe Inc. branding + CTA callout), and Community links.
-- **SquatchQR Platform**: Enterprise-grade dynamic QR code system for delivering daily quotes and rituals.
-  - **Quote Studio** (`/squatch-qr/studio`): 4-tab dashboard (Projects, Create New, Quote Library, Analytics) with 4-step wizard for AI quote generation.
-  - **QR Code Designer**: Customizable QR codes with color presets, logo overlay, PNG/SVG export.
-  - **Public Quote Page** (`/q/:projectId`): Landing page for QR scans with streak tracking, voice delivery (ElevenLabs TTS), and social sharing.
-  - **Gamification**: Streak tracking with badges (First Scan, Week Warrior, Consistency King, Century Club) and leaderboard.
-  - **Analytics Dashboard**: Scan metrics, weekly charts, device breakdown, top projects, peak hours.
-  - **White-label Support**: Custom domains, branding removal, custom colors (schema ready).
-  - **Design Theme**: Forest green (#1B4332), gold accent (#C9941A), dark base (#0D0D0D).
-  - **Real Use Cases**: Squatch Mix (stroke recovery supplement), WashBizHub (laundromat community 75K members).
-
-- **Survivor Community** (`/recovery/community`): Skool-killer social hub with:
-  - **Feed Tab**: Post composer with photo/video upload, 5 post types (Update/Milestone/Question/Tip/Win), 5 reaction types (Like/Love/Celebrate/Fire/Insight), comment threads with author avatars. Mobile-responsive horizontal filter scroll bar for post type filtering on small screens.
-  - **Members Tab**: Member grid sorted by streak, showing avatars, screen names, and day counts.
-  - **Live Tab**: Live event scheduling and streaming (YouTube embed or external URL), admin "Go Live" control with start/end.
-  - **Classroom Tab**: Links to Recovery University courses.
-  - **Profile Edit Modal**: Upload avatar, set screen name (@handle), bio.
-  - **Routes**: `/api/community/posts`, `/api/community/members`, `/api/community/comments/:id`, `/api/live/events`, `/api/upload/media`, `/api/upload/avatar`, `/api/user/settings` GET/PUT.
-  - Uploaded files stored in `./uploads/` served statically at `/uploads/`.
-  - Live events table created via raw SQL (`CREATE TABLE IF NOT EXISTS live_events`).
-  - **Mobile responsive**: Scrollable tabs on small screens, horizontal filter pill row for feed filtering on mobile.
-
-- **Quality / Accessibility Hardening**: Contrast audit complete — all `text-gray-600` on dark backgrounds replaced with `text-gray-500`. Empty alt text and missing aria-labels fixed across RecoveryCommunity, RecoveryBlogPost, RecoveryStore, RecoveryPrograms. Google Fonts payload trimmed from 30+ families to 7 actually-used families (Crimson Pro, Playfair Display, Inter, Source Serif 4, Libre Baskerville, Lora, Merriweather) for major LCP improvement.
-- **Recovery Blog** (`/recovery/blog` + `/recovery/blog/:slug`): Full blog list + article detail pages.
-  - **Blog List** (`/recovery/blog`): Category filter buttons (Philosophy/Therapy/Science/Exercises/Caregivers/Income), search, featured articles section, clickable card grid.
-  - **Article Detail** (`/recovery/blog/:slug`): Full markdown-rendered article with headers/lists/bold, author bio card, like/share buttons, related posts. SEO-optimized.
-  - **Real Content**: 8+ real articles from Nick Kremers with full long-form content — "Never Zero Philosophy", "CIMT Guide", "Neuroplasticity", "Caregiver Burnout", "Speech Therapy Exercises", plus income/financial articles.
-  - **Seed Fallback**: `getRecoveryBlogPostBySlug` falls back to seed data when DB is empty so articles are always readable.
-  - **Markdown Renderer**: Custom inline markdown renderer (bold, italic, headers, lists, blockquotes, links) without external library dependency.
-
-### Stripe Products & Subscription Tiers
-- **KreAIte Tiers**: Free, Creator, Pro, Enterprise.
-- **Recovery Academy Tiers**: Free, Survivor, Creator.
-- **Credit Packs**: Various credit bundles.
-- **Publishing Add-ons**: Basic, Premium, Cover Design, ISBN.
+- **The 7 Studios**: Specialized AI-integrated tools for Book, Video, Music, Course, Image, Doctrine Engine, and Website Builder.
+- **Creator Production Engine**: Content vaults, SERP research, batch production, and a unified production dashboard.
+- **Marketplace (KreAItorverse)**: Platform for selling content with an 85% creator revenue share.
+- **Creator Dashboard**: Unified command center for overview, studios, earnings, referrals, and admin.
+- **Affiliate/Referral System**: APIs for tracking and commission payouts.
+- **AI Integration**: Utilizes Google Gemini, OpenAI, Lyria (for music), specialized models for images/video, and an AI Consultant.
+- **Book Studio Workspace**: Professional publishing workspace with multiple view modes, KDP-ready export, and AI-powered analysis (DoctrineChecker, ConsistencyMonitor).
+- **Premium Blog SEO Suite**: Enterprise-grade optimization tools including meta tag optimization, focus keyphrase tracking, and various Schema Types.
+- **SEO Command Center**: External website optimization tools for analysis, keyword research, and sitemap generation.
+- **Lulu Publishing Integration**: Professional Print-on-Demand via OAuth2 API for book production and orders.
+- **Stroke Recovery OS**: Dedicated platform with a dark OS theme, including:
+    - **Recovery Dashboard**: Daily check-ins, habit tracking, motivational content.
+    - **Recovery University**: Interactive, graded curriculum with lessons, quizzes, and certificates.
+    - **Recovery Center Finder**: ZIP-based search for rehab centers and specialists.
+    - **Recovery Blog**: Survivor stories and expert articles.
+    - **Forge Your Beast**: Persona/alter-ego system for survivors with AI-assisted creed generation.
+    - **Sasquatch Coach**: 24/7 AI companion with ElevenLabs voice.
+    - **Survivor Community**: Social hub with post feed, member directory, live events, and classroom integration.
+    - **66-Day Sasquatch Transformation Challenge**: Structured program with daily missions and progress tracking.
+    - **Gift a Survivor**: Donation page for scholarships to the platform.
+- **SquatchQR Platform**: Enterprise-grade dynamic QR code system featuring:
+    - **Quote Studio**: AI quote generation and project management.
+    - **QR Code Designer**: Customizable QR codes with branding options.
+    - **Public Quote Page**: Landing page for QR scans with streak tracking, voice delivery, and social sharing.
+    - **Gamification**: Streak tracking, badges, and leaderboard.
+    - **Analytics Dashboard**: Comprehensive scan metrics and user engagement data.
 
 ## External Dependencies
 
@@ -122,11 +83,11 @@ Icons: lucide-react only (no emoji)
 5.  **Remove.bg API**: Image background removal.
 6.  **Neon Database**: Serverless PostgreSQL.
 7.  **Radix UI**: Accessible UI primitives.
-8.  **Lucide React / React Icons**: Iconography.
+8.  **Lucide React**: Iconography.
 9.  **TipTap**: Rich text editing.
 10. **Tone.js**: Audio/music processing.
 11. **Drizzle ORM / Drizzle Kit**: Database queries and migrations.
 12. **mammoth / pdf-parse**: Document parsing.
 13. **SERP API**: Keyword research.
 14. **Lulu API**: Print-on-demand publishing.
-15. **ElevenLabs API**: Text-to-speech for voice delivery in SquatchQR.
+15. **ElevenLabs API**: Text-to-speech services.

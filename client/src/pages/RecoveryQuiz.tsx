@@ -65,6 +65,12 @@ export default function RecoveryQuiz() {
     retry: false,
   });
 
+  const { data: personaData } = useQuery<{ persona: { name: string } | null }>({
+    queryKey: ['/api/persona/me'],
+    enabled: !!user,
+  });
+  const persona = personaData?.persona ?? null;
+
   const hintMutation = useMutation({
     mutationFn: async (questionId: number) => {
       const res = await apiRequest("GET", `/api/recovery/university/quiz/${chapter}/hint/${questionId}`);
@@ -190,6 +196,13 @@ export default function RecoveryQuiz() {
               <h1 className="text-3xl font-black mb-2" data-testid="heading-quiz-result">
                 {result.passed ? "Chapter passed" : "Not yet — keep going"}
               </h1>
+              {persona && (
+                <p className="text-sm text-[#C9941A] italic mb-2" data-testid="text-persona-line">
+                  {result.passed
+                    ? `${persona.name} keeps the streak.`
+                    : `${persona.name} doesn't quit on this. Try again.`}
+                </p>
+              )}
               <p className="text-5xl font-black text-[#C9941A] my-4" data-testid="text-final-score">
                 {result.score}%
               </p>

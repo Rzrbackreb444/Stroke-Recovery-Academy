@@ -5528,6 +5528,26 @@ export type InsertRecoveryUniversityQuizAttempt = z.infer<typeof insertRecoveryU
 export type RecoveryUniversityCertificate = typeof recoveryUniversityCertificates.$inferSelect;
 export type InsertRecoveryUniversityCertificate = z.infer<typeof insertRecoveryUniversityCertificateSchema>;
 
+// ─── Forge Your Beast — Recovery Personas ────────────────────────────────────
+// One persona per user. The persona is the survivor's chosen alter-ego — the
+// version of themselves that does the rep when the wounded self can't. Wired
+// into dashboard greeting, quiz feedback, certificate name, coach voice line.
+export const userPersonas = pgTable("user_personas", {
+  userId: varchar("user_id").primaryKey().references(() => users.id, { onDelete: "cascade" }),
+  archetypeKey: text("archetype_key").notNull(), // 'sasquatch' | 'phoenix' | 'wolf' | 'bear' | 'anvil' | 'lighthouse'
+  name: text("name").notNull(), // e.g. "Cassie the Phoenix"
+  creed: text("creed").notNull(), // one-line manifesto in persona voice
+  triggerCue: text("trigger_cue"), // physical cue the survivor uses to switch modes (bracelet, song, phrase)
+  voicePreset: text("voice_preset"), // ElevenLabs voice id alias
+  accentColor: text("accent_color").notNull().default("#C9941A"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertUserPersonaSchema = createInsertSchema(userPersonas).omit({ createdAt: true, updatedAt: true });
+export type UserPersona = typeof userPersonas.$inferSelect;
+export type InsertUserPersona = z.infer<typeof insertUserPersonaSchema>;
+
 // ─── Brain Gym ────────────────────────────────────────────────────────────────
 export const brainGymCompletions = pgTable("brain_gym_completions", {
   id: serial("id").primaryKey(),

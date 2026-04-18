@@ -45,6 +45,10 @@ const motivationalQuotes = [
 export default function RecoveryDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { data: personaData } = useQuery<{ persona: { name: string; creed: string; archetypeKey: string; accentColor: string } | null }>({
+    queryKey: ['/api/persona/me'],
+  });
+  const persona = personaData?.persona ?? null;
   const [checkinForm, setCheckinForm] = useState({
     moodScore: 5,
     energyScore: 5,
@@ -196,9 +200,20 @@ export default function RecoveryDashboard() {
           <div className="grid md:grid-cols-3 gap-6 items-center">
             <div className="md:col-span-2">
               <h1 className="text-4xl md:text-5xl font-black mb-3" data-testid="text-dashboard-title">
-                Welcome back, <span className="text-[#C9941A]">{user?.firstName || "Warrior"}</span>
+                Welcome back, <span className="text-[#C9941A]">{persona?.name || user?.firstName || "Warrior"}</span>
               </h1>
-              <p className="text-gray-300 text-lg italic" data-testid="text-quote">"{randomQuote}"</p>
+              {persona?.creed ? (
+                <p className="text-gray-300 text-lg italic" data-testid="text-persona-creed">"{persona.creed}"</p>
+              ) : (
+                <p className="text-gray-300 text-lg italic" data-testid="text-quote">"{randomQuote}"</p>
+              )}
+              {!persona && (
+                <Link href="/recovery/forge">
+                  <Button variant="outline" size="sm" className="mt-3 border-[#C9941A]/40 text-[#C9941A] hover:bg-[#C9941A]/10" data-testid="button-forge-persona">
+                    Forge Your Beast
+                  </Button>
+                </Link>
+              )}
             </div>
             
             <div className="flex flex-col items-center justify-center p-6 rounded-lg border border-[#333] bg-[#1a1a1a]">
