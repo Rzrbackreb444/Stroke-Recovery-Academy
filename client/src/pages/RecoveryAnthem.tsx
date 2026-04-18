@@ -29,24 +29,17 @@ const VIDEO_SRC = "/videos/squatchy-anthem.mp4";
 const AUDIO_SRC = "/videos/stand-up.mp3";
 const SHARE_URL =
   typeof window !== "undefined" ? `${window.location.origin}/recovery/anthem` : "https://strokerecoveryacademy.com/recovery/anthem";
-const SHARE_TEXT =
-  '"Squatchy" — From wheelchair to warrior. The Stroked-Out Sasquatch anthem.';
-
-const HASHTAGS = [
-  "Squatchy",
-  "StandUp",
-  "StrokeRecovery",
-  "OvercomingAdversity",
-  "NeverGiveUp",
-  "SasquatchMindset",
-  "StrokeSurvivor",
-  "Resilience",
-  "RecoveryJourney",
-  "InspirationalMusic",
-  "KeepSwinging",
-];
+const SHARE_COPY: Record<TrackId, string> = {
+  squatchy: '"Squatchy" — From wheelchair to warrior. The Stroked-Out Sasquatch anthem.',
+  "stand-up": '"Stand Up!" — Knocked down ain\'t down for the count. The new Stroked-Out Sasquatch single.',
+};
 
 type TrackId = "squatchy" | "stand-up";
+
+interface TrackVerse {
+  label: string;
+  body: string;
+}
 
 interface Track {
   id: TrackId;
@@ -56,6 +49,9 @@ interface Track {
   poster?: string;
   badge: string;
   tagline: string;
+  verses: TrackVerse[];
+  hook: string;
+  hashtags: string[];
 }
 
 const TRACKS: Track[] = [
@@ -67,6 +63,33 @@ const TRACKS: Track[] = [
     poster: "/videos/squatchy-poster.jpg",
     badge: "Track 01 · Anthem",
     tagline: "From wheelchair to warrior. Get up. Get loud. Get Squatchy.",
+    verses: [
+      {
+        label: "The Story",
+        body: `"Squatchy" is a powerful rock anthem about rising after being knocked down. Inspired by the Stroked-Out Sasquatch's real journey — spending 2.5 years in a wheelchair after a massive stroke, then defying every "never" to reach 90%+ and still rising.`,
+      },
+      {
+        label: "The Energy",
+        body: `With a massive, chantable hook and raw, triumphant energy, this track celebrates resilience, fatherhood fire, and the daily grind of turning rock bottom into comeback.`,
+      },
+      {
+        label: "The Mantra",
+        body: `From wheelchair to warrior — get up, get loud, and get Squatchy. Heart still thumpin'? Life still pumpin'. Keep swinging.`,
+      },
+    ],
+    hook: `"Heart still thumpin'? Life still pumpin'. Keep swinging."`,
+    hashtags: [
+      "Squatchy",
+      "StrokeRecovery",
+      "OvercomingAdversity",
+      "NeverGiveUp",
+      "SasquatchMindset",
+      "StrokeSurvivor",
+      "Resilience",
+      "RecoveryJourney",
+      "InspirationalMusic",
+      "KeepSwinging",
+    ],
   },
   {
     id: "stand-up",
@@ -75,21 +98,33 @@ const TRACKS: Track[] = [
     src: AUDIO_SRC,
     badge: "Track 02 · Recovery Single",
     tagline: "Knocked down isn't the end. Stand up — every single day.",
-  },
-];
-
-const VERSES = [
-  {
-    label: "The Story",
-    body: `"Squatchy" is a powerful rock anthem about rising after being knocked down. Inspired by the Stroked-Out Sasquatch's real journey — spending 2.5 years in a wheelchair after a massive stroke, then defying every "never" to reach 90%+ and still rising.`,
-  },
-  {
-    label: "The Energy",
-    body: `With a massive, chantable hook and raw, triumphant energy, this track celebrates resilience, fatherhood fire, and the daily grind of turning rock bottom into comeback.`,
-  },
-  {
-    label: "The Mantra",
-    body: `From wheelchair to warrior — get up, get loud, and get Squatchy. Heart still thumpin'? Life still pumpin'. Keep swinging.`,
+    verses: [
+      {
+        label: "The Story",
+        body: `"Stand Up!" is the second single from the Stroked-Out Sasquatch — a defiant, fist-in-the-air rock track for anyone the world tried to count out. Born from 2.5 years in a wheelchair, fifty staples, and a doctor's "probably never," it's the song Nick wrote to the version of himself who had to learn standing all over again.`,
+      },
+      {
+        label: "The Energy",
+        body: `Driving drums, gritty guitars, and a chant-along chorus you'll be screaming on the second listen. It's not a sad recovery ballad — it's the soundtrack you put on before therapy, before the hard rep, before the day you didn't think you had in you.`,
+      },
+      {
+        label: "The Message",
+        body: `Recovery isn't a finish line — it's a decision you make every morning. Your knees might shake. Your body might quit on you for a second. Stand up anyway. Stand up loud. Stand up for the survivor who's watching you do it.`,
+      },
+    ],
+    hook: `"Knocked down ain't the same as down for the count. Stand up. Stand up. Stand up."`,
+    hashtags: [
+      "StandUp",
+      "Squatchy",
+      "StrokeRecovery",
+      "NeverGiveUp",
+      "SasquatchMindset",
+      "StrokeSurvivor",
+      "Resilience",
+      "RecoveryAnthem",
+      "FightSong",
+      "KeepSwinging",
+    ],
   },
 ];
 
@@ -155,7 +190,7 @@ export default function RecoveryAnthem() {
   const nativeShare = async () => {
     if (navigator.share) {
       try {
-        await navigator.share({ title: "Squatchy", text: SHARE_TEXT, url: SHARE_URL });
+        await navigator.share({ title: currentTrack.title, text: SHARE_COPY[activeTrack], url: SHARE_URL });
       } catch {
         /* user cancelled */
       }
@@ -336,8 +371,13 @@ export default function RecoveryAnthem() {
       {/* STORY + SHARE */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">
-          {VERSES.map((v) => (
-            <Card key={v.label} className="bg-[#1a1a1a] border-[#333] p-6">
+          <div className="flex items-center justify-between mb-1">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9941A] font-bold" data-testid="text-active-track-label">
+              About · {currentTrack.title}
+            </p>
+          </div>
+          {currentTrack.verses.map((v) => (
+            <Card key={`${currentTrack.id}-${v.label}`} className="bg-[#1a1a1a] border-[#333] p-6" data-testid={`card-verse-${v.label.toLowerCase().replace(/\s+/g, '-')}`}>
               <div className="flex items-start gap-3">
                 <Quote className="h-5 w-5 text-[#C9941A] flex-shrink-0 mt-1" />
                 <div>
@@ -350,8 +390,8 @@ export default function RecoveryAnthem() {
 
           <Card className="bg-gradient-to-br from-[#C9941A]/10 via-[#1a1a1a] to-[#1a1a1a] border-[#C9941A]/30 p-6">
             <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9941A] mb-3 font-bold">The Hook</p>
-            <p className="text-2xl sm:text-3xl font-black text-white leading-tight" style={{ fontFamily: "Playfair Display, Georgia, serif" }}>
-              "Heart still thumpin'? Life still pumpin'. Keep swinging."
+            <p className="text-2xl sm:text-3xl font-black text-white leading-tight" style={{ fontFamily: "Playfair Display, Georgia, serif" }} data-testid="text-track-hook">
+              {currentTrack.hook}
             </p>
           </Card>
         </div>
@@ -376,7 +416,7 @@ export default function RecoveryAnthem() {
                 Copy Link
               </Button>
               <a
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(SHARE_TEXT)}&url=${encodeURIComponent(SHARE_URL)}&hashtags=${HASHTAGS.join(",")}`}
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(SHARE_COPY[activeTrack])}&url=${encodeURIComponent(SHARE_URL)}&hashtags=${currentTrack.hashtags.join(",")}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 data-testid="link-anthem-twitter"
@@ -398,7 +438,7 @@ export default function RecoveryAnthem() {
                 </Button>
               </a>
               <a
-                href={`https://wa.me/?text=${encodeURIComponent(`${SHARE_TEXT} ${SHARE_URL}`)}`}
+                href={`https://wa.me/?text=${encodeURIComponent(`${SHARE_COPY[activeTrack]} ${SHARE_URL}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 data-testid="link-anthem-whatsapp"
@@ -414,7 +454,7 @@ export default function RecoveryAnthem() {
           <Card className="bg-[#1a1a1a] border-[#333] p-6">
             <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9941A] mb-3 font-bold">Tags</p>
             <div className="flex flex-wrap gap-1.5">
-              {HASHTAGS.map((tag) => (
+              {currentTrack.hashtags.map((tag) => (
                 <Badge
                   key={tag}
                   variant="outline"
