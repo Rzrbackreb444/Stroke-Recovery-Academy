@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "EGooVUwVUQyTPSx95p4M4"
+uri = "file://exports/Stroked-Out-Sasquatch_DEDUPED_v1.md"
+type = "text"
+title = "Deduplicated Manuscript v1 (~18K words / 71 pages)"
