@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -94,6 +95,10 @@ export default function SixtyDayTracker() {
   const [completedDays, setCompletedDays] = useState<number[]>([]);
   const [lastCheckIn, setLastCheckIn] = useState<string | null>(null);
   const [motivationalMessage, setMotivationalMessage] = useState<string>("");
+  const { data: personaData } = useQuery<{ persona: { name: string; creed: string; accentColor: string } | null }>({
+    queryKey: ['/api/persona/me'],
+  });
+  const persona = personaData?.persona ?? null;
 
   const currentPhase = useMemo(() => getPhase(currentDay), [currentDay]);
   const streak = useMemo(() => getStreak(completedDays), [completedDays]);
@@ -221,12 +226,18 @@ export default function SixtyDayTracker() {
               </p>
             </div>
 
-            <p 
+            <p
               className="text-foreground italic text-sm border-l-2 pl-3"
-              style={{ borderColor: "#C9941A" }}
+              style={{ borderColor: persona?.accentColor || "#C9941A" }}
               data-testid="motivational-message"
             >
-              "{motivationalMessage}"
+              {persona && streak > 0 ? (
+                <>"{persona.name} keeps the streak. Day {streak}."</>
+              ) : persona && streak === 0 && completedDays.length > 0 ? (
+                <>"{persona.name} doesn't quit on a broken streak. Today is rep one again."</>
+              ) : (
+                <>"{motivationalMessage}"</>
+              )}
             </p>
           </div>
         </div>

@@ -136,6 +136,12 @@ That is the doctrine. The whole book is just the long version.
 
 ---
 
+## Sasquatch Quote
+
+> *"The hospital wheelchair didn't decide who I was going to be. The face of my son did. Find the face that decides for you. The chair stops mattering the moment you find it."*
+
+---
+
 ### Builder's Note
 
 > *Once you have a why, you can survive any how. The chair I sat in for the first ninety minutes of my son's life is the same chair I stood up out of, internally, the second I saw his face. The body took years to catch up. The decision took half a second. Find the half-second. Your body will follow the decision eventually. It always does.*

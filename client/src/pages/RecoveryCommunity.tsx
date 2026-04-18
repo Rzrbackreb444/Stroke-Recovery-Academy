@@ -440,8 +440,12 @@ function PostComposer({ user, settings }: { user: any; settings: any }) {
     onError: () => toast({ title: "Failed to post", variant: "destructive" }),
   });
 
+  const { data: personaData } = useQuery<{ persona: { name: string; creed: string; accentColor: string } | null }>({
+    queryKey: ['/api/persona/me'],
+  });
+  const persona = personaData?.persona ?? null;
   const avatarSrc = settings?.avatarUrl || user?.profileImageUrl || "";
-  const displayName = settings?.displayName || user?.firstName || "Member";
+  const displayName = persona?.name || settings?.displayName || user?.firstName || "Member";
 
   return (
     <Card className="bg-[#1a1a1a] border-[#333]">
@@ -455,6 +459,11 @@ function PostComposer({ user, settings }: { user: any; settings: any }) {
           </Avatar>
 
           <div className="flex-1 space-y-3">
+            {persona && (
+              <p className="text-xs italic" style={{ color: persona.accentColor }} data-testid="text-composer-creed">
+                "{persona.creed}"
+              </p>
+            )}
             {!expanded ? (
               <button
                 className="w-full text-left text-gray-500 bg-[#111] rounded-md px-4 py-2.5 text-sm border border-[#333] hover:border-[#555] transition-colors"

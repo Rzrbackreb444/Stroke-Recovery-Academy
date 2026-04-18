@@ -6,3 +6,9 @@ id = "EGooVUwVUQyTPSx95p4M4"
 uri = "file://exports/Stroked-Out-Sasquatch_DEDUPED_v1.md"
 type = "text"
 title = "Deduplicated Manuscript v1 (~18K words / 71 pages)"
+
+[[outputs]]
+id = "jC5dMkkv_Sh8YwrW7Ht3e"
+uri = "file://screenshots/forge-step1-after.jpg"
+type = "image"
+title = "Forge Your Beast — Step 1 of 5"
