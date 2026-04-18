@@ -857,6 +857,10 @@ Allow: /
   const { registerRecoveryUniversityRoutes } = await import('./recoveryUniversityRoutes');
   registerRecoveryUniversityRoutes(app);
 
+  // Forge Your Beast — recovery persona system
+  const { registerPersonaRoutes } = await import('./personaRoutes');
+  registerPersonaRoutes(app);
+
   // ─── Media Upload Routes (must be after setupAuth for isAuthenticated) ────────
   const multerStorage = multer.diskStorage({
     destination: (_req, _file, cb) => cb(null, uploadsDir),

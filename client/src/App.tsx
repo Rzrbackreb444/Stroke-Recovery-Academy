@@ -108,6 +108,7 @@ import RecoveryUniversity from "@/pages/RecoveryUniversity";
 import RecoveryLesson from "@/pages/RecoveryLesson";
 import RecoveryQuiz from "@/pages/RecoveryQuiz";
 import RecoveryCertificate from "@/pages/RecoveryCertificate";
+import RecoveryForge from "@/pages/RecoveryForge";
 import BrainGym from "@/pages/BrainGym";
 import StrokeLyfeOrg from "@/pages/StrokeLyfeOrg";
 import RecoveryStore from "@/pages/RecoveryStore";
@@ -484,6 +485,7 @@ function Router() {
       <Route path="/recovery/university/lesson/:chapter" component={RecoveryLesson} />
       <Route path="/recovery/university/quiz/:chapter" component={RecoveryQuiz} />
       <Route path="/recovery/university/certificate/:part" component={RecoveryCertificate} />
+      <Route path="/recovery/forge" component={RecoveryForge} />
       <Route path="/recovery/brain-gym" component={BrainGym} />
       <Route path="/recovery/strokelyfe-org" component={StrokeLyfeOrg} />
       <Route path="/strokelyfe" component={StrokeLyfeOrg} />

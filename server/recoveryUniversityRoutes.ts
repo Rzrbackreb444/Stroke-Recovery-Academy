@@ -11,6 +11,7 @@ import {
 import { eq, and, asc, desc, inArray } from "drizzle-orm";
 import { isAuthenticated } from "./replitAuth";
 import { RECOVERY_UNIVERSITY_CURRICULUM, type SeedLesson } from "./data/recoveryUniversityCurriculum";
+import { loadPersonaFor } from "./personaRoutes";
 
 const TIER_ORDER = ["explorer", "warrior", "champion", "platinum"] as const;
 type Tier = (typeof TIER_ORDER)[number];
@@ -554,7 +555,11 @@ export function registerRecoveryUniversityRoutes(app: Express): void {
         }
       }
 
+      // Prefer persona name if the survivor has forged one — the certificate
+      // belongs to the alter-ego, not the legal name, by design.
+      const persona = await loadPersonaFor(userId);
       const recipientName =
+        persona?.name?.trim() ||
         [user?.firstName, user?.lastName].filter(Boolean).join(" ").trim() ||
         user?.email ||
         "Survivor";
