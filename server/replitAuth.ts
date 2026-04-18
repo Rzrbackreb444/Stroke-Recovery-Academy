@@ -132,10 +132,19 @@ export async function setupAuth(app: Express) {
   });
 }
 
-export const isAuthenticated: RequestHandler = async (req, res, next) => {
+export const isAuthenticated: RequestHandler = async (req: any, res, next) => {
+  // Bridge: email/password/OTP users sign in via req.session.userId.
+  // Synthesize a Passport-shaped req.user so downstream code that reads
+  // req.user.claims.sub keeps working unchanged.
+  const sessionUserId = (req.session as any)?.userId as string | undefined;
+  if (sessionUserId && (!req.user || !req.user?.claims?.sub)) {
+    req.user = { claims: { sub: sessionUserId }, _viaSession: true };
+    return next();
+  }
+
   const user = req.user as any;
 
-  if (!req.isAuthenticated() || !user.expires_at) {
+  if (!req.isAuthenticated || !req.isAuthenticated() || !user?.expires_at) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 

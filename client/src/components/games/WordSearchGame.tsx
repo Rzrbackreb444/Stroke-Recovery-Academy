@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Check, RotateCw, Keyboard, Download } from "lucide-react";
+import { Check, RotateCw, Keyboard, Download, Pause, Play } from "lucide-react";
 import {
   generateWordSearch,
   getCellsBetween,
@@ -34,6 +34,14 @@ interface SaveState {
   attempts: number;
   hintsUsed: number;
   seedNonce: number;
+  pausedMs?: number;
+  paused?: boolean;
+}
+
+function formatClock(sec: number): string {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${m}:${String(s).padStart(2, "0")}`;
 }
 
 export default function WordSearchGame({
@@ -79,6 +87,10 @@ export default function WordSearchGame({
   const [keyboardCursor, setKeyboardCursor] = useState<{ row: number; col: number } | null>(null);
   const [keyboardMode, setKeyboardMode] = useState(false);
   const [announce, setAnnounce] = useState("");
+  const [paused, setPaused] = useState(false);
+  const [pausedMs, setPausedMs] = useState(0);
+  const [pauseStartedAt, setPauseStartedAt] = useState<number | null>(null);
+  const [tick, setTick] = useState(0);
   const calledComplete = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -130,28 +142,75 @@ export default function WordSearchGame({
       setStartedAt(saved.startedAt);
       setAttempts(saved.attempts || 0);
       setHintsUsed(saved.hintsUsed || 0);
+      setPausedMs(saved.pausedMs || 0);
+      // Restore paused state — autosave captures the full effective pausedMs
+      // (including any in-progress pause segment), so we re-enter pause cleanly.
+      if (saved.paused) {
+        setPaused(true);
+        setPauseStartedAt(Date.now());
+      } else {
+        setPaused(false);
+        setPauseStartedAt(null);
+      }
     } else {
       setFound([]);
       setStartedAt(Date.now());
       setAttempts(0);
       setHintsUsed(0);
+      setPausedMs(0);
+      setPaused(false);
+      setPauseStartedAt(null);
     }
   }, [puzzle, packId, difficulty, seedNonce]);
 
-  // Autosave every 5s while in progress
+  // Live clock — ticks every second while playing
+  useEffect(() => {
+    if (solved || paused) return;
+    const t = setInterval(() => setTick((n) => n + 1), 1000);
+    return () => clearInterval(t);
+  }, [solved, paused]);
+
+  const elapsedSec = Math.max(
+    0,
+    Math.floor((Date.now() - startedAt - pausedMs - (pauseStartedAt ? Date.now() - pauseStartedAt : 0)) / 1000),
+  );
+  // touch tick so elapsedSec re-renders
+  void tick;
+
+  function togglePause() {
+    if (solved) return;
+    if (!paused) {
+      setPaused(true);
+      setPauseStartedAt(Date.now());
+      setAnnounce("Game paused. Timer stopped.");
+    } else {
+      setPaused(false);
+      if (pauseStartedAt) setPausedMs((m) => m + (Date.now() - pauseStartedAt));
+      setPauseStartedAt(null);
+      setAnnounce("Game resumed.");
+    }
+  }
+
+  // Autosave every 5s while in progress.
+  // When paused, we fold the in-progress pause segment into pausedMs so a reload
+  // while paused doesn't silently count that gap as active play time.
   useEffect(() => {
     if (solved) return;
     const t = setInterval(() => {
+      const effectivePausedMs =
+        pausedMs + (paused && pauseStartedAt ? Date.now() - pauseStartedAt : 0);
       saveGame<SaveState>(saveKey, packId, difficulty, {
         found,
         startedAt,
         attempts,
         hintsUsed,
         seedNonce,
+        pausedMs: effectivePausedMs,
+        paused,
       });
     }, 5000);
     return () => clearInterval(t);
-  }, [found, startedAt, attempts, hintsUsed, seedNonce, packId, difficulty, solved]);
+  }, [found, startedAt, attempts, hintsUsed, seedNonce, packId, difficulty, solved, pausedMs, paused, pauseStartedAt]);
 
   // Detect completion
   useEffect(() => {
@@ -162,7 +221,10 @@ export default function WordSearchGame({
     ) {
       calledComplete.current = true;
       setSolved(true);
-      const durationSec = Math.round((Date.now() - startedAt) / 1000);
+      const durationSec = Math.max(
+        1,
+        Math.round((Date.now() - startedAt - pausedMs) / 1000),
+      );
       const accuracyPct = attempts > 0 ? Math.round((found.length / attempts) * 100) : 100;
       const stats: GameCompletionStats = {
         durationSec,
@@ -175,7 +237,7 @@ export default function WordSearchGame({
       clearGame(saveKey, packId, difficulty);
       onComplete?.(stats);
     }
-  }, [found, targetWords, onComplete, startedAt, attempts, hintsUsed, packId, difficulty]);
+  }, [found, targetWords, onComplete, startedAt, attempts, hintsUsed, packId, difficulty, pausedMs]);
 
   const activeCells: { row: number; col: number }[] = useMemo(() => {
     if (!start || !hover) return [];
@@ -190,6 +252,7 @@ export default function WordSearchGame({
 
   const tryCommit = useCallback(
     (s: { row: number; col: number }, h: { row: number; col: number }) => {
+      if (paused) return;
       const cells = getCellsBetween(s.row, s.col, h.row, h.col);
       if (!cells) return;
       const reading = readCells(puzzle.grid, cells);
@@ -205,16 +268,18 @@ export default function WordSearchGame({
         playWrong();
       }
     },
-    [puzzle, targetWords, found],
+    [puzzle, targetWords, found, paused],
   );
 
   function handleCellDown(row: number, col: number) {
+    if (paused) return;
     setStart({ row, col });
     setHover({ row, col });
     setKeyboardMode(false);
   }
 
   function handleCellEnter(row: number, col: number) {
+    if (paused) return;
     if (start) setHover({ row, col });
   }
 
@@ -232,7 +297,7 @@ export default function WordSearchGame({
   // Keyboard navigation handlers (full a11y)
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (solved) return;
+      if (solved || paused) return;
       const cursor = keyboardCursor ?? { row: 0, col: 0 };
       const max = puzzle.size - 1;
 
@@ -287,7 +352,7 @@ export default function WordSearchGame({
           break;
       }
     },
-    [keyboardCursor, keyboardMode, solved, start, puzzle.size, tryCommit],
+    [keyboardCursor, keyboardMode, solved, paused, start, puzzle.size, tryCommit],
   );
 
   function reset() {
@@ -310,6 +375,55 @@ export default function WordSearchGame({
         data-testid="game-word-search"
       >
         <div className="flex flex-col items-center gap-4">
+          {/* Timer + Pause control */}
+          <div className="flex w-full items-center justify-between gap-3">
+            <div
+              className="flex items-center gap-2 rounded-md border border-[#1e1e1e] bg-[#0f0f0f] px-3 py-1.5 font-mono text-sm tabular-nums text-gray-300"
+              data-testid="text-ws-clock"
+              aria-label={`Elapsed time: ${formatClock(elapsedSec)}`}
+            >
+              <span className={`inline-block h-2 w-2 rounded-full ${paused ? "bg-gray-500" : "bg-[#C9941A] animate-pulse"}`} />
+              {formatClock(elapsedSec)}
+              {paused && <span className="ml-1 text-xs uppercase tracking-widest text-gray-500">Paused</span>}
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={togglePause}
+              data-testid="button-ws-pause"
+              className="border-[#333] bg-transparent text-gray-300"
+              disabled={solved}
+              aria-pressed={paused}
+            >
+              {paused ? (
+                <><Play className="mr-2 h-4 w-4" /> Resume</>
+              ) : (
+                <><Pause className="mr-2 h-4 w-4" /> Pause</>
+              )}
+            </Button>
+          </div>
+          <div className="relative">
+          {paused && (
+            <div
+              className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-md bg-[#0a0a0a]/95 backdrop-blur-sm"
+              role="status"
+              aria-live="polite"
+              data-testid="overlay-ws-paused"
+            >
+              <Pause className="mb-3 h-12 w-12" style={{ color: accent }} />
+              <p className="text-lg font-black uppercase tracking-widest text-white">Game Paused</p>
+              <p className="mt-1 text-sm text-gray-400">Take your time. Resume when ready.</p>
+              <Button
+                type="button"
+                onClick={togglePause}
+                className="mt-5 bg-[#C9941A] text-black hover:bg-[#C9941A]"
+                data-testid="button-ws-resume-overlay"
+              >
+                <Play className="mr-2 h-4 w-4" /> Resume
+              </Button>
+            </div>
+          )}
           <div
             ref={containerRef}
             tabIndex={0}
@@ -377,6 +491,7 @@ export default function WordSearchGame({
                 );
               }),
             )}
+          </div>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-2">
             <Button
