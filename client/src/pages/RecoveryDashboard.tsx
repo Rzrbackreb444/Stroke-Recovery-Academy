@@ -256,6 +256,59 @@ export default function RecoveryDashboard() {
           </Link>
         </section>
 
+        {/* SQUATCHY ANTHEM HERO */}
+        <section className="mb-8" data-testid="section-anthem-hero">
+          <Link href="/recovery/anthem">
+            <a
+              className="block group rounded-xl border border-[#C9941A]/40 bg-gradient-to-br from-[#C9941A]/15 via-[#1a1a1a] to-[#1a1a1a] hover-elevate active-elevate-2"
+              data-testid="link-anthem-hero"
+              aria-label="Squatchy — the recovery anthem. Watch the video."
+            >
+              <div className="grid md:grid-cols-[280px_1fr] gap-0">
+                <div className="relative bg-black aspect-video md:aspect-auto md:min-h-[180px] rounded-t-xl md:rounded-l-xl md:rounded-tr-none overflow-hidden">
+                  <img
+                    src="/videos/squatchy-poster.jpg"
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#1a1a1a]/40 pointer-events-none" />
+                  <div className="absolute top-3 left-3">
+                    <Badge className="bg-[#C9941A] text-black hover:bg-[#C9941A] font-bold tracking-widest text-[10px]">
+                      <Play className="h-3 w-3 mr-1" /> NEW ANTHEM
+                    </Badge>
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="w-14 h-14 rounded-full bg-[#C9941A]/95 group-hover:bg-[#C9941A] flex items-center justify-center shadow-lg transition-colors">
+                      <Play className="h-6 w-6 text-black ml-0.5" fill="currentColor" />
+                    </div>
+                  </div>
+                </div>
+                <div className="p-6 flex flex-col justify-center">
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9941A] font-bold mb-2">
+                    Stroked-Out Sasquatch · Rock Anthem
+                  </p>
+                  <h2
+                    className="text-3xl sm:text-4xl font-black text-white leading-tight mb-2"
+                    style={{ fontFamily: "Playfair Display, Georgia, serif" }}
+                  >
+                    Squatchy
+                  </h2>
+                  <p className="text-sm text-gray-300 leading-relaxed mb-4 max-w-xl">
+                    From wheelchair to warrior. Heart still thumpin'? Life still pumpin'.{" "}
+                    <span className="text-[#C9941A] font-semibold">Get up. Get loud. Get Squatchy.</span>
+                  </p>
+                  <div className="flex items-center gap-2 text-[#C9941A] text-sm font-semibold uppercase tracking-widest">
+                    Watch & Share
+                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+              </div>
+            </a>
+          </Link>
+        </section>
+
         {/* CHALLENGE COMMAND CENTER */}
         <section className="mb-8" data-testid="section-challenge-command">
           <div className="bg-gradient-to-r from-[#C9941A]/15 via-[#1a1a1a] to-[#1a1a1a] border border-[#C9941A]/30 rounded-xl p-6 mb-4">

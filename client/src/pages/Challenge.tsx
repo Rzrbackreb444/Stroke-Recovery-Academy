@@ -291,6 +291,27 @@ export default function Challenge() {
             </Button>
           </div>
 
+          {/* SQUATCHY ANTHEM EMBED — social proof */}
+          <div className="max-w-3xl mx-auto mb-10" data-testid="section-anthem-embed">
+            <div className="rounded-xl overflow-hidden border border-[#C9941A]/40 bg-black shadow-[0_0_60px_rgba(201,148,26,0.15)]">
+              <video
+                src="/videos/squatchy-anthem.mp4"
+                className="w-full h-auto block bg-black"
+                controls
+                playsInline
+                preload="metadata"
+                data-testid="video-challenge-anthem"
+              />
+            </div>
+            <p className="text-sm text-gray-400 mt-3 text-center">
+              <span className="text-[#C9941A] font-bold uppercase tracking-widest text-xs">"Squatchy"</span>{" "}
+              — the anthem written from the wheelchair. Heart still thumpin'? Life still pumpin'.{" "}
+              <a href="/recovery/anthem" className="text-[#C9941A] underline" data-testid="link-anthem-from-challenge">
+                Hear the full story →
+              </a>
+            </p>
+          </div>
+
           <div className="flex flex-wrap justify-center gap-3 mb-4">
             <p className="text-sm text-gray-500 self-center">
               <Shield className="inline h-3.5 w-3.5 mr-1 text-[#C9941A]" />
