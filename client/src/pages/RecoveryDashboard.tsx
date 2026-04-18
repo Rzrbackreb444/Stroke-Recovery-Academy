@@ -741,7 +741,7 @@ export default function RecoveryDashboard() {
                     <Badge className="bg-[#333] text-gray-300 border-[#333]">+{milestone.pointsAwarded}</Badge>
                   </div>
                 ))}
-                <Link href="/achievements">
+                <Link href="/recovery/achievements">
                   <Button 
                     variant="outline" 
                     className="w-full mt-4 border-[#C9941A] text-[#C9941A]"
@@ -755,7 +755,7 @@ export default function RecoveryDashboard() {
               <div className="text-center py-8">
                 <Trophy className="h-12 w-12 text-gray-500 mx-auto mb-4" />
                 <p className="text-gray-400">Complete check-ins and habits to earn milestones!</p>
-                <Link href="/achievements">
+                <Link href="/recovery/achievements">
                   <Button 
                     variant="outline" 
                     className="mt-4 border-[#C9941A] text-[#C9941A]"
@@ -1039,7 +1039,7 @@ export default function RecoveryDashboard() {
         <section className="mb-8">
           <h2 className="text-xl font-bold mb-4 text-white">Quick Actions</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            <Link href="/survival-grid">
+            <Link href="/recovery/survival-grid">
               <Card className="bg-[#1a1a1a] border-[#333] p-4 hover-elevate cursor-pointer" data-testid="action-survival-grid">
                 <Grid3X3 className="h-8 w-8 text-[#C9941A] mb-2" />
                 <div className="font-semibold text-white">Survival Grid</div>

@@ -247,7 +247,7 @@ function BookCard({ book }: { book: typeof books[0] }) {
             className="w-full gap-2" 
             data-testid={`button-book-${book.id}`}
             disabled={isComingSoon}
-            onClick={() => !isComingSoon && (window.location.href = `/recovery/course/${book.courseId}`)}
+            onClick={() => !isComingSoon && (window.location.href = `/recovery/university`)}
           >
             {isComingSoon ? (
               <>
@@ -294,7 +294,13 @@ function ModuleCard({ module }: { module: typeof featuredModules[0] }) {
           <p className="text-sm text-gray-400 mb-3">{module.description}</p>
           <div className="flex items-center justify-between">
             <Badge variant="outline">{module.difficulty}</Badge>
-            <Button size="sm" variant="ghost" className="gap-1" data-testid={`button-module-preview-${module.id}`}>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="gap-1"
+              data-testid={`button-module-preview-${module.id}`}
+              onClick={() => (window.location.href = "/recovery/university")}
+            >
               Preview
               <ArrowRight className="h-3 w-3" aria-hidden="true" />
             </Button>
@@ -445,11 +451,22 @@ export default function Academy() {
               </p>
               
               <div className="flex flex-wrap justify-center gap-4 mb-12">
-                <Button size="lg" className="gap-2" data-testid="button-browse-courses">
+                <Button
+                  size="lg"
+                  className="gap-2"
+                  data-testid="button-browse-courses"
+                  onClick={() => (window.location.href = "/recovery/university")}
+                >
                   <BookOpen className="h-5 w-5" aria-hidden="true" />
                   Browse Courses
                 </Button>
-                <Button size="lg" variant="outline" className="gap-2" data-testid="button-free-preview">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="gap-2"
+                  data-testid="button-free-preview"
+                  onClick={() => (window.location.href = "/recovery/university/lesson/1")}
+                >
                   <Play className="h-5 w-5" aria-hidden="true" />
                   Free Preview
                 </Button>

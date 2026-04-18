@@ -303,7 +303,7 @@ export default function Dashboard() {
                       title="New Book Project"
                       description="Start writing with AI assistance"
                       icon={BookOpen}
-                      href="/book-studio-v2"
+                      href="/book-studio"
                     />
                     <QuickActionCard
                       title="Generate Music"
@@ -338,7 +338,7 @@ export default function Dashboard() {
                     </div>
                   </CardHeader>
                   <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    <Link href="/book-studio-v2">
+                    <Link href="/book-studio">
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-book-studio">
                         <BookOpen className="h-5 w-5 text-[#C9941A]" />
                         <span className="font-medium text-sm">Book Studio</span>
@@ -368,7 +368,7 @@ export default function Dashboard() {
                         <span className="font-medium text-sm">Image Studio</span>
                       </div>
                     </Link>
-                    <Link href="/doctrine-engine">
+                    <Link href="/recovery/sasch">
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-doctrine-engine">
                         <Brain className="h-5 w-5 text-[#C9941A]" />
                         <span className="font-medium text-sm">Doctrine Engine</span>
@@ -476,7 +476,7 @@ export default function Dashboard() {
                 title="Book Studio"
                 description="Professional TipTap editor with AI ghostwriting, KDP publishing"
                 icon={BookOpen}
-                href="/book-studio-v2"
+                href="/book-studio"
                 tags={['AI Writing', 'KDP/Lulu', 'EPUB']}
               />
               <StudioCard
@@ -511,7 +511,7 @@ export default function Dashboard() {
                 title="Doctrine Engine"
                 description="Knowledge base builder for structured content systems"
                 icon={Brain}
-                href="/doctrine-engine"
+                href="/recovery/sasch"
                 tags={['Knowledge', 'Systems', 'Export']}
               />
               <StudioCard
@@ -679,7 +679,7 @@ export default function Dashboard() {
                       <BookOpen className="h-8 w-8 text-[#C9941A] mb-3" />
                       <h3 className="font-semibold mb-1">Sell Books</h3>
                       <p className="text-sm text-gray-400 mb-3">Publish and sell your books on the marketplace</p>
-                      <Link href="/book-studio-v2">
+                      <Link href="/book-studio">
                         <Button variant="outline" size="sm" data-testid="button-create-book">Create Book</Button>
                       </Link>
                     </div>

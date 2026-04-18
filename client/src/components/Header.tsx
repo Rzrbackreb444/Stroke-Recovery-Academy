@@ -37,7 +37,7 @@ export default function EliteHeader() {
 
           <a href="/marketplace" className="flex items-center gap-2 hover:text-[#C9941A] transition-colors"><Globe className="w-3.5 h-3.5" /> KreAItorverse</a>
           <a href="/community" className="flex items-center gap-2 hover:text-[#C9941A] transition-colors"><MessageSquare className="w-3.5 h-3.5" /> Collective</a>
-          <a href="/earnings" className="flex items-center gap-2 hover:text-[#C9941A] transition-colors"><DollarSign className="w-3.5 h-3.5" /> Revenue</a>
+          <a href="/creator/earnings" className="flex items-center gap-2 hover:text-[#C9941A] transition-colors"><DollarSign className="w-3.5 h-3.5" /> Revenue</a>
         </div>
       </div>
 
