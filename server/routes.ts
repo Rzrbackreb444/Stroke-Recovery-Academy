@@ -1050,10 +1050,13 @@ Allow: /
       const result = await dbPool.query(
         `SELECT u.id, u.first_name, u.last_name, u.profile_image_url, u.created_at,
                 us.display_name, us.avatar_url, us.username,
-                us2.current_streak
+                us2.current_streak,
+                up.name AS persona_name, up.creed AS persona_creed,
+                up.accent_color AS persona_accent_color, up.archetype_key AS persona_archetype_key
          FROM users u
          LEFT JOIN user_settings us ON us.user_id = u.id
          LEFT JOIN user_streaks us2 ON us2.user_id = u.id
+         LEFT JOIN user_personas up ON up.user_id = u.id
          ORDER BY COALESCE(us2.current_streak, 0) DESC, u.created_at DESC
          LIMIT 50`
       );
@@ -1072,12 +1075,15 @@ Allow: /
       const posts = await dbPool.query(
         `SELECT ap.*, u.first_name, u.last_name, u.profile_image_url,
                 us.display_name, us.avatar_url, us.username,
+                up.name AS persona_name, up.creed AS persona_creed,
+                up.accent_color AS persona_accent_color, up.archetype_key AS persona_archetype_key,
                 (SELECT json_agg(json_build_object('id', am.id, 'mediaType', am.media_type, 'mediaUrl', am.media_url, 'thumbnailUrl', am.thumbnail_url)) FROM activity_media am WHERE am.post_id = ap.id) as media,
                 (SELECT json_agg(json_build_object('id', ar.id, 'userId', ar.user_id, 'reactionType', ar.reaction_type)) FROM activity_reactions ar WHERE ar.post_id = ap.id) as reactions,
                 (SELECT COUNT(*) FROM activity_comments ac WHERE ac.post_id = ap.id) as comment_count_real
          FROM activity_posts ap
          LEFT JOIN users u ON u.id = ap.author_id
          LEFT JOIN user_settings us ON us.user_id = ap.author_id
+         LEFT JOIN user_personas up ON up.user_id = ap.author_id
          WHERE ap.visibility = 'public' OR ap.visibility = 'members'
          ORDER BY ap.is_pinned DESC, ap.created_at DESC
          LIMIT $1 OFFSET $2`,
@@ -1096,10 +1102,12 @@ Allow: /
       const { pool: dbPool } = await import('./db');
       const comments = await dbPool.query(
         `SELECT ac.*, u.first_name, u.last_name, u.profile_image_url,
-                us.display_name, us.avatar_url, us.username
+                us.display_name, us.avatar_url, us.username,
+                up.name AS persona_name, up.accent_color AS persona_accent_color
          FROM activity_comments ac
          LEFT JOIN users u ON u.id = ac.author_id
          LEFT JOIN user_settings us ON us.user_id = ac.author_id
+         LEFT JOIN user_personas up ON up.user_id = ac.author_id
          WHERE ac.post_id = $1
          ORDER BY ac.created_at ASC`,
         [req.params.id]

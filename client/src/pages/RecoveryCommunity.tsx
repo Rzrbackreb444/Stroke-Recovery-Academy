@@ -25,6 +25,7 @@ import {
   Milestone, HelpCircle, Star, Camera, Upload, X, Plus,
   PlayCircle, Clock, Eye, Crown, Zap, Activity
 } from "lucide-react";
+import { safeAccentForDark } from "@/lib/personaContrast";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface EnrichedPost {
@@ -48,6 +49,10 @@ interface EnrichedPost {
   media?: Array<{ id: number; mediaType: string; mediaUrl: string; thumbnailUrl?: string }>;
   reactions?: Array<{ id: number; userId: string; reactionType: string }>;
   comment_count_real?: string;
+  persona_name?: string | null;
+  persona_creed?: string | null;
+  persona_accent_color?: string | null;
+  persona_archetype_key?: string | null;
 }
 
 interface EnrichedComment {
@@ -104,6 +109,10 @@ interface Member {
   username?: string;
   currentStreak?: number;
   createdAt: string;
+  persona_name?: string | null;
+  persona_creed?: string | null;
+  persona_accent_color?: string | null;
+  persona_archetype_key?: string | null;
 }
 
 // ─── Reaction config ───────────────────────────────────────────────────────────
@@ -124,8 +133,8 @@ const POST_TYPES = [
 ] as const;
 
 // ─── Utility helpers ──────────────────────────────────────────────────────────
-function getDisplayName(post: Pick<EnrichedPost, "displayName" | "firstName" | "lastName" | "username">) {
-  return post.displayName || (post.firstName && post.lastName ? `${post.firstName} ${post.lastName}` : post.username || "Member");
+function getDisplayName(post: Pick<EnrichedPost, "displayName" | "firstName" | "lastName" | "username"> & { persona_name?: string | null }) {
+  return post.persona_name || post.displayName || (post.firstName && post.lastName ? `${post.firstName} ${post.lastName}` : post.username || "Member");
 }
 
 function getAvatar(post: Pick<EnrichedPost, "avatarUrl" | "profileImageUrl">) {
@@ -460,7 +469,7 @@ function PostComposer({ user, settings }: { user: any; settings: any }) {
 
           <div className="flex-1 space-y-3">
             {persona && (
-              <p className="text-xs italic" style={{ color: persona.accentColor }} data-testid="text-composer-creed">
+              <p className="text-xs italic" style={{ color: safeAccentForDark(persona.accentColor) }} data-testid="text-composer-creed">
                 "{persona.creed}"
               </p>
             )}
@@ -784,7 +793,13 @@ function PostCard({ post, currentUser, settings }: { post: EnrichedPost; current
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-semibold text-white text-sm">{getDisplayName(post)}</span>
+              <span
+                className="font-semibold text-sm"
+                style={{ color: post.persona_name ? safeAccentForDark(post.persona_accent_color) : "#FFFFFF" }}
+                data-testid={`text-post-author-${post.id}`}
+              >
+                {getDisplayName(post)}
+              </span>
               {post.username && (
                 <span className="text-xs text-gray-500">@{post.username}</span>
               )}
@@ -795,6 +810,16 @@ function PostCard({ post, currentUser, settings }: { post: EnrichedPost; current
                 {typeBadge.label}
               </span>
             </div>
+            {post.persona_creed && (
+              <p
+                className="text-xs italic mt-0.5 truncate"
+                style={{ color: safeAccentForDark(post.persona_accent_color), opacity: 0.85 }}
+                data-testid={`text-post-creed-${post.id}`}
+                title={post.persona_creed}
+              >
+                "{post.persona_creed}"
+              </p>
+            )}
             <p className="text-xs text-gray-500 mt-0.5">{timeAgo(post.createdAt)}</p>
           </div>
         </div>
@@ -1032,10 +1057,22 @@ function MembersTab() {
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="text-sm font-semibold text-white leading-tight">
-                    {m.displayName || `${m.firstName || ""} ${m.lastName || ""}`.trim() || "Member"}
+                  <p
+                    className="text-sm font-semibold leading-tight"
+                    style={{ color: m.persona_name ? safeAccentForDark(m.persona_accent_color) : "#FFFFFF" }}
+                  >
+                    {m.persona_name || m.displayName || `${m.firstName || ""} ${m.lastName || ""}`.trim() || "Member"}
                   </p>
-                  {m.username && <p className="text-xs text-gray-500">@{m.username}</p>}
+                  {m.persona_creed && (
+                    <p
+                      className="text-[10px] italic leading-snug mt-0.5 line-clamp-2"
+                      style={{ color: safeAccentForDark(m.persona_accent_color), opacity: 0.8 }}
+                      title={m.persona_creed}
+                    >
+                      "{m.persona_creed}"
+                    </p>
+                  )}
+                  {m.username && <p className="text-xs text-gray-500 mt-0.5">@{m.username}</p>}
                   {m.currentStreak != null && m.currentStreak > 0 && (
                     <div className="flex items-center gap-1 justify-center mt-1">
                       <Flame className="w-3 h-3 text-orange-400" />
