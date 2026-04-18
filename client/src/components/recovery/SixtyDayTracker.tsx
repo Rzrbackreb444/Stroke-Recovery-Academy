@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Target, Flame, Trophy, CheckCircle, Calendar } from "lucide-react";
+import { safeAccentForDark } from "@/lib/personaContrast";
 
 interface Phase {
   name: string;
@@ -228,7 +229,7 @@ export default function SixtyDayTracker() {
 
             <p
               className="text-foreground italic text-sm border-l-2 pl-3"
-              style={{ borderColor: persona?.accentColor || "#C9941A" }}
+              style={{ borderColor: safeAccentForDark(persona?.accentColor) }}
               data-testid="motivational-message"
             >
               {persona && streak > 0 ? (

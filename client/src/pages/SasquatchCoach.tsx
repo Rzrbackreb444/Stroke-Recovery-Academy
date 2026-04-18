@@ -2,12 +2,13 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send, Volume2, VolumeX, Loader2, Mic } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import RecoveryHeader from "@/components/RecoveryHeader";
 import RecoverySEO from "@/components/RecoverySEO";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
+import { safeAccentForDark } from "@/lib/personaContrast";
 
 interface Message {
   role: "user" | "coach";
@@ -24,13 +25,31 @@ const STARTER_PROMPTS = [
 
 export default function SasquatchCoach() {
   const { user } = useAuth();
+  const { data: personaData } = useQuery<{ persona: { name: string; creed: string; accentColor: string } | null }>({
+    queryKey: ['/api/persona/me'],
+  });
+  const persona = personaData?.persona ?? null;
+  const safeAccent = safeAccentForDark(persona?.accentColor);
+  const buildWelcome = (name: string) =>
+    `Hey ${name}. I'm Sasquatch — your round-the-clock recovery coach. I've been through what you're going through, and I'm here to push you when you need pushing and steady you when you need steadying. What's on your mind today?`;
   const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "coach",
-      content:
-        "Hey warrior. I'm Sasquatch — your round-the-clock recovery coach. I've been through what you're going through, and I'm here to push you when you need pushing and steady you when you need steadying. What's on your mind today?",
-    },
+    { role: "coach", content: buildWelcome("warrior") },
   ]);
+
+  // When persona resolves after first paint, swap the welcome line in-place
+  // (only if the user hasn't started chatting yet).
+  useEffect(() => {
+    if (!persona) return;
+    setMessages((prev) => {
+      if (prev.length !== 1) return prev;
+      const first = prev[0];
+      if (first.role !== "coach") return prev;
+      const personalized = buildWelcome(persona.name);
+      if (first.content === personalized) return prev;
+      return [{ ...first, content: personalized }];
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [persona?.name]);
   const [input, setInput] = useState("");
   const [audioEnabled, setAudioEnabled] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -163,8 +182,15 @@ export default function SasquatchCoach() {
                 )}
               </div>
               {msg.role === "user" && (
-                <div className="w-8 h-8 rounded-full bg-[#1a1a1a] flex items-center justify-center flex-shrink-0 mt-1 text-xs font-bold text-white">
-                  {(user as any)?.firstName?.[0] || "Y"}
+                <div
+                  className="w-8 h-8 rounded-full bg-[#1a1a1a] flex items-center justify-center flex-shrink-0 mt-1 text-xs font-bold border"
+                  style={{
+                    color: persona ? safeAccent : "#FFFFFF",
+                    borderColor: persona ? `${safeAccent}55` : "#333",
+                  }}
+                  data-testid="avatar-coach-user"
+                >
+                  {(persona?.name?.[0] || (user as any)?.firstName?.[0] || "Y").toUpperCase()}
                 </div>
               )}
             </div>
