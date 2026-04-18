@@ -78,7 +78,7 @@ export default function Footer() {
                 <Input
                   type="email"
                   placeholder="your@email.com"
-                  className="flex-1 border-[#333] bg-[#111] text-white placeholder:text-gray-600 focus:border-[#C9941A]"
+                  className="flex-1 border-[#333] bg-[#111] text-white placeholder:text-gray-500 focus:border-[#C9941A]"
                   data-testid="input-newsletter-email"
                 />
                 <Button
@@ -105,7 +105,7 @@ export default function Footer() {
                     className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm group"
                     data-testid={`footer-link-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
                   >
-                    <link.icon className="w-3.5 h-3.5 text-gray-600 group-hover:text-[#C9941A] transition-colors" />
+                    <link.icon className="w-3.5 h-3.5 text-gray-500 group-hover:text-[#C9941A] transition-colors" />
                     {link.label}
                   </Link>
                 </li>
@@ -126,7 +126,7 @@ export default function Footer() {
                     className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm group"
                     data-testid={`footer-link-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
                   >
-                    <link.icon className="w-3.5 h-3.5 text-gray-600 group-hover:text-[#C9941A] transition-colors" />
+                    <link.icon className="w-3.5 h-3.5 text-gray-500 group-hover:text-[#C9941A] transition-colors" />
                     {link.label}
                   </Link>
                 </li>
@@ -225,7 +225,7 @@ export default function Footer() {
                 />
                 <div>
                   <p className="text-xs font-semibold text-gray-400">Stroke Lyfe Inc.</p>
-                  <p className="text-xs text-gray-600">501(c)(3) Nonprofit · Rebuild. Rewire. Rise.</p>
+                  <p className="text-xs text-gray-500">501(c)(3) Nonprofit · Rebuild. Rewire. Rise.</p>
                 </div>
               </div>
               <Link href="/recovery/gift">
