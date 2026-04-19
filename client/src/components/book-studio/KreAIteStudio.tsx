@@ -1371,19 +1371,17 @@ export default function KreAIteStudio() {
                                   description: "Creating document from your manuscript..."
                                 });
                                 try {
-                                  const response = await apiRequest('/api/book-studio/export-google-docs', {
-                                    method: 'POST',
-                                    body: JSON.stringify({
-                                      title: project?.title || 'Untitled Book',
-                                      chapters: project?.chapters || []
-                                    })
+                                  const res = await apiRequest('POST', '/api/book-studio/export-google-docs', {
+                                    title: bookOutline?.title || 'Untitled Book',
+                                    chapters: chapters || []
                                   });
-                                  if (response.documentUrl) {
+                                  const data = await res.json() as { documentUrl?: string };
+                                  if (data.documentUrl) {
                                     toast({
                                       title: "Exported to Google Docs",
                                       description: "Opening your document...",
                                     });
-                                    window.open(response.documentUrl, '_blank');
+                                    window.open(data.documentUrl, '_blank');
                                   }
                                 } catch (error: any) {
                                   toast({

@@ -102,7 +102,7 @@ export function PodcastStudio() {
   // Mutations
   const createPodcastMutation = useMutation({
     mutationFn: async (data: { title: string; description: string; category: string }) => {
-      return apiRequest("/api/podcasts", { method: "POST", body: JSON.stringify(data) });
+      return apiRequest("POST", "/api/podcasts", data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/podcasts"] });
@@ -119,7 +119,7 @@ export function PodcastStudio() {
 
   const deletePodcastMutation = useMutation({
     mutationFn: async (id: number) => {
-      return apiRequest(`/api/podcasts/${id}`, { method: "DELETE" });
+      return apiRequest("DELETE", `/api/podcasts/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/podcasts"] });
@@ -131,10 +131,7 @@ export function PodcastStudio() {
   const createEpisodeMutation = useMutation({
     mutationFn: async (data: { title: string; description: string; showNotes: string; duration: number; audioUrl?: string }) => {
       if (!selectedPodcast) throw new Error("No podcast selected");
-      return apiRequest(`/api/podcasts/${selectedPodcast.id}/episodes`, { 
-        method: "POST", 
-        body: JSON.stringify(data) 
-      });
+      return apiRequest("POST", `/api/podcasts/${selectedPodcast.id}/episodes`, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/podcasts", selectedPodcast?.id, "episodes"] });
@@ -156,10 +153,7 @@ export function PodcastStudio() {
   const updateEpisodeMutation = useMutation({
     mutationFn: async ({ episodeId, data }: { episodeId: number; data: Partial<PodcastEpisode> }) => {
       if (!selectedPodcast) throw new Error("No podcast selected");
-      return apiRequest(`/api/podcasts/${selectedPodcast.id}/episodes/${episodeId}`, { 
-        method: "PATCH", 
-        body: JSON.stringify(data) 
-      });
+      return apiRequest("PATCH", `/api/podcasts/${selectedPodcast.id}/episodes/${episodeId}`, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/podcasts", selectedPodcast?.id, "episodes"] });
@@ -171,7 +165,7 @@ export function PodcastStudio() {
   const deleteEpisodeMutation = useMutation({
     mutationFn: async (episodeId: number) => {
       if (!selectedPodcast) throw new Error("No podcast selected");
-      return apiRequest(`/api/podcasts/${selectedPodcast.id}/episodes/${episodeId}`, { method: "DELETE" });
+      return apiRequest("DELETE", `/api/podcasts/${selectedPodcast.id}/episodes/${episodeId}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/podcasts", selectedPodcast?.id, "episodes"] });
@@ -184,7 +178,7 @@ export function PodcastStudio() {
   const transcribeMutation = useMutation({
     mutationFn: async (episodeId: number) => {
       if (!selectedPodcast) throw new Error("No podcast selected");
-      return apiRequest(`/api/podcasts/${selectedPodcast.id}/episodes/${episodeId}/transcribe`, { method: "POST" });
+      return apiRequest("POST", `/api/podcasts/${selectedPodcast.id}/episodes/${episodeId}/transcribe`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/podcasts", selectedPodcast?.id, "episodes"] });
@@ -198,7 +192,7 @@ export function PodcastStudio() {
   const publishMutation = useMutation({
     mutationFn: async (episodeId: number) => {
       if (!selectedPodcast) throw new Error("No podcast selected");
-      return apiRequest(`/api/podcasts/${selectedPodcast.id}/episodes/${episodeId}/publish`, { method: "POST" });
+      return apiRequest("POST", `/api/podcasts/${selectedPodcast.id}/episodes/${episodeId}/publish`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/podcasts", selectedPodcast?.id, "episodes"] });

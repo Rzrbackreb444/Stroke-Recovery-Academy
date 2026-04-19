@@ -429,7 +429,7 @@ export default function BrainGym() {
                   count={cfg.wordSearchCount}
                   accent={pack.accent}
                   seed={isDailyMode ? dailyChallenge.seed : undefined}
-                  packTitle={pack.title}
+                  packTitle={pack.name}
                   onComplete={(s) => handleComplete("wordsearch", s)}
                 />
               </div>

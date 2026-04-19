@@ -240,9 +240,9 @@ export default function AuthorDashboard() {
               <p className="text-gray-400 mb-4">
                 Please sign in to access your author dashboard.
               </p>
-              <Link href="/api/login">
-                <Button>Sign In</Button>
-              </Link>
+              <Button onClick={() => (window.location.href = "/api/login")} data-testid="button-author-signin">
+                Sign In
+              </Button>
             </CardContent>
           </Card>
         </main>

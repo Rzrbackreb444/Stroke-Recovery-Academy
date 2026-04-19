@@ -223,7 +223,7 @@ export default function SocialNetwork() {
               <CardContent className="p-4">
                 <div className="flex gap-4">
                   <Avatar className="w-12 h-12">
-                    <AvatarImage src={user?.profileImageUrl} />
+                    <AvatarImage src={user?.profileImageUrl ?? undefined} />
                     <AvatarFallback className="bg-gray-700 text-[#C9941A]">
                       {user?.firstName?.[0]}{user?.lastName?.[0]}
                     </AvatarFallback>

@@ -66,8 +66,8 @@ export default function SasquatchCoach() {
         role: m.role === "coach" ? "assistant" : "user",
         content: m.content,
       }));
-      const data = await apiRequest("POST", "/api/coach/chat", { message, history });
-      return data as { response: string; audioBase64?: string };
+      const res = await apiRequest("POST", "/api/coach/chat", { message, history });
+      return (await res.json()) as { response: string; audioBase64?: string };
     },
     onSuccess: (data) => {
       const coachMsg: Message = {

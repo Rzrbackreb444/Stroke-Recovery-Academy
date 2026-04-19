@@ -99,35 +99,6 @@ export default function RiverWorkspace() {
             <ChevronDown className="h-3.5 w-3.5 text-zinc-400" />
           </div>
 
-          <div className="h-5 w-px bg-zinc-200 dark:bg-zinc-700" />
-          
-          {/* Quick Actions */}
-          <div className="flex items-center gap-1">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" data-testid="button-save">
-                  <Save className="h-4 w-4 text-zinc-500" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Save (⌘S)</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" data-testid="button-undo">
-                  <Undo className="h-4 w-4 text-zinc-500" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Undo (⌘Z)</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" data-testid="button-redo">
-                  <Redo className="h-4 w-4 text-zinc-500" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Redo (⌘⇧Z)</TooltipContent>
-            </Tooltip>
-          </div>
         </div>
 
         <div className="flex items-center gap-2">
@@ -136,20 +107,15 @@ export default function RiverWorkspace() {
             <Cloud className="h-3.5 w-3.5 text-[#C9941A]" />
             <span>Saved</span>
           </div>
-          
+
           <div className="h-5 w-px bg-zinc-200 dark:bg-zinc-700" />
-          
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" aria-label="Search" data-testid="button-search">
-            <Search className="h-4 w-4 text-zinc-500" />
-          </Button>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" aria-label="Settings" data-testid="button-settings">
-            <Settings className="h-4 w-4 text-zinc-500" />
-          </Button>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" aria-label="Help" data-testid="button-help">
-            <HelpCircle className="h-4 w-4 text-zinc-500" />
-          </Button>
-          
-          <Button size="sm" className="h-8 bg-blue-600 hover:bg-blue-700 text-white text-xs gap-1.5">
+
+          <Button
+            size="sm"
+            className="h-8 bg-blue-600 hover:bg-blue-700 text-white text-xs gap-1.5"
+            onClick={() => (window.location.href = "/recovery/pricing")}
+            data-testid="button-upgrade-river"
+          >
             <Zap className="h-3.5 w-3.5" />
             Upgrade
           </Button>
