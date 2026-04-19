@@ -644,15 +644,15 @@ router.get("/public/quote/:projectId", async (req: Request, res: Response) => {
         id: 0,
         text: "No quotes available yet. Check back soon!",
         projectName: project.name,
-        brandColor: project.brandColor || "#1B4332",
-        isWhiteLabel: project.isWhiteLabel || false,
+        brandColor: (project as any).brandColor || "#1B4332",
+        isWhiteLabel: (project as any).isWhiteLabel || false,
         streak: 0,
         badges: [],
       });
     }
 
     // Determine which quote to show based on rotation
-    const rotationType = settings?.rotationType || "daily";
+    const rotationType = (settings as any)?.rotationType || "daily";
     let quoteIndex = 0;
 
     if (rotationType === "daily") {
@@ -663,7 +663,7 @@ router.get("/public/quote/:projectId", async (req: Request, res: Response) => {
       quoteIndex = Math.floor(Math.random() * poolQuotes.length);
     } else if (rotationType === "sequential") {
       // Use current index from settings
-      quoteIndex = (settings?.currentIndex || 0) % poolQuotes.length;
+      quoteIndex = ((settings as any)?.currentIndex || 0) % poolQuotes.length;
     }
 
     const selectedQuote = poolQuotes[quoteIndex].quote;
@@ -685,9 +685,9 @@ router.get("/public/quote/:projectId", async (req: Request, res: Response) => {
       text: selectedQuote.text,
       author: selectedQuote.author,
       projectName: project.name,
-      brandColor: project.brandColor || "#1B4332",
+      brandColor: (project as any).brandColor || "#1B4332",
       brandLogo: project.logoUrl,
-      isWhiteLabel: project.isWhiteLabel || false,
+      isWhiteLabel: (project as any).isWhiteLabel || false,
       streak: 0, // TODO: Implement user streak tracking
       badges: [],
       nextQuoteTime,
@@ -715,10 +715,9 @@ router.post("/scans", async (req: Request, res: Response) => {
     // Increment scan count on the project
     await db
       .update(qrCodeProjects)
-      .set({ 
+      .set({
         totalScans: sql`COALESCE(${qrCodeProjects.totalScans}, 0) + 1`,
-        lastScanAt: new Date(),
-      })
+      } as any)
       .where(eq(qrCodeProjects.id, parsedProjectId));
 
     res.json({ message: "Scan tracked" });

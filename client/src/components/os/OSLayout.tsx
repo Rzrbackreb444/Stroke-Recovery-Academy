@@ -112,7 +112,7 @@ export function OSHeader() {
                     <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
                       <User className="w-3 h-3 text-primary" />
                     </div>
-                    <span className="hidden sm:block text-sm">{user.username || user.email}</span>
+                    <span className="hidden sm:block text-sm">{user.firstName || user.email}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">

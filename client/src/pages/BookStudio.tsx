@@ -5,7 +5,7 @@ import RecoveryHeader from "@/components/RecoveryHeader";
 import { usePlatform } from "@/lib/hooks/usePlatform";
 import Footer from "@/components/Footer";
 import ChildrensBookMode from "@/components/ChildrensBookMode";
-import ProfessionalEditor from "@/components/ProfessionalEditor";
+import ProfessionalEditor from "@/components/ui/ProfessionalEditor";
 import CoverDesigner from "@/components/CoverDesigner";
 import SEO, { studioSchemas } from "@/components/SEO";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";

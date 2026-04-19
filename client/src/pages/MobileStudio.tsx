@@ -549,7 +549,7 @@ export default function MobileStudio() {
     }
   };
 
-  const applyChapterStyle = (styleId: string) => {
+  const applyChapterStyle = (styleId: "classic" | "modern" | "minimal" | "ornate") => {
     setProject(prev => ({
       ...prev,
       settings: { ...prev.settings, chapterStyle: styleId }
@@ -1120,7 +1120,7 @@ export default function MobileStudio() {
                   {chapterStyles.map((style) => (
                     <div
                       key={style.id}
-                      onClick={() => applyChapterStyle(style.id)}
+                      onClick={() => applyChapterStyle(style.id as "classic" | "modern" | "minimal" | "ornate")}
                       className={`p-3 rounded-lg border cursor-pointer transition-all ${
                         project.settings.chapterStyle === style.id
                           ? "border-[#C9941A] bg-[#C9941A]/10"

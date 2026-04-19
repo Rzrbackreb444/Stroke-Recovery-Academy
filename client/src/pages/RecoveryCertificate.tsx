@@ -72,6 +72,7 @@ export default function RecoveryCertificate() {
     );
   }
 
+  const { toast } = useToast();
   const handleShare = async () => {
     const url = window.location.href;
     const text = `I just earned my Recovery University · Part ${partNumber} (${partInfo.title}) certificate from Stroke Recovery Academy.`;

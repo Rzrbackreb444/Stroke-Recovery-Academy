@@ -287,7 +287,7 @@ export default function RecoveryLesson() {
             data-testid="button-mark-complete"
           >
             <BookOpen className="w-4 h-4 mr-2" />
-            {progress?.readAt || progress?.status === "read" || progress?.status === "passed" ? "Marked as read" : "Mark as read"}
+            {progress?.status === "read" || progress?.status === "passed" ? "Marked as read" : "Mark as read"}
           </Button>
           <Button
             onClick={() => setLocation(`/recovery/university/quiz/${chapter}`)}

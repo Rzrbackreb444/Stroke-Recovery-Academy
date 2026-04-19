@@ -978,7 +978,12 @@ function NewWebsiteDialog({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {themes.map(t => (
+                  {[
+                    { id: "classic", name: "Classic", description: "Timeless serif, refined" },
+                    { id: "modern", name: "Modern", description: "Clean sans, minimal" },
+                    { id: "literary", name: "Literary", description: "Warm cream, antique gold" },
+                    { id: "dark", name: "Dark", description: "Premium dark UI" },
+                  ].map(t => (
                     <SelectItem key={t.id} value={t.id}>
                       {t.name} - {t.description}
                     </SelectItem>

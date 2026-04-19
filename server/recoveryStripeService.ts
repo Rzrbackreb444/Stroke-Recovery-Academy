@@ -21,11 +21,12 @@ export class RecoveryStripeService {
 
   async createTipCheckout(
     customerId: string,
-    creatorId: number,
+    creatorId: string,
     amount: number,
     storyId?: number,
     successUrl: string = '/recovery/dashboard',
-    cancelUrl: string = '/recovery/dashboard'
+    cancelUrl: string = '/recovery/dashboard',
+    fromUserId?: string
   ) {
     const stripe = getRecoveryStripeClient();
     
@@ -48,8 +49,9 @@ export class RecoveryStripeService {
       cancel_url: cancelUrl,
       metadata: {
         type: 'tip',
-        creatorId: creatorId.toString(),
+        creatorId: creatorId,
         storyId: storyId?.toString() || '',
+        fromUserId: fromUserId || '',
         platform: 'stroke_recovery_academy',
       },
     });
@@ -63,7 +65,8 @@ export class RecoveryStripeService {
     price: number,
     title: string,
     successUrl: string,
-    cancelUrl: string
+    cancelUrl: string,
+    buyerId?: string
   ) {
     const stripe = getRecoveryStripeClient();
 
@@ -87,6 +90,7 @@ export class RecoveryStripeService {
       metadata: {
         type: 'premium_purchase',
         storyId: storyId.toString(),
+        buyerId: buyerId || '',
         platform: 'stroke_recovery_academy',
       },
     });
@@ -274,36 +278,48 @@ export class RecoveryStripeService {
   }
 
   private async processTip(session: any) {
-    const { creatorId, storyId } = session.metadata;
+    const { creatorId, storyId, fromUserId } = session.metadata || {};
     const amount = session.amount_total;
-    const creatorShare = Math.floor(amount * (CREATOR_SHARE_PERCENT / 100));
-    const platformFee = amount - creatorShare;
+    const creatorPayout = Math.floor(amount * (CREATOR_SHARE_PERCENT / 100));
+    const platformFee = amount - creatorPayout;
+
+    if (!creatorId) {
+      console.error('[recoveryStripe] processTip missing creatorId in metadata; skipping insert');
+      return;
+    }
 
     await db.insert(recoveryCreatorTips).values({
-      fromUserId: session.customer ? parseInt(session.customer) : null,
-      toCreatorId: parseInt(creatorId),
+      fromUserId: fromUserId || null,
+      toCreatorId: creatorId,
       storyId: storyId ? parseInt(storyId) : null,
       amount: amount,
-      creatorShare: creatorShare,
-      platformFee: platformFee,
+      creatorPayout,
+      platformFee,
       stripePaymentId: session.payment_intent,
       message: null,
+      status: 'completed',
     });
   }
 
   private async processPremiumPurchase(session: any) {
-    const { storyId } = session.metadata;
+    const { storyId, buyerId } = session.metadata || {};
     const amount = session.amount_total;
-    const creatorShare = Math.floor(amount * (CREATOR_SHARE_PERCENT / 100));
-    const platformFee = amount - creatorShare;
+    const creatorPayout = Math.floor(amount * (CREATOR_SHARE_PERCENT / 100));
+    const platformFee = amount - creatorPayout;
+
+    if (!buyerId || !storyId) {
+      console.error('[recoveryStripe] processPremiumPurchase missing buyerId/storyId; skipping insert');
+      return;
+    }
 
     await db.insert(recoveryPremiumPurchases).values({
-      buyerId: parseInt(session.customer),
+      buyerId,
       storyId: parseInt(storyId),
       amount: amount,
-      creatorShare: creatorShare,
-      platformFee: platformFee,
+      creatorPayout,
+      platformFee,
       stripePaymentId: session.payment_intent,
+      status: 'completed',
     });
   }
 

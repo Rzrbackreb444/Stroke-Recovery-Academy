@@ -215,7 +215,7 @@ function CreateProjectDialog({
 }: { 
   open: boolean; 
   onOpenChange: (open: boolean) => void;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }) {
   const { toast } = useToast();
   

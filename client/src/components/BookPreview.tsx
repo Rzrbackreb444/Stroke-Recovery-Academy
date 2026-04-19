@@ -275,8 +275,10 @@ export default function BookPreview({
   lineHeight = 1.5,
   imagePlacements = [],
   onPageChange,
-  showCropMarks = false,
+  showCropMarks: showCropMarksProp = false,
 }: BookPreviewProps) {
+  const [showCropMarksLocal, setShowCropMarksLocal] = useState(showCropMarksProp);
+  const showCropMarks = showCropMarksLocal;
   const [currentPage, setCurrentPage] = useState(1);
   const [zoom, setZoom] = useState(100);
   const [viewMode, setViewMode] = useState<ViewMode>('spread');
@@ -641,7 +643,7 @@ export default function BookPreview({
               <Button
                 size="icon"
                 variant={showCropMarks ? 'secondary' : 'ghost'}
-                onClick={() => {}}
+                onClick={() => setShowCropMarksLocal(v => !v)}
                 className="h-8 w-8"
                 data-testid="button-crop-marks"
               >

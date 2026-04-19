@@ -722,15 +722,22 @@ export default function ImageStudio({ initialImage, onSave, onClose }: ImageStud
           
           <Separator className="my-2 bg-gray-700 w-8" />
           
-          <div className="flex flex-col items-center gap-1">
-            <div
-              className="w-6 h-6 rounded border-2 border-white cursor-pointer"
+          <div className="flex flex-col items-center gap-1 relative">
+            <label
+              className="w-6 h-6 rounded border-2 border-white cursor-pointer block"
               style={{ backgroundColor: brushColor }}
-              onClick={() => {}}
               data-testid="color-foreground"
-            />
+            >
+              <input
+                type="color"
+                value={brushColor}
+                onChange={(e) => setBrushColor(e.target.value)}
+                className="opacity-0 absolute w-6 h-6 cursor-pointer"
+                data-testid="input-foreground-color"
+              />
+            </label>
             <div
-              className="w-5 h-5 rounded border border-gray-600 bg-white cursor-pointer -mt-2 ml-2"
+              className="w-5 h-5 rounded border border-gray-600 bg-white -mt-2 ml-2"
               data-testid="color-background"
             />
           </div>
