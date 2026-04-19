@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 import {
   ArrowLeft,
   Award,
@@ -80,7 +81,7 @@ export default function RecoveryCertificate() {
       } catch {}
     } else {
       await navigator.clipboard.writeText(`${text} ${url}`);
-      alert("Link copied to clipboard");
+      toast({ title: "Link copied", description: "Share your certificate anywhere." });
     }
   };
 

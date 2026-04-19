@@ -248,10 +248,7 @@ export default function WebsiteStudio() {
 
   const createWebsiteMutation = useMutation({
     mutationFn: async (data: any) => {
-      return apiRequest('/api/website-builder/websites', {
-        method: 'POST',
-        body: JSON.stringify(data),
-      });
+      return apiRequest('POST', '/api/website-builder/websites', data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/website-builder/websites'] });
@@ -264,13 +261,11 @@ export default function WebsiteStudio() {
 
   const publishWebsiteMutation = useMutation({
     mutationFn: async ({ websiteId, slug }: { websiteId: number; slug: string }) => {
-      return apiRequest(`/api/website-builder/publish/${websiteId}`, {
-        method: 'POST',
-        body: JSON.stringify({ slug }),
-      });
+      const res = await apiRequest('POST', `/api/website-builder/publish/${websiteId}`, { slug });
+      return res.json() as Promise<{ url?: string }>;
     },
-    onSuccess: (data: any) => {
-      toast({ title: "Website Published!", description: `Your site is now live at ${data.url}` });
+    onSuccess: (data) => {
+      toast({ title: "Website Published!", description: data?.url ? `Your site is now live at ${data.url}` : "Your site is now live." });
     },
     onError: (error: any) => {
       toast({ title: "Publish Failed", description: error.message || "Could not publish website", variant: "destructive" });

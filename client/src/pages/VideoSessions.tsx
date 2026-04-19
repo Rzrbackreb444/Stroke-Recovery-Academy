@@ -176,7 +176,7 @@ export default function VideoSessions() {
             <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent" />
             <div className="text-center z-10">
               <Avatar className="w-24 h-24 mx-auto mb-4">
-                <AvatarImage src={user?.profileImageUrl} />
+                <AvatarImage src={user?.profileImageUrl ?? undefined} />
                 <AvatarFallback className="bg-gray-700 text-[#C9941A] text-2xl">
                   {user?.firstName?.[0]}{user?.lastName?.[0]}
                 </AvatarFallback>

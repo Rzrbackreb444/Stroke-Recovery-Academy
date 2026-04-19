@@ -668,7 +668,11 @@ function ContentCard({ content, onPlay }: { content: CreatorContent; onPlay: (co
               {content.type === "music" ? "Stream" : "Watch"}
             </Button>
           )}
-          <Button size="sm" data-testid={`button-buy-${content.id}`}>
+          <Button
+            size="sm"
+            data-testid={`button-buy-${content.id}`}
+            onClick={() => (window.location.href = `/listing/${content.id}`)}
+          >
             {content.price === 0 ? "Get Free" : "Buy"}
           </Button>
         </div>

@@ -69,21 +69,18 @@ export default function BookCard({
         <Button
           variant="outline"
           size="icon"
-          data-testid="button-download"
-          onClick={(e) => {
-            e.stopPropagation();
-            console.log("Download clicked");
-          }}
-        >
-          <Download className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
           data-testid="button-share"
-          onClick={(e) => {
+          onClick={async (e) => {
             e.stopPropagation();
-            console.log("Share clicked");
+            const url = typeof window !== "undefined" ? window.location.href : "";
+            const shareData = { title, text: preview, url };
+            try {
+              if (navigator.share) {
+                await navigator.share(shareData);
+              } else if (navigator.clipboard) {
+                await navigator.clipboard.writeText(url);
+              }
+            } catch {}
           }}
         >
           <Share2 className="h-4 w-4" />

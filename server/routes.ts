@@ -920,14 +920,19 @@ Allow: /
     }
   });
 
-  // GET /api/user/settings
-  app.get('/api/user/settings', isAuthenticated, async (req: any, res) => {
+  // GET /api/user/settings — returns defaults for unauthenticated users so the
+  // client never sits in an error state while the user is browsing logged-out.
+  app.get('/api/user/settings', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user?.claims?.sub;
+      if (!userId) {
+        return res.json({});
+      }
       const settings = await storage.getUserSettings(userId);
       res.json(settings || {});
     } catch (error) {
-      res.status(500).json({ message: 'Failed to fetch settings' });
+      console.error('[settings] fetch failed:', error);
+      res.json({});
     }
   });
 
@@ -8295,7 +8300,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
           // Fetch user's recovery context for personalized coaching
           const { loadPersonaFor } = await import('./personaRoutes');
           const [exerciseScores, streakData, milestonesData, userData, personaRow] = await Promise.all([
-            storage.getExerciseScores(userId).catch(() => []),
+            storage.getUserExerciseScores(userId).catch((err) => { console.error('[coach] getUserExerciseScores failed:', err); return []; }),
             storage.getUserStreak(userId).catch(() => ({ currentStreak: 0 })),
             storage.getUserMilestones(userId).catch(() => []),
             storage.getUser(userId).catch(() => null),
