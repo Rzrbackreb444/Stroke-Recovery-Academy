@@ -58,9 +58,9 @@ export default function HeroSection() {
                 size="lg"
                 className="bg-[#C9941A] text-black text-lg font-bold px-10 shadow-lg shadow-[#C9941A]/20"
                 data-testid="button-start-recovery"
-                onClick={() => window.location.href = "/recovery/challenge"}
+                onClick={() => window.location.href = "/recovery/onboarding"}
               >
-                Join the 66-Day Challenge
+                Find My Recovery Plan
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
               <Button
