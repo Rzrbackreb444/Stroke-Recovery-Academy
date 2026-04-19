@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogOut, LayoutDashboard, Settings, Heart } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, Settings, Heart, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -13,16 +13,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import strokeLyfeLogo from "@assets/Stroke_Recovery_Academy_Logo_1776602072669.png";
 
-const navLinks = [
+const primaryNav = [
+  { href: "/recovery/academy", label: "Academy" },
   { href: "/recovery/challenge", label: "66-Day Challenge" },
   { href: "/recovery/community", label: "Community" },
-  { href: "/recovery/academy", label: "Academy" },
-  { href: "/recovery/brain-gym", label: "Brain Gym" },
   { href: "/recovery/sasquatch-coach", label: "AI Coach" },
+  { href: "/recovery/pricing", label: "Pricing" },
+];
+
+const moreNav = [
+  { href: "/recovery/brain-gym", label: "Brain Gym" },
   { href: "/recovery/blog", label: "Blog" },
   { href: "/recovery/spotlight", label: "Spotlight" },
-  { href: "/recovery/pricing", label: "Pricing" },
   { href: "/recovery/survivor-income", label: "Earn Income" },
+  { href: "/recovery/exercises", label: "Exercises" },
 ];
 
 export default function RecoveryHeader() {
@@ -41,6 +45,8 @@ export default function RecoveryHeader() {
     setMobileOpen(false);
   }, [location]);
 
+  const allNav = [...primaryNav, ...moreNav];
+
   return (
     <header
       className={`sticky top-0 z-50 transition-all duration-200 ${
@@ -49,30 +55,27 @@ export default function RecoveryHeader() {
           : "bg-transparent"
       }`}
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-32">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-28">
 
-          {/* Logo */}
+          {/* Logo — image already contains the full name, no text needed */}
           <Link href="/recovery" data-testid="link-recovery-home">
-            <div className="flex items-center gap-2.5 cursor-pointer">
+            <div className="flex items-center cursor-pointer">
               <img
                 src={strokeLyfeLogo}
                 alt="Stroke Recovery Academy"
-                className="h-28 w-auto"
+                className="h-24 w-auto"
                 data-testid="img-recovery-logo"
               />
-              <span className="hidden sm:block text-sm font-bold text-white tracking-wide">
-                Stroke Recovery Academy
-              </span>
             </div>
           </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-1" aria-label="Main navigation">
-            {navLinks.map((link) => (
+          {/* Desktop nav — 5 primary + More dropdown */}
+          <nav className="hidden lg:flex items-center gap-0.5" aria-label="Main navigation">
+            {primaryNav.map((link) => (
               <Link key={link.href} href={link.href}>
                 <button
-                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
                     location === link.href
                       ? "text-[#C9941A]"
                       : "text-gray-400 hover:text-white"
@@ -83,15 +86,33 @@ export default function RecoveryHeader() {
                 </button>
               </Link>
             ))}
+
+            {/* More dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-400 hover:text-white rounded-lg transition-colors" data-testid="nav-more">
+                  More <ChevronDown className="h-3.5 w-3.5" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="bg-[#111] border-[#222] min-w-[160px]">
+                {moreNav.map((link) => (
+                  <DropdownMenuItem key={link.href} asChild>
+                    <Link href={link.href} className={`cursor-pointer text-sm ${location === link.href ? "text-[#C9941A]" : "text-gray-300"}`}>
+                      {link.label}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </nav>
 
           {/* Right actions */}
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-2">
             <Link href="/recovery/gift">
               <Button
                 size="sm"
                 variant="outline"
-                className="border-[#C9941A]/50 text-[#C9941A] hover:bg-[#C9941A]/10 font-semibold text-xs"
+                className="border-[#C9941A]/50 text-[#C9941A] font-semibold text-xs"
                 data-testid="button-nav-gift"
               >
                 <Heart className="w-3.5 h-3.5 mr-1.5" />
@@ -182,8 +203,8 @@ export default function RecoveryHeader() {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="lg:hidden border-t border-[#1e1e1e] bg-[#0D0D0D]">
-          <div className="max-w-6xl mx-auto px-4 py-4 space-y-1">
-            {navLinks.map((link) => (
+          <div className="max-w-7xl mx-auto px-4 py-4 space-y-1">
+            {allNav.map((link) => (
               <Link key={link.href} href={link.href}>
                 <button
                   className={`w-full text-left px-4 py-3 text-sm font-medium rounded-lg transition-colors ${

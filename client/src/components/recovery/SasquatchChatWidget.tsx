@@ -15,7 +15,7 @@ import {
   Mic,
   MicOff
 } from "lucide-react";
-import strokeLyfeLogo from "@assets/stroked-out-sasquatch-logo.png";
+import strokeLyfeLogo from "@assets/Stroke_Recovery_Academy_Logo_1776602072669.png";
 
 interface Message {
   id: string;
@@ -193,7 +193,7 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
             <img 
               src={strokeLyfeLogo} 
               alt="Sasquatch Coach" 
-              className="w-12 h-12 object-contain"
+              className="w-24 h-24 object-contain"
             />
           </div>
           <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#C9941A] rounded-full animate-pulse" />
@@ -209,7 +209,7 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
     return (
       <div className="fixed bottom-6 right-6 z-50">
         <div className="bg-[#0D0D0D] rounded-full shadow-lg flex items-center gap-2 px-4 py-2 border border-[#C9941A]">
-          <img src={strokeLyfeLogo} alt="Coach" className="w-8 h-8" />
+          <img src={strokeLyfeLogo} alt="Coach" className="w-16 h-16" />
           <span className="text-white font-medium">Coach Nick</span>
           <Button
             size="icon"
@@ -241,8 +241,8 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
       <div className="bg-[#0D0D0D] rounded-2xl shadow-2xl border border-[#C9941A]/30 overflow-hidden">
         <div className="bg-gradient-to-r from-[#1a1a1a] to-[#0D0D0D] px-4 py-3 flex items-center justify-between border-b border-[#C9941A]/20">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#C9941A]/10 flex items-center justify-center overflow-hidden border border-[#C9941A]/50">
-              <img src={strokeLyfeLogo} alt="Coach" className="w-8 h-8" />
+            <div className="w-20 h-20 rounded-full bg-[#C9941A]/10 flex items-center justify-center overflow-hidden border border-[#C9941A]/50">
+              <img src={strokeLyfeLogo} alt="Coach" className="w-16 h-16" />
             </div>
             <div>
               <h3 className="text-white font-semibold text-sm">Coach Nick</h3>
