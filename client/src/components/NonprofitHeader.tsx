@@ -27,7 +27,7 @@ import {
   ShoppingBag,
   Bell,
 } from "lucide-react";
-import strokeLyfeLogo from "@assets/Stroke_Recovery_Academy_Crowned_Brain_Logo_1776589115629.png";
+import strokeLyfeLogo from "@assets/Untitled_design_1776589635654.png";
 
 const navLinks = [
   { href: "/strokelyfe", label: "HOME", icon: Home },

@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { SiTiktok, SiInstagram, SiYoutube, SiX } from "react-icons/si";
 import sasquatchLogo from "@assets/Stroke_Recovery_Academy_Crowned_Brain_Logo_1776589115629.png";
-import strokeLyfeLogo from "@assets/Stroke_Recovery_Academy_Crowned_Brain_Logo_1776589115629.png";
+import strokeLyfeLogo from "@assets/Untitled_design_1776589635654.png";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
