@@ -19,12 +19,14 @@ export async function initPushSchema() {
   `);
 }
 
-// VAPID keys — generated once, use env vars in production
-const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY || 'BFK4fdq6Ltp_lB4SXL0Hs55xqf08blT6XMqJAHWlPlXFrnMWnMNOUYl6DJu70IS1j00ORWouZsrf1s0rsG5suog';
-const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || 'auRSt_RjogvhqAbicipSY3O1ZFVe-GlCm4j9GyvEhgs';
+// VAPID keys — must be set via environment variables
+const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY || '';
+const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || '';
 const VAPID_EMAIL = process.env.VAPID_EMAIL || 'mailto:nick@strokerecoveryacademy.com';
 
-webPush.setVapidDetails(VAPID_EMAIL, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
+if (VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY) {
+  webPush.setVapidDetails(VAPID_EMAIL, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
+}
 
 export { VAPID_PUBLIC_KEY };
 

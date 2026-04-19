@@ -27,7 +27,7 @@ import {
   ShoppingBag,
   Bell,
 } from "lucide-react";
-import strokeLyfeLogo from "@assets/stroked-out-sasquatch-logo.png";
+import strokeLyfeLogo from "@assets/Stroke_Recovery_Academy_Crowned_Brain_Logo_1776589115629.png";
 
 const navLinks = [
   { href: "/strokelyfe", label: "HOME", icon: Home },
@@ -65,7 +65,7 @@ export default function NonprofitHeader() {
             <img 
               src={strokeLyfeLogo} 
               alt="Stroke Lyfe" 
-              className="h-10 w-auto"
+              className="h-40 w-auto"
               data-testid="img-nonprofit-logo"
             />
             <div className="hidden sm:block">
@@ -173,7 +173,7 @@ export default function NonprofitHeader() {
               <SheetContent side="right" className="w-80 bg-[#C9941A] border-[#C9941A]/20">
                 <div className="flex flex-col gap-4 mt-8">
                   <div className="flex items-center gap-3 mb-4">
-                    <img src={strokeLyfeLogo} alt="Stroke Lyfe" className="h-10 w-auto" />
+                    <img src={strokeLyfeLogo} alt="Stroke Lyfe" className="h-40 w-auto" />
                     <div>
                       <span className="text-lg font-bold text-white">Stroke Lyfe</span>
                       <span className="text-xs text-[#C9941A] block">501(c)(3) Nonprofit</span>

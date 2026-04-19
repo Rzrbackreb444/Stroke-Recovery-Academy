@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import strokeLyfeLogo from "@assets/stroked-out-sasquatch-logo.png";
+import strokeLyfeLogo from "@assets/Stroke_Recovery_Academy_Crowned_Brain_Logo_1776589115629.png";
 
 const navLinks = [
   { href: "/recovery/challenge", label: "66-Day Challenge" },
@@ -50,7 +50,7 @@ export default function RecoveryHeader() {
       }`}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-32">
 
           {/* Logo */}
           <Link href="/recovery" data-testid="link-recovery-home">
@@ -58,7 +58,7 @@ export default function RecoveryHeader() {
               <img
                 src={strokeLyfeLogo}
                 alt="Stroke Recovery Academy"
-                className="h-8 w-auto"
+                className="h-28 w-auto"
                 data-testid="img-recovery-logo"
               />
               <span className="hidden sm:block text-sm font-bold text-white tracking-wide">

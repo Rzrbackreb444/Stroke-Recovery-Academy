@@ -30,7 +30,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
-import strokeLyfeLogo from "@assets/stroked-out-sasquatch-logo.png";
+import strokeLyfeLogo from "@assets/Stroke_Recovery_Academy_Crowned_Brain_Logo_1776589115629.png";
 
 const studios = [
   { id: "book", name: "Book Studio", icon: BookOpen, path: "/book-studio", color: "text-amber-500" },
@@ -64,7 +64,7 @@ export function OSHeader() {
         <div className="flex items-center justify-between h-14">
           <div className="flex items-center gap-6">
             <Link href="/recovery/dashboard" className="flex items-center gap-2">
-              <img src={strokeLyfeLogo} alt="Stroke Recovery OS" className="w-8 h-8" />
+              <img src={strokeLyfeLogo} alt="Stroke Recovery OS" className="w-32 h-32" />
               <span className="font-bold text-foreground hidden sm:block">Recovery OS</span>
             </Link>
 
@@ -148,7 +148,7 @@ export function OSHeader() {
               <SheetContent side="right" className="w-80 p-0">
                 <div className="p-4 border-b border-border">
                   <div className="flex items-center gap-3">
-                    <img src={strokeLyfeLogo} alt="Stroke Recovery OS" className="w-10 h-10" />
+                    <img src={strokeLyfeLogo} alt="Stroke Recovery OS" className="w-40 h-40" />
                     <div>
                       <h2 className="font-bold">Recovery OS</h2>
                       <p className="text-xs text-muted-foreground">Stroke Recovery Platform</p>
