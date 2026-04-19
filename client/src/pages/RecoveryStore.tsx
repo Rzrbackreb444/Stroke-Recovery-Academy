@@ -20,7 +20,7 @@ import {
   Users,
   Quote,
 } from "lucide-react";
-import strokeLyfeLogo from "@assets/Stroke_Recovery_Academy_Crowned_Brain_Logo_1776589115629.png";
+import strokeLyfeLogo from "@assets/Stroke_Recovery_Academy_Logo_1776602072669.png";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 
 interface Product {
