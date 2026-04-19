@@ -57,7 +57,7 @@ async function loadLessonOrDeny(
   }
   const userId = req.user.claims.sub;
   const [user] = await db.select().from(users).where(eq(users.id, userId));
-  const userTier = getRecoveryTier(user?.subscriptionTier);
+  const userTier = getRecoveryTier((user as any)?.subscriptionTier);
 
   const [lesson] = await db
     .select()

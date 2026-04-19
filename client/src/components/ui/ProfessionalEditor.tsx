@@ -1,4 +1,5 @@
-import { useEditor, EditorContent, BubbleMenu, FloatingMenu } from '@tiptap/react'
+import { useEditor, EditorContent } from '@tiptap/react'
+import { BubbleMenu, FloatingMenu } from '@tiptap/react/menus'
 import StarterKit from '@tiptap/starter-kit'
 import { 
   Bold, Italic, List, ListOrdered, 
@@ -12,10 +13,22 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { cn } from "@/lib/utils"
 
-export default function ProfessionalEditor() {
+interface ProfessionalEditorProps {
+  content?: string;
+  onChange?: (html: string) => void;
+  onSave?: () => void;
+  placeholder?: string;
+  className?: string;
+  showWordCount?: boolean;
+}
+
+export default function ProfessionalEditor(props: ProfessionalEditorProps = {}) {
   const editor = useEditor({
     extensions: [StarterKit],
-    content: `
+    onUpdate: ({ editor }) => {
+      props.onChange?.(editor.getHTML());
+    },
+    content: props.content ?? `
       <h2>Chapter 6: The Softmount Protocol</h2>
       <p>The vibration was the first thing you noticed. Not the noise—the noise you could ignore. But the vibration of a forty-pound hardmount washer spinning at 100 G-force was something you felt in your teeth.</p>
       <p>My grandfather, Jerry, used to say that a laundromat was a living thing. "If the machines aren't shaking," he'd tell me, pointing a grease-stained finger at the row of Dexters, "then the money isn't moving."</p>

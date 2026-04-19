@@ -1,6 +1,7 @@
 import webPush from 'web-push';
 import { db } from './db';
-import { sql } from 'drizzle-orm';
+import { sql, and, eq, gte, lte } from 'drizzle-orm';
+import { pushSubscriptions, dailyCheckins } from '../shared/schema';
 
 // Ensure push_subscriptions table exists
 export async function initPushSchema() {
@@ -128,7 +129,7 @@ async function runAccountabilityChecks() {
 async function checkDailyCheckins(now: Date) {
   // Get all push subscribers
   const subs = await db.select().from(pushSubscriptions);
-  const userIds = [...new Set(subs.map(s => s.userId))];
+  const userIds = Array.from(new Set(subs.map(s => s.userId)));
 
   for (const userId of userIds) {
     const today = new Date(now);
@@ -149,7 +150,7 @@ async function checkDailyCheckins(now: Date) {
 
 async function checkMissedCheckins(now: Date) {
   const subs = await db.select().from(pushSubscriptions);
-  const userIds = [...new Set(subs.map(s => s.userId))];
+  const userIds = Array.from(new Set(subs.map(s => s.userId)));
 
   for (const userId of userIds) {
     const today = new Date(now);

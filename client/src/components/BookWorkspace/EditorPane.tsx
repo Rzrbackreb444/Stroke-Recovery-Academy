@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import ProfessionalEditor from "@/components/ProfessionalEditor";
+import ProfessionalEditor from "@/components/ui/ProfessionalEditor";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";

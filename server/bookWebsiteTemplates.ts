@@ -1384,7 +1384,7 @@ export const BOOK_WEBSITE_TEMPLATES: BookWebsiteTemplate[] = [
       headingFont: "DM Sans, sans-serif"
     },
     layout: {
-      heroStyle: "centered",
+      heroStyle: "minimal",
       navigationStyle: "sticky",
       sectionOrder: ["hero", "preview", "modules", "exercises", "bonuses", "author", "guarantee", "buy"]
     },
@@ -1455,7 +1455,7 @@ export const BOOK_WEBSITE_TEMPLATES: BookWebsiteTemplate[] = [
       headingFont: "Playfair Display, serif"
     },
     layout: {
-      heroStyle: "banner",
+      heroStyle: "full_cover",
       navigationStyle: "fixed",
       sectionOrder: ["hero", "bestsellers", "new_releases", "categories", "featured_author", "newsletter", "shop"]
     },

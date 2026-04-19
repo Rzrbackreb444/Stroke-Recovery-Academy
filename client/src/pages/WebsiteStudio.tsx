@@ -422,9 +422,25 @@ export default function WebsiteStudio() {
               <Eye className="w-4 h-4 mr-2" />
               Preview
             </Button>
-            <Button size="sm" className="bg-primary" data-testid="button-publish">
+            <Button
+              size="sm"
+              className="bg-primary"
+              data-testid="button-publish"
+              disabled={publishWebsiteMutation.isPending}
+              onClick={() => {
+                const websites = userWebsites?.websites || [];
+                const target = websites[0];
+                if (!target) {
+                  toast({ title: "No website yet", description: "Create a website first to publish.", variant: "destructive" });
+                  return;
+                }
+                const slug = target.slug || window.prompt("Choose a subdomain slug for your site (letters, numbers, dashes):", target.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'my-site');
+                if (!slug) return;
+                publishWebsiteMutation.mutate({ websiteId: target.id, slug });
+              }}
+            >
               <Rocket className="w-4 h-4 mr-2" />
-              Publish
+              {publishWebsiteMutation.isPending ? 'Publishing…' : 'Publish'}
             </Button>
           </div>
         </header>

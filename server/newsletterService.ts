@@ -5,7 +5,15 @@ import { eq, and, lte, isNull, sql } from 'drizzle-orm';
 import { renderEmail, EMAIL } from './emailTemplate';
 
 // Backwards-compatible BRAND alias used in edition content strings below.
-const BRAND = { siteUrl: EMAIL.site, muted: EMAIL.muted };
+const BRAND = {
+  siteUrl: EMAIL.site,
+  muted: EMAIL.muted,
+  bg: EMAIL.bg,
+  card: EMAIL.card,
+  gold: EMAIL.gold,
+  text: EMAIL.text,
+  border: EMAIL.border,
+};
 
 // Legacy wrapper retained for any external callers; new sends use renderEmail directly.
 function emailWrapper(content: string, previewText = ''): string {

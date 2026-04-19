@@ -270,7 +270,7 @@ function makeRateLimiter(maxRequests: number, windowMs: number) {
 // Prune stale entries every 10 minutes to avoid unbounded growth
 setInterval(() => {
   const now = Date.now();
-  for (const [k, v] of _rlStore.entries()) { if (now > v.resetAt) _rlStore.delete(k); }
+  Array.from(_rlStore.entries()).forEach(([k, v]) => { if (now > v.resetAt) _rlStore.delete(k); });
 }, 10 * 60 * 1000);
 
 const subscribeRateLimit      = makeRateLimiter(5,  60 * 60 * 1000);  // 5 per hour  — newsletter subscribe
@@ -941,7 +941,7 @@ Allow: /
     try {
       const userId = req.user.claims.sub;
       const { username, displayName, avatarUrl, bio, bannerUrl } = req.body;
-      const settings = await storage.createOrUpdateUserSettings(userId, { username, displayName, avatarUrl, bio, bannerUrl });
+      const settings = await storage.createOrUpdateUserSettings(userId, { username, displayName, avatarUrl, bannerUrl, bio } as any);
       res.json(settings);
     } catch (error) {
       res.status(500).json({ message: 'Failed to update settings' });
@@ -8317,7 +8317,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
 
           userContext = {
             // Prefer persona name so the coach addresses the survivor as their forged self.
-            name: personaRow?.name || userData?.firstName || userData?.username,
+            name: personaRow?.name || userData?.firstName || userData?.email || undefined,
             exerciseCount: exerciseScores.length,
             streak: streakData?.currentStreak || 0,
             lastExercises: exerciseScores.slice(0, 3).map((s: any) => s.exerciseType || 'exercise'),
@@ -9456,15 +9456,15 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       const userLevel: 'beginner' | 'moderate' | 'advanced' =
         physScore <= 3 ? 'beginner' : physScore <= 6 ? 'moderate' : 'advanced';
 
-      function levelDose(ex: any) {
+      const levelDose = (ex: any) => {
         const sets = ex[`${userLevel}Sets`] ?? ex.beginnerSets ?? 2;
         const reps = ex[`${userLevel}Reps`] ?? ex.beginnerReps ?? 10;
         const hold = ex[`${userLevel}HoldSec`] ?? ex.beginnerHoldSec ?? 0;
         return { sets, reps, hold };
-      }
+      };
 
       // Pre-built realistic prescription drawn from the real catalog.
-      function pickFromCatalog(): any[] {
+      const pickFromCatalog = (): any[] => {
         const opener = catalog.find((e: any) => e.category === 'spasticity' && e.slug === 'gentle-rocking');
         const lowerSeated = catalog.filter((e: any) => e.category === 'lower' && e.position === 'seated');
         const lowerStanding = catalog.filter((e: any) => e.category === 'lower' && e.position === 'standing');
@@ -9814,7 +9814,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
         gratitude: c.gratitude || ''
       }));
 
-      const userName = user?.firstName || user?.username || 'Warrior';
+      const userName = user?.firstName || user?.email || 'Warrior';
       const result = await createDraftYourLegendDoc(
         `Draft Your Legend - ${userName}'s Recovery Journey`,
         entries,
@@ -10550,19 +10550,22 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
       const { creatorId, amount, storyId } = req.body;
       const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
-      
-      if (!user?.stripeCustomerId) {
+
+      let stripeCustomerId = user?.stripeCustomerId || '';
+      if (!stripeCustomerId) {
         const customer = await recoveryStripeService.createCustomer(user?.email || '', userId);
-        await storage.updateUser(userId, { stripeCustomerId: customer.id });
+        stripeCustomerId = customer.id;
+        await db.update(users).set({ stripeCustomerId }).where(eq(users.id, userId));
       }
-      
+
       const session = await recoveryStripeService.createTipCheckout(
-        user?.stripeCustomerId || '',
-        creatorId,
+        stripeCustomerId,
+        String(creatorId),
         amount,
         storyId,
         `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/dashboard?tip=success`,
-        `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/dashboard`
+        `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/dashboard`,
+        userId
       );
       
       res.json({ url: session.url });
@@ -21574,16 +21577,15 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
       }
 
       if (isElevenLabsConfigured()) {
-        const audioResult = await synthesizeWithElevenLabs(sceneDialogue, "eleven_multilingual_v2", {
-          stability: 0.5,
-          similarity_boost: 0.75,
-          style: 0.0,
-          use_speaker_boost: true
-        });
-        
-        res.json({ 
-          audioUrl: audioResult.audioUrl || `/api/audio/${Date.now()}.mp3`,
-          duration: audioResult.duration || sceneDialogue.length * 0.05
+        const audioResult = await synthesizeWithElevenLabs(sceneDialogue, "21m00Tcm4TlvDq8ikWAM", "eleven_multilingual_v2", 0.5, 0.75, 0.0);
+
+        const audioUrl = audioResult.audioBase64
+          ? `data:audio/mpeg;base64,${audioResult.audioBase64}`
+          : `/api/audio/${Date.now()}.mp3`;
+
+        res.json({
+          audioUrl,
+          duration: sceneDialogue.length * 0.05
         });
       } else {
         res.json({ 
@@ -21622,8 +21624,8 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
           let imageUrl = null;
           if (isImagenConfigured()) {
             try {
-              const result = await generateImageWithImagen(prompt, { aspectRatio: "16:9" });
-              imageUrl = result.imageUrl;
+              const result = await generateImageWithImagen(prompt, "16:9");
+              imageUrl = result.imageBase64 ? `data:${result.mimeType || 'image/png'};base64,${result.imageBase64}` : null;
             } catch (imgError) {
               console.error("Image generation failed:", imgError);
             }
@@ -21657,8 +21659,8 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
       let imageUrl = null;
       if (isImagenConfigured()) {
         try {
-          const result = await generateImageWithImagen(prompt, { aspectRatio: "16:9" });
-          imageUrl = result.imageUrl;
+          const result = await generateImageWithImagen(prompt, "16:9");
+          imageUrl = result.imageBase64 ? `data:${result.mimeType || 'image/png'};base64,${result.imageBase64}` : null;
         } catch (imgError) {
           console.error("Image regeneration failed:", imgError);
         }
@@ -21776,11 +21778,12 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
       const { screenplayProjectId, title, scenes, characters, dialogue, settings } = req.body;
 
       const [movieProject] = await db.insert(mediaProjects).values({
-        userId,
+        ownerId: userId,
         name: title || "Untitled Movie",
-        type: "movie",
+        mode: "video",
         status: "draft",
-        settings: {
+        projectData: {
+          type: "movie",
           sourceScreenplayId: screenplayProjectId,
           videoStyle: settings?.videoStyle || "cinematic",
           aspectRatio: settings?.aspectRatio || "16:9",
@@ -22292,12 +22295,16 @@ Format as structured JSON with clear sections.`;
     res.json({ templates: websiteTemplates });
   });
 
+  // In-memory persistence for builder websites (per-user)
+  const websiteBuilderStore: Map<string, any[]> = (globalThis as any).__websiteBuilderStore || new Map();
+  (globalThis as any).__websiteBuilderStore = websiteBuilderStore;
+
   // GET /api/website-builder/websites - Get user's websites
   app.get('/api/website-builder/websites', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.id;
+      const userId = req.user?.claims?.sub || req.user?.id;
       if (!userId) return res.status(401).json({ message: 'Not authenticated' });
-      res.json({ websites: [] });
+      res.json({ websites: websiteBuilderStore.get(userId) || [] });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
@@ -22306,7 +22313,7 @@ Format as structured JSON with clear sections.`;
   // POST /api/website-builder/websites - Create new website
   app.post('/api/website-builder/websites', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.id;
+      const userId = req.user?.claims?.sub || req.user?.id;
       if (!userId) return res.status(401).json({ message: 'Not authenticated' });
 
       const { name, slug, templateId, industry, businessName, description, primaryColor, secondaryColor, accentColor, fontHeading, fontBody } = req.body;
@@ -22315,8 +22322,9 @@ Format as structured JSON with clear sections.`;
         return res.status(400).json({ message: 'Name and slug are required' });
       }
 
-      res.json({
+      const website = {
         id: Date.now(),
+        userId,
         name,
         slug,
         templateId: templateId || 'blank',
@@ -22330,7 +22338,13 @@ Format as structured JSON with clear sections.`;
         fontBody: fontBody || 'Inter',
         isPublished: false,
         createdAt: new Date().toISOString(),
-      });
+      };
+
+      const list = websiteBuilderStore.get(userId) || [];
+      list.unshift(website);
+      websiteBuilderStore.set(userId, list);
+
+      res.json(website);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
@@ -22339,7 +22353,7 @@ Format as structured JSON with clear sections.`;
   // POST /api/website-builder/generate-logo - Generate logo with AI
   app.post('/api/website-builder/generate-logo', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.id;
+      const userId = req.user?.claims?.sub || req.user?.id;
       if (!userId) return res.status(401).json({ message: 'Not authenticated' });
 
       const { businessName, industry, style, iconType, primaryColor } = req.body;
@@ -22366,16 +22380,26 @@ Format as structured JSON with clear sections.`;
   // POST /api/website-builder/publish/:websiteId - Publish website
   app.post('/api/website-builder/publish/:websiteId', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.id;
+      const userId = req.user?.claims?.sub || req.user?.id;
       if (!userId) return res.status(401).json({ message: 'Not authenticated' });
 
       const { websiteId } = req.params;
-      
+      const userSites = websiteBuilderStore.get(userId) || [];
+      const site = userSites.find((s: any) => String(s.id) === String(websiteId));
+      if (!site) return res.status(404).json({ message: 'Website not found or not owned by you' });
+
+      const slug = (req.body.slug || site.slug || 'my-site').toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '') || 'my-site';
+      site.slug = slug;
+      site.isPublished = true;
+      site.publishedAt = new Date().toISOString();
+
       res.json({
         success: true,
         message: 'Website published successfully',
-        url: `https://${req.body.slug || 'my-site'}.kreaite.xyz`,
-        publishedAt: new Date().toISOString(),
+        websiteId,
+        slug,
+        url: `https://${slug}.kreaite.xyz`,
+        publishedAt: site.publishedAt,
       });
     } catch (error: any) {
       res.status(500).json({ message: error.message });

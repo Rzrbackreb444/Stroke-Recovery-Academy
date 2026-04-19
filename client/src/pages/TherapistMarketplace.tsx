@@ -72,7 +72,7 @@ export default function TherapistMarketplace() {
   const [productForm, setProductForm] = useState({
     title: "",
     description: "",
-    productType: "session" as const,
+    productType: "session" as "session" | "coaching" | "course" | "subscription",
     price: 0,
     duration: 60,
     sessionCount: 1,
