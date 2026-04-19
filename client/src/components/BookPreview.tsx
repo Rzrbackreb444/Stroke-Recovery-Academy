@@ -279,6 +279,10 @@ export default function BookPreview({
 }: BookPreviewProps) {
   const [showCropMarksLocal, setShowCropMarksLocal] = useState(showCropMarksProp);
   const showCropMarks = showCropMarksLocal;
+
+  useEffect(() => {
+    setShowCropMarksLocal(showCropMarksProp);
+  }, [showCropMarksProp]);
   const [currentPage, setCurrentPage] = useState(1);
   const [zoom, setZoom] = useState(100);
   const [viewMode, setViewMode] = useState<ViewMode>('spread');

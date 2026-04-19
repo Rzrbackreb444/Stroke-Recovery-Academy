@@ -1,4 +1,5 @@
 import { useEditor, EditorContent } from '@tiptap/react'
+import { useEffect } from 'react'
 import { BubbleMenu, FloatingMenu } from '@tiptap/react/menus'
 import StarterKit from '@tiptap/starter-kit'
 import { 
@@ -24,6 +25,7 @@ interface ProfessionalEditorProps {
 
 export default function ProfessionalEditor(props: ProfessionalEditorProps = {}) {
   const editor = useEditor({
+
     extensions: [StarterKit],
     onUpdate: ({ editor }) => {
       props.onChange?.(editor.getHTML());
@@ -45,6 +47,14 @@ export default function ProfessionalEditor(props: ProfessionalEditorProps = {}) 
       },
     },
   })
+
+  useEffect(() => {
+    if (!editor || props.content === undefined) return;
+    const current = editor.getHTML();
+    if (current !== props.content) {
+      editor.commands.setContent(props.content);
+    }
+  }, [editor, props.content]);
 
   if (!editor) return null
 
