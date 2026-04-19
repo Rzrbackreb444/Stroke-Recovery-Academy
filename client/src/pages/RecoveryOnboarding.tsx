@@ -85,14 +85,9 @@ interface GoalDraft {
 export default function RecoveryOnboarding() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [step, setStep] = useState(0);
-
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      setLocation("/recovery/login?next=/recovery/onboarding");
-    }
-  }, [authLoading, isAuthenticated, setLocation]);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [scores, setScores] = useState<Record<Domain, number>>({
     physical: 5,
     cognitive: 5,
@@ -147,7 +142,15 @@ export default function RecoveryOnboarding() {
 
   function next() {
     if (step === totalSteps - 2) {
-      // After goals, kick off generation
+      if (!isAuthenticated) {
+        // Save quiz progress so it survives the login redirect
+        sessionStorage.setItem(
+          "onboarding_draft",
+          JSON.stringify({ scores, notes, shortGoal, longGoal })
+        );
+        setShowLoginPrompt(true);
+        return;
+      }
       setStep(totalSteps - 1);
       submitMutation.mutate();
       return;
@@ -161,6 +164,36 @@ export default function RecoveryOnboarding() {
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
+      {/* Guest login prompt — shown when quiz is complete but not signed in */}
+      {showLoginPrompt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
+          <div className="bg-[#111] border border-[#C9941A]/30 rounded-xl p-8 max-w-md w-full text-center shadow-2xl">
+            <Sparkles className="mx-auto h-10 w-10 mb-4" style={{ color: "#C9941A" }} strokeWidth={1.5} />
+            <h2 className="text-2xl font-bold text-white mb-2">Your plan is ready.</h2>
+            <p className="text-gray-400 text-sm leading-relaxed mb-6">
+              Create your free account to save your results and unlock your personalised recovery program.
+              It takes 30 seconds — no credit card.
+            </p>
+            <div className="flex flex-col gap-3">
+              <Button
+                className="w-full bg-[#C9941A] text-black font-bold text-base py-3"
+                onClick={() => (window.location.href = "/recovery/login?tab=signup&next=/recovery/onboarding")}
+                data-testid="button-onboarding-signup"
+              >
+                Create Free Account
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full text-gray-400 text-sm"
+                onClick={() => (window.location.href = "/recovery/login?next=/recovery/onboarding")}
+                data-testid="button-onboarding-signin"
+              >
+                Already have an account? Sign in
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="mx-auto max-w-3xl px-4 sm:px-6 py-10 sm:py-16">
         <div className="mb-8">
           <p
