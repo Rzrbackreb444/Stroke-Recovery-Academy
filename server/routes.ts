@@ -623,36 +623,35 @@ ${listings.slice(0, 1000).map((listing: any) => `  <url>
     const baseUrl = 'https://strokerecoveryacademy.com';
     const today = new Date().toISOString().split('T')[0];
 
+    // IMPORTANT: Only include publicly crawlable pages — never ProtectedRoute pages.
+    // Protected pages (compass, legend, never-zero, achievements, command-center,
+    // wearables, social, therapist-marketplace) cause redirect errors in GSC because
+    // Google gets bounced to the login page. They are excluded here AND blocked in robots.txt.
     const recoveryStaticRoutes = [
-      { path: '/', priority: '1.0', changefreq: 'weekly', description: 'Stroke Recovery Academy - Home' },
-      { path: '/recovery', priority: '1.0', changefreq: 'weekly', description: 'Stroke Recovery OS - Platform Hub' },
-      { path: '/recovery/challenge', priority: '1.0', changefreq: 'weekly', description: '66-Day Sasquatch Transformation Challenge - Stroke Recovery' },
-      { path: '/recovery/academy', priority: '0.95', changefreq: 'weekly', description: 'Recovery Academy - Nick Kremers Courses' },
-      { path: '/recovery/university', priority: '0.95', changefreq: 'weekly', description: 'Recovery University - 33-Chapter Curriculum' },
-      { path: '/recovery/exercises', priority: '0.95', changefreq: 'daily', description: 'Stroke Recovery Exercises Database' },
-      { path: '/recovery/protocols', priority: '0.95', changefreq: 'weekly', description: 'Evidence-Based Recovery Protocols' },
-      { path: '/recovery/resources', priority: '0.90', changefreq: 'weekly', description: 'Recovery Resources Library' },
-      { path: '/recovery/blog', priority: '0.90', changefreq: 'daily', description: 'Stroke Recovery Blog - Expert Insights' },
-      { path: '/recovery/center-finder', priority: '0.90', changefreq: 'monthly', description: 'Recovery Center Finder' },
-      { path: '/recovery/about-nick', priority: '0.85', changefreq: 'monthly', description: 'About Nick Kremers - Stroke Survivor' },
-      { path: '/recovery/store', priority: '0.85', changefreq: 'weekly', description: 'Recovery Store - Supplements & Equipment' },
-      { path: '/recovery/social', priority: '0.80', changefreq: 'daily', description: 'Recovery Community - Connect with Survivors' },
-      { path: '/recovery/survival-grid', priority: '0.80', changefreq: 'weekly', description: 'Survival Grid - Recovery Tools' },
-      { path: '/recovery/achievements', priority: '0.75', changefreq: 'weekly', description: 'Recovery Milestones & Achievements' },
-      { path: '/recovery/never-zero', priority: '0.80', changefreq: 'weekly', description: 'Never Zero - Daily Consistency Tracker' },
-      { path: '/recovery/legend', priority: '0.75', changefreq: 'weekly', description: 'Draft Your Legend - Recovery Story' },
-      { path: '/recovery/builder', priority: '0.80', changefreq: 'weekly', description: 'Recovery Plan Builder' },
-      { path: '/recovery/compass', priority: '0.75', changefreq: 'weekly', description: 'Recovery Compass - Navigation System' },
-      { path: '/recovery/command-center', priority: '0.70', changefreq: 'weekly', description: 'Recovery Command Center' },
-      { path: '/recovery/wearables', priority: '0.70', changefreq: 'monthly', description: 'Wearables Integration for Recovery' },
-      { path: '/recovery/therapist-marketplace', priority: '0.80', changefreq: 'weekly', description: 'Therapist Marketplace - Find Specialists' },
-      { path: '/recovery/strokelyfe-org', priority: '0.80', changefreq: 'monthly', description: 'Stroke Lyfe Inc. — 501(c)(3) Nonprofit' },
-      { path: '/recovery/pricing', priority: '0.95', changefreq: 'monthly', description: 'Warrior Membership Pricing — 7-Day Free Trial' },
-      { path: '/recovery/gift', priority: '0.90', changefreq: 'monthly', description: 'Gift a Survivor — Donate a Warrior Membership via Stroke Lyfe Inc.' },
-      { path: '/my-book', priority: '0.75', changefreq: 'weekly', description: 'My Recovery Book - AI-Assisted Memoir' },
-      { path: '/pricing', priority: '0.85', changefreq: 'monthly', description: 'Recovery Academy Pricing Plans' },
-      { path: '/recovery/sasquatch-coach', priority: '0.90', changefreq: 'weekly', description: 'Sasquatch Coach - 24/7 AI Stroke Recovery Coach' },
-      { path: '/recovery/survivor-income', priority: '0.90', changefreq: 'weekly', description: 'Survivor Income Program - Earn Money After Stroke' },
+      // Tier 1 — Core landing pages (priority 1.0)
+      { path: '/recovery', priority: '1.0', changefreq: 'weekly' },
+      { path: '/recovery/challenge', priority: '1.0', changefreq: 'weekly' },
+      // Tier 2 — High-value public content hubs (priority 0.90–0.95)
+      { path: '/recovery/pricing', priority: '0.95', changefreq: 'monthly' },
+      { path: '/recovery/academy', priority: '0.95', changefreq: 'weekly' },
+      { path: '/recovery/university', priority: '0.95', changefreq: 'weekly' },
+      { path: '/recovery/exercises', priority: '0.95', changefreq: 'daily' },
+      { path: '/recovery/protocols', priority: '0.92', changefreq: 'weekly' },
+      { path: '/recovery/sasquatch-coach', priority: '0.92', changefreq: 'weekly' },
+      { path: '/recovery/survivor-income', priority: '0.92', changefreq: 'weekly' },
+      { path: '/recovery/gift', priority: '0.90', changefreq: 'monthly' },
+      { path: '/recovery/blog', priority: '0.90', changefreq: 'daily' },
+      { path: '/recovery/center-finder', priority: '0.90', changefreq: 'monthly' },
+      { path: '/recovery/resources', priority: '0.90', changefreq: 'weekly' },
+      // Tier 3 — Public supporting pages (priority 0.75–0.85)
+      { path: '/recovery/about-nick', priority: '0.85', changefreq: 'monthly' },
+      { path: '/recovery/store', priority: '0.85', changefreq: 'weekly' },
+      { path: '/recovery/community', priority: '0.82', changefreq: 'daily' },
+      { path: '/recovery/strokelyfe-org', priority: '0.80', changefreq: 'monthly' },
+      { path: '/recovery/forge', priority: '0.80', changefreq: 'weekly' },
+      { path: '/recovery/brain-gym', priority: '0.78', changefreq: 'weekly' },
+      { path: '/recovery/survival-grid', priority: '0.78', changefreq: 'weekly' },
+      { path: '/recovery/builder', priority: '0.78', changefreq: 'weekly' },
     ];
 
     // Static pages only — blog posts live exclusively in sitemap-blog.xml to avoid duplication
@@ -676,12 +675,39 @@ ${recoveryStaticRoutes.map(r => `  <url>
   app.get('/robots.txt', (req, res) => {
     const robotsTxt = `User-agent: *
 Allow: /
+
+# API and admin — never crawl
 Disallow: /api/
 Disallow: /admin/
+
+# Auth-walled pages — Google gets a login redirect, causing "Page with redirect" errors in GSC.
+# These must never be in the sitemap and must be blocked here.
 Disallow: /recovery/dashboard
 Disallow: /recovery/journal
 Disallow: /recovery/medical-log
 Disallow: /recovery/flicker-log
+Disallow: /recovery/achievements
+Disallow: /recovery/compass
+Disallow: /recovery/legend
+Disallow: /recovery/never-zero
+Disallow: /recovery/command-center
+Disallow: /recovery/wearables
+Disallow: /recovery/social
+Disallow: /recovery/therapist-marketplace
+Disallow: /recovery/therapist
+Disallow: /recovery/messages
+Disallow: /recovery/video
+Disallow: /recovery/reminders
+Disallow: /recovery/activity
+Disallow: /recovery/flicker-log
+Disallow: /recovery/course-builder
+Disallow: /recovery/admin/
+Disallow: /dashboard
+Disallow: /author-dashboard
+Disallow: /author-profile
+Disallow: /sell-books
+Disallow: /white-label
+Disallow: /squatch-qr/studio
 
 # Sitemap index — Google discovers all sub-sitemaps from here
 Sitemap: https://strokerecoveryacademy.com/sitemap-index.xml
