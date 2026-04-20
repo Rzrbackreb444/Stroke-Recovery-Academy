@@ -1000,6 +1000,21 @@ export const insertNewsletterSubscriberSchema = createInsertSchema(newsletterSub
 export type InsertNewsletterSubscriber = typeof insertNewsletterSubscriberSchema._type;
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
 
+// Platform feedback survey responses
+export const platformFeedback = pgTable("platform_feedback", {
+  id: serial("id").primaryKey(),
+  name: text("name"),
+  email: text("email"),
+  userType: text("user_type").notNull().default("visitor"), // visitor, survivor, caregiver, family
+  goals: text("goals").array().notNull().default([]),
+  freeText: text("free_text"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const insertPlatformFeedbackSchema = createInsertSchema(platformFeedback).omit({ id: true, createdAt: true });
+export type InsertPlatformFeedback = typeof insertPlatformFeedbackSchema._type;
+export type PlatformFeedback = typeof platformFeedback.$inferSelect;
+
 // Newsletter Editions sent to subscribers
 export const newsletterEditions = pgTable("newsletter_editions", {
   id: serial("id").primaryKey(),

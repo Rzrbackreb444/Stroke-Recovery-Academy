@@ -13,6 +13,7 @@ import HeroSection from "@/components/HeroSection";
 import StatsStrip from "@/components/StatsStrip";
 import TestimonyVideo from "@/components/TestimonyVideo";
 import WhatYouGet from "@/components/WhatYouGet";
+import FeedbackSurvey from "@/components/FeedbackSurvey";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
@@ -79,6 +80,7 @@ export default function Landing() {
         <StatsStrip />
         <TestimonyVideo />
         <WhatYouGet />
+        <FeedbackSurvey />
         <CTASection />
       </main>
       <Footer />
