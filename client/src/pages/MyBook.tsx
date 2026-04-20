@@ -47,6 +47,7 @@ interface RecoveryBook {
 }
 
 const MEMOIR_PROMPTS = [
+  // ─── ACT I: BEFORE & THE DAY ────────────────────────────────────────────────
   {
     id: "before-stroke",
     title: "Life Before the Stroke",
@@ -63,69 +64,145 @@ const MEMOIR_PROMPTS = [
   },
   {
     id: "hospital",
-    title: "Hospital & Early Recovery",
-    prompt: "Describe your time in the hospital. The doctors, the therapists, the emotions. What did they tell you? How did it feel?",
+    title: "The ICU: What Nobody Tells You",
+    prompt: "Describe your time in the ICU and hospital. Not the sanitized version — the real one. What did it look, smell, and feel like? What did they tell you?",
     nickExcerpt: "The pain wasn't what broke me — it was the confusion. It felt like chainsaws buzzed behind my eyes. I even reached up once, sure I'd find steel under my scalp. Every beep of a monitor mocked me. In the ICU, I lost 50 pounds — down to tube feedings, then pureed foods that tasted like cardboard mush. And then came the humiliation.",
-    nickSource: "Chapter 1 — ICU Hell",
+    nickSource: "Chapter 2 — ICU Hell",
+  },
+  {
+    id: "the-body",
+    title: "Spasticity, Pain & What Nobody Warns You About",
+    prompt: "Describe the physical reality of your recovery. The spasms, the fatigue, the daily pain, the things your body does now that it never did before. What do people not understand about living in a post-stroke body?",
+    nickExcerpt: "People see you walk through a door and think you're fine. They don't see what it costs. Every step is a negotiation. Spasticity is your muscles at war with themselves — tightening when you need them to release, releasing when you need them to hold. You learn to manage it. You don't learn to ignore it.",
+    nickSource: "Chapter 7 — The Body Betrayal",
+  },
+  // ─── ACT II: THE DARK MIDDLE ─────────────────────────────────────────────────
+  {
+    id: "the-anger",
+    title: "The Anger Nobody Talks About",
+    prompt: "Stroke survivors get angry. At the stroke. At their body. At people who say the wrong thing. At people who are healthy. Write about that anger. When did it peak? What did it look like? How did you handle it?",
+    nickExcerpt: "There's a stage before acceptance that nobody puts on the recovery timeline. I call it the furnace. Everything was rage — hot, clean, completely justified rage. At the brain that betrayed me. At the body that used to listen. At every well-meaning person who said 'at least you're alive.' Alive is not the finish line.",
+    nickSource: "Chapter 9 — The Furnace Phase",
+  },
+  {
+    id: "financial-hit",
+    title: "The Financial Devastation",
+    prompt: "What did the stroke cost you financially? Medical bills, lost income, disability, insurance battles? This is one of the most real parts of stroke survival that books skip. Don't skip it.",
+    nickExcerpt: "Nobody warns you about the second stroke — the one that hits your bank account. The bills stack up faster than your recovery progress. You go from provider to patient. The paperwork alone could break you if the stroke didn't. This is part of the fight nobody puts on the inspirational poster.",
+    nickSource: "Chapter 11 — The Money Problem",
+  },
+  {
+    id: "relationships",
+    title: "How It Changed Your Relationships",
+    prompt: "How did the stroke change your relationships? Your marriage or partnership, friendships, family roles? Who showed up? Who couldn't handle it? How did the dynamic shift?",
+    nickExcerpt: "A stroke tests every relationship in your life. Some people rise to it. Some disappear. Some say all the right things and do nothing. Some say nothing and carry you. You learn very quickly who was in your corner for the right reasons. That knowledge changes everything — who you trust, who you invest in, who you protect.",
+    nickSource: "Chapter 10 — Who Stays",
   },
   {
     id: "going-home",
-    title: "Going Home",
-    prompt: "What was it like returning home? What challenges did you face? How did daily life change?",
+    title: "Going Home (But It Wasn't Home Anymore)",
+    prompt: "What was it like returning home? What challenges did you face immediately? How had the space itself — your house, your routines — become a different place?",
     nickExcerpt: "Returning home with improvements — but a wheelchair. Bathroom autonomy became a mission. Bed transfers, the slow return of self-sufficiency. Showers instead of sponges. Every small thing I used to do without thinking became a battle to relearn. A body in motion stays in motion.",
     nickSource: "Chapter 15 — Home Again, But Different",
   },
-  {
-    id: "rehabilitation",
-    title: "The Rehabilitation Journey",
-    prompt: "Describe your rehabilitation process. The exercises, the small victories, the setbacks. What worked? What didn't?",
-    nickExcerpt: "Seize where you are — no denial, just raw truth. Absorb everything around you like your life depends on it, because it does. Swing boldly and experiment — try things that feel stupid. Combine what actually works. Then hammer it every single day. S.A.S.C.H. It sounds simple. It took me years to live it. And it saved everything.",
-    nickSource: "Chapter 32 — The S.A.S.C.H. Formula",
-  },
+  // ─── ACT III: THE FIGHT BACK ─────────────────────────────────────────────────
   {
     id: "support-system",
-    title: "My Support System",
-    prompt: "Who helped you through this? Family, friends, therapists, strangers? How did relationships change?",
+    title: "The Person Who Believed When You Didn't",
+    prompt: "Who helped you through this? Was there one person — therapist, family member, stranger — who believed in your recovery before you did? What did they do? What did they say?",
     nickExcerpt: "Michael's appearance changed everything. I had doubts at first, but his dedication and passion were real. He believed I could walk again when nobody else did. Walking practice with support, ankle weakness, AFO braces — he pushed me through all of it. Some people save your life by believing in you.",
     nickSource: "Chapter 13 — Michael: My Unlikely Savior",
   },
   {
-    id: "turning-point",
-    title: "The Turning Point",
-    prompt: "Was there a moment when things started to click? A breakthrough? When you knew you'd fight back?",
+    id: "rehabilitation",
+    title: "The Rehabilitation Grind",
+    prompt: "Describe your rehabilitation in real detail. The exercises, the small victories, the setbacks that felt like collapse. What actually worked? What was overhyped? What did you discover by accident?",
+    nickExcerpt: "Seize where you are — no denial, just raw truth. Absorb everything around you like your life depends on it, because it does. Swing boldly and experiment — try things that feel stupid. Combine what actually works. Then hammer it every single day. S.A.S.C.H. It sounds simple. It took me years to live it. And it saved everything.",
+    nickSource: "Chapter 32 — The S.A.S.C.H. Formula",
+  },
+  {
+    id: "never-zero",
+    title: "The Day I Invented Never Zero",
+    prompt: "Was there a specific moment, a bottom-of-the-barrel day, when you made a commitment to yourself? What was the smallest action you took that kept the streak alive? What does 'Never Zero' mean to you personally?",
+    nickExcerpt: "There will be days when everything in you says stop. The exhaustion is real. The progress feels invisible. You'll want a zero day — a day where you did nothing, moved nothing, fought nothing. Never give yourself that day. One rep. One step. One breath counts. A body in motion stays in motion. Never Zero.",
+    nickSource: "Chapter 19 — The Never Zero Commitment",
+  },
+  {
+    id: "tiktok-chapter",
+    title: "TikTok Was My Medicine",
+    prompt: "How did sharing your story — on social media, in a group, with a therapist, or with one person — change your recovery? Why did you decide to go public? What happened when you did?",
     nickExcerpt: "Two and a half years of recovery. Then a new idea: TikTok as a recovery tool. Filming the journey, a new purpose found. The first video — a testimonial of survival. Exercise videos, an overwhelming response. Followers pouring in, hope ignited. Inspiration and self-motivation, a powerful combination.",
     nickSource: "Chapter 21 — The Seeds of Change",
   },
+  // ─── ACT IV: THE SYSTEM ──────────────────────────────────────────────────────
+  {
+    id: "the-formula",
+    title: "How I Built My Recovery System",
+    prompt: "Did you develop your own routines, rituals, or framework for recovery? How did you figure out what to do each day? What principles guided you when you had no energy, no motivation, and no clear progress to point to?",
+    nickExcerpt: "The S.A.S.C.H. Formula wasn't born in a day. It was built from hundreds of failed attempts, things that worked once and never again, and things that felt stupid until they didn't. You combine enough hard-won experiments and eventually you have a system. And a system beats motivation every single time.",
+    nickSource: "Chapter 32 — The S.A.S.C.H. Formula Origin",
+  },
+  {
+    id: "fear-of-second-stroke",
+    title: "The Fear Nobody Talks About",
+    prompt: "Do you fear another stroke? How has fear — of setbacks, of the future, of your own body — shaped your recovery? How do you manage it without letting it manage you?",
+    nickExcerpt: "The second biggest fight after a stroke isn't physical. It's the fear that lives in the back of your head. Every headache is a question mark. Every moment of fatigue is a warning you're not sure is real. You learn to live inside uncertainty. That's not easy. But you learn to make it useful.",
+    nickSource: "Chapter 24 — Living With the Unknown",
+  },
+  // ─── ACT V: THE MISSION ──────────────────────────────────────────────────────
+  {
+    id: "turning-point",
+    title: "The Turning Point",
+    prompt: "Was there a specific moment — a breakthrough, a conversation, a result — when you knew you were going to make it? Not just survive, but actually build something from this?",
+    nickExcerpt: "There's a moment in recovery — and you'll know it when it hits — where the math changes. You stop calculating what you lost and start calculating what's possible. I don't know exactly when it happened for me. But I know I woke up one day and the fight felt different. Less desperate. More intentional.",
+    nickSource: "Chapter 27 — The Math Changes",
+  },
   {
     id: "lessons-learned",
-    title: "Lessons Learned",
-    prompt: "What has this experience taught you? How have you grown? What do you know now that you didn't before?",
+    title: "What the Stroke Taught You",
+    prompt: "What has this experience taught you — about yourself, about other people, about time, priorities, and what actually matters? What do you know now that you wish you'd known before?",
     nickExcerpt: "Never accept 'never' as final. Treat plateaus as launching pads. Use setbacks as fuel. Help others after breakthroughs. Prove impossible is just another word for 'watch me.' As long as that meat in your chest is still thumpin', your life is still pumpin'. Get knocked down five times, stand up six.",
     nickSource: "The Sasquatch Doctrine — Revolution Rules",
   },
   {
+    id: "to-the-caregiver",
+    title: "A Letter to the Caregiver",
+    prompt: "Write directly to the people who care for stroke survivors — spouses, children, parents, friends. What do they need to hear that nobody tells them? What did they do that helped? What did they do that (without knowing it) made things harder?",
+    nickExcerpt: "To everyone who sat in that waiting room, who slept in that hospital chair, who drove to every appointment without being asked: this was your stroke too. Just a different kind. Your exhaustion is real. Your grief is real. Your love is what made this possible. You deserve to be told that.",
+    nickSource: "Chapter 16 — The Caregiver's Fight",
+  },
+  {
     id: "message-to-survivors",
-    title: "Message to Fellow Survivors",
-    prompt: "What would you tell someone who just had a stroke? What do they need to hear right now?",
+    title: "What I'd Tell You on Day One",
+    prompt: "If you could go back to the hospital room — yours or someone else's — on Day 1, what would you say? What does the survivor in front of you need to hear more than anything else right now?",
     nickExcerpt: "When that well-meaning doctor said, 'You'll probably never walk normally again,' I had two choices: Accept limitations and fade. Or use it as fuel to prove every expert wrong. I chose 2. And it changed EVERYTHING. If an Arkansas boy from Fort Smith who suffered massive brain damage and was told 'never' can do it — SO CAN YOU.",
     nickSource: "Foreword — The Sasquatch Battle Cry",
   },
   {
+    id: "the-new-normal",
+    title: "What '90%' Actually Looks Like",
+    prompt: "What does your recovery look like today — honestly? Not the inspirational version, the real version. What still challenges you? What have you fully accepted? What still surprises you about the person you've become?",
+    nickExcerpt: "90%+ isn't a finish line. It's a baseline. There are still hard days. Still things my body does that it didn't do before. Still moments where I catch myself trying to do something the old way and remembering that the old way is gone. The new way is good. It's just different. And different is something I've made my peace with.",
+    nickSource: "Chapter 36 — The New Baseline",
+  },
+  {
     id: "future",
-    title: "Looking Forward",
-    prompt: "What are your goals now? What does the future look like? What's your 'impossible' that you're going after?",
+    title: "The Mission: What You're Building Now",
+    prompt: "What are you building now — in your recovery, your relationships, your community, your purpose? What's the 'impossible' goal you're currently pursuing? What does your life look like when you've won?",
     nickExcerpt: "Seven years later, I'm better than I ever was — 90%+ function, still rising with breakthroughs, building StrokeRecoveryAcademy.com from Fort Smith, Arkansas, and inspiring 14.5K warriors on TikTok and 3.8K on Facebook. Your revolution starts NOW.",
     nickSource: "Foreword — January 2026",
   },
 ];
 
 const MILESTONES = [
-  { words: 100, label: "First Steps", message: "You started. That's the hardest part." },
-  { words: 500, label: "Finding Your Voice", message: "Your story is taking shape." },
-  { words: 1000, label: "One Thousand Strong", message: "PDF export unlocked." },
-  { words: 2500, label: "Warrior's Tale", message: "This is becoming something real." },
-  { words: 5000, label: "The Full Story", message: "You've built a memoir. That takes guts." },
-  { words: 10000, label: "Published Author", message: "Book Studio is calling your name." },
+  { words: 100,   label: "First Steps",        message: "You started. That's the hardest part." },
+  { words: 500,   label: "Finding Your Voice",  message: "Your story is taking shape." },
+  { words: 1000,  label: "One Thousand Strong", message: "PDF export unlocked." },
+  { words: 2500,  label: "Warrior's Tale",      message: "This is becoming something real." },
+  { words: 5000,  label: "Short Memoir",        message: "5,000 words. You've got a story." },
+  { words: 10000, label: "Half the Book",       message: "10K down. Keep hammering." },
+  { words: 20000, label: "Real Manuscript",     message: "20K words — you're past the point of no return." },
+  { words: 40000, label: "Published Author",    message: "KDP-ready. Book Studio is calling your name." },
 ];
 
 function MemoirToolbar({ editor }: { editor: any }) {
