@@ -31,6 +31,7 @@ const resourcesNav = [
 
 export default function RecoveryHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [resourcesOpen, setResourcesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [location] = useLocation();
   const { user, isLoading } = useAuth();
@@ -43,9 +44,8 @@ export default function RecoveryHeader() {
 
   useEffect(() => {
     setMobileOpen(false);
+    setResourcesOpen(false);
   }, [location]);
-
-  const allNav = [...primaryNav, ...resourcesNav];
 
   return (
     <header
@@ -210,7 +210,8 @@ export default function RecoveryHeader() {
       {mobileOpen && (
         <div className="lg:hidden border-t border-[#1e1e1e] bg-[#0D0D0D]">
           <div className="max-w-7xl mx-auto px-4 py-4 space-y-1">
-            {allNav.map((link) => (
+            {/* 5 primary links */}
+            {primaryNav.map((link) => (
               <Link key={link.href} href={link.href}>
                 <button
                   className={`w-full text-left px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
@@ -224,6 +225,35 @@ export default function RecoveryHeader() {
                 </button>
               </Link>
             ))}
+            {/* Resources — collapsible like desktop dropdown */}
+            <div>
+              <button
+                className="w-full text-left px-4 py-3 text-sm font-medium rounded-lg text-gray-300 hover:text-white hover:bg-[#1a1a1a] flex items-center justify-between transition-colors"
+                onClick={() => setResourcesOpen((v) => !v)}
+                data-testid="mobile-nav-resources"
+              >
+                Resources
+                <ChevronDown className={`h-3.5 w-3.5 transition-transform ${resourcesOpen ? "rotate-180" : ""}`} />
+              </button>
+              {resourcesOpen && (
+                <div className="pl-4 space-y-1 mt-1">
+                  {resourcesNav.map((link) => (
+                    <Link key={link.href} href={link.href}>
+                      <button
+                        className={`w-full text-left px-4 py-2.5 text-sm rounded-lg transition-colors ${
+                          location === link.href
+                            ? "text-[#C9941A]"
+                            : "text-gray-400 hover:text-white hover:bg-[#1a1a1a]"
+                        }`}
+                        data-testid={`mobile-nav-${link.label.toLowerCase().replace(/\s/g, "-")}`}
+                      >
+                        {link.label}
+                      </button>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
             <div className="pt-3 border-t border-[#1e1e1e] flex flex-col gap-2">
               <Link href="/recovery/gift">
                 <Button
