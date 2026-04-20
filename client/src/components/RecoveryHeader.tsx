@@ -17,6 +17,7 @@ const primaryNav = [
   { href: "/recovery/academy", label: "Learn" },
   { href: "/recovery/challenge", label: "66-Day Challenge" },
   { href: "/recovery/exercises", label: "Exercises" },
+  { href: "/recovery/routine", label: "Daily Routine" },
   { href: "/recovery/community", label: "Community" },
   { href: "/recovery/sasquatch-coach", label: "My Coach" },
 ];
