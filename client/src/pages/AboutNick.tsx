@@ -12,7 +12,7 @@ import nickCasual from "@assets/IMG_4824_1776397947955.jpeg";
 
 const milestones = [
   { year: "Dec 2018", title: "The Day Everything Changed", description: "December 3, 2018 — a massive hemorrhagic stroke. Left side paralyzed, speech gone, 50 pounds lost in the ICU on tube feedings. Told he might never walk normally again." },
-  { year: "2019", title: "The Fight Begins", description: "Home from the hospital in a wheelchair. Developed the Never Zero principle: 1 rep per day minimum, no matter what. A body in motion stays in motion." },
+  { year: "Apr 2019", title: "Nicholas Jr. — The Spark", description: "April 24, 2019: Nicholas Jr. took his first breath. Nick watched from the wheelchair. He promised to play catch with both arms. Every rep since has had his son's name on it." },
   { year: "2020", title: "S.A.S.C.H. Formula Born", description: "Formalized the 5-step daily operating system — Seize, Absorb, Swing, Combine, Hammer — after years of testing every recovery technique available." },
   { year: "2021", title: "C.O.M.P.A.S.S. Created", description: "Built the 7-pillar navigation system: Control, Own, Mutate, Patience, Anger, Small Wins, Stack. A framework for getting unstuck when recovery stalls." },
   { year: "2022", title: "TikTok & Community Launch", description: "Took the Sasquatch Doctrine to TikTok. An overwhelming response — 14.5K warriors followed. The mission became undeniable: help every survivor who would listen." },
@@ -63,8 +63,8 @@ export default function AboutNick() {
       
       <main className="container mx-auto px-4 py-6 max-w-4xl">
         <div className="text-center mb-12">
-          <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center">
-            <Mountain className="h-16 w-16 text-white" />
+          <div className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-[#C9941A]/40">
+            <img src={nickPortrait} alt="Nick Kremers" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-4xl font-bold mb-2">Nick Kremers</h1>
           <p className="text-xl text-[#C9941A] mb-4">Stroke Survivor. Sasquatch. Legend in Progress.</p>
