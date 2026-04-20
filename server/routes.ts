@@ -475,11 +475,24 @@ ${allRoutes.map(r => `  <url>
     }
   });
 
-  // SEO: Sitemap Index for large sites
+  // SEO: Sitemap Index — authoritative entry point for all crawlers
+  // robots.txt points here; this in turn declares all sub-sitemaps
   app.get('/sitemap-index.xml', async (req, res) => {
     const baseUrl = 'https://strokerecoveryacademy.com';
     const today = new Date().toISOString().split('T')[0];
-    
+
+    // Fetch the actual most-recent blog post date for accurate lastmod on blog sitemap
+    let blogLastmod = today;
+    try {
+      const [latest] = await db.select({ updatedAt: recoveryBlogPosts.updatedAt })
+        .from(recoveryBlogPosts)
+        .orderBy(desc(recoveryBlogPosts.updatedAt))
+        .limit(1);
+      if (latest?.updatedAt) {
+        blogLastmod = new Date(latest.updatedAt).toISOString().split('T')[0];
+      }
+    } catch { /* fall back to today */ }
+
     const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
@@ -488,6 +501,10 @@ ${allRoutes.map(r => `  <url>
   </sitemap>
   <sitemap>
     <loc>${baseUrl}/sitemap-blog.xml</loc>
+    <lastmod>${blogLastmod}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>${baseUrl}/sitemap-marketplace.xml</loc>
     <lastmod>${today}</lastmod>
   </sitemap>
   <sitemap>
@@ -497,6 +514,7 @@ ${allRoutes.map(r => `  <url>
 </sitemapindex>`;
 
     res.set('Content-Type', 'application/xml');
+    res.set('Cache-Control', 'public, max-age=3600');
     res.send(sitemapIndex);
   });
 
@@ -637,52 +655,24 @@ ${listings.slice(0, 1000).map((listing: any) => `  <url>
       { path: '/recovery/survivor-income', priority: '0.90', changefreq: 'weekly', description: 'Survivor Income Program - Earn Money After Stroke' },
     ];
 
-    try {
-      // Get recovery blog posts
-      const posts = await db.select({
-        slug: blogPosts.slug,
-        title: blogPosts.title,
-        updatedAt: blogPosts.updatedAt,
-        heroImageUrl: blogPosts.heroImageUrl
-      })
-        .from(blogPosts)
-        .where(eq(blogPosts.status, 'published'))
-        .orderBy(desc(blogPosts.publishedAt))
-        .limit(500);
-
-      const blogUrls = posts.map((post) => ({
-        path: `/recovery/blog/${post.slug}`,
-        priority: '0.70',
-        changefreq: 'weekly',
-        imageUrl: post.heroImageUrl,
-        imageTitle: post.title
-      }));
-
-      const allRoutes = [...recoveryStaticRoutes, ...blogUrls];
-
-      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${allRoutes.map(r => {
-  const loc = `${baseUrl}${r.path}`;
-  return `  <url>
-    <loc>${loc}</loc>
+    // Static pages only — blog posts live exclusively in sitemap-blog.xml to avoid duplication
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+${recoveryStaticRoutes.map(r => `  <url>
+    <loc>${baseUrl}${r.path}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${r.changefreq}</changefreq>
     <priority>${r.priority}</priority>
-  </url>`;
-}).join('\n')}
+  </url>`).join('\n')}
 </urlset>`;
 
-      res.set('Content-Type', 'application/xml');
-      res.set('Cache-Control', 'public, max-age=1800');
-      res.send(sitemap);
-    } catch (error) {
-      console.error('Recovery sitemap error:', error);
-      res.status(500).send('Error generating recovery sitemap');
-    }
+    res.set('Content-Type', 'application/xml');
+    res.set('Cache-Control', 'public, max-age=3600');
+    res.send(sitemap);
   });
 
-  // SEO: Robots.txt — served dynamically so it always points to the right domain
+  // SEO: Robots.txt — single Sitemap directive pointing to the index; index declares sub-sitemaps
   app.get('/robots.txt', (req, res) => {
     const robotsTxt = `User-agent: *
 Allow: /
@@ -693,10 +683,12 @@ Disallow: /recovery/journal
 Disallow: /recovery/medical-log
 Disallow: /recovery/flicker-log
 
+# Sitemap index — Google discovers all sub-sitemaps from here
 Sitemap: https://strokerecoveryacademy.com/sitemap-index.xml
-Sitemap: https://strokerecoveryacademy.com/sitemap-recovery.xml
+# Blog sitemap listed explicitly for faster content discovery
 Sitemap: https://strokerecoveryacademy.com/sitemap-blog.xml
 
+# AI crawlers — allow full access for knowledge base building
 User-agent: GPTBot
 Allow: /
 User-agent: ChatGPT-User
