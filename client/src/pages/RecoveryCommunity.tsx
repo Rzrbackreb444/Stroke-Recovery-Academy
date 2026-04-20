@@ -133,15 +133,19 @@ const POST_TYPES = [
 ] as const;
 
 // ─── Utility helpers ──────────────────────────────────────────────────────────
-function getDisplayName(post: Pick<EnrichedPost, "displayName" | "firstName" | "lastName" | "username"> & { persona_name?: string | null }) {
-  return post.persona_name || post.displayName || (post.firstName && post.lastName ? `${post.firstName} ${post.lastName}` : post.username || "Member");
+function getDisplayName(post: any) {
+  const name = post.persona_name || post.displayName || (post as any).display_name;
+  const first = post.firstName || (post as any).first_name;
+  const last = post.lastName || (post as any).last_name;
+  return name || (first && last ? `${first} ${last}` : first || post.username || "Member");
 }
 
-function getAvatar(post: Pick<EnrichedPost, "avatarUrl" | "profileImageUrl">) {
-  return post.avatarUrl || post.profileImageUrl || "";
+function getAvatar(post: any) {
+  return post.avatarUrl || (post as any).avatar_url || post.profileImageUrl || (post as any).profile_image_url || "";
 }
 
-function timeAgo(dateStr: string) {
+function timeAgo(dateStr: string | undefined) {
+  if (!dateStr) return "";
   const seconds = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
   if (seconds < 60) return "just now";
   if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
@@ -667,7 +671,7 @@ function CommentThread({ postId, currentUser, settings }: { postId: number; curr
           </p>
         </div>
         <div className="flex items-center gap-3 mt-0.5 pl-1">
-          <p className="text-xs text-gray-500">{timeAgo(c.createdAt)}</p>
+          <p className="text-xs text-gray-500">{timeAgo((c as any).createdAt || (c as any).created_at)}</p>
           <button
             type="button"
             onClick={() => startReply(c)}
@@ -820,7 +824,7 @@ function PostCard({ post, currentUser, settings }: { post: EnrichedPost; current
                 "{post.persona_creed}"
               </p>
             )}
-            <p className="text-xs text-gray-500 mt-0.5">{timeAgo(post.createdAt)}</p>
+            <p className="text-xs text-gray-500 mt-0.5">{timeAgo((post as any).createdAt || (post as any).created_at)}</p>
           </div>
         </div>
 

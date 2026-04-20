@@ -104,6 +104,7 @@ import SocialNetwork from "@/pages/SocialNetwork";
 import RecoveryCommunity from "@/pages/RecoveryCommunity";
 import TherapistMarketplace from "@/pages/TherapistMarketplace";
 import AdminPlanBuilder from "@/pages/AdminPlanBuilder";
+import FeedbackAdmin from "@/pages/FeedbackAdmin";
 import RecoveryUniversity from "@/pages/RecoveryUniversity";
 import RecoveryLesson from "@/pages/RecoveryLesson";
 import RecoveryQuiz from "@/pages/RecoveryQuiz";
@@ -479,6 +480,11 @@ function Router() {
       <Route path="/recovery/admin/plans">
         <ProtectedRoute>
           <AdminPlanBuilder />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/recovery/admin/feedback">
+        <ProtectedRoute>
+          <FeedbackAdmin />
         </ProtectedRoute>
       </Route>
       <Route path="/recovery/university" component={RecoveryUniversity} />

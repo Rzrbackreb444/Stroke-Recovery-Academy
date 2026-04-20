@@ -1425,6 +1425,39 @@ Allow: /
   // ── Newsletter routes ──────────────────────────────────────────────────────
 
   // Public subscribe (email capture widget, no auth required)
+  // POST /api/feedback/platform — save survivor feedback (public)
+  app.post('/api/feedback/platform', async (req, res) => {
+    try {
+      const { name, email, userType, goals, freeText } = req.body;
+      if (!goals || !Array.isArray(goals) || goals.length === 0) {
+        return res.status(400).json({ message: 'Please select at least one goal.' });
+      }
+      const { pool: dbPool } = await import('./db');
+      await dbPool.query(
+        `INSERT INTO platform_feedback (name, email, user_type, goals, free_text)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [name?.trim() || null, email?.trim().toLowerCase() || null, userType || 'visitor', goals, freeText?.trim() || null]
+      );
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Feedback submit error:', error);
+      res.status(500).json({ message: 'Failed to save feedback.' });
+    }
+  });
+
+  // GET /api/admin/feedback — view all feedback responses (Nick only)
+  app.get('/api/admin/feedback', isAuthenticated, async (req: any, res) => {
+    try {
+      const { pool: dbPool } = await import('./db');
+      const result = await dbPool.query(
+        `SELECT * FROM platform_feedback ORDER BY created_at DESC`
+      );
+      res.json(result.rows);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to fetch feedback.' });
+    }
+  });
+
   app.post('/api/newsletter/subscribe', subscribeRateLimit, async (req, res) => {
     try {
       const { email, firstName, source } = req.body;
