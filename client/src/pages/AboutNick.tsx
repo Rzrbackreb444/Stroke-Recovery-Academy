@@ -21,11 +21,12 @@ const milestones = [
 ];
 
 const doctrinePoints = [
-  { icon: Flame, title: "Never Zero", description: "1 rep saves your streak. Do something every day." },
-  { icon: Target, title: "C.O.M.P.A.S.S.", description: "Control · Own · Mutate · Patience · Anger · Small Wins · Stack — the 7-pillar builder's compass." },
-  { icon: Star, title: "Flicker Log", description: "Track micro-moments of progress - every twitch matters." },
-  { icon: BookOpen, title: "Draft Your Legend", description: "Write your recovery story. Own your narrative." },
-  { icon: Heart, title: "Medical Log", description: "Stay on top of meds, appointments, and vitals." },
+  { icon: Flame, title: "Never Zero", description: "1 rep per day minimum. Non-negotiable. The streak is what builds the brain. Even teeth brushing counts." },
+  { icon: Target, title: "S.A.S.C.H. Daily System", description: "Seize · Absorb · Swing · Combine · Hammer — the 5-step daily operating system Nick used from ICU to 90%+." },
+  { icon: Mountain, title: "C.O.M.P.A.S.S. Navigation", description: "Control · Own · Mutate · Patience · Anger · Small Wins · Stack — the advanced 7-pillar builder's compass for when recovery stalls." },
+  { icon: Star, title: "Flicker Log", description: "Track every micro-moment — a toe twitch, one more second of balance, buttoning a shirt. Every flicker is data. Every flicker is proof." },
+  { icon: BookOpen, title: "Draft Your Legend", description: "Write your recovery story in your own words. Nick's chapters alongside yours. Your story matters — and someone out there needs to hear it." },
+  { icon: Heart, title: "S.O.S. Panic Button", description: "Survive · Organize · Strive — the beginner reset for the darkest days. Use S.O.S. to survive; upgrade to S.A.S.C.H. when momentum builds." },
 ];
 
 export default function AboutNick() {
@@ -79,11 +80,11 @@ export default function AboutNick() {
             <Quote className="h-8 w-8 text-[#C9941A] flex-shrink-0" />
             <div>
               <p className="text-xl italic text-gray-200 mb-4">
-                "They told me what I couldn't do. I decided to prove them wrong, 
-                one day at a time. That's what becoming a Sasquatch means - 
-                becoming something they said was impossible."
+                "Recovery isn't healing — it's construction. You build with what you still have.
+                As long as that meat in your chest is still thumpin', your life is still pumpin'.
+                You are not done."
               </p>
-              <p className="text-[#C9941A] font-semibold">- Nick Kremers</p>
+              <p className="text-[#C9941A] font-semibold">— Nick Kremers, Fort Smith, Arkansas</p>
             </div>
           </div>
         </Card>
