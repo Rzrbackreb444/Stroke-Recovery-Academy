@@ -10935,7 +10935,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
       const { category, featured } = req.query;
       const posts = await storage.getRecoveryBlogPosts(
         category as string,
-        featured === 'true'
+        featured !== undefined ? featured === 'true' : undefined
       );
       res.json(posts);
     } catch (error) {

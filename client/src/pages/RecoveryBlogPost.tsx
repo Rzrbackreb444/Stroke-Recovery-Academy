@@ -26,9 +26,11 @@ interface BlogPost {
   content: string;
   authorId: string;
   authorName: string;
+  authorBio?: string;
   category: string;
   tags: string[];
   featuredImage?: string;
+  heroImageUrl?: string;
   status: string;
   featured: boolean;
   viewCount: number;
@@ -211,24 +213,93 @@ export default function RecoveryBlogPost() {
     );
   }
 
-  const renderedContent = renderMarkdown(post.content || '');
+  // Detect HTML content and render it directly; fall back to Markdown processor for legacy posts
+  const isHtmlContent = (post.content || '').trim().startsWith('<');
+  const renderedContent = isHtmlContent ? post.content : renderMarkdown(post.content || '');
   const gradient = categoryGradients[post.category] || "from-[#C9941A]/20 to-[#0D0D0D]";
+
+  const baseUrl = "https://strokerecoveryacademy.com";
+  const postUrl = `${baseUrl}/recovery/blog/${post.slug}`;
+  const authorName = post.authorName || "Nick Kremers";
+  const authorBioText = post.authorBio || "Nick Kremers is a hemorrhagic stroke survivor (December 3, 2018) and founder of Stroke Recovery Academy. He developed the Sasquatch Method and SASCH framework after recovering from complete left-side paralysis to full independent mobility.";
+
+  // Article + BreadcrumbList + Person structured data for maximum EEAT
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        "@id": `${postUrl}#article`,
+        "headline": post.title,
+        "description": post.excerpt || '',
+        "url": postUrl,
+        "datePublished": post.createdAt,
+        "dateModified": post.updatedAt,
+        "author": {
+          "@type": "Person",
+          "@id": `${baseUrl}#nick-kremers`,
+          "name": authorName,
+          "description": authorBioText,
+          "url": `${baseUrl}/recovery`,
+          "sameAs": ["https://strokerecoveryacademy.com/recovery"]
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Stroke Recovery Academy",
+          "url": baseUrl,
+          "logo": { "@type": "ImageObject", "url": `${baseUrl}/logo.png` }
+        },
+        "image": post.heroImageUrl ? {
+          "@type": "ImageObject",
+          "url": post.heroImageUrl,
+          "width": 1200,
+          "height": 630
+        } : undefined,
+        "mainEntityOfPage": { "@type": "WebPage", "@id": postUrl },
+        "keywords": (post.tags || []).join(", "),
+        "articleSection": post.category,
+        "wordCount": Math.round((post.content || '').replace(/<[^>]+>/g, ' ').split(/\s+/).filter((w: string) => w.length > 0).length)
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Recovery Home", "item": `${baseUrl}/recovery` },
+          { "@type": "ListItem", "position": 2, "name": "Blog", "item": `${baseUrl}/recovery/blog` },
+          { "@type": "ListItem", "position": 3, "name": post.title, "item": postUrl }
+        ]
+      },
+      {
+        "@type": "Person",
+        "@id": `${baseUrl}#nick-kremers`,
+        "name": "Nick Kremers",
+        "jobTitle": "Stroke Recovery Coach & Educator",
+        "description": authorBioText,
+        "url": `${baseUrl}/recovery`,
+        "knowsAbout": ["stroke recovery", "neuroplasticity", "hemorrhagic stroke", "rehabilitation", "SASCH method"]
+      }
+    ]
+  };
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <RecoverySEO
-        title={`${post.title} — Stroke Recovery Academy`}
-        description={post.excerpt || `Read this article by ${post.authorName || "Nick Kremers"} on Stroke Recovery Academy.`}
+        title={`${post.title} | Stroke Recovery Academy`}
+        description={post.excerpt || `Read this article by ${authorName} on Stroke Recovery Academy.`}
         canonical={`/recovery/blog/${post.slug}`}
-        keywords={[...(post.tags || []), "stroke recovery", "Nick Kremers", post.category]}
+        keywords={[...(post.tags || []), "stroke recovery", "Nick Kremers", post.category, "stroke survivor"]}
         pageType="article"
-        author={post.authorName || "Nick Kremers"}
+        author={authorName}
+        image={post.heroImageUrl || undefined}
+        publishedTime={post.createdAt}
+        modifiedTime={post.updatedAt}
         breadcrumbs={[
           { name: "Recovery Hub", url: "/recovery" },
           { name: "Blog", url: "/recovery/blog" },
           { name: post.title, url: `/recovery/blog/${post.slug}` },
         ]}
       />
+      {/* Article JSON-LD with full EEAT signals */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <RecoveryHeader />
 
       <div className={`bg-gradient-to-b ${gradient} pt-8 pb-12`}>
