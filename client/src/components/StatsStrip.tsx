@@ -1,5 +1,5 @@
 const stats = [
-  { value: "50,000+", label: "Survivors helped" },
+  { value: "90,000+", label: "Community reach" },
   { value: "0→90%", label: "Nick's documented recovery" },
   { value: "6+ years", label: "Of proven methods" },
 ];

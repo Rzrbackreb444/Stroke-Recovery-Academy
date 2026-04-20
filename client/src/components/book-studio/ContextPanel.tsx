@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useBookStudio } from "@/lib/contexts/BookStudioContext";
+import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import {
   BookOpen,
@@ -37,11 +38,13 @@ export default function ContextPanel({
 }: ContextPanelProps) {
   const { 
     bookOutline, 
-    brainstormIdeas, 
+    brainstormIdeas,
+    addBrainstormIdea,
     contentAnalysis,
     imagePrompts,
     recommendations 
   } = useBookStudio();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("outline");
   const [quickNote, setQuickNote] = useState("");
 
@@ -58,13 +61,16 @@ export default function ContextPanel({
           <ChevronRight className="w-4 h-4 rotate-180" />
         </Button>
         <div className="flex flex-col gap-2 mt-4">
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Outline" aria-label="Outline" data-testid="button-outline">
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Outline" aria-label="Outline" data-testid="button-outline"
+            onClick={() => { setActiveTab("outline"); onToggleCollapse?.(); }}>
             <BookOpen className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="AI Suggestions" aria-label="AI Suggestions" data-testid="button-ai-suggestions">
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="AI Suggestions" aria-label="AI Suggestions" data-testid="button-ai-suggestions"
+            onClick={() => { setActiveTab("ai"); onToggleCollapse?.(); }}>
             <Sparkles className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Notes" aria-label="Notes" data-testid="button-notes">
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Notes" aria-label="Notes" data-testid="button-notes"
+            onClick={() => { setActiveTab("notes"); onToggleCollapse?.(); }}>
             <FileText className="w-4 h-4" />
           </Button>
         </div>
@@ -321,6 +327,12 @@ export default function ContextPanel({
                 className="w-full h-7 text-xs"
                 disabled={!quickNote.trim()}
                 data-testid="button-save-note"
+                onClick={() => {
+                  if (!quickNote.trim()) return;
+                  addBrainstormIdea({ type: "note", content: quickNote.trim() });
+                  setQuickNote("");
+                  toast({ title: "Note saved", description: "Your note has been added." });
+                }}
               >
                 <Save className="w-3 h-3 mr-1.5" />
                 Save Note

@@ -299,7 +299,7 @@ export default function DailyRoutine() {
           <HeartPulse className="h-10 w-10 text-[#C9941A] mx-auto mb-4" />
           <h2 className="text-white font-bold text-xl mb-2">Sign In to Track Your Routine</h2>
           <p className="text-gray-500 text-sm mb-6">Your progress saves automatically every day.</p>
-          <Button onClick={() => setLocation("/recovery/login")} className="w-full bg-[#C9941A] hover:bg-[#b8841a] text-black font-bold">
+          <Button size="lg" onClick={() => setLocation("/recovery/login")} className="w-full bg-[#C9941A] text-black font-bold" data-testid="button-sign-in-routine">
             Sign In
           </Button>
         </Card>
@@ -584,7 +584,7 @@ export default function DailyRoutine() {
               <Button
                 data-testid="button-bad-day-survival"
                 onClick={() => { setLevel(0); setShowBadDayModal(false); }}
-                className="flex-1 bg-[#C9941A] hover:bg-[#b8841a] text-black font-bold"
+                className="flex-1 bg-[#C9941A] text-black font-bold"
               >
                 Set to Survival Mode
               </Button>
