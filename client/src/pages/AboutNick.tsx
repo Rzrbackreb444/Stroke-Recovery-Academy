@@ -11,12 +11,13 @@ import nickPortrait from "@assets/IMG_1750_1776397947955.jpeg";
 import nickCasual from "@assets/IMG_4824_1776397947955.jpeg";
 
 const milestones = [
-  { year: "2019", title: "Stroke Event", description: "Suffered a life-changing stroke that affected mobility and speech." },
-  { year: "2020", title: "Never Zero Born", description: "Developed the 1-rep principle: doing something every single day, no matter how small." },
-  { year: "2021", title: "C.O.M.P.A.S.S. Created", description: "Formalized the 7-pillar builder's navigation system: Control, Own, Mutate, Patience, Anger, Small Wins, Stack." },
-  { year: "2022", title: "Community Launch", description: "Started sharing the Sasquatch Doctrine with other survivors." },
-  { year: "2023", title: "Academy Founded", description: "Launched the Stroke Recovery Academy to reach more people." },
-  { year: "2024", title: "Sasquatch Rises", description: "Continuing to grow, help others, and prove that recovery never stops." },
+  { year: "Dec 2018", title: "The Day Everything Changed", description: "December 3, 2018 — a massive hemorrhagic stroke. Left side paralyzed, speech gone, 50 pounds lost in the ICU on tube feedings. Told he might never walk normally again." },
+  { year: "2019", title: "The Fight Begins", description: "Home from the hospital in a wheelchair. Developed the Never Zero principle: 1 rep per day minimum, no matter what. A body in motion stays in motion." },
+  { year: "2020", title: "S.A.S.C.H. Formula Born", description: "Formalized the 5-step daily operating system — Seize, Absorb, Swing, Combine, Hammer — after years of testing every recovery technique available." },
+  { year: "2021", title: "C.O.M.P.A.S.S. Created", description: "Built the 7-pillar navigation system: Control, Own, Mutate, Patience, Anger, Small Wins, Stack. A framework for getting unstuck when recovery stalls." },
+  { year: "2022", title: "TikTok & Community Launch", description: "Took the Sasquatch Doctrine to TikTok. An overwhelming response — 14.5K warriors followed. The mission became undeniable: help every survivor who would listen." },
+  { year: "2023", title: "Academy Founded", description: "Launched StrokeRecoveryAcademy.com from Fort Smith, Arkansas. The 33-chapter curriculum, the Sasquatch Coach, the 66-Day Challenge — all built to give survivors what he never had." },
+  { year: "2026", title: "Sasquatch Keeps Rising", description: "90%+ function and still climbing. Building the platform, writing the books, running the community. As long as that meat in your chest is still thumpin', your life is still pumpin'." },
 ];
 
 const doctrinePoints = [
@@ -92,23 +93,28 @@ export default function AboutNick() {
             <Heart className="h-6 w-6 text-[#C9941A]" />
             The Story
           </h2>
-          <div className="space-y-4 text-gray-300">
+          <div className="space-y-4 text-gray-300 nick-bio">
             <p>
-              In 2019, Nick's life changed in an instant. A stroke left him facing 
-              challenges he never imagined - mobility limitations, speech difficulties, 
-              and the daunting reality of a long recovery ahead.
+              December 3, 2018. Nick Kremers — former athlete, benching over 400 pounds, 
+              built like a brick wall — suffered a massive hemorrhagic stroke. Left side 
+              paralyzed. Speech gone. 50 pounds lost in the ICU on tube feedings.
+              The doctors told him he'd probably never walk normally again.
             </p>
             <p>
-              But Nick refused to give up. Through trial, error, and an unwavering 
-              commitment to progress, he developed what would become the 
-              <span className="text-[#C9941A] font-semibold"> Sasquatch Doctrine</span> - 
-              a comprehensive methodology for stroke recovery that combines daily 
-              consistency, holistic tracking, and community support.
+              He had two choices: accept the limitations and fade, or use every word of 
+              that prognosis as fuel. He chose fuel. What followed was seven years of 
+              relentless, daily, sometimes humiliating, always honest work — developing 
+              what would become the{" "}
+              <span className="text-[#C9941A] font-semibold">Sasquatch Doctrine</span>:
+              a recovery methodology built not in a lab, but in a body that was supposed 
+              to stop.
             </p>
             <p>
-              The name "Sasquatch" came from a simple truth: survivors are told they 
-              can't do things, that their recovery is impossible, that they're imagining 
-              progress. Just like Sasquatch - dismissed, doubted, but undeniably present.
+              The name came from a simple truth. Survivors are told they can't do things.
+              That their recovery is impossible. That they're imagining progress. 
+              Just like Sasquatch — dismissed, doubted, but undeniably, stubbornly present.
+              Today Nick is 90%+ functional, still rising, and coaching thousands of 
+              warriors from Fort Smith, Arkansas.
             </p>
           </div>
         </div>
