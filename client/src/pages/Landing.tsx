@@ -11,6 +11,7 @@ import RecoverySEO, {
 } from "@/components/RecoverySEO";
 import HeroSection from "@/components/HeroSection";
 import StatsStrip from "@/components/StatsStrip";
+import AccountabilityManifesto from "@/components/AccountabilityManifesto";
 import TestimonyVideo from "@/components/TestimonyVideo";
 import WhatYouGet from "@/components/WhatYouGet";
 import FeedbackSurvey from "@/components/FeedbackSurvey";
@@ -78,6 +79,7 @@ export default function Landing() {
       <main>
         <HeroSection />
         <StatsStrip />
+        <AccountabilityManifesto />
         <TestimonyVideo />
         <WhatYouGet />
         <FeedbackSurvey />

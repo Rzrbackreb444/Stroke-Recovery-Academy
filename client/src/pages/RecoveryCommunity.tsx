@@ -291,7 +291,7 @@ function ProfileEditModal({ trigger }: { trigger: React.ReactNode }) {
           </div>
 
           <Button
-            className="w-full bg-[#C9941A] text-black font-bold hover:bg-[#B8831A]"
+            className="w-full bg-[#C9941A] text-black font-bold"
             onClick={() => saveMutation.mutate()}
             disabled={saveMutation.isPending}
             data-testid="button-save-profile"

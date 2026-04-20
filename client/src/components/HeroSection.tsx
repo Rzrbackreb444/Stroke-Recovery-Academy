@@ -49,8 +49,8 @@ export default function HeroSection() {
               data-testid="text-hero-quote"
             >
               Today Nick Kremers types with both hands, runs a thriving business, and has
-              helped 50,000+ stroke survivors worldwide — using techniques that don't exist
-              in any medical textbook. This is the Sasquatch Method.
+              reached 90,000+ stroke survivors and caregivers across social media — using
+              techniques that don't exist in any medical textbook. This is the Sasquatch Method.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-14">
