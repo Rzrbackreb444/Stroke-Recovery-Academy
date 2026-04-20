@@ -9411,6 +9411,63 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     }
   });
 
+  // ─── Daily Routine API ───────────────────────────────────────────────────
+  // GET /api/recovery/routine/today — load or create today's routine entry
+  app.get('/api/recovery/routine/today', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const today = new Date().toISOString().slice(0, 10);
+      const row = await db.execute(
+        sql`SELECT * FROM routine_completions WHERE user_id = ${userId} AND date = ${today} LIMIT 1`
+      );
+      // Streak = count of consecutive days ending today
+      const streakResult = await db.execute(
+        sql`WITH RECURSIVE days AS (
+          SELECT date FROM routine_completions WHERE user_id = ${userId} AND date <= ${today} ORDER BY date DESC LIMIT 365
+        ), consecutive AS (
+          SELECT date, ROW_NUMBER() OVER (ORDER BY date DESC) AS rn FROM days
+        )
+        SELECT COUNT(*) AS streak FROM consecutive
+        WHERE date::date = (${today}::date - (rn - 1) * INTERVAL '1 day')::date`
+      );
+      const streak = Number((streakResult.rows[0] as any)?.streak ?? 0);
+      if (row.rows.length === 0) {
+        return res.json({ level: 2, completedTasks: [], notes: null, streak });
+      }
+      const entry = row.rows[0] as any;
+      res.json({
+        level: entry.level,
+        completedTasks: entry.completed_tasks ?? [],
+        notes: entry.notes,
+        streak,
+      });
+    } catch (err) {
+      console.error('routine/today GET error:', err);
+      res.status(500).json({ message: 'Failed to load routine' });
+    }
+  });
+
+  // PUT /api/recovery/routine/today — upsert today's routine
+  app.put('/api/recovery/routine/today', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const today = new Date().toISOString().slice(0, 10);
+      const { level, completedTasks, notes } = req.body || {};
+      const lvl = typeof level === 'number' ? Math.max(0, Math.min(4, level)) : 2;
+      const tasks = Array.isArray(completedTasks) ? completedTasks : [];
+      await db.execute(
+        sql`INSERT INTO routine_completions (user_id, date, level, completed_tasks, notes, updated_at)
+            VALUES (${userId}, ${today}, ${lvl}, ${tasks}, ${notes ?? null}, NOW())
+            ON CONFLICT (user_id, date)
+            DO UPDATE SET level = ${lvl}, completed_tasks = ${tasks}, notes = ${notes ?? null}, updated_at = NOW()`
+      );
+      res.json({ ok: true });
+    } catch (err) {
+      console.error('routine/today PUT error:', err);
+      res.status(500).json({ message: 'Failed to save routine' });
+    }
+  });
+
   // POST /api/recovery/assessment — save a new Sasquatch Scale snapshot
   app.post('/api/recovery/assessment', isAuthenticated, async (req: any, res) => {
     try {

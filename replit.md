@@ -65,6 +65,7 @@ Icons: lucide-react only (no emoji)
     - **Forge Your Beast**: Persona/alter-ego system for survivors with AI-assisted creed generation.
     - **Sasquatch Coach**: 24/7 AI companion with ElevenLabs voice.
     - **Survivor Community**: Social hub with post feed, member directory, live events, and classroom integration.
+    - **Daily Routine System**: 5-level structured daily routine (Level 0 Survival → Level 4 Full Power) with four time blocks (Morning, Midday, Evening, Wind-Down), auto-saving checkbox tasks, streak tracking, bad day protocol/modal, and medical disclaimer. Lives at `/recovery/routine`. Database table: `routine_completions`. API: GET/PUT `/api/recovery/routine/today`.
     - **66-Day Sasquatch Transformation Challenge**: Structured program with daily missions and progress tracking.
     - **Gift a Survivor**: Donation page for scholarships to the platform.
 - **SquatchQR Platform**: Enterprise-grade dynamic QR code system featuring:

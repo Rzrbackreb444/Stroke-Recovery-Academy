@@ -5746,3 +5746,21 @@ export const insertRecoveryExerciseLogSchema = createInsertSchema(recoveryExerci
 export type RecoveryExerciseLog = typeof recoveryExerciseLogs.$inferSelect;
 export type InsertRecoveryExerciseLog = z.infer<typeof insertRecoveryExerciseLogSchema>;
 
+
+// ─── Daily Routine System ──────────────────────────────────────────────────
+// Tracks daily routine completions per user with level (0-4) and task IDs.
+export const routineCompletions = pgTable("routine_completions", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  date: text("date").notNull(), // YYYY-MM-DD
+  level: integer("level").notNull().default(2), // 0=Survival 1=Bed 2=Seated 3=Assisted 4=Full
+  completedTasks: text("completed_tasks").array().notNull().default([]),
+  notes: text("notes"),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (t) => ({
+  userDateIdx: uniqueIndex("routine_user_date_idx").on(t.userId, t.date),
+}));
+
+export const insertRoutineCompletionSchema = createInsertSchema(routineCompletions).omit({ id: true, updatedAt: true });
+export type RoutineCompletion = typeof routineCompletions.$inferSelect;
+export type InsertRoutineCompletion = z.infer<typeof insertRoutineCompletionSchema>;
