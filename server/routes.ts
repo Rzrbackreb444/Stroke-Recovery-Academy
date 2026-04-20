@@ -136,6 +136,7 @@ import {
   insertWorkflowReviewSchema,
   blogPosts,
   prizeEntitlements,
+  recoveryBlogPosts,
 } from "../shared/schema";
 import { db } from "./db";
 import { eq, and, gte, lte, desc, asc, ilike, or, sql, count } from "drizzle-orm";
@@ -499,35 +500,26 @@ ${allRoutes.map(r => `  <url>
     res.send(sitemapIndex);
   });
 
-  // SEO: Blog-specific sitemap
+  // SEO: Recovery blog sitemap — canonical source is recovery_blog_posts
+  // Includes priority differentiation, Google News tags for fresh posts, and hero images
   app.get('/sitemap-blog.xml', async (req, res) => {
     const baseUrl = 'https://strokerecoveryacademy.com';
-    
+    const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
     try {
-      const dbPosts = await db.select({ 
-        slug: blogPosts.slug, 
-        title: blogPosts.title,
-        updatedAt: blogPosts.updatedAt,
-        heroImageUrl: blogPosts.heroImageUrl
+      const posts = await db.select({
+        slug: recoveryBlogPosts.slug,
+        title: recoveryBlogPosts.title,
+        updatedAt: recoveryBlogPosts.updatedAt,
+        createdAt: recoveryBlogPosts.createdAt,
+        heroImageUrl: recoveryBlogPosts.heroImageUrl,
+        featured: recoveryBlogPosts.featured,
       })
-        .from(blogPosts)
-        .where(eq(blogPosts.status, 'published'))
-        .orderBy(desc(blogPosts.publishedAt))
+        .from(recoveryBlogPosts)
+        .where(eq(recoveryBlogPosts.status, 'published'))
+        .orderBy(desc(recoveryBlogPosts.createdAt))
         .limit(1000);
-
-      // Fallback to seeded posts slugs if DB is empty
-      const fallbackSlugs = [
-        { slug: 'stroke-recovery-journey-from-0-to-90-percent', title: 'From 0% to 90%: Nick Kremers Stroke Recovery Journey' },
-        { slug: 'top-stroke-recovery-exercises-at-home', title: 'Top Stroke Recovery Exercises You Can Do at Home' },
-        { slug: 'sasquatch-method-accountability-recovery', title: 'The Sasquatch Method: How Accountability Transforms Recovery' },
-        { slug: 'stroke-recovery-income-opportunities', title: 'Turning Your Stroke Recovery Story Into Income' },
-        { slug: 'rok-financial-survivor-income-program', title: 'ROK Financial Partner Program for Stroke Survivors' },
-        { slug: 'building-passive-income-after-stroke', title: 'Building Passive Income After a Stroke: A Survivors Guide' },
-      ];
-
-      const posts = dbPosts.length > 0 ? dbPosts : fallbackSlugs.map(p => ({
-        slug: p.slug, title: p.title, updatedAt: null, heroImageUrl: null
-      }));
 
       const today = new Date().toISOString().split('T')[0];
 
@@ -535,20 +527,40 @@ ${allRoutes.map(r => `  <url>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
         xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
-${posts.map((post) => `  <url>
-    <loc>${baseUrl}/recovery/blog/${post.slug}</loc>
-    <lastmod>${post.updatedAt ? new Date(post.updatedAt).toISOString().split('T')[0] : today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>${post.heroImageUrl ? `
+${posts.map((post) => {
+  const pubDate = post.createdAt ? new Date(post.createdAt) : new Date();
+  const lastmod = post.updatedAt
+    ? new Date(post.updatedAt).toISOString().split('T')[0]
+    : today;
+  // Priority: featured=0.85, recent (<30d)=0.80, older=0.70
+  const priority = post.featured ? '0.85' : pubDate > thirtyDaysAgo ? '0.80' : '0.70';
+  // News tag for posts published within the last 2 days (Google News fast-indexing)
+  const isNews = pubDate > twoDaysAgo;
+  const newsBlock = isNews ? `
+    <news:news>
+      <news:publication>
+        <news:name>Stroke Recovery Academy</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>${pubDate.toISOString()}</news:publication_date>
+      <news:title>${post.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</news:title>
+    </news:news>` : '';
+  const imageBlock = post.heroImageUrl ? `
     <image:image>
       <image:loc>${post.heroImageUrl}</image:loc>
-      <image:title>${post.title}</image:title>
-    </image:image>` : ''}
-  </url>`).join('\n')}
+      <image:title>${post.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</image:title>
+    </image:image>` : '';
+  return `  <url>
+    <loc>${baseUrl}/recovery/blog/${post.slug}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>${post.featured ? 'weekly' : 'monthly'}</changefreq>
+    <priority>${priority}</priority>${newsBlock}${imageBlock}
+  </url>`;
+}).join('\n')}
 </urlset>`;
 
       res.set('Content-Type', 'application/xml');
-      res.set('Cache-Control', 'public, max-age=3600');
+      res.set('Cache-Control', 'public, max-age=1800'); // 30 min — blog updates frequently
       res.send(sitemap);
     } catch (error) {
       console.error('Blog sitemap error:', error);
