@@ -1,8 +1,59 @@
 import type { Express } from 'express';
 import { z } from 'zod';
 import { db } from '../db';
-import { therapistApplications, users } from '@shared/schema';
+import { therapistApplications, therapistProfiles, users } from '@shared/schema';
 import { and, desc, eq } from 'drizzle-orm';
+
+// Day → ISO weekday (0=Sun..6=Sat used by JS Date.getDay())
+const DAY_KEYS = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'] as const;
+type AvailableHours = Partial<Record<typeof DAY_KEYS[number], string[]>>;
+
+const hoursSchema = z.object({
+  hours: z.record(
+    z.enum(DAY_KEYS),
+    z.array(z.string().regex(/^\d{1,2}:\d{2}-\d{1,2}:\d{2}$/, 'Use HH:MM-HH:MM'))
+  ),
+  timezone: z.string().min(1).max(64).optional(),
+});
+
+function parseHHMM(s: string): number | null {
+  const m = /^(\d{1,2}):(\d{2})$/.exec(s.trim());
+  if (!m) return null;
+  const h = parseInt(m[1], 10), mn = parseInt(m[2], 10);
+  if (h < 0 || h > 23 || mn < 0 || mn > 59) return null;
+  return h * 60 + mn;
+}
+
+/** Compute open/next-open from an availableHours JSON map. Times are interpreted in
+ *  the viewer's local time — good enough for showing a hint in the DM thread. */
+function computeAvailability(hours: AvailableHours | null | undefined, now = new Date()) {
+  if (!hours) return { isOpen: false, currentWindow: null, nextWindow: null };
+  const todayIdx = now.getDay();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  let currentWindow: { day: string; start: string; end: string } | null = null;
+  let nextWindow: { day: string; start: string; end: string; minutesUntil: number } | null = null;
+  let bestNextDelta = Infinity;
+
+  for (let offset = 0; offset < 7; offset++) {
+    const idx = (todayIdx + offset) % 7;
+    const dayKey = DAY_KEYS[idx];
+    const windows = hours[dayKey] || [];
+    for (const w of windows) {
+      const [s, e] = w.split('-');
+      const sm = parseHHMM(s), em = parseHHMM(e);
+      if (sm == null || em == null || em <= sm) continue;
+      if (offset === 0 && nowMin >= sm && nowMin < em) {
+        currentWindow = { day: dayKey, start: s, end: e };
+      }
+      const delta = offset === 0 ? sm - nowMin : (offset * 24 * 60) + sm - nowMin;
+      if (delta > 0 && delta < bestNextDelta) {
+        bestNextDelta = delta;
+        nextWindow = { day: dayKey, start: s, end: e, minutesUntil: delta };
+      }
+    }
+  }
+  return { isOpen: !!currentWindow, currentWindow, nextWindow };
+}
 
 const applySchema = z.object({
   fullName: z.string().min(2).max(120),
@@ -111,6 +162,86 @@ export function registerTherapistRoutes(app: Express, isAuthenticated: any) {
       status: 'rejected', reviewerId, reviewerNotes: notes, reviewedAt: new Date(),
     }).where(eq(therapistApplications.id, id));
     res.json({ ok: true });
+  });
+
+  // P3-01 — Therapist availability for a given user (used by DMs UI)
+  app.get('/api/therapists/:userId/availability', async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const [u] = await db.select({
+        id: users.id,
+        firstName: users.firstName,
+        lastName: users.lastName,
+        isVerifiedTherapist: users.isVerifiedTherapist,
+        therapistTitle: users.therapistTitle,
+      }).from(users).where(eq(users.id, userId)).limit(1);
+
+      if (!u || !u.isVerifiedTherapist) {
+        return res.json({ isTherapist: false });
+      }
+
+      const [profile] = await db.select({
+        availableHours: therapistProfiles.availableHours,
+        acceptingPatients: therapistProfiles.acceptingPatients,
+      }).from(therapistProfiles).where(eq(therapistProfiles.userId, userId)).limit(1);
+
+      const hours = (profile?.availableHours as AvailableHours | null) || null;
+      const computed = computeAvailability(hours);
+
+      res.json({
+        isTherapist: true,
+        title: u.therapistTitle || 'Therapist',
+        acceptingPatients: profile?.acceptingPatients !== false,
+        hours: hours || {},
+        ...computed,
+      });
+    } catch (e: any) {
+      console.error('[therapists] availability error', e);
+      res.status(500).json({ error: 'Failed to load availability' });
+    }
+  });
+
+  // P3-01 — Therapist edits their own open hours
+  app.put('/api/therapists/me/hours', isAuthenticated, async (req: any, res) => {
+    try {
+      const uid = req.user.claims.sub as string;
+      const [u] = await db.select({ isVerifiedTherapist: users.isVerifiedTherapist })
+        .from(users).where(eq(users.id, uid)).limit(1);
+      if (!u?.isVerifiedTherapist) return res.status(403).json({ error: 'Verified therapists only' });
+
+      const parsed = hoursSchema.safeParse(req.body);
+      if (!parsed.success) return res.status(400).json({ error: 'Invalid', details: parsed.error.format() });
+
+      // Validate ranges
+      for (const [day, wins] of Object.entries(parsed.data.hours)) {
+        for (const w of wins) {
+          const [s, e] = w.split('-');
+          const sm = parseHHMM(s), em = parseHHMM(e);
+          if (sm == null || em == null || em <= sm) {
+            return res.status(400).json({ error: `Invalid window for ${day}: ${w}` });
+          }
+        }
+      }
+
+      // Upsert profile row
+      const [existing] = await db.select({ id: therapistProfiles.id })
+        .from(therapistProfiles).where(eq(therapistProfiles.userId, uid)).limit(1);
+      if (existing) {
+        await db.update(therapistProfiles)
+          .set({ availableHours: parsed.data.hours as any, updatedAt: new Date() })
+          .where(eq(therapistProfiles.userId, uid));
+      } else {
+        await db.insert(therapistProfiles).values({
+          userId: uid,
+          availableHours: parsed.data.hours as any,
+        });
+      }
+
+      res.json({ ok: true, hours: parsed.data.hours });
+    } catch (e: any) {
+      console.error('[therapists] hours update error', e);
+      res.status(500).json({ error: 'Failed to save hours' });
+    }
   });
 
   // Public list of verified therapists — only expose first name + last initial

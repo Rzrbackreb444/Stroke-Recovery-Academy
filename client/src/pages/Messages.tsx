@@ -14,6 +14,7 @@ import {
   MessageCircle, Send, Search, Plus, Image, Smile, MoreVertical,
   Phone, Video, Info, Check, CheckCheck, Loader2, Users, ArrowLeft
 } from "lucide-react";
+import TherapistAvailabilityBadge from "@/components/recovery/TherapistAvailabilityBadge";
 
 interface Conversation {
   id: number;
@@ -330,11 +331,18 @@ export default function Messages() {
                       <p className="text-foreground font-medium">
                         {getConversationName(selectedConversation)}
                       </p>
-                      <p className="text-gray-400 text-sm">
-                        {selectedConversation.type === "group"
-                          ? `${selectedConversation.participants?.length || 0} members`
-                          : "Online"}
-                      </p>
+                      {selectedConversation.type === "group" ? (
+                        <p className="text-gray-400 text-sm">
+                          {selectedConversation.participants?.length || 0} members
+                        </p>
+                      ) : (
+                        (() => {
+                          const otherId = selectedConversation.participants?.find(
+                            (p) => p.userId !== user?.id
+                          )?.userId;
+                          return <TherapistAvailabilityBadge userId={otherId} />;
+                        })()
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
