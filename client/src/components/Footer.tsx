@@ -19,8 +19,8 @@ import {
   Users,
 } from "lucide-react";
 import { SiTiktok, SiInstagram, SiYoutube, SiX } from "react-icons/si";
-import sasquatchLogo from "@assets/Stroke_Recovery_Academy_Logo_1776602072669.png";
-import strokeLyfeLogo from "@assets/Untitled_design_1776589635654.png";
+import sasquatchLogo from "@assets/Untitled_design_1776781251258.png";
+import strokeLyfeLogo from "@assets/Untitled_design_1776781251258.png";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -264,7 +264,7 @@ export default function Footer() {
                 <img
                   src={strokeLyfeLogo}
                   alt="Stroke Lyfe Inc."
-                  className="h-32 w-auto opacity-60"
+                  className="h-44 w-auto opacity-90"
                 />
                 <div>
                   <p className="text-xs font-semibold text-gray-400">Stroke Lyfe Inc.</p>

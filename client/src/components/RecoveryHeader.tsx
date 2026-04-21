@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import strokeLyfeLogo from "@assets/Stroke_Recovery_Academy_Logo_1776602072669.png";
+import strokeLyfeLogo from "@assets/Untitled_design_1776781251258.png";
 
 const primaryNav = [
   { href: "/recovery/academy", label: "Learn" },
@@ -59,13 +59,13 @@ export default function RecoveryHeader() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between py-2">
 
-          {/* Logo — 3× scale, auto-heights the header */}
+          {/* Logo — 3× scale, dominant on every viewport including mobile */}
           <Link href="/recovery" data-testid="link-recovery-home">
             <div className="flex items-center cursor-pointer">
               <img
                 src={strokeLyfeLogo}
                 alt="Stroke Recovery Academy"
-                style={{ height: "20px", width: "auto", flexShrink: 0 }}
+                style={{ height: "72px", width: "auto", flexShrink: 0 }}
                 data-testid="img-recovery-logo"
               />
             </div>
