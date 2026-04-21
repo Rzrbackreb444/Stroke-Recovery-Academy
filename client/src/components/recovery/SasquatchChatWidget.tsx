@@ -15,7 +15,7 @@ import {
   Mic,
   MicOff
 } from "lucide-react";
-import strokeLyfeLogo from "@assets/Stroke_Recovery_Academy_Logo_1776602072669.png";
+import strokeLyfeLogo from "@assets/Untitled_design_1776781251258.png";
 
 interface Message {
   id: string;
