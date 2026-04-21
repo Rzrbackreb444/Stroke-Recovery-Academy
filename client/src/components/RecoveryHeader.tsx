@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import strokeLyfeLogo from "@assets/sra_logo_transparent.png";
+import strokeLyfeLogo from "@assets/Untitled_design_1776789083877.png";
 
 const primaryNav = [
   { href: "/recovery/academy", label: "Learn" },
