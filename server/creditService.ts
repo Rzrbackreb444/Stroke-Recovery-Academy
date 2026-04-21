@@ -20,7 +20,7 @@ export interface CreditTransaction {
   createdAt: Date;
 }
 
-const STARTER_CREDITS = 50;
+const STARTER_CREDITS = 500;
 
 export async function getBalance(userId: string): Promise<CreditBalance> {
   const wallet = await db.select().from(creditWallets).where(eq(creditWallets.userId, userId)).limit(1);

@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import { Link as WouterLink } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import kreaiteLogo from "@assets/Untitled_design.zip_-_1_1769816069353.png";
@@ -233,14 +235,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
           </div>
 
           <div className="flex items-center gap-3">
-            {user && (
-              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-[#C9941A]/10 rounded-full transition-all duration-300 hover:bg-[#C9941A]/20 hover:scale-105">
-                <Coins className="w-4 h-4 text-[#C9941A] transition-transform duration-300 animate-subtle-float" />
-                <span className="text-sm font-bold text-[#C9941A]" data-testid="credit-balance">
-                  2,500
-                </span>
-              </div>
-            )}
+            {user && <CreditBalancePill />}
 
             <div className="relative hidden md:flex items-center">
               {searchOpen ? (
@@ -481,5 +476,49 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
         </div>
       </div>
     </header>
+  );
+}
+
+interface CreditBalanceData {
+  balance: number;
+  bonusCredits: number;
+  total: number;
+  lifetimeEarned: number;
+  lifetimeSpent: number;
+}
+
+function CreditBalancePill() {
+  const { data, isLoading } = useQuery<CreditBalanceData>({
+    queryKey: ["/api/credits/balance"],
+    refetchInterval: 60_000,
+    staleTime: 30_000,
+  });
+
+  const total = data?.total ?? 0;
+  const isOut = !isLoading && total <= 0;
+  const isLow = !isLoading && total > 0 && total < 25;
+  const formatted = total >= 1000 ? `${(total / 1000).toFixed(total >= 10000 ? 0 : 1)}k` : total.toLocaleString();
+
+  const pillStyle = isOut
+    ? "bg-red-500/15 hover:bg-red-500/25 border border-red-500/40"
+    : isLow
+      ? "bg-[#C9941A]/20 hover:bg-[#C9941A]/30 border border-[#C9941A]/50 animate-pulse"
+      : "bg-[#C9941A]/10 hover:bg-[#C9941A]/20";
+  const textColor = isOut ? "text-red-400" : "text-[#C9941A]";
+
+  return (
+    <WouterLink
+      href="/pricing"
+      className={`hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-300 hover:scale-105 ${pillStyle}`}
+      data-testid="link-credit-balance"
+      aria-label={isOut ? "Out of credits — upgrade" : `${total} credits available`}
+    >
+      <Coins className={`w-4 h-4 ${textColor} transition-transform duration-300`} />
+      <span className={`text-sm font-bold ${textColor}`} data-testid="credit-balance">
+        {isLoading ? "…" : formatted}
+      </span>
+      {isOut && <span className="text-xs font-semibold text-red-400">· Upgrade</span>}
+      {isLow && !isOut && <span className="text-xs font-semibold text-[#C9941A]">· Low</span>}
+    </WouterLink>
   );
 }
