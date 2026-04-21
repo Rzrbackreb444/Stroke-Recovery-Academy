@@ -441,6 +441,7 @@ export const forumThreads = pgTable("forum_threads", {
   isLocked: boolean("is_locked").notNull().default(false),
   viewCount: integer("view_count").notNull().default(0),
   replyCount: integer("reply_count").notNull().default(0),
+  answerPostId: integer("answer_post_id"),
   lastActivityAt: timestamp("last_activity_at").notNull().defaultNow(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
@@ -449,10 +450,16 @@ export const forumPosts = pgTable("forum_posts", {
   id: serial("id").primaryKey(),
   threadId: integer("thread_id").notNull().references(() => forumThreads.id, { onDelete: "cascade" }),
   authorId: varchar("author_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  parentId: integer("parent_id"),
   content: text("content").notNull(),
+  audioUrl: text("audio_url"),
+  isOriginal: boolean("is_original").notNull().default(false),
   isEdited: boolean("is_edited").notNull().default(false),
   editedAt: timestamp("edited_at"),
   likeCount: integer("like_count").notNull().default(0),
+  score: integer("score").notNull().default(0),
+  crisisFlag: boolean("crisis_flag").notNull().default(false),
+  isDeleted: boolean("is_deleted").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -6013,3 +6020,14 @@ export const imageProjects = pgTable("image_projects", {
 export const insertImageProjectSchema = createInsertSchema(imageProjects).omit({ id: true, createdAt: true, updatedAt: true });
 export type ImageProject = typeof imageProjects.$inferSelect;
 export type InsertImageProject = z.infer<typeof insertImageProjectSchema>;
+
+// ─── Forum Votes (P2-01, net-new) ───────────────────────────────────────────
+export const forumVotes = pgTable("forum_votes", {
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  postId: integer("post_id").notNull().references(() => forumPosts.id, { onDelete: "cascade" }),
+  value: integer("value").notNull(), // 1 or -1
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  pk: primaryKey({ columns: [t.userId, t.postId] }),
+}));
+export type ForumVote = typeof forumVotes.$inferSelect;

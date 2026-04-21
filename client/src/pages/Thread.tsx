@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useParams, useLocation } from "wouter";
-import { ArrowLeft, Heart, MessageCircle, Edit2, Trash2, Pin, Lock, MoreVertical, Send, Calendar } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, Edit2, Trash2, Pin, Lock, MoreVertical, Send, Calendar, ChevronUp, ChevronDown, CheckCircle2, AlertTriangle, Mic, Square, Play, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -38,6 +38,12 @@ export default function Thread() {
   const [replyContent, setReplyContent] = useState("");
   const [editingPostId, setEditingPostId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
+  const [optimisticVotes, setOptimisticVotes] = useState<Record<number, number>>({});
+  const [replyingTo, setReplyingTo] = useState<number | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
 
   const { data: user } = useQuery<User | null>({
     queryKey: ["/api/auth/user"],
@@ -61,15 +67,41 @@ export default function Thread() {
     queryKey: ["/api/forum/categories"],
   });
 
-  const replyMutation = useMutation({
-    mutationFn: async (content: string) => {
-      return apiRequest("POST", "/api/forum/posts", { threadId: parseInt(id!), content });
+  // P2-01: enriched thread data including myVotes map — seeds button state from server
+  const { data: threadFull } = useQuery<{ thread: any; posts: any[]; myVotes: Record<number, number> }>({
+    queryKey: ["/api/forum/threads", id, "full"],
+    queryFn: async () => {
+      const res = await fetch(`/api/forum/threads/${id}/full`);
+      if (!res.ok) throw new Error("fail");
+      return res.json();
     },
-    onSuccess: () => {
+    enabled: !!id,
+  });
+
+  // Hydrate optimisticVotes from server truth whenever myVotes changes
+  useEffect(() => {
+    if (threadFull?.myVotes) setOptimisticVotes(threadFull.myVotes);
+  }, [threadFull?.myVotes]);
+
+  const replyMutation = useMutation({
+    mutationFn: async ({ content, parentId }: { content: string; parentId: number | null }) => {
+      const res = await apiRequest("POST", "/api/forum/posts", {
+        threadId: parseInt(id!),
+        content,
+        parentId,
+      });
+      return res.json();
+    },
+    onSuccess: (data: any) => {
       queryClient.invalidateQueries({ queryKey: ["/api/forum/threads", id, "posts"] });
       queryClient.invalidateQueries({ queryKey: ["/api/forum/threads", id] });
+      queryClient.invalidateQueries({ queryKey: ["/api/forum/threads", id, "full"] });
       setReplyContent("");
-      toast({ title: "Reply posted!" });
+      setReplyingTo(null);
+      toast({
+        title: data?.crisis ? "Reply posted — support resources shown" : "Reply posted!",
+        description: data?.crisis ? "If you're in crisis, please reach 988 right now." : undefined,
+      });
     },
     onError: () => {
       toast({ title: "Error", description: "Failed to post reply.", variant: "destructive" });
@@ -114,6 +146,78 @@ export default function Thread() {
     },
   });
 
+  // P2-01: upvote / downvote
+  const voteMutation = useMutation({
+    mutationFn: async ({ postId, value }: { postId: number; value: number }) => {
+      const res = await apiRequest("POST", `/api/forum/posts/${postId}/vote`, { value });
+      return res.json();
+    },
+    onSuccess: (_d, vars) => {
+      setOptimisticVotes((prev) => ({ ...prev, [vars.postId]: vars.value }));
+      queryClient.invalidateQueries({ queryKey: ["/api/forum/threads", id, "posts"] });
+    },
+    onError: (err: any) => {
+      toast({ title: "Vote failed", description: err?.message || "Try again", variant: "destructive" });
+    },
+  });
+
+  // P2-01: mark-as-answer (thread author only)
+  const markAnswerMutation = useMutation({
+    mutationFn: async (postId: number) => {
+      return apiRequest("POST", `/api/forum/posts/${postId}/mark-answer`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/forum/threads", id] });
+      toast({ title: "Answer marked" });
+    },
+  });
+
+  // P2-01: voice reply — record → upload → Whisper transcribe → post
+  const voiceReplyMutation = useMutation({
+    mutationFn: async (blob: Blob) => {
+      const fd = new FormData();
+      fd.append("file", blob, "voice-reply.webm");
+      const res = await fetch(`/api/forum/threads/${id}/voice`, { method: "POST", body: fd, credentials: "include" });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/forum/threads", id, "posts"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/forum/threads", id] });
+      setRecordedBlob(null);
+      toast({
+        title: data?.crisis ? "Reply posted — crisis resource shown" : "Voice reply posted",
+        description: data?.crisis ? "If you're in crisis, please reach 988 right now." : undefined,
+      });
+    },
+    onError: (err: any) => {
+      toast({ title: "Voice reply failed", description: err?.message || "Try again", variant: "destructive" });
+    },
+  });
+
+  async function startRecording() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const rec = new MediaRecorder(stream, { mimeType: "audio/webm" });
+      chunksRef.current = [];
+      rec.ondataavailable = (e) => { if (e.data.size) chunksRef.current.push(e.data); };
+      rec.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+        setRecordedBlob(blob);
+        stream.getTracks().forEach((t) => t.stop());
+      };
+      rec.start();
+      mediaRecorderRef.current = rec;
+      setIsRecording(true);
+    } catch (e: any) {
+      toast({ title: "Mic unavailable", description: e?.message || "Check permissions", variant: "destructive" });
+    }
+  }
+  function stopRecording() {
+    mediaRecorderRef.current?.stop();
+    setIsRecording(false);
+  }
+
   const moderateMutation = useMutation({
     mutationFn: async (updates: { isPinned?: boolean; isLocked?: boolean }) => {
       return apiRequest("PATCH", `/api/forum/threads/${id}/moderate`, updates);
@@ -136,7 +240,7 @@ export default function Thread() {
 
   const handleReply = () => {
     if (!replyContent.trim()) return;
-    replyMutation.mutate(replyContent);
+    replyMutation.mutate({ content: replyContent, parentId: replyingTo });
   };
 
   const handleEditPost = (postId: number) => {
@@ -151,6 +255,8 @@ export default function Thread() {
 
   const canModerate = user?.role === "moderator" || user?.role === "admin";
   const category = categories?.find((c) => c.id === thread?.categoryId);
+  const isThreadAuthor = !!user && !!thread && thread.authorId === user.id;
+  const hasCrisis = (posts || []).some((p: any) => p.crisisFlag);
 
   if (loadingThread) {
     return (
@@ -192,6 +298,23 @@ export default function Thread() {
           <ArrowLeft className="h-4 w-4" />
           Back to Community
         </Button>
+
+        {hasCrisis && (
+          <Card className="mb-4 border-destructive/40 bg-destructive/5" data-testid="banner-crisis">
+            <CardContent className="pt-4 pb-4 flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+              <div className="flex-1 text-sm">
+                <div className="font-semibold mb-1">If you're in crisis, help is here right now.</div>
+                <div className="text-muted-foreground">
+                  Call or text <strong>988</strong> (Suicide &amp; Crisis Lifeline). You're not alone.
+                </div>
+              </div>
+              <Button size="sm" variant="default" asChild className="gap-1">
+                <a href="tel:988" data-testid="link-988"><Phone className="h-4 w-4" />Call 988</a>
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
         <Card className="mb-6">
           <CardHeader className="space-y-4">
@@ -297,8 +420,12 @@ export default function Thread() {
               ))}
             </div>
           ) : posts && posts.length > 0 ? (
-            posts.map((post, index) => (
-              <Card key={post.id} data-testid={`card-post-${post.id}`}>
+            posts.map((post, index) => {
+              const anyPost = post as any;
+              const isAnswer = thread?.answerPostId === post.id;
+              return (
+              <Card key={post.id} data-testid={`card-post-${post.id}`}
+                className={isAnswer ? "border-[#C9941A]/60 bg-[#C9941A]/5" : undefined}>
                 <CardContent className="pt-6">
                   <div className="flex gap-4">
                     <Avatar className="h-10 w-10">
@@ -308,10 +435,20 @@ export default function Thread() {
                     </Avatar>
                     
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2">
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
                         <span className="font-medium text-sm">Member</span>
                         {index === 0 && (
                           <Badge variant="secondary" className="text-xs">Author</Badge>
+                        )}
+                        {isAnswer && (
+                          <Badge className="text-xs gap-1 bg-[#C9941A] text-black hover:bg-[#C9941A]">
+                            <CheckCircle2 className="h-3 w-3" />Answer
+                          </Badge>
+                        )}
+                        {anyPost.crisisFlag && (
+                          <Badge variant="destructive" className="text-xs gap-1">
+                            <AlertTriangle className="h-3 w-3" />Support resources offered
+                          </Badge>
                         )}
                         <span className="text-xs text-gray-400">
                           {formatRelativeTime(post.createdAt)}
@@ -320,6 +457,20 @@ export default function Thread() {
                           <span className="text-xs text-gray-400">(edited)</span>
                         )}
                       </div>
+
+                      {anyPost.parentId && posts && (() => {
+                        const parent = posts.find((x: any) => x.id === anyPost.parentId);
+                        if (!parent) return null;
+                        return (
+                          <div className="text-xs text-muted-foreground mb-2 border-l-2 border-[#C9941A]/40 pl-2 italic" data-testid={`text-reply-to-${post.id}`}>
+                            Replying to: {(parent.content || "").slice(0, 90)}{parent.content && parent.content.length > 90 ? "…" : ""}
+                          </div>
+                        );
+                      })()}
+
+                      {anyPost.audioUrl && (
+                        <audio controls src={anyPost.audioUrl} className="mb-2 w-full max-w-md" data-testid={`audio-post-${post.id}`} />
+                      )}
                       
                       {editingPostId === post.id ? (
                         <div className="space-y-2">
@@ -360,7 +511,65 @@ export default function Thread() {
                 </CardContent>
                 
                 <CardFooter className="border-t pt-3 px-6 pb-3">
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {user && post.authorId !== user.id && (
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant={optimisticVotes[post.id] === 1 ? "default" : "ghost"}
+                          size="sm"
+                          className="gap-1"
+                          onClick={() => voteMutation.mutate({ postId: post.id, value: optimisticVotes[post.id] === 1 ? 0 : 1 })}
+                          data-testid={`button-upvote-${post.id}`}
+                          aria-label="Upvote"
+                        >
+                          <ChevronUp className="h-4 w-4" />
+                        </Button>
+                        <span className="text-sm font-medium min-w-[1.5rem] text-center" data-testid={`text-score-${post.id}`}>
+                          {anyPost.score ?? 0}
+                        </span>
+                        <Button
+                          variant={optimisticVotes[post.id] === -1 ? "default" : "ghost"}
+                          size="sm"
+                          className="gap-1"
+                          onClick={() => voteMutation.mutate({ postId: post.id, value: optimisticVotes[post.id] === -1 ? 0 : -1 })}
+                          data-testid={`button-downvote-${post.id}`}
+                          aria-label="Downvote"
+                        >
+                          <ChevronDown className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+
+                    {isThreadAuthor && !anyPost.isOriginal && index !== 0 && (
+                      <Button
+                        variant={isAnswer ? "default" : "ghost"}
+                        size="sm"
+                        className="gap-1"
+                        onClick={() => markAnswerMutation.mutate(post.id)}
+                        data-testid={`button-mark-answer-${post.id}`}
+                      >
+                        <CheckCircle2 className="h-4 w-4" />
+                        {isAnswer ? "Unmark answer" : "Mark as answer"}
+                      </Button>
+                    )}
+
+                    {user && !thread.isLocked && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="gap-1"
+                        onClick={() => {
+                          setReplyingTo(post.id);
+                          document.getElementById("reply-box")?.scrollIntoView({ behavior: "smooth", block: "center" });
+                          setTimeout(() => document.getElementById("input-reply")?.focus(), 350);
+                        }}
+                        data-testid={`button-reply-${post.id}`}
+                      >
+                        <MessageCircle className="h-4 w-4" />
+                        Reply
+                      </Button>
+                    )}
+
                     {user && (
                       <Button
                         variant="ghost"
@@ -419,7 +628,8 @@ export default function Thread() {
                   </div>
                 </CardFooter>
               </Card>
-            ))
+            );
+            })
           ) : (
             <Card>
               <CardContent className="pt-6 text-center py-8">
@@ -442,15 +652,51 @@ export default function Thread() {
                 className="min-h-[120px] mb-4"
                 data-testid="input-reply"
               />
-              <Button
-                onClick={handleReply}
-                disabled={replyMutation.isPending || !replyContent.trim()}
-                className="gap-2"
-                data-testid="button-submit-reply"
-              >
-                <Send className="h-4 w-4" />
-                {replyMutation.isPending ? "Posting..." : "Post Reply"}
-              </Button>
+              <div className="flex items-center gap-2 flex-wrap">
+                <Button
+                  onClick={handleReply}
+                  disabled={replyMutation.isPending || !replyContent.trim()}
+                  className="gap-2"
+                  data-testid="button-submit-reply"
+                >
+                  <Send className="h-4 w-4" />
+                  {replyMutation.isPending ? "Posting..." : "Post Reply"}
+                </Button>
+
+                <span className="text-xs text-gray-400">or</span>
+
+                {!isRecording && !recordedBlob && (
+                  <Button variant="outline" className="gap-2" onClick={startRecording} data-testid="button-start-voice">
+                    <Mic className="h-4 w-4" />
+                    Voice reply
+                  </Button>
+                )}
+                {isRecording && (
+                  <Button variant="destructive" className="gap-2" onClick={stopRecording} data-testid="button-stop-voice">
+                    <Square className="h-4 w-4" />
+                    Stop recording
+                  </Button>
+                )}
+                {recordedBlob && (
+                  <>
+                    <audio controls src={URL.createObjectURL(recordedBlob)} className="max-w-xs" />
+                    <Button
+                      variant="default"
+                      className="gap-2"
+                      disabled={voiceReplyMutation.isPending}
+                      onClick={() => voiceReplyMutation.mutate(recordedBlob)}
+                      data-testid="button-send-voice"
+                    >
+                      <Send className="h-4 w-4" />
+                      {voiceReplyMutation.isPending ? "Transcribing..." : "Send voice reply"}
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={() => setRecordedBlob(null)} data-testid="button-discard-voice">
+                      Discard
+                    </Button>
+                  </>
+                )}
+              </div>
+              <p className="text-xs text-gray-400 mt-2">Voice replies are transcribed automatically so everyone can read along.</p>
             </CardContent>
           </Card>
         )}
