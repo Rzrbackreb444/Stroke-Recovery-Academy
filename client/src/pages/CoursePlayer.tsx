@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import LessonVideoPlayer from "@/components/LessonVideoPlayer";
+import QuizRunner from "@/components/QuizRunner";
 import { useRoute, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -609,15 +610,11 @@ export default function CoursePlayer() {
                   </div>
                 </ScrollArea>
               ) : currentLesson.type === "quiz" ? (
-                <div className="text-center p-8">
-                  <HelpCircle className="w-20 h-20 text-[#C9941A] mx-auto mb-4" />
-                  <h2 className="text-2xl font-bold mb-2">Module Quiz</h2>
-                  <p className="text-gray-400 mb-6">Test your understanding of the material</p>
-                  <Button className="bg-[#C9941A]" data-testid="button-start-quiz">
-                    <Zap className="w-4 h-4 mr-2" />
-                    Start Quiz
-                  </Button>
-                </div>
+                <ScrollArea className="h-full w-full p-6">
+                  <div className="max-w-3xl mx-auto">
+                    <QuizRunner quizId={Number((currentLesson as any).quizId ?? currentLesson.id)} />
+                  </div>
+                </ScrollArea>
               ) : null}
             </div>
             

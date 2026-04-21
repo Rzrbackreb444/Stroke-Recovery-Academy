@@ -23181,12 +23181,14 @@ Format as structured JSON with clear sections.`;
   const { registerSurvivorProfileRoutes } = await import('./routes/survivorProfileRoutes');
   const { registerEngagementRoutes } = await import('./routes/engagementRoutes');
   const { registerLessonVideoRoutes } = await import('./routes/lessonVideoRoutes');
+  const { registerQuizRoutes } = await import('./routes/quizRoutes');
   registerPowerPointsRoutes(app, isAuthenticated);
   registerTherapistRoutes(app, isAuthenticated);
   registerCourseUnlockRoutes(app, isAuthenticated);
   registerSurvivorProfileRoutes(app, isAuthenticated);
   registerEngagementRoutes(app, isAuthenticated);
   registerLessonVideoRoutes(app, isAuthenticated, uploadsDir);
+  registerQuizRoutes(app, isAuthenticated, uploadsDir);
 
   const httpServer = createServer(app);
   return httpServer;
