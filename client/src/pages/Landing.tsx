@@ -17,6 +17,7 @@ import WhatYouGet from "@/components/WhatYouGet";
 import FeedbackSurvey from "@/components/FeedbackSurvey";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
+import FadeUpSection from "@/components/FadeUpSection";
 
 export default function Landing() {
   const { isLoading, isAuthenticated } = useAuth();
@@ -78,12 +79,24 @@ export default function Landing() {
       <RecoveryHeader />
       <main>
         <HeroSection />
-        <StatsStrip />
-        <AccountabilityManifesto />
-        <TestimonyVideo />
-        <WhatYouGet />
-        <FeedbackSurvey />
-        <CTASection />
+        <FadeUpSection>
+          <StatsStrip />
+        </FadeUpSection>
+        <FadeUpSection delay={50}>
+          <AccountabilityManifesto />
+        </FadeUpSection>
+        <FadeUpSection delay={50}>
+          <TestimonyVideo />
+        </FadeUpSection>
+        <FadeUpSection delay={50}>
+          <WhatYouGet />
+        </FadeUpSection>
+        <FadeUpSection delay={50}>
+          <FeedbackSurvey />
+        </FadeUpSection>
+        <FadeUpSection delay={50}>
+          <CTASection />
+        </FadeUpSection>
       </main>
       <Footer />
     </div>

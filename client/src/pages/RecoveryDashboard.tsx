@@ -8,7 +8,6 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import SEO from "@/components/SEO";
 import { Progress } from "@/components/ui/progress";
-import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -26,10 +25,33 @@ import {
   Flame, Trophy, BookOpen, MessageCircle, Grid3X3, ShoppingBag, Users, Sparkles,
   CheckCircle2, Target, Star, TrendingUp, Calendar, Heart, Zap, LogOut,
   Plus, UserPlus, DoorOpen, Smile, Activity, Quote, RefreshCw, ArrowRight,
-  Play, Brain
+  Play, Brain, ChevronDown
 } from "lucide-react";
 import SixtyDayTracker from "@/components/recovery/SixtyDayTracker";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
+import FadeUpSection from "@/components/FadeUpSection";
+
+const MOOD_OPTIONS = [
+  { value: 2, label: "Rough" },
+  { value: 4, label: "Low" },
+  { value: 6, label: "Okay" },
+  { value: 8, label: "Good" },
+  { value: 10, label: "Great" },
+];
+const ENERGY_OPTIONS = [
+  { value: 2, label: "Empty" },
+  { value: 4, label: "Low" },
+  { value: 6, label: "Okay" },
+  { value: 8, label: "Good" },
+  { value: 10, label: "Charged" },
+];
+const PAIN_OPTIONS = [
+  { value: 2, label: "None" },
+  { value: 4, label: "Mild" },
+  { value: 6, label: "Moderate" },
+  { value: 8, label: "High" },
+  { value: 10, label: "Severe" },
+];
 
 const motivationalQuotes = [
   "The impossible is only impossible until someone proves it's not.",
@@ -51,14 +73,15 @@ export default function RecoveryDashboard() {
   const persona = personaData?.persona ?? null;
   const personaAccent = persona?.accentColor || "#C9941A";
   const [checkinForm, setCheckinForm] = useState({
-    moodScore: 5,
-    energyScore: 5,
-    painScore: 3,
+    moodScore: 6,
+    energyScore: 6,
+    painScore: 2,
     winsToday: "",
     challengesToday: "",
     gratitude: "",
     tomorrowsTarget: "",
   });
+  const [showNotes, setShowNotes] = useState(false);
   const [createPodOpen, setCreatePodOpen] = useState(false);
   const [newPodName, setNewPodName] = useState("");
   const [newPodDescription, setNewPodDescription] = useState("");
@@ -197,6 +220,7 @@ export default function RecoveryDashboard() {
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <FadeUpSection>
         <section className="mb-8">
           <div className="grid md:grid-cols-3 gap-6 items-center">
             <div className="md:col-span-2">
@@ -305,7 +329,7 @@ export default function RecoveryDashboard() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#1a1a1a]/40 pointer-events-none" />
                   <div className="absolute top-3 left-3">
-                    <Badge className="bg-[#C9941A] text-black hover:bg-[#C9941A] font-bold tracking-widest text-[10px]">
+                    <Badge className="bg-[#C9941A] text-black font-bold tracking-widest text-[10px] no-default-hover-elevate no-default-active-elevate">
                       <Play className="h-3 w-3 mr-1" /> NEW ANTHEM
                     </Badge>
                   </div>
@@ -339,7 +363,10 @@ export default function RecoveryDashboard() {
           </Link>
         </section>
 
+        </FadeUpSection>
+
         {/* CHALLENGE COMMAND CENTER */}
+        <FadeUpSection delay={100}>
         <section className="mb-8" data-testid="section-challenge-command">
           <div className="bg-gradient-to-r from-[#C9941A]/15 via-[#1a1a1a] to-[#1a1a1a] border border-[#C9941A]/30 rounded-xl p-6 mb-4">
             <div className="flex flex-wrap items-center justify-between gap-4 mb-5">
@@ -442,11 +469,15 @@ export default function RecoveryDashboard() {
             </div>
           </div>
         </section>
+        </FadeUpSection>
 
+        <FadeUpSection delay={150}>
         <section className="mb-8" data-testid="section-66day-tracker">
           <SixtyDayTracker />
         </section>
+        </FadeUpSection>
 
+        <FadeUpSection delay={200}>
         <div className="grid lg:grid-cols-2 gap-6 mb-8">
           <Card className="bg-[#1a1a1a] border-[#333] p-6" data-testid="card-checkin">
             <div className="flex items-center justify-between mb-4">
@@ -475,7 +506,7 @@ export default function RecoveryDashboard() {
                     <div className="text-xs text-gray-400">Energy</div>
                   </div>
                   <div className="text-center">
-                    <Target className="h-5 w-5 text-[#C9941A] mx-auto mb-1" />
+                    <Activity className="h-5 w-5 text-[#C9941A] mx-auto mb-1" />
                     <div className="text-2xl font-bold text-white">{todayCheckin.painScore}/10</div>
                     <div className="text-xs text-gray-400">Pain</div>
                   </div>
@@ -489,102 +520,182 @@ export default function RecoveryDashboard() {
               </div>
             ) : (
               <div className="space-y-4">
+                {/* Skip escape hatch */}
+                <Link href="/recovery/community">
+                  <div className="text-center text-xs text-gray-600 hover:text-[#C9941A] cursor-pointer transition-colors pb-1" data-testid="link-skip-checkin">
+                    Skip for now → Explore Community
+                  </div>
+                </Link>
+
+                {/* MOOD tap buttons */}
                 <div>
-                  <label className="text-sm text-gray-400 mb-2 block">Mood (1-10)</label>
-                  <Slider
-                    value={[checkinForm.moodScore]}
-                    onValueChange={(v) => setCheckinForm({ ...checkinForm, moodScore: v[0] })}
-                    min={1} max={10} step={1}
-                    className="my-2"
-                    data-testid="slider-mood"
-                  />
-                  <div className="text-right text-[#C9941A] font-bold">{checkinForm.moodScore}</div>
-                </div>
-                
-                <div>
-                  <label className="text-sm text-gray-400 mb-2 block">Energy (1-10)</label>
-                  <Slider
-                    value={[checkinForm.energyScore]}
-                    onValueChange={(v) => setCheckinForm({ ...checkinForm, energyScore: v[0] })}
-                    min={1} max={10} step={1}
-                    className="my-2"
-                    data-testid="slider-energy"
-                  />
-                  <div className="text-right text-[#C9941A] font-bold">{checkinForm.energyScore}</div>
-                </div>
-                
-                <div>
-                  <label className="text-sm text-gray-400 mb-2 block">Pain Level (1-10)</label>
-                  <Slider
-                    value={[checkinForm.painScore]}
-                    onValueChange={(v) => setCheckinForm({ ...checkinForm, painScore: v[0] })}
-                    min={1} max={10} step={1}
-                    className="my-2"
-                    data-testid="slider-pain"
-                  />
-                  <div className="text-right text-[#C9941A] font-bold">{checkinForm.painScore}</div>
-                </div>
-                
-                <div className="bg-[#C9941A]/10 border border-[#C9941A]/30 rounded-lg p-4 mb-4">
-                  <h3 className="text-sm font-bold text-[#C9941A] uppercase tracking-wider mb-3 flex items-center gap-2">
-                    <Flame className="w-4 h-4" />
-                    Sasquatch Daily Audit
-                  </h3>
-                  <div className="space-y-3">
-                    <div>
-                      <label className="text-sm text-gray-400 mb-2 block">1. What did I BUILD today?</label>
-                      <Textarea
-                        placeholder="Every small action counts - a flicker is still progress..."
-                        value={checkinForm.winsToday}
-                        onChange={(e) => setCheckinForm({ ...checkinForm, winsToday: e.target.value })}
-                        className="bg-[#1a1a1a] border-[#333] text-white"
-                        data-testid="input-wins"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="text-sm text-gray-400 mb-2 block">2. What BROKE?</label>
-                      <Textarea
-                        placeholder="Honesty heals faster than denial..."
-                        value={checkinForm.challengesToday}
-                        onChange={(e) => setCheckinForm({ ...checkinForm, challengesToday: e.target.value })}
-                        className="bg-[#1a1a1a] border-[#333] text-white"
-                        data-testid="input-challenges"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="text-sm text-gray-400 mb-2 block">3. What's TOMORROW'S TARGET?</label>
-                      <Textarea
-                        placeholder="Your next rep, your next step..."
-                        value={checkinForm.tomorrowsTarget}
-                        onChange={(e) => setCheckinForm({ ...checkinForm, tomorrowsTarget: e.target.value })}
-                        className="bg-[#1a1a1a] border-[#333] text-white"
-                        data-testid="input-target"
-                      />
-                    </div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-medium text-gray-300 flex items-center gap-1.5">
+                      <Heart className="h-3.5 w-3.5 text-[#C9941A]" /> Mood
+                    </label>
+                    <span className="text-[#C9941A] font-bold text-xs">
+                      {MOOD_OPTIONS.find(o => o.value === checkinForm.moodScore)?.label}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-5 gap-1.5" data-testid="mood-buttons">
+                    {MOOD_OPTIONS.map(opt => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setCheckinForm({ ...checkinForm, moodScore: opt.value })}
+                        className={`py-3 rounded-lg text-xs font-bold border transition-colors ${
+                          checkinForm.moodScore === opt.value
+                            ? "bg-[#C9941A] text-black border-[#C9941A]"
+                            : "bg-[#0D0D0D] text-gray-400 border-[#333] hover:border-[#C9941A]/50"
+                        }`}
+                        data-testid={`mood-${opt.value}`}
+                      >{opt.label}</button>
+                    ))}
                   </div>
                 </div>
-                
+
+                {/* ENERGY tap buttons */}
                 <div>
-                  <label className="text-sm text-gray-400 mb-2 block">Gratitude</label>
-                  <Textarea
-                    placeholder="One thing I'm grateful for..."
-                    value={checkinForm.gratitude}
-                    onChange={(e) => setCheckinForm({ ...checkinForm, gratitude: e.target.value })}
-                    className="bg-[#1a1a1a] border-[#333] text-white"
-                    data-testid="input-gratitude"
-                  />
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-medium text-gray-300 flex items-center gap-1.5">
+                      <Zap className="h-3.5 w-3.5 text-[#C9941A]" /> Energy
+                    </label>
+                    <span className="text-[#C9941A] font-bold text-xs">
+                      {ENERGY_OPTIONS.find(o => o.value === checkinForm.energyScore)?.label}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-5 gap-1.5" data-testid="energy-buttons">
+                    {ENERGY_OPTIONS.map(opt => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setCheckinForm({ ...checkinForm, energyScore: opt.value })}
+                        className={`py-3 rounded-lg text-xs font-bold border transition-colors ${
+                          checkinForm.energyScore === opt.value
+                            ? "bg-[#C9941A] text-black border-[#C9941A]"
+                            : "bg-[#0D0D0D] text-gray-400 border-[#333] hover:border-[#C9941A]/50"
+                        }`}
+                        data-testid={`energy-${opt.value}`}
+                      >{opt.label}</button>
+                    ))}
+                  </div>
                 </div>
-                
-                <Button 
+
+                {/* PAIN tap buttons */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-medium text-gray-300 flex items-center gap-1.5">
+                      <Activity className="h-3.5 w-3.5 text-[#C9941A]" /> Pain
+                    </label>
+                    <span className={`font-bold text-xs ${
+                      checkinForm.painScore >= 8 ? "text-red-400" : checkinForm.painScore >= 6 ? "text-orange-400" : "text-[#C9941A]"
+                    }`}>
+                      {PAIN_OPTIONS.find(o => o.value === checkinForm.painScore)?.label}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-5 gap-1.5" data-testid="pain-buttons">
+                    {PAIN_OPTIONS.map(opt => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setCheckinForm({ ...checkinForm, painScore: opt.value })}
+                        className={`py-3 rounded-lg text-xs font-bold border transition-colors ${
+                          checkinForm.painScore === opt.value
+                            ? opt.value >= 8 ? "bg-red-500 text-white border-red-500"
+                              : opt.value >= 6 ? "bg-orange-500 text-white border-orange-500"
+                              : "bg-[#C9941A] text-black border-[#C9941A]"
+                            : "bg-[#0D0D0D] text-gray-400 border-[#333] hover:border-[#C9941A]/50"
+                        }`}
+                        data-testid={`pain-${opt.value}`}
+                      >{opt.label}</button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Quick submit */}
+                <Button
+                  size="lg"
                   onClick={handleCheckinSubmit}
                   disabled={checkinMutation.isPending}
-                  className="w-full bg-[#C9941A] hover:bg-[#C9941A]/90 text-black font-bold"
+                  className="w-full bg-[#C9941A] text-black font-bold"
                   data-testid="button-checkin-submit"
                 >
-                  {checkinMutation.isPending ? "Saving..." : "Complete Check-in"}
+                  {checkinMutation.isPending ? "Saving..." : "Submit Check-in"}
                 </Button>
+
+                {/* Optional notes toggle */}
+                <button
+                  type="button"
+                  onClick={() => setShowNotes(!showNotes)}
+                  className="w-full flex items-center justify-center gap-1.5 text-xs text-gray-600 hover:text-gray-300 transition-colors py-1"
+                  data-testid="button-toggle-notes"
+                >
+                  <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${showNotes ? "rotate-180" : ""}`} />
+                  {showNotes ? "Hide notes" : "Add notes (optional)"}
+                </button>
+
+                {/* Optional Sasquatch Daily Audit */}
+                {showNotes && (
+                  <div className="space-y-3 pt-2 border-t border-[#222]">
+                    <div className="bg-[#C9941A]/10 border border-[#C9941A]/30 rounded-lg p-4">
+                      <h3 className="text-sm font-bold text-[#C9941A] uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <Flame className="w-4 h-4" />
+                        Sasquatch Daily Audit
+                      </h3>
+                      <div className="space-y-3">
+                        <div>
+                          <label className="text-xs text-gray-400 mb-1.5 block">1. What did I BUILD today?</label>
+                          <Textarea
+                            placeholder="Every small action counts — a flicker is still progress..."
+                            value={checkinForm.winsToday}
+                            onChange={(e) => setCheckinForm({ ...checkinForm, winsToday: e.target.value })}
+                            className="bg-[#1a1a1a] border-[#333] text-white text-sm min-h-[60px]"
+                            data-testid="input-wins"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs text-gray-400 mb-1.5 block">2. What BROKE?</label>
+                          <Textarea
+                            placeholder="Honesty heals faster than denial..."
+                            value={checkinForm.challengesToday}
+                            onChange={(e) => setCheckinForm({ ...checkinForm, challengesToday: e.target.value })}
+                            className="bg-[#1a1a1a] border-[#333] text-white text-sm min-h-[60px]"
+                            data-testid="input-challenges"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs text-gray-400 mb-1.5 block">3. Tomorrow's target?</label>
+                          <Textarea
+                            placeholder="Your next rep, your next step..."
+                            value={checkinForm.tomorrowsTarget}
+                            onChange={(e) => setCheckinForm({ ...checkinForm, tomorrowsTarget: e.target.value })}
+                            className="bg-[#1a1a1a] border-[#333] text-white text-sm min-h-[60px]"
+                            data-testid="input-target"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs text-gray-400 mb-1.5 block">Gratitude</label>
+                          <Textarea
+                            placeholder="One thing I'm grateful for..."
+                            value={checkinForm.gratitude}
+                            onChange={(e) => setCheckinForm({ ...checkinForm, gratitude: e.target.value })}
+                            className="bg-[#1a1a1a] border-[#333] text-white text-sm min-h-[60px]"
+                            data-testid="input-gratitude"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <Button
+                      size="lg"
+                      onClick={handleCheckinSubmit}
+                      disabled={checkinMutation.isPending}
+                      className="w-full bg-[#C9941A] text-black font-bold"
+                      data-testid="button-checkin-submit-notes"
+                    >
+                      {checkinMutation.isPending ? "Saving..." : "Submit with Notes"}
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
           </Card>
@@ -624,7 +735,7 @@ export default function RecoveryDashboard() {
                 )}
                 
                 <Link href="/recovery/academy">
-                  <Button className="w-full bg-[#C9941A] hover:bg-[#C9941A]/90 text-black font-bold" data-testid="button-continue-learning">
+                  <Button className="w-full bg-[#C9941A] text-black font-bold" data-testid="button-continue-learning">
                     Continue Learning
                   </Button>
                 </Link>
@@ -634,7 +745,7 @@ export default function RecoveryDashboard() {
                 <Target className="h-12 w-12 text-gray-500 mx-auto mb-4" />
                 <p className="text-gray-400 mb-4">Start your personalized recovery journey</p>
                 <Link href="/recovery/builder">
-                  <Button className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black font-bold" data-testid="button-start-program">
+                  <Button className="bg-[#C9941A] text-black font-bold" data-testid="button-start-program">
                     Build Your Program
                   </Button>
                 </Link>
@@ -642,7 +753,9 @@ export default function RecoveryDashboard() {
             )}
           </Card>
         </div>
+        </FadeUpSection>
 
+        <FadeUpSection delay={250}>
         <div className="grid lg:grid-cols-2 gap-6 mb-8">
           <Card className="bg-[#1a1a1a] border-[#333] p-6" data-testid="card-habits">
             <div className="flex items-center justify-between mb-4">
@@ -768,8 +881,10 @@ export default function RecoveryDashboard() {
             )}
           </Card>
         </div>
+        </FadeUpSection>
 
         {/* Accountability Pod Section */}
+        <FadeUpSection delay={300}>
         <Card className="bg-[#1a1a1a] border-[#333] p-6 mb-8" data-testid="card-accountability-pod">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
@@ -911,7 +1026,7 @@ export default function RecoveryDashboard() {
                           size="sm"
                           onClick={() => joinPodMutation.mutate(pod.id)}
                           disabled={joinPodMutation.isPending}
-                          className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black"
+                          className="bg-[#C9941A] text-black"
                           data-testid={`button-join-pod-${pod.id}`}
                         >
                           <UserPlus className="h-4 w-4 mr-1" />
@@ -928,7 +1043,7 @@ export default function RecoveryDashboard() {
                 <Dialog open={createPodOpen} onOpenChange={setCreatePodOpen}>
                   <DialogTrigger asChild>
                     <Button 
-                      className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black"
+                      className="bg-[#C9941A] text-black"
                       data-testid="button-create-pod"
                     >
                       <Plus className="h-4 w-4 mr-2" />
@@ -976,7 +1091,7 @@ export default function RecoveryDashboard() {
                       <Button
                         onClick={handleCreatePod}
                         disabled={createPodMutation.isPending || !newPodName.trim()}
-                        className="w-full bg-[#C9941A] hover:bg-[#C9941A]/90 text-black"
+                        className="w-full bg-[#C9941A] text-black"
                         data-testid="button-confirm-create-pod"
                       >
                         {createPodMutation.isPending ? "Creating..." : "Create Pod"}
@@ -988,7 +1103,9 @@ export default function RecoveryDashboard() {
             </div>
           )}
         </Card>
+        </FadeUpSection>
 
+        <FadeUpSection delay={350}>
         <Card className="bg-[#1a1a1a] border-[#333] p-6 mb-8" data-testid="card-ai-coach">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
@@ -1008,7 +1125,9 @@ export default function RecoveryDashboard() {
             </Button>
           </div>
         </Card>
+        </FadeUpSection>
 
+        <FadeUpSection delay={400}>
         <section className="mb-8">
           <Card className="bg-gradient-to-r from-[#C9941A]/20 to-[#1a1a1a] border-[#C9941A]/30 p-6" data-testid="card-donation-cta">
             <div className="flex flex-col md:flex-row items-center gap-4">
@@ -1021,7 +1140,7 @@ export default function RecoveryDashboard() {
               </div>
               <div className="flex gap-3">
                 <a href="https://strokelyfe.org" target="_blank" rel="noopener noreferrer">
-                  <Button className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black font-bold" data-testid="button-donate">
+                  <Button className="bg-[#C9941A] text-black font-bold" data-testid="button-donate">
                     <Heart className="w-4 h-4 mr-2" />
                     Donate Now
                   </Button>
@@ -1035,7 +1154,9 @@ export default function RecoveryDashboard() {
             </div>
           </Card>
         </section>
+        </FadeUpSection>
 
+        <FadeUpSection delay={450}>
         <section className="mb-8">
           <h2 className="text-xl font-bold mb-4 text-white">Quick Actions</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -1080,6 +1201,7 @@ export default function RecoveryDashboard() {
             </Link>
           </div>
         </section>
+        </FadeUpSection>
 
         <SasquatchChatWidget />
       </main>
