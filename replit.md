@@ -63,6 +63,7 @@ Icons: lucide-react only (no emoji)
 - **Premium Blog SEO Suite**: Enterprise-grade optimization tools including meta tag optimization, focus keyphrase tracking, and various Schema Types.
 - **SEO Command Center**: External website optimization tools for analysis, keyword research, and sitemap generation.
 - **Lulu Publishing Integration**: Professional Print-on-Demand via OAuth2 API for book production and orders.
+- **Course Social Layer (P2)**: Forums, Groups, per-course Cohorts (auto-created weekly with 30-day window, voice posts via Whisper, crisis-keyword detection → 988), course Reviews + ratings (1-5 stars, verified-completion badge from `userCourseProgress`, helpful upvotes), and an Instructor Analytics dashboard at `/instructor/analytics` (enrollments, completion %, weighted avg rating, 85% earnings split — pending vs paid).
 - **Stroke Recovery OS**: Dedicated platform with a dark OS theme, including:
     - **Recovery Dashboard**: Daily check-ins, habit tracking, motivational content.
     - **Recovery University**: Interactive, graded curriculum with lessons, quizzes, and certificates.
