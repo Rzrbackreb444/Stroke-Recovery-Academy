@@ -524,6 +524,30 @@ export const userBadges = pgTable("user_badges", {
   uniq: uniqueIndex("user_badges_user_badge_unique").on(t.userId, t.badgeKey),
 }));
 
+// ─── Quiz spaced-repetition queue (SM-2 lite) ────────────────────────────────
+export const quizReviewQueue = pgTable("quiz_review_queue", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  questionId: integer("question_id").notNull(),
+  nextReviewAt: timestamp("next_review_at").notNull().defaultNow(),
+  intervalDays: integer("interval_days").notNull().default(1),
+  ease: integer("ease").notNull().default(250), // stored ×100 (SM-2 ef 2.5 = 250)
+  lapses: integer("lapses").notNull().default(0),
+  repetitions: integer("repetitions").notNull().default(0),
+  lastAnsweredAt: timestamp("last_answered_at"),
+  lastCorrect: boolean("last_correct"),
+  retired: boolean("retired").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  userIdx: index("quiz_review_user_idx").on(t.userId),
+  uniq: uniqueIndex("quiz_review_user_question_unique").on(t.userId, t.questionId),
+  dueIdx: index("quiz_review_due_idx").on(t.userId, t.nextReviewAt),
+}));
+
+export const insertQuizReviewQueueSchema = createInsertSchema(quizReviewQueue).omit({ id: true, createdAt: true });
+export type QuizReviewQueue = typeof quizReviewQueue.$inferSelect;
+export type InsertQuizReviewQueue = z.infer<typeof insertQuizReviewQueueSchema>;
+
 // ─── Lesson videos — uploaded + Whisper-transcribed + chapterable ───────────
 export const lessonVideos = pgTable("lesson_videos", {
   id: serial("id").primaryKey(),
