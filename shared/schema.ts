@@ -6077,3 +6077,36 @@ export const insertGroupPostSchema = createInsertSchema(groupPosts).omit({
 });
 export type GroupPost = typeof groupPosts.$inferSelect;
 export type InsertGroupPost = z.infer<typeof insertGroupPostSchema>;
+
+// ─── Course cohorts (P2-03) — same-start-date peer threads ────────────────────
+export const courseCohorts = pgTable("course_cohorts", {
+  id: serial("id").primaryKey(),
+  courseId: integer("course_id").notNull().references(() => courses.id, { onDelete: "cascade" }),
+  name: varchar("name", { length: 120 }).notNull(),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  isActive: boolean("is_active").notNull().default(true),
+  memberCount: integer("member_count").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+export type CourseCohort = typeof courseCohorts.$inferSelect;
+
+export const cohortMembers = pgTable("cohort_members", {
+  cohortId: integer("cohort_id").notNull().references(() => courseCohorts.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  joinedAt: timestamp("joined_at").notNull().defaultNow(),
+}, (t) => ({
+  pk: primaryKey({ columns: [t.cohortId, t.userId] }),
+}));
+export type CohortMember = typeof cohortMembers.$inferSelect;
+
+export const cohortPosts = pgTable("cohort_posts", {
+  id: serial("id").primaryKey(),
+  cohortId: integer("cohort_id").notNull().references(() => courseCohorts.id, { onDelete: "cascade" }),
+  authorId: varchar("author_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  content: text("content").notNull(),
+  audioUrl: text("audio_url"),
+  crisisFlag: boolean("crisis_flag").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+export type CohortPost = typeof cohortPosts.$inferSelect;

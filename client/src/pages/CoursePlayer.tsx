@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import CohortPanel from "@/components/CohortPanel";
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -168,6 +169,8 @@ const formatTime = (seconds: number) => {
 export default function CoursePlayer() {
   const { toast } = useToast();
   const [, navigate] = useLocation();
+  const [, routeParams] = useRoute("/course/:courseId");
+  const courseId = routeParams?.courseId;
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<HTMLDivElement>(null);
   
@@ -803,8 +806,18 @@ export default function CoursePlayer() {
                   <TabsTrigger value="overview">Overview</TabsTrigger>
                   <TabsTrigger value="resources">Resources</TabsTrigger>
                   <TabsTrigger value="discussion">Discussion</TabsTrigger>
+                  <TabsTrigger value="cohort" data-testid="tab-cohort">Cohort</TabsTrigger>
                   <TabsTrigger value="notes">My Notes</TabsTrigger>
                 </TabsList>
+
+                <TabsContent value="cohort" className="mt-4">
+                  {(() => {
+                    const cidNum = parseInt(String(courseId ?? ""), 10);
+                    return Number.isFinite(cidNum)
+                      ? <CohortPanel courseId={cidNum} />
+                      : <div className="text-gray-400 text-sm py-6 text-center">Cohorts unavailable for this course.</div>;
+                  })()}
+                </TabsContent>
                 
                 <TabsContent value="overview" className="mt-4">
                   <Card className="bg-[#1a1a1a] border-[#333] p-6">
