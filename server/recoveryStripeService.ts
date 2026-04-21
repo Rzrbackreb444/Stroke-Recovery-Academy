@@ -274,7 +274,15 @@ export class RecoveryStripeService {
       case 'donation':
         await this.processDonation(session);
         break;
+      case 'power_points':
+        await this.processPowerPoints(session);
+        break;
     }
+  }
+
+  private async processPowerPoints(session: any) {
+    const { deliverPowerPoints } = await import('./powerPointsService');
+    await deliverPowerPoints(session);
   }
 
   private async processTip(session: any) {

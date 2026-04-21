@@ -289,9 +289,47 @@ export const users = pgTable("users", {
   spotlightOptedIn: boolean("spotlight_opted_in").notNull().default(false),
   spotlightConsent: boolean("spotlight_consent").notNull().default(false),
   spotlightConsentAt: timestamp("spotlight_consent_at"),
+  // Verified Therapist program — gates therapist-tagged courses & badges
+  isVerifiedTherapist: boolean("is_verified_therapist").notNull().default(false),
+  therapistTitle: text("therapist_title"), // e.g. "PT, DPT", "OT/L", "SLP-CCC"
+  therapistCredentials: text("therapist_credentials"), // license # / state / cert
+  therapistBio: text("therapist_bio"),
+  therapistVerifiedAt: timestamp("therapist_verified_at"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+// Power Points — purchased by family/friends/therapists, gifted to a survivor
+// with a motivational message. Delivered as bonus credits + persistent inbox entry.
+export const powerPointGifts = pgTable("power_point_gifts", {
+  id: serial("id").primaryKey(),
+  senderId: varchar("sender_id").references(() => users.id, { onDelete: "set null" }),
+  receiverId: varchar("receiver_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  packageKey: text("package_key").notNull(), // spark | boost | surge | beast
+  points: integer("points").notNull(), // credits delivered to receiver
+  amountCents: integer("amount_cents").notNull(), // what sender paid (USD cents)
+  message: text("message"), // motivational note
+  isAnonymous: boolean("is_anonymous").notNull().default(false),
+  stripePaymentId: text("stripe_payment_id"),
+  status: text("status").notNull().default("pending"), // pending | delivered | refunded
+  deliveredAt: timestamp("delivered_at"),
+  readAt: timestamp("read_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  receiverIdx: index("ppg_receiver_idx").on(t.receiverId, t.createdAt),
+  senderIdx: index("ppg_sender_idx").on(t.senderId, t.createdAt),
+}));
+
+export const insertPowerPointGiftSchema = createInsertSchema(powerPointGifts).omit({
+  id: true,
+  createdAt: true,
+  deliveredAt: true,
+  readAt: true,
+  status: true,
+  stripePaymentId: true,
+});
+export type InsertPowerPointGift = z.infer<typeof insertPowerPointGiftSchema>;
+export type PowerPointGift = typeof powerPointGifts.$inferSelect;
 
 export const userProfiles = pgTable("user_profiles", {
   id: serial("id").primaryKey(),
