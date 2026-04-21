@@ -6,9 +6,20 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { db } from '../db';
-import { lessonVideos } from '@shared/schema';
+import { lessonVideos, courseLessons, courseModules, courses } from '@shared/schema';
 import { eq } from 'drizzle-orm';
 import { transcribeVideo, writeVttSidecar } from '../videoTranscription';
+
+// Returns { ok, ownedByUser } — ownedByUser is true only if the lesson's course belongs to userId.
+async function lessonOwnedByUser(lessonId: number, userId: string): Promise<boolean> {
+  const rows = await db.select({ instructorId: courses.instructorId })
+    .from(courseLessons)
+    .innerJoin(courseModules, eq(courseModules.id, courseLessons.moduleId))
+    .innerJoin(courses, eq(courses.id, courseModules.courseId))
+    .where(eq(courseLessons.id, lessonId))
+    .limit(1);
+  return !!rows[0] && rows[0].instructorId === userId;
+}
 
 export function registerLessonVideoRoutes(app: Express, isAuthenticated: any, uploadsDir: string) {
   const storage = multer.diskStorage({
@@ -28,11 +39,13 @@ export function registerLessonVideoRoutes(app: Express, isAuthenticated: any, up
   });
 
   // POST /api/lessons/:id/video — upload + queue transcription
-  app.post('/api/lessons/:id/video', isAuthenticated, upload.single('file'), async (req: Request, res: Response) => {
+  app.post('/api/lessons/:id/video', isAuthenticated, upload.single('file'), async (req: any, res: Response) => {
     try {
       const lessonId = parseInt(req.params.id, 10);
       if (!Number.isFinite(lessonId)) return res.status(400).json({ error: 'Invalid lesson id' });
       if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+      const userId = req.user?.claims?.sub;
+      if (!userId || !(await lessonOwnedByUser(lessonId, userId))) return res.status(403).json({ error: 'Not your lesson' });
 
       const url = `/uploads/${req.file.filename}`;
       const filePath = req.file.path;
@@ -89,10 +102,12 @@ export function registerLessonVideoRoutes(app: Express, isAuthenticated: any, up
   });
 
   // PATCH /api/lessons/:id/video/chapters — manual chapter edits
-  app.patch('/api/lessons/:id/video/chapters', isAuthenticated, async (req: Request, res: Response) => {
+  app.patch('/api/lessons/:id/video/chapters', isAuthenticated, async (req: any, res: Response) => {
     const lessonId = parseInt(req.params.id, 10);
     const chapters = Array.isArray(req.body?.chapters) ? req.body.chapters : null;
     if (!chapters) return res.status(400).json({ error: 'chapters array required' });
+    const userId = req.user?.claims?.sub;
+    if (!userId || !(await lessonOwnedByUser(lessonId, userId))) return res.status(403).json({ error: 'Not your lesson' });
     const clean = chapters
       .filter((c: any) => typeof c?.start === 'number' && typeof c?.title === 'string')
       .map((c: any) => ({ start: Math.max(0, Math.round(c.start)), title: String(c.title).slice(0, 120) }));

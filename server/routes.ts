@@ -6899,63 +6899,137 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
     }
   });
 
-  // Create or update (full upsert of course + modules + lessons in one call)
+  // Create or update (diff-based upsert of course + modules + lessons, in one transaction)
+  // Preserves existing module/lesson IDs when the client sends them back, so lesson_videos
+  // and other FK-linked rows keep pointing at the same lesson after an edit.
   async function saveCourseTree(userId: string, body: any, existingId?: number) {
-    const { courses, courseModules, courseLessons } = await import("@shared/schema");
+    const { courses, courseModules, courseLessons, courseCategoryTags, coursePrerequisites } = await import("@shared/schema");
+    const MAX_TAGS = 50;
+    const MAX_PREREQS = 50;
+    const MAX_MODULES = 100;
+    const MAX_LESSONS_PER_MODULE = 200;
     const slugify = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || `course-${Date.now()}`;
     const baseSlug = slugify(body.title || "untitled-course");
+    const allowedDifficulty = new Set(["survival", "rebuild", "rise", "reign"]);
+    const difficulty = allowedDifficulty.has(String(body.difficulty)) ? body.difficulty : "survival";
+    const allowedStatus = new Set(["draft", "preview", "published"]);
+    const status = allowedStatus.has(String(body.status)) ? body.status : "draft";
     const courseData: any = {
       title: body.title || "Untitled Course",
       description: body.description || "",
       thumbnailUrl: body.thumbnailUrl || null,
-      difficulty: body.difficulty || body.level || "beginner",
+      difficulty,
       estimatedHours: body.estimatedHours ?? null,
-      category: body.category || "general",
+      category: body.category || (Array.isArray(body.categorySlugs) && body.categorySlugs[0]) || "general",
+      status,
+      priceCredits: typeof body.priceCredits === "number" ? body.priceCredits : 0,
       instructorId: userId,
       updatedAt: new Date(),
     };
-    let course;
-    if (existingId) {
-      const [existing] = await db.select().from(courses).where(eq(courses.id, existingId));
-      if (!existing || existing.instructorId !== userId) throw new Error("NOT_FOUND");
-      [course] = await db.update(courses).set(courseData).where(eq(courses.id, existingId)).returning();
-      // Wipe existing modules (cascade removes lessons)
-      await db.delete(courseModules).where(eq(courseModules.courseId, existingId));
-    } else {
-      // Ensure unique slug
-      let slug = baseSlug;
-      let n = 1;
-      while (true) {
-        const [hit] = await db.select().from(courses).where(eq(courses.slug, slug));
-        if (!hit) break;
-        slug = `${baseSlug}-${++n}`;
+
+    const inputModules: any[] = (Array.isArray(body.modules) ? body.modules : []).slice(0, MAX_MODULES);
+
+    return await db.transaction(async (tx) => {
+      let course: any;
+      if (existingId) {
+        const [existing] = await tx.select().from(courses).where(eq(courses.id, existingId));
+        if (!existing || existing.instructorId !== userId) throw new Error("NOT_FOUND");
+        [course] = await tx.update(courses).set(courseData).where(eq(courses.id, existingId)).returning();
+      } else {
+        let slug = baseSlug;
+        let n = 1;
+        while (true) {
+          const [hit] = await tx.select().from(courses).where(eq(courses.slug, slug));
+          if (!hit) break;
+          slug = `${baseSlug}-${++n}`;
+        }
+        [course] = await tx.insert(courses).values({ ...courseData, slug, isPublished: false }).returning();
       }
-      [course] = await db.insert(courses).values({ ...courseData, slug, isPublished: false }).returning();
-    }
-    const inputModules: any[] = Array.isArray(body.modules) ? body.modules : [];
-    for (let mi = 0; mi < inputModules.length; mi++) {
-      const m = inputModules[mi];
-      const [mod] = await db.insert(courseModules).values({
-        courseId: course.id,
-        title: m.title || `Module ${mi + 1}`,
-        description: m.description || null,
-        order: mi,
-      }).returning();
-      const inputLessons: any[] = Array.isArray(m.lessons) ? m.lessons : [];
-      if (inputLessons.length) {
-        await db.insert(courseLessons).values(inputLessons.map((l: any, li: number) => ({
-          moduleId: mod.id,
-          title: l.title || `Lesson ${li + 1}`,
-          content: l.content || "",
-          videoUrl: l.videoUrl || null,
-          duration: typeof l.duration === "number" ? l.duration : null,
-          order: li,
-          lessonType: l.type || l.lessonType || "text",
-          resources: l.resources || null,
-        })));
+
+      // Auto-populate ogImageUrl with our dynamic endpoint
+      if (!course.ogImageUrl) {
+        const ogUrl = `/og/course/${course.id}`;
+        await tx.update(courses).set({ ogImageUrl: ogUrl }).where(eq(courses.id, course.id));
+        course.ogImageUrl = ogUrl;
       }
-    }
-    return course;
+
+      // Multi-category tags (replace-all, bounded)
+      if (Array.isArray(body.categoryIds)) {
+        const catIds: number[] = Array.from(new Set(
+          body.categoryIds.map((x: any) => parseInt(x, 10)).filter(Number.isFinite)
+        )).slice(0, MAX_TAGS) as number[];
+        await tx.delete(courseCategoryTags).where(eq(courseCategoryTags.courseId, course.id));
+        if (catIds.length) await tx.insert(courseCategoryTags).values(catIds.map(categoryId => ({ courseId: course.id, categoryId })));
+      }
+      // Prerequisites (replace-all, bounded, exclude self)
+      if (Array.isArray(body.prerequisiteIds)) {
+        const preIds: number[] = Array.from(new Set(
+          body.prerequisiteIds.map((x: any) => parseInt(x, 10)).filter((v: number) => Number.isFinite(v) && v !== course.id)
+        )).slice(0, MAX_PREREQS) as number[];
+        await tx.delete(coursePrerequisites).where(eq(coursePrerequisites.courseId, course.id));
+        if (preIds.length) await tx.insert(coursePrerequisites).values(preIds.map(prerequisiteCourseId => ({ courseId: course.id, prerequisiteCourseId })));
+      }
+
+      // Diff modules & lessons (preserve IDs)
+      const existingMods = await tx.select().from(courseModules).where(eq(courseModules.courseId, course.id));
+      const existingModIds = new Set(existingMods.map(m => m.id));
+      const keptModIds = new Set<number>();
+
+      for (let mi = 0; mi < inputModules.length; mi++) {
+        const m = inputModules[mi] || {};
+        const moduleVals = {
+          title: String(m.title || `Module ${mi + 1}`).slice(0, 500),
+          description: m.description ? String(m.description).slice(0, 5000) : null,
+          order: mi,
+        };
+        let modId: number;
+        if (Number.isFinite(m.id) && existingModIds.has(m.id)) {
+          modId = m.id;
+          await tx.update(courseModules).set(moduleVals).where(eq(courseModules.id, modId));
+        } else {
+          const [mod] = await tx.insert(courseModules).values({ courseId: course.id, ...moduleVals }).returning();
+          modId = mod.id;
+        }
+        keptModIds.add(modId);
+
+        const existingLessons = await tx.select().from(courseLessons).where(eq(courseLessons.moduleId, modId));
+        const existingLessonIds = new Set(existingLessons.map(l => l.id));
+        const keptLessonIds = new Set<number>();
+        const inputLessons: any[] = (Array.isArray(m.lessons) ? m.lessons : []).slice(0, MAX_LESSONS_PER_MODULE);
+
+        for (let li = 0; li < inputLessons.length; li++) {
+          const l = inputLessons[li] || {};
+          const lessonType = ["text", "video", "quiz"].includes(l.lessonType || l.type) ? (l.lessonType || l.type) : "text";
+          const lessonVals = {
+            moduleId: modId,
+            title: String(l.title || `Lesson ${li + 1}`).slice(0, 500),
+            content: String(l.content || "").slice(0, 100000),
+            videoUrl: l.videoUrl ? String(l.videoUrl).slice(0, 2048) : null,
+            duration: typeof l.duration === "number" ? l.duration : null,
+            order: li,
+            lessonType,
+            resources: l.resources || null,
+          };
+          if (Number.isFinite(l.id) && existingLessonIds.has(l.id)) {
+            await tx.update(courseLessons).set(lessonVals).where(eq(courseLessons.id, l.id));
+            keptLessonIds.add(l.id);
+          } else {
+            const [ins] = await tx.insert(courseLessons).values(lessonVals).returning();
+            keptLessonIds.add(ins.id);
+          }
+        }
+        // Delete lessons that were removed
+        for (const lid of existingLessonIds) {
+          if (!keptLessonIds.has(lid)) await tx.delete(courseLessons).where(eq(courseLessons.id, lid));
+        }
+      }
+      // Delete modules that were removed
+      for (const mid of existingModIds) {
+        if (!keptModIds.has(mid)) await tx.delete(courseModules).where(eq(courseModules.id, mid));
+      }
+
+      return course;
+    });
   }
 
   app.post('/api/my-courses', isAuthenticated, async (req: any, res) => {
@@ -23183,6 +23257,7 @@ Format as structured JSON with clear sections.`;
   const { registerLessonVideoRoutes } = await import('./routes/lessonVideoRoutes');
   const { registerQuizRoutes } = await import('./routes/quizRoutes');
   const { registerAvatarRoutes } = await import('./routes/avatarRoutes');
+  const { registerCourseStudioExtrasRoutes, seedCourseCategoriesIfEmpty } = await import('./routes/courseStudioExtrasRoutes');
   registerPowerPointsRoutes(app, isAuthenticated);
   registerTherapistRoutes(app, isAuthenticated);
   registerCourseUnlockRoutes(app, isAuthenticated);
@@ -23191,6 +23266,8 @@ Format as structured JSON with clear sections.`;
   registerLessonVideoRoutes(app, isAuthenticated, uploadsDir);
   registerQuizRoutes(app, isAuthenticated, uploadsDir);
   registerAvatarRoutes(app, isAuthenticated, uploadsDir);
+  registerCourseStudioExtrasRoutes(app, isAuthenticated);
+  seedCourseCategoriesIfEmpty().catch(() => {});
 
   const httpServer = createServer(app);
   return httpServer;
