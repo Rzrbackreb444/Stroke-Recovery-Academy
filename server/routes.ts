@@ -23182,6 +23182,7 @@ Format as structured JSON with clear sections.`;
   const { registerEngagementRoutes } = await import('./routes/engagementRoutes');
   const { registerLessonVideoRoutes } = await import('./routes/lessonVideoRoutes');
   const { registerQuizRoutes } = await import('./routes/quizRoutes');
+  const { registerAvatarRoutes } = await import('./routes/avatarRoutes');
   registerPowerPointsRoutes(app, isAuthenticated);
   registerTherapistRoutes(app, isAuthenticated);
   registerCourseUnlockRoutes(app, isAuthenticated);
@@ -23189,6 +23190,7 @@ Format as structured JSON with clear sections.`;
   registerEngagementRoutes(app, isAuthenticated);
   registerLessonVideoRoutes(app, isAuthenticated, uploadsDir);
   registerQuizRoutes(app, isAuthenticated, uploadsDir);
+  registerAvatarRoutes(app, isAuthenticated, uploadsDir);
 
   const httpServer = createServer(app);
   return httpServer;

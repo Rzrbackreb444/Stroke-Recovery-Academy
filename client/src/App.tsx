@@ -25,6 +25,7 @@ import PowerPointsInbox from "@/pages/PowerPointsInbox";
 import TherapistApply from "@/pages/TherapistApply";
 import TherapistAdmin from "@/pages/TherapistAdmin";
 import SurvivorProfilePage from "@/pages/SurvivorProfile";
+import AvatarSettings from "@/pages/AvatarSettings";
 import AdminRoute from "@/components/AdminRoute";
 import MusicStudio from "@/pages/MusicStudio";
 import MusicSandbox from "@/pages/MusicSandbox";
@@ -426,6 +427,11 @@ function Router() {
       <Route path="/power-points/inbox" component={PowerPointsInbox} />
       <Route path="/therapists/apply" component={TherapistApply} />
       <Route path="/survivor/:slug" component={SurvivorProfilePage} />
+      <Route path="/settings/avatar">
+        <ProtectedRoute>
+          <AvatarSettings />
+        </ProtectedRoute>
+      </Route>
       <Route path="/admin/therapists">
         <AdminRoute><TherapistAdmin /></AdminRoute>
       </Route>
