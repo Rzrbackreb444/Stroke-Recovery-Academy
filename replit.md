@@ -16,7 +16,7 @@ Preferred communication style: Simple, everyday language.
 
 **`client/index.html` is the source of truth for what Google indexes.** It must always carry Stroke Recovery Academy branding, canonical = `https://strokerecoveryacademy.com/`, and the full structured-data block (Organization, WebSite, MedicalWebPage, Course, FAQPage). Never let it revert to KreAIte/kreaite.xyz tags — that triggers duplicate-content penalties and blocks indexing.
 
-**Owner action required (one-time):** Verify the property in Google Search Console at https://search.google.com/search-console, copy the verification code, and replace `REPLACE_WITH_YOUR_GSC_VERIFICATION_CODE` in `client/index.html`. Then submit `https://strokerecoveryacademy.com/sitemap-index.xml`.
+**GSC verification code is installed in `client/index.html`.** After deploy, log in to Google Search Console, click **Verify** on the `strokerecoveryacademy.com` property, and submit `https://strokerecoveryacademy.com/sitemap-index.xml`.
 Design mandate: 
 - Creator Platform: Literary warm palette - cream background (#FAF8F3), antique gold accent (#C9941A)
 - Stroke Recovery OS: Dark OS theme - black background (#0D0D0D), gold accents (#C9941A), card backgrounds (#1a1a1a), borders (#333)
