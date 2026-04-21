@@ -524,6 +524,27 @@ export const userBadges = pgTable("user_badges", {
   uniq: uniqueIndex("user_badges_user_badge_unique").on(t.userId, t.badgeKey),
 }));
 
+// ─── Lesson videos — uploaded + Whisper-transcribed + chapterable ───────────
+export const lessonVideos = pgTable("lesson_videos", {
+  id: serial("id").primaryKey(),
+  lessonId: integer("lesson_id").notNull().unique(), // references course_lessons.id but kept loose for flexibility
+  url: text("url").notNull(),              // /uploads/... or https:// for HLS
+  hlsUrl: text("hls_url"),                 // .m3u8 when transcoded
+  duration: integer("duration"),           // seconds
+  sizeBytes: integer("size_bytes"),
+  captionVttUrl: text("caption_vtt_url"),
+  transcriptText: text("transcript_text"),
+  chapters: jsonb("chapters"),             // [{start:sec, title:string}]
+  transcriptionStatus: text("transcription_status").notNull().default("pending"), // pending|processing|ready|failed
+  transcriptionError: text("transcription_error"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertLessonVideoSchema = createInsertSchema(lessonVideos).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertLessonVideo = z.infer<typeof insertLessonVideoSchema>;
+export type LessonVideo = typeof lessonVideos.$inferSelect;
+
 export const insertCourseCategorySchema = createInsertSchema(courseCategories).omit({ id: true });
 export type InsertCourseCategory = z.infer<typeof insertCourseCategorySchema>;
 export type CourseCategory = typeof courseCategories.$inferSelect;
