@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import LessonVideoPlayer from "@/components/LessonVideoPlayer";
 import { useRoute, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -587,21 +588,11 @@ export default function CoursePlayer() {
             {/* Video/Content Area */}
             <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-zinc-900 to-black">
               {currentLesson.type === "video" ? (
-                <>
-                  {/* Placeholder for video - would use actual video element */}
-                  <div className="text-center">
-                    <PlayCircle className="w-20 h-20 text-white/20 mx-auto mb-4" />
-                    <p className="text-white/40">Video Player</p>
-                    <p className="text-white/20 text-sm">{currentLesson.title}</p>
+                <div className="absolute inset-0 p-2 md:p-4 flex items-center justify-center">
+                  <div className="w-full max-w-5xl">
+                    <LessonVideoPlayer lessonId={Number(currentLesson.id)} />
                   </div>
-                  
-                  {/* Buffering indicator */}
-                  {isBuffering && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                      <Loader2 className="w-12 h-12 text-[#C9941A] animate-spin" />
-                    </div>
-                  )}
-                </>
+                </div>
               ) : currentLesson.type === "text" ? (
                 <ScrollArea className="h-full w-full p-8">
                   <div className="max-w-3xl mx-auto prose prose-invert">
