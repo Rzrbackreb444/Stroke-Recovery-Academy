@@ -1,4 +1,8 @@
 import { useState, useEffect, useRef } from "react";
+
+// Singleton guard: when GlobalHeader is mounted globally at the router level
+// AND a page still renders its own, only the first instance renders.
+let __globalHeaderPrimaryMounted = false;
 import { Link as WouterLink } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -84,9 +88,18 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
   const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [studiosHovered, setStudiosHovered] = useState(false);
+  const [isPrimary, setIsPrimary] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [location] = useLocation();
   const { user, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!__globalHeaderPrimaryMounted) {
+      __globalHeaderPrimaryMounted = true;
+      setIsPrimary(true);
+      return () => { __globalHeaderPrimaryMounted = false; };
+    }
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -109,6 +122,8 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
   const borderClass = variant === "transparent" && !scrolled
     ? "border-transparent"
     : "border-[#C9941A]/10";
+
+  if (!isPrimary) return null;
 
   return (
     <header 

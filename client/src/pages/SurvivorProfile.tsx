@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import SendPowerPointsModal from "@/components/SendPowerPointsModal";
 import { VerifiedTherapistBadge } from "@/components/VerifiedTherapistBadge";
+import DailyGiftButton from "@/components/DailyGiftButton";
 
 interface SurvivorProfile {
   id: string;
@@ -124,6 +125,12 @@ export default function SurvivorProfilePage() {
                 <Share2 className="w-4 h-4 mr-2" /> Share profile
               </Button>
             </div>
+
+            {p.acceptsPowerPoints && !isSelf && user && (
+              <div className="mt-3">
+                <DailyGiftButton receiverId={p.id} receiverName={displayName} size="default" className="w-full" />
+              </div>
+            )}
 
             <p className="text-[11px] text-gray-500 mt-6 leading-snug text-center">
               Power Points fund this survivor's access to therapist courses, AI tools, and exercises. Points are not redeemable for cash.

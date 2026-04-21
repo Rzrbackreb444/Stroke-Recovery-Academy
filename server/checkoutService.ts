@@ -19,10 +19,15 @@ import type Stripe from 'stripe';
 const PLATFORM_FEE_PERCENT = 15;
 const CREATOR_SHARE_PERCENT = 85;
 
+// Unified with Power Points pricing: 1 credit = $0.04 (25 credits per $1).
+// Bigger tiers carry bonus credits so they're the obvious buy.
 const CREDIT_PACKAGES = {
-  starter: { credits: 100, priceUsd: 999, name: 'Starter Pack' },
-  pro: { credits: 500, priceUsd: 3999, name: 'Pro Pack' },
-  studio: { credits: 2000, priceUsd: 14999, name: 'Studio Pack' },
+  cheer:   { credits: 25,   priceUsd: 100,   name: 'Cheer Pack',   bonusPercent: 0 },
+  spark:   { credits: 100,  priceUsd: 500,   name: 'Spark Pack',   bonusPercent: 0 },
+  boost:   { credits: 250,  priceUsd: 1000,  name: 'Boost Pack',   bonusPercent: 0 },
+  surge:   { credits: 600,  priceUsd: 2000,  name: 'Surge Pack',   bonusPercent: 20 },
+  beast:   { credits: 1500, priceUsd: 4000,  name: 'Beast Pack',   bonusPercent: 50 },
+  legend:  { credits: 4000, priceUsd: 10000, name: 'Legend Pack',  bonusPercent: 60 },
 } as const;
 
 type CreditPackageKey = keyof typeof CREDIT_PACKAGES;

@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import DailyGiftButton from "@/components/DailyGiftButton";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger
 } from "@/components/ui/dialog";
@@ -1092,7 +1093,7 @@ function MembersTab() {
                   </div>
                 </CardContent>
                 {!isMe && me && (
-                  <div className="px-3 pb-3">
+                  <div className="px-3 pb-3 space-y-2">
                     <Button
                       size="sm"
                       onClick={() => setGiftTarget(m)}
@@ -1101,6 +1102,11 @@ function MembersTab() {
                     >
                       <Zap className="w-3.5 h-3.5 mr-1" /> Send Power
                     </Button>
+                    <DailyGiftButton
+                      receiverId={m.id}
+                      receiverName={memberName}
+                      className="w-full"
+                    />
                   </div>
                 )}
               </Card>
