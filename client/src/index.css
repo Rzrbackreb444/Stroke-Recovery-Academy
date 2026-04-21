@@ -864,3 +864,41 @@
 .prose-recovery td { padding: 0.5rem 0.875rem; border: 1px solid #222; color: #d1d5db; }
 .prose-recovery tr:nth-child(even) td { background: #111; }
 .prose-recovery blockquote { border-left: 3px solid #C9941A; padding: 0.75rem 1.25rem; margin: 1.5rem 0; background: #111; border-radius: 0 6px 6px 0; color: #e5e7eb; }
+
+/* ── Fade-up entrance animation ───────────────────────────── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Staggered delay helpers */
+.animate-delay-100 { animation-delay: 100ms; }
+.animate-delay-150 { animation-delay: 150ms; }
+.animate-delay-200 { animation-delay: 200ms; }
+.animate-delay-300 { animation-delay: 300ms; }
+.animate-delay-400 { animation-delay: 400ms; }
+.animate-delay-500 { animation-delay: 500ms; }
+.animate-delay-600 { animation-delay: 600ms; }
+.animate-delay-700 { animation-delay: 700ms; }
+
+/* Scroll-triggered fade-up via Intersection Observer pattern */
+.fade-up-hidden {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.fade-up-hidden.fade-up-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
