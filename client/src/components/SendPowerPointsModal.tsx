@@ -45,7 +45,11 @@ export default function SendPowerPointsModal({ open, onOpenChange, receiverId, r
       return res.json() as Promise<{ url: string }>;
     },
     onSuccess: (data) => {
-      if (data.url) window.location.href = data.url;
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        toast({ title: "Couldn't start checkout", description: "Please try again.", variant: "destructive" });
+      }
     },
     onError: (e: any) => {
       toast({ title: "Couldn't start checkout", description: e?.message || "Try again in a moment.", variant: "destructive" });

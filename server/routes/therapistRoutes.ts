@@ -113,9 +113,9 @@ export function registerTherapistRoutes(app: Express, isAuthenticated: any) {
     res.json({ ok: true });
   });
 
-  // Public list of verified therapists
+  // Public list of verified therapists — only expose first name + last initial
   app.get('/api/therapists/verified', async (_req, res) => {
-    const list = await db.select({
+    const rows = await db.select({
       id: users.id,
       firstName: users.firstName,
       lastName: users.lastName,
@@ -123,11 +123,21 @@ export function registerTherapistRoutes(app: Express, isAuthenticated: any) {
       title: users.therapistTitle,
       bio: users.therapistBio,
       verifiedAt: users.therapistVerifiedAt,
+      publicSlug: users.publicSlug,
     })
       .from(users)
       .where(eq(users.isVerifiedTherapist, true))
       .orderBy(desc(users.therapistVerifiedAt))
       .limit(100);
-    res.json({ therapists: list });
+    const therapists = rows.map((r) => ({
+      id: r.id,
+      displayName: `${r.firstName || ''} ${r.lastName?.[0] ? r.lastName[0] + '.' : ''}`.trim() || 'Therapist',
+      profileImageUrl: r.profileImageUrl,
+      title: r.title,
+      bio: r.bio,
+      verifiedAt: r.verifiedAt,
+      publicSlug: r.publicSlug,
+    }));
+    res.json({ therapists });
   });
 }

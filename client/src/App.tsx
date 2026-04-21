@@ -23,6 +23,8 @@ import Pricing from "@/pages/Pricing";
 import PowerPointsInbox from "@/pages/PowerPointsInbox";
 import TherapistApply from "@/pages/TherapistApply";
 import TherapistAdmin from "@/pages/TherapistAdmin";
+import SurvivorProfilePage from "@/pages/SurvivorProfile";
+import AdminRoute from "@/components/AdminRoute";
 import MusicStudio from "@/pages/MusicStudio";
 import MusicSandbox from "@/pages/MusicSandbox";
 import MusicProductionStudio from "@/pages/MusicProductionStudio";
@@ -420,7 +422,10 @@ function Router() {
       <Route path="/power-points" component={PowerPointsInbox} />
       <Route path="/power-points/inbox" component={PowerPointsInbox} />
       <Route path="/therapists/apply" component={TherapistApply} />
-      <Route path="/admin/therapists" component={TherapistAdmin} />
+      <Route path="/survivor/:slug" component={SurvivorProfilePage} />
+      <Route path="/admin/therapists">
+        <AdminRoute><TherapistAdmin /></AdminRoute>
+      </Route>
       <Route path="/recovery" component={StrokeRecoveryLanding} />
       <Route path="/recovery/dashboard">
         <ProtectedRoute>

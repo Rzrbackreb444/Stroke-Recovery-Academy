@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -54,19 +54,24 @@ export default function PowerPointsInbox() {
     queryFn: async () => (await fetch(`/api/power-points/top-supporters/${user!.id}`)).json(),
   });
 
+  const marked = useRef<Set<number>>(new Set());
   const markRead = useMutation({
     mutationFn: (id: number) => apiRequest("POST", `/api/power-points/${id}/read`, {}),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["/api/power-points/received"] });
       qc.invalidateQueries({ queryKey: ["/api/power-points/unread-count"] });
     },
   });
 
-  // Auto-mark every visible gift as read on mount
+  // Auto-mark every visible gift as read — once per id, no refetch loop
   useEffect(() => {
-    received?.gifts?.forEach((g) => { if (!g.readAt) markRead.mutate(g.id); });
+    received?.gifts?.forEach((g) => {
+      if (!g.readAt && !marked.current.has(g.id)) {
+        marked.current.add(g.id);
+        markRead.mutate(g.id);
+      }
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [received?.gifts?.length]);
+  }, [received?.gifts]);
 
   const gifts = received?.gifts || [];
   const supporters = top?.supporters || [];
