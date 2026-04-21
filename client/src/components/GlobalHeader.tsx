@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 
-// Singleton guard: when GlobalHeader is mounted globally at the router level
-// AND a page still renders its own, only the first instance renders.
-let __globalHeaderPrimaryMounted = false;
+// Shared site-header singleton — suppresses duplicate headers (GlobalHeader
+// or RecoveryHeader). First-mounted header wins; all others render null.
+import { siteHeaderRegistry } from "./siteHeaderRegistry";
 import { Link as WouterLink } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import kreaiteLogo from "@assets/Untitled_design.zip_-_1_1769816069353.png";
+import sraLogo from "@assets/Untitled_design_1776803832326.png";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -94,10 +94,10 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
   const { user, isLoading } = useAuth();
 
   useEffect(() => {
-    if (!__globalHeaderPrimaryMounted) {
-      __globalHeaderPrimaryMounted = true;
+    if (!siteHeaderRegistry.mounted) {
+      siteHeaderRegistry.mounted = true;
       setIsPrimary(true);
-      return () => { __globalHeaderPrimaryMounted = false; };
+      return () => { siteHeaderRegistry.mounted = false; };
     }
   }, []);
 
@@ -131,14 +131,14 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
       data-testid="global-header"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-4 h-16 lg:h-18">
+        <div className="flex items-center justify-between gap-4 h-32">
           <div className="flex items-center gap-8">
             <Link href="/" data-testid="link-home">
               <div className="flex items-center gap-2 group cursor-pointer transition-transform duration-300 hover:scale-105">
-                <img 
-                  src={kreaiteLogo} 
-                  alt="KreAIte" 
-                  className="h-10 w-auto object-contain"
+                <img
+                  src={sraLogo}
+                  alt="Stroke Recovery Academy"
+                  className="h-28 w-auto object-contain"
                 />
               </div>
             </Link>
@@ -375,15 +375,15 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
               <SheetContent side="right" className="w-[300px] bg-[#FAF8F3] dark:bg-[#1a1a1a] p-0 animate-menu-slide-in">
                 <SheetHeader className="p-4 border-b border-[#C9941A]/10">
                   <SheetTitle className="flex items-center gap-2 transition-transform duration-300 hover:scale-105">
-                    <img 
-                      src={kreaiteLogo} 
-                      alt="KreAIte" 
-                      className="h-8 w-auto object-contain"
+                    <img
+                      src={sraLogo}
+                      alt="Stroke Recovery Academy"
+                      className="h-24 w-auto object-contain"
                     />
                   </SheetTitle>
                 </SheetHeader>
                 
-                <div className="p-4 space-y-6">
+                <div className="p-4 space-y-4">
                   {user && (
                     <div className="flex items-center gap-3 p-3 bg-[#C9941A]/10 rounded-lg transition-all duration-300 hover:bg-[#C9941A]/20 animate-scale-in">
                       <Avatar className="h-10 w-10 border-2 border-[#C9941A]/30 transition-all duration-300">
@@ -402,58 +402,62 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                     </div>
                   )}
 
-                  <div>
-                    <p className="text-xs font-bold text-[#C9941A] uppercase tracking-wider mb-2">Studios</p>
-                    <div className="space-y-1">
-                      {studios.map((studio, idx) => (
-                        <Link key={studio.href} href={studio.href}>
-                          <Button
-                            variant="ghost"
-                            className="w-full justify-start gap-3 h-auto py-3 transition-all duration-300 hover:bg-[#C9941A]/5"
-                            onClick={() => setMobileMenuOpen(false)}
-                            style={{ animationDelay: `${idx * 30}ms` }}
-                          >
-                            <div className="w-8 h-8 rounded-lg bg-[#C9941A]/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                  {/* Mobile nav — 1:1 mirror of desktop top-level items */}
+                  <div className="space-y-1">
+                    <details className="group">
+                      <summary className="flex items-center gap-2 w-full cursor-pointer list-none px-3 py-2.5 rounded-md font-semibold text-sm text-gray-700 dark:text-gray-300 hover:bg-[#C9941A]/5 transition-colors">
+                        <Sparkles className="w-4 h-4 text-[#C9941A]" />
+                        Studios
+                        <ChevronDown className="w-4 h-4 ml-auto transition-transform group-open:rotate-180" />
+                      </summary>
+                      <div className="pl-4 mt-1 space-y-1 border-l-2 border-[#C9941A]/15">
+                        {studios.map((studio) => (
+                          <Link key={studio.href} href={studio.href}>
+                            <Button
+                              variant="ghost"
+                              className="w-full justify-start gap-2 text-sm"
+                              onClick={() => setMobileMenuOpen(false)}
+                              data-testid={`mobile-studio-${studio.href.replace('/', '')}`}
+                            >
                               <studio.icon className="w-4 h-4 text-[#C9941A]" />
-                            </div>
-                            <div className="text-left">
-                              <div className="flex items-center gap-2">
-                                <span className="font-semibold text-sm">{studio.label}</span>
-                                {studio.badge && (
-                                  <Badge className="bg-[#C9941A] text-white text-[10px] px-1.5 py-0 animate-subtle-float">
-                                    {studio.badge}
-                                  </Badge>
-                                )}
-                              </div>
-                              <span className="text-xs text-gray-500">{studio.description}</span>
-                            </div>
-                          </Button>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Navigate</p>
-                    <div className="space-y-1">
-                      {navLinks.map((link, idx) => (
-                        <Link key={link.href} href={link.href}>
-                          <Button
-                            variant="ghost"
-                            className={`w-full justify-start gap-2 transition-all duration-300 ${
-                              link.isHighlight ? "text-red-600 dark:text-red-500" : ""
-                            }`}
-                            onClick={() => setMobileMenuOpen(false)}
-                            style={{ animationDelay: `${(studios.length + idx) * 30}ms` }}
-                          >
-                            <link.icon className={`w-4 h-4 transition-transform duration-300 ${
-                              link.isHighlight ? "animate-subtle-float" : ""
-                            }`} />
-                            {link.label}
-                          </Button>
-                        </Link>
-                      ))}
-                    </div>
+                              {studio.label}
+                              {studio.badge && (
+                                <Badge className="bg-[#C9941A] text-white text-[10px] px-1.5 py-0 ml-auto">
+                                  {studio.badge}
+                                </Badge>
+                              )}
+                            </Button>
+                          </Link>
+                        ))}
+                        {quickTools.map((tool) => (
+                          <Link key={tool.href} href={tool.href}>
+                            <Button
+                              variant="ghost"
+                              className="w-full justify-start gap-2 text-sm text-gray-600 dark:text-gray-400"
+                              onClick={() => setMobileMenuOpen(false)}
+                            >
+                              <tool.icon className="w-4 h-4" />
+                              {tool.label}
+                            </Button>
+                          </Link>
+                        ))}
+                      </div>
+                    </details>
+                    {navLinks.map((link) => (
+                      <Link key={link.href} href={link.href}>
+                        <Button
+                          variant="ghost"
+                          className={`w-full justify-start gap-2 font-semibold text-sm transition-colors ${
+                            link.isHighlight ? "text-red-600 dark:text-red-500" : "text-gray-700 dark:text-gray-300"
+                          }`}
+                          onClick={() => setMobileMenuOpen(false)}
+                          data-testid={`mobile-nav-${link.label.toLowerCase().replace(" ", "-")}`}
+                        >
+                          <link.icon className="w-4 h-4" />
+                          {link.label}
+                        </Button>
+                      </Link>
+                    ))}
                   </div>
 
                   {!user && (

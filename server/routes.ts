@@ -23280,6 +23280,7 @@ Format as structured JSON with clear sections.`;
   const { registerAvatarRoutes } = await import('./routes/avatarRoutes');
   const { registerCourseStudioExtrasRoutes, seedCourseCategoriesIfEmpty } = await import('./routes/courseStudioExtrasRoutes');
   const { registerForumRoutes, seedForumBoardsIfEmpty } = await import('./routes/forumRoutes');
+  const { registerGroupRoutes, seedGroupsIfEmpty } = await import('./routes/groupRoutes');
   registerPowerPointsRoutes(app, isAuthenticated);
   registerTherapistRoutes(app, isAuthenticated);
   registerCourseUnlockRoutes(app, isAuthenticated);
@@ -23290,8 +23291,10 @@ Format as structured JSON with clear sections.`;
   registerAvatarRoutes(app, isAuthenticated, uploadsDir);
   registerCourseStudioExtrasRoutes(app, isAuthenticated);
   registerForumRoutes(app, isAuthenticated, uploadsDir);
+  registerGroupRoutes(app, isAuthenticated, uploadsDir);
   seedCourseCategoriesIfEmpty().catch(() => {});
   seedForumBoardsIfEmpty().catch(() => {});
+  seedGroupsIfEmpty().catch(() => {});
 
   const httpServer = createServer(app);
   return httpServer;

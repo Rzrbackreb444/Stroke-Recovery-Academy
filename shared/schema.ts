@@ -6031,3 +6031,49 @@ export const forumVotes = pgTable("forum_votes", {
   pk: primaryKey({ columns: [t.userId, t.postId] }),
 }));
 export type ForumVote = typeof forumVotes.$inferSelect;
+
+// ─── Groups (P2-02) — survivor cohorts, caregiver circles, condition-specific ───
+export const groups = pgTable("groups", {
+  id: serial("id").primaryKey(),
+  slug: varchar("slug", { length: 100 }).notNull().unique(),
+  name: varchar("name", { length: 120 }).notNull(),
+  description: text("description").notNull(),
+  type: varchar("type", { length: 20 }).notNull(), // survivor | caregiver | condition | general
+  conditionTag: varchar("condition_tag", { length: 60 }), // e.g. aphasia, hemiparesis
+  isPrivate: boolean("is_private").notNull().default(false),
+  ownerId: varchar("owner_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  memberCount: integer("member_count").notNull().default(0),
+  iconUrl: text("icon_url"),
+  bannerUrl: text("banner_url"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+export const insertGroupSchema = createInsertSchema(groups).omit({
+  id: true, memberCount: true, createdAt: true,
+});
+export type Group = typeof groups.$inferSelect;
+export type InsertGroup = z.infer<typeof insertGroupSchema>;
+
+export const groupMembers = pgTable("group_members", {
+  groupId: integer("group_id").notNull().references(() => groups.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  role: varchar("role", { length: 10 }).notNull().default("member"), // owner | mod | member
+  joinedAt: timestamp("joined_at").notNull().defaultNow(),
+}, (t) => ({
+  pk: primaryKey({ columns: [t.groupId, t.userId] }),
+}));
+export type GroupMember = typeof groupMembers.$inferSelect;
+
+export const groupPosts = pgTable("group_posts", {
+  id: serial("id").primaryKey(),
+  groupId: integer("group_id").notNull().references(() => groups.id, { onDelete: "cascade" }),
+  authorId: varchar("author_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  content: text("content").notNull(),
+  audioUrl: text("audio_url"),
+  crisisFlag: boolean("crisis_flag").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+export const insertGroupPostSchema = createInsertSchema(groupPosts).omit({
+  id: true, createdAt: true, crisisFlag: true,
+});
+export type GroupPost = typeof groupPosts.$inferSelect;
+export type InsertGroupPost = z.infer<typeof insertGroupPostSchema>;
