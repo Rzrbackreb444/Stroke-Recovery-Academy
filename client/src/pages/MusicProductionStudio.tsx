@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -32,10 +34,14 @@ import { TrackLibrary } from "@/components/music/TrackLibrary";
 
 export default function MusicProductionStudio() {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [activeView, setActiveView] = useState<"dj" | "production" | "ai">("dj");
   const [deckATrack, setDeckATrack] = useState<string | null>(null);
   const [deckBTrack, setDeckBTrack] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [projectId, setProjectId] = useState<number | null>(null);
+  const [projectTitle, setProjectTitle] = useState<string>("Untitled Track");
 
   const handleTrackSelect = (track: any, deck: "A" | "B") => {
     if (deck === "A") {
@@ -46,9 +52,49 @@ export default function MusicProductionStudio() {
   };
 
   const handleSaveProject = async () => {
+    if (!user) {
+      toast({ title: "Sign in required", description: "Log in to save your track.", variant: "destructive" });
+      return;
+    }
     setIsSaving(true);
-    await new Promise(r => setTimeout(r, 1000));
-    setIsSaving(false);
+    try {
+      const payload = { title: projectTitle, genre: "pop", bpm: 120, key: "C", scale: "major" };
+      const res = projectId
+        ? await apiRequest("PATCH", `/api/music/projects/${projectId}`, payload)
+        : await apiRequest("POST", "/api/music/projects", payload);
+      const row = await res.json();
+      setProjectId(row.id);
+      queryClient.invalidateQueries({ queryKey: ["/api/music/projects"] });
+      toast({ title: "Saved", description: `"${row.title}" saved to your library.` });
+    } catch (err: any) {
+      toast({ title: "Save failed", description: err?.message || "Try again.", variant: "destructive" });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handlePublishProject = async () => {
+    if (!user) {
+      toast({ title: "Sign in required", variant: "destructive" });
+      return;
+    }
+    setIsPublishing(true);
+    try {
+      let id = projectId;
+      if (!id) {
+        const res = await apiRequest("POST", "/api/music/projects", { title: projectTitle, genre: "pop", bpm: 120, key: "C", scale: "major" });
+        const row = await res.json();
+        id = row.id;
+        setProjectId(id);
+      }
+      await apiRequest("POST", `/api/music/projects/${id}/publish`, { publish: true });
+      queryClient.invalidateQueries({ queryKey: ["/api/music/projects"] });
+      toast({ title: "Published", description: "Your track is live in your library." });
+    } catch (err: any) {
+      toast({ title: "Publish failed", description: err?.message || "Try again.", variant: "destructive" });
+    } finally {
+      setIsPublishing(false);
+    }
   };
 
   return (
@@ -98,8 +144,14 @@ export default function MusicProductionStudio() {
               <span className="hidden md:inline ml-2">Export</span>
             </Button>
             
-            <Button size="sm" className="bg-[#C9941A] hover:bg-[#C9941A]" data-testid="button-share">
-              <Share2 className="w-4 h-4" />
+            <Button
+              size="sm"
+              className="bg-[#C9941A] hover:bg-[#C9941A]"
+              onClick={handlePublishProject}
+              disabled={isPublishing}
+              data-testid="button-share"
+            >
+              {isPublishing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4" />}
               <span className="hidden md:inline ml-2">Publish</span>
             </Button>
           </div>

@@ -6787,8 +6787,11 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
   app.get('/api/music/projects', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      // TODO: Implement storage.getMusicProjects(userId)
-      res.json([]);
+      const { musicProjects } = await import("@shared/schema");
+      const rows = await db.select().from(musicProjects)
+        .where(eq(musicProjects.userId, userId))
+        .orderBy(desc(musicProjects.updatedAt));
+      res.json(rows);
     } catch (error) {
       console.error("Error fetching music projects:", error);
       res.status(500).json({ message: "Failed to fetch music projects" });
@@ -6799,12 +6802,216 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
   app.post('/api/music/projects', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      const projectData = { ...req.body, userId };
-      // TODO: Implement storage.createMusicProject(projectData)
-      res.json({ id: Date.now(), ...projectData });
+      const { musicProjects } = await import("@shared/schema");
+      const [row] = await db.insert(musicProjects).values({
+        userId,
+        title: req.body.title || "Untitled Track",
+        genre: req.body.genre || "pop",
+        subGenre: req.body.subGenre || null,
+        bpm: req.body.bpm ?? 120,
+        key: req.body.key || "C",
+        scale: req.body.scale || "major",
+        description: req.body.description || null,
+        coverArtUrl: req.body.coverArtUrl || null,
+        status: req.body.status || "draft",
+        duration: req.body.duration ?? null,
+      }).returning();
+      res.json(row);
     } catch (error) {
       console.error("Error creating music project:", error);
       res.status(500).json({ message: "Failed to create music project" });
+    }
+  });
+
+  // Update music project
+  app.patch('/api/music/projects/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const id = parseInt(req.params.id, 10);
+      const { musicProjects } = await import("@shared/schema");
+      const [existing] = await db.select().from(musicProjects).where(eq(musicProjects.id, id));
+      if (!existing || existing.userId !== userId) return res.status(404).json({ message: "Not found" });
+      const patch: any = { updatedAt: new Date() };
+      for (const k of ["title","genre","subGenre","bpm","key","scale","description","coverArtUrl","status","duration"]) {
+        if (k in req.body) patch[k] = req.body[k];
+      }
+      const [row] = await db.update(musicProjects).set(patch).where(eq(musicProjects.id, id)).returning();
+      res.json(row);
+    } catch (error) {
+      console.error("Error updating music project:", error);
+      res.status(500).json({ message: "Failed to update music project" });
+    }
+  });
+
+  // Publish / unpublish music project
+  app.post('/api/music/projects/:id/publish', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const id = parseInt(req.params.id, 10);
+      const { musicProjects } = await import("@shared/schema");
+      const [existing] = await db.select().from(musicProjects).where(eq(musicProjects.id, id));
+      if (!existing || existing.userId !== userId) return res.status(404).json({ message: "Not found" });
+      const [row] = await db.update(musicProjects)
+        .set({ isPublished: req.body.publish !== false, status: "completed", updatedAt: new Date() })
+        .where(eq(musicProjects.id, id))
+        .returning();
+      res.json(row);
+    } catch (error) {
+      console.error("Error publishing music project:", error);
+      res.status(500).json({ message: "Failed to publish music project" });
+    }
+  });
+
+  // ============================================================================
+  // COURSE STUDIO — creator-authored courses (create, save, publish)
+  // ============================================================================
+  app.get('/api/my-courses', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { courses } = await import("@shared/schema");
+      const rows = await db.select().from(courses)
+        .where(eq(courses.instructorId, userId))
+        .orderBy(desc(courses.updatedAt));
+      res.json(rows);
+    } catch (error) {
+      console.error("Error fetching my courses:", error);
+      res.status(500).json({ message: "Failed to fetch courses" });
+    }
+  });
+
+  app.get('/api/my-courses/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const id = parseInt(req.params.id, 10);
+      const { courses, courseModules, courseLessons } = await import("@shared/schema");
+      const [course] = await db.select().from(courses).where(eq(courses.id, id));
+      if (!course || course.instructorId !== userId) return res.status(404).json({ message: "Not found" });
+      const mods = await db.select().from(courseModules).where(eq(courseModules.courseId, id)).orderBy(asc(courseModules.order));
+      const modIds = mods.map(m => m.id);
+      const lessons = modIds.length
+        ? await db.select().from(courseLessons).where(or(...modIds.map(mid => eq(courseLessons.moduleId, mid)))!).orderBy(asc(courseLessons.order))
+        : [];
+      const modulesOut = mods.map(m => ({ ...m, lessons: lessons.filter(l => l.moduleId === m.id) }));
+      res.json({ ...course, modules: modulesOut });
+    } catch (error) {
+      console.error("Error fetching course:", error);
+      res.status(500).json({ message: "Failed to fetch course" });
+    }
+  });
+
+  // Create or update (full upsert of course + modules + lessons in one call)
+  async function saveCourseTree(userId: string, body: any, existingId?: number) {
+    const { courses, courseModules, courseLessons } = await import("@shared/schema");
+    const slugify = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || `course-${Date.now()}`;
+    const baseSlug = slugify(body.title || "untitled-course");
+    const courseData: any = {
+      title: body.title || "Untitled Course",
+      description: body.description || "",
+      thumbnailUrl: body.thumbnailUrl || null,
+      difficulty: body.difficulty || body.level || "beginner",
+      estimatedHours: body.estimatedHours ?? null,
+      category: body.category || "general",
+      instructorId: userId,
+      updatedAt: new Date(),
+    };
+    let course;
+    if (existingId) {
+      const [existing] = await db.select().from(courses).where(eq(courses.id, existingId));
+      if (!existing || existing.instructorId !== userId) throw new Error("NOT_FOUND");
+      [course] = await db.update(courses).set(courseData).where(eq(courses.id, existingId)).returning();
+      // Wipe existing modules (cascade removes lessons)
+      await db.delete(courseModules).where(eq(courseModules.courseId, existingId));
+    } else {
+      // Ensure unique slug
+      let slug = baseSlug;
+      let n = 1;
+      while (true) {
+        const [hit] = await db.select().from(courses).where(eq(courses.slug, slug));
+        if (!hit) break;
+        slug = `${baseSlug}-${++n}`;
+      }
+      [course] = await db.insert(courses).values({ ...courseData, slug, isPublished: false }).returning();
+    }
+    const inputModules: any[] = Array.isArray(body.modules) ? body.modules : [];
+    for (let mi = 0; mi < inputModules.length; mi++) {
+      const m = inputModules[mi];
+      const [mod] = await db.insert(courseModules).values({
+        courseId: course.id,
+        title: m.title || `Module ${mi + 1}`,
+        description: m.description || null,
+        order: mi,
+      }).returning();
+      const inputLessons: any[] = Array.isArray(m.lessons) ? m.lessons : [];
+      if (inputLessons.length) {
+        await db.insert(courseLessons).values(inputLessons.map((l: any, li: number) => ({
+          moduleId: mod.id,
+          title: l.title || `Lesson ${li + 1}`,
+          content: l.content || "",
+          videoUrl: l.videoUrl || null,
+          duration: typeof l.duration === "number" ? l.duration : null,
+          order: li,
+          lessonType: l.type || l.lessonType || "text",
+          resources: l.resources || null,
+        })));
+      }
+    }
+    return course;
+  }
+
+  app.post('/api/my-courses', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const course = await saveCourseTree(userId, req.body);
+      res.json(course);
+    } catch (error) {
+      console.error("Error creating course:", error);
+      res.status(500).json({ message: "Failed to create course" });
+    }
+  });
+
+  app.patch('/api/my-courses/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const id = parseInt(req.params.id, 10);
+      const course = await saveCourseTree(userId, req.body, id);
+      res.json(course);
+    } catch (error: any) {
+      if (error?.message === "NOT_FOUND") return res.status(404).json({ message: "Not found" });
+      console.error("Error updating course:", error);
+      res.status(500).json({ message: "Failed to update course" });
+    }
+  });
+
+  app.post('/api/my-courses/:id/publish', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const id = parseInt(req.params.id, 10);
+      const { courses } = await import("@shared/schema");
+      const [existing] = await db.select().from(courses).where(eq(courses.id, id));
+      if (!existing || existing.instructorId !== userId) return res.status(404).json({ message: "Not found" });
+      const [row] = await db.update(courses)
+        .set({ isPublished: req.body.publish !== false, updatedAt: new Date() })
+        .where(eq(courses.id, id))
+        .returning();
+      res.json(row);
+    } catch (error) {
+      console.error("Error publishing course:", error);
+      res.status(500).json({ message: "Failed to publish course" });
+    }
+  });
+
+  app.delete('/api/my-courses/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const id = parseInt(req.params.id, 10);
+      const { courses } = await import("@shared/schema");
+      const [existing] = await db.select().from(courses).where(eq(courses.id, id));
+      if (!existing || existing.instructorId !== userId) return res.status(404).json({ message: "Not found" });
+      await db.delete(courses).where(eq(courses.id, id));
+      res.json({ ok: true });
+    } catch (error) {
+      console.error("Error deleting course:", error);
+      res.status(500).json({ message: "Failed to delete course" });
     }
   });
 
