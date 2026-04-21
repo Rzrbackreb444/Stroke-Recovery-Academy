@@ -153,6 +153,7 @@ import RecoveryAnthem from "@/pages/RecoveryAnthem";
 import RecoveryPricing from "@/pages/RecoveryPricing";
 import GiftSurvivor from "@/pages/GiftSurvivor";
 import CoursePlayer from "@/pages/CoursePlayer";
+import InstructorAnalytics from "@/pages/InstructorAnalytics";
 import CourseQuiz from "@/pages/CourseQuiz";
 import CourseCertificate from "@/pages/CourseCertificate";
 import StudentDashboard from "@/pages/StudentDashboard";
@@ -586,6 +587,7 @@ function Router() {
       
       {/* Course Learning Pages */}
       <Route path="/course/:courseId" component={CoursePlayer} />
+      <Route path="/instructor/analytics" component={InstructorAnalytics} />
       <Route path="/course/:courseId/quiz/:quizId" component={CourseQuiz} />
       <Route path="/certificate/:courseId" component={CourseCertificate} />
       <Route path="/my-learning">
