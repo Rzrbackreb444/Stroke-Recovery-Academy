@@ -64,6 +64,7 @@ Icons: lucide-react only (no emoji)
 - **SEO Command Center**: External website optimization tools for analysis, keyword research, and sitemap generation.
 - **Lulu Publishing Integration**: Professional Print-on-Demand via OAuth2 API for book production and orders.
 - **Course Social Layer (P2)**: Forums, Groups, per-course Cohorts (auto-created weekly with 30-day window, voice posts via Whisper, crisis-keyword detection → 988), course Reviews + ratings (1-5 stars, verified-completion badge from `userCourseProgress`, helpful upvotes), and an Instructor Analytics dashboard at `/instructor/analytics` (enrollments, completion %, weighted avg rating, 85% earnings split — pending vs paid).
+- **Direct Messaging + Therapist Open Hours (P3-01)**: 1:1 and group DMs at `/messages` with read receipts and conversation list. Verified therapists set weekly availability windows at `/settings/therapist-hours` (`PUT /api/therapists/me/hours`); the `TherapistAvailabilityBadge` component fetches `/api/therapists/:userId/availability` and shows survivors an "Open Hours · until 17:00" / "Open tomorrow 09:00" hint in the chat header so they know when to expect a reply.
 - **Stroke Recovery OS**: Dedicated platform with a dark OS theme, including:
     - **Recovery Dashboard**: Daily check-ins, habit tracking, motivational content.
     - **Recovery University**: Interactive, graded curriculum with lessons, quizzes, and certificates.
