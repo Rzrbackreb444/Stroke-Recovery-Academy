@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { RotateCw, Pause, Play } from "lucide-react";
+import { RotateCw, Pause, Play, Eye } from "lucide-react";
 import type { PackEntry } from "@shared/brainGymPacks";
 import { playCorrect, playWrong } from "@/lib/gameAudio";
 import { saveGame, loadGame, clearGame } from "@/lib/gameStorage";
 import GameCompleteModal, { type GameCompletionStats } from "./GameCompleteModal";
+
+const PREVIEW_SECONDS = 20;
 
 interface Props {
   entries: PackEntry[];
@@ -70,6 +72,7 @@ export default function MemoryMatchGame({
   const [pauseStartedAt, setPauseStartedAt] = useState<number | null>(null);
   const [tick, setTick] = useState(0);
   const [announce, setAnnounce] = useState("");
+  const [previewRemaining, setPreviewRemaining] = useState(PREVIEW_SECONDS);
 
   const cards = useMemo<Card[]>(() => {
     const chosen = shuffle(entries, seed).slice(0, pairs);
@@ -101,6 +104,7 @@ export default function MemoryMatchGame({
         setPaused(false);
         setPauseStartedAt(null);
       }
+      setPreviewRemaining(0); // resumed games skip preview
     } else {
       const fresh = Date.now();
       setSeed(fresh);
@@ -112,10 +116,32 @@ export default function MemoryMatchGame({
       setPausedMs(0);
       setPaused(false);
       setPauseStartedAt(null);
+      setPreviewRemaining(PREVIEW_SECONDS);
     }
     setModalOpen(false);
     setCompletionStats(null);
   }, [packId, difficulty]);
+
+  // Preview countdown — all cards face-up, then flip back and start clock
+  useEffect(() => {
+    if (previewRemaining <= 0) return;
+    if (paused || solved) return;
+    const t = setTimeout(() => {
+      setPreviewRemaining((r) => {
+        const next = r - 1;
+        if (next <= 0) {
+          // Preview ended — reset the timer baseline so elapsed clock starts from 0
+          setStartedAt(Date.now());
+          setPausedMs(0);
+          setAnnounce("Preview over. Cards hidden. Go!");
+        }
+        return next;
+      });
+    }, 1000);
+    return () => clearTimeout(t);
+  }, [previewRemaining, paused, solved]);
+
+  const inPreview = previewRemaining > 0;
 
   // Live clock — ticks every second while playing
   useEffect(() => {
@@ -206,6 +232,7 @@ export default function MemoryMatchGame({
 
   function handleFlip(id: number) {
     if (paused) return;
+    if (inPreview) return;
     if (flipped.length === 2) return;
     if (matched.includes(id) || flipped.includes(id)) return;
     setFlipped((prev) => [...prev, id]);
@@ -224,10 +251,11 @@ export default function MemoryMatchGame({
     setPausedMs(0);
     setPaused(false);
     setPauseStartedAt(null);
+    setPreviewRemaining(PREVIEW_SECONDS);
     clearGame(saveKey, packId, difficulty);
   }
 
-  const isFlipped = (id: number) => flipped.includes(id) || matched.includes(id);
+  const isFlipped = (id: number) => inPreview || flipped.includes(id) || matched.includes(id);
   const isMatched = (id: number) => matched.includes(id);
 
   return (
@@ -238,15 +266,27 @@ export default function MemoryMatchGame({
             <p className="text-sm text-gray-400">
               Match each <span className="font-semibold" style={{ color: accent }}>word</span> to its definition.
             </p>
-            <div
-              className="flex items-center gap-2 rounded-md border border-[#1e1e1e] bg-[#0f0f0f] px-3 py-1.5 font-mono text-sm tabular-nums text-gray-300"
-              data-testid="text-mm-clock"
-              aria-label={`Elapsed time: ${formatClock(elapsedSec)}`}
-            >
-              <span className={`inline-block h-2 w-2 rounded-full ${paused ? "bg-gray-500" : "bg-[#C9941A] animate-pulse"}`} />
-              {formatClock(elapsedSec)}
-              {paused && <span className="ml-1 text-xs uppercase tracking-widest text-gray-500">Paused</span>}
-            </div>
+            {inPreview ? (
+              <div
+                className="flex items-center gap-2 rounded-md border px-3 py-1.5 font-mono text-sm tabular-nums"
+                style={{ borderColor: `${accent}55`, backgroundColor: `${accent}14`, color: accent }}
+                data-testid="text-mm-preview"
+                aria-label={`Memorize the cards — ${previewRemaining} seconds remaining`}
+              >
+                <Eye className="h-3.5 w-3.5" style={{ color: accent }} />
+                Memorize · {previewRemaining}s
+              </div>
+            ) : (
+              <div
+                className="flex items-center gap-2 rounded-md border border-[#1e1e1e] bg-[#0f0f0f] px-3 py-1.5 font-mono text-sm tabular-nums text-gray-300"
+                data-testid="text-mm-clock"
+                aria-label={`Elapsed time: ${formatClock(elapsedSec)}`}
+              >
+                <span className={`inline-block h-2 w-2 rounded-full ${paused ? "bg-gray-500" : "bg-[#C9941A] animate-pulse"}`} />
+                {formatClock(elapsedSec)}
+                {paused && <span className="ml-1 text-xs uppercase tracking-widest text-gray-500">Paused</span>}
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-3">
             <span className="text-sm text-gray-400" data-testid="text-mm-progress">
