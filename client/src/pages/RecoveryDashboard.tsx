@@ -30,6 +30,7 @@ import {
 import SixtyDayTracker from "@/components/recovery/SixtyDayTracker";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import FadeUpSection from "@/components/FadeUpSection";
+import SasquatchQuoteModal from "@/components/SasquatchQuoteModal";
 
 const MOOD_OPTIONS = [
   { value: 2, label: "Rough" },
@@ -82,6 +83,7 @@ export default function RecoveryDashboard() {
     tomorrowsTarget: "",
   });
   const [showNotes, setShowNotes] = useState(false);
+  const [checkinReward, setCheckinReward] = useState<{ quote: any; creditsEarned: number; streakBonusLabel?: string | null; streak?: number } | null>(null);
   const [createPodOpen, setCreatePodOpen] = useState(false);
   const [newPodName, setNewPodName] = useState("");
   const [newPodDescription, setNewPodDescription] = useState("");
@@ -107,14 +109,26 @@ export default function RecoveryDashboard() {
 
   const checkinMutation = useMutation({
     mutationFn: async (data: any) => {
-      return apiRequest("POST", "/api/recovery/checkin", data);
+      const r = await apiRequest("POST", "/api/recovery/checkin", data);
+      return r.json();
     },
-    onSuccess: () => {
+    onSuccess: (data: any) => {
       queryClient.invalidateQueries({ queryKey: ["/api/recovery/dashboard"] });
-      toast({ title: "Check-in complete!", description: "Great job staying consistent!" });
+      queryClient.invalidateQueries({ queryKey: ["/api/credits/balance"] });
+      if (data?.quote) {
+        setCheckinReward({
+          quote: data.quote,
+          creditsEarned: data.creditsEarned || 10,
+          streakBonusLabel: data.streakBonusLabel,
+          streak: data.streak?.current,
+        });
+      } else {
+        toast({ title: "Check-in complete!", description: "Great job staying consistent!" });
+      }
     },
-    onError: () => {
-      toast({ title: "Error", description: "Could not save check-in", variant: "destructive" });
+    onError: (e: any) => {
+      const msg = e?.message?.includes("Already checked in") ? "You already checked in today. Come back tomorrow." : "Could not save check-in";
+      toast({ title: "Check-in", description: msg, variant: "destructive" });
     },
   });
 
@@ -1204,6 +1218,14 @@ export default function RecoveryDashboard() {
         </FadeUpSection>
 
         <SasquatchChatWidget />
+        <SasquatchQuoteModal
+          open={!!checkinReward}
+          onClose={() => setCheckinReward(null)}
+          quote={checkinReward?.quote || null}
+          creditsEarned={checkinReward?.creditsEarned || 0}
+          streakBonusLabel={checkinReward?.streakBonusLabel}
+          streak={checkinReward?.streak}
+        />
       </main>
     </div>
   );

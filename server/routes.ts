@@ -9011,7 +9011,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       
       const existing = await storage.getDailyCheckin(userId, new Date());
       if (existing) {
-        return res.status(400).json({ message: "Already checked in today" });
+        return res.status(400).json({ message: "Already checked in today", alreadyCheckedIn: true });
       }
       
       const checkin = await storage.createDailyCheckin({
@@ -9047,8 +9047,29 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         lastActivityDate: today,
         totalActiveDays: (streak?.totalActiveDays || 0) + 1,
       });
-      
-      res.json(checkin);
+
+      // Credit reward: 10 base + streak milestones (7 / 30 / 66 days)
+      let creditsEarned = 10;
+      let streakBonusLabel: string | null = null;
+      if (newCurrentStreak === 7)  { creditsEarned += 25;  streakBonusLabel = '7-day Streak'; }
+      if (newCurrentStreak === 30) { creditsEarned += 50;  streakBonusLabel = '30-day Streak'; }
+      if (newCurrentStreak === 66) { creditsEarned += 100; streakBonusLabel = '66-day Transformation'; }
+      try {
+        const { addCredits } = await import('./creditService');
+        await addCredits(userId, creditsEarned, 'bonus', `Daily check-in${streakBonusLabel ? ' + ' + streakBonusLabel : ''}`, { streak: newCurrentStreak });
+      } catch (e) { console.error('[checkin] credit award failed', e); }
+
+      // Sasquatch quote reward
+      const { pickSasquatchQuote } = await import('./sasquatchQuotes');
+      const quote = pickSasquatchQuote();
+
+      res.json({
+        checkin,
+        streak: { current: newCurrentStreak, longest: Math.max(newCurrentStreak, streak?.longestStreak || 0) },
+        creditsEarned,
+        streakBonusLabel,
+        quote,
+      });
     } catch (error) {
       console.error("Error creating checkin:", error);
       res.status(500).json({ message: "Failed to create checkin" });
@@ -23158,10 +23179,12 @@ Format as structured JSON with clear sections.`;
   const { registerTherapistRoutes } = await import('./routes/therapistRoutes');
   const { registerCourseUnlockRoutes } = await import('./routes/courseUnlockRoutes');
   const { registerSurvivorProfileRoutes } = await import('./routes/survivorProfileRoutes');
+  const { registerEngagementRoutes } = await import('./routes/engagementRoutes');
   registerPowerPointsRoutes(app, isAuthenticated);
   registerTherapistRoutes(app, isAuthenticated);
   registerCourseUnlockRoutes(app, isAuthenticated);
   registerSurvivorProfileRoutes(app, isAuthenticated);
+  registerEngagementRoutes(app, isAuthenticated);
 
   const httpServer = createServer(app);
   return httpServer;

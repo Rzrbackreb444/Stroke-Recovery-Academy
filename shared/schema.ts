@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, pgSchema, text, varchar, timestamp, integer, boolean, jsonb, serial, index, uniqueIndex, real, customType, uuid } from "drizzle-orm/pg-core";
+import { pgTable, pgSchema, text, varchar, timestamp, integer, boolean, jsonb, serial, index, uniqueIndex, real, customType, uuid, primaryKey } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -298,6 +298,11 @@ export const users = pgTable("users", {
   // Power Points: opt-in to receive gifts + public slug for share link
   acceptsPowerPoints: boolean("accepts_power_points").notNull().default(true),
   publicSlug: varchar("public_slug").unique(),
+  lastDailyGiftAt: timestamp("last_daily_gift_at"),
+  // Avatar system — distinct from profileImageUrl (which is Replit Auth photo)
+  avatarUrl: text("avatar_url"),
+  avatarStyle: text("avatar_style"),           // generated | uploaded | gallery
+  avatarGeneratedPrompt: text("avatar_generated_prompt"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -469,15 +474,63 @@ export const courses = pgTable("courses", {
   slug: text("slug").notNull().unique(),
   description: text("description").notNull(),
   thumbnailUrl: text("thumbnail_url"),
+  ogImageUrl: text("og_image_url"),
+  // difficulty lane: survival | rebuild | rise | reign (P1 four-tier)
   difficulty: text("difficulty").notNull(),
   estimatedHours: integer("estimated_hours"),
-  category: text("category").notNull(),
+  category: text("category").notNull(), // legacy single-category; new multi-tag lives in courseCategoryTags
   instructorId: varchar("instructor_id").references(() => users.id),
+  status: text("status").notNull().default("draft"), // draft | preview | published
+  priceCredits: integer("price_credits").notNull().default(0),
   isPublished: boolean("is_published").notNull().default(false),
   enrollmentCount: integer("enrollment_count").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+// ─── Course taxonomy (multi-category + prerequisites) ───────────────────────
+export const courseCategories = pgTable("course_categories", {
+  id: serial("id").primaryKey(),
+  slug: varchar("slug").notNull().unique(),
+  name: text("name").notNull(),
+  icon: text("icon"),       // lucide-react icon name
+  color: text("color"),     // hex accent
+  sortOrder: integer("sort_order").notNull().default(0),
+});
+
+export const courseCategoryTags = pgTable("course_category_tags", {
+  courseId: integer("course_id").notNull().references(() => courses.id, { onDelete: "cascade" }),
+  categoryId: integer("category_id").notNull().references(() => courseCategories.id, { onDelete: "cascade" }),
+}, (t) => ({
+  pk: primaryKey({ columns: [t.courseId, t.categoryId] }),
+}));
+
+export const coursePrerequisites = pgTable("course_prerequisites", {
+  courseId: integer("course_id").notNull().references(() => courses.id, { onDelete: "cascade" }),
+  prerequisiteCourseId: integer("prerequisite_course_id").notNull().references(() => courses.id, { onDelete: "cascade" }),
+}, (t) => ({
+  pk: primaryKey({ columns: [t.courseId, t.prerequisiteCourseId] }),
+}));
+
+// ─── User badges (earned achievements, driven by engagement events) ─────────
+export const userBadges = pgTable("user_badges", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  badgeKey: varchar("badge_key").notNull(), // e.g. 'streak_7', 'first_course_complete'
+  earnedAt: timestamp("earned_at").notNull().defaultNow(),
+  metadata: jsonb("metadata"),
+}, (t) => ({
+  userIdx: index("user_badges_user_idx").on(t.userId),
+  uniq: uniqueIndex("user_badges_user_badge_unique").on(t.userId, t.badgeKey),
+}));
+
+export const insertCourseCategorySchema = createInsertSchema(courseCategories).omit({ id: true });
+export type InsertCourseCategory = z.infer<typeof insertCourseCategorySchema>;
+export type CourseCategory = typeof courseCategories.$inferSelect;
+
+export const insertUserBadgeSchema = createInsertSchema(userBadges).omit({ id: true, earnedAt: true });
+export type InsertUserBadge = z.infer<typeof insertUserBadgeSchema>;
+export type UserBadge = typeof userBadges.$inferSelect;
 
 export const courseModules = pgTable("course_modules", {
   id: serial("id").primaryKey(),
