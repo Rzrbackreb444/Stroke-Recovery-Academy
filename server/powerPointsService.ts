@@ -4,7 +4,7 @@ import { and, desc, eq, sql } from 'drizzle-orm';
 import { addCredits } from './creditService';
 import { getRecoveryStripeClient } from './recoveryStripeClient';
 
-export type PowerPointPackageKey = 'spark' | 'boost' | 'surge' | 'beast';
+export type PowerPointPackageKey = 'cheer' | 'spark' | 'boost' | 'surge' | 'beast';
 
 export interface PowerPointPackage {
   key: PowerPointPackageKey;
@@ -15,6 +15,7 @@ export interface PowerPointPackage {
 }
 
 export const POWER_POINT_PACKAGES: Record<PowerPointPackageKey, PowerPointPackage> = {
+  cheer: { key: 'cheer', label: 'Cheer', tagline: 'Just say I see you', points: 25, amountCents: 100 },
   spark: { key: 'spark', label: 'Spark',     tagline: 'A quick push',         points: 100,  amountCents: 500  },
   boost: { key: 'boost', label: 'Boost',     tagline: 'A real lift',          points: 250,  amountCents: 1000 },
   surge: { key: 'surge', label: 'Surge',     tagline: 'Game-changer',         points: 600,  amountCents: 2000 },
