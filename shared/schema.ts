@@ -1698,7 +1698,9 @@ export const videoSessionParticipants = pgTable("video_session_participants", {
   joinedAt: timestamp("joined_at"),
   leftAt: timestamp("left_at"),
   status: text("status").notNull().default("invited"), // invited, joined, left
-});
+}, (t) => ({
+  uniqSessionUser: uniqueIndex("video_session_participants_session_user_unique").on(t.sessionId, t.userId),
+}));
 
 // ============================================================================
 // STROKE RECOVERY ACADEMY - Powered by Stroke Lyfe Inc
