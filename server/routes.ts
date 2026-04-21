@@ -1977,7 +1977,16 @@ Allow: /
     try {
       const userId = req.user.claims.sub;
       const { categoryId, title, content } = req.body;
-      
+
+      // P2-01: crisis detection on the original post too
+      const CRISIS_RX = [
+        /\bkill (my|her|his|them)self\b/i, /\bsuicid(e|al)\b/i,
+        /\bend (it|my life|it all)\b/i, /\b(i (want|am going) to die)\b/i,
+        /\bno reason to (live|go on)\b/i, /\bself[- ]harm\b/i, /\bhurt(ing)? myself\b/i,
+      ];
+      const crisisFlag = CRISIS_RX.some((rx) =>
+        rx.test(String(title || "")) || rx.test(String(content || "")));
+
       const thread = await storage.createForumThread({
         categoryId,
         authorId: userId,
@@ -1991,9 +2000,11 @@ Allow: /
         threadId: thread.id,
         authorId: userId,
         content,
-      });
+        isOriginal: true,
+        crisisFlag,
+      } as any);
 
-      res.json(thread);
+      res.json({ ...thread, crisis: crisisFlag });
     } catch (error) {
       console.error("Error creating forum thread:", error);
       res.status(500).json({ message: "Failed to create forum thread" });
@@ -2003,15 +2014,25 @@ Allow: /
   app.post('/api/forum/posts', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      const { threadId, content } = req.body;
-      
+      const { threadId, content, parentId } = req.body;
+
+      // P2-01: crisis detection
+      const CRISIS_RX = [
+        /\bkill (my|her|his|them)self\b/i, /\bsuicid(e|al)\b/i,
+        /\bend (it|my life|it all)\b/i, /\b(i (want|am going) to die)\b/i,
+        /\bno reason to (live|go on)\b/i, /\bself[- ]harm\b/i, /\bhurt(ing)? myself\b/i,
+      ];
+      const crisisFlag = CRISIS_RX.some((rx) => rx.test(String(content || "")));
+
       const post = await storage.createForumPost({
         threadId,
         authorId: userId,
         content,
-      });
+        parentId: parentId ? parseInt(parentId, 10) : null,
+        crisisFlag,
+      } as any);
 
-      res.json(post);
+      res.json({ ...post, crisis: crisisFlag });
     } catch (error) {
       console.error("Error creating forum post:", error);
       res.status(500).json({ message: "Failed to create forum post" });
@@ -23258,6 +23279,7 @@ Format as structured JSON with clear sections.`;
   const { registerQuizRoutes } = await import('./routes/quizRoutes');
   const { registerAvatarRoutes } = await import('./routes/avatarRoutes');
   const { registerCourseStudioExtrasRoutes, seedCourseCategoriesIfEmpty } = await import('./routes/courseStudioExtrasRoutes');
+  const { registerForumRoutes, seedForumBoardsIfEmpty } = await import('./routes/forumRoutes');
   registerPowerPointsRoutes(app, isAuthenticated);
   registerTherapistRoutes(app, isAuthenticated);
   registerCourseUnlockRoutes(app, isAuthenticated);
@@ -23267,7 +23289,9 @@ Format as structured JSON with clear sections.`;
   registerQuizRoutes(app, isAuthenticated, uploadsDir);
   registerAvatarRoutes(app, isAuthenticated, uploadsDir);
   registerCourseStudioExtrasRoutes(app, isAuthenticated);
+  registerForumRoutes(app, isAuthenticated, uploadsDir);
   seedCourseCategoriesIfEmpty().catch(() => {});
+  seedForumBoardsIfEmpty().catch(() => {});
 
   const httpServer = createServer(app);
   return httpServer;
