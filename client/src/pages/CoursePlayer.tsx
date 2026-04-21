@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CohortPanel from "@/components/CohortPanel";
+import ReviewsPanel from "@/components/ReviewsPanel";
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -807,6 +808,7 @@ export default function CoursePlayer() {
                   <TabsTrigger value="resources">Resources</TabsTrigger>
                   <TabsTrigger value="discussion">Discussion</TabsTrigger>
                   <TabsTrigger value="cohort" data-testid="tab-cohort">Cohort</TabsTrigger>
+                  <TabsTrigger value="reviews" data-testid="tab-reviews">Reviews</TabsTrigger>
                   <TabsTrigger value="notes">My Notes</TabsTrigger>
                 </TabsList>
 
@@ -816,6 +818,15 @@ export default function CoursePlayer() {
                     return Number.isFinite(cidNum)
                       ? <CohortPanel courseId={cidNum} />
                       : <div className="text-gray-400 text-sm py-6 text-center">Cohorts unavailable for this course.</div>;
+                  })()}
+                </TabsContent>
+
+                <TabsContent value="reviews" className="mt-4">
+                  {(() => {
+                    const cidNum = parseInt(String(courseId ?? ""), 10);
+                    return Number.isFinite(cidNum)
+                      ? <ReviewsPanel courseId={cidNum} />
+                      : <div className="text-gray-400 text-sm py-6 text-center">Reviews unavailable for this course.</div>;
                   })()}
                 </TabsContent>
                 
