@@ -5,6 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import GlobalHeader from "@/components/GlobalHeader";
+import RecoveryHeader from "@/components/RecoveryHeader";
 
 // Creator Platform Pages
 import CreatorLanding from "@/pages/CreatorLanding";
@@ -12,6 +13,8 @@ import Dashboard from "@/pages/Dashboard";
 import OnboardingFlow, { useOnboardingComplete } from "@/components/OnboardingFlow";
 import Community from "@/pages/Community";
 import Thread from "@/pages/Thread";
+import Groups from "@/pages/Groups";
+import GroupDetail from "@/pages/GroupDetail";
 import About from "@/pages/About";
 import AboutUs from "@/pages/AboutUs";
 import Marketplace from "@/pages/Marketplace";
@@ -178,7 +181,7 @@ function HomeLanding() {
 function Router() {
   return (
     <>
-    <GlobalHeader />
+    <RecoveryHeader />
     <Switch>
       {/* ============================================ */}
       {/* HOME - Domain-based landing page */}
@@ -195,6 +198,8 @@ function Router() {
       </Route>
       <Route path="/community" component={Community} />
       <Route path="/community/thread/:id" component={Thread} />
+      <Route path="/groups" component={Groups} />
+      <Route path="/groups/:slug" component={GroupDetail} />
       <Route path="/about" component={About} />
       <Route path="/about-us" component={AboutUs} />
       <Route path="/marketplace" component={Marketplace} />

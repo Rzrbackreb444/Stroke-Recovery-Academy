@@ -11,7 +11,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import strokeLyfeLogo from "@assets/Untitled_design_1776789083877.png";
+import strokeLyfeLogo from "@assets/Untitled_design_1776803832326.png";
+
+// Shared site-header singleton — first mount wins (covers RecoveryHeader
+// and GlobalHeader both), so legacy per-page header mounts are suppressed.
+import { siteHeaderRegistry } from "./siteHeaderRegistry";
 
 const primaryNav = [
   { href: "/recovery/academy", label: "Learn" },
@@ -27,6 +31,8 @@ const resourcesNav = [
   { href: "/recovery/blog", label: "Blog" },
   { href: "/recovery/spotlight", label: "Spotlight" },
   { href: "/recovery/survivor-income", label: "Earn Income" },
+  { href: "/groups", label: "Groups" },
+  { href: "/marketplace", label: "Marketplace" },
   { href: "/recovery/pricing", label: "Pricing" },
 ];
 
@@ -34,8 +40,17 @@ export default function RecoveryHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [resourcesOpen, setResourcesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isPrimary, setIsPrimary] = useState(false);
   const [location] = useLocation();
   const { user, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!siteHeaderRegistry.mounted) {
+      siteHeaderRegistry.mounted = true;
+      setIsPrimary(true);
+      return () => { siteHeaderRegistry.mounted = false; };
+    }
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -47,6 +62,8 @@ export default function RecoveryHeader() {
     setMobileOpen(false);
     setResourcesOpen(false);
   }, [location]);
+
+  if (!isPrimary) return null;
 
   return (
     <header
