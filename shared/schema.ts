@@ -5764,3 +5764,51 @@ export const routineCompletions = pgTable("routine_completions", {
 export const insertRoutineCompletionSchema = createInsertSchema(routineCompletions).omit({ id: true, updatedAt: true });
 export type RoutineCompletion = typeof routineCompletions.$inferSelect;
 export type InsertRoutineCompletion = z.infer<typeof insertRoutineCompletionSchema>;
+
+// ============================================================================
+// VIDEO STUDIO — user-authored video projects (timeline + assets state)
+// ============================================================================
+export const videoProjects = pgTable("video_projects", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  description: text("description"),
+  thumbnailUrl: text("thumbnail_url"),
+  videoUrl: text("video_url"),
+  duration: integer("duration"),
+  timeline: jsonb("timeline"),
+  assets: jsonb("assets"),
+  aspectRatio: text("aspect_ratio").notNull().default("16:9"),
+  resolution: text("resolution").notNull().default("1080p"),
+  status: text("status").notNull().default("draft"),
+  isPublished: boolean("is_published").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+export const insertVideoProjectSchema = createInsertSchema(videoProjects).omit({ id: true, createdAt: true, updatedAt: true });
+export type VideoProject = typeof videoProjects.$inferSelect;
+export type InsertVideoProject = z.infer<typeof insertVideoProjectSchema>;
+
+// ============================================================================
+// IMAGE STUDIO — user-saved image assets (gallery)
+// ============================================================================
+export const imageProjects = pgTable("image_projects", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  description: text("description"),
+  imageUrl: text("image_url").notNull(),
+  thumbnailUrl: text("thumbnail_url"),
+  width: integer("width"),
+  height: integer("height"),
+  source: text("source").notNull().default("upload"),
+  prompt: text("prompt"),
+  edits: jsonb("edits"),
+  tags: text("tags").array().notNull().default([]),
+  isPublished: boolean("is_published").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+export const insertImageProjectSchema = createInsertSchema(imageProjects).omit({ id: true, createdAt: true, updatedAt: true });
+export type ImageProject = typeof imageProjects.$inferSelect;
+export type InsertImageProject = z.infer<typeof insertImageProjectSchema>;

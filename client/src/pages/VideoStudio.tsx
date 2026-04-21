@@ -1,4 +1,7 @@
 import { useState, useRef, useCallback } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import GlobalHeader from "@/components/GlobalHeader";
 import SEO from "@/components/SEO";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -204,6 +207,12 @@ const initialTracks: TimelineTrack[] = [
 ];
 
 export default function VideoStudio() {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [videoProjectId, setVideoProjectId] = useState<number | null>(null);
+  const [videoTitle, setVideoTitle] = useState<string>("Untitled Video");
+  const [isSavingProject, setIsSavingProject] = useState(false);
+  const [isPublishingVideo, setIsPublishingVideo] = useState(false);
   const [activeTab, setActiveTab] = useState("upload");
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -254,6 +263,61 @@ export default function VideoStudio() {
     }
   }, []);
 
+  const buildVideoPayload = () => ({
+    title: videoTitle,
+    duration,
+    aspectRatio: "16:9",
+    resolution: "1080p",
+    timeline: { currentTime, volume, selectedTemplate },
+    assets: { fileNames: uploadedFiles.map(f => f.name) },
+  });
+
+  const handleSaveVideoProject = async () => {
+    if (!user) {
+      toast({ title: "Sign in required", description: "Log in to save your video project.", variant: "destructive" });
+      return;
+    }
+    setIsSavingProject(true);
+    try {
+      const payload = buildVideoPayload();
+      const res = videoProjectId
+        ? await apiRequest("PATCH", `/api/video/projects/${videoProjectId}`, payload)
+        : await apiRequest("POST", "/api/video/projects", payload);
+      const row = await res.json();
+      setVideoProjectId(row.id);
+      queryClient.invalidateQueries({ queryKey: ["/api/video/projects"] });
+      toast({ title: "Project saved", description: `"${row.title}" saved to your library.` });
+    } catch (err: any) {
+      toast({ title: "Save failed", description: err?.message || "Try again.", variant: "destructive" });
+    } finally {
+      setIsSavingProject(false);
+    }
+  };
+
+  const handlePublishVideo = async () => {
+    if (!user) {
+      toast({ title: "Sign in required", variant: "destructive" });
+      return;
+    }
+    setIsPublishingVideo(true);
+    try {
+      let id = videoProjectId;
+      if (!id) {
+        const res = await apiRequest("POST", "/api/video/projects", buildVideoPayload());
+        const row = await res.json();
+        id = row.id;
+        setVideoProjectId(id);
+      }
+      await apiRequest("POST", `/api/video/projects/${id}/publish`, { publish: true });
+      queryClient.invalidateQueries({ queryKey: ["/api/video/projects"] });
+      toast({ title: "Published", description: "Your video project is live in your library." });
+    } catch (err: any) {
+      toast({ title: "Publish failed", description: err?.message || "Try again.", variant: "destructive" });
+    } finally {
+      setIsPublishingVideo(false);
+    }
+  };
+
   const handleExport = async () => {
     setIsExporting(true);
     setExportProgress(0);
@@ -262,6 +326,8 @@ export default function VideoStudio() {
       setExportProgress(i);
     }
     setIsExporting(false);
+    // Also persist the project so the user can come back to it
+    await handleSaveVideoProject();
   };
 
   const handleAITool = async (toolId: string) => {
@@ -1275,17 +1341,29 @@ export default function VideoStudio() {
                         variant="outline"
                         className="flex-1 border-[#C9941A]/30 text-foreground"
                         data-testid="button-save-project"
+                        onClick={handleSaveVideoProject}
+                        disabled={isSavingProject}
                       >
-                        <Save className="w-4 h-4 mr-2" />
-                        Save
+                        {isSavingProject ? (
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        ) : (
+                          <Save className="w-4 h-4 mr-2" />
+                        )}
+                        {isSavingProject ? "Saving…" : "Save"}
                       </Button>
                       <Button
                         variant="outline"
                         className="flex-1 border-[#C9941A]/30 text-foreground"
-                        data-testid="button-share"
+                        data-testid="button-publish-video"
+                        onClick={handlePublishVideo}
+                        disabled={isPublishingVideo}
                       >
-                        <Share2 className="w-4 h-4 mr-2" />
-                        Share
+                        {isPublishingVideo ? (
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        ) : (
+                          <Share2 className="w-4 h-4 mr-2" />
+                        )}
+                        {isPublishingVideo ? "Publishing…" : "Publish"}
                       </Button>
                     </div>
                   </TabsContent>

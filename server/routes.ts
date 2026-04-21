@@ -7015,6 +7015,193 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
     }
   });
 
+  // ============================================================================
+  // VIDEO STUDIO — user projects (create, save, publish)
+  // ============================================================================
+  app.get('/api/video/projects', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { videoProjects } = await import("@shared/schema");
+      const rows = await db.select().from(videoProjects)
+        .where(eq(videoProjects.userId, userId))
+        .orderBy(desc(videoProjects.updatedAt));
+      res.json(rows);
+    } catch (error) {
+      console.error("Error fetching video projects:", error);
+      res.status(500).json({ message: "Failed to fetch video projects" });
+    }
+  });
+
+  app.post('/api/video/projects', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { videoProjects } = await import("@shared/schema");
+      const [row] = await db.insert(videoProjects).values({
+        userId,
+        title: req.body.title || "Untitled Video",
+        description: req.body.description || null,
+        thumbnailUrl: req.body.thumbnailUrl || null,
+        videoUrl: req.body.videoUrl || null,
+        duration: req.body.duration ?? null,
+        timeline: req.body.timeline || null,
+        assets: req.body.assets || null,
+        aspectRatio: req.body.aspectRatio || "16:9",
+        resolution: req.body.resolution || "1080p",
+        status: req.body.status || "draft",
+      }).returning();
+      res.json(row);
+    } catch (error) {
+      console.error("Error creating video project:", error);
+      res.status(500).json({ message: "Failed to create video project" });
+    }
+  });
+
+  app.patch('/api/video/projects/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const id = parseInt(req.params.id, 10);
+      const { videoProjects } = await import("@shared/schema");
+      const [existing] = await db.select().from(videoProjects).where(eq(videoProjects.id, id));
+      if (!existing || existing.userId !== userId) return res.status(404).json({ message: "Not found" });
+      const patch: any = { updatedAt: new Date() };
+      for (const k of ["title","description","thumbnailUrl","videoUrl","duration","timeline","assets","aspectRatio","resolution","status"]) {
+        if (k in req.body) patch[k] = req.body[k];
+      }
+      const [row] = await db.update(videoProjects).set(patch).where(eq(videoProjects.id, id)).returning();
+      res.json(row);
+    } catch (error) {
+      console.error("Error updating video project:", error);
+      res.status(500).json({ message: "Failed to update video project" });
+    }
+  });
+
+  app.post('/api/video/projects/:id/publish', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const id = parseInt(req.params.id, 10);
+      const { videoProjects } = await import("@shared/schema");
+      const [existing] = await db.select().from(videoProjects).where(eq(videoProjects.id, id));
+      if (!existing || existing.userId !== userId) return res.status(404).json({ message: "Not found" });
+      const [row] = await db.update(videoProjects)
+        .set({ isPublished: req.body.publish !== false, status: "completed", updatedAt: new Date() })
+        .where(eq(videoProjects.id, id))
+        .returning();
+      res.json(row);
+    } catch (error) {
+      console.error("Error publishing video project:", error);
+      res.status(500).json({ message: "Failed to publish video project" });
+    }
+  });
+
+  app.delete('/api/video/projects/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const id = parseInt(req.params.id, 10);
+      const { videoProjects } = await import("@shared/schema");
+      const [existing] = await db.select().from(videoProjects).where(eq(videoProjects.id, id));
+      if (!existing || existing.userId !== userId) return res.status(404).json({ message: "Not found" });
+      await db.delete(videoProjects).where(eq(videoProjects.id, id));
+      res.json({ ok: true });
+    } catch (error) {
+      console.error("Error deleting video project:", error);
+      res.status(500).json({ message: "Failed to delete video project" });
+    }
+  });
+
+  // ============================================================================
+  // IMAGE STUDIO — user image gallery (save, publish)
+  // ============================================================================
+  app.get('/api/image/projects', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { imageProjects } = await import("@shared/schema");
+      const rows = await db.select().from(imageProjects)
+        .where(eq(imageProjects.userId, userId))
+        .orderBy(desc(imageProjects.updatedAt));
+      res.json(rows);
+    } catch (error) {
+      console.error("Error fetching image projects:", error);
+      res.status(500).json({ message: "Failed to fetch image projects" });
+    }
+  });
+
+  app.post('/api/image/projects', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { imageProjects } = await import("@shared/schema");
+      if (!req.body.imageUrl) return res.status(400).json({ message: "imageUrl required" });
+      const [row] = await db.insert(imageProjects).values({
+        userId,
+        title: req.body.title || "Untitled Image",
+        description: req.body.description || null,
+        imageUrl: req.body.imageUrl,
+        thumbnailUrl: req.body.thumbnailUrl || req.body.imageUrl,
+        width: req.body.width ?? null,
+        height: req.body.height ?? null,
+        source: req.body.source || "upload",
+        prompt: req.body.prompt || null,
+        edits: req.body.edits || null,
+        tags: Array.isArray(req.body.tags) ? req.body.tags : [],
+      }).returning();
+      res.json(row);
+    } catch (error) {
+      console.error("Error creating image project:", error);
+      res.status(500).json({ message: "Failed to create image project" });
+    }
+  });
+
+  app.patch('/api/image/projects/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const id = parseInt(req.params.id, 10);
+      const { imageProjects } = await import("@shared/schema");
+      const [existing] = await db.select().from(imageProjects).where(eq(imageProjects.id, id));
+      if (!existing || existing.userId !== userId) return res.status(404).json({ message: "Not found" });
+      const patch: any = { updatedAt: new Date() };
+      for (const k of ["title","description","imageUrl","thumbnailUrl","width","height","source","prompt","edits","tags"]) {
+        if (k in req.body) patch[k] = req.body[k];
+      }
+      const [row] = await db.update(imageProjects).set(patch).where(eq(imageProjects.id, id)).returning();
+      res.json(row);
+    } catch (error) {
+      console.error("Error updating image project:", error);
+      res.status(500).json({ message: "Failed to update image project" });
+    }
+  });
+
+  app.post('/api/image/projects/:id/publish', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const id = parseInt(req.params.id, 10);
+      const { imageProjects } = await import("@shared/schema");
+      const [existing] = await db.select().from(imageProjects).where(eq(imageProjects.id, id));
+      if (!existing || existing.userId !== userId) return res.status(404).json({ message: "Not found" });
+      const [row] = await db.update(imageProjects)
+        .set({ isPublished: req.body.publish !== false, updatedAt: new Date() })
+        .where(eq(imageProjects.id, id))
+        .returning();
+      res.json(row);
+    } catch (error) {
+      console.error("Error publishing image project:", error);
+      res.status(500).json({ message: "Failed to publish image project" });
+    }
+  });
+
+  app.delete('/api/image/projects/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const id = parseInt(req.params.id, 10);
+      const { imageProjects } = await import("@shared/schema");
+      const [existing] = await db.select().from(imageProjects).where(eq(imageProjects.id, id));
+      if (!existing || existing.userId !== userId) return res.status(404).json({ message: "Not found" });
+      await db.delete(imageProjects).where(eq(imageProjects.id, id));
+      res.json({ ok: true });
+    } catch (error) {
+      console.error("Error deleting image project:", error);
+      res.status(500).json({ message: "Failed to delete image project" });
+    }
+  });
+
   // Generate music video prompt
   app.post('/api/music/generate-video-prompt', isAuthenticated, async (req: any, res) => {
     try {
