@@ -65,7 +65,7 @@ export default function RecoveryHeader() {
               <img
                 src={strokeLyfeLogo}
                 alt="Stroke Recovery Academy"
-                style={{ height: "144px", width: "auto", flexShrink: 0, marginTop: "-32px", marginBottom: "-32px" }}
+                style={{ height: "144px", width: "auto", flexShrink: 0, marginTop: "-24px", marginBottom: "-24px" }}
                 data-testid="img-recovery-logo"
               />
             </div>
