@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import SpotlightOptInCard from "@/components/SpotlightOptInCard";
+import PowerPointsSettingsCard from "@/components/PowerPointsSettingsCard";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
@@ -158,6 +159,7 @@ export default function Settings() {
 
           <TabsContent value="profile" className="space-y-6">
             <SpotlightOptInCard />
+            <PowerPointsSettingsCard />
             <Card className="bg-[#1a1a1a] border-[#333] p-6">
               <h2 className="text-xl font-semibold text-white mb-6">Profile Picture</h2>
               <div className="flex items-center gap-6">

@@ -165,6 +165,19 @@ export function registerPowerPointsRoutes(app: Express, isAuthenticated: any) {
     res.json({ ok: true });
   });
 
+  // Authenticated: read current prefs (accepts + public slug)
+  app.get('/api/power-points/preferences', isAuthenticated, async (req: any, res) => {
+    const userId = req.user.claims.sub as string;
+    const [row] = await db.select({
+      acceptsPowerPoints: users.acceptsPowerPoints,
+      publicSlug: users.publicSlug,
+    }).from(users).where(eq(users.id, userId)).limit(1);
+    res.json({
+      acceptsPowerPoints: row?.acceptsPowerPoints ?? true,
+      publicSlug: row?.publicSlug ?? null,
+    });
+  });
+
   // Authenticated: toggle accepting Power Points
   app.post('/api/power-points/preferences', isAuthenticated, async (req: any, res) => {
     const userId = req.user.claims.sub as string;

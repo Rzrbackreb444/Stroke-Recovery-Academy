@@ -2,7 +2,7 @@ import type { Express } from 'express';
 import { db } from '../db';
 import { courseCreditUnlocks, courses, users } from '@shared/schema';
 import { and, eq } from 'drizzle-orm';
-import { deductCredits } from '../creditService';
+import { deductCredits, addCredits } from '../creditService';
 import { getRecoveryStripeClient } from '../recoveryStripeClient';
 
 // Each Power Point is worth $0.04 in cash equivalent on payouts.
@@ -71,16 +71,24 @@ export function registerCourseUnlockRoutes(app: Express, isAuthenticated: any) {
         return res.status(402).json({ error: 'Insufficient Power Points', shortBy: points - result.newBalance });
       }
 
-      // Record the unlock
-      const [unlock] = await db.insert(courseCreditUnlocks).values({
-        buyerId: userId,
-        creatorId: course.instructorId,
-        courseId,
-        pointsSpent: points,
-        cashEquivalentCents,
-        creatorPayoutCents,
-        platformFeeCents,
-      }).returning();
+      // Record the unlock — if this fails, refund the points
+      let unlock;
+      try {
+        const [row] = await db.insert(courseCreditUnlocks).values({
+          buyerId: userId,
+          creatorId: course.instructorId,
+          courseId,
+          pointsSpent: points,
+          cashEquivalentCents,
+          creatorPayoutCents,
+          platformFeeCents,
+        }).returning();
+        unlock = row;
+      } catch (insertErr: any) {
+        console.error('[courseUnlock] insert failed — refunding', insertErr);
+        await addCredits(userId, points, 'refund', `Refund: course unlock failed (${course.title})`, { courseId });
+        return res.status(500).json({ error: 'Unlock failed — your points were refunded.' });
+      }
 
       // Try Stripe Connect transfer (best-effort; mark queued/skipped/failed accordingly)
       const [instructor] = await db.select({
