@@ -58,6 +58,9 @@ import {
   Zap,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useQuery } from "@tanstack/react-query";
 
 interface Lesson {
   id: string;
@@ -119,6 +122,10 @@ const levels = [
 
 export default function CourseStudio() {
   const { toast } = useToast();
+  const { user } = useAuth();
+  const [currentCourseId, setCurrentCourseId] = useState<number | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
   const [activeTab, setActiveTab] = useState("my-courses");
   const [wizardStep, setWizardStep] = useState(1);
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
@@ -157,38 +164,89 @@ export default function CourseStudio() {
     },
   ]);
 
-  const [myCourses] = useState<Course[]>([
-    {
-      id: "1",
-      title: "Complete Stroke Recovery Protocol",
-      description: "Master the fundamentals of stroke recovery with proven techniques",
-      thumbnail: "",
-      category: "recovery",
-      level: "beginner",
-      price: 97,
-      currency: "USD",
-      modules: [],
-      status: "published",
-      students: 342,
-      rating: 4.8,
-      revenue: 33174,
-    },
-    {
-      id: "2",
-      title: "Advanced Mobility Training",
-      description: "Take your mobility to the next level with advanced exercises",
-      thumbnail: "",
-      category: "health",
-      level: "advanced",
-      price: 147,
-      currency: "USD",
-      modules: [],
-      status: "draft",
-      students: 0,
-      rating: 0,
-      revenue: 0,
-    },
-  ]);
+  // Live list of this user's courses from the DB
+  const { data: myCoursesData = [] } = useQuery<any[]>({
+    queryKey: ["/api/my-courses"],
+    enabled: !!user,
+  });
+  const myCourses: Course[] = myCoursesData.map((c: any) => ({
+    id: String(c.id),
+    title: c.title,
+    description: c.description,
+    thumbnail: c.thumbnailUrl || "",
+    category: c.category,
+    level: c.difficulty,
+    price: 0,
+    currency: "USD",
+    modules: [],
+    status: c.isPublished ? "published" : "draft",
+    students: c.enrollmentCount || 0,
+    rating: 0,
+    revenue: 0,
+  }));
+
+  const buildPayload = () => ({
+    title: courseTitle,
+    description: courseDescription,
+    thumbnailUrl: courseThumbnail || null,
+    difficulty: courseLevel || "beginner",
+    category: courseCategory || "general",
+    modules: modules.map(m => ({
+      title: m.title,
+      description: m.description,
+      lessons: m.lessons.map(l => ({
+        title: l.title,
+        content: l.content,
+        videoUrl: l.videoUrl || null,
+        duration: l.duration,
+        type: l.type,
+      })),
+    })),
+  });
+
+  const saveDraft = async (): Promise<number | null> => {
+    if (!user) {
+      toast({ title: "Sign in required", description: "Log in to save your course.", variant: "destructive" });
+      return null;
+    }
+    if (!courseTitle.trim()) {
+      toast({ title: "Title required", description: "Give your course a title first.", variant: "destructive" });
+      return null;
+    }
+    setIsSaving(true);
+    try {
+      const payload = buildPayload();
+      const res = currentCourseId
+        ? await apiRequest("PATCH", `/api/my-courses/${currentCourseId}`, payload)
+        : await apiRequest("POST", "/api/my-courses", payload);
+      const row = await res.json();
+      setCurrentCourseId(row.id);
+      queryClient.invalidateQueries({ queryKey: ["/api/my-courses"] });
+      toast({ title: "Draft saved", description: `"${row.title}" saved to your courses.` });
+      return row.id;
+    } catch (err: any) {
+      toast({ title: "Save failed", description: err?.message || "Try again.", variant: "destructive" });
+      return null;
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const publishCourse = async () => {
+    setIsPublishing(true);
+    try {
+      const id = currentCourseId ?? (await saveDraft());
+      if (!id) return;
+      await apiRequest("POST", `/api/my-courses/${id}/publish`, { publish: true });
+      queryClient.invalidateQueries({ queryKey: ["/api/my-courses"] });
+      toast({ title: "Course published", description: "Your course is now live." });
+      setActiveTab("my-courses");
+    } catch (err: any) {
+      toast({ title: "Publish failed", description: err?.message || "Try again.", variant: "destructive" });
+    } finally {
+      setIsPublishing(false);
+    }
+  };
 
   const totalSteps = 5;
   const wizardProgress = (wizardStep / totalSteps) * 100;
@@ -1061,16 +1119,20 @@ export default function CourseStudio() {
                       <Button
                         data-testid="button-save-draft"
                         variant="outline"
+                        onClick={() => saveDraft()}
+                        disabled={isSaving}
                         className="border-[#C9941A]/50 text-[#C9941A]"
                       >
-                        <Save className="w-4 h-4 mr-2" />
+                        {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
                         Save Draft
                       </Button>
                       <Button
                         data-testid="button-publish-course"
+                        onClick={publishCourse}
+                        disabled={isPublishing}
                         className="bg-[#C9941A] hover:bg-[#C9941A] text-black"
                       >
-                        <Zap className="w-4 h-4 mr-2" />
+                        {isPublishing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Zap className="w-4 h-4 mr-2" />}
                         Publish Course
                       </Button>
                     </div>
@@ -1385,9 +1447,11 @@ export default function CourseStudio() {
                   ) : (
                     <Button
                       data-testid="button-finish-wizard"
+                      onClick={publishCourse}
+                      disabled={isPublishing}
                       className="bg-[#C9941A] hover:bg-[#C9941A] text-black"
                     >
-                      <Zap className="w-4 h-4 mr-2" />
+                      {isPublishing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Zap className="w-4 h-4 mr-2" />}
                       Publish Course
                     </Button>
                   )}
