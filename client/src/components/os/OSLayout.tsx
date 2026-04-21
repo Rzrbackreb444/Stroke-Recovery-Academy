@@ -30,7 +30,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
-import strokeLyfeLogo from "@assets/Untitled_design_1776781251258.png";
+import strokeLyfeLogo from "@assets/Untitled_design_1776788235720.png";
 
 const studios = [
   { id: "book", name: "Book Studio", icon: BookOpen, path: "/book-studio", color: "text-amber-500" },
