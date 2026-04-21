@@ -23153,6 +23153,14 @@ Format as structured JSON with clear sections.`;
     }
   });
 
+  // Power Points + Therapist verification + Course unlock with credits
+  const { registerPowerPointsRoutes } = await import('./routes/powerPointsRoutes');
+  const { registerTherapistRoutes } = await import('./routes/therapistRoutes');
+  const { registerCourseUnlockRoutes } = await import('./routes/courseUnlockRoutes');
+  registerPowerPointsRoutes(app, isAuthenticated);
+  registerTherapistRoutes(app, isAuthenticated);
+  registerCourseUnlockRoutes(app, isAuthenticated);
+
   const httpServer = createServer(app);
   return httpServer;
 }

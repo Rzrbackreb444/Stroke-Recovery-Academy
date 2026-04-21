@@ -260,6 +260,8 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
               )}
             </div>
 
+            {user && <PowerPointsBell />}
+
             {user && (
               <Button
                 variant="ghost"
@@ -519,6 +521,33 @@ function CreditBalancePill() {
       </span>
       {isOut && <span className="text-xs font-semibold text-red-400">· Upgrade</span>}
       {isLow && !isOut && <span className="text-xs font-semibold text-[#C9941A]">· Low</span>}
+    </WouterLink>
+  );
+}
+
+function PowerPointsBell() {
+  const { data } = useQuery<{ count: number }>({
+    queryKey: ["/api/power-points/unread-count"],
+    refetchInterval: 60_000,
+    staleTime: 30_000,
+  });
+  const count = data?.count ?? 0;
+  return (
+    <WouterLink
+      href="/power-points/inbox"
+      className="relative hidden md:inline-flex items-center justify-center h-9 w-9 rounded-md text-[#C9941A] hover-elevate"
+      data-testid="link-power-points"
+      aria-label={count > 0 ? `${count} unread Power Points` : "Power Points"}
+    >
+      <Zap className="w-5 h-5" />
+      {count > 0 && (
+        <span
+          className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#C9941A] text-black text-[10px] font-bold leading-[18px] text-center"
+          data-testid="badge-power-unread"
+        >
+          {count > 99 ? "99+" : count}
+        </span>
+      )}
     </WouterLink>
   );
 }

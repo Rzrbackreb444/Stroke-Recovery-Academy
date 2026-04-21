@@ -20,6 +20,9 @@ import StoryView from "@/pages/StoryView";
 import StoryEditor from "@/pages/StoryEditor";
 import MyStories from "@/pages/MyStories";
 import Pricing from "@/pages/Pricing";
+import PowerPointsInbox from "@/pages/PowerPointsInbox";
+import TherapistApply from "@/pages/TherapistApply";
+import TherapistAdmin from "@/pages/TherapistAdmin";
 import MusicStudio from "@/pages/MusicStudio";
 import MusicSandbox from "@/pages/MusicSandbox";
 import MusicProductionStudio from "@/pages/MusicProductionStudio";
@@ -414,6 +417,10 @@ function Router() {
       {/* ============================================ */}
       {/* STROKE RECOVERY PLATFORM - /recovery/* Routes */}
       {/* ============================================ */}
+      <Route path="/power-points" component={PowerPointsInbox} />
+      <Route path="/power-points/inbox" component={PowerPointsInbox} />
+      <Route path="/therapists/apply" component={TherapistApply} />
+      <Route path="/admin/therapists" component={TherapistAdmin} />
       <Route path="/recovery" component={StrokeRecoveryLanding} />
       <Route path="/recovery/dashboard">
         <ProtectedRoute>

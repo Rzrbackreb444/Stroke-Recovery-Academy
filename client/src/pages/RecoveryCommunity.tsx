@@ -26,6 +26,7 @@ import {
   PlayCircle, Clock, Eye, Crown, Zap, Activity
 } from "lucide-react";
 import { safeAccentForDark } from "@/lib/personaContrast";
+import SendPowerPointsModal from "@/components/SendPowerPointsModal";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface EnrichedPost {
@@ -1028,6 +1029,8 @@ function MembersTab() {
   const { data: members = [], isLoading } = useQuery<Member[]>({
     queryKey: ["/api/community/members"],
   });
+  const { user: me } = useAuth();
+  const [giftTarget, setGiftTarget] = useState<Member | null>(null);
 
   return (
     <div className="space-y-4">
@@ -1048,46 +1051,72 @@ function MembersTab() {
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          {members.map((m, idx) => (
-            <Card key={m.id} className="bg-[#1a1a1a] border-[#333]" data-testid={`card-member-${m.id}`}>
-              <CardContent className="p-4 flex flex-col items-center gap-2 text-center">
-                {idx < 3 && (
-                  <Crown className="w-4 h-4 text-[#C9941A] self-start" />
-                )}
-                <Avatar className="w-14 h-14 border-2 border-[#333]">
-                  <AvatarImage src={m.avatarUrl || m.profileImageUrl || ""} />
-                  <AvatarFallback className="bg-[#2a2a2a] text-[#C9941A] text-lg">
-                    {(m.displayName || m.firstName || "M")[0]?.toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p
-                    className="text-sm font-semibold leading-tight"
-                    style={{ color: m.persona_name ? safeAccentForDark(m.persona_accent_color) : "#FFFFFF" }}
-                  >
-                    {m.persona_name || m.displayName || `${m.firstName || ""} ${m.lastName || ""}`.trim() || "Member"}
-                  </p>
-                  {m.persona_creed && (
+          {members.map((m, idx) => {
+            const memberName = m.persona_name || m.displayName || `${m.firstName || ""} ${m.lastName || ""}`.trim() || "Member";
+            const isMe = me?.id === m.id;
+            return (
+              <Card key={m.id} className="bg-[#1a1a1a] border-[#333] flex flex-col" data-testid={`card-member-${m.id}`}>
+                <CardContent className="p-4 flex flex-col items-center gap-2 text-center flex-1">
+                  {idx < 3 && (
+                    <Crown className="w-4 h-4 text-[#C9941A] self-start" />
+                  )}
+                  <Avatar className="w-14 h-14 border-2 border-[#333]">
+                    <AvatarImage src={m.avatarUrl || m.profileImageUrl || ""} />
+                    <AvatarFallback className="bg-[#2a2a2a] text-[#C9941A] text-lg">
+                      {memberName[0]?.toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
                     <p
-                      className="text-[10px] italic leading-snug mt-0.5 line-clamp-2"
-                      style={{ color: safeAccentForDark(m.persona_accent_color), opacity: 0.8 }}
-                      title={m.persona_creed}
+                      className="text-sm font-semibold leading-tight"
+                      style={{ color: m.persona_name ? safeAccentForDark(m.persona_accent_color) : "#FFFFFF" }}
                     >
-                      "{m.persona_creed}"
+                      {memberName}
                     </p>
-                  )}
-                  {m.username && <p className="text-xs text-gray-500 mt-0.5">@{m.username}</p>}
-                  {m.currentStreak != null && m.currentStreak > 0 && (
-                    <div className="flex items-center gap-1 justify-center mt-1">
-                      <Flame className="w-3 h-3 text-orange-400" />
-                      <span className="text-xs text-orange-400">{m.currentStreak}-day streak</span>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                    {m.persona_creed && (
+                      <p
+                        className="text-[10px] italic leading-snug mt-0.5 line-clamp-2"
+                        style={{ color: safeAccentForDark(m.persona_accent_color), opacity: 0.8 }}
+                        title={m.persona_creed}
+                      >
+                        "{m.persona_creed}"
+                      </p>
+                    )}
+                    {m.username && <p className="text-xs text-gray-500 mt-0.5">@{m.username}</p>}
+                    {m.currentStreak != null && m.currentStreak > 0 && (
+                      <div className="flex items-center gap-1 justify-center mt-1">
+                        <Flame className="w-3 h-3 text-orange-400" />
+                        <span className="text-xs text-orange-400">{m.currentStreak}-day streak</span>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+                {!isMe && me && (
+                  <div className="px-3 pb-3">
+                    <Button
+                      size="sm"
+                      onClick={() => setGiftTarget(m)}
+                      className="w-full bg-[#C9941A]/15 hover:bg-[#C9941A]/25 text-[#C9941A] border border-[#C9941A]/30"
+                      data-testid={`button-gift-${m.id}`}
+                    >
+                      <Zap className="w-3.5 h-3.5 mr-1" /> Send Power
+                    </Button>
+                  </div>
+                )}
+              </Card>
+            );
+          })}
         </div>
+      )}
+
+      {giftTarget && (
+        <SendPowerPointsModal
+          open={!!giftTarget}
+          onOpenChange={(v) => { if (!v) setGiftTarget(null); }}
+          receiverId={giftTarget.id}
+          receiverName={giftTarget.persona_name || giftTarget.displayName || `${giftTarget.firstName || ""} ${giftTarget.lastName || ""}`.trim() || "Member"}
+          receiverAvatarUrl={giftTarget.avatarUrl || giftTarget.profileImageUrl}
+        />
       )}
     </div>
   );

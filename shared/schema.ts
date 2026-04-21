@@ -295,6 +295,9 @@ export const users = pgTable("users", {
   therapistCredentials: text("therapist_credentials"), // license # / state / cert
   therapistBio: text("therapist_bio"),
   therapistVerifiedAt: timestamp("therapist_verified_at"),
+  // Power Points: opt-in to receive gifts + public slug for share link
+  acceptsPowerPoints: boolean("accepts_power_points").notNull().default(true),
+  publicSlug: varchar("public_slug").unique(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -330,6 +333,68 @@ export const insertPowerPointGiftSchema = createInsertSchema(powerPointGifts).om
 });
 export type InsertPowerPointGift = z.infer<typeof insertPowerPointGiftSchema>;
 export type PowerPointGift = typeof powerPointGifts.$inferSelect;
+
+// Therapist applications — manual admin review before isVerifiedTherapist flips on
+export const therapistApplications = pgTable("therapist_applications", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  fullName: text("full_name").notNull(),
+  title: text("title").notNull(),               // PT, DPT, OT/L, SLP-CCC, etc.
+  licenseNumber: text("license_number").notNull(),
+  licenseState: text("license_state").notNull(),
+  yearsExperience: integer("years_experience"),
+  specialties: text("specialties").array(),
+  bio: text("bio"),
+  portfolioUrl: text("portfolio_url"),
+  documentUrl: text("document_url"),            // license/cert upload
+  status: text("status").notNull().default("pending"), // pending | approved | rejected
+  reviewerId: varchar("reviewer_id").references(() => users.id, { onDelete: "set null" }),
+  reviewerNotes: text("reviewer_notes"),
+  reviewedAt: timestamp("reviewed_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  userIdx: index("therapist_app_user_idx").on(t.userId),
+  statusIdx: index("therapist_app_status_idx").on(t.status, t.createdAt),
+}));
+export const insertTherapistApplicationSchema = createInsertSchema(therapistApplications).omit({
+  id: true, createdAt: true, status: true, reviewerId: true, reviewerNotes: true, reviewedAt: true,
+});
+export type InsertTherapistApplication = z.infer<typeof insertTherapistApplicationSchema>;
+export type TherapistApplication = typeof therapistApplications.$inferSelect;
+
+// Course unlocks paid in credits — drives 85% Stripe Connect payout to therapist
+export const courseCreditUnlocks = pgTable("course_credit_unlocks", {
+  id: serial("id").primaryKey(),
+  buyerId: varchar("buyer_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  creatorId: varchar("creator_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  courseId: integer("course_id").notNull(),    // soft FK — courses live in marketplace
+  pointsSpent: integer("points_spent").notNull(),
+  cashEquivalentCents: integer("cash_equivalent_cents").notNull(),  // points * point-value
+  creatorPayoutCents: integer("creator_payout_cents").notNull(),     // 85%
+  platformFeeCents: integer("platform_fee_cents").notNull(),         // 15%
+  payoutTransferId: text("payout_transfer_id"),
+  payoutStatus: text("payout_status").notNull().default("queued"),   // queued | paid | failed | skipped
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  buyerIdx: index("ccu_buyer_idx").on(t.buyerId, t.createdAt),
+  creatorIdx: index("ccu_creator_idx").on(t.creatorId, t.createdAt),
+  uniqUnlock: uniqueIndex("ccu_unique_unlock_idx").on(t.buyerId, t.courseId),
+}));
+export const insertCourseCreditUnlockSchema = createInsertSchema(courseCreditUnlocks).omit({
+  id: true, createdAt: true, payoutTransferId: true, payoutStatus: true,
+});
+export type InsertCourseCreditUnlock = z.infer<typeof insertCourseCreditUnlockSchema>;
+export type CourseCreditUnlock = typeof courseCreditUnlocks.$inferSelect;
+
+// Block list — receivers can mute hostile senders
+export const giftSenderBlocks = pgTable("gift_sender_blocks", {
+  id: serial("id").primaryKey(),
+  receiverId: varchar("receiver_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  blockedSenderId: varchar("blocked_sender_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  uniq: uniqueIndex("gsb_unique_idx").on(t.receiverId, t.blockedSenderId),
+}));
 
 export const userProfiles = pgTable("user_profiles", {
   id: serial("id").primaryKey(),
