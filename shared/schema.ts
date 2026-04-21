@@ -6110,3 +6110,25 @@ export const cohortPosts = pgTable("cohort_posts", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 export type CohortPost = typeof cohortPosts.$inferSelect;
+
+// ─── SRA Course ratings (P2-04) — targets `courses` (separate from course_builder reviews) ───
+export const sraCourseRatings = pgTable("sra_course_ratings", {
+  id: serial("id").primaryKey(),
+  courseId: integer("course_id").notNull().references(() => courses.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  rating: integer("rating").notNull(), // 1-5
+  title: varchar("title", { length: 160 }),
+  body: text("body").notNull(),
+  isVerifiedCompletion: boolean("is_verified_completion").notNull().default(false),
+  helpfulCount: integer("helpful_count").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  uniqUserCourse: uniqueIndex("uniq_sra_course_rating_user").on(t.courseId, t.userId),
+}));
+export type SraCourseRating = typeof sraCourseRatings.$inferSelect;
+
+export const sraCourseRatingHelpful = pgTable("sra_course_rating_helpful", {
+  reviewId: integer("review_id").notNull().references(() => sraCourseRatings.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({ pk: primaryKey({ columns: [t.reviewId, t.userId] }) }));
