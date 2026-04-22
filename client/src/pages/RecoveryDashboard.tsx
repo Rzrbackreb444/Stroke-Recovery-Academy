@@ -28,6 +28,7 @@ import {
   Play, Brain, ChevronDown
 } from "lucide-react";
 import SixtyDayTracker from "@/components/recovery/SixtyDayTracker";
+import MyPathRecommender from "@/components/recovery/MyPathRecommender";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import FadeUpSection from "@/components/FadeUpSection";
 import SasquatchQuoteModal from "@/components/SasquatchQuoteModal";
@@ -488,6 +489,12 @@ export default function RecoveryDashboard() {
         <FadeUpSection delay={150}>
         <section className="mb-8" data-testid="section-66day-tracker">
           <SixtyDayTracker />
+        </section>
+        </FadeUpSection>
+
+        <FadeUpSection delay={175}>
+        <section className="mb-8" data-testid="section-my-path">
+          <MyPathRecommender />
         </section>
         </FadeUpSection>
 
