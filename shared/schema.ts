@@ -1707,6 +1707,39 @@ export const videoSessionParticipants = pgTable("video_session_participants", {
 // Recovery journeys, creative expression, community monetization
 // ============================================================================
 
+// P3-03 Accountability Buddies — opt-in profile + active 1:1 pair
+export const buddyProfiles = pgTable("buddy_profiles", {
+  userId: varchar("user_id").primaryKey().references(() => users.id, { onDelete: "cascade" }),
+  optedIn: boolean("opted_in").notNull().default(false),
+  routineLevel: integer("routine_level").notNull().default(0), // 0 survival - 4 full power
+  interests: text("interests").array().notNull().default(sql`'{}'::text[]`),
+  bio: text("bio"),
+  status: text("status").notNull().default("looking"), // looking, paired, paused
+  pairedAt: timestamp("paired_at"),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const buddyPairs = pgTable("buddy_pairs", {
+  id: serial("id").primaryKey(),
+  user1Id: varchar("user1_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  user2Id: varchar("user2_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  status: text("status").notNull().default("active"), // active, ended
+  pairedAt: timestamp("paired_at").notNull().defaultNow(),
+  endedAt: timestamp("ended_at"),
+  endReason: text("end_reason"),
+}, (t) => ({
+  uniqActive: uniqueIndex("buddy_pairs_active_unique")
+    .on(t.user1Id, t.user2Id)
+    .where(sql`status = 'active'`),
+}));
+// Enforces "one active buddy per user" at the DB level via PRIMARY KEY.
+export const buddyActiveMembers = pgTable("buddy_active_members", {
+  userId: varchar("user_id").primaryKey().references(() => users.id, { onDelete: "cascade" }),
+  pairId: integer("pair_id").notNull().references(() => buddyPairs.id, { onDelete: "cascade" }),
+});
+export type BuddyProfile = typeof buddyProfiles.$inferSelect;
+export type BuddyPair = typeof buddyPairs.$inferSelect;
+
 // Recovery Creator Profiles (extended user profile for stroke survivors)
 export const recoveryCreatorProfiles = pgTable("recovery_creator_profiles", {
   id: serial("id").primaryKey(),
