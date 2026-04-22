@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CohortPanel from "@/components/CohortPanel";
 import ReviewsPanel from "@/components/ReviewsPanel";
 import CourseShareButton from "@/components/CourseShareButton";
+import CourseRefundButton from "@/components/CourseRefundButton";
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -510,6 +511,7 @@ export default function CoursePlayer() {
           </div>
           
           {courseId ? <CourseShareButton courseId={courseId} /> : null}
+          {courseId ? <CourseRefundButton courseId={courseId} /> : null}
 
           <TooltipProvider>
             <Tooltip>
