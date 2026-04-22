@@ -11,6 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CohortPanel from "@/components/CohortPanel";
 import ReviewsPanel from "@/components/ReviewsPanel";
+import CourseShareButton from "@/components/CourseShareButton";
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -508,6 +509,8 @@ export default function CoursePlayer() {
             <span className="text-xs text-gray-400">{progressPercent}%</span>
           </div>
           
+          {courseId ? <CourseShareButton courseId={courseId} /> : null}
+
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
