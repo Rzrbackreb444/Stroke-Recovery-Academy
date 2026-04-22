@@ -28,10 +28,13 @@ export function registerCourseUnlockRoutes(app: Express, isAuthenticated: any) {
       eq(courseCreditUnlocks.courseId, courseId),
     )).limit(1);
 
+    // Refunded unlocks revoke access — caller must purchase again.
+    const isActive = !!unlock && !unlock.refundedAt;
     res.json({
       pointsRequired,
-      unlocked: !!unlock,
-      unlockedAt: unlock?.createdAt || null,
+      unlocked: isActive,
+      unlockedAt: isActive ? unlock!.createdAt : null,
+      refundedAt: unlock?.refundedAt || null,
     });
   });
 
@@ -47,12 +50,21 @@ export function registerCourseUnlockRoutes(app: Express, isAuthenticated: any) {
       if (!course.instructorId) return res.status(400).json({ error: 'Course has no instructor' });
       if (course.instructorId === userId) return res.status(400).json({ error: 'You created this course' });
 
-      // Already unlocked?
+      // Already unlocked? (Refunded rows count as not-unlocked, but the
+      // unique index on (buyer, course) means we must reuse that row
+      // rather than insert a fresh one — flip its refund fields back.)
       const [existing] = await db.select().from(courseCreditUnlocks).where(and(
         eq(courseCreditUnlocks.buyerId, userId),
         eq(courseCreditUnlocks.courseId, courseId),
       )).limit(1);
-      if (existing) return res.json({ unlocked: true, unlock: existing });
+      if (existing && !existing.refundedAt) {
+        return res.json({ unlocked: true, unlock: existing });
+      }
+      if (existing && existing.refundedAt) {
+        // Re-unlock: clear refund flags after charging again below.
+        // Charge first, then update — handled in the normal flow below
+        // by skipping the insert and updating the existing row.
+      }
 
       const points = computePointsForCourse(course.estimatedHours ?? 1, course.difficulty);
       const cashEquivalentCents = points * POINT_VALUE_CENTS;
@@ -71,19 +83,39 @@ export function registerCourseUnlockRoutes(app: Express, isAuthenticated: any) {
         return res.status(402).json({ error: 'Insufficient Power Points', shortBy: points - result.newBalance });
       }
 
-      // Record the unlock — if this fails, refund the points
+      // Record the unlock — if this fails, refund the points.
+      // If a refunded row already exists, reuse it (the unique index
+      // on (buyer, course) blocks a fresh INSERT) by clearing refund state.
       let unlock;
       try {
-        const [row] = await db.insert(courseCreditUnlocks).values({
-          buyerId: userId,
-          creatorId: course.instructorId,
-          courseId,
-          pointsSpent: points,
-          cashEquivalentCents,
-          creatorPayoutCents,
-          platformFeeCents,
-        }).returning();
-        unlock = row;
+        if (existing && existing.refundedAt) {
+          const [row] = await db.update(courseCreditUnlocks).set({
+            creatorId: course.instructorId,
+            pointsSpent: points,
+            cashEquivalentCents,
+            creatorPayoutCents,
+            platformFeeCents,
+            payoutStatus: 'queued',
+            payoutTransferId: null,
+            refundedAt: null,
+            refundReason: null,
+            refundPoints: null,
+            refundTransferReversalId: null,
+            createdAt: new Date(),
+          }).where(eq(courseCreditUnlocks.id, existing.id)).returning();
+          unlock = row;
+        } else {
+          const [row] = await db.insert(courseCreditUnlocks).values({
+            buyerId: userId,
+            creatorId: course.instructorId,
+            courseId,
+            pointsSpent: points,
+            cashEquivalentCents,
+            creatorPayoutCents,
+            platformFeeCents,
+          }).returning();
+          unlock = row;
+        }
       } catch (insertErr: any) {
         console.error('[courseUnlock] insert failed — refunding', insertErr);
         await addCredits(userId, points, 'refund', `Refund: course unlock failed (${course.title})`, { courseId });

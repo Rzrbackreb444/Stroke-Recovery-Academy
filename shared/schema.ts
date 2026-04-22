@@ -379,6 +379,10 @@ export const courseCreditUnlocks = pgTable("course_credit_unlocks", {
   platformFeeCents: integer("platform_fee_cents").notNull(),         // 15%
   payoutTransferId: text("payout_transfer_id"),
   payoutStatus: text("payout_status").notNull().default("queued"),   // queued | paid | failed | skipped
+  refundedAt: timestamp("refunded_at"),
+  refundReason: text("refund_reason"),
+  refundPoints: integer("refund_points"),
+  refundTransferReversalId: text("refund_transfer_reversal_id"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => ({
   buyerIdx: index("ccu_buyer_idx").on(t.buyerId, t.createdAt),
