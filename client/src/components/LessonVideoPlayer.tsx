@@ -1,8 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import Hls from "hls.js";
 import { Button } from "@/components/ui/button";
-import { Play, Pause, Volume2, VolumeX, Rewind, FastForward, Captions, Gauge, Loader2 } from "lucide-react";
+import {
+  Play, Pause, Volume2, VolumeX, Rewind, FastForward, Captions, Gauge, Loader2, Languages,
+} from "lucide-react";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+
+interface AvailLocale { locale: string; name: string; ready: boolean; }
+interface TranslationsResp {
+  available: AvailLocale[];
+  translations: Array<{ id: number; videoId: number; locale: string; transcriptText: string | null; captionVttUrl: string | null }>;
+}
 
 interface LessonVideo {
   id: number;
@@ -38,6 +48,9 @@ export default function LessonVideoPlayer({ lessonId }: Props) {
   const [speed, setSpeed] = useState(1);
   const [captionsOn, setCaptionsOn] = useState(true);
 
+  const { toast } = useToast();
+  const [locale, setLocale] = useState<string>("en");
+
   const { data, isLoading } = useQuery<{ video: LessonVideo }>({
     queryKey: ["/api/lessons", lessonId, "video"],
     refetchInterval: (q) => {
@@ -46,6 +59,33 @@ export default function LessonVideoPlayer({ lessonId }: Props) {
     },
   });
   const video = data?.video;
+
+  // P4-03: available + ready translations for this video.
+  const transQ = useQuery<TranslationsResp>({
+    queryKey: ["/api/lessons", video?.id, "translations"],
+    enabled: !!video?.id,
+  });
+
+  const translateM = useMutation({
+    mutationFn: async (target: string) => {
+      const r = await apiRequest("POST", `/api/lessons/${video!.id}/translate`, { locale: target });
+      return r.json();
+    },
+    onSuccess: (_d, target) => {
+      toast({ title: "Translation ready", description: `Captions and transcript are now available.` });
+      queryClient.invalidateQueries({ queryKey: ["/api/lessons", video?.id, "translations"] });
+      setLocale(target);
+    },
+    onError: (err: any) => {
+      toast({ title: "Translation failed", description: err?.message || "Try another language.", variant: "destructive" });
+    },
+  });
+
+  const activeTranslation = locale !== "en"
+    ? transQ.data?.translations.find(t => t.locale === locale)
+    : null;
+  const activeVttUrl = activeTranslation?.captionVttUrl || video?.captionVttUrl || null;
+  const activeTranscript = activeTranslation?.transcriptText || video?.transcriptText || null;
 
   // HLS.js wiring (only if hlsUrl present)
   useEffect(() => {
@@ -117,8 +157,8 @@ export default function LessonVideoPlayer({ lessonId }: Props) {
           aria-label="Lesson video"
           data-testid="video-element"
         >
-          {video.captionVttUrl && (
-            <track kind="captions" src={video.captionVttUrl} srcLang="en" label="English" default />
+          {activeVttUrl && (
+            <track key={`${activeVttUrl}-${locale}`} kind="captions" src={activeVttUrl} srcLang={locale} label={locale.toUpperCase()} default />
           )}
         </video>
 
@@ -178,11 +218,42 @@ export default function LessonVideoPlayer({ lessonId }: Props) {
           </select>
         </label>
 
-        {video.captionVttUrl && (
+        {activeVttUrl && (
           <Button size="icon" variant={captionsOn ? "default" : "ghost"} className="h-8 w-8" onClick={() => setCaptionsOn(v => !v)} data-testid="button-captions" aria-pressed={captionsOn} aria-label="Toggle captions">
             <Captions className="w-4 h-4" />
           </Button>
         )}
+
+        {/* P4-03: translation picker */}
+        {transQ.data?.available?.length ? (
+          <label className="flex items-center gap-1 text-xs">
+            <Languages className="w-3.5 h-3.5 text-gray-500" />
+            <select
+              value={locale}
+              onChange={(e) => {
+                const v = e.target.value;
+                const opt = transQ.data!.available.find(a => a.locale === v);
+                if (v !== "en" && opt && !opt.ready) {
+                  translateM.mutate(v);
+                } else {
+                  setLocale(v);
+                }
+              }}
+              disabled={translateM.isPending}
+              className="bg-[#1a1a1a] border border-[#333] rounded px-1.5 py-0.5 text-xs"
+              data-testid="select-language"
+              aria-label="Caption language"
+            >
+              <option value="en">English</option>
+              {transQ.data.available.map(a => (
+                <option key={a.locale} value={a.locale}>
+                  {a.name}{a.ready ? "" : " — translate"}
+                </option>
+              ))}
+            </select>
+            {translateM.isPending && <Loader2 className="w-3 h-3 animate-spin text-[#C9941A]" />}
+          </label>
+        ) : null}
       </div>
 
       {/* Chapters */}
@@ -202,11 +273,13 @@ export default function LessonVideoPlayer({ lessonId }: Props) {
         </div>
       )}
 
-      {/* Transcript */}
-      {video.transcriptText && (
+      {/* Transcript (locale-aware) */}
+      {activeTranscript && (
         <details className="px-3 py-2 bg-[#0D0D0D] border-t border-[#333] text-xs text-gray-400" data-testid="transcript-panel">
-          <summary className="cursor-pointer text-[#C9941A] hover:underline">Transcript</summary>
-          <p className="mt-2 whitespace-pre-wrap leading-relaxed">{video.transcriptText}</p>
+          <summary className="cursor-pointer text-[#C9941A] hover:underline">
+            Transcript {locale !== "en" && <span className="text-gray-500 ml-1">({locale.toUpperCase()})</span>}
+          </summary>
+          <p className="mt-2 whitespace-pre-wrap leading-relaxed">{activeTranscript}</p>
         </details>
       )}
     </div>

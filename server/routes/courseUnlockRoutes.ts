@@ -153,7 +153,21 @@ export function registerCourseUnlockRoutes(app: Express, isAuthenticated: any) {
         .set({ payoutStatus, payoutTransferId: transferId })
         .where(eq(courseCreditUnlocks.id, unlock.id));
 
-      res.json({ unlocked: true, unlock: { ...unlock, payoutStatus, payoutTransferId: transferId }, newBalance: result.newBalance });
+      // P4-02: mirror this unlock to every linked survivor (caregiver seat).
+      let mirroredTo = 0;
+      try {
+        const { mirrorOneUnlock } = await import('./caregiverRoutes');
+        mirroredTo = await mirrorOneUnlock(userId, courseId);
+      } catch (mErr) {
+        console.error('[courseUnlock] mirror failed (non-fatal)', mErr);
+      }
+
+      res.json({
+        unlocked: true,
+        unlock: { ...unlock, payoutStatus, payoutTransferId: transferId },
+        newBalance: result.newBalance,
+        mirroredToLinkedSurvivors: mirroredTo,
+      });
     } catch (e: any) {
       console.error('[courseUnlock] error', e);
       res.status(500).json({ error: e?.message || 'Unlock failed' });

@@ -6171,3 +6171,108 @@ export const sraCourseRatingHelpful = pgTable("sra_course_rating_helpful", {
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => ({ pk: primaryKey({ columns: [t.reviewId, t.userId] }) }));
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PHASE 4 — ACCESS + REACH (scholarship pool, caregiver linking, translations)
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Scholarship Fund (singleton row id=1) — pool of points donated by anyone, granted to survivors
+export const scholarshipFund = pgTable("scholarship_fund", {
+  id: integer("id").primaryKey().default(1),
+  balancePoints: integer("balance_points").notNull().default(0),
+  totalFunded: integer("total_funded").notNull().default(0),
+  totalGranted: integer("total_granted").notNull().default(0),
+  totalDonors: integer("total_donors").notNull().default(0),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+export type ScholarshipFund = typeof scholarshipFund.$inferSelect;
+
+export const scholarshipContributions = pgTable("scholarship_contributions", {
+  id: serial("id").primaryKey(),
+  donorId: varchar("donor_id").references(() => users.id, { onDelete: "set null" }),
+  donorEmail: varchar("donor_email"),
+  donorName: text("donor_name"),
+  points: integer("points").notNull(),
+  amountCents: integer("amount_cents").notNull(),
+  message: text("message"),
+  isAnonymous: boolean("is_anonymous").notNull().default(false),
+  stripePaymentId: text("stripe_payment_id"),
+  status: text("status").notNull().default("completed"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  donorIdx: index("sc_donor_idx").on(t.donorId, t.createdAt),
+}));
+export const insertScholarshipContributionSchema = createInsertSchema(scholarshipContributions).omit({
+  id: true, createdAt: true, status: true, stripePaymentId: true,
+});
+export type InsertScholarshipContribution = z.infer<typeof insertScholarshipContributionSchema>;
+export type ScholarshipContribution = typeof scholarshipContributions.$inferSelect;
+
+export const scholarshipGrants = pgTable("scholarship_grants", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  courseId: integer("course_id").notNull(),
+  pointsGranted: integer("points_granted").notNull(),
+  unlockId: integer("unlock_id"),
+  reason: text("reason"),
+  grantedAt: timestamp("granted_at").notNull().defaultNow(),
+}, (t) => ({
+  userIdx: index("sg_user_idx").on(t.userId, t.grantedAt),
+  courseIdx: index("sg_course_idx").on(t.courseId),
+}));
+export type ScholarshipGrant = typeof scholarshipGrants.$inferSelect;
+
+export const scholarshipRequests = pgTable("scholarship_requests", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  story: text("story"),
+  status: text("status").notNull().default("pending"), // pending | granted | denied | auto_granted
+  grantId: integer("grant_id").references(() => scholarshipGrants.id, { onDelete: "set null" }),
+  reviewedAt: timestamp("reviewed_at"),
+  reviewerNotes: text("reviewer_notes"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  userIdx: index("sr_user_idx").on(t.userId, t.createdAt),
+  statusIdx: index("sr_status_idx").on(t.status, t.createdAt),
+}));
+export const insertScholarshipRequestSchema = createInsertSchema(scholarshipRequests).omit({
+  id: true, createdAt: true, status: true, grantId: true, reviewedAt: true, reviewerNotes: true,
+});
+export type InsertScholarshipRequest = z.infer<typeof insertScholarshipRequestSchema>;
+export type ScholarshipRequest = typeof scholarshipRequests.$inferSelect;
+
+// Caregiver Links — paid caregiver acct seats their linked survivor on every course they unlock
+export const caregiverLinks = pgTable("caregiver_links", {
+  id: serial("id").primaryKey(),
+  caregiverId: varchar("caregiver_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  survivorId: varchar("survivor_id").references(() => users.id, { onDelete: "cascade" }),
+  status: text("status").notNull().default("invited"), // invited | active | revoked | expired
+  relationship: text("relationship"), // spouse | parent | child | friend | professional | other
+  invitedAt: timestamp("invited_at").notNull().defaultNow(),
+  acceptedAt: timestamp("accepted_at"),
+  revokedAt: timestamp("revoked_at"),
+  inviteEmail: varchar("invite_email"),
+  inviteToken: varchar("invite_token").unique(),
+  inviteExpiresAt: timestamp("invite_expires_at"),
+}, (t) => ({
+  pairIdx: uniqueIndex("cgl_pair_idx").on(t.caregiverId, t.survivorId),
+  caregiverIdx: index("cgl_caregiver_idx").on(t.caregiverId, t.status),
+  survivorIdx: index("cgl_survivor_idx").on(t.survivorId, t.status),
+}));
+export type CaregiverLink = typeof caregiverLinks.$inferSelect;
+
+// Lesson video translations — i18n for transcript + caption VTT (Gemini-generated)
+export const lessonVideoTranslations = pgTable("lesson_video_translations", {
+  id: serial("id").primaryKey(),
+  videoId: integer("video_id").notNull(),
+  locale: varchar("locale", { length: 8 }).notNull(),
+  transcriptText: text("transcript_text"),
+  captionVttUrl: text("caption_vtt_url"),
+  translatedBy: text("translated_by").notNull().default("gemini"),
+  wordCount: integer("word_count"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  uniq: uniqueIndex("lvt_unique_idx").on(t.videoId, t.locale),
+}));
+export type LessonVideoTranslation = typeof lessonVideoTranslations.$inferSelect;
