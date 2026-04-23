@@ -3,6 +3,7 @@ import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
+import InstallPrompt from "@/components/InstallPrompt";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import GlobalHeader from "@/components/GlobalHeader";
 import RecoveryHeader from "@/components/RecoveryHeader";
@@ -97,6 +98,8 @@ import QuoteViewPage from "@/pages/QuoteViewPage";
 // Stroke Recovery Platform Pages (under /recovery/*)
 import StrokeRecoveryLanding from "@/pages/Landing";
 import RecoveryDashboard from "@/pages/RecoveryDashboard";
+import Scholarship from "@/pages/Scholarship";
+import CaregiverSettings from "@/pages/CaregiverSettings";
 import Academy from "@/pages/Academy";
 import SaschLanding from "@/pages/SaschLanding";
 import Builder from "@/pages/Builder";
@@ -594,6 +597,9 @@ function Router() {
       <Route path="/settings/therapist-hours" component={TherapistHoursSettings} />
       <Route path="/recovery/circles" component={RecoveryCircles} />
       <Route path="/recovery/buddy" component={RecoveryBuddy} />
+      <Route path="/recovery/scholarship" component={Scholarship} />
+      <Route path="/settings/caregivers" component={CaregiverSettings} />
+      <Route path="/settings/caregivers/accept/:token" component={CaregiverSettings} />
       <Route path="/course/:courseId/quiz/:quizId" component={CourseQuiz} />
       <Route path="/certificate/:courseId" component={CourseCertificate} />
       <Route path="/my-learning">
@@ -635,6 +641,7 @@ function App() {
       <LocaleProvider>
         <TooltipProvider>
           <Toaster />
+          <InstallPrompt />
           {showOnboarding && <OnboardingFlow onComplete={handleOnboardingComplete} />}
           {!showOnboarding && (
             <>
