@@ -31,6 +31,16 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip as ChartTooltip,
+  CartesianGrid,
+} from "recharts";
+import { Activity, UserPlus, AlertCircle } from "lucide-react";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -533,6 +543,235 @@ function SpotlightAdminPanel() {
   );
 }
 
+interface AnalyticsData {
+  rangeDays: number;
+  signupsByDay: { day: string; count: number }[];
+  totals: {
+    totalUsers: number;
+    signups24h: number;
+    signups7d: number;
+    signups30d: number;
+    active7d: number;
+    active30d: number;
+    checkins7d: number;
+    checkins30d: number;
+    enrollments30d: number;
+    unlocks30d: number;
+    revenue30d: number;
+    revenueTotal: number;
+    realSignupsInRecent: number;
+  };
+  recentSignups: Array<{
+    id: string;
+    email: string | null;
+    firstName: string | null;
+    lastName: string | null;
+    role: string;
+    createdAt: string;
+    isLikelyTest: boolean;
+  }>;
+  topFeatures: Array<{ feature: string; uses: number }>;
+}
+
+function AnalyticsTab() {
+  const { data, isLoading, error } = useQuery<AnalyticsData>({
+    queryKey: ["/api/admin/analytics"],
+    refetchInterval: 60000,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+      </div>
+    );
+  }
+  if (error || !data) {
+    return (
+      <Card>
+        <CardContent className="p-6 flex items-center gap-3 text-red-400">
+          <AlertCircle className="h-5 w-5" />
+          <span>Failed to load analytics.</span>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const { totals, signupsByDay, recentSignups, topFeatures } = data;
+  const realRecent = recentSignups.filter((u) => !u.isLikelyTest);
+  const testRecent = recentSignups.filter((u) => u.isLikelyTest);
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <StatCard
+          title="Total Signups"
+          value={totals.totalUsers}
+          icon={Users}
+          subtitle={`${totals.signups24h} in last 24h · ${totals.signups7d} in 7d`}
+        />
+        <StatCard
+          title="New (30 days)"
+          value={totals.signups30d}
+          icon={UserPlus}
+        />
+        <StatCard
+          title="Active Users (7d)"
+          value={totals.active7d}
+          icon={Activity}
+          subtitle={`${totals.active30d} active in 30d`}
+        />
+        <StatCard
+          title="Daily Check-ins (30d)"
+          value={totals.checkins30d}
+          icon={Check}
+          subtitle={`${totals.checkins7d} this week`}
+        />
+        <StatCard
+          title="Course Enrollments (30d)"
+          value={totals.enrollments30d}
+          icon={Star}
+        />
+        <StatCard
+          title="Course Unlocks (30d)"
+          value={totals.unlocks30d}
+          icon={CreditCard}
+        />
+        <StatCard
+          title="Revenue (30d)"
+          value={`$${totals.revenue30d.toFixed(2)}`}
+          icon={DollarSign}
+          subtitle={`$${totals.revenueTotal.toFixed(2)} all time`}
+        />
+        <StatCard
+          title="Real (non-test) recent"
+          value={totals.realSignupsInRecent}
+          icon={Shield}
+          subtitle="of last 25 signups"
+        />
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Signups per day (last {data.rangeDays} days)</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {signupsByDay.length === 0 ? (
+            <div className="text-sm text-gray-400 py-8 text-center" data-testid="text-no-signups-chart">
+              No signups in this range yet.
+            </div>
+          ) : (
+            <div className="h-64" data-testid="chart-signups">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={signupsByDay}>
+                  <CartesianGrid stroke="#333" strokeDasharray="3 3" />
+                  <XAxis dataKey="day" stroke="#888" tick={{ fontSize: 11 }} />
+                  <YAxis stroke="#888" allowDecimals={false} tick={{ fontSize: 11 }} />
+                  <ChartTooltip
+                    contentStyle={{
+                      backgroundColor: "#1a1a1a",
+                      border: "1px solid #333",
+                      borderRadius: 4,
+                      color: "#fff",
+                    }}
+                  />
+                  <Line type="monotone" dataKey="count" stroke="#C9941A" strokeWidth={2} dot={{ r: 3 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Recent signups (real)</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {realRecent.length === 0 ? (
+              <div className="text-sm text-gray-400 py-4" data-testid="text-no-real-signups">
+                No real signups yet. Start sharing the site to bring traffic in.
+              </div>
+            ) : (
+              realRecent.map((u) => (
+                <div
+                  key={u.id}
+                  className="flex items-center justify-between gap-4 p-2 rounded-md border border-[#333]"
+                  data-testid={`row-real-signup-${u.id}`}
+                >
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium truncate">
+                      {u.firstName || u.lastName ? `${u.firstName ?? ""} ${u.lastName ?? ""}`.trim() : (u.email || u.id)}
+                    </div>
+                    <div className="text-xs text-gray-400 truncate">{u.email}</div>
+                  </div>
+                  <div className="text-xs text-gray-400 whitespace-nowrap">
+                    {new Date(u.createdAt).toLocaleString()}
+                  </div>
+                </div>
+              ))
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Test / seed accounts</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {testRecent.length === 0 ? (
+              <div className="text-sm text-gray-400 py-4">No test accounts in recent signups.</div>
+            ) : (
+              testRecent.map((u) => (
+                <div
+                  key={u.id}
+                  className="flex items-center justify-between gap-4 p-2 rounded-md border border-[#333] opacity-70"
+                  data-testid={`row-test-signup-${u.id}`}
+                >
+                  <div className="min-w-0">
+                    <div className="text-sm truncate">
+                      {u.email || u.id}
+                    </div>
+                    <div className="text-xs text-gray-400 truncate">
+                      {u.firstName} {u.lastName}
+                    </div>
+                  </div>
+                  <Badge variant="outline" className="text-xs">test</Badge>
+                </div>
+              ))
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Top features used (last 30 days)</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {topFeatures.length === 0 ? (
+            <div className="text-sm text-gray-400 py-4">No feature usage logged yet.</div>
+          ) : (
+            <div className="space-y-2">
+              {topFeatures.map((f) => (
+                <div
+                  key={f.feature}
+                  className="flex items-center justify-between gap-4 p-2 rounded-md border border-[#333]"
+                  data-testid={`row-feature-${f.feature}`}
+                >
+                  <span className="text-sm truncate">{f.feature}</span>
+                  <span className="text-sm font-medium tabular-nums">{f.uses.toLocaleString()}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 export default function AdminPanel() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
@@ -592,13 +831,18 @@ export default function AdminPanel() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-6">
+          <TabsList className="grid w-full grid-cols-6 mb-6">
             <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
+            <TabsTrigger value="analytics" data-testid="tab-analytics">Analytics</TabsTrigger>
             <TabsTrigger value="revenue" data-testid="tab-revenue">Revenue</TabsTrigger>
             <TabsTrigger value="credits" data-testid="tab-credits">Credits</TabsTrigger>
             <TabsTrigger value="users" data-testid="tab-users">Users</TabsTrigger>
             <TabsTrigger value="spotlight" data-testid="tab-spotlight">Spotlight</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="analytics" className="space-y-6">
+            <AnalyticsTab />
+          </TabsContent>
 
           <TabsContent value="spotlight" className="space-y-6">
             <SpotlightAdminPanel />

@@ -20787,6 +20787,105 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
+  // GET /api/admin/analytics - Rich growth/engagement analytics (admin only)
+  app.get('/api/admin/analytics', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const days = Math.min(Math.max(parseInt(req.query.days as string) || 30, 7), 90);
+      const sinceDays = (n: number) => {
+        const d = new Date();
+        d.setDate(d.getDate() - n);
+        return d;
+      };
+      const since = sinceDays(days);
+
+      // Signups by day
+      const signupsByDay = await db.execute(sql`
+        SELECT to_char(date_trunc('day', created_at), 'YYYY-MM-DD') AS day,
+               count(*)::int AS count
+        FROM users
+        WHERE created_at >= ${since}
+        GROUP BY 1
+        ORDER BY 1 ASC
+      `);
+
+      // Headline counts
+      const totals = await db.execute(sql`
+        SELECT
+          (SELECT count(*)::int FROM users) AS total_users,
+          (SELECT count(*)::int FROM users WHERE created_at > NOW() - INTERVAL '24 hours') AS signups_24h,
+          (SELECT count(*)::int FROM users WHERE created_at > NOW() - INTERVAL '7 days') AS signups_7d,
+          (SELECT count(*)::int FROM users WHERE created_at > NOW() - INTERVAL '30 days') AS signups_30d,
+          (SELECT count(DISTINCT user_id)::int FROM usage_events WHERE created_at > NOW() - INTERVAL '7 days') AS active_7d,
+          (SELECT count(DISTINCT user_id)::int FROM usage_events WHERE created_at > NOW() - INTERVAL '30 days') AS active_30d,
+          (SELECT count(*)::int FROM daily_checkins WHERE created_at > NOW() - INTERVAL '7 days') AS checkins_7d,
+          (SELECT count(*)::int FROM daily_checkins WHERE created_at > NOW() - INTERVAL '30 days') AS checkins_30d,
+          (SELECT count(*)::int FROM course_enrollments WHERE enrolled_at > NOW() - INTERVAL '30 days') AS enrollments_30d,
+          (SELECT count(*)::int FROM course_credit_unlocks WHERE created_at > NOW() - INTERVAL '30 days') AS unlocks_30d,
+          (SELECT COALESCE(SUM(amount_cents),0)::int FROM revenue_events WHERE created_at > NOW() - INTERVAL '30 days' AND status = 'succeeded') AS revenue_cents_30d,
+          (SELECT COALESCE(SUM(amount_cents),0)::int FROM revenue_events WHERE status = 'succeeded') AS revenue_cents_total
+      `);
+
+      // Recent signups (last 25)
+      const recent = await db.execute(sql`
+        SELECT id, email, first_name, last_name, role, created_at
+        FROM users
+        ORDER BY created_at DESC
+        LIMIT 25
+      `);
+
+      // Top features used in last 30d
+      const topFeatures = await db.execute(sql`
+        SELECT feature_key, count(*)::int AS uses
+        FROM usage_events
+        WHERE created_at > NOW() - INTERVAL '30 days'
+        GROUP BY feature_key
+        ORDER BY uses DESC
+        LIMIT 10
+      `);
+
+      const TEST_PATTERNS = /(example\.com|test\.com|testdomain\.com|^test|^ru-test|^john\s*doe|@test\.|playwright)/i;
+      const recentRows = (recent.rows as any[]).map(r => {
+        const blob = `${r.email || ''} ${r.first_name || ''} ${r.last_name || ''}`.trim();
+        return {
+          id: r.id,
+          email: r.email,
+          firstName: r.first_name,
+          lastName: r.last_name,
+          role: r.role,
+          createdAt: r.created_at,
+          isLikelyTest: TEST_PATTERNS.test(blob),
+        };
+      });
+      const realSignupsTotal = recentRows.filter(r => !r.isLikelyTest).length;
+
+      const t = (totals.rows[0] as any) || {};
+      res.json({
+        rangeDays: days,
+        signupsByDay: (signupsByDay.rows as any[]).map(r => ({ day: r.day, count: Number(r.count) })),
+        totals: {
+          totalUsers: Number(t.total_users || 0),
+          signups24h: Number(t.signups_24h || 0),
+          signups7d: Number(t.signups_7d || 0),
+          signups30d: Number(t.signups_30d || 0),
+          active7d: Number(t.active_7d || 0),
+          active30d: Number(t.active_30d || 0),
+          checkins7d: Number(t.checkins_7d || 0),
+          checkins30d: Number(t.checkins_30d || 0),
+          enrollments30d: Number(t.enrollments_30d || 0),
+          unlocks30d: Number(t.unlocks_30d || 0),
+          revenue30d: Number(t.revenue_cents_30d || 0) / 100,
+          revenueTotal: Number(t.revenue_cents_total || 0) / 100,
+          realSignupsInRecent: realSignupsTotal,
+        },
+        recentSignups: recentRows,
+        topFeatures: (topFeatures.rows as any[]).map(r => ({ feature: r.feature_key, uses: Number(r.uses) })),
+      });
+    } catch (error) {
+      console.error("Error fetching admin analytics:", error);
+      res.status(500).json({ message: "Failed to fetch analytics" });
+    }
+  });
+
   // GET /api/admin/credits-analytics - Credit usage analytics (admin only)
   app.get('/api/admin/credits-analytics', isAuthenticated, isAdmin, async (req: any, res) => {
     try {
