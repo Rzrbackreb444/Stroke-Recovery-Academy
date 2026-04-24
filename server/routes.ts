@@ -500,6 +500,10 @@ ${allRoutes.map(r => `  <url>
     <lastmod>${today}</lastmod>
   </sitemap>
   <sitemap>
+    <loc>${baseUrl}/sitemap-centers.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+  <sitemap>
     <loc>${baseUrl}/sitemap-blog.xml</loc>
     <lastmod>${blogLastmod}</lastmod>
   </sitemap>
@@ -654,11 +658,18 @@ ${listings.slice(0, 1000).map((listing: any) => `  <url>
       { path: '/recovery/builder', priority: '0.78', changefreq: 'weekly' },
     ];
 
+    // Tier 1 SSR landing pages + hubs — server-rendered with unique content per URL
+    const { getSsrPageUrls } = await import('./seo/landingRoutes');
+    const ssrPages = getSsrPageUrls();
+    const ssrRoutes = ssrPages.map(p => ({ path: p.url, priority: p.priority, changefreq: p.changefreq }));
+
+    const allRoutes = [...recoveryStaticRoutes, ...ssrRoutes];
+
     // Static pages only — blog posts live exclusively in sitemap-blog.xml to avoid duplication
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-${recoveryStaticRoutes.map(r => `  <url>
+${allRoutes.map(r => `  <url>
     <loc>${baseUrl}${r.path}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${r.changefreq}</changefreq>
@@ -11536,19 +11547,50 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.get('/api/recovery/centers', async (req, res) => {
     try {
-      const { zipCode, query, type } = req.query;
-      const { searchRecoveryCenters, isPlacesConfigured } = await import('./placesService');
-      
-      const centers = await searchRecoveryCenters(
-        zipCode as string || '78701',
-        query as string,
-        type as string
-      );
-      
-      res.json({ 
-        centers, 
+      const { zipCode, query, type, lat: qLat, lng: qLng } = req.query;
+      const {
+        findOrFetchCentersNear,
+        geocodeQuery,
+        isPlacesConfigured,
+      } = await import('./recoveryCentersService');
+
+      // Resolve coords: prefer explicit lat/lng, otherwise geocode the ZIP / query
+      let lat: number | null = null;
+      let lng: number | null = null;
+      let resolvedAddress: string | undefined;
+      let resolvedCity: string | undefined;
+      let resolvedState: string | undefined;
+
+      if (qLat && qLng && !isNaN(Number(qLat)) && !isNaN(Number(qLng))) {
+        lat = Number(qLat); lng = Number(qLng);
+      } else {
+        const target = (query as string) || (zipCode as string) || '78701';
+        const geo = await geocodeQuery(target);
+        if (geo) {
+          lat = geo.lat; lng = geo.lng;
+          resolvedAddress = geo.formattedAddress;
+          resolvedCity = geo.city;
+          resolvedState = geo.state;
+        }
+      }
+
+      if (lat === null || lng === null) {
+        return res.json({ centers: [], isLive: isPlacesConfigured(), count: 0, error: 'Could not resolve location' });
+      }
+
+      let centers = await findOrFetchCentersNear(lat, lng, { radiusMeters: 40000 });
+
+      // Optional category filter
+      if (type && type !== 'all') {
+        const t = String(type).toLowerCase();
+        centers = centers.filter(c => String(c.category).toLowerCase() === t);
+      }
+
+      res.json({
+        centers,
         isLive: isPlacesConfigured(),
-        count: centers.length 
+        count: centers.length,
+        resolved: { address: resolvedAddress, city: resolvedCity, state: resolvedState, lat, lng },
       });
     } catch (error) {
       console.error("Error fetching recovery centers:", error);
@@ -23416,6 +23458,15 @@ Format as structured JSON with clear sections.`;
   seedCourseCategoriesIfEmpty().catch(() => {});
   seedForumBoardsIfEmpty().catch(() => {});
   seedGroupsIfEmpty().catch(() => {});
+
+  // SEO: SSR landing pages — registered last so they take precedence over the
+  // Vite catch-all (which is wired AFTER registerRoutes returns).
+  const { registerLandingRoutes } = await import('./seo/landingRoutes');
+  registerLandingRoutes(app);
+
+  // SEO: Recovery Center Finder SSR — metro hubs + per-center detail + sitemap
+  const { registerCenterFinderRoutes } = await import('./seo/centerFinderRoutes');
+  registerCenterFinderRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;

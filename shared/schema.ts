@@ -6276,3 +6276,45 @@ export const lessonVideoTranslations = pgTable("lesson_video_translations", {
   uniq: uniqueIndex("lvt_unique_idx").on(t.videoId, t.locale),
 }));
 export type LessonVideoTranslation = typeof lessonVideoTranslations.$inferSelect;
+
+// ============================================================================
+// Recovery Center Finder — uber-legit Google Places cache (S5)
+// ============================================================================
+export const recoveryCenters = pgTable("recovery_centers", {
+  placeId: varchar("place_id", { length: 255 }).primaryKey(),
+  name: text("name").notNull(),
+  formattedAddress: text("formatted_address").notNull(),
+  street: text("street"),
+  city: text("city"),
+  state: varchar("state", { length: 8 }),
+  postalCode: varchar("postal_code", { length: 16 }),
+  country: varchar("country", { length: 8 }).default("US"),
+  lat: real("lat").notNull(),
+  lng: real("lng").notNull(),
+  phone: text("phone"),
+  website: text("website"),
+  googleMapsUrl: text("google_maps_url"),
+  rating: real("rating"),
+  reviewsCount: integer("reviews_count").default(0),
+  businessStatus: text("business_status"),
+  category: varchar("category", { length: 32 }).notNull(),
+  services: jsonb("services").$type<string[]>().default([]),
+  googleTypes: jsonb("google_types").$type<string[]>().default([]),
+  sourceQueries: jsonb("source_queries").$type<string[]>().default([]),
+  metroSlugs: jsonb("metro_slugs").$type<string[]>().default([]),
+  raw: jsonb("raw"),
+  fetchedAt: timestamp("fetched_at").notNull().defaultNow(),
+  refreshedAt: timestamp("refreshed_at").notNull().defaultNow(),
+}, (t) => ({
+  stateIdx: index("idx_recovery_centers_state").on(t.state),
+  cityIdx: index("idx_recovery_centers_city").on(t.city),
+  refreshIdx: index("idx_recovery_centers_refresh").on(t.refreshedAt),
+}));
+export type RecoveryCenterRow = typeof recoveryCenters.$inferSelect;
+
+export const recoveryMetroCache = pgTable("recovery_metro_cache", {
+  metroSlug: varchar("metro_slug", { length: 64 }).primaryKey(),
+  centersCount: integer("centers_count").default(0),
+  lastRefreshed: timestamp("last_refreshed").notNull().defaultNow(),
+});
+export type RecoveryMetroCache = typeof recoveryMetroCache.$inferSelect;
