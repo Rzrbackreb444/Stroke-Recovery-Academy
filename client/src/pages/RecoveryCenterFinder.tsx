@@ -7,23 +7,33 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import RecoverySEO, { createLocalBusinessSchema } from "@/components/RecoverySEO";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
-import { 
-  MapPin, Search, Phone, Globe, Star, Clock, 
+import {
+  MapPin, Search, Phone, Globe, Star, Clock,
   Navigation, Building2, Heart, Brain, Dumbbell, AlertCircle,
-  ExternalLink, CheckCircle
+  ExternalLink, CheckCircle, ListChecks, Activity, Mic2
 } from "lucide-react";
+import { Link } from "wouter";
 
+// New API shape (recoveryCentersService) — kept loose to also tolerate old shape.
 interface RecoveryCenter {
-  id: string;
+  // new
+  placeId?: string;
+  category?: string; // rehab|neuro|hospital|pt|ot|slp|therapy
+  distanceMiles?: number;
+  reviewsCount?: number;
+  // legacy / alias
+  id?: string;
+  type?: string;
+  distance?: string;
+  reviews?: number;
+  // shared
   name: string;
   address: string;
   phone?: string;
   website?: string;
+  googleMapsUrl?: string;
   rating: number;
-  reviews: number;
-  type: "rehab" | "neuro" | "therapy" | "hospital";
   services: string[];
-  distance?: string;
   hours?: string;
   lat: number;
   lng: number;
@@ -31,18 +41,45 @@ interface RecoveryCenter {
 }
 
 const centerTypes = [
-  { id: "all", label: "All Centers", icon: Building2 },
-  { id: "rehab", label: "Rehabilitation", icon: Dumbbell },
-  { id: "neuro", label: "Neurology", icon: Brain },
-  { id: "therapy", label: "Therapy", icon: Heart },
+  { id: "all",   label: "All Centers",   icon: Building2 },
+  { id: "rehab", label: "Stroke Rehab",  icon: Dumbbell },
+  { id: "neuro", label: "Neurology",     icon: Brain },
+  { id: "pt",    label: "Physical Therapy", icon: Activity },
+  { id: "ot",    label: "Occupational",  icon: Heart },
+  { id: "slp",   label: "Speech",        icon: Mic2 },
 ];
 
-const typeColors = {
-  rehab: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  neuro: "bg-purple-500/20 text-purple-400 border-purple-500/30",
-  therapy: "bg-green-500/20 text-green-400 border-green-500/30",
+const typeColors: Record<string, string> = {
+  rehab:    "bg-blue-500/20 text-blue-400 border-blue-500/30",
+  neuro:    "bg-purple-500/20 text-purple-400 border-purple-500/30",
+  therapy:  "bg-green-500/20 text-green-400 border-green-500/30",
   hospital: "bg-red-500/20 text-red-400 border-red-500/30",
+  pt:       "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
+  ot:       "bg-amber-500/20 text-amber-400 border-amber-500/30",
+  slp:      "bg-pink-500/20 text-pink-400 border-pink-500/30",
 };
+
+const categoryLabel = (c: string): string => {
+  switch (c) {
+    case "rehab":    return "Stroke Rehab";
+    case "neuro":    return "Neurology";
+    case "hospital": return "Hospital";
+    case "pt":       return "Physical Therapy";
+    case "ot":       return "Occupational Therapy";
+    case "slp":      return "Speech-Language";
+    default:         return "Therapy";
+  }
+};
+
+const fmtDistance = (c: RecoveryCenter): string => {
+  if (typeof c.distanceMiles === "number") return `${c.distanceMiles.toFixed(1)} mi`;
+  if (typeof c.distance === "string") return c.distance;
+  return "";
+};
+
+const centerKey = (c: RecoveryCenter, idx: number): string => c.placeId || c.id || String(idx);
+const centerCategory = (c: RecoveryCenter): string => (c.category || c.type || "therapy") as string;
+const centerReviews = (c: RecoveryCenter): number => c.reviewsCount ?? c.reviews ?? 0;
 
 export default function RecoveryCenterFinder() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -82,10 +119,12 @@ export default function RecoveryCenterFinder() {
 
   const centers: RecoveryCenter[] = data?.centers || [];
   const isLive = data?.isLive || false;
+  const resolved = data?.resolved as { city?: string; state?: string; address?: string } | undefined;
 
   const filteredCenters = centers.filter(center => {
-    const matchesType = activeType === "all" || center.type === activeType;
-    const matchesSearch = !searchQuery || 
+    const cat = centerCategory(center);
+    const matchesType = activeType === "all" || cat === activeType;
+    const matchesSearch = !searchQuery ||
       center.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       center.services.some(s => s.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesType && matchesSearch;
@@ -245,96 +284,154 @@ export default function RecoveryCenterFinder() {
         {searchParams.zipCode && !isLoading && !error && (
           <div className="grid gap-4">
             {filteredCenters.length > 0 && (
-              <p className="text-gray-400 text-sm mb-2">
-                Found {filteredCenters.length} center{filteredCenters.length !== 1 ? 's' : ''} near {searchParams.zipCode}
-              </p>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                <p className="text-gray-400 text-sm" data-testid="text-results-summary">
+                  Found <span className="text-white font-semibold">{filteredCenters.length}</span> center{filteredCenters.length !== 1 ? 's' : ''}
+                  {resolved?.city ? <> near <span className="text-white">{resolved.city}{resolved.state ? `, ${resolved.state}` : ''}</span></> : <> near {searchParams.zipCode}</>}
+                </p>
+                {isLive && (
+                  <Badge className="bg-green-500/20 text-green-400 border-green-500/30 self-start" data-testid="badge-live-data">
+                    <CheckCircle className="h-3 w-3 mr-1" /> Live Google Places data
+                  </Badge>
+                )}
+              </div>
             )}
-            
-            {filteredCenters.map((center) => (
-              <Card 
-                key={center.id} 
-                className="bg-[#1a1a1a] border-[#333] p-6 hover:border-[#C9941A]/30 transition-all duration-200" 
-                data-testid={`card-center-${center.id}`}
-              >
-                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+
+            {/* What to Ask guide — shown above results to set the right tone */}
+            {filteredCenters.length > 0 && (
+              <Card className="bg-[#1a1a1a] border-[#C9941A]/30 p-5 mb-2" data-testid="card-what-to-ask">
+                <div className="flex items-start gap-3">
+                  <ListChecks className="h-5 w-5 text-[#C9941A] mt-0.5 flex-shrink-0" />
                   <div className="flex-1">
-                    <div className="flex items-start gap-3 mb-2 flex-wrap">
-                      <h3 className="text-xl font-bold text-white">{center.name}</h3>
-                      <Badge className={typeColors[center.type]}>
-                        {center.type.charAt(0).toUpperCase() + center.type.slice(1)}
-                      </Badge>
-                      {center.isOpen !== undefined && (
-                        <Badge className={center.isOpen ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}>
-                          {center.isOpen ? "Open Now" : "Closed"}
-                        </Badge>
-                      )}
-                    </div>
-                    
-                    <div className="flex flex-wrap items-center gap-4 text-gray-400 text-sm mb-3">
-                      <span className="flex items-center gap-1">
-                        <MapPin className="h-4 w-4" />
-                        {center.address}
-                      </span>
-                      {center.hours && (
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-4 w-4" />
-                          {center.hours}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="flex items-center gap-1">
-                        <Star className="h-4 w-4 text-[#C9941A] fill-[#C9941A]" />
-                        <span className="font-semibold text-white">{center.rating.toFixed(1)}</span>
-                      </div>
-                      <span className="text-gray-500">({center.reviews} reviews)</span>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2">
-                      {center.services.map((service) => (
-                        <Badge key={service} variant="outline" className="border-[#333] text-gray-300">
-                          {service}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-2 min-w-[140px]">
-                    {center.phone && (
-                      <Button 
-                        className="bg-[#C9941A] text-black hover:bg-[#C9941A]/90" 
-                        onClick={() => window.open(`tel:${center.phone}`)}
-                        data-testid={`button-call-${center.id}`}
-                      >
-                        <Phone className="h-4 w-4 mr-2" />
-                        Call Now
-                      </Button>
-                    )}
-                    {center.website && (
-                      <Button 
-                        variant="outline" 
-                        className="border-[#333] text-gray-300"
-                        onClick={() => window.open(center.website, '_blank')}
-                        data-testid={`button-website-${center.id}`}
-                      >
-                        <ExternalLink className="h-4 w-4 mr-2" />
-                        Website
-                      </Button>
-                    )}
-                    <Button 
-                      variant="outline" 
-                      className="border-[#333] text-gray-300"
-                      onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(center.name + ' ' + center.address)}`, '_blank')}
-                      data-testid={`button-directions-${center.id}`}
-                    >
-                      <Navigation className="h-4 w-4 mr-2" />
-                      Directions
-                    </Button>
+                    <h3 className="text-white font-semibold mb-2">Bring this list to your first call</h3>
+                    <ul className="text-sm text-gray-300 space-y-1.5 leading-relaxed">
+                      <li>• "How many stroke survivors do you currently see, and what's a typical recovery arc?"</li>
+                      <li>• "Do you offer task-specific repetition, or mostly passive modalities?"</li>
+                      <li>• "How will you measure my progress objectively?"</li>
+                      <li>• "Will my PT, OT, SLP, and neurologist coordinate?"</li>
+                      <li>• "What happens when I plateau — do you push intensity, or stop?"</li>
+                    </ul>
                   </div>
                 </div>
               </Card>
-            ))}
+            )}
+
+            {filteredCenters.map((center, idx) => {
+              const k = centerKey(center, idx);
+              const cat = centerCategory(center);
+              const distStr = fmtDistance(center);
+              const reviewCount = centerReviews(center);
+              return (
+                <Card
+                  key={k}
+                  className="bg-[#1a1a1a] border-[#333] p-6 hover:border-[#C9941A]/30 transition-all duration-200"
+                  data-testid={`card-center-${k}`}
+                >
+                  <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start gap-3 mb-2 flex-wrap">
+                        {center.placeId ? (
+                          <Link href={`/recovery/center/${encodeURIComponent(center.placeId)}`}>
+                            <h3 className="text-xl font-bold text-white hover:text-[#C9941A] transition-colors cursor-pointer" data-testid={`text-center-name-${k}`}>{center.name}</h3>
+                          </Link>
+                        ) : (
+                          <h3 className="text-xl font-bold text-white" data-testid={`text-center-name-${k}`}>{center.name}</h3>
+                        )}
+                        <Badge className={typeColors[cat] || typeColors.therapy} data-testid={`badge-category-${k}`}>
+                          {categoryLabel(cat)}
+                        </Badge>
+                        {center.isOpen !== undefined && (
+                          <Badge className={center.isOpen ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}>
+                            {center.isOpen ? "Open Now" : "Closed"}
+                          </Badge>
+                        )}
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-4 text-gray-400 text-sm mb-3">
+                        <span className="flex items-center gap-1" data-testid={`text-address-${k}`}>
+                          <MapPin className="h-4 w-4 flex-shrink-0" />
+                          {center.address}
+                        </span>
+                        {distStr && (
+                          <span className="flex items-center gap-1 text-[#C9941A]" data-testid={`text-distance-${k}`}>
+                            <Navigation className="h-3.5 w-3.5" />
+                            {distStr}
+                          </span>
+                        )}
+                        {center.hours && (
+                          <span className="flex items-center gap-1">
+                            <Clock className="h-4 w-4" />
+                            {center.hours}
+                          </span>
+                        )}
+                      </div>
+
+                      {!!center.rating && (
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="flex items-center gap-1">
+                            <Star className="h-4 w-4 text-[#C9941A] fill-[#C9941A]" />
+                            <span className="font-semibold text-white">{Number(center.rating).toFixed(1)}</span>
+                          </div>
+                          <span className="text-gray-500">({reviewCount} reviews)</span>
+                        </div>
+                      )}
+
+                      <div className="flex flex-wrap gap-2">
+                        {center.services.map((service) => (
+                          <Badge key={service} variant="outline" className="border-[#333] text-gray-300">
+                            {service}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-2 md:min-w-[160px]">
+                      {center.phone && (
+                        <Button
+                          className="bg-[#C9941A] text-black hover:bg-[#C9941A]/90"
+                          onClick={() => window.open(`tel:${center.phone}`)}
+                          data-testid={`button-call-${k}`}
+                        >
+                          <Phone className="h-4 w-4 mr-2" />
+                          Call Now
+                        </Button>
+                      )}
+                      {center.website && (
+                        <Button
+                          variant="outline"
+                          className="border-[#333] text-gray-300"
+                          onClick={() => window.open(center.website, '_blank')}
+                          data-testid={`button-website-${k}`}
+                        >
+                          <ExternalLink className="h-4 w-4 mr-2" />
+                          Website
+                        </Button>
+                      )}
+                      <Button
+                        variant="outline"
+                        className="border-[#333] text-gray-300"
+                        onClick={() => window.open(center.googleMapsUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(center.name + ' ' + center.address)}`, '_blank')}
+                        data-testid={`button-directions-${k}`}
+                      >
+                        <Navigation className="h-4 w-4 mr-2" />
+                        Directions
+                      </Button>
+                      {center.placeId && (
+                        <Link href={`/recovery/center/${encodeURIComponent(center.placeId)}`}>
+                          <Button
+                            variant="outline"
+                            className="w-full border-[#C9941A]/40 text-[#C9941A] hover:bg-[#C9941A]/10"
+                            data-testid={`button-detail-${k}`}
+                          >
+                            Details
+                          </Button>
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
           </div>
         )}
 

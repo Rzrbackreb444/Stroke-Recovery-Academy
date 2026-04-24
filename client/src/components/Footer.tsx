@@ -70,6 +70,29 @@ export default function Footer() {
     { label: "Gift a Survivor", href: "/recovery/gift", icon: Gift },
   ];
 
+  const whoItsForLinks = [
+    { label: "For Survivors", href: "/for/stroke-survivors" },
+    { label: "For Caregivers", href: "/for/caregivers" },
+    { label: "For Young Survivors", href: "/for/young-stroke-survivors" },
+    { label: "For Spouses", href: "/for/spouses" },
+    { label: "For Therapists", href: "/for/therapists" },
+  ];
+
+  const programsLinks = [
+    { label: "The Sasquatch Method", href: "/programs/sasquatch-method" },
+    { label: "66-Day Challenge", href: "/programs/66-day-challenge" },
+    { label: "Daily Routine", href: "/programs/daily-routine" },
+  ];
+
+  const learnLinks = [
+    { label: "Neuroplasticity", href: "/learn/neuroplasticity-after-stroke" },
+    { label: "Hemiparesis Recovery", href: "/learn/hemiparesis-recovery" },
+    { label: "Exercises at Home", href: "/learn/stroke-recovery-exercises-at-home" },
+    { label: "Aphasia Recovery", href: "/learn/aphasia-recovery" },
+    { label: "Depression After Stroke", href: "/learn/depression-after-stroke" },
+    { label: "Recovery Timeline", href: "/learn/stroke-recovery-timeline" },
+  ];
+
   const companyLinks = [
     { label: "About Nick", href: "/recovery/about-nick" },
     { label: "Stroke Lyfe Inc. (Nonprofit)", href: "/recovery/strokelyfe-org" },
@@ -82,7 +105,7 @@ export default function Footer() {
   return (
     <footer className="bg-[#080808] border-t border-[#1a1a1a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-7 gap-10 mb-12">
 
           {/* Brand column */}
           <div className="lg:col-span-2">
@@ -170,6 +193,62 @@ export default function Footer() {
                     data-testid={`footer-link-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
                   >
                     <link.icon className="w-3.5 h-3.5 text-gray-500 group-hover:text-[#C9941A] transition-colors" />
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Who it's for */}
+          <div>
+            <h3 className="font-bold mb-4 text-sm uppercase tracking-wide text-[#C9941A]">
+              Who It's For
+            </h3>
+            <ul className="space-y-2">
+              {whoItsForLinks.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="text-gray-400 hover:text-white transition-colors block text-sm"
+                    data-testid={`footer-link-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Programs */}
+          <div>
+            <h3 className="font-bold mb-4 text-sm uppercase tracking-wide text-[#C9941A]">
+              Programs
+            </h3>
+            <ul className="space-y-2">
+              {programsLinks.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="text-gray-400 hover:text-white transition-colors block text-sm"
+                    data-testid={`footer-link-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <h3 className="font-bold mb-4 mt-6 text-sm uppercase tracking-wide text-[#C9941A]">
+              Learn
+            </h3>
+            <ul className="space-y-2">
+              {learnLinks.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="text-gray-400 hover:text-white transition-colors block text-sm"
+                    data-testid={`footer-link-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
+                  >
                     {link.label}
                   </Link>
                 </li>
