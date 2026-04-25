@@ -8654,6 +8654,10 @@ Respond in JSON format:
     }
   };
 
+  app.get('/api/config/affiliate', (_req, res) => {
+    res.json({ amazonTag: process.env.AMAZON_AFFILIATE_TAG || null });
+  });
+
   app.get('/api/marketplace/products', async (req, res) => {
     try {
       const { categoryId, search, featured } = req.query;

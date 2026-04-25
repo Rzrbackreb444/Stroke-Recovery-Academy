@@ -131,6 +131,7 @@ import RecoveryStore from "@/pages/RecoveryStore";
 import FlickerLog from "@/pages/FlickerLog";
 import DailyRoutine from "@/pages/DailyRoutine";
 import RecoveryToday from "@/pages/RecoveryToday";
+import SurvivorShop from "@/pages/SurvivorShop";
 import MedicalLog from "@/pages/MedicalLog";
 import Compass from "@/pages/Compass";
 import DraftYourLegend from "@/pages/DraftYourLegend";
@@ -576,6 +577,7 @@ function Router() {
       <Route path="/recovery/me" component={RecoveryMe} />
       <Route path="/recovery/routine" component={DailyRoutine} />
       <Route path="/recovery/today" component={RecoveryToday} />
+      <Route path="/recovery/shop" component={SurvivorShop} />
       <Route path="/recovery/exercises" component={RecoveryExercises} />
       <Route path="/recovery/exercises/:slug" component={RecoveryExerciseDetail} />
       <Route path="/recovery/blog" component={RecoveryBlog} />
