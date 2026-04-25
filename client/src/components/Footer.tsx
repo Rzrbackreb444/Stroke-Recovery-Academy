@@ -91,6 +91,7 @@ export default function Footer() {
     { label: "Aphasia Recovery", href: "/learn/aphasia-recovery" },
     { label: "Depression After Stroke", href: "/learn/depression-after-stroke" },
     { label: "Recovery Timeline", href: "/learn/stroke-recovery-timeline" },
+    { label: "Recovery Blog", href: "/blog" },
   ];
 
   const companyLinks = [

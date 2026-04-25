@@ -663,7 +663,12 @@ ${listings.slice(0, 1000).map((listing: any) => `  <url>
     const ssrPages = getSsrPageUrls();
     const ssrRoutes = ssrPages.map(p => ({ path: p.url, priority: p.priority, changefreq: p.changefreq }));
 
-    const allRoutes = [...recoveryStaticRoutes, ...ssrRoutes];
+    // SSR blog posts — high-intent PAA queries served with full HTML
+    const { getBlogPageUrls } = await import('./seo/blogRoutes');
+    const blogPages = getBlogPageUrls();
+    const blogRoutes = blogPages.map(p => ({ path: p.url, priority: p.priority, changefreq: p.changefreq }));
+
+    const allRoutes = [...recoveryStaticRoutes, ...ssrRoutes, ...blogRoutes];
 
     // Static pages only — blog posts live exclusively in sitemap-blog.xml to avoid duplication
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -23467,6 +23472,10 @@ Format as structured JSON with clear sections.`;
   // SEO: Recovery Center Finder SSR — metro hubs + per-center detail + sitemap
   const { registerCenterFinderRoutes } = await import('./seo/centerFinderRoutes');
   registerCenterFinderRoutes(app);
+
+  // SEO: SSR blog posts — high-intent PAA queries at /blog/[slug] + /blog hub
+  const { registerBlogRoutes } = await import('./seo/blogRoutes');
+  registerBlogRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;
