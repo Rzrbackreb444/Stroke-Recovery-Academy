@@ -110,7 +110,9 @@ async function renderMetroHubHtml(metroSlug: string): Promise<string | null> {
   const cityState = `${metro.city}, ${metro.state}`;
   const h1 = `Stroke Recovery Centers in ${cityState}`;
   const titleStr = `Stroke Recovery Centers in ${cityState} | Top Rehab + Neuro + Therapy`;
-  const description = `${centers.length || "Verified"} stroke rehabilitation centers, neurologists, physical therapists, occupational therapists, and speech-language pathologists in and around ${cityState} — sourced from Google Places, ranked by category and distance.`;
+  // Meta description: keep under 160 chars for ideal SERP rendering.
+  const descRaw = `${centers.length || "Verified"} stroke rehab centers, neurologists, PTs, OTs, and SLPs in ${cityState} — ranked by distance. Call ahead and bring our "what to ask" checklist.`;
+  const description = descRaw.length > 160 ? descRaw.slice(0, 157).replace(/\s+\S*$/, '') + '…' : descRaw;
 
   // Build LocalBusiness JSON-LD blocks (top 10 only) for ItemList
   const itemList = {

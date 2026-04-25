@@ -37,8 +37,8 @@ export const PAGE_FOR_SURVIVORS: SsrPageConfig = {
   hero: {
     eyebrow: 'For survivors',
     subhead: 'You had the stroke. You woke up. The hospital sent you home with a binder. Now what? Here is the playbook nobody hands out.',
-    ctaPrimary: { href: '/api/login', label: 'Start free' },
-    ctaSecondary: { href: '/recovery/university', label: 'Browse Recovery University' },
+    ctaPrimary: { href: '/api/login', label: 'Get the survivor playbook' },
+    ctaSecondary: { href: '/learn', label: 'Browse all guides' },
   },
   keywords: ['stroke survivor resources', 'stroke recovery program', 'sasquatch method', 'stroke recovery at home'],
   schemaType: 'MedicalWebPage',
@@ -109,7 +109,7 @@ export const PAGE_FOR_CAREGIVERS: SsrPageConfig = {
   hero: {
     eyebrow: 'For caregivers',
     subhead: 'Stroke caregivers are the second casualty nobody counts. You sleep less, eat worse, lose friends, and watch the person you love fight a brain that betrayed them. Here is what actually helps.',
-    ctaPrimary: { href: '/api/login', label: 'Start free' },
+    ctaPrimary: { href: '/api/login', label: 'Get the caregiver kit' },
     ctaSecondary: { href: '/programs/daily-routine', label: 'See the daily routine' },
   },
   keywords: ['stroke caregiver resources', 'caregiver burnout stroke', 'how to help a stroke survivor', 'caregiver support'],
@@ -176,7 +176,8 @@ export const PAGE_FOR_YOUNG: SsrPageConfig = {
   hero: {
     eyebrow: 'For young survivors',
     subhead: 'Doctors will tell you "you\'re young, you\'ll bounce back." That is half-true and entirely unhelpful. Here is the rest.',
-    ctaPrimary: { href: '/api/login', label: 'Start free' },
+    ctaPrimary: { href: '/api/login', label: 'Start the under-50 path' },
+    ctaSecondary: { href: '/programs/sasquatch-method', label: "Read Nick's story" },
   },
   keywords: ['young stroke survivor', 'stroke under 50', 'stroke under 40', 'returning to work after stroke', 'stroke and parenting'],
   breadcrumbs: [{ name: 'Home', href: '/' }, { name: 'For young survivors', href: '/for/young-stroke-survivors' }],
@@ -235,7 +236,8 @@ export const PAGE_FOR_SPOUSES: SsrPageConfig = {
   hero: {
     eyebrow: 'For spouses',
     subhead: 'Marriages survive stroke. Most do. But not by accident. Here is what the research, the survivors, and the spouses themselves say works.',
-    ctaPrimary: { href: '/api/login', label: 'Start free' },
+    ctaPrimary: { href: '/api/login', label: 'Get the spouse guide' },
+    ctaSecondary: { href: '/programs/sasquatch-method', label: 'Read the survival manual' },
   },
   keywords: ['spouse of stroke survivor', 'stroke marriage', 'stroke and relationships', 'caregiver spouse'],
   breadcrumbs: [{ name: 'Home', href: '/' }, { name: 'For spouses', href: '/for/spouses' }],
@@ -293,7 +295,8 @@ export const PAGE_FOR_THERAPISTS: SsrPageConfig = {
   hero: {
     eyebrow: 'For clinicians',
     subhead: 'You write the home exercise plan. They go home and do 14% of it. Stroke Recovery Academy is the operating system that closes the gap.',
-    ctaPrimary: { href: '/api/login', label: 'Get a free clinician account' },
+    ctaPrimary: { href: '/api/login', label: 'Create clinician account' },
+    ctaSecondary: { href: '/programs/sasquatch-method', label: 'See the clinical protocol' },
   },
   keywords: ['stroke rehabilitation therapist', 'home exercise program stroke', 'stroke patient compliance', 'PT OT SLP stroke'],
   breadcrumbs: [{ name: 'Home', href: '/' }, { name: 'For therapists', href: '/for/therapists' }],
@@ -353,7 +356,7 @@ export const PAGE_66_DAY: SsrPageConfig = {
   hero: {
     eyebrow: 'Programs',
     subhead: 'Sixty-six days is the median time it takes a behavior to become automatic. This is the program that turns "I should be doing my exercises" into "I am the kind of survivor who does this."',
-    ctaPrimary: { href: '/api/login', label: 'Join the challenge' },
+    ctaPrimary: { href: '/api/login', label: 'Join the 66-day challenge' },
     ctaSecondary: { href: '/programs/sasquatch-method', label: 'Read the Method' },
   },
   keywords: ['66 day stroke challenge', 'stroke recovery challenge', 'stroke habit transformation', 'sasquatch challenge'],
@@ -415,8 +418,8 @@ export const PAGE_METHOD: SsrPageConfig = {
   hero: {
     eyebrow: 'Doctrine',
     subhead: 'The four pillars Nick used to recover 90% from a stroke that left him paralyzed on his left side. Built in the trenches. No fluff.',
-    ctaPrimary: { href: '/api/login', label: 'Start free' },
-    ctaSecondary: { href: '/recovery/university', label: 'Open Recovery University' },
+    ctaPrimary: { href: '/api/login', label: 'Try the Method free' },
+    ctaSecondary: { href: '/programs/66-day-challenge', label: 'See the 66-day challenge' },
   },
   keywords: ['sasquatch method', 'stroke recovery method', 'nick kremers stroke', 'stroke recovery doctrine'],
   breadcrumbs: [{ name: 'Home', href: '/' }, { name: 'Programs', href: '/programs/sasquatch-method' }],
@@ -474,7 +477,8 @@ export const PAGE_DAILY_ROUTINE: SsrPageConfig = {
   hero: {
     eyebrow: 'Programs',
     subhead: 'The single biggest predictor of recovery is whether you do something every day. The Daily Routine is the system that makes "every day" actually happen.',
-    ctaPrimary: { href: '/api/login', label: 'Start your routine' },
+    ctaPrimary: { href: '/api/login', label: 'Start your daily routine' },
+    ctaSecondary: { href: '/programs', label: 'See all five levels' },
   },
   keywords: ['stroke daily routine', 'daily exercise stroke', 'stroke recovery schedule', 'home program stroke'],
   breadcrumbs: [{ name: 'Home', href: '/' }, { name: 'Programs', href: '/programs/sasquatch-method' }, { name: 'Daily Routine', href: '/programs/daily-routine' }],
@@ -542,7 +546,8 @@ export const PAGE_NEUROPLASTICITY: SsrPageConfig = {
   hero: {
     eyebrow: 'Learn',
     subhead: 'The single most important word in stroke recovery — and the one most survivors hear without ever being told what it actually means.',
-    ctaPrimary: { href: '/api/login', label: 'Start free' },
+    ctaPrimary: { href: '/api/login', label: 'Start the rewiring plan' },
+    ctaSecondary: { href: '/programs/daily-routine', label: 'Get the daily routine' },
   },
   keywords: ['neuroplasticity after stroke', 'brain rewiring stroke', 'neuroplasticity exercises', 'stroke recovery brain'],
   schemaType: 'MedicalWebPage',
@@ -609,7 +614,8 @@ export const PAGE_HEMIPARESIS: SsrPageConfig = {
   hero: {
     eyebrow: 'Learn',
     subhead: 'Half your body works. The other half is on strike. Here is how to get it back to work.',
-    ctaPrimary: { href: '/api/login', label: 'Start free' },
+    ctaPrimary: { href: '/api/login', label: 'Start the weak-side plan' },
+    ctaSecondary: { href: '/learn/stroke-recovery-exercises-at-home', label: 'See home exercises' },
   },
   keywords: ['hemiparesis recovery', 'stroke weak side', 'hemiplegia stroke', 'left side weakness stroke'],
   schemaType: 'MedicalWebPage',
@@ -679,7 +685,8 @@ export const PAGE_HOME_EXERCISES: SsrPageConfig = {
   hero: {
     eyebrow: 'Learn',
     subhead: 'No equipment, no insurance pre-auth, no waiting list. Just protocols you can run from your living room starting in the next 10 minutes.',
-    ctaPrimary: { href: '/api/login', label: 'Get the full exercise library' },
+    ctaPrimary: { href: '/api/login', label: 'Get the exercise library' },
+    ctaSecondary: { href: '/learn/stroke-recovery-timeline', label: 'Read the timeline' },
   },
   keywords: ['stroke exercises at home', 'home stroke recovery', 'stroke exercises no equipment', 'stroke rehabilitation exercises'],
   schemaType: 'MedicalWebPage',
@@ -758,7 +765,8 @@ export const PAGE_APHASIA: SsrPageConfig = {
   hero: {
     eyebrow: 'Learn',
     subhead: 'Aphasia is not a thinking problem. It is a wiring problem between thought and speech. The wiring can be rebuilt.',
-    ctaPrimary: { href: '/api/login', label: 'Start free' },
+    ctaPrimary: { href: '/api/login', label: 'Start the speech protocol' },
+    ctaSecondary: { href: '/api/login', label: 'Try Sasquatch Coach' },
   },
   keywords: ['aphasia recovery', 'aphasia after stroke', 'speech therapy stroke', 'aphasia exercises'],
   schemaType: 'MedicalWebPage',
@@ -830,7 +838,8 @@ export const PAGE_DEPRESSION: SsrPageConfig = {
   hero: {
     eyebrow: 'Learn',
     subhead: 'About 30-35% of stroke survivors develop clinical depression. It is the most under-treated complication of stroke. Here is what to do about it.',
-    ctaPrimary: { href: '/api/login', label: 'Start free' },
+    ctaPrimary: { href: '/api/login', label: 'Talk to the Coach' },
+    ctaSecondary: { href: '/programs/daily-routine', label: 'Open the daily routine' },
   },
   keywords: ['depression after stroke', 'post-stroke depression', 'stroke mental health', 'PSD treatment'],
   schemaType: 'MedicalWebPage',
@@ -898,7 +907,8 @@ export const PAGE_TIMELINE: SsrPageConfig = {
   hero: {
     eyebrow: 'Learn',
     subhead: 'Recovery is not linear and the books that pretend it is will mislead you. Here is the honest map.',
-    ctaPrimary: { href: '/api/login', label: 'Start free' },
+    ctaPrimary: { href: '/api/login', label: 'Map my recovery timeline' },
+    ctaSecondary: { href: '/programs/sasquatch-method', label: 'Read the doctrine' },
   },
   keywords: ['stroke recovery timeline', 'stroke recovery stages', 'how long does stroke recovery take', 'stroke recovery year by year'],
   schemaType: 'MedicalWebPage',
@@ -993,7 +1003,7 @@ export const HUB_FOR: SsrPageConfig = {
   hero: {
     eyebrow: 'Who it is for',
     subhead: 'A stroke does not just happen to one person. It happens to a whole circle of people. Each one needs a different playbook.',
-    ctaPrimary: { href: '/api/login', label: 'Start free' },
+    ctaPrimary: { href: '/api/login', label: 'Find my path' },
   },
   breadcrumbs: [{ name: 'Home', href: '/' }, { name: 'For', href: '/for' }],
   sections: [
@@ -1016,13 +1026,13 @@ export const HUB_FOR: SsrPageConfig = {
 
 export const HUB_PROGRAMS: SsrPageConfig = {
   url: '/programs',
-  title: 'Stroke Recovery Programs | Sasquatch Method, Daily Routine, 66-Day Challenge',
-  description: 'The three programs that power Stroke Recovery Academy: the doctrine (Sasquatch Method), the runway (Daily Routine), and the entry ramp (66-Day Challenge).',
+  title: 'Stroke Recovery Programs | Stroke Recovery Academy',
+  description: 'The three programs that power Stroke Recovery Academy: the Sasquatch Method doctrine, the 5-level Daily Routine, and the 66-Day Challenge. Start free today.',
   h1: 'Three programs. One operating system.',
   hero: {
     eyebrow: 'Programs',
     subhead: 'The doctrine, the runway, and the entry ramp. They work together.',
-    ctaPrimary: { href: '/api/login', label: 'Start free' },
+    ctaPrimary: { href: '/api/login', label: 'Pick a program' },
   },
   breadcrumbs: [{ name: 'Home', href: '/' }, { name: 'Programs', href: '/programs' }],
   sections: [
@@ -1043,13 +1053,13 @@ export const HUB_PROGRAMS: SsrPageConfig = {
 
 export const HUB_LEARN: SsrPageConfig = {
   url: '/learn',
-  title: 'Stroke Recovery Learning Hub | Neuroplasticity, Hemiparesis, Aphasia',
-  description: 'Deep guides on every aspect of stroke recovery. Neuroplasticity, hemiparesis, aphasia, depression, exercises at home, and the recovery timeline.',
+  title: 'Stroke Recovery Learning Hub | Stroke Recovery Academy',
+  description: 'Deep, survivor-written guides on neuroplasticity, hemiparesis, aphasia, depression after stroke, at-home exercises, and the realistic recovery timeline.',
   h1: 'Stroke recovery, from the ground up.',
   hero: {
     eyebrow: 'Learn',
     subhead: 'The science, the protocols, and the survival manual. Written by a survivor in survivor language.',
-    ctaPrimary: { href: '/api/login', label: 'Start free' },
+    ctaPrimary: { href: '/recovery/university', label: 'Open Recovery University' },
   },
   breadcrumbs: [{ name: 'Home', href: '/' }, { name: 'Learn', href: '/learn' }],
   sections: [
