@@ -9994,6 +9994,175 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     }
   });
 
+  // ────────────────────────────────────────────────────────────────────────
+  // BONFIRE — adaptive "Today" session
+  // ────────────────────────────────────────────────────────────────────────
+
+  // GET /api/recovery/today/recommendation
+  // Returns a recommended level + reasoning based on the past 7 days of
+  // per-task feedback and routine completions. The recommendation is the
+  // input to the Bonfire walkthrough.
+  app.get('/api/recovery/today/recommendation', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const today = new Date().toISOString().slice(0, 10);
+
+      // Look at most recent prior day with feedback (yesterday or earlier).
+      const lastFb = await db.execute(
+        sql`SELECT date, level, reaction FROM routine_feedback
+            WHERE user_id = ${userId} AND date < ${today}
+            ORDER BY date DESC, id DESC
+            LIMIT 200`
+      );
+
+      // Most recent completed routine (whatever level the user last picked).
+      const lastRoutine = await db.execute(
+        sql`SELECT date, level FROM routine_completions
+            WHERE user_id = ${userId} AND date < ${today}
+            ORDER BY date DESC LIMIT 1`
+      );
+
+      // Look up today's already-saved feedback so we don't double-count.
+      const rows = lastFb.rows as Array<{ date: string; level: number; reaction: string }>;
+
+      // First session ever?
+      if (rows.length === 0 && lastRoutine.rows.length === 0) {
+        return res.json({
+          level: 2,
+          reason: "First Bonfire — we'll start at Seated. You can drop down or step up if it doesn't fit.",
+          basis: 'first_session',
+          ambulatoryToday: false,
+        });
+      }
+
+      // Pick the actual most recent prior date across BOTH tables — never base
+      // a recommendation on stale feedback when a newer routine completion exists.
+      const lastFbDate = rows[0]?.date as string | undefined;
+      const lastRoutineDate = (lastRoutine.rows[0] as any)?.date as string | undefined;
+      const mostRecentDate =
+        lastFbDate && lastRoutineDate
+          ? (lastFbDate >= lastRoutineDate ? lastFbDate : lastRoutineDate)
+          : (lastFbDate ?? lastRoutineDate);
+
+      // Aggregate feedback rows for the chosen "most recent" date (may be empty
+      // if the most recent activity was a completion-only day with no per-task feedback).
+      const yesterdayRows = rows.filter((r) => r.date === mostRecentDate);
+      const yesterdayLevel: number =
+        yesterdayRows[0]?.level ??
+        (mostRecentDate === lastRoutineDate
+          ? Number((lastRoutine.rows[0] as any)?.level ?? 2)
+          : 2);
+
+      const tooHard = yesterdayRows.filter((r) => r.reaction === 'too_hard').length;
+      const hard = yesterdayRows.filter((r) => r.reaction === 'hard').length;
+      const good = yesterdayRows.filter((r) => r.reaction === 'good').length;
+      const totalFb = yesterdayRows.length;
+
+      let recLevel = yesterdayLevel;
+      let basis: 'yesterday_too_hard' | 'yesterday_good' | 'first_session' | 'steady' = 'steady';
+      let reason = '';
+
+      // Rule 1 — back off if 2+ "too hard" yesterday
+      if (tooHard >= 2 && yesterdayLevel > 0) {
+        recLevel = yesterdayLevel - 1;
+        basis = 'yesterday_too_hard';
+        reason = `Yesterday you marked ${tooHard} exercises "too much." Today we're dropping one level so your nervous system can rebuild. This is the work — recovery isn't linear.`;
+      }
+      // Rule 2 — step up if a strong day with no "too hard"
+      else if (totalFb >= 4 && tooHard === 0 && good >= Math.ceil(totalFb * 0.6) && yesterdayLevel < 4) {
+        // Check if at least 3 of the last 5 routine days were at this level (steady streak).
+        const distinctDates = await db.execute(
+          sql`SELECT date FROM routine_completions
+              WHERE user_id = ${userId} AND level = ${yesterdayLevel} AND date < ${today}
+              ORDER BY date DESC LIMIT 5`
+        );
+        if (distinctDates.rows.length >= 3) {
+          recLevel = yesterdayLevel + 1;
+          basis = 'yesterday_good';
+          reason = `Yesterday felt strong — ${good} of ${totalFb} marked "felt strong" with zero "too much." You've held steady for several sessions. Today, we step up.`;
+        } else {
+          reason = `Yesterday felt strong (${good} of ${totalFb}). Holding at ${getLevelName(yesterdayLevel)} for one more session before we step up.`;
+        }
+      }
+      // Rule 3 — steady (mixed signal or insufficient data)
+      else {
+        if (totalFb === 0) {
+          reason = `Picking up where you left off — last session was ${getLevelName(yesterdayLevel)}. Listen to your body today.`;
+        } else if (hard >= good) {
+          reason = `Yesterday was a grinder — ${hard} hard, ${good} strong. We'll stay at ${getLevelName(yesterdayLevel)} and let your body settle.`;
+        } else {
+          reason = `Steady wins. Continuing at ${getLevelName(yesterdayLevel)} so the new pathways stay myelinating.`;
+        }
+      }
+
+      recLevel = Math.max(0, Math.min(4, recLevel));
+
+      res.json({
+        level: recLevel,
+        reason,
+        basis,
+        ambulatoryToday: recLevel >= 3, // Assisted Standing or Full Power
+      });
+    } catch (err) {
+      console.error('today/recommendation error:', err);
+      res.status(500).json({ message: 'Failed to compute recommendation' });
+    }
+  });
+
+  // POST /api/recovery/today/feedback
+  // Body: { taskId, level, reaction: 'good'|'hard'|'too_hard'|'skipped', date? }
+  // Idempotent upsert keyed by (user_id, date, task_id).
+  app.post('/api/recovery/today/feedback', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const today = new Date().toISOString().slice(0, 10);
+      const { taskId, level, reaction, date } = req.body || {};
+      const validReactions = new Set(['good', 'hard', 'too_hard', 'skipped']);
+      if (typeof taskId !== 'string' || !taskId) {
+        return res.status(400).json({ message: 'taskId required' });
+      }
+      if (!validReactions.has(reaction)) {
+        return res.status(400).json({ message: 'invalid reaction' });
+      }
+      const lvl = typeof level === 'number' ? Math.max(0, Math.min(4, level)) : 2;
+      const dateStr = typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : today;
+
+      await db.execute(
+        sql`INSERT INTO routine_feedback (user_id, date, task_id, level, reaction, created_at)
+            VALUES (${userId}, ${dateStr}, ${taskId}, ${lvl}, ${reaction}, NOW())
+            ON CONFLICT (user_id, date, task_id)
+            DO UPDATE SET reaction = ${reaction}, level = ${lvl}, created_at = NOW()`
+      );
+
+      // Also mark the task complete in routine_completions for streak/dashboard parity.
+      if (reaction !== 'skipped' && taskId !== 'walk_cooldown') {
+        await db.execute(
+          sql`INSERT INTO routine_completions (user_id, date, level, completed_tasks, updated_at)
+              VALUES (${userId}, ${dateStr}, ${lvl}, ARRAY[${taskId}]::text[], NOW())
+              ON CONFLICT (user_id, date)
+              DO UPDATE SET
+                level = ${lvl},
+                completed_tasks = (
+                  SELECT ARRAY(SELECT DISTINCT unnest(routine_completions.completed_tasks || ARRAY[${taskId}]::text[]))
+                  FROM routine_completions
+                  WHERE routine_completions.user_id = ${userId} AND routine_completions.date = ${dateStr}
+                ),
+                updated_at = NOW()`
+        );
+      }
+
+      res.json({ ok: true });
+    } catch (err) {
+      console.error('today/feedback error:', err);
+      res.status(500).json({ message: 'Failed to record feedback' });
+    }
+  });
+
+  // helper used by the recommendation reasoning string
+  function getLevelName(n: number): string {
+    return ['Survival', 'Bed-Based', 'Seated', 'Assisted Standing', 'Full Power'][Math.max(0, Math.min(4, n))];
+  }
+
   // POST /api/recovery/assessment — save a new Sasquatch Scale snapshot
   app.post('/api/recovery/assessment', isAuthenticated, async (req: any, res) => {
     try {

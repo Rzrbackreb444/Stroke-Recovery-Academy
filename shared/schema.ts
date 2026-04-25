@@ -6012,6 +6012,24 @@ export const insertRoutineCompletionSchema = createInsertSchema(routineCompletio
 export type RoutineCompletion = typeof routineCompletions.$inferSelect;
 export type InsertRoutineCompletion = z.infer<typeof insertRoutineCompletionSchema>;
 
+// Per-exercise survivor feedback. Drives the Bonfire's adaptive level recommendation.
+// reaction = 'good' (felt right), 'hard' (challenging but doable), 'too_hard' (back off).
+export const routineFeedback = pgTable("routine_feedback", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  date: text("date").notNull(), // YYYY-MM-DD
+  taskId: text("task_id").notNull(),
+  level: integer("level").notNull(),
+  reaction: text("reaction").notNull(), // 'good' | 'hard' | 'too_hard'
+  createdAt: timestamp("created_at").defaultNow(),
+}, (t) => ({
+  userDateIdx: uniqueIndex("routine_fb_user_date_task_idx").on(t.userId, t.date, t.taskId),
+}));
+
+export const insertRoutineFeedbackSchema = createInsertSchema(routineFeedback).omit({ id: true, createdAt: true });
+export type RoutineFeedback = typeof routineFeedback.$inferSelect;
+export type InsertRoutineFeedback = z.infer<typeof insertRoutineFeedbackSchema>;
+
 // ============================================================================
 // VIDEO STUDIO — user-authored video projects (timeline + assets state)
 // ============================================================================

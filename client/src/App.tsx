@@ -130,6 +130,7 @@ import RecoveryStore from "@/pages/RecoveryStore";
 // Sasquatch Doctrine Core Pages
 import FlickerLog from "@/pages/FlickerLog";
 import DailyRoutine from "@/pages/DailyRoutine";
+import RecoveryToday from "@/pages/RecoveryToday";
 import MedicalLog from "@/pages/MedicalLog";
 import Compass from "@/pages/Compass";
 import DraftYourLegend from "@/pages/DraftYourLegend";
@@ -574,6 +575,7 @@ function Router() {
       <Route path="/recovery/onboarding" component={RecoveryOnboarding} />
       <Route path="/recovery/me" component={RecoveryMe} />
       <Route path="/recovery/routine" component={DailyRoutine} />
+      <Route path="/recovery/today" component={RecoveryToday} />
       <Route path="/recovery/exercises" component={RecoveryExercises} />
       <Route path="/recovery/exercises/:slug" component={RecoveryExerciseDetail} />
       <Route path="/recovery/blog" component={RecoveryBlog} />

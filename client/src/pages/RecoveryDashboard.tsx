@@ -25,7 +25,7 @@ import {
   Flame, Trophy, BookOpen, MessageCircle, Grid3X3, ShoppingBag, Users, Sparkles,
   CheckCircle2, Target, Star, TrendingUp, Calendar, Heart, Zap, LogOut,
   Plus, UserPlus, DoorOpen, Smile, Activity, Quote, RefreshCw, ArrowRight,
-  Play, Brain, ChevronDown
+  Play, Brain, ChevronDown, Footprints
 } from "lucide-react";
 import SixtyDayTracker from "@/components/recovery/SixtyDayTracker";
 import MyPathRecommender from "@/components/recovery/MyPathRecommender";
@@ -320,6 +320,43 @@ export default function RecoveryDashboard() {
                   </div>
                 </div>
                 <span className="text-xs text-[#C9941A] font-semibold uppercase tracking-widest">Open →</span>
+              </div>
+            </a>
+          </Link>
+        </section>
+
+        {/* BONFIRE — Today's adaptive session */}
+        <section className="mb-8" data-testid="section-bonfire-hero">
+          <Link href="/recovery/today">
+            <a
+              className="block group rounded-xl border-2 border-[#C9941A] bg-gradient-to-br from-[#C9941A]/20 via-[#1a1a1a] to-[#1a1a1a] hover-elevate active-elevate-2 p-6"
+              data-testid="link-bonfire-hero"
+              aria-label="Start today's Bonfire session"
+            >
+              <div className="flex items-start gap-5">
+                <div className="hidden sm:flex h-16 w-16 rounded-full bg-[#C9941A] items-center justify-center shrink-0 shadow-[0_0_24px_rgba(201,148,26,0.45)]">
+                  <Flame className="h-8 w-8 text-black" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9941A] font-bold mb-1">
+                    Today's Session · The Bonfire
+                  </p>
+                  <h2
+                    className="text-2xl sm:text-3xl font-black text-white leading-tight mb-2"
+                    style={{ fontFamily: "Playfair Display, Georgia, serif" }}
+                  >
+                    What to do, right now.
+                  </h2>
+                  <p className="text-sm text-gray-300 leading-relaxed mb-3">
+                    One adaptive walkthrough, tuned to how yesterday felt. Ends with a
+                    supervised walking cooldown <span className="text-[#C9941A] font-semibold">when you're ready for it.</span>
+                  </p>
+                  <div className="flex items-center gap-2 text-[#C9941A] text-sm font-semibold uppercase tracking-widest">
+                    <Footprints className="h-4 w-4" />
+                    Begin Today's Session
+                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
               </div>
             </a>
           </Link>
