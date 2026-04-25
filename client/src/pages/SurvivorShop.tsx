@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { GlobalHeader } from "@/components/GlobalHeader";
-import { Footer } from "@/components/Footer";
+import GlobalHeader from "@/components/GlobalHeader";
+import Footer from "@/components/Footer";
 import { MedicalDisclaimerCard } from "@/components/recovery/MedicalDisclaimerCard";
 import {
   SHOP_CATEGORIES,
@@ -21,7 +21,7 @@ interface AffiliateConfig {
   amazonTag: string | null;
 }
 
-function ProductCard({ p, tag }: { p: ShopProduct; tag: string | null }) {
+function ProductCard({ p, tag, configReady }: { p: ShopProduct; tag: string | null; configReady: boolean }) {
   const url = buildAmazonUrl(p.asin, tag);
   return (
     <Card className="bg-zinc-900/60 border-amber-900/30 flex flex-col" data-testid={`card-product-${p.id}`}>
@@ -48,16 +48,27 @@ function ProductCard({ p, tag }: { p: ShopProduct; tag: string | null }) {
             <p className="text-xs text-amber-200/80">{p.notMedicalNote}</p>
           </div>
         )}
-        <Button
-          asChild
-          className="mt-auto bg-amber-500 hover:bg-amber-400 text-zinc-950"
-          data-testid={`link-amazon-${p.id}`}
-        >
-          <a href={url} target="_blank" rel="noopener noreferrer sponsored nofollow">
+        {configReady ? (
+          <Button
+            asChild
+            className="mt-auto bg-amber-500 hover:bg-amber-400 text-zinc-950"
+            data-testid={`link-amazon-${p.id}`}
+          >
+            <a href={url} target="_blank" rel="noopener noreferrer sponsored nofollow">
+              <ExternalLink className="h-4 w-4 mr-2" />
+              View on Amazon
+            </a>
+          </Button>
+        ) : (
+          <Button
+            disabled
+            className="mt-auto bg-amber-500/40 text-zinc-950"
+            data-testid={`link-amazon-${p.id}-loading`}
+          >
             <ExternalLink className="h-4 w-4 mr-2" />
-            View on Amazon
-          </a>
-        </Button>
+            Loading…
+          </Button>
+        )}
       </CardContent>
     </Card>
   );
@@ -67,10 +78,11 @@ export default function SurvivorShop() {
   const [activeCat, setActiveCat] = useState<ShopCategoryId | "all">("all");
   const [search, setSearch] = useState("");
 
-  const { data: cfg } = useQuery<AffiliateConfig>({
+  const { data: cfg, isLoading: cfgLoading } = useQuery<AffiliateConfig>({
     queryKey: ["/api/config/affiliate"],
   });
   const tag = cfg?.amazonTag ?? null;
+  const configReady = !cfgLoading;
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -183,9 +195,19 @@ export default function SurvivorShop() {
             </Card>
           )}
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Card className="bg-amber-950/15 border-amber-900/40 mb-6" data-testid="card-affiliate-disclosure">
+            <CardContent className="py-4 text-sm text-amber-100/80">
+              <p>
+                <strong className="text-amber-200">Affiliate disclosure:</strong> Stroke Recovery Academy is
+                an Amazon Associate. We earn from qualifying purchases — your price is unchanged. Every link
+                below is an affiliate link.
+              </p>
+            </CardContent>
+          </Card>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 min-h-[400px]">
             {filtered.map((p) => (
-              <ProductCard key={p.id} p={p} tag={tag} />
+              <ProductCard key={p.id} p={p} tag={tag} configReady={configReady} />
             ))}
           </div>
 
@@ -200,7 +222,7 @@ export default function SurvivorShop() {
           <Card className="bg-zinc-900/60 border-amber-900/30">
             <CardContent className="py-6 space-y-3 text-sm text-amber-100/70">
               <p>
-                <strong className="text-amber-200">Affiliate disclosure:</strong> KreAIte / Stroke Recovery
+                <strong className="text-amber-200">Full affiliate disclosure:</strong> KreAIte / Stroke Recovery
                 Academy is an Amazon Associate. As an Amazon Associate we earn from qualifying purchases.
                 Your price is unchanged. Choosing to buy through these links helps fund free survivor content.
               </p>
