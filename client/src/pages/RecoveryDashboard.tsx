@@ -362,6 +362,31 @@ export default function RecoveryDashboard() {
           </Link>
         </section>
 
+        {/* SURVIVOR SHOP — Curated Amazon affiliate gear */}
+        <section className="mb-8" data-testid="section-survivor-shop">
+          <Link href="/recovery/shop">
+            <a
+              className="block rounded-xl border border-[#C9941A]/40 bg-gradient-to-r from-[#1a1610] via-[#141414] to-[#1a1610] p-5 hover-elevate"
+              data-testid="link-survivor-shop"
+              aria-label="Open the Survivor Shop"
+            >
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div className="flex items-center gap-3">
+                  <div className="h-11 w-11 rounded-md bg-[#C9941A] flex items-center justify-center">
+                    <ShoppingBag className="h-5 w-5 text-black" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9941A]">Survivor Shop</p>
+                    <p className="text-base font-bold text-white">The gear that actually helped</p>
+                    <p className="text-xs text-gray-500">AFOs, putty, grab bars, wedge pillows — survivor-curated, never prescriptive</p>
+                  </div>
+                </div>
+                <span className="text-xs text-[#C9941A] font-semibold uppercase tracking-widest">Browse →</span>
+              </div>
+            </a>
+          </Link>
+        </section>
+
         {/* SQUATCHY ANTHEM HERO */}
         <section className="mb-8" data-testid="section-anthem-hero">
           <Link href="/recovery/anthem">
