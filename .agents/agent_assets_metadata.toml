@@ -1,5 +1,10 @@
 uploads = []
-generated = []
+
+[[generated]]
+id = "bqgZrEidQzJo4orS-nS77"
+uri = "file://client/public/og-image-1200x630.png"
+type = "image"
+title = "stroke recovery og social card"
 
 [[outputs]]
 id = "EGooVUwVUQyTPSx95p4M4"
