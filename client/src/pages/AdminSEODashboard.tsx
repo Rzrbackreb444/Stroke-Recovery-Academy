@@ -62,16 +62,21 @@ export default function AdminSEODashboard() {
 
   const ping = useMutation({
     mutationFn: async () => {
-      const r = await apiRequest("POST", "/api/admin/seo/ping-search-engines");
-      return (await r.json()) as { results: { name: string; status: number; ok: boolean }[] };
+      const r = await apiRequest("POST", "/api/admin/seo/submit");
+      return (await r.json()) as {
+        urlCount: number;
+        indexNow: { batches: { batch: number; status: number; ok: boolean; count: number }[]; covers: string[] };
+        google: { note: string };
+      };
     },
     onSuccess: (d) => {
+      const okBatches = d.indexNow.batches.filter((b) => b.ok).length;
       toast({
-        title: "Pinged search engines",
-        description: d.results.map((r) => `${r.name}: ${r.status}`).join(" · "),
+        title: `Submitted ${d.urlCount} URLs`,
+        description: `IndexNow (${d.indexNow.covers.join(", ")}): ${okBatches}/${d.indexNow.batches.length} batches OK`,
       });
     },
-    onError: () => toast({ title: "Ping failed", variant: "destructive" }),
+    onError: () => toast({ title: "Submit failed", variant: "destructive" }),
   });
 
   const filteredRoutes = useMemo(() => {

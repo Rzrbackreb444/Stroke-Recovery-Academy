@@ -1646,30 +1646,87 @@ Last updated: ${new Date().toISOString().split('T')[0]}
     }
   });
 
-  // POST /api/admin/seo/ping-search-engines — pings Google + Bing sitemap endpoints (admin only)
-  app.post('/api/admin/seo/ping-search-engines', isAuthenticated, async (req: any, res) => {
+  // ───────── INDEXNOW (Bing / Yandex / Seznam push protocol) ──────────────────
+  // Public key file — IndexNow requires the key to be retrievable at /<key>.txt.
+  const INDEXNOW_KEY = process.env.INDEXNOW_KEY ?? 'b4467db1ff1a56507f0cd0b4754c969e';
+  app.get(`/${INDEXNOW_KEY}.txt`, (_req, res) => {
+    res.type('text/plain').send(INDEXNOW_KEY);
+  });
+
+  // POST /api/admin/seo/submit — push every indexable URL to IndexNow + ping
+  // Google's sitemap auto-discovery (legacy ping endpoints were retired in 2023;
+  // Google now relies on the sitemap declared in robots.txt + Search Console).
+  app.post('/api/admin/seo/submit', isAuthenticated, async (req: any, res) => {
     try {
       const u = await storage.getUser(req.user.claims.sub);
       if (!u || u.role !== 'admin') return res.status(403).json({ message: 'Admin only' });
-      const sitemap = encodeURIComponent('https://strokerecoveryacademy.com/sitemap-index.xml');
-      const targets = [
-        { name: 'Google', url: `https://www.google.com/ping?sitemap=${sitemap}` },
-        { name: 'Bing', url: `https://www.bing.com/ping?sitemap=${sitemap}` },
-      ];
-      const results = await Promise.all(
-        targets.map(async (t) => {
-          try {
-            const r = await fetch(t.url, { method: 'GET' });
-            return { name: t.name, status: r.status, ok: r.ok };
-          } catch (e: any) {
-            return { name: t.name, status: 0, ok: false, error: e?.message ?? 'failed' };
-          }
-        }),
-      );
-      res.json({ results });
+
+      const HOST = 'strokerecoveryacademy.com';
+      const ORIGIN = `https://${HOST}`;
+
+      // Build the URL list from the registry (static, indexable) + DB content
+      // (blog posts, marketplace listings, programmatic SSR pages).
+      const { getStaticSitemapEntries } = await import('../shared/seo/routeRegistry');
+      const staticUrls = getStaticSitemapEntries().map((e) => `${ORIGIN}${e.loc}`);
+
+      let dynamicUrls: string[] = [];
+      try {
+        const { getBlogPageUrls } = await import('./seo/blogRoutes');
+        dynamicUrls.push(...getBlogPageUrls().map((p) => `${ORIGIN}${p.url}`));
+      } catch {}
+      try {
+        const { getProgrammaticSeoUrls } = await import('./seo/programmaticRoutes');
+        const prog = await getProgrammaticSeoUrls();
+        dynamicUrls.push(...prog.map((p) => `${ORIGIN}${p.url}`));
+      } catch {}
+      try {
+        const listings = (await storage.getMarketplaceListings?.()) || [];
+        dynamicUrls.push(
+          ...listings
+            .filter((l: any) => l?.id)
+            .map((l: any) => `${ORIGIN}/listing/${l.id}`),
+        );
+      } catch {}
+
+      const allUrls = Array.from(new Set([...staticUrls, ...dynamicUrls]));
+      // IndexNow caps at 10,000 URLs per submission — chunk to be safe.
+      const CHUNK = 1000;
+      const indexNowResults: { batch: number; status: number; ok: boolean; count: number }[] = [];
+      for (let i = 0; i < allUrls.length; i += CHUNK) {
+        const batch = allUrls.slice(i, i + CHUNK);
+        try {
+          const r = await fetch('https://api.indexnow.org/indexnow', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify({
+              host: HOST,
+              key: INDEXNOW_KEY,
+              keyLocation: `${ORIGIN}/${INDEXNOW_KEY}.txt`,
+              urlList: batch,
+            }),
+          });
+          indexNowResults.push({ batch: i / CHUNK, status: r.status, ok: r.ok, count: batch.length });
+        } catch (e: any) {
+          indexNowResults.push({ batch: i / CHUNK, status: 0, ok: false, count: batch.length });
+        }
+      }
+
+      res.json({
+        urlCount: allUrls.length,
+        indexNow: {
+          endpoint: 'https://api.indexnow.org/indexnow',
+          keyLocation: `${ORIGIN}/${INDEXNOW_KEY}.txt`,
+          batches: indexNowResults,
+          covers: ['Bing', 'Yandex', 'Seznam', 'Naver'],
+        },
+        google: {
+          note: 'Google retired the public sitemap ping endpoint in 2023. Google auto-discovers the sitemap via robots.txt (already declared) and Search Console. For per-URL push, use the GSC URL Inspection tool or the Indexing API (job postings + livestream only).',
+          sitemapDeclared: `${ORIGIN}/sitemap-index.xml`,
+        },
+      });
     } catch (error) {
-      console.error('SEO ping error:', error);
-      res.status(500).json({ message: 'Failed to ping search engines.' });
+      console.error('SEO submit error:', error);
+      res.status(500).json({ message: 'Failed to submit URLs.' });
     }
   });
 
