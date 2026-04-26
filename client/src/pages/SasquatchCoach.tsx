@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Volume2, VolumeX, Loader2, Mic } from "lucide-react";
+import { Send, Volume2, VolumeX, Loader2, Mic, Flame, Sparkles, ShoppingBag } from "lucide-react";
+import { Link } from "wouter";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import RecoveryHeader from "@/components/RecoveryHeader";
@@ -213,8 +214,50 @@ export default function SasquatchCoach() {
           <div ref={bottomRef} />
         </div>
 
-        {/* Starter prompts — only shown before first user message */}
+        {/* Quick actions + starter prompts — only shown before first user message */}
         {messages.filter((m) => m.role === "user").length === 0 && (
+          <>
+            <div className="mb-3">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-[#C9941A] mb-2">Jump straight to action</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <Link href="/recovery/today">
+                  <a
+                    className="flex items-center gap-2 px-3 py-2.5 rounded-md border border-[#C9941A]/30 bg-[#1a1610] hover-elevate text-left"
+                    data-testid="coach-quick-today"
+                  >
+                    <Flame className="h-4 w-4 text-[#C9941A] flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold text-white">What should I do today?</p>
+                      <p className="text-[11px] text-gray-400 truncate">Open The Bonfire</p>
+                    </div>
+                  </a>
+                </Link>
+                <Link href="/recovery/motivation">
+                  <a
+                    className="flex items-center gap-2 px-3 py-2.5 rounded-md border border-[#C9941A]/30 bg-[#1a1610] hover-elevate text-left"
+                    data-testid="coach-quick-motivation"
+                  >
+                    <Sparkles className="h-4 w-4 text-[#C9941A] flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold text-white">I need a fire-up</p>
+                      <p className="text-[11px] text-gray-400 truncate">Motivation Studio</p>
+                    </div>
+                  </a>
+                </Link>
+                <Link href="/recovery/shop">
+                  <a
+                    className="flex items-center gap-2 px-3 py-2.5 rounded-md border border-[#C9941A]/30 bg-[#1a1610] hover-elevate text-left"
+                    data-testid="coach-quick-shop"
+                  >
+                    <ShoppingBag className="h-4 w-4 text-[#C9941A] flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold text-white">Gear that helped me</p>
+                      <p className="text-[11px] text-gray-400 truncate">Survivor Shop</p>
+                    </div>
+                  </a>
+                </Link>
+              </div>
+            </div>
           <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
             {STARTER_PROMPTS.map((prompt) => (
               <button
@@ -228,6 +271,7 @@ export default function SasquatchCoach() {
               </button>
             ))}
           </div>
+          </>
         )}
 
         {/* Input */}

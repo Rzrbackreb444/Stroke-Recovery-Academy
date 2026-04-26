@@ -74,8 +74,16 @@ function ProductCard({ p, tag, configReady }: { p: ShopProduct; tag: string | nu
   );
 }
 
+function readCategoryFromUrl(): ShopCategoryId | "all" {
+  if (typeof window === "undefined") return "all";
+  const raw = new URLSearchParams(window.location.search).get("category");
+  if (!raw) return "all";
+  const valid = SHOP_CATEGORIES.some((c) => c.id === raw);
+  return valid ? (raw as ShopCategoryId) : "all";
+}
+
 export default function SurvivorShop() {
-  const [activeCat, setActiveCat] = useState<ShopCategoryId | "all">("all");
+  const [activeCat, setActiveCat] = useState<ShopCategoryId | "all">(() => readCategoryFromUrl());
   const [search, setSearch] = useState("");
 
   const { data: cfg, isLoading: cfgLoading } = useQuery<AffiliateConfig>({

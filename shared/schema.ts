@@ -6031,6 +6031,48 @@ export type RoutineFeedback = typeof routineFeedback.$inferSelect;
 export type InsertRoutineFeedback = z.infer<typeof insertRoutineFeedbackSchema>;
 
 // ============================================================================
+// MOTIVATION STUDIO — anthems, vision cards, daily quotes
+// ============================================================================
+
+// Per-user monthly counters that gate free-tier limits.
+export const motivationUsage = pgTable("motivation_usage", {
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  month: text("month").notNull(), // YYYY-MM
+  anthemCount: integer("anthem_count").notNull().default(0),
+  visionCardCount: integer("vision_card_count").notNull().default(0),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (t) => ({
+  pk: uniqueIndex("motivation_usage_pk").on(t.userId, t.month),
+}));
+export type MotivationUsage = typeof motivationUsage.$inferSelect;
+
+// Persisted user-generated artifacts (anthems + vision cards).
+export const motivationArtifacts = pgTable("motivation_artifacts", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  type: text("type").notNull(), // 'anthem' | 'vision_card'
+  title: text("title"),
+  payload: jsonb("payload").notNull(), // { lyrics, declaration, prompt, etc }
+  audioUrl: text("audio_url"),
+  imageUrl: text("image_url"),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (t) => ({
+  byUserCreated: index("motivation_artifacts_user_created").on(t.userId, t.createdAt),
+}));
+export const insertMotivationArtifactSchema = createInsertSchema(motivationArtifacts).omit({ id: true, createdAt: true });
+export type MotivationArtifact = typeof motivationArtifacts.$inferSelect;
+export type InsertMotivationArtifact = z.infer<typeof insertMotivationArtifactSchema>;
+
+// Server-cached daily quote shared across all users (one row per date).
+export const dailyQuotes = pgTable("daily_quotes", {
+  date: text("date").primaryKey(), // YYYY-MM-DD
+  quote: text("quote").notNull(),
+  audioUrl: text("audio_url"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+export type DailyQuote = typeof dailyQuotes.$inferSelect;
+
+// ============================================================================
 // VIDEO STUDIO — user-authored video projects (timeline + assets state)
 // ============================================================================
 export const videoProjects = pgTable("video_projects", {
