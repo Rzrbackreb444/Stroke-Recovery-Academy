@@ -396,30 +396,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/sitemap.xml', async (req, res) => {
     const baseUrl = 'https://strokerecoveryacademy.com';
 
-    const recoveryStaticRoutes = [
-      { path: '/', priority: '1.0', changefreq: 'weekly' },
-      { path: '/recovery', priority: '1.0', changefreq: 'weekly' },
-      { path: '/recovery/university', priority: '0.9', changefreq: 'weekly' },
-      { path: '/recovery/sasquatch-coach', priority: '0.9', changefreq: 'weekly' },
-      { path: '/recovery/protocols', priority: '0.9', changefreq: 'weekly' },
-      { path: '/recovery/exercises', priority: '0.9', changefreq: 'weekly' },
-      { path: '/recovery/blog', priority: '0.9', changefreq: 'daily' },
-      { path: '/recovery/center-finder', priority: '0.8', changefreq: 'monthly' },
-      { path: '/recovery/survivor-income', priority: '0.8', changefreq: 'monthly' },
-      { path: '/recovery/store', priority: '0.8', changefreq: 'weekly' },
-      { path: '/recovery/resources', priority: '0.7', changefreq: 'weekly' },
-      { path: '/recovery/community', priority: '0.8', changefreq: 'daily' },
-      { path: '/recovery/pricing', priority: '0.95', changefreq: 'monthly' },
-      { path: '/recovery/gift', priority: '0.9', changefreq: 'monthly' },
-      { path: '/recovery/challenge', priority: '1.0', changefreq: 'weekly' },
-      { path: '/recovery/about-nick', priority: '0.8', changefreq: 'monthly' },
-      { path: '/recovery/strokelyfe-org', priority: '0.8', changefreq: 'monthly' },
-      { path: '/pricing', priority: '0.7', changefreq: 'monthly' },
-      { path: '/terms', priority: '0.3', changefreq: 'yearly' },
-      { path: '/privacy', priority: '0.3', changefreq: 'yearly' },
-    ];
-
-    const staticRoutes = recoveryStaticRoutes;
+    // Derive static sitemap entries from the single-source-of-truth registry
+    // so any route added to shared/seo/routeRegistry.ts auto-appears here.
+    const { getStaticSitemapEntries } = await import('../shared/seo/routeRegistry');
+    const staticRoutes = getStaticSitemapEntries().map((e) => ({
+      path: e.loc,
+      priority: e.priority.toFixed(2),
+      changefreq: e.changefreq,
+    }));
 
     try {
       // Get marketplace listings
@@ -631,32 +615,15 @@ ${listings.slice(0, 1000).map((listing: any) => `  <url>
     // Protected pages (compass, legend, never-zero, achievements, command-center,
     // wearables, social, therapist-marketplace) cause redirect errors in GSC because
     // Google gets bounced to the login page. They are excluded here AND blocked in robots.txt.
-    const recoveryStaticRoutes = [
-      // Tier 1 — Core landing pages (priority 1.0)
-      { path: '/recovery', priority: '1.0', changefreq: 'weekly' },
-      { path: '/recovery/challenge', priority: '1.0', changefreq: 'weekly' },
-      // Tier 2 — High-value public content hubs (priority 0.90–0.95)
-      { path: '/recovery/pricing', priority: '0.95', changefreq: 'monthly' },
-      { path: '/recovery/academy', priority: '0.95', changefreq: 'weekly' },
-      { path: '/recovery/university', priority: '0.95', changefreq: 'weekly' },
-      { path: '/recovery/exercises', priority: '0.95', changefreq: 'daily' },
-      { path: '/recovery/protocols', priority: '0.92', changefreq: 'weekly' },
-      { path: '/recovery/sasquatch-coach', priority: '0.92', changefreq: 'weekly' },
-      { path: '/recovery/survivor-income', priority: '0.92', changefreq: 'weekly' },
-      { path: '/recovery/gift', priority: '0.90', changefreq: 'monthly' },
-      { path: '/recovery/blog', priority: '0.90', changefreq: 'daily' },
-      { path: '/recovery/center-finder', priority: '0.90', changefreq: 'monthly' },
-      { path: '/recovery/resources', priority: '0.90', changefreq: 'weekly' },
-      // Tier 3 — Public supporting pages (priority 0.75–0.85)
-      { path: '/recovery/about-nick', priority: '0.85', changefreq: 'monthly' },
-      { path: '/recovery/store', priority: '0.85', changefreq: 'weekly' },
-      { path: '/recovery/community', priority: '0.82', changefreq: 'daily' },
-      { path: '/recovery/strokelyfe-org', priority: '0.80', changefreq: 'monthly' },
-      { path: '/recovery/forge', priority: '0.80', changefreq: 'weekly' },
-      { path: '/recovery/brain-gym', priority: '0.78', changefreq: 'weekly' },
-      { path: '/recovery/survival-grid', priority: '0.78', changefreq: 'weekly' },
-      { path: '/recovery/builder', priority: '0.78', changefreq: 'weekly' },
-    ];
+    // Derived from the registry single source of truth — only /recovery/* entries.
+    const { getStaticSitemapEntries: getRecoverySitemapEntries } = await import('../shared/seo/routeRegistry');
+    const recoveryStaticRoutes = getRecoverySitemapEntries()
+      .filter((e) => e.loc.startsWith('/recovery'))
+      .map((e) => ({
+        path: e.loc,
+        priority: e.priority.toFixed(2),
+        changefreq: e.changefreq,
+      }));
 
     // Tier 1 SSR landing pages + hubs — server-rendered with unique content per URL
     const { getSsrPageUrls } = await import('./seo/landingRoutes');
@@ -1610,6 +1577,99 @@ Last updated: ${new Date().toISOString().split('T')[0]}
     } catch (error) {
       console.error('Feedback item update error:', error);
       res.status(500).json({ message: 'Failed to update feedback item.' });
+    }
+  });
+
+  // ───────── ADMIN SEO DASHBOARD ─────────
+  // GET /api/admin/seo/registry — full registry coverage stats (admin only)
+  app.get('/api/admin/seo/registry', isAuthenticated, async (req: any, res) => {
+    try {
+      const u = await storage.getUser(req.user.claims.sub);
+      if (!u || u.role !== 'admin') return res.status(403).json({ message: 'Admin only' });
+      const { ROUTES, getRegistryStats, getStaticSitemapEntries } = await import('../shared/seo/routeRegistry');
+      res.json({
+        stats: getRegistryStats(),
+        sitemapStaticCount: getStaticSitemapEntries().length,
+        routes: ROUTES.map((r) => ({
+          pattern: r.pattern.source,
+          canonical: r.canonical ?? null,
+          category: r.category,
+          intent: r.intent,
+          schemaType: r.schemaType,
+          title: r.title,
+          description: r.description,
+          author: r.author ?? null,
+          noindex: Boolean(r.noindex),
+          ssrHandled: Boolean(r.ssrHandled),
+          changefreq: r.changefreq ?? null,
+          priority: r.priority ?? null,
+        })),
+      });
+    } catch (error) {
+      console.error('SEO registry fetch error:', error);
+      res.status(500).json({ message: 'Failed to fetch SEO registry.' });
+    }
+  });
+
+  // GET /api/admin/seo/inspect?path=/foo — inspect what the registry would emit (admin only)
+  app.get('/api/admin/seo/inspect', isAuthenticated, async (req: any, res) => {
+    try {
+      const u = await storage.getUser(req.user.claims.sub);
+      if (!u || u.role !== 'admin') return res.status(403).json({ message: 'Admin only' });
+      const path = typeof req.query.path === 'string' ? req.query.path : '/';
+      const { lookupRoute, CANONICAL_DEFAULT } = await import('../shared/seo/routeRegistry');
+      const { generateRouteSchemas } = await import('../shared/seo/schemaGenerator');
+      const entry = lookupRoute(path);
+      if (!entry) return res.json({ path, matched: false });
+      const fullUrl = `${CANONICAL_DEFAULT}${path}`;
+      res.json({
+        path,
+        matched: true,
+        entry: {
+          pattern: entry.pattern.source,
+          canonical: entry.canonical ?? null,
+          category: entry.category,
+          intent: entry.intent,
+          schemaType: entry.schemaType,
+          title: entry.title,
+          description: entry.description,
+          author: entry.author ?? null,
+          noindex: Boolean(entry.noindex),
+          ssrHandled: Boolean(entry.ssrHandled),
+        },
+        fullUrl,
+        schemas: entry.noindex ? [] : generateRouteSchemas(entry, fullUrl),
+      });
+    } catch (error) {
+      console.error('SEO inspect error:', error);
+      res.status(500).json({ message: 'Failed to inspect path.' });
+    }
+  });
+
+  // POST /api/admin/seo/ping-search-engines — pings Google + Bing sitemap endpoints (admin only)
+  app.post('/api/admin/seo/ping-search-engines', isAuthenticated, async (req: any, res) => {
+    try {
+      const u = await storage.getUser(req.user.claims.sub);
+      if (!u || u.role !== 'admin') return res.status(403).json({ message: 'Admin only' });
+      const sitemap = encodeURIComponent('https://strokerecoveryacademy.com/sitemap-index.xml');
+      const targets = [
+        { name: 'Google', url: `https://www.google.com/ping?sitemap=${sitemap}` },
+        { name: 'Bing', url: `https://www.bing.com/ping?sitemap=${sitemap}` },
+      ];
+      const results = await Promise.all(
+        targets.map(async (t) => {
+          try {
+            const r = await fetch(t.url, { method: 'GET' });
+            return { name: t.name, status: r.status, ok: r.ok };
+          } catch (e: any) {
+            return { name: t.name, status: 0, ok: false, error: e?.message ?? 'failed' };
+          }
+        }),
+      );
+      res.json({ results });
+    } catch (error) {
+      console.error('SEO ping error:', error);
+      res.status(500).json({ message: 'Failed to ping search engines.' });
     }
   });
 

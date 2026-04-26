@@ -118,6 +118,7 @@ import SocialNetwork from "@/pages/SocialNetwork";
 import RecoveryCommunity from "@/pages/RecoveryCommunity";
 import TherapistMarketplace from "@/pages/TherapistMarketplace";
 import AdminPlanBuilder from "@/pages/AdminPlanBuilder";
+import AdminSEODashboard from "@/pages/AdminSEODashboard";
 import FeedbackAdmin from "@/pages/FeedbackAdmin";
 import FeedbackInbox from "@/pages/FeedbackInbox";
 import BlogDraftStudio from "@/pages/BlogDraftStudio";
@@ -535,6 +536,9 @@ function Router() {
       </Route>
       <Route path="/admin/blog/draft">
         <AdminRoute><BlogDraftStudio /></AdminRoute>
+      </Route>
+      <Route path="/admin/seo">
+        <AdminRoute><AdminSEODashboard /></AdminRoute>
       </Route>
       <Route path="/recovery/university" component={RecoveryUniversity} />
       <Route path="/recovery/university/lesson/:chapter" component={RecoveryLesson} />

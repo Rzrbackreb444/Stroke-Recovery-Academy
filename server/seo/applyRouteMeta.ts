@@ -1,4 +1,6 @@
 import { lookupRouteMeta, type RouteMeta } from "../../shared/seo/routeMeta";
+import { lookupRoute } from "../../shared/seo/routeRegistry";
+import { generateRouteSchemas, renderJsonLdScripts } from "../../shared/seo/schemaGenerator";
 
 const SITE_ORIGIN_DEFAULT = "https://strokerecoveryacademy.com";
 
@@ -52,6 +54,9 @@ function buildHead(meta: RouteMeta, canonical: string): string {
     `<meta property="og:title" content="${escapeAttr(ogTitle)}">`,
     `<meta property="og:description" content="${escapeAttr(ogDesc)}">`,
     `<meta property="og:url" content="${escapeAttr(canonical)}">`,
+    `<meta property="og:type" content="website">`,
+    `<meta property="og:site_name" content="Stroke Recovery Academy">`,
+    `<meta name="twitter:card" content="summary_large_image">`,
     `<meta name="twitter:title" content="${escapeAttr(ogTitle)}">`,
     `<meta name="twitter:description" content="${escapeAttr(ogDesc)}">`,
   ].join("\n    ");
@@ -59,8 +64,9 @@ function buildHead(meta: RouteMeta, canonical: string): string {
 
 /**
  * Rewrites the SPA index.html `<head>` so the served HTML carries route-specific
- * meta BEFORE bytes leave the server. Critical for AI crawlers (GPTBot, Claude-Web,
- * PerplexityBot) and traditional search engines that don't execute client JS.
+ * meta + JSON-LD BEFORE bytes leave the server. Critical for AI crawlers (GPTBot,
+ * Claude-Web, PerplexityBot) and traditional search engines that don't execute
+ * client JS.
  *
  * Routes with their own SSR handlers (programmatic, blog, landing, center finder)
  * never reach this code path — they short-circuit upstream.
@@ -74,7 +80,18 @@ export function applyRouteMeta(html: string, url: string, host?: string): string
   const canonical = `${origin}${path}`;
   const newHead = buildHead(meta, canonical);
 
-  // Strip existing title + description + canonical + robots + og:title/og:description/og:url + twitter:title/description
+  // JSON-LD: emit Org + WebSite + Person + page schema for every indexable
+  // route. Skip for noindex routes (don't pollute the knowledge graph with
+  // private surfaces).
+  let jsonLd = "";
+  if (!meta.noindex) {
+    const entry = lookupRoute(path);
+    if (entry) {
+      jsonLd = renderJsonLdScripts(generateRouteSchemas(entry, canonical));
+    }
+  }
+
+  // Strip existing meta (keep <head> and the rest of the document intact).
   let out = html
     .replace(/<title>[\s\S]*?<\/title>/i, "")
     .replace(/<meta\s+name=["']description["'][^>]*>/gi, "")
@@ -83,10 +100,14 @@ export function applyRouteMeta(html: string, url: string, host?: string): string
     .replace(/<meta\s+property=["']og:title["'][^>]*>/gi, "")
     .replace(/<meta\s+property=["']og:description["'][^>]*>/gi, "")
     .replace(/<meta\s+property=["']og:url["'][^>]*>/gi, "")
+    .replace(/<meta\s+property=["']og:type["'][^>]*>/gi, "")
+    .replace(/<meta\s+property=["']og:site_name["'][^>]*>/gi, "")
+    .replace(/<meta\s+name=["']twitter:card["'][^>]*>/gi, "")
     .replace(/<meta\s+name=["']twitter:title["'][^>]*>/gi, "")
     .replace(/<meta\s+name=["']twitter:description["'][^>]*>/gi, "");
 
-  // Inject the new head block right after <head>
-  out = out.replace(/<head([^>]*)>/i, (m) => `${m}\n    ${newHead}`);
+  // Inject the new head block (and any JSON-LD) right after <head>.
+  const inject = jsonLd ? `${newHead}\n    ${jsonLd}` : newHead;
+  out = out.replace(/<head([^>]*)>/i, (m) => `${m}\n    ${inject}`);
   return out;
 }
