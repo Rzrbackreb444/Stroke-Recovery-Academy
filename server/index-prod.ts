@@ -16,9 +16,21 @@ export async function serveStatic(app: Express, _server: Server) {
 
   app.use(express.static(distPath));
 
-  // fall through to index.html if the file doesn't exist
-  app.use("*", (_req, res) => {
-    res.sendFile(path.resolve(distPath, "index.html"));
+  // fall through to index.html if the file doesn't exist (with per-route meta injection)
+  const indexHtmlPath = path.resolve(distPath, "index.html");
+  let indexHtmlCache: string | null = null;
+  app.use("*", async (req, res) => {
+    try {
+      if (!indexHtmlCache) {
+        indexHtmlCache = await fs.promises.readFile(indexHtmlPath, "utf-8");
+      }
+      const { applyRouteMeta } = await import("./seo/applyRouteMeta");
+      const page = applyRouteMeta(indexHtmlCache, req.originalUrl, req.headers.host);
+      res.status(200).set({ "Content-Type": "text/html" }).end(page);
+    } catch (err) {
+      console.error("[serveStatic] meta inject failed, falling back to raw index.html:", err);
+      res.sendFile(indexHtmlPath);
+    }
   });
 }
 

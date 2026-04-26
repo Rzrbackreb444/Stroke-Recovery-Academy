@@ -85,80 +85,8 @@ interface Product {
   updatedAt: string;
 }
 
-const mockProducts: Product[] = [
-  {
-    id: 1,
-    type: "book",
-    title: "The Ultimate Stroke Recovery Bible",
-    description: "A comprehensive guide to stroke recovery with actionable exercises and real stories.",
-    coverImageUrl: null,
-    price: 2999,
-    status: "active",
-    salesCount: 127,
-    revenue: 380373,
-    views: 2450,
-    createdAt: "2024-11-15T10:00:00Z",
-    updatedAt: "2024-12-20T14:30:00Z",
-  },
-  {
-    id: 2,
-    type: "course",
-    title: "30-Day Recovery Bootcamp",
-    description: "Intensive recovery program with daily exercises and coaching.",
-    coverImageUrl: null,
-    price: 4999,
-    status: "active",
-    salesCount: 89,
-    revenue: 444911,
-    views: 1820,
-    discount: 20,
-    createdAt: "2024-10-01T08:00:00Z",
-    updatedAt: "2024-12-18T11:15:00Z",
-  },
-  {
-    id: 3,
-    type: "music",
-    title: "Meditation Sounds for Recovery",
-    description: "Calming audio tracks designed for relaxation during recovery.",
-    coverImageUrl: null,
-    price: 999,
-    status: "draft",
-    salesCount: 0,
-    revenue: 0,
-    views: 45,
-    scheduledReleaseDate: "2025-01-15T00:00:00Z",
-    createdAt: "2024-12-01T09:00:00Z",
-    updatedAt: "2024-12-22T16:45:00Z",
-  },
-  {
-    id: 4,
-    type: "video",
-    title: "Physical Therapy Exercise Series",
-    description: "Video tutorials for home physical therapy exercises.",
-    coverImageUrl: null,
-    price: 1999,
-    status: "active",
-    salesCount: 56,
-    revenue: 111944,
-    views: 890,
-    createdAt: "2024-09-20T12:00:00Z",
-    updatedAt: "2024-12-15T10:00:00Z",
-  },
-  {
-    id: 5,
-    type: "book",
-    title: "Caregiver's Companion Guide",
-    description: "Essential guide for caregivers supporting stroke survivors.",
-    coverImageUrl: null,
-    price: 1999,
-    status: "inactive",
-    salesCount: 34,
-    revenue: 67966,
-    views: 520,
-    createdAt: "2024-08-10T14:00:00Z",
-    updatedAt: "2024-11-30T09:00:00Z",
-  },
-];
+// Real product list is fetched via useQuery against /api/creator/products inside the component.
+// Empty by default — no fake products rendered to the creator's dashboard.
 
 function StatCard({
   title,
@@ -467,7 +395,10 @@ export default function CreatorProductDashboard() {
     queryKey: ["/api/creator/earnings"],
   });
 
-  const products = mockProducts;
+  const { data: productsData } = useQuery<Product[]>({
+    queryKey: ["/api/creator/products"],
+  });
+  const products: Product[] = productsData ?? [];
   const isLoading = false;
 
   const filteredProducts = products.filter((product) => {

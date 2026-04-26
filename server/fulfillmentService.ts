@@ -25,6 +25,7 @@ interface FulfillmentResult {
   digitalDelivered?: boolean;
   printJobsCreated?: number;
   error?: string;
+  failedItems?: { itemId: number; error: string }[];
 }
 
 export function calculateRevenueSplit(
@@ -52,34 +53,68 @@ export async function fulfillOrder(orderId: number): Promise<FulfillmentResult> 
 
     let digitalDelivered = false;
     let printJobsCreated = 0;
+    const failedItems: { itemId: number; error: string }[] = [];
+    const succeededItems: OrderItem[] = [];
 
     for (const item of items) {
       const edition = await storage.getBookEdition(item.editionId);
-      if (!edition) continue;
-
-      const listing = await storage.getMarketplaceListing(item.listingId);
-      if (!listing) continue;
-
-      const isDigital = edition.editionType.includes('digital');
-      
-      if (isDigital) {
-        const result = await fulfillDigitalProduct(order, item, edition);
-        if (result.success) digitalDelivered = true;
-      } else {
-        const result = await fulfillPrintProduct(order, item, edition, listing);
-        if (result.success) printJobsCreated++;
+      if (!edition) {
+        failedItems.push({ itemId: item.id, error: 'Edition not found' });
+        continue;
       }
 
-      await recordAuthorEarning(order, item, edition, listing);
+      const listing = await storage.getMarketplaceListing(item.listingId);
+      if (!listing) {
+        failedItems.push({ itemId: item.id, error: 'Listing not found' });
+        continue;
+      }
+
+      const isDigital = edition.editionType.includes('digital');
+      let itemSucceeded = false;
+
+      if (isDigital) {
+        const result = await fulfillDigitalProduct(order, item, edition);
+        if (result.success) {
+          digitalDelivered = true;
+          itemSucceeded = true;
+        } else {
+          failedItems.push({ itemId: item.id, error: result.error || 'Digital fulfillment failed' });
+        }
+      } else {
+        const result = await fulfillPrintProduct(order, item, edition, listing);
+        if (result.success) {
+          printJobsCreated++;
+          itemSucceeded = true;
+        } else {
+          failedItems.push({ itemId: item.id, error: result.error || 'Print fulfillment failed' });
+        }
+      }
+
+      // Only credit earnings + bump sales stats for items that actually fulfilled.
+      if (itemSucceeded) {
+        await recordAuthorEarning(order, item, edition, listing);
+        succeededItems.push(item);
+      }
     }
 
-    await updateListingSalesStats(items);
+    if (succeededItems.length > 0) {
+      await updateListingSalesStats(succeededItems);
+    }
 
+    if (failedItems.length > 0) {
+      console.error(
+        `[fulfillment] Order ${order.orderNumber} had ${failedItems.length} failed item(s):`,
+        failedItems,
+      );
+    }
+
+    const allFailed = failedItems.length === items.length;
     return {
-      success: true,
+      success: !allFailed,
       orderId,
       digitalDelivered,
       printJobsCreated,
+      ...(failedItems.length > 0 ? { error: `${failedItems.length} item(s) failed to fulfill` } : {}),
     };
   } catch (error) {
     console.error('Fulfillment error:', error);
@@ -130,19 +165,19 @@ async function fulfillPrintProduct(
 ): Promise<{ success: boolean; luluOrderId?: string; error?: string }> {
   try {
     if (!isLuluConfigured()) {
-      console.log('Lulu not configured - creating mock print job record');
-      
+      // Hard fail: never silently fake a print order on a real customer purchase.
+      console.error('[fulfillment] Lulu not configured — rejecting print fulfillment for order', order.orderNumber);
       await storage.createLuluPrintJob({
         orderId: order.id,
         orderItemId: item.id,
-        status: 'pending',
+        status: 'failed',
         quantity: item.quantity,
-        interiorSourceUrl: edition.interiorPdfUrl || undefined,
-        coverSourceUrl: edition.coverPdfUrl || undefined,
-        shippingLevel: order.shippingMethod?.toUpperCase() as any || 'GROUND',
+        errorMessage: 'Print fulfillment unavailable — Lulu API credentials are not configured.',
       });
-
-      return { success: true, luluOrderId: 'MOCK_' + Date.now() };
+      return {
+        success: false,
+        error: 'Print fulfillment is temporarily unavailable. The order has been logged for manual review.',
+      };
     }
 
     if (!edition.interiorPdfUrl || !edition.coverPdfUrl) {

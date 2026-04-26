@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   Card,
   CardContent,
@@ -35,6 +36,7 @@ import {
   Package,
   ArrowUp,
   ArrowDown,
+  AlertCircle,
 } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -49,44 +51,13 @@ const CHART_COLORS = [
   "#EC4899",
 ];
 
-const generateRevenueData = (days: number) => {
-  const data = [];
-  const now = new Date();
-  for (let i = days - 1; i >= 0; i--) {
-    const date = new Date(now);
-    date.setDate(date.getDate() - i);
-    data.push({
-      date: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-      revenue: Math.floor(Math.random() * 500) + 100,
-      sales: Math.floor(Math.random() * 20) + 5,
-    });
-  }
-  return data;
-};
+// All analytics arrays are fed by real `/api/analytics/*` queries inside the component.
+// Empty arrays render an honest "No sales yet" empty state instead of fabricated numbers.
 
-const mockSalesBreakdown = [
-  { name: "E-Books", value: 4500, count: 45 },
-  { name: "Music Tracks", value: 3200, count: 32 },
-  { name: "Video Courses", value: 2800, count: 14 },
-  { name: "Images", value: 1800, count: 180 },
-  { name: "Templates", value: 1200, count: 24 },
-];
-
-const mockTopProducts = [
-  { id: 1, name: "Complete Guitar Mastery Course", type: "Course", sales: 156, revenue: 4680, trend: 12 },
-  { id: 2, name: "Ambient Music Pack Vol. 1", type: "Music", sales: 89, revenue: 1335, trend: 8 },
-  { id: 3, name: "Stroke Recovery Bible", type: "E-Book", sales: 76, revenue: 1140, trend: 25 },
-  { id: 4, name: "Professional Photo Presets", type: "Images", sales: 234, revenue: 936, trend: -5 },
-  { id: 5, name: "Meditation Audio Collection", type: "Music", sales: 45, revenue: 675, trend: 3 },
-];
-
-const mockTransactions = [
-  { id: 1, product: "Complete Guitar Mastery Course", buyer: "john_doe", amount: 29.99, date: "2025-12-26T10:30:00", status: "completed" },
-  { id: 2, product: "Ambient Music Pack Vol. 1", buyer: "music_lover_22", amount: 14.99, date: "2025-12-26T09:15:00", status: "completed" },
-  { id: 3, product: "Stroke Recovery Bible", buyer: "recovery_warrior", amount: 14.99, date: "2025-12-25T22:45:00", status: "completed" },
-  { id: 4, product: "Professional Photo Presets", buyer: "photo_pro", amount: 3.99, date: "2025-12-25T18:20:00", status: "pending" },
-  { id: 5, product: "Meditation Audio Collection", buyer: "zen_master", amount: 14.99, date: "2025-12-25T14:10:00", status: "completed" },
-];
+interface SalesBreakdownEntry { name: string; value: number; count: number }
+interface TopProductEntry { id: number; name: string; type: string; sales: number; revenue: number; trend: number }
+interface TransactionEntry { id: number; product: string; buyer: string; amount: number; date: string; status: string }
+interface RevenuePoint { date: string; revenue: number; sales: number }
 
 function AnalyticsSkeleton() {
   return (
@@ -130,13 +101,14 @@ function AnalyticsSkeleton() {
 interface SummaryCardProps {
   title: string;
   value: string;
-  change: number;
+  change?: number;
   icon: typeof DollarSign;
   testId: string;
 }
 
 function SummaryCard({ title, value, change, icon: Icon, testId }: SummaryCardProps) {
-  const isPositive = change >= 0;
+  const hasChange = typeof change === "number";
+  const isPositive = hasChange && change! >= 0;
   return (
     <Card className="bg-card border-[#333]" data-testid={testId}>
       <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
@@ -147,10 +119,12 @@ function SummaryCard({ title, value, change, icon: Icon, testId }: SummaryCardPr
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold text-foreground" data-testid={`${testId}-value`}>{value}</div>
-        <p className={`text-xs flex items-center gap-1 ${isPositive ? "text-[#C9941A]" : "text-red-500"}`}>
-          {isPositive ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
-          {Math.abs(change)}% from last period
-        </p>
+        {hasChange && (
+          <p className={`text-xs flex items-center gap-1 ${isPositive ? "text-[#C9941A]" : "text-red-500"}`}>
+            {isPositive ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
+            {Math.abs(change!)}% from last period
+          </p>
+        )}
       </CardContent>
     </Card>
   );
@@ -158,9 +132,21 @@ function SummaryCard({ title, value, change, icon: Icon, testId }: SummaryCardPr
 
 export default function AnalyticsDashboard() {
   const [timePeriod, setTimePeriod] = useState<string>("30");
-  const [isLoading, setIsLoading] = useState(false);
 
-  const revenueData = generateRevenueData(parseInt(timePeriod));
+  const { data: analyticsData, isLoading, isError } = useQuery<{
+    revenueSeries: RevenuePoint[];
+    salesBreakdown: SalesBreakdownEntry[];
+    topProducts: TopProductEntry[];
+    transactions: TransactionEntry[];
+  }>({
+    queryKey: ["/api/analytics/overview", { period: timePeriod }],
+    retry: false,
+  });
+
+  const revenueData: RevenuePoint[] = analyticsData?.revenueSeries ?? [];
+  const mockSalesBreakdown: SalesBreakdownEntry[] = analyticsData?.salesBreakdown ?? [];
+  const mockTopProducts: TopProductEntry[] = analyticsData?.topProducts ?? [];
+  const mockTransactions: TransactionEntry[] = analyticsData?.transactions ?? [];
   const totalRevenue = revenueData.reduce((sum, d) => sum + d.revenue, 0);
   const totalSales = revenueData.reduce((sum, d) => sum + d.sales, 0);
 
@@ -201,34 +187,48 @@ export default function AnalyticsDashboard() {
           </div>
         </div>
 
+        {isError && (
+          <Card
+            className="bg-amber-500/10 border-amber-500/30 mb-6"
+            data-testid="banner-analytics-unavailable"
+          >
+            <CardContent className="p-4 flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="font-semibold text-amber-300">Analytics data unavailable</p>
+                <p className="text-sm text-amber-200/80 mt-1">
+                  We could not reach the analytics service. The numbers below are placeholders
+                  showing zero — they do not reflect real activity. Please refresh in a moment.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <SummaryCard
             title="Total Earnings"
             value={`$${totalRevenue.toLocaleString()}`}
-            change={12.5}
             icon={DollarSign}
             testId="card-total-earnings"
           />
           <SummaryCard
             title="Total Sales"
             value={totalSales.toLocaleString()}
-            change={8.2}
             icon={ShoppingCart}
             testId="card-total-sales"
           />
           <SummaryCard
             title="Active Listings"
-            value="24"
-            change={4}
+            value={(analyticsData?.topProducts?.length ?? 0).toLocaleString()}
             icon={Package}
             testId="card-active-listings"
           />
           <SummaryCard
-            title="Total Views"
-            value="12.4K"
-            change={-2.1}
+            title="Transactions"
+            value={(analyticsData?.transactions?.length ?? 0).toLocaleString()}
             icon={Eye}
-            testId="card-total-views"
+            testId="card-total-transactions"
           />
         </div>
 
