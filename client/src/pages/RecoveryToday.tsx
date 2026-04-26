@@ -8,13 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   ArrowLeft, ArrowRight, CheckCircle2, Flame, Footprints,
-  HeartPulse, Sparkles, Trophy, Calendar, AlertCircle,
+  HeartPulse, Sparkles, Trophy, Calendar, AlertCircle, ShoppingBag,
 } from "lucide-react";
 import {
   LEVELS, getSequentialTasks, todayStr, type SequentialTask,
 } from "@/lib/recoveryRoutine";
 import { MedicalDisclaimerCard } from "@/components/recovery/MedicalDisclaimerCard";
 import { WalkingCooldown } from "@/components/recovery/WalkingCooldown";
+import { SHOP_CATEGORIES, type ShopCategoryId } from "@/data/survivorShop";
 
 type Reaction = "good" | "hard" | "too_hard";
 
@@ -405,6 +406,21 @@ export default function RecoveryToday() {
   const hardCount = Object.values(reactions).filter((r) => r === "hard").length;
   const tooHardCount = Object.values(reactions).filter((r) => r === "too_hard").length;
 
+  // Pick the most relevant Survivor Shop category based on the day's signals.
+  // Heuristic: which task IDs were marked too_hard / hard? Map to a category.
+  const recommendedCategoryId: ShopCategoryId = (() => {
+    const struggled = Object.entries(reactions)
+      .filter(([, r]) => r === "too_hard" || r === "hard")
+      .map(([taskId]) => taskId.toLowerCase());
+    const hits = (kw: string[]) => struggled.some((t) => kw.some((k) => t.includes(k)));
+    if (walkLogged?.reaction === "too_hard" || hits(["walk", "stand", "balance", "step"])) return "mobility";
+    if (hits(["foot", "ankle", "toe", "afo"])) return "footdrop";
+    if (hits(["hand", "grip", "finger", "wrist", "putty"])) return "hand";
+    if (hits(["speech", "word", "language", "swallow", "cognit"])) return "speech";
+    return "bedside";
+  })();
+  const recCategory = SHOP_CATEGORIES.find((c) => c.id === recommendedCategoryId)!;
+
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <div className="max-w-2xl mx-auto px-4 py-8">
@@ -459,7 +475,42 @@ export default function RecoveryToday() {
           </Card>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-6">
+        {/* Cross-sell: relevant Survivor Shop category + Motivation Studio CTA */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
+          <Link href={`/recovery/shop?category=${recCategory.id}`}>
+            <a
+              className="block rounded-md border border-[#C9941A]/30 bg-[#1a1610] p-4 hover-elevate text-left"
+              data-testid="link-cross-sell-shop"
+              aria-label={`Open Survivor Shop — ${recCategory.name}`}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <ShoppingBag className="h-4 w-4 text-[#C9941A]" />
+                <p className="text-[10px] uppercase tracking-[0.2em] text-[#C9941A]">Gear that helps with this</p>
+              </div>
+              <p className="text-white font-semibold text-sm">{recCategory.name}</p>
+              <p className="text-xs text-gray-400 mt-1">{recCategory.bonfireSignal ?? recCategory.blurb}</p>
+              <p className="text-[10px] text-gray-500 mt-2 italic">Survivor picks — not medical advice. Confirm with your therapist.</p>
+              <p className="text-xs text-[#C9941A] mt-2 font-semibold">Browse →</p>
+            </a>
+          </Link>
+          <Link href="/recovery/motivation">
+            <a
+              className="block rounded-md border border-[#C9941A]/30 bg-[#1a1610] p-4 hover-elevate text-left"
+              data-testid="link-cross-sell-motivation"
+              aria-label="Make tomorrow's anthem in the Motivation Studio"
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <Sparkles className="h-4 w-4 text-[#C9941A]" />
+                <p className="text-[10px] uppercase tracking-[0.2em] text-[#C9941A]">Fuel for tomorrow</p>
+              </div>
+              <p className="text-white font-semibold text-sm">Make tomorrow's anthem</p>
+              <p className="text-xs text-gray-400 mt-1">Turn one affirmation into a 4-line lyric in Sasquatch's voice.</p>
+              <p className="text-xs text-[#C9941A] mt-2 font-semibold">Open Motivation Studio →</p>
+            </a>
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
           <Link href="/recovery/dashboard">
             <a>
               <Button variant="outline" className="w-full" data-testid="button-back-dashboard-complete">

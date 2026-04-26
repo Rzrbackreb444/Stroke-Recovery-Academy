@@ -8658,6 +8658,17 @@ Respond in JSON format:
     res.json({ amazonTag: process.env.AMAZON_AFFILIATE_TAG || null });
   });
 
+  // ──────────────────────────────────────────────────────────────────
+  // Motivation Studio — Anthem Maker, Vision Card, Daily Quote
+  // ──────────────────────────────────────────────────────────────────
+  try {
+    const { registerMotivationRoutes } = await import('./motivationStudioRoutes');
+    registerMotivationRoutes(app);
+    console.log('[motivation] routes registered');
+  } catch (e) {
+    console.error('[motivation] failed to register routes:', e);
+  }
+
   app.get('/api/marketplace/products', async (req, res) => {
     try {
       const { categoryId, search, featured } = req.query;
