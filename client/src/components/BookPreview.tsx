@@ -72,9 +72,8 @@ function parseHtmlToPages(
   const lineRatio = 1.5 / lineHeight;
   const charsPerPage = Math.floor(CHARS_PER_PAGE_6X9 * areaRatio * fontRatio * lineRatio);
   
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = html;
-  const textContent = tempDiv.textContent || '';
+  // Use DOMParser instead of innerHTML — safer, never executes scripts/images even in detached DOM
+  const textContent = new DOMParser().parseFromString(html, 'text/html').body.textContent || '';
   
   const totalChars = textContent.length;
   const estimatedPages = Math.max(1, Math.ceil(totalChars / charsPerPage));
@@ -87,9 +86,9 @@ function parseHtmlToPages(
       if (!chapter.trim()) return;
       
       const chapterHtml = index > 0 ? `<h2>${chapter}` : chapter;
-      const chapterText = document.createElement('div');
-      chapterText.innerHTML = chapterHtml;
-      const chapterLength = chapterText.textContent?.length || 0;
+      // Use DOMParser instead of innerHTML — safer, never executes scripts/images
+      const chapterTextContent = new DOMParser().parseFromString(chapterHtml, 'text/html').body.textContent || '';
+      const chapterLength = chapterTextContent.length;
       const chapterPages = Math.max(1, Math.ceil(chapterLength / charsPerPage));
       
       for (let i = 0; i < chapterPages; i++) {
