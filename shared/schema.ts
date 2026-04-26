@@ -1227,6 +1227,31 @@ export const insertPlatformFeedbackSchema = createInsertSchema(platformFeedback)
 export type InsertPlatformFeedback = typeof insertPlatformFeedbackSchema._type;
 export type PlatformFeedback = typeof platformFeedback.$inferSelect;
 
+// Route-aware in-app feedback inbox (bug reports, feature requests, praise)
+// Submitted from the floating FeedbackButton on any page.
+export const feedbackItems = pgTable("feedback_items", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id"),                       // nullable — anonymous users can submit
+  route: text("route").notNull(),                   // e.g. /recovery/dashboard
+  kind: text("kind").notNull().default("general"),  // bug | feature | praise | confusion | general
+  body: text("body").notNull(),                     // the actual message
+  severity: text("severity").notNull().default("normal"), // low | normal | high | urgent
+  status: text("status").notNull().default("new"),  // new | triaged | in_progress | resolved | wont_fix
+  contactEmail: text("contact_email"),              // optional reply-to
+  userAgent: text("user_agent"),                    // for debugging device-specific issues
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const insertFeedbackItemSchema = createInsertSchema(feedbackItems).omit({
+  id: true, createdAt: true, status: true, userId: true, userAgent: true,
+}).extend({
+  body: z.string().min(3).max(4000),
+  kind: z.enum(["bug", "feature", "praise", "confusion", "general"]).default("general"),
+  severity: z.enum(["low", "normal", "high", "urgent"]).default("normal"),
+});
+export type InsertFeedbackItem = z.infer<typeof insertFeedbackItemSchema>;
+export type FeedbackItem = typeof feedbackItems.$inferSelect;
+
 // Newsletter Editions sent to subscribers
 export const newsletterEditions = pgTable("newsletter_editions", {
   id: serial("id").primaryKey(),
