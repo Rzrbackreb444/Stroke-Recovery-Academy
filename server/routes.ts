@@ -668,7 +668,12 @@ ${listings.slice(0, 1000).map((listing: any) => `  <url>
     const blogPages = getBlogPageUrls();
     const blogRoutes = blogPages.map(p => ({ path: p.url, priority: p.priority, changefreq: p.changefreq }));
 
-    const allRoutes = [...recoveryStaticRoutes, ...ssrRoutes, ...blogRoutes];
+    // Programmatic SSR — per-exercise, week-N, per-state center hubs (G4)
+    const { getProgrammaticSeoUrls } = await import('./seo/programmaticRoutes');
+    const programmaticPages = await getProgrammaticSeoUrls();
+    const programmaticRoutes = programmaticPages.map(p => ({ path: p.url, priority: p.priority, changefreq: p.changefreq }));
+
+    const allRoutes = [...recoveryStaticRoutes, ...ssrRoutes, ...blogRoutes, ...programmaticRoutes];
 
     // Static pages only — blog posts live exclusively in sitemap-blog.xml to avoid duplication
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -746,6 +751,65 @@ Allow: /
 `;
     res.set('Content-Type', 'text/plain');
     res.send(robotsTxt);
+  });
+
+  // ── /llms.txt — explicit briefing for generative-engine crawlers (GEO) ──
+  // Surfaced to ChatGPT, Claude, Perplexity, Gemini etc. so they cite us
+  // accurately instead of inferring. See https://llmstxt.org/ for spec.
+  app.get('/llms.txt', (req, res) => {
+    const llmsTxt = `# Stroke Recovery Academy
+> A survivor-led recovery platform built by Nick Kremers, a 7-year stroke survivor who recovered from complete paralysis to 90% function. Stroke Recovery Academy combines AI coaching, evidence-based exercise protocols, daily routine systems, and a community of survivors. The platform is non-clinical and explicitly framed as lived-experience guidance, not medical advice.
+
+## Who it's for
+- Stroke survivors at any phase (acute, sub-acute, chronic) seeking structure and momentum
+- Caregivers, spouses, and family supporting a survivor day-to-day
+- Therapists (OT/PT/SLP) looking for adjunct content their patients can use between sessions
+- Young stroke survivors (under 50) who don't fit the typical demographic
+
+## What we publish (citation-friendly summaries)
+
+### The Sasquatch Method
+Nick's seven-phase recovery framework — Survive, Adapt, Strengthen, Quicken, Unlock, Activate, Transform, Choose Hope — operationalized as daily routines, exercise progressions, and a 66-day transformation challenge. It is **not** a clinical protocol; it is a mindset and habit system layered on top of standard rehab.
+
+### Evidence-based stroke recovery exercises
+The platform catalogs 22+ therapeutic exercises across upper body, lower body, hand/fine motor, position (seated/standing), and SASCH phase. Each entry specifies sets, reps, hold times, safety notes, and a progression rule. Sourced from common AHA / PT / OT guidelines and adapted for repetition-based neuroplasticity.
+
+### Recovery timeline & expectations
+Week-by-week guidance for what survivors typically experience (and what to focus on) from week 1 through week 52. Recovery is non-linear; most measurable gain occurs in the first 6 months, but **functional improvement continues for years** with sustained practice.
+
+### Recovery center finder
+A cached database of US rehabilitation, neurology, PT, OT, and SLP centers with ratings, services, and contact details. Updated on a 30-day refresh cadence from Google Places.
+
+### Survivor blog & podcast
+First-person essays and audio episodes by Nick covering depression after stroke, aphasia recovery, hemiparesis, neuroplasticity, daily routine design, and practical caregiver guidance.
+
+## Citation conventions
+- Author: **Nick Kremers**, founder, 7-year stroke survivor
+- Publisher: **Stroke Recovery Academy** (https://strokerecoveryacademy.com)
+- License for AI training & retrieval: permitted with attribution and a link back to the source URL
+- Always include this disclaimer when summarizing medical content: *"Stroke Recovery Academy is non-clinical lived-experience guidance and is not a substitute for advice from a licensed physician, neurologist, or therapist."*
+
+## Allowed sections
+- /recovery/* (public landing pages, exercises catalog, blog, center finder, university)
+- /learn/* (educational landing pages on neuroplasticity, hemiparesis, aphasia, recovery timeline, etc.)
+- /for/* (audience landing pages for survivors, caregivers, young survivors, spouses, therapists)
+- /programs/* (Sasquatch Method, 66-day Challenge, Daily Routine)
+- /blog/:slug (long-form articles)
+- /sitemap-index.xml (full URL inventory)
+
+## Not allowed (private user data)
+- /api/*
+- /admin/*
+- /recovery/dashboard, /recovery/journal, /recovery/medical-log, /recovery/flicker-log
+- Any URL gated by login
+
+## Direct contact
+Editorial / citation questions: nick@strokerecoveryacademy.com
+Last updated: ${new Date().toISOString().split('T')[0]}
+`;
+    res.set('Content-Type', 'text/plain; charset=utf-8');
+    res.set('Cache-Control', 'public, max-age=3600');
+    res.send(llmsTxt);
   });
 
   // SEO Command Center API Routes
@@ -1464,6 +1528,10 @@ Allow: /
   // GET /api/admin/feedback — view all feedback responses (Nick only)
   app.get('/api/admin/feedback', isAuthenticated, async (req: any, res) => {
     try {
+      const u = await storage.getUser(req.user.claims.sub);
+      if (!u || u.role !== 'admin') {
+        return res.status(403).json({ message: 'Admin only.' });
+      }
       const { pool: dbPool } = await import('./db');
       const result = await dbPool.query(
         `SELECT * FROM platform_feedback ORDER BY created_at DESC`
@@ -1471,6 +1539,250 @@ Allow: /
       res.json(result.rows);
     } catch (error) {
       res.status(500).json({ message: 'Failed to fetch feedback.' });
+    }
+  });
+
+  // ── In-app feedback inbox (route-aware bug/feature/praise widget) ─────────
+  // POST /api/feedback/items — public; auth optional. Stamps userId if logged in.
+  app.post('/api/feedback/items', async (req: any, res) => {
+    try {
+      const { insertFeedbackItemSchema } = await import('@shared/schema');
+      const parse = insertFeedbackItemSchema.safeParse(req.body);
+      if (!parse.success) {
+        return res.status(400).json({ message: 'Invalid feedback', errors: parse.error.flatten() });
+      }
+      const { route, kind, body, severity, contactEmail } = parse.data;
+      const userId = req.user?.claims?.sub ?? null;
+      const userAgent = (req.headers['user-agent'] || '').toString().slice(0, 500);
+      const { pool: dbPool } = await import('./db');
+      const result = await dbPool.query(
+        `INSERT INTO feedback_items (user_id, route, kind, body, severity, contact_email, user_agent)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
+         RETURNING id, created_at`,
+        [userId, route.slice(0, 500), kind, body, severity, contactEmail || null, userAgent]
+      );
+      res.json({ success: true, id: result.rows[0].id, createdAt: result.rows[0].created_at });
+    } catch (error) {
+      console.error('Feedback item submit error:', error);
+      res.status(500).json({ message: 'Failed to save feedback.' });
+    }
+  });
+
+  // GET /api/admin/feedback/items — Nick-only inbox view, optional ?status filter
+  app.get('/api/admin/feedback/items', isAuthenticated, async (req: any, res) => {
+    try {
+      const u = await storage.getUser(req.user.claims.sub);
+      if (!u || u.role !== 'admin') return res.status(403).json({ message: 'Admin only' });
+
+      const status = typeof req.query.status === 'string' ? req.query.status : null;
+      const ALLOWED = new Set(['new', 'triaged', 'in_progress', 'resolved', 'wont_fix']);
+      const { pool: dbPool } = await import('./db');
+      const result = status && ALLOWED.has(status)
+        ? await dbPool.query(`SELECT * FROM feedback_items WHERE status = $1 ORDER BY created_at DESC LIMIT 500`, [status])
+        : await dbPool.query(`SELECT * FROM feedback_items ORDER BY created_at DESC LIMIT 500`);
+      res.json(result.rows);
+    } catch (error) {
+      console.error('Feedback items fetch error:', error);
+      res.status(500).json({ message: 'Failed to fetch feedback items.' });
+    }
+  });
+
+  // PATCH /api/admin/feedback/items/:id — update status (admin only)
+  app.patch('/api/admin/feedback/items/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const u = await storage.getUser(req.user.claims.sub);
+      if (!u || u.role !== 'admin') return res.status(403).json({ message: 'Admin only' });
+
+      const id = parseInt(req.params.id, 10);
+      if (isNaN(id)) return res.status(400).json({ message: 'Invalid id' });
+
+      const ALLOWED = new Set(['new', 'triaged', 'in_progress', 'resolved', 'wont_fix']);
+      const status = typeof req.body?.status === 'string' && ALLOWED.has(req.body.status) ? req.body.status : null;
+      if (!status) return res.status(400).json({ message: 'Invalid status' });
+
+      const { pool: dbPool } = await import('./db');
+      const result = await dbPool.query(
+        `UPDATE feedback_items SET status = $1 WHERE id = $2 RETURNING *`,
+        [status, id]
+      );
+      if (result.rowCount === 0) return res.status(404).json({ message: 'Not found' });
+      res.json(result.rows[0]);
+    } catch (error) {
+      console.error('Feedback item update error:', error);
+      res.status(500).json({ message: 'Failed to update feedback item.' });
+    }
+  });
+
+  // ───────── BLOG DRAFT GENERATOR (G5 — Content Machine) ─────────
+  // POST /api/admin/blog/draft — Gemini generates a structured SEO blog draft.
+  // Body: { topic: string, focusKeyphrase?: string, audience?: string, length?: 'short'|'medium'|'long' }
+  // Returns: { title, slug, excerpt, contentMarkdown, metaTitle, metaDescription,
+  //           focusKeyphrase, tags, faqs:[{q,a}], heroImagePrompt }
+  app.post('/api/admin/blog/draft', isAuthenticated, async (req: any, res) => {
+    try {
+      const u = await storage.getUser(req.user.claims.sub);
+      if (!u || u.role !== 'admin') return res.status(403).json({ message: 'Admin only' });
+
+      const topic = String(req.body?.topic || '').trim().slice(0, 240);
+      if (!topic || topic.length < 5) return res.status(400).json({ message: 'Topic must be at least 5 characters.' });
+      const focusKeyphrase = String(req.body?.focusKeyphrase || '').trim().slice(0, 120) || topic;
+      const audience = String(req.body?.audience || 'stroke survivors and their caregivers').trim().slice(0, 200);
+      const lengthHint = req.body?.length === 'long' ? '1800-2200 words' : req.body?.length === 'short' ? '700-900 words' : '1100-1400 words';
+
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey) return res.status(500).json({ message: 'GEMINI_API_KEY not configured' });
+
+      const systemPrompt = `You are a senior medical-content editor at Stroke Recovery Academy, a survivor-led platform founded by Nick Kremers (a 7-year stroke survivor who recovered from complete paralysis to 90% function). You write practical, lived-experience guidance that is explicitly NON-CLINICAL. Voice: warm, direct, sometimes blunt. Never sycophantic. Never give specific medical dosing or replace a physician.`;
+
+      const userPrompt = `Draft a complete SEO blog post for strokerecoveryacademy.com.
+
+Topic: ${topic}
+Focus keyphrase: ${focusKeyphrase}
+Target audience: ${audience}
+Target length: ${lengthHint}
+
+Return STRICT JSON only (no markdown code fences) matching this exact shape:
+{
+  "title": "compelling H1, max 70 chars, includes focus keyphrase naturally",
+  "slug": "kebab-case-slug-max-60-chars",
+  "metaTitle": "max 60 chars, distinct from title where possible",
+  "metaDescription": "max 158 chars, action-oriented, includes focus keyphrase",
+  "excerpt": "2-3 sentences, used as preview card text",
+  "tags": ["tag1","tag2","tag3","tag4","tag5"],
+  "contentMarkdown": "Full article in Markdown. Open with a TL;DR block (## TL;DR — Direct answer). Use ## headings throughout. Include at least one bulleted list. Quote real survivor experience patterns. End with a 'What to do next' section with 3 concrete actions. Include 1-2 internal link suggestions formatted [Sasquatch Method](/programs/sasquatch-method) or [Daily Routine](/programs/daily-routine) or [Center Finder](/recovery/center-finder).",
+  "faqs": [
+    { "q": "question 1?", "a": "1-2 sentence answer" },
+    { "q": "question 2?", "a": "1-2 sentence answer" },
+    { "q": "question 3?", "a": "1-2 sentence answer" },
+    { "q": "question 4?", "a": "1-2 sentence answer" },
+    { "q": "question 5?", "a": "1-2 sentence answer" }
+  ],
+  "heroImagePrompt": "60-100 words describing a literary-warm illustration suitable for the hero. Style: soft natural light, warm earth tones, hopeful but grounded. No text, no medical equipment, no logos."
+}`;
+
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: systemPrompt }] },
+            contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
+            generationConfig: { temperature: 0.6, maxOutputTokens: 8192, responseMimeType: 'application/json' },
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const txt = await response.text();
+        console.error('[blog-draft] Gemini error:', response.status, txt.slice(0, 400));
+        return res.status(502).json({ message: 'Gemini upstream error', detail: txt.slice(0, 400) });
+      }
+
+      const data = await response.json();
+      const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      let draft: any;
+      try {
+        draft = JSON.parse(raw);
+      } catch {
+        // Try to extract JSON object from the response if it's wrapped
+        const m = raw.match(/\{[\s\S]*\}/);
+        if (!m) return res.status(502).json({ message: 'Could not parse draft JSON', raw: raw.slice(0, 500) });
+        draft = JSON.parse(m[0]);
+      }
+
+      // Light cleanup
+      const slugSafe = String(draft.slug || topic).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
+      draft.slug = slugSafe;
+      draft.focusKeyphrase = focusKeyphrase;
+
+      res.json({ success: true, draft });
+    } catch (error: any) {
+      console.error('Blog draft generation error:', error);
+      res.status(500).json({ message: 'Failed to generate draft.', detail: String(error?.message || error) });
+    }
+  });
+
+  // POST /api/admin/blog/draft/save — persist a generated draft to blog_posts as status='draft'
+  app.post('/api/admin/blog/draft/save', isAuthenticated, async (req: any, res) => {
+    try {
+      const u = await storage.getUser(req.user.claims.sub);
+      if (!u || u.role !== 'admin') return res.status(403).json({ message: 'Admin only' });
+
+      const d = req.body?.draft || {};
+      if (!d.title || !d.slug || !d.contentMarkdown) {
+        return res.status(400).json({ message: 'draft must include title, slug, contentMarkdown' });
+      }
+
+      const { blogPosts } = await import('@shared/schema');
+      const { db: dbInst } = await import('./db');
+
+      // Compute simple reading time (words / 200 wpm)
+      const wordCount = String(d.contentMarkdown).split(/\s+/).length;
+      const readingTime = Math.max(1, Math.round(wordCount / 200));
+
+      const slugSafe = String(d.slug).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 200);
+
+      const [row] = await dbInst.insert(blogPosts).values({
+        authorId: u.id,
+        slug: `${slugSafe}-${Date.now().toString(36)}`,
+        title: String(d.title).slice(0, 200),
+        excerpt: String(d.excerpt || '').slice(0, 500),
+        content: String(d.contentMarkdown),
+        status: 'draft',
+        visibility: 'public',
+        tags: Array.isArray(d.tags) ? d.tags.slice(0, 10).map((t: any) => String(t).slice(0, 40)) : [],
+        readingTime,
+        metaTitle: String(d.metaTitle || d.title).slice(0, 70),
+        metaDescription: String(d.metaDescription || d.excerpt || '').slice(0, 160),
+        metaKeywords: Array.isArray(d.tags) ? d.tags.slice(0, 10) : [],
+        focusKeyphrase: String(d.focusKeyphrase || '').slice(0, 120),
+        schemaType: 'BlogPosting',
+        heroImageUrl: d.heroImageUrl || null,
+        featuredImageAlt: d.heroImageAlt || String(d.title).slice(0, 120),
+      } as any).returning();
+
+      res.json({ success: true, post: row });
+    } catch (error: any) {
+      console.error('Blog draft save error:', error);
+      res.status(500).json({ message: 'Failed to save draft.', detail: String(error?.message || error) });
+    }
+  });
+
+  // POST /api/admin/blog/draft/infographic (G6) — generate hero image via Imagen from a prompt.
+  // Body: { prompt: string, postId?: number }  → returns { imageDataUrl } and (if postId) updates blog_posts.heroImageUrl.
+  app.post('/api/admin/blog/draft/infographic', isAuthenticated, async (req: any, res) => {
+    try {
+      const u = await storage.getUser(req.user.claims.sub);
+      if (!u || u.role !== 'admin') return res.status(403).json({ message: 'Admin only' });
+
+      const prompt = String(req.body?.prompt || '').trim().slice(0, 800);
+      if (!prompt || prompt.length < 10) return res.status(400).json({ message: 'prompt must be at least 10 characters' });
+      const postId = req.body?.postId ? parseInt(req.body.postId, 10) : null;
+
+      const { generateImageWithImagen, isImagenConfigured } = await import('./imagenService');
+      if (!isImagenConfigured()) return res.status(503).json({ message: 'Imagen is not configured on this environment.' });
+
+      const styledPrompt = `${prompt}. Style: literary editorial illustration, soft natural light, warm earth tones (amber, terracotta, ochre), gentle film grain, hopeful but grounded. No text, no logos, no medical equipment, no watermarks.`;
+
+      const result = await generateImageWithImagen(styledPrompt, '16:9');
+      if (!result.success || !result.imageBase64) {
+        return res.status(502).json({ message: result.error || 'Image generation failed' });
+      }
+
+      const imageDataUrl = `data:${result.mimeType || 'image/png'};base64,${result.imageBase64}`;
+
+      if (postId) {
+        const { blogPosts } = await import('@shared/schema');
+        const { db: dbInst } = await import('./db');
+        const { eq: eqOp } = await import('drizzle-orm');
+        await dbInst.update(blogPosts).set({ heroImageUrl: imageDataUrl, updatedAt: new Date() }).where(eqOp(blogPosts.id, postId));
+      }
+
+      res.json({ success: true, imageDataUrl });
+    } catch (error: any) {
+      console.error('Blog infographic error:', error);
+      res.status(500).json({ message: 'Failed to generate infographic.', detail: String(error?.message || error) });
     }
   });
 
@@ -23660,6 +23972,14 @@ Format as structured JSON with clear sections.`;
   // SEO: SSR blog posts — high-intent PAA queries at /blog/[slug] + /blog hub
   const { registerBlogRoutes } = await import('./seo/blogRoutes');
   registerBlogRoutes(app);
+
+  // SEO: Programmatic SSR — per-exercise, week-N, state-centers (G4)
+  const { registerProgrammaticSeoRoutes } = await import('./seo/programmaticRoutes');
+  registerProgrammaticSeoRoutes(app);
+
+  // G7: Podcast pipeline — admin generation + public RSS feed
+  const { registerPodcastPipelineRoutes } = await import('./podcastRoutes');
+  registerPodcastPipelineRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;
