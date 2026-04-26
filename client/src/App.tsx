@@ -4,6 +4,7 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import InstallPrompt from "@/components/InstallPrompt";
+import FeedbackButton from "@/components/FeedbackButton";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import GlobalHeader from "@/components/GlobalHeader";
 import RecoveryHeader from "@/components/RecoveryHeader";
@@ -118,6 +119,8 @@ import RecoveryCommunity from "@/pages/RecoveryCommunity";
 import TherapistMarketplace from "@/pages/TherapistMarketplace";
 import AdminPlanBuilder from "@/pages/AdminPlanBuilder";
 import FeedbackAdmin from "@/pages/FeedbackAdmin";
+import FeedbackInbox from "@/pages/FeedbackInbox";
+import BlogDraftStudio from "@/pages/BlogDraftStudio";
 import RecoveryUniversity from "@/pages/RecoveryUniversity";
 import RecoveryLesson from "@/pages/RecoveryLesson";
 import RecoveryQuiz from "@/pages/RecoveryQuiz";
@@ -524,6 +527,14 @@ function Router() {
           <FeedbackAdmin />
         </ProtectedRoute>
       </Route>
+      <Route path="/recovery/admin/feedback-inbox">
+        <ProtectedRoute>
+          <FeedbackInbox />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/blog/draft">
+        <AdminRoute><BlogDraftStudio /></AdminRoute>
+      </Route>
       <Route path="/recovery/university" component={RecoveryUniversity} />
       <Route path="/recovery/university/lesson/:chapter" component={RecoveryLesson} />
       <Route path="/recovery/university/quiz/:chapter" component={RecoveryQuiz} />
@@ -648,6 +659,7 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <InstallPrompt />
+          <FeedbackButton />
           {showOnboarding && <OnboardingFlow onComplete={handleOnboardingComplete} />}
           {!showOnboarding && (
             <>

@@ -83,6 +83,9 @@ Sessions persist 7 days; admin actions on the blog draft generator, podcast pipe
 | 23 HIGH dependency vulnerabilities (no critical) | High | Run `npm audit fix` and re-scan; pin transitive offenders. |
 | 3 SAST property-injection findings in `quoteStudioRoutes.ts` | High (false positive — code uses allowlist) | Convert to `z.object().pick()` to silence scanner and lock contract. |
 | 2 XSS findings in `BookPreview.tsx` | High (false positive — detached DOM, text-only extraction) | **Fixed** via DOMParser conversion (2026-04-26). |
+| Missing admin role check on legacy `GET /api/admin/feedback` | High | **Fixed** — now requires `role === 'admin'` (2026-04-26). |
+| Unescaped DB-derived values in programmatic SSR `rawHtml` (`/recovery/exercise/:slug`, `/recovery/centers/state/:state`) | High | **Fixed** — `esc()` helper wraps every interpolated DB field before reaching `ssrShell.rawHtml` (2026-04-26). |
+| Podcast feed loaded full base64 audio blobs into Node memory and emitted hardcoded `enclosure length="0"` | Medium | **Fixed** — feed query now projects only display columns plus a SQL-computed `OCTET_LENGTH(audio_url)` byte size, used for real `<enclosure length>` (2026-04-26). |
 | Hashicorp tf-password gitleaks finding in `multiProviderAuth.ts` | High (false positive — Passport field-name strings) | Suppress with `.semgrepignore` line comment. |
 | Tainted SQL string in `personaRoutes.ts` | High (false positive — LLM prompt template, no DB query) | Add inline `nosemgrep` comment. |
 | 165 MEDIUM SAST findings | Medium | Triage in batches; most are stylistic. |
