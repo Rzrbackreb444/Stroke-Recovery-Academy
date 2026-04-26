@@ -176,6 +176,7 @@ import CreatorScribeWidget from "@/components/CreatorScribeWidget";
 import { LocaleProvider } from "@/lib/hooks/useLocale";
 import { usePlatform } from "@/lib/hooks/usePlatform";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { useRouteMeta } from "@/hooks/useRouteMeta";
 
 function HomeLanding() {
   const platform = usePlatform();
@@ -637,6 +638,7 @@ function App() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   
   useAnalytics();
+  useRouteMeta();
 
   useEffect(() => {
     if (isComplete === false) {

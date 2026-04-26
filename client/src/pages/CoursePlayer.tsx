@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 import LessonVideoPlayer from "@/components/LessonVideoPlayer";
 import QuizRunner from "@/components/QuizRunner";
 import { useRoute, useLocation } from "wouter";
@@ -100,67 +101,30 @@ interface Module {
   expanded: boolean;
 }
 
-const mockCourse = {
-  id: "1",
-  title: "Complete Stroke Recovery Protocol",
-  instructor: "Nick Kremers",
+interface CourseData {
+  id: string;
+  title: string;
+  instructor: string;
+  instructorAvatar: string;
+  totalLessons: number;
+  completedLessons: number;
+  totalDuration: number;
+  rating: number;
+  students: number;
+  modules: Module[];
+}
+
+const EMPTY_COURSE: CourseData = {
+  id: "",
+  title: "Course unavailable",
+  instructor: "—",
   instructorAvatar: "",
-  totalLessons: 42,
-  completedLessons: 18,
-  totalDuration: 480,
-  rating: 4.9,
-  students: 2847,
-  modules: [
-    {
-      id: "m1",
-      title: "Module 1: Foundation & Mindset",
-      description: "Build the mental framework for recovery success",
-      expanded: true,
-      lessons: [
-        { id: "l1", title: "Welcome to Your Recovery Journey", type: "video" as const, duration: 12, completed: true, locked: false, videoUrl: "" },
-        { id: "l2", title: "Understanding Neuroplasticity", type: "video" as const, duration: 18, completed: true, locked: false, videoUrl: "" },
-        { id: "l3", title: "The Sasquatch Doctrine Overview", type: "text" as const, duration: 8, completed: true, locked: false, content: "" },
-        { id: "l4", title: "Setting Your Recovery Goals", type: "video" as const, duration: 15, completed: false, locked: false, videoUrl: "" },
-        { id: "l5", title: "Module 1 Quiz", type: "quiz" as const, duration: 10, completed: false, locked: false },
-      ],
-    },
-    {
-      id: "m2",
-      title: "Module 2: Physical Recovery Techniques",
-      description: "Master the essential physical exercises",
-      expanded: false,
-      lessons: [
-        { id: "l6", title: "Upper Body Exercises", type: "video" as const, duration: 25, completed: false, locked: false, videoUrl: "" },
-        { id: "l7", title: "Lower Body Mobility", type: "video" as const, duration: 22, completed: false, locked: false, videoUrl: "" },
-        { id: "l8", title: "Fine Motor Skills Training", type: "video" as const, duration: 20, completed: false, locked: true, videoUrl: "" },
-        { id: "l9", title: "Exercise Worksheet", type: "download" as const, duration: 5, completed: false, locked: true },
-        { id: "l10", title: "Module 2 Quiz", type: "quiz" as const, duration: 15, completed: false, locked: true },
-      ],
-    },
-    {
-      id: "m3",
-      title: "Module 3: Cognitive Rehabilitation",
-      description: "Rebuild and strengthen cognitive abilities",
-      expanded: false,
-      lessons: [
-        { id: "l11", title: "Memory Enhancement Techniques", type: "video" as const, duration: 18, completed: false, locked: true, videoUrl: "" },
-        { id: "l12", title: "Focus and Attention Training", type: "video" as const, duration: 22, completed: false, locked: true, videoUrl: "" },
-        { id: "l13", title: "Problem-Solving Exercises", type: "text" as const, duration: 15, completed: false, locked: true },
-        { id: "l14", title: "Cognitive Assessment", type: "quiz" as const, duration: 20, completed: false, locked: true },
-      ],
-    },
-    {
-      id: "m4",
-      title: "Module 4: Speech & Communication",
-      description: "Restore speech clarity and confidence",
-      expanded: false,
-      lessons: [
-        { id: "l15", title: "Speech Therapy Fundamentals", type: "video" as const, duration: 20, completed: false, locked: true, videoUrl: "" },
-        { id: "l16", title: "Articulation Exercises", type: "video" as const, duration: 18, completed: false, locked: true, videoUrl: "" },
-        { id: "l17", title: "Daily Practice Routine", type: "text" as const, duration: 10, completed: false, locked: true },
-      ],
-    },
-  ],
+  totalLessons: 0,
+  completedLessons: 0,
+  totalDuration: 0,
+  rating: 0,
+  students: 0,
+  modules: [],
 };
 
 const formatTime = (seconds: number) => {
@@ -176,11 +140,18 @@ export default function CoursePlayer() {
   const courseId = routeParams?.courseId;
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<HTMLDivElement>(null);
-  
+
+  // Real course data — fetched from API; falls back to empty shell while loading or if not found.
+  const { data: courseData, isLoading: isCourseLoading } = useQuery<CourseData>({
+    queryKey: ["/api/courses", courseId],
+    enabled: !!courseId,
+  });
+  const mockCourse: CourseData = courseData ?? EMPTY_COURSE;
+
   // Player state
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(720); // Mock 12 min video
+  const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -189,10 +160,18 @@ export default function CoursePlayer() {
   const [isBuffering, setIsBuffering] = useState(false);
   const [quality, setQuality] = useState("1080p");
   const [showSubtitles, setShowSubtitles] = useState(false);
-  
-  // Course state
+
+  // Course state — re-syncs when real course data arrives.
   const [modules, setModules] = useState<Module[]>(mockCourse.modules);
-  const [currentLesson, setCurrentLesson] = useState<Lesson>(mockCourse.modules[0].lessons[3]);
+  const [currentLesson, setCurrentLesson] = useState<Lesson | null>(
+    mockCourse.modules[0]?.lessons[0] ?? null,
+  );
+  useEffect(() => {
+    if (courseData) {
+      setModules(courseData.modules);
+      setCurrentLesson(courseData.modules[0]?.lessons[0] ?? null);
+    }
+  }, [courseData]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("curriculum");
@@ -236,7 +215,9 @@ export default function CoursePlayer() {
   const [newComment, setNewComment] = useState("");
   
   // Progress simulation
-  const progressPercent = Math.round((mockCourse.completedLessons / mockCourse.totalLessons) * 100);
+  const progressPercent = mockCourse.totalLessons > 0
+    ? Math.round((mockCourse.completedLessons / mockCourse.totalLessons) * 100)
+    : 0;
   
   // Keyboard shortcuts
   useEffect(() => {
@@ -484,7 +465,28 @@ export default function CoursePlayer() {
       </div>
     </ScrollArea>
   );
-  
+
+  // Honest empty state when no lesson is loaded yet (data still arriving or course is empty).
+  if (!currentLesson) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
+        <Card className="max-w-md w-full p-8 bg-[#1a1a1a] border-[#333] text-center">
+          <h1 className="text-xl font-semibold mb-2">
+            {isCourseLoading ? "Loading course…" : "Course content not available"}
+          </h1>
+          <p className="text-sm text-gray-400 mb-6">
+            {isCourseLoading
+              ? "Fetching your lessons."
+              : "This course does not have any lessons yet, or the data could not be loaded."}
+          </p>
+          <Button onClick={() => navigate("/courses")} data-testid="button-back-to-courses">
+            <ArrowLeft className="w-4 h-4 mr-2" /> Back to courses
+          </Button>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Top Navigation */}

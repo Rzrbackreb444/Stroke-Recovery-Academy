@@ -224,15 +224,10 @@ async function handleMarketplacePurchase(
       authorRoyalty: creatorShare,
       subtotal: session.amount_total || 0,
     });
-    
-    await db.update(marketplaceListings)
-      .set({
-        totalSales: sql`${marketplaceListings.totalSales} + 1`,
-        totalRevenue: sql`${marketplaceListings.totalRevenue} + ${session.amount_total || 0}`,
-        updatedAt: new Date(),
-      })
-      .where(eq(marketplaceListings.id, listingId));
-    
+
+    // Record earnings as 'pending_fulfillment' BEFORE fulfillment runs.
+    // We do not bump the listing's totalSales/totalRevenue counters yet — those are
+    // public credibility numbers and must reflect only successfully fulfilled orders.
     await db.insert(creatorEarnings).values({
       creatorId: sellerId,
       orderId: order.id,
@@ -246,16 +241,29 @@ async function handleMarketplacePurchase(
       status: 'pending',
       customerEmail: session.customer_email || session.customer_details?.email || null,
     });
-    
-    console.log(`Marketplace purchase completed: Order ${orderNumber}, Creator payout queued for ${sellerId}`);
-    
+
+    console.log(`Marketplace order recorded: ${orderNumber} (awaiting fulfillment for ${sellerId})`);
+
+    // fulfillOrder() is the single source of truth for marketplace listing counters
+    // (totalSales / totalRevenue) — it only increments them for items that actually
+    // fulfilled, so we do NOT touch those columns here.
     const fulfillmentResult = await fulfillOrder(order.id);
-    if (!fulfillmentResult.success) {
-      console.error(`Fulfillment failed for order ${order.id}:`, fulfillmentResult.error);
+
+    if (fulfillmentResult.success) {
+      console.log(
+        `Fulfillment initiated for order ${orderNumber}: digital=${fulfillmentResult.digitalDelivered}, print jobs=${fulfillmentResult.printJobsCreated}`,
+      );
     } else {
-      console.log(`Fulfillment initiated: Digital delivered: ${fulfillmentResult.digitalDelivered}, Print jobs: ${fulfillmentResult.printJobsCreated}`);
+      // Fulfillment failed entirely — flag the order for manual review and leave the
+      // earnings row in 'pending' status so it cannot be paid out automatically.
+      await db.update(bookOrders)
+        .set({ status: 'fulfillment_failed', updatedAt: new Date() })
+        .where(eq(bookOrders.id, order.id));
+      console.error(
+        `[checkout] Fulfillment failed for order ${orderNumber}; sales counters NOT credited. Reason: ${fulfillmentResult.error}`,
+      );
     }
-    
+
     return { success: true };
   } catch (error) {
     console.error('Handle marketplace purchase error:', error);

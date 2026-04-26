@@ -49,34 +49,19 @@ interface ConsultantBot {
   expertise: string[];
 }
 
-const mockBots: ConsultantBot[] = [
-  {
-    id: "1",
-    name: "Book Writing Expert",
-    description: "Trained on my 5 published books about creative writing and storytelling",
-    sourceMaterials: 5,
-    conversations: 1247,
-    earnings: 3741,
-    status: "active",
-    expertise: ["Creative Writing", "Storytelling", "Publishing"],
-  },
-  {
-    id: "2", 
-    name: "Music Production Coach",
-    description: "Based on my 10+ years of music production experience and course content",
-    sourceMaterials: 12,
-    conversations: 892,
-    earnings: 2676,
-    status: "active",
-    expertise: ["Music Production", "Mixing", "Sound Design"],
-  },
-];
+// Real consultant list is fetched from /api/consultants/bots inside the component.
 
 export default function AIConsultant() {
   const { toast } = useToast();
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("my-consultants");
   const [selectedBot, setSelectedBot] = useState<ConsultantBot | null>(null);
+
+  // Real consultant bots — empty until the user creates one or the API ships.
+  const { data: botsData } = useQuery<ConsultantBot[]>({
+    queryKey: ["/api/consultants/bots"],
+  });
+  const mockBots: ConsultantBot[] = botsData ?? [];
   const [isCreating, setIsCreating] = useState(false);
   const [newBotName, setNewBotName] = useState("");
   const [newBotDescription, setNewBotDescription] = useState("");

@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
-import { useLocation } from "wouter";
+import { useLocation, useRoute } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -42,19 +43,7 @@ interface Certificate {
   skills: string[];
 }
 
-const mockCertificate: Certificate = {
-  id: "cert-2024-001",
-  recipientName: "John Smith",
-  courseTitle: "Complete Stroke Recovery Protocol",
-  instructorName: "Nick Kremers",
-  completionDate: new Date(),
-  credentialId: "SRCA-2024-NK-001847",
-  courseDuration: 480,
-  lessonsCompleted: 42,
-  quizScore: 92,
-  issueDate: new Date(),
-  skills: ["Stroke Recovery", "Neuroplasticity", "Physical Therapy", "Cognitive Rehabilitation", "Speech Therapy"],
-};
+// Real certificate is fetched from /api/courses/:courseId/certificate.
 
 const templates = [
   { id: "classic", name: "Classic Gold", preview: "gradient-to-br from-amber-100 to-yellow-50" },
@@ -66,9 +55,14 @@ const templates = [
 export default function CourseCertificate() {
   const { toast } = useToast();
   const [, navigate] = useLocation();
+  const [, routeParams] = useRoute("/certificate/:courseId");
+  const courseId = routeParams?.courseId;
   const certificateRef = useRef<HTMLDivElement>(null);
-  
-  const [certificate] = useState<Certificate>(mockCertificate);
+
+  const { data: certificate, isLoading: certLoading } = useQuery<Certificate>({
+    queryKey: ["/api/courses", courseId, "certificate"],
+    enabled: !!courseId,
+  });
   const [selectedTemplate, setSelectedTemplate] = useState("classic");
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -156,7 +150,28 @@ export default function CourseCertificate() {
   };
   
   const styles = getTemplateStyles();
-  
+
+  if (!certificate) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
+        <Card className="max-w-md w-full p-8 bg-[#1a1a1a] border-[#333] text-center">
+          <Award className="w-12 h-12 text-[#C9941A] mx-auto mb-4" />
+          <h1 className="text-xl font-semibold mb-2">
+            {certLoading ? "Loading certificate…" : "Certificate not available"}
+          </h1>
+          <p className="text-sm text-gray-400 mb-6">
+            {certLoading
+              ? "Fetching your completion record."
+              : "Finish all lessons in this course to earn your certificate."}
+          </p>
+          <Button onClick={() => navigate("/courses")} data-testid="button-back-to-courses">
+            <ArrowLeft className="w-4 h-4 mr-2" /> Back to courses
+          </Button>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Header */}

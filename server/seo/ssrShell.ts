@@ -417,14 +417,22 @@ ${cfg.keywords && cfg.keywords.length > 0 ? `<meta name="keywords" content="${es
 <meta property="og:url" content="${escAttr(url)}" />
 <meta property="og:title" content="${escAttr(cfg.title)}" />
 <meta property="og:description" content="${escAttr(cfg.description)}" />
-<meta property="og:image" content="${SITE_URL}/og-image.jpg" />
+<meta property="og:image" content="${SITE_URL}/og-image-1200x630.png" />
+<meta property="og:image:width" content="1408" />
+<meta property="og:image:height" content="768" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="${escAttr(cfg.title)}" />
 <meta property="og:site_name" content="Stroke Recovery Academy" />
 <meta property="og:locale" content="en_US" />
 <meta property="article:author" content="Nick Kremers" />
+<meta property="article:published_time" content="${escAttr(cfg.publishedDate || '2026-01-15')}" />
+<meta property="article:modified_time" content="${escAttr(cfg.modifiedDate || new Date().toISOString().split('T')[0])}" />
 <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@strokerecovery" />
 <meta name="twitter:title" content="${escAttr(cfg.title)}" />
 <meta name="twitter:description" content="${escAttr(cfg.description)}" />
-<meta name="twitter:image" content="${SITE_URL}/og-image.jpg" />
+<meta name="twitter:image" content="${SITE_URL}/og-image-1200x630.png" />
+<meta name="twitter:image:alt" content="${escAttr(cfg.title)}" />
 <meta name="theme-color" content="#0D0D0D" />
 <link rel="icon" href="/favicon.ico" sizes="any" />
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
