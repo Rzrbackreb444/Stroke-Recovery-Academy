@@ -8,6 +8,7 @@ import { apiRequest } from "@/lib/queryClient";
 import RecoveryHeader from "@/components/RecoveryHeader";
 import RecoverySEO from "@/components/RecoverySEO";
 import Footer from "@/components/Footer";
+import CrisisCard, { type CrisisResource } from "@/components/recovery/CrisisCard";
 import { useAuth } from "@/hooks/useAuth";
 import { safeAccentForDark } from "@/lib/personaContrast";
 
@@ -15,6 +16,8 @@ interface Message {
   role: "user" | "coach";
   content: string;
   audioBase64?: string;
+  crisis?: boolean;
+  crisisResources?: CrisisResource[];
 }
 
 const STARTER_PROMPTS = [
@@ -68,16 +71,24 @@ export default function SasquatchCoach() {
         content: m.content,
       }));
       const res = await apiRequest("POST", "/api/coach/chat", { message, history });
-      return (await res.json()) as { response: string; audioBase64?: string };
+      return (await res.json()) as {
+        response: string;
+        audioBase64?: string;
+        crisis?: boolean;
+        resources?: CrisisResource[];
+      };
     },
     onSuccess: (data) => {
       const coachMsg: Message = {
         role: "coach",
         content: data.response,
         audioBase64: data.audioBase64,
+        crisis: data.crisis === true,
+        crisisResources: data.crisis ? data.resources : undefined,
       };
       setMessages((prev) => [...prev, coachMsg]);
-      if (audioEnabled && data.audioBase64) {
+      // Never autoplay audio on a crisis response — let the user act on the resources.
+      if (audioEnabled && data.audioBase64 && !data.crisis) {
         playAudio(data.audioBase64);
       }
     },
@@ -164,24 +175,30 @@ export default function SasquatchCoach() {
                   <Mic className="h-3.5 w-3.5 text-[#C9941A]" />
                 </div>
               )}
-              <div
-                className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-                  msg.role === "user"
-                    ? "bg-[#C9941A] text-black font-medium rounded-tr-sm"
-                    : "bg-[#111] text-gray-200 border border-[#1e1e1e] rounded-tl-sm"
-                }`}
-              >
-                {msg.content}
-                {msg.role === "coach" && msg.audioBase64 && audioEnabled && (
-                  <button
-                    className="mt-2 flex items-center gap-1 text-xs text-[#C9941A] opacity-60 hover:opacity-100 transition-opacity"
-                    onClick={() => playAudio(msg.audioBase64!)}
-                    data-testid={`button-replay-audio-${i}`}
-                  >
-                    <Volume2 className="h-3 w-3" /> Replay
-                  </button>
-                )}
-              </div>
+              {msg.role === "coach" && msg.crisis && msg.crisisResources ? (
+                <div className="max-w-[90%] flex-1">
+                  <CrisisCard message={msg.content} resources={msg.crisisResources} />
+                </div>
+              ) : (
+                <div
+                  className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                    msg.role === "user"
+                      ? "bg-[#C9941A] text-black font-medium rounded-tr-sm"
+                      : "bg-[#111] text-gray-200 border border-[#1e1e1e] rounded-tl-sm"
+                  }`}
+                >
+                  {msg.content}
+                  {msg.role === "coach" && msg.audioBase64 && audioEnabled && (
+                    <button
+                      className="mt-2 flex items-center gap-1 text-xs text-[#C9941A] opacity-60 hover:opacity-100 transition-opacity"
+                      onClick={() => playAudio(msg.audioBase64!)}
+                      data-testid={`button-replay-audio-${i}`}
+                    >
+                      <Volume2 className="h-3 w-3" /> Replay
+                    </button>
+                  )}
+                </div>
+              )}
               {msg.role === "user" && (
                 <div
                   className="w-8 h-8 rounded-full bg-[#1a1a1a] flex items-center justify-center flex-shrink-0 mt-1 text-xs font-bold border"

@@ -1,0 +1,117 @@
+/**
+ * Lightweight test for the crisis-detection layer that gates the AI Coach.
+ * Runnable directly with: `tsx tests/crisisDetection.test.ts`
+ *
+ * No vitest required — keeps the dependency surface tight. The exit code
+ * is non-zero on any failure so CI / shell invocation catches regressions.
+ */
+
+import { detectCrisis, buildCrisisResponse } from "../server/services/crisisDetection";
+
+type Case = {
+  label: string;
+  input: string;
+  shouldDetect: boolean;
+  category?: "suicide" | "self_harm" | "violence" | "abuse";
+};
+
+const cases: Case[] = [
+  // POSITIVE — must intercept
+  { label: "explicit suicide", input: "I want to kill myself", shouldDetect: true, category: "suicide" },
+  { label: "ending life euphemism", input: "I'm thinking of ending my life tonight", shouldDetect: true, category: "suicide" },
+  { label: "want to die", input: "honestly I just want to die", shouldDetect: true, category: "suicide" },
+  { label: "better off dead", input: "everyone would be better off dead without me", shouldDetect: true, category: "suicide" },
+  { label: "hang myself", input: "i'm going to hang myself", shouldDetect: true, category: "suicide" },
+  { label: "self-harm cutting", input: "I started cutting myself again", shouldDetect: true, category: "self_harm" },
+  { label: "self-harm hyphen", input: "this is self-harm and I can't stop", shouldDetect: true, category: "self_harm" },
+  { label: "violence at spouse", input: "sometimes I want to kill my wife", shouldDetect: true, category: "violence" },
+  { label: "abuse beating", input: "he keeps beating me when I can't move my arm", shouldDetect: true, category: "abuse" },
+  { label: "abuse not safe", input: "I'm not safe at home anymore", shouldDetect: true, category: "abuse" },
+
+  // NEGATIVE — must NOT intercept (recovery talk legitimately discusses bleak feelings)
+  { label: "no progress frustration", input: "my recovery is killing me, no progress in 3 weeks", shouldDetect: false },
+  { label: "tired metaphor", input: "I'm dead tired today, can't lift my arm", shouldDetect: false },
+  { label: "dying laughing", input: "the coach was dying for me to do one more rep", shouldDetect: false },
+  { label: "skill not kill", input: "I'm trying to build skill in my left hand", shouldDetect: false },
+  { label: "general sad", input: "I feel really sad about losing function", shouldDetect: false },
+  { label: "depression mention", input: "I think I have post-stroke depression and need to see a doctor", shouldDetect: false },
+  { label: "sister hurt me", input: "my sister hurts when she sees me struggle", shouldDetect: false },
+];
+
+let passed = 0;
+let failed = 0;
+const failures: string[] = [];
+
+for (const c of cases) {
+  const result = detectCrisis(c.input);
+  const detectMatch = result.detected === c.shouldDetect;
+  const categoryMatch = !c.shouldDetect || result.category === c.category;
+
+  if (detectMatch && categoryMatch) {
+    passed++;
+    console.log(`  ✓ ${c.label}`);
+  } else {
+    failed++;
+    const why = !detectMatch
+      ? `expected detected=${c.shouldDetect}, got ${result.detected}`
+      : `expected category=${c.category}, got ${result.category}`;
+    failures.push(`  ✗ ${c.label} — ${why} (input: "${c.input}")`);
+    console.log(`  ✗ ${c.label} — ${why}`);
+  }
+}
+
+// Verify response shape for each category
+console.log("\nResponse shape sanity checks:");
+for (const cat of ["suicide", "self_harm", "violence", "abuse"] as const) {
+  const r = buildCrisisResponse(cat);
+  const ok =
+    typeof r.response === "string" &&
+    r.response.length > 20 &&
+    r.crisis === true &&
+    r.category === cat &&
+    Array.isArray(r.resources) &&
+    r.resources.length >= 2 &&
+    r.resources.every(
+      (res) =>
+        typeof res.label === "string" &&
+        typeof res.detail === "string" &&
+        res.action &&
+        ["tel", "sms", "url"].includes(res.action.type) &&
+        typeof res.action.value === "string",
+    );
+  if (ok) {
+    passed++;
+    console.log(`  ✓ buildCrisisResponse(${cat}) shape valid`);
+  } else {
+    failed++;
+    failures.push(`  ✗ buildCrisisResponse(${cat}) returned malformed payload`);
+    console.log(`  ✗ buildCrisisResponse(${cat}) returned malformed payload`);
+  }
+}
+
+// 988 must always be present in the suicide/self-harm/violence baseline.
+for (const cat of ["suicide", "self_harm", "violence"] as const) {
+  const r = buildCrisisResponse(cat);
+  const has988 = r.resources.some(
+    (res) => res.action.type === "tel" && res.action.value === "988",
+  );
+  if (has988) {
+    passed++;
+    console.log(`  ✓ buildCrisisResponse(${cat}) includes 988 lifeline`);
+  } else {
+    failed++;
+    failures.push(`  ✗ buildCrisisResponse(${cat}) missing 988 resource`);
+    console.log(`  ✗ buildCrisisResponse(${cat}) missing 988 resource`);
+  }
+}
+
+console.log(
+  `\n${passed} passed, ${failed} failed — total ${passed + failed} assertions\n`,
+);
+
+if (failed > 0) {
+  console.error("FAILURES:");
+  for (const f of failures) console.error(f);
+  process.exit(1);
+}
+process.exit(0);

@@ -9,6 +9,7 @@ import express, {
 
 import { registerRoutes } from "./routes";
 import { WebhookHandlers } from "./webhookHandlers";
+import { requestId, structuredErrorLogger, registerHealthRoutes } from "./middleware/observability";
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -70,6 +71,13 @@ app.use(express.json({
 }));
 app.use(express.urlencoded({ extended: false, limit: '5mb' }));
 
+// Per-request correlation id (X-Request-Id) for log tracing.
+app.use(requestId);
+
+// Health endpoint must be registered early so it's available even if
+// downstream route registration fails part-way through.
+registerHealthRoutes(app);
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -110,6 +118,10 @@ export default async function runApp(
     console.error("[app] registerRoutes failed:", err?.message ?? err);
     throw err;
   }
+
+  // Structured error logger runs first — emits one JSON line per error with
+  // the request id so the deployment logs can be greped by correlation.
+  app.use(structuredErrorLogger);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;

@@ -10,8 +10,9 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import { publicPostLimiter, authActionLimiter } from "./middleware/publicRateLimit";
 import emailAuthRoutes from "./emailAuthRoutes";
 import luluRoutes from "./luluRoutes";
-import quoteStudioRoutes from "./quoteStudioRoutes";
 import survivorProfileRoutes from "./survivorProfileRoutes";
+import accountRoutes from "./routes/accountRoutes";
+import { detectCrisis, buildCrisisResponse } from "./services/crisisDetection";
 import { stripeService } from "./stripeService";
 import { getStripeSync, getStripePublishableKey } from "./stripeClient";
 import { runMigrations } from "stripe-replit-sync";
@@ -303,9 +304,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Lulu Publishing API Routes
   app.use('/api/lulu', luluRoutes);
 
-  // Quote Studio API Routes
-  app.use('/api/quote-studio', quoteStudioRoutes);
-  app.use('/api/survivor', survivorProfileRoutes);
+  // NOTE: /api/survivor and /api/account were previously mounted here, but they
+  // depend on session/passport middleware (isAuthenticated). Express runs
+  // middleware in registration order, so mounting before setupAuth meant
+  // req.user was always undefined and every authed call 401'd. Both are now
+  // mounted right after setupAuth — see the block ~620 lines below.
 
   // Publishing Platforms API - Universal Distribution Hub
   app.get('/api/publishing-platforms', async (req, res) => {
@@ -928,6 +931,11 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   
   // Setup authentication
   await setupAuth(app);
+
+  // Survivor + account routes MUST be mounted after setupAuth so isAuthenticated
+  // sees the session/passport middleware. See note above their previous mount.
+  app.use('/api/survivor', survivorProfileRoutes);
+  app.use('/api/account', accountRoutes);
   
   // Email Authentication Routes (must be after setupAuth for session access)
   app.use('/api/email-auth', emailAuthRoutes);
@@ -9302,6 +9310,24 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
 
       if (!message || typeof message !== 'string') {
         return res.status(400).json({ message: 'Message is required' });
+      }
+
+      // CRISIS GATE — runs BEFORE the LLM. If the user expresses suicidal
+      // ideation, self-harm, violence, or abuse, we short-circuit to a
+      // structured crisis response and skip Gemini + ElevenLabs entirely.
+      const crisis = detectCrisis(message);
+      if (crisis.detected && crisis.category) {
+        const userId = req.user?.claims?.sub ?? null;
+        console.warn(JSON.stringify({
+          level: 'warn',
+          ts: new Date().toISOString(),
+          msg: 'coach_crisis_intercept',
+          userId,
+          category: crisis.category,
+          matched: crisis.matchedPhrase,
+        }));
+        const crisisPayload = buildCrisisResponse(crisis.category);
+        return res.json(crisisPayload);
       }
 
       // Build user context if authenticated
