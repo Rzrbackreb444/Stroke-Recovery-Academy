@@ -34,7 +34,7 @@ export function lookupRouteMeta(pathname: string): RouteMeta | null {
   // that should be private via explicit noindex patterns.
   return {
     title: BRAND,
-    description: `Discover ${BRAND} — the AI creator platform powering Stroke Recovery Academy and the Marketplace marketplace.`,
+    description: `${BRAND} — the operating system for stroke survivors. Daily routines, neuroplasticity exercises, AI Sasquatch Coach, and the 66-day recovery challenge, built by 7-year survivor Nick Kremers.`,
     schemaType: "WebPage",
   };
 }
