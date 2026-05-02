@@ -8,6 +8,7 @@ import {
   users,
 } from '@shared/schema';
 import { and, asc, eq, ne } from 'drizzle-orm';
+import { requireAdmin } from '../middleware/requireAdmin';
 
 const DEFAULT_CATEGORIES: Array<{ slug: string; name: string; icon: string; color: string; sortOrder: number }> = [
   { slug: 'physical',           name: 'Physical',            icon: 'Activity',     color: '#C9941A', sortOrder: 10 },
@@ -109,11 +110,8 @@ export function registerCourseStudioExtrasRoutes(app: Express, isAuthenticated: 
   });
 
   // Admin re-seed (idempotent: inserts only missing slugs)
-  app.post('/api/course-categories/seed', isAuthenticated, async (req: any, res) => {
+  app.post('/api/course-categories/seed', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const [me] = await db.select().from(users).where(eq(users.id, userId));
-      if (me?.role !== 'admin') return res.status(403).json({ error: 'Admin only' });
       const existing = await db.select().from(courseCategories);
       const haveSlugs = new Set(existing.map(c => c.slug));
       const toInsert = DEFAULT_CATEGORIES.filter(c => !haveSlugs.has(c.slug));

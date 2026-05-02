@@ -8,6 +8,7 @@ import { eq, and, desc, sql } from "drizzle-orm";
 import { podcasts, podcastEpisodes, blogPosts } from "@shared/schema";
 import { storage } from "./storage";
 import { isAuthenticated } from "./replitAuth";
+import { requireAdmin } from "./middleware/requireAdmin";
 import { sasquatchSpeak } from "./elevenlabs";
 
 const SITE_URL = "https://strokerecoveryacademy.com";
@@ -60,11 +61,8 @@ async function getOrCreateDefaultShow(userId: string) {
 
 export function registerPodcastPipelineRoutes(app: Express): void {
   // POST /api/admin/podcast/from-blog/:postId — generate an episode from a blog post.
-  app.post("/api/admin/podcast/from-blog/:postId", isAuthenticated, async (req: any, res) => {
+  app.post("/api/admin/podcast/from-blog/:postId", isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const u = await storage.getUser(req.user.claims.sub);
-      if (!u || u.role !== "admin") return res.status(403).json({ message: "Admin only" });
-
       const postId = parseInt(req.params.postId, 10);
       if (isNaN(postId)) return res.status(400).json({ message: "Invalid postId" });
 
@@ -127,7 +125,7 @@ Return ONLY the spoken script, nothing else.`;
       const estimatedDuration = Math.max(60, Math.round((wordCount / 165) * 60));
 
       // 3) Persist episode under the admin's default show.
-      const show = await getOrCreateDefaultShow(u.id);
+      const show = await getOrCreateDefaultShow(req.user.claims.sub);
 
       const existingEpisodes = await db.select({ episodeNumber: podcastEpisodes.episodeNumber })
         .from(podcastEpisodes)
