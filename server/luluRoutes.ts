@@ -391,12 +391,26 @@ router.get('/print-jobs/:jobId', async (req: Request, res: Response) => {
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    
+
     const { jobId } = req.params;
-    
+
+    // Ownership check: jobId is the Lulu order id stored on lulu_print_jobs;
+    // verify the linked book_orders.customer_id is this user before proxying
+    // to the Lulu API. Without this any authenticated survivor could read any
+    // other survivor's print-job status by guessing/scraping ids.
+    const [owned] = await db
+      .select({ id: luluPrintJobs.id })
+      .from(luluPrintJobs)
+      .innerJoin(bookOrders, eq(bookOrders.id, luluPrintJobs.orderId))
+      .where(and(eq(luluPrintJobs.luluOrderId, jobId), eq(bookOrders.customerId, userId)))
+      .limit(1);
+    if (!owned) {
+      return res.status(404).json({ error: 'Print job not found' });
+    }
+
     // Get from Lulu API
     const printJob = await luluPublishingService.getPrintJob(jobId);
-    
+
     res.json({ printJob });
   } catch (error: any) {
     console.error('Error getting print job:', error);
@@ -411,14 +425,34 @@ router.get('/print-jobs', async (req: Request, res: Response) => {
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    
-    // Get from database
+
+    // Scope to this user's orders only — prior implementation returned the
+    // global newest 50 jobs, leaking every other survivor's print activity
+    // (shipping addresses on Lulu side, order ids that could be replayed
+    // against /print-jobs/:jobId, etc.).
     const jobs = await db
-      .select()
+      .select({
+        id: luluPrintJobs.id,
+        orderId: luluPrintJobs.orderId,
+        luluOrderId: luluPrintJobs.luluOrderId,
+        status: luluPrintJobs.status,
+        quantity: luluPrintJobs.quantity,
+        shippingLevel: luluPrintJobs.shippingLevel,
+        estimatedShipDate: luluPrintJobs.estimatedShipDate,
+        actualShipDate: luluPrintJobs.actualShipDate,
+        trackingNumber: luluPrintJobs.trackingNumber,
+        trackingUrl: luluPrintJobs.trackingUrl,
+        carrier: luluPrintJobs.carrier,
+        productionCost: luluPrintJobs.productionCost,
+        shippingCost: luluPrintJobs.shippingCost,
+        createdAt: luluPrintJobs.createdAt,
+      })
       .from(luluPrintJobs)
+      .innerJoin(bookOrders, eq(bookOrders.id, luluPrintJobs.orderId))
+      .where(eq(bookOrders.customerId, userId))
       .orderBy(desc(luluPrintJobs.createdAt))
       .limit(50);
-    
+
     res.json({ jobs });
   } catch (error: any) {
     console.error('Error listing print jobs:', error);
@@ -433,17 +467,29 @@ router.post('/print-jobs/:jobId/cancel', async (req: Request, res: Response) => 
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    
+
     const { jobId } = req.params;
-    
+
+    // Ownership check before mutating Lulu state — without this any authed
+    // survivor could cancel any other survivor's print job by id.
+    const [owned] = await db
+      .select({ id: luluPrintJobs.id })
+      .from(luluPrintJobs)
+      .innerJoin(bookOrders, eq(bookOrders.id, luluPrintJobs.orderId))
+      .where(and(eq(luluPrintJobs.luluOrderId, jobId), eq(bookOrders.customerId, userId)))
+      .limit(1);
+    if (!owned) {
+      return res.status(404).json({ error: 'Print job not found' });
+    }
+
     const result = await luluPublishingService.cancelPrintJob(jobId);
-    
+
     // Update database
     await db
       .update(luluPrintJobs)
       .set({ status: 'cancelled' })
       .where(eq(luluPrintJobs.luluOrderId, jobId));
-    
+
     res.json({ result });
   } catch (error: any) {
     console.error('Error cancelling print job:', error);

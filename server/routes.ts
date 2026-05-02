@@ -302,14 +302,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Email Authentication Routes - moved to after setupAuth for session access
 
-  // Lulu Publishing API Routes
-  app.use('/api/lulu', luluRoutes);
-
-  // NOTE: /api/survivor and /api/account were previously mounted here, but they
-  // depend on session/passport middleware (isAuthenticated). Express runs
-  // middleware in registration order, so mounting before setupAuth meant
-  // req.user was always undefined and every authed call 401'd. Both are now
-  // mounted right after setupAuth — see the block ~620 lines below.
+  // NOTE: /api/lulu, /api/survivor, /api/account were previously mounted here, but
+  // they depend on session/passport middleware (isAuthenticated / getUserId).
+  // Express runs middleware in registration order, so mounting before setupAuth
+  // meant req.user was always undefined and every authed call 401'd. All three
+  // are now mounted right after setupAuth — see the block ~620 lines below.
 
   // Publishing Platforms API - Universal Distribution Hub
   app.get('/api/publishing-platforms', async (req, res) => {
@@ -933,10 +930,12 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   // Setup authentication
   await setupAuth(app);
 
-  // Survivor + account routes MUST be mounted after setupAuth so isAuthenticated
-  // sees the session/passport middleware. See note above their previous mount.
+  // Survivor + account + lulu routes MUST be mounted after setupAuth so
+  // isAuthenticated / getUserId() see the session/passport middleware.
+  // See note above their previous mount.
   app.use('/api/survivor', survivorProfileRoutes);
   app.use('/api/account', accountRoutes);
+  app.use('/api/lulu', luluRoutes);
   
   // Email Authentication Routes (must be after setupAuth for session access)
   app.use('/api/email-auth', emailAuthRoutes);
