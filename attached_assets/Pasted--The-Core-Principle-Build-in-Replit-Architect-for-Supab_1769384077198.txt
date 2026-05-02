@@ -58,7 +58,7 @@ This mirrors how Supabase apps are built.
 
 🟧 What You Can Build in Replit Right Now
 And convert later with almost zero pain:
-✔ KreAIte Editor
+✔ Stroke Recovery Academy Editor
 ✔ Mobile‑first UI
 ✔ Desktop UI
 ✔ AI inline actions
@@ -90,7 +90,7 @@ This is when you scale to:
 • 	parts marketplace
 • 	diagnostics
 • 	templates marketplace
-This is WashBizHub + KreAIte 2.0 territory.
+This is WashBizHub + Stroke Recovery Academy 2.0 territory.
 
 ⭐ Bottom Line
 You’re not choosing between Replit and Supabase.

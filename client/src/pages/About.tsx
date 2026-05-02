@@ -13,16 +13,16 @@ export default function About() {
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
       <SEO
-        title="About KreAIte - The Shopify for KreAItion"
-        description="KreAIte.xyz is the ultimate creator platform - a social network and marketplace where creators build, publish, and monetize in the KreAItorverse. 85% creator earnings, 7 professional studios, and AI-powered tools for books, music, video, courses, and more."
-        keywords="about kreaite, creator platform, content marketplace, shopify for creators, kreaitorverse, AI creation tools, creator economy, digital content monetization, self-publishing platform"
+        title="About Stroke Recovery Academy - The Shopify for KreAItion"
+        description="Stroke Recovery Academy is the ultimate creator platform - a social network and marketplace where creators build, publish, and monetize in the Marketplace. 85% creator earnings, 7 professional studios, and AI-powered tools for books, music, video, courses, and more."
+        keywords="about stroke recovery academy, stroke recovery platform, survivor-led recovery, neuroplasticity exercises, 66-day stroke challenge, stroke survivor community, stroke recovery coach, post-stroke rehabilitation"
         canonical="/about"
         type="website"
         faq={[
-          { question: "What is KreAIte.xyz?", answer: "KreAIte is the Shopify for KreAItion - a social network and marketplace where creators build, publish, and monetize content using AI-powered studios for books, music, video, courses, images, and websites." },
-          { question: "How much do creators earn?", answer: "Creators keep 85% of every sale in the KreAItorverse marketplace. The 15% platform fee covers payment processing, hosting, and platform maintenance." },
-          { question: "What is the KreAItorverse?", answer: "The KreAItorverse is our creator marketplace where you can sell books, courses, music, templates, and digital products to a global audience of buyers." },
-          { question: "Who founded KreAIte?", answer: "KreAIte was founded by Nick Kremers, whose personal journey inspired both the creator platform and the Stroke Recovery Academy." }
+          { question: "What is Stroke Recovery Academy?", answer: "Stroke Recovery Academy is the Shopify for KreAItion - a social network and marketplace where creators build, publish, and monetize content using AI-powered studios for books, music, video, courses, images, and websites." },
+          { question: "How much do creators earn?", answer: "Creators keep 85% of every sale in the Marketplace marketplace. The 15% platform fee covers payment processing, hosting, and platform maintenance." },
+          { question: "What is the Marketplace?", answer: "The Marketplace is our creator marketplace where you can sell books, courses, music, templates, and digital products to a global audience of buyers." },
+          { question: "Who founded Stroke Recovery Academy?", answer: "Stroke Recovery Academy was founded by Nick Kremers, whose personal journey inspired both the creator platform and the Stroke Recovery Academy." }
         ]}
         breadcrumbs={[
           { name: "Home", url: "/" },
@@ -34,9 +34,9 @@ export default function About() {
         schema={{
           "@context": "https://schema.org",
           "@type": "Organization",
-          "name": "KreAIte.xyz",
+          "name": "Stroke Recovery Academy",
           "alternateName": "The Shopify for KreAItion",
-          "url": "https://kreaite.xyz",
+          "url": "https://strokerecoveryacademy.com",
           "description": "AI-powered creator platform and marketplace",
           "foundingDate": "2024"
         }}

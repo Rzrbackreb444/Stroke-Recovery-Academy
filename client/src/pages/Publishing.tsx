@@ -640,9 +640,9 @@ export default function Publishing() {
       <SEO 
         title="Publishing Hub"
         description="Publish your content to global marketplaces with AI-powered tools. Create books, courses, and digital products with professional writing assistance and direct marketplace integration."
-        canonicalUrl="https://kreaite.xyz/publishing"
+        canonicalUrl="https://strokerecoveryacademy.com/publishing"
         keywords={["content publishing", "book publishing", "marketplace publishing", "self-publishing", "digital publishing"]}
-        author="KreAIte"
+        author="Stroke Recovery Academy"
         expertise="Professional content publishing platform"
         experience="Platform established 2024 with integrated marketplace systems"
         authoritativeness="Industry-leading publishing tools and marketplace access"

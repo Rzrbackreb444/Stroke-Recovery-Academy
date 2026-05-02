@@ -271,11 +271,11 @@ export default function ScriptStudio() {
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
       <SEO 
-        title="Script Studio | KreAIte"
+        title="Script Studio | Stroke Recovery Academy"
         description="AI-powered screenplay and script writing studio. Generate loglines, beat sheets, characters, scenes, and dialogue. Professional formatting for feature films, shorts, TV series, and pilots."
         canonical="/script-studio"
         keywords="AI screenplay, script writing, screenwriting software, beat sheet generator, screenplay formatting"
-        author="KreAIte"
+        author="Stroke Recovery Academy"
         expertise={["Professional screenplay structure", "AI-assisted writing", "Industry-standard screenplay formatting"]}
         experience="Professional screenwriting tools since 2024"
         trustSignals={["Trusted by screenwriters worldwide", "Industry-standard screenplay formatting", "Professional-grade AI writing assistance"]}

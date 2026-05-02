@@ -185,7 +185,7 @@ export function MagicLinkVerify() {
         setStatus("success");
         toast({
           title: "Signed in successfully!",
-          description: "Welcome back to KreAIte.",
+          description: "Welcome back to Stroke Recovery Academy.",
         });
 
         setTimeout(() => {

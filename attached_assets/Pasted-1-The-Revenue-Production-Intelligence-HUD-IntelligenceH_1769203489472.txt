@@ -88,7 +88,7 @@ export default function WorkspaceShell({ children }: { children: React.ReactNode
       <header className="h-14 border-b border-[#C9941A]/20 bg-white/90 backdrop-blur-xl flex items-center px-6 justify-between z-50">
         <div className="flex items-center gap-6">
           <div className="flex flex-col leading-none">
-            <span className="text-[#C9941A] font-black text-lg tracking-tighter uppercase">KreAIte</span>
+            <span className="text-[#C9941A] font-black text-lg tracking-tighter uppercase">Stroke Recovery Academy</span>
             <span className="text-[8px] tracking-[0.4em] font-bold opacity-40 uppercase">Author Intelligence V3</span>
           </div>
           <div className="h-8 w-[1px] bg-[#C9941A]/10 mx-2" />

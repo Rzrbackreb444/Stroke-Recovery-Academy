@@ -126,7 +126,7 @@ export class StripeService {
   }
 
   // ============================================================================
-  // PRODUCT & PRICE CREATION - KreAIte Subscription Tiers
+  // PRODUCT & PRICE CREATION - Stroke Recovery Academy Subscription Tiers
   // ============================================================================
 
   async createKreAIteProducts() {
@@ -134,21 +134,21 @@ export class StripeService {
     
     const tiers = [
       {
-        name: 'KreAIte Creator',
+        name: 'Stroke Recovery Academy Creator',
         description: 'For serious content creators - 50 AI generations/day, full Book & Music Studio access, Google Docs integration',
         monthlyPrice: 2900, // $29
         annualPrice: 24900, // $249/year (save ~28%)
         metadata: { platform: 'kreaite', tier: 'creator', credits: '2500' }
       },
       {
-        name: 'KreAIte Pro',
+        name: 'Stroke Recovery Academy Pro',
         description: 'Unlimited creation power - All studios, unlimited AI generations, priority support, commercial license',
         monthlyPrice: 7900, // $79
         annualPrice: 69900, // $699/year (save ~26%)
         metadata: { platform: 'kreaite', tier: 'pro', credits: '10000' }
       },
       {
-        name: 'KreAIte Enterprise',
+        name: 'Stroke Recovery Academy Enterprise',
         description: 'For teams and agencies - 10 seats, white-label option, API access, dedicated account manager',
         monthlyPrice: 29900, // $299
         annualPrice: 249900, // $2499/year (save ~30%)

@@ -247,7 +247,7 @@ const faqs = [
   },
   {
     question: "Do I own the content I create?",
-    answer: "Yes! All content you create on KreAIte belongs to you. Pro and Enterprise plans include full commercial licenses, meaning you can sell, publish, and monetize your creations however you want."
+    answer: "Yes! All content you create on Stroke Recovery Academy belongs to you. Pro and Enterprise plans include full commercial licenses, meaning you can sell, publish, and monetize your creations however you want."
   },
   {
     question: "Can I upgrade or downgrade my plan?",
@@ -350,7 +350,7 @@ export default function Pricing() {
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <SEO
         title="Pricing Plans - AI Creator Platform Subscriptions"
-        description="Explore KreAIte's flexible pricing plans. Free tier to get started, Creator plan for serious creators, Pro for unlimited AI generation, and Enterprise for teams. All plans include Book Studio, Music Studio, and more. Keep 85% of every sale on our marketplace."
+        description="Explore Stroke Recovery Academy's flexible pricing plans. Free tier to get started, Creator plan for serious creators, Pro for unlimited AI generation, and Enterprise for teams. All plans include Book Studio, Music Studio, and more. Keep 85% of every sale on our marketplace."
         keywords="pricing, subscription, AI creator tools, free tier, creator plan, pro plan, enterprise pricing, AI content creation, subscription cost, AI platform pricing"
         canonical="/pricing"
         type="website"
@@ -377,7 +377,7 @@ export default function Pricing() {
           },
           {
             question: "Do I own the content I create?",
-            answer: "Yes! All content you create on KreAIte belongs to you. Pro and Enterprise plans include full commercial licenses, meaning you can sell, publish, and monetize your creations however you want."
+            answer: "Yes! All content you create on Stroke Recovery Academy belongs to you. Pro and Enterprise plans include full commercial licenses, meaning you can sell, publish, and monetize your creations however you want."
           }
         ]}
         expertise={[
@@ -388,7 +388,7 @@ export default function Pricing() {
           "Transparent pricing and revenue sharing",
           "Comprehensive creator toolkit"
         ]}
-        experience="Built by creators for creators. Over 10,000+ active creators using KreAIte. Real success stories from self-published authors, musicians, course creators, and content producers."
+        experience="Built by creators for creators. Over 10,000+ active creators using Stroke Recovery Academy. Real success stories from self-published authors, musicians, course creators, and content producers."
         trustSignals={[
           "14-day money-back guarantee on all paid plans",
           "No credit card required for free plan",
@@ -443,7 +443,7 @@ export default function Pricing() {
           },
           {
             "@type": "Product",
-            name: "KreAIte Creator Platform",
+            name: "Stroke Recovery Academy Creator Platform",
             description: "All-in-one AI platform for content creators with Book Studio, Music Studio, Image Studio, Video Studio, Course Studio, and Audiobook Narration tools",
             offers: [
               {
@@ -828,7 +828,7 @@ export default function Pricing() {
                 Frequently Asked <span className="text-[#C9941A]">Questions</span>
               </h2>
               <p className="text-gray-400 mt-2">
-                Everything you need to know about KreAIte
+                Everything you need to know about Stroke Recovery Academy
               </p>
             </div>
             

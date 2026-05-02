@@ -69,7 +69,7 @@ export const updateMetaSchema = z.object({
   secondaryCategories: z.array(z.string().max(100)).max(10).optional(),
 });
 
-const BASE_URL = 'https://kreaite.xyz';
+const BASE_URL = 'https://strokerecoveryacademy.com';
 
 // ============================================================================
 // SEO VALIDATION & SCORING
@@ -664,14 +664,14 @@ export async function generateBlogPostSchema(postId: number): Promise<object[]> 
       "@type": "Person",
       name: authorData?.firstName && authorData?.lastName 
         ? `${authorData.firstName} ${authorData.lastName}` 
-        : authorData?.email || 'KreAIte Author',
+        : authorData?.email || 'Stroke Recovery Academy Author',
       description: p.authorBio,
       knowsAbout: p.authorCredentials,
       url: `${BASE_URL}/author/${p.authorId}`,
     },
     publisher: {
       "@type": "Organization",
-      name: "KreAIte.xyz",
+      name: "Stroke Recovery Academy",
       logo: { "@type": "ImageObject", url: `${BASE_URL}/logo.png` },
     },
     datePublished: p.publishedAt?.toISOString(),

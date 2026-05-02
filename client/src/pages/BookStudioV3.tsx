@@ -75,7 +75,7 @@ export default function BookStudioV3() {
 
   const seoTitle = isRecovery 
     ? "Write Your Recovery Story | Stroke Recovery Academy"
-    : "Book Studio | KreAIte.xyz - AI-Powered Book Creation";
+    : "Book Studio | Stroke Recovery Academy - AI-Powered Book Creation";
   
   const seoDescription = isRecovery
     ? "Share your stroke recovery journey. Write, edit, and publish your memoir with AI assistance."

@@ -68,7 +68,7 @@ export default function AuthVerify() {
               <div className="flex items-center justify-center">
                 <img 
                   src={kreaiteLogo} 
-                  alt="Welcome to KreAIte" 
+                  alt="Welcome to Stroke Recovery Academy" 
                   className="h-8 w-auto object-contain"
                 />
               </div>

@@ -122,7 +122,7 @@ export default function AIConsultant() {
   };
 
   const copyEmbedCode = (botId: string) => {
-    const code = `<script src="https://kreaite.xyz/embed/consultant/${botId}.js"></script>`;
+    const code = `<script src="https://strokerecoveryacademy.com/embed/consultant/${botId}.js"></script>`;
     navigator.clipboard.writeText(code);
     toast({
       title: "Copied!",
@@ -133,11 +133,11 @@ export default function AIConsultant() {
   return (
     <div className="min-h-screen bg-[#FAF8F3] flex flex-col">
       <SEO
-        title="AI Consultant | KreAIte"
+        title="AI Consultant | Stroke Recovery Academy"
         description="Train an AI on your expertise and earn 24/7. Create an AI consultant from your books, courses, and knowledge to automatically answer customer questions and monetize your content effortlessly."
         canonical="/ai-consultant"
         keywords="AI consultant, chatbot creator, content monetization, AI training, knowledge base automation, passive income"
-        author="KreAIte"
+        author="Stroke Recovery Academy"
         expertise={["AI Training", "Expertise Monetization", "Customer Automation"]}
         experience="Empowering creators to monetize expertise with AI since 2024"
         trustSignals={["Creators earning $1000+/month", "Simple setup process", "Trusted by industry experts"]}

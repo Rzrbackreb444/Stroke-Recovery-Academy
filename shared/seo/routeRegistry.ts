@@ -94,7 +94,7 @@ export interface RouteEntry {
 }
 
 const SITE = "Stroke Recovery Academy";
-const BRAND = "KreAIte.xyz";
+const BRAND = "Stroke Recovery Academy";
 
 /** Strict allowlist of canonical hosts. Any other Host header collapses to this. */
 export const CANONICAL_DEFAULT = "https://strokerecoveryacademy.com";
@@ -107,16 +107,16 @@ export const CANONICAL_DEFAULT = "https://strokerecoveryacademy.com";
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const ROUTES: RouteEntry[] = [
-  // ─── KreAIte main domain ──────────────────────────────────────────────────
+  // ─── Stroke Recovery Academy main domain ─────────────────────────────────
   {
     pattern: /^\/$/,
     canonical: "/",
     category: "home",
     intent: "informational",
     schemaType: "WebPage",
-    title: "KreAIte.xyz: Create. Publish. Earn. AI Studios for Creators",
+    title: "Stroke Recovery Academy: Create. Publish. Earn. AI Studios for Creators",
     description:
-      "Seven AI-powered studios for books, video, music, courses, images, and websites. Sell on the KreAItorverse marketplace with an 85/15 revenue split.",
+      "Seven AI-powered studios for books, video, music, courses, images, and websites. Sell on the Marketplace marketplace with an 85/15 revenue split.",
     keywords: ["AI creator platform", "AI book writer", "AI music studio", "AI course builder", "creator marketplace"],
     author: "platform",
     changefreq: "weekly",
@@ -128,7 +128,7 @@ export const ROUTES: RouteEntry[] = [
     category: "marketplace",
     intent: "transactional",
     schemaType: "CollectionPage",
-    title: "KreAItorverse Marketplace: Buy & Sell Creator Content",
+    title: "Marketplace: Buy & Sell Creator Content",
     description:
       "Books, courses, music, and digital products from independent creators. 85% revenue goes to the creator. Discover survivor-led, AI-built work.",
     keywords: ["creator marketplace", "indie books", "indie courses", "85/15 revenue split"],
@@ -142,7 +142,7 @@ export const ROUTES: RouteEntry[] = [
     category: "marketplace",
     intent: "transactional",
     schemaType: "CollectionPage",
-    title: "Indie Books from Survivor Authors | KreAItorverse",
+    title: "Indie Books from Survivor Authors | Marketplace",
     description:
       "Books written by independent authors and stroke survivors. KDP-ready. Print-on-demand via Lulu. Real lived experience, not algorithmic filler.",
     keywords: ["indie books", "survivor authors", "stroke recovery books", "print on demand"],
@@ -155,9 +155,9 @@ export const ROUTES: RouteEntry[] = [
     category: "marketplace",
     intent: "transactional",
     schemaType: "Product",
-    title: "Listing | KreAItorverse Marketplace",
+    title: "Listing | Marketplace",
     description:
-      "Listing detail on the KreAItorverse creator marketplace. Buy directly from independent creators. 85% revenue goes to the creator.",
+      "Listing detail on the Marketplace creator marketplace. Buy directly from independent creators. 85% revenue goes to the creator.",
     author: "platform",
     // Sitemap is fed from DB in server/routes.ts; no canonical here
   },
@@ -167,9 +167,9 @@ export const ROUTES: RouteEntry[] = [
     category: "content",
     intent: "transactional",
     schemaType: "CollectionPage",
-    title: "Browse Courses | Indie Creator Courses on KreAIte",
+    title: "Browse Courses | Indie Creator Courses on Stroke Recovery Academy",
     description:
-      "Browse independent creator courses on KreAIte — recovery, craft, business, AI, and more. Self-paced, survivor-friendly, with course refund window.",
+      "Browse independent creator courses on Stroke Recovery Academy — recovery, craft, business, AI, and more. Self-paced, survivor-friendly, with course refund window.",
     keywords: ["indie courses", "creator courses", "online courses", "survivor courses"],
     author: "platform",
     changefreq: "daily",
@@ -181,9 +181,9 @@ export const ROUTES: RouteEntry[] = [
     category: "content",
     intent: "transactional",
     schemaType: "CollectionPage",
-    title: "Browse Books | Indie Books from KreAIte Creators",
+    title: "Browse Books | Indie Books from Stroke Recovery Academy Creators",
     description:
-      "Discover books written by independent creators on KreAIte. Survivor memoirs, recovery guides, fiction, and craft — all royalty-shared 85/15.",
+      "Discover books written by independent creators on Stroke Recovery Academy. Survivor memoirs, recovery guides, fiction, and craft — all royalty-shared 85/15.",
     keywords: ["indie books", "self published books", "creator books"],
     author: "platform",
     changefreq: "daily",
@@ -194,9 +194,9 @@ export const ROUTES: RouteEntry[] = [
     category: "content",
     intent: "transactional",
     schemaType: "Course",
-    title: "Course | KreAIte",
+    title: "Course | Stroke Recovery Academy",
     description:
-      "Course detail on KreAIte. Self-paced lessons, instructor-led discussion, and a course refund window. Direct revenue share with the creator.",
+      "Course detail on Stroke Recovery Academy. Self-paced lessons, instructor-led discussion, and a course refund window. Direct revenue share with the creator.",
     author: "platform",
   },
   {
@@ -205,10 +205,10 @@ export const ROUTES: RouteEntry[] = [
     category: "pricing",
     intent: "transactional",
     schemaType: "WebPage",
-    title: "KreAIte Pricing: Free, Pro, and Studio Plans",
+    title: "Stroke Recovery Academy Pricing: Free, Pro, and Studio Plans",
     description:
       "Start free. Upgrade when you publish. Transparent pricing for creators using AI studios for books, music, video, courses, and websites.",
-    keywords: ["KreAIte pricing", "AI creator pricing", "indie creator plans"],
+    keywords: ["Stroke Recovery Academy pricing", "AI creator pricing", "indie creator plans"],
     author: "platform",
     changefreq: "monthly",
     priority: 0.9,
@@ -219,37 +219,32 @@ export const ROUTES: RouteEntry[] = [
     category: "publishing",
     intent: "transactional",
     schemaType: "Service",
-    title: "KreAIte Publishing: KDP-Ready Books & Lulu Print-on-Demand",
+    title: "Stroke Recovery Academy Publishing: KDP-Ready Books & Lulu Print-on-Demand",
     description:
-      "Publish your book directly to Amazon KDP and Lulu Print-on-Demand from inside KreAIte. Royalty tracking, OAuth-secured, no formatting headaches.",
+      "Publish your book directly to Amazon KDP and Lulu Print-on-Demand from inside Stroke Recovery Academy. Royalty tracking, OAuth-secured, no formatting headaches.",
     keywords: ["KDP publishing", "Lulu print on demand", "self publishing platform"],
     author: "platform",
     changefreq: "monthly",
     priority: 0.7,
   },
+  // ─── SquatchQR (HIDDEN — noindex, excluded from sitemap) ────────────────
   {
     pattern: /^\/squatch-qr\/?$/,
-    canonical: "/squatch-qr",
-    category: "marketplace",
-    intent: "transactional",
-    schemaType: "Service",
-    title: "SquatchQR: Dynamic QR Codes with Quote Studio & Analytics",
-    description:
-      "Enterprise dynamic QR codes that route to live quote pages. Designer, scan analytics, A/B variants. Free tier available.",
-    keywords: ["dynamic QR codes", "quote QR", "QR analytics", "branded QR codes"],
-    author: "platform",
-    changefreq: "monthly",
-    priority: 0.7,
+    category: "misc",
+    intent: "private",
+    schemaType: "WebPage",
+    title: `Stroke Recovery Academy`,
+    description: "Internal tooling — not for indexing.",
+    noindex: true,
   },
   {
     pattern: /^\/q\/[^/]+\/?$/,
     category: "content",
-    intent: "informational",
+    intent: "private",
     schemaType: "WebPage",
-    title: "Live Quote | SquatchQR",
-    description:
-      "A live quote page served by SquatchQR. Dynamic destinations, scan analytics, and on-demand redirect — without re-printing the QR code.",
-    author: "platform",
+    title: `Stroke Recovery Academy`,
+    description: "Internal tooling — not for indexing.",
+    noindex: true,
   },
   {
     pattern: /^\/(about|about-us)\/?$/,
@@ -257,10 +252,10 @@ export const ROUTES: RouteEntry[] = [
     category: "about",
     intent: "informational",
     schemaType: "AboutPage",
-    title: "About KreAIte.xyz: The Creator Operating System",
+    title: "About Stroke Recovery Academy: Built by a Survivor",
     description:
-      "KreAIte.xyz is the operating system for independent creators. Built by Nick Kremers — 7-year stroke survivor, author, and founder.",
-    keywords: ["about KreAIte", "Nick Kremers founder", "creator OS"],
+      "Stroke Recovery Academy is built by Nick Kremers — 7-year stroke survivor, author, and founder. Daily routines, neuroplasticity, AI coach, survivor community.",
+    keywords: ["about Stroke Recovery Academy", "Nick Kremers founder", "stroke recovery"],
     author: "platform",
     changefreq: "monthly",
     priority: 0.6,
@@ -273,7 +268,7 @@ export const ROUTES: RouteEntry[] = [
     category: "community",
     intent: "informational",
     schemaType: "CollectionPage",
-    title: "KreAIte Community: Discussion, Threads & Creator Groups",
+    title: "Stroke Recovery Academy Community: Discussion, Threads & Creator Groups",
     description:
       "Discuss craft, share works in progress, find collaborators. Survivor and creator threads, moderated, ad-free.",
     keywords: ["creator community", "indie author community", "stroke survivor community"],
@@ -286,9 +281,9 @@ export const ROUTES: RouteEntry[] = [
     category: "community",
     intent: "informational",
     schemaType: "Article",
-    title: "Discussion Thread | KreAIte Community",
+    title: "Discussion Thread | Stroke Recovery Academy Community",
     description:
-      "Discussion thread on the KreAIte creator community. Survivor-friendly, moderated, ad-free.",
+      "Discussion thread on the Stroke Recovery Academy creator community. Survivor-friendly, moderated, ad-free.",
   },
   {
     pattern: /^\/groups\/?$/,
@@ -296,7 +291,7 @@ export const ROUTES: RouteEntry[] = [
     category: "community",
     intent: "informational",
     schemaType: "CollectionPage",
-    title: "KreAIte Groups: Find Your Creator Community",
+    title: "Stroke Recovery Academy Groups: Find Your Creator Community",
     description:
       "Join groups for indie authors, course creators, musicians, stroke survivors, caregivers, and more. Share work, get feedback, build together.",
     keywords: ["creator groups", "writer groups", "stroke survivor groups"],
@@ -308,9 +303,9 @@ export const ROUTES: RouteEntry[] = [
     category: "community",
     intent: "informational",
     schemaType: "CollectionPage",
-    title: "Group | KreAIte Community",
+    title: "Group | Stroke Recovery Academy Community",
     description:
-      "Join this group on KreAIte. Discussion threads, shared resources, member feed.",
+      "Join this group on Stroke Recovery Academy. Discussion threads, shared resources, member feed.",
   },
   {
     pattern: /^\/stories\/?$/,
@@ -318,7 +313,7 @@ export const ROUTES: RouteEntry[] = [
     category: "community",
     intent: "informational",
     schemaType: "CollectionPage",
-    title: "Stories on KreAIte: Read & Share Survivor & Creator Stories",
+    title: "Stories on Stroke Recovery Academy: Read & Share Survivor & Creator Stories",
     description:
       "Real stories from stroke survivors, caregivers, and creators. Read, react, and share your own. No paywall.",
     keywords: ["survivor stories", "stroke recovery stories", "creator stories"],
@@ -330,9 +325,9 @@ export const ROUTES: RouteEntry[] = [
     category: "community",
     intent: "informational",
     schemaType: "Article",
-    title: "Survivor Story | KreAIte",
+    title: "Survivor Story | Stroke Recovery Academy",
     description:
-      "A survivor story shared on KreAIte. Real lived experience from stroke survivors, caregivers, and creators.",
+      "A survivor story shared on Stroke Recovery Academy. Real lived experience from stroke survivors, caregivers, and creators.",
     author: "platform",
   },
   {
@@ -349,9 +344,9 @@ export const ROUTES: RouteEntry[] = [
     category: "community",
     intent: "informational",
     schemaType: "AboutPage",
-    title: "Author Profile | KreAIte",
+    title: "Author Profile | Stroke Recovery Academy",
     description:
-      "Author profile on KreAIte. Books, courses, and published work from this independent creator.",
+      "Author profile on Stroke Recovery Academy. Books, courses, and published work from this independent creator.",
   },
 
   // ─── Legal ────────────────────────────────────────────────────────────────
@@ -363,7 +358,7 @@ export const ROUTES: RouteEntry[] = [
     schemaType: "WebPage",
     title: `Terms of Service | ${BRAND}`,
     description:
-      "Terms of Service for KreAIte.xyz, KreAItorverse Marketplace, and Stroke Recovery Academy. Plain-language, creator-friendly.",
+      "Terms of Service for Stroke Recovery Academy, Marketplace, and Stroke Recovery Academy. Plain-language, creator-friendly.",
     changefreq: "yearly",
     priority: 0.3,
   },
@@ -375,7 +370,7 @@ export const ROUTES: RouteEntry[] = [
     schemaType: "WebPage",
     title: `Privacy Policy | ${BRAND}`,
     description:
-      "How KreAIte.xyz collects, uses, and protects your data. Plain-language, GDPR/CCPA-aligned, no dark patterns.",
+      "How Stroke Recovery Academy collects, uses, and protects your data. Plain-language, GDPR/CCPA-aligned, no dark patterns.",
     changefreq: "yearly",
     priority: 0.3,
   },
@@ -803,7 +798,7 @@ export const ROUTES: RouteEntry[] = [
     schemaType: "Service",
     title: "Survivor Income: Stroke Recovery & Earning a Living",
     description:
-      "Practical guide to earning income after stroke — disability, remote work, creator income, and the KreAItorverse 85/15 marketplace.",
+      "Practical guide to earning income after stroke — disability, remote work, creator income, and the Marketplace 85/15 marketplace.",
     keywords: ["stroke disability", "income after stroke", "stroke survivor income", "work after stroke"],
     author: "nick",
     changefreq: "monthly",
@@ -939,10 +934,10 @@ export const ROUTES: RouteEntry[] = [
     category: "marketplace",
     intent: "transactional",
     schemaType: "WebPage",
-    title: "KreAIte Affiliate Program: Refer & Earn Recurring",
+    title: "Stroke Recovery Academy Affiliate Program: Refer & Earn Recurring",
     description:
-      "Refer creators to KreAIte and earn recurring commission. Survivor-friendly tier, transparent attribution, monthly payouts.",
-    keywords: ["KreAIte affiliate", "creator affiliate program", "referral program"],
+      "Refer creators to Stroke Recovery Academy and earn recurring commission. Survivor-friendly tier, transparent attribution, monthly payouts.",
+    keywords: ["Stroke Recovery Academy affiliate", "creator affiliate program", "referral program"],
     author: "platform",
     changefreq: "monthly",
     priority: 0.6,
@@ -1006,7 +1001,7 @@ export const ROUTES: RouteEntry[] = [
     noindex: true,
   },
 
-  // ─── KreAIte — private app surfaces (NOINDEX) ─────────────────────────────
+  // ─── Stroke Recovery Academy — private app surfaces (NOINDEX) ─────────────────────────────
   {
     pattern: /^\/dashboard/,
     category: "app",
@@ -1167,7 +1162,7 @@ export const ROUTES: RouteEntry[] = [
     schemaType: "CollectionPage",
     title: `Voice Library — AI narration voices | ${BRAND}`,
     description:
-      "Browse the KreAIte voice library — premium AI narration voices for audiobooks, podcasts, courses, and video. Try samples free.",
+      "Browse the Stroke Recovery Academy voice library — premium AI narration voices for audiobooks, podcasts, courses, and video. Try samples free.",
     keywords: ["AI voice library", "AI narration voices", "audiobook voices", "ElevenLabs alternative"],
     changefreq: "weekly",
     priority: 0.7,
@@ -1180,7 +1175,7 @@ export const ROUTES: RouteEntry[] = [
     schemaType: "CollectionPage",
     title: `Templates — Books, courses, sites, music | ${BRAND}`,
     description:
-      "Free starter templates for KreAIte studios. Books, courses, websites, music projects — launch in minutes with proven structures.",
+      "Free starter templates for Stroke Recovery Academy studios. Books, courses, websites, music projects — launch in minutes with proven structures.",
     keywords: ["creator templates", "book templates", "course templates", "website templates"],
     changefreq: "weekly",
     priority: 0.7,
@@ -1214,103 +1209,19 @@ export const ROUTES: RouteEntry[] = [
     noindex: true,
   },
 
-  // ─── Games (NOINDEX — no SEO value) ───────────────────────────────────────
+  // ─── Brain games (KEEP — survivor-friendly cognitive training) ──────────
   {
     pattern: /^\/games\/?$/,
     canonical: "/games",
     category: "games",
     intent: "navigational",
     schemaType: "CollectionPage",
-    title: `Free games — Brain training & cognitive recovery | ${BRAND}`,
+    title: `Brain Games — Cognitive recovery training | ${BRAND}`,
     description:
-      "Free online games — slots, blackjack, roulette, Texas Hold'em, bingo, scratch-off. Brain training that doubles as cognitive recovery practice.",
-    keywords: ["free online games", "brain training games", "cognitive recovery games"],
+      "Free brain-training games for stroke survivors. Wilderness Survival and other cognitive exercises that double as recovery practice.",
+    keywords: ["brain training games", "cognitive recovery games", "stroke recovery games"],
     changefreq: "weekly",
     priority: 0.6,
-  },
-  {
-    pattern: /^\/slots\/?$/,
-    canonical: "/slots",
-    category: "games",
-    intent: "navigational",
-    schemaType: "WebPage",
-    title: `Free Slots — Sasquatch reels | ${BRAND}`,
-    description: "Play free Sasquatch slots online. No download, no signup. A fun cognitive break for stroke survivors and everyone else.",
-    keywords: ["free slots", "free online slots", "sasquatch slots"],
-    changefreq: "weekly",
-    priority: 0.55,
-  },
-  {
-    pattern: /^\/blackjack\/?$/,
-    canonical: "/blackjack",
-    category: "games",
-    intent: "navigational",
-    schemaType: "WebPage",
-    title: `Free Blackjack — Play online | ${BRAND}`,
-    description: "Play free blackjack online. Fast hands, classic rules, no signup. Sharpens decision-making and short-term memory.",
-    keywords: ["free blackjack", "play blackjack online"],
-    changefreq: "weekly",
-    priority: 0.55,
-  },
-  {
-    pattern: /^\/roulette\/?$/,
-    canonical: "/roulette",
-    category: "games",
-    intent: "navigational",
-    schemaType: "WebPage",
-    title: `Free Roulette — Spin the wheel | ${BRAND}`,
-    description: "Free online roulette — European and American wheels. No signup. A relaxing brain-break game built by survivors.",
-    keywords: ["free roulette", "play roulette online"],
-    changefreq: "weekly",
-    priority: 0.5,
-  },
-  {
-    pattern: /^\/texas-holdem\/?$/,
-    canonical: "/texas-holdem",
-    category: "games",
-    intent: "navigational",
-    schemaType: "WebPage",
-    title: `Free Texas Hold'em Poker | ${BRAND}`,
-    description: "Free Texas Hold'em poker online. Practice hands against AI opponents. Builds focus, pattern recognition, and decision speed.",
-    keywords: ["free texas holdem", "free poker online", "play poker"],
-    changefreq: "weekly",
-    priority: 0.55,
-  },
-  {
-    pattern: /^\/bingo\/?$/,
-    canonical: "/bingo",
-    category: "games",
-    intent: "navigational",
-    schemaType: "WebPage",
-    title: `Free Bingo — Play online | ${BRAND}`,
-    description: "Free online bingo — classic 75-ball play. No signup. Survivor-friendly: large numbers, calm pacing.",
-    keywords: ["free bingo", "play bingo online"],
-    changefreq: "weekly",
-    priority: 0.5,
-  },
-  {
-    pattern: /^\/powerball\/?$/,
-    canonical: "/powerball",
-    category: "games",
-    intent: "navigational",
-    schemaType: "WebPage",
-    title: `Powerball — Quick-pick generator | ${BRAND}`,
-    description: "Free Powerball quick-pick number generator. Instant random picks, no signup, no spam. Just for fun.",
-    keywords: ["powerball quick pick", "powerball numbers"],
-    changefreq: "weekly",
-    priority: 0.45,
-  },
-  {
-    pattern: /^\/scratch-off\/?$/,
-    canonical: "/scratch-off",
-    category: "games",
-    intent: "navigational",
-    schemaType: "WebPage",
-    title: `Free Scratch-Off Cards | ${BRAND}`,
-    description: "Play free virtual scratch-off cards online. Quick rewards, no download, survivor-friendly tap-to-reveal.",
-    keywords: ["free scratch off", "scratch off online"],
-    changefreq: "weekly",
-    priority: 0.45,
   },
   {
     pattern: /^\/wilderness-survival\/?$/,
@@ -1318,11 +1229,78 @@ export const ROUTES: RouteEntry[] = [
     category: "games",
     intent: "navigational",
     schemaType: "WebPage",
-    title: `Wilderness Survival — Sasquatch adventure | ${BRAND}`,
-    description: "Free wilderness survival game — make decisions, manage resources, outlast the wild. Builds problem-solving and resilience.",
-    keywords: ["wilderness survival game", "free survival game online"],
+    title: `Wilderness Survival — Brain training adventure | ${BRAND}`,
+    description: "Free wilderness survival game — make decisions, manage resources, outlast the wild. Builds problem-solving and resilience for stroke recovery.",
+    keywords: ["wilderness survival game", "brain training game", "stroke recovery cognitive game"],
     changefreq: "weekly",
-    priority: 0.5,
+    priority: 0.55,
+  },
+
+  // ─── Casino-style games (HIDDEN — noindex, excluded from sitemap) ───────
+  // Routes remain reachable by direct URL but are not promoted, indexed, or
+  // surfaced in nav. Brand stays focused on stroke recovery.
+  {
+    pattern: /^\/slots\/?$/,
+    category: "games",
+    intent: "private",
+    schemaType: "WebPage",
+    title: `Stroke Recovery Academy`,
+    description: "Hidden — not indexed.",
+    noindex: true,
+  },
+  {
+    pattern: /^\/blackjack\/?$/,
+    category: "games",
+    intent: "private",
+    schemaType: "WebPage",
+    title: `Stroke Recovery Academy`,
+    description: "Hidden — not indexed.",
+    noindex: true,
+  },
+  {
+    pattern: /^\/roulette\/?$/,
+    category: "games",
+    intent: "private",
+    schemaType: "WebPage",
+    title: `Stroke Recovery Academy`,
+    description: "Hidden — not indexed.",
+    noindex: true,
+  },
+  {
+    pattern: /^\/texas-holdem\/?$/,
+    category: "games",
+    intent: "private",
+    schemaType: "WebPage",
+    title: `Stroke Recovery Academy`,
+    description: "Hidden — not indexed.",
+    noindex: true,
+  },
+  {
+    pattern: /^\/bingo\/?$/,
+    category: "games",
+    intent: "private",
+    schemaType: "WebPage",
+    title: `Stroke Recovery Academy`,
+    description: "Hidden — not indexed.",
+    noindex: true,
+  },
+  {
+    pattern: /^\/powerball\/?$/,
+    category: "games",
+    intent: "private",
+    schemaType: "WebPage",
+    title: `Stroke Recovery Academy`,
+    description: "Hidden — not indexed.",
+    noindex: true,
+  },
+  {
+    pattern: /^\/scratch-off\/?$/,
+    category: "games",
+    intent: "private",
+    schemaType: "WebPage",
+    title: `Stroke Recovery Academy`,
+    description: "Hidden — not indexed.",
+    noindex: true,
   },
   // ─── Public alias /store → Survivor Shop ────────────────────────────────────
   {

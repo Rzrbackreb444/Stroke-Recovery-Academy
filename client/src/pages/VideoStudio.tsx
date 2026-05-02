@@ -398,13 +398,13 @@ export default function VideoStudio() {
         ]}
         schema={{
           "@type": "SoftwareApplication",
-          name: "KreAIte Video Studio",
+          name: "Stroke Recovery Academy Video Studio",
           applicationCategory: "MultimediaApplication",
           operatingSystem: "Web Browser",
           browserRequirements: "Requires modern browser with WebGL support",
           description: "Professional AI-powered video editor for creating social media content, YouTube videos, and cinematic productions. Features automatic captioning, background removal, multi-track timeline editing, and advanced effects.",
           softwareVersion: "2.0",
-          url: "https://kreaite.xyz/video-studio",
+          url: "https://strokerecoveryacademy.com/video-studio",
           offers: {
             "@type": "Offer",
             price: "0",
@@ -434,8 +434,8 @@ export default function VideoStudio() {
           },
           author: {
             "@type": "Organization",
-            name: "KreAIte.xyz",
-            url: "https://kreaite.xyz",
+            name: "Stroke Recovery Academy",
+            url: "https://strokerecoveryacademy.com",
           },
         }}
       />

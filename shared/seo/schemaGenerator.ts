@@ -16,7 +16,6 @@
 import type { RouteEntry } from "./routeRegistry";
 
 const SITE = "Stroke Recovery Academy";
-const BRAND_KREAITE = "KreAIte.xyz";
 const SITE_URL = "https://strokerecoveryacademy.com";
 const FOUNDED = "2024";
 const NICK_NAME = "Nick Kremers";
@@ -33,7 +32,7 @@ export function generateOrganizationSchema() {
     "@type": "Organization",
     "@id": ID_ORG,
     name: SITE,
-    alternateName: [BRAND_KREAITE, "StrokeLyfe", "SRA"],
+    alternateName: ["StrokeLyfe", "SRA", "Stroke Recovery Academy"],
     url: SITE_URL,
     logo: {
       "@type": "ImageObject",

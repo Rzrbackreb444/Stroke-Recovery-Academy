@@ -1,6 +1,23 @@
 import { getStripeSync } from './stripeClient';
+import { pool as dbPool } from './db';
 
 export class WebhookHandlers {
+  /**
+   * Process an inbound Stripe webhook with idempotency protection.
+   *
+   * Flow:
+   *   1. Sanity-check the raw body shape.
+   *   2. Best-effort extract the Stripe event id from the JSON body so we can
+   *      dedupe replays at the HTTP boundary. This does NOT replace signature
+   *      verification — `stripe-replit-sync` re-verifies the signature against
+   *      the raw buffer inside `processWebhook`.
+   *   3. Insert a row into `webhook_events` (UNIQUE on event_id). On conflict,
+   *      we treat the call as a duplicate replay and return without re-running
+   *      sync / fulfillment.
+   *   4. Hand the raw payload to `stripe-replit-sync` for signature
+   *      verification + DB sync.
+   *   5. Mark the event row as `processed` (or `failed` on exception).
+   */
   static async processWebhook(payload: Buffer, signature: string, uuid: string): Promise<void> {
     if (!Buffer.isBuffer(payload)) {
       throw new Error(
@@ -11,7 +28,88 @@ export class WebhookHandlers {
       );
     }
 
-    const sync = await getStripeSync();
-    await sync.processWebhook(payload, signature, uuid);
+    // ── 1. Best-effort event-id extraction for dedupe ──────────────────────
+    let eventId: string | null = null;
+    let eventType: string | null = null;
+    try {
+      const parsed = JSON.parse(payload.toString('utf8'));
+      if (parsed && typeof parsed.id === 'string') eventId = parsed.id;
+      if (parsed && typeof parsed.type === 'string') eventType = parsed.type;
+    } catch {
+      // If we can't parse, we still hand off to sync — its signature check
+      // will fail loudly for bad bodies. Skip the dedupe layer.
+    }
+
+    // ── 2. Reserve the event id (UNIQUE constraint enforces idempotency) ──
+    //
+    // We only treat an event as a "duplicate replay to skip" when we have
+    // previously processed it SUCCESSFULLY. If a prior attempt failed (e.g.
+    // Stripe is retrying after a transient error on our side), we want to
+    // re-run sync — otherwise we'd silently swallow Stripe's retries and
+    // never recover from the failure.
+    //
+    // Strategy: INSERT new row, OR re-arm a previously-failed row to
+    // 'received'. If the existing row is already 'processed' or 'received'
+    // (in flight from a concurrent worker), skip.
+    //
+    // Stale-recovery: a row stuck in 'received' for >5min (e.g., the worker
+    // crashed between reserve and final status update) is also re-armed for
+    // retry — otherwise such rows would be permanently un-retryable.
+    let reserved = false;
+    if (eventId) {
+      try {
+        const result = await dbPool.query(
+          `INSERT INTO webhook_events (provider, event_id, event_type, status)
+           VALUES ('stripe', $1, $2, 'received')
+           ON CONFLICT (provider, event_id) DO UPDATE
+             SET status = 'received', created_at = NOW()
+             WHERE webhook_events.status = 'failed'
+                OR (webhook_events.status = 'received'
+                    AND webhook_events.created_at < NOW() - INTERVAL '5 minutes')
+           RETURNING status, (xmax = 0) AS is_new`,
+          [eventId, eventType]
+        );
+        if (result.rowCount === 0) {
+          // Existing row was either 'processed' (real duplicate — skip) or
+          // 'received' (a concurrent worker is handling it — skip).
+          console.log(`[stripe-webhook] duplicate replay ignored: ${eventId} (${eventType})`);
+          return;
+        }
+        reserved = true;
+      } catch (err) {
+        // If the dedupe table is unavailable, fall through to processing —
+        // we don't want a logging table outage to block payments.
+        console.warn('[stripe-webhook] dedupe insert failed, processing anyway:', err);
+      }
+    }
+
+    // ── 3. Hand off to stripe-replit-sync (verifies signature + syncs DB) ──
+    try {
+      const sync = await getStripeSync();
+      await sync.processWebhook(payload, signature, uuid);
+
+      if (reserved && eventId) {
+        await dbPool
+          .query(
+            `UPDATE webhook_events
+                SET status = 'processed', processed_at = NOW()
+              WHERE provider = 'stripe' AND event_id = $1`,
+            [eventId]
+          )
+          .catch(() => {/* best-effort */});
+      }
+    } catch (err) {
+      if (reserved && eventId) {
+        await dbPool
+          .query(
+            `UPDATE webhook_events
+                SET status = 'failed', error_message = $2, processed_at = NOW()
+              WHERE provider = 'stripe' AND event_id = $1`,
+            [eventId, String(err).slice(0, 500)]
+          )
+          .catch(() => {/* best-effort */});
+      }
+      throw err;
+    }
   }
 }

@@ -15,7 +15,7 @@ export default function LandingPage() {
       {/* Navigation */}
       <nav className="h-20 border-b border-[#C9941A]/10 px-8 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-xl z-50">
         <div className="flex flex-col">
-          <span className="text-xl font-black tracking-tighter uppercase text-[#C9941A]">KreAIte</span>
+          <span className="text-xl font-black tracking-tighter uppercase text-[#C9941A]">Stroke Recovery Academy</span>
           <span className="text-[8px] uppercase tracking-[0.4em] opacity-40">Author Intelligence OS</span>
         </div>
         <div className="hidden md:flex items-center gap-8 text-[11px] uppercase tracking-widest font-bold opacity-60">
@@ -192,4 +192,4 @@ Stripe: Webhook and products are configured for the 85% margin model.
 
 Intelligence: The IntelligenceHUD is active and monitoring manuscript consistency.
 
-KreAIte is now a complete, institutional ecosystem. Would you like me to trigger a final Live Preview of the The Laundromat Doctrine in the new Publisher Template?
+Stroke Recovery Academy is now a complete, institutional ecosystem. Would you like me to trigger a final Live Preview of the The Laundromat Doctrine in the new Publisher Template?

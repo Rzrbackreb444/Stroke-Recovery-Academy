@@ -230,7 +230,7 @@ export default function SurvivorShop() {
           <Card className="bg-zinc-900/60 border-amber-900/30">
             <CardContent className="py-6 space-y-3 text-sm text-amber-100/70">
               <p>
-                <strong className="text-amber-200">Full affiliate disclosure:</strong> KreAIte / Stroke Recovery
+                <strong className="text-amber-200">Full affiliate disclosure:</strong> Stroke Recovery Academy / Stroke Recovery
                 Academy is an Amazon Associate. As an Amazon Associate we earn from qualifying purchases.
                 Your price is unchanged. Choosing to buy through these links helps fund free survivor content.
               </p>

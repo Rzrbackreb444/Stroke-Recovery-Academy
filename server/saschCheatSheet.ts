@@ -330,7 +330,7 @@ export async function sendSaschWelcomeEmail(toEmail: string, firstName?: string 
     if (!data?.settings?.api_key) throw new Error('Resend API key missing');
 
     const client = new Resend(data.settings.api_key);
-    const fromEmail = data.settings.from_email || 'info@kreaite.xyz';
+    const fromEmail = data.settings.from_email || 'info@strokerecoveryacademy.com';
 
     const result = await client.emails.send({
       from: fromEmail,

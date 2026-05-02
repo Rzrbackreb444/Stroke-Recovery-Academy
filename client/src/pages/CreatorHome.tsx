@@ -110,7 +110,7 @@ const features = [
   {
     icon: Shield,
     title: "85% Revenue Share",
-    description: "Industry-leading creator earnings. Keep 85% of every sale through our KreAItorverse marketplace.",
+    description: "Industry-leading creator earnings. Keep 85% of every sale through our Marketplace marketplace.",
   },
   {
     icon: Clock,
@@ -297,7 +297,7 @@ export default function CreatorHome() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
               <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-4">
-                Why KreAIte
+                Why Stroke Recovery Academy
               </Badge>
               <h2 className="text-4xl sm:text-5xl font-black text-white mb-6">
                 The Creator Platform Built for{" "}
@@ -416,7 +416,7 @@ export default function CreatorHome() {
             Ready to Start <span className="text-[#C9941A]">Creating</span>?
           </h2>
           <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
-            Join thousands of creators who are building their businesses with KreAIte. 
+            Join thousands of creators who are building their businesses with Stroke Recovery Academy. 
             Start with 100 free credits, no credit card required.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

@@ -1,8 +1,8 @@
-# KreAIte.xyz
+# Stroke Recovery Academy
 
 ## Overview
 
-KreAIte.xyz is an ultra-premium AI-powered creator platform designed to empower creators to "CREATE. PUBLISH. EARN." It offers seven professional studios (Book, Video, Music, Course, Image, Doctrine Engine, Website Builder) for content production, an integrated marketplace (KreAItorverse) with an 85/15 revenue split, and comprehensive publishing tools. The platform features advanced AI for content generation and editing, unified media editing, full-featured website hosting, a dedicated Stroke Recovery OS with specialized tools, and an enterprise-grade dynamic QR code system (SquatchQR). Its vision is to streamline the creative workflow from concept to publication, fostering a vibrant creator economy.
+Stroke Recovery Academy ("REBUILD. REWIRE. RISE.") is a survivor-first stroke recovery platform built on the lived experience of founder Nick Kremers (7-year survivor). It provides recovery exercises, the 66-Day Sasquatch Transformation Challenge, daily routine tools, an AI Sasquatch Coach companion, a survivor community with accountability pairing, and a curated Survivor Shop. The platform also retains a creator-side toolkit (Book Studio, Course Studio, etc.) used by survivor-authors to publish recovery content, plus a Marketplace with an 85/15 creator revenue split. Casino-style games and the SquatchQR product surface are intentionally hidden from navigation; only the Wilderness Survival brain game remains visible under `/games`. Vision: help survivors rebuild faster than the medical system told them was possible, while sharing what works with other survivors.
 
 ## User Preferences
 
@@ -28,7 +28,7 @@ A consistent literary warm theme is applied to the main platform, while the Stro
 ### Feature Specifications
 - **Seven Studios**: AI-integrated tools for various content types.
 - **Creator Production Engine**: Content vaults, SERP research, batch production, unified dashboard.
-- **KreAItorverse Marketplace**: Content selling platform with an 85% creator revenue share.
+- **Marketplace**: Content selling platform with an 85% creator revenue share.
 - **Creator Dashboard**: Centralized management for projects, earnings, and administration.
 - **Affiliate/Referral System**: APIs for tracking and commission payouts.
 - **AI Integration**: Leverages Google Gemini, OpenAI, Lyria for music, and specialized models for images/video.
@@ -57,6 +57,9 @@ A consistent literary warm theme is applied to the main platform, while the Stro
 - **Marketplace Order Integrity**: Robust fulfillment process with detailed status tracking and conditional earnings recording.
 - **Security/Cost-Control Hardening**: Implemented body limits, explicit `sameSite` for session cookies, persistent rate-limiting, and AI/voice quota gates on direct-LLM routes.
 - **FK Indexes**: Optimized database performance with 32 indexes across 20 high-traffic tables.
+- **Webhook Idempotency**: All inbound Stripe webhooks are deduplicated at the HTTP boundary via the `webhook_events` table (UNIQUE on `(provider, event_id)`); replays are skipped before fulfillment runs. The signature is still verified by `stripe-replit-sync` against the raw buffer.
+- **Public Endpoint Rate Limiting**: In-memory token-bucket limiter (`server/middleware/publicRateLimit.ts`) wired in front of `/api/auth/magic-link` (5/min/IP), `/api/auth/register` (5/min/IP), and `/api/feedback/platform` (10/min/IP) to defend against burst floods.
+- **Admin Audit Log**: `admin_audit_log` table + `auditAdminAction` wrapper (`server/middleware/adminAudit.ts`) record `userId + action + timestamp + metadata` for editorial-trust traceability.
 
 ## External Dependencies
 

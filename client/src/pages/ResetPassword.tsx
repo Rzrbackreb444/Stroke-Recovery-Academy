@@ -88,7 +88,7 @@ export default function ResetPassword() {
         <div className="flex items-center justify-center mb-8">
           <img 
             src={kreaiteLogo} 
-            alt="KreAIte" 
+            alt="Stroke Recovery Academy" 
             className="h-10 w-auto object-contain"
           />
         </div>

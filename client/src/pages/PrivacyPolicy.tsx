@@ -29,10 +29,10 @@ export default function PrivacyPolicy() {
     <div className="min-h-screen bg-[#FAF8F3]" data-testid="page-privacy-policy">
       <SEO 
         title="Privacy Policy"
-        description="Learn how KreAIte protects your personal data with transparent privacy practices, secure storage, and compliance with international data protection regulations."
-        canonicalUrl="https://kreaite.xyz/privacy-policy"
+        description="Learn how Stroke Recovery Academy protects your personal data with transparent privacy practices, secure storage, and compliance with international data protection regulations."
+        canonicalUrl="https://strokerecoveryacademy.com/privacy-policy"
         keywords={["privacy policy", "data protection", "personal information", "data security", "GDPR"]}
-        author="KreAIte"
+        author="Stroke Recovery Academy"
         expertise="Data privacy and protection standards"
         experience="Platform established 2024 with HIPAA-compliant data handling"
         authoritativeness="Transparent and verified privacy practices"
@@ -83,7 +83,7 @@ export default function PrivacyPolicy() {
 
         <article className="prose prose-invert prose-lg max-w-none" data-testid="article-privacy-content">
           <p className="text-gray-400 leading-relaxed mb-8">
-            At KreAIte, we are committed to protecting your privacy and ensuring the security of your personal 
+            At Stroke Recovery Academy, we are committed to protecting your privacy and ensuring the security of your personal 
             information. This Privacy Policy explains how we collect, use, disclose, and safeguard your 
             information when you use our platform.
           </p>
@@ -126,7 +126,7 @@ export default function PrivacyPolicy() {
               We use the information we collect to:
             </p>
             <ul className="list-disc pl-6 text-gray-400 space-y-2">
-              <li>Provide, maintain, and improve the KreAIte platform</li>
+              <li>Provide, maintain, and improve the Stroke Recovery Academy platform</li>
               <li>Process transactions and send related information (confirmations, receipts)</li>
               <li>Calculate and distribute creator earnings</li>
               <li>Send you technical notices, updates, security alerts, and support messages</li>
@@ -172,7 +172,7 @@ export default function PrivacyPolicy() {
             <h3 className="text-xl font-semibold text-foreground mb-3">Other Disclosures</h3>
             <ul className="list-disc pl-6 text-gray-400 space-y-2">
               <li><strong className="text-foreground">Legal Requirements:</strong> When required by law, subpoena, or government request</li>
-              <li><strong className="text-foreground">Protection of Rights:</strong> To protect the rights, property, or safety of KreAIte, our users, or the public</li>
+              <li><strong className="text-foreground">Protection of Rights:</strong> To protect the rights, property, or safety of Stroke Recovery Academy, our users, or the public</li>
               <li><strong className="text-foreground">Business Transfers:</strong> In connection with a merger, acquisition, or sale of assets</li>
               <li><strong className="text-foreground">With Your Consent:</strong> When you explicitly authorize us to share information</li>
             </ul>
@@ -253,7 +253,7 @@ export default function PrivacyPolicy() {
             </ul>
 
             <p className="text-gray-400 leading-relaxed">
-              To exercise any of these rights, please contact us at <a href="mailto:info@kreaite.xyz" className="text-[#C9941A] hover:underline">info@kreaite.xyz</a>. 
+              To exercise any of these rights, please contact us at <a href="mailto:info@strokerecoveryacademy.com" className="text-[#C9941A] hover:underline">info@strokerecoveryacademy.com</a>. 
               We will respond to your request within 30 days (or as required by applicable law).
             </p>
           </section>
@@ -263,7 +263,7 @@ export default function PrivacyPolicy() {
           <section id="childrens-privacy" className="scroll-mt-24">
             <h2 className="text-2xl font-bold text-foreground mb-4">7. Children's Privacy</h2>
             <p className="text-gray-400 leading-relaxed mb-4">
-              KreAIte is not intended for children under the age of 13 (or 16 in the EEA). We do not knowingly 
+              Stroke Recovery Academy is not intended for children under the age of 13 (or 16 in the EEA). We do not knowingly 
               collect personal information from children under these ages.
             </p>
             <p className="text-gray-400 leading-relaxed mb-4">
@@ -272,7 +272,7 @@ export default function PrivacyPolicy() {
             </p>
             <p className="text-gray-400 leading-relaxed">
               If you are a parent or guardian and believe your child has provided us with personal information, 
-              please contact us immediately at <a href="mailto:info@kreaite.xyz" className="text-[#C9941A] hover:underline">info@kreaite.xyz</a>.
+              please contact us immediately at <a href="mailto:info@strokerecoveryacademy.com" className="text-[#C9941A] hover:underline">info@strokerecoveryacademy.com</a>.
             </p>
           </section>
 
@@ -341,9 +341,9 @@ export default function PrivacyPolicy() {
               practices, please contact us:
             </p>
             <div className="bg-[#1a1a1a] border border-[#333] rounded-lg p-6">
-              <p className="text-foreground font-semibold mb-2">KreAIte Privacy Team</p>
+              <p className="text-foreground font-semibold mb-2">Stroke Recovery Academy Privacy Team</p>
               <p className="text-gray-400 mb-4">
-                Email: <a href="mailto:info@kreaite.xyz" className="text-[#C9941A] hover:underline" data-testid="link-contact-email">info@kreaite.xyz</a>
+                Email: <a href="mailto:info@strokerecoveryacademy.com" className="text-[#C9941A] hover:underline" data-testid="link-contact-email">info@strokerecoveryacademy.com</a>
               </p>
               <p className="text-gray-400 text-sm">
                 For GDPR-related inquiries, you may also contact our Data Protection Officer at the above email address.

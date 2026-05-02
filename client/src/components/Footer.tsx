@@ -396,7 +396,7 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-xs text-gray-500 text-center mt-4">
-              Powered by KremersX · &copy; {currentYear} Stroke Recovery Academy
+              &copy; {currentYear} Stroke Recovery Academy · Built by a survivor, for survivors.
             </p>
           </div>
         </div>

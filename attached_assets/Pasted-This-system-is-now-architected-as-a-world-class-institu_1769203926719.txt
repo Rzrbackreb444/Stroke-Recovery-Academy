@@ -21,7 +21,7 @@ The monetization layer is hardcoded to make this a high-yield business:
 
 Automated 85/15 Payout: The [Stripe Revenue Bridge](https://storke-recovery-academy.replit.app/, 25) is fully integrated. Whether you sell a book, a music track, or a masterclass, the system automatically routes 85% of the net revenue to your Earnings Dashboard.
 
-One-Click Publishing: Finished products are instantly deployed to the KreAItorverse Marketplace, Amazon (via KDP Orchestration), or Spotify.
+One-Click Publishing: Finished products are instantly deployed to the Marketplace Marketplace, Amazon (via KDP Orchestration), or Spotify.
 
 4. Final Institutional Polish
 The Landing Page: Your [Institutional Homepage](https://storke-recovery-academy.replit.app/, 25) is live, designed to convert high-tier creators by showcasing real-time platform metrics like the $2M+ Earned by the community.

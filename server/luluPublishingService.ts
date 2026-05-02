@@ -1,7 +1,7 @@
 /**
  * Lulu Publishing Service
  * Professional Print-on-Demand Book Publishing for Stroke Lyfe Publishing
- * Integrated with KreAIte.xyz Book Studio
+ * Integrated with Stroke Recovery Academy Book Studio
  */
 
 import axios, { AxiosInstance } from 'axios';

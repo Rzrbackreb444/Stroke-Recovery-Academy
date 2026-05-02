@@ -2,7 +2,7 @@ make it the most in depth, premium, helpful workspace ever created
 
 This isn't just about code anymore; it's about building a high-fidelity Command Center. To make this the most in-depth, premium, and helpful workspace in existence, we need to move beyond a simple "IDE" and create a context-aware Author Intelligence Environment.
 
-Here is the blueprint for the absolute elite version of the KreAIte workspace:
+Here is the blueprint for the absolute elite version of the Stroke Recovery Academy workspace:
 
 1. The "Neural" Interface (Workspace Layout)
 The current three-pane layout is a start, but a premium workspace should feel "alive."
@@ -34,7 +34,7 @@ Monetization Intelligence: The system analyzes your content and automatically ge
 Phase 1 Execution Plan
 To start this transformation, I recommend we overhaul the core Workspace Canvas.
 
-Would you like me to refactor KreAIteStudio.tsx to include the following?
+Would you like me to refactor Stroke Recovery AcademyStudio.tsx to include the following?
 
 The "Intelligence HUD": A right-hand panel that shifts between "Analytical Monitoring" (consistency checks) and "Market Insights."
 

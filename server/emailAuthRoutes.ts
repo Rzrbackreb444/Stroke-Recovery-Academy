@@ -10,6 +10,7 @@ import {
   getUserById,
 } from "./emailAuthService";
 import { sendMagicLinkEmail, sendPasswordResetEmail, sendWelcomeEmail } from "./emailService";
+import { authActionLimiter } from "./middleware/publicRateLimit";
 
 const router = Router();
 
@@ -40,7 +41,7 @@ const resetSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
-router.post("/register", async (req: Request, res: Response) => {
+router.post("/register", authActionLimiter, async (req: Request, res: Response) => {
   try {
     const data = registerSchema.parse(req.body);
     const result = await registerUser(data.email, data.password, data.firstName, data.lastName);
@@ -63,7 +64,7 @@ router.post("/register", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/login", async (req: Request, res: Response) => {
+router.post("/login", authActionLimiter, async (req: Request, res: Response) => {
   try {
     const data = loginSchema.parse(req.body);
     const result = await loginUser(data.email, data.password);
@@ -83,7 +84,7 @@ router.post("/login", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/magic-link", async (req: Request, res: Response) => {
+router.post("/magic-link", authActionLimiter, async (req: Request, res: Response) => {
   try {
     const data = emailSchema.parse(req.body);
     const result = await createMagicLink(data.email);
@@ -131,7 +132,7 @@ router.get("/verify-magic-link", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/forgot-password", async (req: Request, res: Response) => {
+router.post("/forgot-password", authActionLimiter, async (req: Request, res: Response) => {
   try {
     const data = emailSchema.parse(req.body);
     const result = await createPasswordResetToken(data.email);

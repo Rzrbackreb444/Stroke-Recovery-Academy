@@ -759,7 +759,7 @@ function BecomeCreatorCTA() {
       <div className="absolute inset-0 bg-black/20" />
       <CardContent className="py-12 relative z-10">
         <div className="text-center max-w-2xl mx-auto">
-          <h2 className="text-3xl font-bold mb-4">Become a KreAIte Creator</h2>
+          <h2 className="text-3xl font-bold mb-4">Become a Stroke Recovery Academy Creator</h2>
           <p className="text-lg opacity-90 mb-6">
             You don't need Silicon Valley to become a star. Create music, videos, courses, and books with AI - 
             then sell or stream them to the world. Keep 85% of every sale.
@@ -826,7 +826,7 @@ export default function Marketplace() {
     return products.map(product => ({
       id: `product-${product.id}`,
       title: product.title,
-      creator: "KreAIte Store",
+      creator: "Stroke Recovery Academy Store",
       type: "course" as const,
       price: parseFloat(product.price) || 0,
       description: product.description,
@@ -840,7 +840,7 @@ export default function Marketplace() {
     return products.map(product => ({
       id: product.product_id,
       title: product.product_name,
-      creator: "KreAIte",
+      creator: "Stroke Recovery Academy",
       type: "course" as const,
       price: product.unit_amount ? product.unit_amount / 100 : 0,
       description: product.product_description,
@@ -875,7 +875,7 @@ export default function Marketplace() {
         description="Discover and purchase books, courses, music, and videos from independent creators. Stream, buy, and support creators while they keep 85% of every sale."
         schema={{
           "@type": "WebPage",
-          name: "KreAIte Marketplace",
+          name: "Stroke Recovery Academy Marketplace",
           description: "Discover books, courses, music, and videos from independent creators",
           mainEntity: {
             "@type": "ItemList",
@@ -895,7 +895,7 @@ export default function Marketplace() {
           <div className="text-center mb-8">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               <span className="bg-gradient-to-r from-[#C9941A] to-amber-500 bg-clip-text text-transparent">
-                KreAIte Marketplace
+                Stroke Recovery Academy Marketplace
               </span>
             </h1>
             <p className="text-lg text-gray-400 max-w-2xl mx-auto">

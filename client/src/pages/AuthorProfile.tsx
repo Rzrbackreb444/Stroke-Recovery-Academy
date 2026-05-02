@@ -349,10 +349,10 @@ export default function AuthorProfile() {
     <div className="min-h-screen bg-[#FAF8F3]">
       <SEO 
         title="Author Profile"
-        description="Create and manage your author identity, portfolio, and professional profile on KreAIte. Showcase your work, connect with readers, and build your author brand."
-        canonicalUrl="https://kreaite.xyz/author-profile"
+        description="Create and manage your author identity, portfolio, and professional profile on Stroke Recovery Academy. Showcase your work, connect with readers, and build your author brand."
+        canonicalUrl="https://strokerecoveryacademy.com/author-profile"
         keywords={["author profile", "portfolio management", "author brand", "creator identity", "author dashboard", "storefront"]}
-        author="KreAIte"
+        author="Stroke Recovery Academy"
         expertise={["Author Platform", "Portfolio Management", "Professional Publishing", "Author Branding"]}
         experience="Platform established 2024"
         authoritativeness="Leading creator marketplace with professional publishing tools and author resources"

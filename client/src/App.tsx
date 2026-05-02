@@ -50,17 +50,13 @@ import VoiceLibrary from "@/pages/VoiceLibrary";
 import AudiobookFactory from "@/pages/AudiobookFactory";
 import DJStudio from "@/pages/DJStudio";
 import WorkflowDashboard from "@/pages/WorkflowDashboard";
-import SlotMachine from "@/pages/SlotMachine";
+// Casino-style game pages hidden — keep components on disk for possible reuse,
+// but no longer routed. Brain-game routes (SasquatchGames hub + WildernessSurvival)
+// remain because they fit the cognitive-recovery brand.
 import SasquatchGames from "@/pages/SasquatchGames";
 import SEOCommandCenter from "@/pages/SEOCommandCenter";
 import BookPerfectionSuite from "@/pages/BookPerfectionSuite";
-import Roulette from "@/pages/Roulette";
-import Blackjack from "@/pages/Blackjack";
-import TexasHoldem from "@/pages/TexasHoldem";
 import WildernessSurvival from "@/pages/WildernessSurvival";
-import Powerball from "@/pages/Powerball";
-import ScratchOff from "@/pages/ScratchOff";
-import Bingo from "@/pages/Bingo";
 import CreatorEarnings from "@/pages/CreatorEarnings";
 import MediaStudioPage from "@/pages/MediaStudioPage";
 import CreatorSettings from "@/pages/CreatorSettings";
@@ -92,9 +88,8 @@ import MobileStudio from "@/pages/MobileStudio";
 import AuthPage from "@/pages/AuthPage";
 import AuthVerify from "@/pages/AuthVerify";
 import ResetPassword from "@/pages/ResetPassword";
-import SquatchQRLanding from "@/pages/SquatchQRLanding";
-import SquatchQRStudio from "@/pages/SquatchQRStudio";
-import QuoteViewPage from "@/pages/QuoteViewPage";
+// SquatchQR pages hidden — components preserved on disk but no longer routed.
+// To re-enable, restore the imports + route declarations in App.tsx.
 
 // Stroke Recovery Platform Pages (under /recovery/*)
 import StrokeRecoveryLanding from "@/pages/Landing";
@@ -242,25 +237,14 @@ function Router() {
       <Route path="/author/:slug" component={AuthorStorefront} />
       <Route path="/publishing" component={Publishing} />
       <Route path="/pricing" component={Pricing} />
-      <Route path="/squatch-qr" component={SquatchQRLanding} />
-      <Route path="/squatch-qr/studio">
-        <ProtectedRoute>
-          <SquatchQRStudio />
-        </ProtectedRoute>
-      </Route>
-      <Route path="/q/:projectId" component={QuoteViewPage} />
+      {/* SquatchQR routes (/squatch-qr, /squatch-qr/studio, /q/:id) hidden.
+          Casino games (/slots, /roulette, /blackjack, /texas-holdem, /powerball,
+          /scratch-off, /bingo) hidden. Brain games kept (/games + /wilderness-survival). */}
       <Route path="/auth" component={AuthPage} />
       <Route path="/auth/verify" component={AuthVerify} />
       <Route path="/auth/reset-password" component={ResetPassword} />
-      <Route path="/slots" component={SlotMachine} />
       <Route path="/games" component={SasquatchGames} />
-      <Route path="/roulette" component={Roulette} />
-      <Route path="/blackjack" component={Blackjack} />
-      <Route path="/texas-holdem" component={TexasHoldem} />
       <Route path="/wilderness-survival" component={WildernessSurvival} />
-      <Route path="/powerball" component={Powerball} />
-      <Route path="/scratch-off" component={ScratchOff} />
-      <Route path="/bingo" component={Bingo} />
       <Route path="/seo-command-center" component={SEOCommandCenter} />
       <Route path="/terms" component={TermsOfService} />
       <Route path="/privacy" component={PrivacyPolicy} />

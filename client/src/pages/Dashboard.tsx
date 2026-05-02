@@ -244,7 +244,7 @@ export default function Dashboard() {
             Welcome back, {user?.firstName || 'Creator'}
           </h1>
           <p className="text-gray-400 mt-1" data-testid="text-dashboard-subtitle">
-            Your creative command center for everything on KreAIte
+            Your creative command center for everything on Stroke Recovery Academy
           </p>
         </div>
 
@@ -579,7 +579,7 @@ export default function Dashboard() {
                   <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg mb-4">
                     <div className="flex items-center gap-2">
                       <Sparkles className="h-5 w-5 text-[#C9941A]" />
-                      <span className="font-medium">Start Earning on KreAIte</span>
+                      <span className="font-medium">Start Earning on Stroke Recovery Academy</span>
                     </div>
                     <p className="text-sm text-gray-400 mt-1">
                       Sell books, courses, and music on the marketplace. You keep 85% of every sale.

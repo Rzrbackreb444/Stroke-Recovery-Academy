@@ -75,7 +75,7 @@ export async function detectLocation(ip: string): Promise<GeoLocation> {
   
   try {
     const response = await fetch(`https://ipapi.co/${ip}/json/`, {
-      headers: { 'User-Agent': 'KreAIte/1.0' }
+      headers: { 'User-Agent': 'Stroke Recovery Academy/1.0' }
     });
     
     if (!response.ok) {

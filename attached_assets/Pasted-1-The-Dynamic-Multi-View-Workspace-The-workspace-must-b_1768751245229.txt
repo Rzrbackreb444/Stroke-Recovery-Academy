@@ -25,7 +25,7 @@ AI Image Drag-and-Drop: Generate professional visuals in the Image Studio and dr
 
 KDP Guardrails: Real-time checks for 300 DPI resolution, font embedding, and 0.125" bleed so your upload never fails.
 
-4. Expansion into the "KreAItorverse"
+4. Expansion into the "Marketplace"
 A book is just the beginning. The workspace should be a launchpad.
 
 Branching to Courses: Once the manuscript is finalized, click one button to generate a full Course Curriculum and student quizzes based on the book's content.

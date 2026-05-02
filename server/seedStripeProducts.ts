@@ -1,6 +1,6 @@
 /**
  * Stripe Products Seed Script
- * Creates products and prices for KreAIte.xyz and Stroke Recovery Academy
+ * Creates products and prices for Stroke Recovery Academy and Stroke Recovery Academy
  * 
  * Usage: Run this script manually to create/update Stripe products
  * The stripe-replit-sync will automatically sync these to the database
@@ -21,11 +21,11 @@ interface ProductConfig {
   }[];
 }
 
-// KreAIte.xyz Subscription Products
+// Stroke Recovery Academy Subscription Products
 const KREAITE_PRODUCTS: ProductConfig[] = [
   {
-    name: 'KreAIte Free',
-    description: 'Basic access to KreAIte.xyz creator platform with limited credits',
+    name: 'Stroke Recovery Academy Free',
+    description: 'Basic access to Stroke Recovery Academy creator platform with limited credits',
     metadata: {
       platform: 'kreaite',
       tier: 'free',
@@ -43,7 +43,7 @@ const KREAITE_PRODUCTS: ProductConfig[] = [
     ],
   },
   {
-    name: 'KreAIte Creator',
+    name: 'Stroke Recovery Academy Creator',
     description: 'Professional creator tools with 2,500 monthly credits',
     metadata: {
       platform: 'kreaite',
@@ -69,7 +69,7 @@ const KREAITE_PRODUCTS: ProductConfig[] = [
     ],
   },
   {
-    name: 'KreAIte Pro',
+    name: 'Stroke Recovery Academy Pro',
     description: 'Advanced studio access with 10,000 monthly credits and priority AI processing',
     metadata: {
       platform: 'kreaite',
@@ -95,7 +95,7 @@ const KREAITE_PRODUCTS: ProductConfig[] = [
     ],
   },
   {
-    name: 'KreAIte Enterprise',
+    name: 'Stroke Recovery Academy Enterprise',
     description: 'Unlimited access with custom integrations and dedicated support',
     metadata: {
       platform: 'kreaite',
@@ -198,7 +198,7 @@ const RECOVERY_ACADEMY_PRODUCTS: ProductConfig[] = [
 const CREDIT_PACKS: ProductConfig[] = [
   {
     name: 'Credit Pack - Starter',
-    description: '500 credits for KreAIte.xyz',
+    description: '500 credits for Stroke Recovery Academy',
     metadata: {
       platform: 'kreaite',
       type: 'credit_pack',
@@ -214,7 +214,7 @@ const CREDIT_PACKS: ProductConfig[] = [
   },
   {
     name: 'Credit Pack - Standard',
-    description: '2,000 credits for KreAIte.xyz (Best Value)',
+    description: '2,000 credits for Stroke Recovery Academy (Best Value)',
     metadata: {
       platform: 'kreaite',
       type: 'credit_pack',
@@ -230,7 +230,7 @@ const CREDIT_PACKS: ProductConfig[] = [
   },
   {
     name: 'Credit Pack - Pro',
-    description: '5,000 credits for KreAIte.xyz',
+    description: '5,000 credits for Stroke Recovery Academy',
     metadata: {
       platform: 'kreaite',
       type: 'credit_pack',
@@ -246,7 +246,7 @@ const CREDIT_PACKS: ProductConfig[] = [
   },
   {
     name: 'Credit Pack - Enterprise',
-    description: '20,000 credits for KreAIte.xyz',
+    description: '20,000 credits for Stroke Recovery Academy',
     metadata: {
       platform: 'kreaite',
       type: 'credit_pack',

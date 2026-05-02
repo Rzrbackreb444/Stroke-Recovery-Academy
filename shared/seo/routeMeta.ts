@@ -6,7 +6,7 @@
 
 import { lookupRoute, isPrivatePath as registryIsPrivate } from "./routeRegistry";
 
-const BRAND = "KreAIte.xyz";
+const BRAND = "Stroke Recovery Academy";
 
 export interface RouteMeta {
   title: string;
@@ -34,7 +34,7 @@ export function lookupRouteMeta(pathname: string): RouteMeta | null {
   // that should be private via explicit noindex patterns.
   return {
     title: BRAND,
-    description: `Discover ${BRAND} — the AI creator platform powering Stroke Recovery Academy and the KreAItorverse marketplace.`,
+    description: `Discover ${BRAND} — the AI creator platform powering Stroke Recovery Academy and the Marketplace marketplace.`,
     schemaType: "WebPage",
   };
 }

@@ -477,7 +477,7 @@ export default function RecoveryStore() {
     }
 
     return () => {
-      document.title = "KreAIte.xyz";
+      document.title = "Stroke Recovery Academy";
     };
   }, []);
 

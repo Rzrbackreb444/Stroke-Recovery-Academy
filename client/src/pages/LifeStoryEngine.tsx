@@ -811,11 +811,11 @@ export default function LifeStoryEngine() {
   return (
     <div className="min-h-screen bg-[#FAF8F3] flex flex-col" data-testid="life-story-engine-page">
       <SEO 
-        title="Life Story Engine | KreAIte"
+        title="Life Story Engine | Stroke Recovery Academy"
         description="Create your life story and memoir with AI assistance. Document milestones, generate chapters, organize your biography with AI-powered writing tools. Tell your unique story."
         canonical="/life-story-engine"
         keywords="memoir writing, life story creator, autobiography, biography writing, personal narrative"
-        author="KreAIte"
+        author="Stroke Recovery Academy"
         expertise={["Memoir and biography writing", "Life narrative structuring", "AI-assisted storytelling"]}
         experience="Life story and memoir tools since 2024"
         trustSignals={["Trusted for personal stories", "Secure personal data handling", "Professional narrative creation"]}
