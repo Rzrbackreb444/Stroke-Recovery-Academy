@@ -263,6 +263,28 @@ export function getSequentialTasks(level: number): SequentialTask[] {
 //   3. Tag goal-aligned tasks with a "your goal" priority badge.
 // Pure function — fully covered by tests/personalizeSequence.test.ts.
 
+// Shared shape returned by GET /api/recovery/today/recommendation. Imported
+// by both RecoveryToday (the session view) and RecoveryDashboard (the preview
+// chip block) so the two surfaces never drift apart.
+export type TodayRecommendation = {
+  level: number;
+  reason: string;
+  basis: "yesterday_too_hard" | "yesterday_good" | "first_session" | "steady";
+  ambulatoryToday: boolean;
+  personalization?: {
+    applied: boolean;
+    startLevel?: number | null;
+    startReason?: string | null;
+    capLevel?: number | null;
+    capReason?: string | null;
+    timeBudgetMinutes?: number | null;
+    energyPattern?: string | null;
+    goals?: string[] | null;
+    equipment?: string[] | null;
+    mobilityAids?: string[] | null;
+  };
+};
+
 export type PersonalizationInput = {
   applied: boolean;
   timeBudgetMinutes?: number | null;

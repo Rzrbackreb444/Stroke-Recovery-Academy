@@ -56,7 +56,7 @@ A consistent literary warm theme is applied to the main platform, while the Stro
 - **Observability**: Request ID tracking, structured error logging, and health routes with DB ping.
 - **Branded Onboarding**: Streamlined welcome flow for new users focusing on key recovery pillars.
 - **Transactional Email Disclaimers**: Inclusion of medical disclaimers and crisis support information in emails.
-- **Bonfire Personalization**: Adapts daily recovery tasks based on survivor intake data, including deficit severity, mobility aids, time budget, and goals.
+- **Bonfire Personalization**: Adapts daily recovery tasks based on survivor intake data, including deficit severity, mobility aids, time budget, and goals. The Recovery Dashboard's Bonfire hero card surfaces a live preview of today's recommended level, reason, energy pattern, time budget, goal-highlight count, and any safety cap, sharing the same recommendation cache as the Bonfire session view.
 - **AI Coach Crisis Safety**: Pre-LLM crisis detection for chat messages, providing crisis resources upon detection.
 
 ## External Dependencies

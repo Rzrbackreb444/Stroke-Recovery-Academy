@@ -32,6 +32,7 @@ import MyPathRecommender from "@/components/recovery/MyPathRecommender";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import FadeUpSection from "@/components/FadeUpSection";
 import SasquatchQuoteModal from "@/components/SasquatchQuoteModal";
+import { LEVELS, type TodayRecommendation } from "@/lib/recoveryRoutine";
 
 const MOOD_OPTIONS = [
   { value: 2, label: "Rough" },
@@ -325,42 +326,8 @@ export default function RecoveryDashboard() {
           </Link>
         </section>
 
-        {/* BONFIRE — Today's adaptive session */}
-        <section className="mb-8" data-testid="section-bonfire-hero">
-          <Link href="/recovery/today">
-            <a
-              className="block group rounded-xl border-2 border-[#C9941A] bg-gradient-to-br from-[#C9941A]/20 via-[#1a1a1a] to-[#1a1a1a] hover-elevate active-elevate-2 p-6"
-              data-testid="link-bonfire-hero"
-              aria-label="Start today's Bonfire session"
-            >
-              <div className="flex items-start gap-5">
-                <div className="hidden sm:flex h-16 w-16 rounded-full bg-[#C9941A] items-center justify-center shrink-0 shadow-[0_0_24px_rgba(201,148,26,0.45)]">
-                  <Flame className="h-8 w-8 text-black" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9941A] font-bold mb-1">
-                    Today's Session · The Bonfire
-                  </p>
-                  <h2
-                    className="text-2xl sm:text-3xl font-black text-white leading-tight mb-2"
-                    style={{ fontFamily: "Playfair Display, Georgia, serif" }}
-                  >
-                    What to do, right now.
-                  </h2>
-                  <p className="text-sm text-gray-300 leading-relaxed mb-3">
-                    One adaptive walkthrough, tuned to how yesterday felt. Ends with a
-                    supervised walking cooldown <span className="text-[#C9941A] font-semibold">when you're ready for it.</span>
-                  </p>
-                  <div className="flex items-center gap-2 text-[#C9941A] text-sm font-semibold uppercase tracking-widest">
-                    <Footprints className="h-4 w-4" />
-                    Begin Today's Session
-                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </div>
-              </div>
-            </a>
-          </Link>
-        </section>
+        {/* BONFIRE — Today's adaptive session (with personalization preview) */}
+        <BonfireHeroCard />
 
         {/* SURVIVOR SHOP — Curated Amazon affiliate gear */}
         <section className="mb-8" data-testid="section-survivor-shop">
@@ -1322,5 +1289,118 @@ export default function RecoveryDashboard() {
         />
       </main>
     </div>
+  );
+}
+
+// Keys must match the `energy_pattern` text column in `user_profiles`
+// (morning | afternoon | evening | variable). Anything else falls through
+// to the raw value below.
+const ENERGY_LABEL: Record<string, string> = {
+  morning: "Morning energy",
+  afternoon: "Afternoon energy",
+  evening: "Evening energy",
+  variable: "Variable energy",
+};
+
+function BonfireHeroCard() {
+  const { data: rec, isLoading } = useQuery<TodayRecommendation>({
+    queryKey: ["/api/recovery/today/recommendation"],
+    staleTime: 60_000,
+  });
+
+  const level = rec ? LEVELS.find((l) => l.id === rec.level) : null;
+  const p = rec?.personalization;
+  const goalCount = p?.goals?.length ?? 0;
+  const showPersonalization = !!(p?.applied && (p?.energyPattern || p?.timeBudgetMinutes || goalCount > 0 || p?.capReason));
+
+  return (
+    <section className="mb-8" data-testid="section-bonfire-hero">
+      <Link href="/recovery/today">
+        <a
+          className="block group rounded-xl border-2 border-[#C9941A] bg-gradient-to-br from-[#C9941A]/20 via-[#1a1a1a] to-[#1a1a1a] hover-elevate active-elevate-2 p-6"
+          data-testid="link-bonfire-hero"
+          aria-label="Start today's Bonfire session"
+        >
+          <div className="flex items-start gap-5">
+            <div className="hidden sm:flex h-16 w-16 rounded-full bg-[#C9941A] items-center justify-center shrink-0 shadow-[0_0_24px_rgba(201,148,26,0.45)]">
+              <Flame className="h-8 w-8 text-black" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9941A] font-bold mb-1">
+                Today's Session · The Bonfire
+              </p>
+              <h2
+                className="text-2xl sm:text-3xl font-black text-white leading-tight mb-2"
+                style={{ fontFamily: "Playfair Display, Georgia, serif" }}
+              >
+                What to do, right now.
+              </h2>
+
+              {isLoading || !rec ? (
+                <p className="text-sm text-gray-300 leading-relaxed mb-3">
+                  One adaptive walkthrough, tuned to how yesterday felt. Ends with a
+                  supervised walking cooldown <span className="text-[#C9941A] font-semibold">when you're ready for it.</span>
+                </p>
+              ) : (
+                <div className="mb-3" data-testid="preview-today-recommendation">
+                  <p className="text-sm text-gray-300 leading-relaxed mb-2">
+                    Today's plan: <span className="text-white font-semibold" data-testid="text-today-level">{level?.name ?? `Level ${rec.level}`}</span>
+                    <span className="text-gray-400"> · </span>
+                    <span className="text-gray-400">{rec.reason}</span>
+                  </p>
+                  {showPersonalization && (
+                    <div className="flex flex-wrap gap-2 mt-2" data-testid="preview-personalization-chips">
+                      {p?.energyPattern && (
+                        <Badge
+                          variant="outline"
+                          className="border-[#C9941A]/50 text-[#C9941A] bg-[#C9941A]/10 text-[11px]"
+                          data-testid="chip-energy"
+                        >
+                          {ENERGY_LABEL[p.energyPattern] ?? p.energyPattern}
+                        </Badge>
+                      )}
+                      {p?.timeBudgetMinutes ? (
+                        <Badge
+                          variant="outline"
+                          className="border-[#C9941A]/50 text-[#C9941A] bg-[#C9941A]/10 text-[11px]"
+                          data-testid="chip-time-budget"
+                        >
+                          {p.timeBudgetMinutes} min budget
+                        </Badge>
+                      ) : null}
+                      {goalCount > 0 && (
+                        <Badge
+                          variant="outline"
+                          className="border-[#C9941A]/50 text-[#C9941A] bg-[#C9941A]/10 text-[11px]"
+                          data-testid="chip-goal-count"
+                        >
+                          <Sparkles className="h-3 w-3 mr-1" />
+                          {goalCount} goal{goalCount === 1 ? "" : "s"} highlighted
+                        </Badge>
+                      )}
+                      {p?.capReason && (
+                        <Badge
+                          variant="outline"
+                          className="border-[#C9941A]/50 text-[#C9941A] bg-[#C9941A]/10 text-[11px]"
+                          data-testid="chip-cap-reason"
+                        >
+                          Capped: {p.capReason}
+                        </Badge>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="flex items-center gap-2 text-[#C9941A] text-sm font-semibold uppercase tracking-widest">
+                <Footprints className="h-4 w-4" />
+                Begin Today's Session
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </div>
+          </div>
+        </a>
+      </Link>
+    </section>
   );
 }
