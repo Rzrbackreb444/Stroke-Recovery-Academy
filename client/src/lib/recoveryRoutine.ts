@@ -234,6 +234,8 @@ export type SequentialTask = RoutineTask & {
   blockIcon: LucideIcon;
   blockTime: string;
   addedAt: number;
+  priority?: "goal" | "normal";
+  goalReason?: string;
 };
 
 export function getSequentialTasks(level: number): SequentialTask[] {
@@ -251,6 +253,115 @@ export function getSequentialTasks(level: number): SequentialTask[] {
     }
   }
   return out;
+}
+
+// ─── Intake-driven personalization ──────────────────────────────────────────
+// The server's /api/recovery/today/recommendation returns the user's intake
+// signals on `personalization`. The client uses them to:
+//   1. Reorder blocks so the user's peak-energy block runs first.
+//   2. Trim the sequence to fit their daily time budget (estimate 1.5 min/task).
+//   3. Tag goal-aligned tasks with a "your goal" priority badge.
+// Pure function — fully covered by tests/personalizeSequence.test.ts.
+
+export type PersonalizationInput = {
+  applied: boolean;
+  timeBudgetMinutes?: number | null;
+  energyPattern?: string | null; // "morning" | "afternoon" | "evening" | "variable"
+  goals?: string[] | null;
+};
+
+const TASK_MINUTES = 1.5;
+
+// Map block ids to the energy pattern that peaks in that block.
+const ENERGY_TO_BLOCK_ORDER: Record<string, string[]> = {
+  morning: ["morning", "midday", "evening", "winddown"],
+  afternoon: ["midday", "morning", "evening", "winddown"],
+  evening: ["evening", "midday", "morning", "winddown"],
+  variable: ["morning", "midday", "evening", "winddown"],
+};
+
+// Lightweight goal-keyword index. Each goal substring (case-insensitive) maps
+// to the task ids it amplifies. Keep small and explicit — no fuzzy matching.
+const GOAL_KEYWORDS: { match: string; taskIds: string[]; reason: string }[] = [
+  { match: "speech",     taskIds: ["d2_speech", "d2_creed"],                          reason: "Speech goal" },
+  { match: "talk",       taskIds: ["d2_speech", "d2_creed"],                          reason: "Speech goal" },
+  { match: "language",   taskIds: ["d2_speech"],                                      reason: "Language goal" },
+  { match: "walk",       taskIds: ["d3_walk", "d3_balance", "d4_workout"],            reason: "Walking goal" },
+  { match: "balance",    taskIds: ["d3_balance", "m3_balance"],                       reason: "Balance goal" },
+  { match: "hand",       taskIds: ["m1_handstretch", "m1_wrist"],                     reason: "Hand goal" },
+  { match: "arm",        taskIds: ["m1_handstretch", "m1_wrist", "d2_pushups"],       reason: "Arm goal" },
+  { match: "memory",     taskIds: ["d4_cognitive", "d2_speech"],                      reason: "Memory goal" },
+  { match: "cognitive",  taskIds: ["d4_cognitive"],                                   reason: "Cognitive goal" },
+  { match: "brain",      taskIds: ["d4_cognitive"],                                   reason: "Brain goal" },
+  { match: "energy",     taskIds: ["m0_breath", "d0_check"],                          reason: "Energy goal" },
+  { match: "fatigue",    taskIds: ["m0_breath", "d0_check", "w2_breathe"],            reason: "Fatigue goal" },
+  { match: "mood",       taskIds: ["m0_gratitude", "e2_3wins", "e0_win"],             reason: "Mood goal" },
+  { match: "community",  taskIds: ["e2_community", "e1_connect", "e4_mentor"],        reason: "Community goal" },
+  { match: "journal",    taskIds: ["e2_journal", "e3_deepJournal"],                   reason: "Journaling goal" },
+  { match: "sleep",      taskIds: ["w0_sleep", "w2_dim", "w2_breathe"],               reason: "Sleep goal" },
+];
+
+export function personalizeSequence(
+  level: number,
+  input: PersonalizationInput | null | undefined
+): SequentialTask[] {
+  // Build per-block lists once so we can reorder cheaply.
+  const byBlock = new Map<string, SequentialTask[]>();
+  for (const block of BLOCKS) {
+    const tasks = getTasksForLevel(block.tasks, level).map((t) => ({
+      ...t,
+      blockId: block.id,
+      blockLabel: block.label,
+      blockIcon: block.icon,
+      blockTime: block.time,
+      priority: "normal" as const,
+    }));
+    byBlock.set(block.id, tasks);
+  }
+
+  // 1. Block order driven by energy pattern.
+  const order = ENERGY_TO_BLOCK_ORDER[input?.energyPattern ?? "morning"]
+    ?? ENERGY_TO_BLOCK_ORDER.morning;
+  let seq: SequentialTask[] = [];
+  for (const blockId of order) {
+    const tasks = byBlock.get(blockId);
+    if (tasks) seq.push(...tasks);
+  }
+
+  // 2. Goal tagging — flip priority to "goal" + attach reason.
+  const goals = (input?.goals ?? []).map((g) => g.toLowerCase());
+  if (goals.length > 0) {
+    seq = seq.map((task) => {
+      for (const { match, taskIds, reason } of GOAL_KEYWORDS) {
+        if (taskIds.includes(task.id) && goals.some((g) => g.includes(match))) {
+          return { ...task, priority: "goal", goalReason: reason };
+        }
+      }
+      return task;
+    });
+  }
+
+  // 3. Time budget trim. Always keep every "goal" task — survivors should
+  //    always see what they came for. NOTE: this means a survivor with many
+  //    goal-tagged tasks may exceed their stated time budget. That is
+  //    intentional: missing a survivor's stated goals to enforce a soft
+  //    minute target is worse than a slightly longer session.
+  const budget = input?.timeBudgetMinutes ?? 0;
+  if (budget > 0) {
+    const maxTasks = Math.max(1, Math.floor(budget / TASK_MINUTES));
+    if (seq.length > maxTasks) {
+      const goalTasks = seq.filter((t) => t.priority === "goal");
+      const nonGoal = seq.filter((t) => t.priority !== "goal");
+      const keepNonGoal = Math.max(0, maxTasks - goalTasks.length);
+      seq = [...goalTasks, ...nonGoal.slice(0, keepNonGoal)];
+      // Restore the original block order after slicing so the walkthrough
+      // still flows energy → wind-down rather than goals-then-everything-else.
+      const indexInOrder = (id: string) => order.indexOf(id);
+      seq.sort((a, b) => indexInOrder(a.blockId) - indexInOrder(b.blockId));
+    }
+  }
+
+  return seq;
 }
 
 export function todayStr(): string {

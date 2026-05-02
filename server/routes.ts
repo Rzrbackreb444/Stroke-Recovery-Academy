@@ -10480,6 +10480,113 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       const userId = req.user.claims.sub;
       const today = new Date().toISOString().slice(0, 10);
 
+      // ── Read survivor profile so we can personalize. Optional: a brand-new
+      // user without intake data will still get a sensible default.
+      let profile: {
+        deficits?: Record<string, number> | null;
+        mobilityAids?: string[] | null;
+        equipment?: string[] | null;
+        recoveryGoals?: string[] | null;
+        dailyTimeBudgetMinutes?: number | null;
+        energyPattern?: string | null;
+        intakeCompletedAt?: Date | string | null;
+      } | null = null;
+      try {
+        const profRows = await db.execute(
+          sql`SELECT deficits, mobility_aids, equipment, recovery_goals,
+                     daily_time_budget_minutes, energy_pattern, intake_completed_at
+              FROM user_profiles WHERE user_id = ${userId} LIMIT 1`
+        );
+        const r = profRows.rows[0] as any;
+        if (r) {
+          profile = {
+            deficits: r.deficits ?? null,
+            mobilityAids: r.mobility_aids ?? null,
+            equipment: r.equipment ?? null,
+            recoveryGoals: r.recovery_goals ?? null,
+            dailyTimeBudgetMinutes: r.daily_time_budget_minutes ?? null,
+            energyPattern: r.energy_pattern ?? null,
+            intakeCompletedAt: r.intake_completed_at ?? null,
+          };
+        }
+      } catch {
+        // user_profiles unavailable — fall through with profile = null
+      }
+
+      // Derive the safest first-session level from intake deficits + aids.
+      // Ordering matters: wheelchair / severe motor → bed; moderate motor or
+      // severe fatigue → seated; mild → assisted; none → full.
+      const motor = Number(profile?.deficits?.motor ?? -1);
+      const fatigue = Number(profile?.deficits?.fatigue ?? -1);
+      const aids = (profile?.mobilityAids ?? []).map((s) => String(s).toLowerCase());
+      const usesWheelchair = aids.some((a) => a.includes('wheelchair') || a.includes('hoyer'));
+      const usesWalker = aids.some((a) => a.includes('walker') || a.includes('cane') || a.includes('quad'));
+
+      function deriveStartLevel(): { level: number; intakeNote: string } | null {
+        if (!profile?.intakeCompletedAt && motor < 0 && fatigue < 0 && aids.length === 0) {
+          return null; // no intake signal at all
+        }
+        if (usesWheelchair || motor >= 3) {
+          return { level: 1, intakeNote: 'Starting at Bed-Based — your intake noted significant motor recovery work ahead.' };
+        }
+        if (motor === 2 || fatigue >= 3) {
+          return { level: 2, intakeNote: 'Starting at Seated — your intake noted moderate motor or high fatigue.' };
+        }
+        if (usesWalker || motor === 1 || fatigue === 2) {
+          return { level: 3, intakeNote: 'Starting at Assisted Standing — your intake noted mild motor or moderate fatigue.' };
+        }
+        if (motor === 0 && fatigue <= 1) {
+          return { level: 4, intakeNote: 'Starting at Full Power — your intake reported minimal deficits.' };
+        }
+        return null;
+      }
+
+      // Cap recommendations for survivors with severe motor deficits — never
+      // step them past Seated automatically, even if their feedback was strong.
+      function capByDeficit(level: number): { capped: number; reason: string | null } {
+        if (motor >= 3 && level > 2) {
+          return { capped: 2, reason: `Holding at Seated — your intake flagged severe motor recovery work. Step up manually only when ready.` };
+        }
+        return { capped: level, reason: null };
+      }
+
+      // `applied` is true whenever ANY intake signal is present (not just
+      // when intake is fully complete) so partial-intake survivors still see
+      // the explanation panel in the UI for any personalization that fired.
+      const hasAnySignal = !!(
+        profile?.intakeCompletedAt
+        || (profile?.deficits && Object.keys(profile.deficits).length > 0)
+        || (profile?.mobilityAids?.length ?? 0) > 0
+        || (profile?.equipment?.length ?? 0) > 0
+        || (profile?.recoveryGoals?.length ?? 0) > 0
+        || profile?.dailyTimeBudgetMinutes
+        || profile?.energyPattern
+      );
+
+      const personalization: {
+        applied: boolean;
+        startLevel: number | null;
+        startReason: string | null;
+        capLevel: number | null;
+        capReason: string | null;
+        timeBudgetMinutes: number | null;
+        energyPattern: string | null;
+        goals: string[];
+        equipment: string[];
+        mobilityAids: string[];
+      } = {
+        applied: hasAnySignal,
+        startLevel: null,
+        startReason: null,
+        capLevel: null,
+        capReason: null,
+        timeBudgetMinutes: profile?.dailyTimeBudgetMinutes ?? null,
+        energyPattern: profile?.energyPattern ?? null,
+        goals: profile?.recoveryGoals ?? [],
+        equipment: profile?.equipment ?? [],
+        mobilityAids: profile?.mobilityAids ?? [],
+      };
+
       // Look at most recent prior day with feedback (yesterday or earlier).
       const lastFb = await db.execute(
         sql`SELECT date, level, reaction FROM routine_feedback
@@ -10500,11 +10607,18 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
 
       // First session ever?
       if (rows.length === 0 && lastRoutine.rows.length === 0) {
+        const derived = deriveStartLevel();
+        const startLevel = derived?.level ?? 2;
+        const startReason = derived?.intakeNote
+          ?? "First Bonfire — we'll start at Seated. You can drop down or step up if it doesn't fit.";
+        personalization.startLevel = derived ? startLevel : null;
+        personalization.startReason = derived ? startReason : null;
         return res.json({
-          level: 2,
-          reason: "First Bonfire — we'll start at Seated. You can drop down or step up if it doesn't fit.",
+          level: startLevel,
+          reason: startReason,
           basis: 'first_session',
-          ambulatoryToday: false,
+          ambulatoryToday: startLevel >= 3,
+          personalization,
         });
       }
 
@@ -10570,11 +10684,22 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
 
       recLevel = Math.max(0, Math.min(4, recLevel));
 
+      // Apply intake-driven cap last so it always wins.
+      const preCapLevel = recLevel;
+      const { capped, reason: capReason } = capByDeficit(recLevel);
+      if (capReason && capped !== preCapLevel) {
+        personalization.capLevel = capped;
+        personalization.capReason = capReason;
+        recLevel = capped;
+        reason = `${capReason} (Original suggestion was ${getLevelName(preCapLevel)} based on yesterday's signal.)`;
+      }
+
       res.json({
         level: recLevel,
         reason,
         basis,
         ambulatoryToday: recLevel >= 3, // Assisted Standing or Full Power
+        personalization,
       });
     } catch (err) {
       console.error('today/recommendation error:', err);

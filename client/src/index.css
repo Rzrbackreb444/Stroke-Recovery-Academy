@@ -924,6 +924,18 @@ html.a11y-big-button button[aria-label],
 html.a11y-big-button [role="button"][aria-label] {
   min-width: 48px;
 }
+/* Bonfire personalization signals — bump the small "tailored" panel and
+   the "your goal" badge so survivors using big-button mode can actually
+   read why a task is highlighted. */
+html.a11y-big-button [data-testid="banner-personalization"],
+html.a11y-big-button [data-testid="banner-personalization"] li {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+html.a11y-big-button [data-testid="badge-goal-task"] {
+  font-size: 0.875rem;
+  padding: 0.375rem 0.75rem;
+}
 
 /* Dyslexia-friendly font. We don't ship a custom font file (keeps bundle
    light); instead we fall back to the most legible system fonts available. */

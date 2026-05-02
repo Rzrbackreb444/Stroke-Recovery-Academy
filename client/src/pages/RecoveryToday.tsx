@@ -11,7 +11,8 @@ import {
   HeartPulse, Sparkles, Trophy, Calendar, AlertCircle, ShoppingBag,
 } from "lucide-react";
 import {
-  LEVELS, getSequentialTasks, todayStr, type SequentialTask,
+  LEVELS, getSequentialTasks, personalizeSequence, todayStr,
+  type SequentialTask, type PersonalizationInput,
 } from "@/lib/recoveryRoutine";
 import { MedicalDisclaimerCard } from "@/components/recovery/MedicalDisclaimerCard";
 import { WalkingCooldown } from "@/components/recovery/WalkingCooldown";
@@ -24,6 +25,14 @@ type Recommendation = {
   reason: string;
   basis: "yesterday_too_hard" | "yesterday_good" | "first_session" | "steady";
   ambulatoryToday: boolean;
+  personalization?: PersonalizationInput & {
+    startLevel?: number | null;
+    startReason?: string | null;
+    capLevel?: number | null;
+    capReason?: string | null;
+    equipment?: string[];
+    mobilityAids?: string[];
+  };
 };
 
 export default function RecoveryToday() {
@@ -64,8 +73,17 @@ export default function RecoveryToday() {
   });
 
   const sequence: SequentialTask[] = useMemo(() => {
-    return chosenLevel === null ? [] : getSequentialTasks(chosenLevel);
-  }, [chosenLevel]);
+    if (chosenLevel === null) return [];
+    if (rec?.personalization?.applied) {
+      return personalizeSequence(chosenLevel, rec.personalization);
+    }
+    return getSequentialTasks(chosenLevel);
+  }, [chosenLevel, rec?.personalization]);
+
+  const goalCount = useMemo(
+    () => sequence.filter((t) => t.priority === "goal").length,
+    [sequence]
+  );
 
   const current: SequentialTask | undefined = sequence[taskIdx];
   const total = sequence.length;
@@ -244,6 +262,42 @@ export default function RecoveryToday() {
               <p className="text-xs text-gray-600 text-center mt-2">
                 {sequence.length} steps · about {Math.max(5, Math.round(sequence.length * 1.5))} minutes
               </p>
+
+              {rec?.personalization?.applied && (
+                <div
+                  className="mt-4 rounded-md border border-[#C9941A]/30 bg-[#C9941A]/5 p-3 text-xs text-gray-300"
+                  data-testid="banner-personalization"
+                >
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-[#C9941A] mb-1.5 flex items-center gap-1">
+                    <Sparkles className="h-3 w-3" /> Tailored from your intake
+                  </p>
+                  <ul className="space-y-1 leading-relaxed">
+                    {rec.personalization.energyPattern && (
+                      <li>
+                        Sequence ordered for your <strong className="text-white">{rec.personalization.energyPattern}</strong> energy peak.
+                      </li>
+                    )}
+                    {rec.personalization.timeBudgetMinutes ? (
+                      <li>
+                        Trimmed to fit your <strong className="text-white">{rec.personalization.timeBudgetMinutes}-minute</strong> daily time budget.
+                      </li>
+                    ) : null}
+                    {goalCount > 0 && (
+                      <li>
+                        <strong className="text-[#C9941A]">{goalCount}</strong> {goalCount === 1 ? "task" : "tasks"} marked as <strong className="text-white">your goal</strong>.
+                      </li>
+                    )}
+                    {rec.personalization.capReason && (
+                      <li className="text-amber-300/90">{rec.personalization.capReason}</li>
+                    )}
+                  </ul>
+                  <p className="text-[10px] text-gray-600 mt-2">
+                    <Link href="/settings/profile" className="underline hover:text-[#C9941A]" data-testid="link-edit-intake">
+                      Update your intake →
+                    </Link>
+                  </p>
+                </div>
+              )}
             </Card>
           )}
         </div>
@@ -288,6 +342,15 @@ export default function RecoveryToday() {
             </p>
 
             <Card className="bg-[#111] border-[#1e1e1e] p-8 text-center" data-testid="card-current-task">
+              {current.priority === "goal" && (
+                <Badge
+                  className="mb-4 bg-[#C9941A] text-black hover:bg-[#C9941A] border-0 gap-1"
+                  data-testid="badge-goal-task"
+                >
+                  <Sparkles className="h-3 w-3" />
+                  {current.goalReason || "Your goal"}
+                </Badge>
+              )}
               <div className="h-14 w-14 mx-auto mb-5 rounded-full bg-[#C9941A]/15 border border-[#C9941A]/40 flex items-center justify-center">
                 <Icon className="h-7 w-7 text-[#C9941A]" />
               </div>
