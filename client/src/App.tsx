@@ -30,6 +30,10 @@ import PowerPointsInbox from "@/pages/PowerPointsInbox";
 import TherapistApply from "@/pages/TherapistApply";
 import TherapistAdmin from "@/pages/TherapistAdmin";
 import SurvivorProfilePage from "@/pages/SurvivorProfile";
+import SurvivorIntake from "@/pages/SurvivorIntake";
+import SurvivorProfileSettings from "@/pages/SurvivorProfileSettings";
+import SurvivorIntakeBanner from "@/components/SurvivorIntakeBanner";
+import AccessibilityProvider from "@/components/AccessibilityProvider";
 import AvatarSettings from "@/pages/AvatarSettings";
 import AdminRoute from "@/components/AdminRoute";
 import MusicStudio from "@/pages/MusicStudio";
@@ -191,6 +195,8 @@ function HomeLanding() {
 function Router() {
   return (
     <>
+    <AccessibilityProvider />
+    <SurvivorIntakeBanner />
     <RecoveryHeader />
     <Switch>
       {/* ============================================ */}
@@ -431,6 +437,16 @@ function Router() {
       <Route path="/power-points/inbox" component={PowerPointsInbox} />
       <Route path="/therapists/apply" component={TherapistApply} />
       <Route path="/survivor/:slug" component={SurvivorProfilePage} />
+      <Route path="/recovery/intake">
+        <ProtectedRoute>
+          <SurvivorIntake />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/settings/profile">
+        <ProtectedRoute>
+          <SurvivorProfileSettings />
+        </ProtectedRoute>
+      </Route>
       <Route path="/settings/avatar">
         <ProtectedRoute>
           <AvatarSettings />

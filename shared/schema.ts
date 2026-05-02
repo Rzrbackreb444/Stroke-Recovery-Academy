@@ -408,17 +408,66 @@ export const giftSenderBlocks = pgTable("gift_sender_blocks", {
 export const userProfiles = pgTable("user_profiles", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+
+  // ── Identity ────────────────────────────────────────────────────────────
+  preferredName: text("preferred_name"),
+  pronouns: text("pronouns"),
+
+  // ── Stroke fundamentals ────────────────────────────────────────────────
   strokeDate: timestamp("stroke_date"),
-  strokeType: text("stroke_type"),
-  affectedSide: text("affected_side"),
+  strokeType: text("stroke_type"),                         // ischemic | hemorrhagic | tia | unknown
+  affectedSide: text("affected_side"),                     // left | right | both | none | unsure
+
+  // ── Deficit profile (each 0-4 severity, jsonb so we can extend later) ──
+  // 0 = none, 1 = mild, 2 = moderate, 3 = severe, 4 = complete
+  deficits: jsonb("deficits").$type<{
+    motor?: number;
+    speech?: number;
+    cognitive?: number;
+    fatigue?: number;
+    vision?: number;
+    swallowing?: number;
+    emotional?: number;
+    sensory?: number;
+  }>(),
+
+  // ── What they have / want ──────────────────────────────────────────────
   recoveryGoals: text("recovery_goals").array(),
   currentChallenges: text("current_challenges").array(),
+  customGoal: text("custom_goal"),
+  equipment: text("equipment").array(),
+  mobilityAids: text("mobility_aids").array(),
+
+  // ── How they live ──────────────────────────────────────────────────────
+  dailyTimeBudgetMinutes: integer("daily_time_budget_minutes").default(20),
+  energyPattern: text("energy_pattern").default("morning"), // morning | afternoon | evening | variable
+
+  // ── Caregiver loop ─────────────────────────────────────────────────────
+  hasCaregiver: boolean("has_caregiver").default(false),
+  caregiverEmail: text("caregiver_email"),
+  caregiverRelationship: text("caregiver_relationship"),   // spouse | child | parent | friend | professional
+
+  // ── Accessibility preferences (driven by deficits, but user-overridable) ─
+  bigButtonMode: boolean("big_button_mode").default(false),
+  dyslexiaFont: boolean("dyslexia_font").default(false),
+  reducedMotion: boolean("reduced_motion").default(false),
+  voicePrefersTts: boolean("voice_prefers_tts").default(false),
+
+  // ── Story / bio (optional, supports voice dictation in UI) ─────────────
   bio: text("bio"),
+  story: text("story"),
   location: text("location"),
   timeZone: text("time_zone"),
   notificationPreferences: jsonb("notification_preferences"),
+
+  // ── Intake lifecycle (save-and-resume) ─────────────────────────────────
+  intakeCompletedAt: timestamp("intake_completed_at"),
+  currentIntakeStep: integer("current_intake_step").default(0),
+
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+}, (t) => ({
+  userIdx: uniqueIndex("user_profiles_user_id_unique").on(t.userId),
+}));
 
 // ============================================================================
 // FORUM SYSTEM

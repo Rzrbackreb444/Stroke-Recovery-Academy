@@ -902,3 +902,45 @@
   opacity: 1;
   transform: translateY(0);
 }
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/* Survivor a11y — toggled by AccessibilityProvider based on user prefs   */
+/* set during intake. These mirror options the user explicitly opted into.*/
+/* ─────────────────────────────────────────────────────────────────────── */
+
+/* Bigger touch targets and slightly larger text. Scoped to interactive
+   controls so layout stays sensible. */
+html.a11y-big-button button,
+html.a11y-big-button [role="button"],
+html.a11y-big-button input,
+html.a11y-big-button select,
+html.a11y-big-button textarea,
+html.a11y-big-button a[href] {
+  min-height: 48px;
+  font-size: 1.0625rem;
+  line-height: 1.4;
+}
+html.a11y-big-button button[aria-label],
+html.a11y-big-button [role="button"][aria-label] {
+  min-width: 48px;
+}
+
+/* Dyslexia-friendly font. We don't ship a custom font file (keeps bundle
+   light); instead we fall back to the most legible system fonts available. */
+html.a11y-dyslexia-font,
+html.a11y-dyslexia-font body {
+  font-family: 'OpenDyslexic', 'Atkinson Hyperlegible', 'Verdana', 'Comic Sans MS', system-ui, sans-serif;
+  letter-spacing: 0.015em;
+  word-spacing: 0.05em;
+}
+
+/* Reduced motion — neutralizes long animations / transitions for users
+   prone to fatigue or vestibular issues post-stroke. */
+html.a11y-reduce-motion *,
+html.a11y-reduce-motion *::before,
+html.a11y-reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
