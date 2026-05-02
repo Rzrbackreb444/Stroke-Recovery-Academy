@@ -6167,6 +6167,8 @@ export const motivationUsage = pgTable("motivation_usage", {
   month: text("month").notNull(), // YYYY-MM
   anthemCount: integer("anthem_count").notNull().default(0),
   visionCardCount: integer("vision_card_count").notNull().default(0),
+  // Recovery Anchor renders this month. Audits (free preview) are unmetered.
+  anchorRenderCount: integer("anchor_render_count").notNull().default(0),
   updatedAt: timestamp("updated_at").defaultNow(),
 }, (t) => ({
   pk: uniqueIndex("motivation_usage_pk").on(t.userId, t.month),
@@ -6198,6 +6200,83 @@ export const dailyQuotes = pgTable("daily_quotes", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 export type DailyQuote = typeof dailyQuotes.$inferSelect;
+
+// ============================================================================
+// RECOVERY ANCHOR STUDIO — survivor musical-mnemonic encoding
+// ============================================================================
+// Ground: Melodic Intonation Therapy (Schlaug et al.) and Rhythmic Auditory
+// Stimulation are real neurological-rehab techniques. We do NOT make medical
+// claims — we provide a tool that uses the same structural ideas (rhythm,
+// melody, repetition) for survivor affirmations, speech practice, and memory
+// encoding. v1 supports anchor types: 'affirmation' | 'speech' | 'memory'.
+// v2 will add 'routine' and 'caregiver'.
+
+export const recoveryAnchors = pgTable("recovery_anchors", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  anchorType: text("anchor_type").notNull(),
+  inputText: text("input_text").notNull(),
+  // Full Shape-A JSON output (lines, callResponse, mnemonic, producerNotes,
+  // realityFooter). See server/services/recoveryAnchor/recoveryAnchorSchema.ts.
+  anchorData: jsonb("anchor_data").notNull(),
+  audioUrl: text("audio_url"),
+  // Public consent-gated share. shareId is null until the user opts in.
+  isShared: boolean("is_shared").notNull().default(false),
+  shareId: text("share_id"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  byUser: index("recovery_anchors_user_created").on(t.userId, t.createdAt),
+  byShareId: uniqueIndex("recovery_anchors_share_id").on(t.shareId),
+}));
+export const insertRecoveryAnchorSchema = createInsertSchema(recoveryAnchors).omit({
+  id: true,
+  createdAt: true,
+});
+export type RecoveryAnchor = typeof recoveryAnchors.$inferSelect;
+export type InsertRecoveryAnchor = z.infer<typeof insertRecoveryAnchorSchema>;
+
+// One row per user. Daily-habit loop state.
+export const anchorStreaks = pgTable("anchor_streaks", {
+  userId: varchar("user_id").primaryKey().references(() => users.id, { onDelete: "cascade" }),
+  currentStreak: integer("current_streak").notNull().default(0),
+  longestStreak: integer("longest_streak").notNull().default(0),
+  lastCheckInDate: text("last_check_in_date"), // YYYY-MM-DD (user-local)
+  todayAnchorId: integer("today_anchor_id"),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+export type AnchorStreak = typeof anchorStreaks.$inferSelect;
+
+// Every "did you remember it?" tap. Powers the data flywheel.
+export const anchorRetentionSignals = pgTable("anchor_retention_signals", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  anchorId: integer("anchor_id").notNull().references(() => recoveryAnchors.id, { onDelete: "cascade" }),
+  status: text("status").notNull(), // 'remembered' | 'struggled' | 'forgot'
+  signaledAt: timestamp("signaled_at").notNull().defaultNow(),
+}, (t) => ({
+  byAnchor: index("anchor_retention_anchor").on(t.anchorId),
+  byUser: index("anchor_retention_user").on(t.userId, t.signaledAt),
+}));
+export type AnchorRetentionSignal = typeof anchorRetentionSignals.$inferSelect;
+
+// Safety/clinical audit log. Every generation writes one row regardless
+// of outcome (clear / crisis / clarification / refused / engine_error).
+// Mirrors the editorial-trust audit pattern from the AI Coach crisis gate.
+export const recoveryAnchorAudit = pgTable("recovery_anchor_audit", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  anchorId: integer("anchor_id"), // null when no anchor was generated
+  anchorType: text("anchor_type"),
+  // 'clear' | 'crisis_personal' | 'clarification' | 'refused' | 'engine_error'
+  disposition: text("disposition").notNull(),
+  category: text("category"), // crisis category if applicable
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  byUser: index("recovery_anchor_audit_user").on(t.userId, t.createdAt),
+  byDisposition: index("recovery_anchor_audit_disposition").on(t.disposition, t.createdAt),
+}));
+export type RecoveryAnchorAuditRow = typeof recoveryAnchorAudit.$inferSelect;
 
 // ============================================================================
 // VIDEO STUDIO — user-authored video projects (timeline + assets state)

@@ -25,7 +25,7 @@ import {
   Flame, Trophy, BookOpen, MessageCircle, Grid3X3, ShoppingBag, Users, Sparkles,
   CheckCircle2, Target, Star, TrendingUp, Calendar, Heart, Zap, LogOut,
   Plus, UserPlus, DoorOpen, Smile, Activity, Quote, RefreshCw, ArrowRight,
-  Play, Brain, ChevronDown, Footprints
+  Play, Brain, ChevronDown, Footprints, Anchor
 } from "lucide-react";
 import SixtyDayTracker from "@/components/recovery/SixtyDayTracker";
 import MyPathRecommender from "@/components/recovery/MyPathRecommender";
@@ -328,6 +328,9 @@ export default function RecoveryDashboard() {
 
         {/* BONFIRE — Today's adaptive session (with personalization preview) */}
         <BonfireHeroCard />
+
+        {/* RECOVERY ANCHOR — Today's musical anchor + streak */}
+        <AnchorHeroCard />
 
         {/* SURVIVOR SHOP — Curated Amazon affiliate gear */}
         <section className="mb-8" data-testid="section-survivor-shop">
@@ -1301,6 +1304,102 @@ const ENERGY_LABEL: Record<string, string> = {
   evening: "Evening energy",
   variable: "Variable energy",
 };
+
+interface AnchorHeroResponse {
+  currentStreak: number;
+  longestStreak: number;
+  lastCheckInDate: string | null;
+  todayAnchor: {
+    id: number;
+    anchorType: string;
+    anchorData: { title: string; lines: string[] };
+  } | null;
+}
+
+function AnchorHeroCard() {
+  const { data, isLoading } = useQuery<AnchorHeroResponse>({
+    queryKey: ["/api/recovery/anchor/today"],
+    staleTime: 60_000,
+  });
+
+  return (
+    <section className="mb-8" data-testid="section-anchor-hero">
+      <Link href="/recovery/anchor/today">
+        <a
+          className="block group rounded-xl border-2 border-amber-500/60 bg-gradient-to-br from-amber-500/15 via-[#1a1a1a] to-[#1a1a1a] hover-elevate active-elevate-2 p-6"
+          data-testid="link-anchor-hero"
+          aria-label="Open today's recovery anchor"
+        >
+          <div className="flex items-start gap-5">
+            <div className="hidden sm:flex h-16 w-16 rounded-full bg-amber-500 items-center justify-center shrink-0 shadow-[0_0_24px_rgba(245,158,11,0.45)]">
+              <Anchor className="h-8 w-8 text-black" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-amber-300 font-bold mb-1">
+                Today's Anchor · Recovery Anchor Studio
+              </p>
+              <h2
+                className="text-2xl sm:text-3xl font-black text-white leading-tight mb-2"
+                style={{ fontFamily: "Playfair Display, Georgia, serif" }}
+              >
+                The words your stroke tried to take.
+              </h2>
+
+              {isLoading || !data ? (
+                <p className="text-sm text-gray-300 leading-relaxed mb-3">
+                  Encode an affirmation, a speech-recovery phrase, or a memory
+                  list as a sung anchor. <span className="text-amber-300 font-semibold">Practice once a day.</span>
+                </p>
+              ) : (
+                <div className="mb-3" data-testid="preview-anchor-today">
+                  {data.todayAnchor ? (
+                    <p className="text-sm text-gray-300 leading-relaxed mb-2">
+                      Today's anchor:{" "}
+                      <span className="text-white font-semibold" data-testid="text-anchor-today-title">
+                        {data.todayAnchor.anchorData.title}
+                      </span>
+                    </p>
+                  ) : (
+                    <p className="text-sm text-gray-300 leading-relaxed mb-2">
+                      No anchor for today yet.{" "}
+                      <span className="text-amber-300 font-semibold">Pick one or render a new one.</span>
+                    </p>
+                  )}
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    <Badge
+                      variant="outline"
+                      className="border-amber-500/50 text-amber-300 bg-amber-500/10 text-[11px]"
+                      data-testid="chip-anchor-streak"
+                    >
+                      <Flame className="h-3 w-3 mr-1" />
+                      {data.currentStreak} day streak
+                    </Badge>
+                    {data.longestStreak > 0 && (
+                      <Badge
+                        variant="outline"
+                        className="border-amber-700/50 text-amber-300/80 bg-amber-500/5 text-[11px]"
+                        data-testid="chip-anchor-longest"
+                      >
+                        <Trophy className="h-3 w-3 mr-1" />
+                        Best: {data.longestStreak}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex items-center gap-2 text-amber-300 text-sm font-semibold uppercase tracking-widest">
+                <Anchor className="h-4 w-4" />
+                Open Today's Anchor
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </div>
+          </div>
+        </a>
+      </Link>
+    </section>
+  );
+}
 
 function BonfireHeroCard() {
   const { data: rec, isLoading } = useQuery<TodayRecommendation>({

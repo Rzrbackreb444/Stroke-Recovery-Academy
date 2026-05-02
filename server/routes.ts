@@ -9109,6 +9109,18 @@ Respond in JSON format:
     console.error('[motivation] failed to register routes:', e);
   }
 
+  // ──────────────────────────────────────────────────────────────────
+  // Recovery Anchor Studio — survivor musical-mnemonic encoding
+  // (affirmation / speech / memory) + Today's Anchor + share surface
+  // ──────────────────────────────────────────────────────────────────
+  try {
+    const { registerRecoveryAnchorRoutes } = await import('./recoveryAnchorRoutes');
+    registerRecoveryAnchorRoutes(app);
+    console.log('[recovery-anchor] routes registered');
+  } catch (e) {
+    console.error('[recovery-anchor] failed to register routes:', e);
+  }
+
   app.get('/api/marketplace/products', async (req, res) => {
     try {
       const { categoryId, search, featured } = req.query;

@@ -159,6 +159,8 @@ import MyBook from "@/pages/MyBook";
 import AboutNick from "@/pages/AboutNick";
 import Challenge from "@/pages/Challenge";
 import RecoveryAnthem from "@/pages/RecoveryAnthem";
+import TodayAnchor from "@/pages/TodayAnchor";
+import AnchorShare from "@/pages/AnchorShare";
 import RecoveryPricing from "@/pages/RecoveryPricing";
 import GiftSurvivor from "@/pages/GiftSurvivor";
 import CoursePlayer from "@/pages/CoursePlayer";
@@ -605,6 +607,8 @@ function Router() {
       <Route path="/recovery/today" component={RecoveryToday} />
       <Route path="/recovery/shop" component={SurvivorShop} />
       <Route path="/recovery/motivation" component={MotivationStudio} />
+      <Route path="/recovery/anchor/today" component={TodayAnchor} />
+      <Route path="/anchor/s/:shareId" component={AnchorShare} />
       <Route path="/recovery/exercises" component={RecoveryExercises} />
       <Route path="/recovery/exercises/:slug" component={RecoveryExerciseDetail} />
       <Route path="/recovery/blog" component={RecoveryBlog} />

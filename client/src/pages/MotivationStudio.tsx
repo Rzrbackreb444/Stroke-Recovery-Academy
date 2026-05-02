@@ -11,7 +11,9 @@ import {
   Lock,
   Volume2,
   Crown,
+  Anchor,
 } from "lucide-react";
+import RecoveryAnchorStudio from "@/components/recovery/RecoveryAnchorStudio";
 import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -421,8 +423,11 @@ export default function MotivationStudio() {
         </section>
 
         <section className="max-w-4xl mx-auto px-4 pb-16">
-          <Tabs defaultValue="anthem" className="w-full">
-            <TabsList className="bg-zinc-900 border border-amber-900/30 mb-6">
+          <Tabs defaultValue="anchor" className="w-full">
+            <TabsList className="bg-zinc-900 border border-amber-900/30 mb-6 flex-wrap h-auto">
+              <TabsTrigger value="anchor" className="data-[state=active]:bg-amber-500 data-[state=active]:text-zinc-950" data-testid="tab-anchor">
+                <Anchor className="h-4 w-4 mr-1" /> Recovery Anchor
+              </TabsTrigger>
               <TabsTrigger value="anthem" className="data-[state=active]:bg-amber-500 data-[state=active]:text-zinc-950" data-testid="tab-anthem">
                 <Music className="h-4 w-4 mr-1" /> Anthem
               </TabsTrigger>
@@ -433,6 +438,10 @@ export default function MotivationStudio() {
                 <Quote className="h-4 w-4 mr-1" /> Daily Quote
               </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="anchor">
+              <RecoveryAnchorStudio />
+            </TabsContent>
 
             <TabsContent value="anthem">
               {usage ? (
