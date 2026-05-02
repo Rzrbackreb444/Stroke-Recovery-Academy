@@ -26,6 +26,7 @@ interface TodayResponse {
   currentStreak: number;
   longestStreak: number;
   lastCheckInDate: string | null;
+  checkedInToday: boolean;
   todayAnchor: AnchorRow | null;
   yesterdayAnchor: AnchorRow | null;
 }
@@ -131,7 +132,7 @@ export default function TodayAnchor() {
         <section className="max-w-4xl mx-auto px-4 py-8 space-y-8">
           <StreakCard today={today} loading={loadingToday} />
 
-          {today?.yesterdayAnchor && (today.lastCheckInDate ?? "") !== today.date && (
+          {today?.yesterdayAnchor && !today.checkedInToday && (
             <YesterdayCheckIn
               anchor={today.yesterdayAnchor}
               onCheckIn={(status) => checkIn.mutate({ id: today.yesterdayAnchor!.id, status })}
