@@ -295,7 +295,7 @@ export default function AISettingsPanel() {
                     <ShieldCheck className="w-8 h-8 text-green-600" /> Security Protocol
                   </h4>
                   <p className="text-[14px] opacity-60 leading-[1.8] font-serif text-justify italic">
-                    All institutional credentials are encrypted at rest using AES-256 standards. Keys never touch the browser; all API calls are proxied through the KreAIte hardened backend to ensure absolute sovereignty over your creative assets.
+                    All institutional credentials are encrypted at rest using AES-256 standards. Keys never touch the browser; all API calls are proxied through the Stroke Recovery Academy hardened backend to ensure absolute sovereignty over your creative assets.
                   </p>
                 </div>
                 
@@ -370,7 +370,7 @@ export default function AISettingsPanel() {
                       ${revenueYield.toLocaleString()}
                     </div>
                     <p className="text-[14px] opacity-50 font-serif italic leading-[1.8] text-justify">
-                      Total community revenue processed through the KreAIte 85/15 Split Engine since Jan 2026. Institutional members have kept 85% of this total yield.
+                      Total community revenue processed through the Stroke Recovery Academy 85/15 Split Engine since Jan 2026. Institutional members have kept 85% of this total yield.
                     </p>
                  </CardContent>
                  <div className="p-8 bg-white/10 text-center text-[10px] font-black uppercase tracking-[0.4em] text-[#C9941A]">
@@ -515,7 +515,7 @@ export default function AISettingsPanel() {
         <div className="text-right space-y-2">
           <div className="text-[12px] font-black uppercase tracking-[0.4em] text-[#1A1A1A]">Institutional Platform v4.0.8</div>
           <div className="text-[10px] uppercase tracking-[0.5em] font-bold text-[#C9941A]">
-            © 2026 KreAIte Author Intelligence Environment • All Rights Reserved
+            © 2026 Stroke Recovery Academy • All Rights Reserved
           </div>
         </div>
       </footer>

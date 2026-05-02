@@ -129,7 +129,7 @@ export function WorkspaceShell({
         <div className="flex items-center gap-4">
           <div className="flex flex-col">
             <span className="text-[#C9941A] font-black text-lg tracking-tighter uppercase">
-              KreAIte
+              Stroke Recovery Academy
             </span>
             <span className={cn(
               "text-[8px] uppercase tracking-[0.3em]",
@@ -506,7 +506,7 @@ export function WorkspaceShell({
         <div className="flex items-center gap-4">
           <span>85% Margin Mode</span>
           <span>•</span>
-          <span className="uppercase tracking-wider font-semibold">KreAIte v3.0</span>
+          <span className="uppercase tracking-wider font-semibold">Stroke Recovery Academy v3.0</span>
         </div>
       </footer>
     </div>

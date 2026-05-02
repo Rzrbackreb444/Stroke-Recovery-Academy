@@ -674,7 +674,7 @@ export default function WebsiteStudio() {
                         placeholder="my-site"
                         className="flex-1"
                       />
-                      <span className="text-xs text-gray-400">.kreaite.xyz</span>
+                      <span className="text-xs text-gray-400">.strokerecoveryacademy.com</span>
                     </div>
                   </div>
                   <Separator />
@@ -711,7 +711,7 @@ export default function WebsiteStudio() {
                 <div className="flex-1 flex items-center justify-center">
                   <div className="bg-white rounded-md px-3 py-1 text-xs text-gray-500 flex items-center gap-1">
                     <Globe className="w-3 h-3" />
-                    {websiteData.slug || "your-site"}.kreaite.xyz
+                    {websiteData.slug || "your-site"}.strokerecoveryacademy.com
                   </div>
                 </div>
               </div>
@@ -905,7 +905,7 @@ export default function WebsiteStudio() {
         ]}
         schema={{
           "@type": "SoftwareApplication",
-          name: "KreAIte Website Studio",
+          name: "Stroke Recovery Academy Website Studio",
           applicationCategory: "WebApplicationBuilder",
           operatingSystem: "Web Browser",
           description: "AI-powered no-code website builder with professional templates, SEO optimization, custom domains, and free hosting",
@@ -935,13 +935,13 @@ export default function WebsiteStudio() {
           ratingCount: "2,847",
           author: {
             "@type": "Organization",
-            name: "KreAIte.xyz",
-            url: "https://kreaite.xyz",
-            logo: "https://kreaite.xyz/logo.png"
+            name: "Stroke Recovery Academy",
+            url: "https://strokerecoveryacademy.com",
+            logo: "https://strokerecoveryacademy.com/logo.png"
           },
           provider: {
             "@type": "Organization",
-            name: "KreAIte.xyz"
+            name: "Stroke Recovery Academy"
           },
           aggregateRating: {
             "@type": "AggregateRating",

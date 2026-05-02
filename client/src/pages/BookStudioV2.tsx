@@ -359,7 +359,7 @@ export default function BookStudioV2() {
   return (
     <>
       <SEO 
-        title="Book Studio - KreAIte" 
+        title="Book Studio - Stroke Recovery Academy" 
         description="Professional book writing workspace with AI assistance"
       />
       

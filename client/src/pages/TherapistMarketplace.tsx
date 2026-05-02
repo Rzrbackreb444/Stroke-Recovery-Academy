@@ -181,11 +181,11 @@ export default function TherapistMarketplace() {
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-foreground">
       <SEO
-        title="Therapist Marketplace | KreAIte"
+        title="Therapist Marketplace | Stroke Recovery Academy"
         description="Find licensed therapists and professional coaches specializing in stroke recovery. Browse verified specialists in physical therapy, occupational therapy, speech therapy, and neurological rehabilitation with transparent pricing."
         canonical="/therapist-marketplace"
         keywords="therapist marketplace, stroke recovery services, physical therapy, occupational therapy, speech therapy, professional coaches, licensed therapists"
-        author="KreAIte"
+        author="Stroke Recovery Academy"
         expertise={["Healthcare Services", "Professional Marketplace", "Therapy & Rehabilitation"]}
         experience="Connecting patients with verified healthcare professionals since 2024"
         trustSignals={["All therapists verified and licensed", "Transparent service pricing", "Professional credential verification"]}

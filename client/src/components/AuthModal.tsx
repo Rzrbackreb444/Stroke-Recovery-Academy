@@ -67,7 +67,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "login" }: Au
       return apiRequest("POST", "/api/auth/register", data);
     },
     onSuccess: () => {
-      toast({ title: "Account created!", description: "Welcome to KreAIte! You're now logged in." });
+      toast({ title: "Account created!", description: "Welcome to Stroke Recovery Academy! You're now logged in." });
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       onClose();
     },
@@ -148,7 +148,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "login" }: Au
           </DialogTitle>
           <DialogDescription>
             {mode === "login" && "Sign in to access your creator dashboard"}
-            {mode === "register" && "Join thousands of creators on KreAIte"}
+            {mode === "register" && "Join 50,000+ stroke survivors on Stroke Recovery Academy"}
             {mode === "magic_link" && "We'll send you a secure login link"}
             {mode === "forgot_password" && "Enter your email to reset password"}
           </DialogDescription>

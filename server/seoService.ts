@@ -3,7 +3,7 @@
  * Comprehensive SEO infrastructure for global platform
  */
 
-const BASE_URL = 'https://kreaite.xyz';
+const BASE_URL = 'https://strokerecoveryacademy.com';
 const SUPPORTED_LOCALES = ['en', 'es', 'fr', 'de', 'it', 'pt', 'nl', 'pl', 'ru', 'ja', 'zh', 'ko', 'ar', 'hi', 'th', 'vi', 'id', 'tr', 'he', 'sv'];
 
 // Organization Schema for E-E-A-T
@@ -11,8 +11,8 @@ export const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   "@id": `${BASE_URL}/#organization`,
-  name: "KreAIte.xyz",
-  alternateName: ["KreAIte", "KreAIte Creator Platform"],
+  name: "Stroke Recovery Academy",
+  alternateName: ["Stroke Recovery Academy", "Stroke Recovery Academy Creator Platform"],
   url: BASE_URL,
   logo: {
     "@type": "ImageObject",
@@ -21,18 +21,18 @@ export const organizationSchema = {
     height: 512,
   },
   image: `${BASE_URL}/og-image.png`,
-  description: "AI-powered creator platform offering 6 professional studios for books, videos, music, courses, and images. Create, publish, and earn with 85% creator revenue share.",
+  description: "Survivor-led stroke recovery platform with neuroplasticity exercises, the 66-Day Sasquatch Transformation Challenge, AI Sasquatch Coach, and a survivor community.",
   foundingDate: "2024",
   sameAs: [
-    "https://twitter.com/kreaite_xyz",
-    "https://linkedin.com/company/kreaite",
-    "https://youtube.com/@kreaite",
+    "https://twitter.com/strokerecoveryacademy",
+    "https://linkedin.com/company/stroke-recovery-academy",
+    "https://youtube.com/@strokerecoveryacademy",
   ],
   contactPoint: [
     {
       "@type": "ContactPoint",
-      telephone: "+1-555-KREAITE",
       contactType: "customer service",
+      email: "support@strokerecoveryacademy.com",
       availableLanguage: ["English", "Spanish", "French", "German"],
     },
   ],
@@ -48,7 +48,7 @@ export const websiteSchema = {
   "@type": "WebSite",
   "@id": `${BASE_URL}/#website`,
   url: BASE_URL,
-  name: "KreAIte.xyz",
+  name: "Stroke Recovery Academy",
   description: "AI-powered creator platform for books, videos, music, courses, and images",
   publisher: { "@id": `${BASE_URL}/#organization` },
   potentialAction: {
@@ -69,10 +69,10 @@ export const platformFAQSchema = {
   mainEntity: [
     {
       "@type": "Question",
-      name: "What is KreAIte.xyz?",
+      name: "What is Stroke Recovery Academy?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "KreAIte.xyz is an AI-powered creator platform with 6 professional studios for creating books, videos, music, courses, and images. Creators earn 85% of sales through our marketplace.",
+        text: "Stroke Recovery Academy is an AI-powered creator platform with 6 professional studios for creating books, videos, music, courses, and images. Creators earn 85% of sales through our marketplace.",
       },
     },
     {
@@ -80,7 +80,7 @@ export const platformFAQSchema = {
       name: "How does the 85/15 revenue split work?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "When you sell content on KreAIte marketplace, you keep 85% of each sale. The 15% platform fee covers payment processing, hosting, and platform maintenance.",
+        text: "When you sell content on Stroke Recovery Academy marketplace, you keep 85% of each sale. The 15% platform fee covers payment processing, hosting, and platform maintenance.",
       },
     },
     {
@@ -88,7 +88,7 @@ export const platformFAQSchema = {
       name: "What AI features are included?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "KreAIte includes AI text generation, image generation, music composition, voice cloning, video intelligence, speech-to-text, text-to-speech, translation in 100+ languages, and D-ID avatar creation.",
+        text: "Stroke Recovery Academy includes AI text generation, image generation, music composition, voice cloning, video intelligence, speech-to-text, text-to-speech, translation in 100+ languages, and D-ID avatar creation.",
       },
     },
     {
@@ -101,18 +101,18 @@ export const platformFAQSchema = {
     },
     {
       "@type": "Question",
-      name: "Is KreAIte free to use?",
+      name: "Is Stroke Recovery Academy free to use?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "KreAIte offers a free tier with 100 monthly credits. Premium plans start at $29/month for creators, $79/month for professionals, and $299/month for enterprises.",
+        text: "Stroke Recovery Academy offers a free tier with 100 monthly credits. Premium plans start at $29/month for creators, $79/month for professionals, and $299/month for enterprises.",
       },
     },
     {
       "@type": "Question",
-      name: "What languages does KreAIte support?",
+      name: "What languages does Stroke Recovery Academy support?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "KreAIte supports 20+ interface languages and translation in 100+ languages via Google Cloud Translation. The platform is fully internationalized for global creators.",
+        text: "Stroke Recovery Academy supports 20+ interface languages and translation in 100+ languages via Google Cloud Translation. The platform is fully internationalized for global creators.",
       },
     },
   ],
@@ -124,10 +124,10 @@ export const howToSchemas = {
     "@context": "https://schema.org",
     "@type": "HowTo",
     name: "How to Create and Publish a Book with AI",
-    description: "Step-by-step guide to creating, formatting, and publishing a book using KreAIte Book Studio",
+    description: "Step-by-step guide to creating, formatting, and publishing a book using Stroke Recovery Academy Book Studio",
     totalTime: "PT2H",
     estimatedCost: { "@type": "MonetaryAmount", currency: "USD", value: "0" },
-    tool: [{ "@type": "HowToTool", name: "KreAIte Book Studio" }],
+    tool: [{ "@type": "HowToTool", name: "Stroke Recovery Academy Book Studio" }],
     step: [
       {
         "@type": "HowToStep",
@@ -165,7 +165,7 @@ export const howToSchemas = {
     "@context": "https://schema.org",
     "@type": "HowTo",
     name: "How to Create an Online Course with AI",
-    description: "Complete guide to building and selling online courses on KreAIte",
+    description: "Complete guide to building and selling online courses on Stroke Recovery Academy",
     totalTime: "PT4H",
     step: [
       {
@@ -195,7 +195,7 @@ export const howToSchemas = {
       {
         "@type": "HowToStep",
         name: "Publish to Marketplace",
-        text: "Set your price and publish to KreAItorverse marketplace.",
+        text: "Set your price and publish to Marketplace marketplace.",
         position: 5,
       },
     ],
@@ -327,7 +327,7 @@ export const aggregateRatingSchema = {
 export const softwareApplicationSchema = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  name: "KreAIte Creator Platform",
+  name: "Stroke Recovery Academy Creator Platform",
   applicationCategory: "MultimediaApplication",
   operatingSystem: "Web Browser (Chrome, Firefox, Safari, Edge)",
   offers: {

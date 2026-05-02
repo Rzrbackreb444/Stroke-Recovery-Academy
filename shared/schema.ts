@@ -184,7 +184,7 @@ export const whiteLabelPricingTiers = {
     price: 299, // per month
     features: [
       "Everything in Basic",
-      "Hide KreAIte branding",
+      "Hide Stroke Recovery Academy branding",
       "Unlimited creator accounts",
       "Custom revenue split",
       "Priority support",
@@ -3396,7 +3396,7 @@ export const workflowTemplates = pgTable("workflow_templates", {
   // Pricing & licensing
   price: integer("price").notNull().default(0), // In cents (0 = free)
   currency: text("currency").notNull().default("USD"),
-  kreaiteCanUse: boolean("kreaite_can_use").notNull().default(true), // KreAIte gets perpetual license
+  kreaiteCanUse: boolean("kreaite_can_use").notNull().default(true), // Stroke Recovery Academy gets perpetual license
   kreaiteFeatureLevel: text("kreaite_feature_level").default("standard"), // standard, featured, premium
   
   // Stats
@@ -3409,7 +3409,7 @@ export const workflowTemplates = pgTable("workflow_templates", {
   // Status
   status: text("status").notNull().default("draft"), // draft, pending_review, published, suspended
   isFeatured: boolean("is_featured").notNull().default(false),
-  isKreaiteOfficial: boolean("is_kreaite_official").notNull().default(false), // KreAIte's own workflows
+  isKreaiteOfficial: boolean("is_kreaite_official").notNull().default(false), // Stroke Recovery Academy's own workflows
   publishedAt: timestamp("published_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -5512,7 +5512,7 @@ export const userWebsites = pgTable("user_websites", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
-  slug: text("slug").notNull().unique(), // subdomain: slug.kreaite.xyz
+  slug: text("slug").notNull().unique(), // subdomain: slug.strokerecoveryacademy.com
   customDomain: text("custom_domain"), // for custom domains
   templateId: text("template_id").notNull().default("blank"),
   industry: text("industry"), // local-business, portfolio, blog, nonprofit, creator, ecommerce
@@ -6456,3 +6456,50 @@ export const recoveryMetroCache = pgTable("recovery_metro_cache", {
   lastRefreshed: timestamp("last_refreshed").notNull().defaultNow(),
 });
 export type RecoveryMetroCache = typeof recoveryMetroCache.$inferSelect;
+
+// ============================================================================
+// Admin Audit Log — every privileged admin action is recorded here for
+// editorial provenance + abuse forensics. Append-only from the app's POV.
+// ============================================================================
+export const adminAuditLog = pgTable("admin_audit_log", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  userEmail: text("user_email"),
+  action: varchar("action", { length: 128 }).notNull(),     // e.g. "blog_draft.publish"
+  resourceType: varchar("resource_type", { length: 64 }),   // e.g. "blog_post"
+  resourceId: text("resource_id"),                          // free-form id of the target
+  method: varchar("method", { length: 8 }),                 // GET/POST/PATCH/DELETE
+  path: text("path").notNull(),                             // request path
+  ip: varchar("ip", { length: 64 }),
+  userAgent: text("user_agent"),
+  statusCode: integer("status_code"),
+  metadata: jsonb("metadata").$type<Record<string, any>>().default({}),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => ({
+  userIdx: index("idx_admin_audit_user").on(t.userId, t.createdAt),
+  actionIdx: index("idx_admin_audit_action").on(t.action, t.createdAt),
+  createdIdx: index("idx_admin_audit_created").on(t.createdAt),
+}));
+export type AdminAuditLog = typeof adminAuditLog.$inferSelect;
+
+// ============================================================================
+// Webhook Events — idempotency + replay-attack defense for inbound webhooks
+// (currently Stripe, future Lulu/Resend). Insert-on-arrival, unique on
+// (provider, eventId). If the insert violates the unique index, the webhook
+// is a duplicate and must be skipped.
+// ============================================================================
+export const webhookEvents = pgTable("webhook_events", {
+  id: serial("id").primaryKey(),
+  provider: varchar("provider", { length: 32 }).notNull(),  // 'stripe' | 'lulu' | etc.
+  eventId: varchar("event_id", { length: 255 }).notNull(),
+  eventType: varchar("event_type", { length: 128 }),
+  status: varchar("status", { length: 16 }).notNull().default("received"),  // received/processed/failed
+  payloadHash: varchar("payload_hash", { length: 128 }),
+  errorMessage: text("error_message"),
+  processedAt: timestamp("processed_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => ({
+  uniq: uniqueIndex("uniq_webhook_provider_event").on(t.provider, t.eventId),
+  statusIdx: index("idx_webhook_status").on(t.status, t.createdAt),
+}));
+export type WebhookEvent = typeof webhookEvents.$inferSelect;

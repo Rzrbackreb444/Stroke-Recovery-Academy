@@ -296,7 +296,7 @@ export default function SellBooks() {
                   <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2">No Books Listed Yet</h3>
                   <p className="text-gray-400 mb-4">
-                    Start selling your books in the KreAIte marketplace
+                    Start selling your books in the Stroke Recovery Academy marketplace
                   </p>
                   <Button onClick={() => setShowNewListingDialog(true)}>
                     <Plus className="h-4 w-4 mr-2" />
@@ -763,7 +763,7 @@ function NewListingDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
         <DialogHeader>
           <DialogTitle>List a New Book</DialogTitle>
           <DialogDescription>
-            Add your book to the KreAIte marketplace. You keep 85% of every sale.
+            Add your book to the Stroke Recovery Academy marketplace. You keep 85% of every sale.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">

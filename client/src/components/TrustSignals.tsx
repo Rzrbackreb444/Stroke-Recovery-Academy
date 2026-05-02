@@ -157,7 +157,7 @@ export function AuthorCredentials({
         {author.publications && author.publications > 0 && (
           <div className="mt-2 text-xs text-muted-foreground flex items-center gap-1">
             <FileCheck className="w-3 h-3" />
-            {author.publications} published works on KreAIte
+            {author.publications} published works on Stroke Recovery Academy
           </div>
         )}
       </div>

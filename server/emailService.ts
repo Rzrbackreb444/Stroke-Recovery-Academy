@@ -37,7 +37,7 @@ async function getResendClient() {
   const { apiKey } = await getCredentials();
   return {
     client: new Resend(apiKey),
-    fromEmail: connectionSettings.settings.from_email || 'info@kreaite.xyz'
+    fromEmail: connectionSettings.settings.from_email || 'info@strokerecoveryacademy.com'
   };
 }
 
@@ -103,7 +103,7 @@ export async function sendPurchaseConfirmation(
     </head>
     <body>
       <div class="container">
-        <div class="logo">KreAIte</div>
+        <div class="logo">Stroke Recovery Academy</div>
         <h1>Thank you for your purchase, ${buyerName}!</h1>
         <p>Your order has been confirmed and is being processed.</p>
         
@@ -113,10 +113,10 @@ export async function sendPurchaseConfirmation(
           <div class="amount">${formattedAmount}</div>
         </div>
         
-        <a href="https://kreaite.xyz/my-purchases" class="cta-button">View My Purchases</a>
+        <a href="https://strokerecoveryacademy.com/my-purchases" class="cta-button">View My Purchases</a>
         
         <div class="footer">
-          <p>KreAIte.xyz - CREATE. PUBLISH. EARN.</p>
+          <p>Stroke Recovery Academy - CREATE. PUBLISH. EARN.</p>
           <p>Powered by KremersX</p>
         </div>
       </div>
@@ -174,7 +174,7 @@ export async function sendCreatorSaleNotification(
     </head>
     <body>
       <div class="container">
-        <div class="logo">KreAIte</div>
+        <div class="logo">Stroke Recovery Academy</div>
         <h1>You made a sale.</h1>
         <p>Congratulations ${creatorName}, someone just purchased your content!</p>
         
@@ -195,10 +195,10 @@ export async function sendCreatorSaleNotification(
           </div>
         </div>
         
-        <a href="https://kreaite.xyz/author-dashboard" class="cta-button">View Dashboard</a>
+        <a href="https://strokerecoveryacademy.com/author-dashboard" class="cta-button">View Dashboard</a>
         
         <div class="footer">
-          <p>KreAIte.xyz - CREATE. PUBLISH. EARN.</p>
+          <p>Stroke Recovery Academy - CREATE. PUBLISH. EARN.</p>
           <p>Powered by KremersX</p>
         </div>
       </div>
@@ -236,7 +236,7 @@ export async function sendNewFollowerNotification(
     </head>
     <body>
       <div class="container">
-        <div class="logo">KreAIte</div>
+        <div class="logo">Stroke Recovery Academy</div>
         <h1>You have a new follower!</h1>
         <p>Hey ${creatorName}, your audience is growing!</p>
         
@@ -245,10 +245,10 @@ export async function sendNewFollowerNotification(
           <p style="color: #888;">is now following you</p>
         </div>
         
-        <a href="https://kreaite.xyz/author-dashboard" class="cta-button">View Your Followers</a>
+        <a href="https://strokerecoveryacademy.com/author-dashboard" class="cta-button">View Your Followers</a>
         
         <div class="footer">
-          <p>KreAIte.xyz - CREATE. PUBLISH. EARN.</p>
+          <p>Stroke Recovery Academy - CREATE. PUBLISH. EARN.</p>
           <p>Powered by KremersX</p>
         </div>
       </div>
@@ -258,9 +258,9 @@ export async function sendNewFollowerNotification(
 
   return sendEmail({
     to: creatorEmail,
-    subject: `${followerName} started following you on KreAIte`,
+    subject: `${followerName} started following you on Stroke Recovery Academy`,
     html,
-    text: `Hey ${creatorName}! ${followerName} is now following you on KreAIte.`,
+    text: `Hey ${creatorName}! ${followerName} is now following you on Stroke Recovery Academy.`,
   });
 }
 
@@ -292,7 +292,7 @@ export async function sendPayoutNotification(
     </head>
     <body>
       <div class="container">
-        <div class="logo">KreAIte</div>
+        <div class="logo">Stroke Recovery Academy</div>
         <h1>Payout Sent.</h1>
         <p>Great news ${creatorName}! Your earnings are on the way.</p>
         
@@ -305,7 +305,7 @@ export async function sendPayoutNotification(
         <p>Funds typically arrive within 2-5 business days depending on your bank.</p>
         
         <div class="footer">
-          <p>KreAIte.xyz - CREATE. PUBLISH. EARN.</p>
+          <p>Stroke Recovery Academy - CREATE. PUBLISH. EARN.</p>
           <p>Powered by KremersX</p>
         </div>
       </div>
@@ -345,8 +345,8 @@ export async function sendWelcomeEmail(
     </head>
     <body>
       <div class="container">
-        <div class="logo">KreAIte</div>
-        <h1>Welcome to KreAIte, ${userName}!</h1>
+        <div class="logo">Stroke Recovery Academy</div>
+        <h1>Welcome to Stroke Recovery Academy, ${userName}!</h1>
         <div class="tagline">CREATE. PUBLISH. EARN.</div>
         
         <p>You now have access to 6 professional AI-powered studios:</p>
@@ -378,13 +378,13 @@ export async function sendWelcomeEmail(
           </div>
         </div>
         
-        <p>Sell your creations on the KreAItorverse marketplace and keep <strong>85% of every sale</strong>!</p>
+        <p>Sell your creations on the Marketplace marketplace and keep <strong>85% of every sale</strong>!</p>
         
-        <a href="https://kreaite.xyz/dashboard" class="cta-button">Start Creating</a>
+        <a href="https://strokerecoveryacademy.com/dashboard" class="cta-button">Start Creating</a>
         
         <div class="footer">
-          <p>KreAIte.xyz - Powered by KremersX</p>
-          <p>Questions? Contact us at info@kreaite.xyz</p>
+          <p>Stroke Recovery Academy - Powered by KremersX</p>
+          <p>Questions? Contact us at info@strokerecoveryacademy.com</p>
         </div>
       </div>
     </body>
@@ -393,9 +393,9 @@ export async function sendWelcomeEmail(
 
   return sendEmail({
     to: userEmail,
-    subject: `Welcome to KreAIte - Start Creating Today!`,
+    subject: `Welcome to Stroke Recovery Academy - Start Creating Today!`,
     html,
-    text: `Welcome to KreAIte, ${userName}! You now have access to 6 professional AI-powered studios. Start creating and earn 85% of every sale on the KreAItorverse marketplace.`,
+    text: `Welcome to Stroke Recovery Academy, ${userName}! You now have access to 6 professional AI-powered studios. Start creating and earn 85% of every sale on the Marketplace marketplace.`,
   });
 }
 
@@ -416,7 +416,7 @@ export async function sendMagicLinkEmail(
           <div style="display: inline-block; padding: 12px; background: linear-gradient(135deg, #f59e0b, #ea580c); border-radius: 16px; margin-bottom: 16px;">
             <span style="font-size: 32px;">✨</span>
           </div>
-          <h1 style="color: #ffffff; font-size: 28px; margin: 0;">KreAIte</h1>
+          <h1 style="color: #ffffff; font-size: 28px; margin: 0;">Stroke Recovery Academy</h1>
           <p style="color: #9ca3af; margin: 8px 0 0;">Create. Publish. Earn.</p>
         </div>
         
@@ -437,7 +437,7 @@ export async function sendMagicLinkEmail(
         
         <div style="text-align: center; margin-top: 40px;">
           <p style="color: #4b5563; font-size: 12px; margin: 0;">
-            © ${new Date().getFullYear()} KreAIte. All rights reserved.
+            © ${new Date().getFullYear()} Stroke Recovery Academy. All rights reserved.
           </p>
         </div>
       </div>
@@ -447,9 +447,9 @@ export async function sendMagicLinkEmail(
 
   return sendEmail({
     to: email,
-    subject: 'Sign in to KreAIte',
+    subject: 'Sign in to Stroke Recovery Academy',
     html,
-    text: `Sign in to KreAIte using this link: ${magicLinkUrl}. This link expires in 15 minutes.`,
+    text: `Sign in to Stroke Recovery Academy using this link: ${magicLinkUrl}. This link expires in 15 minutes.`,
   });
 }
 
@@ -470,7 +470,7 @@ export async function sendPasswordResetEmail(
           <div style="display: inline-block; padding: 12px; background: linear-gradient(135deg, #f59e0b, #ea580c); border-radius: 16px; margin-bottom: 16px;">
             <span style="font-size: 32px;">🔐</span>
           </div>
-          <h1 style="color: #ffffff; font-size: 28px; margin: 0;">KreAIte</h1>
+          <h1 style="color: #ffffff; font-size: 28px; margin: 0;">Stroke Recovery Academy</h1>
         </div>
         
         <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 32px; text-align: center;">
@@ -494,8 +494,8 @@ export async function sendPasswordResetEmail(
 
   return sendEmail({
     to: email,
-    subject: 'Reset your KreAIte password',
+    subject: 'Reset your Stroke Recovery Academy password',
     html,
-    text: `Reset your KreAIte password using this link: ${resetUrl}. This link expires in 1 hour.`,
+    text: `Reset your Stroke Recovery Academy password using this link: ${resetUrl}. This link expires in 1 hour.`,
   });
 }

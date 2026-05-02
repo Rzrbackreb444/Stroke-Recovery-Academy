@@ -128,9 +128,9 @@ export default function SEOCommandCenter() {
       <SEO 
         title="SEO Command Center"
         description="Enterprise-grade SEO optimization tools including website analysis, keyword research, content optimization, competitor analysis, and structured data generation for maximum search visibility."
-        canonicalUrl="https://kreaite.xyz/seo-command-center"
+        canonicalUrl="https://strokerecoveryacademy.com/seo-command-center"
         keywords={["SEO tools", "keyword research", "content optimization", "website analysis", "SEO checker"]}
-        author="KreAIte"
+        author="Stroke Recovery Academy"
         expertise="Advanced SEO and search optimization strategies"
         experience="Platform established 2024 with proven SEO methodologies"
         authoritativeness="Comprehensive SEO analysis and optimization platform"

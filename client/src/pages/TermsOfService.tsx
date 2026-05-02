@@ -30,10 +30,10 @@ export default function TermsOfService() {
     <div className="min-h-screen bg-[#FAF8F3]" data-testid="page-terms-of-service">
       <SEO 
         title="Terms of Service"
-        description="Review KreAIte's comprehensive Terms of Service covering user accounts, creator rights, revenue sharing, payment terms, and platform policies for all members."
-        canonicalUrl="https://kreaite.xyz/terms-of-service"
+        description="Review Stroke Recovery Academy's comprehensive Terms of Service covering user accounts, creator rights, revenue sharing, payment terms, and platform policies for all members."
+        canonicalUrl="https://strokerecoveryacademy.com/terms-of-service"
         keywords={["terms of service", "user agreement", "platform terms", "creator terms", "service terms"]}
-        author="KreAIte"
+        author="Stroke Recovery Academy"
         expertise="Legal platform terms and creator agreements"
         experience="Platform established 2024 with transparent creator terms"
         authoritativeness="Clear and fair platform policies"
@@ -84,8 +84,8 @@ export default function TermsOfService() {
 
         <article className="prose prose-invert prose-lg max-w-none" data-testid="article-terms-content">
           <p className="text-gray-400 leading-relaxed mb-8">
-            Welcome to KreAIte. These Terms of Service ("Terms") govern your access to and use of the KreAIte platform, 
-            including our website, applications, and services (collectively, the "Service"). By accessing or using KreAIte, 
+            Welcome to Stroke Recovery Academy. These Terms of Service ("Terms") govern your access to and use of the Stroke Recovery Academy platform, 
+            including our website, applications, and services (collectively, the "Service"). By accessing or using Stroke Recovery Academy, 
             you agree to be bound by these Terms.
           </p>
 
@@ -94,12 +94,12 @@ export default function TermsOfService() {
           <section id="acceptance" className="scroll-mt-24">
             <h2 className="text-2xl font-bold text-foreground mb-4">1. Acceptance of Terms</h2>
             <p className="text-gray-400 leading-relaxed mb-4">
-              By creating an account, accessing, or using the KreAIte platform, you acknowledge that you have read, 
+              By creating an account, accessing, or using the Stroke Recovery Academy platform, you acknowledge that you have read, 
               understood, and agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree 
               to these Terms, you may not access or use the Service.
             </p>
             <p className="text-gray-400 leading-relaxed">
-              You must be at least 18 years of age to use this Service. By using KreAIte, you represent and warrant that 
+              You must be at least 18 years of age to use this Service. By using Stroke Recovery Academy, you represent and warrant that 
               you are at least 18 years old and have the legal capacity to enter into these Terms.
             </p>
           </section>
@@ -130,10 +130,10 @@ export default function TermsOfService() {
             <h2 className="text-2xl font-bold text-foreground mb-4">3. Creator Content and Rights</h2>
             <p className="text-gray-400 leading-relaxed mb-4">
               <strong className="text-foreground">Ownership:</strong> You retain full ownership of all content you create, 
-              upload, or publish on KreAIte ("Creator Content"). KreAIte does not claim ownership of your original works.
+              upload, or publish on Stroke Recovery Academy ("Creator Content"). Stroke Recovery Academy does not claim ownership of your original works.
             </p>
             <p className="text-gray-400 leading-relaxed mb-4">
-              <strong className="text-foreground">License Grant:</strong> By publishing content on KreAIte, you grant us a 
+              <strong className="text-foreground">License Grant:</strong> By publishing content on Stroke Recovery Academy, you grant us a 
               non-exclusive, worldwide, royalty-free license to display, distribute, reproduce, and promote your 
               Creator Content solely for the purpose of operating and improving the Service, and facilitating sales 
               through our marketplace.
@@ -154,7 +154,7 @@ export default function TermsOfService() {
           <section id="revenue-share" className="scroll-mt-24">
             <h2 className="text-2xl font-bold text-foreground mb-4">4. Revenue Share</h2>
             <p className="text-gray-400 leading-relaxed mb-4">
-              KreAIte operates on a creator-first revenue model:
+              Stroke Recovery Academy operates on a creator-first revenue model:
             </p>
             <div className="bg-[#1a1a1a] border border-[#333] rounded-lg p-6 mb-4">
               <div className="flex items-center justify-between">
@@ -169,11 +169,11 @@ export default function TermsOfService() {
               </div>
             </div>
             <p className="text-gray-400 leading-relaxed mb-4">
-              For all sales made through the KreAIte marketplace:
+              For all sales made through the Stroke Recovery Academy marketplace:
             </p>
             <ul className="list-disc pl-6 text-gray-400 space-y-2">
               <li>Creators receive 85% of the net sale price after payment processing fees</li>
-              <li>KreAIte retains 15% as a platform fee to cover operations, hosting, and development</li>
+              <li>Stroke Recovery Academy retains 15% as a platform fee to cover operations, hosting, and development</li>
               <li>Payment processing fees (typically 2.9% + $0.30) are deducted before the revenue split</li>
               <li>Earnings are calculated and distributed according to our payment schedule</li>
             </ul>
@@ -209,7 +209,7 @@ export default function TermsOfService() {
             <h2 className="text-2xl font-bold text-foreground mb-4">6. Payment Terms</h2>
             <p className="text-gray-400 leading-relaxed mb-4">
               <strong className="text-foreground">Payment Processing:</strong> All payments are processed through 
-              Stripe, our third-party payment processor. By using KreAIte, you agree to Stripe's terms of service.
+              Stripe, our third-party payment processor. By using Stroke Recovery Academy, you agree to Stripe's terms of service.
             </p>
             <p className="text-gray-400 leading-relaxed mb-4">
               <strong className="text-foreground">Creator Payouts:</strong>
@@ -227,7 +227,7 @@ export default function TermsOfService() {
             </p>
             <p className="text-gray-400 leading-relaxed">
               <strong className="text-foreground">Taxes:</strong> Creators are responsible for reporting and paying 
-              all applicable taxes on their earnings. KreAIte may provide tax documentation as required by law.
+              all applicable taxes on their earnings. Stroke Recovery Academy may provide tax documentation as required by law.
             </p>
           </section>
 
@@ -236,7 +236,7 @@ export default function TermsOfService() {
           <section id="dmca" className="scroll-mt-24">
             <h2 className="text-2xl font-bold text-foreground mb-4">7. DMCA / Copyright Policy</h2>
             <p className="text-gray-400 leading-relaxed mb-4">
-              KreAIte respects the intellectual property rights of others and expects users to do the same. 
+              Stroke Recovery Academy respects the intellectual property rights of others and expects users to do the same. 
               We comply with the Digital Millennium Copyright Act (DMCA) and will respond to valid takedown notices.
             </p>
             <p className="text-gray-400 leading-relaxed mb-4">
@@ -266,7 +266,7 @@ export default function TermsOfService() {
           <section id="limitation" className="scroll-mt-24">
             <h2 className="text-2xl font-bold text-foreground mb-4">8. Limitation of Liability</h2>
             <p className="text-gray-400 leading-relaxed mb-4">
-              TO THE MAXIMUM EXTENT PERMITTED BY LAW, KREAITE AND ITS AFFILIATES, OFFICERS, DIRECTORS, EMPLOYEES, 
+              TO THE MAXIMUM EXTENT PERMITTED BY LAW, STROKE RECOVERY ACADEMY AND ITS AFFILIATES, OFFICERS, DIRECTORS, EMPLOYEES, 
               AND AGENTS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE 
               DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF PROFITS, DATA, OR USE, ARISING OUT OF OR IN CONNECTION 
               WITH YOUR USE OF THE SERVICE.
@@ -278,7 +278,7 @@ export default function TermsOfService() {
             </p>
             <p className="text-gray-400 leading-relaxed">
               Our total liability for any claims arising under these Terms shall not exceed the greater of 
-              $100 USD or the amount you paid to KreAIte in the 12 months preceding the claim.
+              $100 USD or the amount you paid to Stroke Recovery Academy in the 12 months preceding the claim.
             </p>
           </section>
 
@@ -346,9 +346,9 @@ export default function TermsOfService() {
               If you have any questions about these Terms of Service, please contact us:
             </p>
             <div className="bg-[#1a1a1a] border border-[#333] rounded-lg p-6">
-              <p className="text-foreground font-semibold mb-2">KreAIte Legal Team</p>
+              <p className="text-foreground font-semibold mb-2">Stroke Recovery Academy Legal Team</p>
               <p className="text-gray-400">
-                Email: <a href="mailto:info@kreaite.xyz" className="text-[#C9941A] hover:underline" data-testid="link-contact-email">info@kreaite.xyz</a>
+                Email: <a href="mailto:info@strokerecoveryacademy.com" className="text-[#C9941A] hover:underline" data-testid="link-contact-email">info@strokerecoveryacademy.com</a>
               </p>
             </div>
           </section>

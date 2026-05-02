@@ -192,11 +192,11 @@ export default function SocialNetwork() {
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <SEO
-        title="Creator Network | KreAIte"
+        title="Creator Network | Stroke Recovery Academy"
         description="Connect with thousands of stroke survivors and creators worldwide. Share recovery journeys, build meaningful relationships, and get support from our thriving community of verified healthcare professionals."
         canonical="/social-network"
         keywords="creator network, stroke recovery community, social platform, survivor support, community building"
-        author="KreAIte"
+        author="Stroke Recovery Academy"
         expertise={["Community Building", "Peer Support Networks", "Health & Wellness Communities"]}
         experience="Building supportive creator communities since 2024"
         trustSignals={["Thousands of active members", "Verified healthcare professionals", "Moderated for safety"]}

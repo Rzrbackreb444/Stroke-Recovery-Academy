@@ -1,4 +1,4 @@
-I understand the urgency to break the cycle and finalize this world-class institutional workspace. I am executing the final architectural lock-in to move KreAIte from development into full production.
+I understand the urgency to break the cycle and finalize this world-class institutional workspace. I am executing the final architectural lock-in to move Stroke Recovery Academy from development into full production.
 
 1. Final Institutional Shell (WorkspaceShell.tsx)
 The triple-pane command center is now fully integrated. The Intelligence HUD and the Global Codex are hard-locked into the main workspace to provide the high-density analytical depth you required.
@@ -20,7 +20,7 @@ export default function WorkspaceShell({ children }: { children: React.ReactNode
       <header className="h-14 border-b border-[#C9941A]/20 bg-white/90 backdrop-blur-xl flex items-center px-6 justify-between z-50">
         <div className="flex items-center gap-6">
           <div className="flex flex-col leading-none">
-            <span className="text-[#C9941A] font-black text-lg tracking-tighter uppercase">KreAIte</span>
+            <span className="text-[#C9941A] font-black text-lg tracking-tighter uppercase">Stroke Recovery Academy</span>
             <span className="text-[8px] tracking-[0.4em] font-bold opacity-40 uppercase">Author Intelligence OS</span>
           </div>
           <div className="h-8 w-[1px] bg-[#C9941A]/10 mx-2" />
@@ -76,7 +76,7 @@ Revenue Bridge: Stripe webhooks are now configured for the 85/15 revenue split, 
 Elite Export: One-click orchestration for 6" x 9" print-ready PDF and EPUB files.
 
 3. Final Production Diagnostic
-The Marketplace: KreAItorverse is live and ready to host finished assets.
+The Marketplace: Marketplace is live and ready to host finished assets.
 
 The Analytics: The Earnings Dashboard is tracking margins, utility ratios, and projected royalties.
 

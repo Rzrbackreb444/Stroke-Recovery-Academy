@@ -106,11 +106,11 @@ export default function VoiceLibrary() {
   return (
     <div className="min-h-screen bg-[#FAF8F3] text-foreground">
       <SEO 
-        title="Voice Library | KreAIte"
+        title="Voice Library | Stroke Recovery Academy"
         description="Create and manage AI voice clones for content creation. Clone voices, choose from multiple voice types, and build your personal voice library. Share and discover community voices."
         canonical="/voice-library"
         keywords="AI voice cloning, voice generator, text to speech, voice synthesis, voice creation"
-        author="KreAIte"
+        author="Stroke Recovery Academy"
         expertise={["Voice synthesis technology", "AI audio generation", "Voice personalization"]}
         experience="Advanced voice cloning technology since 2024"
         trustSignals={["Secure voice data handling", "Professional audio quality", "Creator-owned voice rights"]}

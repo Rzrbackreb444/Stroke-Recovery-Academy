@@ -8,8 +8,8 @@ const RECOVERY_DOMAINS = [
 ];
 
 const CREATOR_DOMAINS = [
-  "kreaite.xyz",
-  "www.kreaite.xyz",
+  "strokerecoveryacademy.com",
+  "www.strokerecoveryacademy.com",
 ];
 
 const NONPROFIT_DOMAINS = [

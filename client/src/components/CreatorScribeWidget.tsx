@@ -25,7 +25,7 @@ export default function CreatorScribeWidget() {
     {
       id: "welcome",
       role: "assistant",
-      content: "Welcome to KreAIte. I'm your Creative Partner, here to help you bring your ideas to life. Whether you're drafting a book, designing a course, or composing music, I can generate content directly into your project. How can I help you create today?",
+      content: "Welcome to Stroke Recovery Academy. I'm your Creative Partner, here to help you bring your ideas to life. Whether you're drafting a book, designing a course, or composing music, I can generate content directly into your project. How can I help you create today?",
       timestamp: new Date(),
     },
   ]);
@@ -190,7 +190,7 @@ export default function CreatorScribeWidget() {
                     Creative Partner
                     <Sparkles className="w-4 h-4 text-[#FF6B35]" />
                   </h3>
-                  <p className="text-[10px] text-[#FF6B35]/70 uppercase tracking-widest font-sans">KreAIte AI Assistant</p>
+                  <p className="text-[10px] text-[#FF6B35]/70 uppercase tracking-widest font-sans">Stroke Recovery Academy AI Assistant</p>
                 </div>
                 <Button
                   size="icon"
@@ -266,7 +266,7 @@ export default function CreatorScribeWidget() {
                   </Button>
                 </div>
                 <p className="text-[10px] text-gray-600 text-center mt-2 font-sans tracking-tight">
-                  Powered by KreAIte &bull; AI-generated content for review
+                  Powered by Stroke Recovery Academy &bull; AI-generated content for review
                 </p>
               </div>
             </>

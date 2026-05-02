@@ -1,6 +1,6 @@
 /**
  * Universal Publishing Platform Distribution Service
- * Distribute books from KreAItorverse to ALL major publishing platforms
+ * Distribute books from Marketplace to ALL major publishing platforms
  * 
  * Supported Platforms:
  * - Amazon KDP (Kindle Direct Publishing)

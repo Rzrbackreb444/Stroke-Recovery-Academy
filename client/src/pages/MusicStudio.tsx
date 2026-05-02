@@ -68,7 +68,7 @@ const genres = [
   { value: "ambient", label: "Ambient", icon: Sparkles, category: "Atmospheric" },
   { value: "cinematic", label: "Cinematic", icon: Film, category: "Atmospheric" },
   { value: "orchestral", label: "Orchestral", icon: Music, category: "Atmospheric" },
-  // Recovery & Motivation (KreAIte Exclusive)
+  // Recovery & Motivation (Stroke Recovery Academy Exclusive)
   { value: "recovery", label: "Recovery Healing", icon: Heart, category: "Motivation" },
   { value: "motivation", label: "Motivational", icon: Rocket, category: "Motivation" },
   { value: "warrior", label: "Warrior Anthem", icon: Zap, category: "Motivation" },

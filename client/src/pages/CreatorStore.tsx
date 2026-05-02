@@ -92,9 +92,9 @@ export default function CreatorStore() {
       <SEO 
         title="Creator Store"
         description="Discover hand-picked professional tools and resources for creators. Essential software, equipment, and services to help you create better content and grow your audience."
-        canonicalUrl="https://kreaite.xyz/creator-store"
+        canonicalUrl="https://strokerecoveryacademy.com/creator-store"
         keywords={["creator tools", "digital products", "creator resources", "content creation tools", "professional software", "creator equipment"]}
-        author="KreAIte"
+        author="Stroke Recovery Academy"
         expertise={["Creator Tools", "Content Creation Resources", "Professional Marketplace", "Creator Equipment"]}
         experience="Platform established 2024"
         authoritativeness="Leading creator marketplace with curated product selection and expert recommendations"
@@ -213,7 +213,7 @@ export default function CreatorStore() {
                 Every product in the Creator Tools store is hand-selected to help you
                 create better content. We focus on quality, value, and tools that
                 successful creators actually use. When you purchase through our links,
-                you support KreAIte at no extra cost to you.
+                you support Stroke Recovery Academy at no extra cost to you.
               </p>
             </CardContent>
           </Card>

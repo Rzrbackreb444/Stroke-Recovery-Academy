@@ -584,7 +584,7 @@ export default function DJStudio() {
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <SEO 
-        title="DJ Studio | KreAIte"
+        title="DJ Studio | Stroke Recovery Academy"
         description="Professional DJ studio with dual turntables, stem separation, autotune, effects, and mixing. Create mashups, scratch, slow down, speed up, and transform your music."
         canonical="/dj-studio"
         keywords="DJ software, music mixing, stem separation, autotune, mashups, turntables, audio production"

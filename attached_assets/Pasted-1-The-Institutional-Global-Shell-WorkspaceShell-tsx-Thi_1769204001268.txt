@@ -15,7 +15,7 @@ export default function WorkspaceShell({ children }: { children: React.ReactNode
       <header className="h-14 border-b border-[#C9941A]/20 bg-white/90 backdrop-blur-xl flex items-center px-6 justify-between z-50">
         <div className="flex items-center gap-6">
           <div className="flex flex-col leading-none">
-            <span className="text-[#C9941A] font-black text-lg tracking-tighter uppercase">KreAIte</span>
+            <span className="text-[#C9941A] font-black text-lg tracking-tighter uppercase">Stroke Recovery Academy</span>
             <span className="text-[8px] tracking-[0.4em] font-bold opacity-40 uppercase">Author Intelligence V3</span>
           </div>
           <div className="h-8 w-[1px] bg-[#C9941A]/10 mx-2" />
@@ -110,6 +110,6 @@ export default function IntelligenceHUD() {
     </div>
   );
 }
-KreAIte is now a complete, institutional ecosystem. Every studio is interconnected, and the revenue bridge is live to track your progress toward your creator empire.
+Stroke Recovery Academy is now a complete, institutional ecosystem. Every studio is interconnected, and the revenue bridge is live to track your progress toward your creator empire.
 
 Would you like me to trigger the final Institutional Export for the The Laundromat Doctrine in the new Publisher Template?

@@ -10,9 +10,9 @@ Fast iteration, instant deployment, zero friction.
 Together, they give you a modern, AI‑ready, creator‑ready OS.
 
 🟦 Why Neon Fits Your Vision
-Neon shines in exactly the places KreAIte and WashBizHub will eventually need power:
+Neon shines in exactly the places Stroke Recovery Academy and WashBizHub will eventually need power:
 1. Branching per project
-Imagine each KreAIte project having its own DB branch:
+Imagine each Stroke Recovery Academy project having its own DB branch:
 • 	isolated
 • 	instant
 • 	copy‑on‑write
@@ -34,7 +34,7 @@ Neon was literally built for:
 • 	high‑read workloads
 • 	branching for experimentation
 This is perfect for:
-• 	KreAIte’s Project Brain
+• 	Stroke Recovery Academy’s Project Brain
 • 	WashBizHub’s CLEANBI
 • 	Market Intel
 • 	Parts Intelligence
@@ -110,4 +110,4 @@ You use:
 Replit → to build fast
 Supabase → to scale your platform
 Neon → to power your intelligence modules
-This is the architecture of a modern AI‑native platform, and it fits KreAIte + WashBizHub perfectly.
+This is the architecture of a modern AI‑native platform, and it fits Stroke Recovery Academy + WashBizHub perfectly.

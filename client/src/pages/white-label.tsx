@@ -46,7 +46,7 @@ const pricingTiers = {
     price: 299,
     features: [
       "Everything in Basic",
-      "Hide KreAIte branding completely",
+      "Hide Stroke Recovery Academy branding completely",
       "Unlimited creator accounts",
       "Custom revenue split (up to 95/5)",
       "Priority support",
@@ -169,7 +169,7 @@ export default function WhiteLabelPage() {
           <div>
             <h1 className="text-3xl font-bold text-[#1a1a1a] font-serif">White Label Branding</h1>
             <p className="text-gray-400 mt-1">
-              Customize and rebrand KreAIte as your own platform
+              Customize and rebrand Stroke Recovery Academy as your own platform
             </p>
           </div>
           <Badge variant="outline" className="bg-[#C9941A]/10 text-[#C9941A] border-[#C9941A]">
@@ -354,9 +354,9 @@ export default function WhiteLabelPage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label>Hide KreAIte Branding</Label>
+                      <Label>Hide Stroke Recovery Academy Branding</Label>
                       <p className="text-sm text-gray-400">
-                        Remove all KreAIte branding from your platform (Professional tier required)
+                        Remove all Stroke Recovery Academy branding from your platform (Professional tier required)
                       </p>
                     </div>
                     <Switch
@@ -441,7 +441,7 @@ export default function WhiteLabelPage() {
                         <div className="text-sm">
                           <p className="font-medium text-amber-800">DNS Configuration Required</p>
                           <p className="text-amber-700 mt-1">
-                            Add a CNAME record pointing to <code className="bg-amber-100 px-1 rounded">app.kreaite.xyz</code>
+                            Add a CNAME record pointing to <code className="bg-amber-100 px-1 rounded">app.strokerecoveryacademy.com</code>
                           </p>
                         </div>
                       </div>

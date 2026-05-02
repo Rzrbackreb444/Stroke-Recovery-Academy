@@ -429,7 +429,7 @@ export default function MovieStudio() {
           "Multi-track scene composition and timeline management",
           "Video production workflow automation"
         ]}
-        experience="KreAIte's Movie Studio leverages years of film production knowledge combined with cutting-edge AI technology. Built for indie filmmakers, content creators, and studios seeking to accelerate their production pipeline while maintaining creative control."
+        experience="Stroke Recovery Academy's Movie Studio leverages years of film production knowledge combined with cutting-edge AI technology. Built for indie filmmakers, content creators, and studios seeking to accelerate their production pipeline while maintaining creative control."
         trustSignals={[
           "ElevenLabs certified voice synthesis partner",
           "Professional-grade screenplay generation",
@@ -440,7 +440,7 @@ export default function MovieStudio() {
         ]}
         schema={{
           "@type": "SoftwareApplication",
-          name: "KreAIte Movie Studio",
+          name: "Stroke Recovery Academy Movie Studio",
           applicationCategory: "MultimediaApplication",
           operatingSystem: "Web Browser",
           description: "AI-powered film production studio with screenplay generation, character voice synthesis, professional scene composition, and video production tools.",

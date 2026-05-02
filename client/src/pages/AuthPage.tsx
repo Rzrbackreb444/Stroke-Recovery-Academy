@@ -55,7 +55,7 @@ export default function AuthPage() {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/email-auth/me"] });
-      toast({ title: "Account created!", description: "Welcome to KreAIte" });
+      toast({ title: "Account created!", description: "Welcome to Stroke Recovery Academy" });
       setLocation("/creator-hub");
     },
     onError: (error: any) => {
@@ -125,7 +125,7 @@ export default function AuthPage() {
             <div className="flex items-center gap-3 mb-12">
               <img 
                 src={kreaiteLogo} 
-                alt="KreAIte" 
+                alt="Stroke Recovery Academy" 
                 className="h-12 w-auto object-contain"
               />
             </div>
@@ -170,7 +170,7 @@ export default function AuthPage() {
           <div className="lg:hidden flex items-center justify-center mb-8">
             <img 
               src={kreaiteLogo} 
-              alt="KreAIte" 
+              alt="Stroke Recovery Academy" 
               className="h-10 w-auto object-contain"
             />
           </div>
@@ -184,8 +184,8 @@ export default function AuthPage() {
                 {mode === "forgot-password" && "Reset Password"}
               </CardTitle>
               <CardDescription className="text-white/60">
-                {mode === "login" && "Sign in to your KreAIte account"}
-                {mode === "register" && "Join 50M+ creators on KreAIte"}
+                {mode === "login" && "Sign in to your Stroke Recovery Academy account"}
+                {mode === "register" && "Join 50M+ creators on Stroke Recovery Academy"}
                 {mode === "magic-link" && "We'll email you a secure sign in link"}
                 {mode === "forgot-password" && "Enter your email to reset password"}
               </CardDescription>

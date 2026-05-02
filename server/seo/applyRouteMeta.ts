@@ -13,8 +13,6 @@ const SITE_ORIGIN_DEFAULT = "https://strokerecoveryacademy.com";
 const CANONICAL_HOST_ALLOWLIST = new Set<string>([
   "strokerecoveryacademy.com",
   "www.strokerecoveryacademy.com",
-  "kreaite.xyz",
-  "www.kreaite.xyz",
 ]);
 
 function resolveCanonicalOrigin(host: string | undefined): string {

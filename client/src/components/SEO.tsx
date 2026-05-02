@@ -24,13 +24,13 @@ interface SEOProps {
   trustSignals?: string[];
 }
 
-const BASE_URL = "https://kreaite.xyz";
+const BASE_URL = "https://strokerecoveryacademy.com";
 const DEFAULT_IMAGE = `${BASE_URL}/og-image.png`;
-const SITE_NAME = "KreAIte.xyz";
+const SITE_NAME = "Stroke Recovery Academy";
 
 export default function SEO({
   title,
-  description = "Create professional content with AI. KreAIte.xyz offers 7 powerful studios for books, videos, music, courses, images, and websites. 85% creator earnings.",
+  description = "Stroke Recovery Academy — built by Nick Kremers, 7-year stroke survivor. Daily routines, neuroplasticity exercises, AI coach, 66-day challenge, survivor community.",
   keywords,
   canonical,
   canonicalUrl,
@@ -130,8 +130,8 @@ export default function SEO({
     url: BASE_URL,
     logo: `${BASE_URL}/logo.png`,
     sameAs: [
-      "https://twitter.com/kreaite",
-      "https://linkedin.com/company/kreaite"
+      "https://twitter.com/strokerecoveryacademy",
+      "https://linkedin.com/company/stroke-recovery-academy"
     ],
     contactPoint: {
       "@type": "ContactPoint",
@@ -186,8 +186,8 @@ export default function SEO({
       <meta property="og:locale" content="en_US" />
 
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:site" content="@kreaite" />
-      <meta name="twitter:creator" content="@kreaite" />
+      <meta name="twitter:site" content="@strokerecoveryacademy" />
+      <meta name="twitter:creator" content="@strokerecoveryacademy" />
       <meta name="twitter:url" content={finalCanonicalUrl} />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
@@ -224,7 +224,7 @@ export default function SEO({
 export const studioSchemas = {
   bookStudio: {
     "@type": "SoftwareApplication",
-    name: "KreAIte Book Studio",
+    name: "Stroke Recovery Academy Book Studio",
     applicationCategory: "DesktopEnhancementApplication",
     operatingSystem: "Web Browser",
     description: "AI-powered book writing studio with professional editor, AI ghostwriting, and direct publishing to KDP and Lulu.",
@@ -233,7 +233,7 @@ export const studioSchemas = {
   },
   musicStudio: {
     "@type": "SoftwareApplication",
-    name: "KreAIte Music Studio",
+    name: "Stroke Recovery Academy Music Studio",
     applicationCategory: "MultimediaApplication",
     operatingSystem: "Web Browser",
     description: "AI music composition studio with Tone.js, loop libraries, mixing and mastering tools.",
@@ -242,7 +242,7 @@ export const studioSchemas = {
   },
   videoStudio: {
     "@type": "SoftwareApplication",
-    name: "KreAIte Video Studio",
+    name: "Stroke Recovery Academy Video Studio",
     applicationCategory: "MultimediaApplication",
     operatingSystem: "Web Browser",
     description: "Professional video editor with AI video generation, multi-track timeline, and studio effects.",
@@ -251,7 +251,7 @@ export const studioSchemas = {
   },
   courseStudio: {
     "@type": "SoftwareApplication",
-    name: "KreAIte Course Builder",
+    name: "Stroke Recovery Academy Course Builder",
     applicationCategory: "EducationalApplication",
     operatingSystem: "Web Browser",
     description: "Create professional online courses with AI-generated content, video lessons, quizzes, and certificates.",
@@ -260,7 +260,7 @@ export const studioSchemas = {
   },
   imageStudio: {
     "@type": "SoftwareApplication",
-    name: "KreAIte Image Studio",
+    name: "Stroke Recovery Academy Image Studio",
     applicationCategory: "MultimediaApplication",
     operatingSystem: "Web Browser",
     description: "Photoshop-like image editor with layers, filters, AI generation, and background removal.",
@@ -294,7 +294,7 @@ export function createAuthorSchema(author: {
     award: author.achievements,
     memberOf: {
       "@type": "Organization",
-      name: "KreAIte.xyz",
+      name: "Stroke Recovery Academy",
       url: BASE_URL,
     },
   };
@@ -313,7 +313,7 @@ export function createCourseSchema(course: {
     description: course.description,
     provider: {
       "@type": "Organization",
-      name: "KreAIte.xyz",
+      name: "Stroke Recovery Academy",
       sameAs: BASE_URL,
     },
     instructor: {
@@ -340,7 +340,7 @@ export function createProductSchema(product: {
     name: product.name,
     description: product.description,
     image: product.image,
-    brand: { "@type": "Brand", name: "KreAIte" },
+    brand: { "@type": "Brand", name: "Stroke Recovery Academy" },
     category: product.category,
     offers: {
       "@type": "Offer",
@@ -390,7 +390,7 @@ export function createArticleSchema(article: {
     image: article.image,
     publisher: {
       "@type": "Organization",
-      name: "KreAIte.xyz",
+      name: "Stroke Recovery Academy",
       logo: { "@type": "ImageObject", url: `${BASE_URL}/logo.png` },
     },
   };

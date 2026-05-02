@@ -10,7 +10,7 @@ interface SEOProps {
   noIndex?: boolean;
 }
 
-const DEFAULT_TITLE = 'KreAIte.xyz | AI-Powered Creator Studio';
+const DEFAULT_TITLE = 'Stroke Recovery Academy | AI-Powered Creator Studio';
 const DEFAULT_DESCRIPTION = 'Create professional content with AI. 6 powerful studios for books, videos, music, courses, and images. 85% creator earnings.';
 
 export function useSEO(props: SEOProps) {
@@ -26,7 +26,7 @@ export function useSEO(props: SEOProps) {
     } = props;
 
     if (title) {
-      const fullTitle = title.includes('KreAIte') ? title : `${title} | KreAIte.xyz`;
+      const fullTitle = title.includes('Stroke Recovery Academy') ? title : `${title} | Stroke Recovery Academy`;
       document.title = fullTitle;
       updateMetaTag('og:title', fullTitle);
       updateMetaTag('twitter:title', fullTitle);
@@ -88,7 +88,7 @@ function updateMetaTag(name: string, content: string) {
 
 export const SEO_PAGES = {
   home: {
-    title: 'KreAIte.xyz | AI-Powered Creator Studio | Books, Videos, Music, Courses',
+    title: 'Stroke Recovery Academy | AI-Powered Creator Studio | Books, Videos, Music, Courses',
     description: 'Create professional content with AI. 6 powerful studios for books, videos, music, courses, and images. Publish to marketplace with 85% creator earnings.',
     keywords: 'AI content creation, AI book writing, AI video generator, AI music composer, creator platform'
   },
@@ -123,33 +123,33 @@ export const SEO_PAGES = {
     keywords: 'knowledge base builder, documentation tool, training content, knowledge management'
   },
   marketplace: {
-    title: 'KreAItorverse Marketplace',
+    title: 'Marketplace',
     description: 'Discover and purchase professional digital content. Books, courses, music, videos, and images from creators worldwide. Creators earn 85%.',
     keywords: 'digital marketplace, buy ebooks, online courses, digital content, creator marketplace'
   },
   pricing: {
     title: 'Pricing Plans',
     description: 'Choose the perfect plan for your creative needs. Free tier available, premium plans with advanced AI features. 85% revenue share for creators.',
-    keywords: 'KreAIte pricing, creator platform pricing, AI content creation cost'
+    keywords: 'Stroke Recovery Academy pricing, creator platform pricing, AI content creation cost'
   },
   terms: {
     title: 'Terms of Service',
-    description: 'KreAIte.xyz Terms of Service. Review our terms for using the AI-powered creator platform, revenue share policy, and content guidelines.',
-    keywords: 'terms of service, legal, KreAIte terms'
+    description: 'Stroke Recovery Academy Terms of Service. Review our terms for using the AI-powered creator platform, revenue share policy, and content guidelines.',
+    keywords: 'terms of service, legal, Stroke Recovery Academy terms'
   },
   privacy: {
     title: 'Privacy Policy',
-    description: 'KreAIte.xyz Privacy Policy. Learn how we collect, use, and protect your data. GDPR and CCPA compliant.',
+    description: 'Stroke Recovery Academy Privacy Policy. Learn how we collect, use, and protect your data. GDPR and CCPA compliant.',
     keywords: 'privacy policy, data protection, GDPR, CCPA'
   },
   analytics: {
     title: 'Creator Analytics Dashboard',
-    description: 'Track your earnings, sales, and content performance. Real-time analytics for KreAIte creators.',
+    description: 'Track your earnings, sales, and content performance. Real-time analytics for Stroke Recovery Academy creators.',
     keywords: 'creator analytics, earnings dashboard, sales tracking'
   },
   affiliate: {
     title: 'Affiliate Program',
-    description: 'Earn 10% commission by referring creators to KreAIte. Share your unique referral link and track your earnings.',
+    description: 'Earn 10% commission by referring creators to Stroke Recovery Academy. Share your unique referral link and track your earnings.',
     keywords: 'affiliate program, referral program, earn commissions'
   }
 } as const;

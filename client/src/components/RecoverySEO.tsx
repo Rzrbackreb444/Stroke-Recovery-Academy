@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 
 const RECOVERY_BASE_URL = "https://strokerecoveryacademy.com";
-const KREAITE_BASE_URL = "https://kreaite.xyz";
+const KREAITE_BASE_URL = "https://strokerecoveryacademy.com";
 const TODAY = new Date().toISOString().split("T")[0];
 
 export const NICK_KREMERS_SCHEMA = {

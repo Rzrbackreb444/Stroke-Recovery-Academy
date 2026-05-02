@@ -7,6 +7,7 @@ import fs from "fs";
 import { storage } from "./storage";
 import { yearsSinceStroke } from "@shared/strokeAnniversary";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { publicPostLimiter, authActionLimiter } from "./middleware/publicRateLimit";
 import emailAuthRoutes from "./emailAuthRoutes";
 import luluRoutes from "./luluRoutes";
 import quoteStudioRoutes from "./quoteStudioRoutes";
@@ -1272,7 +1273,7 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   });
 
   // Magic Link Authentication routes
-  app.post('/api/auth/magic-link', async (req, res) => {
+  app.post('/api/auth/magic-link', authActionLimiter, async (req, res) => {
     try {
       const { email } = req.body;
       if (!email || typeof email !== 'string') {
@@ -1369,7 +1370,7 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   });
 
   // Email/Password Registration route
-  app.post('/api/auth/register', async (req: any, res) => {
+  app.post('/api/auth/register', authActionLimiter, async (req: any, res) => {
     try {
       const { email, password, firstName, lastName } = req.body;
       if (!email || !password) {
@@ -1473,7 +1474,7 @@ Last updated: ${new Date().toISOString().split('T')[0]}
 
   // Public subscribe (email capture widget, no auth required)
   // POST /api/feedback/platform — save survivor feedback (public)
-  app.post('/api/feedback/platform', async (req, res) => {
+  app.post('/api/feedback/platform', publicPostLimiter, async (req, res) => {
     try {
       const { name, email, userType, goals, freeText } = req.body;
       if (!goals || !Array.isArray(goals) || goals.length === 0) {
@@ -8469,7 +8470,7 @@ Respond in JSON format:
     <p>All rights reserved.</p>
     ${isbn ? `<p>ISBN: ${isbn}</p>` : ''}
     <p style="margin-top: 1in;">No part of this publication may be reproduced, distributed, or transmitted in any form without prior written permission.</p>
-    <p>Published by KreAIte Publishing</p>
+    <p>Published by Stroke Recovery Academy Publishing</p>
   </div>`;
 
       // Dedication
@@ -8980,7 +8981,7 @@ Respond in JSON format:
         price: 299,
         features: [
           "Everything in Basic",
-          "Hide KreAIte branding completely",
+          "Hide Stroke Recovery Academy branding completely",
           "Unlimited creator accounts",
           "Custom revenue split (up to 95/5)",
           "Priority support",
@@ -13188,12 +13189,12 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
         return res.status(403).json({ message: "Admin access required" });
       }
       
-      console.log('Creating KreAIte products in Stripe...');
+      console.log('Creating Stroke Recovery Academy products in Stripe...');
       const products = await stripeService.createKreAIteProducts();
       console.log('Created products:', products);
       res.json({ success: true, products });
     } catch (error) {
-      console.error("Error creating KreAIte products:", error);
+      console.error("Error creating Stroke Recovery Academy products:", error);
       res.status(500).json({ message: "Failed to create products", error: String(error) });
     }
   });
@@ -13203,7 +13204,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
       const products = await stripeService.getKreAIteProducts();
       res.json(products);
     } catch (error) {
-      console.error("Error fetching KreAIte products:", error);
+      console.error("Error fetching Stroke Recovery Academy products:", error);
       res.status(500).json({ message: "Failed to fetch products" });
     }
   });
@@ -13435,7 +13436,7 @@ Disallow: /api/
 Disallow: /dashboard/
 Disallow: /admin/
 
-Sitemap: https://kreaite.xyz/sitemap.xml
+Sitemap: https://strokerecoveryacademy.com/sitemap.xml
 `;
     res.set('Content-Type', 'text/plain');
     res.send(robotsTxt);
@@ -17222,7 +17223,7 @@ Return the rhyming version only, no explanation.`;
         })),
         certificate: {
           title: `Certificate of Completion: ${bookTitle}`,
-          issuer: authorProfile?.penName || 'KreAIte Academy'
+          issuer: authorProfile?.penName || 'Stroke Recovery Academy Academy'
         }
       };
 
@@ -17705,7 +17706,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
         analysis,
         soundtrack: {
           albumTitle: `${title} - Original Soundtrack`,
-          artist: 'AI Composer for KreAIte',
+          artist: 'AI Composer for Stroke Recovery Academy',
           totalTracks: tracks.length,
           estimatedDuration: `${tracks.length * 2.5} minutes`,
           tracks,
@@ -17814,7 +17815,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
         totalEarnings: 0,
         pendingEarnings: 0,
         conversionRate: 0,
-        affiliateLink: `https://kreaite.xyz?ref=${userInfo?.id || userId}`,
+        affiliateLink: `https://strokerecoveryacademy.com?ref=${userInfo?.id || userId}`,
       });
     } catch (error: any) {
       console.error("Error fetching affiliate stats:", error);
@@ -17842,7 +17843,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
           creatorName: "Marcus Williams",
           creatorImage: null,
           title: "AI Music Producer",
-          description: "Created 50+ royalty-free tracks for my YouTube channel. Now selling them on KreAItorverse!",
+          description: "Created 50+ royalty-free tracks for my YouTube channel. Now selling them on Marketplace!",
           earnings: 8500,
           studio: "music",
           featured: true,
@@ -17887,7 +17888,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
         .from(users)
         .where(eq(users.id, userId));
       
-      const watermarkText = `Created with KreAIte.xyz by ${userInfo?.firstName || 'Creator'}`;
+      const watermarkText = `Created with Stroke Recovery Academy by ${userInfo?.firstName || 'Creator'}`;
       
       res.json({
         success: true,
@@ -23787,7 +23788,7 @@ Format as structured JSON with clear sections.`;
         message: 'Website published successfully',
         websiteId,
         slug,
-        url: `https://${slug}.kreaite.xyz`,
+        url: `https://${slug}.strokerecoveryacademy.com`,
         publishedAt: site.publishedAt,
       });
     } catch (error: any) {

@@ -230,7 +230,7 @@ export default function AuthorStorefront() {
     <div className="min-h-screen bg-[#0D0D0D]">
       <SEO
         title={`${authorName} - Author Storefront`}
-        description={profile.bio || `Explore books and content by ${authorName} on KreAIte.xyz`}
+        description={profile.bio || `Explore books and content by ${authorName} on Stroke Recovery Academy`}
         author={authorName}
         image={profile.photoUrl || undefined}
         canonical={`/author/${params.slug}`}
@@ -517,7 +517,7 @@ export default function AuthorStorefront() {
       <footer className="border-t border-[#333] mt-16 py-8">
         <div className="container mx-auto px-4 max-w-6xl text-center">
           <p className="text-sm text-gray-400">
-            Author page for {profile.penName} powered by KreAIte
+            Author page for {profile.penName} powered by Stroke Recovery Academy
           </p>
         </div>
       </footer>

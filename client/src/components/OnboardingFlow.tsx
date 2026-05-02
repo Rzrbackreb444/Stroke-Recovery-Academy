@@ -203,7 +203,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <Sparkles className="w-6 h-6 text-primary" />
-            <span className="text-foreground font-bold text-xl">KreAIte</span>
+            <span className="text-foreground font-bold text-xl">Stroke Recovery Academy</span>
           </div>
           <Button
             variant="ghost"
@@ -250,7 +250,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                   <Sparkles className="w-10 h-10 text-primary" />
                 </div>
                 <h1 className="text-4xl font-black text-foreground mb-4" data-testid="text-welcome-title">
-                  Welcome to KreAIte
+                  Welcome to Stroke Recovery Academy
                 </h1>
                 <p className="text-xl text-muted-foreground mb-8 max-w-md mx-auto" data-testid="text-welcome-subtitle">
                   Your AI-powered creative studio. Let's set up your experience in just a few steps.
@@ -486,7 +486,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                   You're All Set!
                 </h1>
                 <p className="text-xl text-muted-foreground mb-2" data-testid="text-final-subtitle">
-                  {data.creatorName ? `Welcome, ${data.creatorName}!` : "Welcome to KreAIte!"}
+                  {data.creatorName ? `Welcome, ${data.creatorName}!` : "Welcome to Stroke Recovery Academy!"}
                 </p>
                 <p className="text-gray-500 mb-8 max-w-md mx-auto">
                   Your{" "}

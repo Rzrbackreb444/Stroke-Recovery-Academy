@@ -52,7 +52,7 @@ const quickActions = [
 const productionTools: { href: string; label: string; icon: any; description: string; badge?: string; enabled: boolean }[] = [];
 
 const navLinks = [
-  { href: "/marketplace", label: "KREAITORVERSE", icon: Store },
+  { href: "/marketplace", label: "MARKETPLACE", icon: Store },
   { href: "/community", label: "COMMUNITY", icon: Users },
   { href: "/author-dashboard", label: "EARNINGS", icon: DollarSign },
 ];
@@ -70,7 +70,7 @@ export default function CreatorHeader() {
             <div className="flex items-center gap-2 hover-elevate active-elevate-2 px-2 py-1 rounded-md cursor-pointer">
               <img 
                 src={kreaiteLogo} 
-                alt="KreAIte" 
+                alt="Stroke Recovery Academy" 
                 className="h-10 w-auto"
                 data-testid="img-logo"
               />

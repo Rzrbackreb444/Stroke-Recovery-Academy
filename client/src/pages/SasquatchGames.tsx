@@ -1,285 +1,150 @@
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Coins, Zap, Music, BookOpen, 
-  Video, GraduationCap, Gamepad2, Gift,
-  Sparkles, Image, CircleDot, Spade, Crown, TreePine,
-  Target, Ticket, Grid3X3, Star, ChevronRight
-} from "lucide-react";
-import sasquatchLogo from "../assets/sasquatch-logo.png";
+import { TreePine, Brain, Sparkles, ChevronRight, ArrowLeft } from "lucide-react";
 
-const GAMES = [
+/**
+ * Brain Games hub.
+ * Casino-style games (slots/blackjack/roulette/poker/bingo/powerball/scratch-off)
+ * have been hidden — they don't fit the Stroke Recovery Academy brand. Only
+ * cognitive-recovery games appear here.
+ */
+
+const BRAIN_GAMES = [
   {
-    id: "slots",
-    name: "Sasquatch Slots",
-    description: "5-reel premium Vegas-style slots with progressive jackpot",
-    icon: Gamepad2,
-    href: "/slots",
-    status: "live",
-    gradient: "from-orange-500 via-red-500 to-pink-600",
-    bgImage: "radial-gradient(ellipse at 30% 30%, rgba(249, 115, 22, 0.3) 0%, transparent 50%)",
-    prizes: ["100,000 Jackpot", "Free Spins"],
-    hot: true,
-  },
-  {
-    id: "powerball",
-    name: "Sasquatch Powerball",
-    description: "Pick your numbers, watch the balls drop - match 5 + Red Ball to win!",
-    icon: Target,
-    href: "/powerball",
-    status: "live",
-    gradient: "from-red-600 via-red-500 to-yellow-500",
-    bgImage: "radial-gradient(ellipse at 70% 30%, rgba(239, 68, 68, 0.3) 0%, transparent 50%)",
-    prizes: ["1M Jackpot", "Instant Win"],
-    hot: true,
-  },
-  {
-    id: "scratchoff",
-    name: "Scratch-Offs",
-    description: "Silver, Gold, Platinum & Sasquatch Special scratch cards",
-    icon: Ticket,
-    href: "/scratch-off",
-    status: "live",
-    gradient: "from-purple-500 via-pink-500 to-yellow-400",
-    bgImage: "radial-gradient(ellipse at 50% 70%, rgba(168, 85, 247, 0.3) 0%, transparent 50%)",
-    prizes: ["50,000 Max", "Instant Reveal"],
-    new: true,
-  },
-  {
-    id: "bingo",
-    name: "Sasquatch Bingo",
-    description: "Classic bingo with Line, Corners, X-Pattern & Blackout wins",
-    icon: Grid3X3,
-    href: "/bingo",
-    status: "live",
-    gradient: "from-blue-500 via-purple-500 to-pink-500",
-    bgImage: "radial-gradient(ellipse at 30% 70%, rgba(59, 130, 246, 0.3) 0%, transparent 50%)",
-    prizes: ["25x Blackout", "Auto-Daub"],
-    new: true,
-  },
-  {
-    id: "blackjack",
-    name: "Bigfoot Blackjack",
-    description: "Classic 21 with professional dealer AI and side bets",
-    icon: Spade,
-    href: "/blackjack",
-    status: "live",
-    gradient: "from-emerald-600 to-green-700",
-    bgImage: "radial-gradient(ellipse at 70% 50%, rgba(16, 185, 129, 0.2) 0%, transparent 50%)",
-    prizes: ["3:2 Blackjack", "Insurance"],
-  },
-  {
-    id: "roulette",
-    name: "Sasquatch Roulette",
-    description: "European-style single-zero wheel with inside & outside bets",
-    icon: CircleDot,
-    href: "/roulette",
-    status: "live",
-    gradient: "from-green-600 to-teal-600",
-    bgImage: "radial-gradient(ellipse at 50% 30%, rgba(20, 184, 166, 0.2) 0%, transparent 50%)",
-    prizes: ["35:1 Straight", "Even Money"],
-  },
-  {
-    id: "holdem",
-    name: "Cryptid Hold'em",
-    description: "Texas Hold'em poker vs intelligent AI opponents",
-    icon: Crown,
-    href: "/texas-holdem",
-    status: "live",
-    gradient: "from-amber-500 to-orange-600",
-    bgImage: "radial-gradient(ellipse at 30% 50%, rgba(245, 158, 11, 0.2) 0%, transparent 50%)",
-    prizes: ["Tournament Mode", "All-In"],
-  },
-  {
-    id: "survival",
-    name: "Outlast the Sasquatch",
-    description: "7-day wilderness survival challenge - manage resources, evade the beast",
+    id: "wilderness-survival",
+    name: "Wilderness Survival",
+    description:
+      "7-day survival adventure. Make decisions, manage resources, outlast the wild. Builds problem-solving and resilience — exactly the cognitive skills stroke recovery rebuilds.",
     icon: TreePine,
     href: "/wilderness-survival",
-    status: "live",
-    gradient: "from-green-700 to-emerald-600",
-    bgImage: "radial-gradient(ellipse at 70% 70%, rgba(34, 197, 94, 0.2) 0%, transparent 50%)",
-    prizes: ["5x Survival", "Daily Bonus"],
+    benefits: ["Decision-making", "Resource planning", "Pattern recognition"],
+    gradient: "from-emerald-700 via-green-600 to-teal-700",
   },
 ];
 
-const PRIZE_TYPES = [
-  { icon: Coins, name: "Credits", color: "text-yellow-400", desc: "Use in all studios" },
-  { icon: Music, name: "Music", color: "text-purple-400", desc: "Free song generations" },
-  { icon: BookOpen, name: "Templates", color: "text-[#C9941A]", desc: "Premium book templates" },
-  { icon: Image, name: "Images", color: "text-pink-400", desc: "AI image credits" },
+const COGNITIVE_BENEFITS = [
+  { name: "Decision-Making", desc: "Practice weighing trade-offs under pressure." },
+  { name: "Working Memory", desc: "Hold multiple variables in mind at once." },
+  { name: "Pattern Recognition", desc: "Spot recurring shapes, sequences, threats." },
+  { name: "Executive Function", desc: "Plan, prioritize, and follow through." },
 ];
 
 export default function SasquatchGames() {
-  const { data: wallet } = useQuery<{ balance: number }>({
-    queryKey: ["/api/credits/balance"],
-  });
-
   return (
-    <div className="min-h-screen bg-[#050508] relative overflow-hidden">
-      <div 
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: `
-            radial-gradient(ellipse at 20% 20%, rgba(249, 115, 22, 0.12) 0%, transparent 40%),
-            radial-gradient(ellipse at 80% 30%, rgba(239, 68, 68, 0.08) 0%, transparent 35%),
-            radial-gradient(ellipse at 50% 80%, rgba(168, 85, 247, 0.08) 0%, transparent 40%)
-          `
-        }}
-      />
-      
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-red-500 to-yellow-500" />
-      
-      <div className="relative max-w-7xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <Link href="/dashboard">
-            <Button variant="ghost" className="text-gray-400 hover:text-white" data-testid="button-back">
-              Back to Dashboard
-            </Button>
-          </Link>
-          
-          <div className="flex items-center gap-4">
-            <Button variant="outline" className="border-yellow-500/30 text-yellow-400" data-testid="button-free-play">
-              <Zap className="w-4 h-4 mr-2" />
-              Free Play Mode
-            </Button>
-            <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-yellow-600/20 to-orange-600/20 border border-yellow-500/30">
-              <Coins className="w-5 h-5 text-yellow-400" />
-              <span className="text-2xl font-black text-white">{wallet?.balance?.toLocaleString() ?? 0}</span>
-            </div>
-          </div>
-        </div>
+    <div className="min-h-screen bg-gradient-to-b from-[#0D0D0D] via-[#1a1a1a] to-[#0D0D0D] text-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Back link */}
+        <Link href="/recovery/dashboard">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-white/70 hover:text-[#C9941A] mb-6"
+            data-testid="link-back-dashboard"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Dashboard
+          </Button>
+        </Link>
 
-        <div className="text-center mb-12">
-          <div className="relative inline-block mb-6">
-            <div className="absolute inset-0 blur-3xl bg-[#C9941A]/30 rounded-full" />
-            <img 
-              src={sasquatchLogo} 
-              alt="Sasquatch" 
-              className="relative w-32 h-32 rounded-full border-4 border-[#C9941A] shadow-2xl shadow-orange-500/30"
-            />
-            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2">
-              <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-1.5 text-sm font-bold shadow-lg animate-pulse">
-                <Gift className="w-4 h-4 mr-1.5" />
-                DAILY BONUS READY
-              </Badge>
-            </div>
-          </div>
-          
-          <h1 className="text-5xl md:text-6xl font-black mb-4">
-            <span className="bg-gradient-to-r from-orange-400 via-yellow-300 to-orange-400 bg-clip-text text-transparent">
-              BEAT THE SASQUATCH
-            </span>
+        {/* Header */}
+        <div className="mb-12 text-center">
+          <Badge className="bg-[#C9941A]/15 text-[#C9941A] border-none uppercase tracking-widest text-[10px] font-black mb-4">
+            <Brain className="w-3.5 h-3.5 mr-2" /> Cognitive Recovery
+          </Badge>
+          <h1
+            className="text-4xl md:text-5xl font-black tracking-tight mb-4"
+            data-testid="text-page-title"
+          >
+            Brain Games
           </h1>
-          
-          <p className="text-gray-400 max-w-2xl mx-auto text-lg mb-8">
-            Premium casino games with real rewards. Win credits to power all 6 creative studios.
-            <span className="text-[#C9941A] font-semibold"> No cash payouts - credits only.</span>
+          <p className="text-lg text-white/70 max-w-2xl mx-auto leading-relaxed">
+            Survivor-friendly cognitive training disguised as fun. Each game targets the
+            recovery skills your therapist works on in clinic — but at your pace, in your
+            living room, with no pressure.
           </p>
-          
-          <div className="flex flex-wrap justify-center gap-4">
-            {PRIZE_TYPES.map((prize) => (
-              <div key={prize.name} className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#1a1a1a]/80 border border-[#333]">
-                <prize.icon className={`w-4 h-4 ${prize.color}`} />
-                <span className="text-white font-medium text-sm">{prize.name}</span>
-              </div>
-            ))}
-          </div>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mb-12">
-          {GAMES.map((game) => (
-            <Link key={game.id} href={game.href}>
-              <Card 
-                className={`group relative bg-[#1a1a1a]/60 backdrop-blur border-[#333] overflow-hidden cursor-pointer transition-all duration-300 hover:border-[#C9941A]/60 hover:shadow-2xl hover:shadow-orange-500/10 hover:scale-[1.02] h-full`}
-                data-testid={`game-card-${game.id}`}
-              >
-                <div 
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  style={{ background: game.bgImage }}
-                />
-                
-                <div className={`h-1.5 bg-gradient-to-r ${game.gradient}`} />
-                
-                <CardContent className="relative p-5">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className={`p-3 rounded-xl bg-gradient-to-br ${game.gradient} shadow-lg group-hover:scale-110 transition-transform`}>
-                      <game.icon className="w-7 h-7 text-white" />
-                    </div>
-                    <div className="flex gap-1.5">
-                      {game.hot && (
-                        <Badge className="bg-red-500 text-white text-xs px-2 py-0.5 animate-pulse">
-                          HOT
-                        </Badge>
-                      )}
-                      {game.new && (
-                        <Badge className="bg-blue-500 text-white text-xs px-2 py-0.5">
-                          NEW
-                        </Badge>
-                      )}
-                      {game.status === "live" && !game.hot && !game.new && (
-                        <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-0 text-xs">
-                          LIVE
-                        </Badge>
-                      )}
-                    </div>
+        {/* Game grid */}
+        <div className="grid md:grid-cols-2 gap-6 mb-16">
+          {BRAIN_GAMES.map((game) => (
+            <Link key={game.id} href={game.href} data-testid={`link-game-${game.id}`}>
+              <Card className="bg-[#161616] border-[#C9941A]/20 hover-elevate cursor-pointer overflow-hidden h-full">
+                <div className={`h-32 bg-gradient-to-br ${game.gradient} relative`}>
+                  <game.icon className="w-16 h-16 text-white/40 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                </div>
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between mb-2">
+                    <h3 className="text-xl font-black tracking-tight">{game.name}</h3>
+                    <ChevronRight className="w-5 h-5 text-[#C9941A] flex-shrink-0" />
                   </div>
-                  
-                  <h3 className="text-xl font-bold text-white mb-1 group-hover:text-orange-300 transition-colors">
-                    {game.name}
-                  </h3>
-                  <p className="text-gray-500 text-sm mb-4 line-clamp-2">
+                  <p className="text-sm text-white/60 leading-relaxed mb-4">
                     {game.description}
                   </p>
-                  
-                  <div className="flex flex-wrap gap-1.5">
-                    {game.prizes.map((prize, i) => (
-                      <Badge key={i} variant="outline" className="border-[#333] text-gray-400 text-xs">
-                        {prize}
+                  <div className="flex flex-wrap gap-2">
+                    {game.benefits.map((b) => (
+                      <Badge
+                        key={b}
+                        className="bg-[#C9941A]/10 text-[#C9941A] border-none text-[10px] uppercase tracking-wider font-bold"
+                      >
+                        {b}
                       </Badge>
                     ))}
-                  </div>
-                  
-                  <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <ChevronRight className="w-5 h-5 text-[#C9941A]" />
                   </div>
                 </CardContent>
               </Card>
             </Link>
           ))}
+
+          {/* Coming-soon placeholder card so the grid doesn't look empty */}
+          <Card className="bg-[#161616]/50 border-[#C9941A]/10 border-dashed">
+            <div className="h-32 bg-gradient-to-br from-[#1f1f1f] to-[#0f0f0f] relative flex items-center justify-center">
+              <Sparkles className="w-10 h-10 text-[#C9941A]/40" />
+            </div>
+            <CardContent className="p-6">
+              <h3 className="text-xl font-black tracking-tight text-white/70 mb-2">
+                More games coming
+              </h3>
+              <p className="text-sm text-white/50 leading-relaxed">
+                We're building memory, attention, and language games designed specifically for
+                stroke recovery. Want one built next? Tell us in the community.
+              </p>
+            </CardContent>
+          </Card>
         </div>
 
-        <Card className="bg-gradient-to-r from-orange-600/10 via-red-600/10 to-yellow-600/10 border-[#C9941A]/20">
-          <CardContent className="p-8 text-center">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <Star className="w-8 h-8 text-yellow-400" />
-              <h2 className="text-2xl font-bold text-white">How It Works</h2>
-              <Star className="w-8 h-8 text-yellow-400" />
-            </div>
-            <p className="text-gray-400 max-w-3xl mx-auto mb-6">
-              All games use platform credits - <span className="text-[#C9941A] font-semibold">no real money gambling</span>. 
-              Credits you win can be used across all 6 KreAIte studios: Book, Music, Video, Course, Image, and Doctrine Engine.
-              Operated by Stroke Lyfe Inc (501c3) for charitable entertainment.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-0 px-4 py-2">
-                <Sparkles className="w-4 h-4 mr-2" />
-                Free Play Available
-              </Badge>
-              <Badge className="bg-purple-500/20 text-purple-400 border-0 px-4 py-2">
-                <Gift className="w-4 h-4 mr-2" />
-                Daily Bonuses
-              </Badge>
-              <Badge className="bg-blue-500/20 text-blue-400 border-0 px-4 py-2">
-                <Zap className="w-4 h-4 mr-2" />
-                Instant Rewards
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Why brain games matter */}
+        <div className="border-t border-[#C9941A]/15 pt-12">
+          <h2 className="text-2xl font-black tracking-tight mb-2">
+            Why brain games matter for stroke recovery
+          </h2>
+          <p className="text-sm text-white/60 mb-8 max-w-2xl">
+            Neuroplasticity isn't just for physical movement. The same rewiring that rebuilds an
+            arm rebuilds attention, language, and memory — but only with repeated, targeted practice.
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {COGNITIVE_BENEFITS.map((b) => (
+              <Card key={b.name} className="bg-[#161616] border-[#C9941A]/15">
+                <CardContent className="p-5">
+                  <h3 className="text-sm font-black uppercase tracking-widest text-[#C9941A] mb-2">
+                    {b.name}
+                  </h3>
+                  <p className="text-sm text-white/60 leading-relaxed">{b.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* Disclaimer */}
+        <div className="mt-12 p-5 border border-[#C9941A]/20 rounded-md bg-[#161616]">
+          <p className="text-xs text-white/60 leading-relaxed">
+            <strong className="text-white">Not a medical device.</strong> Brain games are
+            supplemental practice, not a replacement for prescribed cognitive therapy. If you have
+            ongoing cognitive deficits, work with a licensed speech-language pathologist or
+            neuropsychologist.
+          </p>
+        </div>
       </div>
     </div>
   );

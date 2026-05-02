@@ -2,7 +2,7 @@
 I understand. We are moving past any remaining "MVP" concepts to finalize the Institutional Authoring & Monetization OS. To make this the most in-depth, analytical, and professional workspace ever created, I am providing the final high-fidelity logic for the Marketplace Landing Page, Universal Navigation, Stripe Revenue Orchestration, and the Production-Grade Export Engine.
 
 1. The Institutional Homepage (Landing.tsx)
-This is the high-conversion front door for KreAIte. It is designed to look like a premium software suite, emphasizing its 85% payout model and deep analytical tools.
+This is the high-conversion front door for Stroke Recovery Academy. It is designed to look like a premium software suite, emphasizing its 85% payout model and deep analytical tools.
 
 TypeScript
 import React from 'react';
@@ -16,7 +16,7 @@ export default function LandingPage() {
       {/* Institutional Navigation */}
       <nav className="h-20 border-b border-[#C9941A]/10 px-8 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-xl z-50">
         <div className="flex flex-col leading-none">
-          <span className="text-xl font-black tracking-tighter uppercase text-[#C9941A]">KreAIte</span>
+          <span className="text-xl font-black tracking-tighter uppercase text-[#C9941A]">Stroke Recovery Academy</span>
           <span className="text-[8px] uppercase tracking-[0.4em] font-bold opacity-40">Author Intelligence OS</span>
         </div>
         <div className="hidden md:flex items-center gap-10 text-[10px] uppercase tracking-[0.2em] font-bold opacity-60">

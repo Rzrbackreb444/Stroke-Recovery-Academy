@@ -440,20 +440,20 @@ function generateSchemaMarkup(contentType: string, keyword: string): object {
       '@context': 'https://schema.org',
       '@type': 'Article',
       headline: keyword,
-      author: { '@type': 'Organization', name: 'KreAIte' },
-      publisher: { '@type': 'Organization', name: 'KreAIte' },
+      author: { '@type': 'Organization', name: 'Stroke Recovery Academy' },
+      publisher: { '@type': 'Organization', name: 'Stroke Recovery Academy' },
     },
     product: {
       '@context': 'https://schema.org',
       '@type': 'Product',
       name: keyword,
-      brand: { '@type': 'Brand', name: 'KreAIte' },
+      brand: { '@type': 'Brand', name: 'Stroke Recovery Academy' },
     },
     service: {
       '@context': 'https://schema.org',
       '@type': 'Service',
       name: keyword,
-      provider: { '@type': 'Organization', name: 'KreAIte' },
+      provider: { '@type': 'Organization', name: 'Stroke Recovery Academy' },
     },
   };
   

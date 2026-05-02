@@ -41,9 +41,9 @@ export default function CreatorLanding() {
   return (
     <div className="min-h-screen bg-[#0D0D0D]" data-testid="page-creator-landing">
       <SEO 
-        title="KreAIte - Create Any Content You Can Imagine"
+        title="Stroke Recovery Academy - Create Any Content You Can Imagine"
         description="The complete AI creative platform. Generate professional books, music, videos, courses, and images. Trusted by 50M+ creators worldwide."
-        canonicalUrl="https://kreaite.xyz"
+        canonicalUrl="https://strokerecoveryacademy.com"
         keywords="AI content creation, AI video, AI music, AI writing, creator platform"
         type="website"
       />
@@ -84,7 +84,7 @@ export default function CreatorLanding() {
                 style={{ fontFamily: "'Inter', sans-serif" }}
                 data-testid="logo"
               >
-                KreAIte
+                Stroke Recovery Academy
               </span>
             </Link>
 
@@ -329,7 +329,7 @@ export default function CreatorLanding() {
             What Creators Are Saying
           </h2>
           <p className="text-white/60 text-center mb-16 max-w-2xl mx-auto">
-            Join thousands of creators who've transformed their work with KreAIte
+            Join thousands of creators who've transformed their work with Stroke Recovery Academy
           </p>
 
           {/* Testimonials Grid */}
@@ -422,7 +422,7 @@ export default function CreatorLanding() {
             className="text-4xl md:text-5xl text-white text-center mb-16"
             style={{ fontFamily: "'Playfair Display', serif", fontWeight: 400 }}
           >
-            50M+ creators choose KreAIte
+            50M+ creators choose Stroke Recovery Academy
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div>
@@ -486,7 +486,7 @@ export default function CreatorLanding() {
             <div className="p-8 rounded-2xl bg-[#1a1a1a] border border-white/10">
               <h3 className="text-2xl text-white font-semibold mb-4">Creators</h3>
               <p className="text-white/60 mb-6">
-                Get the full AI Suite, highest-quality creative assets, or everything KreAIte has to offer, all covered by the right license for you.
+                Get the full AI Suite, highest-quality creative assets, or everything Stroke Recovery Academy has to offer, all covered by the right license for you.
               </p>
               <Link href="/pricing">
                 <Button variant="outline" className="border-white/30 text-white hover:bg-white hover:text-black rounded-full">
@@ -539,7 +539,7 @@ export default function CreatorLanding() {
       <footer className="py-12 bg-[#0D0D0D] border-t border-white/10">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <span className="text-[#C9941A] font-bold text-xl">KreAIte</span>
+            <span className="text-[#C9941A] font-bold text-xl">Stroke Recovery Academy</span>
             <div className="flex items-center gap-8 text-white/50 text-sm">
               <Link href="/pricing"><span className="hover:text-white cursor-pointer">Pricing</span></Link>
               <Link href="/marketplace"><span className="hover:text-white cursor-pointer">Marketplace</span></Link>
@@ -547,7 +547,7 @@ export default function CreatorLanding() {
               <Link href="/terms"><span className="hover:text-white cursor-pointer">Terms</span></Link>
               <Link href="/privacy"><span className="hover:text-white cursor-pointer">Privacy</span></Link>
             </div>
-            <span className="text-white/30 text-sm">© 2024 KreAIte. All rights reserved.</span>
+            <span className="text-white/30 text-sm">© 2024 Stroke Recovery Academy. All rights reserved.</span>
           </div>
         </div>
       </footer>
