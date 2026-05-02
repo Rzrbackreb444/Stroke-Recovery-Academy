@@ -8,6 +8,7 @@ import { storage } from "./storage";
 import { yearsSinceStroke } from "@shared/strokeAnniversary";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { publicPostLimiter, authActionLimiter } from "./middleware/publicRateLimit";
+import { requireAdmin } from "./middleware/requireAdmin";
 import emailAuthRoutes from "./emailAuthRoutes";
 import luluRoutes from "./luluRoutes";
 import survivorProfileRoutes from "./survivorProfileRoutes";
@@ -1522,7 +1523,7 @@ Last updated: ${new Date().toISOString().split('T')[0]}
 
   // ── In-app feedback inbox (route-aware bug/feature/praise widget) ─────────
   // POST /api/feedback/items — public; auth optional. Stamps userId if logged in.
-  app.post('/api/feedback/items', async (req: any, res) => {
+  app.post('/api/feedback/items', publicPostLimiter, async (req: any, res) => {
     try {
       const { insertFeedbackItemSchema } = await import('@shared/schema');
       const parse = insertFeedbackItemSchema.safeParse(req.body);
@@ -1667,11 +1668,8 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   // POST /api/admin/seo/submit — push every indexable URL to IndexNow + ping
   // Google's sitemap auto-discovery (legacy ping endpoints were retired in 2023;
   // Google now relies on the sitemap declared in robots.txt + Search Console).
-  app.post('/api/admin/seo/submit', isAuthenticated, async (req: any, res) => {
+  app.post('/api/admin/seo/submit', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const u = await storage.getUser(req.user.claims.sub);
-      if (!u || u.role !== 'admin') return res.status(403).json({ message: 'Admin only' });
-
       const HOST = 'strokerecoveryacademy.com';
       const ORIGIN = `https://${HOST}`;
 
@@ -1746,11 +1744,8 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   // Body: { topic: string, focusKeyphrase?: string, audience?: string, length?: 'short'|'medium'|'long' }
   // Returns: { title, slug, excerpt, contentMarkdown, metaTitle, metaDescription,
   //           focusKeyphrase, tags, faqs:[{q,a}], heroImagePrompt }
-  app.post('/api/admin/blog/draft', isAuthenticated, async (req: any, res) => {
+  app.post('/api/admin/blog/draft', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const u = await storage.getUser(req.user.claims.sub);
-      if (!u || u.role !== 'admin') return res.status(403).json({ message: 'Admin only' });
-
       const topic = String(req.body?.topic || '').trim().slice(0, 240);
       if (!topic || topic.length < 5) return res.status(400).json({ message: 'Topic must be at least 5 characters.' });
       const focusKeyphrase = String(req.body?.focusKeyphrase || '').trim().slice(0, 120) || topic;
@@ -1832,11 +1827,8 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   });
 
   // POST /api/admin/blog/draft/save — persist a generated draft to blog_posts as status='draft'
-  app.post('/api/admin/blog/draft/save', isAuthenticated, async (req: any, res) => {
+  app.post('/api/admin/blog/draft/save', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const u = await storage.getUser(req.user.claims.sub);
-      if (!u || u.role !== 'admin') return res.status(403).json({ message: 'Admin only' });
-
       const d = req.body?.draft || {};
       if (!d.title || !d.slug || !d.contentMarkdown) {
         return res.status(400).json({ message: 'draft must include title, slug, contentMarkdown' });
@@ -1879,11 +1871,8 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
 
   // POST /api/admin/blog/draft/infographic (G6) — generate hero image via Imagen from a prompt.
   // Body: { prompt: string, postId?: number }  → returns { imageDataUrl } and (if postId) updates blog_posts.heroImageUrl.
-  app.post('/api/admin/blog/draft/infographic', isAuthenticated, async (req: any, res) => {
+  app.post('/api/admin/blog/draft/infographic', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const u = await storage.getUser(req.user.claims.sub);
-      if (!u || u.role !== 'admin') return res.status(403).json({ message: 'Admin only' });
-
       const prompt = String(req.body?.prompt || '').trim().slice(0, 800);
       if (!prompt || prompt.length < 10) return res.status(400).json({ message: 'prompt must be at least 10 characters' });
       const postId = req.body?.postId ? parseInt(req.body.postId, 10) : null;
@@ -10020,13 +10009,9 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // Opt-in only. Explicit release-of-likeness consent required. Admin must
   // approve every monthly pick before it's published.
 
-  // Local admin guard (the global isAdmin is defined later in this file)
-  const requireAdminLocal = async (req: any, res: any, next: any) => {
-    if (!req.isAuthenticated()) return res.status(401).json({ message: 'Authentication required' });
-    const u = await storage.getUser(req.user.claims.sub);
-    if (!u || u.role !== 'admin') return res.status(403).json({ message: 'Admin access required' });
-    next();
-  };
+  // Local admin guard kept as an alias for legacy call sites — delegates to
+  // the canonical `requireAdmin` middleware so we have one source of truth.
+  const requireAdminLocal = requireAdmin;
 
   function spotlightMonthKey(date = new Date()): string {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
@@ -11937,13 +11922,8 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
-  app.post('/api/admin/seed-recovery-data', isAuthenticated, async (req: any, res) => {
+  app.post('/api/admin/seed-recovery-data', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-      
       const result = await seedRecoveryData();
       res.json({ 
         success: true, 
@@ -13375,14 +13355,8 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   });
 
   // POST /api/admin/stripe/sync - Manually trigger Stripe sync
-  app.post('/api/admin/stripe/sync', isAuthenticated, async (req: any, res) => {
+  app.post('/api/admin/stripe/sync', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-      
       console.log('Manually triggering Stripe sync...');
       const stripeSync = await getStripeSync();
       await stripeSync.syncBackfill();
@@ -13395,14 +13369,8 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   });
 
   // GET /api/admin/stripe/products - List all Stripe products (admin)
-  app.get('/api/admin/stripe/products', isAuthenticated, async (req: any, res) => {
+  app.get('/api/admin/stripe/products', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-      
       const products = await stripeService.listProductsWithPrices(true, 100, 0);
       res.json({ success: true, products });
     } catch (error) {
