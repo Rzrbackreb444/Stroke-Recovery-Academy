@@ -321,11 +321,29 @@ export function registerRecoveryAnchorRoutes(app: Express) {
         yesterdayAnchor = todayAnchor;
       }
 
+      // True retention check: did this user submit ANY check-in today?
+      // The streak's `lastCheckInDate` advances on render/set-today, so it
+      // can't tell us whether the user actually answered the yesterday
+      // prompt today. Query the retention signals table directly so the
+      // UI guard hides the prompt as soon as a check-in lands.
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      const [{ count: signalsToday } = { count: 0 }] = await db
+        .select({ count: sql<number>`count(*)::int` })
+        .from(anchorRetentionSignals)
+        .where(
+          and(
+            eq(anchorRetentionSignals.userId, userId),
+            sql`${anchorRetentionSignals.signaledAt} >= ${todayStart}`,
+          ),
+        );
+
       return res.json({
         date: today,
         currentStreak,
         longestStreak: streakRow?.longestStreak ?? 0,
         lastCheckInDate: streakRow?.lastCheckInDate ?? null,
+        checkedInToday: (signalsToday ?? 0) > 0,
         todayAnchor,
         yesterdayAnchor,
       });
