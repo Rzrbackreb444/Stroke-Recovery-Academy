@@ -1505,12 +1505,8 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   });
 
   // GET /api/admin/feedback — view all feedback responses (Nick only)
-  app.get('/api/admin/feedback', isAuthenticated, async (req: any, res) => {
+  app.get('/api/admin/feedback', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const u = await storage.getUser(req.user.claims.sub);
-      if (!u || u.role !== 'admin') {
-        return res.status(403).json({ message: 'Admin only.' });
-      }
       const { pool: dbPool } = await import('./db');
       const result = await dbPool.query(
         `SELECT * FROM platform_feedback ORDER BY created_at DESC`
@@ -1548,11 +1544,8 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   });
 
   // GET /api/admin/feedback/items — Nick-only inbox view, optional ?status filter
-  app.get('/api/admin/feedback/items', isAuthenticated, async (req: any, res) => {
+  app.get('/api/admin/feedback/items', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const u = await storage.getUser(req.user.claims.sub);
-      if (!u || u.role !== 'admin') return res.status(403).json({ message: 'Admin only' });
-
       const status = typeof req.query.status === 'string' ? req.query.status : null;
       const ALLOWED = new Set(['new', 'triaged', 'in_progress', 'resolved', 'wont_fix']);
       const { pool: dbPool } = await import('./db');
@@ -1567,11 +1560,8 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   });
 
   // PATCH /api/admin/feedback/items/:id — update status (admin only)
-  app.patch('/api/admin/feedback/items/:id', isAuthenticated, async (req: any, res) => {
+  app.patch('/api/admin/feedback/items/:id', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const u = await storage.getUser(req.user.claims.sub);
-      if (!u || u.role !== 'admin') return res.status(403).json({ message: 'Admin only' });
-
       const id = parseInt(req.params.id, 10);
       if (isNaN(id)) return res.status(400).json({ message: 'Invalid id' });
 
@@ -1594,10 +1584,8 @@ Last updated: ${new Date().toISOString().split('T')[0]}
 
   // ───────── ADMIN SEO DASHBOARD ─────────
   // GET /api/admin/seo/registry — full registry coverage stats (admin only)
-  app.get('/api/admin/seo/registry', isAuthenticated, async (req: any, res) => {
+  app.get('/api/admin/seo/registry', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const u = await storage.getUser(req.user.claims.sub);
-      if (!u || u.role !== 'admin') return res.status(403).json({ message: 'Admin only' });
       const { ROUTES, getRegistryStats, getStaticSitemapEntries } = await import('../shared/seo/routeRegistry');
       res.json({
         stats: getRegistryStats(),
@@ -1624,10 +1612,8 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   });
 
   // GET /api/admin/seo/inspect?path=/foo — inspect what the registry would emit (admin only)
-  app.get('/api/admin/seo/inspect', isAuthenticated, async (req: any, res) => {
+  app.get('/api/admin/seo/inspect', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const u = await storage.getUser(req.user.claims.sub);
-      if (!u || u.role !== 'admin') return res.status(403).json({ message: 'Admin only' });
       const path = typeof req.query.path === 'string' ? req.query.path : '/';
       const { lookupRoute, CANONICAL_DEFAULT } = await import('../shared/seo/routeRegistry');
       const { generateRouteSchemas } = await import('../shared/seo/schemaGenerator');
@@ -1844,7 +1830,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
       const slugSafe = String(d.slug).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 200);
 
       const [row] = await dbInst.insert(blogPosts).values({
-        authorId: u.id,
+        authorId: req.user.claims.sub,
         slug: `${slugSafe}-${Date.now().toString(36)}`,
         title: String(d.title).slice(0, 200),
         excerpt: String(d.excerpt || '').slice(0, 500),
@@ -1999,10 +1985,8 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   });
 
   // Admin — list subscribers
-  app.get('/api/admin/newsletter/subscribers', isAuthenticated, async (req: any, res) => {
+  app.get('/api/admin/newsletter/subscribers', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user || user.role !== 'admin') return res.status(403).json({ message: 'Admin access required' });
       const { newsletterSubscribers } = await import('../shared/schema');
       const { desc } = await import('drizzle-orm');
       const { db: nsDb } = await import('./db');
@@ -2014,10 +1998,8 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   });
 
   // Admin — list drip editions (metadata only)
-  app.get('/api/admin/newsletter/drip', isAuthenticated, async (req: any, res) => {
+  app.get('/api/admin/newsletter/drip', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user || user.role !== 'admin') return res.status(403).json({ message: 'Admin access required' });
       const { DRIP_EDITIONS } = await import('./newsletterService');
       res.json(DRIP_EDITIONS.map(({ editionNumber, dayOffset, subject, previewText }) => ({ editionNumber, dayOffset, subject, previewText })));
     } catch (err: any) {
@@ -2026,10 +2008,8 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   });
 
   // Admin — get drip queue stats
-  app.get('/api/admin/newsletter/queue-stats', isAuthenticated, async (req: any, res) => {
+  app.get('/api/admin/newsletter/queue-stats', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user || user.role !== 'admin') return res.status(403).json({ message: 'Admin access required' });
       const { newsletterDripQueue } = await import('../shared/schema');
       const { db: nsDb } = await import('./db');
       const { sql: rawSql } = await import('drizzle-orm');
@@ -2047,10 +2027,8 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   });
 
   // Admin — list broadcast editions
-  app.get('/api/admin/newsletter/editions', isAuthenticated, async (req: any, res) => {
+  app.get('/api/admin/newsletter/editions', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user || user.role !== 'admin') return res.status(403).json({ message: 'Admin access required' });
       const { newsletterEditions } = await import('../shared/schema');
       const { desc } = await import('drizzle-orm');
       const { db: nsDb } = await import('./db');
@@ -2062,10 +2040,8 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   });
 
   // Admin — create broadcast edition
-  app.post('/api/admin/newsletter/editions', isAuthenticated, async (req: any, res) => {
+  app.post('/api/admin/newsletter/editions', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user || user.role !== 'admin') return res.status(403).json({ message: 'Admin access required' });
       const { subject, preview, htmlContent, textContent, edition } = req.body;
       if (!subject || !htmlContent) return res.status(400).json({ message: 'subject and htmlContent are required' });
       const { newsletterEditions } = await import('../shared/schema');
@@ -2078,10 +2054,8 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   });
 
   // Admin — send broadcast edition NOW
-  app.post('/api/admin/newsletter/editions/:id/send', isAuthenticated, async (req: any, res) => {
+  app.post('/api/admin/newsletter/editions/:id/send', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user || user.role !== 'admin') return res.status(403).json({ message: 'Admin access required' });
       const id = parseInt(req.params.id);
       const { sendBroadcast } = await import('./newsletterService');
       const result = await sendBroadcast(id);
@@ -2092,10 +2066,8 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   });
 
   // Admin — schedule broadcast edition for future date
-  app.patch('/api/admin/newsletter/editions/:id/schedule', isAuthenticated, async (req: any, res) => {
+  app.patch('/api/admin/newsletter/editions/:id/schedule', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user || user.role !== 'admin') return res.status(403).json({ message: 'Admin access required' });
       const id = parseInt(req.params.id);
       const { scheduledFor } = req.body;
       if (!scheduledFor) return res.status(400).json({ message: 'scheduledFor date is required' });
@@ -2614,15 +2586,8 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   });
 
   // Admin: Create category
-  app.post('/api/forum/categories', isAuthenticated, async (req: any, res) => {
+  app.post('/api/forum/categories', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-      
       const category = await storage.createForumCategory(req.body);
       res.json(category);
     } catch (error) {
@@ -2632,15 +2597,8 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   });
 
   // Admin: Update category
-  app.patch('/api/forum/categories/:id', isAuthenticated, async (req: any, res) => {
+  app.patch('/api/forum/categories/:id', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-      
       const category = await storage.updateForumCategory(parseInt(req.params.id), req.body);
       res.json(category);
     } catch (error) {
@@ -2650,15 +2608,8 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   });
 
   // Admin: Delete category
-  app.delete('/api/forum/categories/:id', isAuthenticated, async (req: any, res) => {
+  app.delete('/api/forum/categories/:id', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-      
       await storage.deleteForumCategory(parseInt(req.params.id));
       res.json({ success: true });
     } catch (error) {
@@ -2679,15 +2630,8 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   });
 
   // Admin: Update user role
-  app.patch('/api/users/:id/role', isAuthenticated, async (req: any, res) => {
+  app.patch('/api/users/:id/role', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-      
       const { role } = req.body;
       if (!['member', 'subscriber', 'moderator', 'admin'].includes(role)) {
         return res.status(400).json({ message: "Invalid role" });
@@ -9154,12 +9098,8 @@ Respond in JSON format:
   });
 
   // Amazon Product API routes (admin only)
-  app.get('/api/amazon/status', isAuthenticated, async (req: any, res) => {
+  app.get('/api/amazon/status', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user || user.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
-      }
       res.json({ configured: isAmazonConfigured() });
     } catch (error) {
       console.error("Error checking Amazon status:", error);
@@ -9167,13 +9107,8 @@ Respond in JSON format:
     }
   });
 
-  app.get('/api/amazon/search', isAuthenticated, async (req: any, res) => {
+  app.get('/api/amazon/search', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user || user.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-
       const { keywords, category, limit } = req.query;
       if (!keywords) {
         return res.status(400).json({ message: "Keywords are required" });
@@ -9191,13 +9126,8 @@ Respond in JSON format:
     }
   });
 
-  app.post('/api/amazon/import', isAuthenticated, async (req: any, res) => {
+  app.post('/api/amazon/import', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user || user.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-
       const { asin, categoryId, isFeatured, tags } = req.body;
       if (!asin || !categoryId) {
         return res.status(400).json({ message: "ASIN and categoryId are required" });
@@ -11106,13 +11036,8 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   });
 
   // POST /api/recovery/exercises/seed — admin-callable manual seed
-  app.post('/api/recovery/exercises/seed', isAuthenticated, async (req: any, res) => {
+  app.post('/api/recovery/exercises/seed', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      if (!user || (user as any).role !== 'admin') {
-        return res.status(403).json({ message: 'Admin only' });
-      }
       const { seedRecoveryExercises } = await import('./lib/seedRecoveryExercises');
       const result = await seedRecoveryExercises();
       res.json(result);
@@ -13264,13 +13189,8 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // ADMIN PLAN BUILDER
   // ============================================================================
 
-  app.get('/api/admin/plans', isAuthenticated, async (req: any, res) => {
+  app.get('/api/admin/plans', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Unauthorized" });
-      }
       const plans = await storage.getRecoveryPlans();
       res.json(plans);
     } catch (error) {
@@ -13278,13 +13198,9 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
-  app.post('/api/admin/plans', isAuthenticated, async (req: any, res) => {
+  app.post('/api/admin/plans', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Unauthorized" });
-      }
       const plan = await storage.createRecoveryPlan({ createdBy: userId, ...req.body });
       res.json(plan);
     } catch (error) {
@@ -13292,13 +13208,8 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
-  app.delete('/api/admin/plans/:id', isAuthenticated, async (req: any, res) => {
+  app.delete('/api/admin/plans/:id', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Unauthorized" });
-      }
       await storage.deleteRecoveryPlan(parseInt(req.params.id));
       res.json({ success: true });
     } catch (error) {
@@ -13306,13 +13217,8 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
-  app.post('/api/admin/plans/:id/assign', isAuthenticated, async (req: any, res) => {
+  app.post('/api/admin/plans/:id/assign', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Unauthorized" });
-      }
       const planId = parseInt(req.params.id);
       const { userIds } = req.body;
       await storage.assignRecoveryPlan(planId, userIds);
@@ -13326,14 +13232,8 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // STRIPE KREAITE PRODUCTS
   // ============================================================================
 
-  app.post('/api/admin/stripe/create-kreaite-products', isAuthenticated, async (req: any, res) => {
+  app.post('/api/admin/stripe/create-kreaite-products', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-      
       console.log('Creating Stroke Recovery Academy products in Stripe...');
       const products = await stripeService.createKreAIteProducts();
       console.log('Created products:', products);
@@ -13421,14 +13321,8 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   });
 
   // POST /api/admin/subscription/seed-tiers - Seed subscription tiers
-  app.post('/api/admin/subscription/seed-tiers', isAuthenticated, async (req: any, res) => {
+  app.post('/api/admin/subscription/seed-tiers', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-      
       await seedSubscriptionTiers();
       const tiers = await getAllTiers();
       res.json({ success: true, message: 'Subscription tiers seeded', tiers });
@@ -13479,14 +13373,8 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   });
 
   // POST /api/admin/credits/process-monthly - Process monthly credit grants
-  app.post('/api/admin/credits/process-monthly', isAuthenticated, async (req: any, res) => {
+  app.post('/api/admin/credits/process-monthly', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-      
       const result = await processMonthlyCredits();
       res.json({ success: true, ...result });
     } catch (error) {
@@ -20059,15 +19947,8 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   });
 
   // GET /api/moderation/reports - Get reports (admin only)
-  app.get('/api/moderation/reports', isAuthenticated, async (req: any, res) => {
+  app.get('/api/moderation/reports', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-
       const { status, limit = '50', offset = '0' } = req.query;
 
       let query = db.select({
@@ -20095,15 +19976,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   });
 
   // PATCH /api/moderation/reports/:id - Update report status (admin only)
-  app.patch('/api/moderation/reports/:id', isAuthenticated, async (req: any, res) => {
+  app.patch('/api/moderation/reports/:id', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-
       const reportId = parseInt(req.params.id);
       const { status } = req.body;
 
@@ -20134,15 +20009,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   });
 
   // PATCH /api/moderation/listings/:id/status - Update listing moderation status (admin only)
-  app.patch('/api/moderation/listings/:id/status', isAuthenticated, async (req: any, res) => {
+  app.patch('/api/moderation/listings/:id/status', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-
       const listingId = parseInt(req.params.id);
       const { moderationStatus, moderationNotes } = req.body;
 
@@ -21235,21 +21104,8 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // ADMIN PANEL ROUTES
   // ============================================================================
 
-  // Admin middleware - checks if user has admin role
-  const isAdmin = async (req: any, res: any, next: any) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "Authentication required" });
-    }
-    const userId = req.user.claims.sub;
-    const user = await storage.getUser(userId);
-    if (!user || user.role !== 'admin') {
-      return res.status(403).json({ message: "Admin access required" });
-    }
-    next();
-  };
-
   // GET /api/admin/users - List/search users (admin only)
-  app.get('/api/admin/users', isAuthenticated, isAdmin, async (req: any, res) => {
+  app.get('/api/admin/users', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const { search, limit = 50, offset = 0 } = req.query;
       const { creditWallets } = await import('../shared/schema');
@@ -21309,7 +21165,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   });
 
   // GET /api/admin/users/:id - Get single user details
-  app.get('/api/admin/users/:id', isAuthenticated, isAdmin, async (req: any, res) => {
+  app.get('/api/admin/users/:id', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const userId = req.params.id;
       const user = await storage.getUser(userId);
@@ -21333,7 +21189,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   });
 
   // POST /api/admin/users/:id/credits - Add credits to user
-  app.post('/api/admin/users/:id/credits', isAuthenticated, isAdmin, async (req: any, res) => {
+  app.post('/api/admin/users/:id/credits', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const targetUserId = req.params.id;
       const adminId = req.user.claims.sub;
@@ -21368,7 +21224,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   });
 
   // POST /api/admin/users/:id/unlimited - Set unlimited credits (999999999)
-  app.post('/api/admin/users/:id/unlimited', isAuthenticated, isAdmin, async (req: any, res) => {
+  app.post('/api/admin/users/:id/unlimited', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const targetUserId = req.params.id;
       const adminId = req.user.claims.sub;
@@ -21423,7 +21279,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   });
 
   // POST /api/admin/users/:id/role - Update user role
-  app.post('/api/admin/users/:id/role', isAuthenticated, isAdmin, async (req: any, res) => {
+  app.post('/api/admin/users/:id/role', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const targetUserId = req.params.id;
       const adminId = req.user.claims.sub;
@@ -21456,7 +21312,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   });
 
   // GET /api/admin/stats - Platform statistics
-  app.get('/api/admin/stats', isAuthenticated, isAdmin, async (req: any, res) => {
+  app.get('/api/admin/stats', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const { creditWallets } = await import('../shared/schema');
       
@@ -21526,7 +21382,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   });
 
   // GET /api/admin/revenue - Revenue analytics (admin only)
-  app.get('/api/admin/revenue', isAuthenticated, isAdmin, async (req: any, res) => {
+  app.get('/api/admin/revenue', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const { getRevenueMetrics, getRecentRevenue } = await import('./revenueService');
       
@@ -21561,7 +21417,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   });
 
   // GET /api/admin/subscriptions - Subscription analytics (admin only)
-  app.get('/api/admin/subscriptions', isAuthenticated, isAdmin, async (req: any, res) => {
+  app.get('/api/admin/subscriptions', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const { getSubscriptionMetrics } = await import('./revenueService');
       const metrics = await getSubscriptionMetrics();
@@ -21582,7 +21438,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   });
 
   // GET /api/admin/analytics - Rich growth/engagement analytics (admin only)
-  app.get('/api/admin/analytics', isAuthenticated, isAdmin, async (req: any, res) => {
+  app.get('/api/admin/analytics', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const days = Math.min(Math.max(parseInt(req.query.days as string) || 30, 7), 90);
       const sinceDays = (n: number) => {
@@ -21681,7 +21537,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   });
 
   // GET /api/admin/credits-analytics - Credit usage analytics (admin only)
-  app.get('/api/admin/credits-analytics', isAuthenticated, isAdmin, async (req: any, res) => {
+  app.get('/api/admin/credits-analytics', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const { getCreditUsageAnalytics } = await import('./revenueService');
       
