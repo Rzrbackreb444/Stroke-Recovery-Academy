@@ -11,7 +11,7 @@ Preferred communication style: Simple, everyday language.
 ## System Architecture
 
 ### Frontend
-The frontend is built with React 18, TypeScript, Vite, Wouter for routing, and TailwindCSS for styling. Shadcn/ui (Radix UI base) is used for components, featuring a literary warm theme for the main platform and a distinct dark OS theme for the Stroke Recovery OS. State management relies on TanStack Query for server state and custom hooks for authentication. Design emphasizes mobile-first responsiveness, accessibility, and uses lucide-react for icons.
+The frontend is built with React 18, TypeScript, Vite, Wouter for routing, and TailwindCSS for styling. Shadcn/ui (Radix UI base) is used for components, featuring a literary warm theme for the main platform and a distinct dark OS theme for the Stroke Recovery OS. State management relies on TanStack Query for server state and custom hooks for authentication. Design emphasizes mobile-first responsiveness, accessibility, and uses lucide-react for icons. Routes are code-split via `React.lazy()` + `<Suspense>` in `client/src/App.tsx` — only the home-landing trio (`CreatorLanding` / `Landing` / `StrokeLyfeOrg`) plus `NotFound` ship in the cold-load main chunk; every other page is fetched on demand. Production cold-load main chunk is ~770 KB (down from ~5.1 MB before code splitting).
 
 ### Backend
 The backend utilizes Express.js and TypeScript, adhering to RESTful API principles with JSON and CORS. Authentication is managed via Replit Auth (OpenID Connect) using Passport.js, incorporating session-based authentication and HTTP-only cookies.

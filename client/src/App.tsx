@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -10,170 +10,177 @@ import GlobalHeader from "@/components/GlobalHeader";
 import RecoveryHeader from "@/components/RecoveryHeader";
 
 // Creator Platform Pages
+
+// ─── Eager pages (cold-load critical) ───────────────────────────────────
+// HomeLanding's three branches must render synchronously at "/" so we never
+// flash a Suspense fallback on the very first paint. NotFound is the always-
+// mounted catch-all so it must also be eager.
 import CreatorLanding from "@/pages/CreatorLanding";
-import Dashboard from "@/pages/Dashboard";
+import StrokeRecoveryLanding from "@/pages/Landing";
+import StrokeLyfeOrg from "@/pages/StrokeLyfeOrg";
+import NotFound from "@/pages/not-found";
+
+// ─── App-shell components (small, used outside the lazy <Switch>) ──────
 import OnboardingFlow, { useOnboardingComplete } from "@/components/OnboardingFlow";
-import Community from "@/pages/Community";
-import Thread from "@/pages/Thread";
-import Groups from "@/pages/Groups";
-import GroupDetail from "@/pages/GroupDetail";
-import About from "@/pages/About";
-import AboutUs from "@/pages/AboutUs";
-import Marketplace from "@/pages/Marketplace";
-import Publishing from "@/pages/Publishing";
-import Stories from "@/pages/Stories";
-import StoryView from "@/pages/StoryView";
-import StoryEditor from "@/pages/StoryEditor";
-import MyStories from "@/pages/MyStories";
-import Pricing from "@/pages/Pricing";
-import PowerPointsInbox from "@/pages/PowerPointsInbox";
-import TherapistApply from "@/pages/TherapistApply";
-import TherapistAdmin from "@/pages/TherapistAdmin";
-import SurvivorProfilePage from "@/pages/SurvivorProfile";
-import SurvivorIntake from "@/pages/SurvivorIntake";
-import SurvivorProfileSettings from "@/pages/SurvivorProfileSettings";
 import SurvivorIntakeBanner from "@/components/SurvivorIntakeBanner";
 import AccessibilityProvider from "@/components/AccessibilityProvider";
-import AvatarSettings from "@/pages/AvatarSettings";
 import AdminRoute from "@/components/AdminRoute";
-import MusicStudio from "@/pages/MusicStudio";
-import MusicSandbox from "@/pages/MusicSandbox";
-import MusicProductionStudio from "@/pages/MusicProductionStudio";
-import BookStudioV3 from "@/pages/BookStudioV3";
-import VideoStudio from "@/pages/VideoStudio";
-import CourseStudio from "@/pages/CourseStudio";
-import ImageStudio from "@/pages/ImageStudio";
-import BookMarketplace from "@/pages/BookMarketplace";
-import SellBooks from "@/pages/SellBooks";
-import OrderConfirmation from "@/pages/OrderConfirmation";
-import MyOrders from "@/pages/MyOrders";
-import AuthorDashboard from "@/pages/AuthorDashboard";
-import CreatorHub from "@/pages/CreatorHub";
-import MovieStudio from "@/pages/MovieStudio";
-import VoiceLibrary from "@/pages/VoiceLibrary";
-import AudiobookFactory from "@/pages/AudiobookFactory";
-import DJStudio from "@/pages/DJStudio";
-import WorkflowDashboard from "@/pages/WorkflowDashboard";
-// Brain Games hub — only cognitive-recovery games (Wilderness Survival).
-// Casino-style games and SquatchQR were removed in the recovery-focused overhaul.
-import SasquatchGames from "@/pages/SasquatchGames";
-import SEOCommandCenter from "@/pages/SEOCommandCenter";
-import BookPerfectionSuite from "@/pages/BookPerfectionSuite";
-import WildernessSurvival from "@/pages/WildernessSurvival";
-import CreatorEarnings from "@/pages/CreatorEarnings";
-import MediaStudioPage from "@/pages/MediaStudioPage";
-import CreatorSettings from "@/pages/CreatorSettings";
-import QuickCreate from "@/pages/QuickCreate";
-import AIConsultant from "@/pages/AIConsultant";
-import ListingDetail from "@/pages/ListingDetail";
-import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
-import AffiliateDashboard from "@/pages/AffiliateDashboard";
-import TermsOfService from "@/pages/TermsOfService";
-import PrivacyPolicy from "@/pages/PrivacyPolicy";
-import MedicalDisclaimer from "@/pages/MedicalDisclaimer";
-import RefundPolicy from "@/pages/RefundPolicy";
-import AccountPrivacy from "@/pages/AccountPrivacy";
-import Welcome from "@/pages/Welcome";
-import ModerationDashboard from "@/pages/ModerationDashboard";
-import AdminPanel from "@/pages/AdminPanel";
-import PodcastStudioPage from "@/pages/PodcastStudioPage";
-import AvatarStudioPage from "@/pages/AvatarStudioPage";
-import TemplateMarketplacePage from "@/pages/TemplateMarketplacePage";
-import DocHubPage from "@/pages/DocHubPage";
-import CreatorStore from "@/pages/CreatorStore";
-import Settings from "@/pages/Settings";
-import MagicLinkLogin, { MagicLinkVerify } from "@/pages/MagicLinkLogin";
-import AuthorProfile from "@/pages/AuthorProfile";
-import AuthorStorefront from "@/pages/AuthorStorefront";
-import CreatorProductDashboard from "@/pages/CreatorProductDashboard";
-import ProductionDashboard from "@/pages/ProductionDashboard";
-import ScriptStudio from "@/pages/ScriptStudio";
-import LifeStoryEngine from "@/pages/LifeStoryEngine";
-import WhiteLabel from "@/pages/white-label";
-import WebsiteStudio from "@/pages/WebsiteStudio";
-import MobileStudio from "@/pages/MobileStudio";
-import AuthPage from "@/pages/AuthPage";
-import AuthVerify from "@/pages/AuthVerify";
-import ResetPassword from "@/pages/ResetPassword";
-// Stroke Recovery Platform Pages (under /recovery/*)
-import StrokeRecoveryLanding from "@/pages/Landing";
-import RecoveryDashboard from "@/pages/RecoveryDashboard";
-import Scholarship from "@/pages/Scholarship";
-import CaregiverSettings from "@/pages/CaregiverSettings";
-import Academy from "@/pages/Academy";
-import SaschLanding from "@/pages/SaschLanding";
-import Builder from "@/pages/Builder";
-import SurvivalGrid from "@/pages/SurvivalGrid";
-import Achievements from "@/pages/Achievements";
-import Reminders from "@/pages/Reminders";
-import Activity from "@/pages/Activity";
-import Exercises from "@/pages/Exercises";
-import TherapistDashboard from "@/pages/TherapistDashboard";
-import CommandCenter from "@/pages/CommandCenter";
-import Wearables from "@/pages/Wearables";
-import Messages from "@/pages/Messages";
-import VideoSessions from "@/pages/VideoSessions";
-import SocialNetwork from "@/pages/SocialNetwork";
-import RecoveryCommunity from "@/pages/RecoveryCommunity";
-import TherapistMarketplace from "@/pages/TherapistMarketplace";
-import AdminPlanBuilder from "@/pages/AdminPlanBuilder";
-import AdminSEODashboard from "@/pages/AdminSEODashboard";
-import FeedbackAdmin from "@/pages/FeedbackAdmin";
-import FeedbackInbox from "@/pages/FeedbackInbox";
-import BlogDraftStudio from "@/pages/BlogDraftStudio";
-import RecoveryUniversity from "@/pages/RecoveryUniversity";
-import RecoveryLesson from "@/pages/RecoveryLesson";
-import RecoveryQuiz from "@/pages/RecoveryQuiz";
-import RecoveryCertificate from "@/pages/RecoveryCertificate";
-import RecoveryForge from "@/pages/RecoveryForge";
-import BrainGym from "@/pages/BrainGym";
-import StrokeLyfeOrg from "@/pages/StrokeLyfeOrg";
-import RecoveryStore from "@/pages/RecoveryStore";
-
-// Sasquatch Doctrine Core Pages
-import FlickerLog from "@/pages/FlickerLog";
-import DailyRoutine from "@/pages/DailyRoutine";
-import RecoveryToday from "@/pages/RecoveryToday";
-import SurvivorShop from "@/pages/SurvivorShop";
-import MotivationStudio from "@/pages/MotivationStudio";
-import MedicalLog from "@/pages/MedicalLog";
-import Compass from "@/pages/Compass";
-import DraftYourLegend from "@/pages/DraftYourLegend";
-import CourseBuilder from "@/pages/CourseBuilder";
-import NeverZero from "@/pages/NeverZero";
-import RecoveryJournal from "@/pages/RecoveryJournal";
-import RecoveryResources from "@/pages/RecoveryResources";
-import RecoveryCenterFinder from "@/pages/RecoveryCenterFinder";
-import RecoveryBlog from "@/pages/RecoveryBlog";
-import RecoveryBlogPost from "@/pages/RecoveryBlogPost";
-import RecoveryOnboarding from "@/pages/RecoveryOnboarding";
-import RecoveryMe from "@/pages/RecoveryMe";
-import RecoveryExercises from "@/pages/RecoveryExercises";
-import RecoveryExerciseDetail from "@/pages/RecoveryExerciseDetail";
-import RecoverySpotlight from "@/pages/RecoverySpotlight";
-import RecoveryLogin from "@/pages/RecoveryLogin";
-import SasquatchCoach from "@/pages/SasquatchCoach";
-import SurvivorIncome from "@/pages/SurvivorIncome";
-import RecoveryProtocols from "@/pages/RecoveryProtocols";
-import MyBook from "@/pages/MyBook";
-import AboutNick from "@/pages/AboutNick";
-import Challenge from "@/pages/Challenge";
-import RecoveryAnthem from "@/pages/RecoveryAnthem";
-import TodayAnchor from "@/pages/TodayAnchor";
-import AnchorShare from "@/pages/AnchorShare";
-import RecoveryPricing from "@/pages/RecoveryPricing";
-import GiftSurvivor from "@/pages/GiftSurvivor";
-import CoursePlayer from "@/pages/CoursePlayer";
-import InstructorAnalytics from "@/pages/InstructorAnalytics";
-import TherapistHoursSettings from "@/pages/TherapistHoursSettings";
-import RecoveryCircles from "@/pages/RecoveryCircles";
-import RecoveryBuddy from "@/pages/RecoveryBuddy";
-import CourseQuiz from "@/pages/CourseQuiz";
-import CourseCertificate from "@/pages/CourseCertificate";
-import StudentDashboard from "@/pages/StudentDashboard";
-
 import ProtectedRoute from "@/components/ProtectedRoute";
-import NotFound from "@/pages/not-found";
+
+// ─── Lazy pages (everything else — code-split per route) ───────────────
+// Each line below produces its own JS chunk. The bundle for cold load
+// drops from ~5MB → main + ~150 small route-level chunks fetched on
+// demand. Wrapped in <Suspense> below.
+const Dashboard = lazy(() => import("@/pages/Dashboard"));
+const Community = lazy(() => import("@/pages/Community"));
+const Thread = lazy(() => import("@/pages/Thread"));
+const Groups = lazy(() => import("@/pages/Groups"));
+const GroupDetail = lazy(() => import("@/pages/GroupDetail"));
+const About = lazy(() => import("@/pages/About"));
+const AboutUs = lazy(() => import("@/pages/AboutUs"));
+const Marketplace = lazy(() => import("@/pages/Marketplace"));
+const Publishing = lazy(() => import("@/pages/Publishing"));
+const Stories = lazy(() => import("@/pages/Stories"));
+const StoryView = lazy(() => import("@/pages/StoryView"));
+const StoryEditor = lazy(() => import("@/pages/StoryEditor"));
+const MyStories = lazy(() => import("@/pages/MyStories"));
+const Pricing = lazy(() => import("@/pages/Pricing"));
+const PowerPointsInbox = lazy(() => import("@/pages/PowerPointsInbox"));
+const TherapistApply = lazy(() => import("@/pages/TherapistApply"));
+const TherapistAdmin = lazy(() => import("@/pages/TherapistAdmin"));
+const SurvivorProfilePage = lazy(() => import("@/pages/SurvivorProfile"));
+const SurvivorIntake = lazy(() => import("@/pages/SurvivorIntake"));
+const SurvivorProfileSettings = lazy(() => import("@/pages/SurvivorProfileSettings"));
+const AvatarSettings = lazy(() => import("@/pages/AvatarSettings"));
+const MusicStudio = lazy(() => import("@/pages/MusicStudio"));
+const MusicSandbox = lazy(() => import("@/pages/MusicSandbox"));
+const MusicProductionStudio = lazy(() => import("@/pages/MusicProductionStudio"));
+const BookStudioV3 = lazy(() => import("@/pages/BookStudioV3"));
+const VideoStudio = lazy(() => import("@/pages/VideoStudio"));
+const CourseStudio = lazy(() => import("@/pages/CourseStudio"));
+const ImageStudio = lazy(() => import("@/pages/ImageStudio"));
+const BookMarketplace = lazy(() => import("@/pages/BookMarketplace"));
+const SellBooks = lazy(() => import("@/pages/SellBooks"));
+const OrderConfirmation = lazy(() => import("@/pages/OrderConfirmation"));
+const MyOrders = lazy(() => import("@/pages/MyOrders"));
+const AuthorDashboard = lazy(() => import("@/pages/AuthorDashboard"));
+const CreatorHub = lazy(() => import("@/pages/CreatorHub"));
+const MovieStudio = lazy(() => import("@/pages/MovieStudio"));
+const VoiceLibrary = lazy(() => import("@/pages/VoiceLibrary"));
+const AudiobookFactory = lazy(() => import("@/pages/AudiobookFactory"));
+const DJStudio = lazy(() => import("@/pages/DJStudio"));
+const WorkflowDashboard = lazy(() => import("@/pages/WorkflowDashboard"));
+const SasquatchGames = lazy(() => import("@/pages/SasquatchGames"));
+const SEOCommandCenter = lazy(() => import("@/pages/SEOCommandCenter"));
+const BookPerfectionSuite = lazy(() => import("@/pages/BookPerfectionSuite"));
+const WildernessSurvival = lazy(() => import("@/pages/WildernessSurvival"));
+const CreatorEarnings = lazy(() => import("@/pages/CreatorEarnings"));
+const MediaStudioPage = lazy(() => import("@/pages/MediaStudioPage"));
+const CreatorSettings = lazy(() => import("@/pages/CreatorSettings"));
+const QuickCreate = lazy(() => import("@/pages/QuickCreate"));
+const AIConsultant = lazy(() => import("@/pages/AIConsultant"));
+const ListingDetail = lazy(() => import("@/pages/ListingDetail"));
+const AnalyticsDashboard = lazy(() => import("@/pages/AnalyticsDashboard"));
+const AffiliateDashboard = lazy(() => import("@/pages/AffiliateDashboard"));
+const TermsOfService = lazy(() => import("@/pages/TermsOfService"));
+const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
+const MedicalDisclaimer = lazy(() => import("@/pages/MedicalDisclaimer"));
+const RefundPolicy = lazy(() => import("@/pages/RefundPolicy"));
+const AccountPrivacy = lazy(() => import("@/pages/AccountPrivacy"));
+const Welcome = lazy(() => import("@/pages/Welcome"));
+const ModerationDashboard = lazy(() => import("@/pages/ModerationDashboard"));
+const AdminPanel = lazy(() => import("@/pages/AdminPanel"));
+const PodcastStudioPage = lazy(() => import("@/pages/PodcastStudioPage"));
+const AvatarStudioPage = lazy(() => import("@/pages/AvatarStudioPage"));
+const TemplateMarketplacePage = lazy(() => import("@/pages/TemplateMarketplacePage"));
+const DocHubPage = lazy(() => import("@/pages/DocHubPage"));
+const CreatorStore = lazy(() => import("@/pages/CreatorStore"));
+const Settings = lazy(() => import("@/pages/Settings"));
+const MagicLinkLogin = lazy(() => import("@/pages/MagicLinkLogin"));
+const MagicLinkVerify = lazy(() => import("@/pages/MagicLinkLogin").then(m => ({ default: m.MagicLinkVerify })));
+const AuthorProfile = lazy(() => import("@/pages/AuthorProfile"));
+const AuthorStorefront = lazy(() => import("@/pages/AuthorStorefront"));
+const CreatorProductDashboard = lazy(() => import("@/pages/CreatorProductDashboard"));
+const ProductionDashboard = lazy(() => import("@/pages/ProductionDashboard"));
+const ScriptStudio = lazy(() => import("@/pages/ScriptStudio"));
+const LifeStoryEngine = lazy(() => import("@/pages/LifeStoryEngine"));
+const WhiteLabel = lazy(() => import("@/pages/white-label"));
+const WebsiteStudio = lazy(() => import("@/pages/WebsiteStudio"));
+const MobileStudio = lazy(() => import("@/pages/MobileStudio"));
+const AuthPage = lazy(() => import("@/pages/AuthPage"));
+const AuthVerify = lazy(() => import("@/pages/AuthVerify"));
+const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
+const RecoveryDashboard = lazy(() => import("@/pages/RecoveryDashboard"));
+const Scholarship = lazy(() => import("@/pages/Scholarship"));
+const CaregiverSettings = lazy(() => import("@/pages/CaregiverSettings"));
+const Academy = lazy(() => import("@/pages/Academy"));
+const SaschLanding = lazy(() => import("@/pages/SaschLanding"));
+const Builder = lazy(() => import("@/pages/Builder"));
+const SurvivalGrid = lazy(() => import("@/pages/SurvivalGrid"));
+const Achievements = lazy(() => import("@/pages/Achievements"));
+const Reminders = lazy(() => import("@/pages/Reminders"));
+const Activity = lazy(() => import("@/pages/Activity"));
+const Exercises = lazy(() => import("@/pages/Exercises"));
+const TherapistDashboard = lazy(() => import("@/pages/TherapistDashboard"));
+const CommandCenter = lazy(() => import("@/pages/CommandCenter"));
+const Wearables = lazy(() => import("@/pages/Wearables"));
+const Messages = lazy(() => import("@/pages/Messages"));
+const VideoSessions = lazy(() => import("@/pages/VideoSessions"));
+const SocialNetwork = lazy(() => import("@/pages/SocialNetwork"));
+const RecoveryCommunity = lazy(() => import("@/pages/RecoveryCommunity"));
+const TherapistMarketplace = lazy(() => import("@/pages/TherapistMarketplace"));
+const AdminPlanBuilder = lazy(() => import("@/pages/AdminPlanBuilder"));
+const AdminSEODashboard = lazy(() => import("@/pages/AdminSEODashboard"));
+const FeedbackAdmin = lazy(() => import("@/pages/FeedbackAdmin"));
+const FeedbackInbox = lazy(() => import("@/pages/FeedbackInbox"));
+const BlogDraftStudio = lazy(() => import("@/pages/BlogDraftStudio"));
+const RecoveryUniversity = lazy(() => import("@/pages/RecoveryUniversity"));
+const RecoveryLesson = lazy(() => import("@/pages/RecoveryLesson"));
+const RecoveryQuiz = lazy(() => import("@/pages/RecoveryQuiz"));
+const RecoveryCertificate = lazy(() => import("@/pages/RecoveryCertificate"));
+const RecoveryForge = lazy(() => import("@/pages/RecoveryForge"));
+const BrainGym = lazy(() => import("@/pages/BrainGym"));
+const RecoveryStore = lazy(() => import("@/pages/RecoveryStore"));
+const FlickerLog = lazy(() => import("@/pages/FlickerLog"));
+const DailyRoutine = lazy(() => import("@/pages/DailyRoutine"));
+const RecoveryToday = lazy(() => import("@/pages/RecoveryToday"));
+const SurvivorShop = lazy(() => import("@/pages/SurvivorShop"));
+const MotivationStudio = lazy(() => import("@/pages/MotivationStudio"));
+const MedicalLog = lazy(() => import("@/pages/MedicalLog"));
+const Compass = lazy(() => import("@/pages/Compass"));
+const DraftYourLegend = lazy(() => import("@/pages/DraftYourLegend"));
+const CourseBuilder = lazy(() => import("@/pages/CourseBuilder"));
+const NeverZero = lazy(() => import("@/pages/NeverZero"));
+const RecoveryJournal = lazy(() => import("@/pages/RecoveryJournal"));
+const RecoveryResources = lazy(() => import("@/pages/RecoveryResources"));
+const RecoveryCenterFinder = lazy(() => import("@/pages/RecoveryCenterFinder"));
+const RecoveryBlog = lazy(() => import("@/pages/RecoveryBlog"));
+const RecoveryBlogPost = lazy(() => import("@/pages/RecoveryBlogPost"));
+const RecoveryOnboarding = lazy(() => import("@/pages/RecoveryOnboarding"));
+const RecoveryMe = lazy(() => import("@/pages/RecoveryMe"));
+const RecoveryExercises = lazy(() => import("@/pages/RecoveryExercises"));
+const RecoveryExerciseDetail = lazy(() => import("@/pages/RecoveryExerciseDetail"));
+const RecoverySpotlight = lazy(() => import("@/pages/RecoverySpotlight"));
+const RecoveryLogin = lazy(() => import("@/pages/RecoveryLogin"));
+const SasquatchCoach = lazy(() => import("@/pages/SasquatchCoach"));
+const SurvivorIncome = lazy(() => import("@/pages/SurvivorIncome"));
+const RecoveryProtocols = lazy(() => import("@/pages/RecoveryProtocols"));
+const MyBook = lazy(() => import("@/pages/MyBook"));
+const AboutNick = lazy(() => import("@/pages/AboutNick"));
+const Challenge = lazy(() => import("@/pages/Challenge"));
+const RecoveryAnthem = lazy(() => import("@/pages/RecoveryAnthem"));
+const TodayAnchor = lazy(() => import("@/pages/TodayAnchor"));
+const AnchorShare = lazy(() => import("@/pages/AnchorShare"));
+const RecoveryPricing = lazy(() => import("@/pages/RecoveryPricing"));
+const GiftSurvivor = lazy(() => import("@/pages/GiftSurvivor"));
+const CoursePlayer = lazy(() => import("@/pages/CoursePlayer"));
+const InstructorAnalytics = lazy(() => import("@/pages/InstructorAnalytics"));
+const TherapistHoursSettings = lazy(() => import("@/pages/TherapistHoursSettings"));
+const RecoveryCircles = lazy(() => import("@/pages/RecoveryCircles"));
+const RecoveryBuddy = lazy(() => import("@/pages/RecoveryBuddy"));
+const CourseQuiz = lazy(() => import("@/pages/CourseQuiz"));
+const CourseCertificate = lazy(() => import("@/pages/CourseCertificate"));
+const StudentDashboard = lazy(() => import("@/pages/StudentDashboard"));
 import CreatorScribeWidget from "@/components/CreatorScribeWidget";
 import { LocaleProvider } from "@/lib/hooks/useLocale";
 import { usePlatform } from "@/lib/hooks/usePlatform";
@@ -194,13 +201,40 @@ function HomeLanding() {
   return <CreatorLanding />;
 }
 
+
+// ─── Suspense fallback for lazy routes ────────────────────────────────────
+// Minimal dark panel — same neutral as the recovery OS so survivors don't see
+// a white flash on slow networks.
+//
+// Height note: this fallback renders *inside* the Switch but BELOW the shell
+// components (RecoveryHeader, SurvivorIntakeBanner, AccessibilityProvider)
+// which sit above the Suspense boundary in <Router/>. Using min-h-screen here
+// would push the page taller than the viewport on every route transition and
+// cause a visible scroll jump. min-h-[60vh] is tall enough that the loading
+// state is visibly centered, short enough that the page never grows past the
+// previous route's height.
+function LazyRouteFallback() {
+  return (
+    <div
+      data-testid="lazy-route-fallback"
+      className="min-h-[60vh] w-full bg-[#0D0D0D] flex items-center justify-center"
+    >
+      <div className="flex items-center gap-2 text-[#C9941A]/80">
+        <span className="h-2 w-2 rounded-full bg-[#C9941A] animate-pulse" />
+        <span className="text-sm">Loading…</span>
+      </div>
+    </div>
+  );
+}
+
 function Router() {
   return (
     <>
     <AccessibilityProvider />
     <SurvivorIntakeBanner />
     <RecoveryHeader />
-    <Switch>
+    <Suspense fallback={<LazyRouteFallback />}>
+      <Switch>
       {/* ============================================ */}
       {/* HOME - Domain-based landing page */}
       {/* ============================================ */}
@@ -645,7 +679,8 @@ function Router() {
       <Route path="/courses" component={StudentDashboard} />
 
       <Route component={NotFound} />
-    </Switch>
+      </Switch>
+    </Suspense>
     </>
   );
 }
