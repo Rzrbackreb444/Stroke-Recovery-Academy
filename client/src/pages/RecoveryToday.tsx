@@ -12,28 +12,14 @@ import {
 } from "lucide-react";
 import {
   LEVELS, getSequentialTasks, personalizeSequence, todayStr,
-  type SequentialTask, type PersonalizationInput,
+  type SequentialTask, type TodayRecommendation,
 } from "@/lib/recoveryRoutine";
 import { MedicalDisclaimerCard } from "@/components/recovery/MedicalDisclaimerCard";
 import { WalkingCooldown } from "@/components/recovery/WalkingCooldown";
 import { SHOP_CATEGORIES, type ShopCategoryId } from "@/data/survivorShop";
 
 type Reaction = "good" | "hard" | "too_hard";
-
-type Recommendation = {
-  level: number;
-  reason: string;
-  basis: "yesterday_too_hard" | "yesterday_good" | "first_session" | "steady";
-  ambulatoryToday: boolean;
-  personalization?: PersonalizationInput & {
-    startLevel?: number | null;
-    startReason?: string | null;
-    capLevel?: number | null;
-    capReason?: string | null;
-    equipment?: string[];
-    mobilityAids?: string[];
-  };
-};
+type Recommendation = TodayRecommendation;
 
 export default function RecoveryToday() {
   const { user, isLoading: authLoading } = useAuth();
