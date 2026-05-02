@@ -4,6 +4,7 @@ import { z } from "zod";
 import crypto from "crypto";
 import { db } from "./db";
 import { isAuthenticated } from "./replitAuth";
+import { publicRateLimit } from "./middleware/publicRateLimit";
 import {
   motivationUsage,
   recoveryAnchors,
@@ -432,7 +433,16 @@ export function registerRecoveryAnchorRoutes(app: Express) {
   });
 
   // ── Public share (no auth) ─────────────────────────────────────────
-  app.get("/api/recovery/anchor/share/:shareId", async (req: Request, res: Response) => {
+  // Per-IP limiter on the public, unauthenticated share surface — prevents
+  // share-id enumeration / scraping. 30 reads/min/IP is generous for normal
+  // social-share traffic and cheap to serve from the projection-only query.
+  const anchorShareLimiter = publicRateLimit({
+    windowMs: 60_000,
+    max: 30,
+    bucketName: "anchor-share",
+  });
+
+  app.get("/api/recovery/anchor/share/:shareId", anchorShareLimiter, async (req: Request, res: Response) => {
     try {
       const shareId = String(req.params.shareId || "");
       if (!shareId || shareId.length > 64) return res.status(404).json({ error: "not_found" });

@@ -92,11 +92,18 @@ Sessions persist 7 days; admin actions on the blog draft generator, podcast pipe
 | `audio_url` is stored as base64 data URL inside `recovery_anchors.anchor_data` adjacent jsonb (large rows) | Medium (operational) | Migrate to Object Storage when the suspension lifts. |
 | Public share endpoint serves the full base64 audio inline | Medium | Same migration — once Object Storage returns, swap to short-lived signed URLs. |
 
+## Week 1 Hardening — Shipped May 2026
+
+- **Centralized admin gate (`server/middleware/requireAdmin.ts`)**: New shared middleware that consolidates the admin-role check at the route declaration line, eliminating the "copy-pasted admin route forgot the inline check" failure mode. Seven highest-traffic admin endpoints converted in this pass: `/api/admin/seo/submit`, `/api/admin/blog/draft`, `/api/admin/blog/draft/save`, `/api/admin/blog/draft/infographic`, `/api/admin/stripe/sync`, `/api/admin/stripe/products`, `/api/admin/seed-recovery-data`. The legacy `requireAdminLocal` alias used by Survivor Spotlight routes is now a thin re-export of the new middleware so spotlight + new endpoints share one source of truth. Approximately 25 additional admin endpoints (newsletter, forum, Amazon, recovery plans, content reports, user management) still use the legacy inline-check pattern — they remain SECURE (every one of them performs the `user.role === 'admin'` check) but should be migrated to the middleware in a follow-up cleanup pass for consistency.
+- **Public POST rate limiting expanded**: `/api/feedback/items` (auth-optional public submission) now uses `publicPostLimiter` (10/min/IP) — closes the burst-flood gap noted in the prior debt list. The unauthenticated `GET /api/recovery/anchor/share/:shareId` surface is now wrapped in a dedicated 30/min/IP limiter (`anchorShareLimiter`) — defends against share-id enumeration / scraping at the edge.
+- **Stripe webhook idempotency tests (`tests/stripeWebhook.test.ts`)**: 11-assertion integration test against the real dev DB covering the Buffer-only contract, the `webhook_events` ledger transitions (received → processed | failed), Stripe-retry semantics for `failed` rows (not lost), 5-minute stale-recovery for `received` rows stuck behind a crashed worker, and concurrency-guard behavior for fresh `received` rows. Closes the highest-revenue-risk untested surface.
+- **Dependency audit pass**: `npm audit fix` (non-breaking, no `--force`) reduced vulnerabilities from 25 (12 high, 10 mod, 3 low) to 10 (1 high, 9 mod). Remaining items are all transitive `uuid` issues under `googleapis` 33.x that require a major-version jump (33 → 171) to resolve — deferred to its own scoped task because it touches every Google Workspace integration surface.
+
 ## Known Security Debt — Follow-up Required
 
 | Item | Severity | Owner action |
 |---|---|---|
-| 23 HIGH dependency vulnerabilities (no critical) | High | Run `npm audit fix` and re-scan; pin transitive offenders. |
+| 1 HIGH + 9 MODERATE dependency vulnerabilities (transitive `uuid` < 14 under `googleapis` 33.x) | Medium | Schedule a dedicated upgrade window: `googleapis` 33 → latest is a breaking change that touches Drive, Docs, Sheets, Slides, Forms, and Speech surfaces. |
 | 3 SAST property-injection findings in `quoteStudioRoutes.ts` | High (false positive — code uses allowlist) | **Resolved (May 2026)** — file deleted along with the SquatchQR surface. |
 | 2 XSS findings in `BookPreview.tsx` | High (false positive — detached DOM, text-only extraction) | **Fixed** via DOMParser conversion (2026-04-26). |
 | Missing admin role check on legacy `GET /api/admin/feedback` | High | **Fixed** — now requires `role === 'admin'` (2026-04-26). |
