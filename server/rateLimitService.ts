@@ -5,8 +5,24 @@
 
 import { db } from './db';
 import { usageEvents } from '../shared/schema';
-import { eq, and, gte, sql } from 'drizzle-orm';
+import { eq, and, gte, inArray, sql } from 'drizzle-orm';
 import { getUserTier, getTierConfig, LimitKey } from './subscriptionTierService';
+
+/**
+ * Feature keys that count toward the per-tier AI generation quota.
+ * Restricting `getUsageCount` to this allowlist prevents unrelated
+ * `usage_events` rows (e.g. `daily_spin`, `export`) from prematurely
+ * exhausting a user's AI quota.
+ *
+ * Add new entries here whenever a new direct-Gemini/OpenAI/ElevenLabs
+ * route calls `recordUsage(userId, '<key>')`.
+ */
+export const AI_USAGE_FEATURE_KEYS = [
+  'ai_generation',
+  'persona_forge',
+  'quote_generate',
+  'voice_synthesis',
+] as const;
 
 interface RateLimitResult {
   allowed: boolean;
@@ -16,22 +32,8 @@ interface RateLimitResult {
   message?: string;
 }
 
-// In-memory cache for rate limits (reset on restart)
-const rateLimitCache = new Map<string, { count: number; resetAt: Date }>();
-
 /**
- * Get rate limit key for user + action
- */
-function getRateLimitKey(userId: string, action: string, period: 'daily' | 'monthly'): string {
-  const now = new Date();
-  const dateKey = period === 'daily' 
-    ? `${now.getUTCFullYear()}-${now.getUTCMonth()}-${now.getUTCDate()}`
-    : `${now.getUTCFullYear()}-${now.getUTCMonth()}`;
-  return `${userId}:${action}:${dateKey}`;
-}
-
-/**
- * Get reset time for rate limit
+ * Get reset time for rate limit window
  */
 function getResetTime(period: 'daily' | 'monthly'): Date {
   const now = new Date();
@@ -57,7 +59,6 @@ export async function checkAiGenerationLimit(userId: string): Promise<RateLimitR
   }
 
   // Check daily limit
-  const dailyKey = getRateLimitKey(userId, 'ai_generation', 'daily');
   const dailyCount = await getUsageCount(userId, 'daily');
   
   if (dailyLimit !== -1 && dailyCount >= dailyLimit) {
@@ -112,10 +113,14 @@ async function getUsageCount(userId: string, period: 'daily' | 'monthly'): Promi
   }
 
   try {
+    // Scope to AI-related feature keys + successful events only so unrelated
+    // rows (daily_spin, export, etc.) don't burn the AI generation quota.
     const result = await db.select({ count: sql<number>`count(*)` })
       .from(usageEvents)
       .where(and(
         eq(usageEvents.userId, userId),
+        eq(usageEvents.success, true),
+        inArray(usageEvents.featureKey, AI_USAGE_FEATURE_KEYS as unknown as string[]),
         gte(usageEvents.createdAt, startDate)
       ));
 
@@ -127,16 +132,24 @@ async function getUsageCount(userId: string, period: 'daily' | 'monthly'): Promi
 }
 
 /**
- * Record usage for rate limiting
+ * Record usage for rate limiting.
+ *
+ * Persisted to the usage_events table so the count is shared across replicas
+ * and survives restarts. Previously this wrote to an in-memory Map that no
+ * other code path read — which meant `getUsageCount` (which queries this
+ * table) always returned 0 for events that hadn't been logged elsewhere,
+ * effectively bypassing the per-user rate limit on AI generations.
  */
 export async function recordUsage(userId: string, action: string): Promise<void> {
-  const dailyKey = getRateLimitKey(userId, action, 'daily');
-  const cached = rateLimitCache.get(dailyKey);
-  
-  if (cached) {
-    cached.count++;
-  } else {
-    rateLimitCache.set(dailyKey, { count: 1, resetAt: getResetTime('daily') });
+  try {
+    await db.insert(usageEvents).values({
+      userId,
+      featureKey: action,
+      creditsCost: 0,
+      success: true,
+    });
+  } catch (error) {
+    console.error('Error recording usage event:', error);
   }
 }
 

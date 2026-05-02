@@ -448,7 +448,10 @@ export const forumThreads = pgTable("forum_threads", {
   answerPostId: integer("answer_post_id"),
   lastActivityAt: timestamp("last_activity_at").notNull().defaultNow(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (table) => [
+  index("idx_forum_threads_category").on(table.categoryId, table.lastActivityAt),
+  index("idx_forum_threads_author").on(table.authorId),
+]);
 
 export const forumPosts = pgTable("forum_posts", {
   id: serial("id").primaryKey(),
@@ -465,7 +468,10 @@ export const forumPosts = pgTable("forum_posts", {
   crisisFlag: boolean("crisis_flag").notNull().default(false),
   isDeleted: boolean("is_deleted").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (table) => [
+  index("idx_forum_posts_thread").on(table.threadId, table.createdAt),
+  index("idx_forum_posts_author").on(table.authorId),
+]);
 
 export const forumReactions = pgTable("forum_reactions", {
   id: serial("id").primaryKey(),
@@ -473,7 +479,10 @@ export const forumReactions = pgTable("forum_reactions", {
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   reactionType: text("reaction_type").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (table) => [
+  index("idx_forum_reactions_post").on(table.postId),
+  index("idx_forum_reactions_user").on(table.userId),
+]);
 
 // ============================================================================
 // LEARNING PLATFORM - COURSES
@@ -595,7 +604,9 @@ export const courseModules = pgTable("course_modules", {
   description: text("description"),
   order: integer("order").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (table) => [
+  index("idx_course_modules_course").on(table.courseId, table.order),
+]);
 
 export const courseLessons = pgTable("course_lessons", {
   id: serial("id").primaryKey(),
@@ -608,7 +619,9 @@ export const courseLessons = pgTable("course_lessons", {
   lessonType: text("lesson_type").notNull(),
   resources: jsonb("resources"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (table) => [
+  index("idx_course_lessons_module").on(table.moduleId, table.order),
+]);
 
 // ============================================================================
 // LEARNING PLATFORM - BOOKS
@@ -642,7 +655,9 @@ export const bookChapters = pgTable("book_chapters", {
   coverImageUrl: text("cover_image_url"),
   estimatedReadTime: integer("estimated_read_time"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (table) => [
+  index("idx_book_chapters_book").on(table.bookId, table.chapterNumber),
+]);
 
 export const bookPages = pgTable("book_pages", {
   id: serial("id").primaryKey(),
@@ -651,7 +666,9 @@ export const bookPages = pgTable("book_pages", {
   content: text("content").notNull(),
   interactiveElements: jsonb("interactive_elements"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (table) => [
+  index("idx_book_pages_chapter").on(table.chapterId, table.pageNumber),
+]);
 
 // ============================================================================
 // LEARNING PACKAGES (Book + Course Combinations)
@@ -684,7 +701,9 @@ export const userCourseProgress = pgTable("user_course_progress", {
   enrolledAt: timestamp("enrolled_at").notNull().defaultNow(),
   lastAccessedAt: timestamp("last_accessed_at").notNull().defaultNow(),
   completedAt: timestamp("completed_at"),
-});
+}, (table) => [
+  index("idx_user_course_progress_user").on(table.userId, table.courseId),
+]);
 
 export const userBookProgress = pgTable("user_book_progress", {
   id: serial("id").primaryKey(),
@@ -727,7 +746,9 @@ export const aiChatSessions = pgTable("ai_chat_sessions", {
   messageCount: integer("message_count").notNull().default(0),
   lastMessageAt: timestamp("last_message_at").notNull().defaultNow(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (table) => [
+  index("idx_ai_chat_sessions_user").on(table.userId, table.lastMessageAt),
+]);
 
 export const aiChatMessages = pgTable("ai_chat_messages", {
   id: serial("id").primaryKey(),
@@ -736,7 +757,9 @@ export const aiChatMessages = pgTable("ai_chat_messages", {
   content: text("content").notNull(),
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (table) => [
+  index("idx_ai_chat_messages_session").on(table.sessionId, table.createdAt),
+]);
 
 export const coachingInsights = pgTable("coaching_insights", {
   id: serial("id").primaryKey(),
@@ -781,7 +804,9 @@ export const dailyLogs = pgTable("daily_logs", {
   exercisesCompleted: text("exercises_completed").array(),
   notes: text("notes"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (table) => [
+  index("idx_daily_logs_user").on(table.userId, table.logDate),
+]);
 
 // ============================================================================
 // MARKETPLACE (Amazon Affiliate Products)
@@ -1339,7 +1364,9 @@ export const exerciseLogs = pgTable("exercise_logs", {
   intensity: text("intensity"), // light, moderate, intense
   notes: text("notes"),
   loggedAt: timestamp("logged_at").notNull().defaultNow(),
-});
+}, (table) => [
+  index("idx_exercise_logs_user").on(table.userId, table.loggedAt),
+]);
 
 // ============================================================================
 // ENHANCED USER MANAGEMENT
@@ -1478,7 +1505,10 @@ export const activityPosts = pgTable("activity_posts", {
   shareCount: integer("share_count").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+}, (table) => [
+  index("idx_activity_posts_author").on(table.authorId, table.createdAt),
+  index("idx_activity_posts_visibility").on(table.visibility, table.createdAt),
+]);
 
 export const activityMedia = pgTable("activity_media", {
   id: serial("id").primaryKey(),
@@ -1501,7 +1531,10 @@ export const activityReactions = pgTable("activity_reactions", {
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   reactionType: text("reaction_type").notNull(), // like, love, celebrate, support, insightful
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (table) => [
+  index("idx_activity_reactions_post").on(table.postId),
+  index("idx_activity_reactions_user").on(table.userId),
+]);
 
 export const activityComments = pgTable("activity_comments", {
   id: serial("id").primaryKey(),
@@ -1512,7 +1545,10 @@ export const activityComments = pgTable("activity_comments", {
   likeCount: integer("like_count").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+}, (table) => [
+  index("idx_activity_comments_post").on(table.postId, table.createdAt),
+  index("idx_activity_comments_author").on(table.authorId),
+]);
 
 // ============================================================================
 // THERAPEUTIC EXERCISE GAMES
@@ -1677,7 +1713,10 @@ export const directMessages = pgTable("direct_messages", {
   isEdited: boolean("is_edited").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+}, (table) => [
+  index("idx_direct_messages_conversation").on(table.conversationId, table.createdAt),
+  index("idx_direct_messages_sender").on(table.senderId),
+]);
 
 // ============================================================================
 // ENHANCED FORUM (Media Support)
@@ -2185,7 +2224,9 @@ export const recoveryJournals = pgTable("recovery_journals", {
   tags: text("tags").array(),
   isPrivate: boolean("is_private").notNull().default(true),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (table) => [
+  index("idx_recovery_journals_user").on(table.userId, table.createdAt),
+]);
 
 // ============================================================================
 // COURSE BUILDER (Kajabi-level)
@@ -2291,7 +2332,10 @@ export const courseEnrollments = pgTable("course_enrollments", {
   lastAccessedAt: timestamp("last_accessed_at"),
   certificateIssuedAt: timestamp("certificate_issued_at"),
   certificateUrl: text("certificate_url"),
-});
+}, (table) => [
+  index("idx_course_enrollments_user").on(table.userId, table.courseId),
+  index("idx_course_enrollments_course").on(table.courseId),
+]);
 
 export const lessonProgress = pgTable("lesson_progress", {
   id: serial("id").primaryKey(),
@@ -2302,7 +2346,10 @@ export const lessonProgress = pgTable("lesson_progress", {
   videoWatchTime: integer("video_watch_time").notNull().default(0), // seconds
   completedAt: timestamp("completed_at"),
   startedAt: timestamp("started_at"),
-});
+}, (table) => [
+  index("idx_lesson_progress_user").on(table.userId, table.lessonId),
+  index("idx_lesson_progress_lesson").on(table.lessonId),
+]);
 
 export const quizAttempts = pgTable("quiz_attempts", {
   id: serial("id").primaryKey(),
@@ -2999,7 +3046,10 @@ export const creatorEarnings = pgTable("creator_earnings", {
   customerEmail: text("customer_email"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   paidAt: timestamp("paid_at"),
-});
+}, (table) => [
+  index("idx_creator_earnings_creator").on(table.creatorId, table.status),
+  index("idx_creator_earnings_payout").on(table.payoutId),
+]);
 
 export const insertCreatorEarningSchema = createInsertSchema(creatorEarnings).omit({
   id: true,
@@ -3142,7 +3192,10 @@ export const orderItems = pgTable("order_items", {
   downloadExpiresAt: timestamp("download_expires_at"),
   downloadCount: integer("download_count").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (table) => [
+  index("idx_order_items_order").on(table.orderId),
+  index("idx_order_items_listing").on(table.listingId),
+]);
 
 export const luluPrintJobs = pgTable("lulu_print_jobs", {
   id: serial("id").primaryKey(),

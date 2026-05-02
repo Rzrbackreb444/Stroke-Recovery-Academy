@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import { db } from "./db";
 import { eq, and, gte, desc, asc, ilike, or, sql } from "drizzle-orm";
 import { isAuthenticated } from "./replitAuth";
+import { checkAiGenerationLimit, recordUsage } from "./rateLimitService";
 import { GoogleGenAI } from "@google/genai";
 import QRCode from "qrcode";
 import {
@@ -64,6 +65,18 @@ router.post("/quotes/generate", isAuthenticated, async (req: any, res: Response)
         errors: parseResult.error.errors 
       });
     }
+
+    // Tier-based daily/monthly AI generation quota. Bypasses cost
+    // controls otherwise — this route calls Gemini directly without
+    // going through aiOrchestrator (which has its own 150k tokens/day cap).
+    const quota = await checkAiGenerationLimit(userId);
+    if (!quota.allowed) {
+      return res.status(429).json({ message: quota.message ?? "Quota exceeded" });
+    }
+    // Best-effort post-call usage record. Failure to record must not
+    // block the response, but without this the quota check above would
+    // never advance.
+    recordUsage(userId, "quote_generate").catch(() => {});
 
     const { industry, tone, targetAudience, count } = parseResult.data;
 
@@ -861,13 +874,49 @@ router.post("/streaks/activity", isAuthenticated, async (req: any, res: Response
   }
 });
 
+// Per-user ElevenLabs synthesis rate bucket (20/hour). Resets on restart;
+// good enough as a coarse cost-cap. Previously this route was public + ungated,
+// turning it into an open ElevenLabs proxy that could drain credits.
+const voiceRate = new Map<string, number[]>();
+// Hard cap on the number of distinct users we track in-memory. When the cap is
+// hit, drop the oldest-touched bucket. Prevents unbounded growth from abusive
+// userId enumeration until a shared store limiter lands.
+const VOICE_RATE_MAX_USERS = 5000;
+
 // Text-to-speech using ElevenLabs
-router.post("/voice", async (req: Request, res: Response) => {
+router.post("/voice", isAuthenticated, async (req: any, res: Response) => {
   try {
+    const userId = req.user?.claims?.sub || req.user?.id;
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+    // Per-user rate limit — bound ElevenLabs cost. Max 20 syntheses per hour.
+    const now = Date.now();
+    const bucket = (voiceRate.get(userId) ?? []).filter(t => now - t < 60 * 60 * 1000);
+    if (bucket.length >= 20) {
+      // Save the pruned bucket so older timestamps aren't re-counted next call.
+      voiceRate.set(userId, bucket);
+      return res.status(429).json({ message: "Too many voice generations this hour. Try again later." });
+    }
+    bucket.push(now);
+    if (bucket.length === 0) {
+      voiceRate.delete(userId);
+    } else {
+      voiceRate.set(userId, bucket);
+    }
+    // Enforce map size cap by evicting the first (oldest insertion-order) entry.
+    if (voiceRate.size > VOICE_RATE_MAX_USERS) {
+      const firstKey = voiceRate.keys().next().value;
+      if (firstKey !== undefined) voiceRate.delete(firstKey);
+    }
+
     const { text, voiceId = "21m00Tcm4TlvDq8ikWAM" } = req.body; // Default to Rachel voice
 
     if (!text || typeof text !== "string") {
       return res.status(400).json({ message: "Text is required" });
+    }
+    // Cap input length so a single request can't ship a novel to ElevenLabs.
+    if (text.length > 2000) {
+      return res.status(400).json({ message: "Text too long (max 2000 chars)" });
     }
 
     const apiKey = process.env.ELEVENLABS_API_KEY;

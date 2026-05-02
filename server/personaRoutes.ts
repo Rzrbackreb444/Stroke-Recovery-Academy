@@ -84,10 +84,23 @@ export function registerPersonaRoutes(app: Express) {
   // Falls back to seed creeds from the archetype if AI is unavailable.
   app.post("/api/persona/forge", isAuthenticated, async (req: any, res) => {
     try {
+      const userId = req.user?.claims?.sub as string | undefined;
       const { archetypeKey, name, why } = req.body ?? {};
       const archetype = getArchetype(archetypeKey);
       if (!archetype || !name) {
         return res.status(400).json({ error: "archetypeKey and name required" });
+      }
+
+      // Tier-based AI quota check — this route calls Gemini directly,
+      // bypassing aiOrchestrator's 150k tokens/day cap.
+      if (userId) {
+        const { checkAiGenerationLimit, recordUsage } = await import("./rateLimitService");
+        const quota = await checkAiGenerationLimit(userId);
+        if (!quota.allowed) {
+          return res.status(429).json({ error: quota.message ?? "Quota exceeded" });
+        }
+        // Record best-effort; failure to record should not block the request.
+        recordUsage(userId, "persona_forge").catch(() => {});
       }
 
       // Try Gemini for personalized suggestions, fall back to seeds.
