@@ -57,13 +57,18 @@ declare module 'http' {
     rawBody: unknown
   }
 }
+// Body-size guard. 50mb was a DoS vector — a single client could occupy a
+// worker for tens of seconds. 5mb covers every JSON-shaped API call on the
+// platform (including base64 image/audio payloads under the suspended Object
+// Storage workaround). Endpoints that legitimately need larger bodies should
+// register their own per-route body parser before this middleware.
 app.use(express.json({
-  limit: '50mb',
+  limit: '5mb',
   verify: (req, _res, buf) => {
     req.rawBody = buf;
   }
 }));
-app.use(express.urlencoded({ extended: false, limit: '50mb' }));
+app.use(express.urlencoded({ extended: false, limit: '5mb' }));
 
 app.use((req, res, next) => {
   const start = Date.now();

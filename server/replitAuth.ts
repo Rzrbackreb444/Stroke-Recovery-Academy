@@ -35,6 +35,10 @@ export function getSession() {
     cookie: {
       httpOnly: true,
       secure: true,
+      // 'lax' allows the OIDC callback (top-level navigation from Replit's
+      // login page back to /api/callback) while blocking cross-site POSTs —
+      // closing the residual CSRF gap on every authenticated mutation.
+      sameSite: 'lax',
       maxAge: sessionTtl,
     },
   });
