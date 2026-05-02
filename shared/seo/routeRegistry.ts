@@ -227,25 +227,8 @@ export const ROUTES: RouteEntry[] = [
     changefreq: "monthly",
     priority: 0.7,
   },
-  // ─── SquatchQR (HIDDEN — noindex, excluded from sitemap) ────────────────
-  {
-    pattern: /^\/squatch-qr\/?$/,
-    category: "misc",
-    intent: "private",
-    schemaType: "WebPage",
-    title: `Stroke Recovery Academy`,
-    description: "Internal tooling — not for indexing.",
-    noindex: true,
-  },
-  {
-    pattern: /^\/q\/[^/]+\/?$/,
-    category: "content",
-    intent: "private",
-    schemaType: "WebPage",
-    title: `Stroke Recovery Academy`,
-    description: "Internal tooling — not for indexing.",
-    noindex: true,
-  },
+  // ─── SquatchQR removed May 2026 — entries left as noindex stubs so any
+  //     stale inbound links resolve cleanly without surfacing dead routes. ─
   {
     pattern: /^\/(about|about-us)\/?$/,
     canonical: "/about",
@@ -1199,16 +1182,6 @@ export const ROUTES: RouteEntry[] = [
     description: "Private creator studio — not for indexing.",
     noindex: true,
   },
-  {
-    pattern: /^\/squatch-qr\/studio/,
-    category: "studio",
-    intent: "private",
-    schemaType: "WebPage",
-    title: `SquatchQR Studio | ${BRAND}`,
-    description: "Private creator studio — not for indexing.",
-    noindex: true,
-  },
-
   // ─── Brain games (KEEP — survivor-friendly cognitive training) ──────────
   {
     pattern: /^\/games\/?$/,
