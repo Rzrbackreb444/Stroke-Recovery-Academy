@@ -10,15 +10,19 @@
  *   3. Makes admin gating *visible at the route registration line*, which
  *      is what code reviewers actually scan.
  *
- * Assumes `isAuthenticated` ran first (so `req.user.claims.sub` is set).
+ * Assumes `isAuthenticated` (or equivalent passport session) ran first.
+ * Reads the user id via `getUserId()` so the gate works for BOTH the
+ * Replit OIDC strategy (`req.user.claims.sub`) AND the multi-provider
+ * email/Google strategy (`req.user.id`) — see `server/lib/authUtils.ts`.
  */
 
 import type { Request, Response, NextFunction } from "express";
 import { storage } from "../storage";
+import { getUserId } from "../lib/authUtils";
 
 export async function requireAdmin(req: Request, res: Response, next: NextFunction) {
   try {
-    const userId = (req as any)?.user?.claims?.sub;
+    const userId = getUserId(req);
     if (!userId) {
       return res.status(401).json({ message: "Authentication required" });
     }

@@ -94,7 +94,7 @@ function parseHtmlToPages(
       for (let i = 0; i < chapterPages; i++) {
         const start = i * charsPerPage;
         const end = Math.min((i + 1) * charsPerPage, chapterLength);
-        const pageText = (chapterText.textContent || '').slice(start, end);
+        const pageText = chapterTextContent.slice(start, end);
         pages.push(`<div class="page-content">${pageText}</div>`);
       }
     });

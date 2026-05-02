@@ -92,6 +92,7 @@ export default function CourseCertificate() {
   };
   
   const copyLink = () => {
+    if (!certificate) return;
     navigator.clipboard.writeText(`https://strokerecoveryacademy.com/verify/${certificate.credentialId}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -99,6 +100,7 @@ export default function CourseCertificate() {
   };
   
   const shareToSocial = (platform: string) => {
+    if (!certificate) return;
     const url = encodeURIComponent(`https://strokerecoveryacademy.com/verify/${certificate.credentialId}`);
     const text = encodeURIComponent(`I just completed "${certificate.courseTitle}" and earned my certificate! #StrokeRecovery #Learning`);
     
