@@ -56,7 +56,9 @@ export default function AuthPage() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/email-auth/me"] });
       toast({ title: "Account created!", description: "Welcome to Stroke Recovery Academy" });
-      setLocation("/creator-hub");
+      // Survivor-first onboarding: route new accounts through /welcome where
+      // they see the four pillars and get nudged to /recovery/intake.
+      setLocation("/welcome");
     },
     onError: (error: any) => {
       toast({ title: "Registration failed", description: error.message, variant: "destructive" });

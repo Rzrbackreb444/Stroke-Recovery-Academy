@@ -434,10 +434,25 @@ export async function sendMagicLinkEmail(
             If you didn't request this email, you can safely ignore it.
           </p>
         </div>
-        
-        <div style="text-align: center; margin-top: 40px;">
-          <p style="color: #4b5563; font-size: 12px; margin: 0;">
+
+        <div style="margin-top: 32px; padding: 16px; background: rgba(220, 38, 38, 0.06); border: 1px solid rgba(220, 38, 38, 0.25); border-radius: 12px;">
+          <p style="color: #fca5a5; font-size: 12px; margin: 0 0 6px; font-weight: 600;">
+            In crisis? Real humans, 24/7.
+          </p>
+          <p style="color: #d1d5db; font-size: 12px; margin: 0; line-height: 1.6;">
+            Call or text <a href="tel:988" style="color: #fca5a5; font-weight: bold;">988</a> (U.S. Suicide &amp; Crisis Lifeline). Emergency: <a href="tel:911" style="color: #fca5a5; font-weight: bold;">911</a>.
+            Stroke Recovery Academy is non-clinical &mdash; not a substitute for professional medical care.
+          </p>
+        </div>
+
+        <div style="text-align: center; margin-top: 24px;">
+          <p style="color: #4b5563; font-size: 12px; margin: 0 0 8px;">
             © ${new Date().getFullYear()} Stroke Recovery Academy. All rights reserved.
+          </p>
+          <p style="color: #4b5563; font-size: 11px; margin: 0;">
+            <a href="https://strokerecoveryacademy.com/legal/medical-disclaimer" style="color: #6b7280;">Medical Disclaimer</a> ·
+            <a href="https://strokerecoveryacademy.com/privacy" style="color: #6b7280;">Privacy</a> ·
+            <a href="https://strokerecoveryacademy.com/terms" style="color: #6b7280;">Terms</a>
           </p>
         </div>
       </div>
@@ -445,11 +460,20 @@ export async function sendMagicLinkEmail(
     </html>
   `;
 
+  const text = [
+    `Sign in to Stroke Recovery Academy: ${magicLinkUrl}`,
+    `This link expires in 15 minutes. If you didn't request it, ignore this email.`,
+    ``,
+    `—`,
+    `NOT MEDICAL ADVICE. Stroke Recovery Academy is non-clinical and is not a substitute for professional medical care.`,
+    `In crisis, call or text 988 (U.S. Suicide & Crisis Lifeline). Emergency: 911.`,
+  ].join('\n');
+
   return sendEmail({
     to: email,
     subject: 'Sign in to Stroke Recovery Academy',
     html,
-    text: `Sign in to Stroke Recovery Academy using this link: ${magicLinkUrl}. This link expires in 15 minutes.`,
+    text,
   });
 }
 

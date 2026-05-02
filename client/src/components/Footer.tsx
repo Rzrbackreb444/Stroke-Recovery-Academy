@@ -99,8 +99,14 @@ export default function Footer() {
     { label: "Stroke Lyfe Inc. (Nonprofit)", href: "/recovery/strokelyfe-org" },
     { label: "Pricing", href: "/pricing" },
     { label: "Contact", href: "/recovery/about-nick" },
+  ];
+
+  const legalLinks = [
     { label: "Privacy Policy", href: "/privacy" },
     { label: "Terms of Service", href: "/terms" },
+    { label: "Medical Disclaimer", href: "/legal/medical-disclaimer" },
+    { label: "Refund Policy", href: "/legal/refund-policy" },
+    { label: "Privacy Controls & Account Delete", href: "/settings/privacy" },
   ];
 
   return (
@@ -276,6 +282,32 @@ export default function Footer() {
               ))}
             </ul>
           </div>
+        </div>
+
+        {/* Legal links — Medical Disclaimer + Refund Policy + Account/Privacy */}
+        <div className="border-t border-[#1a1a1a] pt-6 pb-2">
+          <ul className="flex flex-wrap gap-x-5 gap-y-2 justify-center md:justify-start">
+            {legalLinks.map((link) => (
+              <li key={link.label}>
+                <Link
+                  href={link.href}
+                  className="text-xs text-gray-400 hover:text-[#C9941A] transition-colors"
+                  data-testid={`footer-legal-${link.label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <a
+                href="tel:988"
+                className="text-xs font-semibold text-red-400 hover:text-red-300 transition-colors"
+                data-testid="footer-legal-crisis-988"
+              >
+                Crisis Support: Call/Text 988
+              </a>
+            </li>
+          </ul>
         </div>
 
         <div className="border-t border-[#1a1a1a] pt-8">

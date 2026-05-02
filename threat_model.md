@@ -74,14 +74,19 @@ Sessions persist 7 days; admin actions on the blog draft generator, podcast pipe
 - Sitemap-index architecture lives behind cacheable XML routes.
 - SSR shell escapes all interpolated values via `esc()` and strips `</script` tokens from JSON-LD.
 - BookPreview text-extraction switched from `innerHTML` to `DOMParser` (no script execution path even in detached DOM).
-- Quote Studio update endpoints already enforce field allowlists.
+- Quote Studio update endpoints already enforce field allowlists. (Note: `server/quoteStudioRoutes.ts` and the SquatchQR surface were removed entirely in May 2026 — the SAST findings against that file are no longer reachable.)
+- **AI Coach crisis gate (May 2026)**: `server/services/crisisDetection.ts` runs a regex matcher across 4 categories on every `/api/coach/chat` message before the LLM call. On a hit, the handler short-circuits Gemini + ElevenLabs entirely and returns a structured 988/Crisis-Text/Veterans/911 response. Mitigates self-harm liability + cost-control DoS via the most expensive path. Logs structured `coach_crisis_intercept` for editorial-trust auditing.
+- **Account data portability + erasure**: `GET /api/account/export` (multi-table JSON dump, password hash stripped, per-user rate-limited to 3/hour with `Retry-After`) and `POST /api/account/delete` (confirm-by-typing-email PII scrub, tombstone email + free-text anonymization across `daily_checkins` / `recovery_journal_entries` / `medical_log_entries` / `flicker_log_entries` / `recovery_journals` / `flicker_logs`, `req.logout()` + session destroy + cookie clear) reduce GDPR/CCPA exposure and let survivors actually leave with their data. Both routes are mounted **after** `setupAuth(app)` so `isAuthenticated` correctly sees the session middleware.
+- **Per-request correlation**: `requestId` middleware injects `X-Request-Id` on every request; `structuredErrorLogger` emits a single JSON line per unhandled error with `{ requestId, path, status, userId, name, msg }`. Stack traces are suppressed in production. Enables auditable triage in Replit deployment logs without an external SIEM.
+- **Health endpoint**: `GET /api/health` performs a real `SELECT 1` round-trip to Postgres and returns 503 (with the DB-down marker) so deployment health checks fail closed.
+- **Magic-link email hardened**: Now includes a 988/911 crisis callout and `/legal/medical-disclaimer` link in both HTML and plain-text variants — closes a regulatory gap where a user re-entering the platform saw no safety messaging until they reached the dashboard.
 
 ## Known Security Debt — Follow-up Required
 
 | Item | Severity | Owner action |
 |---|---|---|
 | 23 HIGH dependency vulnerabilities (no critical) | High | Run `npm audit fix` and re-scan; pin transitive offenders. |
-| 3 SAST property-injection findings in `quoteStudioRoutes.ts` | High (false positive — code uses allowlist) | Convert to `z.object().pick()` to silence scanner and lock contract. |
+| 3 SAST property-injection findings in `quoteStudioRoutes.ts` | High (false positive — code uses allowlist) | **Resolved (May 2026)** — file deleted along with the SquatchQR surface. |
 | 2 XSS findings in `BookPreview.tsx` | High (false positive — detached DOM, text-only extraction) | **Fixed** via DOMParser conversion (2026-04-26). |
 | Missing admin role check on legacy `GET /api/admin/feedback` | High | **Fixed** — now requires `role === 'admin'` (2026-04-26). |
 | Unescaped DB-derived values in programmatic SSR `rawHtml` (`/recovery/exercise/:slug`, `/recovery/centers/state/:state`) | High | **Fixed** — `esc()` helper wraps every interpolated DB field before reaching `ssrShell.rawHtml` (2026-04-26). |
