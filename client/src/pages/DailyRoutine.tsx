@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   CheckCircle, Circle, ChevronDown, ChevronUp, AlertTriangle,
   Trophy, Calendar, ArrowRight, HeartPulse,
+  Activity, Brain, Users, BookOpen,
 } from "lucide-react";
 import { RecoverySafetyFooter } from "@/components/recovery/RecoverySafetyFooter";
 import { LEVELS, BLOCKS, getTasksForLevel, todayStr } from "@/lib/recoveryRoutine";

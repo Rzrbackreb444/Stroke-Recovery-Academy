@@ -3,7 +3,19 @@ import { ShieldAlert, Phone } from "lucide-react";
 
 type Variant = "compact" | "full" | "modal";
 
-export function MedicalDisclaimerCard({ variant = "compact" }: { variant?: Variant }) {
+interface MedicalDisclaimerCardProps {
+  variant?: Variant;
+  /**
+   * Optional context-specific addendum appended below the standard
+   * survivor-not-medical-advice copy. Used by surfaces like the Motivation
+   * Studio and Survivor Shop to scope the warning to their use case
+   * (e.g. "Motivation tools are not therapy" / "Confirm assistive devices
+   * with your therapist").
+   */
+  extraContext?: string;
+}
+
+export function MedicalDisclaimerCard({ variant = "compact", extraContext }: MedicalDisclaimerCardProps) {
   if (variant === "modal") {
     return (
       <div
@@ -53,6 +65,11 @@ export function MedicalDisclaimerCard({ variant = "compact" }: { variant?: Varia
               <Phone className="h-3.5 w-3.5" />
               If you suspect a new stroke, call 911 (or your local emergency number) right now.
             </p>
+            {extraContext && (
+              <p className="mt-3 pt-3 border-t border-red-900/30 text-gray-400 italic" data-testid="disclaimer-extra-context">
+                {extraContext}
+              </p>
+            )}
           </div>
         </div>
       </Card>
@@ -70,6 +87,11 @@ export function MedicalDisclaimerCard({ variant = "compact" }: { variant?: Varia
         Survivor-built — not medical advice. Clear new exercises with your therapist.
         Suspect a new stroke?{" "}
         <span className="text-red-300 font-semibold">Call 911.</span>
+        {extraContext && (
+          <span className="block mt-1 italic text-gray-500" data-testid="disclaimer-extra-context">
+            {extraContext}
+          </span>
+        )}
       </span>
     </div>
   );

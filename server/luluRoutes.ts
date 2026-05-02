@@ -4,6 +4,8 @@
  */
 
 import { Router, Request, Response } from 'express';
+import { getUserId, getUserEmail } from './lib/authUtils';
+import { requireAdmin } from './middleware/requireAdmin';
 import { z } from 'zod';
 import { db } from './db';
 import { 
@@ -138,7 +140,8 @@ router.get('/specifications', async (req: Request, res: Response) => {
 // Create publishing project
 router.post('/projects', async (req: Request, res: Response) => {
   try {
-    if (!req.user) {
+    const userId = getUserId(req);
+    if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
     
@@ -150,7 +153,7 @@ router.post('/projects', async (req: Request, res: Response) => {
       .from(bookProjects)
       .where(and(
         eq(bookProjects.id, validated.bookProjectId),
-        eq(bookProjects.ownerId, (req.user as any).id)
+        eq(bookProjects.ownerId, userId)
       ));
     
     if (!bookProject) {
@@ -181,7 +184,7 @@ router.post('/projects', async (req: Request, res: Response) => {
       .insert(bookPublishingProjects)
       .values({
         bookProjectId: validated.bookProjectId,
-        ownerId: (req.user as any).id,
+        ownerId: userId,
         templateId: validated.templateId,
         customPodPackageId: podPackageId,
         trimSizeCode: validated.trimSizeCode,
@@ -211,14 +214,15 @@ router.post('/projects', async (req: Request, res: Response) => {
 // Get user's publishing projects
 router.get('/projects', async (req: Request, res: Response) => {
   try {
-    if (!req.user) {
+    const userId = getUserId(req);
+    if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
     
     const projects = await db
       .select()
       .from(bookPublishingProjects)
-      .where(eq(bookPublishingProjects.ownerId, (req.user as any).id))
+      .where(eq(bookPublishingProjects.ownerId, userId))
       .orderBy(desc(bookPublishingProjects.createdAt));
     
     res.json({ projects });
@@ -231,7 +235,8 @@ router.get('/projects', async (req: Request, res: Response) => {
 // Get single publishing project
 router.get('/projects/:id', async (req: Request, res: Response) => {
   try {
-    if (!req.user) {
+    const userId = getUserId(req);
+    if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
     
@@ -242,7 +247,7 @@ router.get('/projects/:id', async (req: Request, res: Response) => {
       .from(bookPublishingProjects)
       .where(and(
         eq(bookPublishingProjects.id, projectId),
-        eq(bookPublishingProjects.ownerId, (req.user as any).id)
+        eq(bookPublishingProjects.ownerId, userId)
       ));
     
     if (!project) {
@@ -308,7 +313,8 @@ router.get('/cover-specs/:podPackageId/:pageCount', async (req: Request, res: Re
 // Create print job
 router.post('/print-jobs', async (req: Request, res: Response) => {
   try {
-    if (!req.user) {
+    const userId = getUserId(req);
+    if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
     
@@ -320,7 +326,7 @@ router.post('/print-jobs', async (req: Request, res: Response) => {
       .from(bookPublishingProjects)
       .where(and(
         eq(bookPublishingProjects.id, validated.publishingProjectId),
-        eq(bookPublishingProjects.ownerId, (req.user as any).id)
+        eq(bookPublishingProjects.ownerId, userId)
       ));
     
     if (!project) {
@@ -339,7 +345,7 @@ router.post('/print-jobs', async (req: Request, res: Response) => {
     
     // Create print job with Lulu
     const printJob = await luluPublishingService.createPrintJob({
-      contactEmail: (req.user as any).email || '',
+      contactEmail: getUserEmail(req) || '',
       lineItems: [{
         title: bookProject?.title || 'Untitled Book',
         coverSourceUrl: project.coverPdfUrl,
@@ -381,7 +387,8 @@ router.post('/print-jobs', async (req: Request, res: Response) => {
 // Get print job status
 router.get('/print-jobs/:jobId', async (req: Request, res: Response) => {
   try {
-    if (!req.user) {
+    const userId = getUserId(req);
+    if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
     
@@ -400,7 +407,8 @@ router.get('/print-jobs/:jobId', async (req: Request, res: Response) => {
 // List user's print jobs
 router.get('/print-jobs', async (req: Request, res: Response) => {
   try {
-    if (!req.user) {
+    const userId = getUserId(req);
+    if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
     
@@ -421,7 +429,8 @@ router.get('/print-jobs', async (req: Request, res: Response) => {
 // Cancel print job
 router.post('/print-jobs/:jobId/cancel', async (req: Request, res: Response) => {
   try {
-    if (!req.user) {
+    const userId = getUserId(req);
+    if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
     
@@ -524,23 +533,11 @@ router.post('/webhooks/lulu', async (req: Request, res: Response) => {
   }
 });
 
-// Setup Lulu webhooks
-router.post('/webhooks/setup', async (req: Request, res: Response) => {
+// Setup Lulu webhooks (admin-only — uses shared requireAdmin middleware
+// so the gate is visible at the registration line and works for both
+// Replit Auth and multi-provider sessions via getUserId() fallback)
+router.post('/webhooks/setup', requireAdmin, async (req: Request, res: Response) => {
   try {
-    if (!req.user) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-    
-    // Only admins can setup webhooks
-    const [user] = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, (req.user as any).id));
-    
-    if (user?.role !== 'admin') {
-      return res.status(403).json({ error: 'Admin access required' });
-    }
-    
     const webhookUrl = `https://${process.env.REPLIT_DOMAINS?.split(',')[0]}/api/lulu/webhooks/lulu`;
     
     const webhook = await luluPublishingService.createWebhook(webhookUrl, [
@@ -568,7 +565,8 @@ router.post('/webhooks/setup', async (req: Request, res: Response) => {
 // List webhooks
 router.get('/webhooks', async (req: Request, res: Response) => {
   try {
-    if (!req.user) {
+    const userId = getUserId(req);
+    if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
     
@@ -583,7 +581,8 @@ router.get('/webhooks', async (req: Request, res: Response) => {
 // Create cover design
 router.post('/projects/:projectId/covers', async (req: Request, res: Response) => {
   try {
-    if (!req.user) {
+    const userId = getUserId(req);
+    if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
     
@@ -595,7 +594,7 @@ router.post('/projects/:projectId/covers', async (req: Request, res: Response) =
       .from(bookPublishingProjects)
       .where(and(
         eq(bookPublishingProjects.id, projectId),
-        eq(bookPublishingProjects.ownerId, (req.user as any).id)
+        eq(bookPublishingProjects.ownerId, userId)
       ));
     
     if (!project) {
@@ -660,7 +659,8 @@ router.post('/projects/:projectId/covers', async (req: Request, res: Response) =
 // Get cover designs for a project
 router.get('/projects/:projectId/covers', async (req: Request, res: Response) => {
   try {
-    if (!req.user) {
+    const userId = getUserId(req);
+    if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
     
@@ -672,7 +672,7 @@ router.get('/projects/:projectId/covers', async (req: Request, res: Response) =>
       .from(bookPublishingProjects)
       .where(and(
         eq(bookPublishingProjects.id, projectId),
-        eq(bookPublishingProjects.ownerId, (req.user as any).id)
+        eq(bookPublishingProjects.ownerId, userId)
       ));
     
     if (!project) {

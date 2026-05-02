@@ -287,9 +287,9 @@ export default function SurvivorIntake() {
             )}
             {stepName === "stroke" && (
               <StrokeStep
-                strokeType={draft.strokeType}
-                strokeDate={draft.strokeDate}
-                affectedSide={draft.affectedSide}
+                strokeType={draft.strokeType ?? null}
+                strokeDate={draft.strokeDate ?? null}
+                affectedSide={draft.affectedSide ?? null}
                 onChange={(k, v) => update(k as any, v)}
               />
             )}

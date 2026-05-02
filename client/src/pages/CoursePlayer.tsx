@@ -321,10 +321,12 @@ export default function CoursePlayer() {
   };
   
   const markComplete = () => {
+    if (!currentLesson) return;
+    const lessonId = currentLesson.id;
     setModules(modules.map(m => ({
       ...m,
       lessons: m.lessons.map(l => 
-        l.id === currentLesson.id ? { ...l, completed: true } : l
+        l.id === lessonId ? { ...l, completed: true } : l
       ),
     })));
     setCurrentLesson({ ...currentLesson, completed: true });
@@ -362,6 +364,8 @@ export default function CoursePlayer() {
   };
   
   const nextLesson = () => {
+    if (!currentLesson) return;
+    const lessonId = currentLesson.id;
     let found = false;
     for (const m of modules) {
       for (let i = 0; i < m.lessons.length; i++) {
@@ -369,7 +373,7 @@ export default function CoursePlayer() {
           selectLesson(m.lessons[i]);
           return;
         }
-        if (m.lessons[i].id === currentLesson.id) {
+        if (m.lessons[i].id === lessonId) {
           found = true;
         }
       }
@@ -377,10 +381,12 @@ export default function CoursePlayer() {
   };
   
   const prevLesson = () => {
+    if (!currentLesson) return;
+    const lessonId = currentLesson.id;
     let prev: Lesson | null = null;
     for (const m of modules) {
       for (const l of m.lessons) {
-        if (l.id === currentLesson.id && prev) {
+        if (l.id === lessonId && prev) {
           selectLesson(prev);
           return;
         }
@@ -441,7 +447,7 @@ export default function CoursePlayer() {
                     onClick={() => selectLesson(lesson)}
                     disabled={lesson.locked}
                     className={`w-full flex items-center gap-3 p-3 text-left transition-colors ${
-                      currentLesson.id === lesson.id
+                      currentLesson?.id === lesson.id
                         ? 'bg-[#C9941A]/20 border-l-2 border-[#C9941A]'
                         : lesson.locked
                         ? 'opacity-50 cursor-not-allowed'
@@ -451,7 +457,7 @@ export default function CoursePlayer() {
                   >
                     {getLessonIcon(lesson.type, lesson.completed, lesson.locked)}
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm truncate ${currentLesson.id === lesson.id ? 'text-[#C9941A] font-medium' : 'text-gray-300'}`}>
+                      <p className={`text-sm truncate ${currentLesson?.id === lesson.id ? 'text-[#C9941A] font-medium' : 'text-gray-300'}`}>
                         {lesson.title}
                       </p>
                       <p className="text-xs text-gray-500">{lesson.duration} min</p>
