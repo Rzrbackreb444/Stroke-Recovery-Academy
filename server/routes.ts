@@ -11,6 +11,7 @@ import { publicPostLimiter, authActionLimiter } from "./middleware/publicRateLim
 import emailAuthRoutes from "./emailAuthRoutes";
 import luluRoutes from "./luluRoutes";
 import quoteStudioRoutes from "./quoteStudioRoutes";
+import survivorProfileRoutes from "./survivorProfileRoutes";
 import { stripeService } from "./stripeService";
 import { getStripeSync, getStripePublishableKey } from "./stripeClient";
 import { runMigrations } from "stripe-replit-sync";
@@ -304,6 +305,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Quote Studio API Routes
   app.use('/api/quote-studio', quoteStudioRoutes);
+  app.use('/api/survivor', survivorProfileRoutes);
 
   // Publishing Platforms API - Universal Distribution Hub
   app.get('/api/publishing-platforms', async (req, res) => {
