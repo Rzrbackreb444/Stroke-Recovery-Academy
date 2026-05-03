@@ -124,10 +124,15 @@ export function registerQuizRoutes(app: Express, isAuthenticated: any, uploadsDi
       if (!process.env.OPENAI_API_KEY) return res.status(503).json({ error: 'Speech transcription not configured' });
       const qid = parseInt(req.params.id, 10);
       const [q] = await db.select().from(courseBuilderQuestions).where(eq(courseBuilderQuestions.id, qid)).limit(1);
+      // All four `req.file.path` reads below are multer-generated paths
+      // confined to `uploadsDir` via `audioStorage`'s server-side filename
+      // (`voice-{Date.now()}-{random}{ext}`). No user-controlled component.
+      // nosemgrep: javascript.lang.security.audit.detect-non-literal-fs-filename
       if (!q) { fs.promises.unlink(req.file.path).catch(() => {}); return res.status(404).json({ error: 'Question not found' }); }
 
       const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
       const r = await openai.audio.transcriptions.create({
+        // nosemgrep: javascript.lang.security.audit.detect-non-literal-fs-filename
         file: fs.createReadStream(req.file.path),
         model: 'whisper-1',
         response_format: 'text',
@@ -135,6 +140,7 @@ export function registerQuizRoutes(app: Express, isAuthenticated: any, uploadsDi
       const transcript = typeof r === 'string' ? r : (r as any).text || '';
 
       // Clean up audio file (no need to keep)
+      // nosemgrep: javascript.lang.security.audit.detect-non-literal-fs-filename
       fs.promises.unlink(req.file.path).catch(() => {});
 
       const similarity = fuzzySimilarity(transcript, q.correctAnswer || '');
@@ -142,6 +148,7 @@ export function registerQuizRoutes(app: Express, isAuthenticated: any, uploadsDi
       res.json({ transcript, similarity, correct, expected: q.correctAnswer });
     } catch (err: any) {
       console.error('[voice-answer] error', err);
+      // nosemgrep: javascript.lang.security.audit.detect-non-literal-fs-filename
       if (req.file) fs.promises.unlink(req.file.path).catch(() => {});
       res.status(500).json({ error: err?.message || 'Transcription failed' });
     }

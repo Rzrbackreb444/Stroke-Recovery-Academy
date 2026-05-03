@@ -251,16 +251,23 @@ function detectTitle(text: string): string | null {
 }
 
 function detectAuthor(text: string): string | null {
-  const plainText = stripHtml(text);
-  
+  // Cap to first 4KB. The `byPattern`/`authorPattern` regexes use nested
+  // quantifiers that can backtrack catastrophically on adversarial input
+  // (e.g. a 1MB string of "Aaaa Aaaa Aaaa…"). Author lines always appear
+  // in the first few lines of a manuscript so this slice loses no signal
+  // while making the regex match O(n) on bounded input.
+  const plainText = stripHtml(text).slice(0, 4096);
+
   const byPattern = /(?:^|\n)\s*by\s+([A-Z][a-z]+(?:\s+[A-Z]\.?)?(?:\s+[A-Z][a-z]+)+)\s*(?:\n|$)/im;
+  // Bounded input (≤4096 chars) above eliminates catastrophic backtracking risk.
+  // nosemgrep: javascript.lang.security.audit.detect-redos
   const byMatch = plainText.match(byPattern);
   if (byMatch) return byMatch[1].trim();
-  
+
   const authorPattern = /(?:author|written\s+by)[\s:]+([A-Z][a-z]+(?:\s+[A-Z]\.?)?(?:\s+[A-Z][a-z]+)+)/im;
   const authorMatch = plainText.match(authorPattern);
   if (authorMatch) return authorMatch[1].trim();
-  
+
   return null;
 }
 

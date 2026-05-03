@@ -600,16 +600,24 @@ export function getTranslation(locale: SupportedLocale): TranslationKeys {
 
 export function t(locale: SupportedLocale, path: string): string {
   const keys = path.split('.');
+  // Reject prototype-chain walks early; a `path` containing `__proto__`,
+  // `constructor`, or `prototype` could be used to traverse beyond the
+  // translations object if `path` ever comes from request input.
+  if (keys.some((k) => k === '__proto__' || k === 'constructor' || k === 'prototype')) {
+    return path;
+  }
   let result: any = translations[locale] || translations.en;
-  
+
   for (const key of keys) {
-    if (result && typeof result === 'object' && key in result) {
+    if (result && typeof result === 'object' && Object.prototype.hasOwnProperty.call(result, key)) {
+      // nosemgrep: javascript.lang.security.audit.prototype-pollution.prototype-pollution-loop
       result = result[key];
     } else {
       const fallback: any = translations.en;
       let fallbackResult = fallback;
       for (const k of keys) {
-        if (fallbackResult && typeof fallbackResult === 'object' && k in fallbackResult) {
+        if (fallbackResult && typeof fallbackResult === 'object' && Object.prototype.hasOwnProperty.call(fallbackResult, k)) {
+          // nosemgrep: javascript.lang.security.audit.prototype-pollution.prototype-pollution-loop
           fallbackResult = fallbackResult[k];
         } else {
           return path;
@@ -618,7 +626,7 @@ export function t(locale: SupportedLocale, path: string): string {
       return typeof fallbackResult === 'string' ? fallbackResult : path;
     }
   }
-  
+
   return typeof result === 'string' ? result : path;
 }
 

@@ -86,7 +86,9 @@ export function registerAvatarRoutes(app: Express, isAuthenticated: any, uploads
         return res.status(502).json({ error: result.error || 'Image generation failed' });
       }
       const buf = Buffer.from(result.imageBase64, 'base64');
+      // Server-generated filename, confined to uploadsDir by construction.
       const filename = `avatar-gen-${Date.now()}-${Math.round(Math.random() * 1e9)}.png`;
+      // nosemgrep: javascript.lang.security.audit.detect-non-literal-fs-filename, javascript.lang.security.audit.path-traversal.path-join-resolve-traversal
       await fs.promises.writeFile(path.join(uploadsDir, filename), buf);
       const url = `/uploads/${filename}`;
       await saveUserAvatar(userId, url, 'generated', prompt);
@@ -107,6 +109,9 @@ export function registerAvatarRoutes(app: Express, isAuthenticated: any, uploads
 
       if (req.body?.removeBackground === 'true' && process.env.REMOVE_BG_API_KEY) {
         try {
+          // `req.file.path` is set by multer to a path inside `uploadsDir`
+          // using a server-generated filename (see `audioStorage` config).
+          // nosemgrep: javascript.lang.security.audit.detect-non-literal-fs-filename
           const fileBuf = await fs.promises.readFile(req.file.path);
           const fd = new FormData();
           fd.append('image_file', new Blob([fileBuf]), req.file.originalname);
@@ -118,7 +123,9 @@ export function registerAvatarRoutes(app: Express, isAuthenticated: any, uploads
           });
           if (r.ok) {
             const outBuf = Buffer.from(await r.arrayBuffer());
+            // Server-generated filename, confined to uploadsDir.
             const outName = `avatar-nobg-${Date.now()}-${Math.round(Math.random() * 1e9)}.png`;
+            // nosemgrep: javascript.lang.security.audit.detect-non-literal-fs-filename, javascript.lang.security.audit.path-traversal.path-join-resolve-traversal
             await fs.promises.writeFile(path.join(uploadsDir, outName), outBuf);
             url = `/uploads/${outName}`;
           } else {

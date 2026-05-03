@@ -20,6 +20,8 @@ function slugify(s: string): string {
 
 export function registerGroupRoutes(app: Express, isAuthenticated: any, uploadsDir: string) {
   const upload = multer({
+    // Static literal subdir — no user input reaches the path.
+    // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal
     dest: path.join(uploadsDir, "group-voice"),
     limits: { fileSize: 25 * 1024 * 1024 },
   });
