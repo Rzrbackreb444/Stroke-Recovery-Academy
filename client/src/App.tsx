@@ -170,6 +170,7 @@ const AboutNick = lazy(() => import("@/pages/AboutNick"));
 const Challenge = lazy(() => import("@/pages/Challenge"));
 const RecoveryAnthem = lazy(() => import("@/pages/RecoveryAnthem"));
 const RecoveryAnthemBuilder = lazy(() => import("@/pages/RecoveryAnthemBuilder"));
+const SasquatchRadio = lazy(() => import("@/pages/SasquatchRadio"));
 const TodayAnchor = lazy(() => import("@/pages/TodayAnchor"));
 const AnchorShare = lazy(() => import("@/pages/AnchorShare"));
 const RecoveryPricing = lazy(() => import("@/pages/RecoveryPricing"));
@@ -658,6 +659,7 @@ function Router() {
       <Route path="/recovery/challenge" component={Challenge} />
       <Route path="/recovery/anthem" component={RecoveryAnthem} />
       <Route path="/recovery/anthem/build" component={RecoveryAnthemBuilder} />
+      <Route path="/recovery/radio" component={SasquatchRadio} />
       <Route path="/recovery/pricing" component={RecoveryPricing} />
       <Route path="/recovery/about-nick" component={AboutNick} />
       <Route path="/recovery/gift" component={GiftSurvivor} />
