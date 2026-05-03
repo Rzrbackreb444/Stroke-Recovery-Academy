@@ -29,6 +29,8 @@ import {
 } from "lucide-react";
 import SixtyDayTracker from "@/components/recovery/SixtyDayTracker";
 import PushOptInBanner from "@/components/PushOptInBanner";
+import { RecommendationCards } from "@/components/RecommendationCard";
+import { TodaysSpark } from "@/components/TodaysSpark";
 import MyPathRecommender from "@/components/recovery/MyPathRecommender";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import FadeUpSection from "@/components/FadeUpSection";
@@ -238,6 +240,10 @@ export default function RecoveryDashboard() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <PushOptInBanner />
+        <TodaysSpark />
+        <div className="mb-6">
+          <RecommendationCards surface="dashboard" />
+        </div>
         <FadeUpSection>
         <section className="mb-8">
           <div className="grid md:grid-cols-3 gap-6 items-center">

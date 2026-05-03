@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import RecoveryHeader from "@/components/RecoveryHeader";
 import RecoverySEO from "@/components/RecoverySEO";
 import { RecommendationCards } from "@/components/RecommendationCard";
+import { TodaysSpark } from "@/components/TodaysSpark";
 import {
   Sun,
   Flame,
@@ -69,6 +70,7 @@ export default function RecoveryJourney() {
       <RecoveryHeader />
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-20">
+        <TodaysSpark />
         {/* ── Streak header ───────────────────────────────────────────── */}
         <div className="mb-6">
           <div className="flex items-baseline justify-between gap-3 flex-wrap mb-3">

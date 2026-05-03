@@ -11,6 +11,7 @@ import Footer from "@/components/Footer";
 import CrisisCard, { type CrisisResource } from "@/components/recovery/CrisisCard";
 import { useAuth } from "@/hooks/useAuth";
 import { safeAccentForDark } from "@/lib/personaContrast";
+import { RecommendationCards } from "@/components/RecommendationCard";
 
 interface Message {
   role: "user" | "coach";
@@ -284,6 +285,12 @@ export default function SasquatchCoach() {
                 {prompt}
               </button>
             ))}
+          </div>
+          {/* Further reading — Gemini-curated Nick quote + deep link.
+              Sits after the primary "Quick actions" + starter prompts so
+              it never competes with them as a primary CTA. */}
+          <div className="mb-4">
+            <RecommendationCards surface="coach" />
           </div>
           </>
         )}
