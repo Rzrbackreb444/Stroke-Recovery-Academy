@@ -22,7 +22,7 @@ import {
   Sparkles,
   ExternalLink,
 } from "lucide-react";
-import { SiItunes, SiTiktok, SiYoutubemusic } from "react-icons/si";
+import { SiApplemusic, SiItunes, SiTiktok, SiYoutubemusic } from "react-icons/si";
 import { useToast } from "@/hooks/use-toast";
 import strokedOutSasquatchCover from "@assets/679586462_1618728516086893_8759763875674995547_n_1777817377755.jpg";
 
@@ -656,9 +656,10 @@ function FeaturedAlbumCard() {
   // links sit between the hero and the player so listeners can grab the
   // album for offline / mobile listening too.
   const platforms = [
+    { name: "Apple Music", icon: SiApplemusic, href: "https://music.apple.com/us/search?term=Stroked+Out+Sasquatch", color: "text-white" },
+    { name: "iTunes (ringtones)", icon: SiItunes, href: "https://music.apple.com/us/search?term=Stroked+Out+Sasquatch&types=ringtones", color: "text-[#FB5BC5]" },
     { name: "YouTube Music", icon: SiYoutubemusic, href: "https://music.youtube.com/search?q=Stroked+Out+Sasquatch", color: "text-[#FF0000]" },
     { name: "TikTok", icon: SiTiktok, href: "https://www.tiktok.com/search?q=Stroked%20Out%20Sasquatch", color: "text-white" },
-    { name: "iTunes (ringtones)", icon: SiItunes, href: "https://music.apple.com/us/search?term=Stroked+Out+Sasquatch", color: "text-[#FB5BC5]" },
   ];
   return (
     <Card
