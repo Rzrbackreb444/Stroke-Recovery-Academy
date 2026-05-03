@@ -16,7 +16,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import {
   Mic2, Play, Pause, Plus, Trash2, ArrowLeft, Loader2, ShieldCheck,
-  AlertTriangle, Square, Volume2,
+  AlertTriangle, Square, Volume2, Lock, CreditCard, Sparkles, CheckCircle2,
 } from "lucide-react";
 
 interface VoiceClone {
@@ -34,6 +34,13 @@ interface VoiceClone {
 interface VoiceListResponse {
   voices: VoiceClone[];
   consentText: string;
+}
+
+interface EntitlementResponse {
+  hasSubscription: boolean;
+  configured: boolean;
+  subscriptionPriceAmountCents: number;
+  perClonePriceAmountCents: number;
 }
 
 const MIN_DURATION = 30;
@@ -76,6 +83,58 @@ export default function VoiceLibrary() {
     queryKey: ["/api/voice-clones"],
     enabled: !!user,
   });
+
+  const { data: entitlement, isLoading: entLoading } = useQuery<EntitlementResponse>({
+    queryKey: ["/api/voice-clones/entitlement"],
+    enabled: !!user,
+  });
+
+  // Per-clone purchase token returned by Stripe Checkout success URL
+  // (?clone_session_id=cs_...). Persisted to sessionStorage so a refresh,
+  // accidental navigation, or browser-crash between purchase and mint never
+  // strands a paid $5 slot client-side. Cleared only on successful mint or
+  // when the survivor explicitly discards.
+  const CLONE_TOKEN_KEY = "voiceClonePendingSessionId";
+  const [pendingCloneSessionId, setPendingCloneSessionIdState] = useState<string | null>(() => {
+    try {
+      return sessionStorage.getItem(CLONE_TOKEN_KEY);
+    } catch {
+      return null;
+    }
+  });
+  const setPendingCloneSessionId = (v: string | null) => {
+    try {
+      if (v) sessionStorage.setItem(CLONE_TOKEN_KEY, v);
+      else sessionStorage.removeItem(CLONE_TOKEN_KEY);
+    } catch {
+      /* private mode / quota */
+    }
+    setPendingCloneSessionIdState(v);
+  };
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const sid = params.get("clone_session_id");
+    const subscribed = params.get("subscribed");
+    const canceled = params.get("canceled");
+    if (sid) {
+      setPendingCloneSessionId(sid);
+      toast({
+        title: "Clone slot ready",
+        description: "Record your sample below to mint your voice.",
+      });
+    }
+    if (subscribed) {
+      queryClient.invalidateQueries({ queryKey: ["/api/voice-clones/entitlement"] });
+      toast({ title: "Subscription active", description: "Voice cloning unlocked." });
+    }
+    if (canceled) {
+      toast({ title: "Checkout canceled", variant: "destructive" });
+    }
+    if (sid || subscribed || canceled) {
+      window.history.replaceState({}, "", "/voice-library");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const consentText = data?.consentText || "";
   const voices = data?.voices ?? [];
@@ -141,9 +200,27 @@ export default function VoiceLibrary() {
     setElapsed(0);
   };
 
+  const checkoutMutation = useMutation({
+    mutationFn: async (mode: "subscription" | "clone") => {
+      const res = await apiRequest("POST", "/api/voice-clones/checkout", { mode });
+      return (await res.json()) as { url: string };
+    },
+    onSuccess: (data) => {
+      if (data?.url) window.location.href = data.url;
+    },
+    onError: (e: any) => {
+      toast({
+        title: "Checkout failed",
+        description: e?.message || "Could not start Stripe checkout.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const createMutation = useMutation({
     mutationFn: async () => {
       if (!recordedBlob) throw new Error("No recording");
+      if (!pendingCloneSessionId) throw new Error("Missing clone purchase token");
       const audioBase64 = await blobToBase64(recordedBlob);
       const res = await apiRequest("POST", "/api/voice-clones", {
         name,
@@ -152,6 +229,7 @@ export default function VoiceLibrary() {
         audioBase64,
         audioMimeType: recordedBlob.type,
         sampleDurationSec: elapsed,
+        stripeSessionId: pendingCloneSessionId,
       });
       return res.json();
     },
@@ -164,6 +242,7 @@ export default function VoiceLibrary() {
       setName("");
       setDescription("");
       setConsentChecked(false);
+      setPendingCloneSessionId(null);
       discardRecording();
     },
     onError: (e: any) => {
@@ -232,14 +311,23 @@ export default function VoiceLibrary() {
     }
   };
 
+  const hasSub = !!entitlement?.hasSubscription;
+  const billingConfigured = !!entitlement?.configured;
+  const subPriceDisplay = entitlement
+    ? `$${(entitlement.subscriptionPriceAmountCents / 100).toFixed(0)}/mo`
+    : "$9/mo";
+  const clonePriceDisplay = entitlement
+    ? `$${(entitlement.perClonePriceAmountCents / 100).toFixed(0)}`
+    : "$5";
+
   const canSubmit =
+    hasSub &&
+    !!pendingCloneSessionId &&
     !!recordedBlob &&
     elapsed >= MIN_DURATION &&
     name.trim().length > 0 &&
     consentChecked &&
     !createMutation.isPending;
-
-  const isAdmin = (user as any)?.role === "admin";
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-zinc-100">
@@ -268,17 +356,112 @@ export default function VoiceLibrary() {
             </p>
           </div>
           <Badge className="bg-[#C9941A]/20 text-[#C9941A] border border-[#C9941A]/40">
-            Beta · Admin-gated
+            {subPriceDisplay} add-on
           </Badge>
         </div>
 
-        {!isAdmin && (
-          <Alert className="mb-6 border-[#C9941A]/40 bg-[#C9941A]/10">
-            <AlertTriangle className="h-4 w-4 text-[#C9941A]" />
-            <AlertTitle>Coming soon for survivors</AlertTitle>
+        {!entLoading && !billingConfigured && (
+          <Alert className="mb-6 border-amber-500/40 bg-amber-500/10">
+            <AlertTriangle className="h-4 w-4 text-amber-400" />
+            <AlertTitle>Stripe products not set up yet</AlertTitle>
             <AlertDescription className="text-zinc-300">
-              Voice cloning will launch as a $9/month add-on. We're stress-testing it with
-              admins first to make sure the consent flow and audio quality hold up.
+              An admin needs to run the one-time Stripe setup before survivors can subscribe.
+              {(user as any)?.role === "admin" && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="ml-3"
+                  onClick={async () => {
+                    try {
+                      const r = await apiRequest("POST", "/api/admin/voice-clones/setup-stripe", {});
+                      const j = await r.json();
+                      toast({ title: "Stripe configured", description: `Sub price: ${j.subscriptionPriceId}` });
+                      queryClient.invalidateQueries({ queryKey: ["/api/voice-clones/entitlement"] });
+                    } catch (e: any) {
+                      toast({ title: "Setup failed", description: e?.message, variant: "destructive" });
+                    }
+                  }}
+                  data-testid="button-stripe-setup"
+                >
+                  Run setup now
+                </Button>
+              )}
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {billingConfigured && !hasSub && (
+          <Card className="mb-6 bg-gradient-to-br from-[#C9941A]/15 to-transparent border-[#C9941A]/40">
+            <CardContent className="py-6 flex flex-col md:flex-row items-start md:items-center gap-4">
+              <div className="p-3 rounded-md bg-[#C9941A]/20 border border-[#C9941A]/40">
+                <Lock className="w-6 h-6 text-[#C9941A]" />
+              </div>
+              <div className="flex-1">
+                <div className="text-lg font-semibold">Unlock voice cloning — {subPriceDisplay}</div>
+                <p className="text-sm text-zinc-400 mt-1">
+                  Use your own voice across Anthem narration, Recovery Anchor, Daily Quote, and
+                  Coach replies. Each new clone is {clonePriceDisplay}. Cancel anytime.
+                </p>
+              </div>
+              <Button
+                size="lg"
+                className="bg-[#C9941A] hover:bg-[#C9941A] text-black"
+                onClick={() => checkoutMutation.mutate("subscription")}
+                disabled={checkoutMutation.isPending}
+                data-testid="button-subscribe"
+              >
+                {checkoutMutation.isPending ? (
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                ) : (
+                  <Sparkles className="w-5 h-5 mr-2" />
+                )}
+                Subscribe
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {hasSub && !pendingCloneSessionId && (
+          <Alert className="mb-6 border-emerald-500/40 bg-emerald-500/10">
+            <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+            <AlertTitle>Subscription active</AlertTitle>
+            <AlertDescription className="text-zinc-300 flex items-center gap-3 flex-wrap">
+              To mint a new voice, purchase a clone slot for {clonePriceDisplay}.
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => checkoutMutation.mutate("clone")}
+                disabled={checkoutMutation.isPending}
+                data-testid="button-buy-clone-slot"
+              >
+                <CreditCard className="w-4 h-4 mr-2" /> Buy clone slot ({clonePriceDisplay})
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {hasSub && pendingCloneSessionId && (
+          <Alert className="mb-6 border-[#C9941A]/40 bg-[#C9941A]/10">
+            <Sparkles className="h-4 w-4 text-[#C9941A]" />
+            <AlertTitle>Clone slot ready</AlertTitle>
+            <AlertDescription className="text-zinc-300 flex flex-wrap items-center gap-3">
+              <span className="flex-1 min-w-[200px]">
+                Your {clonePriceDisplay} purchase is queued. Record your sample below and submit to
+                mint your voice. The slot is consumed only on a successful clone.
+              </span>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="text-zinc-400"
+                onClick={() => {
+                  if (confirm("Discard this paid clone slot? This cannot be undone.")) {
+                    setPendingCloneSessionId(null);
+                  }
+                }}
+                data-testid="button-discard-clone-token"
+              >
+                Discard slot
+              </Button>
             </AlertDescription>
           </Alert>
         )}
@@ -423,9 +606,17 @@ export default function VoiceLibrary() {
                   <>
                     <Loader2 className="w-5 h-5 mr-2 animate-spin" /> Cloning…
                   </>
+                ) : !hasSub ? (
+                  <>
+                    <Lock className="w-5 h-5 mr-2" /> Subscribe to clone
+                  </>
+                ) : !pendingCloneSessionId ? (
+                  <>
+                    <CreditCard className="w-5 h-5 mr-2" /> Buy {clonePriceDisplay} slot first
+                  </>
                 ) : (
                   <>
-                    <Volume2 className="w-5 h-5 mr-2" /> Clone this voice
+                    <Volume2 className="w-5 h-5 mr-2" /> Mint voice ({clonePriceDisplay} slot)
                   </>
                 )}
               </Button>

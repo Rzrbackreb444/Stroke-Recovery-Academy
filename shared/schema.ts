@@ -3775,6 +3775,7 @@ export const voiceClones = pgTable("voice_clones", {
   consentIp: varchar("consent_ip", { length: 64 }), // IP at consent time (legal record)
   sampleDurationSec: integer("sample_duration_sec"), // length of submitted sample
   deletedAt: timestamp("deleted_at"), // soft-delete; voice removed from EL but row retained
+  stripeSessionId: text("stripe_session_id").unique(), // single-use $5 checkout session token; UNIQUE prevents replay
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
