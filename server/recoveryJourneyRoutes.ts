@@ -18,6 +18,11 @@ import { sql } from "drizzle-orm";
 import { isAuthenticated } from "./replitAuth";
 import { getUserId } from "./lib/authUtils";
 import { GoogleGenAI } from "@google/genai";
+import {
+  sampleQuotePool,
+  getQuotesByCategory,
+  getRandomQuote,
+} from "./data/nickQuotes";
 
 // ── Step catalog ─────────────────────────────────────────────────────────
 // Outcome-framed copy, never feature-framed. Each step deep-links to the
@@ -104,8 +109,11 @@ function todayUtcKey(): string {
 }
 
 // Static fallback recommendations per surface — used when Gemini errors,
-// times out, or the daily quota is exhausted. Keeps the platform sticky
-// even when the LLM path is degraded.
+// times out, or the daily quota is exhausted. Quotes are sourced from
+// server/data/nickQuotes.ts so the platform reads as on-brand (Nick's
+// actual voice, drawn from his book + manuscripts) even when the LLM
+// path is degraded. Body copy + CTA stay hand-written so the link is
+// always honest about which surface it routes to.
 const STATIC_FALLBACK: Record<string, RecommendationCard[]> = {
   journey: [
     {
@@ -128,7 +136,7 @@ const STATIC_FALLBACK: Record<string, RecommendationCard[]> = {
   welcome: [
     {
       id: "static-welcome-today",
-      quote: "Never zero.",
+      quote: "Never zero. If you can't do the whole drill, do a fragment.",
       body: "The Bonfire walks you through one adaptive routine session per day. Even on the hardest days, one rep counts.",
       ctaLabel: "See today's Bonfire",
       ctaHref: "/recovery/today",
@@ -138,11 +146,21 @@ const STATIC_FALLBACK: Record<string, RecommendationCard[]> = {
   dashboard: [
     {
       id: "static-dashboard-journey",
-      quote: "One page, your whole day.",
+      quote: "Pick a ritual. Run it daily. That's the engine.",
       body: "The Daily Journey shows you exactly which 6 steps make up a sticky recovery day, what you've done, and what's next.",
       ctaLabel: "Open Daily Journey",
       ctaHref: "/recovery/journey",
       icon: "compass",
+    },
+  ],
+  coach: [
+    {
+      id: "static-coach-anchor",
+      quote: "Anchor your why. Then act on it before you feel ready.",
+      body: "If today feels heavy, write down the one person or thing pulling you forward. Then come back and ask Sasquatch what to do next.",
+      ctaLabel: "Build an Anchor",
+      ctaHref: "/recovery/motivation",
+      icon: "music",
     },
   ],
 };
@@ -168,6 +186,7 @@ async function generateRecommendations(args: {
   notDoneToday: StepKey[];
   streak: number;
   isPremium: boolean;
+  userId?: string | null;
 }): Promise<RecommendationCard[]> {
   const ai = getGemini();
   if (!ai) return STATIC_FALLBACK[args.surface] ?? STATIC_FALLBACK.journey;
@@ -206,24 +225,42 @@ async function generateRecommendations(args: {
     ];
   }
 
+  // Pull 8 candidate quotes in Nick's actual voice, drawn from his book
+  // + Doctrine + Manifesto. The model is required to pick its `quote`
+  // verbatim from this pool — eliminates the "generic motivational copy"
+  // drift Gemini gravitates toward. Only `body` + `ctaLabel` are model-
+  // generated, and only against the candidate pool.
+  const quotePool = sampleQuotePool({
+    surface: args.surface,
+    streak: args.streak,
+    isPremium: args.isPremium,
+    userId: args.userId,
+  });
+  const quotePoolSet = new Set(quotePool);
+
   const prompt = [
-    "You are Sasquatch — a dry, warm, survivor-to-survivor voice for a stroke recovery platform.",
-    "Generate 1 to 2 recommendation cards for a survivor on the daily journey page.",
-    "Each card MUST have:",
-    "  - quote: a short witty line (≤ 12 words), survivor-tone, no exclamation points, no marketing jargon, no emoji",
-    "  - body: one sentence (≤ 30 words) explaining why this for them right now",
-    "  - ctaLabel: 2-4 word action label",
-    "  - ctaHref: pick from the candidate pool below",
-    "  - icon: one of: music, messageCircle, flame, brain, pencil, sun, sparkles, star, compass",
+    "You are Sasquatch — a dry, warm, survivor-to-survivor voice for a stroke recovery platform built by Nick Kremers (7-year stroke survivor, founder).",
+    "Generate 1 to 2 recommendation cards for a survivor.",
+    "",
+    "STRICT RULES:",
+    "  - The `quote` field MUST be copied verbatim from the QUOTE POOL below. Do not paraphrase, shorten, or invent quotes. These are Nick's actual book lines.",
+    "  - The `body` field is one sentence (≤ 30 words) explaining why this card matters for THIS survivor right now. Tie the quote to the action.",
+    "  - `ctaLabel` is a 2-4 word action label.",
+    "  - `ctaHref` MUST be picked from the CANDIDATE POOL below.",
+    "  - `icon` is one of: music, messageCircle, flame, brain, pencil, sun, sparkles, star, compass.",
+    "  - No exclamation points. No emoji. No marketing jargon. Never start with 'Hey' or 'Hi'.",
+    "  - Never recommend premium if premium=true.",
     "",
     `Survivor state: streak=${args.streak} days, completed today=[${args.completedToday.join(",") || "none"}], premium=${args.isPremium}.`,
     `Surface: ${args.surface}.`,
     "",
-    "Candidate pool (ctaHref must be one of these exact paths):",
+    "QUOTE POOL (pick `quote` verbatim from one of these):",
+    ...quotePool.map((q) => `  - "${q}"`),
+    "",
+    "CANDIDATE POOL (ctaHref must be one of these exact paths):",
     ...candidatePool.map((c) => `  - "${c.href}": ${c.outcome}`),
     "",
     "Return ONLY a JSON object: {\"items\": [{\"quote\":\"\",\"body\":\"\",\"ctaLabel\":\"\",\"ctaHref\":\"\",\"icon\":\"\"}]}.",
-    "Never recommend premium if premium=true. Never include emoji. Never start with 'Hey' or 'Hi'.",
   ].join("\n");
 
   try {
@@ -247,16 +284,23 @@ async function generateRecommendations(args: {
     const cleanItems: RecommendationCard[] = items
       .slice(0, 2)
       .filter((it: any) => it && typeof it === "object")
-      .map((it: any, idx: number) => ({
-        id: `gemini-${args.surface}-${idx}`,
-        quote: String(it.quote ?? "").slice(0, 120),
-        body: String(it.body ?? "").slice(0, 280),
-        ctaLabel: String(it.ctaLabel ?? "Try it").slice(0, 32),
-        ctaHref: allowedHrefs.has(String(it.ctaHref))
-          ? String(it.ctaHref)
-          : candidatePool[0].href,
-        icon: String(it.icon ?? "sparkles").slice(0, 32),
-      }))
+      .map((it: any, idx: number) => {
+        // Verbatim guard: if Gemini paraphrases or invents a quote, fall
+        // back to the first library quote in the pool so every shipped
+        // card is guaranteed to be in Nick's actual voice.
+        const rawQuote = String(it.quote ?? "").trim();
+        const quote = quotePoolSet.has(rawQuote) ? rawQuote : quotePool[0];
+        return {
+          id: `gemini-${args.surface}-${idx}`,
+          quote: quote.slice(0, 200),
+          body: String(it.body ?? "").slice(0, 280),
+          ctaLabel: String(it.ctaLabel ?? "Try it").slice(0, 32),
+          ctaHref: allowedHrefs.has(String(it.ctaHref))
+            ? String(it.ctaHref)
+            : candidatePool[0].href,
+          icon: String(it.icon ?? "sparkles").slice(0, 32),
+        };
+      })
       .filter((c: RecommendationCard) => c.quote.length > 0 && c.body.length > 0);
     if (cleanItems.length === 0) throw new Error("empty");
     return cleanItems;
@@ -423,6 +467,7 @@ export function registerRecoveryJourneyRoutes(app: Express) {
           notDoneToday,
           streak: rJourney.streak,
           isPremium: rPremium,
+          userId,
         });
 
         recCache.set(cacheKey, { value: items, expiresAt: Date.now() + REC_TTL_MS });
@@ -434,6 +479,27 @@ export function registerRecoveryJourneyRoutes(app: Express) {
           surface: String(req.query.surface ?? "journey"),
           items: STATIC_FALLBACK.journey,
         });
+      }
+    },
+  );
+
+  // ── GET /api/recovery/spark ────────────────────────────────────────────
+  // Today's Spark — a single Nick quote, deterministic per (userId, day).
+  // Same survivor sees the same line all day, fresh quote tomorrow. No
+  // LLM call, no DB write — pure library lookup.
+  app.get(
+    "/api/recovery/spark",
+    isAuthenticated,
+    async (req: Request, res: Response) => {
+      try {
+        const userId = getUserId(req) ?? "anon";
+        const { getDailyQuote } = await import("./data/nickQuotes");
+        const q = getDailyQuote(userId);
+        res.json({ text: q.text, category: q.category });
+      } catch (e: any) {
+        console.error("[spark] failed", e?.message || e);
+        const fallback = getRandomQuote();
+        res.json({ text: fallback.text, category: fallback.category });
       }
     },
   );
