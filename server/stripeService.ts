@@ -21,7 +21,7 @@ export class StripeService {
     successUrl: string,
     cancelUrl: string,
     mode: 'subscription' | 'payment' = 'payment',
-    options: { trialDays?: number } = {}
+    options: { trialDays?: number; allowPromotionCodes?: boolean; promotionCode?: string } = {}
   ) {
     const stripe = await getUncachableStripeClient();
     const params: any = {
@@ -34,6 +34,36 @@ export class StripeService {
     };
     if (mode === 'subscription' && options.trialDays && options.trialDays > 0) {
       params.subscription_data = { trial_period_days: options.trialDays };
+    }
+    // Pre-apply a promo code if a customer-supplied code resolves to an
+    // active Stripe promotion code. We never trust the raw string — we look
+    // it up via the Stripe API and use the resolved promotion_code id, so
+    // a tampered request can't synthesize a discount that doesn't exist.
+    // Stripe forbids combining `discounts` with `allow_promotion_codes` in
+    // the same session, so when we pre-apply we must NOT also enable the
+    // "enter a code" link — and vice versa.
+    let preApplied = false;
+    if (options.promotionCode && typeof options.promotionCode === 'string') {
+      try {
+        const found = await stripe.promotionCodes.list({
+          code: options.promotionCode.trim().toUpperCase(),
+          active: true,
+          limit: 1,
+        });
+        const promo = found.data[0];
+        if (promo) {
+          params.discounts = [{ promotion_code: promo.id }];
+          preApplied = true;
+        }
+      } catch (e: any) {
+        // Bad code string → silently ignore; survivor still gets full price
+        // and can manually enter a code at the Stripe Checkout page if
+        // allow_promotion_codes is enabled below.
+        console.warn('[stripe] promo lookup failed', e?.message || e);
+      }
+    }
+    if (!preApplied && options.allowPromotionCodes) {
+      params.allow_promotion_codes = true;
     }
     return await stripe.checkout.sessions.create(params);
   }

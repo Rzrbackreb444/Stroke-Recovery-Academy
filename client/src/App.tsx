@@ -137,6 +137,7 @@ const FeedbackAdmin = lazy(() => import("@/pages/FeedbackAdmin"));
 const FeedbackInbox = lazy(() => import("@/pages/FeedbackInbox"));
 const BlogDraftStudio = lazy(() => import("@/pages/BlogDraftStudio"));
 const AdminVoiceLab = lazy(() => import("@/pages/AdminVoiceLab"));
+const AdminSasquatchFunnel = lazy(() => import("@/pages/AdminSasquatchFunnel"));
 const RecoveryUniversity = lazy(() => import("@/pages/RecoveryUniversity"));
 const RecoveryLesson = lazy(() => import("@/pages/RecoveryLesson"));
 const RecoveryQuiz = lazy(() => import("@/pages/RecoveryQuiz"));
@@ -594,6 +595,9 @@ function Router() {
       </Route>
       <Route path="/admin/seo">
         <AdminRoute><AdminSEODashboard /></AdminRoute>
+      </Route>
+      <Route path="/admin/sasquatch-funnel">
+        <AdminRoute><AdminSasquatchFunnel /></AdminRoute>
       </Route>
       <Route path="/admin/voice-lab">
         <AdminRoute><AdminVoiceLab /></AdminRoute>

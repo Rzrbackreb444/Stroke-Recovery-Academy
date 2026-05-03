@@ -159,30 +159,63 @@ export async function hasActiveSasquatchPremium(
     if (cached && cached.expiresAt > Date.now()) return cached.value;
   }
 
+  // ── Webhook-backed entitlement (Wave I) ────────────────────────────────
+  // The `stripe-replit-sync` integration mirrors all Stripe state into the
+  // `stripe.*` Postgres schema in near-realtime. Querying that locally is
+  // ~1ms vs ~150ms for the Stripe REST API and costs nothing. We only fall
+  // back to Stripe API if the DB lookup returns false — handles the 1-2s
+  // lag window after a fresh checkout where the survivor's brand-new sub
+  // hasn't sync'd yet (rare but real). On any DB error we ALSO fall back
+  // to Stripe so the entitlement gate degrades safely.
+  const eligibleArr = Array.from(eligiblePriceIds);
   let active = false;
+  let dbFallbackNeeded = false;
   try {
-    const stripe = await getUncachableStripeClient();
-    for (const status of ["active", "trialing"] as const) {
-      const subs = await stripe.subscriptions.list({
-        customer: stripeCustomerId,
-        status,
-        limit: 20,
-      });
-      for (const sub of subs.data) {
-        for (const item of sub.items.data) {
-          if (item.price?.id && eligiblePriceIds.has(item.price.id)) {
-            active = true;
-            break;
+    const r = await db.execute(sql`
+      SELECT 1
+        FROM stripe.subscriptions s
+        JOIN stripe.subscription_items si ON si.subscription = s.id
+       WHERE s.customer = ${stripeCustomerId}
+         AND s.status IN ('active', 'trialing')
+         AND si.price = ANY(${eligibleArr}::text[])
+       LIMIT 1
+    `);
+    active = (r.rows?.length ?? 0) > 0;
+    if (!active) dbFallbackNeeded = true; // only call Stripe when we'd otherwise deny
+  } catch (e: any) {
+    console.warn(
+      "[sasquatch-premium] local entitlement lookup failed, falling back to Stripe:",
+      e?.message || e,
+    );
+    dbFallbackNeeded = true;
+  }
+
+  if (!active && dbFallbackNeeded) {
+    try {
+      const stripe = await getUncachableStripeClient();
+      for (const status of ["active", "trialing"] as const) {
+        const subs = await stripe.subscriptions.list({
+          customer: stripeCustomerId,
+          status,
+          limit: 20,
+        });
+        for (const sub of subs.data) {
+          for (const item of sub.items.data) {
+            if (item.price?.id && eligiblePriceIds.has(item.price.id)) {
+              active = true;
+              break;
+            }
           }
+          if (active) break;
         }
         if (active) break;
       }
-      if (active) break;
+    } catch (e: any) {
+      console.error("[sasquatch-premium] stripe sub lookup failed", e?.message || e);
+      return false;
     }
-  } catch (e: any) {
-    console.error("[sasquatch-premium] stripe sub lookup failed", e?.message || e);
-    return false;
   }
+
   entitlementCache.set(stripeCustomerId, {
     value: active,
     expiresAt: Date.now() + ENTITLEMENT_CACHE_MS,
