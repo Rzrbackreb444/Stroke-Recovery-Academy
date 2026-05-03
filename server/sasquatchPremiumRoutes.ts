@@ -12,6 +12,15 @@ import {
   invalidateSasquatchPremium,
 } from "./services/sasquatchPremiumService";
 
+// 7-day free trial for first-time subscribers. Survivors get the full premium
+// surface (unlimited Coach, unlimited Anchor renders, voice cloning, premium
+// Campfire fires) for a week before the first $19 charge — removes the
+// cold-start objection. Stripe enforces "one trial per customer" by default
+// via the customer record, so re-subscribing after a cancel won't re-trial
+// (Stripe returns a session without the trial). Anyone who wants to abuse
+// this would need a fresh email + fresh Stripe customer.
+const SASQUATCH_PREMIUM_TRIAL_DAYS = 7;
+
 async function getOrCreateStripeCustomer(userId: string): Promise<string | null> {
   const [u] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
   if (!u) return null;
@@ -76,6 +85,7 @@ export function registerSasquatchPremiumRoutes(app: Express) {
         `${baseUrl}/recovery/premium?subscribed=1`,
         `${baseUrl}/recovery/premium?canceled=1`,
         "subscription",
+        { trialDays: SASQUATCH_PREMIUM_TRIAL_DAYS },
       );
       res.json({ url: session.url });
     } catch (err: any) {
