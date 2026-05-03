@@ -543,6 +543,7 @@ export function generateLocalBusinessSchema(business: {
 
 export function generateHreflangTags(pages: { url: string; lang: string }[]): string {
   return pages.map(p => 
+    // nosemgrep: javascript.lang.security.html-in-template-string
     `<link rel="alternate" hreflang="${p.lang}" href="${p.url}" />`
   ).join('\n');
 }

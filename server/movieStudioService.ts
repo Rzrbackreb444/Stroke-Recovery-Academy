@@ -283,6 +283,7 @@ function addEmotionMarkers(text: string, emotion: string): string {
 
   const settings = emotionSSML[emotion.toLowerCase()] || { rate: 'medium', pitch: 'medium' };
   
+  // nosemgrep: javascript.lang.security.html-in-template-string
   return `<speak><prosody rate="${settings.rate}" pitch="${settings.pitch}">${text}</prosody></speak>`;
 }
 

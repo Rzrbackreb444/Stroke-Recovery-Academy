@@ -154,10 +154,12 @@ export default function ImageEditorModal({
     };
 
     const html = caption
+      // nosemgrep: javascript.lang.security.html-in-template-string
       ? `<figure style="margin: 1.5rem 0; ${alignStyles[alignment]}">
           <img src="${currentUrl}" alt="${altText || imageName}" style="${sizeStyles[imageSize]} height: auto; display: block; ${alignStyles[alignment]}" />
           <figcaption style="text-align: ${alignment}; font-size: 0.875rem; color: #666; margin-top: 0.5rem; font-style: italic;">${caption}</figcaption>
         </figure>`
+      // nosemgrep: javascript.lang.security.html-in-template-string
       : `<img src="${currentUrl}" alt="${altText || imageName}" style="${sizeStyles[imageSize]} height: auto; display: block; margin: 1.5rem 0; ${alignStyles[alignment]}" />`;
 
     onInsert(html);

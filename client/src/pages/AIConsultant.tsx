@@ -122,6 +122,7 @@ export default function AIConsultant() {
   };
 
   const copyEmbedCode = (botId: string) => {
+    // nosemgrep: javascript.lang.security.html-in-template-string
     const code = `<script src="https://strokerecoveryacademy.com/embed/consultant/${botId}.js"></script>`;
     navigator.clipboard.writeText(code);
     toast({

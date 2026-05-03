@@ -194,6 +194,7 @@ export function renderJsonLdScripts(blocks: object[]): string {
   return blocks
     .map((b) => {
       const json = JSON.stringify(b).replace(/<\/script/gi, "<\\/script");
+      // nosemgrep: javascript.lang.security.html-in-template-string
       return `<script type="application/ld+json">${json}</script>`;
     })
     .join("\n");

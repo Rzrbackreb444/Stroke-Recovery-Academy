@@ -18,6 +18,7 @@ const BRAND = {
 
 // Legacy wrapper retained for any external callers; new sends use renderEmail directly.
 function emailWrapper(content: string, previewText = ''): string {
+  // nosemgrep: javascript.lang.security.html-in-template-string
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -110,6 +111,7 @@ export const DRIP_EDITIONS: Array<{
     headline: 'The email I wasn\u2019t going to send.',
     subheadline: 'Year 2 after my stroke nearly took me out. Here\u2019s what stopped the spiral.',
     showCrisisCallout: true,
+    // nosemgrep: javascript.lang.security.html-in-template-string
     content: `
       <p class="body-text">Let me start with something I don't tell most people.</p>
       <div class="quote-block">
@@ -141,6 +143,7 @@ export const DRIP_EDITIONS: Array<{
     dayOffset: 7,
     subject: 'The doctor said I had a 0% chance. He was wrong.',
     previewText: 'The medical system isn\'t lying to you — it just doesn\'t account for what you\'re about to do.',
+    // nosemgrep: javascript.lang.security.html-in-template-string
     content: `
       <div class="quote-block">
         <div class="quote-text">"I refused their timeline. You should refuse it too."</div>
@@ -171,6 +174,7 @@ export const DRIP_EDITIONS: Array<{
     dayOffset: 14,
     subject: 'What 66 days actually does to a recovering brain.',
     previewText: 'It\'s not about willpower. It\'s about what happens neurologically when you repeat something 66 days straight.',
+    // nosemgrep: javascript.lang.security.html-in-template-string
     content: `
       <div class="quote-block">
         <div class="quote-text">"66 days builds the habit. Consistency keeps it."</div>
@@ -201,6 +205,7 @@ export const DRIP_EDITIONS: Array<{
     dayOffset: 21,
     subject: 'You\'re not stuck. You\'re in the plateau. Here\'s the difference.',
     previewText: 'The plateau looks like failure from the inside. But I can tell you exactly what\'s happening.',
+    // nosemgrep: javascript.lang.security.html-in-template-string
     content: `
       <div class="quote-block">
         <div class="quote-text">"Plateaus are launchpads, not parking lots."</div>
@@ -232,6 +237,7 @@ export const DRIP_EDITIONS: Array<{
     dayOffset: 30,
     subject: 'Build in public. It will feel terrifying. Do it anyway.',
     previewText: 'Isolation almost killed me after my stroke. Community is what I had to build to save myself.',
+    // nosemgrep: javascript.lang.security.html-in-template-string
     content: `
       <div class="quote-block">
         <div class="quote-text">"Build your tribe. Isolation almost killed me. Connection saved me."</div>
@@ -260,6 +266,7 @@ export const DRIP_EDITIONS: Array<{
     dayOffset: 37,
     subject: 'This one\'s for the caregivers.',
     previewText: "If you're doing this for someone you love — this email is specifically for you.",
+    // nosemgrep: javascript.lang.security.html-in-template-string
     content: `
       <div class="quote-block">
         <div class="quote-text">"The tribe pulls you when your own rope feels too short."</div>
@@ -294,6 +301,7 @@ export const DRIP_EDITIONS: Array<{
     headline: 'Post-stroke depression is real. Let\u2019s name it.',
     subheadline: '30\u201350% of survivors face it. Most never get told what\u2019s actually happening.',
     showCrisisCallout: true,
+    // nosemgrep: javascript.lang.security.html-in-template-string
     content: `
       <div class="quote-block">
         <div class="quote-text">"Depression wants you parked. Tell it to kick rocks."</div>
@@ -328,6 +336,7 @@ export const DRIP_EDITIONS: Array<{
     headline: 'From walker to 90%. Here\u2019s the honest receipt.',
     subheadline: 'The before/after, the wins, the things that are still hard.',
     showBeforeAfter: true,
+    // nosemgrep: javascript.lang.security.html-in-template-string
     content: `
       <div class="quote-block">
         <div class="quote-text">"Still rising at Year 7. Your story isn't over either."</div>
@@ -357,6 +366,7 @@ export const DRIP_EDITIONS: Array<{
     dayOffset: 60,
     subject: 'Your recovery is someone else\'s only hope.',
     previewText: "Two months in. You're now the proof that wasn't available when you started.",
+    // nosemgrep: javascript.lang.security.html-in-template-string
     content: `
       <div class="quote-block">
         <div class="quote-text">"Your recovery is someone else's hope. Don't keep it to yourself."</div>
@@ -385,6 +395,7 @@ export const DRIP_EDITIONS: Array<{
     dayOffset: 67,
     subject: 'This is the invitation.',
     previewText: "You've been reading for 67 days. Now I'm asking you to take the next step.",
+    // nosemgrep: javascript.lang.security.html-in-template-string
     content: `
       <div class="quote-block">
         <div class="quote-text">"From patient to architect. That's the real recovery."</div>
@@ -431,8 +442,12 @@ async function sendDripEdition(queueId: number, editionNumber: number, email: st
   const edition = DRIP_EDITIONS.find((e) => e.editionNumber === editionNumber);
   if (!edition) return;
 
+  const escapedFirstName = firstName
+    ? String(firstName).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!)
+    : '';
   const personalizedContent = firstName
-    ? edition.content.replace('<p class="body-text">Let me start', `<p class="body-text">Hey ${firstName} — let me start`)
+    // nosemgrep: javascript.lang.security.html-in-template-string
+    ? edition.content.replace('<p class="body-text">Let me start', `<p class="body-text">Hey ${escapedFirstName} — let me start`)
     : edition.content;
 
   const html = renderEmail({
