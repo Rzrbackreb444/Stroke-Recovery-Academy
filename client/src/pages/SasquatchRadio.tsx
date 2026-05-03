@@ -38,6 +38,8 @@ import iAmTheArchitectUrl from "@assets/i-am-the-architect_1777782175104.mp3";
 import strokedOutButNotDoneUrl from "@assets/“stroked-out-(but-not-done)”_1777782389082.mp3";
 import blackingOutUrl from "@assets/blacking-out_1777782436717.mp3";
 import squatchyUrl from "@assets/squatchy-2_1777782436717.mp3";
+import standUpUrl from "@assets/stand-up!_1777782562333.mp3";
+import dingNowFightUrl from "@assets/ding-now-fight_1777782562333.mp3";
 
 interface RadioTrack {
   id: string;
@@ -217,6 +219,28 @@ const SEED_CATALOG: RadioTrack[] = [
     audioUrl: squatchyUrl,
     durationLabel: "Full track",
     hashtags: ["#StrokeRecovery", "#Squatchy", "#SasquatchRadio"],
+  },
+  {
+    id: "stand-up",
+    title: "Stand Up!",
+    artist: "Stroked-Out Sasquatch",
+    vibe: "Rock Anthem",
+    story:
+      "Two words the rehab gym screams at you a thousand times. Two words you'll one day scream back at the world. This is the song for the first time you do.",
+    audioUrl: standUpUrl,
+    durationLabel: "Full track",
+    hashtags: ["#StrokeRecovery", "#StandUp", "#SasquatchRadio"],
+  },
+  {
+    id: "ding-now-fight",
+    title: "Ding — Now Fight",
+    artist: "Stroked-Out Sasquatch",
+    vibe: "Hip-Hop Fight Song",
+    story:
+      "The bell rang the moment the stroke hit. Round one started without you. Get up. Ding — now fight. Every day a new round, every round another chance to rewire.",
+    audioUrl: dingNowFightUrl,
+    durationLabel: "Full track",
+    hashtags: ["#StrokeRecovery", "#NowFight", "#SasquatchRadio"],
   },
 ];
 
