@@ -70,6 +70,18 @@ export function structuredErrorLogger(
 }
 
 export function registerHealthRoutes(app: Express) {
+  // Sentry DSNs are designed to be embedded in client code (publicly safe by
+  // design — they identify the project, not authenticate). Exposing it via a
+  // tiny server endpoint avoids needing a VITE_-prefixed duplicate of the
+  // SENTRY_DSN secret.
+  app.get("/api/observability/client-config", (_req, res) => {
+    res.setHeader("Cache-Control", "public, max-age=300");
+    res.json({
+      sentryDsn: process.env.SENTRY_DSN || null,
+      environment: process.env.NODE_ENV || "development",
+    });
+  });
+
   app.get("/api/health", async (req, res) => {
     const startedAt = process.uptime();
     let dbOk = false;
