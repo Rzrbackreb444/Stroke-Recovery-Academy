@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogOut, LayoutDashboard, Settings, Heart, ChevronDown } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, Settings, Heart, ChevronDown, Music2, Crown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -26,6 +26,16 @@ const primaryNav = [
   { href: "/recovery/sasquatch-coach", label: "My Coach" },
 ];
 
+// Paid music headliner — Recovery Anchor Studio (musical-mnemonic encoder
+// for words/phrases stroke survivors are trying to recover) lives inside the
+// Motivation Studio page. Anthem Builder generates personal recovery anthems;
+// Sasquatch Radio is the curated audio stream with DJ voice intros.
+const musicNav = [
+  { href: "/recovery/motivation", label: "Anchor Studio", pro: true, description: "Musical-mnemonic for words your stroke took" },
+  { href: "/recovery/anthem/build", label: "Anthem Builder", pro: false, description: "Build your personal recovery anthem" },
+  { href: "/recovery/radio", label: "Sasquatch Radio", pro: false, description: "Survivor-curated stream with DJ intros" },
+];
+
 const resourcesNav = [
   { href: "/recovery/brain-gym", label: "Brain Gym" },
   { href: "/recovery/blog", label: "Blog" },
@@ -39,6 +49,7 @@ const resourcesNav = [
 export default function RecoveryHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [resourcesOpen, setResourcesOpen] = useState(false);
+  const [musicOpen, setMusicOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isPrimary, setIsPrimary] = useState(false);
   const [location] = useLocation();
@@ -61,6 +72,7 @@ export default function RecoveryHeader() {
   useEffect(() => {
     setMobileOpen(false);
     setResourcesOpen(false);
+    setMusicOpen(false);
   }, [location]);
 
   if (!isPrimary) return null;
@@ -104,6 +116,40 @@ export default function RecoveryHeader() {
                 </button>
               </Link>
             ))}
+
+            {/* Music dropdown — paid headliner (Anchor Studio) gets a PRO badge */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-400 hover:text-white rounded-lg transition-colors"
+                  data-testid="nav-music"
+                >
+                  <Music2 className="h-3.5 w-3.5 mr-1 text-[#C9941A]" />
+                  Music <ChevronDown className="h-3.5 w-3.5" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="bg-[#111] border-[#222] min-w-[280px]">
+                {musicNav.map((link) => (
+                  <DropdownMenuItem key={link.href} asChild>
+                    <Link
+                      href={link.href}
+                      className={`cursor-pointer flex flex-col items-start gap-0.5 py-2 ${location === link.href ? "text-[#C9941A]" : "text-gray-300"}`}
+                      data-testid={`nav-music-${link.label.toLowerCase().replace(/\s/g, "-")}`}
+                    >
+                      <span className="flex items-center gap-2 text-sm font-medium">
+                        {link.label}
+                        {link.pro && (
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide rounded bg-[#C9941A]/15 text-[#C9941A] border border-[#C9941A]/30">
+                            <Crown className="h-2.5 w-2.5" /> Pro
+                          </span>
+                        )}
+                      </span>
+                      <span className="text-xs text-gray-500">{link.description}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             {/* Resources dropdown */}
             <DropdownMenu>
@@ -243,6 +289,43 @@ export default function RecoveryHeader() {
                 </button>
               </Link>
             ))}
+            {/* Music — collapsible (paid headliner gets PRO badge) */}
+            <div>
+              <button
+                className="w-full text-left px-4 py-3 text-sm font-medium rounded-lg text-gray-300 hover:text-white hover:bg-[#1a1a1a] flex items-center justify-between transition-colors"
+                onClick={() => setMusicOpen((v) => !v)}
+                data-testid="mobile-nav-music"
+              >
+                <span className="flex items-center gap-2">
+                  <Music2 className="h-3.5 w-3.5 text-[#C9941A]" />
+                  Music
+                </span>
+                <ChevronDown className={`h-3.5 w-3.5 transition-transform ${musicOpen ? "rotate-180" : ""}`} />
+              </button>
+              {musicOpen && (
+                <div className="pl-4 space-y-1 mt-1">
+                  {musicNav.map((link) => (
+                    <Link key={link.href} href={link.href}>
+                      <button
+                        className={`w-full text-left px-4 py-2.5 text-sm rounded-lg transition-colors flex items-center gap-2 ${
+                          location === link.href
+                            ? "text-[#C9941A]"
+                            : "text-gray-400 hover:text-white hover:bg-[#1a1a1a]"
+                        }`}
+                        data-testid={`mobile-nav-music-${link.label.toLowerCase().replace(/\s/g, "-")}`}
+                      >
+                        {link.label}
+                        {link.pro && (
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide rounded bg-[#C9941A]/15 text-[#C9941A] border border-[#C9941A]/30">
+                            <Crown className="h-2.5 w-2.5" /> Pro
+                          </span>
+                        )}
+                      </button>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
             {/* Resources — collapsible like desktop dropdown */}
             <div>
               <button
