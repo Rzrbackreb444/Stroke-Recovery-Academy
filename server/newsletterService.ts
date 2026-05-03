@@ -1,5 +1,6 @@
 import { db } from './db';
 import { sendEmail } from './emailService';
+import { redactEmail } from './lib/redact';
 import { newsletterSubscribers, newsletterEditions } from '../shared/schema';
 import { eq, and, lte, isNull, sql } from 'drizzle-orm';
 import { renderEmail, EMAIL } from './emailTemplate';
@@ -454,7 +455,7 @@ async function sendDripEdition(queueId: number, editionNumber: number, email: st
   const { newsletterDripQueue } = await import('../shared/schema');
   await db.update(newsletterDripQueue).set({ sentAt: new Date(), status: 'sent' }).where(eq(newsletterDripQueue.id, queueId));
 
-  console.log(`[newsletter] Sent drip edition ${editionNumber} to ${email}`);
+  console.log(`[newsletter] Sent drip edition ${editionNumber} to ${redactEmail(email)}`);
 }
 
 // ─── Broadcast send ───────────────────────────────────────────────────────────
@@ -476,7 +477,7 @@ export async function sendBroadcast(editionId: number): Promise<{ sent: number; 
       });
       sent++;
     } catch (e) {
-      console.error(`[newsletter] broadcast failed for ${sub.email}:`, e);
+      console.error(`[newsletter] broadcast failed for ${redactEmail(sub.email)}:`, e);
       failed++;
     }
     // 5 req/s safety throttle

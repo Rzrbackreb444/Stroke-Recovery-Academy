@@ -1,5 +1,7 @@
 // Google Places API Service for Recovery Center Finder
 
+import { redactZip } from "./lib/redact";
+
 const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY || process.env.PLACES_API_KEY;
 const GOOGLE_PLACES_BASE_URL = "https://maps.googleapis.com/maps/api/place";
 
@@ -115,7 +117,7 @@ export async function searchRecoveryCenters(
     const geocodeData = await geocodeResponse.json() as any;
     
     if (geocodeData.status !== "OK" || !geocodeData.results?.[0]) {
-      console.log("Geocoding failed for ZIP:", zipCode);
+      console.log("Geocoding failed for ZIP:", redactZip(zipCode));
       return getSampleCenters(zipCode);
     }
     

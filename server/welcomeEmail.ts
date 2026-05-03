@@ -1,5 +1,6 @@
 import { sendEmail } from './emailService';
 import { renderEmail, EMAIL } from './emailTemplate';
+import { redactEmail } from './lib/redact';
 
 const CHALLENGE_URL = `${EMAIL.site}/recovery/challenge`;
 const BLOG_URL = `${EMAIL.site}/recovery/blog/never-zero-philosophy`;
@@ -106,9 +107,9 @@ If you're in crisis, call or text 988 (U.S. Suicide & Crisis Lifeline). Emergenc
       html,
       text,
     });
-    console.log(`[welcome email] sent to ${email}`);
+    console.log(`[welcome email] sent to ${redactEmail(email)}`);
   } catch (err) {
-    console.error(`[welcome email] failed for ${email}:`, err);
+    console.error(`[welcome email] failed for ${redactEmail(email)}:`, err);
   }
 }
 
