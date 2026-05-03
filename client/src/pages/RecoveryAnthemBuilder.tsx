@@ -32,6 +32,7 @@ import {
   Lock,
   Maximize2,
   X,
+  Radio as RadioIcon,
 } from "lucide-react";
 
 type VibeOption =
@@ -585,6 +586,9 @@ function ResultPanel({
             {result.id && (
               <ShareToggleButton anthemId={result.id} initialIsShared={!!result.isShared} initialShareId={result.shareId ?? null} />
             )}
+            {result.id && (
+              <SubmitToRadioButton anthemId={result.id} defaultTitle={script.title} />
+            )}
           </div>
         </div>
       )}
@@ -665,6 +669,121 @@ function ShareToggleButton({
       <Share2 className="w-4 h-4 mr-2" />
       {isShared ? "Sharing — copy link" : "Make shareable"}
     </Button>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// Submit to Sasquatch Radio — opens a small consent form, then POSTs.
+// Curation is admin-gated server-side; this UI just collects intent
+// + on-air name. Submission moves the anthem into the broadcast queue.
+// ─────────────────────────────────────────────────────────────────────
+function SubmitToRadioButton({
+  anthemId,
+  defaultTitle,
+}: {
+  anthemId: number;
+  defaultTitle: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [artistName, setArtistName] = useState("");
+  const [agree, setAgree] = useState(false);
+  const { toast } = useToast();
+
+  const m = useMutation({
+    mutationFn: async () => {
+      const r = await apiRequest("POST", `/api/recovery/anthem/${anthemId}/broadcast`, {
+        consent: true,
+        artistName: artistName.trim() || undefined,
+      });
+      return (await r.json()) as { status: string; consent: boolean };
+    },
+    onSuccess: () => {
+      setSubmitted(true);
+      setOpen(false);
+      toast({
+        title: "Submitted to Sasquatch Radio",
+        description: "We'll review it within a few days. You'll see it in rotation once approved.",
+      });
+    },
+    onError: (e: any) => {
+      toast({
+        title: "Submission failed",
+        description: e?.message ?? "Try again",
+        variant: "destructive",
+      });
+    },
+  });
+
+  if (submitted) {
+    return (
+      <Button variant="outline" size="sm" disabled data-testid="button-submitted-to-radio">
+        <RadioIcon className="w-4 h-4 mr-2" />In review for radio
+      </Button>
+    );
+  }
+
+  if (!open) {
+    return (
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => setOpen(true)}
+        data-testid="button-submit-to-radio"
+      >
+        <RadioIcon className="w-4 h-4 mr-2" />Submit to Sasquatch Radio
+      </Button>
+    );
+  }
+
+  return (
+    <Card className="bg-[#1a1a1a] border-[#C9941A]/40 p-4 mt-2 w-full max-w-md">
+      <div className="text-sm font-semibold text-white mb-1">Submit "{defaultTitle}" to the radio</div>
+      <p className="text-xs text-white/60 mb-3">
+        Your anthem will go into a moderation queue. Once approved, it plays in the
+        public rotation at <span className="text-[#C9941A]">/recovery/radio</span>.
+        You can withdraw consent any time.
+      </p>
+      <div className="space-y-2">
+        <input
+          type="text"
+          value={artistName}
+          onChange={(e) => setArtistName(e.target.value.slice(0, 60))}
+          placeholder="On-air name (e.g. Nick K., Survivor)"
+          className="w-full px-3 py-2 rounded bg-[#0d0d0d] border border-white/10 text-white text-sm focus:outline-none focus:border-[#C9941A]"
+          data-testid="input-artist-name"
+        />
+        <label className="flex items-start gap-2 text-xs text-white/70 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={agree}
+            onChange={(e) => setAgree(e.target.checked)}
+            className="mt-0.5"
+            data-testid="checkbox-broadcast-consent"
+          />
+          <span>
+            I consent to public broadcast of this anthem on Sasquatch Radio. I
+            confirm I wrote it about my own recovery and it doesn't contain
+            anyone else's identifying info.
+          </span>
+        </label>
+        <div className="flex gap-2 pt-1">
+          <Button
+            size="sm"
+            onClick={() => m.mutate()}
+            disabled={!agree || m.isPending}
+            className="bg-[#C9941A] text-black hover:bg-[#C9941A]/90"
+            data-testid="button-confirm-submit-radio"
+          >
+            {m.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RadioIcon className="w-4 h-4 mr-2" />}
+            Submit
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => setOpen(false)} disabled={m.isPending}>
+            Cancel
+          </Button>
+        </div>
+      </div>
+    </Card>
   );
 }
 

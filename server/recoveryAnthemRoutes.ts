@@ -4,8 +4,10 @@ import { z } from "zod";
 import crypto from "crypto";
 import { db } from "./db";
 import { isAuthenticated } from "./replitAuth";
+import { requireAdmin } from "./middleware/requireAdmin";
 import { publicRateLimit } from "./middleware/publicRateLimit";
-import { motivationUsage, recoveryAnthems } from "@shared/schema";
+import { getUserId } from "./lib/authUtils";
+import { motivationUsage, recoveryAnthems, users } from "@shared/schema";
 import {
   previewAnthem,
   renderAnthem,
@@ -294,6 +296,197 @@ export function registerRecoveryAnthemRoutes(app: Express) {
       } catch (e: any) {
         console.error("[anthem] public share error:", e?.message ?? e);
         return res.status(500).json({ error: "share_fetch_failed" });
+      }
+    },
+  );
+
+  // ── Submit anthem to Sasquatch Radio (consent + queue) ────────────
+  // Survivor explicitly opts in; admin curation gate stops anything from
+  // hitting the public stream until reviewed.
+  app.post(
+    "/api/recovery/anthem/:id/broadcast",
+    isAuthenticated,
+    async (req: any, res: Response) => {
+      try {
+        const userId = req.user.claims.sub;
+        const id = Number(req.params.id);
+        if (!Number.isFinite(id)) return res.status(400).json({ error: "bad_id" });
+
+        const parsed = z
+          .object({
+            consent: z.boolean(),
+            artistName: z.string().trim().min(1).max(60).optional(),
+            broadcastVibe: z.string().trim().min(1).max(40).optional(),
+          })
+          .safeParse(req.body ?? {});
+        if (!parsed.success) return res.status(400).json({ error: "bad_input" });
+
+        const [anthem] = await db
+          .select()
+          .from(recoveryAnthems)
+          .where(and(eq(recoveryAnthems.id, id), eq(recoveryAnthems.userId, userId)))
+          .limit(1);
+        if (!anthem) return res.status(404).json({ error: "not_found" });
+
+        // If consent withdrawn, kick back to 'none' regardless of prior status.
+        // If consent granted, only move into 'pending' when not already approved
+        // (don't bump an approved track back into queue on a no-op resubmit).
+        const nextStatus = !parsed.data.consent
+          ? "none"
+          : anthem.broadcastStatus === "approved"
+            ? "approved"
+            : "pending";
+
+        await db
+          .update(recoveryAnthems)
+          .set({
+            broadcastConsent: parsed.data.consent,
+            broadcastStatus: nextStatus,
+            broadcastSubmittedAt: parsed.data.consent ? new Date() : null,
+            artistName: parsed.data.artistName ?? anthem.artistName ?? null,
+            broadcastVibe: parsed.data.broadcastVibe ?? anthem.broadcastVibe ?? null,
+            // Withdrawing consent clears prior review state so it has to be
+            // re-reviewed if the survivor opts back in later.
+            broadcastReviewedAt: parsed.data.consent ? anthem.broadcastReviewedAt : null,
+            broadcastReviewerId: parsed.data.consent ? anthem.broadcastReviewerId : null,
+            broadcastRejectionReason: parsed.data.consent ? anthem.broadcastRejectionReason : null,
+          })
+          .where(eq(recoveryAnthems.id, id));
+
+        return res.json({ status: nextStatus, consent: parsed.data.consent });
+      } catch (e: any) {
+        console.error("[anthem] broadcast submit error:", e?.message ?? e);
+        return res.status(500).json({ error: "broadcast_failed", message: e?.message });
+      }
+    },
+  );
+
+  // ── Public radio rotation (no auth, projects only display columns) ──
+  const radioListLimiter = publicRateLimit({
+    windowMs: 60_000,
+    max: 60,
+    bucketName: "radio-list",
+  });
+  app.get("/api/recovery/radio/tracks", radioListLimiter, async (_req: Request, res: Response) => {
+    try {
+      const rows = await db
+        .select({
+          id: recoveryAnthems.id,
+          title: recoveryAnthems.title,
+          artistName: recoveryAnthems.artistName,
+          broadcastVibe: recoveryAnthems.broadcastVibe,
+          scriptData: recoveryAnthems.scriptData,
+          audioUrl: recoveryAnthems.audioUrl,
+          durationMs: recoveryAnthems.durationMs,
+          shareId: recoveryAnthems.shareId,
+          isShared: recoveryAnthems.isShared,
+          broadcastReviewedAt: recoveryAnthems.broadcastReviewedAt,
+        })
+        .from(recoveryAnthems)
+        .where(
+          and(
+            eq(recoveryAnthems.broadcastStatus, "approved"),
+            eq(recoveryAnthems.broadcastConsent, true),
+          ),
+        )
+        .orderBy(desc(recoveryAnthems.broadcastReviewedAt))
+        .limit(50);
+
+      // Project to the minimal radio-card shape. Never expose userId, inputData,
+      // audit metadata, or the survivor's free-form story.
+      const tracks = rows.map((r) => {
+        const script = (r.scriptData as any) ?? {};
+        return {
+          id: `anthem-${r.id}`,
+          title: r.title,
+          artist: r.artistName ?? "Survivor",
+          vibe: r.broadcastVibe ?? script.vibe ?? "Recovery Anthem",
+          story: typeof script.tagline === "string" ? script.tagline : "",
+          audioUrl: r.audioUrl,
+          shareId: r.isShared ? r.shareId : null,
+        };
+      });
+
+      return res.json({ tracks });
+    } catch (e: any) {
+      console.error("[radio] list error:", e?.message ?? e);
+      return res.status(500).json({ error: "list_failed" });
+    }
+  });
+
+  // ── Admin: pending broadcast queue ────────────────────────────────
+  app.get(
+    "/api/admin/radio/queue",
+    isAuthenticated,
+    requireAdmin,
+    async (_req: Request, res: Response) => {
+      try {
+        const rows = await db
+          .select({
+            id: recoveryAnthems.id,
+            userId: recoveryAnthems.userId,
+            title: recoveryAnthems.title,
+            artistName: recoveryAnthems.artistName,
+            broadcastVibe: recoveryAnthems.broadcastVibe,
+            scriptData: recoveryAnthems.scriptData,
+            audioUrl: recoveryAnthems.audioUrl,
+            durationMs: recoveryAnthems.durationMs,
+            broadcastStatus: recoveryAnthems.broadcastStatus,
+            broadcastSubmittedAt: recoveryAnthems.broadcastSubmittedAt,
+            broadcastRejectionReason: recoveryAnthems.broadcastRejectionReason,
+          })
+          .from(recoveryAnthems)
+          .where(eq(recoveryAnthems.broadcastConsent, true))
+          .orderBy(desc(recoveryAnthems.broadcastSubmittedAt))
+          .limit(100);
+        return res.json({ items: rows });
+      } catch (e: any) {
+        console.error("[radio] admin queue error:", e?.message ?? e);
+        return res.status(500).json({ error: "queue_failed" });
+      }
+    },
+  );
+
+  // ── Admin: approve / reject ───────────────────────────────────────
+  app.post(
+    "/api/admin/radio/queue/:id",
+    isAuthenticated,
+    requireAdmin,
+    async (req: Request, res: Response) => {
+      try {
+        const id = Number(req.params.id);
+        if (!Number.isFinite(id)) return res.status(400).json({ error: "bad_id" });
+        const parsed = z
+          .object({
+            action: z.enum(["approve", "reject"]),
+            reason: z.string().trim().max(500).optional(),
+          })
+          .safeParse(req.body ?? {});
+        if (!parsed.success) return res.status(400).json({ error: "bad_input" });
+
+        const reviewerId = getUserId(req);
+        const status = parsed.data.action === "approve" ? "approved" : "rejected";
+
+        await db
+          .update(recoveryAnthems)
+          .set({
+            broadcastStatus: status,
+            broadcastReviewedAt: new Date(),
+            broadcastReviewerId: reviewerId,
+            broadcastRejectionReason:
+              parsed.data.action === "reject" ? parsed.data.reason ?? null : null,
+          })
+          .where(
+            and(
+              eq(recoveryAnthems.id, id),
+              eq(recoveryAnthems.broadcastConsent, true),
+            ),
+          );
+
+        return res.json({ status });
+      } catch (e: any) {
+        console.error("[radio] admin review error:", e?.message ?? e);
+        return res.status(500).json({ error: "review_failed" });
       }
     },
   );

@@ -6310,10 +6310,25 @@ export const recoveryAnthems = pgTable("recovery_anthems", {
   // Public consent-gated share. Same pattern as recovery_anchors.
   isShared: boolean("is_shared").notNull().default(false),
   shareId: text("share_id"),
+  // ── Sasquatch Radio broadcast pipeline (Phase 2) ──
+  // Survivor explicitly opts in to have their anthem considered for the
+  // public radio rotation. Approval is admin-curated so harmful content
+  // never reaches the public stream.
+  broadcastConsent: boolean("broadcast_consent").notNull().default(false),
+  // 'none' | 'pending' | 'approved' | 'rejected'
+  broadcastStatus: text("broadcast_status").notNull().default("none"),
+  broadcastSubmittedAt: timestamp("broadcast_submitted_at"),
+  broadcastReviewedAt: timestamp("broadcast_reviewed_at"),
+  broadcastReviewerId: varchar("broadcast_reviewer_id"),
+  broadcastRejectionReason: text("broadcast_rejection_reason"),
+  // Survivor's chosen on-air display name + vibe override (defaults to script vibe).
+  artistName: text("artist_name"),
+  broadcastVibe: text("broadcast_vibe"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => ({
   byUser: index("recovery_anthems_user_created").on(t.userId, t.createdAt),
   byShareId: uniqueIndex("recovery_anthems_share_id").on(t.shareId),
+  byBroadcastStatus: index("recovery_anthems_broadcast_status").on(t.broadcastStatus, t.broadcastSubmittedAt),
 }));
 export const insertRecoveryAnthemSchema = createInsertSchema(recoveryAnthems).omit({
   id: true,

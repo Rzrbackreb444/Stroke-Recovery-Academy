@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import RecoveryHeader from "@/components/RecoveryHeader";
 import Footer from "@/components/Footer";
 import RecoverySEO from "@/components/RecoverySEO";
@@ -26,6 +27,8 @@ import faultLineUrl from "@assets/fault-line-(icu)_1777781081423.mp3";
 import whiteCoatsUrl from "@assets/white-coats_1777781117732.mp3";
 import wheeledOutUrl from "@assets/wheeled-out-(discharge)_1777781117732.mp3";
 import handicrapUrl from "@assets/handicrap_2_1777781117732.mp3";
+import maximumBenefitUrl from "@assets/maximum-benefit-(interlude)_1777781929626.mp3";
+import wheelchairWarriorUrl from "@assets/wheelchair-warrior_1777781929626.mp3";
 
 interface RadioTrack {
   id: string;
@@ -85,6 +88,28 @@ const SEED_CATALOG: RadioTrack[] = [
     durationLabel: "Full track",
     hashtags: ["#StrokeRecovery", "#Disability", "#SasquatchRadio"],
   },
+  {
+    id: "maximum-benefit",
+    title: "Maximum Benefit (Interlude)",
+    artist: "Stroked-Out Sasquatch",
+    vibe: "Spoken-Word Interlude",
+    story:
+      "The phrase every survivor hears: 'You've reached maximum benefit.' Insurance-speak for they're done with you. This interlude is the answer — recovery doesn't end when their coverage does.",
+    audioUrl: maximumBenefitUrl,
+    durationLabel: "Interlude",
+    hashtags: ["#StrokeRecovery", "#MaximumBenefit", "#SasquatchRadio"],
+  },
+  {
+    id: "wheelchair-warrior",
+    title: "Wheelchair Warrior",
+    artist: "Stroked-Out Sasquatch",
+    vibe: "Rock Anthem",
+    story:
+      "Wheels aren't a defeat — they're the mount you ride into the next round. For every survivor who refuses to let their chair define the ceiling.",
+    audioUrl: wheelchairWarriorUrl,
+    durationLabel: "Full track",
+    hashtags: ["#StrokeRecovery", "#WheelchairWarrior", "#SasquatchRadio"],
+  },
 ];
 
 // ─────────────────────────────────────────────────────────────────────
@@ -104,8 +129,19 @@ export default function SasquatchRadio() {
   const [duration, setDuration] = useState(0);
   const [listenersOnline] = useState(() => 12 + Math.floor(Math.random() * 40));
 
-  const tracks = SEED_CATALOG;
-  const current = tracks[trackIdx];
+  // Fetch survivor-approved tracks and merge with the seed catalog. Seed
+  // tracks always lead so the founder set is the cold-start experience.
+  const approvedQuery = useQuery<{ tracks: RadioTrack[] }>({
+    queryKey: ["/api/recovery/radio/tracks"],
+    staleTime: 60_000,
+  });
+
+  const tracks = useMemo(() => {
+    const approved = approvedQuery.data?.tracks ?? [];
+    return [...SEED_CATALOG, ...approved.filter((t) => !!t.audioUrl)];
+  }, [approvedQuery.data]);
+
+  const current = tracks[trackIdx] ?? SEED_CATALOG[0];
 
   // ── Audio element wiring ────────────────────────────────────────
   useEffect(() => {
