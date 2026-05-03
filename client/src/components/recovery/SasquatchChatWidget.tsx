@@ -13,7 +13,8 @@ import {
   Minimize2,
   Maximize2,
   Mic,
-  MicOff
+  MicOff,
+  Trash2
 } from "lucide-react";
 import strokeLyfeLogo from "@assets/Untitled_design_1776789083877.png";
 
@@ -35,21 +36,28 @@ interface SasquatchChatWidgetProps {
   defaultOpen?: boolean;
 }
 
+const WELCOME_MESSAGE: Message = {
+  id: "welcome",
+  role: "coach",
+  content: "Hey there, warrior! I'm Nick - your Sasquatch Coach. You're here because you're serious about your comeback, and I respect that. Let's talk exercises, celebrate wins, or work through tough days. What did you work on today?",
+};
+
 export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchChatWidgetProps) {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
+  // Auto-open the widget when the daily Sasquatch push deep-links here with ?ping=1
+  // (or when the host page sets defaultOpen). Lives in initializer so SSR is safe.
+  const [isOpen, setIsOpen] = useState(() => {
+    if (defaultOpen) return true;
+    if (typeof window === "undefined") return false;
+    return new URLSearchParams(window.location.search).get("ping") === "1";
+  });
   const [isMinimized, setIsMinimized] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      role: "coach",
-      content: "Hey there, warrior! I'm Nick - your Sasquatch Coach. You're here because you're serious about your comeback, and I respect that. Let's talk exercises, celebrate wins, or work through tough days. What did you work on today?",
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [autoVoice, setAutoVoice] = useState(true);
+  const [historyLoaded, setHistoryLoaded] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -65,6 +73,50 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
       inputRef.current.focus();
     }
   }, [isOpen, isMinimized]);
+
+  // Lazy-load the persisted thread the first time the widget opens. Fail-open:
+  // if the survivor isn't authenticated or the request errors, we just keep the
+  // scripted welcome line and the chat works as before.
+  useEffect(() => {
+    if (!isOpen || historyLoaded) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/coach/history", { credentials: "include" });
+        if (!res.ok) return;
+        const data = await res.json();
+        const past: Message[] = Array.isArray(data?.messages)
+          ? data.messages.map((m: any) => ({
+              id: `h-${m.id}`,
+              role: m.role === "coach" ? "coach" : "user",
+              content: String(m.content ?? ""),
+            }))
+          : [];
+        if (cancelled) return;
+        if (past.length > 0) {
+          // Replace the scripted welcome with the real conversation history.
+          setMessages(past);
+        }
+      } catch {
+        // Ignore — fall back to the welcome line.
+      } finally {
+        if (!cancelled) setHistoryLoaded(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, historyLoaded]);
+
+  const clearHistory = async () => {
+    if (!window.confirm("Clear your entire chat history with Sasquatch?")) return;
+    try {
+      await fetch("/api/coach/history", { method: "DELETE", credentials: "include" });
+    } catch {
+      // Best-effort; reset UI regardless so the survivor sees a fresh thread.
+    }
+    setMessages([WELCOME_MESSAGE]);
+  };
 
   const chatMutation = useMutation({
     mutationFn: async (message: string) => {
@@ -262,6 +314,16 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
               data-testid="button-toggle-voice"
             >
               {autoVoice ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+            </Button>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-7 w-7 text-white/70"
+              onClick={clearHistory}
+              aria-label="Clear chat history"
+              data-testid="button-clear-coach-history"
+            >
+              <Trash2 className="w-4 h-4" />
             </Button>
             <Button
               size="icon"

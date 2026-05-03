@@ -6827,3 +6827,30 @@ export const campfireRoomPrompts = pgTable("campfire_room_prompts", {
   uniq: uniqueIndex("uniq_campfire_room_prompt").on(t.roomId, t.promptDate),
 }));
 export type CampfireRoomPrompt = typeof campfireRoomPrompts.$inferSelect;
+
+// ============================================================================
+// Sasquatch personal chat — persistent thread per survivor with the AI Coach.
+// /api/coach/chat already generates the dynamic Gemini reply; this table just
+// makes the conversation outlive the widget so survivors can resume mid-stream.
+// ============================================================================
+export const sasquatchChatMessages = pgTable("sasquatch_chat_messages", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  role: varchar("role", { length: 16 }).notNull(), // 'user' | 'coach'
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => ({
+  userIdx: index("idx_sasquatch_chat_user_created").on(t.userId, t.createdAt),
+}));
+export type SasquatchChatMessage = typeof sasquatchChatMessages.$inferSelect;
+
+// Daily ping ledger — one row per (user, day) so the scheduler doesn't double-ping.
+export const sasquatchDailyPings = pgTable("sasquatch_daily_pings", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  pingDate: varchar("ping_date", { length: 10 }).notNull(), // YYYY-MM-DD UTC
+  sentAt: timestamp("sent_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => ({
+  uniq: uniqueIndex("uniq_sasquatch_ping").on(t.userId, t.pingDate),
+}));
+export type SasquatchDailyPing = typeof sasquatchDailyPings.$inferSelect;

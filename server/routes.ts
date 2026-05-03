@@ -10,6 +10,7 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import { publicPostLimiter, authActionLimiter } from "./middleware/publicRateLimit";
 import { redactEmail } from "./lib/redact";
 import { requireAdmin } from "./middleware/requireAdmin";
+import { getUserId } from "./lib/authUtils";
 import emailAuthRoutes from "./emailAuthRoutes";
 import luluRoutes from "./luluRoutes";
 import survivorProfileRoutes from "./survivorProfileRoutes";
@@ -1259,6 +1260,15 @@ Last updated: ${new Date().toISOString().split('T')[0]}
     startAccountabilityScheduler();
   } catch (err: any) {
     console.warn("[startup] accountability scheduler skipped:", err?.message ?? err);
+  }
+
+  // Init Sasquatch personal-chat persistence + daily-ping ledger (non-fatal).
+  // The ping itself is fired by the accountability scheduler in pushNotificationService.
+  try {
+    const { initSasquatchSchema } = await import('./sasquatchHistoryService');
+    await initSasquatchSchema();
+  } catch (err: any) {
+    console.warn("[startup] sasquatch schema init skipped:", err?.message ?? err);
   }
 
   // Auth routes
@@ -9386,10 +9396,71 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         console.error('ElevenLabs TTS error (non-fatal):', audioError);
       }
 
+      // Best-effort persist of the turn so survivors can resume the thread.
+      // Never blocks the response — persist failure is logged only. Uses the
+      // cross-strategy identity helper so BOTH Replit OIDC sessions
+      // (req.user.claims.sub) AND multi-provider sessions (req.user.id) persist.
+      const persistUserId = getUserId(req);
+      if (persistUserId) {
+        import('./sasquatchHistoryService')
+          .then(({ persistChatTurn }) => persistChatTurn(persistUserId, message, result.response))
+          .catch((e) => console.warn('[coach] persist skipped:', e?.message ?? e));
+      }
+
       res.json({ response: result.response, audioBase64 });
     } catch (error) {
       console.error('Coach chat error:', error);
       res.status(500).json({ message: 'Failed to generate coach response' });
+    }
+  });
+
+  // GET /api/coach/history — load the survivor's persistent Sasquatch thread
+  // (oldest first, capped at 100 turns). Auth required; unauthenticated callers
+  // get an empty array so the widget falls back to its scripted welcome line.
+  app.get('/api/coach/history', async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      if (!userId) {
+        return res.json({ messages: [] });
+      }
+      const { getChatHistory } = await import('./sasquatchHistoryService');
+      const messages = await getChatHistory(userId);
+      res.json({ messages });
+    } catch (error: any) {
+      console.error('Coach history error:', error?.message ?? error);
+      res.json({ messages: [] }); // fail open — widget still works
+    }
+  });
+
+  // DELETE /api/coach/history — let the survivor wipe their thread.
+  app.delete('/api/coach/history', async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      if (!userId) {
+        return res.status(401).json({ message: 'Sign in to manage your chat history' });
+      }
+      const { clearChatHistory } = await import('./sasquatchHistoryService');
+      const removed = await clearChatHistory(userId);
+      res.json({ removed });
+    } catch (error: any) {
+      console.error('Coach history clear error:', error?.message ?? error);
+      res.status(500).json({ message: 'Failed to clear history' });
+    }
+  });
+
+  // POST /api/coach/ping/test — admin-only manual trigger for the daily ping.
+  // Lets Nick verify the push payload + deep link without waiting until 13:00 UTC.
+  // Admin-gated because (a) the comment promised admin-only, (b) any signed-in
+  // user could otherwise spam push notifications to themselves.
+  app.post('/api/coach/ping/test', isAuthenticated, requireAdmin, async (req: any, res) => {
+    try {
+      const userId = getUserId(req)!; // requireAdmin guarantees a valid userId
+      const { sendSasquatchPingNow } = await import('./sasquatchHistoryService');
+      await sendSasquatchPingNow(userId);
+      res.json({ ok: true });
+    } catch (error: any) {
+      console.error('Coach ping test error:', error?.message ?? error);
+      res.status(500).json({ message: 'Failed to send test ping' });
     }
   });
 
