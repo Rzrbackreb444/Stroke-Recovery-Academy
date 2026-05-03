@@ -215,7 +215,11 @@ export default function RecoveryAnthemBuilder() {
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
-      <RecoverySEO title="Build Your Anthem · Stroke Recovery Academy" />
+      <RecoverySEO
+        title="Build Your Anthem"
+        description="Compose your own recovery anthem — verses, chorus, real vocals — in minutes. Free to preview, premium to render."
+        canonical="/recovery/anthem/build"
+      />
       <RecoveryHeader />
 
       <main className="mx-auto max-w-6xl px-4 py-8 sm:py-12">
