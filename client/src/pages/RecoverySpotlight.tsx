@@ -135,10 +135,12 @@ export default function RecoverySpotlight() {
               </p>
               <p className="mt-2 text-gray-400">
                 Want to be featured? Opt in from your{" "}
-                <Link href="/settings">
-                  <a className="underline" style={{ color: "#C9941A" }}>
-                    profile settings
-                  </a>
+                <Link
+                  href="/settings"
+                  className="underline"
+                  style={{ color: "#C9941A" }}
+                >
+                  profile settings
                 </Link>
                 .
               </p>
@@ -194,19 +196,19 @@ export default function RecoverySpotlight() {
             </h2>
             <div className="grid gap-3 sm:grid-cols-2">
               {archive.slice(1).map((s) => (
-                <Link key={s.id} href={`/recovery/spotlight/${s.slug}`}>
-                  <a
-                    data-testid={`link-archive-${s.slug}`}
-                    className="block rounded-md border border-[#1a1a1a] bg-[#111] p-4 hover-elevate active-elevate-2"
-                  >
-                    <p className="text-xs uppercase tracking-widest text-gray-500">
-                      {s.publishedAt && new Date(s.publishedAt).toLocaleDateString(undefined, { month: "long", year: "numeric" })}
-                    </p>
-                    <p className="mt-1 text-base font-black text-white">{s.displayName}</p>
-                    {s.headline && (
-                      <p className="mt-1 text-sm text-gray-400 line-clamp-2">{s.headline}</p>
-                    )}
-                  </a>
+                <Link
+                  key={s.id}
+                  href={`/recovery/spotlight/${s.slug}`}
+                  data-testid={`link-archive-${s.slug}`}
+                  className="block rounded-md border border-[#1a1a1a] bg-[#111] p-4 hover-elevate active-elevate-2"
+                >
+                  <p className="text-xs uppercase tracking-widest text-gray-500">
+                    {s.publishedAt && new Date(s.publishedAt).toLocaleDateString(undefined, { month: "long", year: "numeric" })}
+                  </p>
+                  <p className="mt-1 text-base font-black text-white">{s.displayName}</p>
+                  {s.headline && (
+                    <p className="mt-1 text-sm text-gray-400 line-clamp-2">{s.headline}</p>
+                  )}
                 </Link>
               ))}
             </div>

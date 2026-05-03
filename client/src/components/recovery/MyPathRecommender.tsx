@@ -76,9 +76,12 @@ export default function MyPathRecommender({ limit = 4 }: { limit?: number }) {
       </CardHeader>
       <CardContent className="grid gap-3 sm:grid-cols-2">
         {data.map((c) => (
-          <Link key={c.id} href={`/course/${c.id}`}>
-            <a className="block rounded-md border border-[#333] bg-[#0D0D0D] p-3 hover-elevate"
-              data-testid={`card-recommend-${c.id}`}>
+          <Link
+            key={c.id}
+            href={`/course/${c.id}`}
+            className="block rounded-md border border-[#333] bg-[#0D0D0D] p-3 hover-elevate"
+            data-testid={`card-recommend-${c.id}`}
+          >
               <div className="flex items-start gap-3">
                 {c.thumbnailUrl ? (
                   <img src={c.thumbnailUrl} alt=""
@@ -105,7 +108,6 @@ export default function MyPathRecommender({ limit = 4 }: { limit?: number }) {
                   </p>
                 </div>
               </div>
-            </a>
           </Link>
         ))}
       </CardContent>

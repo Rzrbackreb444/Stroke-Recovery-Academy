@@ -117,14 +117,13 @@ export default function AnchorShare() {
                 <p className="text-[11px] uppercase tracking-widest text-amber-300/70 mb-2">
                   Made on Stroke Recovery Academy
                 </p>
-                <Link href="/recovery">
-                  <a
-                    className="inline-flex items-center gap-2 text-sm text-amber-300 font-semibold hover:text-amber-200"
-                    data-testid="link-share-cta"
-                  >
-                    Build your own recovery anchor
-                    <ExternalLink className="h-3.5 w-3.5" />
-                  </a>
+                <Link
+                  href="/recovery"
+                  className="inline-flex items-center gap-2 text-sm text-amber-300 font-semibold hover:text-amber-200"
+                  data-testid="link-share-cta"
+                >
+                  Build your own recovery anchor
+                  <ExternalLink className="h-3.5 w-3.5" />
                 </Link>
               </div>
             </article>

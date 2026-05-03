@@ -243,8 +243,11 @@ function ExerciseCard({ ex }: { ex: Exercise }) {
     : null;
 
   return (
-    <Link href={`/recovery/exercises/${ex.slug}`}>
-      <a className="block" data-testid={`card-exercise-${ex.slug}`}>
+    <Link
+      href={`/recovery/exercises/${ex.slug}`}
+      className="block"
+      data-testid={`card-exercise-${ex.slug}`}
+    >
         <Card className="bg-[#1a1a1a] border-[#333] p-4 hover-elevate h-full">
           <div className="flex items-start justify-between gap-2 mb-2">
             <h3 className="text-base font-bold text-white">{ex.name}</h3>
@@ -272,7 +275,6 @@ function ExerciseCard({ ex }: { ex: Exercise }) {
             <Stat label="Advanced" value={adv} />
           </div>
         </Card>
-      </a>
     </Link>
   );
 }
