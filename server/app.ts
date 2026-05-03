@@ -63,6 +63,12 @@ declare module 'http' {
 // platform (including base64 image/audio payloads under the suspended Object
 // Storage workaround). Endpoints that legitimately need larger bodies should
 // register their own per-route body parser before this middleware.
+
+// Voice clone uploads carry base64 audio (30-180s WebM ~= 1-10MB). Mount the
+// larger 15mb parser BEFORE the global 5mb cap so the global cap doesn't
+// reject the request first. Other endpoints stay at 5mb.
+app.use('/api/voice-clones', express.json({ limit: '15mb' }));
+
 app.use(express.json({
   limit: '5mb',
   verify: (req, _res, buf) => {

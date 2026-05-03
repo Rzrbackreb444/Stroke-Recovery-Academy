@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
 import GlobalHeader from "@/components/GlobalHeader";
 import SEO from "@/components/SEO";
@@ -8,363 +8,543 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import {
-  Mic2, Play, Pause, Plus, Trash2, Upload, Download, Wand2,
-  Sparkles, Volume2, VolumeX, ArrowLeft, Loader2, User, Check
+  Mic2, Play, Pause, Plus, Trash2, ArrowLeft, Loader2, ShieldCheck,
+  AlertTriangle, Square, Volume2,
 } from "lucide-react";
-
-const voiceTypes = [
-  { value: "narrator", label: "Narrator" },
-  { value: "character", label: "Character" },
-  { value: "singer", label: "Singer" },
-  { value: "hero", label: "Hero" },
-  { value: "villain", label: "Villain" },
-  { value: "child", label: "Child" },
-  { value: "elder", label: "Elder" },
-  { value: "robot", label: "Robot/AI" }
-];
 
 interface VoiceClone {
   id: number;
   name: string;
-  description: string;
-  voiceType: string;
-  sampleAudioUrl: string;
-  isPublic: boolean;
+  description: string | null;
+  status: string;
+  voiceModelId: string | null;
+  sampleDurationSec: number | null;
+  consentSignedAt: string | null;
+  usageCount: number;
+  createdAt: string;
+}
+
+interface VoiceListResponse {
+  voices: VoiceClone[];
+  consentText: string;
+}
+
+const MIN_DURATION = 30;
+const TARGET_DURATION = 90;
+const MAX_DURATION = 180;
+
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onloadend = () => resolve(String(r.result || ""));
+    r.onerror = reject;
+    r.readAsDataURL(blob);
+  });
 }
 
 export default function VoiceLibrary() {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("library");
-  
-  const [newVoiceName, setNewVoiceName] = useState("");
-  const [newVoiceDesc, setNewVoiceDesc] = useState("");
-  const [newVoiceType, setNewVoiceType] = useState("narrator");
-  const [sampleText, setSampleText] = useState("");
+
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [consentChecked, setConsentChecked] = useState(false);
+
   const [isRecording, setIsRecording] = useState(false);
-  const [playingId, setPlayingId] = useState<number | null>(null);
+  const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
+  const [recordedUrl, setRecordedUrl] = useState<string | null>(null);
+  const [elapsed, setElapsed] = useState(0);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const streamRef = useRef<MediaStream | null>(null);
+  const tickRef = useRef<number | null>(null);
 
-  const { data: voicesData, isLoading } = useQuery({
-    queryKey: ["/api/voices"],
-    enabled: !!user
+  const [previewingId, setPreviewingId] = useState<number | null>(null);
+  const [previewText, setPreviewText] = useState(
+    "Recovery is not a deadline. It is a direction.",
+  );
+  const previewAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  const { data, isLoading } = useQuery<VoiceListResponse>({
+    queryKey: ["/api/voice-clones"],
+    enabled: !!user,
   });
 
-  const { data: publicVoices } = useQuery({
-    queryKey: ["/api/voices/public"]
-  });
+  const consentText = data?.consentText || "";
+  const voices = data?.voices ?? [];
 
-  const createVoiceMutation = useMutation({
-    mutationFn: async () => {
-      const response = await apiRequest("POST", "/api/voices", {
-        name: newVoiceName,
-        description: newVoiceDesc,
-        voiceType: newVoiceType,
-        sampleAudioUrl: "",
-        isPublic: false
+  const cleanupRecorder = () => {
+    if (tickRef.current) {
+      window.clearInterval(tickRef.current);
+      tickRef.current = null;
+    }
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+    recorderRef.current = null;
+  };
+
+  useEffect(() => () => cleanupRecorder(), []);
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+      chunksRef.current = [];
+      const mr = new MediaRecorder(stream);
+      mr.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data);
+      };
+      mr.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: mr.mimeType || "audio/webm" });
+        setRecordedBlob(blob);
+        setRecordedUrl(URL.createObjectURL(blob));
+        cleanupRecorder();
+      };
+      mr.start();
+      recorderRef.current = mr;
+      setIsRecording(true);
+      setElapsed(0);
+      const start = Date.now();
+      tickRef.current = window.setInterval(() => {
+        const s = Math.floor((Date.now() - start) / 1000);
+        setElapsed(s);
+        if (s >= MAX_DURATION) {
+          mr.stop();
+          setIsRecording(false);
+        }
+      }, 250);
+    } catch (e: any) {
+      toast({
+        title: "Microphone blocked",
+        description: e?.message || "Please allow microphone access and try again.",
+        variant: "destructive",
       });
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/voices"] });
-      setNewVoiceName("");
-      setNewVoiceDesc("");
-      toast({ title: "Voice Created!", description: "Your voice clone is ready to use" });
-    },
-    onError: (error: any) => {
-      toast({ title: "Creation Failed", description: error.message, variant: "destructive" });
-    }
-  });
-
-  const deleteVoiceMutation = useMutation({
-    mutationFn: async (id: number) => {
-      await apiRequest("DELETE", `/api/voices/${id}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/voices"] });
-      toast({ title: "Voice Deleted" });
-    }
-  });
-
-  const togglePlay = (id: number) => {
-    if (playingId === id) {
-      setPlayingId(null);
-    } else {
-      setPlayingId(id);
     }
   };
 
-  const voices = (voicesData as any)?.voices || [];
+  const stopRecording = () => {
+    recorderRef.current?.stop();
+    setIsRecording(false);
+  };
+
+  const discardRecording = () => {
+    if (recordedUrl) URL.revokeObjectURL(recordedUrl);
+    setRecordedBlob(null);
+    setRecordedUrl(null);
+    setElapsed(0);
+  };
+
+  const createMutation = useMutation({
+    mutationFn: async () => {
+      if (!recordedBlob) throw new Error("No recording");
+      const audioBase64 = await blobToBase64(recordedBlob);
+      const res = await apiRequest("POST", "/api/voice-clones", {
+        name,
+        description,
+        consentAccepted: true,
+        audioBase64,
+        audioMimeType: recordedBlob.type,
+        sampleDurationSec: elapsed,
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/voice-clones"] });
+      toast({
+        title: "Voice cloned",
+        description: `"${name}" is ready to use across the platform.`,
+      });
+      setName("");
+      setDescription("");
+      setConsentChecked(false);
+      discardRecording();
+    },
+    onError: (e: any) => {
+      toast({
+        title: "Clone failed",
+        description: e?.message || "Could not create voice clone.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await apiRequest("DELETE", `/api/voice-clones/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/voice-clones"] });
+      toast({ title: "Voice deleted" });
+    },
+    onError: (e: any) => {
+      toast({
+        title: "Delete failed",
+        description: e?.message || "Could not delete voice.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const previewVoice = async (voice: VoiceClone) => {
+    if (previewingId === voice.id) {
+      previewAudioRef.current?.pause();
+      previewAudioRef.current = null;
+      setPreviewingId(null);
+      return;
+    }
+    let url: string | null = null;
+    try {
+      setPreviewingId(voice.id);
+      const res = await apiRequest("POST", `/api/voice-clones/${voice.id}/preview`, {
+        text: previewText,
+      });
+      const blob = await res.blob();
+      url = URL.createObjectURL(blob);
+      const localUrl = url;
+      const audio = new Audio(localUrl);
+      previewAudioRef.current = audio;
+      const cleanup = () => {
+        URL.revokeObjectURL(localUrl);
+        if (previewAudioRef.current === audio) previewAudioRef.current = null;
+        setPreviewingId(null);
+      };
+      audio.onended = cleanup;
+      audio.onerror = cleanup;
+      audio.onpause = () => {
+        if (audio.currentTime > 0 && !audio.ended) cleanup();
+      };
+      await audio.play();
+    } catch (e: any) {
+      if (url) URL.revokeObjectURL(url);
+      setPreviewingId(null);
+      toast({
+        title: "Preview failed",
+        description: e?.message || "Could not generate preview.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const canSubmit =
+    !!recordedBlob &&
+    elapsed >= MIN_DURATION &&
+    name.trim().length > 0 &&
+    consentChecked &&
+    !createMutation.isPending;
+
+  const isAdmin = (user as any)?.role === "admin";
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] text-foreground">
-      <SEO 
-        title="Voice Library | Stroke Recovery Academy"
-        description="Create and manage AI voice clones for content creation. Clone voices, choose from multiple voice types, and build your personal voice library. Share and discover community voices."
+    <div className="min-h-screen bg-[#0D0D0D] text-zinc-100">
+      <SEO
+        title="Survivor Voice Cloning | Stroke Recovery Academy"
+        description="Clone your voice and use it across Anthem, Anchor Studio, and Coach. Survivor-owned, consent-gated voice cloning."
         canonical="/voice-library"
-        keywords="AI voice cloning, voice generator, text to speech, voice synthesis, voice creation"
-        author="Stroke Recovery Academy"
-        expertise={["Voice synthesis technology", "AI audio generation", "Voice personalization"]}
-        experience="Advanced voice cloning technology since 2024"
-        trustSignals={["Secure voice data handling", "Professional audio quality", "Creator-owned voice rights"]}
-        breadcrumbs={[{ name: "Home", url: "/" }, { name: "Voice Library", url: "/voice-library" }]}
       />
       <GlobalHeader />
-      
-      <main className="container mx-auto px-4 py-8">
+
+      <main className="container mx-auto px-4 py-8 max-w-5xl">
         <div className="flex items-center gap-4 mb-8">
-          <Link href="/creator-hub">
+          <Link href="/recovery">
             <Button variant="ghost" size="icon" data-testid="button-back">
               <ArrowLeft className="w-5 h-5" />
             </Button>
           </Link>
-          <div className="p-3 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600">
-            <Mic2 className="w-8 h-8 text-foreground" />
+          <div className="p-3 rounded-md bg-[#C9941A]/20 border border-[#C9941A]/40">
+            <Mic2 className="w-7 h-7 text-[#C9941A]" />
           </div>
-          <div>
-            <h1 className="text-3xl font-bold">Voice Cloning Library</h1>
-            <p className="text-zinc-400">Create and manage reusable AI voices</p>
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold">Survivor Voice Cloning</h1>
+            <p className="text-zinc-400 text-sm mt-1">
+              Use your own voice across the platform — Anthem narration, Anchor Studio,
+              Daily Quote, and Coach replies.
+            </p>
           </div>
-          <Badge className="ml-auto bg-primary/20 text-[#C9941A] border">
-            <Sparkles className="w-3 h-3 mr-1" /> Ultra-Premium
+          <Badge className="bg-[#C9941A]/20 text-[#C9941A] border border-[#C9941A]/40">
+            Beta · Admin-gated
           </Badge>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-[#1a1a1a] border border-[#333]">
-            <TabsTrigger value="library" className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]">
-              <Mic2 className="w-4 h-4 mr-2" /> My Voices
-            </TabsTrigger>
-            <TabsTrigger value="create" className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]">
-              <Plus className="w-4 h-4 mr-2" /> Create Voice
-            </TabsTrigger>
-            <TabsTrigger value="community" className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]">
-              <User className="w-4 h-4 mr-2" /> Community
-            </TabsTrigger>
-          </TabsList>
+        {!isAdmin && (
+          <Alert className="mb-6 border-[#C9941A]/40 bg-[#C9941A]/10">
+            <AlertTriangle className="h-4 w-4 text-[#C9941A]" />
+            <AlertTitle>Coming soon for survivors</AlertTitle>
+            <AlertDescription className="text-zinc-300">
+              Voice cloning will launch as a $9/month add-on. We're stress-testing it with
+              admins first to make sure the consent flow and audio quality hold up.
+            </AlertDescription>
+          </Alert>
+        )}
 
-          <TabsContent value="library" className="space-y-6">
-            {voices.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {voices.map((voice: VoiceClone) => (
-                  <Card key={voice.id} className="bg-[#1a1a1a]/50 border-[#333]">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between">
-                        <div className="p-2 rounded-lg bg-primary/20">
-                          <Mic2 className="w-5 h-5 text-[#C9941A]" />
-                        </div>
-                        <div className="flex gap-2">
-                          {voice.isPublic && (
-                            <Badge variant="secondary" className="text-xs">Public</Badge>
-                          )}
-                          <Button 
-                            variant="ghost" 
-                            size="icon"
-                            onClick={() => deleteVoiceMutation.mutate(voice.id)}
-                            data-testid={`button-delete-voice-${voice.id}`}
-                          >
-                            <Trash2 className="w-4 h-4 text-red-400" />
-                          </Button>
-                        </div>
-                      </div>
-                      <CardTitle className="text-lg mt-2">{voice.name}</CardTitle>
-                      <CardDescription className="text-zinc-400 line-clamp-2">
-                        {voice.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <Badge className="mb-3">{voice.voiceType}</Badge>
-                      <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => togglePlay(voice.id)}
-                          className="flex-1"
-                          data-testid={`button-play-voice-${voice.id}`}
-                        >
-                          {playingId === voice.id ? (
-                            <><Pause className="w-4 h-4 mr-2" /> Stop</>
-                          ) : (
-                            <><Play className="w-4 h-4 mr-2" /> Preview</>
-                          )}
-                        </Button>
-                        <Button variant="outline" size="sm" data-testid={`button-use-voice-${voice.id}`}>
-                          <Check className="w-4 h-4 mr-2" /> Use
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+        <div className="grid lg:grid-cols-2 gap-6">
+          <Card className="bg-[#1a1a1a]/80 border-[#333]">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Plus className="w-5 h-5 text-[#C9941A]" />
+                Create a new voice
+              </CardTitle>
+              <CardDescription className="text-zinc-400">
+                Record {MIN_DURATION}-{MAX_DURATION} seconds of clean speech in a quiet
+                room. {TARGET_DURATION}s is the sweet spot.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="voice-name">Voice name</Label>
+                <Input
+                  id="voice-name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="e.g., My voice (April 2026)"
+                  className="bg-[#0D0D0D] border-[#333] mt-1"
+                  maxLength={60}
+                  data-testid="input-voice-name"
+                />
               </div>
-            ) : (
-              <Card className="bg-[#1a1a1a]/50 border-[#333]">
-                <CardContent className="text-center py-12">
-                  <Mic2 className="w-16 h-16 mx-auto mb-4 text-zinc-600" />
-                  <h3 className="text-xl font-medium mb-2">No Voice Clones Yet</h3>
-                  <p className="text-zinc-400 mb-4">Create your first AI voice clone to use across all studios</p>
-                  <Button 
-                    onClick={() => setActiveTab("create")}
-                    className="bg-[#C9941A] hover:bg-[#C9941A]"
-                    data-testid="button-create-first-voice"
+              <div>
+                <Label htmlFor="voice-desc">Description (optional)</Label>
+                <Textarea
+                  id="voice-desc"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Anything that helps you remember which voice this is."
+                  className="bg-[#0D0D0D] border-[#333] mt-1"
+                  rows={2}
+                  maxLength={500}
+                  data-testid="input-voice-desc"
+                />
+              </div>
+
+              <div className="rounded-md border border-[#333] bg-[#0D0D0D] p-4 space-y-3">
+                <div className="flex items-center gap-2 text-sm font-medium text-[#C9941A]">
+                  <ShieldCheck className="w-4 h-4" /> Consent statement
+                </div>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  Read this aloud as part of your recording, then check the box to confirm.
+                </p>
+                <p
+                  className="text-sm text-zinc-200 italic leading-relaxed"
+                  data-testid="text-consent-statement"
+                >
+                  "{consentText || "Loading consent statement..."}"
+                </p>
+                <div className="flex items-start gap-2 pt-1">
+                  <Checkbox
+                    id="consent"
+                    checked={consentChecked}
+                    onCheckedChange={(v) => setConsentChecked(v === true)}
+                    data-testid="checkbox-consent"
+                  />
+                  <Label
+                    htmlFor="consent"
+                    className="text-xs text-zinc-300 leading-snug cursor-pointer"
                   >
-                    <Plus className="w-4 h-4 mr-2" /> Create Voice Clone
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
+                    I confirm I am the owner of this voice and I read the statement aloud
+                    in the recording above.
+                  </Label>
+                </div>
+              </div>
 
-          <TabsContent value="create" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-[#1a1a1a]/50 border-[#333]">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Wand2 className="w-5 h-5 text-[#C9941A]" />
-                    Voice Details
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label>Voice Name</Label>
-                    <Input
-                      value={newVoiceName}
-                      onChange={(e) => setNewVoiceName(e.target.value)}
-                      placeholder="e.g., Epic Narrator"
-                      className="bg-[#1a1a1a] border-[#333]"
-                      data-testid="input-voice-name"
-                    />
+              <div className="rounded-md border border-[#333] bg-[#0D0D0D] p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="text-sm font-medium">
+                    {isRecording ? "Recording…" : recordedBlob ? "Sample ready" : "Ready to record"}
                   </div>
-                  
-                  <div>
-                    <Label>Description</Label>
-                    <Textarea
-                      value={newVoiceDesc}
-                      onChange={(e) => setNewVoiceDesc(e.target.value)}
-                      placeholder="Describe the voice characteristics..."
-                      className="bg-[#1a1a1a] border-[#333]"
-                      data-testid="input-voice-desc"
-                    />
+                  <div
+                    className={`text-sm font-mono ${
+                      elapsed >= MIN_DURATION ? "text-[#C9941A]" : "text-zinc-500"
+                    }`}
+                    data-testid="text-elapsed"
+                  >
+                    {elapsed}s / {MAX_DURATION}s
                   </div>
-                  
-                  <div>
-                    <Label>Voice Type</Label>
-                    <Select value={newVoiceType} onValueChange={setNewVoiceType}>
-                      <SelectTrigger className="bg-[#1a1a1a] border-[#333]" data-testid="select-voice-type">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {voiceTypes.map((type) => (
-                          <SelectItem key={type.value} value={type.value}>
-                            {type.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </CardContent>
-              </Card>
+                </div>
 
-              <Card className="bg-[#1a1a1a]/50 border-[#333]">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Upload className="w-5 h-5 text-[#C9941A]" />
-                    Voice Sample
-                  </CardTitle>
-                  <CardDescription>Record or upload a voice sample</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="p-8 border-2 border-dashed border-[#333] rounded-lg text-center">
-                    <Mic2 className="w-12 h-12 mx-auto mb-4 text-zinc-600" />
-                    <p className="text-zinc-400 mb-4">Record a 30-second sample or upload audio</p>
-                    <div className="flex gap-3 justify-center">
-                      <Button
-                        variant={isRecording ? "destructive" : "outline"}
-                        onClick={() => setIsRecording(!isRecording)}
-                        data-testid="button-record"
-                      >
-                        {isRecording ? (
-                          <><Pause className="w-4 h-4 mr-2" /> Stop Recording</>
-                        ) : (
-                          <><Mic2 className="w-4 h-4 mr-2" /> Record Sample</>
-                        )}
-                      </Button>
-                      <Button variant="outline" data-testid="button-upload">
-                        <Upload className="w-4 h-4 mr-2" /> Upload File
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <Label>Sample Text (for TTS preview)</Label>
-                    <Textarea
-                      value={sampleText}
-                      onChange={(e) => setSampleText(e.target.value)}
-                      placeholder="Enter text to preview the voice..."
-                      className="bg-[#1a1a1a] border-[#333]"
-                      data-testid="input-sample-text"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            <Button
-              onClick={() => createVoiceMutation.mutate()}
-              disabled={createVoiceMutation.isPending || !newVoiceName.trim()}
-              size="lg"
-              className="w-full bg-[#C9941A] hover:bg-[#C9941A]"
-              data-testid="button-create-voice"
-            >
-              {createVoiceMutation.isPending ? (
-                <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Creating...</>
-              ) : (
-                <><Sparkles className="w-5 h-5 mr-2" /> Create Voice Clone</>
-              )}
-            </Button>
-          </TabsContent>
-
-          <TabsContent value="community" className="space-y-6">
-            <Card className="bg-[#1a1a1a]/50 border-[#333]">
-              <CardHeader>
-                <CardTitle>Community Voices</CardTitle>
-                <CardDescription>Public voice clones shared by other creators</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {(publicVoices as any)?.voices?.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {(publicVoices as any).voices.map((voice: VoiceClone) => (
-                      <div key={voice.id} className="p-4 bg-[#1a1a1a]/50 rounded-lg">
-                        <div className="flex items-center gap-3 mb-2">
-                          <Mic2 className="w-5 h-5 text-[#C9941A]" />
-                          <span className="font-medium">{voice.name}</span>
-                        </div>
-                        <p className="text-sm text-zinc-400 mb-3">{voice.description}</p>
-                        <div className="flex gap-2">
-                          <Badge variant="secondary">{voice.voiceType}</Badge>
-                          <Button variant="outline" size="sm" className="ml-auto" data-testid={`button-clone-${voice.id}`}>
-                            <Download className="w-4 h-4 mr-1" /> Clone
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-zinc-500">
-                    <User className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                    <p>No public voices available yet</p>
-                  </div>
+                {recordedUrl && !isRecording && (
+                  <audio
+                    src={recordedUrl}
+                    controls
+                    className="w-full mb-3"
+                    data-testid="audio-recorded-sample"
+                  />
                 )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+
+                <div className="flex flex-wrap gap-2">
+                  {!isRecording && !recordedBlob && (
+                    <Button
+                      onClick={startRecording}
+                      className="bg-[#C9941A] hover:bg-[#C9941A] text-black"
+                      data-testid="button-record-start"
+                    >
+                      <Mic2 className="w-4 h-4 mr-2" /> Start recording
+                    </Button>
+                  )}
+                  {isRecording && (
+                    <Button
+                      onClick={stopRecording}
+                      variant="destructive"
+                      data-testid="button-record-stop"
+                    >
+                      <Square className="w-4 h-4 mr-2" /> Stop
+                    </Button>
+                  )}
+                  {recordedBlob && !isRecording && (
+                    <Button
+                      onClick={discardRecording}
+                      variant="outline"
+                      data-testid="button-record-discard"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" /> Re-record
+                    </Button>
+                  )}
+                </div>
+                {recordedBlob && elapsed < MIN_DURATION && (
+                  <p className="text-xs text-amber-400 mt-2">
+                    Sample is too short. Need at least {MIN_DURATION} seconds.
+                  </p>
+                )}
+              </div>
+
+              <Button
+                onClick={() => createMutation.mutate()}
+                disabled={!canSubmit}
+                size="lg"
+                className="w-full bg-[#C9941A] hover:bg-[#C9941A] text-black disabled:opacity-50"
+                data-testid="button-create-clone"
+              >
+                {createMutation.isPending ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" /> Cloning…
+                  </>
+                ) : (
+                  <>
+                    <Volume2 className="w-5 h-5 mr-2" /> Clone this voice
+                  </>
+                )}
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-[#1a1a1a]/80 border-[#333]">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Mic2 className="w-5 h-5 text-[#C9941A]" />
+                My voices ({voices.length})
+              </CardTitle>
+              <CardDescription className="text-zinc-400">
+                Preview, manage, and (later) wire into Anthem / Anchor / Coach.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="preview-text" className="text-xs">
+                  Preview text
+                </Label>
+                <Input
+                  id="preview-text"
+                  value={previewText}
+                  onChange={(e) => setPreviewText(e.target.value)}
+                  className="bg-[#0D0D0D] border-[#333] mt-1"
+                  maxLength={500}
+                  data-testid="input-preview-text"
+                />
+              </div>
+
+              {isLoading ? (
+                <div className="flex items-center gap-2 text-zinc-500 py-8 justify-center">
+                  <Loader2 className="w-4 h-4 animate-spin" /> Loading voices…
+                </div>
+              ) : voices.length === 0 ? (
+                <div className="text-center py-10 text-zinc-500">
+                  <Mic2 className="w-12 h-12 mx-auto mb-3 opacity-40" />
+                  <p>No cloned voices yet.</p>
+                  <p className="text-xs mt-1">Record a sample on the left to start.</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {voices.map((voice) => (
+                    <div
+                      key={voice.id}
+                      className="rounded-md border border-[#333] bg-[#0D0D0D] p-3"
+                      data-testid={`card-voice-${voice.id}`}
+                    >
+                      <div className="flex items-start justify-between gap-3 mb-2">
+                        <div className="min-w-0">
+                          <div
+                            className="font-medium text-zinc-100 truncate"
+                            data-testid={`text-voice-name-${voice.id}`}
+                          >
+                            {voice.name}
+                          </div>
+                          {voice.description && (
+                            <div className="text-xs text-zinc-500 line-clamp-2 mt-0.5">
+                              {voice.description}
+                            </div>
+                          )}
+                        </div>
+                        <Badge
+                          variant="secondary"
+                          className={
+                            voice.status === "ready"
+                              ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                              : "bg-zinc-700 text-zinc-300"
+                          }
+                          data-testid={`badge-status-${voice.id}`}
+                        >
+                          {voice.status}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center gap-2 text-[11px] text-zinc-500 mb-2">
+                        <span>{voice.sampleDurationSec ?? "?"}s sample</span>
+                        <span>·</span>
+                        <span>used {voice.usageCount}×</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => previewVoice(voice)}
+                          disabled={voice.status !== "ready" || (previewingId !== null && previewingId !== voice.id)}
+                          data-testid={`button-preview-${voice.id}`}
+                        >
+                          {previewingId === voice.id ? (
+                            <>
+                              <Pause className="w-3 h-3 mr-1" /> Stop
+                            </>
+                          ) : (
+                            <>
+                              <Play className="w-3 h-3 mr-1" /> Preview
+                            </>
+                          )}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="text-red-400 hover:text-red-300"
+                          onClick={() => {
+                            if (confirm(`Delete voice "${voice.name}"? This removes it from ElevenLabs too.`)) {
+                              deleteMutation.mutate(voice.id);
+                            }
+                          }}
+                          data-testid={`button-delete-${voice.id}`}
+                        >
+                          <Trash2 className="w-3 h-3 mr-1" /> Delete
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </main>
     </div>
   );
