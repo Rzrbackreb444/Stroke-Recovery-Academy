@@ -3,9 +3,9 @@
    - Offline caching for unlocked course assets (P4-04)
 */
 
-const STATIC_CACHE = 'sra-static-v2';
-const COURSE_CACHE = 'sra-course-v2';
-const RUNTIME_CACHE = 'sra-runtime-v2';
+const STATIC_CACHE = 'sra-static-v3';
+const COURSE_CACHE = 'sra-course-v3';
+const RUNTIME_CACHE = 'sra-runtime-v3';
 const CACHE_VERSIONS = [STATIC_CACHE, COURSE_CACHE, RUNTIME_CACHE];
 
 const STATIC_ASSETS = [
