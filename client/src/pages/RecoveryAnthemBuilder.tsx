@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "wouter";
 import RecoveryHeader from "@/components/RecoveryHeader";
@@ -126,14 +126,37 @@ export default function RecoveryAnthemBuilder() {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
 
   // ── Form state ────────────────────────────────────────────────────
-  const [vibe, setVibe] = useState<VibeOption>("rock_anthem");
-  const [deficit, setDeficit] = useState("");
-  const [goal, setGoal] = useState("");
-  const [fightFor, setFightFor] = useState("");
-  const [story, setStory] = useState("");
-  const [currentDay, setCurrentDay] = useState(1);
-  const [walkingBpm, setWalkingBpm] = useState(90);
-  const [lengthSec, setLengthSec] = useState(60);
+  // Persisted to localStorage so survivor's inputs survive the OAuth sign-in
+  // round-trip. Cleared after a successful compose so the next session starts fresh.
+  const FORM_KEY = "anthem-builder-form-v1";
+  const initial = (() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const raw = window.localStorage.getItem(FORM_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  })();
+
+  const [vibe, setVibe] = useState<VibeOption>(initial?.vibe ?? "rock_anthem");
+  const [deficit, setDeficit] = useState<string>(initial?.deficit ?? "");
+  const [goal, setGoal] = useState<string>(initial?.goal ?? "");
+  const [fightFor, setFightFor] = useState<string>(initial?.fightFor ?? "");
+  const [story, setStory] = useState<string>(initial?.story ?? "");
+  const [currentDay, setCurrentDay] = useState<number>(initial?.currentDay ?? 1);
+  const [walkingBpm, setWalkingBpm] = useState<number>(initial?.walkingBpm ?? 90);
+  const [lengthSec, setLengthSec] = useState<number>(initial?.lengthSec ?? 60);
+
+  // Persist on every change. Tiny payload (under 4KB), no debounce needed.
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(
+        FORM_KEY,
+        JSON.stringify({ vibe, deficit, goal, fightFor, story, currentDay, walkingBpm, lengthSec }),
+      );
+    } catch {}
+  }, [vibe, deficit, goal, fightFor, story, currentDay, walkingBpm, lengthSec]);
 
   // ── Result state ──────────────────────────────────────────────────
   const [result, setResult] = useState<ComposeResponse | null>(null);
@@ -191,6 +214,8 @@ export default function RecoveryAnthemBuilder() {
       qc.invalidateQueries({ queryKey: ["/api/recovery/anthem/usage"] });
       qc.invalidateQueries({ queryKey: ["/api/recovery/anthem/list"] });
       if (data.shape === "anthem") {
+        // Successful render — clear the saved form so next visit starts fresh.
+        try { window.localStorage.removeItem(FORM_KEY); } catch {}
         toast({ title: "Your anthem is here", description: "Press play and turn it up." });
       }
     },
@@ -200,7 +225,7 @@ export default function RecoveryAnthemBuilder() {
       if (msg.includes("401")) {
         toast({
           title: "Sign in to compose your anthem",
-          description: "Your session expired. Sign in and your inputs will still be here.",
+          description: "Your session expired. We've saved your inputs — they'll be here when you get back.",
           variant: "destructive",
         });
         return;
@@ -291,6 +316,11 @@ export default function RecoveryAnthemBuilder() {
                   saved drafts, share links, and the Sasquatch Radio submission flow.
                   <span className="text-white/60"> 7 days free, then cancel anytime — no card needed to start.</span>
                 </p>
+                {(deficit || goal || story) && (
+                  <p className="text-xs text-[#C9941A]/80 mb-4" data-testid="text-form-saved">
+                    Your inputs below are saved on this device — they'll still be here after sign-in.
+                  </p>
+                )}
                 <p className="text-xs italic text-[#C9941A]/80 mb-4">
                   Sasquatch has your back. Heart still thumpin', life's still pumpin'.
                 </p>
