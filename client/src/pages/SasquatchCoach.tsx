@@ -1,10 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Volume2, VolumeX, Loader2, Mic, Flame, Sparkles, ShoppingBag } from "lucide-react";
+import { Send, Volume2, VolumeX, Loader2, Mic, Flame, Sparkles, ShoppingBag, LogIn } from "lucide-react";
 import { Link } from "wouter";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
 import RecoveryHeader from "@/components/RecoveryHeader";
 import RecoverySEO from "@/components/RecoverySEO";
 import Footer from "@/components/Footer";
@@ -19,6 +18,7 @@ interface Message {
   audioBase64?: string;
   crisis?: boolean;
   crisisResources?: CrisisResource[];
+  requireAuth?: boolean;
 }
 
 const STARTER_PROMPTS = [
@@ -57,6 +57,9 @@ export default function SasquatchCoach() {
   }, [persona?.name]);
   const [input, setInput] = useState("");
   const [audioEnabled, setAudioEnabled] = useState(true);
+  // Anonymous-quota hint shown subtly under the input. null = unknown
+  // (haven't sent yet), { used, limit } = "X of Y free messages used".
+  const [anonQuota, setAnonQuota] = useState<{ used: number; limit: number } | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -71,12 +74,33 @@ export default function SasquatchCoach() {
         role: m.role === "coach" ? "assistant" : "user",
         content: m.content,
       }));
-      const res = await apiRequest("POST", "/api/coach/chat", { message, history });
-      return (await res.json()) as {
+      // Direct fetch (not apiRequest) so we can read the body on 401 — the
+      // anonymous gate returns 401 { requireAuth: true } which we render
+      // inline as a sign-in card, not as a thrown error.
+      const res = await fetch("/api/coach/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ message, history }),
+      });
+      const json = await res.json().catch(() => ({} as any));
+      if (res.status === 401 && json?.requireAuth) {
+        return {
+          response: json.message ?? "Sign in to keep talking with Sasquatch.",
+          requireAuth: true as const,
+          anon: { used: json.anonLimit ?? 3, limit: json.anonLimit ?? 3 },
+        };
+      }
+      if (!res.ok) {
+        throw new Error(json?.message || `${res.status}`);
+      }
+      return json as {
         response: string;
         audioBase64?: string;
         crisis?: boolean;
         resources?: CrisisResource[];
+        anon?: { used: number; limit: number } | null;
+        requireAuth?: boolean;
       };
     },
     onSuccess: (data) => {
@@ -86,10 +110,12 @@ export default function SasquatchCoach() {
         audioBase64: data.audioBase64,
         crisis: data.crisis === true,
         crisisResources: data.crisis ? data.resources : undefined,
+        requireAuth: data.requireAuth === true,
       };
       setMessages((prev) => [...prev, coachMsg]);
-      // Never autoplay audio on a crisis response — let the user act on the resources.
-      if (audioEnabled && data.audioBase64 && !data.crisis) {
+      if (data.anon) setAnonQuota(data.anon);
+      // Never autoplay audio on a crisis or sign-in-gate response.
+      if (audioEnabled && data.audioBase64 && !data.crisis && !data.requireAuth) {
         playAudio(data.audioBase64);
       }
     },
@@ -179,6 +205,50 @@ export default function SasquatchCoach() {
               {msg.role === "coach" && msg.crisis && msg.crisisResources ? (
                 <div className="max-w-[90%] flex-1">
                   <CrisisCard message={msg.content} resources={msg.crisisResources} />
+                </div>
+              ) : msg.role === "coach" && msg.requireAuth ? (
+                <div
+                  className="max-w-[90%] flex-1 rounded-2xl border border-[#C9941A]/40 bg-gradient-to-br from-[#1a1410] to-[#0f0c08] p-4"
+                  data-testid="coach-signin-card"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-full bg-[#C9941A]/15 border border-[#C9941A]/40 flex items-center justify-center flex-shrink-0">
+                      <LogIn className="h-4 w-4 text-[#C9941A]" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-gray-200 leading-relaxed mb-3">
+                        {msg.content}
+                      </p>
+                      <p className="text-xs text-gray-500 mb-3">
+                        Sign in unlocks unlimited Coach turns, voice replies, and a thread that resumes where you left off.
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          asChild
+                          size="sm"
+                          className="bg-[#C9941A] hover:bg-[#C9941A] text-black font-semibold"
+                          data-testid="button-coach-signin"
+                        >
+                          <a href="/api/login">
+                            <LogIn className="h-3.5 w-3.5 mr-1.5" />
+                            Sign in free
+                          </a>
+                        </Button>
+                        <Button
+                          asChild
+                          size="sm"
+                          variant="outline"
+                          className="border-[#C9941A]/40 text-[#C9941A] hover:bg-[#C9941A]/10"
+                          data-testid="button-coach-premium"
+                        >
+                          <Link href="/recovery/premium">
+                            <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                            See Premium
+                          </Link>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div
@@ -302,15 +372,19 @@ export default function SasquatchCoach() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKey}
-            placeholder="Tell the coach what's going on..."
+            placeholder={
+              !user && anonQuota && anonQuota.used >= anonQuota.limit
+                ? "Sign in to keep talking with Sasquatch..."
+                : "Tell the coach what's going on..."
+            }
             className="resize-none bg-[#111] border-[#1e1e1e] text-white placeholder:text-gray-600 focus-visible:ring-[#C9941A]/30 focus-visible:border-[#C9941A]/40 min-h-[52px] max-h-32"
             rows={1}
-            disabled={chatMutation.isPending}
+            disabled={chatMutation.isPending || (!user && !!anonQuota && anonQuota.used >= anonQuota.limit)}
             data-testid="input-chat-message"
           />
           <Button
             onClick={handleSend}
-            disabled={!input.trim() || chatMutation.isPending}
+            disabled={!input.trim() || chatMutation.isPending || (!user && !!anonQuota && anonQuota.used >= anonQuota.limit)}
             className="bg-[#C9941A] text-black hover:bg-[#b8841a] flex-shrink-0"
             data-testid="button-send-message"
           >
@@ -321,6 +395,18 @@ export default function SasquatchCoach() {
             )}
           </Button>
         </div>
+        {!user && anonQuota && anonQuota.used < anonQuota.limit && (
+          <p
+            className="text-xs text-center text-[#C9941A]/70 mt-2"
+            data-testid="text-anon-quota"
+          >
+            {anonQuota.limit - anonQuota.used} of {anonQuota.limit} free Coach messages left.{" "}
+            <a href="/api/login" className="underline hover:text-[#C9941A]" data-testid="link-anon-signin">
+              Sign in free
+            </a>{" "}
+            for unlimited + voice replies.
+          </p>
+        )}
         <p className="text-xs text-center text-gray-600 mt-3">
           Sasquatch Coach is an AI trained on Nick's recovery methodology — not a substitute for medical advice.
         </p>

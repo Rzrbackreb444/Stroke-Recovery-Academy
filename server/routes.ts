@@ -8,6 +8,12 @@ import { storage } from "./storage";
 import { yearsSinceStroke } from "@shared/strokeAnniversary";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { publicPostLimiter, authActionLimiter } from "./middleware/publicRateLimit";
+import {
+  ANON_COACH_LIMIT,
+  coachIpLimiter,
+  getAnonCoachCount,
+  setAnonCoachCount,
+} from "./middleware/anonCoachQuota";
 import { redactEmail } from "./lib/redact";
 import { requireAdmin } from "./middleware/requireAdmin";
 import { getUserId } from "./lib/authUtils";
@@ -9323,7 +9329,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   };
 
   // AI coaching chat endpoint - enhanced with user context
-  app.post('/api/coach/chat', async (req: any, res) => {
+  app.post('/api/coach/chat', coachIpLimiter, async (req: any, res) => {
     try {
       const { message, history } = req.body;
 
@@ -9334,6 +9340,8 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       // CRISIS GATE — runs BEFORE the LLM. If the user expresses suicidal
       // ideation, self-harm, violence, or abuse, we short-circuit to a
       // structured crisis response and skip Gemini + ElevenLabs entirely.
+      // Crisis path also bypasses the anonymous + daily caps on purpose —
+      // we never block a crisis message.
       const crisis = detectCrisis(message);
       if (crisis.detected && crisis.category) {
         const userId = req.user?.claims?.sub ?? null;
@@ -9349,10 +9357,27 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         return res.json(crisisPayload);
       }
 
-      // Daily soft-cap for free survivors (Sasquatch Premium = unlimited).
-      // Crisis path bypasses the cap above on purpose — we never block a
-      // crisis message. Anonymous users also bypass (no userId to track).
+      // Anonymous soft sign-in gate. Logged-out visitors get
+      // ANON_COACH_LIMIT free messages (text only, no ElevenLabs voice)
+      // tracked via HMAC-signed cookie, then a 401 with requireAuth so
+      // the UI can prompt sign-in inline. The cookie is bypassable
+      // (clear cookies, get a fresh 3) — that's intentional, the
+      // per-IP `coachIpLimiter` above is the real cost-abuse backstop.
       const capUserId = getUserId(req);
+      const isAnonymous = !capUserId;
+      let anonCount = 0;
+      if (isAnonymous) {
+        anonCount = getAnonCoachCount(req);
+        if (anonCount >= ANON_COACH_LIMIT) {
+          return res.status(401).json({
+            message: `You've used your ${ANON_COACH_LIMIT} free Coach messages. Sign in free to keep going — no card, no spam.`,
+            requireAuth: true,
+            anonLimit: ANON_COACH_LIMIT,
+          });
+        }
+      }
+
+      // Daily soft-cap for authenticated free survivors (Premium = unlimited).
       let quotaInfo: { used: number; limit: number; premium: boolean } | null = null;
       if (capUserId) {
         const { isSasquatchPremium } = await import('./services/sasquatchPremiumService');
@@ -9415,23 +9440,37 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       }
 
       const result = await generateCoachResponse(message, history || [], getSasquatchCoachPrompt(coachPersona), userContext);
-      
+
       let audioBase64: string | undefined;
-      
-      try {
-        const isConfigured = await isElevenLabsServiceConfigured();
-        if (isConfigured) {
-          const elevenlabs = getElevenLabsService();
-          const audioBuffer = await elevenlabs.textToSpeech(result.response, SASQUATCH_VOICE_ID, {
-            stability: 0.6,
-            similarity_boost: 0.85,
-            style: 0.4,
-            use_speaker_boost: true,
-          });
-          audioBase64 = audioBuffer.toString('base64');
+
+      // Skip the expensive ElevenLabs TTS path entirely for anonymous
+      // visitors — voice unlocks at sign-in. Cuts the cost-abuse worst
+      // case dramatically since TTS is the most expensive line item.
+      if (!isAnonymous) {
+        try {
+          const isConfigured = await isElevenLabsServiceConfigured();
+          if (isConfigured) {
+            const elevenlabs = getElevenLabsService();
+            const audioBuffer = await elevenlabs.textToSpeech(result.response, SASQUATCH_VOICE_ID, {
+              stability: 0.6,
+              similarity_boost: 0.85,
+              style: 0.4,
+              use_speaker_boost: true,
+            });
+            audioBase64 = audioBuffer.toString('base64');
+          }
+        } catch (audioError) {
+          console.error('ElevenLabs TTS error (non-fatal):', audioError);
         }
-      } catch (audioError) {
-        console.error('ElevenLabs TTS error (non-fatal):', audioError);
+      }
+
+      // Bump the anonymous counter only after a successful generation so
+      // a Gemini outage doesn't burn one of the 3 free messages.
+      let anonInfo: { used: number; limit: number } | null = null;
+      if (isAnonymous) {
+        const newCount = anonCount + 1;
+        setAnonCoachCount(res, newCount);
+        anonInfo = { used: newCount, limit: ANON_COACH_LIMIT };
       }
 
       // Best-effort persist of the turn so survivors can resume the thread.
@@ -9445,7 +9484,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
           .catch((e) => console.warn('[coach] persist skipped:', e?.message ?? e));
       }
 
-      res.json({ response: result.response, audioBase64, quota: quotaInfo });
+      res.json({ response: result.response, audioBase64, quota: quotaInfo, anon: anonInfo });
     } catch (error) {
       console.error('Coach chat error:', error);
       // Refund the daily-cap reservation so a Gemini outage doesn't burn
