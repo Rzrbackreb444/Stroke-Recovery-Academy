@@ -130,6 +130,8 @@ const SocialNetwork = lazy(() => import("@/pages/SocialNetwork"));
 const RecoveryCommunity = lazy(() => import("@/pages/RecoveryCommunity"));
 const RecoveryCampfire = lazy(() => import("@/pages/RecoveryCampfire"));
 const RecoveryPremium = lazy(() => import("@/pages/RecoveryPremium"));
+const RecoveryJourney = lazy(() => import("@/pages/RecoveryJourney"));
+const RecoveryWelcome = lazy(() => import("@/pages/RecoveryWelcome"));
 const TherapistMarketplace = lazy(() => import("@/pages/TherapistMarketplace"));
 const AdminPlanBuilder = lazy(() => import("@/pages/AdminPlanBuilder"));
 const AdminSEODashboard = lazy(() => import("@/pages/AdminSEODashboard"));
@@ -570,6 +572,8 @@ function Router() {
       <Route path="/recovery/community" component={RecoveryCommunity} />
       <Route path="/recovery/campfire" component={RecoveryCampfire} />
       <Route path="/recovery/premium" component={RecoveryPremium} />
+      <Route path="/recovery/journey" component={RecoveryJourney} />
+      <Route path="/recovery/welcome" component={RecoveryWelcome} />
       <Route path="/recovery/therapist-marketplace">
         <ProtectedRoute>
           <TherapistMarketplace />
