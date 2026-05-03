@@ -9065,6 +9065,12 @@ Respond in JSON format:
     // isAuthenticated middleware fires correctly.
     const { registerSasquatchPremiumRoutes } = await import('./sasquatchPremiumRoutes');
     registerSasquatchPremiumRoutes(app);
+
+    // Daily Journey funnel + Gemini-powered recommendation cards.
+    // /api/recovery/journey returns the 6-step daily plan + streak.
+    // /api/recovery/recommendations returns 1-2 contextual cards per surface.
+    const { registerRecoveryJourneyRoutes } = await import('./recoveryJourneyRoutes');
+    registerRecoveryJourneyRoutes(app);
     console.log('[recovery-anchor] routes registered');
   } catch (e) {
     console.error('[recovery-anchor] failed to register routes:', e);

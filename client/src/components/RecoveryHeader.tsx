@@ -1,5 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogOut, LayoutDashboard, Settings, Heart, ChevronDown, Music2, Crown } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, Settings, Heart, ChevronDown, Music2, Crown, Sparkles, Check } from "lucide-react";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -24,7 +29,11 @@ import { siteHeaderRegistry } from "./siteHeaderRegistry";
 // rest of the surface area collapsed into one dropdown.
 const primaryNav = [
   { href: "/recovery/sasquatch-coach", label: "Coach" },
-  { href: "/recovery/dashboard", label: "Today" },
+  // "Today" now points to the unified Daily Journey funnel — one page that
+  // walks the survivor through their 6 daily steps with streak + progress +
+  // what's next. The legacy /recovery/dashboard is still available from the
+  // user dropdown.
+  { href: "/recovery/journey", label: "Today" },
 ];
 
 // Paid music headliner — Recovery Anchor Studio (musical-mnemonic encoder
@@ -188,6 +197,51 @@ export default function RecoveryHeader() {
 
           {/* Right actions */}
           <div className="hidden lg:flex items-center gap-2">
+            {/* Premium nav — always visible, never blocking. Hover popover
+                gives a 4-line free vs premium snapshot. One click → /recovery/premium. */}
+            <HoverCard openDelay={120} closeDelay={120}>
+              <HoverCardTrigger asChild>
+                <Link href="/recovery/premium">
+                  <button
+                    className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-[#C9941A] hover:text-amber-300 rounded-lg transition-colors whitespace-nowrap"
+                    data-testid="nav-premium"
+                  >
+                    <Sparkles className="h-4 w-4" />
+                    Premium
+                  </button>
+                </Link>
+              </HoverCardTrigger>
+              <HoverCardContent className="bg-[#111] border-[#222] w-72 p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Crown className="h-4 w-4 text-[#C9941A]" />
+                  <div className="font-bold text-white text-sm">Sasquatch Premium</div>
+                  <span className="text-xs text-stone-500 ml-auto">7 days free</span>
+                </div>
+                <ul className="space-y-1.5 mb-3 text-xs text-stone-300">
+                  <li className="flex items-start gap-2">
+                    <Check className="h-3.5 w-3.5 text-green-400 mt-0.5 flex-shrink-0" />
+                    Unlimited Coach (free: 25/day)
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-3.5 w-3.5 text-green-400 mt-0.5 flex-shrink-0" />
+                    Unlimited Recovery Anchors (free: 3/mo)
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-3.5 w-3.5 text-green-400 mt-0.5 flex-shrink-0" />
+                    Voice Cloning included
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-3.5 w-3.5 text-green-400 mt-0.5 flex-shrink-0" />
+                    Premium Campfire circles with Nick
+                  </li>
+                </ul>
+                <Link href="/recovery/premium">
+                  <Button size="sm" className="w-full bg-[#C9941A] text-black font-semibold" data-testid="nav-premium-cta">
+                    See Premium
+                  </Button>
+                </Link>
+              </HoverCardContent>
+            </HoverCard>
             <Link href="/recovery/gift">
               <Button
                 size="sm"
