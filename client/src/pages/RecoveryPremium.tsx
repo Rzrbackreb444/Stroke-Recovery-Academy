@@ -113,7 +113,7 @@ export default function RecoveryPremium() {
     <div className="min-h-screen bg-stone-950 text-stone-100">
       <RecoverySEO
         title="Sasquatch Premium — Unlimited Survivor Tools | Stroke Recovery Academy"
-        description="Unlimited AI Sasquatch Coach. Unlimited Recovery Anchor renders. Voice Cloning. Premium Campfire circles. $19/month. Cancel anytime."
+        description="7-day free trial. Unlimited AI Sasquatch Coach. Unlimited Recovery Anchor renders. Voice Cloning. Premium Campfire circles. Then $19/month. Cancel anytime."
         canonical="/recovery/premium"
       />
       <RecoveryHeader />
@@ -153,7 +153,7 @@ export default function RecoveryPremium() {
                 </span>
                 <span className="text-stone-400 text-lg">/month</span>
               </div>
-              <p className="text-stone-500 text-sm mt-1">Cancel anytime. No contracts.</p>
+              <p className="text-stone-500 text-sm mt-1">7-day free trial. Cancel anytime.</p>
             </div>
 
             {!isAuthenticated ? (
@@ -193,7 +193,7 @@ export default function RecoveryPremium() {
                 disabled={checkoutMut.isPending}
                 data-testid="button-subscribe"
               >
-                {checkoutMut.isPending ? "Starting checkout..." : `Start at $${priceUsd}/mo`}
+                {checkoutMut.isPending ? "Starting checkout..." : `Start 7-day free trial`}
               </Button>
             )}
           </div>
