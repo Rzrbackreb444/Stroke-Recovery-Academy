@@ -31,6 +31,10 @@ import maximumBenefitUrl from "@assets/maximum-benefit-(interlude)_1777781929626
 import wheelchairWarriorUrl from "@assets/wheelchair-warrior_1777781929626.mp3";
 import sixtySixDaysUrl from "@assets/sixty-six-days._1777782059888.mp3";
 import hostileConstructionUrl from "@assets/hostile-construction_1777782059888.mp3";
+import theVanguardUrl from "@assets/the-vanguard_1777782175104.mp3";
+import phantomLimbUrl from "@assets/phantom-limb_1777782175104.mp3";
+import thePromiseUrl from "@assets/the-promise_1777782175104.mp3";
+import iAmTheArchitectUrl from "@assets/i-am-the-architect_1777782175104.mp3";
 
 interface RadioTrack {
   id: string;
@@ -133,6 +137,50 @@ const SEED_CATALOG: RadioTrack[] = [
     audioUrl: hostileConstructionUrl,
     durationLabel: "Full track",
     hashtags: ["#StrokeRecovery", "#Neuroplasticity", "#SasquatchRadio"],
+  },
+  {
+    id: "the-vanguard",
+    title: "The Vanguard",
+    artist: "Stroked-Out Sasquatch",
+    vibe: "Rock Anthem",
+    story:
+      "Every survivor who steps up before the rest is the vanguard — taking arrows for the ones still in the ICU. This one's for the front line of the recovery movement.",
+    audioUrl: theVanguardUrl,
+    durationLabel: "Full track",
+    hashtags: ["#StrokeRecovery", "#Vanguard", "#SasquatchRadio"],
+  },
+  {
+    id: "phantom-limb",
+    title: "Phantom Limb",
+    artist: "Stroked-Out Sasquatch",
+    vibe: "Lo-Fi Recovery",
+    story:
+      "The arm that doesn't answer. The hand you still feel. Phantom-limb is the survivor's ghost — and the proof your brain remembers what to fight back to.",
+    audioUrl: phantomLimbUrl,
+    durationLabel: "Full track",
+    hashtags: ["#StrokeRecovery", "#PhantomLimb", "#SasquatchRadio"],
+  },
+  {
+    id: "the-promise",
+    title: "The Promise",
+    artist: "Stroked-Out Sasquatch",
+    vibe: "Gospel Rise",
+    story:
+      "The promise you made yourself in the hospital bed. To your family. To the survivor you'll be a year from now. This is the song for keeping it.",
+    audioUrl: thePromiseUrl,
+    durationLabel: "Full track",
+    hashtags: ["#StrokeRecovery", "#ThePromise", "#SasquatchRadio"],
+  },
+  {
+    id: "i-am-the-architect",
+    title: "I Am The Architect",
+    artist: "Stroked-Out Sasquatch",
+    vibe: "Hip-Hop Fight Song",
+    story:
+      "Doctors hand you a blueprint and call it a prognosis. Throw it out. You are the architect of the brain you're building next. Draw it yourself.",
+    audioUrl: iAmTheArchitectUrl,
+    durationLabel: "Full track",
+    hashtags: ["#StrokeRecovery", "#Neuroplasticity", "#Architect"],
   },
 ];
 
