@@ -171,6 +171,8 @@ const Challenge = lazy(() => import("@/pages/Challenge"));
 const RecoveryAnthem = lazy(() => import("@/pages/RecoveryAnthem"));
 const RecoveryAnthemBuilder = lazy(() => import("@/pages/RecoveryAnthemBuilder"));
 const SasquatchRadio = lazy(() => import("@/pages/SasquatchRadio"));
+const LyricsStudio = lazy(() => import("@/pages/LyricsStudio"));
+const LyricsStudioShare = lazy(() => import("@/pages/LyricsStudioShare"));
 const AdminRadioQueue = lazy(() => import("@/pages/AdminRadioQueue"));
 const TodayAnchor = lazy(() => import("@/pages/TodayAnchor"));
 const AnchorShare = lazy(() => import("@/pages/AnchorShare"));
@@ -661,6 +663,8 @@ function Router() {
       <Route path="/recovery/anthem" component={RecoveryAnthem} />
       <Route path="/recovery/anthem/build" component={RecoveryAnthemBuilder} />
       <Route path="/recovery/radio" component={SasquatchRadio} />
+      <Route path="/recovery/lyrics" component={LyricsStudio} />
+      <Route path="/lyrics/s/:shareId" component={LyricsStudioShare} />
       <Route path="/admin/radio" component={AdminRadioQueue} />
       <Route path="/recovery/pricing" component={RecoveryPricing} />
       <Route path="/recovery/about-nick" component={AboutNick} />

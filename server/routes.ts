@@ -9054,6 +9054,18 @@ Respond in JSON format:
     console.error('[recovery-anchor] failed to register routes:', e);
   }
 
+  // Lyrics Studio — Grammy-grade structured production-sheet generator.
+  // MUST mount after setupAuth so isAuthenticated middleware sees the session.
+  // Separate try/catch from anchor so a partial-mount failure on either
+  // surface doesn't mask the other in deployment logs.
+  try {
+    const { registerLyricsStudioRoutes } = await import('./lyricsStudioRoutes');
+    registerLyricsStudioRoutes(app);
+    console.log('[lyrics-studio] routes registered');
+  } catch (e) {
+    console.error('[lyrics-studio] failed to register routes:', e);
+  }
+
   // ──────────────────────────────────────────────────────────────────
   // Build-Your-Anthem — survivor-composed full songs via ElevenLabs Music.
   // Same crisis-gate + audit pattern as the Anchor Studio. Free tier gets

@@ -6179,11 +6179,44 @@ export const motivationUsage = pgTable("motivation_usage", {
   // Separate counter from anthemCount (legacy MotivationStudio anthems) so the
   // two surfaces can have independent quotas without a data migration.
   anthemBuilderCount: integer("anthem_builder_count").notNull().default(0),
+  // Lyrics Studio drafts this month. Free tier gets 1/month, premium unlimited.
+  lyricsDraftCount: integer("lyrics_draft_count").notNull().default(0),
   updatedAt: timestamp("updated_at").defaultNow(),
 }, (t) => ({
   pk: uniqueIndex("motivation_usage_pk").on(t.userId, t.month),
 }));
 export type MotivationUsage = typeof motivationUsage.$inferSelect;
+
+// ============================================================================
+// LYRICS STUDIO — Grammy-grade structured production-sheet generator
+// ============================================================================
+// Survivor inputs a story / description / aesthetic (≤5000 chars), picks a
+// genre + singer arrangement (male / female / duet / auto), Gemini returns a
+// labeled-section production sheet (Suno/Udio-ready). Premium feature: free
+// tier gets 1 draft/month, premium gets unlimited. Private by default;
+// public share is consent-gated like recovery_anchors.
+export const lyricsDrafts = pgTable("lyrics_drafts", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  storyText: text("story_text").notNull(),
+  genre: text("genre").notNull(),
+  singer: text("singer").notNull(),
+  // Full LyricsOutput JSON — title, styleHeader, sections[], hashtags[],
+  // producerNotes. See server/services/lyricsStudio/lyricsStudioSchema.ts.
+  lyricsData: jsonb("lyrics_data").notNull(),
+  isShared: boolean("is_shared").notNull().default(false),
+  shareId: text("share_id"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  byUser: index("lyrics_drafts_user_created").on(t.userId, t.createdAt),
+  byShareId: uniqueIndex("lyrics_drafts_share_id").on(t.shareId),
+}));
+export const insertLyricsDraftSchema = createInsertSchema(lyricsDrafts).omit({
+  id: true,
+  createdAt: true,
+});
+export type LyricsDraft = typeof lyricsDrafts.$inferSelect;
+export type InsertLyricsDraft = z.infer<typeof insertLyricsDraftSchema>;
 
 // Persisted user-generated artifacts (anthems + vision cards).
 export const motivationArtifacts = pgTable("motivation_artifacts", {
