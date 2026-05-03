@@ -9059,6 +9059,12 @@ Respond in JSON format:
   try {
     const { registerRecoveryAnchorRoutes } = await import('./recoveryAnchorRoutes');
     registerRecoveryAnchorRoutes(app);
+
+    // Sasquatch Premium ($19/mo bundled SKU): unlimited Coach + Anchor +
+    // Voice Cloning + premium Campfire circles. Mounted post-setupAuth so
+    // isAuthenticated middleware fires correctly.
+    const { registerSasquatchPremiumRoutes } = await import('./sasquatchPremiumRoutes');
+    registerSasquatchPremiumRoutes(app);
     console.log('[recovery-anchor] routes registered');
   } catch (e) {
     console.error('[recovery-anchor] failed to register routes:', e);
@@ -9337,6 +9343,28 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         return res.json(crisisPayload);
       }
 
+      // Daily soft-cap for free survivors (Sasquatch Premium = unlimited).
+      // Crisis path bypasses the cap above on purpose — we never block a
+      // crisis message. Anonymous users also bypass (no userId to track).
+      const capUserId = getUserId(req);
+      if (capUserId) {
+        const { isSasquatchPremium } = await import('./services/sasquatchPremiumService');
+        const premium = await isSasquatchPremium(capUserId);
+        if (!premium) {
+          const { reserveCoachMessage } = await import('./sasquatchHistoryService');
+          const reservation = await reserveCoachMessage(capUserId);
+          if (!reservation.ok) {
+            return res.status(429).json({
+              message: `You've used ${reservation.used} of ${reservation.limit} free Coach messages today. Sasquatch Premium ($19/mo) unlocks unlimited.`,
+              capped: true,
+              used: reservation.used,
+              limit: reservation.limit,
+              upgradeUrl: '/recovery/premium',
+            });
+          }
+        }
+      }
+
       // Build user context if authenticated
       let userContext: { name?: string; exerciseCount?: number; streak?: number; lastExercises?: string[]; milestones?: string[] } | undefined;
       
@@ -9410,6 +9438,15 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       res.json({ response: result.response, audioBase64 });
     } catch (error) {
       console.error('Coach chat error:', error);
+      // Refund the daily-cap reservation so a Gemini outage doesn't burn
+      // a free survivor's daily quota on a non-response.
+      const refundUserId = getUserId(req);
+      if (refundUserId) {
+        try {
+          const { refundCoachMessage } = await import('./sasquatchHistoryService');
+          await refundCoachMessage(refundUserId);
+        } catch {}
+      }
       res.status(500).json({ message: 'Failed to generate coach response' });
     }
   });

@@ -39,6 +39,16 @@ export async function initSasquatchSchema(): Promise<void> {
       CREATE UNIQUE INDEX IF NOT EXISTS uniq_sasquatch_ping
       ON sasquatch_daily_pings (user_id, ping_date)
     `);
+    // Coach daily soft-cap (free tier = COACH_FREE_DAILY_LIMIT msgs/day,
+    // Sasquatch Premium = unlimited). One row per (user, UTC day).
+    await db.execute(sql`
+      CREATE TABLE IF NOT EXISTS coach_daily_usage (
+        user_id VARCHAR NOT NULL,
+        usage_date VARCHAR(10) NOT NULL,
+        count INTEGER NOT NULL DEFAULT 0,
+        PRIMARY KEY (user_id, usage_date)
+      )
+    `);
   })();
   return schemaReady;
 }
@@ -175,6 +185,50 @@ export async function checkSasquatchDailyPings(now: Date): Promise<void> {
       url: '/recovery/coach?ping=1',
       tag: `sasquatch-daily-${dateStr}`,
     });
+  }
+}
+
+// === COACH DAILY CAP ===
+// Free survivors get COACH_FREE_DAILY_LIMIT messages/day, Premium = unlimited.
+// Atomic INSERT … ON CONFLICT DO UPDATE … RETURNING so we can't double-count
+// or under-count under concurrent requests. Returns { ok, used, limit }.
+export const COACH_FREE_DAILY_LIMIT = 25;
+
+export async function reserveCoachMessage(userId: string): Promise<
+  { ok: true; used: number; limit: number } | { ok: false; used: number; limit: number }
+> {
+  await initSasquatchSchema();
+  const dateStr = new Date().toISOString().slice(0, 10);
+  try {
+    const result = await db.execute(sql`
+      INSERT INTO coach_daily_usage (user_id, usage_date, count)
+      VALUES (${userId}, ${dateStr}, 1)
+      ON CONFLICT (user_id, usage_date)
+      DO UPDATE SET count = coach_daily_usage.count + 1
+      RETURNING count
+    `);
+    const used = Number((result.rows as any[])[0]?.count ?? 1);
+    if (used > COACH_FREE_DAILY_LIMIT) {
+      return { ok: false, used, limit: COACH_FREE_DAILY_LIMIT };
+    }
+    return { ok: true, used, limit: COACH_FREE_DAILY_LIMIT };
+  } catch (err: any) {
+    // Fail-open — never block a survivor on a counter outage.
+    console.warn("[coach-daily-cap] reserve failed:", err?.message ?? err);
+    return { ok: true, used: 0, limit: COACH_FREE_DAILY_LIMIT };
+  }
+}
+
+export async function refundCoachMessage(userId: string): Promise<void> {
+  const dateStr = new Date().toISOString().slice(0, 10);
+  try {
+    await db.execute(sql`
+      UPDATE coach_daily_usage
+      SET count = GREATEST(count - 1, 0)
+      WHERE user_id = ${userId} AND usage_date = ${dateStr}
+    `);
+  } catch (err: any) {
+    console.warn("[coach-daily-cap] refund failed:", err?.message ?? err);
   }
 }
 

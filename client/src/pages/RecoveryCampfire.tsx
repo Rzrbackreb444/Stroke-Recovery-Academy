@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import RecoveryHeader from "@/components/RecoveryHeader";
 import RecoverySEO from "@/components/RecoverySEO";
-import { Flame, Send, ArrowLeft, Clock, Users } from "lucide-react";
+import { Flame, Send, ArrowLeft, Clock, Users, Lock } from "lucide-react";
 
 type Room = {
   id: string;
@@ -22,7 +22,10 @@ type Room = {
   isOpen: boolean;
   nextOpenAt: string;
   recent24h: number;
+  isPremiumOnly?: boolean;
 };
+
+type PremiumStatus = { active: boolean };
 
 type Message = {
   id: number;
@@ -60,6 +63,12 @@ export default function RecoveryCampfire() {
     refetchInterval: 60_000,
   });
 
+  const { data: premiumStatus } = useQuery<PremiumStatus>({
+    queryKey: ["/api/sasquatch-premium/status"],
+    enabled: isAuthenticated,
+  });
+  const isPremium = !!premiumStatus?.active;
+
   const rooms = roomsData?.rooms ?? [];
   const activeRoom = rooms.find((r) => r.id === activeRoomId);
 
@@ -94,11 +103,19 @@ export default function RecoveryCampfire() {
               </div>
             ) : (
               <div className="grid md:grid-cols-2 gap-4">
-                {rooms.map((room) => (
+                {rooms.map((room) => {
+                  const locked = !!room.isPremiumOnly && !isPremium;
+                  return (
                   <Card
                     key={room.id}
                     className="p-5 bg-stone-900 border-stone-800 hover-elevate cursor-pointer"
-                    onClick={() => setActiveRoomId(room.id)}
+                    onClick={() => {
+                      if (locked) {
+                        window.location.href = "/recovery/premium";
+                      } else {
+                        setActiveRoomId(room.id);
+                      }
+                    }}
                     data-testid={`card-room-${room.id}`}
                   >
                     <div className="flex items-start justify-between gap-3 mb-3">
@@ -113,7 +130,15 @@ export default function RecoveryCampfire() {
                           </p>
                         </div>
                       </div>
-                      {room.isOpen ? (
+                      {locked ? (
+                        <Badge
+                          className="bg-amber-900/40 text-amber-300 border border-amber-700/40"
+                          data-testid={`badge-locked-${room.id}`}
+                        >
+                          <Lock className="w-3 h-3 mr-1" />
+                          Premium
+                        </Badge>
+                      ) : room.isOpen ? (
                         <Badge
                           className="bg-amber-600 text-white"
                           data-testid={`badge-open-${room.id}`}
@@ -134,7 +159,8 @@ export default function RecoveryCampfire() {
                       {room.recent24h} message{room.recent24h === 1 ? "" : "s"} in last 24h
                     </div>
                   </Card>
-                ))}
+                  );
+                })}
               </div>
             )}
           </>
