@@ -1,5 +1,6 @@
 import { getStripeSync } from './stripeClient';
 import { pool as dbPool } from './db';
+import { recordSasquatchSubscriptionTransition } from './services/sasquatchFunnelService';
 
 export class WebhookHandlers {
   /**
@@ -31,10 +32,11 @@ export class WebhookHandlers {
     // ── 1. Best-effort event-id extraction for dedupe ──────────────────────
     let eventId: string | null = null;
     let eventType: string | null = null;
+    let parsedEvent: any = null;
     try {
-      const parsed = JSON.parse(payload.toString('utf8'));
-      if (parsed && typeof parsed.id === 'string') eventId = parsed.id;
-      if (parsed && typeof parsed.type === 'string') eventType = parsed.type;
+      parsedEvent = JSON.parse(payload.toString('utf8'));
+      if (parsedEvent && typeof parsedEvent.id === 'string') eventId = parsedEvent.id;
+      if (parsedEvent && typeof parsedEvent.type === 'string') eventType = parsedEvent.type;
     } catch {
       // If we can't parse, we still hand off to sync — its signature check
       // will fail loudly for bad bodies. Skip the dedupe layer.
@@ -97,6 +99,20 @@ export class WebhookHandlers {
             [eventId]
           )
           .catch(() => {/* best-effort */});
+      }
+
+      // ── 4. Funnel telemetry — fire trial_converted / trial_canceled on
+      //      Stripe subscription state transitions for the Sasquatch Premium
+      //      product. Best-effort: never throws, never blocks webhook ack.
+      //      Idempotency is already enforced by the webhook_events dedupe
+      //      layer above (a Stripe replay won't reach this code a second time
+      //      because step 2 returns early on a 'processed' row).
+      if (eventType === 'customer.subscription.updated' && parsedEvent) {
+        try {
+          await recordSasquatchSubscriptionTransition(parsedEvent);
+        } catch (e) {
+          console.warn('[stripe-webhook] funnel transition record failed:', e);
+        }
       }
     } catch (err) {
       if (reserved && eventId) {
