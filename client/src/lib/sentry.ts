@@ -20,7 +20,7 @@ export async function initSentry(): Promise<void> {
     const cfg = (await res.json()) as { sentryDsn: string | null; environment: string };
     if (!cfg.sentryDsn) return;
 
-    const Sentry = await import("@sentry/react");
+    const Sentry = await import("@sentry/browser");
     Sentry.init({
       dsn: cfg.sentryDsn,
       environment: cfg.environment,
