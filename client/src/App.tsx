@@ -128,6 +128,7 @@ const Messages = lazy(() => import("@/pages/Messages"));
 const VideoSessions = lazy(() => import("@/pages/VideoSessions"));
 const SocialNetwork = lazy(() => import("@/pages/SocialNetwork"));
 const RecoveryCommunity = lazy(() => import("@/pages/RecoveryCommunity"));
+const RecoveryCampfire = lazy(() => import("@/pages/RecoveryCampfire"));
 const TherapistMarketplace = lazy(() => import("@/pages/TherapistMarketplace"));
 const AdminPlanBuilder = lazy(() => import("@/pages/AdminPlanBuilder"));
 const AdminSEODashboard = lazy(() => import("@/pages/AdminSEODashboard"));
@@ -565,6 +566,7 @@ function Router() {
         </ProtectedRoute>
       </Route>
       <Route path="/recovery/community" component={RecoveryCommunity} />
+      <Route path="/recovery/campfire" component={RecoveryCampfire} />
       <Route path="/recovery/therapist-marketplace">
         <ProtectedRoute>
           <TherapistMarketplace />
