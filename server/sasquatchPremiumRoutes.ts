@@ -7,10 +7,19 @@ import { getUserId } from "./lib/authUtils";
 import { stripeService } from "./stripeService";
 import {
   SASQUATCH_PREMIUM_PRICE_AMOUNT,
-  ensureSasquatchPremiumProduct,
+  SASQUATCH_PREMIUM_ANNUAL_AMOUNT,
+  ensureSasquatchPremiumPrices,
   hasActiveSasquatchPremium,
   invalidateSasquatchPremium,
 } from "./services/sasquatchPremiumService";
+import {
+  recordFunnelEvent,
+  isValidFunnelEvent,
+  isValidFunnelPlan,
+  getFunnelSummary,
+} from "./services/sasquatchFunnelService";
+import { requireAdmin } from "./middleware/requireAdmin";
+import { publicPostLimiter } from "./middleware/publicRateLimit";
 
 // 7-day free trial for first-time subscribers. Survivors get the full premium
 // surface (unlimited Coach, unlimited Anchor renders, voice cloning, premium
@@ -35,7 +44,9 @@ async function getOrCreateStripeCustomer(userId: string): Promise<string | null>
 }
 
 export function registerSasquatchPremiumRoutes(app: Express) {
-  // GET /api/sasquatch-premium/status — UI gate
+  // GET /api/sasquatch-premium/status — UI gate. Returns both monthly +
+  // annual prices so the landing page can render a Monthly/Annual toggle
+  // without a second roundtrip.
   app.get("/api/sasquatch-premium/status", isAuthenticated, async (req: any, res: Response) => {
     try {
       const userId = getUserId(req);
@@ -47,6 +58,13 @@ export function registerSasquatchPremiumRoutes(app: Express) {
         active,
         priceCents: SASQUATCH_PREMIUM_PRICE_AMOUNT,
         priceUsd: SASQUATCH_PREMIUM_PRICE_AMOUNT / 100,
+        annualCents: SASQUATCH_PREMIUM_ANNUAL_AMOUNT,
+        annualUsd: SASQUATCH_PREMIUM_ANNUAL_AMOUNT / 100,
+        annualMonthlyEquivalentUsd:
+          Math.round((SASQUATCH_PREMIUM_ANNUAL_AMOUNT / 12) / 100 * 100) / 100,
+        annualSavingsUsd:
+          (SASQUATCH_PREMIUM_PRICE_AMOUNT * 12 - SASQUATCH_PREMIUM_ANNUAL_AMOUNT) / 100,
+        trialDays: SASQUATCH_PREMIUM_TRIAL_DAYS,
       });
     } catch (err: any) {
       console.error("[sasquatch-premium] status failed", err?.message || err);
@@ -55,21 +73,24 @@ export function registerSasquatchPremiumRoutes(app: Express) {
   });
 
   // POST /api/sasquatch-premium/checkout — create recurring checkout session.
-  // Lazy-creates the Stripe product+price on first call; subsequent calls
-  // hit the cache. Success returns to /recovery/premium?subscribed=1 so the
-  // landing page can flash a confirmation and re-fetch entitlement.
+  // Body: { plan?: 'monthly' | 'annual' } (default 'monthly'). Lazy-creates
+  // BOTH Stripe prices on first call; subsequent calls hit the cache.
   app.post("/api/sasquatch-premium/checkout", isAuthenticated, async (req: any, res: Response) => {
     try {
       const userId = getUserId(req);
       if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
-      let priceId: string;
+      const requestedPlan = req.body?.plan === "annual" ? "annual" : "monthly";
+
+      let prices: { monthlyPriceId: string; annualPriceId: string };
       try {
-        priceId = await ensureSasquatchPremiumProduct();
+        prices = await ensureSasquatchPremiumPrices();
       } catch (e: any) {
         console.error("[sasquatch-premium] product setup failed", e?.message || e);
         return res.status(503).json({ message: "Stripe billing not configured" });
       }
+      const priceId =
+        requestedPlan === "annual" ? prices.annualPriceId : prices.monthlyPriceId;
 
       const customerId = await getOrCreateStripeCustomer(userId);
       if (!customerId) return res.status(404).json({ message: "User not found" });
@@ -82,12 +103,21 @@ export function registerSasquatchPremiumRoutes(app: Express) {
       const session = await stripeService.createCheckoutSession(
         customerId,
         priceId,
-        `${baseUrl}/recovery/premium?subscribed=1`,
+        `${baseUrl}/recovery/premium?subscribed=1&plan=${requestedPlan}`,
         `${baseUrl}/recovery/premium?canceled=1`,
         "subscription",
         { trialDays: SASQUATCH_PREMIUM_TRIAL_DAYS },
       );
-      res.json({ url: session.url });
+
+      // Funnel: server-side record (more reliable than client-side because the
+      // browser is about to hard-navigate to Stripe). Best-effort, swallowed.
+      void recordFunnelEvent({
+        userId,
+        eventType: "checkout_click",
+        plan: requestedPlan,
+      });
+
+      res.json({ url: session.url, plan: requestedPlan });
     } catch (err: any) {
       console.error("[sasquatch-premium] checkout failed", err?.message || err);
       res.status(500).json({ message: "Checkout failed" });
@@ -117,4 +147,47 @@ export function registerSasquatchPremiumRoutes(app: Express) {
       res.status(500).json({ message: "Portal session failed" });
     }
   });
+
+  // POST /api/sasquatch-premium/track — funnel telemetry. Body:
+  //   { event: 'premium_page_view' | 'trial_start', plan?: 'monthly' | 'annual' }
+  // checkout_click is recorded server-side from the /checkout endpoint; this
+  // route handles the events that only the client knows about (page mount +
+  // post-redirect ?subscribed=1). Auth-optional so anonymous page views still
+  // count toward top of funnel. Always returns 204 to avoid leaking shape.
+  app.post("/api/sasquatch-premium/track", publicPostLimiter, async (req: any, res: Response) => {
+    try {
+      const eventRaw = String(req.body?.event ?? "");
+      const planRaw = String(req.body?.plan ?? "unknown");
+      if (!isValidFunnelEvent(eventRaw)) return res.status(204).end();
+      // checkout_click is recorded server-side only — refuse client posts
+      // for it so we don't double-count or accept spoofed conversions.
+      if (eventRaw === "checkout_click") return res.status(204).end();
+      const plan = isValidFunnelPlan(planRaw) ? planRaw : "unknown";
+      const userId = getUserId(req) || null;
+      await recordFunnelEvent({ userId, eventType: eventRaw, plan });
+      res.status(204).end();
+    } catch (err: any) {
+      console.warn("[sasquatch-premium] track failed", err?.message || err);
+      res.status(204).end();
+    }
+  });
+
+  // GET /api/sasquatch-premium/funnel — admin diagnostic. Counts by event +
+  // plan for the last N days (default 30). Rendered server-side as JSON so
+  // we can reach it from a curl/admin script without building a UI yet.
+  app.get(
+    "/api/sasquatch-premium/funnel",
+    isAuthenticated,
+    requireAdmin,
+    async (req: any, res: Response) => {
+      try {
+        const days = Math.max(1, Math.min(365, Number(req.query.days) || 30));
+        const summary = await getFunnelSummary(days);
+        res.json({ days, summary });
+      } catch (err: any) {
+        console.error("[sasquatch-premium] funnel failed", err?.message || err);
+        res.status(500).json({ message: "Funnel lookup failed" });
+      }
+    },
+  );
 }
