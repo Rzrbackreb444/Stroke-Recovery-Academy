@@ -304,11 +304,11 @@ export default function RecoveryDashboard() {
 
         {/* SURVIVOR OS PLAN CTA */}
         <section className="mb-6">
-          <Link href="/recovery/me">
-            <a
-              className="block rounded-xl border border-[#C9941A]/40 bg-gradient-to-r from-[#1a1610] via-[#141414] to-[#1a1610] p-5 hover-elevate"
-              data-testid="link-recovery-me"
-            >
+          <Link
+            href="/recovery/me"
+            className="block rounded-xl border border-[#C9941A]/40 bg-gradient-to-r from-[#1a1610] via-[#141414] to-[#1a1610] p-5 hover-elevate"
+            data-testid="link-recovery-me"
+          >
               <div className="flex items-center justify-between gap-4 flex-wrap">
                 <div className="flex items-center gap-3">
                   <div className="h-11 w-11 rounded-md bg-[#C9941A] flex items-center justify-center">
@@ -322,7 +322,6 @@ export default function RecoveryDashboard() {
                 </div>
                 <span className="text-xs text-[#C9941A] font-semibold uppercase tracking-widest">Open →</span>
               </div>
-            </a>
           </Link>
         </section>
 
@@ -334,12 +333,12 @@ export default function RecoveryDashboard() {
 
         {/* SURVIVOR SHOP — Curated Amazon affiliate gear */}
         <section className="mb-8" data-testid="section-survivor-shop">
-          <Link href="/recovery/shop">
-            <a
-              className="block rounded-xl border border-[#C9941A]/40 bg-gradient-to-r from-[#1a1610] via-[#141414] to-[#1a1610] p-5 hover-elevate"
-              data-testid="link-survivor-shop"
-              aria-label="Open the Survivor Shop"
-            >
+          <Link
+            href="/recovery/shop"
+            className="block rounded-xl border border-[#C9941A]/40 bg-gradient-to-r from-[#1a1610] via-[#141414] to-[#1a1610] p-5 hover-elevate"
+            data-testid="link-survivor-shop"
+            aria-label="Open the Survivor Shop"
+          >
               <div className="flex items-center justify-between gap-4 flex-wrap">
                 <div className="flex items-center gap-3">
                   <div className="h-11 w-11 rounded-md bg-[#C9941A] flex items-center justify-center">
@@ -353,18 +352,17 @@ export default function RecoveryDashboard() {
                 </div>
                 <span className="text-xs text-[#C9941A] font-semibold uppercase tracking-widest">Browse →</span>
               </div>
-            </a>
           </Link>
         </section>
 
         {/* MOTIVATION STUDIO — Anthem Maker, Vision Card, Daily Quote */}
         <section className="mb-8" data-testid="section-motivation-studio">
-          <Link href="/recovery/motivation">
-            <a
-              className="block rounded-xl border border-[#C9941A]/40 bg-gradient-to-r from-[#1a1610] via-[#141414] to-[#1a1610] p-5 hover-elevate"
-              data-testid="link-motivation-studio"
-              aria-label="Open the Motivation Studio"
-            >
+          <Link
+            href="/recovery/motivation"
+            className="block rounded-xl border border-[#C9941A]/40 bg-gradient-to-r from-[#1a1610] via-[#141414] to-[#1a1610] p-5 hover-elevate"
+            data-testid="link-motivation-studio"
+            aria-label="Open the Motivation Studio"
+          >
               <div className="flex items-center justify-between gap-4 flex-wrap">
                 <div className="flex items-center gap-3">
                   <div className="h-11 w-11 rounded-md bg-[#C9941A] flex items-center justify-center">
@@ -378,18 +376,17 @@ export default function RecoveryDashboard() {
                 </div>
                 <span className="text-xs text-[#C9941A] font-semibold uppercase tracking-widest">Create →</span>
               </div>
-            </a>
           </Link>
         </section>
 
         {/* SQUATCHY ANTHEM HERO */}
         <section className="mb-8" data-testid="section-anthem-hero">
-          <Link href="/recovery/anthem">
-            <a
-              className="block group rounded-xl border border-[#C9941A]/40 bg-gradient-to-br from-[#C9941A]/15 via-[#1a1a1a] to-[#1a1a1a] hover-elevate active-elevate-2"
-              data-testid="link-anthem-hero"
-              aria-label="Squatchy — the recovery anthem. Watch the video."
-            >
+          <Link
+            href="/recovery/anthem"
+            className="block group rounded-xl border border-[#C9941A]/40 bg-gradient-to-br from-[#C9941A]/15 via-[#1a1a1a] to-[#1a1a1a] hover-elevate active-elevate-2"
+            data-testid="link-anthem-hero"
+            aria-label="Squatchy — the recovery anthem. Watch the video."
+          >
               <div className="grid md:grid-cols-[280px_1fr] gap-0">
                 <div className="relative bg-black aspect-video md:aspect-auto md:min-h-[180px] rounded-t-xl md:rounded-l-xl md:rounded-tr-none overflow-hidden">
                   <img
@@ -431,7 +428,6 @@ export default function RecoveryDashboard() {
                   </div>
                 </div>
               </div>
-            </a>
           </Link>
         </section>
 
@@ -1324,12 +1320,12 @@ function AnchorHeroCard() {
 
   return (
     <section className="mb-8" data-testid="section-anchor-hero">
-      <Link href="/recovery/anchor/today">
-        <a
-          className="block group rounded-xl border-2 border-amber-500/60 bg-gradient-to-br from-amber-500/15 via-[#1a1a1a] to-[#1a1a1a] hover-elevate active-elevate-2 p-6"
-          data-testid="link-anchor-hero"
-          aria-label="Open today's recovery anchor"
-        >
+      <Link
+        href="/recovery/anchor/today"
+        className="block group rounded-xl border-2 border-amber-500/60 bg-gradient-to-br from-amber-500/15 via-[#1a1a1a] to-[#1a1a1a] hover-elevate active-elevate-2 p-6"
+        data-testid="link-anchor-hero"
+        aria-label="Open today's recovery anchor"
+      >
           <div className="flex items-start gap-5">
             <div className="hidden sm:flex h-16 w-16 rounded-full bg-amber-500 items-center justify-center shrink-0 shadow-[0_0_24px_rgba(245,158,11,0.45)]">
               <Anchor className="h-8 w-8 text-black" />
@@ -1395,7 +1391,6 @@ function AnchorHeroCard() {
               </div>
             </div>
           </div>
-        </a>
       </Link>
     </section>
   );
@@ -1414,12 +1409,12 @@ function BonfireHeroCard() {
 
   return (
     <section className="mb-8" data-testid="section-bonfire-hero">
-      <Link href="/recovery/today">
-        <a
-          className="block group rounded-xl border-2 border-[#C9941A] bg-gradient-to-br from-[#C9941A]/20 via-[#1a1a1a] to-[#1a1a1a] hover-elevate active-elevate-2 p-6"
-          data-testid="link-bonfire-hero"
-          aria-label="Start today's Bonfire session"
-        >
+      <Link
+        href="/recovery/today"
+        className="block group rounded-xl border-2 border-[#C9941A] bg-gradient-to-br from-[#C9941A]/20 via-[#1a1a1a] to-[#1a1a1a] hover-elevate active-elevate-2 p-6"
+        data-testid="link-bonfire-hero"
+        aria-label="Start today's Bonfire session"
+      >
           <div className="flex items-start gap-5">
             <div className="hidden sm:flex h-16 w-16 rounded-full bg-[#C9941A] items-center justify-center shrink-0 shadow-[0_0_24px_rgba(201,148,26,0.45)]">
               <Flame className="h-8 w-8 text-black" />
@@ -1498,7 +1493,6 @@ function BonfireHeroCard() {
               </div>
             </div>
           </div>
-        </a>
       </Link>
     </section>
   );

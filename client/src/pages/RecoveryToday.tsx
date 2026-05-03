@@ -526,54 +526,48 @@ export default function RecoveryToday() {
 
         {/* Cross-sell: relevant Survivor Shop category + Motivation Studio CTA */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
-          <Link href={`/recovery/shop?category=${recCategory.id}`}>
-            <a
-              className="block rounded-md border border-[#C9941A]/30 bg-[#1a1610] p-4 hover-elevate text-left"
-              data-testid="link-cross-sell-shop"
-              aria-label={`Open Survivor Shop — ${recCategory.name}`}
-            >
-              <div className="flex items-center gap-2 mb-1">
-                <ShoppingBag className="h-4 w-4 text-[#C9941A]" />
-                <p className="text-[10px] uppercase tracking-[0.2em] text-[#C9941A]">Gear that helps with this</p>
-              </div>
-              <p className="text-white font-semibold text-sm">{recCategory.name}</p>
-              <p className="text-xs text-gray-400 mt-1">{recCategory.bonfireSignal ?? recCategory.blurb}</p>
-              <p className="text-[10px] text-gray-500 mt-2 italic">Survivor picks — not medical advice. Confirm with your therapist.</p>
-              <p className="text-xs text-[#C9941A] mt-2 font-semibold">Browse →</p>
-            </a>
+          <Link
+            href={`/recovery/shop?category=${recCategory.id}`}
+            className="block rounded-md border border-[#C9941A]/30 bg-[#1a1610] p-4 hover-elevate text-left"
+            data-testid="link-cross-sell-shop"
+            aria-label={`Open Survivor Shop — ${recCategory.name}`}
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <ShoppingBag className="h-4 w-4 text-[#C9941A]" />
+              <p className="text-[10px] uppercase tracking-[0.2em] text-[#C9941A]">Gear that helps with this</p>
+            </div>
+            <p className="text-white font-semibold text-sm">{recCategory.name}</p>
+            <p className="text-xs text-gray-400 mt-1">{recCategory.bonfireSignal ?? recCategory.blurb}</p>
+            <p className="text-[10px] text-gray-500 mt-2 italic">Survivor picks — not medical advice. Confirm with your therapist.</p>
+            <p className="text-xs text-[#C9941A] mt-2 font-semibold">Browse →</p>
           </Link>
-          <Link href="/recovery/motivation">
-            <a
-              className="block rounded-md border border-[#C9941A]/30 bg-[#1a1610] p-4 hover-elevate text-left"
-              data-testid="link-cross-sell-motivation"
-              aria-label="Make tomorrow's anthem in the Motivation Studio"
-            >
-              <div className="flex items-center gap-2 mb-1">
-                <Sparkles className="h-4 w-4 text-[#C9941A]" />
-                <p className="text-[10px] uppercase tracking-[0.2em] text-[#C9941A]">Fuel for tomorrow</p>
-              </div>
-              <p className="text-white font-semibold text-sm">Make tomorrow's anthem</p>
-              <p className="text-xs text-gray-400 mt-1">Turn one affirmation into a 4-line lyric in Sasquatch's voice.</p>
-              <p className="text-xs text-[#C9941A] mt-2 font-semibold">Open Motivation Studio →</p>
-            </a>
+          <Link
+            href="/recovery/motivation"
+            className="block rounded-md border border-[#C9941A]/30 bg-[#1a1610] p-4 hover-elevate text-left"
+            data-testid="link-cross-sell-motivation"
+            aria-label="Make tomorrow's anthem in the Motivation Studio"
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <Sparkles className="h-4 w-4 text-[#C9941A]" />
+              <p className="text-[10px] uppercase tracking-[0.2em] text-[#C9941A]">Fuel for tomorrow</p>
+            </div>
+            <p className="text-white font-semibold text-sm">Make tomorrow's anthem</p>
+            <p className="text-xs text-gray-400 mt-1">Turn one affirmation into a 4-line lyric in Sasquatch's voice.</p>
+            <p className="text-xs text-[#C9941A] mt-2 font-semibold">Open Motivation Studio →</p>
           </Link>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
           <Link href="/recovery/dashboard">
-            <a>
-              <Button variant="outline" className="w-full" data-testid="button-back-dashboard-complete">
-                <ArrowLeft className="h-4 w-4 mr-1.5" /> Back to Dashboard
-              </Button>
-            </a>
+            <Button variant="outline" className="w-full" data-testid="button-back-dashboard-complete">
+              <ArrowLeft className="h-4 w-4 mr-1.5" /> Back to Dashboard
+            </Button>
           </Link>
           <Link href="/recovery/community">
-            <a>
-              <Button className="w-full bg-[#C9941A] text-black font-bold" data-testid="button-share-win">
-                <HeartPulse className="h-4 w-4 mr-1.5" /> Share a Win
-                <ArrowRight className="h-4 w-4 ml-1.5" />
-              </Button>
-            </a>
+            <Button className="w-full bg-[#C9941A] text-black font-bold" data-testid="button-share-win">
+              <HeartPulse className="h-4 w-4 mr-1.5" /> Share a Win
+              <ArrowRight className="h-4 w-4 ml-1.5" />
+            </Button>
           </Link>
         </div>
 

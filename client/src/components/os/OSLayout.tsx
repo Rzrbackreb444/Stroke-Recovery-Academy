@@ -132,7 +132,7 @@ export function OSHeader() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link href="/login">
+              <Link href="/recovery/login">
                 <Button size="sm" data-testid="button-login">
                   Sign In
                 </Button>

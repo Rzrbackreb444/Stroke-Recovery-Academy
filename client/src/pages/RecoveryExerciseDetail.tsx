@@ -125,14 +125,13 @@ export default function RecoveryExerciseDetail() {
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8">
-        <Link href="/recovery/exercises">
-          <a
-            className="inline-flex items-center gap-1 text-xs text-gray-400 hover-elevate rounded-md px-2 py-1 mb-4"
-            data-testid="link-back-exercises"
-          >
-            <ChevronLeft className="h-3 w-3" />
-            Back to library
-          </a>
+        <Link
+          href="/recovery/exercises"
+          className="inline-flex items-center gap-1 text-xs text-gray-400 hover-elevate rounded-md px-2 py-1 mb-4"
+          data-testid="link-back-exercises"
+        >
+          <ChevronLeft className="h-3 w-3" />
+          Back to library
         </Link>
 
         <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
@@ -318,11 +317,12 @@ export default function RecoveryExerciseDetail() {
                     )}
                   </Button>
 
-                  <Link href="/recovery/me">
-                    <a className="block text-center text-[11px] text-gray-500 hover:text-[#C9941A] mt-1">
-                      <Sparkles className="inline h-3 w-3 mr-1" />
-                      View your plan & weekly volume
-                    </a>
+                  <Link
+                    href="/recovery/me"
+                    className="block text-center text-[11px] text-gray-500 hover:text-[#C9941A] mt-1"
+                  >
+                    <Sparkles className="inline h-3 w-3 mr-1" />
+                    View your plan & weekly volume
                   </Link>
                 </div>
               )}
