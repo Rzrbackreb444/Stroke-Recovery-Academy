@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Volume2, VolumeX, Loader2, Mic, Flame, Sparkles, ShoppingBag, LogIn } from "lucide-react";
+import { Send, Volume2, VolumeX, Loader2, Mic, MicOff, Flame, Sparkles, ShoppingBag, LogIn } from "lucide-react";
 import { Link } from "wouter";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import RecoveryHeader from "@/components/RecoveryHeader";
@@ -60,9 +60,43 @@ export default function SasquatchCoach() {
   // Anonymous-quota hint shown subtly under the input. null = unknown
   // (haven't sent yet), { used, limit } = "X of Y free messages used".
   const [anonQuota, setAnonQuota] = useState<{ used: number; limit: number } | null>(null);
+  // Push-to-talk state (browser SpeechRecognition — free, on-device, instant).
+  const [isListening, setIsListening] = useState(false);
+  const [micUnsupported, setMicUnsupported] = useState(false);
+  const recognitionRef = useRef<any>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  // Track every Blob URL we mint for parallel-fetched TTS audio so we can
+  // revoke them all on unmount. Without this they'd accumulate in browser
+  // memory across a long conversation.
+  const blobUrlsRef = useRef<string[]>([]);
+
+  // Probe for SpeechRecognition once on mount, and clean up an in-flight
+  // recognition + any orphan Blob URLs on unmount so the browser's "mic in
+  // use" indicator and the audio Blobs don't leak across navigations.
+  useEffect(() => {
+    const SR =
+      (typeof window !== "undefined" &&
+        ((window as any).SpeechRecognition ||
+          (window as any).webkitSpeechRecognition)) ||
+      null;
+    if (!SR) setMicUnsupported(true);
+    return () => {
+      try {
+        recognitionRef.current?.stop();
+      } catch {}
+      recognitionRef.current = null;
+      try {
+        audioRef.current?.pause();
+      } catch {}
+      audioRef.current = null;
+      for (const u of blobUrlsRef.current) {
+        try { URL.revokeObjectURL(u); } catch {}
+      }
+      blobUrlsRef.current = [];
+    };
+  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -77,11 +111,14 @@ export default function SasquatchCoach() {
       // Direct fetch (not apiRequest) so we can read the body on 401 — the
       // anonymous gate returns 401 { requireAuth: true } which we render
       // inline as a sign-in card, not as a thrown error.
+      // skipAudio: true — server returns text the instant Gemini finishes
+      // and we fetch the ElevenLabs voice in parallel via /api/coach/speak
+      // below. Drops perceived latency by the full TTS round-trip.
       const res = await fetch("/api/coach/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ message, history }),
+        body: JSON.stringify({ message, history, skipAudio: true }),
       });
       const json = await res.json().catch(() => ({} as any));
       if (res.status === 401 && json?.requireAuth) {
@@ -114,9 +151,46 @@ export default function SasquatchCoach() {
       };
       setMessages((prev) => [...prev, coachMsg]);
       if (data.anon) setAnonQuota(data.anon);
-      // Never autoplay audio on a crisis or sign-in-gate response.
-      if (audioEnabled && data.audioBase64 && !data.crisis && !data.requireAuth) {
+      // Never autoplay or fetch audio on crisis or sign-in-gate responses.
+      if (data.crisis || data.requireAuth) return;
+      // Inline audio (legacy path) → just play.
+      if (data.audioBase64 && audioEnabled) {
         playAudio(data.audioBase64);
+        return;
+      }
+      // Fast-path: text already on screen, kick off TTS in parallel and
+      // play it as soon as it lands. We deliberately don't try to stash
+      // the URL back onto the message for "Replay" — by the time the TTS
+      // resolves the user may have sent another turn and any index/id we
+      // recorded would race. The "Replay" affordance only renders when
+      // the server returned base64 inline (legacy/non-fast path).
+      // Voice is signed-in only (server enforces via isAuthenticated on
+      // /api/coach/speak); no point firing for anon users.
+      if (audioEnabled && user) {
+        fetch("/api/coach/speak", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ text: data.response }),
+        })
+          .then(async (r) => (r.ok ? r.arrayBuffer() : null))
+          .then((buf) => {
+            if (!buf) return;
+            const blob = new Blob([buf], { type: "audio/mpeg" });
+            const url = URL.createObjectURL(blob);
+            blobUrlsRef.current.push(url);
+            if (audioRef.current) audioRef.current.pause();
+            const audio = new Audio(url);
+            audioRef.current = audio;
+            audio.play().catch(() => {});
+            const cleanup = () => {
+              try { URL.revokeObjectURL(url); } catch {}
+              blobUrlsRef.current = blobUrlsRef.current.filter((u) => u !== url);
+            };
+            audio.onended = cleanup;
+            audio.onerror = cleanup;
+          })
+          .catch(() => {});
       }
     },
   });
@@ -148,6 +222,60 @@ export default function SasquatchCoach() {
   const handleStarter = (prompt: string) => {
     setMessages((prev) => [...prev, { role: "user", content: prompt }]);
     chatMutation.mutate(prompt);
+  };
+
+  // Push-to-talk: tap to start, tap again to stop. On `result` we drop
+  // the transcript into the input box and auto-send so the survivor
+  // doesn't have to reach for the keyboard. All STT runs on-device via
+  // the browser's SpeechRecognition — no audio leaves the laptop.
+  const startListening = () => {
+    if (micUnsupported || isListening || chatMutation.isPending) return;
+    if (!user && anonQuota && anonQuota.used >= anonQuota.limit) return;
+    const SR =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+    if (!SR) return;
+    const recognition = new SR();
+    recognition.lang = "en-US";
+    recognition.interimResults = true;
+    recognition.continuous = false;
+    recognition.maxAlternatives = 1;
+    let finalTranscript = "";
+    recognition.onresult = (event: any) => {
+      let interim = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) finalTranscript += transcript;
+        else interim += transcript;
+      }
+      setInput((finalTranscript + interim).trim());
+    };
+    recognition.onerror = () => {
+      setIsListening(false);
+    };
+    recognition.onend = () => {
+      setIsListening(false);
+      const text = finalTranscript.trim();
+      if (text) {
+        setMessages((prev) => [...prev, { role: "user", content: text }]);
+        setInput("");
+        chatMutation.mutate(text);
+      }
+    };
+    recognitionRef.current = recognition;
+    setIsListening(true);
+    try {
+      recognition.start();
+    } catch {
+      setIsListening(false);
+    }
+  };
+
+  const stopListening = () => {
+    try {
+      recognitionRef.current?.stop();
+    } catch {}
+    setIsListening(false);
   };
 
   return (
@@ -220,7 +348,7 @@ export default function SasquatchCoach() {
                         {msg.content}
                       </p>
                       <p className="text-xs text-gray-500 mb-3">
-                        Sign in unlocks unlimited Coach turns, voice replies, and a thread that resumes where you left off.
+                        Sign in for the full companion: Sasquatch's actual voice replies, push-to-talk so you can speak instead of type, unlimited Coach turns, and a thread that resumes where you left off.
                       </p>
                       <div className="flex flex-wrap gap-2">
                         <Button
@@ -375,13 +503,38 @@ export default function SasquatchCoach() {
             placeholder={
               !user && anonQuota && anonQuota.used >= anonQuota.limit
                 ? "Sign in to keep talking with Sasquatch..."
-                : "Tell the coach what's going on..."
+                : isListening
+                ? "Listening — speak naturally, tap mic to stop..."
+                : "Tell the coach what's going on, or tap the mic to talk..."
             }
             className="resize-none bg-[#111] border-[#1e1e1e] text-white placeholder:text-gray-600 focus-visible:ring-[#C9941A]/30 focus-visible:border-[#C9941A]/40 min-h-[52px] max-h-32"
             rows={1}
             disabled={chatMutation.isPending || (!user && !!anonQuota && anonQuota.used >= anonQuota.limit)}
             data-testid="input-chat-message"
           />
+          {!micUnsupported && (
+            <Button
+              onClick={isListening ? stopListening : startListening}
+              disabled={
+                chatMutation.isPending ||
+                (!user && !!anonQuota && anonQuota.used >= anonQuota.limit)
+              }
+              variant={isListening ? "default" : "outline"}
+              className={
+                isListening
+                  ? "bg-[#C9941A] text-black hover:bg-[#b8841a] flex-shrink-0 animate-pulse"
+                  : "border-[#1e1e1e] text-[#C9941A] hover:bg-[#C9941A]/10 flex-shrink-0"
+              }
+              title={isListening ? "Tap to stop" : "Push to talk"}
+              data-testid="button-mic-toggle"
+            >
+              {isListening ? (
+                <MicOff className="h-4 w-4" />
+              ) : (
+                <Mic className="h-4 w-4" />
+              )}
+            </Button>
+          )}
           <Button
             onClick={handleSend}
             disabled={!input.trim() || chatMutation.isPending || (!user && !!anonQuota && anonQuota.used >= anonQuota.limit)}
@@ -404,7 +557,7 @@ export default function SasquatchCoach() {
             <a href="/api/login" className="underline hover:text-[#C9941A]" data-testid="link-anon-signin">
               Sign in free
             </a>{" "}
-            for unlimited + voice replies.
+            for Sasquatch's voice + push-to-talk + unlimited turns.
           </p>
         )}
         <p className="text-xs text-center text-gray-600 mt-3">

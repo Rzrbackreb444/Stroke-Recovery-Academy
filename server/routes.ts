@@ -9331,11 +9331,16 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // AI coaching chat endpoint - enhanced with user context
   app.post('/api/coach/chat', coachIpLimiter, async (req: any, res) => {
     try {
-      const { message, history } = req.body;
+      const { message, history, skipAudio } = req.body;
 
       if (!message || typeof message !== 'string') {
         return res.status(400).json({ message: 'Message is required' });
       }
+      // Client-controlled fast path: when `skipAudio: true`, skip the
+      // ElevenLabs round-trip entirely on this call and let the client
+      // fetch audio in parallel via `/api/coach/speak`. Drops time-to-
+      // first-text by the full TTS latency (~2-3s) for the survivor.
+      const wantAudioInline = skipAudio !== true;
 
       // CRISIS GATE — runs BEFORE the LLM. If the user expresses suicidal
       // ideation, self-harm, violence, or abuse, we short-circuit to a
@@ -9446,7 +9451,10 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       // Skip the expensive ElevenLabs TTS path entirely for anonymous
       // visitors — voice unlocks at sign-in. Cuts the cost-abuse worst
       // case dramatically since TTS is the most expensive line item.
-      if (!isAnonymous) {
+      // Also skip when the client opted into the parallel-fetch fast
+      // path via `skipAudio: true` (it will hit /api/coach/speak itself
+      // while the user is already reading the text).
+      if (!isAnonymous && wantAudioInline) {
         try {
           const isConfigured = await isElevenLabsServiceConfigured();
           if (isConfigured) {
@@ -9550,8 +9558,11 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     }
   });
 
-  // TTS endpoint for coach voice
-  app.post('/api/coach/speak', async (req, res) => {
+  // TTS endpoint for coach voice. Auth-gated so anonymous visitors can't
+  // bypass the text-only quota by hitting this endpoint directly — voice
+  // is a signed-in unlock and that needs to be enforced server-side, not
+  // just hidden client-side. Matches the gate on /api/coach/chat.
+  app.post('/api/coach/speak', isAuthenticated, async (req, res) => {
     try {
       const { text } = req.body;
 
