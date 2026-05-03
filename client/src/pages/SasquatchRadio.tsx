@@ -35,6 +35,7 @@ import theVanguardUrl from "@assets/the-vanguard_1777782175104.mp3";
 import phantomLimbUrl from "@assets/phantom-limb_1777782175104.mp3";
 import thePromiseUrl from "@assets/the-promise_1777782175104.mp3";
 import iAmTheArchitectUrl from "@assets/i-am-the-architect_1777782175104.mp3";
+import strokedOutButNotDoneUrl from "@assets/“stroked-out-(but-not-done)”_1777782389082.mp3";
 
 interface RadioTrack {
   id: string;
@@ -50,6 +51,17 @@ interface RadioTrack {
 // Seed catalog — founder + early-survivor-supplied tracks. Survivor-generated
 // anthems will graduate into this rotation once curation flow ships.
 const SEED_CATALOG: RadioTrack[] = [
+  {
+    id: "stroked-out-but-not-done",
+    title: "Stroked-Out (But Not Done)",
+    artist: "Stroked-Out Sasquatch",
+    vibe: "Rock Anthem",
+    story:
+      "The signature anthem. The project's namesake. Stroke knocked us down — it didn't finish us. This is the flag in the ground for every survivor who refuses to be past tense.",
+    audioUrl: strokedOutButNotDoneUrl,
+    durationLabel: "Full track",
+    hashtags: ["#StrokeRecovery", "#StrokedOutSasquatch", "#NotDone"],
+  },
   {
     id: "fault-line-icu",
     title: "Fault Line (ICU)",
