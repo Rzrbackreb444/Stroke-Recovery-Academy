@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -15,7 +15,14 @@ type PremiumStatus = {
   active: boolean;
   priceCents: number;
   priceUsd: number;
+  annualCents: number;
+  annualUsd: number;
+  annualMonthlyEquivalentUsd: number;
+  annualSavingsUsd: number;
+  trialDays: number;
 };
+
+type Plan = "monthly" | "annual";
 
 const FEATURES = [
   {
@@ -40,10 +47,26 @@ const FEATURES = [
   },
 ];
 
+// Best-effort funnel ping — never throws, never blocks render.
+function trackFunnel(event: "premium_page_view" | "trial_start", plan?: Plan) {
+  try {
+    void fetch("/api/sasquatch-premium/track", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ event, plan: plan ?? "unknown" }),
+      keepalive: true,
+    }).catch(() => {});
+  } catch {
+    /* swallow */
+  }
+}
+
 export default function RecoveryPremium() {
   const { isAuthenticated } = useAuth();
   const { toast } = useToast();
-  const [location, setLocation] = useLocation();
+  const [, setLocation] = useLocation();
+  const [plan, setPlan] = useState<Plan>("monthly");
 
   const { data: status, isLoading: statusLoading } = useQuery<PremiumStatus>({
     queryKey: ["/api/sasquatch-premium/status"],
@@ -51,9 +74,11 @@ export default function RecoveryPremium() {
   });
 
   const checkoutMut = useMutation({
-    mutationFn: async () => {
-      const res = await apiRequest("POST", "/api/sasquatch-premium/checkout", {});
-      return (await res.json()) as { url?: string };
+    mutationFn: async (selectedPlan: Plan) => {
+      const res = await apiRequest("POST", "/api/sasquatch-premium/checkout", {
+        plan: selectedPlan,
+      });
+      return (await res.json()) as { url?: string; plan?: Plan };
     },
     onSuccess: (data) => {
       if (data?.url) window.location.href = data.url;
@@ -85,10 +110,18 @@ export default function RecoveryPremium() {
     },
   });
 
-  // ?subscribed=1 / ?canceled=1 flash + entitlement re-fetch on return.
+  // ?subscribed=1 / ?canceled=1 flash + entitlement re-fetch + funnel events.
+  // Page-view fires once on mount (auth OR anon — top of funnel).
+  // trial_start fires when Stripe redirects back successfully.
+  const fnRef = useRef<typeof trackFunnel>(trackFunnel);
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    const planParam = params.get("plan");
+    const planFromUrl: Plan | undefined =
+      planParam === "annual" || planParam === "monthly" ? planParam : undefined;
+
     if (params.get("subscribed") === "1") {
+      fnRef.current("trial_start", planFromUrl);
       toast({
         title: "Welcome to Sasquatch Premium.",
         description: "You're in. Coach is unlimited from this moment forward.",
@@ -101,19 +134,31 @@ export default function RecoveryPremium() {
         description: "Free Coach is still here for you. Come back when you're ready.",
       });
       window.history.replaceState({}, "", "/recovery/premium");
+    } else {
+      fnRef.current("premium_page_view");
     }
     // intentionally only once on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const priceUsd = status?.priceUsd ?? 19;
+  const monthlyUsd = status?.priceUsd ?? 19;
+  const annualUsd = status?.annualUsd ?? 190;
+  const annualPerMonth = status?.annualMonthlyEquivalentUsd ?? 15.83;
+  const annualSavings = status?.annualSavingsUsd ?? 38;
+  const trialDays = status?.trialDays ?? 7;
   const isActive = !!status?.active;
+
+  const displayUsd = plan === "annual" ? annualPerMonth : monthlyUsd;
+  const billedSubline =
+    plan === "annual"
+      ? `Billed $${annualUsd}/year — save $${annualSavings}/yr.`
+      : `Billed monthly. Cancel anytime.`;
 
   return (
     <div className="min-h-screen bg-stone-950 text-stone-100">
       <RecoverySEO
         title="Sasquatch Premium — Unlimited Survivor Tools | Stroke Recovery Academy"
-        description="7-day free trial. Unlimited AI Sasquatch Coach. Unlimited Recovery Anchor renders. Voice Cloning. Premium Campfire circles. Then $19/month. Cancel anytime."
+        description="7-day free trial. Unlimited AI Sasquatch Coach. Unlimited Recovery Anchor renders. Voice Cloning. Premium Campfire circles. Then $19/month or $190/year. Cancel anytime."
         canonical="/recovery/premium"
       />
       <RecoveryHeader />
@@ -140,6 +185,52 @@ export default function RecoveryPremium() {
           </p>
         </div>
 
+        {/* Monthly / Annual toggle */}
+        <div className="flex justify-center mb-6">
+          <div
+            className="inline-flex rounded-md border border-stone-800 bg-stone-900 p-1 gap-1"
+            role="tablist"
+            aria-label="Billing interval"
+          >
+            <Button
+              size="sm"
+              variant={plan === "monthly" ? "default" : "ghost"}
+              className={
+                plan === "monthly"
+                  ? "bg-amber-600 hover:bg-amber-700 text-white"
+                  : "text-stone-300"
+              }
+              onClick={() => setPlan("monthly")}
+              data-testid="button-plan-monthly"
+              role="tab"
+              aria-selected={plan === "monthly"}
+            >
+              Monthly
+            </Button>
+            <Button
+              size="sm"
+              variant={plan === "annual" ? "default" : "ghost"}
+              className={
+                plan === "annual"
+                  ? "bg-amber-600 hover:bg-amber-700 text-white"
+                  : "text-stone-300"
+              }
+              onClick={() => setPlan("annual")}
+              data-testid="button-plan-annual"
+              role="tab"
+              aria-selected={plan === "annual"}
+            >
+              Annual
+              <Badge
+                className="ml-2 bg-green-700/30 text-green-300 border-green-700/40 text-[10px]"
+                data-testid="badge-annual-savings"
+              >
+                Save ${annualSavings}
+              </Badge>
+            </Button>
+          </div>
+        </div>
+
         <Card className="p-8 md:p-10 bg-stone-900 border-stone-800 mb-10">
           <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-4 mb-8">
             <div>
@@ -149,11 +240,13 @@ export default function RecoveryPremium() {
                   style={{ color: "#C9941A" }}
                   data-testid="text-price"
                 >
-                  ${priceUsd}
+                  ${displayUsd}
                 </span>
                 <span className="text-stone-400 text-lg">/month</span>
               </div>
-              <p className="text-stone-500 text-sm mt-1">7-day free trial. Cancel anytime.</p>
+              <p className="text-stone-500 text-sm mt-1" data-testid="text-billed-subline">
+                {trialDays}-day free trial. {billedSubline}
+              </p>
             </div>
 
             {!isAuthenticated ? (
@@ -189,11 +282,13 @@ export default function RecoveryPremium() {
               <Button
                 size="lg"
                 className="bg-amber-600 hover:bg-amber-700 text-white"
-                onClick={() => checkoutMut.mutate()}
+                onClick={() => checkoutMut.mutate(plan)}
                 disabled={checkoutMut.isPending}
                 data-testid="button-subscribe"
               >
-                {checkoutMut.isPending ? "Starting checkout..." : `Start 7-day free trial`}
+                {checkoutMut.isPending
+                  ? "Starting checkout..."
+                  : `Start ${trialDays}-day free trial`}
               </Button>
             )}
           </div>
@@ -229,7 +324,8 @@ export default function RecoveryPremium() {
                 Voice Cloning alone is $9/mo as a standalone add-on — Sasquatch
                 Premium bundles it with unlimited Coach and Anchor renders for
                 $10 more. The math says: if you use Coach more than ~5 days a
-                month, Premium pays for itself.
+                month, Premium pays for itself. Annual ($190/yr ≈ $
+                {annualPerMonth}/mo) saves another ${annualSavings} on top.
               </p>
             </div>
           </div>
