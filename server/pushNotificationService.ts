@@ -2,6 +2,7 @@ import webPush from 'web-push';
 import { db } from './db';
 import { sql, and, eq, gte, lte } from 'drizzle-orm';
 import { pushSubscriptions, dailyCheckins } from '../shared/schema';
+import { checkSasquatchDailyPings } from './sasquatchHistoryService';
 
 // Ensure push_subscriptions table exists
 export async function initPushSchema() {
@@ -122,6 +123,9 @@ async function runAccountabilityChecks() {
       checkAppointmentReminders(now),
       ...(hour === 14 && minute === 0 ? [checkDailyCheckins(now)] : []),   // 9am EST (UTC-5)
       ...(hour === 20 && minute === 0 ? [checkMissedCheckins(now)] : []),   // 3pm EST fallback
+      // Sasquatch's daily drop-in ping. Fires at 13:00 UTC (~8am EST) — 1 hour
+      // before the check-in nudge so survivors get a friendly opener first.
+      ...(hour === 13 && minute === 0 ? [checkSasquatchDailyPings(now)] : []),
     ]);
   } catch (err) {
     console.error('[accountability] Scheduler error:', err);

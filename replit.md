@@ -34,6 +34,7 @@ The frontend uses React 18, TypeScript, Vite, Wouter for routing, and TailwindCS
 - **Lyrics Studio**: AI-powered lyric generation for survivors with structured production sheets.
 - **Observability**: Request ID tracking, structured error logging, health routes, and client-side Sentry for browser error reporting.
 - **Branded Onboarding**: Streamlined welcome flow for new users.
+- **Sasquatch Personal Chat**: The existing dynamic AI Coach (Gemini + ElevenLabs + crisis gate + persona context) is now persistent — every authenticated turn is best-effort persisted to `sasquatch_chat_messages` and replayed on widget reopen so survivors can resume mid-thread. The accountability scheduler also fires a once-per-UTC-day Sasquatch push ping at 13:00 UTC (~8am ET) with a rotating motivational prompt (30-prompt rotation by day-of-year), idempotent via `sasquatch_daily_pings` UNIQUE(user_id, ping_date). Push deep-links to `/recovery/coach?ping=1` which auto-opens the chat widget.
 
 ## External Dependencies
 - **Replit Auth**: User authentication.
