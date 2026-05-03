@@ -651,14 +651,14 @@ export default function SasquatchRadio() {
 }
 
 function FeaturedAlbumCard() {
-  // STROKED OUT SASQUATCH by Hostile Construction — the survivor-authored
-  // album these tracks come from. Available on every major streaming
-  // platform; cover + platform links sit between the hero and the player
-  // so listeners can grab the album for offline / mobile listening too.
+  // STROKED OUT SASQUATCH — the survivor-authored album these tracks come
+  // from. Available on every major streaming platform; cover + platform
+  // links sit between the hero and the player so listeners can grab the
+  // album for offline / mobile listening too.
   const platforms = [
-    { name: "Spotify", icon: SiSpotify, href: "https://open.spotify.com/search/Stroked%20Out%20Sasquatch%20Hostile%20Construction", color: "text-[#1DB954]" },
-    { name: "Apple Music", icon: SiApplemusic, href: "https://music.apple.com/us/search?term=Stroked%20Out%20Sasquatch%20Hostile%20Construction", color: "text-white" },
-    { name: "YouTube Music", icon: SiYoutubemusic, href: "https://music.youtube.com/search?q=Stroked+Out+Sasquatch+Hostile+Construction", color: "text-[#FF0000]" },
+    { name: "Spotify", icon: SiSpotify, href: "https://open.spotify.com/search/Stroked%20Out%20Sasquatch", color: "text-[#1DB954]" },
+    { name: "Apple Music", icon: SiApplemusic, href: "https://music.apple.com/us/search?term=Stroked%20Out%20Sasquatch", color: "text-white" },
+    { name: "YouTube Music", icon: SiYoutubemusic, href: "https://music.youtube.com/search?q=Stroked+Out+Sasquatch", color: "text-[#FF0000]" },
     { name: "TikTok", icon: SiTiktok, href: "https://www.tiktok.com/search?q=Stroked%20Out%20Sasquatch", color: "text-white" },
   ];
   return (
@@ -669,7 +669,7 @@ function FeaturedAlbumCard() {
       <div className="grid md:grid-cols-[220px_1fr] gap-4 md:gap-6 p-4 md:p-6 items-center">
         <img
           src={strokedOutSasquatchCover}
-          alt="Stroked Out Sasquatch album cover by Hostile Construction"
+          alt="Stroked Out Sasquatch album cover"
           className="w-full max-w-[220px] mx-auto rounded-md shadow-2xl"
           data-testid="img-featured-album-cover"
         />
@@ -678,12 +678,9 @@ function FeaturedAlbumCard() {
             <Sparkles className="h-3 w-3" />
             Featured Album
           </div>
-          <div>
-            <div className="text-xs text-white/50 uppercase tracking-widest mb-1">Hostile Construction</div>
-            <h2 className="text-2xl md:text-3xl font-black text-white leading-tight" data-testid="text-featured-album-title">
-              STROKED OUT SASQUATCH
-            </h2>
-          </div>
+          <h2 className="text-2xl md:text-3xl font-black text-white leading-tight" data-testid="text-featured-album-title">
+            STROKED OUT SASQUATCH
+          </h2>
           <p className="text-sm text-white/60 max-w-xl">
             The full album every track on this station was written for. Take it
             with you — out now on every major platform.
