@@ -32,6 +32,7 @@ const primaryNav = [
 // Sasquatch Radio is the curated audio stream with DJ voice intros.
 const musicNav = [
   { href: "/recovery/motivation", label: "Anchor Studio", pro: true, description: "Musical-mnemonic for words your stroke took" },
+  { href: "/recovery/lyrics", label: "Lyrics Studio", pro: true, description: "Grammy-grade lyric sheets from your story" },
   { href: "/recovery/anthem/build", label: "Anthem Builder", pro: false, description: "Build your personal recovery anthem" },
   { href: "/recovery/radio", label: "Sasquatch Radio", pro: false, description: "Survivor-curated stream with DJ intros" },
 ];

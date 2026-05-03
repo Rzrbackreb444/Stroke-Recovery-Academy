@@ -20,8 +20,11 @@ import {
   Share2,
   Music,
   Sparkles,
+  ExternalLink,
 } from "lucide-react";
+import { SiSpotify, SiApplemusic, SiTiktok, SiYoutubemusic } from "react-icons/si";
 import { useToast } from "@/hooks/use-toast";
+import strokedOutSasquatchCover from "@assets/679586462_1618728516086893_8759763875674995547_n_1777817377755.jpg";
 
 import faultLineUrl from "@assets/fault-line-(icu)_1777781081423.mp3";
 import whiteCoatsUrl from "@assets/white-coats_1777781117732.mp3";
@@ -454,6 +457,9 @@ export default function SasquatchRadio() {
           </p>
         </section>
 
+        {/* ── Featured Album ─────────────────────────────────── */}
+        <FeaturedAlbumCard />
+
         {/* ── Player card ────────────────────────────────────── */}
         <Card className="bg-gradient-to-br from-[#1a1a1a] to-[#0d0d0d] border-[#C9941A]/30 p-6 sm:p-8 mb-10" data-testid="card-player">
           <audio
@@ -633,5 +639,65 @@ export default function SasquatchRadio() {
 
       <Footer />
     </div>
+  );
+}
+
+function FeaturedAlbumCard() {
+  // STROKED OUT SASQUATCH by Hostile Construction — the survivor-authored
+  // album these tracks come from. Available on every major streaming
+  // platform; cover + platform links sit between the hero and the player
+  // so listeners can grab the album for offline / mobile listening too.
+  const platforms = [
+    { name: "Spotify", icon: SiSpotify, href: "https://open.spotify.com/search/Stroked%20Out%20Sasquatch%20Hostile%20Construction", color: "text-[#1DB954]" },
+    { name: "Apple Music", icon: SiApplemusic, href: "https://music.apple.com/us/search?term=Stroked%20Out%20Sasquatch%20Hostile%20Construction", color: "text-white" },
+    { name: "YouTube Music", icon: SiYoutubemusic, href: "https://music.youtube.com/search?q=Stroked+Out+Sasquatch+Hostile+Construction", color: "text-[#FF0000]" },
+    { name: "TikTok", icon: SiTiktok, href: "https://www.tiktok.com/search?q=Stroked%20Out%20Sasquatch", color: "text-white" },
+  ];
+  return (
+    <Card
+      className="mb-10 overflow-hidden border-[#C9941A]/30 bg-gradient-to-br from-[#0a1410] via-[#0a0a0a] to-[#1a0a05]"
+      data-testid="card-featured-album"
+    >
+      <div className="grid md:grid-cols-[220px_1fr] gap-4 md:gap-6 p-4 md:p-6 items-center">
+        <img
+          src={strokedOutSasquatchCover}
+          alt="Stroked Out Sasquatch album cover by Hostile Construction"
+          className="w-full max-w-[220px] mx-auto rounded-md shadow-2xl"
+          data-testid="img-featured-album-cover"
+        />
+        <div className="space-y-3 text-center md:text-left">
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#C9941A]/15 text-[#C9941A] border border-[#C9941A]/30">
+            <Sparkles className="h-3 w-3" />
+            Featured Album
+          </div>
+          <div>
+            <div className="text-xs text-white/50 uppercase tracking-widest mb-1">Hostile Construction</div>
+            <h2 className="text-2xl md:text-3xl font-black text-white leading-tight" data-testid="text-featured-album-title">
+              STROKED OUT SASQUATCH
+            </h2>
+          </div>
+          <p className="text-sm text-white/60 max-w-xl">
+            The full album every track on this station was written for. Take it
+            with you — out now on every major platform.
+          </p>
+          <div className="flex flex-wrap gap-2 justify-center md:justify-start pt-1">
+            {platforms.map((p) => (
+              <a
+                key={p.name}
+                href={p.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#0a0a0a] border border-white/10 hover-elevate text-xs text-white/80 hover:text-white transition-colors"
+                data-testid={`link-album-platform-${p.name.toLowerCase().replace(/\s/g, "-")}`}
+              >
+                <p.icon className={`h-3.5 w-3.5 ${p.color}`} />
+                {p.name}
+                <ExternalLink className="h-3 w-3 text-white/40" />
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </Card>
   );
 }
