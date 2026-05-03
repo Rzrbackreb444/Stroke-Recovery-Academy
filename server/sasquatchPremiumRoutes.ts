@@ -81,6 +81,12 @@ export function registerSasquatchPremiumRoutes(app: Express) {
       if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
       const requestedPlan = req.body?.plan === "annual" ? "annual" : "monthly";
+      // Promo code (Wave H). Optional, length-capped to a sane maximum so a
+      // malformed body can't blow up the Stripe API call. Stripe promotion
+      // codes are typically ≤32 chars; we accept up to 64 for headroom and
+      // strip whitespace. Empty string → no code.
+      const rawPromo = String(req.body?.promoCode ?? "").trim().slice(0, 64);
+      const promotionCode = rawPromo.length > 0 ? rawPromo : undefined;
 
       let prices: { monthlyPriceId: string; annualPriceId: string };
       try {
@@ -106,7 +112,13 @@ export function registerSasquatchPremiumRoutes(app: Express) {
         `${baseUrl}/recovery/premium?subscribed=1&plan=${requestedPlan}`,
         `${baseUrl}/recovery/premium?canceled=1`,
         "subscription",
-        { trialDays: SASQUATCH_PREMIUM_TRIAL_DAYS },
+        {
+          trialDays: SASQUATCH_PREMIUM_TRIAL_DAYS,
+          // Always allow the survivor to type a code on the Stripe page —
+          // unless they're pre-applying one we already validated server-side.
+          allowPromotionCodes: true,
+          promotionCode,
+        },
       );
 
       // Funnel: server-side record (more reliable than client-side because the
