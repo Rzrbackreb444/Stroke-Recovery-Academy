@@ -956,3 +956,41 @@ html.a11y-reduce-motion *::after {
   transition-duration: 0.001ms !important;
   scroll-behavior: auto !important;
 }
+
+/* Sasquatch Radio — equalizer bars (now-playing indicator) */
+@keyframes sasquatch-eq {
+  0%, 100% { height: 25%; }
+  50% { height: 100%; }
+}
+.sasquatch-eq-bar {
+  height: 25%;
+  animation: sasquatch-eq 900ms ease-in-out infinite;
+  transform-origin: bottom;
+}
+.sasquatch-eq-bar-1 { animation-delay: 0ms;   animation-duration: 750ms; }
+.sasquatch-eq-bar-2 { animation-delay: 150ms; animation-duration: 1100ms; }
+.sasquatch-eq-bar-3 { animation-delay: 300ms; animation-duration: 850ms; }
+
+/* Sasquatch Radio — gold-tinted progress + volume sliders */
+.sasquatch-progress [data-slot="slider-track"],
+.sasquatch-progress [data-orientation="horizontal"] > span:first-child {
+  background-color: rgba(255, 255, 255, 0.10);
+  height: 4px;
+}
+.sasquatch-progress [data-slot="slider-range"],
+.sasquatch-progress [data-orientation="horizontal"] > span:first-child > span {
+  background: linear-gradient(90deg, #C9941A 0%, #E0B040 100%);
+}
+.sasquatch-progress [data-slot="slider-thumb"],
+.sasquatch-progress [role="slider"] {
+  background-color: #C9941A;
+  border: 2px solid #0D0D0D;
+  box-shadow: 0 0 0 1px rgba(201, 148, 26, 0.5), 0 0 12px -2px rgba(201, 148, 26, 0.6);
+  width: 14px;
+  height: 14px;
+  transition: transform 150ms ease;
+}
+.sasquatch-progress [role="slider"]:hover,
+.sasquatch-progress [role="slider"]:focus-visible {
+  transform: scale(1.15);
+}

@@ -461,7 +461,18 @@ export default function SasquatchRadio() {
         <FeaturedAlbumCard />
 
         {/* ── Player card ────────────────────────────────────── */}
-        <Card className="bg-gradient-to-br from-[#1a1a1a] to-[#0d0d0d] border-[#C9941A]/30 p-6 sm:p-8 mb-10" data-testid="card-player">
+        <Card
+          className="relative overflow-hidden bg-gradient-to-br from-[#1a1a1a] via-[#141414] to-[#0a0a0a] border-[#C9941A]/30 p-6 sm:p-8 mb-10 shadow-2xl"
+          data-testid="card-player"
+        >
+          {/* Soft gold ambient glow behind the artwork — only visible while playing */}
+          <div
+            aria-hidden
+            className={`pointer-events-none absolute -top-24 -left-24 w-72 h-72 rounded-full bg-[#C9941A]/15 blur-3xl transition-opacity duration-700 ${
+              isPlaying ? "opacity-100" : "opacity-0"
+            }`}
+          />
+
           <audio
             ref={audioRef}
             src={current.audioUrl}
@@ -484,48 +495,76 @@ export default function SasquatchRadio() {
             />
           )}
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-6">
-            <img
-              src={strokedOutSasquatchCover}
-              alt="Stroked Out Sasquatch album cover"
-              className="w-32 h-32 sm:w-40 sm:h-40 rounded-md object-cover shadow-lg flex-shrink-0"
-              data-testid="img-now-playing-cover"
-            />
-            <div className="flex-1 min-w-0">
-              <Badge className="bg-[#C9941A]/20 text-[#C9941A] border border-[#C9941A]/40 mb-2">
-                {current.vibe}
-              </Badge>
-              <h2 className="text-3xl font-bold text-white mb-1 truncate" data-testid="text-now-playing-title">
+          <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-7">
+            {/* Album art with gold ring + glow when playing */}
+            <div className="relative flex-shrink-0 mx-auto sm:mx-0">
+              <div
+                aria-hidden
+                className={`absolute -inset-1 rounded-lg bg-gradient-to-br from-[#C9941A] via-[#E0B040] to-[#C9941A] opacity-60 blur transition-opacity duration-500 ${
+                  isPlaying ? "opacity-70" : "opacity-30"
+                }`}
+              />
+              <img
+                src={strokedOutSasquatchCover}
+                alt="Stroked Out Sasquatch album cover"
+                className="relative w-40 h-40 sm:w-44 sm:h-44 rounded-lg object-cover shadow-2xl ring-1 ring-white/10"
+                data-testid="img-now-playing-cover"
+              />
+            </div>
+
+            <div className="flex-1 min-w-0 text-center sm:text-left">
+              <div className="flex items-center gap-2 justify-center sm:justify-start mb-2">
+                <Badge className="bg-[#C9941A]/15 text-[#C9941A] border border-[#C9941A]/40 hover:bg-[#C9941A]/20">
+                  {current.vibe}
+                </Badge>
+                {isPlaying && !isPlayingIntro && (
+                  <span className="inline-flex items-end gap-[3px] h-4" aria-label="Now playing" data-testid="indicator-now-playing">
+                    <span className="w-[3px] bg-[#C9941A] rounded-sm sasquatch-eq-bar sasquatch-eq-bar-1" />
+                    <span className="w-[3px] bg-[#C9941A] rounded-sm sasquatch-eq-bar sasquatch-eq-bar-2" />
+                    <span className="w-[3px] bg-[#C9941A] rounded-sm sasquatch-eq-bar sasquatch-eq-bar-3" />
+                  </span>
+                )}
+              </div>
+              <h2
+                className="text-2xl sm:text-3xl font-bold text-white mb-1 leading-tight tracking-tight"
+                data-testid="text-now-playing-title"
+              >
                 {current.title}
               </h2>
-              <div className="text-white/70 mb-3" data-testid="text-now-playing-artist">{current.artist}</div>
-              <p className="text-white/60 text-sm leading-relaxed">{current.story}</p>
+              <div className="text-white/60 text-sm font-medium mb-3" data-testid="text-now-playing-artist">
+                {current.artist}
+              </div>
+              <p className="text-white/55 text-sm leading-relaxed line-clamp-3">{current.story}</p>
             </div>
           </div>
 
           {/* Progress */}
-          <div className="mb-4">
+          <div className="relative mb-5">
             <Slider
               value={[progressPct]}
               onValueChange={([v]) => seek(v)}
               max={100}
               step={0.1}
+              className="sasquatch-progress"
               data-testid="slider-progress"
             />
-            <div className="flex justify-between text-xs text-white/50 mt-1">
+            <div className="flex justify-between text-[11px] font-mono tracking-wider text-white/50 mt-2 tabular-nums">
               <span data-testid="text-time-current">{fmt(progress)}</span>
               <span data-testid="text-time-total">{fmt(duration)}</span>
             </div>
           </div>
 
-          {/* Transport */}
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
+          {/* Transport — three-zone grid; collapses to centered stack on mobile */}
+          <div className="relative grid grid-cols-1 sm:grid-cols-3 items-center gap-4">
+            {/* Volume (left) */}
+            <div className="flex items-center justify-center sm:justify-start gap-2 order-2 sm:order-1">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setMuted((m) => !m)}
+                className="text-white/70 hover:text-white"
                 data-testid="button-mute"
+                aria-label={muted ? "Unmute" : "Mute"}
               >
                 {muted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
               </Button>
@@ -536,51 +575,85 @@ export default function SasquatchRadio() {
                   setMuted(false);
                 }}
                 max={100}
-                className="w-24"
+                className="w-24 sasquatch-progress"
                 data-testid="slider-volume"
               />
             </div>
 
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" onClick={prev} data-testid="button-prev">
+            {/* Transport (center) */}
+            <div className="flex items-center justify-center gap-3 order-1 sm:order-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={prev}
+                className="text-white/80 hover:text-white"
+                data-testid="button-prev"
+                aria-label="Previous track"
+              >
                 <SkipBack className="w-5 h-5" />
               </Button>
               <Button
                 size="icon"
                 onClick={() => setIsPlaying((p) => !p)}
-                className="w-14 h-14 rounded-full bg-[#C9941A] text-black hover:bg-[#C9941A]/90"
+                className="w-16 h-16 rounded-full bg-[#C9941A] text-black hover:bg-[#E0B040] shadow-[0_0_30px_-5px_rgba(201,148,26,0.6)] transition-all duration-200 hover:scale-105 active:scale-95"
                 data-testid="button-play"
+                aria-label={isPlaying ? "Pause" : "Play"}
               >
-                {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-1" />}
+                {isPlaying ? <Pause className="w-7 h-7" /> : <Play className="w-7 h-7 ml-0.5" />}
               </Button>
-              <Button variant="ghost" size="icon" onClick={next} data-testid="button-next">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={next}
+                className="text-white/80 hover:text-white"
+                data-testid="button-next"
+                aria-label="Next track"
+              >
                 <SkipForward className="w-5 h-5" />
               </Button>
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Actions (right) */}
+            <div className="flex items-center justify-center sm:justify-end gap-2 order-3">
               <Button
                 variant={djMode ? "default" : "outline"}
                 size="sm"
                 onClick={() => setDjMode((d) => !d)}
-                className={djMode ? "bg-[#C9941A] text-black hover:bg-[#C9941A]/90" : ""}
+                className={djMode ? "bg-[#C9941A] text-black hover:bg-[#E0B040]" : "border-white/20 text-white/80"}
                 data-testid="button-dj-mode"
                 title={djMode ? "DJ Mode is on — Coach intros between tracks" : "DJ Mode is off"}
               >
                 <RadioIcon className="w-4 h-4 mr-1" />
                 DJ {djMode ? "On" : "Off"}
               </Button>
-              <Button variant="ghost" size="icon" data-testid="button-like">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-white/70 hover:text-white"
+                data-testid="button-like"
+                aria-label="Like"
+              >
                 <Heart className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={shareCurrent} data-testid="button-share">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={shareCurrent}
+                className="text-white/70 hover:text-white"
+                data-testid="button-share"
+                aria-label="Share"
+              >
                 <Share2 className="w-5 h-5" />
               </Button>
             </div>
           </div>
+
           {isPlayingIntro && (
-            <div className="mt-3 text-center text-xs uppercase tracking-wider text-[#C9941A]/80" data-testid="text-dj-intro-playing">
-              <RadioIcon className="inline w-3 h-3 mr-1" />
+            <div
+              className="relative mt-4 text-center text-xs uppercase tracking-[0.2em] text-[#C9941A]"
+              data-testid="text-dj-intro-playing"
+            >
+              <RadioIcon className="inline w-3 h-3 mr-1.5 -mt-0.5 animate-pulse" />
               Coach Sasquatch DJ · introducing the next track
             </div>
           )}
@@ -589,42 +662,70 @@ export default function SasquatchRadio() {
         {/* ── Up next ────────────────────────────────────────── */}
         <section className="mb-10">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-semibold">In rotation</h2>
+            <div>
+              <h2 className="text-2xl font-semibold tracking-tight">In rotation</h2>
+              <p className="text-xs text-white/40 uppercase tracking-widest mt-0.5">Tap any track to jump in</p>
+            </div>
             <Badge className="bg-white/10 text-white/70 border-0" data-testid="badge-track-count">
               {tracks.length} {tracks.length === 1 ? "track" : "tracks"}
             </Badge>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {tracks.map((t, i) => (
-              <button
-                key={t.id}
-                onClick={() => {
-                  setTrackIdx(i);
-                  setIsPlaying(true);
-                }}
-                className={`flex items-center gap-3 p-3 rounded-md text-left hover-elevate ${
-                  i === trackIdx ? "bg-[#C9941A]/10 border border-[#C9941A]/40" : "bg-[#1a1a1a] border border-white/5"
-                }`}
-                data-testid={`button-track-${t.id}`}
-              >
-                <div className="relative w-12 h-12 rounded overflow-hidden flex-shrink-0">
-                  <img
-                    src={strokedOutSasquatchCover}
-                    alt=""
-                    className="w-full h-full object-cover"
-                  />
-                  {i === trackIdx && isPlaying && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                      <RadioIcon className="w-5 h-5 text-[#C9941A] animate-pulse" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+            {tracks.map((t, i) => {
+              const isActive = i === trackIdx;
+              const isLive = isActive && isPlaying;
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => {
+                    setTrackIdx(i);
+                    setIsPlaying(true);
+                  }}
+                  className={`group flex items-center gap-3 p-3 rounded-lg text-left hover-elevate transition-colors ${
+                    isActive
+                      ? "bg-gradient-to-r from-[#C9941A]/15 via-[#C9941A]/5 to-transparent border border-[#C9941A]/40"
+                      : "bg-[#161616] border border-white/5"
+                  }`}
+                  data-testid={`button-track-${t.id}`}
+                  aria-current={isActive ? "true" : undefined}
+                >
+                  {/* Track number / live indicator */}
+                  <div className="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0 ring-1 ring-white/10">
+                    <img src={strokedOutSasquatchCover} alt="" className="w-full h-full object-cover" />
+                    <div
+                      className={`absolute inset-0 flex items-center justify-center transition-opacity duration-200 ${
+                        isLive
+                          ? "bg-black/55 opacity-100"
+                          : isActive
+                          ? "bg-black/40 opacity-100"
+                          : "bg-black/0 opacity-0 group-hover:opacity-100 group-hover:bg-black/40"
+                      }`}
+                    >
+                      {isLive ? (
+                        <span className="inline-flex items-end gap-[2px] h-3.5" aria-label="Playing">
+                          <span className="w-[2px] bg-[#C9941A] rounded-sm sasquatch-eq-bar sasquatch-eq-bar-1" />
+                          <span className="w-[2px] bg-[#C9941A] rounded-sm sasquatch-eq-bar sasquatch-eq-bar-2" />
+                          <span className="w-[2px] bg-[#C9941A] rounded-sm sasquatch-eq-bar sasquatch-eq-bar-3" />
+                        </span>
+                      ) : (
+                        <Play className="w-4 h-4 text-white ml-0.5" />
+                      )}
                     </div>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-white truncate">{t.title}</div>
-                  <div className="text-sm text-white/60 truncate">{t.artist} · {t.vibe}</div>
-                </div>
-              </button>
-            ))}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className={`font-semibold truncate ${isActive ? "text-[#E0B040]" : "text-white"}`}>
+                      {t.title}
+                    </div>
+                    <div className="text-xs text-white/50 truncate mt-0.5">
+                      {t.artist} · {t.vibe}
+                    </div>
+                  </div>
+                  <div className="flex-shrink-0 text-[10px] font-mono text-white/30 tabular-nums tracking-wider pr-1">
+                    {String(i + 1).padStart(2, "0")}
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </section>
 
