@@ -203,6 +203,10 @@ function Page({
       >
         <div
           className="prose prose-sm max-w-none h-full overflow-hidden"
+          // `content` is the survivor's own book draft as they typed it in
+          // the editor — never another user's content. Author-only surface,
+          // not a multi-tenant leak. Documented in threat_model.md.
+          // nosemgrep: typescript.react.security.audit.react-dangerouslysetinnerhtml
           dangerouslySetInnerHTML={{ __html: content }}
         />
       </div>
@@ -251,6 +255,8 @@ function Thumbnail({ content, pageNumber, isActive, onClick, isCover, coverImage
       ) : (
         <div
           className="p-1 text-[4px] text-gray-600 leading-tight overflow-hidden h-full"
+          // Same author-only surface as the main preview above.
+          // nosemgrep: typescript.react.security.audit.react-dangerouslysetinnerhtml
           dangerouslySetInnerHTML={{ __html: content.slice(0, 200) }}
         />
       )}

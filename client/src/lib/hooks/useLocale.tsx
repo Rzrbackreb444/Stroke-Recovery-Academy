@@ -115,18 +115,24 @@ export function LocaleProvider({ children }: LocaleProviderProps) {
 
   const t = (key: string): string => {
     if (!translationsQuery.data) return key;
-    
+
     const keys = key.split('.');
     let result: any = translationsQuery.data;
-    
+
     for (const k of keys) {
-      if (result && typeof result === 'object' && k in result) {
+      // Block prototype-chain walks. Even though `t()` is called with hard-coded
+      // keys today, this guards against any future caller passing a
+      // user-controlled string (e.g. server-driven feature flags) and prevents
+      // a malicious key like "__proto__.polluted" from reaching anything below.
+      if (k === '__proto__' || k === 'constructor' || k === 'prototype') return key;
+      if (result && typeof result === 'object' && Object.prototype.hasOwnProperty.call(result, k)) {
+        // nosemgrep: javascript.lang.security.audit.prototype-pollution.prototype-pollution-loop
         result = result[k];
       } else {
         return key;
       }
     }
-    
+
     return typeof result === 'string' ? result : key;
   };
 

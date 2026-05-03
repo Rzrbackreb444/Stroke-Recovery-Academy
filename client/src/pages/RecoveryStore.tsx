@@ -308,7 +308,13 @@ function ProductSchema({ product }: { product: Product }) {
     },
     offers: {
       "@type": "Offer",
-      price: product.price.replace("$", ""),
+      // Strip every non-numeric/non-dot character. Safe for US/Amazon
+      // prices (e.g. "$9.99", "$9.99 USD", "$1,299.00") which is the only
+      // affiliate region this storefront serves today (AMAZON_AFFILIATE_TAG
+      // is US). If/when EU/UK affiliate tags are added, swap to a locale-
+      // aware parser — comma-decimal prices like "€9,99" would otherwise
+      // collapse to "999".
+      price: product.price.replace(/[^0-9.]/g, ""),
       priceCurrency: "USD",
       availability: "https://schema.org/InStock",
       url: product.amazonUrl,

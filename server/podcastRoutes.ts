@@ -178,6 +178,9 @@ Return ONLY the spoken script, nothing else.`;
       res.set("Accept-Ranges", "bytes");
       res.set("Cache-Control", "public, max-age=86400");
       res.set("Content-Length", String(buf.length));
+      // `buf` is a Buffer (binary audio bytes), not a string — Express writes
+      // it as raw binary with no escaping, so there is no XSS path here.
+      // nosemgrep: javascript.express.security.audit.xss.direct-response-write
       res.send(buf);
     } catch (e) {
       console.error("Episode audio error:", e);
