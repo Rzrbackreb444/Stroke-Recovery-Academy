@@ -73,16 +73,6 @@ interface AnchorUsage {
   premium: boolean;
 }
 
-const TYPES: Array<{
-  id: AnchorType;
-  label: string;
-  description: string;
-  placeholder: string;
-  Icon: typeof Heart;
-}> = {
-  // typed-as-array but written as object then cast — simpler readability
-} as any;
-
 const ANCHOR_TYPE_META: Array<{
   id: AnchorType;
   label: string;
