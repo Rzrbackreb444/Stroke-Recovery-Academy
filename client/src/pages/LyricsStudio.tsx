@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Music2, Crown, Loader2, Sparkles, Copy, Check, Share2, Trash2, Lock, AlertTriangle, ExternalLink } from "lucide-react";
-import { SiTiktok, SiYoutubemusic } from "react-icons/si";
+import { SiItunes, SiTiktok, SiYoutubemusic } from "react-icons/si";
 import strokedOutSasquatchCover from "@assets/679586462_1618728516086893_8759763875674995547_n_1777817377755.jpg";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -502,6 +502,7 @@ function FeaturedAlbumBanner() {
   const platforms = [
     { name: "YouTube Music", icon: SiYoutubemusic, href: "https://music.youtube.com/search?q=Stroked+Out+Sasquatch", color: "text-[#FF0000]" },
     { name: "TikTok", icon: SiTiktok, href: "https://www.tiktok.com/search?q=Stroked%20Out%20Sasquatch", color: "text-white" },
+    { name: "iTunes (ringtones)", icon: SiItunes, href: "https://music.apple.com/us/search?term=Stroked+Out+Sasquatch", color: "text-[#FB5BC5]" },
   ];
   return (
     <div
