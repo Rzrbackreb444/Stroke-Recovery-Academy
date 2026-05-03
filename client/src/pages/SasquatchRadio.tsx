@@ -23,6 +23,9 @@ import {
 import { useToast } from "@/hooks/use-toast";
 
 import faultLineUrl from "@assets/fault-line-(icu)_1777781081423.mp3";
+import whiteCoatsUrl from "@assets/white-coats_1777781117732.mp3";
+import wheeledOutUrl from "@assets/wheeled-out-(discharge)_1777781117732.mp3";
+import handicrapUrl from "@assets/handicrap_2_1777781117732.mp3";
 
 interface RadioTrack {
   id: string;
@@ -48,6 +51,39 @@ const SEED_CATALOG: RadioTrack[] = [
     audioUrl: faultLineUrl,
     durationLabel: "Full track",
     hashtags: ["#StrokeRecovery", "#FaultLine", "#SasquatchRadio"],
+  },
+  {
+    id: "white-coats",
+    title: "White Coats",
+    artist: "Stroked-Out Sasquatch",
+    vibe: "Hip-Hop Fight Song",
+    story:
+      "Every survivor knows the white coat parade — the rounds, the shrugs, the timelines that don't fit you. This one's for taking your recovery back from the people who said it was finished.",
+    audioUrl: whiteCoatsUrl,
+    durationLabel: "Full track",
+    hashtags: ["#StrokeRecovery", "#WhiteCoats", "#SasquatchRadio"],
+  },
+  {
+    id: "wheeled-out-discharge",
+    title: "Wheeled Out (Discharge)",
+    artist: "Stroked-Out Sasquatch",
+    vibe: "Country Grit",
+    story:
+      "The day they roll you to the curb and tell you good luck. Discharge isn't the finish line — it's where the real work starts. This is the song for the ride home.",
+    audioUrl: wheeledOutUrl,
+    durationLabel: "Full track",
+    hashtags: ["#StrokeRecovery", "#Discharge", "#SasquatchRadio"],
+  },
+  {
+    id: "handicrap",
+    title: "Handi-Crap",
+    artist: "Stroked-Out Sasquatch",
+    vibe: "Hip-Hop Fight Song",
+    story:
+      "Reclaiming the word the world tries to put on us. Disability isn't the punchline — it's the proving ground. Turn it up.",
+    audioUrl: handicrapUrl,
+    durationLabel: "Full track",
+    hashtags: ["#StrokeRecovery", "#Disability", "#SasquatchRadio"],
   },
 ];
 
