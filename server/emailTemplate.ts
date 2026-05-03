@@ -75,6 +75,7 @@ export function renderEmail(opts: EmailRenderOptions): string {
 
   const hero = heroImage || (showBeforeAfter ? EMAIL.beforeAfter : null);
 
+  // nosemgrep: javascript.lang.security.html-in-template-string
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -139,10 +140,10 @@ export function renderEmail(opts: EmailRenderOptions): string {
   </div>
 
   <div class="body">
-    ${eyebrow ? `<div class="eyebrow">${eyebrow}</div>` : ''}
-    ${headline ? `<h1 class="headline">${headline}</h1>` : ''}
-    ${subheadline ? `<p class="subhead">${subheadline}</p>` : ''}
-    ${hero ? `<div class="hero-wrap"><img src="${hero}" alt="${escapeAttr(heroAlt)}" class="hero-img" /></div>` : ''}
+    ${eyebrow ? `<div class="eyebrow">${escapeText(eyebrow)}</div>` : ''}
+    ${headline ? `<h1 class="headline">${escapeText(headline)}</h1>` : ''}
+    ${subheadline ? `<p class="subhead">${escapeText(subheadline)}</p>` : ''}
+    ${hero ? `<div class="hero-wrap"><img src="${escapeAttr(hero)}" alt="${escapeAttr(heroAlt)}" class="hero-img" /></div>` : ''}
     ${bodyHtml}
     ${showCrisisCallout ? renderCrisisCallout() : ''}
   </div>
@@ -168,7 +169,7 @@ export function renderEmail(opts: EmailRenderOptions): string {
       Stroke Recovery Academy · <a href="${SITE}">strokerecoveryacademy.com</a><br/>
       Powered by Stroke Lyfe Inc., a 501(c)(3) nonprofit · Rebuild. Rewire. Rise.<br/><br/>
       ${escapeText(whyReceiving)}<br/>
-      <a href="${unsubscribeUrl}">Unsubscribe</a> · <a href="${SITE}/recovery/dashboard">Manage preferences</a>
+      <a href="${escapeAttr(unsubscribeUrl)}">Unsubscribe</a> · <a href="${SITE}/recovery/dashboard">Manage preferences</a>
     </div>
   </div>
 
@@ -198,5 +199,6 @@ function escapeAttr(s: string): string {
 
 /** Helper to build a primary CTA button block. */
 export function ctaButton(href: string, label: string): string {
-  return `<div class="cta-block"><a class="cta-btn" href="${href}">${label}</a></div>`;
+  // nosemgrep: javascript.lang.security.html-in-template-string
+  return `<div class="cta-block"><a class="cta-btn" href="${escapeAttr(href)}">${escapeText(label)}</a></div>`;
 }

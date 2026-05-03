@@ -54,11 +54,22 @@ interface FaqItem {
 
 // ── Markdown renderer ────────────────────────────────────────────────────────
 
+function escapeHtml(s: string): string {
+  return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+}
+
+function safeUrl(s: string): string {
+  const trimmed = s.trim();
+  if (/^(https?:|mailto:|\/|#)/i.test(trimmed)) return escapeHtml(trimmed);
+  return '#';
+}
+
 function processInline(text: string): string {
-  return text
+  return escapeHtml(text)
     .replace(/\*\*(.+?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
     .replace(/\*(.+?)\*/g, '<em class="italic">$1</em>')
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-[#C9941A] hover:underline font-medium">$1</a>');
+    // nosemgrep: javascript.lang.security.html-in-template-string
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, label, href) => `<a href="${safeUrl(href)}" class="text-[#C9941A] hover:underline font-medium">${label}</a>`);
 }
 
 function renderMarkdown(text: string): string {
@@ -70,6 +81,7 @@ function renderMarkdown(text: string): string {
 
   const flushParagraph = () => {
     if (pendingParagraph.length > 0) {
+      // nosemgrep: javascript.lang.security.html-in-template-string
       output.push(`<p class="text-gray-300 mb-5 leading-relaxed text-lg">${processInline(pendingParagraph.join(' '))}</p>`);
       pendingParagraph = [];
     }
@@ -84,26 +96,32 @@ function renderMarkdown(text: string): string {
     if (!line.trim()) { flushParagraph(); closeList(); continue; }
     if (line.startsWith('## ')) {
       flushParagraph(); closeList();
+      // nosemgrep: javascript.lang.security.html-in-template-string
       output.push(`<h2 class="text-2xl font-bold mt-10 mb-4 text-white border-b border-[#333] pb-2">${processInline(line.slice(3))}</h2>`);
     } else if (line.startsWith('### ')) {
       flushParagraph(); closeList();
+      // nosemgrep: javascript.lang.security.html-in-template-string
       output.push(`<h3 class="text-xl font-bold mt-8 mb-3 text-[#C9941A]">${processInline(line.slice(4))}</h3>`);
     } else if (line.startsWith('#### ')) {
       flushParagraph(); closeList();
+      // nosemgrep: javascript.lang.security.html-in-template-string
       output.push(`<h4 class="text-lg font-semibold mt-6 mb-2 text-white">${processInline(line.slice(5))}</h4>`);
     } else if (/^[-*]\s/.test(line)) {
       flushParagraph();
       if (inOl) { output.push('</ol>'); inOl = false; }
       if (!inUl) { output.push('<ul class="space-y-2 mb-5 ml-2">'); inUl = true; }
+      // nosemgrep: javascript.lang.security.html-in-template-string
       output.push(`<li class="text-gray-300 flex gap-2 text-lg"><span class="text-[#C9941A] font-bold mt-0.5 flex-shrink-0">•</span><span>${processInline(line.replace(/^[-*]\s/, ''))}</span></li>`);
     } else if (/^\d+\.\s/.test(line)) {
       flushParagraph();
       if (inUl) { output.push('</ul>'); inUl = false; }
       if (!inOl) { output.push('<ol class="space-y-2 mb-5 ml-2 list-none counter-reset-item">'); inOl = true; }
       const num = line.match(/^(\d+)\./)?.[1] ?? '';
+      // nosemgrep: javascript.lang.security.html-in-template-string
       output.push(`<li class="text-gray-300 flex gap-3 text-lg"><span class="text-[#C9941A] font-bold flex-shrink-0 w-6">${num}.</span><span>${processInline(line.replace(/^\d+\.\s/, ''))}</span></li>`);
     } else if (line.startsWith('> ')) {
       flushParagraph(); closeList();
+      // nosemgrep: javascript.lang.security.html-in-template-string
       output.push(`<blockquote class="border-l-4 border-[#C9941A] pl-4 my-6 italic text-gray-300 text-xl leading-relaxed">${processInline(line.slice(2))}</blockquote>`);
     } else {
       if (inUl || inOl) closeList();
@@ -125,6 +143,7 @@ function extractTOC(html: string): { items: TocItem[]; html: string } {
     if (!text) return _match;
     const id = `h-${counter++}-${text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 40)}`;
     items.push({ id, text, level: parseInt(lvl) as 2 | 3 });
+    // nosemgrep: javascript.lang.security.html-in-template-string
     return `<h${lvl}${attrs} id="${id}">${inner}</h${lvl}>`;
   });
   return { items, html: injected };
@@ -204,11 +223,10 @@ export default function RecoveryBlogPost() {
 
   // Derived content — useMemo so we don't re-parse on every render
   const rawContent = post?.content || '';
-  const isHtmlContent = rawContent.trim().startsWith('<');
 
   const rawRendered = useMemo(
-    () => (isHtmlContent ? rawContent : renderMarkdown(rawContent)),
-    [rawContent, isHtmlContent]
+    () => renderMarkdown(rawContent),
+    [rawContent]
   );
 
   const { items: tocItems, html: renderedContent } = useMemo(
