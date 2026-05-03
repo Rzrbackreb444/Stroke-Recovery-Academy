@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { safeJsonLd } from "@/lib/safeJsonLd";
 
 const RECOVERY_BASE_URL = "https://strokerecoveryacademy.com";
 const KREAITE_BASE_URL = "https://strokerecoveryacademy.com";
@@ -451,9 +452,11 @@ export default function RecoverySEO({
       <link rel="alternate" hrefLang="x-default" href={canonicalUrl} />
 
       {allSchemas.map((s, i) => (
-        <script key={i} type="application/ld+json">
-          {JSON.stringify(s)}
-        </script>
+        <script
+          key={i}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(s) }}
+        />
       ))}
     </Helmet>
   );

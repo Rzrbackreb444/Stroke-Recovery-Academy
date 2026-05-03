@@ -1,4 +1,5 @@
 import { useParams } from "wouter";
+import { safeJsonLd } from "@/lib/safeJsonLd";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Link } from "wouter";
@@ -467,7 +468,7 @@ export default function RecoveryBlogPost() {
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@graph": schemaGraph }) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd({ "@context": "https://schema.org", "@graph": schemaGraph }) }}
       />
 
       <RecoveryHeader />

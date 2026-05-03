@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { safeJsonLd } from "@/lib/safeJsonLd";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -330,7 +331,7 @@ function ProductSchema({ product }: { product: Product }) {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: safeJsonLd(schema) }}
     />
   );
 }
@@ -522,7 +523,7 @@ export default function RecoveryStore() {
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(pageSchema) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(pageSchema) }}
       />
 
       <header className="bg-[#0D0D0D] border-b border-[#333] py-4 px-4">
