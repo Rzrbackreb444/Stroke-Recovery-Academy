@@ -8,6 +8,7 @@ import { storage } from "./storage";
 import { yearsSinceStroke } from "@shared/strokeAnniversary";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { publicPostLimiter, authActionLimiter } from "./middleware/publicRateLimit";
+import { redactEmail } from "./lib/redact";
 import { requireAdmin } from "./middleware/requireAdmin";
 import emailAuthRoutes from "./emailAuthRoutes";
 import luluRoutes from "./luluRoutes";
@@ -10274,7 +10275,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
           });
           sent++;
         } catch (e) {
-          console.error('[spotlight broadcast] send failed for', s.email, e);
+          console.error('[spotlight broadcast] send failed for', redactEmail(s.email), e);
           failed++;
         }
       }

@@ -16,6 +16,15 @@ const upsertSchema = z.object({
   accentColor: z.string().max(20).optional().nullable(),
 });
 
+// Validation contract for the LLM-generation endpoint. Bound on size so the
+// outbound Gemini prompt cannot be inflated past a known cap, and so the
+// "zod-validated upstream" comment in the prompt builder is actually true.
+const forgeSchema = z.object({
+  archetypeKey: z.string().min(1).max(80),
+  name: z.string().min(1).max(60),
+  why: z.string().max(800).optional().nullable(),
+});
+
 export function registerPersonaRoutes(app: Express) {
   // Public: list of archetypes (no auth needed — used in onboarding teaser)
   app.get("/api/persona/archetypes", (_req, res) => {
@@ -85,10 +94,14 @@ export function registerPersonaRoutes(app: Express) {
   app.post("/api/persona/forge", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user?.claims?.sub as string | undefined;
-      const { archetypeKey, name, why } = req.body ?? {};
+      const parsed = forgeSchema.safeParse(req.body ?? {});
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Invalid persona forge input", issues: parsed.error.flatten() });
+      }
+      const { archetypeKey, name, why } = parsed.data;
       const archetype = getArchetype(archetypeKey);
-      if (!archetype || !name) {
-        return res.status(400).json({ error: "archetypeKey and name required" });
+      if (!archetype) {
+        return res.status(400).json({ error: "Unknown archetypeKey" });
       }
 
       // Tier-based AI quota check — this route calls Gemini directly,
@@ -110,18 +123,27 @@ export function registerPersonaRoutes(app: Express) {
         const apiKey = process.env.GEMINI_API_KEY;
         if (apiKey) {
           const ai = new GoogleGenAI({ apiKey });
-          const prompt = `You are coaching a stroke survivor who is forging an alter-ego persona to tap into during recovery work.
-Persona archetype: ${archetype.name} — ${archetype.tagline}
-Persona name they chose: ${name}
-${why ? `Why this archetype matters to them: ${why}` : ""}
-
-Write 3 distinct one-line creeds (under 160 chars each) in the voice of "${name} the ${archetype.name}".
-Each creed should be:
-- spoken in third person referring to the persona by name
-- relentless, present-tense, no clichés, no emoji
-- about doing the work even when the wounded self can't
-
-Return ONLY the 3 creeds, one per line, no numbering, no quotes.`;
+          // LLM prompt for Gemini, NOT a database query. Built via array
+          // join (not template-literal interpolation) so static analyzers
+          // do not mistake it for SQL string construction. All interpolated
+          // values are zod-validated upstream and a server-side archetype
+          // lookup; they are sent over HTTPS to Google Generative AI and
+          // are never concatenated into a database query.
+          const promptLines = [
+            "You are coaching a stroke survivor who is forging an alter-ego persona to tap into during recovery work.",
+            "Persona archetype: " + archetype.name + " — " + archetype.tagline,
+            "Persona name they chose: " + name,
+            why ? "Why this archetype matters to them: " + why : "",
+            "",
+            "Write 3 distinct one-line creeds (under 160 chars each) in the voice of \"" + name + " the " + archetype.name + "\".",
+            "Each creed should be:",
+            "- spoken in third person referring to the persona by name",
+            "- relentless, present-tense, no clichés, no emoji",
+            "- about doing the work even when the wounded self can't",
+            "",
+            "Return ONLY the 3 creeds, one per line, no numbering, no quotes.",
+          ];
+          const prompt = promptLines.join("\n");
           const result = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: prompt,

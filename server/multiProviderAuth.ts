@@ -220,8 +220,13 @@ export function configurePassport() {
     }
   });
   
-  // Local strategy
+  // Local strategy.
+  // The `passwordField` value below is a passport-local CONFIGURATION FIELD
+  // NAME (tells the strategy which req.body field to read), not a credential.
+  // Verified false positive of `gitleaks.hashicorp-tf-password`; the
+  // `nosemgrep` directive immediately preceding the matched line silences it.
   passport.use(new LocalStrategy(
+    // nosemgrep: generic.secrets.gitleaks.hashicorp-tf-password
     { usernameField: "email", passwordField: "password" },
     async (email, password, done) => {
       try {
