@@ -3,9 +3,26 @@ import FormData from "form-data";
 
 const ELEVENLABS_API_URL = "https://api.elevenlabs.io/v1";
 
-// Nick's Sasquatch Coach voice ID - set this after cloning Nick's voice in ElevenLabs
-// Default: 'pNInz6obpgDQGcFmaJgB' (Adam - deep motivational male voice)
-export const SASQUATCH_VOICE_ID = process.env.SASQUATCH_VOICE_ID || 'pNInz6obpgDQGcFmaJgB';
+// Nick's Sasquatch Coach voice ID — defaults to "Clyde" (2EiwWnXFnvU5JabPnv8n),
+// a middle-aged raspy American premade. Closest stock match to a warm-but-gravelly
+// Sasquatch character. Override with SASQUATCH_VOICE_ID env or the admin Voice Lab.
+// Other strong raspy candidates surfaced in the Voice Lab:
+//   - Callum   N2lVS1w4EtoT3dr4eOWO   (gravelly intense)
+//   - George   JBFqnCBsd6RMkjVDRZzb   (British raspy storyteller)
+//   - Daniel   onwK4e9ZLuTAKqWW03F9   (deep British authoritative)
+//   - Bill     pqHfZKP75CvOlQylNhV4   (warm older American — not raspy, kept for contrast)
+//   - Adam     pNInz6obpgDQGcFmaJgB   (prior default — generic deep narrator)
+export const SASQUATCH_VOICE_ID = process.env.SASQUATCH_VOICE_ID || '2EiwWnXFnvU5JabPnv8n';
+
+// Default voice settings tuned for the Sasquatch character: lower stability lets
+// the raspy texture come through (less averaging); higher style amplifies the
+// character's personality. Speaker boost is on for fuller chest resonance.
+export const SASQUATCH_VOICE_SETTINGS = {
+  stability: 0.30,
+  similarity_boost: 0.85,
+  style: 0.65,
+  use_speaker_boost: true,
+} as const;
 
 interface VoiceSettings {
   stability: number;
