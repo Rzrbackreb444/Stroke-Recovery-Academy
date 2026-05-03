@@ -9067,6 +9067,17 @@ Respond in JSON format:
     console.error('[recovery-anthem] failed to register routes:', e);
   }
 
+  // ──────────────────────────────────────────────────────────────────
+  // Coach Sasquatch DJ — between-track intros for Sasquatch Radio.
+  // Distinct ElevenLabs voice, admin-curated, cached in Postgres.
+  // ──────────────────────────────────────────────────────────────────
+  try {
+    const { registerRecoveryDjRoutes } = await import('./recoveryDjRoutes');
+    registerRecoveryDjRoutes(app);
+  } catch (e) {
+    console.error('[recovery-dj] failed to register routes:', e);
+  }
+
   app.get('/api/marketplace/products', async (req, res) => {
     try {
       const { categoryId, search, featured } = req.query;

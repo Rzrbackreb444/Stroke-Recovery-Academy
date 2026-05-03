@@ -252,14 +252,31 @@ const SEED_CATALOG: RadioTrack[] = [
 export default function SasquatchRadio() {
   const { toast } = useToast();
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  // Coach Sasquatch DJ — separate audio element so intro playback never
+  // races the main track. We pause the main element while the intro
+  // plays, then resume on intro `ended`.
+  const introRef = useRef<HTMLAudioElement | null>(null);
 
   const [trackIdx, setTrackIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlayingIntro, setIsPlayingIntro] = useState(false);
   const [volume, setVolume] = useState(0.8);
   const [muted, setMuted] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [listenersOnline] = useState(() => 12 + Math.floor(Math.random() * 40));
+
+  // DJ Mode — persisted client-side preference. Defaults to OFF so first-
+  // time listeners aren't surprised by a voice they didn't ask for.
+  const [djMode, setDjMode] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem("sasquatchRadio_djMode") === "1";
+  });
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("sasquatchRadio_djMode", djMode ? "1" : "0");
+    }
+  }, [djMode]);
 
   // Fetch survivor-approved tracks and merge with the seed catalog. Seed
   // tracks always lead so the founder set is the cold-start experience.
@@ -268,29 +285,100 @@ export default function SasquatchRadio() {
     staleTime: 60_000,
   });
 
+  // Pre-fetched DJ intros — public, cached, projects only {trackId, audioUrl}.
+  const introsQuery = useQuery<{ intros: Record<string, string> }>({
+    queryKey: ["/api/recovery/radio/dj/intros"],
+    staleTime: 5 * 60_000,
+  });
+  const intros = introsQuery.data?.intros ?? {};
+
   const tracks = useMemo(() => {
     const approved = approvedQuery.data?.tracks ?? [];
     return [...SEED_CATALOG, ...approved.filter((t) => !!t.audioUrl)];
   }, [approvedQuery.data]);
 
   const current = tracks[trackIdx] ?? SEED_CATALOG[0];
+  const currentIntroUrl = djMode ? intros[current.id] : undefined;
+
+  // Tracks which trackIdx already had its intro played in this session,
+  // so prev/next/scrub doesn't replay the intro mid-listen.
+  const introPlayedFor = useRef<Set<number>>(new Set());
 
   // ── Audio element wiring ────────────────────────────────────────
   useEffect(() => {
     const el = audioRef.current;
-    if (!el) return;
-    el.volume = muted ? 0 : volume;
+    const intro = introRef.current;
+    if (el) el.volume = muted ? 0 : volume;
+    if (intro) intro.volume = muted ? 0 : volume;
   }, [volume, muted]);
 
+  // Reset "intro played" memory whenever the user toggles DJ mode so
+  // turning it on mid-listen will prepend an intro to the *next* track.
+  // ALSO: if the user toggles DJ mode OFF mid-intro, clear the playing-
+  // intro state and resume the main track immediately so playback
+  // doesn't deadlock with isPlaying=true but no audio progressing.
   useEffect(() => {
-    const el = audioRef.current;
-    if (!el) return;
-    if (isPlaying) {
-      el.play().catch(() => setIsPlaying(false));
-    } else {
-      el.pause();
+    introPlayedFor.current = new Set();
+    if (!djMode && isPlayingIntro) {
+      const intro = introRef.current;
+      if (intro) {
+        try { intro.pause(); } catch {}
+      }
+      setIsPlayingIntro(false);
+      const main = audioRef.current;
+      if (main && isPlaying) main.play().catch(() => setIsPlaying(false));
     }
-  }, [isPlaying, trackIdx]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [djMode]);
+
+  // Safety net: if the intro audio errors (file missing, decode fail,
+  // network drop), don't strand the player — fall through to the main
+  // track immediately. Same path as the catch() in the play effect.
+  function handleIntroError() {
+    setIsPlayingIntro(false);
+    const main = audioRef.current;
+    if (main && isPlaying) main.play().catch(() => setIsPlaying(false));
+  }
+
+  useEffect(() => {
+    const main = audioRef.current;
+    const intro = introRef.current;
+    if (!main) return;
+    if (!isPlaying) {
+      main.pause();
+      intro?.pause();
+      setIsPlayingIntro(false);
+      return;
+    }
+    // Should we prepend an intro? Only if DJ mode is on, an intro exists
+    // for this track, and we haven't already played it for this index.
+    if (currentIntroUrl && intro && !introPlayedFor.current.has(trackIdx)) {
+      introPlayedFor.current.add(trackIdx);
+      setIsPlayingIntro(true);
+      main.pause();
+      try {
+        intro.currentTime = 0;
+      } catch {}
+      intro.play().catch(() => {
+        // Intro failed — fall through to the main track immediately.
+        setIsPlayingIntro(false);
+        main.play().catch(() => setIsPlaying(false));
+      });
+    } else if (!isPlayingIntro) {
+      main.play().catch(() => setIsPlaying(false));
+    }
+    // We deliberately exclude isPlayingIntro from deps — it's set inside
+    // this effect and shouldn't retrigger the chain.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPlaying, trackIdx, currentIntroUrl]);
+
+  function handleIntroEnded() {
+    setIsPlayingIntro(false);
+    const main = audioRef.current;
+    if (main && isPlaying) {
+      main.play().catch(() => setIsPlaying(false));
+    }
+  }
 
   function handleTimeUpdate() {
     const el = audioRef.current;
@@ -377,6 +465,18 @@ export default function SasquatchRadio() {
             preload="metadata"
             data-testid="audio-radio"
           />
+          {/* Coach Sasquatch DJ intro — separate element, only sources
+              when an intro exists for the current track. */}
+          {currentIntroUrl && (
+            <audio
+              ref={introRef}
+              src={currentIntroUrl}
+              onEnded={handleIntroEnded}
+              onError={handleIntroError}
+              preload="auto"
+              data-testid="audio-dj-intro"
+            />
+          )}
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-6">
             <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-md bg-gradient-to-br from-[#C9941A] to-[#7a5a0f] flex items-center justify-center flex-shrink-0">
@@ -450,6 +550,17 @@ export default function SasquatchRadio() {
             </div>
 
             <div className="flex items-center gap-2">
+              <Button
+                variant={djMode ? "default" : "outline"}
+                size="sm"
+                onClick={() => setDjMode((d) => !d)}
+                className={djMode ? "bg-[#C9941A] text-black hover:bg-[#C9941A]/90" : ""}
+                data-testid="button-dj-mode"
+                title={djMode ? "DJ Mode is on — Coach intros between tracks" : "DJ Mode is off"}
+              >
+                <RadioIcon className="w-4 h-4 mr-1" />
+                DJ {djMode ? "On" : "Off"}
+              </Button>
               <Button variant="ghost" size="icon" data-testid="button-like">
                 <Heart className="w-5 h-5" />
               </Button>
@@ -458,6 +569,12 @@ export default function SasquatchRadio() {
               </Button>
             </div>
           </div>
+          {isPlayingIntro && (
+            <div className="mt-3 text-center text-xs uppercase tracking-wider text-[#C9941A]/80" data-testid="text-dj-intro-playing">
+              <RadioIcon className="inline w-3 h-3 mr-1" />
+              Coach Sasquatch DJ · introducing the next track
+            </div>
+          )}
         </Card>
 
         {/* ── Up next ────────────────────────────────────────── */}
