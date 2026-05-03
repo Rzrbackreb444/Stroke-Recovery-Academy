@@ -657,6 +657,58 @@ export default function SasquatchRadio() {
               Coach Sasquatch DJ · introducing the next track
             </div>
           )}
+
+          {/* Quick "get the album" row — same destinations as the
+              FeaturedAlbumCard above, but inline with the player so a
+              listener mid-track can grab the album / a ringtone without
+              scrolling. */}
+          <div className="relative mt-6 pt-5 border-t border-white/5">
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-white/40">Get the album</span>
+              <div className="flex flex-wrap gap-1.5">
+                <a
+                  href="https://music.apple.com/us/search?term=Stroked+Out+Sasquatch"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0a0a0a] border border-white/10 hover-elevate text-[11px] text-white/80 hover:text-white transition-colors"
+                  data-testid="link-player-platform-apple-music"
+                >
+                  <SiApplemusic className="h-3 w-3" />
+                  Apple Music
+                </a>
+                <a
+                  href="https://music.apple.com/us/search?term=Stroked+Out+Sasquatch&types=ringtones"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0a0a0a] border border-white/10 hover-elevate text-[11px] text-white/80 hover:text-white transition-colors"
+                  data-testid="link-player-platform-itunes"
+                >
+                  <SiItunes className="h-3 w-3 text-[#FB5BC5]" />
+                  iTunes
+                </a>
+                <a
+                  href="https://music.youtube.com/search?q=Stroked+Out+Sasquatch"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0a0a0a] border border-white/10 hover-elevate text-[11px] text-white/80 hover:text-white transition-colors"
+                  data-testid="link-player-platform-youtube-music"
+                >
+                  <SiYoutubemusic className="h-3 w-3 text-[#FF0000]" />
+                  YouTube Music
+                </a>
+                <a
+                  href="https://www.tiktok.com/search?q=Stroked%20Out%20Sasquatch"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0a0a0a] border border-white/10 hover-elevate text-[11px] text-white/80 hover:text-white transition-colors"
+                  data-testid="link-player-platform-tiktok"
+                >
+                  <SiTiktok className="h-3 w-3" />
+                  TikTok
+                </a>
+              </div>
+            </div>
+          </div>
         </Card>
 
         {/* ── Up next ────────────────────────────────────────── */}
