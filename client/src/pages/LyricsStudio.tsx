@@ -500,9 +500,9 @@ function FeaturedAlbumBanner() {
   // see real proof-of-concept the moment they land on the page: this is
   // what these tools build.
   const platforms = [
-    { name: "Apple Music", icon: SiApplemusic, href: "https://music.apple.com/us/search?term=Stroked+Out+Sasquatch", color: "text-white" },
-    { name: "iTunes (ringtones)", icon: SiItunes, href: "https://music.apple.com/us/search?term=Stroked+Out+Sasquatch&types=ringtones", color: "text-[#FB5BC5]" },
-    { name: "YouTube Music", icon: SiYoutubemusic, href: "https://music.youtube.com/search?q=Stroked+Out+Sasquatch", color: "text-[#FF0000]" },
+    { name: "Apple Music", icon: SiApplemusic, href: "https://music.apple.com/us/search?term=Stroked%20Out%20Sasquatch", color: "text-white" },
+    { name: "iTunes (ringtones)", icon: SiItunes, href: "https://music.apple.com/us/search?term=Stroked%20Out%20Sasquatch&types=ringtones", color: "text-[#FB5BC5]" },
+    { name: "YouTube Music", icon: SiYoutubemusic, href: "https://music.youtube.com/search?q=Stroked%20Out%20Sasquatch", color: "text-[#FF0000]" },
     { name: "TikTok", icon: SiTiktok, href: "https://www.tiktok.com/search?q=Stroked%20Out%20Sasquatch", color: "text-white" },
   ];
   return (

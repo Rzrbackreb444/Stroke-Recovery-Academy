@@ -667,7 +667,7 @@ export default function SasquatchRadio() {
               <span className="text-[10px] uppercase tracking-[0.2em] text-white/40">Get the album</span>
               <div className="flex flex-wrap gap-1.5">
                 <a
-                  href="https://music.apple.com/us/search?term=Stroked+Out+Sasquatch"
+                  href="https://music.apple.com/us/search?term=Stroked%20Out%20Sasquatch"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0a0a0a] border border-white/10 hover-elevate text-[11px] text-white/80 hover:text-white transition-colors"
@@ -677,7 +677,7 @@ export default function SasquatchRadio() {
                   Apple Music
                 </a>
                 <a
-                  href="https://music.apple.com/us/search?term=Stroked+Out+Sasquatch&types=ringtones"
+                  href="https://music.apple.com/us/search?term=Stroked%20Out%20Sasquatch&types=ringtones"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0a0a0a] border border-white/10 hover-elevate text-[11px] text-white/80 hover:text-white transition-colors"
@@ -687,7 +687,7 @@ export default function SasquatchRadio() {
                   iTunes
                 </a>
                 <a
-                  href="https://music.youtube.com/search?q=Stroked+Out+Sasquatch"
+                  href="https://music.youtube.com/search?q=Stroked%20Out%20Sasquatch"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0a0a0a] border border-white/10 hover-elevate text-[11px] text-white/80 hover:text-white transition-colors"
@@ -809,9 +809,9 @@ function FeaturedAlbumCard() {
   // links sit between the hero and the player so listeners can grab the
   // album for offline / mobile listening too.
   const platforms = [
-    { name: "Apple Music", icon: SiApplemusic, href: "https://music.apple.com/us/search?term=Stroked+Out+Sasquatch", color: "text-white" },
-    { name: "iTunes (ringtones)", icon: SiItunes, href: "https://music.apple.com/us/search?term=Stroked+Out+Sasquatch&types=ringtones", color: "text-[#FB5BC5]" },
-    { name: "YouTube Music", icon: SiYoutubemusic, href: "https://music.youtube.com/search?q=Stroked+Out+Sasquatch", color: "text-[#FF0000]" },
+    { name: "Apple Music", icon: SiApplemusic, href: "https://music.apple.com/us/search?term=Stroked%20Out%20Sasquatch", color: "text-white" },
+    { name: "iTunes (ringtones)", icon: SiItunes, href: "https://music.apple.com/us/search?term=Stroked%20Out%20Sasquatch&types=ringtones", color: "text-[#FB5BC5]" },
+    { name: "YouTube Music", icon: SiYoutubemusic, href: "https://music.youtube.com/search?q=Stroked%20Out%20Sasquatch", color: "text-[#FF0000]" },
     { name: "TikTok", icon: SiTiktok, href: "https://www.tiktok.com/search?q=Stroked%20Out%20Sasquatch", color: "text-white" },
   ];
   return (
