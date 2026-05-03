@@ -9078,6 +9078,16 @@ Respond in JSON format:
     console.error('[recovery-dj] failed to register routes:', e);
   }
 
+  // ──────────────────────────────────────────────────────────────────
+  // Survivor Voice Cloning (Slice 1: admin-gated, Stripe paywall TBD)
+  // ──────────────────────────────────────────────────────────────────
+  try {
+    const { registerVoiceCloneRoutes } = await import('./voiceCloneRoutes');
+    registerVoiceCloneRoutes(app);
+  } catch (e) {
+    console.error('[voice-clones] failed to register routes:', e);
+  }
+
   app.get('/api/marketplace/products', async (req, res) => {
     try {
       const { categoryId, search, featured } = req.query;

@@ -3770,6 +3770,11 @@ export const voiceClones = pgTable("voice_clones", {
   isPublic: boolean("is_public").notNull().default(false),
   usageCount: integer("usage_count").notNull().default(0),
   status: text("status").notNull().default("processing"), // processing, ready, failed
+  consentText: text("consent_text"), // ElevenLabs-required verbal consent statement (transcript)
+  consentSignedAt: timestamp("consent_signed_at"), // when consent was captured
+  consentIp: varchar("consent_ip", { length: 64 }), // IP at consent time (legal record)
+  sampleDurationSec: integer("sample_duration_sec"), // length of submitted sample
+  deletedAt: timestamp("deleted_at"), // soft-delete; voice removed from EL but row retained
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
