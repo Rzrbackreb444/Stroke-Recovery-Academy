@@ -29,6 +29,8 @@ import wheeledOutUrl from "@assets/wheeled-out-(discharge)_1777781117732.mp3";
 import handicrapUrl from "@assets/handicrap_2_1777781117732.mp3";
 import maximumBenefitUrl from "@assets/maximum-benefit-(interlude)_1777781929626.mp3";
 import wheelchairWarriorUrl from "@assets/wheelchair-warrior_1777781929626.mp3";
+import sixtySixDaysUrl from "@assets/sixty-six-days._1777782059888.mp3";
+import hostileConstructionUrl from "@assets/hostile-construction_1777782059888.mp3";
 
 interface RadioTrack {
   id: string;
@@ -109,6 +111,28 @@ const SEED_CATALOG: RadioTrack[] = [
     audioUrl: wheelchairWarriorUrl,
     durationLabel: "Full track",
     hashtags: ["#StrokeRecovery", "#WheelchairWarrior", "#SasquatchRadio"],
+  },
+  {
+    id: "sixty-six-days",
+    title: "Sixty-Six Days",
+    artist: "Stroked-Out Sasquatch",
+    vibe: "Rock Anthem",
+    story:
+      "Science says it takes 66 days to build a habit. The Sasquatch Transformation Challenge says it's how you rewire a life. This is the soundtrack for the count.",
+    audioUrl: sixtySixDaysUrl,
+    durationLabel: "Full track",
+    hashtags: ["#StrokeRecovery", "#SixtySixDays", "#SasquatchChallenge"],
+  },
+  {
+    id: "hostile-construction",
+    title: "Hostile Construction",
+    artist: "Stroked-Out Sasquatch",
+    vibe: "Hip-Hop Fight Song",
+    story:
+      "Rebuilding a brain isn't gentle work. Every neural pathway you forge is a hostile construction site — and you're the foreman, the crew, and the city. Hard hats on.",
+    audioUrl: hostileConstructionUrl,
+    durationLabel: "Full track",
+    hashtags: ["#StrokeRecovery", "#Neuroplasticity", "#SasquatchRadio"],
   },
 ];
 
