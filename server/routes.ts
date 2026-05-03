@@ -9054,6 +9054,19 @@ Respond in JSON format:
     console.error('[recovery-anchor] failed to register routes:', e);
   }
 
+  // ──────────────────────────────────────────────────────────────────
+  // Build-Your-Anthem — survivor-composed full songs via ElevenLabs Music.
+  // Same crisis-gate + audit pattern as the Anchor Studio. Free tier gets
+  // 1 composition per month; premium unlimited.
+  // ──────────────────────────────────────────────────────────────────
+  try {
+    const { registerRecoveryAnthemRoutes } = await import('./recoveryAnthemRoutes');
+    registerRecoveryAnthemRoutes(app);
+    console.log('[recovery-anthem] routes registered');
+  } catch (e) {
+    console.error('[recovery-anthem] failed to register routes:', e);
+  }
+
   app.get('/api/marketplace/products', async (req, res) => {
     try {
       const { categoryId, search, featured } = req.query;

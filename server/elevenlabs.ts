@@ -221,6 +221,39 @@ export class ElevenLabsService {
     }
   }
 
+  /**
+   * ElevenLabs Music — text-to-music with vocals.
+   * Endpoint: POST /v1/music
+   * Returns audio/mpeg binary directly. Length is capped server-side at 5 min.
+   * Cost: per-character charged against the same ElevenLabs subscription.
+   */
+  async composeMusic(
+    prompt: string,
+    musicLengthMs: number = 60000,
+  ): Promise<Buffer> {
+    const apiKey = await this.getApiKey();
+    const response = await fetch(`${ELEVENLABS_API_URL}/music`, {
+      method: "POST",
+      headers: {
+        "xi-api-key": apiKey,
+        "Content-Type": "application/json",
+        Accept: "audio/mpeg",
+      },
+      body: JSON.stringify({
+        prompt,
+        music_length_ms: Math.max(10000, Math.min(300000, musicLengthMs)),
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`Music compose failed: ${response.status} ${error}`);
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    return Buffer.from(arrayBuffer);
+  }
+
   async getModels(): Promise<any[]> {
     const response = await fetch(`${ELEVENLABS_API_URL}/models`, {
       headers: await this.getHeaders(),

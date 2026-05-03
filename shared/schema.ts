@@ -6169,6 +6169,10 @@ export const motivationUsage = pgTable("motivation_usage", {
   visionCardCount: integer("vision_card_count").notNull().default(0),
   // Recovery Anchor renders this month. Audits (free preview) are unmetered.
   anchorRenderCount: integer("anchor_render_count").notNull().default(0),
+  // Build-Your-Anthem renders this month. Free tier gets 1/month, premium unlimited.
+  // Separate counter from anthemCount (legacy MotivationStudio anthems) so the
+  // two surfaces can have independent quotas without a data migration.
+  anthemBuilderCount: integer("anthem_builder_count").notNull().default(0),
   updatedAt: timestamp("updated_at").defaultNow(),
 }, (t) => ({
   pk: uniqueIndex("motivation_usage_pk").on(t.userId, t.month),
@@ -6277,6 +6281,61 @@ export const recoveryAnchorAudit = pgTable("recovery_anchor_audit", {
   byDisposition: index("recovery_anchor_audit_disposition").on(t.disposition, t.createdAt),
 }));
 export type RecoveryAnchorAuditRow = typeof recoveryAnchorAudit.$inferSelect;
+
+// ============================================================================
+// BUILD-YOUR-ANTHEM — survivor-composed full songs via ElevenLabs Music
+// ============================================================================
+// Mirrors the recovery_anchors pattern: per-user persisted artifacts + a
+// separate audit log that captures every disposition (clear / crisis /
+// clarification / refused / engine_error) regardless of whether an anthem
+// row was created. Survivor input is sent to Gemini (Pass 1 + Pass 2) and
+// then the final structured lyric script is sent to ElevenLabs Music.
+
+export const recoveryAnthems = pgTable("recovery_anthems", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  // The survivor's structured input that drove generation. We persist the
+  // raw form so the survivor can iterate ("regenerate with these tweaks")
+  // without retyping. Free-form story is capped at 2000 chars upstream.
+  inputData: jsonb("input_data").notNull(), // { deficit, goal, fightFor, currentDay, walkingBpm, story }
+  // Pass-2 Gemini output: full structured song script (sections + lines +
+  // sound-design cues). See server/services/recoveryAnthem/recoveryAnthemSchema.ts.
+  scriptData: jsonb("script_data").notNull(),
+  title: text("title").notNull(),
+  // ElevenLabs Music returns ~3 min of audio/mpeg. Stored as a base64 data
+  // URL until Object Storage suspension lifts (see threat_model.md).
+  audioUrl: text("audio_url"),
+  durationMs: integer("duration_ms"),
+  bpm: integer("bpm"),
+  // Public consent-gated share. Same pattern as recovery_anchors.
+  isShared: boolean("is_shared").notNull().default(false),
+  shareId: text("share_id"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  byUser: index("recovery_anthems_user_created").on(t.userId, t.createdAt),
+  byShareId: uniqueIndex("recovery_anthems_share_id").on(t.shareId),
+}));
+export const insertRecoveryAnthemSchema = createInsertSchema(recoveryAnthems).omit({
+  id: true,
+  createdAt: true,
+});
+export type RecoveryAnthem = typeof recoveryAnthems.$inferSelect;
+export type InsertRecoveryAnthem = z.infer<typeof insertRecoveryAnthemSchema>;
+
+export const recoveryAnthemAudit = pgTable("recovery_anthem_audit", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  anthemId: integer("anthem_id"),
+  // 'clear' | 'crisis_personal' | 'clarification' | 'refused' | 'engine_error'
+  disposition: text("disposition").notNull(),
+  category: text("category"),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  byUser: index("recovery_anthem_audit_user").on(t.userId, t.createdAt),
+  byDisposition: index("recovery_anthem_audit_disposition").on(t.disposition, t.createdAt),
+}));
+export type RecoveryAnthemAuditRow = typeof recoveryAnthemAudit.$inferSelect;
 
 // ============================================================================
 // VIDEO STUDIO — user-authored video projects (timeline + assets state)
