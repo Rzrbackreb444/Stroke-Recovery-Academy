@@ -5,8 +5,43 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Music, Check, X, Clock, ShieldAlert } from "lucide-react";
+import { Music, Check, X, Clock, ShieldAlert, Radio as RadioIcon, Loader2, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+
+// ── Mirror of SasquatchRadio.tsx SEED_CATALOG (id + display metadata only).
+// Kept in this admin file so the admin chunk doesn't pull in the full
+// 17-track audio bundle. If you add a new seed track to the radio page,
+// add a matching row here so admins can mint its DJ intro.
+const SEED_TRACKS_FOR_DJ: Array<{ id: string; title: string; artist: string; vibe: string }> = [
+  { id: "stroked-out-but-not-done", title: "Stroked-Out (But Not Done)", artist: "Stroked-Out Sasquatch", vibe: "Rock Anthem" },
+  { id: "fault-line-icu", title: "Fault Line (ICU)", artist: "Stroked-Out Sasquatch", vibe: "Rock Anthem" },
+  { id: "white-coats", title: "White Coats", artist: "Stroked-Out Sasquatch", vibe: "Hip-Hop Fight Song" },
+  { id: "wheeled-out-discharge", title: "Wheeled Out (Discharge)", artist: "Stroked-Out Sasquatch", vibe: "Country Grit" },
+  { id: "handicrap", title: "Handicrap", artist: "Stroked-Out Sasquatch", vibe: "Hip-Hop Fight Song" },
+  { id: "maximum-benefit", title: "Maximum Benefit", artist: "Stroked-Out Sasquatch", vibe: "Rock Anthem" },
+  { id: "wheelchair-warrior", title: "Wheelchair Warrior", artist: "Stroked-Out Sasquatch", vibe: "Rock Anthem" },
+  { id: "sixty-six-days", title: "66 Days", artist: "Stroked-Out Sasquatch", vibe: "Rock Anthem" },
+  { id: "hostile-construction", title: "Hostile Construction", artist: "Stroked-Out Sasquatch", vibe: "Hip-Hop Fight Song" },
+  { id: "the-vanguard", title: "The Vanguard", artist: "Stroked-Out Sasquatch", vibe: "Rock Anthem" },
+  { id: "phantom-limb", title: "Phantom Limb", artist: "Stroked-Out Sasquatch", vibe: "Lo-Fi" },
+  { id: "the-promise", title: "The Promise", artist: "Stroked-Out Sasquatch", vibe: "Gospel" },
+  { id: "i-am-the-architect", title: "I Am the Architect", artist: "Stroked-Out Sasquatch", vibe: "Rock Anthem" },
+  { id: "blacking-out", title: "Blacking Out", artist: "Stroked-Out Sasquatch", vibe: "Rock Anthem" },
+  { id: "squatchy", title: "Squatchy", artist: "Stroked-Out Sasquatch", vibe: "Rock Anthem" },
+  { id: "stand-up", title: "Stand Up!", artist: "Stroked-Out Sasquatch", vibe: "Rock Anthem" },
+  { id: "ding-now-fight", title: "Ding — Now Fight", artist: "Stroked-Out Sasquatch", vibe: "Hip-Hop Fight Song" },
+];
+
+interface DjIntroRow {
+  id: number;
+  trackId: string;
+  trackTitle: string;
+  trackArtist: string | null;
+  trackKind: string;
+  voiceId: string;
+  script: string;
+  createdAt: string;
+}
 
 interface QueueItem {
   id: number;
@@ -103,8 +138,149 @@ export default function AdminRadioQueue() {
             <QueueRow key={item.id} item={item} onReview={(action, reason) => reviewMutation.mutate({ id: item.id, action, reason })} pending={reviewMutation.isPending} />
           ))}
         </div>
+
+        {/* ── Coach Sasquatch DJ intros ────────────────────────── */}
+        <DjIntroSection approvedTracks={(queueQuery.data?.items ?? []).filter((i) => i.broadcastStatus === "approved")} />
       </div>
     </div>
+  );
+}
+
+function DjIntroSection({ approvedTracks }: { approvedTracks: QueueItem[] }) {
+  const { toast } = useToast();
+  const [pendingId, setPendingId] = useState<string | null>(null);
+
+  const introsQuery = useQuery<{ intros: DjIntroRow[] }>({
+    queryKey: ["/api/admin/radio/dj/intros"],
+  });
+
+  const introByTrack = new Map<string, DjIntroRow>();
+  for (const r of introsQuery.data?.intros ?? []) introByTrack.set(r.trackId, r);
+
+  const mintMutation = useMutation({
+    mutationFn: async (body: {
+      trackId: string;
+      trackTitle: string;
+      trackArtist: string;
+      trackKind: "seed" | "survivor";
+      vibe?: string;
+    }) => {
+      const r = await apiRequest("POST", "/api/admin/radio/dj/intro", body);
+      return r.json();
+    },
+    onSuccess: (_d, vars) => {
+      toast({ title: "Intro minted", description: `Coach DJ recorded the intro for "${vars.trackTitle}".` });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/radio/dj/intros"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/recovery/radio/dj/intros"] });
+    },
+    onError: (e: any) => {
+      toast({ title: "Mint failed", description: e?.message ?? "ElevenLabs error — try again", variant: "destructive" });
+    },
+    onSettled: () => setPendingId(null),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (trackId: string) => {
+      const r = await apiRequest("DELETE", `/api/admin/radio/dj/intro/${encodeURIComponent(trackId)}`);
+      return r.json();
+    },
+    onSuccess: () => {
+      toast({ title: "Intro deleted", description: "It will be regenerated next time you mint." });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/radio/dj/intros"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/recovery/radio/dj/intros"] });
+    },
+  });
+
+  const allTracks: Array<{ id: string; title: string; artist: string; vibe: string; kind: "seed" | "survivor" }> = [
+    ...SEED_TRACKS_FOR_DJ.map((t) => ({ ...t, kind: "seed" as const })),
+    // Must match the id format the radio page sees from
+    // /api/recovery/radio/tracks → `anthem-${anthem.id}` (see
+    // server/recoveryAnthemRoutes.ts). Using a different prefix here
+    // would silently mint intros that the player never looks up.
+    ...approvedTracks.map((t) => ({
+      id: `anthem-${t.id}`,
+      title: t.title,
+      artist: t.artistName ?? "Survivor",
+      vibe: t.broadcastVibe ?? "",
+      kind: "survivor" as const,
+    })),
+  ];
+
+  return (
+    <section className="mt-12 pt-8 border-t border-white/10">
+      <div className="flex items-center gap-2 text-[#C9941A] mb-1">
+        <RadioIcon className="w-4 h-4" />
+        <span className="text-sm font-semibold uppercase tracking-wider">Coach Sasquatch DJ</span>
+      </div>
+      <h2 className="text-2xl font-bold mb-1" data-testid="text-dj-section-title">Between-Track Intros</h2>
+      <p className="text-white/60 text-sm mb-5 max-w-2xl">
+        Mint a short ElevenLabs intro for each track so the radio plays a Coach Sasquatch DJ voice between songs when listeners turn on DJ Mode. Distinct voice from Nick's coach persona — protects the brand voice.
+      </p>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {allTracks.map((t) => {
+          const intro = introByTrack.get(t.id);
+          const busy = pendingId === t.id && mintMutation.isPending;
+          return (
+            <Card key={t.id} className="bg-[#1a1a1a] border-white/10 p-4" data-testid={`card-dj-${t.id}`}>
+              <div className="flex items-start justify-between gap-3 mb-2 flex-wrap">
+                <div className="min-w-0">
+                  <div className="font-semibold text-white truncate">{t.title}</div>
+                  <div className="text-xs text-white/60 truncate">
+                    {t.artist}{t.vibe ? ` · ${t.vibe}` : ""}
+                  </div>
+                </div>
+                {intro ? (
+                  <Badge className="bg-green-500/20 text-green-300 border border-green-500/40">
+                    <Check className="w-3 h-3 mr-1" />Minted
+                  </Badge>
+                ) : (
+                  <Badge className="bg-white/10 text-white/60 border-0">No intro</Badge>
+                )}
+              </div>
+
+              {intro && (
+                <div className="text-xs text-white/60 italic mb-2 line-clamp-2">"{intro.script}"</div>
+              )}
+
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    setPendingId(t.id);
+                    mintMutation.mutate({
+                      trackId: t.id,
+                      trackTitle: t.title,
+                      trackArtist: t.artist,
+                      trackKind: t.kind,
+                      vibe: t.vibe || undefined,
+                    });
+                  }}
+                  disabled={busy || mintMutation.isPending}
+                  className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black"
+                  data-testid={`button-mint-${t.id}`}
+                >
+                  {busy ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <RadioIcon className="w-4 h-4 mr-1" />}
+                  {intro ? "Re-mint" : "Mint intro"}
+                </Button>
+                {intro && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => deleteMutation.mutate(t.id)}
+                    disabled={deleteMutation.isPending}
+                    data-testid={`button-delete-${t.id}`}
+                  >
+                    <Trash2 className="w-4 h-4 mr-1" />
+                    Delete
+                  </Button>
+                )}
+              </div>
+            </Card>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 

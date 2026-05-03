@@ -6334,6 +6334,31 @@ export const insertRecoveryAnthemSchema = createInsertSchema(recoveryAnthems).om
   id: true,
   createdAt: true,
 });
+
+// ── Coach Sasquatch DJ — between-track intros (Phase 2.5) ──
+// One row per radio track. Holds the cached ElevenLabs audio so we don't
+// re-mint on every page load (intros are static once approved). Distinct
+// voice_id from Nick's SASQUATCH_VOICE_ID — this protects Nick's voice
+// from being baked into between-track filler the moment he changes the
+// brand voice. Admin-minted; survivors can't write here.
+export const radioDjIntros = pgTable("radio_dj_intros", {
+  id: serial("id").primaryKey(),
+  trackId: text("track_id").notNull().unique(),
+  trackTitle: text("track_title").notNull(),
+  trackArtist: text("track_artist"),
+  // 'seed' (founder catalog) | 'survivor' (approved survivor anthem)
+  trackKind: text("track_kind").notNull().default("seed"),
+  voiceId: text("voice_id").notNull(),
+  script: text("script").notNull(),
+  // base64 data URL, same constraint as recovery_anthems.audio_url until
+  // Object Storage suspension lifts.
+  audioUrl: text("audio_url").notNull(),
+  createdBy: varchar("created_by"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  byKind: index("radio_dj_intros_kind_idx").on(t.trackKind, t.createdAt),
+}));
+export type RadioDjIntro = typeof radioDjIntros.$inferSelect;
 export type RecoveryAnthem = typeof recoveryAnthems.$inferSelect;
 export type InsertRecoveryAnthem = z.infer<typeof insertRecoveryAnthemSchema>;
 
