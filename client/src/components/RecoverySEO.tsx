@@ -47,11 +47,22 @@ export const NICK_KREMERS_SCHEMA = {
     "Creator of the S.A.S.C.H. Formula (Seize-Absorb-Swing-Combine-Hammer)",
   ],
   sameAs: [
+    `${RECOVERY_BASE_URL}/recovery/about-nick`,
+    "https://www.tiktok.com/@nickkremers",
+    "https://www.facebook.com/NicholasKremersSr",
     "https://www.facebook.com/strokerecoveryacademy",
     "https://twitter.com/strokerecovery",
     "https://www.youtube.com/@strokerecoveryacademy",
-    `${RECOVERY_BASE_URL}/recovery/about-nick`,
   ],
+  homeLocation: {
+    "@type": "Place",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Fort Smith",
+      addressRegion: "AR",
+      addressCountry: "US",
+    },
+  },
 };
 
 export const STROKE_RECOVERY_ORG_SCHEMA = {
@@ -92,7 +103,9 @@ export const STROKE_RECOVERY_ORG_SCHEMA = {
     "Constraint-induced movement therapy",
   ],
   sameAs: [
+    "https://www.tiktok.com/@nickkremers",
     "https://www.facebook.com/strokerecoveryacademy",
+    "https://www.facebook.com/NicholasKremersSr",
     "https://twitter.com/strokerecovery",
     "https://www.youtube.com/@strokerecoveryacademy",
   ],
@@ -216,7 +229,7 @@ interface RecoverySEOProps {
   description: string;
   canonical: string;
   keywords?: string[];
-  pageType?: "website" | "article" | "course" | "faq" | "medical";
+  pageType?: "website" | "article" | "course" | "faq" | "medical" | "product";
   image?: string;
   author?: string;
   publishedTime?: string;
@@ -422,7 +435,16 @@ export default function RecoverySEO({
         />
       )}
 
-      <meta property="og:type" content={pageType === "article" || pageType === "medical" ? "article" : "website"} />
+      <meta
+        property="og:type"
+        content={
+          pageType === "product"
+            ? "product"
+            : pageType === "article" || pageType === "medical"
+            ? "article"
+            : "website"
+        }
+      />
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />
@@ -471,6 +493,12 @@ export function createRecoveryCourseSchema(course: {
   level: "Beginner" | "Intermediate" | "Advanced" | "All Levels";
   free?: boolean;
   price?: number;
+  lessons?: Array<{
+    name: string;
+    url: string;
+    position: number;
+    description?: string;
+  }>;
 }) {
   return {
     "@context": "https://schema.org",
@@ -486,6 +514,7 @@ export function createRecoveryCourseSchema(course: {
     instructor: {
       "@type": "Person",
       name: "Nick Kremers",
+      "@id": `${RECOVERY_BASE_URL}/recovery/about-nick#nick-kremers`,
       description: "Stroke survivor, 0% to 90% recovery, author and founder",
     },
     educationalLevel: course.level,
@@ -499,6 +528,7 @@ export function createRecoveryCourseSchema(course: {
       priceCurrency: "USD",
       availability: "https://schema.org/InStock",
       url: `${RECOVERY_BASE_URL}${course.url}`,
+      category: course.free ? "Free" : "Subscription",
     },
     about: {
       "@type": "MedicalCondition",
@@ -509,6 +539,100 @@ export function createRecoveryCourseSchema(course: {
       courseMode: "online",
       courseWorkload: `PT${course.durationHours}H`,
     },
+    ...(course.lessons?.length && {
+      hasPart: course.lessons.map((lesson) => ({
+        "@type": "LearningResource",
+        name: lesson.name,
+        url: `${RECOVERY_BASE_URL}${lesson.url}`,
+        position: lesson.position,
+        ...(lesson.description && { description: lesson.description }),
+        learningResourceType: "Lesson",
+        educationalLevel: course.level,
+        inLanguage: "en-US",
+        isAccessibleForFree: false,
+        isPartOf: {
+          "@type": "Course",
+          name: course.name,
+          url: `${RECOVERY_BASE_URL}${course.url}`,
+        },
+      })),
+    }),
+  };
+}
+
+export function createRecoveryProductSchema(product: {
+  name: string;
+  description: string;
+  url: string;
+  image?: string;
+  /** Pass a verified current price in major-currency units. Omit when no
+   *  authoritative price source is available — the schema will then ship
+   *  without an `offers` block rather than guess and risk a Google
+   *  "misleading information" flag. */
+  price?: number;
+  priceCurrency?: string;
+  availability?: "InStock" | "OutOfStock" | "PreOrder";
+  category: string;
+  authorName?: string;
+  authorUrl?: string;
+  averageRating?: number;
+  reviewCount?: number;
+  totalSales?: number;
+}) {
+  const url = product.url.startsWith("http") ? product.url : `${RECOVERY_BASE_URL}${product.url}`;
+  const hasValidRating =
+    typeof product.averageRating === "number" &&
+    Number.isFinite(product.averageRating) &&
+    product.averageRating > 0 &&
+    typeof product.reviewCount === "number" &&
+    product.reviewCount > 0;
+  const hasValidPrice =
+    typeof product.price === "number" &&
+    Number.isFinite(product.price) &&
+    product.price >= 0;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    url,
+    ...(product.image && { image: product.image }),
+    category: product.category,
+    brand: {
+      "@type": "MedicalOrganization",
+      name: "Stroke Recovery Academy",
+      "@id": `${RECOVERY_BASE_URL}/#organization`,
+    },
+    ...(product.authorName && {
+      author: {
+        "@type": "Person",
+        name: product.authorName,
+        ...(product.authorUrl && { url: product.authorUrl }),
+      },
+    }),
+    ...(hasValidPrice && {
+      offers: {
+        "@type": "Offer",
+        price: (product.price as number).toFixed(2),
+        priceCurrency: product.priceCurrency || "USD",
+        availability: `https://schema.org/${product.availability || "InStock"}`,
+        url,
+        seller: {
+          "@type": "MedicalOrganization",
+          name: "Stroke Recovery Academy",
+          "@id": `${RECOVERY_BASE_URL}/#organization`,
+        },
+      },
+    }),
+    ...(hasValidRating && {
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: (product.averageRating as number).toFixed(1),
+        reviewCount: product.reviewCount,
+        bestRating: "5",
+        worstRating: "1",
+      },
+    }),
   };
 }
 
