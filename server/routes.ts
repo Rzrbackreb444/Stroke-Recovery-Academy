@@ -9075,7 +9075,15 @@ Respond in JSON format:
     registerVoiceLabRoutes(app);
     console.log('[voice-lab] routes registered');
   } catch (e) {
-    console.error('[voice-lab] failed to register routes:', e);
+    console.error('[voice-lab] failed to register routes', e);
+  }
+
+  try {
+    const { registerCampfireRoutes } = await import('./campfireRoutes');
+    await registerCampfireRoutes(app);
+    console.log('[campfire] routes registered');
+  } catch (e) {
+    console.error('[campfire] failed to register routes:', e);
   }
 
   // ──────────────────────────────────────────────────────────────────

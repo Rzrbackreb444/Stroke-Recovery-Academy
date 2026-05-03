@@ -46,6 +46,7 @@ const resourcesNav = [
   { href: "/recovery/exercises", label: "Exercises" },
   { href: "/recovery/routine", label: "Daily Routine" },
   { href: "/recovery/community", label: "Community" },
+  { href: "/recovery/campfire", label: "Campfire (Live)" },
   { href: "/recovery/brain-gym", label: "Brain Gym" },
   { href: "/recovery/blog", label: "Blog" },
   { href: "/recovery/spotlight", label: "Spotlight" },

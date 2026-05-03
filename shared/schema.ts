@@ -6769,3 +6769,19 @@ export const webhookEvents = pgTable("webhook_events", {
   statusIdx: index("idx_webhook_status").on(t.status, t.createdAt),
 }));
 export type WebhookEvent = typeof webhookEvents.$inferSelect;
+
+// ============================================================================
+// Campfire — scheduled live group chat rooms (Geneva-style). Rooms themselves
+// are hardcoded constants in server/campfireRoutes.ts; only messages persist.
+// ============================================================================
+export const campfireMessages = pgTable("campfire_messages", {
+  id: serial("id").primaryKey(),
+  roomId: varchar("room_id", { length: 64 }).notNull(),
+  userId: varchar("user_id").notNull(),
+  body: text("body").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => ({
+  roomIdx: index("idx_campfire_room_created").on(t.roomId, t.createdAt),
+  userIdx: index("idx_campfire_user_created").on(t.userId, t.createdAt),
+}));
+export type CampfireMessage = typeof campfireMessages.$inferSelect;
