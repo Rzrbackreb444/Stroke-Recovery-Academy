@@ -347,8 +347,14 @@ export default function SasquatchCoach() {
                       <p className="text-sm text-gray-200 leading-relaxed mb-3">
                         {msg.content}
                       </p>
-                      <p className="text-xs text-gray-500 mb-3">
-                        Sign in for the full companion: Sasquatch's actual voice replies, push-to-talk so you can speak instead of type, unlimited Coach turns, and a thread that resumes where you left off.
+                      <p className="text-xs italic text-gray-400 leading-relaxed mb-3">
+                        Built by a 7-year survivor — not textbook theory, lived experience and real feedback baked in. I learned from the doctors, experimented, failed, then recovered. I'll give you the blueprint. The work is on you.
+                      </p>
+                      <p className="text-xs text-gray-500 leading-relaxed mb-3">
+                        Sign in unlocks <span className="text-[#C9941A] font-semibold">Sasquatch's actual voice replies</span>, <span className="text-[#C9941A] font-semibold">push-to-talk</span> so you can speak instead of type, <span className="text-[#C9941A] font-semibold">unlimited Coach turns</span>, and a thread that resumes where you left off. Cancel anytime, no card needed for free.
+                      </p>
+                      <p className="text-xs italic text-[#C9941A]/80 mb-3">
+                        Sasquatch has your back. Heart still thumpin', life's still pumpin'.
                       </p>
                       <div className="flex flex-wrap gap-2">
                         <Button

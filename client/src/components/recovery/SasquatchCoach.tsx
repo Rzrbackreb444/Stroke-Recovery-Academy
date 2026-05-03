@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { apiRequest } from "@/lib/queryClient";
-import { Send, Volume2, MessageCircle, User, Loader2 } from "lucide-react";
+import { Send, Volume2, MessageCircle, User, Loader2, Mic, MicOff } from "lucide-react";
 
 interface Message {
   id: string;
@@ -35,14 +35,37 @@ export default function SasquatchCoach() {
   const [isLoading, setIsLoading] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playingId, setPlayingId] = useState<string | null>(null);
+  const [isListening, setIsListening] = useState(false);
+  const [micUnsupported, setMicUnsupported] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const recognitionRef = useRef<any>(null);
+  const blobUrlsRef = useRef<string[]>([]);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
+
+  // Probe SpeechRecognition + clean up mic / audio / blob URLs on unmount.
+  useEffect(() => {
+    const SR =
+      (typeof window !== "undefined" &&
+        ((window as any).SpeechRecognition ||
+          (window as any).webkitSpeechRecognition)) || null;
+    if (!SR) setMicUnsupported(true);
+    return () => {
+      try { recognitionRef.current?.stop(); } catch {}
+      recognitionRef.current = null;
+      try { audioRef.current?.pause(); } catch {}
+      audioRef.current = null;
+      for (const u of blobUrlsRef.current) {
+        try { URL.revokeObjectURL(u); } catch {}
+      }
+      blobUrlsRef.current = [];
+    };
+  }, []);
 
   const chatMutation = useMutation({
     mutationFn: async (message: string) => {
@@ -51,9 +74,13 @@ export default function SasquatchCoach() {
         content: m.content,
       }));
       
+      // skipAudio: true → server returns text the instant Gemini finishes
+      // and we fetch ElevenLabs in parallel below. Cuts perceived latency
+      // by the full TTS round-trip (~2-3s).
       const response = await apiRequest("POST", "/api/coach/chat", {
         message,
         history,
+        skipAudio: true,
       });
       return response.json();
     },
@@ -66,6 +93,35 @@ export default function SasquatchCoach() {
       };
       setMessages((prev) => [...prev, newMessage]);
       setIsLoading(false);
+      // Auto-play in parallel for the fast path. Server's isAuthenticated
+      // gate on /api/coach/speak rejects anon, so this just no-ops when
+      // signed-out — that's fine, the page-level Coach is the upsell surface.
+      if (!data.audioBase64 && data.response) {
+        fetch("/api/coach/speak", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ text: data.response }),
+        })
+          .then(async (r) => (r.ok ? r.arrayBuffer() : null))
+          .then((buf) => {
+            if (!buf) return;
+            const blob = new Blob([buf], { type: "audio/mpeg" });
+            const url = URL.createObjectURL(blob);
+            blobUrlsRef.current.push(url);
+            if (audioRef.current) audioRef.current.pause();
+            const audio = new Audio(url);
+            audioRef.current = audio;
+            audio.play().catch(() => {});
+            const cleanup = () => {
+              try { URL.revokeObjectURL(url); } catch {}
+              blobUrlsRef.current = blobUrlsRef.current.filter((u) => u !== url);
+            };
+            audio.onended = cleanup;
+            audio.onerror = cleanup;
+          })
+          .catch(() => {});
+      }
     },
     onError: () => {
       setIsLoading(false);
@@ -179,6 +235,54 @@ export default function SasquatchCoach() {
       e.preventDefault();
       handleSend();
     }
+  };
+
+  // Push-to-talk via browser SpeechRecognition (free, on-device, instant).
+  const startListening = () => {
+    if (micUnsupported || isListening || isLoading) return;
+    const SR =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+    if (!SR) return;
+    const recognition = new SR();
+    recognition.lang = "en-US";
+    recognition.interimResults = true;
+    recognition.continuous = false;
+    recognition.maxAlternatives = 1;
+    let finalTranscript = "";
+    recognition.onresult = (event: any) => {
+      let interim = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) finalTranscript += transcript;
+        else interim += transcript;
+      }
+      setInput((finalTranscript + interim).trim());
+    };
+    recognition.onerror = () => setIsListening(false);
+    recognition.onend = () => {
+      setIsListening(false);
+      const text = finalTranscript.trim();
+      if (text) {
+        const userMessage: Message = {
+          id: Date.now().toString(),
+          role: "user",
+          content: text,
+        };
+        setMessages((prev) => [...prev, userMessage]);
+        setInput("");
+        setIsLoading(true);
+        chatMutation.mutate(text);
+      }
+    };
+    recognitionRef.current = recognition;
+    setIsListening(true);
+    try { recognition.start(); } catch { setIsListening(false); }
+  };
+
+  const stopListening = () => {
+    try { recognitionRef.current?.stop(); } catch {}
+    setIsListening(false);
   };
 
   return (
@@ -333,11 +437,24 @@ export default function SasquatchCoach() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Talk to your coach..."
+              placeholder={isListening ? "Listening — speak naturally..." : "Talk to your coach, or tap mic..."}
               disabled={isLoading}
               className="flex-1"
               data-testid="chat-input"
             />
+            {!micUnsupported && (
+              <Button
+                onClick={isListening ? stopListening : startListening}
+                disabled={isLoading}
+                variant={isListening ? "default" : "outline"}
+                style={isListening ? { backgroundColor: "#C9941A" } : undefined}
+                className={isListening ? "hover:opacity-90 animate-pulse" : "hover:opacity-90"}
+                title={isListening ? "Tap to stop" : "Push to talk"}
+                data-testid="mic-button"
+              >
+                {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+              </Button>
+            )}
             <Button
               onClick={handleSend}
               disabled={!input.trim() || isLoading}
