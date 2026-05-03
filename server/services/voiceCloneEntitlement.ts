@@ -112,7 +112,12 @@ export async function hasActiveVoiceCloneSubscription(
 ): Promise<boolean> {
   if (!stripeCustomerId) return false;
   const { subscriptionPriceId } = await getVoiceClonePriceIds();
-  if (!subscriptionPriceId) return false;
+  // Sasquatch Premium ($19/mo) bundles voice-clone access — load its price id
+  // too so the same Stripe sub list scan can satisfy either entitlement in
+  // one round trip. Either price grants voice-clone access.
+  const { getSasquatchPremiumPriceId } = await import("./sasquatchPremiumService");
+  const sasquatchPriceId = await getSasquatchPremiumPriceId();
+  if (!subscriptionPriceId && !sasquatchPriceId) return false;
 
   if (!opts.skipCache) {
     const cached = entitlementCache.get(stripeCustomerId);
@@ -133,7 +138,8 @@ export async function hasActiveVoiceCloneSubscription(
       });
       for (const sub of subs.data) {
         for (const item of sub.items.data) {
-          if (item.price?.id === subscriptionPriceId) {
+          const pid = item.price?.id;
+          if (pid && (pid === subscriptionPriceId || pid === sasquatchPriceId)) {
             active = true;
             break;
           }

@@ -13,6 +13,7 @@ type CampfireRoom = {
   schedule: string;
   isOpen: (now: Date) => boolean;
   nextOpen: (now: Date) => Date;
+  isPremiumOnly?: boolean;
 };
 
 function nextDailyAt(now: Date, utcHour: number): Date {
@@ -84,6 +85,34 @@ const ROOMS: CampfireRoom[] = [
     },
     nextOpen: (now) => nextDailyAt(now, 3),
   },
+  {
+    id: "coach-circle",
+    name: "Coach Circle (Premium)",
+    blurb: "Premium-only fire. Sasquatch coaches drop in. Deeper questions, longer answers.",
+    emoji: "🛡️",
+    schedule: "Mon, Wed, Fri · 12:00–1:00pm ET",
+    isOpen: (now) => {
+      const h = now.getUTCHours();
+      const d = now.getUTCDay();
+      return (d === 1 || d === 3 || d === 5) && (h === 16 || h === 17);
+    },
+    nextOpen: (now) => nextWeeklyAt(now, [1, 3, 5], 16),
+    isPremiumOnly: true,
+  },
+  {
+    id: "live-with-nick",
+    name: "Live with Nick (Premium)",
+    blurb: "Founder fireside. 7-year survivor Nick Kremers, live. Premium only.",
+    emoji: "🪵",
+    schedule: "Sat · 10:00–11:00am ET",
+    isOpen: (now) => {
+      const h = now.getUTCHours();
+      const d = now.getUTCDay();
+      return d === 6 && (h === 14 || h === 15);
+    },
+    nextOpen: (now) => nextWeeklyAt(now, [6], 14),
+    isPremiumOnly: true,
+  },
 ];
 
 async function ensureSchema() {
@@ -134,6 +163,7 @@ export async function registerCampfireRoutes(app: Express) {
         isOpen: r.isOpen(now),
         nextOpenAt: r.nextOpen(now).toISOString(),
         recent24h: countMap.get(r.id) ?? 0,
+        isPremiumOnly: !!r.isPremiumOnly,
       }));
       res.json({ rooms, serverTime: now.toISOString() });
     } catch (err: any) {
@@ -150,6 +180,17 @@ export async function registerCampfireRoutes(app: Express) {
         const { roomId } = req.params;
         const room = ROOMS.find((r) => r.id === roomId);
         if (!room) return res.status(404).json({ error: "Room not found" });
+
+        if (room.isPremiumOnly) {
+          const userId = getUserId(req);
+          const { isSasquatchPremium } = await import("./services/sasquatchPremiumService");
+          if (!userId || !(await isSasquatchPremium(userId))) {
+            return res.status(402).json({
+              error: "Sasquatch Premium required for this circle.",
+              upgradeUrl: "/recovery/premium",
+            });
+          }
+        }
 
         const sinceRaw = typeof req.query.since === "string" ? req.query.since : null;
         // Reject malformed timestamps before they reach the SQL layer — Postgres
@@ -215,6 +256,16 @@ export async function registerCampfireRoutes(app: Express) {
         const { roomId } = req.params;
         const room = ROOMS.find((r) => r.id === roomId);
         if (!room) return res.status(404).json({ error: "Room not found" });
+
+        if (room.isPremiumOnly) {
+          const { isSasquatchPremium } = await import("./services/sasquatchPremiumService");
+          if (!(await isSasquatchPremium(userId))) {
+            return res.status(402).json({
+              error: "Sasquatch Premium required for this circle.",
+              upgradeUrl: "/recovery/premium",
+            });
+          }
+        }
 
         const now = new Date();
         if (!room.isOpen(now)) {

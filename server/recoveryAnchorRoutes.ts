@@ -48,6 +48,15 @@ function yesterdayStr(): string {
 }
 
 async function isPremium(userId: string): Promise<boolean> {
+  // Survivor-side $19/mo Sasquatch Premium also grants unlimited renders.
+  // Checked first because it's a single Stripe lookup with a 60s cache,
+  // whereas getUserTier() touches user_subscriptions + tier config.
+  try {
+    const { isSasquatchPremium } = await import("./services/sasquatchPremiumService");
+    if (await isSasquatchPremium(userId)) return true;
+  } catch (e: any) {
+    console.warn("[recovery-anchor] sasquatch premium check failed:", e?.message ?? e);
+  }
   try {
     const { getUserTier } = await import("./subscriptionTierService");
     const tier = await getUserTier(userId);
