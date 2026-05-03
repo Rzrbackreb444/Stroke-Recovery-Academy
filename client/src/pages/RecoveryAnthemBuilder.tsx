@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient as queryClientImpl } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/useAuth";
 import {
   Music,
   Sparkles,
@@ -30,6 +31,7 @@ import {
   Phone,
   HelpCircle,
   Lock,
+  LogIn,
   Maximize2,
   X,
   Radio as RadioIcon,
@@ -121,6 +123,7 @@ const VOICE_BADGE_LABEL: Record<string, string> = {
 export default function RecoveryAnthemBuilder() {
   const { toast } = useToast();
   const qc = useQueryClient();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
 
   // ── Form state ────────────────────────────────────────────────────
   const [vibe, setVibe] = useState<VibeOption>("rock_anthem");
@@ -137,12 +140,16 @@ export default function RecoveryAnthemBuilder() {
   const [exerciseMode, setExerciseMode] = useState(false);
 
   // ── Queries ───────────────────────────────────────────────────────
+  // Skip usage/list queries entirely when signed out — they 401 and pollute
+  // the console + react-query retry budget for no UX benefit.
   const usageQuery = useQuery<UsageStatus>({
     queryKey: ["/api/recovery/anthem/usage"],
+    enabled: isAuthenticated,
   });
 
   const listQuery = useQuery<AnthemListItem[]>({
     queryKey: ["/api/recovery/anthem/list"],
+    enabled: isAuthenticated,
   });
 
   // ── Mutations ─────────────────────────────────────────────────────
@@ -161,7 +168,16 @@ export default function RecoveryAnthemBuilder() {
       }
     },
     onError: (e: any) => {
-      toast({ title: "Preview failed", description: e?.message ?? "Try again", variant: "destructive" });
+      const msg = String(e?.message ?? "");
+      if (msg.includes("401")) {
+        toast({
+          title: "Sign in to preview",
+          description: "Your session expired. Sign in and try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+      toast({ title: "Preview failed", description: msg || "Try again", variant: "destructive" });
     },
   });
 
@@ -179,8 +195,17 @@ export default function RecoveryAnthemBuilder() {
       }
     },
     onError: async (e: any) => {
-      // Surface 402 free-tier-limit nicely.
       const msg = String(e?.message ?? "");
+      // Surface 401 (signed out / session expired) before any other branch.
+      if (msg.includes("401")) {
+        toast({
+          title: "Sign in to compose your anthem",
+          description: "Your session expired. Sign in and your inputs will still be here.",
+          variant: "destructive",
+        });
+        return;
+      }
+      // Surface 402 free-tier-limit nicely.
       if (msg.includes("402") || msg.toLowerCase().includes("limit")) {
         toast({
           title: "Free anthem used this month",
@@ -206,7 +231,7 @@ export default function RecoveryAnthemBuilder() {
     };
   }
 
-  const canSubmit = deficit.trim().length >= 2 && goal.trim().length >= 2 && !previewMutation.isPending && !composeMutation.isPending;
+  const canSubmit = isAuthenticated && deficit.trim().length >= 2 && goal.trim().length >= 2 && !previewMutation.isPending && !composeMutation.isPending;
 
   const usageBadge = useMemo(() => {
     if (!usageQuery.data) return null;
@@ -242,6 +267,56 @@ export default function RecoveryAnthemBuilder() {
             </Badge>
           )}
         </header>
+
+        {/* ── Sign-in gate ─────────────────────────────────────── */}
+        {!authLoading && !isAuthenticated && (
+          <Card
+            className="mb-8 border border-[#C9941A]/40 bg-[#1a1a1a] p-6"
+            data-testid="card-anthem-signin-gate"
+          >
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-full bg-[#C9941A]/15 border border-[#C9941A]/40 flex items-center justify-center flex-shrink-0">
+                <LogIn className="h-5 w-5 text-[#C9941A]" />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-lg font-semibold text-white mb-2">
+                  Sign in to compose your anthem
+                </h2>
+                <p className="text-sm italic text-white/60 leading-relaxed mb-3">
+                  Built by a 7-year survivor — not textbook theory, lived experience and real
+                  feedback baked in. I'll give you the blueprint. The work is on you.
+                </p>
+                <p className="text-sm text-white/70 leading-relaxed mb-4">
+                  Sign in unlocks <span className="text-[#C9941A] font-semibold">your first anthem free this month</span>,
+                  saved drafts, share links, and the Sasquatch Radio submission flow.
+                  <span className="text-white/60"> 7 days free, then cancel anytime — no card needed to start.</span>
+                </p>
+                <p className="text-xs italic text-[#C9941A]/80 mb-4">
+                  Sasquatch has your back. Heart still thumpin', life's still pumpin'.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    asChild
+                    size="sm"
+                    className="bg-[#C9941A] text-black hover:bg-[#C9941A]/90"
+                    data-testid="button-anthem-signin"
+                  >
+                    <a href="/api/login">Sign in to compose</a>
+                  </Button>
+                  <Button
+                    asChild
+                    size="sm"
+                    variant="outline"
+                    className="border-white/20 text-white hover:bg-white/5"
+                    data-testid="button-anthem-learn-more"
+                  >
+                    <Link href="/recovery/premium">Premium details</Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
 
         {/* ── Form ─────────────────────────────────────────────── */}
         <Card className="bg-[#1a1a1a] border-white/10 p-6 sm:p-8 mb-8">
