@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { safeJsonLd } from "@/lib/safeJsonLd";
 
 interface SEOProps {
   title?: string;
@@ -213,9 +214,11 @@ export default function SEO({
       <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
 
       {allSchemas.map((s, i) => (
-        <script key={i} type="application/ld+json">
-          {JSON.stringify({ "@context": "https://schema.org", ...s })}
-        </script>
+        <script
+          key={i}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: safeJsonLd({ "@context": "https://schema.org", ...s }) }}
+        />
       ))}
     </Helmet>
   );
