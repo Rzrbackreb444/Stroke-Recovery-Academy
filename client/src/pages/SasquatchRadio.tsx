@@ -36,6 +36,8 @@ import phantomLimbUrl from "@assets/phantom-limb_1777782175104.mp3";
 import thePromiseUrl from "@assets/the-promise_1777782175104.mp3";
 import iAmTheArchitectUrl from "@assets/i-am-the-architect_1777782175104.mp3";
 import strokedOutButNotDoneUrl from "@assets/“stroked-out-(but-not-done)”_1777782389082.mp3";
+import blackingOutUrl from "@assets/blacking-out_1777782436717.mp3";
+import squatchyUrl from "@assets/squatchy-2_1777782436717.mp3";
 
 interface RadioTrack {
   id: string;
@@ -193,6 +195,28 @@ const SEED_CATALOG: RadioTrack[] = [
     audioUrl: iAmTheArchitectUrl,
     durationLabel: "Full track",
     hashtags: ["#StrokeRecovery", "#Neuroplasticity", "#Architect"],
+  },
+  {
+    id: "blacking-out",
+    title: "Blacking Out",
+    artist: "Stroked-Out Sasquatch",
+    vibe: "Lo-Fi Recovery",
+    story:
+      "The moment everything goes dark — and then comes back different. Blacking-out is the survivor's origin story, told in the quiet between the heartbeats.",
+    audioUrl: blackingOutUrl,
+    durationLabel: "Full track",
+    hashtags: ["#StrokeRecovery", "#BlackingOut", "#SasquatchRadio"],
+  },
+  {
+    id: "squatchy",
+    title: "Squatchy",
+    artist: "Stroked-Out Sasquatch",
+    vibe: "Rock Anthem",
+    story:
+      "The Sasquatch swagger track. Big-footed, big-hearted, big-noise. For the survivor who's done apologizing for taking up space in the world they fought back into.",
+    audioUrl: squatchyUrl,
+    durationLabel: "Full track",
+    hashtags: ["#StrokeRecovery", "#Squatchy", "#SasquatchRadio"],
   },
 ];
 
