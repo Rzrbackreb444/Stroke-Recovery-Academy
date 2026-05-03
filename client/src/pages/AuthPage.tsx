@@ -6,108 +6,178 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { SiGoogle } from "react-icons/si";
 import {
-  Sparkles, Mail, Lock, User, ArrowRight, Loader2, Eye, EyeOff,
-  Wand2, Check, Crown, Zap, Star, ArrowLeft
+  Mail, Lock, User, ArrowRight, Loader2, Eye, EyeOff,
+  Wand2, Check, Crown, Zap, Star, ArrowLeft, KeyRound,
 } from "lucide-react";
 
-type AuthMode = "login" | "register" | "magic-link" | "forgot-password";
+// AuthMode philosophy:
+//   "otp"          — DEFAULT. Email + 6-digit code. No password to remember.
+//                    Survivor-first: many users have aphasia or memory deficits
+//                    after a stroke; OTP removes the password burden entirely.
+//   "password"     — Returning users with an established password.
+//   "register"     — Create-account form (still password-based for users who
+//                    explicitly want one).
+//   "magic-link"   — Email a one-tap link instead of a code.
+//   "forgot-password" — Standard reset flow.
+//
+// Replit Auth is intentionally a small fallback link below the card, NOT a
+// primary button — survivors found the developer-branded "Continue with Replit"
+// confusing/cheap-looking.
+type AuthMode = "otp" | "password" | "register" | "magic-link" | "forgot-password";
 
 export default function AuthPage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const [mode, setMode] = useState<AuthMode>("login");
+  const [mode, setMode] = useState<AuthMode>("otp");
   const [showPassword, setShowPassword] = useState(false);
-  
+
   const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [magicLinkSent, setMagicLinkSent] = useState(false);
 
-  const loginMutation = useMutation({
+  // Probe configured social providers so we only render Google if the server
+  // actually has GOOGLE_CLIENT_ID. Avoids a dead button.
+  const { data: providersData } = useQuery<{ providers: string[] }>({
+    queryKey: ["/api/auth/providers"],
+    staleTime: 60_000,
+  });
+  const googleEnabled = providersData?.providers?.includes("google") ?? false;
+
+  // ── Mutations ──────────────────────────────────────────────────────────────
+
+  const sendOtpMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest("POST", "/api/email-auth/login", { email, password });
-      return response.json();
+      const r = await apiRequest("POST", "/api/auth/otp/send", { email });
+      return r.json();
+    },
+    onSuccess: () => {
+      setOtpSent(true);
+      toast({ title: "Code sent", description: `Check ${email} for your 6-digit code` });
+    },
+    onError: (e: any) => {
+      toast({ title: "Couldn't send code", description: e.message || "Try again", variant: "destructive" });
+    },
+  });
+
+  const verifyOtpMutation = useMutation({
+    mutationFn: async () => {
+      const r = await apiRequest("POST", "/api/auth/otp/verify", { email, otp });
+      return r.json();
     },
     onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/email-auth/me"] });
+      toast({ title: "Welcome!", description: "You're signed in" });
+      // New OTP accounts go to /welcome (intake-first); returning users go to
+      // the creator hub. Server flags isNewUser via the OTP verify response.
+      setLocation(data?.isNewUser ? "/welcome" : "/creator-hub");
+    },
+    onError: (e: any) => {
+      toast({ title: "Invalid code", description: e.message || "Check the code and try again", variant: "destructive" });
+    },
+  });
+
+  const loginMutation = useMutation({
+    mutationFn: async () => {
+      const r = await apiRequest("POST", "/api/email-auth/login", { email, password });
+      return r.json();
+    },
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/email-auth/me"] });
       toast({ title: "Welcome back!", description: "You've successfully signed in" });
       setLocation("/creator-hub");
     },
-    onError: (error: any) => {
-      toast({ title: "Login failed", description: error.message || "Invalid credentials", variant: "destructive" });
-    }
+    onError: (e: any) => {
+      toast({ title: "Login failed", description: e.message || "Invalid credentials", variant: "destructive" });
+    },
   });
 
   const registerMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest("POST", "/api/email-auth/register", {
-        email,
-        password,
-        firstName,
-        lastName,
-      });
-      return response.json();
+      const r = await apiRequest("POST", "/api/email-auth/register", { email, password, firstName, lastName });
+      return r.json();
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/email-auth/me"] });
       toast({ title: "Account created!", description: "Welcome to Stroke Recovery Academy" });
-      // Survivor-first onboarding: route new accounts through /welcome where
-      // they see the four pillars and get nudged to /recovery/intake.
       setLocation("/welcome");
     },
-    onError: (error: any) => {
-      toast({ title: "Registration failed", description: error.message, variant: "destructive" });
-    }
+    onError: (e: any) => {
+      toast({ title: "Registration failed", description: e.message, variant: "destructive" });
+    },
   });
 
   const magicLinkMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest("POST", "/api/email-auth/magic-link", { email });
-      return response.json();
+      const r = await apiRequest("POST", "/api/email-auth/magic-link", { email });
+      return r.json();
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       setMagicLinkSent(true);
       toast({ title: "Magic link sent!", description: "Check your email to sign in" });
     },
-    onError: (error: any) => {
-      toast({ title: "Failed to send", description: error.message, variant: "destructive" });
-    }
+    onError: (e: any) => {
+      toast({ title: "Failed to send", description: e.message, variant: "destructive" });
+    },
   });
 
   const forgotPasswordMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest("POST", "/api/email-auth/forgot-password", { email });
-      return response.json();
+      const r = await apiRequest("POST", "/api/email-auth/forgot-password", { email });
+      return r.json();
     },
     onSuccess: () => {
       toast({ title: "Reset link sent", description: "Check your email to reset your password" });
     },
-    onError: (error: any) => {
-      toast({ title: "Request failed", description: error.message, variant: "destructive" });
-    }
+    onError: (e: any) => {
+      toast({ title: "Request failed", description: e.message, variant: "destructive" });
+    },
   });
+
+  // Reset OTP step state when leaving OTP mode so the form re-arms cleanly.
+  useEffect(() => {
+    if (mode !== "otp") {
+      setOtpSent(false);
+      setOtp("");
+    }
+  }, [mode]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (mode === "register" && password !== confirmPassword) {
-      toast({ title: "Passwords don't match", variant: "destructive" });
-      return;
+    if (mode === "otp") {
+      if (!otpSent) sendOtpMutation.mutate();
+      else verifyOtpMutation.mutate();
+    } else if (mode === "password") {
+      loginMutation.mutate();
+    } else if (mode === "register") {
+      if (password !== confirmPassword) {
+        toast({ title: "Passwords don't match", variant: "destructive" });
+        return;
+      }
+      registerMutation.mutate();
+    } else if (mode === "magic-link") {
+      magicLinkMutation.mutate();
+    } else if (mode === "forgot-password") {
+      forgotPasswordMutation.mutate();
     }
-    
-    if (mode === "login") loginMutation.mutate();
-    else if (mode === "register") registerMutation.mutate();
-    else if (mode === "magic-link") magicLinkMutation.mutate();
-    else if (mode === "forgot-password") forgotPasswordMutation.mutate();
   };
 
-  const isLoading = loginMutation.isPending || registerMutation.isPending || 
-                    magicLinkMutation.isPending || forgotPasswordMutation.isPending;
+  const isLoading =
+    sendOtpMutation.isPending ||
+    verifyOtpMutation.isPending ||
+    loginMutation.isPending ||
+    registerMutation.isPending ||
+    magicLinkMutation.isPending ||
+    forgotPasswordMutation.isPending;
 
   const features = [
     { icon: Crown, text: "7 Premium AI Studios" },
@@ -115,35 +185,54 @@ export default function AuthPage() {
     { icon: Star, text: "85/15 Creator Revenue Split" },
   ];
 
+  // Title/description derived from mode so we keep one card layout.
+  const cardTitle = {
+    otp: otpSent ? "Enter Your Code" : "Sign In with Email",
+    password: "Sign in with Password",
+    register: "Create Account",
+    "magic-link": "Magic Link Sign In",
+    "forgot-password": "Reset Password",
+  }[mode];
+
+  const cardDescription = {
+    otp: otpSent
+      ? `We sent a 6-digit code to ${email}`
+      : "We'll email you a 6-digit code — no password needed",
+    password: "Use your saved password",
+    register: "Join survivors and creators worldwide",
+    "magic-link": "We'll email you a one-tap sign-in link",
+    "forgot-password": "Enter your email to reset password",
+  }[mode];
+
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex">
       {/* Left Panel - Branding */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 via-orange-500/10 to-rose-500/20" />
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0djZoNnYtNmgtNnptMCAwdi02aDZ2NmgtdnptLTYgNmg2di02aC02djZ6bTAtMTJoNnY2aC02di02eiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
-        
+
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
           <div>
             <div className="flex items-center gap-3 mb-12">
-              <img 
-                src={kreaiteLogo} 
-                alt="Stroke Recovery Academy" 
+              <img
+                src={kreaiteLogo}
+                alt="Stroke Recovery Academy"
                 className="h-12 w-auto object-contain"
               />
             </div>
-            
+
             <h1 className="text-5xl font-bold text-white mb-6 leading-tight">
-              Create.<br />
+              Rebuild.<br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">
-                Publish.
+                Rewire.
               </span><br />
-              Earn.
+              Rise.
             </h1>
-            
+
             <p className="text-xl text-white/60 mb-12 max-w-md">
-              The world's most powerful AI creator platform. Turn your imagination into reality with our 7 professional studios.
+              The survivor-first stroke recovery platform. Daily routines, AI coach, and a community that gets it.
             </p>
-            
+
             <div className="space-y-4">
               {features.map((feature, i) => {
                 const Icon = feature.icon;
@@ -158,41 +247,35 @@ export default function AuthPage() {
               })}
             </div>
           </div>
-          
+
           <div className="text-white/40 text-sm">
-            Trusted by 50M+ creators worldwide
+            Built by survivors, for survivors.
           </div>
         </div>
       </div>
-      
+
       {/* Right Panel - Auth Form */}
       <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center justify-center mb-8">
-            <img 
-              src={kreaiteLogo} 
-              alt="Stroke Recovery Academy" 
+            <img
+              src={kreaiteLogo}
+              alt="Stroke Recovery Academy"
               className="h-10 w-auto object-contain"
             />
           </div>
-          
+
           <Card className="bg-white/5 border-white/10 backdrop-blur-xl">
             <CardHeader className="text-center pb-2">
-              <CardTitle className="text-2xl text-white">
-                {mode === "login" && "Welcome Back"}
-                {mode === "register" && "Create Account"}
-                {mode === "magic-link" && "Magic Link Sign In"}
-                {mode === "forgot-password" && "Reset Password"}
+              <CardTitle className="text-2xl text-white" data-testid="text-auth-title">
+                {cardTitle}
               </CardTitle>
               <CardDescription className="text-white/60">
-                {mode === "login" && "Sign in to your Stroke Recovery Academy account"}
-                {mode === "register" && "Join 50M+ creators on Stroke Recovery Academy"}
-                {mode === "magic-link" && "We'll email you a secure sign in link"}
-                {mode === "forgot-password" && "Enter your email to reset password"}
+                {cardDescription}
               </CardDescription>
             </CardHeader>
-            
+
             <CardContent>
               {magicLinkSent && mode === "magic-link" ? (
                 <div className="text-center py-8">
@@ -205,200 +288,319 @@ export default function AuthPage() {
                   </p>
                   <Button
                     variant="ghost"
-                    onClick={() => { setMagicLinkSent(false); setMode("login"); }}
+                    onClick={() => { setMagicLinkSent(false); setMode("otp"); }}
                     className="text-[#C9941A]"
+                    data-testid="button-back-from-magic-link"
                   >
-                    Back to Login
+                    Back to Sign In
                   </Button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  {mode === "register" && (
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <Label className="text-white/80 text-sm">First Name</Label>
-                        <div className="relative mt-1">
-                          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-                          <Input
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
-                            placeholder="John"
-                            className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30"
-                            data-testid="input-first-name"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <Label className="text-white/80 text-sm">Last Name</Label>
-                        <div className="relative mt-1">
-                          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-                          <Input
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
-                            placeholder="Doe"
-                            className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30"
-                            data-testid="input-last-name"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  
-                  <div>
-                    <Label className="text-white/80 text-sm">Email</Label>
-                    <div className="relative mt-1">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-                      <Input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="you@example.com"
-                        required
-                        className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30"
-                        data-testid="input-email"
-                      />
-                    </div>
-                  </div>
-                  
-                  {(mode === "login" || mode === "register") && (
-                    <div>
-                      <Label className="text-white/80 text-sm">Password</Label>
-                      <div className="relative mt-1">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-                        <Input
-                          type={showPassword ? "text" : "password"}
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          placeholder="Enter password"
-                          required
-                          className="pl-10 pr-10 bg-white/5 border-white/10 text-white placeholder:text-white/30"
-                          data-testid="input-password"
-                        />
-                        <button
+                <>
+                  {/* ── Google + Replit social row (above email form) ──────
+                     Shown only on the entry modes (otp / password / register).
+                     Hidden on magic-link / forgot-password to keep the focused
+                     flow uncluttered. */}
+                  {(mode === "otp" || mode === "password" || mode === "register") && !otpSent && (
+                    <div className="space-y-3 mb-6">
+                      {googleEnabled && (
+                        <Button
                           type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60"
+                          variant="outline"
+                          onClick={() => { window.location.href = "/api/auth/google"; }}
+                          className="w-full border-white/20 text-white hover:bg-white/10"
+                          data-testid="button-google-signin"
                         >
-                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {mode === "register" && (
-                    <div>
-                      <Label className="text-white/80 text-sm">Confirm Password</Label>
-                      <div className="relative mt-1">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-                        <Input
-                          type={showPassword ? "text" : "password"}
-                          value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                          placeholder="Confirm password"
-                          required
-                          className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30"
-                          data-testid="input-confirm-password"
-                        />
-                      </div>
-                    </div>
-                  )}
-                  
-                  {mode === "login" && (
-                    <div className="flex justify-end">
-                      <button
-                        type="button"
-                        onClick={() => setMode("forgot-password")}
-                        className="text-sm text-[#C9941A] hover:text-amber-300"
-                      >
-                        Forgot password?
-                      </button>
-                    </div>
-                  )}
-                  
-                  <Button
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-semibold py-6"
-                    data-testid="button-submit-auth"
-                  >
-                    {isLoading ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                      <>
-                        {mode === "login" && "Sign In"}
-                        {mode === "register" && "Create Account"}
-                        {mode === "magic-link" && "Send Magic Link"}
-                        {mode === "forgot-password" && "Send Reset Link"}
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </>
-                    )}
-                  </Button>
-                  
-                  {(mode === "login" || mode === "register") && (
-                    <>
-                      <div className="relative my-6">
+                          <SiGoogle className="w-4 h-4 mr-2" />
+                          Continue with Google
+                        </Button>
+                      )}
+                      <div className="relative">
                         <div className="absolute inset-0 flex items-center">
                           <div className="w-full border-t border-white/10" />
                         </div>
                         <div className="relative flex justify-center">
-                          <span className="bg-[#0a0a0a] px-4 text-sm text-white/40">or</span>
+                          <span className="bg-[#0a0a0a] px-4 text-sm text-white/40">or use email</span>
                         </div>
                       </div>
-                      
+                    </div>
+                  )}
+
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    {mode === "register" && (
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <Label className="text-white/80 text-sm">First Name</Label>
+                          <div className="relative mt-1">
+                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                            <Input
+                              value={firstName}
+                              onChange={(e) => setFirstName(e.target.value)}
+                              placeholder="Jane"
+                              className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                              data-testid="input-first-name"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <Label className="text-white/80 text-sm">Last Name</Label>
+                          <div className="relative mt-1">
+                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                            <Input
+                              value={lastName}
+                              onChange={(e) => setLastName(e.target.value)}
+                              placeholder="Doe"
+                              className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                              data-testid="input-last-name"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Email field — hidden on the OTP "enter code" step */}
+                    {!(mode === "otp" && otpSent) && (
+                      <div>
+                        <Label className="text-white/80 text-sm">Email</Label>
+                        <div className="relative mt-1">
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                          <Input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="you@example.com"
+                            required
+                            autoComplete="email"
+                            className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                            data-testid="input-email"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* OTP code field — only on the "enter code" step */}
+                    {mode === "otp" && otpSent && (
+                      <div>
+                        <Label className="text-white/80 text-sm">6-Digit Code</Label>
+                        <div className="relative mt-1">
+                          <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                          <Input
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            maxLength={6}
+                            value={otp}
+                            onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                            placeholder="123456"
+                            required
+                            autoFocus
+                            autoComplete="one-time-code"
+                            className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30 tracking-[0.5em] text-center text-lg"
+                            data-testid="input-otp"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => { setOtpSent(false); setOtp(""); }}
+                          className="text-xs text-white/50 hover:text-white/80 mt-2"
+                          data-testid="button-otp-change-email"
+                        >
+                          Use a different email
+                        </button>
+                      </div>
+                    )}
+
+                    {(mode === "password" || mode === "register") && (
+                      <div>
+                        <Label className="text-white/80 text-sm">Password</Label>
+                        <div className="relative mt-1">
+                          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                          <Input
+                            type={showPassword ? "text" : "password"}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Enter password"
+                            required
+                            autoComplete={mode === "register" ? "new-password" : "current-password"}
+                            className="pl-10 pr-10 bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                            data-testid="input-password"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60"
+                            data-testid="button-toggle-password-visibility"
+                          >
+                            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {mode === "register" && (
+                      <div>
+                        <Label className="text-white/80 text-sm">Confirm Password</Label>
+                        <div className="relative mt-1">
+                          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                          <Input
+                            type={showPassword ? "text" : "password"}
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            placeholder="Confirm password"
+                            required
+                            autoComplete="new-password"
+                            className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                            data-testid="input-confirm-password"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {mode === "password" && (
+                      <div className="flex justify-end">
+                        <button
+                          type="button"
+                          onClick={() => setMode("forgot-password")}
+                          className="text-sm text-[#C9941A] hover:text-amber-300"
+                          data-testid="button-forgot-password"
+                        >
+                          Forgot password?
+                        </button>
+                      </div>
+                    )}
+
+                    <Button
+                      type="submit"
+                      disabled={isLoading}
+                      className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-semibold py-6"
+                      data-testid="button-submit-auth"
+                    >
+                      {isLoading ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : (
+                        <>
+                          {mode === "otp" && (otpSent ? "Verify & Sign In" : "Send Code")}
+                          {mode === "password" && "Sign In"}
+                          {mode === "register" && "Create Account"}
+                          {mode === "magic-link" && "Send Magic Link"}
+                          {mode === "forgot-password" && "Send Reset Link"}
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </>
+                      )}
+                    </Button>
+
+                    {/* Resend code on the OTP "enter code" step */}
+                    {mode === "otp" && otpSent && (
                       <Button
                         type="button"
-                        variant="outline"
-                        onClick={() => setMode("magic-link")}
-                        className="w-full border-white/20 text-white hover:bg-white/10"
-                        data-testid="button-magic-link"
+                        variant="ghost"
+                        disabled={sendOtpMutation.isPending}
+                        onClick={() => sendOtpMutation.mutate()}
+                        className="w-full text-white/60 hover:text-white"
+                        data-testid="button-otp-resend"
                       >
-                        <Wand2 className="w-4 h-4 mr-2 text-[#C9941A]" />
-                        Sign in with Magic Link
+                        {sendOtpMutation.isPending ? "Sending…" : "Didn't get it? Resend code"}
                       </Button>
-                    </>
-                  )}
-                  
-                  {(mode === "magic-link" || mode === "forgot-password") && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      onClick={() => setMode("login")}
-                      className="w-full text-white/60 hover:text-white"
-                    >
-                      <ArrowLeft className="w-4 h-4 mr-2" />
-                      Back to Login
-                    </Button>
-                  )}
-                </form>
+                    )}
+
+                    {/* Mode switchers — secondary options */}
+                    {mode === "otp" && !otpSent && (
+                      <div className="grid grid-cols-2 gap-3 pt-1">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setMode("password")}
+                          className="border-white/20 text-white hover:bg-white/10"
+                          data-testid="button-mode-password"
+                        >
+                          <Lock className="w-4 h-4 mr-2 text-[#C9941A]" />
+                          Password
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setMode("magic-link")}
+                          className="border-white/20 text-white hover:bg-white/10"
+                          data-testid="button-mode-magic-link"
+                        >
+                          <Wand2 className="w-4 h-4 mr-2 text-[#C9941A]" />
+                          Magic link
+                        </Button>
+                      </div>
+                    )}
+
+                    {mode === "password" && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => setMode("otp")}
+                        className="w-full text-white/60 hover:text-white"
+                        data-testid="button-back-to-otp"
+                      >
+                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        Use a code instead
+                      </Button>
+                    )}
+
+                    {(mode === "magic-link" || mode === "forgot-password") && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => setMode("otp")}
+                        className="w-full text-white/60 hover:text-white"
+                        data-testid="button-back-to-signin"
+                      >
+                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        Back to Sign In
+                      </Button>
+                    )}
+                  </form>
+                </>
               )}
-              
-              <div className="mt-6 text-center">
-                {mode === "login" ? (
-                  <p className="text-white/60 text-sm">
-                    Don't have an account?{" "}
-                    <button
-                      onClick={() => setMode("register")}
-                      className="text-[#C9941A] hover:text-amber-300 font-medium"
-                    >
-                      Sign up free
-                    </button>
-                  </p>
-                ) : mode === "register" ? (
-                  <p className="text-white/60 text-sm">
-                    Already have an account?{" "}
-                    <button
-                      onClick={() => setMode("login")}
-                      className="text-[#C9941A] hover:text-amber-300 font-medium"
-                    >
-                      Sign in
-                    </button>
-                  </p>
-                ) : null}
-              </div>
+
+              {/* Sign-up / Sign-in toggle */}
+              {!magicLinkSent && (mode === "otp" || mode === "password" || mode === "register") && (
+                <div className="mt-6 text-center">
+                  {mode === "register" ? (
+                    <p className="text-white/60 text-sm">
+                      Already have an account?{" "}
+                      <button
+                        onClick={() => setMode("otp")}
+                        className="text-[#C9941A] hover:text-amber-300 font-medium"
+                        data-testid="button-toggle-signin"
+                      >
+                        Sign in
+                      </button>
+                    </p>
+                  ) : (
+                    <p className="text-white/60 text-sm">
+                      New here?{" "}
+                      <button
+                        onClick={() => setMode("register")}
+                        className="text-[#C9941A] hover:text-amber-300 font-medium"
+                        data-testid="button-toggle-register"
+                      >
+                        Create an account
+                      </button>
+                    </p>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
-          
-          <p className="text-center text-white/40 text-xs mt-6">
+
+          {/* Replit Auth fallback — small, low-emphasis, below the card */}
+          <div className="mt-6 text-center">
+            <a
+              href="/api/login"
+              className="text-xs text-white/40 hover:text-white/70 underline underline-offset-4"
+              data-testid="link-replit-fallback"
+            >
+              Or continue with Replit
+            </a>
+          </div>
+
+          <p className="text-center text-white/40 text-xs mt-4">
             By continuing, you agree to our Terms of Service and Privacy Policy
           </p>
         </div>
