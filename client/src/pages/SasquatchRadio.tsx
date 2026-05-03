@@ -485,9 +485,12 @@ export default function SasquatchRadio() {
           )}
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-6">
-            <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-md bg-gradient-to-br from-[#C9941A] to-[#7a5a0f] flex items-center justify-center flex-shrink-0">
-              <Music className="w-16 h-16 text-black/70" />
-            </div>
+            <img
+              src={strokedOutSasquatchCover}
+              alt="Stroked Out Sasquatch album cover"
+              className="w-32 h-32 sm:w-40 sm:h-40 rounded-md object-cover shadow-lg flex-shrink-0"
+              data-testid="img-now-playing-cover"
+            />
             <div className="flex-1 min-w-0">
               <Badge className="bg-[#C9941A]/20 text-[#C9941A] border border-[#C9941A]/40 mb-2">
                 {current.vibe}
@@ -604,11 +607,16 @@ export default function SasquatchRadio() {
                 }`}
                 data-testid={`button-track-${t.id}`}
               >
-                <div className="w-12 h-12 rounded bg-gradient-to-br from-[#C9941A] to-[#7a5a0f] flex items-center justify-center flex-shrink-0">
-                  {i === trackIdx && isPlaying ? (
-                    <RadioIcon className="w-5 h-5 text-black animate-pulse" />
-                  ) : (
-                    <Music className="w-5 h-5 text-black/70" />
+                <div className="relative w-12 h-12 rounded overflow-hidden flex-shrink-0">
+                  <img
+                    src={strokedOutSasquatchCover}
+                    alt=""
+                    className="w-full h-full object-cover"
+                  />
+                  {i === trackIdx && isPlaying && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                      <RadioIcon className="w-5 h-5 text-[#C9941A] animate-pulse" />
+                    </div>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
