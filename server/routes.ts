@@ -9066,6 +9066,18 @@ Respond in JSON format:
     console.error('[lyrics-studio] failed to register routes:', e);
   }
 
+  // Sasquatch Voice Lab — admin-only ElevenLabs voice auditioning so Nick
+  // can pick the raspy character that sounds most like Sasquatch without
+  // touching env vars. Separate try/catch like the other satellite mounts
+  // so a failure here doesn't mask siblings in the deployment logs.
+  try {
+    const { registerVoiceLabRoutes } = await import('./voiceLabRoutes');
+    registerVoiceLabRoutes(app);
+    console.log('[voice-lab] routes registered');
+  } catch (e) {
+    console.error('[voice-lab] failed to register routes:', e);
+  }
+
   // ──────────────────────────────────────────────────────────────────
   // Build-Your-Anthem — survivor-composed full songs via ElevenLabs Music.
   // Same crisis-gate + audit pattern as the Anchor Studio. Free tier gets

@@ -134,6 +134,7 @@ const AdminSEODashboard = lazy(() => import("@/pages/AdminSEODashboard"));
 const FeedbackAdmin = lazy(() => import("@/pages/FeedbackAdmin"));
 const FeedbackInbox = lazy(() => import("@/pages/FeedbackInbox"));
 const BlogDraftStudio = lazy(() => import("@/pages/BlogDraftStudio"));
+const AdminVoiceLab = lazy(() => import("@/pages/AdminVoiceLab"));
 const RecoveryUniversity = lazy(() => import("@/pages/RecoveryUniversity"));
 const RecoveryLesson = lazy(() => import("@/pages/RecoveryLesson"));
 const RecoveryQuiz = lazy(() => import("@/pages/RecoveryQuiz"));
@@ -589,6 +590,9 @@ function Router() {
       </Route>
       <Route path="/admin/seo">
         <AdminRoute><AdminSEODashboard /></AdminRoute>
+      </Route>
+      <Route path="/admin/voice-lab">
+        <AdminRoute><AdminVoiceLab /></AdminRoute>
       </Route>
       <Route path="/recovery/university" component={RecoveryUniversity} />
       <Route path="/recovery/university/lesson/:chapter" component={RecoveryLesson} />

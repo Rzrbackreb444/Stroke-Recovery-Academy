@@ -17,13 +17,14 @@ import strokeLyfeLogo from "@assets/Untitled_design_1776803832326.png";
 // and GlobalHeader both), so legacy per-page header mounts are suppressed.
 import { siteHeaderRegistry } from "./siteHeaderRegistry";
 
+// Hero-funnel collapse (May 2026): Top nav reduced from 12 items to 4 destinations.
+// Survivors with cognitive load can't parse 12 nav items — picking 4 forces every
+// decision to be obvious. Coach (chat) and Today (dashboard with the Bonfire) are
+// the two activation surfaces; Music is the paid headliner cluster; More holds the
+// rest of the surface area collapsed into one dropdown.
 const primaryNav = [
-  { href: "/recovery/academy", label: "Learn" },
-  { href: "/recovery/challenge", label: "66-Day Challenge" },
-  { href: "/recovery/exercises", label: "Exercises" },
-  { href: "/recovery/routine", label: "Daily Routine" },
-  { href: "/recovery/community", label: "Community" },
-  { href: "/recovery/sasquatch-coach", label: "My Coach" },
+  { href: "/recovery/sasquatch-coach", label: "Coach" },
+  { href: "/recovery/dashboard", label: "Today" },
 ];
 
 // Paid music headliner — Recovery Anchor Studio (musical-mnemonic encoder
@@ -37,7 +38,14 @@ const musicNav = [
   { href: "/recovery/radio", label: "Sasquatch Radio", pro: false, description: "Survivor-curated stream with DJ intros" },
 ];
 
+// "More" — everything that used to live in the top nav and the old Resources dropdown,
+// now consolidated into a single overflow menu so the hero-funnel surface stays clean.
 const resourcesNav = [
+  { href: "/recovery/academy", label: "Learn" },
+  { href: "/recovery/challenge", label: "66-Day Challenge" },
+  { href: "/recovery/exercises", label: "Exercises" },
+  { href: "/recovery/routine", label: "Daily Routine" },
+  { href: "/recovery/community", label: "Community" },
   { href: "/recovery/brain-gym", label: "Brain Gym" },
   { href: "/recovery/blog", label: "Blog" },
   { href: "/recovery/spotlight", label: "Spotlight" },
@@ -159,7 +167,7 @@ export default function RecoveryHeader() {
                   className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-400 hover:text-white rounded-lg transition-colors"
                   data-testid="nav-resources"
                 >
-                  Resources <ChevronDown className="h-3.5 w-3.5" />
+                  More <ChevronDown className="h-3.5 w-3.5" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="bg-[#111] border-[#222] min-w-[160px]">
@@ -334,7 +342,7 @@ export default function RecoveryHeader() {
                 onClick={() => setResourcesOpen((v) => !v)}
                 data-testid="mobile-nav-resources"
               >
-                Resources
+                More
                 <ChevronDown className={`h-3.5 w-3.5 transition-transform ${resourcesOpen ? "rotate-180" : ""}`} />
               </button>
               {resourcesOpen && (
