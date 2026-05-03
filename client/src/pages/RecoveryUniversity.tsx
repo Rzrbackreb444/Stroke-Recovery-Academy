@@ -293,6 +293,14 @@ export default function RecoveryUniversity() {
             durationHours: 16,
             level: "All Levels",
             free: false,
+            lessons: curriculumParts.flatMap((part) =>
+              part.chapters.map((ch) => ({
+                name: `Chapter ${ch.number}: ${ch.title}`,
+                url: `/recovery/university/lesson/${ch.number}`,
+                position: ch.number,
+                description: ch.description,
+              })),
+            ),
           }),
           SASQUATCH_METHOD_SCHEMA
         ]}

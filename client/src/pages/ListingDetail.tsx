@@ -33,6 +33,7 @@ import { useMarketplaceListing, useListingReviews, useCreateCheckout, type Marke
 import { useLocaleContext } from "@/lib/hooks/useLocale";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import RecoverySEO, { createRecoveryProductSchema } from "@/components/RecoverySEO";
 
 const contentTypeIcons: Record<string, typeof BookOpen> = {
   book: BookOpen,
@@ -213,8 +214,62 @@ export default function ListingDetail() {
     { stars: 1, percent: 2 },
   ];
 
+  // Average historical sale price (cents → dollars). Only emitted when there
+  // are real sales backing the average, so we never publish a guessed price
+  // that could trigger a Google "misleading information" rich-result flag.
+  const averageSalePrice =
+    listing.totalRevenue > 0 && listing.totalSales > 0
+      ? listing.totalRevenue / 100 / listing.totalSales
+      : undefined;
+  const normalizedRating =
+    listing.averageRating != null && Number.isFinite(listing.averageRating)
+      ? listing.averageRating / 10
+      : undefined;
+  const productCategory = contentTypeLabels[listing.genre] || "Digital Content";
+  // Strip any HTML tags before truncating so we never emit a broken tag inside
+  // a meta description or JSON-LD string. Whitespace collapse for clean OG.
+  const seoDescription = (listing.description || "")
+    .replace(/<[^>]*>/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 280);
+
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
+      <RecoverySEO
+        title={listing.subtitle ? `${listing.title} — ${listing.subtitle}` : listing.title}
+        description={
+          seoDescription ||
+          `${listing.title} — ${productCategory} on the Stroke Recovery Academy marketplace. Survivor-built content, 85% creator revenue share.`
+        }
+        canonical={`/listing/${listing.id}`}
+        pageType="product"
+        image={listing.coverImageUrl || undefined}
+        keywords={[
+          productCategory.toLowerCase(),
+          "stroke recovery marketplace",
+          "survivor-authored content",
+          ...(listing.tags || []),
+        ]}
+        breadcrumbs={[
+          { name: "Marketplace", url: "/marketplace" },
+          { name: listing.title, url: `/listing/${listing.id}` },
+        ]}
+        additionalSchema={createRecoveryProductSchema({
+          name: listing.title,
+          description: seoDescription || listing.title,
+          url: `/listing/${listing.id}`,
+          image: listing.coverImageUrl || undefined,
+          price: averageSalePrice,
+          priceCurrency: "USD",
+          availability: "InStock",
+          category: productCategory,
+          averageRating: normalizedRating,
+          reviewCount: listing.reviewCount,
+          totalSales: listing.totalSales,
+        })}
+        medicalDisclaimer={false}
+      />
       <GlobalHeader />
 
       <main className="max-w-6xl mx-auto px-4 py-8">
