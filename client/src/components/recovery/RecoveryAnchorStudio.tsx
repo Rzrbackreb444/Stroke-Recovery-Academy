@@ -184,6 +184,26 @@ export default function RecoveryAnchorStudio() {
       <CardContent className="space-y-6">
         <UsagePill usage={usage} />
 
+        {overLimit && (
+          <a
+            href="/recovery/premium"
+            className="block rounded-md border border-amber-500/50 bg-amber-500/10 px-4 py-3 hover-elevate transition-colors"
+            data-testid="banner-anchor-upsell"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-bold text-amber-100">
+                  You've used all {usage?.limit ?? 3} free renders this month.
+                </p>
+                <p className="text-xs text-amber-100/70 mt-0.5">
+                  Sasquatch Premium ($19/mo) unlocks unlimited anchor renders + Coach + voice cloning.
+                </p>
+              </div>
+              <span className="text-amber-300 font-bold whitespace-nowrap">Unlock →</span>
+            </div>
+          </a>
+        )}
+
         <div>
           <p className="text-sm font-semibold text-amber-100 mb-3">Anchor type</p>
           <div className="grid sm:grid-cols-3 gap-2">

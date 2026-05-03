@@ -23,6 +23,13 @@ interface Message {
   role: "user" | "coach";
   content: string;
   audioBase64?: string;
+  upsell?: { used: number; limit: number };
+}
+
+interface CoachQuota {
+  used: number;
+  limit: number;
+  premium: boolean;
 }
 
 const QUICK_PROMPTS = [
@@ -58,6 +65,7 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [autoVoice, setAutoVoice] = useState(true);
   const [historyLoaded, setHistoryLoaded] = useState(false);
+  const [quota, setQuota] = useState<CoachQuota | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -130,9 +138,11 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
         history,
         includeAudio: autoVoice,
       });
-      return response.json();
+      const data = await response.json();
+      return { ...data, _status: response.status };
     },
     onSuccess: (data) => {
+      if (data?.quota) setQuota(data.quota as CoachQuota);
       const newMessage: Message = {
         id: Date.now().toString(),
         role: "coach",
@@ -141,13 +151,43 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
       };
       setMessages((prev) => [...prev, newMessage]);
       setIsLoading(false);
-      
+
       if (autoVoice && data.audioBase64) {
         playAudioFromBase64(data.audioBase64, newMessage.id);
       }
     },
-    onError: () => {
+    onError: async (err: any) => {
       setIsLoading(false);
+      // The shared apiRequest helper throws "<status>: <body>" on non-2xx —
+      // try to parse the body so a 429 can render the upsell card instead of
+      // the generic "I hit a bump" line. If parsing fails, fall back.
+      const raw = String(err?.message ?? "");
+      const match = raw.match(/^(\d+):\s*(.+)$/s);
+      if (match && match[1] === "429") {
+        try {
+          const body = JSON.parse(match[2]);
+          if (body?.capped) {
+            setQuota({
+              used: Number(body.used ?? 0),
+              limit: Number(body.limit ?? 25),
+              premium: false,
+            });
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: Date.now().toString(),
+                role: "coach",
+                content: String(body.message ?? "You hit your daily Coach limit."),
+                upsell: {
+                  used: Number(body.used ?? 0),
+                  limit: Number(body.limit ?? 25),
+                },
+              },
+            ]);
+            return;
+          }
+        } catch {}
+      }
       setMessages((prev) => [
         ...prev,
         {
@@ -348,6 +388,16 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
           </div>
         </div>
 
+        {quota && !quota.premium && quota.limit > 0 && quota.used >= Math.floor(quota.limit * 0.8) && quota.used < quota.limit && (
+          <a
+            href="/recovery/premium"
+            className="block px-4 py-2 bg-[#C9941A]/10 border-b border-[#C9941A]/30 text-xs text-[#C9941A] hover:bg-[#C9941A]/20 transition-colors"
+            data-testid="banner-coach-quota"
+          >
+            <span className="font-bold">{quota.used}/{quota.limit}</span> messages today · Unlock unlimited →
+          </a>
+        )}
+
         <ScrollArea className="h-[320px] p-4 bg-[#0D0D0D]" ref={scrollRef}>
           <div className="space-y-4">
             {messages.map((message) => (
@@ -363,6 +413,15 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
                   }`}
                 >
                   <p className="text-sm leading-relaxed">{message.content}</p>
+                  {message.upsell && (
+                    <a
+                      href="/recovery/premium"
+                      className="mt-3 block text-center bg-[#C9941A] hover:bg-[#C9941A]/90 text-black text-xs font-bold rounded-md px-3 py-2 transition-colors"
+                      data-testid="link-coach-upsell"
+                    >
+                      Unlock Unlimited — $19/mo →
+                    </a>
+                  )}
                   {message.role === "coach" && message.audioBase64 && (
                     <button
                       onClick={() => playAudioFromBase64(message.audioBase64!, message.id)}
