@@ -102,6 +102,29 @@ export default function RecoveryCampfire() {
                 Loading circles...
               </div>
             ) : (
+              <>
+              {!isPremium && rooms.some((r) => r.isPremiumOnly) && (
+                <a
+                  href="/recovery/premium"
+                  className="block mb-4 rounded-md border border-amber-700/50 bg-gradient-to-r from-amber-900/30 to-stone-900 px-5 py-4 hover-elevate transition-colors"
+                  data-testid="banner-campfire-upsell"
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <Lock className="w-5 h-5 text-amber-400 flex-shrink-0" />
+                      <div>
+                        <p className="text-sm font-bold text-amber-100">
+                          Coach Circle + Live with Nick — Premium fires
+                        </p>
+                        <p className="text-xs text-stone-400 mt-0.5">
+                          Smaller rooms, deeper conversations. $19/mo. Cancel anytime.
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-amber-300 font-bold whitespace-nowrap text-sm">Unlock →</span>
+                  </div>
+                </a>
+              )}
               <div className="grid md:grid-cols-2 gap-4">
                 {rooms.map((room) => {
                   const locked = !!room.isPremiumOnly && !isPremium;
@@ -162,6 +185,7 @@ export default function RecoveryCampfire() {
                   );
                 })}
               </div>
+              </>
             )}
           </>
         ) : (

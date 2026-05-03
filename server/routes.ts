@@ -9347,10 +9347,13 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       // Crisis path bypasses the cap above on purpose — we never block a
       // crisis message. Anonymous users also bypass (no userId to track).
       const capUserId = getUserId(req);
+      let quotaInfo: { used: number; limit: number; premium: boolean } | null = null;
       if (capUserId) {
         const { isSasquatchPremium } = await import('./services/sasquatchPremiumService');
         const premium = await isSasquatchPremium(capUserId);
-        if (!premium) {
+        if (premium) {
+          quotaInfo = { used: 0, limit: 0, premium: true };
+        } else {
           const { reserveCoachMessage } = await import('./sasquatchHistoryService');
           const reservation = await reserveCoachMessage(capUserId);
           if (!reservation.ok) {
@@ -9362,6 +9365,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
               upgradeUrl: '/recovery/premium',
             });
           }
+          quotaInfo = { used: reservation.used, limit: reservation.limit, premium: false };
         }
       }
 
@@ -9435,7 +9439,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
           .catch((e) => console.warn('[coach] persist skipped:', e?.message ?? e));
       }
 
-      res.json({ response: result.response, audioBase64 });
+      res.json({ response: result.response, audioBase64, quota: quotaInfo });
     } catch (error) {
       console.error('Coach chat error:', error);
       // Refund the daily-cap reservation so a Gemini outage doesn't burn
