@@ -7016,3 +7016,50 @@ export const survivorAlbumTracks = pgTable("survivor_album_tracks", {
   albumIdx: index("idx_survivor_album_track_album").on(t.albumId, t.position),
 }));
 export type SurvivorAlbumTrack = typeof survivorAlbumTracks.$inferSelect;
+
+// ============================================================================
+// DAILY CIRCUIT — guided multi-station recovery sessions
+// ============================================================================
+// A "circuit" is a paced ritual that strings the platform's existing surface
+// (brain games, exercises, hydration, reflection, community, coach moments)
+// into one session with voice-cloned bridge quotes between stations.
+// Presets live in server/data/circuitPresets.ts (versioned with code).
+// User-authored circuits are a Pro+ feature and will get their own table later.
+
+export const circuitSessions = pgTable("circuit_sessions", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  circuitSlug: text("circuit_slug").notNull(),
+  startedAt: timestamp("started_at").notNull().defaultNow(),
+  completedAt: timestamp("completed_at"),
+  stationsCompleted: integer("stations_completed").notNull().default(0),
+  totalStations: integer("total_stations").notNull(),
+  // good | hard | too_hard — last-known overall feeling for the session.
+  // Per-station feelings are kept inside `meta.stationFeedback`.
+  feeling: text("feeling"),
+  xpEarned: integer("xp_earned").notNull().default(0),
+  // { stationFeedback: {stationId: 'good'|'hard'|'too_hard'},
+  //   quotesPlayed: string[], skipped: string[], length: 'quick'|... }
+  meta: jsonb("meta").default({}).notNull(),
+}, (t) => ({
+  byUserStarted: index("idx_circuit_sessions_user_started").on(t.userId, t.startedAt),
+  byUserCompleted: index("idx_circuit_sessions_user_completed").on(t.userId, t.completedAt),
+}));
+export type CircuitSession = typeof circuitSessions.$inferSelect;
+export const insertCircuitSessionSchema = createInsertSchema(circuitSessions).omit({
+  id: true,
+  startedAt: true,
+});
+export type InsertCircuitSession = z.infer<typeof insertCircuitSessionSchema>;
+
+// Cache of pre-generated ElevenLabs audio for Nick's curated quotes. Keyed
+// by the stable content-hash quoteId() from server/data/nickQuotes.ts so
+// re-shuffling the source array does not invalidate cached audio.
+export const nickQuoteAudio = pgTable("nick_quote_audio", {
+  quoteId: text("quote_id").primaryKey(),
+  text: text("text").notNull(),
+  audioUrl: text("audio_url").notNull(),
+  voiceId: text("voice_id").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+export type NickQuoteAudio = typeof nickQuoteAudio.$inferSelect;
