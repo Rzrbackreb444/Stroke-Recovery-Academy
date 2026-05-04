@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -24,99 +24,109 @@ import {
 } from "@/components/ui/select";
 import RecoveryHeader from "@/components/RecoveryHeader";
 import {
-  Flame, Trophy, Target, Calendar, Zap,
-  TrendingUp, CheckCircle2, AlertCircle, MessageCircle, Loader2, Send,
+  Flame, Trophy, Target, Calendar, Zap, MessageCircle, Loader2, RefreshCw,
+  CheckCircle2, AlertCircle, ArrowRight, History, Award, Sparkles,
 } from "lucide-react";
 
 const categories = [
-  { value: "movement", label: "Movement", examples: "1 stretch, 1 step, 1 exercise" },
-  { value: "therapy", label: "Therapy", examples: "1 minute of speech practice, 1 cognitive exercise" },
-  { value: "self_care", label: "Self-Care", examples: "1 healthy meal, 1 glass of water, 1 minute of rest" },
-  { value: "mindset", label: "Mindset", examples: "1 positive thought, 1 gratitude moment" },
-  { value: "connection", label: "Connection", examples: "1 text, 1 call, 1 conversation" },
-  { value: "learning", label: "Learning", examples: "1 page read, 1 lesson watched" },
-  { value: "custom", label: "Custom", examples: "Define your own" },
+  { value: "movement", label: "Movement" },
+  { value: "therapy", label: "Therapy" },
+  { value: "self_care", label: "Self-Care" },
+  { value: "mindset", label: "Mindset" },
+  { value: "connection", label: "Connection" },
+  { value: "learning", label: "Learning" },
+  { value: "custom", label: "Custom" },
 ];
 
-type SasquatchReport = {
+type AuditPayload = {
+  auditId: number | null;
+  auditDate: string;
   message: string;
   streak: number;
+  longestStreak: number;
+  totalDays: number;
   todayCount: number;
+  categoriesCovered: string[];
+  categoriesMissed: string[];
+  stoodOut: string | null;
+  missing: string | null;
+  verdict: string | null;
+  tomorrow: string | null;
   todayLogs: Array<{ id: number; action: string; category: string; notes: string | null; createdAt: string }>;
+  streakBand: 'spark' | 'ember' | 'blaze' | 'wildfire' | 'legend';
+  fromCache: boolean;
 };
+
+const TIERS: Record<AuditPayload['streakBand'], { label: string; min: number; next: number | null; color: string; tagline: string }> = {
+  spark:    { label: "Spark",    min: 0,   next: 7,   color: "#C9941A", tagline: "Lighting the fire." },
+  ember:    { label: "Ember",    min: 7,   next: 14,  color: "#E07B00", tagline: "Heat is building." },
+  blaze:    { label: "Blaze",    min: 14,  next: 30,  color: "#F97316", tagline: "Burning steady." },
+  wildfire: { label: "Wildfire", min: 30,  next: 100, color: "#EF4444", tagline: "Unstoppable now." },
+  legend:   { label: "Legend",   min: 100, next: null, color: "#FACC15", tagline: "Living diploma." },
+};
+
+const catLabel = (v: string) => categories.find((c) => c.value === v)?.label ?? v;
 
 export default function NeverZero() {
   const { isAuthenticated } = useAuth();
   const { toast } = useToast();
   const [logDialogOpen, setLogDialogOpen] = useState(false);
-  const [form, setForm] = useState({
-    category: "movement",
-    action: "",
-    notes: "",
-    reps: 1,
-  });
+  const [form, setForm] = useState({ category: "movement", action: "", notes: "", reps: 1 });
 
   const { data: streakData } = useQuery<any>({
     queryKey: ["/api/recovery/never-zero"],
     enabled: isAuthenticated,
   });
 
-  // Sasquatch's daily accountability report — fetched once per day per user.
-  // Stays fresh after every new log via invalidation in the mutation onSuccess.
+  const { data: historyData } = useQuery<{ audits: AuditPayload[] }>({
+    queryKey: ["/api/recovery/never-zero/audit"],
+    enabled: isAuthenticated,
+  });
+
   const reportMut = useMutation({
-    mutationFn: async () => {
-      const res = await apiRequest("POST", "/api/recovery/never-zero/report", {});
-      return (await res.json()) as SasquatchReport;
+    mutationFn: async (force: boolean = false) => {
+      const res = await apiRequest("POST", "/api/recovery/never-zero/report", { force });
+      return (await res.json()) as AuditPayload;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/recovery/never-zero/audit"] });
     },
     onError: (e: any) => {
       if (e?.status === 401) {
-        toast({
-          title: "Sign in to send your report",
-          description: "Sasquatch only reads check-ins from signed-in survivors.",
-          variant: "destructive",
-        });
+        toast({ title: "Sign in to send your report", description: "Sasquatch only reads check-ins from signed-in survivors.", variant: "destructive" });
         return;
       }
-      toast({
-        title: "Couldn't reach Sasquatch",
-        description: String(e?.message ?? "Try again in a moment."),
-        variant: "destructive",
-      });
+      toast({ title: "Couldn't reach Sasquatch", description: String(e?.message ?? "Try again in a moment."), variant: "destructive" });
     },
   });
 
   const logMutation = useMutation({
-    mutationFn: async (data: any) => {
-      return apiRequest("POST", "/api/recovery/never-zero", data);
-    },
+    mutationFn: async (data: any) => apiRequest("POST", "/api/recovery/never-zero", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/recovery/never-zero"] });
       setLogDialogOpen(false);
       setForm({ category: "movement", action: "", notes: "", reps: 1 });
-      toast({
-        title: "Streak Saved!",
-        description: "1 rep counts. Sending your report to Sasquatch…",
-      });
-      // Auto-trigger Sasquatch report so the survivor sees the accountability
-      // loop close immediately — the whole point of this feature.
-      reportMut.mutate();
+      toast({ title: "Rep logged", description: "Sending today's audit to Sasquatch…" });
+      reportMut.mutate(true); // force-refresh the audit since reps changed
     },
     onError: (e: any) => {
       if (e?.status === 401) {
-        toast({
-          title: "Sign in to log your rep",
-          description: "Your session expired. Sign in and try again.",
-          variant: "destructive",
-        });
+        toast({ title: "Sign in to log your rep", variant: "destructive" });
         return;
       }
-      toast({
-        title: "Couldn't save your rep",
-        description: String(e?.message ?? "Try again in a moment."),
-        variant: "destructive",
-      });
+      toast({ title: "Couldn't save your rep", description: String(e?.message ?? ""), variant: "destructive" });
     },
   });
+
+  // Auto-fetch today's audit on mount so signed-in survivors see Sasquatch's
+  // voice immediately. Cached server-side so this is one cheap DB read on
+  // re-visits within the same day.
+  useEffect(() => {
+    if (isAuthenticated && !reportMut.data && !reportMut.isPending) {
+      reportMut.mutate(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]);
 
   const handleSubmit = () => {
     if (!form.action.trim()) {
@@ -129,257 +139,255 @@ export default function NeverZero() {
   const currentStreak = streakData?.currentStreak || 0;
   const longestStreak = streakData?.longestStreak || 0;
   const totalDays = streakData?.totalDays || 0;
-  const logs = streakData?.logs || [];
   const hasLoggedToday = streakData?.loggedToday || false;
-  const report = reportMut.data;
-
-  const getStreakMessage = (streak: number) => {
-    if (streak === 0) return "Start your streak today!";
-    if (streak < 7) return "Building momentum!";
-    if (streak < 30) return "You're on fire!";
-    if (streak < 100) return "Unstoppable force!";
-    return "LEGENDARY!";
-  };
+  const audit = reportMut.data;
+  const tier = TIERS[audit?.streakBand ?? (currentStreak >= 100 ? 'legend' : currentStreak >= 30 ? 'wildfire' : currentStreak >= 14 ? 'blaze' : currentStreak >= 7 ? 'ember' : 'spark')];
+  const nextTier = tier.next != null ? Object.values(TIERS).find((t) => t.min === tier.next) : null;
+  const toNext = tier.next != null ? Math.max(0, tier.next - currentStreak) : 0;
+  const tierProgress = tier.next != null ? Math.min(100, Math.round(((currentStreak - tier.min) / (tier.next - tier.min)) * 100)) : 100;
+  const history = (historyData?.audits ?? []).filter((a) => a.auditDate !== audit?.auditDate);
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <RecoveryHeader />
 
       <main className="container mx-auto px-4 py-6 max-w-4xl">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold flex items-center justify-center gap-3 mb-2">
-            <Flame className="h-8 w-8 text-[#C9941A]" />
+        <div className="text-center mb-6">
+          <h1 className="text-3xl font-bold flex items-center justify-center gap-3 mb-1">
+            <Flame className="h-8 w-8" style={{ color: tier.color }} />
             Never Zero
           </h1>
-          <p className="text-gray-300 text-lg italic">
-            For survivors who are serious about recovery and want accountability.
-          </p>
-          <p className="text-gray-500 text-sm mt-2">
-            Do one thing. Anything. Just don't hit zero. Sasquatch reads every check-in.
-          </p>
+          <p className="text-gray-300 italic">Daily check-in. Sasquatch audits. You stay accountable.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Card className="bg-gradient-to-br from-orange-500/20 to-red-500/20 border-[#C9941A]/50 p-6 text-center">
-            <Flame className="h-12 w-12 text-[#C9941A] mx-auto mb-3" />
-            <div className="text-5xl font-bold text-[#C9941A]" data-testid="text-current-streak">{currentStreak}</div>
-            <div className="text-gray-300 mt-1">Day Streak</div>
-            <p className="text-gray-400 text-sm mt-2">{getStreakMessage(currentStreak)}</p>
-          </Card>
+        {/* Tier + streak hero */}
+        <Card className="mb-6 p-6 border" style={{ background: `linear-gradient(135deg, ${tier.color}22, #1a1a1a)`, borderColor: `${tier.color}55` }}>
+          <div className="flex items-start justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-4">
+              <div className="h-14 w-14 rounded-full flex items-center justify-center" style={{ background: `${tier.color}25`, border: `1px solid ${tier.color}` }}>
+                <Award className="h-7 w-7" style={{ color: tier.color }} />
+              </div>
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.3em] font-bold" style={{ color: tier.color }}>{tier.label} tier</div>
+                <div className="text-4xl font-black" data-testid="text-current-streak" style={{ color: tier.color }}>{currentStreak}<span className="text-base font-semibold text-white/60 ml-2">day streak</span></div>
+                <div className="text-sm text-white/70 italic">{tier.tagline}</div>
+              </div>
+            </div>
+            <div className="text-right text-sm text-white/80 space-y-1">
+              <div className="flex items-center gap-2 justify-end"><Trophy className="h-4 w-4 text-yellow-500" /> Best: <span className="font-bold text-white">{longestStreak}</span></div>
+              <div className="flex items-center gap-2 justify-end"><Calendar className="h-4 w-4" style={{ color: tier.color }} /> Total days: <span className="font-bold text-white">{totalDays}</span></div>
+            </div>
+          </div>
+          {nextTier && (
+            <div className="mt-5">
+              <div className="flex items-center justify-between text-xs text-white/70 mb-1">
+                <span>{toNext} more to <span className="font-semibold" style={{ color: nextTier.color }}>{nextTier.label}</span></span>
+                <span>{currentStreak} / {tier.next}</span>
+              </div>
+              <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                <div className="h-full transition-all" style={{ width: `${tierProgress}%`, background: tier.color }} />
+              </div>
+            </div>
+          )}
+        </Card>
 
-          <Card className="bg-[#1a1a1a] border-[#333] p-6 text-center">
-            <Trophy className="h-10 w-10 text-yellow-500 mx-auto mb-3" />
-            <div className="text-3xl font-bold">{longestStreak}</div>
-            <div className="text-gray-400">Best Streak</div>
-          </Card>
-
-          <Card className="bg-[#1a1a1a] border-[#333] p-6 text-center">
-            <Calendar className="h-10 w-10 text-[#C9941A] mx-auto mb-3" />
-            <div className="text-3xl font-bold">{totalDays}</div>
-            <div className="text-gray-400">Total Days Active</div>
-          </Card>
-        </div>
-
+        {/* Check-in CTA */}
         {hasLoggedToday ? (
-          <Card className="bg-[#C9941A]/10 border-green-500/50 p-6 mb-8 text-center">
-            <CheckCircle2 className="h-12 w-12 text-[#C9941A] mx-auto mb-3" />
-            <h3 className="text-xl font-bold text-[#C9941A]">Streak Saved for Today!</h3>
-            <p className="text-gray-400 mt-2">You did it. Come back tomorrow to keep it going.</p>
-            {!report && !reportMut.isPending && (
-              <Button
-                onClick={() => reportMut.mutate()}
-                size="sm"
-                variant="outline"
-                className="mt-4 border-[#C9941A]/50 text-[#C9941A] hover:bg-[#C9941A]/10"
-                data-testid="button-fetch-sasquatch-report"
-              >
-                <Send className="h-4 w-4 mr-2" />
-                Send today's report to Sasquatch
-              </Button>
-            )}
+          <Card className="mb-6 p-5 bg-[#1a1a1a] border-green-500/40 flex items-center gap-3">
+            <CheckCircle2 className="h-7 w-7 text-green-500 shrink-0" />
+            <div className="flex-1">
+              <div className="font-bold">Today's check-in is in.</div>
+              <div className="text-sm text-white/60">Sasquatch is reading your reps below. Add another anytime to deepen the audit.</div>
+            </div>
+            <Button onClick={() => setLogDialogOpen(true)} variant="outline" className="border-[#C9941A]/50 text-[#C9941A]" data-testid="button-add-another">
+              <Zap className="h-4 w-4 mr-2" /> Add another
+            </Button>
           </Card>
         ) : (
-          <Card className="bg-[#C9941A]/10 border-[#C9941A]/50 p-6 mb-8 text-center">
-            <AlertCircle className="h-12 w-12 text-[#C9941A] mx-auto mb-3" />
-            <h3 className="text-xl font-bold text-[#C9941A]">Don't Break Your Streak!</h3>
-            <p className="text-gray-400 mt-2 mb-4">Log just ONE action to save today's streak — Sasquatch is waiting.</p>
-            <Button
-              onClick={() => setLogDialogOpen(true)}
-              className="bg-[#C9941A] text-lg px-8 py-6"
-              data-testid="button-log-action"
-            >
-              <Zap className="h-5 w-5 mr-2" />
-              Log My 1 Rep
+          <Card className="mb-6 p-5 bg-[#C9941A]/10 border-[#C9941A]/50 flex items-center gap-3">
+            <AlertCircle className="h-7 w-7 text-[#C9941A] shrink-0" />
+            <div className="flex-1">
+              <div className="font-bold text-[#C9941A]">No rep yet today.</div>
+              <div className="text-sm text-white/70">Log one — anything — and Sasquatch will audit your day.</div>
+            </div>
+            <Button onClick={() => setLogDialogOpen(true)} className="bg-[#C9941A] text-black font-bold" data-testid="button-log-action">
+              <Zap className="h-4 w-4 mr-2" /> Log my 1 rep
             </Button>
           </Card>
         )}
 
-        {/* ── Sasquatch's daily report ───────────────────────────── */}
-        {(reportMut.isPending || report) && (
-          <Card className="bg-[#1a1a1a] border-[#C9941A]/40 p-6 mb-8" data-testid="card-sasquatch-report">
-            <div className="flex items-start gap-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-[#C9941A]/15 border border-[#C9941A]/40 flex items-center justify-center flex-shrink-0">
-                <MessageCircle className="h-5 w-5 text-[#C9941A]" />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="text-lg font-bold text-[#C9941A]">Sasquatch's Report</h3>
-                  {report && (
-                    <Badge className="bg-[#C9941A]/20 text-[#C9941A] border border-[#C9941A]/40 text-xs">
-                      Day {report.streak} · {report.todayCount} {report.todayCount === 1 ? "rep" : "reps"} today
-                    </Badge>
-                  )}
-                </div>
-                {reportMut.isPending ? (
-                  <div className="flex items-center gap-2 text-white/60">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    <span className="text-sm italic">Sasquatch is reviewing your day…</span>
-                  </div>
-                ) : report ? (
-                  <p className="text-white/90 leading-relaxed whitespace-pre-line" data-testid="text-sasquatch-message">
-                    {report.message}
-                  </p>
-                ) : null}
-              </div>
+        {/* Sasquatch audit */}
+        <Card className="mb-6 p-6 bg-[#1a1a1a] border-[#C9941A]/40" data-testid="card-sasquatch-audit">
+          <div className="flex items-start gap-3 mb-4">
+            <div className="w-11 h-11 rounded-full bg-[#C9941A]/15 border border-[#C9941A]/40 flex items-center justify-center shrink-0">
+              <MessageCircle className="h-5 w-5 text-[#C9941A]" />
             </div>
-            {report && report.todayLogs.length > 0 && (
-              <div className="mt-4 pt-4 border-t border-white/10">
-                <p className="text-xs uppercase tracking-wider text-white/50 mb-2">Today's reps</p>
-                <ul className="space-y-1">
-                  {report.todayLogs.map((l) => (
-                    <li key={l.id} className="text-sm text-white/80 flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-[#C9941A] flex-shrink-0 mt-0.5" />
-                      <span>{l.action}</span>
-                      <Badge variant="outline" className="text-xs ml-auto">
-                        {categories.find((c) => c.value === l.category)?.label || l.category}
-                      </Badge>
-                    </li>
-                  ))}
-                </ul>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-lg font-bold text-[#C9941A]">Today's Sasquatch Audit</h2>
+                {audit && (
+                  <Badge className="bg-[#C9941A]/20 text-[#C9941A] border border-[#C9941A]/40 text-xs">
+                    Day {audit.streak} · {audit.todayCount} {audit.todayCount === 1 ? "rep" : "reps"}
+                  </Badge>
+                )}
+                {audit?.fromCache && <span className="text-[10px] text-white/40 uppercase tracking-wider">cached</span>}
               </div>
+              <p className="text-xs text-white/50 mt-0.5">Honest accountability from a 7-year survivor — not a textbook.</p>
+            </div>
+            {audit && (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => reportMut.mutate(true)}
+                disabled={reportMut.isPending}
+                className="text-white/60 hover:text-[#C9941A]"
+                data-testid="button-refresh-audit"
+              >
+                <RefreshCw className={`h-4 w-4 ${reportMut.isPending ? "animate-spin" : ""}`} />
+              </Button>
             )}
-          </Card>
-        )}
-
-        <Card className="bg-[#1a1a1a] border-[#333] p-6 mb-8">
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <Target className="h-5 w-5 text-[#C9941A]" />
-            The Never Zero Philosophy
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 bg-[#1a1a1a]/50 rounded-lg">
-              <h4 className="font-semibold text-[#C9941A] mb-2">The Rule</h4>
-              <p className="text-gray-400 text-sm">
-                Every day, do at least ONE thing for your recovery. One rep. One step. One stretch.
-                That's all it takes to save your streak.
-              </p>
-            </div>
-            <div className="p-4 bg-[#1a1a1a]/50 rounded-lg">
-              <h4 className="font-semibold text-[#C9941A] mb-2">Why It Works</h4>
-              <p className="text-gray-400 text-sm">
-                Bad days happen. But doing even the smallest thing keeps you in the game.
-                1 rep compounds over time into massive progress — and Sasquatch holds you to it.
-              </p>
-            </div>
           </div>
+
+          {reportMut.isPending && !audit ? (
+            <div className="flex items-center gap-2 text-white/60 py-6 justify-center">
+              <Loader2 className="h-5 w-5 animate-spin" /> Sasquatch is reviewing your day…
+            </div>
+          ) : audit && audit.todayCount === 0 ? (
+            <p className="text-white/70 italic py-2">{audit.message}</p>
+          ) : audit ? (
+            <div className="space-y-4">
+              {audit.stoodOut && (
+                <AuditLine label="What stood out" tone="positive" body={audit.stoodOut} />
+              )}
+              {audit.missing && (
+                <AuditLine label="What's missing" tone="warn" body={audit.missing} />
+              )}
+              {audit.verdict && (
+                <AuditLine label="Verdict" tone="verdict" body={audit.verdict} />
+              )}
+              {audit.tomorrow && (
+                <AuditLine label="Tomorrow's 1 rep" tone="next" body={audit.tomorrow} />
+              )}
+
+              {/* Coverage */}
+              <div className="pt-3 border-t border-white/10">
+                <div className="text-[10px] uppercase tracking-widest text-white/50 mb-2">Category coverage today</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {audit.categoriesCovered.map((c) => (
+                    <Badge key={c} className="bg-green-500/15 text-green-300 border border-green-500/30 text-xs" data-testid={`chip-covered-${c}`}>
+                      <CheckCircle2 className="h-3 w-3 mr-1" /> {catLabel(c)}
+                    </Badge>
+                  ))}
+                  {audit.categoriesMissed.filter((c) => c !== 'custom').map((c) => (
+                    <Badge key={c} variant="outline" className="border-white/20 text-white/40 text-xs" data-testid={`chip-missed-${c}`}>
+                      {catLabel(c)}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+
+              {/* Today's reps list */}
+              {audit.todayLogs.length > 0 && (
+                <div className="pt-3 border-t border-white/10">
+                  <div className="text-[10px] uppercase tracking-widest text-white/50 mb-2">Today's reps</div>
+                  <ul className="space-y-1.5">
+                    {audit.todayLogs.map((l) => (
+                      <li key={l.id} className="text-sm text-white/85 flex items-start gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-[#C9941A] shrink-0 mt-0.5" />
+                        <span className="flex-1">{l.action}{l.notes && <span className="text-white/50 italic"> — {l.notes}</span>}</span>
+                        <Badge variant="outline" className="text-[10px] border-white/20 text-white/60">{catLabel(l.category)}</Badge>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          ) : (
+            <p className="text-white/60 italic">Log your first rep today to get audited.</p>
+          )}
         </Card>
 
-        {logs.length > 0 && (
-          <Card className="bg-[#1a1a1a] border-[#333] p-6">
+        {/* History timeline */}
+        {history.length > 0 && (
+          <Card className="mb-6 p-6 bg-[#1a1a1a] border-[#333]">
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-[#C9941A]" />
-              Recent Activity
+              <History className="h-5 w-5 text-[#C9941A]" /> Sasquatch's Log
+              <span className="text-xs text-white/40 font-normal ml-2">past audits, in his own words</span>
             </h3>
-            <div className="space-y-3">
-              {logs.slice(0, 10).map((log: any) => (
-                <div key={log.id} className="flex items-start gap-3 p-3 bg-[#1a1a1a]/50 rounded-lg">
-                  <div className="p-2 rounded bg-[#C9941A]/20">
-                    <CheckCircle2 className="h-4 w-4 text-[#C9941A]" />
+            <div className="space-y-4">
+              {history.slice(0, 10).map((a) => (
+                <div key={a.auditId ?? a.auditDate} className="border-l-2 border-[#C9941A]/40 pl-4" data-testid={`history-${a.auditDate}`}>
+                  <div className="flex items-center gap-2 mb-1 text-xs text-white/50">
+                    <span className="font-mono">{a.auditDate}</span>
+                    <span>·</span>
+                    <span>Day {a.streak}</span>
+                    <span>·</span>
+                    <span>{a.todayCount} {a.todayCount === 1 ? "rep" : "reps"}</span>
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{log.action}</span>
-                      <Badge variant="outline" className="text-xs">
-                        {categories.find(c => c.value === log.difficulty)?.label || log.difficulty}
-                      </Badge>
-                    </div>
-                    {log.notes && <p className="text-gray-400 text-sm mt-1">{log.notes}</p>}
-                    <p className="text-gray-500 text-xs mt-1">
-                      {new Date(log.created_at).toLocaleDateString()}
-                    </p>
-                  </div>
+                  {a.verdict && <p className="text-sm text-white/85 leading-relaxed">{a.verdict}</p>}
+                  {a.tomorrow && <p className="text-xs text-[#C9941A]/80 mt-1 flex items-center gap-1"><ArrowRight className="h-3 w-3" />{a.tomorrow}</p>}
                 </div>
               ))}
             </div>
           </Card>
         )}
 
+        {/* Philosophy strip — kept short */}
+        <Card className="mb-6 p-5 bg-[#1a1a1a] border-[#333]">
+          <h3 className="font-semibold mb-2 flex items-center gap-2"><Target className="h-4 w-4 text-[#C9941A]" /> The rule</h3>
+          <p className="text-sm text-white/70">
+            Do at least <span className="text-[#C9941A] font-semibold">one</span> thing for your recovery every day. One rep saves the streak. Sasquatch reads it. Sasquatch reports back. That's the loop.
+          </p>
+        </Card>
+
+        {/* Log dialog */}
         <Dialog open={logDialogOpen} onOpenChange={setLogDialogOpen}>
           <DialogContent className="bg-[#1a1a1a] border-[#333] text-white max-w-lg">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <Zap className="h-5 w-5 text-[#C9941A]" />
-                Log Your 1 Rep
-              </DialogTitle>
+              <DialogTitle className="flex items-center gap-2"><Zap className="h-5 w-5 text-[#C9941A]" /> Log your 1 rep</DialogTitle>
             </DialogHeader>
-
             <div className="space-y-4 mt-4">
               <div>
                 <Label>Category</Label>
                 <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v })}>
-                  <SelectTrigger className="bg-[#1a1a1a] border-[#333] mt-1" data-testid="select-category">
-                    <SelectValue />
-                  </SelectTrigger>
+                  <SelectTrigger className="bg-[#1a1a1a] border-[#333] mt-1" data-testid="select-category"><SelectValue /></SelectTrigger>
                   <SelectContent className="bg-[#1a1a1a] border-[#333]">
-                    {categories.map((c) => (
-                      <SelectItem key={c.value} value={c.value}>
-                        <div>
-                          <div>{c.label}</div>
-                          <div className="text-xs text-gray-500">{c.examples}</div>
-                        </div>
-                      </SelectItem>
-                    ))}
+                    {categories.map((c) => (<SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>))}
                   </SelectContent>
                 </Select>
               </div>
-
               <div>
                 <Label>What did you do? *</Label>
-                <Input
-                  placeholder="e.g., Did 1 arm stretch, Drank a glass of water..."
-                  value={form.action}
-                  onChange={(e) => setForm({ ...form, action: e.target.value })}
-                  className="bg-[#1a1a1a] border-[#333] mt-1"
-                  data-testid="input-action"
-                />
-                <p className="text-gray-500 text-xs mt-1">
-                  Sasquatch sees this. Be honest — 1 rep is enough.
-                </p>
+                <Input placeholder="e.g., 1 arm stretch, drank a glass of water…" value={form.action} onChange={(e) => setForm({ ...form, action: e.target.value })} className="bg-[#1a1a1a] border-[#333] mt-1" data-testid="input-action" />
+                <p className="text-xs text-white/50 mt-1 flex items-center gap-1"><Sparkles className="h-3 w-3" />Sasquatch sees this. Be honest — 1 rep is enough.</p>
               </div>
-
               <div>
                 <Label>Notes (optional)</Label>
-                <Textarea
-                  placeholder="How did you feel? Any wins to celebrate?"
-                  value={form.notes}
-                  onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                  className="bg-[#1a1a1a] border-[#333] mt-1"
-                  rows={2}
-                />
+                <Textarea placeholder="How did it feel? Any context for Sasquatch?" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} className="bg-[#1a1a1a] border-[#333] mt-1" rows={2} />
               </div>
-
-              <Button
-                onClick={handleSubmit}
-                className="w-full bg-[#C9941A] text-lg py-6"
-                disabled={logMutation.isPending}
-                data-testid="button-save-action"
-              >
-                {logMutation.isPending ? "Saving…" : "Save & report to Sasquatch"}
+              <Button onClick={handleSubmit} className="w-full bg-[#C9941A] text-black font-bold py-6" disabled={logMutation.isPending} data-testid="button-save-action">
+                {logMutation.isPending ? "Saving…" : "Save & audit my day"}
               </Button>
             </div>
           </DialogContent>
         </Dialog>
       </main>
+    </div>
+  );
+}
+
+function AuditLine({ label, tone, body }: { label: string; tone: 'positive' | 'warn' | 'verdict' | 'next'; body: string }) {
+  const colorMap = {
+    positive: { bg: 'bg-green-500/10', border: 'border-green-500/30', text: 'text-green-300' },
+    warn:     { bg: 'bg-amber-500/10', border: 'border-amber-500/30', text: 'text-amber-300' },
+    verdict:  { bg: 'bg-[#C9941A]/10',  border: 'border-[#C9941A]/40',  text: 'text-[#C9941A]' },
+    next:     { bg: 'bg-blue-500/10',  border: 'border-blue-500/30',  text: 'text-blue-300' },
+  } as const;
+  const c = colorMap[tone];
+  return (
+    <div className={`rounded-md border ${c.bg} ${c.border} p-3`}>
+      <div className={`text-[10px] uppercase tracking-widest font-bold ${c.text} mb-1`}>{label}</div>
+      <p className="text-sm text-white/90 leading-relaxed">{body}</p>
     </div>
   );
 }

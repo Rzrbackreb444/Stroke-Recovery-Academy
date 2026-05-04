@@ -333,6 +333,9 @@ export default function RecoveryDashboard() {
           </Link>
         </section>
 
+        {/* NEVER ZERO AUDIT — The heart of the platform: daily check-in + Sasquatch audit */}
+        <NeverZeroAuditHero />
+
         {/* BONFIRE — Today's adaptive session (with personalization preview) */}
         <BonfireHeroCard />
 
@@ -1399,6 +1402,105 @@ function AnchorHeroCard() {
               </div>
             </div>
           </div>
+      </Link>
+    </section>
+  );
+}
+
+type NeverZeroAuditHeroPayload = {
+  auditDate: string;
+  message: string;
+  streak: number;
+  todayCount: number;
+  verdict: string | null;
+  tomorrow: string | null;
+  streakBand: 'spark' | 'ember' | 'blaze' | 'wildfire' | 'legend';
+};
+
+function NeverZeroAuditHero() {
+  const { isAuthenticated } = useAuth();
+  const tierColor: Record<NeverZeroAuditHeroPayload['streakBand'], string> = {
+    spark: "#C9941A", ember: "#E07B00", blaze: "#F97316", wildfire: "#EF4444", legend: "#FACC15",
+  };
+  const tierLabel: Record<NeverZeroAuditHeroPayload['streakBand'], string> = {
+    spark: "Spark", ember: "Ember", blaze: "Blaze", wildfire: "Wildfire", legend: "Legend",
+  };
+
+  // Hits the cached audit — won't burn a Gemini call if today's already saved.
+  const { data: audit, isLoading } = useQuery<NeverZeroAuditHeroPayload>({
+    queryKey: ["/api/recovery/never-zero/report", "hero"],
+    queryFn: async () => {
+      const res = await apiRequest("POST", "/api/recovery/never-zero/report", { force: false });
+      return await res.json();
+    },
+    enabled: isAuthenticated,
+    staleTime: 5 * 60_000,
+  });
+
+  const color = audit ? tierColor[audit.streakBand] : "#C9941A";
+  const tier = audit ? tierLabel[audit.streakBand] : "Spark";
+  const hasReps = (audit?.todayCount ?? 0) > 0;
+
+  return (
+    <section className="mb-8" data-testid="section-never-zero-audit-hero">
+      <Link
+        href="/recovery/never-zero"
+        className="block group rounded-xl border-2 hover-elevate active-elevate-2 p-6"
+        style={{ borderColor: color, background: `linear-gradient(135deg, ${color}22, #1a1a1a 60%, #1a1a1a)` }}
+        data-testid="link-never-zero-hero"
+        aria-label="Open today's Sasquatch audit"
+      >
+        <div className="flex items-start gap-5">
+          <div
+            className="hidden sm:flex h-16 w-16 rounded-full items-center justify-center shrink-0"
+            style={{ background: color, boxShadow: `0 0 24px ${color}73` }}
+          >
+            <Flame className="h-8 w-8 text-black" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap mb-1">
+              <p className="text-[10px] uppercase tracking-[0.3em] font-bold" style={{ color }}>
+                The Heart · Never Zero Audit
+              </p>
+              <Badge className="text-[10px] border" style={{ background: `${color}25`, color, borderColor: `${color}66` }}>
+                {tier} · Day {audit?.streak ?? 0}
+              </Badge>
+            </div>
+            <h2
+              className="text-2xl sm:text-3xl font-black text-white leading-tight mb-2"
+              style={{ fontFamily: "Playfair Display, Georgia, serif" }}
+            >
+              {hasReps ? "Sasquatch audited your day." : "Sasquatch is waiting on your rep."}
+            </h2>
+            {isLoading ? (
+              <p className="text-sm text-gray-400 italic">Loading today's audit…</p>
+            ) : audit && hasReps && audit.verdict ? (
+              <>
+                <p className="text-sm text-gray-200 leading-relaxed mb-2 line-clamp-3" data-testid="text-audit-verdict">
+                  {audit.verdict}
+                </p>
+                {audit.tomorrow && (
+                  <p className="text-xs text-gray-400 italic flex items-center gap-1 mb-3">
+                    <ArrowRight className="h-3 w-3" /> Tomorrow: {audit.tomorrow}
+                  </p>
+                )}
+              </>
+            ) : audit && !hasReps ? (
+              <p className="text-sm text-gray-300 leading-relaxed mb-3">
+                One stretch. One step. One word. Anything saves the streak — and Sasquatch will audit your day in seconds.
+              </p>
+            ) : (
+              <p className="text-sm text-gray-300 leading-relaxed mb-3">
+                Daily check-in with honest feedback from a 7-year survivor. The accountability loop.
+              </p>
+            )}
+            <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest" style={{ color }}>
+              <Zap className="h-4 w-4" />
+              {hasReps ? "Open today's audit" : "Log my 1 rep"}
+              <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+        </div>
       </Link>
     </section>
   );

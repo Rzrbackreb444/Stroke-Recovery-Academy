@@ -2255,6 +2255,25 @@ export const neverZeroLogs = pgTable("never_zero_logs", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+// Daily Sasquatch audit — one row per user per local-date. Persists the AI's
+// structured audit (stood out / missing / verdict / tomorrow) so survivors can
+// scroll back through Sasquatch's voice over time. This is the moat.
+export const neverZeroAudits = pgTable("never_zero_audits", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  auditDate: text("audit_date").notNull(), // YYYY-MM-DD in user-local time
+  streak: integer("streak").notNull().default(0),
+  todayCount: integer("today_count").notNull().default(0),
+  categoriesCovered: text("categories_covered").array(), // e.g. ["movement","mindset"]
+  categoriesMissed: text("categories_missed").array(),
+  stoodOut: text("stood_out"),
+  missing: text("missing"),
+  verdict: text("verdict"),
+  tomorrow: text("tomorrow"),
+  rawMessage: text("raw_message"), // full assembled text (fallback for legacy clients)
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 // ============================================================================
 // RECOVERY JOURNAL (Daily Entries)
 // ============================================================================
