@@ -122,6 +122,14 @@ export default function SasquatchSound() {
             <Badge variant="outline">Founder: Stroked-Out Sasquatch</Badge>
             <Badge variant="outline">Now accepting interest</Badge>
           </div>
+          <div className="pt-3">
+            <Button asChild size="lg" variant="outline" data-testid="link-hero-studio">
+              <Link href="/sasquatch-studio">
+                <Sparkles className="w-4 h-4 mr-2" />
+                Or clone your own voice — Sasquatch Studio · $9.99/mo
+              </Link>
+            </Button>
+          </div>
         </section>
 
         {/* Proof — listen to what's already out */}
@@ -210,34 +218,49 @@ export default function SasquatchSound() {
 
         {/* Tiers */}
         <section className="space-y-4">
-          <h2 className="text-2xl font-semibold">Two ways in</h2>
-          <div className="grid gap-4 md:grid-cols-2">
+          <h2 className="text-2xl font-semibold">Three ways in</h2>
+          <div className="grid gap-4 md:grid-cols-3">
             <Card className="p-6 space-y-3">
               <Badge variant="secondary">Sponsored slot</Badge>
               <h3 className="text-xl font-semibold">Free · Apply</h3>
               <p className="text-sm text-muted-foreground">
                 One survivor each month gets the full treatment, fully funded. Selected from the
-                interest list. Story shared publicly to inspire others.
+                interest list below.
               </p>
               <ul className="text-sm space-y-1 list-disc pl-5">
                 <li>Custom song from your story</li>
                 <li>Released on all major platforms</li>
-                <li>Your own track page + QR for sharing</li>
-                <li>Featured on the Academy</li>
+                <li>Your own track page + QR</li>
               </ul>
             </Card>
             <Card className="p-6 space-y-3 border-primary/40">
               <Badge>Skip the line</Badge>
               <h3 className="text-xl font-semibold">Paid · Coming soon</h3>
               <p className="text-sm text-muted-foreground">
-                Don't want to wait? Pay an affordable production fee and your song ships in 14 days.
-                Pricing locks in for the founding cohort.
+                Pay an affordable production fee and your song ships in 14 days. Founding-member
+                pricing for the interest list.
               </p>
               <ul className="text-sm space-y-1 list-disc pl-5">
                 <li>Everything in Sponsored, on your timeline</li>
-                <li>Founding-member pricing if you join the interest list now</li>
+                <li>Founding-member pricing</li>
                 <li>You keep 100% of streaming royalties</li>
               </ul>
+            </Card>
+            <Card className="p-6 space-y-3 border-primary/60">
+              <Badge>DIY · Live now</Badge>
+              <h3 className="text-xl font-semibold">Sasquatch Studio · $9.99/mo</h3>
+              <p className="text-sm text-muted-foreground">
+                Clone your own voice. Record audiobooks, poems, anthems — anything — in your own
+                voice. Even on bad-aphasia days.
+              </p>
+              <ul className="text-sm space-y-1 list-disc pl-5">
+                <li>Up to 3 cloned voices</li>
+                <li>50,000 characters / month</li>
+                <li>Download every track as MP3</li>
+              </ul>
+              <Button asChild size="sm" data-testid="link-tier-studio">
+                <Link href="/sasquatch-studio">Open the Studio →</Link>
+              </Button>
             </Card>
           </div>
         </section>

@@ -24564,6 +24564,8 @@ Format as structured JSON with clear sections.`;
   registerBuddyRoutes(app, isAuthenticated);
   const { registerSasquatchSoundRoutes } = await import('./routes/sasquatchSoundRoutes');
   registerSasquatchSoundRoutes(app, isAuthenticated);
+  const { registerSasquatchStudioRoutes } = await import('./routes/sasquatchStudioRoutes');
+  registerSasquatchStudioRoutes(app, isAuthenticated, uploadsDir);
   registerRecommendationRoutes(app, isAuthenticated);
   registerShareRoutes(app, isAuthenticated);
   registerRefundRoutes(app, isAuthenticated);
