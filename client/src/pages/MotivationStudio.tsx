@@ -100,10 +100,27 @@ function AnthemMaker({ usage, onDone }: { usage: UsageResponse; onDone: () => vo
       toast({ title: "Anthem ready", description: "Your 4-line lyric is below." });
     },
     onError: (err: any) => {
+      const msg = String(err?.message ?? "");
+      if (msg.includes("401")) {
+        toast({
+          variant: "destructive",
+          title: "Sign in to compose your anthem",
+          description: "Your session expired. Sign in and try again.",
+        });
+        return;
+      }
+      if (msg.includes("402") || msg.toLowerCase().includes("limit")) {
+        toast({
+          variant: "destructive",
+          title: "Free anthem used this month",
+          description: "Upgrade for unlimited anthems.",
+        });
+        return;
+      }
       toast({
         variant: "destructive",
         title: "Couldn't make your anthem",
-        description: err?.message ?? "Please try again.",
+        description: msg || "Please try again.",
       });
     },
   });
@@ -212,10 +229,27 @@ function VisionCard({ usage, onDone }: { usage: UsageResponse; onDone: () => voi
       toast({ title: "Vision card ready", description: "Save it to your phone lock screen." });
     },
     onError: (err: any) => {
+      const msg = String(err?.message ?? "");
+      if (msg.includes("401")) {
+        toast({
+          variant: "destructive",
+          title: "Sign in to make your vision card",
+          description: "Your session expired. Sign in and try again.",
+        });
+        return;
+      }
+      if (msg.includes("402") || msg.toLowerCase().includes("limit")) {
+        toast({
+          variant: "destructive",
+          title: "Free vision card used this month",
+          description: "Upgrade for unlimited vision cards.",
+        });
+        return;
+      }
       toast({
         variant: "destructive",
         title: "Couldn't make your vision card",
-        description: err?.message ?? "Please try again.",
+        description: msg || "Please try again.",
       });
     },
   });
