@@ -9267,11 +9267,15 @@ Respond in JSON format:
     return `You are Nick Kremers - "The Stroked Out Sasquatch" - a stroke survivor who beat impossible odds.${personaBlock}
 
 VOICE & PERSONALITY:
-- Southern warmth with raspy, gravelly authenticity - like a wise old friend who's been through hell and came back smiling
-- Blend tough love with genuine compassion - you've earned the right to speak truth because you've lived it
-- Call them "warrior," "champion," "friend," "brother/sister in arms"
-- Speak from YOUR experience: "I remember when my arm wouldn't move..." "In my darkest hour..."
-- Keep responses conversational and warm, like sitting on a porch talking - not clinical or preachy
+- Southern warmth with raspy, gravelly authenticity — wise friend who's been through hell and came back smiling.
+- Tough love AND real compassion. You earned the right to speak truth because you've lived it.
+- Speak from YOUR experience naturally: "I remember when my left arm wouldn't move…" "In my darkest hour…"
+- Conversational, warm — porch talk. Not clinical. Not preachy. Not sycophantic.
+- NEVER use emojis. Punctuation and word choice carry the warmth.
+- Vary salutations. "Warrior," "champion," "friend" only when earned — never every reply. Most replies need NO salutation. Use their actual name (or persona name) when you have one.
+- If you know their streak day, name the number out loud: "Day 12 — that's not luck, that's discipline."
+- If you know today's reps, reference them by name. "You walked today. Good. The leg remembers."
+- Never say "great job," "amazing," "you got this!" — those are dead phrases. Be specific or be silent.
 
 YOUR STORY (weave naturally into responses):
 - Massive hemorrhagic stroke at age 36 - doctors said 0% chance of meaningful recovery
@@ -9319,11 +9323,23 @@ SIGNATURE PHRASES (use naturally, don't force):
 - "Small victories compound into extraordinary comebacks."
 
 RESPONSE STYLE:
-- Keep responses conversational (2-5 sentences usually, longer for deep emotional support)
-- Ask about THEM - their wins, their struggles, their day
-- End with encouragement or a specific action they can take
-- Use humor when appropriate - recovery needs laughter too
-- Be real, not robotic. You're a friend first.
+- 2–4 sentences usually. Longer ONLY for deep emotional support or when explaining a system the user asked about.
+- Lead with the answer or the truth. Never lead with sympathy or filler.
+- Plain text. No emojis. No bullet lists unless the user explicitly asked for steps.
+- Body of the reply ends with one specific next move OR one honest question — not both.
+- Use humor when it fits. Recovery needs laughter too.
+- Be real, not robotic. Friend first.
+
+ALWAYS END WITH A QUOTE (mandatory — every single reply, no exceptions):
+- After your main reply, add a blank line, then a short founder/survivor quote on its own line, prefixed with "— " (em dash + space).
+- Pull from the SIGNATURE PHRASES list above when they fit, OR coin a new one in the same Sasquatch voice (short, punchy, earned, never sappy).
+- The quote must be ONE LINE. Max 18 words. No emojis. No author tag — the em dash IS the signature.
+- If you used a SIGNATURE PHRASE inside your reply already, pick a different one for the closer — never repeat.
+
+EXAMPLE OUTPUT FORMAT:
+Day 12 — that's discipline, not luck. The arm is remembering because you keep asking it to.
+
+— Every damn day you show up, you win. Period.
 
 NEVER: Provide medical advice. Always encourage working with their healthcare team. You're their motivational companion, their cheerleader in dark times, their proof that comebacks happen.`;
   };
@@ -9405,22 +9421,53 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         }
       }
 
+      // Quote-closer enforcer — used to guarantee the "always end with a
+      // quote" hard rule even when Gemini drifts. Treats em-dash / en-dash /
+      // hyphen all as valid leaders since model output varies. If the
+      // response already closes with a quote line, returns it unchanged;
+      // otherwise appends a blank line + the random fallback quote.
+      const ensureQuoteCloser = (text: string, fallback?: string): string => {
+        const safe = (fallback || 'Every comeback starts with one rep.').trim().replace(/\n+/g, ' ');
+        const trimmed = (text || '').trimEnd();
+        if (!trimmed) return `Keep going. One rep at a time.\n\n— ${safe}`;
+        const lines = trimmed.split('\n');
+        const lastLine = lines[lines.length - 1]?.trim() || '';
+        if (/^[—–-]\s+\S/.test(lastLine)) return trimmed;
+        return `${trimmed}\n\n— ${safe}`;
+      };
+
       // Build user context if authenticated
-      let userContext: { name?: string; exerciseCount?: number; streak?: number; lastExercises?: string[]; milestones?: string[] } | undefined;
-      
+      let userContext: {
+        name?: string;
+        exerciseCount?: number;
+        streak?: number;
+        lastExercises?: string[];
+        milestones?: string[];
+        streakBand?: string;
+        todayReps?: string[];
+        todayVerdict?: string | null;
+        tomorrowSuggestion?: string | null;
+        hasLoggedToday?: boolean;
+      } | undefined;
+
       let coachPersona: { name: string; creed: string; archetypeKey: string } | null = null;
 
       if (req.user?.claims?.sub) {
         const userId = req.user.claims.sub;
         try {
-          // Fetch user's recovery context for personalized coaching
+          // Fetch user's recovery context for personalized coaching, including
+          // today's Never Zero reps + audit so Sasquatch references the actual
+          // day instead of generic "keep pushing" lines.
           const { loadPersonaFor } = await import('./personaRoutes');
-          const [exerciseScores, streakData, milestonesData, userData, personaRow] = await Promise.all([
+          const todayKey = localDateKey(new Date());
+          const [exerciseScores, streakData, milestonesData, userData, personaRow, neverZero, todayAudit] = await Promise.all([
             storage.getUserExerciseScores(userId).catch((err) => { console.error('[coach] getUserExerciseScores failed:', err); return []; }),
             storage.getUserStreak(userId).catch(() => ({ currentStreak: 0 })),
             storage.getUserMilestones(userId).catch(() => []),
             storage.getUser(userId).catch(() => null),
             loadPersonaFor(userId).catch(() => null),
+            storage.getNeverZeroData(userId).catch(() => null),
+            storage.getNeverZeroAuditByDate(userId, todayKey).catch(() => null),
           ]);
 
           if (personaRow) {
@@ -9431,13 +9478,24 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
             };
           }
 
+          // Pull today's Never Zero reps from the same data source the audit uses.
+          const allLogs = (neverZero?.logs ?? []) as Array<{ action: string; created_at: string }>;
+          const todayLogs = allLogs.filter((l) => localDateKey(new Date(l.created_at)) === todayKey);
+          const todayReps = todayLogs.map((l) => l.action).slice(0, 6);
+          const nzStreak = neverZero?.currentStreak ?? streakData?.currentStreak ?? 0;
+
           userContext = {
             // Prefer persona name so the coach addresses the survivor as their forged self.
             name: personaRow?.name || userData?.firstName || userData?.email || undefined,
             exerciseCount: exerciseScores.length,
-            streak: streakData?.currentStreak || 0,
+            streak: nzStreak,
             lastExercises: exerciseScores.slice(0, 3).map((s: any) => s.exerciseType || 'exercise'),
-            milestones: milestonesData.slice(0, 2).map((m: any) => m.title || m.name)
+            milestones: milestonesData.slice(0, 2).map((m: any) => m.title || m.name),
+            streakBand: nzStreak >= 100 ? 'Legend' : nzStreak >= 30 ? 'Wildfire' : nzStreak >= 14 ? 'Blaze' : nzStreak >= 7 ? 'Ember' : 'Spark',
+            todayReps,
+            todayVerdict: todayAudit?.verdict ?? null,
+            tomorrowSuggestion: todayAudit?.tomorrow ?? null,
+            hasLoggedToday: todayLogs.length > 0,
           };
         } catch (e) {
           console.error('Error fetching user context:', e);
@@ -9445,6 +9503,15 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       }
 
       const result = await generateCoachResponse(message, history || [], getSasquatchCoachPrompt(coachPersona), userContext);
+
+      // Hard rule: every Sasquatch reply MUST end with a quote on its own
+      // line, prefixed with "— ". The system prompt instructs Gemini to do
+      // this, but a single drift would silently break the founder's stated
+      // requirement. We enforce server-side: if the last non-empty line
+      // doesn't already match the quote-closer pattern, append a fallback
+      // pulled from the SASQUATCH_QUOTES pool (already returned alongside
+      // result.response by generateCoachResponse).
+      const finalResponse = ensureQuoteCloser(result.response, result.quote);
 
       let audioBase64: string | undefined;
 
@@ -9459,7 +9526,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
           const isConfigured = await isElevenLabsServiceConfigured();
           if (isConfigured) {
             const elevenlabs = getElevenLabsService();
-            const audioBuffer = await elevenlabs.textToSpeech(result.response, SASQUATCH_VOICE_ID, {
+            const audioBuffer = await elevenlabs.textToSpeech(finalResponse, SASQUATCH_VOICE_ID, {
               stability: 0.6,
               similarity_boost: 0.85,
               style: 0.4,
@@ -9488,11 +9555,11 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       const persistUserId = getUserId(req);
       if (persistUserId) {
         import('./sasquatchHistoryService')
-          .then(({ persistChatTurn }) => persistChatTurn(persistUserId, message, result.response))
+          .then(({ persistChatTurn }) => persistChatTurn(persistUserId, message, finalResponse))
           .catch((e) => console.warn('[coach] persist skipped:', e?.message ?? e));
       }
 
-      res.json({ response: result.response, audioBase64, quota: quotaInfo, anon: anonInfo });
+      res.json({ response: finalResponse, audioBase64, quota: quotaInfo, anon: anonInfo });
     } catch (error) {
       console.error('Coach chat error:', error);
       // Refund the daily-cap reservation so a Gemini outage doesn't burn

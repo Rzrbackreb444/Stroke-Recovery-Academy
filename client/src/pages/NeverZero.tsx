@@ -26,6 +26,7 @@ import RecoveryHeader from "@/components/RecoveryHeader";
 import {
   Flame, Trophy, Target, Calendar, Zap, MessageCircle, Loader2, RefreshCw,
   CheckCircle2, AlertCircle, ArrowRight, History, Award, Sparkles,
+  Footprints, Droplet, Brain, Heart, Users, BookOpen, PartyPopper,
 } from "lucide-react";
 
 const categories = [
@@ -65,13 +66,36 @@ const TIERS: Record<AuditPayload['streakBand'], { label: string; min: number; ne
   legend:   { label: "Legend",   min: 100, next: null, color: "#FACC15", tagline: "Living diploma." },
 };
 
+const TIER_ORDER: AuditPayload['streakBand'][] = ['spark', 'ember', 'blaze', 'wildfire', 'legend'];
+
+const TIER_CELEBRATION: Record<AuditPayload['streakBand'], { headline: string; quote: string }> = {
+  spark:    { headline: "The Spark is lit.", quote: "Every fire I've ever seen started exactly like this. One rep. One day. You showed up." },
+  ember:    { headline: "Day 7 — that's an Ember now.", quote: "A week of showing up rewires more than a month of thinking about it. Don't let the heat die." },
+  blaze:    { headline: "Day 14 — Blaze tier.", quote: "Two weeks. The brain is officially listening. This is where most survivors quit. You didn't." },
+  wildfire: { headline: "Day 30 — Wildfire.", quote: "Thirty days. Habit. Identity. You're not 'trying to recover' anymore. You're a survivor who recovers daily. Period." },
+  legend:   { headline: "Day 100 — Legend.", quote: "100 days. You are the proof now. Somebody on day 1 is going to read your story and find their fire. Pass it forward." },
+};
+
 const catLabel = (v: string) => categories.find((c) => c.value === v)?.label ?? v;
+
+type QuickLogPreset = { label: string; category: string; action: string; icon: any };
+const QUICK_LOG_PRESETS: QuickLogPreset[] = [
+  { label: "Walked",     category: "movement",   action: "Walked — no zero day",        icon: Footprints },
+  { label: "Stretched",  category: "movement",   action: "Stretched the affected side", icon: Sparkles },
+  { label: "Hydrated",   category: "self_care",  action: "Drank water — brain fuel",     icon: Droplet },
+  { label: "Breathwork", category: "mindset",    action: "Breathwork — 4-4-8 reset",     icon: Brain },
+  { label: "Read",       category: "learning",   action: "Read recovery material",       icon: BookOpen },
+  { label: "Reached out",category: "connection", action: "Reached out to another survivor", icon: Users },
+  { label: "Mirror therapy", category: "therapy", action: "Mirror therapy reps",        icon: Heart },
+];
 
 export default function NeverZero() {
   const { isAuthenticated } = useAuth();
   const { toast } = useToast();
   const [logDialogOpen, setLogDialogOpen] = useState(false);
   const [form, setForm] = useState({ category: "movement", action: "", notes: "", reps: 1 });
+  const [celebrationTier, setCelebrationTier] = useState<AuditPayload['streakBand'] | null>(null);
+  const [quickLogPending, setQuickLogPending] = useState<string | null>(null);
 
   const { data: streakData } = useQuery<any>({
     queryKey: ["/api/recovery/never-zero"],
@@ -106,10 +130,12 @@ export default function NeverZero() {
       queryClient.invalidateQueries({ queryKey: ["/api/recovery/never-zero"] });
       setLogDialogOpen(false);
       setForm({ category: "movement", action: "", notes: "", reps: 1 });
+      setQuickLogPending(null);
       toast({ title: "Rep logged", description: "Sending today's audit to Sasquatch…" });
       reportMut.mutate(true); // force-refresh the audit since reps changed
     },
     onError: (e: any) => {
+      setQuickLogPending(null);
       if (e?.status === 401) {
         toast({ title: "Sign in to log your rep", variant: "destructive" });
         return;
@@ -117,6 +143,12 @@ export default function NeverZero() {
       toast({ title: "Couldn't save your rep", description: String(e?.message ?? ""), variant: "destructive" });
     },
   });
+
+  const handleQuickLog = (preset: QuickLogPreset) => {
+    if (logMutation.isPending) return;
+    setQuickLogPending(preset.label);
+    logMutation.mutate({ category: preset.category, action: preset.action, notes: "", reps: 1 });
+  };
 
   // Auto-fetch today's audit on mount so signed-in survivors see Sasquatch's
   // voice immediately. Cached server-side so this is one cheap DB read on
@@ -141,11 +173,34 @@ export default function NeverZero() {
   const totalDays = streakData?.totalDays || 0;
   const hasLoggedToday = streakData?.loggedToday || false;
   const audit = reportMut.data;
-  const tier = TIERS[audit?.streakBand ?? (currentStreak >= 100 ? 'legend' : currentStreak >= 30 ? 'wildfire' : currentStreak >= 14 ? 'blaze' : currentStreak >= 7 ? 'ember' : 'spark')];
+  const currentBand: AuditPayload['streakBand'] = audit?.streakBand ?? (currentStreak >= 100 ? 'legend' : currentStreak >= 30 ? 'wildfire' : currentStreak >= 14 ? 'blaze' : currentStreak >= 7 ? 'ember' : 'spark');
+  const tier = TIERS[currentBand];
   const nextTier = tier.next != null ? Object.values(TIERS).find((t) => t.min === tier.next) : null;
   const toNext = tier.next != null ? Math.max(0, tier.next - currentStreak) : 0;
   const tierProgress = tier.next != null ? Math.min(100, Math.round(((currentStreak - tier.min) / (tier.next - tier.min)) * 100)) : 100;
   const history = (historyData?.audits ?? []).filter((a) => a.auditDate !== audit?.auditDate);
+
+  // Tier-crossing celebration. Compare current band against the highest band
+  // we've previously shown (in localStorage) — fire only when crossing UP.
+  useEffect(() => {
+    if (!isAuthenticated || typeof window === "undefined") return;
+    if (currentStreak < 1) return;
+    const KEY = "nz-tier-seen";
+    const prev = window.localStorage.getItem(KEY) as AuditPayload['streakBand'] | null;
+    const prevIdx = prev ? TIER_ORDER.indexOf(prev) : -1;
+    const curIdx = TIER_ORDER.indexOf(currentBand);
+    if (prevIdx >= 0 && curIdx > prevIdx) {
+      setCelebrationTier(currentBand);
+    }
+    if (curIdx > prevIdx) {
+      window.localStorage.setItem(KEY, currentBand);
+    }
+  }, [currentBand, currentStreak, isAuthenticated]);
+
+  // Weekly recap — last 7 audits (today included), aggregated.
+  const weekAudits = [audit, ...history].filter(Boolean).slice(0, 7) as AuditPayload[];
+  const weekReps = weekAudits.reduce((s, a) => s + (a.todayCount || 0), 0);
+  const weekCategoryUnion = Array.from(new Set(weekAudits.flatMap((a) => a.categoriesCovered ?? [])));
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
@@ -215,6 +270,35 @@ export default function NeverZero() {
             </Button>
           </Card>
         )}
+
+        {/* Quick-log chips — one tap, no dialog. Reduces friction to ~zero. */}
+        <Card className="mb-6 p-4 bg-[#1a1a1a] border-[#333]">
+          <div className="flex items-center gap-2 mb-3">
+            <Zap className="h-4 w-4 text-[#C9941A]" />
+            <h3 className="text-sm font-semibold text-white/90">Quick-log a rep</h3>
+            <span className="text-xs text-white/50">— one tap, Sasquatch audits the moment you log</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {QUICK_LOG_PRESETS.map((p) => {
+              const Icon = p.icon;
+              const pending = quickLogPending === p.label;
+              return (
+                <Button
+                  key={p.label}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleQuickLog(p)}
+                  disabled={logMutation.isPending}
+                  className="border-[#C9941A]/40 text-white/85 hover:text-[#C9941A] hover:border-[#C9941A]"
+                  data-testid={`quick-log-${p.label.toLowerCase().replace(/\s+/g, '-')}`}
+                >
+                  {pending ? <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> : <Icon className="h-3.5 w-3.5 mr-1.5" />}
+                  {p.label}
+                </Button>
+              );
+            })}
+          </div>
+        </Card>
 
         {/* Sasquatch audit */}
         <Card className="mb-6 p-6 bg-[#1a1a1a] border-[#C9941A]/40" data-testid="card-sasquatch-audit">
@@ -307,6 +391,42 @@ export default function NeverZero() {
           )}
         </Card>
 
+        {/* Weekly recap — last 7 audited days at a glance. */}
+        {weekAudits.length >= 2 && (
+          <Card className="mb-6 p-5 bg-[#1a1a1a] border-[#333]">
+            <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
+              <h3 className="text-base font-semibold flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-[#C9941A]" /> Last {weekAudits.length} audited days
+              </h3>
+              <div className="flex items-center gap-3 text-xs text-white/70">
+                <span><span className="font-bold text-white">{weekReps}</span> reps</span>
+                <span>·</span>
+                <span><span className="font-bold text-white">{weekCategoryUnion.length}</span> categories touched</span>
+              </div>
+            </div>
+            <div className="grid grid-cols-7 gap-1.5">
+              {weekAudits.slice().reverse().map((a) => {
+                const intensity = Math.min(100, (a.todayCount || 0) * 25);
+                return (
+                  <div
+                    key={a.auditDate}
+                    className="aspect-square rounded border flex flex-col items-center justify-center text-[10px] gap-0.5"
+                    style={{
+                      background: a.todayCount > 0 ? `rgba(201, 148, 26, ${0.15 + intensity / 400})` : "rgba(255,255,255,0.04)",
+                      borderColor: a.todayCount > 0 ? "rgba(201, 148, 26, 0.5)" : "rgba(255,255,255,0.1)",
+                    }}
+                    title={`${a.auditDate} — ${a.todayCount} reps`}
+                    data-testid={`recap-${a.auditDate}`}
+                  >
+                    <span className="text-white/60 font-mono">{a.auditDate.slice(5)}</span>
+                    <span className="text-[#C9941A] font-bold">{a.todayCount}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+        )}
+
         {/* History timeline */}
         {history.length > 0 && (
           <Card className="mb-6 p-6 bg-[#1a1a1a] border-[#333]">
@@ -339,6 +459,46 @@ export default function NeverZero() {
             Do at least <span className="text-[#C9941A] font-semibold">one</span> thing for your recovery every day. One rep saves the streak. Sasquatch reads it. Sasquatch reports back. That's the loop.
           </p>
         </Card>
+
+        {/* Tier-crossing celebration — fires once per band crossing, persisted in localStorage. */}
+        <Dialog open={!!celebrationTier} onOpenChange={(open) => !open && setCelebrationTier(null)}>
+          <DialogContent className="bg-[#0D0D0D] border-2 max-w-md text-white" style={{ borderColor: celebrationTier ? TIERS[celebrationTier].color : '#C9941A' }}>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-2xl">
+                <PartyPopper className="h-6 w-6" style={{ color: celebrationTier ? TIERS[celebrationTier].color : '#C9941A' }} />
+                {celebrationTier ? TIER_CELEBRATION[celebrationTier].headline : 'New tier'}
+              </DialogTitle>
+            </DialogHeader>
+            {celebrationTier && (
+              <div className="space-y-4 mt-2">
+                <div
+                  className="h-20 w-20 rounded-full mx-auto flex items-center justify-center"
+                  style={{ background: `${TIERS[celebrationTier].color}25`, border: `2px solid ${TIERS[celebrationTier].color}` }}
+                >
+                  <Award className="h-10 w-10" style={{ color: TIERS[celebrationTier].color }} />
+                </div>
+                <div className="text-center">
+                  <div className="text-[10px] uppercase tracking-[0.3em] font-bold" style={{ color: TIERS[celebrationTier].color }}>
+                    {TIERS[celebrationTier].label} tier unlocked
+                  </div>
+                  <div className="text-sm text-white/60 italic mt-1">{TIERS[celebrationTier].tagline}</div>
+                </div>
+                <p className="text-sm leading-relaxed text-white/85 italic border-l-2 pl-4" style={{ borderColor: TIERS[celebrationTier].color }}>
+                  "{TIER_CELEBRATION[celebrationTier].quote}"
+                </p>
+                <p className="text-xs text-white/40 text-center">— Nick "Sasquatch" Kremers</p>
+                <Button
+                  onClick={() => setCelebrationTier(null)}
+                  className="w-full font-bold text-black"
+                  style={{ backgroundColor: TIERS[celebrationTier].color }}
+                  data-testid="button-celebration-continue"
+                >
+                  Keep the streak alive
+                </Button>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
 
         {/* Log dialog */}
         <Dialog open={logDialogOpen} onOpenChange={setLogDialogOpen}>
