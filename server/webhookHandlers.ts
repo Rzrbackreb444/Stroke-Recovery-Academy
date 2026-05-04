@@ -114,6 +114,39 @@ export class WebhookHandlers {
           console.warn('[stripe-webhook] funnel transition record failed:', e);
         }
       }
+
+      // ── 5. Sasquatch Studio subscription state — keep our DB in sync with
+      //      Stripe so renewals don't silently flip the user to "inactive"
+      //      (and so cancels propagate immediately).
+      if (
+        parsedEvent &&
+        (eventType === 'customer.subscription.created' ||
+          eventType === 'customer.subscription.updated' ||
+          eventType === 'customer.subscription.deleted' ||
+          eventType === 'invoice.paid' ||
+          eventType === 'invoice.payment_succeeded')
+      ) {
+        try {
+          const { syncStudioSubscriptionFromStripe } = await import(
+            './routes/sasquatchStudioRoutes'
+          );
+          const obj: any = (parsedEvent as any).data?.object;
+          if (eventType.startsWith('invoice.')) {
+            // For invoice events, fetch the linked subscription if present.
+            const subId = obj?.subscription;
+            if (subId) {
+              const { getUncachableStripeClient } = await import('./stripeClient');
+              const stripe = await getUncachableStripeClient();
+              const sub = await stripe.subscriptions.retrieve(subId);
+              await syncStudioSubscriptionFromStripe(sub);
+            }
+          } else {
+            await syncStudioSubscriptionFromStripe(obj);
+          }
+        } catch (e) {
+          console.warn('[stripe-webhook] sasq-studio sync failed:', e);
+        }
+      }
     } catch (err) {
       if (reserved && eventId) {
         await dbPool

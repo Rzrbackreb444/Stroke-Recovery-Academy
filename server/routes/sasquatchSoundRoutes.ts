@@ -30,8 +30,38 @@ function escapeHtml(s: string): string {
 }
 
 export function registerSasquatchSoundRoutes(app: Express, isAuthenticated: any) {
+  // Lightweight per-IP rate limiter — 5 signups per IP per hour. Keeps Nick's
+  // inbox safe from form-spam without pulling in another dep.
+  const _interestRl = new Map<string, { count: number; resetAt: number }>();
+  const interestLimiter = (req: any, res: any, next: any) => {
+    const ip = (
+      (req.headers["x-forwarded-for"] as string) ||
+      req.socket?.remoteAddress ||
+      "unknown"
+    )
+      .split(",")[0]
+      .trim();
+    const now = Date.now();
+    const entry = _interestRl.get(ip);
+    if (!entry || now > entry.resetAt) {
+      _interestRl.set(ip, { count: 1, resetAt: now + 60 * 60 * 1000 });
+      return next();
+    }
+    entry.count++;
+    if (entry.count > 5) {
+      res.setHeader("Retry-After", Math.ceil((entry.resetAt - now) / 1000));
+      return res
+        .status(429)
+        .json({ message: "Too many signups from this address. Try again later." });
+    }
+    next();
+  };
+
   // Public submit — pre-launch interest
-  app.post("/api/sasquatch-sound/interest", async (req: Request, res: Response) => {
+  app.post(
+    "/api/sasquatch-sound/interest",
+    interestLimiter,
+    async (req: Request, res: Response) => {
     try {
       const parsed = interestSchema.safeParse(req.body);
       if (!parsed.success) {
@@ -99,7 +129,7 @@ export function registerSasquatchSoundRoutes(app: Express, isAuthenticated: any)
 
       return res.json({ ok: true, id: row.id });
     } catch (err: any) {
-      console.error("[sasquatch-sound/interest] error:", err);
+        console.error("[sasquatch-sound/interest] error:", err);
       return res.status(500).json({ error: "Failed to submit" });
     }
   });

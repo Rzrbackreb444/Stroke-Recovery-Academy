@@ -6911,3 +6911,66 @@ export const insertSasquatchSoundInterestSchema = createInsertSchema(sasquatchSo
 });
 export type SasquatchSoundInterest = typeof sasquatchSoundInterest.$inferSelect;
 export type InsertSasquatchSoundInterest = z.infer<typeof insertSasquatchSoundInterestSchema>;
+
+// ============================================================================
+// SASQUATCH STUDIO — $9.99/mo voice cloning + audio generation for survivors
+// ============================================================================
+export const sasquatchStudioSubscriptions = pgTable("sasquatch_studio_subscriptions", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  email: varchar("email", { length: 200 }).notNull(),
+  status: varchar("status", { length: 24 }).notNull().default("inactive"),
+    // inactive | active | past_due | canceled
+  stripeCustomerId: varchar("stripe_customer_id", { length: 200 }),
+  stripeSubscriptionId: varchar("stripe_subscription_id", { length: 200 }),
+  stripePriceId: varchar("stripe_price_id", { length: 200 }),
+  currentPeriodEnd: timestamp("current_period_end", { withTimezone: true }),
+  charactersUsedThisPeriod: integer("characters_used_this_period").notNull().default(0),
+  monthlyCharacterCap: integer("monthly_character_cap").notNull().default(50000),
+  voicesAllowed: integer("voices_allowed").notNull().default(3),
+  startedAt: timestamp("started_at", { withTimezone: true }),
+  canceledAt: timestamp("canceled_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => ({
+  userUniq: uniqueIndex("uniq_sasq_studio_sub_user").on(t.userId),
+  statusIdx: index("idx_sasq_studio_sub_status").on(t.status),
+}));
+export type SasquatchStudioSubscription = typeof sasquatchStudioSubscriptions.$inferSelect;
+
+export const sasquatchVoiceClones = pgTable("sasquatch_voice_clones", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  name: varchar("name", { length: 120 }).notNull(),
+  description: text("description"),
+  elevenlabsVoiceId: varchar("elevenlabs_voice_id", { length: 80 }).notNull(),
+  consentAttested: boolean("consent_attested").notNull().default(false),
+  consentText: text("consent_text"),
+  consentIp: varchar("consent_ip", { length: 64 }),
+  status: varchar("status", { length: 24 }).notNull().default("ready"),
+    // ready | deleted
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }),
+}, (t) => ({
+  userIdx: index("idx_sasq_voice_clone_user").on(t.userId, t.createdAt),
+  voiceUniq: uniqueIndex("uniq_sasq_voice_clone_voice").on(t.elevenlabsVoiceId),
+}));
+export type SasquatchVoiceClone = typeof sasquatchVoiceClones.$inferSelect;
+
+export const sasquatchVoiceGenerations = pgTable("sasquatch_voice_generations", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  voiceId: varchar("voice_id", { length: 80 }).notNull(),     // elevenlabs voice id
+  voiceName: varchar("voice_name", { length: 120 }),
+  kind: varchar("kind", { length: 32 }).notNull().default("speech"),
+    // speech | audiobook_chapter | poem | anthem_lyric | affirmation
+  title: varchar("title", { length: 200 }),
+  text: text("text").notNull(),
+  characterCount: integer("character_count").notNull(),
+  audioUrl: varchar("audio_url", { length: 400 }).notNull(),
+  durationSeconds: integer("duration_seconds"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => ({
+  userIdx: index("idx_sasq_voice_gen_user").on(t.userId, t.createdAt),
+}));
+export type SasquatchVoiceGeneration = typeof sasquatchVoiceGenerations.$inferSelect;

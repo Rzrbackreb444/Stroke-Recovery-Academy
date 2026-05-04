@@ -60,3 +60,23 @@ The frontend is built with React 18, TypeScript, Vite, Wouter, and TailwindCSS w
 - **Google Places**: Recovery Center Finder integration.
 - **Tone.js**: Audio/music processing.
 - **Lulu API**: Print-on-demand publishing.
+## Sasquatch Sound Label (Pre-launch)
+- `/sasquatch-sound` (also `/label`, `/sasquatchsound`) — public landing page showcasing 6 founder-album tracks + 3-tier offering + interest signup form
+- `POST /api/sasquatch-sound/interest` — captures pre-launch interest, fires email to nick@washbizhub.com via Resend (async, non-blocking)
+- `GET /api/admin/sasquatch-sound/interest` — admin-only list of all signups
+- Tables: `sasquatch_sound_interest`
+
+## Sasquatch Studio ($9.99/mo voice cloning)
+- `/sasquatch-studio` (also `/studio`) — auth-gated subscription page
+- Survivors clone their own voice via mic recording or audio file upload (ElevenLabs IVC)
+- Generate audio in their cloned voice: speech, audiobook chapters, poems, anthem lyrics, affirmations
+- Download every generation as MP3, full history per user
+- Subscription via Stripe Checkout (auto-creates product/price), Customer Portal for manage/cancel
+- Limits: 3 voices per user, 50,000 characters/month
+- Routes: `/api/sasquatch-studio/{me,checkout,verify,portal,voices/clone,voices/:id,generate,generations}`
+- Tables: `sasquatch_studio_subscriptions`, `sasquatch_voice_clones` (with consent attestation + IP audit), `sasquatch_voice_generations`
+- Audio stored under `/uploads/sasquatch-studio/`
+
+## Sasquatch Coach Voice
+- Default `SASQUATCH_VOICE_ID` switched to Nick's cloned voice (`vn2rUKJYxR85xDKQNeFJ`) in `server/elevenlabs.ts`
+- Override via env if needed; `/api/coach/speak` and chat audio now use Nick's real voice

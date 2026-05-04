@@ -180,6 +180,7 @@ const SasquatchRadio = lazy(() => import("@/pages/SasquatchRadio"));
 const HostileConstruction = lazy(() => import("@/pages/HostileConstruction"));
 const TrackPage = lazy(() => import("@/pages/TrackPage"));
 const SasquatchSound = lazy(() => import("@/pages/SasquatchSound"));
+const SasquatchStudio = lazy(() => import("@/pages/SasquatchStudio"));
 const LyricsStudio = lazy(() => import("@/pages/LyricsStudio"));
 const LyricsStudioShare = lazy(() => import("@/pages/LyricsStudioShare"));
 const AdminRadioQueue = lazy(() => import("@/pages/AdminRadioQueue"));
@@ -688,6 +689,8 @@ function Router() {
       <Route path="/sasquatch-sound" component={SasquatchSound} />
       <Route path="/sasquatchsound" component={SasquatchSound} />
       <Route path="/label" component={SasquatchSound} />
+      <Route path="/sasquatch-studio" component={SasquatchStudio} />
+      <Route path="/studio" component={SasquatchStudio} />
       <Route path="/recovery/lyrics" component={LyricsStudio} />
       <Route path="/lyrics/s/:shareId" component={LyricsStudioShare} />
       <Route path="/admin/radio" component={AdminRadioQueue} />

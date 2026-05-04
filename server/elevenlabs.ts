@@ -12,7 +12,10 @@ const ELEVENLABS_API_URL = "https://api.elevenlabs.io/v1";
 //   - Daniel   onwK4e9ZLuTAKqWW03F9   (deep British authoritative)
 //   - Bill     pqHfZKP75CvOlQylNhV4   (warm older American — not raspy, kept for contrast)
 //   - Adam     pNInz6obpgDQGcFmaJgB   (prior default — generic deep narrator)
-export const SASQUATCH_VOICE_ID = process.env.SASQUATCH_VOICE_ID || '2EiwWnXFnvU5JabPnv8n';
+// Default is Nick's own cloned voice ("Nick" in the ElevenLabs library).
+// The user explicitly cloned this for the Sasquatch Coach. Override with
+// SASQUATCH_VOICE_ID env if a different cut should be used.
+export const SASQUATCH_VOICE_ID = process.env.SASQUATCH_VOICE_ID || 'vn2rUKJYxR85xDKQNeFJ';
 
 // Default voice settings tuned for the Sasquatch character: lower stability lets
 // the raspy texture come through (less averaging); higher style amplifies the
