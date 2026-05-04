@@ -10922,6 +10922,14 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         reason = `${capReason} (Original suggestion was ${getLevelName(preCapLevel)} based on yesterday's signal.)`;
       }
 
+      // Personalization is keyed off intake + same-day feedback writes which
+      // can change immediately after a survivor submits a reaction. Use a
+      // tight 60s window — long enough to absorb the SPA's burst of dashboard
+      // tab switches, short enough that a fresh feedback POST is reflected on
+      // the next reload. `Vary: Cookie` prevents cross-account replay on
+      // shared browser profiles (different session cookie → cache miss).
+      res.set('Cache-Control', 'private, max-age=60');
+      res.set('Vary', 'Cookie');
       res.json({
         level: recLevel,
         reason,

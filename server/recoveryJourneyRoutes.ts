@@ -495,6 +495,13 @@ export function registerRecoveryJourneyRoutes(app: Express) {
         const userId = getUserId(req) ?? "anon";
         const { getDailyQuote } = await import("./data/nickQuotes");
         const q = getDailyQuote(userId);
+        // Deterministic per (userId, day) — same survivor sees the same line
+        // all day. private + 1h max-age means a hard reload short-circuits at
+        // the browser cache instead of running the picker again. `Vary: Cookie`
+        // prevents the cached response from replaying across an account switch
+        // in the same browser profile (different session cookie → cache miss).
+        res.set("Cache-Control", "private, max-age=3600");
+        res.set("Vary", "Cookie");
         res.json({ text: q.text, category: q.category });
       } catch (e: any) {
         console.error("[spark] failed", e?.message || e);
