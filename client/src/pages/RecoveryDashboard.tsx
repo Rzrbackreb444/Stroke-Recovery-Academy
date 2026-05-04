@@ -339,8 +339,9 @@ export default function RecoveryDashboard() {
         {/* BONFIRE — Today's adaptive session (with personalization preview) */}
         <BonfireHeroCard />
 
-        {/* RECOVERY ANCHOR — Today's musical anchor + streak */}
-        <AnchorHeroCard />
+        {/* Music intentionally not surfaced here. Anchor + Anthem live in the
+            Music nav so the dashboard stays focused on accountability + community.
+            Re-enable AnchorHeroCard if music ever returns to the home loop. */}
 
         {/* SURVIVOR SHOP — Curated Amazon affiliate gear */}
         <section className="mb-8" data-testid="section-survivor-shop">
