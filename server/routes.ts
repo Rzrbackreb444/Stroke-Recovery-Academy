@@ -12612,43 +12612,196 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
-  // Daily Sasquatch accountability report. Pulls today's never-zero reps and
-  // routes a structured summary through the Coach persona for a 2-3 sentence
-  // acknowledgement + tomorrow focus. The check-in talks back — accountability
-  // that hears you. Cached client-side per-day; safe to call after every log.
+  // Daily Sasquatch accountability AUDIT. Pulls today's never-zero reps,
+  // groups by category, computes coverage + gaps + streak band, and asks
+  // Gemini for a structured 4-line audit (stood out / missing / verdict /
+  // tomorrow). One audit per local-date per user — persisted to
+  // never_zero_audits and reused on the same day to avoid burning Gemini
+  // tokens on every page load. The check-in talks back. This is the heart.
+  const NEVER_ZERO_CATEGORIES = ['movement','therapy','self_care','mindset','connection','learning','custom'] as const;
+  type AuditPayload = {
+    auditId: number | null;
+    auditDate: string;
+    message: string;
+    streak: number;
+    longestStreak: number;
+    totalDays: number;
+    todayCount: number;
+    categoriesCovered: string[];
+    categoriesMissed: string[];
+    stoodOut: string | null;
+    missing: string | null;
+    verdict: string | null;
+    tomorrow: string | null;
+    todayLogs: Array<{ id: number; action: string; category: string; notes: string | null; createdAt: string }>;
+    streakBand: 'spark' | 'ember' | 'blaze' | 'wildfire' | 'legend';
+    fromCache: boolean;
+  };
+
+  function streakBand(n: number): AuditPayload['streakBand'] {
+    if (n >= 100) return 'legend';
+    if (n >= 30) return 'wildfire';
+    if (n >= 14) return 'blaze';
+    if (n >= 7) return 'ember';
+    return 'spark';
+  }
+
+  function localDateKey(d: Date): string {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
+  app.get('/api/recovery/never-zero/audit', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const audits = await storage.getNeverZeroAudits(userId, 30);
+      res.json({ audits });
+    } catch (error) {
+      console.error("Error fetching never-zero audits:", error);
+      res.status(500).json({ message: "Failed to fetch audit history" });
+    }
+  });
+
   app.post('/api/recovery/never-zero/report', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
+      const force = req.body?.force === true;
       const data = await storage.getNeverZeroData(userId);
       const allLogs = (data?.logs ?? []) as Array<{ id: number; action: string; notes?: string | null; reps?: number; difficulty?: string; created_at: string }>;
       const today = new Date();
-      const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-      const todayLogs = allLogs.filter((l) => {
-        const d = new Date(l.created_at);
-        const k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-        return k === todayKey;
+      const todayKey = localDateKey(today);
+      const todayLogs = allLogs.filter((l) => localDateKey(new Date(l.created_at)) === todayKey);
+      const streak = data?.currentStreak ?? 0;
+
+      const respondEmpty = (msg: string): AuditPayload => ({
+        auditId: null,
+        auditDate: todayKey,
+        message: msg,
+        streak,
+        longestStreak: data?.longestStreak ?? 0,
+        totalDays: data?.totalDays ?? 0,
+        todayCount: 0,
+        categoriesCovered: [],
+        categoriesMissed: [...NEVER_ZERO_CATEGORIES] as string[],
+        stoodOut: null,
+        missing: null,
+        verdict: null,
+        tomorrow: null,
+        todayLogs: [],
+        streakBand: streakBand(streak),
+        fromCache: false,
       });
 
       if (todayLogs.length === 0) {
-        return res.json({
-          message: "No reps today yet — log one (any one) and Sasquatch will weigh in.",
-          streak: data?.currentStreak ?? 0,
-          todayCount: 0,
-          todayLogs: [],
-        });
+        return res.json(respondEmpty("No reps today yet — log one (any one) and Sasquatch will weigh in."));
       }
 
+      // Reuse today's audit if it exists and a refresh wasn't forced.
+      if (!force) {
+        const existing = await storage.getNeverZeroAuditByDate(userId, todayKey);
+        if (existing && existing.todayCount === todayLogs.length) {
+          return res.json({
+            auditId: existing.id,
+            auditDate: existing.auditDate,
+            message: existing.rawMessage ?? '',
+            streak,
+            longestStreak: data?.longestStreak ?? 0,
+            totalDays: data?.totalDays ?? 0,
+            todayCount: existing.todayCount,
+            categoriesCovered: existing.categoriesCovered ?? [],
+            categoriesMissed: existing.categoriesMissed ?? [],
+            stoodOut: existing.stoodOut,
+            missing: existing.missing,
+            verdict: existing.verdict,
+            tomorrow: existing.tomorrow,
+            todayLogs: todayLogs.map((l) => ({ id: l.id, action: l.action, category: l.difficulty || 'movement', notes: l.notes ?? null, createdAt: l.created_at })),
+            streakBand: streakBand(streak),
+            fromCache: true,
+          } satisfies AuditPayload);
+        }
+      }
+
+      const covered = Array.from(new Set(todayLogs.map((l) => (l.difficulty || 'movement').toLowerCase())));
+      const missed = (NEVER_ZERO_CATEGORIES as readonly string[]).filter((c) => !covered.includes(c));
+      const yesterdayKey = localDateKey(new Date(today.getTime() - 86400000));
+      const yesterdayCount = allLogs.filter((l) => localDateKey(new Date(l.created_at)) === yesterdayKey).length;
+      const band = streakBand(streak);
+
+      const lines = todayLogs.map((l) => `- ${l.action}${l.notes ? ` — note: ${l.notes}` : ''} [${l.difficulty || 'movement'}]`).join('\n');
+      const auditPrompt = `Daily Never Zero accountability AUDIT.
+
+Survivor stats:
+- Current streak: ${streak} days (${band} tier)
+- Today's reps: ${todayLogs.length} (yesterday: ${yesterdayCount})
+- Categories covered today: ${covered.join(', ') || 'none'}
+- Categories missed today: ${missed.join(', ') || 'none'}
+
+Today's reps:
+${lines}
+
+Return EXACTLY this JSON shape — no prose, no markdown fences:
+{
+  "stoodOut": "<one sentence: pick the rep that stood out and say why, by name>",
+  "missing": "<one sentence: name a category they skipped today and what a 1-rep version looks like; if they covered everything say 'Full sweep — nothing skipped today.'>",
+  "verdict": "<one sentence: streak verdict in founder voice, name the streak number out loud, compare to yesterday if relevant>",
+  "tomorrow": "<one sentence: one specific 1-rep action for tomorrow, not a category, an action>"
+}
+
+Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "great job." No medical advice. No emojis. Each field max 25 words.`;
+
       const { generateCoachResponse } = await import('./geminiService');
-      const lines = todayLogs.map((l) => `- ${l.action}${l.notes ? ` (${l.notes})` : ''} [${l.difficulty || 'movement'}]`).join('\n');
-      const prompt = `Daily Never Zero accountability check-in.\n\nStreak: ${data?.currentStreak ?? 0} days. Today's reps (${todayLogs.length}):\n${lines}\n\nGive me 2-3 sentences max. Acknowledge what they did today by name (pick one rep that stood out, don't list all). Name the streak number out loud. End with one focus for tomorrow. Founder voice. No medical advice. Don't say "great job" — be specific.`;
-      const out = await generateCoachResponse(prompt, [], "recovery");
+      const out = await generateCoachResponse(auditPrompt, [], "recovery");
+
+      // Parse Gemini's JSON; fall back to using the raw text if parse fails.
+      let stoodOut: string | null = null;
+      let missing: string | null = null;
+      let verdict: string | null = null;
+      let tomorrow: string | null = null;
+      try {
+        const cleaned = (out.response || '').replace(/```json\s*|\s*```/g, '').trim();
+        const firstBrace = cleaned.indexOf('{');
+        const lastBrace = cleaned.lastIndexOf('}');
+        if (firstBrace !== -1 && lastBrace !== -1) {
+          const parsed = JSON.parse(cleaned.slice(firstBrace, lastBrace + 1));
+          stoodOut = typeof parsed.stoodOut === 'string' ? parsed.stoodOut.slice(0, 400) : null;
+          missing = typeof parsed.missing === 'string' ? parsed.missing.slice(0, 400) : null;
+          verdict = typeof parsed.verdict === 'string' ? parsed.verdict.slice(0, 400) : null;
+          tomorrow = typeof parsed.tomorrow === 'string' ? parsed.tomorrow.slice(0, 400) : null;
+        }
+      } catch {
+        // structured parse failed — keep nulls, raw fallback below
+      }
+
+      const message = [stoodOut, missing, verdict, tomorrow].filter(Boolean).join('\n\n') || (out.response || '').slice(0, 1200);
+
+      const saved = await storage.upsertNeverZeroAudit({
+        userId,
+        auditDate: todayKey,
+        streak,
+        todayCount: todayLogs.length,
+        categoriesCovered: covered,
+        categoriesMissed: missed,
+        stoodOut,
+        missing,
+        verdict,
+        tomorrow,
+        rawMessage: message,
+      });
 
       res.json({
-        message: out.response,
-        streak: data?.currentStreak ?? 0,
+        auditId: saved?.id ?? null,
+        auditDate: todayKey,
+        message,
+        streak,
+        longestStreak: data?.longestStreak ?? 0,
+        totalDays: data?.totalDays ?? 0,
         todayCount: todayLogs.length,
+        categoriesCovered: covered,
+        categoriesMissed: missed,
+        stoodOut, missing, verdict, tomorrow,
         todayLogs: todayLogs.map((l) => ({ id: l.id, action: l.action, category: l.difficulty || 'movement', notes: l.notes ?? null, createdAt: l.created_at })),
-      });
+        streakBand: band,
+        fromCache: false,
+      } satisfies AuditPayload);
     } catch (error) {
       console.error("Error generating never-zero report:", error);
       res.status(500).json({ message: "Couldn't reach Sasquatch right now — your reps are still saved." });

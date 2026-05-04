@@ -2822,6 +2822,87 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
+  // Daily Sasquatch audit persistence — one row per (userId, auditDate).
+  async getNeverZeroAuditByDate(userId: string, auditDate: string): Promise<any | null> {
+    try {
+      const result = await db.execute(sql`
+        SELECT id, audit_date AS "auditDate", streak, today_count AS "todayCount",
+               categories_covered AS "categoriesCovered", categories_missed AS "categoriesMissed",
+               stood_out AS "stoodOut", missing, verdict, tomorrow,
+               raw_message AS "rawMessage", created_at AS "createdAt"
+        FROM never_zero_audits
+        WHERE user_id = ${userId} AND audit_date = ${auditDate}
+        LIMIT 1
+      `);
+      return result.rows?.[0] ?? null;
+    } catch (error) {
+      console.error("Error fetching never-zero audit:", error);
+      return null;
+    }
+  }
+
+  async getNeverZeroAudits(userId: string, limit: number = 30): Promise<any[]> {
+    try {
+      const result = await db.execute(sql`
+        SELECT id, audit_date AS "auditDate", streak, today_count AS "todayCount",
+               categories_covered AS "categoriesCovered", categories_missed AS "categoriesMissed",
+               stood_out AS "stoodOut", missing, verdict, tomorrow,
+               raw_message AS "rawMessage", created_at AS "createdAt"
+        FROM never_zero_audits
+        WHERE user_id = ${userId}
+        ORDER BY audit_date DESC
+        LIMIT ${limit}
+      `);
+      return (result.rows ?? []) as any[];
+    } catch (error) {
+      console.error("Error fetching never-zero audits:", error);
+      return [];
+    }
+  }
+
+  async upsertNeverZeroAudit(payload: {
+    userId: string;
+    auditDate: string;
+    streak: number;
+    todayCount: number;
+    categoriesCovered: string[];
+    categoriesMissed: string[];
+    stoodOut: string | null;
+    missing: string | null;
+    verdict: string | null;
+    tomorrow: string | null;
+    rawMessage: string;
+  }): Promise<any | null> {
+    try {
+      const result = await db.execute(sql`
+        INSERT INTO never_zero_audits (
+          user_id, audit_date, streak, today_count,
+          categories_covered, categories_missed,
+          stood_out, missing, verdict, tomorrow, raw_message
+        ) VALUES (
+          ${payload.userId}, ${payload.auditDate}, ${payload.streak}, ${payload.todayCount},
+          ${payload.categoriesCovered}, ${payload.categoriesMissed},
+          ${payload.stoodOut}, ${payload.missing}, ${payload.verdict}, ${payload.tomorrow}, ${payload.rawMessage}
+        )
+        ON CONFLICT (user_id, audit_date) DO UPDATE SET
+          streak = EXCLUDED.streak,
+          today_count = EXCLUDED.today_count,
+          categories_covered = EXCLUDED.categories_covered,
+          categories_missed = EXCLUDED.categories_missed,
+          stood_out = EXCLUDED.stood_out,
+          missing = EXCLUDED.missing,
+          verdict = EXCLUDED.verdict,
+          tomorrow = EXCLUDED.tomorrow,
+          raw_message = EXCLUDED.raw_message
+        RETURNING id, audit_date AS "auditDate", today_count AS "todayCount"
+      `);
+      return result.rows?.[0] ?? null;
+    } catch (error) {
+      console.error("Error upserting never-zero audit:", error);
+      return null;
+    }
+  }
+
   // Journal Methods
   async getJournalEntries(userId: string): Promise<any[]> {
     try {
