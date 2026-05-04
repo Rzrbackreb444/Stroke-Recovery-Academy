@@ -6883,3 +6883,31 @@ export const sasquatchDailyPings = pgTable("sasquatch_daily_pings", {
   uniq: uniqueIndex("uniq_sasquatch_ping").on(t.userId, t.pingDate),
 }));
 export type SasquatchDailyPing = typeof sasquatchDailyPings.$inferSelect;
+
+// ============================================================================
+// SASQUATCH SOUND — survivor music label pre-launch interest signups
+// ============================================================================
+export const sasquatchSoundInterest = pgTable("sasquatch_sound_interest", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 200 }).notNull(),
+  email: varchar("email", { length: 200 }).notNull(),
+  phone: varchar("phone", { length: 40 }),
+  city: varchar("city", { length: 120 }),
+  state: varchar("state", { length: 80 }),
+  storyText: text("story_text"),
+  songVibe: text("song_vibe"),
+  tierInterest: varchar("tier_interest", { length: 32 }),
+  hearAbout: varchar("hear_about", { length: 120 }),
+  ip: varchar("ip", { length: 64 }),
+  userAgent: text("user_agent"),
+  emailedNick: boolean("emailed_nick").notNull().default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => ({
+  emailIdx: index("idx_sasq_sound_interest_email").on(t.email),
+  createdIdx: index("idx_sasq_sound_interest_created").on(t.createdAt),
+}));
+export const insertSasquatchSoundInterestSchema = createInsertSchema(sasquatchSoundInterest).omit({
+  id: true, createdAt: true, ip: true, userAgent: true, emailedNick: true,
+});
+export type SasquatchSoundInterest = typeof sasquatchSoundInterest.$inferSelect;
+export type InsertSasquatchSoundInterest = z.infer<typeof insertSasquatchSoundInterestSchema>;
