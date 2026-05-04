@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
 import {
   Dialog,
   DialogContent,
@@ -24,9 +23,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import RecoveryHeader from "@/components/RecoveryHeader";
-import { 
-  Flame, Plus, Trophy, Target, Calendar, Zap, Star, 
-  Clock, TrendingUp, Award, CheckCircle2, AlertCircle
+import {
+  Flame, Trophy, Target, Calendar, Zap,
+  TrendingUp, CheckCircle2, AlertCircle, MessageCircle, Loader2, Send,
 } from "lucide-react";
 
 const categories = [
@@ -39,8 +38,15 @@ const categories = [
   { value: "custom", label: "Custom", examples: "Define your own" },
 ];
 
+type SasquatchReport = {
+  message: string;
+  streak: number;
+  todayCount: number;
+  todayLogs: Array<{ id: number; action: string; category: string; notes: string | null; createdAt: string }>;
+};
+
 export default function NeverZero() {
-  const { user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { toast } = useToast();
   const [logDialogOpen, setLogDialogOpen] = useState(false);
   const [form, setForm] = useState({
@@ -50,8 +56,33 @@ export default function NeverZero() {
     reps: 1,
   });
 
-  const { data: streakData, isLoading } = useQuery<any>({
+  const { data: streakData } = useQuery<any>({
     queryKey: ["/api/recovery/never-zero"],
+    enabled: isAuthenticated,
+  });
+
+  // Sasquatch's daily accountability report — fetched once per day per user.
+  // Stays fresh after every new log via invalidation in the mutation onSuccess.
+  const reportMut = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/recovery/never-zero/report", {});
+      return (await res.json()) as SasquatchReport;
+    },
+    onError: (e: any) => {
+      if (e?.status === 401) {
+        toast({
+          title: "Sign in to send your report",
+          description: "Sasquatch only reads check-ins from signed-in survivors.",
+          variant: "destructive",
+        });
+        return;
+      }
+      toast({
+        title: "Couldn't reach Sasquatch",
+        description: String(e?.message ?? "Try again in a moment."),
+        variant: "destructive",
+      });
+    },
   });
 
   const logMutation = useMutation({
@@ -62,13 +93,28 @@ export default function NeverZero() {
       queryClient.invalidateQueries({ queryKey: ["/api/recovery/never-zero"] });
       setLogDialogOpen(false);
       setForm({ category: "movement", action: "", notes: "", reps: 1 });
-      toast({ 
-        title: "Streak Saved!", 
-        description: "1 rep counts. You did something today!" 
+      toast({
+        title: "Streak Saved!",
+        description: "1 rep counts. Sending your report to Sasquatch…",
       });
+      // Auto-trigger Sasquatch report so the survivor sees the accountability
+      // loop close immediately — the whole point of this feature.
+      reportMut.mutate();
     },
-    onError: () => {
-      toast({ title: "Error", description: "Could not log your action", variant: "destructive" });
+    onError: (e: any) => {
+      if (e?.status === 401) {
+        toast({
+          title: "Sign in to log your rep",
+          description: "Your session expired. Sign in and try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+      toast({
+        title: "Couldn't save your rep",
+        description: String(e?.message ?? "Try again in a moment."),
+        variant: "destructive",
+      });
     },
   });
 
@@ -85,6 +131,7 @@ export default function NeverZero() {
   const totalDays = streakData?.totalDays || 0;
   const logs = streakData?.logs || [];
   const hasLoggedToday = streakData?.loggedToday || false;
+  const report = reportMut.data;
 
   const getStreakMessage = (streak: number) => {
     if (streak === 0) return "Start your streak today!";
@@ -97,35 +144,35 @@ export default function NeverZero() {
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <RecoveryHeader />
-      
+
       <main className="container mx-auto px-4 py-6 max-w-4xl">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold flex items-center justify-center gap-3 mb-2">
             <Flame className="h-8 w-8 text-[#C9941A]" />
             Never Zero
           </h1>
-          <p className="text-gray-400 text-lg">
-            "1 rep = saved streak"
+          <p className="text-gray-300 text-lg italic">
+            For survivors who are serious about recovery and want accountability.
           </p>
-          <p className="text-gray-500 text-sm mt-1">
-            Do one thing. Anything. Just don't hit zero.
+          <p className="text-gray-500 text-sm mt-2">
+            Do one thing. Anything. Just don't hit zero. Sasquatch reads every check-in.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <Card className="bg-gradient-to-br from-orange-500/20 to-red-500/20 border-[#C9941A]/50 p-6 text-center">
             <Flame className="h-12 w-12 text-[#C9941A] mx-auto mb-3" />
-            <div className="text-5xl font-bold text-[#C9941A]">{currentStreak}</div>
+            <div className="text-5xl font-bold text-[#C9941A]" data-testid="text-current-streak">{currentStreak}</div>
             <div className="text-gray-300 mt-1">Day Streak</div>
             <p className="text-gray-400 text-sm mt-2">{getStreakMessage(currentStreak)}</p>
           </Card>
-          
+
           <Card className="bg-[#1a1a1a] border-[#333] p-6 text-center">
             <Trophy className="h-10 w-10 text-yellow-500 mx-auto mb-3" />
             <div className="text-3xl font-bold">{longestStreak}</div>
             <div className="text-gray-400">Best Streak</div>
           </Card>
-          
+
           <Card className="bg-[#1a1a1a] border-[#333] p-6 text-center">
             <Calendar className="h-10 w-10 text-[#C9941A] mx-auto mb-3" />
             <div className="text-3xl font-bold">{totalDays}</div>
@@ -138,20 +185,79 @@ export default function NeverZero() {
             <CheckCircle2 className="h-12 w-12 text-[#C9941A] mx-auto mb-3" />
             <h3 className="text-xl font-bold text-[#C9941A]">Streak Saved for Today!</h3>
             <p className="text-gray-400 mt-2">You did it. Come back tomorrow to keep it going.</p>
+            {!report && !reportMut.isPending && (
+              <Button
+                onClick={() => reportMut.mutate()}
+                size="sm"
+                variant="outline"
+                className="mt-4 border-[#C9941A]/50 text-[#C9941A] hover:bg-[#C9941A]/10"
+                data-testid="button-fetch-sasquatch-report"
+              >
+                <Send className="h-4 w-4 mr-2" />
+                Send today's report to Sasquatch
+              </Button>
+            )}
           </Card>
         ) : (
           <Card className="bg-[#C9941A]/10 border-[#C9941A]/50 p-6 mb-8 text-center">
             <AlertCircle className="h-12 w-12 text-[#C9941A] mx-auto mb-3" />
             <h3 className="text-xl font-bold text-[#C9941A]">Don't Break Your Streak!</h3>
-            <p className="text-gray-400 mt-2 mb-4">Log just ONE action to save today's streak.</p>
-            <Button 
-              onClick={() => setLogDialogOpen(true)} 
+            <p className="text-gray-400 mt-2 mb-4">Log just ONE action to save today's streak — Sasquatch is waiting.</p>
+            <Button
+              onClick={() => setLogDialogOpen(true)}
               className="bg-[#C9941A] text-lg px-8 py-6"
               data-testid="button-log-action"
             >
               <Zap className="h-5 w-5 mr-2" />
               Log My 1 Rep
             </Button>
+          </Card>
+        )}
+
+        {/* ── Sasquatch's daily report ───────────────────────────── */}
+        {(reportMut.isPending || report) && (
+          <Card className="bg-[#1a1a1a] border-[#C9941A]/40 p-6 mb-8" data-testid="card-sasquatch-report">
+            <div className="flex items-start gap-3 mb-3">
+              <div className="w-10 h-10 rounded-full bg-[#C9941A]/15 border border-[#C9941A]/40 flex items-center justify-center flex-shrink-0">
+                <MessageCircle className="h-5 w-5 text-[#C9941A]" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="text-lg font-bold text-[#C9941A]">Sasquatch's Report</h3>
+                  {report && (
+                    <Badge className="bg-[#C9941A]/20 text-[#C9941A] border border-[#C9941A]/40 text-xs">
+                      Day {report.streak} · {report.todayCount} {report.todayCount === 1 ? "rep" : "reps"} today
+                    </Badge>
+                  )}
+                </div>
+                {reportMut.isPending ? (
+                  <div className="flex items-center gap-2 text-white/60">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span className="text-sm italic">Sasquatch is reviewing your day…</span>
+                  </div>
+                ) : report ? (
+                  <p className="text-white/90 leading-relaxed whitespace-pre-line" data-testid="text-sasquatch-message">
+                    {report.message}
+                  </p>
+                ) : null}
+              </div>
+            </div>
+            {report && report.todayLogs.length > 0 && (
+              <div className="mt-4 pt-4 border-t border-white/10">
+                <p className="text-xs uppercase tracking-wider text-white/50 mb-2">Today's reps</p>
+                <ul className="space-y-1">
+                  {report.todayLogs.map((l) => (
+                    <li key={l.id} className="text-sm text-white/80 flex items-start gap-2">
+                      <CheckCircle2 className="h-4 w-4 text-[#C9941A] flex-shrink-0 mt-0.5" />
+                      <span>{l.action}</span>
+                      <Badge variant="outline" className="text-xs ml-auto">
+                        {categories.find((c) => c.value === l.category)?.label || l.category}
+                      </Badge>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </Card>
         )}
 
@@ -164,15 +270,15 @@ export default function NeverZero() {
             <div className="p-4 bg-[#1a1a1a]/50 rounded-lg">
               <h4 className="font-semibold text-[#C9941A] mb-2">The Rule</h4>
               <p className="text-gray-400 text-sm">
-                Every day, do at least ONE thing for your recovery. One rep. One step. One stretch. 
+                Every day, do at least ONE thing for your recovery. One rep. One step. One stretch.
                 That's all it takes to save your streak.
               </p>
             </div>
             <div className="p-4 bg-[#1a1a1a]/50 rounded-lg">
               <h4 className="font-semibold text-[#C9941A] mb-2">Why It Works</h4>
               <p className="text-gray-400 text-sm">
-                Bad days happen. But doing even the smallest thing keeps you in the game. 
-                1 rep compounds over time into massive progress.
+                Bad days happen. But doing even the smallest thing keeps you in the game.
+                1 rep compounds over time into massive progress — and Sasquatch holds you to it.
               </p>
             </div>
           </div>
@@ -194,7 +300,7 @@ export default function NeverZero() {
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{log.action}</span>
                       <Badge variant="outline" className="text-xs">
-                        {categories.find(c => c.value === log.category)?.label || log.category}
+                        {categories.find(c => c.value === log.difficulty)?.label || log.difficulty}
                       </Badge>
                     </div>
                     {log.notes && <p className="text-gray-400 text-sm mt-1">{log.notes}</p>}
@@ -216,7 +322,7 @@ export default function NeverZero() {
                 Log Your 1 Rep
               </DialogTitle>
             </DialogHeader>
-            
+
             <div className="space-y-4 mt-4">
               <div>
                 <Label>Category</Label>
@@ -247,7 +353,7 @@ export default function NeverZero() {
                   data-testid="input-action"
                 />
                 <p className="text-gray-500 text-xs mt-1">
-                  Remember: 1 rep counts. Anything is better than nothing.
+                  Sasquatch sees this. Be honest — 1 rep is enough.
                 </p>
               </div>
 
@@ -262,13 +368,13 @@ export default function NeverZero() {
                 />
               </div>
 
-              <Button 
-                onClick={handleSubmit} 
+              <Button
+                onClick={handleSubmit}
                 className="w-full bg-[#C9941A] text-lg py-6"
                 disabled={logMutation.isPending}
                 data-testid="button-save-action"
               >
-                {logMutation.isPending ? "Saving..." : "Save My Streak!"}
+                {logMutation.isPending ? "Saving…" : "Save & report to Sasquatch"}
               </Button>
             </div>
           </DialogContent>

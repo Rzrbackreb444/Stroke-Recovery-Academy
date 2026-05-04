@@ -46,6 +46,11 @@ type Plan = "monthly" | "annual";
 
 const FEATURES = [
   {
+    icon: Flame,
+    title: "Daily Never Zero report to Sasquatch",
+    body: "For survivors serious about recovery. Every day you log a rep — one stretch, one step, one word — Sasquatch reads it and reports back: names your streak, calls out what you did, gives one focus for tomorrow. Accountability that talks back. Worth the subscription on its own.",
+  },
+  {
     icon: MessageCircle,
     title: "Unlimited Sasquatch Coach",
     body: "Free survivors get 25 Coach messages per day. Premium = unlimited. Talk to Sasquatch as much as you need, whenever the brain needs it.",
@@ -77,6 +82,7 @@ const OUTCOMES = [
 
 // Free vs Premium — reframes the price as an upgrade, not a paywall.
 const COMPARISON: Array<{ feature: string; free: string; premium: string }> = [
+  { feature: "Never Zero daily report to Sasquatch", free: "Log only", premium: "Daily AI report back" },
   { feature: "Sasquatch Coach messages", free: "25 / day", premium: "Unlimited" },
   { feature: "Recovery Anchor renders", free: "3 / month", premium: "Unlimited" },
   { feature: "Voice Cloning (ElevenLabs)", free: "—", premium: "Included" },
