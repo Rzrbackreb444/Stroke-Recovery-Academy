@@ -1,7 +1,7 @@
 # Stroke Recovery Academy
 
 ## Overview
-Stroke Recovery Academy ("REBUILD. REWIRE. RISE.") is a survivor-first stroke recovery platform aimed at accelerating recovery and building a supportive community. It offers recovery exercises, daily routines, an AI Sasquatch Coach, and a survivor community with accountability pairing. The platform also empowers survivor-authors with a creator toolkit (Book Studio, Course Studio) to publish and monetize content via a Marketplace, fostering economic independence and disseminating effective recovery strategies.
+Stroke Recovery Academy ("REBUILD. REWIRE. RISE.") is a survivor-first platform designed to accelerate stroke recovery and foster a supportive community. It provides recovery exercises, daily routines, an AI Sasquatch Coach, and a survivor community with accountability pairing. The platform also enables survivor-authors to create, publish, and monetize content through tools like Book Studio and Course Studio via a Marketplace, promoting economic independence and sharing effective recovery strategies. The vision is to empower stroke survivors globally, offering personalized recovery journeys and fostering a vibrant community.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -9,74 +9,48 @@ Preferred communication style: Simple, everyday language.
 ## System Architecture
 
 ### UI/UX Decisions
-The platform features a literary warm theme for the main interface and a dark OS theme for the Stroke Recovery OS. Design prioritizes mobile-first responsiveness, accessibility, and intuitive interfaces, with persistent user inputs for professional tools.
+The platform features a literary warm theme for the main interface and a dark OS theme for the Stroke Recovery OS. Design prioritizes mobile-first responsiveness, accessibility, and intuitive interfaces. Professional tools maintain persistent user inputs. The "More" dropdown in the header is a 3-column megamenu structured by recovery progression (Practice / Connect / Earn) to improve navigation for users with aphasia or executive dysfunction.
 
 ### Technical Implementations
-The frontend is built with React 18, TypeScript, Vite, Wouter, and TailwindCSS with Shadcn/ui. State management uses TanStack Query and custom authentication hooks. The backend uses Express.js with TypeScript, adhering to RESTful API principles. Authentication leverages Replit Auth (OpenID Connect) via Passport.js. PostgreSQL is the primary data store, using Neon serverless driver and pgvector for AI functionalities, with Drizzle ORM. The system includes a global credit system, geolocation, i18n support, and an EventEmitter-based background job processing queue with SSE streaming. Server-side rendering (SSR) is implemented for SEO on Tier-1 landing pages and blog posts, including JSON-LD and Generative-Engine SEO (GEO). Observability includes request ID tracking, structured error logging, health routes, and client-side Sentry.
+The frontend is built with React 18, TypeScript, Vite, Wouter, and TailwindCSS with Shadcn/ui, using TanStack Query for state management and custom authentication hooks. The backend utilizes Express.js with TypeScript, following RESTful API principles. Authentication is handled via Replit Auth (OpenID Connect) and Passport.js. PostgreSQL, with Neon serverless driver and pgvector, serves as the primary data store, managed by Drizzle ORM. Key technical features include a global credit system, geolocation, i18n support, an EventEmitter-based background job processing queue with SSE streaming, and server-side rendering (SSR) for SEO on Tier-1 landing pages and blog posts, including JSON-LD and Generative-Engine SEO (GEO). Observability includes request ID tracking, structured error logging, health routes, and client-side Sentry. Performance optimizations include specific `Cache-Control` headers for API endpoints and composite indexes for frequently queried tables.
 
 ### Feature Specifications
-- **Seven Studios**: AI-integrated content creation tools (e.g., Book Studio, Lyrics Studio).
+- **Seven Studios**: AI-integrated content creation tools (e.g., Book Studio, Lyrics Studio, Motivation Studio, Recovery Anchor Studio for musical-mnemonic encoding).
 - **Creator Production Engine**: Tools for content vaults, SERP research, batch production, and a unified dashboard.
 - **Marketplace**: Content selling platform with an 85% creator revenue share.
-- **AI Integration**: Utilizes Google Gemini, OpenAI, and Lyria for various AI functionalities, including pre-LLM crisis detection.
+- **AI Integration**: Leverages Google Gemini, OpenAI, and Lyria for various functionalities, including pre-LLM crisis detection and personalized recommendations.
 - **Course Social Layer**: Community features like forums, groups, cohorts, reviews, and Live Circles (Campfire).
 - **Offline PWA**: Progressive Web App with offline caching and push notifications.
 - **Accountability Buddy**: System for survivor pairing and daily recovery tasks (The Bonfire).
 - **Stroke Recovery OS**: Dedicated platform with a Recovery Dashboard, University, Center Finder, Blog, Sasquatch Coach, Survivor Community, Daily Routine System, and the 66-Day Sasquatch Transformation Challenge.
-- **Motivation Studio**: Tools for recovery motivation like Anthem Maker, Vision Card, and Daily Quote.
-- **Recovery Anchor Studio**: Musical-mnemonic encoder based on Melodic Intonation Therapy.
 - **Survivor Voice Cloning**: Integration with ElevenLabs Instant Voice Cloning.
 - **In-App Feedback Inbox**: Public submission and admin triage.
-- **Content Machine**: Admin tool for AI-generated, SEO-optimized blog drafts and infographics.
-- **Podcast Pipeline**: Admin action to convert blog posts to narrated podcasts via AI.
-- **Branded Onboarding**: Streamlined welcome flow for new users.
-- **Daily Journey Funnel**: A single page (`/recovery/journey`) integrating daily activities with live completion tracking and Gemini-powered recommendations.
-- **First-Run Welcome**: A five-card guided tour (`/recovery/welcome`) for new survivors, with progress persisted.
-- **Premium Navigation**: Global header link to `/recovery/premium` detailing free vs. premium features.
-- **Gemini Recommendation Cards**: Contextual recommendation cards generated by `gemini-2.5-flash`, with survivor-tone guardrails and quotes from the Nick Quote Library.
-- **Nick Quote Library**: A curated collection of ~190 founder quotes and survivor rallying cries, categorized for deterministic daily quotes and Gemini recommendations.
-- **Today's Spark**: A deterministic Nick quote displayed prominently on the Daily Journey and Recovery Dashboard.
-- **Anonymous Coach Gate**: Implements IP-based rate limiting and HMAC-signed cookie counter for limited free messages before sign-in, with TTS skipped for anonymous users.
-- **Sasquatch Premium**: Monetization features including unlimited Coach access, Recovery Anchor renders, Voice Cloning, premium Campfire circles, and a 7-day free trial via subscriptions.
+- **Content Machine & Podcast Pipeline**: Admin tools for AI-generated blog drafts, infographics, and narrated podcasts.
+- **Branded Onboarding & Daily Journey Funnel**: Streamlined new user welcome flow and a single-page daily activity integration with live completion tracking.
+- **Gemini Recommendation Cards & Nick Quote Library**: Contextual recommendations and a curated collection of founder and survivor quotes for motivation.
+- **Anonymous Coach Gate & Sasquatch Premium**: Rate-limited free messages for anonymous users and a premium subscription model for enhanced Coach access, Recovery Anchor renders, and voice cloning.
 - **Premium SEO / E-E-A-T pass**: Enhancements for Marketplace Product schema, Course schema, and Nick Person `sameAs` data.
-- **AI Studio Sign-in UX Hardening**: Improved error handling and state persistence for authentication-gated AI features, ensuring user progress is saved and recovery paths are clear upon session expiry or unauthorized access. This includes refactoring `ApiError` handling and utilizing a `useFormPersistence` hook.
-- **Coach Voice + Push-to-talk + Latency Cut**: Upgrades to the Sasquatch Coach, including client-side SpeechRecognition for push-to-talk, text-first/TTS-in-parallel response delivery for reduced perceived latency, and authentication gating for TTS functionality.
-- **Never Zero Audit**: The daily check-in (`/recovery/never-zero`) now offers a structured 4-line audit from Sasquatch, personalized based on daily reps. This feature includes persistence to a `never_zero_audits` table, gamification with a streak tier system, and a dedicated dashboard hero card.
-- **Header Accountability Refocus (May 2026)**: Primary nav restructured around daily-action surfaces. Was: `Coach · Today · Music▾ · More▾` (Music dropdown competed for primary attention with the daily reps that actually move recovery). Now: `Coach · Today · 🔥 Never Zero · 👥 Bonfire · More▾`. Every primary slot is now a daily-action surface — Coach (the conversation), Today (the daily funnel), Never Zero (THE streak-protection check-in / moat), Bonfire (the survivor accountability buddy at `/recovery/buddy`). Music demoted to a fourth column inside the More megamenu (Practice / Connect / **Music** / Earn) with PRO badges preserved on Anchor Studio + Lyrics Studio — still discoverable in two clicks, no longer dominant. Megamenu width grew 560→680px to fit the 4th column. Mobile menu mirrors: Music collapsible removed; the 4 primary links render with their lucide icon (Flame for Never Zero, Users for Bonfire) so the accountability surfaces are visually flagged on small screens too. Removed `musicNav` constant, `musicOpen` state, `Music2` import — dead code purged in the same pass.
-- **Performance + Menu Optimization Pass (May 2026)**: (a) Added `Cache-Control: private, max-age=3600` + `Vary: Cookie` to `/api/recovery/spark` (deterministic per-user daily Nick quote — same survivor sees the same line all day, so a hard reload short-circuits at the browser cache instead of re-running the picker; `Vary: Cookie` prevents cross-account replay on shared browser profiles). (b) Added `Cache-Control: private, max-age=60` + `Vary: Cookie` to `/api/recovery/today/recommendation` — initial 15-min TTL was too aggressive because the personalization compute keys off intake + same-day feedback writes which mutate immediately after a survivor reaction; tight 60s window absorbs the SPA's tab-switch burst without serving stale level/reason after a fresh POST. (c) Schema: added composite indexes `never_zero_logs_user_created_idx` on `(user_id, created_at)` and `never_zero_audits_user_date_idx` on `(user_id, audit_date)` — both queries run on every Coach turn (via `userContext`) and every dashboard load; created live via raw `CREATE INDEX IF NOT EXISTS` since `drizzle-kit push` requires a TTY for table-rename prompts. (d) Header "More" dropdown restructured from a flat 13-item list into a 3-column megamenu with sections (Practice / Connect / Earn) ordered by recovery progression — survivors with aphasia / executive dysfunction can't scan a 13-item list, but a labeled 3-column grid pre-makes the "where is X" decision. Mobile collapsed view preserves the grouping with section headers. Each link wrapped in `DropdownMenuItem asChild` so radix's roving-tabindex + arrow-key navigation + screen-reader menuitem semantics are preserved despite the grid layout.
-- **Hostile Construction Album Pages (May 2026)**: Permanent, branded landing surfaces for the 17-track *Hostile Construction* album by Stroked-Out Sasquatch. Album page at `/hostile-construction` (alias `/album/hostile-construction`) renders the cover, tagline, full tracklist with book-chapter Sync badges, and inline `<audio>` players sourced from the local MP3s already in `attached_assets/`. Per-track redirect pages at `/track/:slug` (e.g. `/track/fault-line`, `/track/hostile-construction`, `/track/the-promise`) render the track art, an embedded player, "Listen on YouTube/Spotify/Apple/Amazon" buttons, the Track Sync block (Vibe + Action + Story), prev/next nav, and an auto-generated QR code (via `api.qrserver.com`) sized for print so the manuscript can swap branded short URLs for the brittle YouTube IDs the prior draft hallucinated. Track config + book-chapter mappings live in `shared/hostileConstruction.ts` (single source of truth — paste real streaming URLs there once pulled from the distributor; pages auto-light up). MP3 import map in `client/src/lib/hostileAudio.ts` reuses the existing `SasquatchRadio` audio assets so no duplication. Routes wired in `App.tsx` between `SasquatchRadio` and `LyricsStudio`.
-- **Coach + Audit 95+ Pass (May 2026)**: Sasquatch Coach voice tightened — no emojis, no "great job/amazing/you got this" filler, varied salutations, references the actual streak day number out loud. Hard rule: every reply ends with a quote on its own line prefixed with em dash; enforced server-side via `ensureQuoteCloser()` helper in `/api/coach/chat` so a single Gemini drift can't break the contract. Coach now fetches today's Never Zero reps + audit verdict + tomorrow suggestion + tier into `userContext`, woven into the system prompt so replies reference the actual day instead of generic encouragement. Coach widget loads persistent thread via `useQuery /api/coach/history` (race-safe seeding via functional `setMessages` — won't clobber in-flight turns), adds a `Trash2` clear-conversation button wired to `DELETE /api/coach/history`. Never Zero page adds: (a) one-tap quick-log chips strip with 7 presets (Walked/Stretched/Hydrated/Breathwork/Read/Reached out/Mirror therapy) reusing the existing `logMutation` so a single click logs and force-refreshes the audit, (b) tier-crossing celebration `Dialog` driven by `localStorage('nz-tier-seen')` — fires once when a survivor crosses Spark→Ember→Blaze→Wildfire→Legend with founder-voice quote per tier, first-visit semantics record-only (no spurious celebration on initial Spark), (c) weekly recap card (7-day grid with intensity-shaded cells, total reps, categories touched) collapsed above the history timeline.
+- **AI Studio Sign-in UX Hardening**: Improved error handling and state persistence for authentication-gated AI features.
+- **Coach Voice + Push-to-talk + Latency Cut**: Upgrades to the Sasquatch Coach for improved interaction, including client-side SpeechRecognition and text-first/TTS-in-parallel response delivery.
+- **Never Zero Audit**: A structured daily check-in with personalized audits, gamification (streak tiers), and a dedicated dashboard hero card.
+- **Header Accountability Refocus**: Restructured primary navigation to prioritize daily action surfaces like Coach, Today, Never Zero, and Bonfire.
+- **Hostile Construction Album Pages**: Permanent landing pages for the *Hostile Construction* album, featuring tracklists, embedded players, and streaming service links.
+- **Coach + Audit 95+ Pass**: Enhanced Sasquatch Coach voice and integration with Never Zero audit data for more personalized and structured responses.
+- **Sasquatch Sound Label**: Public landing page for founder album tracks, tiered offerings, and interest signup.
+- **Sasquatch Studio**: Auth-gated tiered subscription service for voice cloning and album building with varying capabilities based on subscription level (Creator, Pro, Label). This includes the ability to clone voices, generate audio, and download generations, with Stripe handling subscription management.
+- **Album Builder**: Tools for survivors to create and publish albums from Studio generations or uploaded MP3s, with tier-gated features like album count caps, tracks per album, public share pages, custom share slugs, and distribution metadata export.
 
 ## External Dependencies
 - **Replit Auth**: User authentication.
 - **Stripe**: Payment processing.
-- **Google Gemini AI**: AI content generation.
+- **Google Gemini AI**: AI content generation and recommendations.
 - **OpenAI**: AI writing and analysis.
 - **Neon Database**: Serverless PostgreSQL.
 - **Radix UI**: Accessible UI primitives.
 - **Drizzle ORM / Drizzle Kit**: Database interaction.
 - **SERP API**: Keyword research.
-- **ElevenLabs API**: Text-to-speech services.
+- **ElevenLabs API**: Text-to-speech services and voice cloning.
 - **Google Places**: Recovery Center Finder integration.
 - **Tone.js**: Audio/music processing.
 - **Lulu API**: Print-on-demand publishing.
-## Sasquatch Sound Label (Pre-launch)
-- `/sasquatch-sound` (also `/label`, `/sasquatchsound`) — public landing page showcasing 6 founder-album tracks + 3-tier offering + interest signup form
-- `POST /api/sasquatch-sound/interest` — captures pre-launch interest, fires email to nick@washbizhub.com via Resend (async, non-blocking)
-- `GET /api/admin/sasquatch-sound/interest` — admin-only list of all signups
-- Tables: `sasquatch_sound_interest`
-
-## Sasquatch Studio ($9.99/mo voice cloning)
-- `/sasquatch-studio` (also `/studio`) — auth-gated subscription page
-- Survivors clone their own voice via mic recording or audio file upload (ElevenLabs IVC)
-- Generate audio in their cloned voice: speech, audiobook chapters, poems, anthem lyrics, affirmations
-- Download every generation as MP3, full history per user
-- Subscription via Stripe Checkout (auto-creates product/price), Customer Portal for manage/cancel
-- Limits: 3 voices per user, 50,000 characters/month
-- Routes: `/api/sasquatch-studio/{me,checkout,verify,portal,voices/clone,voices/:id,generate,generations}`
-- Tables: `sasquatch_studio_subscriptions`, `sasquatch_voice_clones` (with consent attestation + IP audit), `sasquatch_voice_generations`
-- Audio stored under `/uploads/sasquatch-studio/`
-
-## Sasquatch Coach Voice
-- Default `SASQUATCH_VOICE_ID` switched to Nick's cloned voice (`vn2rUKJYxR85xDKQNeFJ`) in `server/elevenlabs.ts`
-- Override via env if needed; `/api/coach/speak` and chat audio now use Nick's real voice
+- **Resend**: Email delivery for pre-launch interest signups.
