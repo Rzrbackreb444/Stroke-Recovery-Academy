@@ -103,7 +103,18 @@ export async function generateCoachResponse(
   userMessage: string,
   conversationHistory: { role: string; content: string }[] = [],
   context: string = "recovery",
-  userContext?: { name?: string; exerciseCount?: number; streak?: number; lastExercises?: string[]; milestones?: string[] }
+  userContext?: {
+    name?: string;
+    exerciseCount?: number;
+    streak?: number;
+    lastExercises?: string[];
+    milestones?: string[];
+    streakBand?: string;
+    todayReps?: string[];
+    todayVerdict?: string | null;
+    tomorrowSuggestion?: string | null;
+    hasLoggedToday?: boolean;
+  }
 ): Promise<{ response: string; quote?: string }> {
   try {
     const randomQuote = SASQUATCH_QUOTES[Math.floor(Math.random() * SASQUATCH_QUOTES.length)];
@@ -117,16 +128,32 @@ export async function generateCoachResponse(
     } else if (context.length > 100) {
       // If context is a long string, use it as the full system prompt (e.g., SASQUATCH_COACH_PROMPT)
       systemPrompt = context;
-      // Add user context if available
+      // Add user context if available — Sasquatch references the actual day
+      // (today's reps, the audit verdict you already gave them, the streak
+      // number out loud) instead of generic "keep pushing" lines.
       if (userContext) {
         const contextLines: string[] = [];
-        if (userContext.name) contextLines.push(`The user's name is ${userContext.name}.`);
-        if (userContext.exerciseCount) contextLines.push(`They have completed ${userContext.exerciseCount} exercises.`);
-        if (userContext.streak && userContext.streak > 0) contextLines.push(`They're on a ${userContext.streak}-day streak!`);
+        if (userContext.name) contextLines.push(`The user's name (or forged persona name) is ${userContext.name}. Use it sparingly when it lands — never on every reply.`);
+        if (userContext.streak && userContext.streak > 0) {
+          const tier = userContext.streakBand ? ` (${userContext.streakBand} tier)` : '';
+          contextLines.push(`They're on Day ${userContext.streak} of their Never Zero streak${tier}. Name the number out loud when it fits.`);
+        } else {
+          contextLines.push(`They have NOT logged a Never Zero rep today. Don't shame — invite. Make logging one rep the easy next move.`);
+        }
+        if (userContext.hasLoggedToday && userContext.todayReps?.length) {
+          contextLines.push(`Today's reps already logged (reference by name when relevant — proves you're paying attention): ${userContext.todayReps.map((r) => `"${r}"`).join(', ')}.`);
+        }
+        if (userContext.todayVerdict) {
+          contextLines.push(`Your most recent audit VERDICT for them today was: "${userContext.todayVerdict}" — stay consistent with that voice; don't contradict yourself.`);
+        }
+        if (userContext.tomorrowSuggestion) {
+          contextLines.push(`The 1-rep you suggested for tomorrow was: "${userContext.tomorrowSuggestion}" — if they ask "what should I do?", that's the answer unless context says otherwise.`);
+        }
+        if (userContext.exerciseCount) contextLines.push(`Lifetime exercises completed: ${userContext.exerciseCount}.`);
         if (userContext.lastExercises?.length) contextLines.push(`Recent exercises: ${userContext.lastExercises.slice(0, 3).join(', ')}.`);
         if (userContext.milestones?.length) contextLines.push(`Recent milestones: ${userContext.milestones.slice(0, 2).join(', ')}.`);
         if (contextLines.length > 0) {
-          systemPrompt += `\n\nUSER CONTEXT (personalize your responses):\n${contextLines.join('\n')}`;
+          systemPrompt += `\n\nUSER CONTEXT (use this to make every reply feel personal — never echo it verbatim, weave it):\n${contextLines.join('\n')}`;
         }
       }
       ackMessage = "Hey warrior! I'm here for you. What's on your mind?";

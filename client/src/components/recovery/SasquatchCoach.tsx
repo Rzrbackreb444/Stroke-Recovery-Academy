@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { apiRequest } from "@/lib/queryClient";
-import { Send, Volume2, MessageCircle, User, Loader2, Mic, MicOff } from "lucide-react";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { Send, Volume2, MessageCircle, User, Loader2, Mic, MicOff, Trash2 } from "lucide-react";
 
 interface Message {
   id: string;
@@ -16,19 +16,22 @@ interface Message {
 }
 
 const QUICK_PROMPTS = [
-  "I'm struggling today",
-  "Give me motivation",
+  "What should I do today?",
+  "I'm struggling — help",
+  "Audit my last 24 hours",
   "Explain S.A.S.C.H.",
-  "I need tough love",
-  "Celebrate my win",
+  "Tell me a comeback story",
 ];
+
+const WELCOME_FRESH = "Hey. Nick here — the Stroked Out Sasquatch. What's on your mind today?";
+const WELCOME_RETURNING = "Welcome back. I remember where we left off. What's the next move?";
 
 export default function SasquatchCoach() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
       role: "coach",
-      content: "Hey warrior! I'm Nick, your Sasquatch Coach. Whether you're having a tough day or celebrating a win, I'm here. What's on your mind?",
+      content: WELCOME_FRESH,
     },
   ]);
   const [input, setInput] = useState("");
@@ -41,12 +44,61 @@ export default function SasquatchCoach() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const recognitionRef = useRef<any>(null);
   const blobUrlsRef = useRef<string[]>([]);
+  const historySeededRef = useRef(false);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
+
+  // Persistent thread — load once on mount. Anonymous users get an empty
+  // array (server fails open), so the welcome line stays.
+  const { data: historyData } = useQuery<{
+    messages: Array<{ id: number; role: string; content: string; createdAt: string }>;
+  }>({
+    queryKey: ["/api/coach/history"],
+    staleTime: Infinity,
+  });
+
+  useEffect(() => {
+    if (historySeededRef.current) return;
+    if (!historyData) return;
+    historySeededRef.current = true;
+    if (historyData.messages.length === 0) return;
+    const seeded: Message[] = historyData.messages.map((m) => ({
+      id: `srv-${m.id}`,
+      role: m.role === "user" ? "user" : "coach",
+      content: m.content,
+    }));
+    // Race-safe: if the survivor already started a new turn before history
+    // resolved, leave their in-flight thread alone. Functional setState
+    // reads the latest messages array even though it's not in deps.
+    setMessages((prev) => {
+      if (prev.length > 1) return prev;
+      return [
+        { id: "welcome", role: "coach", content: WELCOME_RETURNING },
+        ...seeded,
+      ];
+    });
+  }, [historyData]);
+
+  const clearMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("DELETE", "/api/coach/history");
+      return res.json();
+    },
+    onSuccess: () => {
+      setMessages([{ id: "welcome", role: "coach", content: "Clean slate. What's on your mind?" }]);
+      queryClient.invalidateQueries({ queryKey: ["/api/coach/history"] });
+    },
+  });
+
+  const handleClear = () => {
+    if (clearMutation.isPending) return;
+    if (typeof window !== "undefined" && !window.confirm("Clear our entire conversation? This can't be undone.")) return;
+    clearMutation.mutate();
+  };
 
   // Probe SpeechRecognition + clean up mic / audio / blob URLs on unmount.
   useEffect(() => {
@@ -296,13 +348,26 @@ export default function SasquatchCoach() {
           <Avatar className="h-10 w-10" style={{ backgroundColor: "#C9941A" }}>
             <AvatarFallback className="text-white font-bold text-sm">NS</AvatarFallback>
           </Avatar>
-          <div>
+          <div className="flex-1 min-w-0">
             <h3 className="font-bold text-foreground flex items-center gap-2" data-testid="coach-title">
               <MessageCircle className="h-4 w-4" style={{ color: "#C9941A" }} />
               Sasquatch Coach
             </h3>
-            <p className="text-xs text-muted-foreground">Your AI Recovery Companion</p>
+            <p className="text-xs text-muted-foreground">Nick Kremers · 7-year survivor · he remembers your thread</p>
           </div>
+          {messages.length > 1 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleClear}
+              disabled={clearMutation.isPending}
+              className="text-muted-foreground hover:text-destructive shrink-0"
+              title="Clear conversation"
+              data-testid="button-clear-history"
+            >
+              {clearMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+            </Button>
+          )}
         </div>
       </CardHeader>
 
