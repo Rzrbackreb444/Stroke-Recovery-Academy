@@ -1,9 +1,24 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
+// Structured error so onError handlers can branch on `err.status` directly
+// instead of the brittle `err.message.includes("401")` string-match pattern.
+// Message format is preserved (`${status}: ${text}`) for back-compat with any
+// existing call sites still doing the string check.
+export class ApiError extends Error {
+  status: number;
+  body: string;
+  constructor(status: number, body: string) {
+    super(`${status}: ${body}`);
+    this.name = "ApiError";
+    this.status = status;
+    this.body = body;
+  }
+}
+
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
-    throw new Error(`${res.status}: ${text}`);
+    throw new ApiError(res.status, text);
   }
 }
 

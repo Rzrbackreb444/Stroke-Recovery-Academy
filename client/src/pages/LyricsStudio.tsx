@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { useFormPersistence } from "@/hooks/useFormPersistence";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 
 type Singer = "male" | "female" | "duet" | "auto";
@@ -85,9 +86,15 @@ export default function LyricsStudio() {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
 
-  const [storyText, setStoryText] = useState("");
-  const [genre, setGenre] = useState<Genre>("hip-hop");
-  const [singer, setSinger] = useState<Singer>("auto");
+  const [form, setForm, clearForm] = useFormPersistence("lyrics-studio-form-v1", {
+    storyText: "",
+    genre: "hip-hop" as Genre,
+    singer: "auto" as Singer,
+  });
+  const { storyText, genre, singer } = form;
+  const setStoryText = (v: string) => setForm((s) => ({ ...s, storyText: v }));
+  const setGenre = (v: Genre) => setForm((s) => ({ ...s, genre: v }));
+  const setSinger = (v: Singer) => setForm((s) => ({ ...s, singer: v }));
   const [result, setResult] = useState<GenerateResponse | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -115,6 +122,7 @@ export default function LyricsStudio() {
       queryClient.invalidateQueries({ queryKey: ["/api/lyrics/usage"] });
       queryClient.invalidateQueries({ queryKey: ["/api/lyrics/list"] });
       if (data.shape === "lyrics") {
+        clearForm();
         toast({ title: "Lyrics ready", description: `"${data.output?.title}" is in your library.` });
       } else if (data.shape === "refused") {
         toast({
@@ -125,21 +133,15 @@ export default function LyricsStudio() {
       }
     },
     onError: async (err: any) => {
-      let msg = err?.message ?? "Generation failed";
-      try {
-        const body = err?.message?.startsWith("{") ? JSON.parse(err.message) : null;
-        if (body?.message) msg = body.message;
-      } catch {}
-      // Survivor-readable mid-flow auth/quota signals before the generic toast.
-      if (msg.includes("401")) {
+      if (err?.status === 401) {
         toast({
           variant: "destructive",
           title: "Sign in to keep writing",
-          description: "Your session expired. Sign in and try again.",
+          description: "Your session expired. We've saved your inputs — they'll be here when you get back.",
         });
         return;
       }
-      if (msg.includes("402") || msg.toLowerCase().includes("limit")) {
+      if (err?.status === 402) {
         toast({
           variant: "destructive",
           title: "Free lyric used this month",
@@ -147,7 +149,11 @@ export default function LyricsStudio() {
         });
         return;
       }
-      toast({ variant: "destructive", title: "Couldn't generate lyrics", description: msg });
+      toast({
+        variant: "destructive",
+        title: "Couldn't generate lyrics",
+        description: String(err?.message ?? "Generation failed"),
+      });
     },
   });
 
