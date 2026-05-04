@@ -12612,6 +12612,49 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
+  // Daily Sasquatch accountability report. Pulls today's never-zero reps and
+  // routes a structured summary through the Coach persona for a 2-3 sentence
+  // acknowledgement + tomorrow focus. The check-in talks back — accountability
+  // that hears you. Cached client-side per-day; safe to call after every log.
+  app.post('/api/recovery/never-zero/report', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const data = await storage.getNeverZeroData(userId);
+      const allLogs = (data?.logs ?? []) as Array<{ id: number; action: string; notes?: string | null; reps?: number; difficulty?: string; created_at: string }>;
+      const today = new Date();
+      const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+      const todayLogs = allLogs.filter((l) => {
+        const d = new Date(l.created_at);
+        const k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        return k === todayKey;
+      });
+
+      if (todayLogs.length === 0) {
+        return res.json({
+          message: "No reps today yet — log one (any one) and Sasquatch will weigh in.",
+          streak: data?.currentStreak ?? 0,
+          todayCount: 0,
+          todayLogs: [],
+        });
+      }
+
+      const { generateCoachResponse } = await import('./geminiService');
+      const lines = todayLogs.map((l) => `- ${l.action}${l.notes ? ` (${l.notes})` : ''} [${l.difficulty || 'movement'}]`).join('\n');
+      const prompt = `Daily Never Zero accountability check-in.\n\nStreak: ${data?.currentStreak ?? 0} days. Today's reps (${todayLogs.length}):\n${lines}\n\nGive me 2-3 sentences max. Acknowledge what they did today by name (pick one rep that stood out, don't list all). Name the streak number out loud. End with one focus for tomorrow. Founder voice. No medical advice. Don't say "great job" — be specific.`;
+      const out = await generateCoachResponse(prompt, [], "recovery");
+
+      res.json({
+        message: out.response,
+        streak: data?.currentStreak ?? 0,
+        todayCount: todayLogs.length,
+        todayLogs: todayLogs.map((l) => ({ id: l.id, action: l.action, category: l.difficulty || 'movement', notes: l.notes ?? null, createdAt: l.created_at })),
+      });
+    } catch (error) {
+      console.error("Error generating never-zero report:", error);
+      res.status(500).json({ message: "Couldn't reach Sasquatch right now — your reps are still saved." });
+    }
+  });
+
   // ============================================================================
   // RECOVERY JOURNAL
   // ============================================================================
