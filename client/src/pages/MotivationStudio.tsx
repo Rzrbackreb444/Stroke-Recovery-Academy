@@ -100,8 +100,7 @@ function AnthemMaker({ usage, onDone }: { usage: UsageResponse; onDone: () => vo
       toast({ title: "Anthem ready", description: "Your 4-line lyric is below." });
     },
     onError: (err: any) => {
-      const msg = String(err?.message ?? "");
-      if (msg.includes("401")) {
+      if (err?.status === 401) {
         toast({
           variant: "destructive",
           title: "Sign in to compose your anthem",
@@ -109,7 +108,7 @@ function AnthemMaker({ usage, onDone }: { usage: UsageResponse; onDone: () => vo
         });
         return;
       }
-      if (msg.includes("402") || msg.toLowerCase().includes("limit")) {
+      if (err?.status === 402) {
         toast({
           variant: "destructive",
           title: "Free anthem used this month",
@@ -120,7 +119,7 @@ function AnthemMaker({ usage, onDone }: { usage: UsageResponse; onDone: () => vo
       toast({
         variant: "destructive",
         title: "Couldn't make your anthem",
-        description: msg || "Please try again.",
+        description: String(err?.message ?? "Please try again."),
       });
     },
   });
@@ -229,8 +228,7 @@ function VisionCard({ usage, onDone }: { usage: UsageResponse; onDone: () => voi
       toast({ title: "Vision card ready", description: "Save it to your phone lock screen." });
     },
     onError: (err: any) => {
-      const msg = String(err?.message ?? "");
-      if (msg.includes("401")) {
+      if (err?.status === 401) {
         toast({
           variant: "destructive",
           title: "Sign in to make your vision card",
@@ -238,7 +236,7 @@ function VisionCard({ usage, onDone }: { usage: UsageResponse; onDone: () => voi
         });
         return;
       }
-      if (msg.includes("402") || msg.toLowerCase().includes("limit")) {
+      if (err?.status === 402) {
         toast({
           variant: "destructive",
           title: "Free vision card used this month",
@@ -249,7 +247,7 @@ function VisionCard({ usage, onDone }: { usage: UsageResponse; onDone: () => voi
       toast({
         variant: "destructive",
         title: "Couldn't make your vision card",
-        description: msg || "Please try again.",
+        description: String(err?.message ?? "Please try again."),
       });
     },
   });

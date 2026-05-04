@@ -209,6 +209,14 @@ export default function VoiceLibrary() {
       if (data?.url) window.location.href = data.url;
     },
     onError: (e: any) => {
+      if (e?.status === 401) {
+        toast({
+          title: "Sign in to clone your voice",
+          description: "Your session expired. Sign in and try again.",
+          variant: "destructive",
+        });
+        return;
+      }
       toast({
         title: "Checkout failed",
         description: e?.message || "Could not start Stripe checkout.",
@@ -246,6 +254,14 @@ export default function VoiceLibrary() {
       discardRecording();
     },
     onError: (e: any) => {
+      if (e?.status === 401) {
+        toast({
+          title: "Sign in to save your clone",
+          description: "Your session expired. Sign in and re-record — the audio sample isn't saved to disk.",
+          variant: "destructive",
+        });
+        return;
+      }
       toast({
         title: "Clone failed",
         description: e?.message || "Could not create voice clone.",

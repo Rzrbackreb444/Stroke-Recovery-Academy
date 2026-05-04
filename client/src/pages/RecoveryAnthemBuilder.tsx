@@ -1,4 +1,5 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
+import { useFormPersistence } from "@/hooks/useFormPersistence";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "wouter";
 import RecoveryHeader from "@/components/RecoveryHeader";
@@ -126,37 +127,27 @@ export default function RecoveryAnthemBuilder() {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
 
   // ── Form state ────────────────────────────────────────────────────
-  // Persisted to localStorage so survivor's inputs survive the OAuth sign-in
-  // round-trip. Cleared after a successful compose so the next session starts fresh.
-  const FORM_KEY = "anthem-builder-form-v1";
-  const initial = (() => {
-    if (typeof window === "undefined") return null;
-    try {
-      const raw = window.localStorage.getItem(FORM_KEY);
-      return raw ? JSON.parse(raw) : null;
-    } catch {
-      return null;
-    }
-  })();
-
-  const [vibe, setVibe] = useState<VibeOption>(initial?.vibe ?? "rock_anthem");
-  const [deficit, setDeficit] = useState<string>(initial?.deficit ?? "");
-  const [goal, setGoal] = useState<string>(initial?.goal ?? "");
-  const [fightFor, setFightFor] = useState<string>(initial?.fightFor ?? "");
-  const [story, setStory] = useState<string>(initial?.story ?? "");
-  const [currentDay, setCurrentDay] = useState<number>(initial?.currentDay ?? 1);
-  const [walkingBpm, setWalkingBpm] = useState<number>(initial?.walkingBpm ?? 90);
-  const [lengthSec, setLengthSec] = useState<number>(initial?.lengthSec ?? 60);
-
-  // Persist on every change. Tiny payload (under 4KB), no debounce needed.
-  useEffect(() => {
-    try {
-      window.localStorage.setItem(
-        FORM_KEY,
-        JSON.stringify({ vibe, deficit, goal, fightFor, story, currentDay, walkingBpm, lengthSec }),
-      );
-    } catch {}
-  }, [vibe, deficit, goal, fightFor, story, currentDay, walkingBpm, lengthSec]);
+  // Persisted to localStorage via shared hook so the survivor's inputs survive
+  // the OAuth sign-in round-trip. Cleared after a successful compose.
+  const [form, setForm, clearForm] = useFormPersistence("anthem-builder-form-v1", {
+    vibe: "rock_anthem" as VibeOption,
+    deficit: "",
+    goal: "",
+    fightFor: "",
+    story: "",
+    currentDay: 1,
+    walkingBpm: 90,
+    lengthSec: 60,
+  });
+  const { vibe, deficit, goal, fightFor, story, currentDay, walkingBpm, lengthSec } = form;
+  const setVibe = (v: VibeOption) => setForm((s) => ({ ...s, vibe: v }));
+  const setDeficit = (v: string) => setForm((s) => ({ ...s, deficit: v }));
+  const setGoal = (v: string) => setForm((s) => ({ ...s, goal: v }));
+  const setFightFor = (v: string) => setForm((s) => ({ ...s, fightFor: v }));
+  const setStory = (v: string) => setForm((s) => ({ ...s, story: v }));
+  const setCurrentDay = (v: number) => setForm((s) => ({ ...s, currentDay: v }));
+  const setWalkingBpm = (v: number) => setForm((s) => ({ ...s, walkingBpm: v }));
+  const setLengthSec = (v: number) => setForm((s) => ({ ...s, lengthSec: v }));
 
   // ── Result state ──────────────────────────────────────────────────
   const [result, setResult] = useState<ComposeResponse | null>(null);
@@ -191,8 +182,7 @@ export default function RecoveryAnthemBuilder() {
       }
     },
     onError: (e: any) => {
-      const msg = String(e?.message ?? "");
-      if (msg.includes("401")) {
+      if (e?.status === 401) {
         toast({
           title: "Sign in to preview",
           description: "Your session expired. Sign in and try again.",
@@ -200,7 +190,11 @@ export default function RecoveryAnthemBuilder() {
         });
         return;
       }
-      toast({ title: "Preview failed", description: msg || "Try again", variant: "destructive" });
+      toast({
+        title: "Preview failed",
+        description: String(e?.message ?? "Try again"),
+        variant: "destructive",
+      });
     },
   });
 
@@ -214,15 +208,12 @@ export default function RecoveryAnthemBuilder() {
       qc.invalidateQueries({ queryKey: ["/api/recovery/anthem/usage"] });
       qc.invalidateQueries({ queryKey: ["/api/recovery/anthem/list"] });
       if (data.shape === "anthem") {
-        // Successful render — clear the saved form so next visit starts fresh.
-        try { window.localStorage.removeItem(FORM_KEY); } catch {}
+        clearForm();
         toast({ title: "Your anthem is here", description: "Press play and turn it up." });
       }
     },
     onError: async (e: any) => {
-      const msg = String(e?.message ?? "");
-      // Surface 401 (signed out / session expired) before any other branch.
-      if (msg.includes("401")) {
+      if (e?.status === 401) {
         toast({
           title: "Sign in to compose your anthem",
           description: "Your session expired. We've saved your inputs — they'll be here when you get back.",
@@ -230,16 +221,19 @@ export default function RecoveryAnthemBuilder() {
         });
         return;
       }
-      // Surface 402 free-tier-limit nicely.
-      if (msg.includes("402") || msg.toLowerCase().includes("limit")) {
+      if (e?.status === 402) {
         toast({
           title: "Free anthem used this month",
           description: "Upgrade for unlimited compositions.",
           variant: "destructive",
         });
-      } else {
-        toast({ title: "Composition failed", description: msg || "Try again", variant: "destructive" });
+        return;
       }
+      toast({
+        title: "Composition failed",
+        description: String(e?.message ?? "Try again"),
+        variant: "destructive",
+      });
     },
   });
 
