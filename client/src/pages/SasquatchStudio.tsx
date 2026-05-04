@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import RecoveryHeader from "@/components/RecoveryHeader";
 import Footer from "@/components/Footer";
@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -25,7 +26,6 @@ import {
   Square,
   Wand2,
   Trash2,
-  Play,
   Loader2,
   CheckCircle2,
   CreditCard,
@@ -34,8 +34,19 @@ import {
   Lock,
   BookOpen,
   Music2,
+  Disc3,
+  Crown,
+  ArrowRight,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import {
+  STUDIO_TIERS,
+  TIER_ORDER,
+  TIER_RANK,
+  type StudioTier,
+  type BillingPeriod,
+  type TierDef,
+} from "@shared/studioTiers";
 
 interface Voice {
   id: number;
@@ -46,13 +57,18 @@ interface Voice {
 }
 interface StudioStatus {
   active: boolean;
-  priceUsd: number;
+  tier: StudioTier;
+  billingPeriod: BillingPeriod;
+  features: TierDef["features"];
   subscription: {
     status: string;
     currentPeriodEnd: string | null;
     charactersUsedThisPeriod: number;
     monthlyCharacterCap: number;
     voicesAllowed: number;
+    albumsAllowed: number;
+    tier: StudioTier;
+    billingPeriod: BillingPeriod;
   } | null;
   voices: Voice[];
 }
@@ -80,6 +96,7 @@ export default function SasquatchStudio() {
   const { toast } = useToast();
   const qc = useQueryClient();
   const [, navigate] = useLocation();
+  const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("monthly");
 
   const status = useQuery<StudioStatus>({
     queryKey: ["/api/sasquatch-studio/me"],
@@ -116,7 +133,8 @@ export default function SasquatchStudio() {
 
   // ------- subscribe ------
   const subscribe = useMutation({
-    mutationFn: async () => apiRequest("POST", "/api/sasquatch-studio/checkout", {}),
+    mutationFn: async ({ tier, period }: { tier: StudioTier; period: BillingPeriod }) =>
+      apiRequest("POST", "/api/sasquatch-studio/checkout", { tier, period }),
     onSuccess: async (res: any) => {
       const data = await res.json();
       if (data?.url) window.location.href = data.url;
@@ -146,8 +164,6 @@ export default function SasquatchStudio() {
   const tickRef = useRef<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Belt-and-suspenders: kill mic + interval when the page unmounts
-  // so navigating away mid-recording doesn't leave the mic indicator on.
   useEffect(() => {
     return () => {
       try {
@@ -290,8 +306,8 @@ export default function SasquatchStudio() {
     return (
       <div className="min-h-screen bg-background">
         <RecoverySEO
-          title="Sasquatch Studio — clone your voice, make anything"
-          description="Clone your own voice for $9.99/month. Record audiobooks, poems, anthems, anything — in your own voice."
+          title="Sasquatch Studio — clone your voice, build albums, release like a label"
+          description="Tiered survivor music & audio studio. Clone your voice, build albums, share publicly, and download everything. Starts at $9.99/month."
           canonical="/sasquatch-studio"
         />
         <RecoveryHeader />
@@ -313,6 +329,7 @@ export default function SasquatchStudio() {
 
   const sub = status.data?.subscription;
   const active = status.data?.active;
+  const currentTier = status.data?.tier || "creator";
   const voices = status.data?.voices || [];
   const usedPct =
     sub && sub.monthlyCharacterCap > 0
@@ -322,79 +339,50 @@ export default function SasquatchStudio() {
   return (
     <div className="min-h-screen bg-background">
       <RecoverySEO
-        title="Sasquatch Studio — clone your voice, make anything"
-        description="Clone your own voice for $9.99/month. Record audiobooks, poems, anthems, anything — in your own voice."
+        title="Sasquatch Studio — clone your voice, build albums, release like a label"
+        description="Tiered survivor music & audio studio. Clone your voice, build albums, share publicly, and download everything. Starts at $9.99/month."
         canonical="/sasquatch-studio"
       />
       <RecoveryHeader />
 
-      <main className="mx-auto max-w-5xl px-4 py-10 space-y-10">
+      <main className="mx-auto max-w-6xl px-4 py-10 space-y-10">
         {/* Hero */}
-        <section className="space-y-3">
+        <section className="space-y-3 max-w-3xl">
           <Badge variant="secondary">
             <Sparkles className="w-3 h-3 mr-1" /> Sasquatch Studio
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-            Clone your voice. Make anything.
+            Clone your voice. Build albums. Release like a label.
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl">
-            $9.99/month. Audiobooks, poems, anthems, affirmations — recorded in your own
-            voice, even on the days when speaking is hard. Built for survivors. Yours forever.
+          <p className="text-lg text-muted-foreground">
+            A studio built for stroke survivors. Clone your real voice, generate audiobooks
+            and anthems on the days speaking is hard, then sequence everything into proper
+            albums you can download or share.
           </p>
-        </section>
-
-        {/* Paywall card */}
-        {!active && (
-          <Card className="p-6 md:p-8 space-y-5 border-primary/40" data-testid="card-paywall">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <h2 className="text-2xl font-semibold">Studio Membership</h2>
-                <p className="text-sm text-muted-foreground">
-                  Cancel anytime from the customer portal.
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="text-3xl font-bold">${status.data?.priceUsd ?? 9.99}</p>
-                <p className="text-xs text-muted-foreground">per month</p>
-              </div>
+          {active && (
+            <div className="flex flex-wrap gap-2 pt-2">
+              <Button asChild size="lg" data-testid="link-go-to-albums">
+                <Link href="/sasquatch-studio/albums">
+                  <Disc3 className="w-4 h-4 mr-2" />
+                  Open Album Builder
+                </Link>
+              </Button>
             </div>
-            <ul className="grid gap-2 sm:grid-cols-2 text-sm">
-              {[
-                "Clone your real voice (up to 3 voices)",
-                "50,000 characters of generation per month",
-                "Audiobook chapters, poems, anthems, affirmations",
-                "Download every track as MP3",
-                "Private to your account, deletable anytime",
-                "Cancel anytime",
-              ].map((line) => (
-                <li key={line} className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 mt-0.5 text-primary shrink-0" />
-                  <span>{line}</span>
-                </li>
-              ))}
-            </ul>
-            <Button
-              size="lg"
-              onClick={() => subscribe.mutate()}
-              disabled={subscribe.isPending}
-              data-testid="button-subscribe"
-            >
-              {subscribe.isPending ? (
-                <Loader2 className="w-4 h-4 animate-spin mr-2" />
-              ) : (
-                <CreditCard className="w-4 h-4 mr-2" />
-              )}
-              Start — $9.99/month
-            </Button>
-          </Card>
-        )}
+          )}
+        </section>
 
         {/* Active membership header */}
         {active && sub && (
           <Card className="p-5 flex flex-wrap items-center justify-between gap-3" data-testid="card-membership-active">
             <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <Badge>Active</Badge>
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge data-testid="badge-current-tier">
+                  <Crown className="w-3 h-3 mr-1" />
+                  {STUDIO_TIERS[currentTier].name}
+                </Badge>
+                <Badge variant="outline" className="text-xs">
+                  {sub.billingPeriod === "annual" ? "Billed annually" : "Billed monthly"}
+                </Badge>
                 <span className="text-sm text-muted-foreground">
                   Renews {sub.currentPeriodEnd ? new Date(sub.currentPeriodEnd).toLocaleDateString() : "—"}
                 </span>
@@ -413,15 +401,142 @@ export default function SasquatchStudio() {
               data-testid="button-manage-billing"
             >
               {portal.isPending && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
-              Manage billing
+              Manage billing & upgrade
             </Button>
           </Card>
         )}
 
+        {/* TIER COMPARISON */}
+        <section className="space-y-5" data-testid="section-tiers">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold">
+                {active ? "Upgrade your plan" : "Choose your plan"}
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                {active
+                  ? "More characters, more voices, more albums. Manage from the billing portal."
+                  : "Cancel anytime. Annual billing saves you about two months."}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className={`text-sm ${billingPeriod === "monthly" ? "font-semibold" : "text-muted-foreground"}`}>
+                Monthly
+              </span>
+              <Switch
+                checked={billingPeriod === "annual"}
+                onCheckedChange={(v) => setBillingPeriod(v ? "annual" : "monthly")}
+                data-testid="switch-billing-period"
+              />
+              <span className={`text-sm ${billingPeriod === "annual" ? "font-semibold" : "text-muted-foreground"}`}>
+                Annual <Badge variant="secondary" className="text-xs ml-1">~2 months free</Badge>
+              </span>
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {TIER_ORDER.map((tierId) => {
+              const tier = STUDIO_TIERS[tierId];
+              const isCurrent = active && currentTier === tierId;
+              const canSwitch = !active || TIER_RANK[tierId] > TIER_RANK[currentTier];
+              const price =
+                billingPeriod === "monthly" ? tier.monthlyDisplay : tier.annualDisplay;
+              const perMonth =
+                billingPeriod === "monthly" ? tier.monthlyDisplay : tier.annualEffectivePerMonth;
+              return (
+                <Card
+                  key={tierId}
+                  className={`p-6 space-y-4 flex flex-col ${
+                    tier.highlight ? "border-primary/60 ring-1 ring-primary/30" : ""
+                  }`}
+                  data-testid={`card-tier-${tierId}`}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-xl font-semibold">{tier.name}</h3>
+                        {tier.highlight && (
+                          <Badge variant="secondary" className="text-xs">
+                            Most popular
+                          </Badge>
+                        )}
+                        {isCurrent && (
+                          <Badge className="text-xs">Current</Badge>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground">{tier.tagline}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-3xl font-bold">
+                      {price}
+                      <span className="text-sm text-muted-foreground font-normal ml-1">
+                        / {billingPeriod === "monthly" ? "mo" : "yr"}
+                      </span>
+                    </p>
+                    {billingPeriod === "annual" && (
+                      <p className="text-xs text-muted-foreground">
+                        ≈ {perMonth} per month
+                      </p>
+                    )}
+                  </div>
+                  <ul className="space-y-1.5 text-sm flex-1">
+                    {tier.perks.map((p) => (
+                      <li key={p} className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 mt-0.5 text-primary shrink-0" />
+                        <span>{p}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  {isCurrent ? (
+                    <Button
+                      variant="outline"
+                      onClick={() => portal.mutate()}
+                      disabled={portal.isPending}
+                      data-testid={`button-manage-${tierId}`}
+                    >
+                      Manage in portal
+                    </Button>
+                  ) : !active ? (
+                    <Button
+                      onClick={() =>
+                        subscribe.mutate({ tier: tierId, period: billingPeriod })
+                      }
+                      disabled={subscribe.isPending}
+                      variant={tier.highlight ? "default" : "outline"}
+                      data-testid={`button-subscribe-${tierId}`}
+                    >
+                      {subscribe.isPending ? (
+                        <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                      ) : (
+                        <CreditCard className="w-4 h-4 mr-2" />
+                      )}
+                      {tier.cta}
+                    </Button>
+                  ) : canSwitch ? (
+                    <Button
+                      onClick={() => portal.mutate()}
+                      disabled={portal.isPending}
+                      data-testid={`button-upgrade-${tierId}`}
+                    >
+                      <ArrowRight className="w-4 h-4 mr-2" />
+                      Upgrade to {tier.name}
+                    </Button>
+                  ) : (
+                    <Button variant="ghost" disabled>
+                      Lower tier
+                    </Button>
+                  )}
+                </Card>
+              );
+            })}
+          </div>
+        </section>
+
         {/* CLONE VOICE */}
         {active && (
           <Card className="p-6 space-y-5">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <Mic className="w-5 h-5" />
               <h2 className="text-xl font-semibold">Clone a voice</h2>
               <Badge variant="outline" className="ml-auto">
@@ -667,9 +782,17 @@ export default function SasquatchStudio() {
         {/* HISTORY */}
         {active && (
           <Card className="p-6 space-y-4">
-            <div className="flex items-center gap-2">
-              <BookOpen className="w-5 h-5" />
-              <h2 className="text-xl font-semibold">My generations</h2>
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-2">
+                <BookOpen className="w-5 h-5" />
+                <h2 className="text-xl font-semibold">My generations</h2>
+              </div>
+              <Button asChild variant="outline" size="sm" data-testid="link-album-builder">
+                <Link href="/sasquatch-studio/albums">
+                  <Disc3 className="w-4 h-4 mr-2" />
+                  Build an album
+                </Link>
+              </Button>
             </div>
             {generations.isLoading ? (
               <p className="text-muted-foreground text-sm">Loading…</p>
@@ -724,7 +847,7 @@ export default function SasquatchStudio() {
             {[
               { icon: BookOpen, title: "Audiobooks", body: "Narrate your own book in your own voice. Chapter by chapter." },
               { icon: Music2, title: "Anthem lyrics", body: "Lay down vocals on top of Suno tracks for a fully custom anthem." },
-              { icon: Headphones, title: "Daily affirmations", body: "Personal pep-talks recorded by you, delivered to your phone." },
+              { icon: Disc3, title: "Albums you can share", body: "Sequence your tracks, add a cover, share publicly or download a ZIP." },
             ].map((it) => (
               <Card key={it.title} className="p-5 space-y-2">
                 <it.icon className="w-5 h-5" />

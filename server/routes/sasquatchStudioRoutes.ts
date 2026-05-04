@@ -10,6 +10,16 @@ import {
   sasquatchVoiceClones,
   sasquatchVoiceGenerations,
 } from "@shared/schema";
+import {
+  STUDIO_TIERS,
+  TIER_ORDER,
+  TIER_RANK,
+  resolveTier,
+  featuresFor,
+  lookupKeyFor,
+  type StudioTier,
+  type BillingPeriod,
+} from "@shared/studioTiers";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { getUncachableStripeClient } from "../stripeClient";
 import {
@@ -30,9 +40,85 @@ function readPeriodEnd(sub: any): Date | null {
   return null;
 }
 
+// Map a Stripe price → (tier, period). Cached at module scope; rebuilt on
+// boot from STUDIO_TIERS lookup_keys so deploys are deterministic.
+const PRICE_TO_TIER = new Map<string, { tier: StudioTier; period: BillingPeriod }>();
+
+async function getOrCreateAllStudioPrices(): Promise<
+  Record<StudioTier, Record<BillingPeriod, string>>
+> {
+  const stripe = await getUncachableStripeClient();
+  // Find or create the parent product once.
+  const products = await stripe.products.list({ limit: 100, active: true });
+  let product = products.data.find((p) => p.name === "Sasquatch Studio");
+  if (!product) {
+    product = await stripe.products.create({
+      name: "Sasquatch Studio",
+      description:
+        "Clone your voice. Build albums. Release like a label — built for stroke survivors.",
+    });
+  }
+  const result: Record<StudioTier, Record<BillingPeriod, string>> = {
+    creator: { monthly: "", annual: "" },
+    pro: { monthly: "", annual: "" },
+    label: { monthly: "", annual: "" },
+  };
+  for (const tier of TIER_ORDER) {
+    for (const period of ["monthly", "annual"] as BillingPeriod[]) {
+      const lookupKey = lookupKeyFor(tier, period);
+      const tierDef = STUDIO_TIERS[tier];
+      const amount =
+        period === "monthly" ? tierDef.monthlyUsdCents : tierDef.annualUsdCents;
+      const interval = period === "monthly" ? "month" : "year";
+      const existing = await stripe.prices.list({
+        lookup_keys: [lookupKey],
+        active: true,
+        limit: 1,
+      });
+      let price = existing.data[0];
+      if (!price) {
+        price = await stripe.prices.create({
+          product: product.id,
+          currency: "usd",
+          unit_amount: amount,
+          recurring: { interval: interval as any },
+          lookup_key: lookupKey,
+          nickname: `${tierDef.name} (${period})`,
+        });
+      }
+      result[tier][period] = price.id;
+      PRICE_TO_TIER.set(price.id, { tier, period });
+    }
+  }
+  return result;
+}
+
+// Lazy bootstrap so we only hit Stripe on first checkout, not on cold boot.
+let pricesCache: Record<StudioTier, Record<BillingPeriod, string>> | null = null;
+async function getPriceFor(tier: StudioTier, period: BillingPeriod): Promise<string> {
+  if (!pricesCache) pricesCache = await getOrCreateAllStudioPrices();
+  return pricesCache[tier][period];
+}
+
+// Resolve tier+period from the Stripe priceId stored on the subscription row.
+// Falls back to a Stripe lookup_keys search if not in the in-process cache
+// (e.g. process restarted after webhook fired with a price we hadn't created
+// in this process yet).
+async function tierFromPriceId(
+  priceId: string | null | undefined
+): Promise<{ tier: StudioTier; period: BillingPeriod } | null> {
+  if (!priceId) return null;
+  const cached = PRICE_TO_TIER.get(priceId);
+  if (cached) return cached;
+  // Warm the cache.
+  await getOrCreateAllStudioPrices();
+  return PRICE_TO_TIER.get(priceId) || null;
+}
+
 // Called by the Stripe webhook handler whenever a subscription event arrives.
 // Looks up our row by stripe_customer_id and refreshes status/period_end so
-// monthly renewals don't silently flip the user back to "inactive". Best-effort.
+// monthly renewals don't silently flip the user back to "inactive". Also
+// re-derives the tier from the active price so upgrades/downgrades land here.
 export async function syncStudioSubscriptionFromStripe(stripeSub: any) {
   try {
     if (!stripeSub?.customer) return;
@@ -48,11 +134,25 @@ export async function syncStudioSubscriptionFromStripe(stripeSub: any) {
             ? "past_due"
             : "inactive";
     const periodEnd = readPeriodEnd(stripeSub);
+    const activePriceId =
+      stripeSub?.items?.data?.[0]?.price?.id ||
+      stripeSub?.plan?.id ||
+      null;
+    const tierMap = await tierFromPriceId(activePriceId);
     const updates: any = {
       status: ourStatus,
       stripeSubscriptionId: stripeSub.id,
       updatedAt: new Date(),
     };
+    if (activePriceId) updates.stripePriceId = activePriceId;
+    if (tierMap) {
+      const f = featuresFor(tierMap.tier);
+      updates.tier = tierMap.tier;
+      updates.billingPeriod = tierMap.period;
+      updates.monthlyCharacterCap = f.monthlyCharacterCap;
+      updates.voicesAllowed = f.voicesAllowed;
+      updates.albumsAllowed = f.albumsAllowed === -1 ? 9999 : f.albumsAllowed;
+    }
     if (periodEnd) updates.currentPeriodEnd = periodEnd;
     if (ourStatus === "canceled") updates.canceledAt = new Date();
     // Reset character usage on a successful renewal (period_end advanced).
@@ -76,49 +176,6 @@ export async function syncStudioSubscriptionFromStripe(stripeSub: any) {
   } catch (e) {
     console.warn("[sasq-studio] syncStudioSubscriptionFromStripe failed", e);
   }
-}
-
-const PRICE_USD_CENTS = 999;
-const PRODUCT_NAME = "Sasquatch Studio";
-const PRODUCT_DESC =
-  "Clone your own voice. Record audiobooks, poems, anthems — anything.";
-
-// Cache the auto-created Stripe price/product per process so we don't recreate
-// them on every checkout. Persists for the lifetime of the dyno.
-let cachedPriceId: string | null = process.env.STRIPE_SASQUATCH_STUDIO_PRICE_ID || null;
-
-async function getOrCreateStudioPrice(): Promise<string> {
-  if (cachedPriceId) return cachedPriceId;
-  const stripe = await getUncachableStripeClient();
-  const products = await stripe.products.list({ limit: 100, active: true });
-  let product = products.data.find((p) => p.name === PRODUCT_NAME);
-  if (!product) {
-    product = await stripe.products.create({
-      name: PRODUCT_NAME,
-      description: PRODUCT_DESC,
-    });
-  }
-  const prices = await stripe.prices.list({
-    product: product.id,
-    active: true,
-    limit: 20,
-  });
-  let price = prices.data.find(
-    (p) =>
-      p.unit_amount === PRICE_USD_CENTS &&
-      p.currency === "usd" &&
-      p.recurring?.interval === "month"
-  );
-  if (!price) {
-    price = await stripe.prices.create({
-      product: product.id,
-      currency: "usd",
-      unit_amount: PRICE_USD_CENTS,
-      recurring: { interval: "month" },
-    });
-  }
-  cachedPriceId = price.id;
-  return price.id;
 }
 
 async function getOrCreateCustomer(
@@ -146,12 +203,24 @@ async function getActiveSub(userId: string) {
     .where(eq(sasquatchStudioSubscriptions.userId, userId))
     .limit(1);
   if (!row) return null;
-  // Active = status active and currentPeriodEnd in future (or unset).
   if (row.status !== "active") return null;
   if (row.currentPeriodEnd && row.currentPeriodEnd.getTime() < Date.now()) {
     return null;
   }
   return row;
+}
+
+// Public helper for other modules (album builder) to gate features.
+export async function getActiveStudioSub(userId: string) {
+  return getActiveSub(userId);
+}
+export async function requireActiveTier(
+  userId: string
+): Promise<{ row: any; tier: StudioTier }> {
+  const row = await getActiveSub(userId);
+  if (!row) throw Object.assign(new Error("Subscription required"), { status: 402 });
+  const tier = resolveTier(row.tier);
+  return { row, tier };
 }
 
 const audioUpload = multer({
@@ -171,6 +240,11 @@ const generateSchema = z.object({
   style: z.number().min(0).max(1).optional(),
 });
 
+const checkoutSchema = z.object({
+  tier: z.enum(["creator", "pro", "label"]).default("creator"),
+  period: z.enum(["monthly", "annual"]).default("monthly"),
+});
+
 export function registerSasquatchStudioRoutes(
   app: Express,
   isAuthenticated: any,
@@ -178,6 +252,11 @@ export function registerSasquatchStudioRoutes(
 ) {
   const studioDir = path.join(uploadsDir, "sasquatch-studio");
   if (!fs.existsSync(studioDir)) fs.mkdirSync(studioDir, { recursive: true });
+
+  // -------- Tier catalog (public, no auth) --------
+  app.get("/api/sasquatch-studio/tiers", (_req, res) => {
+    res.json({ tiers: STUDIO_TIERS, order: TIER_ORDER });
+  });
 
   // -------- Status --------
   app.get(
@@ -205,9 +284,13 @@ export function registerSasquatchStudioRoutes(
         sub.status === "active" &&
         (!sub.currentPeriodEnd ||
           sub.currentPeriodEnd.getTime() > Date.now());
+      const tier = resolveTier(sub?.tier);
+      const features = featuresFor(tier);
       return res.json({
         active: isActive,
-        priceUsd: PRICE_USD_CENTS / 100,
+        tier,
+        billingPeriod: (sub?.billingPeriod as BillingPeriod) || "monthly",
+        features,
         subscription: sub
           ? {
               status: sub.status,
@@ -215,6 +298,9 @@ export function registerSasquatchStudioRoutes(
               charactersUsedThisPeriod: sub.charactersUsedThisPeriod,
               monthlyCharacterCap: sub.monthlyCharacterCap,
               voicesAllowed: sub.voicesAllowed,
+              albumsAllowed: sub.albumsAllowed,
+              tier,
+              billingPeriod: sub.billingPeriod,
             }
           : null,
         voices: voices.map((v) => ({
@@ -228,7 +314,7 @@ export function registerSasquatchStudioRoutes(
     }
   );
 
-  // -------- Subscribe (Stripe Checkout) --------
+  // -------- Subscribe / upgrade (Stripe Checkout) --------
   app.post(
     "/api/sasquatch-studio/checkout",
     isAuthenticated,
@@ -239,7 +325,12 @@ export function registerSasquatchStudioRoutes(
           req.user.claims.email ||
           req.body?.email ||
           `${userId}@unknown.local`;
-        const priceId = await getOrCreateStudioPrice();
+        const parsed = checkoutSchema.safeParse(req.body || {});
+        if (!parsed.success) {
+          return res.status(400).json({ error: "Invalid tier/period" });
+        }
+        const { tier, period } = parsed.data;
+        const priceId = await getPriceFor(tier, period);
         const customerId = await getOrCreateCustomer(userId, email);
         const stripe = await getUncachableStripeClient();
         const origin =
@@ -253,7 +344,7 @@ export function registerSasquatchStudioRoutes(
           success_url: `${origin}/sasquatch-studio?session_id={CHECKOUT_SESSION_ID}`,
           cancel_url: `${origin}/sasquatch-studio?canceled=1`,
           allow_promotion_codes: true,
-          metadata: { userId, scope: "sasquatch_studio" },
+          metadata: { userId, scope: "sasquatch_studio", tier, period },
         });
         // Pre-create row so we can update on verify.
         await db
@@ -264,6 +355,8 @@ export function registerSasquatchStudioRoutes(
             status: "inactive",
             stripeCustomerId: customerId,
             stripePriceId: priceId,
+            tier,
+            billingPeriod: period,
           })
           .onConflictDoUpdate({
             target: sasquatchStudioSubscriptions.userId,
@@ -271,6 +364,8 @@ export function registerSasquatchStudioRoutes(
               email,
               stripeCustomerId: customerId,
               stripePriceId: priceId,
+              tier,
+              billingPeriod: period,
               updatedAt: new Date(),
             },
           });
@@ -305,6 +400,13 @@ export function registerSasquatchStudioRoutes(
           return res.status(400).json({ error: "No subscription on session" });
         }
         const periodEnd = readPeriodEnd(sub);
+        const activePriceId =
+          sub?.items?.data?.[0]?.price?.id || sub?.plan?.id || null;
+        const tierMap = await tierFromPriceId(activePriceId);
+        const tier = tierMap?.tier || (session.metadata?.tier as StudioTier) || "creator";
+        const billingPeriod =
+          tierMap?.period || (session.metadata?.period as BillingPeriod) || "monthly";
+        const f = featuresFor(tier);
         await db
           .update(sasquatchStudioSubscriptions)
           .set({
@@ -313,12 +415,18 @@ export function registerSasquatchStudioRoutes(
                 ? "active"
                 : sub.status,
             stripeSubscriptionId: sub.id,
+            stripePriceId: activePriceId || undefined,
             currentPeriodEnd: periodEnd,
+            tier,
+            billingPeriod,
+            monthlyCharacterCap: f.monthlyCharacterCap,
+            voicesAllowed: f.voicesAllowed,
+            albumsAllowed: f.albumsAllowed === -1 ? 9999 : f.albumsAllowed,
             startedAt: new Date(),
             updatedAt: new Date(),
           })
           .where(eq(sasquatchStudioSubscriptions.userId, userId));
-        return res.json({ ok: true, status: sub.status });
+        return res.json({ ok: true, status: sub.status, tier });
       } catch (err: any) {
         console.error("[sasq-studio/verify]", err);
         return res.status(500).json({ error: err?.message || "Verify failed" });
@@ -326,7 +434,7 @@ export function registerSasquatchStudioRoutes(
     }
   );
 
-  // -------- Customer portal (cancel/manage) --------
+  // -------- Customer portal (cancel/manage/upgrade) --------
   app.post(
     "/api/sasquatch-studio/portal",
     isAuthenticated,
@@ -381,7 +489,7 @@ export function registerSasquatchStudioRoutes(
         if (existingVoices.length >= active.voicesAllowed) {
           return res
             .status(400)
-            .json({ error: `Voice cap reached (${active.voicesAllowed})` });
+            .json({ error: `Voice cap reached (${active.voicesAllowed}). Upgrade for more.` });
         }
         const name = String(req.body?.name || "").trim().slice(0, 120);
         const description = String(req.body?.description || "").trim().slice(0, 500);
@@ -465,7 +573,6 @@ export function registerSasquatchStudioRoutes(
           )
           .limit(1);
         if (!voice) return res.status(404).json({ error: "Not found" });
-        // Best-effort delete from ElevenLabs
         try {
           const apiKey = process.env.ELEVENLABS_API_KEY;
           if (apiKey) {
@@ -506,7 +613,6 @@ export function registerSasquatchStudioRoutes(
         }
         const { voiceId, text, kind, title, stability, similarityBoost, style } =
           parsed.data;
-        // Verify voice belongs to this user (or is the public Sasquatch voice).
         const [voice] = await db
           .select()
           .from(sasquatchVoiceClones)
@@ -520,8 +626,6 @@ export function registerSasquatchStudioRoutes(
           .limit(1);
         if (!voice) return res.status(403).json({ error: "Voice not yours" });
         const characterCount = text.length;
-        // Atomic reserve-quota: increment ONLY if it stays under the cap.
-        // Returning [] means another concurrent call already pushed over the cap.
         const reserved = await db
           .update(sasquatchStudioSubscriptions)
           .set({
@@ -537,7 +641,7 @@ export function registerSasquatchStudioRoutes(
           .returning({ id: sasquatchStudioSubscriptions.id });
         if (!reserved.length) {
           return res.status(429).json({
-            error: `Monthly character cap reached (${active.monthlyCharacterCap}). Resets at next billing cycle.`,
+            error: `Monthly character cap reached (${active.monthlyCharacterCap}). Upgrade your tier or wait for renewal.`,
           });
         }
         const synth = await synthesizeWithElevenLabs(
@@ -549,7 +653,6 @@ export function registerSasquatchStudioRoutes(
           style ?? 0.4
         );
         if (!synth.success || !synth.audioBase64) {
-          // Refund the reserved characters since synthesis failed.
           await db
             .update(sasquatchStudioSubscriptions)
             .set({
@@ -561,14 +664,11 @@ export function registerSasquatchStudioRoutes(
             .status(500)
             .json({ error: synth.error || "Synthesis failed" });
         }
-        // Unguessable filename — random 24-byte token, no userId or timestamp.
-        // Files are served via public /uploads, so the token IS the access secret.
         const token = crypto.randomBytes(24).toString("hex");
         const filename = `gen-${token}.mp3`;
         const filepath = path.join(studioDir, filename);
         fs.writeFileSync(filepath, Buffer.from(synth.audioBase64, "base64"));
         const audioUrl = `/uploads/sasquatch-studio/${filename}`;
-        // Rough duration estimate: ~150 wpm, ~5 chars per word → seconds
         const durationSeconds = Math.max(
           1,
           Math.round((characterCount / 5 / 150) * 60)

@@ -181,6 +181,9 @@ const HostileConstruction = lazy(() => import("@/pages/HostileConstruction"));
 const TrackPage = lazy(() => import("@/pages/TrackPage"));
 const SasquatchSound = lazy(() => import("@/pages/SasquatchSound"));
 const SasquatchStudio = lazy(() => import("@/pages/SasquatchStudio"));
+const SurvivorAlbums = lazy(() => import("@/pages/SurvivorAlbums"));
+const SurvivorAlbumEditor = lazy(() => import("@/pages/SurvivorAlbumEditor"));
+const AlbumShare = lazy(() => import("@/pages/AlbumShare"));
 const LyricsStudio = lazy(() => import("@/pages/LyricsStudio"));
 const LyricsStudioShare = lazy(() => import("@/pages/LyricsStudioShare"));
 const AdminRadioQueue = lazy(() => import("@/pages/AdminRadioQueue"));
@@ -691,6 +694,17 @@ function Router() {
       <Route path="/label" component={SasquatchSound} />
       <Route path="/sasquatch-studio" component={SasquatchStudio} />
       <Route path="/studio" component={SasquatchStudio} />
+      <Route path="/sasquatch-studio/albums">
+        <ProtectedRoute>
+          <SurvivorAlbums />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/sasquatch-studio/albums/:id">
+        <ProtectedRoute>
+          <SurvivorAlbumEditor />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/album/:slug" component={AlbumShare} />
       <Route path="/recovery/lyrics" component={LyricsStudio} />
       <Route path="/lyrics/s/:shareId" component={LyricsStudioShare} />
       <Route path="/admin/radio" component={AdminRadioQueue} />

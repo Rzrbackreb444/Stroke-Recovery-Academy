@@ -6928,6 +6928,10 @@ export const sasquatchStudioSubscriptions = pgTable("sasquatch_studio_subscripti
   charactersUsedThisPeriod: integer("characters_used_this_period").notNull().default(0),
   monthlyCharacterCap: integer("monthly_character_cap").notNull().default(50000),
   voicesAllowed: integer("voices_allowed").notNull().default(3),
+  // Tier metadata — see shared/studioTiers.ts
+  tier: varchar("tier", { length: 24 }).notNull().default("creator"),
+  billingPeriod: varchar("billing_period", { length: 12 }).notNull().default("monthly"),
+  albumsAllowed: integer("albums_allowed").notNull().default(3),
   startedAt: timestamp("started_at", { withTimezone: true }),
   canceledAt: timestamp("canceled_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -6987,6 +6991,7 @@ export const survivorAlbums = pgTable("survivor_albums", {
   coverUrl: varchar("cover_url", { length: 400 }),
   isPublic: boolean("is_public").notNull().default(false),
   shareSlug: varchar("share_slug", { length: 64 }),
+  distributionMeta: jsonb("distribution_meta"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => ({
