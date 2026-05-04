@@ -6974,3 +6974,40 @@ export const sasquatchVoiceGenerations = pgTable("sasquatch_voice_generations", 
   userIdx: index("idx_sasq_voice_gen_user").on(t.userId, t.createdAt),
 }));
 export type SasquatchVoiceGeneration = typeof sasquatchVoiceGenerations.$inferSelect;
+
+// ============================================================================
+// SURVIVOR ALBUM BUILDER — anyone can build an album from their tracks
+// ============================================================================
+export const survivorAlbums = pgTable("survivor_albums", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  title: varchar("title", { length: 200 }).notNull(),
+  artist: varchar("artist", { length: 200 }),
+  description: text("description"),
+  coverUrl: varchar("cover_url", { length: 400 }),
+  isPublic: boolean("is_public").notNull().default(false),
+  shareSlug: varchar("share_slug", { length: 64 }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => ({
+  userIdx: index("idx_survivor_album_user").on(t.userId, t.createdAt),
+  shareUniq: uniqueIndex("uniq_survivor_album_share").on(t.shareSlug),
+}));
+export type SurvivorAlbum = typeof survivorAlbums.$inferSelect;
+
+export const survivorAlbumTracks = pgTable("survivor_album_tracks", {
+  id: serial("id").primaryKey(),
+  albumId: integer("album_id").notNull(),
+  position: integer("position").notNull().default(0),
+  source: varchar("source", { length: 24 }).notNull(),
+    // studio | upload
+  sourceRef: varchar("source_ref", { length: 200 }),
+    // for studio: the sasquatch_voice_generations.id; for upload: the filename
+  title: varchar("title", { length: 200 }).notNull(),
+  audioUrl: varchar("audio_url", { length: 400 }).notNull(),
+  durationSeconds: integer("duration_seconds"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => ({
+  albumIdx: index("idx_survivor_album_track_album").on(t.albumId, t.position),
+}));
+export type SurvivorAlbumTrack = typeof survivorAlbumTracks.$inferSelect;
