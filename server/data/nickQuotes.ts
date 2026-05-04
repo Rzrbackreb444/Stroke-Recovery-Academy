@@ -35,13 +35,70 @@ export type QuoteCategory =
   | "identity"
   | "humor"
   | "doctrine"
-  | "practice";
+  | "practice"
+  | "comeback"
+  | "night";
+
+export type QuoteIntensity = "gentle" | "strong" | "dark";
 
 export interface NickQuote {
   text: string;
   category: QuoteCategory;
+  /** Optional explicit intensity override. Defaults via categoryIntensity(). */
+  intensity?: QuoteIntensity;
 }
 
+// Default intensity per category — used when a quote doesn't override it.
+// Drives the Daily Circuit transition mapper (good days get strong, hard
+// moments get gentle, late-night and "too much" branches pull dark).
+export function categoryIntensity(cat: QuoteCategory): QuoteIntensity {
+  switch (cat) {
+    case "dark":
+      return "dark";
+    case "foundation":
+    case "humanhood":
+    case "humor":
+    case "reflection":
+    case "comeback":
+    case "night":
+      return "gentle";
+    default:
+      return "strong";
+  }
+}
+
+export function quoteIntensity(q: NickQuote): QuoteIntensity {
+  return q.intensity ?? categoryIntensity(q.category);
+}
+
+// Stable, content-derived ID for a quote. Used as the cache key for
+// pre-generated ElevenLabs audio (nick_quote_audio table). The same quote
+// text always produces the same ID across deploys, so re-shuffling the
+// NICK_QUOTES array does not invalidate the audio cache.
+export function quoteId(text: string): string {
+  let h = 5381;
+  for (let i = 0; i < text.length; i++) {
+    h = ((h << 5) + h + text.charCodeAt(i)) | 0;
+  }
+  // Unsigned 32-bit hex, padded — short, URL-safe, stable.
+  return "q_" + (h >>> 0).toString(36);
+}
+
+export interface NickQuoteWithId extends NickQuote {
+  id: string;
+  intensity: QuoteIntensity;
+}
+
+export function withId(q: NickQuote): NickQuoteWithId {
+  return { ...q, id: quoteId(q.text), intensity: quoteIntensity(q) };
+}
+
+// Categories added for the Daily Circuit:
+//   - "comeback" — survivors returning after a missed streak. Forgiving
+//                  language. Used by the bridge mapper after a "too_hard"
+//                  signal and on email re-engagement.
+//   - "night"    — evening-time delivery. Quieter, restorative. Used by
+//                  the close station when the local hour is late.
 export const NICK_QUOTES: NickQuote[] = [
   // ─── FOUNDATION ────────────────────────────────────────────────────────
   { text: "You've already won. You survived.", category: "foundation" },
@@ -261,6 +318,35 @@ export const NICK_QUOTES: NickQuote[] = [
   { text: "If you don't move, your brain doesn't learn. If you don't believe, your body doesn't respond.", category: "practice" },
   { text: "I built a daily ritual: wake up, move something, no negotiation.", category: "practice" },
   { text: "Each small win releases the brain's progress chemical. That's how habit becomes hunger.", category: "practice" },
+
+  // ─── COMEBACK ──────────────────────────────────────────────────────────
+  // For survivors returning after a missed streak. Forgiveness, not shame.
+  { text: "You missed a day. The build is still standing.", category: "comeback" },
+  { text: "Welcome back. The site was waiting, not judging.", category: "comeback" },
+  { text: "A pause is not a quit. Pick the hammer up.", category: "comeback" },
+  { text: "Streaks reset. Survivors don't.", category: "comeback" },
+  { text: "Showing up after a gap is harder than showing up on a streak. Today you did the harder thing.", category: "comeback" },
+  { text: "The body forgot the rep. The brain remembers the rebuilder. Keep going.", category: "comeback" },
+  { text: "Day one of week two is not failure. It's the second draft.", category: "comeback" },
+  { text: "Skipping was data. Returning is the answer.", category: "comeback" },
+  { text: "I rebuilt my streak forty-seven times before it stuck. Forty-eight is allowed.", category: "comeback" },
+  { text: "Your worst day on the floor still beats your best day in the chair.", category: "comeback" },
+  { text: "The construction crew doesn't fire you for taking a breath. Get back on the scaffold.", category: "comeback" },
+  { text: "Fall down seven, stand up eight. The math still works after a stroke.", category: "comeback" },
+
+  // ─── NIGHT ─────────────────────────────────────────────────────────────
+  // Quieter, restorative. Used by the close station after dark and in
+  // evening push notifications. No "push harder" — let the day end clean.
+  { text: "Today counted. Tomorrow is allowed to be smaller.", category: "night" },
+  { text: "Lights off. The brain heals while you sleep — that's also the work.", category: "night" },
+  { text: "You stacked one. That's enough for tonight.", category: "night" },
+  { text: "Rest is not the opposite of recovery. Rest is recovery.", category: "night" },
+  { text: "Close the tools. Open the bed. The site will be here at sunrise.", category: "night" },
+  { text: "Sleep is the secret rep. Take it.", category: "night" },
+  { text: "Nothing more is required of you tonight. You showed up. That's the whole job.", category: "night" },
+  { text: "The lights stay on inside even when you turn them off outside.", category: "night" },
+  { text: "Tomorrow's hammer is sharper if tonight's hand actually rests.", category: "night" },
+  { text: "Bury the day. Build the next one in the morning.", category: "night" },
 ];
 
 // ── Helpers ────────────────────────────────────────────────────────────
@@ -285,6 +371,54 @@ export function getDailyQuote(userId: string | null | undefined): NickQuote {
   const seed = `${userId ?? "anon"}::${todayUtcKey()}`;
   const idx = hashString(seed) % NICK_QUOTES.length;
   return NICK_QUOTES[idx];
+}
+
+// Find a quote by stable ID. Linear scan is fine — under 250 entries.
+export function getQuoteById(id: string): NickQuoteWithId | null {
+  for (const q of NICK_QUOTES) {
+    if (quoteId(q.text) === id) return withId(q);
+  }
+  return null;
+}
+
+// Pick one quote that matches a category preference list and is not in
+// excludeIds. Falls through preferred categories in order; final fallback
+// is any non-excluded quote. Deterministic when `seed` is provided.
+export function pickCircuitQuote(opts: {
+  preferCategories?: QuoteCategory[];
+  preferIntensity?: QuoteIntensity;
+  excludeIds?: string[];
+  seed?: number;
+}): NickQuoteWithId | null {
+  const exclude = new Set(opts.excludeIds ?? []);
+  const rand =
+    typeof opts.seed === "number" ? mulberry32(opts.seed) : Math.random;
+  const intensityFilter = opts.preferIntensity;
+
+  const tryPool = (pool: NickQuote[]): NickQuoteWithId | null => {
+    const eligible = pool
+      .filter((q) => !exclude.has(quoteId(q.text)))
+      .filter((q) =>
+        intensityFilter ? quoteIntensity(q) === intensityFilter : true
+      );
+    if (!eligible.length) return null;
+    const pick = eligible[Math.floor(rand() * eligible.length)];
+    return withId(pick);
+  };
+
+  for (const cat of opts.preferCategories ?? []) {
+    const pool = NICK_QUOTES.filter((q) => q.category === cat);
+    const hit = tryPool(pool);
+    if (hit) return hit;
+  }
+  // Drop the intensity filter if no categorical hit
+  const anyCat = NICK_QUOTES.filter((q) => !exclude.has(quoteId(q.text)));
+  if (!anyCat.length) {
+    // Everything excluded — relax exclusions
+    const fallback = NICK_QUOTES[Math.floor(rand() * NICK_QUOTES.length)];
+    return fallback ? withId(fallback) : null;
+  }
+  return withId(anyCat[Math.floor(rand() * anyCat.length)]);
 }
 
 export function getRandomQuote(): NickQuote {

@@ -184,6 +184,8 @@ const SasquatchStudio = lazy(() => import("@/pages/SasquatchStudio"));
 const SurvivorAlbums = lazy(() => import("@/pages/SurvivorAlbums"));
 const SurvivorAlbumEditor = lazy(() => import("@/pages/SurvivorAlbumEditor"));
 const AlbumShare = lazy(() => import("@/pages/AlbumShare"));
+const RecoveryCircuit = lazy(() => import("@/pages/RecoveryCircuit"));
+const RecoveryCircuitPlayer = lazy(() => import("@/pages/RecoveryCircuitPlayer"));
 const LyricsStudio = lazy(() => import("@/pages/LyricsStudio"));
 const LyricsStudioShare = lazy(() => import("@/pages/LyricsStudioShare"));
 const AdminRadioQueue = lazy(() => import("@/pages/AdminRadioQueue"));
@@ -667,6 +669,12 @@ function Router() {
       <Route path="/recovery/me" component={RecoveryMe} />
       <Route path="/recovery/routine" component={DailyRoutine} />
       <Route path="/recovery/today" component={RecoveryToday} />
+      <Route path="/recovery/circuit" component={RecoveryCircuit} />
+      <Route path="/recovery/circuit/:slug">
+        <ProtectedRoute>
+          <RecoveryCircuitPlayer />
+        </ProtectedRoute>
+      </Route>
       <Route path="/recovery/shop" component={SurvivorShop} />
       <Route path="/recovery/motivation" component={MotivationStudio} />
       <Route path="/recovery/anchor/today" component={TodayAnchor} />
