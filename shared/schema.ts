@@ -2253,7 +2253,12 @@ export const neverZeroLogs = pgTable("never_zero_logs", {
   difficulty: text("difficulty"), // easy, medium, hard (relative to their condition)
   notes: text("notes"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => [
+  // Hot path: getNeverZeroData() does WHERE user_id = ? ORDER BY created_at DESC
+  // and runs on every dashboard load + every Coach turn (via userContext).
+  // Composite index covers both the filter and the sort.
+  index("never_zero_logs_user_created_idx").on(t.userId, t.createdAt),
+]);
 
 // Daily Sasquatch audit — one row per user per local-date. Persists the AI's
 // structured audit (stood out / missing / verdict / tomorrow) so survivors can
@@ -2272,7 +2277,12 @@ export const neverZeroAudits = pgTable("never_zero_audits", {
   tomorrow: text("tomorrow"),
   rawMessage: text("raw_message"), // full assembled text (fallback for legacy clients)
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => [
+  // Hot path: getNeverZeroAuditByDate(userId, today) — runs on every Coach
+  // turn for authenticated users + every Never Zero page load. Composite
+  // index covers the exact-match lookup with no scan.
+  index("never_zero_audits_user_date_idx").on(t.userId, t.auditDate),
+]);
 
 // ============================================================================
 // RECOVERY JOURNAL (Daily Entries)

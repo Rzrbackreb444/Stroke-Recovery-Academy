@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogOut, LayoutDashboard, Settings, Heart, ChevronDown, Music2, Crown, Sparkles, Check } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, Settings, Heart, ChevronDown, Crown, Sparkles, Check, Flame, Users } from "lucide-react";
 import {
   HoverCard,
   HoverCardContent,
@@ -22,53 +22,66 @@ import strokeLyfeLogo from "@assets/Untitled_design_1776803832326.png";
 // and GlobalHeader both), so legacy per-page header mounts are suppressed.
 import { siteHeaderRegistry } from "./siteHeaderRegistry";
 
-// Hero-funnel collapse (May 2026): Top nav reduced from 12 items to 4 destinations.
-// Survivors with cognitive load can't parse 12 nav items — picking 4 forces every
-// decision to be obvious. Coach (chat) and Today (dashboard with the Bonfire) are
-// the two activation surfaces; Music is the paid headliner cluster; More holds the
-// rest of the surface area collapsed into one dropdown.
-const primaryNav = [
+// Accountability-focused primary nav (May 2026 refocus pass): every primary
+// slot is now a daily-action surface. Coach = the conversation. Today = the
+// daily funnel. Never Zero = the streak-protection check-in (THE moat).
+// Bonfire = the survivor accountability buddy. Music demoted to a column
+// inside the More megamenu — survivors who want it can still reach it in
+// two clicks, but it no longer competes for primary attention with the
+// daily reps that actually move recovery.
+const primaryNav: { href: string; label: string; icon?: typeof Flame }[] = [
   { href: "/recovery/sasquatch-coach", label: "Coach" },
-  // "Today" now points to the unified Daily Journey funnel — one page that
-  // walks the survivor through their 6 daily steps with streak + progress +
-  // what's next. The legacy /recovery/dashboard is still available from the
-  // user dropdown.
   { href: "/recovery/journey", label: "Today" },
+  { href: "/recovery/never-zero", label: "Never Zero", icon: Flame },
+  { href: "/recovery/buddy", label: "Bonfire", icon: Users },
 ];
 
-// Paid music headliner — Recovery Anchor Studio (musical-mnemonic encoder
-// for words/phrases stroke survivors are trying to recover) lives inside the
-// Motivation Studio page. Anthem Builder generates personal recovery anthems;
-// Sasquatch Radio is the curated audio stream with DJ voice intros.
-const musicNav = [
-  { href: "/recovery/motivation", label: "Anchor Studio", pro: true, description: "Musical-mnemonic for words your stroke took" },
-  { href: "/recovery/lyrics", label: "Lyrics Studio", pro: true, description: "Grammy-grade lyric sheets from your story" },
-  { href: "/recovery/anthem/build", label: "Anthem Builder", pro: false, description: "Build your personal recovery anthem" },
-  { href: "/recovery/radio", label: "Sasquatch Radio", pro: false, description: "Survivor-curated stream with DJ intros" },
-];
-
-// "More" — everything that used to live in the top nav and the old Resources dropdown,
-// now consolidated into a single overflow menu so the hero-funnel surface stays clean.
-const resourcesNav = [
-  { href: "/recovery/academy", label: "Learn" },
-  { href: "/recovery/challenge", label: "66-Day Challenge" },
-  { href: "/recovery/exercises", label: "Exercises" },
-  { href: "/recovery/routine", label: "Daily Routine" },
-  { href: "/recovery/community", label: "Community" },
-  { href: "/recovery/campfire", label: "Campfire (Live)" },
-  { href: "/recovery/brain-gym", label: "Brain Gym" },
-  { href: "/recovery/blog", label: "Blog" },
-  { href: "/recovery/spotlight", label: "Spotlight" },
-  { href: "/recovery/survivor-income", label: "Earn Income" },
-  { href: "/groups", label: "Groups" },
-  { href: "/marketplace", label: "Marketplace" },
-  { href: "/recovery/pricing", label: "Pricing" },
+// "More" — grouped megamenu. Four columns now (Practice / Connect / Music /
+// Earn) ordered by recovery progression. Music joined the megamenu in the
+// accountability refocus pass — still discoverable, no longer dominant.
+const resourcesGroups: { title: string; items: { href: string; label: string; pro?: boolean }[] }[] = [
+  {
+    title: "Practice",
+    items: [
+      { href: "/recovery/academy", label: "Learn" },
+      { href: "/recovery/exercises", label: "Exercises" },
+      { href: "/recovery/routine", label: "Daily Routine" },
+      { href: "/recovery/brain-gym", label: "Brain Gym" },
+      { href: "/recovery/challenge", label: "66-Day Challenge" },
+    ],
+  },
+  {
+    title: "Connect",
+    items: [
+      { href: "/recovery/community", label: "Community" },
+      { href: "/recovery/campfire", label: "Campfire (Live)" },
+      { href: "/recovery/spotlight", label: "Spotlight" },
+      { href: "/groups", label: "Groups" },
+      { href: "/recovery/blog", label: "Blog" },
+    ],
+  },
+  {
+    title: "Music",
+    items: [
+      { href: "/recovery/motivation", label: "Anchor Studio", pro: true },
+      { href: "/recovery/lyrics", label: "Lyrics Studio", pro: true },
+      { href: "/recovery/anthem/build", label: "Anthem Builder" },
+      { href: "/recovery/radio", label: "Sasquatch Radio" },
+    ],
+  },
+  {
+    title: "Earn",
+    items: [
+      { href: "/recovery/survivor-income", label: "Earn Income" },
+      { href: "/marketplace", label: "Marketplace" },
+      { href: "/recovery/pricing", label: "Pricing" },
+    ],
+  },
 ];
 
 export default function RecoveryHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [resourcesOpen, setResourcesOpen] = useState(false);
-  const [musicOpen, setMusicOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isPrimary, setIsPrimary] = useState(false);
   const [location] = useLocation();
@@ -91,7 +104,6 @@ export default function RecoveryHeader() {
   useEffect(() => {
     setMobileOpen(false);
     setResourcesOpen(false);
-    setMusicOpen(false);
   }, [location]);
 
   if (!isPrimary) return null;
@@ -119,58 +131,28 @@ export default function RecoveryHeader() {
             </div>
           </Link>
 
-          {/* Desktop nav — 5 primary + Resources dropdown */}
+          {/* Desktop nav — 4 accountability-focused primary + More megamenu */}
           <nav className="hidden lg:flex items-center gap-0.5" aria-label="Main navigation">
-            {primaryNav.map((link) => (
-              <Link key={link.href} href={link.href}>
-                <button
-                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
-                    location === link.href
-                      ? "text-[#C9941A]"
-                      : "text-gray-400 hover:text-white"
-                  }`}
-                  data-testid={`nav-link-${link.label.toLowerCase().replace(/\s/g, "-")}`}
-                >
-                  {link.label}
-                </button>
-              </Link>
-            ))}
+            {primaryNav.map((link) => {
+              const Icon = link.icon;
+              return (
+                <Link key={link.href} href={link.href}>
+                  <button
+                    className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
+                      location === link.href
+                        ? "text-[#C9941A]"
+                        : "text-gray-400 hover:text-white"
+                    }`}
+                    data-testid={`nav-link-${link.label.toLowerCase().replace(/\s/g, "-")}`}
+                  >
+                    {Icon && <Icon className="h-3.5 w-3.5 text-[#C9941A]" />}
+                    {link.label}
+                  </button>
+                </Link>
+              );
+            })}
 
-            {/* Music dropdown — paid headliner (Anchor Studio) gets a PRO badge */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-400 hover:text-white rounded-lg transition-colors"
-                  data-testid="nav-music"
-                >
-                  <Music2 className="h-3.5 w-3.5 mr-1 text-[#C9941A]" />
-                  Music <ChevronDown className="h-3.5 w-3.5" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="bg-[#111] border-[#222] min-w-[280px]">
-                {musicNav.map((link) => (
-                  <DropdownMenuItem key={link.href} asChild>
-                    <Link
-                      href={link.href}
-                      className={`cursor-pointer flex flex-col items-start gap-0.5 py-2 ${location === link.href ? "text-[#C9941A]" : "text-gray-300"}`}
-                      data-testid={`nav-music-${link.label.toLowerCase().replace(/\s/g, "-")}`}
-                    >
-                      <span className="flex items-center gap-2 text-sm font-medium">
-                        {link.label}
-                        {link.pro && (
-                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide rounded bg-[#C9941A]/15 text-[#C9941A] border border-[#C9941A]/30">
-                            <Crown className="h-2.5 w-2.5" /> Pro
-                          </span>
-                        )}
-                      </span>
-                      <span className="text-xs text-gray-500">{link.description}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Resources dropdown */}
+            {/* Resources megamenu — Practice / Connect / Music / Earn */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
@@ -180,17 +162,36 @@ export default function RecoveryHeader() {
                   More <ChevronDown className="h-3.5 w-3.5" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="bg-[#111] border-[#222] min-w-[160px]">
-                {resourcesNav.map((link) => (
-                  <DropdownMenuItem key={link.href} asChild>
-                    <Link
-                      href={link.href}
-                      className={`cursor-pointer text-sm ${location === link.href ? "text-[#C9941A]" : "text-gray-300"}`}
-                    >
-                      {link.label}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
+              <DropdownMenuContent align="start" className="bg-[#111] border-[#222] p-3 w-[680px]">
+                <div className="grid grid-cols-4 gap-4">
+                  {resourcesGroups.map((group) => (
+                    <div key={group.title}>
+                      <div className="text-[11px] font-bold uppercase tracking-wider text-[#C9941A]/80 px-2 pb-1.5 mb-1 border-b border-[#222]">
+                        {group.title}
+                      </div>
+                      <div className="flex flex-col">
+                        {group.items.map((link) => (
+                          <DropdownMenuItem key={link.href} asChild>
+                            <Link
+                              href={link.href}
+                              className={`px-2 py-1.5 text-sm rounded transition-colors cursor-pointer flex items-center gap-1.5 ${
+                                location === link.href ? "text-[#C9941A]" : "text-gray-300"
+                              }`}
+                              data-testid={`nav-more-${link.label.toLowerCase().replace(/\s|\(|\)/g, "-")}`}
+                            >
+                              <span className="truncate">{link.label}</span>
+                              {link.pro && (
+                                <span className="inline-flex items-center gap-0.5 px-1 py-0 text-[9px] font-bold uppercase tracking-wide rounded bg-[#C9941A]/15 text-[#C9941A] border border-[#C9941A]/30">
+                                  <Crown className="h-2 w-2" /> Pro
+                                </span>
+                              )}
+                            </Link>
+                          </DropdownMenuItem>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </DropdownMenuContent>
             </DropdownMenu>
           </nav>
@@ -338,58 +339,25 @@ export default function RecoveryHeader() {
       {mobileOpen && (
         <div className="lg:hidden border-t border-[#1e1e1e] bg-[#0D0D0D]">
           <div className="max-w-7xl mx-auto px-4 py-4 space-y-1">
-            {/* 5 primary links */}
-            {primaryNav.map((link) => (
-              <Link key={link.href} href={link.href}>
-                <button
-                  className={`w-full text-left px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
-                    location === link.href
-                      ? "text-[#C9941A] bg-[#C9941A]/5"
-                      : "text-gray-300 hover:text-white hover:bg-[#1a1a1a]"
-                  }`}
-                  data-testid={`mobile-nav-${link.label.toLowerCase().replace(/\s/g, "-")}`}
-                >
-                  {link.label}
-                </button>
-              </Link>
-            ))}
-            {/* Music — collapsible (paid headliner gets PRO badge) */}
-            <div>
-              <button
-                className="w-full text-left px-4 py-3 text-sm font-medium rounded-lg text-gray-300 hover:text-white hover:bg-[#1a1a1a] flex items-center justify-between transition-colors"
-                onClick={() => setMusicOpen((v) => !v)}
-                data-testid="mobile-nav-music"
-              >
-                <span className="flex items-center gap-2">
-                  <Music2 className="h-3.5 w-3.5 text-[#C9941A]" />
-                  Music
-                </span>
-                <ChevronDown className={`h-3.5 w-3.5 transition-transform ${musicOpen ? "rotate-180" : ""}`} />
-              </button>
-              {musicOpen && (
-                <div className="pl-4 space-y-1 mt-1">
-                  {musicNav.map((link) => (
-                    <Link key={link.href} href={link.href}>
-                      <button
-                        className={`w-full text-left px-4 py-2.5 text-sm rounded-lg transition-colors flex items-center gap-2 ${
-                          location === link.href
-                            ? "text-[#C9941A]"
-                            : "text-gray-400 hover:text-white hover:bg-[#1a1a1a]"
-                        }`}
-                        data-testid={`mobile-nav-music-${link.label.toLowerCase().replace(/\s/g, "-")}`}
-                      >
-                        {link.label}
-                        {link.pro && (
-                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide rounded bg-[#C9941A]/15 text-[#C9941A] border border-[#C9941A]/30">
-                            <Crown className="h-2.5 w-2.5" /> Pro
-                          </span>
-                        )}
-                      </button>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
+            {/* 4 accountability-focused primary links */}
+            {primaryNav.map((link) => {
+              const Icon = link.icon;
+              return (
+                <Link key={link.href} href={link.href}>
+                  <button
+                    className={`w-full text-left px-4 py-3 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 ${
+                      location === link.href
+                        ? "text-[#C9941A] bg-[#C9941A]/5"
+                        : "text-gray-300 hover:text-white hover:bg-[#1a1a1a]"
+                    }`}
+                    data-testid={`mobile-nav-${link.label.toLowerCase().replace(/\s/g, "-")}`}
+                  >
+                    {Icon && <Icon className="h-3.5 w-3.5 text-[#C9941A]" />}
+                    {link.label}
+                  </button>
+                </Link>
+              );
+            })}
             {/* Resources — collapsible like desktop dropdown */}
             <div>
               <button
@@ -401,20 +369,34 @@ export default function RecoveryHeader() {
                 <ChevronDown className={`h-3.5 w-3.5 transition-transform ${resourcesOpen ? "rotate-180" : ""}`} />
               </button>
               {resourcesOpen && (
-                <div className="pl-4 space-y-1 mt-1">
-                  {resourcesNav.map((link) => (
-                    <Link key={link.href} href={link.href}>
-                      <button
-                        className={`w-full text-left px-4 py-2.5 text-sm rounded-lg transition-colors ${
-                          location === link.href
-                            ? "text-[#C9941A]"
-                            : "text-gray-400 hover:text-white hover:bg-[#1a1a1a]"
-                        }`}
-                        data-testid={`mobile-nav-${link.label.toLowerCase().replace(/\s/g, "-")}`}
-                      >
-                        {link.label}
-                      </button>
-                    </Link>
+                <div className="pl-4 mt-1 space-y-3">
+                  {resourcesGroups.map((group) => (
+                    <div key={group.title}>
+                      <div className="px-4 text-[11px] font-bold uppercase tracking-wider text-[#C9941A]/80 mb-1">
+                        {group.title}
+                      </div>
+                      <div className="space-y-1">
+                        {group.items.map((link) => (
+                          <Link key={link.href} href={link.href}>
+                            <button
+                              className={`w-full text-left px-4 py-2.5 text-sm rounded-lg transition-colors flex items-center gap-2 ${
+                                location === link.href
+                                  ? "text-[#C9941A]"
+                                  : "text-gray-400 hover:text-white hover:bg-[#1a1a1a]"
+                              }`}
+                              data-testid={`mobile-nav-${link.label.toLowerCase().replace(/\s|\(|\)/g, "-")}`}
+                            >
+                              {link.label}
+                              {link.pro && (
+                                <span className="inline-flex items-center gap-0.5 px-1 py-0 text-[9px] font-bold uppercase tracking-wide rounded bg-[#C9941A]/15 text-[#C9941A] border border-[#C9941A]/30">
+                                  <Crown className="h-2 w-2" /> Pro
+                                </span>
+                              )}
+                            </button>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
                   ))}
                 </div>
               )}
