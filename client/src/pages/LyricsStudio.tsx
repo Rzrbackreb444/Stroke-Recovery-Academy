@@ -130,6 +130,23 @@ export default function LyricsStudio() {
         const body = err?.message?.startsWith("{") ? JSON.parse(err.message) : null;
         if (body?.message) msg = body.message;
       } catch {}
+      // Survivor-readable mid-flow auth/quota signals before the generic toast.
+      if (msg.includes("401")) {
+        toast({
+          variant: "destructive",
+          title: "Sign in to keep writing",
+          description: "Your session expired. Sign in and try again.",
+        });
+        return;
+      }
+      if (msg.includes("402") || msg.toLowerCase().includes("limit")) {
+        toast({
+          variant: "destructive",
+          title: "Free lyric used this month",
+          description: "Upgrade for unlimited lyrics.",
+        });
+        return;
+      }
       toast({ variant: "destructive", title: "Couldn't generate lyrics", description: msg });
     },
   });
