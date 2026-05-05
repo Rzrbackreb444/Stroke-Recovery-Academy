@@ -2029,6 +2029,36 @@ Speech is courage as much as it is muscle. The drills build the muscle. The will
 
 ## Chapter 18: Technology Assists — Bioness, Robotics, and the Tools That Earn Their Spot
 
+### The Cuff That Walked Me Around the Block
+
+Spring, 2019. Five months out. Driveway again. Always the driveway.
+
+The Bioness L300 cuff sits cold around my right shin. Velcro tight. Electrodes pressed to skin I cannot feel. I press the button on the controller. A click in the heel sensor. A sting in the peroneal nerve.
+
+My foot lifts.
+
+Not by *me.* Not yet. By the machine. But the foot lifts at the right moment in the swing, and the heel lands flat instead of slapping, and I take a step that does not look like a stroke step.
+
+I take another. Another. The block is one hundred and forty paces. I have measured.
+
+By pace forty I am crying because the toe is clearing the sidewalk crack that has caught me three times this week. By pace ninety I am laughing because I have not had to look at my foot once. By pace one hundred and forty I am back at the driveway and the cuff is hot and the skin under it is angry and I do not care.
+
+I sit on the porch step. Pull the cuff off. Look at the leg.
+
+The leg, on its own, does nothing.
+
+But for one hundred and forty paces, that leg got to *practice* what a normal step felt like. The brain got the input. The brain got to watch the cycle. The brain got the rep.
+
+This is what the chapter is about. The right tool, used right, is not a crutch. It is a multiplier. The wrong tool, used wrong, is a crutch you spend the rest of your life leaning on.
+
+The rule is the rule. Earn the rep, or surrender the muscle. The cuff is allowed because it lets me earn more reps than I could earn without it. The day it lets me earn fewer is the day it gets retired.
+
+Two years later, I retired it. Anterior tibialis came back online. Foot lifts on its own now. The cuff sits in a drawer. It earned its retirement.
+
+That is the whole chapter in one scene.
+
+---
+
 Technology in stroke recovery is a double-edged sword.
 
 Used right, the right device unlocks reps you could not otherwise do, fires muscles you could not otherwise reach, and keeps you in the fight on days your willpower is shot.
@@ -2150,6 +2180,36 @@ The Sasquatch took the next step. The bot did not take it for him. The bot remin
 ---
 
 ## Chapter 19: Open Hand Protocol and Recovery Fuel
+
+### The Morning the Hand Would Not Let Go
+
+Six months out. 5:47 a.m. Kitchen.
+
+I reach for the coffee mug with my left hand because my right hand is asleep — the bad sleep, the spastic sleep, the kind of sleep where the brain forgets the limb exists for eight hours and the limb does what gravity and tone tell it to do.
+
+The right hand has curled into a fist overnight.
+
+Not a soft fist. A locked fist. Thumb pulled into the palm. Fingers wrapped over the thumb. Wrist flexed inward, knuckles pointing at my own chest. Like the hand is trying to punch me from the inside.
+
+I sit down. Set the mug aside. Use my left hand to pry the right hand open finger by finger. The pinky comes first — small, willing. The ring finger fights. The middle finger fights harder. The index finger is iron. The thumb has to be peeled out like opening a stuck jar.
+
+When all five are open, I hold them open against the table for sixty seconds. The hand wants to close. The whole forearm wants to close. The bicep wants to pull the whole arm into a chest-cradled wad of meat that is no use to anyone.
+
+I count to sixty out loud because saying numbers makes my brain stay in charge of the hand instead of letting the spinal cord run the show.
+
+When sixty is done, I let go. The hand snaps shut like a mousetrap.
+
+I open it again. Sixty more.
+
+This is what every morning looks like for the next two years.
+
+This chapter is what I learned in those two years. Spasticity is not a character flaw. It is a circuit running without its boss home. You do not beat it with willpower. You beat it with reps, splints, sleep, food, and a refusal to let the hand make the decisions.
+
+If you skip this chapter, the hand wins. If you run this chapter, the hand becomes yours again.
+
+The mug is still there. By 6:15 I am holding it. Not gracefully. But holding.
+
+---
 
 This chapter is three fights in one because they are all the same fight.
 
@@ -2289,6 +2349,36 @@ Heart's still thumpin'. Hand still openin'. Keep the extensors loud.
 ---
 
 ## Chapter 20: The Motivation Engine That Never Quits
+
+### The Tuesday Motivation Did Not Show Up
+
+Seven months out. A Tuesday in July.
+
+The alarm goes off at 5:30. I do not move. I stare at the ceiling fan because the ceiling fan is the only thing in the room that is doing what it is supposed to do.
+
+The rage is gone. That is the first thing I notice. For seven months the rage has been the engine — *I will not die, I will not lose this hand, I will not be the dad who watches from a chair.* The rage has driven me through six hundred reps a day, every day, no exceptions.
+
+This morning the rage tank is empty.
+
+I lie there and run the math. If I do not get up, the world keeps spinning. Lisa will get the kids to school. Insurance will pay the therapist whether I show up or not. The hand will be a little more closed tonight than it is right now, and tomorrow it will be a little more closed than that, and in a year I will be the guy in the chair watching his sons play catch with someone else.
+
+The math does not move me. The math is the math. I have run the math five hundred times. The math does not get me out of bed on the day the rage runs out.
+
+What gets me out of bed is a sentence I wrote on an index card on day two of acute rehab and taped to the inside of my closet door.
+
+*I am the guy who shows up.*
+
+Not "the guy who feels like showing up." Not "the guy who shows up when the rage is loud." The guy who shows up.
+
+The card does not care how I feel. The card describes who I am. Identity beats motivation every single morning, and motivation beats willpower every single morning, and willpower has nothing to do with any of this.
+
+I sit up. Feet on floor. Stand. Open the closet. Read the card. Walk to the kitchen. Pry the hand open. Sixty seconds.
+
+The rep counts the same on the day the rage shows up and the day it does not.
+
+That is the engine. The rest of this chapter is the schematic.
+
+---
 
 Motivation isn't some fluffy feeling that shows up when the stars align. It's a machine you build, fuel, and defend every day.
 
@@ -5893,7 +5983,7 @@ You will also have stalled. You will also have grieved again. You will also have
 
 Keep maintaining. Keep teaching. Keep singing. Keep showing up.
 
-Heart's still thumpin'. Year 14 is just another rep.
+Year 14 is just another rep.
 
 — Nick (writing forward)
 
@@ -5984,7 +6074,7 @@ Three years of disciplined two-drill execution = **540,000 reps.**
 
 That is the number that rewires a stroke brain. That is the number nobody talks about. That is the number that turns "they said never" into "I do this on a Tuesday."
 
-The math does not lie. Pull every lever. Run the program. Heart's still thumpin'. The reps still rep.
+The math does not lie. Pull every lever. Run the program. The reps still rep.
 
 > Worked-example calculator, dose tracker, and the Recovery Math worksheet at **strokerecoveryacademy.com/math**.
 
