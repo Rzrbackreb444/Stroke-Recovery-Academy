@@ -17,3 +17,9 @@ id = "jC5dMkkv_Sh8YwrW7Ht3e"
 uri = "file://screenshots/forge-step1-after.jpg"
 type = "image"
 title = "Forge Your Beast — Step 1 of 5"
+
+[[outputs]]
+id = "L36WMeaK-3yyQ68zQNp8X"
+uri = "file://attached_assets/strokelyfe-org-build-brief.md"
+type = "text"
+title = "Stroke Lyfe — Comprehensive Build Brief"
