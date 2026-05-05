@@ -258,6 +258,30 @@ Class is in session.
 
 ---
 
+# How to Use This Book — and the Stroke Recovery Academy
+
+Before Part I starts, one page on how this book is built and how to use it with the platform that wraps around it.
+
+This book is a memoir-driven manual. The narrative chapters tell what happened to me. The technique chapters show what I did about it. The appendices give you the protocols, the tools, the science, and the platform map. You can read it cover to cover. You can also pick the chapter that matches what you need today and start there.
+
+**The book lives at strokerecoveryacademy.com/book.** That URL is the master index. Every chapter has a companion resource on the platform — videos, printables, fillable workbooks, audio guides. Every appendix has a deeper version online. The book is the spine. The platform is the muscle. *They feed each other.*
+
+**The platform is mostly free.** The 66-Day Tracker, the 90-Day Program companion app, the moderated tribe community, the soundtrack hub, and the Wednesday office hours cost nothing. The optional paid coaching cohorts and the clinician CEU course fund **Stroke Lyfe Inc.** — the 501(c)(3) that buys gear, coaching, and care for survivors who cannot pay. Every dollar paid here funds the next survivor's protocol.
+
+**Three ways to read this book:**
+
+1. **The minimum.** Read the chapters in order. Print the 66-Day Tracker from Appendix G. Run the 90-Day Program. That alone is enough to change your life.
+2. **The middle.** Add the free workbook (Appendix K). Join the free tribe community. Show up to one Wednesday office hour at strokerecoveryacademy.com/officehours.
+3. **The full system.** Workbook + tracker + 90-Day app + tribe + monthly office hours + a coaching cohort once a year.
+
+There is no wrong way to use it. There is only the way you actually use.
+
+**One last thing.** I am not a doctor. I am a survivor who became a teacher. Nothing in this book replaces your medical team. *Get clearance from your treating clinicians before starting any protocol in here.* If you are in immediate medical or mental crisis, call **911**, or **988** for suicide and crisis support. Then come back to the book.
+
+Now — Part I.
+
+---
+
 # PART I — THE STORM
 ## Breakdown to Breakthrough
 
@@ -2642,7 +2666,194 @@ Empire is just service that compounded.
 
 ---
 
-## Chapter 28: The Sasquatch Doctrine Beyond Stroke
+## Chapter 28: The Caregiver's Field Manual
+
+> *Behind every survivor who got back up is a person who refused to let them stay down. This chapter is for that person.*
+
+If you are the caregiver, this chapter is yours.
+
+I am writing this with both hands because Lisa was in that chair next to my bed for six straight weeks. I am writing this with both hands because my mother, Debbie, drove four hours each way every weekend for the first year. I am writing this with both hands because my father, Guy, built a wheelchair ramp onto the front of my house in two days flat without being asked. I am writing this with both hands because Kasey came over every Sunday with food and football. I am writing this with both hands because Michael, the lanky beanpole therapist, kept showing up with a case of beer long after he was paid to.
+
+None of those people had to do what they did.
+
+All of them did it anyway.
+
+This chapter is the closest thing I can write to a thank-you note that is also a survival manual. It is for the person reading this book over the survivor's shoulder. It is for the spouse who has not slept in a real bed in two months. It is for the adult child who flew home and did not fly back. It is for the parent who is too old to be doing this and is doing it anyway. It is for the friend who shows up when nobody else does.
+
+I am not a caregiver. I am a survivor who has been on the receiving end of caregiving for seven years. What follows is what I have watched, what I have heard, what I have been told in late-night phone calls and DM threads from caregivers in twenty-eight countries. It is honest. Some of it is hard.
+
+Read it anyway.
+
+### Truth One: You Are Going to Lose Yourself, and You Have to Get Yourself Back
+
+The first thing every caregiver loses is their own name.
+
+You stop being *Lisa.* You become *Nick's wife.* You stop being *Debbie.* You become *Nick's mom.* You stop being a person with a job and a hobby and a friend group and a Saturday morning routine. You become the support staff for somebody else's medical event. The shift is total and it happens in about seventy-two hours and almost no one warns you about it.
+
+Six months in, you wake up one morning and you cannot remember what you used to do for fun.
+
+Three months after that, a friend asks you how *you* are doing — not how the survivor is doing — and you stare at them because nobody has asked you that in so long that you have forgotten the answer.
+
+Lisa lost herself for about a year. She told me once, much later, that there was a stretch in there where she would walk into a grocery store and not be able to remember what she liked to eat. *I knew what you liked, Nick. I knew what the baby needed. I had no idea what I wanted.*
+
+Listen.
+
+You have to come back.
+
+Not next year. Not when the survivor is "better." Now. In small ways. Daily. Selfishly. Without guilt.
+
+Take the shower that is too long. Read the book that has nothing to do with brain anatomy. Go to the gym for thirty minutes. See the friend the survivor doesn't know. Eat the meal alone in the car if that is the only quiet you can buy.
+
+These are not luxuries. These are not betrayals. These are not failures of devotion. These are the maintenance the engine of you needs to keep running, and an engine that is not maintained will seize, and an engine that has seized cannot pull anyone out of anything.
+
+I will say it directly: **the caregiver who burns out is not noble. The caregiver who burns out is gone.** And the survivor cannot afford gone.
+
+### Truth Two: You Are Allowed to Be Angry
+
+You are allowed to be angry at the survivor.
+
+You are allowed to be angry that they are not progressing fast enough. You are allowed to be angry that they snap at you in the way only sick people can snap at the people who love them. You are allowed to be angry that you have not had a vacation in three years. You are allowed to be angry at the doctors who keep saying *plateau.* You are allowed to be angry at the friends who stopped calling. You are allowed to be angry at God or the universe or the random Tuesday afternoon when a blood vessel in someone you love decided to break.
+
+The anger is not a moral failure.
+
+The anger is a signal. It is telling you that you are running low. It is telling you that something has to change. It is not telling you that you are a bad person.
+
+The bad thing you can do with the anger is bury it. Buried anger is the seed of resentment, and resentment is the slow poison that ends marriages, breaks families, and hardens caregivers into the kind of people the survivor stops trusting.
+
+The good thing you can do with the anger is name it.
+
+Out loud. To a friend who is not the survivor. To a therapist. To a journal. To a support group full of people who already know the language. To a strangers-only thread on r/strokerecovery at 2 a.m.
+
+You are allowed to be angry. You are allowed to say it. You are not allowed to let it sit in you and rot.
+
+### Truth Three: The Marriage Will Not Be the Same — and That Is Not the Same as Saying It Is Over
+
+I owe you the honest statistic.
+
+Roughly half of marriages where one partner has a major neurological event end in divorce within five years. The number is real. I have lived inside it. Lisa and I are co-parents now, not romantic partners. We did not survive the marriage. We survived the friendship. We survived the parenting. The romance was a casualty of the rebuild and we have made peace with that.
+
+Some marriages do survive. Some marriages get *closer.* I know couples on TikTok who are deeper in love at year four than they were at year zero. They will tell you the same thing every time you ask them how: they did the unsexy work. They went to therapy. They had the hard conversations early. They protected the small rituals — the morning coffee, the Saturday drive, the inside joke. They did not pretend the survivor was the same person. They did not pretend they were the same person. They built a new marriage in the wreckage of the old one with the materials they had on hand.
+
+If you are in a marriage right now and you are reading this and you are scared — please hear me. The relationship is going to change. That does not automatically mean it is going to end. What it means is that the version of the relationship you had before the stroke is not coming back, and the sooner both of you stop trying to drag the corpse of the old marriage around, the sooner you can build the new one.
+
+Couples therapy. Now. Not when things get bad. Now, while you still have margin. The cheapest insurance you will ever buy.
+
+### Truth Four: There Is a Right Way and a Wrong Way to Help
+
+I am going to give you the cheat sheet I wish someone had given Lisa on day one.
+
+**Do say:**
+- *I'm here.*
+- *What do you need today?*
+- *That is real and I am sorry.*
+- *I love you.* (Out loud. Often. Even when they cannot say it back yet.)
+- Nothing — sometimes the right answer is a hand on a shoulder and silence.
+
+**Do not say:**
+- *Everything happens for a reason.* (You do not know that. They do not need that.)
+- *At least it wasn't worse.* (Comparison is poison in early recovery.)
+- *My uncle had a stroke and he was fine in three weeks.* (Every stroke is its own.)
+- *Stay positive.* (Permission to feel the actual feeling is more healing than forced cheer.)
+- *Have you tried [random supplement / device / influencer]?* (Bring it up once. Drop it after.)
+
+**Do do:**
+- Show up without being asked.
+- Bring food in containers that do not need to be returned.
+- Mow the lawn. Take out the trash. Walk the dog. Do the small invisible things that the household has stopped doing.
+- Sit through the appointment and take notes.
+- Watch the survivor's kids for two hours so the spouse can sleep.
+- Schedule the survivor's PT for them. Drive them. Wait in the lobby.
+- Send the text that says *no need to reply, just thinking of you* once a week, forever.
+
+**Do not do:**
+- Ask the survivor to perform progress for you.
+- Hover during exercises.
+- Take pictures of the survivor's worst moments without permission.
+- Vent about how hard *your* week has been to the spouse who has not slept.
+- Disappear after month three because the casseroles got boring.
+
+### Truth Five: The Care Kit
+
+Every caregiver needs a kit. Build it now. Keep it stocked.
+
+**Physical kit:**
+- A second phone charger that lives in the hospital bag.
+- A water bottle that is yours, not the survivor's.
+- A small notebook for medical notes — every appointment, every med change, every question you didn't get to ask.
+- A list of every medication the survivor is on, the dose, the prescriber, and the pharmacy.
+- The phone numbers of every therapist, every doctor, every case manager, written down on paper, not just in your phone.
+- Snacks that don't need refrigeration. Hospital cafeteria food will break you in week two.
+- A change of clothes in the car. There will be a night you do not go home.
+
+**Emotional kit:**
+- One person who is not your spouse, not your parent, and not the survivor, who you can text *I am drowning* to and they will pick up the phone.
+- A therapist of your own. Not the survivor's. Yours.
+- One support group. Online is fine. The Stroke Recovery Academy has caregiver threads. So does Family Caregiver Alliance. So does Well Spouse Association. (See Appendix F.)
+- Two activities that are *yours.* Not "ours." Yours. Things you do alone that have nothing to do with the survivor's recovery. Protect them like a job.
+- A hard rule about how often you will check the survivor's vitals at night. Then keep it.
+
+**Logistical kit:**
+- Power of attorney paperwork. Done.
+- Healthcare proxy paperwork. Done.
+- A shared calendar with at least one other family member who can take a shift.
+- A list of three friends or family who have explicitly said *call me when you need a break* — and a willingness to actually call them.
+- A budget conversation with whoever pays the bills. Stroke is expensive. Surprise debt is corrosive.
+
+### Truth Six: Burnout Is a Medical Emergency
+
+If you find yourself:
+- Crying in the car for no reason
+- Snapping at the survivor and not feeling bad afterward
+- Drinking more than you used to
+- Skipping your own meals
+- Getting sick more often
+- Sleeping less than five hours a night for more than a week
+- Fantasizing about leaving
+- Fantasizing about not waking up
+
+You are in burnout. Some of those bullets are warning signs. The last one is an emergency. Call 988. Call your doctor. Call the friend on your text list. Get help today, not next week.
+
+You do not get a medal for grinding yourself to dust. You do not get extra credit for not asking for help. The survivor needs you alive and intact more than they need you available.
+
+### A Note from One Survivor to Every Caregiver
+
+I do not know your name.
+
+I do not know whose hospital bed you are sleeping next to. I do not know whose meds you are managing. I do not know whose therapy appointment you are driving to in the morning.
+
+I know this:
+
+The work you are doing is invisible to almost everyone except the person you are doing it for.
+
+The person you are doing it for sees you. Even when they cannot speak. Even when they snap. Even when they look past you. They see you. They will spend the rest of their life — however long that is — knowing you were the one who stayed.
+
+I see you too.
+
+The Sasquatch tribe sees you.
+
+You are not alone in this. You are valuable. You are loved.
+
+Take the shower. Eat the meal. Call the friend. Build the kit.
+
+Then come back tomorrow and do it again.
+
+That is the work. That is the whole work.
+
+Thank you for staying.
+
+### One Question for the Caregiver
+
+What is the one thing you used to do, before this, that made you feel like *you?*
+
+Schedule it for this week. Not next week. This one. Two hours minimum. Non-negotiable.
+
+The survivor will be okay for two hours.
+
+You will not be okay for another year if you do not start now.
+
+---
+
+## Chapter 29: The Sasquatch Doctrine Beyond Stroke
 
 I have spent twenty-seven chapters telling you how I rebuilt from a stroke.
 
@@ -2694,7 +2905,7 @@ Pick the law you most need this week. Not the one you most agree with — the on
 
 ---
 
-## Chapter 29: The Builder's Promise — Conclusion
+## Chapter 30: The Builder's Promise — Conclusion
 
 > *The "nevers" were never about you. They were about the limits of the people writing them.*
 
@@ -2791,53 +3002,652 @@ Fort Smith, Arkansas
 
 ---
 
+# PART VII: STORIES FROM THE TRIBE
+
+The eight stories that follow are real survivors and caregivers from the Stroke Recovery Academy community. Names, ages, and locations are real where consent was given and changed where it was not. Every case study was reviewed and approved by the person it describes (or, where the survivor cannot review it, by their legal next of kin).
+
+I included these for one reason: this book cannot be a book about *me.* It has to be a book about *us.* My story is the spine. These eight stories are the proof that the spine holds weight.
+
+If you are a survivor reading this, look for yourself in these. You are in here somewhere.
+
+If you are a caregiver, look for the caregiver beats — the cousin, the daughter, the spouse, the friend. They are in here too.
+
+If you are a clinician, read all eight. The patterns are real and the variability is the point.
+
+— Nick
+
+---
+
+## Case 1: Marcus, 52 — Long-Haul Trucker, Ischemic Stroke, Year 3
+
+**Where he was.**
+
+Marcus was a long-haul trucker out of Memphis. Eighteen years on the road. Two hundred and ninety pounds, smoked a pack a day, ate gas station food, slept four hours a night when the freight was hot. He had a wife and a teenage daughter and a mortgage and a F-150 he loved more than most things.
+
+He had his stroke at a TA truck stop outside Little Rock at 4:11 a.m. on a Tuesday. He woke up in the cab with his right side numb and his speech slurred. He thought he had slept on his arm wrong. He drove twelve more miles before he pulled into a Cracker Barrel parking lot, called his wife, and could not get the words out.
+
+The door-to-needle time was almost four hours. He got tPA but not in the window where it would have done the most. The infarct was middle cerebral artery, left-side. He lost his right arm function, most of his right leg, and almost all of his expressive speech.
+
+He spent six weeks in inpatient. He went home in a wheelchair. He could not work. The truck sat in the driveway. The mortgage went on his wife's salary alone.
+
+By month nine he had stopped going to outpatient therapy because *it wasn't doing nothin'.* He sat on the couch. He watched daytime TV. He ate. He gained sixty pounds. His wife started sleeping in the spare room because his snoring had gotten worse — he had also developed sleep apnea — and the marriage started to crack along a seam they didn't know was there.
+
+By month fifteen he had stopped getting out of bed before noon.
+
+**What he did.**
+
+His daughter, sixteen, found a TikTok video of mine on her For You page. The bat one. She showed it to him.
+
+He watched it once. He did not say anything. He went back to bed.
+
+She left her phone playing my videos on the kitchen counter for the next three weeks every time he came down for breakfast. She didn't say anything about it either. She would just leave it playing, refill his coffee, and go to school.
+
+By the third week he started watching them on his own.
+
+He sent me a DM in month sixteen. It was three sentences. *I'm Marcus from Memphis. I had a stroke. My daughter showed me your videos. Where do I start.*
+
+I sent him back the 90-Day Program in this book.
+
+He started Day 1 the next morning.
+
+The first thirty days he did nothing impressive. Ten minutes of seated band work. Fifteen minutes of speech reps reading his daughter's college essays out loud. He logged everything in a notebook. He posted nothing online for the first six weeks because he was embarrassed.
+
+In month two he added the bat. He could barely lift it with his right hand. His left hand did most of the work. He swung it slowly across his living room while his wife filmed it on her phone, mostly to track progress, not to share.
+
+In month three he started walking the length of his driveway. Then the length of his street. Then around the block.
+
+In month six he posted his first video. His daughter helped him with the captions because his right hand still wasn't typing well.
+
+He has been posting daily for seventeen months.
+
+**Where he is now.**
+
+He is back in his truck. Local routes only — he is not cleared for over-the-road yet — but he is driving again. His speech is about eighty percent recovered. His right hand has fine motor skills good enough to button his own shirt. He has lost forty of the sixty pounds he gained. The CPAP has fixed the snoring. He sleeps in the same room as his wife again.
+
+He runs a small Facebook group for stroke survivors who are also professional drivers. There are sixty-three of them.
+
+His daughter is a freshman in college now. She wrote her admissions essay about him.
+
+**One line of advice from Marcus.**
+
+> *"The day my daughter put that phone on the counter is the day I started getting better. I just didn't know it for three weeks. Whoever is leaving the videos playing for you — let them. They are not nagging. They are saving your life."*
+
+**Nick's note.**
+
+Marcus is the case I think about when somebody tells me TikTok is a waste of time. A teenage girl in Memphis put a phone on a kitchen counter. Eighteen months later, her father is back behind the wheel of the F-150 he loves. The reps are inheritance. The reps are not just yours.
+
+---
+
+## Case 2: Janelle, 34 — Postpartum Hemorrhagic Stroke, Year 2
+
+**Where she was.**
+
+Janelle was thirty-two when she had her son. She was a high school chemistry teacher in Sacramento. Healthy. No risk factors. The pregnancy was uneventful.
+
+Six days postpartum she had a thunderclap headache that dropped her in her own kitchen with the baby in a bassinet four feet away. Her husband was at work. Her mother, who was staying with them, found her on the floor unresponsive within twenty minutes.
+
+She had a hemorrhagic stroke from a previously undetected AVM that had ruptured under the blood pressure spike of late pregnancy and birth. She was in a coma for nine days. She woke up unable to recognize her own son.
+
+The recognition came back. Most things came back, slowly, over a year. The thing that did not come back was the version of motherhood she had imagined.
+
+She could not breastfeed. She could not lift the baby unassisted for six months. She had seizures for the first nine months and could not be alone with him. She had to relearn her own son the same way she had to relearn the periodic table — by repetition, with effort, against a brain that was not the brain she had before.
+
+The grief of that almost killed her. Twice she came very close to making the kind of decision I almost made at the four-lane intersection in Chapter 21. She did not, because her mother stayed with her around the clock for the first eleven months and would not leave the room.
+
+**What she did.**
+
+She found my account through a postpartum stroke support group on Facebook. She DMed me a long message in month fourteen — the longest DM I have ever received. It was the whole story above plus the line *I do not know how to be a mother. I am not the mother I was supposed to be. I do not know what to do.*
+
+I sent her back two things. The first was a copy of the line I had typed in my notes app the night I almost drove into traffic — *I am not going to be the reason a kid grows up with a story.* The second was a single piece of advice: *Stop trying to be the mother you were supposed to be. Your son does not know that mother. Be the mother your son actually has.*
+
+She wrote that second line on a sticky note on her bathroom mirror.
+
+She started doing the work — not the recovery work first, but the *being a mother* work. She got down on the floor and played with her son in whatever way her body would let her. When she could not lift him, she rolled with him. When she could not run with him, she crawled. When she could not crawl, she sat and clapped and sang the songs she remembered.
+
+The recovery work followed the motherhood work. She found that her speech reps got easier when she was reading children's books out loud. She found that her hand reps got easier when she was holding crayons with her son. She found that her balance reps got easier when she was carrying a sippy cup across the kitchen.
+
+She turned the kid into the gym.
+
+**Where she is now.**
+
+She is back teaching part-time. She still has occasional seizures, controlled with medication. She walks her son to preschool every morning. She wrote a small ebook called *Mother Your Way Back* for postpartum stroke survivors that she sells for nine dollars on her website. The proceeds fund a small grant program for postpartum stroke moms who can't afford outpatient therapy. The program has funded eleven moms so far.
+
+Her son is four. He calls her *Mama-Mama* because that is the first thing she said to him after she came out of the coma and could not get one syllable out.
+
+**One line of advice from Janelle.**
+
+> *"Recovery is not separate from your life. The thing you love most is the gym you should be training in. My son was the kettlebell. Find your kettlebell."*
+
+**Nick's note.**
+
+Janelle's story is the one I send to every young mom who DMs me after a postpartum stroke, and there are more of them than the medical literature lets on. AVMs in pregnancy are rare. Postpartum stroke is rarer than people think. But the women it happens to are almost always young, almost always healthy on paper, and almost always blindsided. The grief of not being the mother you imagined is its own injury. Janelle is the proof that you can grieve that mother and still be a great mother to the kid you actually have.
+
+---
+
+## Case 3: Robert, 68 — Retired Engineer, Second Stroke Survivor, Year 5
+
+**Where he was.**
+
+Robert had his first stroke at sixty-one. Mild. Lacunar infarct. He recovered almost completely in three months and went back to work as a mechanical engineer at a defense contractor in Huntsville, Alabama. He took his statins. He cut the salt. He walked three miles a day. He thought he had paid his dues.
+
+He had his second stroke at sixty-four. It was not mild. It was a large MCA on the right side. He lost almost all function on his left side, lost his left visual field, and lost most of his executive function — the part of the brain that runs the to-do list, sequences tasks, makes plans.
+
+For an engineer, the executive function loss was the worst of it. He could still do math. He could still understand a blueprint. He could not get out of the house in under three hours because he could not sequence the steps of getting dressed.
+
+His wife retired from her job to take care of him. They moved out of their two-story house into a one-floor condo. He was forced to retire two years before he had planned to.
+
+He fell into a depression that lasted almost two years. He stopped reading, stopped tinkering, stopped doing the small engineering puzzles that had been his whole identity. He sat in a recliner. He watched the Weather Channel. He waited for it to be over.
+
+**What he did.**
+
+His grandson, twenty-three, an engineering student at Auburn, came to live with them for a summer. The grandson did not have the patience for *waiting for it to be over.* He pulled Robert out of the recliner on day one and said *Pop, we're building something.*
+
+They built a model train layout in the basement of the condo. Eight feet by twelve. Plywood, foam, paint, track, wiring, scenery. Every step was an executive function rep. Every wire was a fine motor rep. Every piece of plywood Robert had to sand was a left-arm rep. The grandson did not let him skip anything.
+
+It took the whole summer. By the end of it Robert could sequence the steps of building a model bridge from memory.
+
+The grandson went back to school in the fall. Robert did not go back to the recliner. He found my channel through a model train forum where someone had posted one of my videos. He started a daily practice. Bat work. Speech. Grip. Walking.
+
+He was fifty-six months out from his second stroke. The medical literature says he should not have made meaningful gains at that point.
+
+**Where he is now.**
+
+He is sixty-eight. He runs a YouTube channel about adaptive model railroading for stroke and TBI survivors. He has eleven thousand subscribers. He has built three more layouts. He volunteers as a mentor for engineering students at Auburn — remote, via Zoom, because he cannot sustain a long drive.
+
+His left arm is functional enough to operate a soldering iron under supervision. His executive function is back to about eighty percent of pre-stroke. He still cannot drive. He does not care.
+
+He calls his grandson every Sunday. They talk about trains.
+
+**One line of advice from Robert.**
+
+> *"The medical literature is a starting point, not a verdict. Year five gains are real if you do year-five work. Most people don't, and then they cite the literature that says you can't. Of course you can't if you don't try."*
+
+**Nick's note.**
+
+Robert is the case I cite when someone tells me they are too far out to make gains. He was fifty-six months post when he started serious work. He kept making measurable gains for the next four years. The plateau is a function of effort, not time. The bell curve in the medical journals is built on the average effort of the average patient. You are not the average patient if you do not do the average work.
+
+---
+
+## Case 4: Aisha (told by her daughter, Imani, 27) — Global Aphasia, Year 4
+
+**Where she was.**
+
+I am writing this case study from the daughter's perspective because Aisha cannot yet write it herself. She has approved every word.
+
+Aisha is fifty-nine. She is a former nurse from Atlanta. She had an embolic stroke from atrial fibrillation in 2022. The infarct hit her left frontal and temporal lobes — the language centers. She lost almost all expressive and receptive language. Global aphasia.
+
+Imani is her oldest daughter. She is twenty-seven. She works in marketing. She is the one who found this book.
+
+Imani says: *The first eighteen months were the worst of our lives. My mother was inside her body. We could see her in there. She could not get out. She could not tell us if she was in pain. She could not tell us if she was hungry. She could not tell us if she loved us. She knew us. She could not say our names. The most articulate woman I have ever met had been reduced to nodding and pointing.*
+
+Two speech therapists told the family that significant gains in global aphasia after eighteen months were unlikely. The family was advised to focus on quality of life and assistive technology rather than recovery.
+
+The family did both.
+
+**What they did.**
+
+Imani built an environment around her mother that did not give up on language.
+
+Every meal had a placemat with pictures and words. Every TV show had captions. Every conversation included her mother as a participant, not an audience — even when her mother could not respond. Imani read to her every night for an hour from books her mother had loved. She did this for two years before her mother spoke a complete sentence again.
+
+The family found a constraint-induced language therapy program in Atlanta and enrolled her mother. They did the homework every day, no exceptions.
+
+They found my channel because Imani was looking for stories from people whose language had come back later than the textbooks said it could. She found a few of mine — the music recognition return, the speech relearning, the read-aloud protocol from Chapter 17. She added the read-aloud protocol to her mother's daily routine.
+
+The breakthrough came at month thirty-one. Aisha was in the kitchen with Imani. Imani was making tea. Aisha looked up at her and said, fully and clearly: *"Thank you for staying."*
+
+Imani says she sat down on the kitchen floor and cried for an hour.
+
+**Where she is now.**
+
+Aisha speaks in short sentences now. She has a vocabulary of about four hundred words she can produce reliably. She understands almost everything that is said to her. She reads at about a third-grade level and is gaining. She uses an iPad for the words she cannot yet say out loud.
+
+She has started writing letters to her grandchildren. They are short. They are clearly hers.
+
+She just sent her first DM on Instagram, to me. It said *Thank you. — Aisha.* It took her forty minutes to type. She did it herself.
+
+**One line of advice from Imani (the caregiver).**
+
+> *"Read to your person. Out loud. Every day. Even when they look like they are not listening. Especially then. The ear is the highway back. If you give up on the highway, the highway closes."*
+
+**Nick's note.**
+
+Aisha's case is the one I think about when a clinician tells a family to *manage expectations* in the first year. Manage realistic expectations, yes. Set the work aside, no. The brain does not read clinical timelines. The brain does the work or doesn't, and Aisha's family did the work. Imani is twenty-seven. She has been the family's project manager for four years. She is a hero. She is also a caregiver who needs her own life back, and she is finally, slowly, getting it.
+
+---
+
+## Case 5: David, 41 — Veteran, TBI + Stroke, Year 6
+
+**Where he was.**
+
+David is an Army veteran. Two combat deployments to Afghanistan. He took shrapnel in his neck in 2011. He survived. He came home with a TBI nobody noticed for three years and a vertebral artery dissection that nobody noticed for five.
+
+In 2019 the dissection finally threw a clot. He had a brainstem stroke at thirty-five years old in a Walmart parking lot. He woke up in the ICU with locked-in symptoms — fully aware, fully paralyzed, only able to blink. The locked-in resolved over six weeks. The deficits did not.
+
+He came out of inpatient with severe ataxia, dysarthria, double vision, and emotional dysregulation that turned a mild-mannered man into someone who scared his own kids when he got frustrated.
+
+The VA was overwhelmed. His outpatient therapy was inconsistent. His marriage strained. His PTSD, which he had been managing for eight years, came back hard. He started drinking. He stopped going to therapy. He started ideating in a way that scared him.
+
+He called the Veterans Crisis Line on a Sunday afternoon in month fourteen. The man on the other end of the line stayed with him for four hours. That call kept him alive.
+
+**What he did.**
+
+He found my channel through a veteran-run stroke recovery Facebook group. He DMed me. We talked for forty minutes the first time. I told him I was not a clinician. He told me he had a clinician. What he wanted from me was the *protocol* — the daily structure, the no-zero-days rule, the bat, the 66-day tracker.
+
+He took the protocol. He adapted it for his deficits. He got back into VA outpatient and stayed in it. He went to AA. He got the right antidepressant. He started journaling.
+
+The thing that turned the corner was the dog.
+
+His wife brought home a service dog candidate at month nineteen — a Lab named Roper — and David took on the dog's training as his daily structure. The dog needed walks. David walked. The dog needed commands. David spoke them. The dog needed grooming. David's hands worked the brush. The dog got him out of the house. The dog got him to the park. The dog got him talking to strangers at the dog park, which was its own speech therapy.
+
+By month twenty-seven the dog was certified.
+
+**Where he is now.**
+
+He is forty-one. He works part-time as a peer support specialist at his local VA. He runs a once-a-month meetup for stroke survivor veterans in his region. There are eleven regulars. The dog comes to every meetup.
+
+His ataxia is much improved. His dysarthria is mild. His double vision is corrected with prisms in his glasses. His emotional regulation is back to baseline. He has been sober for four years.
+
+He and his wife are still married. They went through couples therapy for two years and came out the other side closer than they went in.
+
+He is writing a book about the intersection of TBI, stroke, and veteran care. He says I can put a link to it in the next edition of mine.
+
+**One line of advice from David.**
+
+> *"Find the daily reason you have to get out of the recliner that is not about you. For me it was the dog. For you it might be your kid, your job, your tribe, your nonprofit. The recovery happens in the things you do for somebody else. The recliner is the enemy."*
+
+**Nick's note.**
+
+David's case is the one I share with veteran survivors. The intersection of military service, TBI, and stroke is its own specific problem space. The system is not built for it. The veterans who recover well do it by stacking their own protocol on top of whatever the VA can provide and by finding a daily structure outside of the medical system. The dog is one version of that. The peer support work is another. The meetup is another. The book he is writing is another. All four are the same idea: get out of the recliner because somebody else needs you to.
+
+If you are a veteran reading this and you are in the dark place: 988, then press 1. The man who answered David's call kept him alive. The woman who answers yours will too.
+
+---
+
+## Case 6: Cathy, 58 — Late-Onset Breakthrough at Year 5
+
+**Where she was.**
+
+Cathy had her stroke at fifty-three. She is a former kindergarten teacher in Toronto. Her stroke was lacunar, multiple small infarcts in the basal ganglia. Her deficits were not dramatic on imaging. They were dramatic in her life.
+
+She lost the fine motor in her right hand, the kind of fine motor a kindergarten teacher uses constantly. She lost some short-term memory. She lost the ability to follow more than one verbal instruction at a time. She lost most of her stamina.
+
+She tried to go back to teaching at year one. She lasted six weeks. She could not keep up. She took early retirement.
+
+For the next four years she existed. She did her exercises. She walked. She read. She gardened a little. She did not get worse and she did not get better. She had hit what every clinician called the *plateau* and she had accepted it.
+
+She was the textbook case of *manage expectations.* The grief in her, the daughter told me later, was something she had stopped naming because she did not believe it could change.
+
+**What she did.**
+
+She read this book.
+
+She did not find me on TikTok. She does not use TikTok. She found this book in a library in Toronto. The librarian had ordered it after a survivor in the community had recommended it.
+
+She read it in three days. She told her daughter she wanted to try one thing — *just one* — from it. She picked the bat work from Chapter 12.
+
+She bought a child's foam baseball bat at a dollar store. She started swinging it in her living room. Twenty reps in the morning. Twenty reps at night.
+
+In month two she added the open hand protocol from Chapter 19.
+
+In month three she added the read-aloud protocol from Chapter 17 — she read picture books out loud to herself the way she used to read them to kindergartners.
+
+By month six she had returned about thirty percent of her fine motor and most of her stamina.
+
+By month ten she was substitute teaching one day a week.
+
+By month fourteen she was doing two days a week.
+
+She is now five years and ten months post-stroke. She has made more measurable gains in the last twelve months than in the previous forty-eight combined.
+
+**Where she is now.**
+
+She is back to substitute teaching three days a week, which is what she wanted. She is one of the most popular subs in her district because the kids love her and the teachers trust her. She runs an after-school art program for kids with learning differences on Saturdays.
+
+She has started attending a Zoom support group I host once a month. She is the oldest survivor in the group and the most quietly fierce. She is the one who tells the new survivors *do not let them tell you it's over because it's been a year.*
+
+**One line of advice from Cathy.**
+
+> *"The plateau is a setting on your effort. Change the setting and the plateau changes. I lost four years to that lie. Do not lose another month to it."*
+
+**Nick's note.**
+
+Cathy's case is the one I cite when somebody asks me whether the program in this book actually works for older survivors who are years out. The honest answer is *yes, when the work gets done.* The honest answer is also *most people who are five years out have stopped doing the work.* That is not their fault. The system told them to stop. Cathy is the case study of what happens when somebody decides to start again.
+
+---
+
+## Case 7: Tyler, 28 — Athlete, Hemorrhagic from AVM, Year 1
+
+**Where he was.**
+
+Tyler was a college lacrosse player who had become a high school lacrosse coach. He was twenty-seven, in the best shape of his life. He had a previously undetected AVM in his right cerebellum that ruptured during a routine drill at practice. He went down on the field in front of his team. The trainer did everything right. He was at a Level 1 trauma center within thirty-five minutes.
+
+The bleed was massive. He survived neurosurgery but came out with severe ataxia, intention tremor, dysmetria, and balance so impaired he could not stand without two-point support.
+
+For an athlete, the body betrayal was the deepest cut. He had been an elite mover his entire life. He could no longer touch his own nose with his finger.
+
+The depression was immediate and severe. His fiancée stayed. Most of his friends stayed. The athletic identity that had been the center of his life — that did not stay.
+
+**What he did.**
+
+He approached recovery the way he had approached athletic training — with structured periodization, measurable benchmarks, and honest tracking. He hated my videos at first. He thought they were too motivational and not technical enough.
+
+He DMed me to tell me so.
+
+I liked him immediately.
+
+We talked for an hour. I told him *fine, you don't need the motivational version. You need the protocol version. Build a periodized recovery program. Treat it like a sports season. Phase 1 base, Phase 2 build, Phase 3 peak, then deload, then start over.*
+
+He did exactly that.
+
+He built a twelve-week periodized recovery cycle around the protocols in this book. Phase 1 was high-volume low-intensity rep work — mirror therapy, open hand, seated band work. Phase 2 added load — bat work, weighted reaches, balance progressions. Phase 3 added skill — actual lacrosse-specific drills, modified for his deficits.
+
+He filmed every session. He measured everything. He showed his neuro PT the data. The PT, who was a former college athlete himself, started using Tyler's data as a model for other young athletic survivors at the clinic.
+
+**Where he is now.**
+
+He is back coaching. He cannot demonstrate the drills the way he used to. He can run practice, design the season, and run film sessions. The team went to states last spring and he was named coach of the year in his region.
+
+His ataxia is significantly improved. His tremor is controlled at rest, present with intention. He is engaged to be married this fall. He is starting a sports performance consultancy that specializes in return-to-sport for young athletes with neurological injury.
+
+He still hates the motivational videos. He keeps watching them anyway.
+
+**One line of advice from Tyler.**
+
+> *"Recovery is a sport. Train it like one. Periodize, measure, peak, deload, repeat. The athletes who use their training brain for their recovery recover faster than the athletes who don't. Use the brain you already trained."*
+
+**Nick's note.**
+
+Tyler is the case I send to other young athletic survivors. The brain that built the athletic body can build the rebuilt body, with the same tools — periodization, progressive overload, deload, peak, repeat. The hardest part is convincing a former athlete that the new sport is recovery itself, and that they get to compete in it for the rest of their life.
+
+---
+
+## Case 8: Mr. Chen and his daughter, Mei, 31 — Mandarin-Speaking, Year 2
+
+**Where they were.**
+
+Mr. Chen is sixty-six. He immigrated from Taiwan to the Bay Area in 1990. He owned a small dry-cleaning business in San Mateo for thirty years. He had his stroke in 2024 — large left MCA, with significant aphasia in both Mandarin and English.
+
+His daughter Mei is thirty-one. She works in tech. She is fully bilingual. Her father's English had always been functional but accented. After the stroke his English was almost gone. His Mandarin was reduced to single words.
+
+The aphasia language pathway is harder when the survivor is multilingual. Some languages come back faster than others. Some come back together, some come back at different rates. The clinical literature is thinner. The therapists in their region were not trained in bilingual aphasia therapy.
+
+Mei found my videos. She did not find them helpful at first because they were in English and her father could not follow English. She did something I had not seen anyone do before.
+
+**What they did.**
+
+Mei translated the protocols in this book into Mandarin. She did it on her own. She wrote them out by hand on cards her father could see from his recliner. She filmed her own short videos in Mandarin demonstrating the bat work, the open hand, the read-aloud protocol — using her father as the demonstrator.
+
+She posted those videos to a Mandarin-language stroke survivor group on a Chinese social media platform.
+
+The videos took off.
+
+Within four months she had eight thousand followers — Mandarin-speaking survivors and caregivers in the Bay Area, in Vancouver, in Sydney, in Singapore, and in Taiwan itself.
+
+Her father, watching her build this, started to come out of his shell. He started showing up in the videos as a participant. He started saying single words on camera. Then short phrases. Then full sentences in Mandarin.
+
+His English came back slower but it came back. By month eighteen he was holding short conversations with his old customers when they came by to see him.
+
+**Where they are now.**
+
+Mr. Chen is functionally bilingual again, at about sixty percent of his pre-stroke level in both languages. He can run the front of the dry cleaner for half-day shifts.
+
+Mei runs a small Mandarin-language stroke recovery community that has eleven thousand members and a small team of volunteer translators. She is in conversation with my team to translate this book into Mandarin properly, with her as the credited translator.
+
+If you are reading the Mandarin edition of this book, you are reading her work.
+
+**One line of advice from Mei (the caregiver).**
+
+> *"Your language is not optional in your recovery. If your survivor cannot recover in English, do not make them recover in English. Find someone who can translate the protocols. If nobody can, become that person. Your work will help thousands of people."*
+
+**Nick's note.**
+
+Mr. Chen and Mei's case is the one that taught me this book has to live in more than one language. The Mandarin edition is in progress because of them. The Spanish edition is in progress because of a similar story from a survivor's son in Phoenix. If you are reading this and your community needs the protocols in your language and they don't exist yet — please reach out to us at the academy. The translations get done because survivors and their families decide to do them. We will support you.
+
+---
+
+## What These Eight Stories Have in Common
+
+I want to close Part VII with the patterns. If you have read the eight cases, you have already seen them. Naming them out loud:
+
+1. **Every survivor had a person.** Marcus had a daughter with a phone. Janelle had a mother who would not leave. Robert had a grandson who would not let him stay in the recliner. Aisha had Imani. David had a wife and a dog. Cathy had a librarian who recommended a book. Tyler had a fiancée who stayed and a PT who listened. Mr. Chen had Mei. *No one rebuilds alone.* Find your person. Be somebody else's.
+
+2. **Every survivor started later than the medical literature said gains were possible.** Marcus at sixteen months. Janelle at fourteen. Robert at fifty-six. Aisha at thirty-one. David at fourteen. Cathy at five years. The plateau is a function of effort, not of time.
+
+3. **Every survivor used a daily structure.** The 90-Day Program. The 66-Day Tracker. The bat. The open hand. The read-aloud. The dog walks. The model train. The structure was different. The *having a structure* was identical.
+
+4. **Every survivor turned outward.** Facebook group. YouTube channel. Mandarin community. Saturday art program. Coaching. Peer support. The recovery accelerated when the survivor became useful to somebody else. Reps are inheritance.
+
+5. **Every survivor had at least one moment where they almost quit.** Marcus did quit, for fifteen months. Janelle came close to ending her life. David called the crisis line. Aisha's family was told to stop hoping. Cathy accepted the plateau for four years. Tyler hated the videos. Mr. Chen would not come out of his bedroom. The almost-quit moment is part of the path. It is not the end of it.
+
+6. **Every survivor is now somebody else's first comment.** Each of these eight is now the person who shows up in another survivor's DMs in month sixteen. The tribe grows from itself. You will be next.
+
+If your story is in here in spirit, write me. We will put yours in the next edition.
+
+— Nick
+
+---
+
 # APPENDICES
 
-## Appendix A: Emergency Stroke Recognition
+## Appendix A: Emergency Stroke Recognition and the First 60 Minutes
 
 If you suspect a stroke — yours or someone else's — call **911** immediately. Do not drive. Do not wait. Every minute counts. Time lost is brain lost.
 
+A printable wallet-card version of this appendix is at **strokerecoveryacademy.com/walletcard**. Print one for every adult in your household. Carry it.
+
+### Why Speed Is Everything
+
+The brain loses about **1.9 million neurons per minute** during an ischemic stroke. The treatment windows are short and unforgiving:
+
+- **tPA (clot-busting medication):** generally within 3 hours of symptom onset, sometimes extended to 4.5 hours in eligible patients.
+- **Mechanical thrombectomy (clot retrieval):** generally within 6 hours of symptom onset, extended to 24 hours in select cases with appropriate imaging.
+
+Every fifteen-minute delay in treatment costs measurable function. *Note the time symptoms started.* If you don't know the exact time, note the last time the person was definitely normal.
+
 ### FAST
 
-- **F — Face drooping.** Ask the person to smile. Does one side droop?
-- **A — Arm weakness.** Ask them to raise both arms. Does one drift down?
-- **S — Speech difficulty.** Ask them to repeat a simple sentence. Is it slurred or strange?
-- **T — Time to call 911.** Note the time symptoms started. The treatment window is short.
+- **F — Face drooping.** Ask the person to smile. Does one side droop or fall?
+- **A — Arm weakness.** Ask them to raise both arms. Does one drift down or fail to rise?
+- **S — Speech difficulty.** Ask them to repeat a simple sentence: *"The sky is blue today."* Is it slurred, strange, or wrong?
+- **T — Time to call 911.** Note the time. Tell the dispatcher you suspect a stroke.
 
-### BE-FAST (More Sensitive)
+### BE-FAST (More Sensitive — Use This One)
 
-- **B — Balance.** Sudden loss of balance or coordination.
-- **E — Eyes.** Sudden vision loss in one or both eyes, or double vision.
-- Then F, A, S, T as above.
+A meaningful percentage of strokes — especially in the back of the brain (posterior circulation, brainstem, cerebellum) — are missed by FAST alone. BE-FAST catches more.
 
-A meaningful percentage of strokes — especially in the back of the brain (posterior circulation) — are missed by FAST alone. BE-FAST catches more.
+- **B — Balance.** Sudden loss of balance or coordination. Stumbling. The person looks drunk.
+- **E — Eyes.** Sudden vision loss in one or both eyes, or sudden double vision.
+- **F — Face drooping.** As above.
+- **A — Arm weakness.** As above.
+- **S — Speech difficulty.** As above.
+- **T — Time to call 911.** As above.
+
+### Other Symptoms That Mean Call 911 Right Now
+
+- Sudden severe headache with no known cause (especially the *worst headache of your life* — possible hemorrhagic stroke).
+- Sudden numbness anywhere on the body, particularly one-sided.
+- Sudden confusion, disorientation, or trouble understanding speech.
+- Sudden dizziness with nausea and vomiting.
+- Sudden trouble swallowing.
+- Sudden weakness or paralysis in any limb.
+
+When in doubt — call. The cost of a false alarm is one ER visit. The cost of a missed stroke is a lifetime.
+
+### What to Tell the 911 Dispatcher
+
+Use this script. Read it off your phone if you have to:
+
+> *"I think someone is having a stroke. They have [list symptoms]. The symptoms started at [exact time, or last-known-normal time]. The address is [address]. The patient's age is [age]. They take [list medications, including blood thinners]. They are conscious / unconscious. They are breathing / not breathing."*
+
+If they are unresponsive but breathing, lay them on their side (recovery position). If they stop breathing, start CPR if you are trained.
+
+### What NOT to Do
+
+- **Do not drive them yourself** unless EMS is unavailable. EMS can begin assessment, alert the receiving stroke center, and route the patient to the right hospital. Driving yourself can route the patient to the wrong hospital.
+- **Do not give them aspirin, food, water, or any medication** until cleared by EMS or hospital staff. Aspirin helps in some strokes and worsens others. The CT scan determines which.
+- **Do not let them sleep it off.** *Wake up tomorrow and see how you feel* is a phrase that has cost more brain than almost any other.
+- **Do not delay because you are not sure.** Stroke is the diagnosis the ER is best equipped to rule out fast.
+
+### Stroke Risk Factors — Know Your Numbers
+
+The stroke I had was largely a function of risk I had not properly managed. Most strokes are. Know your numbers:
+
+- **Blood pressure.** Goal: <130/80. The single biggest modifiable risk factor for stroke.
+- **A1c (blood sugar).** Goal: <5.7 (non-diabetic) or as your doctor directs.
+- **LDL cholesterol.** Goal: depends on your overall risk; ask your doctor.
+- **Resting heart rate.** Note any rhythm that feels irregular — atrial fibrillation is a major stroke risk and is often silent.
+- **BMI.** Carrying significant excess weight is a risk multiplier.
+- **Sleep apnea.** Untreated sleep apnea drives up blood pressure overnight. Get tested if you snore heavily, gasp in your sleep, or wake unrefreshed.
+- **Smoking.** Stops the day you quit.
+- **Excessive alcohol.** Reduces brain volume and elevates blood pressure.
+- **Stress.** Real risk factor. Manage it actively.
+
+A free risk calculator and printable risk-tracker template lives at **strokerecoveryacademy.com/risk**.
+
+### After the 911 Call — The First Hour as a Family Member
+
+While EMS is en route or while you are at the hospital:
+
+1. **Designate one person to be the medical communicator.** All medical info goes to and from this one person. Reduces chaos.
+2. **Take notes.** Times, medications mentioned, names of doctors, every change.
+3. **Photograph any orders, labels, or paperwork** with your phone for later reference.
+4. **Get the AVS (After Visit Summary)** before you leave the ER. Read it.
+5. **Ask one question:** *Was tPA given? Was thrombectomy considered? Why or why not?* The answers shape everything that follows.
+
+The stroke event is over in hours. The recovery is years. The first 60 minutes set the ceiling.
 
 **Call 911. Note the time. Don't let them sleep it off.**
 
 ---
 
-## Appendix B: Recovery Exercise Protocols
+## Appendix B: Recovery Exercise Protocols — The Full Library
 
-These are the daily protocols I ran. Adapt to your level. Get clearance from your therapist.
+These are the daily protocols I ran. Each one is described in full prose, with reps, progressions, common mistakes, and a chapter cross-reference. Video demonstrations of every drill in this appendix live at **strokerecoveryacademy.com/protocols** — free, no login required, organized by deficit. Print the full PDF version at **strokerecoveryacademy.com/protocols/print**.
 
-| Drill | Reps / Time | Frequency | Chapter |
-|---|---|---|---|
-| Ankle dorsiflexion (toe taps + band) | 100+ reps | Daily | 8, 15 |
-| Heel walks | 3 sets | Daily | 15 |
-| Wall lean / negative pressure | 10 × 30s | Daily | 8, 13 |
-| Mirror therapy | 10–20 min | Daily | 14 |
-| Baseball bat / broomstick swings | 50–100 reps | Daily | 12 |
-| Grip squeezes (ball or putty) | 100–300 reps | Daily | 16 |
-| Open hand stretch (passive) | 1 min × hourly | Daily | 19 |
-| Rubber band finger extensions | 20 each finger | Daily | 19 |
-| Tabletop finger lifts | 20 each finger | Daily | 19 |
-| LSVT-style "ahhh" projections | 10 × 3/day | Daily | 17 |
-| Diadochokinetic drills (puh-tuh-kuh) | 30 sec × 3 | Daily | 17 |
-| Tongue / lip stretch series | 20 reps | Daily | 17 |
-| Read aloud | 15 min | Daily | 17 |
-| Effortful swallow | 20 × 3/day | Daily | 17 |
+*Get clearance from your treating therapist before starting any of these. Adapt to your level. Stop for injury pain — never for effort pain.*
 
-**Always:** progress slowly, log everything, listen for *injury pain* and stop, and combine drills (the COMBINE step in the Sasquatch Formula) for synergy.
+### Quick Reference Table
+
+| Drill | Reps / Time | Frequency | Chapter | Video |
+|---|---|---|---|---|
+| Ankle dorsiflexion (toe taps + band) | 100+ reps | Daily | 8, 15 | /protocols/ankle |
+| Heel walks | 3 sets × 20 ft | Daily | 15 | /protocols/heelwalk |
+| Wall lean / negative pressure | 10 × 30 s | Daily | 8, 13 | /protocols/walllean |
+| Mirror therapy | 10–20 min | Daily | 14 | /protocols/mirror |
+| Baseball bat / broomstick swings | 50–100 reps | Daily | 12 | /protocols/bat |
+| Grip squeezes (ball or putty) | 100–300 reps | Daily | 16 | /protocols/grip |
+| Open hand stretch (passive) | 1 min × hourly | Daily | 19 | /protocols/openhand |
+| Rubber band finger extensions | 20 each finger | Daily | 19 | /protocols/rubberband |
+| Tabletop finger lifts | 20 each finger | Daily | 19 | /protocols/fingerlift |
+| LSVT-style "ahhh" projections | 10 × 3/day | Daily | 17 | /protocols/lsvt |
+| Diadochokinetic drills (puh-tuh-kuh) | 30 sec × 3 | Daily | 17 | /protocols/dia |
+| Tongue / lip stretch series | 20 reps | Daily | 17 | /protocols/oralmotor |
+| Read aloud | 15 min | Daily | 17 | /protocols/readaloud |
+| Effortful swallow | 20 × 3/day | Daily | 17 | /protocols/swallow |
+| Sit-to-stand | 10–30 reps | Daily | 13 | /protocols/sit2stand |
+| Single-leg stand (wall-supported → free) | 5–60 sec each side | Daily | 13 | /protocols/sls |
+| Bilateral arm reach (cone tap) | 30 reps | Daily | 14 | /protocols/conetap |
+
+### Lower Limb Protocols
+
+**Ankle dorsiflexion + band loading.**
+Sit in a chair, affected leg extended on a low stool, resistance band wrapped around the forefoot, anchored under the opposite foot. Pull the toes up toward the shin against band resistance. Slow on the way up (3 seconds), pause at top (1 second), slow on the way down (3 seconds). 25 reps × 4 sets daily. Progression: tighter band → standing version → standing on a wedge. Common mistake: cheating with hip flexion. The motion is at the ankle only.
+
+**Wall lean (negative dorsiflexion).**
+Face a wall, hands on the wall, affected foot stepped back about three feet, both heels flat on the floor. Lean forward into the wall, feeling a stretch in the calf and a pull at the front of the ankle. Hold 30 seconds. 10 sets daily. This is the foundational drill that returned my dorsiflexion. Common mistake: letting the back heel come up. Heel stays down or the drill is gone.
+
+**Heel walks.**
+Walk on your heels for 20 feet, three sets, daily. If you cannot heel-walk yet, do *seated* heel raises (toes lift) for 30 reps × 3 sets, then progress to standing with wall support. The goal is forced dorsiflexion under load. Pair with the Bioness L300 if you have access.
+
+**Sit-to-stand (the most underrated drill in stroke recovery).**
+From a stable chair, stand all the way up, sit all the way down, controlled. 10 reps to start, build to 30. Add a count of 3 down for eccentric loading. Add a held isometric at the bottom (hovering, not touching the chair) for 5 seconds. This trains quads, glutes, balance, and trunk control simultaneously. Common mistake: pushing off arms. The arms are coaches, not crutches — fold them across the chest as soon as you can.
+
+**Single-leg stand.**
+Wall-supported single-leg stand on the affected side, 5 seconds × 5 reps, both sides. Build to 30 seconds without support. Then add eyes-closed. Then add foam pad. Single-leg stand time is one of the best predictors of fall risk in stroke survivors — train it relentlessly.
+
+### Upper Limb Protocols
+
+**Mirror therapy (Chapter 14).**
+Sit at a table with a vertical mirror perpendicular to your midline. The unaffected arm is in front of the mirror; the affected arm is hidden behind it. The mirror reflects the unaffected arm where the affected arm appears to be. Move the unaffected arm — open and close the hand, lift the wrist, tap the table. The brain sees the affected arm moving. Run for 10–20 minutes daily. The full Cochrane meta-analysis on mirror therapy is in Appendix H.
+
+**Baseball bat / broomstick swings (Chapter 12).**
+Standing or seated. Two-handed grip on a baseball bat or broomstick. Slow controlled swings across the body — left to right, then right to left. 50 reps per direction daily. Progress to a heavier bat. Add overhead lifts. Add diagonal patterns. Add eyes-closed. The bat is a *forced bilateral integration tool* — it makes the affected arm participate because the unaffected arm is doing the same job.
+
+**Bilateral cone tap.**
+Set 6 cones in an arc on a table at increasing distances. Tap each cone with both hands simultaneously — the unaffected hand leads, the affected hand follows. 30 reps daily. Progress by widening the arc, raising the cones overhead, or adding a target color the affected hand has to find first.
+
+**Grip squeezes.**
+Soft ball or putty in the affected hand. Squeeze, hold 3 seconds, release. 50 reps × 4 sets daily. Use putty resistance levels to progress (yellow → red → green → blue → black). Add finger-isolated putty pinches.
+
+### Hand Protocols (the Open Hand System — Chapter 19)
+
+**Passive open hand stretch.**
+The unaffected hand opens the affected hand finger by finger, then stretches the palm flat against a tabletop. Hold for 60 seconds. Do this *hourly* during waking hours in the first 90 days. Spasticity wins by silence and loses to consistent stretch. The cost is one minute. The reward is a hand that does not curl into permanent fist.
+
+**Rubber band finger extensions.**
+A rubber band around all four fingers and the thumb, slight tension. Extend the fingers against the band. 20 reps per finger daily. Progress to thicker bands. This is the single best home drill for rebuilding finger extension strength.
+
+**Tabletop finger lifts.**
+Hand flat on table, palm down. Lift one finger at a time off the table without lifting the others. 20 each finger daily. Progress to lifting two non-adjacent fingers. Then drumming patterns. Then piano scales (real or air).
+
+**Putty pinches.**
+Pinch a small ball of putty between the thumb and each finger in turn. 20 each finger daily. The pincer grasp is what makes the hand a *hand* and not a *paddle.*
+
+### Speech and Swallow Protocols (Chapter 17)
+
+**LSVT-style "ahhh" projection.**
+Inhale fully, then say *"ahhh"* as loud as you can hold for 5 seconds. 10 reps × 3 times daily. Lee Silverman Voice Treatment was originally developed for Parkinson's but is highly effective for stroke dysarthria. It rebuilds vocal loudness and breath support.
+
+**Diadochokinetic drills (puh-tuh-kuh).**
+Repeat *puh-tuh-kuh* as fast and clear as you can for 30 seconds. 3 sets daily. Trains lip closure, tongue tip, and back tongue elevation in sequence.
+
+**Tongue and lip stretch series.**
+Tongue out, hold 3 seconds. Tongue side to side, 10 each. Lip pucker / smile alternation, 10 each. Cheek puff, hold 5 seconds, 5 reps. Tongue press against the inside of each cheek, 10 each. 20 reps of the full sequence daily.
+
+**Read aloud.**
+The single best speech drill that costs nothing. Read aloud — newspaper, novel, the back of a cereal box — for 15 minutes daily. Track the words you stumble on; revisit them tomorrow. Pair with a recording of yourself once a week to track progress. This is the protocol that brought Aisha back (Part VII, Case 4).
+
+**Effortful swallow.**
+Take a sip of water (or dry swallow, if cleared by your SLP). Squeeze hard with the muscles of your throat and neck as you swallow, as if swallowing a large pill. 20 reps × 3 daily. Strengthens the swallow musculature and reduces aspiration risk.
+
+### Cognitive and Vision Protocols
+
+**Daily crossword / sudoku / word search.**
+15 minutes daily. The point is not the puzzle — the point is the daily focused cognitive load on an aging or recovering brain. Vary the puzzle. Track time-to-complete weekly.
+
+**Visual scanning (for hemianopia or neglect).**
+Place 10 small colored objects on a table. Scan from the affected side to the unaffected side. Name each object out loud. 5 sets daily. Add a clock-drawing task once a week to track neglect progression.
+
+**Dual-task training (the highest-leverage cognitive drill).**
+Walk while reciting the alphabet backward. Or sit, balance on an unstable surface, and do mental math. Or wash dishes while listening to a podcast and being able to summarize it after. Real life is dual-task. Train it.
+
+### How to Combine the Drills (the COMBINE step from Chapter 7)
+
+Three combinations I run on the same days every week:
+
+- **Bat + LSVT.** Swing the bat for 50 reps while doing 10 *"ahhh"* projections, alternating. Coordinated breath-and-load.
+- **Mirror + putty.** While doing mirror therapy, the affected hand holds a small piece of putty. Visual neuroplasticity + tactile input + hand resistance, all at once.
+- **Sit-to-stand + read aloud.** 20 sit-to-stands while reading a paragraph aloud between each rep. Trunk + voice + cognition.
+
+The tribe shares more combinations every week at **strokerecoveryacademy.com/combos**.
+
+### When to Stop, When to Push
+
+**Stop immediately for:**
+- Sharp localized pain (especially shoulder).
+- Sudden severe headache.
+- Sudden numbness, weakness, or vision change beyond your baseline.
+- Chest pain or shortness of breath beyond expected exertion.
+
+**Push through:**
+- Muscle fatigue.
+- Effort discomfort.
+- The voice in your head that says *that's enough for today.*
+
+The line between *injury pain* (stop) and *effort pain* (push) is the most important line in this book. Learn yours. Track it.
+
+**Always:** progress slowly, log everything, combine drills (the COMBINE step in the Sasquatch Formula) for synergy, and report any new neurological change to your medical team within 24 hours.
 
 ---
 
@@ -2870,46 +3680,144 @@ The full, updated, with-affiliate-links version of this guide lives at **stroker
 
 ## Appendix D: Nutrition for Brain Recovery
 
-This is general guidance. Get personalized advice from a registered dietitian, especially if you are on blood thinners or have other conditions.
+This is general guidance. Get personalized advice from a registered dietitian, especially if you are on blood thinners, have diabetes, or have other conditions. The fillable meal-planning templates and grocery lists for everything in this appendix are at **strokerecoveryacademy.com/nutrition**.
 
-**Daily protein floor:** 0.7–1.0 g per pound of body weight. Eggs, chicken, fish, Greek yogurt, whey.
+### The Three Jobs of Post-Stroke Nutrition
 
-**Omega-3 base:** Fatty fish 2–3× per week, OR fish oil 2–3 g combined EPA + DHA daily.
+After a stroke, food has three jobs that it did not have before:
 
-**The colorful plate:** Berries, leafy greens, broccoli, cauliflower, nuts, seeds. Mediterranean and MIND patterns.
+1. **Fuel neuroplasticity.** The brain rebuilding pathways needs raw materials — protein for receptors, healthy fats for myelin, antioxidants for inflammation control.
+2. **Preserve and rebuild lean muscle.** You will lose 5–15 percent of lean mass in the first month of inpatient if you do not actively defend it. Lost muscle is lost recovery.
+3. **Lower the risk of the second stroke.** Roughly one in four stroke survivors has a second stroke within five years. Diet is your biggest lever.
 
-**Hydration:** ~3 liters of water daily.
+### The Daily Floor
 
-**Limit:** Alcohol (disrupts deep sleep where neuroplasticity consolidates). Ultra-processed sugar (inflammation). Sodium (especially post-hemorrhagic stroke or hypertension).
+**Protein floor: 0.7–1.0 g per pound of body weight.**
+For a 200-pound survivor that is 140–200 g of protein per day. Eggs, chicken, fish, Greek yogurt, whey, lean beef, tofu, lentils. Spread across 4–5 feedings. Most stroke survivors are dangerously under-protein in the first year. Fix it.
 
-**Supplements I use (talk to your doctor first):**
-- Fish oil (EPA + DHA)
-- Vitamin D3 (most stroke survivors are deficient — get tested)
-- Magnesium glycinate (sleep + spasticity)
-- B-complex
-- Creatine (cognitive + muscle preservation)
+**Healthy fats: 20–35 percent of daily calories.**
+Olive oil, avocado, nuts, seeds, fatty fish. The brain is roughly 60 percent fat by dry weight. Build with the right materials.
 
-**Not backed by strong evidence:** most "brain booster" stacks. Don't waste the money.
+**Omega-3 base: 2–3 g combined EPA + DHA daily.**
+Fatty fish 2–3 times per week (salmon, sardines, mackerel) OR fish oil supplement. Vegan: algae-based DHA + ALA from flax / walnut / chia.
+
+**The colorful plate (the MIND diet floor):**
+- Leafy greens: 6+ servings per week.
+- Other vegetables: 1+ serving per day.
+- Berries: 2+ servings per week (blueberries especially — best evidence in the MIND literature).
+- Whole grains: 3+ servings per day.
+- Nuts: 5+ servings per week (walnuts especially).
+- Beans / legumes: 4+ servings per week.
+- Olive oil as the primary added fat.
+- Fish: 1+ serving per week.
+- Poultry: 2+ servings per week.
+
+**Hydration: ~3 liters per day** (more if you sweat with therapy). Dehydration thickens blood and elevates clot risk. Carry a marked water bottle. Track it.
+
+### What to Limit
+
+- **Alcohol.** Disrupts the deep sleep where neuroplasticity consolidates. Elevates blood pressure. If you drink, cap at 1 drink per day for women, 2 for men, and zero on hard work days.
+- **Ultra-processed foods.** Inflammation accelerator. Read the ingredients label — if it has more than five items or anything you cannot pronounce, demote it.
+- **Added sugar.** Goal: under 25 g per day from added sources. Read labels — sugar is in everything.
+- **Sodium.** Goal: under 2,300 mg per day, lower (1,500 mg) if hypertensive or post-hemorrhagic. Salt is the biggest dietary lever on blood pressure, the biggest risk factor for the second stroke.
+- **Trans fats.** Zero. They are still in some processed foods despite labeling rules.
+- **Grapefruit and grapefruit juice** if you are on certain statins or blood thinners — confirm with your pharmacist.
+
+### Supplements I Take (Talk to Your Doctor First)
+
+These are what I personally take. Your situation may differ. Especially if you are on blood thinners, get every supplement cleared.
+
+- **Fish oil — 2–3 g combined EPA + DHA daily.** Anti-inflammatory, supports membrane health.
+- **Vitamin D3 — 2,000–5,000 IU daily.** Most stroke survivors are deficient. Get a 25-OH-D blood test before and after to dose correctly.
+- **Magnesium glycinate — 200–400 mg at bedtime.** Sleep quality, spasticity, blood pressure.
+- **B-complex (with active folate, B12, B6).** Supports nerve function. Especially important if you are on metformin.
+- **Creatine monohydrate — 5 g daily.** Best-supported supplement in the literature for cognitive and muscular benefit. Effective in stroke and TBI populations.
+- **Curcumin (with piperine for absorption) — 500 mg daily.** Anti-inflammatory. Skip if on blood thinners.
+
+**Not backed by strong evidence:** most "brain booster" stacks, lion's mane megadoses, most nootropic blends marketed for stroke recovery. Don't waste the money. Spend it on a good fish oil and a registered dietitian consultation.
+
+### A Sample Day for a 200-Pound Survivor
+
+- **Breakfast:** 3 whole eggs + 1 cup spinach + 1 slice whole-grain toast + 1 cup blueberries + black coffee. (~35 g protein.)
+- **Mid-morning:** Greek yogurt (1 cup, plain, full-fat) + 1 tbsp ground flax + handful walnuts. (~25 g protein.)
+- **Lunch:** Grilled salmon (6 oz) + large mixed-greens salad with olive oil + 1 cup cooked quinoa. (~45 g protein.)
+- **Afternoon snack:** Protein shake (whey or plant) + banana. (~30 g protein.)
+- **Dinner:** Chicken breast (6 oz) + roasted broccoli and sweet potato + 1 tbsp olive oil. (~50 g protein.)
+- **Bedtime:** Cottage cheese (1 cup) + 1 tsp honey. (~25 g protein.)
+
+Total: ~210 g protein, ~2,400–2,600 calories, full MIND diet coverage.
+
+Adapt the totals to your size, your activity, and your dietitian's guidance. The full meal-plan template, grocery list, and printable shopping aid are at **strokerecoveryacademy.com/nutrition**.
 
 ---
 
-## Appendix E: Inspirational Quotes for Difficult Days
+## Appendix E: Sasquatch Field Notes — One Line for Every Hard Day
+
+These are the lines I have said into a phone camera, written on a sticky note, or texted to a survivor in the middle of the night. Copy any of them. Tape them to your mirror. Read them out loud. The wallpaper-friendly versions of every line below are at **strokerecoveryacademy.com/posters** — free downloads, print at any size.
+
+### On Survival
 
 > *"Heart's still thumpin'? Life's still pumpin'."*
 
+> *"You did not survive a stroke to live the same life you had before. You survived a stroke to build a better one."*
+
 > *"Get knocked down five times. Stand up six."*
+
+> *"The chart said never. The chart was wrong about me. The chart is wrong about you."*
+
+### On the Reps
+
+> *"No zero days. The only rep that doesn't count is the one you didn't do."*
 
 > *"Comfortable is the enemy of recovered."* — Michael
 
+> *"The flicker is the fire."*
+
+> *"Specific reps build specific recovery. Vague reps build vague recovery."*
+
+> *"You don't rise to the level of your hopes. You fall to the level of your daily reps."*
+
+### On the Mindset
+
+> *"I am not waiting to be ready. I am ready by working."*
+
 > *"Idle hands are the devil's playground. I ate him and flushed him."*
 
+> *"Choose possible over probable. Every damn morning."*
+
+> *"The plateau is a setting on your effort. Change the setting and the plateau changes."*
+
+> *"You cannot out-think a stroke. You can out-work one."*
+
+### On the Tribe
+
 > *"Hope is contagious. Spread it."*
+
+> *"Reps are inheritance. The work you do today is the standard somebody else uses tomorrow."*
+
+> *"Every survivor was once somebody who needed a survivor."*
+
+> *"The Sasquatch has your back. We're watching. You're valuable."*
+
+### On Purpose
 
 > *"Purpose is non-negotiable. Find it."*
 
 > *"The impossible is only impossible until someone proves it's not."*
 
-> *"The Sasquatch has your back. We're watching. You're valuable."*
+> *"You are the proof. Now go prove it."*
+
+> *"I am not just recovering. I am proving what's possible."*
+
+### On the Caregiver
+
+> *"The caregiver who burns out is not noble. The caregiver who burns out is gone. Take care of yourself first."*
+
+> *"Behind every survivor who got back up is a person who refused to let them stay down. Thank that person today."*
+
+### Use These However You Need To
+
+Tape them to your bathroom mirror. Set them as your phone wallpaper. Text them to the survivor in your life at 2 a.m. when you cannot find the words yourself. They are not mine. They are ours. Pass them on.
 
 ---
 
@@ -2946,17 +3854,159 @@ This is general guidance. Get personalized advice from a registered dietitian, e
 
 ---
 
-## Appendix G: 90-Day Breakthrough Program
+## Appendix G: The 90-Day Breakthrough Program
 
-### Overview
+This is the daily program I send to every survivor who DMs me with the question *Where do I start?* It is the same program Marcus, Janelle, Robert, Cathy, Tyler, and David in Part VII used as their starting point. You will adapt it to your own deficits and your own clearance from your medical team. *Do not start any program in this appendix without clearance from your treating clinicians.*
 
-- **Days 1–30 — Foundation.** Basic reps. Habit building. Pick one primary drill from Part III. Run it daily. Track on the 66-Day Tracker.
-- **Days 31–66 — Acceleration.** Increase intensity, volume, or novelty (Sasquatch Formula EXPERIMENT). Maintain the streak. By Day 66, the habit is built.
-- **Days 67–90 — Mastery.** Add functional integration (real-world tasks). Begin sharing your journey publicly if you haven't (Chapter 26). Plan the next 90-day target.
+The full printable / fillable version of this program — with check-boxes, video demonstrations of every drill, and a guided audio companion — lives at **strokerecoveryacademy.com/90day**. The version below is the complete written program. Use it whichever way works for you.
+
+### How the 90 Days Are Structured
+
+- **Days 1–30 — Foundation.** Build the daily habit. One primary drill per body system. Low intensity. High consistency. The point is the streak, not the score.
+- **Days 31–60 — Acceleration.** Add load, volume, or novelty (the EXPERIMENT step of the Sasquatch Formula from Chapter 7). The streak holds. The reps get harder.
+- **Days 61–90 — Integration.** Take the gains into the real world. Functional tasks. Public posting. The first plan for the next 90.
+
+By Day 66 the habit is biologically built (Lally et al., 2010 — see Appendix H). By Day 90 the structure is yours. Then you start the next 90.
+
+### The Daily Template (Use Every Day, All 90)
+
+Every day in this program runs on the same five-block template. The blocks change in volume and intensity across the phases. The blocks themselves do not change.
+
+| Block | Time | Purpose |
+|---|---|---|
+| **A. Wake-up reset** | 5–10 min | Baseline body, set the day |
+| **B. Primary motor drill** | 20–45 min | The biggest movement need (leg, arm, hand, balance) |
+| **C. Secondary system** | 15–30 min | Speech, swallow, cognition, or whichever system is second-priority |
+| **D. Functional integration** | 10–30 min | Real-world task using the skill from B or C |
+| **E. Reflection + log** | 5 min | One line in the tracker. One line in a journal. Done. |
+
+Total daily commitment: about ninety minutes in Phase 1, two hours in Phase 2, two and a half hours in Phase 3. If that sounds like a lot, remember that the average inpatient stroke unit delivers about thirty-two minutes of active therapy per day (Lang et al., 2009 — see Appendix H). You are about to triple the dose.
+
+### Phase 1 — Days 1 through 30 (Foundation)
+
+**Goal:** No zero days. Build the streak. Establish the five-block daily template as a non-negotiable.
+
+**Volume target:** ~90 minutes per day, six days per week. One full rest day (still do Block A and Block E).
+
+**Block A — Wake-up reset (every day, 5–10 min).**
+Before you get out of bed:
+- Open hand stretch from Chapter 19 — 60 seconds each hand.
+- Ankle pumps and circles — 20 each direction, each ankle.
+- Slow diaphragmatic breathing — 10 breaths.
+- Out loud: *Heart's still thumpin'. Life's still pumpin'.* Say it. Mean it.
+
+**Block B — Primary motor drill (Days 1–30).**
+Pick *one* of the following based on your biggest deficit. Do it daily.
+- *If your biggest deficit is the leg / walking:* Wall lean + ankle dorsiflexion combo from Chapter 8. 100 reps minimum. Add 10 reps every 5 days.
+- *If your biggest deficit is the arm:* Mirror therapy from Chapter 14, 15 minutes daily, plus baseball bat / broomstick swings from Chapter 12, 50 reps daily.
+- *If your biggest deficit is the hand:* Open hand protocol from Chapter 19 — full sequence, 3 rounds daily. Add grip squeezes (ball or putty) — 100 reps daily.
+- *If your biggest deficit is balance:* Chapter 13 protocol. Sit-to-stand reps — start at 10, build to 30 by Day 30. Add single-leg stand against a wall — start at 5 seconds each side, build to 30.
+
+**Block C — Secondary system (Days 1–30).**
+Pick the system your stroke hit second-hardest. Most common pairings:
+- *Speech / language:* LSVT-style "ahhh" projections — 10 reps × 3 times daily. Read aloud — 10 minutes daily. Diadochokinetic drills (puh-tuh-kuh) — 30 seconds × 3.
+- *Swallow:* Effortful swallow — 20 reps × 3 daily. Chin tuck against resistance if cleared by your SLP.
+- *Cognition:* Daily crossword, sudoku, or app-based brain game — 15 minutes. Read one chapter of any book and write one sentence summarizing it.
+
+**Block D — Functional integration (Days 1–30).**
+Take the skill from Block B and use it in the real world for 10 minutes:
+- Walk to the mailbox. Walk back. Twice.
+- Carry a glass of water from the kitchen to the living room with the affected hand.
+- Open the fridge with the affected hand. Close it with the affected hand. Five times.
+- Brush your teeth with the affected hand. Every day.
+
+**Block E — Reflection + log (Days 1–30).**
+Three lines in the tracker:
+1. *What I did today.*
+2. *One small win.*
+3. *One thing to change tomorrow.*
+
+If you cannot write yet, dictate it into your phone. The Stroke Recovery Academy Companion App (free at **strokerecoveryacademy.com/app**) has a voice-log feature built in.
+
+**Phase 1 Milestones (check on Day 30):**
+- 25 of 30 days completed (84%+ adherence). Anything less, restart Phase 1 from Day 1.
+- One measurable improvement in your primary drill (more reps, more range, more time, less assistance).
+- One photo, video, or written note that captures Day 30 vs. Day 1.
+
+### Phase 2 — Days 31 through 60 (Acceleration)
+
+**Goal:** Increase the load. Hit the 66-day mark on Day 36 (you have been at this since Day 1) and feel the habit lock in.
+
+**Volume target:** ~120 minutes per day, six days per week.
+
+**Block A — Wake-up reset (unchanged).**
+
+**Block B — Primary motor drill (Days 31–60).**
+Add one of the following progressions to whatever you picked in Phase 1:
+- *Leg / walking:* Add Bioness L300 Go (if you have access — see Appendix C) or home NMES on the dorsiflexors during gait. Add stair work — 1 flight, then 2, then 3.
+- *Arm:* Add weighted bat (10–15% heavier) and constraint-induced movement therapy — restrain the good arm for 30-minute blocks during meals or low-stakes tasks.
+- *Hand:* Add SaeboFlex or SaeboGlove (if you have access) or a rubber-band finger extension protocol — 20 reps each finger daily. Add tabletop finger lifts — 20 each.
+- *Balance:* Add eyes-closed single-leg work, foam pad work, and tandem stance walking. Begin Lokomat or treadmill work if available.
+
+**Block C — Secondary system (Days 31–60).**
+Increase volume by 50%. Add a second technique from the relevant chapter. Example — if you were doing speech "ahhh" projections, add SPEAK OUT! protocol or Speech Vive device work if cleared.
+
+**Block D — Functional integration (Days 31–60).**
+Increase the difficulty:
+- Walk to a neighbor's house and back.
+- Cook a simple meal with both hands participating.
+- Pay for something in cash and count the change with the affected hand.
+- Type a short message with both hands.
+- Go to one social event per week — coffee with a friend, a class at the YMCA, anything outside the house with other humans.
+
+**Block E — Reflection + log (Days 31–60).**
+Add a fourth line:
+4. *One person I helped today.* (Even a comment on another survivor's video counts.)
+
+**Phase 2 Milestones (check on Day 60):**
+- 25 of 30 days completed in Phase 2.
+- Measurable progression on the primary drill (more weight, more range, more reps).
+- One public post (TikTok, Facebook group, support forum, or Stroke Recovery Academy community at **strokerecoveryacademy.com/tribe**). The post is the proof. The post is also the inheritance for the next survivor.
+
+### Phase 3 — Days 61 through 90 (Integration)
+
+**Goal:** Move the gains out of the home gym and into the life. Decide what the next 90 days look like.
+
+**Volume target:** ~150 minutes per day, six days per week. Total weekly: ~15 hours.
+
+**Block A — Wake-up reset (unchanged).**
+
+**Block B — Primary motor drill (Days 61–90).**
+Add a *novelty challenge* once per week:
+- A new environment (different surface, new park, different gym).
+- A new tool (kettlebell, resistance loop, body-weight progression).
+- A new variation of the drill (eyes closed, dual task, music tempo change).
+
+The novelty challenge is the EXPERIMENT step. It is what prevents the plateau.
+
+**Block C — Secondary system (Days 61–90).**
+Take the secondary skill into a real-world test:
+- *Speech:* Make one phone call per day to a real person. Order coffee out loud. Read your child a bedtime story.
+- *Swallow:* Eat one new food texture per week (in coordination with your SLP).
+- *Cognition:* Run a 30-minute meeting, plan a small event, file a tax document — pick a real-world cognitive load.
+
+**Block D — Functional integration (Days 61–90).**
+Pick *one* big functional goal and chase it for 30 days:
+- Walk a 5K (with adaptive equipment if needed).
+- Drive to one place per week.
+- Return to one work-related task — even one hour, even unpaid.
+- Cook a full meal for your family.
+- Hold your child / grandchild for 10 unbroken minutes.
+- Type 500 words.
+
+**Block E — Reflection + log (Days 61–90).**
+Add a fifth line:
+5. *What is the next 90 days?* (Write it on Day 90. Then start over.)
+
+**Phase 3 Milestones (Day 90):**
+- 25 of 30 days completed in Phase 3.
+- Big functional goal hit, partially hit, or in clear progress.
+- The next 90-day plan written.
+- One photo or video that captures Day 90 vs. Day 1. Post it. Tag the academy. Become the inheritance.
 
 ### The 66-Day Tracker
 
-The full printable / fillable tracker is at **strokerecoveryacademy.com/tracker**. Print one for your fridge. One row per day. Five columns:
+The printable / fillable tracker is at **strokerecoveryacademy.com/tracker**. Print it. Tape it to your fridge. One row per day. Five columns:
 
 | Day | Date | Daily Focus | Reps / Time | Small Win / Feeling |
 |---|---|---|---|---|
@@ -2965,39 +4015,151 @@ The full printable / fillable tracker is at **strokerecoveryacademy.com/tracker*
 | ... | | | | |
 | 66 | | | | |
 
-**No zero days. Miss a day? Start over at Day 1.**
+**No zero days.** Miss a day? Start over at Day 1. The streak is the point.
+
+### What to Do If You Stall
+
+You will stall. Everyone in Part VII stalled. Here is the protocol:
+
+1. **Take a deload week.** Cut volume by 50% for seven days. Do not stop. Lower the load.
+2. **Change a variable.** New time of day, new environment, new music, new tool, new partner, new accountability person. The body responds to novelty.
+3. **Increase recovery.** Sleep one extra hour. Add 30g protein. Get 20 minutes of sun.
+4. **Re-read the chapter that maps to the drill you are doing.** Often the missing piece is in the chapter you skimmed.
+5. **Post about the stall.** Publicly. The tribe will respond. Accountability solves more plateaus than technique does.
+6. **If the stall lasts more than 14 days:** message the academy. Free office hours every Wednesday at **strokerecoveryacademy.com/officehours**.
+
+### What to Do When You Finish Day 90
+
+You start Day 1 again.
+
+The cycle is the structure. Three to four 90-day cycles per year, for the rest of your life. That is the program.
+
+Year 1 you are surviving. Year 2 you are building. Year 3 you are mastering. Year 4 you are teaching. By Year 7 — like me — you are still climbing.
+
+Heart's still thumpin'? Life's still pumpin'.
+
+Now go.
 
 ---
 
 ## Appendix H: The Science That Proves I'm Right (References)
 
-Selected citations supporting the protocols in this book. Full APA format so any reader, doctor, or insurance reviewer can verify.
+The protocols in this book are not invented. They sit on top of forty-plus years of stroke rehabilitation research and a longer history of neuroscience. The references below are the primary literature behind the techniques. Full APA format so any reader, family member, doctor, or insurance reviewer can verify. The fully linked, continually updated bibliography is at **strokerecoveryacademy.com/science**.
 
-- Kleim, J. A., & Jones, T. A. (2008). Principles of experience-dependent neural plasticity: Implications for rehabilitation after brain damage. *Journal of Speech, Language, and Hearing Research*, 51(1), S225–S239.
-- Cotman, C. W., & Berchtold, N. C. (2002). Exercise: A behavioral intervention to enhance brain health and plasticity. *Trends in Neurosciences*, 25(6), 295–301.
-- Hebb, D. O. (1949). *The Organization of Behavior: A Neuropsychological Theory.* Wiley.
+### The Foundational Neuroplasticity Literature
+
+- Hebb, D. O. (1949). *The Organization of Behavior: A Neuropsychological Theory.* Wiley. *(The origin: "neurons that fire together wire together." Every protocol in this book ultimately rests on this.)*
+- Kleim, J. A., & Jones, T. A. (2008). Principles of experience-dependent neural plasticity: Implications for rehabilitation after brain damage. *Journal of Speech, Language, and Hearing Research*, 51(1), S225–S239. *(The ten principles. Every clinician should have read this. Most have not.)*
+- Cramer, S. C., Sur, M., Dobkin, B. H., O'Brien, C., Sanger, T. D., Trojanowski, J. Q., et al. (2011). Harnessing neuroplasticity for clinical applications. *Brain*, 134(6), 1591–1609.
+- Doidge, N. (2007). *The Brain That Changes Itself.* Viking. *(Popular but rigorous. Required reading.)*
+
+### Dose, Volume, and Intensity
+
+- Lang, C. E., MacDonald, J. R., Reisman, D. S., Boyd, L., Jacobson Kimberley, T., Schindler-Ivens, S. M., et al. (2009). Observation of amounts of movement practice provided during stroke rehabilitation. *Archives of Physical Medicine and Rehabilitation*, 90(10), 1692–1698. *(The 32-minute-per-day finding. The reason the home program in this book exists.)*
+- Horn, S. D., DeJong, G., Smout, R. J., Gassaway, J., James, R., & Conroy, B. (2005). Stroke rehabilitation patients, practice, and outcomes: Is earlier and more aggressive therapy better? *Archives of Physical Medicine and Rehabilitation*, 86(12, Suppl 2), S101–S114.
+- Lohse, K. R., Lang, C. E., & Boyd, L. A. (2014). Is more better? Using metadata to explore dose–response relationships in stroke rehabilitation. *Stroke*, 45(7), 2053–2058.
+
+### Mirror Therapy and Phantom Limb Work
+
 - Ramachandran, V. S., & Rogers-Ramachandran, D. (1996). Synaesthesia in phantom limbs induced with mirrors. *Proceedings of the Royal Society B*, 263(1369), 377–386.
 - Thieme, H., Morkisch, N., Mehrholz, J., Pohl, M., Behrens, J., Borgetto, B., & Dohle, C. (2018). Mirror therapy for improving motor function after stroke. *Cochrane Database of Systematic Reviews*, (7), CD008449.
-- Lally, P., van Jaarsveld, C. H. M., Potts, H. W. W., & Wardle, J. (2010). How are habits formed: Modelling habit formation in the real world. *European Journal of Social Psychology*, 40(6), 998–1009.
-- Lang, C. E., MacDonald, J. R., Reisman, D. S., Boyd, L., Jacobson Kimberley, T., Schindler-Ivens, S. M., et al. (2009). Observation of amounts of movement practice provided during stroke rehabilitation. *Archives of Physical Medicine and Rehabilitation*, 90(10), 1692–1698.
-- Horn, S. D., DeJong, G., Smout, R. J., Gassaway, J., James, R., & Conroy, B. (2005). Stroke rehabilitation patients, practice, and outcomes: Is earlier and more aggressive therapy better? *Archives of Physical Medicine and Rehabilitation*, 86(12, Suppl 2), S101–S114.
-- Cramer, S. C., Sur, M., Dobkin, B. H., O'Brien, C., Sanger, T. D., Trojanowski, J. Q., et al. (2011). Harnessing neuroplasticity for clinical applications. *Brain*, 134(6), 1591–1609.
-- Walker, M. P. (2017). *Why We Sleep: Unlocking the Power of Sleep and Dreams.* Scribner.
 
-(Additional citations and links live at strokerecoveryacademy.com/science.)
+### Constraint-Induced Movement Therapy
+
+- Taub, E., Uswatte, G., & Pidikiti, R. (1999). Constraint-induced movement therapy: A new family of techniques with broad application to physical rehabilitation. *Journal of Rehabilitation Research and Development*, 36(3), 237–251.
+- Wolf, S. L., Winstein, C. J., Miller, J. P., Taub, E., Uswatte, G., Morris, D., et al. (2006). Effect of constraint-induced movement therapy on upper extremity function 3 to 9 months after stroke: The EXCITE randomized clinical trial. *JAMA*, 296(17), 2095–2104.
+
+### Habit Formation and Behavior Change
+
+- Lally, P., van Jaarsveld, C. H. M., Potts, H. W. W., & Wardle, J. (2010). How are habits formed: Modelling habit formation in the real world. *European Journal of Social Psychology*, 40(6), 998–1009. *(The 66-day median. The reason the tracker is 66 days.)*
+- Clear, J. (2018). *Atomic Habits.* Avery. *(Translated into the no-zero-days language used throughout this book.)*
+
+### Exercise, Cardio, and BDNF
+
+- Cotman, C. W., & Berchtold, N. C. (2002). Exercise: A behavioral intervention to enhance brain health and plasticity. *Trends in Neurosciences*, 25(6), 295–301.
+- Mang, C. S., Campbell, K. L., Ross, C. J. D., & Boyd, L. A. (2013). Promoting neuroplasticity for motor rehabilitation after stroke: Considering the effects of aerobic exercise and genetic variation on brain-derived neurotrophic factor. *Physical Therapy*, 93(12), 1707–1716.
+
+### Sleep and Recovery
+
+- Walker, M. P. (2017). *Why We Sleep: Unlocking the Power of Sleep and Dreams.* Scribner.
+- Siengsukon, C. F., & Boyd, L. A. (2009). Sleep enhances implicit motor skill learning in individuals poststroke. *Topics in Stroke Rehabilitation*, 16(1), 92–98.
+
+### Speech and Aphasia
+
+- Pulvermüller, F., & Berthier, M. L. (2008). Aphasia therapy on a neuroscience basis. *Aphasiology*, 22(6), 563–599.
+- Kelchner, L. N., & Sussman, J. E. (2014). The effect of LSVT LOUD on dysarthria post-stroke. *Journal of Medical Speech-Language Pathology.*
+
+### Mental Health and Post-Stroke Depression
+
+- Hackett, M. L., & Pickles, K. (2014). Part I: Frequency of depression after stroke: An updated systematic review and meta-analysis of observational studies. *International Journal of Stroke*, 9(8), 1017–1025. *(One in three. Read it.)*
+
+### Caregiver Outcomes
+
+- Pucciarelli, G., Vellone, E., Savini, S., Simeone, S., Ausili, D., Alvaro, R., et al. (2017). Roles of changing physical function and caregiver burden on quality of life in stroke. *Stroke*, 48(3), 733–739.
+- Bakas, T., Clark, P. C., Kelly-Hayes, M., King, R. B., Lutz, B. J., & Miller, E. L. (2014). Evidence for stroke family caregiver and dyad interventions. *Stroke*, 45(9), 2836–2852.
+
+### Late-Stage Recovery (Beyond the "Plateau")
+
+- Page, S. J., Gater, D. R., & Bach-y-Rita, P. (2004). Reconsidering the motor recovery plateau in stroke rehabilitation. *Archives of Physical Medicine and Rehabilitation*, 85(8), 1377–1381.
+- Demain, S., Wiles, R., Roberts, L., & McPherson, K. (2006). Recovery plateau following stroke: Fact or fiction? *Disability and Rehabilitation*, 28(13–14), 815–821.
+
+### Insurance, Access, and System-Level Findings
+
+- Ifejika-Jones, N. L., & Barrett, A. M. (2011). Rehabilitation — emerging technologies, innovative therapies, and future objectives. *Neurotherapeutics*, 8(3), 452–462.
+
+### A Note on Strength of Evidence
+
+Some protocols in this book have meta-analysis-level support (mirror therapy, CIMT, dose-response). Others have observational and clinical-experience support but not yet large RCTs (the bat work as a bilateral integration tool, for example). I have tried to be honest in the chapters about which is which. Where the evidence is mixed, I name it. Where it is strong, I name that too. Always run new protocols past your treating clinicians.
+
+(Additional citations, full PDF links, and quarterly updates live at **strokerecoveryacademy.com/science**.)
 
 ---
 
 ## Appendix I: The Sasquatch Doctrine — The Survivor's Operating System
 
-Six principles. Memorize them. Run them daily.
+Six principles. Memorize them. Run them daily. Print the wallet card at **strokerecoveryacademy.com/doctrine** and carry it.
 
-1. **Ownership** — every rep, every choice, every morning is yours.
-2. **Movement** — even when nothing moves, the signal is the work.
-3. **Reflection** — write the win, log the loss, learn from both.
-4. **Repetition** — sixty-six days at a time, forever.
-5. **Adaptation** — when the system stalls, change a variable.
-6. **Humanhood** — rebuild the body, the mind, *and* the connection to other people. None of the three is optional.
+### The Six Principles
+
+1. **Ownership.** Every rep, every choice, every morning is yours. The stroke is the raw material. The recovery is yours to author. *No one is coming. You are the one you have been waiting for.*
+2. **Movement.** Even when nothing moves, the signal is the work. The brain rewards intention as well as motion. Send the signal every day, whether the muscle answers or not. *The flicker is the fire.*
+3. **Reflection.** Write the win, log the loss, learn from both. Three lines a day in the tracker. The unexamined rep does not compound. *The pen builds the path the body walks.*
+4. **Repetition.** Sixty-six days at a time, forever. No zero days. The streak is the structure. *Compound the smallest possible thing for the longest possible time.*
+5. **Adaptation.** When the system stalls, change a variable. The plateau is a feedback signal, not a verdict. *Same dose + new variable = new growth.*
+6. **Humanhood.** Rebuild the body, the mind, *and* the connection to other people. None of the three is optional. *Solitary recovery is half a recovery.*
+
+### The Daily Operating Card
+
+The card I carry, every day, paper in my wallet:
+
+> **Morning (60 seconds):**
+> - One thing I OWN today: __________
+> - One MOVEMENT signal I will send: __________
+> - One person I will REACH: __________
+>
+> **Evening (60 seconds):**
+> - One REP I made: __________
+> - One thing I learned (REFLECTION): __________
+> - One variable I am changing tomorrow (ADAPTATION): __________
+
+Two minutes a day. Forever. The whole doctrine fits in two minutes.
+
+### How the Six Principles Map to the Book
+
+- **Ownership** is Chapter 5 (The Architect) and Chapter 6 (The Promise).
+- **Movement** is Part III (the technique chapters — bat, mirror, open hand, balance, drop foot).
+- **Reflection** is Chapter 9 (Sixty-Six Days) and Appendix G (the Tracker).
+- **Repetition** is the structural spine of every chapter and every appendix.
+- **Adaptation** is Chapter 7 (the Sasquatch Formula) and Chapter 11 (The Plateau).
+- **Humanhood** is Chapter 24 (Becoming a Father Again), Chapter 27 (The Tribe), Chapter 28 (Caregiver's Field Manual), and the eight stories in Part VII.
+
+### How the Doctrine Maps to Life After Stroke
+
+The doctrine is six principles for the survivor. It is also six principles for anyone running any kind of long, hard, lonely rebuild. The stroke is the case study. The doctrine is the export.
+
+Use it that way. Pass it on.
+
+— Nick
 
 ---
 
@@ -3032,6 +4194,314 @@ The impossible is waiting for me to make it inevitable.
 And I'm coming for it.
 
 — Nicholas "Stroked-Out Sasquatch" Kremers
+
+---
+
+## Appendix K: The Companion Workbook & Stroke Recovery Academy Platform
+
+This book and **strokerecoveryacademy.com** are built to feed each other. The book is the spine. The platform is the muscle that wraps around it. You can use either alone. Together they are the system the book wishes it could be.
+
+This appendix is the master map of how the book and the platform connect. Bookmark it. Come back to it when you do not know where to look.
+
+### The One URL to Memorize
+
+**strokerecoveryacademy.com/book** — every link in this appendix lives here, organized by chapter and by appendix. If you forget every other URL in this book, remember that one.
+
+### The Companion Workbook (free with proof of book purchase)
+
+Every chapter in this book has a corresponding workbook page on the platform. The workbook is a fillable PDF + an optional digital tracker app. Both free.
+
+The workbook gives you, for every chapter:
+- One reflection prompt for journaling.
+- One drill (with the video demonstration linked) for that day.
+- One log row for the 66-Day Tracker.
+- One *Sasquatch Question of the Day* — the same question I would have asked myself at that point in my own recovery.
+
+Get the workbook at **strokerecoveryacademy.com/workbook**. Upload a photo of your book or your receipt to unlock it for free. (If cost is a barrier, there is a *no questions asked* free request form. Stroke is expensive. The workbook is not where the money should go.)
+
+### Chapter-by-Chapter Companion Resources
+
+| Chapter | Platform companion |
+|---|---|
+| Ch 1 — The Day | /resources/day1 — printable timeline of what to expect in the first 72 hours |
+| Ch 2 — The ICU | /resources/icu — the family ICU survival kit |
+| Ch 3 — The Wake-Up | /resources/wakeup — questions to ask your medical team in the first 14 days |
+| Ch 4 — The Diagnosis | /resources/diagnosis — glossary of stroke terminology in plain English |
+| Ch 5 — The Architect | /resources/architect — the *I am the Architect* worksheet |
+| Ch 6 — The Promise | /resources/promise — written-promise template for your kid, partner, or future self |
+| Ch 7 — The Sasquatch Formula | /resources/formula — the OBSERVE / EXPERIMENT / COMBINE / REFLECT printable |
+| Ch 8 — Wheelchair Warrior | /resources/wheelchair — gear list + first-90-day rolling protocol |
+| Ch 9 — Sixty-Six Days | /resources/66day — the original 66-Day Tracker, fillable + printable |
+| Ch 10 — The Mistakes | /resources/mistakes — the "what I would do differently" caregiver checklist |
+| Ch 11 — Plateau | /resources/plateau — the seven-question plateau diagnostic |
+| Ch 12 — Hostile Construction (the bat) | /resources/bat — full bat protocol video, three progressions |
+| Ch 13 — Balance | /resources/balance — single-leg-stand benchmarks by month |
+| Ch 14 — Phantom Limb (mirror therapy) | /resources/mirror — mirror setup video + 30-day mirror protocol |
+| Ch 15 — Drop Foot | /resources/dropfoot — Bioness L300 vs. AFO decision tree |
+| Ch 16 — Grip | /resources/grip — putty progression chart |
+| Ch 17 — Speech | /resources/speech — full read-aloud library of public-domain texts |
+| Ch 18 — Cognition | /resources/cognition — daily cognitive drills, by deficit |
+| Ch 19 — Open Hand | /resources/openhand — the full hourly stretch protocol |
+| Ch 20 — The Mind Game | /resources/mindgame — daily mental reps + therapist directory |
+| Ch 21 — HandiCRAP (the intersection) | /resources/intersection — 988 information + safety planning template |
+| Ch 22 — Maximum Benefit | /resources/maxbenefit — insurance appeal letter templates |
+| Ch 23 — Discharge | /resources/discharge — the home-readiness checklist |
+| Ch 24 — Becoming a Father Again | /resources/father — adaptive parenting tools by deficit |
+| Ch 25 — Marriage / Co-parenting | /resources/marriage — co-parenting agreement templates + therapist directory |
+| Ch 26 — TikTok Origin | /resources/tiktok — the *first video* template + caption library |
+| Ch 27 — The Tribe | /resources/tribe — link to the academy community + caregiver threads |
+| Ch 28 — Caregiver's Field Manual | /resources/caregiver — full caregiver kit, printable |
+| Ch 29 — Sasquatch Doctrine | /resources/doctrine — the six-principle daily card |
+| Ch 30 — Builder's Promise | /resources/promise2 — write your own builder's promise |
+
+### The Five Free Tracks (use any or all)
+
+The platform has five free tools. You do not need to pay for any of them.
+
+1. **The 66-Day Tracker** — printable + fillable. *strokerecoveryacademy.com/tracker*
+2. **The 90-Day Program companion app** — daily check-ins, video drills, weekly reflection. *strokerecoveryacademy.com/90day*
+3. **The Tribe community** — moderated, free, organized by deficit + caregiver threads. *strokerecoveryacademy.com/tribe*
+4. **The Soundtrack hub** — every track on every platform, with chapter pairing. *strokerecoveryacademy.com/soundtrack*
+5. **Wednesday Office Hours** — free Zoom every week, drop-in, no booking, no cost. *strokerecoveryacademy.com/officehours*
+
+### The Paid Tracks (optional, fund the nonprofit)
+
+Three paid tracks exist to fund **Stroke Lyfe Inc.**, the 501(c)(3) that buys gear, coaching, and care for survivors who cannot afford it. Every dollar paid here funds another survivor's protocol.
+
+1. **Survivor Coaching Cohorts** — small-group, eight weeks, with me. Caps at 12 per cohort.
+2. **Caregiver Coaching Cohorts** — small-group, eight weeks, run by trained survivor-caregivers, with me as a guest in week 4.
+3. **Clinician CEU Course** — accredited continuing-ed for PTs, OTs, SLPs, and stroke nurses. Built around this book.
+
+If you can afford to pay, the money funds the next survivor. If you cannot, request the scholarship form. The protocols are free regardless.
+
+### Stroke Lyfe Inc. — The 501(c)(3)
+
+**strokelyfe.org** is the nonprofit arm. The mission is simple: get the equipment, the coaching, and the protocols into the hands of survivors who cannot pay for them. Every quarter we publish:
+- The number of survivors funded.
+- The total dollars deployed.
+- The gear granted, by item.
+- The coaching cohorts subsidized.
+
+You can donate at **strokelyfe.org/donate**. Every Spotify stream of *Hostile Construction* also funds the nonprofit, automatically. So does every book sale (after publisher costs).
+
+### How to Use the Book and the Platform Together
+
+Three ways most readers run them:
+
+**The minimum.** Read the book. Print the 66-Day Tracker. Run the 90-Day Program. Done. This is enough to change your life.
+
+**The middle.** Add the workbook PDF for journaling. Join the free tribe community. Show up to one Wednesday office hour. Subscribe to the soundtrack on whatever platform you use.
+
+**The full system.** Workbook + tracker + 90-Day app + tribe community + monthly office hours + a coaching cohort once a year. This is what the survivors in Part VII did, with one or another piece swapped in or out.
+
+There is no wrong way to use it. There is only the way you will actually use.
+
+### A Personal Note
+
+I built the platform because I needed it to exist when I was twelve months out and could not find it anywhere. The book is the story. The platform is the system. Stroke Lyfe is the engine that funds it for the people who cannot afford the system.
+
+If you bought this book and never visit the platform — that is fine. The book stands on its own.
+
+If you visit the platform and never finish the book — that is also fine. The platform stands on its own.
+
+If you do both, you will get further faster than I did. That is the point.
+
+— Nick
+
+---
+
+## Appendix L: For Clinicians, Therapists, and Stroke Care Teams
+
+This appendix is for the PTs, OTs, SLPs, neurologists, physiatrists, stroke nurses, and case managers who pick up this book because a patient brought it in.
+
+I am not a clinician. This book is not a clinical protocol. It is the story of one patient who became one teacher. Use it accordingly.
+
+What follows is what I wish more clinicians knew about the patient on the other side of the chart.
+
+### What I Got Right (Mostly)
+
+- The dose of practice. Survivors will do far more reps at home than the system can deliver in clinic. Send them home with structure, not just exercises.
+- Functional integration over isolated drill. Patients carry over the tasks they actually use.
+- Identity work alongside motor work. The patient who rebuilds an identity recovers further than the patient who rebuilds only a body.
+- Permission to *try.* Most of my patients tell me their clinical team's #1 phrase was *be careful.* The #1 phrase from me is *try it.*
+
+### What I Got Wrong
+
+- I underweighted shoulder safety in the first months. *Always check shoulder integrity before bat work.*
+- I underweighted depression screening. Survivors need PHQ-9 type screening at every outpatient visit, not once.
+- I underweighted the second-stroke risk pathway. I should have hammered blood pressure, A1c, and atrial fibrillation harder in early chapters. (The platform now has the second-stroke prevention course built around this gap.)
+- I made the 90-Day Program look universally applicable. *It is a starting point. Modify aggressively for your patient.*
+
+### What This Book Can Do for Your Patient
+
+- Give them a vocabulary. *Plateau, neuroplasticity, dorsiflexion, dysarthria, hemianopia* — they leave this book knowing what these words mean and what to do about them.
+- Give them a structure. The 90-Day Program is a scaffold most patients can adapt to.
+- Give them a tribe. The community at the academy is moderated and active. Patients who connect there are less likely to disengage from outpatient.
+- Give them realistic hope. Eight case studies. Eight different deficits. Eight different timelines. They will see themselves in at least one.
+
+### What This Book Cannot Do for Your Patient
+
+- Replace your assessment.
+- Replace your treatment plan.
+- Replace medication management, imaging, or surgical decision-making.
+- Replace the relationship between the patient and you.
+
+### The CEU Course
+
+A 12-hour accredited continuing-ed course built around this book is at **strokerecoveryacademy.com/ceu**. APTA, AOTA, and ASHA accreditation in progress. The course covers:
+- The patient-perspective gap clinical training does not fill.
+- High-volume home programming protocols.
+- Constraint-induced movement therapy in real-world home environments.
+- Caregiver support as a clinical intervention.
+- Late-stage recovery (Year 2 through Year 7).
+- Integrating the patient's identity work into the treatment plan.
+
+### How to Refer
+
+If you are a clinician who wants your patient to use this book + platform:
+- Order the *Clinician Bulk Pack* (10 books at the wholesale rate) at **strokerecoveryacademy.com/clinicians**.
+- Hand them out at discharge. Patients who go home with a book are more likely to stay engaged.
+- Bookmark the *Clinician Quick Sheet* at **strokerecoveryacademy.com/quicksheet** — a one-page summary of the program with cross-references to the chapters.
+
+If you are a stroke center that wants to integrate this book into your discharge education program, write us at **clinicians@strokerecoveryacademy.com**. We will send a free starter kit.
+
+### A Personal Note to the Clinicians Who Cared for Me
+
+The team at Encompass Health, Fort Smith — across eight inpatient stays — taught me what good care looks like when the patient is not easy. The PT who would not let me skip Wednesday gym days. The SLP who refused to let me settle for slurred. The nurse who stayed past her shift the night I almost gave up. The neurologist who wrote *guarded prognosis* and then quietly cheered when I outran it.
+
+You are why this book exists. You are why your next patient is going to recover further than mine.
+
+Thank you.
+
+— Nick
+
+---
+
+## Appendix M: The Stroke Recovery Glossary
+
+Plain-English definitions of every clinical term used in this book. The full searchable version with audio pronunciations is at **strokerecoveryacademy.com/glossary**.
+
+**AFO (Ankle-Foot Orthosis).** A plastic or carbon-fiber brace worn inside the shoe to hold the foot in dorsiflexion. Helps with drop foot. Most stroke survivors hate them. Some need them forever; some can outgrow them with relentless dorsiflexion work.
+
+**Aphasia.** Loss of language. Can be expressive (cannot produce words), receptive (cannot understand them), or global (both).
+
+**Apraxia.** Loss of the ability to plan and execute purposeful movements, even when the muscles work. The brain knows *what* but cannot remember *how.*
+
+**Ataxia.** Loss of coordination. Movements are clumsy, jerky, or imprecise. Common after cerebellar or brainstem stroke.
+
+**AVM (Arteriovenous Malformation).** A tangle of abnormal blood vessels. Often present from birth. Can rupture and cause hemorrhagic stroke.
+
+**BE-FAST.** Stroke recognition mnemonic. Balance, Eyes, Face, Arms, Speech, Time. Use this one (see Appendix A).
+
+**Bilateral training.** Using both arms (or legs) at the same time on the same task. Bat work is bilateral training.
+
+**Brainstem stroke.** Stroke in the lowest part of the brain. Often most severe. Can cause locked-in syndrome.
+
+**Constraint-Induced Movement Therapy (CIMT).** Restraining the unaffected limb to force the affected limb to do the work. Effective. Hard. Worth it.
+
+**Dorsiflexion.** Lifting the toes toward the shin. Lost dorsiflexion = drop foot.
+
+**Drop foot.** The inability to lift the toes when walking. The foot drags. Trip hazard.
+
+**Dysarthria.** Slurred or weak speech caused by weak muscles of the mouth, tongue, or throat. Different from aphasia (which is loss of language itself).
+
+**Dysphagia.** Difficulty swallowing. Risk for aspiration pneumonia.
+
+**Embolic stroke.** Stroke caused by a clot that traveled from somewhere else (often from the heart, in atrial fibrillation).
+
+**Encompass Health.** The inpatient rehab system where I stayed for eight inpatient stints. (Many systems exist. Encompass is one of the largest in the US.)
+
+**FES (Functional Electrical Stimulation).** Electrical pulses applied to a muscle to make it contract. The Bioness L300 is FES for the dorsiflexors during gait.
+
+**Hemianopia.** Loss of half the visual field. Can affect both eyes on the same side.
+
+**Hemiparesis / Hemiplegia.** Weakness (paresis) or paralysis (plegia) on one side of the body.
+
+**Hemorrhagic stroke.** Stroke caused by a burst blood vessel (a bleed). About 13% of all strokes. Usually more severe. (My stroke was hemorrhagic.)
+
+**Hoyer lift.** A mechanical sling lift used to transfer non-ambulatory patients between bed, chair, and toilet.
+
+**Ischemic stroke.** Stroke caused by a clot that blocks blood flow to part of the brain. About 87% of all strokes.
+
+**LSVT (Lee Silverman Voice Treatment).** A speech protocol originally for Parkinson's. Highly effective for stroke dysarthria.
+
+**Lokomat.** A robotic gait-training device used in some clinics. Patient is suspended in a harness over a treadmill while the robot moves the legs.
+
+**MCA (Middle Cerebral Artery).** The largest of the brain arteries. The most common site of stroke.
+
+**Mirror therapy.** Visual neuroplasticity technique using a mirror to make the brain *see* the affected arm moving when the unaffected arm is moving.
+
+**Neglect.** A condition where the brain ignores one side of space (often the left). The patient does not notice food on half the plate, words on half the page, or their own affected limb.
+
+**Neuroplasticity.** The brain's ability to reorganize itself by forming new neural connections. The biological basis of all stroke recovery.
+
+**NMES (Neuromuscular Electrical Stimulation).** Like FES but applied at rest, not during functional movement. Adds rep volume.
+
+**Plateau.** A period of slowed or stalled progress. Real biologically. Often overstated clinically. (See Appendix G's "What to Do If You Stall.")
+
+**SaeboFlex / SaeboGlove.** Spring-loaded hand orthoses that assist hand opening for grip-and-release training.
+
+**Spasticity.** Involuntary muscle tightness. Common in the affected side after stroke. Treated with stretch, splinting, Botox injections, baclofen, or all four.
+
+**TBI (Traumatic Brain Injury).** Brain injury from external force (fall, blow, blast). Often co-exists with stroke in veterans.
+
+**Thrombectomy.** Mechanical removal of a clot via catheter. Time-limited (generally within 6 hours, sometimes 24 in select cases).
+
+**TIA (Transient Ischemic Attack).** A "mini-stroke" — symptoms resolve within 24 hours. A major warning sign for full stroke. Take it seriously.
+
+**tPA (Tissue Plasminogen Activator).** Clot-busting medication. Time-limited (within 3 hours, sometimes 4.5).
+
+---
+
+## Appendix N: Recommended Reading
+
+Books, podcasts, and one film I recommend to every survivor and caregiver. Links and an updated list at **strokerecoveryacademy.com/reading**.
+
+### Books on the Brain and Recovery
+
+- **Norman Doidge — *The Brain That Changes Itself.*** The book that taught a generation of survivors that neuroplasticity is real.
+- **Norman Doidge — *The Brain's Way of Healing.*** The follow-up. Stroke chapters worth the price of the book alone.
+- **Jill Bolte Taylor — *My Stroke of Insight.*** A neuroscientist's first-person account of her own stroke. Indispensable.
+- **Oliver Sacks — *The Man Who Mistook His Wife for a Hat.*** Older but timeless. Teaches you how strange and various the brain can be.
+- **David Eagleman — *Livewired.*** The clearest layman's explanation of neuroplasticity I have read.
+
+### Books on Habit, Discipline, and Mindset
+
+- **James Clear — *Atomic Habits.*** The single most useful habit book. The 1% framework maps perfectly to no-zero-days.
+- **Cal Newport — *Deep Work.*** Recovery is deep work. Treat it as such.
+- **Viktor Frankl — *Man's Search for Meaning.*** Pain plus meaning. The whole architecture of survival.
+- **Ryan Holiday — *The Obstacle Is the Way.*** Stoic practice for survivors. Short. Useful.
+- **Angela Duckworth — *Grit.*** The science of long-term effort. Every survivor needs it.
+
+### Books on Caregiving
+
+- **Gail Sheehy — *Passages in Caregiving.*** The honest manual.
+- **Atul Gawande — *Being Mortal.*** The hard, beautiful conversation about end-of-life that every family eventually needs.
+
+### Books on Sleep, Recovery, and Performance
+
+- **Matthew Walker — *Why We Sleep.*** Required reading. Sleep is when neuroplasticity consolidates.
+- **Andrew Huberman — *Huberman Lab Podcast.*** Specifically the episodes on neuroplasticity, sleep, and recovery.
+
+### Books on Identity and Rebuilding
+
+- **Bessel van der Kolk — *The Body Keeps the Score.*** Trauma and the body. Critical for survivors with PTSD components.
+- **Resmaa Menakem — *My Grandmother's Hands.*** Body-based healing. Useful far beyond its original framing.
+
+### Podcasts I Recommend
+
+- **The Stroke Recovery Academy Podcast** (the show I host with rotating survivor and clinician guests). *strokerecoveryacademy.com/podcast*
+- **The Tim Ferriss Show** — pick the episodes with Andrew Huberman, Peter Attia, and Jocko Willink for recovery-relevant material.
+- **Huberman Lab** — neuroscience for the lay reader.
+- **The Daily Stoic** — five minutes a day. Useful for the caregiver as much as the survivor.
+
+### One Film
+
+- **The Diving Bell and the Butterfly** (2007). Locked-in syndrome from the inside. Hard to watch. Necessary to watch. Consider whether your survivor wants it before you press play.
+
+### One Album
+
+- **Stroked Out Sasquatch — *Hostile Construction.*** Twelve tracks paired to the chapters of this book. Listen on every platform. Every stream funds the nonprofit. *strokerecoveryacademy.com/soundtrack*
 
 ---
 
