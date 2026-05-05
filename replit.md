@@ -11,8 +11,8 @@ Polish Nick Kremers' stroke recovery book "THE ULTIMATE STROKE RECOVERY REVOLUTI
 
 ## Current State
 - **Manuscript:** `attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION-v3.md`
-- **Word count:** ~54.4k words (~5,000 lines)
-- **30 chapters** in 6 narrative parts + Part VII Stories from the Tribe + 14 appendices (A–N) + Soundtrack + Acknowledgments + About + Seal
+- **Word count:** ~56.8k words (~5,250 lines)
+- **30 chapters + Ch 20½ Persona Forge mindset capstone** in 6 narrative parts + Part VII Stories from the Tribe + 14 appendices (A–N) + Soundtrack + Acknowledgments + About + Seal
 - **Front matter** now includes "How to Use This Book — and the Stroke Recovery Academy" right before Part I
 - **Part VII (Stories from the Tribe):** 8 full case studies (~10k words) — Marcus, Janelle, Robert, Aisha/Imani, David, Cathy, Tyler, Mr. Chen/Mei + closing pattern analysis
 - **Caregiver chapter (Ch 28):** ~3500 words, full field manual
