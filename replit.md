@@ -11,16 +11,16 @@ Polish Nick Kremers' stroke recovery book "THE ULTIMATE STROKE RECOVERY REVOLUTI
 
 ## Current State
 - **Manuscript:** `attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION-v3.md`
-- **Word count:** ~77.6k words (~6,550 lines)
+- **Word count:** ~78.8k words (~6,650 lines)
 - **30 chapters + Ch 20½ / 22½ / 29½ mindset capstones** in 6 narrative parts + Part VII Stories from the Tribe (9 cases) + 17 appendices (A–N + U/V/W) + Soundtrack + Acknowledgments + About + Seal
 - **Front matter** now includes Author's Note, three-sentence thesis paragraph in Introduction, and outside Foreword placeholder slot with target candidates list (Foreword to be solicited from Norman Doidge / Jill Bolte Taylor / Andrew Huberman / Wendy Suzuki / Michael Merzenich)
 - **Cold-open epigraphs** added to all 7 Parts (I–VII)
-- **Cinematic openers** added to Ch 11 (Day My Toe Twitched), 12 (First Swing), 13 (Day I Stood Up Alone), 14 (Mirror in Bathroom Doorway), 15 (Driveway and the Crack), 16 (First Coffee Cup), 17 (Drive-Thru That Nearly Killed Me), and Ch 24 (both-arm hold + walking son to school)
+- **Cinematic openers** added to Ch 11 (Day My Toe Twitched), 12 (First Swing), 13 (Day I Stood Up Alone), 14 (Mirror in Bathroom Doorway), 15 (Driveway and the Crack), 16 (First Coffee Cup), 17 (Drive-Thru That Nearly Killed Me), 18 (Cuff That Walked Me Around the Block), 19 (Morning the Hand Would Not Let Go), 20 (Tuesday Motivation Did Not Show Up), and Ch 24 (both-arm hold + walking son to school)
 - **Part VII (Stories from the Tribe):** 9 case studies (~12k words) — Marcus, Janelle, Robert, Aisha/Imani, David, Cathy, Tyler, Mr. Chen/Mei, **Jordan (NEW — 22yo AVM survivor, college soccer player, fills under-25 demographic gap)** + closing pattern analysis updated to "Nine Stories"
 - **Caregiver chapter (Ch 28):** ~3500 words, full field manual
 - **Acknowledgments:** structured TBD slots filled in for beta readers, editor, copy editor, fact-checkers, Hostile Construction collaborators, cover/typography/photo, legal counsel, academy team
 - **Appendix H (Science References):** added explicit APA 7 citation-style + verification note with corrections inbox + fact-checker placeholders
-- **Voice trim:** "thumpin'" usage trimmed 28 → 23 in densest clusters (closing letter cap-tags + book-end + chapter-end duplicates)
+- **Voice trim:** "thumpin'" usage trimmed 28 → 21 in densest clusters (closing letter cap-tags + book-end + chapter-end duplicates + Appendix Q/O)
 - **TOC:** updated to include Part VII, appendices A–N + U/V/W, and Index stub note
 - **Dedup fixes:** removed duplicate `# THE SOUNDTRACK: HOSTILE CONSTRUCTION` header
 
