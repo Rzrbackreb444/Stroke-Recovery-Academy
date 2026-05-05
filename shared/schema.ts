@@ -7063,3 +7063,69 @@ export const nickQuoteAudio = pgTable("nick_quote_audio", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 export type NickQuoteAudio = typeof nickQuoteAudio.$inferSelect;
+
+// ============================================================================
+// FREE VIDEO ANALYSIS — public lead-gen + testimonial funnel
+// ============================================================================
+// Survivors upload a short recovery video; Gemini 2.5 produces a stroke-
+// recovery-specific analysis (speech, energy, mindset, momentum, focus areas,
+// recommended exercises). With consent, the submission becomes a public
+// testimonial after admin moderation. Public submission, rate-limited.
+export const freeVideoAnalyses = pgTable("free_video_analyses", {
+  id: serial("id").primaryKey(),
+  publicToken: text("public_token").notNull().unique(),
+  // Submitter
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  storyText: text("story_text"),
+  recoveryStage: text("recovery_stage"), // acute | subacute | chronic | unsure
+  focusArea: text("focus_area"),         // speech | mobility | cognition | overall | other
+  // Video
+  videoUrl: text("video_url").notNull(),
+  videoSizeBytes: integer("video_size_bytes"),
+  durationSec: integer("duration_sec"),
+  transcript: text("transcript"),
+  // Analysis
+  status: text("status").notNull().default("processing"), // processing | complete | failed
+  errorMessage: text("error_message"),
+  analysisJson: jsonb("analysis_json"),
+  // Consent / moderation
+  consentToShare: boolean("consent_to_share").notNull().default(false),
+  consentToContact: boolean("consent_to_contact").notNull().default(false),
+  moderationStatus: text("moderation_status").notNull().default("pending"), // pending | approved | rejected
+  moderatedBy: varchar("moderated_by").references(() => users.id, { onDelete: "set null" }),
+  moderatedAt: timestamp("moderated_at"),
+  publishedHandle: text("published_handle"), // anonymized display name on the public site
+  // Audit
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  submittedAt: timestamp("submitted_at").notNull().defaultNow(),
+  completedAt: timestamp("completed_at"),
+}, (t) => ({
+  byStatus: index("idx_free_video_analyses_status").on(t.status),
+  byModeration: index("idx_free_video_analyses_moderation").on(t.moderationStatus),
+  byEmail: index("idx_free_video_analyses_email").on(t.email),
+  byToken: index("idx_free_video_analyses_token").on(t.publicToken),
+}));
+export type FreeVideoAnalysis = typeof freeVideoAnalyses.$inferSelect;
+export const insertFreeVideoAnalysisSchema = createInsertSchema(freeVideoAnalyses).omit({
+  id: true,
+  publicToken: true,
+  status: true,
+  errorMessage: true,
+  analysisJson: true,
+  transcript: true,
+  durationSec: true,
+  videoUrl: true,
+  videoSizeBytes: true,
+  moderationStatus: true,
+  moderatedBy: true,
+  moderatedAt: true,
+  publishedHandle: true,
+  submittedAt: true,
+  completedAt: true,
+  ipAddress: true,
+  userAgent: true,
+});
+export type InsertFreeVideoAnalysis = z.infer<typeof insertFreeVideoAnalysisSchema>;
