@@ -59,6 +59,11 @@ export async function generateLyrics(input: EngineInput): Promise<EngineResult> 
       config: {
         responseMimeType: "application/json",
         temperature: 0.85,
+        // Per-genre playbook prompt is long; a full song production sheet
+        // (10 sections × 6-8 lines × scene notes) can exceed the default
+        // output budget and truncate mid-JSON. 8192 leaves comfortable
+        // headroom for the largest valid output (~16 sections × 40 lines).
+        maxOutputTokens: 8192,
       },
     });
     raw = (r.text || "").trim();
