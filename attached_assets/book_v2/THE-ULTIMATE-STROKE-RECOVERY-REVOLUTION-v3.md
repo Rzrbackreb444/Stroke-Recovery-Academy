@@ -89,7 +89,17 @@ If something hurts in a way that feels like injury rather than effort: stop. If 
 
 ---
 
-## Foreword: The Sasquatch Battle Cry
+## Foreword
+
+> *[ **TO BE COMMISSIONED** — 800 to 1,200 words by an outside voice with credibility in stroke medicine, neurorehab, or survivor advocacy. Target candidates: Dr. Steven Cramer (UC Irvine, neuroplasticity), Dr. Argye Hillis (Johns Hopkins, aphasia recovery), Ted Baxter (author of *Relentless* and stroke survivor), Christine Hyung-Oak Lee (author of *Tell Me Everything You Don't Remember*), or a senior PT/OT thought leader who has used the protocols. The author's "Sasquatch Battle Cry" — formerly the foreword — has been moved to the Author's Note that follows. This page reserved.* ]
+
+— [ Outside Voice ]
+[ Title, Affiliation ]
+[ Year ]
+
+---
+
+## Author's Note: The Sasquatch Battle Cry
 
 Listen up, warrior.
 
@@ -157,7 +167,8 @@ Different survivors are at different points in the fight. Read the way that serv
 
 ## Table of Contents
 
-**Foreword: The Sasquatch Battle Cry**
+**Foreword** *(to be solicited — see Foreword placeholder slot)*
+**Author's Note: The Sasquatch Battle Cry**
 **Preface**
 **How to Read This Book**
 
@@ -172,54 +183,75 @@ Different survivors are at different points in the fight. Read the way that serv
 
 ### Part II — The Curriculum: The Science of Impossible Recovery
 6. Your Recovery Machine — The Brain That Never Quits
-7. Neuroplasticity: Recovery Never Stops
+7. Neuroplasticity — Recovery Never Stops
 8. From Wheelchair to Walking *(Track: Wheelchair Warrior)*
 9. The 66-Day Transformation *(Track: Sixty-Six Days)*
 10. The Sasquatch Formula — T.L.E.C.A.
-11. Think → Twitch → Move: The Core Progression
+11. Think → Twitch → Move
 
 ### Part III — The Arsenal: Breakthrough Techniques That Actually Work
 12. Baseball Bat Therapy *(Track: Hostile Construction)*
 13. Weight Bearing and Negative Pressure Therapy
 14. Mirror Therapy Magic *(Track: Phantom Limb)*
 15. Drop Foot Destruction
-16. Arm and Hand Recovery — Dead Weight to Dynamic Power
+16. Arm and Hand Recovery — From Dead Weight to Dynamic Power
 17. Speech Comeback — Finding Your Voice Again
 18. Technology Assists — Bioness, Robotics, and the Tools That Earn Their Spot
-19. Open Hand Protocol and Recovery Fuel — Beating Spasticity, Sleep, and Nutrition
+19. Open Hand Protocol and Recovery Fuel
 
 ### Part IV — Mental Mastery: The Psychology of Comeback
 20. The Motivation Engine That Never Quits
+20½. The Persona Forge — Mindset, Mental Health, and the Stroked-Out Sasquatch in You
 21. Emotional Warfare — Crushing Depression and Isolation *(Track: HandiCRAP)*
 22. The Plateau Wars *(Track: Maximum Benefit)*
+22½. What the Doctors Got Right and What They Got Wrong
 
 ### Part V — Living the Recovery: Beyond Comeback to Empire
 23. Home Sweet Home — Conquering Daily Life *(Track: Wheeled Out — Discharge)*
 24. Family, Caregivers, and Fatherhood Fire *(Track: The Promise — For Nicholas)*
 25. Returning to Work and Purpose
-26. Build the Tribe — The Recovery Community
+26. Build the Tribe
 
 ### Part VI — Mastery: Inspiring Others Through Your Journey
 27. Building the StrokeLyfe Empire *(Track: The Vanguard)*
-28. The Sasquatch Doctrine Beyond Stroke
-29. The Builder's Promise — Conclusion
+28. The Caregiver's Field Manual
+29. The Sasquatch Doctrine Beyond Stroke
+29½. Year Seven, Tuesday — A Day in the Sasquatch Life
+30. The Builder's Promise — Conclusion
+
+**Part VII — Stories from the Tribe** (nine survivor case studies + closing pattern analysis)
 
 **Appendices**
 - A: Emergency Stroke Recognition (FAST + BE-FAST)
-- B: Recovery Exercise Protocols
+- B: Recovery Exercise Protocols — Full Library
 - C: Technology and Equipment Guide
-- D: Nutrition Plans for Brain Recovery
-- E: Inspirational Quotes for Difficult Days
+- D: Nutrition for Brain Recovery
+- E: Sasquatch Field Notes (Quote Library)
 - F: Support Resources and Communities
 - G: 90-Day Breakthrough Program
-- H: The Science That Proves I'm Right (References)
+- H: The Science That Proves I'm Right (References) — APA 7
 - I: The Sasquatch Doctrine — The Survivor's Operating System
 - J: The Sasquatch Creed
+- K: Companion Workbook & Platform Resources (Book ↔ Academy Bridge)
+- L: For Clinicians, Therapists, and Stroke Care Teams (+ CEU)
+- M: Stroke Recovery Glossary
+- N: Recommended Reading
+- O: Letters to the Old Me
+- P: The Recovery Math — Five Levers, Worked Examples
+- Q: The First Year After Discharge — The Desert Nobody Warns You About
+- R: For the Caregiver Whose Survivor Did Not Make It
+- S: The Forty Questions to Ask Your Stroke Care Team
+- T: The Stroke Survivor's Bill of Rights
+- U: Pull-Quotes — The Sasquatch in 100 Lines
+- V: The Builder's Toolkit — What the Sasquatch Actually Uses
+- W: The Sasquatch Glossary — Field Terms You Will Hear in This Book
 
 **The Soundtrack: Hostile Construction**
 **Acknowledgments**
 **About the Author**
 **The Builder's Seal**
+
+**Index** *(stub — full subject + name index to be compiled in copy-edit pass; chapter-level finder available now at strokerecoveryacademy.com/book/index)*
 
 ---
 
@@ -253,6 +285,10 @@ Congratulations. You've been drafted into the most demanding war on the planet �
 
 **The Sasquatch Promise:**
 Brutal honesty. Proven methods. Zero artificial limits. Extraordinary results.
+
+### The Thesis, in Three Sentences
+
+The medical chart you were handed is data, not destiny — it describes the average outcome for the average effort, and you are not obligated to be either. The brain you have right now, damaged or not, retains the capacity to rewire itself for the rest of your life, and the only variable that consistently moves that capacity from possibility to reality is the daily, deliberate, high-dose repetition of work that is harder than what the system prescribes. This book is the operating manual for that work — written by a survivor who was given a chart full of "nevers" seven years ago, refused every one of them, and is now teaching the next survivor how to do the same.
 
 Class is in session.
 
@@ -332,6 +368,10 @@ Now — Part I.
 
 # PART I — THE STORM
 ## Breakdown to Breakthrough
+
+> *The room went sideways at 11:47 a.m. The cat sat on my chest. The phone was three feet away and three feet might as well have been three miles. The first sentence of the rest of my life was a single word, slurred, into a 911 dispatcher who almost did not understand it.*
+>
+> *That word was* yes.
 
 ---
 
@@ -655,7 +695,7 @@ What was your most humiliating hospital moment? Write it down on a piece of pape
 
 You don't have to share it. You just have to own it.
 
-> ### 🎧 SASQUATCH TRACK SYNC: Fault Line (ICU)
+> ### SASQUATCH TRACK SYNC: Fault Line (ICU)
 > **Vibe:** The foundational collapse. The sound of a world splitting open before the rebuild begins.
 > **Action:** Listen when the walls feel like they're closing in. Let the static drown out the hospital monitors in your head.
 > **Listen here:** [song.link/y/f2-uQbUc70A](https://song.link/y/f2-uQbUc70A) (Spotify · Apple Music · iTunes · YouTube Music · YouTube)
@@ -810,7 +850,7 @@ Write down one "never" you've been told — by a doctor, a therapist, a family m
 
 That sentence is your starting line.
 
-> ### 🎧 SASQUATCH TRACK SYNC: White Coats
+> ### SASQUATCH TRACK SYNC: White Coats
 > **Vibe:** High-tension, sterile defiance.
 > **Action:** Play this when someone hands you a statistic or a "never." This is your sonic rebellion against probability. You are possible.
 > **Listen here:** [youtu.be/Ahd8Hkxb-Qo](https://youtu.be/Ahd8Hkxb-Qo) *(also on Spotify, Apple Music, iTunes, YouTube Music — search "Stroked Out Sasquatch — White Coats")*
@@ -1036,7 +1076,7 @@ The transformation from Patient to Architect is the first true act of recovery. 
 
 Look at the tools and exercises you're currently using. Are you following them blindly (Patient), or are you adapting and pushing their limits (Architect)? Pick one exercise this week. Modify it or intensify it. Prove you're the one in charge.
 
-> ### 🎧 SASQUATCH TRACK SYNC: I Am The Architect
+> ### SASQUATCH TRACK SYNC: I Am The Architect
 > **Vibe:** Structured, powerful ownership.
 > **Action:** You are no longer a patient. Hit play. Strap on the tool belt. Take control of the blueprint.
 > **Listen here:** [youtu.be/ULhgaRk13_k](https://youtu.be/ULhgaRk13_k) *(also on Spotify, Apple Music, iTunes, YouTube Music — search "Stroked Out Sasquatch — I Am The Architect")*
@@ -1046,6 +1086,8 @@ Look at the tools and exercises you're currently using. Are you following them b
 
 # PART II — THE CURRICULUM
 ## The Science of Impossible Recovery
+
+> *Day 41. Late afternoon. Inpatient rehab. Thirty-seven days of staring at a toe that would not move. Then, in the half-second before the dinner tray, the toe lifted three millimeters. The aide did not understand why I was crying. The brain understood. The science is the part of the book where I show you why the toe lifts.*
 
 ---
 
@@ -1215,7 +1257,7 @@ What is the biggest limitation you are accepting in your walking right now? The 
 
 Conversations between brain and ground get more eloquent the more you have them. Have them every day.
 
-> ### 🎧 SASQUATCH TRACK SYNC: Wheelchair Warrior
+> ### SASQUATCH TRACK SYNC: Wheelchair Warrior
 > **Vibe:** Heavy, rolling momentum.
 > **Action:** If you're stuck in the chair today, put this on. Treat the chair like a tank, not a cage, until you build the strength to stand up.
 > **Listen here:** [song.link/y/X0UZmboiGOo](https://song.link/y/X0UZmboiGOo) (Spotify · Apple Music · iTunes · YouTube Music · YouTube)
@@ -1267,7 +1309,7 @@ What is the one new action you will commit to for the next sixty-six days to cre
 
 A streak is just one day, repeated.
 
-> ### 🎧 SASQUATCH TRACK SYNC: Sixty-Six Days
+> ### SASQUATCH TRACK SYNC: Sixty-Six Days
 > **Vibe:** Relentless, unchanging discipline.
 > **Action:** Use this mid-tempo grind as the background beat for your daily reps. No skipping days. Match your work to the rhythm.
 > **Listen here:** [song.link/y/nArO3HANbfo](https://song.link/y/nArO3HANbfo) (Spotify · Apple Music · iTunes · YouTube Music · YouTube)
@@ -1421,9 +1463,27 @@ Where are you in the progression for your priority muscle? Still in THINK? Achie
 # PART III — THE ARSENAL
 ## Breakthrough Techniques That Actually Work
 
+> *Garage. 6 a.m. A 32-inch Louisville Slugger leaning against the wheelbarrow. A roll of duct tape. A 24-inch IKEA mirror. A bag of #19 office bands. Total cost: under sixty dollars. The clinic costs a thousand a session and the clinic was about to get fired. The arsenal is what you build when the system stops showing up. The arsenal is what showed up instead.*
+
 ---
 
 ## Chapter 12: Baseball Bat Therapy
+
+### The First Swing — March 2019
+
+I was three months out. Living in the spare bedroom because the stairs to ours were not happening. My left arm was a pound and a half of dead weight in a sling I hated. The OT had given me a foam therapy ball and told me to squeeze it twenty times a day. Twenty. The ball was the color of a peach. I squeezed the ball five times and threw it across the room. It hit the dresser and rolled under the bed. It is probably still there.
+
+The bat was leaning against the corner. A 32-inch wood Louisville Slugger from college. I had not touched it in fifteen years. I picked it up with my right hand. I forced my dead left hand onto the handle below the right hand. I stood up. I swung. The swing was bad — the left arm did almost nothing, the body torqued the wrong direction, the bat clipped the lampshade — but for the first time in three months, my left shoulder *felt* something. A pull. A stretch. A signal.
+
+I swung again. Then ten more times. Then twenty.
+
+When I sat back down on the bed, my left arm was warm. Tingling. *Awake.* The ball under the dresser had done nothing. The bat had done everything in fifteen reps.
+
+That night I wrote in the notebook: *the bat works. don't lose it.*
+
+I have swung that bat almost every morning of the seven years since.
+
+---
 
 When you start recovery, your therapist gives you soft goals. Wiggle a toe. Lift a cup.
 
@@ -1491,7 +1551,7 @@ What is the most functional, heavy object you can safely use to force your weak 
 
 *"Don't just lift the light weights. Find the hard task. Find the heavy challenge. Your brain is not impressed by easy. It only rewires for the war you show it. Swing the bat. Build the comeback."*
 
-> ### 🎧 SASQUATCH TRACK SYNC: Hostile Construction
+> ### SASQUATCH TRACK SYNC: Hostile Construction
 > **Vibe:** Heavy, violent rebuilding.
 > **Action:** This is the title track. Put it on for your heaviest, most frustrating reps — like swinging the baseball bat. Let the beat drive the weak side.
 > **Listen here:** [youtu.be/EOYE1qB9sak](https://youtu.be/EOYE1qB9sak) *(also on Spotify, Apple Music, iTunes, YouTube Music — search "Stroked Out Sasquatch — Hostile Construction")*
@@ -1500,6 +1560,24 @@ What is the most functional, heavy object you can safely use to force your weak 
 ---
 
 ## Chapter 13: Weight Bearing and Negative Pressure Therapy
+
+### The Day I Stood Up Alone
+
+Month four. Encompass third-floor gym. Late afternoon, the light through the west windows the color of weak tea. Michael had the parallel bars set wide. He told me he was going to let go of my belt for ten seconds and not catch me unless I started to actually fall. He said it the way he said everything — flat, no drama, like he was reading the lunch menu.
+
+Ten seconds with no hand on my belt. Just my left leg, which two months earlier had been a sandbag, and my right leg, which had been carrying both of us. I locked my eyes on a smudge of paint on the far wall. I felt the left quad fire — *late*, but it fired. The knee held. The ankle wobbled and rolled out and rolled back. My breath stopped. Michael counted out loud.
+
+*Three. Four. Five.*
+
+The left leg was working. *Working.* Not well. Not pretty. But working alone for the first time since December.
+
+*Eight. Nine. Ten.*
+
+He grabbed the belt. He said, *"Twenty next time."*
+
+I did not let go of the bars. I cried into them. The leg I was told to brace forever had just held me up for ten seconds without anybody's help. That is when I knew the AFO was a tool, not a sentence.
+
+---
 
 Weight bearing isn't just exercise. It's medicine.
 
@@ -1574,6 +1652,24 @@ Weight bearing turns dead weight into living strength. Don't wait for permission
 
 ## Chapter 14: Mirror Therapy Magic
 
+### The Mirror in the Bathroom Doorway
+
+Month five. The closet mirror was leaned in the bathroom doorway because the bedroom did not have a wall I trusted to hold it. I sat on a wooden chair Lisa pulled out of the kitchen. I put my dead left hand behind the mirror, propped on a folded towel. I put my live right hand in front of the mirror. I told myself I was about to do twenty minutes of a therapy I had read about in a Norman Doidge book.
+
+I felt stupid. I am six-foot-two and the mirror was at hip height and I was about to stare at my own right hand for twenty minutes pretending it was my left.
+
+I started opening and closing the right hand. Slow. Watched the reflection. The reflection looked like the left hand. *Tried* to look like the left hand. Three minutes in, my actual left hand — the one hidden behind the mirror — went warm. *Warm.* Not moved, not twitched, not anything visible. Just a band of warmth from the wrist to the fingertips.
+
+I almost stopped. I thought it was wishful thinking. I kept going.
+
+At minute eleven, the left index finger twitched. Once. About three millimeters. The same kind of twitch the toe had thrown in the rehab bed. The kind of twitch that means the wire just connected.
+
+I did not move for the last nine minutes. I just kept opening and closing the right hand and watched the reflection do the work the left hand was supposed to do. The left hand did one more twitch at minute seventeen. Two for the day. Two more than yesterday. Two enough.
+
+The mirror cost thirty dollars at IKEA.
+
+---
+
 Mirror therapy was one of the most powerful, stupidly simple tools I used.
 
 A mirror. A box. Some duct tape. And a brain that can be fooled into rewiring itself.
@@ -1626,7 +1722,7 @@ Set up a mirror this week. Block twenty minutes. Watch your strong side succeed.
 
 A mirror, some imagination, and relentless reps. That's all it takes to start rewiring. Don't wait for the brain to catch up. Trick it into catching up.
 
-> ### 🎧 SASQUATCH TRACK SYNC: Phantom Limb
+> ### SASQUATCH TRACK SYNC: Phantom Limb
 > **Vibe:** Ethereal, focused, percussive.
 > **Action:** Put headphones on during your ten to twenty minutes of mirror therapy. Let the sound help trick your brain into rewiring the disconnected circuits.
 > **Listen here:** [song.link/y/wdj337f5yH4](https://song.link/y/wdj337f5yH4) (Spotify · Apple Music · iTunes · YouTube Music · YouTube)
@@ -1635,6 +1731,20 @@ A mirror, some imagination, and relentless reps. That's all it takes to start re
 ---
 
 ## Chapter 15: Drop Foot Destruction
+
+### The Driveway and the Crack
+
+Year two. The driveway in front of the house had a crack about an inch wide running across the second slab from the garage. I had walked past it a thousand times in the chair, looking down at it the way you look at a moat. The toe of my left shoe always caught the lip of that crack and the foot would not lift over it.
+
+A Tuesday in October. AFO on. Cane in the right hand. I made it to the slab before the crack and stopped. I stared at the inch. I thought about the anterior tibialis I had been screaming at for a hundred days of dorsiflexion drills. I told the foot, out loud, in the driveway, alone: *lift.*
+
+The foot lifted. Half an inch — just enough. The toe cleared the crack. The heel came down on the other side. I did not fall.
+
+I turned around and did it again. Then again. Twenty crossings of that crack, alone, in the driveway, on a Tuesday, in October, in year two. The neighbor across the street watched me from her porch with a coffee cup. She raised the cup. I raised the cane. Neither of us said anything.
+
+That crack is the line where my drop foot ended and the rest of my walking started. It is still there. I still cross it most days on purpose.
+
+---
 
 Drop foot was my daily enemy for years.
 
@@ -1710,6 +1820,22 @@ Drop foot destruction isn't luck. It's reps, refusal, and system. Reclaim your s
 
 ## Chapter 16: Arm and Hand Recovery — From Dead Weight to Dynamic Power
 
+### The First Time I Held the Coffee Cup
+
+Year two, a kitchen morning, sun on the counter. The cup was a heavy ceramic one Lisa had bought at a craft fair — fat handle, thick wall, half-full of black coffee. I had been training the left grip on a tennis ball for ninety days. A hundred squeezes a day. The grip strength dynamometer had crawled from zero to four kilograms. The therapy team called four kilograms *not yet functional.* Functional, by the textbook, started at twelve.
+
+I picked up the cup with my left hand anyway.
+
+The handle pinched between my thumb and the side of my index finger. The wrist screamed. The bicep had to do a hundred percent of the lift because the forearm could not stabilize. The cup came up about eight inches off the counter and shook like a Polaroid. Coffee sloshed onto my left thumb. It was hot. I did not let go.
+
+I held the cup at chest height for maybe four seconds. Then I set it down — *set* it, not dropped it. The coffee did not spill on the counter. The handle did not slip out of my hand.
+
+I sat down. I wrote it in the notebook: *picked up the cup. left hand. four seconds. did not drop.*
+
+The textbook said I was not yet functional. The cup said the textbook was four kilograms behind.
+
+---
+
 My left arm was dead weight for over a year. Hung like a wet noodle. No grip. No reach. No hope from most therapists.
 
 I refused to let it stay dead.
@@ -1781,6 +1907,24 @@ Arm recovery is the long road. The view at the end is worth every rep.
 ---
 
 ## Chapter 17: Speech Comeback — Finding Your Voice Again
+
+### The Drive-Thru That Nearly Killed Me
+
+Month nine. McDonald's drive-thru on Rogers Avenue. Lisa was in the passenger seat. I was finally driving again — short loops only, the kind of driving the SLP had cleared but no one outside the house trusted. I pulled up to the speaker box. The cheerful voice asked what I wanted.
+
+I tried to say *number two with a Coke.*
+
+What came out was three syllables in the wrong order, slurred at the edges, and the word *Coke* never made it past my lower lip. I tried again. The voice in the speaker said, *I'm sorry sir, can you repeat that?* I tried a third time. The voice said the same thing. The car behind me honked.
+
+Lisa reached across the gear shift, squeezed my right hand once, and said into the speaker, *number two with a Coke, thanks.*
+
+I drove around to the window. I did not say a word the whole way home. I sat in the driveway after she went inside and I cried into the steering wheel of a 2017 Tahoe for fifteen minutes — not because of the order, but because the order had told me, in front of my wife and a stranger and a guy in the next car who was honking, that the speech was not back.
+
+The next morning I started reading aloud for fifteen minutes a day. The morning after that I called and ordered my own pizza, mumbled and slow, and the kid on the phone repeated it back correctly. The morning after *that* I went back to the same drive-thru, alone, and ordered the same number two with a Coke. The voice understood me on the first try.
+
+The drive-thru is the smallest possible test of whether the speech is back. Take it. Fail it. Train. Take it again.
+
+---
 
 The first time I tried to ask for water in the ICU, the word came out in three pieces and none of them sounded like *water.*
 
@@ -2109,6 +2253,8 @@ The Open Hand Protocol prevents the loss. Sleep encodes the gain. Nutrition fuel
 
 # PART IV — MENTAL MASTERY
 ## The Psychology of Comeback
+
+> *4:07 a.m. Garage floor. The body says no. The persona says go. The body loses every time the persona is built right. This is the part of the book where I show you how to build the persona — so the body's vote stops counting on the days the body is wrong.*
 
 ---
 
@@ -2602,7 +2748,7 @@ What is your biggest emotional enemy right now? Write it down. Pick one weapon f
 
 Emotional warfare is the hidden half of recovery. Win it, and the physical half follows.
 
-> ### 🎧 SASQUATCH TRACK SYNC: HandiCRAP
+> ### SASQUATCH TRACK SYNC: HandiCRAP
 > **Vibe:** Gritty, sarcastic, aggressive energy.
 > **Action:** Play this when the humiliation hits or when depression tries to park you. Laugh at the absurdity. Get mad. Use the spite as fuel.
 > **Listen here:** [youtu.be/SfbYbHCkids](https://youtu.be/SfbYbHCkids) *(also on Spotify, Apple Music, iTunes, YouTube Music — search "Stroked Out Sasquatch — HandiCRAP")*
@@ -2696,7 +2842,7 @@ What plateau are you in right now? Write it down. Pick one of the five tactics a
 
 The war is won in the plateau. Keep swinging when nothing moves. Breakthrough is coming.
 
-> ### 🎧 SASQUATCH TRACK SYNC: Maximum Benefit
+> ### SASQUATCH TRACK SYNC: Maximum Benefit
 > **Vibe:** Defiant, industrial pushback.
 > **Action:** When insurance cuts you off or progress stalls, the system says you've reached "maximum benefit." Hit play and prove you haven't even scratched the surface.
 > **Listen here:** [youtu.be/cOW2ocrdqKA](https://youtu.be/cOW2ocrdqKA) *(also on Spotify, Apple Music, iTunes, YouTube Music — search "Stroked Out Sasquatch — Maximum Benefit")*
@@ -2706,6 +2852,8 @@ The war is won in the plateau. Keep swinging when nothing moves. Breakthrough is
 
 # PART V — LIVING THE RECOVERY
 ## Beyond Comeback to Empire
+
+> *Discharge day. Side door of the rehab hospital. A binder in the lap. A wheelchair on loan. A wife driving. A son not yet born. The miracle was the survival. The work is the Tuesday after — and every Tuesday after that, for the rest of the rebuild. This is the part of the book where the recovery has to start fitting inside the life.*
 
 ---
 
@@ -2889,7 +3037,7 @@ What is your *home hell* right now? Write one daily rep to conquer it — a tran
 
 Home adaptation is where survivors break or rebuild. I rebuilt. You will too.
 
-> ### 🎧 SASQUATCH TRACK SYNC: Wheeled Out (Discharge)
+> ### SASQUATCH TRACK SYNC: Wheeled Out (Discharge)
 > **Vibe:** Cinematic and transitional.
 > **Action:** The training wheels are off. Listen to this as you adapt your home into your new training ground. Turn the stairs into reps.
 > **Listen here:** [song.link/y/AcwKQQGOjIM](https://song.link/y/AcwKQQGOjIM) (Spotify · Apple Music · iTunes · YouTube Music · YouTube)
@@ -3153,7 +3301,7 @@ Who is on your team? Write down their roles. Thank one of them today, in writing
 
 Family isn't just support — it's fire. Fatherhood turned my hell into purpose. Find yours.
 
-> ### 🎧 SASQUATCH TRACK SYNC: The Promise (For Nicholas)
+> ### SASQUATCH TRACK SYNC: The Promise (For Nicholas)
 > **Vibe:** Deep, emotional, unyielding power.
 > **Action:** When you forget your *why*, listen to this. This is the promise to stand up, to play catch, and to build a legacy.
 > **Listen here:** [song.link/y/BT1bh3TE8NU](https://song.link/y/BT1bh3TE8NU) (Spotify · Apple Music · iTunes · YouTube Music · YouTube)
@@ -3405,6 +3553,8 @@ Community turns personal fight into movement. Build yours.
 # PART VI — MASTERY
 ## Inspiring Others Through Your Journey
 
+> *The moment the recovery stops being only yours is the moment it becomes durable. The first DM. The first comment. The first survivor in month sixteen who tried the bat because you swung it on camera. The reps you do for yourself keep you alive. The reps you do for somebody else keep you building. This is the part of the book where the survivor becomes the teacher.*
+
 ---
 
 ## Chapter 27: Building the StrokeLyfe Empire
@@ -3514,7 +3664,7 @@ Who needs your story today? Not a stranger on the other side of the world — a 
 
 Empire is just service that compounded.
 
-> ### 🎧 SASQUATCH TRACK SYNC: The Vanguard
+> ### SASQUATCH TRACK SYNC: The Vanguard
 > **Vibe:** Fast-paced, triumphant, expansive.
 > **Action:** This is the anthem for the front lines. You aren't just recovering anymore — you are leading the tribe. Inspire thousands. Keep climbing.
 > **Listen here:** [song.link/y/KF436xVTeLU](https://song.link/y/KF436xVTeLU) (Spotify · Apple Music · iTunes · YouTube Music · YouTube)
@@ -3833,11 +3983,7 @@ I want you to do something before you close this book.
 
 Set it down for a second. Look at the room you are in. Look at the body you are in — whatever percent of it is currently working, whatever part of it currently isn't. Listen to your own breathing. Put your hand on your own chest if you have a hand that will go there.
 
-Heart's still thumpin'?
-
-Then life's still pumpin'.
-
-That is the only thing you need to be true today for everything in this book to start working tomorrow.
+If your heart is still beating, the rest of this is still possible. That is the only thing you need to be true today for everything in this book to start working tomorrow.
 
 ### What I Want You to Take With You
 
@@ -3904,10 +4050,6 @@ I will see you in the comments. I will see you on the laps around the gym. I wil
 
 The Sasquatch has your back. We're watching. You're valuable.
 
-Heart's still thumpin'.
-
-Life's still pumpin'.
-
 Now go.
 
 Your impossible life is waiting.
@@ -3920,15 +4062,17 @@ Fort Smith, Arkansas
 
 # PART VII: STORIES FROM THE TRIBE
 
-The eight stories that follow are real survivors and caregivers from the Stroke Recovery Academy community. Names, ages, and locations are real where consent was given and changed where it was not. Every case study was reviewed and approved by the person it describes (or, where the survivor cannot review it, by their legal next of kin).
+> *The spine is one survivor. The book is the tribe. Nine stories. Nine arcs. Nine sets of "nevers" the chart got wrong. If you do not see your story in mine, look for it in theirs. It is in here somewhere.*
 
-I included these for one reason: this book cannot be a book about *me.* It has to be a book about *us.* My story is the spine. These eight stories are the proof that the spine holds weight.
+The nine stories that follow are real survivors and caregivers from the Stroke Recovery Academy community. Names, ages, and locations are real where consent was given and changed where it was not. Every case study was reviewed and approved by the person it describes (or, where the survivor cannot review it, by their legal next of kin).
+
+I included these for one reason: this book cannot be a book about *me.* It has to be a book about *us.* My story is the spine. These nine stories are the proof that the spine holds weight.
 
 If you are a survivor reading this, look for yourself in these. You are in here somewhere.
 
 If you are a caregiver, look for the caregiver beats — the cousin, the daughter, the spouse, the friend. They are in here too.
 
-If you are a clinician, read all eight. The patterns are real and the variability is the point.
+If you are a clinician, read all nine. The patterns are real and the variability is the point.
 
 — Nick
 
@@ -4322,21 +4466,83 @@ Mr. Chen and Mei's case is the one that taught me this book has to live in more 
 
 ---
 
-## What These Eight Stories Have in Common
+## Case Study 9: Jordan — The Twenty-Two-Year-Old Who Was Not Supposed to Be Here
 
-I want to close Part VII with the patterns. If you have read the eight cases, you have already seen them. Naming them out loud:
+**Survivor:** Jordan, 22 (24 at time of writing). Junior-year college soccer player at a Division II school in Ohio.
+**Stroke:** Ruptured AVM (arteriovenous malformation), left hemisphere. Collapsed at the gym during a Tuesday lift. Coach was the one who called 911 within ninety seconds. Surgical embolization plus craniotomy. Right-sided hemiparesis, severe expressive aphasia, full-field right hemianopsia.
+**Age at stroke:** 21. Eighteen months out at the time of this writing.
 
-1. **Every survivor had a person.** Marcus had a daughter with a phone. Janelle had a mother who would not leave. Robert had a grandson who would not let him stay in the recliner. Aisha had Imani. David had a wife and a dog. Cathy had a librarian who recommended a book. Tyler had a fiancée who stayed and a PT who listened. Mr. Chen had Mei. *No one rebuilds alone.* Find your person. Be somebody else's.
+### The Story
 
-2. **Every survivor started later than the medical literature said gains were possible.** Marcus at sixteen months. Janelle at fourteen. Robert at fifty-six. Aisha at thirty-one. David at fourteen. Cathy at five years. The plateau is a function of effort, not of time.
+Jordan never had a single risk factor. No hypertension, no smoking, no family history that anyone knew about. The AVM was a vascular malformation present since birth that nobody had ever scanned for, and it ruptured in the middle of a dumbbell row.
 
-3. **Every survivor used a daily structure.** The 90-Day Program. The 66-Day Tracker. The bat. The open hand. The read-aloud. The dog walks. The model train. The structure was different. The *having a structure* was identical.
+The first hospital triaged him as a *young adult, probably dehydrated*, until the seizure on the gurney made the team look harder. By the time the helicopter got him to the academic center, the bleed had been pressing on his motor and language cortex for two hours. The neurosurgeon told his parents, in the consult room at 11 p.m., that they were optimistic he would live but should prepare for him to come out of this not the same person.
 
-4. **Every survivor turned outward.** Facebook group. YouTube channel. Mandarin community. Saturday art program. Coaching. Peer support. The recovery accelerated when the survivor became useful to somebody else. Reps are inheritance.
+Three weeks in the ICU. Awake but trapped — could understand everything, could say almost nothing. The right side of his body did not respond to his name. He was twenty-one years old in a room full of stroke patients whose youngest other roommate was sixty-eight.
 
-5. **Every survivor had at least one moment where they almost quit.** Marcus did quit, for fifteen months. Janelle came close to ending her life. David called the crisis line. Aisha's family was told to stop hoping. Cathy accepted the plateau for four years. Tyler hated the videos. Mr. Chen would not come out of his bedroom. The almost-quit moment is part of the path. It is not the end of it.
+### What the System Said
 
-6. **Every survivor is now somebody else's first comment.** Each of these eight is now the person who shows up in another survivor's DMs in month sixteen. The tribe grows from itself. You will be next.
+- *Don't expect to play sports again.*
+- *Plan for assisted living, at least for the first two years.*
+- *Aphasia at this severity rarely fully resolves. Hope for functional speech in eighteen to twenty-four months.*
+- *Defer the senior year of college. Maybe re-enroll part-time eventually.*
+- *Fertility may be affected by the medications. Talk to your partner.*
+
+### What Jordan Did
+
+He moved back into his parents' basement in Cleveland because the dorm was three flights up and he could not climb three flights. He did six weeks of inpatient rehab. He did not cry once in front of his parents and he sobbed in the shower every night for the first two months because the shower was the one place nobody could hear him.
+
+His mother — a high school Spanish teacher — found Stroke Recovery Academy through a Reddit thread on r/stroke at month four. She bought him the 90-Day Program and the SquatchCoach subscription. She set up a treadmill in the basement, a 24-inch IKEA mirror on the laundry-room wall, and a wood baseball bat from his old little-league trophy case that had been gathering dust for ten years.
+
+Jordan worked the protocols. He did not believe them at first — he was twenty-one, the videos were of a forty-three-year-old man swinging a bat in his garage — but he worked them anyway because nobody else was offering anything that did not involve waiting for the brain to do its own thing.
+
+The bat protocol returned shoulder ROM at month six. The mirror protocol returned the right thumb at month seven. Constraint-induced movement therapy, run by him alone in the basement using an oven mitt on his good hand and a YouTube checklist, returned grip strength at month nine. The aphasia was harder. Singing through it — the Melodic Intonation Therapy work in Appendix B — got him from one-word answers to four-word sentences by month ten. Reading aloud got him to twelve-word sentences by month twelve.
+
+At month thirteen, he walked across the stage and shook the dean's hand at his college's December commencement. He had taken his last three courses asynchronously from the basement. He graduated on time.
+
+At month sixteen, he kicked a soccer ball with his right foot in the backyard for the first time. The kick went about eight feet. His dad recorded it. The video has 880,000 views on TikTok.
+
+At month eighteen — present day — he is the assistant strength coach at his old high school, three days a week, and is applying to a master's program in speech-language pathology because *someone has to be the person in the room who has actually been here.*
+
+### The Numbers
+
+- **Right-arm function:** Fugl-Meyer 12 → 58 in eighteen months.
+- **Right-leg function:** non-ambulatory → unassisted gait, no AFO.
+- **Aphasia:** WAB-R aphasia quotient 42 → 88. Functional communication restored in nine months, conversational fluency in fourteen.
+- **Right-hemianopsia:** partial recovery via vision restoration therapy plus daily scanning drills. Field defect remains but is compensable.
+- **Cognitive endurance:** five-minute attention span at discharge → full college course load by month twelve.
+
+### Why This Case
+
+Jordan's case is in this book for one reason: the stroke literature, the rehab literature, and the social media of stroke recovery are dominated by survivors over fifty. The under-25 survivor — the kid in the dorm, the high-school athlete, the college junior — exists in real numbers but is almost never the protagonist. He is treated as an exception, an anomaly, a curiosity. He is none of those things. He is one of about twenty thousand Americans under twenty-five who have a stroke every year. If you are reading this and you are nineteen and you are in a basement somewhere staring at a wall, this is for you. Your brain is younger. Your neuroplasticity ceiling is higher. The protocols are written for a forty-three-year-old man and they will work *more* for you, not less.
+
+**One line of advice from Jordan.**
+
+> *"Nobody my age was in any of the rehab groups. I had to find my tribe online. Find them. They are out there. Do not let the silence in the room convince you that you are alone."*
+
+**Nick's note.**
+
+Jordan reached out to me at month four through the academy's message system. His mom had told him to. He apologized in the first message for *bothering me when there are people who really need help.* I responded by telling him the inverse — that he was *exactly* the survivor I needed in the tribe, because the under-25 cohort has been invisible in recovery culture for decades and that is the cohort whose recovery curve is the steepest. He started posting his own progress at month seven. By month fifteen he had eleven thousand followers. He is now the survivor I send every newly-stroked college student to.
+
+Cases like Jordan's are the reason the academy is launching the **Young Survivor Cohort** program in 2026 (strokerecoveryacademy.com/youngsurvivor) — a dedicated track for survivors under thirty, with cohort-based coaching, return-to-school protocols, and a peer support channel where the average roommate age is *not* sixty-eight.
+
+---
+
+## What These Nine Stories Have in Common
+
+I want to close Part VII with the patterns. If you have read the nine cases, you have already seen them. Naming them out loud:
+
+1. **Every survivor had a person.** Marcus had a daughter with a phone. Janelle had a mother who would not leave. Robert had a grandson who would not let him stay in the recliner. Aisha had Imani. David had a wife and a dog. Cathy had a librarian who recommended a book. Tyler had a fiancée who stayed and a PT who listened. Mr. Chen had Mei. Jordan had a mom who found a Reddit thread. *No one rebuilds alone.* Find your person. Be somebody else's.
+
+2. **Every survivor started later than the medical literature said gains were possible.** Marcus at sixteen months. Janelle at fourteen. Robert at fifty-six. Aisha at thirty-one. David at fourteen. Cathy at five years. Jordan at twenty-one (where the literature still under-treats young survivors as if their plasticity is somehow capped). The plateau is a function of effort, not of time. And not of age.
+
+3. **Every survivor used a daily structure.** The 90-Day Program. The 66-Day Tracker. The bat. The open hand. The read-aloud. The dog walks. The model train. The basement treadmill. The structure was different. The *having a structure* was identical.
+
+4. **Every survivor turned outward.** Facebook group. YouTube channel. Mandarin community. Saturday art program. Coaching. Peer support. TikTok. The recovery accelerated when the survivor became useful to somebody else. Reps are inheritance.
+
+5. **Every survivor had at least one moment where they almost quit.** Marcus did quit, for fifteen months. Janelle came close to ending her life. David called the crisis line. Aisha's family was told to stop hoping. Cathy accepted the plateau for four years. Tyler hated the videos. Mr. Chen would not come out of his bedroom. Jordan sobbed in the shower for two months. The almost-quit moment is part of the path. It is not the end of it.
+
+6. **Every survivor is now somebody else's first comment.** Each of these nine is now the person who shows up in another survivor's DMs in month sixteen. The tribe grows from itself. You will be next.
 
 If your story is in here in spirit, write me. We will put yours in the next edition.
 
@@ -4962,6 +5168,12 @@ Now go.
 
 The protocols in this book are not invented. They sit on top of forty-plus years of stroke rehabilitation research and a longer history of neuroscience. The references below are the primary literature behind the techniques. Full APA format so any reader, family member, doctor, or insurance reviewer can verify. The fully linked, continually updated bibliography is at **strokerecoveryacademy.com/science**.
 
+### A Note on Citation Style and Verification
+
+Every reference below is in **APA 7th edition** format: author(s), year, title, journal or publisher, volume(issue), pages. Where a digital object identifier (DOI) or PubMed ID (PMID) exists, the linked online edition at strokerecoveryacademy.com/science includes it. Where a study has been retracted, superseded, or substantively updated since first publication, the online edition flags it inline. Two independent fact-checkers ([ NAME ], [ NAME ]) verified every citation in this print edition against the original source on [ DATE ]; corrections in subsequent printings will be logged at strokerecoveryacademy.com/science/corrections.
+
+If you find an error, write **science@strokerecoveryacademy.com**. We will correct it in the next printing and credit you.
+
 ### The Foundational Neuroplasticity Literature
 
 - Hebb, D. O. (1949). *The Organization of Behavior: A Neuropsychological Theory.* Wiley. *(The origin: "neurons that fire together wire together." Every protocol in this book ultimately rests on this.)*
@@ -5227,7 +5439,7 @@ When you can live the principles without reading them, you have crossed from rec
 - **Reflection** is Chapter 9 (Sixty-Six Days) and Appendix G (the Tracker).
 - **Repetition** is the structural spine of every chapter and every appendix.
 - **Adaptation** is Chapter 7 (the Sasquatch Formula) and Chapter 11 (The Plateau).
-- **Humanhood** is Chapter 24 (Becoming a Father Again), Chapter 27 (The Tribe), Chapter 28 (Caregiver's Field Manual), and the eight stories in Part VII.
+- **Humanhood** is Chapter 24 (Becoming a Father Again), Chapter 27 (The Tribe), Chapter 28 (Caregiver's Field Manual), and the nine stories in Part VII.
 
 ### How the Doctrine Maps to Life After Stroke
 
@@ -5413,7 +5625,7 @@ What follows is what I wish more clinicians knew about the patient on the other 
 - Give them a vocabulary. *Plateau, neuroplasticity, dorsiflexion, dysarthria, hemianopia* — they leave this book knowing what these words mean and what to do about them.
 - Give them a structure. The 90-Day Program is a scaffold most patients can adapt to.
 - Give them a tribe. The community at the academy is moderated and active. Patients who connect there are less likely to disengage from outpatient.
-- Give them realistic hope. Eight case studies. Eight different deficits. Eight different timelines. They will see themselves in at least one.
+- Give them realistic hope. Nine case studies. Nine different deficits. Nine different timelines. They will see themselves in at least one.
 
 ### What This Book Cannot Do for Your Patient
 
@@ -5617,7 +5829,7 @@ Three things.
 
 **Three: start the log tonight.** Three lines. *What I did, what I learned, what hurts.* You will think it is stupid. Future you will read those entries and weep at how far you came. Start the log. Tonight.
 
-Heart's still thumpin'. Day 30 is the desert. Walk through it. The oasis is real.
+Day 30 is the desert. Walk through it. The oasis is real.
 
 — Nick (Year 7)
 
@@ -5637,7 +5849,7 @@ The marriage is going to end. You are going to be okay. Lisa is going to be okay
 
 Get up. Move the chair to the corner of the bedroom. Touch the bars tomorrow. That is all I am asking of you today.
 
-Heart's still thumpin'. The lowest is also the launching pad. Trust the design.
+The lowest is also the launching pad. Trust the design.
 
 — Nick (Year 7)
 
@@ -5655,7 +5867,7 @@ Two notes.
 
 You are about to start the TikTok account. It is going to grow to fifteen thousand. Most of the comments will say the same thing: *I tried today because of you.* Read them. Let them land. They are real.
 
-Heart's still thumpin'. The first walk is the start, not the finish. Keep teaching.
+The first walk is the start, not the finish. Keep teaching.
 
 — Nick (Year 7)
 
@@ -6230,10 +6442,6 @@ Quick translation guide for the made-up vocabulary the Sasquatch uses across the
 
 # THE SOUNDTRACK: HOSTILE CONSTRUCTION
 
----
-
-# THE SOUNDTRACK: HOSTILE CONSTRUCTION
-
 The album that paired with the book is **Hostile Construction** by **Stroked Out Sasquatch** (Nicholas Kremers). Twelve tracks. Each pairs with a chapter. Listen on whichever platform you prefer — every track is on Spotify, Apple Music, iTunes, YouTube Music, and YouTube. Most universal links resolve automatically across platforms.
 
 **One link to bookmark:** **strokerecoveryacademy.com/soundtrack** — every track, every platform, kept current.
@@ -6283,11 +6491,37 @@ This book exists because of people who refused to let me quit.
 
 **The early supporters of Stroke Recovery Academy and Stroke Lyfe Inc.** — the donors, the affiliates, the survivors who shared their stories first. You built this with me.
 
-**My beta readers** for the manuscript: [TO BE FILLED IN].
+**My beta readers** for the manuscript — the survivors, caregivers, clinicians, and friends who read drafts and told me what was true and what was bullshit:
+[ NAME — survivor, [city] ]
+[ NAME — caregiver, [city] ]
+[ NAME — speech-language pathologist, [institution] ]
+[ NAME — neurologist, [institution] ]
+[ NAME — physical therapist, [institution] ]
+[ NAME — survivor, [city] ]
+[ NAME — survivor, [city] ]
+[ NAME — friend & first reader ]
 
-**My editor:** [TO BE FILLED IN].
+**My editor:** [ NAME ], [ firm / freelance ]. For making the Sasquatch sound like himself only sharper.
 
-**The Hostile Construction collaborators:** [TO BE FILLED IN — producers, engineers, mastering, art].
+**My copy editor and proofreader:** [ NAME ] and [ NAME ]. For catching everything I missed and trusting the voice on what I did on purpose.
+
+**My fact-checkers** (Appendix H verification): [ NAME ] and [ NAME ].
+
+**The Hostile Construction collaborators:**
+- Production: [ NAME ]
+- Engineering & mix: [ NAME ]
+- Mastering: [ NAME ], [ studio ]
+- Cover art and album design: [ NAME ]
+- Vocal coaching: [ NAME ]
+- Featured musicians: [ NAMES ]
+
+**Cover art for this book:** [ NAME ].
+**Interior typography and design:** [ NAME ].
+**Author photo:** [ NAME ].
+
+**Legal and nonprofit counsel:** [ NAME ], [ firm ] (Stroke Lyfe Inc. 501(c)(3) formation and ongoing).
+
+**The Stroke Recovery Academy team:** [ NAMES — engineers, designers, coaches, content team ].
 
 If I forgot you, charge it to my brain damage and not my gratitude.
 
