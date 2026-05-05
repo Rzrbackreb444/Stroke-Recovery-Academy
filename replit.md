@@ -11,7 +11,7 @@ Polish Nick Kremers' stroke recovery book "THE ULTIMATE STROKE RECOVERY REVOLUTI
 
 ## Current State
 - **Manuscript:** `attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION-v3.md`
-- **Word count:** ~47k words (~4,490 lines)
+- **Word count:** ~54.4k words (~5,000 lines)
 - **30 chapters** in 6 narrative parts + Part VII Stories from the Tribe + 14 appendices (A–N) + Soundtrack + Acknowledgments + About + Seal
 - **Front matter** now includes "How to Use This Book — and the Stroke Recovery Academy" right before Part I
 - **Part VII (Stories from the Tribe):** 8 full case studies (~10k words) — Marcus, Janelle, Robert, Aisha/Imani, David, Cathy, Tyler, Mr. Chen/Mei + closing pattern analysis
@@ -43,7 +43,8 @@ Every appendix and many chapters cross-reference `strokerecoveryacademy.com/<res
 - Donation: strokelyfe.org/donate
 
 ## Still To Do (if user wants further work)
-- Push toward 50-60k+ via: Builder's Science sidebars in technique chapters, additional cinematic scenes in Ch 24 (first both-arm hold of newborn, walking son to school), expanded Chapters 11/18/20.
+- Push toward 60-75k+ via: Ch 22 plateau wars expansion, Ch 19 open hand sidebar, Ch 18 (Tech) + Ch 20 (Motivation Engine) cinematic scenes.
+- Done this session: Builder's Science sidebars across Ch 11/12/13/14/15/16/17, "Day My Toe Twitched" cinematic, two Ch 24 cinematic scenes (first both-arm hold + walking son to school), April 24 2019 birth date locked in, raw pre-stroke marriage truth (Eric/cheating/honest split) added to Lisa section, "Chopping Wood" Builder's Science sidebar added before Appendix I, **Appendix I now restructured as the four-layer doctrine: Tattoo-Grade Laws + S.O.S. (crisis) + S.A.S.C.H. (daily construction rhythm — Seize/Absorb/Swing/Combine/Hammer) + C.O.M.P.A.S.S. (advanced navigation), with morning/midday/evening day-shape and clinical/caregiver/AI/community usage matrix.**
 - Final voice/spelling sweep.
 - Beta reader / editor / collaborator names in Acknowledgments (currently TBD).
 - Cover art credit, typography credits in colophon (TBD).
