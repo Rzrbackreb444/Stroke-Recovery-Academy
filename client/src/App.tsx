@@ -57,6 +57,7 @@ const MusicSandbox = lazy(() => import("@/pages/MusicSandbox"));
 const MusicProductionStudio = lazy(() => import("@/pages/MusicProductionStudio"));
 const BookStudioV3 = lazy(() => import("@/pages/BookStudioV3"));
 const VideoStudio = lazy(() => import("@/pages/VideoStudio"));
+const FreeAnalysisForVideo = lazy(() => import("@/pages/FreeAnalysisForVideo"));
 const CourseStudio = lazy(() => import("@/pages/CourseStudio"));
 const ImageStudio = lazy(() => import("@/pages/ImageStudio"));
 const BookMarketplace = lazy(() => import("@/pages/BookMarketplace"));
@@ -343,6 +344,8 @@ function Router() {
       <Route path="/mobile-studio" component={MobileStudio} />
       <Route path="/creator-store" component={CreatorStore} />
       <Route path="/video-studio" component={VideoStudio} />
+      <Route path="/free-analysis-for-video" component={FreeAnalysisForVideo} />
+      <Route path="/Free-analysis-for-video" component={FreeAnalysisForVideo} />
       <Route path="/course-studio" component={CourseStudio} />
       <Route path="/image-studio" component={ImageStudio} />
       <Route path="/website-studio" component={WebsiteStudio} />

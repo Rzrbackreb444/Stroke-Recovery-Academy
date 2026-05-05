@@ -24552,6 +24552,8 @@ Format as structured JSON with clear sections.`;
   registerSurvivorProfileRoutes(app, isAuthenticated);
   registerEngagementRoutes(app, isAuthenticated);
   registerLessonVideoRoutes(app, isAuthenticated, uploadsDir);
+  const { registerFreeAnalysisRoutes } = await import('./routes/freeAnalysisRoutes');
+  registerFreeAnalysisRoutes(app, isAuthenticated, uploadsDir);
   registerQuizRoutes(app, isAuthenticated, uploadsDir);
   registerAvatarRoutes(app, isAuthenticated, uploadsDir);
   registerCourseStudioExtrasRoutes(app, isAuthenticated);
