@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   ArrowLeft, ArrowRight, CheckCircle2, Flame, Footprints,
   HeartPulse, Sparkles, Trophy, Calendar, AlertCircle, ShoppingBag,
+  Mic,
 } from "lucide-react";
 import {
   LEVELS, getSequentialTasks, personalizeSequence, todayStr,
@@ -168,6 +169,34 @@ export default function RecoveryToday() {
           </p>
 
           <MedicalDisclaimerCard variant="full" />
+
+          {/* Daily Circuit shortcut — entry point to the multi-station ritual
+              with voice-cloned Nick bridge cues. The Bonfire below is the
+              adaptive single-track session; Circuit is the all-in-one. */}
+          <Link
+            href="/recovery/circuit"
+            className="block rounded-md border border-[#C9941A]/40 bg-gradient-to-br from-[#1a1610] to-[#111] p-4 mt-4 hover-elevate"
+            data-testid="link-daily-circuit"
+            aria-label="Open the Daily Circuit — guided multi-station session"
+          >
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-md bg-[#C9941A]/15 border border-[#C9941A]/40 flex items-center justify-center shrink-0">
+                <Mic className="h-5 w-5 text-[#C9941A]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="text-white font-bold text-sm">Daily Circuit</p>
+                  <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-0 text-[10px] hover:bg-[#C9941A]/20">
+                    Voice cues
+                  </Badge>
+                </div>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  Brain · breath · dexterity · coach moment, all in one paced session.
+                </p>
+              </div>
+              <ArrowRight className="h-4 w-4 text-[#C9941A] shrink-0" />
+            </div>
+          </Link>
 
           {recLoading && !lvl ? (
             <Card className="bg-[#111] border-[#222] p-8 mt-6 text-center">

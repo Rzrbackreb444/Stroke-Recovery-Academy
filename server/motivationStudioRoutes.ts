@@ -133,19 +133,42 @@ const ai = new GoogleGenAI({
 });
 
 async function generateAnthemLyrics(affirmation: string, theme: string): Promise<string> {
-  const prompt = `You are Sasquatch — a stroke survivor who rebuilt himself with grit and humor.
-Write a 4-line anthem lyric (one verse only) for a stroke survivor based on this affirmation:
+  // Same Grammy-grade craft bar as Lyrics Studio — but condensed into 4 lines.
+  // The kill-list strips lazy AI tropes; prosody rules force internal rhyme +
+  // multi-syllable chains so a 4-line anthem actually sounds like a real hook.
+  const prompt = `You are a Grammy-tier songwriter writing a 4-line anthem
+verse for a stroke survivor. Lineage: think Kendrick's prosody, Springsteen's
+working-class image clarity, Phoebe Bridgers' specificity, Frank Ocean's
+restraint. Pick ONE register and commit.
 
+The survivor's affirmation:
 "${affirmation}"
 
 Theme: ${theme || "rebuilding strength"}
 
-Rules:
-- Exactly 4 short lines, each on its own line
-- First-person ("I am", "I will")
-- No medical claims
-- No religious references unless the affirmation contains them
-- Plain text only, no markdown, no quotes, no commentary
+Craft rules — non-negotiable:
+- Exactly 4 short lines, each on its own line. First-person ("I", "my").
+- Internal rhyme on at least 2 of the 4 lines. Stack vowel + consonant
+  pairs across 2-3 syllables, not just last-word end-rhyme.
+- Vary line lengths (e.g. 6+4+7+5 syllables) — never four identical lengths.
+- Every concrete noun must be sense-specific: the actual room, the actual
+  body part, the actual weather, the actual hour. Replace abstractions with
+  the physical thing that caused the feeling.
+- Line 4 should land a turn — a small surprise of meaning, sound, or
+  rhythm that a listener wants to hear again.
+
+Hard rules — never break:
+- No medical claims, diagnoses, prognoses.
+- No religious framing unless the affirmation contains it.
+- No platitudes ("you got this", "never give up", "you're a warrior").
+
+Banned phrases — never write any of these unless the affirmation uses them
+verbatim: "warrior", "fight the demons", "rise above", "phoenix rising",
+"I am the storm", "still standing", "comeback story", "what doesn't kill
+me", "this is my anthem", "scars tell stories", "won't back down",
+"the climb", "find my voice", "break these chains".
+
+Return plain text only — 4 lines, no markdown, no quotes, no commentary.
 `;
   const r = await ai.models.generateContent({
     model: "gemini-2.5-flash",

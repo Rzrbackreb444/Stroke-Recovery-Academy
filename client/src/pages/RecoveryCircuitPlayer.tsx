@@ -131,6 +131,12 @@ export default function RecoveryCircuitPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const intervalRef = useRef<number | null>(null);
   const playedQuoteIds = useRef<Set<string>>(new Set());
+  // Track whether the most recent bridge fetch came back without an
+  // audioUrl (ElevenLabs unconfigured / quota / 5xx) so we can degrade to
+  // a captions-only experience with an honest banner instead of silently
+  // playing nothing.
+  const [audioMissing, setAudioMissing] = useState<boolean>(false);
+  const audioFailureNoticed = useRef<boolean>(false);
 
   // ── Pre-fetch the preset for the picker confirmation screen ──────────
   const presetQuery = useQuery<PresetResponse>({
@@ -243,17 +249,27 @@ export default function RecoveryCircuitPlayer() {
       playedQuoteIds.current.add(q.id);
       setBridge(q);
       setBridgeVisible(true);
-      // Play the audio if available + not muted.
-      if (q.audioUrl && !muted) {
+      // Audio fallback: server returns audioUrl=null when ElevenLabs is
+      // unconfigured or generation failed. Surface this honestly with a
+      // one-time toast and persistent captions-only badge instead of
+      // silently playing nothing.
+      const hasAudio = !!q.audioUrl;
+      setAudioMissing(!hasAudio);
+      if (hasAudio && !muted) {
         try {
-          if (audioRef.current) {
-            audioRef.current.pause();
-          }
-          const a = new Audio(q.audioUrl);
+          if (audioRef.current) audioRef.current.pause();
+          const a = new Audio(q.audioUrl!);
           a.volume = 0.95;
           audioRef.current = a;
           a.play().catch(() => {/* user-gesture rules */});
         } catch {/* ignore */}
+      } else if (!hasAudio && !audioFailureNoticed.current) {
+        audioFailureNoticed.current = true;
+        toast({
+          title: "Voice cues unavailable",
+          description:
+            "Showing captions instead — your circuit and XP still count the same.",
+        });
       }
       // Auto-hide bridge after ~6s (or 9s for coach moments)
       const hideMs = isCoach ? 9000 : 6000;
@@ -610,14 +626,24 @@ export default function RecoveryCircuitPlayer() {
       {/* Bridge quote overlay (also shown at start while station=0) */}
       {bridgeVisible && bridge && (
         <div className="bg-primary/5 border-b border-primary/30">
-          <div className="mx-auto max-w-3xl px-6 py-4 flex items-center gap-3">
-            <Quote className="w-5 h-5 text-primary shrink-0" />
-            <blockquote
-              className="text-base md:text-lg italic"
-              data-testid="text-bridge-quote"
-            >
-              "{bridge.text}"
-            </blockquote>
+          <div className="mx-auto max-w-3xl px-6 py-4 flex items-start gap-3">
+            <Quote className="w-5 h-5 text-primary shrink-0 mt-1" />
+            <div className="flex-1 min-w-0 space-y-1">
+              <blockquote
+                className="text-base md:text-lg italic"
+                data-testid="text-bridge-quote"
+              >
+                "{bridge.text}"
+              </blockquote>
+              {audioMissing && (
+                <div
+                  className="inline-flex items-center gap-1 text-[11px] text-muted-foreground"
+                  data-testid="badge-captions-only"
+                >
+                  <VolumeX className="w-3 h-3" /> Captions only — voice cue unavailable
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

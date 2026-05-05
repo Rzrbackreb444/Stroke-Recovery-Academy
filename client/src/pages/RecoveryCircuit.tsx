@@ -71,6 +71,46 @@ function fmt(sec: number): string {
   return m < 1 ? `${sec}s` : `${m} min`;
 }
 
+// ── 7-day strip helpers ────────────────────────────────────────────────
+// Build a Set of YYYY-MM-DD (local time) strings for any session whose
+// completedAt falls inside the last 7 calendar days. Local time matters
+// here — UTC ISO strings would shift days for west-coast users at night.
+function localDayKey(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function buildLast7Days(items: RecentResponse["items"]): Array<{
+  key: string;
+  label: string;
+  isToday: boolean;
+  completed: boolean;
+}> {
+  const completedKeys = new Set<string>();
+  for (const it of items) {
+    if (!it.completedAt) continue;
+    const d = new Date(it.completedAt);
+    if (Number.isNaN(d.getTime())) continue;
+    completedKeys.add(localDayKey(d));
+  }
+  const out: Array<{ key: string; label: string; isToday: boolean; completed: boolean }> = [];
+  const now = new Date();
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(now.getDate() - i);
+    const key = localDayKey(d);
+    out.push({
+      key,
+      label: d.toLocaleDateString(undefined, { weekday: "short" }).slice(0, 1),
+      isToday: i === 0,
+      completed: completedKeys.has(key),
+    });
+  }
+  return out;
+}
+
 export default function RecoveryCircuit() {
   const { isAuthenticated } = useAuth();
   const presets = useQuery<PresetsResponse>({
@@ -86,6 +126,10 @@ export default function RecoveryCircuit() {
     return [...presets.data.presets].sort((a, b) => a.totalSeconds - b.totalSeconds);
   }, [presets.data]);
   const recommended = presets.data?.recommendedSlug;
+  const last7 = useMemo(
+    () => (recent.data ? buildLast7Days(recent.data.items) : []),
+    [recent.data],
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -127,6 +171,51 @@ export default function RecoveryCircuit() {
                   {recent.data.items.filter((i) => i.completedAt).length} completed total
                 </div>
               </div>
+            </div>
+            {/* 7-day strip — solid dot = completed, hollow = not yet, ring = today */}
+            <div
+              className="flex items-end gap-1.5"
+              data-testid="strip-last-7-days"
+              aria-label="Last 7 days of circuit completion"
+            >
+              {last7.map((d) => (
+                <div
+                  key={d.key}
+                  className="flex flex-col items-center gap-1"
+                  data-testid={`day-${d.key}`}
+                >
+                  <div
+                    className={[
+                      "w-3.5 h-3.5 rounded-full",
+                      d.completed
+                        ? "bg-primary"
+                        : "bg-muted border border-border",
+                      d.isToday && !d.completed
+                        ? "ring-2 ring-primary/40 ring-offset-1 ring-offset-background"
+                        : "",
+                      d.isToday && d.completed
+                        ? "ring-2 ring-primary/60 ring-offset-1 ring-offset-background"
+                        : "",
+                    ].join(" ")}
+                    aria-label={
+                      d.isToday
+                        ? d.completed
+                          ? "Today — completed"
+                          : "Today — not yet"
+                        : d.completed
+                          ? `${d.key} — completed`
+                          : `${d.key} — missed`
+                    }
+                  />
+                  <span
+                    className={`text-[10px] uppercase tracking-wider ${
+                      d.isToday ? "text-primary font-bold" : "text-muted-foreground"
+                    }`}
+                  >
+                    {d.label}
+                  </span>
+                </div>
+              ))}
             </div>
             {recent.data.streak === 0 && (
               <p className="text-sm text-muted-foreground max-w-xs text-right">
