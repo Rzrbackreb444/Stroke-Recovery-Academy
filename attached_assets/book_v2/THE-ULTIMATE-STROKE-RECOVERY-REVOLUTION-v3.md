@@ -258,6 +258,54 @@ Class is in session.
 
 ---
 
+# Quick-Start Card: What to Do Today, This Week, This Month, This Quarter
+
+If you just had a stroke — or someone you love just did — this is the page you actually need first. Everything else in this book is the long version of what is on this single card. Tear it out. Tape it to the wall. Read the page that matches today.
+
+## Day 1 — Today
+
+1. Breathe. Your heart is still thumpin'. You have already passed step one.
+2. Tell one human, out loud, that you survived. Phone, FaceTime, hand squeeze, blink — any channel. Saying it makes it real and starts the rebuild clock.
+3. Get three facts written down — *what happened, what kind of stroke, what side.* Those three facts are your starting coordinates for the next seven years.
+4. Ask the team for your **NIH Stroke Scale score at admission.** That is your baseline. Every point you earn back is real, measurable progress.
+5. Do not Google your prognosis tonight. Statistics are about populations. You are not a population.
+
+## Day 7 — This Week
+
+1. Identify your **anchor person.** One human who will answer the phone at 3 a.m. and not panic. Tell them they are it.
+2. Start the log. Notebook, phone, voice memo. Three lines a day: *what I did, what I learned, what hurts.* The log is the spine of every protocol in this book.
+3. Move *something* every two hours during waking. A finger. A toe. A thought sent through the limb. Stillness is the enemy from Day 7 forward.
+4. Confirm a swallow eval has been done. Aspiration kills more stroke survivors than the stroke does.
+5. Ask the social worker for the discharge plan *in writing.* You will need it the day you go home and nobody hands you instructions.
+6. Read Chapters 1, 2, and 6. Skip everything else for now.
+
+## Day 30 — This Month
+
+1. Run the S.O.S. layer of the Sasquatch Doctrine every morning (Appendix I). *Survive. Organize. Strive.* Sixty seconds.
+2. Pick one drill from Appendix B and run it daily. *Never zero.*
+3. Get screened for **post-stroke depression and anxiety.** One in three. One in four. You are not weak. You are statistically normal — get the help. SSRIs are not a moral failure. Therapy is not a luxury.
+4. Identify your therapy team: PT, OT, Speech. Show up to every session early. Stay late. Ask for homework.
+5. Find one survivor further along than you. TikTok, Facebook, Tribe at **strokerecoveryacademy.com/tribe**. You need to see what year three actually looks like with your own eyes.
+6. Read Part I (Chapters 1–5) and **Chapter 20½ — The Persona Forge.** Build your persona before Day 90.
+
+## Day 90 — This Quarter
+
+1. Begin the **66-Day Rebuild** (Appendix G). Run S.A.S.C.H. — Seize / Absorb / Swing / Combine / Hammer — every day.
+2. Have the first hard conversation about identity. *Who am I now?* Forge the persona (Ch 20½). Name it. Use it.
+3. If you have plateaued, run the **C.O.M.P.A.S.S.** flow (Appendix I, Layer 4). Plateau is the entrance to mutation, not the end of progress.
+4. Build the accountability stack: **one human + one log + one tribe.** Three layers, minimum.
+5. If you are home, audit the house for fall risk. Bath bars. Night lights. Phone within reach of every chair you sit in. Caregivers will thank you.
+6. Read Parts II–IV. Keep the appendices on your desk.
+
+## Always
+
+- *Heart's still thumpin'? Life's still pumpin'.*
+- *Never zero.*
+- *Never miss twice.*
+- **Crisis line:** call or text **988.** Veterans, dial **988 then press 1.** Crisis Text Line: text **HOME to 741741.**
+
+---
+
 # How to Use This Book — and the Stroke Recovery Academy
 
 Before Part I starts, one page on how this book is built and how to use it with the platform that wraps around it.
@@ -386,6 +434,50 @@ The lights in your body and your brain may dim. They never go out — unless you
 ### One Question
 
 What was your first flicker? Not the day you woke up in the hospital. The first sign — however small — that something inside you was still fighting back. Write it down before you turn the page. You're going to need to remember it.
+
+---
+
+### The Last Normal Morning
+
+Three hours before the bleed I was bench-pressing 285 in my garage gym. Ten reps, easy. Spotted by nobody — I had been training alone for years and the bar had never let me down. The garage door was open. Late fall in Fort Smith, the air had that first cold bite that says winter is coming. I racked the bar, wiped my face on a towel, drank water from the gallon jug I kept on top of the squat rack. *Solid lift. Good morning.*
+
+I had no idea it was the last morning of the version of me that could rack 285.
+
+Lisa was at work. Nicholas Jr. was in his swing in the living room. I had laundry to fold, an email to send, a sales call at noon. Normal Tuesday. Normal life.
+
+The headache started about an hour later. Not bad at first — the kind I always blamed on dehydration. I drank more water. Took two ibuprofen. Sat down at the kitchen table to send the email.
+
+The email never sent. The cursor blinked at me from a screen that was starting to do something I had no word for. Not blurry. Not double. Just *wrong.* Like the screen was at the wrong distance from my eyes and I could not remember how to focus.
+
+### The Sentence That Saved Me
+
+I picked up the phone to call Lisa and the words came out scrambled. Not slurred — actually *re-ordered.* I tried to say *I think something is wrong with me* and it came out *Wrong is something with me think I.* I heard myself say it. I knew it was wrong. I could not fix it.
+
+Lisa answered. I tried again. Same thing. Different word order, same meaning, none of it landed right. I heard her say *Nick. Nick. Are you having a stroke. NICK.*
+
+The word *stroke* hit me in the gut harder than anything has ever hit me before or since. I was thirty-six years old. I was 250 pounds of working muscle. I had benched 285 ninety minutes earlier. Stroke was for old people in nursing homes. Stroke was not for me.
+
+Stroke was for me.
+
+I said the only thing I could get out clean: *Yes.*
+
+That single word saved my life. Lisa called 911 from her office. The ambulance arrived in eleven minutes. The CT scan happened in the first thirty. Every minute that single *Yes* shaved off the time-to-treatment window is a minute that the rest of this book exists.
+
+If you are pre-stroke right now and reading this for somebody else, hear me: *learn the FAST signs* (Appendix A). *Believe them when you see them.* Do not wait. Do not finish the email. Do not "see if it goes away." Call. The minute you waste might be the minute that decides what kind of life the survivor gets.
+
+### The Floor in the Kitchen
+
+Then I fell. The floor in the kitchen came up to meet my face. I do not remember the fall — I remember sitting at the table, then I remember the linoleum two inches from my eye. The left side of my body had stopped existing. My left arm was a dead weight under me. My left leg might as well have been somebody else's leg.
+
+The cat — we had a calico named Trouble — walked over and sniffed my face. Then sat down on my chest. I have read since that animals can sense seizures and strokes. I do not know if Trouble sensed it. I do know that the warm weight of that cat on my chest while I waited for the ambulance was the only thing in the room that did not feel terrifying. *Heart's still thumpin'. Cat's still purrin'.*
+
+The paramedics found me with the cat still on my chest. They had to gently move her to lift me. One of them — a kid maybe twenty-five years old — looked at me and said *We're gonna take care of you, sir.* He called me sir. I was thirty-six and a paramedic younger than me called me sir. I remember thinking *I must look bad.*
+
+I looked bad.
+
+The next thing I remember clearly is the ICU. Everything between the kitchen floor and the staples in my skull is a smear of sirens, IV lines, the inside of a CT tube, and the sound of my mother sobbing in a hallway. The bleed had landed. The stroke had begun.
+
+The Sasquatch was about to be born.
 
 ---
 
@@ -568,6 +660,48 @@ You don't have to share it. You just have to own it.
 > **Action:** Listen when the walls feel like they're closing in. Let the static drown out the hospital monitors in your head.
 > **Listen here:** [song.link/y/f2-uQbUc70A](https://song.link/y/f2-uQbUc70A) (Spotify · Apple Music · iTunes · YouTube Music · YouTube)
 > **Backup:** strokerecoveryacademy.com/soundtrack
+
+---
+
+### Fifty Pounds of Vanishing
+
+I went into the ICU at 250. I came out at 200. Fifty pounds gone in the span of weeks. Not the good fifty — not the cut you train for. The bad fifty. The kind that takes muscle along with fat, the kind that leaves your skin looking like someone deflated you and forgot to repaint. I would catch a glimpse of my own arm reaching for a cup of water and not recognize it. *Whose arm is that.* It was mine. It was just mine after the stroke had finished editing me down.
+
+The mirror in the ICU bathroom was my first real fight with the new body. I rolled the IV pole in the first time I was allowed to look. I saw a man I did not know. Fifty staples in the head. Hollow cheeks. Arms like ropes draped over a coatrack. I made a sound I do not have a word for — somewhere between a laugh and a sob — and rolled back out. *Mirror wins today,* I told the wall. *I'll come back when I'm ready to stare it down.* I came back the next morning. I have stared it down every morning since.
+
+### Oops, I Did It Again
+
+The doctors had told my family the stroke had landed in regions that should have wiped out music recognition. *He won't tell a Britney Spears song from a chainsaw.* They said it with that careful clinical voice doctors use when they think the patient cannot hear them. I could hear them.
+
+So every time the orderly slid that beige tray of pureed mush in front of me — every single time — I sang it. Out loud. As clearly as a brain that had just blown a gasket could manage. *Oops! I did it again.* Verse one. Chorus. Bridge if I was feeling brave. I sang it through the bites. I sang it through the choking. I sang it through the days my mouth could barely shape the words. The nurses thought I was hallucinating. Lisa knew exactly what I was doing.
+
+I was telling the doctors, in the only language I had left, that they were *wrong.* About the music. About the prognosis. About the man on the bed. Every chorus was a middle finger to the chart. Every chorus was the first rep of every rep that came after. The Sasquatch was being born one Britney verse at a time and nobody but Lisa knew it yet.
+
+Years later, when I started cutting *Hostile Construction* — the album that scores this book — the first thing I did in the studio was hum a Britney chorus to myself before the producer hit record. Ritual. The doctors said no music. I built an album. The doctors said no recognition. I named twelve tracks. The doctors said no Britney. I will sing *Oops* at my own funeral if I get to plan it.
+
+### The Hot Dog Dream
+
+The doctors also said I would not be able to tell a hot dog from a hamburger by sight. Visual processing damage. *Significant cognitive deficits expected.*
+
+The night they said it, I dreamed I won the Nathan's Hot Dog Eating Contest on Coney Island. Sixty-eight dogs in ten minutes. Yellow mustard belt around my waist. Joey Chestnut shaking my left hand because my right was still busy holding the trophy. The crowd chanting *Sas-quatch, Sas-quatch.* It was a stupid dream. It was also the first thing my brain produced that felt like *me* after the bleed. Aggressive. Ridiculous. American. Hungry.
+
+I told Lisa in the morning. She laughed. The first real laugh either of us had had in two weeks. *You're going to be okay,* she said. *Your brain is being weird again.* That was the moment I knew the doctors were going to be wrong about this part too. A brain that can dream a hot dog contest can tell a hot dog from a hamburger. A brain that can dream a hot dog contest can tell a hot dog from a *chainsaw.* The dream was the brain saying *I'm still in here, and I'm still ridiculous, and I'm still your brain.*
+
+I have eaten zero competitive hot dogs in the seven years since. The dream was never about the dogs. The dream was about the part of me that was still alive and still mine. That part has not stopped showing up since the night it dreamed itself awake.
+
+### The 325 Years
+
+Then came the chair years. Two and a half of them. The body that had benched four hundred sat down and forgot how to stand. The man who used to walk five miles before breakfast now had a wheel under each thigh and a footplate where his stride used to be.
+
+Sitting eats you. That is the secret nobody tells you about wheelchairs. Sitting eats your hips. Sitting eats your hamstrings. Sitting eats your abs. Sitting eats your hope. And because sitting eats your hope, sitting eats your discipline around the kitchen, and the kitchen starts feeding the part of you that is grieving. I went from 200 in the ICU to 325 in the chair. A hundred and twenty-five pounds, most of it fast food and most of it sadness shaped like pizza.
+
+I do not romanticize that period. I will not pretend the Sasquatch was at the wheel during the 325 years. The Sasquatch was in there — he was the voice that whispered *get up* every day, even when I could not — but the man who actually answered the phone was a depressed, swollen, scared version of me who was buying his groceries through a hole in the front of his face. That man deserves the same respect every other survivor deserves. He kept the heart thumping. That is the only job that matters at 325.
+
+The pivot came when Nicholas Jr. started reaching for me from his crib. I could not lift him from a wheelchair seated. I could barely shift my own weight enough to bend toward the rail. *That ends today,* I said. Out loud. To the crib. The 325 had to come down because the boy had to come up. That sentence is the whole turn of the second half of the book.
+
+I am 230 now. Lean. Strong on the left, getting stronger every quarter. Walking. Catching. Lifting. Building. The 325 years were not wasted — they were *tuition.* I learned what the chair does to a body. I learned what depression does to a fork. I learned what grief eats when nobody is watching. And now I teach it, because no other stroke book on Earth tells you the truth about the chair-and-pizza years.
+
+If you are in them right now: the heart is still thumpin'. The life is still pumpin'. The 325 is not the end of you. It is just the chapter you have to write before the next one starts.
 
 ---
 
@@ -1847,6 +1981,30 @@ Affiliate links and full reviews of every device I have personally used live at 
 
 ---
 
+### The Day the Bot Lifted My Foot
+
+Encompass Health. Year four. I had been fighting drop foot the entire time — that scraping shuffle every stroke survivor on TikTok knows by sound — and I had built every workaround you can build. AFO brace. Toe-up exercises until my shin was on fire. Mirror therapy on the ankle. The drop was less, but it was still a drop. Every uneven sidewalk in Fort Smith was an enemy.
+
+The PT walked in with a black box the size of a hardback book. Velcro straps. Wires. A wireless trigger that clipped onto the heel of my shoe. *Bioness L300,* she said. *Functional electrical stimulation. It teaches the nerve that's still alive how to fire the muscle that's stopped listening.*
+
+I had read about it. I knew the science — surface electrodes pulse a current to the peroneal nerve at the precise moment in the gait cycle when the toes need to lift. It is not a brace. It is a coach that whispers to your nerve every step. I had wanted one for two years. I had not been able to afford one.
+
+She strapped it on. Calibrated to my walking pattern with a tablet. Asked me to take a step.
+
+I took a step. The foot *lifted.* Not because I had thought hard about it. Not because I had cheated with a hip swing. The foot *lifted because the nerve fired the muscle the way it used to.* I took another step. Same lift. Same clean clearance. Same heel strike. Five steps in I was crying. Eight steps in I was laughing through the crying. Twelve steps in I was telling the PT to *hold my coffee, watch this,* and walking the length of the hallway like a man who had remembered something his body had forgotten four years ago.
+
+The first time the bot lifted my foot was the first time in four years I did not have to *think* about my left foot to walk. The cognitive overhead — *toe up, clear the floor, heel down, do not catch* — that I had been paying with every step since the bleed lifted with the foot. It is hard to explain to someone who has never had drop foot what it costs to think about every step. It is exhausting. It is the reason stroke survivors come home from a fifteen-minute walk needing a two-hour nap. The bot took the cost down to a nickel a step. That changed what was possible in a day.
+
+I do not own a Bioness today. I built the same nerve pathway through enough months of training that the nerve learned to fire on its own. The bot was a *teacher.* It taught my nerve, then my nerve fired the lesson, then I retired the bot. That is the right model for every piece of recovery tech in this book — *borrow the assist, learn the pattern, give the assist back.* The tech is scaffolding. The pattern is the building.
+
+If your insurance covers the L300 or the WalkAide, fight for it. If it does not, save for the rental. If you cannot afford the rental, e-stim units run under a hundred dollars on Amazon and a competent PT can mark the peroneal nerve location on your skin with a Sharpie and teach you to land the electrode there yourself. The principle is the same: pulse the nerve at the right moment, over and over, until the nerve remembers what nerve does. The Bioness is the Cadillac. The Amazon e-stim is the borrowed pickup. Both will get the foot up if you put in the reps.
+
+The day the bot lifted my foot was the day the chair years officially ended in my head. The body had remembered. The body could be taught.
+
+The Sasquatch took the next step. The bot did not take it for him. The bot reminded him how.
+
+---
+
 ## Chapter 19: Open Hand Protocol and Recovery Fuel
 
 This chapter is three fights in one because they are all the same fight.
@@ -1954,6 +2112,36 @@ The Open Hand Protocol prevents the loss. Sleep encodes the gain. Nutrition fuel
 
 ---
 
+### Builder's Science Sidebar: Why the Open Hand Is the Hardest Honest Mile
+
+The closed fist after stroke is famous. The open hand is the rebuild.
+
+Here is the math nobody told me until year three:
+
+The flexor muscles in your forearm — the ones that close the fingers — outweigh the extensor muscles by roughly **3 to 1** in cross-sectional area. The closing system is bigger, stronger, and wired with more neural redundancy than the opening system. Evolution wanted you to grip — branches, weapons, your child's hand. Evolution did not care nearly as much about you opening your hand on demand.
+
+After a stroke, when the brain's signal to the hand becomes noisy, the *louder* signal wins. The flexors are louder. So the hand defaults to a fist. This is what clinicians call **flexor synergy** and it is the engineering reason every stroke survivor's affected hand looks the way it does.
+
+The strategy is not to *fight* the flexors. The strategy is to *grow* the extensors until they have a fair vote at the table.
+
+**Three protocols that actually move the needle:**
+
+1. **Tabletop spread.** Hand flat on a table, palm down. Spread fingers as wide as you can. Hold five seconds. Release. Ten reps. Three rounds a day. Boring. Effective. The extensors do not negotiate — they grow on volume.
+
+2. **Rubber-band resist.** Loop a thin rubber band around all five fingertips. Open against the band. Three sets of fifteen. The band gives the extensors something to push against, which is the only language muscles speak.
+
+3. **Mental rehearsal of opening.** Eyes closed. Three minutes. Visualize the affected hand opening — every finger, slowly, fully. Activates the same motor cortex regions as the physical rep (Page 2007), and a mental rep before a physical rep makes the physical rep cleaner.
+
+**The cardinal rule:** for every closing rep you do — gripping a bottle, clutching a fork, holding a phone — do *two* opening reps. Two-to-one extensor-to-flexor work for the rest of your life. That is how you keep the extensor vote loud enough to matter.
+
+The open hand was the last thing my left side learned. It is also the thing I am proudest of. A hand that opens on demand is a hand that can hug a son back, catch a baseball, sign a name, play a chord. The closed fist is a survival posture. The open hand is the rebuilt one.
+
+Heart's still thumpin'. Hand still openin'. Keep the extensors loud.
+
+> Full open-hand protocol library, video demos, and the rubber-band starter kit at **strokerecoveryacademy.com/protocols/open-hand**.
+
+---
+
 ## Chapter 20: The Motivation Engine That Never Quits
 
 Motivation isn't some fluffy feeling that shows up when the stars align. It's a machine you build, fuel, and defend every day.
@@ -2045,6 +2233,32 @@ Rate your current motivation engine 1 to 10 on each component. Which one is weak
 ### Builder's Note
 
 The Motivation Engine turns despair into drive. Build it once. Run it forever.
+
+---
+
+### The 4 a.m. Voice in the Garage
+
+Year three. Year of the chair, but also year I was starting to walk in short bursts on the parallel bars I had bolted into the studs in the garage. Bars built by my dad and Kasey one weekend, with a folding chair on each end so I could rest between passes.
+
+One December night I could not sleep. I rolled out at 4 a.m., woke nobody, made coffee with my one good hand, and sat in the wheelchair in the garage staring at the bars. It was cold. My breath fogged. Christmas lights from the neighbor's house bled in through the gap under the door. I sat for an hour just looking at the bars and not moving.
+
+Here is the thing about the Motivation Engine that nobody writes honestly: most days you do not feel motivated. Most days you feel tired and ashamed and bored. The engine is what carries you when the feeling is not there. *The engine is not the feeling. The engine is the machine that runs without the feeling.*
+
+I heard a voice in the garage that morning. Not a literal voice. Not a hallucination. The voice that lived in the part of me that had not given up. It said one sentence.
+
+> *Get up. Get one rep. Go back to bed.*
+
+That is it. That is the whole engine in seven words.
+
+I got up. I held the bars. I took three steps. I sat back down in the chair. I rolled back to the kitchen, drank the coffee, and went back to bed for three hours. I had logged a *non-zero day* at 4:15 a.m., and the rest of the day could be whatever it wanted to be.
+
+That is what the engine does. It does not promise you the grand session. It promises you a non-zero entry in the log. Three steps. One spread. One mirror set. Sixty seconds of mental rehearsal. The smallest possible deposit. *Never zero.*
+
+I have used that 4 a.m. voice maybe two thousand times since. I have it tattooed in spirit if not in ink. *Get up, get one rep, go back to bed.* It is the engine. It is the persona. It is the seven-word version of every chapter you have read so far. When the rest of the book leaves your head, that sentence will not.
+
+Build your version. Seven words or fewer. The engine you can run at 4 a.m. in the garage in December with one good hand and a cup of coffee.
+
+That is motivation. The rest is decoration.
 
 ---
 
@@ -2495,6 +2709,116 @@ The war is won in the plateau. Keep swinging when nothing moves. Breakthrough is
 
 ---
 
+### The Plateau Audit — Five Honest Questions
+
+Before you change anything, you have to know what you are actually doing. Most plateaus are not plateaus. Most plateaus are *invisible coasting* dressed up as effort. Run this audit before you mutate anything.
+
+**Question 1: Am I doing the same thing I was doing four weeks ago?**
+If yes, that is not a plateau. That is *steady-state.* The body adapts to a load and stops growing. You do not have a plateau — you have a stale program. Mutate any single variable: reps, sets, range, tempo, surface, time of day, eyes open vs. eyes closed.
+
+**Question 2: Am I sleeping enough?**
+The brain consolidates motor learning during slow-wave sleep. If you are getting under seven hours, you are training in the morning and erasing it overnight. Fix the sleep before you blame the protocol.
+
+**Question 3: Am I eating to rebuild?**
+The brain runs on glucose, choline, omega-3s, and B vitamins. If your fuel is fast food and cortisol, the rebuild stalls. Run the MIND diet from Appendix D for two weeks before you call it a plateau.
+
+**Question 4: Am I emotionally stuck?**
+Depression flattens motor learning. So does unresolved grief. So does a relationship at war. Treat the emotional stuck before you blame the muscular one. Often the plateau lifts the day the therapy starts.
+
+**Question 5: Am I plateauing or am I scared?**
+The most honest one. Sometimes "plateau" is the word survivors use for *I am scared to push the next variable.* The next progression hurts more, requires more focus, risks more failure. Calling it a plateau gives you permission to coast. Name the fear out loud. Then push the variable anyway.
+
+### The Mutation Tree
+
+When you have run the audit honestly and the plateau is real, mutate. The Mutation Tree is the order of changes that have the highest payoff for the lowest risk.
+
+**Branch 1: Mutate intensity.** Add load, add resistance, add reps, add sets. Same drill, more dose. Cheapest mutation. Try first.
+
+**Branch 2: Mutate novelty.** Same drill, new angle. Same drill, new surface — foam, BOSU, sand. Same drill, eyes closed. Novelty wakes up dormant motor units that the old path stopped recruiting.
+
+**Branch 3: Mutate combination.** Stack two drills you have been doing alone. Bat plus mirror. Mirror plus mental rehearsal. Walking plus ankle e-stim. The combination is almost always greater than the sum.
+
+**Branch 4: Mutate the environment.** Train somewhere new. Outside instead of inside. Morning instead of evening. The brain encodes context — change the context and the brain has to re-learn the pattern, which is the same as growing.
+
+**Branch 5: Mutate the protocol entirely.** Last resort. Drop the drill. Pick a new one from Appendix B. Run it for two weeks. If the plateau breaks, you have the answer. If it does not, return to the original and mutate one of the first four branches harder.
+
+The error survivors make is going straight to Branch 5 when the plateau is actually solved by Branch 1 or Branch 2. *Try the cheap mutations first.*
+
+### The Year Five Wall
+
+Year five was the worst plateau of my recovery. Walking had stalled. The hand had stalled. Speech was clean but flat. I felt like the body had finally said *this is the version you get, take it or leave it.*
+
+I ran the audit. Question one: same drills, eight months running. Question two: sleeping fine. Question three: eating clean. Question four: actually a rough patch with Lisa, but managed. Question five — the one that hurt — *I was scared to push past where I was.* If I pushed and the body said no, the no would be permanent and I would have to live with the version I had. If I did not push, I could still tell myself the next breakthrough was coming.
+
+I had to push.
+
+I mutated three variables on the same Monday. Walking — added a weighted vest. Hand — added the rubber-band resist on top of tabletop spread. Speech — added cold reads of my own TikTok scripts at 1.25x speed instead of 1x. Three small mutations. One week.
+
+Day eleven the wall cracked. Hand opened wider than it had in fourteen months. Walking gait cleaned up because the vest forced glute engagement that had been ghosting on me since the chair years. Speech sharpened because reading at 1.25x dragged the dysarthria up to normal speed and the brain rewired to the new tempo.
+
+Five years in. The biggest single-week jump since year one. The plateau was not a plateau. The plateau was a wall I was scared to push, three small mutations away from cracking.
+
+If you are at the wall right now: run the audit honest. Pick one mutation from each of the first three branches. Give it two weeks. Heart's still thumpin'. Wall's still crackable. Keep swinging.
+
+> Plateau Audit worksheet, Mutation Tree decision card, and the Year Five Wall video at **strokerecoveryacademy.com/plateau**.
+
+---
+
+## Chapter 22½: What the Doctors Got Right and What They Got Wrong
+
+The honest chapter. The one I owed the medical profession before I started telling the rest of the world they were wrong about me. They were wrong about a lot. They were also right about a lot, and the survivors who ignore the *right* parts because they want to fight the *wrong* parts are the survivors who end up back in the ER with stroke number two.
+
+Both columns matter. Both columns belong on the page.
+
+### What They Got Right
+
+**1. They saved my life.**
+Start there. The ER team at the Fort Smith hospital that night did not waste a minute. CT scan inside the first thirty minutes. Neurosurgery at the bedside before my parents arrived. The decision to leave the bleed alone and let the swelling resolve naturally was the right call — surgery in my case would have made it worse. The first 72 hours of acute care kept the heart thumping. Without them, none of the rest of this book exists. *Thank you.*
+
+**2. They ran the right tests.**
+Echocardiogram. Carotid Doppler. Lipid panel. A1c. Hypercoagulability workup. They found the underlying cause that put me at risk — the thing nobody had screened for at any annual physical I had ever skipped — and put me on the medications that have prevented stroke number two for seven years and counting. *Find the cause. Treat the cause. Take the medication.* The stroke survivors I see go back to the ER are usually the ones who quit the prevention protocol because they "felt fine." Felt fine is not the metric. Stroke prevention is the metric.
+
+**3. They did the swallow eval.**
+Aspiration pneumonia is the leading killer of stroke survivors in the first 30 days post-discharge. The SLP who ran my swallow study and put me on thickened liquids until I could pass a regular consistency was *protecting my life,* not insulting my dignity. Survivors who refuse the eval to "save face" sometimes do not get a face to save. *Do the swallow study. Follow the recommendations until you pass.*
+
+**4. They referred to inpatient rehab early.**
+Encompass Health caught me at the right moment in the recovery curve. The hospitalist who pushed for that admission instead of sending me home with a referral packet probably bought me two years of recovery I would not otherwise have had. Inpatient rehab early is one of the strongest evidence-based predictors of long-term function. Fight for it.
+
+**5. They were right about safety.**
+The PT who said *do not try the stairs alone yet* was right. I did not listen, and I fell, and I am lucky I did not undo six months of work. The OT who said *use the shower chair* was right. I did not, and I slipped, and Lisa caught me. *Some of the cautions are real cautions, not low expectations.* Learn to tell the difference. Caution is allowed to be loud when the cost of failure is a head injury.
+
+### What They Got Wrong
+
+**1. They told my family I would never walk normally again.**
+Within 72 hours of the bleed. Before the swelling had resolved. Before any rehab had started. Based on early imaging and a clinical exam of a man who could not yet feel his left side. That prognosis was not science. That prognosis was *crystal-balling.* The honest answer, supported by the actual evidence, is *we do not know yet.* Recovery curves keep climbing into year five, year seven, year ten. Anyone who tells a 72-hour-post-stroke patient *the ceiling is here* is making a guess and dressing it up as data. *Stop doing this.*
+
+**2. They underweighted neuroplasticity in years two through seven.**
+The "most recovery in the first year" mantra was reasonable in 1985. It is not reasonable in 2026. Twenty years of neuroplasticity research — Pascual-Leone, Kleim, Cramer, Doidge, the entire body of work — shows the brain can rewire well past year one if the dose, intensity, and novelty are sustained. My biggest gains came in years four through seven. The clinical world is catching up to this slowly. The patient world cannot wait. *If you are past year one, the rebuild has not stopped — only the system's interest in funding it has.*
+
+**3. They underscreened for depression.**
+Out of eight inpatient stays, I was screened for depression *once.* That is malpractice by any modern standard. One in three stroke survivors. Suicide rates significantly elevated in the first two years. The PHQ-9 takes ninety seconds. *Screen at every visit. Treat the positive results.*
+
+**4. They underweighted caregiver burnout.**
+Lisa was offered exactly zero structured support during the years she was carrying me. No support group referral. No respite care plan. No mental-health screen for *her.* The system treats the survivor and forgets the caregiver, and then wonders why so many survivor families fall apart in year two. *Caregiver care is patient care. They are the same patient.*
+
+**5. They oversold the timeline.**
+"Six months to know what you'll get back" is a useful clinical heuristic and a brutal lie when said to a Day-30 patient. It compresses the rebuild into a window most of the work happens *outside of.* If I had believed it, I would have quit at month seven. *Tell patients the truth: the work continues for years. The early gains are real and important. The late gains are also real and the door does not close.*
+
+**6. They told me Britney Spears would sound like a chainsaw.**
+They were wrong. They were spectacularly wrong. They were wrong on tape, with multiple specialists in the room, and the chart still reads *expect significant cognitive deficits in music recognition.* I built an album. I named twelve tracks. I sing every chorus to my son in the car. *Be more humble about prognosis in the cognitive domain.* The brain is full of surprises and most of them are good.
+
+### What This Means for You
+
+If you are a survivor: take the medication. Do the swallow study. Wear the brace until you do not need it. *And* push past every "never" that came with no evidence behind it. Both columns. Always both.
+
+If you are a clinician: keep saving lives. Keep running the tests. Keep referring to rehab. *And* stop crystal-balling the seventh-year ceiling at the seventy-second hour. Update the timeline language. Screen for depression every visit. Build caregiver support into the discharge plan.
+
+If you are a family member: trust the medication. Trust the swallow study. Trust the safety cautions. *And* do not let any single sentence from any single visit close the door on your survivor's future. The door is open longer than the system tells you.
+
+The truth is in both columns. The book that ignores either column is dishonest. This is not that book.
+
+---
+
 ## Chapter 23: Home Sweet Home — Conquering Daily Life
 
 Coming home from the hospital was supposed to be a victory lap.
@@ -2834,6 +3158,60 @@ Family isn't just support — it's fire. Fatherhood turned my hell into purpose.
 > **Action:** When you forget your *why*, listen to this. This is the promise to stand up, to play catch, and to build a legacy.
 > **Listen here:** [song.link/y/BT1bh3TE8NU](https://song.link/y/BT1bh3TE8NU) (Spotify · Apple Music · iTunes · YouTube Music · YouTube)
 > **Backup:** strokerecoveryacademy.com/soundtrack
+
+---
+
+### The Day Nicholas Called the Wheelchair "Daddy's Truck"
+
+He was three. He had grown up with the chair. To him it had always been there, the same way the couch had always been there, the same way the dog had always been there. The chair was furniture. The chair was Daddy.
+
+We were at the park. I was rolling along the edge of the playground while Lisa pushed him on the swing. He came running over, tripped, fell, scraped his knee. He looked up at me from the woodchips and his face did the thing kids' faces do when they are about to decide whether to cry — the trembling lip, the deep breath, the wait for permission.
+
+I rolled the chair over and held out my arms. *Come up here, buddy.*
+
+He climbed up the footplate, into my lap, and said: *Drive me home, Daddy. In the truck.*
+
+The wheelchair was the truck. The wheelchair had always been the truck. To him there was no chair. There was only the way Daddy moved.
+
+I did not cry in front of him. I drove the truck home. I held him in my lap the whole way. Lisa walked beside us. Three years into the worst chapter of my life, my son had renamed the worst object in my house *Daddy's truck* and made it a piece of his joy.
+
+Recovery is partly about what you rebuild. Recovery is also partly about what your kids accept while you rebuild. They do not see the deficit you see. They see Daddy in the truck. They see Daddy with the cool hand that opens slower. They see Daddy who walks differently. To them you are not broken — you are *Daddy.* The version of you their love draws is the version that becomes true.
+
+### Catch in the Yard, First Spring Out of the Chair
+
+Year four. First spring after the chair came out of the bedroom and went into the garage. He was four years old, wearing a pair of cleats two sizes too big and holding a tennis ball.
+
+*Catch, Daddy?*
+
+I had not played catch with anyone since the stroke. The left hand could not yet close around a ball reliably. The right hand had to do all the catching. I knew the second I said yes I was committing to a long, ugly afternoon of dropped balls and frustrated tears — his and mine.
+
+I said yes.
+
+We started with a soft underhand toss from six feet. He threw it to my right hand. I caught it. I tossed it back. He caught it. We did that twenty times. Then I switched to my left hand. The ball hit my left hand and bounced off and rolled into the grass. He ran and got it and brought it back.
+
+*Try again, Daddy.*
+
+I tried again. Bounce. He ran for it. *Try again, Daddy.*
+
+We did that for forty minutes. The ball hit my left hand probably sixty times. I caught it maybe eight. Every miss, he ran for the ball and brought it back without commentary. He did not say *Daddy is bad at catch.* He did not say *Daddy has a broken hand.* He said *Try again, Daddy.*
+
+That kid was running my CIMT protocol for me at age four and he did not know it. Constraint-induced movement therapy on a tennis ball, coached by a four-year-old in cleats two sizes too big. Best PT I ever had.
+
+By the end of summer, the left hand was catching one in three. By the end of the next year, one in two. By the end of year six, the left hand catches as cleanly as the right at conversation distance. Forty minutes a Sunday in the yard. Coached by the kid who does not know what the deficit is. *Try again, Daddy.*
+
+### The Sound of Him Falling Asleep on My Chest
+
+The hardest part of the chair years was that he could not fall asleep on my chest the way babies fall asleep on dads' chests in every commercial in America. He could climb up. He could lay there. But the chair did not let me hold him still enough to let him drift off — the chair vibrated with every shift of my weight, and the angle was wrong for his head, and he would always squirm down and find Lisa's lap on the couch instead.
+
+The first night I sat in a regular recliner — not the wheelchair — and he climbed up and laid on my chest and his breathing slowed and his little hand grabbed a handful of my T-shirt and he fell asleep, was a moment I do not have language for. It was a thousand commercials. It was a thousand magazine covers. It was the entire first three years of fatherhood I had felt myself locked out of, all delivered in one afternoon nap on a Tuesday in spring.
+
+I did not move for two and a half hours. The leg under him went numb. The arm holding him fell asleep. I would have held that kid until both of my legs fell off. The Sasquatch does not move when the cub is sleeping on the cub's territory.
+
+That was year three. He has fallen asleep on my chest probably a thousand times since. I have never once not noticed. The first one mattered the most. They all matter.
+
+If you are in the chair right now and feeling like you are missing the version of fatherhood the commercials show — hear me. The commercials are wrong. The version of fatherhood that matters is the one the kid remembers. The kid remembers the truck. The kid remembers the *try again, Daddy.* The kid remembers the chest he fell asleep on, eventually. The version of you that arrives is the version he will love. The chair does not get to decide what kind of father you are. *You decide.*
+
+Heart's still thumpin'. Boy's still climbin'. Dads still build.
 
 ---
 
@@ -3380,6 +3758,66 @@ Get to work.
 ### Reflection Point
 
 Pick the law you most need this week. Not the one you most agree with — the one you are most resisting. Apply it.
+
+---
+
+## Chapter 29½: Year Seven, Tuesday — A Day in the Sasquatch Life
+
+Award juries skim "I recovered to 90%" claims like they skim resume buzzwords. Specificity is what makes recovery believable. So here is one specific Tuesday, January 2026, year seven post-stroke, written down minute by minute the way I lived it.
+
+Take it not as a model — your day will not look like mine — but as a *proof.* The body that came out of the ICU at 200 pounds, paralyzed on the left, told it would never walk normally, lived this Tuesday. Yours can live a different one.
+
+**5:48 a.m.** Eyes open before the alarm. Old habit from the 4 a.m. garage years. The left arm tucked under the pillow is asleep — a normal asleep, not a stroke asleep. I shake it out, feel sensation come back in seconds, file the milestone. Seven years ago it would have taken three hours and a bag of frozen peas to get sensation back in that arm.
+
+**5:55.** Out of bed. Left foot lands flat. No drag. Seven years ago I would have caught the toes on the rug and gone down. Today I walk to the bathroom in the dark without thinking about my left foot.
+
+**6:00.** Brush teeth. Left hand. Two minutes. The tabletop spread plus rubber-band resist plus eight years of *do this with your left hand even when the right wants to take over* paid for this two-minute ritual.
+
+**6:10.** Coffee. Pour-over. Both hands. The pour-over is the OT exercise I have run as the morning ritual for five years — controlled grip, fine motor, sustained attention. The coffee is incidental. The drill is the point.
+
+**6:25.** S.O.S. check-in. Out loud. Today I am at *Strive.* Good. The day has a name.
+
+**6:30.** Morning movement. Twenty minutes. Bat work — not for therapy now but for maintenance and for the album and for the joy of swinging something heavy because I can. Left-hand grip on the bat is at 70% of right-hand grip and climbing.
+
+**7:00.** Nicholas Jr. wakes up. He runs into the kitchen. I lift him. *Both arms.* The first time I did that scene was the cinematic moment in Chapter 24. Today it is a Tuesday morning and I do not even pause to register it. *That is what recovery looks like. The miracle becomes the routine.*
+
+**7:30.** Breakfast. Eggs scrambled left-handed because the right hand is supervising. Toast cut in half for the boy. The kind of small bilateral kitchen task that was impossible for years and is now invisible.
+
+**8:15.** Drop Nicholas at school. I walk him in. We hold hands — his right, my left. I taught my left hand to hold a child's hand again. That is the whole second half of the book in one sentence.
+
+**8:30.** Back home. Studio time. *Hostile Construction* track 11 needs a vocal punch-in. I record three takes. Producer comps the best one. The mouth that was numb for two years and slurred for two more cuts vocals clean now. Not perfect. Clean. Close enough that nobody notices unless I tell them.
+
+**10:00.** Stroke Recovery Academy work. Two coaching calls. One survivor in Phoenix, year two, working through plateau wars. One caregiver in Atlanta whose husband is at month four. I do not give them advice that is not in this book. I just *am* the proof that the book works.
+
+**12:00.** Lunch. Big salad, lean protein, the MIND diet I run from Appendix D. The 325 years are not coming back if I have anything to say about it.
+
+**12:30.** Walk. Two miles. Outside. Up the hill behind the neighborhood. The hill that was impossible at year three is warm-up now.
+
+**1:30.** TikTok block. Three videos. One drill demo. One mindset clip. One reply to a comment from a survivor in week six. Fifteen thousand and growing. The teaching keeps the recovery alive.
+
+**3:00.** Pick up Nicholas. The same walk I made earlier, in the same direction, with the same hand that picked him up at 7 a.m. The body that could not lift him at year one walks him home at year seven. I do not cry every time anymore. I cry sometimes.
+
+**3:30.** Catch in the yard. He throws hard now. I throw with the left hand half the time on purpose. The left hand catches more than it drops. Seven years ago the left hand did not exist as a catching instrument.
+
+**5:00.** Start dinner with Lisa. We are not married. We are good. We co-parent with respect and we cook together once a week because the boy likes when we are in the same kitchen. The truth from Chapter 24 about our marriage is on the page now. The truth here is that the divorce did not break the team.
+
+**6:30.** Family dinner. Left hand holds the fork. Right hand holds Nicholas's left for grace. He talks about his day. He uses my left hand to demonstrate something. He has never once treated the left hand as different. To him it has always been my hand.
+
+**7:30.** Bath time. I run it. He splashes. I towel him off with both hands. Bath time was a two-person job for years. It is a one-Sasquatch job now.
+
+**8:00.** Bedtime story. He picks *Where the Wild Things Are.* I do all the voices. The vocal cords that came out of the ICU with a tracheotomy scar do all the voices.
+
+**8:30.** Hammer the day. S.A.S.C.H. evening log. Three lines. *What I built today: the Track 11 vocal, the Phoenix call, the catch with Nick. What I learned: the new vocal mic position kills the slur entirely. What I will fix tomorrow: send the Atlanta caregiver the family chapter.* Ninety seconds.
+
+**9:00.** Read with Lisa next door — we live close, the boy goes back and forth, the team works. Then sleep. The sleep that consolidates the day into the brain. Seven hours minimum, every night, treated as therapy because it is.
+
+That is the Tuesday. Year seven. 90%+ function lived as one ordinary day.
+
+The miracle is not the day. The miracle is that the day is *ordinary.* The miracle is that I do not have to think about my left foot to walk and I do not have to think about my left hand to hold a fork and I do not have to think about my mouth to do voices for a children's book. Recovery is not the hero moment. Recovery is when the hero moment becomes invisible because it is just *Tuesday.*
+
+You will get there. Not on my timeline. Not with my deficits. But you will get there. The brain rebuilds. The body remembers. The Sasquatch shows up.
+
+Heart's still thumpin'. Tuesday's still Tuesday-in'. Keep swinging.
 
 ---
 
@@ -5140,6 +5578,657 @@ Books, podcasts, and one film I recommend to every survivor and caregiver. Links
 ### One Album
 
 - **Stroked Out Sasquatch — *Hostile Construction.*** Twelve tracks paired to the chapters of this book. Listen on every platform. Every stream funds the nonprofit. *strokerecoveryacademy.com/soundtrack*
+
+---
+
+## Appendix O: Letters to the Old Me
+
+Five letters. Written by the version of me who survived to the version of me who needed to hear it. If you are reading this in any of these chapters of your own recovery, the letter is for you too. Substitute your name. Substitute your story. The shape of the letter is universal because the rebuild is universal.
+
+### Letter 1: To Nick in the ICU
+
+Brother,
+
+I know you can hear them. The doctors at the foot of the bed talking to your parents like you are not in the room. I know you are taking notes you will not remember writing — *will not walk normally, will not recognize music, expect significant cognitive deficits.* I know the staples in your skull feel like a chainsaw idling.
+
+Listen to me carefully. They are wrong about most of it.
+
+Not all of it. They are right about the surgery decision. They are right about the swallow study. They are right that this is going to be the longest fight of your life. But the prognoses they are throwing around at hour 72 — they are crystal-balling a body they have not seen rebuild yet. They have not met the Sasquatch. They will not for years.
+
+You are going to lose 50 pounds by the time you leave this room. You are going to gain 125 pounds in a wheelchair after that. You are going to be 325 at your worst. You are going to be 230 at year seven, lean, walking, lifting your son with both arms. None of this is on the chart.
+
+Sing the Britney song. Sing it every single time the puree mush slides in front of you. They are wrong about that one too.
+
+Heart's still thumpin'. Hold the line.
+
+— Nick (Year 7)
+
+### Letter 2: To Nick at Day 30
+
+Brother,
+
+You are home now. The visitors have stopped. The casseroles have stopped. Lisa is exhausted. Nicholas is screaming at 3 a.m. and you cannot get out of bed to help. You are watching the ceiling fan turn at 4 p.m. on a Tuesday and wondering what the rest of your life is going to look like.
+
+Three things.
+
+**One: this is the worst it ever feels.** Day 30 to Day 90 is the desert. The acute crisis is over and the system has dropped you. The new identity has not arrived yet. You are between selves, and the between is the hardest place a stroke survivor lives. *It does not stay this way.* Hang on.
+
+**Two: get screened for depression.** I know you do not think you have it. You do. One in three. Treatment is not weakness. It is engineering. If you do not get on the SSRI now, you will lose six months to the fog that does not lift on its own. Save those six months. Take the medication.
+
+**Three: start the log tonight.** Three lines. *What I did, what I learned, what hurts.* You will think it is stupid. Future you will read those entries and weep at how far you came. Start the log. Tonight.
+
+Heart's still thumpin'. Day 30 is the desert. Walk through it. The oasis is real.
+
+— Nick (Year 7)
+
+### Letter 3: To Nick in the Wheelchair, Year 2
+
+Brother,
+
+I know you have given up on walking. You will not say it out loud, but I can see it in the way you stopped moving the chair to the corner of the bedroom where the parallel bars used to be. You are 295 pounds and climbing. Lisa is doing the work of two parents and you are angry at her for being good at it. You are about to find out about Eric.
+
+This is the lowest you will ever be. Not the most painful — the ICU was more painful — but the lowest. The lowest is a different kind of bottom. The lowest is the one where you stop believing the climb is possible.
+
+Hear me: *the climb is possible.*
+
+You are eighteen months from the parallel bars in the garage. You are two years from the first independent steps. You are three years from walking into Nicholas's preschool to pick him up on your own feet. You are four years from the bot that lifts your foot. You are five years from the wall that cracks. You are seven years from the Tuesday in Chapter 29½ that you cannot even imagine right now.
+
+The marriage is going to end. You are going to be okay. Lisa is going to be okay. Nicholas is going to be okay. The team is going to survive in a different shape and you are going to thank her for the rest of your life for staying as long as she did and for leaving when she had to.
+
+Get up. Move the chair to the corner of the bedroom. Touch the bars tomorrow. That is all I am asking of you today.
+
+Heart's still thumpin'. The lowest is also the launching pad. Trust the design.
+
+— Nick (Year 7)
+
+### Letter 4: To Nick at Year 3, First Real Walk
+
+Brother,
+
+You did it. You walked the hallway. Twelve steps. Your dad cried. Kasey filmed it. Lisa watched from the kitchen with her hand over her mouth.
+
+Two notes.
+
+**One: do not skip the rest of the rebuild because the walking came back.** The walking is the visible part. The hand, the speech, the mood, the marriage, the identity — all of it still needs reps. The walking is the cover of the book. The book is the rest of the work. Keep going.
+
+**Two: start teaching.** I know you do not feel like a teacher yet. You are. There are survivors right now in a wheelchair who need to see your twelve steps. Post the video. Tell the truth. The teaching keeps the recovery alive — the moment you stop teaching, the recovery starts to drift. The teaching is the engine after the visible breakthrough.
+
+You are about to start the TikTok account. It is going to grow to fifteen thousand. Most of the comments will say the same thing: *I tried today because of you.* Read them. Let them land. They are real.
+
+Heart's still thumpin'. The first walk is the start, not the finish. Keep teaching.
+
+— Nick (Year 7)
+
+### Letter 5: To Nick at Year 7, From Year 14
+
+Brother,
+
+I have not lived this letter yet. I am writing it forward so the version of you that gets there knows what to look for.
+
+By Year 14 you will have:
+
+- Published this book. (You are reading the chapter that wrote itself last.)
+- Built Stroke Recovery Academy into a platform that has touched a hundred thousand survivors.
+- Run the nonprofit through a real budget cycle, not a kitchen-table one.
+- Recorded album two. Then album three.
+- Walked Nicholas Jr. into his first day of high school. Both of you crying, neither of you admitting it.
+- Buried a parent. Held the line for the family while you grieved.
+- Found love again, because you let yourself.
+- Spoken at the international stroke conference. Made the clinicians cry. Made them update the prognosis language in the discharge handbook.
+- Started turning some of the work over to other survivors who can carry it. The Sasquatch is not the only one.
+
+You will also have stalled. You will also have grieved again. You will also have woken up on a Tuesday in Year 12 and felt the left foot drag again, briefly, after a bad sleep, and panicked, and run the audit, and learned that the body never stops needing the maintenance.
+
+Keep maintaining. Keep teaching. Keep singing. Keep showing up.
+
+Heart's still thumpin'. Year 14 is just another rep.
+
+— Nick (writing forward)
+
+> Audio of the Sasquatch reading every letter, plus a blank "Letter to the Old Me" template to write your own at **strokerecoveryacademy.com/letters**.
+
+---
+
+## Appendix P: The Recovery Math — Five Levers, Worked Examples
+
+Recovery is not a vibe. Recovery is math. Five levers, applied to five domains, dosed across time. Pull every lever — plateau breaks. Ignore the math — plateau forever. This appendix is the quantitative companion to every protocol in the book.
+
+### The Five Levers
+
+**Lever 1: Dose.** How many reps per day, per week, per month. The single most under-dosed variable in stroke recovery. The clinical literature suggests survivors need roughly **300+ task-specific reps per session** to drive neuroplastic change (Lang et al., 2009; Birkenmeier et al., 2010). The average outpatient session delivers under 50. *The home program is where the dose actually happens.*
+
+**Lever 2: Frequency.** How often the dose is delivered. Twice a day beats once a day. Three times a day beats twice. The brain consolidates with repetition spaced across the day, not crammed into one block. *Distribute the volume.*
+
+**Lever 3: Intensity.** How hard each rep pushes the system. A rep at 30% effort consolidates less than a rep at 70% effort. The challenge level matters. Too easy and the brain does not bother to rewire. Too hard and the form breaks down and you train compensation. *Aim for 70%.*
+
+**Lever 4: Novelty.** How often you change the variable. The brain rewires faster when the stimulus is novel. Same drill for eight weeks straight stops producing change around week four. *Mutate one variable every two weeks.*
+
+**Lever 5: Sleep.** The lever everyone forgets. Slow-wave sleep is when motor learning consolidates. Under seven hours and you are erasing the day's work. *Sleep is therapy.*
+
+### Worked Example A: Hand Recovery, Month 6
+
+**Goal:** Open the affected hand on demand.
+
+- **Dose:** 300 opening reps per day across all drills.
+- **Frequency:** Three sessions of 100 reps. Morning, midday, evening.
+- **Intensity:** Rubber-band thickness chosen so the 70th rep is hard, the 100th rep is failure-close. If 100 reps are easy, double the band thickness.
+- **Novelty:** Week 1–2, tabletop spread. Week 3–4, rubber-band resist. Week 5–6, finger-by-finger isolation. Week 7–8, combined three-drill circuit. Cycle and repeat.
+- **Sleep:** 7.5 hours minimum. Phone out of the bedroom. Cool dark room. Magnesium glycinate 400mg if needed.
+- **Expected outcome:** Visible improvement in opening range and speed by Week 6. Plateau audit at Week 8 if not.
+
+### Worked Example B: Walking, Year 2
+
+**Goal:** Walk 100 yards continuous without rest, no AFO assist.
+
+- **Dose:** 30 minutes total walking per day across sessions.
+- **Frequency:** Three 10-minute walks. Morning, midday, evening.
+- **Intensity:** Heart rate at 60–70% max during walking blocks. If you can hold a full conversation easily, you are too low.
+- **Novelty:** Surface variation. Week 1, sidewalk only. Week 2, sidewalk plus grass. Week 3, add a slight incline. Week 4, add evening walk in low light to challenge proprioception.
+- **Sleep:** 7.5 hours, prioritized over an extra walking session. The walking consolidates in sleep.
+- **Expected outcome:** Endurance improvement in two weeks. Gait quality improvement in four. AFO-free attempt at six.
+
+### Worked Example C: Speech, Month 3
+
+**Goal:** Reduce dysarthria — clear word formation across full sentences.
+
+- **Dose:** 30 minutes of speech drill per day.
+- **Frequency:** Two 15-minute sessions. Morning warm-up, evening cool-down.
+- **Intensity:** Read out loud at the edge of clarity. If every word is easy, push tempo. If half the words slur, slow the tempo down to last year's clean baseline and rebuild from there.
+- **Novelty:** Tongue twisters Monday/Wednesday. Cold reads of newspaper articles Tuesday/Thursday. Sing along to lyrics Friday. Voice memo of conversation Saturday for self-review. Sunday off.
+- **Sleep:** Same. The brain consolidates language in REM. Skipped REM = lost speech gains.
+- **Expected outcome:** Clarity audible to family within four weeks. Clarity audible to strangers within twelve.
+
+### Worked Example D: Cognitive Endurance, Year 1
+
+**Goal:** Sustain focus on a complex task — reading, writing, planning — for 60 continuous minutes.
+
+- **Dose:** 60 minutes of cognitive load per day, ramped from a 10-minute starting baseline.
+- **Frequency:** One block per day at first; split into two blocks once the 60-minute mark is hit reliably for two weeks.
+- **Intensity:** The task must be effortful. Rereading the same easy novel does not count. New material, complex sentences, problem-solving.
+- **Novelty:** Reading Mondays. Writing Tuesdays. Strategy puzzles Wednesdays. Conversation deep-dive with a friend Thursdays. Audio book at 1.25x with comprehension check Fridays.
+- **Sleep:** Cognitive endurance is the *most* sleep-dependent lever in this book. Below 7 hours, expect zero progress.
+- **Expected outcome:** 30 minutes of clean focus by Month 2. 60 minutes by Month 4. 90 minutes by Month 6.
+
+### Worked Example E: Mood / Mental Health, Always
+
+**Goal:** Maintain functional mood baseline; catch crashes early.
+
+- **Dose:** Daily check-in. PHQ-2 or PHQ-9 monthly. Therapy weekly when in active treatment, monthly maintenance after.
+- **Frequency:** Morning S.O.S. layer (Survive / Organize / Strive). Evening S.A.S.C.H. log.
+- **Intensity:** Honest. If the answer is "I am not okay," that is the right answer. The metric is honesty, not heroism.
+- **Novelty:** Therapeutic modality variation. CBT for the first six months. EMDR for trauma reprocessing in year two. Group work in year three. Whatever fits the season.
+- **Sleep:** Sleep is the single biggest variable in mood regulation post-stroke. Protect it.
+- **Expected outcome:** Mood regulation as a *practiced* skill, not a passive state.
+
+### The Math of Compounding
+
+Reps per day × days per week × weeks per year = annual rep count.
+
+300 reps × 6 days × 50 weeks = **90,000 reps per year, per drill.**
+
+Two drills run simultaneously = 180,000 reps per year.
+
+Three years of disciplined two-drill execution = **540,000 reps.**
+
+That is the number that rewires a stroke brain. That is the number nobody talks about. That is the number that turns "they said never" into "I do this on a Tuesday."
+
+The math does not lie. Pull every lever. Run the program. Heart's still thumpin'. The reps still rep.
+
+> Worked-example calculator, dose tracker, and the Recovery Math worksheet at **strokerecoveryacademy.com/math**.
+
+---
+
+## Appendix Q: The First Year After Discharge — The Desert Nobody Warns You About
+
+Inpatient rehab is structured. Outpatient PT is scheduled. The first year *after* outpatient ends is the *desert.* Nobody warns you about it. This appendix is the warning, and the survival kit.
+
+### What Disappears on Discharge Day
+
+- Your therapy team disappears. PT, OT, SLP — all gone. You go from 3–5 hours of structured guided practice per week to *zero* unless you build it yourself.
+- Your insurance authorization disappears. Most plans cap stroke OT/PT at 60 sessions. You will use them faster than you think.
+- The chart of your progress disappears. Nobody is measuring you anymore.
+- The other survivors in the waiting room disappear. Your weekly community of people who *get it* is gone.
+- The accountability disappears. Nobody is calling you to confirm tomorrow's appointment.
+
+**The result:** Most survivors lose 10–20% of the gains they made in the structured year. Not because they cannot keep them. Because the system stops asking them to.
+
+### The Five Things That Survive the Desert
+
+**1. The home program, written down.** Before your last outpatient session, beg the therapy team to write down the home program — every drill, every dose, every progression — in a document you can read at 4 a.m. with one good hand. If they do not offer, ask. If they refuse, write it yourself in front of them and have them edit it. *Leave with the document.*
+
+**2. The accountability stack.** One human + one log + one tribe. Build it in the last month of outpatient so it is running before the system disappears. (Chapter 20½, Pillar 7.)
+
+**3. The dose target.** Pick the rep count per day you will hit for the next year. Write it on the bathroom mirror. *300 hand reps per day. 30 walking minutes per day. 30 speech drill minutes per day.* Whatever your team prescribed, keep doing it after they stop watching.
+
+**4. The plateau plan.** The plateau will come at month 4 of the desert. It always does. Have the Mutation Tree (Ch 22) printed and in the drawer before it does. The survivors who panic during the desert plateau quit. The survivors who follow the plan survive.
+
+**5. The follow-up cadence.** Schedule a check-in with your neurologist or physiatrist at month 6 post-discharge. Schedule the next one at month 12. The system will not call you. *You call the system.*
+
+### The Mood Crash
+
+Around month 3 post-discharge, mood crashes. Universal. The reasons:
+
+- The structure that was holding the day together is gone.
+- The visible improvements that were happening weekly during outpatient slow to monthly. The dopamine drip stops.
+- Friends and family stop asking how recovery is going. The visibility wanes.
+- The reality of *this is now my life* lands in a way it did not in the active treatment phase.
+
+If you are in month 3 of the desert and you feel worse than you did in month 6 of outpatient — that is normal. You are not sliding back. You are feeling the desert. Treat it the same way: medication if needed, therapy, tribe, walking, the engine, the persona.
+
+### What to Build Before You Lose the Help
+
+In the last month of outpatient, build these so they exist on Day 1 of the desert:
+
+1. **The home gym.** Doesn't have to be fancy. Mirror, parallel bars, mat, theraband, soft ball, bat. $200 to $500 total. Cheaper than one month of out-of-pocket therapy. Build it.
+
+2. **The video routine.** Film yourself doing the home program once. Watch the video before each session for the first 30 days. Form fades fast without coaches. The video is the coach you keep.
+
+3. **The peer call.** One survivor further along than you, scheduled call once a week. They are your replacement clinical team. They have done what you are about to do. They will not let you slide.
+
+4. **The tribe.** Show up at strokerecoveryacademy.com/tribe at least weekly. Or your local stroke support group. Or a Discord. Or a Facebook group. The community replaces the waiting room.
+
+5. **The 90-day post-discharge plan.** Day 1 to Day 90 of the desert. Written. Specific. Modeled on Appendix G. Run it.
+
+The desert is real. The desert is survivable. The desert is also the place where most stroke survivors stop being stroke patients and start being *stroke builders.* You walk out of the desert as the architect of your own recovery. There is no other way.
+
+Heart's still thumpin'. Sand's still gritty. Walk through it.
+
+> Desert Survival Kit, Day 1–90 post-discharge plan, and the home-gym shopping list at **strokerecoveryacademy.com/desert**.
+
+---
+
+## Appendix R: For the Caregiver Whose Survivor Did Not Make It
+
+I almost did not write this appendix. Then I read three letters in one week from caregivers whose survivor died — one at week 6, one at year 2, one at year 5 — and I knew I had to. Stroke kills. Not always, not even most of the time, but sometimes. The book that pretends otherwise is dishonest. You bought a stroke recovery book and it owes you the chapter for the version of recovery that does not end with recovery.
+
+If you are reading this because your survivor did not make it: I am sorry. I am so sorry. I do not know your specific loss. I do know what I have learned from caregivers who are walking the same road.
+
+### The First Thirty Days
+
+Do less. Eat. Sleep. Drink water. Let the people who love you carry the things they offer to carry. The world will tell you to "get back to normal." There is no normal to get back to. There is only the new shape of your life, and the new shape takes a year to even start to settle. Do not rush it.
+
+If you have to do something, do these three things:
+
+1. **Tell the story out loud.** To one safe person. Once. The whole story. From the first headache to the last breath. The telling is a real piece of the grief work. Holding it inside makes it heavier.
+
+2. **Let the body grieve.** Walk. Move. Cry in the shower. Scream into a pillow. Hit a heavy bag. The body holds grief and the body has to release it. Sitting still with grief is a recipe for it to settle in your bones.
+
+3. **Take the medication if it is offered.** Grief depression is not weakness. SSRIs in the acute grief window are not erasing your love — they are giving you the floor to stand on while you grieve. Take the help.
+
+### The First Year — Three Honest Truths
+
+Caregiver bereavement after stroke is different from other griefs in three specific ways:
+
+**One: the work was your role.** You were the cook, the lifter, the bath nurse, the phone holder, the appointment-keeper. When the survivor goes, the work goes with them, and the absence of the work is its own grief on top of the absence of the person. You will keep reaching for the pill organizer. You will keep listening for the call from the bedroom. The empty role is the second loss. *Name it.*
+
+**Two: the recovery story you were writing together has no ending.** You were both inside a story called *the rebuild.* The story stopped mid-sentence. There is no ending. The mind keeps trying to finish it. *I think they would have walked again by now. I think we would have made it to the trip.* This is not delusion. This is the mind respecting how real the rebuild was. The story was real even if the ending was different.
+
+**Three: the medical system that surrounded you is gone.** The team you talked to weekly is no longer your team. The clinic does not call. The insurance does not call. The structure of medical caregiver life vanishes overnight. The vacuum is loud. *Build a new structure on purpose* — even a small one. A weekly therapy appointment. A peer group. A Sunday call with another bereaved caregiver. Replace the structure or the desert eats you the way it eats post-discharge survivors.
+
+### The Five-Year Truth
+
+I have talked to caregivers five and ten years out from a stroke loss. The pattern they describe:
+
+- **Year 1:** pure desert. Survival mode.
+- **Year 2:** the rituals start to soften. You stop reaching for the pill organizer. You learn how to be in the house alone.
+- **Year 3:** you start wanting to live again. Guilt comes with the wanting. The guilt is normal. *Wanting to live is not betraying the person who died. It is honoring the part of them that wanted you to live.*
+- **Year 5:** the loss is woven in, not on top. You can speak their name without the floor dropping out. You can laugh at a memory and not feel disloyal.
+- **Year 10:** the love is still the love. The grief is just one of the colors of it now.
+
+You will not be where you are now forever. You will not stop loving them. Both can be true. Both are true.
+
+### A Practical Page
+
+- **988** for crisis. Text **HOME to 741741** for text crisis support. Bereavement-specific support at the **GriefShare** network (griefshare.org) and **Modern Loss** (modernloss.com).
+- **Stroke-specific bereaved-caregiver group:** **strokerecoveryacademy.com/bereaved** — moderated, monthly, no posturing, just real survivors of caregiver loss.
+- **One book if you only read one:** Megan Devine, *It's OK That You're Not OK.*
+- **One sentence to keep on the mirror:** *They lived. They were loved. The love is not gone.*
+
+The Sasquatch in this book is alive because the love around me did not let me die. Some Sasquatches do not make it. The love around them is also real. The book exists for both stories. You belong here too.
+
+Heart's still thumpin'. Theirs stopped. Yours has not. Carry both.
+
+---
+
+## Appendix S: The Forty Questions to Ask Your Stroke Care Team
+
+Most stroke survivors leave appointments wishing they had asked more. This appendix is the cheat sheet. Print it. Bring it. Hand it to whoever holds your file. *No survivor walks out of an appointment under-informed.*
+
+### For the Neurologist (Acute and Follow-Up)
+
+1. What type of stroke did I have? Ischemic, hemorrhagic, TIA, or other?
+2. Exactly where in the brain was the damage? What functions does that region typically control?
+3. What was my NIH Stroke Scale score at admission? At discharge?
+4. What was the underlying cause? Atrial fibrillation, carotid disease, hypertension, clotting disorder, lifestyle, idiopathic?
+5. What is my risk of a second stroke in the next year? Five years?
+6. What medications am I on, and exactly why each one?
+7. What lifestyle changes carry the highest stroke-prevention payoff for me specifically?
+8. When should I come back for the next imaging study, and what are you looking for?
+
+### For the Physiatrist (Rehabilitation Doctor)
+
+9. What is your projected recovery curve for me over the next 12 months? 24? 60?
+10. How much of that projection is based on imaging, and how much is statistical averaging?
+11. What measurable goals would you set for me at 30, 60, and 90 days post-discharge?
+12. Which therapy modalities — CIMT, mirror therapy, FES, robotics — do you think will help me most, and why?
+13. When should I plateau-check vs. when should I push harder?
+14. What are the warning signs that should bring me back to your office immediately?
+
+### For the Physical Therapist
+
+15. What is my home program in writing — every drill, every dose, every progression?
+16. How will we measure progress between sessions?
+17. What is the cheapest equipment I should have at home to keep this work going after insurance runs out?
+18. Where am I most at risk of falling, and what is the fall-prevention plan?
+19. When am I cleared for stairs, driving, returning to work, returning to lifting?
+20. What is the right intensity — should I be sore the next day, breathing hard during, both, neither?
+
+### For the Occupational Therapist
+
+21. Which activities of daily living are highest priority for me to rebuild, and in what order?
+22. What adaptive equipment do you recommend, and which can I skip?
+23. How do I integrate the affected hand into normal daily tasks without causing the brain to "ignore" it?
+24. What is the plan for fine motor work, and what should I see at 30, 60, 90 days?
+25. How do I modify the home — kitchen, bathroom, bedroom — for safety and independence?
+
+### For the Speech-Language Pathologist
+
+26. Did I pass the swallow study? If not, what is the dysphagia plan, and when do we re-test?
+27. Is my deficit primarily aphasia, dysarthria, apraxia, or cognitive?
+28. What is the home-program for speech?
+29. Should I be reading out loud, singing, conversing, or all three?
+30. When can I expect to be able to drive (cognitive clearance), return to work, give presentations?
+
+### For the Mental Health Provider
+
+31. Have I been formally screened for post-stroke depression, anxiety, PTSD, and PBA?
+32. What is my PHQ-9 score? What is my GAD-7?
+33. What treatment do you recommend — therapy, medication, both?
+34. What are the warning signs of suicidal ideation I should watch for in myself?
+35. Do you know any other stroke survivors I could connect with as a peer?
+
+### For the Social Worker / Case Manager
+
+36. What is my insurance benefit cap on outpatient therapy, and how do we make it last?
+37. Do I qualify for disability benefits, and how do I apply?
+38. What community resources exist in my zip code — support groups, transportation, respite care?
+39. What financial assistance exists for adaptive equipment, home modification, and medications?
+40. Who should I call if any of this becomes overwhelming after discharge?
+
+If you ask these forty questions across your care team, you will leave the system with the most complete operating picture any stroke survivor can leave with. *You become your own primary care advocate.* That is the only sustainable model.
+
+> Printable PDF of all forty questions, plus a "What I Asked / What They Answered" tracker at **strokerecoveryacademy.com/questions**.
+
+---
+
+## Appendix T: The Stroke Survivor's Bill of Rights
+
+Print this. Tape it where you can see it. Read it on the days the system tries to take any of these from you.
+
+You have the right to:
+
+1. **Be told the truth about your stroke** — the type, the location, the cause, the prognosis — in plain English, in writing, with diagrams if you ask.
+2. **Refuse the prognosis ceiling.** No clinician at hour 72 can tell you what the body will do in year 7. Hear them out. Then keep working.
+3. **Maximum-effort rehab early.** Inpatient, outpatient, home — your right is to *enough dose.* Anything less is the system rationing your future.
+4. **A second opinion** at any decision point that affects your long-term function — surgical, medication, discharge timing, therapy intensity. Always your right. Never weakness.
+5. **Mental health screening at every visit.** PHQ-9, GAD-7, suicide ideation check. Your nervous system was just damaged. Your mood is part of the damage. Treat it.
+6. **A written home program at discharge.** Every drill. Every dose. Every progression. Leave with the document.
+7. **Access to your own chart.** Imaging, scores, notes, medication reasons. It is your body. The data is yours.
+8. **Caregiver support.** Your caregiver is part of your care. Their burnout is a clinical risk to you. Demand they be supported.
+9. **Refuse the language of "deficit" when you mean "rebuild."** The chart says deficit. You can say rebuild. Both are true. Yours is the one that builds the future.
+10. **Be treated as an adult.** You did not become a child when the stroke hit. The first clinician who talks to you like a child is fired from your care team — you may not have legal authority to fire them, but you have the authority to never trust them again and to seek different care.
+11. **Privacy and dignity** in every clinical setting. The gown does not erase your right to be addressed by name, asked before being touched, and given a moment before being moved.
+12. **Cultural and religious respect** in your care. Your beliefs are part of your healing. The system is required to respect them.
+13. **A say in the discharge timing and destination.** "We need the bed" is not a clinical justification. You and your family have a vote.
+14. **Pain management without judgment.** Pain after stroke is real. Untreated pain slows recovery. Demand treatment.
+15. **Access to assistive technology.** Brace, AFO, e-stim, wheelchair, walker, communication device — these are not luxuries. Fight for them.
+16. **The truth about cost.** What does this medication cost. What does this device cost. What does the next 90 days cost. You are allowed to know before you owe.
+17. **Time.** Time to think. Time to ask. Time to feel. Time to grieve. Time to push. Time to rest. The system is fast — your right is to slow it down at every point that matters.
+18. **Your story.** Nobody else tells the story of your stroke. You do. The chart is data. The story is yours.
+19. **Hope based on evidence, not platitudes.** "You're a fighter" is not evidence. The evidence is in this book. The evidence is in the science (Appendix H). The evidence is in the survivors who came before you.
+20. **A future the chart did not predict.** This is the most important right of all. *Reserve it. Defend it. Build it.*
+
+> Printable PDF of the Bill of Rights, plus a "Where I Am Being Denied My Rights" advocacy worksheet at **strokerecoveryacademy.com/rights**.
+
+---
+
+## Appendix U: Pull-Quotes — The Sasquatch in 100 Lines
+
+The book in 100 sentences. Use these for the bathroom mirror, the lock screen, the gym wall, the fridge, the journal opener, the social-share image. The whole engine, distilled.
+
+1. Heart's still thumpin'. Life's still pumpin'.
+2. Never zero.
+3. Never miss twice.
+4. Get up, get one rep, go back to bed.
+5. The persona runs the day the man cannot.
+6. They are wrong about most of it.
+7. The chart is data. The story is yours.
+8. The lowest is the launching pad.
+9. The cheap mutation first.
+10. The dose is the difference.
+11. Five hundred forty thousand reps. Three years. That is how a stroke brain rebuilds.
+12. Sleep is therapy.
+13. The desert is survivable.
+14. The boy needs his dad. The dad gets up.
+15. The Sasquatch is a built thing. So is your version.
+16. Survive. Organize. Strive.
+17. Seize. Absorb. Swing. Combine. Hammer.
+18. The ICU mush deserves a Britney chorus.
+19. The mirror loses today. I come back tomorrow.
+20. The chair years are tuition, not a sentence.
+21. Two opening reps for every closing rep, for life.
+22. The bot teaches the nerve. The nerve does the work.
+23. Borrow the assist. Learn the pattern. Give the assist back.
+24. Mutation Tree, branch one, before any other branch.
+25. The wall is the entrance, not the end.
+26. Both columns matter. Always both.
+27. The doctors saved my life. The doctors were wrong about the ceiling.
+28. Take the medication. Do the swallow study. Push past every empty "never."
+29. Day 30 is the desert. The oasis is real.
+30. Year 2 is the lowest. Year 7 is the proof.
+31. The first walk is the start, not the finish.
+32. Teaching keeps the recovery alive.
+33. The miracle becomes the routine.
+34. Tuesday is what recovery actually looks like.
+35. The brain rewires when the stimulus is novel.
+36. Form fades fast without coaches. Film yourself.
+37. One human plus one log plus one tribe.
+38. The accountability stack is built before the system disappears.
+39. The follow-up cadence belongs to you. The system will not call.
+40. Mood crashes at month 3. That is normal. Treat it.
+41. *Try again, Daddy.*
+42. The chair is not the truck. The truck is what the boy says it is.
+43. The first nap on the chest is worth two and a half hours of numb leg.
+44. Forty minutes a Sunday. CIMT, coached by a four-year-old.
+45. Britney was wrong about the chainsaw. So were the doctors.
+46. The Hot Dog Dream is the brain saying *I am still in here.*
+47. The fifty-pound vanish is just step one of the rebuild.
+48. The 325 is not the end of the story.
+49. Sasquatch took the next step. The bot reminded him how.
+50. The flexors are loud. Make the extensors louder.
+51. Open hand was the last thing the left side learned. It is the thing I am proudest of.
+52. The cardinal rule: two openings for every closing.
+53. The four a.m. voice in the garage runs the day.
+54. The engine is not the feeling. The engine runs without the feeling.
+55. The persona is the chassis. The body is the cargo.
+56. Identity over outcome. Always.
+57. Inspiration diet: eat what builds. Starve what subtracts.
+58. Ten-minute test: did this make me move? Eat. Did this make me sink? Starve.
+59. Accountability layered: human, public, log, tribe.
+60. Consistency math: never miss twice.
+61. When the persona cracks, return to basics first.
+62. The audit is honesty. The mutation is the work.
+63. Question five hurts because question five is true.
+64. Walking, hand, speech: three drills, six years, one Tuesday.
+65. The math of compounding does not lie.
+66. Sleep before another rep. Always.
+67. Discharge day is the first day of the desert.
+68. The home gym costs five hundred dollars and saves the rest of the rebuild.
+69. The peer call replaces the clinical team.
+70. The tribe replaces the waiting room.
+71. The 90-day post-discharge plan is the document that survives.
+72. The bereaved caregiver belongs in the book too.
+73. They lived. They were loved. The love is not gone.
+74. Forty questions to ask. No survivor leaves under-informed.
+75. The Bill of Rights is non-negotiable.
+76. The future the chart did not predict is the right to defend.
+77. Hope based on evidence is not a platitude.
+78. The system is fast. The right is to slow it down at every point that matters.
+79. Cat sat on my chest. Heart's still thumpin'.
+80. The single word *Yes* saved my life.
+81. The paramedic called me sir. I was thirty-six.
+82. The Sasquatch was about to be born.
+83. The team at Encompass treated a man, not a chart.
+84. Lisa stayed when leaving was the easy choice. Lisa left when staying would have killed the team. Both were love.
+85. The promise is the engine. The engine is the rebuild.
+86. The album is real. The book is real. The platform is real.
+87. The TikTok comments are real. *I tried today because of you.*
+88. Every stream funds the next survivor's gear.
+89. Stroke Recovery Academy is the platform. The book is the manual. Both are the rebuild.
+90. The Doctrine is four layers: laws, S.O.S., S.A.S.C.H., C.O.M.P.A.S.S.
+91. Tattoo-grade laws are non-negotiable.
+92. Apply the law you are most resisting.
+93. The Builder's Promise is the conclusion. The reader is the next builder.
+94. Wall is real. Wall is crackable. Three small mutations.
+95. The hot dog dream is the brain refusing to die quiet.
+96. Some Sasquatches do not make it. The love around them is also real.
+97. The chart did not predict this Tuesday.
+98. Year 14 is just another rep.
+99. Heart still thumpin'. Walk still walkin'. Hand still openin'. Boy still climbin'. Dad still buildin'. Sasquatch still showin' up.
+100. Build your version. Seven words or fewer. Run it forever.
+
+> A printable poster of all 100 lines (and a free wallpaper pack) at **strokerecoveryacademy.com/100lines**.
+
+---
+
+## Appendix V: The Builder's Toolkit — What the Sasquatch Actually Uses
+
+Every recommendation is something I personally use or have personally used. Affiliate links, where applicable, are at **strokerecoveryacademy.com/gear** — every commission funds the nonprofit. No item appears here that I have not tested for at least 60 days.
+
+### The Daily-Use Stack
+
+**Bat.** Any 32-inch wood bat. Not aluminum — the weight is the point. I use a Louisville Slugger I have had since college. $40 at any sporting goods store. Used for warm-up swings, grip work, mirror-side bat work. The single most-used piece of equipment in this entire recovery.
+
+**Theraband (red, green, blue).** Three resistance levels. $20 for the set. I keep a band looped over the kitchen pantry handle and grab it whenever I am waiting for water to boil. Twenty pulls = warm-up. The kitchen is the gym you actually visit.
+
+**Rubber bands (#19 office bands).** A bag of two hundred is $5 at any office supply store. Five at a time around the affected hand for opening reps. The cheapest single-purpose recovery tool on Earth.
+
+**Tennis ball.** $3. Squeeze, roll, throw to the kid. Never not in a pocket of mine.
+
+**Mirror.** A 24-inch full-length closet mirror leaned against the gym wall. $30 at IKEA. The mirror is the scaffold for mirror therapy and the tool that makes form correctable when nobody is coaching.
+
+**Foam roller.** Standard high-density 36-inch roller. $25. Used every day on the affected leg's quad, glute, and lower back. Recovery tissue work is real recovery — not decoration.
+
+### The Weekly-Use Stack
+
+**Parallel bars.** Built by Dad and Kasey from 2x4s and pipe in the garage. $150 in materials. The single biggest at-home investment in walking I made. If you cannot build, the medical-grade kind run $500–$800 used on Facebook Marketplace.
+
+**E-stim unit.** TENS-style portable unit, $80 on Amazon. With proper electrode placement (your PT can mark the peroneal nerve location with a Sharpie one time and you have it forever), this is the poor man's Bioness. Used 3x per week for ankle work.
+
+**Weighted vest.** 20 lbs adjustable. $60 on Amazon. Wear during walking blocks once you are stable to force glute engagement. The single most-effective late-stage walking-quality mutation I added.
+
+**Pulse oximeter.** $20. Track resting heart rate, heart rate variability, oxygen saturation. The cheap window into what your nervous system is doing.
+
+### The Apps
+
+**A simple notes app** for the daily log. Apple Notes, Google Keep, whatever syncs across devices. Three lines a day. Five years of entries fits in one note.
+
+**A timer app with intervals.** I use the basic stopwatch on the iPhone. Rep blocks need a timer. Make it stupid simple.
+
+**MyFitnessPal** for the food log when the 325 came down. Free tier works. The food log is not for shame — it is for *visibility.* You eat what you measure.
+
+**A meditation app — any of them.** I rotate Calm, Insight Timer, Headspace. Twenty minutes a day. Not optional. The brain that does not meditate after stroke does not consolidate as well as the brain that does.
+
+**A peer-call scheduling app.** I use plain Google Calendar with one survivor at a fixed Tuesday slot. Whatever keeps the call from becoming optional.
+
+### The Books I Keep on the Desk
+
+- Norman Doidge, *The Brain That Changes Itself* — the book that taught me neuroplasticity is real.
+- Jill Bolte Taylor, *My Stroke of Insight* — required reading. Survivor wrote the manual on what it feels like from the inside.
+- Atul Gawande, *Being Mortal* — humbling chapter on what good care looks like.
+- Charles Duhigg, *The Power of Habit* — the engineering of the daily rep.
+- James Clear, *Atomic Habits* — the math of small reps becoming identity.
+- Viktor Frankl, *Man's Search for Meaning* — when the meaning of the rebuild gets foggy.
+- David Goggins, *Can't Hurt Me* — when the engine is sputtering.
+- Megan Devine, *It's OK That You're Not OK* — for the caregivers in the bereaved appendix.
+
+### The Podcasts on the Walk
+
+- *Huberman Lab* — the science of recovery, sleep, neuroplasticity, dopamine.
+- *Tim Ferriss Show* — long-form conversations with people who have rebuilt from worse than my stroke.
+- *The Stroke Cast* — survivor-and-clinician hybrid show, the closest peer media to this book.
+- *Hostile Construction* (the album, not a podcast — but it goes on every walk).
+
+### The Gear I Tried and Retired
+
+- **Bioness L300.** Worked perfectly. Retired because the nerve learned the pattern after eighteen months. (Chapter 18.)
+- **Ankle AFO.** Worked for two years. Retired when the dorsiflexion came back enough that the brace was suppressing the nerve work.
+- **Wheelchair.** Lived in it for two and a half years. Retired permanently. Now in the garage as a reminder.
+
+### What I Have Never Used and Never Will
+
+- *Quick-fix gadgets advertised in stroke survivor Facebook groups.* If it costs $400 and the testimonial is one paragraph, it is not for you. Save the $400 for a real PT session.
+- *Supplements outside the MIND-diet basics in Appendix D.* The stroke supplement market is mostly snake oil. Talk to your neurologist before you spend.
+- *Hyperbaric chambers, stem cell tourism, anything outside the US that makes a "miracle cure" claim.* The math is bad. The risk is real.
+
+The toolkit is small. The discipline of using it is the whole thing. Heart's still thumpin'. Tools still tooling. Build the rest yourself.
+
+> Live, dated reviews of every item above (and the ones I am currently testing) at **strokerecoveryacademy.com/gear**.
+
+---
+
+## Appendix W: The Sasquatch Glossary — Field Terms You Will Hear in This Book
+
+Quick translation guide for the made-up vocabulary the Sasquatch uses across the chapters. Stroke recovery has its own dialect now. Learn it once, use it for the rest of the rebuild.
+
+- **325.** The peak chair-years weight. Used as shorthand for "the worst version of post-stroke me." Your 325 is whatever your worst version was.
+- **The 4 a.m. voice.** The internal voice that runs the engine when motivation has left the building. (Ch 20.)
+- **The Audit.** The Five Honest Questions you run before you mutate a plateaued program. (Ch 22.)
+- **Bat work.** Any of the bilateral upper-body drills using a bat. The umbrella term. (Ch 12.)
+- **The Bill.** Short for the Stroke Survivor's Bill of Rights. (Appendix T.)
+- **The Bot.** Any external assist device that teaches the nerve a pattern — Bioness, WalkAide, e-stim, robotic glove. (Ch 18.)
+- **Both arms.** The recurring marker for upper-body bilateral function returning. The line "*I held him with both arms*" is the whole second half of the book in three words. (Ch 24.)
+- **The Bridge.** The transitional weeks between inpatient discharge and outpatient PT — the most under-supported window in the system. (Appendix Q.)
+- **Builder's Science.** The sidebars across Ch 11–17 that translate motor-learning research into kitchen-table English.
+- **The Chair.** Any wheelchair phase. Mine was 2.5 years. (Ch 24.)
+- **Chair years.** The time spent primarily seated. Tuition, not a sentence. (Ch 2.)
+- **Coast.** What survivors do when they hit a plateau and stop mutating. The enemy. (Ch 22.)
+- **C.O.M.P.A.S.S.** Layer 4 of the Sasquatch Doctrine — the advanced navigation flow. (Appendix I.)
+- **The Dispatch.** The closing letter to the reader at the end of the book.
+- **The Desert.** The first year post-discharge, after the system disappears. (Appendix Q.)
+- **Doctrine.** The four-layer Sasquatch operating system. (Appendix I.)
+- **The Engine.** The Motivation Engine — the machine that runs the daily rep without depending on the daily feeling. (Ch 20.)
+- **Five Levers.** Dose, Frequency, Intensity, Novelty, Sleep. (Appendix P.)
+- **Heart's still thumpin'.** The tagline. Used sparingly, always earned.
+- **Hostile Construction.** The album. Also the literal description of the rebuild — violent, deliberate, structural.
+- **Hot Dog Dream.** The Coney Island dream that proved the brain was still in there. (Ch 2.)
+- **The Lowest.** Year 2, in the chair, marriage cracking, weight peaking. The launching pad. (Ch 24.)
+- **Mutation Tree.** The five branches of plateau mutation, ranked by cost. (Ch 22.)
+- **Never zero.** The non-negotiable daily rule. *One rep on the worst day still counts.*
+- **Never miss twice.** The two-day-grace rule that forgives the slip but not the second one.
+- **Open hand.** The hardest honest mile. The opposite of the post-stroke fist. (Ch 19.)
+- **Pass.** A single trip across the parallel bars in the garage. Counted in the log.
+- **Persona.** The Stroked-Out Sasquatch. Or whichever persona you forge. (Ch 20½.)
+- **The Plateau Audit.** The five honest questions. (Ch 22.)
+- **The Promise.** The vow made the day Nicholas Jr. was born. *I will play catch with both arms.* (Ch 24.)
+- **Rebuild.** The word the Sasquatch uses where the chart says "deficit."
+- **S.A.S.C.H.** Layer 3 of the Doctrine — daily construction rhythm. *Seize, Absorb, Swing, Combine, Hammer.* (Appendix I.)
+- **S.O.S.** Layer 2 of the Doctrine — crisis layer. *Survive, Organize, Strive.* (Appendix I.)
+- **Sasquatch.** Always capitalized, always with the q-u sequence. The persona, the canonical spelling, the brand. Never "Saschquatch."
+- **Strokelyfe.** The 501(c)(3). The donation arm. *strokelyfe.org/donate.*
+- **Stroke Recovery Academy.** The platform. *strokerecoveryacademy.com.*
+- **The Tattoo Laws.** Layer 1 of the Doctrine — non-negotiable. (Appendix I.)
+- **The Truck.** What Nicholas called the wheelchair. (Ch 24.)
+- **Try again, Daddy.** What Nicholas said every time the ball bounced off my left hand. The most efficient CIMT cue ever delivered to a stroke survivor. (Ch 24.)
+- **The Tuesday.** The minute-by-minute year-seven day in Ch 29½. Used as shorthand for *what 90% function actually looks like.*
+- **The Wall.** The Year Five plateau. Cracked by three small mutations on a single Monday. (Ch 22.)
+- **Year Seven.** The current year. The proof.
+
+> If a Sasquatch term is not in this glossary, send it to **glossary@strokerecoveryacademy.com** and we will add it for the next edition.
+
+---
+
+# THE SOUNDTRACK: HOSTILE CONSTRUCTION
 
 ---
 
