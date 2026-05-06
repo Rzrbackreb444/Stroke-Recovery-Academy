@@ -1215,6 +1215,8 @@ The plateau is the launching pad. Treat it that way.
 
 ## Chapter 8: From Wheelchair to Walking
 
+![Figure 6: Walking gait — heel-strike, opposite arm swing, upright torso, eyes forward.](images/fig-06-walking-gait.png)
+
 The first time I tried to move my left leg, it felt like someone else's. Dead weight. A floppy anchor. Every step was a shuffle, a drag, or a face-plant waiting to happen.
 
 The worst was drop foot — that inability to lift the front of my foot, guaranteeing I'd catch my toe on every rug, every curb, every change in floor color.
@@ -1414,6 +1416,8 @@ What you should feel during a clean THINK rep: total focus on the muscle, a fain
 
 What the research is also honest about: motor imagery does not bypass the lesion. If the corticospinal tract is completely destroyed, no amount of THINK creates motion. But for the vast majority of survivors with **partial** lesions — which is most strokes — the dormant pathways are recoverable, and THINK is one of the cheapest, safest tools to wake them.
 
+![Figure 8: Mental rehearsal posture — seated upright, eyes closed, hands open on thighs.](images/fig-08-mental-rehearsal.png)
+
 Audio THINK guides at **strokerecoveryacademy.com/protocols/think**.
 
 ### Builder's Note
@@ -1535,6 +1539,8 @@ What you should *feel* if it is working: warmth in the weak shoulder during the 
 
 What you should *not* feel: sharp pain in the shoulder (stop — you may be subluxing), pain in the wrist or elbow (lighten the bat, shorten the range), or a "pop" anywhere (stop, ice, call your PT).
 
+![Figure 1: Bat-therapy stance — both hands on the bat, arms extended, feet shoulder-width.](images/fig-01-bat-therapy.png)
+
 Video demo at **strokerecoveryacademy.com/protocols/bat**.
 
 ### Builder's Note
@@ -1634,6 +1640,8 @@ The eccentric-loading wrinkle (the wall-lean negative) does extra work because e
 
 What you should feel if it's working: a slow ankle "wake-up" warmth within 30 seconds, calf fatigue inside 90 seconds, the toes starting to pull upward involuntarily after the third or fourth set. The involuntary toe-lift is the anterior tibialis re-firing. Log it. The first day you feel it is a milestone — circle it in the Tracker.
 
+![Figure 5: Sit-to-stand progression — seated, hinge-and-rise, full standing.](images/fig-05-sit-to-stand.png)
+
 Video demo at **strokerecoveryacademy.com/protocols/weight-bearing**.
 
 ### Reflection Point
@@ -1707,6 +1715,8 @@ The mechanism is **visual capture of motor intention.** When you look at the ref
 This is also why **head position matters.** Tilt your head so your direct line of sight goes to the mirror, not over the top of it. Your peripheral vision should not see the hidden hand. The illusion needs to be unbroken for the mirror neuron firing to be maximal. Twenty minutes is the sweet spot — long enough for the priming effect, short enough that fatigue doesn't crash the focus.
 
 Pair it with the Phantom Limb track in the soundtrack. Headphones on. Eyes locked. Twenty minutes. Sixty-six days. Watch what happens.
+
+![Figure 2: Mirror-therapy setup — vertical mirror on midline, unaffected arm in front, affected arm behind.](images/fig-02-mirror-therapy.png)
 
 Video demo at **strokerecoveryacademy.com/protocols/mirror**.
 
@@ -1802,6 +1812,8 @@ The mechanism is two-stage. First, you have to **restore the cortical signal** �
 
 The AFO question is honest: a brace that prevents falls in week one is a tool. A brace that prevents practice in year three is a sentence. The transition out is gradual, supervised, and started indoors. The end-state for many survivors is brace-on for distance walking, brace-off for short household walks, and recovery that keeps trending toward the latter.
 
+![Figure 3: Wall lean for ankle dorsiflexion — hands flat on wall, rear heel pressed to floor.](images/fig-03-wall-lean.png)
+
 Video demo at **strokerecoveryacademy.com/protocols/dropfoot**.
 
 ### Reflection Point
@@ -1889,6 +1901,8 @@ That curve is *not* a destiny. It is an average. Late hand recovery happens when
 **3. Combine modalities.** The high-yield stack: mirror therapy primes the motor cortex, then 100+ task-specific reps consolidate, then a constraint period (mitt on the good hand for 30 minutes a day) forces transfer. Each modality alone is mediocre. The stack is the multiplier.
 
 What the literature is also honest about: there are survivors with severe damage who do not get useful hand function back even with perfect protocol adherence. Compensation strategies (one-handed techniques, adaptive equipment) are not failure — they are the right tool for that situation. Appendix C lists what works.
+
+![Figure 9: Constraint-induced movement therapy — restraint mitt on the unaffected hand, affected hand reaching for the cup.](images/fig-09-cimt.png)
 
 Video demo at **strokerecoveryacademy.com/protocols/hand**.
 
@@ -2343,6 +2357,8 @@ The strategy is not to *fight* the flexors. The strategy is to *grow* the extens
 The open hand was the last thing my left side learned. It is also the thing I am proudest of. A hand that opens on demand is a hand that can hug a son back, catch a baseball, sign a name, play a chord. The closed fist is a survival posture. The open hand is the rebuilt one.
 
 Heart's still thumpin'. Hand still openin'. Keep the extensors loud.
+
+![Figure 4: Open-hand rubber-band protocol — palm forward, fingers extended against gentle band resistance.](images/fig-04-open-hand.png)
 
 > Full open-hand protocol library, video demos, and the rubber-band starter kit at **strokerecoveryacademy.com/protocols/open-hand**.
 
@@ -4682,6 +4698,8 @@ Every fifteen-minute delay in treatment costs measurable function. *Note the tim
 - **S — Speech difficulty.** Ask them to repeat a simple sentence: *"The sky is blue today."* Is it slurred, strange, or wrong?
 - **T — Time to call 911.** Note the time. Tell the dispatcher you suspect a stroke.
 
+![Figure 7: FAST face comparison — symmetric face on the left, drooping left side on the right.](images/fig-07-fast-face.png)
+
 ### BE-FAST (More Sensitive — Use This One)
 
 A meaningful percentage of strokes — especially in the back of the brain (posterior circulation, brainstem, cerebellum) — are missed by FAST alone. BE-FAST catches more.
@@ -4711,6 +4729,8 @@ Use this script. Read it off your phone if you have to:
 > *"I think someone is having a stroke. They have [list symptoms]. The symptoms started at [exact time, or last-known-normal time]. The address is [address]. The patient's age is [age]. They take [list medications, including blood thinners]. They are conscious / unconscious. They are breathing / not breathing."*
 
 If they are unresponsive but breathing, lay them on their side (recovery position). If they stop breathing, start CPR if you are trained.
+
+![Figure 12: Recovery position — on the side, top knee bent forward, head tilted back to keep the airway open.](images/fig-12-recovery-position.png)
 
 ### What NOT to Do
 
@@ -4794,6 +4814,9 @@ Walk on your heels for 20 feet, three sets, daily. If you cannot heel-walk yet, 
 From a stable chair, stand all the way up, sit all the way down, controlled. 10 reps to start, build to 30. Add a count of 3 down for eccentric loading. Add a held isometric at the bottom (hovering, not touching the chair) for 5 seconds. This trains quads, glutes, balance, and trunk control simultaneously. Common mistake: pushing off arms. The arms are coaches, not crutches — fold them across the chest as soon as you can.
 
 **Single-leg stand.**
+
+![Figure 10: Single-leg balance — one knee lifted, fingertips touching the wall for safety.](images/fig-10-single-leg-balance.png)
+
 Wall-supported single-leg stand on the affected side, 5 seconds × 5 reps, both sides. Build to 30 seconds without support. Then add eyes-closed. Then add foam pad. Single-leg stand time is one of the best predictors of fall risk in stroke survivors — train it relentlessly.
 
 ### Upper Limb Protocols
@@ -6425,6 +6448,8 @@ Every recommendation is something I personally use or have personally used. Affi
 ### The Daily-Use Stack
 
 **Bat.** Any 32-inch wood bat. Not aluminum — the weight is the point. I use a Louisville Slugger I have had since college. $40 at any sporting goods store. Used for warm-up swings, grip work, mirror-side bat work. The single most-used piece of equipment in this entire recovery.
+
+![Figure 11: Theraband row — band anchored to a doorway, elbows pulled to the ribs, shoulder blades squeezed.](images/fig-11-theraband-row.png)
 
 **Theraband (red, green, blue).** Three resistance levels. $20 for the set. I keep a band looped over the kitchen pantry handle and grab it whenever I am waiting for water to boil. Twenty pulls = warm-up. The kitchen is the gym you actually visit.
 
