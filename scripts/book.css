@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cinzel:wght@600;700;900&family=Inter:wght@500;600;700;800&display=swap');
+/* fonts injected by typeset.mjs as @font-face from local files */
 
 @page {
   size: Letter;
@@ -22,24 +22,130 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-#book {
-  max-width: 100%;
+/* ============ TITLE PAGE ============ */
+.title-page {
+  page-break-after: always;
+  break-after: page;
+  height: 9.3in;            /* Letter 11in - 2*0.85in margin */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* ---------- Headings ---------- */
+.title-inner {
+  width: 100%;
+  text-align: center;
+}
+
+.title-rule {
+  width: 2.6in;
+  height: 1.5px;
+  background: #ea580c;
+  margin: 0 auto 0.18in;
+}
+.title-rule + .title-rule,
+h1.book-title-main + .title-rule {
+  margin: 0.18in auto 0.35in;
+}
+
+h1.book-title-main {
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: 800;
+  font-size: 30pt;
+  line-height: 1.18;
+  letter-spacing: 0.06em;
+  color: #0a0a0a;
+  text-transform: uppercase;
+  margin: 0 0 0.18in;
+  padding: 0;
+}
+
+.title-subtitle {
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: 600;
+  font-size: 13pt;
+  letter-spacing: 0.18em;
+  color: #c2410c;
+  text-transform: uppercase;
+  margin: 0 0 0.12in;
+  text-indent: 0;
+  text-align: center;
+}
+
+.title-tagline {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-style: italic;
+  font-size: 12pt;
+  color: #555;
+  margin: 0 0 0.45in;
+  text-indent: 0;
+  text-align: center;
+}
+
+.title-spacer { height: 0.4in; }
+
+.title-author {
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: 700;
+  font-size: 13pt;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.06in;
+  text-indent: 0;
+  text-align: center;
+  color: #1a1a1a;
+}
+
+.title-author-credit {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-style: italic;
+  font-size: 11pt;
+  color: #555;
+  margin: 0 0 0.6in;
+  text-indent: 0;
+  text-align: center;
+}
+
+.title-promise {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 11pt;
+  color: #2a2a2a;
+  margin: 0 0 0.4in;
+  text-indent: 0;
+  text-align: center;
+}
+
+img.title-qr {
+  display: block;
+  margin: 0 auto 0.1in;
+  width: 1.4in;
+  height: 1.4in;
+}
+
+.title-qr-caption {
+  font-family: 'Inter', sans-serif;
+  font-size: 9pt;
+  color: #c2410c;
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+  margin: 0;
+  text-indent: 0;
+  text-align: center;
+}
+
+/* ============ HEADINGS ============ */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Cinzel', 'Inter', Georgia, serif;
+  font-family: 'Cinzel', Georgia, serif;
   color: #0a0a0a;
   font-weight: 700;
   letter-spacing: 0.02em;
-  line-height: 1.15;
+  line-height: 1.18;
   margin: 1.6em 0 0.6em;
   page-break-after: avoid;
   break-after: avoid;
 }
 
 h1 {
-  font-size: 28pt;
+  font-size: 26pt;
   text-align: center;
   margin: 0.3in 0 0.4in;
   letter-spacing: 0.06em;
@@ -47,29 +153,30 @@ h1 {
 }
 
 h2 {
-  font-size: 18pt;
+  font-size: 16pt;
   text-align: left;
   margin-top: 1.4em;
-  margin-bottom: 0.8em;
+  margin-bottom: 0.7em;
   letter-spacing: 0.04em;
 }
 
 h2.chapter-head {
-  font-size: 22pt;
+  font-size: 20pt;
   text-align: center;
-  margin: 0.6in 0 0.45in;
+  margin: 0.5in 0 0.4in;
   text-transform: uppercase;
   letter-spacing: 0.07em;
   page-break-before: always;
   break-before: page;
-  border-bottom: none;
+  color: #0a0a0a;
+  font-weight: 700;
 }
 
 h2.chapter-head::before {
   content: "";
   display: block;
-  width: 60px;
-  height: 2px;
+  width: 64px;
+  height: 1.5px;
   background: #ea580c;
   margin: 0 auto 0.35in;
 }
@@ -77,10 +184,10 @@ h2.chapter-head::before {
 h2.chapter-head::after {
   content: "";
   display: block;
-  width: 60px;
-  height: 2px;
+  width: 64px;
+  height: 1.5px;
   background: #ea580c;
-  margin: 0.25in auto 0;
+  margin: 0.3in auto 0;
 }
 
 h1.chapter-head {
@@ -88,40 +195,54 @@ h1.chapter-head {
   break-before: page;
 }
 
-h1.book-title {
-  page-break-before: avoid;
-  break-before: avoid;
-  font-size: 30pt;
-  margin-top: 1.2in;
-}
-
+/* H3 = section header inside chapter */
 h3 {
-  font-size: 13pt;
+  font-size: 12pt;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: #c2410c;
-  margin-top: 1.5em;
+  margin-top: 1.6em;
+  margin-bottom: 0.5em;
   font-family: 'Inter', sans-serif;
   font-weight: 700;
+  text-align: left;
+}
+
+/* H3 immediately under chapter-head H2: render as Part divider sub-line, centered */
+h2.chapter-head + h3 {
+  text-align: center;
+  margin-top: -0.2in;
+  color: #c2410c;
 }
 
 h4 {
-  font-size: 11.5pt;
+  font-size: 11pt;
   font-family: 'Inter', sans-serif;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #1a1a1a;
+  margin: 1.3em 0 0.4em;
 }
 
-/* ---------- Body text ---------- */
+/* ============ BODY TEXT ============ */
 p {
   margin: 0 0 0.55em;
   text-align: justify;
   hyphens: auto;
   -webkit-hyphens: auto;
-  orphans: 3;
-  widows: 3;
+  orphans: 4;
+  widows: 4;
+}
+
+p.attribution {
+  page-break-before: avoid;
+  break-before: avoid;
+  text-indent: 0;
+  text-align: right;
+  margin-top: -0.2em;
+  font-style: italic;
+  color: #555;
 }
 
 p + p {
@@ -133,20 +254,22 @@ h1 + p, h2 + p, h3 + p, h4 + p, hr + p, blockquote + p {
   text-indent: 0;
 }
 
-/* ---------- Drop caps ---------- */
+/* ============ DROP CAPS ============ */
 p.chapter-opener {
   text-indent: 0;
   margin-top: 0.3em;
+  min-height: 4em;
 }
 
 p.chapter-opener::first-letter {
   font-family: 'Cinzel', Georgia, serif;
-  font-weight: 900;
-  font-size: 5.2em;
-  line-height: 0.85;
+  font-weight: 800;
+  font-size: 4.6em;
+  line-height: 0.88;
   float: left;
-  padding: 0.05em 0.12em 0 0;
-  margin-bottom: -0.15em;
+  padding: 0.06em 0.14em 0 0;
+  margin-top: 0.02em;
+  margin-bottom: -0.18em;
   color: #ea580c;
 }
 
@@ -156,7 +279,7 @@ p.chapter-opener::first-line {
   font-weight: 600;
 }
 
-/* ---------- Blockquotes (epigraphs / sidebar callouts) ---------- */
+/* ============ BLOCKQUOTES ============ */
 blockquote {
   margin: 1.2em 0.4in;
   padding: 0.4em 0.8em;
@@ -171,8 +294,9 @@ blockquote {
 
 blockquote p { text-align: left; text-indent: 0; }
 
-/* Epigraph immediately under a chapter heading: center it, no border */
-h2.chapter-head + blockquote {
+/* Epigraph / cold-open: blockquote immediately under chapter heading -> centered, no border */
+h2.chapter-head + blockquote,
+h2.chapter-head + h3 + blockquote {
   border: none;
   text-align: center;
   margin: 0 0.6in 0.5in;
@@ -181,9 +305,11 @@ h2.chapter-head + blockquote {
   color: #444;
 }
 
-h2.chapter-head + blockquote p { text-align: center; }
+h2.chapter-head + blockquote p,
+h2.chapter-head + h3 + blockquote p { text-align: center; text-indent: 0; }
 
-h2.chapter-head + blockquote::before {
+h2.chapter-head + blockquote::before,
+h2.chapter-head + h3 + blockquote::before {
   content: "";
   display: block;
   margin: 0 auto 0.2in;
@@ -191,24 +317,51 @@ h2.chapter-head + blockquote::before {
   border-top: 1px solid #c2410c;
 }
 
-/* ---------- Lists ---------- */
+/* ============ CENTERED FRONT-MATTER PAGES (Dedication, Epigraph, A Note) ============ */
+h2.chapter-head.center-page-head {
+  margin-top: 2.4in;
+}
+
+/* ============ PART DIVIDER PAGES (H1 like "PART I — THE STORM") ============ */
+h1.chapter-head.part-divider {
+  margin-top: 3.6in;
+  text-align: center;
+  font-size: 28pt;
+  letter-spacing: 0.15em;
+  page-break-after: always;
+  break-after: page;
+}
+h1.chapter-head.part-divider::before,
+h1.chapter-head.part-divider::after {
+  content: "";
+  display: block;
+  width: 60px;
+  margin: 0 auto;
+  border-top: 1.5px solid #ea580c;
+}
+h1.chapter-head.part-divider::before { margin-bottom: 0.5em; }
+h1.chapter-head.part-divider::after  { margin-top: 0.5em; }
+
+/* ============ LISTS ============ */
 ul, ol {
   margin: 0.5em 0 0.7em 1.5em;
   padding-left: 0.5em;
 }
 li { margin: 0.2em 0; }
-li > p { text-indent: 0; }
+li > p { text-indent: 0; margin-bottom: 0.3em; }
 
-/* ---------- Strong / em ---------- */
+/* ============ STRONG / EM ============ */
 strong { font-weight: 700; color: #0a0a0a; }
 em { font-style: italic; }
 
-/* ---------- HR / scene break ---------- */
+/* ============ HR / SCENE BREAK ============ */
 hr.scene-break {
   border: none;
   text-align: center;
   margin: 1.4em 0;
   page-break-after: avoid;
+  break-after: avoid;
+  height: 1em;
 }
 hr.scene-break::after {
   content: "❖   ❖   ❖";
@@ -219,10 +372,10 @@ hr.scene-break::after {
   font-style: normal;
 }
 
-/* ---------- Images / figures ---------- */
+/* ============ IMAGES / FIGURES ============ */
 img {
   display: block;
-  max-width: 80%;
+  max-width: 78%;
   max-height: 4.5in;
   margin: 1em auto;
   page-break-inside: avoid;
@@ -233,14 +386,12 @@ p > img:only-child {
   margin: 1.2em auto;
 }
 
-/* QR code image: render smaller + centered */
-img[src*="qr-scan-me"] {
-  max-width: 1.6in;
-  max-height: 1.6in;
+img[src*="qr-scan-me"]:not(.title-qr) {
+  max-width: 1.4in;
+  max-height: 1.4in;
 }
 
-/* Image captions: when image sits alone in <p>, italicize anything after it */
-p:has(img) {
+p:has(img):not(.title-qr-caption) {
   text-align: center;
   font-style: italic;
   font-size: 10pt;
@@ -248,13 +399,13 @@ p:has(img) {
   text-indent: 0;
 }
 
-/* ---------- Links ---------- */
+/* ============ LINKS ============ */
 a {
   color: #c2410c;
   text-decoration: none;
 }
 
-/* ---------- Code (rare in this book but be safe) ---------- */
+/* ============ CODE ============ */
 code, pre {
   font-family: 'JetBrains Mono', Menlo, Consolas, monospace;
   font-size: 0.9em;
@@ -264,21 +415,8 @@ code, pre {
 }
 pre { padding: 0.6em 0.8em; overflow-x: auto; }
 
-/* ---------- Page-break safety ---------- */
+/* ============ PAGE-BREAK SAFETY ============ */
 img, blockquote, h3, h4 {
   page-break-inside: avoid;
   break-inside: avoid;
-}
-
-/* Front-matter title page H1 (first one only): full title page treatment */
-h1.book-title {
-  font-size: 34pt;
-  letter-spacing: 0.08em;
-  margin-top: 1.5in;
-}
-
-/* TOC — make it tighter */
-h2:first-of-type ~ ul {
-  list-style: none;
-  padding-left: 0;
 }

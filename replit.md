@@ -68,6 +68,11 @@ Every appendix and many chapters cross-reference `strokerecoveryacademy.com/<res
 - **Visuals shipped (May 2026, post-92/100-review):** 12 consistent black-ink line-art figures generated and placed in `attached_assets/book_v2/images/`. Same visual style across all (single neutral figure, IKEA-instruction aesthetic, white background, no text labels). Placed at natural anchor points: Fig 1 bat (Ch 12), Fig 2 mirror (Ch 14), Fig 3 wall lean (Ch 15 dropfoot), Fig 4 open hand (Ch 19), Fig 5 sit-to-stand (Ch 13), Fig 6 walking gait (Ch 8 opener), Fig 7 FAST face comparison (App A), Fig 8 mental rehearsal (Ch 11), Fig 9 CIMT mitt (Ch 16), Fig 10 single-leg balance (App B), Fig 11 theraband row (App V), Fig 12 recovery position (App A 911 section). Closes the reviewer's #1 transformative gap.
 - **Still pending:** plug-density demotion (move inline mid-chapter platform callouts to end-of-chapter Resources boxes in Ch 1, 2, 11, 14, 16, 24); "Pocket Sasquatch" 12k-word condensed cut as separate funnel asset; external Foreword (Nick to solicit); professional copy edit; beta reader round 2.
 
+## Typeset PDF (Shipped May 2026)
+- **`attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION.pdf`** — 300pp, 6.5 MB, production-grade.
+- Built by `scripts/typeset.mjs` (puppeteer + chromium + pdf-lib) from the v3 markdown without ever mutating the source. Pipeline strips editorial cruft (Foreword section, ISBN/cover-art/beta-reader placeholder lines, App H fact-checker sentence), renders front matter + body as separate PDFs, merges them, and stamps roman numerals on front matter (cover unnumbered, ii..xxiv) + arabic on body (1..276).
+- Custom Cinzel/Crimson-Pro/Inter title page with orange rules, QR + URL caption. Drop caps on every chapter opener (heuristic skips image-only/strong-only/em-only/short/attribution paragraphs). Part divider pages (`PART I — THE STORM`, etc) render vertically centered with orange display rule. Attribution lines (`— Nick`) right-aligned italic, pinned to previous block via `page-break-before: avoid` so they never strand alone.
+
 ## Important Files
 - `attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION-v3.md` — main deliverable
 - `attached_assets/Pasted-THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION-FROM-0-TO-90-AN_1778002753962.txt` — original 23k source
