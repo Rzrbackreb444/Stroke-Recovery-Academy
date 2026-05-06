@@ -78,6 +78,42 @@ uri = "file://attached_assets/book_v2/images/fig-12-recovery-position.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "j6TadFGe4i7NGJshC_HJB"
+uri = "file://attached_assets/book_v2/images/fig-13-nmes-placement.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "SpzGHuW5FP7lnmKjVxgyk"
+uri = "file://attached_assets/book_v2/images/fig-14-foam-roller.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "B_TJhJZ72ppjSX3HVjRsJ"
+uri = "file://attached_assets/book_v2/images/fig-15-parallel-bars.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "GhWiMsV0GbRA99ZOVhF2t"
+uri = "file://attached_assets/book_v2/images/fig-16-chin-tuck-swallow.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "NTvgaa0hfhh--aI9FibpY"
+uri = "file://attached_assets/book_v2/images/fig-17-brushing-teeth.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "B559-VXkw89HLIbTgHKFl"
+uri = "file://attached_assets/book_v2/images/fig-18-tennis-ball-squeeze.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "EGooVUwVUQyTPSx95p4M4"
 uri = "file://exports/Stroked-Out-Sasquatch_DEDUPED_v1.md"
