@@ -42,6 +42,42 @@ uri = "file://attached_assets/book_v2/images/fig-06-walking-gait.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "_ZHjS2c7diQBhFXOfevSD"
+uri = "file://attached_assets/book_v2/images/fig-07-fast-face.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "tjE2_fHUS3oikejPVp6Qz"
+uri = "file://attached_assets/book_v2/images/fig-08-mental-rehearsal.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "kixAJwxruIHn27Ezoo6n-"
+uri = "file://attached_assets/book_v2/images/fig-09-cimt.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "V2njvBSztHa-iEl1w__pm"
+uri = "file://attached_assets/book_v2/images/fig-10-single-leg-balance.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "wuLLYqu5ijMMaiz9VYcwH"
+uri = "file://attached_assets/book_v2/images/fig-11-theraband-row.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "STsj-kflM-R_tT1Z3Kd15"
+uri = "file://attached_assets/book_v2/images/fig-12-recovery-position.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "EGooVUwVUQyTPSx95p4M4"
 uri = "file://exports/Stroked-Out-Sasquatch_DEDUPED_v1.md"
@@ -101,3 +137,39 @@ id = "x85UbD19juDzmmEFGUmVG"
 uri = "file://attached_assets/book_v2/images/fig-06-walking-gait.png"
 type = "image"
 title = "Fig 6 — Walking Gait Posture (Ch 8)"
+
+[[outputs]]
+id = "PsMQIRHFH0eYGJP81vTHM"
+uri = "file://attached_assets/book_v2/images/fig-07-fast-face.png"
+type = "image"
+title = "Fig 7 — FAST Face Droop Comparison (Appendix A)"
+
+[[outputs]]
+id = "ihKKcknxRxnWoUfyzF7Z6"
+uri = "file://attached_assets/book_v2/images/fig-08-mental-rehearsal.png"
+type = "image"
+title = "Fig 8 — THINK Mental Rehearsal (Ch 11)"
+
+[[outputs]]
+id = "jgcPaar8xvFgt5IMbzlK6"
+uri = "file://attached_assets/book_v2/images/fig-09-cimt.png"
+type = "image"
+title = "Fig 9 — Constraint-Induced Movement Therapy (Ch 16)"
+
+[[outputs]]
+id = "5h-T2nfoXCoSEDRjSzlN7"
+uri = "file://attached_assets/book_v2/images/fig-10-single-leg-balance.png"
+type = "image"
+title = "Fig 10 — Single-Leg Balance with Wall Support (Ch 13)"
+
+[[outputs]]
+id = "-G5QACiP5dxuge-LV8c-E"
+uri = "file://attached_assets/book_v2/images/fig-11-theraband-row.png"
+type = "image"
+title = "Fig 11 — Theraband Resistance Row (Appendix V)"
+
+[[outputs]]
+id = "2IInKROtuNYfPN9i4juR0"
+uri = "file://attached_assets/book_v2/images/fig-12-recovery-position.png"
+type = "image"
+title = "Fig 12 — Recovery Position (Appendix A)"
