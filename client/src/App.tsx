@@ -58,6 +58,7 @@ const MusicProductionStudio = lazy(() => import("@/pages/MusicProductionStudio")
 const BookStudioV3 = lazy(() => import("@/pages/BookStudioV3"));
 const BookCompanion = lazy(() => import("@/pages/BookCompanion"));
 const BookBuy = lazy(() => import("@/pages/BookBuy"));
+const BookRead = lazy(() => import("@/pages/BookRead"));
 const BookSlugRedirect = lazy(() => import("@/pages/BookSlugRedirect"));
 const VideoStudio = lazy(() => import("@/pages/VideoStudio"));
 const FreeAnalysisForVideo = lazy(() => import("@/pages/FreeAnalysisForVideo"));
@@ -749,6 +750,7 @@ function Router() {
       <Route path="/book" component={BookCompanion} />
       <Route path="/book/index" component={BookCompanion} />
       <Route path="/book/buy" component={BookBuy} />
+      <Route path="/book/read" component={BookRead} />
       <Route path="/protocols" component={BookSlugRedirect} />
       <Route path="/protocols/:slug" component={BookSlugRedirect} />
       <Route path="/workbook" component={BookSlugRedirect} />

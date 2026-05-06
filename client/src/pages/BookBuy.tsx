@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
-import { Download, FileText, Truck, Star, Check, Loader2, BookOpen } from "lucide-react";
+import { Download, FileText, Truck, Star, Check, Loader2, BookOpen, BookMarked } from "lucide-react";
 
 interface Edition {
   id: number;
@@ -37,6 +37,11 @@ export default function BookBuy() {
 
   const { data, isLoading } = useQuery<Listing>({
     queryKey: ["/api/book/storefront"],
+  });
+
+  const { data: entitlement } = useQuery<{ owns: boolean }>({
+    queryKey: ["/api/book/entitlement"],
+    enabled: isAuthenticated,
   });
 
   const buy = async (editionId: number, kind: string) => {
@@ -83,12 +88,15 @@ export default function BookBuy() {
       <main className="flex-1">
         <section className="container mx-auto px-4 py-10 md:py-16">
           <div className="grid md:grid-cols-2 gap-10 items-start max-w-6xl mx-auto">
-            <div className="md:sticky md:top-24">
-              <div className="rounded-md overflow-hidden shadow-2xl ring-1 ring-border">
+            <div className="md:sticky md:top-24 flex flex-col items-center md:items-stretch">
+              <div
+                className="rounded-md overflow-hidden shadow-2xl ring-1 ring-border bg-black mx-auto"
+                style={{ maxWidth: "min(100%, 360px)", aspectRatio: "1410 / 2250" }}
+              >
                 <img
                   src={data.coverImageUrl}
                   alt={data.title}
-                  className="w-full h-auto"
+                  className="w-full h-full object-contain"
                   data-testid="img-book-cover"
                 />
               </div>
@@ -97,11 +105,24 @@ export default function BookBuy() {
                 <Badge variant="secondary">{Math.round(data.wordCount / 1000)}k words</Badge>
                 <Badge variant="secondary">30 chapters</Badge>
               </div>
+              {entitlement?.owns && (
+                <Button
+                  asChild
+                  size="sm"
+                  className="mt-4 w-full bg-orange-600 hover:bg-orange-700 text-white"
+                  data-testid="link-read-owned"
+                >
+                  <Link href="/book/read">
+                    <BookMarked className="w-4 h-4 mr-2" />
+                    Read your book
+                  </Link>
+                </Button>
+              )}
               <Button
                 asChild
                 variant="outline"
                 size="sm"
-                className="mt-4 w-full"
+                className="mt-2 w-full"
                 data-testid="link-sample-pdf"
               >
                 <a href="/book/sample.pdf" target="_blank" rel="noopener noreferrer">

@@ -14884,6 +14884,41 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   });
 
   // ───────────────────────────────────────────────────────────────────────
+  // BOOK ENTITLEMENT — does the current user own a paid digital edition?
+  // Drives the /book/read paywall and the "Read your book" CTA on /book/buy.
+  // Returns the most recent paid order + its first downloadable item, or
+  // { owns: false } so the client can paywall.
+  // ───────────────────────────────────────────────────────────────────────
+  app.get('/api/book/entitlement', isAuthenticated, async (req: any, res) => {
+    try {
+      const customerId = req.user.claims.sub;
+      const orders = await storage.getCustomerOrders(customerId);
+      const paidStatuses = new Set(['paid', 'processing', 'shipped', 'delivered']);
+      // newest first
+      const sorted = [...orders].sort((a, b) =>
+        new Date(b.createdAt as any).getTime() - new Date(a.createdAt as any).getTime()
+      );
+      for (const o of sorted) {
+        if (!paidStatuses.has(o.status as string)) continue;
+        const items = await storage.getOrderItems(o.id);
+        const downloadable = items.find(i => i.downloadUrl === 'secure://book/full.pdf');
+        if (downloadable) {
+          return res.json({
+            owns: true,
+            orderId: o.id,
+            itemId: downloadable.id,
+            orderNumber: o.orderNumber,
+          });
+        }
+      }
+      res.json({ owns: false });
+    } catch (e: any) {
+      console.error('book entitlement error', e);
+      res.status(500).json({ message: 'Failed to check entitlement' });
+    }
+  });
+
+  // ───────────────────────────────────────────────────────────────────────
   // SECURE DIGITAL DOWNLOAD — gated by order ownership + expiry. Streams the
   // book PDF from disk (NEVER served from /public, which would be unauthenticated).
   // The edition's downloadUrl uses a "secure://book/full.pdf" sentinel that maps
@@ -14923,11 +14958,18 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
         process.cwd(),
         'attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION.pdf',
       );
+      // inline=1 → render in browser PDF viewer (used by /book/read).
+      // default → force download.
+      const inline = req.query.inline === '1';
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader(
         'Content-Disposition',
-        'attachment; filename="The-Ultimate-Stroke-Recovery-Revolution.pdf"',
+        `${inline ? 'inline' : 'attachment'}; filename="The-Ultimate-Stroke-Recovery-Revolution.pdf"`,
       );
+      // Don't let the secured bytes get cached by intermediaries.
+      res.setHeader('Cache-Control', 'private, no-store');
+      // X-Frame-Options must allow same-origin so /book/read can iframe it.
+      res.setHeader('X-Frame-Options', 'SAMEORIGIN');
       res.sendFile(pdfPath);
     } catch (e: any) {
       console.error('download error', e);
