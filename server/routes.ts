@@ -303,6 +303,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Serve stock images from attached_assets
   app.use('/stock_images', express.static(path.join(process.cwd(), 'attached_assets', 'stock_images')));
 
+  // Object Storage upload + serve routes (presigned PUT + /objects/:path GET).
+  // Mounted before any auth middleware because (a) the upload-URL endpoint will
+  // be hardened with auth in the audiobook flow that uses it and (b) /objects/
+  // GET enforces ACL via getObjectAclPolicy on the GCS metadata.
+  const { registerObjectStorageRoutes } = await import('./replit_integrations/object_storage');
+  registerObjectStorageRoutes(app);
+
   // Serve user-uploaded media files
   const uploadsDir = path.join(process.cwd(), 'uploads');
   if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
