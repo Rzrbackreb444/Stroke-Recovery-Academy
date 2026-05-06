@@ -8,6 +8,8 @@
 
 *Because recovery isn't healing — it's construction.*
 
+![Scan to enter the Stroke Recovery Academy — the full companion platform: video drills, the 90-day program, the tribe, the soundtrack, every protocol referenced in this book.](images/qr-scan-me.png)
+
 ---
 
 ## Copyright
@@ -6670,6 +6672,8 @@ His mission is simple: prove that extraordinary recovery is possible, then teach
 He still walks without an AFO. He still swings a baseball bat in his garage every morning. He still pulls his son's pictures up on his phone when the work feels too hard.
 
 Find him at **strokerecoveryacademy.com** and **strokelyfe.org**.
+
+![Scan to start — strokerecoveryacademy.com](images/qr-scan-me.png)
 
 ---
 
