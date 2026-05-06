@@ -56,6 +56,8 @@ const MusicStudio = lazy(() => import("@/pages/MusicStudio"));
 const MusicSandbox = lazy(() => import("@/pages/MusicSandbox"));
 const MusicProductionStudio = lazy(() => import("@/pages/MusicProductionStudio"));
 const BookStudioV3 = lazy(() => import("@/pages/BookStudioV3"));
+const BookCompanion = lazy(() => import("@/pages/BookCompanion"));
+const BookSlugRedirect = lazy(() => import("@/pages/BookSlugRedirect"));
 const VideoStudio = lazy(() => import("@/pages/VideoStudio"));
 const FreeAnalysisForVideo = lazy(() => import("@/pages/FreeAnalysisForVideo"));
 const CourseStudio = lazy(() => import("@/pages/CourseStudio"));
