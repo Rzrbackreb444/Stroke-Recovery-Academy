@@ -28,6 +28,7 @@ type Section = {
 };
 
 const QUICK_ACTIONS: ResourceLink[] = [
+  { slug: "read", label: "Read the Book", description: "Open your purchased copy", href: "/book/read" },
   { slug: "buy", label: "Buy the Book", description: "Digital PDF or print paperback", href: "/book/buy" },
   { slug: "workbook", label: "Companion Workbook", description: "Chapter prompts + drill logs", href: "/recovery/journal" },
   { slug: "tracker", label: "90-Day Tracker", description: "Daily breakthrough check-in", href: "/recovery/today" },

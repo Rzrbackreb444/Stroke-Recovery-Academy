@@ -1,96 +1,45 @@
-# Project: Stroked-Out Sasquatch Book Polish
+# Stroked-Out Sasquatch Book Polish
 
-## Goal
-Polish Nick Kremers' stroke recovery book "THE ULTIMATE STROKE RECOVERY REVOLUTION" to 95+/100 awards-grade quality, expanded from 23k to 50–75k words. Memoir-driven manual structure. Voice: Stroked-Out Sasquatch (terse, decisive, no emojis, no fluff). Single markdown manuscript file. Book and platform (strokerecoveryacademy.com) feed each other — appendices and chapters integrate platform cross-references throughout.
+## Run & Operate
+_Populate as you build_
 
-## Locked Style Rules
-- Spelling: **Sasquatch** canonical. Never "Saschquatch."
-- Voice: terse, em-dashes, straight quotes, age=36 at stroke (Dec 3, 2018, now 7 years out).
-- "Heart's still thumpin'" tagline — used sparingly.
-- No emojis ever.
+## Stack
+_Populate as you build_
 
-## Current State
-- **Manuscript:** `attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION-v3.md`
-- **Word count:** ~78.8k words (~6,650 lines)
-- **30 chapters + Ch 20½ / 22½ / 29½ mindset capstones** in 6 narrative parts + Part VII Stories from the Tribe (9 cases) + 17 appendices (A–N + U/V/W) + Soundtrack + Acknowledgments + About + Seal
-- **Front matter** now includes Author's Note, three-sentence thesis paragraph in Introduction, and outside Foreword placeholder slot with target candidates list (Foreword to be solicited from Norman Doidge / Jill Bolte Taylor / Andrew Huberman / Wendy Suzuki / Michael Merzenich)
-- **Cold-open epigraphs** added to all 7 Parts (I–VII)
-- **Cinematic openers** added to Ch 11 (Day My Toe Twitched), 12 (First Swing), 13 (Day I Stood Up Alone), 14 (Mirror in Bathroom Doorway), 15 (Driveway and the Crack), 16 (First Coffee Cup), 17 (Drive-Thru That Nearly Killed Me), 18 (Cuff That Walked Me Around the Block), 19 (Morning the Hand Would Not Let Go), 20 (Tuesday Motivation Did Not Show Up), and Ch 24 (both-arm hold + walking son to school)
-- **Part VII (Stories from the Tribe):** 9 case studies (~12k words) — Marcus, Janelle, Robert, Aisha/Imani, David, Cathy, Tyler, Mr. Chen/Mei, **Jordan (NEW — 22yo AVM survivor, college soccer player, fills under-25 demographic gap)** + closing pattern analysis updated to "Nine Stories"
-- **Caregiver chapter (Ch 28):** ~3500 words, full field manual
-- **Acknowledgments:** structured TBD slots filled in for beta readers, editor, copy editor, fact-checkers, Hostile Construction collaborators, cover/typography/photo, legal counsel, academy team
-- **Appendix H (Science References):** added explicit APA 7 citation-style + verification note with corrections inbox + fact-checker placeholders
-- **Voice trim:** "thumpin'" usage trimmed 28 → 21 in densest clusters (closing letter cap-tags + book-end + chapter-end duplicates + Appendix Q/O)
-- **TOC:** updated to include Part VII, appendices A–N + U/V/W, and Index stub note
-- **Dedup fixes:** removed duplicate `# THE SOUNDTRACK: HOSTILE CONSTRUCTION` header
+## Where things live
+- **Manuscript source:** `attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION-v3.md`
+- **Typesetting script:** `scripts/typeset.mjs`
+- **Book companion page:** `client/src/pages/BookCompanion.tsx`
+- **Book buy page:** `client/src/pages/BookBuy.tsx`
+- **Book in-platform reader:** `client/src/pages/BookRead.tsx`
+- **Slug aliases/redirects:** `client/src/pages/BookSlugRedirect.tsx`
+- **Stripe webhook handler:** `server/webhookHandlers.ts`
+- **Book storefront API:** `server/routes.ts` (search for `/api/book/storefront`)
+- **Book seed script:** `scripts/seedBookStorefront.ts`
+- **Generated PDF:** `attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION.pdf`
 
-## Appendices — All Built Out
-- **A:** Emergency Stroke Recognition + First 60 Minutes (FAST/BE-FAST + risk factors + 911 script)
-- **B:** Recovery Exercise Protocols — Full Library (prose for every drill + platform video links)
-- **C:** Technology and Equipment Guide (gear table)
-- **D:** Nutrition for Brain Recovery (MIND diet, supplements, sample day)
-- **E:** Sasquatch Field Notes (categorized quote library)
-- **F:** Support Resources and Communities
-- **G:** Full daily 90-Day Breakthrough Program (~5k words, three phases, daily template)
-- **H:** Science References (organized by topic, ~25 citations)
-- **I:** Sasquatch Doctrine OS + Daily Operating Card
-- **J:** Sasquatch Creed
-- **K (NEW):** Companion Workbook & Platform Resources — chapter-by-chapter book↔academy bridge
-- **L (NEW):** For Clinicians, Therapists, and Stroke Care Teams + CEU course
-- **M (NEW):** Stroke Recovery Glossary
-- **N (NEW):** Recommended Reading (books, podcasts, film, album)
+## Architecture decisions
+- **Single Markdown Manuscript:** The entire book content is maintained in one large Markdown file for simplicity and ease of content management.
+- **Platform Integration via Slugs:** All URLs mentioned in the book are aliased and handled by the `strokerecoveryacademy.com` platform to prevent 404s and provide a seamless reader experience.
+- **Dynamic PDF Generation:** The production PDF is generated programmatically from the Markdown source without mutation, allowing for clean separation of content and presentation.
+- **Secure Content Delivery:** Book downloads and in-platform reading are auth-gated and ownership-checked, with a "404 not found" response for unauthorized access to prevent information leakage about order existence.
+- **Voice and Style Consistency:** Strict adherence to the "Stroked-Out Sasquatch" voice, spelling, and stylistic rules is enforced throughout the manuscript.
 
-## Platform Integration
-Every appendix and many chapters cross-reference `strokerecoveryacademy.com/<resource>`:
-- /book (master index), /workbook, /tracker, /90day, /tribe, /soundtrack, /officehours
-- /protocols/* (one URL per drill, with video)
-- /resources/* (one URL per chapter)
-- /science, /glossary, /reading, /posters, /walletcard, /risk, /nutrition, /gear
-- /clinicians, /ceu, /quicksheet
-- Donation: strokelyfe.org/donate
+## Product
+The application provides a polished, memoir-driven manual for stroke recovery, expanded to 50–75k words, and integrated with the `strokerecoveryacademy.com` platform. It features 30 chapters, mindset capstones, narrative parts, 9 case studies, 17 appendices, and a soundtrack. The platform offers a companion page, redirects for all in-book URLs, and a storefront for purchasing digital and print editions, including an in-platform reader for owners.
 
-## Still To Do (if user wants further work)
-- Push toward 60-75k+ via: Ch 22 plateau wars expansion, Ch 19 open hand sidebar, Ch 18 (Tech) + Ch 20 (Motivation Engine) cinematic scenes.
-- Done this session: Builder's Science sidebars across Ch 11/12/13/14/15/16/17, "Day My Toe Twitched" cinematic, two Ch 24 cinematic scenes (first both-arm hold + walking son to school), April 24 2019 birth date locked in, raw pre-stroke marriage truth (Eric/cheating/honest split) added to Lisa section, "Chopping Wood" Builder's Science sidebar added before Appendix I, **Appendix I now restructured as the four-layer doctrine: Tattoo-Grade Laws + S.O.S. (crisis) + S.A.S.C.H. (daily construction rhythm — Seize/Absorb/Swing/Combine/Hammer) + C.O.M.P.A.S.S. (advanced navigation), with morning/midday/evening day-shape and clinical/caregiver/AI/community usage matrix.**
-- Final voice/spelling sweep.
-- Beta reader / editor / collaborator names in Acknowledgments (currently TBD).
-- Cover art credit, typography credits in colophon (TBD).
+## User preferences
+- **Communication Style:** Terse, decisive, no emojis, no fluff.
+- **Coding Style:** Prefer surgical `edit` with unique anchors over full rewrites for large files.
+- **Voice:** Voice should remain "Stroked-Out Sasquatch" (terse, em-dashes, straight quotes, age=36 at stroke).
+- **Branding:** "Heart's still thumpin'" tagline used sparingly. "Sasquatch" is the canonical spelling.
 
-## Platform ↔ Book Wiring (Shipped May 2026)
-- **`/book` companion page** (`client/src/pages/BookCompanion.tsx`) — single canonical index with hero + 8 quick-action cards + 9 themed resource sections (protocols / mindset / tribe / fuel / structure / clinicians / science / caregivers / soundtrack), all sections anchor-targeted, all links data-testid'd.
-- **Slug aliases** (`client/src/pages/BookSlugRedirect.tsx`) — every bare-path URL printed in the manuscript (`/protocols/*`, `/tribe`, `/soundtrack`, `/workbook`, `/tracker`, `/90day`, `/officehours`, `/persona`, `/clinicians`, `/ceu`, `/letters`, `/math`, `/desert`, `/bereaved`, `/glossary`, `/reading`, `/science`, `/walletcard`, `/risk`, `/nutrition`, `/gear`, `/posters`, `/100lines`, `/podcast`, `/youngsurvivor`, `/plateau`, `/doctrine`, `/quicksheet`, `/app`, `/combos`, `/questions`, `/rights`) resolves via SLUG_MAP/PROTOCOL_MAP either to existing `/recovery/*` pages or to `/book#anchor`. ~33 routes registered before NotFound catch-all.
-- **Result:** every URL the book prints now lands on a real page in the academy. No 404s for book readers.
+## Gotchas
+- The manuscript file is large; always use surgical edits.
+- Ensure platform cross-references (URLs) are correctly mapped to prevent broken links.
+- Maintain strict adherence to the defined voice and style guidelines.
+- Remember to run `scripts/seedBookStorefront.ts` for local development of the book storefront features.
 
-## Book Polish Adjustments (Shipped May 2026, post-87/100-review)
-- **Appendix H renamed** "The Science That Proves I'm Right" → "The Science Behind These Methods" (TOC + header). Closes the defensiveness flag in the citations section without softening the chapter prose voice.
-- **"For the Quiet Sasquatch" sidebar** added inside Ch 20½ (Persona Forge) — ~280 words affirming the doctrine works for introverts, women, older survivors, soft-spoken survivors. Voice preserved (still ends "Heart's still thumpin'. The whisper counts too."). Opens the door without diluting the brand.
-- **Repetition trim** (post-91/100-review, reviewer flagged "chop wood, never zero" repeats): chop wood 11→10 (removed redundant "chop-wood hour" callout in App I S.A.S.C.H. midday — already covered by canonical sidebar at 5354); never zero 9→8 (removed duplicate Tattoo-Grade Law bullet — already echoed at S.O.S. Strive + S.A.S.C.H. test); thumpin' 26→23 (replaced 3 cap-tag duplicates with fresher mantras: "I am here. The bleed lost. Today I build." in App G wake-up; "Tuesday came back. So will you." at Ch 29½ close; trimmed redundant "Heart's still thumpin'? Life's still pumpin'." at App G close). Voice preserved everywhere; brand-tagline still earned where it remains. Final word count: ~78,750.
-- **Visuals shipped (May 2026, post-92/100-review):** 12 consistent black-ink line-art figures generated and placed in `attached_assets/book_v2/images/`. Same visual style across all (single neutral figure, IKEA-instruction aesthetic, white background, no text labels). Placed at natural anchor points: Fig 1 bat (Ch 12), Fig 2 mirror (Ch 14), Fig 3 wall lean (Ch 15 dropfoot), Fig 4 open hand (Ch 19), Fig 5 sit-to-stand (Ch 13), Fig 6 walking gait (Ch 8 opener), Fig 7 FAST face comparison (App A), Fig 8 mental rehearsal (Ch 11), Fig 9 CIMT mitt (Ch 16), Fig 10 single-leg balance (App B), Fig 11 theraband row (App V), Fig 12 recovery position (App A 911 section). Closes the reviewer's #1 transformative gap.
-- **Still pending:** plug-density demotion (move inline mid-chapter platform callouts to end-of-chapter Resources boxes in Ch 1, 2, 11, 14, 16, 24); "Pocket Sasquatch" 12k-word condensed cut as separate funnel asset; external Foreword (Nick to solicit); professional copy edit; beta reader round 2.
-
-## Typeset PDF (Shipped May 2026)
-- **`attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION.pdf`** — 297pp, 6.5 MB, production-grade, publish-ready.
-- Built by `scripts/typeset.mjs` (puppeteer + chromium + pdf-lib) from the v3 markdown without ever mutating the source. Pipeline strips editorial cruft (Foreword section through to `## Author's Note` lookahead, ISBN/cover-art/beta-reader placeholder lines, App H fact-checker sentence) and applies in-memory TOC/structural fixes: trailing 4 back-matter bold lines + front-matter bold cluster split into bullet lists, Part VII + Appendices promoted to H3 for orange Inter caps, back-matter chapters (Acknowledgments / About the Author / The Builder's Seal) demoted from H1 to H2 so they get standard chapter-head treatment instead of part-divider's 3.6in top margin + `page-break-after: always` (which previously orphaned the heading on its own near-blank page).
-- Custom Cinzel/Crimson-Pro/Inter title page with orange rules, QR + URL caption. Drop caps on every chapter opener (heuristic skips image-only/strong-only/em-only/short/attribution paragraphs AND the Table of Contents). Part divider pages (`PART I — THE STORM`, etc) render vertically centered with orange display rule. Attribution lines (`— Nick`) right-aligned italic, pinned to previous block via `page-break-before: avoid` so they never strand alone. h2.chapter-head has `page-break-after: avoid` and chapter-opener has `page-break-before: avoid` + `min-height: 3em` to keep heading + first paragraph together.
-
-## Book Storefront (Shipped May 2026)
-- **`/book/buy`** (`client/src/pages/BookBuy.tsx`) — public buy page with cover, sample-PDF link (`/book/sample.pdf`, 12pp), 2 buy cards (digital $19, print $29). POSTs to `/api/marketplace/checkout` with `{ items: [{ editionId, quantity }] }`.
-- **`/api/book/storefront`** (`server/routes.ts:14837`) — public listing + active editions for the seeded book.
-- **`/api/marketplace/orders/:orderId/items/:itemId/download`** (`server/routes.ts:14886`) — auth-gated, ownership-checked PDF stream from `attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION.pdf`. Resolves the `secure://book/full.pdf` sentinel stored in `bookEditions.interiorPdfUrl` / `orderItems.downloadUrl`. Returns 404 (not 403) for non-owners to avoid order-existence oracle. `OrderConfirmation.tsx` download button now hits this endpoint instead of the (sentinel) `item.downloadUrl`.
-- **Webhook fulfillment** (`server/webhookHandlers.ts:121`) — on `checkout.session.completed`, looks up bookOrder by sessionId, populates shipping fields from `session.shipping_details` (Stripe collects these for print orders via `shipping_address_collection`), marks paid, calls `fulfillOrder()`. The competing `checkoutService.handleMarketplacePurchase` path requires `metadata.type === 'marketplace_purchase'` which this checkout doesn't set, so no double-fulfill.
-- **Stripe shipping collection**: `/api/marketplace/checkout` (server/routes.ts:14744) enables `shipping_address_collection` + `phone_number_collection` only when `hasPrintItems`. Closes the gap where the buy page didn't ask for an address up front (Lulu would have rejected empty street/city).
-- **Cover bug fixed** (`scripts/typeset.mjs:140`): title-block regex now anchors on `(?=^## Copyright)` instead of `\n---\n` (the earlier orphan-diamond pass stripped the `---`). PDF: 286pp / 9.4MB with full-bleed Sasquatch cover.
-- **`/book/:slug` server route relocated**: was hijacking `/book/buy` (any client `/book/*` path). Now mounted under `/api/book-websites/public/:slug` so the SPA owns the `/book/*` namespace.
-- **Seed**: `scripts/seedBookStorefront.ts` (run via `npx tsx`) idempotently creates publishingProject + marketplaceListing + 2 bookEditions.
-
-## Important Files
-- `attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION-v3.md` — main deliverable
-- `attached_assets/Pasted-THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION-FROM-0-TO-90-AN_1778002753962.txt` — original 23k source
-- `attached_assets/Pasted-INSTRUCTIONS-FOR-AUTHOR-Paste-each-of-these-TRACK-SYNC-_1778003050187.txt` — track sync templates
-- `attached_assets/Pasted-Here-is-the-complete-fully-assembled-100-100-Masterclas_1778007141035.txt` — Masterclass v with Builder's Science sidebars
-- `attached_assets/strokelyfe-org-build-brief.md` — prior platform brief
-
-## Editing Notes
-- File is large (~4,500 lines) — always use surgical `edit` with unique anchors, not full rewrites.
-- Track URLs already wired in soundtrack section: 7 song.link, 5 direct youtu.be, all with strokerecoveryacademy.com/soundtrack backup.
-- Stroke Lyfe Inc. = the 501(c)(3); Stroke Recovery Academy = the platform.
+## Pointers
+- **Relevant Skills:** Markdown formatting, TypeScript, React, Node.js, Puppeteer, PDF manipulation, Stripe API integration.
+- **External Docs:** APA 7 citation style for scientific references.
