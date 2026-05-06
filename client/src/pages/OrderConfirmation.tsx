@@ -146,7 +146,7 @@ function OrderTimeline({ order }: { order: Order }) {
   );
 }
 
-function OrderItemCard({ item }: { item: OrderItem }) {
+function OrderItemCard({ item, orderId }: { item: OrderItem; orderId: number }) {
   const price = item.unitPrice / 100;
   
   return (
@@ -182,7 +182,7 @@ function OrderItemCard({ item }: { item: OrderItem }) {
             data-testid={`button-download-${item.id}`}
           >
             <a
-              href={`/api/marketplace/orders/${order.id}/items/${item.id}/download`}
+              href={`/api/marketplace/orders/${orderId}/items/${item.id}/download`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -356,7 +356,7 @@ export default function OrderConfirmation() {
               <div className="space-y-3">
                 <h3 className="font-medium text-foreground">Order Items</h3>
                 {order.items.map(item => (
-                  <OrderItemCard key={item.id} item={item} />
+                  <OrderItemCard key={item.id} item={item} orderId={order.id} />
                 ))}
               </div>
 
