@@ -6,6 +6,42 @@ uri = "file://client/public/og-image-1200x630.png"
 type = "image"
 title = "stroke recovery og social card"
 
+[[generated]]
+id = "-7uHC-yx0BVtEX8Q088db"
+uri = "file://attached_assets/book_v2/images/fig-01-bat-therapy.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "50rUlrqg_LV7xm9WgVeYi"
+uri = "file://attached_assets/book_v2/images/fig-02-mirror-therapy.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "3rWJ8RaAzD7D8sJJFno4T"
+uri = "file://attached_assets/book_v2/images/fig-03-wall-lean.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "KNwSdnRS6_1bP2dLCAMOE"
+uri = "file://attached_assets/book_v2/images/fig-04-open-hand.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "fUXThMO55bJoUxdAH7CeJ"
+uri = "file://attached_assets/book_v2/images/fig-05-sit-to-stand.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "Eau6z9k4Fh5ZWHbyNSiRt"
+uri = "file://attached_assets/book_v2/images/fig-06-walking-gait.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "EGooVUwVUQyTPSx95p4M4"
 uri = "file://exports/Stroked-Out-Sasquatch_DEDUPED_v1.md"
@@ -29,3 +65,39 @@ id = "6n_puOCTqtHm8-Hd1gXbz"
 uri = "file://attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION-v3.md"
 type = "text"
 title = "THE ULTIMATE STROKE RECOVERY REVOLUTION (v3) — 78.8k words"
+
+[[outputs]]
+id = "41YBDyyjzp9fBGrrXIfcw"
+uri = "file://attached_assets/book_v2/images/fig-01-bat-therapy.png"
+type = "image"
+title = "Fig 1 — Bat Therapy Setup (Ch 12)"
+
+[[outputs]]
+id = "FULPWHwnjZqB50IF-UdJX"
+uri = "file://attached_assets/book_v2/images/fig-02-mirror-therapy.png"
+type = "image"
+title = "Fig 2 — Mirror Therapy Positioning (Ch 14)"
+
+[[outputs]]
+id = "tM5POa1PyfUzqKclQaeMl"
+uri = "file://attached_assets/book_v2/images/fig-03-wall-lean.png"
+type = "image"
+title = "Fig 3 — Wall Lean Ankle Dorsiflexion (Ch 8/13)"
+
+[[outputs]]
+id = "wLrZjlQPKMB7j9umXQs71"
+uri = "file://attached_assets/book_v2/images/fig-04-open-hand.png"
+type = "image"
+title = "Fig 4 — Open-Hand Rubber-Band Protocol (Ch 19)"
+
+[[outputs]]
+id = "tpaj4npXgXmtXIeMQjNSh"
+uri = "file://attached_assets/book_v2/images/fig-05-sit-to-stand.png"
+type = "image"
+title = "Fig 5 — Sit-to-Stand Progression (Ch 13)"
+
+[[outputs]]
+id = "x85UbD19juDzmmEFGUmVG"
+uri = "file://attached_assets/book_v2/images/fig-06-walking-gait.png"
+type = "image"
+title = "Fig 6 — Walking Gait Posture (Ch 8)"
