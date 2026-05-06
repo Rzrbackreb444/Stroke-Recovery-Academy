@@ -1,0 +1,284 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cinzel:wght@600;700;900&family=Inter:wght@500;600;700;800&display=swap');
+
+@page {
+  size: Letter;
+  margin: 0.85in 0.95in;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  color: #1a1a1a;
+}
+
+body {
+  font-family: 'Crimson Pro', Georgia, 'Times New Roman', serif;
+  font-size: 11.5pt;
+  line-height: 1.55;
+  font-feature-settings: "kern", "liga", "onum";
+  text-rendering: optimizeLegibility;
+}
+
+#book {
+  max-width: 100%;
+}
+
+/* ---------- Headings ---------- */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Cinzel', 'Inter', Georgia, serif;
+  color: #0a0a0a;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  margin: 1.6em 0 0.6em;
+  page-break-after: avoid;
+  break-after: avoid;
+}
+
+h1 {
+  font-size: 28pt;
+  text-align: center;
+  margin: 0.3in 0 0.4in;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+h2 {
+  font-size: 18pt;
+  text-align: left;
+  margin-top: 1.4em;
+  margin-bottom: 0.8em;
+  letter-spacing: 0.04em;
+}
+
+h2.chapter-head {
+  font-size: 22pt;
+  text-align: center;
+  margin: 0.6in 0 0.45in;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  page-break-before: always;
+  break-before: page;
+  border-bottom: none;
+}
+
+h2.chapter-head::before {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 2px;
+  background: #ea580c;
+  margin: 0 auto 0.35in;
+}
+
+h2.chapter-head::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 2px;
+  background: #ea580c;
+  margin: 0.25in auto 0;
+}
+
+h1.chapter-head {
+  page-break-before: always;
+  break-before: page;
+}
+
+h1.book-title {
+  page-break-before: avoid;
+  break-before: avoid;
+  font-size: 30pt;
+  margin-top: 1.2in;
+}
+
+h3 {
+  font-size: 13pt;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #c2410c;
+  margin-top: 1.5em;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+}
+
+h4 {
+  font-size: 11.5pt;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #1a1a1a;
+}
+
+/* ---------- Body text ---------- */
+p {
+  margin: 0 0 0.55em;
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  orphans: 3;
+  widows: 3;
+}
+
+p + p {
+  text-indent: 1.4em;
+}
+
+/* No indent on first paragraph after a heading or hr */
+h1 + p, h2 + p, h3 + p, h4 + p, hr + p, blockquote + p {
+  text-indent: 0;
+}
+
+/* ---------- Drop caps ---------- */
+p.chapter-opener {
+  text-indent: 0;
+  margin-top: 0.3em;
+}
+
+p.chapter-opener::first-letter {
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: 900;
+  font-size: 5.2em;
+  line-height: 0.85;
+  float: left;
+  padding: 0.05em 0.12em 0 0;
+  margin-bottom: -0.15em;
+  color: #ea580c;
+}
+
+p.chapter-opener::first-line {
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+/* ---------- Blockquotes (epigraphs / sidebar callouts) ---------- */
+blockquote {
+  margin: 1.2em 0.4in;
+  padding: 0.4em 0.8em;
+  border-left: 3px solid #ea580c;
+  font-style: italic;
+  color: #2a2a2a;
+  font-size: 11pt;
+  line-height: 1.5;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+blockquote p { text-align: left; text-indent: 0; }
+
+/* Epigraph immediately under a chapter heading: center it, no border */
+h2.chapter-head + blockquote {
+  border: none;
+  text-align: center;
+  margin: 0 0.6in 0.5in;
+  font-size: 12pt;
+  font-style: italic;
+  color: #444;
+}
+
+h2.chapter-head + blockquote p { text-align: center; }
+
+h2.chapter-head + blockquote::before {
+  content: "";
+  display: block;
+  margin: 0 auto 0.2in;
+  width: 30px;
+  border-top: 1px solid #c2410c;
+}
+
+/* ---------- Lists ---------- */
+ul, ol {
+  margin: 0.5em 0 0.7em 1.5em;
+  padding-left: 0.5em;
+}
+li { margin: 0.2em 0; }
+li > p { text-indent: 0; }
+
+/* ---------- Strong / em ---------- */
+strong { font-weight: 700; color: #0a0a0a; }
+em { font-style: italic; }
+
+/* ---------- HR / scene break ---------- */
+hr.scene-break {
+  border: none;
+  text-align: center;
+  margin: 1.4em 0;
+  page-break-after: avoid;
+}
+hr.scene-break::after {
+  content: "❖   ❖   ❖";
+  display: inline-block;
+  color: #ea580c;
+  font-size: 0.85em;
+  letter-spacing: 0.7em;
+  font-style: normal;
+}
+
+/* ---------- Images / figures ---------- */
+img {
+  display: block;
+  max-width: 80%;
+  max-height: 4.5in;
+  margin: 1em auto;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+p > img:only-child {
+  margin: 1.2em auto;
+}
+
+/* QR code image: render smaller + centered */
+img[src*="qr-scan-me"] {
+  max-width: 1.6in;
+  max-height: 1.6in;
+}
+
+/* Image captions: when image sits alone in <p>, italicize anything after it */
+p:has(img) {
+  text-align: center;
+  font-style: italic;
+  font-size: 10pt;
+  color: #555;
+  text-indent: 0;
+}
+
+/* ---------- Links ---------- */
+a {
+  color: #c2410c;
+  text-decoration: none;
+}
+
+/* ---------- Code (rare in this book but be safe) ---------- */
+code, pre {
+  font-family: 'JetBrains Mono', Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: #f5f5f4;
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+pre { padding: 0.6em 0.8em; overflow-x: auto; }
+
+/* ---------- Page-break safety ---------- */
+img, blockquote, h3, h4 {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* Front-matter title page H1 (first one only): full title page treatment */
+h1.book-title {
+  font-size: 34pt;
+  letter-spacing: 0.08em;
+  margin-top: 1.5in;
+}
+
+/* TOC — make it tighter */
+h2:first-of-type ~ ul {
+  list-style: none;
+  padding-left: 0;
+}
