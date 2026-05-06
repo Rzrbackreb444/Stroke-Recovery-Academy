@@ -34,8 +34,8 @@ const FONT_FACES = `
 // ---------- 1. READ + STRIP EDITORIAL CRUFT ----------
 let raw = fs.readFileSync(MD, 'utf8');
 
-// Strip entire Foreword section (placeholder TBD)
-raw = raw.replace(/## Foreword[\s\S]*?(?=^---\n## )/m, '');
+// Strip entire Foreword section (placeholder TBD) — runs through closing --- + blank line
+raw = raw.replace(/^## Foreword\b[\s\S]*?(?=^## Author)/m, '');
 
 // Strip ISBN [TO BE ASSIGNED] lines
 raw = raw.replace(/^ISBN[^\n]*\[TO BE ASSIGNED\][^\n]*\n?/gm, '');
@@ -63,6 +63,29 @@ raw = raw.replace(/^\*\*My beta readers\*\*[^\n]*\n?/gm, '');
 
 // Drop the now-orphaned "**The Hostile Construction collaborators:**" header
 raw = raw.replace(/^\*\*The Hostile Construction collaborators:\*\*\s*\n?/gm, '');
+
+// TOC: separate the 4 trailing back-matter lines (consecutive bold lines collapse into one paragraph)
+raw = raw.replace(
+  /\*\*The Soundtrack: Hostile Construction\*\*\s*\n\*\*Acknowledgments\*\*\s*\n\*\*About the Author\*\*\s*\n\*\*The Builder.s Seal\*\*/,
+  '- The Soundtrack: Hostile Construction\n- Acknowledgments\n- About the Author\n- The Builder\u2019s Seal'
+);
+
+// TOC: promote "Part VII —" and "Appendices" to H3 so they render in orange Inter caps like the other Part headers
+raw = raw.replace(/^\*\*Part VII —([^*]+)\*\*([^\n]*)$/m, '### Part VII —$1$2');
+raw = raw.replace(/^\*\*Appendices\*\*\s*$/m, '### Appendices');
+
+// TOC front-matter cluster: 4 consecutive bold lines collapse into one paragraph; convert to bullet list
+raw = raw.replace(
+  /\*\*Author.s Note: The Sasquatch Battle Cry\*\*\s*\n\*\*Preface\*\*\s*\n\*\*How to Read This Book\*\*/,
+  "- Author\u2019s Note: The Sasquatch Battle Cry\n- Preface\n- How to Read This Book"
+);
+
+// Demote back-matter H1 (Acknowledgments / About the Author / The Builder's Seal) to H2 so
+// they get standard chapter-head treatment, NOT part-divider treatment (which centers them
+// vertically on a near-empty page with content pushed to the next page).
+raw = raw.replace(/^# Acknowledgments\s*$/m, '## Acknowledgments');
+raw = raw.replace(/^# About the Author\s*$/m, '## About the Author');
+raw = raw.replace(/^# The Builder.s Seal\s*$/m, '## The Builder\u2019s Seal');
 
 // Collapse any 4+ consecutive newlines from deletions
 raw = raw.replace(/\n{4,}/g, '\n\n\n');
@@ -129,6 +152,9 @@ function postProcess(htmlInput, opts = {}) {
     if (tag === 'h2' && !isChapterH2(text)) return;
     $el.addClass('chapter-head');
     if (tag === 'h1') $el.addClass('part-divider');
+
+    // Skip drop-cap entirely for TOC (first item is bold structural list, not body prose)
+    if (/^Table of Contents/i.test(text.trim())) return;
 
     // Find first true body paragraph for drop cap
     let $cur = $el.next();
