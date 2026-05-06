@@ -227,6 +227,46 @@ export const ROUTES: RouteEntry[] = [
     changefreq: "monthly",
     priority: 0.7,
   },
+  // ─── The Ultimate Stroke Recovery Revolution (book product surface) ──────
+  {
+    pattern: /^\/book\/?$/,
+    canonical: "/book",
+    category: "content",
+    intent: "informational",
+    schemaType: "WebPage",
+    title: "The Ultimate Stroke Recovery Revolution — Book Companion",
+    description:
+      "Companion academy for Nick Kremers' stroke recovery book. Every protocol, appendix, case study, and resource referenced in the 286-page manual — wired live into Stroke Recovery Academy.",
+    keywords: ["stroke recovery book", "Nick Kremers book", "Sasquatch Method", "stroke recovery manual", "90-day recovery program", "stroke survivor memoir"],
+    author: "platform",
+    changefreq: "weekly",
+    priority: 0.9,
+  },
+  {
+    pattern: /^\/book\/buy\/?$/,
+    canonical: "/book/buy",
+    category: "content",
+    intent: "transactional",
+    schemaType: "Product",
+    title: "Buy The Ultimate Stroke Recovery Revolution — Digital $19 / Print $29",
+    description:
+      "Order Nick Kremers' battle-tested 286-page stroke recovery manual. Digital PDF $19 (instant download) or 6×9 trade paperback $29 (ships in 5-10 days via Lulu). 30 chapters, 17 appendices, 9 case studies, full 90-day program.",
+    keywords: ["buy stroke recovery book", "stroke recovery PDF", "stroke recovery paperback", "Nick Kremers Ultimate Stroke Recovery", "stroke survivor book", "stroke rehabilitation manual"],
+    author: "platform",
+    changefreq: "weekly",
+    priority: 0.95,
+  },
+  {
+    pattern: /^\/book\/read\/?$/,
+    canonical: "/book/read",
+    category: "content",
+    intent: "transactional",
+    schemaType: "WebPage",
+    title: "Read Your Book — The Ultimate Stroke Recovery Revolution",
+    description: "In-platform reader for owners of The Ultimate Stroke Recovery Revolution.",
+    author: "platform",
+    noindex: true,
+  },
   // ─── SquatchQR removed May 2026 — entries left as noindex stubs so any
   //     stale inbound links resolve cleanly without surfacing dead routes. ─
   {
