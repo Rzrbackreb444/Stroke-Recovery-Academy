@@ -43,6 +43,12 @@ function buildHead(meta: RouteMeta, canonical: string): string {
   const ogTitle = meta.ogTitle ?? title;
   const ogDesc = meta.ogDescription ?? desc;
   const robots = meta.noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1";
+  const ogType =
+    meta.schemaType === "Product"
+      ? "product"
+      : meta.schemaType === "Article" || meta.schemaType === "MedicalWebPage"
+      ? "article"
+      : "website";
 
   return [
     // nosemgrep: javascript.lang.security.html-in-template-string
@@ -59,7 +65,8 @@ function buildHead(meta: RouteMeta, canonical: string): string {
     `<meta property="og:description" content="${escapeAttr(ogDesc)}">`,
     // nosemgrep: javascript.lang.security.html-in-template-string
     `<meta property="og:url" content="${escapeAttr(canonical)}">`,
-    `<meta property="og:type" content="website">`,
+    // nosemgrep: javascript.lang.security.html-in-template-string
+    `<meta property="og:type" content="${ogType}">`,
     `<meta property="og:site_name" content="Stroke Recovery Academy">`,
     `<meta name="twitter:card" content="summary_large_image">`,
     // nosemgrep: javascript.lang.security.html-in-template-string

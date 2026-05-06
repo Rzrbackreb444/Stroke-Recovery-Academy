@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/Footer";
+import RecoverySEO from "@/components/RecoverySEO";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -48,6 +49,13 @@ export default function BookRead() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <RecoverySEO
+        title="Read Your Book — The Ultimate Stroke Recovery Revolution"
+        description="Owner-only in-platform reader for The Ultimate Stroke Recovery Revolution."
+        canonical="/book/read"
+        noindex
+        medicalDisclaimer={false}
+      />
       <GlobalHeader />
       <main className="flex-1 flex flex-col">
         <div className="border-b">
@@ -93,6 +101,13 @@ function Paywall({ reason }: { reason: "signin" | "purchase" }) {
   const isSignin = reason === "signin";
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <RecoverySEO
+        title={isSignin ? "Sign In to Read Your Book" : "Get The Ultimate Stroke Recovery Revolution"}
+        description="Sign in to read The Ultimate Stroke Recovery Revolution, or purchase the digital PDF ($19) or print paperback ($29)."
+        canonical="/book/read"
+        noindex
+        medicalDisclaimer={false}
+      />
       <GlobalHeader />
       <main className="flex-1 flex items-center justify-center px-4 py-16">
         <Card className="max-w-lg w-full" data-testid="card-paywall">
