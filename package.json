@@ -12,6 +12,9 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
+    "@fontsource/cinzel": "^5.2.8",
+    "@fontsource/crimson-pro": "^5.2.8",
+    "@fontsource/inter": "^5.2.8",
     "@google/genai": "^1.30.0",
     "@hookform/resolvers": "^3.10.0",
     "@hubspot/api-client": "^12.0.1",
@@ -109,6 +112,7 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
+    "pdf-lib": "^1.17.1",
     "pdf-parse": "^2.4.5",
     "pdfkit": "^0.17.2",
     "puppeteer": "^24.43.0",
