@@ -57,6 +57,7 @@ const MusicSandbox = lazy(() => import("@/pages/MusicSandbox"));
 const MusicProductionStudio = lazy(() => import("@/pages/MusicProductionStudio"));
 const BookStudioV3 = lazy(() => import("@/pages/BookStudioV3"));
 const BookCompanion = lazy(() => import("@/pages/BookCompanion"));
+const BookBuy = lazy(() => import("@/pages/BookBuy"));
 const BookSlugRedirect = lazy(() => import("@/pages/BookSlugRedirect"));
 const VideoStudio = lazy(() => import("@/pages/VideoStudio"));
 const FreeAnalysisForVideo = lazy(() => import("@/pages/FreeAnalysisForVideo"));
@@ -747,6 +748,7 @@ function Router() {
           "The Ultimate Stroke Recovery Revolution" resolves to a real page. */}
       <Route path="/book" component={BookCompanion} />
       <Route path="/book/index" component={BookCompanion} />
+      <Route path="/book/buy" component={BookBuy} />
       <Route path="/protocols" component={BookSlugRedirect} />
       <Route path="/protocols/:slug" component={BookSlugRedirect} />
       <Route path="/workbook" component={BookSlugRedirect} />

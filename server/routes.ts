@@ -14727,7 +14727,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
       }
 
       const domain = `https://${process.env.REPLIT_DOMAINS?.split(',')[0]}`;
-      const session = await stripe.checkout.sessions.create({
+      const sessionParams: any = {
         payment_method_types: ['card'],
         line_items: lineItems,
         mode: 'payment',
@@ -14737,7 +14737,17 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
           orderId: order.id.toString(),
           orderNumber,
         },
-      });
+      };
+      // For print orders, let Stripe collect a real shipping address — the
+      // BookBuy page doesn't ask for one up front, and Lulu fulfillment will
+      // reject empty street/city fields. The webhook reads session.shipping_details.
+      if (hasPrintItems) {
+        sessionParams.shipping_address_collection = {
+          allowed_countries: ['US', 'CA', 'GB', 'AU', 'NZ', 'IE'],
+        };
+        sessionParams.phone_number_collection = { enabled: true };
+      }
+      const session = await stripe.checkout.sessions.create(sessionParams);
 
       // Update order with Stripe session ID
       await storage.updateBookOrder(order.id, {
@@ -14826,6 +14836,102 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
     } catch (error) {
       console.error("Error fetching order:", error);
       res.status(500).json({ message: "Failed to fetch order" });
+    }
+  });
+
+  // ───────────────────────────────────────────────────────────────────────
+  // BOOK STOREFRONT — public listing for "The Ultimate Stroke Recovery Revolution"
+  // Seeded by scripts/seedBookStorefront.ts. Returns the canonical listing + its
+  // active editions (digital_pdf + print_paperback) so /book/buy can render.
+  // ───────────────────────────────────────────────────────────────────────
+  app.get('/api/book/storefront', async (_req, res) => {
+    try {
+      const { db } = await import('./db');
+      const { marketplaceListings, bookEditions } = await import('@shared/schema');
+      const { eq, and } = await import('drizzle-orm');
+
+      const [listing] = await db.select().from(marketplaceListings)
+        .where(and(
+          eq(marketplaceListings.title, 'The Ultimate Stroke Recovery Revolution'),
+          eq(marketplaceListings.status, 'published'),
+        ))
+        .limit(1);
+
+      if (!listing) return res.status(404).json({ message: 'Storefront not seeded yet' });
+
+      const editions = await db.select({
+        id: bookEditions.id,
+        editionType: bookEditions.editionType,
+        price: bookEditions.price,
+        currency: bookEditions.currency,
+      }).from(bookEditions)
+        .where(and(eq(bookEditions.listingId, listing.id), eq(bookEditions.isActive, true)));
+
+      res.json({
+        id: listing.id,
+        title: listing.title,
+        subtitle: listing.subtitle,
+        description: listing.description,
+        coverImageUrl: listing.coverImageUrl,
+        pageCount: listing.pageCount,
+        wordCount: listing.wordCount,
+        editions,
+      });
+    } catch (e: any) {
+      console.error('book storefront error', e);
+      res.status(500).json({ message: 'Failed to load storefront' });
+    }
+  });
+
+  // ───────────────────────────────────────────────────────────────────────
+  // SECURE DIGITAL DOWNLOAD — gated by order ownership + expiry. Streams the
+  // book PDF from disk (NEVER served from /public, which would be unauthenticated).
+  // The edition's downloadUrl uses a "secure://book/full.pdf" sentinel that maps
+  // to the on-disk path — survivors who paid get the real bytes; everyone else
+  // gets 404 (not 403, to avoid order-existence oracle).
+  // ───────────────────────────────────────────────────────────────────────
+  app.get('/api/marketplace/orders/:orderId/items/:itemId/download',
+    isAuthenticated, async (req: any, res) => {
+    try {
+      const customerId = req.user.claims.sub;
+      const orderId = parseInt(req.params.orderId);
+      const itemId = parseInt(req.params.itemId);
+
+      const order = await storage.getBookOrder(orderId);
+      if (!order || order.customerId !== customerId) {
+        return res.status(404).json({ message: 'Not found' });
+      }
+      if (order.status !== 'paid' && order.status !== 'processing'
+        && order.status !== 'shipped' && order.status !== 'delivered') {
+        return res.status(404).json({ message: 'Not found' });
+      }
+
+      const items = await storage.getOrderItems(orderId);
+      const item = items.find(i => i.id === itemId);
+      if (!item || !item.downloadUrl) return res.status(404).json({ message: 'Not found' });
+      if (item.downloadExpiresAt && new Date(item.downloadExpiresAt) <= new Date()) {
+        return res.status(410).json({ message: 'Download link expired' });
+      }
+
+      // Resolve sentinel → real disk path. Only allow the canonical book.
+      if (item.downloadUrl !== 'secure://book/full.pdf') {
+        return res.status(404).json({ message: 'Not found' });
+      }
+
+      const path = await import('path');
+      const pdfPath = path.resolve(
+        process.cwd(),
+        'attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION.pdf',
+      );
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader(
+        'Content-Disposition',
+        'attachment; filename="The-Ultimate-Stroke-Recovery-Revolution.pdf"',
+      );
+      res.sendFile(pdfPath);
+    } catch (e: any) {
+      console.error('download error', e);
+      res.status(500).json({ message: 'Download failed' });
     }
   });
 
@@ -15174,7 +15280,9 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   });
 
   // Public book website endpoint (no auth required)
-  app.get('/book/:slug', async (req, res) => {
+  // Note: mounted under /api/ so it doesn't shadow client-side /book/* routes
+  // (e.g. /book, /book/buy). The legacy /book/:slug path was intercepting them.
+  app.get('/api/book-websites/public/:slug', async (req, res) => {
     try {
       const { slug } = req.params;
       const website = await bookWebsiteService.getBookWebsiteBySlug(slug);
@@ -15191,7 +15299,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   });
 
   // Capture newsletter lead (no auth required)
-  app.post('/book/:slug/subscribe', async (req, res) => {
+  app.post('/api/book-websites/public/:slug/subscribe', async (req, res) => {
     try {
       const { slug } = req.params;
       const { email, name } = req.body;
