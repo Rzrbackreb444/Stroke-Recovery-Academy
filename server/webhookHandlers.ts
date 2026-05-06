@@ -115,6 +115,54 @@ export class WebhookHandlers {
         }
       }
 
+      // ── 4b. MARKETPLACE BOOK ORDERS — when a checkout.session.completed fires
+      //       for a bookOrders row (order created in /api/marketplace/checkout),
+      //       look it up by sessionId, mark it paid, and call fulfillOrder so
+      //       the digital download URL gets written + Lulu print job created.
+      if (parsedEvent && eventType === 'checkout.session.completed') {
+        try {
+          const session: any = (parsedEvent as any).data?.object;
+          if (session?.id) {
+            const { storage } = await import('./storage');
+            const existing = await storage.getBookOrderBySessionId(session.id);
+            if (existing && existing.status === 'pending') {
+              // Pull Stripe-collected shipping address into the order so Lulu
+              // POD fulfillment has the fields it needs.
+              const ship = session.shipping_details || session.customer_details || null;
+              const addr = ship?.address || null;
+              const updates: any = {
+                status: 'paid',
+                stripePaymentIntentId: session.payment_intent || null,
+                paidAt: new Date(),
+              };
+              if (addr) {
+                updates.shippingName = ship?.name || existing.shippingName;
+                updates.shippingStreet1 = addr.line1 || existing.shippingStreet1;
+                updates.shippingStreet2 = addr.line2 || existing.shippingStreet2;
+                updates.shippingCity = addr.city || existing.shippingCity;
+                updates.shippingState = addr.state || existing.shippingState;
+                updates.shippingPostalCode = addr.postal_code || existing.shippingPostalCode;
+                updates.shippingCountry = addr.country || existing.shippingCountry;
+                if (session.customer_details?.phone) {
+                  updates.shippingPhone = session.customer_details.phone;
+                }
+              }
+              await storage.updateBookOrder(existing.id, updates);
+              const { fulfillOrder } = await import('./fulfillmentService');
+              const result = await fulfillOrder(existing.id);
+              if (!result.success) {
+                await storage.updateBookOrder(existing.id, { status: 'fulfillment_failed' });
+                console.error('[stripe-webhook] book order fulfillment failed', existing.orderNumber, result.error);
+              } else {
+                console.log('[stripe-webhook] book order fulfilled', existing.orderNumber);
+              }
+            }
+          }
+        } catch (e) {
+          console.warn('[stripe-webhook] book-order fulfillment failed:', e);
+        }
+      }
+
       // ── 5. Sasquatch Studio subscription state — keep our DB in sync with
       //      Stripe so renewals don't silently flip the user to "inactive"
       //      (and so cancels propagate immediately).

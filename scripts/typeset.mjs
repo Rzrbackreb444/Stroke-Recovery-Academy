@@ -80,12 +80,25 @@ raw = raw.replace(
   "- Author\u2019s Note: The Sasquatch Battle Cry\n- Preface\n- How to Read This Book"
 );
 
-// Demote back-matter H1 (Acknowledgments / About the Author / The Builder's Seal) to H2 so
-// they get standard chapter-head treatment, NOT part-divider treatment (which centers them
-// vertically on a near-empty page with content pushed to the next page).
+// Demote back-matter + standalone-content H1 to H2 so they get standard chapter-head treatment,
+// NOT part-divider treatment (which centers them vertically on a near-empty page with body
+// pushed to the next page). Only true Part I-VII + APPENDICES dividers stay as H1.
 raw = raw.replace(/^# Acknowledgments\s*$/m, '## Acknowledgments');
 raw = raw.replace(/^# About the Author\s*$/m, '## About the Author');
 raw = raw.replace(/^# The Builder.s Seal\s*$/m, '## The Builder\u2019s Seal');
+raw = raw.replace(/^# Quick-Start Card([^\n]*)$/m, '## Quick-Start Card$1');
+raw = raw.replace(/^# How to Use This Book([^\n]*)$/m, '## How to Use This Book$1');
+raw = raw.replace(/^# THE SOUNDTRACK: HOSTILE CONSTRUCTION\s*$/m, '## The Soundtrack: Hostile Construction');
+
+// Strip trailing scene-break (---) lines that immediately precede a chapter or part heading.
+// These cause "orphan diamonds" pages where a scene-break separator lands alone at top of next
+// page after being pushed past a forced page break. The chapter/part heading is itself a
+// strong-enough separator; the trailing --- adds nothing typographically.
+raw = raw.replace(/\n---\s*\n+(?=#{1,3} )/g, '\n\n');
+
+// Strip trailing scene break + whitespace at the very end of the manuscript so the final
+// page does not get an orphan "diamonds + nothing" or a fully blank page after the seal.
+raw = raw.replace(/\n---\s*\n*$/g, '\n').replace(/\s+$/, '\n');
 
 // Collapse any 4+ consecutive newlines from deletions
 raw = raw.replace(/\n{4,}/g, '\n\n\n');
@@ -97,9 +110,15 @@ if (splitIdx < 0) throw new Error('Body split marker not found');
 let frontMD = raw.slice(0, splitIdx);
 const bodyMD = raw.slice(splitIdx);
 
-// ---------- 3. CUSTOM TITLE PAGE (replaces markdown title block) ----------
+// ---------- 3. COVER + INTERIOR TITLE PAGE ----------
+// Full-bleed cover (real artwork) + interior typographic title page with QR.
+// Cover is embedded as base64 data URL so puppeteer's file:// loader cannot drop it.
+const coverPath = path.join(ROOT, '..', 'IMG_6157_1778084440581.jpeg');
+const coverB64 = fs.readFileSync(coverPath).toString('base64');
+const coverUrl = `data:image/jpeg;base64,${coverB64}`;
 const qrUrl = url.pathToFileURL(path.join(ROOT, 'images/qr-scan-me.png')).href;
 const titleBlock = `
+<div class="cover-page"><img class="cover-image" src="${coverUrl}" alt="The Ultimate Stroke Recovery Revolution" /></div>
 <div class="title-page">
   <div class="title-inner">
     <div class="title-rule"></div>
@@ -109,7 +128,7 @@ const titleBlock = `
     <p class="title-tagline">The battle-tested blueprint defying every "never."</p>
     <div class="title-spacer"></div>
     <p class="title-author">Nicholas "Stroked-Out Sasquatch" Kremers</p>
-    <p class="title-author-credit">Founder · Stroke Recovery Academy</p>
+    <p class="title-author-credit">Founder &middot; Stroke Recovery Academy</p>
     <p class="title-promise"><em>Because recovery isn't healing &mdash; it's construction.</em></p>
     <img class="title-qr" src="${qrUrl}" alt="" />
     <p class="title-qr-caption">strokerecoveryacademy.com/book</p>
@@ -118,8 +137,9 @@ const titleBlock = `
 
 `;
 
-// Remove original title H1 + subtitle through QR + closing ---
-frontMD = frontMD.replace(/^# THE ULTIMATE[\s\S]*?^---\n/m, titleBlock + '\n');
+// Remove original title H1 + subtitle through QR (closing --- already stripped by orphan-diamond
+// pass above). Anchor on the next H2 (## Copyright) instead of the stripped ---.
+frontMD = frontMD.replace(/^# THE ULTIMATE[\s\S]*?(?=^## Copyright)/m, titleBlock + '\n');
 
 // ---------- 4. RENDER MARKDOWN ----------
 const md = new MarkdownIt({ html: true, linkify: true, typographer: true, breaks: false });
@@ -286,6 +306,7 @@ bodyPages.forEach((p, i) => {
 const bytes = await finalDoc.save();
 fs.writeFileSync(OUT_PDF, bytes);
 
+try { fs.copyFileSync(TMP_FRONT_HTML, '/tmp/dbg-front.html'); } catch {}
 // Cleanup temp files
 [TMP_FRONT_HTML, TMP_BODY_HTML, TMP_FRONT_PDF, TMP_BODY_PDF].forEach(f => {
   try { fs.unlinkSync(f); } catch {}

@@ -5,6 +5,34 @@
   margin: 0.85in 0.95in;
 }
 
+@page cover {
+  margin: 0;
+  size: Letter;
+}
+
+.cover-page {
+  page: cover;
+  width: 8.5in;
+  height: 11in;
+  margin: 0;
+  padding: 0;
+  page-break-after: always;
+  break-after: page;
+  overflow: hidden;
+  position: relative;
+}
+
+.cover-page .cover-image {
+  width: 8.5in;
+  height: 11in;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  display: block;
+  object-fit: cover;
+}
+
 * { box-sizing: border-box; }
 
 html, body {
@@ -233,8 +261,8 @@ p {
   text-align: justify;
   hyphens: auto;
   -webkit-hyphens: auto;
-  orphans: 4;
-  widows: 4;
+  orphans: 2;
+  widows: 2;
 }
 
 p.attribution {

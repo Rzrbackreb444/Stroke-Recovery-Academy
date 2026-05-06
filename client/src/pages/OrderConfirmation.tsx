@@ -181,7 +181,11 @@ function OrderItemCard({ item }: { item: OrderItem }) {
             asChild
             data-testid={`button-download-${item.id}`}
           >
-            <a href={item.downloadUrl} target="_blank" rel="noopener noreferrer">
+            <a
+              href={`/api/marketplace/orders/${order.id}/items/${item.id}/download`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Download className="w-3 h-3 mr-1" />
               Download
             </a>
