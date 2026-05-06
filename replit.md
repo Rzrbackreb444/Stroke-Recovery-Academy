@@ -56,6 +56,17 @@ Every appendix and many chapters cross-reference `strokerecoveryacademy.com/<res
 - Beta reader / editor / collaborator names in Acknowledgments (currently TBD).
 - Cover art credit, typography credits in colophon (TBD).
 
+## Platform ↔ Book Wiring (Shipped May 2026)
+- **`/book` companion page** (`client/src/pages/BookCompanion.tsx`) — single canonical index with hero + 8 quick-action cards + 9 themed resource sections (protocols / mindset / tribe / fuel / structure / clinicians / science / caregivers / soundtrack), all sections anchor-targeted, all links data-testid'd.
+- **Slug aliases** (`client/src/pages/BookSlugRedirect.tsx`) — every bare-path URL printed in the manuscript (`/protocols/*`, `/tribe`, `/soundtrack`, `/workbook`, `/tracker`, `/90day`, `/officehours`, `/persona`, `/clinicians`, `/ceu`, `/letters`, `/math`, `/desert`, `/bereaved`, `/glossary`, `/reading`, `/science`, `/walletcard`, `/risk`, `/nutrition`, `/gear`, `/posters`, `/100lines`, `/podcast`, `/youngsurvivor`, `/plateau`, `/doctrine`, `/quicksheet`, `/app`, `/combos`, `/questions`, `/rights`) resolves via SLUG_MAP/PROTOCOL_MAP either to existing `/recovery/*` pages or to `/book#anchor`. ~33 routes registered before NotFound catch-all.
+- **Result:** every URL the book prints now lands on a real page in the academy. No 404s for book readers.
+
+## Book Polish Adjustments (Shipped May 2026, post-87/100-review)
+- **Appendix H renamed** "The Science That Proves I'm Right" → "The Science Behind These Methods" (TOC + header). Closes the defensiveness flag in the citations section without softening the chapter prose voice.
+- **"For the Quiet Sasquatch" sidebar** added inside Ch 20½ (Persona Forge) — ~280 words affirming the doctrine works for introverts, women, older survivors, soft-spoken survivors. Voice preserved (still ends "Heart's still thumpin'. The whisper counts too."). Opens the door without diluting the brand.
+- **Repetition trim** (post-91/100-review, reviewer flagged "chop wood, never zero" repeats): chop wood 11→10 (removed redundant "chop-wood hour" callout in App I S.A.S.C.H. midday — already covered by canonical sidebar at 5354); never zero 9→8 (removed duplicate Tattoo-Grade Law bullet — already echoed at S.O.S. Strive + S.A.S.C.H. test); thumpin' 26→23 (replaced 3 cap-tag duplicates with fresher mantras: "I am here. The bleed lost. Today I build." in App G wake-up; "Tuesday came back. So will you." at Ch 29½ close; trimmed redundant "Heart's still thumpin'? Life's still pumpin'." at App G close). Voice preserved everywhere; brand-tagline still earned where it remains. Final word count: ~78,750.
+- **Still pending:** plug-density demotion (move inline mid-chapter platform callouts to end-of-chapter Resources boxes in Ch 1, 2, 11, 14, 16, 24); "Pocket Sasquatch" 12k-word condensed cut as separate funnel asset; visuals (out of scope for AI text editing — production task for publisher).
+
 ## Important Files
 - `attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION-v3.md` — main deliverable
 - `attached_assets/Pasted-THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION-FROM-0-TO-90-AN_1778002753962.txt` — original 23k source
