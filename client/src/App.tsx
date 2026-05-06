@@ -743,6 +743,45 @@ function Router() {
       </Route>
       <Route path="/courses" component={StudentDashboard} />
 
+      {/* Book companion + bare-path slug aliases — every URL printed in
+          "The Ultimate Stroke Recovery Revolution" resolves to a real page. */}
+      <Route path="/book" component={BookCompanion} />
+      <Route path="/book/index" component={BookCompanion} />
+      <Route path="/protocols" component={BookSlugRedirect} />
+      <Route path="/protocols/:slug" component={BookSlugRedirect} />
+      <Route path="/workbook" component={BookSlugRedirect} />
+      <Route path="/tracker" component={BookSlugRedirect} />
+      <Route path="/90day" component={BookSlugRedirect} />
+      <Route path="/tribe" component={BookSlugRedirect} />
+      <Route path="/soundtrack" component={BookSlugRedirect} />
+      <Route path="/officehours" component={BookSlugRedirect} />
+      <Route path="/persona" component={BookSlugRedirect} />
+      <Route path="/plateau" component={BookSlugRedirect} />
+      <Route path="/doctrine" component={BookSlugRedirect} />
+      <Route path="/clinicians" component={BookSlugRedirect} />
+      <Route path="/ceu" component={BookSlugRedirect} />
+      <Route path="/quicksheet" component={BookSlugRedirect} />
+      <Route path="/glossary" component={BookSlugRedirect} />
+      <Route path="/reading" component={BookSlugRedirect} />
+      <Route path="/science" component={BookSlugRedirect} />
+      <Route path="/science/corrections" component={BookSlugRedirect} />
+      <Route path="/walletcard" component={BookSlugRedirect} />
+      <Route path="/risk" component={BookSlugRedirect} />
+      <Route path="/nutrition" component={BookSlugRedirect} />
+      <Route path="/gear" component={BookSlugRedirect} />
+      <Route path="/posters" component={BookSlugRedirect} />
+      <Route path="/combos" component={BookSlugRedirect} />
+      <Route path="/letters" component={BookSlugRedirect} />
+      <Route path="/math" component={BookSlugRedirect} />
+      <Route path="/desert" component={BookSlugRedirect} />
+      <Route path="/bereaved" component={BookSlugRedirect} />
+      <Route path="/questions" component={BookSlugRedirect} />
+      <Route path="/rights" component={BookSlugRedirect} />
+      <Route path="/100lines" component={BookSlugRedirect} />
+      <Route path="/podcast" component={BookSlugRedirect} />
+      <Route path="/youngsurvivor" component={BookSlugRedirect} />
+      <Route path="/app" component={BookSlugRedirect} />
+
       <Route component={NotFound} />
       </Switch>
     </Suspense>

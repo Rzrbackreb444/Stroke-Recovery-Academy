@@ -229,7 +229,7 @@ Different survivors are at different points in the fight. Read the way that serv
 - E: Sasquatch Field Notes (Quote Library)
 - F: Support Resources and Communities
 - G: 90-Day Breakthrough Program
-- H: The Science That Proves I'm Right (References) — APA 7
+- H: The Science Behind These Methods (References) — APA 7
 - I: The Sasquatch Doctrine — The Survivor's Operating System
 - J: The Sasquatch Creed
 - K: Companion Workbook & Platform Resources (Book ↔ Academy Bridge)
@@ -2724,6 +2724,24 @@ The Sasquatch is not somebody else. The Sasquatch is the version of you that the
 
 Find him. Use him. Become him.
 
+---
+
+### For the Quiet Sasquatch
+
+Not everybody yells. Not everybody wants a beard, a flannel, and a baseball bat in the closet. Some of the strongest survivors I have met are quiet. Older. Soft-spoken. A grandmother who finished her reps at 5 a.m. before the house woke up. A retired schoolteacher who logged every drill in cursive. A woman in her sixties who never once raised her voice but never once missed a session in three years.
+
+The Sasquatch is not a costume. The Sasquatch is a stance.
+
+The stance is: *I do not negotiate with the bleed. I show up. I rep. I do not miss twice.*
+
+You can hold that stance in a whisper. You can hold it in church clothes. You can hold it without ever saying the word Sasquatch out loud. The doctrine works the same. The 90-day program works the same. The drills work the same. S.A.S.C.H. works the same — Seize, Absorb, Swing, Combine, Hammer — whether you swing a bat or you swing a knitting needle.
+
+If the loud voice does not fit you, translate it. Build the version of yourself the bleed could not kill in your own language. Quiet rebuilds and loud rebuilds end at the same place: the version of you that came back.
+
+Heart's still thumpin'. The whisper counts too.
+
+---
+
 > Full Persona Forge worksheet, Daily Check-In card, mental-health resource directory (988, Crisis Text Line, Veterans line, post-stroke depression specialists by region), and the audio guided forge with the Sasquatch walking you through all five questions: **strokerecoveryacademy.com/persona**.
 
 ---
@@ -4057,7 +4075,7 @@ The miracle is not the day. The miracle is that the day is *ordinary.* The mirac
 
 You will get there. Not on my timeline. Not with my deficits. But you will get there. The brain rebuilds. The body remembers. The Sasquatch shows up.
 
-Heart's still thumpin'. Tuesday's still Tuesday-in'. Keep swinging.
+Tuesday came back. So will you.
 
 ---
 
@@ -5105,7 +5123,7 @@ Before you get out of bed:
 - Open hand stretch from Chapter 19 — 60 seconds each hand.
 - Ankle pumps and circles — 20 each direction, each ankle.
 - Slow diaphragmatic breathing — 10 breaths.
-- Out loud: *Heart's still thumpin'. Life's still pumpin'.* Say it. Mean it.
+- Out loud: *I am here. The bleed lost. Today I build.* Say it. Mean it.
 
 **Block B — Primary motor drill (Days 1–30).**
 Pick *one* of the following based on your biggest deficit. Do it daily.
@@ -5248,13 +5266,11 @@ The cycle is the structure. Three to four 90-day cycles per year, for the rest o
 
 Year 1 you are surviving. Year 2 you are building. Year 3 you are mastering. Year 4 you are teaching. By Year 7 — like me — you are still climbing.
 
-Heart's still thumpin'? Life's still pumpin'.
-
 Now go.
 
 ---
 
-## Appendix H: The Science That Proves I'm Right (References)
+## Appendix H: The Science Behind These Methods (References)
 
 The protocols in this book are not invented. They sit on top of forty-plus years of stroke rehabilitation research and a longer history of neuroscience. The references below are the primary literature behind the techniques. Full APA format so any reader, family member, doctor, or insurance reviewer can verify. The fully linked, continually updated bibliography is at **strokerecoveryacademy.com/science**.
 
@@ -5417,7 +5433,6 @@ Raw. Simple. Real. Seven rallying cries survivors ink, wear, and repeat until th
 - *Anger is a spark, not a wildfire. Burn clean.*
 - *Patience is a bitch — but it is a virtue.*
 - *Stack failures until they form steps.*
-- *Never zero. If you cannot do the whole drill, do a fragment.*
 
 These are the Street-Cred PhD laws — the mindset that keeps the fire burning when every other light goes out. Pick one. Tape it to the bathroom mirror. Read it every morning until you do not need the paper.
 
@@ -5458,7 +5473,7 @@ S.A.S.C.H. turns recovery from something passive and medical into active daily c
 **The S.A.S.C.H. day, in one rhythm:**
 
 - **Morning — Seize + Absorb.** Self-care first. Teeth. Grooming. Shower with the adaptations you have built. Then gratitude — out loud, three lines, name the second chance. Then read yesterday's evening log. *Absorb the lesson before you start writing today's.*
-- **Midday — Swing + Combine.** This is the work block. The reps. The chop-wood hour. Use the Sasquatch persona to push through the part of the work the old you would have skipped. Combine the drills — bat plus mirror, mirror plus mental rehearsal, walking plus narration of what you feel under each foot.
+- **Midday — Swing + Combine.** This is the work block. The reps. Use the Sasquatch persona to push through the part of the work the old you would have skipped. Combine the drills — bat plus mirror, mirror plus mental rehearsal, walking plus narration of what you feel under each foot.
 - **Evening — Hammer.** Sixty seconds of logging. Three lines. *What I built. What I learned. What I will fix tomorrow.* Done.
 
 This is the engine of the 66-Day Rebuild. Run it once and you have one good day. Run it sixty-six days in a row and you have a habit. Run it for a year and you have a different brain in a different body running a different life.
