@@ -209,3 +209,9 @@ id = "2IInKROtuNYfPN9i4juR0"
 uri = "file://attached_assets/book_v2/images/fig-12-recovery-position.png"
 type = "image"
 title = "Fig 12 — Recovery Position (Appendix A)"
+
+[[outputs]]
+id = "10zAJB4G8fUil-IpKgKOe"
+uri = "file://attached_assets/book_v2/images/qr-scan-me.png"
+type = "image"
+title = "Fresh QR — encodes strokerecoveryacademy.com/book directly"
