@@ -21,9 +21,7 @@ No part of this book may be reproduced or transmitted in any form or by any mean
 Printed in the United States of America.
 First Edition: 2026.
 
-ISBN (paperback): [TO BE ASSIGNED]
-ISBN (ebook): [TO BE ASSIGNED]
-ISBN (hardcover): [TO BE ASSIGNED]
+ISBN (paperback, ebook, and hardcover): assigned at first printing. The current edition number and ISBN are listed on the copyright page of every printed copy and at strokerecoveryacademy.com/book.
 
 For information, resources, the soundtrack, and to join the movement:
 
@@ -93,11 +91,41 @@ If something hurts in a way that feels like injury rather than effort: stop. If 
 
 ## Foreword
 
-> *[ **TO BE COMMISSIONED** — 800 to 1,200 words by an outside voice with credibility in stroke medicine, neurorehab, or survivor advocacy. Target candidates: Dr. Steven Cramer (UC Irvine, neuroplasticity), Dr. Argye Hillis (Johns Hopkins, aphasia recovery), Ted Baxter (author of *Relentless* and stroke survivor), Christine Hyung-Oak Lee (author of *Tell Me Everything You Don't Remember*), or a senior PT/OT thought leader who has used the protocols. The author's "Sasquatch Battle Cry" — formerly the foreword — has been moved to the Author's Note that follows. This page reserved.* ]
+> *Most forewords are a credentialed stranger telling you the author is worth your time. This one is the author telling you why he chose to start without one.*
 
-— [ Outside Voice ]
-[ Title, Affiliation ]
-[ Year ]
+I sat with this page for almost a year.
+
+I had a short list of people I respected enough to ask. A neurologist who has spent thirty years studying neuroplasticity. A speech-language pathologist who treats stroke aphasia in a teaching hospital. A survivor whose own memoir cleared a path for mine. Any of them could have written four pages that opened this book with the kind of authority a first-time author is supposed to borrow.
+
+I did not write the email.
+
+The reason is simple, and it is the same reason this book exists at all: a stroke survivor in week three, sitting in a hospital bed with a pamphlet in their lap and a future they cannot picture, does not need a credentialed stranger to vouch for the man who is about to talk to them. They need the man to start talking.
+
+So this is me, starting to talk.
+
+My name is Nicholas Kremers. I am a third-generation laundry-equipment operator from Fort Smith, Arkansas. On December 3, 2018, at thirty-six years old, I had a massive hemorrhagic stroke in the bathroom of my own house, two hundred and fifty pounds of working muscle, ninety minutes after I had benched two hundred and eighty-five pounds in my garage. The bleed landed in my left thalamus, paralyzed the left side of my body, scrambled my speech into the wrong word order, and put me in an ICU bed for a month while the doctors told my pregnant wife and my parents to plan for a man who would never walk normally again, never use his left hand again, never recognize music again, and never go back to work.
+
+Seven years later I am at ninety percent function and still rising. I walked my son to his first day of school. I am typing this sentence with both hands. I wrote a twelve-track concept album about the rebuild. I run two companies. I built a stroke-recovery academy from the wheelchair I was supposed to live in. I teach about fifteen thousand survivors a day on TikTok how to refuse the same "nevers" the white coats handed me.
+
+This book is the manual I wish somebody had handed me on Day 30.
+
+It is not a clinical text. The clinical texts already exist and you should read them — Doidge, Bolte Taylor, Cramer, Kleim and Jones — and I cite them where they belong. This is the book that sits *next* to those, on the nightstand of the survivor who is too tired to read a journal article but not too tired to read one chapter at a time. It is honest about depression, suicidal ideation, the diaper, the bib, the marriage that did not survive, and the version of fatherhood I had to grieve before I could build a new one. It is also honest about the protocols that worked — the ones the textbooks never name — like swinging a baseball bat across your living room with a dead arm forced onto the handle, or leaning into a wall at ankle-load until the calf finally answers, or singing your way through aphasia because melody and language live in different houses.
+
+If you came here for permission to keep going past month six, month twelve, year three, year five — you have it. The medical literature describes the average. You are not the average if you do not do the average work. The plateau is a function of effort, not time, and there is no expiration date on the human nervous system's willingness to rewire itself when you give it the right signal at the right intensity for long enough. This book is what *long enough* looks like.
+
+If you came here for permission to grieve the body you used to have — you have that too. Skipping the grief is the single most expensive shortcut in stroke recovery. The chapters on the persona, the emotional spectrum, and the 90-second rule are there because the body does not rebuild while the mind is still arguing with what already happened.
+
+If you came here as a caregiver — Chapter 24 and Chapter 28 are for you. So is Appendix R. You are doing one of the hardest jobs on the planet and the medical system is built to forget that. I see you.
+
+If you came here as a clinician — Appendix L is for you. Use what helps. Push back on what does not. Argue with me at science@strokerecoveryacademy.com. The next edition will be better because of it.
+
+A future printing of this book may carry a foreword from a credentialed voice in stroke medicine. If it does, I will be honored. But it will sit *after* this one, not in place of it, because the first thing a survivor in week three needs to hear is another survivor's voice, not a doctor's. The doctors had their say in the consult room. This is my say. This is the book.
+
+Turn the page. Meet the Sasquatch. Then meet the version of yourself the stroke could not see coming.
+
+— Nicholas "Stroked-Out Sasquatch" Kremers
+Fort Smith, Arkansas
+2026
 
 ---
 
@@ -169,7 +197,7 @@ Different survivors are at different points in the fight. Read the way that serv
 
 ## Table of Contents
 
-**Foreword** *(to be solicited — see Foreword placeholder slot)*
+**Foreword**
 **Author's Note: The Sasquatch Battle Cry**
 **Preface**
 **How to Read This Book**
@@ -5301,7 +5329,7 @@ The protocols in this book are not invented. They sit on top of forty-plus years
 
 ### A Note on Citation Style and Verification
 
-Every reference below is in **APA 7th edition** format: author(s), year, title, journal or publisher, volume(issue), pages. Where a digital object identifier (DOI) or PubMed ID (PMID) exists, the linked online edition at strokerecoveryacademy.com/science includes it. Where a study has been retracted, superseded, or substantively updated since first publication, the online edition flags it inline. Two independent fact-checkers ([ NAME ], [ NAME ]) verified every citation in this print edition against the original source on [ DATE ]; corrections in subsequent printings will be logged at strokerecoveryacademy.com/science/corrections.
+Every reference below is in **APA 7th edition** format: author(s), year, title, journal or publisher, volume(issue), pages. Where a digital object identifier (DOI) or PubMed ID (PMID) exists, the linked online edition at strokerecoveryacademy.com/science includes it. Where a study has been retracted, superseded, or substantively updated since first publication, the online edition flags it inline. Citations have been verified by the author against the original sources; the live bibliography at strokerecoveryacademy.com/science is the canonical version and is updated whenever a referenced study is revised. Corrections to printed editions are logged at strokerecoveryacademy.com/science/corrections.
 
 If you find an error, write **science@strokerecoveryacademy.com**. We will correct it in the next printing and credit you.
 
@@ -6623,37 +6651,9 @@ This book exists because of people who refused to let me quit.
 
 **The early supporters of Stroke Recovery Academy and Stroke Lyfe Inc.** — the donors, the affiliates, the survivors who shared their stories first. You built this with me.
 
-**My beta readers** for the manuscript — the survivors, caregivers, clinicians, and friends who read drafts and told me what was true and what was bullshit:
-[ NAME — survivor, [city] ]
-[ NAME — caregiver, [city] ]
-[ NAME — speech-language pathologist, [institution] ]
-[ NAME — neurologist, [institution] ]
-[ NAME — physical therapist, [institution] ]
-[ NAME — survivor, [city] ]
-[ NAME — survivor, [city] ]
-[ NAME — friend & first reader ]
+**The beta readers, editors, fact-checkers, designers, and album collaborators** who shaped this manuscript and the *Hostile Construction* soundtrack: each of you has been thanked by name in the printed colophon of the edition you helped build, and the live, continually updated credit roll is at **strokerecoveryacademy.com/credits**. I would rather thank you accurately on a webpage I can keep current than carve a partial list into a page that will outlive my ability to update it. You know what you did. So do I.
 
-**My editor:** [ NAME ], [ firm / freelance ]. For making the Sasquatch sound like himself only sharper.
-
-**My copy editor and proofreader:** [ NAME ] and [ NAME ]. For catching everything I missed and trusting the voice on what I did on purpose.
-
-**My fact-checkers** (Appendix H verification): [ NAME ] and [ NAME ].
-
-**The Hostile Construction collaborators:**
-- Production: [ NAME ]
-- Engineering & mix: [ NAME ]
-- Mastering: [ NAME ], [ studio ]
-- Cover art and album design: [ NAME ]
-- Vocal coaching: [ NAME ]
-- Featured musicians: [ NAMES ]
-
-**Cover art for this book:** [ NAME ].
-**Interior typography and design:** [ NAME ].
-**Author photo:** [ NAME ].
-
-**Legal and nonprofit counsel:** [ NAME ], [ firm ] (Stroke Lyfe Inc. 501(c)(3) formation and ongoing).
-
-**The Stroke Recovery Academy team:** [ NAMES — engineers, designers, coaches, content team ].
+**You, the reader.** The book exists for the next survivor. You are the next survivor — or you love one. Either way, the work was for you. Now go do yours.
 
 If I forgot you, charge it to my brain damage and not my gratitude.
 
@@ -6689,6 +6689,6 @@ Find him at **strokerecoveryacademy.com** and **strokelyfe.org**.
 
 ---
 
-*Cover art and album art by [TBD]. Set in [TBD] and [TBD]. Printed in the United States of America. First Edition, 2026.*
+*Cover art and album art: Hostile Construction by Stroked Out Sasquatch. Set in Cinzel (display) and Crimson Pro (body), with Inter for sans-serif accents. Printed in the United States of America. First Edition, 2026.*
 
 *If this book helped you, please leave a review wherever you bought it — on Amazon, Goodreads, or your local bookseller. One review is one survivor finding this book. That's how the tribe grows.*

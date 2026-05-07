@@ -31,38 +31,18 @@ const FONT_FACES = `
 @font-face { font-family: 'Inter'; font-weight: 700; font-style: normal; src: url('${fontUrl('inter/files/inter-latin-700-normal.woff2')}') format('woff2'); }
 `;
 
-// ---------- 1. READ + STRIP EDITORIAL CRUFT ----------
+// ---------- 1. READ ----------
+// Manuscript source is now publish-clean: Foreword is real prose, ISBN block is
+// resolved to a forward-pointing line, fact-checker / beta-reader / collaborator
+// sections name people honestly or defer to the live credit roll. No editorial
+// scrubs needed. The placeholder strips that lived here (foreword TBD, ISBN
+// [TO BE ASSIGNED], cover-art [TBD], [ NAME ] beta-reader rows, etc.) have all
+// been removed because the source no longer contains the patterns they targeted.
 let raw = fs.readFileSync(MD, 'utf8');
 
-// Strip entire Foreword section (placeholder TBD) — runs through closing --- + blank line
-raw = raw.replace(/^## Foreword\b[\s\S]*?(?=^## Author)/m, '');
-
-// Strip ISBN [TO BE ASSIGNED] lines
-raw = raw.replace(/^ISBN[^\n]*\[TO BE ASSIGNED\][^\n]*\n?/gm, '');
-
-// Strip END OF BOOK + cover-art TBD line
+// Strip END OF BOOK marker — visual-only "the book is over" stamp that the
+// printed colophon already conveys via the final-page block.
 raw = raw.replace(/^\*\*END OF BOOK\*\*\s*\n?/gm, '');
-raw = raw.replace(/^\*Cover art and album art by \[TBD\][^\n]*\n?/gm, '');
-
-// Strip TOC Foreword line
-raw = raw.replace(/^\*\*Foreword\*\*[^\n]*\(to be solicited[^\n]*\n?/gm, '');
-
-// App H fact-checker placeholder sentence rewrite
-raw = raw.replace(
-  /Two independent fact-checkers \(\[ NAME \], \[ NAME \]\)[^.]*\./,
-  'Citations in this print edition will be independently verified before second printing;'
-);
-
-// Drop any line containing a [ NAME / NAMES / firm / studio / city / institution / year / Year / Title / Outside / DATE ] placeholder bracket
-raw = raw.split('\n').filter(line =>
-  !/\[\s*(NAME|NAMES|firm|studio|city|institution|year|Year|Title|Outside|DATE)\b[^\]]*\]/.test(line)
-).join('\n');
-
-// Drop the now-orphaned "**My beta readers** ... :" intro paragraph
-raw = raw.replace(/^\*\*My beta readers\*\*[^\n]*\n?/gm, '');
-
-// Drop the now-orphaned "**The Hostile Construction collaborators:**" header
-raw = raw.replace(/^\*\*The Hostile Construction collaborators:\*\*\s*\n?/gm, '');
 
 // TOC: separate the 4 trailing back-matter lines (consecutive bold lines collapse into one paragraph)
 raw = raw.replace(
