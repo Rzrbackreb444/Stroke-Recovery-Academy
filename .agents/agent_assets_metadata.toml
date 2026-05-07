@@ -120,6 +120,48 @@ uri = "file://attached_assets/book_v2/images/sasquatch-canonical.png"
 type = "image"
 title = "sasquatch canonical poster"
 
+[[generated]]
+id = "VSpBF3t7ZPngyKivLp7Aw"
+uri = "file://attached_assets/book_v2/images/sasquatch-cover.png"
+type = "image"
+title = "sasquatch cover"
+
+[[generated]]
+id = "wo2Y8ECVCZw8_fONFtvGB"
+uri = "file://attached_assets/book_v2/images/sasquatch-forge.png"
+type = "image"
+title = "sasquatch forge"
+
+[[generated]]
+id = "aghWyiFb-TtpBBqFh5yav"
+uri = "file://attached_assets/book_v2/images/sasquatch-intersection.png"
+type = "image"
+title = "sasquatch intersection"
+
+[[generated]]
+id = "fpcFqOwv09nxCQrZnSyVN"
+uri = "file://attached_assets/book_v2/images/sasquatch-year-seven.png"
+type = "image"
+title = "sasquatch year seven"
+
+[[generated]]
+id = "yjZrAbAPuxlWnFM1ZQS2p"
+uri = "file://attached_assets/book_v2/images/sasquatch-creed.png"
+type = "image"
+title = "sasquatch creed oath"
+
+[[generated]]
+id = "Gnemf51EgtjNAIe1suX4o"
+uri = "file://attached_assets/book_v2/images/sasquatch-doctrine-six.png"
+type = "image"
+title = "sasquatch doctrine six panel"
+
+[[generated]]
+id = "l4kF3GaaqJFAJfNArCwGK"
+uri = "file://attached_assets/book_v2/images/sasquatch-seal.png"
+type = "image"
+title = "sasquatch builders seal"
+
 [[outputs]]
 id = "EGooVUwVUQyTPSx95p4M4"
 uri = "file://exports/Stroked-Out-Sasquatch_DEDUPED_v1.md"
@@ -233,3 +275,45 @@ id = "-g9mNPO2JZTgOWg-vNtgj"
 uri = "file://attached_assets/book_v2/images/sasquatch-canonical.png"
 type = "image"
 title = "Canonical Sasquatch — woodcut-poster, axe, left-side asymmetry"
+
+[[outputs]]
+id = "GuS0y2AOVQwziOP-a5aA0"
+uri = "file://attached_assets/book_v2/images/sasquatch-cover.png"
+type = "image"
+title = "1. Cover — axe across chest, scaffolding frame"
+
+[[outputs]]
+id = "imreHZl2kcd5yeeTcVBgJ"
+uri = "file://attached_assets/book_v2/images/sasquatch-forge.png"
+type = "image"
+title = "2. The Forge — hammer, anvil, persona being made"
+
+[[outputs]]
+id = "duDNKG9p1wD4paEILV29t"
+uri = "file://attached_assets/book_v2/images/sasquatch-intersection.png"
+type = "image"
+title = "3. Intersection — guardian behind lost figure (Ch.21 Emotional Warfare)"
+
+[[outputs]]
+id = "HDiRtPVhsXDQ9Zct8UGbT"
+uri = "file://attached_assets/book_v2/images/sasquatch-year-seven.png"
+type = "image"
+title = "4. Year Seven — son on shoulders, axe at rest"
+
+[[outputs]]
+id = "Lm_Iq8IHrZQUmiRA5D1Wi"
+uri = "file://attached_assets/book_v2/images/sasquatch-creed.png"
+type = "image"
+title = "5. The Creed — oath stance, axe planted, full halo"
+
+[[outputs]]
+id = "Nmh39iRg8_8O5Hmwf1T5h"
+uri = "file://attached_assets/book_v2/images/sasquatch-doctrine-six.png"
+type = "image"
+title = "6. Doctrine Six-Panel — one icon per principle"
+
+[[outputs]]
+id = "AWUd_SJ6bkPvYWYygUnLV"
+uri = "file://attached_assets/book_v2/images/sasquatch-seal.png"
+type = "image"
+title = "7. Builder's Seal — silhouette watermark"
