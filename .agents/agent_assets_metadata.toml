@@ -114,6 +114,12 @@ uri = "file://attached_assets/book_v2/images/fig-18-tennis-ball-squeeze.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "bPSY6pahKv20JN5xfd29c"
+uri = "file://attached_assets/book_v2/images/sasquatch-canonical.png"
+type = "image"
+title = "sasquatch canonical poster"
+
 [[outputs]]
 id = "EGooVUwVUQyTPSx95p4M4"
 uri = "file://exports/Stroked-Out-Sasquatch_DEDUPED_v1.md"
@@ -221,3 +227,9 @@ id = "QMl0yixM6M_wqa-H2nwa_"
 uri = "file://attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION.pdf"
 type = "pdf"
 title = "The Ultimate Stroke Recovery Revolution — 99/100 polish pass"
+
+[[outputs]]
+id = "-g9mNPO2JZTgOWg-vNtgj"
+uri = "file://attached_assets/book_v2/images/sasquatch-canonical.png"
+type = "image"
+title = "Canonical Sasquatch — woodcut-poster, axe, left-side asymmetry"
