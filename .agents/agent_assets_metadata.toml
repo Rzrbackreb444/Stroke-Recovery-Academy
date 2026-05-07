@@ -162,6 +162,30 @@ uri = "file://attached_assets/book_v2/images/sasquatch-seal.png"
 type = "image"
 title = "sasquatch builders seal"
 
+[[generated]]
+id = "opuRMUDWGr4WvbJGb7MFs"
+uri = "file://attached_assets/book_v2/images/sasquatch-bat.png"
+type = "image"
+title = "sasquatch baseball bat"
+
+[[generated]]
+id = "YgG3Fl2UGpEH4322BC13o"
+uri = "file://attached_assets/book_v2/images/sasquatch-mirror.png"
+type = "image"
+title = "sasquatch mirror therapy"
+
+[[generated]]
+id = "_n1U_JsD3KrkhpsS4BRPP"
+uri = "file://attached_assets/book_v2/images/sasquatch-tribe.png"
+type = "image"
+title = "sasquatch tribe leading"
+
+[[generated]]
+id = "q2LAL-V2E9yg-YIufgryq"
+uri = "file://attached_assets/book_v2/images/sasquatch-handoff.png"
+type = "image"
+title = "sasquatch builders promise handoff"
+
 [[outputs]]
 id = "EGooVUwVUQyTPSx95p4M4"
 uri = "file://exports/Stroked-Out-Sasquatch_DEDUPED_v1.md"
@@ -268,7 +292,7 @@ title = "Fresh QR — encodes strokerecoveryacademy.com/book directly"
 id = "QMl0yixM6M_wqa-H2nwa_"
 uri = "file://attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION.pdf"
 type = "pdf"
-title = "The Ultimate Stroke Recovery Revolution — 99/100 polish pass"
+title = "Stroked-Out Sasquatch — 298pp, 11 character illustrations + Architect's Creed"
 
 [[outputs]]
 id = "-g9mNPO2JZTgOWg-vNtgj"

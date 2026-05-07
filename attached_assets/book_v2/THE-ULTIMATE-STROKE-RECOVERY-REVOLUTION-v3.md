@@ -1530,6 +1530,8 @@ That night I wrote in the notebook: *the bat works. don't lose it.*
 
 I have swung that bat almost every morning of the seven years since.
 
+![The Sasquatch in the garage at dawn — bat planted, weak hand forced onto the wood, the work about to start.](images/sasquatch-bat.png)
+
 ---
 
 When you start recovery, your therapist gives you soft goals. Wiggle a toe. Lift a cup.
@@ -1720,6 +1722,8 @@ At minute eleven, the left index finger twitched. Once. About three millimeters.
 I did not move for the last nine minutes. I kept opening and closing the right hand and watched the reflection do the work the left hand was supposed to do. The left hand did one more twitch at minute seventeen. Two for the day. Two more than yesterday. Two enough.
 
 The mirror cost thirty dollars at IKEA.
+
+![The Sasquatch at the mirror box — strong arm in front, weak arm hidden behind, the brain being lied to into rewiring itself.](images/sasquatch-mirror.png)
 
 ---
 
@@ -2562,6 +2566,8 @@ The Sasquatch was not born in the ICU. The Sasquatch was *forged* — slowly, de
 
 This chapter is the forge. Step inside.
 
+![The Forge — the Sasquatch hammers the axe into being on the anvil. The persona is not born. The persona is made.](images/sasquatch-forge.png)
+
 ---
 
 ### Why a Persona Outperforms Willpower
@@ -2807,6 +2813,8 @@ Setbacks aren't the end. They are invitations to get stronger.
 Depression and isolation tried to kill my recovery. I turned them into fuel.
 
 Here is how I fought, and how I won, the emotional war.
+
+![The four-lane intersection at midnight — the survivor stands in the center, head down. The Sasquatch stands behind him, axe planted, patient. The guardian shows up before the survivor knows he is there.](images/sasquatch-intersection.png)
 
 ### The Depression Trap
 
@@ -3633,6 +3641,8 @@ I went into the garage. I propped my phone against a paint can. I hit record. I 
 
 Twenty-two seconds.
 
+![The tribe at dawn — the Sasquatch leads from the front, axe over his shoulder, five survivors in a v-formation marching with him. Isolation dies the day you let one other survivor walk beside you.](images/sasquatch-tribe.png)
+
 I posted it under the username *@nickkremers* because I could not think of anything more clever and my left hand still made typing slow.
 
 I went to bed.
@@ -4155,6 +4165,8 @@ I was supposed to be twenty.
 
 I was told I would never walk again. I walked my son to his first day of school.
 
+![Year Seven — the son rides on the Sasquatch's shoulder, the axe at rest in the grass. The work paid the only debt that ever mattered.](images/sasquatch-year-seven.png)
+
 I was told I would never use my left hand again. I am typing this with both.
 
 I was told I would never recognize music again. I wrote an album.
@@ -4213,6 +4225,8 @@ I will see you in the comments. I will see you on the laps around the gym. I wil
 The Sasquatch has your back. We're watching. You're valuable.
 
 Now go.
+
+![The Builder's Promise — the Sasquatch extends the axe handle-first. The work is yours now. The build is yours now. The ceiling is yours to lift.](images/sasquatch-handoff.png)
 
 Your impossible life is waiting.
 
@@ -5443,6 +5457,8 @@ Full chopping-wood protocol, the wooden-axe desk talisman, and the daily habit-s
 
 ## Appendix I: The Sasquatch Doctrine — The Survivor's Operating System
 
+![The Six-Panel Doctrine — Ownership. Movement. Reflection. Repetition. Adaptation. Humanhood. One Sasquatch. Six daily reps of the self.](images/sasquatch-doctrine-six.png)
+
 Six principles. Memorize them. Run them daily. Print the wallet card at **strokerecoveryacademy.com/doctrine** and carry it.
 
 ### The Six Principles
@@ -5618,7 +5634,44 @@ Use it that way. Pass it on.
 
 ---
 
-## Appendix J: The Sasquatch Creed
+## Appendix J: The Two Creeds
+
+![The Oath — the Sasquatch front-facing, axe planted, both hands on the handle, eyes locked forward. The creed is not read. The creed is sworn.](images/sasquatch-creed.png)
+
+Two creeds. One survivor. The Architect plans the build at the desk. The Sasquatch executes the build in the body. You need both. Read them in order — Architect first, Sasquatch second — every morning until you no longer need to read them at all.
+
+---
+
+### The Architect's Creed
+
+I am not the patient. I am the architect.
+
+I do not wait to be healed. I build the body that heals me.
+
+I survey the rubble first — honest, without flinching.
+I draw the blueprint on the worst day, not the best.
+I lay one brick before sunrise. Then one more.
+
+The system gave me the floor. I am building the ceiling.
+The chart gave me the average. I am the outlier I came here to be.
+
+I work in reps, not in moods.
+I work in years, not in weeks.
+I work whether the work is seen or not.
+
+Every morning I pick up the same hammer.
+Every morning I aim it at the same wall.
+The wall does not get bigger. *I* get bigger.
+
+The blueprint is mine.
+The build is mine.
+The ceiling is mine to lift.
+
+— Nicholas "Stroked-Out Sasquatch" Kremers
+
+---
+
+### The Sasquatch Creed
 
 I am the Stroked-Out Sasquatch.
 
@@ -6685,6 +6738,8 @@ Find him at **strokerecoveryacademy.com** and **strokelyfe.org**.
 ---
 
 # The Builder's Seal
+
+![The Sasquatch silhouette — axe planted, weight on the strong side, the weak side honored. The seal of every survivor who picks up the work after closing this book.](images/sasquatch-seal.png)
 
 > *I am the proof.
 > The impossible is waiting for me to make it inevitable.
