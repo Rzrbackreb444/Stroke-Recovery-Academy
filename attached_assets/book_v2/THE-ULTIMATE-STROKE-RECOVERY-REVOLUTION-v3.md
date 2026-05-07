@@ -934,6 +934,8 @@ Step two.
 
 We made it ten feet down the parallel bars before I had to stop because my heart was going to come out of my chest. I sat back down in the chair. I was sweating through the gown. I was breathing the way you breathe after a heavy set, except the heavy set had been ten feet of dragging my own dead leg across linoleum.
 
+![Figure 15: Parallel-bar walking — both hands gripping the rails, gait belt at the waist, therapist alongside spotting the affected leg.](images/fig-15-parallel-bars.png)
+
 Michael grinned at me.
 
 He said: *"Tomorrow we go twenty."*
@@ -1879,6 +1881,8 @@ Drop foot destruction isn't luck. It's reps, refusal, and system. Reclaim your s
 
 Year two, a kitchen morning, sun on the counter. The cup was a heavy ceramic one Lisa had bought at a craft fair — fat handle, thick wall, half-full of black coffee. I had been training the left grip on a tennis ball for ninety days. A hundred squeezes a day. The grip strength dynamometer had crawled from zero to four kilograms. The therapy team called four kilograms *not yet functional.* Functional, by the textbook, started at twelve.
 
+![Figure 18: Tennis-ball squeeze — affected hand wrapped around a standard tennis ball, full grip held three to five seconds, then released.](images/fig-18-tennis-ball-squeeze.png)
+
 I picked up the cup with my left hand anyway.
 
 The handle pinched between my thumb and the side of my index finger. The wrist screamed. The bicep had to do a hundred percent of the lift because the forearm could not stabilize. The cup came up about eight inches off the counter and shook like a Polaroid. Coffee sloshed onto my left thumb. It was hot. I did not let go.
@@ -1923,6 +1927,8 @@ Ten to twenty minutes daily. Watching the right arm move and imagining the left.
 
 **5. Functional tasks.**
 Brushing teeth. Holding a fork. Buttoning a shirt. Forced use. Started assisted, progressed to independent.
+
+![Figure 17: Brushing teeth left-handed — affected hand on the brush, unaffected hand stabilizing the tube cap, mirror in front for visual feedback.](images/fig-17-brushing-teeth.png)
 
 ### My Timeline
 
@@ -2057,6 +2063,8 @@ The drills your SLP will likely give you:
 - **Masako maneuver.** Stick your tongue out and hold it gently between your teeth. Try to swallow without pulling your tongue back in.
 - **Shaker exercise.** Lie flat. Lift just your head (not your shoulders) to look at your toes. Hold one minute. Rest. Repeat.
 
+![Figure 16: Chin-tuck swallow — chin pulled toward chest before initiating the swallow, narrowing the airway entrance and reducing aspiration risk.](images/fig-16-chin-tuck-swallow.png)
+
 These aren't optional. They protect your airway.
 
 ### My Timeline
@@ -2155,6 +2163,8 @@ Same concept as the L300, applied to the wrist and fingers. Stimulates the muscl
 Cheap. Fifty to two hundred dollars. Available on Amazon. Worth their weight in gold for cued muscle activation.
 
 **Why they earned a spot.** I used a basic NMES (neuromuscular electrical stimulation) unit on my anterior tibialis at home — pads on the muscle, pulse on, intentionally try to fire the muscle along with the pulse. The combination of the pulse and the conscious effort doubled the signal to my brain.
+
+![Figure 13: NMES electrode placement — two pads spanning the anterior tibialis muscle belly, channel leads routed clear of the ankle.](images/fig-13-nmes-placement.png)
 
 **Watch out for.** TENS (pain-relief mode) and NMES (muscle-contraction mode) are different settings. You want NMES mode for rebuilding. Read the manual. Get an OT or PT to set it up correctly the first time.
 
@@ -2285,6 +2295,11 @@ Combine. Mirror box. Watch the strong hand opening fully. Imagine the weak hand 
 
 **6. Botox and baclofen are tools, not failures.**
 If spasticity is severe, talk to a physiatrist about targeted Botox injections. They temporarily quiet specific overactive muscles, opening a window in which you can do the active drills above. Used right, Botox is a rep-multiplier — same logic as the Bioness in Chapter 18. Used as a substitute for the work, it just delays the problem. Same with oral baclofen.
+
+**7. Soft-tissue work — foam roller and ball release.**
+Spastic muscle is also tight, knotted, dehydrated muscle. A foam roller on the forearm flexors before extension drills, or on the calf and quad before gait work, gives the active drills a longer range to work in. Two to three minutes per muscle group, slow passes, breathe through the tender spots. This is not a substitute for the active work — it is the warm-up that lets the active work do more.
+
+![Figure 14: Foam-roller forearm release — affected forearm draped across the roller, slow passes from elbow to wrist, unaffected hand stabilizing.](images/fig-14-foam-roller.png)
 
 ### Part 2 — Sleep: The Recovery Multiplier Nobody Talks About
 
@@ -6666,8 +6681,6 @@ His mission is simple: prove that extraordinary recovery is possible, then teach
 He still walks without an AFO. He still swings a baseball bat in his garage every morning. He still pulls his son's pictures up on his phone when the work feels too hard.
 
 Find him at **strokerecoveryacademy.com** and **strokelyfe.org**.
-
-![Scan to start — strokerecoveryacademy.com](images/qr-scan-me.png)
 
 ---
 
