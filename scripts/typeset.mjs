@@ -93,9 +93,9 @@ const bodyMD = raw.slice(splitIdx);
 // ---------- 3. COVER + INTERIOR TITLE PAGE ----------
 // Full-bleed cover (real artwork) + interior typographic title page with QR.
 // Cover is embedded as base64 data URL so puppeteer's file:// loader cannot drop it.
-const coverPath = path.join(ROOT, '..', 'IMG_6157_1778084440581.jpeg');
+const coverPath = path.join(ROOT, 'images', 'sasquatch-cover.png');
 const coverB64 = fs.readFileSync(coverPath).toString('base64');
-const coverUrl = `data:image/jpeg;base64,${coverB64}`;
+const coverUrl = `data:image/png;base64,${coverB64}`;
 const qrUrl = url.pathToFileURL(path.join(ROOT, 'images/qr-scan-me.png')).href;
 const titleBlock = `
 <div class="cover-page"><img class="cover-image" src="${coverUrl}" alt="The Ultimate Stroke Recovery Revolution" /></div>
