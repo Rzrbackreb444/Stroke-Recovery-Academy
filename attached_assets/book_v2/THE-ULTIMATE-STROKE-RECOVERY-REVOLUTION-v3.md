@@ -169,7 +169,7 @@ I woke up unable to move half my body, handed a timeline full of "nevers."
 
 This book is what happened when I refused them.
 
-It's not a medical textbook. It's the blueprint forged in rage, repetition, and relentless experimentation. These pages contain the laws, tactics, and mindset that took me from a wheelchair to a platform — and the methods I now teach the survivors who find me through TikTok every single day.
+It's not a medical textbook. It's the blueprint forged in rage, repetition, and relentless experimentation. These pages contain the laws, tactics, and mindset that took me from a wheelchair to a platform — and the methods I now teach the survivors who find me through TikTok every day.
 
 Your setback will be different. Your rebuild will be unique. Use this as ammunition, not as a prescription. Take what serves your fight and leave the rest. Adapt the drills to your body. Argue with me where you need to. Then put in the work.
 
@@ -326,7 +326,7 @@ Class is in session.
 
 # Quick-Start Card: What to Do Today, This Week, This Month, This Quarter
 
-If you just had a stroke — or someone you love just did — this is the page you actually need first. Everything else in this book is the long version of what is on this single card. Tear it out. Tape it to the wall. Read the page that matches today.
+If you just had a stroke — or someone you love just did — this is the page you need first. Everything else in this book is the long version of what is on this single card. Tear it out. Tape it to the wall. Read the page that matches today.
 
 ## Day 1 — Today
 
@@ -388,7 +388,7 @@ This book is a memoir-driven manual. The narrative chapters tell what happened t
 2. **The middle.** Add the free workbook (Appendix K). Join the free tribe community. Show up to one Wednesday office hour at strokerecoveryacademy.com/officehours.
 3. **The full system.** Workbook + tracker + 90-Day app + tribe + monthly office hours + a coaching cohort once a year.
 
-There is no wrong way to use it. There is only the way you actually use.
+There is no wrong way to use it. There is only the way you use.
 
 **One last thing.** I am not a doctor. I am a survivor who became a teacher. Nothing in this book replaces your medical team. *Get clearance from your treating clinicians before starting any protocol in here.* If you are in immediate medical or mental crisis, call **911**, or **988** for suicide and crisis support. Then come back to the book.
 
@@ -489,7 +489,7 @@ When I met Michael, my physical therapist, he didn't look like much. Tall. Lanky
 
 But he carried belief like a tool belt.
 
-He didn't baby me. He didn't promise miracles. He just looked me in the eye and said, *"We're not here to survive, Nick. We're here to rebuild."*
+He didn't baby me. He didn't promise miracles. He looked me in the eye and said, *"We're not here to survive, Nick. We're here to rebuild."*
 
 That was the first flicker. Not in my muscles. In my mind. The idea that maybe, somehow, I could build again.
 
@@ -619,7 +619,7 @@ The nurses probably thought I was losing it.
 
 I was not losing it. I was finding it.
 
-The doctors had told my family the stroke had taken my music. The doctors had told my family I would not recognize Britney from a chainsaw. The doctors had told my family a lot of things they could not actually know.
+The doctors had told my family the stroke had taken my music. The doctors had told my family I would not recognize Britney from a chainsaw. The doctors had told my family a lot of things they could not know.
 
 I was lying in a hospital bed in a soiled diaper singing Britney Spears at three in the afternoon and the brain they said was broken was making the connection between the song and the situation just fine.
 
@@ -1028,7 +1028,7 @@ Not everyone gets a Michael. But everyone needs his approach.
 
 **Become your own Michael:**
 - Set breakthrough goals, not maintenance goals.
-- Push safely every single day.
+- Push safely every day.
 - Treat your recovery like elite athletic training.
 - Demand extraordinary from yourself.
 - Reject "good enough" as a final answer.
@@ -1088,7 +1088,7 @@ The new identity isn't about recovering the old one. It's about creating a stron
 
 Therapy is essential. Doctors are vital. But they are advisors. They give you the tools and a section of the blueprint. You are the foreman of the build.
 
-When I left the constant supervision of inpatient rehab, the training wheels came off. Suddenly I was on my own — responsible for every single rep, every minute of practice. That moment is terrifying. It is also the moment of total empowerment. They had given me my freedom. Now I had to earn it, one rep at a time.
+When I left the constant supervision of inpatient rehab, the training wheels came off. Suddenly I was on my own — responsible for every rep, every minute of practice. That moment is terrifying. It is also the moment of total empowerment. They had given me my freedom. Now I had to earn it, one rep at a time.
 
 ### The Architect's Vow
 
@@ -1328,7 +1328,7 @@ Discipline is showing up on the day you feel zero motivation, when the pain is c
 
 **1. Choose ONE target.** Don't try to master your hand, leg, and speech all at once. Choose one primary goal (lift my left toes; open my left hand) and one primary drill (toe taps; mirror therapy).
 
-**2. Zero exceptions.** You do the work every single day for sixty-six days. No excuses. Not busy. Not tired. Not sore. Not "just skipping one day." If you miss a day, you start over on Day 1. The goal is to make the work non-negotiable.
+**2. Zero exceptions.** You do the work every day for sixty-six days. No excuses. Not busy. Not tired. Not sore. Not "just skipping one day." If you miss a day, you start over on Day 1. The goal is to make the work non-negotiable.
 
 **3. Time is fuel, not a clock.** Don't set a time limit ("thirty minutes"). Set a rep limit or a fatigue limit. You stop when the target muscle fails or the prescribed reps are complete — not when the clock says time's up. You are feeding the machine, not punching a clock.
 
@@ -1443,7 +1443,7 @@ The progression from zero to full function follows three distinct, brutal phases
 
 ### Builder's Science: What Is Actually Happening Inside Your Skull During THINK
 
-When the visible movement is zero and the work feels like screaming into a void, here is what is actually happening — measurable on functional MRI, EEG, and TMS in study after study.
+When the visible movement is zero and the work feels like screaming into a void, here is what is happening — measurable on functional MRI, EEG, and TMS in study after study.
 
 **Motor imagery activates the same neural circuits as motor execution.** Jeannerod's 1995 framework, confirmed by hundreds of subsequent imaging studies, established that imagined movement of a limb activates roughly 70 to 80 percent of the same cortical and subcortical motor networks as actual movement of that limb. Premotor cortex, supplementary motor area, basal ganglia, and cerebellum all light up. The only thing missing is the final descending signal to the muscle. This means a stroke survivor stuck in the THINK phase, with no visible movement, is **still doing real motor cortex work** with every imagined rep.
 
@@ -1489,7 +1489,7 @@ I did not breathe for ten seconds. Then I tried it again. Nothing. I tried it ag
 
 I started crying. The dinner tray showed up. The aide asked if I was okay. I told her my toe just moved. She did not understand what that meant. I do not blame her. To anyone outside the work, a toe lifting three millimeters for a quarter-second is nothing. To anyone inside the work, it is the entire world.
 
-I called Lisa. I told her the toe moved. She did not understand either. I told Michael the next morning. He understood. He did not smile. He just nodded and said, *"Now we don't lose it. Now we go a hundred a day."*
+I called Lisa. I told her the toe moved. She did not understand either. I told Michael the next morning. He understood. He did not smile. He nodded and said, *"Now we don't lose it. Now we go a hundred a day."*
 
 The toe is the part of my body I am most grateful for. Not because it is impressive. Because it was the first piece of evidence that the work was working. Every other piece of recovery — the foot, the calf, the knee, the hip, the arm, the hand — followed the same arc. THINK for weeks. TWITCH on a random Tuesday afternoon. Then the work of MOVE.
 
@@ -1715,7 +1715,7 @@ I almost stopped. I thought it was wishful thinking. I kept going.
 
 At minute eleven, the left index finger twitched. Once. About three millimeters. The same kind of twitch the toe had thrown in the rehab bed. The kind of twitch that means the wire just connected.
 
-I did not move for the last nine minutes. I just kept opening and closing the right hand and watched the reflection do the work the left hand was supposed to do. The left hand did one more twitch at minute seventeen. Two for the day. Two more than yesterday. Two enough.
+I did not move for the last nine minutes. I kept opening and closing the right hand and watched the reflection do the work the left hand was supposed to do. The left hand did one more twitch at minute seventeen. Two for the day. Two more than yesterday. Two enough.
 
 The mirror cost thirty dollars at IKEA.
 
@@ -2002,7 +2002,7 @@ These two get mixed up constantly. They are different problems with different so
 
 The aphasia literature is one of the cleanest dose-response stories in stroke rehabilitation. Bhogal, Teasell, and Speechley (2003) reviewed the trials and found a stark pattern: **studies that delivered more than 8.8 hours of speech therapy per week showed significant improvement; studies that delivered less did not.** Same population. Same diagnosis. Same protocols. The only variable that mattered was dose.
 
-This is not a small effect. It is the difference between recovery and stagnation. And it is the exact opposite of the dose most stroke survivors actually receive — typical outpatient speech therapy is one or two sessions per week, totaling under two hours.
+This is not a small effect. It is the difference between recovery and stagnation. And it is the exact opposite of the dose most stroke survivors receive — typical outpatient speech therapy is one or two sessions per week, totaling under two hours.
 
 The Pulvermüller and Berthier (2008) Constraint-Induced Aphasia Therapy work showed the same principle from the other direction: **massed practice** (intensive blocks of training over short periods) outperformed distributed practice (the same total hours spread over months). The brain rewires for what you ask of it, intensely and frequently. Aphasia is a language-circuit problem, and language circuits are use-dependent like any other.
 
@@ -2299,7 +2299,7 @@ What fixed it:
 - **Got tested for sleep apnea.** I was positive. CPAP changed everything. If you snore, gasp, or wake up exhausted — get a sleep study. Insurance usually covers it. Untreated sleep apnea after stroke radically increases your risk of a second stroke. This is non-optional.
 - **Hard wind-down routine.** No screens for thirty minutes before bed. No caffeine after noon. Same bedtime every night. The brain that rebuilds during the day needs the brain that consolidates at night.
 - **Resting hand splint on.** Reduces nighttime spasticity wake-ups.
-- **Cool, dark, quiet room.** The basics actually work.
+- **Cool, dark, quiet room.** The basics work.
 - **Eight hours, non-negotiable.** I treat sleep like a rep, not like a luxury.
 
 ### Part 3 — Nutrition: Fuel for the Rebuild
@@ -2365,7 +2365,7 @@ After a stroke, when the brain's signal to the hand becomes noisy, the *louder* 
 
 The strategy is not to *fight* the flexors. The strategy is to *grow* the extensors until they have a fair vote at the table.
 
-**Three protocols that actually move the needle:**
+**Three protocols that move the needle:**
 
 1. **Tabletop spread.** Hand flat on a table, palm down. Spread fingers as wide as you can. Hold five seconds. Release. Ten reps. Three rounds a day. Boring. Effective. The extensors do not negotiate — they grow on volume.
 
@@ -2557,7 +2557,7 @@ There is real science under this. It is not just costume.
 
 **Identity-based behavior change beats outcome-based.** James Clear nailed it in *Atomic Habits*: outcomes are what you want, processes are what you do, but *identity* is who you believe you are. "I am trying to do my reps today" loses to "I am the Sasquatch. The Sasquatch does the reps." Once the action is consistent with identity, you stop negotiating with yourself every morning. The negotiation is what kills survivors.
 
-**Persona externalizes the burden.** Stroke takes everything from you, including the version of yourself you used to be. If recovery has to be carried by *you* — the broken, scared, grieving you — the load is too heavy. A persona lets you hand the load to a character who is built for it. The Sasquatch carries the reps. The Sasquatch absorbs the pain. The Sasquatch shows up when Nicholas wants to quit. Nicholas just has to be willing to be the Sasquatch for one more rep.
+**Persona externalizes the burden.** Stroke takes everything from you, including the version of yourself you used to be. If recovery has to be carried by *you* — the broken, scared, grieving you — the load is too heavy. A persona lets you hand the load to a character who is built for it. The Sasquatch carries the reps. The Sasquatch absorbs the pain. The Sasquatch shows up when Nicholas wants to quit. Nicholas has to be willing to be the Sasquatch for one more rep.
 
 This is not pretending. This is engineering.
 
@@ -2646,7 +2646,7 @@ Some days the answer was *brush my teeth with my left hand.* Some days the answe
 
 ### Pillar 5: Identity Over Outcome
 
-If you fix your mind on the outcome — *I want to walk normally again* — every day that you do not walk normally is a failure. That is unsustainable for the months and years recovery actually takes.
+If you fix your mind on the outcome — *I want to walk normally again* — every day that you do not walk normally is a failure. That is unsustainable for the months and years recovery takes.
 
 If you fix your mind on the *identity* — *I am the kind of person who does the work* — every day you do the work is a win. The walking shows up as a side effect.
 
@@ -2686,7 +2686,7 @@ Willpower is a candle. Accountability is the lantern.
 
 **Layer 2: Public commitment.** Post the goal somewhere people will see it. The TikTok army did this for me without me asking. Once 80,000 people are watching whether you do the reps, the cost of skipping goes up. You do not need 80,000. You need three.
 
-**Layer 3: The log.** A notebook. A note app. A spreadsheet. Anything where you write *what I built today* every single night. The log is accountability to *future you.* Future you is also a person who deserves not to be lied to.
+**Layer 3: The log.** A notebook. A note app. A spreadsheet. Anything where you write *what I built today* every night. The log is accountability to *future you.* Future you is also a person who deserves not to be lied to.
 
 **Layer 4: The community.** A tribe of survivors who get it. **strokerecoveryacademy.com/tribe** exists for exactly this. Show up weekly. Lurk if you have to. Eventually you will speak. Eventually someone will speak because you did.
 
@@ -2702,7 +2702,7 @@ Missing one day is human. Missing two days is the start of a habit of missing. T
 
 You will miss. You will get sick. The kid will be up at three. The depression will land. You will skip a day. Forgive it. The next day, *do not skip again.* That is the entire discipline.
 
-Consistency math is brutal and kind at the same time. Brutal: the only path is showing up. Kind: you do not have to be good. You just have to be there. *Never zero* is the bottom rung. Even one rep. Even thirty seconds. Even just opening the notebook and writing *today I did nothing and I am here tomorrow.* That is non-zero. That counts.
+Consistency math is brutal and kind at the same time. Brutal: the only path is showing up. Kind: you do not have to be good. You just have to be there. *Never zero* is the bottom rung. Even one rep. Even thirty seconds. Even opening the notebook and writing *today I did nothing and I am here tomorrow.* That is non-zero. That counts.
 
 Sixty-six days of non-zero builds the habit. Three hundred and sixty-five days of non-zero builds the identity. Seven years of non-zero builds the Sasquatch.
 
@@ -3006,7 +3006,7 @@ The war is won in the plateau. Keep swinging when nothing moves. Breakthrough is
 
 ### The Plateau Audit — Five Honest Questions
 
-Before you change anything, you have to know what you are actually doing. Most plateaus are not plateaus. Most plateaus are *invisible coasting* dressed up as effort. Run this audit before you mutate anything.
+Before you change anything, you have to know what you are doing. Most plateaus are not plateaus. Most plateaus are *invisible coasting* dressed up as effort. Run this audit before you mutate anything.
 
 **Question 1: Am I doing the same thing I was doing four weeks ago?**
 If yes, that is not a plateau. That is *steady-state.* The body adapts to a load and stops growing. You do not have a plateau — you have a stale program. Mutate any single variable: reps, sets, range, tempo, surface, time of day, eyes open vs. eyes closed.
@@ -3037,7 +3037,7 @@ When you have run the audit honestly and the plateau is real, mutate. The Mutati
 
 **Branch 5: Mutate the protocol entirely.** Last resort. Drop the drill. Pick a new one from Appendix B. Run it for two weeks. If the plateau breaks, you have the answer. If it does not, return to the original and mutate one of the first four branches harder.
 
-The error survivors make is going straight to Branch 5 when the plateau is actually solved by Branch 1 or Branch 2. *Try the cheap mutations first.*
+The error survivors make is going straight to Branch 5 when the plateau is solved by Branch 1 or Branch 2. *Try the cheap mutations first.*
 
 ### The Year Five Wall
 
@@ -4519,7 +4519,7 @@ She has started attending a Zoom support group I host once a month. She is the o
 
 **Nick's note.**
 
-Cathy's case is the one I cite when somebody asks me whether the program in this book actually works for older survivors who are years out. The honest answer is *yes, when the work gets done.* The honest answer is also *most people who are five years out have stopped doing the work.* That is not their fault. The system told them to stop. Cathy is the case study of what happens when somebody decides to start again.
+Cathy's case is the one I cite when somebody asks me whether the program in this book works for older survivors who are years out. The honest answer is *yes, when the work gets done.* The honest answer is also *most people who are five years out have stopped doing the work.* That is not their fault. The system told them to stop. Cathy is the case study of what happens when somebody decides to start again.
 
 ---
 
@@ -4949,7 +4949,7 @@ The full, updated, with-affiliate-links version of this guide lives at **stroker
 **What I would not buy:**
 - "Brain rewire in 7 days" anything.
 - Vibration plates marketed for stroke (without active use).
-- Most supplements marketed for stroke recovery (see Appendix D for what is actually backed).
+- Most supplements marketed for stroke recovery (see Appendix D for what is backed).
 - Anything that promises results without you doing the reps.
 
 ---
@@ -5461,7 +5461,7 @@ The Six Principles are the *foundation.* On top of the foundation sit four opera
 
 **Layer 1: The Tattoo-Grade Laws** — what you mutter to yourself when nothing else works.
 **Layer 2: S.O.S. — the Everyday Survivor OS** — the crisis-day and Day-One compass.
-**Layer 3: S.A.S.C.H. — the Daily Construction Rhythm** — the engine you run every single day.
+**Layer 3: S.A.S.C.H. — the Daily Construction Rhythm** — the engine you run every day.
 **Layer 4: C.O.M.P.A.S.S. — the Advanced Navigation System** — the framework that runs once the basics are reflex.
 
 Use whichever layer the day demands. All four live on the same wallet card.
@@ -5961,7 +5961,7 @@ Not all of it. They are right about the surgery decision. They are right about t
 
 You are going to lose 50 pounds by the time you leave this room. You are going to gain 125 pounds in a wheelchair after that. You are going to be 325 at your worst. You are going to be 230 at year seven, lean, walking, lifting your son with both arms. None of this is on the chart.
 
-Sing the Britney song. Sing it every single time the puree mush slides in front of you. They are wrong about that one too.
+Sing the Britney song. Sing it every time the puree mush slides in front of you. They are wrong about that one too.
 
 Heart's still thumpin'. Hold the line.
 
