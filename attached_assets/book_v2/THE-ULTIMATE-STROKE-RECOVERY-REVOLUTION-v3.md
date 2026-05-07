@@ -1201,6 +1201,17 @@ It doesn't slow down. *You* slow down. You accept "good enough." You stop feedin
 
 Neuroplasticity is the science that proves the impossible is merely a starting point. It's your brain's ability to change its structure and function by reorganizing connections. This power has no expiration date. It is a fire — but you have to keep adding fuel.
 
+### A Sasquatch-Honest Caveat About the Window
+
+A working stroke neurologist will read the sentence above and want to push back, and they would be partly right. The literature is clearer than my chapter title makes it sound: plasticity does continue across the lifespan, but the *density* of available rewiring is highest in the first thirty to one hundred and eighty days post-stroke (Cramer et al., 2011; Kleim & Jones, 2008; Krakauer et al., 2012). That window does not close on day 181. It tapers. The brain after Day 181 still rewires — every chapter from here forward, every Year-Four and Year-Seven story I tell, is proof — but each rep buys *more* circuit in those first six months than it does in Year Two. The clinical literature calls that early window the *sensitive period.* I call it the part of the road that is paved.
+
+Two operational consequences for the reader, depending on where you are sitting when you read this paragraph:
+
+- **If you are inside the first one hundred and eighty days:** *Do not waste a single one of them.* The road is paved right now. Every honest, intense, novel rep you bank in this window is wiring you can spend for the next forty years. This is the chapter that tells you why the next eighteen chapters of techniques exist. Run them now.
+- **If you are outside the first one hundred and eighty days — month seven, year three, year fifteen:** *The road is not closed. The road is gravel now.* Gravel still goes somewhere. It just costs more reps per inch. The plateau chapters (Ch. 22, Ch. 22½) and the late-recovery case studies in Part VII are the proof that the gravel road still leads up the mountain. The Sasquatch is on the gravel road now. So is everyone in this book past Year Two. We do the work because the work still works. It just costs more.
+
+I am not softening the chapter title. *Recovery never stops* is true. I am sharpening it: *recovery never stops, but it never stops being expensive either, and the price per rep goes up over time. So buy the cheap reps while they are on sale, and never accept the lie that the store has closed.*
+
 ### The Lie of the Plateau
 
 A plateau is not your brain's final answer.
@@ -2196,30 +2207,6 @@ Look at the tech in your recovery routine. For each piece, ask one question: *Do
 ### Builder's Note
 
 Affiliate links and full reviews of every device I have personally used live at strokerecoveryacademy.com/gear. I update them as I find new tools and retire old ones. Buy nothing without reading the review first.
-
----
-
-### The Day the Bot Lifted My Foot
-
-Encompass Health. Year four. I had been fighting drop foot the entire time — that scraping shuffle every stroke survivor on TikTok knows by sound — and I had built every workaround you can build. AFO brace. Toe-up exercises until my shin was on fire. Mirror therapy on the ankle. The drop was less, but it was still a drop. Every uneven sidewalk in Fort Smith was an enemy.
-
-The PT walked in with a black box the size of a hardback book. Velcro straps. Wires. A wireless trigger that clipped onto the heel of my shoe. *Bioness L300,* she said. *Functional electrical stimulation. It teaches the nerve that's still alive how to fire the muscle that's stopped listening.*
-
-I had read about it. I knew the science — surface electrodes pulse a current to the peroneal nerve at the precise moment in the gait cycle when the toes need to lift. It is not a brace. It is a coach that whispers to your nerve every step. I had wanted one for two years. I had not been able to afford one.
-
-She strapped it on. Calibrated to my walking pattern with a tablet. Asked me to take a step.
-
-I took a step. The foot *lifted.* Not because I had thought hard about it. Not because I had cheated with a hip swing. The foot *lifted because the nerve fired the muscle the way it used to.* I took another step. Same lift. Same clean clearance. Same heel strike. Five steps in I was crying. Eight steps in I was laughing through the crying. Twelve steps in I was telling the PT to *hold my coffee, watch this,* and walking the length of the hallway like a man who had remembered something his body had forgotten four years ago.
-
-The first time the bot lifted my foot was the first time in four years I did not have to *think* about my left foot to walk. The cognitive overhead — *toe up, clear the floor, heel down, do not catch* — that I had been paying with every step since the bleed lifted with the foot. It is hard to explain to someone who has never had drop foot what it costs to think about every step. It is exhausting. It is the reason stroke survivors come home from a fifteen-minute walk needing a two-hour nap. The bot took the cost down to a nickel a step. That changed what was possible in a day.
-
-I do not own a Bioness today. I built the same nerve pathway through enough months of training that the nerve learned to fire on its own. The bot was a *teacher.* It taught my nerve, then my nerve fired the lesson, then I retired the bot. That is the right model for every piece of recovery tech in this book — *borrow the assist, learn the pattern, give the assist back.* The tech is scaffolding. The pattern is the building.
-
-If your insurance covers the L300 or the WalkAide, fight for it. If it does not, save for the rental. If you cannot afford the rental, e-stim units run under a hundred dollars on Amazon and a competent PT can mark the peroneal nerve location on your skin with a Sharpie and teach you to land the electrode there yourself. The principle is the same: pulse the nerve at the right moment, over and over, until the nerve remembers what nerve does. The Bioness is the Cadillac. The Amazon e-stim is the borrowed pickup. Both will get the foot up if you put in the reps.
-
-The day the bot lifted my foot was the day the chair years officially ended in my head. The body had remembered. The body could be taught.
-
-The Sasquatch took the next step. The bot did not take it for him. The bot reminded him how.
 
 ---
 
@@ -5336,34 +5323,35 @@ If you find an error, write **science@strokerecoveryacademy.com**. We will corre
 ### The Foundational Neuroplasticity Literature
 
 - Hebb, D. O. (1949). *The Organization of Behavior: A Neuropsychological Theory.* Wiley. *(The origin: "neurons that fire together wire together." Every protocol in this book ultimately rests on this.)*
-- Kleim, J. A., & Jones, T. A. (2008). Principles of experience-dependent neural plasticity: Implications for rehabilitation after brain damage. *Journal of Speech, Language, and Hearing Research*, 51(1), S225–S239. *(The ten principles. Every clinician should have read this. Most have not.)*
-- Cramer, S. C., Sur, M., Dobkin, B. H., O'Brien, C., Sanger, T. D., Trojanowski, J. Q., et al. (2011). Harnessing neuroplasticity for clinical applications. *Brain*, 134(6), 1591–1609.
+- Kleim, J. A., & Jones, T. A. (2008). Principles of experience-dependent neural plasticity: Implications for rehabilitation after brain damage. *Journal of Speech, Language, and Hearing Research*, 51(1), S225–S239. https://doi.org/10.1044/1092-4388(2008/018) *(The ten principles. Every clinician should have read this. Most have not.)*
+- Cramer, S. C., Sur, M., Dobkin, B. H., O'Brien, C., Sanger, T. D., Trojanowski, J. Q., et al. (2011). Harnessing neuroplasticity for clinical applications. *Brain*, 134(6), 1591–1609. https://doi.org/10.1093/brain/awr039
+- Krakauer, J. W., Carmichael, S. T., Corbett, D., & Wittenberg, G. F. (2012). Getting neurorehabilitation right: What can be learned from animal models? *Neurorehabilitation and Neural Repair*, 26(8), 923–931. https://doi.org/10.1177/1545968312440745 *(The paper that names the early sensitive period and argues we are wasting it.)*
 - Doidge, N. (2007). *The Brain That Changes Itself.* Viking. *(Popular but rigorous. Required reading.)*
 
 ### Dose, Volume, and Intensity
 
-- Lang, C. E., MacDonald, J. R., Reisman, D. S., Boyd, L., Jacobson Kimberley, T., Schindler-Ivens, S. M., et al. (2009). Observation of amounts of movement practice provided during stroke rehabilitation. *Archives of Physical Medicine and Rehabilitation*, 90(10), 1692–1698. *(The 32-minute-per-day finding. The reason the home program in this book exists.)*
-- Horn, S. D., DeJong, G., Smout, R. J., Gassaway, J., James, R., & Conroy, B. (2005). Stroke rehabilitation patients, practice, and outcomes: Is earlier and more aggressive therapy better? *Archives of Physical Medicine and Rehabilitation*, 86(12, Suppl 2), S101–S114.
-- Lohse, K. R., Lang, C. E., & Boyd, L. A. (2014). Is more better? Using metadata to explore dose–response relationships in stroke rehabilitation. *Stroke*, 45(7), 2053–2058.
+- Lang, C. E., MacDonald, J. R., Reisman, D. S., Boyd, L., Jacobson Kimberley, T., Schindler-Ivens, S. M., et al. (2009). Observation of amounts of movement practice provided during stroke rehabilitation. *Archives of Physical Medicine and Rehabilitation*, 90(10), 1692–1698. https://doi.org/10.1016/j.apmr.2009.04.005 *(The 32-minute-per-day finding. The reason the home program in this book exists.)*
+- Horn, S. D., DeJong, G., Smout, R. J., Gassaway, J., James, R., & Conroy, B. (2005). Stroke rehabilitation patients, practice, and outcomes: Is earlier and more aggressive therapy better? *Archives of Physical Medicine and Rehabilitation*, 86(12, Suppl 2), S101–S114. https://doi.org/10.1016/j.apmr.2005.09.016
+- Lohse, K. R., Lang, C. E., & Boyd, L. A. (2014). Is more better? Using metadata to explore dose–response relationships in stroke rehabilitation. *Stroke*, 45(7), 2053–2058. https://doi.org/10.1161/STROKEAHA.114.004695
 
 ### Mirror Therapy and Phantom Limb Work
 
-- Ramachandran, V. S., & Rogers-Ramachandran, D. (1996). Synaesthesia in phantom limbs induced with mirrors. *Proceedings of the Royal Society B*, 263(1369), 377–386.
-- Thieme, H., Morkisch, N., Mehrholz, J., Pohl, M., Behrens, J., Borgetto, B., & Dohle, C. (2018). Mirror therapy for improving motor function after stroke. *Cochrane Database of Systematic Reviews*, (7), CD008449.
+- Ramachandran, V. S., & Rogers-Ramachandran, D. (1996). Synaesthesia in phantom limbs induced with mirrors. *Proceedings of the Royal Society B*, 263(1369), 377–386. https://doi.org/10.1098/rspb.1996.0058
+- Thieme, H., Morkisch, N., Mehrholz, J., Pohl, M., Behrens, J., Borgetto, B., & Dohle, C. (2018). Mirror therapy for improving motor function after stroke. *Cochrane Database of Systematic Reviews*, (7), CD008449. https://doi.org/10.1002/14651858.CD008449.pub3
 
 ### Constraint-Induced Movement Therapy
 
 - Taub, E., Uswatte, G., & Pidikiti, R. (1999). Constraint-induced movement therapy: A new family of techniques with broad application to physical rehabilitation. *Journal of Rehabilitation Research and Development*, 36(3), 237–251.
-- Wolf, S. L., Winstein, C. J., Miller, J. P., Taub, E., Uswatte, G., Morris, D., et al. (2006). Effect of constraint-induced movement therapy on upper extremity function 3 to 9 months after stroke: The EXCITE randomized clinical trial. *JAMA*, 296(17), 2095–2104.
+- Wolf, S. L., Winstein, C. J., Miller, J. P., Taub, E., Uswatte, G., Morris, D., et al. (2006). Effect of constraint-induced movement therapy on upper extremity function 3 to 9 months after stroke: The EXCITE randomized clinical trial. *JAMA*, 296(17), 2095–2104. https://doi.org/10.1001/jama.296.17.2095
 
 ### Habit Formation and Behavior Change
 
-- Lally, P., van Jaarsveld, C. H. M., Potts, H. W. W., & Wardle, J. (2010). How are habits formed: Modelling habit formation in the real world. *European Journal of Social Psychology*, 40(6), 998–1009. *(The 66-day median. The reason the tracker is 66 days.)*
+- Lally, P., van Jaarsveld, C. H. M., Potts, H. W. W., & Wardle, J. (2010). How are habits formed: Modelling habit formation in the real world. *European Journal of Social Psychology*, 40(6), 998–1009. https://doi.org/10.1002/ejsp.674 *(The 66-day median. The reason the tracker is 66 days.)*
 - Clear, J. (2018). *Atomic Habits.* Avery. *(Translated into the no-zero-days language used throughout this book.)*
 
 ### Exercise, Cardio, and BDNF
 
-- Cotman, C. W., & Berchtold, N. C. (2002). Exercise: A behavioral intervention to enhance brain health and plasticity. *Trends in Neurosciences*, 25(6), 295–301.
+- Cotman, C. W., & Berchtold, N. C. (2002). Exercise: A behavioral intervention to enhance brain health and plasticity. *Trends in Neurosciences*, 25(6), 295–301. https://doi.org/10.1016/S0166-2236(02)02143-4
 - Mang, C. S., Campbell, K. L., Ross, C. J. D., & Boyd, L. A. (2013). Promoting neuroplasticity for motor rehabilitation after stroke: Considering the effects of aerobic exercise and genetic variation on brain-derived neurotrophic factor. *Physical Therapy*, 93(12), 1707–1716.
 
 ### Sleep and Recovery
@@ -5373,12 +5361,12 @@ If you find an error, write **science@strokerecoveryacademy.com**. We will corre
 
 ### Speech and Aphasia
 
-- Pulvermüller, F., & Berthier, M. L. (2008). Aphasia therapy on a neuroscience basis. *Aphasiology*, 22(6), 563–599.
+- Pulvermüller, F., & Berthier, M. L. (2008). Aphasia therapy on a neuroscience basis. *Aphasiology*, 22(6), 563–599. https://doi.org/10.1080/02687030701612213
 - Kelchner, L. N., & Sussman, J. E. (2014). The effect of LSVT LOUD on dysarthria post-stroke. *Journal of Medical Speech-Language Pathology.*
 
 ### Mental Health and Post-Stroke Depression
 
-- Hackett, M. L., & Pickles, K. (2014). Part I: Frequency of depression after stroke: An updated systematic review and meta-analysis of observational studies. *International Journal of Stroke*, 9(8), 1017–1025. *(One in three. Read it.)*
+- Hackett, M. L., & Pickles, K. (2014). Part I: Frequency of depression after stroke: An updated systematic review and meta-analysis of observational studies. *International Journal of Stroke*, 9(8), 1017–1025. https://doi.org/10.1111/ijs.12357 *(One in three. Read it.)*
 
 ### Caregiver Outcomes
 
@@ -5387,7 +5375,7 @@ If you find an error, write **science@strokerecoveryacademy.com**. We will corre
 
 ### Late-Stage Recovery (Beyond the "Plateau")
 
-- Page, S. J., Gater, D. R., & Bach-y-Rita, P. (2004). Reconsidering the motor recovery plateau in stroke rehabilitation. *Archives of Physical Medicine and Rehabilitation*, 85(8), 1377–1381.
+- Page, S. J., Gater, D. R., & Bach-y-Rita, P. (2004). Reconsidering the motor recovery plateau in stroke rehabilitation. *Archives of Physical Medicine and Rehabilitation*, 85(8), 1377–1381. https://doi.org/10.1016/j.apmr.2003.12.031
 - Demain, S., Wiles, R., Roberts, L., & McPherson, K. (2006). Recovery plateau following stroke: Fact or fiction? *Disability and Rehabilitation*, 28(13–14), 815–821.
 
 ### Insurance, Access, and System-Level Findings
