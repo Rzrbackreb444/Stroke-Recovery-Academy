@@ -1580,6 +1580,8 @@ What you should *feel* if it is working: warmth in the weak shoulder during the 
 
 What you should *not* feel: sharp pain in the shoulder (stop — you may be subluxing), pain in the wrist or elbow (lighten the bat, shorten the range), or a "pop" anywhere (stop, ice, call your PT).
 
+**Evidence honesty.** *The bat as a specific tool has zero direct randomized-controlled-trial support.* What has support is the underlying mechanism — bilateral, high-load, task-specific upper-extremity training (Cauraugh 2010; Stoykov & Madhavan 2015; Kleim & Jones 2008). My contribution is the substrate: a bat is cheap, heavy in the right places, and culturally familiar to most American men, which makes the rep happen on days when "another set on the therapy table" does not. Substitute a sledgehammer handle, a broomstick, or a kettlebell-on-a-rope if a bat is wrong for your context. The bat is the n=1 application. The bilateral high-load principle is the evidence. Do not let either the bat-skeptics or the bat-enthusiasts collapse those two into one claim.
+
 ![Figure 1: Bat-therapy stance — both hands on the bat, arms extended, feet shoulder-width.](images/fig-01-bat-therapy.png)
 
 Video demo at **strokerecoveryacademy.com/protocols/bat**.
@@ -1691,7 +1693,7 @@ Where in your routine are you avoiding weight on your weak side? Set one weight-
 
 ### Stroked-Out Sasquatch Motivational Quote
 
-*"Stand even when standing hurts. Weight bearing isn't punishment — it's medicine. Lean into the pressure. The Sasquatch didn't stay seated. Neither should you."*
+*"Stand even when standing hurts. Weight bearing isn't punishment — it's medicine. Lean into the pressure. Gravity is the cheapest physical therapist on earth. Hire it for life."*
 
 ### Builder's Note
 
@@ -1719,7 +1721,7 @@ The mirror cost thirty dollars at IKEA.
 
 ---
 
-Mirror therapy was one of the most powerful, stupidly simple tools I used.
+Mirror therapy was one of the most powerful, almost embarrassingly simple tools I used.
 
 A mirror. A box. Some duct tape. And a brain that can be fooled into rewiring itself.
 
@@ -1741,7 +1743,7 @@ It wasn't a lie. It was training.
 - **Month 4 and beyond:** The left hand started opening on its own during sessions.
 - **Long term:** Bilateral coordination improved dramatically.
 
-The science backs it: mirror therapy activates the mirror neuron system, increases excitability in the damaged motor cortex, and reduces learned non-use. (Ramachandran & Rogers-Ramachandran, 1996; Thieme et al., 2018.) Cheap, safe, stupidly effective.
+The science backs it: mirror therapy activates the mirror neuron system, increases excitability in the damaged motor cortex, and reduces learned non-use. (Ramachandran & Rogers-Ramachandran, 1996; Thieme et al., 2018.) Cheap. Safe. Genuinely effective.
 
 ### Builder's Science: Why a Twenty-Dollar Mirror Outperforms a Ten-Thousand-Dollar Robot
 
@@ -1863,7 +1865,7 @@ Pick one drop-foot drill from this chapter. Commit to sixty-six days. Track it o
 
 ### Stroked-Out Sasquatch Motivational Quote
 
-*"Drop foot ain't permanent until you quit trying. Attack it daily. Rewire it. Destroy it. The Sasquatch didn't drag his foot forever — neither should you."*
+*"Drop foot ain't permanent until you quit trying. Attack it daily. Rewire it. Destroy it. The toe will lift on the day you stop negotiating with the floor."*
 
 ### Builder's Note
 
@@ -1953,7 +1955,7 @@ Pick one daily arm or hand drill. Commit to sixty-six days. Track every rep.
 
 ### Stroked-Out Sasquatch Motivational Quote
 
-*"Dead weight becomes dynamic power one rep at a time. Grip it. Swing it. Own it. The Sasquatch didn't let a dead arm stop him. Neither should you."*
+*"Dead weight becomes dynamic power one rep at a time. Grip it. Swing it. Own it. The arm comes back the way it left — slowly, cell by cell, on a Tuesday you weren't expecting."*
 
 ### Builder's Note
 
@@ -2007,6 +2009,8 @@ The Pulvermüller and Berthier (2008) Constraint-Induced Aphasia Therapy work sh
 For dysarthria, the LSVT LOUD program (Lee Silverman Voice Treatment) has the strongest single-protocol evidence. It is high-effort, high-amplitude, high-frequency — sixteen sessions over four weeks, focused on producing maximum-effort loudness on every rep. The mechanism is **scaling up the motor output amplitude** so that even at a "normal" volume the muscles fire more completely. The protocol was developed for Parkinson's and adapted to stroke; it works in both populations.
 
 The honest gap: insurance rarely pays for the dose the literature says works. The workaround is the same as the rest of this book — the clinic delivers the framework, you deliver the volume, the platform delivers the practice material. Daily reading aloud, daily song singing, daily structured conversation with a partner who will not finish your sentences for you. Twenty minutes a day, every day, for a year. That is what gets you to the recovery the literature describes.
+
+**Evidence honesty.** *The high-dose principle (8.8+ hours per week) has clean RCT support for aphasia. LSVT LOUD has clean RCT support for dysarthria. The specific six-tool stack in this chapter is mine, not from a single trial.* I borrowed LSVT loudness drills, classical DDK exercises, daily reading-aloud, melodic intonation singing, and monthly recordings, and I ran them in combination because each one targets a different layer (volume, articulation coordination, prosody, pitch, self-monitoring) and because no single trial has tested the combined stack. The mechanism — high-frequency intensive practice across multiple sub-systems of speech motor control — is well-supported. The exact stack is plausible compounding. Run it with an SLP who can swap any drill out for one targeted to your specific deficit profile.
 
 Daily speech drills, recorded targets, and song-along tracks at **strokerecoveryacademy.com/protocols/speech**.
 
@@ -2370,6 +2374,8 @@ The strategy is not to *fight* the flexors. The strategy is to *grow* the extens
 3. **Mental rehearsal of opening.** Eyes closed. Three minutes. Visualize the affected hand opening — every finger, slowly, fully. Activates the same motor cortex regions as the physical rep (Page 2007), and a mental rep before a physical rep makes the physical rep cleaner.
 
 **The cardinal rule:** for every closing rep you do — gripping a bottle, clutching a fork, holding a phone — do *two* opening reps. Two-to-one extensor-to-flexor work for the rest of your life. That is how you keep the extensor vote loud enough to matter.
+
+**Evidence honesty.** *Mental rehearsal of opening has direct RCT support (Page 2007). The 2:1 extensor-to-flexor ratio is mine.* I arrived at it by trial and error over four years and the underlying logic — that the closing system is anatomically dominant and needs deliberate counterweight — is mechanistically sound, but no published trial has tested the specific 2:1 dose. Treat it as a heuristic that worked for one survivor, not a number you can cite to your therapist as established standard of care. The principle (counterbalance the dominant flexor system with deliberate extensor volume) is what the evidence supports. The exact ratio is mine to defend.
 
 The open hand was the last thing my left side learned. It is also the thing I am proudest of. A hand that opens on demand is a hand that can hug a son back, catch a baseball, sign a name, play a chord. The closed fist is a survival posture. The open hand is the rebuilt one.
 
@@ -3683,7 +3689,7 @@ Who is your tribe — or who *could* be? Write one way to build it today. A post
 
 ### Stroked-Out Sasquatch Motivational Quote
 
-*"Isolation wants you dead. Community wants you alive. Document. Engage. Share value. Build tribe. The Sasquatch didn't rebuild alone. Neither should you."*
+*"Isolation wants you dead. Community wants you alive. Document. Engage. Share value. Build tribe. The next survivor is already searching for a story that sounds like yours — be the one they find."*
 
 ### Builder's Note
 
