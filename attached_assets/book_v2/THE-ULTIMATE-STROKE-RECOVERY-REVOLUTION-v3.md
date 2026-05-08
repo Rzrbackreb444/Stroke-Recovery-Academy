@@ -103,7 +103,7 @@ The reason is simple, and it is the same reason this book exists at all: a strok
 
 So this is me, starting to talk.
 
-My name is Nicholas Kremers. I am a third-generation laundry-equipment operator from Fort Smith, Arkansas. On December 3, 2018, at thirty-six years old, I had a massive hemorrhagic stroke in the bathroom of my own house, two hundred and fifty pounds of working muscle, ninety minutes after I had benched two hundred and eighty-five pounds in my garage. The bleed landed in my left thalamus, paralyzed the left side of my body, scrambled my speech into the wrong word order, and put me in an ICU bed for a month while the doctors told my pregnant wife and my parents to plan for a man who would never walk normally again, never use his left hand again, never recognize music again, and never go back to work.
+My name is Nicholas Kremers. I am a third-generation laundry-equipment operator from Lavaca, Arkansas. On December 3, 2018, at thirty-six years old, I had a massive hemorrhagic stroke in the bathroom of my own house, two hundred and fifty pounds of working muscle, ninety minutes after I had benched two hundred and eighty-five pounds in my garage. The bleed landed in my left thalamus, paralyzed the left side of my body, scrambled my speech into the wrong word order, and put me in an ICU bed for a month while the doctors told my pregnant wife and my parents to plan for a man who would never walk normally again, never use his left hand again, never recognize music again, and never go back to work.
 
 Seven years later I am at ninety percent function and still rising. I walked my son to his first day of school. I am typing this sentence with both hands. I wrote a twelve-track concept album about the rebuild. I run two companies. I built a stroke-recovery academy from the wheelchair I was supposed to live in. I teach about fifteen thousand survivors a day on TikTok how to refuse the same "nevers" the white coats handed me.
 
@@ -124,7 +124,7 @@ A future printing of this book may carry a foreword from a credentialed voice in
 Turn the page. Meet the Sasquatch. Then meet the version of yourself the stroke could not see coming.
 
 — Nicholas "Stroked-Out Sasquatch" Kremers
-Fort Smith, Arkansas
+Lavaca, Arkansas
 2026
 
 ---
@@ -135,7 +135,7 @@ Listen up, warrior.
 
 December 3, 2018 — the day they told me I'd never be the same.
 
-Seven years later, I'm better than I ever was. Ninety percent function and still climbing, with breakthroughs in year seven that doctors swore couldn't happen after year one. I built Stroke Recovery Academy from a wheelchair in Fort Smith, Arkansas. I run a 501(c)(3) nonprofit called Stroke Lyfe Inc. I cut a twelve-track concept album called *Hostile Construction* about the rebuild — every song you'll see referenced at the end of these chapters. And on TikTok, fourteen and a half thousand survivors and counting use the methods in this book to refuse their own "nevers."
+Seven years later, I'm better than I ever was. Ninety percent function and still climbing, with breakthroughs in year seven that doctors swore couldn't happen after year one. I built Stroke Recovery Academy from a wheelchair in Lavaca, Arkansas. I run a 501(c)(3) nonprofit called Stroke Lyfe Inc. I cut a twelve-track concept album called *Hostile Construction* about the rebuild — every song you'll see referenced at the end of these chapters. And on TikTok, fourteen and a half thousand survivors and counting use the methods in this book to refuse their own "nevers."
 
 When that well-meaning doctor said, *"You'll probably never walk normally again,"* I had two choices.
 
@@ -153,12 +153,12 @@ I chose two. It changed everything.
 
 This started as my stroke recovery blueprint. The principles also work on whatever knocked you down — addiction, business failure, grief, heartbreak — but make no mistake: this is a stroke recovery book first. The deepest cuts go to people whose lives changed in one moment and who refuse to let that moment win.
 
-If an Arkansas boy from Fort Smith with massive brain damage and a chart full of "nevers" can do it — so can you.
+If an Arkansas boy from Lavaca with massive brain damage and a chart full of "nevers" can do it — so can you.
 
 Your revolution starts now.
 
 — Nick "Stroked-Out Sasquatch" Kremers
-Fort Smith, Arkansas
+Lavaca, Arkansas
 2026
 
 ---
@@ -509,11 +509,11 @@ What was your first flicker? Not the day you woke up in the hospital. The first 
 
 ### The Last Normal Morning
 
-Three hours before the bleed I was bench-pressing 285 in my garage gym. Ten reps, easy. Spotted by nobody — I had been training alone for years and the bar had never let me down. The garage door was open. Late fall in Fort Smith, the air had that first cold bite that says winter is coming. I racked the bar, wiped my face on a towel, drank water from the gallon jug I kept on top of the squat rack. *Solid lift. Good morning.*
+Three hours before the bleed I was bench-pressing 285 in my garage gym. Ten reps, easy. Spotted by nobody — I had been training alone for years and the bar had never let me down. The garage door was open. Late fall in Lavaca, the air had that first cold bite that says winter is coming. I racked the bar, wiped my face on a towel, drank water from the gallon jug I kept on top of the squat rack. *Solid lift. Good morning.*
 
 I had no idea it was the last morning of the version of me that could rack 285.
 
-Lisa was at work. Nicholas Jr. was in his swing in the living room. I had laundry to fold, an email to send, a sales call at noon. Normal Tuesday. Normal life.
+Lisa was at work. The crib for the baby — five months out, sex still unknown — was half-assembled in the back bedroom. I had laundry to fold, an email to send, a sales call at noon. Normal Tuesday. Normal life.
 
 The headache started about an hour later. Not bad at first — the kind I always blamed on dehydration. I drank more water. Took two ibuprofen. Sat down at the kitchen table to send the email.
 
@@ -3229,7 +3229,7 @@ I learned the hard way how to manage the team — and I learned that the most po
 
 Lisa was pregnant through the entire ICU.
 
-She rarely left my side. Only to shower. Weeks after the stroke, she found out the baby was a boy — our son — while sitting next to my bed.
+She rarely left my side. Only to shower. Weeks after the stroke, we found out the baby was a boy — our son — together, the ultrasound tech wheeling the cart into my hospital room because Lisa would not leave it. I was still slurring. I could not sit up unassisted. The screen lit up over my chest and the tech pointed and said *that's a boy.* Lisa cried. I cried with the half of my face that still worked. The promise I would later type and seal in an envelope started forming right there, in a hospital bed, the moment I knew his name was going to be Nicholas.
 
 She stayed. Held my pee cup. Gave sponge baths. Fought the system. Ripped a tube out of my throat when nurses were too slow.
 
@@ -3619,7 +3619,7 @@ Returning to work and purpose is reclaiming identity. Adapt. Build. Climb. The r
 
 Isolation almost killed me. TikTok saved me. Here is the actual story of how it started.
 
-It was a Wednesday, about thirteen months after the stroke. I was sitting on my back porch in Fort Smith with a cup of coffee getting cold next to my elbow and a phone in my one good hand. I had not had a real conversation with a friend other than Kasey or Michael in almost six weeks. The texts had stopped. The visits had stopped. The casseroles had stopped. People had run out of polite ways to ask *how are you* about a thing that had no good answer.
+It was a Wednesday, about thirteen months after the stroke. I was sitting on my back porch in Lavaca with a cup of coffee getting cold next to my elbow and a phone in my one good hand. I had not had a real conversation with a friend other than Kasey or Michael in almost six weeks. The texts had stopped. The visits had stopped. The casseroles had stopped. People had run out of polite ways to ask *how are you* about a thing that had no good answer.
 
 I was scrolling TikTok. I had downloaded it the week before because I had seen a news segment about how it was getting bigger. I had no plan. I was watching dance videos and a cat falling off a counter and a guy in Texas doing card tricks. The algorithm did not know me yet.
 
@@ -4231,7 +4231,7 @@ Now go.
 Your impossible life is waiting.
 
 — Nicholas "Stroked-Out Sasquatch" Kremers
-Fort Smith, Arkansas
+Lavaca, Arkansas
 2026
 
 ---
@@ -6723,7 +6723,7 @@ If I forgot you, charge it to my brain damage and not my gratitude.
 
 # About the Author
 
-**Nicholas "Stroked-Out Sasquatch" Kremers** is a stroke survivor, the founder of Stroke Recovery Academy, and the creator of the Sasquatch Doctrine. Born and raised in Fort Smith, Arkansas. Third-generation operator of Kremers Laundry Equipment Company. Father to Nicholas Jr.
+**Nicholas "Stroked-Out Sasquatch" Kremers** is a stroke survivor, the founder of Stroke Recovery Academy, and the creator of the Sasquatch Doctrine. Lives in Lavaca, Arkansas. Third-generation operator of Kremers Laundry Equipment Company. Father to Nicholas Jr.
 
 On December 3, 2018, at age thirty-six, he survived a massive hemorrhagic stroke that left him paralyzed on his left side, unable to speak clearly, and given a chart full of "nevers."
 

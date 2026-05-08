@@ -38,7 +38,7 @@ const books = [
     title: "The Stroked Out Sasquatch",
     subtitle: "A Stroke Recovery Guide Through the Eyes of a Survivor",
     author: "Nick Kremers",
-    description: "Nick's raw, chapter-by-chapter autobiography — from a lifelong athlete benching 400 lbs to lying paralyzed in an ICU with 50 staples in his skull. This is the unfiltered story: the hallucinations, the pureed food, learning to walk again with Michael, TikTok going viral, and building StrokeRecoveryAcademy.com from Fort Smith, Arkansas.",
+    description: "Nick's raw, chapter-by-chapter autobiography — from a lifelong athlete benching 400 lbs to lying paralyzed in an ICU with 50 staples in his skull. This is the unfiltered story: the hallucinations, the pureed food, learning to walk again with Michael, TikTok going viral, and building StrokeRecoveryAcademy.com from Lavaca, Arkansas.",
     topics: ["December 3, 2018 — The Day It Happened", "ICU, Hallucinations & 50 Staples", "Michael: The Therapist Who Changed Everything", "TikTok Army & Building the Movement"],
     gradient: "from-orange-600 via-orange-500 to-amber-500",
     chapters: 38,
