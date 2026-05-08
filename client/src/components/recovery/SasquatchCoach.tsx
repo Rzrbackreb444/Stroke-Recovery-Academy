@@ -23,8 +23,8 @@ const QUICK_PROMPTS = [
   "Tell me a comeback story",
 ];
 
-const WELCOME_FRESH = "Hey. Nick here — the Stroked Out Sasquatch. What's on your mind today?";
-const WELCOME_RETURNING = "Welcome back. I remember where we left off. What's the next move?";
+const WELCOME_FRESH = "Hey. Nick here — the Stroked Out Sasquatch. I'm here for accountability and reps — not diagnosis. New symptoms go to your doctor; the work goes to me. What's on your mind today?";
+const WELCOME_RETURNING = "Welcome back. I remember where we left off. Same deal — accountability, not diagnosis. What's the next move?";
 
 export default function SasquatchCoach() {
   const [messages, setMessages] = useState<Message[]>([

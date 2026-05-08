@@ -91,6 +91,36 @@ export default function Landing() {
         <FadeUpSection delay={50}>
           <WhatYouGet />
         </FadeUpSection>
+        {/* CAREGIVER FUNNEL — caregivers usually do the research and hold the
+            credit card. The deep SSR landing at /for/caregivers carries the
+            full pitch (burnout, first-30-days, the hardest conversation).
+            This block is the entry point that puts that page one click away
+            from the homepage. */}
+        <FadeUpSection delay={50}>
+          <section className="bg-[#0D0D0D] py-16 px-4 sm:px-6 lg:px-8 border-y border-[#1f1f1f]" data-testid="section-caregiver-cta">
+            <div className="max-w-5xl mx-auto">
+              <div className="rounded-xl border border-[#C9941A]/40 bg-gradient-to-br from-[#1a1610] via-[#141414] to-[#1a1610] p-8 md:p-10">
+                <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9941A] mb-3">For caregivers</p>
+                <h2 className="text-3xl md:text-4xl font-black text-white mb-4 leading-tight">
+                  You are not the patient. But you are in the war.
+                </h2>
+                <p className="text-gray-300 text-lg mb-3 leading-relaxed">
+                  You're the one Googling at 2 a.m., scheduling the appointments, watching them refuse the exercises, lying awake worried they'll quit. The exhaustion is real. The burnout is real. And nobody built a recovery system that took your seat seriously — until now.
+                </p>
+                <p className="text-gray-400 text-base mb-6 leading-relaxed">
+                  Let the system do the daily nagging. The accountability loop, the check-ins, the "did you do your reps today" — that's our job. Yours is to stay standing.
+                </p>
+                <a
+                  href="/for/caregivers"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-[#C9941A] text-black font-bold uppercase tracking-widest text-sm hover-elevate"
+                  data-testid="link-caregiver-landing"
+                >
+                  Open the caregiver kit →
+                </a>
+              </div>
+            </div>
+          </section>
+        </FadeUpSection>
         <FadeUpSection delay={50}>
           <FeedbackSurvey />
         </FadeUpSection>

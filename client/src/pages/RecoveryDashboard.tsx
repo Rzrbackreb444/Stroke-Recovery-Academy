@@ -93,6 +93,23 @@ export default function RecoveryDashboard() {
   const [newPodName, setNewPodName] = useState("");
   const [newPodDescription, setNewPodDescription] = useState("");
   const [newPodFocus, setNewPodFocus] = useState("");
+  // Zen Mode — neuro-fatigue accommodation. Hides everything except the single
+  // "do this one thing next" focal card (NeverZeroAuditHero). Persists in
+  // localStorage so the choice survives reloads. Default off so the full
+  // dashboard stays the canonical experience for survivors who want it.
+  const [zenMode, setZenMode] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem("sra:zen-mode") === "1";
+  });
+  const toggleZenMode = () => {
+    setZenMode((prev) => {
+      const next = !prev;
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("sra:zen-mode", next ? "1" : "0");
+      }
+      return next;
+    });
+  };
 
   const { data: dashboard, isLoading } = useQuery<any>({
     queryKey: ["/api/recovery/dashboard"],
@@ -240,7 +257,23 @@ export default function RecoveryDashboard() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <PushOptInBanner />
+        {/* Zen Mode toggle — neuro-fatigue accommodation. When on, the dashboard
+            collapses to a single focal card (the daily audit) so survivors who
+            log in exhausted aren't drowned in a menu. */}
+        <div className="flex justify-end mb-3">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={toggleZenMode}
+            className={`border-[#333] text-xs uppercase tracking-widest ${zenMode ? "bg-[#C9941A]/10 text-[#C9941A] border-[#C9941A]/40" : "text-gray-400"}`}
+            data-testid="button-zen-mode-toggle"
+            aria-pressed={zenMode}
+          >
+            {zenMode ? "Zen Mode: ON — show full dashboard" : "Zen Mode — just the next rep"}
+          </Button>
+        </div>
         <TodaysSpark />
+        {!zenMode && (<>
         <div className="mb-6">
           <RecommendationCards surface="dashboard" />
         </div>
@@ -333,11 +366,59 @@ export default function RecoveryDashboard() {
           </Link>
         </section>
 
-        {/* NEVER ZERO AUDIT — The heart of the platform: daily check-in + Sasquatch audit */}
+        </FadeUpSection>
+        </>)}
+        {/* NEVER ZERO AUDIT — The heart of the platform: daily check-in + Sasquatch audit.
+            Always rendered (even in Zen Mode) — this is the single "do this one thing next" focal card. */}
         <NeverZeroAuditHero />
 
+        {!zenMode && (<>
+        <FadeUpSection delay={50}>
         {/* BONFIRE — Today's adaptive session (with personalization preview) */}
         <BonfireHeroCard />
+
+        {/* SQUAD — Accountability Pod hero CTA. Survivors don't fail because of
+            missing information; they fail because nobody is watching the days
+            in between. The pod IS the watch. Surfaced here as a hero card
+            (not buried below) because peer-to-peer accountability is the
+            stickiest retention feature on the platform. */}
+        <section className="mb-8" data-testid="section-squad-hero">
+          {userPod ? (
+            <div className="block rounded-xl border border-[#C9941A]/40 bg-gradient-to-r from-[#1a1610] via-[#141414] to-[#1a1610] p-5">
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div className="flex items-center gap-3">
+                  <div className="h-11 w-11 rounded-md bg-[#C9941A] flex items-center justify-center">
+                    <Users className="h-5 w-5 text-black" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9941A]">Your Squad</p>
+                    <p className="text-base font-bold text-white" data-testid="text-squad-hero-name">{userPod.name}</p>
+                    <p className="text-xs text-gray-500">
+                      {userPod.memberCount}/{userPod.maxMembers} survivors checking in together — your day is somebody else's reason to show up
+                    </p>
+                  </div>
+                </div>
+                <a href="#pod-section" className="text-xs text-[#C9941A] font-semibold uppercase tracking-widest hover-elevate px-3 py-2 rounded-md">Open squad →</a>
+              </div>
+            </div>
+          ) : (
+            <div className="block rounded-xl border border-[#C9941A]/40 bg-gradient-to-r from-[#1a1610] via-[#141414] to-[#1a1610] p-5">
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div className="flex items-center gap-3">
+                  <div className="h-11 w-11 rounded-md bg-[#C9941A] flex items-center justify-center">
+                    <UserPlus className="h-5 w-5 text-black" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9941A]">Draft your team</p>
+                    <p className="text-base font-bold text-white">3–5 survivors. Daily check-ins. Nobody walks alone.</p>
+                    <p className="text-xs text-gray-500">The accountability pod is the stickiest retention feature on the platform — because the days in between are where recovery actually happens.</p>
+                  </div>
+                </div>
+                <a href="#pod-section" className="text-xs text-[#C9941A] font-semibold uppercase tracking-widest hover-elevate px-3 py-2 rounded-md" data-testid="link-squad-hero-join">Find your squad →</a>
+              </div>
+            </div>
+          )}
+        </section>
 
         {/* Music intentionally not surfaced here. Anchor + Anthem live in the
             Music nav so the dashboard stays focused on accountability + community.
@@ -969,9 +1050,11 @@ export default function RecoveryDashboard() {
         </div>
         </FadeUpSection>
 
-        {/* Accountability Pod Section */}
+        {/* Accountability Pod Section — full management surface (the hero CTA above
+            scrolls here via #pod-section). Stays in the deeper page so the
+            create/join/leave + member list + activity stream lives in one place. */}
         <FadeUpSection delay={300}>
-        <Card className="bg-[#1a1a1a] border-[#333] p-6 mb-8" data-testid="card-accountability-pod">
+        <Card id="pod-section" className="bg-[#1a1a1a] border-[#333] p-6 mb-8" data-testid="card-accountability-pod">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
               <Users className="h-5 w-5 text-[#C9941A]" />
@@ -1298,6 +1381,7 @@ export default function RecoveryDashboard() {
           streakBonusLabel={checkinReward?.streakBonusLabel}
           streak={checkinReward?.streak}
         />
+        </>)}
       </main>
     </div>
   );

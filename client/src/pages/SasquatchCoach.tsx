@@ -36,7 +36,7 @@ export default function SasquatchCoach() {
   const persona = personaData?.persona ?? null;
   const safeAccent = safeAccentForDark(persona?.accentColor);
   const buildWelcome = (name: string) =>
-    `Hey ${name}. I'm Sasquatch — your round-the-clock recovery coach. I've been through what you're going through, and I'm here to push you when you need pushing and steady you when you need steadying. What's on your mind today?`;
+    `Hey ${name}. I'm Sasquatch — your round-the-clock recovery coach. I've been through what you're going through, and I'm here to push you when you need pushing and steady you when you need steadying. Heads up — I'm here for accountability and reps, not diagnosis. New symptoms or anything that feels medical go to your doctor; the daily work goes to me. What's on your mind today?`;
   const [messages, setMessages] = useState<Message[]>([
     { role: "coach", content: buildWelcome("warrior") },
   ]);

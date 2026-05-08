@@ -19,6 +19,12 @@ _Populate as you build_
 - **Generated PDF:** `attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION.pdf`
 - **Sasquatch character art:** `attached_assets/book_v2/images/sasquatch-*.png` — 11 woodcut/linocut metal-poster illustrations (axe-bearing, left-side asymmetry, deep ink + bone white + blood-red palette). Cover wired in `scripts/typeset.mjs`; 10 inline placements wired in the manuscript at iconic moments (bat Ch.12, mirror Ch.14, forge Ch.20½, intersection Ch.21, tribe Ch.26, year-seven + handoff Ch.30, doctrine App. I, creed App. J, seal final page). Aesthetic locked — any future regen must match the canonical brief documented in this skill's session.
 
+## Recent platform work (May 2026)
+- **Zen Mode** on `RecoveryDashboard.tsx` — neuro-fatigue accommodation. Toggle button (persisted to `localStorage` as `sra:zen-mode`) collapses dashboard to TodaysSpark + NeverZeroAuditHero only. Two `{!zenMode && (<>...</>)}` wrappers bracket the always-visible audit card.
+- **Squad hero CTA** — Accountability Pod elevated from buried section to hero card after `<BonfireHeroCard />`. Uses existing `userPod` query; "Open squad →" anchors to `#pod-section` (id added to existing pod management Card at line ~1058).
+- **Coach diagnosis boundary** — `WELCOME_FRESH` / `WELCOME_RETURNING` in `SasquatchCoach.tsx` + `buildWelcome` in `pages/SasquatchCoach.tsx` now state "accountability and reps, not diagnosis. New symptoms go to your doctor." Backstop to the existing crisis gate.
+- **Caregiver CTA** on `Landing.tsx` — new section between `WhatYouGet` and `FeedbackSurvey` linking to existing `/for/caregivers` SSR page.
+
 ## Architecture decisions
 - **Single Markdown Manuscript:** The entire book content is maintained in one large Markdown file for simplicity and ease of content management.
 - **Platform Integration via Slugs:** All URLs mentioned in the book are aliased and handled by the `strokerecoveryacademy.com` platform to prevent 404s and provide a seamless reader experience.
