@@ -91,7 +91,7 @@ If something hurts in a way that feels like injury rather than effort: stop. If 
 
 ## Foreword
 
-> *Most forewords are a credentialed stranger telling you the author is worth your time. This one is the author telling you why he chose to start without one.*
+> *Most forewords are a credentialed stranger telling the survivor the author is worth their time. This one is the survivor.*
 
 I sat with this page for almost a year.
 
@@ -105,7 +105,7 @@ So this is me, starting to talk.
 
 My name is Nicholas Kremers. I am a third-generation laundry-equipment operator from Lavaca, Arkansas. On December 3, 2018, at thirty-six years old, I had a massive hemorrhagic stroke in the bathroom of my own house, two hundred and fifty pounds of working muscle, ninety minutes after I had benched two hundred and eighty-five pounds in my garage. The bleed landed in my left thalamus, paralyzed the left side of my body, scrambled my speech into the wrong word order, and put me in an ICU bed for a month while the doctors told my pregnant wife and my parents to plan for a man who would never walk normally again, never use his left hand again, never recognize music again, and never go back to work.
 
-Seven years later I am at ninety percent function and still rising. I walked my son to his first day of school. I am typing this sentence with both hands. I wrote a twelve-track concept album about the rebuild. I run two companies. I built a stroke-recovery academy from the wheelchair I was supposed to live in. I teach about fifteen thousand survivors a day on TikTok how to refuse the same "nevers" the white coats handed me.
+Seven years later I am at ninety percent function and still rising. I walked my son to his first day of school. I am typing this sentence with both hands. I wrote a twelve-track concept album about the rebuild. I run two companies. I built a stroke-recovery academy from the wheelchair I was supposed to live in. I teach roughly fifteen thousand survivors a day on TikTok how to refuse the same "nevers" the white coats handed me.
 
 This book is the manual I wish somebody had handed me on Day 30.
 
@@ -135,7 +135,7 @@ Listen up, warrior.
 
 December 3, 2018 — the day they told me I'd never be the same.
 
-Seven years later, I'm better than I ever was. Ninety percent function and still climbing, with breakthroughs in year seven that doctors swore couldn't happen after year one. I built Stroke Recovery Academy from a wheelchair in Lavaca, Arkansas. I run a 501(c)(3) nonprofit called Stroke Lyfe Inc. I cut a twelve-track concept album called *Hostile Construction* about the rebuild — every song you'll see referenced at the end of these chapters. And on TikTok, fourteen and a half thousand survivors and counting use the methods in this book to refuse their own "nevers."
+Seven years later, I'm better than I ever was. Ninety percent function and still climbing, with breakthroughs in year seven that doctors swore couldn't happen after year one. I built Stroke Recovery Academy from a wheelchair in Lavaca, Arkansas. I run a 501(c)(3) nonprofit called Stroke Lyfe Inc. I cut a twelve-track concept album called *Hostile Construction* about the rebuild — every song you'll see referenced at the end of these chapters. And on TikTok, roughly fifteen thousand survivors a day use the methods in this book to refuse their own "nevers."
 
 When that well-meaning doctor said, *"You'll probably never walk normally again,"* I had two choices.
 
@@ -163,22 +163,6 @@ Lavaca, Arkansas
 
 ---
 
-## Preface
-
-I woke up unable to move half my body, handed a timeline full of "nevers."
-
-This book is what happened when I refused them.
-
-It's not a medical textbook. It's the blueprint forged in rage, repetition, and relentless experimentation. These pages contain the laws, tactics, and mindset that took me from a wheelchair to a platform — and the methods I now teach the survivors who find me through TikTok every day.
-
-Your setback will be different. Your rebuild will be unique. Use this as ammunition, not as a prescription. Take what serves your fight and leave the rest. Adapt the drills to your body. Argue with me where you need to. Then put in the work.
-
-The only failure is staying down.
-
-— Nick Kremers, 2026
-
----
-
 ## How to Read This Book
 
 Different survivors are at different points in the fight. Read the way that serves yours.
@@ -189,7 +173,7 @@ Different survivors are at different points in the fight. Read the way that serv
 
 **If you're years in and looking for the next gear:** Start at Part V. The breakthroughs in years four through seven are real and they require a different approach than year one.
 
-**If you're a caregiver:** Read it all. Especially Chapter 25. You are doing one of the hardest jobs on the planet.
+**If you're a caregiver:** Read it all. Especially Chapter 24, Chapter 28, and Appendix R. You are doing one of the hardest jobs on the planet.
 
 **If you found this book through TikTok or the album:** Welcome. Open Spotify, Apple Music, or YouTube Music to *Hostile Construction* by Stroked Out Sasquatch. Each chapter that pairs with a track ends with a Track Sync block — listen while you read. The book and the album are one experience.
 
@@ -199,7 +183,6 @@ Different survivors are at different points in the fight. Read the way that serv
 
 **Foreword**
 **Author's Note: The Sasquatch Battle Cry**
-**Preface**
 **How to Read This Book**
 
 **Introduction: Welcome to the Revolution**
