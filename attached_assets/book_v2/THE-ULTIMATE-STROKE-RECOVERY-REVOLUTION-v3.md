@@ -4984,6 +4984,29 @@ The full, updated, with-affiliate-links version of this guide lives at **stroker
 - Most supplements marketed for stroke recovery (see Appendix D for what is backed).
 - Anything that promises results without you doing the reps.
 
+### How to Talk Insurance Into Covering the Big-Ticket Items
+
+Most of the four-figure items in the table above are coverable. The denial on the first try is part of the process — not a verdict. Read this before you give up.
+
+**The script (read it to the case manager, word for word if you have to):**
+
+> *"My treating clinician has documented [device] as medically necessary for the management of [drop foot / hand spasticity / arm hemiparesis / gait deficit] following stroke. The peer-reviewed evidence supports use; the device is FDA-cleared for this indication; and home use is associated with lower long-term care costs. I am requesting a written denial with the specific medical-necessity criteria you applied so I can appeal. I am also requesting a peer-to-peer review with a physiatrist on your panel."*
+
+**The five things that must be in your file before they will pay:**
+1. **Letter of medical necessity** from a physiatrist, neurologist, or your PT/OT — naming the device, the diagnosis (with ICD-10 code), and the functional goal.
+2. **A failed-trial-of-conservative-care note** — proof that AFOs, standard PT, and home program were tried first.
+3. **A measurable functional baseline** — 10-meter walk test, Fugl-Meyer score, gait-speed video, whatever your clinician uses. Without a baseline, there is no way to prove the device worked.
+4. **An appeal letter template** — Patient Advocate Foundation (Appendix F) has free ones. Use them.
+5. **Peer-to-peer escalation** — if denied twice, request a peer-to-peer between your physiatrist and the insurer's medical director. Most denials reverse here.
+
+**If insurance still says no:**
+- The manufacturer's patient-assistance program (Bioness, Saebo, Myomo all have one).
+- The Stroke Lyfe Inc. equipment grant — strokelyfe.org/grant.
+- A used unit on Facebook Marketplace, eBay, or the academy's gear-exchange board at *strokerecoveryacademy.com/exchange*. (Always verify electrode pads and software updates before buying used.)
+- Tax deduction. Durable medical equipment for a documented disability is generally deductible if you itemize. Talk to a tax preparer.
+
+> Templates for the letter of medical necessity, the appeal letter, and the peer-to-peer request live at **strokerecoveryacademy.com/insurance**.
+
 ---
 
 ## Appendix D: Nutrition for Brain Recovery
@@ -5131,34 +5154,141 @@ Tape them to your bathroom mirror. Set them as your phone wallpaper. Text them t
 
 ## Appendix F: Support Resources and Communities
 
-**The Stroke Recovery Academy (Nick's platform):**
-- Web: strokerecoveryacademy.com
-- TikTok: @nickkremers
-- Facebook: @NicholasKremersSr
-- Email: hello@strokerecoveryacademy.com
+The full, dated, link-checked version of this directory lives at **strokerecoveryacademy.com/resources** and is reviewed every quarter. The version below is the snapshot at the time this book went to press. If a link is dead by the time you read it, write **resources@strokerecoveryacademy.com** and we will route you to a working alternative within 48 hours.
 
-**Stroke Lyfe Inc. (the nonprofit):**
-- Web: strokelyfe.org
-- Donate: strokelyfe.org/donate
+### Crisis — Save These to Your Phone Today
 
-**Crisis support:**
-- **988** — Suicide & Crisis Lifeline (US, call or text, 24/7)
-- Veterans: dial 988, press 1
-- International: findahelpline.com
+- **988** — Suicide & Crisis Lifeline (US). Call or text. 24/7. Free. Confidential.
+- **988, then press 1** — Veterans Crisis Line.
+- **Text HOME to 741741** — Crisis Text Line. 24/7. US, UK, Canada, Ireland.
+- **911** — for any new stroke symptoms. Do not drive yourself. (See Appendix A.)
+- **1-800-799-7233** — National Domestic Violence Hotline. Stroke caregivers and survivors are at elevated risk; this line is for both.
+- **findahelpline.com** — international crisis-line directory, by country.
+- **iasp.info/resources/Crisis_Centres** — International Association for Suicide Prevention crisis-center directory.
 
-**Major stroke organizations:**
-- American Stroke Association — stroke.org
-- National Stroke Association — stroke.org (now part of ASA)
-- Brain Injury Association of America — biausa.org
-- The Aphasia Recovery Connection — aphasiarecoveryconnection.org
+### Stroke Recovery Academy Ecosystem
 
-**Caregiver support:**
-- Family Caregiver Alliance — caregiver.org
-- Well Spouse Association — wellspouse.org
+- **strokerecoveryacademy.com** — the platform. Free workbook, free 90-Day app, free tribe, weekly office hours.
+- **strokerecoveryacademy.com/tribe** — the moderated community, organized by deficit + caregiver threads. Free.
+- **strokerecoveryacademy.com/officehours** — free Wednesday Zoom. Drop-in, no booking, no cost.
+- **strokerecoveryacademy.com/podcast** — survivor and clinician interviews, weekly.
+- **strokelyfe.org** — Stroke Lyfe Inc., the 501(c)(3). Funds gear and coaching for survivors who cannot pay.
+- **strokelyfe.org/donate** — every dollar funds another survivor's protocol.
+- **TikTok:** @nickkremers · **Facebook:** @NicholasKremersSr · **Email:** hello@strokerecoveryacademy.com
 
-**Speech / aphasia tools:**
-- Tactus Therapy apps — tactustherapy.com
-- Lingraphica — aphasia.com
+### Major Stroke and Brain-Injury Organizations (US)
+
+- **American Stroke Association** — stroke.org. The largest single resource. Find a support group, find a stroke center, get the latest guidelines.
+- **American Heart Association** — heart.org. Sister org to ASA. Risk-factor and second-stroke prevention material.
+- **National Stroke Association** — now part of ASA, archived material at stroke.org/legacy.
+- **Brain Injury Association of America** — biausa.org. State-by-state chapters, helpline 1-800-444-6443.
+- **Brain Injury Alliance** — biaa.org/find-bia. State-level affiliates with local case-management referrals.
+- **National Aphasia Association** — aphasia.org. Resource finder, support-group locator.
+- **Aphasia Recovery Connection** — aphasiarecoveryconnection.org. Survivor-and-family-led peer community.
+- **Young Stroke Inc.** — youngstroke.org. Specifically for survivors under 50.
+- **Different Strokes (UK)** — differentstrokes.co.uk. Working-age stroke survivor charity; their model is exportable globally.
+- **National Council on Aging** — ncoa.org/article/stroke-recovery. For survivors over 60 navigating Medicare and benefits.
+
+### International Stroke Organizations
+
+- **World Stroke Organization** — world-stroke.org. Country-by-country directory.
+- **Stroke Association (UK)** — stroke.org.uk. Helpline 0303 3033 100.
+- **Heart and Stroke (Canada)** — heartandstroke.ca. Bilingual EN/FR.
+- **Stroke Foundation (Australia)** — strokefoundation.org.au. Helpline 1800 STROKE.
+- **European Stroke Organisation** — eso-stroke.org. Clinician-facing but patient-resource pages exist.
+- **Indian Stroke Association** — indianstroke.com.
+- **Stroke Society of the Philippines** — strokesocietyphilippines.org.
+- **Mexican Stroke Association** — mexicostroke.org.
+
+### Survivor and Caregiver Online Communities (Free)
+
+- **r/stroke** (Reddit) — large, active, survivor-led. Mixed quality, useful at 3 a.m.
+- **r/StrokeSurvivors** (Reddit) — smaller, more curated.
+- **r/Caregivers** and **r/CaregiverSupport** (Reddit) — caregiver-only.
+- **Facebook: Stroke Survivors Support Group** — large peer group, moderated.
+- **Facebook: Young Stroke Survivors (Under 55)** — age-specific.
+- **Facebook: Caregivers of Stroke Survivors** — caregiver-only.
+- **Aphasia Recovery Connection** (Facebook) — most active aphasia-specific group on Facebook.
+- **Discord: Stroke Recovery Academy Discord** — survivor and caregiver channels, moderated, link at *strokerecoveryacademy.com/discord*.
+
+### Caregiver-Specific Support
+
+- **Family Caregiver Alliance** — caregiver.org. Helpline 1-800-445-8106. Free care planning, state-by-state resources.
+- **Well Spouse Association** — wellspouse.org. Specifically for spouses of survivors with chronic illness or disability.
+- **Caregiver Action Network** — caregiveraction.org. Peer support, education, advocacy.
+- **AARP Family Caregiving** — aarp.org/caregiving. Practical guides, financial planning, legal templates.
+- **National Alliance for Caregiving** — caregiving.org. Research-driven; useful for understanding what is normal in the role.
+- **Hilarity for Charity (Seth and Lauren Rogen)** — hilarityforcharity.org. Respite-care grants for spousal caregivers, especially in dementia-adjacent cases.
+- **Stroke Recovery Academy Caregiver Track** — *strokerecoveryacademy.com/caregiver*. Eight-week cohort, run by trained survivor-caregivers.
+- **Bereaved caregivers** — see Appendix R for the full bereavement directory (988, GriefShare, Modern Loss, Megan Devine).
+
+### Speech, Aphasia, and Communication Tools
+
+- **Tactus Therapy** — tactustherapy.com. The most respected aphasia app suite.
+- **Lingraphica** — aphasia.com. AAC devices, often insurance-covered.
+- **Constant Therapy** — constanttherapyhealth.com. AI-driven brain rehab app, evidence-based.
+- **iTalk2 / Speech Assistant AAC** — free or low-cost AAC apps for iOS/Android.
+- **Read2Me** — read2me.io. Aloud-reading practice library.
+- **Voiceitt** — voiceitt.com. Speech-recognition that adapts to dysarthric speech.
+- **National Aphasia Association SLP Finder** — aphasia.org/aphasia-resources/find-an-slp.
+
+### Movement, Mobility, and Rehab Tech
+
+- **Bioness (Bioventus)** — bioness.com. L300 Go for drop foot, H200 for hand. Insurance-coverage support team.
+- **WalkAide (Innovative Neurotronics)** — walkaide.com. Alternative FES for drop foot.
+- **MyoPro (Myomo)** — myomo.com. Powered arm orthosis. Frequently insurance-covered for stroke.
+- **Saebo** — saebo.com. SaeboFlex, SaeboGlove, SaeboStretch.
+- **Flint Rehab** — flintrehab.com. MusicGlove, FitMi. Survivor-affordable home tech.
+- **Neofect** — neofect.com. Smart hand/glove home rehab devices.
+- **Constant Therapy + Tali** (cognition) — constanttherapyhealth.com.
+- **GoodMaps** (low-vision navigation) — goodmaps.com. Useful for hemianopia survivors.
+
+### Mental Health, Depression, and Trauma
+
+- **988** — first stop, always.
+- **psychologytoday.com/us/therapists** — find a therapist; filter for *stroke*, *brain injury*, *chronic illness*.
+- **APA Stroke / Rehab Psychology Locator** — div22.org.
+- **NAMI (National Alliance on Mental Illness)** — nami.org. Helpline 1-800-950-6264. Family-to-family support classes are excellent for stroke families.
+- **SAMHSA Treatment Locator** — findtreatment.gov. Substance-use and mental-health treatment, by zip code.
+- **Open Path Collective** — openpathcollective.org. Sliding-scale therapy, $30–$80 per session.
+- **BetterHelp / Talkspace** — affordable telehealth therapy. Useful when mobility limits in-person access.
+- **Postpartum Support International** — postpartum.net. For postpartum-stroke survivors and partners.
+
+### Financial Assistance, Equipment, and Medication
+
+- **Patient Advocate Foundation** — patientadvocate.org. Co-pay relief, insurance appeals support.
+- **NeedyMeds** — needymeds.org. Database of patient-assistance programs by drug.
+- **GoodRx** — goodrx.com. Prescription discount cards. Often beats insurance copay.
+- **Medicare.gov / Medicaid.gov** — eligibility, plan finder, durable medical equipment coverage.
+- **Stroke Lyfe Inc. Equipment Grant** — strokelyfe.org/grant. Application form for survivors who cannot afford gear in Appendix C / Appendix V.
+- **United Way 211** — dial **211** from any US phone, or 211.org. Local emergency funds, food, housing, transportation.
+- **HealthWell Foundation** — healthwellfoundation.org. Co-pay assistance for chronic illness.
+- **The Assistance Fund** — tafcares.org. Medication and insurance-premium grants.
+- **Modest Needs** — modestneeds.org. Small grants for working families in temporary crisis.
+- **Disability.gov / SSA.gov** — Social Security disability application portal.
+
+### Transportation, Mobility, and Accessibility
+
+- **Paratransit** — every US metro is required to offer ADA paratransit; call your local transit authority. Apply *before* you discharge.
+- **GoGoGrandparent** — gogograndparent.com. Uber/Lyft via phone call (no app required), for survivors who cannot use smartphones.
+- **National Aging and Disability Transportation Center** — nadtc.org.
+- **Local Area Agency on Aging** — eldercare.acl.gov. State-by-state directory; rides, meals, respite.
+- **Wheelchair Travel** — wheelchairtravel.org. Accessible-travel reviews and guides.
+
+### Veterans
+
+- **VA Stroke Care** — va.gov. The VA stroke care system is one of the strongest stroke networks in the US.
+- **Wounded Warrior Project** — woundedwarriorproject.org. Stroke and TBI co-existing.
+- **Veterans Crisis Line:** 988, press 1, or text 838255.
+- **Disabled American Veterans (DAV)** — dav.org. Benefits-claim help.
+
+### For Clinicians and Stroke Care Teams
+
+- See **Appendix L** for the full clinician resource set, the CEU course, the bulk-pack option, and the discharge-education kit.
+
+### A Note on This Directory
+
+Resources change. Phone numbers change. Domains expire. The directory above is correct as of the print date but the platform mirror at **strokerecoveryacademy.com/resources** is the live version. If you find a dead link or a closed program, write us — we will fix it within 48 hours and your name (or initials, your call) goes on the *Directory Tribe* page that thanks every survivor who keeps this thing accurate. The directory only stays useful if the tribe maintains it. *That is the whole rebuild in one paragraph.*
 
 ---
 
@@ -5734,36 +5864,39 @@ Get the workbook at **strokerecoveryacademy.com/workbook**. Upload a photo of yo
 
 | Chapter | Platform companion |
 |---|---|
-| Ch 1 — The Day | /resources/day1 — printable timeline of what to expect in the first 72 hours |
-| Ch 2 — The ICU | /resources/icu — the family ICU survival kit |
-| Ch 3 — The Wake-Up | /resources/wakeup — questions to ask your medical team in the first 14 days |
-| Ch 4 — The Diagnosis | /resources/diagnosis — glossary of stroke terminology in plain English |
-| Ch 5 — The Architect | /resources/architect — the *I am the Architect* worksheet |
-| Ch 6 — The Promise | /resources/promise — written-promise template for your kid, partner, or future self |
-| Ch 7 — The Sasquatch Formula | /resources/formula — the OBSERVE / EXPERIMENT / COMBINE / REFLECT printable |
-| Ch 8 — Wheelchair Warrior | /resources/wheelchair — gear list + first-90-day rolling protocol |
-| Ch 9 — Sixty-Six Days | /resources/66day — the original 66-Day Tracker, fillable + printable |
-| Ch 10 — The Mistakes | /resources/mistakes — the "what I would do differently" caregiver checklist |
-| Ch 11 — Plateau | /resources/plateau — the seven-question plateau diagnostic |
-| Ch 12 — Hostile Construction (the bat) | /resources/bat — full bat protocol video, three progressions |
-| Ch 13 — Balance | /resources/balance — single-leg-stand benchmarks by month |
-| Ch 14 — Phantom Limb (mirror therapy) | /resources/mirror — mirror setup video + 30-day mirror protocol |
-| Ch 15 — Drop Foot | /resources/dropfoot — Bioness L300 vs. AFO decision tree |
-| Ch 16 — Grip | /resources/grip — putty progression chart |
-| Ch 17 — Speech | /resources/speech — full read-aloud library of public-domain texts |
-| Ch 18 — Cognition | /resources/cognition — daily cognitive drills, by deficit |
-| Ch 19 — Open Hand | /resources/openhand — the full hourly stretch protocol |
-| Ch 20 — The Mind Game | /resources/mindgame — daily mental reps + therapist directory |
-| Ch 21 — HandiCRAP (the intersection) | /resources/intersection — 988 information + safety planning template |
-| Ch 22 — Maximum Benefit | /resources/maxbenefit — insurance appeal letter templates |
-| Ch 23 — Discharge | /resources/discharge — the home-readiness checklist |
-| Ch 24 — Becoming a Father Again | /resources/father — adaptive parenting tools by deficit |
-| Ch 25 — Marriage / Co-parenting | /resources/marriage — co-parenting agreement templates + therapist directory |
-| Ch 26 — TikTok Origin | /resources/tiktok — the *first video* template + caption library |
-| Ch 27 — The Tribe | /resources/tribe — link to the academy community + caregiver threads |
-| Ch 28 — Caregiver's Field Manual | /resources/caregiver — full caregiver kit, printable |
-| Ch 29 — Sasquatch Doctrine | /resources/doctrine — the six-principle daily card |
-| Ch 30 — Builder's Promise | /resources/promise2 — write your own builder's promise |
+| Ch 1 — The Day I Refused to Die | /resources/day1 — printable timeline of what to expect in the first 72 hours |
+| Ch 2 — ICU Hell and the Two Paths | /resources/icu — the family ICU survival kit |
+| Ch 3 — Why Rock Bottom Is Your Best Foundation | /resources/foundation — the first-14-days *Choice Law* worksheet |
+| Ch 4 — Meeting Michael | /resources/mentor — how to find your Michael (peer-mentor finder) |
+| Ch 5 — From Patient to Architect | /resources/architect — the *I am the Architect* worksheet |
+| Ch 6 — Your Recovery Machine | /resources/brain — plain-English brain-anatomy primer + diagrams |
+| Ch 7 — Neuroplasticity | /resources/neuroplasticity — the Five Levers printable (cross-ref Appendix P) |
+| Ch 8 — From Wheelchair to Walking | /resources/wheelchair — gear list + first-90-day rolling protocol |
+| Ch 9 — The 66-Day Transformation | /resources/66day — the original 66-Day Tracker, fillable + printable |
+| Ch 10 — The Sasquatch Formula (T.L.E.C.A.) | /resources/tleca — the Think / Look / Engage / Crush / Anchor printable |
+| Ch 11 — Think → Twitch → Move | /resources/twitch — the mental-rehearsal audio companion |
+| Ch 12 — Baseball Bat Therapy | /resources/bat — full bat protocol video, three progressions |
+| Ch 13 — Weight Bearing & Negative Pressure | /resources/weightbearing — standing-frame and partial-weight protocols |
+| Ch 14 — Mirror Therapy Magic | /resources/mirror — mirror setup video + 30-day mirror protocol |
+| Ch 15 — Drop Foot Destruction | /resources/dropfoot — Bioness L300 vs. AFO decision tree |
+| Ch 16 — Arm and Hand Recovery | /resources/arm — putty progression chart + open-hand reps |
+| Ch 17 — Speech Comeback | /resources/speech — full read-aloud library of public-domain texts |
+| Ch 18 — Technology Assists | /resources/tech — Bioness, robotics, and FES decision matrix (cross-ref Appendix C) |
+| Ch 19 — Open Hand Protocol | /resources/openhand — the full hourly stretch protocol |
+| Ch 20 — The Motivation Engine | /resources/engine — the 4 a.m. voice audio companion + daily check-in |
+| Ch 20½ — The Persona Forge | /resources/persona — the persona-naming worksheet + therapist directory |
+| Ch 21 — Emotional Warfare | /resources/emotional — 988 + crisis-text + safety-planning template |
+| Ch 22 — The Plateau Wars | /resources/plateau — the Mutation Tree printable + Five Honest Questions card |
+| Ch 22½ — What the Doctors Got Right and Wrong | /resources/care-audit — the *Audit Your Care Team* checklist |
+| Ch 23 — Home Sweet Home | /resources/home — the home-readiness + bathroom/bedroom mod checklist |
+| Ch 24 — Family, Caregivers, Fatherhood Fire | /resources/family — adaptive parenting tools + the Five Pressure Points worksheet |
+| Ch 25 — Returning to Work and Purpose | /resources/work — return-to-work staged plan + ADA accommodation letter |
+| Ch 26 — Build the Tribe | /resources/tribe — link to the academy community + caregiver threads |
+| Ch 27 — Building the StrokeLyfe Empire | /resources/empire — the *first video* template + caption library |
+| Ch 28 — The Caregiver's Field Manual | /resources/caregiver — full caregiver kit, printable |
+| Ch 29 — The Sasquatch Doctrine Beyond Stroke | /resources/doctrine — the four-layer Doctrine card (cross-ref Appendix I) |
+| Ch 29½ — Year Seven, Tuesday | /resources/tuesday — the *day-in-the-life* shape-of-recovery one-pager |
+| Ch 30 — The Builder's Promise | /resources/promise — write your own Builder's Promise |
 
 ### The Five Free Tracks (use any or all)
 
