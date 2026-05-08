@@ -142,7 +142,7 @@ function postProcess(htmlInput, opts = {}) {
 
   // Identify chapter-opening headings
   const isChapterH2 = (text) =>
-    /^(Chapter\s|Case\s|Case Study\s|Appendix\s|Copyright|Dedication|Epigraph|A Note Before|Disclaimer|Author.s Note|Preface|How to Read|How to Use|Table of Contents|Introduction|Day\s\d|Always|What These Nine|Breakdown to|The Science of|Breakthrough Techniques|The Psychology|Beyond Comeback|Inspiring Others|Acknowledgments|About the Author|The Builder.s Seal|The Soundtrack|Stories from the Tribe|Mental Mastery)/i
+    /^(Chapter\s|Case\s|Case Study\s|Appendix\s|Copyright|Dedication|Epigraph|A Note Before|Disclaimer|Foreword|Author.s Note|Preface|How to Read|How to Use|Table of Contents|Introduction|Day\s\d|Always|What These Nine|Breakdown to|The Science of|Breakthrough Techniques|The Psychology|Beyond Comeback|Inspiring Others|Acknowledgments|About the Author|The Builder.s Seal|The Soundtrack|Stories from the Tribe|Mental Mastery)/i
       .test(text.trim());
 
   $('#book > h1, #book > h2').each((_, el) => {
