@@ -93,10 +93,21 @@ const bodyMD = raw.slice(splitIdx);
 // ---------- 3. COVER + INTERIOR TITLE PAGE ----------
 // Full-bleed cover (real artwork) + interior typographic title page with QR.
 // Cover is embedded as base64 data URL so puppeteer's file:// loader cannot drop it.
-const coverPath = path.join(ROOT, 'images', 'sasquatch-cover.png');
+// Prefer optimized JPGs from images-web/ (10x smaller); fall back to PNGs.
+const WEB_IMG_DIR = path.join(ROOT, 'images-web');
+const hasWebImages = fs.existsSync(WEB_IMG_DIR);
+function resolveImg(relName) {
+  if (hasWebImages) {
+    const jpg = path.join(WEB_IMG_DIR, relName.replace(/\.png$/i, '.jpg'));
+    if (fs.existsSync(jpg)) return jpg;
+  }
+  return path.join(ROOT, 'images', relName);
+}
+const coverPath = resolveImg('sasquatch-cover.png');
 const coverB64 = fs.readFileSync(coverPath).toString('base64');
-const coverUrl = `data:image/png;base64,${coverB64}`;
-const qrUrl = url.pathToFileURL(path.join(ROOT, 'images/qr-scan-me.png')).href;
+const coverMime = coverPath.endsWith('.jpg') ? 'image/jpeg' : 'image/png';
+const coverUrl = `data:${coverMime};base64,${coverB64}`;
+const qrUrl = url.pathToFileURL(resolveImg('qr-scan-me.png')).href;
 const titleBlock = `
 <div class="cover-page"><img class="cover-image" src="${coverUrl}" alt="The Ultimate Stroke Recovery Revolution" /></div>
 <div class="title-page">
@@ -128,12 +139,20 @@ const md = new MarkdownIt({ html: true, linkify: true, typographer: true, breaks
 function postProcess(htmlInput, opts = {}) {
   const $ = cheerio.load(`<div id="book">${htmlInput}</div>`, { decodeEntities: false });
 
-  // Resolve relative image paths
+  // Resolve relative image paths; remap images/foo.png → images-web/foo.jpg if available.
   $('img').each((_, el) => {
     const src = $(el).attr('src') || '';
-    if (!/^(https?:|file:|data:)/.test(src)) {
-      const abs = path.resolve(ROOT, src);
+    if (/^(https?:|file:|data:)/.test(src)) return;
+    let resolved = src;
+    if (hasWebImages) {
+      const m = src.match(/(^|\/)images\/([^/]+)\.png$/i);
+      if (m) resolved = src.replace(/images\/([^/]+)\.png$/i, 'images-web/$1.jpg');
+    }
+    const abs = path.resolve(ROOT, resolved);
+    if (fs.existsSync(abs)) {
       $(el).attr('src', url.pathToFileURL(abs).href);
+    } else {
+      $(el).attr('src', url.pathToFileURL(path.resolve(ROOT, src)).href);
     }
   });
 
