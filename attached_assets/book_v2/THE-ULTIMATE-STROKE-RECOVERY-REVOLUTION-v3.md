@@ -3225,6 +3225,24 @@ Family becomes battlefield and lifeline. Caregivers become warriors and casualti
 
 I learned the hard way how to manage the team — and I learned that the most powerful motivator I would ever have was about to be born while I was still in the chair.
 
+### The Five Pressure Points the House Will Take
+
+Before I tell you about Lisa, I owe the people in your house — the ones reading this over your shoulder right now — five honest sentences about what they are about to absorb. Generic stroke literature will tell them their lives are going to change. It will not tell them *how.* I will. These are the five pressure points. Every survivor's family takes them in some shape. Name them out loud and you can build for them. Pretend they aren't coming and they take the house apart from the inside.
+
+**1. The Emotional Shock.** Your spouse does not get to grieve in private. Your parents do not get to grieve at all. They are in a hallway, holding it together for the next nurse who walks past, while a version of you they have known their whole adult lives is being dismantled in real time on the other side of the door. My mother sobbed in a hallway for a full month and I only know that because somebody else told me later. Watch for the family member who *isn't* crying. They are the one who will collapse in year two.
+
+**2. The Caregiver Becomes a Casualty.** Your spouse, your parent, your sibling — somebody is going to wake up at 3 a.m. for a year. They will help you with a bowel. They will lift more of your body weight than their back can handle. They will skip their own doctor appointments to make yours. Lisa was five months pregnant sleeping in a hospital chair with her hand on my side rail. *That is not sustainable.* Caregiver burnout is not a character flaw. It is physics. Build them a relief schedule the same way you build your therapy schedule, or you will lose the person who is keeping you alive.
+
+**3. The Money.** Disability paperwork. Insurance fights. The income that walked out of the house with you on the gurney. Home modifications that nobody priced before the stroke. The wheelchair ramp. The shower bench. The car the family member now drives because you can't. The legal and accounting work that nobody in the house has the bandwidth for *because they are also doing the caregiving above.* I am not here to tell you it is fine. It is not fine. It is the second crisis nobody warns you about. Get a financial advocate — a lawyer, an accountant, a social worker, a friend who is good at forms — and let them handle the paper while the house handles the body.
+
+**4. The Roles Flip and Nobody Asked.** A spouse becomes a nurse. A child becomes a translator. A parent becomes a parent again to their adult son. You become dependent in your own house at 36 years old. Nobody signed the contract for the new roles. Nobody got to vote. The resentment that grows out of *unspoken* role shifts is what breaks marriages and ruins teenagers. Name the new roles out loud at the kitchen table. *You are not my mother — but for the next eight months you are going to do some things only a mother does, and we are both going to acknowledge that, and when I can do them again I will.* The acknowledgment is the load-bearing wall.
+
+**5. The Friends Stop Coming.** The casseroles arrive in month one. The texts stop in month four. Your spouse's social life collapses around your medical schedule. Your parents' friends do not know what to say so they say nothing. Isolation kills the family the same way it almost killed me on the back porch in Lavaca thirteen months in. The fix is not waiting for the friends to come back. The fix is *the family being honest with each other that the friends are not coming back* — and then building a new tribe together, with other survivor families, with a church or a recovery community, with the people online who actually understand the room you are in. The Stroke Recovery Academy community exists in part because Lisa needed other survivor wives to talk to and there were none in our county.
+
+If you are the survivor reading this — *show this section to your house.* Not as a complaint. As a map. Tell them: *this is the territory we are about to walk into. I see you. I will not pretend you are fine when you are not. We are going to name the load and carry it together.* That sentence is the entire chapter compressed into one line.
+
+Now, the warrior who carried more of the load than anyone.
+
 ### Lisa: The Warrior in the Chair Next to Mine
 
 Lisa was pregnant through the entire ICU.
