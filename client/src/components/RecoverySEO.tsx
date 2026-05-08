@@ -58,7 +58,7 @@ export const NICK_KREMERS_SCHEMA = {
     "@type": "Place",
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Fort Smith",
+      addressLocality: "Lavaca",
       addressRegion: "AR",
       addressCountry: "US",
     },

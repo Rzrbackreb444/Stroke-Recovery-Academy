@@ -175,7 +175,7 @@ const MEMOIR_PROMPTS = [
     id: "message-to-survivors",
     title: "What I'd Tell You on Day One",
     prompt: "If you could go back to the hospital room — yours or someone else's — on Day 1, what would you say? What does the survivor in front of you need to hear more than anything else right now?",
-    nickExcerpt: "I'm an Arkansas boy from Fort Smith. Three years of drug court. One class short of a college degree I walked the stage for and then found out I'd failed. A massive hemorrhagic stroke that took my left side completely. Two and a half years in a wheelchair at 325 pounds. A doctor who told me I'd probably never walk normally again. And I'm at 90%+ function in Year 7, still rising, still building, still swinging. If that's possible for me — with that background, with those numbers, with that prognosis — then 'never' is just a word someone said before they saw what you're capable of. Recovery isn't healing. It's construction. And you still have everything you need to build.",
+    nickExcerpt: "I'm an Arkansas boy from Lavaca. Three years of drug court. One class short of a college degree I walked the stage for and then found out I'd failed. A massive hemorrhagic stroke that took my left side completely. Two and a half years in a wheelchair at 325 pounds. A doctor who told me I'd probably never walk normally again. And I'm at 90%+ function in Year 7, still rising, still building, still swinging. If that's possible for me — with that background, with those numbers, with that prognosis — then 'never' is just a word someone said before they saw what you're capable of. Recovery isn't healing. It's construction. And you still have everything you need to build.",
     nickSource: "Foreword — The Sasquatch Battle Cry",
   },
   {

@@ -16,7 +16,7 @@ const milestones = [
   { year: "2020", title: "S.A.S.C.H. Formula Born", description: "Formalized the 5-step daily operating system — Seize, Absorb, Swing, Combine, Hammer — after years of testing every recovery technique available." },
   { year: "2021", title: "C.O.M.P.A.S.S. Created", description: "Built the 7-pillar navigation system: Control, Own, Mutate, Patience, Anger, Small Wins, Stack. A framework for getting unstuck when recovery stalls." },
   { year: "2022", title: "TikTok & Community Launch", description: "Took the Sasquatch Doctrine to TikTok. An overwhelming response — 14.5K warriors followed. The mission became undeniable: help every survivor who would listen." },
-  { year: "2023", title: "Academy Founded", description: "Launched StrokeRecoveryAcademy.com from Fort Smith, Arkansas. The 33-chapter curriculum, the Sasquatch Coach, the 66-Day Challenge — all built to give survivors what he never had." },
+  { year: "2023", title: "Academy Founded", description: "Launched StrokeRecoveryAcademy.com from Lavaca, Arkansas. The 33-chapter curriculum, the Sasquatch Coach, the 66-Day Challenge — all built to give survivors what he never had." },
   { year: "2026", title: "Sasquatch Keeps Rising", description: "90%+ function and still climbing. Building the platform, writing the books, running the community. As long as that meat in your chest is still thumpin', your life is still pumpin'." },
 ];
 
@@ -84,7 +84,7 @@ export default function AboutNick() {
                 As long as that meat in your chest is still thumpin', your life is still pumpin'.
                 You are not done."
               </p>
-              <p className="text-[#C9941A] font-semibold">— Nick Kremers, Fort Smith, Arkansas</p>
+              <p className="text-[#C9941A] font-semibold">— Nick Kremers, Lavaca, Arkansas</p>
             </div>
           </div>
         </Card>
@@ -115,7 +115,7 @@ export default function AboutNick() {
               That their recovery is impossible. That they're imagining progress. 
               Just like Sasquatch — dismissed, doubted, but undeniably, stubbornly present.
               Today Nick is 90%+ functional, still rising, and coaching thousands of 
-              warriors from Fort Smith, Arkansas.
+              warriors from Lavaca, Arkansas.
             </p>
           </div>
         </div>

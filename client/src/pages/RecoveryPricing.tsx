@@ -751,7 +751,7 @@ export default function RecoveryPricing() {
               </div>
               <div>
                 <p className="text-[#C9941A] font-bold text-sm uppercase tracking-wider">Nick's Personal Promise</p>
-                <p className="text-gray-500 text-xs">Fort Smith, Arkansas — Year 7 post-stroke</p>
+                <p className="text-gray-500 text-xs">Lavaca, Arkansas — Year 7 post-stroke</p>
               </div>
             </div>
             <blockquote className="text-gray-200 text-lg leading-relaxed mb-6 italic">
