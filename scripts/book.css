@@ -447,8 +447,71 @@ code, pre {
 }
 pre { padding: 0.6em 0.8em; overflow-x: auto; }
 
+/* ============ TABLES ============
+   Letter page minus 0.95in margins = 6.6in printable width. Tables MUST
+   be constrained or wide rows (Appendix C, K, etc.) will overflow off
+   the right margin. table-layout:fixed + word-wrap forces every column
+   to honor the page width regardless of cell content length. */
+table {
+  width: 100%;
+  max-width: 6.6in;
+  border-collapse: collapse;
+  margin: 0.9em 0 1.1em;
+  font-size: 9.5pt;
+  line-height: 1.4;
+  table-layout: fixed;
+  page-break-inside: auto;
+  break-inside: auto;
+}
+
+th, td {
+  border: 0.5pt solid #d1d1d1;
+  padding: 0.35em 0.45em;
+  text-align: left;
+  vertical-align: top;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+th {
+  background: #fafaf9;
+  color: #0a0a0a;
+  font-weight: 700;
+  font-size: 9pt;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+td p, th p { margin: 0; text-indent: 0; }
+
+/* Wide tables (5+ columns) shrink further to keep cells legible */
+table:has(th:nth-child(5)) { font-size: 9pt; }
+table:has(th:nth-child(6)) { font-size: 8.5pt; }
+table:has(th:nth-child(7)) { font-size: 8pt; }
+
+/* Keep table header row with the first data row */
+thead { display: table-header-group; }
+tr { page-break-inside: avoid; break-inside: avoid; }
+
 /* ============ PAGE-BREAK SAFETY ============ */
 img, blockquote, h3, h4 {
   page-break-inside: avoid;
   break-inside: avoid;
 }
+
+/* Pre-formatted code blocks must wrap, not overflow horizontally */
+pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-width: 6.6in;
+}
+
+/* Long URLs and inline code should never push the line past the margin */
+code, a { word-break: break-word; overflow-wrap: anywhere; }
+
+/* Keep H2 chapter heads with the first paragraph that follows them */
+h2.chapter-head { page-break-after: avoid; break-after: avoid; }
+
+/* Orphan / widow control — at least 2 lines together at page breaks */
+p { orphans: 2; widows: 2; }

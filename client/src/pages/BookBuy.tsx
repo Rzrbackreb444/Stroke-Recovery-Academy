@@ -236,7 +236,7 @@ export default function BookBuy() {
     <div className="min-h-screen bg-background flex flex-col">
       <RecoverySEO
         title="Buy The Ultimate Stroke Recovery Revolution — Digital $19 / Print $29"
-        description="Nick Kremers' battle-tested 286-page stroke recovery manual. Digital PDF $19 (instant) or 6×9 paperback $29 (ships 5-10 days). 30 chapters, 17 appendices, 9 case studies, full 90-day program. Forged by a 7-year survivor."
+        description="Nick Kremers' battle-tested 314-page stroke recovery manual. Digital PDF $19 (instant) or 6×9 paperback $29 (ships 5-10 days). 30 chapters, 17 appendices, 9 case studies, full 90-day program. Forged by a 7-year survivor."
         canonical="/book/buy"
         pageType="product"
         image={coverAbs}
@@ -305,7 +305,7 @@ export default function BookBuy() {
               >
                 <a href="/book/sample.pdf" target="_blank" rel="noopener noreferrer">
                   <FileText className="w-4 h-4 mr-2" />
-                  Read free 12-page sample
+                  Read free 36-page sample
                 </a>
               </Button>
             </div>
