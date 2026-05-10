@@ -103,7 +103,7 @@ The reason is simple, and it is the same reason this book exists at all: a strok
 
 So this is me, starting to talk.
 
-My name is Nicholas Kremers. I am a third-generation laundry-equipment operator from Lavaca, Arkansas. On December 3, 2018, at thirty-six years old, I had a massive hemorrhagic stroke in the bathroom of my own house, two hundred and fifty pounds of working muscle, ninety minutes after I had benched two hundred and eighty-five pounds in my garage. The bleed landed in my left thalamus, paralyzed the left side of my body, scrambled my speech into the wrong word order, and put me in an ICU bed for a month while the doctors told my pregnant wife and my parents to plan for a man who would never walk normally again, never use his left hand again, never recognize music again, and never go back to work.
+My name is Nicholas Kremers. I am Vice President of Kremers Laundry Equipment Company — a third-generation family business out of Lavaca, Arkansas. On December 3, 2018, at thirty-six years old, I had a massive hemorrhagic stroke in the bathroom of my own house, two hundred and fifty pounds of working muscle, ninety minutes after I had benched two hundred and eighty-five pounds in my garage. The bleed landed in my left thalamus, paralyzed the left side of my body, scrambled my speech into the wrong word order, and put me in an ICU bed for a month while the doctors told my pregnant wife and my parents to plan for a man who would never walk normally again, never use his left hand again, never recognize music again, and never go back to work.
 
 Seven years later I am at ninety percent function and still rising. I walked my son to his first day of school. I am typing this sentence with both hands. I wrote a twelve-track concept album about the rebuild. I run two companies. I built a stroke-recovery academy from the wheelchair I was supposed to live in. I teach roughly fifteen thousand survivors a day on TikTok how to refuse the same "nevers" the white coats handed me.
 
@@ -396,7 +396,7 @@ December 3, 2018. A Monday.
 
 I remember the exact moment because I have replayed it ten thousand times since.
 
-I was thirty-six years old. Two hundred and fifty pounds of Arkansas, built like a brick outhouse. I had benched over four hundred pounds the week before. I was running Kremers Laundry Equipment — third generation, no boss but myself, working the kind of long days that make you feel like you can't be killed. Lisa was pregnant. Our son was due in the spring. Life was loaded and pointed in one direction: more.
+I was thirty-six years old. Two hundred and fifty pounds of Arkansas, built like a brick outhouse. I had benched over four hundred pounds the week before. I was Vice President of Kremers Laundry Equipment — third-generation family operation, working the kind of long days that make you feel like you can't be killed. Lisa was pregnant. Our son was due in the spring. Life was loaded and pointed in one direction: more.
 
 That morning I woke up with a headache I tried to ignore.
 
@@ -3552,7 +3552,7 @@ Here is how I came back to work, found new purpose, and why I'm still climbing a
 
 ### The Work Reality
 
-- **Pre-stroke:** Kremers Laundry Equipment Company. Third-generation family operation. I knew the washers, the dryers, the financing structures, the lender relationships, the deals. I was the guy who walked into a laundromat and could quote the deal in the parking lot before we got back to my truck.
+- **Pre-stroke:** Vice President of Kremers Laundry Equipment Company — third-generation family operation. I knew the washers, the dryers, the financing structures, the lender relationships, the deals. I was the guy who walked into a laundromat and could quote the deal in the parking lot before we got back to my truck.
 - **Post-stroke:** Wheelchair. Dead arm. Slurred speech. Could not do field work. Could not lift a panel. Could not climb under a machine. Felt useless in the exact ways the business needed me most.
 - **Early return:** Desk work. Phone calls. Email. Planning. Lender comparisons in spreadsheets I built one-handed. Humbling. Every phone call was a speech rep. Every email was a typing rep. Every spreadsheet was a focus rep. Work was therapy and therapy was work and they stopped being separate.
 
@@ -6859,7 +6859,7 @@ If I forgot you, charge it to my brain damage and not my gratitude.
 
 # About the Author
 
-**Nicholas "Stroked-Out Sasquatch" Kremers** is a stroke survivor, the founder of Stroke Recovery Academy, and the creator of the Sasquatch Doctrine. Lives in Lavaca, Arkansas. Third-generation operator of Kremers Laundry Equipment Company. Father to Nicholas Jr.
+**Nicholas "Stroked-Out Sasquatch" Kremers** is a stroke survivor, the founder of Stroke Recovery Academy, and the creator of the Sasquatch Doctrine. Lives in Lavaca, Arkansas. Vice President of Kremers Laundry Equipment Company — a third-generation family business. Father to Nicholas Jr.
 
 On December 3, 2018, at age thirty-six, he survived a massive hemorrhagic stroke that left him paralyzed on his left side, unable to speak clearly, and given a chart full of "nevers."
 
