@@ -5007,6 +5007,66 @@ Most of the four-figure items in the table above are coverable. The denial on th
 
 > Templates for the letter of medical necessity, the appeal letter, and the peer-to-peer request live at **strokerecoveryacademy.com/insurance**.
 
+### Decision Tree: AFO vs. Bioness L300 Go vs. WalkAide
+
+The drop-foot device decision is the single most-asked question I get. Use this tree.
+
+| Question | Yes path | No path |
+|---|---|---|
+| Can you contract the dorsiflexors at all when cued (even a flicker)? | FES candidate. Continue. | Plastic AFO until you can. |
+| Insurance approves FES (one peer-to-peer in)? | Bioness L300 Go (best gait sensors). | WalkAide (no foot sensor needed; thigh-mounted alternative). |
+| Out-of-pocket budget under $500? | Carbon-fiber AFO (Allard ToeOFF, $300–$500 used). | Save for FES. The carbon AFO is *also* a great backup. |
+| You walk indoors barefoot a lot? | Add a posterior leaf-spring AFO for the house. | Hinged AFO with adjustable stop is the workhorse. |
+
+**Bottom line:** Most survivors walk best with **a carbon AFO outdoors + an FES unit for indoor practice** for the first 18 months, then phase to FES-only as the dorsiflexors come back. The order matters. The carbon AFO is the seat belt; the FES is the rebuild.
+
+### FES Brand Comparison (drop foot + hand)
+
+| Brand | Drop foot | Hand | Trunk/shoulder | Subscription? | App control? |
+|---|---|---|---|---|---|
+| Bioness L300 Go | Yes (best) | — | — | No (one-time) | Yes (iOS/Android) |
+| Bioness H200 Wireless | — | Yes (best) | — | No | Yes |
+| WalkAide | Yes (no foot sensor) | — | — | No | Yes |
+| Saebo Stim | — | Yes (budget) | — | No | No |
+| Cefar Compex | Yes | Yes | Yes | No | Limited |
+| Restorative Therapies RT300 | Lower-limb cycling FES | Yes | Yes | Yes (clinic) | Clinic-only |
+
+**The honest take:** Bioness wins on polish, support, and clinical adoption. WalkAide wins on freedom (no shoe-mounted sensor). Cefar wins on flexibility if you want one unit for everything. Saebo wins on price.
+
+### AAC (Augmentative and Alternative Communication) for Aphasia
+
+If speech is not coming back fast enough to participate in your own life, you need an AAC tool — *now*, not "when you've plateaued." Dignity is not a milestone reward.
+
+| Tool | What it is | Best for | Cost |
+|---|---|---|---|
+| Proloquo2Go (iPad app) | Symbol + text speech generator | Moderate-to-severe aphasia, kids and adults | $250 (one-time) |
+| TouchChat (iPad app) | Symbol speech generator | Same; comparable to Proloquo2Go | $300 |
+| Lingraphica AllTalk | Dedicated AAC tablet | Severe aphasia, insurance-funded device | Insurance ($5k+) |
+| Tobii Dynavox TD I-110 | Dedicated AAC tablet, eye-gaze option | Locked-in / severe motor aphasia | Insurance |
+| Tactus Therapy apps | Practice + carryover, not AAC | Mild-to-moderate aphasia, daily practice | $5–$25 each |
+| Constant Therapy | AI-driven home practice | All levels, gamified daily reps | $30/mo |
+| Lumen Lab voice banking | Bank your voice for future synthesis | Anyone whose speech is at risk | Free–$200 |
+
+### Wearables: Fall Detection + Cardiac Monitoring
+
+Stroke survivors are at higher fall risk forever. The right wearable cuts the panic-call latency from "hopefully someone finds me" to "EMS dispatched in three minutes."
+
+| Device | Fall detection | ECG / AFib | Cellular SOS | Notes |
+|---|---|---|---|---|
+| Apple Watch Series 9+ / Ultra | Yes (auto-call) | Yes | Yes (cellular models) | Best ecosystem; pair with iPhone. |
+| Google Pixel Watch 2+ | Yes | Yes | Yes (LTE models) | Best Android option. |
+| Garmin Venu / Vivoactive | Yes (incident detection) | Yes (newer models) | Phone-tethered only | Best battery life (5–7 days). |
+| Kanega Watch (UnaliWear) | Yes | No | Yes (built-in) | No phone needed. Subscription. |
+| Lively Mobile2 (Jitterbug) | Yes (one-button) | No | Yes | Simple. No screen learning curve. |
+
+**Settings every survivor should turn on:**
+- **Fall detection: ON** (default-off on most watches before age 55).
+- **Hard-fall auto-call: 60 seconds** (the default; do not extend).
+- **Emergency contacts: at least 3** (caregiver, neighbor, adult child).
+- **Medical ID: filled out** with stroke type, date, anticoagulant if any, allergies, blood type.
+- **Heart-rhythm notifications: ON** (catches paroxysmal AFib — a primary stroke recurrence risk).
+- **Activity rings or step goal: SET** (the only fitness tracker that matters in year one is the one you actually look at).
+
 ---
 
 ## Appendix D: Nutrition for Brain Recovery
@@ -6147,6 +6207,47 @@ Books, podcasts, and one film I recommend to every survivor and caregiver. Links
 
 - **Stroked Out Sasquatch — *Hostile Construction.*** Twelve tracks paired to the chapters of this book. Listen on every platform. Every stream funds the nonprofit. *strokerecoveryacademy.com/soundtrack*
 
+### Books on Aphasia and Speech
+
+- **Mike McCrary — *Aphasia: The Movie in My Head.*** A survivor-written field guide. Plain English, hard-won.
+- **Lisa Bruce — *I Had a Stroke at 33.*** Speech-and-language perspective from a young survivor. Pairs with the *Stories from the Tribe* chapter.
+- **Sara Scott — *Speechless: Finding My Voice.*** Memoir + practical drills. Useful for caregivers learning how to converse without infantilizing.
+
+### Books on Cognitive Recovery and Executive Function
+
+- **Sandra Bond Chapman — *Make Your Brain Smarter.*** From the Center for BrainHealth at UT Dallas. Strategy training that maps to post-stroke cognitive rehab.
+- **Daniel Goleman — *Focus.*** The cleanest explanation of attention as a trainable skill. Vital after frontal-lobe injury.
+- **Barbara Oakley — *A Mind for Numbers.*** Originally for math anxiety; the chunking + spaced-rep tools translate directly to cognitive rehab homework.
+
+### Books on Pain, Sleep, and the Nervous System
+
+- **Lorimer Moseley & David Butler — *Explain Pain.*** Reframes chronic post-stroke pain. Shorter than it looks and worth twice its length.
+- **Stephen Porges — *The Pocket Guide to the Polyvagal Theory.*** Why your survivor flinches at the sound of the dishwasher now. Useful, if a little academic.
+- **Andrew Huberman & Peter Attia — *Outlive* (Attia, solo).*** The longevity reframe. Stroke survivors are the textbook longevity population. Read it through that lens.
+
+### Memoir + Narrative
+
+- **Christopher Reeve — *Still Me.*** Spinal cord, not stroke, but the disability + identity rebuild is universal. The chapter on "the boundary of self" alone is worth it.
+- **Anne Lamott — *Operating Instructions.*** Caregiver / parent stamina. Indirect but indispensable.
+- **Maya Angelou — *I Know Why the Caged Bird Sings.*** On voicelessness and finding voice. Survivors with aphasia have read this and wept.
+- **Paul Kalanithi — *When Breath Becomes Air.*** Neurosurgeon turned terminal patient. The clearest writing on mortality from inside the white coat.
+
+### Books on Caregiver Burnout (Beyond Sheehy)
+
+- **Kate Washington — *Already Toast.*** Modern, brutal, accurate. Best caregiver-burnout book of the last five years.
+- **Pauline Boss — *Loving Someone Who Has Dementia.*** Stroke + cognitive change overlaps the dementia caregiver path more than people admit. Boss's *ambiguous loss* framework is essential.
+
+### Books for Survivors Returning to Work and Money
+
+- **Sendhil Mullainathan & Eldar Shafir — *Scarcity.*** Why post-stroke financial decisions feel impossible. The science of bandwidth scarcity. Forgiving and useful.
+- **JL Collins — *The Simple Path to Wealth.*** Plain-English personal finance for survivors who can no longer afford a misstep. Skip the index-fund evangelism if it grates; the discipline message lands.
+
+### Podcasts (Expanded)
+
+- **The Recovery After Stroke Podcast** (Bill Gasiamis, host). Australian survivor-host, weekly survivor interviews. Best peer-survivor podcast running.
+- **NeuroNerds** (Lauren Manzano, Joe Borges). Pop-culture-savvy, survivor-led. Funny when humor is welcome.
+- **Stroke Cast** (Bill Monroe, host). Long-running, survivor-led, deep archive.
+
 ---
 
 ## Appendix O: Letters to the Old Me
@@ -6533,30 +6634,88 @@ If you ask these forty questions across your care team, you will leave the syste
 
 Print this. Tape it where you can see it. Read it on the days the system tries to take any of these from you.
 
-You have the right to:
+Each right has teeth: the action to take when it is denied. The system rarely violates these rights on purpose. It violates them on momentum. Stop the momentum.
 
-1. **Be told the truth about your stroke** — the type, the location, the cause, the prognosis — in plain English, in writing, with diagrams if you ask.
-2. **Refuse the prognosis ceiling.** No clinician at hour 72 can tell you what the body will do in year 7. Hear them out. Then keep working.
-3. **Maximum-effort rehab early.** Inpatient, outpatient, home — your right is to *enough dose.* Anything less is the system rationing your future.
-4. **A second opinion** at any decision point that affects your long-term function — surgical, medication, discharge timing, therapy intensity. Always your right. Never weakness.
-5. **Mental health screening at every visit.** PHQ-9, GAD-7, suicide ideation check. Your nervous system was just damaged. Your mood is part of the damage. Treat it.
-6. **A written home program at discharge.** Every drill. Every dose. Every progression. Leave with the document.
-7. **Access to your own chart.** Imaging, scores, notes, medication reasons. It is your body. The data is yours.
-8. **Caregiver support.** Your caregiver is part of your care. Their burnout is a clinical risk to you. Demand they be supported.
-9. **Refuse the language of "deficit" when you mean "rebuild."** The chart says deficit. You can say rebuild. Both are true. Yours is the one that builds the future.
-10. **Be treated as an adult.** You did not become a child when the stroke hit. The first clinician who talks to you like a child is fired from your care team — you may not have legal authority to fire them, but you have the authority to never trust them again and to seek different care.
-11. **Privacy and dignity** in every clinical setting. The gown does not erase your right to be addressed by name, asked before being touched, and given a moment before being moved.
-12. **Cultural and religious respect** in your care. Your beliefs are part of your healing. The system is required to respect them.
-13. **A say in the discharge timing and destination.** "We need the bed" is not a clinical justification. You and your family have a vote.
-14. **Pain management without judgment.** Pain after stroke is real. Untreated pain slows recovery. Demand treatment.
-15. **Access to assistive technology.** Brace, AFO, e-stim, wheelchair, walker, communication device — these are not luxuries. Fight for them.
-16. **The truth about cost.** What does this medication cost. What does this device cost. What does the next 90 days cost. You are allowed to know before you owe.
-17. **Time.** Time to think. Time to ask. Time to feel. Time to grieve. Time to push. Time to rest. The system is fast — your right is to slow it down at every point that matters.
-18. **Your story.** Nobody else tells the story of your stroke. You do. The chart is data. The story is yours.
-19. **Hope based on evidence, not platitudes.** "You're a fighter" is not evidence. The evidence is in this book. The evidence is in the science (Appendix H). The evidence is in the survivors who came before you.
-20. **A future the chart did not predict.** This is the most important right of all. *Reserve it. Defend it. Build it.*
+### Article I — The Right to Truth
 
-> Printable PDF of the Bill of Rights, plus a "Where I Am Being Denied My Rights" advocacy worksheet at **strokerecoveryacademy.com/rights**.
+**1. Be told the truth about your stroke** — the type, the location, the cause, the prognosis — in plain English, in writing, with diagrams if you ask.
+> *When violated:* "Doctor, I am asking for the type, location, cause, and prognosis in writing. If you cannot provide it today, please document my request in my chart and tell me when I will receive it." If still denied, request the *Patient Advocate* by name. Every accredited hospital has one.
+
+**2. Refuse the prognosis ceiling.** No clinician at hour 72 can tell you what the body will do in year 7. Hear them out. Then keep working.
+> *When violated:* The phrase to use is "I appreciate the prognosis. I am not consenting to it as a ceiling. Please document my goal of full recovery in my chart so it travels with me through every transition of care."
+
+### Article II — The Right to Adequate Care
+
+**3. Maximum-effort rehab early.** Inpatient, outpatient, home — your right is to *enough dose.* Anything less is the system rationing your future.
+> *When violated:* Ask for the dose in writing — "How many minutes of active therapy per discipline per day?" If the answer is below American Heart Association recommendations (3 hours/day inpatient rehab; AHA Guideline 2016), request a transfer evaluation to an Acute Inpatient Rehabilitation Facility (IRF), not a Skilled Nursing Facility (SNF). The two are not the same.
+
+**4. A second opinion** at any decision point that affects your long-term function — surgical, medication, discharge timing, therapy intensity. Always your right. Never weakness.
+> *When violated:* "Per CMS patient-rights regulations, I am formally requesting a second opinion. Please document the request and the referral." CMS rules apply to any Medicare/Medicaid-participating facility — which is essentially all of them.
+
+**5. Mental health screening at every visit.** PHQ-9, GAD-7, suicide ideation check. Your nervous system was just damaged. Your mood is part of the damage. Treat it.
+> *When violated:* Bring the form yourself. Both are free PDFs online. Fill it out. Hand it to the clinician. Now they have to file it.
+
+**6. A written home program at discharge.** Every drill. Every dose. Every progression. Leave with the document.
+> *When violated:* Do not sign discharge paperwork until you have it. The discharge cannot proceed without your signature on the *Discharge Acknowledgment*. The leverage is real.
+
+### Article III — The Right to Your Own Information
+
+**7. Access to your own chart.** Imaging, scores, notes, medication reasons. It is your body. The data is yours.
+> *When violated:* HIPAA gives you 30 days. Request in writing. If denied, file with the Department of Health and Human Services Office for Civil Rights — the form takes 10 minutes. Hospitals respond fast once OCR is on the file.
+
+**8. The truth about cost.** What does this medication cost. What does this device cost. What does the next 90 days cost. You are allowed to know before you owe.
+> *When violated:* The federal *Hospital Price Transparency Rule* (CMS, 2021) requires hospitals to publish standard charges and shoppable services. Ask for the *good-faith estimate* in writing.
+
+### Article IV — The Right to Be Treated Like a Person
+
+**9. Caregiver support.** Your caregiver is part of your care. Their burnout is a clinical risk to you. Demand they be supported.
+> *When violated:* Request a referral to the hospital's *social work* team and to the AHA *Stroke Family Caregiver Support* program. Both are free. Both are reimbursable.
+
+**10. Refuse the language of "deficit" when you mean "rebuild."** The chart says deficit. You can say rebuild. Both are true. Yours is the one that builds the future.
+> *When violated:* This is your private right. You do not need permission. Use the language you choose in every conversation about yourself.
+
+**11. Be treated as an adult.** You did not become a child when the stroke hit. The first clinician who talks to you like a child is fired from your care team.
+> *When violated:* Document the interaction (date, name, what was said). Send it to the patient advocate. You may not have legal authority to fire the clinician — but you have the authority to never let them in your room again. Your refusal must be documented in your chart.
+
+**12. Privacy and dignity** in every clinical setting. The gown does not erase your right to be addressed by name, asked before being touched, and given a moment before being moved.
+> *When violated:* "Please ask before you touch me." Repeat as needed. The phrase belongs to you.
+
+**13. Cultural and religious respect** in your care. Your beliefs are part of your healing. The system is required to respect them.
+> *When violated:* The Joint Commission requires accommodation. Ask for the *Spiritual Care* department. Every accredited hospital has one.
+
+**14. Pain management without judgment.** Pain after stroke is real. Untreated pain slows recovery. Demand treatment.
+> *When violated:* Numerical pain scale, every time, in writing. If pain is consistently 5+ and untreated, that is a documented quality-of-care issue. Escalate to the nursing supervisor.
+
+### Article V — The Right to Direct Your Recovery
+
+**15. A say in the discharge timing and destination.** "We need the bed" is not a clinical justification. You and your family have a vote.
+> *When violated:* You may file a *discharge appeal* through the local Quality Improvement Organization (QIO) — the number is on your Medicare paperwork. The appeal stops the discharge clock until reviewed.
+
+**16. Access to assistive technology.** Brace, AFO, e-stim, wheelchair, walker, communication device — these are not luxuries. Fight for them.
+> *When violated:* Letter of medical necessity (Appendix C). Peer-to-peer review. Manufacturer patient-assistance program. Stroke Lyfe Inc. equipment grant. Do not stop at the first denial — first denial is the entry fee, not the answer.
+
+**17. Time.** Time to think. Time to ask. Time to feel. Time to grieve. Time to push. Time to rest. The system is fast — your right is to slow it down at every point that matters.
+> *When violated:* "I need 24 hours to make this decision." Decisions made under hospital time pressure are the ones survivors regret most. Take the 24 hours. The world will hold.
+
+**18. Your story.** Nobody else tells the story of your stroke. You do. The chart is data. The story is yours.
+
+**19. Hope based on evidence, not platitudes.** "You're a fighter" is not evidence. The evidence is in this book. The evidence is in the science (Appendix H). The evidence is in the survivors who came before you.
+
+**20. A future the chart did not predict.** This is the most important right of all. *Reserve it. Defend it. Build it.*
+
+### Article VI — The Five Rights the System Forgets to Tell You
+
+**21. The right to *refuse* discharge to a facility you do not consent to.** "We have a bed at the SNF on the other side of town" is a logistics statement, not a medical order. You can decline that destination and request your top three.
+
+**22. The right to a written *advance directive* and a designated healthcare proxy** — even at age 36. Especially at age 36. The single document you most wish you had filed *before* the stroke is the one you can still file now, for next time.
+
+**23. The right to *outpatient* therapy that matches the intensity of your inpatient therapy.** The drop-off between inpatient discharge and outpatient first-visit is the most dangerous gap in stroke care. Request a *direct outpatient referral* before you leave the inpatient floor — not after.
+
+**24. The right to *retry rehab* months or years later.** Insurance rationing is not the science. Many survivors are eligible for additional structured outpatient rehab when a *new functional goal* is documented (return to work, learning to drive, a wedding to walk). Document the goal. Re-request the referral.
+
+**25. The right to be wrong about your prognosis and try again.** You are allowed to expect more than the chart said and find out later you got even more. This is not naive. This is the science of neuroplasticity (Appendix H). Plan accordingly.
+
+> Printable PDF of the Bill of Rights, plus the "Where I Am Being Denied My Rights" advocacy worksheet, the discharge-appeal QIO contact list, and the HIPAA chart-request letter template at **strokerecoveryacademy.com/rights**.
 
 ---
 

@@ -169,7 +169,7 @@ export default function BookCompanion() {
     <div className="min-h-screen bg-background" data-testid="page-book-companion">
       <RecoverySEO
         title="The Ultimate Stroke Recovery Revolution — Book Companion"
-        description="Every protocol, every appendix, every resource referenced in Nick Kremers' stroke recovery book — wired live into the Stroke Recovery Academy. 286 pages, 30 chapters, 17 appendices, 9 case studies."
+        description="Every protocol, every appendix, every resource referenced in Nick Kremers' stroke recovery book — wired live into the Stroke Recovery Academy. 314 pages, 30 chapters, 17 appendices, 9 case studies."
         canonical="/book"
         keywords={[
           "stroke recovery book companion",
@@ -192,7 +192,7 @@ export default function BookCompanion() {
           {
             question: "What is The Ultimate Stroke Recovery Revolution?",
             answer:
-              "A 286-page survivor-built recovery manual by Nick Kremers covering 30 chapters, 17 appendices, 9 case studies, and a full 90-day breakthrough program for stroke survivors and caregivers.",
+              "A 314-page survivor-built recovery manual by Nick Kremers covering 30 chapters, 17 appendices, 9 case studies, and a full 90-day breakthrough program for stroke survivors and caregivers.",
           },
           {
             question: "Where can I buy it?",
@@ -212,12 +212,12 @@ export default function BookCompanion() {
           name: "The Ultimate Stroke Recovery Revolution",
           headline: "From 0 to 90 — A No-BS Battle Manual by Nick Kremers",
           description:
-            "Battle-tested 286-page stroke recovery manual covering 30 chapters, 17 appendices, 9 case studies, and a full 90-day breakthrough program.",
+            "Battle-tested 314-page stroke recovery manual covering 30 chapters, 17 appendices, 9 case studies, and a full 90-day breakthrough program.",
           image: "https://strokerecoveryacademy.com/book/cover.jpg",
           url: "https://strokerecoveryacademy.com/book",
           bookFormat: "https://schema.org/Paperback",
           inLanguage: "en-US",
-          numberOfPages: 286,
+          numberOfPages: 314,
           datePublished: "2026",
           author: {
             "@type": "Person",

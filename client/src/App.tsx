@@ -753,6 +753,8 @@ function Router() {
       <Route path="/book/read" component={BookRead} />
       <Route path="/protocols" component={BookSlugRedirect} />
       <Route path="/protocols/:slug" component={BookSlugRedirect} />
+      <Route path="/resources" component={BookSlugRedirect} />
+      <Route path="/resources/:slug" component={BookSlugRedirect} />
       <Route path="/workbook" component={BookSlugRedirect} />
       <Route path="/tracker" component={BookSlugRedirect} />
       <Route path="/90day" component={BookSlugRedirect} />
