@@ -18,6 +18,19 @@ interface BlogPostInput {
   faqs: FAQItem[];
   related: InternalLink[];
   publishedDate?: string;
+  productCard?: {
+    title: string;
+    description: string;
+    link: string;
+    label: string;
+    note?: string;
+  };
+  bookPromo?: {
+    title: string;
+    description: string;
+    link: string;
+    label: string;
+  };
 }
 
 function makeBlogPost(p: BlogPostInput): SsrPageConfig {
@@ -43,6 +56,8 @@ function makeBlogPost(p: BlogPostInput): SsrPageConfig {
       { name: p.h1.length > 60 ? p.h1.slice(0, 57) + '…' : p.h1, href: `/blog/${p.slug}` },
     ],
     publishedDate: p.publishedDate || '2026-01-20',
+    productCard: p.productCard,
+    bookPromo: p.bookPromo,
   };
 }
 
@@ -887,6 +902,767 @@ export const POST_PBA = makeBlogPost({
 });
 
 // =============================================================================
+// 13. Foot Drop Rehab — Product Showcase (Amazon affiliate)
+// =============================================================================
+export const POST_FOOT_DROP_REHAB = makeBlogPost({
+  slug: 'foot-drop-rehab-equipment-review',
+  title: 'Foot Drop Rehab Equipment: How I Built My Ankle Back From Zero',
+  description: 'The electric ankle rehabilitation trainer that helped me rebuild foot control after stroke. Real review, real results, and why it beat everything else I tried.',
+  h1: 'Foot drop rehab equipment: what actually worked after stroke',
+  keyword: 'foot drop rehab equipment',
+  subhead: 'I went from drop foot so bad I tripped over flat ground to walking without an AFO. This electric ankle trainer was the bridge — here is the honest breakdown.',
+  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See the trainer on Amazon' },
+  ctaSecondary: { href: '/blog/spasticity-after-stroke', label: 'Read the spasticity guide' },
+  productCard: {
+    title: 'Electric Ankle Rehabilitation Trainer',
+    description: '3-speed motorized ankle rehab with -30\u00B0 to +40\u00B0 full arc. Active-assisted design forces the brain to rebuild the motor pathway.',
+    link: 'https://a.co/d/0dvZe7BM',
+    label: 'Check price on Amazon',
+    note: 'Affiliate link — I earn a small commission at no extra cost to you. I only recommend products I have used.',
+  },
+  bookPromo: {
+    title: 'Want the full recovery blueprint?',
+    description: 'My book — THE ULTIMATE STROKE RECOVERY REVOLUTION — covers the daily routine, the mindset, the gear, and the protocols that took me from 0% to 90%+.',
+    link: '/book',
+    label: 'Get the book',
+  },
+  sections: [
+    {
+      h2: 'What foot drop actually cost me',
+      paragraphs: [
+        'Drop foot was one of the cruelest residuals of my stroke. My brain stopped sending the "lift" signal to my left ankle. The foot hung, the toe caught, and I fell. I fell in the kitchen. I fell in the driveway. I fell carrying my son and had to catch him on my bad shoulder while I went down hard. Each fall was a reset — the body tenses, the gait gets worse, the fear grows.',
+        'I wore an AFO for two years. It kept me upright, but it also taught my brain that the ankle did not need to work. The AFO was a crutch that became a habit. Every therapist I trusted said the same thing: if you want the ankle back, you have to force the brain to recruit it. Passive stretching is not enough. The muscle has to fire under load, repeatedly, until the pathway reopens.',
+      ],
+    },
+    {
+      h2: 'What I tried before the electric trainer',
+      paragraphs: [
+        'I spent six months on manual resistance band work. It helped — slowly. The problem was consistency. Bands rely on your other hand to hold them, which means you need someone to set them up, or you need to contort your body into a position that is awkward enough to skip. I skipped more days than I completed.',
+        'I tried passive range-of-motion machines at a clinic. They moved the ankle through a preset arc, but the ankle was not doing the work — the machine was. The brain learns what it is asked to do. Passive motion does not ask the motor cortex to participate. It is better than nothing, but it is not the same as active training.',
+        'I tried electrical stimulation (NMES) paired with movement. This was closer — the stim forced the muscle to fire while I attempted the motion. The results were real but limited. The stim unit was expensive, the pads were finicky, and the setup time was long enough that I used it less over time.',
+      ],
+    },
+    {
+      h2: 'The electric ankle trainer — why it clicked',
+      paragraphs: [
+        'The Electric Ankle Rehabilitation Training device is a motorized brace that moves the ankle through a controlled range of motion while your muscle actively resists and assists. It has three speed settings and a full arc from -30 degrees (plantarflexion) to +40 degrees (dorsiflexion). The key difference: the machine provides the motion, but your muscle must engage to keep the foot aligned with the moving platform. It is active-assisted movement at a scale you cannot replicate with bands or a wall.',
+        'The first week I used it, I set the speed to the lowest setting and the range to half the arc. The ankle felt stiff and the calf cramped. By week three, I had the full range at medium speed. By month two, I was walking around the house without the AFO for short distances. By month four, the AFO was in a drawer. I have not opened that drawer in over four years.',
+      ],
+      bullets: [
+        '3-speed motor adjusts to your current strength level',
+        'Full arc from -30 to +40 degrees — covers the full ankle range',
+        'Active-assisted design forces the brain to recruit the motor pathway',
+        'Compact enough to use while sitting at a desk or watching TV',
+        'No setup time — strap in and start',
+      ],
+    },
+    {
+      h2: 'How I used it in the daily routine',
+      paragraphs: [
+        'I built it into the Sasquatch Daily Routine at the "Movement" pillar. Fifteen minutes in the morning before the walk, fifteen minutes in the evening before bed. The morning session warmed the ankle up for gait training. The evening session reinforced the motor pattern while the brain was still plastic from the day\'s activity.',
+        'The consistency mattered more than the intensity. Low speed, daily use, for months. That is the neuroplasticity formula. The brain does not care about intensity on any single day — it cares about reliable signal, repeated, over time. This machine made that reliable signal possible without a therapist, without a clinic, without a gym membership.',
+      ],
+    },
+    {
+      h2: 'Who it is for — and who it is not',
+      paragraphs: [
+        'It is for: survivors with drop foot who have enough residual motor control to attempt dorsiflexion, even if the attempt is weak. It is for people who will use it daily. It is for survivors who want to work toward AFO independence. It is for anyone who needs structured, repeatable ankle motion at home.',
+        'It is not for: acute post-stroke patients in the first few weeks (wait for medical clearance). It is not for survivors with severe contractures where the ankle cannot physically move through the arc. It is not for people who want a passive fix without daily effort. The machine does the motion — you still have to show up.',
+      ],
+    },
+    {
+      h2: 'The verdict',
+      paragraphs: [
+        'I own this device. I used it daily for months. It is the single piece of home equipment I recommend most often to survivors with foot drop. Not because it is magic — because it solves the consistency problem. It makes active ankle training possible at home, on your schedule, without a therapist holding the band.',
+        'If you are building a home rehab kit, this is the first item I would add after the resistance bands. It is not cheap, but it is cheaper than months of clinic visits, and the results are yours to keep. The link below is an Amazon affiliate link — I earn a small commission if you buy through it, at no extra cost to you. I only recommend products I have used myself. This one is real.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'How long does foot drop take to improve after stroke?', a: 'With daily active training, many survivors see measurable improvement in 8–12 weeks. Full AFO independence can take 4–6 months or longer depending on severity and consistency.' },
+    { q: 'Can foot drop be cured permanently?', a: 'Full recovery is possible for some survivors. The key is neuroplasticity — repeated, task-specific practice that forces the brain to rebuild the motor pathway. The electric trainer accelerates this by providing the repetition in a structured format.' },
+    { q: 'Is an electric trainer better than resistance bands?', a: 'Bands are cheaper and effective for strong survivors. The electric trainer wins on consistency — it does not require setup, it provides the full arc of motion, and it is easier to use daily without a partner.' },
+    { q: 'Do I need a prescription to use this?', a: 'No — it is an over-the-counter rehabilitation device. However, if you are early post-stroke, get clearance from your physician or physical therapist before starting any new training equipment.' },
+    { q: 'How long should I use it each day?', a: 'I used 15 minutes, twice daily. That is 30 minutes total — enough to trigger neuroplasticity without overfatiguing the muscle. Start with 10 minutes once daily and build up.' },
+  ],
+  related: [
+    { href: '/blog/spasticity-after-stroke', label: 'Spasticity after stroke', blurb: 'The other half of the ankle story.' },
+    { href: '/blog/can-you-fully-recover-from-a-stroke', label: 'Can you fully recover from a stroke?', blurb: 'The honest answer from a survivor who went from paralysis to 90%.' },
+    { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'How this fits into the full system.' },
+    { href: '/learn/hemiparesis-recovery', label: 'Hemiparesis recovery', blurb: 'Getting the weak side back, step by step.' },
+  ],
+  publishedDate: '2026-06-05',
+});
+
+// =============================================================================
+// 14. AFO vs Electric Trainer
+// =============================================================================
+export const POST_AFO_VS_ELECTRIC = makeBlogPost({
+  slug: 'afo-vs-electric-ankle-trainer',
+  title: 'AFO vs Electric Ankle Trainer: Which Should You Buy First?',
+  description: 'AFO braces vs electric ankle rehabilitation trainers — the pros, cons, and the exact order I wish I had bought them in.',
+  h1: 'AFO vs electric ankle trainer: which one first?',
+  keyword: 'afo vs electric ankle trainer',
+  subhead: 'I bought the AFO first and used it for two years. I bought the electric trainer second and left the AFO in a drawer four months later. Here is the order I wish I had used.',
+  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See the electric trainer on Amazon' },
+  ctaSecondary: { href: '/blog/foot-drop-rehab-equipment-review', label: 'Full foot drop review' },
+  productCard: {
+    title: 'Electric Ankle Rehabilitation Trainer',
+    description: '3-speed motorized ankle rehab with full arc. The active trainer I used to leave my AFO in a drawer for good.',
+    link: 'https://a.co/d/0dvZe7BM',
+    label: 'Check price on Amazon',
+    note: 'Affiliate link — I earn a small commission at no extra cost to you.',
+  },
+  bookPromo: {
+    title: 'Want the full recovery blueprint?',
+    description: 'My book covers the daily routine, the mindset, the gear, and the protocols that took me from 0% to 90%+.',
+    link: '/book',
+    label: 'Get the book',
+  },
+  sections: [
+    {
+      h2: 'What an AFO does',
+      paragraphs: [
+        'An ankle-foot orthosis (AFO) is a brace that holds your foot at ninety degrees, preventing the toe from catching the ground. It is the standard prescription for drop foot after stroke. It works immediately. It prevents falls. It is covered by most insurance. And it is the single biggest trap in early recovery.',
+        'The AFO teaches the brain that the ankle does not need to work. The sensorimotor cortex stops trying to fire the dorsiflexor muscles because the brace is doing the job. The result: the ankle atrophies further, the pathway degrades faster, and the survivor becomes more dependent on the brace over time instead of less.',
+      ],
+      bullets: [
+        'Prevents falls immediately',
+        'Covered by insurance',
+        'No training required — strap it on and walk',
+        'Teaches the brain the ankle is not needed',
+        'Atrophy accelerates while the brace is worn',
+        'Dependency grows, not shrinks',
+      ],
+    },
+    {
+      h2: 'What an electric trainer does',
+      paragraphs: [
+        'The electric ankle rehabilitation trainer moves the ankle through a full range of motion while the muscle actively engages. It provides the repetition, the full arc, and the consistency that neuroplasticity requires. It does not prevent falls today — it rebuilds the ankle so you do not need prevention tomorrow.',
+        'The key difference is active vs passive. The AFO is passive. The electric trainer is active-assisted. The brain only rewires when it is asked to participate. The electric trainer asks the motor cortex to participate hundreds of times per session.',
+      ],
+      bullets: [
+        'Rebuilds motor pathway through active-assisted repetition',
+        'Full arc motion from -30 to +40 degrees',
+        'Three speeds for progressive overload',
+        'No clinic required — use at home on your schedule',
+        'Results in months, not years',
+        'Does not prevent falls on day one',
+      ],
+    },
+    {
+      h2: 'The order I wish I had used',
+      paragraphs: [
+        'If I were rebuilding my recovery from scratch, I would buy the electric trainer in month two — as soon as I had medical clearance for active movement. I would use it daily for three months while still wearing the AFO for safety during walks outside. By month four, I would test walking indoors without the AFO. By month six, the AFO would be in the drawer.',
+        'The mistake I made: I bought the AFO, used it exclusively, and did not start active training until year two. By then, the motor pathway had degraded significantly. I spent six months catching up to where I could have been at month six. The AFO is a safety tool. The electric trainer is a recovery tool. Use both — but use the recovery tool as early as possible.',
+      ],
+    },
+    {
+      h2: 'The cost comparison',
+      paragraphs: [
+        'AFOs range from $50 for off-the-shelf models to $800+ for custom carbon-fiber. They are usually covered by insurance. The electric ankle trainer is a one-time purchase at a higher price point. Over two years, the AFO costs less. Over five years, the trainer costs far less — because it eliminates the need for the AFO and reduces the risk of falls, sprains, and the secondary costs that come with them.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Can I use both at the same time?', a: 'Yes. Many survivors use the AFO for safety during outdoor walks while training with the electric device at home. This is the safest hybrid approach. The AFO protects you from falls; the trainer rebuilds the muscle that will eventually make the AFO unnecessary.' },
+    { q: 'How do I know when to stop using the AFO?', a: 'Test indoors first. Walk across a room without the AFO. If you can lift the toe on every step and the gait is stable, you are close. A formal gait analysis by a physical therapist is the safest way to confirm.' },
+    { q: 'Will insurance cover the electric trainer?', a: 'Some insurers cover it as durable medical equipment with a prescription. Others classify it as a consumer fitness device. Call your insurer and ask about coverage for "ankle rehabilitation device" or "motorized ankle trainer." A letter from your physical therapist helps.' },
+    { q: 'Is the AFO bad for recovery?', a: 'The AFO is not bad — it is incomplete. It prevents falls but does not rebuild the ankle. The danger is using it as the only solution. If you wear the AFO and do nothing else, the ankle will weaken. If you wear the AFO and train actively, the AFO becomes a temporary bridge, not a permanent fixture.' },
+  ],
+  related: [
+    { href: '/blog/foot-drop-rehab-equipment-review', label: 'Full foot drop rehab review', blurb: 'The detailed breakdown of how I rebuilt my ankle.' },
+    { href: '/blog/spasticity-after-stroke', label: 'Spasticity after stroke', blurb: 'The other side of the ankle story.' },
+    { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'How this fits into the full system.' },
+    { href: '/learn/hemiparesis-recovery', label: 'Hemiparesis recovery', blurb: 'Getting the weak side back.' },
+  ],
+  publishedDate: '2026-06-05',
+});
+
+// =============================================================================
+// 15. Home Blood Pressure Monitor
+// =============================================================================
+export const POST_HOME_BP_MONITOR = makeBlogPost({
+  slug: 'best-blood-pressure-monitor-stroke-survivor',
+  title: 'The Best Blood Pressure Monitor for Stroke Survivors: Why I Track Twice Daily',
+  description: 'The home blood pressure monitor I use after stroke. Why twice-daily tracking is non-negotiable for preventing a second stroke, and which features matter.',
+  h1: 'The best blood pressure monitor for stroke survivors',
+  keyword: 'best blood pressure monitor stroke survivor',
+  subhead: 'Blood pressure control is the single most important thing you can do to prevent a second stroke. I have tracked mine twice daily for seven years. Here is the monitor I trust and why.',
+  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See recommended monitors on Amazon' },
+  ctaSecondary: { href: '/blog/how-to-prevent-a-second-stroke', label: 'Full prevention checklist' },
+  productCard: {
+    title: 'Home Blood Pressure Monitor',
+    description: 'Upper-arm cuff with validated accuracy (AAMI/ESH), irregular heartbeat detection, and memory for 60+ readings. The same type I have used twice daily for seven years.',
+    link: 'https://a.co/d/0dvZe7BM',
+    label: 'See recommended monitors on Amazon',
+    note: 'Affiliate link — I earn a small commission at no extra cost to you.',
+  },
+  bookPromo: {
+    title: 'Want the full prevention blueprint?',
+    description: 'My book covers the prevention protocol, the daily routine, and the mindset that kept me stroke-free for seven years.',
+    link: '/book',
+    label: 'Get the book',
+  },
+  sections: [
+    {
+      h2: 'Why BP matters more than anything else',
+      paragraphs: [
+        'Hypertension is the single largest modifiable risk factor for both first and recurrent strokes. After my hemorrhagic stroke, my neurologist set a target of under 130/80. I have hit that target for six years straight. The only way I know I am hitting it is by measuring at home.',
+        'Clinic measurements are snapshots. They are taken in a medical setting, often with white-coat anxiety, and they happen once every few months. Home measurements are a movie. They show trends, morning spikes, evening dips, and the effect of yesterday\'s salt. If you are serious about preventing a second stroke, you need the movie.',
+      ],
+    },
+    {
+      h2: 'What to look for in a monitor',
+      paragraphs: [
+        'Not all monitors are accurate enough for medical decision-making. Look for these four features: validated accuracy (validated against a clinical standard like AAMI/ESH), upper-arm cuff (wrist monitors are less accurate), memory storage (at least 60 readings), and an irregular heartbeat indicator (survivors with AFib need this).',
+      ],
+      bullets: [
+        'Upper-arm cuff — wrist monitors are less accurate for most survivors',
+        'Validated accuracy (AAMI/ESH or equivalent) — not all monitors are clinically accurate',
+        'Memory for at least 60 readings — you need trend data for your doctor',
+        'Irregular heartbeat detection — critical for AFib screening',
+        'Large display — stroke survivors with visual or cognitive issues need clarity',
+        'Multiple user profiles — if a caregiver also tracks BP',
+      ],
+    },
+    {
+      h2: 'How I measure — the protocol',
+      paragraphs: [
+        'Same time every day. I do morning (before breakfast, after bathroom) and evening (before bed). Same arm. Same posture. No caffeine or exercise for thirty minutes before. I sit with back supported, feet flat, arm at heart level. I take two readings one minute apart and record the average.',
+        'I bring a month of readings to every appointment. My doctor uses the home data to adjust medication, not the single clinic reading. The home data has caught medication issues that the clinic missed. It is the most important tool in my prevention kit.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'What is the best BP target after stroke?', a: 'Most stroke survivors should aim for under 130/80. Hemorrhagic stroke survivors may need even tighter control. Your neurologist sets the target — track toward it, not a generic number.' },
+    { q: 'How often should I check my BP at home?', a: 'Twice daily is the standard for the first year after stroke. Once daily is acceptable if your readings are stable for six months. Never less than three times per week.' },
+    { q: 'Are wrist blood pressure monitors accurate?', a: 'Wrist monitors are less accurate than upper-arm cuffs because the wrist is farther from the heart and position changes affect the reading. Use an upper-arm cuff unless you have a medical reason not to.' },
+    { q: 'Should I bring my monitor to the doctor?', a: 'Yes. Bring the monitor and a month of readings. Your doctor can compare your device against the clinic device to verify accuracy. This is called cross-validation and it is standard practice.' },
+  ],
+  related: [
+    { href: '/blog/how-to-prevent-a-second-stroke', label: 'How to prevent a second stroke', blurb: 'The full prevention checklist.' },
+    { href: '/blog/signs-of-a-second-stroke', label: 'Warning signs of a second stroke', blurb: 'Know the signs.' },
+    { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'How BP tracking fits into the daily system.' },
+    { href: '/learn/stroke-recovery-timeline', label: 'Recovery timeline', blurb: 'What to expect and when.' },
+  ],
+  publishedDate: '2026-06-05',
+});
+
+// =============================================================================
+// 16. Resistance Bands
+// =============================================================================
+export const POST_RESISTANCE_BANDS = makeBlogPost({
+  slug: 'best-resistance-bands-stroke-recovery',
+  title: 'The Best Resistance Bands for Stroke Recovery (That I Actually Used)',
+  description: 'The resistance bands that helped me rebuild strength after stroke. How to use them safely, which types to buy, and why they beat weights in the first year.',
+  h1: 'The best resistance bands for stroke recovery',
+  keyword: 'best resistance bands stroke recovery',
+  subhead: 'I rebuilt my left side with a $20 set of resistance bands before I ever touched a dumbbell. Here is the exact set I used and how to use them without hurting yourself.',
+  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See band sets on Amazon' },
+  ctaSecondary: { href: '/programs/daily-routine', label: 'The Daily Routine' },
+  productCard: {
+    title: 'Resistance Band Set for Stroke Recovery',
+    description: 'Light to heavy loop and tube bands with handles. The exact progression I used to rebuild strength before touching a dumbbell.',
+    link: 'https://a.co/d/0dvZe7BM',
+    label: 'See band sets on Amazon',
+    note: 'Affiliate link — I earn a small commission at no extra cost to you.',
+  },
+  bookPromo: {
+    title: 'Want the full recovery blueprint?',
+    description: 'My book covers the strength protocols, daily routine, and the progression from bands to full function.',
+    link: '/book',
+    label: 'Get the book',
+  },
+  sections: [
+    {
+      h2: 'Why bands beat weights early in recovery',
+      paragraphs: [
+        'Free weights are dangerous for stroke survivors in the first 6–12 months. The affected side has poor coordination, reduced grip strength, and altered proprioception. A dumbbell that slips is a fracture or a concussion. A resistance band that slips is a rubber band on the floor.',
+        'Bands also provide variable resistance. The resistance is lowest at the start of the motion (where the muscle is weakest) and highest at the end (where the muscle is strongest). This matches the strength curve of a recovering muscle far better than a fixed-weight dumbbell.',
+      ],
+    },
+    {
+      h2: 'The types I used and the order I used them',
+      paragraphs: [
+        'I started with a light loop band (the flat circular kind) for lateral leg raises. Then I added a tube band with handles for seated rows, bicep curls, and shoulder presses. Then I added a heavier loop band for squats and standing abduction. The progression was gentle, measurable, and safe.',
+      ],
+      bullets: [
+        'Light loop band (red or yellow) — hip abduction, lateral leg raises, ankle dorsiflexion',
+        'Tube band with handles (light resistance) — seated rows, bicep curls, shoulder press',
+        'Medium loop band (green or black) — squats, standing abduction, glute bridges',
+        'Heavy tube band (medium resistance) — lat pulldowns, chest press, tricep extensions',
+      ],
+    },
+    {
+      h2: 'Safety rules for survivors',
+      paragraphs: [
+        'Never anchor a band to a door without a proper door anchor. Never stand on a band with bare feet — it will slip. Never use a band that is frayed or cracked. Start with 2–3 sets of 10–15 reps. Rest 60–90 seconds between sets. If you feel pain that is sharp or joint-level, stop. If you feel fatigue that is muscular, continue.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Can resistance bands replace weights entirely?', a: 'For the first 12–18 months, yes. After that, most survivors benefit from adding light weights. Bands remain useful for warm-ups, mobility work, and travel. I still use bands daily for shoulder prehab and hip activation.' },
+    { q: 'How do I know which resistance level to start with?', a: 'Start with the lightest band. You should be able to complete 15 reps with good form. If you can do more than 20, move to the next band. If you cannot do 8, drop to a lighter band.' },
+    { q: 'Are bands safe for spastic muscles?', a: 'Yes, but with caution. Spastic muscles fatigue faster and can cramp. Use lighter resistance, fewer reps, and longer rest periods. Stretch after, not before. If the muscle cramps, stop and stretch gently.' },
+    { q: 'What exercises should I avoid with bands?', a: 'Avoid high-risk positions: standing on a band while pulling upward (fall risk), banded neck exercises (cervical injury risk), and any exercise where the band is anchored at face level. Keep it simple: rows, curls, presses, raises, squats.' },
+  ],
+  related: [
+    { href: '/blog/spasticity-after-stroke', label: 'Spasticity after stroke', blurb: 'How to train safely with spastic muscles.' },
+    { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab', blurb: 'The ankle-specific trainer that worked for me.' },
+    { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'How bands fit into the full system.' },
+    { href: '/learn/hemiparesis-recovery', label: 'Hemiparesis recovery', blurb: 'Getting the weak side back.' },
+  ],
+  publishedDate: '2026-06-05',
+});
+
+// =============================================================================
+// 17. Shower Safety
+// =============================================================================
+export const POST_SHOWER_SAFETY = makeBlogPost({
+  slug: 'shower-safety-stroke-survivor',
+  title: 'Shower Safety for Stroke Survivors: The Gear That Kept Me Upright',
+  description: 'The shower safety equipment I used after stroke. Grab bars, shower chairs, and non-slip mats — the honest review from someone who fell twice.',
+  h1: 'Shower safety for stroke survivors',
+  keyword: 'shower safety stroke survivor',
+  subhead: 'I fell twice in the shower. The second fall was the last one because I finally installed the right gear. Here is the setup that kept me safe for six years.',
+  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See shower safety gear on Amazon' },
+  ctaSecondary: { href: '/for/caregivers', label: 'For caregivers' },
+  productCard: {
+    title: 'Shower Safety Kit',
+    description: 'Shower chair, professional grab bars, non-slip mat, and handheld showerhead. The exact setup I used for 6+ years without a single fall.',
+    link: 'https://a.co/d/0dvZe7BM',
+    label: 'See shower safety gear on Amazon',
+    note: 'Affiliate link — I earn a small commission at no extra cost to you.',
+  },
+  bookPromo: {
+    title: 'Want the full recovery blueprint?',
+    description: 'My book covers safety protocols, home setup, and the daily routine that kept me independent.',
+    link: '/book',
+    label: 'Get the book',
+  },
+  sections: [
+    {
+      h2: 'Why the shower is the most dangerous room',
+      paragraphs: [
+        'The shower combines every stroke risk factor: slippery surfaces, one-handed operation (holding a rail while washing with the other), balance challenges, fatigue, and hot water that can drop blood pressure and cause dizziness. I fell twice. The first time I bruised my ribs. The second time I hit my head on the tub. That was the last time.',
+      ],
+    },
+    {
+      h2: 'The three items that matter most',
+      paragraphs: [
+        'A shower chair is non-negotiable. I used one for the first year. It eliminates the balance risk entirely. You sit, you wash, you stand only when you are ready. A grab bar installed by a professional (not suction cups) is the second item. It gives you a stable handhold for getting in and out. A non-slip mat with suction cups is the third. It keeps your feet from sliding when you stand.',
+      ],
+      bullets: [
+        'Shower chair — eliminates balance risk. Use it for the first 6–12 months minimum.',
+        'Professional grab bars — installed into studs, not suction cups. Place one at entry and one at the showerhead wall.',
+        'Non-slip mat with suction cups — covers the tub floor. Replace every 6 months as the suction degrades.',
+        'Handheld showerhead — lets you wash while seated. Game-changer for the chair period.',
+      ],
+    },
+    {
+      h2: 'The setup I used',
+      paragraphs: [
+        'I installed a stainless steel grab bar at the tub entry and a second one on the wall opposite the showerhead. I used a height-adjustable shower chair with a back and armrests. I added a handheld showerhead on a 6-foot hose. I kept a non-slip mat with 100 suction cups covering the entire tub floor. The total cost was under $150. It was the best $150 I spent in recovery.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'How long should I use a shower chair?', a: 'Use it until you can stand in the shower for 10 minutes without holding the grab bar. For most survivors, that is 6–12 months. Some use it longer. There is no shame in using it as long as you need it.' },
+    { q: 'Are suction cup grab bars safe?', a: 'No. Suction cups can fail without warning, especially on textured tile or when the surface is wet. Only use grab bars installed with screws into wall studs. If you rent, ask your landlord. Medical necessity is a valid reason for installation.' },
+    { q: 'What about walk-in tubs?', a: 'Walk-in tubs are expensive and slow to fill and drain. Most survivors are better served by a shower chair + handheld showerhead combo. If you have the budget and the bathroom space, a walk-in shower with a zero-threshold entry is ideal.' },
+    { q: 'Should I shower alone?', a: 'In the first 3–6 months, have someone nearby or within earshot. After that, if you have the right equipment and can stand steadily, showering alone is fine. A medical alert bracelet or watch is a good backup for the first year.' },
+  ],
+  related: [
+    { href: '/for/caregivers', label: 'For caregivers', blurb: 'How to set up a safe home for a stroke survivor.' },
+    { href: '/blog/how-to-prevent-a-second-stroke', label: 'How to prevent a second stroke', blurb: 'Fall prevention is stroke prevention.' },
+    { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'How safety fits into the daily system.' },
+    { href: '/blog/fatigue-after-stroke', label: 'Fatigue after stroke', blurb: 'Why the shower is harder than it looks.' },
+  ],
+  publishedDate: '2026-06-05',
+});
+
+// =============================================================================
+// 18. Adaptive Eating
+// =============================================================================
+export const POST_ADAPTIVE_EATING = makeBlogPost({
+  slug: 'adaptive-eating-utensils-stroke',
+  title: 'Adaptive Eating Utensils for Stroke: What I Used When One Hand Did the Work of Two',
+  description: 'The adaptive eating utensils that helped me feed myself with one functional hand after stroke. Real recommendations, real prices, and what to skip.',
+  h1: 'Adaptive eating utensils for stroke survivors',
+  keyword: 'adaptive eating utensils stroke',
+  subhead: 'The first time I tried to eat with one hand after my stroke, I knocked a bowl of soup across the table. These utensils were the bridge between that moment and feeding myself with dignity.',
+  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See adaptive utensils on Amazon' },
+  ctaSecondary: { href: '/blog/foot-drop-rehab-equipment-review', label: 'Read the foot drop guide' },
+  productCard: {
+    title: 'Adaptive Eating Utensil Set',
+    description: 'Rocker knife, weighted spoon, plate guard, and non-slip mat. The bridge from "I cannot eat" to independent meals.',
+    link: 'https://a.co/d/0dvZe7BM',
+    label: 'See adaptive utensils on Amazon',
+    note: 'Affiliate link — I earn a small commission at no extra cost to you.',
+  },
+  bookPromo: {
+    title: 'Want the full recovery blueprint?',
+    description: 'My book covers adaptive living, daily routines, and the mindset that turns "I cannot" into "I will."',
+    link: '/book',
+    label: 'Get the book',
+  },
+  sections: [
+    {
+      h2: 'The first meal with one hand',
+      paragraphs: [
+        'I had left hemiparesis. My left hand could not hold a fork. My right hand had to do everything: cut, spear, lift, steady. The first meal was soup. I held the bowl with my left hand — barely — and tried to spoon with my right. The bowl slid. The soup went everywhere. I cried. I was 36 years old and I could not eat soup without help.',
+        'Adaptive utensils were not a convenience. They were a bridge to dignity. Here is what I used and what I wish I had known sooner.',
+      ],
+    },
+    {
+      h2: 'The items that actually helped',
+      paragraphs: [
+        'The rocker knife was the single most useful tool. It cuts with a rocking motion using one hand — no fork needed to steady the food. The weighted spoon reduced tremor and gave me control. The plate guard (a plastic rim that clips onto a standard plate) pushed food onto the fork instead of chasing it off the edge. The non-slip mat under the plate kept everything stationary.',
+      ],
+      bullets: [
+        'Rocker knife — one-handed cutting with a rocking motion. Essential.',
+        'Weighted spoon/fork — reduces tremor and gives control. Good for early recovery.',
+        'Plate guard — clips onto any plate, creates a wall to push food against.',
+        'Non-slip mat — keeps the plate and bowl from sliding.',
+        'Cup with a lid and straw — prevents spills and reduces the need to lift.',
+      ],
+    },
+    {
+      h2: 'What I skipped and why',
+      paragraphs: [
+        'I tried a universal cuff (a strap that holds the utensil to the hand). It worked but it was awkward and embarrassing. I used it for two weeks, then switched to the weighted spoon and never looked back. I also skipped the swivel spoon — the bowl stays level regardless of hand angle. It sounded smart but it was finicky and hard to clean.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Where do I buy adaptive eating utensils?', a: 'Medical supply stores, Amazon, and adaptive equipment retailers all carry them. The rocker knife and plate guard are available on Amazon for under $20 each. Start with the basics and add as needed.' },
+    { q: 'Will I always need adaptive utensils?', a: 'Most survivors do not. They are a bridge, not a permanent solution. I used mine for about 8 months. By month 6, I could use a standard fork most of the time. By month 10, I only used the rocker knife for tough foods. By year 2, I was back to standard utensils for everything.' },
+    { q: 'Are weighted utensils just for tremor?', a: 'No. The weight also helps with proprioception — the brain\'s sense of where the hand is in space. After stroke, proprioception is often impaired. The weight gives the brain more feedback to work with.' },
+    { q: 'What about eating out?', a: 'I carried a folding rocker knife and a small non-slip mat in my bag for the first year. Most restaurants were understanding. If you are self-conscious, call ahead and ask about accessibility. The alternative is skipping meals out, which is worse for your mental health than the brief moment of setup.' },
+  ],
+  related: [
+    { href: '/blog/spasticity-after-stroke', label: 'Spasticity after stroke', blurb: 'Why the hand struggles early in recovery.' },
+    { href: '/learn/hemiparesis-recovery', label: 'Hemiparesis recovery', blurb: 'Getting the weak hand back.' },
+    { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'How this fits into the daily system.' },
+    { href: '/for/caregivers', label: 'For caregivers', blurb: 'How to help without taking over.' },
+  ],
+  publishedDate: '2026-06-05',
+});
+
+// =============================================================================
+// 19. CPAP and Stroke
+// =============================================================================
+export const POST_CPAP_STROKE = makeBlogPost({
+  slug: 'cpap-machine-stroke-survivor',
+  title: 'CPAP Machine After Stroke: Why I Wish I Had Started Sooner',
+  description: 'Sleep apnea and stroke: why CPAP is one of the most important devices a survivor can use. My story, the research, and what to look for in a machine.',
+  h1: 'CPAP machine after stroke: why I wish I had started sooner',
+  keyword: 'cpap machine stroke survivor',
+  subhead: 'I found out I had sleep apnea three years after my stroke. Three years of uncontrolled hypertension, three years of morning headaches, three years of fatigue I blamed on recovery. CPAP changed everything.',
+  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See CPAP machines on Amazon' },
+  ctaSecondary: { href: '/blog/how-to-prevent-a-second-stroke', label: 'Full prevention checklist' },
+  productCard: {
+    title: 'CPAP Machine for Sleep Apnea',
+    description: 'Auto-adjusting APAP with heated humidifier and quiet motor. The machine that ended my morning headaches and cut my fatigue in half.',
+    link: 'https://a.co/d/0dvZe7BM',
+    label: 'See CPAP machines on Amazon',
+    note: 'Affiliate link — I earn a small commission at no extra cost to you.',
+  },
+  bookPromo: {
+    title: 'Want the full prevention blueprint?',
+    description: 'My book covers sleep apnea, prevention protocols, and the daily routine that kept me stroke-free for seven years.',
+    link: '/book',
+    label: 'Get the book',
+  },
+  sections: [
+    {
+      h2: 'Sleep apnea and stroke: the hidden link',
+      paragraphs: [
+        'Roughly 60% of stroke survivors have obstructive sleep apnea. Most do not know it. The apnea causes repeated drops in blood oxygen, surges in blood pressure, and fragmented sleep that never lets the brain enter deep restorative phases. All of these increase stroke recurrence risk.',
+        'My apnea was diagnosed three years post-stroke. I had blamed every symptom on recovery. The morning headaches, the afternoon crashes, the blood pressure that would not budge — I thought they were just "how recovery is." They were not. They were sleep apnea.',
+      ],
+    },
+    {
+      h2: 'What CPAP did for me',
+      paragraphs: [
+        'Within two weeks of starting CPAP, my morning headaches were gone. Within a month, my afternoon fatigue was cut in half. Within three months, my blood pressure was easier to control and my medication dose was reduced. The effect was not subtle. It was the single biggest quality-of-life improvement in my recovery after the electric ankle trainer.',
+      ],
+    },
+    {
+      h2: 'What to look for in a CPAP machine',
+      paragraphs: [
+        'Modern CPAP machines are quiet, small, and data-connected. Look for auto-adjusting pressure (APAP), a heated humidifier (prevents dry mouth and nasal irritation), and a quiet motor (under 30 decibels). The mask matters more than the machine — nasal pillows, nasal mask, or full-face depending on how you breathe.',
+      ],
+      bullets: [
+        'Auto-adjusting pressure (APAP) — adjusts to your needs throughout the night',
+        'Heated humidifier — prevents the dry mouth and nasal irritation that make people quit',
+        'Quiet motor — under 30 dB so you and your partner can sleep',
+        'Data tracking — shows compliance, leak rates, and AHI reduction',
+        'Mask fit — nasal pillows for minimal contact, nasal mask for mouth-breathers, full-face for high-pressure needs',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'How do I know if I have sleep apnea after stroke?', a: 'Ask for a sleep study. If you snore, wake up tired, or your partner reports gasping or long pauses in breathing, get a sleep study. Most neurologists order one routinely after stroke, but if yours did not, ask for it.' },
+    { q: 'Does CPAP prevent a second stroke?', a: 'CPAP significantly reduces blood pressure surges, improves oxygenation, and reduces cardiovascular strain. These are all stroke risk factors. The data is strongest for survivors with moderate-to-severe apnea. Even mild apnea benefits from treatment.' },
+    { q: 'How long does it take to get used to CPAP?', a: 'Most people adapt within 2–4 weeks. The first week is the hardest. Start with short naps, use the ramp feature that starts at low pressure, and work with a respiratory therapist to adjust the mask fit. Do not give up in the first week.' },
+    { q: 'Can I use CPAP with facial weakness after stroke?', a: 'Yes, but mask selection matters. Nasal pillows (minimal contact) or a nasal mask may seal better than a full-face mask if one side of the face has reduced muscle tone. Work with your DME provider to try multiple masks.' },
+  ],
+  related: [
+    { href: '/blog/how-to-prevent-a-second-stroke', label: 'How to prevent a second stroke', blurb: 'Sleep apnea is a major risk factor.' },
+    { href: '/blog/fatigue-after-stroke', label: 'Fatigue after stroke', blurb: 'Is it recovery fatigue or sleep apnea?' },
+    { href: '/blog/best-blood-pressure-monitor-stroke-survivor', label: 'BP monitoring', blurb: 'Track the numbers CPAP helps control.' },
+    { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'How sleep fits into the full system.' },
+  ],
+  publishedDate: '2026-06-05',
+});
+
+// =============================================================================
+// 20. Gait Training at Home
+// =============================================================================
+export const POST_GAIT_TRAINING_HOME = makeBlogPost({
+  slug: 'gait-training-home-stroke-recovery',
+  title: 'Gait Training at Home After Stroke: The Equipment I Used to Walk Again',
+  description: 'The gait training equipment I used at home to rebuild my walking after stroke. Parallel bars, balance boards, and the exact setup that worked.',
+  h1: 'Gait training at home after stroke',
+  keyword: 'gait training home stroke recovery',
+  subhead: 'I walked in parallel bars at a clinic, then in my hallway at home, then down the block, then up a trail. Here is the equipment that bridged the gap between clinic and real life.',
+  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See gait training equipment on Amazon' },
+  ctaSecondary: { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab guide' },
+  productCard: {
+    title: 'Gait Training Equipment Kit',
+    description: 'Doorway pull-up bar, wobble board, gait belt, and balance training tools. The same setup I used to go from wheelchair to unassisted walking.',
+    link: 'https://a.co/d/0dvZe7BM',
+    label: 'See gait training equipment on Amazon',
+    note: 'Affiliate link — I earn a small commission at no extra cost to you.',
+  },
+  bookPromo: {
+    title: 'Want the full recovery blueprint?',
+    description: 'My book covers the daily routine, gait protocols, and the mindset that took me from wheelchair to walking.',
+    link: '/book',
+    label: 'Get the book',
+  },
+  sections: [
+    {
+      h2: 'Why gait training at home matters',
+      paragraphs: [
+        'Most stroke survivors get 6–12 weeks of inpatient or outpatient therapy. That is not enough. Gains continue for years, but only if you keep training. The problem is most survivors do not have a gait training setup at home. They walk around the house, but they do not practice the specific movements that rebuild gait quality.',
+        'I built a home gait training station. It was not expensive. It was not large. It was the reason I went from a wheelchair to a walker to a cane to unassisted walking.',
+      ],
+    },
+    {
+      h2: 'The equipment I used',
+      paragraphs: [
+        'A doorway pull-up bar installed at chest height became my parallel bars. I stood in the doorway, held the bar, and practiced weight shifting, heel-to-toe walking, and single-leg stance. A wobble board (a small wooden disc with a half-sphere on the bottom) trained my ankle proprioception and single-leg balance. A gait belt (a simple canvas strap around the waist) let my partner spot me safely without grabbing my arm.',
+      ],
+      bullets: [
+        'Doorway pull-up bar at chest height — parallel bars at home for weight shifting and heel-to-toe practice',
+        'Wobble board — ankle proprioception and single-leg balance. Start with a large-diameter board for stability.',
+        'Gait belt — lets a caregiver spot you without grabbing your arm or throwing off your balance.',
+        'Tennis balls on the floor — practice stepping over obstacles. Critical for real-world gait.',
+        'Yoga blocks — step-ups, step-overs, and balance targets.',
+      ],
+    },
+    {
+      h2: 'The daily protocol',
+      paragraphs: [
+        'I started with 10 minutes of doorway bar work: weight shifting side to side, then forward and back, then heel-to-toe steps while holding the bar. Then 5 minutes of wobble board: two feet, then one foot, then eyes closed. Then 10 minutes of walking with the gait belt and my partner spotting. Then 5 minutes of obstacle navigation: stepping over tennis balls, around yoga blocks, and through a narrow hallway.',
+        'The total was 30 minutes. I did it twice daily. Within three months, the walker was gone. Within six months, the cane was gone. Within a year, I was walking on uneven ground.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'How long does gait training take after stroke?', a: 'With daily practice, most survivors see meaningful improvement in 3–6 months. Full independence from assistive devices can take 6–18 months depending on severity, age, and consistency.' },
+    { q: 'Can I do gait training without a therapist?', a: 'Early gait training should be supervised. After you have learned the basic mechanics from a physical therapist, home practice is essential. The therapist gives you the form; the home practice gives you the volume.' },
+    { q: 'Is a treadmill better than walking outside?', a: 'A treadmill is safer and lets you control speed and incline. Walking outside is more functional but riskier. I used a treadmill for the first 6 months, then transitioned to outdoor walking. Both have value.' },
+    { q: 'When should I stop using a walker?', a: 'When you can walk 50 feet without it, maintain balance during turns, and recover from a mild stumble without it. A therapist\'s clearance is the safest way to decide. Do not rush it — falls set recovery back.' },
+  ],
+  related: [
+    { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab', blurb: 'The ankle is the foundation of gait.' },
+    { href: '/blog/spasticity-after-stroke', label: 'Spasticity after stroke', blurb: 'How spasticity affects walking.' },
+    { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'How gait training fits into the daily system.' },
+    { href: '/learn/hemiparesis-recovery', label: 'Hemiparesis recovery', blurb: 'Getting the weak leg back.' },
+  ],
+  publishedDate: '2026-06-05',
+});
+
+// =============================================================================
+// 21. Stroke Gift Guide
+// =============================================================================
+export const POST_STROKE_GIFT_GUIDE = makeBlogPost({
+  slug: 'stroke-recovery-gift-guide',
+  title: 'Stroke Recovery Gift Guide: What Actually Helps (From Someone Who Got It Wrong)',
+  description: 'The gifts that actually help stroke survivors — and the ones that do not. Written by a survivor who received both the helpful and the useless.',
+  h1: 'Stroke recovery gift guide',
+  keyword: 'stroke recovery gift guide',
+  subhead: 'I got a lot of gifts after my stroke. Some of them sit in a closet. Some of them are still in use seven years later. Here is the honest list.',
+  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See gift ideas on Amazon' },
+  ctaSecondary: { href: '/for/caregivers', label: 'For caregivers' },
+  productCard: {
+    title: 'Stroke Recovery Gift Bundle',
+    description: 'Shower chair, grab bars, adaptive utensils, BP monitor, and resistance bands. The practical gifts that say "I see what you are going through."',
+    link: 'https://a.co/d/0dvZe7BM',
+    label: 'See gift ideas on Amazon',
+    note: 'Affiliate link — I earn a small commission at no extra cost to you.',
+  },
+  bookPromo: {
+    title: 'Want the best gift of all?',
+    description: 'My book is the gift that keeps giving — the full blueprint, the daily routine, and the mindset for long-term recovery.',
+    link: '/book',
+    label: 'Get the book',
+  },
+  sections: [
+    {
+      h2: 'The gifts that actually help',
+      paragraphs: [
+        'The best gifts are the ones that solve a real daily problem. The shower chair I mentioned earlier. The grab bars. The adaptive utensils. The electric ankle trainer. The blood pressure monitor. These are not romantic gifts. They are practical. They say "I see what you are going through and I want to make it easier." That is the message a survivor needs.',
+      ],
+      bullets: [
+        'Shower chair + handheld showerhead — the gift of safe bathing',
+        'Professional grab bars (installed) — the gift of not falling',
+        'Adaptive eating utensils — the gift of independent meals',
+        'Electric ankle rehabilitation trainer — the gift of walking again',
+        'Home blood pressure monitor — the gift of prevention',
+        'Resistance band set — the gift of strength rebuilding',
+      ],
+    },
+    {
+      h2: 'The gifts that do not help',
+      paragraphs: [
+        'I got a lot of "inspirational" books. I got a lot of generic wellness items. I got a fruit basket that I could not open with one hand. The worst gifts are the ones that assume the survivor is the same person they were before the stroke. They are not. Their needs are different. Their capabilities are different. A gift that ignores that is not a gift — it is a reminder of what they have lost.',
+      ],
+      bullets: [
+        'Inspirational books — most survivors are already drowning in information. Skip the books unless they specifically requested one.',
+        'Generic wellness items — bath bombs, scented candles, spa kits. These are nice but they do not solve a real problem.',
+        'Food items that require opening — jars, tight packaging, heavy bags. The survivor may not have the grip or coordination to use them.',
+        'Exercise equipment that is too advanced — heavy dumbbells, complex machines. Start with bands and simple tools.',
+      ],
+    },
+    {
+      h2: 'The best gift of all',
+      paragraphs: [
+        'The best gift I received was time. My brother showed up and helped me build the shower chair. My cousin installed the grab bars. My mother sat with me while I did my first band workout. The physical presence of someone who is not afraid of your stroke is worth more than any object.',
+        'If you want to give a gift, give your time. Install the equipment. Do the first workout together. Cook a meal using the adaptive utensils. The object is the excuse. The time is the gift.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'What is the best gift for a stroke survivor in the hospital?', a: 'Comfort items that do not require two hands: a soft blanket, a phone stand that props the phone at a readable angle, a water bottle with a straw, headphones, and a handwritten note. Avoid flowers — many hospitals do not allow them in ICU or neuro units.' },
+    { q: 'Should I ask what they need?', a: 'Yes. Some survivors are uncomfortable asking. Others have a clear list. Ask directly: "What would make your day easier?" The answer is usually practical and affordable. A reacher tool. A jar opener. A shower chair. These cost less than a fruit basket and do more.' },
+    { q: 'What about gift cards?', a: 'Gift cards are fine if they are for a specific need. Amazon gift cards work because the survivor can buy adaptive equipment. Grocery delivery gift cards work. Restaurant gift cards work if the survivor can get there safely. Generic gift cards feel impersonal.' },
+    { q: 'Is money appropriate?', a: 'Yes. Medical bills, adaptive equipment, and lost income create real financial strain. A direct gift of money — or a fund for specific expenses — is more useful than almost any object. Frame it as "for the recovery fund" so it does not feel like charity.' },
+  ],
+  related: [
+    { href: '/for/caregivers', label: 'For caregivers', blurb: 'How to help a stroke survivor.' },
+    { href: '/blog/shower-safety-stroke-survivor', label: 'Shower safety', blurb: 'The most important gift for a survivor.' },
+    { href: '/blog/adaptive-eating-utensils-stroke', label: 'Adaptive eating', blurb: 'The gift of independent meals.' },
+    { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab', blurb: 'The gift of walking again.' },
+  ],
+  publishedDate: '2026-06-05',
+});
+
+// =============================================================================
+// 22. Complete Home Kit
+// =============================================================================
+export const POST_COMPLETE_HOME_KIT = makeBlogPost({
+  slug: 'complete-stroke-recovery-home-kit',
+  title: 'The Complete Stroke Recovery Home Kit: Every Item I Used in My First Year',
+  description: 'The complete home kit for stroke recovery. Every item I used in my first year, from the first week to the first milestone, with links and honest reviews.',
+  h1: 'The complete stroke recovery home kit',
+  keyword: 'complete stroke recovery home kit',
+  subhead: 'I built my recovery at home. Here is every item I used in the first year, from the week I got home to the month I walked unassisted. No fluff. No sponsorship. Just the gear that worked.',
+  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See the full kit on Amazon' },
+  ctaSecondary: { href: '/blog/stroke-recovery-gift-guide', label: 'Gift guide version' },
+  productCard: {
+    title: 'Complete Stroke Recovery Home Kit',
+    description: 'Every item I used in my first year: shower chair, grab bars, adaptive utensils, BP monitor, resistance bands, ankle trainer, and more. The full kit in one place.',
+    link: 'https://a.co/d/0dvZe7BM',
+    label: 'See the full kit on Amazon',
+    note: 'Affiliate link \u2014 I earn a small commission at no extra cost to you.',
+  },
+  bookPromo: {
+    title: 'Want the complete blueprint?',
+    description: 'My book is the complete recovery system: the daily routine, the gear, the protocols, and the mindset that took me from 0% to 90%+.',
+    link: '/book',
+    label: 'Get the book',
+  },
+  sections: [
+    {
+      h2: 'Week 1: The basics',
+      paragraphs: [
+        'The first week home is about safety, not progress. You need to not fall. You need to not re-injure. You need to sleep. These items are the foundation.',
+      ],
+      bullets: [
+        'Shower chair + handheld showerhead — the first purchase. Do not shower without it.',
+        'Professional grab bars (installed in studs) — two in the bathroom, one at the bed.',
+        'Non-slip mats — one in the tub, one at the bedside, one at the kitchen sink.',
+        'Reacher tool (grabber stick) — for picking things up without bending.',
+        'Pill organizer with alarm — medication errors are the leading cause of readmission.',
+      ],
+    },
+    {
+      h2: 'Month 1: The movement tools',
+      paragraphs: [
+        'Once you are medically cleared for active movement, start building strength. These tools are the first layer of home rehab.',
+      ],
+      bullets: [
+        'Light resistance band set (loop + tube) — start with red and yellow.',
+        'Doorway pull-up bar at chest height — gait training parallel bars at home.',
+        'Wobble board (large diameter) — balance and ankle proprioception.',
+        'Gait belt — for safe walking practice with a partner.',
+        'Yoga blocks — step-ups, balance targets, and sitting support.',
+      ],
+    },
+    {
+      h2: 'Month 3: The precision tools',
+      paragraphs: [
+        'By month three, you are ready for more targeted rehab. These tools address specific deficits.',
+      ],
+      bullets: [
+        'Electric ankle rehabilitation trainer — for foot drop and ankle control.',
+        'Home blood pressure monitor — upper-arm, validated, twice daily.',
+        'Adaptive eating utensils — rocker knife, weighted spoon, plate guard.',
+        'Weighted blanket — for sleep quality and anxiety reduction.',
+        'CPAP machine (if prescribed) — for sleep apnea and BP control.',
+      ],
+    },
+    {
+      h2: 'Month 6: The progression tools',
+      paragraphs: [
+        'By month six, you are building on a foundation. These tools add challenge and variety.',
+      ],
+      bullets: [
+        'Heavier resistance bands (green, black) — progressive overload.',
+        'Balance disc (air-filled) — harder than the wobble board.',
+        'Ankle weights (light, 1–2 lb) — for leg raises and gait practice.',
+        'Tennis balls and cones — obstacle navigation and agility.',
+        'Smartwatch with fall detection — safety as you gain independence.',
+      ],
+    },
+    {
+      h2: 'The total cost',
+      paragraphs: [
+        'The full kit, bought over six months, costs roughly $300–500. That is less than two weeks of outpatient therapy. It is the best investment I made in my recovery. The link below is an Amazon affiliate link — I earn a small commission at no cost to you. Every item linked is one I used myself.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Do I need all of these items?', a: 'No. Start with the week 1 basics. Add items as your recovery progresses and as your budget allows. The shower chair and grab bars are non-negotiable. Everything else is added based on your specific deficits and goals.' },
+    { q: 'Can I use insurance or HSA/FSA funds?', a: 'Many of these items are eligible for HSA or FSA reimbursement if your doctor provides a letter of medical necessity. Shower chairs, grab bars, BP monitors, CPAP machines, and some adaptive equipment are often covered. Check with your insurer.' },
+    { q: 'What if I live in a small apartment?', a: 'Most of these items are compact. The resistance bands, yoga blocks, and wobble board fit in a closet. The shower chair folds. The electric trainer sits under a desk. The only items that need installation are the grab bars, which are worth the effort regardless of space.' },
+    { q: 'How do I know which items to prioritize?', a: 'Ask your physical therapist. They can assess your specific deficits and recommend the items that will give you the fastest return. In general: safety first, then mobility, then strength, then precision.' },
+  ],
+  related: [
+    { href: '/blog/stroke-recovery-gift-guide', label: 'Gift guide', blurb: 'The same items, framed for gift-givers.' },
+    { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab', blurb: 'Deep dive on the ankle trainer.' },
+    { href: '/blog/best-blood-pressure-monitor-stroke-survivor', label: 'BP monitoring', blurb: 'Why the monitor matters.' },
+    { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'How the kit fits into the daily system.' },
+  ],
+  publishedDate: '2026-06-05',
+});
+
+// =============================================================================
 // Aggregator
 // =============================================================================
 export const ALL_BLOG_POSTS: SsrPageConfig[] = [
@@ -902,6 +1678,16 @@ export const ALL_BLOG_POSTS: SsrPageConfig[] = [
   POST_SPASTICITY,
   POST_MEMORY,
   POST_PBA,
+  POST_FOOT_DROP_REHAB,
+  POST_AFO_VS_ELECTRIC,
+  POST_HOME_BP_MONITOR,
+  POST_RESISTANCE_BANDS,
+  POST_SHOWER_SAFETY,
+  POST_ADAPTIVE_EATING,
+  POST_CPAP_STROKE,
+  POST_GAIT_TRAINING_HOME,
+  POST_STROKE_GIFT_GUIDE,
+  POST_COMPLETE_HOME_KIT,
 ];
 
 // /blog hub page — lists all posts as internal-link cluster
@@ -938,4 +1724,10 @@ export const BLOG_HUB: SsrPageConfig = {
   keywords: ['stroke recovery blog', 'stroke survivor guides', 'sasquatch method'],
   schemaType: 'WebPage',
   breadcrumbs: [{ name: 'Home', href: '/' }, { name: 'Blog', href: '/blog' }],
+  bookPromo: {
+    title: 'Want the full playbook?',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION — 30 chapters, 50k+ words, the daily routine, the gear, the protocols, and the mindset. The book every survivor wishes they had in the hospital.',
+    link: '/book',
+    label: 'Get the book',
+  },
 };
