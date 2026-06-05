@@ -38,6 +38,21 @@ export interface SsrPageConfig {
   keywords?: string[];
   schemaType?: 'Article' | 'MedicalWebPage' | 'WebPage';
   breadcrumbs?: { name: string; href: string }[];
+  /** Optional product card for affiliate/gear showcase */
+  productCard?: {
+    title: string;
+    description: string;
+    link: string;
+    label: string;
+    note?: string;
+  };
+  /** Optional book promotion CTA */
+  bookPromo?: {
+    title: string;
+    description: string;
+    link: string;
+    label: string;
+  };
 }
 
 const SITE_URL = 'https://strokerecoveryacademy.com';
@@ -365,6 +380,15 @@ a:hover { text-decoration: underline; }
   background: linear-gradient(135deg, var(--sra-gold-soft), transparent);
   border: 1px solid var(--sra-gold); border-radius: 8px; text-align: center;
 }
+.sra-affiliate {
+  margin: 56px 0 24px; padding: 24px;
+  background: var(--sra-bg-card); border: 1px solid var(--sra-border);
+  border-radius: 8px;
+}
+.sra-affiliate h2 { font-family: 'Crimson Pro', Georgia, serif; font-size: 24px; color: var(--sra-text); margin: 0 0 12px; }
+.sra-affiliate p { color: var(--sra-text-dim); margin: 0 0 16px; }
+.sra-affiliate .sra-btn-primary { display: inline-block; }
+.sra-affiliate-note { font-size: 12px; color: var(--sra-text-dim); margin-top: 12px; font-style: italic; }
 .sra-final-cta h2 { font-family: 'Crimson Pro', Georgia, serif; font-size: 28px; color: var(--sra-text); margin: 0 0 12px; }
 .sra-final-cta p { color: var(--sra-text-dim); margin: 0 0 20px; }
 .sra-footer { border-top: 1px solid var(--sra-border); background: var(--sra-bg); padding: 40px 24px 24px; margin-top: 64px; }
@@ -403,6 +427,9 @@ export function renderSsrPage(cfg: SsrPageConfig): string {
   const hero = cfg.hero;
   const ctaPrimary = hero.ctaPrimary || { href: '/api/login', label: 'Start free' };
   const ctaSecondary = hero.ctaSecondary;
+
+  const productCard = cfg.productCard;
+  const bookPromo = cfg.bookPromo;
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -473,6 +500,23 @@ ${renderHeader()}
   ${renderSections(cfg.sections)}
 
   ${renderFaqs(cfg.faqs)}
+
+  ${productCard ? `
+  <section class="sra-affiliate">
+    <h2>${esc(productCard.title)}</h2>
+    <p>${esc(productCard.description)}</p>
+    <a href="${escAttr(productCard.link)}" class="sra-btn-primary" target="_blank" rel="noopener noreferrer">${esc(productCard.label)}</a>
+    ${productCard.note ? `<div class="sra-affiliate-note">${esc(productCard.note)}</div>` : ''}
+  </section>
+  ` : ''}
+
+  ${bookPromo ? `
+  <section class="sra-affiliate" style="border-color: var(--sra-gold);">
+    <h2 style="color: var(--sra-gold);">${esc(bookPromo.title)}</h2>
+    <p>${esc(bookPromo.description)}</p>
+    <a href="${escAttr(bookPromo.link)}" class="sra-btn-primary">${esc(bookPromo.label)}</a>
+  </section>
+  ` : ''}
 
   <section class="sra-final-cta">
     <h2>Start your recovery free.</h2>
