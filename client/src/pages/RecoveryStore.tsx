@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { safeJsonLd } from "@/lib/safeJsonLd";
+import { buildAmazonUrl } from "@/lib/amazonLink";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -294,7 +296,7 @@ const CATEGORIES = [
   { id: "brain", name: "Brain Games & Books", icon: Brain },
 ];
 
-function ProductSchema({ product }: { product: Product }) {
+function ProductSchema({ product, tag }: { product: Product; tag: string | null }) {
   const schema = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -318,7 +320,7 @@ function ProductSchema({ product }: { product: Product }) {
       price: product.price.replace(/[^0-9.]/g, ""),
       priceCurrency: "USD",
       availability: "https://schema.org/InStock",
-      url: product.amazonUrl,
+      url: buildAmazonUrl(product.amazonUrl, tag),
     },
     review: {
       "@type": "Review",
@@ -360,10 +362,11 @@ function StarRating({ rating, reviewCount }: { rating: number; reviewCount: numb
   );
 }
 
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({ product, tag, configReady }: { product: Product; tag: string | null; configReady: boolean }) {
+  const amazonUrl = buildAmazonUrl(product.amazonUrl, tag);
   return (
     <>
-      <ProductSchema product={product} />
+      <ProductSchema product={product} tag={tag} />
       <Card className="group overflow-hidden bg-[#1a1a1a] border border-[#333] hover:border-[#C9941A]/30 hover:shadow-lg hover:shadow-[#C9941A]/5 transition-all">
         <div className="relative aspect-square bg-[#0D0D0D] overflow-hidden">
           <img
@@ -427,16 +430,27 @@ function ProductCard({ product }: { product: Product }) {
                 <span className="text-sm text-gray-500 line-through">{product.originalPrice}</span>
               )}
             </div>
-            <Button
-              asChild
-              className="bg-[#C9941A] hover:bg-[#B8860B] text-black"
-              data-testid={`button-buy-${product.id}`}
-            >
-              <a href={product.amazonUrl} target="_blank" rel="noopener noreferrer">
+            {configReady ? (
+              <Button
+                asChild
+                className="bg-[#C9941A] hover:bg-[#B8860B] text-black"
+                data-testid={`button-buy-${product.id}`}
+              >
+                <a href={amazonUrl} target="_blank" rel="noopener noreferrer sponsored nofollow">
+                  <ShoppingCart className="w-4 h-4 mr-2" />
+                  Buy Now
+                </a>
+              </Button>
+            ) : (
+              <Button
+                disabled
+                className="bg-[#C9941A]/40 text-black"
+                data-testid={`button-buy-${product.id}-loading`}
+              >
                 <ShoppingCart className="w-4 h-4 mr-2" />
-                Buy Now
-              </a>
-            </Button>
+                Loading…
+              </Button>
+            )}
           </div>
           
           <div className="pt-2 border-t border-[#333]">
@@ -456,9 +470,19 @@ function ProductCard({ product }: { product: Product }) {
   );
 }
 
+interface AffiliateConfig {
+  amazonTag: string | null;
+}
+
 export default function RecoveryStore() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+
+  const { data: affiliateConfig, isLoading: affiliateLoading } = useQuery<AffiliateConfig>({
+    queryKey: ["/api/config/affiliate"],
+  });
+  const affiliateTag = affiliateConfig?.amazonTag ?? null;
+  const configReady = !affiliateLoading;
 
   useEffect(() => {
     document.title = "Recovery Store | Stroke Lyfe - Curated Products for Stroke Survivors";
@@ -631,7 +655,7 @@ export default function RecoveryStore() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredProducts.map((product) => (
                   <div key={product.id} id={product.id}>
-                    <ProductCard product={product} />
+                    <ProductCard product={product} tag={affiliateTag} configReady={configReady} />
                   </div>
                 ))}
               </div>
