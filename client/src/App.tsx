@@ -688,6 +688,8 @@ function Router() {
       <Route path="/anchor/s/:shareId" component={AnchorShare} />
       <Route path="/recovery/exercises" component={RecoveryExercises} />
       <Route path="/recovery/exercises/:slug" component={RecoveryExerciseDetail} />
+      <Route path="/blog" component={RecoveryBlog} />
+      <Route path="/blog/:slug" component={RecoveryBlogPost} />
       <Route path="/recovery/blog" component={RecoveryBlog} />
       <Route path="/recovery/blog/:slug" component={RecoveryBlogPost} />
       <Route path="/recovery/spotlight" component={RecoverySpotlight} />

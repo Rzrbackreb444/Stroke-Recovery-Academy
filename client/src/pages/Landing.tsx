@@ -122,6 +122,48 @@ export default function Landing() {
           </section>
         </FadeUpSection>
         <FadeUpSection delay={50}>
+          <section className="bg-[#0D0D0D] py-16 px-4 sm:px-6 lg:px-8" data-testid="section-latest-guides">
+            <div className="max-w-5xl mx-auto">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9941A] mb-3">Latest guides</p>
+              <h2 className="text-3xl md:text-4xl font-black text-white mb-6 leading-tight">
+                The questions every survivor asks
+              </h2>
+              <p className="text-gray-400 text-base mb-8 leading-relaxed max-w-2xl">
+                Honest, in-the-trenches answers built from research and lived experience. No fluff. No fake hope. Just the playbook nobody handed you in the hospital.
+              </p>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[
+                  { href: "/blog/how-long-does-stroke-rehab-take", label: "How long does rehab take?", blurb: "The real timeline. Not the one the hospital gave you." },
+                  { href: "/blog/can-you-fully-recover-from-a-stroke", label: "Can you fully recover?", blurb: "What the research says and what seven years actually looks like." },
+                  { href: "/blog/neuroplasticity-after-stroke", label: "Neuroplasticity explained", blurb: "How your brain rewires itself. The science behind every rep." },
+                  { href: "/blog/fatigue-after-stroke", label: "Stroke fatigue", blurb: "Why you sleep ten hours and still feel wrecked. And what to do about it." },
+                  { href: "/blog/stroke-recovery-gift-guide", label: "Gift guide for survivors", blurb: "What to buy someone who just had a stroke. From someone who lived it." },
+                  { href: "/blog/best-foods-for-stroke-recovery", label: "Best foods for recovery", blurb: "What to eat, what to avoid, and why sugar is not your friend." },
+                ].map((item) => (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    className="block rounded-lg border border-[#1e1e1e] bg-[#0a0a0a] p-5 hover-elevate group"
+                    data-testid={`link-guide-${item.href.replace(/\//g, "-")}`}
+                  >
+                    <div className="text-white font-semibold text-sm mb-1 group-hover:text-[#C9941A] transition-colors">
+                      {item.label}
+                    </div>
+                    <div className="text-gray-500 text-xs leading-relaxed">
+                      {item.blurb}
+                    </div>
+                  </a>
+                ))}
+              </div>
+              <div className="mt-6">
+                <a href="/blog" className="text-[#C9941A] text-sm font-semibold hover:underline" data-testid="link-all-guides">
+                  See all 48 guides →
+                </a>
+              </div>
+            </div>
+          </section>
+        </FadeUpSection>
+        <FadeUpSection delay={50}>
           <FeedbackSurvey />
         </FadeUpSection>
         <FadeUpSection delay={50}>

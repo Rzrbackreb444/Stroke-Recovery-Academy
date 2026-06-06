@@ -183,7 +183,7 @@ function renderHeader(): string {
     <a href="/recovery/university">University</a>
     <a href="/recovery/exercises">Exercises</a>
     <a href="/recovery/challenge">66-Day Challenge</a>
-    <a href="/recovery/blog">Blog</a>
+    <a href="/blog">Blog</a>
     <a href="/recovery/center-finder">Center Finder</a>
     <a href="/recovery/pricing" class="sra-cta-btn">Start Free</a>
   </nav>
@@ -222,7 +222,7 @@ function renderFooter(): string {
     <div class="sra-footer-col">
       <div class="sra-footer-title">Resources</div>
       <a href="/recovery/center-finder">Find a recovery center</a>
-      <a href="/recovery/blog">Survivor blog</a>
+      <a href="/blog">Survivor blog</a>
       <a href="/recovery/about-nick">About Nick</a>
       <a href="/recovery/pricing">Pricing</a>
     </div>
@@ -618,7 +618,7 @@ export function renderSsr404(): string {
     { href: '/recovery/exercises', label: 'Daily exercises', blurb: 'Real movements, real protocols.' },
     { href: '/recovery/challenge', label: '66-Day Challenge', blurb: 'The transformation arc.' },
     { href: '/recovery/center-finder', label: 'Center Finder', blurb: 'Find a stroke recovery center near you.' },
-    { href: '/recovery/blog', label: 'Survivor blog', blurb: 'Posts from the trenches.' },
+    { href: '/blog', label: 'Survivor blog', blurb: 'Posts from the trenches.' },
     { href: '/learn/neuroplasticity-after-stroke', label: 'How neuroplasticity works', blurb: 'The science of rewiring.' },
   ];
   return `<!DOCTYPE html>
