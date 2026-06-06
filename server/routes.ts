@@ -581,7 +581,7 @@ ${allRoutes.map(r => `  <url>
       let ssrBlogPosts: { url: string; title: string; modifiedDate?: string; priority: string; changefreq: string }[] = [];
       try {
         const { getBlogPageUrls } = await import('./seo/blogRoutes');
-        ssrBlogPosts = getBlogPageUrls().filter((p) => p.url !== '/blog');
+        ssrBlogPosts = getBlogPageUrls();
       } catch { /* fall back to db-only sitemap */ }
 
       const ssrBlocks = ssrBlogPosts.map((p) => {
