@@ -1663,6 +1663,1252 @@ export const POST_COMPLETE_HOME_KIT = makeBlogPost({
 });
 
 // =============================================================================
+// 23. Best robotic gloves for stroke recovery
+// =============================================================================
+export const POST_ROBOTIC_GLOVE = makeBlogPost({
+  slug: 'best-robotic-glove-stroke-recovery',
+  title: 'Best Robotic Gloves for Stroke Recovery (2026)',
+  description: 'My left hand was a fist for 14 months. Robotic gloves broke the pattern — but only the right type, used right. A 7-year survivor\'s no-BS buying guide.',
+  h1: 'Best robotic gloves for stroke recovery',
+  keyword: 'best robotic glove stroke recovery',
+  subhead: 'My left hand was a closed fist for 14 months straight. Robotic gloves were part of what broke the pattern — but only after I stopped using the wrong one.',
+  ctaPrimary: { href: '/recovery/shop', label: 'See all stroke recovery gear' },
+  ctaSecondary: { href: '/blog/afo-vs-electric-ankle-trainer', label: 'Drop foot solutions too' },
+  sections: [
+    {
+      h2: 'The hand problem nobody prepares you for',
+      paragraphs: [
+        'Six months post-stroke, my left hand was still a closed fist. My therapist said that was normal. She didn\'t say what to do about it.',
+        'Roughly 65% of survivors have persistent upper limb impairment at six months. That number barely moves at one year on standard outpatient care alone. The hand is the slowest-recovering part of the body after stroke — and the first the rehab system quietly gives up on.',
+        'An upper motor neuron lesion — what most strokes cause — leaves the flexors dominant and the extensors weak. Your hand closes. The signal that should open it is damaged or disconnected. The brain can rebuild that connection, but not without an enormous volume of practice. Far more than any insurance-covered schedule provides.',
+        'Robotic gloves are not a cure. They are a volume machine.',
+      ],
+      externalLinks: [
+        { label: 'Upper limb recovery after stroke — Stroke Association', href: 'https://www.stroke.org.uk/what-is-stroke/effects-of-stroke/weakness-of-arm-hand' },
+      ],
+    },
+    {
+      h2: 'What a robotic glove actually does to your brain',
+      paragraphs: [
+        'The mechanism is repetition-driven neuroplasticity. When your brain fires a signal to open your hand and the movement completes — even with assist — sensory feedback arrives and reinforces the pathway. After stroke, the signal is too weak to complete the movement alone, so no feedback arrives, no reinforcement happens, and the pathway fades.',
+        'An EMG-triggered glove detects the muscle signal your brain produces — even if it\'s not enough to move your fingers solo — and completes the movement mechanically. Hand opens. Brain registers it. Pathway strengthens. Repeat 400–600 times in a session and you are doing real cortical remapping.',
+        'Passive pneumatic gloves — the kind that inflate on a timer — don\'t close that loop. They move your fingers without your brain\'s intent driving it. Useful for spasticity and range-of-motion maintenance. Not for motor retraining.',
+      ],
+      image: {
+        src: '/images/blog/fig-04-open-hand.png',
+        alt: 'Illustration of open hand goal for stroke hand rehabilitation',
+        caption: 'Full finger extension is the goal. The glove provides the assisted reps the brain needs to rebuild the pathway.',
+      },
+      externalLinks: [
+        { label: 'Soft robotic gloves in stroke — systematic review (PMC)', href: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10295999/' },
+        { label: 'Robot-assisted upper limb therapy after stroke — AHA Journals', href: 'https://www.ahajournals.org/doi/10.1161/STROKEAHA.124.048183' },
+      ],
+    },
+    {
+      h2: 'Three types — match the device to where your hand is today',
+      paragraphs: [
+        'There is no single best glove. There is a best glove for where your hand is today. Get this wrong and $300 does nothing.',
+        'Passive pneumatic (CPM gloves): Inflate to extend fingers, deflate to relax. Timer-controlled. Best for dense paralysis with no volitional movement in the first 3–6 months. Useful for contracture prevention. Not for motor retraining if you have no signal.',
+        'EMG-triggered active-assist: Electrodes detect your muscle activation — however faint — and assist the movement. This is where the clinical evidence is strongest. Best for partial motor return: you can flicker fingers, feel some grip, or sense hand movement. This is the category I would buy.',
+        'Bilateral and mirror gloves: The unaffected hand drives the affected one in real time. Uses inter-limb neural coupling. Best for chronic survivors with minimal residual signal who need a different stimulus.',
+      ],
+    },
+    {
+      h2: 'Three devices worth buying',
+      paragraphs: [
+        'I have used or closely evaluated each of these. Affiliate links below — small commission at no cost to you.',
+      ],
+      products: [
+        {
+          name: 'Syrebo C10 — Best EMG glove for most survivors',
+          price: '$299–$369',
+          link: 'https://www.amazon.com/syrebo-Rehabilitation-Hemiplegia-Recovery-Equipment/dp/B0C36PWC3H',
+          note: 'Adjustable EMG sensitivity threshold, bilateral training mode, left and right versions. The device I\'d recommend for anyone with partial hand return in the subacute or chronic phase. Confirm left version at checkout if your affected hand is your left.',
+        },
+        {
+          name: 'Syrebo E10 — Better app and sensitivity',
+          price: '$349–$449',
+          link: 'https://www.amazon.com/syrebo-Rehabilitation-Training-Recovery-Equipment/dp/B0C4T1VGMK',
+          note: 'Upgraded electrode contact and more robust session-tracking app over the C10. Worth the step-up if you plan daily use and want data on your progress. Bilateral mode included.',
+        },
+        {
+          name: 'Neofect Neomano — Best for functional task training',
+          price: '$599–$799',
+          link: 'https://www.amazon.com/Neofect-Neomano-Robotic-Assist-Spinal/dp/B08FD9XZX8',
+          note: 'Soft robotic wearable you can use during real tasks — drinking, gripping objects — not just dedicated therapy sessions. Excellent for left-hand survivors. Higher price, superior build quality.',
+        },
+      ],
+    },
+    {
+      h2: 'The protocol that gets results — and the mistake that wastes your money',
+      paragraphs: [
+        'The mistake I see in every stroke survivor forum: putting the glove on and watching TV while it runs cycles. Passive use yields passive results.',
+        'Your brain rewires on intent plus outcome. No intent — no cortical activation — no reinforcement.',
+        'What works: 20-minute morning session, 20-minute evening session, EMG sensitivity dialed to your threshold. With every rep, actively attempt the movement. Let the device assist — keep trying anyway. Close your eyes between sets and mentally rehearse the open hand. After the glove session, add 10 minutes of mirror therapy. That\'s 50 minutes of real upper limb work per day.',
+      ],
+      image: {
+        src: '/images/blog/fig-09-cimt.png',
+        alt: 'Constraint-induced movement therapy illustration — intent-driven repetition for stroke hand recovery',
+        caption: 'Intent drives the rewiring. The glove amplifies the volume — it doesn\'t replace the effort.',
+      },
+      bullets: [
+        'Pre-session (5 min): Warm soak or gentle passive stretch. Reduce tone before you start.',
+        'Session 1 (morning, 20 min): EMG mode, sensitivity at threshold. Actively attempt every rep.',
+        'Session 2 (evening, 20 min): Same. Between sets, close eyes and mentally rehearse opening.',
+        'After glove (10 min): Mirror therapy — watch the unaffected hand while both attempt opening.',
+        'Daily: Track reps. Measure grip weekly. Data keeps you in the game.',
+      ],
+      externalLinks: [
+        { label: 'Effectiveness of soft robotic glove for hand function — PMC', href: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC9061070/' },
+      ],
+    },
+    {
+      h2: 'The honest limits',
+      paragraphs: [
+        'Severe contracture blocks the glove. Serial casting or prolonged splinting comes first — then the glove.',
+        'Plan for 4 weeks before measurable grip change. Functional gains at 8–12 weeks of daily use. Zero change at 12 weeks of consistent daily use means adjust the sensitivity setting or spasticity management.',
+        'I bought my first robotic glove at month 18. I wish I had it at month three. But I was still making measurable progress at year five. The chronic neuroplasticity window is wide. If you are reading this two years post-stroke and wondering whether it\'s too late — it isn\'t.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Do robotic gloves actually work for stroke hand recovery?', a: 'EMG-triggered models have solid clinical evidence — multiple RCTs and a 2023 meta-analysis found significantly greater grip strength and Fugl-Meyer scores vs standard therapy alone. Passive pneumatic models help with spasticity and ROM, not motor recovery. Right type, right protocol, consistent daily use: yes.' },
+    { q: 'Can I use a robotic glove if my hand is still clenched from spasticity?', a: 'With caution. If spasticity resists passive extension, the glove may not open the hand — and forcing it risks injury. Address tone first: prolonged stretching, resting splints at night, possibly Botox for severe cases. Mild to moderate spasticity with proper pre-session stretching is manageable.' },
+    { q: 'Is a robotic glove covered by insurance or HSA/FSA?', a: 'Insurance without a Letter of Medical Necessity is rare. Most HSA/FSA accounts accept these as qualifying medical equipment. Always submit with an LMN — even 50% reimbursement changes the math.' },
+    { q: 'How long does it take to see results from a robotic glove?', a: 'Plan for 4 weeks before measurable grip change. Functional gains — changes in what your hand can do — typically appear at 8–12 weeks of daily 40-minute sessions.' },
+    { q: 'Can I use a robotic glove years after my stroke?', a: 'Yes. The EXCITE trial demonstrated significant functional gains in chronic survivors up to 5 years post-stroke. Chronic-phase gains are smaller per unit of effort than early-phase gains — but they are real. I was still making measurable progress at year five.' },
+    { q: 'My affected hand is my left. Does that affect which glove I buy?', a: 'Significantly. Many consumer devices are right-hand dominant. Confirm a left version exists and is in stock before ordering. Syrebo C10 and E10 both have left versions. Neofect Neomano fits either hand.' },
+  ],
+  related: [
+    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'All survivor-tested stroke recovery gear.' },
+    { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery', blurb: 'Continue upper limb rebuilding after glove sessions.' },
+    { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO vs. electric ankle trainer', blurb: 'The same question for your foot and ankle.' },
+    { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors', blurb: 'Footwear that accommodates AFOs and drop foot.' },
+    { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'The system that makes daily practice actually happen.' },
+  ],
+  publishedDate: '2026-06-05',
+  productCard: {
+    title: 'Syrebo C10 — the EMG glove I\'d buy today',
+    description: 'EMG-triggered, left and right versions, adjustable sensitivity, bilateral mode. Covers 80% of stroke survivors at the right price.',
+    link: 'https://www.amazon.com/syrebo-Rehabilitation-Hemiplegia-Recovery-Equipment/dp/B0C36PWC3H',
+    label: 'View on Amazon',
+    note: 'Affiliate link — small commission at no cost to you.',
+  },
+  bookPromo: {
+    title: 'The full upper limb protocol is in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the complete hand rebuild — gloves, mirror therapy, CIMT, spasticity management, and the daily system that stacks gains.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
+// 24. Best shoes for stroke survivors — Brooks GTS 24 + Skechers GoWalk Slip-In
+// =============================================================================
+export const POST_BEST_SHOES = makeBlogPost({
+  slug: 'best-shoes-stroke-survivors',
+  title: 'Best Shoes for Stroke Survivors: Brooks, Skechers & More',
+  description: 'Drop foot. Spasticity. AFO compatibility. One-handed dressing. The wrong shoe makes everything harder. A 7-year survivor\'s guide to footwear that works.',
+  h1: 'Best shoes for stroke survivors',
+  keyword: 'best shoes for stroke survivors',
+  subhead: 'After my stroke at 36, footwear stopped being a fashion decision. Your shoe determines whether you trip, compensate wrong, or actually walk with confidence. Here is what works.',
+  ctaPrimary: { href: '/recovery/shop', label: 'Browse recovery gear' },
+  ctaSecondary: { href: '/blog/afo-vs-electric-ankle-trainer', label: 'Drop foot solutions' },
+  sections: [
+    {
+      h2: 'Why stroke changes what your shoe needs to do',
+      paragraphs: [
+        'Drop foot. Spasticity. Weakness on one side. AFO use. Proprioceptive deficits. Balance impairment. Any one of these changes your footwear requirements. Most stroke survivors have two or three simultaneously.',
+        'The wrong shoe doesn\'t just feel bad. It increases fall risk, distorts gait mechanics, fights your AFO, and reinforces compensations — hip hiking, circumduction — that become learned-wrong patterns. The right shoe provides the stable base to trust your step, accommodates your brace if you wear one, and absorbs the asymmetric impact of a hemiparetic gait.',
+      ],
+    },
+    {
+      h2: 'The non-negotiables for any stroke recovery shoe',
+      bullets: [
+        'Wide toe box: Spasticity drives toe curling and claw positioning. A narrow box compresses already-stressed intrinsic foot muscles and creates pressure points on feet with reduced sensation.',
+        'Firm heel counter: Weakness on the affected side means the ankle rolls. A firm heel counter is the first line of passive stability before the AFO.',
+        'Removable insole: If you wear an AFO, the insole comes out to make room for the footplate. Non-removable insoles make AFO use much harder.',
+        'Slip-resistant outsole: Low-friction sole is a fall. Every time.',
+        'Rocker or beveled sole: Compensates for reduced push-off on the affected side — the rocker does some of the work your calf can\'t.',
+        'Easy entry: Hemiplegia means one hand doing the work of two. Slip-ins and wide-entry designs aren\'t laziness — they are function.',
+      ],
+    },
+    {
+      h2: 'Brooks Adrenaline GTS 24 — the structured support benchmark',
+      paragraphs: [
+        'The Adrenaline GTS line has been the go-to among stroke rehab PTs for years. The GTS 24 refines what already worked: GuideRails technology that controls excess movement at the knee and ankle without the rigidity of a traditional motion-control shoe, DNA LOFT v3 foam for cushioning that holds up across 500+ miles of compensated gait, and a wide platform that gives a hemiparetic foot something trustworthy to land on.',
+        'For stroke survivors: removable insole, firm heel counter, available in 2E and 4E widths. If you wear an AFO, the 4E width in a size up from your normal is the standard fitting protocol most orthotists use. Women\'s GTS 24 uses the same construction.',
+      ],
+      products: [
+        {
+          name: 'Brooks Adrenaline GTS 24 — Men\'s',
+          price: '$130–$150',
+          link: 'https://www.amazon.com/Brooks-Mens-Adrenaline-Supportive-Running/dp/B0D93BZ61K',
+          note: 'GuideRails stability, DNA LOFT v3 cushioning, removable insole, 2E and 4E widths. Size up half to full size for AFO use. The most PT-recommended structured shoe for stroke survivors.',
+        },
+      ],
+      image: {
+        src: '/images/blog/fig-06-walking-gait.png',
+        alt: 'Stroke survivor gait analysis illustration — heel strike through toe-off phases',
+        caption: 'Proper footwear supports every phase of the gait cycle that stroke makes harder.',
+      },
+    },
+    {
+      h2: 'Skechers GoWalk Arch Fit Slip-In — the one-hand solution',
+      paragraphs: [
+        'The Skechers GoWalk Arch Fit with the Slip-In design is the other shoe that comes up constantly in stroke survivor communities — and for good reason. ISOARCH support built into the footbed, machine-washable upper, ultra-lightweight foam midsole, and a hands-free slip-in heel design that makes getting dressed independently actually doable.',
+        'Where Brooks wins on stability, Skechers wins on function. For survivors with significant hand weakness, limited balance while standing to put on shoes, or anyone who values morning independence — the Slip-In is the difference between dressing with help and dressing alone.',
+        'Limitation: the GoWalk is not a motion-control shoe. Significant ankle instability or AFO use means the Brooks is the better structural choice. If your stability is adequate and the primary barrier is getting the shoe on, the Skechers wins.',
+      ],
+      products: [
+        {
+          name: 'Skechers GoWalk Arch Fit Slip-In — Men\'s',
+          price: '$65–$85',
+          link: 'https://www.amazon.com/Skechers-Gowalk-Fit-Athletic-Walking-Sneaker/dp/B09KMYW8S8',
+          note: 'Hands-free slip-in entry, ISOARCH support, machine washable, lightweight foam. For survivors who need morning independence. Not a motion-control shoe — if you need AFO compatibility, use the Brooks.',
+        },
+      ],
+    },
+    {
+      h2: 'AFO users — the fitting protocol',
+      paragraphs: [
+        'Bring your AFO to the fitting. Every time. Ordering online? Know the return policy before you buy.',
+        'Standard starting point: one full size up from normal, widest available width (4E for laced shoes). Remove the insole — the AFO footplate is your insole now. The heel counter must be firm enough that the AFO doesn\'t rock inside the shoe.',
+        'If the shoe\'s heel counter is too low, the AFO footplate will push the back of the shoe down. Most solid-ankle AFOs need at least a 1-inch heel counter height inside the shoe.',
+      ],
+      externalLinks: [
+        { label: 'AFO vs. electric ankle trainer — which is right for you', href: '/blog/afo-vs-electric-ankle-trainer' },
+        { label: 'Drop foot rehab guide', href: '/blog/foot-drop-rehab-at-home' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Can I wear Brooks Adrenaline GTS 24 over an AFO?', a: 'Yes — size up one full size, go widest available width (4E), remove the insole. The GTS 24\'s removable insole and wide-width options are why it is the most PT-recommended shoe for AFO users among traditional running shoes. Bring your AFO to any in-person fitting.' },
+    { q: 'Are Skechers GoWalk shoes good for stroke survivors with drop foot?', a: 'For mild-to-moderate drop foot with adequate balance, yes — the lightweight sole and rocker geometry help. For more significant drop foot with ankle instability, the GoWalk lacks the structural support of the Brooks. Consider pairing it with a lightweight ankle brace for longer distances.' },
+    { q: 'What shoe width do I need after stroke?', a: 'Most stroke survivors benefit from wide (2E) or extra-wide (4E). Spasticity causes toe curling that functionally widens the foot; swelling from reduced movement also increases forefoot width. If between sizes, go wider — a snug narrow shoe creates pressure points on a foot that may have reduced sensation.' },
+    { q: 'Is it worth spending $130+ on stroke recovery shoes?', a: 'One fall costs more than a dozen pairs of shoes — medically, functionally, and psychologically. The Skechers at $65–$85 is excellent value for the right candidate. Start with the foot and balance assessment, then choose the shoe that fits that assessment.' },
+    { q: 'Do I need special shoes for walking therapy?', a: 'Not "special" — but supportive. The criteria above apply whether you\'re in a clinic or walking your driveway. Avoid flat canvas shoes, minimalist soles, and anything without a firm heel counter during the acute and subacute phases. Your gait pattern is still being rebuilt — the shoe is part of the scaffolding.' },
+  ],
+  related: [
+    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Survivor-tested gear including shoes and mobility aids.' },
+    { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO vs. electric ankle trainer', blurb: 'Which drop foot solution fits your recovery stage.' },
+    { href: '/blog/foot-drop-rehab-at-home', label: 'Drop foot rehab at home', blurb: 'The protocol for rebuilding dorsiflexion.' },
+    { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids for stroke survivors', blurb: 'Canes, walkers, and rollators when shoes aren\'t enough.' },
+    { href: '/blog/best-balance-board-stroke-recovery', label: 'Best balance boards for stroke recovery', blurb: 'Build the proprioceptive base that keeps every step stable.' },
+  ],
+  publishedDate: '2026-06-05',
+  productCard: {
+    title: 'Brooks Adrenaline GTS 24 — the PT-recommended stability shoe',
+    description: 'GuideRails tech, DNA LOFT v3 cushioning, removable insole for AFO use, 4E width option. Most commonly recommended by stroke rehab PTs.',
+    link: 'https://www.amazon.com/Brooks-Mens-Adrenaline-Supportive-Running/dp/B0D93BZ61K',
+    label: 'View on Amazon',
+    note: 'Affiliate link — small commission at no cost to you.',
+  },
+  bookPromo: {
+    title: 'The full movement-rebuilding system',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers gait rebuilding, footwear decisions, drop foot protocols, and the daily routine that stacks recovery gains week over week.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
+// 25. Best walking aids for stroke survivors
+// =============================================================================
+export const POST_WALKING_AIDS = makeBlogPost({
+  slug: 'best-walking-aids-stroke-survivors',
+  title: 'Best Walking Aids for Stroke Survivors: Canes, Walkers & Rollators',
+  description: 'The wrong cane doesn\'t support you — it tilts you and teaches a bad compensation. Quad canes, rollators, and when to use each — a survivor\'s real guide.',
+  h1: 'Best walking aids for stroke survivors',
+  keyword: 'best walking aids stroke survivors',
+  subhead: 'The wrong aid doesn\'t just fail to support you — it teaches your brain the wrong compensation pattern. Here is how to choose, what to look for, and the models I recommend.',
+  ctaPrimary: { href: '/recovery/shop', label: 'Browse all recovery gear' },
+  ctaSecondary: { href: '/blog/best-shoes-stroke-survivors', label: 'Get the right shoes too' },
+  sections: [
+    {
+      h2: 'The progression most survivors actually follow',
+      paragraphs: [
+        'Parallel bars in acute care. Front-wheeled walker in inpatient rehab. Quad cane in early outpatient. Single-point cane or rollator at home. No aid or context-dependent aid at 6–18 months.',
+        'Not everyone follows that path. Some skip aids entirely. Some plateau at the quad cane — and that is not a failure; it is an honest adaptation. The key question at each step: does this aid let you walk more normally, or does it create a compensated pattern your brain then has to unlearn?',
+      ],
+    },
+    {
+      h2: 'Quad cane vs single-point cane — what actually differs',
+      paragraphs: [
+        'A single-point cane offloads the hip and knee on the affected side but does almost nothing for ankle instability. A quad cane provides a stable platform that doesn\'t tip when planted and can bear significantly more weight. The tradeoff: slower cadence and requires flat surfaces.',
+        'Use a quad cane when you need it to bear real weight during stance and your ankle is unstable. Transition to single-point when you\'re using the quad for balance only — not load-bearing — and gait speed is within functional range.',
+        'Contralateral use: the cane goes in the hand opposite the affected leg, not on the affected side. This is the biomechanically correct position that reduces hip joint load during stance. Most survivors instinctively do it wrong.',
+      ],
+    },
+    {
+      h2: 'Three aids I recommend',
+      paragraphs: [
+        'Affiliate links — small commission at no cost to you.',
+      ],
+      products: [
+        {
+          name: 'HurryCane Freedom Edition — best single-point cane',
+          price: '$30–$45',
+          link: 'https://www.amazon.com/dp/B00MV4WEVU',
+          note: 'Pivoting base that self-adjusts to uneven surfaces — the key differentiator. Folds flat. Multiple heights. Already in the Recovery Store.',
+        },
+        {
+          name: 'Hugo Mobility Offset Quad Cane — best quad cane',
+          price: '$35–$55',
+          link: 'https://www.amazon.com/Hugo-Mobility-Quadpod-Offset-Stable/dp/B005IV0BBY',
+          note: 'Offset handle positions weight over the base center — more natural arm alignment than in-line quad canes. Height-adjustable. Large base. The quad cane I\'d buy for the early outpatient phase.',
+        },
+        {
+          name: 'Drive Medical Nitro Rollator — best rollator',
+          price: '$80–$110',
+          link: 'https://www.amazon.com/Drive-Medical-Nitro-Rollator-Walker/dp/B009SOC9PI',
+          note: 'Euro-style 4-wheel, 13 lbs, loop brakes, padded seat, storage pouch. For survivors who need more support than a cane but want speed over a traditional walker.',
+        },
+      ],
+      image: {
+        src: '/images/blog/fig-15-parallel-bars.png',
+        alt: 'Gait training with parallel bars and walking aids for stroke rehabilitation',
+        caption: 'Each stage in the aid progression is a step toward independent ambulation — not a permanent label.',
+      },
+    },
+    {
+      h2: 'How to set cane height',
+      bullets: [
+        'Stand upright, arms at sides. Top of handle = wrist crease.',
+        'Holding the cane with a relaxed grip, elbow should be flexed 20–30 degrees. Too straight = no shock absorption. Too bent = leaning on the cane instead of the floor.',
+        'Cane in the hand opposite the affected side — contralateral.',
+        'If wearing an AFO that shortens the affected leg slightly, adjust height to maintain level shoulder alignment.',
+      ],
+    },
+    {
+      h2: 'When a walker beats a cane',
+      paragraphs: [
+        'A cane requires balance. If your balance can\'t trust a single support point, a walker gives bilateral stability. The Kaye postural control walker adds trunk support for more severe impairment. The standard front-wheeled walker is the workhorse of inpatient rehab.',
+        'If you are on a walker and your PT hasn\'t discussed transition to a rollator or cane, ask. Most survivors who plateau there simply haven\'t had the conversation.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Should I hold my cane on my strong or weak side?', a: 'Strong side — the hand opposite your affected leg. This is the biomechanically correct position that reduces hip joint load during stance. Most survivors instinctively use the cane on the affected side; that provides some balance help but doesn\'t offload the hip correctly.' },
+    { q: 'When can I stop using a walking aid after stroke?', a: 'When your gait speed, balance confidence, and ankle stability allow you to walk safely without it — not before. Your PT should lead this decision with functional gait assessments. Rushing independent ambulation before balance is ready significantly increases fall risk.' },
+    { q: 'Is a rollator better than a walker for stroke survivors?', a: 'In most cases, yes — for survivors past the acute inpatient phase. A rollator allows a more natural walking pattern, supports a seat when needed, and moves with you rather than breaking stride. The Drive Nitro is the most common rollator in outpatient stroke rehab.' },
+    { q: 'Can I use a walking cane on stairs?', a: 'With a handrail, yes. Cane in the strong-side hand, strong leg goes up first. Without a handrail, a quad cane is significantly more stable. Work on stair training with your PT before attempting unsupervised.' },
+  ],
+  related: [
+    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'HurryCane and survivor-tested gear in one place.' },
+    { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors', blurb: 'The right shoe makes every walking aid more effective.' },
+    { href: '/blog/foot-drop-rehab-at-home', label: 'Drop foot rehab at home', blurb: 'Address the gait deficit that makes walking aids necessary.' },
+    { href: '/blog/gait-training-at-home', label: 'Gait training at home', blurb: 'The protocol for rebuilding independent ambulation.' },
+    { href: '/blog/best-afo-brace-drop-foot', label: 'Best AFO braces for drop foot', blurb: 'When you need more support than a cane can give.' },
+  ],
+  publishedDate: '2026-06-05',
+  productCard: {
+    title: 'Drive Medical Nitro Rollator — the rollator upgrade worth making',
+    description: 'Euro-style, 13 lbs, loop brakes, padded seat. For survivors who need more than a cane and won\'t compromise on speed.',
+    link: 'https://www.amazon.com/Drive-Medical-Nitro-Rollator-Walker/dp/B009SOC9PI',
+    label: 'View on Amazon',
+    note: 'Affiliate link — small commission at no cost to you.',
+  },
+  bookPromo: {
+    title: 'The gait rebuild is in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION walks through every stage of gait recovery — acute, subacute, chronic — and the daily routine that keeps momentum building.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
+// 26. Best hand therapy tools for stroke survivors
+// =============================================================================
+export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
+  slug: 'best-hand-therapy-tools-stroke-recovery',
+  title: 'Best Hand Therapy Tools for Stroke Recovery (2026)',
+  description: 'Therapy putty, grip trainers, finger exercisers — the tools that fill the gap between OT sessions and actually move the needle. A survivor\'s honest breakdown.',
+  h1: 'Best hand therapy tools for stroke recovery',
+  keyword: 'best hand therapy tools stroke recovery',
+  subhead: 'Sixty minutes of OT per week isn\'t enough. The survivors who rebuild hand function are the ones filling the hours between sessions. Here are the tools that make those hours count.',
+  ctaPrimary: { href: '/recovery/shop', label: 'See all stroke recovery gear' },
+  ctaSecondary: { href: '/blog/best-robotic-glove-stroke-recovery', label: 'Consider a robotic glove too' },
+  sections: [
+    {
+      h2: 'The volume problem in hand rehab',
+      paragraphs: [
+        'Meaningful cortical remapping requires 400–600 repetitions per session. A standard 60-minute outpatient OT session — accounting for transport, setup, assessment, and other treatment components — might yield 100–200 focused hand reps. That leaves a gap.',
+        'The survivors who rebuild hand function are the ones filling that gap at home. Not with heroic effort — with the right tools and 20–30 minutes twice a day.',
+      ],
+    },
+    {
+      h2: 'Therapy putty — the foundation',
+      paragraphs: [
+        'Therapy putty is the most versatile hand rehab tool available. Different resistance levels — extra-soft through extra-firm — allow progressive loading as strength returns. Squeezing, pinching, rolling, and extension exercises all target different muscle groups in a single tool.',
+        'The key: use a resistance you can move through, not one you max out on. Overloading a spastic hand increases tone and defeats the purpose. Start softer than you think you need to.',
+      ],
+      products: [
+        {
+          name: 'Theraputty Hand Exercise Putty Set — 6-piece progression set',
+          price: '$18–$28',
+          link: 'https://www.amazon.com/dp/B001AW1PE0',
+          note: 'Six resistance levels from extra-soft to extra-firm. Allows progressive loading as hand strength returns. Also in the Recovery Store. The starting point for any home hand therapy program.',
+        },
+        {
+          name: 'CanDo Theraputty Plus — color-coded resistance',
+          price: '$14–$22',
+          link: 'https://www.amazon.com/Theraputty-Exercise-Rehabilitation-Exercises-Strengthening/dp/B006LN4TOI',
+          note: 'Tan through black, six resistance grades. Non-sticky formula. Good alternative if the standard set is out of stock.',
+        },
+      ],
+      image: {
+        src: '/images/blog/fig-18-tennis-ball-squeeze.png',
+        alt: 'Illustration of hand squeeze and grip exercise for stroke hand rehabilitation',
+        caption: 'Grip and pinch work target the same pathways — progressive resistance is the mechanism.',
+      },
+    },
+    {
+      h2: 'Grip strengthener — load the entire kinetic chain',
+      paragraphs: [
+        'Putty targets intrinsic muscles. A grip trainer loads the extrinsic flexors — the long muscles in the forearm that drive gross grip. Both are needed.',
+        'For stroke survivors: adjustable resistance is essential. Fixed-resistance grippers start too heavy for most survivors post-stroke and cause compensated posture. The grip trainer set below has individual finger resistance adjustment.',
+      ],
+      products: [
+        {
+          name: 'Grip Strength Trainer Set — adjustable resistance',
+          price: '$12–$20',
+          link: 'https://www.amazon.com/dp/B07B2Z3YXS',
+          note: 'Adjustable resistance per finger, forearm and grip trainer included. Also in the Recovery Store. The set I\'d use alongside therapy putty for a complete home hand program.',
+        },
+      ],
+    },
+    {
+      h2: 'Finger exerciser — isolation and independence',
+      paragraphs: [
+        'Individual finger strengthening matters. After stroke, some fingers recover faster than others — typically the ring and middle first, the index and pinky last. A finger exerciser allows targeted work on lagging fingers while the stronger ones maintain.',
+        'The D\'Addario Varigrip was designed for musicians. It also happens to be exactly what stroke survivors need: individual spring resistance per finger, compact, works in any position.',
+      ],
+      products: [
+        {
+          name: 'D\'Addario Varigrip Hand Exerciser — individual finger resistance',
+          price: '$10–$16',
+          link: 'https://www.amazon.com/dp/B001OCGGEM',
+          note: 'Individual adjustable resistance per finger. Works at a desk, in a chair, or anywhere. Also in the Recovery Store.',
+        },
+      ],
+    },
+    {
+      h2: 'Theragun Prime — spasticity management before every session',
+      paragraphs: [
+        'Percussive therapy is not a treatment for hand weakness. It is a preparation tool. 60–90 seconds of Theragun on the forearm flexors before a hand therapy session reduces tone and makes the putty and grip work significantly more effective.',
+        'This is the sequence: Theragun on the flexor forearm (1 min) → warm water soak (3 min) → 5 minutes passive stretch → active hand therapy. Tone management first — then the reps.',
+      ],
+      products: [
+        {
+          name: 'Theragun Prime — percussive therapy for spasticity management',
+          price: '$199–$249',
+          link: 'https://www.amazon.com/Theragun-Prime-Generation-Percussive-Treatment/dp/B086Z6V3S6',
+          note: 'Used pre-session to reduce forearm flexor tone before hand exercises. Not a hand therapy tool itself — a preparation tool that makes the therapy more effective.',
+        },
+      ],
+    },
+    {
+      h2: 'The 20-minute home hand session that works',
+      bullets: [
+        '5 min prep: warm water soak, passive extension stretch of all fingers.',
+        '5 min putty: squeeze and release (softest resistance that challenges without spasm), 3 sets x 20 reps.',
+        '5 min grip trainer: whole-hand squeezes, then individual finger presses, 3 sets x 15.',
+        '5 min fine motor: pinch to pick up small objects (coins, buttons), or use varigrip for finger isolation.',
+        'Log reps. Note which fingers fired. Track weekly.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'What is the best therapy putty resistance level to start with after stroke?', a: 'Extra-soft or soft (tan or yellow in most color-coding systems). Most survivors start too hard — which triggers spasm and defeats the purpose. If you can complete 20 reps with good form without your hand locking up, the resistance is appropriate. Progress to the next color when 3 sets of 30 feels easy.' },
+    { q: 'How often should I do hand therapy exercises at home?', a: 'Twice daily, every day. Morning and evening, 20 minutes each session. That\'s the minimum that produces measurable cortical change over 8–12 weeks. Weekends count. The brain doesn\'t take rest days from neuroplasticity.' },
+    { q: 'Should I push through hand spasms during therapy?', a: 'No. A spasm is a protective response — pushing through it increases tone and can cause injury. If spasms occur during exercise, stop, passively stretch the hand flat, and apply gentle warmth. Resume at a lower resistance or a smaller range of motion. If spasms are frequent, discuss Botox or oral antispasmodic options with your neurologist.' },
+    { q: 'Can I do hand therapy exercises if I have no movement at all?', a: 'Yes — start with passive exercises. Caregiver-assisted or self-assisted stretching, range-of-motion work, and gentle resistance of the unaffected hand pressing against the affected fingers. Even passive movement maintains joint mobility and provides sensory input that keeps pathways active. Add a robotic glove when passive work has been established.' },
+  ],
+  related: [
+    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Therapy putty, grip trainer, finger exerciser — all in one place.' },
+    { href: '/blog/best-robotic-glove-stroke-recovery', label: 'Best robotic gloves for stroke recovery', blurb: 'Amplify hand rehab volume with EMG-triggered assistance.' },
+    { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery', blurb: 'Continue upper limb work beyond the hand.' },
+    { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'The daily system that makes twice-daily practice sustainable.' },
+  ],
+  publishedDate: '2026-06-05',
+  productCard: {
+    title: 'Theraputty Hand Exercise Putty Set',
+    description: 'Six resistance levels from extra-soft to extra-firm. The most versatile single hand rehab tool for stroke survivors at any stage.',
+    link: 'https://www.amazon.com/dp/B001AW1PE0',
+    label: 'View on Amazon',
+    note: 'Also in the Recovery Store. Affiliate link — small commission at no cost to you.',
+  },
+  bookPromo: {
+    title: 'The hand rebuild protocol is in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the complete upper limb system — from dense paralysis to functional grip — with the daily practice framework that makes it stick.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
+// 27. Best mobility scooters for stroke survivors
+// =============================================================================
+export const POST_MOBILITY_SCOOTER = makeBlogPost({
+  slug: 'best-mobility-scooter-stroke-survivor',
+  title: 'Best Mobility Scooters for Stroke Survivors (2026 Guide)',
+  description: 'A scooter isn\'t giving up — it\'s buying your energy back for recovery. A 7-year survivor\'s guide to choosing the right electric scooter after stroke.',
+  h1: 'Best mobility scooters for stroke survivors',
+  keyword: 'mobility scooter for stroke survivor',
+  subhead: 'Getting a scooter isn\'t giving up on walking. It is buying your cognitive and physical energy back for the things that actually move recovery forward. Here is how to choose.',
+  ctaPrimary: { href: '/recovery/shop', label: 'Browse all recovery gear' },
+  ctaSecondary: { href: '/blog/best-walking-aids-stroke-survivors', label: 'Start with walking aids' },
+  sections: [
+    {
+      h2: 'The energy economy of stroke recovery',
+      paragraphs: [
+        'Stroke survivors expend 3–4 times the metabolic energy walking compared to non-survivors. A 10-minute walk that costs a healthy person 40 calories costs a hemiparetic survivor 120–160. That is energy that isn\'t available for therapy, for cognitive work, for living.',
+        'A mobility scooter doesn\'t mean you\'ve given up on walking. It means you have enough energy left after getting to the grocery store to actually cook a meal, do your hand exercises, and sleep. Energy management is a legitimate recovery strategy.',
+      ],
+    },
+    {
+      h2: '3-wheel vs 4-wheel — the real tradeoff',
+      paragraphs: [
+        '3-wheel scooters turn tighter — better for indoor use, narrow aisles, and smaller spaces. Less stable at speed. 4-wheel scooters are more stable on uneven outdoor surfaces, support higher weight capacities, and handle inclines better. The tradeoff is turning radius.',
+        'For most stroke survivors: if primarily indoor use or tight spaces, 3-wheel. If primarily outdoor or mixed use with hills and uneven pavement, 4-wheel.',
+      ],
+    },
+    {
+      h2: 'What to look for in a stroke-specific scooter',
+      bullets: [
+        'Tiller steering: must be adjustable for one-handed use. Most scooters can be operated one-handed — confirm the tiller rotates or adjusts for the unaffected hand.',
+        'Disassembly: if you will transport it in a vehicle, the heaviest single piece must be liftable with one hand or by a caregiver without mechanical assist. Check the heaviest component weight, not total weight.',
+        'Range: minimum 8–10 miles per charge for any practical outdoor use. Battery degradation is real — buy more range than you currently need.',
+        'Seat swivel: a swivel seat makes transfer significantly easier for hemiparetic survivors.',
+        'Delta tiller: the loop-style tiller (vs two separate levers) is far easier to operate one-handed.',
+      ],
+    },
+    {
+      h2: 'Recommended scooter',
+      products: [
+        {
+          name: 'Pride Go-Go Sport 4-Wheel Scooter (S74)',
+          price: '$1,199–$1,499',
+          link: 'https://www.amazon.com/Pride-Mobility-4-Wheel-Electric-Scooter/dp/B00PV2QSLW',
+          note: 'Disassembles into 5 lightweight pieces for vehicle transport — heaviest piece under 27 lbs. Delta tiller. 8-mile range per charge. 300 lb weight capacity. The most common compact travel scooter in stroke rehab communities.',
+        },
+      ],
+      image: {
+        src: '/images/blog/sasquatch-intersection.png',
+        alt: 'Sasquatch at the intersection — the choice between different mobility paths for stroke recovery',
+        caption: 'Every tool in the mobility toolkit serves the larger goal: a life worth living, with energy to spare.',
+      },
+    },
+    {
+      h2: 'Insurance and Medicare coverage',
+      paragraphs: [
+        'Medicare Part B covers power mobility devices (including scooters) when a physician certifies that you have a mobility limitation that significantly impairs your ability to participate in daily activities and the limitation cannot be resolved with a less costly device (walker, cane). The physician must conduct a face-to-face exam and provide documentation.',
+        'The coverage process takes 4–12 weeks. If you need the scooter now, buy it and simultaneously initiate the coverage request. Retroactive coverage is not guaranteed — but an approved claim within the look-back window is possible.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Can I drive a mobility scooter on a public sidewalk after stroke?', a: 'In most US states, yes — mobility scooters are classified as pedestrian devices and are permitted on sidewalks and in pedestrian areas. They are not street legal. Check your specific state regulations; some municipalities have speed restrictions on sidewalk devices.' },
+    { q: 'Does getting a scooter mean I\'ve given up on walking?', a: 'No — this is a false dichotomy that costs survivors quality of life. Walking therapy is about rebuilding gait. The scooter handles distance. Many survivors walk intensively in therapy and use a scooter in the community. These are not competing strategies.' },
+    { q: 'Will Medicare pay for a mobility scooter after stroke?', a: 'Medicare Part B may cover it as Durable Medical Equipment with physician documentation of medical necessity. You\'ll need a face-to-face physician exam, a written order, and enrollment with a Medicare-approved DME supplier. The process takes time — start early.' },
+    { q: 'Can I operate a scooter with one hand?', a: 'Most scooters with a delta (loop) tiller can be operated one-handed. Confirm the specific model\'s tiller design before purchasing. The Pride Go-Go Sport has a delta tiller and is commonly recommended for one-handed use.' },
+  ],
+  related: [
+    { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids for stroke survivors', blurb: 'Canes, walkers, and rollators for shorter-distance mobility.' },
+    { href: '/blog/best-wheelchair-stroke-survivor', label: 'Best wheelchairs for stroke survivors', blurb: 'When a scooter isn\'t the right fit.' },
+    { href: '/blog/managing-fatigue-after-stroke', label: 'Fatigue after stroke', blurb: 'The energy management system that makes recovery sustainable.' },
+    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'All stroke recovery gear in one place.' },
+  ],
+  publishedDate: '2026-06-05',
+  productCard: {
+    title: 'Pride Go-Go Sport 4-Wheel Scooter',
+    description: 'Disassembles into 5 pieces under 27 lbs each. Delta tiller. 8-mile range. 300 lb capacity. The most common compact travel scooter in stroke rehab.',
+    link: 'https://www.amazon.com/Pride-Mobility-4-Wheel-Electric-Scooter/dp/B00PV2QSLW',
+    label: 'View on Amazon',
+    note: 'Affiliate link — small commission at no cost to you.',
+  },
+  bookPromo: {
+    title: 'Energy management is recovery strategy',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the complete energy and mobility toolkit — including when and how to use assistive devices to maximize what you have left for recovery.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
+// 28. Best wheelchairs for stroke survivors
+// =============================================================================
+export const POST_WHEELCHAIR = makeBlogPost({
+  slug: 'best-wheelchair-stroke-survivor',
+  title: 'Best Wheelchairs for Stroke Survivors: What to Look For',
+  description: 'The right wheelchair after stroke isn\'t just lighter — it supports a hemiplegic posture, one-handed propulsion, and transfers that preserve independence. A survivor\'s guide.',
+  h1: 'Best wheelchairs for stroke survivors',
+  keyword: 'best wheelchair for stroke survivor',
+  subhead: 'A wheelchair is not the end of the mobility story. It is a tool — one that should support your posture, your transfers, and your independence as aggressively as possible. Here is how to choose.',
+  ctaPrimary: { href: '/recovery/shop', label: 'Browse all recovery gear' },
+  ctaSecondary: { href: '/blog/best-mobility-scooter-stroke-survivor', label: 'Considering a scooter instead?' },
+  sections: [
+    {
+      h2: 'Stroke-specific wheelchair considerations',
+      paragraphs: [
+        'A wheelchair designed for a bilateral upper extremity user is wrong for a hemiparetic stroke survivor. You have function on one side. Your wheelchair should leverage it.',
+        'The most common stroke-specific adaptations: one-arm drive (dual-rim system on the stronger side), hemiplegic height (lower seat height so the strong-side foot can propel against the floor — the most efficient propulsion method for many survivors), anti-tip casters, and swing-away leg rests for transfer clearance.',
+      ],
+    },
+    {
+      h2: 'Transport vs self-propelled — which you actually need',
+      paragraphs: [
+        'Transport (caregiver-propelled) wheelchairs are lighter, fold smaller, and are the right choice when someone else is doing most of the propulsion. Self-propelled chairs have larger rear wheels that allow independent propulsion. If you will be using the chair alone at any point, you need a self-propelled model.',
+        'Hemiparetic self-propulsion works. The strong arm propels the wheel. The strong foot steers and brakes against the floor. This is a legitimate and effective propulsion method and does not require bilateral arm function.',
+      ],
+    },
+    {
+      h2: 'Recommended wheelchair',
+      products: [
+        {
+          name: 'Drive Medical Expedition Lightweight Transport Wheelchair',
+          price: '$90–$130',
+          link: 'https://www.amazon.com/Drive-Medical-Lightweight-Expedition-Wheelchair/dp/B00537S944',
+          note: '19-inch seat, flip-back padded armrests, swing-away footrests for easy transfers, 300 lb capacity, folds flat for transport. The most widely used entry-level transport wheelchair in US hospital discharge programs.',
+        },
+      ],
+      image: {
+        src: '/images/blog/sasquatch-canonical.png',
+        alt: 'Sasquatch stroke survivor — mobility tools as part of the recovery story, not the end of it',
+        caption: 'The wheelchair is a mobility tool, not a verdict. Most survivors use it as a stage — not a destination.',
+      },
+    },
+    {
+      h2: 'Positioning matters more than most people realize',
+      bullets: [
+        'Hips at 90°: pelvis squared in the seat, not tilted posteriorly. A posterior pelvic tilt after stroke contributes to kyphosis and shoulder pain over time.',
+        'Footrests at correct height: feet should rest flat on the footrests. Too low causes hip extension; too high causes hip flexion and sliding.',
+        'Affected arm supported: a lap tray or arm trough prevents shoulder subluxation on the hemiplegic side — a painful and common complication of unsupported arm hanging.',
+        'Seat width: 1 inch of clearance per side at the hips is the standard. Too wide creates lateral instability. Too narrow creates pressure wounds.',
+      ],
+    },
+    {
+      h2: 'Medicare coverage for wheelchairs',
+      paragraphs: [
+        'Medicare Part B covers manual wheelchairs as Durable Medical Equipment with a physician\'s written order certifying medical necessity. The process requires a face-to-face exam and an enrolled Medicare DME supplier. Coverage typically runs 80% of the Medicare-approved amount after the Part B deductible.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Can a stroke survivor propel a wheelchair with one arm?', a: 'Yes — the hemiparetic propulsion pattern (strong arm on the wheel, strong foot against the floor for steering and braking) is effective and widely used. One-arm drive wheelchairs with dual-rim systems on one side allow both wheels to be driven from a single side, which is an alternative for survivors with minimal lower extremity function on either side.' },
+    { q: 'What wheelchair seat height is right for a hemiplegic survivor?', a: 'The hemiplegic seat height (often 17.5 or 18 inches, lower than standard) positions the foot flat on the floor for propulsion. Standard wheelchair height of 19–20 inches leaves many survivors\' feet dangling, which both prevents floor propulsion and creates pressure under the thigh. Ask your PT or OT for a seating evaluation before purchasing.' },
+    { q: 'Should I get a lightweight or heavy-duty wheelchair?', a: 'Lightweight (sub-35 lb) is almost always better. A lighter chair is easier to transport, easier for a caregiver to lift into a vehicle, and requires less upper-body effort from the survivor during self-propulsion. Heavy-duty models serve bariatric weight requirements — otherwise, go lighter.' },
+  ],
+  related: [
+    { href: '/blog/best-mobility-scooter-stroke-survivor', label: 'Best mobility scooters for stroke survivors', blurb: 'For outdoor distance that preserves recovery energy.' },
+    { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids for stroke survivors', blurb: 'Canes, walkers, and rollators when ambulation is the goal.' },
+    { href: '/blog/managing-fatigue-after-stroke', label: 'Fatigue after stroke', blurb: 'Why energy management is a recovery strategy.' },
+    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'All stroke recovery gear in one place.' },
+  ],
+  publishedDate: '2026-06-05',
+  productCard: {
+    title: 'Drive Medical Expedition Transport Wheelchair',
+    description: 'Flip-back armrests, swing-away footrests, 300 lb capacity, folds flat. The most common hospital-discharge transport wheelchair.',
+    link: 'https://www.amazon.com/Drive-Medical-Lightweight-Expedition-Wheelchair/dp/B00537S944',
+    label: 'View on Amazon',
+    note: 'Affiliate link — small commission at no cost to you.',
+  },
+  bookPromo: {
+    title: 'Every tool has its role in the recovery system',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the complete mobility toolkit — wheelchairs, walkers, scooters, and the mindset that keeps recovery moving forward at every stage.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
+// 29. Best pedal exercisers for stroke recovery
+// =============================================================================
+export const POST_PEDAL_EXERCISER = makeBlogPost({
+  slug: 'best-pedal-exerciser-stroke-recovery',
+  title: 'Best Pedal Exercisers for Stroke Recovery (2026)',
+  description: 'Passive leg cycling increases spasticity. Active pedaling rebuilds it. A 7-year survivor\'s guide to the under-desk pedal exerciser that actually works for stroke.',
+  h1: 'Best pedal exerciser for stroke recovery',
+  keyword: 'pedal exerciser stroke recovery',
+  subhead: 'Cycling motion is one of the earliest things stroke survivors can do on the affected leg — but only the right type of device captures the full benefit. Here is the breakdown.',
+  ctaPrimary: { href: '/recovery/shop', label: 'See all stroke recovery gear' },
+  ctaSecondary: { href: '/blog/gait-training-at-home', label: 'Gait training guide too' },
+  sections: [
+    {
+      h2: 'Why pedaling works for stroke recovery',
+      paragraphs: [
+        'Cyclical lower limb movement activates the same neural circuits involved in walking — the central pattern generators (CPGs) that produce rhythmic, alternating leg movements. After stroke, these circuits are partially disconnected. Pedaling provides a rhythmic, bilateral, lower-demand activation that starts to restore the rhythm without the full balance demands of walking.',
+        'This is why cycling is often one of the first weight-bearing-equivalent activities in inpatient rehab. The fixed trajectory of the pedal helps the affected limb complete a movement it couldn\'t execute independently — the same principle as the EMG glove for the hand.',
+      ],
+    },
+    {
+      h2: 'Active vs passive pedaling — the difference matters',
+      paragraphs: [
+        'Passive motorized pedaling (the unaffected leg drives the affected leg, or the device does all the work) provides sensory input and range of motion — valuable in early recovery or with dense paralysis. It is not the same as active pedaling.',
+        'Active pedaling — where the affected leg contributes voluntarily to the movement, even partially — produces cortical activation and motor learning. If you can actively pedal, actively pedal. Use motor imagery during passive cycling to get some cortical benefit when active participation isn\'t yet possible.',
+      ],
+    },
+    {
+      h2: 'Recommended pedal exerciser',
+      products: [
+        {
+          name: 'DeskCycle Under-Desk Pedal Exerciser',
+          price: '$159–$199',
+          link: 'https://www.amazon.com/dp/B00B1VDNQA',
+          note: 'Calibrated resistance, whisper-quiet operation, fits under most chairs and desks. Magnetic resistance allows smooth cycling even at slow RPM — critical for survivors who can\'t maintain fast cadence on the affected side. Also in the Recovery Store.',
+        },
+      ],
+      image: {
+        src: '/images/blog/fig-05-sit-to-stand.png',
+        alt: 'Sit-to-stand and lower body exercise illustration for stroke recovery',
+        caption: 'Lower limb activation in a seated position is often the safest entry point — progress to standing and walking from there.',
+      },
+    },
+    {
+      h2: 'The protocol for stroke-specific use',
+      bullets: [
+        'Start with 10 minutes twice daily. That\'s it. Fatigue management matters as much as the exercise itself.',
+        'Resistance at zero or one for the first two weeks. The goal is rhythm and repetition, not load.',
+        'If the affected leg stops contributing, reduce resistance further — don\'t let the strong leg do all the work for more than a few reps.',
+        'Progress: add 5 minutes per session every two weeks until you reach 30 minutes twice daily.',
+        'Combine with upper body work (putty, grip trainer) during the session — two-for-one use of 30 minutes.',
+      ],
+    },
+    {
+      h2: 'What a pedal exerciser won\'t do',
+      paragraphs: [
+        'It won\'t replace walking. The gait pattern — weight shift, stance phase, heel strike, push-off — requires vertical loading that a seated pedal device doesn\'t provide. Use the pedal exerciser to build base endurance and rhythmic activation, then take that to walking therapy.',
+        'It won\'t resolve foot drop. The dorsiflexion component of pedaling is minimal compared to what\'s required for walking. Address drop foot with your AFO and ankle-specific work.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Can I use a pedal exerciser if my affected leg barely moves?', a: 'Yes — start with minimal or zero resistance and let the unaffected leg drive the rhythm. The affected leg will follow passively, and you should actively attempt to contribute to the movement on every stroke. Even passive cycling with motor imagery provides more benefit than no movement at all.' },
+    { q: 'How long should I pedal after stroke?', a: 'Start at 10 minutes twice daily. Add 5 minutes per session every two weeks. Target 30 minutes twice daily by week 8. This is a conservative progression that respects post-stroke fatigue — the most common reason survivors stop using equipment they bought.' },
+    { q: 'Should I pedal with or without shoes?', a: 'With shoes, and specifically with your AFO if you wear one. The AFO holds the ankle in neutral during the cycling motion, which both prevents foot drop on the downstroke and provides more accurate proprioceptive feedback. Strapped pedals also help keep the affected foot on the pedal.' },
+  ],
+  related: [
+    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'DeskCycle and all stroke recovery gear in one place.' },
+    { href: '/blog/gait-training-at-home', label: 'Gait training at home', blurb: 'Build on the cycling base with walking-specific training.' },
+    { href: '/blog/best-balance-board-stroke-recovery', label: 'Best balance boards for stroke recovery', blurb: 'Take the work from seated to standing.' },
+    { href: '/blog/managing-fatigue-after-stroke', label: 'Fatigue after stroke', blurb: 'Energy management for sustainable daily exercise.' },
+  ],
+  publishedDate: '2026-06-05',
+  productCard: {
+    title: 'DeskCycle Under-Desk Pedal Exerciser',
+    description: 'Calibrated magnetic resistance, whisper-quiet, works at slow RPM. The pedal exerciser most commonly used in stroke home rehab programs.',
+    link: 'https://www.amazon.com/dp/B00B1VDNQA',
+    label: 'View on Amazon',
+    note: 'Also in the Recovery Store. Affiliate link — small commission at no cost to you.',
+  },
+  bookPromo: {
+    title: 'The lower body rebuild is in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the complete lower limb progression — from seated cycling to walking to the advanced gait protocol used by 7-year survivors.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
+// 30. Best push-up bars for stroke recovery upper body work
+// =============================================================================
+export const POST_PUSH_UP_BARS_GUIDE = makeBlogPost({
+  slug: 'best-push-up-bars-stroke-recovery',
+  title: 'Best Push-Up Bars for Stroke Recovery Upper Body Training',
+  description: 'Push-up bars reduce wrist strain and increase range of motion — both critical for hemiparetic survivors rebuilding pressing strength. A survivor\'s guide.',
+  h1: 'Best push-up bars for stroke recovery',
+  keyword: 'push up bars stroke recovery',
+  subhead: 'Rebuilding pressing strength after stroke means training around wrist limitations, compensated grip, and asymmetric loading. The right push-up bars make that possible. The wrong ones make it worse.',
+  ctaPrimary: { href: '/recovery/shop', label: 'See all stroke recovery gear' },
+  ctaSecondary: { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Add resistance bands too' },
+  sections: [
+    {
+      h2: 'Why wrist position matters after stroke',
+      paragraphs: [
+        'Spasticity after stroke frequently affects the wrist — either driving it into flexion (the hand closes and the wrist curls down) or into extension with pronation. Floor push-ups require 90 degrees of wrist extension under load — a position many stroke survivors can\'t achieve without pain or injury.',
+        'Push-up bars raise the hand off the floor and change the wrist angle requirement. Instead of extending your wrist to place your palm on the floor, you grip the handle in a neutral or slightly extended position. That\'s the difference between being able to load the push-up pattern and not.',
+      ],
+    },
+    {
+      h2: 'Rotating vs fixed — which matters for stroke',
+      paragraphs: [
+        'Rotating push-up bars allow the handle to turn as your hand moves through the push-up — they naturally pronate and supinate with your forearm, reducing torque at the wrist. For stroke survivors with wrist and forearm spasticity, this rotation reduces the compensatory grip tension that would otherwise fire up the spastic patterns.',
+        'Fixed handles require the wrist to stay in one position throughout the movement. Fine for healthy wrists. Problematic for spastic ones.',
+        'Recommendation: rotating if you have any wrist or forearm tone issues. Fixed is acceptable if your affected side wrist is stable and mobile.',
+      ],
+    },
+    {
+      h2: 'The wall push-up progression for early-stage survivors',
+      paragraphs: [
+        'If floor push-ups are not yet accessible — which is the case for most survivors in the first 6–12 months — start with wall push-ups. Wall push-ups with handles (leaning into a fixed set against the wall) load the same muscle chains at a fraction of the body weight.',
+        'The progression: wall push-up → countertop push-up → incline (bench) push-up → floor push-up. Each step adds approximately 15–20% more body weight to the movement. Don\'t skip steps.',
+      ],
+      image: {
+        src: '/images/blog/fig-11-theraband-row.png',
+        alt: 'Upper body resistance exercise illustration for stroke survivor rehabilitation',
+        caption: 'Upper body pressing and pulling strength both matter — push-up bars cover the pressing half.',
+      },
+    },
+    {
+      h2: 'Recommended push-up bars',
+      products: [
+        {
+          name: 'Perfect Fitness Push-Up Bars — rotating handles',
+          price: '$20–$35',
+          link: 'https://www.amazon.com/dp/B008DNAJ5M',
+          note: 'Rotating handles reduce wrist torque, non-slip base, foam grips. The most widely used push-up bar in stroke rehab home programs. Also in the Recovery Store.',
+        },
+      ],
+    },
+    {
+      h2: 'Bala Bangles for progressive upper body loading',
+      paragraphs: [
+        'Wrist and ankle weights are useful for adding progressive load to exercises that don\'t lend themselves to dumbbells — shoulder circles, arm raises, wrist extensions. After stroke, the affected arm often needs lighter loading than any commercially available dumbbell.',
+        'Bala Bangles are wearable 1-lb weights that strap to the wrist or ankle. For survivors rebuilding proximal arm strength (shoulder, upper arm), they add load to functional movements without requiring grip strength.',
+      ],
+      products: [
+        {
+          name: 'Bala Bangles Wrist and Ankle Weights',
+          price: '$49–$55',
+          link: 'https://www.amazon.com/Bala-Bangles-Wrist-Ankle-Weights/dp/B0DDRFMZVF',
+          note: '1 lb each (sold as a pair = 2 lbs total). Wraparound design requires no grip. Good for shoulder and proximal arm work when grip isn\'t available yet on the affected side.',
+        },
+      ],
+    },
+    {
+      h2: 'The upper body session structure for stroke recovery',
+      bullets: [
+        '5 min prep: shoulder circles, passive arm swings, theraband rows at light resistance.',
+        '3 sets x 10 wall or incline push-ups on bars. Focus on controlled lowering — the eccentric is where the strength is built.',
+        '3 sets x 15 resistance band rows (TheraBand anchored at door). Bilateral — let the strong side guide the rhythm.',
+        '2 sets x 10 shoulder press (resistance band overhead). Keep affected shoulder in the movement even if the range is partial.',
+        'Cool down: passive overhead stretch, chest opener against doorframe.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Can I do push-ups with one-sided weakness after stroke?', a: 'Modified push-ups, yes. Wall push-ups, countertop push-ups, and incline push-ups are all accessible to survivors with significant weakness. As the affected side gets stronger, progress toward floor push-ups. The goal is to keep the affected arm in the movement — even if it contributes 10% of the force — rather than do one-armed push-ups on the strong side only.' },
+    { q: 'Are rotating push-up bars better than fixed for stroke survivors?', a: 'For survivors with wrist or forearm spasticity, yes. The rotation allows the forearm to move naturally through its supination-pronation arc rather than fighting a fixed position. If your wrist has good mobility and no significant tone, fixed handles are fine.' },
+    { q: 'What is the best starting push-up progression after stroke?', a: 'Wall push-ups at body-perpendicular angle. Then countertop height. Then incline (low box or bench). Then floor. Each step adds approximately 20% more body weight to the movement. Use the lowest accessible level and do full range of motion with good form rather than a partial rep at a harder level.' },
+  ],
+  related: [
+    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Push-up bars and all stroke recovery training gear.' },
+    { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery', blurb: 'The pull-based counterpart to push-up training.' },
+    { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools', blurb: 'Build the grip strength that makes bar work possible.' },
+    { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'The system for sustainable daily upper body work.' },
+  ],
+  publishedDate: '2026-06-05',
+  productCard: {
+    title: 'Perfect Fitness Push-Up Bars — rotating handles',
+    description: 'Rotating handles reduce wrist torque. Non-slip base. The standard push-up bar in stroke home rehab programs.',
+    link: 'https://www.amazon.com/dp/B008DNAJ5M',
+    label: 'View on Amazon',
+    note: 'Also in the Recovery Store. Affiliate link — small commission at no cost to you.',
+  },
+  bookPromo: {
+    title: 'The upper body rebuild is in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the complete strength progression from arm slings and shoulder subluxation through advanced pressing and pulling patterns.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
+// 31. Best AFO braces for drop foot after stroke
+// =============================================================================
+export const POST_AFO_OSSUR = makeBlogPost({
+  slug: 'best-afo-brace-drop-foot',
+  title: 'Best AFO Braces for Drop Foot After Stroke (Ossur Guide)',
+  description: 'Solid ankle vs dynamic vs carbon fiber — the AFO you need depends on your drop foot severity, gait speed, and activity level. A 7-year survivor\'s breakdown.',
+  h1: 'Best AFO braces for drop foot after stroke',
+  keyword: 'best AFO brace drop foot stroke',
+  subhead: 'The wrong AFO brace isn\'t just uncomfortable — it teaches your ankle the wrong thing. Here is how to choose, how to fit it, and the models worth considering.',
+  ctaPrimary: { href: '/recovery/shop', label: 'See all stroke recovery gear' },
+  ctaSecondary: { href: '/blog/afo-vs-electric-ankle-trainer', label: 'Compare AFO vs electric options' },
+  sections: [
+    {
+      h2: 'What an AFO actually does — and doesn\'t do',
+      paragraphs: [
+        'An ankle-foot orthosis holds the foot in dorsiflexion — preventing the foot from dropping during the swing phase of gait. That prevents tripping. That is the primary job.',
+        'It does not rebuild dorsiflexion strength. It compensates for the weakness while you work on rebuilding it. If you wear the AFO without also doing ankle-specific rehab — NMES, progressive dorsiflexion exercises, gait training — you are managing the symptom without addressing the cause.',
+        'The right mindset: AFO as scaffold, rehab as construction. Use both.',
+      ],
+    },
+    {
+      h2: 'Three AFO types — which fits your gait',
+      paragraphs: [
+        'Solid ankle (rigid): No movement at the ankle. Maximum control. Best for severe drop foot with no active dorsiflexion. Limitation: blocks the push-off phase of gait, which many survivors need as they progress.',
+        'Dynamic (spring-loaded): Allows some sagittal plane motion. The spring assists toe clearance during swing but gives some push-off. Best for survivors with partial dorsiflexion return and faster gait speeds. More natural gait pattern than rigid.',
+        'Carbon fiber (posterior leaf spring): Lightweight, energy-storing. The carbon plate flexes and returns energy at push-off. Best for active survivors with controlled drop foot who want to run, hike, or walk at higher speeds. Requires adequate ankle stability — not for severe impairment.',
+      ],
+    },
+    {
+      h2: 'Recommended AFO models',
+      products: [
+        {
+          name: 'Ossur Foot-Up Drop Foot Brace — best simple ankle solution',
+          price: '$45–$70',
+          link: 'https://www.amazon.com/Ossur-Foot-up-Drop-Foot-Brace/dp/B00KB008OM',
+          note: 'Shoe insert connects to a strap-on cuff — no custom fitting required. Lightweight, wearable in most laced shoes. Best for mild-to-moderate drop foot where a full plastic AFO is unnecessary. The entry-level Ossur option.',
+        },
+        {
+          name: 'Ossur AFO Dynamic Brace — best for active gait recovery',
+          price: '$55–$85',
+          link: 'https://www.amazon.com/dp/B07XNQB9RK',
+          note: 'Dynamic spring-loaded design allows push-off motion. Adjustable tension. More natural gait pattern than rigid. Good for survivors with partial dorsiflexion return. Also in the Recovery Store.',
+        },
+      ],
+      image: {
+        src: '/images/blog/fig-03-wall-lean.png',
+        alt: 'Calf stretch and ankle exercise illustration for drop foot and AFO rehabilitation after stroke',
+        caption: 'Calf stretching before AFO use reduces the tone that makes dorsiflexion harder — prep first, then brace.',
+      },
+    },
+    {
+      h2: 'Fitting an AFO with the right shoe',
+      paragraphs: [
+        'Size up one full shoe size. Go to the widest available width (4E for laced shoes). Remove the insole — the AFO footplate is your insole. The heel counter must be firm and tall enough that the AFO footplate doesn\'t lever the back of the shoe down.',
+        'The Brooks Adrenaline GTS 24 in 4E is the most common shoe pairing for Ossur AFOs among stroke rehab PTs.',
+      ],
+      externalLinks: [
+        { label: 'Best shoes for stroke survivors — full guide', href: '/blog/best-shoes-stroke-survivors' },
+        { label: 'AFO vs. electric ankle trainer — which is right', href: '/blog/afo-vs-electric-ankle-trainer' },
+      ],
+    },
+    {
+      h2: 'When to transition away from the AFO',
+      paragraphs: [
+        'The goal is to not need it. But rushing the transition too early — before dorsiflexion strength is reliable during full gait — increases fall risk significantly.',
+        'The transition test: can you clear your toe during the swing phase of walking on a flat surface for 10 consecutive strides without the AFO? If yes, trial ambulation without it in a safe supervised setting. If you trip once in 10 strides, keep the AFO for longer distances.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Should I wear an AFO all day after stroke?', a: 'During all walking, yes — until dorsiflexion is reliable. During rest, sitting, and sleep, remove it unless your PT has prescribed overnight use for contracture prevention. Continuous wearing in bed can cause pressure points on a foot with reduced sensation.' },
+    { q: 'What\'s the difference between the Ossur Foot-Up and a full plastic AFO?', a: 'The Ossur Foot-Up is a minimalist, non-custom device — a shoe insert connected to a strap-on cuff that holds the foot up during swing. A full plastic AFO (either prefab or custom-molded) provides more rigidity, covers more of the foot and ankle, and is better for moderate-to-severe drop foot with ankle instability. For mild drop foot, the Foot-Up is often sufficient.' },
+    { q: 'Can I wear an AFO with Skechers GoWalk slip-in shoes?', a: 'The GoWalk Slip-In does not have enough heel counter rigidity or interior depth for most AFOs. Use a laced shoe with a firm heel counter — such as the Brooks Adrenaline GTS 24 in a wide width — for AFO use. The Skechers is a better choice for AFO-free days.' },
+    { q: 'Will I need an AFO forever?', a: 'Many survivors use an AFO indefinitely for longer distances and unfamiliar terrain while managing without one in controlled home environments. Some survivors — particularly those who combined AFO use with aggressive ankle-specific rehab — achieve full independence from the device. Individual outcomes vary significantly with time-since-stroke, lesion location, and rehab intensity.' },
+  ],
+  related: [
+    { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO vs. electric ankle trainer', blurb: 'Which approach fits your recovery stage.' },
+    { href: '/blog/foot-drop-rehab-at-home', label: 'Drop foot rehab at home', blurb: 'The protocol for rebuilding dorsiflexion.' },
+    { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors', blurb: 'AFO-compatible footwear — Brooks and Skechers guide.' },
+    { href: '/blog/best-ankle-brace-stroke-survivor', label: 'Best ankle braces for stroke survivors', blurb: 'Lighter options when a full AFO isn\'t needed.' },
+    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Ossur AFO and all stroke recovery gear.' },
+  ],
+  publishedDate: '2026-06-05',
+  productCard: {
+    title: 'Ossur Foot-Up Drop Foot Brace',
+    description: 'Shoe insert + strap cuff. No custom fit. Lightweight. Best entry-level AFO for mild-to-moderate drop foot.',
+    link: 'https://www.amazon.com/Ossur-Foot-up-Drop-Foot-Brace/dp/B00KB008OM',
+    label: 'View on Amazon',
+    note: 'Affiliate link — small commission at no cost to you.',
+  },
+  bookPromo: {
+    title: 'The drop foot protocol is in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers AFO selection, shoe fitting, NMES protocols, and the gait progression that gets survivors from braced to independent.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
+// 32. Best ankle braces for stroke survivors
+// =============================================================================
+export const POST_ANKLE_BRACE = makeBlogPost({
+  slug: 'best-ankle-brace-stroke-survivor',
+  title: 'Best Ankle Braces for Stroke Survivors: Stabilizers That Work',
+  description: 'A lace-up ankle brace isn\'t an AFO — but for mild instability and partial dorsiflexion, it\'s often all you need. A survivor\'s guide to ankle stabilizers.',
+  h1: 'Best ankle braces for stroke survivors',
+  keyword: 'ankle brace for stroke survivors',
+  subhead: 'Not every drop foot needs a full AFO. Not every ankle instability needs a rigid brace. Here is how to figure out which level of support your ankle actually needs — and which products deliver it.',
+  ctaPrimary: { href: '/recovery/shop', label: 'Browse recovery gear' },
+  ctaSecondary: { href: '/blog/best-afo-brace-drop-foot', label: 'Need more? See full AFO guide' },
+  sections: [
+    {
+      h2: 'Ankle instability after stroke — what\'s actually happening',
+      paragraphs: [
+        'Ankle instability after stroke has two distinct causes. Weakness: the peroneal and tibialis muscles that normally stabilize the ankle laterally and medially can\'t produce adequate force. Proprioceptive deficit: the ankle doesn\'t send accurate position information to the brain, so even when you have some strength, you don\'t know where your foot is.',
+        'A brace can compensate for both — the mechanical structure substitutes for strength, and the compression and contact improve sensory feedback. An AFO is the strongest version; a lace-up stabilizer is the lightest.',
+      ],
+    },
+    {
+      h2: 'When a lace-up stabilizer is enough vs when you need a full AFO',
+      paragraphs: [
+        'A lace-up ankle brace is appropriate when: you have active dorsiflexion (you can lift your foot off the ground, even partially), ankle instability is the primary concern rather than foot drop, and you are in the subacute-to-chronic phase where proprioceptive feedback is the limiting factor.',
+        'You need a full AFO when: you have no active dorsiflexion (complete foot drop), you are tripping on level surfaces, or your ankle buckles during stance phase rather than just instability during balance tasks.',
+      ],
+    },
+    {
+      h2: 'Recommended ankle braces',
+      products: [
+        {
+          name: 'Vive Lace-Up Ankle Brace — best all-purpose stabilizer',
+          price: '$18–$28',
+          link: 'https://www.amazon.com/Vive-Laced-Ankle-Brace-Compression/dp/B073RKSNXX',
+          note: 'Lace-up design with figure-8 straps for adjustable support. Wearable inside most stroke-appropriate shoes. Fits left or right ankle. For mild-to-moderate instability with preserved dorsiflexion.',
+        },
+      ],
+      image: {
+        src: '/images/blog/fig-10-single-leg-balance.png',
+        alt: 'Single leg balance exercise for stroke survivors — ankle stabilization and proprioception training',
+        caption: 'Ankle braces buy you the stability to practice — but the balance work itself is what builds it.',
+      },
+    },
+    {
+      h2: 'The ankle stabilization protocol',
+      paragraphs: [
+        'Wearing the brace without doing the work maintains your current level. Wearing the brace while doing progressive proprioceptive and strengthening work rebuilds the ankle over time.',
+      ],
+      bullets: [
+        'Daily: seated ankle circles and alphabet tracing — 2 sets each direction. Maintains range of motion and sends positional information to the brain.',
+        '3x/week: single-leg standing (use support as needed) on the affected leg, 3 sets x 30 seconds. Progress to unstable surface (folded towel, then balance board) as tolerated.',
+        '3x/week: resisted dorsiflexion with a TheraBand — seated, loop around the forefoot, pull toward shin against resistance. 3 sets x 20.',
+        'Bracing: wear during all walking. Remove for seated exercises to allow full ankle movement.',
+      ],
+      externalLinks: [
+        { label: 'TheraBand resistance bands for stroke recovery — full guide', href: '/blog/best-resistance-bands-stroke-recovery' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Can I wear a regular ankle brace instead of an AFO after stroke?', a: 'If you have active dorsiflexion (can lift your foot during swing), a lace-up stabilizer may be sufficient for moderate activity. For complete drop foot with no active dorsiflexion, a full AFO is required for safe ambulation. Get a PT assessment to determine which applies to you.' },
+    { q: 'Should I sleep with my ankle brace on?', a: 'Standard lace-up braces are not designed for overnight use. For contracture prevention at night, a dedicated resting splint (rigid or semi-rigid, designed for sustained low-load stretch) is more appropriate. Ask your OT for a night splint recommendation if contracture is a concern.' },
+    { q: 'How tight should an ankle brace be after stroke?', a: 'Firm enough to restrict inversion (rolling outward) — the primary instability direction after stroke — without restricting plantar/dorsiflexion or cutting off circulation. You should not see skin blanching or feel tingling. If the affected foot has reduced sensation, check visually for pressure points.' },
+  ],
+  related: [
+    { href: '/blog/best-afo-brace-drop-foot', label: 'Best AFO braces for drop foot', blurb: 'When you need more than a lace-up stabilizer.' },
+    { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO vs. electric ankle trainer', blurb: 'Which approach fits your recovery stage.' },
+    { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors', blurb: 'Brooks and Skechers for braced and unbraced feet.' },
+    { href: '/blog/best-balance-board-stroke-recovery', label: 'Best balance boards for stroke recovery', blurb: 'Rebuild the proprioception a brace compensates for.' },
+    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'All stroke recovery gear in one place.' },
+  ],
+  publishedDate: '2026-06-05',
+  productCard: {
+    title: 'Vive Lace-Up Ankle Brace',
+    description: 'Figure-8 strap, lace-up, left or right. Best lightweight stabilizer for stroke survivors with preserved dorsiflexion.',
+    link: 'https://www.amazon.com/Vive-Laced-Ankle-Brace-Compression/dp/B073RKSNXX',
+    label: 'View on Amazon',
+    note: 'Affiliate link — small commission at no cost to you.',
+  },
+  bookPromo: {
+    title: 'The ankle and gait system is in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the complete ankle rehabilitation progression — bracing, NMES, progressive strengthening, and the gait training that makes the brace unnecessary.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
+// 33. Best balance boards for stroke recovery
+// =============================================================================
+export const POST_BALANCE_BOARD_GUIDE = makeBlogPost({
+  slug: 'best-balance-board-stroke-recovery',
+  title: 'Best Balance Boards for Stroke Recovery (2026 Guide)',
+  description: 'Balance board training after stroke reduces fall risk by rebuilding the proprioceptive pathways that stroke damages. A 7-year survivor\'s guide to the boards worth buying.',
+  h1: 'Best balance boards for stroke recovery',
+  keyword: 'balance board stroke recovery',
+  subhead: 'Balance training after stroke isn\'t about not falling — it\'s about rebuilding the sensory feedback loops that stroke severed. Here is what works, what doesn\'t, and the boards I recommend.',
+  ctaPrimary: { href: '/recovery/shop', label: 'See all stroke recovery gear' },
+  ctaSecondary: { href: '/blog/best-ankle-brace-stroke-survivor', label: 'Stabilize the ankle first' },
+  sections: [
+    {
+      h2: 'Why stroke destroys balance — the actual mechanism',
+      paragraphs: [
+        'Balance requires three systems working together: vision (where the horizon is), vestibular (head position in space), and proprioception (where your joints are relative to each other). Stroke can impair all three, but proprioception — the unconscious position sense from the ankle, knee, and hip — is almost universally affected.',
+        'The proprioceptive pathway from the ankle to the brain is damaged. The brain is getting inaccurate or absent information about where the foot is during stance. A balance board creates the movement demands that force those pathways to fire repeatedly — the same neuroplasticity principle that drives all stroke recovery.',
+      ],
+    },
+    {
+      h2: 'Rocker vs wobble board — different perturbations for different goals',
+      paragraphs: [
+        'A rocker board tilts in one plane — anterior-posterior (front-to-back) or mediolateral (side-to-side). Simpler, more controlled, better for early-stage balance training and for isolating specific ankle movements.',
+        'A wobble board tilts in all planes simultaneously — more unstable, more neurologically demanding. Better for intermediate-to-advanced training when single-plane stability is already established.',
+        'Start rocker. Progress to wobble. Using a wobble board before rocker stability is established is how people fall.',
+      ],
+    },
+    {
+      h2: 'The recommended board — with a critical safety caveat',
+      paragraphs: [
+        'Balance board training after stroke always requires a safety setup: sturdy chair, counter, or wall within arm\'s reach. You are not proving you don\'t need support — you are building the pathways that will eventually let you not need it.',
+      ],
+      products: [
+        {
+          name: 'StrongTek Professional Balance Board — rocker/wobble combo',
+          price: '$35–$55',
+          link: 'https://www.amazon.com/dp/B07D8J6BHR',
+          note: 'Anti-slip surface, comfortable standing edge, 300 lb capacity. Can be used flat (stability board), as a rocker (one axis), or as a wobble board. Also in the Recovery Store.',
+        },
+      ],
+      image: {
+        src: '/images/blog/fig-10-single-leg-balance.png',
+        alt: 'Single leg balance training illustration for stroke survivors — building proprioception and fall prevention',
+        caption: 'Balance training is proprioceptive retraining — the board creates the perturbation the brain needs to rebuild the map.',
+      },
+    },
+    {
+      h2: 'The balance board progression for stroke survivors',
+      bullets: [
+        'Week 1–2: Bilateral standing on flat board (no movement), near support. 3 sets x 1 minute.',
+        'Week 3–4: Bilateral standing with gentle rocker motion. 3 sets x 45 seconds.',
+        'Week 5–8: Weight shift side-to-side and front-to-back. Eyes open. Near support. 3 sets x 1 minute.',
+        'Week 9+: Progress to eyes-closed (harder than it sounds post-stroke). Single-leg standing on flat board. Wobble board bilateral with near-support.',
+        'Never: abandon safety setup. One fall on a balance board sets training back weeks and damages confidence more than strength.',
+      ],
+    },
+    {
+      h2: 'Combine with ankle work for compounding effect',
+      paragraphs: [
+        'Balance board training combined with ankle strengthening (TheraBand dorsiflexion work) produces significantly faster balance gains than either alone. The strengthening builds the actuators; the balance board trains the control system. Do both in the same session.',
+      ],
+      externalLinks: [
+        { label: 'TheraBand resistance bands — full stroke guide', href: '/blog/best-resistance-bands-stroke-recovery' },
+        { label: 'Best ankle braces for stroke survivors', href: '/blog/best-ankle-brace-stroke-survivor' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Is a balance board safe for stroke survivors?', a: 'With a safety setup (sturdy chair, counter, or wall within arm\'s reach), yes — for survivors past the acute phase with adequate standing tolerance. Start with bilateral standing on a flat surface before introducing any rocking motion. Never use a balance board without a fall-prevention setup nearby.' },
+    { q: 'How long should I stand on a balance board after stroke?', a: 'Start at 1 minute per set, 3 sets per session. Total 5–10 minutes of balance board time per session. This is shorter than healthy-population balance training — post-stroke fatigue and concentration demands make longer sessions counterproductive early on. Build to 20–30 minutes over 8–12 weeks.' },
+    { q: 'Can I use a balance board if I wear an AFO?', a: 'Yes — start with the AFO on the affected foot. The AFO provides ankle stability that makes the board more controllable while still providing the proprioceptive stimulus through the knee and hip. As ankle stability improves, trial brief periods without the AFO on the board in a supervised setting.' },
+    { q: 'Should I do balance board training with eyes open or closed?', a: 'Always start eyes open. When you can maintain bilateral board balance with eyes open for 3 x 1 minute comfortably, trial eyes closed — briefly at first. Eyes-closed balance is significantly harder after stroke because you\'ve been compensating with vision for impaired proprioception. It is also more neurologically beneficial.' },
+  ],
+  related: [
+    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'StrongTek balance board and all stroke recovery gear.' },
+    { href: '/blog/best-ankle-brace-stroke-survivor', label: 'Best ankle braces for stroke survivors', blurb: 'Stabilize before you challenge.' },
+    { href: '/blog/gait-training-at-home', label: 'Gait training at home', blurb: 'Take balance work into the walking pattern.' },
+    { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors', blurb: 'The right shoe pairs with balance work.' },
+    { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'The framework that makes balance training a daily habit.' },
+  ],
+  publishedDate: '2026-06-05',
+  productCard: {
+    title: 'StrongTek Professional Balance Board',
+    description: 'Rocker and wobble modes. Anti-slip. 300 lb capacity. The balance board most commonly used in stroke home rehab.',
+    link: 'https://www.amazon.com/dp/B07D8J6BHR',
+    label: 'View on Amazon',
+    note: 'Also in the Recovery Store. Affiliate link — small commission at no cost to you.',
+  },
+  bookPromo: {
+    title: 'The full balance rebuild system is in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the complete proprioceptive retraining progression — from first standing to advanced dynamic balance — with the daily system that makes it stick.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
+// 34. Best brain games and books for stroke cognitive recovery
+// =============================================================================
+export const POST_BRAIN_BOOKS = makeBlogPost({
+  slug: 'best-brain-games-books-stroke-cognitive-recovery',
+  title: 'Best Brain Games & Books for Stroke Cognitive Recovery (2026)',
+  description: 'Memory, processing speed, attention, word-finding — cognitive deficits after stroke are real and addressable. The books and games that actually challenge recovery.',
+  h1: 'Best brain games and books for stroke cognitive recovery',
+  keyword: 'brain games stroke cognitive recovery',
+  subhead: 'Cognitive recovery after stroke follows the same principle as physical recovery: the brain rewires based on what you practice. The games and books below are the tools I use. Here is why they work.',
+  ctaPrimary: { href: '/recovery/shop', label: 'See all stroke recovery gear' },
+  ctaSecondary: { href: '/blog/memory-problems-after-stroke', label: 'Memory problems guide' },
+  sections: [
+    {
+      h2: 'What \'use it or lose it\' actually means for the post-stroke brain',
+      paragraphs: [
+        'Neuroplasticity applies to cognitive function the same way it applies to motor function. The neural pathways involved in memory, attention, language, and processing speed can be strengthened through consistent, challenging use — or weakened through disuse.',
+        'The key word is challenging. Doing a puzzle that\'s easy doesn\'t push the brain. The difficulty level needs to be just past your current ability — the same progressive overload principle that applies to physical rehab. A crossword you can finish in 10 minutes isn\'t a challenge anymore. A crossword that takes you 45 minutes and leaves you frustrated is the one that\'s working.',
+      ],
+    },
+    {
+      h2: 'What to look for in stroke-appropriate cognitive tools',
+      bullets: [
+        'Adjustable difficulty: your cognitive capacity changes day to day after stroke. A good game or book has multiple difficulty levels.',
+        'Short session length: 15–20 minutes per session. Cognitive fatigue after stroke is real and different from tiredness — it hits fast and recovery is slow. Multiple short sessions beat one long one.',
+        'Multi-domain coverage: memory, language, attention, executive function, and visuospatial processing all deserve dedicated work. A single crossword covers language and memory but misses visuospatial and processing speed.',
+        'Large print: processing deficits and visual field changes make standard-print materials genuinely harder. This is not a preference — it\'s an accessibility issue.',
+      ],
+    },
+    {
+      h2: 'Recommended books and games',
+      products: [
+        {
+          name: '399 Games, Puzzles & Trivia for Stroke Recovery',
+          price: '$12–$18',
+          link: 'https://www.amazon.com/dp/1648769039',
+          note: 'Designed specifically for stroke survivors — graduated difficulty, multiple cognitive domains (word find, trivia, logic, fill-in), large print. The most clinically cited workbook in stroke OT home programs. Also in the Recovery Store.',
+        },
+        {
+          name: 'Large Print Word Search for Stroke Survivors',
+          price: '$8–$12',
+          link: 'https://www.amazon.com/dp/B09MYQWG2M',
+          note: 'Extra-large print, designed for post-stroke visual processing changes, gradual difficulty progression. Good for survivors with visual field deficits. Also in the Recovery Store.',
+        },
+        {
+          name: 'Easy Crossword Puzzles for Adults — large print',
+          price: '$8–$12',
+          link: 'https://www.amazon.com/dp/1953561020',
+          note: 'Language and memory work. Large print. Multiple difficulty levels within the book. The crossword starts easier than most adult crosswords — appropriate for early-phase aphasia recovery or word-finding deficits.',
+        },
+        {
+          name: 'Sudoku for Stroke Recovery — large print',
+          price: '$8–$12',
+          link: 'https://www.amazon.com/dp/1640307834',
+          note: 'Visuospatial and logical reasoning. Does not require language — appropriate for aphasic survivors. Large print. Graded difficulty.',
+        },
+      ],
+      image: {
+        src: '/images/blog/fig-08-mental-rehearsal.png',
+        alt: 'Mental rehearsal and cognitive exercise illustration for stroke cognitive recovery',
+        caption: 'Cognitive work and motor imagery use overlapping neural networks — both matter for recovery.',
+      },
+    },
+    {
+      h2: 'The cognitive session structure that works',
+      paragraphs: [
+        'Two 15-minute sessions per day. Morning and evening. Different tools in each session — one language-focused (crossword, word search), one logic/visuospatial (Sudoku, logic puzzle). This covers more cognitive domains and keeps engagement higher than one long session with one tool.',
+        'Track your time per puzzle and your error rate. Progress is not always visible in a week — it shows up over a month. If you\'re not tracking, you\'ll underestimate how much you\'ve improved.',
+      ],
+    },
+    {
+      h2: 'Digital vs paper — the honest comparison',
+      paragraphs: [
+        'Paper puzzles require no device setup, have zero screen fatigue, and are portable. The tactile feedback of writing an answer on paper adds a motor component that is absent from tapping a screen.',
+        'Digital platforms (Lumosity, BrainHQ, Elevate) offer adaptive difficulty and progress tracking. BrainHQ specifically has clinical evidence for post-stroke cognitive rehabilitation and adjusts automatically as your performance improves.',
+        'I use both. Paper in the morning when I want low-stimulation work. Digital when I want data and adaptation.',
+      ],
+      externalLinks: [
+        { label: 'Cognitive rehabilitation after stroke — American Stroke Association', href: 'https://www.stroke.org/en/about-stroke/effects-of-stroke/cognitive-and-communication' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Do brain games actually help stroke recovery?', a: 'For cognitive deficits specifically — yes, with the right tools and dosage. Targeted cognitive training (adaptive difficulty, multi-domain, consistent practice) produces measurable improvements in memory, attention, and processing speed in the research literature. Non-targeted easy games produce engagement, not rehabilitation. The two are not the same.' },
+    { q: 'How long does cognitive recovery take after stroke?', a: 'Highly variable. The fastest cognitive gains occur in the first 3–6 months, similar to physical recovery. Significant improvement continues in years 2–5 with active practice. Processing speed tends to recover slower than memory. Language (aphasia) has its own trajectory and benefits specifically from SLP work alongside book exercises.' },
+    { q: 'Should I do brain games if I have aphasia?', a: 'Yes — but choose the right type. Word-based games (crossword, word search) directly target the language pathways involved in aphasia and are useful with appropriate difficulty. Sudoku and logic puzzles do not require language and work well alongside SLP therapy for aphasic survivors.' },
+    { q: 'Are these puzzles actually appropriate for stroke survivors or just generic adult puzzles?', a: 'The 399 Games book is specifically designed for stroke survivors by an occupational therapist. The others are general large-print adult books — appropriate because of their large format and graduated difficulty, not because they are stroke-specific. A stroke-specific workbook (like the 399 Games) is the better starting point; supplement with general large-print books as you progress.' },
+  ],
+  related: [
+    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Brain games, puzzles, and all stroke recovery gear in one place.' },
+    { href: '/blog/memory-problems-after-stroke', label: 'Memory problems after stroke', blurb: 'Why memory changes after stroke and what actually helps.' },
+    { href: '/blog/pseudobulbar-affect-after-stroke', label: 'Pseudobulbar affect after stroke', blurb: 'When the emotional response doesn\'t match the feeling.' },
+    { href: '/blog/managing-fatigue-after-stroke', label: 'Fatigue after stroke', blurb: 'Why cognitive fatigue is different — and how to manage it.' },
+    { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'The framework that includes cognitive work in the daily system.' },
+  ],
+  publishedDate: '2026-06-05',
+  productCard: {
+    title: '399 Games, Puzzles & Trivia for Stroke Recovery',
+    description: 'Designed specifically for stroke survivors. Large print. Graduated difficulty. Multiple cognitive domains. The most clinically used stroke cognitive workbook.',
+    link: 'https://www.amazon.com/dp/1648769039',
+    label: 'View on Amazon',
+    note: 'Also in the Recovery Store. Affiliate link — small commission at no cost to you.',
+  },
+  bookPromo: {
+    title: 'Cognitive recovery is covered in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION dedicates full chapters to cognitive recovery, memory, processing speed, and the daily system that integrates cognitive work with physical rehab.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
 // Aggregator
 // =============================================================================
 export const ALL_BLOG_POSTS: SsrPageConfig[] = [
@@ -1688,6 +2934,18 @@ export const ALL_BLOG_POSTS: SsrPageConfig[] = [
   POST_GAIT_TRAINING_HOME,
   POST_STROKE_GIFT_GUIDE,
   POST_COMPLETE_HOME_KIT,
+  POST_ROBOTIC_GLOVE,
+  POST_BEST_SHOES,
+  POST_WALKING_AIDS,
+  POST_HAND_THERAPY_TOOLS,
+  POST_MOBILITY_SCOOTER,
+  POST_WHEELCHAIR,
+  POST_PEDAL_EXERCISER,
+  POST_PUSH_UP_BARS_GUIDE,
+  POST_AFO_OSSUR,
+  POST_ANKLE_BRACE,
+  POST_BALANCE_BOARD_GUIDE,
+  POST_BRAIN_BOOKS,
 ];
 
 // /blog hub page — lists all posts as internal-link cluster
