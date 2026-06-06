@@ -17,6 +17,12 @@ export interface ContentSection {
   h2: string;
   paragraphs: string[];
   bullets?: string[];
+  /** Optional illustration: served from /images/blog/ */
+  image?: { src: string; alt: string; caption?: string };
+  /** Footnote-style external citation links rendered below section content */
+  externalLinks?: { label: string; href: string; note?: string }[];
+  /** Inline product cards — affiliate tag applied server-side via tagAmazonLink */
+  products?: { name: string; price: string; link: string; note: string }[];
   /**
    * Optional pre-sanitized HTML appended after paragraphs/bullets.
    * Only use for trusted, server-controlled content (e.g. SSR center cards).
@@ -61,6 +67,19 @@ const AUTHOR = {
   bio: '7-year stroke survivor who went from complete paralysis to 90% recovery. Founder of Stroke Recovery Academy and creator of the Sasquatch Method.',
   url: `${SITE_URL}/recovery/about-nick`,
 };
+
+function tagAmazonLink(url: string): string {
+  const tag = process.env.AMAZON_AFFILIATE_TAG;
+  if (!tag || !url) return url;
+  try {
+    const u = new URL(url);
+    if (!u.hostname.includes('amazon.')) return url;
+    u.searchParams.set('tag', tag);
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
 
 function esc(s: string): string {
   return s
@@ -214,6 +233,20 @@ function renderSections(sections: ContentSection[]): string {
   ${s.h2 ? `<h2>${esc(s.h2)}</h2>` : ''}
   ${Array.isArray(s.paragraphs) && s.paragraphs.length > 0 ? s.paragraphs.map(p => `<p>${esc(p)}</p>`).join('\n  ') : ''}
   ${s.bullets && s.bullets.length > 0 ? `<ul>${s.bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}
+  ${s.image ? `<figure class="sra-blog-fig">
+    <img src="${escAttr(s.image.src)}" alt="${escAttr(s.image.alt)}" class="sra-blog-img" loading="lazy" width="680" />
+    ${s.image.caption ? `<figcaption class="sra-blog-caption">${esc(s.image.caption)}</figcaption>` : ''}
+  </figure>` : ''}
+  ${s.products && s.products.length > 0 ? `<div class="sra-product-grid">${s.products.map(p => `
+  <div class="sra-product-card">
+    <div class="sra-product-card-name">${esc(p.name)}</div>
+    <div class="sra-product-card-price">${esc(p.price)}</div>
+    <p class="sra-product-card-note">${esc(p.note)}</p>
+    <a href="${escAttr(tagAmazonLink(p.link))}" class="sra-product-card-link" target="_blank" rel="noopener noreferrer sponsored nofollow">View on Amazon ↗</a>
+  </div>`).join('')}</div>` : ''}
+  ${s.externalLinks && s.externalLinks.length > 0 ? `<div class="sra-citations" role="list" aria-label="Sources">${s.externalLinks.map(l =>
+    `<a href="${escAttr(l.href)}" class="sra-citation-link" target="_blank" rel="noopener noreferrer" role="listitem">${esc(l.label)}</a>${l.note ? ` <span class="sra-citation-note">${esc(l.note)}</span>` : ''}`
+  ).join(' ')}</div>` : ''}
   ${s.rawHtml ? s.rawHtml : ''}
 </section>`).join('\n');
 }
@@ -408,12 +441,33 @@ a:hover { text-decoration: underline; }
   font-size: 13px; color: var(--sra-text-dim);
 }
 .sra-footer-bottom a { color: var(--sra-text-dim); }
+.sra-blog-fig { margin: 28px 0; }
+.sra-blog-img { max-width: 100%; border-radius: 6px; border: 1px solid var(--sra-border); display: block; }
+.sra-blog-caption { font-size: 13px; color: var(--sra-text-dim); margin-top: 8px; font-style: italic; }
+.sra-citations { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--sra-border); display: flex; flex-wrap: wrap; gap: 8px; }
+.sra-citation-link { font-size: 12px; color: var(--sra-gold); border: 1px solid var(--sra-border); padding: 3px 10px; border-radius: 3px; display: inline-block; }
+.sra-citation-link:hover { border-color: var(--sra-gold); text-decoration: none; }
+.sra-citation-note { font-size: 12px; color: var(--sra-text-dim); }
+.sra-product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 20px 0; }
+.sra-product-card { background: var(--sra-bg-card); border: 1px solid var(--sra-border); border-radius: 6px; padding: 18px; display: flex; flex-direction: column; gap: 6px; }
+.sra-product-card-name { font-weight: 700; font-size: 15px; color: var(--sra-text); }
+.sra-product-card-price { font-size: 13px; color: var(--sra-gold); font-weight: 600; }
+.sra-product-card-note { font-size: 13px; color: var(--sra-text-dim); margin: 4px 0 8px; line-height: 1.5; }
+.sra-product-card-link { display: inline-block; background: var(--sra-gold); color: #000 !important; padding: 9px 18px; border-radius: 4px; font-size: 13px; font-weight: 700; margin-top: auto; align-self: flex-start; }
+.sra-product-card-link:hover { text-decoration: none; opacity: 0.9; }
+.sra-share-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 40px 0 0; padding: 16px 0; border-top: 1px solid var(--sra-border); font-size: 13px; color: var(--sra-text-dim); }
+.sra-share-btn { display: inline-block; padding: 7px 14px; border-radius: 4px; font-size: 12px; font-weight: 600; text-decoration: none !important; }
+.sra-share-fb { background: #1877f2; color: #fff !important; }
+.sra-share-tw { background: #000; color: #fff !important; }
+.sra-share-em { background: var(--sra-bg-card); border: 1px solid var(--sra-border); color: var(--sra-text) !important; }
+.sra-share-btn:hover { opacity: 0.88; }
 @media (max-width: 600px) {
   .sra-header { padding: 12px 16px; }
   .sra-logo-text { display: none; }
   .sra-nav { gap: 14px; }
   .sra-page { padding: 20px 16px 64px; }
   .sra-hero h1 { font-size: 32px; }
+  .sra-product-grid { grid-template-columns: 1fr; }
 }
 `;
 }
@@ -505,7 +559,7 @@ ${renderHeader()}
   <section class="sra-affiliate">
     <h2>${esc(productCard.title)}</h2>
     <p>${esc(productCard.description)}</p>
-    <a href="${escAttr(productCard.link)}" class="sra-btn-primary" target="_blank" rel="noopener noreferrer">${esc(productCard.label)}</a>
+    <a href="${escAttr(tagAmazonLink(productCard.link))}" class="sra-btn-primary" target="_blank" rel="noopener noreferrer sponsored nofollow">${esc(productCard.label)}</a>
     ${productCard.note ? `<div class="sra-affiliate-note">${esc(productCard.note)}</div>` : ''}
   </section>
   ` : ''}
