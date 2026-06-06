@@ -2909,6 +2909,571 @@ export const POST_BRAIN_BOOKS = makeBlogPost({
 });
 
 // =============================================================================
+// Batch 3 — High-commission equipment + therapy devices
+// =============================================================================
+
+export const POST_ELLIPTICAL = makeBlogPost({
+  slug: 'best-elliptical-machine-stroke-recovery',
+  title: 'Best Elliptical Machines for Stroke Recovery: Low-Impact Cardio That Works',
+  description: 'Ellipticals are one of the best low-impact cardio tools for stroke survivors — reciprocal arm-leg motion, zero impact on joints, and real neuroplasticity stimulus. Here\'s what to buy and what to avoid.',
+  h1: 'Best Elliptical Machines for Stroke Recovery',
+  keyword: 'best elliptical machine stroke recovery',
+  subhead: 'Reciprocal motion. Zero impact. Real cardio. The elliptical is underrated for hemiparetic survivors who need to rebuild endurance without wrecking joints.',
+  ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
+  ctaSecondary: { label: 'Get the book', link: '/book' },
+  sections: [
+    {
+      heading: 'Why the elliptical is worth considering',
+      body: `<p>Seven years post-stroke, the elliptical is still in my weekly rotation. Here's why it made the list over a treadmill for many survivors: the reciprocal arm-leg cross-body motion forces the brain to coordinate both sides simultaneously — exactly the bilateral integration that neuroplasticity research says matters. Zero impact on the knee and ankle means compensated gait patterns don't get reinforced the way they can on a treadmill. And the moving handlebars give a hemiparetic arm something to do that isn't just hanging there.</p>
+<p>Caveat upfront: if you have significant balance deficits or can't weight-shift laterally without losing balance, a recumbent bike is the safer starting point. The elliptical requires standing balance. Come back to it once that's more stable.</p>`,
+      image: '/images/blog/fig-04.jpg',
+    },
+    {
+      heading: 'What to look for in a stroke-recovery elliptical',
+      body: `<p><strong>Handrail stability:</strong> Fixed stationary handles alongside the moving poles. You need something to grab if balance fails mid-session. Not all ellipticals have them. This is non-negotiable for stroke survivors in early-to-mid recovery.</p>
+<p><strong>Step-through design:</strong> A low step-up height is essential if you have hip flexor weakness or foot drop. High center-mount designs where you step up and over a bar are an injury waiting to happen with a hemiparetic leg.</p>
+<p><strong>Adjustable stride length:</strong> Hemiparetic gait is asymmetric. A shorter stride (16–18") is often better than the standard 20" for stroke survivors — it lets the affected leg cycle through without requiring full hip extension you may not have yet.</p>
+<p><strong>Resistance range:</strong> You want both ends — low enough to start at near-zero resistance as the affected side builds, high enough to actually challenge you six months from now.</p>`,
+    },
+    {
+      heading: 'Schwinn 430 — the best value for most survivors',
+      body: `<p>The Schwinn 430 hits every requirement: 20 levels of resistance (genuinely wide range), fixed inner handlebars alongside the moving poles for grab-and-go stability, a 20" stride length that can be adjusted by stride pace, and a step-up height that works for most stroke survivors with a single step. The footpads are wide and the toe cages are removable — important if foot drop means you need your foot sitting flat rather than strapped in.</p>
+<p>The built-in programs are mostly irrelevant for stroke rehab. What matters: manual mode, set a timer, go slow enough that the affected arm actually participates instead of being dragged by momentum from the strong side. That takes conscious practice.</p>`,
+      products: [
+        { name: 'Schwinn 430 Elliptical', price: '$699–$799', link: 'https://www.amazon.com/Schwinn-Fitness-430-Elliptical-Machine/dp/B004AE2TH8', note: 'Fixed inner handlebars, 20 resistance levels, wide footpads. Best all-around value for stroke recovery use.' },
+      ],
+    },
+    {
+      heading: 'Nautilus E616 — for survivors ready to push harder',
+      body: `<p>The Nautilus E616 is a step up in build quality and data. Twenty-nine resistance levels, 22 built-in programs including interval options, a 20" stride with a smoother magnetic flywheel feel than the Schwinn 430 at the same price tier. The console tracks strides per minute — useful if your PT has given you a target cadence for gait retraining.</p>
+<p>The E616 has the same fixed inner handlebar design. The footpads have a slight tilt that some survivors with ankle instability find uncomfortable — try before buying if possible, or verify the return window before ordering.</p>`,
+      products: [
+        { name: 'Nautilus E616 Elliptical', price: '$799–$999', link: 'https://www.amazon.com/Nautilus-E616-Elliptical-Machine/dp/B00FDDMVB0', note: '29 resistance levels, built-in programs, smoother flywheel than Schwinn 430. Good for mid-to-late recovery when intensity matters.' },
+      ],
+    },
+    {
+      heading: 'How to actually use an elliptical after stroke',
+      body: `<p>The biggest mistake is letting the strong side do all the work. Watch your affected arm at the pole — it should be pushing and pulling, not riding passively. If it's going limp, slow down until you can actively drive it. Quality of bilateral engagement beats duration every time.</p>
+<p>Start with 10 minutes at low resistance. Build by 5 minutes per week if you tolerate it. Heart rate monitoring matters — post-stroke cardiovascular deconditioning is real, and a 40-minute aerobic session requires slow progression to get there safely.</p>
+<p>If you have foot drop: keep resistance low enough that the foot doesn't get caught in the back of the stride. Wear your AFO if your PT recommends it for uneven terrain — the same logic applies to an elliptical footpad.</p>`,
+      externalLinks: [
+        { label: 'Bilateral arm training post-stroke — Cochrane Review', url: 'https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD006876.pub4/full' },
+        { label: 'Aerobic exercise in stroke rehabilitation — Stroke journal', url: 'https://www.ahajournals.org/doi/10.1161/STR.0000000000000103' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Can I use an elliptical with foot drop?', a: 'Yes, with modifications. Keep resistance low so the affected foot can complete the stroke cycle without catching. Wear your AFO if your orthotist approves it for exercise. Start slow — literally 2–3 mph equivalent — and watch the foot placement on every stroke until the pattern is reliable.' },
+    { q: 'Is an elliptical better than a treadmill after stroke?', a: 'For most stroke survivors in the first 1–2 years: yes. No impact means joint stress doesn\'t compound compensated movement patterns. The reciprocal cross-body motion adds neuroplasticity value. Treadmills are better for direct gait retraining — but that\'s usually a clinical setting with a PT, not a home machine.' },
+    { q: 'What if my affected arm can\'t hold the handlebar?', a: 'Use the fixed inner handlebar on the strong side for stability. Drape the affected arm over the moving pole loosely and let gravity do what it will — even passive movement is more input than nothing. As grip and shoulder function improve, transition to active participation.' },
+    { q: 'Do I need supervision to use an elliptical at home after stroke?', a: 'In early recovery: yes. Have someone present for the first several sessions. In mid-to-late recovery with stable balance: many survivors use one independently. But have a phone within reach and a clear fall plan before going solo.' },
+    { q: 'How often should I use an elliptical during stroke recovery?', a: 'Current cardio guidelines for stroke survivors: 150 minutes of moderate aerobic activity per week, broken into manageable sessions. That\'s 20–30 minutes five days a week, or 50 minutes three days a week. Build to it — don\'t start there.' },
+  ],
+  related: ['best-stationary-bike-stroke-recovery', 'best-treadmill-stroke-recovery', 'best-pedal-exerciser-stroke-recovery', 'gait-training-at-home-after-stroke'],
+  publishedDate: '2026-06-06',
+  productCard: {
+    name: 'Schwinn 430 Elliptical',
+    price: '$699–$799',
+    link: 'https://www.amazon.com/Schwinn-Fitness-430-Elliptical-Machine/dp/B004AE2TH8',
+    label: 'View on Amazon',
+    note: 'Best value elliptical for stroke recovery. Fixed inner handlebars, wide footpads, 20 resistance levels. Affiliate link.',
+  },
+  bookPromo: {
+    title: 'Cardio and recovery in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers cardiovascular rebuilding, fatigue management, and the weekly structure that makes progressive exercise sustainable after stroke.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+export const POST_STATIONARY_BIKE = makeBlogPost({
+  slug: 'best-stationary-bike-stroke-recovery',
+  title: 'Best Stationary Bikes for Stroke Recovery: Recumbent vs. Upright, and When Each Makes Sense',
+  description: 'Stationary bikes are the safest cardio starting point for most stroke survivors. Back support, no balance demand, bilateral leg training. Here\'s what actually works.',
+  h1: 'Best Stationary Bikes for Stroke Recovery',
+  keyword: 'best stationary bike stroke recovery',
+  subhead: 'Seated. Supported. Safe. The recumbent bike is how most stroke survivors should start building cardiovascular fitness — and the evidence agrees.',
+  ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
+  ctaSecondary: { label: 'Get the book', link: '/book' },
+  sections: [
+    {
+      heading: 'Recumbent first, upright later',
+      body: `<p>I started on a recumbent bike three weeks post-discharge. Couldn't stand for more than a minute without significant fatigue, balance was unreliable, affected leg wasn't doing much. The recumbent didn't care. Back supported, pedals out in front, nothing to fall off of. Fifteen minutes at almost zero resistance. That was enough to start.</p>
+<p>The recumbent vs. upright decision isn't about fitness preference — it's a clinical one. If you have: significant trunk weakness, balance deficits that require concentration to maintain, or fatigue that limits standing tolerance, start recumbent. Move to upright when your PT clears you for seated-balance work without back support.</p>
+<p>The upright bike gets added value for core engagement and posture — but that value is zero if you're gripping the handlebars to stay upright rather than pedaling effectively.</p>`,
+      image: '/images/blog/fig-05.jpg',
+    },
+    {
+      heading: 'Marcy ME-709 — the recumbent for most stroke survivors',
+      body: `<p>The Marcy ME-709 is the recumbent bike I see recommended most frequently in stroke survivor communities — and for good reason. Eight resistance levels (enough range for the 0–18 month window), a step-through frame with a very low bar clearance, back support that actually extends to the lower lumbar, and oversized pedals with adjustable straps that work even with foot drop. It folds for storage, which matters in most home setups.</p>
+<p>What it's not: a performance machine. The resistance knob is manual, the console is basic, and the seat comfort is average over 30+ minutes. For stroke recovery purposes, none of that matters. What matters is that it's stable, accessible, and does the job.</p>`,
+      products: [
+        { name: 'Marcy Recumbent Exercise Bike ME-709', price: '$199–$249', link: 'https://www.amazon.com/Marcy-Recumbent-Exercise-Bike-Resistance/dp/B003DYERJO', note: 'Low step-through frame, 8 resistance levels, back support with lumbar extension, oversized pedals with straps. Best value recumbent for early stroke recovery.' },
+      ],
+    },
+    {
+      heading: 'Schwinn 270 Recumbent — more resistance range, better data',
+      body: `<p>The Schwinn 270 is the upgrade from the Marcy. Twenty-five resistance levels, 29 built-in programs, Bluetooth connectivity for app integration, and a more comfortable seat. The additional resistance range matters once you\'re 6–12 months into recovery and the low end of the Marcy feels too easy — you don\'t want to buy a second machine.</p>
+<p>The step-over height is slightly higher than the Marcy — verify this is workable for your hip flexion and balance before ordering. Most stroke survivors at the Schwinn 270 stage are past the point where this is an issue, but it\'s worth checking.</p>`,
+      products: [
+        { name: 'Schwinn 270 Recumbent Exercise Bike', price: '$499–$599', link: 'https://www.amazon.com/Schwinn-Fitness-270-Recumbent-Bike/dp/B00MCLVHRU', note: '25 resistance levels, Bluetooth, 29 programs. The step-up from the Marcy for survivors 6+ months out who need more range.' },
+      ],
+    },
+    {
+      heading: 'Using the bike effectively: the affected leg problem',
+      body: `<p>The most common mistake on a stationary bike post-stroke: letting the strong leg do 90% of the pedaling and the affected leg ride along. This is worse than not using the bike — you\'re reinforcing asymmetry and teaching the brain that the affected leg doesn\'t need to contribute.</p>
+<p>Fix: reduce resistance to the point where the affected leg can actually push. Consciously think about the push phase on that side. Some survivors use a slight heel wedge under the affected foot to compensate for plantarflexion spasticity that prevents a full pedal stroke. Ask your PT before adding any modifications.</p>
+<p>Heart rate target: 50–70% of age-predicted max for most of recovery. In the acute phase, RPE (rate of perceived exertion) of 12–14 on the Borg 20-point scale — "somewhat hard." Not gasping, not coasting.</p>`,
+      externalLinks: [
+        { label: 'Exercise after stroke — NHS guidance', url: 'https://www.nhs.uk/conditions/stroke/living-with/physical-activity/' },
+        { label: 'Cycling training in post-stroke hemiplegia — NeuroRehabilitation', url: 'https://content.iospress.com/articles/neurorehabilitation/nre190537' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'When can I start using a stationary bike after stroke?', a: 'With medical clearance, many survivors start recumbent cycling 2–4 weeks post-discharge. The key clearances: cardiovascular stability, no DVT contraindication, no uncontrolled hypertension with exercise. Get explicit clearance from your neurologist or physiatrist before starting.' },
+    { q: 'Can I use a stationary bike if I have foot drop?', a: 'Yes — a recumbent bike with adjustable pedal straps works well for mild-to-moderate foot drop. The strap keeps the foot in position through the full pedal rotation. For severe drop foot with ankle instability, consult your PT about whether your AFO is appropriate for cycling use.' },
+    { q: 'How long should I bike each session during stroke recovery?', a: 'Start at 10–15 minutes. Add 5 minutes per session if you feel good the next day. Work toward 30–45 minutes at moderate intensity. More isn\'t always better — post-stroke fatigue can delay recovery if you push past your current capacity consistently.' },
+    { q: 'Should I get a recumbent or upright bike?', a: 'If you have any trunk weakness, balance deficits, or are less than 6 months post-stroke: recumbent. If your balance is stable, you can maintain upright seated posture without gripping for support, and your PT has cleared progressive loading: upright gives you more core engagement. When in doubt, start recumbent.' },
+    { q: 'Is a spin bike (like Peloton) appropriate for stroke recovery?', a: 'Generally not in the first year. Spin bikes require significant hip flexor and core engagement to maintain position, have no back support, and the lean-forward posture is demanding. The Schwinn IC4 or similar is appropriate for mid-to-late chronic phase survivors with good trunk control — not early recovery.' },
+  ],
+  related: ['best-elliptical-machine-stroke-recovery', 'best-pedal-exerciser-stroke-recovery', 'best-treadmill-stroke-recovery', 'stroke-recovery-fatigue'],
+  publishedDate: '2026-06-06',
+  productCard: {
+    name: 'Marcy Recumbent Bike ME-709',
+    price: '$199–$249',
+    link: 'https://www.amazon.com/Marcy-Recumbent-Exercise-Bike-Resistance/dp/B003DYERJO',
+    label: 'View on Amazon',
+    note: 'Best value recumbent for stroke recovery. Low step-through, back support, adjustable pedal straps. Affiliate link.',
+  },
+  bookPromo: {
+    title: 'The full exercise protocol is in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the cardio progression, week-by-week scheduling, and the mindset required to stay consistent when fatigue makes everything harder.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+export const POST_TREADMILL = makeBlogPost({
+  slug: 'best-treadmill-stroke-recovery',
+  title: 'Best Treadmills for Stroke Recovery: What PTs Recommend and What to Know Before You Buy',
+  description: 'A treadmill at home can extend gait retraining beyond clinic hours — but only if it\'s the right machine, used the right way. Here\'s what matters for stroke survivors.',
+  h1: 'Best Treadmills for Stroke Recovery',
+  keyword: 'best treadmill stroke recovery',
+  subhead: 'Gait retraining doesn\'t stop when your PT appointment ends. The right home treadmill closes that gap — if you buy correctly and use it correctly.',
+  ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
+  ctaSecondary: { label: 'Get the book', link: '/book' },
+  sections: [
+    {
+      heading: 'Treadmill vs. overground walking — what the research says',
+      body: `<p>There\'s legitimate debate in the rehab literature about treadmill gait training vs. overground. The short version: body-weight-supported treadmill training (BWSTT) in clinical settings has solid evidence for gait improvement. Home treadmill use without support has less evidence but is widely recommended by PTs as a way to accumulate walking volume — and walking volume is the variable that predicts long-term mobility outcomes.</p>
+<p>The key word is supervised. A treadmill at home is not a replacement for clinical gait training — it\'s a supplement for accumulating steps in a controlled environment. Set the speed low. Use the handrails when you need them. Have someone present until your PT gives you the solo green light.</p>`,
+      image: '/images/blog/fig-06.jpg',
+    },
+    {
+      heading: 'What to look for in a stroke-recovery treadmill',
+      body: `<p><strong>Emergency stop clip:</strong> Non-negotiable. The magnetic safety clip attaches to your waist — if you fall, it pulls free and stops the belt instantly. Every treadmill has one, but stroke survivors must actually use it every session. Not optional.</p>
+<p><strong>Handrail design:</strong> Side handrails for stability, not the angled front handrails. Many treadmills only have front bars — those cause you to lean forward and alter gait mechanics. Look for side rails that allow upright posture.</p>
+<p><strong>Low minimum speed:</strong> You need to walk at 0.5–1.0 mph in early recovery. Many treadmills bottom out at 0.5 mph but the belt can be jerky at that speed on cheaper models. Verify the low-end is smooth.</p>
+<p><strong>Deck width:</strong> A 20" wide belt is standard. Go wider if possible (22"+) — a hemiparetic gait pattern has a wider stance and more lateral drift than typical. More deck = more margin for error.</p>`,
+    },
+    {
+      heading: 'NordicTrack T 6.5 S — best home treadmill for stroke recovery',
+      body: `<p>The NordicTrack T 6.5 S has become the most-recommended home treadmill in stroke survivor PT communities I\'ve been part of. The reasons: a 20" x 55" deck with enough room for a compensated gait pattern, smooth belt performance down to 0.5 mph, a solid set of side handrails (not just the front angled ones), and iFIT compatibility for trainer-led walking programs. The AutoBreeze fan is genuinely useful — post-stroke thermoregulation issues mean overheating during exercise is a real concern for many survivors.</p>
+<p>The incline goes to 12% — you probably won\'t use it in the first year, but it means the machine doesn\'t become obsolete as you improve. Foldable for storage.</p>`,
+      products: [
+        { name: 'NordicTrack T 6.5 S Treadmill', price: '$699–$799', link: 'https://www.amazon.com/NordicTrack-T-Series-Treadmill/dp/B07VPN6G54', note: '20" x 55" deck, 0.5 mph minimum, solid side handrails, iFIT compatible. Best all-around home treadmill for stroke recovery gait work.' },
+      ],
+    },
+    {
+      heading: 'Sole F63 — the alternative for a wider deck',
+      body: `<p>The Sole F63 has a 20" x 60" deck — five inches longer than most competitors in this price range, which matters when your stride is asymmetric and unpredictable. The cushioning system (Cushion Flex Whisper Deck) is one of the better impact-reduction setups in the under-$1000 category. Heavier build quality than the NordicTrack, which also means more stable at slow speeds for survivors who are loading the handrails significantly.</p>
+<p>The console is less polished than the NordicTrack and there\'s no iFIT-style trainer integration. If PT-guided at-home programming matters to you, the NordicTrack wins. If you want a tank that won\'t wobble when you need the rails, the Sole is worth the extra spend.</p>`,
+      products: [
+        { name: 'Sole F63 Treadmill', price: '$899–$1099', link: 'https://www.amazon.com/Sole-Fitness-F63-Treadmill-2019/dp/B004BWLSNI', note: '20" x 60" deck, heavy build, excellent low-speed stability. Better choice for survivors who need maximum handrail support.' },
+      ],
+    },
+    {
+      heading: 'The one mistake that sets survivors back',
+      body: `<p>Using the handrails to hold yourself up at a speed that\'s too fast. I see this constantly. It looks like exercise. It is not — it\'s teaching your nervous system to walk at a speed it can\'t actually support without external assistance, and it reinforces asymmetric loading patterns.</p>
+<p>Rule: set the speed slow enough that you can walk with fingertip contact on the rails only — for balance cues, not weight support. If you\'re gripping hard and pulling yourself through the stride, the belt is too fast. Slow it down. The goal is quality steps, not distance covered.</p>`,
+      externalLinks: [
+        { label: 'Treadmill training after stroke — Cochrane Review', url: 'https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD002840.pub4/full' },
+        { label: 'Walking speed and stroke outcomes — Stroke journal', url: 'https://www.ahajournals.org/doi/10.1161/STROKEAHA.110.608273' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'How slow should I set the treadmill for stroke recovery?', a: 'Start at 0.5–1.0 mph. This feels embarrassingly slow. It is the correct speed for the first month of home treadmill use. Gait quality at 0.8 mph beats gait quantity at 2.0 mph with rail support. Progress speed only when you can walk 15 minutes at the current speed without significant rail use.' },
+    { q: 'Should I use handrails on a treadmill after stroke?', a: 'For balance cues: yes. For weight-bearing: no. Fingertip contact for awareness of drift is appropriate. Gripping hard and supporting your body weight through the rails means the speed is too high or the session is too long. Reduce one of them.' },
+    { q: 'Is it safe to use a treadmill alone after stroke?', a: 'With PT clearance, yes — once you\'ve demonstrated consistent safe use with someone present. Always: attach the safety clip every session, keep a phone within reach, and know how to step off safely if something goes wrong. The first several solo sessions should be very short (5–10 min) even if you\'ve been doing longer supervised sessions.' },
+    { q: 'Can I use a treadmill if I have foot drop?', a: 'With caution. Wear your AFO if prescribed for ambulation. Keep speed low so the affected foot has time to clear the belt on each step. Some survivors find the consistent pace of a treadmill actually helps with drop foot rhythm — but any catch of the toe at treadmill speed is dangerous. Start with someone present.' },
+    { q: 'What\'s better for stroke recovery — treadmill or outdoor walking?', a: 'Outdoor walking is the goal. Treadmills are the bridge when weather, terrain, fatigue, or safety concerns make outdoor walking impractical. The consistent pace and emergency stop of a treadmill is safer than outdoor walking in early recovery. Transition to outdoor as soon as your PT clears it.' },
+  ],
+  related: ['best-elliptical-machine-stroke-recovery', 'best-stationary-bike-stroke-recovery', 'gait-training-at-home-after-stroke', 'best-afo-brace-drop-foot'],
+  publishedDate: '2026-06-06',
+  productCard: {
+    name: 'NordicTrack T 6.5 S Treadmill',
+    price: '$699–$799',
+    link: 'https://www.amazon.com/NordicTrack-T-Series-Treadmill/dp/B07VPN6G54',
+    label: 'View on Amazon',
+    note: 'Best stroke-recovery treadmill. Smooth at 0.5 mph, solid side handrails, foldable. Affiliate link.',
+  },
+  bookPromo: {
+    title: 'Gait retraining is chapter-length in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the gait retraining process from shuffle to stride — including the mental game of accepting slow progress as the only real path forward.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+export const POST_GRIP_STRENGTHENER = makeBlogPost({
+  slug: 'best-grip-strengthener-stroke-recovery',
+  title: 'Best Grip Strengtheners for Stroke Recovery: Rebuilding Hand Strength That Actually Transfers',
+  description: 'Grip strength after stroke doesn\'t rebuild itself. The right tools, used correctly, accelerate the process. Here\'s what works — and what to avoid if spasticity is still present.',
+  h1: 'Best Grip Strengtheners for Stroke Recovery',
+  keyword: 'best grip strengthener stroke recovery',
+  subhead: 'Grip strength is a reliable predictor of upper extremity function outcomes after stroke. Here\'s how to train it at home without making spasticity worse.',
+  ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
+  ctaSecondary: { label: 'Get the book', link: '/book' },
+  sections: [
+    {
+      heading: 'The spasticity gate — read this first',
+      body: `<p>Grip strengthening exercises are contraindicated when spasticity is the dominant presentation. If your hand is in a fist at rest and resists passive opening, loaded grip work will reinforce that pattern. Address spasticity first: prolonged stretching, resting splints, Botox if severe, then grip strengthening once you have voluntary opening.</p>
+<p>If you have partial voluntary hand opening — you can open the hand against gravity or light resistance, but grip is weak — that\'s the profile where grip strengthening tools provide real value. If you\'re not sure which category you\'re in, ask your OT before purchasing.</p>`,
+      image: '/images/blog/fig-07.jpg',
+    },
+    {
+      heading: 'Gripmaster Pro — the standard for independent finger training',
+      body: `<p>The Gripmaster Pro addresses what most grip tools miss: individual finger strengthening. After stroke, finger extensors and intrinsics are often disproportionately weak compared to finger flexors — and most grip tools train flexion only, reinforcing the imbalance. The Gripmaster trains each finger independently, with individually weighted buttons that can be set to different resistances per digit.</p>
+<p>Available in four resistance levels (1.5 lb, 3 lb, 5 lb, 7 lb per finger). Most stroke survivors in early hand recovery start at 1.5 lb. Don\'t let ego push you to 3 lb before you\'ve earned it — quality of extension matters as much as grip force.</p>`,
+      products: [
+        { name: 'Gripmaster Pro Hand Exerciser', price: '$18–$24', link: 'https://www.amazon.com/Gripmaster-Pro-Hand-Exerciser/dp/B0002M7F2Q', note: 'Individual finger buttons, four resistance levels, trains both flexion and extension. Best starting point for stroke survivors with partial hand return.' },
+      ],
+    },
+    {
+      heading: 'Dynaflex Pro Gyroscopic Hand Exerciser',
+      body: `<p>The Dynaflex gyroball is a different stimulus than the Gripmaster — it trains grip endurance and wrist stability through resistance that scales with rotational speed. You start slow, build RPM, and the ball creates an angular momentum load on the wrist and forearm that\'s surprisingly effective for rebuilding the stabilizer muscles that get neglected in most stroke hand rehab.</p>
+<p>The catch: you need sufficient hand function to initiate the gyro. It requires a wrist flick to start. If your wrist extension is minimal, this isn\'t the right tool yet. Once you have that — mid-to-late recovery, or chronic phase — the Dynaflex is a genuinely useful addition to a grip program.</p>`,
+      products: [
+        { name: 'Dynaflex Pro Gyroscopic Hand Exerciser', price: '$22–$32', link: 'https://www.amazon.com/Dynaflex-Pro-Gyroscopic-Hand-Exerciser/dp/B07WBM76TK', note: 'Wrist and grip endurance through gyroscopic resistance. Requires some wrist extension to start — mid-to-late recovery tool.' },
+      ],
+    },
+    {
+      heading: 'IronMind Captains of Crush Trainer — for late-recovery grip building',
+      body: `<p>The Captains of Crush (CoC) Trainer is the lightest of the IronMind CoC line (100 lb closing resistance) and is the appropriate tool once you\'re building toward functional grip strength — not relearning movement patterns, but actually loading the hand for strength gains. The all-aluminum construction and spring quality is noticeably better than most consumer grip trainers.</p>
+<p>Context check: 100 lb resistance sounds mild. Post-stroke, it\'s not. Most people with full hand function find the Trainer challenging. Use this when you can close it cleanly for 10 reps on the affected side — until then, the Gripmaster or theraputty work is the right sequence.</p>`,
+      products: [
+        { name: 'IronMind Captains of Crush Trainer Gripper', price: '$20–$26', link: 'https://www.amazon.com/IronMind-Captains-Crush-Grippers-Trainer/dp/B001DAXNEF', note: '100 lb closing resistance, premium spring, all-aluminum. Late-recovery grip strengthener once basic hand function is restored.' },
+      ],
+    },
+    {
+      heading: 'Programming grip work into your recovery routine',
+      body: `<p>Three sessions per week, not daily. The hand needs recovery time — tendinitis is a real risk if you over-train an already-compromised neuromuscular system. Two to three sets of 10–15 reps per session. Active rest between sets — don\'t clench the hand, do light finger extension stretches.</p>
+<p>Track both sides. The goal is closing the asymmetry ratio — if your strong hand grips at 80 lbs and your affected hand grips at 20 lbs, you\'re at 25% symmetry. Progress means that ratio improving. Absolute strength is less meaningful than symmetry for most stroke outcomes.</p>`,
+      externalLinks: [
+        { label: 'Grip strength as a predictor of upper extremity function post-stroke — JNPT', url: 'https://journals.lww.com/jnpt/fulltext/2018/07000/grip_strength_and_upper_extremity_function.7.aspx' },
+        { label: 'Progressive resistance training for stroke — Cochrane Review', url: 'https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD010368.pub2/full' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Can grip strengtheners make spasticity worse?', a: 'Yes, if used in the wrong phase. Loaded grip work on a hand dominated by flexor spasticity reinforces the pattern. Wait until you have voluntary finger extension against gravity before introducing resistance tools. If in doubt, ask your OT.' },
+    { q: 'How often should I do grip exercises after stroke?', a: 'Three times per week. The hand is small but the tendon load is real. Daily grip work with resistance tools risks overuse injury in a hand that may have reduced sensation and won\'t give you normal pain warning signals. Rest days are not optional.' },
+    { q: 'What if I can\'t even hold the grip tool?', a: 'Start with theraputty (see our hand therapy tools post). Putty allows very low resistance, full ROM work, and individual finger isolation. It\'s the step before grip tools for most stroke survivors with minimal hand return.' },
+    { q: 'My affected hand cramps during exercises. Is that normal?', a: 'Muscle cramping during grip work post-stroke is common and usually indicates working at too high a resistance for too long. Back off to a lighter tool, shorter sets, longer rest periods. Persistent or painful cramping warrants a conversation with your OT or neurologist.' },
+    { q: 'Will grip strengtheners help with fine motor skills like buttons?', a: 'Partially. Grip strength is a prerequisite for fine motor function, but fine motor skill requires additional precision training — pinch exercises, manipulation tasks, peg boards. A full OT home program covers both. Grip tools are one component, not the whole program.' },
+  ],
+  related: ['best-hand-therapy-tools-stroke-recovery', 'best-robotic-glove-stroke-recovery', 'best-push-up-bars-stroke-recovery', 'stroke-spasticity-management'],
+  publishedDate: '2026-06-06',
+  productCard: {
+    name: 'Gripmaster Pro Hand Exerciser',
+    price: '$18–$24',
+    link: 'https://www.amazon.com/Gripmaster-Pro-Hand-Exerciser/dp/B0002M7F2Q',
+    label: 'View on Amazon',
+    note: 'Best starting grip tool for stroke survivors. Individual finger training, four resistance levels. Affiliate link.',
+  },
+  bookPromo: {
+    title: 'Hand recovery is covered in detail in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION dedicates a full section to upper extremity recovery — the sequence, the tools, and the mindset required to rebuild a hand that a stroke tried to take.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+export const POST_TENS_UNIT = makeBlogPost({
+  slug: 'best-tens-unit-stroke-recovery',
+  title: 'Best TENS Units for Stroke Recovery: Shoulder Pain, Spasticity, and NMES Explained',
+  description: 'TENS and NMES devices are some of the most clinically relevant tools for post-stroke shoulder pain and spasticity management. Here\'s what the evidence supports and which devices to buy.',
+  h1: 'Best TENS Units for Stroke Recovery',
+  keyword: 'best TENS unit stroke recovery',
+  subhead: 'Hemiplegic shoulder pain affects up to 84% of stroke survivors. Electrical stimulation is one of the most evidence-backed interventions. Here\'s what to buy and how to use it safely.',
+  ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
+  ctaSecondary: { label: 'Get the book', link: '/book' },
+  sections: [
+    {
+      heading: 'TENS vs. NMES — know which one you actually need',
+      body: `<p>TENS (transcutaneous electrical nerve stimulation) manages pain by modulating sensory nerve signals. It doesn\'t cause muscle contraction — it changes pain perception. NMES (neuromuscular electrical stimulation) uses higher current to cause actual muscle contractions and is used for motor re-education. Many consumer devices do both — but the programs and electrode placement are completely different for each application.</p>
+<p>For hemiplegic shoulder pain: TENS is the primary tool. For motor re-education of the shoulder girdle or hand (FES-type use): NMES/EMS programs. For spasticity management: some evidence for TENS and NMES both, though the mechanism differs. Know what you\'re treating before you set up the device.</p>`,
+      image: '/images/blog/fig-08.jpg',
+    },
+    {
+      heading: 'Safety first — electrode placement you must avoid',
+      body: `<p>Absolutely do not place electrodes: over the carotid artery (front of the neck), over a cardiac pacemaker or ICD, over the eyes, on broken or irritated skin, or transthoracically (one electrode on each side of the chest, passing current through the heart). For stroke survivors specifically: avoid placement over areas of significantly impaired sensation — you won\'t feel if the current is too high, which is how skin burns happen.</p>
+<p>If you have hemiplegic shoulder subluxation (the shoulder joint is partially dislocated — very common post-stroke), get specific electrode placement from a PT or physiatrist before self-treating. The shoulder capsule geometry changes with subluxation and standard placement guides may not apply.</p>`,
+    },
+    {
+      heading: 'TENS 7000 — the clinical standard at home price',
+      body: `<p>The TENS 7000 is used in more physical therapy clinics than any other consumer-grade unit. It has been for years. The reason isn\'t marketing — it\'s that the machine works, the controls are simple, the intensity range is adequate for post-stroke shoulder pain, and the pads and leads are available everywhere. Five modes (Normal, Burst, Modulation, SD1, SD2), 0–100 mA output, dual-channel independent control.</p>
+<p>For post-stroke shoulder pain, most PTs recommend starting with Normal mode, intensity at the threshold of sensation without muscle contraction, 20–30 minutes per session. The TENS 7000 bundle includes pads, leads, and a carrying case.</p>`,
+      products: [
+        { name: 'TENS 7000 Digital TENS Unit', price: '$28–$38', link: 'https://www.amazon.com/TENS-7000-Official-Muscle-Stimulator/dp/B001O1OUF6', note: 'Clinical-standard consumer TENS unit. Dual channel, 5 modes, 0–100 mA. Most PT-recommended device for home post-stroke shoulder pain management.' },
+      ],
+    },
+    {
+      heading: 'iReliev ET-5050+ — TENS + EMS combo for motor re-education',
+      body: `<p>The iReliev ET-5050+ does TENS and EMS (equivalent to NMES for most stroke applications) in one device. Twenty-five programs, dual channel, rechargeable. The EMS programs are where this device earns its place — if your PT has prescribed electrical muscle stimulation for shoulder girdle motor re-education or is trying to reduce spasticity through reciprocal inhibition protocols, having dedicated EMS modes matters.</p>
+<p>The electrode quality on the included pads is better than the TENS 7000 bundle. The device is slightly more complex to operate — the extra modes require learning the menu system. For survivors who want the full TENS + EMS toolkit in one unit, this is the best value in the category.</p>`,
+      products: [
+        { name: 'iReliev ET-5050+ TENS + EMS Combination Unit', price: '$55–$70', link: 'https://www.amazon.com/iReliev-Combination-TENS-Muscle-Stimulator/dp/B00ZULXJPQ', note: '25 programs, TENS + EMS, rechargeable, better pad quality than TENS 7000. Best choice if you need both pain management and motor re-education.' },
+      ],
+    },
+    {
+      heading: 'PowerDot 2.0 Duo — smart TENS/NMES for app-guided use',
+      body: `<p>The PowerDot 2.0 Duo is Bluetooth-connected and app-controlled. For stroke survivors who want guided programs rather than manual settings, the PowerDot app provides electrode placement guides, program selection, and intensity progression. The app-guided approach reduces the learning curve that trips up some survivors with the manual TENS 7000 or iReliev menus.</p>
+<p>The caveat: app-dependency. The PowerDot requires a phone to operate — no manual override. If fine motor limitations make phone interaction difficult, the hardware buttons on the TENS 7000 or iReliev are more accessible. Also significantly more expensive.</p>`,
+      products: [
+        { name: 'PowerDot 2.0 Duo Smart Muscle Stimulator', price: '$199–$249', link: 'https://www.amazon.com/PowerDot-2-0-Muscle-Stimulator/dp/B07G78CPW6', note: 'App-guided TENS/NMES with Bluetooth. Best for survivors who want program guidance over manual settings. Requires phone — consider accessibility.' },
+      ],
+      externalLinks: [
+        { label: 'Electrical stimulation for shoulder pain post-stroke — Cochrane Review', url: 'https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD004379.pub3/full' },
+        { label: 'Neuromuscular electrical stimulation in stroke rehabilitation — EBRSR', url: 'https://www.ebrsr.com/evidence-review/10-motor-recovery-and-rehabilitation' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Will TENS help my hemiplegic shoulder pain?', a: 'For most survivors: yes, for pain management during use. The Cochrane review shows TENS reduces hemiplegic shoulder pain acutely. Whether it changes the underlying subluxation or joint mechanics is a separate question — it doesn\'t. But managing pain enough to participate in rehab and sleep is not a small thing.' },
+    { q: 'Can TENS or NMES help me regain movement after stroke?', a: 'NMES/FES with voluntary effort (the EMG-triggered approach) has the strongest evidence for motor re-education — similar to the robotic glove mechanism. Passive NMES has moderate evidence for spasticity reduction. Standard TENS is pain management, not motor rehab. The category matters.' },
+    { q: 'Do I need a prescription for a TENS unit?', a: 'In the US: no, for consumer units like the ones listed here. Prescription-grade devices (like Bioness L300 for drop foot or specific FES systems) require a prescription. Standard TENS for pain management is OTC. Insurance reimbursement is a different story — check your plan before expecting coverage.' },
+    { q: 'How often should I use a TENS unit for shoulder pain?', a: 'Most PT protocols for hemiplegic shoulder pain: 30–60 minutes once or twice daily, during and after exercise sessions when pain is worst. TENS is not a substitute for shoulder positioning, subluxation management, and progressive loading — it\'s an adjunct.' },
+    { q: 'Can I use TENS if I have a pacemaker or other implanted device?', a: 'No — not without explicit clearance from your cardiologist. The electromagnetic interference from TENS can affect pacemaker function. This is not a precaution to ignore. Absolute contraindication absent specific cardiology clearance.' },
+  ],
+  related: ['best-hand-therapy-tools-stroke-recovery', 'best-massage-gun-stroke-spasticity', 'stroke-spasticity-management', 'best-robotic-glove-stroke-recovery'],
+  publishedDate: '2026-06-06',
+  productCard: {
+    name: 'TENS 7000 Digital TENS Unit',
+    price: '$28–$38',
+    link: 'https://www.amazon.com/TENS-7000-Official-Muscle-Stimulator/dp/B001O1OUF6',
+    label: 'View on Amazon',
+    note: 'Clinical-standard consumer TENS. Used in PT clinics. Best starting point for home post-stroke shoulder pain management. Affiliate link.',
+  },
+  bookPromo: {
+    title: 'Pain management is covered in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers hemiplegic shoulder pain, spasticity, and the integrated approach to managing both while keeping momentum in recovery.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+export const POST_MASSAGE_GUN = makeBlogPost({
+  slug: 'best-massage-gun-stroke-spasticity',
+  title: 'Best Massage Guns for Stroke Spasticity: What Works, What to Avoid, and How to Use One Safely',
+  description: 'Percussion therapy can reduce spasticity tone before exercise and improve range of motion post-stroke — if you use the right device in the right areas. Here\'s the honest guide.',
+  h1: 'Best Massage Guns for Stroke Spasticity and Muscle Recovery',
+  keyword: 'best massage gun stroke spasticity',
+  subhead: 'Percussion massage before your PT session can reduce tone enough to get meaningful work done. After exercise it accelerates recovery. But there are areas you must avoid — and a technique that makes the difference.',
+  ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
+  ctaSecondary: { label: 'Get the book', link: '/book' },
+  sections: [
+    {
+      heading: 'Why percussion therapy for stroke survivors',
+      body: `<p>Vibration and percussion stimulate Golgi tendon organs — mechanoreceptors that signal muscle lengthening and trigger inhibitory reflexes that reduce muscle tone. That\'s the mechanism behind the anecdotal experience of using a massage gun on a spastic calf and having the foot easier to dorsiflex for the next 20–30 minutes. The effect is temporary, but temporary is enough to get therapeutic range of motion work done.</p>
+<p>The research on percussion specifically (vs. vibration) for post-stroke spasticity is thin but growing. The anecdotal evidence from stroke survivor communities is consistent: pre-exercise percussive massage to the affected arm or leg reduces tone enough to make subsequent exercises more effective. It\'s a warm-up tool, not a cure.</p>`,
+      image: '/images/blog/fig-09.jpg',
+    },
+    {
+      heading: 'Where not to use a massage gun — non-negotiable',
+      body: `<p>Never use a massage gun over: bony prominences (spine, shoulder blade edges, hip bones), the carotid artery or anterior neck, areas of significantly reduced sensation (you can\'t feel if you\'re causing injury), areas with broken skin, bruising, or recent surgical sites, the anterior knee over the patella, or directly over an implanted device. For stroke survivors specifically: avoid the cranium and the posterior neck near the brainstem.</p>
+<p>Use only on muscle bellies with the lowest amplitude setting first. Build up from there. If you don\'t feel the sensation on the affected side, have someone confirm placement is on muscle tissue before increasing intensity.</p>`,
+    },
+    {
+      heading: 'Theragun Pro — the clinical standard',
+      body: `<p>The Theragun Pro is used in sports medicine and physical therapy clinics because the amplitude (16 mm) and force (60 lbs stall force) are calibrated for real tissue work, not superficial vibration. It comes with six attachments — the soft ball and dampener are the correct choices for post-stroke spastic muscle work; avoid the cone attachment on spastic tissue. The OLED display with pressure indicator prevents over-application.</p>
+<p>One-handed operation is possible — the rotating arm and ergonomic handle are genuinely designed to reach the contralateral side. For stroke survivors doing self-treatment on the affected limbs, this matters more than it sounds.</p>`,
+      products: [
+        { name: 'Theragun Pro Percussive Therapy Device', price: '$349–$399', link: 'https://www.amazon.com/Therabody-Theragun-Percussive-Therapy-Attachments/dp/B086YDTLVX', note: '16mm amplitude, 60 lb stall force, 6 attachments, one-handed rotating arm. Clinical-standard device for spasticity pre-treatment and muscle recovery.' },
+      ],
+    },
+    {
+      heading: 'Hypervolt 2 — the best mid-range option',
+      body: `<p>The Hypervolt 2 sits below the Theragun Pro in amplitude (12 mm vs 16 mm) and stall force (40 lbs vs 60 lbs), but is still genuinely effective for post-stroke spasticity warm-up and muscle recovery work. Three speed settings, five attachments, Bluetooth for app integration (optional — works without the app). Quieter than the Theragun, which matters if noise or vibration sensitivity is an issue post-stroke.</p>
+<p>The handle geometry is not as optimized for one-handed self-treatment as the Theragun Pro\'s rotating arm. If you have significant upper extremity involvement on both sides, the Theragun Pro\'s ergonomics are worth the price premium. If your strong arm is fully functional, the Hypervolt 2 is excellent value.</p>`,
+      products: [
+        { name: 'Hyperice Hypervolt 2 Percussion Massage Gun', price: '$179–$199', link: 'https://www.amazon.com/Hyperice-Hypervolt-Percussion-Massage-Device/dp/B09CVCB7FW', note: '12mm amplitude, 3 speeds, 5 attachments, quieter than Theragun. Best mid-range option for survivors with functional strong-side arm.' },
+      ],
+      externalLinks: [
+        { label: 'Vibration therapy and spasticity — Journal of Physical Therapy Science', url: 'https://www.jstage.jst.go.jp/article/jpts/30/7/30_jpts-2018-018/_article' },
+        { label: 'Mechanical vibration for post-stroke spasticity — Cochrane', url: 'https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD003316.pub2/full' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Will a massage gun reduce my spasticity permanently?', a: 'No. The tone reduction is temporary — typically 20–45 minutes. The value is using that window for effective range-of-motion work, stretching, or exercise that would be harder to do at baseline tone. Stack it before therapy, not instead of therapy.' },
+    { q: 'Can I use a massage gun on my spastic hand?', a: 'With caution and low amplitude only. The hand has very little muscle belly to work with and many bony prominences to avoid. Use the soft ball attachment at the lowest speed on the forearm flexors (the muscle belly in the forearm, not the hand itself) to reduce distal tone. Direct percussion on the hand is generally not recommended.' },
+    { q: 'Is it safe to use a massage gun near my stroke-affected areas?', a: 'Avoid the cranium and neck. Everything else — with the bony landmark exclusions listed above — is generally safe on muscle bellies. The key safety factor for stroke survivors is sensation impairment: if you can\'t feel the device on the affected side, have someone monitor the skin for redness or pressure marks and keep sessions to 60–90 seconds per muscle group.' },
+    { q: 'What\'s the difference between percussion and vibration for spasticity?', a: 'Amplitude and tissue depth. Percussion (massage guns) delivers higher amplitude, higher force impacts — better at reaching deeper muscle tissue. Vibration plates or handheld vibrators operate at higher frequency with lower amplitude — better for sensory input and some proprioceptive work. Both have evidence for temporary spasticity reduction; for self-treatment, percussion guns are more practical.' },
+    { q: 'Do I need the Theragun Pro or will a cheaper massage gun work?', a: 'A mid-range device (Hypervolt 2 or Theragun Elite) is sufficient for most stroke survivors. The Pro is worth the upgrade if: you\'re doing self-treatment with one hand and need the rotating arm ergonomics, you want the pressure display to prevent over-application on insensate tissue, or you\'re using it daily in a clinical-adjacent context. Budget is better spent elsewhere if the Hypervolt 2 handles your needs.' },
+  ],
+  related: ['best-tens-unit-stroke-recovery', 'best-hand-therapy-tools-stroke-recovery', 'stroke-spasticity-management', 'best-robotic-glove-stroke-recovery'],
+  publishedDate: '2026-06-06',
+  productCard: {
+    name: 'Theragun Pro Percussive Therapy Device',
+    price: '$349–$399',
+    link: 'https://www.amazon.com/Therabody-Theragun-Percussive-Therapy-Attachments/dp/B086YDTLVX',
+    label: 'View on Amazon',
+    note: 'Clinical-standard percussion therapy. Rotating arm for one-handed use. Best for spasticity pre-treatment. Affiliate link.',
+  },
+  bookPromo: {
+    title: 'Spasticity management is in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the full spasticity management stack — from positioning and splinting to electrical stimulation and beyond.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+export const POST_SMART_HOME = makeBlogPost({
+  slug: 'best-smart-home-devices-stroke-survivors',
+  title: 'Best Smart Home Devices for Stroke Survivors: Independence Through Voice and Automation',
+  description: 'For stroke survivors with aphasia, hemiplegia, or fatigue, smart home technology can restore independence that seemed gone. Here\'s what actually works and what\'s worth the money.',
+  h1: 'Best Smart Home Devices for Stroke Survivors',
+  keyword: 'smart home devices stroke survivors independence',
+  subhead: 'Controlling your home without two working hands, clear speech, or unlimited energy isn\'t a luxury — it\'s a functional independence goal. Here\'s the technology that closes the gap.',
+  ctaPrimary: { label: 'Start recovering', link: '/get-started' },
+  ctaSecondary: { label: 'Get the book', link: '/book' },
+  sections: [
+    {
+      heading: 'Why smart home tech matters for stroke recovery',
+      body: `<p>Six months post-stroke I couldn\'t reliably operate my thermostat, unlock my front door for a home health aide, or turn off a light across the room without a full trip across unstable ground. These aren\'t trivial inconveniences — they\'re independence losses that compound fatigue, create safety risks, and grind on dignity in ways that don\'t show up on a Fugl-Meyer assessment.</p>
+<p>Smart home technology addresses the asymmetry between cognitive ability and physical execution. Most stroke survivors have intact intelligence, partially intact speech, and severely limited bilateral motor function. Voice control and automation bypass the motor bottleneck entirely. This is assistive technology that doesn\'t look like assistive technology — and that matters for motivation.</p>`,
+      image: '/images/blog/fig-10.jpg',
+    },
+    {
+      heading: 'Amazon Echo Show 8 — the control center that works',
+      body: `<p>The Echo Show 8 is the sweet spot for stroke survivors: a 8" touchscreen with large, accessible UI elements plus full Alexa voice control. Voice commands handle lights, thermostat, timers, calls, video calls, music, weather, medication reminders. The touchscreen is a fallback when voice commands aren\'t working well — which matters for survivors with aphasia or dysarthria who have good days and bad days for verbal communication.</p>
+<p>The camera enables video calling without requiring a phone — critical for survivors who struggle with small touchscreen interfaces. Drop In feature allows family caregivers to check in without the survivor needing to answer. The Show 8\'s screen size is the minimum that makes the UI accessible with motor impairment; the Show 5 is too small for reliable touch interaction with hemiparetic hands.</p>`,
+      products: [
+        { name: 'Amazon Echo Show 8 (2nd Gen)', price: '$99–$129', link: 'https://www.amazon.com/echo-show-8/dp/B07PF1Y28C', note: '8" touchscreen + Alexa voice control, video calls, Drop In, large UI elements. Best smart home hub for stroke survivors — accessible for both voice and touch.' },
+      ],
+    },
+    {
+      heading: 'Amazon Echo Show 5 — bedside independence',
+      body: `<p>The Echo Show 5 paired with the Echo Show 8 creates a two-zone setup: main living area (Show 8) and bedside (Show 5). Nighttime independence — medication alarms, light control without getting up, emergency calls, sleep sounds for post-stroke insomnia — is disproportionately valuable. The Show 5 is compact enough for a nightstand and still has a screen for video calling family in the morning before getting up.</p>
+<p>Don\'t try to use the Show 5 as a primary device — the 5.5" screen is too small for reliable touch with motor impairment. It\'s a bedside satellite, not a hub.</p>`,
+      products: [
+        { name: 'Amazon Echo Show 5 (2nd Gen)', price: '$44–$64', link: 'https://www.amazon.com/echo-show-5/dp/B09B2SBHQK', note: '5.5" touchscreen, compact bedside size, Alexa. Best as a satellite device in the bedroom for nighttime independence.' },
+      ],
+    },
+    {
+      heading: 'Smart plugs, smart lights, and video doorbells',
+      body: `<p><strong>Smart plugs:</strong> A $10–$15 Alexa-compatible smart plug turns any lamp or appliance into a voice-controlled device. Start here before buying dedicated smart bulbs — it\'s the lowest-friction way to get voice control on existing fixtures. Kasa and Amazon Basics both make reliable units.</p>
+<p><strong>Smart lights:</strong> Philips Hue or similar let you control brightness and color by voice — useful for post-stroke light sensitivity where the overhead might be too harsh but reaching a dimmer requires crossing the room. "Alexa, dim the living room to 30%" is a real quality-of-life improvement.</p>
+<p><strong>Video doorbell:</strong> The Ring Video Doorbell lets a survivor see and speak to anyone at the door through the Echo Show without walking to the door. For survivors with gait issues, fatigue, or who live alone, this is a genuine safety and independence tool — not just a convenience gadget.</p>`,
+      products: [
+        { name: 'Ring Video Doorbell (2nd Gen)', price: '$59–$99', link: 'https://www.amazon.com/Ring-Video-Doorbell/dp/B07DPQJK9L', note: 'View and speak to visitors through Echo Show without going to the door. Critical for survivors with gait issues or who live alone.' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Will Alexa understand me if I have dysarthria after stroke?', a: 'Alexa\'s speech recognition has improved significantly for atypical speech. Many survivors with mild-to-moderate dysarthria report reliable recognition after the system learns their voice pattern. Severe dysarthria may require supplementing with touch-based control (the Echo Show screen). Worth trying — you can return it if voice recognition is too unreliable.' },
+    { q: 'What\'s the best setup for a stroke survivor living alone?', a: 'Echo Show 8 in the main living area, Echo Show 5 at the bedside, Ring doorbell, smart plugs on key lamps, and a smart thermostat. Total cost: $300–$400. The independence and safety value of that setup is hard to overstate for someone living alone post-stroke.' },
+    { q: 'Can smart home devices help with post-stroke cognitive issues?', a: 'Yes — Alexa\'s reminder system is genuinely useful for medication management, scheduled activity cues, and appointment reminders. Cognitive fatigue means post-stroke survivors benefit from offloading working memory to external systems. "Alexa, remind me to take my aspirin at 8 AM" is a real clinical tool.' },
+    { q: 'My caregiver wants to check on me but I want privacy. Can smart home devices handle that?', a: 'Alexa Drop In can be restricted to announced calls only (normal video calls) rather than the unannounced check-in mode. The survivor controls who has Drop In permissions. This is a worth-it conversation to have — the safety value of easy caregiver check-ins is real, and the privacy settings can be calibrated to a level both parties accept.' },
+    { q: 'Is Alexa accessible for one-handed operation?', a: 'Primarily voice-operated by design — one-handed by default. The Echo Show touchscreen requires touch for some interactions; all of those have voice equivalents. For the occasional gesture (swiping through a playlist, adjusting a slider), the Show\'s touch targets are large enough for most hemiparetic hands with adequate active arm function.' },
+  ],
+  related: ['best-adaptive-eating-tools-stroke', 'stroke-memory-cognitive-recovery', 'stroke-recovery-fatigue', 'best-brain-games-books-stroke-cognitive-recovery'],
+  publishedDate: '2026-06-06',
+  productCard: {
+    name: 'Amazon Echo Show 8',
+    price: '$99–$129',
+    link: 'https://www.amazon.com/echo-show-8/dp/B07PF1Y28C',
+    label: 'View on Amazon',
+    note: 'Best smart home hub for stroke survivors. Voice + touchscreen, video calls, Drop In. Affiliate link.',
+  },
+  bookPromo: {
+    title: 'Independence strategies are in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers home adaptation, adaptive technology, and the practical strategies that rebuild independence without waiting for full physical recovery.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+export const POST_RED_LIGHT = makeBlogPost({
+  slug: 'red-light-therapy-stroke-recovery',
+  title: 'Red Light Therapy After Stroke: What the Evidence Actually Says',
+  description: 'Red light therapy (photobiomodulation) has emerging evidence for neurological recovery and strong evidence for muscle soreness and inflammation. Here\'s an honest assessment for stroke survivors.',
+  h1: 'Red Light Therapy for Stroke Recovery: Evidence, Limits, and What I Actually Use',
+  keyword: 'red light therapy stroke recovery',
+  subhead: 'Photobiomodulation is not a cure. It is not fringe science either. For post-stroke inflammation, muscle recovery, and the mitochondrial support that underlies everything else, it\'s worth understanding.',
+  ctaPrimary: { label: 'Start recovering', link: '/get-started' },
+  ctaSecondary: { label: 'Get the book', link: '/book' },
+  sections: [
+    {
+      heading: 'What photobiomodulation actually does',
+      body: `<p>Red and near-infrared light in the 630–850 nm range is absorbed by cytochrome c oxidase — a mitochondrial enzyme involved in the final step of cellular energy production. Stimulating this pathway increases ATP production, reduces oxidative stress, and modulates inflammatory cytokines. This isn\'t speculative — the cellular mechanisms are well-characterized. The clinical question is whether those cellular effects are large enough to matter at the systemic level for stroke recovery outcomes.</p>
+<p>The honest answer: the neurological evidence is promising but not definitive. Multiple animal models show neuroprotection and improved recovery post-stroke. Human clinical trials for acute stroke neurological recovery exist but are small. For the musculoskeletal effects — reducing DOMS, improving muscle function after exercise, joint inflammation — the evidence base is substantially stronger and more mature.</p>`,
+      image: '/images/blog/fig-11.jpg',
+    },
+    {
+      heading: 'The practical case for stroke survivors',
+      body: `<p>Here\'s how I frame it: if the evidence for neurological recovery is emerging but not yet definitive, the evidence for the things that support neurological recovery — reducing systemic inflammation, improving sleep, reducing musculoskeletal pain that limits exercise participation — is much stronger. And reducing barriers to consistent exercise is the highest-value target in stroke recovery.</p>
+<p>I use red light therapy on my spastic calf and affected shoulder post-exercise. The joint and muscle recovery effect is real for me. Whether it\'s also doing something in my central nervous system, I genuinely don\'t know. But the risk profile is low, the cost is manageable, and it\'s one of the few things I do that has no downside.</p>`,
+    },
+    {
+      heading: 'Mito Red MitoPRO 300 — the best value panel',
+      body: `<p>The MitoPRO 300 is a 6" x 9" targeted panel — the right size for treating a shoulder, calf, or forearm in one session. Dual wavelength (660 nm red + 850 nm near-infrared), no EMF issues at the 6" treatment distance, no fan noise, 90-day return window. Mito Red has consistently been one of the more transparent companies about actual output specs vs. marketing claims in a category full of overstatements.</p>
+<p>Treatment protocol: 5–15 minutes per area at 6" distance, once daily or every other day. More time does not mean more benefit — there\'s a Goldilocks window with photobiomodulation. Exceeding it can actually inhibit the response (biphasic dose response). Set a timer.</p>`,
+      products: [
+        { name: 'Mito Red Light MitoPRO 300 Panel', price: '$189–$239', link: 'https://www.amazon.com/Mito-Red-Light-MitoPRO-Therapy/dp/B09B3HJ7XH', note: 'Dual wavelength 660/850nm, 6"x9" targeted panel, transparent output specs. Best value entry panel for post-stroke muscle recovery and inflammation management.' },
+      ],
+    },
+    {
+      heading: 'Tendlite — the handheld option for targeted work',
+      body: `<p>The Tendlite is a small, handheld 660 nm red light device for targeted tendon and joint work. It\'s the right tool if your primary use case is a specific joint — the affected shoulder, a spastic wrist, or a painful knee — rather than a larger muscle area. Ninety-second treatment time per point, FDA-cleared for the cleared indications, very simple operation with one hand.</p>
+<p>The Tendlite is not a full-body or large-muscle tool — it\'s a point device. For broader applications (the entire affected arm, the lower leg), the MitoPRO 300 panel is more practical. For a survivor whose primary target is one specific painful joint, the Tendlite\'s simplicity and one-hand operation are advantages.</p>`,
+      products: [
+        { name: 'Tendlite Advanced Red Light Device', price: '$58–$78', link: 'https://www.amazon.com/Tendlite-Advanced-Red-Light-Therapy/dp/B01J3CKQZG', note: 'FDA-cleared, handheld, single-joint targeted treatment, one-hand operation. Best for survivors with one specific painful joint target.' },
+      ],
+      externalLinks: [
+        { label: 'Photobiomodulation for stroke — systematic review 2023', url: 'https://pubmed.ncbi.nlm.nih.gov/36972768/' },
+        { label: 'Low-level laser therapy for musculoskeletal pain — Cochrane', url: 'https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD009100.pub2/full' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Is red light therapy safe after stroke?', a: 'For most survivors: yes. Don\'t shine it directly in the eyes. Don\'t use it over active bleeding or malignancy. The safety profile for low-level photobiomodulation is very good. If you\'re taking photosensitizing medications (some blood thinners, antibiotics, antifungals), check with your pharmacist — photosensitization is a drug interaction, not a device issue per se.' },
+    { q: 'Can red light therapy help with my neurological recovery from stroke?', a: 'The honest answer: possibly. The animal model evidence and cellular mechanisms are compelling. The human clinical trial data for neurological recovery specifically is promising but not yet practice-changing. What the evidence supports more clearly is the musculoskeletal and inflammation pathway — which supports recovery indirectly. I wouldn\'t buy it primarily for neurological reasons; I\'d buy it for joint and muscle recovery.' },
+    { q: 'How long does a red light therapy session take?', a: '5–15 minutes per treatment area at 6" distance for panels. 90 seconds per point for the Tendlite. Err on the lower end of the time range — the biphasic dose response is real. More than 20 minutes per area is not more beneficial and may inhibit the response.' },
+    { q: 'What\'s the difference between red light and near-infrared?', a: 'Red light (630–680 nm) penetrates about 5mm — good for skin, superficial tissue, and surface joint structures. Near-infrared (800–850 nm) penetrates 2–3 cm — reaches muscle tissue and deeper joints. Dual-wavelength panels do both simultaneously. For post-stroke use where you want both surface and deeper tissue effects, dual-wavelength is worth the modest price premium.' },
+    { q: 'Can I use red light therapy on my spastic muscles?', a: 'Yes — there\'s some emerging evidence that photobiomodulation reduces muscle tone through mitochondrial and anti-inflammatory pathways, separate from the mechanical mechanisms of TENS or massage. It\'s compatible with other spasticity tools and there\'s no conflict with stretching or splinting protocols. Stack it as a pre-treatment tool alongside percussion massage if you have both.' },
+  ],
+  related: ['best-tens-unit-stroke-recovery', 'best-massage-gun-stroke-spasticity', 'best-hand-therapy-tools-stroke-recovery', 'stroke-spasticity-management'],
+  publishedDate: '2026-06-06',
+  productCard: {
+    name: 'Mito Red Light MitoPRO 300',
+    price: '$189–$239',
+    link: 'https://www.amazon.com/Mito-Red-Light-MitoPRO-Therapy/dp/B09B3HJ7XH',
+    label: 'View on Amazon',
+    note: 'Best value red light therapy panel for stroke recovery. Dual wavelength, transparent specs. Affiliate link.',
+  },
+  bookPromo: {
+    title: 'The recovery stack is in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers every tool, protocol, and mindset piece in the recovery stack — including what I actually use seven years out and why.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
 // Aggregator
 // =============================================================================
 export const ALL_BLOG_POSTS: SsrPageConfig[] = [
@@ -2946,6 +3511,14 @@ export const ALL_BLOG_POSTS: SsrPageConfig[] = [
   POST_ANKLE_BRACE,
   POST_BALANCE_BOARD_GUIDE,
   POST_BRAIN_BOOKS,
+  POST_ELLIPTICAL,
+  POST_STATIONARY_BIKE,
+  POST_TREADMILL,
+  POST_GRIP_STRENGTHENER,
+  POST_TENS_UNIT,
+  POST_MASSAGE_GUN,
+  POST_SMART_HOME,
+  POST_RED_LIGHT,
 ];
 
 // /blog hub page — lists all posts as internal-link cluster
