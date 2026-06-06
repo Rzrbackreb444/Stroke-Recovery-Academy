@@ -12,8 +12,8 @@ interface BlogPostInput {
   h1: string;
   keyword: string;
   subhead: string;
-  ctaPrimary: { href: string; label: string };
-  ctaSecondary: { href: string; label: string };
+  ctaPrimary: { href?: string; link?: string; label: string };
+  ctaSecondary?: { href?: string; link?: string; label: string };
   sections: ContentSection[];
   faqs: FAQItem[];
   related: InternalLink[];
@@ -42,8 +42,8 @@ function makeBlogPost(p: BlogPostInput): SsrPageConfig {
     hero: {
       eyebrow: 'Stroke Recovery Blog',
       subhead: p.subhead,
-      ctaPrimary: p.ctaPrimary,
-      ctaSecondary: p.ctaSecondary,
+      ctaPrimary: { href: (p.ctaPrimary.href || p.ctaPrimary.link) as string, label: p.ctaPrimary.label },
+      ctaSecondary: p.ctaSecondary ? { href: (p.ctaSecondary.href || p.ctaSecondary.link) as string, label: p.ctaSecondary.label } : undefined,
     },
     sections: p.sections,
     faqs: p.faqs,
@@ -3474,6 +3474,436 @@ export const POST_RED_LIGHT = makeBlogPost({
 });
 
 // =============================================================================
+// Batch 4 — Home accessibility, therapy, and return-to-function
+// =============================================================================
+
+export const POST_ADJUSTABLE_BED = makeBlogPost({
+  slug: 'best-adjustable-bed-wedge-pillow-stroke-recovery',
+  title: 'Best Adjustable Beds and Wedge Pillows for Stroke Recovery: Sleep, Positioning, and Spasticity',
+  description: 'Bed positioning after stroke directly affects spasticity, shoulder subluxation, aspiration risk, and sleep quality. Here\'s what to buy and how to set it up correctly.',
+  h1: 'Best Adjustable Beds and Wedge Pillows for Stroke Recovery',
+  keyword: 'best adjustable bed wedge pillow stroke recovery',
+  subhead: 'How you sleep is part of your rehabilitation. Positioning affects spasticity tone, shoulder integrity, and whether you wake up ready to work or already behind.',
+  ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
+  ctaSecondary: { label: 'Get the book', link: '/book' },
+  sections: [
+    {
+      heading: 'Why positioning matters more than most survivors realize',
+      body: `<p>In the acute and subacute phases, my affected arm position overnight made a measurable difference in morning tone. A shoulder left to fall into internal rotation and adduction through eight hours of sleep showed up as tighter, more resistant, and more painful in morning PT. A shoulder properly supported in slight abduction and external rotation showed up ready to work.</p>
+<p>The neurological mechanism: prolonged positioning in a shortened muscle length maintains hypertonicity. The inverse — positioning in a lengthened state — has a genuine, if modest, tone-reducing effect over time. This is why occupational therapists give detailed positioning instructions at discharge. Most survivors follow them for two weeks and then revert to whatever's comfortable. Comfortable is often the wrong position for recovery.</p>`,
+      image: '/images/blog/fig-12.jpg',
+    },
+    {
+      heading: 'InteVision Foam Wedge Pillow — the essential base',
+      body: `<p>The InteVision foam wedge is the most prescribed positioning product in stroke OT. The two-piece design — a firm base wedge plus a softer top piece — allows adjustment for trunk elevation (aspiration risk, GERD, breathing) and limb positioning simultaneously. The cover is removable and washable, which matters given the extended daily use.</p>
+<p>Use cases: elevating the head of bed 30 degrees for dysphagia or aspiration risk, propping the affected arm in slight abduction during sleep, supporting the affected leg in slight hip abduction and knee flexion to counteract extensor spasticity pattern. Your OT can give you the exact configuration for your specific presentation — what I can tell you is that the InteVision wedge is the right tool for most of those positions.</p>`,
+      products: [
+        { name: 'InteVision Foam Wedge Bed Pillow', price: '$44–$58', link: 'https://www.amazon.com/InteVision-Foam-Wedge-Bed-Pillow/dp/B00FHKNO04', note: 'Two-piece adjustable design, removable washable cover. The most PT-recommended wedge for stroke positioning. Versatile for trunk, arm, and leg support.' },
+      ],
+    },
+    {
+      heading: 'Lucid L300 Adjustable Bed Base — for survivors ready to invest',
+      body: `<p>An adjustable bed base that lets you set head and foot elevation independently changes the positioning equation entirely. No more stacking and restacking wedges at 2 AM when you need to adjust for reflux or just need to get comfortable enough to sleep. The remote works one-handed — critical. The zero-gravity preset (head and knees slightly elevated, lumbar in neutral) is what many stroke survivors find optimal for spasticity management overnight and for the neurofatigue that makes flat-lying uncomfortable.</p>
+<p>The Lucid L300 is the value entry in the adjustable base category — it does head and foot elevation with a wired remote and a wireless backup, has a USB port for device charging bedside, and is compatible with most standard and split-king mattresses. Delivery and assembly complexity: verify your bedroom access before ordering a king or split-king base.</p>`,
+      products: [
+        { name: 'LUCID L300 Adjustable Bed Base', price: '$349–$549', link: 'https://www.amazon.com/LUCID-Adjustable-Base-Head-Elevation/dp/B073VHM9DV', note: 'Independent head/foot elevation, one-handed remote, zero-gravity preset, USB charging. Best value adjustable base for stroke positioning and sleep quality.' },
+      ],
+    },
+    {
+      heading: 'The affected arm overnight — the position most survivors get wrong',
+      body: `<p>Most stroke survivors sleep with their affected arm tucked against their body or curled across their chest. Both positions maintain the flexor synergy pattern — shoulder internal rotation, elbow flexion, wrist flexion. Eight hours per night. That\'s a third of your day reinforcing the very pattern you\'re spending therapy hours trying to reverse.</p>
+<p>Target position: affected shoulder in slight abduction (30–45 degrees away from the body), elbow gently extended or at neutral, forearm pronated or neutral, wrist in slight extension. A pillow under the arm maintains abduction. A resting hand splint (see our hand therapy post) maintains wrist extension. This setup costs $50–$80 total and changes the daily battle with morning tone.</p>`,
+      externalLinks: [
+        { label: 'Positioning for stroke — evidence review EBRSR', url: 'https://www.ebrsr.com/evidence-review/15-shoulder-pain-and-complex-regional-pain-syndrome' },
+        { label: 'Sleep and neurological recovery — Nature Reviews Neurology', url: 'https://www.nature.com/articles/nrneurol.2017.36' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'What angle should I elevate my head after stroke?', a: 'For dysphagia or aspiration risk: 30–45 degrees head-of-bed elevation during and after meals, and often overnight. For general sleep quality and spasticity: 15–30 degrees is comfortable for most survivors without specific aspiration concerns. Your speech-language pathologist or OT gives the definitive recommendation for your case.' },
+    { q: 'Will a wedge pillow help with my hemiplegic shoulder pain at night?', a: 'Yes, if positioned correctly. The goal is maintaining the shoulder in slight abduction and external rotation — away from the internal rotation/adduction pattern that worsens shoulder pain. A wedge under the arm (not just behind the back) provides the abduction support. Ask your OT to demonstrate the specific placement.' },
+    { q: 'Is an adjustable bed worth the cost for stroke recovery?', a: 'If you\'re in the first 12–18 months and actively managing spasticity, positioning, or sleep-disrupting fatigue: yes, the value is real. If you\'re further out and sleeping reasonably well with standard positioning: start with the wedge pillow and see if that\'s sufficient before the adjustable base investment.' },
+    { q: 'Should I sleep on my affected side or my stronger side after stroke?', a: 'Both positions have clinical use. Lying on the affected side can provide weight-bearing proprioceptive input that inhibits spasticity. Lying on the strong side allows the affected arm to be positioned forward with support. Back-lying with wedge support is the most controllable for positioning purposes. Your OT should guide which is indicated for your specific pattern.' },
+    { q: 'My affected leg is in extensor spasticity at night — what helps?', a: 'Hip abduction pillow between the knees reduces the extensor pattern reinforcement. A slight knee flexion cushion under the knee on the affected side further reduces extensor tone. Some survivors use ankle splints or soft AFOs overnight for plantarflexion management — talk to your orthotist about night use of your device.' },
+  ],
+  related: ['stroke-spasticity-management', 'best-hand-therapy-tools-stroke-recovery', 'stroke-recovery-fatigue', 'best-tens-unit-stroke-recovery'],
+  publishedDate: '2026-06-06',
+  productCard: {
+    name: 'InteVision Foam Wedge Bed Pillow',
+    price: '$44–$58',
+    link: 'https://www.amazon.com/InteVision-Foam-Wedge-Bed-Pillow/dp/B00FHKNO04',
+    label: 'View on Amazon',
+    note: 'Most PT-recommended positioning wedge for stroke recovery. Two-piece adjustable design. Affiliate link.',
+  },
+  bookPromo: {
+    title: 'Recovery happens 24 hours a day',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers positioning, sleep, and the overnight recovery practices that most survivors ignore — and that compound over months.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+export const POST_COMPRESSION = makeBlogPost({
+  slug: 'compression-garments-stroke-recovery-edema',
+  title: 'Compression Socks and Sleeves for Stroke Recovery: Managing Edema, DVT Risk, and Circulation',
+  description: 'Post-stroke edema in the affected limb is nearly universal. Compression garments are one of the most evidence-backed interventions. Here\'s what to buy, how to put them on one-handed, and when to call your doctor.',
+  h1: 'Compression Garments for Stroke Recovery: Socks, Sleeves, and Edema Management',
+  keyword: 'compression socks stroke recovery edema',
+  subhead: 'A swollen affected leg isn\'t just uncomfortable — it limits movement, increases DVT risk, and compounds the fatigue that already makes everything harder. Compression is the answer most survivors underuse.',
+  ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
+  ctaSecondary: { label: 'Get the book', link: '/book' },
+  sections: [
+    {
+      heading: 'Why stroke survivors need compression',
+      body: `<p>Paralysis or significant weakness in the affected limb impairs the muscle pump — the mechanism by which skeletal muscle contraction pushes blood and lymph back toward the heart. No pump, fluid pools. Edema in the affected hand, ankle, and lower leg is nearly universal in the first weeks post-stroke, and many survivors deal with it for months or years.</p>
+<p>The consequences go beyond appearance. Edematous tissue is stiffer and more resistant to the range-of-motion work you need to do. Swollen fingers are harder to rehabilitate. Ankle edema in an already-compromised gait pattern adds instability and fatigue cost. DVT risk is elevated in the first 3–6 months post-stroke — immobility, hemiplegia, and hospital-acquired deconditioning are all independent risk factors. Compression addresses all of these.</p>`,
+      image: '/images/blog/fig-13.jpg',
+    },
+    {
+      heading: 'Compression levels — what the numbers mean',
+      body: `<p>Compression is measured in mmHg (millimeters of mercury). For stroke recovery contexts:</p>
+<p><strong>8–15 mmHg:</strong> Mild, OTC, for general circulation support and travel. Appropriate for survivors with minimal edema who are ambulatory.</p>
+<p><strong>15–20 mmHg:</strong> Moderate OTC. Best starting point for most stroke survivors with mild-to-moderate dependent edema in the affected leg.</p>
+<p><strong>20–30 mmHg:</strong> Firm. Medical-grade — usually requires a prescription for reimbursement but is OTC-available. Indicated for significant edema, venous insufficiency, or DVT prevention protocol.</p>
+<p><strong>30–40 mmHg:</strong> Extra firm. Prescription only in most clinical contexts. Not for self-purchase without physician guidance.</p>`,
+    },
+    {
+      heading: 'Physix Gear compression socks — best daily-wear value',
+      body: `<p>Physix Gear makes the most-reviewed compression socks in the 20–30 mmHg stroke-relevant range. Moisture-wicking nylon-spandex blend, reinforced heel and toe, graduated compression from ankle to calf. Available in multiple sizes — measure ankle circumference and calf circumference before ordering, not just shoe size. The snug fit that makes them effective also makes them harder to size wrong and harder to put on.</p>
+<p>For one-handed donning: a stocking donner (a separate $15–$20 purchase) is nearly essential for compression socks with significant hemiplegia. The same donner works for the Physix Gear socks and most medical-grade alternatives.</p>`,
+      products: [
+        { name: 'Physix Gear Sport Compression Socks (20–30 mmHg)', price: '$14–$20', link: 'https://www.amazon.com/Compression-Socks-Men-Women-20-30mmhg/dp/B00U1YHUJI', note: 'Graduated 20-30 mmHg, moisture-wicking, reinforced heel/toe. Best daily-use value for post-stroke leg edema management.' },
+      ],
+    },
+    {
+      heading: 'NormaTec Go — pneumatic compression for serious recovery',
+      body: `<p>The NormaTec Go is a battery-powered, app-controlled pneumatic compression sleeve — the portable version of the devices used in elite sports recovery and lymphedema clinics. Unlike passive compression socks, pneumatic sleeves actively cycle pressure to push fluid up the limb, mimicking the muscle pump that paralysis has disrupted. The sessions last 20–60 minutes; most stroke survivors use it after exercise or after a long day on their feet.</p>
+<p>The clinical evidence for pneumatic compression in post-stroke edema and DVT prevention is strong. The cost is significantly higher than socks — but for survivors with persistent dependent edema that isn\'t fully controlled by static compression, or those who can\'t tolerate the donning of tight socks with significant hand weakness, the NormaTec Go\'s sleeve design and one-button operation is a genuinely better solution.</p>`,
+      products: [
+        { name: 'Hyperice NormaTec Go Leg Recovery System', price: '$299–$399', link: 'https://www.amazon.com/Hyperice-NormaTec-Leg-Compression-Boots/dp/B09F8D3WNH', note: 'Pneumatic sequential compression, app-controlled, battery-powered. Best for significant edema uncontrolled by static compression socks.' },
+      ],
+      externalLinks: [
+        { label: 'Compression therapy for post-stroke edema — EBRSR', url: 'https://www.ebrsr.com/evidence-review/10-motor-recovery-and-rehabilitation' },
+        { label: 'DVT prevention after stroke — AHA guidelines', url: 'https://www.ahajournals.org/doi/10.1161/STR.0000000000000375' },
+      ],
+    },
+    {
+      heading: 'Upper extremity compression — the neglected half',
+      body: `<p>Hand and forearm edema post-stroke gets less attention than leg edema but affects rehabilitation outcomes significantly. A swollen hand is harder to open, harder to position, and harder to get any meaningful sensory input from. Isotoner-style compression gloves (open-finger, light compression) are the standard for mild hand edema. For more significant involvement, lymphedema-specific compression garments prescribed by a certified lymphedema therapist are the appropriate intervention — not self-purchase.</p>
+<p>Arm slings also contribute to dependent edema by keeping the arm at a dependent angle. An arm trough wheelchair attachment or proper sling positioning keeps the hand at heart level when sitting — ask your OT about the positioning if forearm and hand swelling is prominent.</p>`,
+    },
+  ],
+  faqs: [
+    { q: 'How do I put on compression socks with one hand after stroke?', a: 'A stocking donner ($15–$20 on Amazon) is the one-handed solution. The rigid frame holds the sock open so you can insert your foot without needing to grip the fabric. Most survivors can master this independently within a few practice sessions. Your OT should demonstrate the technique and confirm the correct donner style for your compression level.' },
+    { q: 'Can compression socks prevent DVT after stroke?', a: 'They contribute to prevention but are not sufficient alone. The AHA guidelines for post-stroke DVT prevention include compression stockings as a component of a multi-modal approach — alongside early mobility, hydration, and anticoagulation where appropriate. If you have elevated DVT risk factors, this is a physician conversation, not an Amazon purchase decision.' },
+    { q: 'What compression level do I need after stroke?', a: 'For most stroke survivors managing dependent edema without physician-diagnosed venous insufficiency: 15–20 mmHg OTC is appropriate to start. If edema is persistent and significant, discuss 20–30 mmHg with your physician. Never buy 30–40 mmHg without explicit medical guidance — incorrectly fitted high-compression garments can cause tissue damage in areas with impaired sensation.' },
+    { q: 'My affected leg swells more toward the end of the day — is that normal?', a: 'Yes. Dependent edema that increases with gravity and activity and decreases with elevation and rest is the classic pattern of post-stroke venous insufficiency and muscle pump impairment. Compression socks worn during the day, leg elevation during rest periods, and ankle pumping exercises (if you have the range) address the contributing factors. Sudden, severe, or asymmetric swelling with warmth or redness warrants urgent medical evaluation for DVT.' },
+    { q: 'Are compression socks covered by insurance after stroke?', a: 'Medical-grade compression stockings (20–30 mmHg and above, prescribed) may be covered under Medicare Part B or supplemental insurance as durable medical equipment — with a physician prescription and documentation of medical necessity (venous insufficiency, DVT history, lymphedema). OTC socks are generally not covered. Verify your specific plan benefits.' },
+  ],
+  related: ['best-ankle-brace-stroke-survivor', 'best-adjustable-bed-wedge-pillow-stroke-recovery', 'best-wheelchair-stroke-survivor', 'stroke-spasticity-management'],
+  publishedDate: '2026-06-06',
+  productCard: {
+    name: 'Physix Gear Compression Socks (20–30 mmHg)',
+    price: '$14–$20',
+    link: 'https://www.amazon.com/Compression-Socks-Men-Women-20-30mmhg/dp/B00U1YHUJI',
+    label: 'View on Amazon',
+    note: 'Best value daily-wear compression socks for post-stroke edema. Graduated 20–30 mmHg. Affiliate link.',
+  },
+  bookPromo: {
+    title: 'Circulation and recovery in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the physical management protocols — compression, positioning, exercise progression — that address the downstream effects of hemiplegia most survivors don\'t know to manage.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+export const POST_STANDING_DESK = makeBlogPost({
+  slug: 'best-standing-desk-stroke-recovery-return-to-work',
+  title: 'Best Standing Desks for Stroke Survivors: Return to Work, Posture, and Active Recovery',
+  description: 'Returning to a desk job after stroke requires more than willpower — it requires a workstation built for hemiplegia, fatigue, and the posture asymmetries that make prolonged sitting a recovery setback.',
+  h1: 'Best Standing Desks for Stroke Survivors and Return to Work',
+  keyword: 'best standing desk stroke recovery return to work',
+  subhead: 'Sitting eight hours a day with hemiplegia reinforces every asymmetry you\'re trying to correct in PT. A height-adjustable desk isn\'t a luxury — it\'s a functional tool for recovering while working.',
+  ctaPrimary: { label: 'Start recovering', link: '/get-started' },
+  ctaSecondary: { label: 'Get the book', link: '/book' },
+  sections: [
+    {
+      heading: 'Why a regular desk works against stroke recovery',
+      body: `<p>I went back to part-time desk work at eight months post-stroke. Standard fixed-height desk, standard chair. Within two weeks my affected shoulder was worse, my trunk was listing right, and my PT was asking what changed. What changed was six hours per day of asymmetric loading in a fixed position — the affected arm resting at an angle that maintained internal rotation, the trunk habitually shifting to the stronger side, the affected leg hanging in less-than-ideal position because the seat height was wrong for my gait mechanics.</p>
+<p>Height-adjustable desks address this by giving you options. Alternate between sitting and standing. Set the height for your affected arm to rest at desk level rather than hanging. Stand during video calls to get bilateral weight-bearing. None of this replaces PT — but all of it stops compounding the asymmetries that PT is trying to reduce.</p>`,
+      image: '/images/blog/fig-14.jpg',
+    },
+    {
+      heading: 'FlexiSpot E7 — the best value electric sit-stand desk',
+      body: `<p>The FlexiSpot E7 is the most-reviewed electric standing desk in the $350–$500 range that consistently shows up in ergonomic and rehabilitation contexts. Dual-motor lift, 355 lb weight capacity, height range of 22.8"–48.4" that works for seated use by shorter survivors and standing use up to 6'4". The anti-collision detection stops the desk if it encounters an obstacle — important if one arm is reaching toward the desk when you hit the up button.</p>
+<p>Four programmable height memory positions. Set one for your optimal seated height (affected forearm resting flat on the desk surface), one for standing height, one for a mid-height that works if you\'re sitting on a stool during fatigue periods. One-button transitions mean you actually use the adjustment instead of avoiding it because it\'s inconvenient.</p>`,
+      products: [
+        { name: 'FlexiSpot E7 Electric Height Adjustable Standing Desk', price: '$369–$449', link: 'https://www.amazon.com/FlexiSpot-Electric-Height-Adjustable-Standing/dp/B08BNQNHFY', note: 'Dual motor, 4 memory presets, anti-collision, 22.8"–48.4" range. Best value electric standing desk for stroke return-to-work setup.' },
+      ],
+    },
+    {
+      heading: 'SHW Electric Height Adjustable Desk — the budget option',
+      body: `<p>For survivors who need the functional benefit of height adjustment without the FlexiSpot price point, the SHW electric desk delivers the core feature — motorized height adjustment with memory presets — at $200–$260. Single motor (slower transitions, lower weight capacity at 176 lbs), but fully adequate for a standard workstation setup. The height range of 28"–45" covers most sitting and standing configurations.</p>
+<p>The limitation: lower build quality is noticeable in the frame stability at standing height. If you\'re using the desk primarily at the seated position (which is appropriate for most stroke survivors in the first year), this doesn\'t matter. If you need a rock-solid standing surface for significant manual work, the FlexiSpot E7 is worth the extra spend.</p>`,
+      products: [
+        { name: 'SHW Electric Height Adjustable Desk', price: '$209–$259', link: 'https://www.amazon.com/SHW-Electric-Height-Adjustable-Computer/dp/B07T96H2JM', note: 'Single motor, memory presets, 28"–45" range, 176 lb capacity. Best budget option for survivors who primarily work seated with periodic standing.' },
+      ],
+    },
+    {
+      heading: 'Setting up the workstation for stroke recovery',
+      body: `<p><strong>Seated height:</strong> Elbows at desk level — the affected forearm should rest flat on the surface, not hanging. This reduces the gravitational pull on the shoulder that contributes to subluxation pain during extended desk work.</p>
+<p><strong>Monitor placement:</strong> Directly ahead, not offset to the stronger side. The natural tendency post-stroke is to position everything toward the stronger side for ease of use — this reinforces neglect of the affected side and trains inattention to it.</p>
+<p><strong>Keyboard and mouse:</strong> Consider a split keyboard that positions the hands at shoulder width — this maintains the affected arm in a more neutral position. If the affected hand can\'t use the keyboard reliably yet, one-handed keyboard adaptations and voice-to-text (Dragon, Windows Voice Access) close the functional gap.</p>
+<p><strong>Standing periods:</strong> Start with 5–10 minutes standing per hour. Standing fatigue post-stroke is real and hits faster than pre-stroke. Build the standing tolerance the same way you build any other tolerance — progressively, with rest.</p>`,
+      externalLinks: [
+        { label: 'Return to work after stroke — systematic review', url: 'https://pubmed.ncbi.nlm.nih.gov/28786782/' },
+        { label: 'Sedentary behavior and stroke outcomes — Stroke journal', url: 'https://www.ahajournals.org/doi/10.1161/STROKEAHA.115.009608' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'When can I return to desk work after stroke?', a: 'Varies enormously with stroke severity and job demands. Mild-to-moderate survivors often return to modified duty at 3–6 months with workplace accommodations. The vocational rehabilitation system (state VR programs in the US) provides job assessment, workstation modification funding, and return-to-work planning — access it before buying anything. Your physiatrist or neurologist provides the medical clearance piece.' },
+    { q: 'Does standing at a desk help stroke recovery?', a: 'Standing provides bilateral weight-bearing through the affected leg, challenges trunk stability, and interrupts the prolonged asymmetric sitting pattern that worsens posture. Even 5-minute standing intervals hourly have measurable effects on circulation and spasticity in clinical settings. More is better up to the fatigue limit — which is lower than pre-stroke for most survivors.' },
+    { q: 'Should I get an anti-fatigue mat for standing after stroke?', a: 'Yes. An anti-fatigue mat is essential for post-stroke standing tolerance — the padded surface reduces the impact stress on the affected leg and makes sustained standing meaningfully less fatiguing. Topo Comfort Mat or similar ergonomic mats are worth the $60–$80.' },
+    { q: 'Can I claim a standing desk as a disability accommodation after stroke?', a: 'Yes — in the US, the ADA requires employers to provide reasonable accommodations for qualified employees with disabilities. A height-adjustable desk for a stroke survivor with hemiplegia or fatigue is a standard, well-established accommodation. Request it through your HR/ADA coordinator with a physician letter of support. Some employers fund it entirely; others cost-share.' },
+    { q: 'My affected arm can\'t use a standard mouse. What works?', a: 'Vertical mouse (reduces forearm pronation), trackball (no wrist movement required), head-tracking mouse (for minimal arm function), or switch-adapted mouse for one-switch scanning. Assistive technology specialists (occupational therapists with AT certification) evaluate and match the solution to your actual motor profile — don\'t trial-and-error expensive AT devices without that assessment.' },
+  ],
+  related: ['best-smart-home-devices-stroke-survivors', 'stroke-recovery-fatigue', 'stroke-memory-cognitive-recovery', 'best-stationary-bike-stroke-recovery'],
+  publishedDate: '2026-06-06',
+  productCard: {
+    name: 'FlexiSpot E7 Electric Standing Desk',
+    price: '$369–$449',
+    link: 'https://www.amazon.com/FlexiSpot-Electric-Height-Adjustable-Standing/dp/B08BNQNHFY',
+    label: 'View on Amazon',
+    note: 'Best electric standing desk for stroke return-to-work. Dual motor, 4 memory presets. Affiliate link.',
+  },
+  bookPromo: {
+    title: 'Return to work and identity are in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the return-to-work journey, the identity crisis that comes with it, and the practical strategies that make it sustainable.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+export const POST_WEIGHTED_VEST = makeBlogPost({
+  slug: 'best-weighted-vest-stroke-balance-training',
+  title: 'Best Weighted Vests for Stroke Recovery: Balance Training, Proprioception, and Gait',
+  description: 'Weighted vests add load to gait and balance training in a way that challenges the nervous system without requiring additional equipment. Here\'s the evidence and what to buy.',
+  h1: 'Best Weighted Vests for Stroke Balance Training and Gait Rehab',
+  keyword: 'best weighted vest stroke recovery balance training',
+  subhead: 'Adding body weight through a vest changes the proprioceptive input during walking and balance work — a different neuroplasticity stimulus that complements standard exercise without requiring different equipment.',
+  ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
+  ctaSecondary: { label: 'Get the book', link: '/book' },
+  sections: [
+    {
+      heading: 'Why weighted vests for stroke recovery',
+      body: `<p>The research on weighted vests for post-stroke gait comes primarily from studies using trunk weighting — adding load at the trunk or affected shoulder to improve trunk symmetry and gait pattern. The mechanism: increased proprioceptive input through the trunk and lower extremities during weight-bearing enhances sensory feedback that post-stroke hemiplegia has disrupted. More feedback means more material for the nervous system to use in recalibrating motor patterns.</p>
+<p>Weighted vests are also used for general strength conditioning during recovery-phase walking — adding load to gait without requiring separate equipment or a gym. As walking capacity improves and the same distance feels too easy, a vest is the lowest-friction way to increase the training stimulus.</p>`,
+      image: '/images/blog/fig-15.jpg',
+    },
+    {
+      heading: 'ZFOsports Weighted Vest — best adjustable option',
+      body: `<p>The ZFOsports vest is the most-reviewed adjustable weighted vest in the stroke and neurological rehabilitation communities. The weight is distributed in small iron ore packets across the front and back — load is balanced symmetrically across the trunk, which matters for survivors already managing asymmetric weight distribution. Available in 20 lb, 40 lb, and 60 lb versions with the ability to add or remove individual weight packets.</p>
+<p>Start with 2–4% of body weight, which is the range most PT research on post-stroke weighting uses. For a 180 lb survivor, that\'s 3.6–7.2 lbs — the 20 lb vest with partial loading covers this range and has room to progress.</p>`,
+      products: [
+        { name: 'ZFOsports Weighted Vest', price: '$55–$89', link: 'https://www.amazon.com/ZFOsports-Weighted-Vest-Adjustable-Weight/dp/B00GG3TGTU', note: 'Adjustable iron ore packets, symmetric trunk loading, 20/40/60 lb versions. Most PT-referenced weighted vest for stroke gait and balance training.' },
+      ],
+    },
+    {
+      heading: 'Henkelion Weighted Vest — the comfortable all-day option',
+      body: `<p>The Henkelion vest uses a softer construction with smaller, more uniformly distributed steel shot weights. It\'s less adjustable than the ZFOsports but more comfortable for extended wear during daily activity or longer walking sessions where the ZFOsports\' rigid pockets become irritating. Available in 6 lb, 8 lb, 12 lb, 16 lb, and 20 lb fixed weights.</p>
+<p>For survivors using the vest as an all-day proprioception aid rather than a specific exercise tool, the Henkelion\'s wearability advantage matters. For survivors using it specifically during training sessions with a clear target weight, the ZFOsports\' adjustability is more valuable.</p>`,
+      products: [
+        { name: 'Henkelion Weighted Vest', price: '$42–$65', link: 'https://www.amazon.com/Henkelion-Weighted-Exercise-Training-Available/dp/B07BJL3SHB', note: 'Softer construction, even weight distribution, fixed-weight versions 6–20 lb. Better for all-day wear comfort vs. ZFOsports for session-specific training.' },
+      ],
+    },
+    {
+      heading: 'How to use a weighted vest during stroke recovery — the protocol',
+      body: `<p>Clinical studies use 2–4% of body weight during walking and balance tasks. Start at the lower end, walk your normal route or use your treadmill, and assess how it affects your gait quality and fatigue the next day. If gait quality degrades significantly — more list, more circumduction, worse foot clearance — the weight is too high. If the next-day fatigue is significantly worse than usual, reduce load.</p>
+<p>Progression: add small increments (half to one pound) every 1–2 weeks as you tolerate the current load without gait degradation. The goal is a training stimulus, not a gait disruptor. Never use a weighted vest if your balance is marginal — add it only when your unweighted balance and gait are stable enough that the added load is a challenge, not a hazard.</p>`,
+      externalLinks: [
+        { label: 'Trunk weighting for gait symmetry post-stroke — Clinical Rehab', url: 'https://pubmed.ncbi.nlm.nih.gov/26628584/' },
+        { label: 'Proprioceptive loading and neuroplasticity — Neurorehabilitation', url: 'https://pubmed.ncbi.nlm.nih.gov/28869474/' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Is a weighted vest safe for stroke survivors?', a: 'With appropriate weight selection and stable baseline balance: yes. The contraindications: significant active balance deficits that make falls a real risk, cardiovascular instability, or cervical/thoracic spine issues where added trunk load is contraindicated. Get PT clearance before adding a weighted vest to your training if you\'re in the first 12 months post-stroke.' },
+    { q: 'How much weight should I put in my vest for stroke recovery?', a: '2–4% of body weight is the research-supported range for gait improvement and proprioceptive training. For a 160 lb survivor: 3.2–6.4 lbs. Start at the lower end and progress slowly. The vest should add challenge without disrupting the gait quality you\'ve worked to develop.' },
+    { q: 'Can weighted vests help with balance after stroke?', a: 'The evidence for trunk weighting specifically improving balance and gait symmetry post-stroke is positive, particularly for asymmetric trunk lean patterns. Multiple RCTs show improved Fugl-Meyer balance subscores, Berg Balance Scale scores, and gait symmetry with trunk-targeted weighting. The effect is modest but consistent.' },
+    { q: 'Should the weight be centered on my affected side?', a: 'Some clinical protocols use asymmetric weighting — more weight on the affected side to correct lateral lean toward the stronger side. This is a clinically guided intervention, not a self-prescription. If your PT has given you a specific weighting protocol, follow it. For general training without specific guidance, symmetric weighting (equal front and back, equal left and right) is appropriate.' },
+    { q: 'Can I wear a weighted vest on a treadmill after stroke?', a: 'Yes, if you\'re cleared for solo treadmill use at baseline and the vest doesn\'t degrade your treadmill gait quality to an unsafe degree. Weighted treadmill walking is a progression — add it after you\'re stable with unweighted treadmill use, not simultaneously with learning to use the treadmill.' },
+  ],
+  related: ['best-treadmill-stroke-recovery', 'best-balance-board-stroke-recovery', 'best-elliptical-machine-stroke-recovery', 'gait-training-at-home-after-stroke'],
+  publishedDate: '2026-06-06',
+  productCard: {
+    name: 'ZFOsports Weighted Vest',
+    price: '$55–$89',
+    link: 'https://www.amazon.com/ZFOsports-Weighted-Vest-Adjustable-Weight/dp/B00GG3TGTU',
+    label: 'View on Amazon',
+    note: 'Most PT-referenced weighted vest for stroke balance and gait training. Adjustable weight, symmetric loading. Affiliate link.',
+  },
+  bookPromo: {
+    title: 'Balance and gait training in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the balance retraining progression, the neuroplasticity mechanisms behind it, and the tools that accelerate it without requiring a clinical setting.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+export const POST_SPEECH_THERAPY = makeBlogPost({
+  slug: 'best-speech-therapy-apps-tools-aphasia-stroke',
+  title: 'Best Speech Therapy Apps and Tools for Aphasia After Stroke: What Actually Works at Home',
+  description: 'Aphasia and dysarthria affect over a third of stroke survivors. Between clinic visits, daily practice is the difference between plateauing and continuing to improve. Here are the tools that make it possible.',
+  h1: 'Best Speech Therapy Apps and Tools for Aphasia After Stroke',
+  keyword: 'best speech therapy app aphasia stroke recovery',
+  subhead: 'Your SLP sees you once or twice a week. The other 22+ hours belong to you. The right tools turn that time into meaningful practice instead of missed recovery.',
+  ctaPrimary: { label: 'Start recovering', link: '/get-started' },
+  ctaSecondary: { label: 'Get the book', link: '/book' },
+  sections: [
+    {
+      heading: 'The home practice gap — why it matters more than your SLP can say',
+      body: `<p>The research on aphasia recovery is unambiguous on one point: intensity matters. The number of hours of practice per week is the strongest predictor of language recovery, more than the specific therapy approach used. Clinical SLP visits are typically 1–3 hours per week. The survivors who make the most progress practice daily — often 45–90 minutes per day — using apps and structured exercises between sessions.</p>
+<p>Most SLPs want their patients practicing at home and will often provide specific targets. The problem is follow-through: the exercises feel hard, progress is slow, and without external structure it\'s easy to skip days. The best tools listed here address the motivation and structure problem, not just the content problem.</p>`,
+      image: '/images/blog/fig-16.jpg',
+    },
+    {
+      heading: 'Constant Therapy — the most clinically validated app',
+      body: `<p>Constant Therapy (available on iOS and Android, subscription-based) is the most studied speech and cognitive therapy app for stroke and aphasia in published literature. It provides over 100,000 exercises across language, speech, memory, and attention domains — personalized to your specific deficit profile based on initial assessment. The platform tracks performance over time and adjusts difficulty, replicating what a skilled SLP does but at home, on your schedule, for as many daily minutes as you can manage.</p>
+<p>The subscription runs $25–$30/month. One month of daily 30-minute sessions is the equivalent of 15 hours of supplementary therapy — at a fraction of the cost of a single SLP session. The app was originally developed at Boston University\'s Aphasia Research Laboratory; the evidence base is not marketing, it\'s peer-reviewed.</p>`,
+      products: [
+        { name: 'Constant Therapy: Brain Rehab App (iOS & Android)', price: '$25–$30/month', link: 'https://www.amazon.com/Constant-Therapy-Health-Brain-Rehab/dp/B00VPRHKVA', note: 'Clinically validated, 100,000+ exercises, adaptive difficulty, tracks progress over time. The highest-evidence home speech and cognitive therapy app for aphasia and stroke.' },
+      ],
+    },
+    {
+      heading: 'Speech Tutor app — articulation and dysarthria',
+      body: `<p>Where Constant Therapy covers language and cognition broadly, Speech Tutor is specifically for articulation — the motor planning of speech sounds that dysarthria disrupts. The app provides visual models of mouth position for each phoneme, which is particularly useful for survivors who can hear that their speech is wrong but can\'t feel exactly where the placement error is. Video-based, no subscription, one-time purchase.</p>
+<p>Best for: dysarthria (slurred, imprecise speech from motor weakness) rather than aphasia (word-finding, comprehension, or sentence construction errors). If your SLP has identified articulation accuracy as a primary goal, Speech Tutor provides the visual feedback that home mirror practice can\'t match.</p>`,
+      products: [
+        { name: 'Speech Tutor App (iOS)', price: '$4.99', link: 'https://www.amazon.com/dp/B00P1I31N4', note: 'Visual phoneme models for articulation practice, one-time purchase. Best for dysarthria — motor speech difficulties, not word-finding or comprehension.' },
+      ],
+    },
+    {
+      heading: 'Communication and AAC tools for severe aphasia',
+      body: `<p>For survivors in the acute or early subacute phase with severe expressive aphasia, low-tech AAC (augmentative and alternative communication) provides a communication bridge while language recovery is underway. Communication boards — visual symbol arrays for basic needs, emotions, and requests — can be printed or purchased as pre-made laminated sets and kept at bedside.</p>
+<p>The GoTalk 20+ is a mid-level dedicated AAC device with 20 symbol locations, recorded messages, and a durable design for survivors who need more functionality than a paper board but aren\'t ready for the complexity of an app-based system. Your SLP or an AT specialist should guide AAC device selection — the wrong device is abandoned.</p>`,
+      products: [
+        { name: 'Attainment GoTalk 20+ AAC Communication Device', price: '$119–$149', link: 'https://www.amazon.com/GoTalk-20-Plus/dp/B001AJ0YZG', note: '20 symbol locations, recorded messages, durable. Appropriate bridge device for severe expressive aphasia when app-based AAC is too complex.' },
+        { name: 'Aphasia Communication Board with Images', price: '$18–$28', link: 'https://www.amazon.com/Communication-Picture-Hospital-Patient-Symbols/dp/B07GBJXQW8', note: 'Low-tech laminated picture board for basic needs and emotions. Essential acute-phase communication tool before formal AAC assessment.' },
+      ],
+    },
+    {
+      heading: 'Workbooks for supported home practice',
+      body: `<p>For survivors who prefer structured paper-based practice — or whose SLP has prescribed specific exercise types that apps don\'t cover well — the Aphasia Therapy Workbooks by Thieme and the exercises in Roberta Chapey\'s <em>Language Intervention Strategies in Aphasia</em> are the clinical standards. The Workbook for Aphasia by Susan Howell Brubaker remains widely used by SLPs for home programming.</p>
+<p>Paper workbooks work alongside app-based practice, not instead of it. The tactile and visual format suits some survivors better than a screen. For word-finding exercises specifically, written naming tasks on paper give the hand and visual system something to do alongside verbal practice — a multimodal approach that matches what most aphasia researchers recommend.</p>`,
+      externalLinks: [
+        { label: 'Intensity of aphasia therapy and outcomes — Cochrane Review', url: 'https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD000425.pub4/full' },
+        { label: 'Technology-based aphasia treatment — evidence review', url: 'https://pubs.asha.org/doi/10.1044/2019_AJSLP-19-0061' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'What is the best app for aphasia recovery after stroke?', a: 'Constant Therapy has the strongest published evidence base and the broadest exercise coverage. Tactus Therapy apps are strong alternatives for specific skill areas. Lingraphica\'s TalkPath is another evidence-backed option. Your SLP should guide app selection based on your specific aphasia profile — the right app for Broca\'s aphasia is not the right app for Wernicke\'s.' },
+    { q: 'How many hours of speech therapy practice do I need per day?', a: 'Research suggests 45–90 minutes of daily practice produces the best aphasia recovery outcomes. That\'s total practice time, not all in one sitting — three 20-minute sessions per day is equivalent to one 60-minute session and may be more sustainable given post-stroke fatigue. Even 30 minutes per day is substantially better than no home practice.' },
+    { q: 'Will aphasia ever fully recover?', a: 'For many survivors: yes, particularly in the first 3–6 months post-stroke. For others: significant but incomplete recovery. The key variables are stroke location (which language network areas were affected), stroke size, age, and most importantly — intensity of rehabilitation in the first two years. Chronic-phase improvement is possible but requires sustained effort. I\'ve seen survivors make meaningful language gains five-plus years out with adequate intensity.' },
+    { q: 'My family member has severe aphasia and can\'t use an app independently. What helps?', a: 'Supported communication practice — a caregiver working through exercises with the survivor using a simple app or workbook — produces better outcomes than unsupported solo practice for severe aphasia. The National Aphasia Association (aphasia.org) has caregiver training resources. An SLP trained in supported communication can teach family members the techniques.' },
+    { q: 'Is there a difference between aphasia and dysarthria?', a: 'Yes — critically. Aphasia is a language processing disorder: difficulty finding words, forming sentences, understanding speech, or reading/writing. The problem is in the language system. Dysarthria is a motor speech disorder: the words are there and correctly assembled, but the muscles of speech articulation are weak or uncoordinated. The treatment approaches are completely different. Your SLP\'s assessment determines which you have — many survivors have both to varying degrees.' },
+  ],
+  related: ['best-smart-home-devices-stroke-survivors', 'stroke-memory-cognitive-recovery', 'best-brain-games-books-stroke-cognitive-recovery', 'stroke-recovery-fatigue'],
+  publishedDate: '2026-06-06',
+  productCard: {
+    name: 'Constant Therapy Brain Rehab App',
+    price: '$25–$30/month',
+    link: 'https://www.amazon.com/Constant-Therapy-Health-Brain-Rehab/dp/B00VPRHKVA',
+    label: 'View on Amazon',
+    note: 'Highest-evidence home aphasia and cognitive therapy app. Adaptive, tracks progress, clinically validated. Affiliate link.',
+  },
+  bookPromo: {
+    title: 'Communication and cognitive recovery in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers aphasia, cognitive recovery, and the daily practice systems that accelerate language return — written by a survivor who rebuilt his own communication from scratch.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+export const POST_THRESHOLD_RAMP = makeBlogPost({
+  slug: 'threshold-ramps-grab-bars-stroke-home-accessibility',
+  title: 'Threshold Ramps, Grab Bars, and Home Accessibility Upgrades for Stroke Survivors',
+  description: 'Falls kill stroke recovery momentum — and most falls happen at thresholds, in bathrooms, and on stairs. Here\'s how to spend $50–$500 on the modifications that actually prevent them.',
+  h1: 'Threshold Ramps and Home Accessibility for Stroke Survivors: What to Buy and Where to Put It',
+  keyword: 'threshold ramp grab bar stroke survivor home accessibility',
+  subhead: 'A threshold is a two-inch ledge. After stroke it\'s a fall risk. A $30 rubber ramp eliminates it. Most survivors don\'t buy it until after they fall. Don\'t be that survivor.',
+  ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
+  ctaSecondary: { label: 'Get the book', link: '/book' },
+  sections: [
+    {
+      heading: 'The fall risk reality of post-stroke home environments',
+      body: `<p>Falls are the most common serious adverse event in stroke recovery — in both inpatient and outpatient settings. Up to 73% of stroke survivors fall in the first six months post-discharge. More than half of those falls happen in the home. The majority happen during transitions: transferring from sitting to standing, crossing thresholds, bathroom activities, and stair navigation.</p>
+<p>Home modification is the highest-leverage fall prevention intervention available. It\'s not as visible as PT progress or as exciting as adaptive equipment. But a grab bar that prevents one fall in year one is worth more to your recovery than six months of resistance training — because a fall-related injury resets the entire timeline.</p>`,
+      image: '/images/blog/fig-17.jpg',
+    },
+    {
+      heading: 'EZ-ACCESS TRANSITIONS threshold ramp — the essential first purchase',
+      body: `<p>The EZ-ACCESS TRANSITIONS ramp is a rubber threshold transition ramp that eliminates the raised threshold between rooms — the 0.5"–2.5" ledges at doorways, shower entries, and sliding door tracks that are tripping hazards for foot drop and compromised gait. It\'s held in place by the weight of traffic (no permanent installation required), works for both wheelchair and ambulatory use, and comes in multiple heights for different threshold sizes.</p>
+<p>Measure your thresholds before ordering — the height needs to match the threshold. The angled entry edge is gentle enough for foot drop clearance. Non-slip rubber surface. Costs $25–$45 depending on size. A legitimate first-week-home purchase that every survivor returning to a standard home environment should make.</p>`,
+      products: [
+        { name: 'EZ-ACCESS TRANSITIONS Modular Angled Entry Ramp', price: '$25–$45', link: 'https://www.amazon.com/EZ-ACCESS-TRANSITIONS-Modular-Entry-1-Inch/dp/B000I5SV3C', note: 'Rubber threshold ramp, multiple height options, no installation required, non-slip. Most essential home accessibility purchase for foot-drop and hemiparetic gait.' },
+      ],
+    },
+    {
+      heading: 'AmazonBasics grab bars — bathroom fall prevention',
+      body: `<p>Grab bars in the bathroom are the second-most-important modification after threshold ramps. The toilet transfer (sit to stand) and the shower entry are the two highest-fall-risk moments of a post-stroke survivor\'s day. A properly installed grab bar at each location converts a fall risk into a controllable transfer.</p>
+<p>Key specification: stainless steel, 1.25" diameter (the ANSI-standard for grab bar grip), rated to 250+ lbs, with a mounting template included. The AmazonBasics bars are ANSI-compliant and come in multiple lengths (16", 24", 32", 42"). Installation into stud or into drywall with toggle bolts — wall studs are strongly preferred for weight-bearing use. If you\'re not confident in the installation, hire a handyman. A $40 bar improperly installed that pulls out of the wall during a transfer is worse than no bar.</p>`,
+      products: [
+        { name: 'Amazon Basics Grab Bar for Bathroom, 24"', price: '$22–$32', link: 'https://www.amazon.com/AmazonBasics-Grab-Bar-for-Bathroom/dp/B07DPQJK9L', note: 'ANSI-compliant, 1.25" diameter, 250 lb rated, stud or toggle-bolt mount. Install at toilet and shower entry — the two highest fall-risk transfer points.' },
+      ],
+    },
+    {
+      heading: 'Prairie View portable wheelchair ramp — for steps and raised entries',
+      body: `<p>For survivors using a wheelchair or rollator who face exterior steps — a single step at the front door is a common barrier — a portable aluminum ramp provides access without permanent construction. The Prairie View Industries solid aluminum ramps are the standard: non-slip surface, fold flat for storage, available in lengths from 3 to 10 feet. Length selection: for a 6" step height, a 3-foot ramp gives a 1:6 rise ratio — steeper than the ADA standard but manageable with a rollator or assistance. A 4-foot ramp gives 1:8, which is better for independent use.</p>
+<p>Heavier than it looks — the 5-foot version weighs 22 lbs. Factor in who is setting it up and whether the survivor or a caregiver handles placement daily.</p>`,
+      products: [
+        { name: 'Prairie View Industries Portable Wheelchair Ramp', price: '$89–$189', link: 'https://www.amazon.com/Prairie-View-Portable-Aluminum-Wheelchair/dp/B00LJNC2XO', note: 'Solid aluminum, non-slip surface, 3–10 ft lengths, folds flat. For exterior steps or raised entries — essential for wheelchair or rollator users.' },
+      ],
+    },
+    {
+      heading: 'The full home safety audit: where to look',
+      body: `<p>Thresholds and bathroom grab bars are the two immediate purchases. The full audit takes 30 minutes with an OT or your own eyes:</p>
+<p><strong>Entryways:</strong> Every raised threshold covered. Non-slip mat at entry if there\'s a step. Adequate lighting (falls happen in the dark — motion-sensor lights are $15 on Amazon).</p>
+<p><strong>Bathroom:</strong> Grab bar at toilet (side wall for push-up assist, rear wall for balance). Grab bar at shower entry. Non-slip bath mat. Shower chair or shower bench for low endurance/balance (see shower safety post). Handheld showerhead for seated bathing.</p>
+<p><strong>Bedroom:</strong> Bed height that allows feet flat on the floor in sitting (not too low, not too high). Clear path to the bathroom — no rugs, no loose cords. Nightlight or motion sensor for nighttime bathroom trips.</p>
+<p><strong>Stairs:</strong> If there are stairs and the survivor must use them: double handrails, non-slip treads, maximum lighting. If stairs cannot be safely negotiated: stair lift evaluation or first-floor living arrangement.</p>`,
+      externalLinks: [
+        { label: 'Fall prevention after stroke — NICE guidelines', url: 'https://www.nice.org.uk/guidance/cg161' },
+        { label: 'Home modification and fall prevention — Cochrane Review', url: 'https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD007383.pub3/full' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Does Medicare cover home modifications for stroke survivors?', a: 'Standard Medicare (Parts A and B) does not cover home modifications. Some Medicare Advantage plans cover limited modifications under supplemental benefits. Medicaid waiver programs in some states cover home modification for qualifying members. USDA Rural Development and HUD programs provide low-income modification grants. The most reliable path: request an OT home visit through your home health benefit — the OT\'s written recommendations become the basis for any funding applications.' },
+    { q: 'What\'s the most important home modification to make first?', a: 'Bathroom grab bars, followed by threshold ramps at all exterior entries and major interior transitions. The bathroom is where the highest-consequence falls happen — a fall getting out of the shower or off the toilet can break a hip, and hip fractures after stroke have devastating outcomes. Do the bathroom first, then the thresholds.' },
+    { q: 'Do I need a stair lift after stroke?', a: 'Only if you cannot safely navigate stairs with a railing and appropriate gait pattern. Many stroke survivors can manage stairs safely with PT training and adequate handrails — stairs are a recoverable functional deficit. A stair lift is the right solution when: both staircases and single-floor ramps are unsafe, the survivor will be living alone, or the fatigue cost of stairs is prohibitive. Stair lift companies (Acorn, Bruno) provide in-home assessments — use them before committing.' },
+    { q: 'Can I install a grab bar myself after stroke?', a: 'The installation itself is a standard DIY task for someone with reliable hand function and basic tools. The critical requirement: mounting into studs or using proper toggle anchors rated for the load. A grab bar that pulls from drywall under load is a fall cause, not a fall prevention. If you\'re uncertain about the mounting, hiring a handyman for a $50–$100 job is the right call.' },
+    { q: 'My home has carpet — does that affect fall risk?', a: 'Paradoxically, carpet reduces fall risk on flat surfaces (softer landing, more friction) but increases it at transitions between flooring types. The carpet-to-hardwood edge, especially if there\'s a lip or a curling edge, is a significant tripping hazard for foot drop and impaired proprioception. Secure all transition strips and remove or secure area rugs throughout the home.' },
+  ],
+  related: ['best-walking-aids-stroke-survivors', 'best-wheelchair-stroke-survivor', 'best-shower-safety-products-stroke', 'best-afo-brace-drop-foot'],
+  publishedDate: '2026-06-06',
+  productCard: {
+    name: 'EZ-ACCESS TRANSITIONS Angled Entry Ramp',
+    price: '$25–$45',
+    link: 'https://www.amazon.com/EZ-ACCESS-TRANSITIONS-Modular-Entry-1-Inch/dp/B000I5SV3C',
+    label: 'View on Amazon',
+    note: 'Most essential home accessibility purchase for foot drop and hemiparetic gait. No installation required. Affiliate link.',
+  },
+  bookPromo: {
+    title: 'Home safety and independence in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the home environment audit, fall prevention, and the adaptive equipment ecosystem that keeps recovery momentum from being derailed by an avoidable injury.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
 // Aggregator
 // =============================================================================
 export const ALL_BLOG_POSTS: SsrPageConfig[] = [
@@ -3519,6 +3949,12 @@ export const ALL_BLOG_POSTS: SsrPageConfig[] = [
   POST_MASSAGE_GUN,
   POST_SMART_HOME,
   POST_RED_LIGHT,
+  POST_ADJUSTABLE_BED,
+  POST_COMPRESSION,
+  POST_STANDING_DESK,
+  POST_WEIGHTED_VEST,
+  POST_SPEECH_THERAPY,
+  POST_THRESHOLD_RAMP,
 ];
 
 // /blog hub page — lists all posts as internal-link cluster
