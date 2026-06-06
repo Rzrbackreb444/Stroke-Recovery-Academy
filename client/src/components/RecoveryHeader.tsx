@@ -57,7 +57,7 @@ const resourcesGroups: { title: string; items: { href: string; label: string; pr
       { href: "/recovery/campfire", label: "Campfire (Live)" },
       { href: "/recovery/spotlight", label: "Spotlight" },
       { href: "/groups", label: "Groups" },
-      { href: "/recovery/blog", label: "Blog" },
+      { href: "/blog", label: "Blog" },
     ],
   },
   {

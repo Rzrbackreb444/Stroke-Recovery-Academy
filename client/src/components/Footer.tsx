@@ -58,7 +58,7 @@ export default function Footer() {
     { label: "Exercises", href: "/recovery/exercises", icon: Activity },
     { label: "Protocols", href: "/recovery/protocols", icon: Brain },
     { label: "Center Finder", href: "/recovery/center-finder", icon: Building2 },
-    { label: "Recovery Blog", href: "/recovery/blog", icon: BookOpen },
+    { label: "Recovery Blog", href: "/blog", icon: BookOpen },
     { label: "My Book", href: "/my-book", icon: FileText },
   ];
 

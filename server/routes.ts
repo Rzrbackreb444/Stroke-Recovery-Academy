@@ -548,20 +548,14 @@ ${allRoutes.map(r => `  <url>
 
       const today = new Date().toISOString().split('T')[0];
 
-      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
-        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
-${posts.map((post) => {
-  const pubDate = post.createdAt ? new Date(post.createdAt) : new Date();
-  const lastmod = post.updatedAt
-    ? new Date(post.updatedAt).toISOString().split('T')[0]
-    : today;
-  // Priority: featured=0.85, recent (<30d)=0.80, older=0.70
-  const priority = post.featured ? '0.85' : pubDate > thirtyDaysAgo ? '0.80' : '0.70';
-  // News tag for posts published within the last 2 days (Google News fast-indexing)
-  const isNews = pubDate > twoDaysAgo;
-  const newsBlock = isNews ? `
+      const postUrls = posts.map((post) => {
+        const pubDate = post.createdAt ? new Date(post.createdAt) : new Date();
+        const lastmod = post.updatedAt
+          ? new Date(post.updatedAt).toISOString().split('T')[0]
+          : today;
+        const priority = post.featured ? '0.85' : pubDate > thirtyDaysAgo ? '0.80' : '0.70';
+        const isNews = pubDate > twoDaysAgo;
+        const newsBlock = isNews ? `
     <news:news>
       <news:publication>
         <news:name>Stroke Recovery Academy</news:name>
@@ -570,23 +564,46 @@ ${posts.map((post) => {
       <news:publication_date>${pubDate.toISOString()}</news:publication_date>
       <news:title>${post.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</news:title>
     </news:news>` : '';
-  const imageBlock = post.heroImageUrl ? `
+        const imageBlock = post.heroImageUrl ? `
     <image:image>
       <image:loc>${post.heroImageUrl}</image:loc>
       <image:title>${post.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</image:title>
     </image:image>` : '';
-  return `  <url>
+        return `  <url>
     <loc>${baseUrl}/recovery/blog/${post.slug}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>${post.featured ? 'weekly' : 'monthly'}</changefreq>
     <priority>${priority}</priority>${newsBlock}${imageBlock}
   </url>`;
-}).join('\n')}
+      }).join('\n');
+
+      // Also include the SSR blog posts (new high-intent PAA guides) from blogContent.ts
+      let ssrBlogPosts: { url: string; title: string; modifiedDate?: string; priority: string; changefreq: string }[] = [];
+      try {
+        const { getBlogPageUrls } = await import('./seo/blogRoutes');
+        ssrBlogPosts = getBlogPageUrls().filter((p) => p.url !== '/blog');
+      } catch { /* fall back to db-only sitemap */ }
+
+      const ssrBlocks = ssrBlogPosts.map((p) => {
+        const lastmod = p.lastmod || today;
+        return `  <url>
+    <loc>${baseUrl}${p.url}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>${p.changefreq}</changefreq>
+    <priority>${p.priority}</priority>
+  </url>`;
+      }).join('\n');
+
+      const finalSitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+${postUrls}${ssrBlocks ? '\n' + ssrBlocks : ''}
 </urlset>`;
 
       res.set('Content-Type', 'application/xml');
       res.set('Cache-Control', 'public, max-age=1800'); // 30 min — blog updates frequently
-      res.send(sitemap);
+      res.send(finalSitemap);
     } catch (error) {
       console.error('Blog sitemap error:', error);
       res.status(500).send('Error generating blog sitemap');
