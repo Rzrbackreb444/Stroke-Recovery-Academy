@@ -225,6 +225,28 @@
   </head>
   <body>
     <div id="root"></div>
+
+    <!-- Server-side link cluster for crawlers (no JS required) -->
+    <!-- noscript block so it only renders for search-engine bots and users with JS disabled -->
+    <noscript>
+      <nav aria-label="Latest guides" style="padding:2rem; background:#0D0D0D; color:#fff; font-family:Inter,sans-serif;">
+        <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.3em; color:#C9941A; margin-bottom:0.5rem;">Latest guides</p>
+        <h2 style="font-size:1.5rem; font-weight:800; margin-bottom:1rem;">The questions every survivor asks</h2>
+        <p style="color:#9ca3af; max-width:600px; margin-bottom:1.5rem;">Honest, in-the-trenches answers built from research and lived experience. No fluff. No fake hope. Just the playbook nobody handed you in the hospital.</p>
+        <ul style="list-style:none; padding:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem;">
+          <li><a href="/blog/how-long-does-stroke-rehab-take" style="color:#fff; text-decoration:none; font-weight:600;">How long does rehab take?</a> — The real timeline. Not the one the hospital gave you.</li>
+          <li><a href="/blog/can-you-fully-recover-from-a-stroke" style="color:#fff; text-decoration:none; font-weight:600;">Can you fully recover?</a> — What the research says and what seven years actually looks like.</li>
+          <li><a href="/blog/neuroplasticity-after-stroke" style="color:#fff; text-decoration:none; font-weight:600;">Neuroplasticity explained</a> — How your brain rewires itself. The science behind every rep.</li>
+          <li><a href="/blog/fatigue-after-stroke" style="color:#fff; text-decoration:none; font-weight:600;">Stroke fatigue</a> — Why you sleep ten hours and still feel wrecked. And what to do about it.</li>
+          <li><a href="/blog/stroke-recovery-gift-guide" style="color:#fff; text-decoration:none; font-weight:600;">Gift guide for survivors</a> — What to buy someone who just had a stroke. From someone who lived it.</li>
+          <li><a href="/blog/best-foods-for-stroke-recovery" style="color:#fff; text-decoration:none; font-weight:600;">Best foods for recovery</a> — What to eat, what to avoid, and why sugar is not your friend.</li>
+          <li><a href="/blog/signs-of-a-second-stroke" style="color:#fff; text-decoration:none; font-weight:600;">Signs of a second stroke</a> — Know the warning signs. Act fast. Save your life.</li>
+          <li><a href="/blog/how-to-prevent-a-second-stroke" style="color:#fff; text-decoration:none; font-weight:600;">How to prevent a second stroke</a> — The protocol that actually moves the needle.</li>
+        </ul>
+        <p style="margin-top:1rem;"><a href="/blog" style="color:#C9941A; font-weight:600; text-decoration:none;">See all 48 guides &rarr;</a></p>
+      </nav>
+    </noscript>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
