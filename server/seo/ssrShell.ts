@@ -14,13 +14,15 @@ export interface InternalLink {
 }
 
 export interface ContentSection {
-  h2: string;
-  paragraphs: string[];
+  h2?: string;
+  /** Alias for h2 — accepted interchangeably */
+  heading?: string;
+  paragraphs?: string[];
   bullets?: string[];
   /** Optional illustration: served from /images/blog/ */
-  image?: { src: string; alt: string; caption?: string };
+  image?: { src: string; alt: string; caption?: string } | string;
   /** Footnote-style external citation links rendered below section content */
-  externalLinks?: { label: string; href: string; note?: string }[];
+  externalLinks?: { label: string; href?: string; url?: string; note?: string }[];
   /** Inline product cards — affiliate tag applied server-side via tagAmazonLink */
   products?: { name: string; price: string; link: string; note: string }[];
   /**
@@ -28,6 +30,8 @@ export interface ContentSection {
    * Only use for trusted, server-controlled content (e.g. SSR center cards).
    */
   rawHtml?: string;
+  /** Alias for rawHtml — accepts trusted HTML body string */
+  body?: string;
 }
 
 export interface SsrPageConfig {
@@ -46,7 +50,9 @@ export interface SsrPageConfig {
   breadcrumbs?: { name: string; href: string }[];
   /** Optional product card for affiliate/gear showcase */
   productCard?: {
-    title: string;
+    title?: string;
+    /** Alias for title */
+    name?: string;
     description: string;
     link: string;
     label: string;
@@ -81,8 +87,9 @@ function tagAmazonLink(url: string): string {
   }
 }
 
-function esc(s: string): string {
-  return s
+function esc(s: string | undefined | null): string {
+  if (s == null) return '';
+  return String(s)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -90,7 +97,7 @@ function esc(s: string): string {
     .replace(/'/g, '&#39;');
 }
 
-function escAttr(s: string): string {
+function escAttr(s: string | undefined | null): string {
   return esc(s);
 }
 
@@ -228,14 +235,23 @@ function renderFooter(): string {
 }
 
 function renderSections(sections: ContentSection[]): string {
-  return sections.map(s => `
+  return sections.map(s => {
+    const heading = s.h2 || s.heading || '';
+    const html = s.rawHtml || s.body || '';
+    // normalise image to object form
+    const img = s.image
+      ? (typeof s.image === 'string'
+          ? { src: s.image, alt: '', caption: undefined }
+          : s.image)
+      : null;
+    return `
 <section class="sra-section">
-  ${s.h2 ? `<h2>${esc(s.h2)}</h2>` : ''}
+  ${heading ? `<h2>${esc(heading)}</h2>` : ''}
   ${Array.isArray(s.paragraphs) && s.paragraphs.length > 0 ? s.paragraphs.map(p => `<p>${esc(p)}</p>`).join('\n  ') : ''}
   ${s.bullets && s.bullets.length > 0 ? `<ul>${s.bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}
-  ${s.image ? `<figure class="sra-blog-fig">
-    <img src="${escAttr(s.image.src)}" alt="${escAttr(s.image.alt)}" class="sra-blog-img" loading="lazy" width="680" />
-    ${s.image.caption ? `<figcaption class="sra-blog-caption">${esc(s.image.caption)}</figcaption>` : ''}
+  ${img ? `<figure class="sra-blog-fig">
+    <img src="${escAttr(img.src)}" alt="${escAttr(img.alt || '')}" class="sra-blog-img" loading="lazy" width="680" />
+    ${img.caption ? `<figcaption class="sra-blog-caption">${esc(img.caption)}</figcaption>` : ''}
   </figure>` : ''}
   ${s.products && s.products.length > 0 ? `<div class="sra-product-grid">${s.products.map(p => `
   <div class="sra-product-card">
@@ -245,10 +261,11 @@ function renderSections(sections: ContentSection[]): string {
     <a href="${escAttr(tagAmazonLink(p.link))}" class="sra-product-card-link" target="_blank" rel="noopener noreferrer sponsored nofollow">View on Amazon ↗</a>
   </div>`).join('')}</div>` : ''}
   ${s.externalLinks && s.externalLinks.length > 0 ? `<div class="sra-citations" role="list" aria-label="Sources">${s.externalLinks.map(l =>
-    `<a href="${escAttr(l.href)}" class="sra-citation-link" target="_blank" rel="noopener noreferrer" role="listitem">${esc(l.label)}</a>${l.note ? ` <span class="sra-citation-note">${esc(l.note)}</span>` : ''}`
+    `<a href="${escAttr(l.href || l.url || '#')}" class="sra-citation-link" target="_blank" rel="noopener noreferrer" role="listitem">${esc(l.label)}</a>${l.note ? ` <span class="sra-citation-note">${esc(l.note)}</span>` : ''}`
   ).join(' ')}</div>` : ''}
-  ${s.rawHtml ? s.rawHtml : ''}
-</section>`).join('\n');
+  ${html}
+</section>`;
+  }).join('\n');
 }
 
 function renderFaqs(faqs: FAQItem[]): string {
@@ -557,7 +574,7 @@ ${renderHeader()}
 
   ${productCard ? `
   <section class="sra-affiliate">
-    <h2>${esc(productCard.title)}</h2>
+    <h2>${esc(productCard.title || productCard.name || '')}</h2>
     <p>${esc(productCard.description)}</p>
     <a href="${escAttr(tagAmazonLink(productCard.link))}" class="sra-btn-primary" target="_blank" rel="noopener noreferrer sponsored nofollow">${esc(productCard.label)}</a>
     ${productCard.note ? `<div class="sra-affiliate-note">${esc(productCard.note)}</div>` : ''}
