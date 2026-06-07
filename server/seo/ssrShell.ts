@@ -78,6 +78,8 @@ export interface SsrPageConfig {
     link: string;
     label: string;
   };
+  /** Optional featured image URL for og:image, hero image, and schema */
+  image?: string;
   /** Optional video — enables VideoObject schema for rich video snippets */
   video?: {
     name: string;
@@ -733,9 +735,9 @@ ${cfg.keywords && cfg.keywords.length > 0 ? `<meta name="keywords" content="${es
 <meta property="og:url" content="${escAttr(url)}" />
 <meta property="og:title" content="${escAttr(cfg.title)}" />
 <meta property="og:description" content="${escAttr(cfg.description)}" />
-<meta property="og:image" content="${SITE_URL}/og-image-1200x630.png" />
-<meta property="og:image:width" content="1408" />
-<meta property="og:image:height" content="768" />
+<meta property="og:image" content="${cfg.image || `${SITE_URL}/og-image-1200x630.png`}" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:alt" content="${escAttr(cfg.title)}" />
 <meta property="og:site_name" content="Stroke Recovery Academy" />
@@ -747,7 +749,7 @@ ${cfg.keywords && cfg.keywords.length > 0 ? `<meta name="keywords" content="${es
 <meta name="twitter:site" content="@strokerecovery" />
 <meta name="twitter:title" content="${escAttr(cfg.title)}" />
 <meta name="twitter:description" content="${escAttr(cfg.description)}" />
-<meta name="twitter:image" content="${SITE_URL}/og-image-1200x630.png" />
+<meta name="twitter:image" content="${cfg.image || `${SITE_URL}/og-image-1200x630.png`}" />
 <meta name="twitter:image:alt" content="${escAttr(cfg.title)}" />
 <meta name="theme-color" content="#0D0D0D" />
 <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -770,6 +772,7 @@ ${renderHeader()}
 <main class="sra-page">
   ${renderBreadcrumbs(cfg)}
   <div class="sra-hero">
+    ${cfg.image ? `<img src="${cfg.image}" alt="${escAttr(cfg.title)}" class="sra-hero-img" loading="eager" />` : ''}
     ${hero.eyebrow ? `<div class="sra-eyebrow">${esc(hero.eyebrow)}</div>` : ''}
     <h1>${esc(cfg.h1)}</h1>
     <p>${esc(hero.subhead)}</p>
