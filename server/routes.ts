@@ -561,7 +561,9 @@ ${allRoutes.map(r => `  <url>
       <news:title>${post.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</news:title>
     </news:news>` : '';
         const imageUrl = post.heroImageUrl ? (post.heroImageUrl.startsWith('http') ? post.heroImageUrl : baseUrl + post.heroImageUrl) : undefined;
-        const imageBlock = imageUrl ? `
+        // Only emit image tags for images that exist — placeholder paths in /images/*.jpg (not /images/blog/*) return HTML
+        const isValidImage = imageUrl && !/^https?:\/\/[^\/]+\/images\/[^\/]+\.jpg$/i.test(imageUrl);
+        const imageBlock = isValidImage ? `
     <image:image>
       <image:loc>${imageUrl.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</image:loc>
       <image:title>${post.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</image:title>
