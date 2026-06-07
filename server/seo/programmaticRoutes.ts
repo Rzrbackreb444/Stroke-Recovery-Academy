@@ -441,8 +441,8 @@ export async function getProgrammaticSeoUrls(): Promise<{ url: string; priority:
   // 52 weeks
   for (let n = 1; n <= 52; n++) out.push({ url: `/recovery/week/${n}`, priority: n <= 12 ? "0.82" : "0.72", changefreq: "monthly" });
 
-  // States with metro coverage
-  for (const code of statesWithMetros()) out.push({ url: `/recovery/centers/state/${code}`, priority: "0.75", changefreq: "monthly" });
+  // States with metro coverage — temporarily disabled to preserve crawl budget
+  // for (const code of statesWithMetros()) out.push({ url: `/recovery/centers/state/${code}`, priority: "0.75", changefreq: "monthly" });
 
   return out;
 }
