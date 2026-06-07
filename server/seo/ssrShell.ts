@@ -240,10 +240,19 @@ function renderFooter(): string {
 </footer>`;
 }
 
+function sectionSlug(heading: string): string {
+  return heading
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 function renderSections(sections: ContentSection[]): string {
-  return sections.map(s => {
+  return sections.map((s, idx) => {
     const heading = s.h2 || s.heading || '';
     const html = s.rawHtml || s.body || '';
+    const slug = heading ? sectionSlug(heading) : `section-${idx}`;
+    const id = heading ? `id="${slug}"` : '';
     // normalise image to object form
     const img = s.image
       ? (typeof s.image === 'string'
@@ -251,7 +260,7 @@ function renderSections(sections: ContentSection[]): string {
           : s.image)
       : null;
     return `
-<section class="sra-section">
+<section class="sra-section" ${id}>
   ${heading ? `<h2>${esc(heading)}</h2>` : ''}
   ${Array.isArray(s.paragraphs) && s.paragraphs.length > 0 ? s.paragraphs.map(p => `<p>${esc(p)}</p>`).join('\n  ') : ''}
   ${s.bullets && s.bullets.length > 0 ? `<ul>${s.bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}
@@ -272,6 +281,20 @@ function renderSections(sections: ContentSection[]): string {
   ${html}
 </section>`;
   }).join('\n');
+}
+
+function renderTableOfContents(sections: ContentSection[]): string {
+  const headings = sections
+    .map(s => s.h2 || s.heading || '')
+    .filter(Boolean);
+  if (headings.length === 0) return '';
+  return `
+<div class="sra-toc" role="navigation" aria-label="Table of contents">
+  <h2>Table of Contents</h2>
+  <ul>
+    ${headings.map(h => `<li><a href="#${sectionSlug(h)}">${esc(h)}</a></li>`).join('\n    ')}
+  </ul>
+</div>`;
 }
 
 function renderFaqs(faqs: FAQItem[]): string {
@@ -565,6 +588,8 @@ ${renderHeader()}
       ${ctaSecondary ? `<a href="${escAttr(ctaSecondary.href)}" class="sra-btn-secondary">${esc(ctaSecondary.label)}</a>` : ''}
     </div>
   </div>
+
+  ${renderTableOfContents(cfg.sections)}
 
   <div class="sra-author">
     <span class="sra-author-mark" aria-hidden="true"></span>
