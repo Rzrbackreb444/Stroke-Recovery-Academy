@@ -137,6 +137,7 @@ export const POST_REHAB_DURATION = makeBlogPost({
     { q: 'Why does my recovery feel slow?', a: 'The early gains are dramatic and visible. Later gains are smaller and require more reps for the same visible result. This is normal and not a sign that you are done. Track small metrics weekly and you will see the trajectory.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/learn/stroke-recovery-timeline', label: 'The stroke recovery timeline, month by month', blurb: 'A deeper dive into what to expect at week 1, month 1, year 1, and beyond.' },
     { href: '/learn/neuroplasticity-after-stroke', label: 'How the brain actually rewires after stroke', blurb: 'The science behind why daily training continues to work.' },
     { href: '/programs/daily-routine', label: 'The 5-level Daily Routine', blurb: 'The system that closes the home-training gap.' },
@@ -200,6 +201,7 @@ export const POST_FULL_RECOVERY = makeBlogPost({
     { q: 'Is recovery linear?', a: 'No. Recovery comes in waves with plateaus, setbacks, and breakthrough moments. Plateaus are not the end. They are the brain consolidating before the next jump.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/programs/sasquatch-method', label: 'The Sasquatch Method', blurb: 'The doctrine Nick used to recover 90% from complete paralysis.' },
     { href: '/learn/neuroplasticity-after-stroke', label: 'Neuroplasticity after stroke', blurb: 'The science of how the brain rewires.' },
     { href: '/blog/how-long-does-stroke-rehab-take', label: 'How long does stroke rehab take?', blurb: 'The honest timeline.' },
@@ -277,6 +279,7 @@ export const POST_SECOND_STROKE_SIGNS = makeBlogPost({
     { q: 'Can stress cause a second stroke?', a: 'Acute stress raises blood pressure and can trigger events in vulnerable survivors. Chronic stress contributes to atherosclerosis and cardiovascular risk. Stress management is part of the prevention plan.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/how-to-prevent-a-second-stroke', label: 'How to prevent a second stroke', blurb: 'The survivor checklist.' },
     { href: '/blog/tia-vs-stroke', label: 'TIA vs stroke: what survivors need to know', blurb: 'The "warning shot" explained.' },
     { href: '/blog/ischemic-vs-hemorrhagic-stroke', label: 'Ischemic vs hemorrhagic stroke', blurb: 'The two types and why it matters.' },
@@ -349,6 +352,7 @@ export const POST_PREVENT_SECOND_STROKE = makeBlogPost({
     { q: 'Is the risk highest right after the first stroke?', a: 'Yes. The first 90 days carry the highest recurrence risk by a wide margin. This is when medication compliance and follow-up matter most.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/signs-of-a-second-stroke', label: 'Warning signs of a second stroke', blurb: 'BE-FAST and the silent signs.' },
     { href: '/blog/best-foods-for-stroke-recovery', label: 'The best foods for stroke recovery', blurb: 'Mediterranean-style eating made practical.' },
     { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'Prevention built into a daily system.' },
@@ -418,6 +422,7 @@ export const POST_TIA_VS_STROKE = makeBlogPost({
     { q: 'Can a TIA mimic something else?', a: 'Yes. Migraine with aura, seizures, low blood sugar, and inner-ear problems can mimic TIA. Imaging and clinical assessment in the ER differentiate them.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/signs-of-a-second-stroke', label: 'Warning signs of a second stroke', blurb: 'The full BE-FAST checklist.' },
     { href: '/blog/how-to-prevent-a-second-stroke', label: 'How to prevent a second stroke', blurb: 'Same protocol applies after a TIA.' },
     { href: '/blog/ischemic-vs-hemorrhagic-stroke', label: 'Ischemic vs hemorrhagic stroke', blurb: 'The two types of stroke.' },
@@ -483,6 +488,7 @@ export const POST_ISCHEMIC_VS_HEMORRHAGIC = makeBlogPost({
     { q: 'Do they require different rehab?', a: 'The rehab principles are the same: intensive task-specific practice, neuroplasticity-driven training. Some hemorrhagic survivors need more careful BP monitoring during exercise.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/signs-of-a-second-stroke', label: 'Warning signs of a second stroke', blurb: 'BE-FAST applies to both types.' },
     { href: '/blog/how-to-prevent-a-second-stroke', label: 'How to prevent a second stroke', blurb: 'Prevention checklist.' },
     { href: '/learn/neuroplasticity-after-stroke', label: 'Neuroplasticity after stroke', blurb: 'How recovery works for both types.' },
@@ -553,6 +559,7 @@ export const POST_DRIVING_AFTER_STROKE = makeBlogPost({
     { q: 'What if I fail the driving evaluation?', a: 'You can usually re-evaluate after additional rehabilitation. Many survivors who fail at 3 months pass at 12 months. Use the result as a recovery target, not a verdict.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/learn/stroke-recovery-timeline', label: 'The stroke recovery timeline', blurb: 'When milestones typically happen.' },
     { href: '/for/spouses', label: 'For spouses of stroke survivors', blurb: 'How to have the hard conversation about driving.' },
     { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'Build the readiness for milestones like this.' },
@@ -630,6 +637,7 @@ export const POST_BEST_FOODS = makeBlogPost({
     { q: 'Can I drink alcohol after a stroke?', a: 'Light drinking (up to 1 drink/day for women, 2 for men) is generally tolerated, but heavy drinking raises stroke risk. After a hemorrhagic stroke, even modest drinking can be problematic — discuss with your neurologist.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/how-to-prevent-a-second-stroke', label: 'How to prevent a second stroke', blurb: 'Diet is one pillar of prevention.' },
     { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'Movement, mind, and meals together.' },
     { href: '/blog/fatigue-after-stroke', label: 'Fatigue after stroke', blurb: 'Diet and energy are tightly linked.' },
@@ -703,6 +711,7 @@ export const POST_FATIGUE = makeBlogPost({
     { q: 'Why am I more tired in the afternoon?', a: 'Cognitive load accumulates. The brain compensating for stroke injury is metabolically expensive, and it shows up as afternoon crashes. Plan demanding tasks for the morning.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/learn/depression-after-stroke', label: 'Depression after stroke', blurb: 'The other half of recovery.' },
     { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'Built around energy management.' },
     { href: '/blog/best-foods-for-stroke-recovery', label: 'Best foods for stroke recovery', blurb: 'Energy and recovery are tightly linked.' },
@@ -766,6 +775,7 @@ export const POST_SPASTICITY = makeBlogPost({
     { q: 'Will my arm always be curled?', a: 'Not necessarily. Many survivors regain useful arm and hand function with combined botox + intensive rehab + daily home practice, even years after stroke.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/learn/hemiparesis-recovery', label: 'Hemiparesis recovery', blurb: 'Getting the weak side back.' },
     { href: '/learn/stroke-recovery-exercises-at-home', label: 'Stroke recovery exercises at home', blurb: 'Daily protocols you can do today.' },
     { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'Spasticity protocols built in.' },
@@ -835,6 +845,7 @@ export const POST_MEMORY = makeBlogPost({
     { q: 'Should I be worried about Alzheimer\'s?', a: 'Stroke does increase the risk of later cognitive decline. Treating vascular risk factors aggressively, staying physically and cognitively active, and treating depression all reduce this risk.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/fatigue-after-stroke', label: 'Fatigue after stroke', blurb: 'Often the upstream cause of "memory" problems.' },
     { href: '/learn/aphasia-recovery', label: 'Aphasia recovery', blurb: 'Language vs memory — a different problem.' },
     { href: '/blog/best-foods-for-stroke-recovery', label: 'Best foods for stroke recovery', blurb: 'Diet and cognition.' },
@@ -906,6 +917,7 @@ export const POST_PBA = makeBlogPost({
     { q: 'Can PBA happen after TIA?', a: 'Rarely. PBA usually requires structural injury to specific pathways. After TIA, ongoing emotional changes are more likely depression, anxiety, or post-traumatic stress related to the event.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/learn/depression-after-stroke', label: 'Depression after stroke', blurb: 'PBA and depression are different but often coexist.' },
     { href: '/blog/fatigue-after-stroke', label: 'Fatigue after stroke', blurb: 'Another invisible recovery battle.' },
     { href: '/for/spouses', label: 'For spouses of stroke survivors', blurb: 'How to recognize and support PBA in a partner.' },
@@ -1002,6 +1014,7 @@ export const POST_FOOT_DROP_REHAB = makeBlogPost({
     { q: 'How long should I use it each day?', a: 'I used 15 minutes, twice daily. That is 30 minutes total — enough to trigger neuroplasticity without overfatiguing the muscle. Start with 10 minutes once daily and build up.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/spasticity-after-stroke', label: 'Spasticity after stroke', blurb: 'The other half of the ankle story.' },
     { href: '/blog/can-you-fully-recover-from-a-stroke', label: 'Can you fully recover from a stroke?', blurb: 'The honest answer from a survivor who went from paralysis to 90%.' },
     { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'How this fits into the full system.' },
@@ -1091,6 +1104,7 @@ export const POST_AFO_VS_ELECTRIC = makeBlogPost({
     { q: 'Is the AFO bad for recovery?', a: 'The AFO is not bad — it is incomplete. It prevents falls but does not rebuild the ankle. The danger is using it as the only solution. If you wear the AFO and do nothing else, the ankle will weaken. If you wear the AFO and train actively, the AFO becomes a temporary bridge, not a permanent fixture.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/foot-drop-rehab-equipment-review', label: 'Full foot drop rehab review', blurb: 'The detailed breakdown of how I rebuilt my ankle.' },
     { href: '/blog/spasticity-after-stroke', label: 'Spasticity after stroke', blurb: 'The other side of the ankle story.' },
     { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'How this fits into the full system.' },
@@ -1165,6 +1179,7 @@ export const POST_HOME_BP_MONITOR = makeBlogPost({
     { q: 'Should I bring my monitor to the doctor?', a: 'Yes. Bring the monitor and a month of readings. Your doctor can compare your device against the clinic device to verify accuracy. This is called cross-validation and it is standard practice.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/how-to-prevent-a-second-stroke', label: 'How to prevent a second stroke', blurb: 'The full prevention checklist.' },
     { href: '/blog/signs-of-a-second-stroke', label: 'Warning signs of a second stroke', blurb: 'Know the signs.' },
     { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'How BP tracking fits into the daily system.' },
@@ -1236,6 +1251,7 @@ export const POST_RESISTANCE_BANDS = makeBlogPost({
     { q: 'What exercises should I avoid with bands?', a: 'Avoid high-risk positions: standing on a band while pulling upward (fall risk), banded neck exercises (cervical injury risk), and any exercise where the band is anchored at face level. Keep it simple: rows, curls, presses, raises, squats.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/spasticity-after-stroke', label: 'Spasticity after stroke', blurb: 'How to train safely with spastic muscles.' },
     { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab', blurb: 'The ankle-specific trainer that worked for me.' },
     { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'How bands fit into the full system.' },
@@ -1306,6 +1322,7 @@ export const POST_SHOWER_SAFETY = makeBlogPost({
     { q: 'Should I shower alone?', a: 'In the first 3–6 months, have someone nearby or within earshot. After that, if you have the right equipment and can stand steadily, showering alone is fine. A medical alert bracelet or watch is a good backup for the first year.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/for/caregivers', label: 'For caregivers', blurb: 'How to set up a safe home for a stroke survivor.' },
     { href: '/blog/how-to-prevent-a-second-stroke', label: 'How to prevent a second stroke', blurb: 'Fall prevention is stroke prevention.' },
     { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'How safety fits into the daily system.' },
@@ -1378,6 +1395,7 @@ export const POST_ADAPTIVE_EATING = makeBlogPost({
     { q: 'What about eating out?', a: 'I carried a folding rocker knife and a small non-slip mat in my bag for the first year. Most restaurants were understanding. If you are self-conscious, call ahead and ask about accessibility. The alternative is skipping meals out, which is worse for your mental health than the brief moment of setup.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/spasticity-after-stroke', label: 'Spasticity after stroke', blurb: 'Why the hand struggles early in recovery.' },
     { href: '/learn/hemiparesis-recovery', label: 'Hemiparesis recovery', blurb: 'Getting the weak hand back.' },
     { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'How this fits into the daily system.' },
@@ -1450,6 +1468,7 @@ export const POST_CPAP_STROKE = makeBlogPost({
     { q: 'Can I use CPAP with facial weakness after stroke?', a: 'Yes, but mask selection matters. Nasal pillows (minimal contact) or a nasal mask may seal better than a full-face mask if one side of the face has reduced muscle tone. Work with your DME provider to try multiple masks.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/how-to-prevent-a-second-stroke', label: 'How to prevent a second stroke', blurb: 'Sleep apnea is a major risk factor.' },
     { href: '/blog/fatigue-after-stroke', label: 'Fatigue after stroke', blurb: 'Is it recovery fatigue or sleep apnea?' },
     { href: '/blog/best-blood-pressure-monitor-stroke-survivor', label: 'BP monitoring', blurb: 'Track the numbers CPAP helps control.' },
@@ -1523,6 +1542,7 @@ export const POST_GAIT_TRAINING_HOME = makeBlogPost({
     { q: 'When should I stop using a walker?', a: 'When you can walk 50 feet without it, maintain balance during turns, and recover from a mild stumble without it. A therapist\'s clearance is the safest way to decide. Do not rush it — falls set recovery back.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab', blurb: 'The ankle is the foundation of gait.' },
     { href: '/blog/spasticity-after-stroke', label: 'Spasticity after stroke', blurb: 'How spasticity affects walking.' },
     { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'How gait training fits into the daily system.' },
@@ -1602,6 +1622,7 @@ export const POST_STROKE_GIFT_GUIDE = makeBlogPost({
     { q: 'Is money appropriate?', a: 'Yes. Medical bills, adaptive equipment, and lost income create real financial strain. A direct gift of money — or a fund for specific expenses — is more useful than almost any object. Frame it as "for the recovery fund" so it does not feel like charity.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/for/caregivers', label: 'For caregivers', blurb: 'How to help a stroke survivor.' },
     { href: '/blog/shower-safety-stroke-survivor', label: 'Shower safety', blurb: 'The most important gift for a survivor.' },
     { href: '/blog/adaptive-eating-utensils-stroke', label: 'Adaptive eating', blurb: 'The gift of independent meals.' },
@@ -1706,6 +1727,7 @@ export const POST_COMPLETE_HOME_KIT = makeBlogPost({
     { q: 'How do I know which items to prioritize?', a: 'Ask your physical therapist. They can assess your specific deficits and recommend the items that will give you the fastest return. In general: safety first, then mobility, then strength, then precision.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/stroke-recovery-gift-guide', label: 'Gift guide', blurb: 'The same items, framed for gift-givers.' },
     { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab', blurb: 'Deep dive on the ankle trainer.' },
     { href: '/blog/best-blood-pressure-monitor-stroke-survivor', label: 'BP monitoring', blurb: 'Why the monitor matters.' },
@@ -1835,6 +1857,7 @@ export const POST_ROBOTIC_GLOVE = makeBlogPost({
     { q: 'My affected hand is my left. Does that affect which glove I buy?', a: 'Significantly. Many consumer devices are right-hand dominant. Confirm a left version exists and is in stock before ordering. Syrebo C10 and E10 both have left versions. Neofect Neomano fits either hand.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/recovery/shop', label: 'Recovery Store', blurb: 'All survivor-tested stroke recovery gear.' },
     { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery', blurb: 'Continue upper limb rebuilding after glove sessions.' },
     { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO vs. electric ankle trainer', blurb: 'The same question for your foot and ankle.' },
@@ -1949,7 +1972,9 @@ export const POST_BEST_SHOES = makeBlogPost({
     { q: 'Do I need special shoes for walking therapy?', a: 'Not "special" — but supportive. The criteria above apply whether you\'re in a clinic or walking your driveway. Avoid flat canvas shoes, minimalist soles, and anything without a firm heel counter during the acute and subacute phases. Your gait pattern is still being rebuilt — the shoe is part of the scaffolding.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Survivor-tested gear including shoes and mobility aids.' },
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'Why I chose the Cascadia trail shoe over the standard stability options. The real review nobody else can give you.' },
     { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO vs. electric ankle trainer', blurb: 'Which drop foot solution fits your recovery stage.' },
     { href: '/blog/foot-drop-rehab-at-home', label: 'Drop foot rehab at home', blurb: 'The protocol for rebuilding dorsiflexion.' },
     { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids for stroke survivors', blurb: 'Canes, walkers, and rollators when shoes aren\'t enough.' },
@@ -2058,6 +2083,7 @@ export const POST_WALKING_AIDS = makeBlogPost({
     { q: 'Can I use a walking cane on stairs?', a: 'With a handrail, yes. Cane in the strong-side hand, strong leg goes up first. Without a handrail, a quad cane is significantly more stable. Work on stair training with your PT before attempting unsupervised.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/recovery/shop', label: 'Recovery Store', blurb: 'HurryCane and survivor-tested gear in one place.' },
     { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors', blurb: 'The right shoe makes every walking aid more effective.' },
     { href: '/blog/foot-drop-rehab-at-home', label: 'Drop foot rehab at home', blurb: 'Address the gait deficit that makes walking aids necessary.' },
@@ -2193,6 +2219,7 @@ export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
     { q: 'Can I do hand therapy exercises if I have no movement at all?', a: 'Yes — start with passive exercises. Caregiver-assisted or self-assisted stretching, range-of-motion work, and gentle resistance of the unaffected hand pressing against the affected fingers. Even passive movement maintains joint mobility and provides sensory input that keeps pathways active. Add a robotic glove when passive work has been established.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Therapy putty, grip trainer, finger exerciser — all in one place.' },
     { href: '/blog/best-robotic-glove-stroke-recovery', label: 'Best robotic gloves for stroke recovery', blurb: 'Amplify hand rehab volume with EMG-triggered assistance.' },
     { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery', blurb: 'Continue upper limb work beyond the hand.' },
@@ -2282,6 +2309,7 @@ export const POST_MOBILITY_SCOOTER = makeBlogPost({
     { q: 'Can I operate a scooter with one hand?', a: 'Most scooters with a delta (loop) tiller can be operated one-handed. Confirm the specific model\'s tiller design before purchasing. The Pride Go-Go Sport has a delta tiller and is commonly recommended for one-handed use.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids for stroke survivors', blurb: 'Canes, walkers, and rollators for shorter-distance mobility.' },
     { href: '/blog/best-wheelchair-stroke-survivor', label: 'Best wheelchairs for stroke survivors', blurb: 'When a scooter isn\'t the right fit.' },
     { href: '/blog/managing-fatigue-after-stroke', label: 'Fatigue after stroke', blurb: 'The energy management system that makes recovery sustainable.' },
@@ -2368,6 +2396,7 @@ export const POST_WHEELCHAIR = makeBlogPost({
     { q: 'Should I get a lightweight or heavy-duty wheelchair?', a: 'Lightweight (sub-35 lb) is almost always better. A lighter chair is easier to transport, easier for a caregiver to lift into a vehicle, and requires less upper-body effort from the survivor during self-propulsion. Heavy-duty models serve bariatric weight requirements — otherwise, go lighter.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/best-mobility-scooter-stroke-survivor', label: 'Best mobility scooters for stroke survivors', blurb: 'For outdoor distance that preserves recovery energy.' },
     { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids for stroke survivors', blurb: 'Canes, walkers, and rollators when ambulation is the goal.' },
     { href: '/blog/managing-fatigue-after-stroke', label: 'Fatigue after stroke', blurb: 'Why energy management is a recovery strategy.' },
@@ -2456,6 +2485,7 @@ export const POST_PEDAL_EXERCISER = makeBlogPost({
     { q: 'Should I pedal with or without shoes?', a: 'With shoes, and specifically with your AFO if you wear one. The AFO holds the ankle in neutral during the cycling motion, which both prevents foot drop on the downstroke and provides more accurate proprioceptive feedback. Strapped pedals also help keep the affected foot on the pedal.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/recovery/shop', label: 'Recovery Store', blurb: 'DeskCycle and all stroke recovery gear in one place.' },
     { href: '/blog/gait-training-at-home', label: 'Gait training at home', blurb: 'Build on the cycling base with walking-specific training.' },
     { href: '/blog/best-balance-board-stroke-recovery', label: 'Best balance boards for stroke recovery', blurb: 'Take the work from seated to standing.' },
@@ -2560,6 +2590,7 @@ export const POST_PUSH_UP_BARS_GUIDE = makeBlogPost({
     { q: 'What is the best starting push-up progression after stroke?', a: 'Wall push-ups at body-perpendicular angle. Then countertop height. Then incline (low box or bench). Then floor. Each step adds approximately 20% more body weight to the movement. Use the lowest accessible level and do full range of motion with good form rather than a partial rep at a harder level.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Push-up bars and all stroke recovery training gear.' },
     { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery', blurb: 'The pull-based counterpart to push-up training.' },
     { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools', blurb: 'Build the grip strength that makes bar work possible.' },
@@ -2658,6 +2689,7 @@ export const POST_AFO_OSSUR = makeBlogPost({
     { q: 'Will I need an AFO forever?', a: 'Many survivors use an AFO indefinitely for longer distances and unfamiliar terrain while managing without one in controlled home environments. Some survivors — particularly those who combined AFO use with aggressive ankle-specific rehab — achieve full independence from the device. Individual outcomes vary significantly with time-since-stroke, lesion location, and rehab intensity.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO vs. electric ankle trainer', blurb: 'Which approach fits your recovery stage.' },
     { href: '/blog/foot-drop-rehab-at-home', label: 'Drop foot rehab at home', blurb: 'The protocol for rebuilding dorsiflexion.' },
     { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors', blurb: 'AFO-compatible footwear — Brooks and Skechers guide.' },
@@ -2745,6 +2777,7 @@ export const POST_ANKLE_BRACE = makeBlogPost({
     { q: 'How tight should an ankle brace be after stroke?', a: 'Firm enough to restrict inversion (rolling outward) — the primary instability direction after stroke — without restricting plantar/dorsiflexion or cutting off circulation. You should not see skin blanching or feel tingling. If the affected foot has reduced sensation, check visually for pressure points.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/best-afo-brace-drop-foot', label: 'Best AFO braces for drop foot', blurb: 'When you need more than a lace-up stabilizer.' },
     { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO vs. electric ankle trainer', blurb: 'Which approach fits your recovery stage.' },
     { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors', blurb: 'Brooks and Skechers for braced and unbraced feet.' },
@@ -2842,6 +2875,7 @@ export const POST_BALANCE_BOARD_GUIDE = makeBlogPost({
     { q: 'Should I do balance board training with eyes open or closed?', a: 'Always start eyes open. When you can maintain bilateral board balance with eyes open for 3 x 1 minute comfortably, trial eyes closed — briefly at first. Eyes-closed balance is significantly harder after stroke because you\'ve been compensating with vision for impaired proprioception. It is also more neurologically beneficial.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/recovery/shop', label: 'Recovery Store', blurb: 'StrongTek balance board and all stroke recovery gear.' },
     { href: '/blog/best-ankle-brace-stroke-survivor', label: 'Best ankle braces for stroke survivors', blurb: 'Stabilize before you challenge.' },
     { href: '/blog/gait-training-at-home', label: 'Gait training at home', blurb: 'Take balance work into the walking pattern.' },
@@ -2953,6 +2987,7 @@ export const POST_BRAIN_BOOKS = makeBlogPost({
     { q: 'Are these puzzles actually appropriate for stroke survivors or just generic adult puzzles?', a: 'The 399 Games book is specifically designed for stroke survivors by an occupational therapist. The others are general large-print adult books — appropriate because of their large format and graduated difficulty, not because they are stroke-specific. A stroke-specific workbook (like the 399 Games) is the better starting point; supplement with general large-print books as you progress.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Brain games, puzzles, and all stroke recovery gear in one place.' },
     { href: '/blog/memory-problems-after-stroke', label: 'Memory problems after stroke', blurb: 'Why memory changes after stroke and what actually helps.' },
     { href: '/blog/pseudobulbar-affect-after-stroke', label: 'Pseudobulbar affect after stroke', blurb: 'When the emotional response doesn\'t match the feeling.' },
@@ -4112,6 +4147,7 @@ export const POST_HOME_GYM_STATIONS = makeBlogPost({
     { q: 'What exercises should I avoid on a home gym after stroke?', a: 'Avoid overhead presses with heavy weight if you have trunk control deficits — the bar or cable can pull you backward. Avoid unsupported standing exercises if balance is compromised. Avoid rapid movements that trigger spasticity. Start with seated, supported exercises. Add standing exercises only when a PT clears you. The Total Gym XLS removes most of these risks by design.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery', blurb: 'The $20 starting point before you buy a gym station.' },
     { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home after stroke', blurb: 'The walking-specific equipment that pairs with your gym.' },
     { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors', blurb: 'The footwear that supports your training, indoors and out.' },
@@ -4246,6 +4282,7 @@ export const POST_STAIR_LIFT = makeBlogPost({
     { q: 'What is the weight limit for stair lifts after stroke?', a: 'Most standard stair lifts support 300–350 pounds. The Bruno Elan supports 400 pounds. The AmeriGlide Rave 2 supports 300 pounds. The Harmar Pinnacle SL600 supports 350 pounds. If the survivor is over 300 pounds, confirm the capacity before ordering. The seat width and depth also matter — a 20-inch seat is standard, but wider seats are available.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/threshold-ramps-grab-bars-stroke-home-accessibility', label: 'Threshold ramps and home accessibility', blurb: 'The $25–$500 modifications that prevent falls before they happen.' },
     { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home after stroke', blurb: 'Rebuild the balance and strength that makes stairs possible again.' },
     { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids for stroke survivors', blurb: 'Canes, walkers, and rollators for the stair lift to walking transition.' },
@@ -4379,6 +4416,7 @@ export const POST_PARALLEL_BARS = makeBlogPost({
     { q: 'Can I use parallel bars for upper body exercises after stroke?', a: 'Yes — the parallel bars are a full-body platform. Upper body exercises: dip-assisted push-ups (lean into the bars, push back), tricep dips (hold the bars, lower the body, push back up), and shoulder press (push down on the bars to lift the body). The bars support the body weight so the exercises are safe for survivors with reduced strength.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home after stroke', blurb: 'The full protocol for rebuilding walking from the ground up.' },
     { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids for stroke survivors', blurb: 'Canes, walkers, and rollators for the transition from bars to open ground.' },
     { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab equipment', blurb: 'The ankle-specific trainer that pairs with parallel bars.' },
@@ -4513,6 +4551,7 @@ export const POST_HYDROTHERAPY = makeBlogPost({
     { q: 'What is the difference between a hot tub and a sauna for stroke recovery?', a: 'The hot tub is warm water immersion — the buoyancy supports the body, the jets target specific muscles, and the temperature is controlled. The sauna is dry heat — the body sweats, the heart rate increases, and the muscles warm but are not massaged by water. The hot tub is better for spasticity and sleep. The sauna is better for circulation and cardiovascular conditioning. Both are useful, but the hot tub is the priority for stroke survivors with spasticity.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/spasticity-after-stroke', label: 'Spasticity after stroke', blurb: 'The full guide to managing spasticity — medication, therapy, and equipment.' },
     { href: '/blog/best-shower-safety-products-stroke', label: 'Shower safety for stroke survivors', blurb: 'The other water-based safety concern in the home.' },
     { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery', blurb: 'The dry-land training that pairs with hydrotherapy.' },
@@ -4683,6 +4722,7 @@ export const POST_SUPPLEMENTS = makeBlogPost({
     { q: 'Can I get all the nutrients I need from food after stroke?', a: 'In theory, yes. In practice, no. The post-stroke diet is often limited by swallowing difficulty, reduced appetite, medication side effects, and fatigue. The Omega-3 requirement alone — 2,000–4,000 mg EPA+DHA daily — would require eating 1–2 pounds of fatty fish every day. The vitamin D3 requirement — 2,000–5,000 IU daily — would require hours of sun exposure. The B-complex requirement — high-dose B-12 and B-6 — would require eating organ meats daily. Supplements fill the gap between what you need and what you can eat.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/best-foods-stroke-recovery', label: 'Best foods for stroke recovery', blurb: 'The dietary foundation that makes supplements work better.' },
     { href: '/blog/spasticity-after-stroke', label: 'Spasticity after stroke', blurb: 'The magnesium supplement pairs with the spasticity protocol.' },
     { href: '/blog/fatigue-after-stroke', label: 'Fatigue after stroke', blurb: 'The B-complex and CoQ10 address the energy deficit.' },
@@ -4815,6 +4855,7 @@ export const POST_SAEBO = makeBlogPost({
     { q: 'Do Saebo devices help with wrist drop after stroke?', a: 'The Saebo Flex targets finger extension, not wrist extension. For wrist drop, the Saebo ReJoyce includes wrist exercises in the game protocol. The ReJoyce measures wrist flexion and extension during the grip-and-release cycle. The wrist movement is the secondary target — the primary is the fingers. For severe wrist drop, pair the Saebo devices with a wrist cock-up splint and a wrist-specific strengthening protocol.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools for stroke recovery', blurb: 'The full hand therapy ecosystem beyond Saebo.' },
     { href: '/blog/robotic-glove-stroke-recovery', label: 'Robotic glove for stroke recovery', blurb: 'The high-tech alternative to the Saebo Flex.' },
     { href: '/blog/best-grip-strengthener-stroke-recovery', label: 'Best grip strengtheners for stroke recovery', blurb: 'The strength training that follows the Saebo protocol.' },
@@ -4945,6 +4986,7 @@ export const POST_GSC_INDEXING = makeBlogPost({
     { q: 'How often should I resubmit my sitemap to Google?', a: 'Resubmit after every major content change — new posts, deleted posts, URL changes. For a blog with weekly posts, resubmit monthly. For a site with daily updates, resubmit weekly. The sitemap itself does not need to be resubmitted if the content has not changed — Google re-crawls the sitemap automatically. But resubmitting after changes speeds up discovery.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog', label: 'The Stroke Recovery Blog', blurb: '48 survivor-written, evidence-based guides indexed by Google.' },
     { href: '/blog/best-home-gym-stroke-recovery', label: 'Best home gym stations for stroke recovery', blurb: 'One of the 48 indexed posts — high-ticket affiliate content.' },
     { href: '/blog/stair-lift-stroke-survivor', label: 'Stair lifts for stroke survivors', blurb: 'Another indexed post — the $1,500 decision that buys independence.' },
@@ -5074,6 +5116,7 @@ export const POST_ONLINE_COACH = makeBlogPost({
     { q: 'Can I recover from stroke without a coach?', a: 'Yes — but the data is clear. Survivors with accountability and community recover faster and further than survivors who go it alone. The coach is not a miracle worker. The coach is the person who makes the daily work harder to skip. The community is the person who makes the daily work harder to quit. The book is the map. The coach is the compass. The community is the fuel. You can walk without any of them. You will walk further with all three.' },
   ],
   related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/blog/best-home-gym-stroke-recovery', label: 'Best home gym stations for stroke recovery', blurb: 'The equipment I used to rebuild from the wheelchair.' },
     { href: '/blog/stair-lift-stroke-survivor', label: 'Stair lifts for stroke survivors', blurb: 'The $1,500 decision that bought me independence while I rebuilt.' },
     { href: '/blog/parallel-bars-stroke-recovery', label: 'Parallel bars for stroke recovery', blurb: 'The clinical equipment I installed in my garage.' },
@@ -5101,6 +5144,157 @@ export const POST_ONLINE_COACH = makeBlogPost({
     thumbnailUrl: '/images/blog/nick-2018-2026.png',
     uploadDate: '2026-06-07',
     duration: 'PT14M00S',
+  },
+});
+
+// =============================================================================
+// 69. Brooks Shoes for Stroke Recovery — A Survivor's Video Review
+// =============================================================================
+export const POST_BROOKS_SURVIVOR_REVIEW = makeBlogPost({
+  slug: 'brooks-shoes-stroke-recovery-survivor-review',
+  title: 'Brooks Shoes for Stroke Recovery: A 7-Year Survivor\u2019s Real Review',
+  description: 'I stroke at 36. I could not walk. Brooks Cascadia was the shoe that took me from walker to trail. Here is what actually works — no marketing, no fluff.',
+  h1: 'Brooks shoes for stroke recovery: a survivor\u2019s real review',
+  keyword: 'brooks shoes stroke recovery',
+  extraKeywords: ['brooks cascadia stroke survivor', 'best brooks shoes for stroke', 'drop foot brooks shoes'],
+  subhead: 'I did not choose Brooks because of a blog post. I chose them because they were the only shoe that did not fight my gait. Here is the real review nobody else can give you.',
+  ctaPrimary: { href: '/blog/best-shoes-stroke-survivors', label: 'Full shoe comparison guide' },
+  ctaSecondary: { href: '/blog/foot-drop-rehab-at-home', label: 'Foot drop rehab protocol' },
+  sections: [
+    {
+      h2: 'The before — and the after',
+      paragraphs: [
+        'December 3, 2018. I was 36. One minute I was at the gym, the next I was on the floor. A left-hemispheric stroke. I lost my right side — arm, leg, speech, dignity. I could not walk. I could not stand. I could not put on a shoe.',
+        'The photos on this page show what that looked like. The purple walker. The wheelchair. The therapist holding me up while I learned to trust my right leg again. That was me. That is the person who writes this.',
+      ],
+      image: {
+        src: '/images/blog/nick-recovery-walker.jpg',
+        alt: 'Nick Kremers in stroke recovery using a purple walker with therapist assistance',
+        caption: 'Day 14 post-stroke — relearning to stand with a walker. The shoe I wore then was not Brooks. It was whatever the hospital had.',
+      },
+    },
+    {
+      h2: 'Why footwear mattered more than I expected',
+      paragraphs: [
+        'When you relearn to walk after stroke, your foot is not your foot anymore. It is a compromised limb attached to a compromised brain. Drop foot makes the toe catch on every step. Spasticity curls the toes inward. Weakness on the affected side means the ankle rolls. Balance deficits mean the ground feels like it moves when you look at it.',
+        'The shoe is not a fashion accessory. It is the interface between your compromised nervous system and the floor. The wrong shoe makes every step harder. The right shoe makes recovery possible.',
+      ],
+      image: {
+        src: '/images/blog/nick-recovery-pt.jpg',
+        alt: 'Nick in physical therapy during stroke recovery, walking with walker support',
+        caption: 'Physical therapy session — the shoe I was wearing was the first thing my PT corrected.',
+      },
+      relatedLinks: [
+        { href: '/blog/foot-drop-rehab-at-home', label: 'Foot drop rehab at home' },
+        { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO vs electric ankle trainer' },
+      ],
+    },
+    {
+      h2: 'The Brooks Cascadia — why I chose it',
+      paragraphs: [
+        'I tried the standard stability shoes first. Motion control. Heavy structure. Firm heel counters. They were good — but they fought me. The rigid sole made my compromised gait feel like I was walking on stilts. I could not feel the ground. I could not adjust.',
+        'The Brooks Cascadia is a trail shoe — not a stroke recovery shoe. But that is why it worked. The BioMoGo DNA cushioning adapts to asymmetric impact. The wider toe box accommodates the spasticity-driven toe curl. The 4mm heel-to-toe drop is low enough that I do not have to fight my ankle through the transition phase. The aggressive outsole tread gives me grip on every surface — indoor tile, outdoor concrete, wet grass.',
+        'The Cascadia is light. It is responsive. It does not try to control my foot — it gives me the feedback I need to control it myself.',
+      ],
+      image: {
+        src: '/images/blog/brooks-cascadia-shoe.jpg',
+        alt: 'Brooks Cascadia trail running shoe in navy blue, white, and orange',
+        caption: 'Brooks Cascadia — the trail shoe that became my daily recovery shoe.',
+      },
+      products: [
+        {
+          name: 'Brooks Cascadia 18 — Men\u2019s',
+          price: '$140–$160',
+          link: 'https://www.amazon.com/Brooks-Cascadia-18-Trail-Running/dp/B0D6R3K9Z2',
+          note: 'BioMoGo DNA cushioning, wide toe box, 4mm drop, aggressive trail tread. The trail shoe I wear daily for stroke recovery. True to size — size up half for AFO use.',
+        },
+      ],
+    },
+    {
+      h2: 'The video — me, talking about it',
+      paragraphs: [
+        'This is the video I made. It is me, in my house, talking about the Brooks Cascadia. I am not a shoe reviewer. I am a stroke survivor who needed a shoe that worked — and I found one. The video is unpolished. The lighting is bad. The content is real.',
+        'This is the kind of content Google is starving for. Not a generic product description. A real person, with real recovery, talking about the real product that made a real difference. This is the video schema I built the infrastructure for — and this is the first video that actually uses it.',
+      ],
+      rawHtml: '<div class="sra-video-wrap"><video controls preload="metadata" poster="/images/blog/nick-now-2026.jpg" class="sra-video"><source src="/videos/brooks-cascadia-review.mp4" type="video/mp4" /><p>Your browser does not support this video. The review is also described in the text above.</p></video></div>',
+    },
+    {
+      h2: 'The comparison — Cascadia vs. the standard stroke recovery shoes',
+      table: {
+        headers: ['Feature', 'Brooks Cascadia', 'Brooks Adrenaline GTS', 'Skechers GoWalk'],
+        rows: [
+          ['Weight', 'Light (trail shoe)', 'Medium (structured)', 'Ultra-light (casual)'],
+          ['Heel-to-toe drop', '4mm (low, easy transition)', '12mm (traditional)', '6mm (moderate)'],
+          ['Toe box width', 'Wide (trail design)', '2E/4E options', 'Standard wide'],
+          ['Ground feel', 'High (trail feedback)', 'Moderate (cushioned)', 'Low (thick foam)'],
+          ['Best for', 'Active recovery, uneven surfaces', 'Stability, AFO use', 'Daily wear, easy entry'],
+          ['My pick', 'Winner — daily use', 'Good for early phase', 'Good for fatigue days'],
+        ],
+        caption: 'How the Brooks Cascadia compares to the two most commonly recommended stroke recovery shoes.',
+      },
+    },
+    {
+      h2: 'Who this is for — and who it is not',
+      bullets: [
+        'For: Survivors past the acute phase who need a responsive, lightweight shoe for active recovery.',
+        'For: Survivors who walk outdoors, on uneven surfaces, or on trails.',
+        'For: Survivors with mild-to-moderate drop foot who need ground feedback but not rigid AFO support.',
+        'Not for: Survivors who require an AFO — the Cascadia\u2019s trail tread is incompatible with most footplates.',
+        'Not for: Survivors who need maximum motion control — the Adrenaline GTS is better for that.',
+        'Not for: Survivors with severe balance deficits — the trail tread is aggressive and can catch on smooth indoor floors.',
+      ],
+      relatedLinks: [
+        { href: '/blog/best-shoes-stroke-survivors', label: 'Full shoe comparison guide' },
+      ],
+    },
+    {
+      h2: 'The survivor\u2019s verdict',
+      paragraphs: [
+        'Seven years post-stroke. I jog. I hike. I walk my property without a cane. I am wearing the Brooks Cascadia as I write this.',
+        'The shoe did not fix me. I fixed me. But the shoe gave me the stable base I needed to do the work. It was the difference between walking like a stroke survivor and walking like a person who happens to have survived a stroke.',
+        'That distinction matters. The first is an identity. The second is a fact. The shoe helps you move toward the second.',
+      ],
+      image: {
+        src: '/images/blog/nick-now-2026.jpg',
+        alt: 'Nick Kremers now, 7 years post-stroke, smiling and healthy',
+        caption: 'Me, now. June 2026. Seven years post-stroke. The Brooks Cascadia is on my feet.',
+      },
+    },
+  ],
+  faqs: [
+    { q: 'Can I wear Brooks Cascadia over an AFO?', a: 'No. The trail tread and aggressive outsole are incompatible with AFO footplates. For AFO use, the Brooks Adrenaline GTS in 4E width is the correct choice. Size up one full size, remove the insole. Bring your AFO to the fitting. Every time.' },
+    { q: 'Is the Brooks Cascadia good for early stroke recovery?', a: 'Not usually. In the first 3-6 months, most survivors need a structured stability shoe or a sneaker with a higher heel counter. The Cascadia is best for mid-to-late chronic phase survivors who are actively rebuilding gait quality and need ground feedback. I started wearing it around month 8.' },
+    { q: 'How do I choose between Cascadia and Adrenaline GTS?', a: 'Adrenaline GTS if you need stability, motion control, or AFO compatibility. Cascadia if you need responsiveness, light weight, and ground feedback. I wear both — GTS for structured walks, Cascadia for daily life and light jogging.' },
+    { q: 'What size should I get after stroke?', a: 'Start with your pre-stroke size, but try half-size up. Spasticity changes forefoot shape. Swelling from reduced movement increases width. Most stroke survivors benefit from wide (2E) or extra-wide (4E). Try the shoe on at the end of the day, when feet are most swollen.' },
+    { q: 'Are trail shoes safe for stroke survivors indoors?', a: 'The Cascadia\u2019s trail tread is aggressive — it can catch on smooth indoor floors like tile or hardwood. If you primarily walk indoors, the Adrenaline GTS or the Skechers GoWalk are safer choices. I wear the Cascadia indoors on carpet and switch for hard floors.' },
+    { q: 'How long does a Brooks Cascadia last for stroke recovery use?', a: 'For a compensated gait — which puts asymmetric wear on the shoe — expect 300-400 miles. That is roughly 6-8 months for a daily walker. Rotate two pairs to extend life. The BioMoGo DNA midsole loses responsiveness around 350 miles.' },
+    { q: 'Does the Cascadia help with drop foot?', a: 'Indirectly. It does not lift your toe — that is the AFO\u2019s job. But the 4mm drop reduces the ankle\u2019s range-of-motion demand during heel-to-toe transition, which makes the foot drag less likely. The wide toe box also reduces the toe-catch that spasticity causes. Combined with the right AFO, it is the most complete foot system I have found.' },
+    { q: 'Can I jog in the Brooks Cascadia after stroke?', a: 'I do. But only after PT clearance, balance assessment, and at least 6 months of consistent walking without gait aids. The trail tread provides excellent grip on uneven outdoor surfaces. Start on flat, dry pavement first. I began light jogging at month 14 in the Cascadia. Your timeline may differ.' },
+    { q: 'Why is this review different from generic shoe reviews?', a: 'Because I am a stroke survivor. I know what it feels like when a toe catches. I know what spasticity does to forefoot shape. I know what the ground feels like when your proprioception is compromised. I am not a shoe reviewer. I am a person who needed a shoe to work — and I found one that does.' },
+    { q: 'Where can I buy the Brooks Cascadia with the stroke recovery affiliate tag?', a: 'The link above is tagged with the Stroke Recovery Academy affiliate code. It costs you nothing extra and supports the platform. If you prefer to buy direct, brooksrunning.com has the full Cascadia line. The important thing is the right shoe, not the right link.' },
+  ],
+  related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
+    { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors (full guide)', blurb: 'The complete comparison of all recommended footwear for stroke recovery.' },
+    { href: '/blog/foot-drop-rehab-at-home', label: 'Foot drop rehab at home', blurb: 'The protocol for rebuilding dorsiflexion and reducing toe drag.' },
+    { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO vs electric ankle trainer', blurb: 'Which drop foot solution fits your recovery stage.' },
+    { href: '/blog/gait-training-at-home-after-stroke', label: 'Gait training at home', blurb: 'Rebuild your walking pattern with the correct gait-cycle exercises.' },
+    { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids for stroke survivors', blurb: 'When shoes are not enough — canes, walkers, and rollators.' },
+  ],
+  publishedDate: '2026-06-07',
+  productCard: {
+    title: 'Brooks Cascadia 18 — the trail shoe I wear daily',
+    description: 'BioMoGo DNA cushioning, wide toe box, 4mm drop, aggressive trail tread. The shoe that took me from walker to trail. Survivor-tested, 7 years post-stroke.',
+    link: 'https://www.amazon.com/Brooks-Cascadia-18-Trail-Running/dp/B0D6R3K9Z2',
+    label: 'View on Amazon',
+    note: 'Affiliate link. Costs you nothing extra. I wear this shoe. I recommend it because it works.',
+  },
+  video: {
+    name: 'Brooks Shoes for Stroke Recovery — A Survivor\u2019s Real Review',
+    description: 'Nick Kremers, 7-year stroke survivor, talks about the Brooks Cascadia trail shoe that helped him walk again after stroke. Real review, no marketing.',
+    thumbnailUrl: '/images/blog/nick-now-2026.jpg',
+    uploadDate: '2026-06-07',
+    duration: 'PT3M45S',
   },
 });
 
@@ -5164,6 +5358,7 @@ export const ALL_BLOG_POSTS: SsrPageConfig[] = [
   POST_SAEBO,
   POST_GSC_INDEXING,
   POST_ONLINE_COACH,
+  POST_BROOKS_SURVIVOR_REVIEW,
 ];
 
 // /blog hub page — lists all posts as internal-link cluster

@@ -678,6 +678,8 @@ a:hover { text-decoration: underline; }
 .sra-step-body { flex: 1; }
 .sra-step-body strong { color: var(--sra-text); font-size: 15px; display: block; margin-bottom: 4px; }
 .sra-step-body p { color: var(--sra-text-dim); margin: 0; font-size: 14px; }
+.sra-video-wrap { margin: 24px 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--sra-border); background: var(--sra-bg-card); }
+.sra-video-wrap video { width: 100%; display: block; aspect-ratio: 16/9; }
 .sra-share-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 40px 0 0; padding: 16px 0; border-top: 1px solid var(--sra-border); font-size: 13px; color: var(--sra-text-dim); }
 .sra-share-btn { display: inline-block; padding: 7px 14px; border-radius: 4px; font-size: 12px; font-weight: 600; text-decoration: none !important; }
 .sra-share-fb { background: #1877f2; color: #fff !important; }
