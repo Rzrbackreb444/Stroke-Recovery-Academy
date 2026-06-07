@@ -3071,7 +3071,9 @@ export const POST_ELLIPTICAL = makeBlogPost({
     { q: 'Do I need supervision to use an elliptical at home after stroke?', a: 'In early recovery: yes. Have someone present for the first several sessions. In mid-to-late recovery with stable balance: many survivors use one independently. But have a phone within reach and a clear fall plan before going solo.' },
     { q: 'How often should I use an elliptical during stroke recovery?', a: 'Current cardio guidelines for stroke survivors: 150 minutes of moderate aerobic activity per week, broken into manageable sessions. That\'s 20–30 minutes five days a week, or 50 minutes three days a week. Build to it — don\'t start there.' },
   ],
-  related: ['best-stationary-bike-stroke-recovery', 'best-treadmill-stroke-recovery', 'best-pedal-exerciser-stroke-recovery', 'gait-training-at-home-after-stroke'],
+  related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
+'best-stationary-bike-stroke-recovery', 'best-treadmill-stroke-recovery', 'best-pedal-exerciser-stroke-recovery', 'gait-training-at-home-after-stroke'],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Schwinn 430 Elliptical',
@@ -3139,7 +3141,9 @@ export const POST_STATIONARY_BIKE = makeBlogPost({
     { q: 'Should I get a recumbent or upright bike?', a: 'If you have any trunk weakness, balance deficits, or are less than 6 months post-stroke: recumbent. If your balance is stable, you can maintain upright seated posture without gripping for support, and your PT has cleared progressive loading: upright gives you more core engagement. When in doubt, start recumbent.' },
     { q: 'Is a spin bike (like Peloton) appropriate for stroke recovery?', a: 'Generally not in the first year. Spin bikes require significant hip flexor and core engagement to maintain position, have no back support, and the lean-forward posture is demanding. The Schwinn IC4 or similar is appropriate for mid-to-late chronic phase survivors with good trunk control — not early recovery.' },
   ],
-  related: ['best-elliptical-machine-stroke-recovery', 'best-pedal-exerciser-stroke-recovery', 'best-treadmill-stroke-recovery', 'stroke-recovery-fatigue'],
+  related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
+'best-elliptical-machine-stroke-recovery', 'best-pedal-exerciser-stroke-recovery', 'best-treadmill-stroke-recovery', 'stroke-recovery-fatigue'],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Marcy Recumbent Bike ME-709',
@@ -3212,7 +3216,9 @@ export const POST_TREADMILL = makeBlogPost({
     { q: 'Can I use a treadmill if I have foot drop?', a: 'With caution. Wear your AFO if prescribed for ambulation. Keep speed low so the affected foot has time to clear the belt on each step. Some survivors find the consistent pace of a treadmill actually helps with drop foot rhythm — but any catch of the toe at treadmill speed is dangerous. Start with someone present.' },
     { q: 'What\'s better for stroke recovery — treadmill or outdoor walking?', a: 'Outdoor walking is the goal. Treadmills are the bridge when weather, terrain, fatigue, or safety concerns make outdoor walking impractical. The consistent pace and emergency stop of a treadmill is safer than outdoor walking in early recovery. Transition to outdoor as soon as your PT clears it.' },
   ],
-  related: ['best-elliptical-machine-stroke-recovery', 'best-stationary-bike-stroke-recovery', 'gait-training-at-home-after-stroke', 'best-afo-brace-drop-foot'],
+  related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
+'best-elliptical-machine-stroke-recovery', 'best-stationary-bike-stroke-recovery', 'gait-training-at-home-after-stroke', 'best-afo-brace-drop-foot'],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'NordicTrack T 6.5 S Treadmill',
@@ -3286,7 +3292,9 @@ export const POST_GRIP_STRENGTHENER = makeBlogPost({
     { q: 'My affected hand cramps during exercises. Is that normal?', a: 'Muscle cramping during grip work post-stroke is common and usually indicates working at too high a resistance for too long. Back off to a lighter tool, shorter sets, longer rest periods. Persistent or painful cramping warrants a conversation with your OT or neurologist.' },
     { q: 'Will grip strengtheners help with fine motor skills like buttons?', a: 'Partially. Grip strength is a prerequisite for fine motor function, but fine motor skill requires additional precision training — pinch exercises, manipulation tasks, peg boards. A full OT home program covers both. Grip tools are one component, not the whole program.' },
   ],
-  related: ['best-hand-therapy-tools-stroke-recovery', 'best-robotic-glove-stroke-recovery', 'best-push-up-bars-stroke-recovery', 'stroke-spasticity-management'],
+  related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
+'best-hand-therapy-tools-stroke-recovery', 'best-robotic-glove-stroke-recovery', 'best-push-up-bars-stroke-recovery', 'stroke-spasticity-management'],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Gripmaster Pro Hand Exerciser',
@@ -3360,7 +3368,9 @@ export const POST_TENS_UNIT = makeBlogPost({
     { q: 'How often should I use a TENS unit for shoulder pain?', a: 'Most PT protocols for hemiplegic shoulder pain: 30–60 minutes once or twice daily, during and after exercise sessions when pain is worst. TENS is not a substitute for shoulder positioning, subluxation management, and progressive loading — it\'s an adjunct.' },
     { q: 'Can I use TENS if I have a pacemaker or other implanted device?', a: 'No — not without explicit clearance from your cardiologist. The electromagnetic interference from TENS can affect pacemaker function. This is not a precaution to ignore. Absolute contraindication absent specific cardiology clearance.' },
   ],
-  related: ['best-hand-therapy-tools-stroke-recovery', 'best-massage-gun-stroke-spasticity', 'stroke-spasticity-management', 'best-robotic-glove-stroke-recovery'],
+  related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
+'best-hand-therapy-tools-stroke-recovery', 'best-massage-gun-stroke-spasticity', 'stroke-spasticity-management', 'best-robotic-glove-stroke-recovery'],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'TENS 7000 Digital TENS Unit',
@@ -3426,7 +3436,9 @@ export const POST_MASSAGE_GUN = makeBlogPost({
     { q: 'What\'s the difference between percussion and vibration for spasticity?', a: 'Amplitude and tissue depth. Percussion (massage guns) delivers higher amplitude, higher force impacts — better at reaching deeper muscle tissue. Vibration plates or handheld vibrators operate at higher frequency with lower amplitude — better for sensory input and some proprioceptive work. Both have evidence for temporary spasticity reduction; for self-treatment, percussion guns are more practical.' },
     { q: 'Do I need the Theragun Pro or will a cheaper massage gun work?', a: 'A mid-range device (Hypervolt 2 or Theragun Elite) is sufficient for most stroke survivors. The Pro is worth the upgrade if: you\'re doing self-treatment with one hand and need the rotating arm ergonomics, you want the pressure display to prevent over-application on insensate tissue, or you\'re using it daily in a clinical-adjacent context. Budget is better spent elsewhere if the Hypervolt 2 handles your needs.' },
   ],
-  related: ['best-tens-unit-stroke-recovery', 'best-hand-therapy-tools-stroke-recovery', 'stroke-spasticity-management', 'best-robotic-glove-stroke-recovery'],
+  related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
+'best-tens-unit-stroke-recovery', 'best-hand-therapy-tools-stroke-recovery', 'stroke-spasticity-management', 'best-robotic-glove-stroke-recovery'],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Theragun Pro Percussive Therapy Device',
@@ -3492,7 +3504,9 @@ export const POST_SMART_HOME = makeBlogPost({
     { q: 'My caregiver wants to check on me but I want privacy. Can smart home devices handle that?', a: 'Alexa Drop In can be restricted to announced calls only (normal video calls) rather than the unannounced check-in mode. The survivor controls who has Drop In permissions. This is a worth-it conversation to have — the safety value of easy caregiver check-ins is real, and the privacy settings can be calibrated to a level both parties accept.' },
     { q: 'Is Alexa accessible for one-handed operation?', a: 'Primarily voice-operated by design — one-handed by default. The Echo Show touchscreen requires touch for some interactions; all of those have voice equivalents. For the occasional gesture (swiping through a playlist, adjusting a slider), the Show\'s touch targets are large enough for most hemiparetic hands with adequate active arm function.' },
   ],
-  related: ['best-adaptive-eating-tools-stroke', 'stroke-memory-cognitive-recovery', 'stroke-recovery-fatigue', 'best-brain-games-books-stroke-cognitive-recovery'],
+  related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
+'best-adaptive-eating-tools-stroke', 'stroke-memory-cognitive-recovery', 'stroke-recovery-fatigue', 'best-brain-games-books-stroke-cognitive-recovery'],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Amazon Echo Show 8',
@@ -3558,7 +3572,9 @@ export const POST_RED_LIGHT = makeBlogPost({
     { q: 'What\'s the difference between red light and near-infrared?', a: 'Red light (630–680 nm) penetrates about 5mm — good for skin, superficial tissue, and surface joint structures. Near-infrared (800–850 nm) penetrates 2–3 cm — reaches muscle tissue and deeper joints. Dual-wavelength panels do both simultaneously. For post-stroke use where you want both surface and deeper tissue effects, dual-wavelength is worth the modest price premium.' },
     { q: 'Can I use red light therapy on my spastic muscles?', a: 'Yes — there\'s some emerging evidence that photobiomodulation reduces muscle tone through mitochondrial and anti-inflammatory pathways, separate from the mechanical mechanisms of TENS or massage. It\'s compatible with other spasticity tools and there\'s no conflict with stretching or splinting protocols. Stack it as a pre-treatment tool alongside percussion massage if you have both.' },
   ],
-  related: ['best-tens-unit-stroke-recovery', 'best-massage-gun-stroke-spasticity', 'best-hand-therapy-tools-stroke-recovery', 'stroke-spasticity-management'],
+  related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
+'best-tens-unit-stroke-recovery', 'best-massage-gun-stroke-spasticity', 'best-hand-therapy-tools-stroke-recovery', 'stroke-spasticity-management'],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Mito Red Light MitoPRO 300',
@@ -3628,7 +3644,9 @@ export const POST_ADJUSTABLE_BED = makeBlogPost({
     { q: 'Should I sleep on my affected side or my stronger side after stroke?', a: 'Both positions have clinical use. Lying on the affected side can provide weight-bearing proprioceptive input that inhibits spasticity. Lying on the strong side allows the affected arm to be positioned forward with support. Back-lying with wedge support is the most controllable for positioning purposes. Your OT should guide which is indicated for your specific pattern.' },
     { q: 'My affected leg is in extensor spasticity at night — what helps?', a: 'Hip abduction pillow between the knees reduces the extensor pattern reinforcement. A slight knee flexion cushion under the knee on the affected side further reduces extensor tone. Some survivors use ankle splints or soft AFOs overnight for plantarflexion management — talk to your orthotist about night use of your device.' },
   ],
-  related: ['stroke-spasticity-management', 'best-hand-therapy-tools-stroke-recovery', 'stroke-recovery-fatigue', 'best-tens-unit-stroke-recovery'],
+  related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
+'stroke-spasticity-management', 'best-hand-therapy-tools-stroke-recovery', 'stroke-recovery-fatigue', 'best-tens-unit-stroke-recovery'],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'InteVision Foam Wedge Bed Pillow',
@@ -3702,7 +3720,9 @@ export const POST_COMPRESSION = makeBlogPost({
     { q: 'My affected leg swells more toward the end of the day — is that normal?', a: 'Yes. Dependent edema that increases with gravity and activity and decreases with elevation and rest is the classic pattern of post-stroke venous insufficiency and muscle pump impairment. Compression socks worn during the day, leg elevation during rest periods, and ankle pumping exercises (if you have the range) address the contributing factors. Sudden, severe, or asymmetric swelling with warmth or redness warrants urgent medical evaluation for DVT.' },
     { q: 'Are compression socks covered by insurance after stroke?', a: 'Medical-grade compression stockings (20–30 mmHg and above, prescribed) may be covered under Medicare Part B or supplemental insurance as durable medical equipment — with a physician prescription and documentation of medical necessity (venous insufficiency, DVT history, lymphedema). OTC socks are generally not covered. Verify your specific plan benefits.' },
   ],
-  related: ['best-ankle-brace-stroke-survivor', 'best-adjustable-bed-wedge-pillow-stroke-recovery', 'best-wheelchair-stroke-survivor', 'stroke-spasticity-management'],
+  related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
+'best-ankle-brace-stroke-survivor', 'best-adjustable-bed-wedge-pillow-stroke-recovery', 'best-wheelchair-stroke-survivor', 'stroke-spasticity-management'],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Physix Gear Compression Socks (20–30 mmHg)',
@@ -3770,7 +3790,9 @@ export const POST_STANDING_DESK = makeBlogPost({
     { q: 'Can I claim a standing desk as a disability accommodation after stroke?', a: 'Yes — in the US, the ADA requires employers to provide reasonable accommodations for qualified employees with disabilities. A height-adjustable desk for a stroke survivor with hemiplegia or fatigue is a standard, well-established accommodation. Request it through your HR/ADA coordinator with a physician letter of support. Some employers fund it entirely; others cost-share.' },
     { q: 'My affected arm can\'t use a standard mouse. What works?', a: 'Vertical mouse (reduces forearm pronation), trackball (no wrist movement required), head-tracking mouse (for minimal arm function), or switch-adapted mouse for one-switch scanning. Assistive technology specialists (occupational therapists with AT certification) evaluate and match the solution to your actual motor profile — don\'t trial-and-error expensive AT devices without that assessment.' },
   ],
-  related: ['best-smart-home-devices-stroke-survivors', 'stroke-recovery-fatigue', 'stroke-memory-cognitive-recovery', 'best-stationary-bike-stroke-recovery'],
+  related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
+'best-smart-home-devices-stroke-survivors', 'stroke-recovery-fatigue', 'stroke-memory-cognitive-recovery', 'best-stationary-bike-stroke-recovery'],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'FlexiSpot E7 Electric Standing Desk',
@@ -3836,7 +3858,9 @@ export const POST_WEIGHTED_VEST = makeBlogPost({
     { q: 'Should the weight be centered on my affected side?', a: 'Some clinical protocols use asymmetric weighting — more weight on the affected side to correct lateral lean toward the stronger side. This is a clinically guided intervention, not a self-prescription. If your PT has given you a specific weighting protocol, follow it. For general training without specific guidance, symmetric weighting (equal front and back, equal left and right) is appropriate.' },
     { q: 'Can I wear a weighted vest on a treadmill after stroke?', a: 'Yes, if you\'re cleared for solo treadmill use at baseline and the vest doesn\'t degrade your treadmill gait quality to an unsafe degree. Weighted treadmill walking is a progression — add it after you\'re stable with unweighted treadmill use, not simultaneously with learning to use the treadmill.' },
   ],
-  related: ['best-treadmill-stroke-recovery', 'best-balance-board-stroke-recovery', 'best-elliptical-machine-stroke-recovery', 'gait-training-at-home-after-stroke'],
+  related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
+'best-treadmill-stroke-recovery', 'best-balance-board-stroke-recovery', 'best-elliptical-machine-stroke-recovery', 'gait-training-at-home-after-stroke'],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'ZFOsports Weighted Vest',
@@ -3911,7 +3935,9 @@ export const POST_SPEECH_THERAPY = makeBlogPost({
     { q: 'My family member has severe aphasia and can\'t use an app independently. What helps?', a: 'Supported communication practice — a caregiver working through exercises with the survivor using a simple app or workbook — produces better outcomes than unsupported solo practice for severe aphasia. The National Aphasia Association (aphasia.org) has caregiver training resources. An SLP trained in supported communication can teach family members the techniques.' },
     { q: 'Is there a difference between aphasia and dysarthria?', a: 'Yes — critically. Aphasia is a language processing disorder: difficulty finding words, forming sentences, understanding speech, or reading/writing. The problem is in the language system. Dysarthria is a motor speech disorder: the words are there and correctly assembled, but the muscles of speech articulation are weak or uncoordinated. The treatment approaches are completely different. Your SLP\'s assessment determines which you have — many survivors have both to varying degrees.' },
   ],
-  related: ['best-smart-home-devices-stroke-survivors', 'stroke-memory-cognitive-recovery', 'best-brain-games-books-stroke-cognitive-recovery', 'stroke-recovery-fatigue'],
+  related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
+'best-smart-home-devices-stroke-survivors', 'stroke-memory-cognitive-recovery', 'best-brain-games-books-stroke-cognitive-recovery', 'stroke-recovery-fatigue'],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Constant Therapy Brain Rehab App',
@@ -3988,7 +4014,9 @@ export const POST_THRESHOLD_RAMP = makeBlogPost({
     { q: 'Can I install a grab bar myself after stroke?', a: 'The installation itself is a standard DIY task for someone with reliable hand function and basic tools. The critical requirement: mounting into studs or using proper toggle anchors rated for the load. A grab bar that pulls from drywall under load is a fall cause, not a fall prevention. If you\'re uncertain about the mounting, hiring a handyman for a $50–$100 job is the right call.' },
     { q: 'My home has carpet — does that affect fall risk?', a: 'Paradoxically, carpet reduces fall risk on flat surfaces (softer landing, more friction) but increases it at transitions between flooring types. The carpet-to-hardwood edge, especially if there\'s a lip or a curling edge, is a significant tripping hazard for foot drop and impaired proprioception. Secure all transition strips and remove or secure area rugs throughout the home.' },
   ],
-  related: ['best-walking-aids-stroke-survivors', 'best-wheelchair-stroke-survivor', 'best-shower-safety-products-stroke', 'best-afo-brace-drop-foot'],
+  related: [
+    { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
+'best-walking-aids-stroke-survivors', 'best-wheelchair-stroke-survivor', 'best-shower-safety-products-stroke', 'best-afo-brace-drop-foot'],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'EZ-ACCESS TRANSITIONS Angled Entry Ramp',
@@ -5216,7 +5244,7 @@ export const POST_BROOKS_SURVIVOR_REVIEW = makeBlogPost({
         'This is the video I made. It is me, in my house, talking about the Brooks Cascadia. I am not a shoe reviewer. I am a stroke survivor who needed a shoe that worked — and I found one. The video is unpolished. The lighting is bad. The content is real.',
         'This is the kind of content Google is starving for. Not a generic product description. A real person, with real recovery, talking about the real product that made a real difference. This is the video schema I built the infrastructure for — and this is the first video that actually uses it.',
       ],
-      rawHtml: '<div class="sra-video-wrap"><video controls preload="metadata" poster="/images/blog/nick-now-2026.jpg" class="sra-video"><source src="/videos/brooks-cascadia-review.mp4" type="video/mp4" /><p>Your browser does not support this video. The review is also described in the text above.</p></video></div>',
+      rawHtml: '<div class="sra-video-wrap"><video controls preload="metadata" poster="/images/blog/nick-author-bio.jpg" class="sra-video"><source src="/videos/nick-testimonial.mp4" type="video/mp4" /><p>Your browser does not support this video. The review is also described in the text above.</p></video></div>',
     },
     {
       h2: 'The comparison — Cascadia vs. the standard stroke recovery shoes',
@@ -5290,11 +5318,12 @@ export const POST_BROOKS_SURVIVOR_REVIEW = makeBlogPost({
     note: 'Affiliate link. Costs you nothing extra. I wear this shoe. I recommend it because it works.',
   },
   video: {
-    name: 'Brooks Shoes for Stroke Recovery — A Survivor\u2019s Real Review',
-    description: 'Nick Kremers, 7-year stroke survivor, talks about the Brooks Cascadia trail shoe that helped him walk again after stroke. Real review, no marketing.',
-    thumbnailUrl: '/images/blog/nick-now-2026.jpg',
+    name: 'Nick Kremers — Stroke Survivor Testimonial',
+    description: 'Nick Kremers, 7-year stroke survivor who went from complete paralysis to 90% recovery, talks about the Brooks Cascadia trail shoe and what actually works after stroke. Real review, no marketing.',
+    thumbnailUrl: '/images/blog/nick-author-bio.jpg',
     uploadDate: '2026-06-07',
-    duration: 'PT3M45S',
+    duration: 'PT2M34S',
+    contentUrl: '/videos/nick-testimonial.mp4',
   },
 });
 
