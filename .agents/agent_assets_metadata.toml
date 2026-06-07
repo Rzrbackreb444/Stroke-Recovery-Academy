@@ -228,6 +228,12 @@ uri = "file://attached_assets/generated_images/gsc-indexing.png"
 type = "image"
 title = "google search console indexing"
 
+[[generated]]
+id = "ZSfIopAV7aU7JxErRTQ_E"
+uri = "file://attached_assets/generated_images/online-stroke-coach.png"
+type = "image"
+title = "online stroke recovery coach"
+
 [[outputs]]
 id = "EGooVUwVUQyTPSx95p4M4"
 uri = "file://exports/Stroked-Out-Sasquatch_DEDUPED_v1.md"

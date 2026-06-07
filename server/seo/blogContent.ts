@@ -4796,6 +4796,107 @@ export const POST_GSC_INDEXING = makeBlogPost({
 });
 
 // =============================================================================
+// 59. Online Stroke Recovery Coach: The Real Story Behind the Rankings
+// =============================================================================
+export const POST_ONLINE_COACH = makeBlogPost({
+  slug: 'online-stroke-recovery-coach',
+  title: 'Online Stroke Recovery Coach: Real Story, Real Results',
+  description: 'Nick Kremers, a 7-year stroke survivor, built the top-ranked stroke recovery resource from a wheelchair. Real protocols, real accountability, and the story behind the results.',
+  h1: 'Online stroke recovery coach',
+  keyword: 'online stroke recovery coach',
+  subhead: 'I was told I would never walk normally again. I built a stroke recovery academy from a wheelchair in Lavaca, Arkansas. Seven years later, I coach 15,000 survivors a day. Here is how I became the online stroke recovery coach I wish I had found in the hospital.',
+  ctaPrimary: { href: '/api/login', label: 'Join the Academy' },
+  ctaSecondary: { href: '/book', label: 'Read the book' },
+  sections: [
+    {
+      h2: 'The stroke that started everything',
+      paragraphs: [
+        'On December 3, 2018, at thirty-six years old, I had a massive hemorrhagic stroke in the bathroom of my own house. Two hundred and fifty pounds of working muscle. Ninety minutes after I had benched two hundred and eighty-five pounds in my garage. The bleed landed in my left thalamus, paralyzed the left side of my body, scrambled my speech into the wrong word order, and put me in an ICU bed for a month while the doctors told my pregnant wife and my parents to plan for a man who would never walk normally again, never use his left hand again, never recognize music again, and never go back to work.',
+        'The doctors handed me a chart full of "nevers." I refused every one of them. Seven years later I am at ninety percent function and still rising. I walked my son to his first day of school. I am typing this sentence with both hands. I wrote a twelve-track concept album about the rebuild. I run two companies. I built Stroke Recovery Academy from the wheelchair I was supposed to live in. I teach roughly fifteen thousand survivors a day on TikTok how to refuse the same "nevers" the white coats handed me.',
+      ],
+      image: {
+        src: '/images/blog/online-stroke-coach.png',
+        alt: 'Woodcut illustration of a stroke survivor building an online academy from a wheelchair — dark ink and bone white palette',
+        caption: 'The online stroke recovery coach is not a credential. It is a survivor who became a teacher.',
+      },
+    },
+    {
+      h2: 'Why an online stroke recovery coach matters',
+      paragraphs: [
+        'The hospital gives you a pamphlet and a discharge date. The outpatient clinic gives you twelve sessions and a goodbye. The insurance company gives you a denial letter. What nobody gives you is a roadmap for the other twenty-three hours of the day — the hours when the depression sits heavier than the paralysis, when the spasticity wakes you at 3 a.m., when the friends stop coming and the spouse is running out of patience.',
+        'An online stroke recovery coach is the bridge between the clinical system and the real world. The coach is not a replacement for your doctor or your physical therapist. The coach is the person who answers the question at 2 a.m. when the doctor is asleep and the PT is off-duty. The coach is the person who has been where you are and can tell you what the next month actually looks like, not what the textbook says it should look like.',
+      ],
+    },
+    {
+      h2: 'What I built — and why it ranks',
+      paragraphs: [
+        'Stroke Recovery Academy is not a blog with affiliate links. It is a full ecosystem: the 30-chapter book, the 90-day program, the daily routine tracker, the moderated tribe community, the weekly office hours, the one-on-one coaching cohorts, and the free companion app. Every piece is built from lived experience and reviewed against the clinical literature.',
+        'The ranking is not an accident. The content is original — written by a survivor, not a content farm. The protocols are tested — seven years of daily practice on my own body. The community is real — moderated by survivors and caregivers, not bots. The book is the spine. The platform is the muscle. They feed each other. The result is a resource that search engines rank because survivors stay on the page, share the page, and come back to the page.',
+      ],
+      bullets: [
+        '30-chapter book: THE ULTIMATE STROKE RECOVERY REVOLUTION — 50,000+ words, survivor-written, clinician-reviewed',
+        '90-day program: structured daily protocol with video drills, printables, and fillable workbooks',
+        'Daily routine tracker: the 66-day habit builder that proves consistency beats intensity',
+        'Moderated tribe community: survivor and caregiver channels, no bots, no spam',
+        'Weekly office hours: live Q&A with me, every Wednesday, free for all members',
+        'One-on-one coaching: cohort-based coaching for survivors who need the direct accountability',
+        'Free companion app: voice log, tracker, and resource hub at strokerecoveryacademy.com/app',
+      ],
+    },
+    {
+      h2: 'The protocols that work — and the ones that do not',
+      paragraphs: [
+        'I do not recommend anything I have not used myself. The electric ankle trainer that took me from an AFO to walking without one. The resistance bands that rebuilt my left side before I ever touched a dumbbell. The parallel bars in my garage that bridged the gap between clinic gait training and real-world walking. The hot tub that reduced my spasticity enough to sleep through the night. The supplements that reduced my neuroinflammation and rebuilt my cell membranes.',
+        'I also do not recommend things that are overpriced, under-researched, or built on hope instead of evidence. The $5,000 robotic glove that does the work for you instead of asking your brain to do it. The miracle supplement that claims to "reverse stroke damage" with no clinical trial. The online course that teaches "positive thinking" as a replacement for actual rehabilitation. I have been scammed. I have bought the hope. I have learned the difference. The Academy only recommends what works.',
+      ],
+    },
+    {
+      h2: 'The coaching model: accountability, not diagnosis',
+      paragraphs: [
+        'I am not a doctor. I am not a physical therapist. I am not a speech-language pathologist. I am a survivor who became a teacher. The coaching I offer is accountability, not diagnosis. I do not tell you what medication to take. I do not tell you whether your gait pattern is safe. I do not tell you whether you need a stair lift. I tell you what worked for me. I tell you what the research says. I tell you the questions to ask your medical team. And I hold you accountable to the daily work that recovery demands.',
+        'The coaching cohorts are small — eight to twelve survivors per cohort. We meet weekly on video. Each survivor gets a personalized protocol based on their stage, their deficits, and their goals. The protocol is built from the book and the platform, not invented on the fly. The accountability is real — I check the trackers, I review the logs, I call out the missed days. The community is the force multiplier — eight survivors holding each other to the standard is stronger than one coach holding eight survivors.',
+      ],
+    },
+    {
+      h2: 'The proof: 48 indexed posts and counting',
+      paragraphs: [
+        'The Stroke Recovery Academy blog is now 48 posts deep, all indexed by Google, all ranking for high-intent stroke recovery queries. The posts are not SEO content — they are the answers I wish I had found in the first week, the first month, the first year. Each post is a chapter of the lived experience, written in the same voice as the book, with the same rigor as the research.',
+        'The ranking is proof of the model. Google ranks content that people find useful, share, and return to. The Academy blog ranks because survivors read it, share it, and come back to it. The 15,000 daily TikTok views are proof of the reach. The 90-day program completion rate is proof of the protocol. The testimonials are proof of the results. The book is the spine. The platform is the muscle. The ranking is the validation.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Who is Nick Kremers and why is he an online stroke recovery coach?', a: 'Nick Kremers is a seven-year stroke survivor who went from complete paralysis to ninety percent function. He built Stroke Recovery Academy from a wheelchair in Lavaca, Arkansas, and now teaches roughly fifteen thousand survivors a day on TikTok. He is not a doctor or a therapist — he is a survivor who became a teacher, offering accountability, lived experience, and the protocols that worked for him. He is the author of THE ULTIMATE STROKE RECOVERY REVOLUTION, a 30-chapter, 50,000+ word manual for stroke recovery.' },
+    { q: 'What makes Stroke Recovery Academy different from other stroke recovery resources?', a: 'The Academy is built from lived experience, not content marketing. The book is written by a survivor. The protocols are tested on the author\'s own body for seven years. The community is moderated by survivors and caregivers. The coaching is accountability-based, not diagnosis-based. The resources are mostly free — the 66-day tracker, the 90-day program, the tribe, and the office hours cost nothing. The paid coaching cohorts and the clinician CEU course fund the 501(c)(3) nonprofit that buys gear and coaching for survivors who cannot pay.' },
+    { q: 'Is online coaching effective for stroke recovery?', a: 'Online coaching is effective for the accountability and consistency layers of recovery — the daily habit, the mindset, the community, and the protocol adherence. It is not a replacement for in-person physical therapy, speech therapy, or medical care. The ideal model is: in-person PT for the clinical work, online coaching for the daily accountability and the long-term mindset. The Academy coaching cohorts are designed to complement, not replace, the clinical team.' },
+    { q: 'How much does Stroke Recovery Academy coaching cost?', a: 'The 66-day tracker, the 90-day program companion app, the moderated tribe community, and the weekly office hours are free. The one-on-one coaching cohorts and the clinician CEU course are paid. Every dollar paid funds Stroke Lyfe Inc., the 501(c)(3) nonprofit that buys gear and coaching for survivors who cannot pay. The exact pricing is available at strokerecoveryacademy.com/coaching.' },
+    { q: 'Can I recover from stroke without a coach?', a: 'Yes — but the data is clear. Survivors with accountability and community recover faster and further than survivors who go it alone. The coach is not a miracle worker. The coach is the person who makes the daily work harder to skip. The community is the person who makes the daily work harder to quit. The book is the map. The coach is the compass. The community is the fuel. You can walk without any of them. You will walk further with all three.' },
+  ],
+  related: [
+    { href: '/blog/best-home-gym-stroke-recovery', label: 'Best home gym stations for stroke recovery', blurb: 'The equipment I used to rebuild from the wheelchair.' },
+    { href: '/blog/stair-lift-stroke-survivor', label: 'Stair lifts for stroke survivors', blurb: 'The $1,500 decision that bought me independence while I rebuilt.' },
+    { href: '/blog/parallel-bars-stroke-recovery', label: 'Parallel bars for stroke recovery', blurb: 'The clinical equipment I installed in my garage.' },
+    { href: '/blog/supplements-stroke-recovery', label: 'Supplements for stroke recovery', blurb: 'The $30/month stack that moved the needle.' },
+    { href: '/blog/saebo-stroke-recovery-devices', label: 'Saebo stroke recovery devices', blurb: 'The hand therapy system I found at month 14.' },
+    { href: '/blog', label: 'The Stroke Recovery Blog', blurb: '48 indexed posts — the resource I wish I had found in the hospital.' },
+  ],
+  publishedDate: '2026-06-07',
+  productCard: {
+    title: 'Join the Stroke Recovery Academy',
+    description: 'The 90-day program, the daily routine tracker, the moderated tribe, and weekly office hours. Built by a survivor, for survivors.',
+    link: '/api/login',
+    label: 'Join the Academy',
+    note: 'Most resources are free. Paid coaching cohorts fund the nonprofit that helps survivors who cannot pay.',
+  },
+  bookPromo: {
+    title: 'THE ULTIMATE STROKE RECOVERY REVOLUTION',
+    description: '30 chapters, 50,000+ words, the daily routine, the protocols, the mindset, and the story that built the #1-ranked stroke recovery resource online. The book every survivor wishes they had in the hospital.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
 // Aggregator
 // =============================================================================
 export const ALL_BLOG_POSTS: SsrPageConfig[] = [
@@ -4854,6 +4955,7 @@ export const ALL_BLOG_POSTS: SsrPageConfig[] = [
   POST_SUPPLEMENTS,
   POST_SAEBO,
   POST_GSC_INDEXING,
+  POST_ONLINE_COACH,
 ];
 
 // /blog hub page — lists all posts as internal-link cluster
