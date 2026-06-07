@@ -32,6 +32,8 @@ interface BlogPostInput {
     link: string;
     label: string;
   };
+  /** Optional featured image URL for og:image and hero */
+  image?: string;
   /** Optional video metadata — enables VideoObject schema for rich video snippets */
   video?: {
     name: string;
@@ -69,6 +71,7 @@ function makeBlogPost(p: BlogPostInput): SsrPageConfig {
     publishedDate: p.publishedDate || '2026-01-20',
     productCard: p.productCard,
     bookPromo: p.bookPromo,
+    image: p.image,
     video: p.video,
   };
 }
