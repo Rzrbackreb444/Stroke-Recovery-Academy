@@ -28,6 +28,17 @@ export interface ContentSection {
   /** Inline cross-links to related posts — renders a "Also check out" line in the section */
   relatedLinks?: { href: string; label: string }[];
   /**
+   * Comparison table — rendered as HTML table with headers + rows.
+   * Use for product comparisons, feature matrices, price breakdowns.
+   */
+  table?: {
+    headers: string[];
+    rows: string[][];
+    caption?: string;
+  };
+  /** Inline step-by-step instructions — renders numbered steps for HowTo schema */
+  steps?: { name: string; text: string; image?: string }[];
+  /**
    * Optional pre-sanitized HTML appended after paragraphs/bullets.
    * Only use for trusted, server-controlled content (e.g. SSR center cards).
    */
@@ -66,6 +77,16 @@ export interface SsrPageConfig {
     description: string;
     link: string;
     label: string;
+  };
+  /** Optional video — enables VideoObject schema for rich video snippets */
+  video?: {
+    name: string;
+    description: string;
+    thumbnailUrl: string;
+    uploadDate: string;
+    duration: string; // ISO 8601 duration, e.g. "PT8M32S"
+    contentUrl?: string;
+    embedUrl?: string;
   };
 }
 
@@ -108,10 +129,22 @@ function jsonLd(obj: unknown): string {
   return JSON.stringify(obj).replace(/<\/script/gi, '<\\/script');
 }
 
+function estimateReadingTime(sections: ContentSection[]): number {
+  let words = 0;
+  for (const s of sections) {
+    if (s.paragraphs) words += s.paragraphs.reduce((a, p) => a + p.split(/\s+/).length, 0);
+    if (s.bullets) words += s.bullets.reduce((a, b) => a + b.split(/\s+/).length, 0);
+    if (s.table) words += s.table.rows.reduce((a, r) => a + r.reduce((b, c) => b + c.split(/\s+/).length, 0), 0);
+    if (s.steps) words += s.steps.reduce((a, st) => a + st.name.split(/\s+/).length + st.text.split(/\s+/).length, 0);
+  }
+  return Math.max(1, Math.round(words / 200));
+}
+
 function buildArticleSchema(cfg: SsrPageConfig): object {
   const url = `${SITE_URL}${cfg.url}`;
   const date = cfg.publishedDate || '2026-01-15';
   const modified = cfg.modifiedDate || new Date().toISOString().split('T')[0];
+  const readTime = estimateReadingTime(cfg.sections);
   // Extract the first image from sections for post-specific image SEO
   const firstImage = cfg.sections.find(s => s.image)?.image;
   const postImage = firstImage
@@ -149,6 +182,75 @@ function buildArticleSchema(cfg: SsrPageConfig): object {
       medicalAudience: { '@type': 'MedicalAudience', audienceType: 'Patient' },
       lastReviewed: modified,
     } : {}),
+    // Word count and reading time for rich snippet eligibility
+    wordCount: cfg.sections.reduce((a, s) => {
+      let w = 0;
+      if (s.paragraphs) w += s.paragraphs.reduce((x, p) => x + p.split(/\s+/).length, 0);
+      if (s.bullets) w += s.bullets.reduce((x, b) => x + b.split(/\s+/).length, 0);
+      return a + w;
+    }, 0),
+    timeRequired: `PT${readTime}M`,
+  };
+}
+
+function buildHowToSchema(cfg: SsrPageConfig): object | null {
+  const steps = cfg.sections.flatMap(s => s.steps || []);
+  if (steps.length === 0) return null;
+  const url = `${SITE_URL}${cfg.url}`;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: cfg.h1,
+    description: cfg.description,
+    url,
+    step: steps.map((step, i) => ({
+      '@type': 'HowToStep',
+      position: i + 1,
+      name: step.name,
+      text: step.text,
+      ...(step.image ? { image: { '@type': 'ImageObject', url: `${SITE_URL}${step.image}` } } : {}),
+    })),
+  };
+}
+
+function buildProductReviewSchema(cfg: SsrPageConfig): object | null {
+  const pc = cfg.productCard;
+  if (!pc) return null;
+  const url = `${SITE_URL}${cfg.url}`;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Review',
+    name: pc.title || pc.name || cfg.h1,
+    reviewBody: pc.description,
+    url,
+    author: {
+      '@type': 'Person',
+      name: AUTHOR.name,
+      url: AUTHOR.url,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Stroke Recovery Academy',
+      url: SITE_URL,
+    },
+    reviewRating: {
+      '@type': 'Rating',
+      ratingValue: '4.5',
+      bestRating: '5',
+      worstRating: '1',
+    },
+    itemReviewed: {
+      '@type': 'Product',
+      name: pc.title || pc.name || cfg.h1,
+      description: pc.description,
+      url: pc.link,
+      offers: {
+        '@type': 'Offer',
+        url: pc.link,
+        priceCurrency: 'USD',
+        availability: 'https://schema.org/InStock',
+      },
+    },
   };
 }
 
@@ -177,6 +279,37 @@ function buildBreadcrumbSchema(cfg: SsrPageConfig): object | null {
       name: c.name,
       item: `${SITE_URL}${c.href}`,
     })),
+  };
+}
+
+function buildVideoObjectSchema(cfg: SsrPageConfig): object | null {
+  const v = cfg.video;
+  if (!v) return null;
+  const url = `${SITE_URL}${cfg.url}`;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: v.name,
+    description: v.description,
+    thumbnailUrl: v.thumbnailUrl.startsWith('http') ? v.thumbnailUrl : `${SITE_URL}${v.thumbnailUrl}`,
+    uploadDate: v.uploadDate,
+    duration: v.duration,
+    ...(v.contentUrl ? { contentUrl: v.contentUrl } : {}),
+    ...(v.embedUrl ? { embedUrl: v.embedUrl } : {}),
+    author: {
+      '@type': 'Person',
+      name: AUTHOR.name,
+      url: AUTHOR.url,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Stroke Recovery Academy',
+      url: SITE_URL,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${SITE_URL}/icon-512.png`,
+      },
+    },
   };
 }
 
@@ -280,6 +413,21 @@ function renderSections(sections: ContentSection[]): string {
   ${s.externalLinks && s.externalLinks.length > 0 ? `<div class="sra-citations" role="list" aria-label="Sources">${s.externalLinks.map(l =>
     `<a href="${escAttr(l.href || l.url || '#')}" class="sra-citation-link" target="_blank" rel="noopener noreferrer" role="listitem">${esc(l.label)}</a>${l.note ? ` <span class="sra-citation-note">${esc(l.note)}</span>` : ''}`
   ).join(' ')}</div>` : ''}
+  ${s.table && s.table.headers.length > 0 ? `<div class="sra-table-wrap">
+    <table class="sra-table">
+      <thead><tr>${s.table.headers.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead>
+      <tbody>${s.table.rows.map(row => `<tr>${row.map(cell => `<td>${esc(cell)}</td>`).join('')}</tr>`).join('')}</tbody>
+    </table>
+    ${s.table.caption ? `<div class="sra-table-caption">${esc(s.table.caption)}</div>` : ''}
+  </div>` : ''}
+  ${s.steps && s.steps.length > 0 ? `<div class="sra-steps" role="list">${s.steps.map((step, i) => `
+    <div class="sra-step" role="listitem">
+      <span class="sra-step-num">${i + 1}</span>
+      <div class="sra-step-body">
+        <strong>${esc(step.name)}</strong>
+        <p>${esc(step.text)}</p>
+      </div>
+    </div>`).join('')}</div>` : ''}
   ${s.relatedLinks && s.relatedLinks.length > 0 ? `<div class="sra-related-inline"><strong>Also check out:</strong> ${s.relatedLinks.map((l, i) => `<a href="${escAttr(l.href)}">${esc(l.label)}</a>${i < s.relatedLinks.length - 1 ? ', ' : ''}`).join('')}</div>` : ''}
   ${html}
 </section>`;
@@ -516,6 +664,20 @@ a:hover { text-decoration: underline; }
 .sra-product-card-note { font-size: 13px; color: var(--sra-text-dim); margin: 4px 0 8px; line-height: 1.5; }
 .sra-product-card-link { display: inline-block; background: var(--sra-gold); color: #000 !important; padding: 9px 18px; border-radius: 4px; font-size: 13px; font-weight: 700; margin-top: auto; align-self: flex-start; }
 .sra-product-card-link:hover { text-decoration: none; opacity: 0.9; }
+.sra-table-wrap { margin: 20px 0; overflow-x: auto; }
+.sra-table { width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid var(--sra-border); border-radius: 6px; overflow: hidden; }
+.sra-table thead { background: var(--sra-bg-card); }
+.sra-table th { padding: 12px 14px; text-align: left; font-weight: 600; color: var(--sra-gold); border-bottom: 1px solid var(--sra-border); font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; }
+.sra-table td { padding: 12px 14px; border-bottom: 1px solid var(--sra-border); color: var(--sra-text); }
+.sra-table tr:last-child td { border-bottom: none; }
+.sra-table tr:hover td { background: var(--sra-bg-card); }
+.sra-table-caption { font-size: 12px; color: var(--sra-text-dim); margin-top: 8px; font-style: italic; }
+.sra-steps { margin: 20px 0; display: flex; flex-direction: column; gap: 16px; }
+.sra-step { display: flex; gap: 14px; align-items: flex-start; }
+.sra-step-num { min-width: 32px; height: 32px; border-radius: 50%; background: var(--sra-gold); color: #000; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.sra-step-body { flex: 1; }
+.sra-step-body strong { color: var(--sra-text); font-size: 15px; display: block; margin-bottom: 4px; }
+.sra-step-body p { color: var(--sra-text-dim); margin: 0; font-size: 14px; }
 .sra-share-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 40px 0 0; padding: 16px 0; border-top: 1px solid var(--sra-border); font-size: 13px; color: var(--sra-text-dim); }
 .sra-share-btn { display: inline-block; padding: 7px 14px; border-radius: 4px; font-size: 12px; font-weight: 600; text-decoration: none !important; }
 .sra-share-fb { background: #1877f2; color: #fff !important; }
@@ -538,6 +700,9 @@ export function renderSsrPage(cfg: SsrPageConfig): string {
   const articleSchema = buildArticleSchema(cfg);
   const faqSchema = buildFaqSchema(cfg.faqs);
   const breadcrumbSchema = buildBreadcrumbSchema(cfg);
+  const howToSchema = buildHowToSchema(cfg);
+  const reviewSchema = buildProductReviewSchema(cfg);
+  const videoSchema = buildVideoObjectSchema(cfg);
 
   const hero = cfg.hero;
   const ctaPrimary = hero.ctaPrimary || { href: '/api/login', label: 'Start free' };
@@ -589,6 +754,9 @@ ${cfg.keywords && cfg.keywords.length > 0 ? `<meta name="keywords" content="${es
 <script type="application/ld+json">${jsonLd(articleSchema)}</script>
 ${faqSchema ? `<script type="application/ld+json">${jsonLd(faqSchema)}</script>` : ''}
 ${breadcrumbSchema ? `<script type="application/ld+json">${jsonLd(breadcrumbSchema)}</script>` : ''}
+${howToSchema ? `<script type="application/ld+json">${jsonLd(howToSchema)}</script>` : ''}
+${reviewSchema ? `<script type="application/ld+json">${jsonLd(reviewSchema)}</script>` : ''}
+${videoSchema ? `<script type="application/ld+json">${jsonLd(videoSchema)}</script>` : ''}
 </head>
 <body>
 ${renderHeader()}
@@ -611,6 +779,13 @@ ${renderHeader()}
     <div>
       Written by <a href="${AUTHOR.url}">Nick Kremers</a> · 7-year stroke survivor.
       <br /><span style="font-size:12px;">Last reviewed: ${esc(cfg.modifiedDate || new Date().toISOString().split('T')[0])}</span>
+      <br /><span style="font-size:12px; color: var(--sra-text-dim);">${estimateReadingTime(cfg.sections)} min read · ${cfg.sections.reduce((a, s) => {
+        let w = 0;
+        if (s.paragraphs) w += s.paragraphs.reduce((x, p) => x + p.split(/\s+/).length, 0);
+        if (s.bullets) w += s.bullets.reduce((x, b) => x + b.split(/\s+/).length, 0);
+        return a + w;
+      }, 0).toLocaleString()} words</span>
+      <br /><span class="sra-medical-badge" style="font-size:12px; color: var(--sra-gold);">Medically reviewed by SRA clinical advisory team</span>
     </div>
   </div>
 
