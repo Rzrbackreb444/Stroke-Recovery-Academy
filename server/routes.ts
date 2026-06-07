@@ -503,10 +503,6 @@ ${allRoutes.map(r => `  <url>
     <lastmod>${today}</lastmod>
   </sitemap>
   <sitemap>
-    <loc>${baseUrl}/sitemap-centers.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-  <sitemap>
     <loc>${baseUrl}/sitemap-blog.xml</loc>
     <lastmod>${blogLastmod}</lastmod>
   </sitemap>
