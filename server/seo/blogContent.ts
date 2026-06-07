@@ -4815,9 +4815,9 @@ export const POST_ONLINE_COACH = makeBlogPost({
         'The doctors handed me a chart full of "nevers." I refused every one of them. Seven years later I am at ninety percent function and still rising. I walked my son to his first day of school. I am typing this sentence with both hands. I wrote a twelve-track concept album about the rebuild. I run two companies. I built Stroke Recovery Academy from the wheelchair I was supposed to live in. I teach roughly fifteen thousand survivors a day on TikTok how to refuse the same "nevers" the white coats handed me.',
       ],
       image: {
-        src: '/images/blog/online-stroke-coach.png',
-        alt: 'Woodcut illustration of a stroke survivor building an online academy from a wheelchair — dark ink and bone white palette',
-        caption: 'The online stroke recovery coach is not a credential. It is a survivor who became a teacher.',
+        src: '/images/blog/nick-2018-2026.png',
+        alt: 'Nick Kremers before and after stroke: 2018 wheelchair photo next to 2026 photo at the WashBizHub laundromat — dark ink and bone white palette',
+        caption: 'December 2018 to June 2026. The white coats said "never." The photo says otherwise.',
       },
     },
     {
@@ -4842,6 +4842,18 @@ export const POST_ONLINE_COACH = makeBlogPost({
         'One-on-one coaching: cohort-based coaching for survivors who need the direct accountability',
         'Free companion app: voice log, tracker, and resource hub at strokerecoveryacademy.com/app',
       ],
+    },
+    {
+      h2: 'The business that built the rebuild',
+      paragraphs: [
+        'I run two companies. The first is Kremers Laundry Equipment Company — the third-generation family business I grew up in. The second is WashBizHub, the laundromat franchise I built in Lavaca, Arkansas. The laundromat is not a side hustle. It is the business that funded the recovery, that paid the medical bills the insurance would not cover, that gave me a purpose when the doctors said I would never work again.',
+        'The photo below is the WashBizHub in Lavaca. The gear behind me is the same gear I used to wash the scrubs I wore to physical therapy. The Sasquatch crown is not a gimmick. It is the reminder that recovery is not a medical chart. It is a business you run, a book you write, a song you record, a company you build from the wheelchair they told you to accept.',
+      ],
+      image: {
+        src: '/images/blog/sasquatch-washbizhub.png',
+        alt: 'Nick Kremers at WashBizHub laundromat in Lavaca, Arkansas, wearing the Sasquatch crown amid commercial laundry equipment',
+        caption: 'WashBizHub, Lavaca, Arkansas. The business that built the rebuild. The crown is the reminder: recovery is not a chart. It is a company you build.',
+      },
     },
     {
       h2: 'The protocols that work — and the ones that do not',
