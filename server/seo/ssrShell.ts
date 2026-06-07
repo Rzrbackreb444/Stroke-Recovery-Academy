@@ -95,6 +95,7 @@ const AUTHOR = {
   name: 'Nick Kremers',
   bio: '7-year stroke survivor who went from complete paralysis to 90% recovery. Founder of Stroke Recovery Academy and creator of the Sasquatch Method.',
   url: `${SITE_URL}/recovery/about-nick`,
+  image: `${SITE_URL}/images/blog/nick-tiktok-walking.png`,
 };
 
 function tagAmazonLink(url: string): string {
@@ -165,6 +166,7 @@ function buildArticleSchema(cfg: SsrPageConfig): object {
       name: AUTHOR.name,
       description: AUTHOR.bio,
       url: AUTHOR.url,
+      image: AUTHOR.image,
     },
     publisher: {
       '@type': 'Organization',
@@ -227,6 +229,7 @@ function buildProductReviewSchema(cfg: SsrPageConfig): object | null {
       '@type': 'Person',
       name: AUTHOR.name,
       url: AUTHOR.url,
+      image: AUTHOR.image,
     },
     publisher: {
       '@type': 'Organization',
@@ -579,10 +582,12 @@ a:hover { text-decoration: underline; }
   font-size: 14px; color: var(--sra-text-dim);
   border-bottom: 1px solid var(--sra-border);
 }
-.sra-author-mark {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: var(--sra-gold-soft); border: 1px solid var(--sra-gold);
+.sra-author-img {
+  width: 44px; height: 44px; border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--sra-gold);
   display: inline-block;
+  flex-shrink: 0;
 }
 .sra-author a { color: var(--sra-text); font-weight: 500; }
 .sra-section { margin: 32px 0; }
@@ -777,7 +782,7 @@ ${renderHeader()}
   ${renderTableOfContents(cfg.sections)}
 
   <div class="sra-author">
-    <span class="sra-author-mark" aria-hidden="true"></span>
+    <img src="${AUTHOR.image}" alt="${AUTHOR.name}" class="sra-author-img" loading="lazy" width="44" height="44" />
     <div>
       Written by <a href="${AUTHOR.url}">Nick Kremers</a> · 7-year stroke survivor.
       <br /><span style="font-size:12px;">Last reviewed: ${esc(cfg.modifiedDate || new Date().toISOString().split('T')[0])}</span>
