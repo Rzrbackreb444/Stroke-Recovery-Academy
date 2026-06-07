@@ -4903,17 +4903,17 @@ export const POST_ONLINE_COACH = makeBlogPost({
   ],
   publishedDate: '2026-06-07',
   productCard: {
-    title: 'Join the Stroke Recovery Academy',
-    description: 'The 90-day program, the daily routine tracker, the moderated tribe, and weekly office hours. Built by a survivor, for survivors.',
-    link: '/api/login',
-    label: 'Join the Academy',
-    note: 'Most resources are free. Paid coaching cohorts fund the nonprofit that helps survivors who cannot pay.',
+    title: 'THE ULTIMATE STROKE RECOVERY REVOLUTION',
+    description: 'The 30-chapter, 50,000+ word manual that built the #1-ranked stroke recovery resource. Digital PDF $19. Print paperback $29. The book every survivor wishes they had in the hospital.',
+    link: '/book/buy',
+    label: 'Get the book',
+    note: 'Digital PDF downloads instantly. Paperback ships 5-10 days via Lulu print-on-demand. Every purchase funds the Stroke Lyfe Inc. nonprofit.',
   },
   bookPromo: {
     title: 'THE ULTIMATE STROKE RECOVERY REVOLUTION',
-    description: '30 chapters, 50,000+ words, the daily routine, the protocols, the mindset, and the story that built the #1-ranked stroke recovery resource online. The book every survivor wishes they had in the hospital.',
-    link: '/book',
-    label: 'Get the book',
+    description: '30 chapters, 50,000+ words, the daily routine, the protocols, the mindset, and the story that built the #1-ranked stroke recovery resource online. Digital PDF $19. Print paperback $29. The book every survivor wishes they had in the hospital.',
+    link: '/book/buy',
+    label: 'Get the book — $19 PDF / $29 paperback',
   },
 });
 
