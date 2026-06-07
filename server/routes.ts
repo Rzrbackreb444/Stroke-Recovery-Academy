@@ -563,7 +563,7 @@ ${allRoutes.map(r => `  <url>
         const imageUrl = post.heroImageUrl ? (post.heroImageUrl.startsWith('http') ? post.heroImageUrl : baseUrl + post.heroImageUrl) : undefined;
         const imageBlock = imageUrl ? `
     <image:image>
-      <image:loc>${imageUrl}</image:loc>
+      <image:loc>${imageUrl.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</image:loc>
       <image:title>${post.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</image:title>
     </image:image>` : '';
         return `  <url>
