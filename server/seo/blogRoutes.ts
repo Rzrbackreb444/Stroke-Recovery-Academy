@@ -22,12 +22,20 @@ export function registerBlogRoutes(app: Express): void {
 }
 
 // Used by sitemap-recovery to advertise these URLs to search engines.
-export function getBlogPageUrls(): { url: string; lastmod: string; priority: string; changefreq: string }[] {
+export function getBlogPageUrls(): { url: string; title: string; lastmod: string; priority: string; changefreq: string; imageUrl?: string }[] {
   const today = new Date().toISOString().split('T')[0];
-  return ALL_BLOG_PAGES.map(p => ({
-    url: p.url,
-    lastmod: p.modifiedDate || today,
-    priority: p.url === '/blog' ? '0.85' : '0.80',
-    changefreq: p.url === '/blog' ? 'weekly' : 'monthly',
-  }));
+  return ALL_BLOG_PAGES.map(p => {
+    const firstImage = p.sections.find(s => s.image)?.image;
+    const imageUrl = firstImage
+      ? (typeof firstImage === 'string' ? firstImage : firstImage.src)
+      : undefined;
+    return {
+      url: p.url,
+      title: p.title,
+      lastmod: p.modifiedDate || today,
+      priority: p.url === '/blog' ? '0.85' : '0.80',
+      changefreq: p.url === '/blog' ? 'weekly' : 'monthly',
+      imageUrl,
+    };
+  });
 }

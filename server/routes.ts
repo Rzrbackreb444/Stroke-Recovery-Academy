@@ -578,7 +578,7 @@ ${allRoutes.map(r => `  <url>
       }).join('\n');
 
       // Also include the SSR blog posts (new high-intent PAA guides) from blogContent.ts
-      let ssrBlogPosts: { url: string; title: string; modifiedDate?: string; priority: string; changefreq: string }[] = [];
+      let ssrBlogPosts: { url: string; title: string; lastmod?: string; priority: string; changefreq: string; imageUrl?: string }[] = [];
       try {
         const { getBlogPageUrls } = await import('./seo/blogRoutes');
         ssrBlogPosts = getBlogPageUrls();
@@ -586,11 +586,16 @@ ${allRoutes.map(r => `  <url>
 
       const ssrBlocks = ssrBlogPosts.map((p) => {
         const lastmod = p.lastmod || today;
+        const imageBlock = p.imageUrl ? `
+    <image:image>
+      <image:loc>${baseUrl}${p.imageUrl}</image:loc>
+      <image:title>${p.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</image:title>
+    </image:image>` : '';
         return `  <url>
     <loc>${baseUrl}${p.url}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>${p.changefreq}</changefreq>
-    <priority>${p.priority}</priority>
+    <priority>${p.priority}</priority>${imageBlock}
   </url>`;
       }).join('\n');
 

@@ -110,6 +110,12 @@ function buildArticleSchema(cfg: SsrPageConfig): object {
   const url = `${SITE_URL}${cfg.url}`;
   const date = cfg.publishedDate || '2026-01-15';
   const modified = cfg.modifiedDate || new Date().toISOString().split('T')[0];
+  // Extract the first image from sections for post-specific image SEO
+  const firstImage = cfg.sections.find(s => s.image)?.image;
+  const postImage = firstImage
+    ? (typeof firstImage === 'string' ? firstImage : firstImage.src)
+    : null;
+  const imageUrl = postImage ? `${SITE_URL}${postImage}` : `${SITE_URL}/og-image.jpg`;
   return {
     '@context': 'https://schema.org',
     '@type': cfg.schemaType === 'MedicalWebPage' ? 'MedicalWebPage' : 'Article',
@@ -135,7 +141,7 @@ function buildArticleSchema(cfg: SsrPageConfig): object {
       },
     },
     mainEntityOfPage: { '@type': 'WebPage', '@id': url },
-    image: `${SITE_URL}/og-image.jpg`,
+    image: imageUrl,
     ...(cfg.keywords && cfg.keywords.length > 0 ? { keywords: cfg.keywords.join(', ') } : {}),
     ...(cfg.schemaType === 'MedicalWebPage' ? {
       medicalAudience: { '@type': 'MedicalAudience', audienceType: 'Patient' },
