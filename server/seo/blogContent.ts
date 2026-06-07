@@ -85,6 +85,7 @@ export const POST_REHAB_DURATION = makeBlogPost({
   description: 'How long stroke rehab really takes — by phase, by severity, and by what actually drives recovery. Written by a 7-year survivor who recovered 90%.',
   h1: 'How long does stroke rehab take?',
   keyword: 'how long does stroke rehab take',
+  image: '/images/blog/therapy-exercises-dark.png',
   subhead: 'The honest answer is "longer than they tell you and shorter than you fear." Here is the real timeline, broken down by phase.',
   ctaPrimary: { href: '/api/login', label: 'See my recovery timeline' },
   ctaSecondary: { href: '/blog/can-you-fully-recover-from-a-stroke', label: 'Can you fully recover?' },
@@ -157,6 +158,7 @@ export const POST_FULL_RECOVERY = makeBlogPost({
   description: 'Can you fully recover from a stroke? Here\'s the honest answer from a survivor who went from total paralysis to 90% function in 7 years.',
   h1: 'Can you fully recover from a stroke?',
   keyword: 'can you fully recover from a stroke',
+  image: '/images/blog/walking-recovery-dark.png',
   subhead: 'The hospital says one thing. The internet says another. Here is what 7 years of recovery actually looks like.',
   ctaPrimary: { href: '/api/login', label: 'Start the recovery plan' },
   ctaSecondary: { href: '/programs/sasquatch-method', label: 'See the four pillars' },
@@ -221,6 +223,7 @@ export const POST_SECOND_STROKE_SIGNS = makeBlogPost({
   description: 'The warning signs of a second stroke every survivor and caregiver must memorize. BE-FAST, silent symptoms, and what to do in the first 5 minutes.',
   h1: 'Warning signs of a second stroke',
   keyword: 'signs of a second stroke',
+  image: '/images/blog/stroke-warning-dark.png',
   subhead: 'About 1 in 4 strokes are recurrent. The next 5 minutes after symptom onset matter more than anything you will do this year.',
   ctaPrimary: { href: '/api/login', label: 'Get the BE-FAST checklist' },
   ctaSecondary: { href: '/blog/how-to-prevent-a-second-stroke', label: 'How to prevent a second stroke' },
@@ -299,6 +302,7 @@ export const POST_PREVENT_SECOND_STROKE = makeBlogPost({
   description: 'A survivor\'s checklist for preventing a second stroke. Medications, blood pressure, sleep apnea, diet, and the daily habits that cut recurrence risk.',
   h1: 'How to prevent a second stroke',
   keyword: 'how to prevent a second stroke',
+  image: '/images/blog/stroke-warning-dark.png',
   subhead: '1 in 4 strokes are recurrent. Almost all of them are preventable. Here is the checklist that actually works.',
   ctaPrimary: { href: '/api/login', label: 'Build my prevention plan' },
   ctaSecondary: { href: '/blog/signs-of-a-second-stroke', label: 'Know the warning signs' },
@@ -372,6 +376,7 @@ export const POST_TIA_VS_STROKE = makeBlogPost({
   description: 'TIA vs stroke: the difference, the warning, and why a TIA is a medical emergency. Written by a survivor who didn\'t take his TIA seriously enough.',
   h1: 'TIA vs stroke: what survivors need to know',
   keyword: 'tia vs stroke',
+  image: '/images/blog/brain-recovery-dark.png',
   subhead: 'A TIA is not a "mini-stroke." It is a major warning. Almost half of post-TIA strokes happen within 48 hours.',
   ctaPrimary: { href: '/api/login', label: 'Build my emergency plan' },
   ctaSecondary: { href: '/blog/signs-of-a-second-stroke', label: 'See the warning signs' },
@@ -442,6 +447,7 @@ export const POST_ISCHEMIC_VS_HEMORRHAGIC = makeBlogPost({
   description: 'Ischemic vs hemorrhagic stroke explained for survivors and caregivers. Causes, treatment, recovery, and why the type changes everything that follows.',
   h1: 'Ischemic vs hemorrhagic stroke',
   keyword: 'ischemic vs hemorrhagic stroke',
+  image: '/images/blog/brain-recovery-dark.png',
   subhead: 'Two very different brain emergencies that get the same name. The difference changes treatment, prevention, and recovery.',
   ctaPrimary: { href: '/api/login', label: 'Get my recovery plan' },
   ctaSecondary: { href: '/blog/signs-of-a-second-stroke', label: 'Warning signs of a second stroke' },
@@ -508,6 +514,7 @@ export const POST_DRIVING_AFTER_STROKE = makeBlogPost({
   description: 'When and how to return to driving after a stroke. The medical clearance process, driving evaluations, and the honest answer survivors need.',
   h1: 'Can you drive after a stroke?',
   keyword: 'can you drive after a stroke',
+  image: '/images/blog/driving-dark.png',
   subhead: 'Driving is independence, identity, and freedom. Returning to it safely is a milestone — and one of the most contested conversations in recovery.',
   ctaPrimary: { href: '/api/login', label: 'Get the driving readiness checklist' },
   ctaSecondary: { href: '/learn/stroke-recovery-timeline', label: 'See the recovery timeline' },
@@ -579,6 +586,7 @@ export const POST_BEST_FOODS = makeBlogPost({
   description: 'The 12 best foods for stroke recovery, backed by research. What to eat, what to skip, and how to build a Mediterranean-style plate that protects the brain.',
   h1: 'The 12 best foods for stroke recovery',
   keyword: 'best foods for stroke recovery',
+  image: '/images/blog/brain-foods-dark.png',
   subhead: 'Food is medicine in the recovery phase. Here is what the evidence actually supports — not the supplement-aisle hype.',
   ctaPrimary: { href: '/api/login', label: 'Get the survivor meal plan' },
   ctaSecondary: { href: '/blog/how-to-prevent-a-second-stroke', label: 'Prevent a second stroke' },
@@ -657,6 +665,7 @@ export const POST_FATIGUE = makeBlogPost({
   description: 'Post-stroke fatigue is real, biological, and brutal. Why it happens, what makes it worse, and the routine that actually moves the needle for survivors.',
   h1: 'Fatigue after stroke: why it hits so hard',
   keyword: 'fatigue after stroke',
+  image: '/images/blog/fatigue-dark.png',
   subhead: 'Up to 70% of survivors experience post-stroke fatigue. It is not laziness, not depression, not weakness. It is biology — and it is treatable.',
   ctaPrimary: { href: '/api/login', label: 'Get the energy protocol' },
   ctaSecondary: { href: '/blog/sleep-problems-after-stroke', label: 'Sleep problems after stroke' },
@@ -731,6 +740,7 @@ export const POST_SPASTICITY = makeBlogPost({
   description: 'Spasticity after stroke explained: why muscles tighten, why stretching alone doesn\'t fix it, and the protocols that actually loosen and strengthen.',
   h1: 'Spasticity after stroke',
   keyword: 'spasticity after stroke',
+  image: '/images/blog/spasticity-dark.png',
   subhead: 'Spasticity is not "tight muscles." It is a brain injury showing up in the limb. The treatment has to address both ends.',
   ctaPrimary: { href: '/api/login', label: 'Get the spasticity protocol' },
   ctaSecondary: { href: '/learn/hemiparesis-recovery', label: 'Hemiparesis recovery' },
@@ -795,6 +805,7 @@ export const POST_MEMORY = makeBlogPost({
   description: 'Memory problems after stroke are common and often improvable. The types, the causes you can treat, and the protocols that rebuild cognitive function.',
   h1: 'Memory problems after stroke',
   keyword: 'memory problems after stroke',
+  image: '/images/blog/memory-dark.png',
   subhead: 'Memory issues after stroke are not all the same. Pinpointing the type is the first step toward fixing the right thing.',
   ctaPrimary: { href: '/api/login', label: 'Get the cognitive protocol' },
   ctaSecondary: { href: '/blog/fatigue-after-stroke', label: 'Fatigue after stroke' },
@@ -865,6 +876,7 @@ export const POST_PBA = makeBlogPost({
   description: 'Sudden uncontrollable crying or laughing after stroke is pseudobulbar affect (PBA). What it is, why it happens, and the treatments that help.',
   h1: 'Why do stroke survivors cry so easily?',
   keyword: 'why do stroke survivors cry easily',
+  image: '/images/blog/brain-recovery-dark.png',
   subhead: 'Sudden tears that don\'t match how you feel inside? It has a name — pseudobulbar affect — and it is treatable.',
   ctaPrimary: { href: '/api/login', label: 'Find the right treatment' },
   ctaSecondary: { href: '/learn/depression-after-stroke', label: 'Depression after stroke' },
@@ -1051,6 +1063,7 @@ export const POST_AFO_VS_ELECTRIC = makeBlogPost({
     link: '/book',
     label: 'Get the book',
   },
+    image: '/images/blog/afo-device.png',
   sections: [
     {
       h2: 'What an AFO does',
@@ -1058,6 +1071,11 @@ export const POST_AFO_VS_ELECTRIC = makeBlogPost({
         'An ankle-foot orthosis (AFO) is a brace that holds your foot at ninety degrees, preventing the toe from catching the ground. It is the standard prescription for drop foot after stroke. It works immediately. It prevents falls. It is covered by most insurance. And it is the single biggest trap in early recovery.',
         'The AFO teaches the brain that the ankle does not need to work. The sensorimotor cortex stops trying to fire the dorsiflexor muscles because the brace is doing the job. The result: the ankle atrophies further, the pathway degrades faster, and the survivor becomes more dependent on the brace over time instead of less.',
       ],
+      image: {
+        src: '/images/blog/survivor-afo-scene.png',
+        alt: 'Stroke survivor wearing a carbon-fiber AFO brace on their affected leg',
+        caption: 'The AFO works immediately — but it is a bridge, not a destination.',
+      },
       bullets: [
         'Prevents falls immediately',
         'Covered by insurance',
@@ -1216,6 +1234,7 @@ export const POST_RESISTANCE_BANDS = makeBlogPost({
     link: '/book',
     label: 'Get the book',
   },
+    image: '/images/blog/resistance-bands-therapy.jpg',
   sections: [
     {
       h2: 'Why bands beat weights early in recovery',
@@ -1242,6 +1261,11 @@ export const POST_RESISTANCE_BANDS = makeBlogPost({
     },
     {
       h2: 'Safety rules for survivors',
+      image: {
+        src: '/images/blog/survivor-resistance-bands-scene.png',
+        alt: 'Stroke survivor doing arm exercises with a resistance band at home',
+        caption: 'Bands provide variable resistance — lowest where the muscle is weakest, highest where it is strongest.',
+      },
       paragraphs: [
         'Never anchor a band to a door without a proper door anchor. Never stand on a band with bare feet — it will slip. Never use a band that is frayed or cracked. Start with 2–3 sets of 10–15 reps. Rest 60–90 seconds between sets. If you feel pain that is sharp or joint-level, stop. If you feel fatigue that is muscular, continue.',
       ],
@@ -1272,6 +1296,7 @@ export const POST_SHOWER_SAFETY = makeBlogPost({
   description: 'The shower safety equipment I used after stroke. Grab bars, shower chairs, and non-slip mats — the honest review from someone who fell twice.',
   h1: 'Shower safety for stroke survivors',
   keyword: 'shower safety stroke survivor',
+  image: '/images/blog/shower-safety-dark.png',
   subhead: 'I fell twice in the shower. The second fall was the last one because I finally installed the right gear. Here is the setup that kept me safe for six years.',
   ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See shower safety gear on Amazon' },
   ctaSecondary: { href: '/for/caregivers', label: 'For caregivers' },
@@ -1297,6 +1322,11 @@ export const POST_SHOWER_SAFETY = makeBlogPost({
     },
     {
       h2: 'The three items that matter most',
+      image: {
+        src: '/images/blog/survivor-shower-safety-scene.png',
+        alt: 'Modern bathroom with grab bars and shower safety equipment installed',
+        caption: 'The shower is the most dangerous room — these three items change the math.',
+      },
       paragraphs: [
         'A shower chair is non-negotiable. I used one for the first year. It eliminates the balance risk entirely. You sit, you wash, you stand only when you are ready. A grab bar installed by a professional (not suction cups) is the second item. It gives you a stable handhold for getting in and out. A non-slip mat with suction cups is the third. It keeps your feet from sliding when you stand.',
       ],
@@ -1895,6 +1925,7 @@ export const POST_BEST_SHOES = makeBlogPost({
   subhead: 'After my stroke at 36, footwear stopped being a fashion decision. Your shoe determines whether you trip, compensate wrong, or actually walk with confidence. Here is what works.',
   ctaPrimary: { href: '/recovery/shop', label: 'Browse recovery gear' },
   ctaSecondary: { href: '/blog/afo-vs-electric-ankle-trainer', label: 'Drop foot solutions' },
+    image: '/images/blog/brooks-adrenaline-gts-product.jpg',
   sections: [
     {
       h2: 'Why stroke changes what your shoe needs to do',
@@ -1905,6 +1936,11 @@ export const POST_BEST_SHOES = makeBlogPost({
     },
     {
       h2: 'The non-negotiables for any stroke recovery shoe',
+      image: {
+        src: '/images/blog/survivor-shoes-scene.png',
+        alt: 'Stroke survivor putting on a supportive shoe with an AFO brace',
+        caption: 'The right shoe is not fashion — it is the base of every step you take.',
+      },
       bullets: [
         'Wide toe box: Spasticity drives toe curling and claw positioning. A narrow box compresses already-stressed intrinsic foot muscles and creates pressure points on feet with reduced sensation.',
         'Firm heel counter: Weakness on the affected side means the ankle rolls. A firm heel counter is the first line of passive stability before the AFO.',
@@ -1940,6 +1976,11 @@ export const POST_BEST_SHOES = makeBlogPost({
     },
     {
       h2: 'Skechers GoWalk Arch Fit Slip-In — the one-hand solution',
+      image: {
+        src: '/images/blog/skechers-gowalk-product.jpg',
+        alt: 'Skechers GoWalk Arch Fit Slip-In shoe — hands-free entry for stroke survivors',
+        caption: 'Where Brooks wins on stability, Skechers wins on function. Morning independence starts with a shoe you can put on alone.',
+      },
       paragraphs: [
         'The Skechers GoWalk Arch Fit with the Slip-In design is the other shoe that comes up constantly in stroke survivor communities — and for good reason. ISOARCH support built into the footbed, machine-washable upper, ultra-lightweight foam midsole, and a hands-free slip-in heel design that makes getting dressed independently actually doable.',
         'Where Brooks wins on stability, Skechers wins on function. For survivors with significant hand weakness, limited balance while standing to put on shoes, or anyone who values morning independence — the Slip-In is the difference between dressing with help and dressing alone.',
@@ -2011,6 +2052,7 @@ export const POST_WALKING_AIDS = makeBlogPost({
   subhead: 'The wrong aid doesn\'t just fail to support you — it teaches your brain the wrong compensation pattern. Here is how to choose, what to look for, and the models I recommend.',
   ctaPrimary: { href: '/recovery/shop', label: 'Browse all recovery gear' },
   ctaSecondary: { href: '/blog/best-shoes-stroke-survivors', label: 'Get the right shoes too' },
+    image: '/images/blog/ossur-afo-product.jpg',
   sections: [
     {
       h2: 'The progression most survivors actually follow',
@@ -2064,6 +2106,11 @@ export const POST_WALKING_AIDS = makeBlogPost({
     },
     {
       h2: 'How to set cane height',
+      image: {
+        src: '/images/blog/survivor-walking-cane-scene.png',
+        alt: 'Stroke survivor walking with a quad cane on a suburban sidewalk',
+        caption: 'The cane is contralateral — opposite the affected leg. Height matters. Position matters.',
+      },
       bullets: [
         'Stand upright, arms at sides. Top of handle = wrist crease.',
         'Holding the cane with a relaxed grip, elbow should be flexed 20–30 degrees. Too straight = no shock absorption. Too bent = leaning on the cane instead of the floor.',
@@ -2433,6 +2480,7 @@ export const POST_PEDAL_EXERCISER = makeBlogPost({
   subhead: 'Cycling motion is one of the earliest things stroke survivors can do on the affected leg — but only the right type of device captures the full benefit. Here is the breakdown.',
   ctaPrimary: { href: '/recovery/shop', label: 'See all stroke recovery gear' },
   ctaSecondary: { href: '/blog/gait-training-at-home', label: 'Gait training guide too' },
+    image: '/images/blog/pedal-exerciser-product.jpg',
   sections: [
     {
       h2: 'Why pedaling works for stroke recovery',
@@ -2466,6 +2514,11 @@ export const POST_PEDAL_EXERCISER = makeBlogPost({
     },
     {
       h2: 'The protocol for stroke-specific use',
+      image: {
+        src: '/images/blog/survivor-pedal-exerciser-scene.png',
+        alt: 'Stroke survivor using a pedal exerciser under a desk at home',
+        caption: 'Start seated, start slow, start today — the cycling motion rebuilds the same neural circuits walking uses.',
+      },
       bullets: [
         'Start with 10 minutes twice daily. That\'s it. Fatigue management matters as much as the exercise itself.',
         'Resistance at zero or one for the first two weeks. The goal is rhythm and repetition, not load.',
@@ -2627,6 +2680,7 @@ export const POST_AFO_OSSUR = makeBlogPost({
   subhead: 'The wrong AFO brace isn\'t just uncomfortable — it teaches your ankle the wrong thing. Here is how to choose, how to fit it, and the models worth considering.',
   ctaPrimary: { href: '/recovery/shop', label: 'See all stroke recovery gear' },
   ctaSecondary: { href: '/blog/afo-vs-electric-ankle-trainer', label: 'Compare AFO vs electric options' },
+    image: '/images/blog/ossur-afo-product.jpg',
   sections: [
     {
       h2: 'What an AFO actually does — and doesn\'t do',
@@ -2727,6 +2781,7 @@ export const POST_ANKLE_BRACE = makeBlogPost({
   subhead: 'Not every drop foot needs a full AFO. Not every ankle instability needs a rigid brace. Here is how to figure out which level of support your ankle actually needs — and which products deliver it.',
   ctaPrimary: { href: '/recovery/shop', label: 'Browse recovery gear' },
   ctaSecondary: { href: '/blog/best-afo-brace-drop-foot', label: 'Need more? See full AFO guide' },
+    image: '/images/blog/ossur-afo-product.jpg',
   sections: [
     {
       h2: 'Ankle instability after stroke — what\'s actually happening',
@@ -2815,6 +2870,7 @@ export const POST_BALANCE_BOARD_GUIDE = makeBlogPost({
   subhead: 'Balance training after stroke isn\'t about not falling — it\'s about rebuilding the sensory feedback loops that stroke severed. Here is what works, what doesn\'t, and the boards I recommend.',
   ctaPrimary: { href: '/recovery/shop', label: 'See all stroke recovery gear' },
   ctaSecondary: { href: '/blog/best-ankle-brace-stroke-survivor', label: 'Stabilize the ankle first' },
+    image: '/images/blog/balance-board-product.jpg',
   sections: [
     {
       h2: 'Why stroke destroys balance — the actual mechanism',
@@ -2852,6 +2908,11 @@ export const POST_BALANCE_BOARD_GUIDE = makeBlogPost({
     },
     {
       h2: 'The balance board progression for stroke survivors',
+      image: {
+        src: '/images/blog/survivor-balance-board-scene.png',
+        alt: 'Stroke survivor standing on a balance board holding a counter for support',
+        caption: 'The board creates the perturbation the brain needs to rebuild the map — but only with a safety setup nearby.',
+      },
       bullets: [
         'Week 1–2: Bilateral standing on flat board (no movement), near support. 3 sets x 1 minute.',
         'Week 3–4: Bilateral standing with gentle rocker motion. 3 sets x 45 seconds.',
@@ -3252,7 +3313,11 @@ export const POST_GRIP_STRENGTHENER = makeBlogPost({
       heading: 'The spasticity gate — read this first',
       body: `<p>Grip strengthening exercises are contraindicated when spasticity is the dominant presentation. If your hand is in a fist at rest and resists passive opening, loaded grip work will reinforce that pattern. Address spasticity first: prolonged stretching, resting splints, Botox if severe, then grip strengthening once you have voluntary opening.</p>
 <p>If you have partial voluntary hand opening — you can open the hand against gravity or light resistance, but grip is weak — that\'s the profile where grip strengthening tools provide real value. If you\'re not sure which category you\'re in, ask your OT before purchasing.</p>`,
-      image: '/images/blog/fig-07.jpg',
+      image: {
+        src: '/images/blog/survivor-grip-scene.png',
+        alt: 'Stroke survivor using a hand grip strengthener at home',
+        caption: 'Grip work is the right tool at the right time — not before.',
+      },
     },
     {
       heading: 'Gripmaster Pro — the standard for independent finger training',
@@ -3323,12 +3388,17 @@ export const POST_TENS_UNIT = makeBlogPost({
   subhead: 'Hemiplegic shoulder pain affects up to 84% of stroke survivors. Electrical stimulation is one of the most evidence-backed interventions. Here\'s what to buy and how to use it safely.',
   ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
   ctaSecondary: { label: 'Get the book', link: '/book' },
+    image: '/images/blog/tens-unit-omron.jpg',
   sections: [
     {
       heading: 'TENS vs. NMES — know which one you actually need',
       body: `<p>TENS (transcutaneous electrical nerve stimulation) manages pain by modulating sensory nerve signals. It doesn\'t cause muscle contraction — it changes pain perception. NMES (neuromuscular electrical stimulation) uses higher current to cause actual muscle contractions and is used for motor re-education. Many consumer devices do both — but the programs and electrode placement are completely different for each application.</p>
 <p>For hemiplegic shoulder pain: TENS is the primary tool. For motor re-education of the shoulder girdle or hand (FES-type use): NMES/EMS programs. For spasticity management: some evidence for TENS and NMES both, though the mechanism differs. Know what you\'re treating before you set up the device.</p>`,
-      image: '/images/blog/fig-08.jpg',
+      image: {
+        src: '/images/blog/survivor-tens-scene.png',
+        alt: 'Stroke survivor with TENS unit electrode pads on shoulder',
+        caption: 'TENS for pain, NMES for motor re-education — know which one you need.',
+      },
     },
     {
       heading: 'Safety first — electrode placement you must avoid',
@@ -3399,6 +3469,7 @@ export const POST_MASSAGE_GUN = makeBlogPost({
   subhead: 'Percussion massage before your PT session can reduce tone enough to get meaningful work done. After exercise it accelerates recovery. But there are areas you must avoid — and a technique that makes the difference.',
   ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
   ctaSecondary: { label: 'Get the book', link: '/book' },
+    image: '/images/blog/massage-gun-theragun.jpg',
   sections: [
     {
       heading: 'Why percussion therapy for stroke survivors',
@@ -3408,6 +3479,11 @@ export const POST_MASSAGE_GUN = makeBlogPost({
     },
     {
       heading: 'Where not to use a massage gun — non-negotiable',
+      image: {
+        src: '/images/blog/survivor-massage-gun-scene.png',
+        alt: 'Stroke survivor receiving percussion massage on their leg from a caregiver',
+        caption: 'Percussion on muscle bellies only — the temporary tone reduction makes the real work possible.',
+      },
       body: `<p>Never use a massage gun over: bony prominences (spine, shoulder blade edges, hip bones), the carotid artery or anterior neck, areas of significantly reduced sensation (you can\'t feel if you\'re causing injury), areas with broken skin, bruising, or recent surgical sites, the anterior knee over the patella, or directly over an implanted device. For stroke survivors specifically: avoid the cranium and the posterior neck near the brainstem.</p>
 <p>Use only on muscle bellies with the lowest amplitude setting first. Build up from there. If you don\'t feel the sensation on the affected side, have someone confirm placement is on muscle tissue before increasing intensity.</p>`,
     },
@@ -4490,6 +4566,7 @@ export const POST_HYDROTHERAPY = makeBlogPost({
   subhead: 'At month six, my spasticity was so bad I could not sleep through the night. A hot tub changed that. Here is the real cost, the real brands, and the real protocol.',
   ctaPrimary: { href: 'https://www.amazon.com/s?k=hot+tub+hydrotherapy+stroke', label: 'Browse hot tubs on Amazon' },
   ctaSecondary: { href: '/blog/spasticity-after-stroke', label: 'Spasticity guide' },
+    image: '/images/blog/hot-tub-hydrotherapy.jpg',
   sections: [
     {
       h2: 'Why hydrotherapy matters for stroke recovery',
@@ -4796,6 +4873,7 @@ export const POST_SAEBO = makeBlogPost({
   subhead: 'I found Saebo at month 14. The Saebo Flex changed my hand from a claw to a functional grip in 90 days. Here is the real review, the real protocol, and the real cost.',
   ctaPrimary: { href: 'https://www.amazon.com/s?k=saebo+stroke', label: 'Browse Saebo on Amazon' },
   ctaSecondary: { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Hand therapy tools guide' },
+    image: '/images/blog/saebo-glove-product.jpg',
   sections: [
     {
       h2: 'Why Saebo is different from other hand therapy devices',
@@ -4925,6 +5003,7 @@ export const POST_GSC_INDEXING = makeBlogPost({
   description: 'Getting Google Search Console to index your website is not a mystery. It is a checklist. Here is the exact process that got 48 stroke recovery blog posts indexed in 90 days.',
   h1: 'How to get Google Search Console to index your website',
   keyword: 'google search console indexing website',
+  image: '/images/blog/therapy-exercises-dark.png',
   extraKeywords: ['index website on Google', 'sitemap submission', 'SEO for bloggers', 'Google indexing checklist', 'how to rank on Google', 'blog SEO strategy', 'submit sitemap to Google', 'site indexing'],
   subhead: 'I spent 6 months watching Google ignore my blog. Then I learned the checklist. Forty-eight posts indexed in 90 days. Here is the exact process. No fluff. No SEO guru secrets. Just the steps that actually work.',
   ctaPrimary: { href: 'https://search.google.com/search-console', label: 'Open Google Search Console' },
@@ -5191,6 +5270,7 @@ export const POST_BROOKS_SURVIVOR_REVIEW = makeBlogPost({
   subhead: 'I did not choose Brooks because of a blog post. I chose them because they were the only shoe that did not fight my gait. Here is the real review nobody else can give you.',
   ctaPrimary: { href: '/blog/best-shoes-stroke-survivors', label: 'Full shoe comparison guide' },
   ctaSecondary: { href: '/blog/foot-drop-rehab-at-home', label: 'Foot drop rehab protocol' },
+    image: '/images/blog/brooks-cascadia-product.jpg',
   sections: [
     {
       h2: 'The before — and the after',

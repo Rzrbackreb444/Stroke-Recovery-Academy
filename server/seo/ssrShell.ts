@@ -148,12 +148,13 @@ function buildArticleSchema(cfg: SsrPageConfig): object {
   const date = cfg.publishedDate || '2026-01-15';
   const modified = cfg.modifiedDate || new Date().toISOString().split('T')[0];
   const readTime = estimateReadingTime(cfg.sections);
-  // Extract the first image from sections for post-specific image SEO
-  const firstImage = cfg.sections.find(s => s.image)?.image;
-  const postImage = firstImage
-    ? (typeof firstImage === 'string' ? firstImage : firstImage.src)
-    : null;
-  const imageUrl = postImage ? `${SITE_URL}${postImage}` : `${SITE_URL}/og-image.jpg`;
+  // Prefer the featured image, then first section image, then default
+  const featuredImage = cfg.image;
+  const firstSectionImage = cfg.sections.find(s => s.image)?.image;
+  const chosenImage = featuredImage || (firstSectionImage
+    ? (typeof firstSectionImage === 'string' ? firstSectionImage : firstSectionImage.src)
+    : null);
+  const imageUrl = chosenImage ? `${SITE_URL}${chosenImage}` : `${SITE_URL}/og-image.jpg`;
   return {
     '@context': 'https://schema.org',
     '@type': cfg.schemaType === 'MedicalWebPage' ? 'MedicalWebPage' : 'Article',
@@ -555,6 +556,7 @@ a:hover { text-decoration: underline; }
 .sra-crumbs a { color: var(--sra-text-dim); }
 .sra-crumb-sep { margin: 0 6px; }
 .sra-hero { padding: 24px 0 32px; border-bottom: 1px solid var(--sra-border); margin-bottom: 32px; }
+.sra-hero-img { width: 100%; max-height: 320px; object-fit: cover; border-radius: 8px; border: 1px solid var(--sra-border); margin-bottom: 24px; display: block; }
 .sra-eyebrow {
   display: inline-block;
   font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
@@ -735,7 +737,7 @@ ${cfg.keywords && cfg.keywords.length > 0 ? `<meta name="keywords" content="${es
 <meta property="og:url" content="${escAttr(url)}" />
 <meta property="og:title" content="${escAttr(cfg.title)}" />
 <meta property="og:description" content="${escAttr(cfg.description)}" />
-<meta property="og:image" content="${cfg.image || `${SITE_URL}/og-image-1200x630.png`}" />
+<meta property="og:image" content="${cfg.image ? (cfg.image.startsWith('http') ? cfg.image : `${SITE_URL}${cfg.image}`) : `${SITE_URL}/og-image-1200x630.png`}" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:type" content="image/png" />
@@ -749,7 +751,7 @@ ${cfg.keywords && cfg.keywords.length > 0 ? `<meta name="keywords" content="${es
 <meta name="twitter:site" content="@strokerecovery" />
 <meta name="twitter:title" content="${escAttr(cfg.title)}" />
 <meta name="twitter:description" content="${escAttr(cfg.description)}" />
-<meta name="twitter:image" content="${cfg.image || `${SITE_URL}/og-image-1200x630.png`}" />
+<meta name="twitter:image" content="${cfg.image ? (cfg.image.startsWith('http') ? cfg.image : `${SITE_URL}${cfg.image}`) : `${SITE_URL}/og-image-1200x630.png`}" />
 <meta name="twitter:image:alt" content="${escAttr(cfg.title)}" />
 <meta name="theme-color" content="#0D0D0D" />
 <link rel="icon" href="/favicon.ico" sizes="any" />
