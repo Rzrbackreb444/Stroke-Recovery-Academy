@@ -234,6 +234,126 @@ uri = "file://attached_assets/generated_images/online-stroke-coach.png"
 type = "image"
 title = "online stroke recovery coach"
 
+[[generated]]
+id = "UJAyffY5fwpk3vhd5l3VA"
+uri = "file://public/images/blog/brain-recovery-dark.png"
+type = "image"
+title = "brain-recovery-dark"
+
+[[generated]]
+id = "BuQoczye7T6r7mZLgAo6Z"
+uri = "file://public/images/blog/stroke-warning-dark.png"
+type = "image"
+title = "stroke-warning-dark"
+
+[[generated]]
+id = "o8HHmbEY7wrTlP2MqiKmh"
+uri = "file://public/images/blog/brain-foods-dark.png"
+type = "image"
+title = "brain-foods-dark"
+
+[[generated]]
+id = "EjIboMMAvUxlLOv7tmWTY"
+uri = "file://public/images/blog/walking-recovery-dark.png"
+type = "image"
+title = "walking-recovery-dark"
+
+[[generated]]
+id = "Y9QN1w95V5bT-Rar_u94h"
+uri = "file://public/images/blog/fatigue-dark.png"
+type = "image"
+title = "fatigue-dark"
+
+[[generated]]
+id = "MOXlwnth9pHRLhdo_Io26"
+uri = "file://public/images/blog/spasticity-dark.png"
+type = "image"
+title = "spasticity-dark"
+
+[[generated]]
+id = "MZxy63e_K0yaxO6mC63u3"
+uri = "file://public/images/blog/driving-dark.png"
+type = "image"
+title = "driving-dark"
+
+[[generated]]
+id = "-oGwzsFXTTHF9z1yAu8MB"
+uri = "file://public/images/blog/shower-safety-dark.png"
+type = "image"
+title = "shower-safety-dark"
+
+[[generated]]
+id = "iN7VNzvkEXNwtz2dkFuyO"
+uri = "file://public/images/blog/memory-dark.png"
+type = "image"
+title = "memory-dark"
+
+[[generated]]
+id = "hFasXqkFdM8H9uA54c41S"
+uri = "file://public/images/blog/therapy-exercises-dark.png"
+type = "image"
+title = "therapy-exercises-dark"
+
+[[generated]]
+id = "47ptEa2RzVOwMPFCUvrIG"
+uri = "file://public/images/blog/survivor-shoes-scene.png"
+type = "image"
+title = "survivor-shoes-scene"
+
+[[generated]]
+id = "xK9OdZn1uEfpszNKCOX_8"
+uri = "file://public/images/blog/survivor-pedal-exerciser-scene.png"
+type = "image"
+title = "survivor-pedal-exerciser-scene"
+
+[[generated]]
+id = "rtLvqbvIQkZqlEo12k8CS"
+uri = "file://public/images/blog/survivor-grip-scene.png"
+type = "image"
+title = "survivor-grip-scene"
+
+[[generated]]
+id = "DToyuHrx0kYi6fs-zn3Uh"
+uri = "file://public/images/blog/survivor-balance-board-scene.png"
+type = "image"
+title = "survivor-balance-board-scene"
+
+[[generated]]
+id = "ChH1i828_Ch7VsB7KB-eX"
+uri = "file://public/images/blog/survivor-tens-scene.png"
+type = "image"
+title = "survivor-tens-scene"
+
+[[generated]]
+id = "2qFUWa6QYyA2Ymc4cXRSV"
+uri = "file://public/images/blog/survivor-massage-gun-scene.png"
+type = "image"
+title = "survivor-massage-gun-scene"
+
+[[generated]]
+id = "vCHL6UsGRttuS-_SWPI9Z"
+uri = "file://public/images/blog/survivor-afo-scene.png"
+type = "image"
+title = "survivor-afo-scene"
+
+[[generated]]
+id = "GowG6yFkSjNb7CXTIOxby"
+uri = "file://public/images/blog/survivor-resistance-bands-scene.png"
+type = "image"
+title = "survivor-resistance-bands-scene"
+
+[[generated]]
+id = "6jAx9n0wpFz2MoA4qDoxv"
+uri = "file://public/images/blog/survivor-shower-safety-scene.png"
+type = "image"
+title = "survivor-shower-safety-scene"
+
+[[generated]]
+id = "0s8h_cxTlvev6l5EtA8tT"
+uri = "file://public/images/blog/survivor-walking-cane-scene.png"
+type = "image"
+title = "survivor-walking-cane-scene"
+
 [[outputs]]
 id = "EGooVUwVUQyTPSx95p4M4"
 uri = "file://exports/Stroked-Out-Sasquatch_DEDUPED_v1.md"
