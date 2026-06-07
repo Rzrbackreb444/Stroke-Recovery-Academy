@@ -186,6 +186,48 @@ uri = "file://attached_assets/book_v2/images/sasquatch-handoff.png"
 type = "image"
 title = "sasquatch builders promise handoff"
 
+[[generated]]
+id = "pnBjtdFotlp3JvzgTrCiR"
+uri = "file://attached_assets/generated_images/home-gym-stroke-recovery.png"
+type = "image"
+title = "home gym stroke recovery"
+
+[[generated]]
+id = "nZxzexszvXyfn66EDI_c0"
+uri = "file://attached_assets/generated_images/stair-lift-stroke.png"
+type = "image"
+title = "stair lift stroke"
+
+[[generated]]
+id = "YRc38XHYUQntlgMiq6MU-"
+uri = "file://attached_assets/generated_images/parallel-bars-home.png"
+type = "image"
+title = "parallel bars home"
+
+[[generated]]
+id = "BG1z-nrlORgUISc8Q-NTl"
+uri = "file://attached_assets/generated_images/hydrotherapy-hot-tub.png"
+type = "image"
+title = "hydrotherapy hot tub"
+
+[[generated]]
+id = "ZQewVuSWySz8UPVgU_Gcr"
+uri = "file://attached_assets/generated_images/supplements-stroke.png"
+type = "image"
+title = "supplements stroke"
+
+[[generated]]
+id = "WkVcCabo5d3D_SW8n9C32"
+uri = "file://attached_assets/generated_images/saebo-stroke-device.png"
+type = "image"
+title = "saebo stroke device"
+
+[[generated]]
+id = "oeE8kIn3PDHhtsEhapKfz"
+uri = "file://attached_assets/generated_images/gsc-indexing.png"
+type = "image"
+title = "google search console indexing"
+
 [[outputs]]
 id = "EGooVUwVUQyTPSx95p4M4"
 uri = "file://exports/Stroked-Out-Sasquatch_DEDUPED_v1.md"
