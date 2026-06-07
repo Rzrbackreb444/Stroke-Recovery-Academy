@@ -976,6 +976,10 @@ export const POST_FOOT_DROP_REHAB = makeBlogPost({
         'I own this device. I used it daily for months. It is the single piece of home equipment I recommend most often to survivors with foot drop. Not because it is magic — because it solves the consistency problem. It makes active ankle training possible at home, on your schedule, without a therapist holding the band.',
         'If you are building a home rehab kit, this is the first item I would add after the resistance bands. It is not cheap, but it is cheaper than months of clinic visits, and the results are yours to keep. The link below is an Amazon affiliate link — I earn a small commission if you buy through it, at no extra cost to you. I only recommend products I have used myself. This one is real.',
       ],
+      relatedLinks: [
+        { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO vs electric ankle trainer' },
+        { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors' },
+      ],
     },
   ],
   faqs: [
@@ -1056,6 +1060,10 @@ export const POST_AFO_VS_ELECTRIC = makeBlogPost({
         'If I were rebuilding my recovery from scratch, I would buy the electric trainer in month two — as soon as I had medical clearance for active movement. I would use it daily for three months while still wearing the AFO for safety during walks outside. By month four, I would test walking indoors without the AFO. By month six, the AFO would be in the drawer.',
         'The mistake I made: I bought the AFO, used it exclusively, and did not start active training until year two. By then, the motor pathway had degraded significantly. I spent six months catching up to where I could have been at month six. The AFO is a safety tool. The electric trainer is a recovery tool. Use both — but use the recovery tool as early as possible.',
       ],
+      relatedLinks: [
+        { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab equipment review' },
+        { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors' },
+      ],
     },
     {
       h2: 'The cost comparison',
@@ -1132,6 +1140,10 @@ export const POST_HOME_BP_MONITOR = makeBlogPost({
         'Same time every day. I do morning (before breakfast, after bathroom) and evening (before bed). Same arm. Same posture. No caffeine or exercise for thirty minutes before. I sit with back supported, feet flat, arm at heart level. I take two readings one minute apart and record the average.',
         'I bring a month of readings to every appointment. My doctor uses the home data to adjust medication, not the single clinic reading. The home data has caught medication issues that the clinic missed. It is the most important tool in my prevention kit.',
       ],
+      relatedLinks: [
+        { href: '/blog/cpap-machine-stroke-survivor', label: 'CPAP machine after stroke' },
+        { href: '/blog/how-to-prevent-a-second-stroke', label: 'How to prevent a second stroke' },
+      ],
     },
   ],
   faqs: [
@@ -1192,6 +1204,10 @@ export const POST_RESISTANCE_BANDS = makeBlogPost({
         'Tube band with handles (light resistance) — seated rows, bicep curls, shoulder press',
         'Medium loop band (green or black) — squats, standing abduction, glute bridges',
         'Heavy tube band (medium resistance) — lat pulldowns, chest press, tricep extensions',
+      ],
+      relatedLinks: [
+        { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools for stroke' },
+        { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home after stroke' },
       ],
     },
     {
@@ -1265,6 +1281,10 @@ export const POST_SHOWER_SAFETY = makeBlogPost({
       paragraphs: [
         'I installed a stainless steel grab bar at the tub entry and a second one on the wall opposite the showerhead. I used a height-adjustable shower chair with a back and armrests. I added a handheld showerhead on a 6-foot hose. I kept a non-slip mat with 100 suction cups covering the entire tub floor. The total cost was under $150. It was the best $150 I spent in recovery.',
       ],
+      relatedLinks: [
+        { href: '/blog/stroke-recovery-gift-guide', label: 'Stroke recovery gift guide' },
+        { href: '/blog/complete-stroke-recovery-home-kit', label: 'Complete stroke recovery home kit' },
+      ],
     },
   ],
   faqs: [
@@ -1327,6 +1347,10 @@ export const POST_ADAPTIVE_EATING = makeBlogPost({
         'Non-slip mat — keeps the plate and bowl from sliding.',
         'Cup with a lid and straw — prevents spills and reduces the need to lift.',
       ],
+      relatedLinks: [
+        { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools for stroke' },
+        { href: '/blog/best-robotic-glove-stroke-recovery', label: 'Best robotic gloves for stroke recovery' },
+      ],
     },
     {
       h2: 'What I skipped and why',
@@ -1387,6 +1411,10 @@ export const POST_CPAP_STROKE = makeBlogPost({
       h2: 'What CPAP did for me',
       paragraphs: [
         'Within two weeks of starting CPAP, my morning headaches were gone. Within a month, my afternoon fatigue was cut in half. Within three months, my blood pressure was easier to control and my medication dose was reduced. The effect was not subtle. It was the single biggest quality-of-life improvement in my recovery after the electric ankle trainer.',
+      ],
+      relatedLinks: [
+        { href: '/blog/best-blood-pressure-monitor-stroke-survivor', label: 'Best blood pressure monitor for stroke survivors' },
+        { href: '/blog/fatigue-after-stroke', label: 'Fatigue after stroke' },
       ],
     },
     {
@@ -1470,6 +1498,10 @@ export const POST_GAIT_TRAINING_HOME = makeBlogPost({
         'I started with 10 minutes of doorway bar work: weight shifting side to side, then forward and back, then heel-to-toe steps while holding the bar. Then 5 minutes of wobble board: two feet, then one foot, then eyes closed. Then 10 minutes of walking with the gait belt and my partner spotting. Then 5 minutes of obstacle navigation: stepping over tennis balls, around yoga blocks, and through a narrow hallway.',
         'The total was 30 minutes. I did it twice daily. Within three months, the walker was gone. Within six months, the cane was gone. Within a year, I was walking on uneven ground.',
       ],
+      relatedLinks: [
+        { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab equipment review' },
+        { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids for stroke survivors' },
+      ],
     },
   ],
   faqs: [
@@ -1544,6 +1576,10 @@ export const POST_STROKE_GIFT_GUIDE = makeBlogPost({
       paragraphs: [
         'The best gift I received was time. My brother showed up and helped me build the shower chair. My cousin installed the grab bars. My mother sat with me while I did my first band workout. The physical presence of someone who is not afraid of your stroke is worth more than any object.',
         'If you want to give a gift, give your time. Install the equipment. Do the first workout together. Cook a meal using the adaptive utensils. The object is the excuse. The time is the gift.',
+      ],
+      relatedLinks: [
+        { href: '/blog/complete-stroke-recovery-home-kit', label: 'Complete stroke recovery home kit' },
+        { href: '/blog/adaptive-eating-utensils-stroke', label: 'Adaptive eating utensils for stroke' },
       ],
     },
   ],
@@ -1644,6 +1680,10 @@ export const POST_COMPLETE_HOME_KIT = makeBlogPost({
       h2: 'The total cost',
       paragraphs: [
         'The full kit, bought over six months, costs roughly $300–500. That is less than two weeks of outpatient therapy. It is the best investment I made in my recovery. The link below is an Amazon affiliate link — I earn a small commission at no cost to you. Every item linked is one I used myself.',
+      ],
+      relatedLinks: [
+        { href: '/blog/stroke-recovery-gift-guide', label: 'Stroke recovery gift guide' },
+        { href: '/blog/shower-safety-stroke-survivor', label: 'Shower safety for stroke survivors' },
       ],
     },
   ],
