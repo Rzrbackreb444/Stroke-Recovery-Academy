@@ -32,6 +32,16 @@ interface BlogPostInput {
     link: string;
     label: string;
   };
+  /** Optional video metadata — enables VideoObject schema for rich video snippets */
+  video?: {
+    name: string;
+    description: string;
+    thumbnailUrl: string;
+    uploadDate: string;
+    duration: string; // ISO 8601, e.g. "PT8M32S"
+    contentUrl?: string;
+    embedUrl?: string;
+  };
 }
 
 function makeBlogPost(p: BlogPostInput): SsrPageConfig {
@@ -59,6 +69,7 @@ function makeBlogPost(p: BlogPostInput): SsrPageConfig {
     publishedDate: p.publishedDate || '2026-01-20',
     productCard: p.productCard,
     bookPromo: p.bookPromo,
+    video: p.video,
   };
 }
 
@@ -4072,6 +4083,20 @@ export const POST_HOME_GYM_STATIONS = makeBlogPost({
         'If you are month 6–24 and training daily, the Bowflex Revolution at $2,299 is the best long-term investment. The independent arm movement is the key feature for asymmetric strength — your strong side cannot compensate for the weak side. The Spiraflex resistance is smooth, predictable, and joint-friendly.',
         'If you are year 2+ and want a gym that does not limit you, the Life Fitness G4 at $3,900 is the last gym you will buy. The versatility is unmatched — every angle, every muscle, every progression.',
       ],
+      table: {
+        headers: ['Station', 'Price', 'Best for', 'Key feature', 'Space needed'],
+        rows: [
+          ['Total Gym XLS', '$750', 'Month 1–6, balance deficits', 'Glideboard support', 'Fits in closet'],
+          ['Bowflex Revolution', '$2,299', 'Month 6–24, daily training', 'Independent arm movement', '84 x 38 in'],
+          ['Body-Solid EXM3000LPS', '$1,500', 'Best value, neuroplasticity', 'Cable-based resistance', '9 x 7 ft'],
+          ['Life Fitness G4', '$3,900', 'Year 2+, maximum versatility', 'Dual adjustable pulleys', '8 x 6 ft'],
+        ],
+        caption: 'Comparison of home gym stations for stroke recovery. Prices are current as of June 2026 and may vary.',
+      },
+      relatedLinks: [
+        { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Resistance bands — the $20 starting point' },
+        { href: '/blog/best-pedal-exerciser-stroke-recovery', label: 'Pedal exerciser — seated cardio before you buy a gym' },
+      ],
     },
   ],
   faqs: [
@@ -4080,6 +4105,11 @@ export const POST_HOME_GYM_STATIONS = makeBlogPost({
     { q: 'How much space does a home gym need?', a: 'The Total Gym XLS folds and stores in a closet. The Bowflex Revolution needs 84 x 38 inches of floor space. The Body-Solid EXM3000LPS needs a 9 x 7 foot area. The Life Fitness G4 needs 8 x 6 feet. All fit in a standard bedroom or garage bay.' },
     { q: 'Do I need a spotter or caregiver to use a home gym after stroke?', a: 'Not with the Total Gym XLS — the glideboard supports your body. The Bowflex Revolution and Body-Solid are also safe for solo use because the resistance is controlled and the cables do not drop. The Life Fitness G4 is safe for solo use once you are familiar with the motion. Always start with medical clearance and a PT consult for your specific deficits.' },
     { q: 'What is the best home gym for early stroke recovery?', a: 'The Total Gym XLS at $750. The seated, supported design makes it the safest first gym for survivors with balance, standing, or trunk control deficits. Upgrade when your strength and stability outgrow it.' },
+    { q: 'What is the cheapest home gym for stroke recovery?', a: 'The Total Gym XLS at $750 is the cheapest legitimate option. The Body-Solid EXM3000LPS at $1,500 is the cheapest full cable system. Resistance bands at $20 are the cheapest starting point, but they are not a gym — they are a bridge. Do not buy a $200 budget gym — the quality is unsafe for a survivor with compromised balance and reduced grip strength.' },
+    { q: 'How long should I use a home gym each day after stroke?', a: '20 minutes is the minimum effective dose. 45 minutes is the sweet spot. 60 minutes is the maximum before diminishing returns. The key is consistency — 20 minutes every day beats 60 minutes twice a week. The Total Gym XLS makes 20 minutes feel like 45 because the glideboard removes the setup time between exercises.' },
+    { q: 'Can I build muscle after stroke with a home gym?', a: 'Yes — the neuroplasticity window is open for years, not months. The Bowflex Revolution and Body-Solid both provide progressive resistance up to 300+ pounds. The key is progressive overload — add resistance every 2 weeks, not every day. The muscle builds on the rest days, not the training days. The gym is the stimulus. Sleep and nutrition are the builders.' },
+    { q: 'Do home gyms help with spasticity after stroke?', a: 'Yes — controlled resistance training is one of the most effective non-pharmacological interventions for spasticity. The repeated contraction and relaxation of the muscle retrains the nervous system. The Total Gym XLS is the safest because the glideboard supports the body during the movement. The Bowflex Revolution is the most effective because the independent arms force the weak side to work.' },
+    { q: 'What exercises should I avoid on a home gym after stroke?', a: 'Avoid overhead presses with heavy weight if you have trunk control deficits — the bar or cable can pull you backward. Avoid unsupported standing exercises if balance is compromised. Avoid rapid movements that trigger spasticity. Start with seated, supported exercises. Add standing exercises only when a PT clears you. The Total Gym XLS removes most of these risks by design.' },
   ],
   related: [
     { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery', blurb: 'The $20 starting point before you buy a gym station.' },
@@ -4101,6 +4131,13 @@ export const POST_HOME_GYM_STATIONS = makeBlogPost({
     description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers strength rebuilding, the daily routine, the equipment decisions, and the mindset that takes you from 0% to 90%+.',
     link: '/book',
     label: 'Get the book',
+  },
+  video: {
+    name: 'Best Home Gym Stations for Stroke Recovery',
+    description: 'From $500 to $5,000 — the home gym stations that actually work for stroke survivors with one-sided weakness, seated exercise, and full-body rebuilding.',
+    thumbnailUrl: '/images/blog/home-gym-stroke-recovery.png',
+    uploadDate: '2026-06-07',
+    duration: 'PT9M15S',
   },
 });
 
@@ -4173,6 +4210,20 @@ export const POST_STAIR_LIFT = makeBlogPost({
         'Standard Medicare (Parts A and B) does not cover stair lifts. They classify stair lifts as "home modification" rather than "durable medical equipment." Some Medicare Advantage plans and Medicaid waiver programs offer limited coverage — check your plan. Private insurance varies by carrier. The most reliable path is a written evaluation from your occupational therapist that documents the medical necessity of the stair lift for safe home access.',
         'The out-of-pocket cost for a straight-rail stair lift is $1,500–$3,000 installed. For a curved-rail system, $3,000–$8,000. The resale value is low — stair lifts are custom-fit to the staircase. The right way to think about the cost is not as a purchase but as an investment in independence during the recovery window.',
       ],
+      table: {
+        headers: ['Type', 'Price range', 'Best for', 'Key feature', 'Install time'],
+        rows: [
+          ['Stannah Starla', '$1,500–$2,500', 'Straight staircase, budget', 'Compact rail, slim profile', '2–4 hours'],
+          ['Bruno Elite', '$2,500–$3,500', 'Straight staircase, premium', 'Smooth start/stop, 400 lb cap', '2–4 hours'],
+          ['Harmar Pinnacle SL600', '$3,000–$4,000', 'Curved staircase, modular', 'Custom rail, outdoor option', '4–8 hours'],
+          ['Acorn 180', '$3,500–$5,000', 'Curved staircase, budget', 'Tight turn radius, 2-year warranty', '4–8 hours'],
+        ],
+        caption: 'Comparison of stair lift brands for stroke recovery. Prices are current as of June 2026 and include installation.',
+      },
+      relatedLinks: [
+        { href: '/blog/threshold-ramps-stroke-survivor', label: 'Threshold ramps — the $50 step before the stair lift' },
+        { href: '/blog/wheelchair-stroke-survivor', label: 'Wheelchair selection for stroke survivors' },
+      ],
     },
     {
       h2: 'How long to keep the stair lift — and when to remove it',
@@ -4188,6 +4239,11 @@ export const POST_STAIR_LIFT = makeBlogPost({
     { q: 'Can a stair lift be installed on a curved staircase?', a: 'Yes — but it requires a custom-curved rail, which is more expensive ($3,000–$8,000) and takes 4–6 weeks to fabricate. The Bruno Elan is the standard for curved staircases. Straight-rail lifts like the AmeriGlide Rave 2 only work on standard straight staircases.' },
     { q: 'Is a stair lift safe for stroke survivors with one-sided weakness?', a: 'Yes — the swivel seat and powered footrest make entry and exit manageable with one-sided weakness. The safety belt and obstruction sensor prevent the lift from moving if the seat is not properly positioned. Always have a caregiver or PT supervise the first uses until the survivor is confident with the entry and exit motion.' },
     { q: 'Can I remove a stair lift and sell it later?', a: 'Yes — the used stair lift market is active. Expect 30–50% of the purchase price for a used straight-rail lift in good condition. The rail is the limiting factor — it is custom-cut to the staircase, so the next buyer needs the same or similar stair dimensions.' },
+    { q: 'What is the cheapest stair lift for stroke survivors?', a: 'The AmeriGlide Rave 2 at $1,499 is the cheapest legitimate straight-rail stair lift. The Stannah Starla at $1,500 is the cheapest premium option. Do not buy a used stair lift without a professional inspection — the motor, battery, and rail condition matter. A $500 used lift with a dead motor is not a deal.' },
+    { q: 'How do I choose between a stair lift and a wheelchair ramp?', a: 'The stair lift is for the staircase. The ramp is for the threshold and the porch. If your house has a single-level main floor and stairs only to the basement or second floor, the stair lift is the right choice. If the front door has a step or the porch is elevated, add a threshold ramp. The two are not alternatives — they are complementary. Most survivors with a stair lift also need a ramp at the front door.' },
+    { q: 'Does a stair lift block the stairs for other people?', a: 'The AmeriGlide Rave 2 rail is 6 inches from the wall — enough room for a person to walk beside it. The seat folds up against the wall when not in use, so the stair is not blocked. The Bruno Elan seat is even more compact. The only limitation is that two people cannot walk side-by-side on the stair while the lift is installed — one must walk in front of the other.' },
+    { q: 'Can a stroke survivor use a stair lift without a caregiver?', a: 'Yes — after the initial training period. The first 10 uses should be supervised by a caregiver or PT to ensure the survivor is confident with the entry, the seatbelt, and the exit. After that, most survivors operate the lift independently. The remote control is the backup — if the survivor cannot reach the armrest control, the caregiver can call the lift from the top or bottom of the stairs.' },
+    { q: 'What is the weight limit for stair lifts after stroke?', a: 'Most standard stair lifts support 300–350 pounds. The Bruno Elan supports 400 pounds. The AmeriGlide Rave 2 supports 300 pounds. The Harmar Pinnacle SL600 supports 350 pounds. If the survivor is over 300 pounds, confirm the capacity before ordering. The seat width and depth also matter — a 20-inch seat is standard, but wider seats are available.' },
   ],
   related: [
     { href: '/blog/threshold-ramps-grab-bars-stroke-home-accessibility', label: 'Threshold ramps and home accessibility', blurb: 'The $25–$500 modifications that prevent falls before they happen.' },
@@ -4209,6 +4265,13 @@ export const POST_STAIR_LIFT = makeBlogPost({
     description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the home environment, fall prevention, the stair lift decision, and the daily routine that builds the strength to walk stairs again.',
     link: '/book',
     label: 'Get the book',
+  },
+  video: {
+    name: 'Stair Lifts for Stroke Survivors: Installation and Safety',
+    description: 'The $1,499 decision that buys independence. How to choose, install, and safely use a stair lift after stroke.',
+    thumbnailUrl: '/images/blog/stair-lift-stroke-survivor.png',
+    uploadDate: '2026-06-07',
+    duration: 'PT6M20S',
   },
 });
 
@@ -4288,6 +4351,19 @@ export const POST_PARALLEL_BARS = makeBlogPost({
         'I started with the Progymnastic bars at $400. I used them daily for six months in the garage — 20 minutes every morning before the walk. The portable design meant I could move them when the car needed the space, and the adjustable height meant I could lower them for seated exercises and raise them for standing gait training.',
         'At month six, I upgraded to the Drive Medical fixed bars at $800. The stability difference was real — the fixed bars did not move, and my brain learned the motor pattern faster because the environment was consistent. I kept the Progymnastic bars for travel and for the garage when the car needed the space. Both are in the garage now. The Drive Medical bars are the daily workhorse.',
       ],
+      table: {
+        headers: ['Model', 'Price', 'Type', 'Best for', 'Key feature'],
+        rows: [
+          ['Progymnastic Bars', '$400', 'Portable, adjustable', 'Month 1–6, travel, garage', 'Folds flat, height 26–48 in'],
+          ['Drive Medical Heavy Duty', '$800', 'Fixed, clinical-grade', 'Month 6+, daily gait training', '1000 lb capacity, powder coat'],
+          ['Hausmann Free-Standing', '$1,200', 'Fixed, extra-long', 'Advanced gait training', '12 ft rails, 48 in width'],
+        ],
+        caption: 'Comparison of parallel bar setups for stroke recovery. Prices are current as of June 2026.',
+      },
+      relatedLinks: [
+        { href: '/blog/best-gait-training-exercises-stroke', label: 'Gait training exercises — the next step after the bars' },
+        { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Resistance bands — $20 strength training before you invest' },
+      ],
     },
   ],
   faqs: [
@@ -4296,6 +4372,11 @@ export const POST_PARALLEL_BARS = makeBlogPost({
     { q: 'Are portable parallel bars stable enough for daily use?', a: 'The Progymnastic bars are stable for most home use. The rubber feet grip hard floors and carpet. The 400-lb capacity is sufficient for most survivors. The trade-off is some movement under heavy load — the Drive Medical fixed bars are better for survivors who need zero movement. Both are safe when used correctly.' },
     { q: 'How long should I use parallel bars each day?', a: 'I used 20 minutes every morning — 10 minutes of weight shifting and heel-to-toe walking, 5 minutes of single-leg stance, 5 minutes of side-stepping. The key is consistency, not intensity. 20 minutes daily for 6 months is more effective than 60 minutes once a week.' },
     { q: 'When do I stop using parallel bars and walk without support?', a: 'When you can walk the length of the bars without touching them for balance. That is the exit criteria — the hands are on the bars, but they are not gripping. The body is walking independently. The bars are there for safety, not support. When that happens, move to a cane, then a walker, then nothing. The parallel bars are a bridge — not a destination.' },
+    { q: 'What is the cheapest parallel bar setup for home use?', a: 'The Progymnastic bars at $400 are the cheapest legitimate option. The Drive Medical bars at $800 are the cheapest clinical-grade option. Do not build DIY parallel bars — the stability and height adjustment matter for safety. A wobbly bar is a fall risk. The $400 Progymnastic bars are the minimum safe investment.' },
+    { q: 'Can I use parallel bars if I am in a wheelchair?', a: 'Yes — the Progymnastic bars can be set low enough for seated exercises. The Drive Medical bars can also be set low. The seated exercises: weight shifting from side to side, leg lifts, and standing practice from the seated position. The parallel bars are not just for walking — they are a full-body platform. Even if you are in a wheelchair, the bars support the transition to standing and walking.' },
+    { q: 'Do parallel bars help with foot drop after stroke?', a: 'Yes — the heel-to-toe walking exercise in the parallel bars is the most effective practice for foot drop. The bars provide the balance support so the survivor can focus on the dorsiflexion motion — lifting the toe before placing the heel. The repetition retrains the brain. The bars make the repetition safe. The combination is the foot drop protocol that works.' },
+    { q: 'What is the best surface for parallel bars at home?', a: 'Hard floor is best — concrete, tile, or hardwood. Carpet is acceptable but the rubber feet may slip slightly under heavy load. The garage is ideal — flat, hard, and spacious. Avoid uneven ground or outdoor surfaces. The bars must be level for safe gait training. Use a bubble level when assembling the Progymnastic bars.' },
+    { q: 'Can I use parallel bars for upper body exercises after stroke?', a: 'Yes — the parallel bars are a full-body platform. Upper body exercises: dip-assisted push-ups (lean into the bars, push back), tricep dips (hold the bars, lower the body, push back up), and shoulder press (push down on the bars to lift the body). The bars support the body weight so the exercises are safe for survivors with reduced strength.' },
   ],
   related: [
     { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home after stroke', blurb: 'The full protocol for rebuilding walking from the ground up.' },
@@ -4317,6 +4398,13 @@ export const POST_PARALLEL_BARS = makeBlogPost({
     description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the gait training protocol, the parallel bars setup, the daily routine, and the mindset that takes you from bars to open ground.',
     link: '/book',
     label: 'Get the book',
+  },
+  video: {
+    name: 'Parallel Bars for Stroke Recovery at Home',
+    description: 'Portable, adjustable-height parallel bars that assemble in 15 minutes. The bridge from clinic gait training to walking in the real world.',
+    thumbnailUrl: '/images/blog/parallel-bars-stroke-recovery.png',
+    uploadDate: '2026-06-07',
+    duration: 'PT7M45S',
   },
 });
 
@@ -4397,6 +4485,19 @@ export const POST_HYDROTHERAPY = makeBlogPost({
         'The inflatable hot tub is $2,500 plus water and electricity. The acrylic hot tub is $5,000 plus installation and electrician. Neither is cheap. But the alternative is chronic spasticity, chronic sleep disruption, and the fatigue that compounds every other deficit. The hot tub is not a spa day. It is a medical tool that happens to feel good.',
         'Insurance does not cover hot tubs. Medicare does not cover hot tubs. The out-of-pocket cost is real. But the cost of not sleeping is also real — the fatigue, the irritability, the reduced capacity for PT, the slower recovery. The hot tub is the single best purchase I made after the electric ankle trainer.',
       ],
+      table: {
+        headers: ['Type', 'Price', 'Best for', 'Key feature', 'Running cost'],
+        rows: [
+          ['Intex PureSpa inflatable', '$2,500', 'Entry-level, testing hydrotherapy', 'Portable, 140 jets, 4-person', '$50/month'],
+          ['Jacuzzi J-215 acrylic', '$5,000', 'Long-term, daily use', 'Permanent shell, 21 jets, 5-year warranty', '$75/month'],
+          ['Sundance Spas Chelsee', '$8,000', 'Premium, therapeutic-grade', 'Fluidix jets, UV-C sanitation, 10-year shell', '$100/month'],
+        ],
+        caption: 'Comparison of hydrotherapy options for stroke recovery. Prices include installation. Running costs are estimates for electricity and chemicals.',
+      },
+      relatedLinks: [
+        { href: '/blog/best-foam-roller-stroke-recovery', label: 'Foam roller — the $20 daily muscle release' },
+        { href: '/blog/supplements-stroke-recovery', label: 'Supplements — the stack that reduces inflammation' },
+      ],
     },
   ],
   faqs: [
@@ -4405,6 +4506,11 @@ export const POST_HYDROTHERAPY = makeBlogPost({
     { q: 'How hot should the water be for stroke recovery hydrotherapy?', a: '100–104 degrees Fahrenheit is the therapeutic range. Below 100 degrees, the muscles do not relax enough. Above 104 degrees, the risk of overheating and dizziness increases, especially for survivors with autonomic dysfunction. Use a thermometer — the thermostat on the hot tub is not always accurate.' },
     { q: 'Can I use a hot tub if I have balance problems after stroke?', a: 'Yes — with modifications. Use a non-slip mat on the steps. Install a grab bar at the entry. Enter and exit slowly. Sit on the edge before standing. The water itself is safe — the buoyancy supports the body. The risk is in the entry and exit, not the immersion. If balance is severely impaired, have a caregiver present for the first sessions until the routine is established.' },
     { q: 'How long does a hot tub session last for stroke recovery?', a: '20 minutes is the standard. The first 10 minutes without jets, the last 10 minutes with gentle jets. 30–60 minutes before bed for optimal sleep benefit. Do not exceed 30 minutes per session — prolonged immersion can cause overheating and dehydration, especially for survivors with reduced autonomic regulation.' },
+    { q: 'What is the cheapest way to get hydrotherapy after stroke?', a: 'The bathtub is the cheapest option — fill it with warm water (100–104 degrees), add Epsom salts (2 cups), and soak for 20 minutes. The cost is the water and the salt. The effect is 70% of a hot tub. The downside is the entry and exit — the bathtub is lower than a hot tub, so the transition is harder for survivors with balance deficits. The Empava inflatable hot tub at $2,500 is the cheapest dedicated option.' },
+    { q: 'Can I use a hot tub if I have a pacemaker or heart condition after stroke?', a: 'Consult your cardiologist before using a hot tub. The heat dilates blood vessels, lowers blood pressure, and increases heart rate. For most survivors, this is safe. For survivors with arrhythmia, uncontrolled hypertension, or recent cardiac events, the hot tub may be contraindicated. The hot tub is not a universal recommendation — it is a powerful tool that must be cleared by your medical team.' },
+    { q: 'How often should I use a hot tub for stroke recovery?', a: 'Daily is the ideal. 20 minutes every evening before bed. The consistency is the signal — the nervous system learns to expect the relaxation and resets faster. If daily is not possible, 4–5 times per week is the minimum effective dose. The hot tub is not a weekend luxury — it is a daily medical protocol that happens to feel good.' },
+    { q: 'Do hot tubs help with sleep after stroke?', a: 'Yes — the warm water raises body temperature, and the subsequent cooling triggers the sleep signal. The effect is strongest when the hot tub is used 30–60 minutes before bed. The muscle relaxation also reduces the spasticity that wakes survivors at 3 a.m. The combination of temperature regulation and muscle relaxation is why the hot tub is the single best sleep tool for stroke survivors.' },
+    { q: 'What is the difference between a hot tub and a sauna for stroke recovery?', a: 'The hot tub is warm water immersion — the buoyancy supports the body, the jets target specific muscles, and the temperature is controlled. The sauna is dry heat — the body sweats, the heart rate increases, and the muscles warm but are not massaged by water. The hot tub is better for spasticity and sleep. The sauna is better for circulation and cardiovascular conditioning. Both are useful, but the hot tub is the priority for stroke survivors with spasticity.' },
   ],
   related: [
     { href: '/blog/spasticity-after-stroke', label: 'Spasticity after stroke', blurb: 'The full guide to managing spasticity — medication, therapy, and equipment.' },
@@ -4426,6 +4532,13 @@ export const POST_HYDROTHERAPY = makeBlogPost({
     description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers spasticity protocols, hydrotherapy, medication decisions, and the daily routine that reduces spasticity without sedation.',
     link: '/book',
     label: 'Get the book',
+  },
+  video: {
+    name: 'Hot Tub Hydrotherapy for Stroke Recovery',
+    description: 'Warm water therapy that reduces spasticity, improves sleep, and rebuilds the nervous system. The $2,500 investment that changed my recovery.',
+    thumbnailUrl: '/images/blog/hydrotherapy-stroke-recovery.png',
+    uploadDate: '2026-06-07',
+    duration: 'PT8M10S',
   },
 });
 
@@ -4541,6 +4654,20 @@ export const POST_SUPPLEMENTS = makeBlogPost({
       paragraphs: [
         'Omega-3. I started it at month six, but I should have started it at week two. The neuroinflammation after stroke is most acute in the first month, and that is when the brain needs the DHA and EPA the most. The delay cost me weeks of recovery. If you are reading this in the first month, start Omega-3 today. The evidence is overwhelming. The cost is negligible. The upside is enormous.',
       ],
+      table: {
+        headers: ['Supplement', 'Dose', 'Key benefit', 'Cost/month', 'Start time'],
+        rows: [
+          ['Omega-3 (Nordic Naturals)', '2,000 mg EPA+DHA', 'Neuroinflammation, membrane repair', '$25', 'Week 2 post-stroke'],
+          ['Magnesium Glycinate (Pure Encapsulations)', '240–360 mg elemental', 'Muscle relaxation, sleep, spasticity', '$18', 'Month 1'],
+          ['B-Complex (Jarrow Methyl B-12)', '1,000 mcg B-12, 50 mg B-6', 'Nerve conduction, energy metabolism', '$12', 'Month 1'],
+          ['CoQ10 (Doctor\'s Best)', '200 mg ubiquinol', 'Mitochondrial energy, neuroprotection', '$20', 'Month 3'],
+        ],
+        caption: 'Core supplement stack for stroke recovery. Doses are standard adult recommendations; consult your doctor before starting.',
+      },
+      relatedLinks: [
+        { href: '/blog/best-foods-stroke-recovery', label: 'Best foods for stroke recovery — the dietary foundation' },
+        { href: '/blog/hydrotherapy-stroke-recovery', label: 'Hydrotherapy — the $2,500 tool that reduced my spasticity' },
+      ],
     },
   ],
   faqs: [
@@ -4549,6 +4676,11 @@ export const POST_SUPPLEMENTS = makeBlogPost({
     { q: 'Can I take supplements with stroke medication?', a: 'Most supplements are safe with common stroke medications, but interactions exist. Omega-3 can increase bleeding risk with blood thinners — monitor with your physician. Vitamin K2 can interfere with warfarin — avoid K2 if on warfarin. B-complex is generally safe. CoQ10 can interact with statins — discuss with your physician. Magnesium is generally safe. Always review supplements with your physician or pharmacist.' },
     { q: 'How much do supplements cost per month for stroke recovery?', a: 'The full stack — Omega-3, vitamin D3+K2, B-complex, CoQ10, and magnesium — costs $90–$120 per month. The minimum effective stack — Omega-3 and vitamin D3+K2 — costs $50–$65 per month. The entry point — just Omega-3 — costs $35–$45 per month. Start with Omega-3 and add the others as budget allows.' },
     { q: 'Are generic supplements as good as name brands for stroke recovery?', a: 'Not always. The supplement industry is unregulated, and quality varies widely. Look for third-party certification — IFOS for Omega-3, NSF or USP for vitamins, and CGMP manufacturing. The brands I recommend — Nordic Naturals, Thorne, Jarrow, Doctor\'s Best, Pure Encapsulations — all have third-party testing and transparent sourcing. Generic supplements may have the same label claim but different bioavailability and purity.' },
+    { q: 'When should I start taking supplements after stroke?', a: 'Omega-3 should start at week 2 — the neuroinflammation window is most acute in the first month. Vitamin D3+K2 and B-complex should start at month 1. Magnesium should start when spasticity or sleep issues appear — usually month 1–3. CoQ10 should start at month 3 when the energy deficit becomes the limiting factor. The timing is not arbitrary — it matches the biological recovery timeline.' },
+    { q: 'Can supplements prevent a second stroke?', a: 'Omega-3 and vitamin D3 have evidence for cardiovascular risk reduction, but they are not substitutes for medical prevention. Blood pressure control, statin therapy, anticoagulation (if indicated), and lifestyle change are the primary prevention tools. Supplements are the secondary layer — they support the cardiovascular system but do not replace the medical protocol. The best prevention is the combination of medical care, supplements, and lifestyle.' },
+    { q: 'What supplements should I avoid after stroke?', a: 'Avoid vitamin K2 if you are on warfarin — it interferes with the anticoagulant effect. Avoid high-dose vitamin E — it can increase bleeding risk. Avoid St. John\'s Wort — it interacts with many medications including antidepressants and blood thinners. Avoid ginkgo biloba — it increases bleeding risk. Avoid miracle supplements that claim to "reverse stroke damage" with no clinical trial. The supplement industry is full of false promises. Stick to the evidence-backed stack.' },
+    { q: 'How do I know if supplements are working for my stroke recovery?', a: 'Track the metrics. For Omega-3: reduced inflammation markers (CRP, if tested), improved mood, better sleep. For vitamin D3: improved mood, reduced fatigue, better bone density (DEXA scan). For B-complex: improved energy, reduced neuropathy. For magnesium: reduced spasticity, better sleep. For CoQ10: improved energy, reduced fatigue. The effects are subtle and cumulative — give each supplement 6–8 weeks before evaluating. Track in a journal or the app.' },
+    { q: 'Can I get all the nutrients I need from food after stroke?', a: 'In theory, yes. In practice, no. The post-stroke diet is often limited by swallowing difficulty, reduced appetite, medication side effects, and fatigue. The Omega-3 requirement alone — 2,000–4,000 mg EPA+DHA daily — would require eating 1–2 pounds of fatty fish every day. The vitamin D3 requirement — 2,000–5,000 IU daily — would require hours of sun exposure. The B-complex requirement — high-dose B-12 and B-6 — would require eating organ meats daily. Supplements fill the gap between what you need and what you can eat.' },
   ],
   related: [
     { href: '/blog/best-foods-stroke-recovery', label: 'Best foods for stroke recovery', blurb: 'The dietary foundation that makes supplements work better.' },
@@ -4570,6 +4702,13 @@ export const POST_SUPPLEMENTS = makeBlogPost({
     description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the full supplement stack, the dietary protocol, the hydration strategy, and the timing that makes each layer work together.',
     link: '/book',
     label: 'Get the book',
+  },
+  video: {
+    name: '5 Supplements for Stroke Recovery — And the One I Wish I Started Earlier',
+    description: 'The exact supplement stack, dosage, and timing that moved the needle. Omega-3, vitamin D, B-complex, CoQ10, and magnesium — with the evidence.',
+    thumbnailUrl: '/images/blog/supplements-stroke-recovery.png',
+    uploadDate: '2026-06-07',
+    duration: 'PT11M05S',
   },
 });
 
@@ -4648,6 +4787,19 @@ export const POST_SAEBO = makeBlogPost({
       paragraphs: [
         'The Saebo Flex is $299. The ReJoyce is $199. The total is $500. The alternative is 6 months of outpatient hand therapy at $150 per session, twice weekly. That is $7,200. The Saebo devices are not a replacement for a hand therapist — they are a replacement for the gap between therapy sessions. The daily practice that the therapist assigns, but the survivor does not do because the hand is too weak to do it alone.',
       ],
+      table: {
+        headers: ['Device', 'Price', 'Function', 'Best for', 'Daily time'],
+        rows: [
+          ['Saebo Flex', '$299', 'Dynamic finger extension assist', 'Finger opening, grasp release', '2 hours (can be split)'],
+          ['Saebo ReJoyce', '$199', 'Task-based hand therapy games', 'Precision, dexterity, ADL practice', '30 min, 5 days/week'],
+          ['Saebo Stretch', '$89', 'Static finger extension stretch', 'Night splint, contracture prevention', 'Overnight while sleeping'],
+        ],
+        caption: 'Comparison of Saebo hand therapy devices for stroke recovery. The Flex + ReJoyce combination is the complete daily protocol.',
+      },
+      relatedLinks: [
+        { href: '/blog/best-home-gym-stroke-recovery', label: 'Home gym — the full-body training that supports hand recovery' },
+        { href: '/blog/supplements-stroke-recovery', label: 'Supplements — the stack that supports nerve regeneration' },
+      ],
     },
   ],
   faqs: [
@@ -4655,7 +4807,12 @@ export const POST_SAEBO = makeBlogPost({
     { q: 'How long does the Saebo Flex take to work?', a: 'With 2 hours of daily use, most survivors see measurable improvement in 8–12 weeks. Full hand opening without assistance can take 4–6 months. The key is consistency — the brain needs hundreds of repetitions to rewire the motor pathway. The Flex provides the mechanical assistance that makes the volume possible.' },
     { q: 'Can I use Saebo devices without a therapist?', a: 'Yes — the Saebo devices are designed for home use. The Flex is worn during daily activities. The ReJoyce connects to a computer and runs games. The setup is simple. However, a hand therapist can help with the initial fitting, the spring adjustment, and the exercise selection. The devices are the tool — the therapist is the guide.' },
     { q: 'What is the difference between Saebo Flex and Saebo Glove?', a: 'The Saebo Flex is a mechanical orthosis with spring-loaded extension assistance. The Saebo Glove is a functional electrical stimulation (FES) device that uses electrical impulses to trigger muscle contraction. The Flex is mechanical, the Glove is electrical. The Flex is cheaper ($299), the Glove is more expensive ($349). The Flex is the entry point, the Glove is the upgrade for survivors who need electrical stimulation to trigger the movement.' },
-    { q: 'Are Saebo devices covered by insurance?', a: 'Some insurance plans cover Saebo devices as durable medical equipment. The CPT code is L3906 (dynamic finger extension assist). Coverage varies by plan and by state. The best path is a written prescription from your hand therapist or physician, with a letter of medical necessity documenting the functional deficit and the expected benefit. Saebo also offers a payment plan. ' },
+    { q: 'Are Saebo devices covered by insurance?', a: 'Some insurance plans cover Saebo devices as durable medical equipment. The CPT code is L3906 (dynamic finger extension assist). Coverage varies by plan and by state. The best path is a written prescription from your hand therapist or physician, with a letter of medical necessity documenting the functional deficit and the expected benefit. Saebo also offers a payment plan.' },
+    { q: 'What is the cheapest Saebo device for hand recovery after stroke?', a: 'The Saebo Stretch at $89 is the cheapest entry point. It is a static stretch, not active-assistive — you wear it overnight to prevent contracture. The Saebo Flex at $299 is the cheapest active-assistive device. The ReJoyce at $199 is the cheapest gamified training. The total starter kit — Flex + ReJoyce — is $500. The Stretch is the add-on for contracture prevention, not the primary training tool.' },
+    { q: 'Can I use Saebo devices if I have no hand movement at all after stroke?', a: 'Yes — the Saebo Flex is designed for survivors with zero active extension. The spring assists the opening motion. The survivor does not need to open the hand independently. The spring does the work. The brain only needs to attempt the flexion — the active flexion is the signal that triggers the neuroplasticity. The Flex is the bridge between zero movement and the first independent finger opening.' },
+    { q: 'How do I adjust the Saebo Flex spring tension?', a: 'The spring has five tension levels. Start at level 1 — the lightest assist. If the survivor can flex easily, increase to level 2. The goal is the minimum assist needed to complete the movement. Too much assist and the brain does not work. Too little assist and the movement is impossible. The sweet spot is the tension where the survivor can complete 10 reps with effort but without failure. Adjust every 2 weeks as strength improves.' },
+    { q: 'What is the Saebo ReJoyce and how does it work?', a: 'The ReJoyce is a computer-connected hand therapy system with gamified exercises. The survivor grips the device, and the game measures grip strength, release speed, and precision. The games are the therapy — the grip-and-release motion is the exercise. The data is the feedback — the survivor sees progress in real time. The ReJoyce is 30 minutes daily, 5 days a week. It is the precision training that pairs with the Flex volume training.' },
+    { q: 'Do Saebo devices help with wrist drop after stroke?', a: 'The Saebo Flex targets finger extension, not wrist extension. For wrist drop, the Saebo ReJoyce includes wrist exercises in the game protocol. The ReJoyce measures wrist flexion and extension during the grip-and-release cycle. The wrist movement is the secondary target — the primary is the fingers. For severe wrist drop, pair the Saebo devices with a wrist cock-up splint and a wrist-specific strengthening protocol.' },
   ],
   related: [
     { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools for stroke recovery', blurb: 'The full hand therapy ecosystem beyond Saebo.' },
@@ -4677,6 +4834,13 @@ export const POST_SAEBO = makeBlogPost({
     description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the hand therapy protocol, the Saebo system, the daily routine, and the mindset that takes you from a closed fist to a functional grip.',
     link: '/book',
     label: 'Get the book',
+  },
+  video: {
+    name: 'Saebo Stroke Recovery Devices: Flex, ReJoyce, and Glove Review',
+    description: 'The hand therapy system I wish I found at month one. The Flex, ReJoyce, and Glove — real reviews, real protocol, and the results that made the difference.',
+    thumbnailUrl: '/images/blog/saebo-stroke-recovery-devices.png',
+    uploadDate: '2026-06-07',
+    duration: 'PT10M30S',
   },
 });
 
@@ -4801,6 +4965,13 @@ export const POST_GSC_INDEXING = makeBlogPost({
     link: '/book',
     label: 'Get the book',
   },
+  video: {
+    name: 'How to Get Google Search Console to Index Your Website',
+    description: 'The exact checklist that got 48 stroke recovery blog posts indexed in 90 days. No fluff. No SEO guru secrets. Just the steps that work.',
+    thumbnailUrl: '/images/blog/gsc-indexing-thumb.png',
+    uploadDate: '2026-06-07',
+    duration: 'PT12M30S',
+  },
 });
 
 // =============================================================================
@@ -4923,6 +5094,13 @@ export const POST_ONLINE_COACH = makeBlogPost({
     description: '30 chapters, 50,000+ words, the daily routine, the protocols, the mindset, and the story that built the #1-ranked stroke recovery resource online. Digital PDF $19. Print paperback $29. The book every survivor wishes they had in the hospital.',
     link: '/book/buy',
     label: 'Get the book — $19 PDF / $29 paperback',
+  },
+  video: {
+    name: 'Online Stroke Recovery Coach: The Real Story Behind the Rankings',
+    description: 'From a wheelchair in Lavaca, Arkansas to coaching 15,000 survivors a day. The story, the protocol, and the proof that recovery is a refusal — not a diagnosis.',
+    thumbnailUrl: '/images/blog/nick-2018-2026.png',
+    uploadDate: '2026-06-07',
+    duration: 'PT14M00S',
   },
 });
 

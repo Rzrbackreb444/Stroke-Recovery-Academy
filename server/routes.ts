@@ -425,34 +425,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }));
 
     try {
-      // Get marketplace listings
-      const listings = await storage.getMarketplaceListings?.() || [];
-      const listingUrls = listings.slice(0, 200).map((l: any) => ({
-        path: `/listing/${l.id}`,
-        priority: '0.6',
-        changefreq: 'weekly'
-      }));
+      // Get marketplace listings — safe to skip if table not seeded
+      let listingUrls: any[] = [];
+      try {
+        const listings = await storage.getMarketplaceListings?.() || [];
+        listingUrls = listings.slice(0, 200).map((l: any) => ({
+          path: `/listing/${l.id}`,
+          priority: '0.6',
+          changefreq: 'weekly'
+        }));
+      } catch (e) {
+        console.warn('sitemap.xml: marketplace listings skipped:', (e as Error).message);
+      }
 
-      // Get blog posts
-      const posts = await db.select({ slug: blogPosts.slug, updatedAt: blogPosts.updatedAt })
-        .from(blogPosts)
-        .where(eq(blogPosts.status, 'published'))
-        .limit(500);
-      const blogUrls = posts.map((post) => ({
-        path: `/blog/${post.slug}`,
-        priority: '0.7',
-        changefreq: 'weekly'
-      }));
+      // Get blog posts — safe to skip if table not seeded
+      let blogUrls: any[] = [];
+      try {
+        const posts = await db.select({ slug: blogPosts.slug, updatedAt: blogPosts.updatedAt })
+          .from(blogPosts)
+          .where(eq(blogPosts.status, 'published'))
+          .limit(500);
+        blogUrls = posts.map((post) => ({
+          path: `/blog/${post.slug}`,
+          priority: '0.7',
+          changefreq: 'weekly'
+        }));
+      } catch (e) {
+        console.warn('sitemap.xml: blog posts skipped:', (e as Error).message);
+      }
 
-      // Get author profiles (use penName as slug)
-      const authors = await db.select({ id: authorProfiles.id, penName: authorProfiles.penName })
-        .from(authorProfiles)
-        .limit(200);
-      const authorUrls = authors.map((author) => ({
-        path: `/author/${author.id}`,
-        priority: '0.5',
-        changefreq: 'monthly'
-      }));
+      // Get author profiles — safe to skip if table not seeded
+      let authorUrls: any[] = [];
+      try {
+        const authors = await db.select({ id: authorProfiles.id, penName: authorProfiles.penName })
+          .from(authorProfiles)
+          .limit(200);
+        authorUrls = authors.map((author) => ({
+          path: `/author/${author.id}`,
+          priority: '0.5',
+          changefreq: 'monthly'
+        }));
+      } catch (e) {
+        console.warn('sitemap.xml: author profiles skipped:', (e as Error).message);
+      }
 
       const allRoutes = [...staticRoutes, ...listingUrls, ...blogUrls, ...authorUrls];
       const today = new Date().toISOString().split('T')[0];
@@ -484,16 +499,12 @@ ${allRoutes.map(r => `  <url>
     const baseUrl = 'https://strokerecoveryacademy.com';
     const today = new Date().toISOString().split('T')[0];
 
-    // Fetch the actual most-recent blog post date for accurate lastmod on blog sitemap
+    // Fetch the actual most-recent blog post date from the SSR blog registry
+    // (not the DB — the 70 PAA posts live in blogContent.ts, not recovery_blog_posts)
     let blogLastmod = today;
     try {
-      const [latest] = await db.select({ updatedAt: recoveryBlogPosts.updatedAt })
-        .from(recoveryBlogPosts)
-        .orderBy(desc(recoveryBlogPosts.updatedAt))
-        .limit(1);
-      if (latest?.updatedAt) {
-        blogLastmod = new Date(latest.updatedAt).toISOString().split('T')[0];
-      }
+      const { getBlogFreshestDate } = await import('./seo/blogRoutes');
+      blogLastmod = getBlogFreshestDate();
     } catch { /* fall back to today */ }
 
     const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
@@ -529,18 +540,24 @@ ${allRoutes.map(r => `  <url>
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
     try {
-      const posts = await db.select({
-        slug: recoveryBlogPosts.slug,
-        title: recoveryBlogPosts.title,
-        updatedAt: recoveryBlogPosts.updatedAt,
-        createdAt: recoveryBlogPosts.createdAt,
-        heroImageUrl: recoveryBlogPosts.heroImageUrl,
-        featured: recoveryBlogPosts.featured,
-      })
-        .from(recoveryBlogPosts)
-        .where(eq(recoveryBlogPosts.status, 'published'))
-        .orderBy(desc(recoveryBlogPosts.createdAt))
-        .limit(1000);
+      // DB recovery blog posts — safe to skip if table not seeded
+      let posts: any[] = [];
+      try {
+        posts = await db.select({
+          slug: recoveryBlogPosts.slug,
+          title: recoveryBlogPosts.title,
+          updatedAt: recoveryBlogPosts.updatedAt,
+          createdAt: recoveryBlogPosts.createdAt,
+          heroImageUrl: recoveryBlogPosts.heroImageUrl,
+          featured: recoveryBlogPosts.featured,
+        })
+          .from(recoveryBlogPosts)
+          .where(eq(recoveryBlogPosts.status, 'published'))
+          .orderBy(desc(recoveryBlogPosts.createdAt))
+          .limit(1000);
+      } catch (e) {
+        console.warn('sitemap-blog.xml: recovery blog posts skipped:', (e as Error).message);
+      }
 
       const today = new Date().toISOString().split('T')[0];
 
@@ -619,7 +636,12 @@ ${postUrls}${ssrBlocks ? '\n' + ssrBlocks : ''}
     const baseUrl = 'https://strokerecoveryacademy.com';
     
     try {
-      const listings = await storage.getMarketplaceListings?.() || [];
+      let listings: any[] = [];
+      try {
+        listings = await storage.getMarketplaceListings?.() || [];
+      } catch (e) {
+        console.warn('sitemap-marketplace.xml: listings skipped:', (e as Error).message);
+      }
       const today = new Date().toISOString().split('T')[0];
 
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -651,39 +673,51 @@ ${listings.slice(0, 1000).map((listing: any) => `  <url>
     const baseUrl = 'https://strokerecoveryacademy.com';
     const today = new Date().toISOString().split('T')[0];
 
-    // IMPORTANT: Only include publicly crawlable pages — never ProtectedRoute pages.
-    // Protected pages (compass, legend, never-zero, achievements, command-center,
-    // wearables, social, therapist-marketplace) cause redirect errors in GSC because
-    // Google gets bounced to the login page. They are excluded here AND blocked in robots.txt.
-    // Derived from the registry single source of truth — only /recovery/* entries.
-    const { getStaticSitemapEntries: getRecoverySitemapEntries } = await import('../shared/seo/routeRegistry');
-    const recoveryStaticRoutes = getRecoverySitemapEntries()
-      .filter((e) => e.loc.startsWith('/recovery'))
-      .map((e) => ({
-        path: e.loc,
-        priority: e.priority.toFixed(2),
-        changefreq: e.changefreq,
-      }));
+    try {
+      // IMPORTANT: Only include publicly crawlable pages — never ProtectedRoute pages.
+      // Protected pages cause redirect errors in GSC because Google gets bounced to login.
+      const { getStaticSitemapEntries: getRecoverySitemapEntries } = await import('../shared/seo/routeRegistry');
+      const recoveryStaticRoutes = getRecoverySitemapEntries()
+        .filter((e) => e.loc.startsWith('/recovery'))
+        .map((e) => ({
+          path: e.loc,
+          priority: e.priority.toFixed(2),
+          changefreq: e.changefreq,
+        }));
 
-    // Tier 1 SSR landing pages + hubs — server-rendered with unique content per URL
-    const { getSsrPageUrls } = await import('./seo/landingRoutes');
-    const ssrPages = getSsrPageUrls();
-    const ssrRoutes = ssrPages.map(p => ({ path: p.url, priority: p.priority, changefreq: p.changefreq }));
+      // Tier 1 SSR landing pages — safe to skip if module fails
+      let ssrRoutes: any[] = [];
+      try {
+        const { getSsrPageUrls } = await import('./seo/landingRoutes');
+        const ssrPages = getSsrPageUrls();
+        ssrRoutes = ssrPages.map(p => ({ path: p.url, priority: p.priority, changefreq: p.changefreq }));
+      } catch (e) {
+        console.warn('sitemap-recovery.xml: SSR landing pages skipped:', (e as Error).message);
+      }
 
-    // SSR blog posts — high-intent PAA queries served with full HTML
-    const { getBlogPageUrls } = await import('./seo/blogRoutes');
-    const blogPages = getBlogPageUrls();
-    const blogRoutes = blogPages.map(p => ({ path: p.url, priority: p.priority, changefreq: p.changefreq }));
+      // SSR blog posts — safe to skip if module fails
+      let blogRoutes: any[] = [];
+      try {
+        const { getBlogPageUrls } = await import('./seo/blogRoutes');
+        const blogPages = getBlogPageUrls();
+        blogRoutes = blogPages.map(p => ({ path: p.url, priority: p.priority, changefreq: p.changefreq }));
+      } catch (e) {
+        console.warn('sitemap-recovery.xml: blog pages skipped:', (e as Error).message);
+      }
 
-    // Programmatic SSR — per-exercise, week-N, per-state center hubs (G4)
-    const { getProgrammaticSeoUrls } = await import('./seo/programmaticRoutes');
-    const programmaticPages = await getProgrammaticSeoUrls();
-    const programmaticRoutes = programmaticPages.map(p => ({ path: p.url, priority: p.priority, changefreq: p.changefreq }));
+      // Programmatic SSR — safe to skip if module fails
+      let programmaticRoutes: any[] = [];
+      try {
+        const { getProgrammaticSeoUrls } = await import('./seo/programmaticRoutes');
+        const programmaticPages = await getProgrammaticSeoUrls();
+        programmaticRoutes = programmaticPages.map(p => ({ path: p.url, priority: p.priority, changefreq: p.changefreq }));
+      } catch (e) {
+        console.warn('sitemap-recovery.xml: programmatic pages skipped:', (e as Error).message);
+      }
 
-    const allRoutes = [...recoveryStaticRoutes, ...ssrRoutes, ...blogRoutes, ...programmaticRoutes];
+      const allRoutes = [...recoveryStaticRoutes, ...ssrRoutes, ...blogRoutes, ...programmaticRoutes];
 
-    // Static pages only — blog posts live exclusively in sitemap-blog.xml to avoid duplication
-    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${allRoutes.map(r => `  <url>
@@ -694,9 +728,13 @@ ${allRoutes.map(r => `  <url>
   </url>`).join('\n')}
 </urlset>`;
 
-    res.set('Content-Type', 'application/xml');
-    res.set('Cache-Control', 'public, max-age=3600');
-    res.send(sitemap);
+      res.set('Content-Type', 'application/xml');
+      res.set('Cache-Control', 'public, max-age=3600');
+      res.send(sitemap);
+    } catch (error) {
+      console.error('Recovery sitemap error:', error);
+      res.status(500).send('Error generating recovery sitemap');
+    }
   });
 
   // SEO: Robots.txt — single Sitemap directive pointing to the index; index declares sub-sitemaps
