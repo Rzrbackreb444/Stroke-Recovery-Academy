@@ -11,6 +11,7 @@ interface BlogPostInput {
   description: string;    // 140-160 chars
   h1: string;
   keyword: string;
+  extraKeywords?: string[];
   subhead: string;
   ctaPrimary: { href?: string; link?: string; label: string };
   ctaSecondary?: { href?: string; link?: string; label: string };
@@ -48,7 +49,7 @@ function makeBlogPost(p: BlogPostInput): SsrPageConfig {
     sections: p.sections,
     faqs: p.faqs,
     related: p.related,
-    keywords: [p.keyword, 'stroke recovery', 'sasquatch method'],
+    keywords: [p.keyword, 'stroke recovery', 'sasquatch method', ...(p.extraKeywords || [])],
     schemaType: 'MedicalWebPage',
     breadcrumbs: [
       { name: 'Home', href: '/' },
@@ -3967,6 +3968,7 @@ export const POST_HOME_GYM_STATIONS = makeBlogPost({
   description: 'The home gym stations that actually work for stroke survivors — one-sided weakness, seated exercise, and full-body rebuilding. Real equipment, real prices, real recommendations.',
   h1: 'Best home gym stations for stroke recovery',
   keyword: 'best home gym stroke recovery',
+  extraKeywords: ['home gym for stroke survivors', 'stroke recovery exercise equipment', 'seated exercise machine', 'one-sided workout', 'resistance training after stroke', 'stroke survivor fitness', 'home rehab equipment', 'affiliate'],
   subhead: 'After my stroke at 36, I had one good side and one weak side. A commercial gym is intimidating. A home gym is the only way to train daily. Here is what I used — and what I would buy today at every budget.',
   ctaPrimary: { href: 'https://www.amazon.com/s?k=home+gym+stroke+recovery', label: 'Browse home gyms on Amazon' },
   ctaSecondary: { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Start with resistance bands' },
@@ -4111,6 +4113,7 @@ export const POST_STAIR_LIFT = makeBlogPost({
   description: 'The stair lift decision after stroke — when to buy, what to pay, and why the stair lift is independence, not surrender. Real prices, real brands, real recommendations.',
   h1: 'Stair lifts for stroke survivors',
   keyword: 'stair lift stroke survivor',
+  extraKeywords: ['stair lift for disabled', 'home accessibility after stroke', 'stair chair lift', 'stair lift cost', 'stair lift installation', 'mobility equipment', 'aging in place', 'affiliate'],
   subhead: 'At month three, I could barely get up the stairs. By month twelve, I was walking them — but the stair lift was the bridge that kept me independent while I rebuilt. Here is the honest breakdown.',
   ctaPrimary: { href: 'https://www.amazon.com/s?k=stair+lift+stroke+survivor', label: 'Browse stair lifts on Amazon' },
   ctaSecondary: { href: '/blog/threshold-ramps-grab-bars-stroke-home-accessibility', label: 'Home accessibility guide' },
@@ -4218,6 +4221,7 @@ export const POST_PARALLEL_BARS = makeBlogPost({
   description: 'The parallel bars that bridge the gap between clinic gait training and real-world walking. Real prices, real brands, and the setup that actually works at home.',
   h1: 'Parallel bars for stroke recovery at home',
   keyword: 'parallel bars stroke recovery',
+  extraKeywords: ['parallel bars for home rehab', 'gait training equipment', 'stroke walking aids', 'balance training equipment', 'physical therapy at home', 'stroke gait recovery', 'home physical therapy', 'affiliate'],
   subhead: 'I walked in parallel bars at a clinic for three months. Then I installed a set in my garage. The difference was immediate — daily practice, no commute, and the confidence to push past the limits of a 45-minute PT session.',
   ctaPrimary: { href: 'https://www.amazon.com/s?k=parallel+bars+stroke+recovery', label: 'Browse parallel bars on Amazon' },
   ctaSecondary: { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training guide' },
@@ -4325,6 +4329,7 @@ export const POST_HYDROTHERAPY = makeBlogPost({
   description: 'Hydrotherapy for stroke recovery — how hot tubs reduce spasticity, improve circulation, and rebuild proprioception. Real brands, real prices, and the setup that actually works.',
   h1: 'Hot tub hydrotherapy for stroke recovery',
   keyword: 'hot tub hydrotherapy stroke recovery',
+  extraKeywords: ['hydrotherapy for stroke', 'hot tub for spasticity', 'warm water therapy', 'aquatic therapy at home', 'stroke muscle relaxation', 'spa therapy for stroke', 'home hydrotherapy', 'affiliate'],
   subhead: 'At month six, my spasticity was so bad I could not sleep through the night. A hot tub changed that. Here is the real cost, the real brands, and the real protocol.',
   ctaPrimary: { href: 'https://www.amazon.com/s?k=hot+tub+hydrotherapy+stroke', label: 'Browse hot tubs on Amazon' },
   ctaSecondary: { href: '/blog/spasticity-after-stroke', label: 'Spasticity guide' },
@@ -4433,6 +4438,7 @@ export const POST_SUPPLEMENTS = makeBlogPost({
   description: 'The supplement stack that actually moved the needle for stroke recovery. Omega-3, vitamin D, B-complex, CoQ10, and magnesium — with the evidence and the dosage.',
   h1: 'Supplements for stroke recovery',
   keyword: 'supplements stroke recovery',
+  extraKeywords: ['stroke recovery vitamins', 'Omega-3 for stroke', 'vitamin D stroke recovery', 'CoQ10 stroke', 'magnesium for spasticity', 'brain health supplements', 'neuroplasticity nutrition', 'affiliate'],
   subhead: 'I spent $30 a month on supplements. The Omega-3 was the one that mattered most. Here is the exact stack, the exact dosage, and the evidence that backs it.',
   ctaPrimary: { href: 'https://www.amazon.com/s?k=stroke+recovery+supplements', label: 'Browse supplements on Amazon' },
   ctaSecondary: { href: '/blog/best-foods-stroke-recovery', label: 'Best foods for stroke recovery' },
@@ -4576,6 +4582,7 @@ export const POST_SAEBO = makeBlogPost({
   description: 'Saebo stroke recovery devices — the Flex, the ReJoyce, and the Glove. Real reviews, real results, and the protocol that makes them work.',
   h1: 'Saebo stroke recovery devices',
   keyword: 'saebo stroke recovery',
+  extraKeywords: ['Saebo Flex review', 'hand therapy after stroke', 'finger recovery stroke', 'stroke hand rehabilitation', 'active assistive therapy', 'Saebo ReJoyce', 'stroke glove therapy', 'affiliate'],
   subhead: 'I found Saebo at month 14. The Saebo Flex changed my hand from a claw to a functional grip in 90 days. Here is the real review, the real protocol, and the real cost.',
   ctaPrimary: { href: 'https://www.amazon.com/s?k=saebo+stroke', label: 'Browse Saebo on Amazon' },
   ctaSecondary: { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Hand therapy tools guide' },
@@ -4682,6 +4689,7 @@ export const POST_GSC_INDEXING = makeBlogPost({
   description: 'Getting Google Search Console to index your website is not a mystery. It is a checklist. Here is the exact process that got 48 stroke recovery blog posts indexed in 90 days.',
   h1: 'How to get Google Search Console to index your website',
   keyword: 'google search console indexing website',
+  extraKeywords: ['index website on Google', 'sitemap submission', 'SEO for bloggers', 'Google indexing checklist', 'how to rank on Google', 'blog SEO strategy', 'submit sitemap to Google', 'site indexing'],
   subhead: 'I spent 6 months watching Google ignore my blog. Then I learned the checklist. Forty-eight posts indexed in 90 days. Here is the exact process. No fluff. No SEO guru secrets. Just the steps that actually work.',
   ctaPrimary: { href: 'https://search.google.com/search-console', label: 'Open Google Search Console' },
   ctaSecondary: { href: '/blog', label: 'See the indexed blog' },
@@ -4804,6 +4812,7 @@ export const POST_ONLINE_COACH = makeBlogPost({
   description: 'Nick Kremers, a 7-year stroke survivor, built the top-ranked stroke recovery resource from a wheelchair. Real protocols, real accountability, and the story behind the results.',
   h1: 'Online stroke recovery coach',
   keyword: 'online stroke recovery coach',
+  extraKeywords: ['stroke recovery coach', 'stroke survivor coaching', 'virtual stroke coach', 'stroke recovery mentor', 'stroke recovery accountability', 'personal stroke coach', 'stroke coaching program', 'online coach for stroke survivors'],
   subhead: 'I was told I would never walk normally again. I built a stroke recovery academy from a wheelchair in Lavaca, Arkansas. Seven years later, I coach 15,000 survivors a day. Here is how I became the online stroke recovery coach I wish I had found in the hospital.',
   ctaPrimary: { href: '/api/login', label: 'Join the Academy' },
   ctaSecondary: { href: '/book', label: 'Read the book' },
