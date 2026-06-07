@@ -25,6 +25,8 @@ export interface ContentSection {
   externalLinks?: { label: string; href?: string; url?: string; note?: string }[];
   /** Inline product cards — affiliate tag applied server-side via tagAmazonLink */
   products?: { name: string; price: string; link: string; note: string }[];
+  /** Inline cross-links to related posts — renders a "Also check out" line in the section */
+  relatedLinks?: { href: string; label: string }[];
   /**
    * Optional pre-sanitized HTML appended after paragraphs/bullets.
    * Only use for trusted, server-controlled content (e.g. SSR center cards).
@@ -278,6 +280,7 @@ function renderSections(sections: ContentSection[]): string {
   ${s.externalLinks && s.externalLinks.length > 0 ? `<div class="sra-citations" role="list" aria-label="Sources">${s.externalLinks.map(l =>
     `<a href="${escAttr(l.href || l.url || '#')}" class="sra-citation-link" target="_blank" rel="noopener noreferrer" role="listitem">${esc(l.label)}</a>${l.note ? ` <span class="sra-citation-note">${esc(l.note)}</span>` : ''}`
   ).join(' ')}</div>` : ''}
+  ${s.relatedLinks && s.relatedLinks.length > 0 ? `<div class="sra-related-inline"><strong>Also check out:</strong> ${s.relatedLinks.map((l, i) => `<a href="${escAttr(l.href)}">${esc(l.label)}</a>${i < s.relatedLinks.length - 1 ? ', ' : ''}`).join('')}</div>` : ''}
   ${html}
 </section>`;
   }).join('\n');
@@ -314,7 +317,7 @@ function renderRelated(related: InternalLink[]): string {
   if (!related || related.length === 0) return '';
   return `
 <section class="sra-related">
-  <h2>Keep learning</h2>
+  <h2>Also check out</h2>
   <div class="sra-related-grid">
   ${related.map(r => `
     <a href="${escAttr(r.href)}" class="sra-related-card">
@@ -324,6 +327,15 @@ function renderRelated(related: InternalLink[]): string {
     </a>`).join('\n  ')}
   </div>
 </section>`;
+}
+
+function renderRelatedInline(related: InternalLink[]): string {
+  if (!related || related.length === 0) return '';
+  return `
+<div class="sra-related-inline">
+  <strong>Also check out:</strong>
+  ${related.map((r, i) => `<a href="${escAttr(r.href)}">${esc(r.label)}</a>${i < related.length - 1 ? ', ' : ''}`).join('')}
+</div>`;
 }
 
 function renderBreadcrumbs(cfg: SsrPageConfig): string {
@@ -494,6 +506,9 @@ a:hover { text-decoration: underline; }
 .sra-citation-link { font-size: 12px; color: var(--sra-gold); border: 1px solid var(--sra-border); padding: 3px 10px; border-radius: 3px; display: inline-block; }
 .sra-citation-link:hover { border-color: var(--sra-gold); text-decoration: none; }
 .sra-citation-note { font-size: 12px; color: var(--sra-text-dim); }
+.sra-related-inline { margin-top: 14px; padding: 12px 16px; background: var(--sra-bg-card); border-left: 3px solid var(--sra-gold); border-radius: 0 4px 4px 0; font-size: 14px; }
+.sra-related-inline a { color: var(--sra-gold); font-weight: 600; }
+.sra-related-inline a:hover { text-decoration: underline; }
 .sra-product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 20px 0; }
 .sra-product-card { background: var(--sra-bg-card); border: 1px solid var(--sra-border); border-radius: 6px; padding: 18px; display: flex; flex-direction: column; gap: 6px; }
 .sra-product-card-name { font-weight: 700; font-size: 15px; color: var(--sra-text); }

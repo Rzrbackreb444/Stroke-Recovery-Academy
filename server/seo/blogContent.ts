@@ -1738,6 +1738,9 @@ export const POST_ROBOTIC_GLOVE = makeBlogPost({
           note: 'Soft robotic wearable you can use during real tasks — drinking, gripping objects — not just dedicated therapy sessions. Excellent for left-hand survivors. Higher price, superior build quality.',
         },
       ],
+      relatedLinks: [
+        { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools for stroke recovery' },
+      ],
     },
     {
       h2: 'The protocol that gets results — and the mistake that wastes your money',
@@ -1852,6 +1855,10 @@ export const POST_BEST_SHOES = makeBlogPost({
         alt: 'Stroke survivor gait analysis illustration — heel strike through toe-off phases',
         caption: 'Proper footwear supports every phase of the gait cycle that stroke makes harder.',
       },
+      relatedLinks: [
+        { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids for stroke survivors' },
+        { href: '/blog/foot-drop-rehab-at-home', label: 'Foot drop rehab at home' },
+      ],
     },
     {
       h2: 'Skechers GoWalk Arch Fit Slip-In — the one-hand solution',
@@ -1970,6 +1977,10 @@ export const POST_WALKING_AIDS = makeBlogPost({
         alt: 'Gait training with parallel bars and walking aids for stroke rehabilitation',
         caption: 'Each stage in the aid progression is a step toward independent ambulation — not a permanent label.',
       },
+      relatedLinks: [
+        { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors' },
+        { href: '/blog/best-balance-board-stroke-recovery', label: 'Best balance boards for stroke recovery' },
+      ],
     },
     {
       h2: 'How to set cane height',
@@ -2062,6 +2073,10 @@ export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
         alt: 'Illustration of hand squeeze and grip exercise for stroke hand rehabilitation',
         caption: 'Grip and pinch work target the same pathways — progressive resistance is the mechanism.',
       },
+      relatedLinks: [
+        { href: '/blog/best-robotic-glove-stroke-recovery', label: 'Best robotic gloves for stroke recovery' },
+        { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery' },
+      ],
     },
     {
       h2: 'Grip strengthener — load the entire kinetic chain',
