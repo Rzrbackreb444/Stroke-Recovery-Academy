@@ -95,7 +95,7 @@ const AUTHOR = {
   name: 'Nick Kremers',
   bio: '7-year stroke survivor who went from complete paralysis to 90% recovery. Founder of Stroke Recovery Academy and creator of the Sasquatch Method.',
   url: `${SITE_URL}/recovery/about-nick`,
-  image: `${SITE_URL}/images/blog/nick-tiktok-walking.png`,
+  image: `${SITE_URL}/images/blog/nick-author-bio.jpg`,
 };
 
 function tagAmazonLink(url: string): string {
@@ -297,8 +297,8 @@ function buildVideoObjectSchema(cfg: SsrPageConfig): object | null {
     thumbnailUrl: v.thumbnailUrl.startsWith('http') ? v.thumbnailUrl : `${SITE_URL}${v.thumbnailUrl}`,
     uploadDate: v.uploadDate,
     duration: v.duration,
-    ...(v.contentUrl ? { contentUrl: v.contentUrl } : {}),
-    ...(v.embedUrl ? { embedUrl: v.embedUrl } : {}),
+    ...(v.contentUrl ? { contentUrl: v.contentUrl.startsWith('http') ? v.contentUrl : `${SITE_URL}${v.contentUrl}` } : {}),
+    ...(v.embedUrl ? { embedUrl: v.embedUrl.startsWith('http') ? v.embedUrl : `${SITE_URL}${v.embedUrl}` } : {}),
     author: {
       '@type': 'Person',
       name: AUTHOR.name,
