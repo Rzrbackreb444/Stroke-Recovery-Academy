@@ -4812,7 +4812,7 @@ export const POST_ONLINE_COACH = makeBlogPost({
       h2: 'The stroke that started everything',
       paragraphs: [
         'On December 3, 2018, at thirty-six years old, I had a massive hemorrhagic stroke in the bathroom of my own house. Two hundred and fifty pounds of working muscle. Ninety minutes after I had benched two hundred and eighty-five pounds in my garage. The bleed landed in my left thalamus, paralyzed the left side of my body, scrambled my speech into the wrong word order, and put me in an ICU bed for a month while the doctors told my pregnant wife and my parents to plan for a man who would never walk normally again, never use his left hand again, never recognize music again, and never go back to work.',
-        'The doctors handed me a chart full of "nevers." I refused every one of them. Seven years later I am at ninety percent function and still rising. I walked my son to his first day of school. I am typing this sentence with both hands. I wrote a twelve-track concept album about the rebuild. I run two companies. I built Stroke Recovery Academy from the wheelchair I was supposed to live in. I teach roughly fifteen thousand survivors a day on TikTok how to refuse the same "nevers" the white coats handed me.',
+        'The doctors handed me a chart full of "nevers." I refused every one of them. Seven years later I am at ninety percent function and still rising. I walked my son to his first day of school. I can jog again. I am learning to type with both hands. I wrote a twelve-track concept album about the rebuild. I run two companies. I built Stroke Recovery Academy from the wheelchair I was supposed to live in. I teach roughly fifteen thousand survivors a day on TikTok how to refuse the same "nevers" the white coats handed me.',
       ],
       image: {
         src: '/images/blog/nick-2018-2026.png',
@@ -4854,6 +4854,15 @@ export const POST_ONLINE_COACH = makeBlogPost({
         alt: 'Nick Kremers at WashBizHub laundromat in Lavaca, Arkansas, wearing the Sasquatch crown amid commercial laundry equipment',
         caption: 'WashBizHub, Lavaca, Arkansas. The business that built the rebuild. The crown is the reminder: recovery is not a chart. It is a company you build.',
       },
+    },
+    {
+      h2: 'The frameworks that turned chaos into a system',
+      paragraphs: [
+        'My recovery was not a straight line. It was chaos. Trial and error. Throwing everything against the wall to see what stuck. The first two years were a mess of half-finished protocols, broken equipment, and days I wanted to quit.',
+        'The turn came when I stopped treating recovery like a recipe and started treating it like a formula. The Sasquatch Formula — T.L.E.C.A. — is the five-step system I distilled from the mess: Take what the system gives you. Learn the science behind the problem. Experiment with the ratios. Combine the methods that work. Apply them every day until they become identity. The full formula is in Chapter 10 of the book. The book is the only place I lay it out completely.',
+        'The operating system that runs underneath T.L.E.C.A. is the Sasquatch Doctrine. Four layers, each for a different stage of the rebuild. Layer 1: S.O.S. — Survive, Organize, Strive. The crisis-day compass. Layer 2: S.A.S.C.H. — Seize, Absorb, Swing, Combine, Hammer. The daily engine. Layer 3: The Persona Forge. The identity builder. Layer 4: C.O.M.P.A.S.S. — the advanced navigation system for plateaus, mutations, and the long game. The book covers all four in detail. The coaching cohorts teach you how to run them.',
+        'The core principle behind every layer: stack failures into success. Every failed rep is data. Every bad day is a log entry. Every plateau is a signal to mutate, not a reason to quit. The accountability system — one human, one log, one tribe — makes the stacking automatic. I do not miss twice. The cohort does not miss twice. The community does not let you miss twice.',
+      ],
     },
     {
       h2: 'The protocols that work — and the ones that do not',
