@@ -564,9 +564,10 @@ ${allRoutes.map(r => `  <url>
       <news:publication_date>${pubDate.toISOString()}</news:publication_date>
       <news:title>${post.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</news:title>
     </news:news>` : '';
-        const imageBlock = post.heroImageUrl ? `
+        const imageUrl = post.heroImageUrl ? (post.heroImageUrl.startsWith('http') ? post.heroImageUrl : baseUrl + post.heroImageUrl) : undefined;
+        const imageBlock = imageUrl ? `
     <image:image>
-      <image:loc>${post.heroImageUrl}</image:loc>
+      <image:loc>${imageUrl}</image:loc>
       <image:title>${post.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</image:title>
     </image:image>` : '';
         return `  <url>
