@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useAuth } from "@/hooks/useAuth";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useBookProject } from "@/lib/hooks/useBookProject";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -117,12 +116,57 @@ interface GeneratedImage {
   timestamp: Date;
 }
 
-interface ProjectContext {
-  id: string;
-  project_name: string;
-  project_type: string;
-  global_tone: string;
-  last_updated: string;
+// ---------- helpers (module-level, no hooks) ----------
+
+function sectionsToHtml(sects: DocumentSection[]): string {
+  return sects.map(s => {
+    switch (s.type) {
+      case 'chapter': return `<h2>${s.content}</h2>`;
+      case 'heading': return `<h${s.level || 2}>${s.content}</h${s.level || 2}>`;
+      case 'quote': return `<blockquote><p>${s.content}</p></blockquote>`;
+      case 'image': return `<figure><img src="${s.imageUrl || ''}" alt="${s.content}" /></figure>`;
+      case 'qrcode': return `<figure data-type="qrcode"><img src="${s.imageUrl || ''}" alt="${s.content}" /></figure>`;
+      default: return `<p>${s.content}</p>`;
+    }
+  }).join('\n');
+}
+
+function htmlToSections(html: string): DocumentSection[] {
+  try {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const result: DocumentSection[] = [];
+    let idx = 0;
+    Array.from(doc.body.childNodes).forEach(node => {
+      if (node.nodeType !== Node.ELEMENT_NODE) return;
+      const el = node as Element;
+      const tag = el.tagName.toLowerCase();
+      if (tag === 'h1') {
+        result.push({ id: `s${idx++}`, type: 'heading', content: el.textContent || '', level: 1 });
+      } else if (tag === 'h2') {
+        const content = el.textContent || '';
+        result.push({ id: `s${idx++}`, type: /^chapter\s+\d+/i.test(content) ? 'chapter' : 'heading', content, level: 2 });
+      } else if (tag === 'blockquote') {
+        result.push({ id: `s${idx++}`, type: 'quote', content: el.textContent || '' });
+      } else if (tag === 'figure') {
+        const img = el.querySelector('img');
+        if (img) result.push({ id: `s${idx++}`, type: el.getAttribute('data-type') === 'qrcode' ? 'qrcode' : 'image', content: img.getAttribute('alt') || '', imageUrl: img.getAttribute('src') || '' });
+      } else if (tag === 'p') {
+        const content = el.textContent || '';
+        if (content.trim()) result.push({ id: `s${idx++}`, type: 'text', content });
+      }
+    });
+    return result;
+  } catch {
+    return [];
+  }
+}
+
+function formatSaveTime(d: Date): string {
+  const diff = Math.floor((Date.now() - d.getTime()) / 1000);
+  if (diff < 10) return 'just now';
+  if (diff < 60) return `${diff}s ago`;
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
 interface Memory {
@@ -142,9 +186,9 @@ interface Reference {
 }
 
 export default function BookPerfectionSuite() {
-  const { user } = useAuth();
   const { toast } = useToast();
-  const queryClient = useQueryClient();
+  const { project, projects, isSaving: projectIsSaving, lastSaved: projectLastSaved, createProject: createBookProject, updateProject, loadProject } = useBookProject();
+  const hydratedProjectIdRef = useRef<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const attachmentInputRef = useRef<HTMLInputElement>(null);
@@ -160,7 +204,6 @@ export default function BookPerfectionSuite() {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   
   const [generatedImages, setGeneratedImages] = useState<GeneratedImage[]>([]);
   const [imagePrompt, setImagePrompt] = useState("");
@@ -175,7 +218,6 @@ export default function BookPerfectionSuite() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
 
-  const [currentProjectId, setCurrentProjectId] = useState<string | null>(null);
   const [showProjectDialog, setShowProjectDialog] = useState(false);
   const [newProjectName, setNewProjectName] = useState("");
   const [projectTone, setProjectTone] = useState("narrative");
@@ -196,58 +238,35 @@ export default function BookPerfectionSuite() {
   const [consistencyIssues, setConsistencyIssues] = useState<string[]>([]);
   const [isCheckingConsistency, setIsCheckingConsistency] = useState(false);
 
-  const { data: projects } = useQuery({
-    queryKey: ['/api/author-brain/projects'],
-    enabled: !!user,
-  });
-
-  const { data: projectMemories, refetch: refetchMemories } = useQuery({
-    queryKey: ['/api/author-brain/memories', currentProjectId],
-    enabled: !!currentProjectId,
-  });
-
+  // Hydrate local state from DB when project loads/changes
   useEffect(() => {
-    if (projectMemories) {
-      const memories = projectMemories as Memory[];
-      setNotes(memories.filter(m => m.content_type === 'note'));
-      setCharacters(memories.filter(m => m.content_type === 'character'));
-      setResearch(memories.filter(m => m.content_type === 'research'));
+    if (!project || project.id === hydratedProjectIdRef.current) return;
+    hydratedProjectIdRef.current = project.id;
+    setDocumentTitle(project.title || '');
+    if (project.manuscriptHtml) {
+      const parsed = htmlToSections(project.manuscriptHtml);
+      if (parsed.length > 0) { setSections(parsed); setActiveTab('editor'); }
+    } else if (project.manuscriptText) {
+      setDocumentContent(project.manuscriptText);
     }
-  }, [projectMemories]);
+    const ak = project.aiKnowledge;
+    if (ak) {
+      if (ak.issues?.length) setNotes((ak.issues as string[]).map((t, i) => ({ id: `n-${i}`, content_type: 'note', raw_text: t, metadata: {}, created_at: new Date().toISOString() })));
+      if (ak.characters?.length) setCharacters((ak.characters as string[]).map((t, i) => ({ id: `c-${i}`, content_type: 'character', raw_text: t, metadata: {}, created_at: new Date().toISOString() })));
+      if (ak.keyFacts?.length) setResearch((ak.keyFacts as string[]).map((t, i) => ({ id: `r-${i}`, content_type: 'research', raw_text: t, metadata: {}, created_at: new Date().toISOString() })));
+    }
+  }, [project]);
 
-  const createProjectMutation = useMutation({
-    mutationFn: async (data: { projectName: string; globalTone: string }) => {
-      const response = await apiRequest('POST', '/api/author-brain/projects', {
-        projectName: data.projectName,
-        projectType: 'book',
-        globalTone: data.globalTone,
-      });
-      return response.json();
-    },
-    onSuccess: (data: any) => {
-      setCurrentProjectId(data.id);
-      setDocumentTitle(newProjectName);
-      setShowProjectDialog(false);
-      queryClient.invalidateQueries({ queryKey: ['/api/author-brain/projects'] });
-      toast({ title: "Project Created", description: "Your book project has been created." });
-    },
-  });
-
-  const addMemoryMutation = useMutation({
-    mutationFn: async (data: { contentType: string; rawText: string; metadata?: Record<string, any> }) => {
-      const response = await apiRequest('POST', '/api/author-brain/memories', {
-        projectId: currentProjectId,
-        contentType: data.contentType,
-        rawText: data.rawText,
-        metadata: data.metadata || {},
-      });
-      return response.json();
-    },
-    onSuccess: () => {
-      refetchMemories();
-      toast({ title: "Saved", description: "Memory added to your project." });
-    },
-  });
+  // Debounced autosave when sections change (3 s)
+  useEffect(() => {
+    if (!project || hydratedProjectIdRef.current !== project.id || sections.length === 0) return;
+    const timer = setTimeout(() => {
+      const html = sectionsToHtml(sections);
+      const wc = sections.map(s => s.content).join(' ').split(/\s+/).filter(Boolean).length;
+      updateProject({ manuscriptHtml: html, wordCount: wc });
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [sections, project?.id]);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -312,7 +331,9 @@ export default function BookPerfectionSuite() {
         
         toast({
           title: "Document Uploaded",
-          description: `"${file.name}" loaded with ${newSections.length} sections.`
+          description: project
+            ? `"${file.name}" loaded with ${newSections.length} sections. Auto-saving…`
+            : `"${file.name}" loaded. Create a project to save it.`
         });
       };
 
@@ -348,11 +369,12 @@ export default function BookPerfectionSuite() {
         };
         setReferences(prev => [newRef, ...prev]);
         
-        if (currentProjectId) {
-          addMemoryMutation.mutate({
-            contentType: 'research',
-            rawText: `Attachment: ${file.name}\n\n${content.substring(0, 5000)}`,
-            metadata: { fileName: file.name, type: 'attachment' },
+        if (project) {
+          const researchText = `Attachment: ${file.name}\n\n${content.substring(0, 5000)}`;
+          setResearch(prev => {
+            const updated = [...prev, { id: `r-${Date.now()}`, content_type: 'research', raw_text: researchText, metadata: { fileName: file.name }, created_at: new Date().toISOString() }];
+            updateProject({ aiKnowledge: { ...project.aiKnowledge, keyFacts: updated.map(r => r.raw_text) } });
+            return updated;
           });
         }
         
@@ -679,31 +701,16 @@ Be specific and actionable in your suggestions. When the author wants to regener
     toast({ title: "QR Code Inserted" });
   };
 
-  const handleSaveDocument = async () => {
-    setIsSaving(true);
-    
-    try {
-      const documentData = {
-        title: documentTitle || "Untitled Document",
-        content: documentContent,
-        sections: sections,
-        images: generatedImages,
-        projectId: currentProjectId,
-        updatedAt: new Date().toISOString()
-      };
-
-      await fetch('/api/book/save-document', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(documentData)
-      });
-
-      toast({ title: "Document Saved", description: `"${documentTitle || 'Untitled'}" saved successfully.` });
-    } catch (error) {
-      toast({ title: "Saved Locally", description: "Your document has been saved." });
-    } finally {
-      setIsSaving(false);
+  const handleSaveDocument = () => {
+    if (!project) {
+      toast({ title: "No project selected", description: "Create or select a project first.", variant: "destructive" });
+      return;
     }
+    const html = sectionsToHtml(sections);
+    const text = sections.map(s => s.content).join('\n\n');
+    const wc = text.split(/\s+/).filter(Boolean).length;
+    updateProject({ manuscriptHtml: html, manuscriptText: text, wordCount: wc });
+    toast({ title: "Saving…", description: "Your manuscript is being saved." });
   };
 
   const handleExportDocument = () => {
@@ -768,31 +775,34 @@ Be specific and actionable in your suggestions. When the author wants to regener
 
   const addNote = () => {
     if (!newNoteContent.trim()) return;
-    if (currentProjectId) {
-      addMemoryMutation.mutate({ contentType: 'note', rawText: newNoteContent });
-    } else {
-      setNotes(prev => [...prev, { id: `note-${Date.now()}`, content_type: 'note', raw_text: newNoteContent, metadata: {}, created_at: new Date().toISOString() }]);
-    }
+    const entry = { id: `note-${Date.now()}`, content_type: 'note', raw_text: newNoteContent, metadata: {}, created_at: new Date().toISOString() };
+    setNotes(prev => {
+      const updated = [...prev, entry];
+      if (project) updateProject({ aiKnowledge: { ...project.aiKnowledge, issues: updated.map(n => n.raw_text) } });
+      return updated;
+    });
     setNewNoteContent("");
   };
 
   const addCharacter = () => {
     if (!newCharacterContent.trim()) return;
-    if (currentProjectId) {
-      addMemoryMutation.mutate({ contentType: 'character', rawText: newCharacterContent });
-    } else {
-      setCharacters(prev => [...prev, { id: `char-${Date.now()}`, content_type: 'character', raw_text: newCharacterContent, metadata: {}, created_at: new Date().toISOString() }]);
-    }
+    const entry = { id: `char-${Date.now()}`, content_type: 'character', raw_text: newCharacterContent, metadata: {}, created_at: new Date().toISOString() };
+    setCharacters(prev => {
+      const updated = [...prev, entry];
+      if (project) updateProject({ aiKnowledge: { ...project.aiKnowledge, characters: updated.map(c => c.raw_text) } });
+      return updated;
+    });
     setNewCharacterContent("");
   };
 
   const addResearch = () => {
     if (!newResearchContent.trim()) return;
-    if (currentProjectId) {
-      addMemoryMutation.mutate({ contentType: 'research', rawText: newResearchContent });
-    } else {
-      setResearch(prev => [...prev, { id: `research-${Date.now()}`, content_type: 'research', raw_text: newResearchContent, metadata: {}, created_at: new Date().toISOString() }]);
-    }
+    const entry = { id: `research-${Date.now()}`, content_type: 'research', raw_text: newResearchContent, metadata: {}, created_at: new Date().toISOString() };
+    setResearch(prev => {
+      const updated = [...prev, entry];
+      if (project) updateProject({ aiKnowledge: { ...project.aiKnowledge, keyFacts: updated.map(r => r.raw_text) } });
+      return updated;
+    });
     setNewResearchContent("");
   };
 
@@ -811,24 +821,20 @@ Be specific and actionable in your suggestions. When the author wants to regener
               </div>
               
               <div className="flex items-center gap-2 ml-4">
-                {(projects as ProjectContext[] | undefined)?.length ? (
-                  <Select 
-                    value={currentProjectId || ""} 
-                    onValueChange={(id) => {
-                      setCurrentProjectId(id);
-                      const proj = (projects as ProjectContext[]).find(p => p.id === id);
-                      if (proj) setDocumentTitle(proj.project_name);
-                    }}
+                {projects.length > 0 ? (
+                  <Select
+                    value={project ? String(project.id) : ""}
+                    onValueChange={(id) => { hydratedProjectIdRef.current = null; loadProject(Number(id)); }}
                   >
                     <SelectTrigger className="w-[180px] text-sm border-[#C9941A]/30">
                       <SelectValue placeholder="Select Project" />
                     </SelectTrigger>
                     <SelectContent>
-                      {(projects as ProjectContext[]).map((proj) => (
-                        <SelectItem key={proj.id} value={proj.id}>
+                      {projects.map((proj) => (
+                        <SelectItem key={proj.id} value={String(proj.id)}>
                           <div className="flex items-center gap-2">
-                            <Brain className="w-3 h-3 text-[#C9941A]" />
-                            {proj.project_name}
+                            <BookOpen className="w-3 h-3 text-[#C9941A]" />
+                            {proj.title}
                           </div>
                         </SelectItem>
                       ))}
@@ -839,11 +845,20 @@ Be specific and actionable in your suggestions. When the author wants to regener
                   <Plus className="w-4 h-4 mr-1" />
                   New
                 </Button>
-                {currentProjectId && (
-                  <Badge className="bg-[#C9941A]/10 text-[#C9941A] border-[#C9941A]/30">
-                    <Brain className="w-3 h-3 mr-1" />
-                    Synced
-                  </Badge>
+                {project && (
+                  projectIsSaving ? (
+                    <Badge variant="outline" className="text-xs gap-1">
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      Saving…
+                    </Badge>
+                  ) : projectLastSaved ? (
+                    <Badge variant="outline" className="text-xs gap-1 text-green-600 border-green-200">
+                      <Check className="w-3 h-3" />
+                      {formatSaveTime(projectLastSaved)}
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline" className="text-xs text-gray-400">Unsaved</Badge>
+                  )
                 )}
               </div>
             </div>
@@ -857,8 +872,8 @@ Be specific and actionable in your suggestions. When the author wants to regener
                 <Download className="w-4 h-4 mr-2" />
                 Export
               </Button>
-              <Button size="sm" onClick={handleSaveDocument} disabled={isSaving || sections.length === 0} data-testid="button-save">
-                {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+              <Button size="sm" onClick={handleSaveDocument} disabled={projectIsSaving || sections.length === 0} data-testid="button-save">
+                {projectIsSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
                 Save
               </Button>
             </div>
@@ -900,7 +915,16 @@ Be specific and actionable in your suggestions. When the author wants to regener
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowProjectDialog(false)}>Cancel</Button>
-            <Button onClick={() => createProjectMutation.mutate({ projectName: newProjectName, globalTone: projectTone })} disabled={!newProjectName.trim()}>
+            <Button onClick={async () => {
+              try {
+                const proj = await createBookProject({ title: newProjectName || 'Untitled Book', genre: projectTone });
+                setDocumentTitle(proj.title);
+                setShowProjectDialog(false);
+                toast({ title: "Project Created", description: `"${proj.title}" is ready.` });
+              } catch {
+                toast({ title: "Error", description: "Could not create project.", variant: "destructive" });
+              }
+            }} disabled={!newProjectName.trim()}>
               Create Project
             </Button>
           </DialogFooter>
