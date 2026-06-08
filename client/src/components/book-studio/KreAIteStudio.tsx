@@ -794,10 +794,129 @@ export default function KreAIteStudio() {
                   </div>
                 </div>
 
-                {/* Codex Tree */}
+                {/* Codex / Corkboard Content */}
                 <ScrollArea className="flex-1">
-                  <div className="p-2">
-                    {filteredFolders.map((folder) => {
+                  {leftPanelView === 'corkboard' && chapters.length > 0 ? (
+                    <div className="p-3 grid grid-cols-2 gap-2 auto-rows-min">
+                      {chapters.map((ch, idx) => {
+                        const isEditing = corkEditId === `chapter-${idx}`;
+                        return (
+                          <div
+                            key={`cork-${idx}`}
+                            draggable={!isEditing}
+                            onDragStart={() => setCorkDragIdx(idx)}
+                            onDragOver={(e) => { e.preventDefault(); setCorkDragOver(idx); }}
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              if (corkDragIdx !== null && corkDragOver !== null && corkDragIdx !== corkDragOver) {
+                                const next = [...chapters];
+                                const [moved] = next.splice(corkDragIdx, 1);
+                                next.splice(corkDragOver, 0, moved);
+                                setBookOutline({
+                                  ...(bookOutline || { title: '', subtitle: '', genre: 'memoir', chapters: [], targetWordCount: 0 }),
+                                  chapters: next,
+                                });
+                                setCorkDragIdx(null);
+                                setCorkDragOver(null);
+                              }
+                            }}
+                            onClick={() => setActiveTabId(`chapter-${idx}`)}
+                            data-testid={`cork-card-${idx}`}
+                            className={cn(
+                              "rounded-lg border p-2.5 cursor-pointer select-none transition-colors",
+                              isDark
+                                ? "bg-stone-800/40 border-stone-700/50 hover:bg-stone-800/70"
+                                : "bg-white border-stone-200 hover:bg-stone-50",
+                              activeTabId === `chapter-${idx}` && (isDark ? "ring-1 ring-amber-500/40" : "ring-1 ring-amber-400/40")
+                            )}
+                          >
+                            {isEditing ? (
+                              <Input
+                                value={corkEditValue}
+                                onChange={(e) => setCorkEditValue(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    const next = [...chapters];
+                                    next[idx] = { ...next[idx], [corkEditField]: corkEditValue };
+                                    setBookOutline({
+                                      ...(bookOutline || { title: '', subtitle: '', genre: 'memoir', chapters: [], targetWordCount: 0 }),
+                                      chapters: next,
+                                    });
+                                    setCorkEditId(null);
+                                  } else if (e.key === 'Escape') {
+                                    setCorkEditId(null);
+                                  }
+                                }}
+                                onBlur={() => {
+                                  const next = [...chapters];
+                                  next[idx] = { ...next[idx], [corkEditField]: corkEditValue };
+                                  setBookOutline({
+                                    ...(bookOutline || { title: '', subtitle: '', genre: 'memoir', chapters: [], targetWordCount: 0 }),
+                                    chapters: next,
+                                  });
+                                  setCorkEditId(null);
+                                }}
+                                autoFocus
+                                className={cn(
+                                  "h-6 text-[10px] px-1.5 rounded",
+                                  isDark
+                                    ? "bg-stone-900 border-stone-700 text-stone-200"
+                                    : "bg-white border-stone-300"
+                                )}
+                              />
+                            ) : (
+                              <>
+                                <div className="flex items-center justify-between mb-1">
+                                  <span className={cn(
+                                    "text-[10px] font-semibold uppercase tracking-wider",
+                                    isDark ? "text-stone-500" : "text-stone-400"
+                                  )}>
+                                    Ch {ch.number || idx + 1}
+                                  </span>
+                                  <span className={cn(
+                                    "text-[9px]",
+                                    isDark ? "text-stone-600" : "text-stone-400"
+                                  )}>
+                                    {(ch.wordCount || 0).toLocaleString()}w
+                                  </span>
+                                </div>
+                                <p
+                                  className={cn(
+                                    "text-[11px] font-medium leading-snug mb-1",
+                                    isDark ? "text-stone-300" : "text-stone-700"
+                                  )}
+                                  onDoubleClick={(e) => {
+                                    e.stopPropagation();
+                                    setCorkEditId(`chapter-${idx}`);
+                                    setCorkEditField('title');
+                                    setCorkEditValue(ch.title || '');
+                                  }}
+                                >
+                                  {ch.title || `Chapter ${idx + 1}`}
+                                </p>
+                                <p
+                                  className={cn(
+                                    "text-[9px] leading-snug",
+                                    isDark ? "text-stone-500" : "text-stone-500"
+                                  )}
+                                  onDoubleClick={(e) => {
+                                    e.stopPropagation();
+                                    setCorkEditId(`chapter-${idx}`);
+                                    setCorkEditField('description');
+                                    setCorkEditValue(ch.description || '');
+                                  }}
+                                >
+                                  {ch.description || 'No description'}
+                                </p>
+                              </>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="p-2">
+                      {filteredFolders.map((folder) => {
                       const isExpanded = expandedFolders.has(folder.id);
                       const FolderIcon = folder.icon;
                       
