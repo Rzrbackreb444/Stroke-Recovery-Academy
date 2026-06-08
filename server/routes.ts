@@ -15007,6 +15007,38 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   });
 
   // ───────────────────────────────────────────────────────────────────────
+  // IN-PLATFORM READER — TOC + per-chapter content (ownership-gated).
+  // ───────────────────────────────────────────────────────────────────────
+  app.get('/api/book/toc', async (_req, res) => {
+    try {
+      const { getToc } = await import('./lib/bookParser');
+      res.json(getToc().map(({ id, title, type, partLabel, chapterNum }) =>
+        ({ id, title, type, partLabel, chapterNum })
+      ));
+    } catch (e: any) {
+      res.status(500).json({ message: 'Failed to parse TOC' });
+    }
+  });
+
+  app.get('/api/book/chapter/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const customerId = req.user.claims.sub;
+      const { storage: st } = await import('./storage');
+      const orders = await st.getCustomerOrders(customerId);
+      const paid = new Set(['paid', 'processing', 'shipped', 'delivered']);
+      const owns = orders.some(o => paid.has(o.status as string));
+      if (!owns) return res.status(403).json({ message: 'Not authorised' });
+      const { getChapter } = await import('./lib/bookParser');
+      const result = getChapter(req.params.id);
+      if (!result) return res.status(404).json({ message: 'Chapter not found' });
+      res.json({ id: result.entry.id, title: result.entry.title, markdown: result.markdown });
+    } catch (e: any) {
+      console.error('book chapter error', e);
+      res.status(500).json({ message: 'Failed to load chapter' });
+    }
+  });
+
+  // ───────────────────────────────────────────────────────────────────────
   // SECURE DIGITAL DOWNLOAD — gated by order ownership + expiry. Streams the
   // book PDF from disk (NEVER served from /public, which would be unauthenticated).
   // The edition's downloadUrl uses a "secure://book/full.pdf" sentinel that maps

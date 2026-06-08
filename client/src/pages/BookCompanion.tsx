@@ -1,159 +1,164 @@
 import { useEffect } from "react";
 import { Link } from "wouter";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import GlobalHeader from "@/components/GlobalHeader";
+import Footer from "@/components/Footer";
 import RecoverySEO from "@/components/RecoverySEO";
 import {
-  BookOpen, Headphones, Users, Calendar, Compass, Stethoscope,
-  Brain, Hand, Footprints, MessageCircle, Heart, Target,
-  ListChecks, FileText, GraduationCap, Quote, Wrench, Library,
-  Activity, Zap, Shield, ArrowRight, Mail
+  BookOpen, Headphones, Users, Calendar, MessageCircle, Heart,
+  Shield, ArrowRight, BookMarked, Mic, Radio, Dumbbell,
+  Brain, FlaskConical, FileText, Stethoscope, HelpCircle
 } from "lucide-react";
 
-type ResourceLink = {
-  slug: string;
-  label: string;
-  description: string;
-  href: string;
-  external?: boolean;
-};
+// ─── Data ─────────────────────────────────────────────────────────────────────
 
-type Section = {
-  id: string;
-  title: string;
-  blurb: string;
-  links: ResourceLink[];
-};
-
-const QUICK_ACTIONS: ResourceLink[] = [
-  { slug: "read", label: "Read the Book", description: "Open your purchased copy", href: "/book/read" },
-  { slug: "buy", label: "Buy the Book", description: "Digital PDF or print paperback", href: "/book/buy" },
-  { slug: "workbook", label: "Companion Workbook", description: "Chapter prompts + drill logs", href: "/recovery/journal" },
-  { slug: "tracker", label: "90-Day Tracker", description: "Daily breakthrough check-in", href: "/recovery/today" },
-  { slug: "90day", label: "90-Day Program", description: "Three-phase daily protocol", href: "/recovery/circuit" },
-  { slug: "tribe", label: "The Tribe", description: "Survivor community", href: "/recovery/community" },
-  { slug: "soundtrack", label: "Hostile Construction", description: "12-track recovery album", href: "/hostile-construction" },
-  { slug: "officehours", label: "Office Hours", description: "Live Q&A with Nick", href: "/recovery/community" },
-  { slug: "coach", label: "Sasquatch Coach", description: "AI coach trained on the book", href: "/recovery/coach" },
-  { slug: "anchor", label: "Today's Anchor", description: "Daily mindset anchor", href: "/recovery/anchor/today" },
+const QUICK_LINKS = [
+  { label: "Read the Book",        sub: "In-platform reader",          href: "/book/read",              icon: BookMarked },
+  { label: "Buy the Book",         sub: "Digital $19 · Print $29",     href: "/book/buy",               icon: BookOpen },
+  { label: "Companion Workbook",   sub: "Chapter prompts + drill logs", href: "/recovery/journal",       icon: FileText },
+  { label: "90-Day Tracker",       sub: "Daily breakthrough check-in",  href: "/recovery/today",         icon: Calendar },
+  { label: "90-Day Program",       sub: "Three-phase daily protocol",   href: "/recovery/circuit",       icon: Dumbbell },
+  { label: "The Tribe",            sub: "Survivor community",           href: "/recovery/community",     icon: Users },
+  { label: "Hostile Construction", sub: "12-track recovery album",      href: "/hostile-construction",   icon: Headphones },
+  { label: "Sasquatch Coach",      sub: "AI coach trained on the book", href: "/recovery/coach",         icon: MessageCircle },
+  { label: "Today's Anchor",       sub: "Daily mindset anchor",         href: "/recovery/anchor/today",  icon: Brain },
+  { label: "Sasquatch Radio",      sub: "24/7 stream",                  href: "/recovery/radio",         icon: Radio },
 ];
+
+type ResourceLink = { label: string; description: string; href: string };
+type Section = { id: string; title: string; chapter: string; blurb: string; icon: any; links: ResourceLink[] };
 
 const SECTIONS: Section[] = [
   {
     id: "protocols",
-    title: "The Drills (Appendix B + Chapters 11–19)",
-    blurb: "Every protocol referenced in the book — with video demos in the academy library.",
+    title: "The Drills",
+    chapter: "Appendix B + Chapters 11–19",
+    blurb: "Every protocol in the book, with video demos in the academy library.",
+    icon: Dumbbell,
     links: [
-      { slug: "think", label: "Think → Twitch → Move", description: "Ch 11 — the core neuroplasticity progression", href: "/recovery/protocols#think" },
-      { slug: "bat", label: "Baseball Bat Therapy", description: "Ch 12 — the bilateral swing protocol", href: "/recovery/protocols#bat" },
-      { slug: "weight-bearing", label: "Weight Bearing & Negative Pressure", description: "Ch 13 — load the limb", href: "/recovery/protocols#weight-bearing" },
-      { slug: "mirror", label: "Mirror Therapy", description: "Ch 14 — the brain's optical illusion", href: "/recovery/protocols#mirror" },
-      { slug: "dropfoot", label: "Drop Foot Destruction", description: "Ch 15 — toe-up rebuild", href: "/recovery/protocols#dropfoot" },
-      { slug: "hand", label: "Arm & Hand Recovery", description: "Ch 16 — dead weight to dynamic power", href: "/recovery/protocols#hand" },
-      { slug: "speech", label: "Speech Comeback", description: "Ch 17 — finding your voice again", href: "/recovery/protocols#speech" },
-      { slug: "open-hand", label: "Open Hand Protocol", description: "Ch 19 — beat spasticity before it wins", href: "/recovery/protocols#open-hand" },
-      { slug: "chopwood", label: "Chopping Wood (Builder's Science)", description: "Sidebar — the daily metaphor", href: "/recovery/protocols#chopwood" },
-      { slug: "sasch", label: "S.A.S.C.H. Daily Rhythm", description: "Appendix I — Seize / Absorb / Swing / Combine / Hammer", href: "/recovery/protocols#sasch" },
-      { slug: "print", label: "Printable Protocol Cards", description: "Wallet-card size for clinic + home", href: "/recovery/resources" },
+      { label: "Think → Twitch → Move",             description: "Ch 11 — the core neuroplasticity progression",    href: "/recovery/protocols#think" },
+      { label: "Baseball Bat Therapy",               description: "Ch 12 — the bilateral swing protocol",            href: "/recovery/protocols#bat" },
+      { label: "Weight Bearing & Negative Pressure", description: "Ch 13 — load the limb",                          href: "/recovery/protocols#weight-bearing" },
+      { label: "Mirror Therapy",                     description: "Ch 14 — the brain's optical illusion",            href: "/recovery/protocols#mirror" },
+      { label: "Drop Foot Destruction",              description: "Ch 15 — toe-up rebuild",                          href: "/recovery/protocols#dropfoot" },
+      { label: "Arm & Hand Recovery",                description: "Ch 16 — dead weight to dynamic power",            href: "/recovery/protocols#hand" },
+      { label: "Speech Comeback",                    description: "Ch 17 — finding your voice again",                href: "/recovery/protocols#speech" },
+      { label: "Open Hand Protocol",                 description: "Ch 19 — beat spasticity before it wins",          href: "/recovery/protocols#open-hand" },
+      { label: "S.A.S.C.H. Daily Rhythm",            description: "Appendix I — Seize/Absorb/Swing/Combine/Hammer",  href: "/recovery/protocols#sasch" },
+      { label: "Printable Protocol Cards",           description: "Wallet-card size for clinic + home",              href: "/recovery/resources" },
     ],
   },
   {
     id: "mindset",
-    title: "Mindset & Doctrine (Chapters 20½ / 22½ / 29½ + Appendices I/J/U)",
+    title: "Mindset & Doctrine",
+    chapter: "Ch 20½ · 22½ · 29½ + App. I/J/U",
     blurb: "The four-layer Sasquatch operating system.",
+    icon: Brain,
     links: [
-      { slug: "doctrine", label: "The Sasquatch Doctrine OS", description: "Appendix I — daily operating card", href: "/recovery/sasch" },
-      { slug: "persona", label: "The Persona Forge", description: "Ch 20½ — build the version of you that survives", href: "/recovery/forge" },
-      { slug: "plateau", label: "The Plateau Wars", description: "Ch 22 — five mutations to break the wall", href: "/recovery/protocols#plateau" },
-      { slug: "100lines", label: "The Sasquatch in 100 Lines", description: "Appendix U — pull-quote library", href: "/recovery/resources#quotes" },
-      { slug: "letters", label: "Letters to the Old Me", description: "Appendix O — write yours", href: "/recovery/journal#letters" },
-      { slug: "anchor-today", label: "Today's Anchor", description: "Daily one-line anchor", href: "/recovery/anchor/today" },
+      { label: "The Sasquatch Doctrine OS",    description: "Appendix I — daily operating card",                  href: "/recovery/sasch" },
+      { label: "The Persona Forge",            description: "Ch 20½ — build the version of you that survives",   href: "/recovery/forge" },
+      { label: "The Plateau Wars",             description: "Ch 22 — five mutations to break the wall",           href: "/recovery/protocols#plateau" },
+      { label: "The Sasquatch in 100 Lines",   description: "Appendix U — pull-quote library",                    href: "/recovery/resources#quotes" },
+      { label: "Letters to the Old Me",        description: "Appendix O — write yours",                           href: "/recovery/journal#letters" },
+      { label: "Today's Anchor",               description: "Daily one-line anchor",                              href: "/recovery/anchor/today" },
     ],
   },
   {
     id: "tribe-stories",
-    title: "Stories from the Tribe (Part VII)",
-    blurb: "Nine survivor case studies — not testimonials. The patterns prove the spine holds weight.",
+    title: "Stories from the Tribe",
+    chapter: "Part VII",
+    blurb: "Nine survivor case studies. Not testimonials — the patterns prove the spine holds weight.",
+    icon: Users,
     links: [
-      { slug: "tribe-feed", label: "The Tribe", description: "Survivor community feed", href: "/recovery/community" },
-      { slug: "spotlight", label: "Spotlight Stories", description: "Featured survivor profiles", href: "/recovery/spotlight" },
-      { slug: "youngsurvivor", label: "Young Survivor Track", description: "Under-25 cohort (Jordan's story, AVM, athletes)", href: "/recovery/community" },
-      { slug: "circles", label: "Recovery Circles", description: "Small-group accountability", href: "/recovery/circles" },
-      { slug: "buddy", label: "Recovery Buddy", description: "1:1 survivor pairings", href: "/recovery/buddy" },
-    ],
-  },
-  {
-    id: "fuel",
-    title: "Fuel & Gear (Appendix C + D + Chapter 19)",
-    blurb: "Nutrition, sleep, equipment — the recovery infrastructure.",
-    links: [
-      { slug: "nutrition", label: "Nutrition for Brain Recovery", description: "MIND diet + supplements + sample day", href: "/recovery/resources#nutrition" },
-      { slug: "gear", label: "Technology & Equipment Guide", description: "Bioness, splints, mirrors, e-stim — what earns its spot", href: "/recovery/store" },
-      { slug: "combos", label: "Combo Protocols", description: "Drill-stack combinations that compound", href: "/recovery/protocols#combos" },
-      { slug: "posters", label: "Printable Posters", description: "Wall-mount the doctrine", href: "/recovery/resources#posters" },
-      { slug: "walletcard", label: "FAST/BE-FAST Wallet Card", description: "Appendix A — emergency stroke recognition", href: "/recovery/resources#walletcard" },
-      { slug: "risk", label: "Stroke Risk Self-Assessment", description: "Appendix A — risk factor checklist", href: "/recovery/quiz" },
+      { label: "The Tribe",          description: "Survivor community feed",             href: "/recovery/community" },
+      { label: "Spotlight Stories",  description: "Featured survivor profiles",          href: "/recovery/spotlight" },
+      { label: "Recovery Circles",   description: "Small-group accountability",          href: "/recovery/circles" },
+      { label: "Recovery Buddy",     description: "1:1 survivor pairings",               href: "/recovery/buddy" },
     ],
   },
   {
     id: "structure",
-    title: "Structure & Programs (Appendix G + Chapter 9)",
+    title: "Structure & Programs",
+    chapter: "Appendix G + Chapter 9",
     blurb: "The 90-day breakthrough scaffold.",
+    icon: Calendar,
     links: [
-      { slug: "90day-program", label: "90-Day Breakthrough Program", description: "Appendix G — three phases, daily template", href: "/recovery/circuit" },
-      { slug: "tracker-daily", label: "Daily Tracker", description: "Check-ins, reps logged, anchors set", href: "/recovery/today" },
-      { slug: "math", label: "The Recovery Math", description: "Appendix P — five levers, worked examples", href: "/recovery/resources#math" },
-      { slug: "desert", label: "The First Year Desert", description: "Appendix Q — what nobody warns you about", href: "/recovery/resources#desert" },
-      { slug: "questions", label: "40 Questions for Your Care Team", description: "Appendix S — clinic-ready printable", href: "/recovery/resources#questions" },
-      { slug: "rights", label: "Survivor's Bill of Rights", description: "Appendix T", href: "/recovery/resources#rights" },
+      { label: "90-Day Breakthrough Program",    description: "Appendix G — three phases, daily template",          href: "/recovery/circuit" },
+      { label: "Daily Tracker",                  description: "Check-ins, reps logged, anchors set",                href: "/recovery/today" },
+      { label: "The Recovery Math",              description: "Appendix P — five levers, worked examples",          href: "/recovery/resources#math" },
+      { label: "The First Year Desert",          description: "Appendix Q — what nobody warns you about",           href: "/recovery/resources#desert" },
+      { label: "40 Questions for Your Care Team",description: "Appendix S — clinic-ready printable",                href: "/recovery/resources#questions" },
+      { label: "Survivor's Bill of Rights",      description: "Appendix T",                                         href: "/recovery/resources#rights" },
+    ],
+  },
+  {
+    id: "fuel",
+    title: "Fuel & Gear",
+    chapter: "Appendix C + D + Chapter 19",
+    blurb: "Nutrition, sleep, equipment — the recovery infrastructure.",
+    icon: FlaskConical,
+    links: [
+      { label: "Nutrition for Brain Recovery",    description: "MIND diet + supplements + sample day",             href: "/recovery/resources#nutrition" },
+      { label: "Technology & Equipment Guide",    description: "Bioness, splints, mirrors, e-stim",                href: "/recovery/store" },
+      { label: "FAST/BE-FAST Wallet Card",        description: "Appendix A — emergency stroke recognition",        href: "/recovery/resources#walletcard" },
+      { label: "Stroke Risk Self-Assessment",     description: "Appendix A — risk factor checklist",              href: "/recovery/quiz" },
     ],
   },
   {
     id: "clinicians",
-    title: "For Clinicians & Care Teams (Appendix L)",
-    blurb: "Therapist-facing resources, the CEU course, and the clinical quick-sheet.",
+    title: "For Clinicians & Care Teams",
+    chapter: "Appendix L",
+    blurb: "Therapist-facing resources, CEU course, and the clinical quick-sheet.",
+    icon: Stethoscope,
     links: [
-      { slug: "clinicians-home", label: "Clinician Hub", description: "Appendix L — for therapists and care teams", href: "/recovery/therapist" },
-      { slug: "ceu", label: "CEU Course", description: "Continuing-education credit on the Sasquatch method", href: "/recovery/university" },
-      { slug: "quicksheet", label: "Clinical Quick-Sheet", description: "One-pager for the chart binder", href: "/recovery/resources#quicksheet" },
-      { slug: "therapist-marketplace", label: "Find a Sasquatch-Aligned Therapist", description: "Vetted directory", href: "/recovery/center-finder" },
+      { label: "Clinician Hub",                        description: "Appendix L — for therapists and care teams",   href: "/recovery/therapist" },
+      { label: "CEU Course",                           description: "Continuing-education on the Sasquatch method", href: "/recovery/university" },
+      { label: "Clinical Quick-Sheet",                 description: "One-pager for the chart binder",               href: "/recovery/resources#quicksheet" },
+      { label: "Find a Sasquatch-Aligned Therapist",  description: "Vetted directory",                              href: "/recovery/center-finder" },
     ],
   },
   {
     id: "science",
-    title: "Science & References (Appendix H + Builder's Science Sidebars)",
+    title: "Science & References",
+    chapter: "Appendix H + Builder's Science Sidebars",
     blurb: "Every claim, every citation, the corrections inbox.",
+    icon: FlaskConical,
     links: [
-      { slug: "science-home", label: "Science Reference Index", description: "Appendix H — APA-7 citations by topic", href: "/recovery/resources#science" },
-      { slug: "science-corrections", label: "Corrections Inbox", description: "Spotted an error? Tell us.", href: "/recovery/resources#corrections" },
-      { slug: "glossary", label: "Stroke Recovery Glossary", description: "Appendix M — every term explained", href: "/recovery/resources#glossary" },
-      { slug: "reading", label: "Recommended Reading", description: "Appendix N — books, podcasts, film, album", href: "/recovery/resources#reading" },
+      { label: "Science Reference Index",  description: "Appendix H — APA-7 citations by topic",   href: "/recovery/resources#science" },
+      { label: "Stroke Recovery Glossary", description: "Appendix M — every term explained",        href: "/recovery/resources#glossary" },
+      { label: "Recommended Reading",      description: "Appendix N — books, podcasts, film",       href: "/recovery/resources#reading" },
+      { label: "Corrections Inbox",        description: "Spotted an error? Tell us.",               href: "/recovery/resources#corrections" },
     ],
   },
   {
     id: "caregivers",
-    title: "For Caregivers (Chapter 28 + Appendix R)",
+    title: "For Caregivers",
+    chapter: "Chapter 28 + Appendix R",
     blurb: "The field manual for the people doing the second-hardest job in the room.",
+    icon: Heart,
     links: [
-      { slug: "caregiver-manual", label: "Caregiver's Field Manual", description: "Ch 28 — the full chapter, online", href: "/recovery/resources#caregiver" },
-      { slug: "bereaved", label: "For the Caregiver Whose Survivor Did Not Make It", description: "Appendix R", href: "/recovery/resources#bereaved" },
-      { slug: "caregiver-settings", label: "Caregiver Account Access", description: "Add a caregiver to your dashboard", href: "/settings/caregivers" },
+      { label: "Caregiver's Field Manual",                          description: "Ch 28 — the full chapter, online",            href: "/recovery/resources#caregiver" },
+      { label: "For the Caregiver Whose Survivor Didn't Make It",  description: "Appendix R",                                   href: "/recovery/resources#bereaved" },
+      { label: "Caregiver Account Access",                         description: "Add a caregiver to your dashboard",            href: "/settings/caregivers" },
     ],
   },
   {
-    id: "soundtrack-album",
-    title: "The Soundtrack — Hostile Construction",
+    id: "soundtrack",
+    title: "The Soundtrack",
+    chapter: "Hostile Construction",
     blurb: "Twelve tracks. The album that scores the book chapter by chapter.",
+    icon: Headphones,
     links: [
-      { slug: "album-home", label: "Hostile Construction (full album)", description: "Stream + Track Sync notes", href: "/hostile-construction" },
-      { slug: "podcast", label: "The Sasquatch Podcast", description: "Behind the book, behind the album", href: "/recovery/community" },
-      { slug: "radio", label: "Sasquatch Radio", description: "24/7 stream", href: "/recovery/radio" },
-      { slug: "anthem", label: "Build Your Recovery Anthem", description: "Custom track for your story", href: "/recovery/anthem" },
+      { label: "Hostile Construction (full album)",  description: "Stream + Track Sync notes",         href: "/hostile-construction" },
+      { label: "Build Your Recovery Anthem",         description: "Custom track for your story",       href: "/recovery/anthem" },
+      { label: "Sasquatch Podcast",                  description: "Behind the book, behind the album", href: "/recovery/community" },
+      { label: "Sasquatch Radio",                    description: "24/7 stream",                       href: "/recovery/radio" },
     ],
   },
 ];
+
+// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function BookCompanion() {
   useEffect(() => {
@@ -166,10 +171,10 @@ export default function BookCompanion() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background" data-testid="page-book-companion">
+    <div className="min-h-screen bg-background flex flex-col" data-testid="page-book-companion">
       <RecoverySEO
-        title="The Ultimate Stroke Recovery Revolution — Book Companion"
-        description="Every protocol, every appendix, every resource referenced in Nick Kremers' stroke recovery book — wired live into the Stroke Recovery Academy. 314 pages, 30 chapters, 17 appendices, 9 case studies."
+        title="Book Companion — The Ultimate Stroke Recovery Revolution"
+        description="Every protocol, appendix, and resource from Nick Kremers' stroke recovery book — wired live into the Stroke Recovery Academy. 314 pages, 30 chapters, 17 appendices, 9 case studies."
         canonical="/book"
         keywords={[
           "stroke recovery book companion",
@@ -178,172 +183,178 @@ export default function BookCompanion() {
           "stroke survivor manual",
           "90-day recovery program",
           "neuroplasticity exercises",
-          "Stroke Recovery Academy book",
         ]}
         breadcrumbs={[
           { name: "Recovery", url: "/recovery" },
           { name: "Book", url: "/book" },
         ]}
-        speakableSelectors={[
-          "[data-testid='text-book-title']",
-          "[data-testid='text-book-subtitle']",
-        ]}
         faq={[
-          {
-            question: "What is The Ultimate Stroke Recovery Revolution?",
-            answer:
-              "A 314-page survivor-built recovery manual by Nick Kremers covering 30 chapters, 17 appendices, 9 case studies, and a full 90-day breakthrough program for stroke survivors and caregivers.",
-          },
-          {
-            question: "Where can I buy it?",
-            answer:
-              "Digital PDF ($19) and 6×9 print paperback ($29) are available at strokerecoveryacademy.com/book/buy. Print orders ship in 5-10 days via Lulu print-on-demand.",
-          },
-          {
-            question: "Does the book replace medical care?",
-            answer:
-              "No. The book is informational and built from one survivor's lived experience. Always consult your healthcare provider before beginning any rehabilitation program.",
-          },
+          { question: "What is The Ultimate Stroke Recovery Revolution?", answer: "A 314-page survivor-built recovery manual by Nick Kremers covering 30 chapters, 17 appendices, 9 case studies, and a full 90-day breakthrough program." },
+          { question: "Where can I buy it?", answer: "Digital PDF ($19) and 6×9 print paperback ($29) at strokerecoveryacademy.com/book/buy." },
+          { question: "Does the book replace medical care?", answer: "No. It is informational and built from one survivor's lived experience. Always consult your healthcare provider." },
         ]}
-        additionalSchema={{
-          "@context": "https://schema.org",
-          "@type": "Book",
-          "@id": "https://strokerecoveryacademy.com/book#book",
-          name: "The Ultimate Stroke Recovery Revolution",
-          headline: "From 0 to 90 — A No-BS Battle Manual by Nick Kremers",
-          description:
-            "Battle-tested 314-page stroke recovery manual covering 30 chapters, 17 appendices, 9 case studies, and a full 90-day breakthrough program.",
-          image: "https://strokerecoveryacademy.com/book/cover.jpg",
-          url: "https://strokerecoveryacademy.com/book",
-          bookFormat: "https://schema.org/Paperback",
-          inLanguage: "en-US",
-          numberOfPages: 314,
-          datePublished: "2026",
-          author: {
-            "@type": "Person",
-            name: "Nick Kremers",
-            url: "https://strokerecoveryacademy.com/recovery/about-nick",
-          },
-          publisher: {
-            "@type": "Organization",
-            name: "Stroke Recovery Academy",
-            url: "https://strokerecoveryacademy.com",
-          },
-          about: [
-            { "@type": "MedicalCondition", name: "Stroke" },
-            { "@type": "Thing", name: "Neuroplasticity" },
-          ],
-          potentialAction: {
-            "@type": "BuyAction",
-            target: "https://strokerecoveryacademy.com/book/buy",
-          },
-        }}
       />
 
-      <section className="border-b bg-gradient-to-b from-card to-background">
-        <div className="container mx-auto max-w-5xl px-4 py-12 md:py-16">
-          <Badge variant="secondary" className="mb-4" data-testid="badge-companion">Book Companion</Badge>
-          <h1 className="text-3xl md:text-5xl font-bold tracking-tight mb-3" data-testid="text-book-title">
-            THE ULTIMATE STROKE RECOVERY REVOLUTION
-          </h1>
-          <p className="text-base md:text-lg text-muted-foreground mb-2" data-testid="text-book-subtitle">
-            From 0 to 90 — A No-BS Battle Manual by Nick Kremers
+      <GlobalHeader />
+
+      {/* ── Hero ────────────────────────────────────────────────── */}
+      <section className="border-b border-border/50 bg-card/30">
+        <div className="container mx-auto px-4 py-12 md:py-20 max-w-6xl">
+          <p className="text-xs tracking-widest uppercase text-muted-foreground font-medium mb-5">
+            Stroke Lyfe Publishing · 2026 · Companion Index
           </p>
-          <p className="text-sm text-muted-foreground italic mb-6" data-testid="text-tagline">
-            Heart's still thumpin'. Reps still rep.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <Button asChild size="lg" data-testid="button-start-90day">
-              <Link href="/recovery/circuit">
-                <Calendar className="mr-2 h-4 w-4" />
-                Start the 90-Day Program
-              </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" data-testid="button-meet-coach">
-              <Link href="/recovery/coach">
-                <MessageCircle className="mr-2 h-4 w-4" />
-                Talk to the Sasquatch Coach
-              </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" data-testid="button-join-tribe">
-              <Link href="/recovery/community">
-                <Users className="mr-2 h-4 w-4" />
-                Join the Tribe
-              </Link>
-            </Button>
+          <div className="grid md:grid-cols-[1fr_auto] gap-8 items-end">
+            <div>
+              <h1
+                className="text-4xl md:text-5xl font-bold tracking-tight leading-[1.08] mb-3"
+                style={{ fontFamily: "var(--font-serif)" }}
+                data-testid="text-book-title"
+              >
+                The Ultimate Stroke Recovery Revolution
+              </h1>
+              <p className="text-lg text-muted-foreground leading-relaxed max-w-xl" data-testid="text-book-subtitle">
+                Every URL in the book lives here. Every protocol, appendix, and resource wired live into the platform.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row md:flex-col gap-3 shrink-0">
+              <Button asChild size="lg" className="gap-2 bg-amber-600 hover:bg-amber-700 text-white" data-testid="button-read">
+                <Link href="/book/read">
+                  <BookMarked className="w-4 h-4" />
+                  Read the book
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" data-testid="button-buy">
+                <Link href="/book/buy">
+                  <BookOpen className="w-4 h-4 mr-2" />
+                  Buy — $19 / $29
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="container mx-auto max-w-5xl px-4 py-10">
-        <h2 className="text-xl font-semibold mb-4" data-testid="text-quick-actions-heading">Quick Actions</h2>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {QUICK_ACTIONS.map((q) => (
-            <Card key={q.slug} className="p-4 hover-elevate" data-testid={`card-quick-${q.slug}`}>
-              <Link href={q.href} className="block">
-                <div className="font-semibold mb-1">{q.label}</div>
-                <div className="text-xs text-muted-foreground">{q.description}</div>
-              </Link>
-            </Card>
+      {/* ── Quick links ──────────────────────────────────────────── */}
+      <section className="container mx-auto px-4 py-10 max-w-6xl">
+        <p className="text-xs tracking-widest uppercase text-muted-foreground font-medium mb-6">
+          Quick access
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-px bg-border/40 rounded-sm overflow-hidden border border-border/40">
+          {QUICK_LINKS.map(({ label, sub, href, icon: Icon }) => (
+            <Link
+              key={label}
+              href={href}
+              className="flex flex-col gap-1.5 px-4 py-4 bg-background hover:bg-card/80 transition-colors group"
+              data-testid={`quick-link-${label.toLowerCase().replace(/\s+/g, "-")}`}
+            >
+              <Icon className="w-4 h-4 text-amber-500 mb-0.5" />
+              <span className="text-sm font-medium leading-snug group-hover:text-amber-400 transition-colors">{label}</span>
+              <span className="text-xs text-muted-foreground leading-snug">{sub}</span>
+            </Link>
           ))}
         </div>
       </section>
 
-      <section className="container mx-auto max-w-5xl px-4 pb-16 space-y-10">
-        <div>
-          <h2 className="text-2xl font-bold mb-2" data-testid="text-toc-heading">Resource Index</h2>
-          <p className="text-sm text-muted-foreground">
-            Every URL printed in the book lives here. Bookmark this page — it is the master index.
-          </p>
-        </div>
+      {/* ── Section divider ─────────────────────────────────────── */}
+      <div className="container mx-auto px-4 max-w-6xl">
+        <Separator className="opacity-40" />
+      </div>
 
-        {SECTIONS.map((section) => (
-          <Card key={section.id} id={section.id} className="p-6 scroll-mt-20" data-testid={`section-${section.id}`}>
-            <h3 className="text-xl font-semibold mb-1" data-testid={`heading-${section.id}`}>{section.title}</h3>
-            <p className="text-sm text-muted-foreground mb-5">{section.blurb}</p>
-            <Separator className="mb-5" />
-            <div className="grid gap-3 sm:grid-cols-2">
-              {section.links.map((link) => (
-                <Link
-                  key={link.slug}
-                  href={link.href}
-                  className="block rounded-md border p-3 hover-elevate"
-                  data-testid={`link-${section.id}-${link.slug}`}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1">
-                      <div className="font-semibold text-sm">{link.label}</div>
-                      <div className="text-xs text-muted-foreground mt-1">{link.description}</div>
-                    </div>
-                    <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0 mt-1" />
+      {/* ── Resource index ──────────────────────────────────────── */}
+      <section className="container mx-auto px-4 py-10 max-w-6xl">
+        <p className="text-xs tracking-widest uppercase text-muted-foreground font-medium mb-8">
+          Resource index
+        </p>
+
+        <div className="space-y-0 divide-y divide-border/40">
+          {SECTIONS.map((section) => {
+            const Icon = section.icon;
+            return (
+              <div
+                key={section.id}
+                id={section.id}
+                className="py-8 scroll-mt-20 grid md:grid-cols-[260px_1fr] gap-6 md:gap-12"
+                data-testid={`section-${section.id}`}
+              >
+                {/* Left label */}
+                <div className="shrink-0">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <Icon className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                    <h2
+                      className="text-base font-semibold"
+                      data-testid={`heading-${section.id}`}
+                    >
+                      {section.title}
+                    </h2>
                   </div>
-                </Link>
-              ))}
-            </div>
-          </Card>
-        ))}
+                  <p className="text-xs text-muted-foreground leading-relaxed mb-2">
+                    {section.chapter}
+                  </p>
+                  <p className="text-xs text-foreground/60 leading-relaxed">
+                    {section.blurb}
+                  </p>
+                </div>
 
-        <Card className="p-6 bg-card" data-testid="section-foundation">
-          <h3 className="text-xl font-semibold mb-2">Stroke Lyfe Inc. — the 501(c)(3)</h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            Stroke Recovery Academy is the platform. Stroke Lyfe Inc. is the nonprofit that funds free access for survivors who cannot pay.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <Button asChild variant="outline" data-testid="button-strokelyfe">
-              <a href="https://strokelyfe.org/donate" target="_blank" rel="noopener noreferrer">
-                <Heart className="mr-2 h-4 w-4" />
-                Donate to Stroke Lyfe Inc.
-              </a>
-            </Button>
-            <Button asChild variant="outline" data-testid="button-scholarship">
-              <Link href="/recovery/scholarship">
-                <Shield className="mr-2 h-4 w-4" />
-                Apply for a Scholarship
-              </Link>
-            </Button>
-          </div>
-        </Card>
+                {/* Right links */}
+                <div className="grid sm:grid-cols-2 gap-1">
+                  {section.links.map((link) => (
+                    <Link
+                      key={link.label}
+                      href={link.href}
+                      className="group flex items-start justify-between gap-3 py-2.5 px-3 rounded-sm hover:bg-card/60 transition-colors"
+                      data-testid={`link-${section.id}-${link.label.toLowerCase().replace(/\s+/g, "-").slice(0, 20)}`}
+                    >
+                      <div className="min-w-0">
+                        <div className="text-sm font-medium leading-snug group-hover:text-amber-400 transition-colors truncate">
+                          {link.label}
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-0.5 leading-snug">
+                          {link.description}
+                        </div>
+                      </div>
+                      <ArrowRight className="w-3.5 h-3.5 text-muted-foreground/50 shrink-0 mt-0.5 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all" />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </section>
+
+      {/* ── Nonprofit footer band ──────────────────────────────── */}
+      <section className="border-t border-border/50 bg-card/30 mt-4">
+        <div className="container mx-auto px-4 py-10 max-w-6xl">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <p className="text-xs tracking-widest uppercase text-muted-foreground font-medium mb-3">
+                Stroke Lyfe Inc. · 501(c)(3)
+              </p>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Stroke Recovery Academy is the platform. Stroke Lyfe Inc. is the nonprofit
+                that funds free access for survivors who cannot pay. Every book purchase
+                supports the mission directly.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Button asChild variant="outline" data-testid="button-strokelyfe">
+                <a href="https://strokelyfe.org/donate" target="_blank" rel="noopener noreferrer">
+                  <Heart className="w-4 h-4 mr-2" />
+                  Donate to Stroke Lyfe Inc.
+                </a>
+              </Button>
+              <Button asChild variant="outline" data-testid="button-scholarship">
+                <Link href="/recovery/scholarship">
+                  <Shield className="w-4 h-4 mr-2" />
+                  Apply for a Scholarship
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
     </div>
   );
 }
