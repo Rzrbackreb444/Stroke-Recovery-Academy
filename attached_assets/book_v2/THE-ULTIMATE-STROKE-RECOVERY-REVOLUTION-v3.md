@@ -21,8 +21,6 @@ No part of this book may be reproduced or transmitted in any form or by any mean
 Printed in the United States of America.
 First Edition: 2026.
 
-ISBN (paperback, ebook, and hardcover): assigned at first printing. The current edition number and ISBN are listed on the copyright page of every printed copy and at strokerecoveryacademy.com/book.
-
 For information, resources, the soundtrack, and to join the movement:
 
 - **Web:** strokerecoveryacademy.com
