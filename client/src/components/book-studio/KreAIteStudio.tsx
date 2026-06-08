@@ -1017,6 +1017,7 @@ export default function KreAIteStudio() {
                       );
                     })}
                   </div>
+                )}
                 </ScrollArea>
 
                 {/* Codex Footer - Project Intelligence */}
