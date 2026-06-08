@@ -761,5 +761,9 @@ If you are in them right now: the heart is still thumpin'. The life is still pum
 
 ## Sample Preview Ends Here
 
-The full book includes 30 chapters, 17 appendices, and 9 survivor case studies.
-Get the complete edition at **strokerecoveryacademy.com/book**.
+This free sample includes the front matter, the Quick-Start Card, the first two chapters of the book, and the start of the Science section.
+
+The full book is **314 pages**, covering **30 chapters, 17 appendices, and 9 survivor case studies**.
+
+Get the complete edition at **strokerecoveryacademy.com/book/buy**.
+

@@ -305,7 +305,7 @@ export default function BookBuy() {
               >
                 <a href="/book/sample.pdf" target="_blank" rel="noopener noreferrer">
                   <FileText className="w-4 h-4 mr-2" />
-                  Read free 36-page sample
+                  Read free 43-page sample
                 </a>
               </Button>
             </div>
