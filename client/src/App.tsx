@@ -751,6 +751,7 @@ function Router() {
           "The Ultimate Stroke Recovery Revolution" resolves to a real page. */}
       <Route path="/book" component={BookCompanion} />
       <Route path="/book/index" component={BookCompanion} />
+      <Route path="/book/companion" component={BookCompanion} />
       <Route path="/book/buy" component={BookBuy} />
       <Route path="/book/read" component={BookRead} />
       <Route path="/protocols" component={BookSlugRedirect} />

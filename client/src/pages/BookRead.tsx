@@ -121,7 +121,7 @@ function Paywall({ reason }: { reason: "signin" | "purchase" }) {
             <p className="mt-3 text-muted-foreground">
               {isSignin
                 ? "The Ultimate Stroke Recovery Revolution is unlocked for survivors who own a copy. Sign in to access yours."
-                : "The full 286-page manual is reader-only for owners. Pick up the digital PDF for $19 (instant) or the print paperback for $29 (ships in 5-10 days)."}
+                : "The full 314-page manual is reader-only for owners. Pick up the digital PDF for $19 (instant) or the print paperback for $29 (ships in 5-10 days)."}
             </p>
 
             <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
