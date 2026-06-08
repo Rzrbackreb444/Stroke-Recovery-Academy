@@ -72,7 +72,7 @@ async function seed() {
       price: 1900,
       currency: "USD",
       authorRoyalty: 1615,
-      interiorPdfUrl: "secure://book/full.pdf",
+      interiorPdfUrl: "https://storage.googleapis.com/download/storage/v1/b/replit-objstore-6695a99c-acae-4297-ba17-54ca57afa29e/o/book%2Ffull.pdf?generation=1780924574487409&alt=media",
     }).returning();
     console.log("Created digital edition", d.id);
   }
@@ -90,6 +90,9 @@ async function seed() {
       paperType: "standard_white",
       bindingType: "perfect",
       colorInterior: false,
+      luluPackageId: "0600X0900BW060UW444M",
+      interiorPdfUrl: "https://storage.googleapis.com/download/storage/v1/b/replit-objstore-6695a99c-acae-4297-ba17-54ca57afa29e/o/book%2Ffull.pdf?generation=1780924574487409&alt=media",
+      coverPdfUrl: "https://storage.googleapis.com/download/storage/v1/b/replit-objstore-6695a99c-acae-4297-ba17-54ca57afa29e/o/book%2Fcover.pdf?generation=1780924574807285&alt=media",
     }).returning();
     console.log("Created print edition", p.id);
   }
