@@ -534,26 +534,35 @@ Be specific and actionable in your suggestions. When the author wants to regener
     setConsistencyIssues([]);
 
     try {
+      const content = documentContent || sections.map(s => s.content).join('\n\n');
       const response = await fetch('/api/book/analyze-manuscript', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          content: documentContent || sections.map(s => s.content).join('\n\n'),
-          checkTypes: ['consistency', 'characters', 'timeline', 'plot'],
-          characters: characters.map(c => c.raw_text),
-        })
+        body: JSON.stringify({ content, analysisType: 'improvements' }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        if (data.issues) {
-          setConsistencyIssues(data.issues);
+        if (data.analysis) {
+          const issues = [
+            ...(data.analysis.areasToImprove || []),
+            ...(data.analysis.structuralSuggestions || []),
+          ].filter(Boolean);
+          setConsistencyIssues(
+            issues.length > 0
+              ? issues
+              : ["No major issues found. Your manuscript looks solid."]
+          );
+        } else if (data.raw) {
+          setConsistencyIssues([data.raw.substring(0, 300)]);
         } else {
           setConsistencyIssues(["No consistency issues found. Your manuscript looks great!"]);
         }
+      } else {
+        setConsistencyIssues(["Server error during analysis. Please try again."]);
       }
-    } catch (error) {
-      setConsistencyIssues(["Consistency check will analyze character names, timeline, and plot continuity."]);
+    } catch {
+      setConsistencyIssues(["Connection error. Check your internet and try again."]);
     } finally {
       setIsCheckingConsistency(false);
     }
