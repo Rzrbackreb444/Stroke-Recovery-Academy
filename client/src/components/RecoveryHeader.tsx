@@ -71,6 +71,13 @@ const resourcesGroups: { title: string; items: { href: string; label: string; pr
     ],
   },
   {
+    title: "Write",
+    items: [
+      { href: "/book-studio", label: "Book Editor" },
+      { href: "/book-perfection-suite", label: "Book Polish" },
+    ],
+  },
+  {
     title: "Earn",
     items: [
       { href: "/recovery/survivor-income", label: "Earn Income" },
