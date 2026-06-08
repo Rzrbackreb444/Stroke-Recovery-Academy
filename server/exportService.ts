@@ -1,6 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 import crypto from "crypto";
+import puppeteer from "puppeteer";
 
 export interface BookExportData {
   title: string;
@@ -376,16 +377,40 @@ export function generateBookHTML(bookData: BookExportData, forPrint: boolean = f
   `.trim();
 }
 
-// Generate PDF-ready HTML
-export async function generateBookPDF(bookData: BookExportData): Promise<ExportResult> {
-  const html = generateBookHTML(bookData, false);
-  const filename = `${bookData.title.replace(/[^a-zA-Z0-9]/g, "_")}_${Date.now()}.html`;
-  
-  return {
-    content: html,
-    contentType: "text/html",
-    filename,
-  };
+// Generate a real binary PDF using Puppeteer
+export async function generateBookPDF(bookData: BookExportData, printReady = false): Promise<ExportResult> {
+  const html = generateBookHTML(bookData, printReady);
+  const filename = `${bookData.title.replace(/[^a-zA-Z0-9]/g, "_")}_${Date.now()}.pdf`;
+
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+  });
+
+  try {
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: "networkidle0" });
+
+    const pdfBuffer = await page.pdf({
+      width: "6in",
+      height: "9in",
+      printBackground: true,
+      margin: {
+        top: "0.75in",
+        bottom: "0.75in",
+        left: "0.875in",
+        right: "0.625in",
+      },
+    });
+
+    return {
+      content: Buffer.from(pdfBuffer),
+      contentType: "application/pdf",
+      filename,
+    };
+  } finally {
+    await browser.close();
+  }
 }
 
 // Generate print-ready PDF HTML for Lulu
