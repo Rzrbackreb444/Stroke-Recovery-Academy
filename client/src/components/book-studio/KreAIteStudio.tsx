@@ -102,9 +102,13 @@ import {
   PieChart,
   LineChart,
   AreaChart,
+  LayoutGrid,
+  GripVertical,
+  List,
 } from "lucide-react";
 
 import KreAIteEditor from "./KreAIteEditor";
+import ChildrensBookMode from "@/components/ChildrensBookMode";
 import { apiRequest } from "@/lib/queryClient";
 
 interface DocumentTab {
@@ -169,6 +173,7 @@ export default function KreAIteStudio() {
     isGeneratingKeywords,
     marketingBlurbs,
     amazonKeywords,
+    setBookOutline,
   } = useBookStudio();
 
   const [leftPanelOpen, setLeftPanelOpen] = useState(true);
@@ -179,6 +184,12 @@ export default function KreAIteStudio() {
   const [rightPanelMode, setRightPanelMode] = useState<'intelligence' | 'market' | 'assets'>('intelligence');
   const [focusMode, setFocusMode] = useState(false);
   const [theme, setTheme] = useState<'stone' | 'ink'>('stone');
+  const [leftPanelView, setLeftPanelView] = useState<'codex' | 'corkboard'>('codex');
+  const [corkDragIdx, setCorkDragIdx] = useState<number | null>(null);
+  const [corkDragOver, setCorkDragOver] = useState<number | null>(null);
+  const [corkEditId, setCorkEditId] = useState<string | null>(null);
+  const [corkEditField, setCorkEditField] = useState<'title' | 'description'>('title');
+  const [corkEditValue, setCorkEditValue] = useState('');
 
   const [openTabs, setOpenTabs] = useState<DocumentTab[]>([
     { id: 'chapter-0', title: 'Chapter 1', type: 'chapter', chapterIndex: 0, isDirty: false }
@@ -348,6 +359,24 @@ export default function KreAIteStudio() {
             />
           </div>
         </div>
+      </div>
+    );
+  }
+
+  if (bookOutline?.genre === 'childrens') {
+    return (
+      <div className={cn(
+        "flex flex-col h-screen font-sans transition-colors duration-300",
+        isDark ? "bg-stone-950 text-stone-100" : "bg-[#FAFAF8] text-stone-900"
+      )}>
+        <ChildrensBookMode
+          onStoryGenerated={() => {
+            toast({ title: "Story Generated", description: "Your children's book is ready." });
+          }}
+          onExport={() => {
+            toast({ title: "Exporting", description: "Preparing your children's book for download." });
+          }}
+        />
       </div>
     );
   }
@@ -655,8 +684,48 @@ export default function KreAIteStudio() {
                         "text-[11px] font-semibold uppercase tracking-wide",
                         isDark ? "text-stone-400" : "text-stone-500"
                       )}>
-                        Knowledge Codex
+                        {leftPanelView === 'corkboard' ? 'Corkboard' : 'Knowledge Codex'}
                       </span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className={cn(
+                              "h-6 w-6 p-0 rounded-md",
+                              leftPanelView === 'codex'
+                                ? isDark ? "bg-amber-500/20 text-amber-400" : "bg-amber-100 text-amber-700"
+                                : isDark ? "text-stone-500 hover-elevate" : "text-slate-400 hover-elevate"
+                            )}
+                            onClick={() => setLeftPanelView('codex')}
+                            data-testid="button-codex-view"
+                          >
+                            <List className="h-3.5 w-3.5" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="text-[10px]">Outline View</TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className={cn(
+                              "h-6 w-6 p-0 rounded-md",
+                              leftPanelView === 'corkboard'
+                                ? isDark ? "bg-amber-500/20 text-amber-400" : "bg-amber-100 text-amber-700"
+                                : isDark ? "text-stone-500 hover-elevate" : "text-slate-400 hover-elevate"
+                            )}
+                            onClick={() => setLeftPanelView('corkboard')}
+                            data-testid="button-corkboard-view"
+                          >
+                            <LayoutGrid className="h-3.5 w-3.5" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="text-[10px]">Corkboard</TooltipContent>
+                      </Tooltip>
                     </div>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

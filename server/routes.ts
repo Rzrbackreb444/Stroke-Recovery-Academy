@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import express from "express";
 import path from "path";
+import { generateBookPDF, type BookExportData } from "./exportService";
 import multer from "multer";
 import fs from "fs";
 import { storage } from "./storage";
@@ -5134,26 +5135,47 @@ Only include genuinely new information. Return empty arrays if nothing new was l
         fullContent += `## Resources\n\n${backMatter.resources}\n\n`;
       }
 
-      // For now, return the markdown content
-      // In production, this would generate actual DOCX/PDF/EPUB files
       const fileName = `${bookTitle.replace(/[^a-z0-9]/gi, '_')}_manuscript`;
-      
+
       if (format === 'markdown' || format === 'txt') {
         res.setHeader('Content-Type', 'text/plain');
         res.setHeader('Content-Disposition', `attachment; filename="${fileName}.${format === 'markdown' ? 'md' : 'txt'}"`);
         res.send(fullContent);
-      } else {
-        // For DOCX/PDF/EPUB, return info about the export
-        res.json({
-          success: true,
-          format,
-          fileName,
-          wordCount: fullContent.split(/\s+/).length,
-          chapterCount: chapters.length,
-          content: fullContent,
-          message: `Export prepared in ${format.toUpperCase()} format. Download ready.`
-        });
+        return;
       }
+
+      if (format === 'pdf') {
+        const bookData: BookExportData = {
+          title: bookTitle || 'Untitled Book',
+          author: settings?.author || 'Author',
+          description: settings?.subtitle,
+          dedication: frontMatter?.dedication,
+          acknowledgments: frontMatter?.acknowledgments,
+          genre: settings?.genre,
+          chapters: chapters.map((ch: any, i: number) => ({
+            number: i + 1,
+            title: ch.title || `Chapter ${i + 1}`,
+            content: ch.content || '',
+          })),
+        };
+        const printReady = settings?.printReady === true;
+        const result = await generateBookPDF(bookData, printReady);
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="${fileName}.pdf"`);
+        res.send(result.content);
+        return;
+      }
+
+      // For EPUB/DOCX/HTML, return structured content
+      res.json({
+        success: true,
+        format,
+        fileName,
+        wordCount: fullContent.split(/\s+/).length,
+        chapterCount: chapters.length,
+        content: fullContent,
+        message: `Export prepared in ${format.toUpperCase()} format. Download ready.`
+      });
     } catch (error) {
       console.error("Error exporting book:", error);
       res.status(500).json({ message: "Failed to export book" });
