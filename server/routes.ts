@@ -20084,46 +20084,19 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // POST /api/marketplace/checkout/:listingId - Create checkout session for listing
-  app.post('/api/marketplace/checkout/:listingId', isAuthenticated, async (req: any, res) => {
+  // POST /api/marketplace/checkout - Cart-style checkout for book editions
+  // Accepts { items: [{ editionId, quantity }] } and routes to the marketplace
+  // service which uses dynamic price_data (no pre-existing Stripe Price IDs needed).
+  app.post('/api/marketplace/checkout', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      const listingId = parseInt(req.params.listingId);
-      const { editionId } = req.body;
-
-      if (isNaN(listingId)) {
-        return res.status(400).json({ message: "Invalid listing ID" });
+      const { items } = req.body;
+      if (!Array.isArray(items) || items.length === 0 || !items[0]?.editionId) {
+        return res.status(400).json({ message: "Invalid cart items" });
       }
-
-      const listing = await db.select()
-        .from(marketplaceListings)
-        .where(and(
-          eq(marketplaceListings.id, listingId),
-          eq(marketplaceListings.status, 'published')
-        ))
-        .limit(1);
-
-      if (listing.length === 0) {
-        return res.status(404).json({ message: "Listing not found or not published" });
-      }
-
-      const editions = await db.select()
-        .from(bookEditions)
-        .where(and(
-          eq(bookEditions.listingId, listingId),
-          eq(bookEditions.isActive, true)
-        ));
-
-      if (editions.length === 0) {
-        return res.status(400).json({ message: "No editions available for purchase" });
-      }
-
-      const selectedEdition = editionId 
-        ? editions.find(e => e.id === editionId)
-        : editions[0];
-
-      if (!selectedEdition) {
-        return res.status(400).json({ message: "Selected edition not found" });
+      const editionId = parseInt(items[0].editionId);
+      if (isNaN(editionId)) {
+        return res.status(400).json({ message: "Invalid edition ID" });
       }
 
       const user = await storage.getUser(userId);
@@ -20131,22 +20104,60 @@ Provide a JSON response with track suggestions for each chapter/section.`;
         return res.status(404).json({ message: "User not found" });
       }
 
-      let customerId = user.stripeCustomerId;
-      if (!customerId) {
-        const customer = await stripeService.createCustomer(user.email || '', user.id);
-        await stripeService.updateUserStripeInfo(user.id, { stripeCustomerId: customer.id });
-        customerId = customer.id;
+      const customerId = user.stripeCustomerId || null;
+      const customerEmail = user.email || '';
+
+      // Resolve edition + listing so we can create a pending order
+      const [edition] = await db.select().from(bookEditions)
+        .where(eq(bookEditions.id, editionId));
+      if (!edition) {
+        return res.status(404).json({ message: "Edition not found" });
+      }
+      const [listing] = await db.select().from(marketplaceListings)
+        .where(eq(marketplaceListings.id, edition.listingId));
+      if (!listing) {
+        return res.status(404).json({ message: "Listing not found" });
       }
 
-      const session = await stripeService.createCheckoutSession(
+      // Create a pending order so the webhook can find it later by sessionId
+      const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+      const [order] = await db.insert(bookOrders).values({
+        orderNumber,
+        customerId: userId,
+        customerEmail,
+        customerName: user.email?.split('@')[0] || 'Customer',
+        status: 'pending',
+        subtotal: edition.price,
+        total: edition.price,
+        currency: edition.currency,
+      }).returning();
+
+      await db.insert(orderItems).values({
+        orderId: order.id,
+        listingId: listing.id,
+        editionId: edition.id,
+        quantity: 1,
+        unitPrice: edition.price,
+        printCost: edition.printCost || null,
+        authorRoyalty: edition.authorRoyalty,
+        subtotal: edition.price,
+      });
+
+      const { createCheckoutSession } = await import('./marketplaceService');
+      const session = await createCheckoutSession(
+        editionId,
         customerId,
-        selectedEdition.price.toString(),
-        `${req.protocol}://${req.get('host')}/marketplace/purchase-success?listing=${listingId}`,
-        `${req.protocol}://${req.get('host')}/marketplace/listing/${listingId}`,
-        'payment'
+        customerEmail,
+        `${req.protocol}://${req.get('host')}/marketplace/purchase-success?edition=${editionId}`,
+        `${req.protocol}://${req.get('host')}/book/buy`
       );
 
-      res.json({ url: session.url, sessionId: session.id });
+      // Tie the session to the pending order so the webhook can match it
+      await db.update(bookOrders)
+        .set({ stripeCheckoutSessionId: session.id })
+        .where(eq(bookOrders.id, order.id));
+
+      res.json({ checkoutUrl: session.url, sessionId: session.id });
     } catch (error: any) {
       console.error("Error creating checkout session:", error);
       res.status(500).json({ message: "Failed to create checkout session" });
