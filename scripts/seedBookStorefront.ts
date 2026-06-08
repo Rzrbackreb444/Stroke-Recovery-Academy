@@ -50,6 +50,16 @@ async function seed() {
       publishedAt: new Date(),
     }).returning();
     console.log("Created listing", listing.id);
+  } else {
+    await db.update(marketplaceListings)
+      .set({
+        pageCount: 314,
+        wordCount: 78750,
+        previewUrl: "/book/sample.pdf",
+        description: "Nick Kremers' battle-tested stroke recovery manual. 314 pages, 30 chapters, 17 appendices, 9 case studies, full 90-day program. The blueprint defying every \"never.\"",
+      })
+      .where(eq(marketplaceListings.id, listing.id));
+    console.log("Updated listing", listing.id);
   }
 
   const editions = await db.select().from(bookEditions).where(eq(bookEditions.listingId, listing.id));
