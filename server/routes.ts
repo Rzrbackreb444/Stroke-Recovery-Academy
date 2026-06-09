@@ -13019,10 +13019,11 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   // ============================================================================
   // RECOVERY JOURNAL
   // ============================================================================
+  const { insertRecoveryJournalSchema, updateRecoveryJournalSchema } = await import('@shared/schema');
 
   app.get('/api/recovery/journal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req);
       const entries = await storage.getJournalEntries(userId);
       res.json(entries);
     } catch (error) {
@@ -13033,12 +13034,57 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/recovery/journal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const entry = await storage.createJournalEntry(userId, req.body);
+      const userId = getUserId(req);
+      const validated = insertRecoveryJournalSchema.safeParse(req.body);
+      if (!validated.success) {
+        return res.status(400).json({ message: "Invalid journal entry", details: validated.error.issues });
+      }
+      const entry = await storage.createJournalEntry(userId, validated.data);
       res.json(entry);
     } catch (error) {
       console.error("Error creating journal entry:", error);
       res.status(500).json({ message: "Failed to save journal entry" });
+    }
+  });
+
+  app.get('/api/recovery/journal/community', async (req: any, res) => {
+    try {
+      const filter = req.query.filter as string || 'all';
+      const entries = await storage.getSharedEntries(filter);
+      res.json(entries);
+    } catch (error) {
+      console.error("Error fetching community entries:", error);
+      res.status(500).json({ message: "Failed to fetch community entries" });
+    }
+  });
+
+  app.get('/api/recovery/journal/insights', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const insights = await storage.getJournalInsights(userId);
+      res.json(insights);
+    } catch (error) {
+      console.error("Error fetching journal insights:", error);
+      res.status(500).json({ message: "Failed to fetch journal insights" });
+    }
+  });
+
+  app.patch('/api/recovery/journal/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const entryId = parseInt(req.params.id);
+      const validated = updateRecoveryJournalSchema.partial().safeParse(req.body);
+      if (!validated.success) {
+        return res.status(400).json({ message: "Invalid update", details: validated.error.issues });
+      }
+      const entry = await storage.updateJournalEntry(entryId, userId, validated.data);
+      if (!entry) {
+        return res.status(404).json({ message: "Entry not found" });
+      }
+      res.json(entry);
+    } catch (error) {
+      console.error("Error updating journal entry:", error);
+      res.status(500).json({ message: "Failed to update journal entry" });
     }
   });
 

@@ -8,6 +8,13 @@
       "when": 1763790115126,
       "tag": "0000_perfect_jackal",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1781036792459,
+      "tag": "0001_faulty_major_mapleleaf",
+      "breakpoints": true
     }
   ]
 }

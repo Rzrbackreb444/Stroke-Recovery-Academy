@@ -2293,18 +2293,50 @@ export const recoveryJournals = pgTable("recovery_journals", {
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   title: text("title"),
   content: text("content").notNull(),
-  mood: integer("mood"), // 1-10
-  energy: integer("energy"), // 1-10
+  mood: integer("mood"), // 1-10 (legacy scale)
+  energy: integer("energy"), // 1-10 (legacy scale)
   gratitude: text("gratitude").array(),
   wins: text("wins").array(),
   struggles: text("struggles").array(),
   tomorrowsIntention: text("tomorrows_intention"),
   tags: text("tags").array(),
   isPrivate: boolean("is_private").notNull().default(true),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
+  // Reflections v2 fields
+  entryType: text("entry_type"), // free, haiku, photo, voice
+  entrySubType: text("entry_sub_type"), // triumph, pitfall
+  moodLabel: text("mood_label"), // good, okay, hard
+  energyLevel: integer("energy_level"), // 1-5
+  isShared: boolean("is_shared").notNull().default(false),
+  sharedAt: timestamp("shared_at", { withTimezone: true }),
+  haikuLines: text("haiku_lines").array(),
+  photoUrl: text("photo_url"),
+  photoCaption: text("photo_caption"),
+  voiceUrl: text("voice_url"),
+  voiceTranscript: text("voice_transcript"),
+  wordCount: integer("word_count"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (table) => [
   index("idx_recovery_journals_user").on(table.userId, table.createdAt),
+  index("idx_recovery_journals_shared").on(table.isShared, table.createdAt),
+  index("idx_recovery_journals_user_type").on(table.userId, table.entryType),
 ]);
+
+// Recovery Journal insert schema
+export const insertRecoveryJournalSchema = createInsertSchema(recoveryJournals).omit({
+  id: true,
+  createdAt: true,
+  sharedAt: true,
+});
+
+export const updateRecoveryJournalSchema = createInsertSchema(recoveryJournals).omit({
+  id: true,
+  userId: true,
+  createdAt: true,
+});
+
+export type RecoveryJournal = typeof recoveryJournals.$inferSelect;
+export type InsertRecoveryJournal = z.infer<typeof insertRecoveryJournalSchema>;
+export type UpdateRecoveryJournal = z.infer<typeof updateRecoveryJournalSchema>;
 
 // ============================================================================
 // COURSE BUILDER (Kajabi-level)
