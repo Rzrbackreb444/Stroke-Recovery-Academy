@@ -384,6 +384,12 @@ uri = "file://artifacts/mockup-sandbox/public/images/home-clean-ui.png"
 type = "image"
 title = "Clean minimalist UI representation"
 
+[[generated]]
+id = "ha9fI8YPf_3wNzz3_sWNm"
+uri = "file://artifacts/mockup-sandbox/public/images/hero-breakmold.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "EGooVUwVUQyTPSx95p4M4"
 uri = "file://exports/Stroked-Out-Sasquatch_DEDUPED_v1.md"
