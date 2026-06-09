@@ -92,7 +92,6 @@ export default function PuzzleBookEditor() {
 
   const puzzles = book?.puzzles ?? [];
   const selected = useMemo(() => puzzles.find((p) => p.id === selectedId) || null, [puzzles, selectedId]);
-  console.log("[puzzle-dbg] render", { bookId, puzzles: puzzles.length, selectedId, hasBook: !!book });
 
   // Default-select first puzzle once the book loads.
   useEffect(() => {
@@ -110,7 +109,10 @@ export default function PuzzleBookEditor() {
     setShowSolution(false);
   }, [selected?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const invalidate = () => queryClient.invalidateQueries({ queryKey: ["/api/puzzle/books", bookId] });
+  // refetchType "all" forces matching queries to refetch even if React Query
+  // considers them inactive at the moment of invalidation — belt-and-suspenders
+  // against the global `staleTime: Infinity` default swallowing the refresh.
+  const invalidate = () => queryClient.invalidateQueries({ queryKey: ["/api/puzzle/books", bookId], refetchType: "all" });
 
   const addMutation = useMutation({
     mutationFn: async () => {
@@ -122,13 +124,15 @@ export default function PuzzleBookEditor() {
       });
       return res.json();
     },
-    onSuccess: async (p: Puzzle) => {
-      console.log("[puzzle-dbg] add onSuccess", p?.id);
-      await invalidate();
-      console.log("[puzzle-dbg] add invalidate done");
+    onSuccess: (p: Puzzle) => {
+      // Optimistically append to the cached book so the list updates synchronously,
+      // independent of the network refetch. invalidate() reconciles in the background.
+      queryClient.setQueryData<BookDetail>(["/api/puzzle/books", bookId], (old) =>
+        old ? { ...old, puzzles: [...(old.puzzles ?? []), p] } : old);
       setAddOpen(false);
       setNewTitle("");
       setSelectedId(p.id);
+      invalidate();
     },
     onError: (err: any) => toast({ title: "Could not add puzzle", description: err?.message, variant: "destructive" }),
   });

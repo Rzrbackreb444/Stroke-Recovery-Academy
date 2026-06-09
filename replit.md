@@ -17,6 +17,7 @@ _Populate as you build_
 - **Book storefront API:** `server/routes.ts` (search for `/api/book/storefront`)
 - **Book seed script:** `scripts/seedBookStorefront.ts`
 - **Generated PDF:** `attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION.pdf`
+- **Puzzle Studio (Brain Games):** schema `puzzleBooks`/`puzzles` in `shared/schema.ts`; generators + `renderPuzzleHtml` in `shared/puzzleEngine.ts`; API `server/puzzleRoutes.ts` (`/api/puzzle`, mounted after `setupAuth`); client `client/src/pages/PuzzleStudioHub.tsx` + `PuzzleBookEditor.tsx` at `/puzzle-studio`
 - **Sasquatch character art:** `attached_assets/book_v2/images/sasquatch-*.png` — 11 woodcut/linocut metal-poster illustrations (axe-bearing, left-side asymmetry, deep ink + bone white + blood-red palette). Cover wired in `scripts/typeset.mjs`; 10 inline placements wired in the manuscript at iconic moments (bat Ch.12, mirror Ch.14, forge Ch.20½, intersection Ch.21, tribe Ch.26, year-seven + handoff Ch.30, doctrine App. I, creed App. J, seal final page). Aesthetic locked — any future regen must match the canonical brief documented in this skill's session.
 
 ## Recent platform work (May 2026)

@@ -127,11 +127,11 @@ export default function RecoveryHeader() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between py-2">
+        <div className="flex items-center justify-between gap-4 py-2">
 
           {/* Logo — 3× scale, dominant on every viewport including mobile */}
-          <Link href="/recovery" data-testid="link-recovery-home">
-            <div className="flex items-center gap-3 cursor-pointer">
+          <Link href="/recovery" data-testid="link-recovery-home" className="min-w-0">
+            <div className="flex items-center gap-3 cursor-pointer min-w-0">
               <img
                 src={sraEmblem}
                 alt="Stroke Recovery Academy"
@@ -139,8 +139,8 @@ export default function RecoveryHeader() {
                 style={{ flexShrink: 0 }}
                 data-testid="img-recovery-logo"
               />
-              <div className="hidden 2xl:flex flex-col leading-none">
-                <span className="font-bold tracking-tight text-white text-xl whitespace-nowrap">
+              <div className="hidden 2xl:flex flex-col leading-none min-w-0">
+                <span className="font-bold tracking-tight text-white text-xl truncate">
                   Stroke Recovery Academy
                 </span>
                 <span className="mt-1 text-[10px] font-semibold uppercase tracking-[0.28em] text-gold">
@@ -151,7 +151,7 @@ export default function RecoveryHeader() {
           </Link>
 
           {/* Desktop nav — 4 accountability-focused primary + More megamenu */}
-          <nav className="hidden xl:flex items-center gap-0.5" aria-label="Main navigation">
+          <nav className="hidden xl:flex items-center gap-0.5 shrink-0" aria-label="Main navigation">
             {primaryNav.map((link) => {
               const Icon = link.icon;
               return (
@@ -216,7 +216,7 @@ export default function RecoveryHeader() {
           </nav>
 
           {/* Right actions */}
-          <div className="hidden xl:flex items-center gap-2">
+          <div className="hidden xl:flex items-center gap-2 shrink-0">
             {/* Premium nav — always visible, never blocking. Hover popover
                 gives a 4-line free vs premium snapshot. One click → /recovery/premium. */}
             <HoverCard openDelay={120} closeDelay={120}>
