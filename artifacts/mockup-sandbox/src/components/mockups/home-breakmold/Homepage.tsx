@@ -39,21 +39,45 @@ function Header() {
 }
 
 function Hero() {
+  // Radiating fracture angles (degrees) emanating from the impact point.
+  const cracks = [-58, -33, -14, 9, 31, 55, 78];
   return (
     <section className="relative bg-black overflow-hidden">
       <div className="absolute inset-0">
-        <img src="/__mockup/images/hero-breakmold.png" alt="" className="w-full h-full object-cover object-right opacity-45" />
+        <img src="/__mockup/images/hero-breakmold.png" alt="" className="w-full h-full object-cover object-right opacity-60 contrast-125" />
         {/* Left-to-right wash keeps the headline readable; bottom fade blends into the stats strip. */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/90 to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-black/10" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40" />
       </div>
 
-      {/* Gold shard streak — the "break" line slicing across the hero. */}
-      <div
-        className="absolute -right-10 top-0 h-full w-px bg-gold/40 hidden lg:block"
-        style={{ transform: "rotate(8deg)", transformOrigin: "top" }}
-        aria-hidden="true"
-      />
+      {/* Shattered-glass field: impact glow + radiating fracture lines. */}
+      <div className="absolute inset-0 pointer-events-none hidden lg:block" aria-hidden="true">
+        {/* Gold impact bloom where the chair bursts through. */}
+        <div className="absolute right-[26%] top-1/2 -translate-y-1/2 w-[44rem] h-[44rem] rounded-full bg-[radial-gradient(circle,_rgba(226,116,27,0.30),_transparent_62%)] blur-2xl" />
+        {/* Cracks radiating from the impact point. */}
+        <div className="absolute" style={{ right: "30%", top: "48%" }}>
+          {cracks.map((deg, i) => (
+            <div
+              key={i}
+              className="absolute left-0 top-0 h-px origin-left bg-gradient-to-r from-gold/80 via-gold/30 to-transparent"
+              style={{ width: `${20 + i * 5}rem`, transform: `rotate(${deg}deg)` }}
+            />
+          ))}
+          {/* Finer white hairline fractures for glass realism. */}
+          {[-46, 4, 44].map((deg, i) => (
+            <div
+              key={`h${i}`}
+              className="absolute left-0 top-0 h-px origin-left bg-gradient-to-r from-white/50 via-white/15 to-transparent"
+              style={{ width: `${28 + i * 6}rem`, transform: `rotate(${deg}deg)` }}
+            />
+          ))}
+        </div>
+        {/* One bold diagonal break line slashing the full hero. */}
+        <div
+          className="absolute -right-20 top-0 h-[140%] w-[2px] bg-gradient-to-b from-transparent via-gold/55 to-transparent"
+          style={{ transform: "rotate(11deg)", transformOrigin: "top" }}
+        />
+      </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-28">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -62,9 +86,15 @@ function Hero() {
               <Zap className="h-3.5 w-3.5 text-gold" fill="currentColor" />
               <span className="text-xs font-semibold uppercase tracking-wider text-gold">Breaking the mold since 2019</span>
             </div>
-            <h1 className="font-display text-white text-7xl md:text-8xl lg:text-[8.5rem] leading-[0.85] mb-8">
-              Break <span className="text-gold">the</span> mold.
+            <h1 className="font-display text-white text-7xl md:text-8xl lg:text-[8.5rem] leading-[0.85] mb-6 [text-shadow:0_2px_40px_rgba(0,0,0,0.8)]">
+              Break <span className="text-gold [text-shadow:0_0_30px_rgba(226,116,27,0.5)]">the</span> mold.
             </h1>
+            {/* Fractured gold rule under the headline. */}
+            <div className="flex items-center gap-1.5 mb-8" aria-hidden="true">
+              <span className="h-1 w-16 bg-gold" />
+              <span className="h-1 w-6 bg-gold/70" style={{ transform: "skewX(-30deg)" }} />
+              <span className="h-1 w-2 bg-gold/40" style={{ transform: "skewX(-30deg)" }} />
+            </div>
             <p className="text-xl text-white/75 mb-10 leading-relaxed max-w-xl">
               They told me this was as good as it gets. So I shattered the ceiling — one rep at a time. The system stabilizes you and stops. We don't. Six weeks out or six years in, you keep showing up, and so do we.
             </p>
