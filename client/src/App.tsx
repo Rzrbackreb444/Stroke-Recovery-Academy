@@ -56,6 +56,8 @@ const MusicStudio = lazy(() => import("@/pages/MusicStudio"));
 const MusicSandbox = lazy(() => import("@/pages/MusicSandbox"));
 const MusicProductionStudio = lazy(() => import("@/pages/MusicProductionStudio"));
 const BookStudioV3 = lazy(() => import("@/pages/BookStudioV3"));
+const BookStudioHub = lazy(() => import("@/pages/BookStudioHub"));
+const BookPublishFlow = lazy(() => import("@/pages/BookPublishFlow"));
 const BookCompanion = lazy(() => import("@/pages/BookCompanion"));
 const BookBuy = lazy(() => import("@/pages/BookBuy"));
 const BookRead = lazy(() => import("@/pages/BookRead"));
@@ -341,7 +343,9 @@ function Router() {
           <MusicSandbox />
         </ProtectedRoute>
       </Route>
-      <Route path="/book-studio" component={BookStudioV3} />
+      <Route path="/book-studio" component={BookStudioHub} />
+      <Route path="/book-studio/publish" component={BookPublishFlow} />
+      <Route path="/book-studio/:id" component={BookStudioV3} />
       <Route path="/book-perfection-suite" component={BookPerfectionSuite} />
       <Route path="/write" component={MobileStudio} />
       <Route path="/studio" component={MobileStudio} />
