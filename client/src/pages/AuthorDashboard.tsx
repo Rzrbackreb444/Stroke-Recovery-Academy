@@ -92,14 +92,14 @@ function StatCard({
               <p className="text-xs text-gray-400">{subtitle}</p>
             )}
             {trend && (
-              <div className={`flex items-center gap-1 text-xs ${trendUp ? 'text-[#C9941A]' : 'text-red-500'}`}>
+              <div className={`flex items-center gap-1 text-xs ${trendUp ? 'text-[#E2741B]' : 'text-red-500'}`}>
                 <TrendingUp className={`w-3 h-3 ${!trendUp && 'rotate-180'}`} />
                 <span>{trend}</span>
               </div>
             )}
           </div>
           <div className="p-3 rounded-full bg-primary/10">
-            <Icon className="w-5 h-5 text-[#C9941A]" />
+            <Icon className="w-5 h-5 text-[#E2741B]" />
           </div>
         </div>
       </CardContent>
@@ -122,7 +122,7 @@ function BookPerformanceCard({ book }: { book: BookWithStats }) {
                 className="w-full h-full object-cover rounded"
               />
             ) : (
-              <BookOpen className="w-8 h-8 text-[#C9941A]/50" />
+              <BookOpen className="w-8 h-8 text-[#E2741B]/50" />
             )}
           </div>
           
@@ -133,7 +133,7 @@ function BookPerformanceCard({ book }: { book: BookWithStats }) {
                 <Badge 
                   variant="outline" 
                   className={`mt-1 ${
-                    book.status === 'published' ? 'text-[#C9941A] border-green-500/30' :
+                    book.status === 'published' ? 'text-[#E2741B] border-green-500/30' :
                     book.status === 'pending_review' ? 'text-yellow-500 border-yellow-500/30' :
                     'text-gray-400'
                   }`}
@@ -184,10 +184,10 @@ function OrderStatusBadge({ status }: { status: string }) {
   const statusConfig: Record<string, { color: string; icon: React.ComponentType<{ className?: string }> }> = {
     pending: { color: 'text-yellow-500 border-yellow-500/30', icon: Clock },
     processing: { color: 'text-blue-500 border-blue-500/30', icon: Package },
-    printing: { color: 'text-[#C9941A] border-amber-500/30', icon: Printer },
+    printing: { color: 'text-[#E2741B] border-amber-500/30', icon: Printer },
     shipped: { color: 'text-cyan-500 border-cyan-500/30', icon: Truck },
-    delivered: { color: 'text-[#C9941A] border-green-500/30', icon: CheckCircle },
-    completed: { color: 'text-[#C9941A] border-green-500/30', icon: CheckCircle },
+    delivered: { color: 'text-[#E2741B] border-green-500/30', icon: CheckCircle },
+    completed: { color: 'text-[#E2741B] border-green-500/30', icon: CheckCircle },
     cancelled: { color: 'text-red-500 border-red-500/30', icon: AlertCircle },
     refunded: { color: 'text-red-500 border-red-500/30', icon: AlertCircle },
   };
@@ -235,7 +235,7 @@ export default function AuthorDashboard() {
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
           <Card className="max-w-md w-full">
             <CardContent className="p-8 text-center">
-              <BookOpen className="w-16 h-16 mx-auto text-[#C9941A]/50 mb-4" />
+              <BookOpen className="w-16 h-16 mx-auto text-[#E2741B]/50 mb-4" />
               <h2 className="text-xl font-semibold mb-2">Sign In Required</h2>
               <p className="text-gray-400 mb-4">
                 Please sign in to access your author dashboard.
@@ -338,7 +338,7 @@ export default function AuthorDashboard() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="w-5 h-5 text-[#C9941A]" />
+                      <TrendingUp className="w-5 h-5 text-[#E2741B]" />
                       Top Performing Books
                     </CardTitle>
                   </CardHeader>
@@ -368,7 +368,7 @@ export default function AuthorDashboard() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Wallet className="w-5 h-5 text-[#C9941A]" />
+                      <Wallet className="w-5 h-5 text-[#E2741B]" />
                       Earnings Summary
                     </CardTitle>
                   </CardHeader>
@@ -376,7 +376,7 @@ export default function AuthorDashboard() {
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-400">Available</span>
-                        <span className="font-medium text-[#C9941A]">
+                        <span className="font-medium text-[#E2741B]">
                           ${((stats?.totalEarnings || 0) / 100).toFixed(2)}
                         </span>
                       </div>
@@ -406,7 +406,7 @@ export default function AuthorDashboard() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Star className="w-5 h-5 text-[#C9941A]" />
+                      <Star className="w-5 h-5 text-[#E2741B]" />
                       Recent Reviews
                     </CardTitle>
                   </CardHeader>
@@ -582,7 +582,7 @@ export default function AuthorDashboard() {
                                   ))}
                                 </div>
                                 {review.isVerifiedPurchase && (
-                                  <Badge variant="outline" className="text-xs text-[#C9941A] border-green-500/30">
+                                  <Badge variant="outline" className="text-xs text-[#E2741B] border-green-500/30">
                                     <CheckCircle className="w-3 h-3 mr-1" />
                                     Verified
                                   </Badge>

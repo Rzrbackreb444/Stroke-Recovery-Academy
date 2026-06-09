@@ -57,10 +57,10 @@ import type { LifeStory } from "@shared/schema";
 const milestoneTypes = [
   { value: "birth", label: "Birth", icon: Baby, color: "bg-pink-500/20 text-pink-400" },
   { value: "education", label: "Education", icon: GraduationCap, color: "bg-blue-500/20 text-blue-400" },
-  { value: "career", label: "Career", icon: Briefcase, color: "bg-[#C9941A]/20 text-[#C9941A]" },
+  { value: "career", label: "Career", icon: Briefcase, color: "bg-[#E2741B]/20 text-[#E2741B]" },
   { value: "relationship", label: "Relationship", icon: Heart, color: "bg-red-500/20 text-red-400" },
   { value: "achievement", label: "Achievement", icon: Trophy, color: "bg-yellow-500/20 text-yellow-400" },
-  { value: "challenge", label: "Challenge", icon: Mountain, color: "bg-[#C9941A]/20 text-[#C9941A]" },
+  { value: "challenge", label: "Challenge", icon: Mountain, color: "bg-[#E2741B]/20 text-[#E2741B]" },
   { value: "growth", label: "Growth", icon: Sprout, color: "bg-emerald-500/20 text-emerald-400" },
 ];
 
@@ -98,7 +98,7 @@ function StoryListSidebar({
         <h2 className="text-lg font-semibold text-foreground mb-3">Life Stories</h2>
         <Button
           onClick={onCreateNew}
-          className="w-full bg-[#C9941A] hover:bg-[#C9941A] text-foreground"
+          className="w-full bg-[#E2741B] hover:bg-[#E2741B] text-foreground"
           data-testid="button-create-story"
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -128,7 +128,7 @@ function StoryListSidebar({
                 data-testid={`button-story-${story.id}`}
               >
                 <div className="flex items-start gap-2">
-                  <BookOpen className="w-4 h-4 text-[#C9941A] mt-0.5 flex-shrink-0" />
+                  <BookOpen className="w-4 h-4 text-[#E2741B] mt-0.5 flex-shrink-0" />
                   <div className="min-w-0">
                     <p className="text-foreground font-medium truncate text-sm">
                       {story.title}
@@ -223,7 +223,7 @@ function StoryHeader({
                 <Badge
                   key={theme}
                   variant="outline"
-                  className="bg-primary/10 border text-[#C9941A]"
+                  className="bg-primary/10 border text-[#E2741B]"
                 >
                   {theme}
                   <button
@@ -302,7 +302,7 @@ function TimelineSection({
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button
-              className="bg-[#C9941A] hover:bg-[#C9941A]"
+              className="bg-[#E2741B] hover:bg-[#E2741B]"
               data-testid="button-add-milestone"
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -400,7 +400,7 @@ function TimelineSection({
               <Button
                 onClick={handleAdd}
                 disabled={!newMilestone.year || !newMilestone.title || isAdding}
-                className="w-full bg-[#C9941A] hover:bg-[#C9941A]"
+                className="w-full bg-[#E2741B] hover:bg-[#E2741B]"
                 data-testid="button-save-milestone"
               >
                 {isAdding ? (
@@ -529,7 +529,7 @@ function ChapterGenerator({
     <Card className="bg-gray-950 border-[#333]">
       <CardHeader>
         <CardTitle className="text-foreground text-lg flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-[#C9941A]" />
+          <Sparkles className="w-5 h-5 text-[#E2741B]" />
           Chapter Generator
         </CardTitle>
         <CardDescription className="text-gray-400">
@@ -566,7 +566,7 @@ function ChapterGenerator({
         <Button
           onClick={() => generateMutation.mutate()}
           disabled={generateMutation.isPending}
-          className="w-full bg-[#C9941A] hover:bg-[#C9941A]"
+          className="w-full bg-[#E2741B] hover:bg-[#E2741B]"
           data-testid="button-generate-chapter"
         >
           {generateMutation.isPending ? (
@@ -595,7 +595,7 @@ function ChapterGenerator({
                     data-testid={`chapter-item-${chapter.id}`}
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <FileText className="w-4 h-4 text-[#C9941A] flex-shrink-0" />
+                      <FileText className="w-4 h-4 text-[#E2741B] flex-shrink-0" />
                       <div className="min-w-0">
                         <p className="text-foreground text-sm font-medium truncate">
                           {chapter.title}
@@ -666,21 +666,21 @@ function AttachmentsSection({
         <div className="grid grid-cols-2 gap-4">
           <button
             onClick={() => onAddAttachment("photo")}
-            className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-[#333] rounded-lg hover:border-[#C9941A]/50 transition-colors"
+            className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-[#333] rounded-lg hover:border-[#E2741B]/50 transition-colors"
             data-testid="button-add-photo"
           >
-            <Image className="w-8 h-8 text-[#C9941A] mb-2" />
+            <Image className="w-8 h-8 text-[#E2741B] mb-2" />
             <span className="text-gray-400 text-sm">Add Photos</span>
-            <span className="text-[#C9941A] text-xs">Click to upload</span>
+            <span className="text-[#E2741B] text-xs">Click to upload</span>
           </button>
           <button
             onClick={() => onAddAttachment("document")}
-            className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-[#333] rounded-lg hover:border-[#C9941A]/50 transition-colors"
+            className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-[#333] rounded-lg hover:border-[#E2741B]/50 transition-colors"
             data-testid="button-add-document"
           >
-            <FileText className="w-8 h-8 text-[#C9941A] mb-2" />
+            <FileText className="w-8 h-8 text-[#E2741B] mb-2" />
             <span className="text-gray-400 text-sm">Add Documents</span>
-            <span className="text-[#C9941A] text-xs">Click to upload</span>
+            <span className="text-[#E2741B] text-xs">Click to upload</span>
           </button>
         </div>
         {attachments.length > 0 && (
@@ -846,7 +846,7 @@ export default function LifeStoryEngine() {
                 <Button
                   onClick={() => createMutation.mutate()}
                   disabled={createMutation.isPending}
-                  className="bg-[#C9941A] hover:bg-[#C9941A]"
+                  className="bg-[#E2741B] hover:bg-[#E2741B]"
                   data-testid="button-create-first-story"
                 >
                   {createMutation.isPending ? (
@@ -867,7 +867,7 @@ export default function LifeStoryEngine() {
                 <Link href="/book-studio">
                   <Button
                     variant="outline"
-                    className="border text-[#C9941A] hover:bg-primary/10"
+                    className="border text-[#E2741B] hover:bg-primary/10"
                     data-testid="button-export-to-book"
                   >
                     <ExternalLink className="w-4 h-4 mr-2" />

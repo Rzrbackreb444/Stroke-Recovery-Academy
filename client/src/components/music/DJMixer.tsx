@@ -200,7 +200,7 @@ export function DJMixer({ onCrossfadeChange, onMasterVolumeChange, onChannelChan
             channel="A" 
             settings={channelA} 
             onUpdate={updateChannelA}
-            color="#C9941A"
+            color="#E2741B"
           />
           <ChannelStrip 
             channel="B" 

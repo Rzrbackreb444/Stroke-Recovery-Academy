@@ -18,7 +18,7 @@ export function DJTurntable({
   audioUrl, 
   onBpmChange, 
   onVolumeChange,
-  accentColor = deckId === "A" ? "#C9941A" : "#10B981"
+  accentColor = deckId === "A" ? "#E2741B" : "#10B981"
 }: DJTurntableProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [rotation, setRotation] = useState(0);

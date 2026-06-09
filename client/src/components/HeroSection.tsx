@@ -13,7 +13,7 @@ export default function HeroSection() {
   return (
     <section className="relative min-h-screen w-full flex items-center justify-center bg-[#0D0D0D] overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/2 right-0 w-[700px] h-[700px] bg-[#C9941A]/4 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 right-0 w-[700px] h-[700px] bg-[#E2741B]/4 rounded-full blur-3xl" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 w-full">
@@ -22,8 +22,8 @@ export default function HeroSection() {
           {/* Left — Copy */}
           <div>
             <div className="flex items-center gap-2 mb-6">
-              <Flame className="h-5 w-5 text-[#C9941A]" />
-              <span className="text-[#C9941A] text-sm font-semibold uppercase tracking-widest">
+              <Flame className="h-5 w-5 text-[#E2741B]" />
+              <span className="text-[#E2741B] text-sm font-semibold uppercase tracking-widest">
                 The Stroked Out Sasquatch
               </span>
             </div>
@@ -33,7 +33,7 @@ export default function HeroSection() {
               data-testid="text-hero-main"
             >
               From 0%<br />
-              <span className="text-[#C9941A]">to 90%</span><br />
+              <span className="text-[#E2741B]">to 90%</span><br />
               Recovery.
             </h1>
 
@@ -56,7 +56,7 @@ export default function HeroSection() {
             <div className="flex flex-col sm:flex-row gap-4 mb-14">
               <Button
                 size="lg"
-                className="bg-[#C9941A] text-black text-lg font-bold px-10 shadow-lg shadow-[#C9941A]/20"
+                className="bg-[#E2741B] text-black text-lg font-bold px-10 shadow-lg shadow-[#E2741B]/20"
                 data-testid="button-start-recovery"
                 onClick={() => window.location.href = "/recovery/onboarding"}
               >
@@ -96,8 +96,8 @@ export default function HeroSection() {
               data-testid="img-nick-hero"
             />
             <div className="absolute bottom-6 left-6 right-6 z-20">
-              <div className="bg-black/70 backdrop-blur-sm border border-[#C9941A]/30 rounded-xl p-4">
-                <p className="text-[#C9941A] text-xs font-semibold uppercase tracking-wider mb-1">
+              <div className="bg-black/70 backdrop-blur-sm border border-[#E2741B]/30 rounded-xl p-4">
+                <p className="text-[#E2741B] text-xs font-semibold uppercase tracking-wider mb-1">
                   Nick Kremers — Founder
                 </p>
                 <p className="text-white text-sm font-medium leading-snug">

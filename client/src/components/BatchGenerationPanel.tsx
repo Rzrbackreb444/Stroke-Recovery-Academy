@@ -286,7 +286,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
                       data-testid={`select-quality-tier-${tier.id}`}
                       className={`p-3 rounded-lg border transition-all text-left ${
                         isSelected 
-                          ? 'border-[#C9941A] bg-orange-950/30' 
+                          ? 'border-[#E2741B] bg-orange-950/30' 
                           : 'border-[#333] bg-[#1a1a1a] hover:border-zinc-600'
                       } ${!tierAffordable ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover-elevate'}`}
                     >
@@ -377,7 +377,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
             <Button
               onClick={handleStartGeneration}
               disabled={!canAfford || !template.trim() || createJob.isPending}
-              className="w-full bg-[#C9941A] hover:bg-orange-600 text-foreground font-semibold"
+              className="w-full bg-[#E2741B] hover:bg-orange-600 text-foreground font-semibold"
               data-testid="button-start-generation"
             >
               {createJob.isPending ? (
@@ -412,7 +412,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
                 </div>
               </div>
               {isConnected && (
-                <Badge variant="secondary" className="bg-[#C9941A]/20 text-[#C9941A]">
+                <Badge variant="secondary" className="bg-[#E2741B]/20 text-[#E2741B]">
                   Live
                 </Badge>
               )}
@@ -451,7 +451,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
                       data-testid={`result-item-${index}`}
                     >
                       {result.status === 'completed' ? (
-                        <CheckCircle2 className="w-4 h-4 text-[#C9941A]" />
+                        <CheckCircle2 className="w-4 h-4 text-[#E2741B]" />
                       ) : result.status === 'failed' ? (
                         <XCircle className="w-4 h-4 text-red-500" />
                       ) : (
@@ -477,8 +477,8 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-full bg-[#C9941A]/20">
-                  <CheckCircle2 className="w-5 h-5 text-[#C9941A]" />
+                <div className="p-2 rounded-full bg-[#E2741B]/20">
+                  <CheckCircle2 className="w-5 h-5 text-[#E2741B]" />
                 </div>
                 <div>
                   <p className="font-medium text-foreground" data-testid="text-completion-status">
@@ -519,7 +519,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-2">
                             {result.status === 'completed' ? (
-                              <CheckCircle2 className="w-4 h-4 text-[#C9941A]" />
+                              <CheckCircle2 className="w-4 h-4 text-[#E2741B]" />
                             ) : (
                               <XCircle className="w-4 h-4 text-red-500" />
                             )}
@@ -529,7 +529,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
                             <Badge 
                               variant="secondary"
                               className={result.status === 'completed' 
-                                ? 'bg-[#C9941A]/20 text-[#C9941A]' 
+                                ? 'bg-[#E2741B]/20 text-[#E2741B]' 
                                 : 'bg-red-500/20 text-red-400'
                               }
                             >
@@ -589,7 +589,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
                 Download All
               </Button>
               <Button
-                className="flex-1 bg-[#C9941A] hover:bg-orange-600 text-foreground"
+                className="flex-1 bg-[#E2741B] hover:bg-orange-600 text-foreground"
                 data-testid="button-publish-all"
               >
                 <Store className="w-4 h-4 mr-2" />

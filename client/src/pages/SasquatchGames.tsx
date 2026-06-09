@@ -40,7 +40,7 @@ export default function SasquatchGames() {
           <Button
             variant="ghost"
             size="sm"
-            className="text-white/70 hover:text-[#C9941A] mb-6"
+            className="text-white/70 hover:text-[#E2741B] mb-6"
             data-testid="link-back-dashboard"
           >
             <ArrowLeft className="w-4 h-4 mr-2" /> Back to Dashboard
@@ -49,7 +49,7 @@ export default function SasquatchGames() {
 
         {/* Header */}
         <div className="mb-12 text-center">
-          <Badge className="bg-[#C9941A]/15 text-[#C9941A] border-none uppercase tracking-widest text-[10px] font-black mb-4">
+          <Badge className="bg-[#E2741B]/15 text-[#E2741B] border-none uppercase tracking-widest text-[10px] font-black mb-4">
             <Brain className="w-3.5 h-3.5 mr-2" /> Cognitive Recovery
           </Badge>
           <h1
@@ -69,14 +69,14 @@ export default function SasquatchGames() {
         <div className="grid md:grid-cols-2 gap-6 mb-16">
           {BRAIN_GAMES.map((game) => (
             <Link key={game.id} href={game.href} data-testid={`link-game-${game.id}`}>
-              <Card className="bg-[#161616] border-[#C9941A]/20 hover-elevate cursor-pointer overflow-hidden h-full">
+              <Card className="bg-[#161616] border-[#E2741B]/20 hover-elevate cursor-pointer overflow-hidden h-full">
                 <div className={`h-32 bg-gradient-to-br ${game.gradient} relative`}>
                   <game.icon className="w-16 h-16 text-white/40 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
                 </div>
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-2">
                     <h3 className="text-xl font-black tracking-tight">{game.name}</h3>
-                    <ChevronRight className="w-5 h-5 text-[#C9941A] flex-shrink-0" />
+                    <ChevronRight className="w-5 h-5 text-[#E2741B] flex-shrink-0" />
                   </div>
                   <p className="text-sm text-white/60 leading-relaxed mb-4">
                     {game.description}
@@ -85,7 +85,7 @@ export default function SasquatchGames() {
                     {game.benefits.map((b) => (
                       <Badge
                         key={b}
-                        className="bg-[#C9941A]/10 text-[#C9941A] border-none text-[10px] uppercase tracking-wider font-bold"
+                        className="bg-[#E2741B]/10 text-[#E2741B] border-none text-[10px] uppercase tracking-wider font-bold"
                       >
                         {b}
                       </Badge>
@@ -97,9 +97,9 @@ export default function SasquatchGames() {
           ))}
 
           {/* Coming-soon placeholder card so the grid doesn't look empty */}
-          <Card className="bg-[#161616]/50 border-[#C9941A]/10 border-dashed">
+          <Card className="bg-[#161616]/50 border-[#E2741B]/10 border-dashed">
             <div className="h-32 bg-gradient-to-br from-[#1f1f1f] to-[#0f0f0f] relative flex items-center justify-center">
-              <Sparkles className="w-10 h-10 text-[#C9941A]/40" />
+              <Sparkles className="w-10 h-10 text-[#E2741B]/40" />
             </div>
             <CardContent className="p-6">
               <h3 className="text-xl font-black tracking-tight text-white/70 mb-2">
@@ -114,7 +114,7 @@ export default function SasquatchGames() {
         </div>
 
         {/* Why brain games matter */}
-        <div className="border-t border-[#C9941A]/15 pt-12">
+        <div className="border-t border-[#E2741B]/15 pt-12">
           <h2 className="text-2xl font-black tracking-tight mb-2">
             Why brain games matter for stroke recovery
           </h2>
@@ -124,9 +124,9 @@ export default function SasquatchGames() {
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {COGNITIVE_BENEFITS.map((b) => (
-              <Card key={b.name} className="bg-[#161616] border-[#C9941A]/15">
+              <Card key={b.name} className="bg-[#161616] border-[#E2741B]/15">
                 <CardContent className="p-5">
-                  <h3 className="text-sm font-black uppercase tracking-widest text-[#C9941A] mb-2">
+                  <h3 className="text-sm font-black uppercase tracking-widest text-[#E2741B] mb-2">
                     {b.name}
                   </h3>
                   <p className="text-sm text-white/60 leading-relaxed">{b.desc}</p>
@@ -137,7 +137,7 @@ export default function SasquatchGames() {
         </div>
 
         {/* Disclaimer */}
-        <div className="mt-12 p-5 border border-[#C9941A]/20 rounded-md bg-[#161616]">
+        <div className="mt-12 p-5 border border-[#E2741B]/20 rounded-md bg-[#161616]">
           <p className="text-xs text-white/60 leading-relaxed">
             <strong className="text-white">Not a medical device.</strong> Brain games are
             supplemental practice, not a replacement for prescribed cognitive therapy. If you have

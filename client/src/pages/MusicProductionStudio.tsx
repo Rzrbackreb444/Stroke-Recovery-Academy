@@ -120,7 +120,7 @@ export default function MusicProductionStudio() {
 
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="hidden md:flex">
-              <Sparkles className="w-3 h-3 mr-1 text-[#C9941A]" />
+              <Sparkles className="w-3 h-3 mr-1 text-[#E2741B]" />
               AI Powered
             </Badge>
             
@@ -146,7 +146,7 @@ export default function MusicProductionStudio() {
             
             <Button
               size="sm"
-              className="bg-[#C9941A] hover:bg-[#C9941A]"
+              className="bg-[#E2741B] hover:bg-[#E2741B]"
               onClick={handlePublishProject}
               disabled={isPublishing}
               data-testid="button-share"
@@ -163,7 +163,7 @@ export default function MusicProductionStudio() {
               size="sm"
               variant={activeView === "dj" ? "default" : "ghost"}
               onClick={() => setActiveView("dj")}
-              className={activeView === "dj" ? "bg-[#C9941A]" : ""}
+              className={activeView === "dj" ? "bg-[#E2741B]" : ""}
               data-testid="button-view-dj"
             >
               <Disc className="w-4 h-4 mr-2" />
@@ -173,7 +173,7 @@ export default function MusicProductionStudio() {
               size="sm"
               variant={activeView === "production" ? "default" : "ghost"}
               onClick={() => setActiveView("production")}
-              className={activeView === "production" ? "bg-[#C9941A]" : ""}
+              className={activeView === "production" ? "bg-[#E2741B]" : ""}
               data-testid="button-view-production"
             >
               <Sliders className="w-4 h-4 mr-2" />
@@ -183,7 +183,7 @@ export default function MusicProductionStudio() {
               size="sm"
               variant={activeView === "ai" ? "default" : "ghost"}
               onClick={() => setActiveView("ai")}
-              className={activeView === "ai" ? "bg-[#C9941A]" : ""}
+              className={activeView === "ai" ? "bg-[#E2741B]" : ""}
               data-testid="button-view-ai"
             >
               <Sparkles className="w-4 h-4 mr-2" />

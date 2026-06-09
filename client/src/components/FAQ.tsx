@@ -46,7 +46,7 @@ export default function FAQ() {
     <section className="py-20 bg-[#0D0D0D]" id="faq">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
-          <p className="text-[#C9941A] text-sm font-semibold uppercase tracking-widest mb-4" data-testid="badge-faq-category">
+          <p className="text-[#E2741B] text-sm font-semibold uppercase tracking-widest mb-4" data-testid="badge-faq-category">
             Questions Answered
           </p>
           <h2 className="text-4xl sm:text-5xl font-black text-white mb-4" data-testid="text-faq-title">
@@ -65,7 +65,7 @@ export default function FAQ() {
               className="border border-[#1e1e1e] rounded-xl px-6 bg-[#111]"
               data-testid={`faq-item-${index}`}
             >
-              <AccordionTrigger className="text-left font-semibold text-white hover:no-underline hover:text-[#C9941A] transition-colors py-5">
+              <AccordionTrigger className="text-left font-semibold text-white hover:no-underline hover:text-[#E2741B] transition-colors py-5">
                 {faq.question}
               </AccordionTrigger>
               <AccordionContent className="text-gray-400 leading-relaxed pt-0 pb-5">

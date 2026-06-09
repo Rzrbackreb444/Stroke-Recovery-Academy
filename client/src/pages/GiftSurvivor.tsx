@@ -31,7 +31,7 @@ const GIFT_TIERS = [
       "All protocols & lessons",
     ],
     icon: Zap,
-    color: "#C9941A",
+    color: "#E2741B",
   },
   {
     id: "mentored",
@@ -48,7 +48,7 @@ const GIFT_TIERS = [
       "Real momentum, real change",
     ],
     icon: Star,
-    color: "#C9941A",
+    color: "#E2741B",
     popular: true,
   },
   {
@@ -151,7 +151,7 @@ export default function GiftSurvivor() {
               : `Your gift has been sent to ${recipientEmail}. They'll receive an email with access instructions. You just changed a warrior's trajectory.`}
           </p>
           <p className="text-xs text-gray-600 mb-6">A tax receipt will be sent to {donorEmail}. Stroke Lyfe Inc. is a registered 501(c)(3) nonprofit.</p>
-          <Button className="bg-[#C9941A] text-black font-black" onClick={() => window.location.href = "/recovery"}>
+          <Button className="bg-[#E2741B] text-black font-black" onClick={() => window.location.href = "/recovery"}>
             Back to Recovery OS
           </Button>
         </div>
@@ -192,14 +192,14 @@ export default function GiftSurvivor() {
             />
           </div>
 
-          <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-5 uppercase tracking-widest text-xs">
+          <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 mb-5 uppercase tracking-widest text-xs">
             <Heart className="h-3 w-3 mr-1" />
             Stroke Lyfe Inc. — 501(c)(3) Nonprofit
           </Badge>
 
           <h1 className="text-4xl md:text-5xl font-black text-white mb-4 leading-tight">
             Gift a Survivor<br />
-            <span style={{ color: "#C9941A" }}>Their Second Chance.</span>
+            <span style={{ color: "#E2741B" }}>Their Second Chance.</span>
           </h1>
 
           <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-6 leading-relaxed">
@@ -219,7 +219,7 @@ export default function GiftSurvivor() {
         <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 px-4 text-center">
           {IMPACT_STATS.map(({ value, label }) => (
             <div key={label}>
-              <div className="text-2xl font-black text-[#C9941A]">{value}</div>
+              <div className="text-2xl font-black text-[#E2741B]">{value}</div>
               <div className="text-xs text-gray-400 mt-0.5">{label}</div>
             </div>
           ))}
@@ -233,7 +233,7 @@ export default function GiftSurvivor() {
           {/* Step 1 — Choose tier */}
           <div className="mb-10">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-7 h-7 rounded-full bg-[#C9941A] text-black font-black text-sm flex items-center justify-center flex-shrink-0">1</div>
+              <div className="w-7 h-7 rounded-full bg-[#E2741B] text-black font-black text-sm flex items-center justify-center flex-shrink-0">1</div>
               <h2 className="text-xl font-black text-white">Choose the gift</h2>
             </div>
 
@@ -247,19 +247,19 @@ export default function GiftSurvivor() {
                     onClick={() => setSelectedTier(tier.id)}
                     className={`text-left rounded-lg border p-5 transition-all relative ${
                       isSelected
-                        ? "border-[#C9941A] bg-[#C9941A]/10"
+                        ? "border-[#E2741B] bg-[#E2741B]/10"
                         : "border-[#333] bg-[#1a1a1a] hover:border-[#555]"
                     }`}
                     data-testid={`button-tier-${tier.id}`}
                   >
                     {tier.popular && (
                       <div className="absolute -top-2.5 left-4">
-                        <Badge className="bg-[#C9941A] text-black text-xs font-black">Most Gifted</Badge>
+                        <Badge className="bg-[#E2741B] text-black text-xs font-black">Most Gifted</Badge>
                       </div>
                     )}
                     {isSelected && (
                       <div className="absolute top-3 right-3">
-                        <CheckCircle className="h-5 w-5 text-[#C9941A]" />
+                        <CheckCircle className="h-5 w-5 text-[#E2741B]" />
                       </div>
                     )}
                     <div className="flex items-center gap-2 mb-3">
@@ -286,7 +286,7 @@ export default function GiftSurvivor() {
           {/* Step 2 — Who gets it */}
           <div className="mb-10">
             <div className="flex items-center gap-3 mb-6">
-              <div className={`w-7 h-7 rounded-full font-black text-sm flex items-center justify-center flex-shrink-0 ${selectedTier ? "bg-[#C9941A] text-black" : "bg-[#333] text-gray-500"}`}>2</div>
+              <div className={`w-7 h-7 rounded-full font-black text-sm flex items-center justify-center flex-shrink-0 ${selectedTier ? "bg-[#E2741B] text-black" : "bg-[#333] text-gray-500"}`}>2</div>
               <h2 className={`text-xl font-black ${selectedTier ? "text-white" : "text-gray-600"}`}>Who gets the gift?</h2>
             </div>
 
@@ -296,19 +296,19 @@ export default function GiftSurvivor() {
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={() => setRecipientMode("specific")}
-                    className={`rounded-lg border p-4 text-left transition-all ${recipientMode === "specific" ? "border-[#C9941A] bg-[#C9941A]/10" : "border-[#333] bg-[#1a1a1a]"}`}
+                    className={`rounded-lg border p-4 text-left transition-all ${recipientMode === "specific" ? "border-[#E2741B] bg-[#E2741B]/10" : "border-[#333] bg-[#1a1a1a]"}`}
                     data-testid="button-mode-specific"
                   >
-                    <Gift className="h-5 w-5 text-[#C9941A] mb-2" />
+                    <Gift className="h-5 w-5 text-[#E2741B] mb-2" />
                     <p className="font-bold text-white text-sm">Gift to someone I know</p>
                     <p className="text-xs text-gray-400">Send directly to a specific survivor's email</p>
                   </button>
                   <button
                     onClick={() => setRecipientMode("fund")}
-                    className={`rounded-lg border p-4 text-left transition-all ${recipientMode === "fund" ? "border-[#C9941A] bg-[#C9941A]/10" : "border-[#333] bg-[#1a1a1a]"}`}
+                    className={`rounded-lg border p-4 text-left transition-all ${recipientMode === "fund" ? "border-[#E2741B] bg-[#E2741B]/10" : "border-[#333] bg-[#1a1a1a]"}`}
                     data-testid="button-mode-fund"
                   >
-                    <Users className="h-5 w-5 text-[#C9941A] mb-2" />
+                    <Users className="h-5 w-5 text-[#E2741B] mb-2" />
                     <p className="font-bold text-white text-sm">Donate to the Survivor Fund</p>
                     <p className="text-xs text-gray-400">Stroke Lyfe Inc. selects a survivor in need</p>
                   </button>
@@ -332,7 +332,7 @@ export default function GiftSurvivor() {
                 {recipientMode === "fund" && (
                   <Card className="bg-[#1a1a1a] border-[#333]">
                     <CardContent className="p-4 flex gap-3 items-start">
-                      <Heart className="h-5 w-5 text-[#C9941A] flex-shrink-0 mt-0.5" />
+                      <Heart className="h-5 w-5 text-[#E2741B] flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="text-sm font-bold text-white mb-1">How the Survivor Fund works</p>
                         <p className="text-xs text-gray-400 leading-relaxed">
@@ -363,7 +363,7 @@ export default function GiftSurvivor() {
           {/* Step 3 — Your info + pay */}
           <div className="mb-10">
             <div className="flex items-center gap-3 mb-6">
-              <div className={`w-7 h-7 rounded-full font-black text-sm flex items-center justify-center flex-shrink-0 ${selectedTier ? "bg-[#C9941A] text-black" : "bg-[#333] text-gray-500"}`}>3</div>
+              <div className={`w-7 h-7 rounded-full font-black text-sm flex items-center justify-center flex-shrink-0 ${selectedTier ? "bg-[#E2741B] text-black" : "bg-[#333] text-gray-500"}`}>3</div>
               <h2 className={`text-xl font-black ${selectedTier ? "text-white" : "text-gray-600"}`}>Your information</h2>
             </div>
 
@@ -411,7 +411,7 @@ export default function GiftSurvivor() {
                 </div>
 
                 <Button
-                  className="bg-[#C9941A] text-black font-black text-lg px-8 py-5"
+                  className="bg-[#E2741B] text-black font-black text-lg px-8 py-5"
                   onClick={handleGift}
                   disabled={giftMutation.isPending || !donorEmail}
                   data-testid="button-complete-gift"
@@ -423,9 +423,9 @@ export default function GiftSurvivor() {
               </div>
 
               <div className="flex flex-wrap gap-4 mt-4 text-xs text-gray-500">
-                <span className="flex items-center gap-1"><Shield className="h-3 w-3 text-[#C9941A]" />Secure payment via Stripe</span>
-                <span className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-[#C9941A]" />Tax-deductible receipt emailed</span>
-                <span className="flex items-center gap-1"><Heart className="h-3 w-3 text-[#C9941A]" />100% to survivor access</span>
+                <span className="flex items-center gap-1"><Shield className="h-3 w-3 text-[#E2741B]" />Secure payment via Stripe</span>
+                <span className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-[#E2741B]" />Tax-deductible receipt emailed</span>
+                <span className="flex items-center gap-1"><Heart className="h-3 w-3 text-[#E2741B]" />100% to survivor access</span>
               </div>
             </div>
           )}
@@ -440,7 +440,7 @@ export default function GiftSurvivor() {
               <img src={strokeLyfeLogo} alt="Stroke Lyfe Inc." className="h-16 mb-6 opacity-90" />
               <h2 className="text-2xl font-black text-white mb-4">
                 Stroke Lyfe Inc.<br />
-                <span style={{ color: "#C9941A" }}>Rebuild. Rewire. Rise.</span>
+                <span style={{ color: "#E2741B" }}>Rebuild. Rewire. Rise.</span>
               </h2>
               <p className="text-gray-400 text-sm leading-relaxed mb-4">
                 Founded by Nick Kremers after his own stroke at 36, Stroke Lyfe Inc. exists to make 
@@ -464,7 +464,7 @@ export default function GiftSurvivor() {
                 { title: "Recurring giving available", desc: "Sponsor a warrior monthly — give the habit while building one yourself." },
               ].map(({ title, desc }) => (
                 <div key={title} className="flex gap-3">
-                  <CheckCircle className="h-5 w-5 text-[#C9941A] flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="h-5 w-5 text-[#E2741B] flex-shrink-0 mt-0.5" />
                   <div>
                     <p className="font-bold text-white text-sm">{title}</p>
                     <p className="text-xs text-gray-400 leading-relaxed">{desc}</p>
@@ -481,7 +481,7 @@ export default function GiftSurvivor() {
         <p className="text-gray-400 text-sm mb-2">
           Questions? Contact the Stroke Lyfe nonprofit team:
         </p>
-        <a href="mailto:support@strokelyfe.org" className="text-[#C9941A] text-sm font-semibold hover:underline">
+        <a href="mailto:support@strokelyfe.org" className="text-[#E2741B] text-sm font-semibold hover:underline">
           support@strokelyfe.org
         </a>
         <p className="text-gray-600 text-xs mt-4">

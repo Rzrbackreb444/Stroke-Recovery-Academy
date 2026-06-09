@@ -265,7 +265,7 @@ function Thumbnail({ content, pageNumber, isActive, onClick, isCover, coverImage
       )}
       <div className={cn(
         "absolute bottom-0.5 right-0.5 text-[8px] px-1 rounded",
-        isActive ? "bg-[#C9941A] text-foreground" : "bg-gray-200 text-gray-600"
+        isActive ? "bg-[#E2741B] text-foreground" : "bg-gray-200 text-gray-600"
       )}>
         {pageNumber}
       </div>

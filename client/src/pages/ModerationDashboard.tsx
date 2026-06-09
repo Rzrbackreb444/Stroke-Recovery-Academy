@@ -83,14 +83,14 @@ const REASON_LABELS: Record<string, { label: string; icon: typeof Flag }> = {
 const STATUS_BADGES: Record<string, { className: string; label: string }> = {
   pending: { className: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30", label: "Pending" },
   reviewed: { className: "bg-blue-500/20 text-blue-400 border-blue-500/30", label: "Reviewed" },
-  resolved: { className: "bg-[#C9941A]/20 text-[#C9941A] border-green-500/30", label: "Resolved" },
+  resolved: { className: "bg-[#E2741B]/20 text-[#E2741B] border-green-500/30", label: "Resolved" },
 };
 
 const MODERATION_STATUS_BADGES: Record<string, { className: string; label: string }> = {
   pending: { className: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30", label: "Pending" },
-  approved: { className: "bg-[#C9941A]/20 text-[#C9941A] border-green-500/30", label: "Approved" },
+  approved: { className: "bg-[#E2741B]/20 text-[#E2741B] border-green-500/30", label: "Approved" },
   rejected: { className: "bg-red-500/20 text-red-400 border-red-500/30", label: "Rejected" },
-  flagged: { className: "bg-primary/20 text-[#C9941A] border", label: "Flagged" },
+  flagged: { className: "bg-primary/20 text-[#E2741B] border", label: "Flagged" },
 };
 
 export default function ModerationDashboard() {
@@ -272,8 +272,8 @@ export default function ModerationDashboard() {
           </Card>
           <Card className="bg-[#1a1a1a] border-[#333]">
             <CardContent className="p-4 flex items-center gap-4">
-              <div className="p-3 bg-[#C9941A]/10 rounded-lg">
-                <Check className="w-6 h-6 text-[#C9941A]" />
+              <div className="p-3 bg-[#E2741B]/10 rounded-lg">
+                <Check className="w-6 h-6 text-[#E2741B]" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground" data-testid="text-resolved-count">{resolvedCount}</p>
@@ -360,7 +360,7 @@ export default function ModerationDashboard() {
                             <Button
                               size="sm"
                               onClick={() => handleQuickAction(item.listing!.id, "approve")}
-                              className="bg-[#C9941A] hover:bg-[#C9941A]/80 text-foreground"
+                              className="bg-[#E2741B] hover:bg-[#E2741B]/80 text-foreground"
                               disabled={updateListingMutation.isPending}
                               data-testid={`button-approve-${item.report.id}`}
                             >
@@ -372,7 +372,7 @@ export default function ModerationDashboard() {
                               size="sm"
                               variant="outline"
                               onClick={() => handleQuickAction(item.listing!.id, "flag")}
-                              className="border-orange-600 text-[#C9941A] hover:bg-[#C9941A]/20"
+                              className="border-orange-600 text-[#E2741B] hover:bg-[#E2741B]/20"
                               disabled={updateListingMutation.isPending}
                               data-testid={`button-flag-${item.report.id}`}
                             >
@@ -473,7 +473,7 @@ export default function ModerationDashboard() {
                 </>
               ) : (
                 <>
-                  <AlertTriangle className="w-5 h-5 text-[#C9941A]" />
+                  <AlertTriangle className="w-5 h-5 text-[#E2741B]" />
                   Flag for Review
                 </>
               )}
@@ -511,7 +511,7 @@ export default function ModerationDashboard() {
             <Button
               onClick={handleConfirmModeration}
               disabled={updateListingMutation.isPending}
-              className={moderationDialog.action === "reject" ? "bg-red-600 hover:bg-red-700" : "bg-[#C9941A] hover:bg-orange-700"}
+              className={moderationDialog.action === "reject" ? "bg-red-600 hover:bg-red-700" : "bg-[#E2741B] hover:bg-orange-700"}
               data-testid="button-confirm-moderation"
             >
               {updateListingMutation.isPending ? "Processing..." : "Confirm"}

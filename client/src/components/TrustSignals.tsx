@@ -173,7 +173,7 @@ export function ExpertiseBadge({
   area: string;
 }) {
   const colors = {
-    beginner: 'bg-[#C9941A]/10 text-[#C9941A] border-green-500/20',
+    beginner: 'bg-[#E2741B]/10 text-[#E2741B] border-green-500/20',
     intermediate: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
     expert: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
     master: 'bg-amber-500/10 text-amber-500 border-amber-500/20',

@@ -87,7 +87,7 @@ export default function TherapistHoursSettings() {
       <div className="min-h-screen bg-[#0D0D0D] text-white">
         <RecoveryHeader />
         <div className="max-w-xl mx-auto px-4 py-12 text-center space-y-3">
-          <Stethoscope className="w-12 h-12 text-[#C9941A] mx-auto" />
+          <Stethoscope className="w-12 h-12 text-[#E2741B] mx-auto" />
           <h1 className="text-xl font-semibold">Verified therapists only</h1>
           <p className="text-gray-400 text-sm">
             Apply to become a verified therapist to set your open hours.
@@ -103,11 +103,11 @@ export default function TherapistHoursSettings() {
       <main className="max-w-3xl mx-auto px-4 py-8 space-y-6">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2" data-testid="text-page-title">
-            <Stethoscope className="w-7 h-7 text-[#C9941A]" /> Therapist Open Hours
+            <Stethoscope className="w-7 h-7 text-[#E2741B]" /> Therapist Open Hours
           </h1>
           <p className="text-gray-400 mt-1 text-sm">
             Survivors see this in your direct messages so they know when to expect a reply.
-            Use 24-hour time, e.g. <code className="text-[#C9941A]">09:00-12:00</code>. Times are local.
+            Use 24-hour time, e.g. <code className="text-[#E2741B]">09:00-12:00</code>. Times are local.
           </p>
         </div>
 
@@ -148,7 +148,7 @@ export default function TherapistHoursSettings() {
                   <Button
                     size="sm" variant="ghost"
                     onClick={() => addWindow(d.key)}
-                    className="text-[#C9941A]"
+                    className="text-[#E2741B]"
                     data-testid={`button-add-${d.key}`}
                   >
                     <Plus className="w-4 h-4 mr-1" /> Add window
@@ -162,7 +162,7 @@ export default function TherapistHoursSettings() {
         <Button
           onClick={() => save.mutate()}
           disabled={save.isPending}
-          className="bg-[#C9941A] text-black hover:bg-[#C9941A]/90"
+          className="bg-[#E2741B] text-black hover:bg-[#E2741B]/90"
           data-testid="button-save-hours"
         >
           <Save className="w-4 h-4 mr-2" />

@@ -224,7 +224,7 @@ export default function SocialNetwork() {
                 <div className="flex gap-4">
                   <Avatar className="w-12 h-12">
                     <AvatarImage src={user?.profileImageUrl ?? undefined} />
-                    <AvatarFallback className="bg-gray-700 text-[#C9941A]">
+                    <AvatarFallback className="bg-gray-700 text-[#E2741B]">
                       {user?.firstName?.[0]}{user?.lastName?.[0]}
                     </AvatarFallback>
                   </Avatar>
@@ -276,7 +276,7 @@ export default function SocialNetwork() {
               <TabsContent value="feed" className="mt-6 space-y-4">
                 {feedLoading ? (
                   <div className="flex justify-center py-12">
-                    <Loader2 className="w-8 h-8 text-[#C9941A] animate-spin" />
+                    <Loader2 className="w-8 h-8 text-[#E2741B] animate-spin" />
                   </div>
                 ) : feed && feed.length > 0 ? (
                   feed.map((post) => (
@@ -285,7 +285,7 @@ export default function SocialNetwork() {
                         <div className="flex items-start gap-4">
                           <Avatar className="w-12 h-12">
                             <AvatarImage src={post.author?.profileImageUrl} />
-                            <AvatarFallback className="bg-gray-700 text-[#C9941A]">
+                            <AvatarFallback className="bg-gray-700 text-[#E2741B]">
                               {post.author?.firstName?.[0]}{post.author?.lastName?.[0]}
                             </AvatarFallback>
                           </Avatar>
@@ -319,7 +319,7 @@ export default function SocialNetwork() {
                                 <Heart className={`w-5 h-5 ${post.hasLiked ? "fill-current" : ""}`} />
                                 <span>{post.likeCount}</span>
                               </button>
-                              <button className="flex items-center gap-2 text-gray-400 hover:text-[#C9941A] transition-colors">
+                              <button className="flex items-center gap-2 text-gray-400 hover:text-[#E2741B] transition-colors">
                                 <MessageCircle className="w-5 h-5" />
                                 <span>{post.commentCount}</span>
                               </button>
@@ -328,7 +328,7 @@ export default function SocialNetwork() {
                                   setSelectedPost(post);
                                   setShareDialogOpen(true);
                                 }}
-                                className="flex items-center gap-2 text-gray-400 hover:text-[#C9941A] transition-colors"
+                                className="flex items-center gap-2 text-gray-400 hover:text-[#E2741B] transition-colors"
                               >
                                 <Share2 className="w-5 h-5" />
                                 <span>{post.shareCount}</span>
@@ -357,7 +357,7 @@ export default function SocialNetwork() {
                           <div className="flex items-center gap-3">
                             <Avatar className="w-12 h-12">
                               <AvatarImage src={follower.profileImageUrl} />
-                              <AvatarFallback className="bg-gray-700 text-[#C9941A]">
+                              <AvatarFallback className="bg-gray-700 text-[#E2741B]">
                                 {follower.firstName?.[0]}{follower.lastName?.[0]}
                               </AvatarFallback>
                             </Avatar>
@@ -399,7 +399,7 @@ export default function SocialNetwork() {
                           <div className="flex items-center gap-3">
                             <Avatar className="w-12 h-12">
                               <AvatarImage src={followed.profileImageUrl} />
-                              <AvatarFallback className="bg-gray-700 text-[#C9941A]">
+                              <AvatarFallback className="bg-gray-700 text-[#E2741B]">
                                 {followed.firstName?.[0]}{followed.lastName?.[0]}
                               </AvatarFallback>
                             </Avatar>
@@ -457,7 +457,7 @@ export default function SocialNetwork() {
                       <div className="flex items-center gap-3">
                         <Avatar className="w-10 h-10">
                           <AvatarImage src={u.profileImageUrl} />
-                          <AvatarFallback className="bg-gray-700 text-[#C9941A]">
+                          <AvatarFallback className="bg-gray-700 text-[#E2741B]">
                             {u.firstName?.[0]}{u.lastName?.[0]}
                           </AvatarFallback>
                         </Avatar>
@@ -514,18 +514,18 @@ export default function SocialNetwork() {
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
                         rank === 1 ? "bg-yellow-500/20 text-yellow-500" :
                         rank === 2 ? "bg-gray-400/20 text-gray-400" :
-                        "bg-primary/20 text-[#C9941A]"
+                        "bg-primary/20 text-[#E2741B]"
                       }`}>
                         {rank}
                       </div>
                       <Avatar className="w-10 h-10">
-                        <AvatarFallback className="bg-gray-700 text-[#C9941A]">
+                        <AvatarFallback className="bg-gray-700 text-[#E2741B]">
                           U{rank}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
                         <p className="text-white text-sm font-medium">Top Survivor {rank}</p>
-                        <div className="flex items-center gap-1 text-[#C9941A] text-xs">
+                        <div className="flex items-center gap-1 text-[#E2741B] text-xs">
                           <Flame className="w-3 h-3" />
                           {100 - rank * 10} day streak
                         </div>

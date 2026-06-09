@@ -30,17 +30,17 @@ export default function GlobalHeader() {
 
   return (
     <nav
-      className="h-16 border-b border-[#C9941A]/15 px-4 sm:px-6 lg:px-8 flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur-xl z-[100] font-sans shadow-sm"
+      className="h-16 border-b border-[#E2741B]/15 px-4 sm:px-6 lg:px-8 flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur-xl z-[100] font-sans shadow-sm"
       data-testid="global-header"
     >
       {/* Brand wordmark */}
       <div className="flex items-center gap-8">
         <Link href="/" data-testid="link-brand-home">
           <div className="flex flex-col leading-tight cursor-pointer group">
-            <span className="text-base sm:text-lg font-black tracking-tight uppercase text-[#0D0D0D] group-hover:text-[#C9941A] transition-colors">
+            <span className="text-base sm:text-lg font-black tracking-tight uppercase text-[#0D0D0D] group-hover:text-[#E2741B] transition-colors">
               Stroke Recovery Academy
             </span>
-            <span className="text-[9px] uppercase tracking-[0.3em] font-bold text-[#C9941A]/80">
+            <span className="text-[9px] uppercase tracking-[0.3em] font-bold text-[#E2741B]/80">
               By Nick Kremers · 7-Year Survivor
             </span>
           </div>
@@ -50,7 +50,7 @@ export default function GlobalHeader() {
         <div className="hidden lg:flex items-center gap-6 text-[11px] uppercase tracking-[0.18em] font-bold text-black/70">
           <Link
             href="/recovery/dashboard"
-            className="flex items-center gap-2 hover:text-[#C9941A] transition-colors"
+            className="flex items-center gap-2 hover:text-[#E2741B] transition-colors"
             data-testid="link-nav-dashboard"
           >
             <Activity className="w-3.5 h-3.5" /> Dashboard
@@ -58,12 +58,12 @@ export default function GlobalHeader() {
 
           <DropdownMenu>
             <DropdownMenuTrigger
-              className="flex items-center gap-2 hover:text-[#C9941A] transition-colors outline-none"
+              className="flex items-center gap-2 hover:text-[#E2741B] transition-colors outline-none"
               data-testid="dropdown-nav-recovery"
             >
               <GraduationCap className="w-3.5 h-3.5" /> Recovery <ChevronDown className="w-3 h-3" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-white border-[#C9941A]/20 shadow-2xl p-2 w-60">
+            <DropdownMenuContent className="bg-white border-[#E2741B]/20 shadow-2xl p-2 w-60">
               <DropdownMenuItem className="cursor-pointer text-[11px] font-bold uppercase py-3" onClick={() => navigate('/recovery/academy')}>
                 Recovery Academy
               </DropdownMenuItem>
@@ -87,12 +87,12 @@ export default function GlobalHeader() {
 
           <DropdownMenu>
             <DropdownMenuTrigger
-              className="flex items-center gap-2 hover:text-[#C9941A] transition-colors outline-none"
+              className="flex items-center gap-2 hover:text-[#E2741B] transition-colors outline-none"
               data-testid="dropdown-nav-programs"
             >
               <Brain className="w-3.5 h-3.5" /> Programs <ChevronDown className="w-3 h-3" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-white border-[#C9941A]/20 shadow-2xl p-2 w-60">
+            <DropdownMenuContent className="bg-white border-[#E2741B]/20 shadow-2xl p-2 w-60">
               <DropdownMenuItem className="cursor-pointer text-[11px] font-bold uppercase py-3" onClick={() => navigate('/programs/sasquatch-method')}>
                 The Sasquatch Method
               </DropdownMenuItem>
@@ -110,7 +110,7 @@ export default function GlobalHeader() {
 
           <Link
             href="/recovery/community"
-            className="flex items-center gap-2 hover:text-[#C9941A] transition-colors"
+            className="flex items-center gap-2 hover:text-[#E2741B] transition-colors"
             data-testid="link-nav-community"
           >
             <Users className="w-3.5 h-3.5" /> Community
@@ -118,7 +118,7 @@ export default function GlobalHeader() {
 
           <Link
             href="/store"
-            className="flex items-center gap-2 hover:text-[#C9941A] transition-colors"
+            className="flex items-center gap-2 hover:text-[#E2741B] transition-colors"
             data-testid="link-nav-store"
           >
             <ShoppingBag className="w-3.5 h-3.5" /> Survivor Shop
@@ -128,7 +128,7 @@ export default function GlobalHeader() {
 
       {/* Right cluster */}
       <div className="flex items-center gap-3">
-        <Badge className="hidden md:inline-flex bg-[#C9941A]/10 text-[#C9941A] border-none text-[9px] uppercase px-3 py-1 font-black tracking-widest">
+        <Badge className="hidden md:inline-flex bg-[#E2741B]/10 text-[#E2741B] border-none text-[9px] uppercase px-3 py-1 font-black tracking-widest">
           <Heart className="w-3 h-3 mr-1.5" /> Built By A Survivor
         </Badge>
 
@@ -145,7 +145,7 @@ export default function GlobalHeader() {
         <Button
           variant="default"
           size="sm"
-          className="hidden sm:inline-flex bg-[#C9941A] text-black font-bold uppercase tracking-wider text-[11px] hover:bg-[#C9941A]/90"
+          className="hidden sm:inline-flex bg-[#E2741B] text-black font-bold uppercase tracking-wider text-[11px] hover:bg-[#E2741B]/90"
           onClick={() => navigate('/recovery/dashboard')}
           data-testid="button-start-recovery"
         >
@@ -165,7 +165,7 @@ export default function GlobalHeader() {
               <Menu className="w-5 h-5" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-white border-[#C9941A]/20 shadow-2xl p-2 w-56">
+          <DropdownMenuContent className="bg-white border-[#E2741B]/20 shadow-2xl p-2 w-56">
             <DropdownMenuItem className="cursor-pointer font-semibold py-3" onClick={() => navigate('/recovery/dashboard')}>Dashboard</DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer font-semibold py-3" onClick={() => navigate('/recovery/academy')}>Recovery Academy</DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer font-semibold py-3" onClick={() => navigate('/recovery/exercises')}>Exercises</DropdownMenuItem>

@@ -173,10 +173,10 @@ const curriculumParts = [
 ];
 
 const tierConfig: Record<string, { name: string; icon: typeof Star; color: string }> = {
-  explorer: { name: "Explorer", icon: Star, color: "text-[#C9941A]" },
-  warrior: { name: "Warrior", icon: Shield, color: "text-[#C9941A]" },
-  champion: { name: "Champion", icon: Crown, color: "text-[#C9941A]" },
-  platinum: { name: "Platinum", icon: Sparkles, color: "text-[#C9941A]" },
+  explorer: { name: "Explorer", icon: Star, color: "text-[#E2741B]" },
+  warrior: { name: "Warrior", icon: Shield, color: "text-[#E2741B]" },
+  champion: { name: "Champion", icon: Crown, color: "text-[#E2741B]" },
+  platinum: { name: "Platinum", icon: Sparkles, color: "text-[#E2741B]" },
 };
 
 function getRecoveryTier(subscriptionTier?: string | null): string {
@@ -315,7 +315,7 @@ export default function RecoveryUniversity() {
       <header className="bg-[#0D0D0D] border-b border-[#333] py-4 px-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <GraduationCap className="w-8 h-8 text-[#C9941A]" />
+            <GraduationCap className="w-8 h-8 text-[#E2741B]" />
             <span className="text-xl font-bold text-white">Recovery University</span>
           </div>
           <Link href="/recovery">
@@ -330,27 +330,27 @@ export default function RecoveryUniversity() {
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row gap-8 items-start">
             <div className="flex-1">
-              <Badge className="mb-4 bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30" data-testid="badge-recovery-university">
+              <Badge className="mb-4 bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30" data-testid="badge-recovery-university">
                 <GraduationCap className="w-3 h-3 mr-1" />
                 Recovery University
               </Badge>
               <h1 className="text-4xl md:text-5xl font-black mb-4 text-white" data-testid="heading-university">
-                The Ultimate Stroke Recovery <span className="text-[#C9941A]">Bible</span>
+                The Ultimate Stroke Recovery <span className="text-[#E2741B]">Bible</span>
               </h1>
               <p className="text-xl text-gray-400 mb-6" data-testid="text-university-subtitle">
                 7 Parts. 33 Chapters. From 0% to 90% - Your complete guide to extraordinary recovery.
               </p>
               <div className="flex flex-wrap gap-4 text-sm text-gray-400">
                 <div className="flex items-center gap-2" data-testid="stat-chapters">
-                  <BookOpen className="w-4 h-4 text-[#C9941A]" />
+                  <BookOpen className="w-4 h-4 text-[#E2741B]" />
                   <span>{getTotalChapters()} Chapters</span>
                 </div>
                 <div className="flex items-center gap-2" data-testid="stat-duration">
-                  <Clock className="w-4 h-4 text-[#C9941A]" />
+                  <Clock className="w-4 h-4 text-[#E2741B]" />
                   <span>{Math.round(getTotalMinutes() / 60)} Hours</span>
                 </div>
                 <div className="flex items-center gap-2" data-testid="stat-author">
-                  <Trophy className="w-4 h-4 text-[#C9941A]" />
+                  <Trophy className="w-4 h-4 text-[#E2741B]" />
                   <span>By Nick Kremers</span>
                 </div>
               </div>
@@ -368,7 +368,7 @@ export default function RecoveryUniversity() {
                         <span className="text-gray-400">Chapters Completed</span>
                         <span className="font-bold text-white" data-testid="text-progress-count">{completedChapters}/{getTotalChapters()}</span>
                       </div>
-                      <Progress value={progressPercentage} className="h-2 bg-[#333] [&>div]:bg-[#C9941A]" data-testid="progress-bar" />
+                      <Progress value={progressPercentage} className="h-2 bg-[#333] [&>div]:bg-[#E2741B]" data-testid="progress-bar" />
                     </div>
                     <div className="flex items-center gap-2 p-3 rounded-lg bg-[#0D0D0D] border border-[#333]">
                       {(() => {
@@ -383,7 +383,7 @@ export default function RecoveryUniversity() {
                         );
                       })()}
                       <Link href="/recovery/pricing" className="ml-auto">
-                        <Button variant="ghost" size="sm" className="text-[#C9941A] hover:bg-[#C9941A]/10" data-testid="button-upgrade">
+                        <Button variant="ghost" size="sm" className="text-[#E2741B] hover:bg-[#E2741B]/10" data-testid="button-upgrade">
                           Upgrade
                         </Button>
                       </Link>
@@ -400,7 +400,7 @@ export default function RecoveryUniversity() {
         <div className="max-w-6xl mx-auto">
           <div className="mb-6">
             <h2 className="text-2xl font-bold mb-2 text-white" data-testid="heading-phases">
-              Nick Kremers' <span className="text-[#C9941A]">66-Day Recovery Revolution</span>
+              Nick Kremers' <span className="text-[#E2741B]">66-Day Recovery Revolution</span>
             </h2>
             <p className="text-gray-400">
               Follow the battle-tested three-phase system from "The Ultimate Stroke Recovery Revolution"
@@ -412,8 +412,8 @@ export default function RecoveryUniversity() {
               variant={activePhase === "all" ? "default" : "outline"}
               onClick={() => setActivePhase("all")}
               className={activePhase === "all" 
-                ? "bg-[#C9941A] hover:bg-[#C9941A]/90 text-black border-[#C9941A]" 
-                : "border-[#333] text-[#C9941A] hover:bg-[#1a1a1a]"}
+                ? "bg-[#E2741B] hover:bg-[#E2741B]/90 text-black border-[#E2741B]" 
+                : "border-[#333] text-[#E2741B] hover:bg-[#1a1a1a]"}
               data-testid="tab-all-phases"
             >
               <BookOpen className="w-4 h-4 mr-2" />
@@ -428,8 +428,8 @@ export default function RecoveryUniversity() {
                   variant={isActive ? "default" : "outline"}
                   onClick={() => setActivePhase(phase.id)}
                   className={isActive 
-                    ? "bg-[#C9941A] hover:bg-[#C9941A]/90 text-black border-[#C9941A]" 
-                    : "border-[#333] text-[#C9941A] hover:bg-[#1a1a1a]"}
+                    ? "bg-[#E2741B] hover:bg-[#E2741B]/90 text-black border-[#E2741B]" 
+                    : "border-[#333] text-[#E2741B] hover:bg-[#1a1a1a]"}
                   data-testid={`tab-phase-${phase.id}`}
                 >
                   <PhaseIcon className="w-4 h-4 mr-2" />
@@ -447,19 +447,19 @@ export default function RecoveryUniversity() {
               return (
                 <Card 
                   key={phase.id}
-                  className={`cursor-pointer transition-all bg-[#1a1a1a] border border-[#333] ${isActive ? 'ring-2 ring-[#C9941A] border-[#C9941A]' : 'hover-elevate'}`}
+                  className={`cursor-pointer transition-all bg-[#1a1a1a] border border-[#333] ${isActive ? 'ring-2 ring-[#E2741B] border-[#E2741B]' : 'hover-elevate'}`}
                   onClick={() => setActivePhase(phase.id)}
                   data-testid={`card-phase-${phase.id}`}
                 >
                   <CardHeader className="pb-2">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center bg-[#C9941A]/15">
-                        <PhaseIcon className="w-5 h-5 text-[#C9941A]" />
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center bg-[#E2741B]/15">
+                        <PhaseIcon className="w-5 h-5 text-[#E2741B]" />
                       </div>
                       <div>
                         <Badge 
                           variant="outline" 
-                          className="mb-1 border-[#C9941A]/50 text-[#C9941A] bg-[#C9941A]/10"
+                          className="mb-1 border-[#E2741B]/50 text-[#E2741B] bg-[#E2741B]/10"
                           data-testid={`badge-phase-days-${phase.id}`}
                         >
                           {phase.days}
@@ -472,7 +472,7 @@ export default function RecoveryUniversity() {
                     <p className="text-sm text-gray-400 mb-2" data-testid={`text-phase-focus-${phase.id}`}>
                       <strong className="text-white">Focus:</strong> {phase.focus}
                     </p>
-                    <p className="text-sm italic text-[#C9941A] mb-3" data-testid={`text-phase-mindset-${phase.id}`}>
+                    <p className="text-sm italic text-[#E2741B] mb-3" data-testid={`text-phase-mindset-${phase.id}`}>
                       "{phase.mindset}"
                     </p>
                     <div className="space-y-2">
@@ -480,9 +480,9 @@ export default function RecoveryUniversity() {
                         <span className="text-gray-400">Phase Progress</span>
                         <span className="font-semibold text-white" data-testid={`text-phase-progress-${phase.id}`}>{phaseProgress}%</span>
                       </div>
-                      <div className="h-2 rounded-full overflow-hidden bg-[#C9941A]/20">
+                      <div className="h-2 rounded-full overflow-hidden bg-[#E2741B]/20">
                         <div 
-                          className="h-full rounded-full transition-all bg-[#C9941A]"
+                          className="h-full rounded-full transition-all bg-[#E2741B]"
                           style={{ width: `${phaseProgress}%` }}
                           data-testid={`progress-phase-${phase.id}`}
                         />
@@ -511,7 +511,7 @@ export default function RecoveryUniversity() {
       <section className="py-12 px-4" data-testid="section-curriculum">
         <div className="max-w-6xl mx-auto">
           {activePhase !== "all" && (
-            <div className="mb-6 p-4 rounded-lg bg-[#C9941A]/10 border-l-4 border-[#C9941A]" data-testid="active-phase-indicator">
+            <div className="mb-6 p-4 rounded-lg bg-[#E2741B]/10 border-l-4 border-[#E2741B]" data-testid="active-phase-indicator">
               <div className="flex items-center gap-2">
                 {(() => {
                   const phase = recoveryPhases.find(p => p.id === activePhase);
@@ -519,8 +519,8 @@ export default function RecoveryUniversity() {
                   const PhaseIcon = phase.icon;
                   return (
                     <>
-                      <PhaseIcon className="w-5 h-5 text-[#C9941A]" />
-                      <span className="font-semibold text-[#C9941A]">{phase.name}</span>
+                      <PhaseIcon className="w-5 h-5 text-[#E2741B]" />
+                      <span className="font-semibold text-[#E2741B]">{phase.name}</span>
                       <span className="text-gray-400">| {phase.days}</span>
                     </>
                   );
@@ -543,9 +543,9 @@ export default function RecoveryUniversity() {
                 >
                   <AccordionTrigger className="px-6 py-4 hover:no-underline hover:bg-[#252525]">
                     <div className="flex items-start gap-4 text-left flex-1">
-                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 ${hasAccess ? 'bg-[#C9941A]/15' : 'bg-[#333]'}`}>
+                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 ${hasAccess ? 'bg-[#E2741B]/15' : 'bg-[#333]'}`}>
                         {hasAccess ? (
-                          <PartIcon className="w-6 h-6 text-[#C9941A]" />
+                          <PartIcon className="w-6 h-6 text-[#E2741B]" />
                         ) : (
                           <Lock className="w-6 h-6 text-gray-500" />
                         )}
@@ -553,7 +553,7 @@ export default function RecoveryUniversity() {
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <span className="text-sm text-gray-400">Part {part.partNumber}</span>
-                          <Badge variant="outline" className={`${TierInfo.color} border-[#C9941A]/50 bg-[#C9941A]/10`} data-testid={`badge-tier-${part.partNumber}`}>
+                          <Badge variant="outline" className={`${TierInfo.color} border-[#E2741B]/50 bg-[#E2741B]/10`} data-testid={`badge-tier-${part.partNumber}`}>
                             <TierInfo.icon className="w-3 h-3 mr-1" />
                             {TierInfo.name}
                           </Badge>
@@ -588,22 +588,22 @@ export default function RecoveryUniversity() {
                                 ? isPassed
                                   ? 'bg-[#252525] hover-elevate cursor-pointer'
                                   : isInProgress
-                                    ? 'bg-[#C9941A]/10 border border-[#C9941A]/30 hover-elevate cursor-pointer'
+                                    ? 'bg-[#E2741B]/10 border border-[#E2741B]/30 hover-elevate cursor-pointer'
                                     : 'bg-[#252525] hover-elevate cursor-pointer'
                                 : 'bg-[#1a1a1a] opacity-60'
                             }`}
                             data-testid={`chapter-${chapter.number}`}
                           >
                             <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                              isPassed ? 'bg-[#C9941A]/20' :
-                              isInProgress ? 'bg-[#C9941A]/20' : 'bg-[#333]'
+                              isPassed ? 'bg-[#E2741B]/20' :
+                              isInProgress ? 'bg-[#E2741B]/20' : 'bg-[#333]'
                             }`}>
                               {!hasAccess ? (
                                 <Lock className="w-4 h-4 text-gray-500" />
                               ) : isPassed ? (
-                                <CheckCircle className="w-5 h-5 text-[#C9941A]" />
+                                <CheckCircle className="w-5 h-5 text-[#E2741B]" />
                               ) : isInProgress ? (
-                                <Play className="w-4 h-4 text-[#C9941A]" />
+                                <Play className="w-4 h-4 text-[#E2741B]" />
                               ) : (
                                 <span className="text-sm font-medium text-gray-500">{chapter.number}</span>
                               )}
@@ -615,7 +615,7 @@ export default function RecoveryUniversity() {
                               </h4>
                               <p className="text-sm text-gray-400 truncate">{chapter.description}</p>
                               {isPassed && chapterProgress && (
-                                <p className="text-xs text-[#C9941A] mt-1" data-testid={`text-chapter-score-${chapter.number}`}>
+                                <p className="text-xs text-[#E2741B] mt-1" data-testid={`text-chapter-score-${chapter.number}`}>
                                   Passed · best score {chapterProgress.bestScore}%
                                 </p>
                               )}
@@ -635,9 +635,9 @@ export default function RecoveryUniversity() {
                                 onClick={(e) => { e.stopPropagation(); goToLesson(); }}
                                 className={
                                   isInProgress
-                                    ? "bg-[#C9941A] hover:bg-[#C9941A]/90 text-black"
+                                    ? "bg-[#E2741B] hover:bg-[#E2741B]/90 text-black"
                                     : isPassed
-                                      ? "text-[#C9941A] hover:bg-[#C9941A]/10"
+                                      ? "text-[#E2741B] hover:bg-[#E2741B]/10"
                                       : "border-[#333] text-white hover:bg-[#252525]"
                                 }
                                 data-testid={`button-chapter-${chapter.number}`}
@@ -651,8 +651,8 @@ export default function RecoveryUniversity() {
                     </div>
 
                     {hasAccess && (
-                      <div className="mt-4 p-4 rounded-lg bg-[#0D0D0D] border border-[#C9941A]/20 flex flex-col sm:flex-row sm:items-center gap-3" data-testid={`certificate-cta-${part.partNumber}`}>
-                        <Award className="w-6 h-6 text-[#C9941A] shrink-0" />
+                      <div className="mt-4 p-4 rounded-lg bg-[#0D0D0D] border border-[#E2741B]/20 flex flex-col sm:flex-row sm:items-center gap-3" data-testid={`certificate-cta-${part.partNumber}`}>
+                        <Award className="w-6 h-6 text-[#E2741B] shrink-0" />
                         <div className="flex-1">
                           {certByPart.has(part.partNumber) ? (
                             <>
@@ -672,7 +672,7 @@ export default function RecoveryUniversity() {
                           )}
                         </div>
                         <Link href={`/recovery/university/certificate/${part.partNumber}`}>
-                          <Button size="sm" className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black" data-testid={`button-view-certificate-${part.partNumber}`}>
+                          <Button size="sm" className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black" data-testid={`button-view-certificate-${part.partNumber}`}>
                             {certByPart.has(part.partNumber) ? "View certificate" : partAllPassed(part.partNumber) ? "Claim certificate" : "View progress"}
                           </Button>
                         </Link>
@@ -680,15 +680,15 @@ export default function RecoveryUniversity() {
                     )}
                     
                     {!hasAccess && (
-                      <div className="mt-4 p-4 bg-[#C9941A]/10 rounded-lg border border-[#C9941A]/20">
+                      <div className="mt-4 p-4 bg-[#E2741B]/10 rounded-lg border border-[#E2741B]/20">
                         <div className="flex items-center gap-3">
-                          <Lock className="w-5 h-5 text-[#C9941A]" />
+                          <Lock className="w-5 h-5 text-[#E2741B]" />
                           <div className="flex-1">
                             <p className="font-medium text-white">Upgrade to {TierInfo.name} to unlock this section</p>
                             <p className="text-sm text-gray-400">Get full access to all {part.chapters.length} chapters</p>
                           </div>
                           <Link href="/pricing">
-                            <Button size="sm" className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black" data-testid={`button-unlock-part-${part.partNumber}`}>
+                            <Button size="sm" className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black" data-testid={`button-unlock-part-${part.partNumber}`}>
                               Unlock Now
                             </Button>
                           </Link>
@@ -706,7 +706,7 @@ export default function RecoveryUniversity() {
       <section className="py-16 px-4 bg-[#1a1a1a] border-t border-[#333]">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4 text-white" data-testid="heading-cta">
-            Ready to Start Your <span className="text-[#C9941A]">Extraordinary</span> Recovery?
+            Ready to Start Your <span className="text-[#E2741B]">Extraordinary</span> Recovery?
           </h2>
           <p className="text-gray-400 mb-8">
             Join thousands of stroke survivors who are rebuilding, rewiring, and rising.
@@ -715,7 +715,7 @@ export default function RecoveryUniversity() {
             {!user ? (
               <>
                 <Link href="/api/login">
-                  <Button size="lg" className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black" data-testid="button-get-started">
+                  <Button size="lg" className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black" data-testid="button-get-started">
                     Get Started Free
                   </Button>
                 </Link>
@@ -727,7 +727,7 @@ export default function RecoveryUniversity() {
               </>
             ) : (
               <>
-                <Button size="lg" className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black" data-testid="button-continue-learning">
+                <Button size="lg" className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black" data-testid="button-continue-learning">
                   Continue Learning
                 </Button>
                 <Link href="/pricing">

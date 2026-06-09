@@ -138,7 +138,7 @@ export default function MedicalLog() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
-              <Stethoscope className="h-6 w-6 text-[#C9941A]" />
+              <Stethoscope className="h-6 w-6 text-[#E2741B]" />
               Medical Log
             </h1>
             <p className="text-gray-400 text-sm mt-1">
@@ -149,15 +149,15 @@ export default function MedicalLog() {
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="bg-[#1a1a1a] border-[#333] mb-6">
-            <TabsTrigger value="medications" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black">
+            <TabsTrigger value="medications" className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black">
               <Pill className="h-4 w-4 mr-2" />
               Medications
             </TabsTrigger>
-            <TabsTrigger value="appointments" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black">
+            <TabsTrigger value="appointments" className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black">
               <Calendar className="h-4 w-4 mr-2" />
               Appointments
             </TabsTrigger>
-            <TabsTrigger value="vitals" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black">
+            <TabsTrigger value="vitals" className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black">
               <Activity className="h-4 w-4 mr-2" />
               Vitals
             </TabsTrigger>
@@ -167,7 +167,7 @@ export default function MedicalLog() {
             <div className="flex justify-end mb-4">
               <Dialog open={medDialogOpen} onOpenChange={setMedDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="bg-[#C9941A] text-black" data-testid="button-add-medication">
+                  <Button className="bg-[#E2741B] text-black" data-testid="button-add-medication">
                     <Plus className="h-4 w-4 mr-2" />
                     Add Medication
                   </Button>
@@ -230,7 +230,7 @@ export default function MedicalLog() {
                     </div>
                     <Button 
                       onClick={() => addMedicationMutation.mutate(medForm)} 
-                      className="w-full bg-[#C9941A] text-black"
+                      className="w-full bg-[#E2741B] text-black"
                       disabled={!medForm.name || !medForm.dosage || !medForm.frequency || addMedicationMutation.isPending}
                     >
                       {addMedicationMutation.isPending ? "Adding..." : "Add Medication"}
@@ -242,7 +242,7 @@ export default function MedicalLog() {
 
             {medications.length === 0 ? (
               <Card className="bg-[#1a1a1a] border-[#333] p-8 text-center">
-                <Pill className="h-12 w-12 text-[#C9941A] mx-auto mb-4" />
+                <Pill className="h-12 w-12 text-[#E2741B] mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No medications tracked</h3>
                 <p className="text-gray-400">Add your medications to keep track of your prescriptions.</p>
               </Card>
@@ -253,7 +253,7 @@ export default function MedicalLog() {
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="flex items-center gap-2">
-                          <Pill className="h-4 w-4 text-[#C9941A]" />
+                          <Pill className="h-4 w-4 text-[#E2741B]" />
                           <span className="font-semibold">{med.name}</span>
                           <Badge variant="outline" className="border-[#333]">{med.dosage}</Badge>
                         </div>
@@ -263,7 +263,7 @@ export default function MedicalLog() {
                         </p>
                       </div>
                       {med.is_active ? (
-                        <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-green-500">Active</Badge>
+                        <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-green-500">Active</Badge>
                       ) : (
                         <Badge variant="outline" className="border-[#333]">Inactive</Badge>
                       )}
@@ -278,7 +278,7 @@ export default function MedicalLog() {
             <div className="flex justify-end mb-4">
               <Dialog open={apptDialogOpen} onOpenChange={setApptDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="bg-[#C9941A] text-black" data-testid="button-add-appointment">
+                  <Button className="bg-[#E2741B] text-black" data-testid="button-add-appointment">
                     <Plus className="h-4 w-4 mr-2" />
                     Add Appointment
                   </Button>
@@ -351,7 +351,7 @@ export default function MedicalLog() {
                     </div>
                     <Button 
                       onClick={() => addAppointmentMutation.mutate(apptForm)} 
-                      className="w-full bg-[#C9941A] text-black"
+                      className="w-full bg-[#E2741B] text-black"
                       disabled={!apptForm.title || !apptForm.providerName || !apptForm.providerType || !apptForm.appointmentDate || addAppointmentMutation.isPending}
                     >
                       {addAppointmentMutation.isPending ? "Adding..." : "Add Appointment"}
@@ -363,7 +363,7 @@ export default function MedicalLog() {
 
             {appointments.length === 0 ? (
               <Card className="bg-[#1a1a1a] border-[#333] p-8 text-center">
-                <Calendar className="h-12 w-12 text-[#C9941A] mx-auto mb-4" />
+                <Calendar className="h-12 w-12 text-[#E2741B] mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No appointments scheduled</h3>
                 <p className="text-gray-400">Add your upcoming appointments to stay organized.</p>
               </Card>
@@ -374,7 +374,7 @@ export default function MedicalLog() {
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4 text-[#C9941A]" />
+                          <Calendar className="h-4 w-4 text-[#E2741B]" />
                           <span className="font-semibold">{appt.title}</span>
                         </div>
                         <p className="text-gray-400 text-sm mt-1">
@@ -383,7 +383,7 @@ export default function MedicalLog() {
                         {appt.location && <p className="text-gray-500 text-sm">{appt.location}</p>}
                       </div>
                       <div className="text-right">
-                        <div className="text-[#C9941A] font-medium">
+                        <div className="text-[#E2741B] font-medium">
                           {new Date(appt.appointment_date).toLocaleDateString()}
                         </div>
                         <div className="text-gray-500 text-sm">
@@ -401,7 +401,7 @@ export default function MedicalLog() {
             <div className="flex justify-end mb-4">
               <Dialog open={vitalsDialogOpen} onOpenChange={setVitalsDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="bg-[#C9941A] text-black" data-testid="button-log-vitals">
+                  <Button className="bg-[#E2741B] text-black" data-testid="button-log-vitals">
                     <Plus className="h-4 w-4 mr-2" />
                     Log Vitals
                   </Button>
@@ -511,7 +511,7 @@ export default function MedicalLog() {
                     </div>
                     <Button 
                       onClick={() => logVitalsMutation.mutate(vitalsForm)} 
-                      className="w-full bg-[#C9941A] text-black"
+                      className="w-full bg-[#E2741B] text-black"
                       disabled={logVitalsMutation.isPending}
                     >
                       {logVitalsMutation.isPending ? "Saving..." : "Log Vitals"}
@@ -523,7 +523,7 @@ export default function MedicalLog() {
 
             {vitals.length === 0 ? (
               <Card className="bg-[#1a1a1a] border-[#333] p-8 text-center">
-                <Activity className="h-12 w-12 text-[#C9941A] mx-auto mb-4" />
+                <Activity className="h-12 w-12 text-[#E2741B] mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No vitals logged</h3>
                 <p className="text-gray-400">Track your daily vitals to monitor your health.</p>
               </Card>
@@ -540,7 +540,7 @@ export default function MedicalLog() {
                       {v.blood_pressure_systolic && v.blood_pressure_diastolic && (
                         <div>
                           <div className="text-gray-400 text-xs">Blood Pressure</div>
-                          <div className="text-lg font-semibold text-[#C9941A]">
+                          <div className="text-lg font-semibold text-[#E2741B]">
                             {v.blood_pressure_systolic}/{v.blood_pressure_diastolic}
                           </div>
                         </div>

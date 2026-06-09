@@ -103,7 +103,7 @@ export default function RecoverySpotlight() {
           </Link>
           <p
             className="mb-2 flex items-center gap-2 text-sm font-bold uppercase tracking-widest"
-            style={{ color: "#C9941A" }}
+            style={{ color: "#E2741B" }}
           >
             <Star className="h-4 w-4" />
             Survivor Spotlight
@@ -138,7 +138,7 @@ export default function RecoverySpotlight() {
                 <Link
                   href="/settings"
                   className="underline"
-                  style={{ color: "#C9941A" }}
+                  style={{ color: "#E2741B" }}
                 >
                   profile settings
                 </Link>
@@ -154,20 +154,20 @@ export default function RecoverySpotlight() {
                     src={spotlight.photoUrl || undefined}
                     alt={spotlight.displayName}
                   />
-                  <AvatarFallback className="bg-[#C9941A] text-3xl font-black text-black">
+                  <AvatarFallback className="bg-[#E2741B] text-3xl font-black text-black">
                     {spotlight.displayName.slice(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div className="mt-4 space-y-2 text-sm text-gray-400">
                   {spotlight.location && (
                     <p className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4" style={{ color: "#C9941A" }} />
+                      <MapPin className="h-4 w-4" style={{ color: "#E2741B" }} />
                       {spotlight.location}
                     </p>
                   )}
                   {spotlight.recoveryDate && (
                     <p className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4" style={{ color: "#C9941A" }} />
+                      <Calendar className="h-4 w-4" style={{ color: "#E2741B" }} />
                       Stroke {new Date(spotlight.recoveryDate).toLocaleDateString()}
                     </p>
                   )}

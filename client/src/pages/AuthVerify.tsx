@@ -50,8 +50,8 @@ export default function AuthVerify() {
         <CardContent className="pt-8 pb-8 text-center">
           {status === "loading" && (
             <>
-              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#C9941A]/20 flex items-center justify-center">
-                <Loader2 className="w-10 h-10 text-[#C9941A] animate-spin" />
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#E2741B]/20 flex items-center justify-center">
+                <Loader2 className="w-10 h-10 text-[#E2741B] animate-spin" />
               </div>
               <h2 className="text-xl font-semibold text-white mb-2">Verifying your link...</h2>
               <p className="text-white/60">Please wait while we sign you in</p>
@@ -60,8 +60,8 @@ export default function AuthVerify() {
           
           {status === "success" && (
             <>
-              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#C9941A]/20 flex items-center justify-center">
-                <CheckCircle className="w-10 h-10 text-[#C9941A]" />
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#E2741B]/20 flex items-center justify-center">
+                <CheckCircle className="w-10 h-10 text-[#E2741B]" />
               </div>
               <h2 className="text-xl font-semibold text-white mb-2">You're in!</h2>
               <p className="text-white/60 mb-6">Redirecting you to your dashboard...</p>
@@ -84,7 +84,7 @@ export default function AuthVerify() {
               <p className="text-white/60 mb-6">{errorMessage}</p>
               <Button
                 onClick={() => setLocation("/auth")}
-                className="bg-[#C9941A] hover:bg-amber-400 text-black"
+                className="bg-[#E2741B] hover:bg-amber-400 text-black"
               >
                 Back to Login
               </Button>

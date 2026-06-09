@@ -56,7 +56,7 @@ export default function MemoryMatchGame({
   packId,
   difficulty,
   pairs,
-  accent = "#C9941A",
+  accent = "#E2741B",
   onComplete,
 }: Props) {
   const [seed, setSeed] = useState(() => Date.now());
@@ -282,7 +282,7 @@ export default function MemoryMatchGame({
                 data-testid="text-mm-clock"
                 aria-label={`Elapsed time: ${formatClock(elapsedSec)}`}
               >
-                <span className={`inline-block h-2 w-2 rounded-full ${paused ? "bg-gray-500" : "bg-[#C9941A] animate-pulse"}`} />
+                <span className={`inline-block h-2 w-2 rounded-full ${paused ? "bg-gray-500" : "bg-[#E2741B] animate-pulse"}`} />
                 {formatClock(elapsedSec)}
                 {paused && <span className="ml-1 text-xs uppercase tracking-widest text-gray-500">Paused</span>}
               </div>
@@ -335,7 +335,7 @@ export default function MemoryMatchGame({
             <Button
               type="button"
               onClick={togglePause}
-              className="mt-5 bg-[#C9941A] text-black hover:bg-[#C9941A]"
+              className="mt-5 bg-[#E2741B] text-black hover:bg-[#E2741B]"
               data-testid="button-mm-resume-overlay"
             >
               <Play className="mr-2 h-4 w-4" /> Resume

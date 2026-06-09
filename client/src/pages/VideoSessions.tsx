@@ -138,7 +138,7 @@ export default function VideoSessions() {
       case "scheduled":
         return <Badge className="bg-blue-500/20 text-blue-400">Scheduled</Badge>;
       case "live":
-        return <Badge className="bg-[#C9941A]/20 text-[#C9941A] animate-pulse">Live</Badge>;
+        return <Badge className="bg-[#E2741B]/20 text-[#E2741B] animate-pulse">Live</Badge>;
       case "ended":
         return <Badge className="bg-gray-500/20 text-gray-400">Ended</Badge>;
       case "cancelled":
@@ -153,7 +153,7 @@ export default function VideoSessions() {
       <div className="fixed inset-0 bg-background z-50 flex flex-col">
         <div className="flex items-center justify-between p-4 bg-[#1a1a1a]">
           <div className="flex items-center gap-3">
-            <Video className="w-6 h-6 text-[#C9941A]" />
+            <Video className="w-6 h-6 text-[#E2741B]" />
             <div>
               <p className="text-foreground font-medium">{activeSession.title}</p>
               <p className="text-gray-400 text-sm">{getSessionTypeLabel(activeSession.sessionType)}</p>
@@ -177,7 +177,7 @@ export default function VideoSessions() {
             <div className="text-center z-10">
               <Avatar className="w-24 h-24 mx-auto mb-4">
                 <AvatarImage src={user?.profileImageUrl ?? undefined} />
-                <AvatarFallback className="bg-gray-700 text-[#C9941A] text-2xl">
+                <AvatarFallback className="bg-gray-700 text-[#E2741B] text-2xl">
                   {user?.firstName?.[0]}{user?.lastName?.[0]}
                 </AvatarFallback>
               </Avatar>
@@ -195,7 +195,7 @@ export default function VideoSessions() {
             <div className="text-center">
               <Avatar className="w-24 h-24 mx-auto mb-4">
                 <AvatarImage src={activeSession.host?.profileImageUrl} />
-                <AvatarFallback className="bg-gray-700 text-[#C9941A] text-2xl">
+                <AvatarFallback className="bg-gray-700 text-[#E2741B] text-2xl">
                   {activeSession.host?.firstName?.[0]}{activeSession.host?.lastName?.[0]}
                 </AvatarFallback>
               </Avatar>
@@ -360,20 +360,20 @@ export default function VideoSessions() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="p-3 bg-[#C9941A]/20 rounded-xl">
-                    <Video className="w-8 h-8 text-[#C9941A]" />
+                  <div className="p-3 bg-[#E2741B]/20 rounded-xl">
+                    <Video className="w-8 h-8 text-[#E2741B]" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="text-xl font-semibold text-foreground">{liveSessions[0].title}</h3>
-                      <Badge className="bg-[#C9941A]/20 text-[#C9941A] animate-pulse">Live Now</Badge>
+                      <Badge className="bg-[#E2741B]/20 text-[#E2741B] animate-pulse">Live Now</Badge>
                     </div>
                     <p className="text-gray-400">{getSessionTypeLabel(liveSessions[0].sessionType)}</p>
                   </div>
                 </div>
                 <Button
                   onClick={() => joinSessionMutation.mutate(liveSessions[0].id)}
-                  className="bg-[#C9941A] hover:bg-[#C9941A]/80"
+                  className="bg-[#E2741B] hover:bg-[#E2741B]/80"
                   data-testid="button-join-live"
                 >
                   <Play className="w-4 h-4 mr-2" />
@@ -397,7 +397,7 @@ export default function VideoSessions() {
           <TabsContent value="upcoming" className="space-y-4">
             {isLoading ? (
               <div className="flex justify-center py-12">
-                <Loader2 className="w-8 h-8 text-[#C9941A] animate-spin" />
+                <Loader2 className="w-8 h-8 text-[#E2741B] animate-spin" />
               </div>
             ) : upcomingSessions.length > 0 ? (
               upcomingSessions.map((session) => (
@@ -406,7 +406,7 @@ export default function VideoSessions() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <div className="p-3 bg-primary/10 rounded-xl">
-                          <Video className="w-6 h-6 text-[#C9941A]" />
+                          <Video className="w-6 h-6 text-[#E2741B]" />
                         </div>
                         <div>
                           <div className="flex items-center gap-2">

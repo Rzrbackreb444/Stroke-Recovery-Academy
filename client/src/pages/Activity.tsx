@@ -139,9 +139,9 @@ export default function Activity() {
   const getPostTypeBadgeColor = (type: string) => {
     switch (type) {
       case "milestone": return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
-      case "victory": return "bg-primary/20 text-[#C9941A] border-primary/30";
+      case "victory": return "bg-primary/20 text-[#E2741B] border-primary/30";
       case "goal": return "bg-blue-500/20 text-blue-400 border-blue-500/30";
-      case "question": return "bg-[#C9941A]/20 text-[#C9941A] border-amber-500/30";
+      case "question": return "bg-[#E2741B]/20 text-[#E2741B] border-amber-500/30";
       default: return "bg-gray-500/20 text-gray-400 border-gray-500/30";
     }
   };
@@ -293,7 +293,7 @@ export default function Activity() {
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 text-[#C9941A] animate-spin" />
+            <Loader2 className="w-8 h-8 text-[#E2741B] animate-spin" />
           </div>
         ) : posts && posts.length > 0 ? (
           <div className="space-y-6">
@@ -315,7 +315,7 @@ export default function Activity() {
                   >
                     <div className="flex gap-4">
                       <Avatar className="w-12 h-12">
-                        <AvatarFallback className="bg-gray-800 text-[#C9941A]">
+                        <AvatarFallback className="bg-gray-800 text-[#E2741B]">
                           U
                         </AvatarFallback>
                       </Avatar>
@@ -380,7 +380,7 @@ export default function Activity() {
                               <Button 
                                 variant="ghost" 
                                 size="sm" 
-                                className="text-gray-400 hover:text-[#C9941A] gap-2"
+                                className="text-gray-400 hover:text-[#E2741B] gap-2"
                                 data-testid={`button-react-${post.id}`}
                               >
                                 <Heart className="w-4 h-4" />
@@ -414,7 +414,7 @@ export default function Activity() {
                           <Button 
                             variant="ghost" 
                             size="sm" 
-                            className="text-gray-400 hover:text-[#C9941A] gap-2"
+                            className="text-gray-400 hover:text-[#E2741B] gap-2"
                             data-testid={`button-share-${post.id}`}
                           >
                             <Share2 className="w-4 h-4" />

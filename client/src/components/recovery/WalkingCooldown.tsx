@@ -76,7 +76,7 @@ export function WalkingCooldown({ open, onClose, onComplete }: Props) {
       <Card className="bg-[#0d0d0d] border-[#2a2a2a] max-w-lg w-full p-6 my-8">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Footprints className="h-5 w-5 text-[#C9941A]" />
+            <Footprints className="h-5 w-5 text-[#E2741B]" />
             <h2 className="text-white font-bold text-xl">Supervised Walking Cooldown</h2>
           </div>
           <Button
@@ -151,7 +151,7 @@ export function WalkingCooldown({ open, onClose, onComplete }: Props) {
               <Button
                 onClick={startTimer}
                 disabled={!allChecked}
-                className="flex-1 bg-[#C9941A] text-black font-bold disabled:opacity-40"
+                className="flex-1 bg-[#E2741B] text-black font-bold disabled:opacity-40"
                 data-testid="button-start-walk"
               >
                 <Play className="h-4 w-4 mr-1" /> All three are true — Start
@@ -164,7 +164,7 @@ export function WalkingCooldown({ open, onClose, onComplete }: Props) {
           <div className="space-y-4 text-center">
             <p className="text-xs text-gray-500 uppercase tracking-widest">Walk at your safe pace</p>
             <div
-              className="text-6xl font-black text-[#C9941A] tabular-nums"
+              className="text-6xl font-black text-[#E2741B] tabular-nums"
               data-testid="text-walking-timer"
             >
               {String(mins).padStart(2, "0")}:{String(secs).padStart(2, "0")}

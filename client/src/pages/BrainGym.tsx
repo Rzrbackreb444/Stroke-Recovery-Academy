@@ -174,14 +174,14 @@ export default function BrainGym() {
             <div>
               <p
                 className="mb-3 text-sm font-bold uppercase tracking-widest"
-                style={{ color: "#C9941A" }}
+                style={{ color: "#E2741B" }}
               >
                 Brain Gym
               </p>
               <h1 className="text-4xl font-black uppercase leading-tight sm:text-5xl">
                 Train the brain.
                 <br />
-                <span style={{ color: "#C9941A" }}>One rep at a time.</span>
+                <span style={{ color: "#E2741B" }}>One rep at a time.</span>
               </h1>
               <p className="mt-4 max-w-2xl text-base text-gray-400 sm:text-lg">
                 Word search, crossword, and memory games built for survivors. Themed
@@ -189,8 +189,8 @@ export default function BrainGym() {
                 comeback. Daily reps build the wire.
               </p>
             </div>
-            <div className="rounded-md border border-[#C9941A]/30 bg-[#C9941A]/10 p-4 sm:w-72">
-              <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-[#C9941A]">
+            <div className="rounded-md border border-[#E2741B]/30 bg-[#E2741B]/10 p-4 sm:w-72">
+              <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-[#E2741B]">
                 <Trophy className="h-4 w-4" />
                 Daily Challenge
               </div>
@@ -206,7 +206,7 @@ export default function BrainGym() {
               <Button
                 size="sm"
                 onClick={startDailyChallenge}
-                className="mt-3 w-full bg-[#C9941A] text-black hover:bg-[#C9941A]"
+                className="mt-3 w-full bg-[#E2741B] text-black hover:bg-[#E2741B]"
                 data-testid="button-play-daily"
               >
                 Play today's challenge
@@ -222,7 +222,7 @@ export default function BrainGym() {
           <div className="grid gap-4 lg:grid-cols-[1fr,1.2fr]">
             <div className="rounded-lg border border-[#1a1a1a] bg-[#111] p-5">
               <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-500">
-                <Flame className="h-4 w-4 text-[#C9941A]" />
+                <Flame className="h-4 w-4 text-[#E2741B]" />
                 Your Brain Gym stats
               </h3>
               <div className="mt-3 grid grid-cols-3 gap-4">
@@ -248,13 +248,13 @@ export default function BrainGym() {
               {personalFastest != null && (
                 <p className="mt-3 text-xs text-gray-500">
                   <Clock className="mr-1 inline h-3 w-3" />
-                  Best for current game: <span className="text-[#C9941A] font-semibold">{fmtTime(personalFastest)}</span>
+                  Best for current game: <span className="text-[#E2741B] font-semibold">{fmtTime(personalFastest)}</span>
                 </p>
               )}
             </div>
-            <div className="rounded-lg border border-[#C9941A]/30 bg-[#C9941A]/5 p-5">
+            <div className="rounded-lg border border-[#E2741B]/30 bg-[#E2741B]/5 p-5">
               <div className="mb-3 flex items-center justify-between">
-                <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#C9941A]">
+                <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#E2741B]">
                   <Trophy className="h-4 w-4" />
                   Daily Leaderboard · {dailyChallenge.date}
                 </h3>
@@ -267,14 +267,14 @@ export default function BrainGym() {
                       key={`${row.rank}-${row.name}`}
                       className="flex items-center justify-between rounded px-2 py-1 text-sm"
                       style={{
-                        backgroundColor: row.isYou ? "rgba(201,148,26,0.18)" : "transparent",
+                        backgroundColor: row.isYou ? "rgba(226,116,27,0.18)" : "transparent",
                       }}
                     >
                       <span className="flex items-center gap-2">
                         <span
                           className="inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold"
                           style={{
-                            backgroundColor: row.rank <= 3 ? "#C9941A" : "#1a1a1a",
+                            backgroundColor: row.rank <= 3 ? "#E2741B" : "#1a1a1a",
                             color: row.rank <= 3 ? "#000" : "#9ca3af",
                           }}
                         >
@@ -283,7 +283,7 @@ export default function BrainGym() {
                         <span className="font-semibold text-white">
                           {row.name}
                           {row.isYou && (
-                            <span className="ml-2 rounded bg-[#C9941A] px-1.5 py-0.5 text-[10px] font-bold uppercase text-black">
+                            <span className="ml-2 rounded bg-[#E2741B] px-1.5 py-0.5 text-[10px] font-bold uppercase text-black">
                               You
                             </span>
                           )}
@@ -329,7 +329,7 @@ export default function BrainGym() {
                     data-testid={`difficulty-${d}`}
                     className="rounded px-3 py-1 text-xs font-bold uppercase tracking-widest transition-colors"
                     style={{
-                      backgroundColor: difficulty === d ? "#C9941A" : "transparent",
+                      backgroundColor: difficulty === d ? "#E2741B" : "transparent",
                       color: difficulty === d ? "#000" : "#9ca3af",
                     }}
                   >
@@ -394,7 +394,7 @@ export default function BrainGym() {
               <h2 className="text-2xl sm:text-3xl font-black uppercase">
                 {pack.name}
                 {isDailyMode && (
-                  <span className="ml-3 rounded bg-[#C9941A] px-2 py-1 text-xs font-bold uppercase tracking-widest text-black align-middle">
+                  <span className="ml-3 rounded bg-[#E2741B] px-2 py-1 text-xs font-bold uppercase tracking-widest text-black align-middle">
                     Daily Challenge
                   </span>
                 )}
@@ -470,7 +470,7 @@ export default function BrainGym() {
       <section className="border-t border-[#1a1a1a] bg-[#0a0a0a]">
         <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
           <div className="flex items-start gap-4">
-            <Brain className="mt-1 h-8 w-8 flex-shrink-0" style={{ color: "#C9941A" }} />
+            <Brain className="mt-1 h-8 w-8 flex-shrink-0" style={{ color: "#E2741B" }} />
             <div>
               <h3 className="text-xl font-black text-white sm:text-2xl">
                 Why we built Brain Gym

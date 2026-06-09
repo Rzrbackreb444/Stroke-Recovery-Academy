@@ -124,12 +124,12 @@ export default function SurvivorIncome() {
         {/* Hero */}
         <section className="relative pt-20 pb-16 px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <p className="text-[#C9941A] text-sm font-semibold uppercase tracking-widest mb-5">
+            <p className="text-[#E2741B] text-sm font-semibold uppercase tracking-widest mb-5">
               Survivor Income Program
             </p>
             <h1 className="text-5xl sm:text-6xl font-black text-white leading-tight mb-6">
               Turn Your Network<br />
-              <span className="text-[#C9941A]">Into Income</span>
+              <span className="text-[#E2741B]">Into Income</span>
             </h1>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed mb-10">
               You've spent a lifetime building relationships. Stroke recovery takes your time — but it doesn't have to take your earning power. Refer business owners you know to commercial financing and collect commissions when their deal closes.
@@ -138,7 +138,7 @@ export default function SurvivorIncome() {
               <a href={ROK_PARTNER_LINK} target="_blank" rel="noopener noreferrer">
                 <Button
                   size="lg"
-                  className="bg-[#C9941A] text-black font-bold text-lg px-10 shadow-lg shadow-[#C9941A]/20"
+                  className="bg-[#E2741B] text-black font-bold text-lg px-10 shadow-lg shadow-[#E2741B]/20"
                   data-testid="button-hero-apply"
                 >
                   Apply as a Partner
@@ -179,8 +179,8 @@ export default function SurvivorIncome() {
                     className="flex gap-4 p-5 rounded-xl bg-[#0a0a0a] border border-[#1e1e1e]"
                     data-testid={`benefit-card-${item.title.slice(0, 15).replace(/\s/g, "-").toLowerCase()}`}
                   >
-                    <div className="w-10 h-10 rounded-lg bg-[#C9941A]/10 flex items-center justify-center flex-shrink-0">
-                      <Icon className="h-5 w-5 text-[#C9941A]" />
+                    <div className="w-10 h-10 rounded-lg bg-[#E2741B]/10 flex items-center justify-center flex-shrink-0">
+                      <Icon className="h-5 w-5 text-[#E2741B]" />
                     </div>
                     <div>
                       <h3 className="text-white font-bold mb-1">{item.title}</h3>
@@ -212,9 +212,9 @@ export default function SurvivorIncome() {
                     data-testid={`step-card-${step.number}`}
                   >
                     <div className="flex-shrink-0 flex flex-col items-center gap-2">
-                      <span className="text-4xl font-black text-[#C9941A]/20">{step.number}</span>
-                      <div className="w-10 h-10 rounded-xl bg-[#C9941A]/10 flex items-center justify-center">
-                        <Icon className="h-5 w-5 text-[#C9941A]" />
+                      <span className="text-4xl font-black text-[#E2741B]/20">{step.number}</span>
+                      <div className="w-10 h-10 rounded-xl bg-[#E2741B]/10 flex items-center justify-center">
+                        <Icon className="h-5 w-5 text-[#E2741B]" />
                       </div>
                     </div>
                     <div>
@@ -242,14 +242,14 @@ export default function SurvivorIncome() {
                   className="p-6 rounded-xl bg-[#0a0a0a] border border-[#1e1e1e] text-center"
                   data-testid={`income-example-${ex.scenario.slice(0, 10).replace(/\s/g, "-").toLowerCase()}`}
                 >
-                  <p className="text-2xl font-black text-[#C9941A] mb-2">{ex.commission}</p>
+                  <p className="text-2xl font-black text-[#E2741B] mb-2">{ex.commission}</p>
                   <p className="text-sm text-gray-500">{ex.scenario}</p>
                 </div>
               ))}
             </div>
 
             {/* What ROK Financial offers */}
-            <div className="rounded-2xl border border-[#C9941A]/20 bg-[#0f0c07] p-8">
+            <div className="rounded-2xl border border-[#E2741B]/20 bg-[#0f0c07] p-8">
               <h3 className="text-white font-bold text-lg mb-5">What You're Connecting People To</h3>
               <div className="grid sm:grid-cols-2 gap-3">
                 {[
@@ -261,7 +261,7 @@ export default function SurvivorIncome() {
                   "Dedicated partnership advisor support",
                 ].map((item) => (
                   <div key={item} className="flex items-center gap-2 text-sm text-gray-300">
-                    <CheckCircle className="h-4 w-4 text-[#C9941A] flex-shrink-0" />
+                    <CheckCircle className="h-4 w-4 text-[#E2741B] flex-shrink-0" />
                     {item}
                   </div>
                 ))}
@@ -285,10 +285,10 @@ export default function SurvivorIncome() {
               {blogPosts.map((post) => (
                 <Link key={post.slug} href={`/recovery/blog/${post.slug}`}>
                   <div
-                    className="group p-6 rounded-xl bg-[#0a0a0a] border border-[#1e1e1e] hover:border-[#C9941A]/30 transition-colors cursor-pointer h-full flex flex-col"
+                    className="group p-6 rounded-xl bg-[#0a0a0a] border border-[#1e1e1e] hover:border-[#E2741B]/30 transition-colors cursor-pointer h-full flex flex-col"
                     data-testid={`blog-card-${post.slug}`}
                   >
-                    <h3 className="text-white font-bold text-sm leading-snug mb-3 group-hover:text-[#C9941A] transition-colors flex-1">
+                    <h3 className="text-white font-bold text-sm leading-snug mb-3 group-hover:text-[#E2741B] transition-colors flex-1">
                       {post.title}
                     </h3>
                     <p className="text-gray-500 text-xs leading-relaxed">{post.excerpt}</p>
@@ -304,7 +304,7 @@ export default function SurvivorIncome() {
           <div className="max-w-2xl mx-auto px-4 text-center">
             <h2 className="text-4xl font-black text-white mb-4">
               Ready to Put Your<br />
-              <span className="text-[#C9941A]">Network to Work?</span>
+              <span className="text-[#E2741B]">Network to Work?</span>
             </h2>
             <p className="text-gray-400 mb-8 leading-relaxed">
               Apply in minutes. Free to join. Start with one referral and see what happens. There's nothing to lose and real income to gain.
@@ -312,7 +312,7 @@ export default function SurvivorIncome() {
             <a href={ROK_PARTNER_LINK} target="_blank" rel="noopener noreferrer">
               <Button
                 size="lg"
-                className="bg-[#C9941A] text-black font-bold text-lg px-12 shadow-lg shadow-[#C9941A]/20"
+                className="bg-[#E2741B] text-black font-bold text-lg px-12 shadow-lg shadow-[#E2741B]/20"
                 data-testid="button-final-cta"
               >
                 Apply as a Partner — It's Free

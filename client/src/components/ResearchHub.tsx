@@ -200,7 +200,7 @@ export function ResearchHub() {
       <Card className="bg-zinc-950 border border-[#333]/50 shadow-xl">
         <CardContent className="p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Badge variant="outline" className="border-[#C9941A]/50 text-primary">
+            <Badge variant="outline" className="border-[#E2741B]/50 text-primary">
               <Coins className="w-3 h-3 mr-1" />
               {CREDIT_COST} credit per query
             </Badge>
@@ -220,7 +220,7 @@ export function ResearchHub() {
             <Button
               onClick={handleSearch}
               disabled={isSearching || !searchQuery.trim()}
-              className="h-12 px-6 bg-[#C9941A] hover:bg-orange-600"
+              className="h-12 px-6 bg-[#E2741B] hover:bg-orange-600"
               data-testid="button-search"
             >
               {isSearching ? (
@@ -253,7 +253,7 @@ export function ResearchHub() {
                   disabled={insightsMutation.isPending}
                   variant="outline"
                   size="sm"
-                  className="border-[#C9941A]/50 text-primary hover:bg-primary/10"
+                  className="border-[#E2741B]/50 text-primary hover:bg-primary/10"
                   data-testid="button-generate-insights"
                 >
                   {insightsMutation.isPending ? (
@@ -270,7 +270,7 @@ export function ResearchHub() {
                     {currentResults.map((result, index) => (
                       <div
                         key={index}
-                        className="p-4 rounded-lg border border-[#333] hover:border-[#C9941A]/50 transition-colors"
+                        className="p-4 rounded-lg border border-[#333] hover:border-[#E2741B]/50 transition-colors"
                         data-testid={`result-card-${index}`}
                       >
                         <div className="flex items-start justify-between gap-2 mb-2">
@@ -313,7 +313,7 @@ export function ResearchHub() {
                   onClick={() => saveToVaultMutation.mutate(currentInsights)}
                   disabled={saveToVaultMutation.isPending}
                   size="sm"
-                  className="bg-[#C9941A] hover:bg-orange-600"
+                  className="bg-[#E2741B] hover:bg-orange-600"
                   data-testid="button-save-to-vault"
                 >
                   {saveToVaultMutation.isPending ? (
@@ -402,7 +402,7 @@ export function ResearchHub() {
                             <div
                               key={topic.id}
                               onClick={() => handleTrendingClick(topic)}
-                              className="p-3 rounded-lg border border-[#333] hover:border-[#C9941A]/50 cursor-pointer transition-colors"
+                              className="p-3 rounded-lg border border-[#333] hover:border-[#E2741B]/50 cursor-pointer transition-colors"
                               data-testid={`trending-topic-${topic.id}`}
                             >
                               <h5 className="text-sm font-medium text-foreground truncate" data-testid={`trending-title-${topic.id}`}>
@@ -447,7 +447,7 @@ export function ResearchHub() {
                     {researchHistory.map((item) => (
                       <div
                         key={item.id}
-                        className="p-3 rounded-lg border border-[#333] hover:border-[#C9941A]/50 transition-colors"
+                        className="p-3 rounded-lg border border-[#333] hover:border-[#E2741B]/50 transition-colors"
                         data-testid={`history-item-${item.id}`}
                       >
                         <div className="flex items-center justify-between gap-2">

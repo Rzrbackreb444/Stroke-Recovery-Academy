@@ -812,8 +812,8 @@ Be specific and actionable in your suggestions. When the author wants to regener
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-2.5 rounded-xl bg-[#C9941A]/10">
-                <BookOpen className="w-6 h-6 text-[#C9941A]" />
+              <div className="p-2.5 rounded-xl bg-[#E2741B]/10">
+                <BookOpen className="w-6 h-6 text-[#E2741B]" />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">Book Perfection Suite</h1>
@@ -826,14 +826,14 @@ Be specific and actionable in your suggestions. When the author wants to regener
                     value={project ? String(project.id) : ""}
                     onValueChange={(id) => { hydratedProjectIdRef.current = null; loadProject(Number(id)); }}
                   >
-                    <SelectTrigger className="w-[180px] text-sm border-[#C9941A]/30">
+                    <SelectTrigger className="w-[180px] text-sm border-[#E2741B]/30">
                       <SelectValue placeholder="Select Project" />
                     </SelectTrigger>
                     <SelectContent>
                       {projects.map((proj) => (
                         <SelectItem key={proj.id} value={String(proj.id)}>
                           <div className="flex items-center gap-2">
-                            <BookOpen className="w-3 h-3 text-[#C9941A]" />
+                            <BookOpen className="w-3 h-3 text-[#E2741B]" />
                             {proj.title}
                           </div>
                         </SelectItem>
@@ -841,7 +841,7 @@ Be specific and actionable in your suggestions. When the author wants to regener
                     </SelectContent>
                   </Select>
                 ) : null}
-                <Button variant="outline" size="sm" onClick={() => setShowProjectDialog(true)} className="border-[#C9941A]/30 hover:bg-[#C9941A]/10">
+                <Button variant="outline" size="sm" onClick={() => setShowProjectDialog(true)} className="border-[#E2741B]/30 hover:bg-[#E2741B]/10">
                   <Plus className="w-4 h-4 mr-1" />
                   New
                 </Button>
@@ -864,7 +864,7 @@ Be specific and actionable in your suggestions. When the author wants to regener
             </div>
             
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" onClick={handleCheckConsistency} disabled={isCheckingConsistency} className="hover:bg-[#C9941A]/10 hover:text-[#C9941A]">
+              <Button variant="ghost" size="sm" onClick={handleCheckConsistency} disabled={isCheckingConsistency} className="hover:bg-[#E2741B]/10 hover:text-[#E2741B]">
                 {isCheckingConsistency ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <CheckCircle className="w-4 h-4 mr-2" />}
                 Check Consistency
               </Button>
@@ -968,7 +968,7 @@ Be specific and actionable in your suggestions. When the author wants to regener
                   <CardContent className="space-y-6">
                     <div className="grid grid-cols-2 gap-4">
                       <div 
-                        className="border-2 border-dashed rounded-xl p-8 text-center hover:border-[#C9941A]/50 transition-colors cursor-pointer"
+                        className="border-2 border-dashed rounded-xl p-8 text-center hover:border-[#E2741B]/50 transition-colors cursor-pointer"
                         onClick={() => fileInputRef.current?.click()}
                         data-testid="upload-dropzone"
                       >
@@ -979,7 +979,7 @@ Be specific and actionable in your suggestions. When the author wants to regener
                       </div>
 
                       <div 
-                        className="border-2 border-dashed rounded-xl p-8 text-center hover:border-[#C9941A]/50 transition-colors cursor-pointer"
+                        className="border-2 border-dashed rounded-xl p-8 text-center hover:border-[#E2741B]/50 transition-colors cursor-pointer"
                         onClick={() => attachmentInputRef.current?.click()}
                       >
                         <input ref={attachmentInputRef} type="file" accept=".txt,.md,.pdf,.doc,.docx" onChange={handleAttachmentUpload} className="hidden" />
@@ -1065,7 +1065,7 @@ Be specific and actionable in your suggestions. When the author wants to regener
                 <Card className="h-[600px] flex flex-col">
                   <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2">
-                      <Brain className="w-5 h-5 text-[#C9941A]" />
+                      <Brain className="w-5 h-5 text-[#E2741B]" />
                       Manuscript Discussion
                     </CardTitle>
                     <CardDescription>
@@ -1105,7 +1105,7 @@ Be specific and actionable in your suggestions. When the author wants to regener
                           chatMessages.map((msg, i) => (
                             <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                               <div className={`max-w-[80%] rounded-lg p-3 ${
-                                msg.role === 'user' ? 'bg-[#C9941A] text-white' : 'bg-gray-100'
+                                msg.role === 'user' ? 'bg-[#E2741B] text-white' : 'bg-gray-100'
                               }`}>
                                 <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
                                 <p className="text-xs opacity-70 mt-1">{msg.timestamp.toLocaleTimeString()}</p>
@@ -1140,7 +1140,7 @@ Be specific and actionable in your suggestions. When the author wants to regener
                       <Button 
                         onClick={handleChatSubmit}
                         disabled={!chatInput.trim() || isProcessing}
-                        className="self-end bg-[#C9941A] hover:bg-[#B8860B]"
+                        className="self-end bg-[#E2741B] hover:bg-[#B8860B]"
                         data-testid="button-send-chat"
                       >
                         <Send className="w-4 h-4" />
@@ -1200,7 +1200,7 @@ Be specific and actionable in your suggestions. When the author wants to regener
                             <div 
                               key={section.id}
                               className={`group relative rounded-lg border p-4 transition-colors ${
-                                selectedSection === section.id ? 'border-[#C9941A] bg-[#C9941A]/5' : 'hover:border-[#C9941A]/50'
+                                selectedSection === section.id ? 'border-[#E2741B] bg-[#E2741B]/5' : 'hover:border-[#E2741B]/50'
                               }`}
                               onClick={() => setSelectedSection(section.id)}
                               data-testid={`section-${section.id}`}
@@ -1225,15 +1225,15 @@ Be specific and actionable in your suggestions. When the author wants to regener
                               ) : (
                                 <div>
                                   {section.type === 'chapter' && (
-                                    <Badge variant="outline" className="mb-2 text-[#C9941A] border-[#C9941A]">Chapter</Badge>
+                                    <Badge variant="outline" className="mb-2 text-[#E2741B] border-[#E2741B]">Chapter</Badge>
                                   )}
                                   <Textarea
                                     value={section.content}
                                     onChange={(e) => updateSection(section.id, e.target.value)}
                                     className={`border-0 p-0 resize-none focus-visible:ring-0 bg-transparent ${
-                                      section.type === 'chapter' ? 'text-xl font-bold text-[#C9941A]' :
+                                      section.type === 'chapter' ? 'text-xl font-bold text-[#E2741B]' :
                                       section.type === 'heading' ? section.level === 1 ? 'text-2xl font-bold' : 'text-xl font-semibold' :
-                                      section.type === 'quote' ? 'italic text-gray-600 border-l-4 border-[#C9941A] pl-4' : ''
+                                      section.type === 'quote' ? 'italic text-gray-600 border-l-4 border-[#E2741B] pl-4' : ''
                                     }`}
                                     rows={section.type === 'heading' || section.type === 'chapter' ? 1 : 3}
                                   />
@@ -1253,7 +1253,7 @@ Be specific and actionable in your suggestions. When the author wants to regener
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <Wand2 className="w-5 h-5 text-[#C9941A]" />
+                        <Wand2 className="w-5 h-5 text-[#E2741B]" />
                         Quality Polish Pipeline
                       </CardTitle>
                       <CardDescription>
@@ -1278,7 +1278,7 @@ Be specific and actionable in your suggestions. When the author wants to regener
                           onClick={() => handleQualityPolish('line')}
                           disabled={isPolishing}
                         >
-                          <Pencil className="w-6 h-6 mb-2 text-[#C9941A]" />
+                          <Pencil className="w-6 h-6 mb-2 text-[#E2741B]" />
                           <span className="font-semibold">Line Edit</span>
                           <span className="text-xs text-gray-500">Prose & flow</span>
                         </Button>
@@ -1288,7 +1288,7 @@ Be specific and actionable in your suggestions. When the author wants to regener
                           onClick={() => handleQualityPolish('copy')}
                           disabled={isPolishing}
                         >
-                          <ClipboardList className="w-6 h-6 mb-2 text-[#C9941A]" />
+                          <ClipboardList className="w-6 h-6 mb-2 text-[#E2741B]" />
                           <span className="font-semibold">Copy Edit</span>
                           <span className="text-xs text-gray-500">Grammar & style</span>
                         </Button>
@@ -1307,7 +1307,7 @@ Be specific and actionable in your suggestions. When the author wants to regener
                       <Separator />
 
                       <Button 
-                        className="w-full bg-[#C9941A] hover:bg-[#B8860B]"
+                        className="w-full bg-[#E2741B] hover:bg-[#B8860B]"
                         onClick={() => handleQualityPolish('full')}
                         disabled={isPolishing}
                       >
@@ -1331,7 +1331,7 @@ Be specific and actionable in your suggestions. When the author wants to regener
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <RefreshCw className="w-5 h-5 text-[#C9941A]" />
+                        <RefreshCw className="w-5 h-5 text-[#E2741B]" />
                         Regenerate Manuscript
                       </CardTitle>
                       <CardDescription>
@@ -1375,7 +1375,7 @@ Be specific and actionable in your suggestions. When the author wants to regener
                             <div className="space-y-2">
                               {consistencyIssues.map((issue, i) => (
                                 <div key={i} className="flex items-start gap-2 p-2 bg-gray-50 rounded text-sm">
-                                  <AlertTriangle className="w-4 h-4 text-[#C9941A] mt-0.5 flex-shrink-0" />
+                                  <AlertTriangle className="w-4 h-4 text-[#E2741B] mt-0.5 flex-shrink-0" />
                                   <span>{issue}</span>
                                 </div>
                               ))}

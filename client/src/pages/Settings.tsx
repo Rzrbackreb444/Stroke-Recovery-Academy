@@ -125,7 +125,7 @@ export default function Settings() {
           <TabsList className="bg-[#1a1a1a] border border-[#333] p-1">
             <TabsTrigger 
               value="profile" 
-              className="data-[state=active]:bg-primary data-[state=active]:text-[#C9941A]-foreground"
+              className="data-[state=active]:bg-primary data-[state=active]:text-[#E2741B]-foreground"
               data-testid="tab-profile"
             >
               <User className="w-4 h-4 mr-2" />
@@ -133,7 +133,7 @@ export default function Settings() {
             </TabsTrigger>
             <TabsTrigger 
               value="notifications" 
-              className="data-[state=active]:bg-primary data-[state=active]:text-[#C9941A]-foreground"
+              className="data-[state=active]:bg-primary data-[state=active]:text-[#E2741B]-foreground"
               data-testid="tab-notifications"
             >
               <Bell className="w-4 h-4 mr-2" />
@@ -141,7 +141,7 @@ export default function Settings() {
             </TabsTrigger>
             <TabsTrigger 
               value="privacy" 
-              className="data-[state=active]:bg-primary data-[state=active]:text-[#C9941A]-foreground"
+              className="data-[state=active]:bg-primary data-[state=active]:text-[#E2741B]-foreground"
               data-testid="tab-privacy"
             >
               <Shield className="w-4 h-4 mr-2" />
@@ -149,7 +149,7 @@ export default function Settings() {
             </TabsTrigger>
             <TabsTrigger 
               value="accessibility" 
-              className="data-[state=active]:bg-primary data-[state=active]:text-[#C9941A]-foreground"
+              className="data-[state=active]:bg-primary data-[state=active]:text-[#E2741B]-foreground"
               data-testid="tab-accessibility"
             >
               <Volume2 className="w-4 h-4 mr-2" />
@@ -180,7 +180,7 @@ export default function Settings() {
                 <div>
                   <p className="text-white font-medium">{user.firstName} {user.lastName}</p>
                   <p className="text-gray-400 text-sm">{user.email}</p>
-                  <p className="text-[#C9941A] text-sm mt-1">
+                  <p className="text-[#E2741B] text-sm mt-1">
                     @{settings?.username || "set-username"}
                   </p>
                 </div>
@@ -208,7 +208,7 @@ export default function Settings() {
                       <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 animate-spin" />
                     )}
                     {!checkingUsername && usernameAvailable === true && (
-                      <Check className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C9941A]" />
+                      <Check className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#E2741B]" />
                     )}
                     {!checkingUsername && usernameAvailable === false && (
                       <X className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-red-500" />

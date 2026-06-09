@@ -120,7 +120,7 @@ export default function RecoveryMe() {
         <Card className="bg-[#111] border-[#222] p-10 max-w-lg text-center space-y-5 rounded-md">
           <Sparkles
             className="mx-auto h-10 w-10"
-            style={{ color: "#C9941A" }}
+            style={{ color: "#E2741B" }}
             strokeWidth={1.5}
           />
           <h1 className="font-serif text-3xl">Take the Sasquatch Scale</h1>
@@ -132,7 +132,7 @@ export default function RecoveryMe() {
           <Button
             size="lg"
             className="text-black"
-            style={{ backgroundColor: "#C9941A" }}
+            style={{ backgroundColor: "#E2741B" }}
             onClick={() => setLocation("/recovery/onboarding")}
             data-testid="button-start-onboarding"
           >
@@ -161,7 +161,7 @@ export default function RecoveryMe() {
           <div>
             <p
               className="text-xs uppercase tracking-[0.3em] mb-1"
-              style={{ color: "#C9941A" }}
+              style={{ color: "#E2741B" }}
             >
               Survivor OS
             </p>
@@ -189,7 +189,7 @@ export default function RecoveryMe() {
               onClick={() => regenerate.mutate()}
               disabled={regenerate.isPending}
               className="text-black"
-              style={{ backgroundColor: "#C9941A" }}
+              style={{ backgroundColor: "#E2741B" }}
               data-testid="button-regenerate-plan"
             >
               <RefreshCw
@@ -208,7 +208,7 @@ export default function RecoveryMe() {
               <h2 className="font-serif text-xl">Sasquatch Scale</h2>
               <span
                 className="text-xs uppercase tracking-widest"
-                style={{ color: "#C9941A" }}
+                style={{ color: "#E2741B" }}
               >
                 {totalScore} / 50
               </span>
@@ -229,8 +229,8 @@ export default function RecoveryMe() {
                   />
                   <Radar
                     dataKey="score"
-                    stroke="#C9941A"
-                    fill="#C9941A"
+                    stroke="#E2741B"
+                    fill="#E2741B"
                     fillOpacity={0.45}
                   />
                 </RadarChart>
@@ -241,7 +241,7 @@ export default function RecoveryMe() {
                 <div key={d.domain} className="text-center">
                   <div
                     className="text-xl font-serif tabular-nums"
-                    style={{ color: "#C9941A" }}
+                    style={{ color: "#E2741B" }}
                   >
                     {d.score}
                   </div>
@@ -256,7 +256,7 @@ export default function RecoveryMe() {
           {/* Today */}
           <Card className="bg-[#111] border-[#222] p-6 rounded-md">
             <div className="flex items-center gap-2 mb-4">
-              <Calendar className="h-5 w-5" style={{ color: "#C9941A" }} />
+              <Calendar className="h-5 w-5" style={{ color: "#E2741B" }} />
               <h2 className="font-serif text-xl">Today's prescription</h2>
             </div>
             {todayPlan.length > 0 ? (
@@ -269,7 +269,7 @@ export default function RecoveryMe() {
                   >
                     <div
                       className="mt-1 h-2 w-2 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: "#C9941A" }}
+                      style={{ backgroundColor: "#E2741B" }}
                     />
                     <span className="text-sm text-gray-200">{item}</span>
                   </li>
@@ -284,7 +284,7 @@ export default function RecoveryMe() {
               <div className="mt-5 flex items-center justify-between rounded-md border border-[#222] bg-[#0a0a0a] p-3">
                 <span className="text-sm text-gray-300">Brain Gym minutes</span>
                 <Link href="/recovery/brain-gym">
-                  <Button size="sm" className="text-black" style={{ backgroundColor: "#C9941A" }}>
+                  <Button size="sm" className="text-black" style={{ backgroundColor: "#E2741B" }}>
                     {plan.brainGymMinutes} min
                   </Button>
                 </Link>
@@ -301,7 +301,7 @@ export default function RecoveryMe() {
           >
             <p
               className="text-xs uppercase tracking-widest mb-2"
-              style={{ color: "#C9941A" }}
+              style={{ color: "#E2741B" }}
             >
               From Sasquatch
             </p>
@@ -312,7 +312,7 @@ export default function RecoveryMe() {
         {/* Goals */}
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <Target className="h-5 w-5" style={{ color: "#C9941A" }} />
+            <Target className="h-5 w-5" style={{ color: "#E2741B" }} />
             <h2 className="font-serif text-xl">Goals</h2>
           </div>
           {data.goals.length === 0 ? (
@@ -329,8 +329,8 @@ export default function RecoveryMe() {
                     <span
                       className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded"
                       style={{
-                        backgroundColor: "rgba(201,148,26,0.18)",
-                        color: "#C9941A",
+                        backgroundColor: "rgba(226,116,27,0.18)",
+                        color: "#E2741B",
                       }}
                     >
                       {g.horizon === "short" ? "30 days" : "1 year"}
@@ -350,7 +350,7 @@ export default function RecoveryMe() {
         {plan?.exercises?.length ? (
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <Dumbbell className="h-5 w-5" style={{ color: "#C9941A" }} />
+              <Dumbbell className="h-5 w-5" style={{ color: "#E2741B" }} />
               <h2 className="font-serif text-xl">Prescribed exercises</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -364,14 +364,14 @@ export default function RecoveryMe() {
                   >
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <Icon className="h-4 w-4" style={{ color: "#C9941A" }} />
+                        <Icon className="h-4 w-4" style={{ color: "#E2741B" }} />
                         <span className="text-[10px] uppercase tracking-widest text-gray-500">
                           {ex.domain}
                         </span>
                       </div>
                       <span
                         className="text-xs font-bold tabular-nums"
-                        style={{ color: "#C9941A" }}
+                        style={{ color: "#E2741B" }}
                       >
                         {ex.sets}×{ex.reps}
                       </span>
@@ -393,7 +393,7 @@ export default function RecoveryMe() {
         {plan?.mealTargets && (
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <Apple className="h-5 w-5" style={{ color: "#C9941A" }} />
+              <Apple className="h-5 w-5" style={{ color: "#E2741B" }} />
               <h2 className="font-serif text-xl">Weekly meal targets</h2>
             </div>
             <Card className="bg-[#111] border-[#222] p-5 rounded-md">
@@ -431,14 +431,14 @@ export default function RecoveryMe() {
           <Card className="bg-[#111] border-[#222] p-5 rounded-md">
             <p
               className="text-xs uppercase tracking-widest mb-3"
-              style={{ color: "#C9941A" }}
+              style={{ color: "#E2741B" }}
             >
               Sasquatch tips
             </p>
             <ul className="space-y-2">
               {plan.tips.map((t, i) => (
                 <li key={i} className="text-sm text-gray-300 flex gap-2">
-                  <span style={{ color: "#C9941A" }}>›</span> {t}
+                  <span style={{ color: "#E2741B" }}>›</span> {t}
                 </li>
               ))}
             </ul>
@@ -458,7 +458,7 @@ export default function RecoveryMe() {
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-2xl font-serif tabular-nums" style={{ color: "#C9941A" }}>
+      <p className="text-2xl font-serif tabular-nums" style={{ color: "#E2741B" }}>
         {value}
       </p>
       <p className="text-[10px] uppercase tracking-widest text-gray-500 mt-1">

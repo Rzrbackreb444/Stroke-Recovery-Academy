@@ -228,7 +228,7 @@ export default function MyStories() {
 
         <div className="mb-8">
           <h1 className="text-3xl font-black mb-2" data-testid="heading-main">
-            <PenSquare className="inline-block mr-3 h-8 w-8 text-[#C9941A]" />
+            <PenSquare className="inline-block mr-3 h-8 w-8 text-[#E2741B]" />
             My Stories
           </h1>
           <p className="text-gray-400">
@@ -267,7 +267,7 @@ export default function MyStories() {
             {published.length > 0 && (
               <div>
                 <h2 className="text-xl font-bold mb-4 flex items-center gap-2" data-testid="heading-published">
-                  <Send className="h-5 w-5 text-[#C9941A]" />
+                  <Send className="h-5 w-5 text-[#E2741B]" />
                   Published ({published.length})
                 </h2>
                 <div className="space-y-4">

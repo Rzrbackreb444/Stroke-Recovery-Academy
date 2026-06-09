@@ -78,7 +78,7 @@ function renderMentions(text: string) {
   const parts = text.split(/(@[A-Za-z0-9_]+)/g);
   return parts.map((p, i) =>
     p.startsWith("@") ? (
-      <span key={i} className="font-semibold" style={{ color: "#C9941A" }}>{p}</span>
+      <span key={i} className="font-semibold" style={{ color: "#E2741B" }}>{p}</span>
     ) : (
       <span key={i}>{p}</span>
     ),
@@ -121,7 +121,7 @@ interface Member {
 const REACTIONS = [
   { type: "like", icon: ThumbsUp, label: "Like", color: "#4A90E2" },
   { type: "love", icon: Heart, label: "Love", color: "#E2556A" },
-  { type: "celebrate", icon: PartyPopper, label: "Celebrate", color: "#C9941A" },
+  { type: "celebrate", icon: PartyPopper, label: "Celebrate", color: "#E2741B" },
   { type: "support", icon: Flame, label: "Fire", color: "#FF6B35" },
   { type: "insightful", icon: Lightbulb, label: "Insight", color: "#A8D8A8" },
 ] as const;
@@ -159,7 +159,7 @@ function timeAgo(dateStr: string | undefined) {
 function postTypeBadge(type: string) {
   const map: Record<string, { label: string; color: string }> = {
     update: { label: "Update", color: "#4A90E2" },
-    milestone: { label: "Milestone", color: "#C9941A" },
+    milestone: { label: "Milestone", color: "#E2741B" },
     question: { label: "Question", color: "#A8D8A8" },
     tip: { label: "Tip", color: "#9B59B6" },
     celebration: { label: "Win", color: "#E2556A" },
@@ -232,20 +232,20 @@ function ProfileEditModal({ trigger }: { trigger: React.ReactNode }) {
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="bg-[#1a1a1a] border-[#333] text-white max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-[#C9941A]">Edit Profile</DialogTitle>
+          <DialogTitle className="text-[#E2741B]">Edit Profile</DialogTitle>
         </DialogHeader>
         <div className="space-y-5 pt-2">
           <div className="flex flex-col items-center gap-3">
             <div className="relative">
-              <Avatar className="w-20 h-20 border-2 border-[#C9941A]">
+              <Avatar className="w-20 h-20 border-2 border-[#E2741B]">
                 <AvatarImage src={avatarPreview} />
-                <AvatarFallback className="bg-[#2a2a2a] text-[#C9941A] text-2xl">
+                <AvatarFallback className="bg-[#2a2a2a] text-[#E2741B] text-2xl">
                   {form.displayName?.[0]?.toUpperCase() || "U"}
                 </AvatarFallback>
               </Avatar>
               <Button
                 size="icon"
-                className="absolute -bottom-1 -right-1 h-7 w-7 rounded-full bg-[#C9941A] text-black"
+                className="absolute -bottom-1 -right-1 h-7 w-7 rounded-full bg-[#E2741B] text-black"
                 onClick={() => fileRef.current?.click()}
                 disabled={uploading}
                 aria-label="Change avatar photo"
@@ -293,7 +293,7 @@ function ProfileEditModal({ trigger }: { trigger: React.ReactNode }) {
           </div>
 
           <Button
-            className="w-full bg-[#C9941A] text-black font-bold"
+            className="w-full bg-[#E2741B] text-black font-bold"
             onClick={() => saveMutation.mutate()}
             disabled={saveMutation.isPending}
             data-testid="button-save-profile"
@@ -359,7 +359,7 @@ function GoLiveModal({ onSuccess }: { onSuccess: () => void }) {
             </Button>
             <Button
               size="sm"
-              className={!isStartingNow ? "bg-[#C9941A] text-black" : "bg-[#2a2a2a] text-gray-300"}
+              className={!isStartingNow ? "bg-[#E2741B] text-black" : "bg-[#2a2a2a] text-gray-300"}
               onClick={() => setIsStartingNow(false)}
             >
               Schedule
@@ -388,7 +388,7 @@ function GoLiveModal({ onSuccess }: { onSuccess: () => void }) {
             <Textarea className="bg-[#111] border-[#333] text-white resize-none" placeholder="What will you cover?" rows={2} value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} />
           </div>
 
-          <Button className={`w-full font-bold ${isStartingNow ? "bg-red-600 text-white" : "bg-[#C9941A] text-black"}`} onClick={() => createMutation.mutate()} disabled={createMutation.isPending || !form.title} data-testid="button-start-live">
+          <Button className={`w-full font-bold ${isStartingNow ? "bg-red-600 text-white" : "bg-[#E2741B] text-black"}`} onClick={() => createMutation.mutate()} disabled={createMutation.isPending || !form.title} data-testid="button-start-live">
             {createMutation.isPending ? "Starting..." : isStartingNow ? "Go LIVE Now" : "Schedule Event"}
           </Button>
         </div>
@@ -468,7 +468,7 @@ function PostComposer({ user, settings }: { user: any; settings: any }) {
         <div className="flex gap-3">
           <Avatar className="w-10 h-10 border border-[#333] flex-shrink-0">
             <AvatarImage src={avatarSrc} />
-            <AvatarFallback className="bg-[#2a2a2a] text-[#C9941A]">
+            <AvatarFallback className="bg-[#2a2a2a] text-[#E2741B]">
               {displayName[0]?.toUpperCase()}
             </AvatarFallback>
           </Avatar>
@@ -496,7 +496,7 @@ function PostComposer({ user, settings }: { user: any; settings: any }) {
                       onClick={() => setPostType(type)}
                       className={`flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border transition-colors ${
                         postType === type
-                          ? "border-[#C9941A] text-[#C9941A] bg-[#C9941A]/10"
+                          ? "border-[#E2741B] text-[#E2741B] bg-[#E2741B]/10"
                           : "border-[#333] text-gray-400 hover:border-[#555]"
                       }`}
                       data-testid={`button-post-type-${type}`}
@@ -508,7 +508,7 @@ function PostComposer({ user, settings }: { user: any; settings: any }) {
                 </div>
 
                 <Textarea
-                  className="bg-[#111] border-[#333] text-white resize-none min-h-[100px] focus:border-[#C9941A]"
+                  className="bg-[#111] border-[#333] text-white resize-none min-h-[100px] focus:border-[#E2741B]"
                   placeholder={
                     postType === "milestone" ? "What milestone did you hit today?"
                     : postType === "question" ? "Ask the community..."
@@ -574,7 +574,7 @@ function PostComposer({ user, settings }: { user: any; settings: any }) {
                     </Button>
                     <Button
                       size="sm"
-                      className="bg-[#C9941A] text-black font-bold gap-1.5"
+                      className="bg-[#E2741B] text-black font-bold gap-1.5"
                       onClick={() => postMutation.mutate()}
                       disabled={postMutation.isPending || (!content.trim() && !media.length)}
                       data-testid="button-submit-post"
@@ -656,13 +656,13 @@ function CommentThread({ postId, currentUser, settings }: { postId: number; curr
     <div key={c.id} className={`flex gap-2.5 ${isReply ? "ml-9" : ""}`}>
       <Avatar className="w-7 h-7 border border-[#333] flex-shrink-0">
         <AvatarImage src={c.avatarUrl || c.profileImageUrl || ""} />
-        <AvatarFallback className="bg-[#2a2a2a] text-[#C9941A] text-xs">
+        <AvatarFallback className="bg-[#2a2a2a] text-[#E2741B] text-xs">
           {(c.displayName || c.firstName || "M")[0]?.toUpperCase()}
         </AvatarFallback>
       </Avatar>
       <div className="flex-1 min-w-0">
         <div className="bg-[#111] rounded-md px-3 py-2">
-          <p className="text-xs font-semibold text-[#C9941A] mb-0.5">
+          <p className="text-xs font-semibold text-[#E2741B] mb-0.5">
             {c.displayName || `${c.firstName || ""} ${c.lastName || ""}`.trim() || "Member"}
             {c.username && (
               <span className="ml-1 font-normal text-gray-500">@{c.username}</span>
@@ -677,7 +677,7 @@ function CommentThread({ postId, currentUser, settings }: { postId: number; curr
           <button
             type="button"
             onClick={() => startReply(c)}
-            className="text-xs font-semibold text-gray-400 hover:text-[#C9941A]"
+            className="text-xs font-semibold text-gray-400 hover:text-[#E2741B]"
             data-testid={`button-reply-${c.id}`}
           >
             Reply
@@ -704,7 +704,7 @@ function CommentThread({ postId, currentUser, settings }: { postId: number; curr
 
       {replyParentId && (
         <div className="flex items-center gap-2 ml-9 text-xs text-gray-400">
-          Replying to <span className="font-semibold text-[#C9941A]">{replyToHandle}</span>
+          Replying to <span className="font-semibold text-[#E2741B]">{replyToHandle}</span>
           <button
             type="button"
             className="underline hover:text-white"
@@ -725,7 +725,7 @@ function CommentThread({ postId, currentUser, settings }: { postId: number; curr
       <div className="flex gap-2 pt-1">
         <Avatar className="w-7 h-7 border border-[#333] flex-shrink-0">
           <AvatarImage src={avatarSrc} />
-          <AvatarFallback className="bg-[#2a2a2a] text-[#C9941A] text-xs">
+          <AvatarFallback className="bg-[#2a2a2a] text-[#E2741B] text-xs">
             {displayName[0]?.toUpperCase()}
           </AvatarFallback>
         </Avatar>
@@ -740,7 +740,7 @@ function CommentThread({ postId, currentUser, settings }: { postId: number; curr
           />
           <Button
             size="icon"
-            className="bg-[#C9941A] text-black flex-shrink-0"
+            className="bg-[#E2741B] text-black flex-shrink-0"
             onClick={() => commentMutation.mutate()}
             disabled={commentMutation.isPending || !commentText.trim()}
             aria-label="Send comment"
@@ -780,10 +780,10 @@ function PostCard({ post, currentUser, settings }: { post: EnrichedPost; current
   const typeBadge = postTypeBadge(post.postType);
 
   return (
-    <Card className={`bg-[#1a1a1a] border-[#333] transition-all ${post.isPinned ? "border-[#C9941A]/40" : ""}`} data-testid={`card-post-${post.id}`}>
+    <Card className={`bg-[#1a1a1a] border-[#333] transition-all ${post.isPinned ? "border-[#E2741B]/40" : ""}`} data-testid={`card-post-${post.id}`}>
       <CardContent className="p-4 space-y-3">
         {post.isPinned && (
-          <div className="flex items-center gap-1.5 text-xs text-[#C9941A]">
+          <div className="flex items-center gap-1.5 text-xs text-[#E2741B]">
             <Pin className="w-3 h-3" />
             Pinned Post
           </div>
@@ -792,7 +792,7 @@ function PostCard({ post, currentUser, settings }: { post: EnrichedPost; current
         <div className="flex items-start gap-3">
           <Avatar className="w-10 h-10 border border-[#333] flex-shrink-0">
             <AvatarImage src={getAvatar(post)} />
-            <AvatarFallback className="bg-[#2a2a2a] text-[#C9941A]">
+            <AvatarFallback className="bg-[#2a2a2a] text-[#E2741B]">
               {getDisplayName(post)[0]?.toUpperCase()}
             </AvatarFallback>
           </Avatar>
@@ -944,7 +944,7 @@ function FeedTab({ user, settings }: { user: any; settings: any }) {
             onClick={() => setFilterType(t || "all")}
             className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border flex-shrink-0 transition-colors ${
               filterType === (t || "all")
-                ? "text-black bg-[#C9941A] border-[#C9941A]"
+                ? "text-black bg-[#E2741B] border-[#E2741B]"
                 : "text-gray-400 border-[#333] bg-[#1a1a1a]"
             }`}
             data-testid={`button-mobile-filter-${t || "all"}`}
@@ -965,7 +965,7 @@ function FeedTab({ user, settings }: { user: any; settings: any }) {
                 key={t || "all"}
                 onClick={() => setFilterType(t || "all")}
                 className={`w-full flex items-center gap-2 text-sm px-2.5 py-1.5 rounded transition-colors text-left ${
-                  filterType === (t || "all") ? "text-[#C9941A] bg-[#C9941A]/10" : "text-gray-400 hover:text-gray-200"
+                  filterType === (t || "all") ? "text-[#E2741B] bg-[#E2741B]/10" : "text-gray-400 hover:text-gray-200"
                 }`}
                 data-testid={`button-filter-${t || "all"}`}
               >
@@ -1059,11 +1059,11 @@ function MembersTab() {
               <Card key={m.id} className="bg-[#1a1a1a] border-[#333] flex flex-col" data-testid={`card-member-${m.id}`}>
                 <CardContent className="p-4 flex flex-col items-center gap-2 text-center flex-1">
                   {idx < 3 && (
-                    <Crown className="w-4 h-4 text-[#C9941A] self-start" />
+                    <Crown className="w-4 h-4 text-[#E2741B] self-start" />
                   )}
                   <Avatar className="w-14 h-14 border-2 border-[#333]">
                     <AvatarImage src={m.avatarUrl || m.profileImageUrl || ""} />
-                    <AvatarFallback className="bg-[#2a2a2a] text-[#C9941A] text-lg">
+                    <AvatarFallback className="bg-[#2a2a2a] text-[#E2741B] text-lg">
                       {memberName[0]?.toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
@@ -1097,7 +1097,7 @@ function MembersTab() {
                     <Button
                       size="sm"
                       onClick={() => setGiftTarget(m)}
-                      className="w-full bg-[#C9941A]/15 hover:bg-[#C9941A]/25 text-[#C9941A] border border-[#C9941A]/30"
+                      className="w-full bg-[#E2741B]/15 hover:bg-[#E2741B]/25 text-[#E2741B] border border-[#E2741B]/30"
                       data-testid={`button-gift-${m.id}`}
                     >
                       <Zap className="w-3.5 h-3.5 mr-1" /> Send Power
@@ -1211,7 +1211,7 @@ function LiveTab({ isAdmin }: { isAdmin: boolean }) {
 
       {upcoming.length > 0 && (
         <div className="space-y-3">
-          <h4 className="font-semibold text-[#C9941A] flex items-center gap-2">
+          <h4 className="font-semibold text-[#E2741B] flex items-center gap-2">
             <Calendar className="w-4 h-4" /> Upcoming
           </h4>
           {upcoming.map((event) => (
@@ -1220,14 +1220,14 @@ function LiveTab({ isAdmin }: { isAdmin: boolean }) {
                 <div>
                   <p className="font-semibold text-white">{event.title}</p>
                   {event.scheduled_at && (
-                    <p className="text-sm text-[#C9941A] flex items-center gap-1 mt-0.5">
+                    <p className="text-sm text-[#E2741B] flex items-center gap-1 mt-0.5">
                       <Clock className="w-3 h-3" />
                       {new Date(event.scheduled_at).toLocaleString()}
                     </p>
                   )}
                   {event.description && <p className="text-sm text-gray-400 mt-1">{event.description}</p>}
                 </div>
-                <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/40">Upcoming</Badge>
+                <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/40">Upcoming</Badge>
               </CardContent>
             </Card>
           ))}
@@ -1292,19 +1292,19 @@ export default function RecoveryCommunity() {
         <Tabs defaultValue="feed">
           <div className="overflow-x-auto">
           <TabsList className="bg-[#1a1a1a] border border-[#333] w-full sm:w-auto">
-            <TabsTrigger value="feed" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black text-gray-400" data-testid="tab-feed">
+            <TabsTrigger value="feed" className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black text-gray-400" data-testid="tab-feed">
               <Activity className="w-4 h-4 mr-1.5" />
               Feed
             </TabsTrigger>
-            <TabsTrigger value="members" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black text-gray-400" data-testid="tab-members">
+            <TabsTrigger value="members" className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black text-gray-400" data-testid="tab-members">
               <Users className="w-4 h-4 mr-1.5" />
               Members
             </TabsTrigger>
-            <TabsTrigger value="live" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black text-gray-400" data-testid="tab-live">
+            <TabsTrigger value="live" className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black text-gray-400" data-testid="tab-live">
               <Radio className="w-4 h-4 mr-1.5" />
               Live
             </TabsTrigger>
-            <TabsTrigger value="classroom" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black text-gray-400" data-testid="tab-classroom">
+            <TabsTrigger value="classroom" className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black text-gray-400" data-testid="tab-classroom">
               <Star className="w-4 h-4 mr-1.5" />
               Classroom
             </TabsTrigger>
@@ -1330,7 +1330,7 @@ export default function RecoveryCommunity() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
                   { title: "Physical Recovery", desc: "Upper extremity, gait & balance", href: "/recovery/university", color: "#4A90E2" },
-                  { title: "Cognitive Recovery", desc: "Memory, focus & brain plasticity", href: "/recovery/university", color: "#C9941A" },
+                  { title: "Cognitive Recovery", desc: "Memory, focus & brain plasticity", href: "/recovery/university", color: "#E2741B" },
                   { title: "Speech Recovery", desc: "Aphasia, dysarthria & communication", href: "/recovery/university", color: "#A8D8A8" },
                   { title: "Emotional Recovery", desc: "Depression, anxiety & mental health", href: "/recovery/university", color: "#E2556A" },
                 ].map((c) => (
@@ -1348,7 +1348,7 @@ export default function RecoveryCommunity() {
                 ))}
               </div>
               <a href="/recovery/university">
-                <Button className="bg-[#C9941A] text-black font-bold gap-2 mt-2">
+                <Button className="bg-[#E2741B] text-black font-bold gap-2 mt-2">
                   <Star className="w-4 h-4" />
                   Go to Recovery University
                 </Button>

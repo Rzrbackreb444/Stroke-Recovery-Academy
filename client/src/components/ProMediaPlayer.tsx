@@ -481,7 +481,7 @@ export function ProMediaPlayer({
           
           {isBuffering && (
             <div className="absolute inset-0 flex items-center justify-center bg-card/80">
-              <div className="w-12 h-12 border-4 border-[#C9941A] border-t-transparent rounded-full animate-spin" />
+              <div className="w-12 h-12 border-4 border-[#E2741B] border-t-transparent rounded-full animate-spin" />
             </div>
           )}
 
@@ -507,7 +507,7 @@ export function ProMediaPlayer({
                       seek(0);
                       setShowLockedOverlay(false);
                     }}
-                    className="border-[#C9941A]/50"
+                    className="border-[#E2741B]/50"
                     data-testid="button-replay-preview"
                   >
                     <Eye className="w-4 h-4 mr-2" />
@@ -517,7 +517,7 @@ export function ProMediaPlayer({
                 {onPurchase && (
                   <Button
                     onClick={onPurchase}
-                    className="bg-[#C9941A] hover:bg-orange-600"
+                    className="bg-[#E2741B] hover:bg-orange-600"
                     data-testid="button-purchase"
                   >
                     <ShoppingCart className="w-4 h-4 mr-2" />
@@ -534,7 +534,7 @@ export function ProMediaPlayer({
               className={`absolute inset-0 flex items-center justify-center bg-card/80 hover:bg-card transition-colors ${showControls ? "opacity-100" : "opacity-0"}`}
               data-testid="button-play-overlay"
             >
-              <div className="w-16 h-16 rounded-full bg-[#C9941A] flex items-center justify-center shadow-lg shadow-orange-500/30">
+              <div className="w-16 h-16 rounded-full bg-[#E2741B] flex items-center justify-center shadow-lg shadow-orange-500/30">
                 <Play className="w-8 h-8 text-foreground ml-1" />
               </div>
             </button>
@@ -554,7 +554,7 @@ export function ProMediaPlayer({
 
           {isPreviewMode && !showLockedOverlay && (
             <Badge 
-              className="absolute top-3 left-3 bg-[#C9941A]/90 text-foreground"
+              className="absolute top-3 left-3 bg-[#E2741B]/90 text-foreground"
               data-testid="badge-preview-mode"
             >
               <Eye className="w-3 h-3 mr-1" />
@@ -582,7 +582,7 @@ export function ProMediaPlayer({
                       seek(0);
                       setShowLockedOverlay(false);
                     }}
-                    className="border-[#C9941A]/50 text-xs"
+                    className="border-[#E2741B]/50 text-xs"
                     data-testid="button-replay-preview-audio"
                   >
                     <Eye className="w-3 h-3 mr-1" />
@@ -593,7 +593,7 @@ export function ProMediaPlayer({
                   <Button
                     size="sm"
                     onClick={onPurchase}
-                    className="bg-[#C9941A] hover:bg-orange-600 text-xs"
+                    className="bg-[#E2741B] hover:bg-orange-600 text-xs"
                     data-testid="button-purchase-audio"
                   >
                     <ShoppingCart className="w-3 h-3 mr-1" />
@@ -658,7 +658,7 @@ export function ProMediaPlayer({
             style={{ width: `${buffered}%` }}
           />
           <div
-            className="absolute inset-y-0 left-0 bg-[#C9941A] rounded-full transition-all"
+            className="absolute inset-y-0 left-0 bg-[#E2741B] rounded-full transition-all"
             style={{ width: `${progress}%` }}
           />
           
@@ -740,7 +740,7 @@ export function ProMediaPlayer({
             <Button
               size="icon"
               onClick={togglePlay}
-              className="h-10 w-10 rounded-full bg-[#C9941A] hover:bg-orange-600"
+              className="h-10 w-10 rounded-full bg-[#E2741B] hover:bg-orange-600"
               disabled={showLockedOverlay && !isOwned}
               data-testid="button-play-pause"
             >
@@ -941,9 +941,9 @@ export function ProMediaPlayer({
                   <div className="w-8 h-8 rounded bg-gray-700 flex items-center justify-center shrink-0">
                     {currentPlaylistIndex === index && isPlaying ? (
                       <div className="flex gap-0.5">
-                        <div className="w-0.5 h-3 bg-[#C9941A] animate-pulse" />
-                        <div className="w-0.5 h-2 bg-[#C9941A] animate-pulse delay-75" />
-                        <div className="w-0.5 h-4 bg-[#C9941A] animate-pulse delay-150" />
+                        <div className="w-0.5 h-3 bg-[#E2741B] animate-pulse" />
+                        <div className="w-0.5 h-2 bg-[#E2741B] animate-pulse delay-75" />
+                        <div className="w-0.5 h-4 bg-[#E2741B] animate-pulse delay-150" />
                       </div>
                     ) : item.isLocked && !isOwned ? (
                       <Lock className="w-3 h-3" />

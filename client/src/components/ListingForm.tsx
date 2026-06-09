@@ -410,7 +410,7 @@ export default function ListingForm({
         <Button
           onClick={form.handleSubmit(onSubmit)}
           disabled={isPending}
-          className="bg-[#C9941A] hover:bg-orange-600 text-black gap-2"
+          className="bg-[#E2741B] hover:bg-orange-600 text-black gap-2"
           data-testid="button-save-listing"
         >
           {isPending ? (

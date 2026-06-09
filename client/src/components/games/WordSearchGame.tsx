@@ -50,7 +50,7 @@ export default function WordSearchGame({
   difficulty,
   size,
   count,
-  accent = "#C9941A",
+  accent = "#E2741B",
   seed,
   packTitle,
   onComplete,
@@ -382,7 +382,7 @@ export default function WordSearchGame({
               data-testid="text-ws-clock"
               aria-label={`Elapsed time: ${formatClock(elapsedSec)}`}
             >
-              <span className={`inline-block h-2 w-2 rounded-full ${paused ? "bg-gray-500" : "bg-[#C9941A] animate-pulse"}`} />
+              <span className={`inline-block h-2 w-2 rounded-full ${paused ? "bg-gray-500" : "bg-[#E2741B] animate-pulse"}`} />
               {formatClock(elapsedSec)}
               {paused && <span className="ml-1 text-xs uppercase tracking-widest text-gray-500">Paused</span>}
             </div>
@@ -417,7 +417,7 @@ export default function WordSearchGame({
               <Button
                 type="button"
                 onClick={togglePause}
-                className="mt-5 bg-[#C9941A] text-black hover:bg-[#C9941A]"
+                className="mt-5 bg-[#E2741B] text-black hover:bg-[#E2741B]"
                 data-testid="button-ws-resume-overlay"
               >
                 <Play className="mr-2 h-4 w-4" /> Resume
@@ -430,7 +430,7 @@ export default function WordSearchGame({
             role="grid"
             aria-label={`Word search grid, ${puzzle.size} by ${puzzle.size}. Use arrow keys to move. Press Enter to start a selection, then arrows to extend, then Enter again to commit.`}
             onKeyDown={handleKeyDown}
-            className="inline-grid select-none rounded-md border border-[#1e1e1e] bg-[#0f0f0f] p-2 outline-none focus:ring-2 focus:ring-[#C9941A]/60"
+            className="inline-grid select-none rounded-md border border-[#1e1e1e] bg-[#0f0f0f] p-2 outline-none focus:ring-2 focus:ring-[#E2741B]/60"
             style={{
               gridTemplateColumns: `repeat(${puzzle.size}, minmax(0, 1fr))`,
               touchAction: "none",

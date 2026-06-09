@@ -42,7 +42,7 @@ const exercises = [
 
 const difficultyColor: Record<string, string> = {
   Beginner: "bg-green-500/10 text-green-400 border-green-500/20",
-  Intermediate: "bg-[#C9941A]/10 text-[#C9941A] border-[#C9941A]/20",
+  Intermediate: "bg-[#E2741B]/10 text-[#E2741B] border-[#E2741B]/20",
   Advanced: "bg-red-500/10 text-red-400 border-red-500/20",
 };
 
@@ -51,7 +51,7 @@ export default function FeaturedExercises() {
     <section className="py-20 bg-[#0D0D0D]" id="exercises">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
-          <p className="text-[#C9941A] text-sm font-semibold uppercase tracking-widest mb-4" data-testid="badge-exercises-category">
+          <p className="text-[#E2741B] text-sm font-semibold uppercase tracking-widest mb-4" data-testid="badge-exercises-category">
             Breakthrough Techniques
           </p>
           <h2 className="text-4xl sm:text-5xl font-black text-white mb-4" data-testid="text-exercises-title">
@@ -97,7 +97,7 @@ export default function FeaturedExercises() {
                   ))}
                 </div>
                 <Link href={exercise.href}>
-                  <Button className="w-full bg-[#C9941A]/10 text-[#C9941A] border border-[#C9941A]/30 hover:bg-[#C9941A] hover:text-black transition-all">
+                  <Button className="w-full bg-[#E2741B]/10 text-[#E2741B] border border-[#E2741B]/30 hover:bg-[#E2741B] hover:text-black transition-all">
                     View Exercise
                     <ArrowRight className="h-4 w-4 ml-2" />
                   </Button>

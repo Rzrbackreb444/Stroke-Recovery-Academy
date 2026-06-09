@@ -81,7 +81,7 @@ export default function PowerPointsInbox() {
       <div className="max-w-5xl mx-auto px-4 py-8">
         <header className="mb-8">
           <div className="flex items-center gap-3">
-            <Zap className="w-8 h-8 text-[#C9941A]" />
+            <Zap className="w-8 h-8 text-[#E2741B]" />
             <h1 className="text-3xl font-bold" data-testid="text-page-title">Your Power Points</h1>
           </div>
           <p className="text-gray-400 mt-2">Every point is fuel sent by someone who believes in your recovery.</p>
@@ -101,7 +101,7 @@ export default function PowerPointsInbox() {
                 <CardContent className="p-8 text-center">
                   <Mail className="w-10 h-10 text-gray-600 mx-auto mb-3" />
                   <p className="text-gray-400">No Power Points yet. When family or therapists send some, they'll show up here.</p>
-                  <Button asChild className="mt-4 bg-[#C9941A] hover:bg-[#B8851A] text-black font-bold">
+                  <Button asChild className="mt-4 bg-[#E2741B] hover:bg-[#B8851A] text-black font-bold">
                     <Link href="/recovery/community">Find your community</Link>
                   </Button>
                 </CardContent>
@@ -116,7 +116,7 @@ export default function PowerPointsInbox() {
                     <CardContent className="p-4 flex gap-3">
                       <Avatar className="w-12 h-12 border border-[#333]">
                         {!g.isAnonymous && <AvatarImage src={g.senderProfileImageUrl || ""} />}
-                        <AvatarFallback className="bg-[#2a2a2a] text-[#C9941A]">{senderName[0]?.toUpperCase()}</AvatarFallback>
+                        <AvatarFallback className="bg-[#2a2a2a] text-[#E2741B]">{senderName[0]?.toUpperCase()}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
@@ -124,7 +124,7 @@ export default function PowerPointsInbox() {
                           {g.senderIsTherapist && !g.isAnonymous && (
                             <VerifiedTherapistBadge title={g.senderTherapistTitle || undefined} />
                           )}
-                          <span className="ml-auto text-[#C9941A] font-bold">+{g.points.toLocaleString()} pts</span>
+                          <span className="ml-auto text-[#E2741B] font-bold">+{g.points.toLocaleString()} pts</span>
                         </div>
                         {g.message && <p className="mt-1 text-gray-300 italic">"{g.message}"</p>}
                         <p className="text-xs text-gray-500 mt-1">{new Date(g.createdAt).toLocaleString()}</p>
@@ -145,10 +145,10 @@ export default function PowerPointsInbox() {
                 <CardContent className="p-4 space-y-3">
                   {supporters.map((s, i) => (
                     <div key={s.senderId} className="flex items-center gap-3" data-testid={`supporter-${s.senderId}`}>
-                      <span className="w-5 text-center font-bold text-[#C9941A]">{i + 1}</span>
+                      <span className="w-5 text-center font-bold text-[#E2741B]">{i + 1}</span>
                       <Avatar className="w-8 h-8 border border-[#333]">
                         <AvatarImage src={s.profileImageUrl || ""} />
-                        <AvatarFallback className="bg-[#2a2a2a] text-[#C9941A] text-xs">
+                        <AvatarFallback className="bg-[#2a2a2a] text-[#E2741B] text-xs">
                           {(s.firstName || "S")[0]?.toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
@@ -180,11 +180,11 @@ function StatCard({ label, value, sub, icon }: { label: string; value: string; s
     <Card className="bg-[#1a1a1a] border-[#333]">
       <CardHeader className="pb-1">
         <CardTitle className="text-sm text-gray-400 flex items-center gap-2 font-normal">
-          <span className="text-[#C9941A]">{icon}</span> {label}
+          <span className="text-[#E2741B]">{icon}</span> {label}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold text-[#C9941A]">{value}</div>
+        <div className="text-2xl font-bold text-[#E2741B]">{value}</div>
         <div className="text-xs text-gray-500">{sub}</div>
       </CardContent>
     </Card>

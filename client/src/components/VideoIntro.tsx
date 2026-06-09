@@ -33,8 +33,8 @@ export default function VideoIntro() {
                 const Icon = point.icon;
                 return (
                   <div key={point.title} className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-[#C9941A]/10 flex items-center justify-center flex-shrink-0">
-                      <Icon className="h-5 w-5 text-[#C9941A]" />
+                    <div className="w-10 h-10 rounded-lg bg-[#E2741B]/10 flex items-center justify-center flex-shrink-0">
+                      <Icon className="h-5 w-5 text-[#E2741B]" />
                     </div>
                     <div>
                       <p className="font-semibold text-white text-sm">{point.title}</p>
@@ -46,7 +46,7 @@ export default function VideoIntro() {
             </div>
 
             <Button 
-              className="bg-[#C9941A] text-black font-semibold"
+              className="bg-[#E2741B] text-black font-semibold"
               onClick={() => document.getElementById('academy')?.scrollIntoView({ behavior: 'smooth' })}
             >
               View Our Protocols
@@ -55,7 +55,7 @@ export default function VideoIntro() {
 
           <div>
             <Card className="bg-[#1a1a1a] border-[#333] overflow-hidden shadow-2xl shadow-black/50">
-              <div className="relative aspect-video w-full bg-gradient-to-br from-[#C9941A]/10 to-[#0D0D0D]">
+              <div className="relative aspect-video w-full bg-gradient-to-br from-[#E2741B]/10 to-[#0D0D0D]">
                 <iframe
                   src="https://sora.chatgpt.com/p/s_697e051ba6308191a6bf2587f97d766f?psh=HXVzZXItTW1WY3BQd0hPS205aFpneldpMEdoempZ.5kP0dGYeVJHu"
                   className="absolute inset-0 w-full h-full"
@@ -73,7 +73,7 @@ export default function VideoIntro() {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="text-[#C9941A]"
+                  className="text-[#E2741B]"
                   onClick={() => window.open("https://sora.chatgpt.com/p/s_697e051ba6308191a6bf2587f97d766f?psh=HXVzZXItTW1WY3BQd0hPS205aFpneldpMEdoempZ.5kP0dGYeVJHu", "_blank")}
                   data-testid="button-watch-video"
                 >

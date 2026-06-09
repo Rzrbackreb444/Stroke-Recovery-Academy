@@ -11,7 +11,7 @@ export default function TestimonyVideo() {
     <section className="py-20 bg-[#0D0D0D]" id="testimony">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <p className="text-[#C9941A] text-sm font-semibold uppercase tracking-widest mb-4">
+          <p className="text-[#E2741B] text-sm font-semibold uppercase tracking-widest mb-4">
             Nick's Story
           </p>
           <h2
@@ -46,7 +46,7 @@ export default function TestimonyVideo() {
                   />
                   <div className="absolute inset-0 bg-black/50" />
                   <div className="relative flex flex-col items-center gap-4">
-                    <div className="w-20 h-20 rounded-full bg-[#C9941A] flex items-center justify-center group-hover:scale-110 transition-transform shadow-xl shadow-[#C9941A]/30">
+                    <div className="w-20 h-20 rounded-full bg-[#E2741B] flex items-center justify-center group-hover:scale-110 transition-transform shadow-xl shadow-[#E2741B]/30">
                       <Play className="w-9 h-9 text-black ml-1" />
                     </div>
                     <p className="text-white text-lg font-semibold drop-shadow">
@@ -74,7 +74,7 @@ export default function TestimonyVideo() {
               className="bg-[#0a0a0a] border border-[#1e1e1e] rounded-xl p-5 text-center"
               data-testid="stat-card-staples"
             >
-              <p className="text-3xl font-black text-[#C9941A] mb-1" data-testid="stat-value-staples">
+              <p className="text-3xl font-black text-[#E2741B] mb-1" data-testid="stat-value-staples">
                 50
               </p>
               <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
@@ -85,7 +85,7 @@ export default function TestimonyVideo() {
               className="bg-[#0a0a0a] border border-[#1e1e1e] rounded-xl p-5 text-center"
               data-testid="stat-card-recovery"
             >
-              <p className="text-3xl font-black text-[#C9941A] mb-1" data-testid="stat-value-recovery">
+              <p className="text-3xl font-black text-[#E2741B] mb-1" data-testid="stat-value-recovery">
                 0→90%
               </p>
               <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
@@ -96,7 +96,7 @@ export default function TestimonyVideo() {
               className="bg-[#0a0a0a] border border-[#1e1e1e] rounded-xl p-5 text-center"
               data-testid="stat-card-years"
             >
-              <p className="text-3xl font-black text-[#C9941A] mb-1" data-testid="stat-value-years">
+              <p className="text-3xl font-black text-[#E2741B] mb-1" data-testid="stat-value-years">
                 7+
               </p>
               <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">

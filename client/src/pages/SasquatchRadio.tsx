@@ -453,7 +453,7 @@ export default function SasquatchRadio() {
           </h1>
           <p className="text-white/70 text-lg max-w-2xl mx-auto">
             Recovery anthems written by survivors, for survivors. Free to listen, forever.
-            Got a song in you? <Link href="/recovery/anthem/build" className="text-[#C9941A] underline">Build your own</Link>.
+            Got a song in you? <Link href="/recovery/anthem/build" className="text-[#E2741B] underline">Build your own</Link>.
           </p>
         </section>
 
@@ -462,13 +462,13 @@ export default function SasquatchRadio() {
 
         {/* ── Player card ────────────────────────────────────── */}
         <Card
-          className="relative overflow-hidden bg-gradient-to-br from-[#1a1a1a] via-[#141414] to-[#0a0a0a] border-[#C9941A]/30 p-6 sm:p-8 mb-10 shadow-2xl"
+          className="relative overflow-hidden bg-gradient-to-br from-[#1a1a1a] via-[#141414] to-[#0a0a0a] border-[#E2741B]/30 p-6 sm:p-8 mb-10 shadow-2xl"
           data-testid="card-player"
         >
           {/* Soft gold ambient glow behind the artwork — only visible while playing */}
           <div
             aria-hidden
-            className={`pointer-events-none absolute -top-24 -left-24 w-72 h-72 rounded-full bg-[#C9941A]/15 blur-3xl transition-opacity duration-700 ${
+            className={`pointer-events-none absolute -top-24 -left-24 w-72 h-72 rounded-full bg-[#E2741B]/15 blur-3xl transition-opacity duration-700 ${
               isPlaying ? "opacity-100" : "opacity-0"
             }`}
           />
@@ -500,7 +500,7 @@ export default function SasquatchRadio() {
             <div className="relative flex-shrink-0 mx-auto sm:mx-0">
               <div
                 aria-hidden
-                className={`absolute -inset-1 rounded-lg bg-gradient-to-br from-[#C9941A] via-[#E0B040] to-[#C9941A] opacity-60 blur transition-opacity duration-500 ${
+                className={`absolute -inset-1 rounded-lg bg-gradient-to-br from-[#E2741B] via-[#E0B040] to-[#E2741B] opacity-60 blur transition-opacity duration-500 ${
                   isPlaying ? "opacity-70" : "opacity-30"
                 }`}
               />
@@ -514,14 +514,14 @@ export default function SasquatchRadio() {
 
             <div className="flex-1 min-w-0 text-center sm:text-left">
               <div className="flex items-center gap-2 justify-center sm:justify-start mb-2">
-                <Badge className="bg-[#C9941A]/15 text-[#C9941A] border border-[#C9941A]/40 hover:bg-[#C9941A]/20">
+                <Badge className="bg-[#E2741B]/15 text-[#E2741B] border border-[#E2741B]/40 hover:bg-[#E2741B]/20">
                   {current.vibe}
                 </Badge>
                 {isPlaying && !isPlayingIntro && (
                   <span className="inline-flex items-end gap-[3px] h-4" aria-label="Now playing" data-testid="indicator-now-playing">
-                    <span className="w-[3px] bg-[#C9941A] rounded-sm sasquatch-eq-bar sasquatch-eq-bar-1" />
-                    <span className="w-[3px] bg-[#C9941A] rounded-sm sasquatch-eq-bar sasquatch-eq-bar-2" />
-                    <span className="w-[3px] bg-[#C9941A] rounded-sm sasquatch-eq-bar sasquatch-eq-bar-3" />
+                    <span className="w-[3px] bg-[#E2741B] rounded-sm sasquatch-eq-bar sasquatch-eq-bar-1" />
+                    <span className="w-[3px] bg-[#E2741B] rounded-sm sasquatch-eq-bar sasquatch-eq-bar-2" />
+                    <span className="w-[3px] bg-[#E2741B] rounded-sm sasquatch-eq-bar sasquatch-eq-bar-3" />
                   </span>
                 )}
               </div>
@@ -595,7 +595,7 @@ export default function SasquatchRadio() {
               <Button
                 size="icon"
                 onClick={() => setIsPlaying((p) => !p)}
-                className="w-16 h-16 rounded-full bg-[#C9941A] text-black hover:bg-[#E0B040] shadow-[0_0_30px_-5px_rgba(201,148,26,0.6)] transition-all duration-200 hover:scale-105 active:scale-95"
+                className="w-16 h-16 rounded-full bg-[#E2741B] text-black hover:bg-[#E0B040] shadow-[0_0_30px_-5px_rgba(226,116,27,0.6)] transition-all duration-200 hover:scale-105 active:scale-95"
                 data-testid="button-play"
                 aria-label={isPlaying ? "Pause" : "Play"}
               >
@@ -619,7 +619,7 @@ export default function SasquatchRadio() {
                 variant={djMode ? "default" : "outline"}
                 size="sm"
                 onClick={() => setDjMode((d) => !d)}
-                className={djMode ? "bg-[#C9941A] text-black hover:bg-[#E0B040]" : "border-white/20 text-white/80"}
+                className={djMode ? "bg-[#E2741B] text-black hover:bg-[#E0B040]" : "border-white/20 text-white/80"}
                 data-testid="button-dj-mode"
                 title={djMode ? "DJ Mode is on — Coach intros between tracks" : "DJ Mode is off"}
               >
@@ -650,7 +650,7 @@ export default function SasquatchRadio() {
 
           {isPlayingIntro && (
             <div
-              className="relative mt-4 text-center text-xs uppercase tracking-[0.2em] text-[#C9941A]"
+              className="relative mt-4 text-center text-xs uppercase tracking-[0.2em] text-[#E2741B]"
               data-testid="text-dj-intro-playing"
             >
               <RadioIcon className="inline w-3 h-3 mr-1.5 -mt-0.5 animate-pulse" />
@@ -735,7 +735,7 @@ export default function SasquatchRadio() {
                   }}
                   className={`group flex items-center gap-3 p-3 rounded-lg text-left hover-elevate transition-colors ${
                     isActive
-                      ? "bg-gradient-to-r from-[#C9941A]/15 via-[#C9941A]/5 to-transparent border border-[#C9941A]/40"
+                      ? "bg-gradient-to-r from-[#E2741B]/15 via-[#E2741B]/5 to-transparent border border-[#E2741B]/40"
                       : "bg-[#161616] border border-white/5"
                   }`}
                   data-testid={`button-track-${t.id}`}
@@ -755,9 +755,9 @@ export default function SasquatchRadio() {
                     >
                       {isLive ? (
                         <span className="inline-flex items-end gap-[2px] h-3.5" aria-label="Playing">
-                          <span className="w-[2px] bg-[#C9941A] rounded-sm sasquatch-eq-bar sasquatch-eq-bar-1" />
-                          <span className="w-[2px] bg-[#C9941A] rounded-sm sasquatch-eq-bar sasquatch-eq-bar-2" />
-                          <span className="w-[2px] bg-[#C9941A] rounded-sm sasquatch-eq-bar sasquatch-eq-bar-3" />
+                          <span className="w-[2px] bg-[#E2741B] rounded-sm sasquatch-eq-bar sasquatch-eq-bar-1" />
+                          <span className="w-[2px] bg-[#E2741B] rounded-sm sasquatch-eq-bar sasquatch-eq-bar-2" />
+                          <span className="w-[2px] bg-[#E2741B] rounded-sm sasquatch-eq-bar sasquatch-eq-bar-3" />
                         </span>
                       ) : (
                         <Play className="w-4 h-4 text-white ml-0.5" />
@@ -783,13 +783,13 @@ export default function SasquatchRadio() {
 
         {/* ── Founder note + CTA ─────────────────────────────── */}
         <Card className="bg-[#1a1a1a] border-white/10 p-6 sm:p-8 text-center">
-          <Sparkles className="w-8 h-8 text-[#C9941A] mx-auto mb-3" />
+          <Sparkles className="w-8 h-8 text-[#E2741B] mx-auto mb-3" />
           <h3 className="text-2xl font-semibold mb-2">Add your anthem to the rotation</h3>
           <p className="text-white/70 mb-5 max-w-xl mx-auto">
             Every survivor has a song in them. Build yours in five minutes — verses, chorus,
             real vocals, your story — and submit it to play on Sasquatch Radio.
           </p>
-          <Button asChild className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black font-semibold" data-testid="button-build-anthem-cta">
+          <Button asChild className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black font-semibold" data-testid="button-build-anthem-cta">
             <Link href="/recovery/anthem/build">
               <Music className="w-4 h-4 mr-2" />
               Build your anthem
@@ -816,7 +816,7 @@ function FeaturedAlbumCard() {
   ];
   return (
     <Card
-      className="mb-10 overflow-hidden border-[#C9941A]/30 bg-gradient-to-br from-[#0a1410] via-[#0a0a0a] to-[#1a0a05]"
+      className="mb-10 overflow-hidden border-[#E2741B]/30 bg-gradient-to-br from-[#0a1410] via-[#0a0a0a] to-[#1a0a05]"
       data-testid="card-featured-album"
     >
       <div className="grid md:grid-cols-[220px_1fr] gap-4 md:gap-6 p-4 md:p-6 items-center">
@@ -827,7 +827,7 @@ function FeaturedAlbumCard() {
           data-testid="img-featured-album-cover"
         />
         <div className="space-y-3 text-center md:text-left">
-          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#C9941A]/15 text-[#C9941A] border border-[#C9941A]/30">
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#E2741B]/15 text-[#E2741B] border border-[#E2741B]/30">
             <Sparkles className="h-3 w-3" />
             Featured Album
           </div>

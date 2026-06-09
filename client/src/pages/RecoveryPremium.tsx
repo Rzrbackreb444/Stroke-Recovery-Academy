@@ -289,7 +289,7 @@ export default function RecoveryPremium() {
           >
             Stop rationing your
             <br />
-            <span style={{ color: "#C9941A" }}>recovery.</span>
+            <span style={{ color: "#E2741B" }}>recovery.</span>
           </h1>
           <p className="text-stone-300 text-lg md:text-xl max-w-2xl mx-auto mb-8">
             Unlimited Coach. Unlimited Recovery Anchors. Voice Cloning included.
@@ -361,7 +361,7 @@ export default function RecoveryPremium() {
         {/* ── What changes after 7 days ─────────────────────────────────── */}
         <section className="mb-12" data-testid="section-outcomes">
           <h2 className="text-2xl md:text-3xl font-black mb-6 text-center">
-            What changes after <span style={{ color: "#C9941A" }}>7 days.</span>
+            What changes after <span style={{ color: "#E2741B" }}>7 days.</span>
           </h2>
           <div className="grid md:grid-cols-2 gap-3">
             {OUTCOMES.map((o, i) => (
@@ -382,7 +382,7 @@ export default function RecoveryPremium() {
         {/* ── Features ──────────────────────────────────────────────────── */}
         <section className="mb-12">
           <h2 className="text-2xl md:text-3xl font-black mb-6 text-center">
-            Everything Sasquatch, <span style={{ color: "#C9941A" }}>uncapped.</span>
+            Everything Sasquatch, <span style={{ color: "#E2741B" }}>uncapped.</span>
           </h2>
           <div className="grid md:grid-cols-2 gap-5">
             {FEATURES.map((f) => {
@@ -395,7 +395,7 @@ export default function RecoveryPremium() {
                 >
                   <div className="flex gap-3">
                     <div className="flex-shrink-0 w-10 h-10 rounded-md bg-amber-900/30 flex items-center justify-center">
-                      <Icon className="w-5 h-5" style={{ color: "#C9941A" }} />
+                      <Icon className="w-5 h-5" style={{ color: "#E2741B" }} />
                     </div>
                     <div>
                       <h3 className="font-bold text-stone-100 mb-1">{f.title}</h3>
@@ -411,7 +411,7 @@ export default function RecoveryPremium() {
         {/* ── Free vs Premium comparison ────────────────────────────────── */}
         <section className="mb-12" data-testid="section-comparison">
           <h2 className="text-2xl md:text-3xl font-black mb-6 text-center">
-            Free vs <span style={{ color: "#C9941A" }}>Premium.</span>
+            Free vs <span style={{ color: "#E2741B" }}>Premium.</span>
           </h2>
           <Card className="bg-stone-900 border-stone-800 overflow-hidden">
             <div className="grid grid-cols-3 text-sm">
@@ -447,7 +447,7 @@ export default function RecoveryPremium() {
         {/* ── Pricing card (the existing one, expanded) ─────────────────── */}
         <section id="pricing" className="scroll-mt-24 mb-12">
           <h2 className="text-2xl md:text-3xl font-black mb-6 text-center">
-            Pick a plan. <span style={{ color: "#C9941A" }}>Try it free.</span>
+            Pick a plan. <span style={{ color: "#E2741B" }}>Try it free.</span>
           </h2>
 
           <div className="flex justify-center mb-6">
@@ -507,7 +507,7 @@ export default function RecoveryPremium() {
 
           <Card
             className={`relative p-8 md:p-10 bg-stone-900 mb-3 ${
-              plan === "annual" ? "border-amber-700/60 shadow-[0_0_0_1px_rgba(201,148,26,0.2)]" : "border-stone-800"
+              plan === "annual" ? "border-amber-700/60 shadow-[0_0_0_1px_rgba(226,116,27,0.2)]" : "border-stone-800"
             }`}
           >
             {plan === "annual" && (
@@ -524,7 +524,7 @@ export default function RecoveryPremium() {
                 <div className="flex items-baseline gap-2 flex-wrap">
                   <span
                     className="text-5xl md:text-6xl font-black"
-                    style={{ color: "#C9941A" }}
+                    style={{ color: "#E2741B" }}
                     data-testid="text-price"
                   >
                     ${displayUsd}
@@ -641,7 +641,7 @@ export default function RecoveryPremium() {
         {/* ── Why $19 ───────────────────────────────────────────────────── */}
         <Card className="p-6 bg-stone-900 border-stone-800 mb-12">
           <div className="flex items-start gap-3">
-            <Lock className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: "#C9941A" }} />
+            <Lock className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: "#E2741B" }} />
             <div>
               <h3 className="font-bold mb-1">Why $19?</h3>
               <p className="text-sm text-stone-400">
@@ -658,7 +658,7 @@ export default function RecoveryPremium() {
         {/* ── FAQ ───────────────────────────────────────────────────────── */}
         <section className="mb-12" data-testid="section-faq">
           <h2 className="text-2xl md:text-3xl font-black mb-6 text-center">
-            Common <span style={{ color: "#C9941A" }}>questions.</span>
+            Common <span style={{ color: "#E2741B" }}>questions.</span>
           </h2>
           <Card className="p-2 md:p-4 bg-stone-900 border-stone-800">
             <Accordion type="single" collapsible className="w-full">

@@ -61,7 +61,7 @@ function StatCard({
             )}
           </div>
           <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-            <Icon className="h-5 w-5 text-[#C9941A]" />
+            <Icon className="h-5 w-5 text-[#E2741B]" />
           </div>
         </div>
       </CardContent>
@@ -90,7 +90,7 @@ function StudioCard({
         <CardContent className="p-5">
           <div className="flex items-start gap-4">
             <div className={`w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0`}>
-              <Icon className="h-6 w-6 text-[#C9941A]" />
+              <Icon className="h-6 w-6 text-[#E2741B]" />
             </div>
             <div className="min-w-0 flex-1">
               <div className="font-bold text-base">{title}</div>
@@ -126,7 +126,7 @@ function QuickActionCard({
     <Link href={href}>
       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid={id}>
         <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center">
-          <Icon className="h-4 w-4 text-[#C9941A]" />
+          <Icon className="h-4 w-4 text-[#E2741B]" />
         </div>
         <div className="min-w-0 flex-1">
           <div className="font-medium text-sm">{title}</div>
@@ -294,7 +294,7 @@ export default function Dashboard() {
                 <Card>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg flex items-center gap-2">
-                      <Sparkles className="h-5 w-5 text-[#C9941A]" />
+                      <Sparkles className="h-5 w-5 text-[#E2741B]" />
                       Quick Create
                     </CardTitle>
                   </CardHeader>
@@ -340,55 +340,55 @@ export default function Dashboard() {
                   <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     <Link href="/book-studio">
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-book-studio">
-                        <BookOpen className="h-5 w-5 text-[#C9941A]" />
+                        <BookOpen className="h-5 w-5 text-[#E2741B]" />
                         <span className="font-medium text-sm">Book Studio</span>
                       </div>
                     </Link>
                     <Link href="/video-studio">
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-video-studio">
-                        <Film className="h-5 w-5 text-[#C9941A]" />
+                        <Film className="h-5 w-5 text-[#E2741B]" />
                         <span className="font-medium text-sm">Video Studio</span>
                       </div>
                     </Link>
                     <Link href="/music-studio">
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-music-studio">
-                        <Music className="h-5 w-5 text-[#C9941A]" />
+                        <Music className="h-5 w-5 text-[#E2741B]" />
                         <span className="font-medium text-sm">Music Studio</span>
                       </div>
                     </Link>
                     <Link href="/course-studio">
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-course-studio">
-                        <GraduationCap className="h-5 w-5 text-[#C9941A]" />
+                        <GraduationCap className="h-5 w-5 text-[#E2741B]" />
                         <span className="font-medium text-sm">Course Builder</span>
                       </div>
                     </Link>
                     <Link href="/image-studio">
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-image-studio">
-                        <Image className="h-5 w-5 text-[#C9941A]" />
+                        <Image className="h-5 w-5 text-[#E2741B]" />
                         <span className="font-medium text-sm">Image Studio</span>
                       </div>
                     </Link>
                     <Link href="/recovery/sasch">
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-doctrine-engine">
-                        <Brain className="h-5 w-5 text-[#C9941A]" />
+                        <Brain className="h-5 w-5 text-[#E2741B]" />
                         <span className="font-medium text-sm">Doctrine Engine</span>
                       </div>
                     </Link>
                     <Link href="/website-studio">
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-website-studio">
-                        <Globe className="h-5 w-5 text-[#C9941A]" />
+                        <Globe className="h-5 w-5 text-[#E2741B]" />
                         <span className="font-medium text-sm">Website Builder</span>
                       </div>
                     </Link>
                     <Link href="/seo-command-center">
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border" data-testid="link-seo-command-center">
-                        <Search className="h-5 w-5 text-[#C9941A]" />
+                        <Search className="h-5 w-5 text-[#E2741B]" />
                         <span className="font-medium text-sm">SEO Command Center</span>
                       </div>
                     </Link>
                     <Link href="/games">
                       <div className="flex items-center gap-3 p-3 rounded-lg hover-elevate cursor-pointer border bg-gradient-to-r from-orange-500/10 to-orange-600/5" data-testid="link-sasquatch-games">
-                        <Gamepad2 className="h-5 w-5 text-[#C9941A]" />
+                        <Gamepad2 className="h-5 w-5 text-[#E2741B]" />
                         <span className="font-medium text-sm">Beat the Sasquatch</span>
                       </div>
                     </Link>
@@ -530,37 +530,37 @@ export default function Dashboard() {
               <CardContent className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
                 <Link href="/media-studio">
                   <div className="text-center p-4 rounded-lg hover-elevate cursor-pointer border" data-testid="link-media-studio">
-                    <Palette className="h-6 w-6 mx-auto mb-2 text-[#C9941A]" />
+                    <Palette className="h-6 w-6 mx-auto mb-2 text-[#E2741B]" />
                     <div className="text-sm font-medium">Media Studio</div>
                   </div>
                 </Link>
                 <Link href="/podcast-studio">
                   <div className="text-center p-4 rounded-lg hover-elevate cursor-pointer border" data-testid="link-podcast-studio">
-                    <Mic className="h-6 w-6 mx-auto mb-2 text-[#C9941A]" />
+                    <Mic className="h-6 w-6 mx-auto mb-2 text-[#E2741B]" />
                     <div className="text-sm font-medium">Podcast Studio</div>
                   </div>
                 </Link>
                 <Link href="/script-studio">
                   <div className="text-center p-4 rounded-lg hover-elevate cursor-pointer border" data-testid="link-script-studio">
-                    <FileText className="h-6 w-6 mx-auto mb-2 text-[#C9941A]" />
+                    <FileText className="h-6 w-6 mx-auto mb-2 text-[#E2741B]" />
                     <div className="text-sm font-medium">Script Studio</div>
                   </div>
                 </Link>
                 <Link href="/doc-hub">
                   <div className="text-center p-4 rounded-lg hover-elevate cursor-pointer border" data-testid="link-doc-hub">
-                    <FileText className="h-6 w-6 mx-auto mb-2 text-[#C9941A]" />
+                    <FileText className="h-6 w-6 mx-auto mb-2 text-[#E2741B]" />
                     <div className="text-sm font-medium">Doc Hub</div>
                   </div>
                 </Link>
                 <Link href="/life-story">
                   <div className="text-center p-4 rounded-lg hover-elevate cursor-pointer border" data-testid="link-life-story">
-                    <Clock className="h-6 w-6 mx-auto mb-2 text-[#C9941A]" />
+                    <Clock className="h-6 w-6 mx-auto mb-2 text-[#E2741B]" />
                     <div className="text-sm font-medium">Life Story</div>
                   </div>
                 </Link>
                 <Link href="/ai-consultant">
                   <div className="text-center p-4 rounded-lg hover-elevate cursor-pointer border" data-testid="link-ai-consultant">
-                    <Brain className="h-6 w-6 mx-auto mb-2 text-[#C9941A]" />
+                    <Brain className="h-6 w-6 mx-auto mb-2 text-[#E2741B]" />
                     <div className="text-sm font-medium">AI Consultant</div>
                   </div>
                 </Link>
@@ -571,14 +571,14 @@ export default function Dashboard() {
           <TabsContent value="earnings" className="space-y-6">
             {earningsQuery.isLoading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-[#C9941A]" />
+                <Loader2 className="h-8 w-8 animate-spin text-[#E2741B]" />
               </div>
             ) : (
               <>
                 {!earningsQuery.data?.summary?.salesCount && (
                   <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg mb-4">
                     <div className="flex items-center gap-2">
-                      <Sparkles className="h-5 w-5 text-[#C9941A]" />
+                      <Sparkles className="h-5 w-5 text-[#E2741B]" />
                       <span className="font-medium">Start Earning on Stroke Recovery Academy</span>
                     </div>
                     <p className="text-sm text-gray-400 mt-1">
@@ -676,7 +676,7 @@ export default function Dashboard() {
                   </CardHeader>
                   <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="p-4 border rounded-lg" data-testid="card-sell-books">
-                      <BookOpen className="h-8 w-8 text-[#C9941A] mb-3" />
+                      <BookOpen className="h-8 w-8 text-[#E2741B] mb-3" />
                       <h3 className="font-semibold mb-1">Sell Books</h3>
                       <p className="text-sm text-gray-400 mb-3">Publish and sell your books on the marketplace</p>
                       <Link href="/book-studio">
@@ -684,7 +684,7 @@ export default function Dashboard() {
                       </Link>
                     </div>
                     <div className="p-4 border rounded-lg" data-testid="card-sell-courses">
-                      <GraduationCap className="h-8 w-8 text-[#C9941A] mb-3" />
+                      <GraduationCap className="h-8 w-8 text-[#E2741B] mb-3" />
                       <h3 className="font-semibold mb-1">Sell Courses</h3>
                       <p className="text-sm text-gray-400 mb-3">Turn your knowledge into paid courses</p>
                       <Link href="/course-studio">
@@ -692,7 +692,7 @@ export default function Dashboard() {
                       </Link>
                     </div>
                     <div className="p-4 border rounded-lg" data-testid="card-sell-music">
-                      <Music className="h-8 w-8 text-[#C9941A] mb-3" />
+                      <Music className="h-8 w-8 text-[#E2741B] mb-3" />
                       <h3 className="font-semibold mb-1">Sell Music</h3>
                       <p className="text-sm text-gray-400 mb-3">License your beats and compositions</p>
                       <Link href="/music-studio">
@@ -770,15 +770,15 @@ export default function Dashboard() {
                 )}
                 <div className="grid grid-cols-3 gap-4 pt-4 border-t">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-[#C9941A]" data-testid="text-referrer-reward">500</div>
+                    <div className="text-2xl font-bold text-[#E2741B]" data-testid="text-referrer-reward">500</div>
                     <div className="text-xs text-gray-400">Credits for You</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-[#C9941A]" data-testid="text-referee-reward">250</div>
+                    <div className="text-2xl font-bold text-[#E2741B]" data-testid="text-referee-reward">250</div>
                     <div className="text-xs text-gray-400">Credits for Friend</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-[#C9941A]" data-testid="text-commission-rate">10%</div>
+                    <div className="text-2xl font-bold text-[#E2741B]" data-testid="text-commission-rate">10%</div>
                     <div className="text-xs text-gray-400">Purchase Commission</div>
                   </div>
                 </div>
@@ -796,7 +796,7 @@ export default function Dashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="text-center space-y-2">
                     <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                      <Share2 className="h-6 w-6 text-[#C9941A]" />
+                      <Share2 className="h-6 w-6 text-[#E2741B]" />
                     </div>
                     <h3 className="font-semibold">1. Share Your Link</h3>
                     <p className="text-sm text-gray-400">
@@ -805,7 +805,7 @@ export default function Dashboard() {
                   </div>
                   <div className="text-center space-y-2">
                     <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                      <UserPlus className="h-6 w-6 text-[#C9941A]" />
+                      <UserPlus className="h-6 w-6 text-[#E2741B]" />
                     </div>
                     <h3 className="font-semibold">2. Friend Signs Up</h3>
                     <p className="text-sm text-gray-400">
@@ -814,7 +814,7 @@ export default function Dashboard() {
                   </div>
                   <div className="text-center space-y-2">
                     <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                      <Gift className="h-6 w-6 text-[#C9941A]" />
+                      <Gift className="h-6 w-6 text-[#E2741B]" />
                     </div>
                     <h3 className="font-semibold">3. Both Get Rewarded</h3>
                     <p className="text-sm text-gray-400">

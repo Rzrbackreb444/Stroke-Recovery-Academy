@@ -103,7 +103,7 @@ export default function DraftYourLegend() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
-              <BookOpen className="h-6 w-6 text-[#C9941A]" />
+              <BookOpen className="h-6 w-6 text-[#E2741B]" />
               Draft Your Legend
             </h1>
             <p className="text-gray-400 text-sm mt-1">
@@ -113,7 +113,7 @@ export default function DraftYourLegend() {
           
           <Button 
             onClick={handleSave} 
-            className="bg-[#C9941A]"
+            className="bg-[#E2741B]"
             disabled={saveMutation.isPending || !hasChanges}
             data-testid="button-save-legend"
           >
@@ -125,7 +125,7 @@ export default function DraftYourLegend() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <Card className="bg-[#1a1a1a] border-[#333] p-4">
             <div className="flex items-center gap-2 mb-2">
-              <FileText className="h-4 w-4 text-[#C9941A]" />
+              <FileText className="h-4 w-4 text-[#E2741B]" />
               <span className="text-gray-400 text-sm">Total Words</span>
             </div>
             <div className="text-2xl font-bold">{totalWords.toLocaleString()}</div>
@@ -157,17 +157,17 @@ export default function DraftYourLegend() {
                     onClick={() => setCurrentChapter(idx)}
                     className={`w-full text-left p-3 rounded-lg transition-all ${
                       idx === currentChapter 
-                        ? 'bg-[#C9941A]/20 border border-[#C9941A]' 
+                        ? 'bg-[#E2741B]/20 border border-[#E2741B]' 
                         : 'bg-[#1a1a1a] hover:bg-zinc-700'
                     }`}
                     data-testid={`chapter-${idx + 1}`}
                   >
                     <div className="flex items-center gap-2">
-                      <span className="text-[#C9941A] font-bold">{idx + 1}</span>
+                      <span className="text-[#E2741B] font-bold">{idx + 1}</span>
                       <span className="text-sm font-medium truncate">{ch.title}</span>
                     </div>
                     {ch.content && ch.content.length > 100 && (
-                      <Badge className="mt-1 bg-[#C9941A]/20 text-[#C9941A] text-xs">
+                      <Badge className="mt-1 bg-[#E2741B]/20 text-[#E2741B] text-xs">
                         Complete
                       </Badge>
                     )}
@@ -181,7 +181,7 @@ export default function DraftYourLegend() {
             <Card className="bg-[#1a1a1a] border-[#333] p-6">
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
-                  <Badge variant="outline" className="border-[#C9941A] text-[#C9941A]">
+                  <Badge variant="outline" className="border-[#E2741B] text-[#E2741B]">
                     Chapter {currentChapter + 1}
                   </Badge>
                   <div className="flex gap-2">
@@ -210,14 +210,14 @@ export default function DraftYourLegend() {
               </div>
 
               <div className="mb-6 p-4 bg-[#1a1a1a]/50 rounded-lg">
-                <h4 className="text-sm font-semibold text-[#C9941A] mb-2 flex items-center gap-2">
+                <h4 className="text-sm font-semibold text-[#E2741B] mb-2 flex items-center gap-2">
                   <Sparkles className="h-4 w-4" />
                   Writing Prompts
                 </h4>
                 <ul className="space-y-1">
                   {chapter.prompts?.map((prompt, idx) => (
                     <li key={idx} className="text-gray-400 text-sm flex items-start gap-2">
-                      <span className="text-[#C9941A]">•</span>
+                      <span className="text-[#E2741B]">•</span>
                       {prompt}
                     </li>
                   ))}
@@ -226,7 +226,7 @@ export default function DraftYourLegend() {
 
               <div>
                 <Label className="flex items-center gap-2 mb-2">
-                  <PenTool className="h-4 w-4 text-[#C9941A]" />
+                  <PenTool className="h-4 w-4 text-[#E2741B]" />
                   Your Story
                 </Label>
                 <Textarea
@@ -241,7 +241,7 @@ export default function DraftYourLegend() {
                     {chapter.content?.split(/\s+/).filter(Boolean).length || 0} words in this chapter
                   </span>
                   {hasChanges && (
-                    <span className="text-[#C9941A]">Unsaved changes</span>
+                    <span className="text-[#E2741B]">Unsaved changes</span>
                   )}
                 </div>
               </div>

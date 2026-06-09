@@ -21,7 +21,7 @@ export default function RefundPolicy() {
           <Button
             variant="ghost"
             size="sm"
-            className="text-white/70 hover:text-[#C9941A] mb-6"
+            className="text-white/70 hover:text-[#E2741B] mb-6"
             data-testid="link-back-dashboard"
           >
             <ArrowLeft className="w-4 h-4 mr-2" /> Back
@@ -30,8 +30,8 @@ export default function RefundPolicy() {
 
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#C9941A]/15 border border-[#C9941A]/30 flex items-center justify-center">
-              <RefreshCw className="h-5 w-5 text-[#C9941A]" />
+            <div className="w-10 h-10 rounded-full bg-[#E2741B]/15 border border-[#E2741B]/30 flex items-center justify-center">
+              <RefreshCw className="h-5 w-5 text-[#E2741B]" />
             </div>
             <h1 className="text-3xl font-black" data-testid="text-page-title">
               Refund Policy
@@ -84,7 +84,7 @@ export default function RefundPolicy() {
             <h2 className="text-xl font-bold text-white mb-3">3. Survivor Scholarship</h2>
             <p>
               If financial hardship is preventing you from accessing the Platform, apply for the Survivor
-              Scholarship at <Link href="/recovery/scholarship" className="text-[#C9941A] underline" data-testid="link-scholarship">
+              Scholarship at <Link href="/recovery/scholarship" className="text-[#E2741B] underline" data-testid="link-scholarship">
                 /recovery/scholarship
               </Link>{" "}
               instead of requesting a refund. We grant scholarships generously to survivors and their caregivers.
@@ -126,7 +126,7 @@ export default function RefundPolicy() {
               Email{" "}
               <a
                 href="mailto:billing@strokerecoveryacademy.com"
-                className="text-[#C9941A] underline"
+                className="text-[#E2741B] underline"
                 data-testid="link-billing-email"
               >
                 billing@strokerecoveryacademy.com

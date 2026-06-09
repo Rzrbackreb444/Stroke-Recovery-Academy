@@ -49,7 +49,7 @@ export default function DailyGiftButton({ receiverId, receiverName, size = "sm",
       <Button
         size={size}
         variant="outline"
-        className={`border-[#C9941A]/40 text-[#C9941A] hover:text-[#C9941A] ${className || ""}`}
+        className={`border-[#E2741B]/40 text-[#E2741B] hover:text-[#E2741B] ${className || ""}`}
         onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOpen(true); }}
         disabled={disabled}
         data-testid={`button-daily-gift-${receiverId}`}
@@ -60,8 +60,8 @@ export default function DailyGiftButton({ receiverId, receiverName, size = "sm",
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="bg-[#0D0D0D] border border-[#C9941A]/40 text-white max-w-sm" data-testid="dialog-daily-gift">
-          <DialogTitle className="text-[#C9941A]">Pass the Power</DialogTitle>
+        <DialogContent className="bg-[#0D0D0D] border border-[#E2741B]/40 text-white max-w-sm" data-testid="dialog-daily-gift">
+          <DialogTitle className="text-[#E2741B]">Pass the Power</DialogTitle>
           <DialogDescription className="text-gray-400">
             One free gift per day — must be given away. {status?.pointsPerGift || 25} credits to {receiverName || "this survivor"}.
           </DialogDescription>
@@ -77,7 +77,7 @@ export default function DailyGiftButton({ receiverId, receiverName, size = "sm",
           <div className="flex gap-2">
             <Button variant="outline" className="flex-1" onClick={() => setOpen(false)} data-testid="button-daily-gift-cancel">Cancel</Button>
             <Button
-              className="flex-1 bg-[#C9941A] text-black hover:bg-[#b8831a]"
+              className="flex-1 bg-[#E2741B] text-black hover:bg-[#b8831a]"
               onClick={() => send.mutate()}
               disabled={send.isPending}
               data-testid="button-daily-gift-send"

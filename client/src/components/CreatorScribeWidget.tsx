@@ -183,7 +183,7 @@ export default function CreatorScribeWidget() {
                   <div className="w-12 h-12 rounded-full flex items-center justify-center bg-background border-2 border-[#FF6B35]">
                     <PenLine className="w-6 h-6 text-[#FF6B35]" />
                   </div>
-                  <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-[#C9941A] rounded-full border-2 border-black" />
+                  <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-[#E2741B] rounded-full border-2 border-black" />
                 </div>
                 <div className="flex-1">
                   <h3 className="font-bold text-foreground flex items-center gap-2 tracking-tight">

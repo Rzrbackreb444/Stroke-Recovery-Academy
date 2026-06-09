@@ -66,14 +66,14 @@ export default function AvatarSettings() {
     <div className="min-h-screen bg-[#0D0D0D] text-gray-200 p-4 md:p-8" data-testid="page-avatar-settings">
       <div className="max-w-3xl mx-auto space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-[#C9941A]">Avatar</h1>
+          <h1 className="text-3xl font-bold text-[#E2741B]">Avatar</h1>
           <p className="text-sm text-gray-500">Show up as the version of yourself you want the pack to see.</p>
         </div>
 
         <Card className="p-4 bg-[#1a1a1a] border-[#333] flex items-center gap-4">
-          <Avatar className="w-20 h-20 border border-[#C9941A]/30">
+          <Avatar className="w-20 h-20 border border-[#E2741B]/30">
             {current ? <AvatarImage src={current} alt="Current avatar" /> : null}
-            <AvatarFallback className="bg-[#0D0D0D] text-[#C9941A] text-2xl">{initials}</AvatarFallback>
+            <AvatarFallback className="bg-[#0D0D0D] text-[#E2741B] text-2xl">{initials}</AvatarFallback>
           </Avatar>
           <div>
             <div className="text-sm text-gray-400">Current avatar</div>
@@ -103,7 +103,7 @@ export default function AvatarSettings() {
               <Button
                 onClick={() => genMut.mutate()}
                 disabled={genMut.isPending}
-                className="bg-[#C9941A] text-black hover:bg-[#C9941A]"
+                className="bg-[#E2741B] text-black hover:bg-[#E2741B]"
                 data-testid="button-generate-avatar"
               >
                 {genMut.isPending ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Forging…</> : <><Sparkles className="w-4 h-4 mr-2" /> Generate avatar</>}
@@ -123,7 +123,7 @@ export default function AvatarSettings() {
               <Button
                 onClick={() => fileRef.current?.click()}
                 disabled={uploadMut.isPending}
-                className="bg-[#C9941A] text-black hover:bg-[#C9941A]"
+                className="bg-[#E2741B] text-black hover:bg-[#E2741B]"
                 data-testid="button-pick-file"
               >
                 {uploadMut.isPending ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Uploading…</> : <><Upload className="w-4 h-4 mr-2" /> Choose image</>}
@@ -134,7 +134,7 @@ export default function AvatarSettings() {
 
           <TabsContent value="gallery" className="mt-4">
             <Card className="p-4 bg-[#1a1a1a] border-[#333]">
-              {gallery.isLoading && <div className="text-center py-8"><Loader2 className="w-5 h-5 animate-spin mx-auto text-[#C9941A]" /></div>}
+              {gallery.isLoading && <div className="text-center py-8"><Loader2 className="w-5 h-5 animate-spin mx-auto text-[#E2741B]" /></div>}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {gallery.data?.items?.map((it) => (
                   <button

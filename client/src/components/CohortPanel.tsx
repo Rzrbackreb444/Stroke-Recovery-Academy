@@ -149,7 +149,7 @@ export default function CohortPanel({ courseId }: { courseId: number }) {
             size="sm"
             variant={c.id === activeCohortId ? "default" : "outline"}
             className={c.id === activeCohortId
-              ? "bg-[#C9941A] text-black hover:bg-[#C9941A]/90"
+              ? "bg-[#E2741B] text-black hover:bg-[#E2741B]/90"
               : "border-[#333] text-gray-300"
             }
             onClick={() => setSelectedId(c.id)}
@@ -172,7 +172,7 @@ export default function CohortPanel({ courseId }: { courseId: number }) {
                 {fmtDate(activeCohort.startDate)} → {fmtDate(activeCohort.endDate)}
               </p>
               <div className="flex items-center gap-2 mt-2">
-                <Badge className="bg-[#C9941A]/15 text-[#C9941A] border-0 gap-1">
+                <Badge className="bg-[#E2741B]/15 text-[#E2741B] border-0 gap-1">
                   <Users className="w-3 h-3" />
                   <span data-testid="text-cohort-member-count">{activeCohort.memberCount}</span> members
                 </Badge>
@@ -196,7 +196,7 @@ export default function CohortPanel({ courseId }: { courseId: number }) {
               ) : (
                 <Button
                   size="sm"
-                  className="bg-[#C9941A] text-black hover:bg-[#C9941A]/90"
+                  className="bg-[#E2741B] text-black hover:bg-[#E2741B]/90"
                   onClick={() => joinMutation.mutate()}
                   disabled={joinMutation.isPending}
                   data-testid="button-join-cohort"
@@ -232,7 +232,7 @@ export default function CohortPanel({ courseId }: { courseId: number }) {
                   <Square className="w-4 h-4 mr-1.5" /> Stop & send
                 </Button>
               )}
-              <Button size="sm" className="bg-[#C9941A] text-black hover:bg-[#C9941A]/90"
+              <Button size="sm" className="bg-[#E2741B] text-black hover:bg-[#E2741B]/90"
                 disabled={!content.trim() || postMutation.isPending}
                 onClick={() => postMutation.mutate({ content: content.trim() })}
                 data-testid="button-cohort-post">
@@ -260,7 +260,7 @@ export default function CohortPanel({ courseId }: { courseId: number }) {
                 <div className="flex items-center gap-2">
                   <Avatar className="h-7 w-7">
                     <AvatarImage src={p.authorAvatar || undefined} />
-                    <AvatarFallback className="bg-[#C9941A]/20 text-[#C9941A] text-xs">
+                    <AvatarFallback className="bg-[#E2741B]/20 text-[#E2741B] text-xs">
                       {(p.authorName || "?")[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>

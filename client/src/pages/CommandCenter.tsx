@@ -174,7 +174,7 @@ export default function CommandCenter() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#C9941A] animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#E2741B] animate-spin" />
       </div>
     );
   }
@@ -193,7 +193,7 @@ export default function CommandCenter() {
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 bg-[#1a1a1a] px-4 py-2 rounded-lg">
-              <Flame className="w-5 h-5 text-[#C9941A]" />
+              <Flame className="w-5 h-5 text-[#E2741B]" />
               <span className="font-bold text-xl">{streak.currentStreak}</span>
               <span className="text-gray-400 text-sm">day streak</span>
             </div>
@@ -383,7 +383,7 @@ export default function CommandCenter() {
                         {todayCheckin?.sleepHours || "-"}h
                       </p>
                     </div>
-                    <Moon className="w-10 h-10 text-[#C9941A]" />
+                    <Moon className="w-10 h-10 text-[#E2741B]" />
                   </div>
                 </CardContent>
               </Card>
@@ -423,13 +423,13 @@ export default function CommandCenter() {
               <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardHeader>
                   <CardTitle className="text-foreground flex items-center gap-2">
-                    <Activity className="w-5 h-5 text-[#C9941A]" />
+                    <Activity className="w-5 h-5 text-[#E2741B]" />
                     Exercise
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-center mb-4">
-                    <p className="text-4xl font-bold text-[#C9941A]">
+                    <p className="text-4xl font-bold text-[#E2741B]">
                       {exerciseData?.todayTotal || 0}
                     </p>
                     <p className="text-gray-400">/ {exerciseData?.goal?.dailyMinutes || 30} mins</p>
@@ -468,13 +468,13 @@ export default function CommandCenter() {
               <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardHeader>
                   <CardTitle className="text-foreground flex items-center gap-2">
-                    <Footprints className="w-5 h-5 text-[#C9941A]" />
+                    <Footprints className="w-5 h-5 text-[#E2741B]" />
                     Stand Breaks
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-center mb-4">
-                    <p className="text-4xl font-bold text-[#C9941A]">
+                    <p className="text-4xl font-bold text-[#E2741B]">
                       {standData?.todayTotal || 0}
                     </p>
                     <p className="text-gray-400">/ {standData?.goal?.dailyStandTarget || 12} stands</p>
@@ -500,7 +500,7 @@ export default function CommandCenter() {
               <CardHeader>
                 <CardTitle className="text-foreground flex items-center justify-between">
                   <span className="flex items-center gap-2">
-                    <Bell className="w-5 h-5 text-[#C9941A]" />
+                    <Bell className="w-5 h-5 text-[#E2741B]" />
                     Upcoming Reminders
                   </span>
                   <Link href="/reminders">
@@ -518,9 +518,9 @@ export default function CommandCenter() {
                         <div className="flex items-center gap-3">
                           {reminder.type === "medication" && <Pill className="w-5 h-5 text-red-400" />}
                           {reminder.type === "hydration" && <Droplets className="w-5 h-5 text-blue-400" />}
-                          {reminder.type === "exercise" && <Activity className="w-5 h-5 text-[#C9941A]" />}
-                          {reminder.type === "appointment" && <Calendar className="w-5 h-5 text-[#C9941A]" />}
-                          {reminder.type === "stand" && <Footprints className="w-5 h-5 text-[#C9941A]" />}
+                          {reminder.type === "exercise" && <Activity className="w-5 h-5 text-[#E2741B]" />}
+                          {reminder.type === "appointment" && <Calendar className="w-5 h-5 text-[#E2741B]" />}
+                          {reminder.type === "stand" && <Footprints className="w-5 h-5 text-[#E2741B]" />}
                           <div>
                             <p className="text-foreground font-medium">{reminder.title}</p>
                             <p className="text-gray-400 text-sm">{reminder.time}</p>
@@ -603,7 +603,7 @@ export default function CommandCenter() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
                     <Heart className="w-8 h-8 text-red-500" />
-                    <Badge className="bg-[#C9941A]/20 text-[#C9941A]">Normal</Badge>
+                    <Badge className="bg-[#E2741B]/20 text-[#E2741B]">Normal</Badge>
                   </div>
                   <p className="text-gray-400 text-sm">Blood Pressure</p>
                   <p className="text-2xl font-bold text-foreground">120/80</p>
@@ -614,8 +614,8 @@ export default function CommandCenter() {
               <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
-                    <Activity className="w-8 h-8 text-[#C9941A]" />
-                    <Badge className="bg-[#C9941A]/20 text-[#C9941A]">Normal</Badge>
+                    <Activity className="w-8 h-8 text-[#E2741B]" />
+                    <Badge className="bg-[#E2741B]/20 text-[#E2741B]">Normal</Badge>
                   </div>
                   <p className="text-gray-400 text-sm">Heart Rate</p>
                   <p className="text-2xl font-bold text-foreground">72 BPM</p>
@@ -627,7 +627,7 @@ export default function CommandCenter() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
                     <Wind className="w-8 h-8 text-blue-400" />
-                    <Badge className="bg-[#C9941A]/20 text-[#C9941A]">Normal</Badge>
+                    <Badge className="bg-[#E2741B]/20 text-[#E2741B]">Normal</Badge>
                   </div>
                   <p className="text-gray-400 text-sm">Oxygen Level</p>
                   <p className="text-2xl font-bold text-foreground">98%</p>
@@ -639,7 +639,7 @@ export default function CommandCenter() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
                     <Thermometer className="w-8 h-8 text-yellow-400" />
-                    <Badge className="bg-[#C9941A]/20 text-[#C9941A]">Normal</Badge>
+                    <Badge className="bg-[#E2741B]/20 text-[#E2741B]">Normal</Badge>
                   </div>
                   <p className="text-gray-400 text-sm">Temperature</p>
                   <p className="text-2xl font-bold text-foreground">98.6°F</p>
@@ -654,8 +654,8 @@ export default function CommandCenter() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-4 bg-[#C9941A]/10 border border-green-500/20 rounded-lg">
-                    <CheckCircle2 className="w-6 h-6 text-[#C9941A]" />
+                  <div className="flex items-center gap-3 p-4 bg-[#E2741B]/10 border border-green-500/20 rounded-lg">
+                    <CheckCircle2 className="w-6 h-6 text-[#E2741B]" />
                     <div>
                       <p className="text-foreground font-medium">Blood Pressure in Range</p>
                       <p className="text-gray-400 text-sm">Your readings are within healthy limits</p>
@@ -726,8 +726,8 @@ export default function CommandCenter() {
                     </div>
                     <p className="text-gray-400 mt-4">Your overall recovery score based on consistency, vitals, and progress</p>
                     <div className="flex items-center justify-center gap-2 mt-2">
-                      <TrendingUp className="w-4 h-4 text-[#C9941A]" />
-                      <span className="text-[#C9941A] text-sm">+5 from last week</span>
+                      <TrendingUp className="w-4 h-4 text-[#E2741B]" />
+                      <span className="text-[#E2741B] text-sm">+5 from last week</span>
                     </div>
                   </div>
                 </CardContent>
@@ -739,7 +739,7 @@ export default function CommandCenter() {
             <Card className="bg-[#1a1a1a] border-[#333]">
               <CardHeader>
                 <CardTitle className="text-foreground flex items-center gap-2">
-                  <Target className="w-5 h-5 text-[#C9941A]" />
+                  <Target className="w-5 h-5 text-[#E2741B]" />
                   66-Day Habit Tracker
                 </CardTitle>
               </CardHeader>
@@ -754,7 +754,7 @@ export default function CommandCenter() {
                             <p className="text-gray-400 text-sm">{habit.habitDescription}</p>
                           </div>
                           <div className="text-right">
-                            <p className="text-2xl font-bold text-[#C9941A]">{habit.currentStreak}</p>
+                            <p className="text-2xl font-bold text-[#E2741B]">{habit.currentStreak}</p>
                             <p className="text-gray-400 text-xs">day streak</p>
                           </div>
                         </div>

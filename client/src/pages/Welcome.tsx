@@ -66,12 +66,12 @@ export default function Welcome() {
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Hero */}
         <div className="text-center mb-10">
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#C9941A] mb-3">
+          <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#E2741B] mb-3">
             Welcome
           </p>
           <h1 className="text-3xl md:text-4xl font-black mb-4 leading-tight" data-testid="text-welcome-title">
             Welcome to the Sasquatch Recovery Family,
-            <span className="text-[#C9941A]"> {firstName}</span>.
+            <span className="text-[#E2741B]"> {firstName}</span>.
           </h1>
           <p className="text-base text-gray-400 leading-relaxed max-w-xl mx-auto">
             This is a survivor-built platform. There's no doctor here, no clinical
@@ -88,7 +88,7 @@ export default function Welcome() {
               <Card
                 key={p.title}
                 className={`bg-[#111] hover-elevate ${
-                  p.primary ? "border-[#C9941A]/40" : "border-[#1e1e1e]"
+                  p.primary ? "border-[#E2741B]/40" : "border-[#1e1e1e]"
                 }`}
               >
                 <CardContent className="p-5">
@@ -96,13 +96,13 @@ export default function Welcome() {
                     <div
                       className={`w-10 h-10 rounded-md flex items-center justify-center flex-shrink-0 ${
                         p.primary
-                          ? "bg-[#C9941A]/15 border border-[#C9941A]/30"
+                          ? "bg-[#E2741B]/15 border border-[#E2741B]/30"
                           : "bg-[#1a1a1a] border border-[#2a2a2a]"
                       }`}
                     >
                       <Icon
                         className={`h-5 w-5 ${
-                          p.primary ? "text-[#C9941A]" : "text-gray-300"
+                          p.primary ? "text-[#E2741B]" : "text-gray-300"
                         }`}
                       />
                     </div>
@@ -117,7 +117,7 @@ export default function Welcome() {
                           variant={p.primary ? "default" : "outline"}
                           className={
                             p.primary
-                              ? "bg-[#C9941A] text-black hover:bg-[#b8841a]"
+                              ? "bg-[#E2741B] text-black hover:bg-[#b8841a]"
                               : "border-[#2a2a2a] text-white"
                           }
                           data-testid={`button-pillar-${p.title.toLowerCase().replace(/\s+/g, "-")}`}
@@ -170,14 +170,14 @@ export default function Welcome() {
         <Card className="bg-[#111] border-[#1e1e1e]">
           <CardContent className="p-4">
             <div className="flex items-start gap-3">
-              <HeartHandshake className="h-5 w-5 text-[#C9941A] flex-shrink-0 mt-0.5" />
+              <HeartHandshake className="h-5 w-5 text-[#E2741B] flex-shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm font-semibold text-white mb-1">
                   Are you the caregiver, not the survivor?
                 </p>
                 <p className="text-xs text-gray-400 leading-relaxed">
                   Set up the account in your survivor's name and{" "}
-                  <Link href="/recovery/caregiver" className="text-[#C9941A] underline">
+                  <Link href="/recovery/caregiver" className="text-[#E2741B] underline">
                     add yourself as a caregiver
                   </Link>{" "}
                   during intake — you'll get the daily check-in summary and milestone alerts.

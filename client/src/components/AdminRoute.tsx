@@ -25,7 +25,7 @@ export default function AdminRoute({ children }: { children: React.ReactNode }) 
       <div className="min-h-screen bg-[#0D0D0D] text-white flex items-center justify-center px-4">
         <Card className="bg-[#1a1a1a] border-[#333] max-w-md w-full">
           <CardContent className="p-8 text-center">
-            <ShieldAlert className="w-10 h-10 text-[#C9941A] mx-auto mb-3" />
+            <ShieldAlert className="w-10 h-10 text-[#E2741B] mx-auto mb-3" />
             <h1 className="text-xl font-bold mb-2">Admin access required</h1>
             <p className="text-gray-400 mb-4 text-sm">This area is restricted to platform administrators.</p>
             <Button asChild variant="outline" className="border-[#333]">

@@ -152,13 +152,13 @@ export default function CreatorEarnings() {
       case 'pending':
         return <Badge variant="secondary"><Clock className="w-3 h-3 mr-1" />Pending</Badge>;
       case 'available':
-        return <Badge className="bg-[#C9941A]/20 text-[#C9941A]"><CheckCircle className="w-3 h-3 mr-1" />Available</Badge>;
+        return <Badge className="bg-[#E2741B]/20 text-[#E2741B]"><CheckCircle className="w-3 h-3 mr-1" />Available</Badge>;
       case 'paid':
-        return <Badge className="bg-primary/20 text-[#C9941A]"><DollarSign className="w-3 h-3 mr-1" />Paid</Badge>;
+        return <Badge className="bg-primary/20 text-[#E2741B]"><DollarSign className="w-3 h-3 mr-1" />Paid</Badge>;
       case 'processing':
         return <Badge className="bg-yellow-500/20 text-yellow-400"><RefreshCw className="w-3 h-3 mr-1 animate-spin" />Processing</Badge>;
       case 'completed':
-        return <Badge className="bg-[#C9941A]/20 text-[#C9941A]"><CheckCircle className="w-3 h-3 mr-1" />Completed</Badge>;
+        return <Badge className="bg-[#E2741B]/20 text-[#E2741B]"><CheckCircle className="w-3 h-3 mr-1" />Completed</Badge>;
       case 'failed':
         return <Badge variant="destructive"><AlertCircle className="w-3 h-3 mr-1" />Failed</Badge>;
       default:
@@ -196,7 +196,7 @@ export default function CreatorEarnings() {
           <Card className="mb-8 border-primary/50">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <CreditCard className="w-5 h-5 text-[#C9941A]" />
+                <CreditCard className="w-5 h-5 text-[#E2741B]" />
                 Set Up Payouts
               </CardTitle>
               <CardDescription>
@@ -241,7 +241,7 @@ export default function CreatorEarnings() {
               <TrendingUp className="w-4 h-4 text-gray-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-[#C9941A]" data-testid="text-total-earnings">
+              <div className="text-2xl font-bold text-[#E2741B]" data-testid="text-total-earnings">
                 {formatCurrency(summary.totalCreatorShare)}
               </div>
               <p className="text-xs text-gray-400">{summary.salesCount} sales</p>
@@ -251,10 +251,10 @@ export default function CreatorEarnings() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
               <CardTitle className="text-sm font-medium">Available</CardTitle>
-              <DollarSign className="w-4 h-4 text-[#C9941A]" />
+              <DollarSign className="w-4 h-4 text-[#E2741B]" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-[#C9941A]" data-testid="text-available-balance">
+              <div className="text-2xl font-bold text-[#E2741B]" data-testid="text-available-balance">
                 {formatCurrency(summary.availableBalance)}
               </div>
               <p className="text-xs text-gray-400">Ready for payout</p>
@@ -277,7 +277,7 @@ export default function CreatorEarnings() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
               <CardTitle className="text-sm font-medium">Paid Out</CardTitle>
-              <CheckCircle className="w-4 h-4 text-[#C9941A]" />
+              <CheckCircle className="w-4 h-4 text-[#E2741B]" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold" data-testid="text-paid-out">
@@ -291,7 +291,7 @@ export default function CreatorEarnings() {
         {connectStatus?.onboarded && (
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
-              <Badge className="bg-[#C9941A]/20 text-[#C9941A]">
+              <Badge className="bg-[#E2741B]/20 text-[#E2741B]">
                 <CheckCircle className="w-3 h-3 mr-1" /> Payouts Enabled
               </Badge>
               <Button variant="ghost" size="sm" onClick={() => loginMutation.mutate()} data-testid="button-stripe-dashboard">
@@ -352,7 +352,7 @@ export default function CreatorEarnings() {
                         </div>
                         <div className="flex items-center gap-4">
                           <div className="text-right">
-                            <p className="font-bold text-[#C9941A]" data-testid={`text-earning-amount-${earning.id}`}>
+                            <p className="font-bold text-[#E2741B]" data-testid={`text-earning-amount-${earning.id}`}>
                               {formatCurrency(earning.creatorShare)}
                             </p>
                             <p className="text-xs text-gray-400">
@@ -392,8 +392,8 @@ export default function CreatorEarnings() {
                     {payouts.map((payout) => (
                       <div key={payout.id} className="flex items-center justify-between p-4 hover:bg-[#1a1a1a]/30">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-[#C9941A]/10 flex items-center justify-center">
-                            <CreditCard className="w-5 h-5 text-[#C9941A]" />
+                          <div className="w-10 h-10 rounded-lg bg-[#E2741B]/10 flex items-center justify-center">
+                            <CreditCard className="w-5 h-5 text-[#E2741B]" />
                           </div>
                           <div>
                             <p className="font-medium">Payout #{payout.id}</p>
@@ -436,7 +436,7 @@ export default function CreatorEarnings() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm">Creator Share (85%)</span>
-                <span className="font-bold text-[#C9941A]">{formatCurrency(summary.totalCreatorShare)}</span>
+                <span className="font-bold text-[#E2741B]">{formatCurrency(summary.totalCreatorShare)}</span>
               </div>
               <Progress value={85} className="h-2" />
               <div className="flex items-center justify-between text-gray-400">

@@ -361,8 +361,8 @@ export default function VoiceLibrary() {
               <ArrowLeft className="w-5 h-5" />
             </Button>
           </Link>
-          <div className="p-3 rounded-md bg-[#C9941A]/20 border border-[#C9941A]/40">
-            <Mic2 className="w-7 h-7 text-[#C9941A]" />
+          <div className="p-3 rounded-md bg-[#E2741B]/20 border border-[#E2741B]/40">
+            <Mic2 className="w-7 h-7 text-[#E2741B]" />
           </div>
           <div className="flex-1">
             <h1 className="text-3xl font-bold">Survivor Voice Cloning</h1>
@@ -371,7 +371,7 @@ export default function VoiceLibrary() {
               Daily Quote, and Coach replies.
             </p>
           </div>
-          <Badge className="bg-[#C9941A]/20 text-[#C9941A] border border-[#C9941A]/40">
+          <Badge className="bg-[#E2741B]/20 text-[#E2741B] border border-[#E2741B]/40">
             {subPriceDisplay} add-on
           </Badge>
         </div>
@@ -407,10 +407,10 @@ export default function VoiceLibrary() {
         )}
 
         {billingConfigured && !hasSub && (
-          <Card className="mb-6 bg-gradient-to-br from-[#C9941A]/15 to-transparent border-[#C9941A]/40">
+          <Card className="mb-6 bg-gradient-to-br from-[#E2741B]/15 to-transparent border-[#E2741B]/40">
             <CardContent className="py-6 flex flex-col md:flex-row items-start md:items-center gap-4">
-              <div className="p-3 rounded-md bg-[#C9941A]/20 border border-[#C9941A]/40">
-                <Lock className="w-6 h-6 text-[#C9941A]" />
+              <div className="p-3 rounded-md bg-[#E2741B]/20 border border-[#E2741B]/40">
+                <Lock className="w-6 h-6 text-[#E2741B]" />
               </div>
               <div className="flex-1">
                 <div className="text-lg font-semibold">Unlock voice cloning — {subPriceDisplay}</div>
@@ -421,7 +421,7 @@ export default function VoiceLibrary() {
               </div>
               <Button
                 size="lg"
-                className="bg-[#C9941A] hover:bg-[#C9941A] text-black"
+                className="bg-[#E2741B] hover:bg-[#E2741B] text-black"
                 onClick={() => checkoutMutation.mutate("subscription")}
                 disabled={checkoutMutation.isPending}
                 data-testid="button-subscribe"
@@ -457,8 +457,8 @@ export default function VoiceLibrary() {
         )}
 
         {hasSub && pendingCloneSessionId && (
-          <Alert className="mb-6 border-[#C9941A]/40 bg-[#C9941A]/10">
-            <Sparkles className="h-4 w-4 text-[#C9941A]" />
+          <Alert className="mb-6 border-[#E2741B]/40 bg-[#E2741B]/10">
+            <Sparkles className="h-4 w-4 text-[#E2741B]" />
             <AlertTitle>Clone slot ready</AlertTitle>
             <AlertDescription className="text-zinc-300 flex flex-wrap items-center gap-3">
               <span className="flex-1 min-w-[200px]">
@@ -486,7 +486,7 @@ export default function VoiceLibrary() {
           <Card className="bg-[#1a1a1a]/80 border-[#333]">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Plus className="w-5 h-5 text-[#C9941A]" />
+                <Plus className="w-5 h-5 text-[#E2741B]" />
                 Create a new voice
               </CardTitle>
               <CardDescription className="text-zinc-400">
@@ -522,7 +522,7 @@ export default function VoiceLibrary() {
               </div>
 
               <div className="rounded-md border border-[#333] bg-[#0D0D0D] p-4 space-y-3">
-                <div className="flex items-center gap-2 text-sm font-medium text-[#C9941A]">
+                <div className="flex items-center gap-2 text-sm font-medium text-[#E2741B]">
                   <ShieldCheck className="w-4 h-4" /> Consent statement
                 </div>
                 <p className="text-xs text-zinc-400 leading-relaxed">
@@ -558,7 +558,7 @@ export default function VoiceLibrary() {
                   </div>
                   <div
                     className={`text-sm font-mono ${
-                      elapsed >= MIN_DURATION ? "text-[#C9941A]" : "text-zinc-500"
+                      elapsed >= MIN_DURATION ? "text-[#E2741B]" : "text-zinc-500"
                     }`}
                     data-testid="text-elapsed"
                   >
@@ -579,7 +579,7 @@ export default function VoiceLibrary() {
                   {!isRecording && !recordedBlob && (
                     <Button
                       onClick={startRecording}
-                      className="bg-[#C9941A] hover:bg-[#C9941A] text-black"
+                      className="bg-[#E2741B] hover:bg-[#E2741B] text-black"
                       data-testid="button-record-start"
                     >
                       <Mic2 className="w-4 h-4 mr-2" /> Start recording
@@ -615,7 +615,7 @@ export default function VoiceLibrary() {
                 onClick={() => createMutation.mutate()}
                 disabled={!canSubmit}
                 size="lg"
-                className="w-full bg-[#C9941A] hover:bg-[#C9941A] text-black disabled:opacity-50"
+                className="w-full bg-[#E2741B] hover:bg-[#E2741B] text-black disabled:opacity-50"
                 data-testid="button-create-clone"
               >
                 {createMutation.isPending ? (
@@ -642,7 +642,7 @@ export default function VoiceLibrary() {
           <Card className="bg-[#1a1a1a]/80 border-[#333]">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Mic2 className="w-5 h-5 text-[#C9941A]" />
+                <Mic2 className="w-5 h-5 text-[#E2741B]" />
                 My voices ({voices.length})
               </CardTitle>
               <CardDescription className="text-zinc-400">

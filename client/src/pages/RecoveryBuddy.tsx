@@ -129,7 +129,7 @@ export default function RecoveryBuddy() {
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <header>
           <h1 className="text-3xl font-bold flex items-center gap-2" data-testid="text-page-title">
-            <HeartHandshake className="w-7 h-7 text-[#C9941A]" /> Accountability Buddy
+            <HeartHandshake className="w-7 h-7 text-[#E2741B]" /> Accountability Buddy
           </h1>
           <p className="text-gray-400 mt-1 text-sm">
             Get paired with one survivor at the same stage. Check in, push each other forward.
@@ -138,17 +138,17 @@ export default function RecoveryBuddy() {
 
         {/* Active pair card */}
         {me?.pair && me.partner ? (
-          <Card className="bg-gradient-to-br from-[#1a1a1a] to-[#0D0D0D] border-[#C9941A]/40">
+          <Card className="bg-gradient-to-br from-[#1a1a1a] to-[#0D0D0D] border-[#E2741B]/40">
             <CardContent className="p-6 space-y-4">
               <div className="flex items-center gap-4">
                 <Avatar className="w-16 h-16">
                   <AvatarImage src={me.partner.profileImageUrl || undefined} />
-                  <AvatarFallback className="bg-zinc-700 text-[#C9941A] text-lg">
+                  <AvatarFallback className="bg-zinc-700 text-[#E2741B] text-lg">
                     {(me.partner.firstName?.[0] || "") + (me.partner.lastName?.[0] || "") || "?"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
-                  <div className="text-xs text-[#C9941A] uppercase tracking-wide">Your buddy</div>
+                  <div className="text-xs text-[#E2741B] uppercase tracking-wide">Your buddy</div>
                   <div className="text-xl font-semibold text-white" data-testid="text-buddy-name">
                     {me.partner.firstName || "Survivor"} {me.partner.lastName?.[0] || ""}
                   </div>
@@ -160,13 +160,13 @@ export default function RecoveryBuddy() {
               {me.partnerProfile?.interests && me.partnerProfile.interests.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {me.partnerProfile.interests.map((t) => (
-                    <Badge key={t} className="bg-[#C9941A]/15 text-[#C9941A] border-0 text-xs">{t}</Badge>
+                    <Badge key={t} className="bg-[#E2741B]/15 text-[#E2741B] border-0 text-xs">{t}</Badge>
                   ))}
                 </div>
               )}
               <div className="flex items-center gap-2 flex-wrap">
                 <Link href="/messages">
-                  <Button className="bg-[#C9941A] text-black hover:bg-[#C9941A]/90" data-testid="button-message-buddy">
+                  <Button className="bg-[#E2741B] text-black hover:bg-[#E2741B]/90" data-testid="button-message-buddy">
                     <MessageCircle className="w-4 h-4 mr-2" /> Send a check-in
                   </Button>
                 </Link>
@@ -181,7 +181,7 @@ export default function RecoveryBuddy() {
         ) : (
           <Card className="bg-[#1a1a1a] border-[#333]">
             <CardContent className="p-6 text-center space-y-3">
-              <Users className="w-10 h-10 text-[#C9941A] mx-auto" />
+              <Users className="w-10 h-10 text-[#E2741B] mx-auto" />
               <h2 className="text-lg font-semibold">No buddy yet</h2>
               <p className="text-sm text-gray-400 max-w-md mx-auto">
                 {optedIn
@@ -189,7 +189,7 @@ export default function RecoveryBuddy() {
                   : "Opt in below and we'll match you with a survivor at the same stage."}
               </p>
               <Button onClick={() => find.mutate()} disabled={!profile?.optedIn || find.isPending}
-                className="bg-[#C9941A] text-black hover:bg-[#C9941A]/90"
+                className="bg-[#E2741B] text-black hover:bg-[#E2741B]/90"
                 data-testid="button-find-buddy">
                 {find.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Search className="w-4 h-4 mr-2" />}
                 Find a buddy
@@ -202,7 +202,7 @@ export default function RecoveryBuddy() {
         <Card className="bg-[#1a1a1a] border-[#333]">
           <CardHeader>
             <CardTitle className="text-white text-base flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#C9941A]" /> Your matching profile
+              <Sparkles className="w-4 h-4 text-[#E2741B]" /> Your matching profile
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
@@ -223,7 +223,7 @@ export default function RecoveryBuddy() {
                   <Button key={l.v} type="button" variant={level === l.v ? "default" : "outline"}
                     onClick={() => setLevel(l.v)}
                     className={level === l.v
-                      ? "bg-[#C9941A] text-black hover:bg-[#C9941A]/90 border-[#C9941A]"
+                      ? "bg-[#E2741B] text-black hover:bg-[#E2741B]/90 border-[#E2741B]"
                       : "border-[#333] text-gray-300 hover:bg-[#0D0D0D]"}
                     data-testid={`button-level-${l.v}`}>
                     {l.v}. {l.label}
@@ -239,7 +239,7 @@ export default function RecoveryBuddy() {
                 {SUGGESTED.map((t) => (
                   <Badge key={t} onClick={() => toggleInterest(t)}
                     className={`cursor-pointer text-xs ${interests.includes(t)
-                      ? "bg-[#C9941A] text-black border-0"
+                      ? "bg-[#E2741B] text-black border-0"
                       : "bg-zinc-800 text-gray-300 border-0 hover:bg-zinc-700"}`}
                     data-testid={`badge-interest-${t}`}>
                     {t}
@@ -257,7 +257,7 @@ export default function RecoveryBuddy() {
               {interests.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-3">
                   {interests.map((t) => (
-                    <Badge key={t} className="bg-[#C9941A]/15 text-[#C9941A] border-0 text-xs gap-1 cursor-pointer"
+                    <Badge key={t} className="bg-[#E2741B]/15 text-[#E2741B] border-0 text-xs gap-1 cursor-pointer"
                       onClick={() => toggleInterest(t)}>
                       {t} <X className="w-3 h-3" />
                     </Badge>
@@ -277,7 +277,7 @@ export default function RecoveryBuddy() {
 
             <div className="flex items-center gap-2">
               <Button onClick={() => save.mutate()} disabled={save.isPending}
-                className="bg-[#C9941A] text-black hover:bg-[#C9941A]/90"
+                className="bg-[#E2741B] text-black hover:bg-[#E2741B]/90"
                 data-testid="button-save-profile">
                 {save.isPending ? "Saving…" : (
                   <span className="inline-flex items-center"><CheckCircle2 className="w-4 h-4 mr-2" /> Save profile</span>

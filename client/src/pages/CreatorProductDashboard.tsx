@@ -107,14 +107,14 @@ function StatCard({
             <p className="text-sm text-gray-400">{title}</p>
             <p className="text-2xl font-bold">{value}</p>
             {trend && (
-              <div className="flex items-center gap-1 text-xs text-[#C9941A]">
+              <div className="flex items-center gap-1 text-xs text-[#E2741B]">
                 <TrendingUp className="w-3 h-3" />
                 <span>{trend}</span>
               </div>
             )}
           </div>
           <div className="p-3 rounded-full bg-primary/10">
-            <Icon className="w-5 h-5 text-[#C9941A]" />
+            <Icon className="w-5 h-5 text-[#E2741B]" />
           </div>
         </div>
       </CardContent>
@@ -138,8 +138,8 @@ function ProductTypeIcon({ type }: { type: Product["type"] }) {
 function ProductTypeBadge({ type }: { type: Product["type"] }) {
   const colors = {
     book: "bg-blue-500/10 text-blue-400 border-blue-500/30",
-    course: "bg-[#C9941A]/10 text-[#C9941A] border-amber-500/30",
-    music: "bg-[#C9941A]/10 text-[#C9941A] border-green-500/30",
+    course: "bg-[#E2741B]/10 text-[#E2741B] border-amber-500/30",
+    music: "bg-[#E2741B]/10 text-[#E2741B] border-green-500/30",
     video: "bg-red-500/10 text-red-400 border-red-500/30",
   };
 
@@ -153,7 +153,7 @@ function ProductTypeBadge({ type }: { type: Product["type"] }) {
 
 function StatusBadge({ status }: { status: Product["status"] }) {
   const colors = {
-    active: "bg-[#C9941A]/10 text-[#C9941A] border-green-500/30",
+    active: "bg-[#E2741B]/10 text-[#E2741B] border-green-500/30",
     draft: "bg-yellow-500/10 text-yellow-400 border-yellow-500/30",
     sold: "bg-blue-500/10 text-blue-400 border-blue-500/30",
     inactive: "bg-gray-500/10 text-gray-400 border-gray-500/30",
@@ -330,7 +330,7 @@ function ProductAnalyticsDialog({
         <div className="grid grid-cols-3 gap-4 py-4">
           <Card>
             <CardContent className="p-4 text-center">
-              <Eye className="w-6 h-6 mx-auto text-[#C9941A] mb-2" />
+              <Eye className="w-6 h-6 mx-auto text-[#E2741B] mb-2" />
               <p className="text-2xl font-bold">{product.views.toLocaleString()}</p>
               <p className="text-xs text-gray-400">Total Views</p>
             </CardContent>
@@ -338,7 +338,7 @@ function ProductAnalyticsDialog({
 
           <Card>
             <CardContent className="p-4 text-center">
-              <ShoppingCart className="w-6 h-6 mx-auto text-[#C9941A] mb-2" />
+              <ShoppingCart className="w-6 h-6 mx-auto text-[#E2741B] mb-2" />
               <p className="text-2xl font-bold">{product.salesCount}</p>
               <p className="text-xs text-gray-400">Sales</p>
             </CardContent>
@@ -464,7 +464,7 @@ export default function CreatorProductDashboard() {
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
           <Card className="max-w-md w-full">
             <CardContent className="p-8 text-center">
-              <Package className="w-16 h-16 mx-auto text-[#C9941A]/50 mb-4" />
+              <Package className="w-16 h-16 mx-auto text-[#E2741B]/50 mb-4" />
               <h2 className="text-xl font-semibold mb-2">Sign In Required</h2>
               <p className="text-gray-400 mb-4">
                 Please sign in to access your product dashboard.
@@ -681,7 +681,7 @@ export default function CreatorProductDashboard() {
                             <TableCell className="text-right">
                               {product.salesCount}
                             </TableCell>
-                            <TableCell className="text-right font-medium text-[#C9941A]">
+                            <TableCell className="text-right font-medium text-[#E2741B]">
                               ${(product.revenue / 100).toLocaleString()}
                             </TableCell>
                             <TableCell>

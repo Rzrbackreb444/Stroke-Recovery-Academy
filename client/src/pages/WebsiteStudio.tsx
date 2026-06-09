@@ -215,7 +215,7 @@ const colorPresets = [
   { name: "Royal", primary: "#8b5cf6", secondary: "#6d28d9", accent: "#faf5ff" },
   { name: "Rose", primary: "#ec4899", secondary: "#be185d", accent: "#fdf2f8" },
   { name: "Slate", primary: "#64748b", secondary: "#334155", accent: "#f8fafc" },
-  { name: "Gold", primary: "#C9941A", secondary: "#92700C", accent: "#FAF8F3" },
+  { name: "Gold", primary: "#E2741B", secondary: "#92700C", accent: "#FAF8F3" },
   { name: "Crimson", primary: "#dc2626", secondary: "#991b1b", accent: "#fef2f2" },
 ];
 
@@ -280,7 +280,7 @@ export default function WebsiteStudio() {
     industry: "",
     businessName: "",
     description: "",
-    primaryColor: "#C9941A",
+    primaryColor: "#E2741B",
     secondaryColor: "#1a1a1a",
     accentColor: "#FAF8F3",
     fontHeading: "Playfair Display",
@@ -292,7 +292,7 @@ export default function WebsiteStudio() {
     industry: "",
     style: "modern",
     iconType: "abstract",
-    primaryColor: "#C9941A",
+    primaryColor: "#E2741B",
   });
 
   const [isGeneratingLogo, setIsGeneratingLogo] = useState(false);
@@ -375,7 +375,7 @@ export default function WebsiteStudio() {
             </Button>
             <Separator orientation="vertical" className="h-6" />
             <div className="flex items-center gap-2">
-              <Globe className="w-4 h-4 text-[#C9941A]" />
+              <Globe className="w-4 h-4 text-[#E2741B]" />
               <span className="font-medium">{websiteData.name || "My Website"}</span>
             </div>
           </div>
@@ -606,7 +606,7 @@ export default function WebsiteStudio() {
               {editorPanel === "seo" && (
                 <div className="p-4 space-y-4">
                   <div className="p-3 rounded-md bg-primary/10 border border-primary/20">
-                    <div className="flex items-center gap-2 text-[#C9941A] mb-1">
+                    <div className="flex items-center gap-2 text-[#E2741B] mb-1">
                       <Sparkles className="w-4 h-4" />
                       <span className="text-sm font-medium">AI SEO Assistant</span>
                     </div>
@@ -1062,7 +1062,7 @@ export default function WebsiteStudio() {
             {selectedTemplate && (
               <div className="fixed bottom-0 left-0 right-0 bg-card border-t p-4 flex items-center justify-between z-50">
                 <div className="flex items-center gap-4">
-                  <CheckCircle2 className="w-5 h-5 text-[#C9941A]" />
+                  <CheckCircle2 className="w-5 h-5 text-[#E2741B]" />
                   <div>
                     <p className="font-medium">
                       {websiteTemplates.find(t => t.id === selectedTemplate)?.name} selected

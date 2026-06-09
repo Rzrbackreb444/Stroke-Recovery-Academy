@@ -34,7 +34,7 @@ export default function WhatYouGet() {
     <section className="py-24 bg-[#0D0D0D]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <p className="text-[#C9941A] text-sm font-semibold uppercase tracking-widest mb-4">
+          <p className="text-[#E2741B] text-sm font-semibold uppercase tracking-widest mb-4">
             What You Get
           </p>
           <h2 className="text-4xl sm:text-5xl font-black text-white">
@@ -51,8 +51,8 @@ export default function WhatYouGet() {
                 className="border border-[#1e1e1e] rounded-2xl p-8 flex flex-col bg-[#0a0a0a]"
                 data-testid={`offering-card-${item.title.toLowerCase().replace(/\s/g, "-")}`}
               >
-                <div className="w-12 h-12 rounded-xl bg-[#C9941A]/10 flex items-center justify-center mb-6">
-                  <Icon className="h-6 w-6 text-[#C9941A]" />
+                <div className="w-12 h-12 rounded-xl bg-[#E2741B]/10 flex items-center justify-center mb-6">
+                  <Icon className="h-6 w-6 text-[#E2741B]" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed flex-1 mb-8">
@@ -61,7 +61,7 @@ export default function WhatYouGet() {
                 <Link href={item.href}>
                   <Button
                     variant="outline"
-                    className="w-full border-[#2a2a2a] text-gray-300 hover:border-[#C9941A] hover:text-[#C9941A] transition-colors"
+                    className="w-full border-[#2a2a2a] text-gray-300 hover:border-[#E2741B] hover:text-[#E2741B] transition-colors"
                     data-testid={`button-offering-${item.title.toLowerCase().replace(/\s/g, "-")}`}
                   >
                     {item.cta}

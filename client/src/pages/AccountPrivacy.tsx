@@ -94,7 +94,7 @@ export default function AccountPrivacy() {
           <Button
             variant="ghost"
             size="sm"
-            className="text-white/70 hover:text-[#C9941A] mb-6"
+            className="text-white/70 hover:text-[#E2741B] mb-6"
             data-testid="link-back-settings"
           >
             <ArrowLeft className="w-4 h-4 mr-2" /> Back to Settings
@@ -112,7 +112,7 @@ export default function AccountPrivacy() {
         <Card className="bg-[#111] border-[#1e1e1e] mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-3 text-white">
-              <FileJson className="h-5 w-5 text-[#C9941A]" />
+              <FileJson className="h-5 w-5 text-[#E2741B]" />
               Export your data
             </CardTitle>
             <CardDescription className="text-gray-400">
@@ -124,7 +124,7 @@ export default function AccountPrivacy() {
             <Button
               onClick={() => exportMutation.mutate()}
               disabled={exportMutation.isPending}
-              className="bg-[#C9941A] text-black hover:bg-[#b8841a]"
+              className="bg-[#E2741B] text-black hover:bg-[#b8841a]"
               data-testid="button-export-data"
             >
               {exportMutation.isPending ? (
@@ -196,7 +196,7 @@ export default function AccountPrivacy() {
 
             <p className="text-xs text-gray-500 leading-relaxed">
               Need a paused account instead? Cancel your subscription from{" "}
-              <Link href="/settings" className="text-[#C9941A] underline">
+              <Link href="/settings" className="text-[#E2741B] underline">
                 Settings → Billing
               </Link>{" "}
               — you'll keep your check-ins and progress, just lose paid features at period end.

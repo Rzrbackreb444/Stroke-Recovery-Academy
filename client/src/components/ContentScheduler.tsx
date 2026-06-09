@@ -270,7 +270,7 @@ export default function ContentScheduler({
                         scheduleStatus.status === "scheduled" &&
                           "bg-primary/20 text-primary border",
                         scheduleStatus.status === "live" &&
-                          "bg-[#C9941A]/20 text-[#C9941A] border-green-500/30",
+                          "bg-[#E2741B]/20 text-[#E2741B] border-green-500/30",
                         scheduleStatus.status === "ended" &&
                           "bg-zinc-500/20 text-zinc-400 border-zinc-500/30"
                       )}
@@ -282,7 +282,7 @@ export default function ContentScheduler({
                 )}
                 {scheduledPublishAt && (
                   <div className="flex items-center gap-3 text-sm" data-testid="preview-publish">
-                    <div className="w-3 h-3 rounded-full bg-[#C9941A]" />
+                    <div className="w-3 h-3 rounded-full bg-[#E2741B]" />
                     <span className="text-muted-foreground">Goes live:</span>
                     <span className="text-foreground font-medium">
                       {format(scheduledPublishAt, "PPP 'at' p")}

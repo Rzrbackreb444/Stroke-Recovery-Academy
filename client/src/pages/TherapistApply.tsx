@@ -70,7 +70,7 @@ export default function TherapistApply() {
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <div className="max-w-3xl mx-auto px-4 py-10">
         <header className="mb-6 flex items-start gap-3">
-          <ShieldCheck className="w-8 h-8 text-[#C9941A] mt-1" />
+          <ShieldCheck className="w-8 h-8 text-[#E2741B] mt-1" />
           <div>
             <h1 className="text-3xl font-bold" data-testid="text-page-title">Become a Verified Therapist</h1>
             <p className="text-gray-400 mt-1">Film exercises, motivation, and techniques. Survivors unlock your courses with Power Points — you keep 85% of every unlock.</p>
@@ -79,7 +79,7 @@ export default function TherapistApply() {
 
         {app && (
           <Card className="bg-[#1a1a1a] border-[#333] mb-6" data-testid="status-card">
-            <CardHeader><CardTitle className="text-lg">Application status: <span className={app.status === "approved" ? "text-green-400" : app.status === "rejected" ? "text-red-400" : "text-[#C9941A]"}>{app.status}</span></CardTitle></CardHeader>
+            <CardHeader><CardTitle className="text-lg">Application status: <span className={app.status === "approved" ? "text-green-400" : app.status === "rejected" ? "text-red-400" : "text-[#E2741B]"}>{app.status}</span></CardTitle></CardHeader>
             <CardContent className="text-sm text-gray-400">
               Submitted {new Date(app.createdAt).toLocaleDateString()}
               {app.reviewerNotes && <p className="mt-2">Reviewer notes: <span className="text-gray-300">{app.reviewerNotes}</span></p>}
@@ -123,7 +123,7 @@ export default function TherapistApply() {
                   <FormField name="documentUrl" control={form.control} render={({ field }) => (
                     <FormItem><FormLabel>License/cert document URL (optional)</FormLabel><FormControl><Input className="bg-[#0D0D0D] border-[#333]" placeholder="https://drive.google.com/…" {...field} data-testid="input-document" /></FormControl><FormMessage /></FormItem>
                   )} />
-                  <Button type="submit" disabled={submit.isPending} className="w-full bg-[#C9941A] hover:bg-[#B8851A] text-black font-bold" data-testid="button-submit">
+                  <Button type="submit" disabled={submit.isPending} className="w-full bg-[#E2741B] hover:bg-[#B8851A] text-black font-bold" data-testid="button-submit">
                     {submit.isPending ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Submitting…</> : "Submit Application"}
                   </Button>
                   <p className="text-[11px] text-gray-500">All applications are reviewed manually. Misrepresenting credentials results in permanent removal.</p>

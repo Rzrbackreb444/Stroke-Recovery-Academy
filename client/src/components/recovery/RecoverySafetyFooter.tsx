@@ -8,10 +8,10 @@ export function RecoverySafetyFooter({ variant = "default" }: Props) {
   if (variant === "compact") {
     return (
       <div
-        className="rounded-lg border border-[#C9941A]/40 bg-[#1a1a1a] p-3 text-xs text-gray-300"
+        className="rounded-lg border border-[#E2741B]/40 bg-[#1a1a1a] p-3 text-xs text-gray-300"
         data-testid="recovery-safety-footer-compact"
       >
-        <p className="font-semibold text-[#C9941A] mb-1">Not medical advice.</p>
+        <p className="font-semibold text-[#E2741B] mb-1">Not medical advice.</p>
         <p>
           Stop if you feel pain, dizziness, or shortness of breath. In a medical emergency call{" "}
           <span className="font-bold text-white">911</span>. For mental health crisis call or text{" "}
@@ -23,11 +23,11 @@ export function RecoverySafetyFooter({ variant = "default" }: Props) {
 
   return (
     <div
-      className="rounded-xl border border-[#C9941A]/40 bg-gradient-to-br from-[#1a1a1a] to-[#141414] p-5"
+      className="rounded-xl border border-[#E2741B]/40 bg-gradient-to-br from-[#1a1a1a] to-[#141414] p-5"
       data-testid="recovery-safety-footer"
     >
       <div className="flex items-start gap-3 mb-3">
-        <div className="h-9 w-9 rounded-md bg-[#C9941A] flex items-center justify-center flex-shrink-0">
+        <div className="h-9 w-9 rounded-md bg-[#E2741B] flex items-center justify-center flex-shrink-0">
           <AlertTriangle className="h-5 w-5 text-black" />
         </div>
         <div>
@@ -41,7 +41,7 @@ export function RecoverySafetyFooter({ variant = "default" }: Props) {
       </div>
       <ul className="text-xs text-gray-300 space-y-1.5 leading-relaxed mb-4 ml-12">
         <li>
-          <span className="text-[#C9941A] font-semibold">Stop immediately</span> if you feel sharp pain,
+          <span className="text-[#E2741B] font-semibold">Stop immediately</span> if you feel sharp pain,
           dizziness, shortness of breath, or unusual symptoms.
         </li>
         <li>
@@ -66,7 +66,7 @@ export function RecoverySafetyFooter({ variant = "default" }: Props) {
         </a>
         <a
           href="tel:988"
-          className="inline-flex items-center gap-2 rounded-md border border-[#C9941A]/40 bg-[#C9941A]/10 px-3 py-1.5 text-xs font-semibold text-[#C9941A] hover-elevate"
+          className="inline-flex items-center gap-2 rounded-md border border-[#E2741B]/40 bg-[#E2741B]/10 px-3 py-1.5 text-xs font-semibold text-[#E2741B] hover-elevate"
           data-testid="link-988"
         >
           <Phone className="h-3 w-3" />

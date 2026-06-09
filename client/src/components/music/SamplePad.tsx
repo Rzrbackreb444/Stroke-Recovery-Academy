@@ -30,7 +30,7 @@ const DEFAULT_SAMPLES: Sample[] = [
   { id: "pad", name: "Pad", color: "#06B6D4", isPlaying: false, loop: true, volume: 80 },
   { id: "fx", name: "FX", color: "#84CC16", isPlaying: false, loop: false, volume: 80 },
   { id: "vocal", name: "Vocal", color: "#F43F5E", isPlaying: false, loop: false, volume: 80 },
-  { id: "scratch", name: "Scratch", color: "#C9941A", isPlaying: false, loop: false, volume: 80 },
+  { id: "scratch", name: "Scratch", color: "#E2741B", isPlaying: false, loop: false, volume: 80 },
   { id: "riser", name: "Riser", color: "#7C3AED", isPlaying: false, loop: false, volume: 80 },
   { id: "drop", name: "Drop", color: "#DC2626", isPlaying: false, loop: false, volume: 80 },
 ];

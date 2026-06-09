@@ -76,12 +76,12 @@ export default function SurvivorProfilePage() {
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <div className="max-w-2xl mx-auto px-4 py-10">
         <Card className="bg-[#1a1a1a] border-[#333] overflow-hidden">
-          <div className="h-24 bg-gradient-to-br from-[#C9941A]/40 via-[#1a1a1a] to-[#0D0D0D]" />
+          <div className="h-24 bg-gradient-to-br from-[#E2741B]/40 via-[#1a1a1a] to-[#0D0D0D]" />
           <CardContent className="p-6 -mt-12">
             <div className="flex items-end gap-4">
               <Avatar className="w-24 h-24 border-4 border-[#1a1a1a] bg-[#2a2a2a]">
                 <AvatarImage src={p.profileImageUrl || ""} />
-                <AvatarFallback className="bg-[#2a2a2a] text-[#C9941A] text-2xl">{displayName[0]?.toUpperCase()}</AvatarFallback>
+                <AvatarFallback className="bg-[#2a2a2a] text-[#E2741B] text-2xl">{displayName[0]?.toUpperCase()}</AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0 pb-1">
                 <div className="flex items-center gap-2 flex-wrap">
@@ -110,7 +110,7 @@ export default function SurvivorProfilePage() {
               {p.acceptsPowerPoints && !isSelf && (
                 <Button
                   onClick={() => { if (!user) { window.location.href = "/api/login"; return; } setGiftOpen(true); }}
-                  className="flex-1 bg-[#C9941A] hover:bg-[#B8851A] text-black font-bold"
+                  className="flex-1 bg-[#E2741B] hover:bg-[#B8851A] text-black font-bold"
                   data-testid="button-send-power"
                 >
                   <Zap className="w-4 h-4 mr-2" /> Send Power Points
@@ -153,7 +153,7 @@ export default function SurvivorProfilePage() {
 function StatBlock({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
     <div className="rounded-md border border-[#333] bg-[#0D0D0D] p-3 text-center">
-      <div className="flex items-center justify-center gap-1 text-[#C9941A] mb-1">{icon}<span className="text-xs uppercase tracking-wide">{label}</span></div>
+      <div className="flex items-center justify-center gap-1 text-[#E2741B] mb-1">{icon}<span className="text-xs uppercase tracking-wide">{label}</span></div>
       <div className="text-lg font-bold text-white">{value}</div>
     </div>
   );

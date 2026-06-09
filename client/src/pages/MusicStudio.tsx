@@ -346,8 +346,8 @@ export default function MusicStudio() {
   const [tracks, setTracks] = useState<Track[]>([
     { id: "1", name: "Drums", type: "drums", volume: 80, pan: 50, muted: false, solo: false, color: "bg-red-500" },
     { id: "2", name: "Bass", type: "bass", volume: 75, pan: 50, muted: false, solo: false, color: "bg-blue-500" },
-    { id: "3", name: "Synth Lead", type: "synth", volume: 70, pan: 45, muted: false, solo: false, color: "bg-[#C9941A]" },
-    { id: "4", name: "Guitar", type: "guitar", volume: 65, pan: 55, muted: false, solo: false, color: "bg-[#C9941A]" },
+    { id: "3", name: "Synth Lead", type: "synth", volume: 70, pan: 45, muted: false, solo: false, color: "bg-[#E2741B]" },
+    { id: "4", name: "Guitar", type: "guitar", volume: 65, pan: 55, muted: false, solo: false, color: "bg-[#E2741B]" },
   ]);
 
   // Audio refs
@@ -1013,8 +1013,8 @@ export default function MusicStudio() {
 
   const addTrack = (type: Track["type"]) => {
     const colors: Record<string, string> = {
-      drums: "bg-red-500", bass: "bg-blue-500", synth: "bg-[#C9941A]",
-      guitar: "bg-[#C9941A]", vocals: "bg-[#C9941A]", ai: "bg-primary",
+      drums: "bg-red-500", bass: "bg-blue-500", synth: "bg-[#E2741B]",
+      guitar: "bg-[#E2741B]", vocals: "bg-[#E2741B]", ai: "bg-primary",
     };
     const newTrack: Track = {
       id: Date.now().toString(),
@@ -1800,11 +1800,11 @@ export default function MusicStudio() {
         schema={studioSchemas.musicStudio}
       />
       {/* Toolbar */}
-      <div className="border-b border-[#C9941A]/10 bg-white/80 backdrop-blur-sm p-4">
+      <div className="border-b border-[#E2741B]/10 bg-white/80 backdrop-blur-sm p-4">
         <div className="max-w-[1800px] mx-auto flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <Music className="w-6 h-6 text-[#C9941A]" />
+              <Music className="w-6 h-6 text-[#E2741B]" />
               <span className="font-bold text-xl">Stroke Lyfe Studio</span>
             </div>
             <Input
@@ -1813,7 +1813,7 @@ export default function MusicStudio() {
               className="w-64 bg-background"
               data-testid="input-project-title"
             />
-            <Badge variant="outline" className="text-[#C9941A]">
+            <Badge variant="outline" className="text-[#E2741B]">
               {selectedGenre.toUpperCase()}
             </Badge>
           </div>
@@ -1878,7 +1878,7 @@ export default function MusicStudio() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm flex items-center gap-2">
-                <Brain className="w-4 h-4 text-[#C9941A]" /> AI Generation
+                <Brain className="w-4 h-4 text-[#E2741B]" /> AI Generation
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
@@ -1963,7 +1963,7 @@ export default function MusicStudio() {
                       <h2 className="text-3xl font-bold bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
                         BEAT LAB
                       </h2>
-                      <Music className="w-8 h-8 text-[#C9941A]" />
+                      <Music className="w-8 h-8 text-[#E2741B]" />
                     </div>
                     <p className="text-gray-400">Create professional beats from Hip Hop to Rock</p>
                   </div>
@@ -1974,7 +1974,7 @@ export default function MusicStudio() {
                       <Button
                         onClick={startSequencer}
                         size="lg"
-                        className={isSequencerPlaying ? "bg-red-500 hover:bg-red-600" : "bg-[#C9941A] hover:bg-[#C9941A]"}
+                        className={isSequencerPlaying ? "bg-red-500 hover:bg-red-600" : "bg-[#E2741B] hover:bg-[#E2741B]"}
                         data-testid="button-sequencer-play"
                       >
                         {isSequencerPlaying ? <Square className="w-5 h-5 mr-2" /> : <Play className="w-5 h-5 mr-2" />}
@@ -2028,7 +2028,7 @@ export default function MusicStudio() {
                                 key={i}
                                 className={`w-10 h-6 flex items-center justify-center text-xs font-mono rounded ${
                                   currentStep === i && isSequencerPlaying 
-                                    ? "bg-[#C9941A] text-white" 
+                                    ? "bg-[#E2741B] text-white" 
                                     : i % 4 === 0 
                                     ? "bg-[#1a1a1a] text-gray-400" 
                                     : "text-gray-400"
@@ -2060,8 +2060,8 @@ export default function MusicStudio() {
                                       ? currentStep === stepIdx && isSequencerPlaying
                                         ? "bg-green-400 scale-110"
                                         : drumIdx === 0 ? "bg-red-500" 
-                                        : drumIdx === 1 ? "bg-[#C9941A]"
-                                        : drumIdx < 4 ? "bg-[#C9941A]"
+                                        : drumIdx === 1 ? "bg-[#E2741B]"
+                                        : drumIdx < 4 ? "bg-[#E2741B]"
                                         : "bg-blue-500"
                                       : currentStep === stepIdx && isSequencerPlaying
                                         ? "bg-green-200"
@@ -2195,7 +2195,7 @@ export default function MusicStudio() {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="flex items-center gap-2">
-                          <Piano className="w-5 h-5 text-[#C9941A]" />
+                          <Piano className="w-5 h-5 text-[#E2741B]" />
                           Chord Pad
                         </CardTitle>
                       </CardHeader>
@@ -2224,7 +2224,7 @@ export default function MusicStudio() {
                                 key={idx}
                                 className={`px-4 py-3 rounded-lg text-center min-w-[60px] ${
                                   Math.floor(currentStep / 4) % chordProgression.length === idx && isSequencerPlaying
-                                    ? "bg-[#C9941A] text-white"
+                                    ? "bg-[#E2741B] text-white"
                                     : "bg-[#1a1a1a]"
                                 }`}
                               >
@@ -2288,7 +2288,7 @@ export default function MusicStudio() {
                   <Card>
                     <CardHeader className="pb-2">
                       <CardTitle className="flex items-center gap-2">
-                        <Music className="w-5 h-5 text-[#C9941A]" />
+                        <Music className="w-5 h-5 text-[#E2741B]" />
                         Melody Keyboard
                       </CardTitle>
                     </CardHeader>
@@ -2350,11 +2350,11 @@ export default function MusicStudio() {
                   {/* Hero Section with Mode Selector */}
                   <div className="text-center py-6 bg-gradient-to-r from-amber-500/10 via-amber-400/10 to-amber-500/10 rounded-xl border border">
                     <div className="flex items-center justify-center gap-2 mb-2">
-                      <Sparkles className="w-8 h-8 text-[#C9941A] animate-pulse" />
-                      <h2 className="text-3xl font-bold bg-gradient-to-r from-[#C9941A] to-amber-500 bg-clip-text text-transparent">
+                      <Sparkles className="w-8 h-8 text-[#E2741B] animate-pulse" />
+                      <h2 className="text-3xl font-bold bg-gradient-to-r from-[#E2741B] to-amber-500 bg-clip-text text-transparent">
                         MELODY MAGIC STUDIO
                       </h2>
-                      <Sparkles className="w-8 h-8 text-[#C9941A] animate-pulse" />
+                      <Sparkles className="w-8 h-8 text-[#E2741B] animate-pulse" />
                     </div>
                     
                     {/* Mode Selector */}
@@ -2370,7 +2370,7 @@ export default function MusicStudio() {
                       <Button 
                         variant={mashupMode === "voice-swap" ? "default" : "outline"}
                         onClick={() => { setMashupMode("voice-swap"); setMelodyMagicStep(0); }}
-                        className={`${mashupMode === "voice-swap" && melodyMagicStep === 0 ? "bg-gradient-to-r from-[#C9941A] to-amber-500 border-0" : ""}`}
+                        className={`${mashupMode === "voice-swap" && melodyMagicStep === 0 ? "bg-gradient-to-r from-[#E2741B] to-amber-500 border-0" : ""}`}
                         data-testid="button-mode-voiceswap"
                       >
                         <Users className="w-4 h-4 mr-2" /> Voice Swap
@@ -2401,7 +2401,7 @@ export default function MusicStudio() {
                     </p>
                     <div className="flex items-center justify-center gap-4 mt-4 text-sm text-gray-400 flex-wrap">
                       <Badge variant="outline" className="bg-primary/10">Rapid-Fire Rap → Country Ballad</Badge>
-                      <Badge variant="outline" className="bg-[#C9941A]/10">Pop Hit + Rock Anthem = Epic Mashup</Badge>
+                      <Badge variant="outline" className="bg-[#E2741B]/10">Pop Hit + Rock Anthem = Epic Mashup</Badge>
                       <Badge variant="outline" className="bg-pink-500/10">Any Voice + Any Genre = Magic</Badge>
                     </div>
                   </div>
@@ -2411,9 +2411,9 @@ export default function MusicStudio() {
                     <Card className="border-amber-500/20">
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          {mashupMode === "voice-swap" && <><Users className="w-6 h-6 text-[#C9941A]" /> Voice Swap Studio</>}
+                          {mashupMode === "voice-swap" && <><Users className="w-6 h-6 text-[#E2741B]" /> Voice Swap Studio</>}
                           {mashupMode === "mashup" && <><Disc className="w-6 h-6 text-blue-500" /> Mashup Creator</>}
-                          {mashupMode === "reimagine" && <><Wand2 className="w-6 h-6 text-[#C9941A]" /> Song Reimaginer</>}
+                          {mashupMode === "reimagine" && <><Wand2 className="w-6 h-6 text-[#E2741B]" /> Song Reimaginer</>}
                         </CardTitle>
                         <CardDescription>
                           {mashupMode === "voice-swap" && "Transform any song with a completely different vocal style - imagine your favorite hits performed by different artist archetypes!"}
@@ -2471,7 +2471,7 @@ export default function MusicStudio() {
                                       onClick={() => setTargetArtistStyle(style.value)}
                                       className={`p-3 rounded-lg border-2 text-left transition-all
                                         ${targetArtistStyle === style.value 
-                                          ? 'border-amber-500 bg-[#C9941A]/10' 
+                                          ? 'border-amber-500 bg-[#E2741B]/10' 
                                           : 'border-[#333] hover:border-primary/50'}`}
                                       data-testid={`button-style-${style.value}`}
                                     >
@@ -2607,12 +2607,12 @@ export default function MusicStudio() {
                           onClick={() => setMelodyMagicStep(s.step)}
                           className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-all
                             ${melodyMagicStep === s.step ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-foreground shadow-lg shadow-orange-500/30' : 
-                              melodyMagicStep > s.step ? 'bg-[#C9941A]/80 text-foreground' : 'bg-[#1a1a1a] text-gray-400'}`}
+                              melodyMagicStep > s.step ? 'bg-[#E2741B]/80 text-foreground' : 'bg-[#1a1a1a] text-gray-400'}`}
                           data-testid={`button-melody-step-${s.step}`}
                         >
                           <s.icon className="w-5 h-5" />
                         </button>
-                        <span className={`ml-2 text-sm hidden md:block ${melodyMagicStep === s.step ? 'text-[#C9941A] font-bold' : 'text-gray-400'}`}>
+                        <span className={`ml-2 text-sm hidden md:block ${melodyMagicStep === s.step ? 'text-[#E2741B] font-bold' : 'text-gray-400'}`}>
                           {s.label}
                         </span>
                         {i < 3 && <div className={`w-12 md:w-24 h-1 mx-2 rounded ${melodyMagicStep > s.step ? 'bg-gradient-to-r from-green-500 to-green-400' : 'bg-[#1a1a1a]'}`} />}
@@ -2625,19 +2625,19 @@ export default function MusicStudio() {
                     <Card className="border">
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <Mic className="w-6 h-6 text-[#C9941A]" /> Step 1: Record Your Melody
+                          <Mic className="w-6 h-6 text-[#E2741B]" /> Step 1: Record Your Melody
                         </CardTitle>
                         <CardDescription>
                           Hum, sing, whistle, or play any melody. Even "Jingle Bells" can become a Death Metal anthem!
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-6">
-                        <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border rounded-xl bg-[#C9941A]/5">
+                        <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border rounded-xl bg-[#E2741B]/5">
                           {!recordedMelodyUrl ? (
                             <>
                               <div className={`w-32 h-32 rounded-full flex items-center justify-center mb-4 transition-all
-                                ${isRecordingMelody ? 'bg-red-500 animate-pulse shadow-lg shadow-red-500/50' : 'bg-primary/20 hover:bg-[#C9941A]/30'}`}>
-                                <Mic className={`w-16 h-16 ${isRecordingMelody ? 'text-foreground' : 'text-[#C9941A]'}`} />
+                                ${isRecordingMelody ? 'bg-red-500 animate-pulse shadow-lg shadow-red-500/50' : 'bg-primary/20 hover:bg-[#E2741B]/30'}`}>
+                                <Mic className={`w-16 h-16 ${isRecordingMelody ? 'text-foreground' : 'text-[#E2741B]'}`} />
                               </div>
                               {isRecordingMelody ? (
                                 <div className="text-center">
@@ -2659,11 +2659,11 @@ export default function MusicStudio() {
                           ) : (
                             <div className="w-full space-y-4">
                               <div className="flex items-center justify-center gap-4">
-                                <div className="w-16 h-16 rounded-full bg-[#C9941A] flex items-center justify-center">
+                                <div className="w-16 h-16 rounded-full bg-[#E2741B] flex items-center justify-center">
                                   <Music className="w-8 h-8 text-foreground" />
                                 </div>
                                 <div>
-                                  <p className="font-bold text-[#C9941A]">Melody Recorded!</p>
+                                  <p className="font-bold text-[#E2741B]">Melody Recorded!</p>
                                   <p className="text-sm text-gray-400">Ready for AI analysis</p>
                                 </div>
                               </div>
@@ -2683,11 +2683,11 @@ export default function MusicStudio() {
                         
                         <div className="grid grid-cols-3 gap-4 text-center text-sm">
                           <div className="p-3 bg-[#1a1a1a]/50 rounded-lg">
-                            <Music className="w-6 h-6 mx-auto mb-1 text-[#C9941A]" />
+                            <Music className="w-6 h-6 mx-auto mb-1 text-[#E2741B]" />
                             <p className="font-medium">Hum a Tune</p>
                           </div>
                           <div className="p-3 bg-[#1a1a1a]/50 rounded-lg">
-                            <Mic className="w-6 h-6 mx-auto mb-1 text-[#C9941A]" />
+                            <Mic className="w-6 h-6 mx-auto mb-1 text-[#E2741B]" />
                             <p className="font-medium">Sing Lyrics</p>
                           </div>
                           <div className="p-3 bg-[#1a1a1a]/50 rounded-lg">
@@ -2704,7 +2704,7 @@ export default function MusicStudio() {
                     <Card className="border-amber-500/20">
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <Wand2 className="w-6 h-6 text-[#C9941A]" /> Step 2: Choose Your Transformation
+                          <Wand2 className="w-6 h-6 text-[#E2741B]" /> Step 2: Choose Your Transformation
                         </CardTitle>
                         <CardDescription>
                           AI detected your melody! Now pick how you want it transformed.
@@ -2714,16 +2714,16 @@ export default function MusicStudio() {
                         {/* Analysis Results */}
                         {melodyAnalysis && (
                           <div className="p-4 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-lg border border-green-500/20">
-                            <h4 className="font-bold text-[#C9941A] mb-3 flex items-center gap-2">
+                            <h4 className="font-bold text-[#E2741B] mb-3 flex items-center gap-2">
                               <Brain className="w-5 h-5" /> AI Analysis Results
                             </h4>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                               <div className="text-center p-3 bg-background/50 rounded">
-                                <p className="text-2xl font-bold text-[#C9941A]">{melodyAnalysis.detectedBpm}</p>
+                                <p className="text-2xl font-bold text-[#E2741B]">{melodyAnalysis.detectedBpm}</p>
                                 <p className="text-xs text-gray-400">BPM</p>
                               </div>
                               <div className="text-center p-3 bg-background/50 rounded">
-                                <p className="text-2xl font-bold text-[#C9941A]">{melodyAnalysis.detectedKey}</p>
+                                <p className="text-2xl font-bold text-[#E2741B]">{melodyAnalysis.detectedKey}</p>
                                 <p className="text-xs text-gray-400">Key</p>
                               </div>
                               <div className="text-center p-3 bg-background/50 rounded">
@@ -2787,7 +2787,7 @@ export default function MusicStudio() {
                                 onClick={() => setTargetVoiceStyle(voice.value)}
                                 className={`p-3 rounded-lg border-2 transition-all text-left
                                   ${targetVoiceStyle === voice.value 
-                                    ? 'border-[#C9941A] bg-primary/10' 
+                                    ? 'border-[#E2741B] bg-primary/10' 
                                     : 'border-[#333] hover:border-primary/50'}`}
                                 data-testid={`button-voice-${voice.value}`}
                               >
@@ -2845,8 +2845,8 @@ export default function MusicStudio() {
                             <div className="p-3 bg-[#1a1a1a]/50 rounded-lg text-sm">
                               <p className="font-medium mb-1">🎵 Transformation Preview:</p>
                               <p className="text-gray-400">
-                                Your melody in <span className="text-[#C9941A] font-bold">{melodyAnalysis?.detectedKey} {melodyAnalysis?.detectedScale}</span> at{' '}
-                                <span className="text-[#C9941A] font-bold">{melodyAnalysis?.detectedBpm} BPM</span> → 
+                                Your melody in <span className="text-[#E2741B] font-bold">{melodyAnalysis?.detectedKey} {melodyAnalysis?.detectedScale}</span> at{' '}
+                                <span className="text-[#E2741B] font-bold">{melodyAnalysis?.detectedBpm} BPM</span> → 
                                 <span className="text-pink-500 font-bold"> {targetGenre.toUpperCase()}</span> with{' '}
                                 <span className="text-blue-500 font-bold">{targetVoiceStyle}</span> vocals
                               </p>
@@ -2891,7 +2891,7 @@ export default function MusicStudio() {
                     <Card className="border-green-500/20">
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <Sparkles className="w-6 h-6 text-[#C9941A]" /> Your Masterpiece is Ready!
+                          <Sparkles className="w-6 h-6 text-[#E2741B]" /> Your Masterpiece is Ready!
                         </CardTitle>
                         <CardDescription>
                           AI transformed your melody into a {targetGenre} masterpiece!
@@ -3058,10 +3058,10 @@ export default function MusicStudio() {
                           <div className="space-y-3">
                             {[
                               { name: "Vocals", icon: Mic, color: "text-pink-500", stem: separatedStems.vocals },
-                              { name: "Drums", icon: Drum, color: "text-[#C9941A]", stem: separatedStems.drums },
-                              { name: "Bass", icon: Waves, color: "text-[#C9941A]", stem: separatedStems.bass },
+                              { name: "Drums", icon: Drum, color: "text-[#E2741B]", stem: separatedStems.drums },
+                              { name: "Bass", icon: Waves, color: "text-[#E2741B]", stem: separatedStems.bass },
                               { name: "Other (Guitar/Keys)", icon: Guitar, color: "text-yellow-500", stem: separatedStems.other },
-                              { name: "Instrumental", icon: Music, color: "text-[#C9941A]", stem: separatedStems.instrumental },
+                              { name: "Instrumental", icon: Music, color: "text-[#E2741B]", stem: separatedStems.instrumental },
                             ].map((s) => (
                               <div key={s.name} className="flex items-center gap-3 p-3 bg-[#1a1a1a]/50 rounded-lg">
                                 <s.icon className={`w-5 h-5 ${s.color}`} />
@@ -3122,7 +3122,7 @@ export default function MusicStudio() {
                 <div className="space-y-6">
                   <div className="text-center py-6 bg-gradient-to-r from-amber-500/10 via-pink-500/10 to-rose-500/10 rounded-xl border border-amber-500/20">
                     <div className="flex items-center justify-center gap-2 mb-2">
-                      <Users className="w-8 h-8 text-[#C9941A] animate-pulse" />
+                      <Users className="w-8 h-8 text-[#E2741B] animate-pulse" />
                       <h2 className="text-3xl font-bold bg-gradient-to-r from-amber-500 to-pink-500 bg-clip-text text-transparent">
                         AI VOICE LIBRARY
                       </h2>
@@ -3136,7 +3136,7 @@ export default function MusicStudio() {
                       <Card>
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
-                            <Users className="w-5 h-5 text-[#C9941A]" /> Voice Models
+                            <Users className="w-5 h-5 text-[#E2741B]" /> Voice Models
                           </CardTitle>
                           <CardDescription>Select from our library of AI voice archetypes</CardDescription>
                         </CardHeader>
@@ -3160,7 +3160,7 @@ export default function MusicStudio() {
                                 key={voice.id}
                                 className={`p-4 rounded-lg border-2 text-left transition-all ${
                                   selectedVoiceModel === voice.id 
-                                    ? 'border-amber-500 bg-[#C9941A]/10' 
+                                    ? 'border-amber-500 bg-[#E2741B]/10' 
                                     : 'border-border hover:border-amber-500/50'
                                 }`}
                                 onClick={() => setSelectedVoiceModel(voice.id)}
@@ -3213,7 +3213,7 @@ export default function MusicStudio() {
                       <Card>
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
-                            <Play className="w-5 h-5 text-[#C9941A]" /> Preview Voice
+                            <Play className="w-5 h-5 text-[#E2741B]" /> Preview Voice
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
@@ -3248,7 +3248,7 @@ export default function MusicStudio() {
                 <div className="space-y-6">
                   <div className="text-center py-6 bg-gradient-to-r from-green-500/10 via-teal-500/10 to-emerald-500/10 rounded-xl border border-green-500/20">
                     <div className="flex items-center justify-center gap-2 mb-2">
-                      <Headphones className="w-8 h-8 text-[#C9941A] animate-pulse" />
+                      <Headphones className="w-8 h-8 text-[#E2741B] animate-pulse" />
                       <h2 className="text-3xl font-bold bg-gradient-to-r from-green-500 to-teal-500 bg-clip-text text-transparent">
                         AI MASTERING SUITE
                       </h2>
@@ -3261,7 +3261,7 @@ export default function MusicStudio() {
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <Target className="w-5 h-5 text-[#C9941A]" /> Mastering Presets
+                          <Target className="w-5 h-5 text-[#E2741B]" /> Mastering Presets
                         </CardTitle>
                         <CardDescription>Choose a preset optimized for your platform</CardDescription>
                       </CardHeader>
@@ -3279,13 +3279,13 @@ export default function MusicStudio() {
                               key={preset.id}
                               className={`p-4 rounded-lg border-2 text-left transition-all ${
                                 masteringPreset === preset.id 
-                                  ? 'border-green-500 bg-[#C9941A]/10' 
+                                  ? 'border-green-500 bg-[#E2741B]/10' 
                                   : 'border-border hover:border-green-500/50'
                               }`}
                               onClick={() => setMasteringPreset(preset.id)}
                               data-testid={`button-preset-${preset.id}`}
                             >
-                              <preset.icon className="w-6 h-6 mb-2 text-[#C9941A]" />
+                              <preset.icon className="w-6 h-6 mb-2 text-[#E2741B]" />
                               <div className="font-medium">{preset.name}</div>
                               <div className="text-xs text-gray-400">{preset.desc}</div>
                             </button>
@@ -3334,19 +3334,19 @@ export default function MusicStudio() {
                         <div className="grid grid-cols-2 gap-3">
                           <div className="p-3 bg-[#1a1a1a]/50 rounded-lg text-center">
                             <span className="text-xs text-gray-400">EQ</span>
-                            <p className="font-medium text-[#C9941A]">Auto</p>
+                            <p className="font-medium text-[#E2741B]">Auto</p>
                           </div>
                           <div className="p-3 bg-[#1a1a1a]/50 rounded-lg text-center">
                             <span className="text-xs text-gray-400">Compression</span>
-                            <p className="font-medium text-[#C9941A]">Adaptive</p>
+                            <p className="font-medium text-[#E2741B]">Adaptive</p>
                           </div>
                           <div className="p-3 bg-[#1a1a1a]/50 rounded-lg text-center">
                             <span className="text-xs text-gray-400">Limiter</span>
-                            <p className="font-medium text-[#C9941A]">True Peak</p>
+                            <p className="font-medium text-[#E2741B]">True Peak</p>
                           </div>
                           <div className="p-3 bg-[#1a1a1a]/50 rounded-lg text-center">
                             <span className="text-xs text-gray-400">Dithering</span>
-                            <p className="font-medium text-[#C9941A]">16-bit</p>
+                            <p className="font-medium text-[#E2741B]">16-bit</p>
                           </div>
                         </div>
                         
@@ -3368,7 +3368,7 @@ export default function MusicStudio() {
                   {masteredTrackUrl && (
                     <Card className="border-green-500">
                       <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-[#C9941A]">
+                        <CardTitle className="flex items-center gap-2 text-[#E2741B]">
                           <CheckCircle className="w-5 h-5" /> Mastering Complete!
                         </CardTitle>
                       </CardHeader>
@@ -3397,39 +3397,39 @@ export default function MusicStudio() {
                       <h2 className="text-3xl font-bold bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 bg-clip-text text-transparent">
                         DISTRIBUTION HUB
                       </h2>
-                      <Radio className="w-8 h-8 text-[#C9941A] animate-pulse" />
+                      <Radio className="w-8 h-8 text-[#E2741B] animate-pulse" />
                     </div>
                     <p className="text-gray-400">Publish to 150+ streaming platforms worldwide</p>
-                    <p className="text-sm text-[#C9941A] mt-2">Keep 85% of royalties | No annual fees</p>
+                    <p className="text-sm text-[#E2741B] mt-2">Keep 85% of royalties | No annual fees</p>
                   </div>
                   
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <Globe className="w-5 h-5 text-[#C9941A]" /> Select Platforms
+                          <Globe className="w-5 h-5 text-[#E2741B]" /> Select Platforms
                         </CardTitle>
                         <CardDescription>Choose where to publish your music</CardDescription>
                       </CardHeader>
                       <CardContent>
                         <div className="grid grid-cols-3 gap-3">
                           {[
-                            { id: "spotify", name: "Spotify", color: "bg-[#C9941A]" },
+                            { id: "spotify", name: "Spotify", color: "bg-[#E2741B]" },
                             { id: "apple", name: "Apple Music", color: "bg-pink-500" },
                             { id: "youtube", name: "YouTube Music", color: "bg-red-500" },
                             { id: "amazon", name: "Amazon Music", color: "bg-blue-500" },
                             { id: "tidal", name: "Tidal", color: "bg-slate-500" },
-                            { id: "deezer", name: "Deezer", color: "bg-[#C9941A]" },
-                            { id: "soundcloud", name: "SoundCloud", color: "bg-[#C9941A]" },
+                            { id: "deezer", name: "Deezer", color: "bg-[#E2741B]" },
+                            { id: "soundcloud", name: "SoundCloud", color: "bg-[#E2741B]" },
                             { id: "tiktok", name: "TikTok", color: "bg-pink-600" },
-                            { id: "instagram", name: "Instagram", color: "bg-[#C9941A]" },
+                            { id: "instagram", name: "Instagram", color: "bg-[#E2741B]" },
                           ].map((platform) => (
                             <button
                               key={platform.id}
                               className={`p-3 rounded-lg border-2 text-center transition-all ${
                                 distributionPlatforms.includes(platform.id)
-                                  ? 'border-[#C9941A] bg-primary/10'
-                                  : 'border-border hover:border-[#C9941A]/50'
+                                  ? 'border-[#E2741B] bg-primary/10'
+                                  : 'border-border hover:border-[#E2741B]/50'
                               }`}
                               onClick={() => {
                                 if (distributionPlatforms.includes(platform.id)) {
@@ -3461,7 +3461,7 @@ export default function MusicStudio() {
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <FileText className="w-5 h-5 text-[#C9941A]" /> Track Metadata
+                          <FileText className="w-5 h-5 text-[#E2741B]" /> Track Metadata
                         </CardTitle>
                         <CardDescription>Fill in your release information</CardDescription>
                       </CardHeader>
@@ -3551,19 +3551,19 @@ export default function MusicStudio() {
                     <CardContent className="py-6">
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                         <div>
-                          <div className="text-3xl font-bold text-[#C9941A]">150+</div>
+                          <div className="text-3xl font-bold text-[#E2741B]">150+</div>
                           <div className="text-sm text-gray-400">Platforms</div>
                         </div>
                         <div>
-                          <div className="text-3xl font-bold text-[#C9941A]">85%</div>
+                          <div className="text-3xl font-bold text-[#E2741B]">85%</div>
                           <div className="text-sm text-gray-400">Royalties Kept</div>
                         </div>
                         <div>
-                          <div className="text-3xl font-bold text-[#C9941A]">$0</div>
+                          <div className="text-3xl font-bold text-[#E2741B]">$0</div>
                           <div className="text-sm text-gray-400">Annual Fees</div>
                         </div>
                         <div>
-                          <div className="text-3xl font-bold text-[#C9941A]">24hr</div>
+                          <div className="text-3xl font-bold text-[#E2741B]">24hr</div>
                           <div className="text-sm text-gray-400">Review Time</div>
                         </div>
                       </div>
@@ -3588,13 +3588,13 @@ export default function MusicStudio() {
                         <button
                           onClick={() => setCreatorStep(s.step)}
                           className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all
-                            ${creatorStep === s.step ? 'bg-primary text-[#C9941A]-foreground' : 
+                            ${creatorStep === s.step ? 'bg-primary text-[#E2741B]-foreground' : 
                               creatorStep > s.step ? 'bg-primary/50 text-foreground' : 'bg-[#1a1a1a] text-gray-400'}`}
                           data-testid={`button-step-${s.step}`}
                         >
                           {s.step}
                         </button>
-                        <span className={`ml-2 text-sm hidden md:block ${creatorStep === s.step ? 'text-[#C9941A] font-bold' : 'text-gray-400'}`}>
+                        <span className={`ml-2 text-sm hidden md:block ${creatorStep === s.step ? 'text-[#E2741B] font-bold' : 'text-gray-400'}`}>
                           {s.label}
                         </span>
                         {i < 4 && <div className={`w-8 md:w-16 h-1 mx-2 ${creatorStep > s.step ? 'bg-primary' : 'bg-[#1a1a1a]'}`} />}
@@ -3607,7 +3607,7 @@ export default function MusicStudio() {
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <PenTool className="w-5 h-5 text-[#C9941A]" /> Step 1: Write Your Lyrics
+                          <PenTool className="w-5 h-5 text-[#E2741B]" /> Step 1: Write Your Lyrics
                         </CardTitle>
                         <CardDescription>Start with your message. What's the song about?</CardDescription>
                       </CardHeader>
@@ -3714,7 +3714,7 @@ Repeat the hook...`}
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <Music className="w-5 h-5 text-[#C9941A]" /> Step 2: Choose Your Style
+                          <Music className="w-5 h-5 text-[#E2741B]" /> Step 2: Choose Your Style
                         </CardTitle>
                         <CardDescription>Define the sound - 32 genres powered by Google Lyria AI</CardDescription>
                       </CardHeader>
@@ -3748,7 +3748,7 @@ Repeat the hook...`}
                                         ${selectedGenre === g.value ? 'border-primary bg-primary/10' : 'border-border'}`}
                                       data-testid={`button-genre-${g.value}`}
                                     >
-                                      <Icon className={`w-6 h-6 ${selectedGenre === g.value ? 'text-[#C9941A]' : ''}`} />
+                                      <Icon className={`w-6 h-6 ${selectedGenre === g.value ? 'text-[#E2741B]' : ''}`} />
                                       <span className="font-medium text-xs text-center">{g.label}</span>
                                     </button>
                                   );
@@ -3810,14 +3810,14 @@ Repeat the hook...`}
 
                         <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
                           <div className="flex items-center gap-2 mb-2">
-                            <Sparkles className="w-5 h-5 text-[#C9941A]" />
+                            <Sparkles className="w-5 h-5 text-[#E2741B]" />
                             <span className="font-semibold text-sm">Lyria AI Configuration</span>
                           </div>
                           <p className="text-xs text-gray-400">
-                            Selected: <strong className="text-[#C9941A]">{genres.find(g => g.value === selectedGenre)?.label}</strong> at <strong className="text-[#C9941A]">{bpm} BPM</strong> in <strong className="text-[#C9941A]">{selectedKey} {selectedScale}</strong>
+                            Selected: <strong className="text-[#E2741B]">{genres.find(g => g.value === selectedGenre)?.label}</strong> at <strong className="text-[#E2741B]">{bpm} BPM</strong> in <strong className="text-[#E2741B]">{selectedKey} {selectedScale}</strong>
                           </p>
                           <p className="text-xs text-gray-400 mt-1">
-                            Cost: <strong className="text-[#C9941A]">$0.06</strong> per 30-second generation
+                            Cost: <strong className="text-[#E2741B]">$0.06</strong> per 30-second generation
                           </p>
                         </div>
                         
@@ -3838,7 +3838,7 @@ Repeat the hook...`}
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <Disc className="w-5 h-5 text-[#C9941A]" /> Step 3: Generate Your Beat
+                          <Disc className="w-5 h-5 text-[#E2741B]" /> Step 3: Generate Your Beat
                         </CardTitle>
                         <CardDescription>
                           AI will create a {genres.find(g => g.value === selectedGenre)?.label} instrumental at {bpm} BPM in {selectedKey} {selectedScale}
@@ -3961,7 +3961,7 @@ Repeat the hook...`}
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <Mic className="w-5 h-5 text-[#C9941A]" /> Step 4: Choose Your Voice & Flow
+                          <Mic className="w-5 h-5 text-[#E2741B]" /> Step 4: Choose Your Voice & Flow
                         </CardTitle>
                         <CardDescription>How should the vocals sound and be delivered?</CardDescription>
                       </CardHeader>
@@ -4052,7 +4052,7 @@ Repeat the hook...`}
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <Download className="w-5 h-5 text-[#C9941A]" /> Step 5: Preview & Export
+                          <Download className="w-5 h-5 text-[#E2741B]" /> Step 5: Preview & Export
                         </CardTitle>
                         <CardDescription>Review your song and export</CardDescription>
                       </CardHeader>
@@ -4190,7 +4190,7 @@ Repeat the hook...`}
                                 max={100} data-testid={`slider-volume-${track.id}`} />
                             </div>
                             {track.audioUrl && (
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-[#C9941A]"
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-[#E2741B]"
                                 onClick={() => {
                                   const link = document.createElement('a');
                                   link.href = track.audioUrl!;
@@ -4361,7 +4361,7 @@ Repeat the hook...`}
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <Mic className="w-5 h-5 text-[#C9941A]" /> Clone Your Voice
+                        <Mic className="w-5 h-5 text-[#E2741B]" /> Clone Your Voice
                       </CardTitle>
                       <CardDescription>Record 10+ seconds to clone your voice</CardDescription>
                     </CardHeader>
@@ -4384,7 +4384,7 @@ Repeat the hook...`}
                         </div>
                       )}
                       {clonedVoiceKey && (
-                        <Badge variant="outline" className="w-full justify-center py-2 text-[#C9941A]">
+                        <Badge variant="outline" className="w-full justify-center py-2 text-[#E2741B]">
                           Voice Cloned Successfully!
                         </Badge>
                       )}
@@ -4395,7 +4395,7 @@ Repeat the hook...`}
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <Sparkles className="w-5 h-5 text-[#C9941A]" /> Voice Synthesis
+                        <Sparkles className="w-5 h-5 text-[#E2741B]" /> Voice Synthesis
                       </CardTitle>
                       <CardDescription>Generate speech in any style</CardDescription>
                     </CardHeader>
@@ -4580,13 +4580,13 @@ Repeat the hook...`}
                                 <div className="text-xs text-gray-400">Suggested BPM</div>
                               </div>
                               <div className="p-3 bg-[#1a1a1a]/50 rounded-lg text-center">
-                                <div className="text-2xl font-bold text-[#C9941A]">3:24</div>
+                                <div className="text-2xl font-bold text-[#E2741B]">3:24</div>
                                 <div className="text-xs text-gray-400">Video Duration</div>
                               </div>
                             </div>
                             
-                            <div className="p-4 bg-[#C9941A]/10 border border-green-500/20 rounded-lg">
-                              <div className="flex items-center gap-2 text-[#C9941A] font-medium mb-2">
+                            <div className="p-4 bg-[#E2741B]/10 border border-green-500/20 rounded-lg">
+                              <div className="flex items-center gap-2 text-[#E2741B] font-medium mb-2">
                                 <CheckCircle className="w-5 h-5" /> Soundtrack Generated!
                               </div>
                               <p className="text-sm text-gray-400 mb-4">
@@ -4649,7 +4649,7 @@ Repeat the hook...`}
                       <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-500 via-red-500 to-orange-500 bg-clip-text text-transparent">
                         LIVE ADAPTIVE MUSIC
                       </h2>
-                      <Zap className="w-8 h-8 text-[#C9941A] animate-pulse" />
+                      <Zap className="w-8 h-8 text-[#E2741B] animate-pulse" />
                     </div>
                     <p className="text-gray-400">Real-time music that adapts to your content</p>
                     <p className="text-sm text-pink-400 mt-2">Gaming | Streaming | Meditation | Workouts</p>
@@ -4667,10 +4667,10 @@ Repeat the hook...`}
                         <CardContent>
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                             {[
-                              { id: "gaming", name: "Gaming", desc: "Reacts to gameplay intensity", IconComponent: Zap, color: "text-[#C9941A]" },
+                              { id: "gaming", name: "Gaming", desc: "Reacts to gameplay intensity", IconComponent: Zap, color: "text-[#E2741B]" },
                               { id: "streaming", name: "Streaming", desc: "Matches chat energy", IconComponent: Radio, color: "text-pink-500" },
-                              { id: "meditation", name: "Meditation", desc: "Calming ambient sounds", IconComponent: Sparkles, color: "text-[#C9941A]" },
-                              { id: "workout", name: "Workout", desc: "Pumps up intensity", IconComponent: Activity, color: "text-[#C9941A]" },
+                              { id: "meditation", name: "Meditation", desc: "Calming ambient sounds", IconComponent: Sparkles, color: "text-[#E2741B]" },
+                              { id: "workout", name: "Workout", desc: "Pumps up intensity", IconComponent: Activity, color: "text-[#E2741B]" },
                             ].map((mode) => (
                               <button
                                 key={mode.id}
@@ -4746,9 +4746,9 @@ Repeat the hook...`}
                         <CardContent>
                           {isLiveMusicActive ? (
                             <div className="space-y-4">
-                              <div className="p-4 bg-[#C9941A]/10 border border-green-500/20 rounded-lg text-center">
-                                <div className="flex items-center justify-center gap-2 text-[#C9941A] font-medium">
-                                  <div className="w-3 h-3 bg-[#C9941A] rounded-full animate-pulse" />
+                              <div className="p-4 bg-[#E2741B]/10 border border-green-500/20 rounded-lg text-center">
+                                <div className="flex items-center justify-center gap-2 text-[#E2741B] font-medium">
+                                  <div className="w-3 h-3 bg-[#E2741B] rounded-full animate-pulse" />
                                   LIVE
                                 </div>
                               </div>
@@ -4758,7 +4758,7 @@ Repeat the hook...`}
                                   <div className="text-xs text-gray-400">Current BPM</div>
                                 </div>
                                 <div className="p-3 bg-[#1a1a1a]/50 rounded-lg text-center">
-                                  <div className="text-xl font-bold text-[#C9941A]">High</div>
+                                  <div className="text-xl font-bold text-[#E2741B]">High</div>
                                   <div className="text-xs text-gray-400">Energy Level</div>
                                 </div>
                               </div>
@@ -4789,12 +4789,12 @@ Repeat the hook...`}
                       <Card>
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
-                            <Headphones className="w-5 h-5 text-[#C9941A]" /> Integration
+                            <Headphones className="w-5 h-5 text-[#E2741B]" /> Integration
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
                           <Button variant="outline" className="w-full justify-start gap-2" data-testid="button-connect-obs">
-                            <span className="w-6 h-6 bg-[#C9941A] rounded flex items-center justify-center text-foreground text-xs">OBS</span>
+                            <span className="w-6 h-6 bg-[#E2741B] rounded flex items-center justify-center text-foreground text-xs">OBS</span>
                             Connect to OBS
                           </Button>
                           <Button variant="outline" className="w-full justify-start gap-2" data-testid="button-connect-discord">
@@ -4818,7 +4818,7 @@ Repeat the hook...`}
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <Film className="w-5 h-5 text-[#C9941A]" /> AI Movie Generator
+                        <Film className="w-5 h-5 text-[#E2741B]" /> AI Movie Generator
                       </CardTitle>
                       <CardDescription>Create movie scripts and storyboards with AI</CardDescription>
                     </CardHeader>
@@ -4938,22 +4938,22 @@ Repeat the hook...`}
                     </Card>
                     <Card className="bg-gradient-to-br from-green-500/10 to-emerald-600/10 border-green-500/20" data-testid="card-model-gemini">
                       <CardContent className="p-4 text-center">
-                        <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-[#C9941A]/20 flex items-center justify-center">
-                          <Sparkles className="w-6 h-6 text-[#C9941A]" />
+                        <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-[#E2741B]/20 flex items-center justify-center">
+                          <Sparkles className="w-6 h-6 text-[#E2741B]" />
                         </div>
                         <h4 className="font-semibold text-sm" data-testid="text-model-gemini">Google Gemini</h4>
                         <p className="text-xs text-gray-400">AI Content Creation</p>
-                        <Badge className="mt-2 bg-[#C9941A]/20 text-green-300 border-green-500/30" data-testid="badge-model-gemini">Active</Badge>
+                        <Badge className="mt-2 bg-[#E2741B]/20 text-green-300 border-green-500/30" data-testid="badge-model-gemini">Active</Badge>
                       </CardContent>
                     </Card>
                     <Card className="bg-gradient-to-br from-amber-500/10 to-orange-600/10 border-amber-500/20" data-testid="card-model-openai">
                       <CardContent className="p-4 text-center">
-                        <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-[#C9941A]/20 flex items-center justify-center">
-                          <Wand2 className="w-6 h-6 text-[#C9941A]" />
+                        <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-[#E2741B]/20 flex items-center justify-center">
+                          <Wand2 className="w-6 h-6 text-[#E2741B]" />
                         </div>
                         <h4 className="font-semibold text-sm" data-testid="text-model-openai">OpenAI</h4>
                         <p className="text-xs text-gray-400">Advanced AI</p>
-                        <Badge className="mt-2 bg-[#C9941A]/20 text-amber-300 border-amber-500/30" data-testid="badge-model-openai">Active</Badge>
+                        <Badge className="mt-2 bg-[#E2741B]/20 text-amber-300 border-amber-500/30" data-testid="badge-model-openai">Active</Badge>
                       </CardContent>
                     </Card>
                   </div>
@@ -4965,7 +4965,7 @@ Repeat the hook...`}
                         <Mic className="w-5 h-5 text-purple-500" />
                         ElevenLabs AI Voice Generator
                         {isElevenLabsConfigured ? (
-                          <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-green-500/30">Connected</Badge>
+                          <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-green-500/30">Connected</Badge>
                         ) : (
                           <Badge variant="destructive">Not Configured</Badge>
                         )}
@@ -5145,7 +5145,7 @@ Repeat the hook...`}
                 <Button variant="ghost" size="icon" onClick={() => setCurrentTime(0)} data-testid="button-skip-back">
                   <SkipBack className="w-4 h-4" />
                 </Button>
-                <Button size="icon" onClick={handlePlay} className={isPlaying ? "bg-[#C9941A] hover:bg-[#C9941A]/80" : ""}
+                <Button size="icon" onClick={handlePlay} className={isPlaying ? "bg-[#E2741B] hover:bg-[#E2741B]/80" : ""}
                   data-testid="button-play">
                   {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                 </Button>

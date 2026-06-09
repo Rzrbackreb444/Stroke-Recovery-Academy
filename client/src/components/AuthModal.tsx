@@ -136,7 +136,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "login" }: Au
       <DialogContent className="sm:max-w-md bg-[#FAF8F3]">
         <DialogHeader className="text-center">
           <div className="flex justify-center mb-2">
-            <div className="w-12 h-12 bg-[#C9941A] rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-[#E2741B] rounded-xl flex items-center justify-center">
               <Sparkles className="w-6 h-6 text-white" />
             </div>
           </div>
@@ -238,7 +238,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "login" }: Au
                     <Button
                       type="button"
                       variant="ghost"
-                      className="p-0 h-auto text-xs text-[#C9941A]"
+                      className="p-0 h-auto text-xs text-[#E2741B]"
                       onClick={() => setMode("forgot_password")}
                     >
                       Forgot password?
@@ -293,7 +293,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "login" }: Au
 
             <Button
               type="submit"
-              className="w-full bg-[#C9941A] hover:bg-[#C9941A]/90"
+              className="w-full bg-[#E2741B] hover:bg-[#E2741B]/90"
               disabled={isLoading}
               data-testid="button-submit-auth"
             >
@@ -324,19 +324,19 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "login" }: Au
             {mode === "login" ? (
               <p>
                 Don't have an account?{" "}
-                <Button variant="ghost" className="p-0 h-auto text-[#C9941A]" onClick={() => setMode("register")}>
+                <Button variant="ghost" className="p-0 h-auto text-[#E2741B]" onClick={() => setMode("register")}>
                   Sign up
                 </Button>
               </p>
             ) : mode === "register" ? (
               <p>
                 Already have an account?{" "}
-                <Button variant="ghost" className="p-0 h-auto text-[#C9941A]" onClick={() => setMode("login")}>
+                <Button variant="ghost" className="p-0 h-auto text-[#E2741B]" onClick={() => setMode("login")}>
                   Sign in
                 </Button>
               </p>
             ) : (
-              <Button variant="ghost" className="p-0 h-auto text-[#C9941A]" onClick={() => setMode("login")}>
+              <Button variant="ghost" className="p-0 h-auto text-[#E2741B]" onClick={() => setMode("login")}>
                 Back to sign in
               </Button>
             )}

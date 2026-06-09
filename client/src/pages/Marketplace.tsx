@@ -320,7 +320,7 @@ function MusicPlayer({ track, onClose }: { track: CreatorContent | null; onClose
             </Button>
             <Button 
               size="lg" 
-              className={`rounded-full ${hasStreamUrl ? 'bg-[#C9941A] hover:bg-[#C9941A]' : 'bg-gray-600 cursor-not-allowed'}`}
+              className={`rounded-full ${hasStreamUrl ? 'bg-[#E2741B] hover:bg-[#E2741B]' : 'bg-gray-600 cursor-not-allowed'}`}
               onClick={handlePlayPause}
               disabled={!hasStreamUrl}
               data-testid="button-play-pause"
@@ -497,7 +497,7 @@ function VideoPlayer({ video, onClose }: { video: CreatorContent | null; onClose
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">
                 {video.type === 'movie' ? (
-                  <Film className="w-24 h-24 text-[#C9941A]/50 mx-auto mb-4" />
+                  <Film className="w-24 h-24 text-[#E2741B]/50 mx-auto mb-4" />
                 ) : (
                   <Video className="w-24 h-24 text-blue-500/50 mx-auto mb-4" />
                 )}
@@ -511,7 +511,7 @@ function VideoPlayer({ video, onClose }: { video: CreatorContent | null; onClose
             <div className="absolute inset-0 flex items-center justify-center bg-card">
               <Button 
                 size="lg" 
-                className={`rounded-full w-20 h-20 shadow-xl ${hasStreamUrl ? 'bg-[#C9941A] hover:bg-[#C9941A]' : 'bg-gray-600 cursor-not-allowed'}`}
+                className={`rounded-full w-20 h-20 shadow-xl ${hasStreamUrl ? 'bg-[#E2741B] hover:bg-[#E2741B]' : 'bg-gray-600 cursor-not-allowed'}`}
                 onClick={handlePlayPause}
                 disabled={!hasStreamUrl}
                 data-testid="button-play-video"
@@ -548,7 +548,7 @@ function VideoPlayer({ video, onClose }: { video: CreatorContent | null; onClose
               </Button>
               <Button 
                 size="lg" 
-                className={`rounded-full w-12 h-12 ${hasStreamUrl ? 'bg-[#C9941A] hover:bg-[#C9941A]' : 'bg-gray-600 cursor-not-allowed'}`}
+                className={`rounded-full w-12 h-12 ${hasStreamUrl ? 'bg-[#E2741B] hover:bg-[#E2741B]' : 'bg-gray-600 cursor-not-allowed'}`}
                 onClick={handlePlayPause}
                 disabled={!hasStreamUrl}
                 data-testid="button-video-play-pause"
@@ -620,7 +620,7 @@ function ContentCard({ content, onPlay }: { content: CreatorContent; onPlay: (co
         <div className="absolute inset-0 bg-black/0 group-hover:bg-card transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
           <Button 
             size="lg"
-            className="rounded-full bg-[#C9941A] shadow-xl"
+            className="rounded-full bg-[#E2741B] shadow-xl"
             onClick={() => onPlay(content)}
             data-testid={`button-play-${content.id}`}
           >
@@ -628,12 +628,12 @@ function ContentCard({ content, onPlay }: { content: CreatorContent; onPlay: (co
           </Button>
         </div>
         {content.isFeatured && (
-          <Badge className="absolute top-2 left-2 bg-[#C9941A]">
+          <Badge className="absolute top-2 left-2 bg-[#E2741B]">
             <Crown className="w-3 h-3 mr-1" /> Featured
           </Badge>
         )}
         {content.isNew && (
-          <Badge className="absolute top-2 right-2 bg-[#C9941A]">New</Badge>
+          <Badge className="absolute top-2 right-2 bg-[#E2741B]">New</Badge>
         )}
       </div>
       <CardContent className="p-4">
@@ -658,7 +658,7 @@ function ContentCard({ content, onPlay }: { content: CreatorContent; onPlay: (co
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0 flex items-center justify-between">
-        <span className="font-bold text-[#C9941A]" data-testid={`text-price-${content.id}`}>
+        <span className="font-bold text-[#E2741B]" data-testid={`text-price-${content.id}`}>
           {content.price === 0 ? "FREE" : `$${content.price.toFixed(2)}`}
         </span>
         <div className="flex gap-2">
@@ -689,7 +689,7 @@ function FeaturedCarousel({ items, onPlay }: { items: CreatorContent[]; onPlay: 
   return (
     <div className="mb-8">
       <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-        <Crown className="w-6 h-6 text-[#C9941A]" /> Featured Creators
+        <Crown className="w-6 h-6 text-[#E2741B]" /> Featured Creators
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {featured.slice(0, 3).map(item => (
@@ -699,7 +699,7 @@ function FeaturedCarousel({ items, onPlay }: { items: CreatorContent[]; onPlay: 
                 <Music className="w-16 h-16 opacity-30" />
               </div>
               <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <Button size="lg" className="rounded-full bg-[#C9941A]" data-testid={`button-featured-play-${item.id}`}>
+                <Button size="lg" className="rounded-full bg-[#E2741B]" data-testid={`button-featured-play-${item.id}`}>
                   <Play className="w-8 h-8 ml-1" />
                 </Button>
               </div>
@@ -732,19 +732,19 @@ function CreatorStats() {
       <CardContent className="py-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           <div>
-            <div className="text-3xl font-bold text-[#C9941A]">15K+</div>
+            <div className="text-3xl font-bold text-[#E2741B]">15K+</div>
             <div className="text-sm text-gray-400">Creators</div>
           </div>
           <div>
-            <div className="text-3xl font-bold text-[#C9941A]">250K+</div>
+            <div className="text-3xl font-bold text-[#E2741B]">250K+</div>
             <div className="text-sm text-gray-400">Content Items</div>
           </div>
           <div>
-            <div className="text-3xl font-bold text-[#C9941A]">$2.5M+</div>
+            <div className="text-3xl font-bold text-[#E2741B]">$2.5M+</div>
             <div className="text-sm text-gray-400">Creator Earnings</div>
           </div>
           <div>
-            <div className="text-3xl font-bold text-[#C9941A]">85%</div>
+            <div className="text-3xl font-bold text-[#E2741B]">85%</div>
             <div className="text-sm text-gray-400">To Creators</div>
           </div>
         </div>
@@ -755,7 +755,7 @@ function CreatorStats() {
 
 function BecomeCreatorCTA() {
   return (
-    <Card className="bg-gradient-to-r from-[#C9941A] to-amber-600 border-0 text-foreground overflow-hidden relative">
+    <Card className="bg-gradient-to-r from-[#E2741B] to-amber-600 border-0 text-foreground overflow-hidden relative">
       <div className="absolute inset-0 bg-black/20" />
       <CardContent className="py-12 relative z-10">
         <div className="text-center max-w-2xl mx-auto">
@@ -765,7 +765,7 @@ function BecomeCreatorCTA() {
             then sell or stream them to the world. Keep 85% of every sale.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button size="lg" className="bg-white text-[#C9941A] hover:bg-white/90" data-testid="button-start-creating">
+            <Button size="lg" className="bg-white text-[#E2741B] hover:bg-white/90" data-testid="button-start-creating">
               <Sparkles className="w-5 h-5 mr-2" /> Start Creating
             </Button>
             <Button size="lg" variant="outline" className="border-white text-foreground hover:bg-white/10" data-testid="button-learn-more">
@@ -894,7 +894,7 @@ export default function Marketplace() {
         <section className="mb-8">
           <div className="text-center mb-8">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-[#C9941A] to-amber-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#E2741B] to-amber-500 bg-clip-text text-transparent">
                 Stroke Recovery Academy Marketplace
               </span>
             </h1>
@@ -940,7 +940,7 @@ export default function Marketplace() {
 
           <TabsContent value="music" className="mt-8">
             <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <Music className="w-6 h-6 text-[#C9941A]" /> Music
+              <Music className="w-6 h-6 text-[#E2741B]" /> Music
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {sampleMusicContent.map(content => (
@@ -985,7 +985,7 @@ export default function Marketplace() {
 
           <TabsContent value="courses" className="mt-8">
             <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <GraduationCap className="w-6 h-6 text-[#C9941A]" /> Courses & Products
+              <GraduationCap className="w-6 h-6 text-[#E2741B]" /> Courses & Products
             </h2>
             {isLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1014,7 +1014,7 @@ export default function Marketplace() {
             )}
             
             <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <BookOpen className="w-6 h-6 text-[#C9941A]" /> Published Books
+              <BookOpen className="w-6 h-6 text-[#E2741B]" /> Published Books
             </h2>
             {booksLoading ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -1046,28 +1046,28 @@ export default function Marketplace() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Sparkles className="w-6 h-6 text-[#C9941A]" />
+                <Sparkles className="w-6 h-6 text-[#E2741B]" />
               </div>
               <h3 className="font-semibold mb-1">AI-Powered Creation</h3>
               <p className="text-sm text-gray-400">Create with cutting-edge AI tools</p>
             </div>
             <div>
               <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                <DollarSign className="w-6 h-6 text-[#C9941A]" />
+                <DollarSign className="w-6 h-6 text-[#E2741B]" />
               </div>
               <h3 className="font-semibold mb-1">85% Creator Earnings</h3>
               <p className="text-sm text-gray-400">Industry-leading revenue share</p>
             </div>
             <div>
               <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Radio className="w-6 h-6 text-[#C9941A]" />
+                <Radio className="w-6 h-6 text-[#E2741B]" />
               </div>
               <h3 className="font-semibold mb-1">Global Distribution</h3>
               <p className="text-sm text-gray-400">Reach audiences worldwide</p>
             </div>
             <div>
               <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Zap className="w-6 h-6 text-[#C9941A]" />
+                <Zap className="w-6 h-6 text-[#E2741B]" />
               </div>
               <h3 className="font-semibold mb-1">Instant Publishing</h3>
               <p className="text-sm text-gray-400">Go live in minutes</p>

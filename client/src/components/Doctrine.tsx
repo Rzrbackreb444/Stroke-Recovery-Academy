@@ -42,7 +42,7 @@ export default function Doctrine() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
-          <p className="text-[#C9941A] text-sm font-semibold uppercase tracking-widest mb-4" data-testid="badge-doctrine-category">
+          <p className="text-[#E2741B] text-sm font-semibold uppercase tracking-widest mb-4" data-testid="badge-doctrine-category">
             The Sasquatch Doctrine
           </p>
           <h2 className="text-4xl sm:text-5xl font-black text-white mb-4 uppercase" data-testid="text-doctrine-title">
@@ -60,7 +60,7 @@ export default function Doctrine() {
               className="p-6 rounded-xl border border-[#1e1e1e] bg-[#0D0D0D]/80 backdrop-blur"
               data-testid={`principle-${index}`}
             >
-              <div className="text-[#C9941A] text-5xl font-black mb-3 leading-none">
+              <div className="text-[#E2741B] text-5xl font-black mb-3 leading-none">
                 {String(index + 1).padStart(2, '0')}
               </div>
               <h3 className="text-lg font-bold mb-2 uppercase tracking-wide text-white">

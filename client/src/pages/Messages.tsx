@@ -205,7 +205,7 @@ export default function Messages() {
                       >
                         <Avatar>
                           <AvatarImage src={u.profileImageUrl} />
-                          <AvatarFallback className="bg-gray-700 text-[#C9941A]">
+                          <AvatarFallback className="bg-gray-700 text-[#E2741B]">
                             {u.firstName?.[0]}{u.lastName?.[0]}
                           </AvatarFallback>
                         </Avatar>
@@ -242,7 +242,7 @@ export default function Messages() {
             <ScrollArea className="flex-1">
               {conversationsLoading ? (
                 <div className="flex justify-center py-8">
-                  <Loader2 className="w-6 h-6 text-[#C9941A] animate-spin" />
+                  <Loader2 className="w-6 h-6 text-[#E2741B] animate-spin" />
                 </div>
               ) : conversations && conversations.length > 0 ? (
                 <div className="px-2">
@@ -267,7 +267,7 @@ export default function Messages() {
                         <div className="relative">
                           <Avatar className="w-12 h-12">
                             <AvatarImage src={getConversationAvatar(conv)} />
-                            <AvatarFallback className="bg-gray-700 text-[#C9941A]">
+                            <AvatarFallback className="bg-gray-700 text-[#E2741B]">
                               {getInitials(conv)}
                             </AvatarFallback>
                           </Avatar>
@@ -323,7 +323,7 @@ export default function Messages() {
                     </button>
                     <Avatar>
                       <AvatarImage src={getConversationAvatar(selectedConversation)} />
-                      <AvatarFallback className="bg-gray-700 text-[#C9941A]">
+                      <AvatarFallback className="bg-gray-700 text-[#E2741B]">
                         {getInitials(selectedConversation)}
                       </AvatarFallback>
                     </Avatar>
@@ -361,7 +361,7 @@ export default function Messages() {
                 <ScrollArea className="flex-1 p-4">
                   {messagesLoading ? (
                     <div className="flex justify-center py-8">
-                      <Loader2 className="w-6 h-6 text-[#C9941A] animate-spin" />
+                      <Loader2 className="w-6 h-6 text-[#E2741B] animate-spin" />
                     </div>
                   ) : messages && messages.length > 0 ? (
                     <div className="space-y-4">
@@ -376,7 +376,7 @@ export default function Messages() {
                               {!isOwn && (
                                 <Avatar className="w-8 h-8">
                                   <AvatarImage src={message.sender?.profileImageUrl} />
-                                  <AvatarFallback className="bg-gray-700 text-[#C9941A] text-xs">
+                                  <AvatarFallback className="bg-gray-700 text-[#E2741B] text-xs">
                                     {message.sender?.firstName?.[0]}{message.sender?.lastName?.[0]}
                                   </AvatarFallback>
                                 </Avatar>
@@ -397,7 +397,7 @@ export default function Messages() {
                                   </span>
                                   {isOwn && (
                                     message.isRead ? (
-                                      <CheckCheck className="w-3 h-3 text-[#C9941A]" />
+                                      <CheckCheck className="w-3 h-3 text-[#E2741B]" />
                                     ) : (
                                       <Check className="w-3 h-3 text-gray-500" />
                                     )

@@ -343,14 +343,14 @@ export default function SasquatchCoach() {
       style={{ backgroundColor: "#FAF8F3" }}
       data-testid="sasquatch-coach-card"
     >
-      <CardHeader className="pb-3 border-b" style={{ borderColor: "rgba(201, 148, 26, 0.2)" }}>
+      <CardHeader className="pb-3 border-b" style={{ borderColor: "rgba(226,116,27, 0.2)" }}>
         <div className="flex items-center gap-3">
-          <Avatar className="h-10 w-10" style={{ backgroundColor: "#C9941A" }}>
+          <Avatar className="h-10 w-10" style={{ backgroundColor: "#E2741B" }}>
             <AvatarFallback className="text-white font-bold text-sm">NS</AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
             <h3 className="font-bold text-foreground flex items-center gap-2" data-testid="coach-title">
-              <MessageCircle className="h-4 w-4" style={{ color: "#C9941A" }} />
+              <MessageCircle className="h-4 w-4" style={{ color: "#E2741B" }} />
               Sasquatch Coach
             </h3>
             <p className="text-xs text-muted-foreground">Nick Kremers · 7-year survivor · he remembers your thread</p>
@@ -388,7 +388,7 @@ export default function SasquatchCoach() {
                   {message.role === "coach" ? (
                     <AvatarFallback
                       className="text-white font-bold text-xs"
-                      style={{ backgroundColor: "#C9941A" }}
+                      style={{ backgroundColor: "#E2741B" }}
                     >
                       NS
                     </AvatarFallback>
@@ -412,7 +412,7 @@ export default function SasquatchCoach() {
                     }`}
                     style={
                       message.role === "coach"
-                        ? { borderColor: "rgba(201, 148, 26, 0.3)" }
+                        ? { borderColor: "rgba(226,116,27, 0.3)" }
                         : {}
                     }
                   >
@@ -436,7 +436,7 @@ export default function SasquatchCoach() {
                         <Volume2
                           className="h-3 w-3 mr-1"
                           style={{
-                            color: isPlaying && playingId === message.id ? "#C9941A" : undefined,
+                            color: isPlaying && playingId === message.id ? "#E2741B" : undefined,
                           }}
                         />
                       )}
@@ -454,7 +454,7 @@ export default function SasquatchCoach() {
                 <Avatar className="h-8 w-8">
                   <AvatarFallback
                     className="text-white font-bold text-xs"
-                    style={{ backgroundColor: "#C9941A" }}
+                    style={{ backgroundColor: "#E2741B" }}
                   >
                     NS
                   </AvatarFallback>
@@ -463,15 +463,15 @@ export default function SasquatchCoach() {
                   <div className="flex gap-1">
                     <span
                       className="w-2 h-2 rounded-full animate-bounce"
-                      style={{ backgroundColor: "#C9941A", animationDelay: "0ms" }}
+                      style={{ backgroundColor: "#E2741B", animationDelay: "0ms" }}
                     />
                     <span
                       className="w-2 h-2 rounded-full animate-bounce"
-                      style={{ backgroundColor: "#C9941A", animationDelay: "150ms" }}
+                      style={{ backgroundColor: "#E2741B", animationDelay: "150ms" }}
                     />
                     <span
                       className="w-2 h-2 rounded-full animate-bounce"
-                      style={{ backgroundColor: "#C9941A", animationDelay: "300ms" }}
+                      style={{ backgroundColor: "#E2741B", animationDelay: "300ms" }}
                     />
                   </div>
                 </div>
@@ -480,7 +480,7 @@ export default function SasquatchCoach() {
           </div>
         </ScrollArea>
 
-        <div className="p-4 border-t" style={{ borderColor: "rgba(201, 148, 26, 0.2)" }}>
+        <div className="p-4 border-t" style={{ borderColor: "rgba(226,116,27, 0.2)" }}>
           <div className="flex flex-wrap gap-2 mb-3">
             {QUICK_PROMPTS.map((prompt) => (
               <Button
@@ -512,7 +512,7 @@ export default function SasquatchCoach() {
                 onClick={isListening ? stopListening : startListening}
                 disabled={isLoading}
                 variant={isListening ? "default" : "outline"}
-                style={isListening ? { backgroundColor: "#C9941A" } : undefined}
+                style={isListening ? { backgroundColor: "#E2741B" } : undefined}
                 className={isListening ? "hover:opacity-90 animate-pulse" : "hover:opacity-90"}
                 title={isListening ? "Tap to stop" : "Push to talk"}
                 data-testid="mic-button"
@@ -523,7 +523,7 @@ export default function SasquatchCoach() {
             <Button
               onClick={handleSend}
               disabled={!input.trim() || isLoading}
-              style={{ backgroundColor: "#C9941A" }}
+              style={{ backgroundColor: "#E2741B" }}
               className="hover:opacity-90"
               data-testid="send-button"
             >

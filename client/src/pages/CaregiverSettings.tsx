@@ -109,7 +109,7 @@ export default function CaregiverSettings() {
       <div className="container mx-auto px-4 py-10 max-w-4xl">
         <header className="mb-8">
           <div className="flex items-center gap-3 mb-3">
-            <Heart className="w-8 h-8 text-[#C9941A]" />
+            <Heart className="w-8 h-8 text-[#E2741B]" />
             <h1 className="text-3xl font-bold">Caregiver Seats</h1>
           </div>
           <p className="text-gray-400 max-w-2xl">
@@ -122,7 +122,7 @@ export default function CaregiverSettings() {
         <Card className="bg-[#1a1a1a] border-[#333] mb-6">
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
-              <UserPlus className="w-5 h-5 text-[#C9941A]" /> Invite a Survivor
+              <UserPlus className="w-5 h-5 text-[#E2741B]" /> Invite a Survivor
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -159,7 +159,7 @@ export default function CaregiverSettings() {
                   data-testid="button-send-invite"
                   onClick={() => inviteM.mutate()}
                   disabled={!email || inviteM.isPending}
-                  className="bg-[#C9941A] hover:bg-[#b08217] text-black font-semibold"
+                  className="bg-[#E2741B] hover:bg-[#b08217] text-black font-semibold"
                 >
                   {inviteM.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Mail className="w-4 h-4 mr-2" />}
                   Send
@@ -167,7 +167,7 @@ export default function CaregiverSettings() {
               </div>
             </div>
             <div className="text-xs text-gray-500 flex items-start gap-2">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#C9941A] mt-0.5" />
+              <ShieldCheck className="w-3.5 h-3.5 text-[#E2741B] mt-0.5" />
               <span>
                 The survivor must sign in and accept. Invite expires in 14 days. Either side can revoke at any time.
               </span>
@@ -179,7 +179,7 @@ export default function CaregiverSettings() {
         <Card className="bg-[#1a1a1a] border-[#333] mb-6">
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
-              <Users className="w-5 h-5 text-[#C9941A]" /> Survivors I Sponsor
+              <Users className="w-5 h-5 text-[#E2741B]" /> Survivors I Sponsor
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -196,7 +196,7 @@ export default function CaregiverSettings() {
                     <div className="flex items-center gap-3 min-w-0">
                       <Avatar className="w-10 h-10">
                         <AvatarImage src={l.survivor_avatar || undefined} />
-                        <AvatarFallback className="bg-[#0D0D0D] text-[#C9941A]">
+                        <AvatarFallback className="bg-[#0D0D0D] text-[#E2741B]">
                           {(l.survivor_first || l.invite_email || "?")[0].toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
@@ -246,7 +246,7 @@ export default function CaregiverSettings() {
         <Card className="bg-[#1a1a1a] border-[#333]">
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
-              <Heart className="w-5 h-5 text-[#C9941A]" /> Caregivers Sponsoring Me
+              <Heart className="w-5 h-5 text-[#E2741B]" /> Caregivers Sponsoring Me
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -262,7 +262,7 @@ export default function CaregiverSettings() {
                     <div className="flex items-center gap-3 min-w-0">
                       <Avatar className="w-10 h-10">
                         <AvatarImage src={l.caregiver_avatar || undefined} />
-                        <AvatarFallback className="bg-[#0D0D0D] text-[#C9941A]">
+                        <AvatarFallback className="bg-[#0D0D0D] text-[#E2741B]">
                           {(l.caregiver_first || "?")[0].toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
@@ -282,7 +282,7 @@ export default function CaregiverSettings() {
                         size="sm"
                         onClick={() => acceptM.mutate(l.invite_token!)}
                         disabled={acceptM.isPending}
-                        className="bg-[#C9941A] hover:bg-[#b08217] text-black font-semibold"
+                        className="bg-[#E2741B] hover:bg-[#b08217] text-black font-semibold"
                       >
                         <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Accept
                       </Button>

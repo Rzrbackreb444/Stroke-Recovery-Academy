@@ -72,7 +72,7 @@ export default function CourseUnlockButton({ courseId, courseTitle, className = 
         </Button>
         <p className="text-xs text-gray-500 text-center">
           You have {balanceTotal.toLocaleString()} — short {short.toLocaleString()}.{" "}
-          <Link href="/pricing" className="text-[#C9941A] hover:underline">Get more</Link>
+          <Link href="/pricing" className="text-[#E2741B] hover:underline">Get more</Link>
         </p>
       </div>
     );
@@ -83,7 +83,7 @@ export default function CourseUnlockButton({ courseId, courseTitle, className = 
       <Button
         disabled={unlock.isPending}
         onClick={() => unlock.mutate()}
-        className={`w-full bg-[#C9941A] hover:bg-[#B8851A] text-black font-bold ${isLarge ? "h-12 text-base" : ""}`}
+        className={`w-full bg-[#E2741B] hover:bg-[#B8851A] text-black font-bold ${isLarge ? "h-12 text-base" : ""}`}
         data-testid={`button-unlock-${courseId}`}
       >
         {unlock.isPending ? (

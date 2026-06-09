@@ -80,11 +80,11 @@ interface Order {
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
   pending: { label: "Pending Payment", color: "bg-yellow-500/20 text-yellow-400", icon: Clock },
-  paid: { label: "Payment Received", color: "bg-[#C9941A]/20 text-[#C9941A]", icon: CheckCircle2 },
+  paid: { label: "Payment Received", color: "bg-[#E2741B]/20 text-[#E2741B]", icon: CheckCircle2 },
   processing: { label: "Processing", color: "bg-blue-500/20 text-blue-400", icon: Package },
-  printing: { label: "Printing", color: "bg-[#C9941A]/20 text-[#C9941A]", icon: Printer },
+  printing: { label: "Printing", color: "bg-[#E2741B]/20 text-[#E2741B]", icon: Printer },
   shipped: { label: "Shipped", color: "bg-teal-500/20 text-teal-400", icon: Truck },
-  delivered: { label: "Delivered", color: "bg-[#C9941A]/20 text-[#C9941A]", icon: CheckCircle2 },
+  delivered: { label: "Delivered", color: "bg-[#E2741B]/20 text-[#E2741B]", icon: CheckCircle2 },
   cancelled: { label: "Cancelled", color: "bg-red-500/20 text-red-400", icon: AlertCircle },
 };
 
@@ -122,8 +122,8 @@ function OrderTimeline({ order }: { order: Order }) {
           <div key={step.key} className="flex flex-col items-center relative flex-1">
             <div 
               className={`w-8 h-8 rounded-full flex items-center justify-center z-10 ${
-                isComplete ? "bg-[#C9941A] text-foreground" : 
-                isCurrent ? "bg-[#C9941A] text-foreground" : 
+                isComplete ? "bg-[#E2741B] text-foreground" : 
+                isCurrent ? "bg-[#E2741B] text-foreground" : 
                 "bg-gray-700 text-gray-400"
               }`}
             >
@@ -135,7 +135,7 @@ function OrderTimeline({ order }: { order: Order }) {
             {index < steps.length - 1 && (
               <div 
                 className={`absolute top-4 left-1/2 w-full h-0.5 ${
-                  index < currentStepIndex ? "bg-[#C9941A]" : "bg-gray-700"
+                  index < currentStepIndex ? "bg-[#E2741B]" : "bg-gray-700"
                 }`}
               />
             )}
@@ -156,7 +156,7 @@ function OrderItemCard({ item, orderId }: { item: OrderItem; orderId: number }) 
           <img src={item.coverImage} alt="" className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <FileText className="w-6 h-6 text-[#C9941A]/50" />
+            <FileText className="w-6 h-6 text-[#E2741B]/50" />
           </div>
         )}
       </div>
@@ -177,7 +177,7 @@ function OrderItemCard({ item, orderId }: { item: OrderItem; orderId: number }) 
         {item.canDownload && item.downloadUrl && (
           <Button
             size="sm"
-            className="mt-2 bg-[#C9941A] hover:bg-[#C9941A]"
+            className="mt-2 bg-[#E2741B] hover:bg-[#E2741B]"
             asChild
             data-testid={`button-download-${item.id}`}
           >
@@ -202,7 +202,7 @@ function OrderItemCard({ item, orderId }: { item: OrderItem; orderId: number }) 
                     href={pj.trackingUrl || "#"} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-[#C9941A] hover:underline flex items-center gap-1"
+                    className="text-[#E2741B] hover:underline flex items-center gap-1"
                     data-testid={`link-tracking-${pj.id}`}
                   >
                     {pj.carrier}: {pj.trackingNumber}
@@ -272,10 +272,10 @@ export default function OrderConfirmation() {
         <main className="flex-1 container mx-auto px-4 py-12 flex items-center justify-center">
           <Card className="max-w-md w-full bg-gray-950 border-[#333]">
             <CardContent className="p-6 text-center">
-              <AlertCircle className="w-12 h-12 text-[#C9941A] mx-auto mb-4" />
+              <AlertCircle className="w-12 h-12 text-[#E2741B] mx-auto mb-4" />
               <h2 className="text-xl font-semibold text-foreground mb-2">Sign in Required</h2>
               <p className="text-gray-400 mb-4">Please sign in to view your order details.</p>
-              <Button className="bg-[#C9941A] hover:bg-[#C9941A]" asChild>
+              <Button className="bg-[#E2741B] hover:bg-[#E2741B]" asChild>
                 <Link href="/auth">Sign In</Link>
               </Button>
             </CardContent>
@@ -301,7 +301,7 @@ export default function OrderConfirmation() {
                   <Loader2 className="w-4 h-4 mr-2" />
                   Retry
                 </Button>
-                <Button className="bg-[#C9941A] hover:bg-[#C9941A]" asChild>
+                <Button className="bg-[#E2741B] hover:bg-[#E2741B]" asChild>
                   <Link href="/marketplace/my-orders">View All Orders</Link>
                 </Button>
               </div>
@@ -321,8 +321,8 @@ export default function OrderConfirmation() {
         <div className="max-w-3xl mx-auto">
           {isSuccess && (
             <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-[#C9941A]/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle2 className="w-8 h-8 text-[#C9941A]" />
+              <div className="w-16 h-16 bg-[#E2741B]/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle2 className="w-8 h-8 text-[#E2741B]" />
               </div>
               <h1 className="text-3xl font-serif font-bold text-foreground mb-2" data-testid="text-success-title">
                 Thank You for Your Order!
@@ -366,7 +366,7 @@ export default function OrderConfirmation() {
                 {order.shippingStreet1 && (
                   <div>
                     <h3 className="font-medium text-foreground mb-2 flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-[#C9941A]" />
+                      <MapPin className="w-4 h-4 text-[#E2741B]" />
                       Shipping Address
                     </h3>
                     <div className="text-gray-400 text-sm">
@@ -442,7 +442,7 @@ export default function OrderConfirmation() {
                 View All Orders
               </Link>
             </Button>
-            <Button className="bg-[#C9941A] hover:bg-[#C9941A]" asChild data-testid="button-continue-shopping">
+            <Button className="bg-[#E2741B] hover:bg-[#E2741B]" asChild data-testid="button-continue-shopping">
               <Link href="/marketplace/books">
                 Continue Shopping
               </Link>

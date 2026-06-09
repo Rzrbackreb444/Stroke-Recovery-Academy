@@ -269,7 +269,7 @@ export default function RecoveryAnthemBuilder() {
 
       <main className="mx-auto max-w-6xl px-4 py-8 sm:py-12">
         <header className="mb-8">
-          <div className="flex items-center gap-2 text-[#C9941A] mb-2">
+          <div className="flex items-center gap-2 text-[#E2741B] mb-2">
             <Music className="w-5 h-5" />
             <span className="text-sm font-semibold uppercase tracking-wider">Recovery Anthem Studio</span>
           </div>
@@ -281,7 +281,7 @@ export default function RecoveryAnthemBuilder() {
             verses, chorus, the whole thing — with real vocals you can sing, scream, or play on repeat.
           </p>
           {usageBadge && (
-            <Badge className="mt-3 bg-[#C9941A]/20 text-[#C9941A] border border-[#C9941A]/40" data-testid="badge-usage">
+            <Badge className="mt-3 bg-[#E2741B]/20 text-[#E2741B] border border-[#E2741B]/40" data-testid="badge-usage">
               {usageBadge}
             </Badge>
           )}
@@ -290,12 +290,12 @@ export default function RecoveryAnthemBuilder() {
         {/* ── Sign-in gate ─────────────────────────────────────── */}
         {!authLoading && !isAuthenticated && (
           <Card
-            className="mb-8 border border-[#C9941A]/40 bg-[#1a1a1a] p-6"
+            className="mb-8 border border-[#E2741B]/40 bg-[#1a1a1a] p-6"
             data-testid="card-anthem-signin-gate"
           >
             <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-[#C9941A]/15 border border-[#C9941A]/40 flex items-center justify-center flex-shrink-0">
-                <LogIn className="h-5 w-5 text-[#C9941A]" />
+              <div className="w-10 h-10 rounded-full bg-[#E2741B]/15 border border-[#E2741B]/40 flex items-center justify-center flex-shrink-0">
+                <LogIn className="h-5 w-5 text-[#E2741B]" />
               </div>
               <div className="flex-1">
                 <h2 className="text-lg font-semibold text-white mb-2">
@@ -306,23 +306,23 @@ export default function RecoveryAnthemBuilder() {
                   feedback baked in. I'll give you the blueprint. The work is on you.
                 </p>
                 <p className="text-sm text-white/70 leading-relaxed mb-4">
-                  Sign in unlocks <span className="text-[#C9941A] font-semibold">your first anthem free this month</span>,
+                  Sign in unlocks <span className="text-[#E2741B] font-semibold">your first anthem free this month</span>,
                   saved drafts, share links, and the Sasquatch Radio submission flow.
                   <span className="text-white/60"> 7 days free, then cancel anytime — no card needed to start.</span>
                 </p>
                 {(deficit || goal || story) && (
-                  <p className="text-xs text-[#C9941A]/80 mb-4" data-testid="text-form-saved">
+                  <p className="text-xs text-[#E2741B]/80 mb-4" data-testid="text-form-saved">
                     Your inputs below are saved on this device — they'll still be here after sign-in.
                   </p>
                 )}
-                <p className="text-xs italic text-[#C9941A]/80 mb-4">
+                <p className="text-xs italic text-[#E2741B]/80 mb-4">
                   Sasquatch has your back. Heart still thumpin', life's still pumpin'.
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <Button
                     asChild
                     size="sm"
-                    className="bg-[#C9941A] text-black hover:bg-[#C9941A]/90"
+                    className="bg-[#E2741B] text-black hover:bg-[#E2741B]/90"
                     data-testid="button-anthem-signin"
                   >
                     <a href="/api/login">Sign in to compose</a>
@@ -440,7 +440,7 @@ export default function RecoveryAnthemBuilder() {
 
             <div>
               <Label className="text-white mb-2 block">
-                Walking-pace BPM: <span className="text-[#C9941A] font-semibold">{walkingBpm}</span>
+                Walking-pace BPM: <span className="text-[#E2741B] font-semibold">{walkingBpm}</span>
               </Label>
               <Slider
                 value={[walkingBpm]}
@@ -454,7 +454,7 @@ export default function RecoveryAnthemBuilder() {
 
             <div>
               <Label className="text-white mb-2 block">
-                Length: <span className="text-[#C9941A] font-semibold">{lengthSec}s</span>
+                Length: <span className="text-[#E2741B] font-semibold">{lengthSec}s</span>
               </Label>
               <Slider
                 value={[lengthSec]}
@@ -482,7 +482,7 @@ export default function RecoveryAnthemBuilder() {
               Preview lyrics (free)
             </Button>
             <Button
-              className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black font-semibold"
+              className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black font-semibold"
               onClick={() => composeMutation.mutate()}
               disabled={!canSubmit}
               data-testid="button-compose"
@@ -638,7 +638,7 @@ function ResultPanel({
             {script.title}
           </h2>
           <div className="flex flex-wrap gap-2 mt-1">
-            <Badge className="bg-[#C9941A]/20 text-[#C9941A] border border-[#C9941A]/40">
+            <Badge className="bg-[#E2741B]/20 text-[#E2741B] border border-[#E2741B]/40">
               {script.bpm} BPM
             </Badge>
             <Badge className="bg-white/10 text-white/70 border-0">{script.key}</Badge>
@@ -661,8 +661,8 @@ function ResultPanel({
         )}
       </div>
 
-      <div className="bg-black/30 rounded-md p-4 mb-6 border border-[#C9941A]/30">
-        <div className="text-xs uppercase tracking-wider text-[#C9941A] mb-1">The hook</div>
+      <div className="bg-black/30 rounded-md p-4 mb-6 border border-[#E2741B]/30">
+        <div className="text-xs uppercase tracking-wider text-[#E2741B] mb-1">The hook</div>
         <div className="text-xl font-semibold text-white" data-testid="text-hook">"{script.hook}"</div>
       </div>
 
@@ -694,9 +694,9 @@ function ResultPanel({
 
       <div className="space-y-5">
         {script.sections.map((s, idx) => (
-          <div key={idx} className="border-l-2 border-[#C9941A]/40 pl-4" data-testid={`section-${idx}`}>
+          <div key={idx} className="border-l-2 border-[#E2741B]/40 pl-4" data-testid={`section-${idx}`}>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-sm font-semibold uppercase tracking-wider text-[#C9941A]">
+              <span className="text-sm font-semibold uppercase tracking-wider text-[#E2741B]">
                 {s.name}
               </span>
               <Badge className="bg-white/10 text-white/60 border-0 text-xs">
@@ -836,11 +836,11 @@ function SubmitToRadioButton({
   }
 
   return (
-    <Card className="bg-[#1a1a1a] border-[#C9941A]/40 p-4 mt-2 w-full max-w-md">
+    <Card className="bg-[#1a1a1a] border-[#E2741B]/40 p-4 mt-2 w-full max-w-md">
       <div className="text-sm font-semibold text-white mb-1">Submit "{defaultTitle}" to the radio</div>
       <p className="text-xs text-white/60 mb-3">
         Your anthem will go into a moderation queue. Once approved, it plays in the
-        public rotation at <span className="text-[#C9941A]">/recovery/radio</span>.
+        public rotation at <span className="text-[#E2741B]">/recovery/radio</span>.
         You can withdraw consent any time.
       </p>
       <div className="space-y-2">
@@ -849,7 +849,7 @@ function SubmitToRadioButton({
           value={artistName}
           onChange={(e) => setArtistName(e.target.value.slice(0, 60))}
           placeholder="On-air name (e.g. Nick K., Survivor)"
-          className="w-full px-3 py-2 rounded bg-[#0d0d0d] border border-white/10 text-white text-sm focus:outline-none focus:border-[#C9941A]"
+          className="w-full px-3 py-2 rounded bg-[#0d0d0d] border border-white/10 text-white text-sm focus:outline-none focus:border-[#E2741B]"
           data-testid="input-artist-name"
         />
         <label className="flex items-start gap-2 text-xs text-white/70 cursor-pointer">
@@ -871,7 +871,7 @@ function SubmitToRadioButton({
             size="sm"
             onClick={() => m.mutate()}
             disabled={!agree || m.isPending}
-            className="bg-[#C9941A] text-black hover:bg-[#C9941A]/90"
+            className="bg-[#E2741B] text-black hover:bg-[#E2741B]/90"
             data-testid="button-confirm-submit-radio"
           >
             {m.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RadioIcon className="w-4 h-4 mr-2" />}
@@ -924,7 +924,7 @@ function ExerciseMode({
         className="flex-1 flex flex-col items-center justify-center px-6 text-center hover-elevate"
         data-testid="button-next-line"
       >
-        <div className="text-[#C9941A] text-sm uppercase tracking-widest mb-4">
+        <div className="text-[#E2741B] text-sm uppercase tracking-widest mb-4">
           {allLines[idx]?.section}
         </div>
         <p className="text-white text-4xl sm:text-6xl font-bold leading-tight max-w-4xl">
@@ -941,7 +941,7 @@ function ExerciseMode({
           <Button variant="outline" onClick={prev} disabled={idx === 0} className="flex-1" data-testid="button-prev-line">
             Back
           </Button>
-          <Button onClick={next} disabled={idx >= allLines.length - 1} className="flex-1 bg-[#C9941A] text-black hover:bg-[#C9941A]/90" data-testid="button-next-line-bottom">
+          <Button onClick={next} disabled={idx >= allLines.length - 1} className="flex-1 bg-[#E2741B] text-black hover:bg-[#E2741B]/90" data-testid="button-next-line-bottom">
             Next
           </Button>
         </div>

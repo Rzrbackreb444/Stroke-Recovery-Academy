@@ -192,7 +192,7 @@ function BookCard({ book }: { book: typeof books[0] }) {
               </Badge>
             )}
             {book.status === "new" && (
-              <Badge className="absolute top-3 right-3 bg-[#C9941A] text-black border-none">
+              <Badge className="absolute top-3 right-3 bg-[#E2741B] text-black border-none">
                 New
               </Badge>
             )}
@@ -205,7 +205,7 @@ function BookCard({ book }: { book: typeof books[0] }) {
               {book.title}
             </h4>
             {"subtitle" in book && book.subtitle && (
-              <p className="text-xs text-[#C9941A] mb-2 italic">{book.subtitle}</p>
+              <p className="text-xs text-[#E2741B] mb-2 italic">{book.subtitle}</p>
             )}
             <p className="text-sm text-gray-400" data-testid={`text-book-description-${book.id}`}>
               {book.description}
@@ -430,7 +430,7 @@ export default function Academy() {
           
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
-              <Badge variant="outline" className="mb-6 text-[#C9941A] border-primary">
+              <Badge variant="outline" className="mb-6 text-[#E2741B] border-primary">
                 <GraduationCap className="h-3 w-3 mr-1" aria-hidden="true" />
                 The Sasquatch Learning System
               </Badge>
@@ -441,7 +441,7 @@ export default function Academy() {
                 data-testid="text-academy-title"
               >
                 Stroke Recovery{" "}
-                <span className="text-[#C9941A]">Academy</span>
+                <span className="text-[#E2741B]">Academy</span>
               </h1>
               
               <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-8">
@@ -474,15 +474,15 @@ export default function Academy() {
               
               <div className="flex flex-wrap justify-center gap-8 text-sm text-gray-400">
                 <div className="flex items-center gap-2">
-                  <Users className="h-4 w-4 text-[#C9941A]" aria-hidden="true" />
+                  <Users className="h-4 w-4 text-[#E2741B]" aria-hidden="true" />
                   <span>50,000+ Warriors</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <BookOpen className="h-4 w-4 text-[#C9941A]" aria-hidden="true" />
+                  <BookOpen className="h-4 w-4 text-[#E2741B]" aria-hidden="true" />
                   <span>2 Comprehensive Courses</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Award className="h-4 w-4 text-[#C9941A]" aria-hidden="true" />
+                  <Award className="h-4 w-4 text-[#E2741B]" aria-hidden="true" />
                   <span>Proven 90% Recovery</span>
                 </div>
               </div>
@@ -497,7 +497,7 @@ export default function Academy() {
         >
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <Badge variant="outline" className="mb-4 border-[#C9941A] text-[#C9941A]">
+              <Badge variant="outline" className="mb-4 border-[#E2741B] text-[#E2741B]">
                 <Zap className="h-3 w-3 mr-1" aria-hidden="true" />
                 The 5-Step System
               </Badge>
@@ -506,11 +506,11 @@ export default function Academy() {
                 className="text-3xl md:text-4xl font-black text-foreground mb-4 uppercase tracking-tight"
                 data-testid="text-formula-title"
               >
-                The <span className="text-[#C9941A]">S.A.S.C.H.</span> Formula
+                The <span className="text-[#E2741B]">S.A.S.C.H.</span> Formula
               </h2>
               <p className="text-gray-400 max-w-2xl mx-auto">
                 Your daily recovery operating system. Five steps that replaced theory with action — forged through years of real recovery, not a textbook.
-                <span className="block mt-2 text-[#C9941A] font-semibold italic">"S.A.S.C.H. it every day: Seize → Absorb → Swing → Combine → Hammer."</span>
+                <span className="block mt-2 text-[#E2741B] font-semibold italic">"S.A.S.C.H. it every day: Seize → Absorb → Swing → Combine → Hammer."</span>
               </p>
             </div>
 
@@ -518,17 +518,17 @@ export default function Academy() {
               {sasquatchFormula.map((step, index) => (
                 <Card 
                   key={step.step} 
-                  className="relative hover-elevate overflow-visible border-2 hover:border-[#C9941A] transition-colors"
+                  className="relative hover-elevate overflow-visible border-2 hover:border-[#E2741B] transition-colors"
                   data-testid={`formula-step-${step.step}`}
                 >
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <Badge className="bg-[#C9941A] text-black font-black text-lg px-3">
+                    <Badge className="bg-[#E2741B] text-black font-black text-lg px-3">
                       {step.step}
                     </Badge>
                   </div>
                   <CardContent className="pt-8 pb-6 text-center">
-                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-[#C9941A]/10 flex items-center justify-center">
-                      <step.icon className="h-6 w-6 text-[#C9941A]" aria-hidden="true" />
+                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-[#E2741B]/10 flex items-center justify-center">
+                      <step.icon className="h-6 w-6 text-[#E2741B]" aria-hidden="true" />
                     </div>
                     <h3 className="font-black text-lg text-foreground mb-2 uppercase tracking-wide">
                       {step.code}
@@ -539,22 +539,22 @@ export default function Academy() {
                   </CardContent>
                   {index < sasquatchFormula.length - 1 && (
                     <div className="hidden md:block absolute top-1/2 -right-3 -translate-y-1/2 z-10">
-                      <ChevronRight className="h-6 w-6 text-[#C9941A]" aria-hidden="true" />
+                      <ChevronRight className="h-6 w-6 text-[#E2741B]" aria-hidden="true" />
                     </div>
                   )}
                 </Card>
               ))}
             </div>
 
-            <Card className="max-w-3xl mx-auto bg-gradient-to-br from-[#C9941A]/10 to-transparent border-[#C9941A]/30">
+            <Card className="max-w-3xl mx-auto bg-gradient-to-br from-[#E2741B]/10 to-transparent border-[#E2741B]/30">
               <CardContent className="py-8 px-6 text-center">
-                <Quote className="h-8 w-8 mx-auto mb-4 text-[#C9941A]" aria-hidden="true" />
+                <Quote className="h-8 w-8 mx-auto mb-4 text-[#E2741B]" aria-hidden="true" />
                 <blockquote className="text-lg md:text-xl font-medium text-foreground mb-4 italic">
                   "Seize where you are. Absorb everything around you. Swing boldly and experiment. 
                   Combine what actually works. Then hammer it — every single day, no excuses, no zero days. 
                   That's S.A.S.C.H. That's how you defy every 'never.'"
                 </blockquote>
-                <cite className="text-[#C9941A] font-bold not-italic">
+                <cite className="text-[#E2741B] font-bold not-italic">
                   — Nicholas "Stroked-Out Sasquatch" Kremers
                 </cite>
               </CardContent>
@@ -566,7 +566,7 @@ export default function Academy() {
                 <Button
                   size="lg"
                   className="font-bold tracking-wide"
-                  style={{ background: "#C9941A", color: "#000" }}
+                  style={{ background: "#E2741B", color: "#000" }}
                 >
                   Get the Free S.A.S.C.H. Cheat Sheet (PDF)
                 </Button>
@@ -579,11 +579,11 @@ export default function Academy() {
             {/* The 66-Day Truth */}
             <div
               className="max-w-3xl mx-auto mt-10 rounded-lg p-6 md:p-8"
-              style={{ background: "#1a1a1a", border: "1px solid #C9941A" }}
+              style={{ background: "#1a1a1a", border: "1px solid #E2741B" }}
               data-testid="callout-66-day-truth-academy"
             >
               <div className="flex items-center gap-3 mb-3">
-                <span className="text-xs font-bold uppercase tracking-widest text-[#C9941A]">
+                <span className="text-xs font-bold uppercase tracking-widest text-[#E2741B]">
                   The 66-Day Truth
                 </span>
               </div>
@@ -606,20 +606,20 @@ export default function Academy() {
           aria-labelledby="sasquatch-creed-title"
           data-testid="section-sasquatch-creed"
         >
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#C9941A]/10 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#E2741B]/10 via-transparent to-transparent" />
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0wIDBoNDB2NDBoLTQweiIvPjxwYXRoIGQ9Ik00MCAyMGgtNDBNMjAgNDB2LTQwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS1vcGFjaXR5PSIuMDMiLz48L2c+PC9zdmc+')] opacity-50" />
           
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
               <div className="flex justify-center mb-6">
-                <div className="w-20 h-20 rounded-full bg-[#C9941A]/20 border-2 border-[#C9941A] flex items-center justify-center">
-                  <Flame className="h-10 w-10 text-[#C9941A]" aria-hidden="true" />
+                <div className="w-20 h-20 rounded-full bg-[#E2741B]/20 border-2 border-[#E2741B] flex items-center justify-center">
+                  <Flame className="h-10 w-10 text-[#E2741B]" aria-hidden="true" />
                 </div>
               </div>
               
               <Badge 
                 variant="outline" 
-                className="mb-4 border-[#C9941A] text-[#C9941A] bg-[#C9941A]/10"
+                className="mb-4 border-[#E2741B] text-[#E2741B] bg-[#E2741B]/10"
                 data-testid="badge-doctrine"
               >
                 The Doctrine
@@ -630,10 +630,10 @@ export default function Academy() {
                 className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-2 uppercase tracking-tight"
                 data-testid="text-creed-title"
               >
-                The Sasquatch <span className="text-[#C9941A]">Creed</span>
+                The Sasquatch <span className="text-[#E2741B]">Creed</span>
               </h2>
               
-              <p className="text-xl md:text-2xl font-bold text-[#C9941A] mb-12 tracking-widest uppercase">
+              <p className="text-xl md:text-2xl font-bold text-[#E2741B] mb-12 tracking-widest uppercase">
                 Rebuild. Rewire. Rise.
               </p>
               
@@ -646,9 +646,9 @@ export default function Academy() {
                   <p>I will be defined by how I respond.</p>
                 </div>
                 <div className="py-4 space-y-2 text-lg md:text-xl text-zinc-300 font-medium leading-relaxed">
-                  <p>Every day I show up, <span className="text-[#C9941A] font-bold">I win.</span></p>
-                  <p>Every rep I complete, <span className="text-[#C9941A] font-bold">I rewire.</span></p>
-                  <p>Every obstacle I face, <span className="text-[#C9941A] font-bold">I overcome.</span></p>
+                  <p>Every day I show up, <span className="text-[#E2741B] font-bold">I win.</span></p>
+                  <p>Every rep I complete, <span className="text-[#E2741B] font-bold">I rewire.</span></p>
+                  <p>Every obstacle I face, <span className="text-[#E2741B] font-bold">I overcome.</span></p>
                 </div>
                 <p className="text-lg md:text-xl text-zinc-300 font-medium italic">
                   The impossible is only impossible until I prove it's not.
@@ -657,7 +657,7 @@ export default function Academy() {
                   <p className="text-xl md:text-2xl text-white font-bold">
                     I am relentless. I am unstoppable.
                   </p>
-                  <p className="text-2xl md:text-3xl lg:text-4xl font-black text-[#C9941A] uppercase tracking-wide">
+                  <p className="text-2xl md:text-3xl lg:text-4xl font-black text-[#E2741B] uppercase tracking-wide">
                     I AM THE COMEBACK.
                   </p>
                 </div>
@@ -670,7 +670,7 @@ export default function Academy() {
                 <p className="text-lg font-bold text-white" data-testid="text-author-attribution">
                   Nicholas "Stroked-Out Sasquatch" Kremers
                 </p>
-                <p className="text-sm text-[#C9941A] font-medium mt-1">
+                <p className="text-sm text-[#E2741B] font-medium mt-1">
                   Stroke Lyfe Publishing
                 </p>
               </div>
@@ -765,7 +765,7 @@ export default function Academy() {
                 <Card key={index} className="hover-elevate">
                   <CardContent className="pt-6">
                     <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center mb-4">
-                      <benefit.icon className="h-6 w-6 text-[#C9941A]" aria-hidden="true" />
+                      <benefit.icon className="h-6 w-6 text-[#E2741B]" aria-hidden="true" />
                     </div>
                     <h3 className="font-semibold text-lg mb-2 text-foreground">
                       {benefit.title}
@@ -788,7 +788,7 @@ export default function Academy() {
             <Card className="max-w-4xl mx-auto bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-primary/20">
               <CardContent className="py-12 px-8 text-center">
                 <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-6">
-                  <Heart className="h-8 w-8 text-[#C9941A]" aria-hidden="true" />
+                  <Heart className="h-8 w-8 text-[#E2741B]" aria-hidden="true" />
                 </div>
                 <h2 
                   id="cta-title"

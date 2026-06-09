@@ -58,7 +58,7 @@ export default function VoiceAnswerCapture({ questionId, onResult }: Props) {
     <div className="space-y-2" data-testid={`voice-answer-${questionId}`}>
       <div className="flex items-center gap-2">
         {!recording ? (
-          <Button onClick={start} disabled={submitting} className="bg-[#C9941A] text-black hover:bg-[#C9941A]" data-testid="button-voice-start">
+          <Button onClick={start} disabled={submitting} className="bg-[#E2741B] text-black hover:bg-[#E2741B]" data-testid="button-voice-start">
             <Mic className="w-4 h-4 mr-2" /> Record answer
           </Button>
         ) : (

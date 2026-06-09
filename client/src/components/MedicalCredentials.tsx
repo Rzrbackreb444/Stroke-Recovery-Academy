@@ -40,7 +40,7 @@ export function MedicalCredentialsBanner() {
     <div className="bg-gradient-to-r from-[#0D0D0D] via-[#1a1a1a] to-[#0D0D0D] border-y border-[#333] py-6">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-center gap-2 mb-4">
-          <Stethoscope className="h-5 w-5 text-[#C9941A]" />
+          <Stethoscope className="h-5 w-5 text-[#E2741B]" />
           <span className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
             Medical-Grade Recovery Platform
           </span>
@@ -50,8 +50,8 @@ export function MedicalCredentialsBanner() {
             const Icon = cred.icon;
             return (
               <div key={cred.title} className="flex items-center gap-3 justify-center">
-                <div className="w-10 h-10 rounded-full bg-[#C9941A]/10 flex items-center justify-center">
-                  <Icon className="h-5 w-5 text-[#C9941A]" />
+                <div className="w-10 h-10 rounded-full bg-[#E2741B]/10 flex items-center justify-center">
+                  <Icon className="h-5 w-5 text-[#E2741B]" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-white">{cred.title}</p>
@@ -78,7 +78,7 @@ export function MedicalTrustBadges() {
       <Badge className="bg-purple-500/10 text-purple-400 border-purple-500/30 gap-1">
         <Award className="h-3 w-3" /> Expert Reviewed
       </Badge>
-      <Badge className="bg-[#C9941A]/10 text-[#C9941A] border-[#C9941A]/30 gap-1">
+      <Badge className="bg-[#E2741B]/10 text-[#E2741B] border-[#E2741B]/30 gap-1">
         <Heart className="h-3 w-3" /> Survivor Approved
       </Badge>
     </div>
@@ -108,7 +108,7 @@ export function ResearchBased() {
   return (
     <div className="bg-[#0D0D0D] border border-[#333] rounded-lg p-6">
       <div className="flex items-center gap-2 mb-4">
-        <FileCheck className="h-5 w-5 text-[#C9941A]" />
+        <FileCheck className="h-5 w-5 text-[#E2741B]" />
         <h3 className="font-bold text-white">Research-Based Methodology</h3>
       </div>
       <div className="grid grid-cols-2 gap-3">
@@ -134,13 +134,13 @@ export function OutcomeMetrics() {
   return (
     <Card className="bg-[#1a1a1a] border-[#333] p-6">
       <h3 className="font-bold text-white mb-4 flex items-center gap-2">
-        <Award className="h-5 w-5 text-[#C9941A]" />
+        <Award className="h-5 w-5 text-[#E2741B]" />
         Measured Outcomes
       </h3>
       <div className="grid grid-cols-2 gap-4">
         {metrics.map((metric) => (
           <div key={metric.label} className="text-center p-3 bg-[#0D0D0D] rounded-lg">
-            <p className="text-2xl font-bold text-[#C9941A]">{metric.value}</p>
+            <p className="text-2xl font-bold text-[#E2741B]">{metric.value}</p>
             <p className="text-xs text-gray-400">{metric.label}</p>
             <p className="text-[10px] text-gray-600">{metric.detail}</p>
           </div>

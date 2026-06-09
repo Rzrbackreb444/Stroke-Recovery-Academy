@@ -14,7 +14,7 @@ export function VerifiedTherapistBadge({ title, size = "sm", className = "" }: P
     <Tooltip>
       <TooltipTrigger asChild>
         <span
-          className={`inline-flex items-center gap-1 rounded-full border border-[#C9941A]/40 bg-[#C9941A]/10 ${padding} font-semibold text-[#C9941A] ${className}`}
+          className={`inline-flex items-center gap-1 rounded-full border border-[#E2741B]/40 bg-[#E2741B]/10 ${padding} font-semibold text-[#E2741B] ${className}`}
           data-testid="badge-verified-therapist"
         >
           <ShieldCheck className={dims} />

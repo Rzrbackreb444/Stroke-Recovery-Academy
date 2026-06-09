@@ -28,7 +28,7 @@ const GOAL_LABELS: Record<string, string> = {
 };
 
 const TYPE_COLORS: Record<string, string> = {
-  survivor: "bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30",
+  survivor: "bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30",
   caregiver: "bg-blue-500/10 text-blue-400 border-blue-500/20",
   visitor: "bg-gray-500/10 text-gray-400 border-gray-500/20",
 };
@@ -66,14 +66,14 @@ export default function FeedbackAdmin() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
           <Card className="bg-[#111] border-[#222] p-4">
             <div className="flex items-center gap-2 mb-1">
-              <MessageSquare className="h-4 w-4 text-[#C9941A]" />
+              <MessageSquare className="h-4 w-4 text-[#E2741B]" />
               <span className="text-xs text-gray-500 uppercase tracking-wider">Total</span>
             </div>
             <p className="text-2xl font-black text-white">{entries.length}</p>
           </Card>
           <Card className="bg-[#111] border-[#222] p-4">
             <div className="flex items-center gap-2 mb-1">
-              <Users className="h-4 w-4 text-[#C9941A]" />
+              <Users className="h-4 w-4 text-[#E2741B]" />
               <span className="text-xs text-gray-500 uppercase tracking-wider">Survivors</span>
             </div>
             <p className="text-2xl font-black text-white">{survivors}</p>
@@ -87,7 +87,7 @@ export default function FeedbackAdmin() {
           </Card>
           <Card className="bg-[#111] border-[#222] p-4">
             <div className="flex items-center gap-2 mb-1">
-              <Target className="h-4 w-4 text-[#C9941A]" />
+              <Target className="h-4 w-4 text-[#E2741B]" />
               <span className="text-xs text-gray-500 uppercase tracking-wider">With Email</span>
             </div>
             <p className="text-2xl font-black text-white">{entries.filter(e => e.email).length}</p>
@@ -102,7 +102,7 @@ export default function FeedbackAdmin() {
               {topGoals.map(([goal, count]) => (
                 <div key={goal} className="flex items-center gap-3">
                   <div
-                    className="h-2 rounded-full bg-[#C9941A]"
+                    className="h-2 rounded-full bg-[#E2741B]"
                     style={{ width: `${Math.round((count / entries.length) * 100)}%`, minWidth: 8 }}
                   />
                   <span className="text-sm text-gray-300 shrink-0">{GOAL_LABELS[goal] || goal}</span>
@@ -131,7 +131,7 @@ export default function FeedbackAdmin() {
                       {entry.name || <span className="text-gray-500 italic">Anonymous</span>}
                     </p>
                     {entry.email && (
-                      <p className="text-sm text-[#C9941A]">{entry.email}</p>
+                      <p className="text-sm text-[#E2741B]">{entry.email}</p>
                     )}
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">

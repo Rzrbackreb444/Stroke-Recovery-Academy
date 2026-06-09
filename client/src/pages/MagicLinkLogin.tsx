@@ -62,8 +62,8 @@ export default function MagicLinkLogin() {
       <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-[#C9941A]/10 flex items-center justify-center">
-              <CheckCircle className="h-6 w-6 text-[#C9941A]" />
+            <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-[#E2741B]/10 flex items-center justify-center">
+              <CheckCircle className="h-6 w-6 text-[#E2741B]" />
             </div>
             <CardTitle data-testid="text-success-title">Check your email</CardTitle>
             <CardDescription data-testid="text-success-description">
@@ -97,7 +97,7 @@ export default function MagicLinkLogin() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-            <Mail className="h-6 w-6 text-[#C9941A]" />
+            <Mail className="h-6 w-6 text-[#E2741B]" />
           </div>
           <CardTitle data-testid="text-login-title">Sign in with Magic Link</CardTitle>
           <CardDescription data-testid="text-login-description">
@@ -207,7 +207,7 @@ export function MagicLinkVerify() {
           {status === "verifying" && (
             <>
               <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Loader2 className="h-6 w-6 text-[#C9941A] animate-spin" />
+                <Loader2 className="h-6 w-6 text-[#E2741B] animate-spin" />
               </div>
               <CardTitle data-testid="text-verifying-title">Verifying magic link...</CardTitle>
               <CardDescription>Please wait while we sign you in.</CardDescription>
@@ -215,8 +215,8 @@ export function MagicLinkVerify() {
           )}
           {status === "success" && (
             <>
-              <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-[#C9941A]/10 flex items-center justify-center">
-                <CheckCircle className="h-6 w-6 text-[#C9941A]" />
+              <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-[#E2741B]/10 flex items-center justify-center">
+                <CheckCircle className="h-6 w-6 text-[#E2741B]" />
               </div>
               <CardTitle data-testid="text-success-title">Signed in!</CardTitle>
               <CardDescription>Redirecting to your dashboard...</CardDescription>

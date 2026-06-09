@@ -571,8 +571,8 @@ export default function MobileStudio() {
     switch (project.settings.chapterStyle) {
       case "classic":
         return {
-          header: "text-center py-8 border-b-2 border-[#C9941A]/30",
-          number: "text-sm uppercase tracking-[0.3em] text-[#C9941A] mb-2",
+          header: "text-center py-8 border-b-2 border-[#E2741B]/30",
+          number: "text-sm uppercase tracking-[0.3em] text-[#E2741B] mb-2",
           title: "text-2xl font-serif italic",
           separator: "✦"
         };
@@ -586,15 +586,15 @@ export default function MobileStudio() {
       case "ornate":
         return {
           header: "text-center py-10",
-          number: "text-xs uppercase tracking-[0.5em] text-[#C9941A] mb-3",
+          number: "text-xs uppercase tracking-[0.5em] text-[#E2741B] mb-3",
           title: "text-3xl font-serif",
           separator: "❧ ❧ ❧"
         };
       case "modern":
       default:
         return {
-          header: "py-6 border-l-4 border-[#C9941A] pl-4",
-          number: "text-xs uppercase tracking-widest text-[#C9941A] mb-1",
+          header: "py-6 border-l-4 border-[#E2741B] pl-4",
+          number: "text-xs uppercase tracking-widest text-[#E2741B] mb-1",
           title: "text-xl font-bold",
           separator: ""
         };
@@ -617,11 +617,11 @@ export default function MobileStudio() {
   <title>${title}</title>
   <style>
     body { font-family: ${project.settings.fontFamily}, Georgia, serif; line-height: ${project.settings.lineHeight}; max-width: 700px; margin: 0 auto; padding: 2rem; background: #FAF8F3; color: #1a1a1a; }
-    h1 { text-align: center; color: #C9941A; margin-bottom: 2rem; }
+    h1 { text-align: center; color: #E2741B; margin-bottom: 2rem; }
     .chapter { margin-bottom: 3rem; }
-    .chapter-title { color: #C9941A; border-left: 4px solid #C9941A; padding-left: 1rem; margin-bottom: 1rem; }
+    .chapter-title { color: #E2741B; border-left: 4px solid #E2741B; padding-left: 1rem; margin-bottom: 1rem; }
     p { margin-bottom: 1em; text-indent: 1.5em; }
-    .separator { text-align: center; color: #C9941A; margin: 2rem 0; }
+    .separator { text-align: center; color: #E2741B; margin: 2rem 0; }
   </style>
 </head>
 <body>
@@ -709,7 +709,7 @@ export default function MobileStudio() {
                           key={chapter.id}
                           className={`group flex items-center gap-2 p-3 rounded-lg cursor-pointer transition-colors ${
                             index === currentChapterIndex
-                              ? isDarkMode ? "bg-[#C9941A]/20 text-[#C9941A]" : "bg-[#C9941A]/10 text-[#C9941A]"
+                              ? isDarkMode ? "bg-[#E2741B]/20 text-[#E2741B]" : "bg-[#E2741B]/10 text-[#E2741B]"
                               : isDarkMode ? "hover:bg-gray-800" : "hover:bg-gray-100"
                           }`}
                           onClick={() => {
@@ -750,7 +750,7 @@ export default function MobileStudio() {
                   </ScrollArea>
                   <Button 
                     onClick={addChapter} 
-                    className="w-full mt-4 bg-[#C9941A] hover:bg-[#B8860B] text-white"
+                    className="w-full mt-4 bg-[#E2741B] hover:bg-[#B8860B] text-white"
                     data-testid="button-add-chapter"
                   >
                     <Plus className="w-4 h-4 mr-2" />
@@ -777,7 +777,7 @@ export default function MobileStudio() {
                 syncStatus === "synced" ? "text-green-600 border-green-600" :
                 syncStatus === "syncing" ? "text-blue-500 border-blue-500" :
                 syncStatus === "error" ? "text-red-500 border-red-500" :
-                "text-[#C9941A] border-[#C9941A]"
+                "text-[#E2741B] border-[#E2741B]"
               }`}
               data-testid="sync-status"
             >
@@ -806,7 +806,7 @@ export default function MobileStudio() {
               <SheetContent side="right" className={`w-[320px] ${isDarkMode ? "bg-[#1a1a1a] border-[#333]" : "bg-white"}`}>
                 <SheetHeader>
                   <SheetTitle className={`flex items-center gap-2 ${isDarkMode ? "text-white" : ""}`}>
-                    <Brain className="w-5 h-5 text-[#C9941A]" />
+                    <Brain className="w-5 h-5 text-[#E2741B]" />
                     Project Brain
                   </SheetTitle>
                 </SheetHeader>
@@ -848,7 +848,7 @@ export default function MobileStudio() {
                           />
                           <Button 
                             onClick={() => addBrainItem(category)} 
-                            className="w-full bg-[#C9941A] hover:bg-[#B8860B]"
+                            className="w-full bg-[#E2741B] hover:bg-[#B8860B]"
                             size="sm"
                           >
                             <Plus className="w-4 h-4 mr-2" />
@@ -966,7 +966,7 @@ export default function MobileStudio() {
               data-testid="input-chapter-title"
             />
             {getChapterHeaderStyle().separator && (
-              <div className="text-[#C9941A] mt-3 text-lg tracking-widest">
+              <div className="text-[#E2741B] mt-3 text-lg tracking-widest">
                 {getChapterHeaderStyle().separator}
               </div>
             )}
@@ -1008,7 +1008,7 @@ export default function MobileStudio() {
         <DialogContent className={`max-w-xs mx-auto ${isDarkMode ? "bg-gray-800 border-[#333]" : ""}`}>
           <DialogHeader>
             <DialogTitle className={`flex items-center gap-2 ${isDarkMode ? "text-white" : ""}`}>
-              <Sparkles className="w-5 h-5 text-[#C9941A]" />
+              <Sparkles className="w-5 h-5 text-[#E2741B]" />
               AI Actions
             </DialogTitle>
           </DialogHeader>
@@ -1029,7 +1029,7 @@ export default function MobileStudio() {
                 onClick={() => executeAIAction(action.id)}
                 disabled={aiLoading}
               >
-                <action.icon className="w-4 h-4 text-[#C9941A]" />
+                <action.icon className="w-4 h-4 text-[#E2741B]" />
                 {action.label}
               </Button>
             ))}
@@ -1046,7 +1046,7 @@ export default function MobileStudio() {
         <DialogContent className={`max-w-sm mx-auto max-h-[80vh] overflow-y-auto ${isDarkMode ? "bg-gray-800 border-[#333]" : ""}`}>
           <DialogHeader>
             <DialogTitle className={`flex items-center gap-2 ${isDarkMode ? "text-white" : ""}`}>
-              <Settings className="w-5 h-5 text-[#C9941A]" />
+              <Settings className="w-5 h-5 text-[#E2741B]" />
               Writing Settings
             </DialogTitle>
           </DialogHeader>
@@ -1070,7 +1070,7 @@ export default function MobileStudio() {
                       onClick={() => applyTypographyTheme(theme.id)}
                       className={`p-3 rounded-lg border cursor-pointer transition-all ${
                         project.settings.fontFamily === theme.font
-                          ? "border-[#C9941A] bg-[#C9941A]/10"
+                          ? "border-[#E2741B] bg-[#E2741B]/10"
                           : isDarkMode ? "border-gray-600 hover:border-gray-500" : "border-gray-200 hover:border-gray-300"
                       }`}
                       data-testid={`theme-${theme.id}`}
@@ -1080,7 +1080,7 @@ export default function MobileStudio() {
                           {theme.name}
                         </span>
                         {project.settings.fontFamily === theme.font && (
-                          <Check className="w-4 h-4 text-[#C9941A]" />
+                          <Check className="w-4 h-4 text-[#E2741B]" />
                         )}
                       </div>
                       <p className={`text-xs mt-1 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
@@ -1101,7 +1101,7 @@ export default function MobileStudio() {
                   </Button>
                   <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
                     <div 
-                      className="h-full bg-[#C9941A] transition-all"
+                      className="h-full bg-[#E2741B] transition-all"
                       style={{ width: `${((project.settings.fontSize - 12) / 16) * 100}%` }}
                     />
                   </div>
@@ -1124,7 +1124,7 @@ export default function MobileStudio() {
                       onClick={() => applyChapterStyle(style.id as "classic" | "modern" | "minimal" | "ornate")}
                       className={`p-3 rounded-lg border cursor-pointer transition-all ${
                         project.settings.chapterStyle === style.id
-                          ? "border-[#C9941A] bg-[#C9941A]/10"
+                          ? "border-[#E2741B] bg-[#E2741B]/10"
                           : isDarkMode ? "border-gray-600 hover:border-gray-500" : "border-gray-200 hover:border-gray-300"
                       }`}
                       data-testid={`style-${style.id}`}
@@ -1132,7 +1132,7 @@ export default function MobileStudio() {
                       <div className="flex items-center justify-between">
                         <span className={`font-medium ${isDarkMode ? "text-white" : ""}`}>{style.name}</span>
                         {project.settings.chapterStyle === style.id && (
-                          <Check className="w-4 h-4 text-[#C9941A]" />
+                          <Check className="w-4 h-4 text-[#E2741B]" />
                         )}
                       </div>
                       <p className={`text-xs mt-1 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
@@ -1161,7 +1161,7 @@ export default function MobileStudio() {
                     <Button
                       key={format.id}
                       variant="outline"
-                      className={`flex flex-col items-start p-3 h-auto ${isDarkMode ? "border-gray-600 hover:border-[#C9941A]" : "hover:border-[#C9941A]"}`}
+                      className={`flex flex-col items-start p-3 h-auto ${isDarkMode ? "border-gray-600 hover:border-[#E2741B]" : "hover:border-[#E2741B]"}`}
                       onClick={() => {
                         toast({ title: "Export Started", description: `Generating ${format.label}...` });
                         setTimeout(() => {
@@ -1178,7 +1178,7 @@ export default function MobileStudio() {
                       }}
                       data-testid={`export-${format.id}`}
                     >
-                      <format.icon className="w-4 h-4 text-[#C9941A] mb-1" />
+                      <format.icon className="w-4 h-4 text-[#E2741B] mb-1" />
                       <span className="font-medium">{format.label}</span>
                       <span className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>{format.desc}</span>
                     </Button>
@@ -1188,7 +1188,7 @@ export default function MobileStudio() {
               
               <div className="pt-4 border-t border-gray-200 dark:border-[#333]">
                 <Button 
-                  className="w-full bg-[#C9941A] hover:bg-[#B8860B] text-white"
+                  className="w-full bg-[#E2741B] hover:bg-[#B8860B] text-white"
                   onClick={() => {
                     const projectData = JSON.stringify(project, null, 2);
                     const blob = new Blob([projectData], { type: "application/json" });
@@ -1217,7 +1217,7 @@ export default function MobileStudio() {
             variant="ghost" 
             size="sm"
             onClick={() => setShowFormatToolbar(!showFormatToolbar)}
-            className={showFormatToolbar ? "text-[#C9941A]" : ""}
+            className={showFormatToolbar ? "text-[#E2741B]" : ""}
           >
             <Type className="w-5 h-5" />
           </Button>
@@ -1229,7 +1229,7 @@ export default function MobileStudio() {
             disabled={aiLoading}
           >
             {aiLoading ? (
-              <RefreshCw className="w-5 h-5 animate-spin text-[#C9941A]" />
+              <RefreshCw className="w-5 h-5 animate-spin text-[#E2741B]" />
             ) : (
               <Sparkles className="w-5 h-5" />
             )}

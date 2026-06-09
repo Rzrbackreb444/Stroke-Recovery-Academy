@@ -43,7 +43,7 @@ const PROVIDERS = [
   { id: "fitbit", name: "Fitbit", icon: Watch, color: "text-teal-400", bgColor: "bg-teal-500/10" },
   { id: "apple_health", name: "Apple Health", icon: Heart, color: "text-red-400", bgColor: "bg-red-500/10" },
   { id: "garmin", name: "Garmin", icon: Watch, color: "text-yellow-400", bgColor: "bg-yellow-500/10" },
-  { id: "oura", name: "Oura Ring", icon: Moon, color: "text-[#C9941A]", bgColor: "bg-[#C9941A]/10" },
+  { id: "oura", name: "Oura Ring", icon: Moon, color: "text-[#E2741B]", bgColor: "bg-[#E2741B]/10" },
 ];
 
 export default function Wearables() {
@@ -126,7 +126,7 @@ export default function Wearables() {
   if (connectionsLoading) {
     return (
       <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#C9941A] animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#E2741B] animate-spin" />
       </div>
     );
   }
@@ -169,7 +169,7 @@ export default function Wearables() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
                     <Footprints className="w-8 h-8 text-blue-400" />
-                    <TrendingUp className="w-4 h-4 text-[#C9941A]" />
+                    <TrendingUp className="w-4 h-4 text-[#E2741B]" />
                   </div>
                   <p className="text-gray-400 text-sm">Steps</p>
                   <p className="text-2xl font-bold text-foreground">{todayStats?.steps?.toLocaleString() || 0}</p>
@@ -182,7 +182,7 @@ export default function Wearables() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
                     <Heart className="w-8 h-8 text-red-400" />
-                    <Badge className="bg-[#C9941A]/20 text-[#C9941A] text-xs">Normal</Badge>
+                    <Badge className="bg-[#E2741B]/20 text-[#E2741B] text-xs">Normal</Badge>
                   </div>
                   <p className="text-gray-400 text-sm">Heart Rate</p>
                   <p className="text-2xl font-bold text-foreground">{todayStats?.heartRate || 72} BPM</p>
@@ -193,8 +193,8 @@ export default function Wearables() {
               <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
-                    <Flame className="w-8 h-8 text-[#C9941A]" />
-                    <TrendingUp className="w-4 h-4 text-[#C9941A]" />
+                    <Flame className="w-8 h-8 text-[#E2741B]" />
+                    <TrendingUp className="w-4 h-4 text-[#E2741B]" />
                   </div>
                   <p className="text-gray-400 text-sm">Calories</p>
                   <p className="text-2xl font-bold text-foreground">{todayStats?.calories?.toLocaleString() || 0}</p>
@@ -206,7 +206,7 @@ export default function Wearables() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
                     <Zap className="w-8 h-8 text-yellow-400" />
-                    <TrendingUp className="w-4 h-4 text-[#C9941A]" />
+                    <TrendingUp className="w-4 h-4 text-[#E2741B]" />
                   </div>
                   <p className="text-gray-400 text-sm">Active Minutes</p>
                   <p className="text-2xl font-bold text-foreground">{todayStats?.activeMinutes || 0}</p>
@@ -218,7 +218,7 @@ export default function Wearables() {
               <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
-                    <Moon className="w-8 h-8 text-[#C9941A]" />
+                    <Moon className="w-8 h-8 text-[#E2741B]" />
                     <Badge className="bg-blue-500/20 text-blue-400 text-xs">Good</Badge>
                   </div>
                   <p className="text-gray-400 text-sm">Sleep</p>
@@ -261,7 +261,7 @@ export default function Wearables() {
                               >
                                 <RefreshCw className={`w-4 h-4 ${syncMutation.isPending ? "animate-spin" : ""}`} />
                               </Button>
-                              <Badge className="bg-[#C9941A]/20 text-[#C9941A]">Connected</Badge>
+                              <Badge className="bg-[#E2741B]/20 text-[#E2741B]">Connected</Badge>
                             </div>
                           </div>
                         );
@@ -311,14 +311,14 @@ export default function Wearables() {
                 const Icon = provider.icon;
 
                 return (
-                  <Card key={provider.id} className={`bg-[#1a1a1a] border-[#333] ${connected ? "ring-1 ring-[#C9941A]/50" : ""}`}>
+                  <Card key={provider.id} className={`bg-[#1a1a1a] border-[#333] ${connected ? "ring-1 ring-[#E2741B]/50" : ""}`}>
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between mb-4">
                         <div className={`p-3 rounded-xl ${provider.bgColor}`}>
                           <Icon className={`w-8 h-8 ${provider.color}`} />
                         </div>
                         {connected && (
-                          <Badge className="bg-[#C9941A]/20 text-[#C9941A]">
+                          <Badge className="bg-[#E2741B]/20 text-[#E2741B]">
                             <CheckCircle2 className="w-3 h-3 mr-1" />
                             Connected
                           </Badge>
@@ -402,7 +402,7 @@ export default function Wearables() {
               <CardContent>
                 {metricsLoading ? (
                   <div className="flex justify-center py-8">
-                    <Loader2 className="w-6 h-6 text-[#C9941A] animate-spin" />
+                    <Loader2 className="w-6 h-6 text-[#E2741B] animate-spin" />
                   </div>
                 ) : metrics && metrics.length > 0 ? (
                   <div className="space-y-2">
@@ -411,8 +411,8 @@ export default function Wearables() {
                         <div className="flex items-center gap-3">
                           {metric.metricType === "steps" && <Footprints className="w-5 h-5 text-blue-400" />}
                           {metric.metricType === "heart_rate" && <Heart className="w-5 h-5 text-red-400" />}
-                          {metric.metricType === "sleep" && <Moon className="w-5 h-5 text-[#C9941A]" />}
-                          {metric.metricType === "calories" && <Flame className="w-5 h-5 text-[#C9941A]" />}
+                          {metric.metricType === "sleep" && <Moon className="w-5 h-5 text-[#E2741B]" />}
+                          {metric.metricType === "calories" && <Flame className="w-5 h-5 text-[#E2741B]" />}
                           {metric.metricType === "active_minutes" && <Zap className="w-5 h-5 text-yellow-400" />}
                           <div>
                             <p className="text-foreground capitalize">{metric.metricType.replace("_", " ")}</p>

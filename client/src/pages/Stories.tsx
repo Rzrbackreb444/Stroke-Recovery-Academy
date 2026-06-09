@@ -58,7 +58,7 @@ function StoryCard({ post }: { post: BlogPost }) {
           )}
         </div>
         <Link href={`/stories/${post.slug}`} data-testid={`link-story-${post.id}`}>
-          <CardTitle className="hover:text-[#C9941A] transition-colors cursor-pointer line-clamp-2" data-testid={`story-title-${post.id}`}>
+          <CardTitle className="hover:text-[#E2741B] transition-colors cursor-pointer line-clamp-2" data-testid={`story-title-${post.id}`}>
             {post.title}
           </CardTitle>
         </Link>
@@ -131,12 +131,12 @@ export default function Stories() {
         <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-transparent" />
         <div className="max-w-6xl mx-auto relative">
           <div className="text-center mb-12">
-            <Badge variant="outline" className="mb-4 border-primary text-[#C9941A]" data-testid="badge-stories">
+            <Badge variant="outline" className="mb-4 border-primary text-[#E2741B]" data-testid="badge-stories">
               <BookOpen className="w-3 h-3 mr-1" />
               Recovery Stories
             </Badge>
             <h1 className="text-4xl md:text-5xl font-black mb-4" data-testid="heading-main">
-              Stories of <span className="text-[#C9941A]">Triumph</span>
+              Stories of <span className="text-[#E2741B]">Triumph</span>
             </h1>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-8">
               Real stories from real survivors. Every journey is unique, every victory matters.
@@ -179,7 +179,7 @@ export default function Stories() {
         <section className="py-12 px-4 bg-card/50">
           <div className="max-w-6xl mx-auto">
             <div className="flex items-center gap-2 mb-8">
-              <TrendingUp className="w-5 h-5 text-[#C9941A]" />
+              <TrendingUp className="w-5 h-5 text-[#E2741B]" />
               <h2 className="text-2xl font-bold" data-testid="heading-featured">Featured Stories</h2>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -234,7 +234,7 @@ export default function Stories() {
       <section className="py-16 px-4 bg-card/50">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-4" data-testid="heading-cta">
-            Your Story Could Inspire <span className="text-[#C9941A]">Thousands</span>
+            Your Story Could Inspire <span className="text-[#E2741B]">Thousands</span>
           </h2>
           <p className="text-gray-400 mb-8">
             Every recovery journey has the power to inspire others. Share your wins, 

@@ -6,14 +6,14 @@ export default function CTASection() {
   return (
     <section className="py-20 bg-[#080808]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="relative rounded-2xl overflow-hidden border border-[#C9941A]/20 bg-[#0f0c07] p-14">
+        <div className="relative rounded-2xl overflow-hidden border border-[#E2741B]/20 bg-[#0f0c07] p-14">
           {/* Glow */}
-          <div className="absolute inset-0 bg-[#C9941A]/5 pointer-events-none" />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-40 bg-[#C9941A]/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute inset-0 bg-[#E2741B]/5 pointer-events-none" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-40 bg-[#E2741B]/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative z-10">
-            <div className="w-14 h-14 rounded-full bg-[#C9941A]/10 flex items-center justify-center mx-auto mb-6 border border-[#C9941A]/20">
-              <Flame className="h-7 w-7 text-[#C9941A]" />
+            <div className="w-14 h-14 rounded-full bg-[#E2741B]/10 flex items-center justify-center mx-auto mb-6 border border-[#E2741B]/20">
+              <Flame className="h-7 w-7 text-[#E2741B]" />
             </div>
 
             <h2
@@ -21,7 +21,7 @@ export default function CTASection() {
               data-testid="text-cta-title"
             >
               Your Impossible<br />
-              <span className="text-[#C9941A]">Starts Now</span>
+              <span className="text-[#E2741B]">Starts Now</span>
             </h2>
 
             <p
@@ -37,7 +37,7 @@ export default function CTASection() {
               <Link href="/recovery/challenge">
                 <Button
                   size="lg"
-                  className="bg-[#C9941A] text-black text-lg font-bold px-10 shadow-lg shadow-[#C9941A]/20"
+                  className="bg-[#E2741B] text-black text-lg font-bold px-10 shadow-lg shadow-[#E2741B]/20"
                   data-testid="button-cta-primary"
                 >
                   Join the 66-Day Challenge

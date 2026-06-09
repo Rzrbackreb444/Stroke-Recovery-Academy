@@ -452,7 +452,7 @@ function MyProjectsSection() {
           <Card className="text-center py-12" data-testid="empty-projects-state">
             <CardContent className="flex flex-col items-center">
               <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                <Lightbulb className="h-8 w-8 text-[#C9941A]" />
+                <Lightbulb className="h-8 w-8 text-[#E2741B]" />
               </div>
               <h3 className="text-xl font-semibold mb-2">No Projects Yet</h3>
               <p className="text-gray-400 max-w-md mb-6">
@@ -551,7 +551,7 @@ function FeaturesSection() {
             >
               <CardHeader>
                 <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                  <feature.icon className="h-6 w-6 text-[#C9941A]" />
+                  <feature.icon className="h-6 w-6 text-[#E2741B]" />
                 </div>
                 <CardTitle className="text-xl">{feature.title}</CardTitle>
                 <CardDescription>{feature.description}</CardDescription>
@@ -582,9 +582,9 @@ function HowItWorksSection() {
             <div key={index} className="text-center" data-testid={`step-${step.step}`}>
               <div className="relative inline-flex">
                 <div className="h-20 w-20 rounded-full bg-primary/20 flex items-center justify-center mb-6 mx-auto">
-                  <step.icon className="h-10 w-10 text-[#C9941A]" />
+                  <step.icon className="h-10 w-10 text-[#E2741B]" />
                 </div>
-                <span className="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-primary text-[#C9941A]-foreground font-bold flex items-center justify-center text-sm">
+                <span className="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-primary text-[#E2741B]-foreground font-bold flex items-center justify-center text-sm">
                   {step.step}
                 </span>
               </div>

@@ -95,7 +95,7 @@ export default function CrosswordGame({
   packId,
   difficulty,
   count,
-  accent = "#C9941A",
+  accent = "#E2741B",
   onComplete,
 }: Props) {
   const trimmedEntries = useMemo(() => entries.slice(0, count), [entries, count]);
@@ -455,7 +455,7 @@ export default function CrosswordGame({
             speak(`${entry.direction} ${entry.number}. ${entry.clue}`);
             setAnnounce(`Read aloud: ${entry.clue}`);
           }}
-          className="flex-shrink-0 rounded p-1 text-gray-500 hover:text-[#C9941A] focus:outline-none focus:ring-1 focus:ring-[#C9941A]"
+          className="flex-shrink-0 rounded p-1 text-gray-500 hover:text-[#E2741B] focus:outline-none focus:ring-1 focus:ring-[#E2741B]"
           data-testid={`cw-listen-${entry.direction}-${entry.number}`}
           title="Read clue aloud"
         >
@@ -476,7 +476,7 @@ export default function CrosswordGame({
               data-testid="text-cw-clock"
               aria-label={`Elapsed time: ${formatClock(elapsedSec)}`}
             >
-              <span className={`inline-block h-2 w-2 rounded-full ${paused ? "bg-gray-500" : "bg-[#C9941A] animate-pulse"}`} />
+              <span className={`inline-block h-2 w-2 rounded-full ${paused ? "bg-gray-500" : "bg-[#E2741B] animate-pulse"}`} />
               {formatClock(elapsedSec)}
               {paused && <span className="ml-1 text-xs uppercase tracking-widest text-gray-500">Paused</span>}
             </div>
@@ -511,7 +511,7 @@ export default function CrosswordGame({
               <Button
                 type="button"
                 onClick={togglePause}
-                className="mt-5 bg-[#C9941A] text-black hover:bg-[#C9941A]"
+                className="mt-5 bg-[#E2741B] text-black hover:bg-[#E2741B]"
                 data-testid="button-cw-resume-overlay"
               >
                 <Play className="mr-2 h-4 w-4" /> Resume

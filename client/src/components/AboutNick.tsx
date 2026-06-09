@@ -26,7 +26,7 @@ export default function AboutNick() {
                 className="w-full h-full object-cover object-top"
               />
             </div>
-            <div className="absolute -bottom-4 -right-4 bg-[#C9941A] text-black rounded-xl p-4 max-w-[180px]">
+            <div className="absolute -bottom-4 -right-4 bg-[#E2741B] text-black rounded-xl p-4 max-w-[180px]">
               <p className="text-2xl font-black">6+ Years</p>
               <p className="text-sm font-medium">of proven recovery</p>
             </div>
@@ -34,7 +34,7 @@ export default function AboutNick() {
 
           {/* Copy */}
           <div>
-            <p className="text-[#C9941A] text-sm font-semibold uppercase tracking-widest mb-4" data-testid="badge-about-category">
+            <p className="text-[#E2741B] text-sm font-semibold uppercase tracking-widest mb-4" data-testid="badge-about-category">
               From Wheelchair to Warrior
             </p>
             <h2
@@ -42,7 +42,7 @@ export default function AboutNick() {
               data-testid="text-about-title"
             >
               Meet Nick<br />
-              <span className="text-[#C9941A]">"The Stroked Out<br />Sasquatch"</span> Kremers
+              <span className="text-[#E2741B]">"The Stroked Out<br />Sasquatch"</span> Kremers
             </h2>
 
             <div className="space-y-4 text-base text-gray-400 leading-relaxed mb-8">
@@ -63,14 +63,14 @@ export default function AboutNick() {
             <div className="space-y-3 mb-10">
               {achievements.map((achievement, index) => (
                 <div key={index} className="flex gap-3 items-start" data-testid={`achievement-${index}`}>
-                  <CheckCircle2 className="h-5 w-5 text-[#C9941A] flex-shrink-0 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-[#E2741B] flex-shrink-0 mt-0.5" />
                   <p className="text-gray-300 text-sm">{achievement}</p>
                 </div>
               ))}
             </div>
 
             <Link href="/recovery/about-nick">
-              <Button className="bg-[#C9941A] text-black font-semibold px-8">
+              <Button className="bg-[#E2741B] text-black font-semibold px-8">
                 Nick's Full Story
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>

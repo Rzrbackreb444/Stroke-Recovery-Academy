@@ -313,7 +313,7 @@ export default function CourseQuiz() {
   
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case "easy": return "text-[#C9941A] bg-[#C9941A]/20";
+      case "easy": return "text-[#E2741B] bg-[#E2741B]/20";
       case "medium": return "text-yellow-400 bg-yellow-500/20";
       case "hard": return "text-red-400 bg-red-500/20";
       default: return "text-gray-400 bg-gray-500/20";
@@ -335,7 +335,7 @@ export default function CourseQuiz() {
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="text-center p-4 bg-[#1a1a1a] rounded-lg">
-              <HelpCircle className="w-6 h-6 text-[#C9941A] mx-auto mb-2" />
+              <HelpCircle className="w-6 h-6 text-[#E2741B] mx-auto mb-2" />
               <p className="text-2xl font-bold">{totalQuestions}</p>
               <p className="text-xs text-gray-400">Questions</p>
             </div>
@@ -345,7 +345,7 @@ export default function CourseQuiz() {
               <p className="text-xs text-gray-400">Minutes</p>
             </div>
             <div className="text-center p-4 bg-[#1a1a1a] rounded-lg">
-              <Target className="w-6 h-6 text-[#C9941A] mx-auto mb-2" />
+              <Target className="w-6 h-6 text-[#E2741B] mx-auto mb-2" />
               <p className="text-2xl font-bold">{mockQuiz.passingScore}%</p>
               <p className="text-xs text-gray-400">To Pass</p>
             </div>
@@ -363,19 +363,19 @@ export default function CourseQuiz() {
             </h3>
             <ul className="space-y-2 text-sm text-gray-400">
               <li className="flex items-start gap-2">
-                <Check className="w-4 h-4 text-[#C9941A] mt-0.5" />
+                <Check className="w-4 h-4 text-[#E2741B] mt-0.5" />
                 Read each question carefully before answering
               </li>
               <li className="flex items-start gap-2">
-                <Check className="w-4 h-4 text-[#C9941A] mt-0.5" />
+                <Check className="w-4 h-4 text-[#E2741B] mt-0.5" />
                 You can flag questions to review later
               </li>
               <li className="flex items-start gap-2">
-                <Check className="w-4 h-4 text-[#C9941A] mt-0.5" />
+                <Check className="w-4 h-4 text-[#E2741B] mt-0.5" />
                 Use the navigation to jump between questions
               </li>
               <li className="flex items-start gap-2">
-                <Check className="w-4 h-4 text-[#C9941A] mt-0.5" />
+                <Check className="w-4 h-4 text-[#E2741B] mt-0.5" />
                 Submit when you're ready - you can review answers after
               </li>
               {mockQuiz.allowRetry && (
@@ -398,7 +398,7 @@ export default function CourseQuiz() {
             </Button>
             <Button
               onClick={startQuiz}
-              className="flex-1 bg-[#C9941A]"
+              className="flex-1 bg-[#E2741B]"
               data-testid="button-start-quiz"
             >
               <Zap className="w-4 h-4 mr-2" />
@@ -421,7 +421,7 @@ export default function CourseQuiz() {
                 <div className="w-20 h-20 mb-4 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
                   <Trophy className="w-10 h-10 text-white" />
                 </div>
-                <span className="text-2xl text-[#C9941A]">Congratulations!</span>
+                <span className="text-2xl text-[#E2741B]">Congratulations!</span>
               </div>
             ) : (
               <div className="flex flex-col items-center">
@@ -442,7 +442,7 @@ export default function CourseQuiz() {
           
           <div className="grid grid-cols-3 gap-4 mt-6">
             <div className="text-center">
-              <p className="text-2xl font-bold text-[#C9941A]">{results.filter(r => r.isCorrect).length}</p>
+              <p className="text-2xl font-bold text-[#E2741B]">{results.filter(r => r.isCorrect).length}</p>
               <p className="text-xs text-gray-400">Correct</p>
             </div>
             <div className="text-center">
@@ -469,7 +469,7 @@ export default function CourseQuiz() {
           {!passed && mockQuiz.allowRetry && (
             <Button
               onClick={retryQuiz}
-              className="flex-1 bg-[#C9941A]"
+              className="flex-1 bg-[#E2741B]"
               data-testid="button-retry-quiz"
             >
               <RotateCcw className="w-4 h-4 mr-2" />
@@ -479,7 +479,7 @@ export default function CourseQuiz() {
           {passed && (
             <Button
               onClick={() => navigate("/course/1")}
-              className="flex-1 bg-[#C9941A]"
+              className="flex-1 bg-[#E2741B]"
               data-testid="button-continue-course"
             >
               <ArrowRight className="w-4 h-4 mr-2" />
@@ -538,7 +538,7 @@ export default function CourseQuiz() {
               {/* Question header */}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <span className="text-3xl font-bold text-[#C9941A]">Q{currentQuestionIndex + 1}</span>
+                  <span className="text-3xl font-bold text-[#E2741B]">Q{currentQuestionIndex + 1}</span>
                   <Badge className={getDifficultyColor(currentQuestion.difficulty)}>
                     {currentQuestion.difficulty}
                   </Badge>
@@ -581,19 +581,19 @@ export default function CourseQuiz() {
                           className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all ${
                             reviewMode
                               ? isCorrect
-                                ? 'bg-[#C9941A]/20 border-green-500'
+                                ? 'bg-[#E2741B]/20 border-green-500'
                                 : isWrong
                                 ? 'bg-red-500/20 border-red-500'
                                 : 'bg-[#1a1a1a] border-[#333]'
                               : answers[currentQuestion.id] === idx
-                              ? 'bg-[#C9941A]/20 border-[#C9941A]'
+                              ? 'bg-[#E2741B]/20 border-[#E2741B]'
                               : 'bg-[#1a1a1a] border-[#333] hover:border-zinc-600'
                           }`}
                           data-testid={`option-${idx}`}
                         >
                           <RadioGroupItem value={idx.toString()} className="border-2" />
                           <span className="flex-1">{option}</span>
-                          {reviewMode && isCorrect && <CheckCircle className="w-5 h-5 text-[#C9941A]" />}
+                          {reviewMode && isCorrect && <CheckCircle className="w-5 h-5 text-[#E2741B]" />}
                           {reviewMode && isWrong && <XCircle className="w-5 h-5 text-red-500" />}
                         </label>
                       );
@@ -615,12 +615,12 @@ export default function CourseQuiz() {
                           className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all ${
                             reviewMode
                               ? isCorrect
-                                ? 'bg-[#C9941A]/20 border-green-500'
+                                ? 'bg-[#E2741B]/20 border-green-500'
                                 : isWrong
                                 ? 'bg-red-500/20 border-red-500'
                                 : 'bg-[#1a1a1a] border-[#333]'
                               : isSelected
-                              ? 'bg-[#C9941A]/20 border-[#C9941A]'
+                              ? 'bg-[#E2741B]/20 border-[#E2741B]'
                               : 'bg-[#1a1a1a] border-[#333] hover:border-zinc-600'
                           }`}
                           data-testid={`option-${idx}`}
@@ -639,7 +639,7 @@ export default function CourseQuiz() {
                             }}
                           />
                           <span className="flex-1">{option}</span>
-                          {reviewMode && isCorrect && <CheckCircle className="w-5 h-5 text-[#C9941A]" />}
+                          {reviewMode && isCorrect && <CheckCircle className="w-5 h-5 text-[#E2741B]" />}
                           {reviewMode && isWrong && <XCircle className="w-5 h-5 text-red-500" />}
                         </label>
                       );
@@ -665,7 +665,7 @@ export default function CourseQuiz() {
                     {reviewMode && (
                       <p className="mt-2 text-sm">
                         <span className="text-gray-400">Correct answer: </span>
-                        <span className="text-[#C9941A] font-semibold">{currentQuestion.correctAnswer as string}</span>
+                        <span className="text-[#E2741B] font-semibold">{currentQuestion.correctAnswer as string}</span>
                       </p>
                     )}
                   </div>
@@ -727,7 +727,7 @@ export default function CourseQuiz() {
                   <Button
                     variant="outline"
                     onClick={submitQuiz}
-                    className="border-green-500 text-[#C9941A]"
+                    className="border-green-500 text-[#E2741B]"
                     data-testid="button-submit"
                   >
                     <CheckCircle className="w-4 h-4 mr-2" />
@@ -737,7 +737,7 @@ export default function CourseQuiz() {
                 {reviewMode && (
                   <Button
                     onClick={() => navigate("/course/1")}
-                    className="bg-[#C9941A]"
+                    className="bg-[#E2741B]"
                     data-testid="button-finish-review"
                   >
                     Finish Review
@@ -773,10 +773,10 @@ export default function CourseQuiz() {
                       onClick={() => goToQuestion(idx)}
                       className={`w-10 h-10 rounded-lg font-semibold text-sm relative transition-all ${
                         currentQuestionIndex === idx
-                          ? 'bg-[#C9941A] text-white'
+                          ? 'bg-[#E2741B] text-white'
                           : reviewMode
                           ? result?.isCorrect
-                            ? 'bg-[#C9941A]/20 text-[#C9941A] border border-green-500/50'
+                            ? 'bg-[#E2741B]/20 text-[#E2741B] border border-green-500/50'
                             : result
                             ? 'bg-red-500/20 text-red-400 border border-red-500/50'
                             : 'bg-[#1a1a1a] text-gray-400'
@@ -811,7 +811,7 @@ export default function CourseQuiz() {
               {!quizCompleted && !reviewMode && (
                 <Button
                   onClick={submitQuiz}
-                  className="w-full mt-4 bg-[#C9941A]"
+                  className="w-full mt-4 bg-[#E2741B]"
                   disabled={answeredCount < totalQuestions}
                   data-testid="button-submit-sidebar"
                 >

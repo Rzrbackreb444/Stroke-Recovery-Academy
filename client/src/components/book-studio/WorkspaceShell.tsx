@@ -69,7 +69,7 @@ export function WorkspaceShell({
         {/* Minimal Focus Header */}
         <header className={cn(
           "h-10 flex items-center justify-between px-6 border-b transition-colors",
-          isDark ? "border-stone-800/30 bg-stone-950" : "border-[#C9941A]/10 bg-[#FAF8F3]"
+          isDark ? "border-stone-800/30 bg-stone-950" : "border-[#E2741B]/10 bg-[#FAF8F3]"
         )}>
           <span className={cn(
             "text-xs font-medium",
@@ -123,12 +123,12 @@ export function WorkspaceShell({
         "h-14 flex items-center justify-between px-6 border-b z-50 shrink-0",
         isDark 
           ? "bg-stone-950/80 backdrop-blur-xl border-stone-800/50" 
-          : "bg-white/80 backdrop-blur-xl border-[#C9941A]/20"
+          : "bg-white/80 backdrop-blur-xl border-[#E2741B]/20"
       )}>
         {/* Left: Branding */}
         <div className="flex items-center gap-4">
           <div className="flex flex-col">
-            <span className="text-[#C9941A] font-black text-lg tracking-tighter uppercase">
+            <span className="text-[#E2741B] font-black text-lg tracking-tighter uppercase">
               Stroke Recovery Academy
             </span>
             <span className={cn(
@@ -140,7 +140,7 @@ export function WorkspaceShell({
           </div>
           <div className={cn(
             "h-6 w-px",
-            isDark ? "bg-stone-800" : "bg-[#C9941A]/20"
+            isDark ? "bg-stone-800" : "bg-[#E2741B]/20"
           )} />
           <div className="flex items-center gap-2">
             <BookOpen className={cn("h-4 w-4", isDark ? "text-stone-500" : "text-[#1A1A1A]/30")} />
@@ -183,7 +183,7 @@ export function WorkspaceShell({
                 onClick={toggleTheme}
                 className={cn(
                   "h-8 w-8 rounded-sm",
-                  isDark ? "text-stone-400 hover:text-amber-400" : "text-[#1A1A1A]/50 hover:text-[#C9941A]"
+                  isDark ? "text-stone-400 hover:text-amber-400" : "text-[#1A1A1A]/50 hover:text-[#E2741B]"
                 )}
                 data-testid="button-toggle-theme"
               >
@@ -195,15 +195,15 @@ export function WorkspaceShell({
 
           <div className={cn(
             "h-6 w-px",
-            isDark ? "bg-stone-800" : "bg-[#C9941A]/20"
+            isDark ? "bg-stone-800" : "bg-[#E2741B]/20"
           )} />
 
           {/* Tier Status */}
           <div className={cn(
             "flex items-center gap-2 px-3 py-1.5 rounded-sm",
-            isDark ? "bg-stone-900/50" : "bg-[#C9941A]/5"
+            isDark ? "bg-stone-900/50" : "bg-[#E2741B]/5"
           )}>
-            <Zap className="h-3.5 w-3.5 text-[#C9941A]" />
+            <Zap className="h-3.5 w-3.5 text-[#E2741B]" />
             <span className={cn(
               "text-xs font-mono font-semibold",
               isDark ? "text-stone-300" : "text-[#1A1A1A]"
@@ -212,7 +212,7 @@ export function WorkspaceShell({
             </span>
             <Badge 
               variant="outline" 
-              className="text-[8px] uppercase tracking-wider border-[#C9941A]/30 text-[#C9941A]"
+              className="text-[8px] uppercase tracking-wider border-[#E2741B]/30 text-[#E2741B]"
             >
               Pro
             </Badge>
@@ -268,7 +268,7 @@ export function WorkspaceShell({
                 "border-r transition-colors relative",
                 isDark 
                   ? "bg-stone-950/50 backdrop-blur-sm border-stone-800/50" 
-                  : "bg-white/40 backdrop-blur-sm border-[#C9941A]/10"
+                  : "bg-white/40 backdrop-blur-sm border-[#E2741B]/10"
               )}
             >
               {leftPanel || (
@@ -289,7 +289,7 @@ export function WorkspaceShell({
                   "absolute -right-3 top-1/2 z-50 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border shadow-xl transition-all",
                   isDark 
                     ? "border-stone-700 bg-stone-900 text-stone-400 hover:text-white hover:scale-110" 
-                    : "border-[#C9941A]/30 bg-white text-[#1A1A1A]/50 hover:text-[#C9941A] hover:scale-110"
+                    : "border-[#E2741B]/30 bg-white text-[#1A1A1A]/50 hover:text-[#E2741B] hover:scale-110"
                 )}
                 data-testid="button-collapse-left"
               >
@@ -299,7 +299,7 @@ export function WorkspaceShell({
             <ResizableHandle 
               withHandle 
               className={cn(
-                isDark ? "bg-stone-800/30" : "bg-[#C9941A]/10"
+                isDark ? "bg-stone-800/30" : "bg-[#E2741B]/10"
               )} 
             />
           </>
@@ -311,7 +311,7 @@ export function WorkspaceShell({
             "w-10 flex flex-col items-center pt-4 border-r relative",
             isDark 
               ? "bg-stone-950/50 border-stone-800/50" 
-              : "bg-white/40 border-[#C9941A]/10"
+              : "bg-white/40 border-[#E2741B]/10"
           )}>
             <Button
               variant="ghost"
@@ -331,7 +331,7 @@ export function WorkspaceShell({
             {/* Panel Controls */}
             <div className={cn(
               "flex items-center justify-between px-4 py-2 border-b shrink-0",
-              isDark ? "border-stone-800/30" : "border-[#C9941A]/10"
+              isDark ? "border-stone-800/30" : "border-[#E2741B]/10"
             )}>
               {leftPanelOpen ? (
                 <div className="w-7" />
@@ -384,7 +384,7 @@ export function WorkspaceShell({
                 "max-w-4xl mx-auto py-12 px-8 min-h-full shadow-2xl my-8 rounded-sm relative",
                 isDark 
                   ? "bg-stone-950 border border-stone-800/50" 
-                  : "bg-white border border-[#C9941A]/5"
+                  : "bg-white border border-[#E2741B]/5"
               )}>
                 {children}
               </main>
@@ -398,7 +398,7 @@ export function WorkspaceShell({
               "absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4 rounded-full border px-4 py-1.5 shadow-2xl backdrop-blur-md",
               isDark 
                 ? "border-stone-800 bg-stone-900/80" 
-                : "border-[#C9941A]/20 bg-white/80"
+                : "border-[#E2741B]/20 bg-white/80"
             )}>
               <div className="flex items-center gap-2 border-r pr-3">
                 <FileText className={cn("h-3 w-3", isDark ? "text-stone-500" : "text-[#1A1A1A]/40")} />
@@ -410,7 +410,7 @@ export function WorkspaceShell({
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <Activity className="h-3 w-3 text-[#C9941A]" />
+                <Activity className="h-3 w-3 text-[#E2741B]" />
                 <span className={cn(
                   "text-[10px] font-mono font-medium",
                   isDark ? "text-stone-300" : "text-[#1A1A1A]/70"
@@ -428,7 +428,7 @@ export function WorkspaceShell({
             <ResizableHandle 
               withHandle 
               className={cn(
-                isDark ? "bg-stone-800/30" : "bg-[#C9941A]/10"
+                isDark ? "bg-stone-800/30" : "bg-[#E2741B]/10"
               )} 
             />
             <ResizablePanel 
@@ -439,7 +439,7 @@ export function WorkspaceShell({
                 "border-l transition-colors relative",
                 isDark 
                   ? "bg-stone-950/50 backdrop-blur-sm border-stone-800/50" 
-                  : "bg-white/40 backdrop-blur-sm border-[#C9941A]/10"
+                  : "bg-white/40 backdrop-blur-sm border-[#E2741B]/10"
               )}
             >
               {rightPanel || (
@@ -460,7 +460,7 @@ export function WorkspaceShell({
                   "absolute -left-3 top-1/2 z-50 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border shadow-xl transition-all",
                   isDark 
                     ? "border-stone-700 bg-stone-900 text-stone-400 hover:text-white hover:scale-110" 
-                    : "border-[#C9941A]/30 bg-white text-[#1A1A1A]/50 hover:text-[#C9941A] hover:scale-110"
+                    : "border-[#E2741B]/30 bg-white text-[#1A1A1A]/50 hover:text-[#E2741B] hover:scale-110"
                 )}
                 data-testid="button-collapse-right"
               >
@@ -476,7 +476,7 @@ export function WorkspaceShell({
             "w-10 flex flex-col items-center pt-4 border-l relative",
             isDark 
               ? "bg-stone-950/50 border-stone-800/50" 
-              : "bg-white/40 border-[#C9941A]/10"
+              : "bg-white/40 border-[#E2741B]/10"
           )}>
             <Button
               variant="ghost"
@@ -496,7 +496,7 @@ export function WorkspaceShell({
         "h-7 flex items-center justify-between px-4 border-t text-[10px] shrink-0",
         isDark 
           ? "bg-stone-950/80 border-stone-800/50 text-stone-500" 
-          : "bg-white/80 border-[#C9941A]/10 text-[#1A1A1A]/40"
+          : "bg-white/80 border-[#E2741B]/10 text-[#1A1A1A]/40"
       )}>
         <div className="flex items-center gap-4">
           <span>Autosaved</span>

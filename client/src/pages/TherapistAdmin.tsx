@@ -39,7 +39,7 @@ export default function TherapistAdmin() {
       <div className="max-w-5xl mx-auto px-4 py-10">
         <header className="mb-6">
           <h1 className="text-3xl font-bold flex items-center gap-3" data-testid="text-page-title">
-            <ShieldCheck className="w-7 h-7 text-[#C9941A]" /> Therapist Verifications
+            <ShieldCheck className="w-7 h-7 text-[#E2741B]" /> Therapist Verifications
           </h1>
           <p className="text-gray-400 mt-1">Manually review credentials before granting Verified Therapist status.</p>
         </header>
@@ -92,10 +92,10 @@ function ApplicationCard({ item }: { item: Application }) {
       <CardHeader className="flex flex-row items-center gap-3 space-y-0 pb-3">
         <Avatar className="w-10 h-10 border border-[#333]">
           <AvatarImage src={item.profileImageUrl || ""} />
-          <AvatarFallback className="bg-[#2a2a2a] text-[#C9941A]">{(item.firstName || a.fullName)[0]?.toUpperCase()}</AvatarFallback>
+          <AvatarFallback className="bg-[#2a2a2a] text-[#E2741B]">{(item.firstName || a.fullName)[0]?.toUpperCase()}</AvatarFallback>
         </Avatar>
         <div className="flex-1">
-          <CardTitle className="text-base">{a.fullName} <span className="text-[#C9941A] text-sm">· {a.title}</span></CardTitle>
+          <CardTitle className="text-base">{a.fullName} <span className="text-[#E2741B] text-sm">· {a.title}</span></CardTitle>
           <p className="text-xs text-gray-500">{item.email} · submitted {new Date(a.createdAt).toLocaleDateString()}</p>
         </div>
       </CardHeader>
@@ -108,7 +108,7 @@ function ApplicationCard({ item }: { item: Application }) {
           )}
           {a.bio && <div className="col-span-2 text-gray-400 italic">"{a.bio}"</div>}
         </div>
-        <div className="flex gap-3 text-xs text-[#C9941A]">
+        <div className="flex gap-3 text-xs text-[#E2741B]">
           {a.portfolioUrl && <a className="inline-flex items-center gap-1 hover:underline" target="_blank" rel="noreferrer" href={a.portfolioUrl}><ExternalLink className="w-3 h-3" /> Portfolio</a>}
           {a.documentUrl && <a className="inline-flex items-center gap-1 hover:underline" target="_blank" rel="noreferrer" href={a.documentUrl}><ExternalLink className="w-3 h-3" /> Document</a>}
         </div>
@@ -119,7 +119,7 @@ function ApplicationCard({ item }: { item: Application }) {
               <Button variant="outline" disabled={reject.isPending} onClick={() => reject.mutate()} className="border-[#333]" data-testid={`button-reject-${a.id}`}>
                 <X className="w-4 h-4 mr-1" /> Reject
               </Button>
-              <Button disabled={approve.isPending} onClick={() => approve.mutate()} className="bg-[#C9941A] hover:bg-[#B8851A] text-black font-bold" data-testid={`button-approve-${a.id}`}>
+              <Button disabled={approve.isPending} onClick={() => approve.mutate()} className="bg-[#E2741B] hover:bg-[#B8851A] text-black font-bold" data-testid={`button-approve-${a.id}`}>
                 <ShieldCheck className="w-4 h-4 mr-1" /> Approve
               </Button>
             </div>

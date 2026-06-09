@@ -236,7 +236,7 @@ export default function SurvivorIntake() {
   if (authLoading || isLoading) {
     return (
       <div className="min-h-screen bg-[#0D0D0D] text-gray-300 flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-[#C9941A]" />
+        <Loader2 className="w-6 h-6 animate-spin text-[#E2741B]" />
       </div>
     );
   }
@@ -246,7 +246,7 @@ export default function SurvivorIntake() {
       <div className="max-w-2xl mx-auto px-4 pt-10 pb-24">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-[#C9941A]">
+          <div className="flex items-center gap-2 text-[#E2741B]">
             <Sparkles className="w-5 h-5" />
             <span className="text-sm uppercase tracking-wider font-semibold">Survivor Intake</span>
           </div>
@@ -264,7 +264,7 @@ export default function SurvivorIntake() {
         <div className="mb-8">
           <div className="h-1.5 w-full rounded-full bg-[#1a1a1a] overflow-hidden">
             <div
-              className="h-full bg-[#C9941A] transition-all duration-500"
+              className="h-full bg-[#E2741B] transition-all duration-500"
               style={{ width: `${progress}%` }}
               data-testid="progress-intake"
             />
@@ -367,7 +367,7 @@ export default function SurvivorIntake() {
           {!isFinal ? (
             <Button
               onClick={goNext}
-              className="bg-[#C9941A] hover:bg-[#B8851A] text-black font-bold"
+              className="bg-[#E2741B] hover:bg-[#B8851A] text-black font-bold"
               data-testid="button-intake-next"
             >
               Continue <ArrowRight className="w-4 h-4 ml-1" />
@@ -375,7 +375,7 @@ export default function SurvivorIntake() {
           ) : (
             <Button
               onClick={handleComplete}
-              className="bg-[#C9941A] hover:bg-[#B8851A] text-black font-bold"
+              className="bg-[#E2741B] hover:bg-[#B8851A] text-black font-bold"
               data-testid="button-intake-complete"
             >
               <Check className="w-4 h-4 mr-1" /> Finish profile
@@ -398,8 +398,8 @@ export default function SurvivorIntake() {
 function WelcomeStep({ userName }: { userName?: string }) {
   return (
     <div className="text-center py-4">
-      <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-[#C9941A]/15 border border-[#C9941A]/40 flex items-center justify-center">
-        <Heart className="w-7 h-7 text-[#C9941A]" />
+      <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-[#E2741B]/15 border border-[#E2741B]/40 flex items-center justify-center">
+        <Heart className="w-7 h-7 text-[#E2741B]" />
       </div>
       <h1 className="text-2xl sm:text-3xl font-black mb-3" data-testid="text-intake-title">
         {userName ? `Welcome, ${userName}.` : "Welcome, survivor."}
@@ -489,7 +489,7 @@ function StrokeStep({
               onClick={() => onChange("strokeType", t.value)}
               className={`text-left rounded-md border p-3 hover-elevate transition-colors ${
                 strokeType === t.value
-                  ? "border-[#C9941A] bg-[#C9941A]/10"
+                  ? "border-[#E2741B] bg-[#E2741B]/10"
                   : "border-[#333] bg-[#0D0D0D]"
               }`}
               data-testid={`option-stroke-type-${t.value}`}
@@ -524,7 +524,7 @@ function StrokeStep({
               onClick={() => onChange("affectedSide", s.value)}
               className={`rounded-md border px-3 py-1.5 text-sm hover-elevate transition-colors ${
                 affectedSide === s.value
-                  ? "border-[#C9941A] bg-[#C9941A]/10 text-white"
+                  ? "border-[#E2741B] bg-[#E2741B]/10 text-white"
                   : "border-[#333] bg-[#0D0D0D] text-gray-300"
               }`}
               data-testid={`option-side-${s.value}`}
@@ -561,7 +561,7 @@ function DeficitsStep({
                   <div className="text-sm font-semibold">{label}</div>
                   <div className="text-xs text-gray-500">{hint}</div>
                 </div>
-                <div className="text-xs font-semibold text-[#C9941A] whitespace-nowrap" data-testid={`deficit-value-${key}`}>
+                <div className="text-xs font-semibold text-[#E2741B] whitespace-nowrap" data-testid={`deficit-value-${key}`}>
                   {SEVERITY_LABEL[v]}
                 </div>
               </div>
@@ -682,7 +682,7 @@ function DailyLifeStep({
       <div className="space-y-3">
         <div className="flex items-end justify-between">
           <Label>How many minutes per day for recovery?</Label>
-          <div className="text-base font-bold text-[#C9941A]" data-testid="text-time-budget">
+          <div className="text-base font-bold text-[#E2741B]" data-testid="text-time-budget">
             {minutes} min
           </div>
         </div>
@@ -715,7 +715,7 @@ function DailyLifeStep({
               key={o.v}
               htmlFor={`energy-${o.v}`}
               className={`flex items-center gap-2 rounded-md border p-3 cursor-pointer hover-elevate ${
-                energy === o.v ? "border-[#C9941A] bg-[#C9941A]/10" : "border-[#333] bg-[#0D0D0D]"
+                energy === o.v ? "border-[#E2741B] bg-[#E2741B]/10" : "border-[#333] bg-[#0D0D0D]"
               }`}
               data-testid={`option-energy-${o.v}`}
             >
@@ -785,7 +785,7 @@ function CaregiverStep({
                   onClick={() => onRelationship(r.value)}
                   className={`rounded-md border px-3 py-1.5 text-xs hover-elevate ${
                     relationship === r.value
-                      ? "border-[#C9941A] bg-[#C9941A]/10 text-white"
+                      ? "border-[#E2741B] bg-[#E2741B]/10 text-white"
                       : "border-[#333] bg-[#1a1a1a] text-gray-300"
                   }`}
                   data-testid={`option-relationship-${r.value}`}
@@ -892,7 +892,7 @@ function StoryStep({
             onClick={toggleMic}
             className={`absolute right-2 top-2 rounded-md border p-2 hover-elevate ${
               listening
-                ? "border-[#C9941A] bg-[#C9941A]/20 text-[#C9941A]"
+                ? "border-[#E2741B] bg-[#E2741B]/20 text-[#E2741B]"
                 : "border-[#333] bg-[#1a1a1a] text-gray-400"
             }`}
             aria-label={listening ? "Stop dictation" : "Start dictation"}
@@ -1009,7 +1009,7 @@ function ChipGroup({
             onClick={() => onToggle(opt)}
             className={`rounded-md border px-3 py-1.5 text-sm hover-elevate transition-colors ${
               isOn
-                ? "border-[#C9941A] bg-[#C9941A]/10 text-white"
+                ? "border-[#E2741B] bg-[#E2741B]/10 text-white"
                 : "border-[#333] bg-[#0D0D0D] text-gray-300"
             }`}
             data-testid={`${testIdPrefix}-${slug}`}
@@ -1057,7 +1057,7 @@ function Row({ label, value, onClick }: { label: string; value: string; onClick:
     >
       <div className="text-[10px] uppercase tracking-wider text-gray-500 w-24 shrink-0 pt-0.5">{label}</div>
       <div className="text-sm text-white flex-1">{value}</div>
-      <div className="text-xs text-[#C9941A] shrink-0">Edit</div>
+      <div className="text-xs text-[#E2741B] shrink-0">Edit</div>
     </button>
   );
 }

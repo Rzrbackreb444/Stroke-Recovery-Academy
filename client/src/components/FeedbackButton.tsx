@@ -84,7 +84,7 @@ export default function FeedbackButton() {
         <Button
           size="icon"
           variant="default"
-          className="fixed bottom-4 left-4 h-12 w-12 rounded-full shadow-lg z-50 bg-[#C9941A] hover:bg-[#C9941A] text-black border border-[#C9941A]"
+          className="fixed bottom-4 left-4 h-12 w-12 rounded-full shadow-lg z-50 bg-[#E2741B] hover:bg-[#E2741B] text-black border border-[#E2741B]"
           aria-label="Send feedback to Nick"
           data-testid="button-feedback-toggle"
         >
@@ -172,7 +172,7 @@ export default function FeedbackButton() {
           <Button
             onClick={handleSubmit}
             disabled={mutation.isPending || body.trim().length < 3}
-            className="w-full bg-[#C9941A] hover:bg-[#C9941A] text-black"
+            className="w-full bg-[#E2741B] hover:bg-[#E2741B] text-black"
             data-testid="button-feedback-submit"
           >
             <Send className="h-4 w-4 mr-2" />

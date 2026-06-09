@@ -115,7 +115,7 @@ export default function RecoveryCircles() {
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2" data-testid="text-page-title">
-              <Video className="w-7 h-7 text-[#C9941A]" /> Live Circles
+              <Video className="w-7 h-7 text-[#E2741B]" /> Live Circles
             </h1>
             <p className="text-gray-400 mt-1 text-sm">
               Weekly community calls with therapists and survivors. Free. Show up as you are.
@@ -124,7 +124,7 @@ export default function RecoveryCircles() {
           <Dialog open={open} onOpenChange={setOpen}>
             {canHost && (
               <DialogTrigger asChild>
-                <Button className="bg-[#C9941A] text-black hover:bg-[#C9941A]/90" data-testid="button-host-circle">
+                <Button className="bg-[#E2741B] text-black hover:bg-[#E2741B]/90" data-testid="button-host-circle">
                   <Plus className="w-4 h-4 mr-2" /> Host a circle
                 </Button>
               </DialogTrigger>
@@ -187,7 +187,7 @@ export default function RecoveryCircles() {
                   </p>
                 </div>
                 <Button onClick={() => create.mutate()} disabled={create.isPending}
-                  className="w-full bg-[#C9941A] text-black hover:bg-[#C9941A]/90"
+                  className="w-full bg-[#E2741B] text-black hover:bg-[#E2741B]/90"
                   data-testid="button-submit-circle">
                   {create.isPending ? "Scheduling…" : "Schedule circle"}
                 </Button>
@@ -208,7 +208,7 @@ export default function RecoveryCircles() {
         ) : events.length === 0 ? (
           <Card className="bg-[#1a1a1a] border-[#333]">
             <CardContent className="py-12 text-center space-y-3">
-              <Calendar className="w-12 h-12 text-[#C9941A] mx-auto" />
+              <Calendar className="w-12 h-12 text-[#E2741B] mx-auto" />
               <h2 className="text-xl font-semibold">No circles scheduled</h2>
               <p className="text-gray-400 text-sm max-w-md mx-auto">
                 Verified therapists and admins can host the first circle. Survivors will see it here.
@@ -241,13 +241,13 @@ function HostBlock({ event }: { event: CircleEvent }) {
     <div className="flex items-center gap-2">
       <Avatar className="w-7 h-7">
         <AvatarImage src={event.host_avatar || undefined} />
-        <AvatarFallback className="bg-zinc-700 text-[#C9941A] text-xs">{initials || "?"}</AvatarFallback>
+        <AvatarFallback className="bg-zinc-700 text-[#E2741B] text-xs">{initials || "?"}</AvatarFallback>
       </Avatar>
       <span className="text-sm text-gray-300">
         {event.host_first_name || "Host"} {event.host_last_name?.[0] || ""}
       </span>
       {event.host_is_therapist && (
-        <Badge className="gap-1 bg-[#C9941A]/15 text-[#C9941A] border-0 text-[10px]">
+        <Badge className="gap-1 bg-[#E2741B]/15 text-[#E2741B] border-0 text-[10px]">
           <Stethoscope className="w-3 h-3" /> Therapist
         </Badge>
       )}
@@ -275,7 +275,7 @@ function FeaturedCircle({ event, onRsvp }: { event: CircleEvent; onRsvp: () => v
   const mins = minutesUntil(event.scheduled_at);
   const live = mins <= 0 && mins > -(event.duration ?? 60);
   return (
-    <Card className="bg-gradient-to-br from-[#1a1a1a] to-[#0D0D0D] border-[#C9941A]/40">
+    <Card className="bg-gradient-to-br from-[#1a1a1a] to-[#0D0D0D] border-[#E2741B]/40">
       <CardContent className="p-6 space-y-4">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="space-y-2 flex-1 min-w-[260px]">
@@ -285,7 +285,7 @@ function FeaturedCircle({ event, onRsvp }: { event: CircleEvent; onRsvp: () => v
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> Live now
                 </Badge>
               ) : (
-                <Badge className="bg-[#C9941A]/15 text-[#C9941A] border-0">Next up</Badge>
+                <Badge className="bg-[#E2741B]/15 text-[#E2741B] border-0">Next up</Badge>
               )}
               <span className="text-xs text-gray-400 inline-flex items-center gap-1">
                 <Clock className="w-3 h-3" /> {fmtWhen(event.scheduled_at)}
@@ -304,7 +304,7 @@ function FeaturedCircle({ event, onRsvp }: { event: CircleEvent; onRsvp: () => v
             </Badge>
             <JoinButton event={event} />
             <Button onClick={onRsvp} variant="outline"
-              className="border-[#C9941A]/40 text-[#C9941A] hover:bg-[#C9941A]/10"
+              className="border-[#E2741B]/40 text-[#E2741B] hover:bg-[#E2741B]/10"
               data-testid={`button-rsvp-${event.id}`}>
               <ShieldCheck className="w-4 h-4 mr-1" /> RSVP
             </Button>
@@ -338,7 +338,7 @@ function CircleCard({ event, onRsvp }: { event: CircleEvent; onRsvp: () => void 
         <div className="flex items-center gap-2 flex-wrap">
           <JoinButton event={event} />
           <Button onClick={onRsvp} size="sm" variant="outline"
-            className="border-[#C9941A]/40 text-[#C9941A] hover:bg-[#C9941A]/10"
+            className="border-[#E2741B]/40 text-[#E2741B] hover:bg-[#E2741B]/10"
             data-testid={`button-rsvp-${event.id}`}>
             <ShieldCheck className="w-3 h-3 mr-1" /> RSVP
           </Button>

@@ -137,7 +137,7 @@ export default function RiverNavigator({
       label: 'Characters & World-Building',
       icon: Users,
       openIcon: Users,
-      color: 'text-[#C9941A]',
+      color: 'text-[#E2741B]',
       items: [...characterItems, ...worldBuildingItems],
     },
     {
@@ -161,7 +161,7 @@ export default function RiverNavigator({
       label: 'Marketing & Publishing',
       icon: Package,
       openIcon: Package,
-      color: 'text-[#C9941A]',
+      color: 'text-[#E2741B]',
       items: [],
     },
     {
@@ -296,7 +296,7 @@ export default function RiverNavigator({
                             )} />
                             <span className="truncate">{item.title}</span>
                             {item.status === 'complete' && (
-                              <div className="ml-auto h-1.5 w-1.5 rounded-full bg-[#C9941A] shrink-0" />
+                              <div className="ml-auto h-1.5 w-1.5 rounded-full bg-[#E2741B] shrink-0" />
                             )}
                           </Button>
                         );

@@ -86,7 +86,7 @@ function CreditWidget() {
       <Card className="bg-zinc-950 border-[#333]" data-testid="card-credits-error">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-zinc-400 flex items-center gap-2">
-            <Coins className="h-4 w-4 text-[#C9941A]" />
+            <Coins className="h-4 w-4 text-[#E2741B]" />
             Credit Balance
           </CardTitle>
         </CardHeader>
@@ -102,7 +102,7 @@ function CreditWidget() {
     <Card className="bg-zinc-950 border-[#333]" data-testid="card-credits">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm font-medium text-zinc-400 flex items-center gap-2">
-          <Coins className="h-4 w-4 text-[#C9941A]" />
+          <Coins className="h-4 w-4 text-[#E2741B]" />
           Credit Balance
         </CardTitle>
       </CardHeader>
@@ -113,7 +113,7 @@ function CreditWidget() {
         <div className="flex items-center gap-2 mt-1">
           <span className="text-xs text-zinc-500">{credits.balance.toLocaleString()} base</span>
           {credits.bonusCredits > 0 && (
-            <Badge variant="outline" className="text-[10px] border-[#C9941A]/50 text-[#C9941A]">
+            <Badge variant="outline" className="text-[10px] border-[#E2741B]/50 text-[#E2741B]">
               +{credits.bonusCredits.toLocaleString()} bonus
             </Badge>
           )}
@@ -122,7 +122,7 @@ function CreditWidget() {
           <Button 
             variant="outline" 
             size="sm" 
-            className="mt-3 w-full border text-[#C9941A] hover:bg-primary/10"
+            className="mt-3 w-full border text-[#E2741B] hover:bg-primary/10"
             data-testid="button-buy-credits"
           >
             <Plus className="h-4 w-4 mr-1" />
@@ -150,9 +150,9 @@ function ActiveJobsWidget() {
   const getStatusIcon = (status: BatchJob["status"]) => {
     switch (status) {
       case "processing":
-        return <RefreshCw className="h-4 w-4 text-[#C9941A] animate-spin" />;
+        return <RefreshCw className="h-4 w-4 text-[#E2741B] animate-spin" />;
       case "completed":
-        return <CheckCircle className="h-4 w-4 text-[#C9941A]" />;
+        return <CheckCircle className="h-4 w-4 text-[#E2741B]" />;
       case "failed":
         return <AlertCircle className="h-4 w-4 text-red-500" />;
       case "pending":
@@ -163,8 +163,8 @@ function ActiveJobsWidget() {
 
   const getStatusBadge = (status: BatchJob["status"]) => {
     const variants: Record<string, string> = {
-      processing: "border-[#C9941A]/50 text-[#C9941A] bg-primary/10",
-      completed: "border-green-500/50 text-[#C9941A] bg-[#C9941A]/10",
+      processing: "border-[#E2741B]/50 text-[#E2741B] bg-primary/10",
+      completed: "border-green-500/50 text-[#E2741B] bg-[#E2741B]/10",
       failed: "border-red-500/50 text-red-500 bg-red-500/10",
       pending: "border-zinc-500/50 text-zinc-400 bg-zinc-500/10",
     };
@@ -199,7 +199,7 @@ function ActiveJobsWidget() {
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm font-medium text-zinc-400 flex items-center gap-2">
-            <Layers className="h-4 w-4 text-[#C9941A]" />
+            <Layers className="h-4 w-4 text-[#E2741B]" />
             Active Batch Jobs
           </CardTitle>
           <Badge variant="outline" className="border-[#333] text-zinc-400">
@@ -216,7 +216,7 @@ function ActiveJobsWidget() {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="mt-3 border text-[#C9941A] hover:bg-primary/10"
+                className="mt-3 border text-[#E2741B] hover:bg-primary/10"
                 data-testid="button-start-batch"
               >
                 Start Batch Job
@@ -279,15 +279,15 @@ function RecentVaultWidget() {
   const getTypeIcon = (type: string) => {
     switch (type) {
       case "book":
-        return <BookOpen className="h-4 w-4 text-[#C9941A]" />;
+        return <BookOpen className="h-4 w-4 text-[#E2741B]" />;
       case "music":
-        return <Music className="h-4 w-4 text-[#C9941A]" />;
+        return <Music className="h-4 w-4 text-[#E2741B]" />;
       case "video":
-        return <Video className="h-4 w-4 text-[#C9941A]" />;
+        return <Video className="h-4 w-4 text-[#E2741B]" />;
       case "image":
-        return <Image className="h-4 w-4 text-[#C9941A]" />;
+        return <Image className="h-4 w-4 text-[#E2741B]" />;
       default:
-        return <FileText className="h-4 w-4 text-[#C9941A]" />;
+        return <FileText className="h-4 w-4 text-[#E2741B]" />;
     }
   };
 
@@ -310,7 +310,7 @@ function RecentVaultWidget() {
     <Card className="bg-zinc-950 border-[#333]" data-testid="card-recent-vault">
       <CardHeader className="pb-3">
         <CardTitle className="text-sm font-medium text-zinc-400 flex items-center gap-2">
-          <Vault className="h-4 w-4 text-[#C9941A]" />
+          <Vault className="h-4 w-4 text-[#E2741B]" />
           Recent Vault Entries
         </CardTitle>
       </CardHeader>
@@ -346,17 +346,17 @@ function RecentVaultWidget() {
 
 function QuickActionsWidget() {
   const quickActions = [
-    { href: "/book-studio", label: "Write Book", icon: BookOpen, color: "text-[#C9941A]" },
-    { href: "/music-studio", label: "Create Music", icon: Music, color: "text-[#C9941A]" },
-    { href: "/video-studio", label: "Edit Video", icon: Video, color: "text-[#C9941A]" },
-    { href: "/image-studio", label: "Generate Image", icon: Image, color: "text-[#C9941A]" },
+    { href: "/book-studio", label: "Write Book", icon: BookOpen, color: "text-[#E2741B]" },
+    { href: "/music-studio", label: "Create Music", icon: Music, color: "text-[#E2741B]" },
+    { href: "/video-studio", label: "Edit Video", icon: Video, color: "text-[#E2741B]" },
+    { href: "/image-studio", label: "Generate Image", icon: Image, color: "text-[#E2741B]" },
   ];
 
   return (
     <Card className="bg-zinc-950 border-[#333]" data-testid="card-quick-actions">
       <CardHeader className="pb-3">
         <CardTitle className="text-sm font-medium text-zinc-400 flex items-center gap-2">
-          <Zap className="h-4 w-4 text-[#C9941A]" />
+          <Zap className="h-4 w-4 text-[#E2741B]" />
           Quick Actions
         </CardTitle>
       </CardHeader>
@@ -366,7 +366,7 @@ function QuickActionsWidget() {
             <Link key={action.href} href={action.href}>
               <Button 
                 variant="outline" 
-                className="w-full h-auto py-3 flex-col gap-1 border-[#333] hover:border-[#C9941A]/50 hover:bg-[#C9941A]/5"
+                className="w-full h-auto py-3 flex-col gap-1 border-[#333] hover:border-[#E2741B]/50 hover:bg-[#E2741B]/5"
                 data-testid={`button-quick-${action.label.toLowerCase().replace(" ", "-")}`}
               >
                 <action.icon className={`h-5 w-5 ${action.color}`} />
@@ -393,7 +393,7 @@ function OverviewTab() {
         <Card className="bg-zinc-950 border-[#333]" data-testid="card-stats">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-zinc-400 flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-[#C9941A]" />
+              <TrendingUp className="h-4 w-4 text-[#E2741B]" />
               Production Stats
             </CardTitle>
           </CardHeader>
@@ -435,7 +435,7 @@ function BatchStudioTab() {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4">
       <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-        <Layers className="h-8 w-8 text-[#C9941A]" />
+        <Layers className="h-8 w-8 text-[#E2741B]" />
       </div>
       <h3 className="text-xl font-semibold text-foreground mb-2" data-testid="text-batch-title">
         Batch Studio
@@ -444,7 +444,7 @@ function BatchStudioTab() {
         Process multiple content pieces at once. Batch generate images, convert formats, 
         and automate repetitive creative tasks.
       </p>
-      <Button className="bg-[#C9941A] text-black" onClick={() => window.location.href = '/batch-generation'}>
+      <Button className="bg-[#E2741B] text-black" onClick={() => window.location.href = '/batch-generation'}>
         Open Batch Studio
       </Button>
     </div>
@@ -455,7 +455,7 @@ function CrossFormatTab() {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4">
       <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-        <Grid3X3 className="h-8 w-8 text-[#C9941A]" />
+        <Grid3X3 className="h-8 w-8 text-[#E2741B]" />
       </div>
       <h3 className="text-xl font-semibold text-foreground mb-2" data-testid="text-crossformat-title">
         Cross-Format Canvas
@@ -464,7 +464,7 @@ function CrossFormatTab() {
         Transform your content across formats. Turn books into courses, podcasts into blogs, 
         and videos into social posts with AI assistance.
       </p>
-      <Button className="bg-[#C9941A] text-black" onClick={() => window.location.href = '/quick-create'}>
+      <Button className="bg-[#E2741B] text-black" onClick={() => window.location.href = '/quick-create'}>
         Start Transforming
       </Button>
     </div>
@@ -480,7 +480,7 @@ export default function ProductionDashboard() {
         <div className="mb-6 sm:mb-8">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <LayoutDashboard className="h-5 w-5 text-[#C9941A]" />
+              <LayoutDashboard className="h-5 w-5 text-[#E2741B]" />
             </div>
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-foreground" data-testid="text-page-title">
@@ -497,7 +497,7 @@ export default function ProductionDashboard() {
           <TabsList className="w-full justify-start bg-zinc-950 border border-[#333] p-1 mb-6 overflow-x-auto flex-wrap sm:flex-nowrap h-auto gap-1">
             <TabsTrigger 
               value="overview" 
-              className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black flex items-center gap-2 whitespace-nowrap"
+              className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black flex items-center gap-2 whitespace-nowrap"
               data-testid="tab-overview"
             >
               <LayoutDashboard className="h-4 w-4" />
@@ -505,7 +505,7 @@ export default function ProductionDashboard() {
             </TabsTrigger>
             <TabsTrigger 
               value="research" 
-              className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black flex items-center gap-2 whitespace-nowrap"
+              className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black flex items-center gap-2 whitespace-nowrap"
               data-testid="tab-research"
             >
               <FlaskConical className="h-4 w-4" />
@@ -513,7 +513,7 @@ export default function ProductionDashboard() {
             </TabsTrigger>
             <TabsTrigger 
               value="vault" 
-              className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black flex items-center gap-2 whitespace-nowrap"
+              className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black flex items-center gap-2 whitespace-nowrap"
               data-testid="tab-vault"
             >
               <Vault className="h-4 w-4" />
@@ -521,7 +521,7 @@ export default function ProductionDashboard() {
             </TabsTrigger>
             <TabsTrigger 
               value="batch" 
-              className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black flex items-center gap-2 whitespace-nowrap"
+              className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black flex items-center gap-2 whitespace-nowrap"
               data-testid="tab-batch"
             >
               <Layers className="h-4 w-4" />
@@ -529,7 +529,7 @@ export default function ProductionDashboard() {
             </TabsTrigger>
             <TabsTrigger 
               value="crossformat" 
-              className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black flex items-center gap-2 whitespace-nowrap"
+              className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black flex items-center gap-2 whitespace-nowrap"
               data-testid="tab-crossformat"
             >
               <Grid3X3 className="h-4 w-4" />

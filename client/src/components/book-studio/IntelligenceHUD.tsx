@@ -84,10 +84,10 @@ export default function IntelligenceHUD({
       {/* HUD Header */}
       <div className={cn(
         "flex items-center justify-between px-4 py-3 border-b",
-        isDark ? "border-stone-800/50" : "border-[#C9941A]/10"
+        isDark ? "border-stone-800/50" : "border-[#E2741B]/10"
       )}>
         <div className="flex items-center gap-2">
-          <BrainCircuit className="h-4 w-4 text-[#C9941A]" />
+          <BrainCircuit className="h-4 w-4 text-[#E2741B]" />
           <span className={cn(
             "text-[10px] font-black uppercase tracking-[0.2em]",
             isDark ? "text-stone-400" : "text-[#1A1A1A]/50"
@@ -101,7 +101,7 @@ export default function IntelligenceHUD({
               key={i} 
               className={cn(
                 "h-1.5 w-1.5 rounded-full",
-                i === 3 ? 'bg-emerald-500 animate-pulse' : isDark ? 'bg-stone-700' : 'bg-[#C9941A]/20'
+                i === 3 ? 'bg-emerald-500 animate-pulse' : isDark ? 'bg-stone-700' : 'bg-[#E2741B]/20'
               )} 
             />
           ))}
@@ -113,15 +113,15 @@ export default function IntelligenceHUD({
         {/* Tab Bar */}
         <TabsList className={cn(
           "grid w-full grid-cols-3 rounded-none border-b bg-transparent p-0 h-10",
-          isDark ? "border-stone-800/50" : "border-[#C9941A]/10"
+          isDark ? "border-stone-800/50" : "border-[#E2741B]/10"
         )}>
           <TabsTrigger 
             value="analysis" 
             className={cn(
               "rounded-none border-b-2 border-transparent text-[9px] font-bold uppercase tracking-wider transition-all",
               isDark 
-                ? "data-[state=active]:border-[#C9941A] data-[state=active]:bg-stone-900/50 text-stone-500 data-[state=active]:text-stone-100" 
-                : "data-[state=active]:border-[#C9941A] data-[state=active]:bg-[#C9941A]/5 text-[#1A1A1A]/40 data-[state=active]:text-[#1A1A1A]"
+                ? "data-[state=active]:border-[#E2741B] data-[state=active]:bg-stone-900/50 text-stone-500 data-[state=active]:text-stone-100" 
+                : "data-[state=active]:border-[#E2741B] data-[state=active]:bg-[#E2741B]/5 text-[#1A1A1A]/40 data-[state=active]:text-[#1A1A1A]"
             )}
             data-testid="tab-analysis"
           >
@@ -132,8 +132,8 @@ export default function IntelligenceHUD({
             className={cn(
               "rounded-none border-b-2 border-transparent text-[9px] font-bold uppercase tracking-wider transition-all",
               isDark 
-                ? "data-[state=active]:border-[#C9941A] data-[state=active]:bg-stone-900/50 text-stone-500 data-[state=active]:text-stone-100" 
-                : "data-[state=active]:border-[#C9941A] data-[state=active]:bg-[#C9941A]/5 text-[#1A1A1A]/40 data-[state=active]:text-[#1A1A1A]"
+                ? "data-[state=active]:border-[#E2741B] data-[state=active]:bg-stone-900/50 text-stone-500 data-[state=active]:text-stone-100" 
+                : "data-[state=active]:border-[#E2741B] data-[state=active]:bg-[#E2741B]/5 text-[#1A1A1A]/40 data-[state=active]:text-[#1A1A1A]"
             )}
             data-testid="tab-entities"
           >
@@ -144,8 +144,8 @@ export default function IntelligenceHUD({
             className={cn(
               "rounded-none border-b-2 border-transparent text-[9px] font-bold uppercase tracking-wider transition-all",
               isDark 
-                ? "data-[state=active]:border-[#C9941A] data-[state=active]:bg-stone-900/50 text-stone-500 data-[state=active]:text-stone-100" 
-                : "data-[state=active]:border-[#C9941A] data-[state=active]:bg-[#C9941A]/5 text-[#1A1A1A]/40 data-[state=active]:text-[#1A1A1A]"
+                ? "data-[state=active]:border-[#E2741B] data-[state=active]:bg-stone-900/50 text-stone-500 data-[state=active]:text-stone-100" 
+                : "data-[state=active]:border-[#E2741B] data-[state=active]:bg-[#E2741B]/5 text-[#1A1A1A]/40 data-[state=active]:text-[#1A1A1A]"
             )}
             data-testid="tab-market"
           >
@@ -173,7 +173,7 @@ export default function IntelligenceHUD({
                 </div>
                 <div className={cn(
                   "h-1.5 w-full rounded-full overflow-hidden",
-                  isDark ? "bg-stone-800" : "bg-[#C9941A]/10"
+                  isDark ? "bg-stone-800" : "bg-[#E2741B]/10"
                 )}>
                    <div className="h-full bg-emerald-500 w-[94%]" />
                 </div>
@@ -185,7 +185,7 @@ export default function IntelligenceHUD({
                 </p>
               </div>
 
-              <Separator className={isDark ? "bg-stone-800" : "bg-[#C9941A]/10"} />
+              <Separator className={isDark ? "bg-stone-800" : "bg-[#E2741B]/10"} />
 
               {/* Pacing Velocity */}
               <div className="space-y-3">
@@ -210,7 +210,7 @@ export default function IntelligenceHUD({
               {/* Tone Analysis */}
               <div className="space-y-3">
                  <div className="flex items-center gap-2 mb-2">
-                    <Zap className="h-3 w-3 text-[#C9941A]" />
+                    <Zap className="h-3 w-3 text-[#E2741B]" />
                     <span className={cn(
                       "text-[10px] font-bold uppercase tracking-widest",
                       isDark ? "text-stone-400" : "text-[#1A1A1A]/50"
@@ -219,15 +219,15 @@ export default function IntelligenceHUD({
                   <div className="flex flex-wrap gap-1.5">
                     <Badge variant="secondary" className={cn(
                       "text-[9px]",
-                      isDark ? "bg-stone-800 text-stone-400" : "bg-[#C9941A]/10 text-[#1A1A1A]/70"
+                      isDark ? "bg-stone-800 text-stone-400" : "bg-[#E2741B]/10 text-[#1A1A1A]/70"
                     )}>AUTHORITATIVE</Badge>
                     <Badge variant="secondary" className={cn(
                       "text-[9px]",
-                      isDark ? "bg-stone-800 text-stone-400" : "bg-[#C9941A]/10 text-[#1A1A1A]/70"
+                      isDark ? "bg-stone-800 text-stone-400" : "bg-[#E2741B]/10 text-[#1A1A1A]/70"
                     )}>GRITTY</Badge>
                     <Badge variant="secondary" className={cn(
                       "text-[9px]",
-                      isDark ? "bg-stone-800 text-stone-400" : "bg-[#C9941A]/10 text-[#1A1A1A]/70"
+                      isDark ? "bg-stone-800 text-stone-400" : "bg-[#E2741B]/10 text-[#1A1A1A]/70"
                     )}>TECHNICAL</Badge>
                   </div>
                </div>
@@ -257,7 +257,7 @@ export default function IntelligenceHUD({
             <TabsContent value="entities" className="m-0 space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
                <div className="space-y-4">
                   {[
-                    { name: "Jerry Kremers", role: "Legacy Carrier", status: "Active", color: "text-[#C9941A]" },
+                    { name: "Jerry Kremers", role: "Legacy Carrier", status: "Active", color: "text-[#E2741B]" },
                     { name: "Larry Larsen", role: "Mentor / Expert", status: "Mentioned", color: "text-blue-500" },
                     { name: "Dexter T-900", role: "Equipment", status: "Object", color: isDark ? "text-stone-500" : "text-[#1A1A1A]/50" },
                   ].map((char, i) => (
@@ -267,14 +267,14 @@ export default function IntelligenceHUD({
                         "group flex items-center justify-between rounded-sm border p-3 transition-all",
                         isDark 
                           ? "border-stone-800 bg-stone-900/40 hover:border-stone-700" 
-                          : "border-[#C9941A]/10 bg-white/50 hover:border-[#C9941A]/20"
+                          : "border-[#E2741B]/10 bg-white/50 hover:border-[#E2741B]/20"
                       )}
                       data-testid={`entity-${char.name.toLowerCase().replace(/\s+/g, '-')}`}
                     >
                       <div className="flex items-center gap-3">
                          <div className={cn(
                            "flex h-8 w-8 items-center justify-center rounded-full border font-bold",
-                           isDark ? "bg-stone-950 border-stone-800" : "bg-[#FAF8F3] border-[#C9941A]/20",
+                           isDark ? "bg-stone-950 border-stone-800" : "bg-[#FAF8F3] border-[#E2741B]/20",
                            char.color
                          )}>
                            {char.name[0]}
@@ -295,12 +295,12 @@ export default function IntelligenceHUD({
                   ))}
                </div>
 
-               <Separator className={isDark ? "bg-stone-800" : "bg-[#C9941A]/10"} />
+               <Separator className={isDark ? "bg-stone-800" : "bg-[#E2741B]/10"} />
 
                {/* Locations */}
                <div>
                  <div className="flex items-center gap-2 mb-3">
-                   <Globe className="h-3 w-3 text-[#C9941A]" />
+                   <Globe className="h-3 w-3 text-[#E2741B]" />
                    <span className={cn(
                      "text-[10px] font-bold uppercase tracking-widest",
                      isDark ? "text-stone-400" : "text-[#1A1A1A]/50"
@@ -314,7 +314,7 @@ export default function IntelligenceHUD({
                          "px-3 py-2 rounded-sm text-xs border",
                          isDark 
                            ? "border-stone-800 bg-stone-900/30 text-stone-300" 
-                           : "border-[#C9941A]/10 bg-white/30 text-[#1A1A1A]/70"
+                           : "border-[#E2741B]/10 bg-white/30 text-[#1A1A1A]/70"
                        )}
                      >
                        {loc}
@@ -328,7 +328,7 @@ export default function IntelligenceHUD({
             <TabsContent value="market" className="m-0 space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-500">
                {revenueLoading ? (
                  <div className="flex items-center justify-center py-8">
-                   <Loader2 className="h-6 w-6 animate-spin text-[#C9941A]" />
+                   <Loader2 className="h-6 w-6 animate-spin text-[#E2741B]" />
                  </div>
                ) : (
                  <>
@@ -380,11 +380,11 @@ export default function IntelligenceHUD({
                    {/* Market Demand Score */}
                    <div className={cn(
                      "rounded-sm border p-4",
-                     isDark ? "border-[#C9941A]/20 bg-[#C9941A]/5" : "border-[#C9941A]/20 bg-[#C9941A]/5"
+                     isDark ? "border-[#E2741B]/20 bg-[#E2741B]/5" : "border-[#E2741B]/20 bg-[#E2741B]/5"
                    )}>
                      <div className="flex items-center gap-2 mb-2">
-                       <Target className="h-4 w-4 text-[#C9941A]" />
-                       <h3 className="text-[10px] font-black uppercase tracking-widest text-[#C9941A]">Market Demand Score</h3>
+                       <Target className="h-4 w-4 text-[#E2741B]" />
+                       <h3 className="text-[10px] font-black uppercase tracking-widest text-[#E2741B]">Market Demand Score</h3>
                      </div>
                      <div className="flex items-end gap-2 mb-2">
                        <div className={cn(
@@ -400,10 +400,10 @@ export default function IntelligenceHUD({
                      </div>
                      <div className={cn(
                        "h-2 w-full rounded-full overflow-hidden mb-2",
-                       isDark ? "bg-stone-800" : "bg-[#C9941A]/10"
+                       isDark ? "bg-stone-800" : "bg-[#E2741B]/10"
                      )}>
                        <div 
-                         className="h-full bg-gradient-to-r from-[#C9941A] to-amber-500 transition-all duration-500" 
+                         className="h-full bg-gradient-to-r from-[#E2741B] to-amber-500 transition-all duration-500" 
                          style={{ width: `${revenuePulse?.market?.demandScore || 75}%` }}
                        />
                      </div>
@@ -421,7 +421,7 @@ export default function IntelligenceHUD({
                    {/* Pricing Recommendations */}
                    <div>
                      <div className="flex items-center gap-2 mb-3">
-                       <BarChart3 className="h-3 w-3 text-[#C9941A]" />
+                       <BarChart3 className="h-3 w-3 text-[#E2741B]" />
                        <span className={cn(
                          "text-[10px] font-bold uppercase tracking-widest",
                          isDark ? "text-stone-400" : "text-[#1A1A1A]/50"
@@ -440,7 +440,7 @@ export default function IntelligenceHUD({
                              "text-center p-2 rounded-sm border",
                              isDark 
                                ? "border-stone-800 bg-stone-900/30" 
-                               : "border-[#C9941A]/10 bg-white/50"
+                               : "border-[#E2741B]/10 bg-white/50"
                            )}
                          >
                            <div className={cn(
@@ -466,7 +466,7 @@ export default function IntelligenceHUD({
                        "flex items-center gap-3 p-3 rounded-sm border",
                        isDark 
                          ? "border-stone-800 bg-stone-900/40" 
-                         : "border-[#C9941A]/10 bg-white/50"
+                         : "border-[#E2741B]/10 bg-white/50"
                      )}>
                        <TrendingUp className="h-4 w-4 text-emerald-500" />
                        <div>
@@ -491,7 +491,7 @@ export default function IntelligenceHUD({
         {/* AI Search Footer */}
         <div className={cn(
           "border-t p-3",
-          isDark ? "border-stone-800 bg-stone-950" : "border-[#C9941A]/10 bg-white/50"
+          isDark ? "border-stone-800 bg-stone-950" : "border-[#E2741B]/10 bg-white/50"
         )}>
            <div className="relative">
              <Search className={cn(
@@ -504,7 +504,7 @@ export default function IntelligenceHUD({
                  "pl-8 h-8 text-[10px] rounded-sm",
                  isDark 
                    ? "bg-stone-900 border-stone-800 text-stone-300 placeholder:text-stone-600" 
-                   : "bg-white/50 border-[#C9941A]/20 placeholder:text-[#1A1A1A]/30"
+                   : "bg-white/50 border-[#E2741B]/20 placeholder:text-[#1A1A1A]/30"
                )}
                data-testid="input-doctrine-search"
                aria-label="Search doctrine AI"

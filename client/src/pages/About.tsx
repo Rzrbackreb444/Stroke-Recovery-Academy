@@ -49,12 +49,12 @@ export default function About() {
           
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
-              <Badge variant="outline" className="mb-6 text-[#C9941A] border-primary">
+              <Badge variant="outline" className="mb-6 text-[#E2741B] border-primary">
                 The Story Behind the System
               </Badge>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6" data-testid="text-about-title">
                 From 0% Function to{" "}
-                <span className="text-[#C9941A]">90% Recovery</span>
+                <span className="text-[#E2741B]">90% Recovery</span>
               </h1>
               <p className="text-xl text-gray-400 max-w-2xl mx-auto">
                 When doctors said "never," Nick Kremers said "watch me." 
@@ -95,7 +95,7 @@ export default function About() {
                     data-testid="img-nick-today"
                   />
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                    <Badge className="mb-2 bg-primary text-[#C9941A]-foreground">Today - 90% Recovery</Badge>
+                    <Badge className="mb-2 bg-primary text-[#E2741B]-foreground">Today - 90% Recovery</Badge>
                     <p className="text-foreground text-sm">
                       Living proof that your greatest comeback 
                       starts with your greatest setback.
@@ -145,7 +145,7 @@ export default function About() {
 
                 <div className="flex gap-4">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-                    <span className="text-2xl font-bold text-[#C9941A]">3</span>
+                    <span className="text-2xl font-bold text-[#E2741B]">3</span>
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold mb-2 text-foreground">The System</h3>
@@ -159,8 +159,8 @@ export default function About() {
                 </div>
 
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#C9941A]/20 flex items-center justify-center">
-                    <span className="text-2xl font-bold text-[#C9941A]">4</span>
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#E2741B]/20 flex items-center justify-center">
+                    <span className="text-2xl font-bold text-[#E2741B]">4</span>
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold mb-2 text-foreground">The Recovery</h3>
@@ -187,7 +187,7 @@ export default function About() {
               <Card className="hover-elevate">
                 <CardContent className="pt-6 text-center">
                   <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
-                    <Target className="h-6 w-6 text-[#C9941A]" />
+                    <Target className="h-6 w-6 text-[#E2741B]" />
                   </div>
                   <h3 className="font-semibold mb-2 text-foreground">Think-Twitch-Move</h3>
                   <p className="text-sm text-gray-400">
@@ -199,7 +199,7 @@ export default function About() {
               <Card className="hover-elevate">
                 <CardContent className="pt-6 text-center">
                   <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
-                    <Zap className="h-6 w-6 text-[#C9941A]" />
+                    <Zap className="h-6 w-6 text-[#E2741B]" />
                   </div>
                   <h3 className="font-semibold mb-2 text-foreground">Neuroplasticity</h3>
                   <p className="text-sm text-gray-400">
@@ -211,7 +211,7 @@ export default function About() {
               <Card className="hover-elevate">
                 <CardContent className="pt-6 text-center">
                   <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
-                    <Heart className="h-6 w-6 text-[#C9941A]" />
+                    <Heart className="h-6 w-6 text-[#E2741B]" />
                   </div>
                   <h3 className="font-semibold mb-2 text-foreground">Small Victories</h3>
                   <p className="text-sm text-gray-400">
@@ -223,7 +223,7 @@ export default function About() {
               <Card className="hover-elevate">
                 <CardContent className="pt-6 text-center">
                   <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
-                    <Users className="h-6 w-6 text-[#C9941A]" />
+                    <Users className="h-6 w-6 text-[#E2741B]" />
                   </div>
                   <h3 className="font-semibold mb-2 text-foreground">Community</h3>
                   <p className="text-sm text-gray-400">
@@ -268,7 +268,7 @@ export default function About() {
               <blockquote className="text-2xl md:text-3xl font-medium text-foreground italic mb-6">
                 "Your greatest comeback starts with your greatest setback."
               </blockquote>
-              <p className="text-[#C9941A] font-semibold">— Nick Kremers, Founder</p>
+              <p className="text-[#E2741B] font-semibold">— Nick Kremers, Founder</p>
             </div>
           </div>
         </section>

@@ -94,12 +94,12 @@ export default function AdminVoiceLab() {
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <div className="max-w-5xl mx-auto px-4 py-10">
         <div className="flex items-center gap-3 mb-2">
-          <Mic2 className="h-7 w-7 text-[#C9941A]" />
+          <Mic2 className="h-7 w-7 text-[#E2741B]" />
           <h1 className="text-3xl font-bold">Sasquatch Voice Lab</h1>
         </div>
         <p className="text-gray-400 mb-8 max-w-2xl">
           Audition raspy ElevenLabs voices with the actual character settings. Pick the one that sounds most
-          like Sasquatch to you, then lock it in by setting <code className="px-1.5 py-0.5 bg-[#1a1a1a] rounded text-xs text-[#C9941A]">SASQUATCH_VOICE_ID</code> in your secrets.
+          like Sasquatch to you, then lock it in by setting <code className="px-1.5 py-0.5 bg-[#1a1a1a] rounded text-xs text-[#E2741B]">SASQUATCH_VOICE_ID</code> in your secrets.
         </p>
 
         {/* Sample text */}
@@ -146,21 +146,21 @@ export default function AdminVoiceLab() {
             <div>
               <div className="flex justify-between mb-2">
                 <Label className="text-sm text-gray-300">Stability</Label>
-                <span className="text-sm text-[#C9941A] font-mono">{stability[0].toFixed(2)}</span>
+                <span className="text-sm text-[#E2741B] font-mono">{stability[0].toFixed(2)}</span>
               </div>
               <Slider value={stability} onValueChange={setStability} min={0} max={1} step={0.05} data-testid="slider-stability" />
             </div>
             <div>
               <div className="flex justify-between mb-2">
                 <Label className="text-sm text-gray-300">Similarity Boost</Label>
-                <span className="text-sm text-[#C9941A] font-mono">{similarity[0].toFixed(2)}</span>
+                <span className="text-sm text-[#E2741B] font-mono">{similarity[0].toFixed(2)}</span>
               </div>
               <Slider value={similarity} onValueChange={setSimilarity} min={0} max={1} step={0.05} data-testid="slider-similarity" />
             </div>
             <div>
               <div className="flex justify-between mb-2">
                 <Label className="text-sm text-gray-300">Style (character intensity)</Label>
-                <span className="text-sm text-[#C9941A] font-mono">{style[0].toFixed(2)}</span>
+                <span className="text-sm text-[#E2741B] font-mono">{style[0].toFixed(2)}</span>
               </div>
               <Slider value={style} onValueChange={setStyle} min={0} max={1} step={0.05} data-testid="slider-style" />
             </div>
@@ -181,7 +181,7 @@ export default function AdminVoiceLab() {
               return (
                 <Card
                   key={c.id}
-                  className={`bg-[#111] border ${isActive ? "border-[#C9941A]" : "border-[#222]"} hover-elevate`}
+                  className={`bg-[#111] border ${isActive ? "border-[#E2741B]" : "border-[#222]"} hover-elevate`}
                   data-testid={`card-voice-${c.name.toLowerCase()}`}
                 >
                   <CardContent className="p-4">
@@ -190,7 +190,7 @@ export default function AdminVoiceLab() {
                         <div className="flex items-center gap-2">
                           <h3 className="text-lg font-bold">{c.name}</h3>
                           {c.raspy && (
-                            <Badge className="bg-[#C9941A]/15 text-[#C9941A] border border-[#C9941A]/30 text-[10px] uppercase">
+                            <Badge className="bg-[#E2741B]/15 text-[#E2741B] border border-[#E2741B]/30 text-[10px] uppercase">
                               Raspy
                             </Badge>
                           )}
@@ -210,7 +210,7 @@ export default function AdminVoiceLab() {
                         size="sm"
                         onClick={() => preview(c.id)}
                         disabled={isLoadingThis || (loadingId !== null && loadingId !== c.id)}
-                        className={isActive ? "bg-[#C9941A] text-black hover:bg-[#C9941A]/90" : "bg-[#1a1a1a] border border-[#333] hover:bg-[#222]"}
+                        className={isActive ? "bg-[#E2741B] text-black hover:bg-[#E2741B]/90" : "bg-[#1a1a1a] border border-[#333] hover:bg-[#222]"}
                         data-testid={`button-preview-${c.name.toLowerCase()}`}
                       >
                         {isLoadingThis ? (
@@ -237,7 +237,7 @@ export default function AdminVoiceLab() {
               <p className="font-semibold text-green-400 mb-1">How to lock in your pick</p>
               <p className="text-gray-400">
                 Once you've picked the voice that sounds most like Sasquatch, set{" "}
-                <code className="px-1.5 py-0.5 bg-[#1a1a1a] rounded text-xs text-[#C9941A]">SASQUATCH_VOICE_ID</code>{" "}
+                <code className="px-1.5 py-0.5 bg-[#1a1a1a] rounded text-xs text-[#E2741B]">SASQUATCH_VOICE_ID</code>{" "}
                 to that voice ID in your environment secrets and restart the app. The Coach, anthem narration, and
                 voice read-throughs will all swap to it.
               </p>

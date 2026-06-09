@@ -40,8 +40,8 @@ function Kpi({ icon: Icon, label, value, sub, testid }: any) {
             <div className="text-2xl font-bold text-white mt-1" data-testid={testid}>{value}</div>
             {sub && <div className="text-xs text-gray-400 mt-1">{sub}</div>}
           </div>
-          <div className="w-10 h-10 rounded-md bg-[#C9941A]/15 flex items-center justify-center">
-            <Icon className="w-5 h-5 text-[#C9941A]" />
+          <div className="w-10 h-10 rounded-md bg-[#E2741B]/15 flex items-center justify-center">
+            <Icon className="w-5 h-5 text-[#E2741B]" />
           </div>
         </div>
       </CardContent>
@@ -79,7 +79,7 @@ export default function InstructorAnalytics() {
             <p className="text-gray-400 mt-1">Students, completion, ratings, and earnings across your courses.</p>
           </div>
           <Link href="/course-studio">
-            <Button className="bg-[#C9941A] text-black hover:bg-[#C9941A]/90" data-testid="button-create-course">
+            <Button className="bg-[#E2741B] text-black hover:bg-[#E2741B]/90" data-testid="button-create-course">
               <BookOpen className="w-4 h-4 mr-2" /> Open Course Studio
             </Button>
           </Link>
@@ -88,7 +88,7 @@ export default function InstructorAnalytics() {
         {noCourses ? (
           <Card className="bg-[#1a1a1a] border-[#333]">
             <CardContent className="py-12 text-center space-y-3">
-              <GraduationCap className="w-12 h-12 text-[#C9941A] mx-auto" />
+              <GraduationCap className="w-12 h-12 text-[#E2741B] mx-auto" />
               <h2 className="text-xl font-semibold">No courses yet</h2>
               <p className="text-gray-400 text-sm max-w-md mx-auto">
                 Publish your first course in the Course Studio to start teaching survivors and earning 85% of every sale.
@@ -159,7 +159,7 @@ export default function InstructorAnalytics() {
                         <td className="py-3 pr-4">
                           {c.reviewCount > 0 ? (
                             <div className="flex items-center gap-1">
-                              <Star className="w-3.5 h-3.5 text-[#C9941A] fill-[#C9941A]" />
+                              <Star className="w-3.5 h-3.5 text-[#E2741B] fill-[#E2741B]" />
                               <span className="text-gray-200">{c.avgRating.toFixed(1)}</span>
                               <span className="text-xs text-gray-500">({c.reviewCount})</span>
                             </div>
@@ -204,11 +204,11 @@ export default function InstructorAnalytics() {
                         <div className="flex items-center gap-0.5">
                           {[1,2,3,4,5].map((n) => (
                             <Star key={n} className={`w-3.5 h-3.5 ${n <= r.rating
-                              ? "text-[#C9941A] fill-[#C9941A]" : "text-zinc-600"}`} />
+                              ? "text-[#E2741B] fill-[#E2741B]" : "text-zinc-600"}`} />
                           ))}
                         </div>
                         <Link href={`/course/${r.course_id}`}>
-                          <span className="text-xs text-gray-400 hover:text-[#C9941A] cursor-pointer">
+                          <span className="text-xs text-gray-400 hover:text-[#E2741B] cursor-pointer">
                             {r.course_title}
                           </span>
                         </Link>

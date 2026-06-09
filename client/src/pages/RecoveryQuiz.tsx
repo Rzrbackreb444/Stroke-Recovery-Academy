@@ -134,10 +134,10 @@ export default function RecoveryQuiz() {
       <div className="min-h-screen bg-[#0D0D0D] text-white flex items-center justify-center px-4">
         <Card className="bg-[#1a1a1a] border border-[#333] max-w-md">
           <CardContent className="p-8 text-center">
-            <Lock className="w-10 h-10 text-[#C9941A] mx-auto mb-3" />
+            <Lock className="w-10 h-10 text-[#E2741B] mx-auto mb-3" />
             <p className="text-gray-400 mb-4">Sign in to take the quiz.</p>
             <Link href="/api/login">
-              <Button className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black" data-testid="button-sign-in">Sign in</Button>
+              <Button className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black" data-testid="button-sign-in">Sign in</Button>
             </Link>
           </CardContent>
         </Card>
@@ -149,10 +149,10 @@ export default function RecoveryQuiz() {
       <div className="min-h-screen bg-[#0D0D0D] text-white flex items-center justify-center px-4">
         <Card className="bg-[#1a1a1a] border border-[#333] max-w-md">
           <CardContent className="p-8 text-center">
-            <Lock className="w-10 h-10 text-[#C9941A] mx-auto mb-3" />
+            <Lock className="w-10 h-10 text-[#E2741B] mx-auto mb-3" />
             <p className="text-gray-400 mb-4">This quiz is locked behind a higher tier.</p>
             <Link href="/pricing">
-              <Button className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black" data-testid="button-upgrade">See plans</Button>
+              <Button className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black" data-testid="button-upgrade">See plans</Button>
             </Link>
           </CardContent>
         </Card>
@@ -179,7 +179,7 @@ export default function RecoveryQuiz() {
               </Button>
             </Link>
             <div className="flex items-center gap-2 text-sm text-gray-400">
-              <GraduationCap className="w-4 h-4 text-[#C9941A]" />
+              <GraduationCap className="w-4 h-4 text-[#E2741B]" />
               <span>Recovery University</span>
             </div>
           </div>
@@ -189,7 +189,7 @@ export default function RecoveryQuiz() {
           <Card className="bg-[#1a1a1a] border border-[#333] mb-6" data-testid="card-result-summary">
             <CardContent className="p-8 text-center">
               {result.passed ? (
-                <CheckCircle className="w-14 h-14 text-[#C9941A] mx-auto mb-3" />
+                <CheckCircle className="w-14 h-14 text-[#E2741B] mx-auto mb-3" />
               ) : (
                 <XCircle className="w-14 h-14 text-red-400 mx-auto mb-3" />
               )}
@@ -197,24 +197,24 @@ export default function RecoveryQuiz() {
                 {result.passed ? "Chapter passed" : "Not yet — keep going"}
               </h1>
               {persona && (
-                <p className="text-sm text-[#C9941A] italic mb-2" data-testid="text-persona-line">
+                <p className="text-sm text-[#E2741B] italic mb-2" data-testid="text-persona-line">
                   {result.passed
                     ? `${persona.name} keeps the streak.`
                     : `${persona.name} doesn't quit on this. Try again.`}
                 </p>
               )}
-              <p className="text-5xl font-black text-[#C9941A] my-4" data-testid="text-final-score">
+              <p className="text-5xl font-black text-[#E2741B] my-4" data-testid="text-final-score">
                 {result.score}%
               </p>
               <p className="text-gray-400">
                 {result.correctCount} / {result.totalQuestions} correct · need {result.passingScore}% to pass
               </p>
               {result.issuedCertificate && (
-                <div className="mt-6 p-4 rounded-lg bg-[#C9941A]/10 border border-[#C9941A]/30">
-                  <Award className="w-6 h-6 text-[#C9941A] mx-auto mb-2" />
+                <div className="mt-6 p-4 rounded-lg bg-[#E2741B]/10 border border-[#E2741B]/30">
+                  <Award className="w-6 h-6 text-[#E2741B] mx-auto mb-2" />
                   <p className="font-bold text-white">Part {result.issuedCertificate.partNumber} certificate unlocked!</p>
                   <Link href={`/recovery/university/certificate/${result.issuedCertificate.partNumber}`}>
-                    <Button className="mt-3 bg-[#C9941A] hover:bg-[#C9941A]/90 text-black" data-testid="button-view-certificate">
+                    <Button className="mt-3 bg-[#E2741B] hover:bg-[#E2741B]/90 text-black" data-testid="button-view-certificate">
                       View certificate
                     </Button>
                   </Link>
@@ -230,13 +230,13 @@ export default function RecoveryQuiz() {
               return (
                 <Card
                   key={q.id}
-                  className={`bg-[#1a1a1a] border ${g.correct ? "border-[#C9941A]/30" : "border-red-500/30"}`}
+                  className={`bg-[#1a1a1a] border ${g.correct ? "border-[#E2741B]/30" : "border-red-500/30"}`}
                   data-testid={`card-graded-${q.id}`}
                 >
                   <CardContent className="p-5">
                     <div className="flex items-start gap-3">
                       {g.correct ? (
-                        <CheckCircle className="w-5 h-5 text-[#C9941A] mt-1 shrink-0" />
+                        <CheckCircle className="w-5 h-5 text-[#E2741B] mt-1 shrink-0" />
                       ) : (
                         <XCircle className="w-5 h-5 text-red-400 mt-1 shrink-0" />
                       )}
@@ -252,7 +252,7 @@ export default function RecoveryQuiz() {
                                 key={opt.id}
                                 className={`p-2 rounded ${
                                   isCorrect
-                                    ? "bg-[#C9941A]/15 text-[#C9941A]"
+                                    ? "bg-[#E2741B]/15 text-[#E2741B]"
                                     : wasPicked
                                       ? "bg-red-500/10 text-red-300"
                                       : "text-gray-400"
@@ -267,7 +267,7 @@ export default function RecoveryQuiz() {
                           })}
                         </div>
                         <div className="mt-3 p-3 rounded bg-[#0D0D0D] border border-[#333] text-sm text-gray-300">
-                          <strong className="text-[#C9941A]">Why: </strong>
+                          <strong className="text-[#E2741B]">Why: </strong>
                           {g.explanation}
                         </div>
                       </div>
@@ -289,7 +289,7 @@ export default function RecoveryQuiz() {
                   setResult(null);
                   startedAt.current = Date.now();
                 }}
-                className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black"
+                className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black"
                 data-testid="button-retake-quiz"
               >
                 <RotateCcw className="w-4 h-4 mr-2" />
@@ -350,12 +350,12 @@ export default function RecoveryQuiz() {
             <span>{quiz.lessonTitle}</span>
             <span>Need {quiz.passingScore}% to pass</span>
           </div>
-          <Progress value={progressPct} className="h-2 bg-[#333] [&>div]:bg-[#C9941A]" data-testid="progress-quiz" />
+          <Progress value={progressPct} className="h-2 bg-[#333] [&>div]:bg-[#E2741B]" data-testid="progress-quiz" />
         </div>
 
         <Card className="bg-[#1a1a1a] border border-[#333]" data-testid={`card-question-${currentQ.id}`}>
           <CardContent className="p-6 md:p-8">
-            <Badge variant="outline" className="mb-4 border-[#C9941A]/50 text-[#C9941A] bg-[#C9941A]/10">
+            <Badge variant="outline" className="mb-4 border-[#E2741B]/50 text-[#E2741B] bg-[#E2741B]/10">
               Question {currentIdx + 1}
             </Badge>
             <h2 className="text-xl md:text-2xl font-bold text-white mb-6" data-testid="text-question-prompt">
@@ -371,7 +371,7 @@ export default function RecoveryQuiz() {
                     onClick={() => setAnswers((prev) => ({ ...prev, [currentQ.id]: opt.id }))}
                     className={`w-full text-left p-4 rounded-lg border transition-colors hover-elevate ${
                       isPicked
-                        ? "border-[#C9941A] bg-[#C9941A]/10"
+                        ? "border-[#E2741B] bg-[#E2741B]/10"
                         : "border-[#333] bg-[#0D0D0D]"
                     }`}
                     data-testid={`option-${currentQ.id}-${opt.id}`}
@@ -379,7 +379,7 @@ export default function RecoveryQuiz() {
                     <div className="flex items-start gap-3">
                       <div
                         className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-                          isPicked ? "bg-[#C9941A] text-black" : "bg-[#333] text-gray-400"
+                          isPicked ? "bg-[#E2741B] text-black" : "bg-[#333] text-gray-400"
                         }`}
                       >
                         {opt.id.toUpperCase()}
@@ -393,10 +393,10 @@ export default function RecoveryQuiz() {
 
             <div className="mt-6">
               {hintsRevealed[currentQ.id] ? (
-                <div className="p-4 rounded-lg bg-[#C9941A]/10 border border-[#C9941A]/30 flex gap-3" data-testid={`hint-${currentQ.id}`}>
-                  <Lightbulb className="w-5 h-5 text-[#C9941A] mt-0.5 shrink-0" />
+                <div className="p-4 rounded-lg bg-[#E2741B]/10 border border-[#E2741B]/30 flex gap-3" data-testid={`hint-${currentQ.id}`}>
+                  <Lightbulb className="w-5 h-5 text-[#E2741B] mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-sm font-semibold text-[#C9941A] mb-1">Hint</p>
+                    <p className="text-sm font-semibold text-[#E2741B] mb-1">Hint</p>
                     <p className="text-sm text-gray-200">{hintsRevealed[currentQ.id]}</p>
                   </div>
                 </div>
@@ -405,7 +405,7 @@ export default function RecoveryQuiz() {
                   variant="ghost"
                   onClick={() => hintMutation.mutate(currentQ.id)}
                   disabled={hintMutation.isPending}
-                  className="text-[#C9941A] hover:bg-[#C9941A]/10"
+                  className="text-[#E2741B] hover:bg-[#E2741B]/10"
                   data-testid={`button-hint-${currentQ.id}`}
                 >
                   <Lightbulb className="w-4 h-4 mr-2" />
@@ -431,7 +431,7 @@ export default function RecoveryQuiz() {
             <Button
               onClick={() => submitMutation.mutate()}
               disabled={!allAnswered || submitMutation.isPending}
-              className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black"
+              className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black"
               data-testid="button-submit-quiz"
             >
               <Trophy className="w-4 h-4 mr-2" />
@@ -441,7 +441,7 @@ export default function RecoveryQuiz() {
             <Button
               onClick={() => setCurrentIdx((i) => Math.min(quiz.questions.length - 1, i + 1))}
               disabled={!picked}
-              className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black"
+              className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black"
               data-testid="button-next-question"
             >
               Next <ArrowRight className="w-4 h-4 ml-2" />

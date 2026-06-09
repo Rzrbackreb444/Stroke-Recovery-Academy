@@ -63,11 +63,11 @@ export default function AboutNick() {
       
       <main className="container mx-auto px-4 py-6 max-w-4xl">
         <div className="text-center mb-12">
-          <div className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-[#C9941A]/40">
+          <div className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-[#E2741B]/40">
             <img src={nickPortrait} alt="Nick Kremers" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-4xl font-bold mb-2">Nick Kremers</h1>
-          <p className="text-xl text-[#C9941A] mb-4">Stroke Survivor. Sasquatch. Legend in Progress.</p>
+          <p className="text-xl text-[#E2741B] mb-4">Stroke Survivor. Sasquatch. Legend in Progress.</p>
           <p className="text-gray-400 max-w-2xl mx-auto">
             Creator of the Sasquatch Doctrine - a comprehensive recovery methodology 
             born from personal experience and dedicated to helping stroke survivors 
@@ -75,23 +75,23 @@ export default function AboutNick() {
           </p>
         </div>
 
-        <Card className="bg-gradient-to-br from-orange-500/10 to-zinc-900 border-[#C9941A]/30 p-8 mb-8">
+        <Card className="bg-gradient-to-br from-orange-500/10 to-zinc-900 border-[#E2741B]/30 p-8 mb-8">
           <div className="flex items-start gap-4">
-            <Quote className="h-8 w-8 text-[#C9941A] flex-shrink-0" />
+            <Quote className="h-8 w-8 text-[#E2741B] flex-shrink-0" />
             <div>
               <p className="text-xl italic text-gray-200 mb-4">
                 "Recovery isn't healing — it's construction. You build with what you still have.
                 As long as that meat in your chest is still thumpin', your life is still pumpin'.
                 You are not done."
               </p>
-              <p className="text-[#C9941A] font-semibold">— Nick Kremers, Lavaca, Arkansas</p>
+              <p className="text-[#E2741B] font-semibold">— Nick Kremers, Lavaca, Arkansas</p>
             </div>
           </div>
         </Card>
 
         <div className="mb-12">
           <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-            <Heart className="h-6 w-6 text-[#C9941A]" />
+            <Heart className="h-6 w-6 text-[#E2741B]" />
             The Story
           </h2>
           <div className="space-y-4 text-gray-300 nick-bio">
@@ -106,7 +106,7 @@ export default function AboutNick() {
               that prognosis as fuel. He chose fuel. What followed was seven years of 
               relentless, daily, sometimes humiliating, always honest work — developing 
               what would become the{" "}
-              <span className="text-[#C9941A] font-semibold">Sasquatch Doctrine</span>:
+              <span className="text-[#E2741B] font-semibold">Sasquatch Doctrine</span>:
               a recovery methodology built not in a lab, but in a body that was supposed 
               to stop.
             </p>
@@ -122,7 +122,7 @@ export default function AboutNick() {
 
         <div className="mb-12">
           <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-            <Target className="h-6 w-6 text-[#C9941A]" />
+            <Target className="h-6 w-6 text-[#E2741B]" />
             The Sasquatch Doctrine
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -131,8 +131,8 @@ export default function AboutNick() {
               return (
                 <Card key={idx} className="bg-[#1a1a1a] border-[#333] p-4">
                   <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-[#C9941A]/20">
-                      <Icon className="h-5 w-5 text-[#C9941A]" />
+                    <div className="p-2 rounded-lg bg-[#E2741B]/20">
+                      <Icon className="h-5 w-5 text-[#E2741B]" />
                     </div>
                     <div>
                       <h3 className="font-semibold">{point.title}</h3>
@@ -147,7 +147,7 @@ export default function AboutNick() {
 
         <div className="mb-12">
           <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-            <Award className="h-6 w-6 text-[#C9941A]" />
+            <Award className="h-6 w-6 text-[#E2741B]" />
             The Journey
           </h2>
           <div className="relative">
@@ -155,9 +155,9 @@ export default function AboutNick() {
             <div className="space-y-6">
               {milestones.map((milestone, idx) => (
                 <div key={idx} className="flex gap-4 ml-4">
-                  <div className="w-3 h-3 rounded-full bg-[#C9941A] mt-2 -ml-1.5 relative z-10" />
+                  <div className="w-3 h-3 rounded-full bg-[#E2741B] mt-2 -ml-1.5 relative z-10" />
                   <div>
-                    <Badge className="bg-[#C9941A]/20 text-[#C9941A] mb-1">{milestone.year}</Badge>
+                    <Badge className="bg-[#E2741B]/20 text-[#E2741B] mb-1">{milestone.year}</Badge>
                     <h3 className="font-semibold">{milestone.title}</h3>
                     <p className="text-gray-400 text-sm">{milestone.description}</p>
                   </div>
@@ -169,7 +169,7 @@ export default function AboutNick() {
 
         <div className="mb-12">
           <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-            <Users className="h-6 w-6 text-[#C9941A]" />
+            <Users className="h-6 w-6 text-[#E2741B]" />
             The Mission
           </h2>
           <Card className="bg-[#1a1a1a] border-[#333] p-6">
@@ -179,33 +179,33 @@ export default function AboutNick() {
             </p>
             <ul className="space-y-3 text-gray-400">
               <li className="flex items-start gap-3">
-                <Star className="h-5 w-5 text-[#C9941A] flex-shrink-0 mt-0.5" />
+                <Star className="h-5 w-5 text-[#E2741B] flex-shrink-0 mt-0.5" />
                 <span>Every survivor can make progress, no matter how small it seems</span>
               </li>
               <li className="flex items-start gap-3">
-                <Star className="h-5 w-5 text-[#C9941A] flex-shrink-0 mt-0.5" />
+                <Star className="h-5 w-5 text-[#E2741B] flex-shrink-0 mt-0.5" />
                 <span>Community and support make the journey less lonely</span>
               </li>
               <li className="flex items-start gap-3">
-                <Star className="h-5 w-5 text-[#C9941A] flex-shrink-0 mt-0.5" />
+                <Star className="h-5 w-5 text-[#E2741B] flex-shrink-0 mt-0.5" />
                 <span>Tracking your progress helps you see the wins you might miss</span>
               </li>
               <li className="flex items-start gap-3">
-                <Star className="h-5 w-5 text-[#C9941A] flex-shrink-0 mt-0.5" />
+                <Star className="h-5 w-5 text-[#E2741B] flex-shrink-0 mt-0.5" />
                 <span>Your story matters and deserves to be told</span>
               </li>
             </ul>
           </Card>
         </div>
 
-        <Card className="bg-gradient-to-br from-orange-500/20 to-zinc-900 border-[#C9941A]/50 p-8 text-center">
+        <Card className="bg-gradient-to-br from-orange-500/20 to-zinc-900 border-[#E2741B]/50 p-8 text-center">
           <h2 className="text-2xl font-bold mb-4">Ready to Start Your Recovery Journey?</h2>
           <p className="text-gray-400 mb-6">
             Join thousands of survivors who are using the Sasquatch Doctrine to 
             reclaim their lives, one rep at a time.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button className="bg-[#C9941A] text-lg px-8" data-testid="button-start-free">
+            <Button className="bg-[#E2741B] text-lg px-8" data-testid="button-start-free">
               Start Free
               <ArrowRight className="h-5 w-5 ml-2" />
             </Button>
