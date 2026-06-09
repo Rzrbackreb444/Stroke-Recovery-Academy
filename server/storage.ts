@@ -173,6 +173,13 @@ export interface IStorage {
   getOpenPods(): Promise<AccountabilityPod[]>;
   getRecentPodActivity(podId: number, limit?: number): Promise<any[]>;
   
+  // Journal
+  getJournalEntries(userId: string): Promise<any[]>;
+  createJournalEntry(userId: string, data: any): Promise<any>;
+  getSharedEntries(filter?: string): Promise<any[]>;
+  getJournalInsights(userId: string): Promise<any>;
+  updateJournalEntry(id: number, userId: string, updates: any): Promise<any>;
+  
   // Reminders & Wellness
   getUserReminders(userId: string): Promise<any[]>;
   createReminder(reminder: any): Promise<any>;
@@ -2999,7 +3006,7 @@ export class DatabaseStorage implements IStorage {
   async getJournalEntries(userId: string): Promise<any[]> {
     try {
       const result = await db.execute(sql`
-        SELECT * FROM recovery_journals 
+        SELECT * FROM recovery_journals
         WHERE user_id = ${userId}
         ORDER BY created_at DESC
         LIMIT 100
@@ -3019,31 +3026,137 @@ export class DatabaseStorage implements IStorage {
       if (data.wins) contentParts.push(`Wins: ${data.wins}`);
       if (data.challenges) contentParts.push(`Challenges: ${data.challenges}`);
       if (data.tomorrowsGoal) contentParts.push(`Tomorrow's Goal: ${data.tomorrowsGoal}`);
-      const content = contentParts.join('\n\n') || 'Journal entry';
-      
-      // Parse mood to integer if it's a string
-      const moodMap: Record<string, number> = {
-        'great': 9, 'good': 7, 'okay': 5, 'struggling': 3, 'difficult': 2
-      };
-      const moodValue = typeof data.mood === 'string' ? moodMap[data.mood] || 5 : (data.mood || 5);
-      
+
+      // Reflections v2: composer modes
+      const wordCount = (data.content || data.reflection || data.freeText || '').split(/\s+/).filter((w: string) => w.length > 0).length;
+      const content = data.content || contentParts.join('\n\n') || 'Journal entry';
+      const moodLabel = data.moodLabel || (data.mood === 'good' || data.mood === 'great' ? 'good' : data.mood === 'okay' || data.mood === 'struggling' ? 'okay' : 'hard');
+      const energyLevel = data.energyLevel ? Math.min(5, Math.max(1, data.energyLevel)) : 3;
+
       const result = await db.execute(sql`
         INSERT INTO recovery_journals (
-          user_id, content, mood, energy, gratitude, wins, 
-          struggles, tomorrows_intention
+          user_id, content, mood, energy, gratitude, wins,
+          struggles, tomorrows_intention, tags, is_private,
+          entry_type, entry_sub_type, mood_label, energy_level,
+          is_shared, haiku_lines, photo_url, photo_caption,
+          voice_url, voice_transcript, word_count
         )
         VALUES (
-          ${userId}, ${content}, ${moodValue}, ${data.energyLevel || 5}, 
-          ${data.gratitude ? [data.gratitude] : null}, 
-          ${data.wins ? [data.wins] : null}, 
-          ${data.challenges ? [data.challenges] : null}, 
-          ${data.tomorrowsGoal || null}
+          ${userId}, ${content}, ${data.mood || 5}, ${data.energy || 5},
+          ${data.gratitude ? [data.gratitude] : null},
+          ${data.wins ? [data.wins] : null},
+          ${data.challenges ? [data.challenges] : null},
+          ${data.tomorrowsGoal || null},
+          ${data.tags || null},
+          ${data.isPrivate !== undefined ? data.isPrivate : true},
+          ${data.entryType || 'free'}, ${data.entrySubType || 'triumph'}, ${moodLabel}, ${energyLevel},
+          ${data.isShared || false},
+          ${data.haikuLines || null}, ${data.photoUrl || null}, ${data.photoCaption || null},
+          ${data.voiceUrl || null}, ${data.voiceTranscript || null}, ${wordCount}
         )
         RETURNING *
       `);
       return result.rows?.[0];
     } catch (error) {
       console.error("Error creating journal entry:", error);
+      throw error;
+    }
+  }
+
+  async getSharedEntries(filter?: string): Promise<any[]> {
+    try {
+      let sqlQuery = sql`
+        SELECT rj.*, u.first_name AS first_name, u.last_name AS last_name
+        FROM recovery_journals rj
+        LEFT JOIN users u ON rj.user_id = u.id
+        WHERE rj.is_shared = true AND rj.is_private = false
+      `;
+      if (filter === 'triumphs') {
+        sqlQuery = sql`
+          SELECT rj.*, u.first_name AS first_name, u.last_name AS last_name
+          FROM recovery_journals rj
+          LEFT JOIN users u ON rj.user_id = u.id
+          WHERE rj.is_shared = true AND rj.is_private = false AND rj.entry_sub_type = 'triumph'
+        `;
+      } else if (filter === 'pitfalls') {
+        sqlQuery = sql`
+          SELECT rj.*, u.first_name AS first_name, u.last_name AS last_name
+          FROM recovery_journals rj
+          LEFT JOIN users u ON rj.user_id = u.id
+          WHERE rj.is_shared = true AND rj.is_private = false AND rj.entry_sub_type = 'pitfall'
+        `;
+      } else if (filter === 'this-week') {
+        sqlQuery = sql`
+          SELECT rj.*, u.first_name AS first_name, u.last_name AS last_name
+          FROM recovery_journals rj
+          LEFT JOIN users u ON rj.user_id = u.id
+          WHERE rj.is_shared = true AND rj.is_private = false
+            AND rj.shared_at >= NOW() - INTERVAL '7 days'
+        `;
+      }
+      const result = await db.execute(sql`${sqlQuery} ORDER BY rj.shared_at DESC LIMIT 50`);
+      return result.rows || [];
+    } catch (error) {
+      console.error("Error fetching shared entries:", error);
+      return [];
+    }
+  }
+
+  async getJournalInsights(userId: string): Promise<any> {
+    try {
+      const stats = await db.execute(sql`
+        SELECT
+          COUNT(*) as total_entries,
+          COUNT(DISTINCT DATE(created_at)) as days_with_entries,
+          SUM(word_count) as total_words,
+          MAX(word_count) as longest_entry
+        FROM recovery_journals
+        WHERE user_id = ${userId}
+      `);
+
+      const moodTrends = await db.execute(sql`
+        SELECT
+          DATE_TRUNC('week', created_at) as week,
+          mood_label,
+          COUNT(*) as count
+        FROM recovery_journals
+        WHERE user_id = ${userId} AND mood_label IS NOT NULL
+        GROUP BY week, mood_label
+        ORDER BY week DESC
+        LIMIT 12
+      `);
+
+      const tagBreakdown = await db.execute(sql`
+        SELECT unnest(tags) as tag, COUNT(*) as count
+        FROM recovery_journals
+        WHERE user_id = ${userId} AND tags IS NOT NULL
+        GROUP BY tag
+        ORDER BY count DESC
+      `);
+
+      return {
+        stats: stats.rows?.[0] || {},
+        moodTrends: moodTrends.rows || [],
+        tagBreakdown: tagBreakdown.rows || [],
+      };
+    } catch (error) {
+      console.error("Error fetching journal insights:", error);
+      return { stats: {}, moodTrends: [], tagBreakdown: [] };
+    }
+  }
+
+  async updateJournalEntry(id: number, userId: string, updates: any): Promise<any> {
+    try {
+      const result = await db.execute(sql`
+        UPDATE recovery_journals
+        SET is_shared = ${updates.isShared},
+            shared_at = ${updates.isShared ? new Date() : null}
+        WHERE id = ${id} AND user_id = ${userId}
+        RETURNING *
+      `);
+      return result.rows?.[0];
+    } catch (error) {
+      console.error("Error updating journal entry:", error);
       throw error;
     }
   }
