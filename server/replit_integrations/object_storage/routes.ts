@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
+import { getObjectAclPolicy, ObjectPermission } from "./objectAcl";
 
 /**
  * Register object storage routes for file uploads.
@@ -73,6 +74,24 @@ export function registerObjectStorageRoutes(app: Express): void {
   app.get("/objects/:objectPath(*)", async (req, res) => {
     try {
       const objectFile = await objectStorageService.getObjectEntityFile(req.path);
+      // Enforce ACL only on objects explicitly marked private. Public objects
+      // and legacy objects without an ACL policy stay openly readable, so this
+      // is backward-compatible for avatars, lesson media, etc. Private objects
+      // (survivor journal photos/voice/PDFs) require the owner.
+      const aclPolicy = await getObjectAclPolicy(objectFile);
+      if (aclPolicy && aclPolicy.visibility === "private") {
+        const userId =
+          (req as any).user?.claims?.sub ?? (req as any).user?.id;
+        const allowed = await objectStorageService.canAccessObjectEntity({
+          userId,
+          objectFile,
+          requestedPermission: ObjectPermission.READ,
+        });
+        if (!allowed) {
+          // 404 (not 403) to avoid leaking object existence.
+          return res.status(404).json({ error: "Object not found" });
+        }
+      }
       await objectStorageService.downloadObject(objectFile, res);
     } catch (error) {
       console.error("Error serving object:", error);

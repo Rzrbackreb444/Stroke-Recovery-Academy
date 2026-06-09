@@ -141,7 +141,7 @@ export class WebhookHandlers {
                 updates.shippingStreet2 = addr.line2 || existing.shippingStreet2;
                 updates.shippingCity = addr.city || existing.shippingCity;
                 updates.shippingState = addr.state || existing.shippingState;
-                updates.shippingPostalCode = addr.postal_code || existing.shippingPostalCode;
+                updates.shippingPostcode = addr.postal_code || existing.shippingPostcode;
                 updates.shippingCountry = addr.country || existing.shippingCountry;
                 if (session.customer_details?.phone) {
                   updates.shippingPhone = session.customer_details.phone;

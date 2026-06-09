@@ -3063,42 +3063,166 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async getSharedEntries(filter?: string): Promise<any[]> {
+  async getSharedEntries(filter?: string, viewerId?: string): Promise<any[]> {
     try {
-      let sqlQuery = sql`
-        SELECT rj.*, u.first_name AS first_name, u.last_name AS last_name
+      let extra = sql``;
+      if (filter === 'triumphs') extra = sql` AND rj.entry_sub_type = 'triumph'`;
+      else if (filter === 'pitfalls') extra = sql` AND rj.entry_sub_type = 'pitfall'`;
+      else if (filter === 'this-week') extra = sql` AND rj.shared_at >= NOW() - INTERVAL '7 days'`;
+      const viewer = viewerId || null;
+      const result = await db.execute(sql`
+        SELECT rj.*, u.first_name AS first_name, u.last_name AS last_name,
+          COALESCE(rc.cnt, 0)::int AS reaction_count,
+          (vr.user_id IS NOT NULL) AS viewer_reacted
         FROM recovery_journals rj
         LEFT JOIN users u ON rj.user_id = u.id
-        WHERE rj.is_shared = true AND rj.is_private = false
-      `;
-      if (filter === 'triumphs') {
-        sqlQuery = sql`
-          SELECT rj.*, u.first_name AS first_name, u.last_name AS last_name
-          FROM recovery_journals rj
-          LEFT JOIN users u ON rj.user_id = u.id
-          WHERE rj.is_shared = true AND rj.is_private = false AND rj.entry_sub_type = 'triumph'
-        `;
-      } else if (filter === 'pitfalls') {
-        sqlQuery = sql`
-          SELECT rj.*, u.first_name AS first_name, u.last_name AS last_name
-          FROM recovery_journals rj
-          LEFT JOIN users u ON rj.user_id = u.id
-          WHERE rj.is_shared = true AND rj.is_private = false AND rj.entry_sub_type = 'pitfall'
-        `;
-      } else if (filter === 'this-week') {
-        sqlQuery = sql`
-          SELECT rj.*, u.first_name AS first_name, u.last_name AS last_name
-          FROM recovery_journals rj
-          LEFT JOIN users u ON rj.user_id = u.id
-          WHERE rj.is_shared = true AND rj.is_private = false
-            AND rj.shared_at >= NOW() - INTERVAL '7 days'
-        `;
-      }
-      const result = await db.execute(sql`${sqlQuery} ORDER BY rj.shared_at DESC LIMIT 50`);
+        LEFT JOIN (
+          SELECT entry_id, COUNT(*) AS cnt FROM journal_reactions GROUP BY entry_id
+        ) rc ON rc.entry_id = rj.id
+        LEFT JOIN journal_reactions vr ON vr.entry_id = rj.id AND vr.user_id = ${viewer}
+        WHERE rj.is_shared = true AND rj.is_private = false${extra}
+        ORDER BY rj.shared_at DESC
+        LIMIT 50
+      `);
       return result.rows || [];
     } catch (error) {
       console.error("Error fetching shared entries:", error);
       return [];
+    }
+  }
+
+  // "Felt this" reactions — only on shared, non-private entries. Returns the
+  // new count, or null when the entry isn't a valid shared target (route -> 404,
+  // no existence oracle).
+  async addJournalReaction(entryId: number, userId: string): Promise<{ count: number } | null> {
+    try {
+      const check = await db.execute(sql`
+        SELECT 1 FROM recovery_journals WHERE id = ${entryId} AND is_shared = true AND is_private = false
+      `);
+      if (!check.rows?.length) return null;
+      await db.execute(sql`
+        INSERT INTO journal_reactions (entry_id, user_id)
+        VALUES (${entryId}, ${userId})
+        ON CONFLICT (entry_id, user_id) DO NOTHING
+      `);
+      const c = await db.execute(sql`SELECT COUNT(*)::int AS count FROM journal_reactions WHERE entry_id = ${entryId}`);
+      return { count: (c.rows?.[0] as any)?.count ?? 0 };
+    } catch (error) {
+      console.error("Error adding journal reaction:", error);
+      throw error;
+    }
+  }
+
+  async removeJournalReaction(entryId: number, userId: string): Promise<{ count: number } | null> {
+    try {
+      const check = await db.execute(sql`
+        SELECT 1 FROM recovery_journals WHERE id = ${entryId} AND is_shared = true AND is_private = false
+      `);
+      if (!check.rows?.length) return null;
+      await db.execute(sql`DELETE FROM journal_reactions WHERE entry_id = ${entryId} AND user_id = ${userId}`);
+      const c = await db.execute(sql`SELECT COUNT(*)::int AS count FROM journal_reactions WHERE entry_id = ${entryId}`);
+      return { count: (c.rows?.[0] as any)?.count ?? 0 };
+    } catch (error) {
+      console.error("Error removing journal reaction:", error);
+      throw error;
+    }
+  }
+
+  // Real impact numbers only — sums over actually-confirmed author earnings.
+  // Everything is 0 until real sales land; nothing is fabricated. accountsFunded
+  // is derived transparently from the platform giveback at the $19 digital price.
+  async getJournalImpact(userId: string): Promise<{ userEarningsCents: number; globalGivebackCents: number; accountsFunded: number }> {
+    try {
+      // Reads the LIVE earnings table (author_earnings) that real marketplace
+      // fulfillment writes to via recordAuthorEarning. Counts every confirmed
+      // sale (pending/available/paid/held), excludes failed/refunded. Stays $0
+      // until a real sale lands — no fabrication.
+      const mine = await db.execute(sql`
+        SELECT COALESCE(SUM(net_earnings), 0)::int AS cents
+        FROM author_earnings
+        WHERE author_id = ${userId} AND status IN ('pending', 'available', 'paid', 'held')
+      `);
+      const global = await db.execute(sql`
+        SELECT COALESCE(SUM(platform_fee), 0)::int AS cents
+        FROM author_earnings
+        WHERE status IN ('pending', 'available', 'paid', 'held')
+      `);
+      const userEarningsCents = (mine.rows?.[0] as any)?.cents ?? 0;
+      const globalGivebackCents = (global.rows?.[0] as any)?.cents ?? 0;
+      const accountsFunded = Math.floor(globalGivebackCents / 1900);
+      return { userEarningsCents, globalGivebackCents, accountsFunded };
+    } catch (error) {
+      console.error("Error computing journal impact:", error);
+      return { userEarningsCents: 0, globalGivebackCents: 0, accountsFunded: 0 };
+    }
+  }
+
+  // Compile a survivor's own journal entries (oldest -> newest) into a Book
+  // Studio draft. Pure passthrough of their words — no AI, no fabrication.
+  // Returns the new project id, or null when there's nothing to compile.
+  async createBookProjectFromJournal(userId: string, authorName: string): Promise<{ id: number } | null> {
+    try {
+      const rowsDesc = await this.getJournalEntries(userId);
+      if (!rowsDesc.length) return null;
+      const entries = [...rowsDesc].reverse();
+
+      const esc = (s: any) =>
+        String(s ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+
+      const htmlParts: string[] = [];
+      const textParts: string[] = [];
+      for (const e of entries) {
+        const d = e.created_at ? new Date(e.created_at) : null;
+        const dateStr = d
+          ? d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+          : "Undated";
+        const moodSuffix = e.mood_label ? ` — ${esc(e.mood_label)}` : "";
+        htmlParts.push(`<h2>${esc(dateStr)}${moodSuffix}</h2>`);
+        textParts.push(`${dateStr}${e.mood_label ? " — " + e.mood_label : ""}`);
+
+        const content = String(e.content || "").trim();
+        for (const para of content.split(/\n+/).map((p) => p.trim()).filter(Boolean)) {
+          htmlParts.push(`<p>${esc(para)}</p>`);
+          textParts.push(para);
+        }
+
+        const transcript = String(e.voice_transcript || "").trim();
+        if (transcript) {
+          htmlParts.push(`<blockquote>${esc(transcript)}</blockquote>`);
+          textParts.push(transcript);
+        }
+
+        const caption = String(e.photo_caption || "").trim();
+        if (caption) {
+          htmlParts.push(`<p><em>Photo — ${esc(caption)}</em></p>`);
+          textParts.push(`Photo — ${caption}`);
+        }
+      }
+
+      const manuscriptHtml = htmlParts.join("\n");
+      const manuscriptText = textParts.join("\n\n");
+      const wordCount = manuscriptText.split(/\s+/).filter((w) => w.length > 0).length;
+      const subtitle = `${entries.length} ${entries.length === 1 ? "entry" : "entries"} from the fight`;
+
+      const result = await db.execute(sql`
+        INSERT INTO book_projects (
+          owner_id, title, subtitle, author_name, genre,
+          manuscript_html, manuscript_text, word_count, status, current_step
+        )
+        VALUES (
+          ${userId}, 'My Reflections', ${subtitle}, ${authorName || "A Survivor"}, 'memoir',
+          ${manuscriptHtml}, ${manuscriptText}, ${wordCount}, 'draft', 1
+        )
+        RETURNING id
+      `);
+      const row = result.rows?.[0] as any;
+      return row ? { id: Number(row.id) } : null;
+    } catch (error) {
+      console.error("Error compiling journal into book project:", error);
+      throw error;
     }
   }
 
@@ -3931,6 +4055,237 @@ Your recovery is your job right now. But financial recovery deserves attention t
         createdAt: new Date("2025-02-05"),
         updatedAt: new Date("2025-02-05"),
         readTime: 8,
+      },
+      {
+        id: 9,
+        slug: "journaling-after-stroke-rewires-your-brain",
+        title: "Why Journaling After a Stroke Rewires Your Brain",
+        excerpt: "A cheap spiral notebook was the rehab tool nobody warned me about. Here's the science on why journaling after a stroke is reps for your brain — not busywork.",
+        content: `Three months after my stroke, a therapist handed me a cheap spiral notebook and told me to write one sentence a day.
+
+I thought it was busywork. I was wrong.
+
+## The science nobody mentions in the hospital
+
+Neuroplasticity is the brain's ability to rebuild — to route function around dead tissue by firing new pathways over and over until they hold. Reps build it. You already know that part.
+
+What the discharge papers don't tell you: language is reps too.
+
+When you put words to what happened — the fall, the fear, the small win nobody else noticed — you fire the language network, the memory network, and the emotional-regulation network at the same time. Expressive writing has decades of research behind it. James Pennebaker's work showed people who wrote about hard experiences had measurably better health outcomes than people who wrote about nothing at all.
+
+For a stroke survivor, that's not a wellness hack. That's rehab.
+
+## What journaling actually does for recovery
+
+**It externalizes the chaos.** A stroke scrambles your sense of time and self. Writing pins it down. Once it's on the page, your brain stops spending energy holding it — and frees that energy for the next rep.
+
+**It tracks progress your eyes miss.** Day to day, you feel stuck. But read back three weeks and you'll see it — the grip that came back, the word you couldn't find that you now use without thinking. Progress is invisible in the moment and obvious in the record.
+
+**It regulates the emotional avalanche.** Naming a feeling lowers its charge. That's not soft — that's measurable. Survivors who process the grief instead of swallowing it tend to stay in the fight longer.
+
+## You don't need a notebook
+
+Here's the part that would've saved me a year of frustration: you don't have to write with a broken hand.
+
+Our [Reflections journal](/recovery/journal) lets you talk instead of type — record a voice note and it transcribes itself. Add a photo of today's win. Everything autosaves as you go, so a dropped connection or a tired hand never costs you your words.
+
+One working hand, one working voice, one sentence. That's the whole bar.
+
+## Start with one sentence
+
+You don't need to write your memoir today. You need to not write zero.
+
+Open [Reflections](/recovery/journal) and put down one true thing about today. Tomorrow, one more.
+
+That's how the pathway gets built — one rep at a time. Heart's still thumpin'.`,
+        authorId: "nick-kremers",
+        authorName: "Nick Kremers",
+        category: "science",
+        tags: ["journaling", "neuroplasticity", "recovery", "expressive writing", "brain health"],
+        metaTitle: "Why Journaling After a Stroke Rewires Your Brain | Stroke Recovery Academy",
+        metaDescription: "Journaling after a stroke isn't busywork — it's reps for your brain. Nick Kremers breaks down the neuroplasticity and expressive-writing science, and how to start with one sentence.",
+        focusKeyphrase: "journaling after stroke",
+        featuredImage: "/images/journaling-brain.jpg",
+        status: "published",
+        featured: false,
+        viewCount: 0,
+        likeCount: 0,
+        commentCount: 0,
+        createdAt: new Date("2026-05-12"),
+        updatedAt: new Date("2026-05-12"),
+        readTime: 6,
+      },
+      {
+        id: 10,
+        slug: "how-to-start-a-stroke-recovery-journal",
+        title: "How to Start a Stroke Recovery Journal (Even With One Working Hand)",
+        excerpt: "A practical, no-pressure guide to starting a stroke recovery journal when typing is hard — voice notes, photos, and the one-sentence rule that actually sticks.",
+        content: `Most "how to journal" advice assumes two good hands, a quiet hour, and a calm mind. After a stroke, you might have none of those.
+
+This guide is for the rest of us.
+
+## Forget the blank page
+
+The blank page is the enemy. It asks for too much. So we don't ask for a page — we ask for one sentence.
+
+One true sentence about today. That's the entire assignment. "My arm felt heavy." "I walked to the mailbox." "I'm angry and I don't know why." All of those count.
+
+The one-sentence rule works because it removes the excuse. You're never too tired for one sentence.
+
+## Use the tool that fits the day
+
+Some days your hand cooperates. Most days early on, it won't. So don't fight it.
+
+- **Talk it.** In [Reflections](/recovery/journal) you can record a voice note instead of typing. It transcribes for you — your words, on the page, without the keyboard battle. For survivors working through aphasia, speaking is often the lower hill to climb.
+- **Show it.** Snap a photo of the win — the full glass you didn't spill, the shoes you tied, the path you walked. Some progress doesn't fit in words.
+- **Type it when you can.** On a good day, write more. On a bad day, write one line. Both keep the streak alive.
+
+## Make it stick to something you already do
+
+A habit needs an anchor. Pick a thing you already do every day and bolt the journal to it.
+
+After your morning coffee. After your last therapy rep. Before you turn off the light. The anchor does the remembering so you don't have to.
+
+## Don't edit. Don't perform.
+
+Nobody's grading this. Spelling doesn't matter. Grammar doesn't matter. This isn't for an audience — it's for the version of you reading it back in a month who needs proof the work is paying off.
+
+Your journal is private by default. You choose if a single entry ever gets shared.
+
+## The payoff
+
+Six weeks in, you'll have something most survivors never get: a record. Proof of the climb. On the days the wall feels permanent, you'll flip back and see exactly how far you've already come.
+
+Start now — one sentence in [Reflections](/recovery/journal). Don't do zero.`,
+        authorId: "nick-kremers",
+        authorName: "Nick Kremers",
+        category: "philosophy",
+        tags: ["journaling", "stroke recovery", "habits", "voice notes", "getting started"],
+        metaTitle: "How to Start a Stroke Recovery Journal (Even With One Hand) | Stroke Recovery Academy",
+        metaDescription: "A practical, no-pressure guide to starting a stroke recovery journal when typing is hard. Voice notes, photos, and the one-sentence rule that actually sticks.",
+        focusKeyphrase: "stroke recovery journal",
+        featuredImage: "/images/start-journal.jpg",
+        status: "published",
+        featured: false,
+        viewCount: 0,
+        likeCount: 0,
+        commentCount: 0,
+        createdAt: new Date("2026-05-19"),
+        updatedAt: new Date("2026-05-19"),
+        readTime: 5,
+      },
+      {
+        id: 11,
+        slug: "voice-journaling-for-aphasia-and-speech-recovery",
+        title: "Voice Journaling for Aphasia and Speech Recovery",
+        excerpt: "When the words are in your head but won't come out, a keyboard makes it worse. Here's how voice journaling turns daily reflection into speech practice.",
+        content: `Aphasia is its own particular hell. You know what you want to say. The thought is right there. But the road from thought to speech is washed out, and watching people wait for you — watching their eyes drift — wears you down fast.
+
+Writing it doesn't always help, because for many survivors the writing pathway took the same hit as the speaking one.
+
+So we use the voice. On purpose. As practice.
+
+## Why speaking out loud is rehab
+
+Speech-language therapy runs on one principle: more practice drives more recovery. Not just better practice in the clinic — more of it, everywhere, in between sessions.
+
+Voice journaling smuggles practice into your day. You're not "doing exercises." You're just talking about your day. But every word you push out is a rep on the exact pathway you're trying to rebuild.
+
+And because you're talking about something real — your day, your win, your frustration — the words come easier than they do from a flashcard. Meaning pulls language out when drills can't.
+
+## How to do it
+
+In [Reflections](/recovery/journal), hit record and just talk. Don't script it. Don't restart every time a word sticks — push through, the way you would in therapy.
+
+When you stop, it transcribes what you said. Two things happen:
+
+1. You get your entry without ever touching a keyboard.
+2. You get a mirror. Reading back the transcript shows you which words landed and which didn't — quiet feedback, no audience, no pressure.
+
+If the transcript is rough on a hard day, that's data, not failure. Compare it to last month's. That's the progress speech therapy is famously bad at showing you in the moment.
+
+## Keep the bar on the floor
+
+Some days you'll get a paragraph. Some days you'll get four words and they'll be a fight. Both count. Both are reps.
+
+The goal was never a perfect recording. The goal is that you spoke today instead of going silent.
+
+## Pair it with your therapist
+
+Bring your transcripts to your speech-language pathologist. A month of real-world samples is gold for them — far more useful than how you sound in a clinic chair.
+
+Open [Reflections](/recovery/journal), hit record, and say one true thing out loud. That's the rep.`,
+        authorId: "nick-kremers",
+        authorName: "Nick Kremers",
+        category: "therapy",
+        tags: ["aphasia", "speech recovery", "voice journaling", "speech therapy", "journaling"],
+        metaTitle: "Voice Journaling for Aphasia and Speech Recovery | Stroke Recovery Academy",
+        metaDescription: "When words are in your head but won't come out, a keyboard makes it worse. Learn how voice journaling turns daily reflection into real speech practice for aphasia recovery.",
+        focusKeyphrase: "voice journaling for aphasia",
+        featuredImage: "/images/voice-journaling.jpg",
+        status: "published",
+        featured: false,
+        viewCount: 0,
+        likeCount: 0,
+        commentCount: 0,
+        createdAt: new Date("2026-05-26"),
+        updatedAt: new Date("2026-05-26"),
+        readTime: 6,
+      },
+      {
+        id: 12,
+        slug: "turn-your-recovery-journal-into-a-book",
+        title: "Turn Your Recovery Journal Into a Book",
+        excerpt: "The entries you write to survive can become something more — a book that helps the next survivor, and maybe a little income. Here's how to compile yours.",
+        content: `I never set out to write a book. I set out to not lose my mind.
+
+I wrote to track the reps, to vent the rage, to remember the wins before they slipped away. Years later, those scattered entries became the spine of everything I teach now.
+
+Your journal can do the same thing. Here's how.
+
+## Your words are already the hard part
+
+People freeze at "write a book" because they picture a blank document and a year of discipline. But if you've been journaling, you've already done the part that stops everyone else — you've put true words on the page, consistently, about something that matters.
+
+The book isn't a new project. It's a compile.
+
+## From entries to manuscript
+
+In [Reflections](/recovery/journal), your entries can be compiled — in order, in your words — straight into a Book Studio draft. No AI rewriting your voice. No ghostwriter flattening your story. Your reps, your rage, your wins, lined up as a manuscript you can shape.
+
+From there you can edit, arrange, and add the connective tissue. The raw material — the honest daily record — is the part that was always going to be hardest, and you already have it.
+
+## Why bother making it a book
+
+**Because the next survivor needs it.** The most useful thing I ever read in recovery wasn't from a doctor. It was from someone six months ahead of me who'd written down what it actually felt like. You are six months ahead of someone right now.
+
+**Because it closes the loop.** Turning the worst chapter of your life into something that helps somebody else — that changes what the stroke means. It stops being only the thing that happened to you.
+
+**Because it can pay.** When a survivor's book sells on our marketplace, the author earns from it. We don't promise numbers — your impact stats start at zero and only move when a real sale lands, no fabricated figures. But the door is open. Your story can carry weight and put something back in your pocket.
+
+## Start where you are
+
+You don't need a finished book today. You need entries. The book is downstream of the habit.
+
+Open [Reflections](/recovery/journal), keep writing the true thing each day, and let the manuscript build itself one entry at a time. When you're ready, compile it.
+
+Heart's still thumpin'. So is your story.`,
+        authorId: "nick-kremers",
+        authorName: "Nick Kremers",
+        category: "income",
+        tags: ["journaling", "writing a book", "survivor income", "book studio", "stroke story"],
+        metaTitle: "Turn Your Recovery Journal Into a Book | Stroke Recovery Academy",
+        metaDescription: "The entries you write to survive can become a book that helps the next survivor — and maybe earns a little income. Learn how to compile your stroke recovery journal into a manuscript.",
+        focusKeyphrase: "turn recovery journal into a book",
+        featuredImage: "/images/journal-to-book.jpg",
+        status: "published",
+        featured: false,
+        viewCount: 0,
+        likeCount: 0,
+        commentCount: 0,
+        createdAt: new Date("2026-06-02"),
+        updatedAt: new Date("2026-06-02"),
+        readTime: 6,
       },
     ];
 

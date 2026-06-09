@@ -3,9 +3,9 @@
    - Offline caching for unlocked course assets (P4-04)
 */
 
-const STATIC_CACHE = 'sra-static-v2';
-const COURSE_CACHE = 'sra-course-v2';
-const RUNTIME_CACHE = 'sra-runtime-v2';
+const STATIC_CACHE = 'sra-static-v5';
+const COURSE_CACHE = 'sra-course-v5';
+const RUNTIME_CACHE = 'sra-runtime-v5';
 const CACHE_VERSIONS = [STATIC_CACHE, COURSE_CACHE, RUNTIME_CACHE];
 
 const STATIC_ASSETS = [
@@ -68,6 +68,12 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
+
+  // Never intercept API requests. They are per-user and auth-bearing; the
+  // stale-while-revalidate path below served stale list data after writes
+  // (a saved journal entry never appeared until a hard reload) and could leak
+  // one user's cached API response to the next user on a shared browser.
+  if (url.pathname.startsWith('/api/')) return;
 
   // HTML navigations
   if (req.mode === 'navigate' || (req.headers.get('accept') || '').includes('text/html')) {

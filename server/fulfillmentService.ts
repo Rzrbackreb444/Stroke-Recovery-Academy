@@ -131,7 +131,11 @@ async function fulfillDigitalProduct(
   edition: BookEdition
 ): Promise<{ success: boolean; downloadUrl?: string; error?: string }> {
   try {
-    let downloadUrl = edition.epubUrl || edition.interiorPdfUrl;
+    // Personalized products (Reflections) pre-stamp the per-buyer file on the
+    // order item BEFORE checkout. Prefer it so fulfillment never overwrites a
+    // personalized PDF with the edition's static one. Safe for every existing
+    // order — item.downloadUrl is null until fulfillment.
+    let downloadUrl = item.downloadUrl || edition.epubUrl || edition.interiorPdfUrl;
     
     if (!downloadUrl) {
       return { success: false, error: 'No digital file available' };
@@ -164,6 +168,10 @@ async function fulfillPrintProduct(
   listing: MarketplaceListing
 ): Promise<{ success: boolean; luluOrderId?: string; error?: string }> {
   try {
+    // Prefer a personalized interior pre-stamped on the order item (Reflections)
+    // over the edition's static interior, so a paid print never ships the wrong
+    // content. Null on every existing order, so behavior is unchanged for them.
+    const interiorSourceUrl = item.downloadUrl || edition.interiorPdfUrl;
     if (!isLuluConfigured()) {
       // Hard fail: never silently fake a print order on a real customer purchase.
       console.error('[fulfillment] Lulu not configured — rejecting print fulfillment for order', order.orderNumber);
@@ -180,7 +188,7 @@ async function fulfillPrintProduct(
       };
     }
 
-    if (!edition.interiorPdfUrl || !edition.coverPdfUrl) {
+    if (!interiorSourceUrl || !edition.coverPdfUrl) {
       const printJob = await storage.createLuluPrintJob({
         orderId: order.id,
         orderItemId: item.id,
@@ -202,7 +210,7 @@ async function fulfillPrintProduct(
     const printableResult = await createPrintable({
       externalId: `${order.orderNumber}-${item.id}`,
       title: listing.title,
-      interiorSourceUrl: edition.interiorPdfUrl,
+      interiorSourceUrl,
       coverSourceUrl: edition.coverPdfUrl,
       podPackageId,
     });
@@ -245,7 +253,7 @@ async function fulfillPrintProduct(
         orderItemId: item.id,
         status: 'failed',
         quantity: item.quantity,
-        interiorSourceUrl: edition.interiorPdfUrl,
+        interiorSourceUrl,
         coverSourceUrl: edition.coverPdfUrl,
         errorMessage: printJobResult.error || 'Failed to create Lulu print job',
       });
@@ -259,7 +267,7 @@ async function fulfillPrintProduct(
       status: 'submitted',
       quantity: item.quantity,
       productId: printableResult.printableId,
-      interiorSourceUrl: edition.interiorPdfUrl,
+      interiorSourceUrl,
       coverSourceUrl: edition.coverPdfUrl,
       shippingLevel: (order.shippingMethod?.toUpperCase() as any) || 'GROUND',
       estimatedShipDate: printJobResult.estimatedShipDate ? new Date(printJobResult.estimatedShipDate) : undefined,

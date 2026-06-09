@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect, useCallback } from "react";
+import { useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -13,8 +14,21 @@ import {
   Lock, PenTool, Feather, Camera, Mic2, Check,
   HeartHandshake, Shield, Sparkles, BookOpen,
   Music, BookText, EyeOff, Globe2, CloudRain, Sun, Cloud,
-  Activity, Heart, LifeBuoy
+  Activity, Heart, LifeBuoy, Loader2, X, Square, Trash2, Download, Printer
 } from "lucide-react";
+
+const DRAFT_KEY = "sra:reflections:draft";
+
+function formatCents(cents: number): string {
+  const dollars = (cents || 0) / 100;
+  return dollars % 1 === 0 ? `$${dollars.toFixed(0)}` : `$${dollars.toFixed(2)}`;
+}
+
+function fmtTime(secs: number): string {
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
 
 const PROMPT_CHIPS = [
   "What's one small thing?",
@@ -58,6 +72,29 @@ export default function RecoveryJournal() {
   const [photoCaption, setPhotoCaption] = useState("");
   const [communityFilter, setCommunityFilter] = useState<"all" | "triumphs" | "pitfalls" | "this-week">("all");
 
+  // Photo capture
+  const [photoUrl, setPhotoUrl] = useState<string>("");
+  const [photoPreview, setPhotoPreview] = useState<string>("");
+  const [photoUploading, setPhotoUploading] = useState(false);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+
+  // Voice capture
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordSecs, setRecordSecs] = useState(0);
+  const [voiceUrl, setVoiceUrl] = useState<string>("");
+  const [voiceTranscript, setVoiceTranscript] = useState<string>("");
+  const [voiceUploading, setVoiceUploading] = useState(false);
+  const [transcriptFailed, setTranscriptFailed] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const recordTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Autosave status
+  const [savedAt, setSavedAt] = useState<number | null>(null);
+  const draftLoadedRef = useRef(false);
+
+  const [, navigate] = useLocation();
+
   // Data queries
   const { data: entries, isLoading: entriesLoading } = useQuery<any[]>({
     queryKey: ["/api/recovery/journal"],
@@ -67,6 +104,10 @@ export default function RecoveryJournal() {
     queryKey: ["/api/recovery/journal/insights"],
   });
 
+  const { data: impact } = useQuery<{ userEarningsCents: number; globalGivebackCents: number; accountsFunded: number }>({
+    queryKey: ["/api/recovery/journal/impact"],
+  });
+
   const { data: communityEntries } = useQuery<any[]>({
     queryKey: ["/api/recovery/journal/community", { filter: communityFilter }],
   });
@@ -74,20 +115,51 @@ export default function RecoveryJournal() {
   // Mutations
   const createMutation = useMutation({
     mutationFn: async (data: any) => {
-      return apiRequest("POST", "/api/recovery/journal", data);
+      const res = await apiRequest("POST", "/api/recovery/journal", data);
+      return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (newEntry: any) => {
+      // Optimistically reflect the saved entry so counts + unlocks update
+      // instantly — don't wait on a background refetch to settle.
+      if (newEntry && newEntry.id != null) {
+        queryClient.setQueryData<any[]>(["/api/recovery/journal"], (old) =>
+          Array.isArray(old) ? [newEntry, ...old] : [newEntry],
+        );
+        queryClient.setQueryData<any>(["/api/recovery/journal/insights"], (old) => {
+          const s = (old && old.stats) || {};
+          return {
+            ...(old || {}),
+            stats: {
+              ...s,
+              total_entries: Number(s.total_entries || 0) + 1,
+              total_words: Number(s.total_words || 0) + Number(newEntry.word_count || 0),
+            },
+            moodTrends: old?.moodTrends || [],
+            tagBreakdown: old?.tagBreakdown || [],
+          };
+        });
+      }
       queryClient.invalidateQueries({ queryKey: ["/api/recovery/journal"] });
       queryClient.invalidateQueries({ queryKey: ["/api/recovery/journal/insights"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/recovery/journal/impact"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/recovery/journal/community"] });
       toast({ title: "Reflection saved.", description: "It's yours, always." });
       // Reset composer
       setFreeText("");
       setHaikuLines(["", "", ""]);
       setPhotoCaption("");
+      setPhotoUrl("");
+      setPhotoPreview("");
+      setVoiceUrl("");
+      setVoiceTranscript("");
+      setTranscriptFailed(false);
+      setRecordSecs(0);
       setIsShared(false);
       setSelectedTags([]);
       setEnergy(3);
       setMoodLabel("okay");
+      setSavedAt(null);
+      try { localStorage.removeItem(DRAFT_KEY); } catch {}
     },
     onError: () => {
       toast({ title: "Error", description: "Could not save entry", variant: "destructive" });
@@ -99,8 +171,224 @@ export default function RecoveryJournal() {
     else setSelectedTags([...selectedTags, t]);
   };
 
+  // ─── Debounced localStorage autosave (the draft, not a saved entry) ────────
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        const d = JSON.parse(raw);
+        if (typeof d.freeText === "string") setFreeText(d.freeText);
+        if (Array.isArray(d.haikuLines)) setHaikuLines(d.haikuLines);
+        if (typeof d.photoCaption === "string") setPhotoCaption(d.photoCaption);
+        if (d.entryMode) setEntryMode(d.entryMode);
+        if (d.entrySubType) setEntrySubType(d.entrySubType);
+        if (d.moodLabel) setMoodLabel(d.moodLabel);
+        if (typeof d.energy === "number") setEnergy(d.energy);
+        if (Array.isArray(d.selectedTags)) setSelectedTags(d.selectedTags);
+      }
+    } catch {}
+    draftLoadedRef.current = true;
+  }, []);
+
+  useEffect(() => {
+    if (!draftLoadedRef.current) return;
+    const hasContent = freeText.trim() || haikuLines.some((l) => l.trim()) || photoCaption.trim();
+    if (!hasContent) return;
+    const handle = setTimeout(() => {
+      try {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify({
+          freeText, haikuLines, photoCaption, entryMode, entrySubType, moodLabel, energy, selectedTags,
+        }));
+        setSavedAt(Date.now());
+      } catch {}
+    }, 800);
+    return () => clearTimeout(handle);
+  }, [freeText, haikuLines, photoCaption, entryMode, entrySubType, moodLabel, energy, selectedTags]);
+
+  // ─── Photo capture ─────────────────────────────────────────────────────────
+  const handlePhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (e.target) e.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "That's not an image", description: "Pick a photo file.", variant: "destructive" });
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast({ title: "Photo too big", description: "Keep it under 10MB.", variant: "destructive" });
+      return;
+    }
+    setPhotoUploading(true);
+    setPhotoPreview(URL.createObjectURL(file));
+    try {
+      const urlRes = await apiRequest("POST", "/api/recovery/journal/photo/upload-url", {});
+      const { uploadURL, objectPath } = await urlRes.json();
+      const put = await fetch(uploadURL, { method: "PUT", body: file, headers: { "Content-Type": file.type } });
+      if (!put.ok) throw new Error("upload failed");
+      const finRes = await apiRequest("POST", "/api/recovery/journal/photo/finalize", { objectPath });
+      const { photoUrl: savedUrl } = await finRes.json();
+      setPhotoUrl(savedUrl);
+      toast({ title: "Photo added." });
+    } catch (err) {
+      setPhotoPreview("");
+      toast({ title: "Couldn't add that photo", description: "Try again.", variant: "destructive" });
+    } finally {
+      setPhotoUploading(false);
+    }
+  };
+
+  const clearPhoto = () => {
+    setPhotoUrl("");
+    setPhotoPreview("");
+  };
+
+  // ─── Voice capture (MediaRecorder) ───────────────────────────────────────────
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mr = new MediaRecorder(stream);
+      chunksRef.current = [];
+      mr.ondataavailable = (ev) => { if (ev.data.size > 0) chunksRef.current.push(ev.data); };
+      mr.onstop = async () => {
+        stream.getTracks().forEach((t) => t.stop());
+        if (recordTimerRef.current) clearInterval(recordTimerRef.current);
+        const blob = new Blob(chunksRef.current, { type: mr.mimeType || "audio/webm" });
+        await uploadVoice(blob);
+      };
+      mr.start();
+      mediaRecorderRef.current = mr;
+      setIsRecording(true);
+      setRecordSecs(0);
+      setVoiceUrl("");
+      setVoiceTranscript("");
+      setTranscriptFailed(false);
+      recordTimerRef.current = setInterval(() => setRecordSecs((s) => s + 1), 1000);
+    } catch (err) {
+      toast({ title: "Mic blocked", description: "Allow microphone access to record.", variant: "destructive" });
+    }
+  };
+
+  const stopRecording = () => {
+    const mr = mediaRecorderRef.current;
+    if (mr && mr.state !== "inactive") mr.stop();
+    setIsRecording(false);
+  };
+
+  const uploadVoice = async (blob: Blob) => {
+    if (blob.size === 0) return;
+    if (blob.size > 25 * 1024 * 1024) {
+      toast({ title: "Recording too long", description: "Keep it under 25MB.", variant: "destructive" });
+      return;
+    }
+    setVoiceUploading(true);
+    try {
+      const form = new FormData();
+      form.append("audio", blob, "voice.webm");
+      const res = await fetch("/api/recovery/journal/voice", { method: "POST", body: form, credentials: "include" });
+      if (!res.ok) throw new Error("voice upload failed");
+      const data = await res.json();
+      setVoiceUrl(data.voiceUrl || "");
+      setVoiceTranscript((data.transcript || "").trim());
+      setTranscriptFailed(!!data.transcriptionFailed);
+      toast({ title: "Voice note saved.", description: data.transcriptionFailed ? "Audio saved — transcription unavailable." : "Transcribed for you." });
+    } catch (err) {
+      toast({ title: "Couldn't save voice note", description: "Try again.", variant: "destructive" });
+    } finally {
+      setVoiceUploading(false);
+    }
+  };
+
+  const clearVoice = () => {
+    setVoiceUrl("");
+    setVoiceTranscript("");
+    setTranscriptFailed(false);
+    setRecordSecs(0);
+  };
+
+  useEffect(() => () => { if (recordTimerRef.current) clearInterval(recordTimerRef.current); }, []);
+
+  // ─── "Felt this" reactions (optimistic) ──────────────────────────────────────
+  const reactionMutation = useMutation({
+    mutationFn: async ({ entryId, reacted }: { entryId: number; reacted: boolean }) => {
+      const method = reacted ? "DELETE" : "POST";
+      const res = await apiRequest(method, `/api/recovery/journal/${entryId}/react`);
+      return res.json();
+    },
+    onMutate: async ({ entryId, reacted }) => {
+      const key = ["/api/recovery/journal/community", { filter: communityFilter }];
+      await queryClient.cancelQueries({ queryKey: key });
+      const prev = queryClient.getQueryData<any[]>(key);
+      queryClient.setQueryData<any[]>(key, (old) =>
+        (old || []).map((e) => e.id === entryId
+          ? { ...e, viewer_reacted: !reacted, reaction_count: Math.max(0, (e.reaction_count || 0) + (reacted ? -1 : 1)) }
+          : e));
+      return { prev, key };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.prev) queryClient.setQueryData(ctx.key, ctx.prev);
+      toast({ title: "Couldn't save that", variant: "destructive" });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/recovery/journal/community"] });
+    },
+  });
+
+  // ─── Monetization ─────────────────────────────────────────────────────────
+  const compileBookMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/recovery/journal/compile-book", {});
+      return res.json();
+    },
+    onSuccess: (data: any) => {
+      toast({ title: "Draft compiled.", description: "Opening Book Studio…" });
+      navigate(`/book-studio/${data.projectId}`);
+    },
+    onError: (err: any) => {
+      toast({ title: "Couldn't compile", description: err?.message || "Write at least one reflection first.", variant: "destructive" });
+    },
+  });
+
+  const checkoutMutation = useMutation({
+    mutationFn: async (editionType: "digital" | "print") => {
+      const res = await apiRequest("POST", "/api/recovery/journal/checkout", { editionType });
+      return res.json();
+    },
+    onSuccess: (data: any) => {
+      if (data?.checkoutUrl) window.location.href = data.checkoutUrl;
+    },
+    onError: (err: any) => {
+      toast({ title: "Couldn't start checkout", description: err?.message || "Try again.", variant: "destructive" });
+    },
+  });
+
   const handleSave = () => {
-    const content = freeText || haikuLines.join("\n") || photoCaption || "Reflection";
+    const trimmedFree = freeText.trim();
+    const haiku = haikuLines.join("\n").trim();
+    const caption = photoCaption.trim();
+
+    if (entryMode === "free" && !trimmedFree) {
+      toast({ title: "Nothing to save yet", description: "Write a line first.", variant: "destructive" });
+      return;
+    }
+    if (entryMode === "haiku" && !haiku) {
+      toast({ title: "Nothing to save yet", description: "Fill in your haiku.", variant: "destructive" });
+      return;
+    }
+    if (entryMode === "photo" && !photoUrl && !caption) {
+      toast({ title: "Add a photo or a caption", description: "Give this moment something.", variant: "destructive" });
+      return;
+    }
+    if (entryMode === "voice" && !voiceUrl) {
+      toast({ title: "Record something first", description: "Tap the mic to start.", variant: "destructive" });
+      return;
+    }
+
+    const content =
+      entryMode === "free" ? trimmedFree :
+      entryMode === "haiku" ? haiku :
+      entryMode === "photo" ? (caption || "A moment, captured.") :
+      (voiceTranscript || "A voice note.");
+
     createMutation.mutate({
       content,
       entryType: entryMode,
@@ -111,13 +399,19 @@ export default function RecoveryJournal() {
       isShared,
       isPrivate: !isShared,
       haikuLines: entryMode === "haiku" ? haikuLines : null,
-      photoCaption: entryMode === "photo" ? photoCaption : null,
+      photoUrl: entryMode === "photo" ? (photoUrl || null) : null,
+      photoCaption: entryMode === "photo" ? (caption || null) : null,
+      voiceUrl: entryMode === "voice" ? (voiceUrl || null) : null,
+      voiceTranscript: entryMode === "voice" ? (voiceTranscript || null) : null,
     });
   };
 
   const stats = insights?.stats || {};
   const totalEntries = entries?.length || 0;
   const totalWords = stats.total_words || 0;
+  const userEarnings = formatCents(impact?.userEarningsCents || 0);
+  const globalGiveback = formatCents(impact?.globalGivebackCents || 0);
+  const accountsFunded = impact?.accountsFunded || 0;
 
   const filteredCommunity = useMemo(() => {
     if (!communityEntries) return [];
@@ -236,9 +530,11 @@ export default function RecoveryJournal() {
                     data-testid="input-free-text"
                   />
                   <div className="absolute bottom-4 right-4 flex items-center gap-3 text-xs font-medium">
-                    <span className="text-[#E2741B] flex items-center gap-1">
-                      <Check className="w-3 h-3" /> Autosaved
-                    </span>
+                    {savedAt && (
+                      <span className="text-[#E2741B] flex items-center gap-1" data-testid="status-autosaved">
+                        <Check className="w-3 h-3" /> Draft saved
+                      </span>
+                    )}
                     <span className="text-[#5A5650]">{freeText.split(/\s+/).filter((x) => x.length > 0).length} words</span>
                   </div>
                 </div>
@@ -288,15 +584,59 @@ export default function RecoveryJournal() {
 
             {entryMode === "photo" && (
               <div className="space-y-4">
-                <div className="w-full aspect-[4/3] bg-[#1C1915] border-2 border-dashed border-[#2A2621] hover:border-[#5A5650] rounded-2xl flex flex-col items-center justify-center gap-4 cursor-pointer transition-colors">
-                  <div className="w-16 h-16 rounded-full bg-[#2A2621] flex items-center justify-center">
-                    <Camera className="w-8 h-8 text-[#8A867D]" />
+                <input
+                  ref={photoInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handlePhotoSelect}
+                  data-testid="input-photo-file"
+                />
+                {photoPreview || photoUrl ? (
+                  <div className="relative w-full aspect-[4/3] bg-[#1C1915] border-2 border-[#2A2621] rounded-2xl overflow-hidden">
+                    <img
+                      src={photoPreview || photoUrl}
+                      alt="Your reflection"
+                      className="w-full h-full object-cover"
+                      data-testid="img-photo-preview"
+                    />
+                    {photoUploading && (
+                      <div className="absolute inset-0 bg-[#0E0D0C]/70 flex items-center justify-center">
+                        <Loader2 className="w-8 h-8 text-[#E2741B] animate-spin" />
+                      </div>
+                    )}
+                    {!photoUploading && (
+                      <button
+                        onClick={clearPhoto}
+                        className="absolute top-3 right-3 w-9 h-9 rounded-full bg-[#0E0D0C]/80 border border-[#2A2621] flex items-center justify-center text-[#F3F2EE] hover:text-[#E2741B] transition-colors"
+                        aria-label="Remove photo"
+                        data-testid="button-remove-photo"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
                   </div>
-                  <div className="text-center">
-                    <p className="text-[#F3F2EE] font-bold text-lg">Tap to upload</p>
-                    <p className="text-[#8A867D] text-sm">A view, a meal, a messy room</p>
-                  </div>
-                </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => photoInputRef.current?.click()}
+                    disabled={photoUploading}
+                    className="w-full aspect-[4/3] bg-[#1C1915] border-2 border-dashed border-[#2A2621] hover:border-[#5A5650] rounded-2xl flex flex-col items-center justify-center gap-4 cursor-pointer transition-colors disabled:opacity-60"
+                    data-testid="button-upload-photo"
+                  >
+                    <div className="w-16 h-16 rounded-full bg-[#2A2621] flex items-center justify-center">
+                      {photoUploading ? (
+                        <Loader2 className="w-8 h-8 text-[#E2741B] animate-spin" />
+                      ) : (
+                        <Camera className="w-8 h-8 text-[#8A867D]" />
+                      )}
+                    </div>
+                    <div className="text-center">
+                      <p className="text-[#F3F2EE] font-bold text-lg">{photoUploading ? "Uploading..." : "Tap to upload"}</p>
+                      <p className="text-[#8A867D] text-sm">A view, a meal, a messy room</p>
+                    </div>
+                  </button>
+                )}
                 <input
                   type="text"
                   value={photoCaption}
@@ -310,25 +650,67 @@ export default function RecoveryJournal() {
 
             {entryMode === "voice" && (
               <div className="space-y-6 bg-[#1C1915] p-6 sm:p-8 rounded-2xl border-2 border-[#2A2621] flex flex-col items-center justify-center text-center min-h-[300px]">
-                <button className="w-24 h-24 rounded-full bg-[#E2741B] flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(226,116,27,0.3)]">
-                  <Mic2 className="w-10 h-10 text-[#0E0D0C]" />
+                <button
+                  type="button"
+                  onClick={isRecording ? stopRecording : startRecording}
+                  disabled={voiceUploading}
+                  className={`w-24 h-24 rounded-full flex items-center justify-center transition-all disabled:opacity-60 ${
+                    isRecording
+                      ? "bg-red-600 shadow-[0_0_30px_rgba(220,38,38,0.45)] animate-pulse"
+                      : "bg-[#E2741B] hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(226,116,27,0.3)]"
+                  }`}
+                  aria-label={isRecording ? "Stop recording" : "Start recording"}
+                  data-testid="button-record-voice"
+                >
+                  {voiceUploading ? (
+                    <Loader2 className="w-10 h-10 text-[#0E0D0C] animate-spin" />
+                  ) : isRecording ? (
+                    <Square className="w-9 h-9 text-white" fill="currentColor" />
+                  ) : (
+                    <Mic2 className="w-10 h-10 text-[#0E0D0C]" />
+                  )}
                 </button>
                 <div className="space-y-1">
-                  <p className="text-[#F3F2EE] font-['Anton'] tracking-wider text-2xl">00:00</p>
-                  <p className="text-[#8A867D] text-sm font-medium">Tap to record</p>
+                  <p className="text-[#F3F2EE] font-['Anton'] tracking-wider text-2xl" data-testid="text-record-timer">{fmtTime(recordSecs)}</p>
+                  <p className="text-[#8A867D] text-sm font-medium">
+                    {voiceUploading ? "Saving your note..." : isRecording ? "Recording — tap to stop" : voiceUrl ? "Saved. Tap to re-record" : "Tap to record"}
+                  </p>
                 </div>
-                <div className="flex items-center gap-1 h-8 opacity-30">
+                <div className={`flex items-end gap-1 h-8 ${isRecording ? "opacity-100" : "opacity-30"}`}>
                   {[2, 4, 3, 6, 8, 5, 3, 4, 7, 5, 2, 3].map((h, i) => (
-                    <div key={i} className="w-1.5 bg-[#8A867D] rounded-full" style={{ height: `${h * 4}px` }} />
+                    <div
+                      key={i}
+                      className={`w-1.5 rounded-full ${isRecording ? "bg-[#E2741B] animate-pulse" : "bg-[#8A867D]"}`}
+                      style={{ height: `${h * 4}px`, animationDelay: `${i * 80}ms` }}
+                    />
                   ))}
                 </div>
+                {voiceUrl && !isRecording && (
+                  <div className="w-full space-y-3">
+                    <audio controls src={voiceUrl} className="w-full" data-testid="audio-voice-playback" />
+                    <button
+                      onClick={clearVoice}
+                      className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#8A867D] hover:text-[#E2741B] transition-colors"
+                      data-testid="button-clear-voice"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" /> Discard
+                    </button>
+                  </div>
+                )}
                 <div className="bg-[#2A2621]/50 p-4 rounded-xl border border-[#2A2621] w-full mt-4 text-left">
                   <p className="text-sm text-[#F3F2EE] mb-2 flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-[#E2741B]" /> We'll transcribe it for you
+                    <Sparkles className="w-4 h-4 text-[#E2741B]" />
+                    {voiceTranscript ? "Your transcript" : transcriptFailed ? "Audio saved" : "We'll transcribe it for you"}
                   </p>
-                  <p className="text-[#8A867D] text-xs italic">
-                    "It automatically turns your audio into text, even if your speech is slow or slurred today..."
-                  </p>
+                  {voiceTranscript ? (
+                    <p className="text-[#F3F2EE] text-sm leading-relaxed whitespace-pre-wrap" data-testid="text-voice-transcript">{voiceTranscript}</p>
+                  ) : transcriptFailed ? (
+                    <p className="text-[#8A867D] text-xs italic">Transcription wasn't available this time — your audio is still saved.</p>
+                  ) : (
+                    <p className="text-[#8A867D] text-xs italic">
+                      "It automatically turns your audio into text, even if your speech is slow or slurred today..."
+                    </p>
+                  )}
                 </div>
               </div>
             )}
@@ -589,18 +971,18 @@ export default function RecoveryJournal() {
               </div>
               <div className="grid grid-cols-2 gap-8">
                 <div>
-                  <p className="text-3xl font-['Anton'] text-[#E2741B] mb-1">$0</p>
+                  <p className="text-3xl font-['Anton'] text-[#E2741B] mb-1" data-testid="text-total-earned">{userEarnings}</p>
                   <p className="text-xs font-bold uppercase tracking-wider text-[#8A867D]">Total Earned</p>
                 </div>
                 <div>
-                  <p className="text-3xl font-['Anton'] text-[#F3F2EE] mb-1">{totalEntries}</p>
+                  <p className="text-3xl font-['Anton'] text-[#F3F2EE] mb-1" data-testid="text-entries-written">{totalEntries}</p>
                   <p className="text-xs font-bold uppercase tracking-wider text-[#8A867D]">Entries Written</p>
                 </div>
               </div>
               <div className="bg-[#1C1915] p-4 rounded-xl flex items-start gap-4">
                 <HeartHandshake className="w-5 h-5 text-[#E2741B] mt-0.5 shrink-0" />
                 <p className="text-sm text-[#8A867D] leading-snug">
-                  <span className="text-[#F3F2EE] font-medium">$0</span> routed to Stroke Lyfe Inc this year. Your entries are your story — when you publish, you choose the give-back.
+                  <span className="text-[#F3F2EE] font-medium" data-testid="text-global-giveback">{globalGiveback}</span> routed to Stroke Lyfe Inc this year. Your entries are your story — when you publish, you choose the give-back.
                 </p>
               </div>
             </div>
@@ -631,40 +1013,93 @@ export default function RecoveryJournal() {
                   <p className="text-xs text-[#8A867D] uppercase font-bold tracking-widest mb-3 flex items-center gap-2">
                     <EyeOff className="w-3 h-3" /> Preview Draft
                   </p>
-                  <p className="text-[#F3F2EE] italic leading-relaxed text-sm">
-                    "The lights didn't go out completely, they just flickered. Then the left side of the world vanished. Here is what they don't tell you about year one..."
-                  </p>
+                  {entries?.length ? (
+                    <p className="text-[#F3F2EE] italic leading-relaxed text-sm" data-testid="text-book-preview">
+                      "{entries[0].content?.length > 220 ? entries[0].content.slice(0, 220) + "..." : entries[0].content}"
+                    </p>
+                  ) : (
+                    <p className="text-[#5A5650] italic leading-relaxed text-sm">
+                      Your first reflection shows up here. Write one and it becomes page one.
+                    </p>
+                  )}
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <Button className="w-full h-14 bg-[#1C1915] text-[#F3F2EE] border-2 border-[#2A2621] hover:bg-[#2A2621] rounded-xl font-bold uppercase tracking-wider">
-                    Edit Settings
-                  </Button>
-                  <Button className="w-full h-14 bg-[#E2741B] text-[#0E0D0C] hover:bg-[#c96312] rounded-xl font-bold uppercase tracking-wider">
-                    Publish Options
-                  </Button>
-                </div>
+                <Button
+                  onClick={() => compileBookMutation.mutate()}
+                  disabled={compileBookMutation.isPending || totalEntries === 0}
+                  className="w-full min-h-[56px] bg-[#E2741B] text-[#0E0D0C] hover:bg-[#c96312] rounded-xl font-bold uppercase tracking-wider"
+                  data-testid="button-compile-book"
+                >
+                  {compileBookMutation.isPending ? (
+                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Compiling...</>
+                  ) : (
+                    <><BookText className="w-4 h-4 mr-2" /> Compile to Book Studio</>
+                  )}
+                </Button>
+                {totalEntries === 0 && (
+                  <p className="text-xs text-[#5A5650] text-center -mt-4">Write your first reflection to unlock this.</p>
+                )}
               </div>
             </div>
 
-            {/* Standard Cards */}
+            {/* Action Cards — real products, real CTAs */}
             {[
-              { title: "Poem Collection", desc: "Compile your haikus into a digital chapbook.", icon: Feather, ready: `${totalEntries} entries`, pct: `${Math.min(100, (totalEntries / 15) * 100)}%` },
-              { title: "A Chapter", desc: "Weave 30 entries into a narrative essay.", icon: BookOpen, ready: `${totalEntries} / 30`, pct: `${Math.min(100, (totalEntries / 30) * 100)}%` },
-              { title: "Personal Anthem", desc: "Your words transformed into an AI music track.", icon: Music, ready: totalEntries > 0 ? "Ready to mix" : "Needs entries", pct: totalEntries > 0 ? "100%" : "0%" },
+              {
+                key: "digital",
+                title: "Digital Edition",
+                desc: "Your reflections, typeset into a personalized PDF you can keep or share.",
+                icon: Download,
+                price: "$19",
+                cta: "Get the PDF",
+                onClick: () => checkoutMutation.mutate("digital"),
+                pending: checkoutMutation.isPending && checkoutMutation.variables === "digital",
+                disabled: totalEntries === 0,
+              },
+              {
+                key: "print",
+                title: "Print Edition",
+                desc: "A real paperback of your journey, shipped to your door.",
+                icon: Printer,
+                price: "$29",
+                cta: "Order in print",
+                onClick: () => checkoutMutation.mutate("print"),
+                pending: checkoutMutation.isPending && checkoutMutation.variables === "print",
+                disabled: totalEntries === 0,
+              },
+              {
+                key: "anthem",
+                title: "Personal Anthem",
+                desc: "Turn your words into an original recovery track.",
+                icon: Music,
+                price: null,
+                cta: "Open Anthem Studio",
+                onClick: () => navigate("/recovery/anthem/build"),
+                pending: false,
+                disabled: false,
+              },
             ].map((product) => (
-              <div key={product.title} className="group relative bg-[#15120F] border-2 border-[#2A2621] p-6 sm:p-8 rounded-3xl hover:border-[#5A5650] transition-colors cursor-pointer flex flex-col justify-between min-h-[300px]">
+              <div key={product.key} className="group relative bg-[#15120F] border-2 border-[#2A2621] p-6 sm:p-8 rounded-3xl hover:border-[#5A5650] transition-colors flex flex-col justify-between min-h-[300px]">
                 <div>
-                  <product.icon className="w-8 h-8 text-[#8A867D] mb-6 group-hover:text-[#E2741B] transition-colors" />
+                  <div className="flex items-start justify-between mb-6">
+                    <product.icon className="w-8 h-8 text-[#8A867D] group-hover:text-[#E2741B] transition-colors" />
+                    {product.price && (
+                      <span className="font-['Anton'] text-2xl text-[#E2741B]">{product.price}</span>
+                    )}
+                  </div>
                   <h4 className="font-['Anton'] uppercase text-2xl text-[#F3F2EE] tracking-wide mb-3">{product.title}</h4>
                   <p className="text-[#8A867D] text-sm leading-relaxed">{product.desc}</p>
                 </div>
                 <div className="mt-8">
-                  <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-[#5A5650] mb-2">
-                    <span>{product.ready}</span>
-                  </div>
-                  <div className="h-1.5 bg-[#1C1915] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#5A5650] group-hover:bg-[#E2741B] transition-colors rounded-full" style={{ width: product.pct }} />
-                  </div>
+                  <Button
+                    onClick={product.onClick}
+                    disabled={product.pending || product.disabled}
+                    className="w-full min-h-[48px] bg-[#1C1915] text-[#F3F2EE] border-2 border-[#2A2621] hover:bg-[#2A2621] rounded-xl font-bold uppercase tracking-wider text-sm"
+                    data-testid={`button-product-${product.key}`}
+                  >
+                    {product.pending ? <Loader2 className="w-4 h-4 animate-spin" /> : product.cta}
+                  </Button>
+                  {product.disabled && (
+                    <p className="text-xs text-[#5A5650] text-center mt-2">Write a reflection first.</p>
+                  )}
                 </div>
               </div>
             ))}
@@ -730,9 +1165,21 @@ export default function RecoveryJournal() {
                     <div className="text-sm font-medium text-[#8A867D]">
                       {post.first_name || "Anonymous"}
                     </div>
-                    <button className="flex items-center gap-2 text-[#8A867D] hover:text-[#E2741B] transition-colors bg-[#1C1915] px-3 py-1.5 rounded-full border border-[#2A2621]">
+                    <button
+                      onClick={() => reactionMutation.mutate({ entryId: post.id, reacted: !!post.viewer_reacted })}
+                      disabled={reactionMutation.isPending && reactionMutation.variables?.entryId === post.id}
+                      className={`flex items-center gap-2 transition-colors px-3 py-1.5 rounded-full border disabled:opacity-60 ${
+                        post.viewer_reacted
+                          ? "text-[#0E0D0C] bg-[#E2741B] border-[#E2741B]"
+                          : "text-[#8A867D] hover:text-[#E2741B] bg-[#1C1915] border-[#2A2621]"
+                      }`}
+                      aria-pressed={!!post.viewer_reacted}
+                      data-testid={`button-felt-this-${post.id}`}
+                    >
                       <HeartHandshake className="w-4 h-4" />
-                      <span className="text-xs font-bold">Felt this</span>
+                      <span className="text-xs font-bold">
+                        Felt this{post.reaction_count > 0 ? ` · ${post.reaction_count}` : ""}
+                      </span>
                     </button>
                   </div>
                 </div>
@@ -757,7 +1204,7 @@ export default function RecoveryJournal() {
               Stroke Lyfe operates as a dual structure. When survivors publish their stories, they can choose to route a percentage of royalties to Stroke Lyfe Inc (our 501c3). This funds accounts and coaching for survivors who cannot afford it.
             </p>
             <div className="inline-flex flex-col items-center gap-2 bg-[#1C1915] border-2 border-[#2A2621] px-8 py-4 rounded-2xl mt-4">
-              <span className="text-3xl font-['Anton'] text-[#E2741B]">312</span>
+              <span className="text-3xl font-['Anton'] text-[#E2741B]" data-testid="text-accounts-funded">{accountsFunded}</span>
               <span className="text-sm font-bold uppercase tracking-widest text-[#F3F2EE]">Free accounts funded this year</span>
             </div>
           </div>
