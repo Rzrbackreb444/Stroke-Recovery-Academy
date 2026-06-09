@@ -281,7 +281,7 @@ export default function RecoveryDashboard() {
         <section className="mb-8">
           <div className="grid md:grid-cols-3 gap-6 items-center">
             <div className="md:col-span-2">
-              <h1 className="text-4xl md:text-5xl font-black mb-3" data-testid="text-dashboard-title">
+              <h1 className="text-4xl md:text-5xl font-display mb-3" data-testid="text-dashboard-title">
                 Welcome back,{" "}
                 <span style={{ color: personaAccent }}>
                   {persona?.name || user?.firstName || "Warrior"}
@@ -506,8 +506,7 @@ export default function RecoveryDashboard() {
                     Stroked-Out Sasquatch · Rock Anthem
                   </p>
                   <h2
-                    className="text-3xl sm:text-4xl font-black text-white leading-tight mb-2"
-                    style={{ fontFamily: "Playfair Display, Georgia, serif" }}
+                    className="text-3xl sm:text-4xl font-display text-white leading-tight mb-2"
                   >
                     Squatchy
                   </h2>

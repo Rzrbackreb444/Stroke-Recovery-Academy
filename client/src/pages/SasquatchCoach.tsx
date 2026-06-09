@@ -297,7 +297,7 @@ export default function SasquatchCoach() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-black text-white">Sasquatch Coach</h1>
+            <h1 className="text-3xl font-display text-white">Sasquatch Coach</h1>
             <p className="text-sm text-gray-500 mt-0.5">Your 24/7 recovery accountability partner</p>
           </div>
           <div className="flex items-center gap-3">
