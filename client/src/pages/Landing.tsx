@@ -15,7 +15,7 @@ import RecoverySEO, {
 } from "@/components/RecoverySEO";
 import Footer from "@/components/Footer";
 import heroWarrior from "@assets/hero-warrior-training.png";
-import nickPortrait from "@assets/nick-founder-portrait.png";
+import nickPortrait from "@assets/Untitled_design_1781030529179.png";
 import manifestoStairs from "@assets/manifesto-stairs.png";
 import cleanUi from "@assets/home-clean-ui.png";
 

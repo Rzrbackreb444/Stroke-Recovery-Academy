@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
-import nickPhoto from "@assets/IMG_4824_1776397947955.jpeg";
+import nickPhoto from "@assets/Untitled_design_1781030529179.png";
 
 const achievements = [
   "Survived a massive hemorrhagic stroke with 50 staples in his skull",
