@@ -285,7 +285,7 @@ export async function createCheckoutSession(
     throw new Error("Listing not found");
   }
 
-  const session = await stripe.checkout.sessions.create({
+  const sessionParams: any = {
     payment_method_types: ["card"],
     line_items: [
       {
@@ -312,7 +312,19 @@ export async function createCheckoutSession(
       platformFee: Math.floor(edition.price * (PLATFORM_FEE_PERCENT / 100)).toString(),
       authorRoyalty: edition.authorRoyalty.toString(),
     },
-  });
+  };
+
+  // Print editions ship a physical book. Lulu POD fulfillment rejects empty
+  // street/city fields, so collect a real shipping address + phone at checkout.
+  // The webhook reads session.shipping_details. Digital editions skip this.
+  if (edition.editionType.toLowerCase().includes("print")) {
+    sessionParams.shipping_address_collection = {
+      allowed_countries: ["US", "CA", "GB", "AU", "NZ", "IE"],
+    };
+    sessionParams.phone_number_collection = { enabled: true };
+  }
+
+  const session = await stripe.checkout.sessions.create(sessionParams);
 
   return session;
 }

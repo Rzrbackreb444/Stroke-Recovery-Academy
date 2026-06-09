@@ -2324,6 +2324,7 @@ export const recoveryJournals = pgTable("recovery_journals", {
 // Recovery Journal insert schema
 export const insertRecoveryJournalSchema = createInsertSchema(recoveryJournals).omit({
   id: true,
+  userId: true, // injected server-side from the auth session, never sent by the client
   createdAt: true,
   sharedAt: true,
 });
@@ -2337,6 +2338,35 @@ export const updateRecoveryJournalSchema = createInsertSchema(recoveryJournals).
 export type RecoveryJournal = typeof recoveryJournals.$inferSelect;
 export type InsertRecoveryJournal = z.infer<typeof insertRecoveryJournalSchema>;
 export type UpdateRecoveryJournal = z.infer<typeof updateRecoveryJournalSchema>;
+
+// "Felt this" reactions on shared community journal entries
+export const journalReactions = pgTable("journal_reactions", {
+  id: serial("id").primaryKey(),
+  entryId: integer("entry_id").notNull().references(() => recoveryJournals.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  uniqueIndex("uq_journal_reaction_entry_user").on(table.entryId, table.userId),
+  index("idx_journal_reaction_entry").on(table.entryId),
+]);
+
+export const insertJournalReactionSchema = createInsertSchema(journalReactions).omit({ id: true, createdAt: true });
+export type JournalReaction = typeof journalReactions.$inferSelect;
+export type InsertJournalReaction = z.infer<typeof insertJournalReactionSchema>;
+
+// Gentle return-to-journal nudge log (dedupe email check-ins per interval)
+export const journalNudgeLog = pgTable("journal_nudge_log", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  nudgeDay: integer("nudge_day").notNull(), // 3, 7, 14
+  sentAt: timestamp("sent_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  index("idx_journal_nudge_user").on(table.userId, table.nudgeDay),
+]);
+
+export const insertJournalNudgeLogSchema = createInsertSchema(journalNudgeLog).omit({ id: true, sentAt: true });
+export type JournalNudgeLog = typeof journalNudgeLog.$inferSelect;
+export type InsertJournalNudgeLog = z.infer<typeof insertJournalNudgeLogSchema>;
 
 // ============================================================================
 // COURSE BUILDER (Kajabi-level)

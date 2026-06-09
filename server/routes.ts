@@ -305,13 +305,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Serve stock images from attached_assets
   app.use('/stock_images', express.static(path.join(process.cwd(), 'attached_assets', 'stock_images')));
 
-  // Object Storage upload + serve routes (presigned PUT + /objects/:path GET).
-  // Mounted before any auth middleware because (a) the upload-URL endpoint will
-  // be hardened with auth in the audiobook flow that uses it and (b) /objects/
-  // GET enforces ACL via getObjectAclPolicy on the GCS metadata.
-  const { registerObjectStorageRoutes } = await import('./replit_integrations/object_storage');
-  registerObjectStorageRoutes(app);
-
   // Serve user-uploaded media files
   const uploadsDir = path.join(process.cwd(), 'uploads');
   if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
@@ -1006,6 +999,12 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   // Setup authentication
   await setupAuth(app);
 
+  // Object Storage serve + upload routes. Mounted AFTER setupAuth so the
+  // /objects/:path GET sees the session (req.user) and can enforce per-owner
+  // ACL on private objects. Public/legacy objects stay anonymously readable.
+  const { registerObjectStorageRoutes } = await import('./replit_integrations/object_storage');
+  registerObjectStorageRoutes(app);
+
   // Survivor + account + lulu routes MUST be mounted after setupAuth so
   // isAuthenticated / getUserId() see the session/passport middleware.
   // See note above their previous mount.
@@ -1326,6 +1325,14 @@ Last updated: ${new Date().toISOString().split('T')[0]}
     startNewsletterScheduler();
   } catch (err: any) {
     console.warn("[startup] newsletter scheduler skipped:", err?.message ?? err);
+  }
+
+  // Start journal return-funnel nudge scheduler (non-fatal)
+  try {
+    const { startJournalNudgeScheduler } = await import('./journalNudgeService');
+    startJournalNudgeScheduler();
+  } catch (err: any) {
+    console.warn("[startup] journal nudge scheduler skipped:", err?.message ?? err);
   }
 
   // Init push_subscriptions table + start accountability scheduler (non-fatal)
@@ -13021,6 +13028,28 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   // ============================================================================
   const { insertRecoveryJournalSchema, updateRecoveryJournalSchema } = await import('@shared/schema');
 
+  // Keep journal media (photo/voice) ACL in lockstep with the entry's share
+  // state: shared entries expose media publicly so the community feed can render
+  // it; private entries lock media back down to the owner. PDFs are never
+  // shared, so they are not touched here.
+  const { ObjectStorageService: JournalMediaObjectStorage } = await import('./replit_integrations/object_storage/objectStorage');
+  const syncJournalMediaAcl = async (entry: any, ownerId: string) => {
+    // storage.create/updateJournalEntry return raw `RETURNING *` rows (snake_case),
+    // so read both casings to stay robust if a mapped row is ever passed in.
+    const isShared = entry?.isShared ?? entry?.is_shared;
+    const visibility: 'public' | 'private' = isShared ? 'public' : 'private';
+    const objectStorage = new JournalMediaObjectStorage();
+    for (const mediaPath of [entry?.photoUrl ?? entry?.photo_url, entry?.voiceUrl ?? entry?.voice_url]) {
+      if (typeof mediaPath === 'string' && mediaPath.startsWith('/objects/')) {
+        try {
+          await objectStorage.trySetObjectEntityAclPolicy(mediaPath, { owner: ownerId, visibility });
+        } catch (e) {
+          console.error('Failed to sync journal media ACL for entry', entry?.id, e);
+        }
+      }
+    }
+  };
+
   app.get('/api/recovery/journal', isAuthenticated, async (req: any, res) => {
     try {
       const userId = getUserId(req);
@@ -13040,6 +13069,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
         return res.status(400).json({ message: "Invalid journal entry", details: validated.error.issues });
       }
       const entry = await storage.createJournalEntry(userId, validated.data);
+      if (entry?.isShared ?? entry?.is_shared) {
+        await syncJournalMediaAcl(entry, userId);
+      }
       res.json(entry);
     } catch (error) {
       console.error("Error creating journal entry:", error);
@@ -13050,11 +13082,41 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   app.get('/api/recovery/journal/community', async (req: any, res) => {
     try {
       const filter = req.query.filter as string || 'all';
-      const entries = await storage.getSharedEntries(filter);
+      const viewerId = getUserId(req); // optional — community wall is public
+      const entries = await storage.getSharedEntries(filter, viewerId);
       res.json(entries);
     } catch (error) {
       console.error("Error fetching community entries:", error);
       res.status(500).json({ message: "Failed to fetch community entries" });
+    }
+  });
+
+  // "Felt this" reactions — only on shared, non-private entries.
+  app.post('/api/recovery/journal/:id/react', isAuthenticated, authActionLimiter, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const entryId = parseInt(req.params.id, 10);
+      if (!Number.isFinite(entryId)) return res.status(400).json({ message: "Invalid entry" });
+      const result = await storage.addJournalReaction(entryId, userId);
+      if (!result) return res.status(404).json({ message: "Entry not found" });
+      res.json({ reactionCount: result.count, viewerReacted: true });
+    } catch (error) {
+      console.error("Error adding journal reaction:", error);
+      res.status(500).json({ message: "Couldn't save that — try again." });
+    }
+  });
+
+  app.delete('/api/recovery/journal/:id/react', isAuthenticated, authActionLimiter, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const entryId = parseInt(req.params.id, 10);
+      if (!Number.isFinite(entryId)) return res.status(400).json({ message: "Invalid entry" });
+      const result = await storage.removeJournalReaction(entryId, userId);
+      if (!result) return res.status(404).json({ message: "Entry not found" });
+      res.json({ reactionCount: result.count, viewerReacted: false });
+    } catch (error) {
+      console.error("Error removing journal reaction:", error);
+      res.status(500).json({ message: "Couldn't save that — try again." });
     }
   });
 
@@ -13069,6 +13131,167 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
+  // Real impact numbers — 0 until real sales land. No fabrication.
+  app.get('/api/recovery/journal/impact', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const impact = await storage.getJournalImpact(userId);
+      res.json(impact);
+    } catch (error) {
+      console.error("Error fetching journal impact:", error);
+      res.status(500).json({ message: "Failed to fetch impact" });
+    }
+  });
+
+  // Compile the survivor's own journal entries into a Book Studio draft project.
+  // Pure passthrough of their words — no AI, no fabrication. Returns projectId so
+  // the client can deep-link into Book Studio.
+  app.post('/api/recovery/journal/compile-book', isAuthenticated, authActionLimiter, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const user = await storage.getUser(userId);
+      const authorName =
+        [user?.firstName, user?.lastName].filter(Boolean).join(' ').trim() ||
+        user?.email?.split('@')[0] ||
+        'A Survivor';
+      const project = await storage.createBookProjectFromJournal(userId, authorName);
+      if (!project) {
+        return res.status(400).json({ message: "Write at least one reflection first." });
+      }
+      res.json({ projectId: project.id });
+    } catch (error) {
+      console.error("Error compiling journal into book:", error);
+      res.status(500).json({ message: "Couldn't compile your reflections — try again." });
+    }
+  });
+
+  // Buy a personalized Reflections edition (digital $19 / print $29). The
+  // per-buyer PDF is generated NOW from their own entries, uploaded to object
+  // storage, and stamped onto the order item's downloadUrl BEFORE checkout — so
+  // the Stripe webhook's existing fulfillOrder path delivers the personalized
+  // file. The webhook never generates a PDF.
+  app.post('/api/recovery/journal/checkout', isAuthenticated, authActionLimiter, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const editionType = req.body?.editionType === 'print' ? 'print_paperback' : 'digital_pdf';
+
+      const user = await storage.getUser(userId);
+      if (!user) return res.status(404).json({ message: "User not found" });
+
+      const entries = await storage.getJournalEntries(userId);
+      if (!entries.length) {
+        return res.status(400).json({ message: "Write at least one reflection first." });
+      }
+
+      const { getReflectionsListingWithEditions } = await import('./reflectionsProduct');
+      const product = await getReflectionsListingWithEditions();
+      if (!product) {
+        return res.status(503).json({ message: "The Reflections store isn't set up yet." });
+      }
+      const edition = product.editions.find((e) => e.editionType === editionType);
+      if (!edition) {
+        return res.status(404).json({ message: "That edition isn't available." });
+      }
+
+      const authorName =
+        [user.firstName, user.lastName].filter(Boolean).join(' ').trim() ||
+        user.email?.split('@')[0] ||
+        'A Survivor';
+
+      const { generateReflectionsPdf } = await import('./journalPdfService');
+      const pdfBuffer = await generateReflectionsPdf(userId, authorName);
+
+      const { ObjectStorageService } = await import('./replit_integrations/object_storage/objectStorage');
+      const objectStorage = new ObjectStorageService();
+      const uploadURL = await objectStorage.getObjectEntityUploadURL();
+      const putRes = await fetch(uploadURL, {
+        method: 'PUT',
+        body: pdfBuffer,
+        headers: { 'Content-Type': 'application/pdf' },
+      });
+      if (!putRes.ok) throw new Error(`Object PUT failed: ${putRes.status}`);
+      const personalizedPdfUrl = await objectStorage.trySetObjectEntityAclPolicy(uploadURL, {
+        owner: userId,
+        visibility: 'private',
+      });
+
+      let customerId = user.stripeCustomerId;
+      if (!customerId) {
+        const customer = await stripeService.createCustomer(user.email || '', user.id);
+        await stripeService.updateUserStripeInfo(user.id, { stripeCustomerId: customer.id });
+        customerId = customer.id;
+      }
+      const customerEmail = user.email || '';
+
+      const orderNumber = `REF-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+      const [order] = await db.insert(bookOrders).values({
+        orderNumber,
+        customerId: userId,
+        customerEmail,
+        customerName: authorName,
+        status: 'pending',
+        subtotal: edition.price,
+        total: edition.price,
+        currency: edition.currency,
+      }).returning();
+
+      await db.insert(orderItems).values({
+        orderId: order.id,
+        listingId: product.listing.id,
+        editionId: edition.id,
+        quantity: 1,
+        unitPrice: edition.price,
+        printCost: edition.printCost || null,
+        authorRoyalty: edition.authorRoyalty,
+        subtotal: edition.price,
+        downloadUrl: personalizedPdfUrl,
+      });
+
+      const { createCheckoutSession } = await import('./marketplaceService');
+      const session = await createCheckoutSession(
+        edition.id,
+        customerId,
+        customerEmail,
+        `${req.protocol}://${req.get('host')}/recovery/journal?purchase=success`,
+        `${req.protocol}://${req.get('host')}/recovery/journal?purchase=cancel`,
+      );
+
+      await db.update(bookOrders)
+        .set({ stripeCheckoutSessionId: session.id })
+        .where(eq(bookOrders.id, order.id));
+
+      res.json({ checkoutUrl: session.url, sessionId: session.id });
+    } catch (error: any) {
+      console.error("Error creating reflections checkout:", error);
+      res.status(500).json({ message: "Couldn't start checkout — try again." });
+    }
+  });
+
+  // Public, token-gated unsubscribe for journal return-funnel nudges. HMAC token
+  // (no DB row) proves the link came from us, so no auth session is required and
+  // no one can opt another user out. Always renders a friendly confirmation.
+  app.get('/api/recovery/journal/nudges/unsubscribe', async (req: any, res) => {
+    try {
+      const uid = String(req.query.uid || '');
+      const token = String(req.query.t || '');
+      const { verifyNudgeToken, optOutOfNudges } = await import('./journalNudgeService');
+      if (!uid || !verifyNudgeToken(uid, token)) {
+        return res.status(400).send('<p style="font-family:Georgia,serif;padding:40px;">That unsubscribe link is invalid or expired.</p>');
+      }
+      await optOutOfNudges(uid);
+      res.status(200).send(
+        '<div style="font-family:Georgia,serif;max-width:520px;margin:60px auto;padding:0 24px;color:#1A1614;">' +
+        '<h1 style="color:#E2741B;">You\'re unsubscribed</h1>' +
+        '<p>No more journal nudges — your reflections stay saved, and the page is always open whenever you want it.</p>' +
+        '<p><a href="' + (process.env.PUBLIC_SITE_URL || 'https://strokerecoveryacademy.com') + '/recovery/journal" style="color:#E2741B;">Back to your journal</a></p>' +
+        '</div>'
+      );
+    } catch (error) {
+      console.error("Error processing journal nudge unsubscribe:", error);
+      res.status(500).send('<p style="font-family:Georgia,serif;padding:40px;">Something went wrong. Try again later.</p>');
+    }
+  });
+
   app.patch('/api/recovery/journal/:id', isAuthenticated, async (req: any, res) => {
     try {
       const userId = getUserId(req);
@@ -13080,6 +13303,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       const entry = await storage.updateJournalEntry(entryId, userId, validated.data);
       if (!entry) {
         return res.status(404).json({ message: "Entry not found" });
+      }
+      if (validated.data.isShared !== undefined) {
+        await syncJournalMediaAcl(entry, userId);
       }
       res.json(entry);
     } catch (error) {
@@ -24924,6 +25150,8 @@ Format as structured JSON with clear sections.`;
   registerSurvivorProfileRoutes(app, isAuthenticated);
   registerEngagementRoutes(app, isAuthenticated);
   registerLessonVideoRoutes(app, isAuthenticated, uploadsDir);
+  const { registerJournalMediaRoutes } = await import('./journalMediaRoutes');
+  registerJournalMediaRoutes(app, isAuthenticated, uploadsDir);
   const { registerFreeAnalysisRoutes } = await import('./routes/freeAnalysisRoutes');
   registerFreeAnalysisRoutes(app, isAuthenticated, uploadsDir);
   registerQuizRoutes(app, isAuthenticated, uploadsDir);
