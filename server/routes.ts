@@ -42,7 +42,7 @@ import { analyzeVideo, getVideoAnalysisResult } from "./videoIntelligenceService
 import { translateText, detectLanguage, getSupportedLanguages, SUPPORTED_LANGUAGES } from "./translationService";
 import { searchGifs, getTrendingGifs } from "./tenorService";
 import { createTalkingAvatar, getAvatarVideoStatus, getStockPresenters, getAvailableVoices as getAvatarVoices } from "./didAvatarService";
-import { seedSubscriptionTiers, getUserTier, hasFeatureAccess, getUserLimit, getAllTiers, getUserSubscription, upgradeTier } from "./subscriptionTierService";
+import { seedSubscriptionTiers, getUserTier, getTierConfig, hasFeatureAccess, getUserLimit, getAllTiers, getUserSubscription, upgradeTier } from "./subscriptionTierService";
 import { checkAiGenerationLimit, checkExportLimit, checkUploadLimit, checkProjectLimit, getRateLimitStatus } from "./rateLimitService";
 import { processMonthlyCredits, grantSubscriptionCredits, checkCreditReplenishment } from "./creditReplenishmentService";
 import { organizationSchema, websiteSchema, platformFAQSchema, howToSchemas, generateSitemap, corePages, trustSignals, aggregateRatingSchema, softwareApplicationSchema, generateBreadcrumbs } from "./seoService";
@@ -3945,6 +3945,15 @@ Clean composition, artistic, evocative. No text or words in the image.`;
         return res.status(401).json({ message: 'Unauthorized' });
       }
 
+      const existing = await db.select({ count: sql<number>`count(*)` })
+        .from(bookProjects)
+        .where(eq(bookProjects.ownerId, userId));
+      const currentCount = Number(existing[0]?.count) || 0;
+      const limitCheck = await checkProjectLimit(userId, currentCount);
+      if (!limitCheck.allowed) {
+        return res.status(403).json({ message: limitCheck.message, limit: limitCheck.limit, reason: 'project_limit' });
+      }
+
       const validatedData = insertBookProjectSchema.parse({
         ...req.body,
         ownerId: userId,
@@ -3958,6 +3967,40 @@ Clean composition, artistic, evocative. No text or words in the image.`;
         return res.status(400).json({ message: 'Invalid request data', errors: error.errors });
       }
       res.status(500).json({ message: 'Failed to create book project' });
+    }
+  });
+
+  // Book Studio tier / quota info
+  app.get('/api/book-studio/tier-info', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims?.sub || req.user.id;
+      if (!userId) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      const tierName = await getUserTier(userId);
+      const config = getTierConfig(tierName);
+      const rl = await getRateLimitStatus(userId);
+      const exportStatus = await checkExportLimit(userId);
+
+      const projectCountResult = await db.select({ count: sql<number>`count(*)` })
+        .from(bookProjects)
+        .where(eq(bookProjects.ownerId, userId));
+      const currentProjectCount = Number(projectCountResult[0]?.count) || 0;
+
+      res.json({
+        tierName,
+        displayName: config.displayName,
+        maxProjects: config.maxProjects,
+        dailyAiGenerations: config.limits.dailyAiGenerations,
+        maxExportsPerDay: config.limits.maxExportsPerDay,
+        currentProjectCount,
+        dailyAiUsed: rl.daily.used,
+        dailyExportsUsed: exportStatus.limit === -1 ? 0 : Math.max(0, exportStatus.limit - exportStatus.remaining),
+      });
+    } catch (error) {
+      console.error("Error fetching book studio tier info:", error);
+      res.status(500).json({ message: 'Failed to fetch tier info' });
     }
   });
 
