@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Flame } from "lucide-react";
-import nickPhoto from "@assets/IMG_0548_1776442127593.jpeg";
+import nickPhoto from "@assets/Untitled_design_1781030529179.png";
 
 const stats = [
   { value: "50", label: "Staples in his skull" },
