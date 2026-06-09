@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --brand-accent: #C9941A;
+}
+
+/* Base specific to this bold mockup */
+.font-sans {
+  font-family: 'Inter', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, .font-black {
+  font-family: 'Anton', sans-serif;
+  font-weight: 400; /* Anton is naturally black, but we can keep font-black classes without breaking */
+  text-transform: uppercase;
+}
+
+/* Tailwind custom class replacements if needed */
+.text-brand-accent {
+  color: var(--brand-accent);
+}
+.bg-brand-accent {
+  background-color: var(--brand-accent);
+}
+.border-brand-accent {
+  border-color: var(--brand-accent);
+}
