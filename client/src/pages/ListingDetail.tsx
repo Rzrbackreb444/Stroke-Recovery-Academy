@@ -60,7 +60,7 @@ function StarRating({ rating, size = "sm" }: { rating: number; size?: "sm" | "lg
     stars.push(
       <Star
         key={i}
-        className={`${sizeClass} ${i <= Math.round(rating) ? "fill-orange-500 text-[#C9941A]" : "text-zinc-600"}`}
+        className={`${sizeClass} ${i <= Math.round(rating) ? "fill-orange-500 text-[#E2741B]" : "text-zinc-600"}`}
       />
     );
   }
@@ -75,7 +75,7 @@ function ReviewCard({ review }: { review: MarketplaceReview }) {
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10 border border">
               <AvatarImage src={review.user?.profileImageUrl || undefined} />
-              <AvatarFallback className="bg-primary/20 text-[#C9941A]">
+              <AvatarFallback className="bg-primary/20 text-[#E2741B]">
                 {review.user?.firstName?.[0] || "U"}
               </AvatarFallback>
             </Avatar>
@@ -86,7 +86,7 @@ function ReviewCard({ review }: { review: MarketplaceReview }) {
               <div className="flex items-center gap-2">
                 <StarRating rating={review.rating} />
                 {review.isVerifiedPurchase && (
-                  <Badge variant="outline" className="text-[10px] border-green-500/50 text-[#C9941A]">
+                  <Badge variant="outline" className="text-[10px] border-green-500/50 text-[#E2741B]">
                     <CheckCircle className="w-3 h-3 mr-1" />
                     Verified
                   </Badge>
@@ -195,7 +195,7 @@ export default function ListingDetail() {
           <h1 className="text-2xl font-bold text-foreground mb-4">Listing Not Found</h1>
           <p className="text-gray-400 mb-8">This content may have been removed or is unavailable.</p>
           <Link href="/marketplace">
-            <Button className="bg-[#C9941A] hover:bg-[#C9941A] text-black">
+            <Button className="bg-[#E2741B] hover:bg-[#E2741B] text-black">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Marketplace
             </Button>
@@ -298,7 +298,7 @@ export default function ListingDetail() {
               {listing.previewUrl && (
                 <Button
                   size="lg"
-                  className="absolute bottom-4 right-4 bg-[#C9941A] hover:bg-[#C9941A] text-black gap-2"
+                  className="absolute bottom-4 right-4 bg-[#E2741B] hover:bg-[#E2741B] text-black gap-2"
                   data-testid="button-preview"
                 >
                   <Play className="w-5 h-5" />
@@ -352,7 +352,7 @@ export default function ListingDetail() {
                   {ratingDistribution.map((item) => (
                     <div key={item.stars} className="flex items-center gap-2">
                       <span className="text-sm text-gray-400 w-6">{item.stars}</span>
-                      <Star className="w-4 h-4 fill-orange-500 text-[#C9941A]" />
+                      <Star className="w-4 h-4 fill-orange-500 text-[#E2741B]" />
                       <Progress value={item.percent} className="h-2 flex-1" />
                       <span className="text-sm text-gray-400 w-10">{item.percent}%</span>
                     </div>
@@ -386,12 +386,12 @@ export default function ListingDetail() {
             <Card className="bg-[#1a1a1a]/50 border-[#333]">
               <CardContent className="p-6 space-y-4">
                 <div className="flex items-center gap-2">
-                  <Badge className="bg-primary/20 text-[#C9941A] border">
+                  <Badge className="bg-primary/20 text-[#E2741B] border">
                     <ContentIcon className="w-3 h-3 mr-1" />
                     {contentTypeLabels[listing.genre] || listing.genre}
                   </Badge>
                   {listing.isFeatured && (
-                    <Badge variant="outline" className="border-[#C9941A]/50 text-[#C9941A]">
+                    <Badge variant="outline" className="border-[#E2741B]/50 text-[#E2741B]">
                       Featured
                     </Badge>
                   )}
@@ -425,7 +425,7 @@ export default function ListingDetail() {
 
                 <div className="space-y-3 pt-2">
                   <Button
-                    className="w-full bg-[#C9941A] hover:bg-[#C9941A] text-black font-semibold gap-2"
+                    className="w-full bg-[#E2741B] hover:bg-[#E2741B] text-black font-semibold gap-2"
                     size="lg"
                     onClick={handlePurchase}
                     disabled={purchaseMutation.isPending}
@@ -459,15 +459,15 @@ export default function ListingDetail() {
 
                 <div className="pt-4 space-y-2 text-sm text-gray-400">
                   <div className="flex items-center gap-2">
-                    <Globe className="w-4 h-4 text-[#C9941A]" />
+                    <Globe className="w-4 h-4 text-[#E2741B]" />
                     <span>Available worldwide</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Download className="w-4 h-4 text-[#C9941A]" />
+                    <Download className="w-4 h-4 text-[#E2741B]" />
                     <span>Instant digital delivery</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-[#C9941A]" />
+                    <CheckCircle className="w-4 h-4 text-[#E2741B]" />
                     <span>Secure checkout via Stripe</span>
                   </div>
                 </div>
@@ -481,7 +481,7 @@ export default function ListingDetail() {
                   <div className="flex-1">
                     <Progress value={85} className="h-2" />
                   </div>
-                  <span className="text-sm font-medium text-[#C9941A]">85%</span>
+                  <span className="text-sm font-medium text-[#E2741B]">85%</span>
                 </div>
                 <p className="text-xs text-gray-400 mt-2">
                   Creators keep 85% of every sale. You support independent creators directly.

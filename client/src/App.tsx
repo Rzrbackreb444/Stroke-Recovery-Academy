@@ -246,8 +246,8 @@ function LazyRouteFallback() {
       data-testid="lazy-route-fallback"
       className="min-h-[60vh] w-full bg-[#0D0D0D] flex items-center justify-center"
     >
-      <div className="flex items-center gap-2 text-[#C9941A]/80">
-        <span className="h-2 w-2 rounded-full bg-[#C9941A] animate-pulse" />
+      <div className="flex items-center gap-2 text-[#E2741B]/80">
+        <span className="h-2 w-2 rounded-full bg-[#E2741B] animate-pulse" />
         <span className="text-sm">Loading…</span>
       </div>
     </div>

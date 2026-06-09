@@ -21,7 +21,7 @@ const PHASES: Phase[] = [
     subtitle: "Building the foundation",
     days: [1, 22],
     icon: Target,
-    color: "#C9941A",
+    color: "#E2741B",
   },
   {
     name: "BREAKTHROUGH PHASE",
@@ -157,7 +157,7 @@ export default function SixtyDayTracker() {
       <CardHeader className="pb-2">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <Calendar className="h-5 w-5" style={{ color: "#C9941A" }} />
+            <Calendar className="h-5 w-5" style={{ color: "#E2741B" }} />
             <h3 className="text-lg font-bold text-foreground" data-testid="tracker-title">
               66-Day Transformation
             </h3>
@@ -245,7 +245,7 @@ export default function SixtyDayTracker() {
 
         <div 
           className="flex flex-wrap items-center justify-center gap-4 p-4 rounded-lg"
-          style={{ backgroundColor: "rgba(201, 148, 26, 0.1)" }}
+          style={{ backgroundColor: "rgba(226,116,27, 0.1)" }}
         >
           <div className="flex items-center gap-2" data-testid="streak-indicator">
             <Flame className="h-5 w-5" style={{ color: "#FF6B35" }} />
@@ -268,7 +268,7 @@ export default function SixtyDayTracker() {
           <div className="h-8 w-px bg-border hidden sm:block" />
 
           <div className="flex items-center gap-2" data-testid="trophy-indicator">
-            <Trophy className="h-5 w-5" style={{ color: "#C9941A" }} />
+            <Trophy className="h-5 w-5" style={{ color: "#E2741B" }} />
             <div>
               <span className="text-xl font-bold text-foreground">{66 - completedDays.length}</span>
               <span className="text-sm text-muted-foreground ml-1">days remaining</span>
@@ -279,7 +279,7 @@ export default function SixtyDayTracker() {
         <div className="space-y-2" data-testid="progress-section">
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Overall Progress</span>
-            <span className="font-semibold" style={{ color: "#C9941A" }} data-testid="progress-percentage">
+            <span className="font-semibold" style={{ color: "#E2741B" }} data-testid="progress-percentage">
               {progressPercentage}%
             </span>
           </div>
@@ -296,7 +296,7 @@ export default function SixtyDayTracker() {
             disabled={isTodayCompleted || currentDay > 66}
             className="flex-1 gap-2 font-semibold"
             style={{ 
-              backgroundColor: isTodayCompleted ? "#E5E5E5" : "#C9941A",
+              backgroundColor: isTodayCompleted ? "#E5E5E5" : "#E2741B",
               color: isTodayCompleted ? "#666" : "#FFF"
             }}
             data-testid="button-checkin"

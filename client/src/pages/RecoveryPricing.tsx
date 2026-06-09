@@ -191,7 +191,7 @@ const TIMELINE = [
   {
     day: "Day 45–66",
     phase: "Phase 3 — Optimization",
-    color: "#C9941A",
+    color: "#E2741B",
     items: [
       "Advanced protocols and full exercise library access",
       "Start writing your recovery story in My Book",
@@ -287,9 +287,9 @@ const FAQS = [
 
 // ─── Cell helper ─────────────────────────────────────────────────────────────
 function FeatureCell({ val }: { val: boolean | string }) {
-  if (val === true) return <Check className="w-4 h-4 text-[#C9941A] mx-auto" />;
+  if (val === true) return <Check className="w-4 h-4 text-[#E2741B] mx-auto" />;
   if (val === false) return <Minus className="w-4 h-4 text-gray-700 mx-auto" />;
-  return <span className="text-xs text-[#C9941A] font-semibold">{val}</span>;
+  return <span className="text-xs text-[#E2741B] font-semibold">{val}</span>;
 }
 
 // ─── Main component ──────────────────────────────────────────────────────────
@@ -349,18 +349,18 @@ export default function RecoveryPricing() {
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
       <section className="relative py-20 px-4 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-10 left-1/4 w-96 h-96 bg-[#C9941A]/8 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-[#C9941A]/5 rounded-full blur-3xl" />
+          <div className="absolute top-10 left-1/4 w-96 h-96 bg-[#E2741B]/8 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-[#E2741B]/5 rounded-full blur-3xl" />
         </div>
         <div className="relative max-w-4xl mx-auto text-center">
-          <Badge className="mb-6 bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 text-sm px-4 py-1.5">
+          <Badge className="mb-6 bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 text-sm px-4 py-1.5">
             <Flame className="w-3.5 h-3.5 mr-1.5" />
             7-Day Free Trial — No Charge Until Day 8
           </Badge>
 
           <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight">
             Stop Guessing.<br />
-            <span className="text-[#C9941A]">Start Rebuilding.</span>
+            <span className="text-[#E2741B]">Start Rebuilding.</span>
           </h1>
 
           <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-8 leading-relaxed">
@@ -375,7 +375,7 @@ export default function RecoveryPricing() {
               { icon: Star, label: "Built by a survivor" },
             ].map(({ icon: Icon, label }) => (
               <div key={label} className="flex items-center gap-2">
-                <Icon className="w-4 h-4 text-[#C9941A]" />
+                <Icon className="w-4 h-4 text-[#E2741B]" />
                 <span>{label}</span>
               </div>
             ))}
@@ -383,7 +383,7 @@ export default function RecoveryPricing() {
 
           <Button
             size="lg"
-            className="bg-[#C9941A] text-black font-black text-lg px-10 gap-2"
+            className="bg-[#E2741B] text-black font-black text-lg px-10 gap-2"
             onClick={handleWarrior}
             disabled={isPending}
             data-testid="button-hero-trial-cta"
@@ -414,7 +414,7 @@ export default function RecoveryPricing() {
               Annual
             </Label>
             {isAnnual && (
-              <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 font-bold">
+              <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 font-bold">
                 <Gift className="w-3 h-3 mr-1" />
                 Save {annualSavings}%
               </Badge>
@@ -462,7 +462,7 @@ export default function RecoveryPricing() {
                   ].map((f, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm" data-testid={`feature-free-${i}`}>
                       {f.yes ? (
-                        <Check className="w-4 h-4 text-[#C9941A] mt-0.5 shrink-0" />
+                        <Check className="w-4 h-4 text-[#E2741B] mt-0.5 shrink-0" />
                       ) : (
                         <Lock className="w-4 h-4 text-gray-700 mt-0.5 shrink-0" />
                       )}
@@ -486,11 +486,11 @@ export default function RecoveryPricing() {
 
             {/* WARRIOR */}
             <Card
-              className="bg-[#111] border-2 border-[#C9941A] ring-2 ring-[#C9941A]/20 flex flex-col relative"
+              className="bg-[#111] border-2 border-[#E2741B] ring-2 ring-[#E2741B]/20 flex flex-col relative"
               data-testid="card-tier-warrior"
             >
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                <Badge className="bg-[#C9941A] text-black font-black px-4 py-1" data-testid="badge-warrior-popular">
+                <Badge className="bg-[#E2741B] text-black font-black px-4 py-1" data-testid="badge-warrior-popular">
                   <Crown className="w-3 h-3 mr-1" />
                   MOST POPULAR
                 </Badge>
@@ -498,11 +498,11 @@ export default function RecoveryPricing() {
 
               <CardHeader className="pb-4 pt-7">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-[#C9941A]/15 flex items-center justify-center">
-                    <Trophy className="w-5 h-5 text-[#C9941A]" />
+                  <div className="w-10 h-10 rounded-lg bg-[#E2741B]/15 flex items-center justify-center">
+                    <Trophy className="w-5 h-5 text-[#E2741B]" />
                   </div>
                   <div>
-                    <p className="text-xs text-[#C9941A] uppercase tracking-wider font-bold">Full Access</p>
+                    <p className="text-xs text-[#E2741B] uppercase tracking-wider font-bold">Full Access</p>
                     <h2 className="text-xl font-bold text-white">Warrior</h2>
                   </div>
                 </div>
@@ -514,7 +514,7 @@ export default function RecoveryPricing() {
                       <span className="text-gray-400 mb-1">/month</span>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">$397 billed once per year</p>
-                    <p className="text-sm text-[#C9941A] font-bold mt-1">
+                    <p className="text-sm text-[#E2741B] font-bold mt-1">
                       <Gift className="w-3 h-3 inline mr-1" />
                       You save $167/year
                     </p>
@@ -529,8 +529,8 @@ export default function RecoveryPricing() {
                   </div>
                 )}
 
-                <div className="mt-3 px-3 py-2 rounded-lg bg-[#C9941A]/10 border border-[#C9941A]/20">
-                  <p className="text-sm text-[#C9941A] font-semibold text-center">
+                <div className="mt-3 px-3 py-2 rounded-lg bg-[#E2741B]/10 border border-[#E2741B]/20">
+                  <p className="text-sm text-[#E2741B] font-semibold text-center">
                     <Flame className="w-3.5 h-3.5 inline mr-1" />
                     7-day free trial — charged {isAnnual ? "$397" : "$47"} on day 8
                   </p>
@@ -538,7 +538,7 @@ export default function RecoveryPricing() {
               </CardHeader>
 
               <CardContent className="flex-1">
-                <Separator className="mb-4 bg-[#C9941A]/20" />
+                <Separator className="mb-4 bg-[#E2741B]/20" />
                 <ul className="space-y-2.5">
                   {[
                     "Everything in Free — no exceptions",
@@ -557,7 +557,7 @@ export default function RecoveryPricing() {
                     "Monthly bonus challenges",
                   ].map((f, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm" data-testid={`feature-warrior-${i}`}>
-                      <Check className="w-4 h-4 text-[#C9941A] mt-0.5 shrink-0" />
+                      <Check className="w-4 h-4 text-[#E2741B] mt-0.5 shrink-0" />
                       <span className="text-gray-200">{f}</span>
                     </li>
                   ))}
@@ -567,7 +567,7 @@ export default function RecoveryPricing() {
               <CardFooter className="pt-4">
                 <Button
                   size="lg"
-                  className="w-full bg-[#C9941A] text-black font-black gap-2"
+                  className="w-full bg-[#E2741B] text-black font-black gap-2"
                   onClick={handleWarrior}
                   disabled={isPending}
                   data-testid="button-select-warrior"
@@ -582,7 +582,7 @@ export default function RecoveryPricing() {
           {/* Scholarship strip */}
           <div className="mt-8 p-5 rounded-xl bg-[#111] border border-[#2a2a2a] flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <Heart className="w-5 h-5 text-[#C9941A] shrink-0" />
+              <Heart className="w-5 h-5 text-[#E2741B] shrink-0" />
               <div>
                 <p className="text-white font-semibold">Can't afford the membership?</p>
                 <p className="text-sm text-gray-400">
@@ -591,7 +591,7 @@ export default function RecoveryPricing() {
               </div>
             </div>
             <Link href="/recovery/gift">
-              <Button variant="outline" className="border-[#C9941A]/40 text-[#C9941A] shrink-0" data-testid="button-scholarship-link">
+              <Button variant="outline" className="border-[#E2741B]/40 text-[#E2741B] shrink-0" data-testid="button-scholarship-link">
                 Apply for a Scholarship
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
@@ -604,7 +604,7 @@ export default function RecoveryPricing() {
       <section className="py-16 px-4 border-t border-[#1a1a1a]">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-black text-center mb-3 text-white">
-            Free vs. <span className="text-[#C9941A]">Warrior</span>
+            Free vs. <span className="text-[#E2741B]">Warrior</span>
           </h2>
           <p className="text-center text-gray-500 mb-10 text-sm">Every feature, side by side.</p>
 
@@ -613,7 +613,7 @@ export default function RecoveryPricing() {
             <div className="grid grid-cols-3 bg-[#111] border-b border-[#1e1e1e] text-xs font-bold uppercase tracking-wider">
               <div className="p-4 text-gray-500">Feature</div>
               <div className="p-4 text-center text-gray-500">Free</div>
-              <div className="p-4 text-center text-[#C9941A]">Warrior</div>
+              <div className="p-4 text-center text-[#E2741B]">Warrior</div>
             </div>
             {FEATURE_MATRIX.map((row, i) => (
               <div
@@ -640,7 +640,7 @@ export default function RecoveryPricing() {
       <section className="py-16 px-4 border-t border-[#1a1a1a]">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-3xl font-black text-center mb-3 text-white">
-            What Warrior <span className="text-[#C9941A]">Actually Gets You</span>
+            What Warrior <span className="text-[#E2741B]">Actually Gets You</span>
           </h2>
           <p className="text-center text-gray-400 mb-12 max-w-xl mx-auto">
             Not information. A system. Built by someone who lived the darkness and found the way out.
@@ -648,8 +648,8 @@ export default function RecoveryPricing() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {WHAT_YOU_GET.map(({ icon: Icon, title, desc }, i) => (
               <div key={i} className="p-5 rounded-xl bg-[#111] border border-[#1e1e1e]" data-testid={`card-feature-${i}`}>
-                <div className="w-10 h-10 rounded-lg bg-[#C9941A]/10 flex items-center justify-center mb-3">
-                  <Icon className="w-5 h-5 text-[#C9941A]" />
+                <div className="w-10 h-10 rounded-lg bg-[#E2741B]/10 flex items-center justify-center mb-3">
+                  <Icon className="w-5 h-5 text-[#E2741B]" />
                 </div>
                 <h3 className="text-white font-bold mb-1 text-sm">{title}</h3>
                 <p className="text-xs text-gray-500 leading-relaxed">{desc}</p>
@@ -663,7 +663,7 @@ export default function RecoveryPricing() {
       <section className="py-16 px-4 border-t border-[#1a1a1a] bg-[#080808]">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-3xl font-black text-center mb-3 text-white">
-            Who This Is <span className="text-[#C9941A]">Built For</span>
+            Who This Is <span className="text-[#E2741B]">Built For</span>
           </h2>
           <p className="text-center text-gray-400 mb-12 max-w-xl mx-auto">
             Any stage. Any severity. Any role in the recovery journey.
@@ -671,15 +671,15 @@ export default function RecoveryPricing() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {WHO_ITS_FOR.map(({ icon: Icon, title, subtitle, points }, i) => (
               <div key={i} className="p-6 rounded-xl bg-[#0f0f0f] border border-[#1e1e1e]">
-                <div className="w-11 h-11 rounded-lg bg-[#C9941A]/10 flex items-center justify-center mb-4">
-                  <Icon className="w-5 h-5 text-[#C9941A]" />
+                <div className="w-11 h-11 rounded-lg bg-[#E2741B]/10 flex items-center justify-center mb-4">
+                  <Icon className="w-5 h-5 text-[#E2741B]" />
                 </div>
                 <h3 className="text-white font-black text-lg mb-1">{title}</h3>
-                <p className="text-xs text-[#C9941A] font-semibold mb-4 uppercase tracking-wider">{subtitle}</p>
+                <p className="text-xs text-[#E2741B] font-semibold mb-4 uppercase tracking-wider">{subtitle}</p>
                 <ul className="space-y-2.5">
                   {points.map((pt, j) => (
                     <li key={j} className="flex items-start gap-2 text-sm text-gray-400">
-                      <CheckCircle className="w-3.5 h-3.5 text-[#C9941A]/60 mt-0.5 shrink-0" />
+                      <CheckCircle className="w-3.5 h-3.5 text-[#E2741B]/60 mt-0.5 shrink-0" />
                       {pt}
                     </li>
                   ))}
@@ -694,7 +694,7 @@ export default function RecoveryPricing() {
       <section className="py-16 px-4 border-t border-[#1a1a1a]">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-black text-center mb-3 text-white">
-            Your First <span className="text-[#C9941A]">66 Days</span>
+            Your First <span className="text-[#E2741B]">66 Days</span>
           </h2>
           <p className="text-center text-gray-400 mb-12 max-w-xl mx-auto">
             What happens when you start. Phase by phase — from survival to optimization.
@@ -744,13 +744,13 @@ export default function RecoveryPricing() {
       {/* ── NICK'S PROMISE ────────────────────────────────────────────────── */}
       <section className="py-16 px-4 border-t border-[#1a1a1a] bg-[#080808]">
         <div className="max-w-3xl mx-auto">
-          <div className="p-8 rounded-2xl bg-[#0f0f0f] border border-[#C9941A]/20">
+          <div className="p-8 rounded-2xl bg-[#0f0f0f] border border-[#E2741B]/20">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-full bg-[#C9941A]/10 flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-[#C9941A]" />
+              <div className="w-12 h-12 rounded-full bg-[#E2741B]/10 flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-[#E2741B]" />
               </div>
               <div>
-                <p className="text-[#C9941A] font-bold text-sm uppercase tracking-wider">Nick's Personal Promise</p>
+                <p className="text-[#E2741B] font-bold text-sm uppercase tracking-wider">Nick's Personal Promise</p>
                 <p className="text-gray-500 text-xs">Lavaca, Arkansas — Year 7 post-stroke</p>
               </div>
             </div>
@@ -764,7 +764,7 @@ export default function RecoveryPricing() {
               That 10% I haven't gotten back yet? I know its name. I'm coming for it. Come with me."
             </blockquote>
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-[#C9941A]/20 flex items-center justify-center text-[#C9941A] font-black text-sm shrink-0">
+              <div className="w-9 h-9 rounded-full bg-[#E2741B]/20 flex items-center justify-center text-[#E2741B] font-black text-sm shrink-0">
                 NK
               </div>
               <div>
@@ -780,7 +780,7 @@ export default function RecoveryPricing() {
       <section className="py-16 px-4 border-t border-[#1a1a1a]">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-2xl font-black text-center mb-10 text-white">
-            From Warriors Who <span className="text-[#C9941A]">Actually Did It</span>
+            From Warriors Who <span className="text-[#E2741B]">Actually Did It</span>
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {TESTIMONIALS.map((t, i) => (
@@ -788,12 +788,12 @@ export default function RecoveryPricing() {
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-0.5 mb-4">
                     {[...Array(5)].map((_, s) => (
-                      <Star key={s} className="w-3.5 h-3.5 text-[#C9941A] fill-[#C9941A]" />
+                      <Star key={s} className="w-3.5 h-3.5 text-[#E2741B] fill-[#E2741B]" />
                     ))}
                   </div>
                   <p className="text-gray-300 text-sm italic mb-5 leading-relaxed">"{t.quote}"</p>
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-[#C9941A]/20 flex items-center justify-center text-[#C9941A] font-bold text-xs shrink-0">
+                    <div className="w-9 h-9 rounded-full bg-[#E2741B]/20 flex items-center justify-center text-[#E2741B] font-bold text-xs shrink-0">
                       {t.avatar}
                     </div>
                     <div>
@@ -812,7 +812,7 @@ export default function RecoveryPricing() {
       <section className="py-16 px-4 border-t border-[#1a1a1a] bg-[#080808]">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl font-black text-center mb-10 text-white">
-            Frequently Asked <span className="text-[#C9941A]">Questions</span>
+            Frequently Asked <span className="text-[#E2741B]">Questions</span>
           </h2>
           <Accordion type="single" collapsible className="w-full space-y-2">
             {FAQS.map((faq, i) => (
@@ -822,7 +822,7 @@ export default function RecoveryPricing() {
                 className="bg-[#0f0f0f] border border-[#1e1e1e] rounded-lg px-4"
                 data-testid={`faq-item-${i}`}
               >
-                <AccordionTrigger className="text-white hover:text-[#C9941A] text-left py-4 text-sm font-semibold">
+                <AccordionTrigger className="text-white hover:text-[#E2741B] text-left py-4 text-sm font-semibold">
                   {faq.q}
                 </AccordionTrigger>
                 <AccordionContent className="text-gray-400 text-sm leading-relaxed pb-4">
@@ -837,13 +837,13 @@ export default function RecoveryPricing() {
       {/* ── FINAL CTA ─────────────────────────────────────────────────────── */}
       <section className="py-24 px-4 border-t border-[#1a1a1a] bg-gradient-to-b from-[#0D0D0D] to-[#0a0a0a]">
         <div className="max-w-3xl mx-auto text-center">
-          <Badge className="mb-6 bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30">
+          <Badge className="mb-6 bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30">
             <Flame className="w-3.5 h-3.5 mr-1.5" />
             7 days free. No excuses.
           </Badge>
           <h2 className="text-4xl md:text-5xl font-black mb-6 leading-tight">
             You already survived<br /> the hardest part.
-            <br /><span className="text-[#C9941A]">Now rebuild.</span>
+            <br /><span className="text-[#E2741B]">Now rebuild.</span>
           </h2>
           <p className="text-gray-400 mb-10 text-lg max-w-xl mx-auto leading-relaxed">
             Start the 7-day free trial. Set your Daily Routine level. Enter the 66-Day Challenge.
@@ -853,7 +853,7 @@ export default function RecoveryPricing() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <Button
               size="lg"
-              className="bg-[#C9941A] text-black font-black text-lg px-10 gap-2"
+              className="bg-[#E2741B] text-black font-black text-lg px-10 gap-2"
               onClick={handleWarrior}
               disabled={isPending}
               data-testid="button-final-cta"
@@ -876,19 +876,19 @@ export default function RecoveryPricing() {
 
           <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-600">
             <div className="flex items-center gap-1.5">
-              <Shield className="w-4 h-4 text-[#C9941A]/50" />
+              <Shield className="w-4 h-4 text-[#E2741B]/50" />
               <span>7-day free trial</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-[#C9941A]/50" />
+              <Clock className="w-4 h-4 text-[#E2741B]/50" />
               <span>Cancel anytime</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Heart className="w-4 h-4 text-[#C9941A]/50" />
+              <Heart className="w-4 h-4 text-[#E2741B]/50" />
               <span>Scholarships via Stroke Lyfe Inc.</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Calendar className="w-4 h-4 text-[#C9941A]/50" />
+              <Calendar className="w-4 h-4 text-[#E2741B]/50" />
               <span>66-Day Challenge included</span>
             </div>
           </div>

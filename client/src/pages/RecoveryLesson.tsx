@@ -57,7 +57,7 @@ function renderMarkdown(md: string): string {
     } else if (line.startsWith("## ")) {
       closePara();
       closeList();
-      html += `<h2 class="text-2xl font-bold text-[#C9941A] mt-8 mb-3">${inline(line.slice(3))}</h2>`;
+      html += `<h2 class="text-2xl font-bold text-[#E2741B] mt-8 mb-3">${inline(line.slice(3))}</h2>`;
     } else if (line.startsWith("# ")) {
       closePara();
       closeList();
@@ -65,7 +65,7 @@ function renderMarkdown(md: string): string {
     } else if (line.startsWith("> ")) {
       closePara();
       closeList();
-      html += `<blockquote class="border-l-4 border-[#C9941A] pl-4 italic text-gray-300 my-4">${inline(line.slice(2))}</blockquote>`;
+      html += `<blockquote class="border-l-4 border-[#E2741B] pl-4 italic text-gray-300 my-4">${inline(line.slice(2))}</blockquote>`;
     } else if (/^[-*]\s+/.test(line)) {
       closePara();
       if (!inList) {
@@ -153,11 +153,11 @@ export default function RecoveryLesson() {
       <div className="min-h-screen bg-[#0D0D0D] text-white flex items-center justify-center px-4">
         <Card className="bg-[#1a1a1a] border border-[#333] max-w-md">
           <CardContent className="p-8 text-center">
-            <Lock className="w-10 h-10 text-[#C9941A] mx-auto mb-3" />
+            <Lock className="w-10 h-10 text-[#E2741B] mx-auto mb-3" />
             <h2 className="text-xl font-bold mb-2">Sign in to access lessons</h2>
             <p className="text-gray-400 mb-4">Recovery University is for survivors. Free to start.</p>
             <Link href="/api/login">
-              <Button className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black" data-testid="button-sign-in">
+              <Button className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black" data-testid="button-sign-in">
                 Sign in
               </Button>
             </Link>
@@ -173,13 +173,13 @@ export default function RecoveryLesson() {
       <div className="min-h-screen bg-[#0D0D0D] text-white flex items-center justify-center px-4">
         <Card className="bg-[#1a1a1a] border border-[#333] max-w-md">
           <CardContent className="p-8 text-center">
-            <Lock className="w-10 h-10 text-[#C9941A] mx-auto mb-3" />
+            <Lock className="w-10 h-10 text-[#E2741B] mx-auto mb-3" />
             <h2 className="text-xl font-bold mb-2">Tier locked</h2>
             <p className="text-gray-400 mb-4">
               Upgrade your plan to unlock Chapter {chapter}.
             </p>
             <Link href="/pricing">
-              <Button className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black" data-testid="button-upgrade-tier">
+              <Button className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black" data-testid="button-upgrade-tier">
                 See plans
               </Button>
             </Link>
@@ -222,7 +222,7 @@ export default function RecoveryLesson() {
             </Button>
           </Link>
           <div className="flex items-center gap-2 text-sm text-gray-400">
-            <GraduationCap className="w-4 h-4 text-[#C9941A]" />
+            <GraduationCap className="w-4 h-4 text-[#E2741B]" />
             <span>Recovery University</span>
           </div>
         </div>
@@ -231,7 +231,7 @@ export default function RecoveryLesson() {
       <article className="max-w-3xl mx-auto px-4 py-10">
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-3 flex-wrap">
-            <Badge variant="outline" className="border-[#C9941A]/50 text-[#C9941A] bg-[#C9941A]/10" data-testid="badge-chapter">
+            <Badge variant="outline" className="border-[#E2741B]/50 text-[#E2741B] bg-[#E2741B]/10" data-testid="badge-chapter">
               Part {lesson.partNumber} · Chapter {lesson.chapter}
             </Badge>
             <Badge variant="outline" className="border-[#333] text-gray-400">
@@ -239,7 +239,7 @@ export default function RecoveryLesson() {
               {lesson.estimatedMinutes} min
             </Badge>
             {passed && (
-              <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30" data-testid="badge-passed">
+              <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30" data-testid="badge-passed">
                 <CheckCircle className="w-3 h-3 mr-1" />
                 Passed · {progress?.bestScore}%
               </Badge>
@@ -260,16 +260,16 @@ export default function RecoveryLesson() {
         />
 
         {lesson.keyTakeaways && lesson.keyTakeaways.length > 0 && (
-          <Card className="bg-[#1a1a1a] border border-[#C9941A]/30 mt-8" data-testid="card-takeaways">
+          <Card className="bg-[#1a1a1a] border border-[#E2741B]/30 mt-8" data-testid="card-takeaways">
             <CardContent className="p-6">
               <div className="flex items-center gap-2 mb-3">
-                <Trophy className="w-5 h-5 text-[#C9941A]" />
+                <Trophy className="w-5 h-5 text-[#E2741B]" />
                 <h3 className="text-lg font-bold text-white">Key takeaways</h3>
               </div>
               <ul className="space-y-2 text-gray-200">
                 {lesson.keyTakeaways.map((t, i) => (
                   <li key={i} className="flex gap-2">
-                    <CheckCircle className="w-4 h-4 text-[#C9941A] mt-1 shrink-0" />
+                    <CheckCircle className="w-4 h-4 text-[#E2741B] mt-1 shrink-0" />
                     <span>{t}</span>
                   </li>
                 ))}
@@ -291,7 +291,7 @@ export default function RecoveryLesson() {
           </Button>
           <Button
             onClick={() => setLocation(`/recovery/university/quiz/${chapter}`)}
-            className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black"
+            className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black"
             data-testid="button-take-quiz"
           >
             {passed ? "Retake quiz" : "Take the quiz"}

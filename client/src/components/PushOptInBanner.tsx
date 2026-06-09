@@ -59,13 +59,13 @@ export default function PushOptInBanner() {
   return (
     <Card
       className="mb-6 p-5 border-2 bg-gradient-to-br from-amber-950/40 to-stone-900/40"
-      style={{ borderColor: "#C9941A" }}
+      style={{ borderColor: "#E2741B" }}
       data-testid="banner-push-optin"
     >
       <div className="flex items-start gap-4">
         <div
           className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center"
-          style={{ backgroundColor: "#C9941A" }}
+          style={{ backgroundColor: "#E2741B" }}
         >
           <Bell className="w-6 h-6 text-stone-900" />
         </div>

@@ -255,13 +255,13 @@ const stats = [
 function getDifficultyColor(difficulty: Difficulty): string {
   switch (difficulty) {
     case "Beginner":
-      return "bg-[#C9941A]/20 text-[#C9941A] border-green-500/30";
+      return "bg-[#E2741B]/20 text-[#E2741B] border-green-500/30";
     case "Intermediate":
-      return "bg-[#C9941A]/20 text-[#C9941A] border-amber-500/30";
+      return "bg-[#E2741B]/20 text-[#E2741B] border-amber-500/30";
     case "Advanced":
       return "bg-red-500/20 text-red-400 border-red-500/30";
     case "All Levels":
-      return "bg-primary/20 text-[#C9941A] border-primary/30";
+      return "bg-primary/20 text-[#E2741B] border-primary/30";
     default:
       return "bg-[#1a1a1a] text-gray-400";
   }
@@ -276,7 +276,7 @@ function ExerciseCard({ exercise }: { exercise: Exercise }) {
         <CardContent className="flex flex-col h-full pt-6">
           <div className="flex items-start justify-between gap-3 mb-4">
             <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/30 transition-colors">
-              <Icon className="h-6 w-6 text-[#C9941A]" aria-hidden="true" />
+              <Icon className="h-6 w-6 text-[#E2741B]" aria-hidden="true" />
             </div>
             <Badge 
               variant="outline" 
@@ -310,7 +310,7 @@ function ExerciseCard({ exercise }: { exercise: Exercise }) {
           
           <div className="flex items-center justify-between text-sm text-gray-400 mb-4 gap-2">
             <span className="flex items-center gap-1">
-              <Clock className="h-4 w-4 text-[#C9941A]" aria-hidden="true" />
+              <Clock className="h-4 w-4 text-[#E2741B]" aria-hidden="true" />
               {exercise.duration}
             </span>
             {exercise.repetitions && (
@@ -375,7 +375,7 @@ function CategoryFilter({
             <span className="hidden sm:inline">{cat.label}</span>
             <Badge 
               variant="secondary" 
-              className={`text-xs ${isSelected ? "bg-primary-foreground/20 text-[#C9941A]-foreground" : ""}`}
+              className={`text-xs ${isSelected ? "bg-primary-foreground/20 text-[#E2741B]-foreground" : ""}`}
             >
               {cat.count}
             </Badge>
@@ -471,7 +471,7 @@ export default function SurvivalGrid() {
           
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
-              <Badge variant="outline" className="mb-6 text-[#C9941A] border-primary">
+              <Badge variant="outline" className="mb-6 text-[#E2741B] border-primary">
                 <Grid3X3 className="h-3 w-3 mr-1" aria-hidden="true" />
                 The Sasquatch Survival System
               </Badge>
@@ -482,7 +482,7 @@ export default function SurvivalGrid() {
                 data-testid="text-survival-grid-title"
               >
                 Survival{" "}
-                <span className="text-[#C9941A]">Grid</span>
+                <span className="text-[#E2741B]">Grid</span>
               </h1>
               
               <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-8">
@@ -507,7 +507,7 @@ export default function SurvivalGrid() {
               <div className="flex flex-wrap justify-center gap-8 text-sm text-gray-400">
                 {stats.map((stat, index) => (
                   <div key={index} className="flex items-center gap-2">
-                    <stat.icon className="h-4 w-4 text-[#C9941A]" aria-hidden="true" />
+                    <stat.icon className="h-4 w-4 text-[#E2741B]" aria-hidden="true" />
                     <span>
                       <strong className="text-foreground">{stat.value}</strong> {stat.label}
                     </span>
@@ -523,7 +523,7 @@ export default function SurvivalGrid() {
             <div className="flex flex-col md:flex-row items-center justify-between gap-6 max-w-4xl mx-auto">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
-                  <CheckCircle2 className="h-7 w-7 text-[#C9941A]" aria-hidden="true" />
+                  <CheckCircle2 className="h-7 w-7 text-[#E2741B]" aria-hidden="true" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-400">Your Arsenal Progress</p>
@@ -536,7 +536,7 @@ export default function SurvivalGrid() {
               <div className="w-full md:w-64">
                 <div className="flex items-center justify-between text-sm mb-2">
                   <span className="text-gray-400">Overall Progress</span>
-                  <span className="font-semibold text-[#C9941A]">{totalProgress}%</span>
+                  <span className="font-semibold text-[#E2741B]">{totalProgress}%</span>
                 </div>
                 <Progress 
                   value={totalProgress} 
@@ -598,7 +598,7 @@ export default function SurvivalGrid() {
             <Card className="max-w-4xl mx-auto bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-primary/20">
               <CardContent className="py-12 px-8 text-center">
                 <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-6">
-                  <Target className="h-8 w-8 text-[#C9941A]" aria-hidden="true" />
+                  <Target className="h-8 w-8 text-[#E2741B]" aria-hidden="true" />
                 </div>
                 <h2 
                   id="cta-title"

@@ -40,7 +40,7 @@ const SEVERITY_COLOR: Record<string, string> = {
 };
 
 const STATUS_COLOR: Record<string, string> = {
-  new: "bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30",
+  new: "bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30",
   triaged: "bg-blue-500/10 text-blue-300 border-blue-500/30",
   in_progress: "bg-purple-500/10 text-purple-300 border-purple-500/30",
   resolved: "bg-green-500/10 text-green-300 border-green-500/30",
@@ -94,7 +94,7 @@ export default function FeedbackInbox() {
     <div className="min-h-screen bg-[#0D0D0D] text-white p-6">
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center gap-3 mb-2">
-          <Inbox className="h-6 w-6 text-[#C9941A]" />
+          <Inbox className="h-6 w-6 text-[#E2741B]" />
           <h1 className="text-2xl font-bold" data-testid="text-inbox-title">Feedback Inbox</h1>
         </div>
         <p className="text-gray-400 text-sm mb-6">
@@ -108,7 +108,7 @@ export default function FeedbackInbox() {
           </Card>
           <Card className="p-4 bg-[#111] border-[#1f1f1f]">
             <div className="text-xs text-gray-400">New</div>
-            <div className="text-2xl font-bold text-[#C9941A]" data-testid="stat-new">{counts.new}</div>
+            <div className="text-2xl font-bold text-[#E2741B]" data-testid="stat-new">{counts.new}</div>
           </Card>
           <Card className="p-4 bg-[#111] border-[#1f1f1f]">
             <div className="text-xs text-gray-400">Bugs</div>
@@ -176,7 +176,7 @@ export default function FeedbackInbox() {
                     <div className="flex items-center gap-3 flex-wrap">
                       {item.contact_email && (
                         <span>
-                          Reply: <a href={`mailto:${item.contact_email}`} className="text-[#C9941A] underline">{item.contact_email}</a>
+                          Reply: <a href={`mailto:${item.contact_email}`} className="text-[#E2741B] underline">{item.contact_email}</a>
                         </span>
                       )}
                       {item.user_id && <span>User: <span className="font-mono">{item.user_id.slice(0, 8)}…</span></span>}

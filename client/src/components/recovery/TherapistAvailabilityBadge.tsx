@@ -109,7 +109,7 @@ export default function TherapistAvailabilityBadge({ userId, variant = "inline" 
       className="flex items-center gap-2 text-xs"
       data-testid={`therapist-availability-${userId}`}
     >
-      <Badge className="gap-1 bg-[#C9941A]/15 text-[#C9941A] border-0">
+      <Badge className="gap-1 bg-[#E2741B]/15 text-[#E2741B] border-0">
         <Stethoscope className="w-3 h-3" /> {data.title || "Therapist"}
       </Badge>
       <span className={`inline-flex items-center gap-1 ${open ? "text-emerald-300" : "text-zinc-400"}`}>

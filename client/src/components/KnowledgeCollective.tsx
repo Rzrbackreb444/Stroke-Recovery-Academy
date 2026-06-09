@@ -79,13 +79,13 @@ export default function KnowledgeCollective({ onCategorySelect, className }: Kno
 
   return (
     <div className={cn("p-6 md:p-10 space-y-10 bg-[#FAF8F3] min-h-screen font-sans max-w-7xl mx-auto", className)}>
-      <header className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 border-b-2 border-[#C9941A]/20 pb-8">
+      <header className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 border-b-2 border-[#E2741B]/20 pb-8">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-[#C9941A] text-white">
+            <div className="p-2 bg-[#E2741B] text-white">
               <Users className="w-5 h-5" />
             </div>
-            <Badge className="bg-[#C9941A]/10 text-[#C9941A] border-none text-[9px] uppercase px-3 py-1 font-black tracking-widest">
+            <Badge className="bg-[#E2741B]/10 text-[#E2741B] border-none text-[9px] uppercase px-3 py-1 font-black tracking-widest">
               Institutional Exchange
             </Badge>
           </div>
@@ -99,7 +99,7 @@ export default function KnowledgeCollective({ onCategorySelect, className }: Kno
         <div className="relative w-full lg:w-96">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 opacity-20" />
           <Input 
-            className="w-full bg-white border-2 border-[#C9941A]/10 p-4 pl-12 text-[12px] font-bold uppercase tracking-widest focus:border-[#C9941A] outline-none transition-all shadow-sm rounded-none h-14" 
+            className="w-full bg-white border-2 border-[#E2741B]/10 p-4 pl-12 text-[12px] font-bold uppercase tracking-widest focus:border-[#E2741B] outline-none transition-all shadow-sm rounded-none h-14" 
             placeholder="Search Doctrines..."
             aria-label="Search doctrines"
             data-testid="input-search-doctrines"
@@ -114,13 +114,13 @@ export default function KnowledgeCollective({ onCategorySelect, className }: Kno
             return (
               <Card 
                 key={cat.title} 
-                className="bg-white border-2 border-[#C9941A]/5 rounded-none shadow-[0_15px_40px_rgba(0,0,0,0.02)] hover:border-[#C9941A]/30 hover:translate-x-1 transition-all cursor-pointer group"
+                className="bg-white border-2 border-[#E2741B]/5 rounded-none shadow-[0_15px_40px_rgba(0,0,0,0.02)] hover:border-[#E2741B]/30 hover:translate-x-1 transition-all cursor-pointer group"
                 onClick={() => onCategorySelect?.(cat.title)}
                 data-testid={`category-card-${cat.title.toLowerCase().replace(/\s+/g, '-')}`}
               >
                 <CardContent className="p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                   <div className="flex items-start md:items-center gap-4 md:gap-6">
-                    <div className="p-4 md:p-5 bg-[#FAF8F3] text-[#C9941A] group-hover:bg-[#1A1A1A] group-hover:text-white transition-all shrink-0">
+                    <div className="p-4 md:p-5 bg-[#FAF8F3] text-[#E2741B] group-hover:bg-[#1A1A1A] group-hover:text-white transition-all shrink-0">
                       <IconComponent className="w-5 h-5 md:w-6 md:h-6" />
                     </div>
                     <div className="space-y-2">
@@ -134,14 +134,14 @@ export default function KnowledgeCollective({ onCategorySelect, className }: Kno
                         <span className="flex items-center gap-1">
                           <Clock className="w-3 h-3" /> {cat.lastActive}
                         </span>
-                        <Badge className="bg-[#C9941A]/10 text-green-600 border-none px-2 py-0 text-[8px] font-black">
+                        <Badge className="bg-[#E2741B]/10 text-green-600 border-none px-2 py-0 text-[8px] font-black">
                           <TrendingUp className="w-2.5 h-2.5 mr-1" />
                           {cat.growth}
                         </Badge>
                       </div>
                     </div>
                   </div>
-                  <ArrowUpRight className="w-6 h-6 opacity-0 group-hover:opacity-100 transition-all text-[#C9941A] shrink-0 hidden md:block" />
+                  <ArrowUpRight className="w-6 h-6 opacity-0 group-hover:opacity-100 transition-all text-[#E2741B] shrink-0 hidden md:block" />
                 </CardContent>
               </Card>
             );
@@ -153,7 +153,7 @@ export default function KnowledgeCollective({ onCategorySelect, className }: Kno
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="text-[10px] uppercase tracking-widest text-[#C9941A] hover:bg-[#C9941A]/10"
+                className="text-[10px] uppercase tracking-widest text-[#E2741B] hover:bg-[#E2741B]/10"
                 data-testid="button-view-all-trending"
               >
                 View All
@@ -163,13 +163,13 @@ export default function KnowledgeCollective({ onCategorySelect, className }: Kno
               {trendingTopics.map((topic) => (
                 <Card 
                   key={topic.topic}
-                  className="bg-white/50 border border-[#C9941A]/10 rounded-none p-4 hover:bg-white hover:border-[#C9941A]/20 transition-all cursor-pointer group"
+                  className="bg-white/50 border border-[#E2741B]/10 rounded-none p-4 hover:bg-white hover:border-[#E2741B]/20 transition-all cursor-pointer group"
                   data-testid={`trending-topic-${topic.topic.toLowerCase().replace(/\s+/g, '-')}`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-[#C9941A] rounded-full animate-pulse" />
-                      <span className="text-sm font-bold group-hover:text-[#C9941A] transition-colors">{topic.topic}</span>
+                      <div className="w-2 h-2 bg-[#E2741B] rounded-full animate-pulse" />
+                      <span className="text-sm font-bold group-hover:text-[#E2741B] transition-colors">{topic.topic}</span>
                     </div>
                     <Badge variant="secondary" className="text-[9px]">{topic.posts} posts</Badge>
                   </div>
@@ -181,10 +181,10 @@ export default function KnowledgeCollective({ onCategorySelect, className }: Kno
 
         <div className="col-span-12 lg:col-span-4 space-y-6">
           <Card className="bg-[#1A1A1A] text-white border-none rounded-none shadow-2xl p-6 md:p-8 relative overflow-hidden">
-            <Zap className="absolute -right-8 -bottom-8 w-32 h-32 md:w-40 md:h-40 opacity-10 text-[#C9941A]" />
+            <Zap className="absolute -right-8 -bottom-8 w-32 h-32 md:w-40 md:h-40 opacity-10 text-[#E2741B]" />
             <div className="flex items-center justify-between mb-6">
-              <h4 className="text-[12px] uppercase tracking-[0.4em] font-black text-[#C9941A]">Top Strategists</h4>
-              <Crown className="w-5 h-5 text-[#C9941A]" />
+              <h4 className="text-[12px] uppercase tracking-[0.4em] font-black text-[#E2741B]">Top Strategists</h4>
+              <Crown className="w-5 h-5 text-[#E2741B]" />
             </div>
             <div className="space-y-4 relative z-10">
               {topStrategists.map((user) => (
@@ -195,13 +195,13 @@ export default function KnowledgeCollective({ onCategorySelect, className }: Kno
                 >
                   <div className="flex items-center gap-3">
                     <div className="relative">
-                      <div className="w-10 h-10 bg-white/10 flex items-center justify-center font-black text-xs group-hover:bg-[#C9941A] transition-all">
+                      <div className="w-10 h-10 bg-white/10 flex items-center justify-center font-black text-xs group-hover:bg-[#E2741B] transition-all">
                         {user.name[0]}
                       </div>
                       {user.rank <= 3 && (
                         <div className={cn(
                           "absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-black",
-                          user.rank === 1 ? "bg-[#C9941A] text-white" : 
+                          user.rank === 1 ? "bg-[#E2741B] text-white" : 
                           user.rank === 2 ? "bg-gray-400 text-white" : 
                           "bg-amber-700 text-white"
                         )}>
@@ -214,12 +214,12 @@ export default function KnowledgeCollective({ onCategorySelect, className }: Kno
                       <span className="text-[9px] opacity-40 uppercase tracking-wider">{user.specialty}</span>
                     </div>
                   </div>
-                  <span className="text-[#C9941A] font-mono text-[11px] font-bold">{user.earnings}</span>
+                  <span className="text-[#E2741B] font-mono text-[11px] font-bold">{user.earnings}</span>
                 </div>
               ))}
             </div>
             <Button 
-              className="w-full mt-6 bg-[#C9941A] hover:bg-[#C9941A]/80 text-white rounded-none text-[10px] uppercase tracking-widest font-black"
+              className="w-full mt-6 bg-[#E2741B] hover:bg-[#E2741B]/80 text-white rounded-none text-[10px] uppercase tracking-widest font-black"
               data-testid="button-view-leaderboard"
             >
               <Star className="w-3.5 h-3.5 mr-2" />
@@ -227,9 +227,9 @@ export default function KnowledgeCollective({ onCategorySelect, className }: Kno
             </Button>
           </Card>
 
-          <Card className="bg-gradient-to-br from-[#C9941A]/10 to-[#C9941A]/5 border-2 border-[#C9941A]/20 rounded-none p-6">
+          <Card className="bg-gradient-to-br from-[#E2741B]/10 to-[#E2741B]/5 border-2 border-[#E2741B]/20 rounded-none p-6">
             <div className="text-center space-y-4">
-              <div className="w-16 h-16 mx-auto bg-[#C9941A] text-white flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto bg-[#E2741B] text-white flex items-center justify-center">
                 <Quote className="w-8 h-8" />
               </div>
               <h4 className="font-black uppercase tracking-wider">Share Your Doctrine</h4>
@@ -245,16 +245,16 @@ export default function KnowledgeCollective({ onCategorySelect, className }: Kno
             </div>
           </Card>
 
-          <div className="p-4 border-2 border-dashed border-[#C9941A]/20 bg-[#FAF8F3]">
+          <div className="p-4 border-2 border-dashed border-[#E2741B]/20 bg-[#FAF8F3]">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-8 h-8 bg-[#C9941A]/20 flex items-center justify-center">
-                <TrendingUp className="w-4 h-4 text-[#C9941A]" />
+              <div className="w-8 h-8 bg-[#E2741B]/20 flex items-center justify-center">
+                <TrendingUp className="w-4 h-4 text-[#E2741B]" />
               </div>
               <span className="text-[10px] font-black uppercase tracking-wider opacity-60">This Week's Stats</span>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center">
-                <div className="text-2xl font-black text-[#C9941A]">2,847</div>
+                <div className="text-2xl font-black text-[#E2741B]">2,847</div>
                 <div className="text-[9px] uppercase tracking-widest opacity-40">New Posts</div>
               </div>
               <div className="text-center">

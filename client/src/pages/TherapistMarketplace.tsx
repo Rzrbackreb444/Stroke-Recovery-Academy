@@ -239,7 +239,7 @@ export default function TherapistMarketplace() {
 
             {isLoading ? (
               <div className="flex justify-center py-12">
-                <Loader2 className="w-8 h-8 text-[#C9941A] animate-spin" />
+                <Loader2 className="w-8 h-8 text-[#E2741B] animate-spin" />
               </div>
             ) : filteredStorefronts && filteredStorefronts.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -254,7 +254,7 @@ export default function TherapistMarketplace() {
                       <div className="flex items-start gap-4 mb-4">
                         <Avatar className="w-16 h-16">
                           <AvatarImage src={storefront.therapist.profileImageUrl} />
-                          <AvatarFallback className="bg-gray-700 text-[#C9941A] text-xl">
+                          <AvatarFallback className="bg-gray-700 text-[#E2741B] text-xl">
                             {storefront.therapist.firstName?.[0]}{storefront.therapist.lastName?.[0]}
                           </AvatarFallback>
                         </Avatar>
@@ -294,12 +294,12 @@ export default function TherapistMarketplace() {
 
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-2xl font-bold text-[#C9941A]">
+                          <p className="text-2xl font-bold text-[#E2741B]">
                             ${((storefront.profile.hourlyRate || 0) / 100).toFixed(0)}
                           </p>
                           <p className="text-gray-500 text-xs">per hour</p>
                         </div>
-                        <Badge className={storefront.profile.acceptingPatients ? "bg-[#C9941A]/20 text-[#C9941A]" : "bg-gray-500/20 text-gray-400"}>
+                        <Badge className={storefront.profile.acceptingPatients ? "bg-[#E2741B]/20 text-[#E2741B]" : "bg-gray-500/20 text-gray-400"}>
                           {storefront.profile.acceptingPatients ? "Accepting Clients" : "Waitlist"}
                         </Badge>
                       </div>
@@ -456,14 +456,14 @@ export default function TherapistMarketplace() {
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between mb-4">
                         <Badge variant="outline">{getProductTypeLabel(product.productType)}</Badge>
-                        <Badge className={product.isActive ? "bg-[#C9941A]/20 text-[#C9941A]" : "bg-gray-500/20 text-gray-400"}>
+                        <Badge className={product.isActive ? "bg-[#E2741B]/20 text-[#E2741B]" : "bg-gray-500/20 text-gray-400"}>
                           {product.isActive ? "Active" : "Inactive"}
                         </Badge>
                       </div>
                       <h3 className="text-lg font-semibold text-foreground mb-2">{product.title}</h3>
                       <p className="text-gray-400 text-sm line-clamp-2 mb-4">{product.description}</p>
                       <div className="flex items-center justify-between mb-4">
-                        <p className="text-2xl font-bold text-[#C9941A]">
+                        <p className="text-2xl font-bold text-[#E2741B]">
                           ${(product.price / 100).toFixed(0)}
                         </p>
                         <div className="flex items-center gap-1 text-gray-400 text-sm">
@@ -504,8 +504,8 @@ export default function TherapistMarketplace() {
               <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
-                    <DollarSign className="w-8 h-8 text-[#C9941A]" />
-                    <TrendingUp className="w-4 h-4 text-[#C9941A]" />
+                    <DollarSign className="w-8 h-8 text-[#E2741B]" />
+                    <TrendingUp className="w-4 h-4 text-[#E2741B]" />
                   </div>
                   <p className="text-gray-400 text-sm">Total Earnings</p>
                   <p className="text-3xl font-bold text-foreground">
@@ -565,7 +565,7 @@ export default function TherapistMarketplace() {
                   <div className="flex items-start gap-4">
                     <Avatar className="w-20 h-20">
                       <AvatarImage src={selectedStorefront.therapist.profileImageUrl} />
-                      <AvatarFallback className="bg-gray-700 text-[#C9941A] text-2xl">
+                      <AvatarFallback className="bg-gray-700 text-[#E2741B] text-2xl">
                         {selectedStorefront.therapist.firstName?.[0]}{selectedStorefront.therapist.lastName?.[0]}
                       </AvatarFallback>
                     </Avatar>
@@ -626,7 +626,7 @@ export default function TherapistMarketplace() {
                                 </div>
                               </div>
                               <div className="text-right">
-                                <p className="text-xl font-bold text-[#C9941A]">
+                                <p className="text-xl font-bold text-[#E2741B]">
                                   ${(product.price / 100).toFixed(0)}
                                 </p>
                                 <Button

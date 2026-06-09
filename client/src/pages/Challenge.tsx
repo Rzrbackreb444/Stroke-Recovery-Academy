@@ -48,8 +48,8 @@ function CountdownTimer() {
         { label: "Secs", value: timeLeft.seconds },
       ].map(({ label, value }) => (
         <div key={label} className="flex flex-col items-center">
-          <div className="bg-[#1a1a1a] border border-[#C9941A]/40 rounded-lg w-16 h-16 flex items-center justify-center">
-            <span className="text-2xl font-black text-[#C9941A]">{String(value).padStart(2, "0")}</span>
+          <div className="bg-[#1a1a1a] border border-[#E2741B]/40 rounded-lg w-16 h-16 flex items-center justify-center">
+            <span className="text-2xl font-black text-[#E2741B]">{String(value).padStart(2, "0")}</span>
           </div>
           <span className="text-xs text-gray-400 mt-1 uppercase tracking-widest">{label}</span>
         </div>
@@ -150,7 +150,7 @@ const PHASES = [
     number: "01",
     name: "SURVIVAL PHASE",
     days: "Days 1–22",
-    color: "#C9941A",
+    color: "#E2741B",
     description: "Foundation. You're building the habit. The nervous system is learning to trust you again. Show up every day — that's the only rule.",
     wins: ["Establish daily check-in habit", "Learn the Sasquatch Formula", "Complete baseline neuroplasticity exercises", "Join your accountability pod"],
   },
@@ -239,17 +239,17 @@ export default function Challenge() {
 
       {/* HERO */}
       <section className="relative pt-20 pb-16 px-4 overflow-hidden" data-testid="section-hero">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#C9941A]/5 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#E2741B]/5 via-transparent to-transparent pointer-events-none" />
 
         <div className="max-w-4xl mx-auto text-center">
-          <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-6 text-sm px-4 py-1.5 uppercase tracking-widest" data-testid="badge-challenge-label">
+          <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 mb-6 text-sm px-4 py-1.5 uppercase tracking-widest" data-testid="badge-challenge-label">
             <Flame className="h-3.5 w-3.5 mr-2" />
             66-Day Sasquatch Transformation Challenge
           </Badge>
 
           <h1 className="text-5xl md:text-7xl font-black leading-none mb-6 tracking-tight" data-testid="heading-hero">
             STOP ACCEPTING<br />
-            <span className="text-[#C9941A]">LIMITATIONS.</span>
+            <span className="text-[#E2741B]">LIMITATIONS.</span>
           </h1>
 
           <p className="text-xl md:text-2xl text-gray-300 mb-4 max-w-3xl mx-auto leading-relaxed" data-testid="text-hero-sub">
@@ -257,7 +257,7 @@ export default function Challenge() {
             Doctors said I'd probably never walk normally again.
           </p>
           <p className="text-xl md:text-2xl text-white font-bold mb-6 max-w-3xl mx-auto">
-            I defied every "never" and rebuilt to <span className="text-[#C9941A]">90%+</span> and still rising at Year 7.{" "}
+            I defied every "never" and rebuilt to <span className="text-[#E2741B]">90%+</span> and still rising at Year 7.{" "}
             Now I'm helping other survivors commit to the long game.
           </p>
           <p className="text-sm text-gray-400 mb-10 max-w-xl mx-auto">
@@ -273,7 +273,7 @@ export default function Challenge() {
             <Button
               onClick={handleCTA}
               size="lg"
-              className="bg-[#C9941A] hover:bg-[#C9941A] text-black font-black text-lg px-10 py-6 rounded-lg"
+              className="bg-[#E2741B] hover:bg-[#E2741B] text-black font-black text-lg px-10 py-6 rounded-lg"
               data-testid="button-cta-hero"
             >
               Start Your Free 7-Day Trial
@@ -286,14 +286,14 @@ export default function Challenge() {
               onClick={() => setLocation("/recovery/academy")}
               data-testid="button-preview"
             >
-              <Play className="mr-2 h-4 w-4 text-[#C9941A]" />
+              <Play className="mr-2 h-4 w-4 text-[#E2741B]" />
               Watch Nick's Story
             </Button>
           </div>
 
           {/* SQUATCHY ANTHEM EMBED — social proof */}
           <div className="max-w-3xl mx-auto mb-10" data-testid="section-anthem-embed">
-            <div className="rounded-xl overflow-hidden border border-[#C9941A]/40 bg-black shadow-[0_0_60px_rgba(201,148,26,0.15)]">
+            <div className="rounded-xl overflow-hidden border border-[#E2741B]/40 bg-black shadow-[0_0_60px_rgba(226,116,27,0.15)]">
               <video
                 src="/videos/squatchy-anthem.mp4"
                 className="w-full h-auto block bg-black"
@@ -304,9 +304,9 @@ export default function Challenge() {
               />
             </div>
             <p className="text-sm text-gray-400 mt-3 text-center">
-              <span className="text-[#C9941A] font-bold uppercase tracking-widest text-xs">"Squatchy"</span>{" "}
+              <span className="text-[#E2741B] font-bold uppercase tracking-widest text-xs">"Squatchy"</span>{" "}
               — the anthem written from the wheelchair. Heart still thumpin'? Life still pumpin'.{" "}
-              <a href="/recovery/anthem" className="text-[#C9941A] underline" data-testid="link-anthem-from-challenge">
+              <a href="/recovery/anthem" className="text-[#E2741B] underline" data-testid="link-anthem-from-challenge">
                 Hear the full story →
               </a>
             </p>
@@ -314,7 +314,7 @@ export default function Challenge() {
 
           <div className="flex flex-wrap justify-center gap-3 mb-4">
             <p className="text-sm text-gray-500 self-center">
-              <Shield className="inline h-3.5 w-3.5 mr-1 text-[#C9941A]" />
+              <Shield className="inline h-3.5 w-3.5 mr-1 text-[#E2741B]" />
               7-day free trial on paid plans. Cancel anytime.
             </p>
             <Button
@@ -340,7 +340,7 @@ export default function Challenge() {
             { value: "Year 7", label: "Nick Still Rising" },
           ].map(({ value, label }) => (
             <div key={label} data-testid={`stat-${label.replace(/\s/g, "-")}`}>
-              <div className="text-2xl md:text-3xl font-black text-[#C9941A]">{value}</div>
+              <div className="text-2xl md:text-3xl font-black text-[#E2741B]">{value}</div>
               <div className="text-sm text-gray-400">{label}</div>
             </div>
           ))}
@@ -365,8 +365,8 @@ export default function Challenge() {
               { icon: Trophy, text: "Refuse to believe the plateau is permanent" },
             ].map(({ icon: Icon, text }) => (
               <Card key={text} className="bg-[#1a1a1a] border-[#333] p-5 flex items-start gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#C9941A]/20 flex items-center justify-center mt-0.5">
-                  <Icon className="h-4 w-4 text-[#C9941A]" />
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#E2741B]/20 flex items-center justify-center mt-0.5">
+                  <Icon className="h-4 w-4 text-[#E2741B]" />
                 </div>
                 <p className="text-gray-200 text-sm leading-relaxed">{text}</p>
               </Card>
@@ -378,7 +378,7 @@ export default function Challenge() {
       {/* 3 PHASES */}
       <section className="py-16 px-4 bg-[#111]" data-testid="section-phases">
         <div className="max-w-4xl mx-auto">
-          <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-4 block w-fit mx-auto uppercase tracking-widest text-xs">
+          <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 mb-4 block w-fit mx-auto uppercase tracking-widest text-xs">
             The Journey
           </Badge>
           <h2 className="text-3xl md:text-4xl font-black text-center mb-4">
@@ -392,13 +392,13 @@ export default function Challenge() {
           {/* The 66-Day Truth callout */}
           <div
             className="max-w-3xl mx-auto mb-12 rounded-lg p-6 md:p-8"
-            style={{ background: "#1a1a1a", border: "1px solid #C9941A" }}
+            style={{ background: "#1a1a1a", border: "1px solid #E2741B" }}
             data-testid="callout-66-day-truth"
           >
             <div className="flex items-center gap-3 mb-3">
               <span
                 className="text-xs font-bold uppercase tracking-widest"
-                style={{ color: "#C9941A" }}
+                style={{ color: "#E2741B" }}
               >
                 The 66-Day Truth
               </span>
@@ -447,7 +447,7 @@ export default function Challenge() {
       {/* WHAT'S INCLUDED */}
       <section className="py-16 px-4" data-testid="section-included">
         <div className="max-w-4xl mx-auto">
-          <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-4 block w-fit mx-auto uppercase tracking-widest text-xs">
+          <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 mb-4 block w-fit mx-auto uppercase tracking-widest text-xs">
             What You Get
           </Badge>
           <h2 className="text-3xl md:text-4xl font-black text-center mb-4">
@@ -461,8 +461,8 @@ export default function Challenge() {
             {WHATS_INCLUDED.map(({ icon: Icon, title, description }) => (
               <Card key={title} className="bg-[#1a1a1a] border-[#333] p-6">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#C9941A]/20 flex items-center justify-center">
-                    <Icon className="h-5 w-5 text-[#C9941A]" />
+                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#E2741B]/20 flex items-center justify-center">
+                    <Icon className="h-5 w-5 text-[#E2741B]" />
                   </div>
                   <div>
                     <h3 className="font-bold text-white mb-2">{title}</h3>
@@ -486,13 +486,13 @@ export default function Challenge() {
               <Card key={name} className="bg-[#1a1a1a] border-[#333] p-6">
                 <div className="flex gap-1 mb-3">
                   {Array.from({ length: stars }).map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-[#C9941A] text-[#C9941A]" />
+                    <Star key={i} className="h-4 w-4 fill-[#E2741B] text-[#E2741B]" />
                   ))}
                 </div>
                 <p className="text-gray-200 text-sm leading-relaxed mb-4 italic">"{quote}"</p>
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-white text-sm">{name}</span>
-                  <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 text-xs">{days}</Badge>
+                  <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 text-xs">{days}</Badge>
                 </div>
               </Card>
             ))}
@@ -503,7 +503,7 @@ export default function Challenge() {
       {/* BONUSES */}
       <section className="py-16 px-4" data-testid="section-bonuses">
         <div className="max-w-4xl mx-auto">
-          <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-4 block w-fit mx-auto uppercase tracking-widest text-xs">
+          <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 mb-4 block w-fit mx-auto uppercase tracking-widest text-xs">
             Member Bonuses
           </Badge>
           <h2 className="text-3xl md:text-4xl font-black text-center mb-10">
@@ -512,15 +512,15 @@ export default function Challenge() {
 
           <div className="grid md:grid-cols-2 gap-5 mb-8">
             {BONUSES.map(({ icon: Icon, title, value, description }) => (
-              <Card key={title} className="bg-[#1a1a1a] border-[#C9941A]/20 p-6">
+              <Card key={title} className="bg-[#1a1a1a] border-[#E2741B]/20 p-6">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#C9941A]/20 flex items-center justify-center">
-                    <Icon className="h-5 w-5 text-[#C9941A]" />
+                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#E2741B]/20 flex items-center justify-center">
+                    <Icon className="h-5 w-5 text-[#E2741B]" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <h3 className="font-bold text-white">{title}</h3>
-                      <Badge className="bg-[#C9941A]/10 text-[#C9941A] border-[#C9941A]/20 text-xs">{value}</Badge>
+                      <Badge className="bg-[#E2741B]/10 text-[#E2741B] border-[#E2741B]/20 text-xs">{value}</Badge>
                     </div>
                     <p className="text-gray-400 text-sm leading-relaxed">{description}</p>
                   </div>
@@ -531,7 +531,7 @@ export default function Challenge() {
 
           <div className="text-center">
             <p className="text-gray-400 text-sm mb-1">Total bonus value: <span className="text-white font-bold line-through">$480</span></p>
-            <p className="text-[#C9941A] font-black text-lg">All included FREE with your membership.</p>
+            <p className="text-[#E2741B] font-black text-lg">All included FREE with your membership.</p>
           </div>
         </div>
       </section>
@@ -541,7 +541,7 @@ export default function Challenge() {
         <div className="max-w-4xl mx-auto">
           {/* ICU video — the proof moment */}
           <div className="mb-14 text-center" data-testid="block-icu-video">
-            <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-5 uppercase tracking-widest text-xs">
+            <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 mb-5 uppercase tracking-widest text-xs">
               Why I Built This
             </Badge>
             <h2 className="text-3xl md:text-4xl font-black mb-4 max-w-3xl mx-auto leading-tight">
@@ -577,7 +577,7 @@ export default function Challenge() {
 
           {/* Then & Now — visual proof */}
           <div className="mb-14 text-center" data-testid="block-before-after">
-            <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-5 uppercase tracking-widest text-xs">
+            <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 mb-5 uppercase tracking-widest text-xs">
               Then & Now
             </Badge>
             <h2 className="text-3xl md:text-4xl font-black mb-4 max-w-3xl mx-auto leading-tight">
@@ -604,7 +604,7 @@ export default function Challenge() {
 
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div>
-              <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-4 uppercase tracking-widest text-xs">
+              <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 mb-4 uppercase tracking-widest text-xs">
                 From the Sasquatch himself
               </Badge>
               <h2 className="text-3xl md:text-4xl font-black mb-6">
@@ -631,14 +631,14 @@ export default function Challenge() {
                   The 66-Day Challenge is the exact system I wish I'd had on Day 1. Now it's yours.
                 </p>
               </div>
-              <p className="mt-6 text-[#C9941A] font-black text-lg italic">
+              <p className="mt-6 text-[#E2741B] font-black text-lg italic">
                 — Nick "Stroked-Out Sasquatch" Kremers
               </p>
             </div>
 
             <Card className="bg-[#1a1a1a] border-[#333] p-6" data-testid="card-sasquatch-systems">
               <h3 className="font-black text-white text-lg mb-2 flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-[#C9941A]" />
+                <CheckCircle className="h-5 w-5 text-[#E2741B]" />
                 The Sasquatch Method
               </h3>
               <p className="text-xs text-gray-400 mb-5 italic">
@@ -668,11 +668,11 @@ export default function Challenge() {
                 ].map(({ code, label, desc, sub }) => (
                   <div
                     key={code}
-                    className="border-l-2 border-[#C9941A] pl-4"
+                    className="border-l-2 border-[#E2741B] pl-4"
                     data-testid={`system-${code.replace(/\./g, "").toLowerCase()}`}
                   >
                     <div className="flex flex-wrap items-baseline gap-2 mb-1">
-                      <span className="text-[#C9941A] font-black text-base tracking-tight">
+                      <span className="text-[#E2741B] font-black text-base tracking-tight">
                         {code}
                       </span>
                       <span className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">
@@ -692,7 +692,7 @@ export default function Challenge() {
       {/* PRICING */}
       <section className="py-16 px-4" data-testid="section-pricing">
         <div className="max-w-4xl mx-auto text-center">
-          <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-4 block w-fit mx-auto uppercase tracking-widest text-xs">
+          <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 mb-4 block w-fit mx-auto uppercase tracking-widest text-xs">
             Simple Pricing
           </Badge>
           <h2 className="text-3xl md:text-4xl font-black mb-4">Community Is Free. The System Is for the Serious.</h2>
@@ -734,8 +734,8 @@ export default function Challenge() {
             </Card>
 
             {/* Warrior Monthly */}
-            <Card className="bg-[#1a1a1a] border-[#C9941A]/50 p-7 relative overflow-hidden flex flex-col">
-              <div className="absolute top-0 left-0 right-0 h-1 bg-[#C9941A]" />
+            <Card className="bg-[#1a1a1a] border-[#E2741B]/50 p-7 relative overflow-hidden flex flex-col">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-[#E2741B]" />
               <p className="text-xs uppercase tracking-widest text-gray-400 mb-3">Warrior — Monthly</p>
               <div className="mb-5">
                 <div className="text-4xl font-black text-white mb-1">
@@ -753,28 +753,28 @@ export default function Challenge() {
                   "Monthly new content — ongoing for life",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2 text-xs text-gray-300">
-                    <CheckCircle className="h-3.5 w-3.5 text-[#C9941A] flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="h-3.5 w-3.5 text-[#E2741B] flex-shrink-0 mt-0.5" />
                     {item}
                   </li>
                 ))}
               </ul>
-              <Button onClick={handleCTA} className="w-full bg-[#C9941A] text-black font-black" data-testid="button-cta-monthly">
+              <Button onClick={handleCTA} className="w-full bg-[#E2741B] text-black font-black" data-testid="button-cta-monthly">
                 Start Free 7-Day Trial
                 <ArrowRight className="ml-1.5 h-4 w-4" />
               </Button>
             </Card>
 
             {/* Elite Annual */}
-            <Card className="bg-[#1a1a1a] border-[#C9941A]/30 p-7 relative overflow-hidden flex flex-col">
+            <Card className="bg-[#1a1a1a] border-[#E2741B]/30 p-7 relative overflow-hidden flex flex-col">
               <div className="flex items-center justify-between mb-3">
                 <p className="text-xs uppercase tracking-widest text-gray-400">Warrior — Annual</p>
-                <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 text-xs font-black">Save $167</Badge>
+                <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 text-xs font-black">Save $167</Badge>
               </div>
               <div className="mb-5">
                 <div className="text-4xl font-black text-white mb-1">
                   $397<span className="text-lg text-gray-400 font-normal">/yr</span>
                 </div>
-                <p className="text-[#C9941A] text-xs font-semibold">~$33/month · Best commitment</p>
+                <p className="text-[#E2741B] text-xs font-semibold">~$33/month · Best commitment</p>
               </div>
               <ul className="space-y-2 mb-6 flex-1">
                 {[
@@ -786,19 +786,19 @@ export default function Challenge() {
                   "Serious about the long game",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2 text-xs text-gray-300">
-                    <CheckCircle className="h-3.5 w-3.5 text-[#C9941A] flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="h-3.5 w-3.5 text-[#E2741B] flex-shrink-0 mt-0.5" />
                     {item}
                   </li>
                 ))}
               </ul>
-              <Button onClick={handleCTA} variant="outline" className="w-full border-[#C9941A] text-[#C9941A] font-bold" data-testid="button-cta-annual">
+              <Button onClick={handleCTA} variant="outline" className="w-full border-[#E2741B] text-[#E2741B] font-bold" data-testid="button-cta-annual">
                 Start Free Trial
               </Button>
             </Card>
           </div>
 
           <p className="text-xs text-gray-500 text-center">
-            <Shield className="inline h-3 w-3 mr-1 text-[#C9941A]" />
+            <Shield className="inline h-3 w-3 mr-1 text-[#E2741B]" />
             Secure checkout. Cancel anytime. Individual results vary — stroke recovery is a personal journey.
           </p>
         </div>
@@ -812,7 +812,7 @@ export default function Challenge() {
           </Badge>
           <h2 className="text-3xl md:text-4xl font-black text-center mb-4">
             This Is a Lifetime Commitment.<br />
-            <span style={{ color: "#C9941A" }}>We're Honest About That.</span>
+            <span style={{ color: "#E2741B" }}>We're Honest About That.</span>
           </h2>
           <p className="text-gray-400 text-center mb-10 max-w-2xl mx-auto">
             Nick is in Year 7 and still actively recovering. The science of neuroplasticity doesn't have an 
@@ -821,7 +821,7 @@ export default function Challenge() {
 
           <div className="grid md:grid-cols-4 gap-4">
             {[
-              { period: "Days 1–66", label: "The Foundation", color: "#C9941A", desc: "Build the habit that outlasts every plateau. The 66-Day Challenge. Your entry into the system." },
+              { period: "Days 1–66", label: "The Foundation", color: "#E2741B", desc: "Build the habit that outlasts every plateau. The 66-Day Challenge. Your entry into the system." },
               { period: "Year 1–2", label: "Momentum", color: "#FF6B35", desc: "Compound progress. Major functional gains. The identity shift from 'patient' to 'architect of recovery.'" },
               { period: "Year 3–5", label: "Optimization", color: "#22C55E", desc: "Refining what works. Deeper protocols. Starting to become the example others look to." },
               { period: "Year 5+", label: "Legacy", color: "#8B5CF6", desc: "Nick's territory. Still improving. Teaching others. Your story becomes someone else's survival guide." },
@@ -836,7 +836,7 @@ export default function Challenge() {
 
           <Card className="bg-[#1a1a1a] border-[#333] p-6 mt-6">
             <div className="flex gap-4 items-start">
-              <Shield className="h-5 w-5 text-[#C9941A] flex-shrink-0 mt-0.5" />
+              <Shield className="h-5 w-5 text-[#E2741B] flex-shrink-0 mt-0.5" />
               <div>
                 <p className="font-bold text-white mb-1 text-sm">Important: This Is Not Medical Advice</p>
                 <p className="text-gray-400 text-xs leading-relaxed">
@@ -870,7 +870,7 @@ export default function Challenge() {
                 >
                   <span className="font-bold text-white text-sm">{q}</span>
                   {openFaq === i ? (
-                    <ChevronUp className="h-4 w-4 text-[#C9941A] flex-shrink-0" />
+                    <ChevronUp className="h-4 w-4 text-[#E2741B] flex-shrink-0" />
                   ) : (
                     <ChevronDown className="h-4 w-4 text-gray-400 flex-shrink-0" />
                   )}
@@ -898,11 +898,11 @@ export default function Challenge() {
       </section>
 
       {/* FINAL CTA */}
-      <section className="py-20 px-4 bg-gradient-to-t from-[#C9941A]/10 to-transparent" data-testid="section-final-cta">
+      <section className="py-20 px-4 bg-gradient-to-t from-[#E2741B]/10 to-transparent" data-testid="section-final-cta">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-black mb-4">
             Heart Still Thumpin'?<br />
-            <span className="text-[#C9941A]">Life Still Pumpin'.</span>
+            <span className="text-[#E2741B]">Life Still Pumpin'.</span>
           </h2>
           <p className="text-xl text-gray-300 mb-8">
             Let's build. Day 1 starts the moment you click below.
@@ -910,7 +910,7 @@ export default function Challenge() {
           <Button
             onClick={handleCTA}
             size="lg"
-            className="bg-[#C9941A] hover:bg-[#C9941A] text-black font-black text-xl px-12 py-7"
+            className="bg-[#E2741B] hover:bg-[#E2741B] text-black font-black text-xl px-12 py-7"
             data-testid="button-cta-final"
           >
             Begin My 66-Day Transformation

@@ -51,10 +51,10 @@ export default function InstallPrompt() {
     <div
       role="dialog"
       aria-label="Install Stroke Recovery Academy"
-      className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 bg-[#1a1a1a] border border-[#C9941A]/40 rounded-lg shadow-xl p-4 flex items-start gap-3"
+      className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 bg-[#1a1a1a] border border-[#E2741B]/40 rounded-lg shadow-xl p-4 flex items-start gap-3"
       data-testid="install-prompt"
     >
-      <div className="bg-[#C9941A] rounded-md p-2 flex-shrink-0">
+      <div className="bg-[#E2741B] rounded-md p-2 flex-shrink-0">
         <Download className="w-5 h-5 text-black" />
       </div>
       <div className="flex-1 min-w-0">
@@ -74,7 +74,7 @@ export default function InstallPrompt() {
               }
               setEvt(null);
             }}
-            className="bg-[#C9941A] hover:bg-[#b08217] text-black font-semibold"
+            className="bg-[#E2741B] hover:bg-[#b08217] text-black font-semibold"
           >
             Install
           </Button>

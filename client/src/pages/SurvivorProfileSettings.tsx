@@ -41,7 +41,7 @@ export default function SurvivorProfileSettings() {
   if (isLoading || !isAuthenticated) {
     return (
       <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-[#C9941A]" />
+        <Loader2 className="w-6 h-6 animate-spin text-[#E2741B]" />
       </div>
     );
   }
@@ -77,7 +77,7 @@ export default function SurvivorProfileSettings() {
         <div className="flex items-start justify-between gap-4 mb-6">
           <div>
             <h1 className="text-2xl font-black flex items-center gap-2">
-              <Edit3 className="w-5 h-5 text-[#C9941A]" /> Survivor profile
+              <Edit3 className="w-5 h-5 text-[#E2741B]" /> Survivor profile
             </h1>
             <p className="text-sm text-gray-400 mt-1">
               Edit anything anytime. Coach and your dashboard adapt automatically.
@@ -91,7 +91,7 @@ export default function SurvivorProfileSettings() {
         </div>
 
         {!profile?.intakeCompletedAt && !profile && (
-          <Card className="bg-[#1a1a1a] border-[#C9941A]/40 mb-6">
+          <Card className="bg-[#1a1a1a] border-[#E2741B]/40 mb-6">
             <CardContent className="p-5 flex items-center justify-between gap-4">
               <div>
                 <div className="font-semibold mb-1">You haven't started your intake yet</div>
@@ -99,7 +99,7 @@ export default function SurvivorProfileSettings() {
               </div>
               <Button
                 onClick={() => navigate("/recovery/intake")}
-                className="bg-[#C9941A] hover:bg-[#B8851A] text-black font-bold"
+                className="bg-[#E2741B] hover:bg-[#B8851A] text-black font-bold"
                 data-testid="button-start-intake-from-settings"
               >
                 Start intake
@@ -202,7 +202,7 @@ export default function SurvivorProfileSettings() {
               <Button
                 onClick={handleSave}
                 disabled={saving}
-                className="bg-[#C9941A] hover:bg-[#B8851A] text-black font-bold flex-1"
+                className="bg-[#E2741B] hover:bg-[#B8851A] text-black font-bold flex-1"
                 data-testid="button-save-profile"
               >
                 {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
@@ -231,7 +231,7 @@ export default function SurvivorProfileSettings() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="space-y-3">
-      <div className="text-[11px] uppercase tracking-wider text-[#C9941A] font-semibold">{title}</div>
+      <div className="text-[11px] uppercase tracking-wider text-[#E2741B] font-semibold">{title}</div>
       {children}
     </div>
   );

@@ -104,7 +104,7 @@ export default function RecoveryForge() {
   });
 
   const archetypes = archetypeData?.archetypes ?? [];
-  const accent = selected?.accentColor ?? "#C9941A";
+  const accent = selected?.accentColor ?? "#E2741B";
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
@@ -116,13 +116,13 @@ export default function RecoveryForge() {
           {[1, 2, 3, 4, 5].map((n) => (
             <div
               key={n}
-              className={`h-1 flex-1 rounded ${n <= step ? "bg-[#C9941A]" : "bg-[#333]"}`}
+              className={`h-1 flex-1 rounded ${n <= step ? "bg-[#E2741B]" : "bg-[#333]"}`}
             />
           ))}
         </div>
 
         <header className="mb-8">
-          <Badge className="bg-[#C9941A]/15 text-[#C9941A] border-[#C9941A]/30 mb-3">
+          <Badge className="bg-[#E2741B]/15 text-[#E2741B] border-[#E2741B]/30 mb-3">
             Forge Your Beast — Step {step} of 5
           </Badge>
           <h1 className="text-4xl md:text-5xl font-black mb-2" data-testid="heading-forge-step">
@@ -151,7 +151,7 @@ export default function RecoveryForge() {
                 <Card
                   key={a.key}
                   onClick={() => setSelected(a)}
-                  className={`bg-[#1a1a1a] border cursor-pointer hover-elevate active-elevate-2 ${isSel ? "border-[#C9941A]" : "border-[#333]"}`}
+                  className={`bg-[#1a1a1a] border cursor-pointer hover-elevate active-elevate-2 ${isSel ? "border-[#E2741B]" : "border-[#333]"}`}
                   data-testid={`card-archetype-${a.key}`}
                 >
                   <CardContent className="p-6">
@@ -174,7 +174,7 @@ export default function RecoveryForge() {
                           ))}
                         </div>
                       </div>
-                      {isSel && <Check className="w-5 h-5 text-[#C9941A] shrink-0" />}
+                      {isSel && <Check className="w-5 h-5 text-[#E2741B] shrink-0" />}
                     </div>
                   </CardContent>
                 </Card>
@@ -188,7 +188,7 @@ export default function RecoveryForge() {
           <Card className="bg-[#1a1a1a] border border-[#333]" data-testid="card-name">
             <CardContent className="p-6 space-y-4">
               <p className="text-sm text-gray-400">
-                You picked <span className="text-[#C9941A] font-bold">{selected.name}</span>. What name does your beast go by?
+                You picked <span className="text-[#E2741B] font-bold">{selected.name}</span>. What name does your beast go by?
                 Most people use a first name plus the archetype: "Cassie the Phoenix," "Marcus the Wolf," or just "Sasquatch."
               </p>
               <Input
@@ -222,14 +222,14 @@ export default function RecoveryForge() {
             <CardContent className="p-6 space-y-4">
               <div className="flex items-center justify-between gap-3 flex-wrap">
                 <p className="text-sm text-gray-400">
-                  One sentence in <span className="text-[#C9941A] font-bold">{name}</span>'s voice. Spoken in third person.
+                  One sentence in <span className="text-[#E2741B] font-bold">{name}</span>'s voice. Spoken in third person.
                 </p>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => forgeMutation.mutate()}
                   disabled={forgeMutation.isPending}
-                  className="border-[#C9941A]/40 text-[#C9941A] hover:bg-[#C9941A]/10"
+                  className="border-[#E2741B]/40 text-[#E2741B] hover:bg-[#E2741B]/10"
                   data-testid="button-generate-creed"
                 >
                   {forgeMutation.isPending ? (
@@ -281,7 +281,7 @@ export default function RecoveryForge() {
             <CardContent className="p-6 space-y-4">
               <p className="text-sm text-gray-400">
                 The trigger is the cue you use to step into your beast. A bracelet you tap. A song you play before therapy.
-                A phrase you say out loud. The trigger is how you tell your nervous system: <span className="text-[#C9941A] italic">"I am switching modes now."</span>
+                A phrase you say out loud. The trigger is how you tell your nervous system: <span className="text-[#E2741B] italic">"I am switching modes now."</span>
               </p>
               <Input
                 value={trigger}
@@ -322,7 +322,7 @@ export default function RecoveryForge() {
               </blockquote>
               {trigger && (
                 <p className="text-sm text-gray-400">
-                  <span className="text-[#C9941A] font-bold uppercase tracking-wide">Trigger:</span> {trigger}
+                  <span className="text-[#E2741B] font-bold uppercase tracking-wide">Trigger:</span> {trigger}
                 </p>
               )}
               <p className="text-xs text-gray-500 max-w-md mx-auto pt-4">
@@ -356,7 +356,7 @@ export default function RecoveryForge() {
                 (step === 2 && name.trim().length < 2) ||
                 (step === 3 && creed.trim().length < 5)
               }
-              className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black"
+              className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black"
               data-testid="button-forge-next"
             >
               Next <ArrowRight className="w-4 h-4 ml-2" />
@@ -365,7 +365,7 @@ export default function RecoveryForge() {
             <Button
               onClick={() => saveMutation.mutate()}
               disabled={saveMutation.isPending || !creed.trim()}
-              className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black"
+              className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black"
               data-testid="button-forge-confirm"
             >
               {saveMutation.isPending ? (

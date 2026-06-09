@@ -29,18 +29,18 @@ const categoryIcons: Record<string, any> = {
 };
 
 const categoryColors: Record<string, string> = {
-  physical: "text-[#C9941A]",
+  physical: "text-[#E2741B]",
   emotional: "text-pink-400",
   cognitive: "text-blue-400",
-  social: "text-[#C9941A]",
-  streak: "text-[#C9941A]",
+  social: "text-[#E2741B]",
+  streak: "text-[#E2741B]",
 };
 
 const categoryBgColors: Record<string, string> = {
-  physical: "bg-[#C9941A]/20 border-green-500/40",
+  physical: "bg-[#E2741B]/20 border-green-500/40",
   emotional: "bg-pink-500/20 border-pink-500/40",
   cognitive: "bg-blue-500/20 border-blue-500/40",
-  social: "bg-[#C9941A]/20 border-amber-500/40",
+  social: "bg-[#E2741B]/20 border-amber-500/40",
   streak: "bg-primary/20 border",
 };
 
@@ -116,7 +116,7 @@ export default function Achievements() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center">
-        <div className="animate-pulse text-[#C9941A] text-xl" data-testid="loading-state">
+        <div className="animate-pulse text-[#E2741B] text-xl" data-testid="loading-state">
           Loading achievements...
         </div>
       </div>
@@ -137,7 +137,7 @@ export default function Achievements() {
               </Button>
             </Link>
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 text-[#C9941A]">
+              <div className="flex items-center gap-2 text-[#E2741B]">
                 <Flame className="w-5 h-5" />
                 <span className="font-bold" data-testid="text-current-streak">{stats?.currentStreak || 0} Day Streak</span>
               </div>
@@ -166,18 +166,18 @@ export default function Achievements() {
 
         <Card className="bg-[#1a1a1a]/50 border mb-8 p-6" data-testid="card-report">
           <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-            <Award className="w-5 h-5 text-[#C9941A]" />
+            <Award className="w-5 h-5 text-[#E2741B]" />
             Recovery Report Card
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center p-4 bg-card rounded-lg border border-[#333]">
-              <div className="text-3xl font-black text-[#C9941A]" data-testid="stat-total-points">
+              <div className="text-3xl font-black text-[#E2741B]" data-testid="stat-total-points">
                 {stats?.totalPoints || 0}
               </div>
               <div className="text-sm text-gray-400 mt-1">Total Points</div>
             </div>
             <div className="text-center p-4 bg-card rounded-lg border border-[#333]">
-              <div className="text-3xl font-black text-[#C9941A]" data-testid="stat-badges-earned">
+              <div className="text-3xl font-black text-[#E2741B]" data-testid="stat-badges-earned">
                 {stats?.badgesEarned || 0}
               </div>
               <div className="text-sm text-gray-400 mt-1">Badges Earned</div>
@@ -286,7 +286,7 @@ export default function Achievements() {
                     <p className="text-sm text-gray-400 mb-3">{achievement.description}</p>
 
                     <div className="flex items-center justify-between">
-                      <Badge variant="outline" className="text-[#C9941A] border">
+                      <Badge variant="outline" className="text-[#E2741B] border">
                         +{achievement.pointsAwarded} pts
                       </Badge>
                       <span className="text-xs text-gray-500">
@@ -351,7 +351,7 @@ export default function Achievements() {
           
           {selectedAchievement && (
             <div 
-              className="p-6 bg-gradient-to-br from-gray-900 to-black border-2 border-[#C9941A]/50 rounded-xl"
+              className="p-6 bg-gradient-to-br from-gray-900 to-black border-2 border-[#E2741B]/50 rounded-xl"
               data-testid="share-card"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent rounded-xl" />
@@ -373,7 +373,7 @@ export default function Achievements() {
               </div>
 
               <div className="flex items-center justify-center gap-4 mb-4">
-                <Badge variant="outline" className="text-[#C9941A] border">
+                <Badge variant="outline" className="text-[#E2741B] border">
                   +{selectedAchievement.pointsAwarded} points
                 </Badge>
                 <span className="text-xs text-gray-500">
@@ -388,7 +388,7 @@ export default function Achievements() {
 
               <div className="mt-4 text-center">
                 <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-                  <Flame className="w-4 h-4 text-[#C9941A]" />
+                  <Flame className="w-4 h-4 text-[#E2741B]" />
                   <span>Stroke Recovery OS</span>
                 </div>
                 {user && (
@@ -410,7 +410,7 @@ export default function Achievements() {
               Close
             </Button>
             <Button 
-              className="flex-1 bg-[#C9941A] hover:bg-[#C9941A]"
+              className="flex-1 bg-[#E2741B] hover:bg-[#E2741B]"
               onClick={() => {
                 toast({ title: "Screenshot this card to share!", description: "Use your device's screenshot feature" });
               }}

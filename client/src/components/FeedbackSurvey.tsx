@@ -51,8 +51,8 @@ export default function FeedbackSurvey() {
     return (
       <section className="border-t border-[#1a1a1a] bg-[#0a0a0a] py-20 px-4">
         <div className="max-w-2xl mx-auto text-center">
-          <div className="w-16 h-16 rounded-full bg-[#C9941A]/10 border border-[#C9941A]/30 flex items-center justify-center mx-auto mb-6">
-            <Check className="h-8 w-8 text-[#C9941A]" />
+          <div className="w-16 h-16 rounded-full bg-[#E2741B]/10 border border-[#E2741B]/30 flex items-center justify-center mx-auto mb-6">
+            <Check className="h-8 w-8 text-[#E2741B]" />
           </div>
           <h2 className="text-2xl font-bold text-white mb-3">
             Received. Thank you.
@@ -70,8 +70,8 @@ export default function FeedbackSurvey() {
       <div className="max-w-2xl mx-auto">
 
         <div className="flex items-center gap-3 mb-3">
-          <MessageSquare className="h-5 w-5 text-[#C9941A]" />
-          <span className="text-[#C9941A] text-sm font-semibold uppercase tracking-widest">
+          <MessageSquare className="h-5 w-5 text-[#E2741B]" />
+          <span className="text-[#E2741B] text-sm font-semibold uppercase tracking-widest">
             Direct to Nick
           </span>
         </div>
@@ -96,7 +96,7 @@ export default function FeedbackSurvey() {
                   onClick={() => setUserType(type.value)}
                   className={`px-4 py-2 rounded-md border text-sm font-medium transition-colors ${
                     userType === type.value
-                      ? "border-[#C9941A] bg-[#C9941A]/10 text-[#C9941A]"
+                      ? "border-[#E2741B] bg-[#E2741B]/10 text-[#E2741B]"
                       : "border-[#333] text-gray-400 hover:border-[#555]"
                   }`}
                   data-testid={`button-usertype-${type.value}`}
@@ -121,13 +121,13 @@ export default function FeedbackSurvey() {
                     onClick={() => toggleGoal(goal.id)}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-md border text-left transition-colors ${
                       selected
-                        ? "border-[#C9941A] bg-[#C9941A]/8 text-white"
+                        ? "border-[#E2741B] bg-[#E2741B]/8 text-white"
                         : "border-[#222] text-gray-400 hover:border-[#444] hover:text-gray-300"
                     }`}
                     data-testid={`button-goal-${goal.id}`}
                   >
                     {selected
-                      ? <CheckSquare className="h-4 w-4 text-[#C9941A] shrink-0" />
+                      ? <CheckSquare className="h-4 w-4 text-[#E2741B] shrink-0" />
                       : <Square className="h-4 w-4 text-gray-600 shrink-0" />
                     }
                     <span className="text-sm">{goal.label}</span>
@@ -146,7 +146,7 @@ export default function FeedbackSurvey() {
               value={freeText}
               onChange={e => setFreeText(e.target.value)}
               placeholder="Where you're at. What's hardest. What you tried. Whatever you want to say."
-              className="bg-[#111] border-[#333] text-white placeholder:text-gray-600 resize-none min-h-24 focus-visible:ring-[#C9941A]/30"
+              className="bg-[#111] border-[#333] text-white placeholder:text-gray-600 resize-none min-h-24 focus-visible:ring-[#E2741B]/30"
               data-testid="input-feedback-freetext"
             />
           </div>
@@ -162,7 +162,7 @@ export default function FeedbackSurvey() {
                 value={name}
                 onChange={e => setName(e.target.value)}
                 placeholder="Your first name"
-                className="w-full px-4 py-2.5 rounded-md bg-[#111] border border-[#333] text-white placeholder:text-gray-600 text-sm focus:outline-none focus:border-[#C9941A]/50"
+                className="w-full px-4 py-2.5 rounded-md bg-[#111] border border-[#333] text-white placeholder:text-gray-600 text-sm focus:outline-none focus:border-[#E2741B]/50"
                 data-testid="input-feedback-name"
               />
               <input
@@ -170,7 +170,7 @@ export default function FeedbackSurvey() {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="your@email.com"
-                className="w-full px-4 py-2.5 rounded-md bg-[#111] border border-[#333] text-white placeholder:text-gray-600 text-sm focus:outline-none focus:border-[#C9941A]/50"
+                className="w-full px-4 py-2.5 rounded-md bg-[#111] border border-[#333] text-white placeholder:text-gray-600 text-sm focus:outline-none focus:border-[#E2741B]/50"
                 data-testid="input-feedback-email"
               />
             </div>
@@ -182,7 +182,7 @@ export default function FeedbackSurvey() {
           <Button
             onClick={handleSubmit}
             disabled={selectedGoals.length === 0 || mutation.isPending}
-            className="w-full bg-[#C9941A] text-black font-bold text-base py-6"
+            className="w-full bg-[#E2741B] text-black font-bold text-base py-6"
             data-testid="button-feedback-submit"
           >
             {mutation.isPending ? (

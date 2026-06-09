@@ -101,7 +101,7 @@ export default function RecoveryExercises() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-10">
         {/* Hero */}
         <div className="mb-8">
-          <p className="text-[10px] uppercase tracking-[0.4em] text-[#C9941A] mb-2">
+          <p className="text-[10px] uppercase tracking-[0.4em] text-[#E2741B] mb-2">
             Survivor OS · Exercise Library
           </p>
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
@@ -130,12 +130,12 @@ export default function RecoveryExercises() {
                   className={[
                     "rounded-lg border p-3 text-left transition-all hover-elevate",
                     isActive
-                      ? "border-[#C9941A] bg-[#C9941A]/10"
+                      ? "border-[#E2741B] bg-[#E2741B]/10"
                       : "border-[#333] bg-[#1a1a1a]",
                   ].join(" ")}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <Icon className="h-4 w-4 text-[#C9941A]" />
+                    <Icon className="h-4 w-4 text-[#E2741B]" />
                     <span className="text-[10px] text-gray-500 font-mono">{count}</span>
                   </div>
                   <p className="text-xs font-bold text-white leading-tight">{c.label}</p>
@@ -158,7 +158,7 @@ export default function RecoveryExercises() {
                     onClick={() => setPosition(p)}
                     className={
                       position === p
-                        ? "cursor-pointer bg-[#C9941A] text-black hover:bg-[#C9941A]"
+                        ? "cursor-pointer bg-[#E2741B] text-black hover:bg-[#E2741B]"
                         : "cursor-pointer"
                     }
                     data-testid={`filter-position-${p}`}
@@ -180,7 +180,7 @@ export default function RecoveryExercises() {
                     onClick={() => setLevel(l)}
                     className={
                       level === l
-                        ? "cursor-pointer bg-[#C9941A] text-black hover:bg-[#C9941A]"
+                        ? "cursor-pointer bg-[#E2741B] text-black hover:bg-[#E2741B]"
                         : "cursor-pointer"
                     }
                     data-testid={`filter-level-${l}`}
@@ -251,7 +251,7 @@ function ExerciseCard({ ex }: { ex: Exercise }) {
         <Card className="bg-[#1a1a1a] border-[#333] p-4 hover-elevate h-full">
           <div className="flex items-start justify-between gap-2 mb-2">
             <h3 className="text-base font-bold text-white">{ex.name}</h3>
-            <ChevronRight className="h-4 w-4 text-[#C9941A] flex-shrink-0 mt-0.5" />
+            <ChevronRight className="h-4 w-4 text-[#E2741B] flex-shrink-0 mt-0.5" />
           </div>
           <div className="flex flex-wrap gap-1 mb-3">
             <Badge variant="outline" className="text-[10px] capitalize">
@@ -261,7 +261,7 @@ function ExerciseCard({ ex }: { ex: Exercise }) {
               {ex.level}
             </Badge>
             {ex.targets.slice(0, 2).map((t) => (
-              <Badge key={t} variant="outline" className="text-[10px] capitalize border-[#C9941A]/40 text-[#C9941A]">
+              <Badge key={t} variant="outline" className="text-[10px] capitalize border-[#E2741B]/40 text-[#E2741B]">
                 {t.replace(/_/g, " ")}
               </Badge>
             ))}

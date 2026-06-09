@@ -110,10 +110,10 @@ function BookCard({
                 data-testid={`img-book-cover-${book.id}`}
               />
             ) : (
-              <BookOpen className="h-16 w-16 text-[#C9941A]/50" />
+              <BookOpen className="h-16 w-16 text-[#E2741B]/50" />
             )}
             {book.isFeatured && (
-              <Badge className="absolute top-2 left-2 bg-[#C9941A]">
+              <Badge className="absolute top-2 left-2 bg-[#E2741B]">
                 <Sparkles className="w-3 h-3 mr-1" /> Featured
               </Badge>
             )}
@@ -169,7 +169,7 @@ function BookCard({
         <CardFooter className="flex items-center justify-between gap-2 pt-2 border-t border-border">
           <div>
             <span className="text-sm text-gray-400">From </span>
-            <span className="text-lg font-bold text-[#C9941A]" data-testid={`text-price-${book.id}`}>
+            <span className="text-lg font-bold text-[#E2741B]" data-testid={`text-price-${book.id}`}>
               ${lowestPrice.toFixed(2)}
             </span>
           </div>
@@ -305,7 +305,7 @@ function BookDetailsDialog({
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <BookOpen className="h-24 w-24 text-[#C9941A]/50" />
+                <BookOpen className="h-24 w-24 text-[#E2741B]/50" />
               )}
             </div>
             
@@ -353,21 +353,21 @@ function BookDetailsDialog({
                     onClick={() => setSelectedEdition(edition)}
                     className={`w-full p-3 rounded-lg border text-left transition-all ${
                       selectedEdition?.id === edition.id
-                        ? 'border-[#C9941A] bg-primary/10'
-                        : 'border-border hover:border-[#C9941A]/50'
+                        ? 'border-[#E2741B] bg-primary/10'
+                        : 'border-border hover:border-[#E2741B]/50'
                     }`}
                     data-testid={`button-edition-${edition.id}`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         {edition.editionType.includes('digital') ? (
-                          <FileText className="w-4 h-4 text-[#C9941A]" />
+                          <FileText className="w-4 h-4 text-[#E2741B]" />
                         ) : (
-                          <Printer className="w-4 h-4 text-[#C9941A]" />
+                          <Printer className="w-4 h-4 text-[#E2741B]" />
                         )}
                         <span className="font-medium">{formatLabels[edition.editionType] || edition.editionType}</span>
                       </div>
-                      <span className="font-bold text-[#C9941A]">${(Number(edition.price) / 100).toFixed(2)}</span>
+                      <span className="font-bold text-[#E2741B]">${(Number(edition.price) / 100).toFixed(2)}</span>
                     </div>
                     {edition.editionType.includes('print') && (
                       <div className="flex items-center gap-3 mt-2 text-xs text-gray-400">
@@ -496,7 +496,7 @@ export default function BookMarketplace() {
       <main className="flex-1 container mx-auto px-4 py-8">
         <section className="mb-8">
           <div className="text-center max-w-3xl mx-auto mb-8">
-            <Badge className="mb-4 bg-primary/10 text-[#C9941A] border">
+            <Badge className="mb-4 bg-primary/10 text-[#E2741B] border">
               <BookOpen className="w-3 h-3 mr-1" /> Book Marketplace
             </Badge>
             <h1 className="text-3xl md:text-4xl font-bold mb-4" data-testid="text-page-title">
@@ -611,7 +611,7 @@ export default function BookMarketplace() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div>
               <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                <Heart className="w-6 h-6 text-[#C9941A]" />
+                <Heart className="w-6 h-6 text-[#E2741B]" />
               </div>
               <h3 className="font-semibold mb-2">Support Survivors</h3>
               <p className="text-sm text-gray-400">
@@ -620,7 +620,7 @@ export default function BookMarketplace() {
             </div>
             <div>
               <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                <Globe className="w-6 h-6 text-[#C9941A]" />
+                <Globe className="w-6 h-6 text-[#E2741B]" />
               </div>
               <h3 className="font-semibold mb-2">Worldwide Delivery</h3>
               <p className="text-sm text-gray-400">
@@ -629,7 +629,7 @@ export default function BookMarketplace() {
             </div>
             <div>
               <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                <Printer className="w-6 h-6 text-[#C9941A]" />
+                <Printer className="w-6 h-6 text-[#E2741B]" />
               </div>
               <h3 className="font-semibold mb-2">Premium Quality</h3>
               <p className="text-sm text-gray-400">

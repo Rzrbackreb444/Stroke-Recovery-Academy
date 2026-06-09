@@ -133,7 +133,7 @@ export default function LessonVideoPlayer({ lessonId }: Props) {
   }, [speed]);
 
   if (isLoading) {
-    return <div className="aspect-video bg-black rounded-md border border-[#333] flex items-center justify-center"><Loader2 className="w-6 h-6 text-[#C9941A] animate-spin" /></div>;
+    return <div className="aspect-video bg-black rounded-md border border-[#333] flex items-center justify-center"><Loader2 className="w-6 h-6 text-[#E2741B] animate-spin" /></div>;
   }
   if (!video) {
     return <div className="aspect-video bg-black rounded-md border border-[#333] flex items-center justify-center text-gray-500 text-sm">No video yet for this lesson.</div>;
@@ -163,7 +163,7 @@ export default function LessonVideoPlayer({ lessonId }: Props) {
         </video>
 
         {video.transcriptionStatus === "processing" && (
-          <div className="absolute top-2 right-2 bg-[#1a1a1a]/90 border border-[#C9941A]/40 text-[#C9941A] text-xs rounded-md px-2 py-1 flex items-center gap-1" data-testid="status-captions-processing">
+          <div className="absolute top-2 right-2 bg-[#1a1a1a]/90 border border-[#E2741B]/40 text-[#E2741B] text-xs rounded-md px-2 py-1 flex items-center gap-1" data-testid="status-captions-processing">
             <Loader2 className="w-3 h-3 animate-spin" /> Generating captions…
           </div>
         )}
@@ -198,7 +198,7 @@ export default function LessonVideoPlayer({ lessonId }: Props) {
             step={0.1}
             value={current}
             onChange={(e) => { const el = videoRef.current; if (el) el.currentTime = Number(e.target.value); }}
-            className="flex-1 accent-[#C9941A]"
+            className="flex-1 accent-[#E2741B]"
             aria-label="Seek"
             data-testid="input-seek"
           />
@@ -251,7 +251,7 @@ export default function LessonVideoPlayer({ lessonId }: Props) {
                 </option>
               ))}
             </select>
-            {translateM.isPending && <Loader2 className="w-3 h-3 animate-spin text-[#C9941A]" />}
+            {translateM.isPending && <Loader2 className="w-3 h-3 animate-spin text-[#E2741B]" />}
           </label>
         ) : null}
       </div>
@@ -263,10 +263,10 @@ export default function LessonVideoPlayer({ lessonId }: Props) {
             <button
               key={i}
               onClick={() => { const el = videoRef.current; if (el) { el.currentTime = c.start; el.play(); } }}
-              className="shrink-0 text-xs text-gray-400 hover:text-[#C9941A] hover-elevate rounded-md px-2 py-1 border border-[#333]"
+              className="shrink-0 text-xs text-gray-400 hover:text-[#E2741B] hover-elevate rounded-md px-2 py-1 border border-[#333]"
               data-testid={`button-chapter-${i}`}
             >
-              <span className="text-[#C9941A] mr-1 tabular-nums">{fmtTime(c.start)}</span>
+              <span className="text-[#E2741B] mr-1 tabular-nums">{fmtTime(c.start)}</span>
               {c.title}
             </button>
           ))}
@@ -276,7 +276,7 @@ export default function LessonVideoPlayer({ lessonId }: Props) {
       {/* Transcript (locale-aware) */}
       {activeTranscript && (
         <details className="px-3 py-2 bg-[#0D0D0D] border-t border-[#333] text-xs text-gray-400" data-testid="transcript-panel">
-          <summary className="cursor-pointer text-[#C9941A] hover:underline">
+          <summary className="cursor-pointer text-[#E2741B] hover:underline">
             Transcript {locale !== "en" && <span className="text-gray-500 ml-1">({locale.toUpperCase()})</span>}
           </summary>
           <p className="mt-2 whitespace-pre-wrap leading-relaxed">{activeTranscript}</p>

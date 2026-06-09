@@ -97,8 +97,8 @@ export default function WorkflowDashboard() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "completed": return "bg-[#C9941A]/20 text-[#C9941A]";
-      case "running": return "bg-primary/20 text-[#C9941A]";
+      case "completed": return "bg-[#E2741B]/20 text-[#E2741B]";
+      case "running": return "bg-primary/20 text-[#E2741B]";
       case "pending": return "bg-blue-500/20 text-blue-400";
       case "failed": return "bg-red-500/20 text-red-400";
       default: return "bg-zinc-500/20 text-zinc-400";
@@ -132,20 +132,20 @@ export default function WorkflowDashboard() {
             <h1 className="text-3xl font-bold">Workflow Orchestration</h1>
             <p className="text-zinc-400">Automate content creation across studios</p>
           </div>
-          <Badge className="ml-auto bg-primary/20 text-[#C9941A] border">
+          <Badge className="ml-auto bg-primary/20 text-[#E2741B] border">
             <Sparkles className="w-3 h-3 mr-1" /> Ultra-Premium
           </Badge>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="bg-[#1a1a1a] border border-[#333]">
-            <TabsTrigger value="active" className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]">
+            <TabsTrigger value="active" className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#E2741B]">
               <Zap className="w-4 h-4 mr-2" /> Active ({activeWorkflows.length})
             </TabsTrigger>
-            <TabsTrigger value="templates" className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]">
+            <TabsTrigger value="templates" className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#E2741B]">
               <GitBranch className="w-4 h-4 mr-2" /> Templates
             </TabsTrigger>
-            <TabsTrigger value="history" className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]">
+            <TabsTrigger value="history" className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#E2741B]">
               <Clock className="w-4 h-4 mr-2" /> History
             </TabsTrigger>
           </TabsList>
@@ -161,7 +161,7 @@ export default function WorkflowDashboard() {
                         <div className="flex items-start justify-between">
                           <div className="flex items-center gap-3">
                             <div className="p-2 rounded-lg bg-primary/20">
-                              <Icon className="w-5 h-5 text-[#C9941A]" />
+                              <Icon className="w-5 h-5 text-[#E2741B]" />
                             </div>
                             <div>
                               <CardTitle className="text-lg">{workflow.type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</CardTitle>
@@ -210,7 +210,7 @@ export default function WorkflowDashboard() {
                   <p className="text-zinc-400 mb-4">Start a workflow to automate your content creation</p>
                   <Button 
                     onClick={() => setActiveTab("templates")}
-                    className="bg-[#C9941A] hover:bg-[#C9941A]"
+                    className="bg-[#E2741B] hover:bg-[#E2741B]"
                     data-testid="button-browse-templates"
                   >
                     <Plus className="w-4 h-4 mr-2" /> Browse Templates
@@ -228,7 +228,7 @@ export default function WorkflowDashboard() {
                   <Card 
                     key={template.type} 
                     className={`bg-[#1a1a1a]/50 border-[#333] cursor-pointer transition-all ${
-                      selectedTemplate === template.type ? "border-[#C9941A]" : "hover:border-zinc-600"
+                      selectedTemplate === template.type ? "border-[#E2741B]" : "hover:border-zinc-600"
                     }`}
                     onClick={() => setSelectedTemplate(template.type)}
                     data-testid={`card-template-${template.type}`}
@@ -237,7 +237,7 @@ export default function WorkflowDashboard() {
                       <div className="flex items-start justify-between">
                         <div className="flex items-center gap-3">
                           <div className="p-3 rounded-lg bg-primary/20">
-                            <Icon className="w-6 h-6 text-[#C9941A]" />
+                            <Icon className="w-6 h-6 text-[#E2741B]" />
                           </div>
                           <div>
                             <CardTitle className="text-lg">{template.name}</CardTitle>
@@ -245,7 +245,7 @@ export default function WorkflowDashboard() {
                           </div>
                         </div>
                         {selectedTemplate === template.type && (
-                          <Check className="w-5 h-5 text-[#C9941A]" />
+                          <Check className="w-5 h-5 text-[#E2741B]" />
                         )}
                       </div>
                     </CardHeader>
@@ -263,7 +263,7 @@ export default function WorkflowDashboard() {
                             <Clock className="w-4 h-4 inline mr-1" />
                             ~{Math.round(template.estimatedDuration / 60)} min
                           </span>
-                          <span className="text-[#C9941A]">
+                          <span className="text-[#E2741B]">
                             <DollarSign className="w-4 h-4 inline" />
                             {(template.estimatedCost / 100).toFixed(2)}
                           </span>
@@ -288,7 +288,7 @@ export default function WorkflowDashboard() {
                     onClick={() => startWorkflowMutation.mutate(selectedTemplate)}
                     disabled={startWorkflowMutation.isPending}
                     size="lg"
-                    className="bg-[#C9941A] hover:bg-[#C9941A]"
+                    className="bg-[#E2741B] hover:bg-[#E2741B]"
                     data-testid="button-start-workflow"
                   >
                     {startWorkflowMutation.isPending ? (

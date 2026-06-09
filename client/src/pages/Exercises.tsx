@@ -25,17 +25,17 @@ import {
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 
 const CATEGORIES = [
-  { id: "upper_extremity", name: "Upper Extremity", icon: Hand, description: "Hand, arm, and shoulder exercises", color: "text-[#C9941A]" },
-  { id: "cognitive", name: "Cognitive", icon: Brain, description: "Memory, attention, and problem-solving", color: "text-[#C9941A]" },
+  { id: "upper_extremity", name: "Upper Extremity", icon: Hand, description: "Hand, arm, and shoulder exercises", color: "text-[#E2741B]" },
+  { id: "cognitive", name: "Cognitive", icon: Brain, description: "Memory, attention, and problem-solving", color: "text-[#E2741B]" },
   { id: "speech_language", name: "Speech & Language", icon: MessageSquare, description: "Aphasia and communication exercises", color: "text-blue-400" },
-  { id: "balance_gait", name: "Balance & Gait", icon: Footprints, description: "Walking, posture, and balance", color: "text-[#C9941A]" },
+  { id: "balance_gait", name: "Balance & Gait", icon: Footprints, description: "Walking, posture, and balance", color: "text-[#E2741B]" },
 ];
 
 const DIFFICULTY_COLORS: Record<string, string> = {
-  beginner: "bg-[#C9941A]/20 text-[#C9941A] border-green-500/30",
+  beginner: "bg-[#E2741B]/20 text-[#E2741B] border-green-500/30",
   intermediate: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-  advanced: "bg-primary/20 text-[#C9941A] border-primary/30",
-  expert: "bg-[#C9941A]500/20 text-[#C9941A]400 border-[#C9941A]500/30",
+  advanced: "bg-primary/20 text-[#E2741B] border-primary/30",
+  expert: "bg-[#E2741B]500/20 text-[#E2741B]400 border-[#E2741B]500/30",
 };
 
 interface Exercise {
@@ -191,8 +191,8 @@ export default function Exercises() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <Card className="bg-[#1a1a1a] border-[#333] p-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg bg-[#C9941A]/20 flex items-center justify-center">
-                <Trophy className="w-6 h-6 text-[#C9941A]" />
+              <div className="w-12 h-12 rounded-lg bg-[#E2741B]/20 flex items-center justify-center">
+                <Trophy className="w-6 h-6 text-[#E2741B]" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">{userScores?.length || 0}</p>
@@ -202,8 +202,8 @@ export default function Exercises() {
           </Card>
           <Card className="bg-[#1a1a1a] border-[#333] p-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg bg-[#C9941A]/20 flex items-center justify-center">
-                <BarChart3 className="w-6 h-6 text-[#C9941A]" />
+              <div className="w-12 h-12 rounded-lg bg-[#E2741B]/20 flex items-center justify-center">
+                <BarChart3 className="w-6 h-6 text-[#E2741B]" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">{calculateTotalProgress()}%</p>
@@ -213,8 +213,8 @@ export default function Exercises() {
           </Card>
           <Card className="bg-[#1a1a1a] border-[#333] p-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg bg-[#C9941A]/20 flex items-center justify-center">
-                <Flame className="w-6 h-6 text-[#C9941A]" />
+              <div className="w-12 h-12 rounded-lg bg-[#E2741B]/20 flex items-center justify-center">
+                <Flame className="w-6 h-6 text-[#E2741B]" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">{calculateStreak()}</p>
@@ -224,8 +224,8 @@ export default function Exercises() {
           </Card>
           <Card className="bg-[#1a1a1a] border-[#333] p-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg bg-[#C9941A]/20 flex items-center justify-center">
-                <Clock className="w-6 h-6 text-[#C9941A]" />
+              <div className="w-12 h-12 rounded-lg bg-[#E2741B]/20 flex items-center justify-center">
+                <Clock className="w-6 h-6 text-[#E2741B]" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">
@@ -265,7 +265,7 @@ export default function Exercises() {
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 text-[#C9941A] animate-spin" />
+            <Loader2 className="w-8 h-8 text-[#E2741B] animate-spin" />
           </div>
         ) : filteredExercises && filteredExercises.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -282,7 +282,7 @@ export default function Exercises() {
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 border border-[#333] flex items-center justify-center">
-                        <CategoryIcon className="w-7 h-7 text-[#C9941A]" />
+                        <CategoryIcon className="w-7 h-7 text-[#E2741B]" />
                       </div>
                       <Badge 
                         variant="outline" 
@@ -310,7 +310,7 @@ export default function Exercises() {
                       <div className="bg-gray-800 rounded-lg p-3 mb-4">
                         <div className="flex items-center justify-between text-sm mb-2">
                           <span className="text-gray-400">High Score</span>
-                          <span className="text-[#C9941A] font-bold">{score.highScore}</span>
+                          <span className="text-[#E2741B] font-bold">{score.highScore}</span>
                         </div>
                         <div className="flex items-center justify-between text-sm">
                           <span className="text-gray-400">Sessions</span>
@@ -371,7 +371,7 @@ export default function Exercises() {
                 )}
                 {!["finger_tap", "memory"].includes(selectedExercise?.gameType || "") && (
                   <div className="text-center">
-                    <Zap className="w-16 h-16 text-[#C9941A] mx-auto mb-4" />
+                    <Zap className="w-16 h-16 text-[#E2741B] mx-auto mb-4" />
                     <p className="text-xl text-white mb-4">Exercise Demo</p>
                     <p className="text-gray-400 mb-6">
                       Follow the on-screen instructions to complete this exercise.
@@ -436,7 +436,7 @@ function FingerTapGame({ onComplete, pointsValue }: { onComplete: (score: number
   if (!gameStarted) {
     return (
       <div className="text-center">
-        <Hand className="w-16 h-16 text-[#C9941A] mx-auto mb-4" />
+        <Hand className="w-16 h-16 text-[#E2741B] mx-auto mb-4" />
         <p className="text-xl text-white mb-4">Finger Tap Challenge</p>
         <p className="text-gray-400 mb-6">Tap the button as many times as you can in 30 seconds!</p>
         <Button onClick={startGame} className="bg-primary hover:bg-primary/90">
@@ -448,7 +448,7 @@ function FingerTapGame({ onComplete, pointsValue }: { onComplete: (score: number
 
   return (
     <div className="text-center">
-      <p className="text-5xl font-bold text-[#C9941A] mb-2">{timeLeft}s</p>
+      <p className="text-5xl font-bold text-[#E2741B] mb-2">{timeLeft}s</p>
       <p className="text-2xl text-white mb-6">Taps: {taps}</p>
       <button
         onClick={handleTap}
@@ -468,7 +468,7 @@ function MemoryGame({ onComplete, pointsValue }: { onComplete: (score: number, a
   const [gameOver, setGameOver] = useState(false);
   const [activeButton, setActiveButton] = useState<number | null>(null);
 
-  const colors = ["bg-[#C9941A]500", "bg-blue-500", "bg-[#C9941A]", "bg-yellow-500"];
+  const colors = ["bg-[#E2741B]500", "bg-blue-500", "bg-[#E2741B]", "bg-yellow-500"];
 
   const startRound = () => {
     const newSequence = [...sequence, Math.floor(Math.random() * 4)];
@@ -514,7 +514,7 @@ function MemoryGame({ onComplete, pointsValue }: { onComplete: (score: number, a
     const accuracy = Math.round((round / (round + 1)) * 100);
     return (
       <div className="text-center">
-        <Brain className="w-16 h-16 text-[#C9941A] mx-auto mb-4" />
+        <Brain className="w-16 h-16 text-[#E2741B] mx-auto mb-4" />
         <p className="text-3xl font-bold text-white mb-2">Round {round - 1} Complete!</p>
         <p className="text-gray-400 mb-4">Score: {score} | Accuracy: {accuracy}%</p>
         <Button onClick={() => onComplete(score, accuracy)} className="bg-primary hover:bg-primary/90">
@@ -527,7 +527,7 @@ function MemoryGame({ onComplete, pointsValue }: { onComplete: (score: number, a
   if (sequence.length === 0) {
     return (
       <div className="text-center">
-        <Brain className="w-16 h-16 text-[#C9941A] mx-auto mb-4" />
+        <Brain className="w-16 h-16 text-[#E2741B] mx-auto mb-4" />
         <p className="text-xl text-white mb-4">Memory Sequence Game</p>
         <p className="text-gray-400 mb-6">Watch the sequence and repeat it back!</p>
         <Button onClick={startRound} className="bg-primary hover:bg-primary/90">

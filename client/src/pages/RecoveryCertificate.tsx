@@ -54,10 +54,10 @@ export default function RecoveryCertificate() {
       <div className="min-h-screen bg-[#0D0D0D] text-white flex items-center justify-center px-4">
         <Card className="bg-[#1a1a1a] border border-[#333] max-w-md">
           <CardContent className="p-8 text-center">
-            <Lock className="w-10 h-10 text-[#C9941A] mx-auto mb-3" />
+            <Lock className="w-10 h-10 text-[#E2741B] mx-auto mb-3" />
             <p className="text-gray-400 mb-4">Sign in to view your certificates.</p>
             <Link href="/api/login">
-              <Button className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black" data-testid="button-sign-in">Sign in</Button>
+              <Button className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black" data-testid="button-sign-in">Sign in</Button>
             </Link>
           </CardContent>
         </Card>
@@ -96,7 +96,7 @@ export default function RecoveryCertificate() {
             </Button>
           </Link>
           <div className="flex items-center gap-2 text-sm text-gray-400">
-            <GraduationCap className="w-4 h-4 text-[#C9941A]" />
+            <GraduationCap className="w-4 h-4 text-[#E2741B]" />
             <span>Recovery University</span>
           </div>
         </div>
@@ -117,7 +117,7 @@ export default function RecoveryCertificate() {
                 </p>
               )}
               <Link href="/recovery/university">
-                <Button className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black" data-testid="button-keep-learning">
+                <Button className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black" data-testid="button-keep-learning">
                   Keep learning
                 </Button>
               </Link>
@@ -126,12 +126,12 @@ export default function RecoveryCertificate() {
         ) : (
           <>
             <div
-              className="relative bg-gradient-to-br from-[#1a1a1a] to-[#0D0D0D] border-4 border-[#C9941A] rounded-lg p-10 md:p-16 text-center print:bg-white print:border-black print:text-black"
+              className="relative bg-gradient-to-br from-[#1a1a1a] to-[#0D0D0D] border-4 border-[#E2741B] rounded-lg p-10 md:p-16 text-center print:bg-white print:border-black print:text-black"
               data-testid="card-certificate"
             >
-              <div className="absolute top-4 left-4 right-4 bottom-4 border border-[#C9941A]/40 rounded pointer-events-none print:border-black/40" />
+              <div className="absolute top-4 left-4 right-4 bottom-4 border border-[#E2741B]/40 rounded pointer-events-none print:border-black/40" />
 
-              <Award className="w-16 h-16 text-[#C9941A] mx-auto mb-4 print:text-black" />
+              <Award className="w-16 h-16 text-[#E2741B] mx-auto mb-4 print:text-black" />
               <p className="text-sm uppercase tracking-[0.3em] text-gray-400 mb-2 print:text-gray-700">
                 Stroke Recovery Academy · Recovery University
               </p>
@@ -139,7 +139,7 @@ export default function RecoveryCertificate() {
                 Certificate of Completion
               </h1>
               <p className="text-gray-400 mb-2 print:text-gray-700">This certifies that</p>
-              <p className="text-2xl md:text-3xl font-bold text-[#C9941A] mb-6 print:text-black" data-testid="text-recipient-name">
+              <p className="text-2xl md:text-3xl font-bold text-[#E2741B] mb-6 print:text-black" data-testid="text-recipient-name">
                 {data.recipientName}
               </p>
               <p className="text-gray-300 max-w-2xl mx-auto mb-2 print:text-gray-800">
@@ -177,7 +177,7 @@ export default function RecoveryCertificate() {
             <div className="mt-6 flex flex-col sm:flex-row gap-3 print:hidden">
               <Button
                 onClick={() => window.print()}
-                className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black"
+                className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black"
                 data-testid="button-print-certificate"
               >
                 <Download className="w-4 h-4 mr-2" />

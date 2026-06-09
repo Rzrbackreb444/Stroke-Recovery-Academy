@@ -16,7 +16,7 @@ interface WaveformVisualizerProps {
 export function WaveformVisualizer({ 
   analyserNode, 
   isPlaying = false,
-  color = "#C9941A",
+  color = "#E2741B",
   height = 120 
 }: WaveformVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);

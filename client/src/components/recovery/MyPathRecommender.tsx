@@ -36,7 +36,7 @@ export default function MyPathRecommender({ limit = 4 }: { limit?: number }) {
       <Card className="bg-[#1a1a1a] border-[#333]">
         <CardHeader>
           <CardTitle className="text-white text-base flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[#C9941A]" /> My Path
+            <Sparkles className="w-4 h-4 text-[#E2741B]" /> My Path
           </CardTitle>
         </CardHeader>
         <CardContent className="text-sm text-gray-400">Loading next courses…</CardContent>
@@ -49,7 +49,7 @@ export default function MyPathRecommender({ limit = 4 }: { limit?: number }) {
       <Card className="bg-[#1a1a1a] border-[#333]">
         <CardHeader>
           <CardTitle className="text-white text-base flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[#C9941A]" /> My Path
+            <Sparkles className="w-4 h-4 text-[#E2741B]" /> My Path
           </CardTitle>
         </CardHeader>
         <CardContent className="text-sm text-gray-400">
@@ -64,10 +64,10 @@ export default function MyPathRecommender({ limit = 4 }: { limit?: number }) {
       <CardHeader>
         <CardTitle className="text-white text-base flex items-center justify-between gap-2">
           <span className="inline-flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[#C9941A]" /> My Path
+            <Sparkles className="w-4 h-4 text-[#E2741B]" /> My Path
           </span>
           <Link href="/recovery/university">
-            <span className="text-xs text-[#C9941A] hover:underline inline-flex items-center gap-1"
+            <span className="text-xs text-[#E2741B] hover:underline inline-flex items-center gap-1"
               data-testid="link-all-courses">
               All courses <ArrowRight className="w-3 h-3" />
             </span>
@@ -88,13 +88,13 @@ export default function MyPathRecommender({ limit = 4 }: { limit?: number }) {
                     className="w-16 h-16 rounded-md object-cover border border-[#333]" />
                 ) : (
                   <div className="w-16 h-16 rounded-md bg-[#1a1a1a] border border-[#333] flex items-center justify-center">
-                    <Sparkles className="w-6 h-6 text-[#C9941A]/50" />
+                    <Sparkles className="w-6 h-6 text-[#E2741B]/50" />
                   </div>
                 )}
                 <div className="flex-1 min-w-0 space-y-1">
                   <div className="text-sm font-semibold text-white line-clamp-2">{c.title}</div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <Badge className="bg-[#C9941A]/15 text-[#C9941A] border-0 text-[10px]">
+                    <Badge className="bg-[#E2741B]/15 text-[#E2741B] border-0 text-[10px]">
                       {DIFF_LABELS[c.difficulty] || c.difficulty}
                     </Badge>
                     {c.estimatedHours ? (

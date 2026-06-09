@@ -72,7 +72,7 @@ export default function TermsOfService() {
               <li key={section.id}>
                 <a 
                   href={`#${section.id}`}
-                  className="text-gray-400 hover:text-[#C9941A] transition-colors"
+                  className="text-gray-400 hover:text-[#E2741B] transition-colors"
                   data-testid={`link-toc-${section.id}`}
                 >
                   {section.title}
@@ -159,7 +159,7 @@ export default function TermsOfService() {
             <div className="bg-[#1a1a1a] border border-[#333] rounded-lg p-6 mb-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-bold text-[#C9941A]">85%</p>
+                  <p className="text-2xl font-bold text-[#E2741B]">85%</p>
                   <p className="text-gray-400">Creator Earnings</p>
                 </div>
                 <div className="text-right">
@@ -348,7 +348,7 @@ export default function TermsOfService() {
             <div className="bg-[#1a1a1a] border border-[#333] rounded-lg p-6">
               <p className="text-foreground font-semibold mb-2">Stroke Recovery Academy Legal Team</p>
               <p className="text-gray-400">
-                Email: <a href="mailto:info@strokerecoveryacademy.com" className="text-[#C9941A] hover:underline" data-testid="link-contact-email">info@strokerecoveryacademy.com</a>
+                Email: <a href="mailto:info@strokerecoveryacademy.com" className="text-[#E2741B] hover:underline" data-testid="link-contact-email">info@strokerecoveryacademy.com</a>
               </p>
             </div>
           </section>
@@ -362,7 +362,7 @@ export default function TermsOfService() {
               </Button>
             </Link>
             <Link href="/">
-              <Button className="bg-[#C9941A] hover:bg-[#C9941A] text-black font-semibold" data-testid="button-return-home">
+              <Button className="bg-[#E2741B] hover:bg-[#E2741B] text-black font-semibold" data-testid="button-return-home">
                 Return to Home
               </Button>
             </Link>
@@ -396,7 +396,7 @@ export default function TermsOfService() {
             background: #f5f5f5 !important;
             border-color: #ddd !important;
           }
-          .text-[#C9941A] {
+          .text-[#E2741B] {
             color: #c45000 !important;
           }
           .text-foreground {

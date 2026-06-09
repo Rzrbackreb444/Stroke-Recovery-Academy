@@ -125,7 +125,7 @@ export default function RecoveryToday() {
     return (
       <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center p-6">
         <Card className="bg-[#111] border-[#222] p-8 max-w-sm w-full text-center">
-          <Flame className="h-10 w-10 text-[#C9941A] mx-auto mb-4" />
+          <Flame className="h-10 w-10 text-[#E2741B] mx-auto mb-4" />
           <h2 className="text-white font-bold text-xl mb-2">Sign In to Light the Bonfire</h2>
           <p className="text-gray-500 text-sm mb-6">
             Your daily session adapts to how yesterday went — sign in so we remember.
@@ -133,7 +133,7 @@ export default function RecoveryToday() {
           <Button
             size="lg"
             onClick={() => setLocation("/recovery/login")}
-            className="w-full bg-[#C9941A] text-black font-bold"
+            className="w-full bg-[#E2741B] text-black font-bold"
             data-testid="button-sign-in-bonfire"
           >
             Sign In
@@ -151,7 +151,7 @@ export default function RecoveryToday() {
         <div className="max-w-2xl mx-auto px-4 py-8">
           <button
             onClick={() => setLocation("/recovery/dashboard")}
-            className="text-gray-500 hover:text-[#C9941A] text-sm mb-6 flex items-center gap-1 transition-colors"
+            className="text-gray-500 hover:text-[#E2741B] text-sm mb-6 flex items-center gap-1 transition-colors"
             data-testid="link-back-dashboard"
           >
             <ArrowLeft className="h-3.5 w-3.5" /> Back to Dashboard
@@ -175,18 +175,18 @@ export default function RecoveryToday() {
               adaptive single-track session; Circuit is the all-in-one. */}
           <Link
             href="/recovery/circuit"
-            className="block rounded-md border border-[#C9941A]/40 bg-gradient-to-br from-[#1a1610] to-[#111] p-4 mt-4 hover-elevate"
+            className="block rounded-md border border-[#E2741B]/40 bg-gradient-to-br from-[#1a1610] to-[#111] p-4 mt-4 hover-elevate"
             data-testid="link-daily-circuit"
             aria-label="Open the Daily Circuit — guided multi-station session"
           >
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-md bg-[#C9941A]/15 border border-[#C9941A]/40 flex items-center justify-center shrink-0">
-                <Mic className="h-5 w-5 text-[#C9941A]" />
+              <div className="h-10 w-10 rounded-md bg-[#E2741B]/15 border border-[#E2741B]/40 flex items-center justify-center shrink-0">
+                <Mic className="h-5 w-5 text-[#E2741B]" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <p className="text-white font-bold text-sm">Daily Circuit</p>
-                  <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-0 text-[10px] hover:bg-[#C9941A]/20">
+                  <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-0 text-[10px] hover:bg-[#E2741B]/20">
                     Voice cues
                   </Badge>
                 </div>
@@ -194,7 +194,7 @@ export default function RecoveryToday() {
                   Brain · breath · dexterity · coach moment, all in one paced session.
                 </p>
               </div>
-              <ArrowRight className="h-4 w-4 text-[#C9941A] shrink-0" />
+              <ArrowRight className="h-4 w-4 text-[#E2741B] shrink-0" />
             </div>
           </Link>
 
@@ -218,7 +218,7 @@ export default function RecoveryToday() {
                 </div>
               )}
               <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">
-                <Sparkles className="h-3 w-3 inline mr-1 text-[#C9941A]" />
+                <Sparkles className="h-3 w-3 inline mr-1 text-[#E2741B]" />
                 Recommended for today
               </p>
               <div className="flex items-center gap-4 mb-3">
@@ -268,7 +268,7 @@ export default function RecoveryToday() {
               <Button
                 size="lg"
                 onClick={() => { setStage("session"); setTaskIdx(0); }}
-                className="w-full mt-6 bg-[#C9941A] text-black font-bold"
+                className="w-full mt-6 bg-[#E2741B] text-black font-bold"
                 data-testid="button-begin-bonfire"
               >
                 <Flame className="h-4 w-4 mr-1.5" />
@@ -280,10 +280,10 @@ export default function RecoveryToday() {
 
               {rec?.personalization?.applied && (
                 <div
-                  className="mt-4 rounded-md border border-[#C9941A]/30 bg-[#C9941A]/5 p-3 text-xs text-gray-300"
+                  className="mt-4 rounded-md border border-[#E2741B]/30 bg-[#E2741B]/5 p-3 text-xs text-gray-300"
                   data-testid="banner-personalization"
                 >
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-[#C9941A] mb-1.5 flex items-center gap-1">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-[#E2741B] mb-1.5 flex items-center gap-1">
                     <Sparkles className="h-3 w-3" /> Tailored from your intake
                   </p>
                   <ul className="space-y-1 leading-relaxed">
@@ -299,7 +299,7 @@ export default function RecoveryToday() {
                     ) : null}
                     {goalCount > 0 && (
                       <li>
-                        <strong className="text-[#C9941A]">{goalCount}</strong> {goalCount === 1 ? "task" : "tasks"} marked as <strong className="text-white">your goal</strong>.
+                        <strong className="text-[#E2741B]">{goalCount}</strong> {goalCount === 1 ? "task" : "tasks"} marked as <strong className="text-white">your goal</strong>.
                       </li>
                     )}
                     {rec.personalization.capReason && (
@@ -307,7 +307,7 @@ export default function RecoveryToday() {
                     )}
                   </ul>
                   <p className="text-[10px] text-gray-600 mt-2">
-                    <Link href="/settings/profile" className="underline hover:text-[#C9941A]" data-testid="link-edit-intake">
+                    <Link href="/settings/profile" className="underline hover:text-[#E2741B]" data-testid="link-edit-intake">
                       Update your intake →
                     </Link>
                   </p>
@@ -331,14 +331,14 @@ export default function RecoveryToday() {
             <button
               onClick={goBack}
               disabled={taskIdx === 0}
-              className="text-gray-500 hover:text-[#C9941A] text-xs flex items-center gap-1 disabled:opacity-30"
+              className="text-gray-500 hover:text-[#E2741B] text-xs flex items-center gap-1 disabled:opacity-30"
               data-testid="button-back-task"
             >
               <ArrowLeft className="h-3 w-3" />
             </button>
             <div className="flex-1 h-1 bg-[#1a1a1a] rounded-full overflow-hidden">
               <div
-                className="h-full bg-[#C9941A] transition-all duration-300"
+                className="h-full bg-[#E2741B] transition-all duration-300"
                 style={{ width: `${pct}%` }}
                 data-testid="progress-bonfire"
               />
@@ -351,7 +351,7 @@ export default function RecoveryToday() {
 
         <div className="flex-1 flex items-center justify-center px-4 py-8">
           <div className="max-w-xl w-full">
-            <p className="text-xs text-[#C9941A] uppercase tracking-widest mb-3 flex items-center gap-2 justify-center">
+            <p className="text-xs text-[#E2741B] uppercase tracking-widest mb-3 flex items-center gap-2 justify-center">
               <current.blockIcon className="h-3.5 w-3.5" />
               {current.blockLabel} · {current.blockTime}
             </p>
@@ -359,15 +359,15 @@ export default function RecoveryToday() {
             <Card className="bg-[#111] border-[#1e1e1e] p-8 text-center" data-testid="card-current-task">
               {current.priority === "goal" && (
                 <Badge
-                  className="mb-4 bg-[#C9941A] text-black hover:bg-[#C9941A] border-0 gap-1"
+                  className="mb-4 bg-[#E2741B] text-black hover:bg-[#E2741B] border-0 gap-1"
                   data-testid="badge-goal-task"
                 >
                   <Sparkles className="h-3 w-3" />
                   {current.goalReason || "Your goal"}
                 </Badge>
               )}
-              <div className="h-14 w-14 mx-auto mb-5 rounded-full bg-[#C9941A]/15 border border-[#C9941A]/40 flex items-center justify-center">
-                <Icon className="h-7 w-7 text-[#C9941A]" />
+              <div className="h-14 w-14 mx-auto mb-5 rounded-full bg-[#E2741B]/15 border border-[#E2741B]/40 flex items-center justify-center">
+                <Icon className="h-7 w-7 text-[#E2741B]" />
               </div>
               <p
                 className="text-2xl sm:text-3xl text-white leading-snug font-medium"
@@ -436,7 +436,7 @@ export default function RecoveryToday() {
       <>
         <div className="min-h-screen bg-[#0D0D0D] text-white flex items-center justify-center p-6">
           <Card className="bg-[#111] border-[#222] p-8 max-w-md w-full text-center">
-            <Footprints className="h-10 w-10 text-[#C9941A] mx-auto mb-4" />
+            <Footprints className="h-10 w-10 text-[#E2741B] mx-auto mb-4" />
             <h2 className="text-white font-bold text-2xl mb-2">Time for the cooldown walk</h2>
             <p className="text-gray-400 text-sm mb-6">
               Open the supervised walking module to log your distance and how it felt.
@@ -444,7 +444,7 @@ export default function RecoveryToday() {
             <Button
               size="lg"
               onClick={() => setShowWalkModal(true)}
-              className="w-full bg-[#C9941A] text-black font-bold"
+              className="w-full bg-[#E2741B] text-black font-bold"
               data-testid="button-open-walk"
             >
               <Footprints className="h-4 w-4 mr-1.5" /> Open Walking Cooldown
@@ -502,9 +502,9 @@ export default function RecoveryToday() {
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <Card className="bg-gradient-to-br from-[#C9941A]/15 via-[#111] to-[#111] border-[#C9941A]/40 p-8 text-center" data-testid="card-complete">
-          <Trophy className="h-12 w-12 text-[#C9941A] mx-auto mb-4" />
-          <p className="text-xs text-[#C9941A] uppercase tracking-widest mb-2">Bonfire Complete</p>
+        <Card className="bg-gradient-to-br from-[#E2741B]/15 via-[#111] to-[#111] border-[#E2741B]/40 p-8 text-center" data-testid="card-complete">
+          <Trophy className="h-12 w-12 text-[#E2741B] mx-auto mb-4" />
+          <p className="text-xs text-[#E2741B] uppercase tracking-widest mb-2">Bonfire Complete</p>
           <h2 className="text-3xl sm:text-4xl font-black text-white mb-3" style={{ fontFamily: "Playfair Display, Georgia, serif" }}>
             You showed up. That's the work.
           </h2>
@@ -530,7 +530,7 @@ export default function RecoveryToday() {
 
         {walkLogged && walkLogged.reaction !== "skipped" && (
           <Card className="bg-[#111] border-[#222] p-4 mt-3 flex items-center gap-3" data-testid="card-walk-summary">
-            <Footprints className="h-5 w-5 text-[#C9941A]" />
+            <Footprints className="h-5 w-5 text-[#E2741B]" />
             <div className="flex-1">
               <p className="text-xs text-gray-500 uppercase tracking-widest">Walking cooldown</p>
               <p className="text-white font-semibold">
@@ -557,32 +557,32 @@ export default function RecoveryToday() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
           <Link
             href={`/recovery/shop?category=${recCategory.id}`}
-            className="block rounded-md border border-[#C9941A]/30 bg-[#1a1610] p-4 hover-elevate text-left"
+            className="block rounded-md border border-[#E2741B]/30 bg-[#1a1610] p-4 hover-elevate text-left"
             data-testid="link-cross-sell-shop"
             aria-label={`Open Survivor Shop — ${recCategory.name}`}
           >
             <div className="flex items-center gap-2 mb-1">
-              <ShoppingBag className="h-4 w-4 text-[#C9941A]" />
-              <p className="text-[10px] uppercase tracking-[0.2em] text-[#C9941A]">Gear that helps with this</p>
+              <ShoppingBag className="h-4 w-4 text-[#E2741B]" />
+              <p className="text-[10px] uppercase tracking-[0.2em] text-[#E2741B]">Gear that helps with this</p>
             </div>
             <p className="text-white font-semibold text-sm">{recCategory.name}</p>
             <p className="text-xs text-gray-400 mt-1">{recCategory.bonfireSignal ?? recCategory.blurb}</p>
             <p className="text-[10px] text-gray-500 mt-2 italic">Survivor picks — not medical advice. Confirm with your therapist.</p>
-            <p className="text-xs text-[#C9941A] mt-2 font-semibold">Browse →</p>
+            <p className="text-xs text-[#E2741B] mt-2 font-semibold">Browse →</p>
           </Link>
           <Link
             href="/recovery/motivation"
-            className="block rounded-md border border-[#C9941A]/30 bg-[#1a1610] p-4 hover-elevate text-left"
+            className="block rounded-md border border-[#E2741B]/30 bg-[#1a1610] p-4 hover-elevate text-left"
             data-testid="link-cross-sell-motivation"
             aria-label="Make tomorrow's anthem in the Motivation Studio"
           >
             <div className="flex items-center gap-2 mb-1">
-              <Sparkles className="h-4 w-4 text-[#C9941A]" />
-              <p className="text-[10px] uppercase tracking-[0.2em] text-[#C9941A]">Fuel for tomorrow</p>
+              <Sparkles className="h-4 w-4 text-[#E2741B]" />
+              <p className="text-[10px] uppercase tracking-[0.2em] text-[#E2741B]">Fuel for tomorrow</p>
             </div>
             <p className="text-white font-semibold text-sm">Make tomorrow's anthem</p>
             <p className="text-xs text-gray-400 mt-1">Turn one affirmation into a 4-line lyric in Sasquatch's voice.</p>
-            <p className="text-xs text-[#C9941A] mt-2 font-semibold">Open Motivation Studio →</p>
+            <p className="text-xs text-[#E2741B] mt-2 font-semibold">Open Motivation Studio →</p>
           </Link>
         </div>
 
@@ -593,7 +593,7 @@ export default function RecoveryToday() {
             </Button>
           </Link>
           <Link href="/recovery/community">
-            <Button className="w-full bg-[#C9941A] text-black font-bold" data-testid="button-share-win">
+            <Button className="w-full bg-[#E2741B] text-black font-bold" data-testid="button-share-win">
               <HeartPulse className="h-4 w-4 mr-1.5" /> Share a Win
               <ArrowRight className="h-4 w-4 ml-1.5" />
             </Button>

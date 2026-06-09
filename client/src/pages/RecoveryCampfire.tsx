@@ -85,7 +85,7 @@ export default function RecoveryCampfire() {
           <>
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-2">
-                <Flame className="w-8 h-8" style={{ color: "#C9941A" }} />
+                <Flame className="w-8 h-8" style={{ color: "#E2741B" }} />
                 <h1 className="text-4xl md:text-5xl font-black" data-testid="text-campfire-title">
                   The Campfire
                 </h1>

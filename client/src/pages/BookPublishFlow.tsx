@@ -81,13 +81,13 @@ export default function BookPublishFlow() {
     finally { setIsExporting(false); }
   }
 
-  if (authLoading) return <div className="min-h-screen bg-[#FAF8F3]"><Header /><div className="flex items-center justify-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#C9941A]" /></div></div>;
+  if (authLoading) return <div className="min-h-screen bg-[#FAF8F3]"><Header /><div className="flex items-center justify-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#E2741B]" /></div></div>;
   if (!isAuthenticated) return (
     <div className="min-h-screen bg-[#FAF8F3]"><Header />
       <div className="flex items-center justify-center py-24">
         <Card className="p-10 max-w-md w-full text-center border-0 shadow-sm">
-          <Lock className="w-10 h-10 text-[#C9941A] mx-auto mb-4" /><h2 className="text-xl font-bold mb-2">Sign in to publish</h2>
-          <Button onClick={() => window.location.href = "/api/login"} className="bg-[#C9941A] text-white mt-2">Sign In</Button>
+          <Lock className="w-10 h-10 text-[#E2741B] mx-auto mb-4" /><h2 className="text-xl font-bold mb-2">Sign in to publish</h2>
+          <Button onClick={() => window.location.href = "/api/login"} className="bg-[#E2741B] text-white mt-2">Sign In</Button>
         </Card>
       </div><Footer />
     </div>
@@ -111,7 +111,7 @@ export default function BookPublishFlow() {
               <SelectContent>
                 {projects.map(p => (
                   <SelectItem key={p.id} value={String(p.id)}>
-                    <div className="flex items-center gap-2"><BookOpen className="w-3.5 h-3.5 text-[#C9941A]" />{p.title}{p.wordCount ? <span className="text-xs text-gray-400">· {p.wordCount.toLocaleString()} words</span> : null}</div>
+                    <div className="flex items-center gap-2"><BookOpen className="w-3.5 h-3.5 text-[#E2741B]" />{p.title}{p.wordCount ? <span className="text-xs text-gray-400">· {p.wordCount.toLocaleString()} words</span> : null}</div>
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -127,7 +127,7 @@ export default function BookPublishFlow() {
                   <div className="flex items-center justify-between"><CardTitle className="text-base">Readiness Score</CardTitle><button onClick={() => refetch()} className="text-gray-400 hover:text-gray-600"><RefreshCw className="w-4 h-4" /></button></div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {readinessLoading ? <div className="flex items-center justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-[#C9941A]" /></div> : readiness ? (
+                  {readinessLoading ? <div className="flex items-center justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-[#E2741B]" /></div> : readiness ? (
                     <>
                       <div className="text-center py-2"><p className={`text-5xl font-bold ${scoreColor}`}>{score}</p><p className="text-xs text-gray-400 mt-1">out of 100</p></div>
                       <Progress value={score} className="h-2" />
@@ -146,7 +146,7 @@ export default function BookPublishFlow() {
                   <CardContent className="p-4 flex items-center gap-3">
                     <Lock className="w-5 h-5 text-amber-500 shrink-0" />
                     <div className="flex-1 text-sm"><span className="font-medium">Export limit reached</span><span className="text-gray-600"> — {tier!.dailyExportsUsed} of {tier!.maxExportsPerDay} used today.</span></div>
-                    <Button size="sm" className="bg-[#C9941A] text-white shrink-0" onClick={() => window.location.href = "/pricing"}><Star className="w-3.5 h-3.5 mr-1.5" />Upgrade</Button>
+                    <Button size="sm" className="bg-[#E2741B] text-white shrink-0" onClick={() => window.location.href = "/pricing"}><Star className="w-3.5 h-3.5 mr-1.5" />Upgrade</Button>
                   </CardContent>
                 </Card>
               )}
@@ -154,7 +154,7 @@ export default function BookPublishFlow() {
               <Card className="border-0 bg-white shadow-sm">
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="rounded-md bg-[#C9941A]/10 p-2"><FileText className="w-4 h-4 text-[#C9941A]" /></div>
+                    <div className="rounded-md bg-[#E2741B]/10 p-2"><FileText className="w-4 h-4 text-[#E2741B]" /></div>
                     <div><CardTitle className="text-base">KDP PDF Export</CardTitle><CardDescription className="text-xs">Print-ready PDF to Amazon KDP specs</CardDescription></div>
                   </div>
                 </CardHeader>
@@ -173,7 +173,7 @@ export default function BookPublishFlow() {
                       <Button size="sm" className="bg-green-600 text-white shrink-0" onClick={() => { const a = document.createElement("a"); a.href = exportedUrl; a.download = `${project?.title || "book"}-kdp.pdf`; a.click(); }} data-testid="button-download-pdf"><Download className="w-3.5 h-3.5 mr-1.5" />Download PDF</Button>
                     </div>
                   ) : (
-                    <Button className="w-full bg-[#C9941A] text-white" onClick={handleExportKdp} disabled={isExporting || !!atExportLimit} data-testid="button-export-kdp">
+                    <Button className="w-full bg-[#E2741B] text-white" onClick={handleExportKdp} disabled={isExporting || !!atExportLimit} data-testid="button-export-kdp">
                       {isExporting ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating…</> : <><Download className="w-4 h-4 mr-2" />Export KDP PDF</>}
                     </Button>
                   )}
@@ -221,7 +221,7 @@ export default function BookPublishFlow() {
             <div className="py-16 text-center">
               <Layers className="w-12 h-12 text-gray-200 mx-auto mb-4" />
               <p className="font-semibold text-gray-600">No book projects yet</p><p className="text-sm text-gray-400 mt-1">Create a project in Book Studio first.</p>
-              <Button className="mt-6 bg-[#C9941A] text-white" onClick={() => window.location.href = "/book-studio"}><BookOpen className="w-4 h-4 mr-2" />Go to Book Studio</Button>
+              <Button className="mt-6 bg-[#E2741B] text-white" onClick={() => window.location.href = "/book-studio"}><BookOpen className="w-4 h-4 mr-2" />Go to Book Studio</Button>
             </div>
           </Card>
         )}

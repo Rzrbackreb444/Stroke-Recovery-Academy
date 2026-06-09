@@ -52,7 +52,7 @@ export default function QuizRunner({ quizId, onComplete }: { quizId: number; onC
         <div className="flex items-center gap-3">
           {result.passed ? <CheckCircle2 className="w-8 h-8 text-green-500" /> : <XCircle className="w-8 h-8 text-red-500" />}
           <div>
-            <div className="text-lg font-bold text-[#C9941A]" data-testid="text-quiz-score">{result.score}% · {result.passed ? "Passed" : "Keep going"}</div>
+            <div className="text-lg font-bold text-[#E2741B]" data-testid="text-quiz-score">{result.score}% · {result.passed ? "Passed" : "Keep going"}</div>
             <div className="text-xs text-gray-500">Passing: {result.passingScore}% · Attempt {result.attemptNumber}</div>
           </div>
         </div>
@@ -66,7 +66,7 @@ export default function QuizRunner({ quizId, onComplete }: { quizId: number; onC
                   {r.correct ? <CheckCircle2 className="w-4 h-4 text-green-500 mt-0.5 shrink-0" /> : <XCircle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />}
                   <div className="flex-1">
                     <div className="text-gray-300">{i + 1}. {q.question}</div>
-                    {!r.correct && r.correctAnswer && <div className="text-xs text-gray-500 mt-1">Correct: <span className="text-[#C9941A]">{r.correctAnswer}</span></div>}
+                    {!r.correct && r.correctAnswer && <div className="text-xs text-gray-500 mt-1">Correct: <span className="text-[#E2741B]">{r.correctAnswer}</span></div>}
                     {r.explanation && <div className="text-xs text-gray-400 mt-1 italic">{r.explanation}</div>}
                   </div>
                 </div>
@@ -75,7 +75,7 @@ export default function QuizRunner({ quizId, onComplete }: { quizId: number; onC
           })}
         </div>
         {quiz.allowRetakes && !result.passed && (
-          <Button onClick={retry} className="bg-[#C9941A] text-black hover:bg-[#C9941A]" data-testid="button-quiz-retry">Try again</Button>
+          <Button onClick={retry} className="bg-[#E2741B] text-black hover:bg-[#E2741B]" data-testid="button-quiz-retry">Try again</Button>
         )}
       </Card>
     );
@@ -84,19 +84,19 @@ export default function QuizRunner({ quizId, onComplete }: { quizId: number; onC
   return (
     <div className="space-y-4" data-testid={`quiz-runner-${quizId}`}>
       <div>
-        <h3 className="text-lg font-bold text-[#C9941A]" data-testid="text-quiz-title">{quiz.title}</h3>
+        <h3 className="text-lg font-bold text-[#E2741B]" data-testid="text-quiz-title">{quiz.title}</h3>
         <p className="text-xs text-gray-500">Passing score: {quiz.passingScore}% · {questions.length} question{questions.length !== 1 ? "s" : ""}</p>
       </div>
       {questions.map((q, idx) => (
         <Card key={q.id} className="p-4 bg-[#1a1a1a] border-[#333] space-y-3" data-testid={`question-${q.id}`}>
           <div className="flex items-start gap-2">
-            <span className="text-[#C9941A] font-bold">{idx + 1}.</span>
+            <span className="text-[#E2741B] font-bold">{idx + 1}.</span>
             <div className="flex-1 text-gray-200">{q.question}</div>
           </div>
           <QuestionInput q={q} value={answers[q.id]} onChange={(v) => setAnswers(a => ({ ...a, [q.id]: v }))} />
         </Card>
       ))}
-      <Button onClick={submit} disabled={submitting} className="bg-[#C9941A] text-black hover:bg-[#C9941A]" data-testid="button-quiz-submit">
+      <Button onClick={submit} disabled={submitting} className="bg-[#E2741B] text-black hover:bg-[#E2741B]" data-testid="button-quiz-submit">
         {submitting ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Grading…</> : <>Submit quiz <ArrowRight className="w-4 h-4 ml-2" /></>}
       </Button>
     </div>
@@ -111,8 +111,8 @@ function QuestionInput({ q, value, onChange }: { q: Question; value: any; onChan
     return (
       <div className="space-y-1.5">
         {opts.map(o => (
-          <label key={o.id} className={`flex items-center gap-2 rounded-md border px-3 py-2 cursor-pointer hover-elevate ${String(value) === String(o.id) ? "border-[#C9941A] bg-[#C9941A]/10" : "border-[#333]"}`} data-testid={`option-${q.id}-${o.id}`}>
-            <input type="radio" name={`q-${q.id}`} checked={String(value) === String(o.id)} onChange={() => onChange(String(o.id))} className="accent-[#C9941A]" />
+          <label key={o.id} className={`flex items-center gap-2 rounded-md border px-3 py-2 cursor-pointer hover-elevate ${String(value) === String(o.id) ? "border-[#E2741B] bg-[#E2741B]/10" : "border-[#333]"}`} data-testid={`option-${q.id}-${o.id}`}>
+            <input type="radio" name={`q-${q.id}`} checked={String(value) === String(o.id)} onChange={() => onChange(String(o.id))} className="accent-[#E2741B]" />
             <span className="text-sm text-gray-300">{o.text}</span>
           </label>
         ))}

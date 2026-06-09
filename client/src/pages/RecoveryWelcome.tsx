@@ -126,7 +126,7 @@ export default function RecoveryWelcome() {
             className="text-3xl md:text-5xl font-black mb-3"
             data-testid="text-welcome-title"
           >
-            Your first <span style={{ color: "#C9941A" }}>5 minutes.</span>
+            Your first <span style={{ color: "#E2741B" }}>5 minutes.</span>
           </h1>
           <p className="text-stone-300 max-w-2xl mx-auto">
             Five cards. Five outcomes. No forced tour. Tap into anything that

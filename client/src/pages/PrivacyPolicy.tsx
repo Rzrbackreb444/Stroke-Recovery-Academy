@@ -71,7 +71,7 @@ export default function PrivacyPolicy() {
               <li key={section.id}>
                 <a 
                   href={`#${section.id}`}
-                  className="text-gray-400 hover:text-[#C9941A] transition-colors"
+                  className="text-gray-400 hover:text-[#E2741B] transition-colors"
                   data-testid={`link-toc-${section.id}`}
                 >
                   {section.title}
@@ -151,19 +151,19 @@ export default function PrivacyPolicy() {
             <div className="bg-[#1a1a1a] border border-[#333] rounded-lg p-6 mb-4">
               <ul className="space-y-3 text-gray-400">
                 <li className="flex items-start gap-3">
-                  <span className="text-[#C9941A] font-semibold min-w-[100px]">Stripe</span>
+                  <span className="text-[#E2741B] font-semibold min-w-[100px]">Stripe</span>
                   <span>Payment processing, creator payouts, and financial compliance</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-[#C9941A] font-semibold min-w-[100px]">Analytics</span>
+                  <span className="text-[#E2741B] font-semibold min-w-[100px]">Analytics</span>
                   <span>Usage analytics, performance monitoring, and error tracking</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-[#C9941A] font-semibold min-w-[100px]">Cloud Hosting</span>
+                  <span className="text-[#E2741B] font-semibold min-w-[100px]">Cloud Hosting</span>
                   <span>Data storage and content delivery infrastructure</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-[#C9941A] font-semibold min-w-[100px]">Email</span>
+                  <span className="text-[#E2741B] font-semibold min-w-[100px]">Email</span>
                   <span>Transactional emails and notifications</span>
                 </li>
               </ul>
@@ -253,7 +253,7 @@ export default function PrivacyPolicy() {
             </ul>
 
             <p className="text-gray-400 leading-relaxed">
-              To exercise any of these rights, please contact us at <a href="mailto:info@strokerecoveryacademy.com" className="text-[#C9941A] hover:underline">info@strokerecoveryacademy.com</a>. 
+              To exercise any of these rights, please contact us at <a href="mailto:info@strokerecoveryacademy.com" className="text-[#E2741B] hover:underline">info@strokerecoveryacademy.com</a>. 
               We will respond to your request within 30 days (or as required by applicable law).
             </p>
           </section>
@@ -272,7 +272,7 @@ export default function PrivacyPolicy() {
             </p>
             <p className="text-gray-400 leading-relaxed">
               If you are a parent or guardian and believe your child has provided us with personal information, 
-              please contact us immediately at <a href="mailto:info@strokerecoveryacademy.com" className="text-[#C9941A] hover:underline">info@strokerecoveryacademy.com</a>.
+              please contact us immediately at <a href="mailto:info@strokerecoveryacademy.com" className="text-[#E2741B] hover:underline">info@strokerecoveryacademy.com</a>.
             </p>
           </section>
 
@@ -343,7 +343,7 @@ export default function PrivacyPolicy() {
             <div className="bg-[#1a1a1a] border border-[#333] rounded-lg p-6">
               <p className="text-foreground font-semibold mb-2">Stroke Recovery Academy Privacy Team</p>
               <p className="text-gray-400 mb-4">
-                Email: <a href="mailto:info@strokerecoveryacademy.com" className="text-[#C9941A] hover:underline" data-testid="link-contact-email">info@strokerecoveryacademy.com</a>
+                Email: <a href="mailto:info@strokerecoveryacademy.com" className="text-[#E2741B] hover:underline" data-testid="link-contact-email">info@strokerecoveryacademy.com</a>
               </p>
               <p className="text-gray-400 text-sm">
                 For GDPR-related inquiries, you may also contact our Data Protection Officer at the above email address.
@@ -360,7 +360,7 @@ export default function PrivacyPolicy() {
               </Button>
             </Link>
             <Link href="/">
-              <Button className="bg-[#C9941A] hover:bg-[#C9941A] text-black font-semibold" data-testid="button-return-home">
+              <Button className="bg-[#E2741B] hover:bg-[#E2741B] text-black font-semibold" data-testid="button-return-home">
                 Return to Home
               </Button>
             </Link>
@@ -395,7 +395,7 @@ export default function PrivacyPolicy() {
             background: #f5f5f5 !important;
             border-color: #ddd !important;
           }
-          .text-[#C9941A] {
+          .text-[#E2741B] {
             color: #c45000 !important;
           }
           .text-foreground {

@@ -16,7 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 
 const TYPE_META: Record<string, { label: string; icon: any; color: string }> = {
-  survivor: { label: "Survivors", icon: Shield, color: "text-[#C9941A]" },
+  survivor: { label: "Survivors", icon: Shield, color: "text-[#E2741B]" },
   caregiver: { label: "Caregivers", icon: Heart, color: "text-rose-500" },
   condition: { label: "Condition-specific", icon: HeartPulse, color: "text-blue-400" },
   general: { label: "General", icon: Sparkles, color: "text-emerald-400" },
@@ -175,7 +175,7 @@ export default function GroupDetail() {
           <CardHeader>
             <div className="flex items-start justify-between gap-4 flex-wrap">
               <div className="flex items-start gap-4">
-                <div className="w-14 h-14 rounded-md bg-[#C9941A]/10 flex items-center justify-center shrink-0">
+                <div className="w-14 h-14 rounded-md bg-[#E2741B]/10 flex items-center justify-center shrink-0">
                   <Icon className={`w-7 h-7 ${meta.color}`} />
                 </div>
                 <div>
@@ -183,7 +183,7 @@ export default function GroupDetail() {
                     {group.name}
                   </CardTitle>
                   <div className="flex items-center gap-2 flex-wrap mt-2">
-                    <Badge className="bg-[#C9941A]/15 text-[#C9941A] border-0">{meta.label}</Badge>
+                    <Badge className="bg-[#E2741B]/15 text-[#E2741B] border-0">{meta.label}</Badge>
                     {group.conditionTag && (
                       <Badge className="bg-blue-500/15 text-blue-300 border-0">{group.conditionTag}</Badge>
                     )}
@@ -197,7 +197,7 @@ export default function GroupDetail() {
               {user && (
                 group.isMember ? (
                   group.ownerId === user.id ? (
-                    <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-0 gap-1">
+                    <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-0 gap-1">
                       <Crown className="w-3 h-3" /> Owner
                     </Badge>
                   ) : (
@@ -213,7 +213,7 @@ export default function GroupDetail() {
                   )
                 ) : (
                   <Button
-                    className="bg-[#C9941A] text-black hover:bg-[#C9941A]/90"
+                    className="bg-[#E2741B] text-black hover:bg-[#E2741B]/90"
                     onClick={() => joinMutation.mutate()}
                     disabled={joinMutation.isPending}
                     data-testid="button-join-group"
@@ -232,7 +232,7 @@ export default function GroupDetail() {
           <CardContent className="pt-6 space-y-3">
             {!user ? (
               <p className="text-sm text-gray-400 text-center py-4">
-                <Link href="/recovery/login" className="text-[#C9941A] hover:underline">Sign in</Link>
+                <Link href="/recovery/login" className="text-[#E2741B] hover:underline">Sign in</Link>
                 {" "}to join the conversation.
               </p>
             ) : !group.isMember ? (
@@ -277,7 +277,7 @@ export default function GroupDetail() {
                   </div>
                   <Button
                     size="sm"
-                    className="bg-[#C9941A] text-black hover:bg-[#C9941A]/90"
+                    className="bg-[#E2741B] text-black hover:bg-[#E2741B]/90"
                     disabled={!content.trim() || postMutation.isPending}
                     onClick={() => postMutation.mutate({ content: content.trim() })}
                     data-testid="button-post"
@@ -309,7 +309,7 @@ export default function GroupDetail() {
                   <div className="flex items-center gap-3">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={p.authorAvatar || undefined} />
-                      <AvatarFallback className="bg-[#C9941A]/20 text-[#C9941A] text-xs">
+                      <AvatarFallback className="bg-[#E2741B]/20 text-[#E2741B] text-xs">
                         {(p.authorName || "?")[0].toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
@@ -354,13 +354,13 @@ export default function GroupDetail() {
                 <div key={m.userId} className="flex items-center gap-2" data-testid={`member-${m.userId}`}>
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={m.avatarUrl || undefined} />
-                    <AvatarFallback className="bg-[#C9941A]/20 text-[#C9941A] text-xs">
+                    <AvatarFallback className="bg-[#E2741B]/20 text-[#E2741B] text-xs">
                       {(m.firstName || "?")[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <span className="text-xs text-gray-300">
                     {m.firstName || "Survivor"}
-                    {m.role === "owner" && <Crown className="w-3 h-3 ml-1 inline text-[#C9941A]" />}
+                    {m.role === "owner" && <Crown className="w-3 h-3 ml-1 inline text-[#E2741B]" />}
                   </span>
                 </div>
               ))}

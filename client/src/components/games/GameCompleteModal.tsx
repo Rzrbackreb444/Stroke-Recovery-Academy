@@ -33,7 +33,7 @@ export default function GameCompleteModal({
   open,
   title,
   subtitle = "Streak credit logged. Hammer it again tomorrow.",
-  accent = "#C9941A",
+  accent = "#E2741B",
   stats,
   onPlayAgain,
   onClose,
@@ -107,7 +107,7 @@ export default function GameCompleteModal({
         <div className="mt-6 flex flex-col gap-2 sm:flex-row">
           <Button
             onClick={onPlayAgain}
-            className="flex-1 bg-[#C9941A] text-black"
+            className="flex-1 bg-[#E2741B] text-black"
             style={{ backgroundColor: accent, color: "#000" }}
             data-testid="button-play-again"
           >

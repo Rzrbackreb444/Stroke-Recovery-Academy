@@ -333,7 +333,7 @@ export default function Community() {
                             )}
                           </div>
                           
-                          <h3 className="font-semibold text-lg text-white line-clamp-2 group-hover:text-[#C9941A] transition-colors">
+                          <h3 className="font-semibold text-lg text-white line-clamp-2 group-hover:text-[#E2741B] transition-colors">
                             {thread.title}
                           </h3>
                           

@@ -136,13 +136,13 @@ export default function RecoveryExerciseDetail() {
 
         <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9941A] mb-1">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[#E2741B] mb-1">
               {ex.category.replace(/_/g, " ")} · {ex.position}
             </p>
             <h1 className="text-2xl sm:text-3xl font-bold text-white">{ex.name}</h1>
           </div>
           {ex.saschPhase && SASCH_LABELS[ex.saschPhase] && (
-            <Badge className="bg-[#C9941A] text-black hover:bg-[#C9941A]" data-testid="badge-sasch">
+            <Badge className="bg-[#E2741B] text-black hover:bg-[#E2741B]" data-testid="badge-sasch">
               S.A.S.C.H · {SASCH_LABELS[ex.saschPhase]}
             </Badge>
           )}
@@ -153,7 +153,7 @@ export default function RecoveryExerciseDetail() {
             <Badge
               key={t}
               variant="outline"
-              className="text-[11px] capitalize border-[#C9941A]/40 text-[#C9941A]"
+              className="text-[11px] capitalize border-[#E2741B]/40 text-[#E2741B]"
             >
               {t.replace(/_/g, " ")}
             </Badge>
@@ -174,7 +174,7 @@ export default function RecoveryExerciseDetail() {
 
             <Card className="bg-[#1a1a1a] border-[#333] p-5">
               <div className="flex items-center gap-2 mb-3">
-                <TrendingUp className="h-4 w-4 text-[#C9941A]" />
+                <TrendingUp className="h-4 w-4 text-[#E2741B]" />
                 <p className="text-xs uppercase tracking-widest text-gray-300 font-semibold">
                   Three Progression Levels
                 </p>
@@ -210,18 +210,18 @@ export default function RecoveryExerciseDetail() {
               </div>
               {ex.progressionRule && (
                 <p className="text-xs text-gray-400 mt-4 leading-relaxed">
-                  <span className="text-[#C9941A] font-semibold">When to advance: </span>
+                  <span className="text-[#E2741B] font-semibold">When to advance: </span>
                   {ex.progressionRule}
                 </p>
               )}
             </Card>
 
             {ex.safetyNotes && (
-              <Card className="bg-[#1a1a1a] border-[#C9941A]/40 p-5">
+              <Card className="bg-[#1a1a1a] border-[#E2741B]/40 p-5">
                 <div className="flex items-start gap-3">
-                  <ShieldCheck className="h-5 w-5 text-[#C9941A] flex-shrink-0 mt-0.5" />
+                  <ShieldCheck className="h-5 w-5 text-[#E2741B] flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-xs uppercase tracking-widest text-[#C9941A] font-semibold mb-1">
+                    <p className="text-xs uppercase tracking-widest text-[#E2741B] font-semibold mb-1">
                       Form & Safety
                     </p>
                     <p className="text-sm text-gray-300 leading-relaxed">{ex.safetyNotes}</p>
@@ -235,7 +235,7 @@ export default function RecoveryExerciseDetail() {
           <div>
             <Card className="bg-[#1a1a1a] border-[#333] p-5 sticky top-4">
               <div className="flex items-center gap-2 mb-4">
-                <Activity className="h-4 w-4 text-[#C9941A]" />
+                <Activity className="h-4 w-4 text-[#E2741B]" />
                 <p className="text-sm font-bold text-white uppercase tracking-wide">Log this set</p>
               </div>
 
@@ -245,7 +245,7 @@ export default function RecoveryExerciseDetail() {
                     Sign in to log sets and feed your monthly Sasquatch Scale re-score.
                   </p>
                   <Link href="/recovery/login?next=/recovery/exercises">
-                    <Button className="w-full bg-[#C9941A] text-black hover:bg-[#C9941A]/90">
+                    <Button className="w-full bg-[#E2741B] text-black hover:bg-[#E2741B]/90">
                       Sign in
                     </Button>
                   </Link>
@@ -263,7 +263,7 @@ export default function RecoveryExerciseDetail() {
                       <p className="text-[10px] uppercase tracking-widest text-gray-500">
                         Effort (RPE)
                       </p>
-                      <p className="text-[10px] text-[#C9941A] font-mono">{effort[0]}/10</p>
+                      <p className="text-[10px] text-[#E2741B] font-mono">{effort[0]}/10</p>
                     </div>
                     <Slider
                       value={effort}
@@ -280,7 +280,7 @@ export default function RecoveryExerciseDetail() {
                       <p className="text-[10px] uppercase tracking-widest text-gray-500">
                         Spasticity after
                       </p>
-                      <p className="text-[10px] text-[#C9941A] font-mono">{spasticity[0]}/10</p>
+                      <p className="text-[10px] text-[#E2741B] font-mono">{spasticity[0]}/10</p>
                     </div>
                     <Slider
                       value={spasticity}
@@ -305,7 +305,7 @@ export default function RecoveryExerciseDetail() {
                   />
 
                   <Button
-                    className="w-full bg-[#C9941A] text-black hover:bg-[#C9941A]/90 font-bold"
+                    className="w-full bg-[#E2741B] text-black hover:bg-[#E2741B]/90 font-bold"
                     disabled={logMutation.isPending}
                     onClick={() => logMutation.mutate()}
                     data-testid="button-log-set"
@@ -319,7 +319,7 @@ export default function RecoveryExerciseDetail() {
 
                   <Link
                     href="/recovery/me"
-                    className="block text-center text-[11px] text-gray-500 hover:text-[#C9941A] mt-1"
+                    className="block text-center text-[11px] text-gray-500 hover:text-[#E2741B] mt-1"
                   >
                     <Sparkles className="inline h-3 w-3 mr-1" />
                     View your plan & weekly volume
@@ -363,7 +363,7 @@ function Progression({
       data-testid={testId}
       className={[
         "rounded-lg border p-3 text-left transition-all hover-elevate",
-        active ? "border-[#C9941A] bg-[#C9941A]/10" : "border-[#333] bg-[#0D0D0D]",
+        active ? "border-[#E2741B] bg-[#E2741B]/10" : "border-[#333] bg-[#0D0D0D]",
       ].join(" ")}
     >
       <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-1">{label}</p>
@@ -373,7 +373,7 @@ function Progression({
             {sets} × {reps}
           </p>
           {hold ? (
-            <p className="text-[11px] text-[#C9941A] mt-0.5 font-mono">{hold}s hold</p>
+            <p className="text-[11px] text-[#E2741B] mt-0.5 font-mono">{hold}s hold</p>
           ) : (
             <p className="text-[11px] text-gray-500 mt-0.5">no hold</p>
           )}

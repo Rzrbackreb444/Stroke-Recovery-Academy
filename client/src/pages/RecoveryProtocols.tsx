@@ -204,7 +204,7 @@ export default function RecoveryProtocols() {
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold flex items-center justify-center gap-3 mb-3">
-            <Clipboard className="h-10 w-10 text-[#C9941A]" />
+            <Clipboard className="h-10 w-10 text-[#E2741B]" />
             Recovery Protocols
           </h1>
           <p className="text-gray-400 text-lg">
@@ -212,9 +212,9 @@ export default function RecoveryProtocols() {
           </p>
         </div>
 
-        <Card className="bg-[#1a1a1a] border-[#C9941A]/30 p-6 mb-8">
+        <Card className="bg-[#1a1a1a] border-[#E2741B]/30 p-6 mb-8">
           <div className="flex items-start gap-4">
-            <Shield className="h-8 w-8 text-[#C9941A] flex-shrink-0 mt-1" />
+            <Shield className="h-8 w-8 text-[#E2741B] flex-shrink-0 mt-1" />
             <div>
               <h3 className="text-lg font-bold mb-2">Important Disclaimer</h3>
               <p className="text-gray-400 text-sm">
@@ -231,19 +231,19 @@ export default function RecoveryProtocols() {
             return (
               <Card 
                 key={protocol.id} 
-                className={`bg-[#1a1a1a] border-[#333] p-6 cursor-pointer transition-all hover:border-[#C9941A]/50 ${selectedProtocol === protocol.id ? 'ring-2 ring-[#C9941A]' : ''}`}
+                className={`bg-[#1a1a1a] border-[#333] p-6 cursor-pointer transition-all hover:border-[#E2741B]/50 ${selectedProtocol === protocol.id ? 'ring-2 ring-[#E2741B]' : ''}`}
                 onClick={() => setSelectedProtocol(selectedProtocol === protocol.id ? null : protocol.id)}
                 data-testid={`card-protocol-${protocol.id}`}
               >
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-[#C9941A]/20 flex items-center justify-center flex-shrink-0">
-                    <Icon className="h-6 w-6 text-[#C9941A]" />
+                  <div className="w-12 h-12 rounded-lg bg-[#E2741B]/20 flex items-center justify-center flex-shrink-0">
+                    <Icon className="h-6 w-6 text-[#E2741B]" />
                   </div>
                   <div className="flex-1">
                     <h3 className="text-lg font-bold mb-1">{protocol.title}</h3>
                     <p className="text-gray-400 text-sm mb-3">{protocol.description}</p>
                     <div className="flex items-center gap-4">
-                      <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30">
+                      <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30">
                         <Clock className="h-3 w-3 mr-1" />
                         {protocol.duration}
                       </Badge>
@@ -263,7 +263,7 @@ export default function RecoveryProtocols() {
             {protocols.filter(p => p.id === selectedProtocol).map((protocol) => (
               <div key={protocol.id}>
                 <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-                  <protocol.icon className="h-8 w-8 text-[#C9941A]" />
+                  <protocol.icon className="h-8 w-8 text-[#E2741B]" />
                   {protocol.title}
                 </h2>
 
@@ -272,7 +272,7 @@ export default function RecoveryProtocols() {
                     <AccordionItem key={idx} value={`phase-${idx}`} className="border border-[#333] rounded-lg bg-[#0D0D0D]">
                       <AccordionTrigger className="px-4 hover:no-underline">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-[#C9941A]/20 flex items-center justify-center text-[#C9941A] font-bold">
+                          <div className="w-8 h-8 rounded-full bg-[#E2741B]/20 flex items-center justify-center text-[#E2741B] font-bold">
                             {idx + 1}
                           </div>
                           <span className="font-semibold">{phase.name}</span>
@@ -282,13 +282,13 @@ export default function RecoveryProtocols() {
                         <div className="grid md:grid-cols-2 gap-6 mt-4">
                           <div>
                             <h4 className="font-semibold mb-3 flex items-center gap-2">
-                              <Zap className="h-4 w-4 text-[#C9941A]" />
+                              <Zap className="h-4 w-4 text-[#E2741B]" />
                               Exercises
                             </h4>
                             <ul className="space-y-2">
                               {phase.exercises.map((exercise, i) => (
                                 <li key={i} className="flex items-start gap-2 text-gray-300">
-                                  <CheckCircle2 className="h-4 w-4 text-[#C9941A] mt-0.5 flex-shrink-0" />
+                                  <CheckCircle2 className="h-4 w-4 text-[#E2741B] mt-0.5 flex-shrink-0" />
                                   {exercise}
                                 </li>
                               ))}
@@ -296,13 +296,13 @@ export default function RecoveryProtocols() {
                           </div>
                           <div>
                             <h4 className="font-semibold mb-3 flex items-center gap-2">
-                              <Target className="h-4 w-4 text-[#C9941A]" />
+                              <Target className="h-4 w-4 text-[#E2741B]" />
                               Goals
                             </h4>
                             <ul className="space-y-2">
                               {phase.goals.map((goal, i) => (
                                 <li key={i} className="flex items-start gap-2 text-gray-300">
-                                  <Trophy className="h-4 w-4 text-[#C9941A] mt-0.5 flex-shrink-0" />
+                                  <Trophy className="h-4 w-4 text-[#E2741B] mt-0.5 flex-shrink-0" />
                                   {goal}
                                 </li>
                               ))}

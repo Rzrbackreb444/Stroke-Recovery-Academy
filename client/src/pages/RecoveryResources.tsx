@@ -136,7 +136,7 @@ export default function RecoveryResources() {
       <main className="container mx-auto px-4 py-6 max-w-5xl">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold flex items-center justify-center gap-3 mb-2">
-            <BookOpen className="h-8 w-8 text-[#C9941A]" />
+            <BookOpen className="h-8 w-8 text-[#E2741B]" />
             Recovery Resources
           </h1>
           <p className="text-gray-400">
@@ -166,11 +166,11 @@ export default function RecoveryResources() {
               return (
                 <Card 
                   key={resource.id} 
-                  className="bg-gradient-to-br from-orange-500/10 to-zinc-900 border-[#C9941A]/30 p-5 hover-elevate cursor-pointer"
+                  className="bg-gradient-to-br from-orange-500/10 to-zinc-900 border-[#E2741B]/30 p-5 hover-elevate cursor-pointer"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="p-3 rounded-lg bg-[#C9941A] text-black/20">
-                      <Icon className="h-6 w-6 text-[#C9941A]" />
+                    <div className="p-3 rounded-lg bg-[#E2741B] text-black/20">
+                      <Icon className="h-6 w-6 text-[#E2741B]" />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
@@ -202,7 +202,7 @@ export default function RecoveryResources() {
                 <TabsTrigger 
                   key={cat.id} 
                   value={cat.id} 
-                  className="data-[state=active]:bg-[#C9941A] text-black"
+                  className="data-[state=active]:bg-[#E2741B] text-black"
                 >
                   <Icon className="h-4 w-4 mr-2" />
                   {cat.label}
@@ -229,7 +229,7 @@ export default function RecoveryResources() {
                     >
                       <div className="flex items-center gap-3 mb-3">
                         <div className="p-2 rounded-lg bg-[#1a1a1a]">
-                          <Icon className="h-5 w-5 text-[#C9941A]" />
+                          <Icon className="h-5 w-5 text-[#E2741B]" />
                         </div>
                         <Badge variant="outline" className="text-xs">{resource.type}</Badge>
                       </div>
@@ -252,7 +252,7 @@ export default function RecoveryResources() {
 
         <Card className="bg-[#1a1a1a] border-[#333] p-6 mt-8">
           <h3 className="font-semibold mb-3 flex items-center gap-2">
-            <MessageCircle className="h-5 w-5 text-[#C9941A]" />
+            <MessageCircle className="h-5 w-5 text-[#E2741B]" />
             Need More Help?
           </h3>
           <p className="text-gray-400 text-sm mb-4">
@@ -263,7 +263,7 @@ export default function RecoveryResources() {
               <Users className="h-4 w-4 mr-2" />
               Join Community
             </Button>
-            <Button className="bg-[#C9941A] text-black">
+            <Button className="bg-[#E2741B] text-black">
               <MessageCircle className="h-4 w-4 mr-2" />
               Book Coaching
             </Button>

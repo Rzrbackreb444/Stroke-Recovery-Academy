@@ -426,7 +426,7 @@ export default function DJStudio() {
               <Disc3 className={`w-5 h-5 text-${color}-500`} />
               Deck {deck}
             </div>
-            <Badge variant="outline" className={deckState.isLoaded ? 'border-green-500 text-[#C9941A]' : 'border-zinc-600'}>
+            <Badge variant="outline" className={deckState.isLoaded ? 'border-green-500 text-[#E2741B]' : 'border-zinc-600'}>
               {deckState.isLoaded ? 'Ready' : 'Empty'}
             </Badge>
           </CardTitle>
@@ -606,23 +606,23 @@ export default function DJStudio() {
             <h1 className="text-2xl font-bold">DJ Studio</h1>
             <p className="text-zinc-400 text-sm">Mix, scratch, mashup, and transform</p>
           </div>
-          <Badge className="ml-auto bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/50">
+          <Badge className="ml-auto bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/50">
             <Sparkles className="w-3 h-3 mr-1" /> Pro
           </Badge>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <TabsList className="bg-[#1a1a1a] border border-[#333]">
-            <TabsTrigger value="decks" className="data-[state=active]:bg-[#C9941A]/20 data-[state=active]:text-[#C9941A]">
+            <TabsTrigger value="decks" className="data-[state=active]:bg-[#E2741B]/20 data-[state=active]:text-[#E2741B]">
               <Disc3 className="w-4 h-4 mr-2" /> Decks
             </TabsTrigger>
-            <TabsTrigger value="effects" className="data-[state=active]:bg-[#C9941A]/20 data-[state=active]:text-[#C9941A]">
+            <TabsTrigger value="effects" className="data-[state=active]:bg-[#E2741B]/20 data-[state=active]:text-[#E2741B]">
               <Sliders className="w-4 h-4 mr-2" /> Effects
             </TabsTrigger>
-            <TabsTrigger value="stems" className="data-[state=active]:bg-[#C9941A]/20 data-[state=active]:text-[#C9941A]">
+            <TabsTrigger value="stems" className="data-[state=active]:bg-[#E2741B]/20 data-[state=active]:text-[#E2741B]">
               <Layers className="w-4 h-4 mr-2" /> Stems
             </TabsTrigger>
-            <TabsTrigger value="voice" className="data-[state=active]:bg-[#C9941A]/20 data-[state=active]:text-[#C9941A]">
+            <TabsTrigger value="voice" className="data-[state=active]:bg-[#E2741B]/20 data-[state=active]:text-[#E2741B]">
               <Mic className="w-4 h-4 mr-2" /> Voice
             </TabsTrigger>
           </TabsList>
@@ -638,7 +638,7 @@ export default function DJStudio() {
             <Card className="bg-[#1a1a1a] border-[#333]">
               <CardContent className="py-4">
                 <div className="flex items-center gap-4">
-                  <span className="text-[#C9941A] font-bold text-sm">A</span>
+                  <span className="text-[#E2741B] font-bold text-sm">A</span>
                   <Slider
                     value={crossfader}
                     onValueChange={setCrossfader}
@@ -746,7 +746,7 @@ export default function DJStudio() {
               <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg flex items-center gap-2">
-                    <Sliders className="w-5 h-5 text-[#C9941A]" /> Low-Pass Filter
+                    <Sliders className="w-5 h-5 text-[#E2741B]" /> Low-Pass Filter
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -801,7 +801,7 @@ export default function DJStudio() {
             <Card className="bg-[#1a1a1a] border-[#333]">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Layers className="w-5 h-5 text-[#C9941A]" />
+                  <Layers className="w-5 h-5 text-[#E2741B]" />
                   AI Stem Separation
                 </CardTitle>
               </CardHeader>
@@ -826,7 +826,7 @@ export default function DJStudio() {
                 <Button 
                   onClick={separateStems}
                   disabled={isSeparating || !deckA.isLoaded}
-                  className="w-full bg-[#C9941A] hover:bg-[#b8860b]"
+                  className="w-full bg-[#E2741B] hover:bg-[#b8860b]"
                   data-testid="button-separate-stems"
                 >
                   {isSeparating ? (
@@ -879,7 +879,7 @@ export default function DJStudio() {
 
                   {recordedBlob && (
                     <div className="p-3 bg-[#1a1a1a] rounded-lg">
-                      <p className="text-sm text-[#C9941A] mb-2">Recording saved!</p>
+                      <p className="text-sm text-[#E2741B] mb-2">Recording saved!</p>
                       <audio controls src={URL.createObjectURL(recordedBlob)} className="w-full" />
                     </div>
                   )}
@@ -890,7 +890,7 @@ export default function DJStudio() {
               <Card className="bg-[#1a1a1a] border-[#333]">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Wand2 className="w-5 h-5 text-[#C9941A]" />
+                    <Wand2 className="w-5 h-5 text-[#E2741B]" />
                     Autotune
                   </CardTitle>
                 </CardHeader>
@@ -913,7 +913,7 @@ export default function DJStudio() {
                           variant={autotuneKey === key ? "default" : "outline"}
                           size="sm"
                           onClick={() => setAutotuneKey(key)}
-                          className={autotuneKey === key ? 'bg-[#C9941A]' : ''}
+                          className={autotuneKey === key ? 'bg-[#E2741B]' : ''}
                           data-testid={`button-key-${key.toLowerCase().replace('#', 'sharp')}`}
                         >
                           {key}
@@ -937,7 +937,7 @@ export default function DJStudio() {
                   </div>
 
                   <Button 
-                    className="w-full bg-[#C9941A] hover:bg-[#b8860b]"
+                    className="w-full bg-[#E2741B] hover:bg-[#b8860b]"
                     disabled={!recordedBlob || !autotuneEnabled}
                     data-testid="button-apply-autotune"
                   >
@@ -955,7 +955,7 @@ export default function DJStudio() {
                   <Sparkles className="w-5 h-5 text-purple-500" />
                   AI Voice Transformation
                   {djStatus?.voiceTransformConfigured && (
-                    <Badge className="ml-2 bg-[#C9941A]/20 text-[#C9941A] border-green-600">
+                    <Badge className="ml-2 bg-[#E2741B]/20 text-[#E2741B] border-green-600">
                       <Zap className="w-3 h-3 mr-1" /> ElevenLabs Connected
                     </Badge>
                   )}
@@ -979,8 +979,8 @@ export default function DJStudio() {
                       <Button
                         key={voice.id}
                         variant="outline"
-                        className={`h-16 flex flex-col gap-1 hover:border-[#C9941A] hover:text-[#C9941A] ${
-                          selectedVoice === voice.id ? 'border-[#C9941A] bg-[#C9941A]/10' : ''
+                        className={`h-16 flex flex-col gap-1 hover:border-[#E2741B] hover:text-[#E2741B] ${
+                          selectedVoice === voice.id ? 'border-[#E2741B] bg-[#E2741B]/10' : ''
                         }`}
                         disabled={!recordedBlob || isTransforming}
                         onClick={() => transformVoice(voice.id, voice.name)}

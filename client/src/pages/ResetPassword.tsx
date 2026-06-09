@@ -65,14 +65,14 @@ export default function ResetPassword() {
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-6">
         <Card className="w-full max-w-md bg-white/5 border-white/10 backdrop-blur-xl">
           <CardContent className="pt-8 pb-8 text-center">
-            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#C9941A]/20 flex items-center justify-center">
-              <CheckCircle className="w-10 h-10 text-[#C9941A]" />
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#E2741B]/20 flex items-center justify-center">
+              <CheckCircle className="w-10 h-10 text-[#E2741B]" />
             </div>
             <h2 className="text-xl font-semibold text-white mb-2">Password Reset Complete</h2>
             <p className="text-white/60 mb-6">Your password has been updated successfully</p>
             <Button
               onClick={() => setLocation("/auth")}
-              className="bg-[#C9941A] hover:bg-amber-400 text-black"
+              className="bg-[#E2741B] hover:bg-amber-400 text-black"
             >
               Sign In Now
             </Button>

@@ -109,7 +109,7 @@ export default function FlickerLog() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
-              <Zap className="h-6 w-6 text-[#C9941A]" />
+              <Zap className="h-6 w-6 text-[#E2741B]" />
               Flicker Log
             </h1>
             <p className="text-gray-400 text-sm mt-1">
@@ -119,7 +119,7 @@ export default function FlickerLog() {
           
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-[#C9941A] text-black" data-testid="button-add-flicker">
+              <Button className="bg-[#E2741B] text-black" data-testid="button-add-flicker">
                 <Plus className="h-4 w-4 mr-2" />
                 Log a Flicker
               </Button>
@@ -127,7 +127,7 @@ export default function FlickerLog() {
             <DialogContent className="bg-[#1a1a1a] border-[#333] text-white max-w-lg">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-[#C9941A]" />
+                  <Sparkles className="h-5 w-5 text-[#E2741B]" />
                   Capture Your Moment
                 </DialogTitle>
               </DialogHeader>
@@ -171,7 +171,7 @@ export default function FlickerLog() {
                       step={1}
                       className="flex-1"
                     />
-                    <Badge variant="outline" className="border-[#C9941A] text-[#C9941A]">
+                    <Badge variant="outline" className="border-[#E2741B] text-[#E2741B]">
                       {form.intensity}
                     </Badge>
                   </div>
@@ -241,7 +241,7 @@ export default function FlickerLog() {
 
                 <Button 
                   onClick={handleSubmit} 
-                  className="w-full bg-[#C9941A] text-black"
+                  className="w-full bg-[#E2741B] text-black"
                   disabled={createMutation.isPending}
                   data-testid="button-save-flicker"
                 >
@@ -254,7 +254,7 @@ export default function FlickerLog() {
 
         <div className="grid grid-cols-3 gap-4 mb-6">
           <Card className="bg-[#1a1a1a] border-[#333] p-4 text-center">
-            <div className="text-2xl font-bold text-[#C9941A]">{recentCount}</div>
+            <div className="text-2xl font-bold text-[#E2741B]">{recentCount}</div>
             <div className="text-sm text-gray-400">Total Flickers</div>
           </Card>
           <Card className="bg-[#1a1a1a] border-[#333] p-4 text-center">
@@ -262,7 +262,7 @@ export default function FlickerLog() {
             <div className="text-sm text-gray-400">Breakthroughs</div>
           </Card>
           <Card className="bg-[#1a1a1a] border-[#333] p-4 text-center">
-            <div className="text-2xl font-bold text-[#C9941A]">
+            <div className="text-2xl font-bold text-[#E2741B]">
               {logs?.[0] ? new Date(logs[0].created_at).toLocaleDateString() : "-"}
             </div>
             <div className="text-sm text-gray-400">Last Logged</div>
@@ -273,14 +273,14 @@ export default function FlickerLog() {
           <div className="text-center py-12 text-gray-400">Loading your flickers...</div>
         ) : !logs?.length ? (
           <Card className="bg-[#1a1a1a] border-[#333] p-8 text-center">
-            <Sparkles className="h-12 w-12 text-[#C9941A] mx-auto mb-4" />
+            <Sparkles className="h-12 w-12 text-[#E2741B] mx-auto mb-4" />
             <h3 className="text-lg font-semibold mb-2">No flickers logged yet</h3>
             <p className="text-gray-400 mb-4">
               Start capturing those micro-moments of recovery. Every twitch, every spark is progress!
             </p>
             <Button 
               onClick={() => setIsOpen(true)} 
-              className="bg-[#C9941A] text-black"
+              className="bg-[#E2741B] text-black"
             >
               Log Your First Flicker
             </Button>
@@ -303,7 +303,7 @@ export default function FlickerLog() {
                           {bodyParts.find(b => b.value === log.body_part)?.label || log.body_part}
                         </Badge>
                       )}
-                      <Badge variant="outline" className="border-[#C9941A]/50 text-[#C9941A]">
+                      <Badge variant="outline" className="border-[#E2741B]/50 text-[#E2741B]">
                         Intensity: {log.intensity}/5
                       </Badge>
                     </div>

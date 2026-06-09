@@ -58,7 +58,7 @@ export default function NonprofitHeader() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-[#C9941A] border-b border-[#C9941A]/20 shadow-lg">
+    <header className="sticky top-0 z-50 bg-[#E2741B] border-b border-[#E2741B]/20 shadow-lg">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-28">
           <Link href="/strokelyfe" className="flex items-center gap-3">
@@ -70,7 +70,7 @@ export default function NonprofitHeader() {
             />
             <div className="hidden sm:block">
               <span className="text-lg font-bold text-white font-serif">Stroke Lyfe</span>
-              <span className="text-xs text-[#C9941A] block -mt-1">501(c)(3) Nonprofit</span>
+              <span className="text-xs text-[#E2741B] block -mt-1">501(c)(3) Nonprofit</span>
             </div>
           </Link>
 
@@ -107,7 +107,7 @@ export default function NonprofitHeader() {
             
             <Button
               size="sm"
-              className="bg-white text-[#C9941A] font-bold hover:bg-white/90"
+              className="bg-white text-[#E2741B] font-bold hover:bg-white/90"
               onClick={scrollToDonate}
               data-testid="button-header-donate"
             >
@@ -121,7 +121,7 @@ export default function NonprofitHeader() {
                   <Button variant="ghost" size="icon" className="text-white hover:bg-white/10">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={user.profileImageUrl || undefined} />
-                      <AvatarFallback className="bg-[#C9941A] text-white text-xs">
+                      <AvatarFallback className="bg-[#E2741B] text-white text-xs">
                         {user.firstName?.[0] || user.email?.[0]?.toUpperCase() || "U"}
                       </AvatarFallback>
                     </Avatar>
@@ -170,13 +170,13 @@ export default function NonprofitHeader() {
                   {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-80 bg-[#C9941A] border-[#C9941A]/20">
+              <SheetContent side="right" className="w-80 bg-[#E2741B] border-[#E2741B]/20">
                 <div className="flex flex-col gap-4 mt-8">
                   <div className="flex items-center gap-3 mb-4">
                     <img src={strokeLyfeLogo} alt="Stroke Lyfe" className="h-40 w-auto" />
                     <div>
                       <span className="text-lg font-bold text-white">Stroke Lyfe</span>
-                      <span className="text-xs text-[#C9941A] block">501(c)(3) Nonprofit</span>
+                      <span className="text-xs text-[#E2741B] block">501(c)(3) Nonprofit</span>
                     </div>
                   </div>
                   
@@ -194,9 +194,9 @@ export default function NonprofitHeader() {
                     </Link>
                   ))}
                   
-                  <div className="border-t border-[#C9941A]/20 pt-4 mt-2">
+                  <div className="border-t border-[#E2741B]/20 pt-4 mt-2">
                     <Button
-                      className="w-full bg-[#C9941A] hover:bg-[#B8860B] text-white mb-2"
+                      className="w-full bg-[#E2741B] hover:bg-[#B8860B] text-white mb-2"
                       onClick={() => {
                         setMobileMenuOpen(false);
                         scrollToDonate();

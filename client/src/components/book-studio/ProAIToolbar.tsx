@@ -69,7 +69,7 @@ const AI_ACTIONS: AIAction[] = [
 ];
 
 const QUALITY_PASSES = [
-  { id: 'developmental', label: 'Developmental', icon: BrainCircuit, color: 'text-[#C9941A]' },
+  { id: 'developmental', label: 'Developmental', icon: BrainCircuit, color: 'text-[#E2741B]' },
   { id: 'line', label: 'Line Edit', icon: PenTool, color: 'text-blue-500' },
   { id: 'copy', label: 'Copy Edit', icon: Edit3, color: 'text-emerald-500' },
   { id: 'proofread', label: 'Proofread', icon: CheckCircle2, color: 'text-amber-500' },
@@ -100,7 +100,7 @@ export default function ProAIToolbar({
       "flex items-center gap-2 px-4 py-2 border-b",
       isDark 
         ? "bg-stone-950/80 border-stone-800/50 backdrop-blur-xl" 
-        : "bg-white/80 border-[#C9941A]/10 backdrop-blur-xl"
+        : "bg-white/80 border-[#E2741B]/10 backdrop-blur-xl"
     )}>
       {/* AI Generation Dropdown */}
       <DropdownMenu>
@@ -112,12 +112,12 @@ export default function ProAIToolbar({
             className={cn(
               "gap-2 h-8 px-3 text-xs font-semibold rounded-sm",
               isDark 
-                ? "text-stone-300 hover:bg-stone-800/50 hover:text-[#C9941A]" 
-                : "text-[#1A1A1A]/70 hover:bg-[#C9941A]/10 hover:text-[#C9941A]"
+                ? "text-stone-300 hover:bg-stone-800/50 hover:text-[#E2741B]" 
+                : "text-[#1A1A1A]/70 hover:bg-[#E2741B]/10 hover:text-[#E2741B]"
             )}
             data-testid="dropdown-ai-generate"
           >
-            <Sparkles className="h-4 w-4 text-[#C9941A]" />
+            <Sparkles className="h-4 w-4 text-[#E2741B]" />
             <span>AI Generate</span>
             <ChevronDown className="h-3 w-3 opacity-50" />
           </Button>
@@ -126,7 +126,7 @@ export default function ProAIToolbar({
           align="start" 
           className={cn(
             "w-64",
-            isDark ? "bg-stone-900 border-stone-800" : "bg-white border-[#C9941A]/20"
+            isDark ? "bg-stone-900 border-stone-800" : "bg-white border-[#E2741B]/20"
           )}
         >
           <DropdownMenuLabel className="text-[9px] uppercase tracking-wider opacity-50">
@@ -140,7 +140,7 @@ export default function ProAIToolbar({
                 onClick={() => handleAction(action.id)}
                 className="gap-2 text-xs cursor-pointer"
               >
-                <Icon className="h-4 w-4 text-[#C9941A]" />
+                <Icon className="h-4 w-4 text-[#E2741B]" />
                 <div className="flex-1">
                   <div className="font-medium">{action.label}</div>
                   <div className="text-[10px] opacity-50">{action.description}</div>
@@ -154,7 +154,7 @@ export default function ProAIToolbar({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Separator orientation="vertical" className={cn("h-5", isDark ? "bg-stone-800" : "bg-[#C9941A]/20")} />
+      <Separator orientation="vertical" className={cn("h-5", isDark ? "bg-stone-800" : "bg-[#E2741B]/20")} />
 
       {/* Quality Polish Dropdown */}
       <DropdownMenu>
@@ -166,12 +166,12 @@ export default function ProAIToolbar({
             className={cn(
               "gap-2 h-8 px-3 text-xs font-semibold rounded-sm",
               isDark 
-                ? "text-stone-300 hover:bg-stone-800/50 hover:text-[#C9941A]" 
-                : "text-[#1A1A1A]/70 hover:bg-[#C9941A]/10 hover:text-[#C9941A]"
+                ? "text-stone-300 hover:bg-stone-800/50 hover:text-[#E2741B]" 
+                : "text-[#1A1A1A]/70 hover:bg-[#E2741B]/10 hover:text-[#E2741B]"
             )}
             data-testid="dropdown-quality-polish"
           >
-            <Wand2 className="h-4 w-4 text-[#C9941A]" />
+            <Wand2 className="h-4 w-4 text-[#E2741B]" />
             <span>Quality Polish</span>
             <ChevronDown className="h-3 w-3 opacity-50" />
           </Button>
@@ -180,7 +180,7 @@ export default function ProAIToolbar({
           align="start" 
           className={cn(
             "w-56",
-            isDark ? "bg-stone-900 border-stone-800" : "bg-white border-[#C9941A]/20"
+            isDark ? "bg-stone-900 border-stone-800" : "bg-white border-[#E2741B]/20"
           )}
         >
           <DropdownMenuLabel className="text-[9px] uppercase tracking-wider opacity-50">
@@ -208,14 +208,14 @@ export default function ProAIToolbar({
             onClick={() => handleAction('polish-all')}
             className="gap-2 text-xs cursor-pointer font-semibold"
           >
-            <RefreshCw className="h-4 w-4 text-[#C9941A]" />
+            <RefreshCw className="h-4 w-4 text-[#E2741B]" />
             <span>Run All 4 Passes</span>
-            <Badge className="bg-[#C9941A] text-white text-[9px]">95</Badge>
+            <Badge className="bg-[#E2741B] text-white text-[9px]">95</Badge>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Separator orientation="vertical" className={cn("h-5", isDark ? "bg-stone-800" : "bg-[#C9941A]/20")} />
+      <Separator orientation="vertical" className={cn("h-5", isDark ? "bg-stone-800" : "bg-[#E2741B]/20")} />
 
       {/* Quick Actions */}
       <div className="flex items-center gap-1">
@@ -280,7 +280,7 @@ export default function ProAIToolbar({
         </Tooltip>
       </div>
 
-      <Separator orientation="vertical" className={cn("h-5", isDark ? "bg-stone-800" : "bg-[#C9941A]/20")} />
+      <Separator orientation="vertical" className={cn("h-5", isDark ? "bg-stone-800" : "bg-[#E2741B]/20")} />
 
       {/* Export */}
       <DropdownMenu>
@@ -292,7 +292,7 @@ export default function ProAIToolbar({
               "gap-2 h-8 px-3 text-xs font-semibold rounded-sm",
               isDark 
                 ? "text-stone-300 hover:bg-stone-800/50" 
-                : "text-[#1A1A1A]/70 hover:bg-[#C9941A]/10"
+                : "text-[#1A1A1A]/70 hover:bg-[#E2741B]/10"
             )}
             data-testid="dropdown-export"
           >
@@ -305,7 +305,7 @@ export default function ProAIToolbar({
           align="start"
           className={cn(
             "w-48",
-            isDark ? "bg-stone-900 border-stone-800" : "bg-white border-[#C9941A]/20"
+            isDark ? "bg-stone-900 border-stone-800" : "bg-white border-[#E2741B]/20"
           )}
         >
           <DropdownMenuItem onClick={() => handleAction('export-pdf')} className="gap-2 text-xs">
@@ -319,7 +319,7 @@ export default function ProAIToolbar({
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => handleAction('export-kdp')} className="gap-2 text-xs font-semibold">
-            <Zap className="h-4 w-4 text-[#C9941A]" /> KDP Package
+            <Zap className="h-4 w-4 text-[#E2741B]" /> KDP Package
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -330,9 +330,9 @@ export default function ProAIToolbar({
       {/* Credit Display */}
       <div className={cn(
         "flex items-center gap-2 px-3 py-1 rounded-sm",
-        isDark ? "bg-stone-800/50" : "bg-[#C9941A]/5"
+        isDark ? "bg-stone-800/50" : "bg-[#E2741B]/5"
       )}>
-        <Zap className="h-3.5 w-3.5 text-[#C9941A]" />
+        <Zap className="h-3.5 w-3.5 text-[#E2741B]" />
         <span className={cn(
           "text-xs font-mono font-semibold",
           isDark ? "text-stone-300" : "text-[#1A1A1A]"
@@ -353,10 +353,10 @@ export default function ProAIToolbar({
         className={cn(
           "text-[9px] uppercase tracking-wider font-bold",
           tierLevel === 'publisher' 
-            ? "border-[#C9941A] text-[#C9941A] bg-[#C9941A]/10"
+            ? "border-[#E2741B] text-[#E2741B] bg-[#E2741B]/10"
             : tierLevel === 'author'
               ? "border-amber-500 text-amber-600 bg-amber-500/10"
-              : isDark ? "border-stone-700 text-stone-500" : "border-[#C9941A]/30 text-[#1A1A1A]/50"
+              : isDark ? "border-stone-700 text-stone-500" : "border-[#E2741B]/30 text-[#1A1A1A]/50"
         )}
       >
         {tierLevel}
@@ -365,7 +365,7 @@ export default function ProAIToolbar({
       {/* Loading State */}
       {isGenerating && (
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 border-2 border-[#C9941A] border-t-transparent rounded-full animate-spin" />
+          <div className="w-4 h-4 border-2 border-[#E2741B] border-t-transparent rounded-full animate-spin" />
           <span className={cn(
             "text-[10px] uppercase tracking-wider",
             isDark ? "text-stone-500" : "text-[#1A1A1A]/50"

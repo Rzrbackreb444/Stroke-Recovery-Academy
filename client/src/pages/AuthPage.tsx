@@ -239,7 +239,7 @@ export default function AuthPage() {
                 return (
                   <div key={i} className="flex items-center gap-3 text-white/80">
                     <div className="p-2 rounded-lg bg-white/10">
-                      <Icon className="w-5 h-5 text-[#C9941A]" />
+                      <Icon className="w-5 h-5 text-[#E2741B]" />
                     </div>
                     <span>{feature.text}</span>
                   </div>
@@ -279,8 +279,8 @@ export default function AuthPage() {
             <CardContent>
               {magicLinkSent && mode === "magic-link" ? (
                 <div className="text-center py-8">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#C9941A]/20 flex items-center justify-center">
-                    <Check className="w-8 h-8 text-[#C9941A]" />
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#E2741B]/20 flex items-center justify-center">
+                    <Check className="w-8 h-8 text-[#E2741B]" />
                   </div>
                   <h3 className="text-lg font-semibold text-white mb-2">Check Your Email</h3>
                   <p className="text-white/60 text-sm mb-6">
@@ -289,7 +289,7 @@ export default function AuthPage() {
                   <Button
                     variant="ghost"
                     onClick={() => { setMagicLinkSent(false); setMode("otp"); }}
-                    className="text-[#C9941A]"
+                    className="text-[#E2741B]"
                     data-testid="button-back-from-magic-link"
                   >
                     Back to Sign In
@@ -461,7 +461,7 @@ export default function AuthPage() {
                         <button
                           type="button"
                           onClick={() => setMode("forgot-password")}
-                          className="text-sm text-[#C9941A] hover:text-amber-300"
+                          className="text-sm text-[#E2741B] hover:text-amber-300"
                           data-testid="button-forgot-password"
                         >
                           Forgot password?
@@ -513,7 +513,7 @@ export default function AuthPage() {
                           className="border-white/20 text-white hover:bg-white/10"
                           data-testid="button-mode-password"
                         >
-                          <Lock className="w-4 h-4 mr-2 text-[#C9941A]" />
+                          <Lock className="w-4 h-4 mr-2 text-[#E2741B]" />
                           Password
                         </Button>
                         <Button
@@ -523,7 +523,7 @@ export default function AuthPage() {
                           className="border-white/20 text-white hover:bg-white/10"
                           data-testid="button-mode-magic-link"
                         >
-                          <Wand2 className="w-4 h-4 mr-2 text-[#C9941A]" />
+                          <Wand2 className="w-4 h-4 mr-2 text-[#E2741B]" />
                           Magic link
                         </Button>
                       </div>
@@ -566,7 +566,7 @@ export default function AuthPage() {
                       Already have an account?{" "}
                       <button
                         onClick={() => setMode("otp")}
-                        className="text-[#C9941A] hover:text-amber-300 font-medium"
+                        className="text-[#E2741B] hover:text-amber-300 font-medium"
                         data-testid="button-toggle-signin"
                       >
                         Sign in
@@ -577,7 +577,7 @@ export default function AuthPage() {
                       New here?{" "}
                       <button
                         onClick={() => setMode("register")}
-                        className="text-[#C9941A] hover:text-amber-300 font-medium"
+                        className="text-[#E2741B] hover:text-amber-300 font-medium"
                         data-testid="button-toggle-register"
                       >
                         Create an account

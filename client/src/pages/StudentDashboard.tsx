@@ -23,12 +23,12 @@ type AchievementIconType = "target" | "flame" | "book" | "star" | "trophy" | "du
 const getAchievementIcon = (iconType: AchievementIconType) => {
   const iconClass = "w-6 h-6";
   switch (iconType) {
-    case "target": return <Target className={`${iconClass} text-[#C9941A]`} />;
+    case "target": return <Target className={`${iconClass} text-[#E2741B]`} />;
     case "flame": return <Flame className={`${iconClass} text-red-500`} />;
     case "book": return <BookOpen className={`${iconClass} text-blue-500`} />;
     case "star": return <Star className={`${iconClass} text-yellow-500`} />;
-    case "trophy": return <Trophy className={`${iconClass} text-[#C9941A]`} />;
-    case "dumbbell": return <Dumbbell className={`${iconClass} text-[#C9941A]`} />;
+    case "trophy": return <Trophy className={`${iconClass} text-[#E2741B]`} />;
+    case "dumbbell": return <Dumbbell className={`${iconClass} text-[#E2741B]`} />;
     case "graduation": return <GraduationCap className={`${iconClass} text-purple-500`} />;
     case "message": return <MessageSquare className={`${iconClass} text-cyan-500`} />;
     default: return <Award className={`${iconClass} text-gray-500`} />;
@@ -170,10 +170,10 @@ export default function StudentDashboard() {
   
   const getActivityIcon = (type: string) => {
     switch (type) {
-      case "lesson_complete": return <CheckCircle className="w-5 h-5 text-[#C9941A]" />;
+      case "lesson_complete": return <CheckCircle className="w-5 h-5 text-[#E2741B]" />;
       case "quiz_passed": return <Star className="w-5 h-5 text-yellow-500" />;
       case "certificate": return <Award className="w-5 h-5 text-purple-500" />;
-      case "streak": return <Flame className="w-5 h-5 text-[#C9941A]" />;
+      case "streak": return <Flame className="w-5 h-5 text-[#E2741B]" />;
       case "comment": return <MessageSquare className="w-5 h-5 text-blue-500" />;
       default: return <Zap className="w-5 h-5 text-gray-500" />;
     }
@@ -192,7 +192,7 @@ export default function StudentDashboard() {
         {/* Welcome Section */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-4">
-            <Avatar className="w-16 h-16 border-2 border-[#C9941A]">
+            <Avatar className="w-16 h-16 border-2 border-[#E2741B]">
               <AvatarImage src={mockUser.avatar} />
               <AvatarFallback className="bg-gradient-to-br from-orange-500 to-red-600 text-xl font-bold">
                 {mockUser.name.split(' ').map(n => n[0]).join('')}
@@ -201,12 +201,12 @@ export default function StudentDashboard() {
             <div>
               <h1 className="text-2xl font-bold">Welcome back, {mockUser.name.split(' ')[0]}!</h1>
               <div className="flex items-center gap-3 mt-1">
-                <Badge className="bg-[#C9941A]/20 text-[#C9941A]">
+                <Badge className="bg-[#E2741B]/20 text-[#E2741B]">
                   <Crown className="w-3 h-3 mr-1" />
                   {mockUser.level}
                 </Badge>
                 <span className="text-sm text-gray-400">
-                  <Flame className="w-4 h-4 inline mr-1 text-[#C9941A]" />
+                  <Flame className="w-4 h-4 inline mr-1 text-[#E2741B]" />
                   {mockUser.streak} day streak
                 </span>
               </div>
@@ -220,7 +220,7 @@ export default function StudentDashboard() {
             </Button>
             {inProgressCourses.length > 0 && (
               <Button 
-                className="bg-[#C9941A]" 
+                className="bg-[#E2741B]" 
                 onClick={() => navigate(`/course/${inProgressCourses[0].id}`)}
                 data-testid="button-continue-learning"
               >
@@ -237,7 +237,7 @@ export default function StudentDashboard() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-2">
                 <Clock className="w-5 h-5 text-blue-500" />
-                <TrendingUp className="w-4 h-4 text-[#C9941A]" />
+                <TrendingUp className="w-4 h-4 text-[#E2741B]" />
               </div>
               <p className="text-2xl font-bold">{formatDuration(mockUser.totalLearningTime)}</p>
               <p className="text-xs text-gray-400">Total Learning Time</p>
@@ -247,8 +247,8 @@ export default function StudentDashboard() {
           <Card className="bg-[#1a1a1a] border-[#333]">
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-2">
-                <BookOpen className="w-5 h-5 text-[#C9941A]" />
-                <span className="text-xs text-[#C9941A]">+1 this week</span>
+                <BookOpen className="w-5 h-5 text-[#E2741B]" />
+                <span className="text-xs text-[#E2741B]">+1 this week</span>
               </div>
               <p className="text-2xl font-bold">{mockUser.coursesCompleted}</p>
               <p className="text-xs text-gray-400">Courses Completed</p>
@@ -268,8 +268,8 @@ export default function StudentDashboard() {
           <Card className="bg-[#1a1a1a] border-[#333]">
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-2">
-                <Flame className="w-5 h-5 text-[#C9941A]" />
-                <span className="text-xs text-[#C9941A]">Best: 28 days</span>
+                <Flame className="w-5 h-5 text-[#E2741B]" />
+                <span className="text-xs text-[#E2741B]">Best: 28 days</span>
               </div>
               <p className="text-2xl font-bold">{mockUser.streak} days</p>
               <p className="text-xs text-gray-400">Current Streak</p>
@@ -278,18 +278,18 @@ export default function StudentDashboard() {
         </div>
         
         {/* XP Progress */}
-        <Card className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border-[#C9941A]/30 mb-8">
+        <Card className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border-[#E2741B]/30 mb-8">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-[#C9941A]" />
+                <Sparkles className="w-5 h-5 text-[#E2741B]" />
                 <span className="font-semibold">Level Progress</span>
               </div>
               <span className="text-sm text-gray-400">{mockUser.xp} / {mockUser.nextLevelXp} XP</span>
             </div>
             <Progress value={(mockUser.xp / mockUser.nextLevelXp) * 100} className="h-2" />
             <p className="text-xs text-gray-400 mt-2">
-              {mockUser.nextLevelXp - mockUser.xp} XP until next level: <span className="text-[#C9941A]">Recovery Legend</span>
+              {mockUser.nextLevelXp - mockUser.xp} XP until next level: <span className="text-[#E2741B]">Recovery Legend</span>
             </p>
           </CardContent>
         </Card>
@@ -297,16 +297,16 @@ export default function StudentDashboard() {
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="bg-[#1a1a1a] border-[#333] mb-6">
-            <TabsTrigger value="overview" className="data-[state=active]:bg-[#C9941A]" data-testid="tab-overview">
+            <TabsTrigger value="overview" className="data-[state=active]:bg-[#E2741B]" data-testid="tab-overview">
               Overview
             </TabsTrigger>
-            <TabsTrigger value="courses" className="data-[state=active]:bg-[#C9941A]" data-testid="tab-courses">
+            <TabsTrigger value="courses" className="data-[state=active]:bg-[#E2741B]" data-testid="tab-courses">
               My Courses
             </TabsTrigger>
-            <TabsTrigger value="achievements" className="data-[state=active]:bg-[#C9941A]" data-testid="tab-achievements">
+            <TabsTrigger value="achievements" className="data-[state=active]:bg-[#E2741B]" data-testid="tab-achievements">
               Achievements
             </TabsTrigger>
-            <TabsTrigger value="certificates" className="data-[state=active]:bg-[#C9941A]" data-testid="tab-certificates">
+            <TabsTrigger value="certificates" className="data-[state=active]:bg-[#E2741B]" data-testid="tab-certificates">
               Certificates
             </TabsTrigger>
           </TabsList>
@@ -319,7 +319,7 @@ export default function StudentDashboard() {
                 <Card className="bg-[#1a1a1a] border-[#333]">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg flex items-center gap-2">
-                      <PlayCircle className="w-5 h-5 text-[#C9941A]" />
+                      <PlayCircle className="w-5 h-5 text-[#E2741B]" />
                       Continue Learning
                     </CardTitle>
                   </CardHeader>
@@ -333,7 +333,7 @@ export default function StudentDashboard() {
                           data-testid={`course-${course.id}`}
                         >
                           <div className="w-20 h-14 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-lg flex items-center justify-center">
-                            <GraduationCap className="w-8 h-8 text-[#C9941A]" />
+                            <GraduationCap className="w-8 h-8 text-[#E2741B]" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <h3 className="font-semibold truncate">{course.title}</h3>
@@ -343,7 +343,7 @@ export default function StudentDashboard() {
                               <span className="text-xs text-gray-400">{course.progress}%</span>
                             </div>
                           </div>
-                          <Button size="icon" className="bg-[#C9941A] flex-shrink-0" data-testid={`button-play-${course.id}`}>
+                          <Button size="icon" className="bg-[#E2741B] flex-shrink-0" data-testid={`button-play-${course.id}`}>
                             <Play className="w-4 h-4" />
                           </Button>
                         </div>
@@ -356,7 +356,7 @@ export default function StudentDashboard() {
                 <Card className="bg-[#1a1a1a] border-[#333]">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg flex items-center gap-2">
-                      <Target className="w-5 h-5 text-[#C9941A]" />
+                      <Target className="w-5 h-5 text-[#E2741B]" />
                       Recommended For You
                     </CardTitle>
                   </CardHeader>
@@ -368,7 +368,7 @@ export default function StudentDashboard() {
                       ].map((course, idx) => (
                         <div key={idx} className="p-4 bg-[#1a1a1a] rounded-lg hover-elevate cursor-pointer">
                           <div className="w-full h-24 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-lg flex items-center justify-center mb-3">
-                            <BookOpen className="w-10 h-10 text-[#C9941A]/50" />
+                            <BookOpen className="w-10 h-10 text-[#E2741B]/50" />
                           </div>
                           <h4 className="font-semibold mb-1">{course.title}</h4>
                           <p className="text-sm text-gray-400">{course.instructor}</p>
@@ -389,7 +389,7 @@ export default function StudentDashboard() {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg flex items-center justify-between">
                       <span className="flex items-center gap-2">
-                        <Zap className="w-5 h-5 text-[#C9941A]" />
+                        <Zap className="w-5 h-5 text-[#E2741B]" />
                         Recent Activity
                       </span>
                       <Button variant="ghost" size="sm" className="text-xs text-gray-400">
@@ -421,7 +421,7 @@ export default function StudentDashboard() {
                 <Card className="bg-[#1a1a1a] border-[#333]">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg flex items-center gap-2">
-                      <Trophy className="w-5 h-5 text-[#C9941A]" />
+                      <Trophy className="w-5 h-5 text-[#E2741B]" />
                       Latest Achievements
                     </CardTitle>
                   </CardHeader>
@@ -467,7 +467,7 @@ export default function StudentDashboard() {
                       onClick={() => navigate(`/course/${course.id}`)}
                     >
                       <div className="h-32 bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center">
-                        <GraduationCap className="w-16 h-16 text-[#C9941A]/50" />
+                        <GraduationCap className="w-16 h-16 text-[#E2741B]/50" />
                       </div>
                       <CardContent className="p-4">
                         <Badge className="bg-[#1a1a1a] text-xs mb-2">{course.category}</Badge>
@@ -477,7 +477,7 @@ export default function StudentDashboard() {
                           <span className="text-xs text-gray-400">
                             {course.completedLessons} / {course.totalLessons} lessons
                           </span>
-                          <span className="text-xs font-semibold text-[#C9941A]">{course.progress}%</span>
+                          <span className="text-xs font-semibold text-[#E2741B]">{course.progress}%</span>
                         </div>
                         <Progress value={course.progress} className="h-1.5" />
                       </CardContent>
@@ -489,7 +489,7 @@ export default function StudentDashboard() {
               {/* Completed */}
               <div>
                 <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-[#C9941A]" />
+                  <CheckCircle className="w-5 h-5 text-[#E2741B]" />
                   Completed ({completedCourses.length})
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -500,7 +500,7 @@ export default function StudentDashboard() {
                       onClick={() => navigate(`/course/${course.id}`)}
                     >
                       <div className="h-32 bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center relative">
-                        <GraduationCap className="w-16 h-16 text-[#C9941A]/50" />
+                        <GraduationCap className="w-16 h-16 text-[#E2741B]/50" />
                         {course.certificateEarned && (
                           <Badge className="absolute top-2 right-2 bg-purple-500">
                             <Award className="w-3 h-3 mr-1" />
@@ -509,7 +509,7 @@ export default function StudentDashboard() {
                         )}
                       </div>
                       <CardContent className="p-4">
-                        <Badge className="bg-[#C9941A]/20 text-[#C9941A] text-xs mb-2">Completed</Badge>
+                        <Badge className="bg-[#E2741B]/20 text-[#E2741B] text-xs mb-2">Completed</Badge>
                         <h3 className="font-semibold mb-1 line-clamp-2">{course.title}</h3>
                         <p className="text-sm text-gray-400 mb-3">{course.instructor}</p>
                         <div className="flex gap-2">
@@ -548,7 +548,7 @@ export default function StudentDashboard() {
                       </div>
                       <h3 className="font-semibold mb-1">{achievement.title}</h3>
                       <p className="text-xs text-gray-400 mb-2">{achievement.description}</p>
-                      <p className="text-xs text-[#C9941A]">{achievement.earnedAt?.toLocaleDateString()}</p>
+                      <p className="text-xs text-[#E2741B]">{achievement.earnedAt?.toLocaleDateString()}</p>
                     </Card>
                   ))}
                 </div>
@@ -604,7 +604,7 @@ export default function StudentDashboard() {
                         <Download className="w-3 h-3 mr-1" />
                         Download
                       </Button>
-                      <Button size="sm" className="flex-1 bg-[#C9941A]">
+                      <Button size="sm" className="flex-1 bg-[#E2741B]">
                         <Share2 className="w-3 h-3 mr-1" />
                         Share
                       </Button>

@@ -245,7 +245,7 @@ export default function ScriptStudio() {
   if (authLoading || projectsLoading) {
     return (
       <div className="min-h-screen bg-[#FAF8F3] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[#C9941A]" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#E2741B]" />
       </div>
     );
   }
@@ -257,7 +257,7 @@ export default function ScriptStudio() {
         <div className="flex items-center justify-center min-h-[70vh]">
           <Card className="bg-zinc-950 border-[#333]">
             <CardContent className="p-8 text-center">
-              <Clapperboard className="w-16 h-16 mx-auto text-[#C9941A] mb-4" />
+              <Clapperboard className="w-16 h-16 mx-auto text-[#E2741B] mb-4" />
               <h2 className="text-2xl font-semibold text-foreground mb-2">Sign in to access Script Studio</h2>
               <p className="text-zinc-400">Create and manage your screenplay projects with AI assistance.</p>
             </CardContent>
@@ -286,7 +286,7 @@ export default function ScriptStudio() {
         <aside className="w-64 border-r border-[#333] bg-zinc-950 flex flex-col" data-testid="sidebar-projects">
           <div className="p-4 border-b border-[#333] flex items-center justify-between">
             <h2 className="text-foreground font-semibold flex items-center gap-2">
-              <Clapperboard className="w-5 h-5 text-[#C9941A]" />
+              <Clapperboard className="w-5 h-5 text-[#E2741B]" />
               Projects
             </h2>
             <Dialog open={newProjectDialogOpen} onOpenChange={setNewProjectDialogOpen}>
@@ -314,7 +314,7 @@ export default function ScriptStudio() {
                   <Button
                     onClick={() => createProjectMutation.mutate(newProjectTitle)}
                     disabled={!newProjectTitle.trim() || createProjectMutation.isPending}
-                    className="w-full bg-[#C9941A] hover:bg-[#C9941A]"
+                    className="w-full bg-[#E2741B] hover:bg-[#E2741B]"
                     data-testid="button-create-project-confirm"
                   >
                     {createProjectMutation.isPending ? (
@@ -339,13 +339,13 @@ export default function ScriptStudio() {
                     onClick={() => setSelectedProjectId(project.id)}
                     className={`w-full text-left p-3 rounded-lg transition-colors ${
                       selectedProjectId === project.id
-                        ? "bg-primary/20 border border-[#C9941A]/50"
+                        ? "bg-primary/20 border border-[#E2741B]/50"
                         : "hover-elevate"
                     }`}
                     data-testid={`button-project-${project.id}`}
                   >
                     <div className="flex items-center gap-2">
-                      <Film className="w-4 h-4 text-[#C9941A]" />
+                      <Film className="w-4 h-4 text-[#E2741B]" />
                       <span className="text-foreground font-medium truncate">{project.title}</span>
                     </div>
                     <div className="flex items-center gap-2 mt-1">
@@ -375,7 +375,7 @@ export default function ScriptStudio() {
                 <h3 className="text-xl text-zinc-400 mb-2">Select a project or create a new one</h3>
                 <Button
                   onClick={() => setNewProjectDialogOpen(true)}
-                  className="bg-[#C9941A] hover:bg-[#C9941A]"
+                  className="bg-[#E2741B] hover:bg-[#E2741B]"
                   data-testid="button-create-project-empty"
                 >
                   <Plus className="w-4 h-4 mr-2" />
@@ -403,7 +403,7 @@ export default function ScriptStudio() {
                             updateProjectMutation.mutate({ title: tempTitle });
                             setEditingTitle(false);
                           }}
-                          className="bg-[#C9941A] hover:bg-[#C9941A]"
+                          className="bg-[#E2741B] hover:bg-[#E2741B]"
                           data-testid="button-save-title"
                         >
                           <Save className="w-4 h-4" />
@@ -463,7 +463,7 @@ export default function ScriptStudio() {
                   <TabsList className="bg-[#1a1a1a] border-b border-[#333] rounded-none px-4 h-12 justify-start gap-1">
                     <TabsTrigger
                       value="overview"
-                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]"
+                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#E2741B]"
                       data-testid="tab-overview"
                     >
                       <FileText className="w-4 h-4 mr-2" />
@@ -471,7 +471,7 @@ export default function ScriptStudio() {
                     </TabsTrigger>
                     <TabsTrigger
                       value="beats"
-                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]"
+                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#E2741B]"
                       data-testid="tab-beats"
                     >
                       <Film className="w-4 h-4 mr-2" />
@@ -479,7 +479,7 @@ export default function ScriptStudio() {
                     </TabsTrigger>
                     <TabsTrigger
                       value="characters"
-                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]"
+                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#E2741B]"
                       data-testid="tab-characters"
                     >
                       <Users className="w-4 h-4 mr-2" />
@@ -487,7 +487,7 @@ export default function ScriptStudio() {
                     </TabsTrigger>
                     <TabsTrigger
                       value="scenes"
-                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]"
+                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#E2741B]"
                       data-testid="tab-scenes"
                     >
                       <Clapperboard className="w-4 h-4 mr-2" />
@@ -495,7 +495,7 @@ export default function ScriptStudio() {
                     </TabsTrigger>
                     <TabsTrigger
                       value="dialogue"
-                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]"
+                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#E2741B]"
                       data-testid="tab-dialogue"
                     >
                       <MessageSquare className="w-4 h-4 mr-2" />
@@ -503,7 +503,7 @@ export default function ScriptStudio() {
                     </TabsTrigger>
                     <TabsTrigger
                       value="script"
-                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]"
+                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#E2741B]"
                       data-testid="tab-script"
                     >
                       <FileText className="w-4 h-4 mr-2" />
@@ -511,7 +511,7 @@ export default function ScriptStudio() {
                     </TabsTrigger>
                     <TabsTrigger
                       value="voice"
-                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]"
+                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#E2741B]"
                       data-testid="tab-voice"
                     >
                       <Mic className="w-4 h-4 mr-2" />
@@ -519,7 +519,7 @@ export default function ScriptStudio() {
                     </TabsTrigger>
                     <TabsTrigger
                       value="storyboard"
-                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]"
+                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#E2741B]"
                       data-testid="tab-storyboard"
                     >
                       <Grid3X3 className="w-4 h-4 mr-2" />
@@ -527,7 +527,7 @@ export default function ScriptStudio() {
                     </TabsTrigger>
                     <TabsTrigger
                       value="movie"
-                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]"
+                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#E2741B]"
                       data-testid="tab-movie"
                     >
                       <Video className="w-4 h-4 mr-2" />
@@ -535,7 +535,7 @@ export default function ScriptStudio() {
                     </TabsTrigger>
                     <TabsTrigger
                       value="export"
-                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#C9941A]"
+                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-[#E2741B]"
                       data-testid="tab-export"
                     >
                       <Download className="w-4 h-4 mr-2" />
@@ -549,14 +549,14 @@ export default function ScriptStudio() {
                         <CardHeader>
                           <div className="flex items-center justify-between">
                             <CardTitle className="text-foreground flex items-center gap-2">
-                              <Sparkles className="w-5 h-5 text-[#C9941A]" />
+                              <Sparkles className="w-5 h-5 text-[#E2741B]" />
                               Logline
                             </CardTitle>
                             <Button
                               onClick={() => generateLoglineMutation.mutate()}
                               disabled={generateLoglineMutation.isPending}
                               variant="outline"
-                              className="border-[#C9941A] text-[#C9941A] hover:bg-primary/10"
+                              className="border-[#E2741B] text-[#E2741B] hover:bg-primary/10"
                               data-testid="button-generate-logline"
                             >
                               {generateLoglineMutation.isPending ? (
@@ -585,14 +585,14 @@ export default function ScriptStudio() {
                         <CardHeader>
                           <div className="flex items-center justify-between">
                             <CardTitle className="text-foreground flex items-center gap-2">
-                              <Film className="w-5 h-5 text-[#C9941A]" />
+                              <Film className="w-5 h-5 text-[#E2741B]" />
                               Beat Sheet
                             </CardTitle>
                             <Button
                               onClick={() => generateBeatsMutation.mutate()}
                               disabled={generateBeatsMutation.isPending}
                               variant="outline"
-                              className="border-[#C9941A] text-[#C9941A] hover:bg-primary/10"
+                              className="border-[#E2741B] text-[#E2741B] hover:bg-primary/10"
                               data-testid="button-generate-beats"
                             >
                               {generateBeatsMutation.isPending ? (
@@ -619,11 +619,11 @@ export default function ScriptStudio() {
                                 <CollapsibleTrigger className="w-full" data-testid={`beat-trigger-${index}`}>
                                   <div className="flex items-center gap-3 p-3 bg-[#1a1a1a] rounded-lg hover-elevate">
                                     {beat.expanded ? (
-                                      <ChevronDown className="w-4 h-4 text-[#C9941A]" />
+                                      <ChevronDown className="w-4 h-4 text-[#E2741B]" />
                                     ) : (
                                       <ChevronRight className="w-4 h-4 text-zinc-500" />
                                     )}
-                                    <Badge variant="outline" className="border-[#C9941A] text-[#C9941A]">
+                                    <Badge variant="outline" className="border-[#E2741B] text-[#E2741B]">
                                       {index + 1}
                                     </Badge>
                                     <span className="text-foreground font-medium">{beat.title}</span>
@@ -646,13 +646,13 @@ export default function ScriptStudio() {
                         <CardHeader>
                           <div className="flex items-center justify-between">
                             <CardTitle className="text-foreground flex items-center gap-2">
-                              <Users className="w-5 h-5 text-[#C9941A]" />
+                              <Users className="w-5 h-5 text-[#E2741B]" />
                               Characters
                             </CardTitle>
                             <Button
                               onClick={addCharacter}
                               variant="outline"
-                              className="border-[#C9941A] text-[#C9941A] hover:bg-primary/10"
+                              className="border-[#E2741B] text-[#E2741B] hover:bg-primary/10"
                               data-testid="button-add-character"
                             >
                               <Plus className="w-4 h-4 mr-2" />
@@ -672,7 +672,7 @@ export default function ScriptStudio() {
                                   <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                       <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                                        <User className="w-5 h-5 text-[#C9941A]" />
+                                        <User className="w-5 h-5 text-[#E2741B]" />
                                       </div>
                                       <Input
                                         value={character.name}
@@ -725,13 +725,13 @@ export default function ScriptStudio() {
                         <CardHeader>
                           <div className="flex items-center justify-between">
                             <CardTitle className="text-foreground flex items-center gap-2">
-                              <Clapperboard className="w-5 h-5 text-[#C9941A]" />
+                              <Clapperboard className="w-5 h-5 text-[#E2741B]" />
                               Scene List
                             </CardTitle>
                             <Button
                               onClick={addScene}
                               variant="outline"
-                              className="border-[#C9941A] text-[#C9941A] hover:bg-primary/10"
+                              className="border-[#E2741B] text-[#E2741B] hover:bg-primary/10"
                               data-testid="button-add-scene"
                             >
                               <Plus className="w-4 h-4 mr-2" />
@@ -749,14 +749,14 @@ export default function ScriptStudio() {
                               <Card
                                 key={scene.id}
                                 className={`bg-[#1a1a1a] border-[#333] cursor-pointer transition-colors ${
-                                  selectedSceneId === scene.id ? "border-[#C9941A]" : ""
+                                  selectedSceneId === scene.id ? "border-[#E2741B]" : ""
                                 }`}
                                 onClick={() => setSelectedSceneId(scene.id)}
                                 data-testid={`card-scene-${scene.id}`}
                               >
                                 <CardContent className="p-4 space-y-2">
                                   <div className="flex items-center justify-between">
-                                    <Badge variant="outline" className="border-[#C9941A] text-[#C9941A]">
+                                    <Badge variant="outline" className="border-[#E2741B] text-[#E2741B]">
                                       Scene {index + 1}
                                     </Badge>
                                     <Button
@@ -801,7 +801,7 @@ export default function ScriptStudio() {
                         <CardHeader>
                           <div className="flex items-center justify-between">
                             <CardTitle className="text-foreground flex items-center gap-2">
-                              <MessageSquare className="w-5 h-5 text-[#C9941A]" />
+                              <MessageSquare className="w-5 h-5 text-[#E2741B]" />
                               Dialogue Generator
                             </CardTitle>
                           </div>
@@ -837,7 +837,7 @@ export default function ScriptStudio() {
                                   <Button
                                     onClick={() => generateDialogueMutation.mutate(selectedSceneId)}
                                     disabled={generateDialogueMutation.isPending}
-                                    className="bg-[#C9941A] hover:bg-[#C9941A]"
+                                    className="bg-[#E2741B] hover:bg-[#E2741B]"
                                     data-testid="button-generate-dialogue"
                                   >
                                     {generateDialogueMutation.isPending ? (
@@ -874,7 +874,7 @@ export default function ScriptStudio() {
                       <Card className="bg-zinc-950 border-[#333]" data-testid="section-full-script">
                         <CardHeader>
                           <CardTitle className="text-foreground flex items-center gap-2">
-                            <FileText className="w-5 h-5 text-[#C9941A]" />
+                            <FileText className="w-5 h-5 text-[#E2741B]" />
                             Full Script
                           </CardTitle>
                         </CardHeader>

@@ -281,7 +281,7 @@ function UserRow({ user, onUpdate }: { user: UserWithCredits; onUpdate: () => vo
       <div className="flex-1 min-w-[200px]">
         <div className="font-medium text-sm">
           {user.firstName} {user.lastName}
-          {user.role === 'admin' && <Crown className="h-3 w-3 inline ml-1 text-[#C9941A]" />}
+          {user.role === 'admin' && <Crown className="h-3 w-3 inline ml-1 text-[#E2741B]" />}
         </div>
         <div className="text-xs text-gray-400">{user.email}</div>
       </div>
@@ -401,7 +401,7 @@ function SpotlightAdminPanel() {
         <CardHeader className="flex flex-row items-center justify-between gap-3 space-y-0">
           <div>
             <CardTitle className="flex items-center gap-2">
-              <Star className="h-5 w-5 text-[#C9941A]" />
+              <Star className="h-5 w-5 text-[#E2741B]" />
               Survivor Spotlight Pipeline
             </CardTitle>
             <p className="mt-1 text-sm text-gray-400">
@@ -675,7 +675,7 @@ function AnalyticsTab() {
                       color: "#fff",
                     }}
                   />
-                  <Line type="monotone" dataKey="count" stroke="#C9941A" strokeWidth={2} dot={{ r: 3 }} />
+                  <Line type="monotone" dataKey="count" stroke="#E2741B" strokeWidth={2} dot={{ r: 3 }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -826,7 +826,7 @@ export default function AdminPanel() {
     <div className="min-h-screen bg-[#0D0D0D]">
       <div className="max-w-7xl mx-auto p-6 space-y-6">
         <div className="flex items-center gap-3">
-          <Shield className="h-8 w-8 text-[#C9941A]" />
+          <Shield className="h-8 w-8 text-[#E2741B]" />
           <h1 className="text-3xl font-bold">Admin Panel</h1>
         </div>
 
@@ -991,7 +991,7 @@ export default function AdminPanel() {
                           <div className="text-sm text-gray-400">Active</div>
                         </div>
                         <div className="text-center p-4 bg-[#1a1a1a]/50 rounded-lg">
-                          <div className="text-2xl font-bold text-[#C9941A]">{subscriptionQuery.data.newThisMonth}</div>
+                          <div className="text-2xl font-bold text-[#E2741B]">{subscriptionQuery.data.newThisMonth}</div>
                           <div className="text-sm text-gray-400">New This Month</div>
                         </div>
                         <div className="text-center p-4 bg-[#1a1a1a]/50 rounded-lg">

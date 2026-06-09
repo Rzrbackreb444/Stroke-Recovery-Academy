@@ -1472,7 +1472,7 @@ export default function MediaStudio({
                           >
                             <div className="w-10 h-10 bg-[#1a1a1a] rounded flex items-center justify-center">
                               {asset.type === 'video' && <Video className="w-5 h-5 text-blue-400" />}
-                              {asset.type === 'audio' && <Music className="w-5 h-5 text-[#C9941A]" />}
+                              {asset.type === 'audio' && <Music className="w-5 h-5 text-[#E2741B]" />}
                               {asset.type === 'image' && <ImageIcon className="w-5 h-5 text-amber-400" />}
                             </div>
                             <div className="flex-1 min-w-0">

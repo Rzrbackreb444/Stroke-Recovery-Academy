@@ -1,4 +1,4 @@
-const FALLBACK_GOLD = "#C9941A";
+const FALLBACK_GOLD = "#E2741B";
 
 function hexToRgb(hex: string): [number, number, number] | null {
   const h = hex.replace("#", "");

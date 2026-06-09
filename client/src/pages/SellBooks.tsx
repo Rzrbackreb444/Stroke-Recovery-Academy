@@ -157,7 +157,7 @@ export default function SellBooks() {
   if (authLoading) {
     return (
       <div className="min-h-screen bg-[#FAF8F3] flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-[#C9941A]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#E2741B]" />
       </div>
     );
   }
@@ -207,7 +207,7 @@ export default function SellBooks() {
             <CardContent className="pt-6">
               <div className="flex items-center gap-4">
                 <div className="p-3 rounded-full bg-primary/10">
-                  <DollarSign className="h-5 w-5 text-[#C9941A]" />
+                  <DollarSign className="h-5 w-5 text-[#E2741B]" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-400">Total Earnings</p>
@@ -219,7 +219,7 @@ export default function SellBooks() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-4">
-                <div className="p-3 rounded-full bg-[#C9941A]/10">
+                <div className="p-3 rounded-full bg-[#E2741B]/10">
                   <ShoppingBag className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
@@ -509,7 +509,7 @@ export default function SellBooks() {
                       <span className="font-bold text-green-600">85%</span>
                     </div>
                     <div className="w-full bg-[#1a1a1a] rounded-full h-4">
-                      <div className="bg-[#C9941A] h-4 rounded-full" style={{ width: '85%' }} />
+                      <div className="bg-[#E2741B] h-4 rounded-full" style={{ width: '85%' }} />
                     </div>
                     <div className="flex justify-between items-center text-sm text-gray-400">
                       <span>Platform Fee: 15%</span>
@@ -583,7 +583,7 @@ function ListingCard({ listing, onCreateWebsite }: { listing: BookListing; onCre
   const [, navigate] = useLocation();
 
   const statusColors: Record<string, string> = {
-    published: "bg-[#C9941A]/10 text-green-700",
+    published: "bg-[#E2741B]/10 text-green-700",
     draft: "bg-yellow-500/10 text-yellow-700",
     pending_review: "bg-blue-500/10 text-blue-700",
     suspended: "bg-red-500/10 text-red-700",
@@ -665,13 +665,13 @@ function WebsiteCard({ website }: { website: BookWebsite }) {
             />
           ) : (
             <div className="w-20 h-28 bg-gradient-to-br from-primary/20 to-primary/5 rounded flex items-center justify-center">
-              <Globe className="h-8 w-8 text-[#C9941A]" />
+              <Globe className="h-8 w-8 text-[#E2741B]" />
             </div>
           )}
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2 mb-2">
               <h3 className="font-semibold truncate">{website.title}</h3>
-              <Badge className={website.isPublished ? "bg-[#C9941A]/10 text-green-700" : "bg-yellow-500/10 text-yellow-700"}>
+              <Badge className={website.isPublished ? "bg-[#E2741B]/10 text-green-700" : "bg-yellow-500/10 text-yellow-700"}>
                 {website.isPublished ? "Live" : "Draft"}
               </Badge>
             </div>
@@ -871,7 +871,7 @@ function NewWebsiteDialog({
     slug: "",
     theme: selectedTemplate?.id || "classic",
     genre: selectedTemplate?.category || "",
-    primaryColor: selectedTemplate?.theme.primaryColor || "#C9941A",
+    primaryColor: selectedTemplate?.theme.primaryColor || "#E2741B",
     accentColor: selectedTemplate?.theme.accentColor || "#1a1a1a",
     tagline: selectedTemplate?.sampleContent.tagline || "",
   });
@@ -906,7 +906,7 @@ function NewWebsiteDialog({
         slug: "", 
         theme: "classic", 
         genre: "",
-        primaryColor: "#C9941A",
+        primaryColor: "#E2741B",
         accentColor: "#1a1a1a",
         tagline: ""
       });

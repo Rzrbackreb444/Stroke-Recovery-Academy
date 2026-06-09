@@ -352,7 +352,7 @@ export default function KreAIteStudio() {
 
   const codexFolders = [
     { id: 'manuscript', label: 'Manuscript', icon: BookOpen, items: manuscriptItems, color: 'text-amber-500' },
-    { id: 'codex', label: 'Story Codex', icon: Library, items: [...characterItems, ...worldItems], color: 'text-[#C9941A]', 
+    { id: 'codex', label: 'Story Codex', icon: Library, items: [...characterItems, ...worldItems], color: 'text-[#E2741B]', 
       subfolders: [
         { id: 'characters', label: 'Characters', icon: Users, items: characterItems },
         { id: 'world', label: 'World & Locations', icon: Globe, items: worldItems },
@@ -1158,7 +1158,7 @@ export default function KreAIteStudio() {
                 )}>
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <Brain className="h-4 w-4 text-[#C9941A]" />
+                      <Brain className="h-4 w-4 text-[#E2741B]" />
                       <span className={cn(
                         "text-[11px] font-semibold uppercase tracking-wide",
                         isDark ? "text-stone-400" : "text-[#1A1A1A]/50"
@@ -1181,8 +1181,8 @@ export default function KreAIteStudio() {
                                 "h-6 w-6 p-0 rounded-md",
                                 rightPanelMode === mode
                                   ? isDark 
-                                    ? "bg-[#C9941A]/20 text-[#C9941A]" 
-                                    : "bg-[#C9941A]/10 text-[#C9941A]"
+                                    ? "bg-[#E2741B]/20 text-[#E2741B]" 
+                                    : "bg-[#E2741B]/10 text-[#E2741B]"
                                   : isDark 
                                     ? "text-stone-500 hover-elevate" 
                                     : "text-slate-400 hover-elevate"
@@ -1215,7 +1215,7 @@ export default function KreAIteStudio() {
                         )}>
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center gap-2">
-                              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#C9941A] to-amber-600 flex items-center justify-center">
+                              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#E2741B] to-amber-600 flex items-center justify-center">
                                 <Activity className="h-4 w-4 text-white" />
                               </div>
                               <div>
@@ -1496,10 +1496,10 @@ export default function KreAIteStudio() {
                         {/* Pricing Strategy */}
                         <div className={cn(
                           "p-3 rounded-xl border",
-                          isDark ? "bg-stone-800/30 border-stone-700/50" : "bg-gradient-to-br from-[#FAF8F3] to-amber-50 border-[#C9941A]/20"
+                          isDark ? "bg-stone-800/30 border-stone-700/50" : "bg-gradient-to-br from-[#FAF8F3] to-amber-50 border-[#E2741B]/20"
                         )}>
                           <div className="flex items-center gap-2 mb-3">
-                            <DollarSign className="h-4 w-4 text-[#C9941A]" />
+                            <DollarSign className="h-4 w-4 text-[#E2741B]" />
                             <h4 className={cn(
                               "text-xs font-semibold",
                               isDark ? "text-stone-200" : "text-stone-800"
@@ -1521,7 +1521,7 @@ export default function KreAIteStudio() {
                                     "text-[10px]",
                                     isDark ? "text-stone-600" : "text-stone-400"
                                   )}>${price.low} - ${price.high}</span>
-                                  <Badge className="text-[9px] bg-[#C9941A]/20 text-[#C9941A] border-0">
+                                  <Badge className="text-[9px] bg-[#E2741B]/20 text-[#E2741B] border-0">
                                     ${price.optimal}
                                   </Badge>
                                 </div>
@@ -1553,7 +1553,7 @@ export default function KreAIteStudio() {
                               onClick={() => generateBlurb()}
                               disabled={isGeneratingBlurb}
                             >
-                              <MessageSquare className="h-3.5 w-3.5 text-[#C9941A]" />
+                              <MessageSquare className="h-3.5 w-3.5 text-[#E2741B]" />
                               {isGeneratingBlurb ? 'Generating...' : 'Generate Blurbs'}
                             </Button>
                             <Button 
@@ -1671,7 +1671,7 @@ export default function KreAIteStudio() {
                               onClick={() => generateAllChapters()}
                               disabled={generationProgress.isGenerating}
                             >
-                              <BookOpen className="h-3.5 w-3.5 text-[#C9941A]" />
+                              <BookOpen className="h-3.5 w-3.5 text-[#E2741B]" />
                               Generate All Chapters
                             </Button>
                           </div>
@@ -1800,7 +1800,7 @@ export default function KreAIteStudio() {
                     isDark ? "text-stone-600" : "text-stone-400"
                   )}>
                     <span className="flex items-center gap-1.5">
-                      <Brain className="h-3 w-3 text-[#C9941A]" />
+                      <Brain className="h-3 w-3 text-[#E2741B]" />
                       Neural Engine Active
                     </span>
                     <span>Ch. {(openTabs.find(t => t.id === activeTabId)?.chapterIndex ?? 0) + 1}</span>

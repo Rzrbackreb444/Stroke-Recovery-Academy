@@ -97,10 +97,10 @@ export default function DailyRoutine() {
     return (
       <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center p-6">
         <Card className="bg-[#111] border-[#222] p-8 max-w-sm w-full text-center">
-          <HeartPulse className="h-10 w-10 text-[#C9941A] mx-auto mb-4" />
+          <HeartPulse className="h-10 w-10 text-[#E2741B] mx-auto mb-4" />
           <h2 className="text-white font-bold text-xl mb-2">Sign In to Track Your Routine</h2>
           <p className="text-gray-500 text-sm mb-6">Your progress saves automatically every day.</p>
-          <Button size="lg" onClick={() => setLocation("/recovery/login")} className="w-full bg-[#C9941A] text-black font-bold" data-testid="button-sign-in-routine">
+          <Button size="lg" onClick={() => setLocation("/recovery/login")} className="w-full bg-[#E2741B] text-black font-bold" data-testid="button-sign-in-routine">
             Sign In
           </Button>
         </Card>
@@ -125,7 +125,7 @@ export default function DailyRoutine() {
           <div className="flex items-center gap-3">
             {streak > 0 && (
               <div className="text-center">
-                <p className="text-2xl font-black text-[#C9941A]">{streak}</p>
+                <p className="text-2xl font-black text-[#E2741B]">{streak}</p>
                 <p className="text-xs text-gray-600">day streak</p>
               </div>
             )}
@@ -140,7 +140,7 @@ export default function DailyRoutine() {
         <div className="h-1.5 bg-[#1a1a1a] rounded-full mb-8 overflow-hidden">
           <div
             className="h-full rounded-full transition-all duration-500"
-            style={{ width: `${pct}%`, backgroundColor: "#C9941A" }}
+            style={{ width: `${pct}%`, backgroundColor: "#E2741B" }}
           />
         </div>
 
@@ -151,7 +151,7 @@ export default function DailyRoutine() {
             <button
               data-testid="button-bad-day"
               onClick={() => setShowBadDayModal(true)}
-              className="text-xs text-gray-600 hover:text-[#C9941A] transition-colors flex items-center gap-1"
+              className="text-xs text-gray-600 hover:text-[#E2741B] transition-colors flex items-center gap-1"
             >
               <AlertTriangle className="h-3 w-3" />
               Bad day?
@@ -214,7 +214,7 @@ export default function DailyRoutine() {
                   onClick={() => toggleBlock(block.id)}
                   className="w-full flex items-center gap-3 p-4 text-left"
                 >
-                  <BlockIcon className="h-4 w-4 text-[#C9941A] shrink-0" />
+                  <BlockIcon className="h-4 w-4 text-[#E2741B] shrink-0" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-bold text-sm text-white">{block.label}</span>
@@ -226,7 +226,7 @@ export default function DailyRoutine() {
                           className="h-full rounded-full transition-all duration-300"
                           style={{
                             width: `${blockPct}%`,
-                            backgroundColor: blockPct === 100 ? "#22c55e" : "#C9941A",
+                            backgroundColor: blockPct === 100 ? "#22c55e" : "#E2741B",
                           }}
                         />
                       </div>
@@ -273,7 +273,7 @@ export default function DailyRoutine() {
                               {task.text}
                             </span>
                             {isNew && (
-                              <span className="ml-2 text-[10px] font-bold uppercase text-[#C9941A] opacity-70">
+                              <span className="ml-2 text-[10px] font-bold uppercase text-[#E2741B] opacity-70">
                                 L{task.addedAt}+
                               </span>
                             )}
@@ -297,7 +297,7 @@ export default function DailyRoutine() {
             value={notes}
             onChange={e => setNotes(e.target.value)}
             placeholder="How did today go? Anything new? Any flickers of movement?"
-            className="bg-[#0f0f0f] border-[#1e1e1e] text-gray-300 placeholder:text-gray-700 resize-none focus:border-[#C9941A]/40 min-h-[80px]"
+            className="bg-[#0f0f0f] border-[#1e1e1e] text-gray-300 placeholder:text-gray-700 resize-none focus:border-[#E2741B]/40 min-h-[80px]"
           />
         </div>
 
@@ -313,7 +313,7 @@ export default function DailyRoutine() {
             )}
           </div>
           {pct === 100 && (
-            <Badge className="bg-[#C9941A]/20 text-[#C9941A] border border-[#C9941A]/30">
+            <Badge className="bg-[#E2741B]/20 text-[#E2741B] border border-[#E2741B]/30">
               <Trophy className="h-3 w-3 mr-1" /> Day Complete
             </Badge>
           )}
@@ -326,7 +326,7 @@ export default function DailyRoutine() {
             data-testid="link-exercises"
             className="flex items-center gap-2 p-3 rounded-lg bg-[#0f0f0f] border border-[#1e1e1e] hover:border-[#333] transition-colors"
           >
-            <Activity className="h-4 w-4 text-[#C9941A] shrink-0" />
+            <Activity className="h-4 w-4 text-[#E2741B] shrink-0" />
             <span className="text-sm text-gray-400">Exercise Library</span>
             <ArrowRight className="h-3 w-3 text-gray-700 ml-auto shrink-0" />
           </a>
@@ -335,7 +335,7 @@ export default function DailyRoutine() {
             data-testid="link-braingym"
             className="flex items-center gap-2 p-3 rounded-lg bg-[#0f0f0f] border border-[#1e1e1e] hover:border-[#333] transition-colors"
           >
-            <Brain className="h-4 w-4 text-[#C9941A] shrink-0" />
+            <Brain className="h-4 w-4 text-[#E2741B] shrink-0" />
             <span className="text-sm text-gray-400">Brain Gym</span>
             <ArrowRight className="h-3 w-3 text-gray-700 ml-auto shrink-0" />
           </a>
@@ -344,7 +344,7 @@ export default function DailyRoutine() {
             data-testid="link-community"
             className="flex items-center gap-2 p-3 rounded-lg bg-[#0f0f0f] border border-[#1e1e1e] hover:border-[#333] transition-colors"
           >
-            <Users className="h-4 w-4 text-[#C9941A] shrink-0" />
+            <Users className="h-4 w-4 text-[#E2741B] shrink-0" />
             <span className="text-sm text-gray-400">Survivor Community</span>
             <ArrowRight className="h-3 w-3 text-gray-700 ml-auto shrink-0" />
           </a>
@@ -353,7 +353,7 @@ export default function DailyRoutine() {
             data-testid="link-journal"
             className="flex items-center gap-2 p-3 rounded-lg bg-[#0f0f0f] border border-[#1e1e1e] hover:border-[#333] transition-colors"
           >
-            <BookOpen className="h-4 w-4 text-[#C9941A] shrink-0" />
+            <BookOpen className="h-4 w-4 text-[#E2741B] shrink-0" />
             <span className="text-sm text-gray-400">Recovery Journal</span>
             <ArrowRight className="h-3 w-3 text-gray-700 ml-auto shrink-0" />
           </a>
@@ -367,16 +367,16 @@ export default function DailyRoutine() {
       {showBadDayModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
           <Card className="bg-[#111] border-[#333] max-w-sm w-full p-6">
-            <AlertTriangle className="h-8 w-8 text-[#C9941A] mb-4" />
+            <AlertTriangle className="h-8 w-8 text-[#E2741B] mb-4" />
             <h2 className="text-white font-black text-xl mb-2">Bad Day Protocol</h2>
             <p className="text-gray-400 text-sm leading-relaxed mb-4">
               Nick built this for himself. Some days he could barely lift his arm. Those days count the same.
             </p>
             <p className="text-gray-300 text-sm font-semibold mb-1">Never Zero means this:</p>
             <ul className="text-sm text-gray-400 space-y-1 mb-6 list-none">
-              <li className="flex items-start gap-2"><span className="text-[#C9941A] shrink-0 mt-0.5">→</span> Three breaths. That's one rep. It counts.</li>
-              <li className="flex items-start gap-2"><span className="text-[#C9941A] shrink-0 mt-0.5">→</span> One glass of water. That's recovery.</li>
-              <li className="flex items-start gap-2"><span className="text-[#C9941A] shrink-0 mt-0.5">→</span> One thing you're grateful for. That's a win.</li>
+              <li className="flex items-start gap-2"><span className="text-[#E2741B] shrink-0 mt-0.5">→</span> Three breaths. That's one rep. It counts.</li>
+              <li className="flex items-start gap-2"><span className="text-[#E2741B] shrink-0 mt-0.5">→</span> One glass of water. That's recovery.</li>
+              <li className="flex items-start gap-2"><span className="text-[#E2741B] shrink-0 mt-0.5">→</span> One thing you're grateful for. That's a win.</li>
             </ul>
             <p className="text-xs text-gray-600 mb-6 italic">
               "The day you do nothing is the day the stroke wins. One rep. Always one rep." — Nick
@@ -385,7 +385,7 @@ export default function DailyRoutine() {
               <Button
                 data-testid="button-bad-day-survival"
                 onClick={() => { setLevel(0); setShowBadDayModal(false); }}
-                className="flex-1 bg-[#C9941A] text-black font-bold"
+                className="flex-1 bg-[#E2741B] text-black font-bold"
               >
                 Set to Survival Mode
               </Button>

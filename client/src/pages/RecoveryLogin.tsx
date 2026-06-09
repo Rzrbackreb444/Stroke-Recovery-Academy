@@ -121,7 +121,7 @@ export default function RecoveryLogin() {
         </button>
         <span
           className="text-xs tracking-widest uppercase font-bold"
-          style={{ color: "#C9941A" }}
+          style={{ color: "#E2741B" }}
         >
           Stroke Recovery Academy
         </span>
@@ -141,7 +141,7 @@ export default function RecoveryLogin() {
             >
               Recovery OS
             </div>
-            <div className="text-xs tracking-widest uppercase" style={{ color: "#C9941A" }}>
+            <div className="text-xs tracking-widest uppercase" style={{ color: "#E2741B" }}>
               by Nick Kremers · Stroke Survivor Year 7
             </div>
           </div>
@@ -158,7 +158,7 @@ export default function RecoveryLogin() {
                   onClick={() => setTab(t)}
                   className="flex-1 py-2.5 text-sm font-semibold transition-colors"
                   style={{
-                    background: tab === t ? "#C9941A" : "transparent",
+                    background: tab === t ? "#E2741B" : "transparent",
                     color: tab === t ? "#000" : "#999",
                     fontFamily: "Arial, sans-serif",
                   }}
@@ -218,7 +218,7 @@ export default function RecoveryLogin() {
               <Button
                 type="submit"
                 className="w-full font-bold tracking-wide"
-                style={{ background: "#C9941A", color: "#000" }}
+                style={{ background: "#E2741B", color: "#000" }}
                 disabled={signInMut.isPending}
                 data-testid="button-signin-submit"
               >
@@ -322,7 +322,7 @@ export default function RecoveryLogin() {
               <Button
                 type="submit"
                 className="w-full font-bold tracking-wide"
-                style={{ background: "#C9941A", color: "#000" }}
+                style={{ background: "#E2741B", color: "#000" }}
                 disabled={signUpMut.isPending}
                 data-testid="button-signup-submit"
               >
@@ -358,7 +358,7 @@ export default function RecoveryLogin() {
           {tab === "otp" && (
             <div data-testid="form-otp">
               <div className="mb-6 text-center">
-                <Mail className="h-10 w-10 mx-auto mb-3" style={{ color: "#C9941A" }} />
+                <Mail className="h-10 w-10 mx-auto mb-3" style={{ color: "#E2741B" }} />
                 <p className="text-sm" style={{ color: "#999" }}>
                   We sent a 6-digit code to
                 </p>
@@ -386,7 +386,7 @@ export default function RecoveryLogin() {
                 <Button
                   type="submit"
                   className="w-full font-bold"
-                  style={{ background: "#C9941A", color: "#000" }}
+                  style={{ background: "#E2741B", color: "#000" }}
                   disabled={otpVerifyMut.isPending || otpCode.length < 6}
                   data-testid="button-otp-verify"
                 >

@@ -97,13 +97,13 @@ export default function AdminRadioQueue() {
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <div className="mx-auto max-w-5xl px-4 py-8">
         <header className="mb-6">
-          <div className="flex items-center gap-2 text-[#C9941A] mb-1">
+          <div className="flex items-center gap-2 text-[#E2741B] mb-1">
             <ShieldAlert className="w-4 h-4" />
             <span className="text-sm font-semibold uppercase tracking-wider">Admin · Curation</span>
           </div>
           <h1 className="text-3xl font-bold" data-testid="text-admin-radio-title">Sasquatch Radio Queue</h1>
           <p className="text-white/60 mt-1">
-            Survivor-submitted anthems awaiting broadcast review. Approving sends the track to the public rotation at <code className="text-[#C9941A]">/recovery/radio</code>.
+            Survivor-submitted anthems awaiting broadcast review. Approving sends the track to the public rotation at <code className="text-[#E2741B]">/recovery/radio</code>.
           </p>
         </header>
 
@@ -114,7 +114,7 @@ export default function AdminRadioQueue() {
               size="sm"
               variant={filter === f.key ? "default" : "outline"}
               onClick={() => setFilter(f.key)}
-              className={filter === f.key ? "bg-[#C9941A] text-black hover:bg-[#C9941A]/90" : ""}
+              className={filter === f.key ? "bg-[#E2741B] text-black hover:bg-[#E2741B]/90" : ""}
               data-testid={`button-filter-${f.key}`}
             >
               {f.label}
@@ -208,7 +208,7 @@ function DjIntroSection({ approvedTracks }: { approvedTracks: QueueItem[] }) {
 
   return (
     <section className="mt-12 pt-8 border-t border-white/10">
-      <div className="flex items-center gap-2 text-[#C9941A] mb-1">
+      <div className="flex items-center gap-2 text-[#E2741B] mb-1">
         <RadioIcon className="w-4 h-4" />
         <span className="text-sm font-semibold uppercase tracking-wider">Coach Sasquatch DJ</span>
       </div>
@@ -257,7 +257,7 @@ function DjIntroSection({ approvedTracks }: { approvedTracks: QueueItem[] }) {
                     });
                   }}
                   disabled={busy || mintMutation.isPending}
-                  className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black"
+                  className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black"
                   data-testid={`button-mint-${t.id}`}
                 >
                   {busy ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <RadioIcon className="w-4 h-4 mr-1" />}
@@ -308,7 +308,7 @@ function QueueRow({ item, onReview, pending }: { item: QueueItem; onReview: (act
           <div className="text-sm text-white/60">
             by <span className="text-white/80">{item.artistName ?? "(no artist name)"}</span>
             {(item.broadcastVibe ?? script.vibe) && (
-              <> · <span className="text-[#C9941A]">{item.broadcastVibe ?? script.vibe}</span></>
+              <> · <span className="text-[#E2741B]">{item.broadcastVibe ?? script.vibe}</span></>
             )}
           </div>
           {item.broadcastSubmittedAt && (

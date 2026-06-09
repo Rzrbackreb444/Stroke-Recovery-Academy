@@ -41,7 +41,7 @@ export default function NewsletterSignupWidget({
         style={{ background: "#1a1a1a", border: "1px solid #333" }}
         data-testid="newsletter-success"
       >
-        <CheckCircle className="h-10 w-10 mx-auto mb-3" style={{ color: "#C9941A" }} />
+        <CheckCircle className="h-10 w-10 mx-auto mb-3" style={{ color: "#E2741B" }} />
         <p className="font-bold text-lg" style={{ color: "#FFF", fontFamily: "Georgia, serif" }}>
           You're in.
         </p>
@@ -69,7 +69,7 @@ export default function NewsletterSignupWidget({
         <Button
           type="submit"
           disabled={subscribeMut.isPending}
-          style={{ background: "#C9941A", color: "#000", fontWeight: 700 }}
+          style={{ background: "#E2741B", color: "#000", fontWeight: 700 }}
           data-testid="button-newsletter-subscribe"
         >
           {subscribeMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Subscribe Free"}
@@ -93,9 +93,9 @@ export default function NewsletterSignupWidget({
       <div className="flex items-start gap-4 mb-6">
         <div
           className="rounded-full p-2.5 shrink-0"
-          style={{ background: "#2a1f00", border: "1px solid #C9941A" }}
+          style={{ background: "#2a1f00", border: "1px solid #E2741B" }}
         >
-          <Mail className="h-5 w-5" style={{ color: "#C9941A" }} />
+          <Mail className="h-5 w-5" style={{ color: "#E2741B" }} />
         </div>
         <div>
           <h3
@@ -115,7 +115,7 @@ export default function NewsletterSignupWidget({
         className="rounded mb-6 p-4"
         style={{ background: "#111", border: "1px solid #2a2a2a" }}
       >
-        <p className="text-xs uppercase tracking-wider mb-2" style={{ color: "#C9941A", fontWeight: 700 }}>
+        <p className="text-xs uppercase tracking-wider mb-2" style={{ color: "#E2741B", fontWeight: 700 }}>
           10 editions. 67 days. Real content.
         </p>
         <ul className="space-y-1.5">
@@ -128,7 +128,7 @@ export default function NewsletterSignupWidget({
             "...5 more editions through Day 67",
           ].map((item, i) => (
             <li key={i} className="text-xs flex items-center gap-2" style={{ color: "#888" }}>
-              <span style={{ color: "#C9941A", fontSize: "8px" }}>◆</span>
+              <span style={{ color: "#E2741B", fontSize: "8px" }}>◆</span>
               {item}
             </li>
           ))}
@@ -165,7 +165,7 @@ export default function NewsletterSignupWidget({
         <Button
           type="submit"
           className="w-full font-bold tracking-wide"
-          style={{ background: "#C9941A", color: "#000" }}
+          style={{ background: "#E2741B", color: "#000" }}
           disabled={subscribeMut.isPending}
           data-testid="button-newsletter-subscribe"
         >

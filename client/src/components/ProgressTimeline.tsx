@@ -38,7 +38,7 @@ export default function ProgressTimeline() {
     <section className="py-20 bg-[#080808]" id="journey">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <p className="text-[#C9941A] text-sm font-semibold uppercase tracking-widest mb-4">
+          <p className="text-[#E2741B] text-sm font-semibold uppercase tracking-widest mb-4">
             The Impossible Journey
           </p>
           <h2 className="text-4xl sm:text-5xl font-black text-white mb-4" data-testid="text-timeline-title">
@@ -64,7 +64,7 @@ export default function ProgressTimeline() {
                 <div className="flex-1 hidden md:block" />
 
                 {/* Center node */}
-                <div className="absolute left-6 md:left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-[#C9941A] flex items-center justify-center z-10 flex-shrink-0">
+                <div className="absolute left-6 md:left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-[#E2741B] flex items-center justify-center z-10 flex-shrink-0">
                   <span className="text-xs font-black text-black leading-none">
                     {milestone.percentage}%
                   </span>
@@ -73,9 +73,9 @@ export default function ProgressTimeline() {
                 {/* Card */}
                 <div className="flex-1 ml-16 md:ml-0 bg-[#111] border border-[#1e1e1e] rounded-xl p-6">
                   <div className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-[#C9941A] flex-shrink-0 mt-0.5" />
+                    <CheckCircle2 className="h-5 w-5 text-[#E2741B] flex-shrink-0 mt-0.5" />
                     <div>
-                      <span className="text-[#C9941A] text-xs font-semibold uppercase tracking-widest">
+                      <span className="text-[#E2741B] text-xs font-semibold uppercase tracking-widest">
                         {milestone.year}
                       </span>
                       <h3 className="text-xl font-bold text-white mt-1 mb-2">{milestone.title}</h3>

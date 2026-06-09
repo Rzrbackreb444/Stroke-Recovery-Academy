@@ -24,11 +24,11 @@ import {
 } from "lucide-react";
 
 const moods = [
-  { value: "great", label: "Great", icon: Smile, color: "text-[#C9941A]" },
+  { value: "great", label: "Great", icon: Smile, color: "text-[#E2741B]" },
   { value: "good", label: "Good", icon: Sun, color: "text-yellow-500" },
   { value: "okay", label: "Okay", icon: Meh, color: "text-gray-400" },
   { value: "struggling", label: "Struggling", icon: Cloud, color: "text-blue-400" },
-  { value: "difficult", label: "Difficult", icon: Frown, color: "text-[#C9941A]400" },
+  { value: "difficult", label: "Difficult", icon: Frown, color: "text-[#E2741B]400" },
 ];
 
 export default function RecoveryJournal() {
@@ -106,7 +106,7 @@ export default function RecoveryJournal() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
-              <BookHeart className="h-6 w-6 text-[#C9941A]" />
+              <BookHeart className="h-6 w-6 text-[#E2741B]" />
               Recovery Journal
             </h1>
             <p className="text-gray-400 text-sm mt-1">
@@ -116,7 +116,7 @@ export default function RecoveryJournal() {
           
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-[#C9941A] text-black" data-testid="button-new-entry">
+              <Button className="bg-[#E2741B] text-black" data-testid="button-new-entry">
                 <Plus className="h-4 w-4 mr-2" />
                 New Entry
               </Button>
@@ -138,7 +138,7 @@ export default function RecoveryJournal() {
                           onClick={() => setForm({ ...form, mood: mood.value })}
                           className={`flex flex-col items-center p-3 rounded-lg transition-all ${
                             form.mood === mood.value 
-                              ? 'bg-[#C9941A] text-black/20 border border-[#C9941A]' 
+                              ? 'bg-[#E2741B] text-black/20 border border-[#E2741B]' 
                               : 'bg-[#1a1a1a] hover:bg-zinc-700'
                           }`}
                         >
@@ -161,7 +161,7 @@ export default function RecoveryJournal() {
                       step={1}
                       className="flex-1"
                     />
-                    <Badge variant="outline" className="border-[#C9941A] text-[#C9941A]">
+                    <Badge variant="outline" className="border-[#E2741B] text-[#E2741B]">
                       {form.energyLevel}
                     </Badge>
                   </div>
@@ -224,7 +224,7 @@ export default function RecoveryJournal() {
 
                 <Button 
                   onClick={handleSubmit} 
-                  className="w-full bg-[#C9941A] text-black"
+                  className="w-full bg-[#E2741B] text-black"
                   disabled={createMutation.isPending}
                   data-testid="button-save-entry"
                 >
@@ -237,12 +237,12 @@ export default function RecoveryJournal() {
 
         <div className="grid grid-cols-3 gap-4 mb-6">
           <Card className="bg-[#1a1a1a] border-[#333] p-4 text-center">
-            <Calendar className="h-5 w-5 text-[#C9941A] mx-auto mb-2" />
+            <Calendar className="h-5 w-5 text-[#E2741B] mx-auto mb-2" />
             <div className="text-2xl font-bold">{entries?.length || 0}</div>
             <div className="text-sm text-gray-400">Total Entries</div>
           </Card>
           <Card className="bg-[#1a1a1a] border-[#333] p-4 text-center">
-            <TrendingUp className="h-5 w-5 text-[#C9941A] mx-auto mb-2" />
+            <TrendingUp className="h-5 w-5 text-[#E2741B] mx-auto mb-2" />
             <div className="text-2xl font-bold">
               {entries?.filter((e: any) => e.mood === 'great' || e.mood === 'good').length || 0}
             </div>
@@ -261,12 +261,12 @@ export default function RecoveryJournal() {
           <div className="text-center py-12 text-gray-400">Loading your journal...</div>
         ) : !entries?.length ? (
           <Card className="bg-[#1a1a1a] border-[#333] p-8 text-center">
-            <BookHeart className="h-12 w-12 text-[#C9941A] mx-auto mb-4" />
+            <BookHeart className="h-12 w-12 text-[#E2741B] mx-auto mb-4" />
             <h3 className="text-lg font-semibold mb-2">Start Your Journal</h3>
             <p className="text-gray-400 mb-4">
               Daily reflection helps you see patterns and celebrate progress.
             </p>
-            <Button onClick={() => setIsOpen(true)} className="bg-[#C9941A] text-black">
+            <Button onClick={() => setIsOpen(true)} className="bg-[#E2741B] text-black">
               Write Your First Entry
             </Button>
           </Card>
@@ -301,7 +301,7 @@ export default function RecoveryJournal() {
                   
                   {entry.wins && (
                     <div className="mb-3">
-                      <Badge className="bg-[#C9941A]/20 text-[#C9941A] mb-1">Wins</Badge>
+                      <Badge className="bg-[#E2741B]/20 text-[#E2741B] mb-1">Wins</Badge>
                       <p className="text-gray-300 text-sm">{entry.wins}</p>
                     </div>
                   )}

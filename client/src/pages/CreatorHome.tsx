@@ -53,7 +53,7 @@ const studios = [
     description: "Write, format, and publish books with AI assistance. From outline to Amazon in hours.",
     features: ["AI-powered writing", "Professional formatting", "Print-on-demand", "EPUB/PDF export"],
     href: "/book-studio",
-    gradient: "from-[#C9941A] to-[#8B6914]",
+    gradient: "from-[#E2741B] to-[#8B6914]",
     badge: null,
   },
   {
@@ -162,10 +162,10 @@ export default function CreatorHome() {
     return (
       <div className="flex items-center justify-center h-screen bg-[#0D0D0D]" data-testid="loading-state">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#C9941A] to-[#8B6914] flex items-center justify-center animate-pulse">
+          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#E2741B] to-[#8B6914] flex items-center justify-center animate-pulse">
             <span className="text-black font-black text-xl">K</span>
           </div>
-          <Loader2 className="h-8 w-8 animate-spin text-[#C9941A]" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#E2741B]" />
         </div>
       </div>
     );
@@ -176,20 +176,20 @@ export default function CreatorHome() {
       <GlobalHeader variant="transparent" />
       
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#C9941A]/10 via-transparent to-[#C9941A]/5" />
-        <div className="absolute top-20 right-0 w-[600px] h-[600px] bg-[#C9941A]/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#C9941A]/5 rounded-full blur-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#E2741B]/10 via-transparent to-[#E2741B]/5" />
+        <div className="absolute top-20 right-0 w-[600px] h-[600px] bg-[#E2741B]/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#E2741B]/5 rounded-full blur-3xl" />
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
           <div className="text-center max-w-4xl mx-auto">
-            <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-6 px-4 py-1.5 text-sm font-semibold">
+            <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 mb-6 px-4 py-1.5 text-sm font-semibold">
               <Sparkles className="w-4 h-4 mr-2" />
               Powered by Advanced AI
             </Badge>
             
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white mb-6">
               Create.{" "}
-              <span className="bg-gradient-to-r from-[#C9941A] to-[#8B6914] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#E2741B] to-[#8B6914] bg-clip-text text-transparent">
                 Publish.
               </span>{" "}
               Earn.
@@ -197,13 +197,13 @@ export default function CreatorHome() {
             
             <p className="text-xl sm:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
               The ultimate AI creator platform. Write books, compose music, create courses, and earn{" "}
-              <span className="font-bold text-[#C9941A]">85% revenue</span> from everything you create.
+              <span className="font-bold text-[#E2741B]">85% revenue</span> from everything you create.
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button 
                 size="lg"
-                className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black font-bold text-lg px-8 py-6 shadow-xl shadow-[#C9941A]/25 group"
+                className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black font-bold text-lg px-8 py-6 shadow-xl shadow-[#E2741B]/25 group"
                 onClick={() => window.location.href = "/api/login"}
                 data-testid="cta-get-started"
               >
@@ -213,7 +213,7 @@ export default function CreatorHome() {
               <Button 
                 variant="outline"
                 size="lg"
-                className="border-2 border-[#333] hover:border-[#C9941A] hover:bg-[#C9941A]/10 text-white font-semibold text-lg px-8 py-6"
+                className="border-2 border-[#333] hover:border-[#E2741B] hover:bg-[#E2741B]/10 text-white font-semibold text-lg px-8 py-6"
                 onClick={() => window.location.href = "/pricing"}
                 data-testid="cta-view-pricing"
               >
@@ -236,12 +236,12 @@ export default function CreatorHome() {
       <section className="py-24 bg-[#1a1a1a]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-4">
+            <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 mb-4">
               7 Professional Studios
             </Badge>
             <h2 className="text-4xl sm:text-5xl font-black text-white mb-4">
               Everything You Need to{" "}
-              <span className="text-[#C9941A]">Create & Sell</span>
+              <span className="text-[#E2741B]">Create & Sell</span>
             </h2>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
               Professional tools that help you create, publish, and monetize your content across every medium.
@@ -251,7 +251,7 @@ export default function CreatorHome() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {studios.map((studio, index) => (
               <Link key={index} href={studio.href}>
-                <Card className="group h-full bg-[#1a1a1a] border border-[#333] hover:border-[#C9941A]/50 hover:shadow-xl hover:shadow-[#C9941A]/10 transition-all duration-300 cursor-pointer overflow-hidden" data-testid={`card-${studio.title.toLowerCase().replace(/\s/g, '-')}`}>
+                <Card className="group h-full bg-[#1a1a1a] border border-[#333] hover:border-[#E2741B]/50 hover:shadow-xl hover:shadow-[#E2741B]/10 transition-all duration-300 cursor-pointer overflow-hidden" data-testid={`card-${studio.title.toLowerCase().replace(/\s/g, '-')}`}>
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4 mb-4">
                       <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${studio.gradient} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
@@ -259,11 +259,11 @@ export default function CreatorHome() {
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-bold text-lg text-white group-hover:text-[#C9941A] transition-colors">
+                          <h3 className="font-bold text-lg text-white group-hover:text-[#E2741B] transition-colors">
                             {studio.title}
                           </h3>
                           {studio.badge && (
-                            <Badge className="bg-[#C9941A] text-black text-[10px]">
+                            <Badge className="bg-[#E2741B] text-black text-[10px]">
                               {studio.badge}
                             </Badge>
                           )}
@@ -280,7 +280,7 @@ export default function CreatorHome() {
                         </Badge>
                       ))}
                     </div>
-                    <div className="mt-4 flex items-center text-[#C9941A] font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="mt-4 flex items-center text-[#E2741B] font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity">
                       Open Studio
                       <ChevronRight className="w-4 h-4 ml-1" />
                     </div>
@@ -296,12 +296,12 @@ export default function CreatorHome() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-4">
+              <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 mb-4">
                 Why Stroke Recovery Academy
               </Badge>
               <h2 className="text-4xl sm:text-5xl font-black text-white mb-6">
                 The Creator Platform Built for{" "}
-                <span className="text-[#C9941A]">Earning</span>
+                <span className="text-[#E2741B]">Earning</span>
               </h2>
               <p className="text-xl text-gray-300 mb-8 leading-relaxed">
                 We believe creators deserve more. That's why we offer industry-leading revenue share, 
@@ -311,8 +311,8 @@ export default function CreatorHome() {
               <div className="space-y-6">
                 {features.map((feature, index) => (
                   <div key={index} className="flex gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-[#C9941A]/20 flex items-center justify-center flex-shrink-0">
-                      <feature.icon className="w-6 h-6 text-[#C9941A]" />
+                    <div className="w-12 h-12 rounded-xl bg-[#E2741B]/20 flex items-center justify-center flex-shrink-0">
+                      <feature.icon className="w-6 h-6 text-[#E2741B]" />
                     </div>
                     <div>
                       <h3 className="font-bold text-lg text-white mb-1">{feature.title}</h3>
@@ -324,11 +324,11 @@ export default function CreatorHome() {
             </div>
             
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#C9941A]/20 to-[#C9941A]/5 rounded-3xl transform rotate-3" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#E2741B]/20 to-[#E2741B]/5 rounded-3xl transform rotate-3" />
               <Card className="relative bg-[#1a1a1a] border border-[#333] shadow-2xl rounded-3xl overflow-hidden">
                 <CardContent className="p-8">
                   <div className="text-center mb-8">
-                    <div className="inline-flex items-center gap-2 bg-[#C9941A]/20 text-[#C9941A] px-4 py-2 rounded-full font-bold text-sm mb-4">
+                    <div className="inline-flex items-center gap-2 bg-[#E2741B]/20 text-[#E2741B] px-4 py-2 rounded-full font-bold text-sm mb-4">
                       <Award className="w-4 h-4" />
                       Creator Success Story
                     </div>
@@ -347,11 +347,11 @@ export default function CreatorHome() {
                     </div>
                     <div className="flex items-center justify-between p-3 bg-[#0D0D0D] border border-[#333] rounded-lg">
                       <span className="text-gray-400">Revenue Share</span>
-                      <span className="font-bold text-[#C9941A]">85%</span>
+                      <span className="font-bold text-[#E2741B]">85%</span>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-[#C9941A]/20 border border-[#C9941A]/30 rounded-lg">
+                    <div className="flex items-center justify-between p-3 bg-[#E2741B]/20 border border-[#E2741B]/30 rounded-lg">
                       <span className="font-semibold text-white">Total Payout</span>
-                      <span className="font-black text-[#C9941A] text-xl">$23,800</span>
+                      <span className="font-black text-[#E2741B] text-xl">$23,800</span>
                     </div>
                   </div>
                 </CardContent>
@@ -364,11 +364,11 @@ export default function CreatorHome() {
       <section className="py-24 bg-[#1a1a1a]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-4">
+            <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 mb-4">
               Creator Stories
             </Badge>
             <h2 className="text-4xl sm:text-5xl font-black text-white mb-4">
-              Loved by <span className="text-[#C9941A]">10,000+ Creators</span>
+              Loved by <span className="text-[#E2741B]">10,000+ Creators</span>
             </h2>
           </div>
           
@@ -378,7 +378,7 @@ export default function CreatorHome() {
                 <CardContent className="p-6">
                   <div className="flex items-center gap-1 mb-4">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 fill-[#C9941A] text-[#C9941A]" />
+                      <Star key={i} className="w-5 h-5 fill-[#E2741B] text-[#E2741B]" />
                     ))}
                   </div>
                   <p className="text-gray-300 mb-6 leading-relaxed italic">
@@ -386,7 +386,7 @@ export default function CreatorHome() {
                   </p>
                   <div className="flex items-center justify-between gap-2 flex-wrap">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-[#C9941A] text-black flex items-center justify-center font-bold text-lg">
+                      <div className="w-12 h-12 rounded-full bg-[#E2741B] text-black flex items-center justify-center font-bold text-lg">
                         {testimonial.avatar}
                       </div>
                       <div>
@@ -395,7 +395,7 @@ export default function CreatorHome() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-[#C9941A] text-lg">{testimonial.earnings}</p>
+                      <p className="font-bold text-[#E2741B] text-lg">{testimonial.earnings}</p>
                       <p className="text-xs text-gray-400">Earned</p>
                     </div>
                   </div>
@@ -408,12 +408,12 @@ export default function CreatorHome() {
 
       <section className="py-24 bg-gradient-to-br from-[#0D0D0D] to-[#1a1a1a]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-6 px-4 py-1.5">
+          <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 mb-6 px-4 py-1.5">
             <Zap className="w-4 h-4 mr-2" />
             Start Free Today
           </Badge>
           <h2 className="text-4xl sm:text-5xl font-black text-white mb-6">
-            Ready to Start <span className="text-[#C9941A]">Creating</span>?
+            Ready to Start <span className="text-[#E2741B]">Creating</span>?
           </h2>
           <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
             Join thousands of creators who are building their businesses with Stroke Recovery Academy. 
@@ -422,7 +422,7 @@ export default function CreatorHome() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button 
               size="lg"
-              className="bg-[#C9941A] hover:bg-[#C9941A]/90 text-black font-bold text-lg px-10 py-6 shadow-xl shadow-[#C9941A]/25"
+              className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-black font-bold text-lg px-10 py-6 shadow-xl shadow-[#E2741B]/25"
               onClick={() => window.location.href = "/api/login"}
             >
               Get Started Free
@@ -431,7 +431,7 @@ export default function CreatorHome() {
             <Button 
               variant="outline"
               size="lg"
-              className="border-2 border-[#333] text-white hover:border-[#C9941A] hover:bg-[#C9941A]/10 font-semibold text-lg px-10 py-6"
+              className="border-2 border-[#333] text-white hover:border-[#E2741B] hover:bg-[#E2741B]/10 font-semibold text-lg px-10 py-6"
               onClick={() => window.location.href = "/pricing"}
             >
               View Plans

@@ -59,10 +59,10 @@ export default function SpotlightOptInCard() {
   const optedIn = !!data?.optedIn;
 
   return (
-    <Card className="border-[#C9941A]/30 bg-[#111]" data-testid="card-spotlight-optin">
+    <Card className="border-[#E2741B]/30 bg-[#111]" data-testid="card-spotlight-optin">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base font-black uppercase tracking-widest text-white">
-          <Star className="h-4 w-4" style={{ color: "#C9941A" }} />
+          <Star className="h-4 w-4" style={{ color: "#E2741B" }} />
           Survivor Spotlight
         </CardTitle>
       </CardHeader>
@@ -75,8 +75,8 @@ export default function SpotlightOptInCard() {
 
         {optedIn ? (
           <div className="space-y-3">
-            <div className="flex items-start gap-2 rounded-md border border-[#C9941A]/40 bg-[#C9941A]/10 p-3">
-              <ShieldCheck className="mt-0.5 h-4 w-4 flex-shrink-0" style={{ color: "#C9941A" }} />
+            <div className="flex items-start gap-2 rounded-md border border-[#E2741B]/40 bg-[#E2741B]/10 p-3">
+              <ShieldCheck className="mt-0.5 h-4 w-4 flex-shrink-0" style={{ color: "#E2741B" }} />
               <div>
                 <p className="text-sm font-semibold text-white">You&apos;re opted in.</p>
                 <p className="mt-1 text-xs text-gray-400">
@@ -125,7 +125,7 @@ export default function SpotlightOptInCard() {
               onClick={() => optIn.mutate()}
               disabled={!consent || optIn.isPending}
               data-testid="button-spotlight-optin"
-              className="bg-[#C9941A] text-black hover:bg-[#C9941A]"
+              className="bg-[#E2741B] text-black hover:bg-[#E2741B]"
             >
               {optIn.isPending ? "Saving…" : "Opt in to Survivor Spotlight"}
             </Button>

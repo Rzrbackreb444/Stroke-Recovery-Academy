@@ -50,7 +50,7 @@ export default function CreatorLanding() {
 
       {/* Announcement Banner */}
       {showBanner && (
-        <div className="relative bg-[#C9941A] text-black py-2.5 px-4 text-center text-sm font-medium z-50">
+        <div className="relative bg-[#E2741B] text-black py-2.5 px-4 text-center text-sm font-medium z-50">
           <div className="flex items-center justify-center gap-2">
             <Sparkles className="w-4 h-4" />
             <span>New! All the AI tools you need, organized in one toolkit</span>
@@ -80,7 +80,7 @@ export default function CreatorLanding() {
             {/* Logo */}
             <Link href="/">
               <span 
-                className="text-[#C9941A] text-2xl font-bold tracking-tight cursor-pointer"
+                className="text-[#E2741B] text-2xl font-bold tracking-tight cursor-pointer"
                 style={{ fontFamily: "'Inter', sans-serif" }}
                 data-testid="logo"
               >
@@ -220,7 +220,7 @@ export default function CreatorLanding() {
       <section className="py-24 bg-[#0D0D0D]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-4">
-            <span className="text-[#C9941A] text-sm font-semibold uppercase tracking-wider">AI Toolkit</span>
+            <span className="text-[#E2741B] text-sm font-semibold uppercase tracking-wider">AI Toolkit</span>
           </div>
           <h2 
             className="text-4xl md:text-5xl lg:text-6xl text-white text-center mb-6"
@@ -254,11 +254,11 @@ export default function CreatorLanding() {
                 className="group relative p-6 bg-[#1a1a1a] rounded-xl border border-white/5 hover:border-white/20 transition-all duration-300 cursor-pointer"
               >
                 {model.tag && (
-                  <span className="absolute top-4 right-4 text-xs font-bold text-[#C9941A] bg-[#C9941A]/10 px-2 py-1 rounded">
+                  <span className="absolute top-4 right-4 text-xs font-bold text-[#E2741B] bg-[#E2741B]/10 px-2 py-1 rounded">
                     {model.tag}
                   </span>
                 )}
-                <h3 className="text-white font-semibold mb-2 group-hover:text-[#C9941A] transition-colors">
+                <h3 className="text-white font-semibold mb-2 group-hover:text-[#E2741B] transition-colors">
                   {model.name}
                 </h3>
                 <p className="text-white/50 text-sm">{model.desc}</p>
@@ -336,7 +336,7 @@ export default function CreatorLanding() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Testimonial 1 - Author */}
             <div 
-              className="p-6 rounded-xl bg-[#1a1a1a] border border-white/10 hover:border-[#C9941A]/50 transition-all duration-300"
+              className="p-6 rounded-xl bg-[#1a1a1a] border border-white/10 hover:border-[#E2741B]/50 transition-all duration-300"
               data-testid="testimonial-card-1"
             >
               <div className="flex items-start gap-4 mb-4">
@@ -355,14 +355,14 @@ export default function CreatorLanding() {
               
               <div className="flex gap-1" data-testid="testimonial-rating-1">
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <Star key={i} className="w-4 h-4 fill-[#C9941A] text-[#C9941A]" data-testid={`star-${i}-1`} />
+                  <Star key={i} className="w-4 h-4 fill-[#E2741B] text-[#E2741B]" data-testid={`star-${i}-1`} />
                 ))}
               </div>
             </div>
 
             {/* Testimonial 2 - Music Producer */}
             <div 
-              className="p-6 rounded-xl bg-[#1a1a1a] border border-white/10 hover:border-[#C9941A]/50 transition-all duration-300"
+              className="p-6 rounded-xl bg-[#1a1a1a] border border-white/10 hover:border-[#E2741B]/50 transition-all duration-300"
               data-testid="testimonial-card-2"
             >
               <div className="flex items-start gap-4 mb-4">
@@ -381,14 +381,14 @@ export default function CreatorLanding() {
               
               <div className="flex gap-1" data-testid="testimonial-rating-2">
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <Star key={i} className="w-4 h-4 fill-[#C9941A] text-[#C9941A]" data-testid={`star-${i}-2`} />
+                  <Star key={i} className="w-4 h-4 fill-[#E2741B] text-[#E2741B]" data-testid={`star-${i}-2`} />
                 ))}
               </div>
             </div>
 
             {/* Testimonial 3 - Content Creator */}
             <div 
-              className="p-6 rounded-xl bg-[#1a1a1a] border border-white/10 hover:border-[#C9941A]/50 transition-all duration-300"
+              className="p-6 rounded-xl bg-[#1a1a1a] border border-white/10 hover:border-[#E2741B]/50 transition-all duration-300"
               data-testid="testimonial-card-3"
             >
               <div className="flex items-start gap-4 mb-4">
@@ -407,7 +407,7 @@ export default function CreatorLanding() {
               
               <div className="flex gap-1" data-testid="testimonial-rating-3">
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <Star key={i} className="w-4 h-4 fill-[#C9941A] text-[#C9941A]" data-testid={`star-${i}-3`} />
+                  <Star key={i} className="w-4 h-4 fill-[#E2741B] text-[#E2741B]" data-testid={`star-${i}-3`} />
                 ))}
               </div>
             </div>
@@ -458,7 +458,7 @@ export default function CreatorLanding() {
               <Link key={item.name} href="/marketplace">
                 <div className={`aspect-square rounded-2xl bg-gradient-to-br ${item.gradient} border border-white/10 p-6 flex flex-col justify-end cursor-pointer hover:border-white/30 transition-all group`}>
                   <h3 className="text-white font-semibold mb-1">{item.name}</h3>
-                  <span className="text-white/50 text-sm group-hover:text-[#C9941A] transition-colors flex items-center gap-1">
+                  <span className="text-white/50 text-sm group-hover:text-[#E2741B] transition-colors flex items-center gap-1">
                     Explore <ArrowRight className="w-3 h-3" />
                   </span>
                 </div>
@@ -539,7 +539,7 @@ export default function CreatorLanding() {
       <footer className="py-12 bg-[#0D0D0D] border-t border-white/10">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <span className="text-[#C9941A] font-bold text-xl">Stroke Recovery Academy</span>
+            <span className="text-[#E2741B] font-bold text-xl">Stroke Recovery Academy</span>
             <div className="flex items-center gap-8 text-white/50 text-sm">
               <Link href="/pricing"><span className="hover:text-white cursor-pointer">Pricing</span></Link>
               <Link href="/marketplace"><span className="hover:text-white cursor-pointer">Marketplace</span></Link>

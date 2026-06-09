@@ -29,19 +29,19 @@ export default function SasquatchQuoteModal({ open, onClose, quote, creditsEarne
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="bg-[#0D0D0D] border border-[#C9941A]/40 text-white max-w-md" data-testid="dialog-sasquatch-quote">
+      <DialogContent className="bg-[#0D0D0D] border border-[#E2741B]/40 text-white max-w-md" data-testid="dialog-sasquatch-quote">
         <DialogTitle className="sr-only">Check-in reward</DialogTitle>
         <div className="flex flex-col items-center text-center gap-4 py-2">
-          <div className="w-12 h-12 rounded-full bg-[#C9941A]/10 border border-[#C9941A]/40 flex items-center justify-center">
-            <Flame className="w-6 h-6 text-[#C9941A]" />
+          <div className="w-12 h-12 rounded-full bg-[#E2741B]/10 border border-[#E2741B]/40 flex items-center justify-center">
+            <Flame className="w-6 h-6 text-[#E2741B]" />
           </div>
-          <div className="text-xs uppercase tracking-widest text-[#C9941A]">Sasquatch says</div>
+          <div className="text-xs uppercase tracking-widest text-[#E2741B]">Sasquatch says</div>
           <p className="text-lg leading-snug font-serif" data-testid="text-quote">"{quote.text}"</p>
 
           <div className="flex items-center gap-2 text-sm text-gray-300 bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2" data-testid="text-credits-earned">
-            <Coins className="w-4 h-4 text-[#C9941A]" />
+            <Coins className="w-4 h-4 text-[#E2741B]" />
             <span>+{creditsEarned} Power Points earned</span>
-            {streakBonusLabel && <span className="text-[#C9941A]">· {streakBonusLabel}</span>}
+            {streakBonusLabel && <span className="text-[#E2741B]">· {streakBonusLabel}</span>}
           </div>
 
           {typeof streak === "number" && streak > 1 && (
@@ -52,7 +52,7 @@ export default function SasquatchQuoteModal({ open, onClose, quote, creditsEarne
             <Button variant="outline" className="flex-1" onClick={share} data-testid="button-share-quote">
               <Share2 className="w-4 h-4 mr-2" /> Share
             </Button>
-            <Button className="flex-1 bg-[#C9941A] text-black hover:bg-[#b8831a]" onClick={onClose} data-testid="button-close-quote">
+            <Button className="flex-1 bg-[#E2741B] text-black hover:bg-[#b8831a]" onClick={onClose} data-testid="button-close-quote">
               Keep going
             </Button>
           </div>

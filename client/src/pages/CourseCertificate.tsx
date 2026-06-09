@@ -119,9 +119,9 @@ export default function CourseCertificate() {
       case "modern":
         return {
           bg: "bg-gradient-to-br from-zinc-900 to-zinc-800",
-          border: "border-[#C9941A]",
+          border: "border-[#E2741B]",
           text: "text-white",
-          accent: "text-[#C9941A]",
+          accent: "text-[#E2741B]",
           secondary: "text-gray-400",
         };
       case "elegant":
@@ -137,7 +137,7 @@ export default function CourseCertificate() {
           bg: "bg-gradient-to-br from-black to-zinc-900",
           border: "border-amber-500",
           text: "text-white",
-          accent: "text-[#C9941A]",
+          accent: "text-[#E2741B]",
           secondary: "text-gray-400",
         };
       default:
@@ -157,7 +157,7 @@ export default function CourseCertificate() {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
         <Card className="max-w-md w-full p-8 bg-[#1a1a1a] border-[#333] text-center">
-          <Award className="w-12 h-12 text-[#C9941A] mx-auto mb-4" />
+          <Award className="w-12 h-12 text-[#E2741B] mx-auto mb-4" />
           <h1 className="text-xl font-semibold mb-2">
             {certLoading ? "Loading certificate…" : "Certificate not available"}
           </h1>
@@ -256,7 +256,7 @@ export default function CourseCertificate() {
                 </div>
               </DialogContent>
             </Dialog>
-            <Button onClick={handleDownload} className="bg-[#C9941A]" data-testid="button-download">
+            <Button onClick={handleDownload} className="bg-[#E2741B]" data-testid="button-download">
               <Download className="w-4 h-4 mr-2" />
               Download PDF
             </Button>
@@ -355,11 +355,11 @@ export default function CourseCertificate() {
             {/* Verification badge */}
             <Card className="bg-[#1a1a1a] border-[#333] p-4 mt-6">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-[#C9941A]/20 flex items-center justify-center">
-                  <Verified className="w-6 h-6 text-[#C9941A]" />
+                <div className="w-12 h-12 rounded-full bg-[#E2741B]/20 flex items-center justify-center">
+                  <Verified className="w-6 h-6 text-[#E2741B]" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold text-[#C9941A]">Verified Certificate</p>
+                  <p className="font-semibold text-[#E2741B]">Verified Certificate</p>
                   <p className="text-sm text-gray-400">
                     This certificate can be verified at strokerecoveryacademy.com/verify
                   </p>
@@ -377,7 +377,7 @@ export default function CourseCertificate() {
             {/* Template selector */}
             <Card className="bg-[#1a1a1a] border-[#333] p-4">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Image className="w-4 h-4 text-[#C9941A]" />
+                <Image className="w-4 h-4 text-[#E2741B]" />
                 Certificate Template
               </h3>
               <div className="grid grid-cols-2 gap-2">
@@ -387,7 +387,7 @@ export default function CourseCertificate() {
                     onClick={() => setSelectedTemplate(template.id)}
                     className={`p-3 rounded-lg border-2 transition-all ${
                       selectedTemplate === template.id
-                        ? 'border-[#C9941A]'
+                        ? 'border-[#E2741B]'
                         : 'border-[#333] hover:border-zinc-600'
                     }`}
                     data-testid={`template-${template.id}`}
@@ -402,7 +402,7 @@ export default function CourseCertificate() {
             {/* Certificate details */}
             <Card className="bg-[#1a1a1a] border-[#333] p-4">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-[#C9941A]" />
+                <FileText className="w-4 h-4 text-[#E2741B]" />
                 Certificate Details
               </h3>
               <div className="space-y-3 text-sm">
@@ -436,7 +436,7 @@ export default function CourseCertificate() {
             {/* Skills earned */}
             <Card className="bg-[#1a1a1a] border-[#333] p-4">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[#C9941A]" />
+                <Sparkles className="w-4 h-4 text-[#E2741B]" />
                 Skills Earned
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -451,7 +451,7 @@ export default function CourseCertificate() {
             {/* Stats */}
             <Card className="bg-[#1a1a1a] border-[#333] p-4">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Trophy className="w-4 h-4 text-[#C9941A]" />
+                <Trophy className="w-4 h-4 text-[#E2741B]" />
                 Achievement Stats
               </h3>
               <div className="grid grid-cols-2 gap-4">
@@ -461,7 +461,7 @@ export default function CourseCertificate() {
                   <p className="text-xs text-gray-400">Learning Time</p>
                 </div>
                 <div className="text-center p-3 bg-[#1a1a1a] rounded-lg">
-                  <BookOpen className="w-5 h-5 text-[#C9941A] mx-auto mb-1" />
+                  <BookOpen className="w-5 h-5 text-[#E2741B] mx-auto mb-1" />
                   <p className="text-lg font-bold">{certificate.lessonsCompleted}</p>
                   <p className="text-xs text-gray-400">Lessons</p>
                 </div>
@@ -479,7 +479,7 @@ export default function CourseCertificate() {
             </Card>
             
             {/* Add to profile */}
-            <Card className="bg-gradient-to-br from-orange-500/20 to-red-500/20 border-[#C9941A]/30 p-4">
+            <Card className="bg-gradient-to-br from-orange-500/20 to-red-500/20 border-[#E2741B]/30 p-4">
               <div className="flex items-start gap-3">
                 <Linkedin className="w-6 h-6 text-blue-500" />
                 <div>

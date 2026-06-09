@@ -117,7 +117,7 @@ export default function RecoveryBlog() {
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         <div className="text-center mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold flex items-center justify-center gap-3 mb-3">
-            <BookOpen className="h-8 w-8 sm:h-10 sm:w-10 text-[#C9941A]" />
+            <BookOpen className="h-8 w-8 sm:h-10 sm:w-10 text-[#E2741B]" />
             Recovery Blog
           </h1>
           <p className="text-gray-400 text-base sm:text-lg">
@@ -143,7 +143,7 @@ export default function RecoveryBlog() {
               variant={activeCategory === cat.id ? "default" : "outline"}
               size="sm"
               onClick={() => setActiveCategory(cat.id)}
-              className={activeCategory === cat.id ? "bg-[#C9941A] text-black" : "border-[#333] text-gray-300"}
+              className={activeCategory === cat.id ? "bg-[#E2741B] text-black" : "border-[#333] text-gray-300"}
               data-testid={`button-category-${cat.id}`}
             >
               {cat.label}
@@ -184,20 +184,20 @@ export default function RecoveryBlog() {
         {!isLoading && activeCategory === "all" && featuredPosts.length > 0 && (
           <div className="mb-10">
             <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <TrendingUp className="h-6 w-6 text-[#C9941A]" />
+              <TrendingUp className="h-6 w-6 text-[#E2741B]" />
               Featured Articles
             </h2>
             <div className="grid sm:grid-cols-2 gap-6">
               {featuredPosts.slice(0, 2).map((post) => (
                 <Link key={post.id} href={`/recovery/blog/${post.slug}`}>
                   <Card
-                    className="bg-[#1a1a1a] border-[#333] overflow-hidden hover:border-[#C9941A]/50 transition-all duration-200 cursor-pointer group h-full"
+                    className="bg-[#1a1a1a] border-[#333] overflow-hidden hover:border-[#E2741B]/50 transition-all duration-200 cursor-pointer group h-full"
                     data-testid={`card-featured-${post.id}`}
                   >
-                    <div className="h-48 bg-gradient-to-br from-[#C9941A]/20 to-[#0D0D0D] flex items-center justify-center relative">
-                      <BookOpen className="h-16 w-16 text-[#C9941A]/50 group-hover:scale-110 transition-transform" />
+                    <div className="h-48 bg-gradient-to-br from-[#E2741B]/20 to-[#0D0D0D] flex items-center justify-center relative">
+                      <BookOpen className="h-16 w-16 text-[#E2741B]/50 group-hover:scale-110 transition-transform" />
                       <div className="absolute top-4 left-4">
-                        <Badge className="bg-[#C9941A] text-black">
+                        <Badge className="bg-[#E2741B] text-black">
                           <Sparkles className="h-3 w-3 mr-1" />
                           Featured
                         </Badge>
@@ -207,7 +207,7 @@ export default function RecoveryBlog() {
                       <Badge className={categoryColors[post.category] || "bg-gray-500/20 text-gray-400"}>
                         {post.category}
                       </Badge>
-                      <h3 className="text-xl font-bold mt-3 mb-2 text-white group-hover:text-[#C9941A] transition-colors">
+                      <h3 className="text-xl font-bold mt-3 mb-2 text-white group-hover:text-[#E2741B] transition-colors">
                         {post.title}
                       </h3>
                       <p className="text-gray-400 mb-4 line-clamp-2">{post.excerpt}</p>
@@ -258,17 +258,17 @@ export default function RecoveryBlog() {
             {filteredPosts.map((post) => (
               <Link key={post.id} href={`/recovery/blog/${post.slug}`}>
                 <Card
-                  className="bg-[#1a1a1a] border-[#333] overflow-hidden hover:border-[#C9941A]/50 transition-all duration-200 cursor-pointer group h-full flex flex-col"
+                  className="bg-[#1a1a1a] border-[#333] overflow-hidden hover:border-[#E2741B]/50 transition-all duration-200 cursor-pointer group h-full flex flex-col"
                   data-testid={`card-post-${post.id}`}
                 >
-                  <div className="h-32 bg-gradient-to-br from-[#C9941A]/10 to-[#0D0D0D] flex items-center justify-center flex-shrink-0">
-                    <BookOpen className="h-10 w-10 text-[#C9941A]/30 group-hover:scale-110 transition-transform" />
+                  <div className="h-32 bg-gradient-to-br from-[#E2741B]/10 to-[#0D0D0D] flex items-center justify-center flex-shrink-0">
+                    <BookOpen className="h-10 w-10 text-[#E2741B]/30 group-hover:scale-110 transition-transform" />
                   </div>
                   <div className="p-5 flex flex-col flex-1">
                     <Badge className={`${categoryColors[post.category] || "bg-gray-500/20 text-gray-400 border-gray-500/30"} self-start mb-2`}>
                       {post.category}
                     </Badge>
-                    <h3 className="font-bold mb-2 text-white line-clamp-2 group-hover:text-[#C9941A] transition-colors flex-1">
+                    <h3 className="font-bold mb-2 text-white line-clamp-2 group-hover:text-[#E2741B] transition-colors flex-1">
                       {post.title}
                     </h3>
                     <p className="text-gray-400 text-sm mb-3 line-clamp-2">{post.excerpt}</p>
@@ -307,14 +307,14 @@ export default function RecoveryBlog() {
 
         {!isLoading && filteredPosts.length === 0 && (
           <Card className="bg-[#1a1a1a] border-[#333] p-12 text-center">
-            <BookOpen className="h-16 w-16 text-[#C9941A] mx-auto mb-4" />
+            <BookOpen className="h-16 w-16 text-[#E2741B] mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">No articles found</h3>
             <p className="text-gray-400 mb-4">
               Try adjusting your search or category filter
             </p>
             <Button
               variant="outline"
-              className="border-[#C9941A] text-[#C9941A]"
+              className="border-[#E2741B] text-[#E2741B]"
               onClick={() => { setActiveCategory("all"); setSearchQuery(""); }}
             >
               Clear Filters
@@ -322,14 +322,14 @@ export default function RecoveryBlog() {
           </Card>
         )}
 
-        <Card className="bg-gradient-to-br from-[#C9941A]/20 to-[#1a1a1a] border-[#C9941A]/30 p-6 sm:p-8 mt-12 text-center">
+        <Card className="bg-gradient-to-br from-[#E2741B]/20 to-[#1a1a1a] border-[#E2741B]/30 p-6 sm:p-8 mt-12 text-center">
           <h2 className="text-xl sm:text-2xl font-bold mb-3">Want to Share Your Recovery Story?</h2>
           <p className="text-gray-300 mb-6 max-w-2xl mx-auto text-sm sm:text-base">
             Your journey could inspire thousands of other survivors. Submit your story and help build
             the world's largest collection of stroke recovery experiences.
           </p>
           <Link href="/recovery/community">
-            <Button className="bg-[#C9941A] text-black font-semibold">
+            <Button className="bg-[#E2741B] text-black font-semibold">
               Join the Community <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           </Link>

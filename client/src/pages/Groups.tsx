@@ -22,7 +22,7 @@ interface GroupRow {
 }
 
 const TYPE_META: Record<string, { label: string; icon: any; color: string }> = {
-  survivor: { label: "Survivors", icon: Shield, color: "text-[#C9941A]" },
+  survivor: { label: "Survivors", icon: Shield, color: "text-[#E2741B]" },
   caregiver: { label: "Caregivers", icon: Heart, color: "text-rose-500" },
   condition: { label: "Condition-specific", icon: HeartPulse, color: "text-blue-500" },
   general: { label: "General", icon: Sparkles, color: "text-emerald-500" },
@@ -89,7 +89,7 @@ export default function Groups() {
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Users className="h-7 w-7 text-[#C9941A]" />
+              <Users className="h-7 w-7 text-[#E2741B]" />
               Groups
             </h1>
             <p className="text-gray-400 text-sm mt-1">
@@ -99,7 +99,7 @@ export default function Groups() {
           {user && (
             <Dialog open={createOpen} onOpenChange={setCreateOpen}>
               <DialogTrigger asChild>
-                <Button className="gap-2 bg-[#C9941A] text-black hover:bg-[#C9941A]/90" data-testid="button-create-group">
+                <Button className="gap-2 bg-[#E2741B] text-black hover:bg-[#E2741B]/90" data-testid="button-create-group">
                   <Plus className="h-4 w-4" />
                   Create Group
                 </Button>
@@ -161,7 +161,7 @@ export default function Groups() {
                   <Button
                     onClick={() => createMutation.mutate()}
                     disabled={createMutation.isPending || !form.name.trim() || !form.description.trim()}
-                    className="bg-[#C9941A] text-black hover:bg-[#C9941A]/90"
+                    className="bg-[#E2741B] text-black hover:bg-[#E2741B]/90"
                     data-testid="button-submit-group"
                   >
                     {createMutation.isPending ? "Creating…" : "Create"}
@@ -202,7 +202,7 @@ export default function Groups() {
               <Users className="h-10 w-10 mx-auto text-gray-600 mb-3" />
               <p className="text-gray-400">No groups match your search yet.</p>
               {user && (
-                <Button className="mt-4 gap-2 bg-[#C9941A] text-black hover:bg-[#C9941A]/90" onClick={() => setCreateOpen(true)}>
+                <Button className="mt-4 gap-2 bg-[#E2741B] text-black hover:bg-[#E2741B]/90" onClick={() => setCreateOpen(true)}>
                   <Plus className="h-4 w-4" />
                   Start one
                 </Button>
@@ -223,7 +223,7 @@ export default function Groups() {
                   <CardHeader className="pb-3">
                     <CardTitle className="flex items-start gap-2 text-base">
                       <Icon className={`h-5 w-5 shrink-0 mt-0.5 ${meta.color}`} />
-                      <Link href={`/groups/${g.slug}`} className="hover:text-[#C9941A] transition-colors line-clamp-2">
+                      <Link href={`/groups/${g.slug}`} className="hover:text-[#E2741B] transition-colors line-clamp-2">
                         {g.name}
                       </Link>
                     </CardTitle>
@@ -231,7 +231,7 @@ export default function Groups() {
                   <CardContent className="space-y-3">
                     <p className="text-sm text-gray-400 line-clamp-3">{g.description}</p>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <Badge variant="outline" className="border-[#C9941A]/30 text-[#C9941A]">
+                      <Badge variant="outline" className="border-[#E2741B]/30 text-[#E2741B]">
                         {meta.label}
                       </Badge>
                       {g.conditionTag && (
@@ -262,7 +262,7 @@ export default function Groups() {
                         ) : (
                           <Button
                             size="sm"
-                            className="bg-[#C9941A] text-black hover:bg-[#C9941A]/90"
+                            className="bg-[#E2741B] text-black hover:bg-[#E2741B]/90"
                             disabled={joinMutation.isPending}
                             onClick={() => joinMutation.mutate(g.id)}
                             data-testid={`button-join-${g.id}`}

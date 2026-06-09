@@ -63,7 +63,7 @@ export default function SendPowerPointsModal({ open, onOpenChange, receiverId, r
       <DialogContent className="bg-[#0D0D0D] border-[#333] text-white max-w-lg" data-testid="modal-send-power-points">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Zap className="w-5 h-5 text-[#C9941A]" /> Send Power Points
+            <Zap className="w-5 h-5 text-[#E2741B]" /> Send Power Points
           </DialogTitle>
           <DialogDescription className="text-gray-400">
             Push them forward today. Your points fund recovery — every point unlocks therapist content, exercises, and AI tools.
@@ -73,7 +73,7 @@ export default function SendPowerPointsModal({ open, onOpenChange, receiverId, r
         <div className="flex items-center gap-3 px-3 py-2 rounded-md bg-[#1a1a1a] border border-[#333]">
           <Avatar className="w-10 h-10 border border-[#333]">
             <AvatarImage src={receiverAvatarUrl || ""} />
-            <AvatarFallback className="bg-[#2a2a2a] text-[#C9941A]">{receiverName[0]?.toUpperCase()}</AvatarFallback>
+            <AvatarFallback className="bg-[#2a2a2a] text-[#E2741B]">{receiverName[0]?.toUpperCase()}</AvatarFallback>
           </Avatar>
           <div>
             <p className="text-sm text-gray-400">Sending to</p>
@@ -92,7 +92,7 @@ export default function SendPowerPointsModal({ open, onOpenChange, receiverId, r
                 data-testid={`pkg-${p.key}`}
                 className={`text-left p-3 rounded-md border transition-all ${
                   active
-                    ? "border-[#C9941A] bg-[#C9941A]/10 ring-1 ring-[#C9941A]"
+                    ? "border-[#E2741B] bg-[#E2741B]/10 ring-1 ring-[#E2741B]"
                     : "border-[#333] bg-[#1a1a1a] hover:bg-[#222]"
                 }`}
               >
@@ -100,7 +100,7 @@ export default function SendPowerPointsModal({ open, onOpenChange, receiverId, r
                   <span className="font-bold text-white">{p.label}</span>
                   <span className="text-xs text-gray-400">{fmtUsd(p.amountCents)}</span>
                 </div>
-                <div className="mt-1 text-[#C9941A] font-bold text-sm">{p.points.toLocaleString()} pts</div>
+                <div className="mt-1 text-[#E2741B] font-bold text-sm">{p.points.toLocaleString()} pts</div>
                 <div className="text-[11px] text-gray-500 mt-0.5 line-clamp-2">{p.tagline}</div>
               </button>
             );
@@ -140,7 +140,7 @@ export default function SendPowerPointsModal({ open, onOpenChange, receiverId, r
           <Button
             disabled={checkout.isPending}
             onClick={() => checkout.mutate()}
-            className="bg-[#C9941A] hover:bg-[#B8851A] text-black font-bold"
+            className="bg-[#E2741B] hover:bg-[#B8851A] text-black font-bold"
             data-testid="button-send-power"
           >
             {checkout.isPending ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Redirecting…</> : <>Send Power</>}

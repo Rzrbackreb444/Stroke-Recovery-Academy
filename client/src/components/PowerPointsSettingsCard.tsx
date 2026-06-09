@@ -57,7 +57,7 @@ export default function PowerPointsSettingsCard() {
   return (
     <Card className="bg-[#1a1a1a] border-[#333] p-6">
       <div className="flex items-center gap-2 mb-4">
-        <Zap className="w-5 h-5 text-[#C9941A]" />
+        <Zap className="w-5 h-5 text-[#E2741B]" />
         <h2 className="text-xl font-semibold text-white">Power Points & Public Profile</h2>
       </div>
 
@@ -77,7 +77,7 @@ export default function PowerPointsSettingsCard() {
         <Separator className="bg-[#333]" />
 
         <div className="space-y-2">
-          <Label className="text-white flex items-center gap-2"><Link2 className="w-4 h-4 text-[#C9941A]" /> Your public profile link</Label>
+          <Label className="text-white flex items-center gap-2"><Link2 className="w-4 h-4 text-[#E2741B]" /> Your public profile link</Label>
           <p className="text-gray-400 text-sm">Share this link with loved ones so they can send you Power Points directly.</p>
 
           {!data?.publicSlug && (
@@ -85,7 +85,7 @@ export default function PowerPointsSettingsCard() {
               size="sm"
               onClick={() => autoSlug.mutate()}
               disabled={autoSlug.isPending}
-              className="bg-[#C9941A] hover:bg-[#B8851A] text-black font-bold"
+              className="bg-[#E2741B] hover:bg-[#B8851A] text-black font-bold"
               data-testid="button-create-slug"
             >
               {autoSlug.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create my profile link"}
@@ -120,7 +120,7 @@ export default function PowerPointsSettingsCard() {
                   size="sm"
                   onClick={() => saveSlug.mutate(slug)}
                   disabled={saveSlug.isPending}
-                  className="bg-[#C9941A] hover:bg-[#B8851A] text-black font-bold"
+                  className="bg-[#E2741B] hover:bg-[#B8851A] text-black font-bold"
                   data-testid="button-save-slug"
                 >
                   {saveSlug.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save new link"}

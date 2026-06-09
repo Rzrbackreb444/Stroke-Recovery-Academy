@@ -104,7 +104,7 @@ export default function RiverWorkspace() {
         <div className="flex items-center gap-2">
           {/* Sync Status */}
           <div className="flex items-center gap-1.5 text-xs text-zinc-500">
-            <Cloud className="h-3.5 w-3.5 text-[#C9941A]" />
+            <Cloud className="h-3.5 w-3.5 text-[#E2741B]" />
             <span>Saved</span>
           </div>
 
@@ -238,7 +238,7 @@ export default function RiverWorkspace() {
         </div>
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1.5">
-            <div className="h-1.5 w-1.5 rounded-full bg-[#C9941A]" />
+            <div className="h-1.5 w-1.5 rounded-full bg-[#E2741B]" />
             All changes saved
           </span>
         </div>

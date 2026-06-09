@@ -167,8 +167,8 @@ export default function RecoveryOnboarding() {
       {/* Guest login prompt — shown when quiz is complete but not signed in */}
       {showLoginPrompt && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
-          <div className="bg-[#111] border border-[#C9941A]/30 rounded-xl p-8 max-w-md w-full text-center shadow-2xl">
-            <Sparkles className="mx-auto h-10 w-10 mb-4" style={{ color: "#C9941A" }} strokeWidth={1.5} />
+          <div className="bg-[#111] border border-[#E2741B]/30 rounded-xl p-8 max-w-md w-full text-center shadow-2xl">
+            <Sparkles className="mx-auto h-10 w-10 mb-4" style={{ color: "#E2741B" }} strokeWidth={1.5} />
             <h2 className="text-2xl font-bold text-white mb-2">Your plan is ready.</h2>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
               Create your free account to save your results and unlock your personalised recovery program.
@@ -176,7 +176,7 @@ export default function RecoveryOnboarding() {
             </p>
             <div className="flex flex-col gap-3">
               <Button
-                className="w-full bg-[#C9941A] text-black font-bold text-base py-3"
+                className="w-full bg-[#E2741B] text-black font-bold text-base py-3"
                 onClick={() => (window.location.href = "/recovery/login?tab=signup&next=/recovery/onboarding")}
                 data-testid="button-onboarding-signup"
               >
@@ -198,7 +198,7 @@ export default function RecoveryOnboarding() {
         <div className="mb-8">
           <p
             className="text-xs uppercase tracking-[0.3em] mb-2"
-            style={{ color: "#C9941A" }}
+            style={{ color: "#E2741B" }}
           >
             Sasquatch Scale · Onboarding
           </p>
@@ -214,7 +214,7 @@ export default function RecoveryOnboarding() {
             <div className="space-y-6 text-center">
               <Sparkles
                 className="mx-auto h-12 w-12"
-                style={{ color: "#C9941A" }}
+                style={{ color: "#E2741B" }}
                 strokeWidth={1.5}
               />
               <h1 className="font-serif text-3xl sm:text-4xl">Let's build your plan.</h1>
@@ -231,7 +231,7 @@ export default function RecoveryOnboarding() {
                 onClick={next}
                 size="lg"
                 className="text-black"
-                style={{ backgroundColor: "#C9941A" }}
+                style={{ backgroundColor: "#E2741B" }}
                 data-testid="button-onboarding-start"
               >
                 Start the Sasquatch Scale
@@ -268,7 +268,7 @@ export default function RecoveryOnboarding() {
             <div className="py-12 text-center space-y-6">
               <Loader2
                 className="mx-auto h-10 w-10 animate-spin"
-                style={{ color: "#C9941A" }}
+                style={{ color: "#E2741B" }}
               />
               <h2 className="font-serif text-2xl">
                 Sasquatch is building your plan…
@@ -294,7 +294,7 @@ export default function RecoveryOnboarding() {
               <Button
                 onClick={next}
                 className="text-black"
-                style={{ backgroundColor: "#C9941A" }}
+                style={{ backgroundColor: "#E2741B" }}
                 disabled={
                   step === DOMAINS.length + 1 &&
                   (shortGoal.goal.trim().length < 3 ||
@@ -336,9 +336,9 @@ function DomainStep({
       <div className="flex items-center gap-3">
         <div
           className="flex h-11 w-11 items-center justify-center rounded-md"
-          style={{ backgroundColor: "rgba(201,148,26,0.12)" }}
+          style={{ backgroundColor: "rgba(226,116,27,0.12)" }}
         >
-          <Icon className="h-5 w-5" style={{ color: "#C9941A" }} />
+          <Icon className="h-5 w-5" style={{ color: "#E2741B" }} />
         </div>
         <div>
           <p className="text-xs uppercase tracking-widest text-gray-500">
@@ -357,7 +357,7 @@ function DomainStep({
           </span>
           <span
             className="text-4xl font-serif tabular-nums"
-            style={{ color: "#C9941A" }}
+            style={{ color: "#E2741B" }}
             data-testid={`text-score-${domain.key}`}
           >
             {value}
@@ -414,9 +414,9 @@ function GoalsStep({
       <div className="flex items-center gap-3">
         <div
           className="flex h-11 w-11 items-center justify-center rounded-md"
-          style={{ backgroundColor: "rgba(201,148,26,0.12)" }}
+          style={{ backgroundColor: "rgba(226,116,27,0.12)" }}
         >
-          <Target className="h-5 w-5" style={{ color: "#C9941A" }} />
+          <Target className="h-5 w-5" style={{ color: "#E2741B" }} />
         </div>
         <div>
           <p className="text-xs uppercase tracking-widest text-gray-500">
@@ -473,7 +473,7 @@ function GoalCard({
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <p
           className="text-sm font-semibold uppercase tracking-widest"
-          style={{ color: "#C9941A" }}
+          style={{ color: "#E2741B" }}
         >
           {title}
         </p>
@@ -487,10 +487,10 @@ function GoalCard({
                 onClick={() => onChange({ ...goal, domain: d })}
                 className={`px-2.5 py-1 rounded-md text-xs font-semibold uppercase tracking-wide border transition-colors ${
                   isOn
-                    ? "border-[#C9941A] text-black"
+                    ? "border-[#E2741B] text-black"
                     : "border-[#333] text-gray-400 hover-elevate"
                 }`}
-                style={isOn ? { backgroundColor: "#C9941A" } : undefined}
+                style={isOn ? { backgroundColor: "#E2741B" } : undefined}
                 data-testid={`button-goal-domain-${goal.horizon}-${d}`}
               >
                 {d}

@@ -208,7 +208,7 @@ export default function CourseBuilder() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
-              <BookOpen className="h-6 w-6 text-[#C9941A]" />
+              <BookOpen className="h-6 w-6 text-[#E2741B]" />
               Course Builder
             </h1>
             <p className="text-gray-400 text-sm mt-1">
@@ -218,7 +218,7 @@ export default function CourseBuilder() {
           
           <Button 
             onClick={() => setNewCourseOpen(true)} 
-            className="bg-[#C9941A]"
+            className="bg-[#E2741B]"
             data-testid="button-new-course"
           >
             <Plus className="h-4 w-4 mr-2" />
@@ -228,15 +228,15 @@ export default function CourseBuilder() {
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="bg-[#1a1a1a] border-[#333] mb-6">
-            <TabsTrigger value="courses" className="data-[state=active]:bg-[#C9941A]">
+            <TabsTrigger value="courses" className="data-[state=active]:bg-[#E2741B]">
               <Layers className="h-4 w-4 mr-2" />
               My Courses
             </TabsTrigger>
-            <TabsTrigger value="editor" className="data-[state=active]:bg-[#C9941A]">
+            <TabsTrigger value="editor" className="data-[state=active]:bg-[#E2741B]">
               <Edit className="h-4 w-4 mr-2" />
               Course Editor
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="data-[state=active]:bg-[#C9941A]">
+            <TabsTrigger value="analytics" className="data-[state=active]:bg-[#E2741B]">
               <Star className="h-4 w-4 mr-2" />
               Analytics
             </TabsTrigger>
@@ -255,17 +255,17 @@ export default function CourseBuilder() {
               {courseForm.title && (
                 <Card className="bg-[#1a1a1a] border-[#333] overflow-hidden">
                   <div className="h-32 bg-gradient-to-br from-orange-500/20 to-purple-500/20 flex items-center justify-center">
-                    <BookOpen className="h-12 w-12 text-[#C9941A]" />
+                    <BookOpen className="h-12 w-12 text-[#E2741B]" />
                   </div>
                   <div className="p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <Badge className={courseForm.isPublished ? "bg-[#C9941A]/20 text-[#C9941A]" : "bg-yellow-500/20 text-yellow-400"}>
+                      <Badge className={courseForm.isPublished ? "bg-[#E2741B]/20 text-[#E2741B]" : "bg-yellow-500/20 text-yellow-400"}>
                         {courseForm.isPublished ? "Published" : "Draft"}
                       </Badge>
                       {courseForm.isFree ? (
                         <Badge variant="outline">Free</Badge>
                       ) : (
-                        <Badge className="bg-[#C9941A]/20 text-[#C9941A]">${(courseForm.price / 100).toFixed(2)}</Badge>
+                        <Badge className="bg-[#E2741B]/20 text-[#E2741B]">${(courseForm.price / 100).toFixed(2)}</Badge>
                       )}
                     </div>
                     <h3 className="font-semibold text-lg">{courseForm.title}</h3>
@@ -373,7 +373,7 @@ export default function CourseBuilder() {
                     <Button 
                       onClick={() => setNewModuleOpen(true)} 
                       size="sm"
-                      className="bg-[#C9941A]"
+                      className="bg-[#E2741B]"
                       data-testid="button-add-module"
                     >
                       <Plus className="h-4 w-4 mr-1" />
@@ -397,7 +397,7 @@ export default function CourseBuilder() {
                           <AccordionTrigger className="hover:no-underline">
                             <div className="flex items-center gap-3">
                               <GripVertical className="h-4 w-4 text-gray-500" />
-                              <span className="text-[#C9941A] font-bold">M{idx + 1}</span>
+                              <span className="text-[#E2741B] font-bold">M{idx + 1}</span>
                               <span className="font-medium">{module.title}</span>
                               <Badge variant="outline" className="text-xs">
                                 {module.lessons.length} lessons
@@ -416,7 +416,7 @@ export default function CourseBuilder() {
                                   return (
                                     <div key={lesson.id} className="flex items-center gap-3 p-2 bg-[#1a1a1a] rounded">
                                       <span className="text-gray-500 text-sm">{lIdx + 1}</span>
-                                      <LessonIcon className="h-4 w-4 text-[#C9941A]" />
+                                      <LessonIcon className="h-4 w-4 text-[#E2741B]" />
                                       <span className="flex-1 text-sm">{lesson.title}</span>
                                       <span className="text-gray-500 text-xs">{lesson.estimatedMinutes}m</span>
                                       {lesson.isPreview && (
@@ -529,7 +529,7 @@ export default function CourseBuilder() {
                   </div>
 
                   <Button 
-                    className="w-full mt-6 bg-[#C9941A] hover:bg-[#C9941A]/80"
+                    className="w-full mt-6 bg-[#E2741B] hover:bg-[#E2741B]/80"
                     onClick={() => {
                       setCourseForm({ ...courseForm, isPublished: !courseForm.isPublished });
                       toast({ 
@@ -560,7 +560,7 @@ export default function CourseBuilder() {
             <div className="grid md:grid-cols-4 gap-4 mb-6">
               <Card className="bg-[#1a1a1a] border-[#333] p-4">
                 <p className="text-sm text-gray-400">Enrollments</p>
-                <p className="text-3xl font-bold text-[#C9941A]">156</p>
+                <p className="text-3xl font-bold text-[#E2741B]">156</p>
               </Card>
               <Card className="bg-[#1a1a1a] border-[#333] p-4">
                 <p className="text-sm text-gray-400">Completion Rate</p>
@@ -582,7 +582,7 @@ export default function CourseBuilder() {
                   <div key={mod} className="flex items-center gap-4">
                     <span className="text-sm text-gray-400 w-32">{mod}</span>
                     <div className="flex-1 h-2 bg-[#333] rounded-full">
-                      <div className="h-full bg-[#C9941A] rounded-full" style={{ width: `${95 - i * 12}%` }} />
+                      <div className="h-full bg-[#E2741B] rounded-full" style={{ width: `${95 - i * 12}%` }} />
                     </div>
                     <span className="text-sm text-gray-400">{95 - i * 12}%</span>
                   </div>
@@ -628,7 +628,7 @@ export default function CourseBuilder() {
                   setActiveTab("editor");
                   toast({ title: "Course created!", description: "Start adding modules and lessons." });
                 }} 
-                className="w-full bg-[#C9941A]"
+                className="w-full bg-[#E2741B]"
                 disabled={!courseForm.title}
               >
                 Create Course
@@ -665,7 +665,7 @@ export default function CourseBuilder() {
               </div>
               <Button 
                 onClick={addModule} 
-                className="w-full bg-[#C9941A]"
+                className="w-full bg-[#E2741B]"
                 disabled={!moduleForm.title}
               >
                 Add Module
@@ -754,7 +754,7 @@ export default function CourseBuilder() {
               </div>
               <Button 
                 onClick={addLesson} 
-                className="w-full bg-[#C9941A]"
+                className="w-full bg-[#E2741B]"
                 disabled={!lessonForm.title}
               >
                 Add Lesson

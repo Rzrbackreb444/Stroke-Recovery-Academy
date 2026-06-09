@@ -32,11 +32,11 @@ interface BookOrder {
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
   pending: { label: "Pending", color: "bg-yellow-500/20 text-yellow-400", icon: Clock },
-  paid: { label: "Paid", color: "bg-[#C9941A]/20 text-[#C9941A]", icon: CheckCircle2 },
+  paid: { label: "Paid", color: "bg-[#E2741B]/20 text-[#E2741B]", icon: CheckCircle2 },
   processing: { label: "Processing", color: "bg-blue-500/20 text-blue-400", icon: Package },
-  printing: { label: "Printing", color: "bg-[#C9941A]/20 text-[#C9941A]", icon: Printer },
+  printing: { label: "Printing", color: "bg-[#E2741B]/20 text-[#E2741B]", icon: Printer },
   shipped: { label: "Shipped", color: "bg-teal-500/20 text-teal-400", icon: Truck },
-  delivered: { label: "Delivered", color: "bg-[#C9941A]/20 text-[#C9941A]", icon: CheckCircle2 },
+  delivered: { label: "Delivered", color: "bg-[#E2741B]/20 text-[#E2741B]", icon: CheckCircle2 },
   cancelled: { label: "Cancelled", color: "bg-red-500/20 text-red-400", icon: AlertCircle },
 };
 
@@ -108,10 +108,10 @@ export default function MyOrders() {
         <main className="flex-1 container mx-auto px-4 py-12 flex items-center justify-center">
           <Card className="max-w-md w-full bg-gray-950 border-[#333]">
             <CardContent className="p-6 text-center">
-              <AlertCircle className="w-12 h-12 text-[#C9941A] mx-auto mb-4" />
+              <AlertCircle className="w-12 h-12 text-[#E2741B] mx-auto mb-4" />
               <h2 className="text-xl font-semibold text-foreground mb-2">Sign in Required</h2>
               <p className="text-gray-400 mb-4">Please sign in to view your orders.</p>
-              <Button className="bg-[#C9941A] hover:bg-[#C9941A]" asChild>
+              <Button className="bg-[#E2741B] hover:bg-[#E2741B]" asChild>
                 <Link href="/auth">Sign In</Link>
               </Button>
             </CardContent>
@@ -132,7 +132,7 @@ export default function MyOrders() {
             <h1 className="text-3xl font-serif font-bold text-foreground" data-testid="text-page-title">
               My Orders
             </h1>
-            <Button className="bg-[#C9941A] hover:bg-[#C9941A]" asChild>
+            <Button className="bg-[#E2741B] hover:bg-[#E2741B]" asChild>
               <Link href="/marketplace/books">
                 <ShoppingBag className="w-4 h-4 mr-2" />
                 Browse Books
@@ -148,7 +148,7 @@ export default function MyOrders() {
                 <p className="text-gray-400 mb-6">
                   Start exploring our marketplace to find amazing books!
                 </p>
-                <Button className="bg-[#C9941A] hover:bg-[#C9941A]" asChild>
+                <Button className="bg-[#E2741B] hover:bg-[#E2741B]" asChild>
                   <Link href="/marketplace/books">Browse Books</Link>
                 </Button>
               </CardContent>

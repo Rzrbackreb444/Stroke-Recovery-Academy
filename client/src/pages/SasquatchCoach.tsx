@@ -308,7 +308,7 @@ export default function SasquatchCoach() {
               title={audioEnabled ? "Mute voice" : "Enable voice"}
             >
               {audioEnabled ? (
-                <Volume2 className="h-4 w-4 text-[#C9941A]" />
+                <Volume2 className="h-4 w-4 text-[#E2741B]" />
               ) : (
                 <VolumeX className="h-4 w-4" />
               )}
@@ -326,8 +326,8 @@ export default function SasquatchCoach() {
               data-testid={`message-${msg.role}-${i}`}
             >
               {msg.role === "coach" && (
-                <div className="w-8 h-8 rounded-full bg-[#C9941A]/10 border border-[#C9941A]/30 flex items-center justify-center flex-shrink-0 mt-1">
-                  <Mic className="h-3.5 w-3.5 text-[#C9941A]" />
+                <div className="w-8 h-8 rounded-full bg-[#E2741B]/10 border border-[#E2741B]/30 flex items-center justify-center flex-shrink-0 mt-1">
+                  <Mic className="h-3.5 w-3.5 text-[#E2741B]" />
                 </div>
               )}
               {msg.role === "coach" && msg.crisis && msg.crisisResources ? (
@@ -336,12 +336,12 @@ export default function SasquatchCoach() {
                 </div>
               ) : msg.role === "coach" && msg.requireAuth ? (
                 <div
-                  className="max-w-[90%] flex-1 rounded-2xl border border-[#C9941A]/40 bg-gradient-to-br from-[#1a1410] to-[#0f0c08] p-4"
+                  className="max-w-[90%] flex-1 rounded-2xl border border-[#E2741B]/40 bg-gradient-to-br from-[#1a1410] to-[#0f0c08] p-4"
                   data-testid="coach-signin-card"
                 >
                   <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-full bg-[#C9941A]/15 border border-[#C9941A]/40 flex items-center justify-center flex-shrink-0">
-                      <LogIn className="h-4 w-4 text-[#C9941A]" />
+                    <div className="w-9 h-9 rounded-full bg-[#E2741B]/15 border border-[#E2741B]/40 flex items-center justify-center flex-shrink-0">
+                      <LogIn className="h-4 w-4 text-[#E2741B]" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-gray-200 leading-relaxed mb-3">
@@ -351,16 +351,16 @@ export default function SasquatchCoach() {
                         Built by a 7-year survivor — not textbook theory, lived experience and real feedback baked in. I learned from the doctors, experimented, failed, then recovered. I'll give you the blueprint. The work is on you.
                       </p>
                       <p className="text-xs text-gray-500 leading-relaxed mb-3">
-                        Sign in unlocks <span className="text-[#C9941A] font-semibold">Sasquatch's actual voice replies</span>, <span className="text-[#C9941A] font-semibold">push-to-talk</span> so you can speak instead of type, <span className="text-[#C9941A] font-semibold">unlimited Coach turns</span>, and a thread that resumes where you left off. 7 days free, then cancel anytime — no card needed to start.
+                        Sign in unlocks <span className="text-[#E2741B] font-semibold">Sasquatch's actual voice replies</span>, <span className="text-[#E2741B] font-semibold">push-to-talk</span> so you can speak instead of type, <span className="text-[#E2741B] font-semibold">unlimited Coach turns</span>, and a thread that resumes where you left off. 7 days free, then cancel anytime — no card needed to start.
                       </p>
-                      <p className="text-xs italic text-[#C9941A]/80 mb-3">
+                      <p className="text-xs italic text-[#E2741B]/80 mb-3">
                         Sasquatch has your back. Heart still thumpin', life's still pumpin'.
                       </p>
                       <div className="flex flex-wrap gap-2">
                         <Button
                           asChild
                           size="sm"
-                          className="bg-[#C9941A] hover:bg-[#C9941A] text-black font-semibold"
+                          className="bg-[#E2741B] hover:bg-[#E2741B] text-black font-semibold"
                           data-testid="button-coach-signin"
                         >
                           <a href="/api/login">
@@ -372,7 +372,7 @@ export default function SasquatchCoach() {
                           asChild
                           size="sm"
                           variant="outline"
-                          className="border-[#C9941A]/40 text-[#C9941A] hover:bg-[#C9941A]/10"
+                          className="border-[#E2741B]/40 text-[#E2741B] hover:bg-[#E2741B]/10"
                           data-testid="button-coach-premium"
                         >
                           <Link href="/recovery/premium">
@@ -388,14 +388,14 @@ export default function SasquatchCoach() {
                 <div
                   className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                     msg.role === "user"
-                      ? "bg-[#C9941A] text-black font-medium rounded-tr-sm"
+                      ? "bg-[#E2741B] text-black font-medium rounded-tr-sm"
                       : "bg-[#111] text-gray-200 border border-[#1e1e1e] rounded-tl-sm"
                   }`}
                 >
                   {msg.content}
                   {msg.role === "coach" && msg.audioBase64 && audioEnabled && (
                     <button
-                      className="mt-2 flex items-center gap-1 text-xs text-[#C9941A] opacity-60 hover:opacity-100 transition-opacity"
+                      className="mt-2 flex items-center gap-1 text-xs text-[#E2741B] opacity-60 hover:opacity-100 transition-opacity"
                       onClick={() => playAudio(msg.audioBase64!)}
                       data-testid={`button-replay-audio-${i}`}
                     >
@@ -421,14 +421,14 @@ export default function SasquatchCoach() {
 
           {chatMutation.isPending && (
             <div className="flex gap-3 justify-start" data-testid="coach-typing">
-              <div className="w-8 h-8 rounded-full bg-[#C9941A]/10 border border-[#C9941A]/30 flex items-center justify-center flex-shrink-0 mt-1">
-                <Mic className="h-3.5 w-3.5 text-[#C9941A]" />
+              <div className="w-8 h-8 rounded-full bg-[#E2741B]/10 border border-[#E2741B]/30 flex items-center justify-center flex-shrink-0 mt-1">
+                <Mic className="h-3.5 w-3.5 text-[#E2741B]" />
               </div>
               <div className="bg-[#111] border border-[#1e1e1e] rounded-2xl rounded-tl-sm px-4 py-3">
                 <div className="flex gap-1.5 items-center h-4">
-                  <span className="w-1.5 h-1.5 bg-[#C9941A]/60 rounded-full animate-bounce [animation-delay:0ms]" />
-                  <span className="w-1.5 h-1.5 bg-[#C9941A]/60 rounded-full animate-bounce [animation-delay:150ms]" />
-                  <span className="w-1.5 h-1.5 bg-[#C9941A]/60 rounded-full animate-bounce [animation-delay:300ms]" />
+                  <span className="w-1.5 h-1.5 bg-[#E2741B]/60 rounded-full animate-bounce [animation-delay:0ms]" />
+                  <span className="w-1.5 h-1.5 bg-[#E2741B]/60 rounded-full animate-bounce [animation-delay:150ms]" />
+                  <span className="w-1.5 h-1.5 bg-[#E2741B]/60 rounded-full animate-bounce [animation-delay:300ms]" />
                 </div>
               </div>
             </div>
@@ -440,14 +440,14 @@ export default function SasquatchCoach() {
         {messages.filter((m) => m.role === "user").length === 0 && (
           <>
             <div className="mb-3">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-[#C9941A] mb-2">Jump straight to action</p>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-[#E2741B] mb-2">Jump straight to action</p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <Link
                   href="/recovery/today"
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-md border border-[#C9941A]/30 bg-[#1a1610] hover-elevate text-left"
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-md border border-[#E2741B]/30 bg-[#1a1610] hover-elevate text-left"
                   data-testid="coach-quick-today"
                 >
-                  <Flame className="h-4 w-4 text-[#C9941A] flex-shrink-0" />
+                  <Flame className="h-4 w-4 text-[#E2741B] flex-shrink-0" />
                   <div className="min-w-0">
                     <p className="text-xs font-semibold text-white">What should I do today?</p>
                     <p className="text-[11px] text-gray-400 truncate">Open The Bonfire</p>
@@ -455,10 +455,10 @@ export default function SasquatchCoach() {
                 </Link>
                 <Link
                   href="/recovery/motivation"
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-md border border-[#C9941A]/30 bg-[#1a1610] hover-elevate text-left"
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-md border border-[#E2741B]/30 bg-[#1a1610] hover-elevate text-left"
                   data-testid="coach-quick-motivation"
                 >
-                  <Sparkles className="h-4 w-4 text-[#C9941A] flex-shrink-0" />
+                  <Sparkles className="h-4 w-4 text-[#E2741B] flex-shrink-0" />
                   <div className="min-w-0">
                     <p className="text-xs font-semibold text-white">I need a fire-up</p>
                     <p className="text-[11px] text-gray-400 truncate">Motivation Studio</p>
@@ -466,10 +466,10 @@ export default function SasquatchCoach() {
                 </Link>
                 <Link
                   href="/recovery/shop"
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-md border border-[#C9941A]/30 bg-[#1a1610] hover-elevate text-left"
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-md border border-[#E2741B]/30 bg-[#1a1610] hover-elevate text-left"
                   data-testid="coach-quick-shop"
                 >
-                  <ShoppingBag className="h-4 w-4 text-[#C9941A] flex-shrink-0" />
+                  <ShoppingBag className="h-4 w-4 text-[#E2741B] flex-shrink-0" />
                   <div className="min-w-0">
                     <p className="text-xs font-semibold text-white">Gear that helped me</p>
                     <p className="text-[11px] text-gray-400 truncate">Survivor Shop</p>
@@ -483,7 +483,7 @@ export default function SasquatchCoach() {
                 key={prompt}
                 onClick={() => handleStarter(prompt)}
                 disabled={chatMutation.isPending}
-                className="text-left px-4 py-3 rounded-xl border border-[#1e1e1e] text-sm text-gray-400 hover:text-white hover:border-[#C9941A]/40 transition-colors bg-[#0a0a0a] disabled:opacity-40"
+                className="text-left px-4 py-3 rounded-xl border border-[#1e1e1e] text-sm text-gray-400 hover:text-white hover:border-[#E2741B]/40 transition-colors bg-[#0a0a0a] disabled:opacity-40"
                 data-testid={`starter-prompt-${prompt.slice(0, 20).replace(/\s/g, "-")}`}
               >
                 {prompt}
@@ -513,7 +513,7 @@ export default function SasquatchCoach() {
                 ? "Listening — speak naturally, tap mic to stop..."
                 : "Tell the coach what's going on, or tap the mic to talk..."
             }
-            className="resize-none bg-[#111] border-[#1e1e1e] text-white placeholder:text-gray-600 focus-visible:ring-[#C9941A]/30 focus-visible:border-[#C9941A]/40 min-h-[52px] max-h-32"
+            className="resize-none bg-[#111] border-[#1e1e1e] text-white placeholder:text-gray-600 focus-visible:ring-[#E2741B]/30 focus-visible:border-[#E2741B]/40 min-h-[52px] max-h-32"
             rows={1}
             disabled={chatMutation.isPending || (!user && !!anonQuota && anonQuota.used >= anonQuota.limit)}
             data-testid="input-chat-message"
@@ -528,8 +528,8 @@ export default function SasquatchCoach() {
               variant={isListening ? "default" : "outline"}
               className={
                 isListening
-                  ? "bg-[#C9941A] text-black hover:bg-[#b8841a] flex-shrink-0 animate-pulse"
-                  : "border-[#1e1e1e] text-[#C9941A] hover:bg-[#C9941A]/10 flex-shrink-0"
+                  ? "bg-[#E2741B] text-black hover:bg-[#b8841a] flex-shrink-0 animate-pulse"
+                  : "border-[#1e1e1e] text-[#E2741B] hover:bg-[#E2741B]/10 flex-shrink-0"
               }
               title={isListening ? "Tap to stop" : "Push to talk"}
               data-testid="button-mic-toggle"
@@ -544,7 +544,7 @@ export default function SasquatchCoach() {
           <Button
             onClick={handleSend}
             disabled={!input.trim() || chatMutation.isPending || (!user && !!anonQuota && anonQuota.used >= anonQuota.limit)}
-            className="bg-[#C9941A] text-black hover:bg-[#b8841a] flex-shrink-0"
+            className="bg-[#E2741B] text-black hover:bg-[#b8841a] flex-shrink-0"
             data-testid="button-send-message"
           >
             {chatMutation.isPending ? (
@@ -556,11 +556,11 @@ export default function SasquatchCoach() {
         </div>
         {!user && anonQuota && anonQuota.used < anonQuota.limit && (
           <p
-            className="text-xs text-center text-[#C9941A]/70 mt-2"
+            className="text-xs text-center text-[#E2741B]/70 mt-2"
             data-testid="text-anon-quota"
           >
             {anonQuota.limit - anonQuota.used} of {anonQuota.limit} free Coach messages left.{" "}
-            <a href="/api/login" className="underline hover:text-[#C9941A]" data-testid="link-anon-signin">
+            <a href="/api/login" className="underline hover:text-[#E2741B]" data-testid="link-anon-signin">
               Sign in free
             </a>{" "}
             for Sasquatch's voice + push-to-talk + unlimited turns.

@@ -425,7 +425,7 @@ export default function Thread() {
               const isAnswer = thread?.answerPostId === post.id;
               return (
               <Card key={post.id} data-testid={`card-post-${post.id}`}
-                className={isAnswer ? "border-[#C9941A]/60 bg-[#C9941A]/5" : undefined}>
+                className={isAnswer ? "border-[#E2741B]/60 bg-[#E2741B]/5" : undefined}>
                 <CardContent className="pt-6">
                   <div className="flex gap-4">
                     <Avatar className="h-10 w-10">
@@ -441,7 +441,7 @@ export default function Thread() {
                           <Badge variant="secondary" className="text-xs">Author</Badge>
                         )}
                         {isAnswer && (
-                          <Badge className="text-xs gap-1 bg-[#C9941A] text-black hover:bg-[#C9941A]">
+                          <Badge className="text-xs gap-1 bg-[#E2741B] text-black hover:bg-[#E2741B]">
                             <CheckCircle2 className="h-3 w-3" />Answer
                           </Badge>
                         )}
@@ -462,7 +462,7 @@ export default function Thread() {
                         const parent = posts.find((x: any) => x.id === anyPost.parentId);
                         if (!parent) return null;
                         return (
-                          <div className="text-xs text-muted-foreground mb-2 border-l-2 border-[#C9941A]/40 pl-2 italic" data-testid={`text-reply-to-${post.id}`}>
+                          <div className="text-xs text-muted-foreground mb-2 border-l-2 border-[#E2741B]/40 pl-2 italic" data-testid={`text-reply-to-${post.id}`}>
                             Replying to: {(parent.content || "").slice(0, 90)}{parent.content && parent.content.length > 90 ? "…" : ""}
                           </div>
                         );

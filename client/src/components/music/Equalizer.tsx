@@ -86,7 +86,7 @@ export function Equalizer({ onEQChange }: EqualizerProps) {
     }
 
     const gradient = ctx.createLinearGradient(0, 0, width, 0);
-    gradient.addColorStop(0, "#C9941A");
+    gradient.addColorStop(0, "#E2741B");
     gradient.addColorStop(0.5, "#F59E0B");
     gradient.addColorStop(1, "#EF4444");
 
@@ -114,7 +114,7 @@ export function Equalizer({ onEQChange }: EqualizerProps) {
     points.forEach(([x, y], i) => {
       ctx.beginPath();
       ctx.arc(x, y, 4, 0, Math.PI * 2);
-      ctx.fillStyle = bands[i].gain !== 0 ? "#C9941A" : "#6B7280";
+      ctx.fillStyle = bands[i].gain !== 0 ? "#E2741B" : "#6B7280";
       ctx.fill();
     });
   };

@@ -109,7 +109,7 @@ function StatCard({
             <p className="text-2xl font-bold">{value}</p>
           </div>
           <div className="p-3 rounded-full bg-primary/10">
-            <Icon className="w-5 h-5 text-[#C9941A]" />
+            <Icon className="w-5 h-5 text-[#E2741B]" />
           </div>
         </div>
       </CardContent>
@@ -912,7 +912,7 @@ export default function AuthorProfile() {
                             variant={selectedGenres.includes(genre) ? "default" : "outline"}
                             className={`cursor-pointer transition-colors ${
                               selectedGenres.includes(genre)
-                                ? "bg-[#C9941A] hover:bg-[#C9941A]"
+                                ? "bg-[#E2741B] hover:bg-[#E2741B]"
                                 : "hover:bg-primary/10"
                             }`}
                             onClick={() => toggleGenre(genre)}
@@ -961,7 +961,7 @@ export default function AuthorProfile() {
                               data-testid={`achievement-${index}`}
                             >
                               <div className="flex items-center gap-2">
-                                <Award className="w-4 h-4 text-[#C9941A]" />
+                                <Award className="w-4 h-4 text-[#E2741B]" />
                                 <span>{achievement}</span>
                               </div>
                               <Button

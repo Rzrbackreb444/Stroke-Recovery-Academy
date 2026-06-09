@@ -143,7 +143,7 @@ export default function SEOCommandCenter() {
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 rounded-lg bg-primary/10">
-              <Search className="h-6 w-6 text-[#C9941A]" />
+              <Search className="h-6 w-6 text-[#E2741B]" />
             </div>
             <h1 className="text-3xl font-bold" data-testid="text-page-title">SEO Command Center</h1>
           </div>
@@ -208,7 +208,7 @@ export default function SEOCommandCenter() {
                   <CardContent className="p-5">
                     <div className="flex items-start gap-4">
                       <div className="p-2 rounded-lg bg-primary/10 shrink-0">
-                        <tool.icon className="h-5 w-5 text-[#C9941A]" />
+                        <tool.icon className="h-5 w-5 text-[#E2741B]" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold">{tool.name}</h3>
@@ -239,7 +239,7 @@ export default function SEOCommandCenter() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Mic className="h-5 w-5 text-[#C9941A]" />
+                  <Mic className="h-5 w-5 text-[#E2741B]" />
                   Answer Engine Optimization (AEO)
                 </CardTitle>
                 <CardDescription>
@@ -250,7 +250,7 @@ export default function SEOCommandCenter() {
                 <div className="grid md:grid-cols-3 gap-4">
                   <Card className="border-dashed">
                     <CardContent className="p-4 text-center">
-                      <Brain className="h-8 w-8 mx-auto text-[#C9941A] mb-2" />
+                      <Brain className="h-8 w-8 mx-auto text-[#E2741B] mb-2" />
                       <h4 className="font-semibold">FAQ Schema</h4>
                       <p className="text-xs text-gray-400 mt-1">
                         Structure Q&A for featured snippets
@@ -259,7 +259,7 @@ export default function SEOCommandCenter() {
                   </Card>
                   <Card className="border-dashed">
                     <CardContent className="p-4 text-center">
-                      <Eye className="h-8 w-8 mx-auto text-[#C9941A] mb-2" />
+                      <Eye className="h-8 w-8 mx-auto text-[#E2741B] mb-2" />
                       <h4 className="font-semibold">HowTo Schema</h4>
                       <p className="text-xs text-gray-400 mt-1">
                         Step-by-step guides for voice search
@@ -268,7 +268,7 @@ export default function SEOCommandCenter() {
                   </Card>
                   <Card className="border-dashed">
                     <CardContent className="p-4 text-center">
-                      <Mic className="h-8 w-8 mx-auto text-[#C9941A] mb-2" />
+                      <Mic className="h-8 w-8 mx-auto text-[#E2741B] mb-2" />
                       <h4 className="font-semibold">Speakable Schema</h4>
                       <p className="text-xs text-gray-400 mt-1">
                         Mark content for text-to-speech
@@ -298,7 +298,7 @@ export default function SEOCommandCenter() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-[#C9941A]" />
+                    <CheckCircle className="h-5 w-5 text-[#E2741B]" />
                     Analysis Results
                   </CardTitle>
                 </CardHeader>
@@ -316,7 +316,7 @@ export default function SEOCommandCenter() {
                   {result.issues && result.issues.length > 0 && (
                     <div className="space-y-2">
                       <h4 className="font-semibold flex items-center gap-2">
-                        <AlertCircle className="h-4 w-4 text-[#C9941A]" />
+                        <AlertCircle className="h-4 w-4 text-[#E2741B]" />
                         Issues Found
                       </h4>
                       <ul className="space-y-1 text-sm">
@@ -333,13 +333,13 @@ export default function SEOCommandCenter() {
                   {result.recommendations && result.recommendations.length > 0 && (
                     <div className="space-y-2">
                       <h4 className="font-semibold flex items-center gap-2">
-                        <TrendingUp className="h-4 w-4 text-[#C9941A]" />
+                        <TrendingUp className="h-4 w-4 text-[#E2741B]" />
                         Recommendations
                       </h4>
                       <ul className="space-y-1 text-sm">
                         {result.recommendations.map((rec, i) => (
                           <li key={i} className="flex items-start gap-2 text-gray-400">
-                            <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-[#C9941A]" />
+                            <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-[#E2741B]" />
                             {rec}
                           </li>
                         ))}

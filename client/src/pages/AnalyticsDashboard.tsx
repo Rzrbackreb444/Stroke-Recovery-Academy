@@ -120,7 +120,7 @@ function SummaryCard({ title, value, change, icon: Icon, testId }: SummaryCardPr
       <CardContent>
         <div className="text-2xl font-bold text-foreground" data-testid={`${testId}-value`}>{value}</div>
         {hasChange && (
-          <p className={`text-xs flex items-center gap-1 ${isPositive ? "text-[#C9941A]" : "text-red-500"}`}>
+          <p className={`text-xs flex items-center gap-1 ${isPositive ? "text-[#E2741B]" : "text-red-500"}`}>
             {isPositive ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
             {Math.abs(change!)}% from last period
           </p>
@@ -366,7 +366,7 @@ export default function AnalyticsDashboard() {
                         <td className="py-3 text-right text-gray-300">{product.sales}</td>
                         <td className="py-3 text-right text-foreground font-medium">${product.revenue}</td>
                         <td className="py-3 text-right">
-                          <span className={`flex items-center justify-end gap-1 ${product.trend >= 0 ? "text-[#C9941A]" : "text-red-500"}`}>
+                          <span className={`flex items-center justify-end gap-1 ${product.trend >= 0 ? "text-[#E2741B]" : "text-red-500"}`}>
                             {product.trend >= 0 ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
                             {Math.abs(product.trend)}%
                           </span>
@@ -410,8 +410,8 @@ export default function AnalyticsDashboard() {
                       <span
                         className={`text-xs px-2 py-1 rounded ${
                           transaction.status === "completed"
-                            ? "bg-[#C9941A]/20 text-[#C9941A]"
-                            : "bg-[#C9941A]/20 text-[#C9941A]"
+                            ? "bg-[#E2741B]/20 text-[#E2741B]"
+                            : "bg-[#E2741B]/20 text-[#E2741B]"
                         }`}
                       >
                         {transaction.status}

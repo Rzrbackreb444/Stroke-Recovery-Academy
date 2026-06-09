@@ -82,7 +82,7 @@ export default function BookStudioHub() {
 
   const atLimit = tier && tier.maxProjects !== -1 && projects.length >= tier.maxProjects;
 
-  if (authLoading) return <div className="min-h-screen bg-[#FAF8F3]"><Header /><div className="flex items-center justify-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#C9941A]" /></div></div>;
+  if (authLoading) return <div className="min-h-screen bg-[#FAF8F3]"><Header /><div className="flex items-center justify-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#E2741B]" /></div></div>;
 
   if (!isAuthenticated) return (
     <div className="min-h-screen bg-[#FAF8F3]">
@@ -90,10 +90,10 @@ export default function BookStudioHub() {
       <Header />
       <div className="flex items-center justify-center py-24">
         <Card className="p-10 max-w-md w-full text-center border-0 shadow-sm">
-          <BookOpen className="w-10 h-10 text-[#C9941A] mx-auto mb-4" />
+          <BookOpen className="w-10 h-10 text-[#E2741B] mx-auto mb-4" />
           <h2 className="text-xl font-bold mb-2">Sign in to access Book Studio</h2>
           <p className="text-gray-500 mb-6 text-sm">Create, edit, and publish professional books with AI assistance.</p>
-          <Button onClick={() => window.location.href = "/api/login"} className="bg-[#C9941A] text-white">Sign In to Continue</Button>
+          <Button onClick={() => window.location.href = "/api/login"} className="bg-[#E2741B] text-white">Sign In to Continue</Button>
         </Card>
       </div>
       <Footer />
@@ -113,7 +113,7 @@ export default function BookStudioHub() {
           </div>
           <div className="flex items-center gap-3">
             {tier && <Badge variant="outline" className="text-xs gap-1.5 py-1 px-3"><Zap className="w-3 h-3 text-amber-500" />{tier.displayName} Plan</Badge>}
-            <Button onClick={() => { if (!atLimit) setShowNew(true); }} disabled={!!atLimit} className="bg-[#C9941A] text-white" data-testid="button-new-project">
+            <Button onClick={() => { if (!atLimit) setShowNew(true); }} disabled={!!atLimit} className="bg-[#E2741B] text-white" data-testid="button-new-project">
               <Plus className="w-4 h-4 mr-2" />New Book
             </Button>
           </div>
@@ -131,7 +131,7 @@ export default function BookStudioHub() {
                 <Progress value={quotaPct(tier.dailyAiUsed, tier.dailyAiGenerations)} className="h-1.5" />
               </div>
               {tier.tierName === "free" && (
-                <Button variant="outline" size="sm" onClick={() => navigate("/pricing")} className="text-[#C9941A] border-[#C9941A]/40 whitespace-nowrap">
+                <Button variant="outline" size="sm" onClick={() => navigate("/pricing")} className="text-[#E2741B] border-[#E2741B]/40 whitespace-nowrap">
                   <ArrowRight className="w-3.5 h-3.5 mr-1" />Upgrade
                 </Button>
               )}
@@ -147,7 +147,7 @@ export default function BookStudioHub() {
                 <p className="font-semibold text-gray-900">Project limit reached</p>
                 <p className="text-sm text-gray-600 mt-0.5">You've used all {tier!.maxProjects} projects on the {tier!.displayName} plan.</p>
               </div>
-              <Button className="bg-[#C9941A] text-white shrink-0" onClick={() => navigate("/pricing")}><Star className="w-4 h-4 mr-2" />Upgrade Plan</Button>
+              <Button className="bg-[#E2741B] text-white shrink-0" onClick={() => navigate("/pricing")}><Star className="w-4 h-4 mr-2" />Upgrade Plan</Button>
             </div>
           </Card>
         )}
@@ -159,16 +159,16 @@ export default function BookStudioHub() {
             <div className="py-20 flex flex-col items-center gap-5 text-center">
               <BookOpen className="w-14 h-14 text-gray-200" />
               <div><p className="font-semibold text-gray-700">No books yet</p><p className="text-sm text-gray-400 mt-1">Create your first project to get started.</p></div>
-              <Button onClick={() => setShowNew(true)} className="bg-[#C9941A] text-white" data-testid="button-first-project"><Plus className="w-4 h-4 mr-2" />Create Your First Book</Button>
+              <Button onClick={() => setShowNew(true)} className="bg-[#E2741B] text-white" data-testid="button-first-project"><Plus className="w-4 h-4 mr-2" />Create Your First Book</Button>
             </div>
           </Card>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {projects.map(proj => (
               <Card key={proj.id} className="group hover-elevate cursor-pointer bg-white border border-gray-100 overflow-hidden" onClick={() => navigate(`/book-studio/${proj.id}`)} data-testid={`card-project-${proj.id}`}>
-                <div className="h-24 bg-gradient-to-br from-[#C9941A]/20 to-[#8B5E3C]/20 relative"
+                <div className="h-24 bg-gradient-to-br from-[#E2741B]/20 to-[#8B5E3C]/20 relative"
                   style={proj.coverImageUrl ? { backgroundImage: `url(${proj.coverImageUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : {}}>
-                  {!proj.coverImageUrl && <BookOpen className="absolute inset-0 m-auto w-8 h-8 text-[#C9941A]/30" />}
+                  {!proj.coverImageUrl && <BookOpen className="absolute inset-0 m-auto w-8 h-8 text-[#E2741B]/30" />}
                   <div className="absolute top-2 left-2">
                     <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${STATUS_BADGE[proj.status] || STATUS_BADGE.draft}`}>{STATUS_LABEL[proj.status] || "Draft"}</span>
                   </div>
@@ -185,7 +185,7 @@ export default function BookStudioHub() {
                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-700" onClick={e => { e.stopPropagation(); navigate("/book-perfection-suite"); }} title="Polish" data-testid={`button-polish-${proj.id}`}><BarChart2 className="w-3.5 h-3.5" /></button>
                       <button className="p-1 rounded hover:bg-red-50 text-gray-400 hover:text-red-500" onClick={e => { e.stopPropagation(); setDeleteTarget(proj); }} title="Delete" data-testid={`button-delete-${proj.id}`}><Trash2 className="w-3.5 h-3.5" /></button>
-                      <ChevronRight className="w-4 h-4 text-[#C9941A] ml-0.5" />
+                      <ChevronRight className="w-4 h-4 text-[#E2741B] ml-0.5" />
                     </div>
                   </div>
                 </div>
@@ -202,7 +202,7 @@ export default function BookStudioHub() {
           ].map(item => (
             <Card key={item.label} className="hover-elevate cursor-pointer bg-white border border-gray-100" onClick={() => navigate(item.href)}>
               <div className="p-4 flex items-center gap-3">
-                <div className="rounded-md bg-[#C9941A]/10 p-2 shrink-0"><item.icon className="w-4 h-4 text-[#C9941A]" /></div>
+                <div className="rounded-md bg-[#E2741B]/10 p-2 shrink-0"><item.icon className="w-4 h-4 text-[#E2741B]" /></div>
                 <div className="min-w-0"><p className="text-sm font-semibold text-gray-800">{item.label}</p><p className="text-xs text-gray-400 truncate">{item.desc}</p></div>
                 <ChevronRight className="w-4 h-4 text-gray-300 ml-auto shrink-0" />
               </div>
@@ -232,7 +232,7 @@ export default function BookStudioHub() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowNew(false)}>Cancel</Button>
-            <Button onClick={() => createMutation.mutate({ title: newTitle.trim(), genre: newGenre })} disabled={!newTitle.trim() || createMutation.isPending} className="bg-[#C9941A] text-white" data-testid="button-create-confirm">
+            <Button onClick={() => createMutation.mutate({ title: newTitle.trim(), genre: newGenre })} disabled={!newTitle.trim() || createMutation.isPending} className="bg-[#E2741B] text-white" data-testid="button-create-confirm">
               {createMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Plus className="w-4 h-4 mr-2" />}Create
             </Button>
           </DialogFooter>

@@ -265,7 +265,7 @@ export default function CourseStudio() {
         <div className="flex items-start justify-between gap-4 mb-8">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold flex items-center gap-3">
-              <GraduationCap className="w-8 h-8 text-[#C9941A]" />
+              <GraduationCap className="w-8 h-8 text-[#E2741B]" />
               Course Studio
             </h1>
             <p className="text-white/70 mt-1">Draft → preview → publish. Categories, prerequisites, videos, quizzes — all in one place.</p>
@@ -290,7 +290,7 @@ export default function CourseStudio() {
                   <button
                     key={c.id}
                     onClick={() => setCurrentCourseId(c.id)}
-                    className={`w-full text-left p-3 rounded-md border ${currentCourseId === c.id ? "border-[#C9941A] bg-[#0D0D0D]" : "border-[#333] bg-[#0D0D0D]"} hover-elevate`}
+                    className={`w-full text-left p-3 rounded-md border ${currentCourseId === c.id ? "border-[#E2741B] bg-[#0D0D0D]" : "border-[#333] bg-[#0D0D0D]"} hover-elevate`}
                     data-testid={`button-select-course-${c.id}`}
                   >
                     <div className="font-medium text-sm truncate text-[#FAF8F3]">{c.title}</div>
@@ -358,11 +358,11 @@ export default function CourseStudio() {
                           type="button"
                           key={cat.id}
                           onClick={() => toggleCategory(cat.id)}
-                          className={`flex items-center gap-2 p-2 rounded-md border text-sm hover-elevate ${on ? "border-[#C9941A] bg-[#C9941A]/10" : "border-[#333] bg-[#0D0D0D]"}`}
+                          className={`flex items-center gap-2 p-2 rounded-md border text-sm hover-elevate ${on ? "border-[#E2741B] bg-[#E2741B]/10" : "border-[#333] bg-[#0D0D0D]"}`}
                           data-testid={`button-category-${cat.slug}`}
                         >
                           <Checkbox checked={on} className="pointer-events-none" />
-                          <span className={on ? "text-[#C9941A] font-medium" : "text-white/80"}>{cat.name}</span>
+                          <span className={on ? "text-[#E2741B] font-medium" : "text-white/80"}>{cat.name}</span>
                         </button>
                       );
                     })}
@@ -501,7 +501,7 @@ export default function CourseStudio() {
                 <Button className="w-full" variant="outline" onClick={() => saveCourse("preview")} disabled={isSaving} data-testid="button-save-preview">
                   <Eye className="w-4 h-4 mr-2" />Save as Preview
                 </Button>
-                <Button className="w-full bg-[#C9941A] text-[#0D0D0D] hover:bg-[#E8B547]" onClick={publishCourse} disabled={isPublishing || isSaving} data-testid="button-publish">
+                <Button className="w-full bg-[#E2741B] text-[#0D0D0D] hover:bg-[#E8B547]" onClick={publishCourse} disabled={isPublishing || isSaving} data-testid="button-publish">
                   {isPublishing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Rocket className="w-4 h-4 mr-2" />}
                   Publish
                 </Button>

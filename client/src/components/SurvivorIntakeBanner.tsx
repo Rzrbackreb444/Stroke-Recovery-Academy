@@ -72,12 +72,12 @@ export default function SurvivorIntakeBanner() {
   return (
     <Link href="/recovery/intake">
       <div
-        className="cursor-pointer bg-gradient-to-r from-[#C9941A]/15 via-[#C9941A]/10 to-transparent border-b border-[#C9941A]/30 hover-elevate"
+        className="cursor-pointer bg-gradient-to-r from-[#E2741B]/15 via-[#E2741B]/10 to-transparent border-b border-[#E2741B]/30 hover-elevate"
         data-testid="banner-survivor-intake"
       >
         <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center gap-3 text-sm">
-          <div className="rounded-full bg-[#C9941A]/20 p-1.5 shrink-0">
-            <Sparkles className="w-3.5 h-3.5 text-[#C9941A]" />
+          <div className="rounded-full bg-[#E2741B]/20 p-1.5 shrink-0">
+            <Sparkles className="w-3.5 h-3.5 text-[#E2741B]" />
           </div>
           <div className="flex-1 min-w-0 text-white/90 truncate">
             <span className="font-semibold">
@@ -87,7 +87,7 @@ export default function SurvivorIntakeBanner() {
               {" "}— {isResume ? "a few questions left" : "5 minutes, all optional"}
             </span>
           </div>
-          <div className="flex items-center gap-1 text-[#C9941A] font-semibold whitespace-nowrap shrink-0">
+          <div className="flex items-center gap-1 text-[#E2741B] font-semibold whitespace-nowrap shrink-0">
             <span>{isResume ? "Resume" : "Start"}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </div>

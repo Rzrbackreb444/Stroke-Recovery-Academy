@@ -158,7 +158,7 @@ export default function AIConsultant() {
           
           <div className="relative max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <Badge className="mb-6 bg-primary/20 text-[#C9941A] border" data-testid="badge-ai-consultant">
+              <Badge className="mb-6 bg-primary/20 text-[#E2741B] border" data-testid="badge-ai-consultant">
                 <Bot className="w-3 h-3 mr-1" />
                 AI Consultant
               </Badge>
@@ -177,7 +177,7 @@ export default function AIConsultant() {
             <div className="grid md:grid-cols-3 gap-6 mb-12">
               <Card className="bg-[#1a1a1a] border-[#333] text-center">
                 <CardContent className="pt-6">
-                  <Brain className="w-10 h-10 text-[#C9941A] mx-auto mb-3" />
+                  <Brain className="w-10 h-10 text-[#E2741B] mx-auto mb-3" />
                   <h3 className="font-bold text-foreground mb-2">Upload Your Content</h3>
                   <p className="text-sm text-gray-400">
                     Books, courses, doctrines, transcripts - any knowledge you want to share
@@ -186,7 +186,7 @@ export default function AIConsultant() {
               </Card>
               <Card className="bg-[#1a1a1a] border-[#333] text-center">
                 <CardContent className="pt-6">
-                  <Bot className="w-10 h-10 text-[#C9941A] mx-auto mb-3" />
+                  <Bot className="w-10 h-10 text-[#E2741B] mx-auto mb-3" />
                   <h3 className="font-bold text-foreground mb-2">AI Learns Your Style</h3>
                   <p className="text-sm text-gray-400">
                     Your AI consultant answers questions exactly how you would
@@ -195,7 +195,7 @@ export default function AIConsultant() {
               </Card>
               <Card className="bg-[#1a1a1a] border-[#333] text-center">
                 <CardContent className="pt-6">
-                  <DollarSign className="w-10 h-10 text-[#C9941A] mx-auto mb-3" />
+                  <DollarSign className="w-10 h-10 text-[#E2741B] mx-auto mb-3" />
                   <h3 className="font-bold text-foreground mb-2">Earn 24/7</h3>
                   <p className="text-sm text-gray-400">
                     Charge per conversation or include with course purchases
@@ -206,15 +206,15 @@ export default function AIConsultant() {
 
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="bg-[#1a1a1a] border border mb-8">
-                <TabsTrigger value="my-consultants" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black gap-2">
+                <TabsTrigger value="my-consultants" className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black gap-2">
                   <Bot className="w-4 h-4" />
                   My Consultants
                 </TabsTrigger>
-                <TabsTrigger value="create" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black gap-2">
+                <TabsTrigger value="create" className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black gap-2">
                   <Plus className="w-4 h-4" />
                   Create New
                 </TabsTrigger>
-                <TabsTrigger value="analytics" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black gap-2">
+                <TabsTrigger value="analytics" className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black gap-2">
                   <DollarSign className="w-4 h-4" />
                   Analytics
                 </TabsTrigger>
@@ -230,7 +230,7 @@ export default function AIConsultant() {
                         Create your first AI consultant to start earning from your expertise.
                       </p>
                       <Button 
-                        className="bg-[#C9941A] hover:bg-[#C9941A] text-black gap-2"
+                        className="bg-[#E2741B] hover:bg-[#E2741B] text-black gap-2"
                         onClick={() => setActiveTab("create")}
                       >
                         <Plus className="w-4 h-4" />
@@ -244,7 +244,7 @@ export default function AIConsultant() {
                       <Card 
                         key={bot.id} 
                         className={`bg-[#1a1a1a] border-[#333] cursor-pointer transition-all hover-elevate ${
-                          selectedBot?.id === bot.id ? 'border-[#C9941A] ring-2 ring-[#C9941A]/20' : ''
+                          selectedBot?.id === bot.id ? 'border-[#E2741B] ring-2 ring-[#E2741B]/20' : ''
                         }`}
                         onClick={() => setSelectedBot(bot)}
                         data-testid={`card-bot-${bot.id}`}
@@ -253,7 +253,7 @@ export default function AIConsultant() {
                           <div className="flex items-start justify-between">
                             <div className="flex items-center gap-3">
                               <Avatar className="h-12 w-12 border-2 border">
-                                <AvatarFallback className="bg-primary/20 text-[#C9941A]">
+                                <AvatarFallback className="bg-primary/20 text-[#E2741B]">
                                   <Bot className="w-6 h-6" />
                                 </AvatarFallback>
                               </Avatar>
@@ -264,7 +264,7 @@ export default function AIConsultant() {
                             </div>
                             <Badge 
                               className={bot.status === "active" 
-                                ? "bg-[#C9941A]/20 text-[#C9941A] border-green-500/30" 
+                                ? "bg-[#E2741B]/20 text-[#E2741B] border-green-500/30" 
                                 : "bg-yellow-500/20 text-yellow-400 border-yellow-500/30"
                               }
                             >
@@ -275,7 +275,7 @@ export default function AIConsultant() {
                         <CardContent>
                           <div className="flex flex-wrap gap-2 mb-4">
                             {bot.expertise.map((tag) => (
-                              <Badge key={tag} variant="outline" className="text-xs border text-[#C9941A]">
+                              <Badge key={tag} variant="outline" className="text-xs border text-[#E2741B]">
                                 {tag}
                               </Badge>
                             ))}
@@ -290,7 +290,7 @@ export default function AIConsultant() {
                               <div className="text-xs text-gray-400">Chats</div>
                             </div>
                             <div>
-                              <div className="text-2xl font-bold text-[#C9941A]">${bot.earnings.toLocaleString()}</div>
+                              <div className="text-2xl font-bold text-[#E2741B]">${bot.earnings.toLocaleString()}</div>
                               <div className="text-xs text-gray-400">Earned</div>
                             </div>
                           </div>
@@ -340,7 +340,7 @@ export default function AIConsultant() {
                                   <div 
                                     className={`max-w-[80%] px-4 py-2 rounded-lg ${
                                       msg.role === "user" 
-                                        ? "bg-[#C9941A] text-black" 
+                                        ? "bg-[#E2741B] text-black" 
                                         : "bg-zinc-700 text-foreground"
                                     }`}
                                   >
@@ -362,7 +362,7 @@ export default function AIConsultant() {
                           data-testid="input-chat"
                         />
                         <Button 
-                          className="bg-[#C9941A] hover:bg-[#C9941A] text-black"
+                          className="bg-[#E2741B] hover:bg-[#E2741B] text-black"
                           onClick={handleSendMessage}
                           data-testid="button-send"
                         >
@@ -408,7 +408,7 @@ export default function AIConsultant() {
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-foreground">Training Materials</label>
                       <div className="border-2 border-dashed border rounded-lg p-8 text-center">
-                        <Upload className="w-12 h-12 text-[#C9941A] mx-auto mb-4" />
+                        <Upload className="w-12 h-12 text-[#E2741B] mx-auto mb-4" />
                         <p className="text-foreground font-medium mb-2">Drag & drop files or click to upload</p>
                         <p className="text-sm text-gray-400 mb-4">
                           PDF, EPUB, DOCX, TXT, or paste content directly
@@ -434,7 +434,7 @@ export default function AIConsultant() {
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-sm">
                           <span className="text-gray-400">Training AI on your content...</span>
-                          <span className="text-[#C9941A]">{trainingProgress}%</span>
+                          <span className="text-[#E2741B]">{trainingProgress}%</span>
                         </div>
                         <Progress value={trainingProgress} className="h-2" />
                       </div>
@@ -445,7 +445,7 @@ export default function AIConsultant() {
                         Save Draft
                       </Button>
                       <Button 
-                        className="bg-[#C9941A] hover:bg-[#C9941A] text-black gap-2"
+                        className="bg-[#E2741B] hover:bg-[#E2741B] text-black gap-2"
                         onClick={handleCreateBot}
                         disabled={isCreating}
                         data-testid="button-create-bot"
@@ -471,29 +471,29 @@ export default function AIConsultant() {
                 <div className="grid md:grid-cols-4 gap-6 mb-8">
                   <Card className="bg-[#1a1a1a] border-[#333]">
                     <CardContent className="pt-6 text-center">
-                      <Bot className="w-8 h-8 text-[#C9941A] mx-auto mb-2" />
+                      <Bot className="w-8 h-8 text-[#E2741B] mx-auto mb-2" />
                       <div className="text-3xl font-bold text-foreground">2</div>
                       <div className="text-sm text-gray-400">Active Consultants</div>
                     </CardContent>
                   </Card>
                   <Card className="bg-[#1a1a1a] border-[#333]">
                     <CardContent className="pt-6 text-center">
-                      <MessageSquare className="w-8 h-8 text-[#C9941A] mx-auto mb-2" />
+                      <MessageSquare className="w-8 h-8 text-[#E2741B] mx-auto mb-2" />
                       <div className="text-3xl font-bold text-foreground">2,139</div>
                       <div className="text-sm text-gray-400">Total Conversations</div>
                     </CardContent>
                   </Card>
                   <Card className="bg-[#1a1a1a] border-[#333]">
                     <CardContent className="pt-6 text-center">
-                      <Users className="w-8 h-8 text-[#C9941A] mx-auto mb-2" />
+                      <Users className="w-8 h-8 text-[#E2741B] mx-auto mb-2" />
                       <div className="text-3xl font-bold text-foreground">847</div>
                       <div className="text-sm text-gray-400">Unique Users</div>
                     </CardContent>
                   </Card>
                   <Card className="bg-[#1a1a1a] border-[#333]">
                     <CardContent className="pt-6 text-center">
-                      <DollarSign className="w-8 h-8 text-[#C9941A] mx-auto mb-2" />
-                      <div className="text-3xl font-bold text-[#C9941A]">$6,417</div>
+                      <DollarSign className="w-8 h-8 text-[#E2741B] mx-auto mb-2" />
+                      <div className="text-3xl font-bold text-[#E2741B]">$6,417</div>
                       <div className="text-sm text-gray-400">Total Earnings</div>
                     </CardContent>
                   </Card>
@@ -510,7 +510,7 @@ export default function AIConsultant() {
                         <h4 className="font-medium text-foreground">Pay Per Conversation</h4>
                         <p className="text-sm text-gray-400">Charge users per chat session</p>
                       </div>
-                      <Badge className="bg-primary/20 text-[#C9941A] border">
+                      <Badge className="bg-primary/20 text-[#E2741B] border">
                         $0.50 - $5.00 per chat
                       </Badge>
                     </div>
@@ -519,7 +519,7 @@ export default function AIConsultant() {
                         <h4 className="font-medium text-foreground">Bundle with Course</h4>
                         <p className="text-sm text-gray-400">Include as course bonus</p>
                       </div>
-                      <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-green-500/30">
+                      <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-green-500/30">
                         Included with purchase
                       </Badge>
                     </div>

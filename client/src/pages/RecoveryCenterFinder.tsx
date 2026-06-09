@@ -161,7 +161,7 @@ export default function RecoveryCenterFinder() {
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold flex items-center justify-center gap-3 mb-3">
-            <MapPin className="h-10 w-10 text-[#C9941A]" />
+            <MapPin className="h-10 w-10 text-[#E2741B]" />
             Recovery Center Finder
           </h1>
           <p className="text-gray-400 text-lg">
@@ -200,7 +200,7 @@ export default function RecoveryCenterFinder() {
               />
             </div>
             <Button 
-              className="bg-[#C9941A] text-black font-semibold hover:bg-[#C9941A]/90" 
+              className="bg-[#E2741B] text-black font-semibold hover:bg-[#E2741B]/90" 
               onClick={handleFindCenters}
               disabled={isLoading || !zipCode.trim()}
               data-testid="button-find-centers"
@@ -219,7 +219,7 @@ export default function RecoveryCenterFinder() {
                 key={type.id}
                 variant={activeType === type.id ? "default" : "outline"}
                 onClick={() => setActiveType(type.id)}
-                className={activeType === type.id ? "bg-[#C9941A] text-black" : "border-[#333] text-gray-300"}
+                className={activeType === type.id ? "bg-[#E2741B] text-black" : "border-[#333] text-gray-300"}
                 data-testid={`button-type-${type.id}`}
               >
                 <Icon className="h-4 w-4 mr-2" />
@@ -231,7 +231,7 @@ export default function RecoveryCenterFinder() {
 
         {!searchParams.zipCode && (
           <Card className="bg-[#1a1a1a] border-[#333] p-12 text-center">
-            <MapPin className="h-16 w-16 text-[#C9941A] mx-auto mb-4" />
+            <MapPin className="h-16 w-16 text-[#E2741B] mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">Enter Your ZIP Code</h3>
             <p className="text-gray-400 mb-4">
               We'll search for stroke rehabilitation centers, neurologists, and therapy services in your area
@@ -299,9 +299,9 @@ export default function RecoveryCenterFinder() {
 
             {/* What to Ask guide — shown above results to set the right tone */}
             {filteredCenters.length > 0 && (
-              <Card className="bg-[#1a1a1a] border-[#C9941A]/30 p-5 mb-2" data-testid="card-what-to-ask">
+              <Card className="bg-[#1a1a1a] border-[#E2741B]/30 p-5 mb-2" data-testid="card-what-to-ask">
                 <div className="flex items-start gap-3">
-                  <ListChecks className="h-5 w-5 text-[#C9941A] mt-0.5 flex-shrink-0" />
+                  <ListChecks className="h-5 w-5 text-[#E2741B] mt-0.5 flex-shrink-0" />
                   <div className="flex-1">
                     <h3 className="text-white font-semibold mb-2">Bring this list to your first call</h3>
                     <ul className="text-sm text-gray-300 space-y-1.5 leading-relaxed">
@@ -324,7 +324,7 @@ export default function RecoveryCenterFinder() {
               return (
                 <Card
                   key={k}
-                  className="bg-[#1a1a1a] border-[#333] p-6 hover:border-[#C9941A]/30 transition-all duration-200"
+                  className="bg-[#1a1a1a] border-[#333] p-6 hover:border-[#E2741B]/30 transition-all duration-200"
                   data-testid={`card-center-${k}`}
                 >
                   <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
@@ -332,7 +332,7 @@ export default function RecoveryCenterFinder() {
                       <div className="flex items-start gap-3 mb-2 flex-wrap">
                         {center.placeId ? (
                           <Link href={`/recovery/center/${encodeURIComponent(center.placeId)}`}>
-                            <h3 className="text-xl font-bold text-white hover:text-[#C9941A] transition-colors cursor-pointer" data-testid={`text-center-name-${k}`}>{center.name}</h3>
+                            <h3 className="text-xl font-bold text-white hover:text-[#E2741B] transition-colors cursor-pointer" data-testid={`text-center-name-${k}`}>{center.name}</h3>
                           </Link>
                         ) : (
                           <h3 className="text-xl font-bold text-white" data-testid={`text-center-name-${k}`}>{center.name}</h3>
@@ -353,7 +353,7 @@ export default function RecoveryCenterFinder() {
                           {center.address}
                         </span>
                         {distStr && (
-                          <span className="flex items-center gap-1 text-[#C9941A]" data-testid={`text-distance-${k}`}>
+                          <span className="flex items-center gap-1 text-[#E2741B]" data-testid={`text-distance-${k}`}>
                             <Navigation className="h-3.5 w-3.5" />
                             {distStr}
                           </span>
@@ -369,7 +369,7 @@ export default function RecoveryCenterFinder() {
                       {!!center.rating && (
                         <div className="flex items-center gap-2 mb-3">
                           <div className="flex items-center gap-1">
-                            <Star className="h-4 w-4 text-[#C9941A] fill-[#C9941A]" />
+                            <Star className="h-4 w-4 text-[#E2741B] fill-[#E2741B]" />
                             <span className="font-semibold text-white">{Number(center.rating).toFixed(1)}</span>
                           </div>
                           <span className="text-gray-500">({reviewCount} reviews)</span>
@@ -388,7 +388,7 @@ export default function RecoveryCenterFinder() {
                     <div className="flex flex-col gap-2 md:min-w-[160px]">
                       {center.phone && (
                         <Button
-                          className="bg-[#C9941A] text-black hover:bg-[#C9941A]/90"
+                          className="bg-[#E2741B] text-black hover:bg-[#E2741B]/90"
                           onClick={() => window.open(`tel:${center.phone}`)}
                           data-testid={`button-call-${k}`}
                         >
@@ -420,7 +420,7 @@ export default function RecoveryCenterFinder() {
                         <Link href={`/recovery/center/${encodeURIComponent(center.placeId)}`}>
                           <Button
                             variant="outline"
-                            className="w-full border-[#C9941A]/40 text-[#C9941A] hover:bg-[#C9941A]/10"
+                            className="w-full border-[#E2741B]/40 text-[#E2741B] hover:bg-[#E2741B]/10"
                             data-testid={`button-detail-${k}`}
                           >
                             Details
@@ -437,14 +437,14 @@ export default function RecoveryCenterFinder() {
 
         {searchParams.zipCode && !isLoading && !error && filteredCenters.length === 0 && (
           <Card className="bg-[#1a1a1a] border-[#333] p-12 text-center">
-            <MapPin className="h-16 w-16 text-[#C9941A] mx-auto mb-4" />
+            <MapPin className="h-16 w-16 text-[#E2741B] mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">No centers found</h3>
             <p className="text-gray-400 mb-4">
               Try adjusting your search filters or expanding your search area
             </p>
             <Button 
               variant="outline" 
-              className="border-[#C9941A] text-[#C9941A]"
+              className="border-[#E2741B] text-[#E2741B]"
               onClick={() => {
                 setActiveType("all");
                 setSearchQuery("");

@@ -150,7 +150,7 @@ export default function RecoveryHeader() {
           </Link>
 
           {/* Desktop nav — 4 accountability-focused primary + More megamenu */}
-          <nav className="hidden lg:flex items-center gap-0.5" aria-label="Main navigation">
+          <nav className="hidden xl:flex items-center gap-0.5" aria-label="Main navigation">
             {primaryNav.map((link) => {
               const Icon = link.icon;
               return (
@@ -215,7 +215,7 @@ export default function RecoveryHeader() {
           </nav>
 
           {/* Right actions */}
-          <div className="hidden lg:flex items-center gap-2">
+          <div className="hidden xl:flex items-center gap-2">
             {/* Premium nav — always visible, never blocking. Hover popover
                 gives a 4-line free vs premium snapshot. One click → /recovery/premium. */}
             <HoverCard openDelay={120} closeDelay={120}>
@@ -343,7 +343,7 @@ export default function RecoveryHeader() {
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden text-gray-400"
+            className="xl:hidden text-gray-400"
             onClick={() => setMobileOpen(!mobileOpen)}
             data-testid="button-menu"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
@@ -355,7 +355,7 @@ export default function RecoveryHeader() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="lg:hidden border-t border-[#1e1e1e] bg-[#0D0D0D]">
+        <div className="xl:hidden border-t border-[#1e1e1e] bg-[#0D0D0D]">
           <div className="max-w-7xl mx-auto px-4 py-4 space-y-1">
             {/* 4 accountability-focused primary links */}
             {primaryNav.map((link) => {

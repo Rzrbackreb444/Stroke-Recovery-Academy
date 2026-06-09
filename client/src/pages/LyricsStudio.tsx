@@ -218,7 +218,7 @@ export default function LyricsStudio() {
   if (authLoading) {
     return (
       <div className="min-h-screen bg-[#0D0D0D] text-white flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-[#C9941A]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#E2741B]" />
       </div>
     );
   }
@@ -228,7 +228,7 @@ export default function LyricsStudio() {
       <div className="min-h-screen bg-[#0D0D0D] text-white flex items-center justify-center px-4">
         <Card className="bg-[#111] border-[#222] max-w-md w-full">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-[#C9941A]">
+            <CardTitle className="flex items-center gap-2 text-[#E2741B]">
               <Lock className="h-5 w-5" />
               Sign in to use Lyrics Studio
             </CardTitle>
@@ -239,7 +239,7 @@ export default function LyricsStudio() {
               Sign in to start writing.
             </p>
             <Link href="/auth">
-              <Button className="w-full bg-[#C9941A] hover:bg-[#b08016] text-black" data-testid="button-sign-in">
+              <Button className="w-full bg-[#E2741B] hover:bg-[#b08016] text-black" data-testid="button-sign-in">
                 Sign in
               </Button>
             </Link>
@@ -259,9 +259,9 @@ export default function LyricsStudio() {
         <div className="mb-8 flex items-start justify-between gap-4 flex-wrap">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <Music2 className="h-6 w-6 text-[#C9941A]" />
+              <Music2 className="h-6 w-6 text-[#E2741B]" />
               <h1 className="text-2xl lg:text-3xl font-bold">Lyrics Studio</h1>
-              <Badge className="bg-[#C9941A]/15 text-[#C9941A] border border-[#C9941A]/30 gap-1">
+              <Badge className="bg-[#E2741B]/15 text-[#E2741B] border border-[#E2741B]/30 gap-1">
                 <Crown className="h-3 w-3" /> PRO
               </Badge>
             </div>
@@ -275,10 +275,10 @@ export default function LyricsStudio() {
               className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#111] border border-[#222]"
               data-testid="status-usage"
             >
-              <Sparkles className="h-4 w-4 text-[#C9941A]" />
+              <Sparkles className="h-4 w-4 text-[#E2741B]" />
               <span className="text-xs text-gray-400">
                 {usage.data.premium ? (
-                  <span className="text-[#C9941A] font-semibold">Premium · unlimited</span>
+                  <span className="text-[#E2741B] font-semibold">Premium · unlimited</span>
                 ) : (
                   <>
                     <span className="text-white font-semibold">{usage.data.lyricsDraftCount}</span>
@@ -344,12 +344,12 @@ export default function LyricsStudio() {
                       key={opt.v}
                       className={`flex items-center gap-2 px-3 py-2.5 rounded-md border cursor-pointer transition-colors ${
                         singer === opt.v
-                          ? "border-[#C9941A] bg-[#C9941A]/10"
+                          ? "border-[#E2741B] bg-[#E2741B]/10"
                           : "border-[#222] bg-[#0a0a0a] hover:border-[#333]"
                       }`}
                       data-testid={`radio-singer-${opt.v}`}
                     >
-                      <RadioGroupItem value={opt.v} className="border-gray-500 text-[#C9941A]" />
+                      <RadioGroupItem value={opt.v} className="border-gray-500 text-[#E2741B]" />
                       <span className="text-sm">{opt.label}</span>
                     </label>
                   ))}
@@ -359,7 +359,7 @@ export default function LyricsStudio() {
               <Button
                 onClick={() => generate.mutate()}
                 disabled={generate.isPending || storyText.trim().length < 10}
-                className="w-full bg-[#C9941A] hover:bg-[#b08016] text-black font-semibold"
+                className="w-full bg-[#E2741B] hover:bg-[#b08016] text-black font-semibold"
                 data-testid="button-generate"
               >
                 {generate.isPending ? (
@@ -484,7 +484,7 @@ export default function LyricsStudio() {
                         {d.singer}
                       </Badge>
                       {d.isShared && (
-                        <Badge className="text-[10px] bg-[#C9941A]/15 text-[#C9941A] border-[#C9941A]/30">
+                        <Badge className="text-[10px] bg-[#E2741B]/15 text-[#E2741B] border-[#E2741B]/30">
                           <Share2 className="h-2.5 w-2.5 mr-1" /> Public
                         </Badge>
                       )}
@@ -541,7 +541,7 @@ function FeaturedAlbumBanner() {
           data-testid="img-featured-album-cover"
         />
         <div className="space-y-3 text-center md:text-left">
-          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#C9941A]/15 text-[#C9941A] border border-[#C9941A]/30">
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#E2741B]/15 text-[#E2741B] border border-[#E2741B]/30">
             <Sparkles className="h-3 w-3" />
             Built with these tools
           </div>
@@ -594,7 +594,7 @@ function LyricsRender({
     <div className="space-y-5">
       {/* Spec block */}
       <div className="p-4 rounded-md bg-[#0a0a0a] border border-[#222] text-sm space-y-1">
-        <div className="text-xs font-bold uppercase tracking-wider text-[#C9941A] mb-2">
+        <div className="text-xs font-bold uppercase tracking-wider text-[#E2741B] mb-2">
           The Architect's Specifications
         </div>
         <div><span className="text-gray-500">• Style:</span> <span className="text-white">{output.styleHeader.style}</span></div>
@@ -604,12 +604,12 @@ function LyricsRender({
 
       <div className="text-center">
         <div className="text-xs text-gray-500 uppercase tracking-widest mb-1">Title</div>
-        <h2 className="text-xl font-bold text-[#C9941A]" data-testid="text-lyrics-title">{output.title}</h2>
+        <h2 className="text-xl font-bold text-[#E2741B]" data-testid="text-lyrics-title">{output.title}</h2>
       </div>
 
       {output.sections.map((s, i) => (
         <div key={i} className="space-y-2" data-testid={`section-lyrics-${i}`}>
-          <div className="text-sm font-bold text-[#C9941A]">{s.label}</div>
+          <div className="text-sm font-bold text-[#E2741B]">{s.label}</div>
           {s.sceneNote && (
             <div className="text-xs italic text-gray-500 leading-relaxed">
               {s.sceneNote.startsWith("(") ? s.sceneNote : `(${s.sceneNote})`}
@@ -638,7 +638,7 @@ function LyricsRender({
 
       {output.producerNotes && (
         <div className="p-3 rounded-md bg-[#0a0a0a] border border-[#222]">
-          <div className="text-xs font-semibold text-[#C9941A] mb-1 uppercase tracking-wide">Producer notes</div>
+          <div className="text-xs font-semibold text-[#E2741B] mb-1 uppercase tracking-wide">Producer notes</div>
           <p className="text-xs text-gray-400 leading-relaxed">{output.producerNotes}</p>
         </div>
       )}
@@ -658,7 +658,7 @@ function LyricsRender({
             />
           </div>
           {shareUrl && (
-            <div className="text-xs p-2 rounded bg-[#0a0a0a] border border-[#222] text-[#C9941A] break-all" data-testid="text-share-url">
+            <div className="text-xs p-2 rounded bg-[#0a0a0a] border border-[#222] text-[#E2741B] break-all" data-testid="text-share-url">
               {shareUrl}
             </div>
           )}

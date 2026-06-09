@@ -21,7 +21,7 @@ export default function MedicalDisclaimer() {
           <Button
             variant="ghost"
             size="sm"
-            className="text-white/70 hover:text-[#C9941A] mb-6"
+            className="text-white/70 hover:text-[#E2741B] mb-6"
             data-testid="link-back-dashboard"
           >
             <ArrowLeft className="w-4 h-4 mr-2" /> Back
@@ -152,7 +152,7 @@ export default function MedicalDisclaimer() {
               Questions about this disclaimer? Email{" "}
               <a
                 href="mailto:hello@strokerecoveryacademy.com"
-                className="text-[#C9941A] underline"
+                className="text-[#E2741B] underline"
                 data-testid="link-contact-email"
               >
                 hello@strokerecoveryacademy.com

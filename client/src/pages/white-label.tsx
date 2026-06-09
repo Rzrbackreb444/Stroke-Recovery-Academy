@@ -76,7 +76,7 @@ export default function WhiteLabelPage() {
     brandName: "",
     logoUrl: "",
     faviconUrl: "",
-    primaryColor: "#C9941A",
+    primaryColor: "#E2741B",
     accentColor: "#1a1a1a",
     backgroundColor: "#FAF8F3",
     customDomain: "",
@@ -172,7 +172,7 @@ export default function WhiteLabelPage() {
               Customize and rebrand Stroke Recovery Academy as your own platform
             </p>
           </div>
-          <Badge variant="outline" className="bg-[#C9941A]/10 text-[#C9941A] border-[#C9941A]">
+          <Badge variant="outline" className="bg-[#E2741B]/10 text-[#E2741B] border-[#E2741B]">
             <Crown className="w-3 h-3 mr-1" />
             Enterprise Feature
           </Badge>
@@ -180,16 +180,16 @@ export default function WhiteLabelPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {Object.entries(pricingTiers).map(([tier, info]) => (
-            <Card key={tier} className={`relative ${tier === "professional" ? "border-[#C9941A] border-2" : ""}`}>
+            <Card key={tier} className={`relative ${tier === "professional" ? "border-[#E2741B] border-2" : ""}`}>
               {tier === "professional" && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <Badge className="bg-[#C9941A] text-white">Most Popular</Badge>
+                  <Badge className="bg-[#E2741B] text-white">Most Popular</Badge>
                 </div>
               )}
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   {tier === "basic" && <Building2 className="w-5 h-5" />}
-                  {tier === "professional" && <Crown className="w-5 h-5 text-[#C9941A]" />}
+                  {tier === "professional" && <Crown className="w-5 h-5 text-[#E2741B]" />}
                   {tier === "enterprise" && <Shield className="w-5 h-5" />}
                   {info.name}
                 </CardTitle>
@@ -208,7 +208,7 @@ export default function WhiteLabelPage() {
                   ))}
                 </ul>
                 <Button 
-                  className={`w-full mt-4 ${tier === "professional" ? "bg-[#C9941A] hover:bg-[#C9941A]/90" : ""}`}
+                  className={`w-full mt-4 ${tier === "professional" ? "bg-[#E2741B] hover:bg-[#E2741B]/90" : ""}`}
                   variant={tier === "professional" ? "default" : "outline"}
                   data-testid={`button-subscribe-${tier}`}
                 >
@@ -304,7 +304,7 @@ export default function WhiteLabelPage() {
                         <Input
                           value={config.primaryColor}
                           onChange={(e) => setConfig(prev => ({ ...prev, primaryColor: e.target.value }))}
-                          placeholder="#C9941A"
+                          placeholder="#E2741B"
                         />
                       </div>
                     </div>
@@ -406,7 +406,7 @@ export default function WhiteLabelPage() {
                 <Card className="bg-[#1a1a1a]/50">
                   <CardContent className="pt-6">
                     <div className="flex items-start gap-4">
-                      <Globe className="w-8 h-8 text-[#C9941A]" />
+                      <Globe className="w-8 h-8 text-[#E2741B]" />
                       <div>
                         <h3 className="font-semibold">Custom Domain Setup</h3>
                         <p className="text-sm text-gray-400 mt-1">
@@ -563,7 +563,7 @@ export default function WhiteLabelPage() {
                     </Card>
                     <Card>
                       <CardContent className="pt-4 text-center">
-                        <p className="text-3xl font-bold text-[#C9941A]">{100 - config.creatorRevenueShare}%</p>
+                        <p className="text-3xl font-bold text-[#E2741B]">{100 - config.creatorRevenueShare}%</p>
                         <p className="text-sm text-gray-400">Platform Fee</p>
                       </CardContent>
                     </Card>
@@ -590,7 +590,7 @@ export default function WhiteLabelPage() {
               <Button 
                 onClick={() => saveMutation.mutate(config)}
                 disabled={saveMutation.isPending}
-                className="bg-[#C9941A] hover:bg-[#C9941A]/90"
+                className="bg-[#E2741B] hover:bg-[#E2741B]/90"
                 data-testid="button-save-config"
               >
                 {saveMutation.isPending ? "Saving..." : "Save Configuration"}

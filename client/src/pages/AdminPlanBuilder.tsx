@@ -192,11 +192,11 @@ export default function AdminPlanBuilder() {
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case "diet": return <Apple className="w-5 h-5 text-[#C9941A]" />;
+      case "diet": return <Apple className="w-5 h-5 text-[#E2741B]" />;
       case "exercise": return <Dumbbell className="w-5 h-5 text-blue-400" />;
-      case "cognitive": return <Brain className="w-5 h-5 text-[#C9941A]" />;
+      case "cognitive": return <Brain className="w-5 h-5 text-[#E2741B]" />;
       case "recovery": return <Heart className="w-5 h-5 text-red-400" />;
-      default: return <Target className="w-5 h-5 text-[#C9941A]" />;
+      default: return <Target className="w-5 h-5 text-[#E2741B]" />;
     }
   };
 
@@ -401,7 +401,7 @@ export default function AdminPlanBuilder() {
 
             {isLoading ? (
               <div className="flex justify-center py-12">
-                <Loader2 className="w-8 h-8 text-[#C9941A] animate-spin" />
+                <Loader2 className="w-8 h-8 text-[#E2741B] animate-spin" />
               </div>
             ) : filteredPlans && filteredPlans.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -414,7 +414,7 @@ export default function AdminPlanBuilder() {
                           {plan.isTemplate && (
                             <Badge variant="outline">Template</Badge>
                           )}
-                          <Badge className={plan.isPublished ? "bg-[#C9941A]/20 text-[#C9941A]" : "bg-gray-500/20 text-gray-400"}>
+                          <Badge className={plan.isPublished ? "bg-[#E2741B]/20 text-[#E2741B]" : "bg-gray-500/20 text-gray-400"}>
                             {plan.isPublished ? "Published" : "Draft"}
                           </Badge>
                         </div>
@@ -525,7 +525,7 @@ export default function AdminPlanBuilder() {
                         <div className="flex items-center gap-3">
                           <Avatar className="w-10 h-10">
                             <AvatarImage src={u.profileImageUrl} />
-                            <AvatarFallback className="bg-gray-700 text-[#C9941A]">
+                            <AvatarFallback className="bg-gray-700 text-[#E2741B]">
                               {u.firstName?.[0]}{u.lastName?.[0]}
                             </AvatarFallback>
                           </Avatar>
@@ -569,7 +569,7 @@ export default function AdminPlanBuilder() {
                     <Checkbox id={`user-${u.id}`} />
                     <Avatar className="w-8 h-8">
                       <AvatarImage src={u.profileImageUrl} />
-                      <AvatarFallback className="bg-gray-700 text-[#C9941A] text-xs">
+                      <AvatarFallback className="bg-gray-700 text-[#E2741B] text-xs">
                         {u.firstName?.[0]}{u.lastName?.[0]}
                       </AvatarFallback>
                     </Avatar>

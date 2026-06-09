@@ -39,15 +39,15 @@ function AccountabilityBanner({ push }: { push: ReturnType<typeof usePushNotific
   if (dismissed || push.isSubscribed || !push.isSupported) return null;
 
   return (
-    <div className="rounded-lg border border-[#C9941A]/40 bg-[#C9941A]/10 p-5 mb-6 flex flex-wrap gap-4 items-start justify-between">
+    <div className="rounded-lg border border-[#E2741B]/40 bg-[#E2741B]/10 p-5 mb-6 flex flex-wrap gap-4 items-start justify-between">
       <div className="flex gap-3 items-start">
-        <Zap className="h-5 w-5 text-[#C9941A] flex-shrink-0 mt-0.5" />
+        <Zap className="h-5 w-5 text-[#E2741B] flex-shrink-0 mt-0.5" />
         <div>
           <p className="font-bold text-white text-sm mb-1">Turn on Accountability Push Alerts</p>
           <p className="text-gray-400 text-xs leading-relaxed">
             The Sasquatch Coach will check on you. Missed check-ins, medication times, 
             appointments, streak milestones — all delivered with Nick's accountability voice. 
-            <span className="text-[#C9941A] font-semibold"> Warrior plan only.</span>
+            <span className="text-[#E2741B] font-semibold"> Warrior plan only.</span>
           </p>
           {push.error && <p className="text-red-400 text-xs mt-1">{push.error}</p>}
         </div>
@@ -64,7 +64,7 @@ function AccountabilityBanner({ push }: { push: ReturnType<typeof usePushNotific
         </Button>
         <Button
           size="sm"
-          className="bg-[#C9941A] text-black font-bold"
+          className="bg-[#E2741B] text-black font-bold"
           onClick={push.subscribe}
           disabled={push.isLoading}
           data-testid="button-enable-push"
@@ -110,7 +110,7 @@ function PushStatusCard({ push }: { push: ReturnType<typeof usePushNotifications
                 <p className="text-xs text-gray-500">You won't receive push reminders until you opt in.</p>
               </div>
             </div>
-            <Button size="sm" className="bg-[#C9941A] text-black font-bold" onClick={push.subscribe} disabled={push.isLoading} data-testid="button-push-subscribe">
+            <Button size="sm" className="bg-[#E2741B] text-black font-bold" onClick={push.subscribe} disabled={push.isLoading} data-testid="button-push-subscribe">
               {push.isLoading ? "Enabling..." : "Enable Now"}
             </Button>
           </div>
@@ -189,7 +189,7 @@ function MedicationsTab() {
           <h3 className="font-black text-white text-lg">Medications</h3>
           <p className="text-xs text-gray-400">Push alerts fire at your set times. Don't skip your protocol.</p>
         </div>
-        <Button size="sm" className="bg-[#C9941A] text-black font-bold gap-1" onClick={() => setShowAdd(true)} data-testid="button-add-medication">
+        <Button size="sm" className="bg-[#E2741B] text-black font-bold gap-1" onClick={() => setShowAdd(true)} data-testid="button-add-medication">
           <Plus className="h-3.5 w-3.5" />Add
         </Button>
       </div>
@@ -222,7 +222,7 @@ function MedicationsTab() {
                       {med.reminder_times?.length > 0 && (
                         <div className="flex gap-1 mt-1 flex-wrap">
                           {med.reminder_times.map((t: string) => (
-                            <Badge key={t} className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 text-xs">{t}</Badge>
+                            <Badge key={t} className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 text-xs">{t}</Badge>
                           ))}
                         </div>
                       )}
@@ -246,7 +246,7 @@ function MedicationsTab() {
       <Dialog open={showAdd} onOpenChange={setShowAdd}>
         <DialogContent className="bg-[#1a1a1a] border-[#333] text-white max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-[#C9941A]">Add Medication</DialogTitle>
+            <DialogTitle className="text-[#E2741B]">Add Medication</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
@@ -279,7 +279,7 @@ function MedicationsTab() {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="text-xs text-gray-400">Reminder times (push alert sent at these times)</label>
-                <Button size="sm" variant="ghost" className="text-[#C9941A] text-xs h-6" onClick={addReminderTime}>+ Add time</Button>
+                <Button size="sm" variant="ghost" className="text-[#E2741B] text-xs h-6" onClick={addReminderTime}>+ Add time</Button>
               </div>
               <div className="space-y-2">
                 {form.reminderTimes.map((t, i) => (
@@ -292,7 +292,7 @@ function MedicationsTab() {
                 ))}
               </div>
             </div>
-            <Button className="w-full bg-[#C9941A] text-black font-black" onClick={() => addMutation.mutate(form)} disabled={addMutation.isPending || !form.name || !form.dosage} data-testid="button-submit-medication">
+            <Button className="w-full bg-[#E2741B] text-black font-black" onClick={() => addMutation.mutate(form)} disabled={addMutation.isPending || !form.name || !form.dosage} data-testid="button-submit-medication">
               {addMutation.isPending ? "Adding..." : "Add Medication"}
             </Button>
           </div>
@@ -350,12 +350,12 @@ function AppointmentsTab() {
     const dayLabel = isToday ? "TODAY" : isTomorrow ? "TOMORROW" : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
     return (
-      <Card className={`bg-[#1a1a1a] border-[#333] ${isToday ? 'border-[#C9941A]/50' : ''}`} data-testid={`card-appointment-${appt.id}`}>
+      <Card className={`bg-[#1a1a1a] border-[#333] ${isToday ? 'border-[#E2741B]/50' : ''}`} data-testid={`card-appointment-${appt.id}`}>
         <CardContent className="p-4">
           <div className="flex items-start justify-between gap-3 flex-wrap">
             <div className="flex gap-3 items-start">
               <div className="text-center w-12 flex-shrink-0">
-                <div className={`text-xs font-black ${isToday ? 'text-[#C9941A]' : 'text-gray-400'}`}>{dayLabel}</div>
+                <div className={`text-xs font-black ${isToday ? 'text-[#E2741B]' : 'text-gray-400'}`}>{dayLabel}</div>
                 <div className="text-lg font-black text-white">{date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}</div>
               </div>
               <div>
@@ -391,7 +391,7 @@ function AppointmentsTab() {
           <h3 className="font-black text-white text-lg">Appointments</h3>
           <p className="text-xs text-gray-400">Push alerts 24h and 1h before each appointment.</p>
         </div>
-        <Button size="sm" className="bg-[#C9941A] text-black font-bold gap-1" onClick={() => setShowAdd(true)} data-testid="button-add-appointment">
+        <Button size="sm" className="bg-[#E2741B] text-black font-bold gap-1" onClick={() => setShowAdd(true)} data-testid="button-add-appointment">
           <Plus className="h-3.5 w-3.5" />Add
         </Button>
       </div>
@@ -428,7 +428,7 @@ function AppointmentsTab() {
       <Dialog open={showAdd} onOpenChange={setShowAdd}>
         <DialogContent className="bg-[#1a1a1a] border-[#333] text-white max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-[#C9941A]">Add Appointment</DialogTitle>
+            <DialogTitle className="text-[#E2741B]">Add Appointment</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
@@ -462,7 +462,7 @@ function AppointmentsTab() {
               <label className="text-xs text-gray-400 mb-1 block">Prep notes (questions to ask, what to bring)</label>
               <Textarea value={form.prepNotes} onChange={e => setForm(f => ({ ...f, prepNotes: e.target.value }))} placeholder="Questions for the doctor, recent symptoms to report..." className="bg-[#111] border-[#333] text-white text-sm" rows={3} data-testid="input-appt-prep" />
             </div>
-            <Button className="w-full bg-[#C9941A] text-black font-black" onClick={() => addMutation.mutate(form)} disabled={addMutation.isPending || !form.title || !form.providerName || !form.appointmentDate} data-testid="button-submit-appointment">
+            <Button className="w-full bg-[#E2741B] text-black font-black" onClick={() => addMutation.mutate(form)} disabled={addMutation.isPending || !form.title || !form.providerName || !form.appointmentDate} data-testid="button-submit-appointment">
               {addMutation.isPending ? "Adding..." : "Add Appointment"}
             </Button>
           </div>
@@ -511,9 +511,9 @@ function WellnessTab() {
     },
     {
       label: "Exercise",
-      icon: <Activity className="h-5 w-5 text-[#C9941A]" />,
-      color: "text-[#C9941A]",
-      bgColor: "bg-[#C9941A]/10",
+      icon: <Activity className="h-5 w-5 text-[#E2741B]" />,
+      color: "text-[#E2741B]",
+      bgColor: "bg-[#E2741B]/10",
       today: `${exerciseData?.todayDuration || 0} min`,
       goal: `${exerciseData?.goal?.dailyMinutes || 30} min goal`,
       note: "One rep is better than zero. Always.",
@@ -556,7 +556,7 @@ function WellnessTab() {
                     <p className="text-xs text-gray-500">{g.note}</p>
                   </div>
                 </div>
-                <Button size="sm" className="bg-[#C9941A] text-black font-bold" onClick={g.onLog} disabled={g.isPending} data-testid={g.testId}>
+                <Button size="sm" className="bg-[#E2741B] text-black font-bold" onClick={g.onLog} disabled={g.isPending} data-testid={g.testId}>
                   {g.isPending ? "Logging..." : `Log ${g.label}`}
                 </Button>
               </div>
@@ -590,7 +590,7 @@ export default function Reminders() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-1">
-            <Shield className="h-5 w-5 text-[#C9941A]" />
+            <Shield className="h-5 w-5 text-[#E2741B]" />
             <span className="text-xs uppercase tracking-widest text-gray-500 font-semibold">Warrior Accountability System</span>
           </div>
           <h1 className="text-3xl font-black text-white mb-1">Accountability Center</h1>
@@ -604,9 +604,9 @@ export default function Reminders() {
           <CardContent className="p-4">
             <div className="flex items-center gap-4 flex-wrap">
               <div className="flex items-center gap-2">
-                <Flame className="h-6 w-6 text-[#C9941A]" />
+                <Flame className="h-6 w-6 text-[#E2741B]" />
                 <div>
-                  <p className="text-2xl font-black text-[#C9941A]">{streak} <span className="text-sm text-gray-400 font-normal">day streak</span></p>
+                  <p className="text-2xl font-black text-[#E2741B]">{streak} <span className="text-sm text-gray-400 font-normal">day streak</span></p>
                   <p className="text-xs text-gray-500">
                     {checkedInToday
                       ? "Checked in today — streak protected."
@@ -615,7 +615,7 @@ export default function Reminders() {
                 </div>
               </div>
               {!checkedInToday && (
-                <Button size="sm" className="bg-[#C9941A] text-black font-bold ml-auto" onClick={() => window.location.href = '/recovery/dashboard?checkin=1'} data-testid="button-checkin-now">
+                <Button size="sm" className="bg-[#E2741B] text-black font-bold ml-auto" onClick={() => window.location.href = '/recovery/dashboard?checkin=1'} data-testid="button-checkin-now">
                   Check In Now <ChevronRight className="h-3.5 w-3.5 ml-1" />
                 </Button>
               )}
@@ -637,13 +637,13 @@ export default function Reminders() {
         {/* Main tabs */}
         <Tabs defaultValue="medications">
           <TabsList className="bg-[#1a1a1a] border border-[#333] mb-6 w-full grid grid-cols-3">
-            <TabsTrigger value="medications" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black font-semibold">
+            <TabsTrigger value="medications" className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black font-semibold">
               <Pill className="h-3.5 w-3.5 mr-1.5" />Medications
             </TabsTrigger>
-            <TabsTrigger value="appointments" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black font-semibold">
+            <TabsTrigger value="appointments" className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black font-semibold">
               <Calendar className="h-3.5 w-3.5 mr-1.5" />Appointments
             </TabsTrigger>
-            <TabsTrigger value="wellness" className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black font-semibold">
+            <TabsTrigger value="wellness" className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black font-semibold">
               <Activity className="h-3.5 w-3.5 mr-1.5" />Wellness
             </TabsTrigger>
           </TabsList>

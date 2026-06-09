@@ -37,7 +37,7 @@ function StarRow({ rating, size = "w-4 h-4", onSelect }:
           className={onSelect ? "p-0.5 hover-elevate rounded-sm" : "p-0"}
           data-testid={onSelect ? `button-star-${n}` : undefined}
         >
-          <Star className={`${size} ${n <= rating ? "text-[#C9941A] fill-[#C9941A]" : "text-zinc-600"}`} />
+          <Star className={`${size} ${n <= rating ? "text-[#E2741B] fill-[#E2741B]" : "text-zinc-600"}`} />
         </button>
       ))}
     </div>
@@ -174,7 +174,7 @@ export default function ReviewsPanel({ courseId }: { courseId: number }) {
               )}
               <Button
                 size="sm"
-                className="bg-[#C9941A] text-black hover:bg-[#C9941A]/90"
+                className="bg-[#E2741B] text-black hover:bg-[#E2741B]/90"
                 disabled={draftBody.trim().length < 10 || submitMutation.isPending}
                 onClick={() => submitMutation.mutate()}
                 data-testid="button-submit-review"
@@ -212,7 +212,7 @@ export default function ReviewsPanel({ courseId }: { courseId: number }) {
                     <div className="flex items-center gap-2">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={r.authorAvatar || undefined} />
-                        <AvatarFallback className="bg-[#C9941A]/20 text-[#C9941A] text-xs">
+                        <AvatarFallback className="bg-[#E2741B]/20 text-[#E2741B] text-xs">
                           {(r.authorName || "?")[0].toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
@@ -239,12 +239,12 @@ export default function ReviewsPanel({ courseId }: { courseId: number }) {
                       <Button
                         size="sm"
                         variant="outline"
-                        className={`border-[#333] ${r.helpfulByMe ? "text-[#C9941A]" : "text-gray-300"}`}
+                        className={`border-[#333] ${r.helpfulByMe ? "text-[#E2741B]" : "text-gray-300"}`}
                         onClick={() => helpfulMutation.mutate(r.id)}
                         disabled={helpfulMutation.isPending}
                         data-testid={`button-helpful-${r.id}`}
                       >
-                        <ThumbsUp className={`w-3.5 h-3.5 mr-1.5 ${r.helpfulByMe ? "fill-[#C9941A]" : ""}`} />
+                        <ThumbsUp className={`w-3.5 h-3.5 mr-1.5 ${r.helpfulByMe ? "fill-[#E2741B]" : ""}`} />
                         Helpful · {r.helpfulCount}
                       </Button>
                     )}

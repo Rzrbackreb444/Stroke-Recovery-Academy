@@ -87,12 +87,12 @@ export default function AboutUs() {
         <div className="max-w-6xl mx-auto relative">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <Badge variant="outline" className="mb-4 border-primary text-[#C9941A]" data-testid="badge-founder">
+              <Badge variant="outline" className="mb-4 border-primary text-[#E2741B]" data-testid="badge-founder">
                 <Star className="w-3 h-3 mr-1" />
                 Founder's Story
               </Badge>
               <h1 className="text-4xl md:text-5xl font-black mb-6" data-testid="heading-main">
-                Meet Nick <span className="text-[#C9941A]">"The Stroked Out Sasquatch"</span> Kremers
+                Meet Nick <span className="text-[#E2741B]">"The Stroked Out Sasquatch"</span> Kremers
               </h1>
               <p className="text-xl text-gray-400 mb-6 leading-relaxed" data-testid="text-intro">
                 When doctors said I'd never walk again, I didn't just prove them wrong - 
@@ -147,7 +147,7 @@ export default function AboutUs() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center" data-testid={`stat-${index}`}>
-                <div className="text-4xl md:text-5xl font-black text-[#C9941A] mb-2" data-testid={`stat-value-${index}`}>
+                <div className="text-4xl md:text-5xl font-black text-[#E2741B] mb-2" data-testid={`stat-value-${index}`}>
                   {stat.value}
                 </div>
                 <div className="text-gray-400" data-testid={`stat-label-${index}`}>{stat.label}</div>
@@ -165,7 +165,7 @@ export default function AboutUs() {
               The Journey
             </Badge>
             <h2 className="text-3xl md:text-4xl font-black mb-4" data-testid="heading-timeline">
-              From <span className="text-[#C9941A]">0% to 90%</span> Recovery
+              From <span className="text-[#E2741B]">0% to 90%</span> Recovery
             </h2>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
               A timeline of defying the impossible and building something that changes lives.
@@ -228,7 +228,7 @@ export default function AboutUs() {
               Our Mission
             </Badge>
             <h2 className="text-3xl md:text-4xl font-black mb-4" data-testid="heading-mission">
-              REBUILD. REWIRE. <span className="text-[#C9941A]">RISE.</span>
+              REBUILD. REWIRE. <span className="text-[#E2741B]">RISE.</span>
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
               Stroke Recovery Academy exists for one purpose: to prove that your stroke is not your ending - 
@@ -242,7 +242,7 @@ export default function AboutUs() {
               <Card key={index} className="text-center" data-testid={`value-card-${index}`}>
                 <CardContent className="pt-8 pb-6">
                   <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <value.icon className="w-7 h-7 text-[#C9941A]" />
+                    <value.icon className="w-7 h-7 text-[#E2741B]" />
                   </div>
                   <h3 className="font-bold mb-2">{value.title}</h3>
                   <p className="text-sm text-gray-400">{value.description}</p>
@@ -261,7 +261,7 @@ export default function AboutUs() {
               The Platform
             </Badge>
             <h2 className="text-3xl md:text-4xl font-black mb-4" data-testid="heading-platform">
-              Your Complete <span className="text-[#C9941A]">Recovery Operating System</span>
+              Your Complete <span className="text-[#E2741B]">Recovery Operating System</span>
             </h2>
           </div>
 
@@ -278,7 +278,7 @@ export default function AboutUs() {
                 <CardContent className="pt-6">
                   <div className="flex items-start gap-4">
                     <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <feature.icon className="w-5 h-5 text-[#C9941A]" />
+                      <feature.icon className="w-5 h-5 text-[#E2741B]" />
                     </div>
                     <div>
                       <h3 className="font-bold mb-1">{feature.title}</h3>
@@ -297,7 +297,7 @@ export default function AboutUs() {
           <div className="text-center mb-12">
             <Badge variant="outline" className="mb-4">Powered By</Badge>
             <h2 className="text-3xl md:text-4xl font-black mb-4" data-testid="heading-kremersx">
-              About <span className="text-[#C9941A]">KremersX</span>
+              About <span className="text-[#E2741B]">KremersX</span>
             </h2>
           </div>
 
@@ -337,7 +337,7 @@ export default function AboutUs() {
       <section className="py-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-black mb-6" data-testid="heading-cta">
-            Ready to Start <span className="text-[#C9941A]">Your Recovery?</span>
+            Ready to Start <span className="text-[#E2741B]">Your Recovery?</span>
           </h2>
           <p className="text-xl text-gray-400 mb-8">
             Join 50,000+ stroke warriors who are proving the impossible every single day.
@@ -360,7 +360,7 @@ export default function AboutUs() {
             Questions? Email us at{" "}
             <a 
               href="mailto:info@strokerecoveryacademy.com" 
-              className="text-[#C9941A] hover:underline"
+              className="text-[#E2741B] hover:underline"
               data-testid="link-email"
             >
               info@strokerecoveryacademy.com

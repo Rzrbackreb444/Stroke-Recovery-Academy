@@ -303,7 +303,7 @@ export default function DoctrineChecker({
             <div className="flex items-center gap-2">
               <div className={cn(
                 "w-3 h-3 rounded-full",
-                criticalIssues.length > 0 ? "bg-red-500" : "bg-[#C9941A]"
+                criticalIssues.length > 0 ? "bg-red-500" : "bg-[#E2741B]"
               )} />
               <span className="text-sm">
                 {criticalIssues.length > 0 ? `${criticalIssues.length} critical` : "No critical issues"}
@@ -312,7 +312,7 @@ export default function DoctrineChecker({
             <div className="flex items-center gap-2">
               <div className={cn(
                 "w-3 h-3 rounded-full",
-                warningIssues.length > 0 ? "bg-yellow-500" : "bg-[#C9941A]"
+                warningIssues.length > 0 ? "bg-yellow-500" : "bg-[#E2741B]"
               )} />
               <span className="text-sm">
                 {warningIssues.length > 0 ? `${warningIssues.length} warnings` : "No warnings"}

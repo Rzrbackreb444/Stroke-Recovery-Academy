@@ -98,7 +98,7 @@ export default function SaschLanding() {
           <div className="max-w-4xl mx-auto text-center">
             <Badge
               className="mb-6 uppercase tracking-widest text-xs"
-              style={{ background: "#2a1f00", color: "#C9941A", border: "1px solid #C9941A" }}
+              style={{ background: "#2a1f00", color: "#E2741B", border: "1px solid #E2741B" }}
               data-testid="badge-free"
             >
               Free Cheat Sheet · No Credit Card
@@ -108,15 +108,15 @@ export default function SaschLanding() {
               style={{ color: "#FFFFFF", fontFamily: "Georgia, serif" }}
               data-testid="text-hero-title"
             >
-              The <span style={{ color: "#C9941A" }}>S.A.S.C.H.</span> Formula
+              The <span style={{ color: "#E2741B" }}>S.A.S.C.H.</span> Formula
             </h1>
             <p
               className="text-lg md:text-xl max-w-2xl mx-auto mb-4 leading-relaxed"
               style={{ color: "#E5E5E5" }}
             >
               The exact 5-step daily system Nick Kremers used to go from{" "}
-              <span style={{ color: "#C9941A", fontWeight: 700 }}>0% function</span> after a massive stroke
-              to <span style={{ color: "#C9941A", fontWeight: 700 }}>90%+ recovery — and still rising.</span>
+              <span style={{ color: "#E2741B", fontWeight: 700 }}>0% function</span> after a massive stroke
+              to <span style={{ color: "#E2741B", fontWeight: 700 }}>90%+ recovery — and still rising.</span>
             </p>
             <p className="text-sm md:text-base italic" style={{ color: "#999" }}>
               Print it. Tape it to the mirror. Keep it on your phone. However you'll actually use it.
@@ -128,9 +128,9 @@ export default function SaschLanding() {
         <section className="px-4 pb-16">
           <div className="max-w-2xl mx-auto">
             {done ? (
-              <Card style={{ background: "#1a1a1a", border: "1px solid #C9941A" }}>
+              <Card style={{ background: "#1a1a1a", border: "1px solid #E2741B" }}>
                 <CardContent className="py-10 text-center">
-                  <CheckCircle className="h-14 w-14 mx-auto mb-4" style={{ color: "#C9941A" }} />
+                  <CheckCircle className="h-14 w-14 mx-auto mb-4" style={{ color: "#E2741B" }} />
                   <h2
                     className="text-2xl font-black mb-3"
                     style={{ color: "#FFFFFF", fontFamily: "Georgia, serif" }}
@@ -149,7 +149,7 @@ export default function SaschLanding() {
                   >
                     <Button
                       className="font-bold"
-                      style={{ background: "#C9941A", color: "#000" }}
+                      style={{ background: "#E2741B", color: "#000" }}
                       size="lg"
                     >
                       <Download className="h-4 w-4 mr-2" />
@@ -203,7 +203,7 @@ export default function SaschLanding() {
                     <Button
                       type="submit"
                       className="w-full font-bold tracking-wide"
-                      style={{ background: "#C9941A", color: "#000" }}
+                      style={{ background: "#E2741B", color: "#000" }}
                       disabled={subscribeMut.isPending}
                       size="lg"
                       data-testid="button-submit"
@@ -233,7 +233,7 @@ export default function SaschLanding() {
             <div className="text-center mb-12">
               <Badge
                 className="mb-4 uppercase tracking-widest text-xs"
-                style={{ background: "#2a1f00", color: "#C9941A", border: "1px solid #C9941A" }}
+                style={{ background: "#2a1f00", color: "#E2741B", border: "1px solid #E2741B" }}
               >
                 Sasquatch Action System — Construction Hammer
               </Badge>
@@ -260,13 +260,13 @@ export default function SaschLanding() {
                   <CardContent className="pt-6 pb-5 text-center">
                     <div
                       className="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center"
-                      style={{ background: "#C9941A" }}
+                      style={{ background: "#E2741B" }}
                     >
                       <s.icon className="h-6 w-6" style={{ color: "#000" }} />
                     </div>
                     <div
                       className="text-3xl font-black mb-1"
-                      style={{ color: "#C9941A", fontFamily: "Georgia, serif" }}
+                      style={{ color: "#E2741B", fontFamily: "Georgia, serif" }}
                     >
                       {s.letter}
                     </div>
@@ -287,7 +287,7 @@ export default function SaschLanding() {
             <div className="mt-10 text-center">
               <p
                 className="text-base md:text-lg italic"
-                style={{ color: "#C9941A", fontFamily: "Georgia, serif" }}
+                style={{ color: "#E2741B", fontFamily: "Georgia, serif" }}
               >
                 "S.A.S.C.H. it every day: Seize → Absorb → Swing → Combine → Hammer."
               </p>
@@ -298,13 +298,13 @@ export default function SaschLanding() {
         {/* THE 66-DAY TRUTH */}
         <section className="px-4 py-16" data-testid="section-truth">
           <div className="max-w-3xl mx-auto">
-            <Card style={{ background: "#1a1a1a", border: "1px solid #C9941A" }}>
+            <Card style={{ background: "#1a1a1a", border: "1px solid #E2741B" }}>
               <CardContent className="py-8 px-6 md:px-10">
                 <div className="flex items-center gap-3 mb-4">
-                  <AlertTriangle className="h-6 w-6 shrink-0" style={{ color: "#C9941A" }} />
+                  <AlertTriangle className="h-6 w-6 shrink-0" style={{ color: "#E2741B" }} />
                   <h2
                     className="text-xl md:text-2xl font-black uppercase tracking-wide"
-                    style={{ color: "#C9941A", fontFamily: "Georgia, serif" }}
+                    style={{ color: "#E2741B", fontFamily: "Georgia, serif" }}
                   >
                     The 66-Day Truth
                   </h2>
@@ -350,7 +350,7 @@ export default function SaschLanding() {
               <Button
                 size="lg"
                 className="font-bold tracking-wide"
-                style={{ background: "#C9941A", color: "#000" }}
+                style={{ background: "#E2741B", color: "#000" }}
               >
                 See the 66-Day Challenge — 7 Days Free
                 <ArrowRight className="h-4 w-4 ml-2" />

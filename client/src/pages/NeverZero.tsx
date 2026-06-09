@@ -59,7 +59,7 @@ type AuditPayload = {
 };
 
 const TIERS: Record<AuditPayload['streakBand'], { label: string; min: number; next: number | null; color: string; tagline: string }> = {
-  spark:    { label: "Spark",    min: 0,   next: 7,   color: "#C9941A", tagline: "Lighting the fire." },
+  spark:    { label: "Spark",    min: 0,   next: 7,   color: "#E2741B", tagline: "Lighting the fire." },
   ember:    { label: "Ember",    min: 7,   next: 14,  color: "#E07B00", tagline: "Heat is building." },
   blaze:    { label: "Blaze",    min: 14,  next: 30,  color: "#F97316", tagline: "Burning steady." },
   wildfire: { label: "Wildfire", min: 30,  next: 100, color: "#EF4444", tagline: "Unstoppable now." },
@@ -254,18 +254,18 @@ export default function NeverZero() {
               <div className="font-bold">Today's check-in is in.</div>
               <div className="text-sm text-white/60">Sasquatch is reading your reps below. Add another anytime to deepen the audit.</div>
             </div>
-            <Button onClick={() => setLogDialogOpen(true)} variant="outline" className="border-[#C9941A]/50 text-[#C9941A]" data-testid="button-add-another">
+            <Button onClick={() => setLogDialogOpen(true)} variant="outline" className="border-[#E2741B]/50 text-[#E2741B]" data-testid="button-add-another">
               <Zap className="h-4 w-4 mr-2" /> Add another
             </Button>
           </Card>
         ) : (
-          <Card className="mb-6 p-5 bg-[#C9941A]/10 border-[#C9941A]/50 flex items-center gap-3">
-            <AlertCircle className="h-7 w-7 text-[#C9941A] shrink-0" />
+          <Card className="mb-6 p-5 bg-[#E2741B]/10 border-[#E2741B]/50 flex items-center gap-3">
+            <AlertCircle className="h-7 w-7 text-[#E2741B] shrink-0" />
             <div className="flex-1">
-              <div className="font-bold text-[#C9941A]">No rep yet today.</div>
+              <div className="font-bold text-[#E2741B]">No rep yet today.</div>
               <div className="text-sm text-white/70">Log one — anything — and Sasquatch will audit your day.</div>
             </div>
-            <Button onClick={() => setLogDialogOpen(true)} className="bg-[#C9941A] text-black font-bold" data-testid="button-log-action">
+            <Button onClick={() => setLogDialogOpen(true)} className="bg-[#E2741B] text-black font-bold" data-testid="button-log-action">
               <Zap className="h-4 w-4 mr-2" /> Log my 1 rep
             </Button>
           </Card>
@@ -274,7 +274,7 @@ export default function NeverZero() {
         {/* Quick-log chips — one tap, no dialog. Reduces friction to ~zero. */}
         <Card className="mb-6 p-4 bg-[#1a1a1a] border-[#333]">
           <div className="flex items-center gap-2 mb-3">
-            <Zap className="h-4 w-4 text-[#C9941A]" />
+            <Zap className="h-4 w-4 text-[#E2741B]" />
             <h3 className="text-sm font-semibold text-white/90">Quick-log a rep</h3>
             <span className="text-xs text-white/50">— one tap, Sasquatch audits the moment you log</span>
           </div>
@@ -289,7 +289,7 @@ export default function NeverZero() {
                   size="sm"
                   onClick={() => handleQuickLog(p)}
                   disabled={logMutation.isPending}
-                  className="border-[#C9941A]/40 text-white/85 hover:text-[#C9941A] hover:border-[#C9941A]"
+                  className="border-[#E2741B]/40 text-white/85 hover:text-[#E2741B] hover:border-[#E2741B]"
                   data-testid={`quick-log-${p.label.toLowerCase().replace(/\s+/g, '-')}`}
                 >
                   {pending ? <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> : <Icon className="h-3.5 w-3.5 mr-1.5" />}
@@ -301,16 +301,16 @@ export default function NeverZero() {
         </Card>
 
         {/* Sasquatch audit */}
-        <Card className="mb-6 p-6 bg-[#1a1a1a] border-[#C9941A]/40" data-testid="card-sasquatch-audit">
+        <Card className="mb-6 p-6 bg-[#1a1a1a] border-[#E2741B]/40" data-testid="card-sasquatch-audit">
           <div className="flex items-start gap-3 mb-4">
-            <div className="w-11 h-11 rounded-full bg-[#C9941A]/15 border border-[#C9941A]/40 flex items-center justify-center shrink-0">
-              <MessageCircle className="h-5 w-5 text-[#C9941A]" />
+            <div className="w-11 h-11 rounded-full bg-[#E2741B]/15 border border-[#E2741B]/40 flex items-center justify-center shrink-0">
+              <MessageCircle className="h-5 w-5 text-[#E2741B]" />
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="text-lg font-bold text-[#C9941A]">Today's Sasquatch Audit</h2>
+                <h2 className="text-lg font-bold text-[#E2741B]">Today's Sasquatch Audit</h2>
                 {audit && (
-                  <Badge className="bg-[#C9941A]/20 text-[#C9941A] border border-[#C9941A]/40 text-xs">
+                  <Badge className="bg-[#E2741B]/20 text-[#E2741B] border border-[#E2741B]/40 text-xs">
                     Day {audit.streak} · {audit.todayCount} {audit.todayCount === 1 ? "rep" : "reps"}
                   </Badge>
                 )}
@@ -324,7 +324,7 @@ export default function NeverZero() {
                 variant="ghost"
                 onClick={() => reportMut.mutate(true)}
                 disabled={reportMut.isPending}
-                className="text-white/60 hover:text-[#C9941A]"
+                className="text-white/60 hover:text-[#E2741B]"
                 data-testid="button-refresh-audit"
               >
                 <RefreshCw className={`h-4 w-4 ${reportMut.isPending ? "animate-spin" : ""}`} />
@@ -377,7 +377,7 @@ export default function NeverZero() {
                   <ul className="space-y-1.5">
                     {audit.todayLogs.map((l) => (
                       <li key={l.id} className="text-sm text-white/85 flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-[#C9941A] shrink-0 mt-0.5" />
+                        <CheckCircle2 className="h-4 w-4 text-[#E2741B] shrink-0 mt-0.5" />
                         <span className="flex-1">{l.action}{l.notes && <span className="text-white/50 italic"> — {l.notes}</span>}</span>
                         <Badge variant="outline" className="text-[10px] border-white/20 text-white/60">{catLabel(l.category)}</Badge>
                       </li>
@@ -396,7 +396,7 @@ export default function NeverZero() {
           <Card className="mb-6 p-5 bg-[#1a1a1a] border-[#333]">
             <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
               <h3 className="text-base font-semibold flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-[#C9941A]" /> Last {weekAudits.length} audited days
+                <Calendar className="h-4 w-4 text-[#E2741B]" /> Last {weekAudits.length} audited days
               </h3>
               <div className="flex items-center gap-3 text-xs text-white/70">
                 <span><span className="font-bold text-white">{weekReps}</span> reps</span>
@@ -412,14 +412,14 @@ export default function NeverZero() {
                     key={a.auditDate}
                     className="aspect-square rounded border flex flex-col items-center justify-center text-[10px] gap-0.5"
                     style={{
-                      background: a.todayCount > 0 ? `rgba(201, 148, 26, ${0.15 + intensity / 400})` : "rgba(255,255,255,0.04)",
-                      borderColor: a.todayCount > 0 ? "rgba(201, 148, 26, 0.5)" : "rgba(255,255,255,0.1)",
+                      background: a.todayCount > 0 ? `rgba(226,116,27, ${0.15 + intensity / 400})` : "rgba(255,255,255,0.04)",
+                      borderColor: a.todayCount > 0 ? "rgba(226,116,27, 0.5)" : "rgba(255,255,255,0.1)",
                     }}
                     title={`${a.auditDate} — ${a.todayCount} reps`}
                     data-testid={`recap-${a.auditDate}`}
                   >
                     <span className="text-white/60 font-mono">{a.auditDate.slice(5)}</span>
-                    <span className="text-[#C9941A] font-bold">{a.todayCount}</span>
+                    <span className="text-[#E2741B] font-bold">{a.todayCount}</span>
                   </div>
                 );
               })}
@@ -431,12 +431,12 @@ export default function NeverZero() {
         {history.length > 0 && (
           <Card className="mb-6 p-6 bg-[#1a1a1a] border-[#333]">
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <History className="h-5 w-5 text-[#C9941A]" /> Sasquatch's Log
+              <History className="h-5 w-5 text-[#E2741B]" /> Sasquatch's Log
               <span className="text-xs text-white/40 font-normal ml-2">past audits, in his own words</span>
             </h3>
             <div className="space-y-4">
               {history.slice(0, 10).map((a) => (
-                <div key={a.auditId ?? a.auditDate} className="border-l-2 border-[#C9941A]/40 pl-4" data-testid={`history-${a.auditDate}`}>
+                <div key={a.auditId ?? a.auditDate} className="border-l-2 border-[#E2741B]/40 pl-4" data-testid={`history-${a.auditDate}`}>
                   <div className="flex items-center gap-2 mb-1 text-xs text-white/50">
                     <span className="font-mono">{a.auditDate}</span>
                     <span>·</span>
@@ -445,7 +445,7 @@ export default function NeverZero() {
                     <span>{a.todayCount} {a.todayCount === 1 ? "rep" : "reps"}</span>
                   </div>
                   {a.verdict && <p className="text-sm text-white/85 leading-relaxed">{a.verdict}</p>}
-                  {a.tomorrow && <p className="text-xs text-[#C9941A]/80 mt-1 flex items-center gap-1"><ArrowRight className="h-3 w-3" />{a.tomorrow}</p>}
+                  {a.tomorrow && <p className="text-xs text-[#E2741B]/80 mt-1 flex items-center gap-1"><ArrowRight className="h-3 w-3" />{a.tomorrow}</p>}
                 </div>
               ))}
             </div>
@@ -454,18 +454,18 @@ export default function NeverZero() {
 
         {/* Philosophy strip — kept short */}
         <Card className="mb-6 p-5 bg-[#1a1a1a] border-[#333]">
-          <h3 className="font-semibold mb-2 flex items-center gap-2"><Target className="h-4 w-4 text-[#C9941A]" /> The rule</h3>
+          <h3 className="font-semibold mb-2 flex items-center gap-2"><Target className="h-4 w-4 text-[#E2741B]" /> The rule</h3>
           <p className="text-sm text-white/70">
-            Do at least <span className="text-[#C9941A] font-semibold">one</span> thing for your recovery every day. One rep saves the streak. Sasquatch reads it. Sasquatch reports back. That's the loop.
+            Do at least <span className="text-[#E2741B] font-semibold">one</span> thing for your recovery every day. One rep saves the streak. Sasquatch reads it. Sasquatch reports back. That's the loop.
           </p>
         </Card>
 
         {/* Tier-crossing celebration — fires once per band crossing, persisted in localStorage. */}
         <Dialog open={!!celebrationTier} onOpenChange={(open) => !open && setCelebrationTier(null)}>
-          <DialogContent className="bg-[#0D0D0D] border-2 max-w-md text-white" style={{ borderColor: celebrationTier ? TIERS[celebrationTier].color : '#C9941A' }}>
+          <DialogContent className="bg-[#0D0D0D] border-2 max-w-md text-white" style={{ borderColor: celebrationTier ? TIERS[celebrationTier].color : '#E2741B' }}>
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2 text-2xl">
-                <PartyPopper className="h-6 w-6" style={{ color: celebrationTier ? TIERS[celebrationTier].color : '#C9941A' }} />
+                <PartyPopper className="h-6 w-6" style={{ color: celebrationTier ? TIERS[celebrationTier].color : '#E2741B' }} />
                 {celebrationTier ? TIER_CELEBRATION[celebrationTier].headline : 'New tier'}
               </DialogTitle>
             </DialogHeader>
@@ -504,7 +504,7 @@ export default function NeverZero() {
         <Dialog open={logDialogOpen} onOpenChange={setLogDialogOpen}>
           <DialogContent className="bg-[#1a1a1a] border-[#333] text-white max-w-lg">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2"><Zap className="h-5 w-5 text-[#C9941A]" /> Log your 1 rep</DialogTitle>
+              <DialogTitle className="flex items-center gap-2"><Zap className="h-5 w-5 text-[#E2741B]" /> Log your 1 rep</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 mt-4">
               <div>
@@ -525,7 +525,7 @@ export default function NeverZero() {
                 <Label>Notes (optional)</Label>
                 <Textarea placeholder="How did it feel? Any context for Sasquatch?" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} className="bg-[#1a1a1a] border-[#333] mt-1" rows={2} />
               </div>
-              <Button onClick={handleSubmit} className="w-full bg-[#C9941A] text-black font-bold py-6" disabled={logMutation.isPending} data-testid="button-save-action">
+              <Button onClick={handleSubmit} className="w-full bg-[#E2741B] text-black font-bold py-6" disabled={logMutation.isPending} data-testid="button-save-action">
                 {logMutation.isPending ? "Saving…" : "Save & audit my day"}
               </Button>
             </div>
@@ -540,7 +540,7 @@ function AuditLine({ label, tone, body }: { label: string; tone: 'positive' | 'w
   const colorMap = {
     positive: { bg: 'bg-green-500/10', border: 'border-green-500/30', text: 'text-green-300' },
     warn:     { bg: 'bg-amber-500/10', border: 'border-amber-500/30', text: 'text-amber-300' },
-    verdict:  { bg: 'bg-[#C9941A]/10',  border: 'border-[#C9941A]/40',  text: 'text-[#C9941A]' },
+    verdict:  { bg: 'bg-[#E2741B]/10',  border: 'border-[#E2741B]/40',  text: 'text-[#E2741B]' },
     next:     { bg: 'bg-blue-500/10',  border: 'border-blue-500/30',  text: 'text-blue-300' },
   } as const;
   const c = colorMap[tone];

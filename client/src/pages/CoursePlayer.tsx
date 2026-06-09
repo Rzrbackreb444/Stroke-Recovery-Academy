@@ -397,12 +397,12 @@ export default function CoursePlayer() {
   
   const getLessonIcon = (type: string, completed: boolean, locked: boolean) => {
     if (locked) return <Lock className="w-4 h-4 text-gray-500" />;
-    if (completed) return <CheckCircle className="w-4 h-4 text-[#C9941A]" />;
+    if (completed) return <CheckCircle className="w-4 h-4 text-[#E2741B]" />;
     switch (type) {
       case "video": return <PlayCircle className="w-4 h-4 text-blue-400" />;
       case "text": return <FileText className="w-4 h-4 text-purple-400" />;
-      case "quiz": return <HelpCircle className="w-4 h-4 text-[#C9941A]" />;
-      case "assignment": return <Edit3 className="w-4 h-4 text-[#C9941A]" />;
+      case "quiz": return <HelpCircle className="w-4 h-4 text-[#E2741B]" />;
+      case "assignment": return <Edit3 className="w-4 h-4 text-[#E2741B]" />;
       case "download": return <Download className="w-4 h-4 text-cyan-400" />;
       default: return <Circle className="w-4 h-4" />;
     }
@@ -448,7 +448,7 @@ export default function CoursePlayer() {
                     disabled={lesson.locked}
                     className={`w-full flex items-center gap-3 p-3 text-left transition-colors ${
                       currentLesson?.id === lesson.id
-                        ? 'bg-[#C9941A]/20 border-l-2 border-[#C9941A]'
+                        ? 'bg-[#E2741B]/20 border-l-2 border-[#E2741B]'
                         : lesson.locked
                         ? 'opacity-50 cursor-not-allowed'
                         : 'hover:bg-[#1a1a1a]'
@@ -457,7 +457,7 @@ export default function CoursePlayer() {
                   >
                     {getLessonIcon(lesson.type, lesson.completed, lesson.locked)}
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm truncate ${currentLesson?.id === lesson.id ? 'text-[#C9941A] font-medium' : 'text-gray-300'}`}>
+                      <p className={`text-sm truncate ${currentLesson?.id === lesson.id ? 'text-[#E2741B] font-medium' : 'text-gray-300'}`}>
                         {lesson.title}
                       </p>
                       <p className="text-xs text-gray-500">{lesson.duration} min</p>
@@ -552,7 +552,7 @@ export default function CoursePlayer() {
                     data-testid="input-note"
                   />
                 </div>
-                <Button onClick={addNote} className="w-full bg-[#C9941A]" data-testid="button-save-note">
+                <Button onClick={addNote} className="w-full bg-[#E2741B]" data-testid="button-save-note">
                   <Plus className="w-4 h-4 mr-2" />
                   Save Note at {formatTime(currentTime)}
                 </Button>
@@ -564,7 +564,7 @@ export default function CoursePlayer() {
                         <div className="flex items-center justify-between mb-2">
                           <button
                             onClick={() => goToTimestamp(note.timestamp)}
-                            className="text-[#C9941A] text-sm font-medium hover:underline"
+                            className="text-[#E2741B] text-sm font-medium hover:underline"
                           >
                             {formatTime(note.timestamp)}
                           </button>
@@ -648,7 +648,7 @@ export default function CoursePlayer() {
                   className="absolute inset-0 flex items-center justify-center"
                   data-testid="button-play-center"
                 >
-                  <div className="w-20 h-20 rounded-full bg-[#C9941A]/90 flex items-center justify-center hover:scale-110 transition-transform">
+                  <div className="w-20 h-20 rounded-full bg-[#E2741B]/90 flex items-center justify-center hover:scale-110 transition-transform">
                     {isPlaying ? (
                       <Pause className="w-10 h-10 text-white" />
                     ) : (
@@ -726,7 +726,7 @@ export default function CoursePlayer() {
                             <DropdownMenuItem
                               key={speed}
                               onClick={() => setPlaybackSpeed(speed)}
-                              className={playbackSpeed === speed ? 'text-[#C9941A]' : ''}
+                              className={playbackSpeed === speed ? 'text-[#E2741B]' : ''}
                             >
                               {speed}x
                             </DropdownMenuItem>
@@ -747,7 +747,7 @@ export default function CoursePlayer() {
                             <DropdownMenuItem
                               key={q}
                               onClick={() => setQuality(q)}
-                              className={quality === q ? 'text-[#C9941A]' : ''}
+                              className={quality === q ? 'text-[#E2741B]' : ''}
                             >
                               {q}
                             </DropdownMenuItem>
@@ -756,7 +756,7 @@ export default function CoursePlayer() {
                       </DropdownMenu>
                       
                       <Button variant="ghost" size="icon" onClick={() => setShowSubtitles(!showSubtitles)} data-testid="button-subtitles">
-                        <Subtitles className={`w-5 h-5 ${showSubtitles ? 'text-[#C9941A]' : ''}`} />
+                        <Subtitles className={`w-5 h-5 ${showSubtitles ? 'text-[#E2741B]' : ''}`} />
                       </Button>
                       
                       <Button variant="ghost" size="icon" onClick={toggleFullscreen} data-testid="button-fullscreen">
@@ -775,7 +775,7 @@ export default function CoursePlayer() {
               {/* Lesson Info */}
               <div className="flex items-start justify-between mb-6">
                 <div>
-                  <Badge className="bg-[#C9941A]/20 text-[#C9941A] mb-2">
+                  <Badge className="bg-[#E2741B]/20 text-[#E2741B] mb-2">
                     {currentLesson.type.charAt(0).toUpperCase() + currentLesson.type.slice(1)} Lesson
                   </Badge>
                   <h1 className="text-2xl font-bold mb-2">{currentLesson.title}</h1>
@@ -797,12 +797,12 @@ export default function CoursePlayer() {
                     Previous
                   </Button>
                   {currentLesson.completed ? (
-                    <Button variant="outline" className="text-[#C9941A] border-green-500" disabled>
+                    <Button variant="outline" className="text-[#E2741B] border-green-500" disabled>
                       <CheckCircle className="w-4 h-4 mr-2" />
                       Completed
                     </Button>
                   ) : (
-                    <Button onClick={markComplete} className="bg-[#C9941A]" data-testid="button-complete">
+                    <Button onClick={markComplete} className="bg-[#E2741B]" data-testid="button-complete">
                       <CheckCircle className="w-4 h-4 mr-2" />
                       Mark Complete
                     </Button>
@@ -853,15 +853,15 @@ export default function CoursePlayer() {
                     <h4 className="font-semibold mb-2">What You'll Learn</h4>
                     <ul className="space-y-2 text-gray-400">
                       <li className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-[#C9941A]" />
+                        <CheckCircle className="w-4 h-4 text-[#E2741B]" />
                         Understanding the recovery timeline
                       </li>
                       <li className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-[#C9941A]" />
+                        <CheckCircle className="w-4 h-4 text-[#E2741B]" />
                         Setting realistic and achievable goals
                       </li>
                       <li className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-[#C9941A]" />
+                        <CheckCircle className="w-4 h-4 text-[#E2741B]" />
                         Building daily habits for success
                       </li>
                     </ul>
@@ -895,7 +895,7 @@ export default function CoursePlayer() {
                       ].map((resource, idx) => (
                         <div key={idx} className="flex items-center justify-between p-3 bg-[#1a1a1a] rounded-lg">
                           <div className="flex items-center gap-3">
-                            <resource.icon className="w-5 h-5 text-[#C9941A]" />
+                            <resource.icon className="w-5 h-5 text-[#E2741B]" />
                             <div>
                               <p className="font-medium text-sm">{resource.name}</p>
                               <p className="text-xs text-gray-500">{resource.size}</p>
@@ -923,7 +923,7 @@ export default function CoursePlayer() {
                           data-testid="input-comment"
                         />
                         <div className="flex justify-end mt-2">
-                          <Button className="bg-[#C9941A]" data-testid="button-post-comment">
+                          <Button className="bg-[#E2741B]" data-testid="button-post-comment">
                             <Send className="w-4 h-4 mr-2" />
                             Post Comment
                           </Button>
@@ -945,11 +945,11 @@ export default function CoursePlayer() {
                               </div>
                               <p className="text-gray-300 text-sm">{comment.content}</p>
                               <div className="flex items-center gap-4 mt-2">
-                                <button className="flex items-center gap-1 text-xs text-gray-500 hover:text-[#C9941A]">
+                                <button className="flex items-center gap-1 text-xs text-gray-500 hover:text-[#E2741B]">
                                   <ThumbsUp className="w-3 h-3" />
                                   {comment.likes}
                                 </button>
-                                <button className="flex items-center gap-1 text-xs text-gray-500 hover:text-[#C9941A]">
+                                <button className="flex items-center gap-1 text-xs text-gray-500 hover:text-[#E2741B]">
                                   <Reply className="w-3 h-3" />
                                   Reply
                                 </button>
@@ -964,7 +964,7 @@ export default function CoursePlayer() {
                               <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-1">
                                   <span className="font-medium text-sm">{reply.userName}</span>
-                                  <Badge className="bg-[#C9941A]/20 text-[#C9941A] text-xs">Instructor</Badge>
+                                  <Badge className="bg-[#E2741B]/20 text-[#E2741B] text-xs">Instructor</Badge>
                                   <span className="text-xs text-gray-500">1 day ago</span>
                                 </div>
                                 <p className="text-gray-300 text-sm">{reply.content}</p>
@@ -987,7 +987,7 @@ export default function CoursePlayer() {
                         className="bg-[#1a1a1a] border-[#333]"
                         data-testid="input-note-inline"
                       />
-                      <Button onClick={addNote} className="bg-[#C9941A]">
+                      <Button onClick={addNote} className="bg-[#E2741B]">
                         <Plus className="w-4 h-4" />
                       </Button>
                     </div>
@@ -997,7 +997,7 @@ export default function CoursePlayer() {
                         <div key={note.id} className="flex gap-3 p-3 bg-[#1a1a1a] rounded-lg">
                           <button
                             onClick={() => goToTimestamp(note.timestamp)}
-                            className="text-[#C9941A] text-sm font-mono hover:underline whitespace-nowrap"
+                            className="text-[#E2741B] text-sm font-mono hover:underline whitespace-nowrap"
                           >
                             {formatTime(note.timestamp)}
                           </button>
@@ -1035,7 +1035,7 @@ export default function CoursePlayer() {
             
             <div className="p-4 border-t border-[#333] bg-gradient-to-r from-orange-500/10 to-transparent">
               <div className="flex items-center gap-3">
-                <Trophy className="w-8 h-8 text-[#C9941A]" />
+                <Trophy className="w-8 h-8 text-[#E2741B]" />
                 <div>
                   <p className="font-semibold text-sm">Earn Your Certificate</p>
                   <p className="text-xs text-gray-400">Complete all lessons to unlock</p>

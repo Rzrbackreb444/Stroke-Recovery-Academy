@@ -106,7 +106,7 @@ export default function Scholarship() {
       <div className="container mx-auto px-4 py-10 max-w-5xl">
         <header className="mb-8">
           <div className="flex items-center gap-3 mb-3">
-            <GraduationCap className="w-8 h-8 text-[#C9941A]" />
+            <GraduationCap className="w-8 h-8 text-[#E2741B]" />
             <h1 className="text-3xl font-bold">Survivor Scholarship</h1>
           </div>
           <p className="text-gray-400 max-w-2xl">
@@ -119,7 +119,7 @@ export default function Scholarship() {
         <Card className="bg-[#1a1a1a] border-[#333] mb-6">
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
-              <Heart className="w-5 h-5 text-[#C9941A]" /> Fund Status
+              <Heart className="w-5 h-5 text-[#E2741B]" /> Fund Status
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -153,18 +153,18 @@ export default function Scholarship() {
           <Card className="bg-[#1a1a1a] border-[#333]">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-[#C9941A]" /> Request a Scholarship
+                <Sparkles className="w-5 h-5 text-[#E2741B]" /> Request a Scholarship
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {!isAuthenticated && !authLoading && (
                 <div className="text-sm text-gray-400">
-                  <Link href="/auth" className="text-[#C9941A] underline">Sign in</Link> to request.
+                  <Link href="/auth" className="text-[#E2741B] underline">Sign in</Link> to request.
                 </div>
               )}
               {isAuthenticated && me.data?.pendingRequest && (
                 <div className="rounded-md bg-[#0D0D0D] border border-[#333] p-3 flex items-start gap-2 text-sm">
-                  <Clock className="w-4 h-4 text-[#C9941A] mt-0.5" />
+                  <Clock className="w-4 h-4 text-[#E2741B] mt-0.5" />
                   <div>
                     <div className="font-medium">Your request is in review</div>
                     <div className="text-gray-500 text-xs">
@@ -175,7 +175,7 @@ export default function Scholarship() {
               )}
               {isAuthenticated && me.data && !me.data.eligible && (
                 <div className="rounded-md bg-[#0D0D0D] border border-[#333] p-3 flex items-start gap-2 text-sm">
-                  <AlertTriangle className="w-4 h-4 text-[#C9941A] mt-0.5" />
+                  <AlertTriangle className="w-4 h-4 text-[#E2741B] mt-0.5" />
                   <div>
                     <div className="font-medium">Cooldown active</div>
                     <div className="text-gray-500 text-xs">
@@ -202,7 +202,7 @@ export default function Scholarship() {
                 data-testid="button-request-scholarship"
                 onClick={() => requestM.mutate()}
                 disabled={!isAuthenticated || requestM.isPending || !!me.data?.pendingRequest || (me.data && !me.data.eligible)}
-                className="w-full bg-[#C9941A] hover:bg-[#b08217] text-black font-semibold"
+                className="w-full bg-[#E2741B] hover:bg-[#b08217] text-black font-semibold"
               >
                 {requestM.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Gift className="w-4 h-4 mr-2" />}
                 Request Scholarship
@@ -214,7 +214,7 @@ export default function Scholarship() {
                   <ul className="space-y-1.5">
                     {me.data.grants.slice(0, 5).map(g => (
                       <li key={g.id} className="text-sm flex items-center gap-2" data-testid={`my-grant-${g.id}`}>
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#C9941A]" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#E2741B]" />
                         <span>{g.pointsGranted.toLocaleString()} pts · {new Date(g.grantedAt).toLocaleDateString()}</span>
                       </li>
                     ))}
@@ -228,7 +228,7 @@ export default function Scholarship() {
           <Card className="bg-[#1a1a1a] border-[#333]">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
-                <Heart className="w-5 h-5 text-[#C9941A]" /> Fund a Survivor
+                <Heart className="w-5 h-5 text-[#E2741B]" /> Fund a Survivor
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -246,7 +246,7 @@ export default function Scholarship() {
                       variant="outline"
                       onClick={() => setContribAmount(v)}
                       className={contribAmount === v
-                        ? "border-[#C9941A] text-[#C9941A]"
+                        ? "border-[#E2741B] text-[#E2741B]"
                         : "border-[#333] text-gray-400"}
                     >
                       {v}
@@ -289,14 +289,14 @@ export default function Scholarship() {
                 data-testid="button-contribute"
                 onClick={() => contribM.mutate()}
                 disabled={!isAuthenticated || contribM.isPending || contribAmount < 25}
-                className="w-full bg-[#C9941A] hover:bg-[#b08217] text-black font-semibold"
+                className="w-full bg-[#E2741B] hover:bg-[#b08217] text-black font-semibold"
               >
                 {contribM.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Gift className="w-4 h-4 mr-2" />}
                 Donate {contribAmount.toLocaleString()} pts
               </Button>
               {!isAuthenticated && (
                 <div className="text-xs text-gray-500 text-center">
-                  <Link href="/auth" className="text-[#C9941A] underline">Sign in</Link> to donate.
+                  <Link href="/auth" className="text-[#E2741B] underline">Sign in</Link> to donate.
                 </div>
               )}
             </CardContent>
@@ -307,7 +307,7 @@ export default function Scholarship() {
         <Card className="bg-[#1a1a1a] border-[#333] mt-6">
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
-              <Users className="w-5 h-5 text-[#C9941A]" /> Recent Scholarships Awarded
+              <Users className="w-5 h-5 text-[#E2741B]" /> Recent Scholarships Awarded
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -320,7 +320,7 @@ export default function Scholarship() {
                 {status.data.recentGrants.map(g => (
                   <li key={g.id} className="py-3 flex items-center justify-between" data-testid={`grant-row-${g.id}`}>
                     <div className="flex items-center gap-3">
-                      <Badge className="bg-[#C9941A] text-black">{g.points_granted.toLocaleString()} pts</Badge>
+                      <Badge className="bg-[#E2741B] text-black">{g.points_granted.toLocaleString()} pts</Badge>
                       <div>
                         <div className="text-sm text-white font-medium">{g.course_title}</div>
                         <div className="text-xs text-gray-500">
@@ -329,7 +329,7 @@ export default function Scholarship() {
                       </div>
                     </div>
                     <Link href={`/recovery/courses/${g.course_slug}`}>
-                      <Button size="sm" variant="ghost" className="text-[#C9941A]">
+                      <Button size="sm" variant="ghost" className="text-[#E2741B]">
                         View <ArrowRight className="w-3.5 h-3.5 ml-1" />
                       </Button>
                     </Link>
@@ -347,7 +347,7 @@ export default function Scholarship() {
 function Stat({ label, value, suffix, testId }: { label: string; value: string; suffix?: string; testId: string }) {
   return (
     <div className="rounded-md bg-[#0D0D0D] border border-[#333] p-4" data-testid={testId}>
-      <div className="text-2xl font-bold text-[#C9941A]">{value}<span className="text-sm text-gray-500 ml-1">{suffix}</span></div>
+      <div className="text-2xl font-bold text-[#E2741B]">{value}<span className="text-sm text-gray-500 ml-1">{suffix}</span></div>
       <div className="text-xs text-gray-500 mt-1 uppercase tracking-wider">{label}</div>
     </div>
   );

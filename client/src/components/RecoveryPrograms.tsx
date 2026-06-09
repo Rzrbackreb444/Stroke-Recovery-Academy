@@ -74,7 +74,7 @@ export default function RecoveryPrograms() {
     <section id="academy" className="py-20 bg-[#0D0D0D]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <Badge className="bg-[#C9941A]/10 text-[#C9941A] border-[#C9941A]/30 mb-4">
+          <Badge className="bg-[#E2741B]/10 text-[#E2741B] border-[#E2741B]/30 mb-4">
             Evidence-Based Protocols
           </Badge>
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">
@@ -94,7 +94,7 @@ export default function RecoveryPrograms() {
             return (
               <Card 
                 key={program.id}
-                className="bg-[#1a1a1a] border-[#333] p-6 hover:border-[#C9941A]/30 transition-all duration-300 group"
+                className="bg-[#1a1a1a] border-[#333] p-6 hover:border-[#E2741B]/30 transition-all duration-300 group"
                 data-testid={`card-program-${program.id}`}
               >
                 <div className="flex items-start gap-4 mb-4">
@@ -105,7 +105,7 @@ export default function RecoveryPrograms() {
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="text-xl font-bold text-white">{program.title}</h3>
                       {program.featured && (
-                        <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 text-xs">
+                        <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 text-xs">
                           <Star className="h-3 w-3 mr-1" /> Popular
                         </Badge>
                       )}
@@ -144,7 +144,7 @@ export default function RecoveryPrograms() {
                 </div>
 
                 <Link href={`/recovery/protocols#${program.id}`}>
-                  <Button className="w-full bg-[#C9941A]/10 text-[#C9941A] border border-[#C9941A]/30 hover:bg-[#C9941A] hover:text-black transition-all">
+                  <Button className="w-full bg-[#E2741B]/10 text-[#E2741B] border border-[#E2741B]/30 hover:bg-[#E2741B] hover:text-black transition-all">
                     View Protocol Details
                     <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Button>
@@ -154,9 +154,9 @@ export default function RecoveryPrograms() {
           })}
         </div>
 
-        <Card className="bg-gradient-to-r from-[#C9941A]/10 to-[#1a1a1a] border-[#C9941A]/30 p-8 text-center">
+        <Card className="bg-gradient-to-r from-[#E2741B]/10 to-[#1a1a1a] border-[#E2741B]/30 p-8 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Users className="h-6 w-6 text-[#C9941A]" />
+            <Users className="h-6 w-6 text-[#E2741B]" />
             <h3 className="text-2xl font-bold text-white">Personalized Protocol Matching</h3>
           </div>
           <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
@@ -164,7 +164,7 @@ export default function RecoveryPrograms() {
             your specific needs and recommend a personalized recovery plan.
           </p>
           <Link href="/recovery/dashboard">
-            <Button className="bg-[#C9941A] text-black font-semibold px-8">
+            <Button className="bg-[#E2741B] text-black font-semibold px-8">
               Get Your Assessment
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>

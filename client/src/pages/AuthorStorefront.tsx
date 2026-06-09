@@ -85,7 +85,7 @@ function SocialLink({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-2 text-gray-400 hover:text-[#C9941A] transition-colors"
+      className="flex items-center gap-2 text-gray-400 hover:text-[#E2741B] transition-colors"
       data-testid={`link-social-${label.toLowerCase()}`}
     >
       <Icon className="w-5 h-5" />
@@ -106,11 +106,11 @@ function BookCard({ book }: { book: BookProject }) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <BookOpen className="w-16 h-16 text-[#C9941A]/50" />
+            <BookOpen className="w-16 h-16 text-[#E2741B]/50" />
           </div>
         )}
         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-          <Button size="sm" className="bg-[#C9941A] hover:bg-[#C9941A]" data-testid={`button-buy-${book.id}`}>
+          <Button size="sm" className="bg-[#E2741B] hover:bg-[#E2741B]" data-testid={`button-buy-${book.id}`}>
             <ShoppingCart className="w-4 h-4 mr-2" />
             Buy Now
           </Button>
@@ -128,7 +128,7 @@ function BookCard({ book }: { book: BookProject }) {
             </Badge>
           )}
           {book.price && (
-            <span className="font-bold text-[#C9941A]" data-testid={`text-book-price-${book.id}`}>
+            <span className="font-bold text-[#E2741B]" data-testid={`text-book-price-${book.id}`}>
               ${(book.price / 100).toFixed(2)}
             </span>
           )}
@@ -258,7 +258,7 @@ export default function AuthorStorefront() {
 
       <div className="container mx-auto px-4 -mt-20 max-w-6xl relative z-10">
         <div className="flex flex-col md:flex-row md:items-end gap-6 mb-8">
-          <Avatar className="w-32 h-32 md:w-40 md:h-40 border-4 border-black ring-4 ring-[#C9941A]/20">
+          <Avatar className="w-32 h-32 md:w-40 md:h-40 border-4 border-black ring-4 ring-[#E2741B]/20">
             <AvatarImage src={profile.photoUrl || undefined} data-testid="img-author-photo" />
             <AvatarFallback className="text-4xl bg-primary/20">
               {profile.penName?.charAt(0) || "A"}
@@ -280,7 +280,7 @@ export default function AuthorStorefront() {
                 <Badge 
                   key={genre} 
                   variant="outline" 
-                  className="border text-[#C9941A]"
+                  className="border text-[#E2741B]"
                   data-testid={`badge-genre-${genre.toLowerCase().replace(/\s+/g, "-")}`}
                 >
                   {genre}
@@ -292,7 +292,7 @@ export default function AuthorStorefront() {
           <div className="flex gap-2">
             <Button
               variant={isFollowing ? "outline" : "default"}
-              className={isFollowing ? "" : "bg-[#C9941A] hover:bg-[#C9941A]"}
+              className={isFollowing ? "" : "bg-[#E2741B] hover:bg-[#E2741B]"}
               onClick={handleFollow}
               data-testid="button-follow"
             >
@@ -390,7 +390,7 @@ export default function AuthorStorefront() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Star className="w-5 h-5 text-[#C9941A]" />
+                    <Star className="w-5 h-5 text-[#E2741B]" />
                     Achievements & Awards
                   </CardTitle>
                 </CardHeader>
@@ -402,7 +402,7 @@ export default function AuthorStorefront() {
                         className="flex items-center gap-3 text-gray-400"
                         data-testid={`text-achievement-${index}`}
                       >
-                        <Star className="w-4 h-4 text-[#C9941A] flex-shrink-0" />
+                        <Star className="w-4 h-4 text-[#E2741B] flex-shrink-0" />
                         {achievement}
                       </li>
                     ))}
@@ -417,7 +417,7 @@ export default function AuthorStorefront() {
               <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Mail className="w-5 h-5 text-[#C9941A]" />
+                    <Mail className="w-5 h-5 text-[#E2741B]" />
                     Newsletter
                   </CardTitle>
                   <CardDescription>
@@ -436,7 +436,7 @@ export default function AuthorStorefront() {
                     />
                     <Button 
                       type="submit" 
-                      className="w-full bg-[#C9941A] hover:bg-[#C9941A]"
+                      className="w-full bg-[#E2741B] hover:bg-[#E2741B]"
                       data-testid="button-newsletter-subscribe"
                     >
                       Subscribe
@@ -460,7 +460,7 @@ export default function AuthorStorefront() {
                     data-testid="link-website"
                   >
                     <span className="flex items-center gap-2">
-                      <Globe className="w-4 h-4 text-[#C9941A]" />
+                      <Globe className="w-4 h-4 text-[#E2741B]" />
                       Official Website
                     </span>
                     <ExternalLink className="w-4 h-4 text-gray-400" />
@@ -475,7 +475,7 @@ export default function AuthorStorefront() {
                     data-testid="link-amazon"
                   >
                     <span className="flex items-center gap-2">
-                      <SiAmazon className="w-4 h-4 text-[#C9941A]" />
+                      <SiAmazon className="w-4 h-4 text-[#E2741B]" />
                       Amazon Author Page
                     </span>
                     <ExternalLink className="w-4 h-4 text-gray-400" />
@@ -490,7 +490,7 @@ export default function AuthorStorefront() {
                     data-testid="link-goodreads"
                   >
                     <span className="flex items-center gap-2">
-                      <SiGoodreads className="w-4 h-4 text-[#C9941A]" />
+                      <SiGoodreads className="w-4 h-4 text-[#E2741B]" />
                       Goodreads Profile
                     </span>
                     <ExternalLink className="w-4 h-4 text-gray-400" />

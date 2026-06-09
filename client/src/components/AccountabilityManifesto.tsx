@@ -85,13 +85,13 @@ export default function AccountabilityManifesto() {
 
         {/* ── Opening manifesto text ───────────────────────────────── */}
         <div className="mb-20">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C9941A] mb-6">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#E2741B] mb-6">
             The accountability gap
           </p>
 
           <h2 className="text-4xl md:text-6xl font-black leading-tight mb-8 max-w-4xl">
             The most underserved part of stroke recovery{" "}
-            <span className="text-[#C9941A]">isn't information.</span>
+            <span className="text-[#E2741B]">isn't information.</span>
             <br />It's someone checking on you.
           </h2>
 
@@ -120,7 +120,7 @@ export default function AccountabilityManifesto() {
               className="p-6 rounded-xl border border-[#1e1e1e] bg-[#0a0a0a]"
               data-testid={`stat-gap-${i}`}
             >
-              <p className="text-4xl font-black text-[#C9941A] mb-2">{s.stat}</p>
+              <p className="text-4xl font-black text-[#E2741B] mb-2">{s.stat}</p>
               <p className="text-gray-300 text-sm leading-relaxed mb-2">{s.label}</p>
               <p className="text-xs text-gray-700 uppercase tracking-wider">{s.source}</p>
             </div>
@@ -129,11 +129,11 @@ export default function AccountabilityManifesto() {
 
         {/* ── How we close the gap ─────────────────────────────────── */}
         <div className="mb-20">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C9941A] mb-4">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#E2741B] mb-4">
             How we close it
           </p>
           <h3 className="text-3xl md:text-4xl font-black mb-3 leading-tight">
-            Not one thing. <span className="text-[#C9941A]">Everything.</span>
+            Not one thing. <span className="text-[#E2741B]">Everything.</span>
           </h3>
           <p className="text-gray-400 mb-12 max-w-2xl leading-relaxed">
             Every tool on this platform is built around one principle: the system should notice when
@@ -148,8 +148,8 @@ export default function AccountabilityManifesto() {
                 className="p-5 rounded-xl bg-[#0f0f0f] border border-[#1e1e1e]"
                 data-testid={`accountability-feature-${i}`}
               >
-                <div className="w-9 h-9 rounded-lg bg-[#C9941A]/10 flex items-center justify-center mb-3">
-                  <Icon className="w-4 h-4 text-[#C9941A]" />
+                <div className="w-9 h-9 rounded-lg bg-[#E2741B]/10 flex items-center justify-center mb-3">
+                  <Icon className="w-4 h-4 text-[#E2741B]" />
                 </div>
                 <h4 className="text-white font-bold text-sm mb-1.5">{title}</h4>
                 <p className="text-xs text-gray-500 leading-relaxed">{desc}</p>
@@ -162,12 +162,12 @@ export default function AccountabilityManifesto() {
         <div className="mb-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C9941A] mb-4">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#E2741B] mb-4">
                 Connection on every level
               </p>
               <h3 className="text-3xl md:text-4xl font-black mb-6 leading-tight">
                 Talk. Share. Inspire.<br />
-                <span className="text-[#C9941A]">Show up for each other.</span>
+                <span className="text-[#E2741B]">Show up for each other.</span>
               </h3>
               <p className="text-gray-400 leading-relaxed mb-8">
                 Community isn't a feed you scroll past. It's survivors at Day 3 and Day 700 talking to each other,
@@ -175,7 +175,7 @@ export default function AccountabilityManifesto() {
                 Not someday. Right now. On this wall.
               </p>
               <Button
-                className="bg-[#C9941A] text-black font-black gap-2"
+                className="bg-[#E2741B] text-black font-black gap-2"
                 onClick={() => setLocation("/recovery/community")}
                 data-testid="button-manifesto-community"
               >
@@ -191,8 +191,8 @@ export default function AccountabilityManifesto() {
                   className="flex items-center gap-3 p-4 rounded-lg bg-[#0f0f0f] border border-[#1e1e1e]"
                   data-testid={`connection-level-${i}`}
                 >
-                  <div className="w-8 h-8 rounded-lg bg-[#C9941A]/10 flex items-center justify-center shrink-0">
-                    <Icon className="w-4 h-4 text-[#C9941A]" />
+                  <div className="w-8 h-8 rounded-lg bg-[#E2741B]/10 flex items-center justify-center shrink-0">
+                    <Icon className="w-4 h-4 text-[#E2741B]" />
                   </div>
                   <span className="text-sm text-gray-300">{label}</span>
                 </div>
@@ -202,15 +202,15 @@ export default function AccountabilityManifesto() {
         </div>
 
         {/* ── Guided plan builder callout ──────────────────────────── */}
-        <div className="mb-20 p-8 rounded-2xl bg-[#0f0f0f] border border-[#C9941A]/20">
+        <div className="mb-20 p-8 rounded-2xl bg-[#0f0f0f] border border-[#E2741B]/20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C9941A] mb-3">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#E2741B] mb-3">
                 Your plan. Your pace.
               </p>
               <h3 className="text-2xl md:text-3xl font-black mb-4 leading-tight">
                 Build your recovery plan<br />
-                <span className="text-[#C9941A]">or let us guide you.</span>
+                <span className="text-[#E2741B]">or let us guide you.</span>
               </h3>
               <p className="text-gray-400 leading-relaxed text-sm">
                 Answer a few questions about your stroke type, affected side, and current stage —
@@ -228,7 +228,7 @@ export default function AccountabilityManifesto() {
                 { label: "Or skip all of this — start anywhere", done: true },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3 text-sm">
-                  <CheckCircle className="w-4 h-4 text-[#C9941A] shrink-0" />
+                  <CheckCircle className="w-4 h-4 text-[#E2741B] shrink-0" />
                   <span className={item.done ? "text-gray-300" : "text-gray-600"}>{item.label}</span>
                 </div>
               ))}
@@ -240,7 +240,7 @@ export default function AccountabilityManifesto() {
         <div className="text-center">
           <h3 className="text-4xl md:text-5xl font-black mb-6 leading-tight">
             The hospital did its job.<br />
-            <span className="text-[#C9941A]">Now it's your turn.</span><br />
+            <span className="text-[#E2741B]">Now it's your turn.</span><br />
             <span className="text-gray-400 font-normal text-2xl md:text-3xl">
               And we'll be there for every rep of it.
             </span>
@@ -249,7 +249,7 @@ export default function AccountabilityManifesto() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
             <Button
               size="lg"
-              className="bg-[#C9941A] text-black font-black text-lg px-10 gap-2"
+              className="bg-[#E2741B] text-black font-black text-lg px-10 gap-2"
               onClick={() => setLocation("/recovery/pricing")}
               data-testid="button-manifesto-start-trial"
             >

@@ -223,8 +223,8 @@ export default function AffiliateDashboard() {
                 <Skeleton className="h-20 w-full bg-gray-800" />
               ) : (
                 <div className="flex items-center gap-4">
-                  <div className="p-3 bg-[#C9941A]/10 rounded-lg">
-                    <DollarSign className="w-6 h-6 text-[#C9941A]" />
+                  <div className="p-3 bg-[#E2741B]/10 rounded-lg">
+                    <DollarSign className="w-6 h-6 text-[#E2741B]" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-400">Paid Out</p>
@@ -283,7 +283,7 @@ export default function AffiliateDashboard() {
                       <Badge
                         variant={conversion.status === 'paid' ? 'default' : 'secondary'}
                         className={conversion.status === 'paid' 
-                          ? 'bg-[#C9941A]/10 text-[#C9941A] border-green-500/20' 
+                          ? 'bg-[#E2741B]/10 text-[#E2741B] border-green-500/20' 
                           : 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
                         }
                         data-testid={`badge-status-${conversion.id}`}

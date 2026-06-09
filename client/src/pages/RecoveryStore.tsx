@@ -347,9 +347,9 @@ function StarRating({ rating, reviewCount }: { rating: number; reviewCount: numb
             key={star}
             className={`w-4 h-4 ${
               star <= Math.floor(rating)
-                ? "fill-[#C9941A] text-[#C9941A]"
+                ? "fill-[#E2741B] text-[#E2741B]"
                 : star <= rating
-                ? "fill-[#C9941A]/50 text-[#C9941A]"
+                ? "fill-[#E2741B]/50 text-[#E2741B]"
                 : "text-gray-500"
             }`}
           />
@@ -367,7 +367,7 @@ function ProductCard({ product, tag, configReady }: { product: Product; tag: str
   return (
     <>
       <ProductSchema product={product} tag={tag} />
-      <Card className="group overflow-hidden bg-[#1a1a1a] border border-[#333] hover:border-[#C9941A]/30 hover:shadow-lg hover:shadow-[#C9941A]/5 transition-all">
+      <Card className="group overflow-hidden bg-[#1a1a1a] border border-[#333] hover:border-[#E2741B]/30 hover:shadow-lg hover:shadow-[#E2741B]/5 transition-all">
         <div className="relative aspect-square bg-[#0D0D0D] overflow-hidden">
           <img
             src={product.imageUrl}
@@ -377,13 +377,13 @@ function ProductCard({ product, tag, configReady }: { product: Product; tag: str
           />
           <div className="absolute top-2 left-2 flex flex-col gap-1">
             {product.isNicksPick && (
-              <Badge className="bg-[#C9941A] text-black text-[10px] border-0">
+              <Badge className="bg-[#E2741B] text-black text-[10px] border-0">
                 <Award className="w-3 h-3 mr-1" />
                 Nick's Pick
               </Badge>
             )}
             {product.isBestSeller && (
-              <Badge className="bg-[#C9941A]/20 text-[#C9941A] border border-[#C9941A]/30 text-[10px]">
+              <Badge className="bg-[#E2741B]/20 text-[#E2741B] border border-[#E2741B]/30 text-[10px]">
                 <TrendingUp className="w-3 h-3 mr-1" />
                 Best Seller
               </Badge>
@@ -393,7 +393,7 @@ function ProductCard({ product, tag, configReady }: { product: Product; tag: str
         
         <CardContent className="p-4 space-y-3">
           <div>
-            <p className="text-xs text-[#C9941A] font-medium uppercase tracking-wide">
+            <p className="text-xs text-[#E2741B] font-medium uppercase tracking-wide">
               {product.brand}
             </p>
             <h3 className="font-semibold text-white line-clamp-2 mt-1">
@@ -414,18 +414,18 @@ function ProductCard({ product, tag, configReady }: { product: Product; tag: str
           </div>
           
           {product.nickSays && (
-            <div className="bg-[#C9941A]/10 rounded-lg p-3 border-l-2 border-[#C9941A]">
+            <div className="bg-[#E2741B]/10 rounded-lg p-3 border-l-2 border-[#E2741B]">
               <div className="flex items-start gap-2">
-                <Quote className="w-4 h-4 text-[#C9941A] flex-shrink-0 mt-0.5" />
+                <Quote className="w-4 h-4 text-[#E2741B] flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-gray-300 italic line-clamp-2">"{product.nickSays}"</p>
               </div>
-              <p className="text-[10px] text-[#C9941A] font-medium mt-1">— Nick Kremers</p>
+              <p className="text-[10px] text-[#E2741B] font-medium mt-1">— Nick Kremers</p>
             </div>
           )}
           
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-baseline gap-2">
-              <span className="text-xl font-bold text-[#C9941A]">{product.price}</span>
+              <span className="text-xl font-bold text-[#E2741B]">{product.price}</span>
               {product.originalPrice && (
                 <span className="text-sm text-gray-500 line-through">{product.originalPrice}</span>
               )}
@@ -433,7 +433,7 @@ function ProductCard({ product, tag, configReady }: { product: Product; tag: str
             {configReady ? (
               <Button
                 asChild
-                className="bg-[#C9941A] hover:bg-[#B8860B] text-black"
+                className="bg-[#E2741B] hover:bg-[#B8860B] text-black"
                 data-testid={`button-buy-${product.id}`}
               >
                 <a href={amazonUrl} target="_blank" rel="noopener noreferrer sponsored nofollow">
@@ -444,7 +444,7 @@ function ProductCard({ product, tag, configReady }: { product: Product; tag: str
             ) : (
               <Button
                 disabled
-                className="bg-[#C9941A]/40 text-black"
+                className="bg-[#E2741B]/40 text-black"
                 data-testid={`button-buy-${product.id}-loading`}
               >
                 <ShoppingCart className="w-4 h-4 mr-2" />
@@ -457,7 +457,7 @@ function ProductCard({ product, tag, configReady }: { product: Product; tag: str
             <p className="text-xs text-gray-500 font-medium mb-1">Recovery Benefits:</p>
             <div className="flex flex-wrap gap-1">
               {product.recoveryBenefits.map((benefit) => (
-                <span key={benefit} className="text-[10px] bg-[#C9941A]/10 text-[#C9941A] px-2 py-0.5 rounded-full flex items-center gap-1">
+                <span key={benefit} className="text-[10px] bg-[#E2741B]/10 text-[#E2741B] px-2 py-0.5 rounded-full flex items-center gap-1">
                   <CheckCircle className="w-3 h-3" />
                   {benefit}
                 </span>
@@ -556,7 +556,7 @@ export default function RecoveryStore() {
             <img src={strokeLyfeLogo} alt="Stroke Lyfe" className="h-10 w-auto" />
             <span className="text-xl font-bold text-white">Recovery Store</span>
           </div>
-          <Badge className="bg-[#C9941A]/20 text-[#C9941A] border border-[#C9941A]/30">
+          <Badge className="bg-[#E2741B]/20 text-[#E2741B] border border-[#E2741B]/30">
             <Award className="w-3 h-3 mr-1" />
             Curated by Nick
           </Badge>
@@ -565,7 +565,7 @@ export default function RecoveryStore() {
 
       <section className="bg-gradient-to-br from-[#1a1a1a] via-[#0D0D0D] to-[#1a1a1a] py-16 px-4 border-b border-[#333]">
         <div className="max-w-6xl mx-auto text-center">
-          <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-[#C9941A]/30 mb-4">
+          <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 mb-4">
             <Award className="w-3 h-3 mr-1" />
             Curated by Nick Kremers
           </Badge>
@@ -578,15 +578,15 @@ export default function RecoveryStore() {
           </p>
           <div className="flex flex-wrap justify-center gap-6 text-gray-400 text-sm">
             <span className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[#C9941A]" />
+              <Shield className="w-4 h-4 text-[#E2741B]" />
               Survivor Tested
             </span>
             <span className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-[#C9941A]" />
+              <CheckCircle className="w-4 h-4 text-[#E2741B]" />
               Expert Recommended
             </span>
             <span className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-[#C9941A]" />
+              <Users className="w-4 h-4 text-[#E2741B]" />
               Community Approved
             </span>
           </div>
@@ -607,7 +607,7 @@ export default function RecoveryStore() {
               <a
                 key={product.id}
                 href={`#${product.id}`}
-                className="bg-[#0D0D0D] hover:bg-[#C9941A]/10 border border-[#333] hover:border-[#C9941A]/30 rounded-lg p-3 text-center transition-colors"
+                className="bg-[#0D0D0D] hover:bg-[#E2741B]/10 border border-[#333] hover:border-[#E2741B]/30 rounded-lg p-3 text-center transition-colors"
               >
                 <img
                   src={product.imageUrl}
@@ -641,7 +641,7 @@ export default function RecoveryStore() {
               <TabsTrigger
                 key={category.id}
                 value={category.id}
-                className="data-[state=active]:bg-[#C9941A] data-[state=active]:text-black text-gray-400 flex items-center gap-2"
+                className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black text-gray-400 flex items-center gap-2"
                 data-testid={`tab-${category.id}`}
               >
                 <category.icon className="w-4 h-4" />
@@ -681,22 +681,22 @@ export default function RecoveryStore() {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
               <div className="text-center">
-                <div className="w-12 h-12 bg-[#C9941A]/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Shield className="w-6 h-6 text-[#C9941A]" />
+                <div className="w-12 h-12 bg-[#E2741B]/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Shield className="w-6 h-6 text-[#E2741B]" />
                 </div>
                 <h3 className="font-semibold text-white mb-1">Survivor Tested</h3>
                 <p className="text-sm text-gray-500">Every product used in real recovery journeys</p>
               </div>
               <div className="text-center">
-                <div className="w-12 h-12 bg-[#C9941A]/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Award className="w-6 h-6 text-[#C9941A]" />
+                <div className="w-12 h-12 bg-[#E2741B]/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Award className="w-6 h-6 text-[#E2741B]" />
                 </div>
                 <h3 className="font-semibold text-white mb-1">Expert Curated</h3>
                 <p className="text-sm text-gray-500">Selected based on therapeutic value</p>
               </div>
               <div className="text-center">
-                <div className="w-12 h-12 bg-[#C9941A]/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Heart className="w-6 h-6 text-[#C9941A]" />
+                <div className="w-12 h-12 bg-[#E2741B]/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Heart className="w-6 h-6 text-[#E2741B]" />
                 </div>
                 <h3 className="font-semibold text-white mb-1">Community First</h3>
                 <p className="text-sm text-gray-500">Affiliate revenue supports survivors</p>
@@ -713,7 +713,7 @@ export default function RecoveryStore() {
             Stroke Lyfe Recovery Store is part of Stroke Lyfe Inc., a 501(c)(3) nonprofit. 
             Affiliate revenue from purchases supports our scholarship fund and free resources for stroke survivors.
           </p>
-          <p className="text-[#C9941A] mt-4 font-semibold">REBUILD. REWIRE. RISE.</p>
+          <p className="text-[#E2741B] mt-4 font-semibold">REBUILD. REWIRE. RISE.</p>
         </div>
       </footer>
 

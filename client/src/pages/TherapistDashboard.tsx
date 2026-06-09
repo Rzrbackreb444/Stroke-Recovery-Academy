@@ -113,7 +113,7 @@ export default function TherapistDashboard() {
   if (profileLoading) {
     return (
       <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#C9941A] animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#E2741B] animate-spin" />
       </div>
     );
   }
@@ -125,7 +125,7 @@ export default function TherapistDashboard() {
           <Card className="bg-[#1a1a1a] border-[#333] p-8">
             <div className="text-center mb-8">
               <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
-                <Users className="w-10 h-10 text-[#C9941A]" />
+                <Users className="w-10 h-10 text-[#E2741B]" />
               </div>
               <h1 className="text-2xl font-bold text-foreground mb-2">Create Therapist Profile</h1>
               <p className="text-gray-400">
@@ -159,7 +159,7 @@ export default function TherapistDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <Badge className={therapistProfile.isVerified ? "bg-[#C9941A]/20 text-[#C9941A]" : "bg-yellow-500/20 text-yellow-400"}>
+            <Badge className={therapistProfile.isVerified ? "bg-[#E2741B]/20 text-[#E2741B]" : "bg-yellow-500/20 text-yellow-400"}>
               {therapistProfile.isVerified ? "Verified" : "Pending Verification"}
             </Badge>
             <Button variant="outline" className="border-[#333]" data-testid="button-edit-profile">
@@ -184,7 +184,7 @@ export default function TherapistDashboard() {
           <Card className="bg-[#1a1a1a] border-[#333] p-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-[#C9941A]" />
+                <Calendar className="w-6 h-6 text-[#E2741B]" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground">{upcomingSessions?.length || 0}</p>
@@ -194,8 +194,8 @@ export default function TherapistDashboard() {
           </Card>
           <Card className="bg-[#1a1a1a] border-[#333] p-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg bg-[#C9941A]/20 flex items-center justify-center">
-                <CheckCircle2 className="w-6 h-6 text-[#C9941A]" />
+              <div className="w-12 h-12 rounded-lg bg-[#E2741B]/20 flex items-center justify-center">
+                <CheckCircle2 className="w-6 h-6 text-[#E2741B]" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground">
@@ -207,8 +207,8 @@ export default function TherapistDashboard() {
           </Card>
           <Card className="bg-[#1a1a1a] border-[#333] p-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg bg-[#C9941A]/20 flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-[#C9941A]" />
+              <div className="w-12 h-12 rounded-lg bg-[#E2741B]/20 flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-[#E2741B]" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground">
@@ -267,7 +267,7 @@ export default function TherapistDashboard() {
             
             {patientsLoading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-8 h-8 text-[#C9941A] animate-spin" />
+                <Loader2 className="w-8 h-8 text-[#E2741B] animate-spin" />
               </div>
             ) : activePatients.length > 0 ? (
               <div className="grid gap-4">
@@ -280,7 +280,7 @@ export default function TherapistDashboard() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <Avatar className="w-12 h-12">
-                          <AvatarFallback className="bg-gray-800 text-[#C9941A]">
+                          <AvatarFallback className="bg-gray-800 text-[#E2741B]">
                             P
                           </AvatarFallback>
                         </Avatar>
@@ -297,7 +297,7 @@ export default function TherapistDashboard() {
                           <p className="text-sm text-gray-400">Started</p>
                           <p className="text-foreground">{format(new Date(patient.createdAt), "MMM d, yyyy")}</p>
                         </div>
-                        <Badge className="bg-[#C9941A]/20 text-[#C9941A] border-green-500/30">
+                        <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-green-500/30">
                           {patient.status}
                         </Badge>
                         <Button variant="outline" className="border-[#333]" data-testid={`button-view-patient-${patient.id}`}>
@@ -473,7 +473,7 @@ export default function TherapistDashboard() {
             <div className="grid md:grid-cols-3 gap-4 mb-6">
               <Card className="bg-[#1a1a1a] border-[#333] p-4">
                 <p className="text-sm text-gray-400">Total Patients</p>
-                <p className="text-3xl font-bold text-[#C9941A]">24</p>
+                <p className="text-3xl font-bold text-[#E2741B]">24</p>
               </Card>
               <Card className="bg-[#1a1a1a] border-[#333] p-4">
                 <p className="text-sm text-gray-400">Avg. Improvement</p>
@@ -491,7 +491,7 @@ export default function TherapistDashboard() {
                   { name: "Motor Function", value: 72, color: "bg-blue-500" },
                   { name: "Speech Clarity", value: 58, color: "bg-green-500" },
                   { name: "Cognitive Tasks", value: 84, color: "bg-purple-500" },
-                  { name: "Daily Activities", value: 66, color: "bg-[#C9941A]" },
+                  { name: "Daily Activities", value: 66, color: "bg-[#E2741B]" },
                 ].map((metric) => (
                   <div key={metric.name}>
                     <div className="flex justify-between text-sm mb-1">
