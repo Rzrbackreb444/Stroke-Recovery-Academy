@@ -124,7 +124,7 @@ export default function Footer() {
                 data-testid="img-footer-logo"
               />
             </div>
-            <p className="text-sm font-semibold uppercase tracking-widest text-[#C9941A] mb-2">
+            <p className="text-sm font-semibold uppercase tracking-widest text-gold mb-2">
               From 0% to 90% Recovery
             </p>
             <p className="text-gray-400 mb-6 leading-relaxed text-sm">
@@ -149,11 +149,11 @@ export default function Footer() {
                     }
                   }}
                   disabled={subscribe.isPending}
-                  className="flex-1 border-[#333] bg-[#111] text-white placeholder:text-gray-500 focus:border-[#C9941A]"
+                  className="flex-1 border-[#333] bg-[#111] text-white placeholder:text-gray-500 focus:border-gold"
                   data-testid="input-newsletter-email"
                 />
                 <Button
-                  className="bg-[#C9941A] text-black font-semibold flex-shrink-0"
+                  className="bg-gold text-black font-semibold flex-shrink-0"
                   data-testid="button-newsletter-subscribe"
                   onClick={handleSubscribe}
                   disabled={subscribe.isPending}
@@ -167,7 +167,7 @@ export default function Footer() {
 
           {/* Recovery links */}
           <div>
-            <h3 className="font-bold mb-4 text-sm uppercase tracking-wide text-[#C9941A]">
+            <h3 className="font-bold mb-4 text-sm uppercase tracking-wide text-gold">
               Recovery
             </h3>
             <ul className="space-y-2">
@@ -178,7 +178,7 @@ export default function Footer() {
                     className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm group"
                     data-testid={`footer-link-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
                   >
-                    <link.icon className="w-3.5 h-3.5 text-gray-500 group-hover:text-[#C9941A] transition-colors" />
+                    <link.icon className="w-3.5 h-3.5 text-gray-500 group-hover:text-gold transition-colors" />
                     {link.label}
                   </Link>
                 </li>
@@ -188,7 +188,7 @@ export default function Footer() {
 
           {/* Community links */}
           <div>
-            <h3 className="font-bold mb-4 text-sm uppercase tracking-wide text-[#C9941A]">
+            <h3 className="font-bold mb-4 text-sm uppercase tracking-wide text-gold">
               Community
             </h3>
             <ul className="space-y-2">
@@ -199,7 +199,7 @@ export default function Footer() {
                     className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm group"
                     data-testid={`footer-link-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
                   >
-                    <link.icon className="w-3.5 h-3.5 text-gray-500 group-hover:text-[#C9941A] transition-colors" />
+                    <link.icon className="w-3.5 h-3.5 text-gray-500 group-hover:text-gold transition-colors" />
                     {link.label}
                   </Link>
                 </li>
@@ -209,7 +209,7 @@ export default function Footer() {
 
           {/* Who it's for */}
           <div>
-            <h3 className="font-bold mb-4 text-sm uppercase tracking-wide text-[#C9941A]">
+            <h3 className="font-bold mb-4 text-sm uppercase tracking-wide text-gold">
               Who It's For
             </h3>
             <ul className="space-y-2">
@@ -229,7 +229,7 @@ export default function Footer() {
 
           {/* Programs */}
           <div>
-            <h3 className="font-bold mb-4 text-sm uppercase tracking-wide text-[#C9941A]">
+            <h3 className="font-bold mb-4 text-sm uppercase tracking-wide text-gold">
               Programs
             </h3>
             <ul className="space-y-2">
@@ -245,7 +245,7 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-            <h3 className="font-bold mb-4 mt-6 text-sm uppercase tracking-wide text-[#C9941A]">
+            <h3 className="font-bold mb-4 mt-6 text-sm uppercase tracking-wide text-gold">
               Learn
             </h3>
             <ul className="space-y-2">
@@ -265,7 +265,7 @@ export default function Footer() {
 
           {/* Company links */}
           <div>
-            <h3 className="font-bold mb-4 text-sm uppercase tracking-wide text-[#C9941A]">
+            <h3 className="font-bold mb-4 text-sm uppercase tracking-wide text-gold">
               Company
             </h3>
             <ul className="space-y-2">
@@ -291,7 +291,7 @@ export default function Footer() {
               <li key={link.label}>
                 <Link
                   href={link.href}
-                  className="text-xs text-gray-400 hover:text-[#C9941A] transition-colors"
+                  className="text-xs text-gray-400 hover:text-gold transition-colors"
                   data-testid={`footer-legal-${link.label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`}
                 >
                   {link.label}
@@ -384,7 +384,7 @@ export default function Footer() {
                 </div>
               </div>
               <Link href="/recovery/gift">
-                <button className="flex items-center gap-2 bg-[#C9941A]/10 border border-[#C9941A]/30 text-[#C9941A] text-xs font-semibold px-4 py-2 rounded-md hover:bg-[#C9941A]/20 transition-colors" data-testid="footer-button-gift">
+                <button className="flex items-center gap-2 bg-gold/10 border border-gold/30 text-gold text-xs font-semibold px-4 py-2 rounded-md hover:bg-gold/20 transition-colors" data-testid="footer-button-gift">
                   <Gift className="h-3.5 w-3.5" />
                   Gift a Survivor Access — from $47
                 </button>
@@ -394,12 +394,12 @@ export default function Footer() {
         </div>
 
         {/* Prominent medical disclaimer — always visible, never tiny */}
-        <div className="border-t-2 border-[#C9941A]/40 bg-[#1a1a1a] mt-8 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-6">
+        <div className="border-t-2 border-gold/40 bg-[#1a1a1a] mt-8 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-6">
           <div className="max-w-5xl mx-auto">
             <div className="flex items-start gap-3 mb-3">
-              <Heart className="h-5 w-5 text-[#C9941A] flex-shrink-0 mt-0.5" aria-hidden="true" />
+              <Heart className="h-5 w-5 text-gold flex-shrink-0 mt-0.5" aria-hidden="true" />
               <div>
-                <p className="text-sm font-bold text-[#C9941A] uppercase tracking-wider mb-1">
+                <p className="text-sm font-bold text-gold uppercase tracking-wider mb-1">
                   Important — Please Read
                 </p>
                 <p className="text-sm text-gray-300 leading-relaxed">
@@ -418,11 +418,11 @@ export default function Footer() {
                 <p className="text-sm text-gray-300 leading-relaxed mt-3">
                   <strong className="text-white">If you experience new stroke symptoms</strong> —
                   sudden weakness, vision changes, severe headache, slurred speech, or chest pain —
-                  call <a href="tel:911" className="text-[#C9941A] underline font-bold">911</a>{" "}
+                  call <a href="tel:911" className="text-gold underline font-bold">911</a>{" "}
                   immediately.{" "}
                   <strong className="text-white">If you are in mental-health crisis</strong>, call
                   or text{" "}
-                  <a href="tel:988" className="text-[#C9941A] underline font-bold">988</a>{" "}
+                  <a href="tel:988" className="text-gold underline font-bold">988</a>{" "}
                   (U.S. Suicide &amp; Crisis Lifeline) any time, day or night.
                 </p>
               </div>

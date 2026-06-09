@@ -44,6 +44,8 @@ import {
   type LuluPrintJob, type InsertLuluPrintJob,
   type Podcast, type InsertPodcast,
   type PodcastEpisode, type InsertPodcastEpisode,
+  type PuzzleBook, type InsertPuzzleBook,
+  type Puzzle, type InsertPuzzle,
 } from "@shared/schema";
 import { 
   users, forumCategories, forumThreads, forumPosts, forumReactions,
@@ -71,6 +73,7 @@ import {
   forumPostMedia, videoSessions, videoSessionParticipants, seoPages,
   blogPosts, blogPostReactions, blogPostComments,
   podcasts, podcastEpisodes,
+  puzzleBooks, puzzles,
   recoveryBlogPosts,
   type RecoveryBlogPost,
   type AccountabilityPod, type InsertAccountabilityPod,
@@ -102,6 +105,18 @@ export interface IStorage {
   getUserReaction(postId: number, userId: string): Promise<string | null>;
   getBooks(): Promise<Book[]>;
   getBookBySlug(slug: string): Promise<Book | undefined>;
+  // Puzzle Studio
+  getPuzzleBooks(ownerId: string): Promise<PuzzleBook[]>;
+  getPuzzleBook(id: number): Promise<PuzzleBook | undefined>;
+  createPuzzleBook(book: InsertPuzzleBook): Promise<PuzzleBook>;
+  updatePuzzleBook(id: number, updates: Partial<InsertPuzzleBook>): Promise<PuzzleBook | undefined>;
+  deletePuzzleBook(id: number): Promise<boolean>;
+  getPuzzles(bookId: number): Promise<Puzzle[]>;
+  getPuzzle(id: number): Promise<Puzzle | undefined>;
+  createPuzzle(puzzle: InsertPuzzle): Promise<Puzzle>;
+  updatePuzzle(id: number, updates: Partial<InsertPuzzle>): Promise<Puzzle | undefined>;
+  deletePuzzle(id: number): Promise<boolean>;
+  reorderPuzzles(bookId: number, orderedIds: number[]): Promise<void>;
   createChatSession(session: InsertAiChatSession): Promise<AiChatSession>;
   getChatSession(id: number): Promise<AiChatSession | undefined>;
   getChatMessages(sessionId: number): Promise<AiChatMessage[]>;
@@ -2360,6 +2375,83 @@ export class DatabaseStorage implements IStorage {
   async deletePodcast(id: number): Promise<boolean> {
     const result = await db.delete(podcasts).where(eq(podcasts.id, id));
     return (result.rowCount ?? 0) > 0;
+  }
+
+  // Puzzle Studio methods
+  async getPuzzleBooks(ownerId: string): Promise<PuzzleBook[]> {
+    return db.select().from(puzzleBooks)
+      .where(eq(puzzleBooks.ownerId, ownerId))
+      .orderBy(desc(puzzleBooks.lastEditedAt));
+  }
+
+  async getPuzzleBook(id: number): Promise<PuzzleBook | undefined> {
+    const [book] = await db.select().from(puzzleBooks).where(eq(puzzleBooks.id, id));
+    return book;
+  }
+
+  async createPuzzleBook(book: InsertPuzzleBook): Promise<PuzzleBook> {
+    const [result] = await db.insert(puzzleBooks).values(book).returning();
+    return result;
+  }
+
+  async updatePuzzleBook(id: number, updates: Partial<InsertPuzzleBook>): Promise<PuzzleBook | undefined> {
+    const [result] = await db.update(puzzleBooks)
+      .set({ ...updates, lastEditedAt: new Date() })
+      .where(eq(puzzleBooks.id, id))
+      .returning();
+    return result;
+  }
+
+  async deletePuzzleBook(id: number): Promise<boolean> {
+    const result = await db.delete(puzzleBooks).where(eq(puzzleBooks.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async getPuzzles(bookId: number): Promise<Puzzle[]> {
+    return db.select().from(puzzles)
+      .where(eq(puzzles.bookId, bookId))
+      .orderBy(puzzles.position);
+  }
+
+  async getPuzzle(id: number): Promise<Puzzle | undefined> {
+    const [puzzle] = await db.select().from(puzzles).where(eq(puzzles.id, id));
+    return puzzle;
+  }
+
+  async createPuzzle(puzzle: InsertPuzzle): Promise<Puzzle> {
+    const [result] = await db.insert(puzzles).values(puzzle).returning();
+    await db.update(puzzleBooks)
+      .set({ lastEditedAt: new Date() })
+      .where(eq(puzzleBooks.id, puzzle.bookId));
+    return result;
+  }
+
+  async updatePuzzle(id: number, updates: Partial<InsertPuzzle>): Promise<Puzzle | undefined> {
+    const [result] = await db.update(puzzles)
+      .set(updates)
+      .where(eq(puzzles.id, id))
+      .returning();
+    if (result) {
+      await db.update(puzzleBooks)
+        .set({ lastEditedAt: new Date() })
+        .where(eq(puzzleBooks.id, result.bookId));
+    }
+    return result;
+  }
+
+  async deletePuzzle(id: number): Promise<boolean> {
+    const result = await db.delete(puzzles).where(eq(puzzles.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async reorderPuzzles(bookId: number, orderedIds: number[]): Promise<void> {
+    await db.transaction(async (tx) => {
+      for (let i = 0; i < orderedIds.length; i++) {
+        await tx.update(puzzles)
+          .set({ position: i })
+          .where(and(eq(puzzles.id, orderedIds[i]), eq(puzzles.bookId, bookId)));
+      }
+    });
   }
 
   async getPodcastEpisodes(podcastId: number): Promise<PodcastEpisode[]> {

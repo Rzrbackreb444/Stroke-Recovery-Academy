@@ -4160,6 +4160,46 @@ export type InsertBookImagePlacement = z.infer<typeof insertBookImagePlacementSc
 export type BookImagePlacement = typeof bookImagePlacements.$inferSelect;
 
 // ============================================================================
+// BRAIN GAMES / PUZZLE STUDIO
+// ============================================================================
+
+export const puzzleBooks = pgTable("puzzle_books", {
+  id: serial("id").primaryKey(),
+  ownerId: varchar("owner_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  subtitle: text("subtitle"),
+  authorName: text("author_name"),
+  description: text("description"),
+  theme: text("theme").default("stroke_recovery"),
+  trimSize: text("trim_size").default("8.5x11"), // '8.5x11', '6x9', '7x10'
+  coverImageUrl: text("cover_image_url"),
+  status: text("status").notNull().default("draft"), // draft, ready, published
+  lastEditedAt: timestamp("last_edited_at").notNull().defaultNow(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const puzzles = pgTable("puzzles", {
+  id: serial("id").primaryKey(),
+  bookId: integer("book_id").notNull().references(() => puzzleBooks.id, { onDelete: "cascade" }),
+  type: text("type").notNull(), // word_search, crossword, word_scramble, sudoku, maze, memory_match
+  title: text("title").notNull(),
+  instructions: text("instructions"),
+  difficulty: text("difficulty").default("easy"), // easy, medium, hard
+  position: integer("position").notNull().default(0),
+  config: jsonb("config").notNull(), // generation inputs (words, clues, size, seed)
+  content: jsonb("content").notNull(), // generated grid / solution / etc.
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const insertPuzzleBookSchema = createInsertSchema(puzzleBooks).omit({ id: true, createdAt: true, lastEditedAt: true });
+export type InsertPuzzleBook = z.infer<typeof insertPuzzleBookSchema>;
+export type PuzzleBook = typeof puzzleBooks.$inferSelect;
+
+export const insertPuzzleSchema = createInsertSchema(puzzles).omit({ id: true, createdAt: true });
+export type InsertPuzzle = z.infer<typeof insertPuzzleSchema>;
+export type Puzzle = typeof puzzles.$inferSelect;
+
+// ============================================================================
 // LULU PUBLISHING - Print-on-Demand Integration
 // ============================================================================
 

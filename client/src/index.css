@@ -308,6 +308,21 @@
   --gold-primary: #C9941A;
   --gold-muted: rgba(201, 148, 26, 0.1);
   --gold-glow: rgba(201, 148, 26, 0.3);
+  /* Homepage brand accent — orange #E2741B (Tailwind `gold` token) */
+  --gold: 27 78% 50%;
+}
+
+/* Display type for dramatic headlines (homepage) */
+.font-display {
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+}
+
+/* Darker orange for small accent text on light backgrounds (AA contrast) */
+.text-gold-ink {
+  color: hsl(24 88% 36%);
 }
 
 /* Industrial Dark Cards - High contrast white text */
