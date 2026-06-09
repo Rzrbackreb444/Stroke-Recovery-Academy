@@ -354,6 +354,36 @@ uri = "file://public/images/blog/survivor-walking-cane-scene.png"
 type = "image"
 title = "survivor-walking-cane-scene"
 
+[[generated]]
+id = "sp8Z-HdVrbsOyPDMzhlPt"
+uri = "file://artifacts/mockup-sandbox/public/images/hero-warrior-training.png"
+type = "image"
+title = "Cinematic warrior training in dark gym"
+
+[[generated]]
+id = "vmJ9dtpzXOU0O0K2zKZ7E"
+uri = "file://artifacts/mockup-sandbox/public/images/manifesto-stairs.png"
+type = "image"
+title = "Dark dramatic recovery stairs"
+
+[[generated]]
+id = "YaDGM__Xf3o2v7smICl17"
+uri = "file://artifacts/mockup-sandbox/public/images/nick-founder-portrait.png"
+type = "image"
+title = "Dramatic founder portrait"
+
+[[generated]]
+id = "B3Z3CtpDnTXX4ihBLm1NX"
+uri = "file://artifacts/mockup-sandbox/public/images/home-clean-hero.png"
+type = "image"
+title = "Clean minimalist stroke recovery hero"
+
+[[generated]]
+id = "Jf5IWyuvlK3Moiugf-5nN"
+uri = "file://artifacts/mockup-sandbox/public/images/home-clean-ui.png"
+type = "image"
+title = "Clean minimalist UI representation"
+
 [[outputs]]
 id = "EGooVUwVUQyTPSx95p4M4"
 uri = "file://exports/Stroked-Out-Sasquatch_DEDUPED_v1.md"
@@ -509,3 +539,21 @@ id = "AWUd_SJ6bkPvYWYygUnLV"
 uri = "file://attached_assets/book_v2/images/sasquatch-seal.png"
 type = "image"
 title = "7. Builder's Seal — silhouette watermark"
+
+[[outputs]]
+id = "GarCwHT0D1TUni05uE1wb"
+uri = "file://artifacts/mockup-sandbox/public/images/warm-hero-stock.jpg"
+type = "image"
+title = "Warm portrait of a mature person looking determined but hopeful in soft light"
+
+[[outputs]]
+id = "D04pJjPhSZ74Dgmg1htZB"
+uri = "file://artifacts/mockup-sandbox/public/images/warm-support-stock.jpg"
+type = "image"
+title = "Two hands holding each other warmly, support and community"
+
+[[outputs]]
+id = "un-DYpWo2uPa0dk16QJsk"
+uri = "file://artifacts/mockup-sandbox/public/images/warm-exercise-stock.jpg"
+type = "image"
+title = "Person doing simple exercises at home in a cozy sunlit room"
