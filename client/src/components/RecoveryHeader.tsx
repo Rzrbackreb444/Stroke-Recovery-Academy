@@ -76,6 +76,7 @@ const resourcesGroups: { title: string; items: { href: string; label: string; pr
     items: [
       { href: "/book-studio", label: "Book Editor" },
       { href: "/book-perfection-suite", label: "Book Polish" },
+      { href: "/puzzle-studio", label: "Puzzle Studio" },
     ],
   },
   {

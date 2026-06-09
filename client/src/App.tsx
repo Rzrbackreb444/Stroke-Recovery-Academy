@@ -57,6 +57,8 @@ const MusicSandbox = lazy(() => import("@/pages/MusicSandbox"));
 const MusicProductionStudio = lazy(() => import("@/pages/MusicProductionStudio"));
 const BookStudioV3 = lazy(() => import("@/pages/BookStudioV3"));
 const BookStudioHub = lazy(() => import("@/pages/BookStudioHub"));
+const PuzzleStudioHub = lazy(() => import("@/pages/PuzzleStudioHub"));
+const PuzzleBookEditor = lazy(() => import("@/pages/PuzzleBookEditor"));
 const BookPublishFlow = lazy(() => import("@/pages/BookPublishFlow"));
 const BookCompanion = lazy(() => import("@/pages/BookCompanion"));
 const BookBuy = lazy(() => import("@/pages/BookBuy"));
@@ -347,6 +349,8 @@ function Router() {
       <Route path="/book-studio/publish" component={BookPublishFlow} />
       <Route path="/book-studio/:id" component={BookStudioV3} />
       <Route path="/book-perfection-suite" component={BookPerfectionSuite} />
+      <Route path="/puzzle-studio" component={PuzzleStudioHub} />
+      <Route path="/puzzle-studio/:id" component={PuzzleBookEditor} />
       <Route path="/write" component={MobileStudio} />
       <Route path="/studio" component={MobileStudio} />
       <Route path="/mobile-studio" component={MobileStudio} />

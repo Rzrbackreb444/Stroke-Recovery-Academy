@@ -161,7 +161,7 @@ export default function RecoveryToday() {
             <Calendar className="h-3 w-3" />
             {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
           </p>
-          <h1 className="text-4xl sm:text-5xl font-black text-white mb-2" style={{ fontFamily: "Playfair Display, Georgia, serif" }}>
+          <h1 className="text-4xl sm:text-5xl font-display text-white mb-2">
             The Bonfire
           </h1>
           <p className="text-gray-400 text-base mb-6">
@@ -371,7 +371,6 @@ export default function RecoveryToday() {
               </div>
               <p
                 className="text-2xl sm:text-3xl text-white leading-snug font-medium"
-                style={{ fontFamily: "Playfair Display, Georgia, serif" }}
                 data-testid="text-current-task"
               >
                 {current.text}
@@ -505,7 +504,7 @@ export default function RecoveryToday() {
         <Card className="bg-gradient-to-br from-[#E2741B]/15 via-[#111] to-[#111] border-[#E2741B]/40 p-8 text-center" data-testid="card-complete">
           <Trophy className="h-12 w-12 text-[#E2741B] mx-auto mb-4" />
           <p className="text-xs text-[#E2741B] uppercase tracking-widest mb-2">Bonfire Complete</p>
-          <h2 className="text-3xl sm:text-4xl font-black text-white mb-3" style={{ fontFamily: "Playfair Display, Georgia, serif" }}>
+          <h2 className="text-3xl sm:text-4xl font-display text-white mb-3">
             You showed up. That's the work.
           </h2>
           <p className="text-gray-300 text-sm">
