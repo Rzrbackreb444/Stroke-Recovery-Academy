@@ -9,7 +9,6 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Slider } from "@/components/ui/slider";
 import {
   Lock, PenTool, Feather, Camera, Mic2, Check,
   HeartHandshake, Shield, Sparkles, BookOpen,
@@ -425,13 +424,18 @@ export default function RecoveryJournal() {
                   <div className="bg-[#1C1915] p-6 rounded-2xl border border-[#2A2621] flex flex-col justify-center min-h-[88px]">
                     <div className="flex items-center gap-4">
                       <span className="text-xs font-bold text-[#5A5650]">LOW</span>
-                      <Slider
-                        value={[energy]}
-                        onValueChange={(val) => setEnergy(val[0])}
-                        max={5}
+                      <input
+                        type="range"
                         min={1}
+                        max={5}
                         step={1}
-                        className="flex-1"
+                        value={energy}
+                        onChange={(e) => setEnergy(Number(e.target.value))}
+                        className="flex-1 h-2 appearance-none rounded-full outline-none cursor-pointer"
+                        style={{
+                          background: `linear-gradient(to right, #E2741B ${((energy - 1) / 4) * 100}%, #2A2621 ${((energy - 1) / 4) * 100}%)`
+                        }}
+                        data-testid="slider-energy"
                       />
                       <span className="text-xs font-bold text-[#5A5650]">HIGH</span>
                     </div>
