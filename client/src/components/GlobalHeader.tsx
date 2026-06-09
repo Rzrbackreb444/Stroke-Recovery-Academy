@@ -121,7 +121,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
 
   const borderClass = variant === "transparent" && !scrolled
     ? "border-transparent"
-    : "border-[#C9941A]/10";
+    : "border-gold/10";
 
   if (!isPrimary) return null;
 
@@ -154,25 +154,25 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                     }`}
                     data-testid="dropdown-studios"
                   >
-                    <Sparkles className="w-4 h-4 text-[#C9941A] transition-transform duration-300 group-hover:scale-110" />
+                    <Sparkles className="w-4 h-4 text-gold transition-transform duration-300 group-hover:scale-110" />
                     Studios
                     <ChevronDown className="w-3 h-3 transition-transform duration-300" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-80 p-2 bg-[#FAF8F3] dark:bg-[#1a1a1a] border-[#C9941A]/20 animate-scale-in">
-                  <DropdownMenuLabel className="text-xs font-bold text-[#C9941A] uppercase tracking-wider px-2">
+                <DropdownMenuContent align="start" className="w-80 p-2 bg-[#FAF8F3] dark:bg-[#1a1a1a] border-gold/20 animate-scale-in">
+                  <DropdownMenuLabel className="text-xs font-bold text-gold uppercase tracking-wider px-2">
                     Creator Studios
                   </DropdownMenuLabel>
                   {studios.map((studio, idx) => (
                     <DropdownMenuItem 
                       key={studio.href} 
                       asChild 
-                      className="cursor-pointer p-3 rounded-lg transition-all duration-200 hover:bg-[#C9941A]/5"
+                      className="cursor-pointer p-3 rounded-lg transition-all duration-200 hover:bg-gold/5"
                       style={{ animationDelay: `${idx * 30}ms` }}
                     >
                       <Link href={studio.href} className="flex items-center gap-3 w-full group">
-                        <div className="w-10 h-10 rounded-lg bg-[#C9941A]/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                          <studio.icon className="w-5 h-5 text-[#C9941A] transition-transform duration-300" />
+                        <div className="w-10 h-10 rounded-lg bg-gold/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                          <studio.icon className="w-5 h-5 text-gold transition-transform duration-300" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
@@ -180,7 +180,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                               {studio.label}
                             </span>
                             {studio.badge && (
-                              <Badge className="bg-[#C9941A] text-white text-[10px] px-1.5 py-0 animate-subtle-float">
+                              <Badge className="bg-gold text-white text-[10px] px-1.5 py-0 animate-subtle-float">
                                 {studio.badge}
                               </Badge>
                             )}
@@ -193,7 +193,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                       </Link>
                     </DropdownMenuItem>
                   ))}
-                  <DropdownMenuSeparator className="bg-[#C9941A]/10 my-2" />
+                  <DropdownMenuSeparator className="bg-gold/10 my-2" />
                   <DropdownMenuLabel className="text-xs font-bold text-gray-500 uppercase tracking-wider px-2">
                     Quick Tools
                   </DropdownMenuLabel>
@@ -228,7 +228,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                       link.isHighlight
                         ? "text-red-600 dark:text-red-500"
                         : location === link.href 
-                        ? "text-[#C9941A] bg-[#C9941A]/5" 
+                        ? "text-gold bg-gold/5" 
                         : "text-gray-700 dark:text-gray-300"
                     }`}
                     data-testid={`nav-${link.label.toLowerCase().replace(" ", "-")}`}
@@ -238,7 +238,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                     }`} />
                     {link.label}
                     {!link.isHighlight && (
-                      <div className="absolute bottom-0 left-1/2 h-0.5 bg-[#C9941A] opacity-0 group-hover:opacity-100 transition-all duration-300 w-0 group-hover:w-full group-hover:left-0" />
+                      <div className="absolute bottom-0 left-1/2 h-0.5 bg-gold opacity-0 group-hover:opacity-100 transition-all duration-300 w-0 group-hover:w-full group-hover:left-0" />
                     )}
                     {link.isHighlight && (
                       <div className="animate-accent-glow rounded-md px-2 py-1" />
@@ -258,7 +258,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                   ref={searchInputRef}
                   type="text"
                   placeholder="Search studios..."
-                  className="w-48 h-9 px-3 py-2 bg-[#FAF8F3] dark:bg-gray-800 border-[#C9941A]/20 focus:border-[#C9941A] animate-search-slide-out"
+                  className="w-48 h-9 px-3 py-2 bg-[#FAF8F3] dark:bg-gray-800 border-gold/20 focus:border-gold animate-search-slide-out"
                   onBlur={() => setSearchOpen(false)}
                   data-testid="input-search"
                 />
@@ -302,7 +302,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                 </Button>
                 <Button 
                   size="sm"
-                  className="bg-[#C9941A] text-white font-semibold shadow-lg shadow-[#C9941A]/25 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#C9941A]/40"
+                  className="bg-gold text-white font-semibold shadow-lg shadow-gold/25 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-gold/40"
                   onClick={() => window.location.href = "/api/login"}
                   data-testid="button-signup"
                 >
@@ -313,15 +313,15 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full p-0 transition-all duration-300 hover:scale-110" data-testid="user-menu">
-                    <Avatar className="h-9 w-9 border-2 border-[#C9941A]/30 transition-all duration-300">
+                    <Avatar className="h-9 w-9 border-2 border-gold/30 transition-all duration-300">
                       <AvatarImage src={user.profileImageUrl || undefined} />
-                      <AvatarFallback className="bg-[#C9941A] text-white font-bold text-sm">
+                      <AvatarFallback className="bg-gold text-white font-bold text-sm">
                         {user.firstName?.[0] || user.email?.[0]?.toUpperCase() || "U"}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 p-2 bg-[#FAF8F3] dark:bg-[#1a1a1a] border-[#C9941A]/20 animate-scale-in">
+                <DropdownMenuContent align="end" className="w-56 p-2 bg-[#FAF8F3] dark:bg-[#1a1a1a] border-gold/20 animate-scale-in">
                   <div className="px-3 py-2 mb-2">
                     <p className="font-semibold text-gray-900 dark:text-white">
                       {user.firstName || "Creator"}
@@ -330,26 +330,26 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                       {user.email}
                     </p>
                   </div>
-                  <DropdownMenuSeparator className="bg-[#C9941A]/10" />
-                  <DropdownMenuItem asChild className="cursor-pointer transition-all duration-200 hover:bg-[#C9941A]/5">
+                  <DropdownMenuSeparator className="bg-gold/10" />
+                  <DropdownMenuItem asChild className="cursor-pointer transition-all duration-200 hover:bg-gold/5">
                     <Link href="/dashboard" className="flex items-center gap-2">
                       <LayoutDashboard className="w-4 h-4" />
                       Dashboard
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="cursor-pointer transition-all duration-200 hover:bg-[#C9941A]/5">
+                  <DropdownMenuItem asChild className="cursor-pointer transition-all duration-200 hover:bg-gold/5">
                     <Link href="/author-dashboard" className="flex items-center gap-2">
                       <DollarSign className="w-4 h-4" />
                       Earnings
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="cursor-pointer transition-all duration-200 hover:bg-[#C9941A]/5">
+                  <DropdownMenuItem asChild className="cursor-pointer transition-all duration-200 hover:bg-gold/5">
                     <Link href="/settings" className="flex items-center gap-2">
                       <Settings className="w-4 h-4" />
                       Settings
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-[#C9941A]/10" />
+                  <DropdownMenuSeparator className="bg-gold/10" />
                   <DropdownMenuItem 
                     className="cursor-pointer text-red-600 transition-all duration-200 hover:bg-red-100 dark:hover:bg-red-500/20"
                     onClick={() => window.location.href = "/api/logout"}
@@ -373,7 +373,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] bg-[#FAF8F3] dark:bg-[#1a1a1a] p-0 animate-menu-slide-in">
-                <SheetHeader className="p-4 border-b border-[#C9941A]/10">
+                <SheetHeader className="p-4 border-b border-gold/10">
                   <SheetTitle className="flex items-center gap-2 transition-transform duration-300 hover:scale-105">
                     <img
                       src={sraLogo}
@@ -385,16 +385,16 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                 
                 <div className="p-4 space-y-4">
                   {user && (
-                    <div className="flex items-center gap-3 p-3 bg-[#C9941A]/10 rounded-lg transition-all duration-300 hover:bg-[#C9941A]/20 animate-scale-in">
-                      <Avatar className="h-10 w-10 border-2 border-[#C9941A]/30 transition-all duration-300">
+                    <div className="flex items-center gap-3 p-3 bg-gold/10 rounded-lg transition-all duration-300 hover:bg-gold/20 animate-scale-in">
+                      <Avatar className="h-10 w-10 border-2 border-gold/30 transition-all duration-300">
                         <AvatarImage src={user.profileImageUrl || undefined} />
-                        <AvatarFallback className="bg-[#C9941A] text-white font-bold">
+                        <AvatarFallback className="bg-gold text-white font-bold">
                           {user.firstName?.[0] || "U"}
                         </AvatarFallback>
                       </Avatar>
                       <div>
                         <p className="font-semibold text-sm">{user.firstName || "Creator"}</p>
-                        <div className="flex items-center gap-1 text-xs text-[#C9941A]">
+                        <div className="flex items-center gap-1 text-xs text-gold">
                           <Coins className="w-3 h-3 animate-subtle-float" />
                           <span className="font-bold">2,500 credits</span>
                         </div>
@@ -405,12 +405,12 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                   {/* Mobile nav — 1:1 mirror of desktop top-level items */}
                   <div className="space-y-1">
                     <details className="group">
-                      <summary className="flex items-center gap-2 w-full cursor-pointer list-none px-3 py-2.5 rounded-md font-semibold text-sm text-gray-700 dark:text-gray-300 hover:bg-[#C9941A]/5 transition-colors">
-                        <Sparkles className="w-4 h-4 text-[#C9941A]" />
+                      <summary className="flex items-center gap-2 w-full cursor-pointer list-none px-3 py-2.5 rounded-md font-semibold text-sm text-gray-700 dark:text-gray-300 hover:bg-gold/5 transition-colors">
+                        <Sparkles className="w-4 h-4 text-gold" />
                         Studios
                         <ChevronDown className="w-4 h-4 ml-auto transition-transform group-open:rotate-180" />
                       </summary>
-                      <div className="pl-4 mt-1 space-y-1 border-l-2 border-[#C9941A]/15">
+                      <div className="pl-4 mt-1 space-y-1 border-l-2 border-gold/15">
                         {studios.map((studio) => (
                           <Link key={studio.href} href={studio.href}>
                             <Button
@@ -419,10 +419,10 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                               onClick={() => setMobileMenuOpen(false)}
                               data-testid={`mobile-studio-${studio.href.replace('/', '')}`}
                             >
-                              <studio.icon className="w-4 h-4 text-[#C9941A]" />
+                              <studio.icon className="w-4 h-4 text-gold" />
                               {studio.label}
                               {studio.badge && (
-                                <Badge className="bg-[#C9941A] text-white text-[10px] px-1.5 py-0 ml-auto">
+                                <Badge className="bg-gold text-white text-[10px] px-1.5 py-0 ml-auto">
                                   {studio.badge}
                                 </Badge>
                               )}
@@ -463,14 +463,14 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                   {!user && (
                     <div className="pt-4 space-y-2 animate-scale-in">
                       <Button 
-                        className="w-full bg-[#C9941A] text-white font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                        className="w-full bg-gold text-white font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg"
                         onClick={() => window.location.href = "/api/login"}
                       >
                         Get Started
                       </Button>
                       <Button 
                         variant="outline"
-                        className="w-full border-[#C9941A]/30 transition-all duration-300 hover:bg-[#C9941A]/5"
+                        className="w-full border-gold/30 transition-all duration-300 hover:bg-gold/5"
                         onClick={() => window.location.href = "/api/login"}
                       >
                         Log In
@@ -479,7 +479,7 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                   )}
 
                   {user && (
-                    <div className="pt-4 border-t border-[#C9941A]/10">
+                    <div className="pt-4 border-t border-gold/10">
                       <Button 
                         variant="ghost"
                         className="w-full justify-start gap-2 text-red-600 transition-all duration-300 hover:bg-red-100 dark:hover:bg-red-500/20"
@@ -523,9 +523,9 @@ function CreditBalancePill() {
   const pillStyle = isOut
     ? "bg-red-500/15 hover:bg-red-500/25 border border-red-500/40"
     : isLow
-      ? "bg-[#C9941A]/20 hover:bg-[#C9941A]/30 border border-[#C9941A]/50 animate-pulse"
-      : "bg-[#C9941A]/10 hover:bg-[#C9941A]/20";
-  const textColor = isOut ? "text-red-400" : "text-[#C9941A]";
+      ? "bg-gold/20 hover:bg-gold/30 border border-gold/50 animate-pulse"
+      : "bg-gold/10 hover:bg-gold/20";
+  const textColor = isOut ? "text-red-400" : "text-gold";
 
   return (
     <WouterLink
@@ -539,7 +539,7 @@ function CreditBalancePill() {
         {isLoading ? "…" : formatted}
       </span>
       {isOut && <span className="text-xs font-semibold text-red-400">· Upgrade</span>}
-      {isLow && !isOut && <span className="text-xs font-semibold text-[#C9941A]">· Low</span>}
+      {isLow && !isOut && <span className="text-xs font-semibold text-gold">· Low</span>}
     </WouterLink>
   );
 }
@@ -554,14 +554,14 @@ function PowerPointsBell() {
   return (
     <WouterLink
       href="/power-points/inbox"
-      className="relative hidden md:inline-flex items-center justify-center h-9 w-9 rounded-md text-[#C9941A] hover-elevate"
+      className="relative hidden md:inline-flex items-center justify-center h-9 w-9 rounded-md text-gold hover-elevate"
       data-testid="link-power-points"
       aria-label={count > 0 ? `${count} unread Power Points` : "Power Points"}
     >
       <Zap className="w-5 h-5" />
       {count > 0 && (
         <span
-          className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#C9941A] text-black text-[10px] font-bold leading-[18px] text-center"
+          className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-gold text-black text-[10px] font-bold leading-[18px] text-center"
           data-testid="badge-power-unread"
         >
           {count > 99 ? "99+" : count}

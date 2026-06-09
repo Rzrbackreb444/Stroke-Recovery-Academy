@@ -20,6 +20,7 @@ import { requireAdmin } from "./middleware/requireAdmin";
 import { getUserId } from "./lib/authUtils";
 import emailAuthRoutes from "./emailAuthRoutes";
 import luluRoutes from "./luluRoutes";
+import puzzleRoutes from "./puzzleRoutes";
 import survivorProfileRoutes from "./survivorProfileRoutes";
 import accountRoutes from "./routes/accountRoutes";
 import { detectCrisis, buildCrisisResponse } from "./services/crisisDetection";
@@ -1011,6 +1012,7 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   app.use('/api/survivor', survivorProfileRoutes);
   app.use('/api/account', accountRoutes);
   app.use('/api/lulu', luluRoutes);
+  app.use('/api/puzzle', puzzleRoutes);
   
   // Email Authentication Routes (must be after setupAuth for session access)
   app.use('/api/email-auth', emailAuthRoutes);

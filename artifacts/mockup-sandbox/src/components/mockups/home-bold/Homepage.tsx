@@ -48,7 +48,7 @@ function Hero() {
         <div className="max-w-3xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 mb-8">
             <Flame className="h-4 w-4 text-brand-accent" />
-            <span className="text-brand-accent text-xs font-black uppercase tracking-[0.2em]">The Stroked Out Sasquatch</span>
+            <span className="text-brand-accent text-xs font-black uppercase tracking-[0.2em]">The Stroked-Out Sasquatch</span>
           </div>
 
           <h1 className="text-6xl md:text-8xl lg:text-9xl font-black text-white leading-[0.85] tracking-tighter mb-8 uppercase">
@@ -113,14 +113,14 @@ function Manifesto() {
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 grid lg:grid-cols-2 gap-16 items-center">
         <div>
           <h2 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter leading-[0.9] mb-8">
-            We Hold You To Your <span className="text-brand-accent">Reps</span>
+            We Show Up For Your <span className="text-brand-accent">Reps</span>
           </h2>
           <div className="space-y-6 text-lg text-white/70 leading-relaxed font-medium">
             <p>
-              Recovery isn't clinical. It's a war. And in war, you need a commanding officer, not a pamphlet. The hospital discharges you when you're "stable." We step in when you're ready to rebuild.
+              Recovery isn't only clinical — it's daily, stubborn work. The hospital sends you home when you're "stable." We pick it up from there, with a clear plan and people who keep showing up alongside you.
             </p>
             <p>
-              Our promise is simple: we provide the blueprint, the daily routines, and the unbreakable accountability loop. If you don't show up, we notice. The Sasquatch Method isn't a passive program—it's a daily confrontation with your limits.
+              The promise is simple: a real blueprint, daily routines, and accountability that actually checks in. Miss a day and we notice — gently. The Sasquatch Method meets you where you are and moves at your pace, whether you're six weeks out or six years in.
             </p>
           </div>
           <Button variant="link" className="mt-8 text-brand-accent p-0 font-bold uppercase tracking-widest text-lg hover:text-white">
@@ -169,16 +169,16 @@ function Testimony() {
 // 6. What you get
 function WhatYouGet() {
   const features = [
-    { title: "AI Coach", desc: "A relentless, personalized AI coach pushing you to hit your daily metrics. No excuses.", icon: Activity },
-    { title: "Daily Routines", desc: "The exact reps and movements that took Nick from zero to ninety. Structured daily.", icon: Flame },
-    { title: "Accountability Pod", desc: "You are not alone. Connect with other warriors fighting the exact same battle.", icon: Shield },
+    { title: "AI Coach", desc: "A personalized AI coach that keeps you on track and adapts to your day — encouraging, never preachy.", icon: Activity },
+    { title: "Daily Routines", desc: "The reps and movements that took Nick from zero to ninety — scaled to your level, structured daily.", icon: Flame },
+    { title: "Accountability Pod", desc: "You're not alone. Connect with other survivors and caregivers walking the same road.", icon: Shield },
   ];
 
   return (
     <section className="py-32 bg-black border-b border-white/10">
       <div className="max-w-[1400px] mx-auto px-6 md:px-12">
         <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-16 text-center">
-          The <span className="text-brand-accent">Arsenal</span>
+          The <span className="text-brand-accent">Toolkit</span>
         </h2>
         <div className="grid md:grid-cols-3 gap-8">
           {features.map((f, i) => (
@@ -202,10 +202,10 @@ function CaregiverCTA() {
         <div className="max-w-4xl">
           <p className="text-sm font-black uppercase tracking-[0.3em] mb-4">For Caregivers</p>
           <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-[0.9] mb-6">
-            You are not the patient.<br />But you are in the war.
+            You're not the patient.<br />But you carry it too.
           </h2>
           <p className="text-xl font-bold opacity-80 mb-8 max-w-2xl">
-            You're the one Googling at 2 a.m., scheduling the appointments, watching them refuse the exercises. Nobody built a system that took your seat seriously — until now. Let the system do the daily nagging. Yours is to stay standing.
+            You're the one Googling at 2 a.m., scheduling the appointments, quietly holding it together. Nobody built a system that took your seat seriously — until now. Let us handle the daily reminders. You just have to keep standing.
           </p>
           <Button size="lg" className="bg-black text-white font-black uppercase tracking-widest rounded-none h-14 px-8 hover:bg-black/80">
             Open the caregiver kit <ArrowRight className="ml-2 h-5 w-5" />
@@ -229,7 +229,7 @@ function Guides() {
       <div className="max-w-[1400px] mx-auto px-6 md:px-12">
         <div className="flex justify-between items-end mb-16">
           <div>
-            <p className="text-brand-accent text-sm font-black uppercase tracking-widest mb-2">Latest Intel</p>
+            <p className="text-brand-accent text-sm font-black uppercase tracking-widest mb-2">Latest Guides</p>
             <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter">
               The Playbook
             </h2>
@@ -269,7 +269,7 @@ function FinalCTA() {
           Time To Put In <br/><span className="text-brand-accent">The Reps.</span>
         </h2>
         <p className="text-xl text-white/60 font-medium mb-12">
-          Join 50,000+ warriors rebuilding their lives. Stop waiting for a miracle and start doing the work.
+          Join 50,000+ survivors rebuilding their lives — at whatever pace recovery takes. Start when you're ready.
         </p>
         <Button size="lg" className="bg-brand-accent text-black font-black uppercase tracking-widest text-xl h-20 px-16 rounded-none hover:bg-brand-accent/90">
           Start Your Recovery
@@ -291,7 +291,7 @@ function Footer() {
               <span className="text-2xl font-black text-white uppercase tracking-widest">Stroke Recovery</span>
             </div>
             <p className="text-white/50 font-medium max-w-md">
-              A non-clinical, survivor-led platform helping warriors rebuild function through accountability, daily reps, and the Sasquatch Method.
+              A non-clinical, survivor-led platform helping survivors and caregivers rebuild function through accountability, daily reps, and the Sasquatch Method.
             </p>
           </div>
           <div>

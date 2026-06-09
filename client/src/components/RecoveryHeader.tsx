@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import strokeLyfeLogo from "@assets/Untitled_design_1776803832326.png";
+import sraEmblem from "@assets/sra-emblem.png";
 
 // Shared site-header singleton — first mount wins (covers RecoveryHeader
 // and GlobalHeader both), so legacy per-page header mounts are suppressed.
@@ -129,13 +130,22 @@ export default function RecoveryHeader() {
 
           {/* Logo — 3× scale, dominant on every viewport including mobile */}
           <Link href="/recovery" data-testid="link-recovery-home">
-            <div className="flex items-center cursor-pointer">
+            <div className="flex items-center gap-3 cursor-pointer">
               <img
-                src={strokeLyfeLogo}
+                src={sraEmblem}
                 alt="Stroke Recovery Academy"
-                style={{ height: "144px", width: "auto", flexShrink: 0 }}
+                className="h-12 w-auto sm:h-14"
+                style={{ flexShrink: 0 }}
                 data-testid="img-recovery-logo"
               />
+              <div className="hidden 2xl:flex flex-col leading-none">
+                <span className="font-bold tracking-tight text-white text-xl whitespace-nowrap">
+                  Stroke Recovery Academy
+                </span>
+                <span className="mt-1 text-[10px] font-semibold uppercase tracking-[0.28em] text-gold">
+                  Rebuild · Rewire · Rise
+                </span>
+              </div>
             </div>
           </Link>
 
@@ -148,12 +158,12 @@ export default function RecoveryHeader() {
                   <button
                     className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
                       location === link.href
-                        ? "text-[#C9941A]"
+                        ? "text-gold"
                         : "text-gray-400 hover:text-white"
                     }`}
                     data-testid={`nav-link-${link.label.toLowerCase().replace(/\s/g, "-")}`}
                   >
-                    {Icon && <Icon className="h-3.5 w-3.5 text-[#C9941A]" />}
+                    {Icon && <Icon className="h-3.5 w-3.5 text-gold" />}
                     {link.label}
                   </button>
                 </Link>
@@ -174,7 +184,7 @@ export default function RecoveryHeader() {
                 <div className="grid grid-cols-4 gap-4">
                   {resourcesGroups.map((group) => (
                     <div key={group.title}>
-                      <div className="text-[11px] font-bold uppercase tracking-wider text-[#C9941A]/80 px-2 pb-1.5 mb-1 border-b border-[#222]">
+                      <div className="text-[11px] font-bold uppercase tracking-wider text-gold/80 px-2 pb-1.5 mb-1 border-b border-[#222]">
                         {group.title}
                       </div>
                       <div className="flex flex-col">
@@ -183,13 +193,13 @@ export default function RecoveryHeader() {
                             <Link
                               href={link.href}
                               className={`px-2 py-1.5 text-sm rounded transition-colors cursor-pointer flex items-center gap-1.5 ${
-                                location === link.href ? "text-[#C9941A]" : "text-gray-300"
+                                location === link.href ? "text-gold" : "text-gray-300"
                               }`}
                               data-testid={`nav-more-${link.label.toLowerCase().replace(/\s|\(|\)/g, "-")}`}
                             >
                               <span className="truncate">{link.label}</span>
                               {link.pro && (
-                                <span className="inline-flex items-center gap-0.5 px-1 py-0 text-[9px] font-bold uppercase tracking-wide rounded bg-[#C9941A]/15 text-[#C9941A] border border-[#C9941A]/30">
+                                <span className="inline-flex items-center gap-0.5 px-1 py-0 text-[9px] font-bold uppercase tracking-wide rounded bg-gold/15 text-gold border border-gold/30">
                                   <Crown className="h-2 w-2" /> Pro
                                 </span>
                               )}
@@ -212,7 +222,7 @@ export default function RecoveryHeader() {
               <HoverCardTrigger asChild>
                 <Link href="/recovery/premium">
                   <button
-                    className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-[#C9941A] hover:text-amber-300 rounded-lg transition-colors whitespace-nowrap"
+                    className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-gold hover:text-amber-300 rounded-lg transition-colors whitespace-nowrap"
                     data-testid="nav-premium"
                   >
                     <Sparkles className="h-4 w-4" />
@@ -222,7 +232,7 @@ export default function RecoveryHeader() {
               </HoverCardTrigger>
               <HoverCardContent className="bg-[#111] border-[#222] w-72 p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Crown className="h-4 w-4 text-[#C9941A]" />
+                  <Crown className="h-4 w-4 text-gold" />
                   <div className="font-bold text-white text-sm">Sasquatch Premium</div>
                   <span className="text-xs text-stone-500 ml-auto">7 days free</span>
                 </div>
@@ -245,7 +255,7 @@ export default function RecoveryHeader() {
                   </li>
                 </ul>
                 <Link href="/recovery/premium">
-                  <Button size="sm" className="w-full bg-[#C9941A] text-black font-semibold" data-testid="nav-premium-cta">
+                  <Button size="sm" className="w-full bg-gold text-black font-semibold" data-testid="nav-premium-cta">
                     See Premium
                   </Button>
                 </Link>
@@ -255,7 +265,7 @@ export default function RecoveryHeader() {
               <Button
                 size="sm"
                 variant="outline"
-                className="border-[#C9941A]/50 text-[#C9941A] font-semibold text-xs"
+                className="border-gold/50 text-gold font-semibold text-xs"
                 data-testid="button-nav-gift"
               >
                 <Heart className="w-3.5 h-3.5 mr-1.5" />
@@ -270,7 +280,7 @@ export default function RecoveryHeader() {
                   <Button variant="ghost" size="sm" className="gap-2" data-testid="dropdown-user">
                     <Avatar className="h-7 w-7">
                       <AvatarImage src={user.profileImageUrl || undefined} />
-                      <AvatarFallback className="bg-[#C9941A]/20 text-[#C9941A] text-xs font-bold">
+                      <AvatarFallback className="bg-gold/20 text-gold text-xs font-bold">
                         {user.firstName?.[0] || user.email?.[0]?.toUpperCase() || "U"}
                       </AvatarFallback>
                     </Avatar>
@@ -286,7 +296,7 @@ export default function RecoveryHeader() {
                   </div>
                   <DropdownMenuItem asChild>
                     <Link href="/recovery/dashboard" className="cursor-pointer">
-                      <LayoutDashboard className="w-4 h-4 mr-2 text-[#C9941A]" />
+                      <LayoutDashboard className="w-4 h-4 mr-2 text-gold" />
                       My Dashboard
                     </Link>
                   </DropdownMenuItem>
@@ -319,7 +329,7 @@ export default function RecoveryHeader() {
                 </Button>
                 <Button
                   size="sm"
-                  className="bg-[#C9941A] text-black font-semibold text-sm px-5"
+                  className="bg-gold text-black font-semibold text-sm px-5"
                   onClick={() => (window.location.href = "/recovery/login?tab=signup")}
                   data-testid="button-join"
                 >
@@ -355,12 +365,12 @@ export default function RecoveryHeader() {
                   <button
                     className={`w-full text-left px-4 py-3 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 ${
                       location === link.href
-                        ? "text-[#C9941A] bg-[#C9941A]/5"
+                        ? "text-gold bg-gold/5"
                         : "text-gray-300 hover:text-white hover:bg-[#1a1a1a]"
                     }`}
                     data-testid={`mobile-nav-${link.label.toLowerCase().replace(/\s/g, "-")}`}
                   >
-                    {Icon && <Icon className="h-3.5 w-3.5 text-[#C9941A]" />}
+                    {Icon && <Icon className="h-3.5 w-3.5 text-gold" />}
                     {link.label}
                   </button>
                 </Link>
@@ -380,7 +390,7 @@ export default function RecoveryHeader() {
                 <div className="pl-4 mt-1 space-y-3">
                   {resourcesGroups.map((group) => (
                     <div key={group.title}>
-                      <div className="px-4 text-[11px] font-bold uppercase tracking-wider text-[#C9941A]/80 mb-1">
+                      <div className="px-4 text-[11px] font-bold uppercase tracking-wider text-gold/80 mb-1">
                         {group.title}
                       </div>
                       <div className="space-y-1">
@@ -389,14 +399,14 @@ export default function RecoveryHeader() {
                             <button
                               className={`w-full text-left px-4 py-2.5 text-sm rounded-lg transition-colors flex items-center gap-2 ${
                                 location === link.href
-                                  ? "text-[#C9941A]"
+                                  ? "text-gold"
                                   : "text-gray-400 hover:text-white hover:bg-[#1a1a1a]"
                               }`}
                               data-testid={`mobile-nav-${link.label.toLowerCase().replace(/\s|\(|\)/g, "-")}`}
                             >
                               {link.label}
                               {link.pro && (
-                                <span className="inline-flex items-center gap-0.5 px-1 py-0 text-[9px] font-bold uppercase tracking-wide rounded bg-[#C9941A]/15 text-[#C9941A] border border-[#C9941A]/30">
+                                <span className="inline-flex items-center gap-0.5 px-1 py-0 text-[9px] font-bold uppercase tracking-wide rounded bg-gold/15 text-gold border border-gold/30">
                                   <Crown className="h-2 w-2" /> Pro
                                 </span>
                               )}
@@ -413,7 +423,7 @@ export default function RecoveryHeader() {
               <Link href="/recovery/gift">
                 <Button
                   variant="outline"
-                  className="w-full border-[#C9941A]/50 text-[#C9941A] justify-start gap-2"
+                  className="w-full border-gold/50 text-gold justify-start gap-2"
                   data-testid="mobile-button-gift"
                 >
                   <Heart className="h-4 w-4" />
@@ -424,7 +434,7 @@ export default function RecoveryHeader() {
                 <>
                   <Link href="/recovery/dashboard">
                     <Button variant="outline" className="w-full border-[#333] text-white justify-start gap-2">
-                      <LayoutDashboard className="h-4 w-4 text-[#C9941A]" />
+                      <LayoutDashboard className="h-4 w-4 text-gold" />
                       My Dashboard
                     </Button>
                   </Link>
@@ -439,7 +449,7 @@ export default function RecoveryHeader() {
                 </>
               ) : (
                 <Button
-                  className="w-full bg-[#C9941A] text-black font-semibold"
+                  className="w-full bg-gold text-black font-semibold"
                   onClick={() => (window.location.href = "/recovery/login?tab=signup")}
                   data-testid="mobile-button-join"
                 >
