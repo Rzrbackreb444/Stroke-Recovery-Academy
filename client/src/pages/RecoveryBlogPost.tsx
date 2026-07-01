@@ -61,8 +61,15 @@ function escapeHtml(s: string): string {
 
 function safeUrl(s: string): string {
   const trimmed = s.trim();
-  if (/^(https?:|mailto:|\/|#)/i.test(trimmed)) return escapeHtml(trimmed);
+  if (/^(https?:|mailto:|\/(?!\/)|#)/i.test(trimmed)) return escapeHtml(trimmed);
   return '#';
+}
+
+// Image src allowlist: only https or vetted local asset paths. Blocks data:/javascript:.
+function safeImageUrl(s: string): string {
+  const t = s.trim();
+  if (/^https:\/\//i.test(t) || /^\/(images|book|assets)\//i.test(t)) return escapeHtml(t);
+  return '';
 }
 
 function processInline(text: string): string {
@@ -124,6 +131,15 @@ function renderMarkdown(text: string): string {
       flushParagraph(); closeList();
       // nosemgrep: javascript.lang.security.html-in-template-string
       output.push(`<blockquote class="border-l-4 border-[#E2741B] pl-4 my-6 italic text-gray-300 text-xl leading-relaxed">${processInline(line.slice(2))}</blockquote>`);
+    } else if (/^!\[[^\]]*\]\([^)]+\)\s*$/.test(line)) {
+      flushParagraph(); closeList();
+      const m = line.match(/^!\[([^\]]*)\]\(([^)]+)\)/);
+      const alt = m ? escapeHtml(m[1]) : '';
+      const src = m ? safeImageUrl(m[2]) : '';
+      if (src) {
+        // nosemgrep: javascript.lang.security.html-in-template-string
+        output.push(`<figure class="my-8"><img src="${src}" alt="${alt}" loading="lazy" class="w-full rounded-md border border-[#333]" />${alt ? `<figcaption class="text-sm text-gray-500 mt-3 text-center italic">${alt}</figcaption>` : ''}</figure>`);
+      }
     } else {
       if (inUl || inOl) closeList();
       pendingParagraph.push(line);
@@ -354,6 +370,8 @@ export default function RecoveryBlogPost() {
 
   // ── JSON-LD schemas ──────────────────────────────────────────────────────────
 
+  const heroSrc = safeImageUrl(post.heroImageUrl || '');
+
   const schemaGraph: object[] = [
     {
       "@type": "MedicalWebPage",
@@ -396,9 +414,9 @@ export default function RecoveryBlogPost() {
         "url": baseUrl,
         "logo": { "@type": "ImageObject", "url": `${baseUrl}/logo.png` }
       },
-      "image": post.heroImageUrl ? {
+      "image": heroSrc ? {
         "@type": "ImageObject",
-        "url": post.heroImageUrl,
+        "url": heroSrc,
         "width": 1200,
         "height": 630
       } : undefined,
@@ -457,7 +475,7 @@ export default function RecoveryBlogPost() {
         keywords={[...(post.tags || []), "stroke recovery", "Nick Kremers", post.category, "stroke survivor", "medical"]}
         pageType="article"
         author={authorName}
-        image={post.heroImageUrl || undefined}
+        image={heroSrc || undefined}
         publishedTime={post.createdAt}
         modifiedTime={post.updatedAt}
         breadcrumbs={[
@@ -526,6 +544,26 @@ export default function RecoveryBlogPost() {
             </span>
           </div>
         </div>
+
+        {/* Hero image — dark wash for consistent legibility over any photo */}
+        {heroSrc && (
+          <div className="max-w-4xl mx-auto px-4 mt-8">
+            <div className="relative rounded-lg overflow-hidden border border-[#333]">
+              <img
+                src={heroSrc}
+                alt={post.title}
+                loading="eager"
+                className="w-full h-auto object-cover max-h-[440px]"
+                onError={(e) => {
+                  const fig = e.currentTarget.parentElement as HTMLElement | null;
+                  if (fig) fig.style.display = 'none';
+                }}
+                data-testid="img-hero"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D]/50 via-transparent to-transparent pointer-events-none" />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Content grid — article + TOC sidebar */}
