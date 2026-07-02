@@ -1162,6 +1162,8 @@ export const dailyCheckins = pgTable("daily_checkins", {
   winsToday: text("wins_today"),
   challengesToday: text("challenges_today"),
   gratitude: text("gratitude"),
+  exercisesLogged: jsonb("exercises_logged").$type<Array<{ name: string; reps?: number; minutes?: number }>>(),
+  habitsCompleted: jsonb("habits_completed").$type<string[]>(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -2276,6 +2278,8 @@ export const neverZeroAudits = pgTable("never_zero_audits", {
   verdict: text("verdict"),
   tomorrow: text("tomorrow"),
   rawMessage: text("raw_message"), // full assembled text (fallback for legacy clients)
+  morningBrief: text("morning_brief"),           // AI morning synthesis, generated before reps
+  morningFocusItems: jsonb("morning_focus_items").$type<string[]>(), // 3 AI focus items for the day
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [
   // Hot path: getNeverZeroAuditByDate(userId, today) — runs on every Coach

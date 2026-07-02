@@ -26,7 +26,7 @@ import RecoveryHeader from "@/components/RecoveryHeader";
 import {
   Flame, Trophy, Target, Calendar, Zap, MessageCircle, Loader2, RefreshCw,
   CheckCircle2, AlertCircle, ArrowRight, History, Award, Sparkles,
-  Footprints, Droplet, Brain, Heart, Users, BookOpen, PartyPopper,
+  Footprints, Droplet, Brain, Heart, Users, BookOpen, PartyPopper, Sun,
 } from "lucide-react";
 
 const categories = [
@@ -96,6 +96,17 @@ export default function NeverZero() {
   const [form, setForm] = useState({ category: "movement", action: "", notes: "", reps: 1 });
   const [celebrationTier, setCelebrationTier] = useState<AuditPayload['streakBand'] | null>(null);
   const [quickLogPending, setQuickLogPending] = useState<string | null>(null);
+
+  const { data: briefData } = useQuery<{ brief: string; focusItems: string[] }>({
+    queryKey: ["/api/recovery/daily-loop/brief"],
+    queryFn: async () => {
+      const res = await apiRequest("POST", "/api/recovery/daily-loop/brief", {});
+      return res.json();
+    },
+    enabled: isAuthenticated,
+    staleTime: 60 * 60_000,
+    retry: false,
+  });
 
   const { data: streakData } = useQuery<any>({
     queryKey: ["/api/recovery/never-zero"],
@@ -214,6 +225,17 @@ export default function NeverZero() {
           </h1>
           <p className="text-gray-300 italic">Daily check-in. Sasquatch audits. You stay accountable.</p>
         </div>
+
+        {/* Morning brief carry-over from the daily loop */}
+        {briefData?.brief && (
+          <div className="mb-5 rounded-xl border border-[#E2741B]/30 bg-[#E2741B]/06 px-5 py-4 flex gap-3 items-start">
+            <Sun className="h-4 w-4 text-[#E2741B] shrink-0 mt-0.5" />
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.3em] text-[#E2741B] font-bold mb-1">Today's brief</p>
+              <p className="text-sm text-gray-300 italic leading-relaxed">"{briefData.brief}"</p>
+            </div>
+          </div>
+        )}
 
         {/* Tier + streak hero */}
         <Card className="mb-6 p-6 border" style={{ background: `linear-gradient(135deg, ${tier.color}22, #1a1a1a)`, borderColor: `${tier.color}55` }}>
