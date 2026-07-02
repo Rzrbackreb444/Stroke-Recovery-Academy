@@ -32,7 +32,7 @@ import { siteHeaderRegistry } from "./siteHeaderRegistry";
 // daily reps that actually move recovery.
 const primaryNav: { href: string; label: string; icon?: typeof Flame }[] = [
   { href: "/recovery/sasquatch-coach", label: "Coach" },
-  { href: "/recovery/journey", label: "Today" },
+  { href: "/recovery#today", label: "Today" },
   { href: "/recovery/never-zero", label: "Never Zero", icon: Flame },
   { href: "/recovery/buddy", label: "Bonfire", icon: Users },
   { href: "/book", label: "Book", icon: BookOpen },
