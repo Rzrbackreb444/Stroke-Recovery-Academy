@@ -281,14 +281,14 @@ export default function SasquatchCoach() {
   return (
     <div className="min-h-screen bg-[#0D0D0D] flex flex-col">
       <RecoverySEO
-        title="Sasquatch Coach — Your 24/7 AI Stroke Recovery Companion | Stroke Recovery Academy"
-        description="Meet Sasquatch — a 24/7 AI recovery coach trained on Nick Kremers' method. Accountability-focused, always available, built for stroke warriors who refuse to quit."
+        title="Online Stroke Recovery Coach — Sasquatch AI | Stroke Recovery Academy"
+        description="Get a free online stroke recovery coach built by Nick Kremers, a 7-year stroke survivor. 3 free messages, no card. 24/7 accountability — no waiting list, no insurance."
         canonical="/recovery/sasquatch-coach"
         pageType="website"
-        keywords={["sasquatch coach", "stroke recovery AI coach", "recovery accountability coach", "stroke rehab support"]}
+        keywords={["online stroke recovery coach", "sasquatch coach", "stroke recovery AI coach", "virtual stroke coach", "stroke rehab support online"]}
         breadcrumbs={[
           { name: "Recovery Hub", url: "/recovery" },
-          { name: "Sasquatch Coach", url: "/recovery/sasquatch-coach" },
+          { name: "Online Stroke Recovery Coach", url: "/recovery/sasquatch-coach" },
         ]}
       />
       <RecoveryHeader />
@@ -297,8 +297,8 @@ export default function SasquatchCoach() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-display text-white">Sasquatch Coach</h1>
-            <p className="text-sm text-gray-500 mt-0.5">Your 24/7 recovery accountability partner</p>
+            <h1 className="text-3xl font-display text-white">Online Stroke Recovery Coach</h1>
+            <p className="text-sm text-gray-500 mt-0.5">Sasquatch — trained on Nick Kremers' 7-year rebuild</p>
           </div>
           <div className="flex items-center gap-3">
             <button

@@ -23,6 +23,7 @@ const RELATED_LINKS = {
   centers: { href: '/recovery/center-finder', label: 'Find a recovery center', blurb: 'Centers near you with real reviews.' },
   university: { href: '/recovery/university', label: 'Recovery University', blurb: '7 parts, 33 chapters.' },
   about: { href: '/recovery/about-nick', label: 'About Nick', blurb: 'The 0-to-90% story.' },
+  coach: { href: '/online-stroke-recovery-coach', label: 'Online stroke recovery coach', blurb: 'The AI coach that answers at 2 a.m. — free to start.' },
 };
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -98,7 +99,7 @@ export const PAGE_FOR_SURVIVORS: SsrPageConfig = {
     { q: 'Do I need any equipment?', a: 'No. The base routine uses only your body, a chair, and a wall. Optional add-ons (resistance bands, a small ball, a TENS unit) help but are not required.' },
     { q: 'I cannot afford it. Can I still join?', a: 'Yes. The free tier covers the essentials. We also run a Survivor Scholarship program funded by donors so any survivor who needs full access can request it.' },
   ],
-  related: [RELATED_LINKS.method, RELATED_LINKS.routine, RELATED_LINKS.challenge, RELATED_LINKS.neuro, RELATED_LINKS.timeline, RELATED_LINKS.about],
+  related: [RELATED_LINKS.coach, RELATED_LINKS.method, RELATED_LINKS.routine, RELATED_LINKS.challenge, RELATED_LINKS.neuro, RELATED_LINKS.timeline, RELATED_LINKS.about],
 };
 
 export const PAGE_FOR_CAREGIVERS: SsrPageConfig = {
@@ -974,7 +975,109 @@ export const PAGE_TIMELINE: SsrPageConfig = {
   related: [RELATED_LINKS.method, RELATED_LINKS.routine, RELATED_LINKS.neuro, RELATED_LINKS.depression, RELATED_LINKS.hemi, RELATED_LINKS.about],
 };
 
+// ──────────────────────────────────────────────────────────────────────────────
+// ONLINE STROKE RECOVERY COACH — exact-match keyword landing page
+// ──────────────────────────────────────────────────────────────────────────────
+
+export const PAGE_ONLINE_COACH: SsrPageConfig = {
+  url: '/online-stroke-recovery-coach',
+  title: 'Online Stroke Recovery Coach | Stroke Recovery Academy',
+  description: 'Nick Kremers built the top online stroke recovery coach from a wheelchair. Free to start. 24/7 AI accountability, no waiting list, no insurance needed.',
+  h1: 'The online stroke recovery coach built by a survivor, for survivors.',
+  hero: {
+    eyebrow: 'Online stroke recovery coach',
+    subhead: 'The hospital discharged you. Insurance cut your sessions. Your PT is booked three weeks out. The coach that answers at 2 a.m. is here — and the first three conversations are free.',
+    ctaPrimary: { href: '/recovery/sasquatch-coach', label: 'Talk to the Coach — free' },
+    ctaSecondary: { href: '/api/login', label: 'Start your recovery' },
+  },
+  keywords: ['online stroke recovery coach', 'stroke recovery coach', 'virtual stroke coach', 'stroke rehabilitation coach online', 'stroke recovery coaching', 'online stroke rehab coach'],
+  schemaType: 'MedicalWebPage',
+  breadcrumbs: [
+    { name: 'Home', href: '/' },
+    { name: 'Online Stroke Recovery Coach', href: '/online-stroke-recovery-coach' },
+  ],
+  sections: [
+    {
+      h2: 'What an online stroke recovery coach actually does',
+      paragraphs: [
+        'An online stroke recovery coach is not your neurologist. Not your physical therapist. Not the discharge coordinator who hands you the binder. The online coach is the person who answers the question at 2 a.m. — the one who has been where you are, knows what the next plateau looks like, and holds you accountable to the daily work when the clinical system has moved on.',
+        'The Sasquatch Coach is an AI trained on the lived experience of Nick Kremers — a stroke survivor who went from complete paralysis to ninety percent function in seven years with no template, no playbook, and no one who had done it before him. That seven years of trial, error, and daily reps is now the coaching engine available to every survivor on the platform.',
+      ],
+    },
+    {
+      h2: 'Why the clinical system cannot give you what you need',
+      paragraphs: [
+        'Insurance covers roughly thirty days of inpatient rehab and twelve outpatient sessions. The research says stroke recovery takes three to five years of consistent daily work. That gap — years two through five — is what kills most recovery trajectories. Not the stroke. The gap.',
+        'The online stroke recovery coach exists to live in that gap. It does not replace your PT. It reinforces your PT. It answers the exercise questions between sessions. It tracks the days you showed up and calls out the days you did not. It reminds you what the research says when the hospital says "this is your new normal." It is the voice in the room at 6 a.m. when you would rather not start.',
+      ],
+    },
+    {
+      h2: 'The Sasquatch Coach: what it is and what it is not',
+      paragraphs: [
+        'Sasquatch is an AI recovery coach. Not a doctor, not a physical therapist, not a crisis line. It is an accountability partner trained on Nick Kremers\' method — the same protocols in the book, the same voice as the TikTok, the same standards that took him from a wheelchair to ninety percent function.',
+        'What the Sasquatch Coach does: answers your questions about the protocol, tracks your daily streak, holds you to your stated goals, reminds you of the doctrine when you drift, and talks you through the bad days without pretending they do not exist. What it does not do: diagnose symptoms, change your medication, or replace the licensed clinicians on your team.',
+      ],
+      bullets: [
+        'Available 24/7 — the question at 3 a.m. gets an answer at 3 a.m.',
+        'Built on Nick Kremers\' 7-year rebuild — lived experience, not the textbook',
+        'Accountability-first — tracks, reminds, and calls out the drift',
+        'Safe for any stage — month one to year thirty, ischemic or hemorrhagic',
+        'Voice-enabled — push-to-talk for aphasia or limited hand function',
+        'Crisis-aware — routes crisis language to 988 before continuing',
+      ],
+    },
+    {
+      h2: 'Three free messages. No card. No waiting list.',
+      paragraphs: [
+        'Every visitor gets three free messages with the Sasquatch Coach before the gate. No credit card. No appointment. No insurance code. Just type the question and get the answer.',
+        'After three messages, create a free account and keep going — still free, with daily limits. Full unlimited access is nineteen dollars a month. No contracts. Cancel any day. The first week is free to try.',
+        'The reason the first three messages are free is the same reason Nick Kremers gives his TikTok content for free: the first conversation is the one that changes whether a survivor believes recovery is possible. That conversation should not cost anything.',
+      ],
+    },
+    {
+      h2: 'Who this works for',
+      paragraphs: [
+        'The Sasquatch Coach works for ischemic stroke survivors, hemorrhagic stroke survivors, TIA survivors, brainstem survivors, and post-surgical stroke survivors. It works at month one and at year seven. It works for survivors with aphasia, hemiparesis, drop foot, spasticity, post-stroke depression, and the cognitive fog nobody warned you about.',
+        'It also works for caregivers who need to understand the protocol their survivor is following, and for therapists who want a tool their patients can use between sessions without drifting off the clinical plan.',
+      ],
+    },
+    {
+      h2: 'What separates this from every other stroke app',
+      paragraphs: [
+        'Most stroke apps are content libraries with a streak tracker bolted on. They show you videos, log your exercises, send a 7 a.m. notification. They do not talk back. They do not know you are at month fourteen and still cannot close your left hand.',
+        'The Sasquatch Coach knows — because it asks. The intake is four questions, not forty. The coach remembers the answers and uses them. The protocol is calibrated to your actual situation: brainstem vs cortical, ischemic vs hemorrhagic, month one vs year five. Not the average survivor from the clinical trial.',
+      ],
+    },
+    {
+      h2: 'Start now',
+      paragraphs: [
+        'Every survivor has the question they have not been able to ask — too basic for the neurologist, too complicated for the PT, too scary for the family. Ask it. The Sasquatch Coach has heard it. The first three conversations are free.',
+        'If you want more — the daily routine, the streak tracker, the full doctrine, the survivor community — all of it is inside the platform at nineteen dollars a month. The coach is the front door. The platform is the house.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Is the Sasquatch Coach a real person?', a: 'No. The Sasquatch Coach is an AI trained on Nick Kremers\' lived experience and the Stroke Recovery Academy curriculum. Nick Kremers is a real seven-year stroke survivor and the founder of the Academy. The coach is his method, available 24/7 without an appointment.' },
+    { q: 'How is an online stroke recovery coach different from a therapist?', a: 'An online stroke recovery coach is not a licensed therapist, does not diagnose, and does not replace clinical care. The coach provides accountability, lived-experience guidance, protocol support, and daily check-ins — the layer between your clinical sessions and the rest of your day. Best outcomes use both: clinical team for clinical work, coach for daily accountability.' },
+    { q: 'Can I use the Sasquatch Coach in the first month after stroke?', a: 'Yes, but clear any exercise protocol with your medical team first. The coach does not prescribe — it teaches the method, answers questions, and holds you to the daily work. In the early months, the most useful coaching is mindset and protocol education, not exercise prescription.' },
+    { q: 'How much does online stroke recovery coaching cost?', a: 'Three free messages with no account. Free account with daily message limits after that. Full unlimited access — AI coach, daily routine tracker, full doctrine, survivor community — is nineteen dollars a month with a seven-day free trial. No contracts, cancel any day.' },
+    { q: 'Does the online coach work for aphasia survivors?', a: 'Yes. The coach is voice-enabled — a push-to-talk button lets survivors speak questions and hear answers read back. Text is always available in the chat window for survivors who communicate better in writing.' },
+    { q: 'What if I have a mental health crisis?', a: 'The Sasquatch Coach routes any crisis language — depression, self-harm, suicidal ideation — to the 988 Suicide and Crisis Lifeline before continuing the conversation. For immediate danger, call 911.' },
+    { q: 'What makes this the best online stroke recovery coach?', a: 'It is the only online stroke recovery coach built by someone who actually had the stroke. Nick Kremers went from complete left-side paralysis to ninety percent function over seven years with no playbook. Every protocol in the coach is field-tested on his own body. The coaching is accountability, not diagnosis — which is exactly what years two through five of stroke recovery require.' },
+  ],
+  related: [
+    { href: '/for/stroke-survivors', label: 'For stroke survivors', blurb: 'The full playbook for survivors at any stage.' },
+    { href: '/programs/sasquatch-method', label: 'The Sasquatch Method', blurb: 'The doctrine behind the coaching.' },
+    { href: '/programs/66-day-challenge', label: '66-Day Challenge', blurb: 'The accountability arc the coach tracks.' },
+    { href: '/learn/neuroplasticity-after-stroke', label: 'Neuroplasticity after stroke', blurb: 'Why the daily reps the coach assigns actually work.' },
+    { href: '/blog/online-stroke-recovery-coach', label: 'Online stroke recovery coach — the story', blurb: 'Nick\'s full story and the protocols behind the Academy.' },
+    { href: '/blog/stroke-recovery-coaching-program', label: 'Stroke recovery coaching program', blurb: 'What works, what doesn\'t — seven years of trial.' },
+    { href: '/recovery/sasquatch-coach', label: 'Talk to the Coach', blurb: 'Start free — three messages, no card.' },
+  ],
+};
+
 export const ALL_TIER1_PAGES: SsrPageConfig[] = [
+  PAGE_ONLINE_COACH,
   PAGE_FOR_SURVIVORS,
   PAGE_FOR_CAREGIVERS,
   PAGE_FOR_YOUNG,
