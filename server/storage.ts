@@ -142,7 +142,10 @@ export interface IStorage {
   updateUserEnrollment(id: number, updates: any): Promise<any | undefined>;
   getDailyCheckin(userId: string, date: Date): Promise<any | undefined>;
   createDailyCheckin(checkin: any): Promise<any>;
+  updateDailyCheckin(userId: string, date: Date, updates: any): Promise<any | null>;
   getRecentCheckins(userId: string, days: number): Promise<any[]>;
+  saveMorningBrief(userId: string, dateKey: string, brief: string, focusItems: string[]): Promise<void>;
+  getMorningBrief(userId: string, dateKey: string): Promise<{ brief: string; focusItems: string[] } | null>;
   getUserStreak(userId: string): Promise<any | undefined>;
   createOrUpdateUserStreak(userId: string, data: any): Promise<any>;
   getUserHabits(userId: string): Promise<any[]>;
@@ -766,6 +769,51 @@ export class DatabaseStorage implements IStorage {
         gte(dailyCheckins.checkinDate, daysAgo)
       ))
       .orderBy(desc(dailyCheckins.checkinDate));
+  }
+
+  async updateDailyCheckin(userId: string, date: Date, updates: any): Promise<any | null> {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+    const parts: any[] = [];
+    if (updates.exercisesLogged !== undefined) parts.push(sql`exercises_logged = ${JSON.stringify(updates.exercisesLogged)}::jsonb`);
+    if (updates.habitsCompleted !== undefined) parts.push(sql`habits_completed = ${JSON.stringify(updates.habitsCompleted)}::jsonb`);
+    if (updates.winsToday !== undefined)       parts.push(sql`wins_today = ${updates.winsToday}`);
+    if (updates.challengesToday !== undefined)  parts.push(sql`challenges_today = ${updates.challengesToday}`);
+    if (updates.moodScore !== undefined)        parts.push(sql`mood_score = ${updates.moodScore}`);
+    if (updates.energyScore !== undefined)      parts.push(sql`energy_score = ${updates.energyScore}`);
+    if (parts.length === 0) return null;
+    const result = await db.execute(sql`
+      UPDATE daily_checkins
+      SET ${sql.join(parts, sql`, `)}
+      WHERE user_id = ${userId}
+        AND checkin_date >= ${startOfDay}
+        AND checkin_date <= ${endOfDay}
+      RETURNING *
+    `);
+    return (result.rows?.[0] as any) ?? null;
+  }
+
+  async saveMorningBrief(userId: string, dateKey: string, brief: string, focusItems: string[]): Promise<void> {
+    await db.execute(sql`
+      INSERT INTO never_zero_audits (user_id, audit_date, streak, today_count, morning_brief, morning_focus_items)
+      VALUES (${userId}, ${dateKey}, 0, 0, ${brief}, ${JSON.stringify(focusItems)}::jsonb)
+      ON CONFLICT (user_id, audit_date) DO UPDATE SET
+        morning_brief = EXCLUDED.morning_brief,
+        morning_focus_items = EXCLUDED.morning_focus_items
+    `);
+  }
+
+  async getMorningBrief(userId: string, dateKey: string): Promise<{ brief: string; focusItems: string[] } | null> {
+    const result = await db.execute(sql`
+      SELECT morning_brief AS "brief", morning_focus_items AS "focusItems"
+      FROM never_zero_audits
+      WHERE user_id = ${userId} AND audit_date = ${dateKey} AND morning_brief IS NOT NULL
+    `);
+    const row = result.rows?.[0] as any;
+    if (!row?.brief) return null;
+    return { brief: row.brief, focusItems: Array.isArray(row.focusItems) ? row.focusItems : [] };
   }
 
   async getUserStreak(userId: string): Promise<any | undefined> {

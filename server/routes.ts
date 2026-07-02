@@ -9588,6 +9588,8 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         todayVerdict?: string | null;
         tomorrowSuggestion?: string | null;
         hasLoggedToday?: boolean;
+        morningBrief?: string | null;
+        morningFocusItems?: string[] | null;
       } | undefined;
 
       let coachPersona: { name: string; creed: string; archetypeKey: string } | null = null;
@@ -9600,7 +9602,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
           // day instead of generic "keep pushing" lines.
           const { loadPersonaFor } = await import('./personaRoutes');
           const todayKey = localDateKey(new Date());
-          const [exerciseScores, streakData, milestonesData, userData, personaRow, neverZero, todayAudit] = await Promise.all([
+          const [exerciseScores, streakData, milestonesData, userData, personaRow, neverZero, todayAudit, todayBrief] = await Promise.all([
             storage.getUserExerciseScores(userId).catch((err) => { console.error('[coach] getUserExerciseScores failed:', err); return []; }),
             storage.getUserStreak(userId).catch(() => ({ currentStreak: 0 })),
             storage.getUserMilestones(userId).catch(() => []),
@@ -9608,6 +9610,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
             loadPersonaFor(userId).catch(() => null),
             storage.getNeverZeroData(userId).catch(() => null),
             storage.getNeverZeroAuditByDate(userId, todayKey).catch(() => null),
+            storage.getMorningBrief(userId, todayKey).catch(() => null),
           ]);
 
           if (personaRow) {
@@ -9636,6 +9639,8 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
             todayVerdict: todayAudit?.verdict ?? null,
             tomorrowSuggestion: todayAudit?.tomorrow ?? null,
             hasLoggedToday: todayLogs.length > 0,
+            morningBrief: todayBrief?.brief ?? null,
+            morningFocusItems: todayBrief?.focusItems ?? null,
           };
         } catch (e) {
           console.error('Error fetching user context:', e);
@@ -10029,6 +10034,159 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     } catch (error) {
       console.error("Error creating checkin:", error);
       res.status(500).json({ message: "Failed to create checkin" });
+    }
+  });
+
+  // Update today's checkin with exercises / habits / structured fields (PATCH — additive, not replace)
+  app.patch('/api/recovery/checkin', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { exercisesLogged, habitsCompleted, winsToday, challengesToday, moodScore, energyScore } = req.body;
+      const existing = await storage.getDailyCheckin(userId, new Date());
+      if (existing) {
+        const updated = await storage.updateDailyCheckin(userId, new Date(), {
+          exercisesLogged, habitsCompleted, winsToday, challengesToday, moodScore, energyScore,
+        });
+        return res.json({ checkin: updated ?? existing });
+      }
+      // No checkin yet — create one implicitly
+      const checkin = await storage.createDailyCheckin({
+        userId,
+        checkinDate: new Date(),
+        moodScore: moodScore ?? 6,
+        energyScore: energyScore ?? 6,
+        winsToday: winsToday ?? null,
+        challengesToday: challengesToday ?? null,
+        exercisesLogged: exercisesLogged ?? null,
+        habitsCompleted: habitsCompleted ?? null,
+      });
+      // Streak
+      const streak = await storage.getUserStreak(userId);
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      yesterday.setHours(0, 0, 0, 0);
+      let newCurrentStreak = 1;
+      if (streak?.lastActivityDate) {
+        const lastDate = new Date(streak.lastActivityDate);
+        lastDate.setHours(0, 0, 0, 0);
+        if (lastDate.getTime() === yesterday.getTime()) {
+          newCurrentStreak = (streak.currentStreak || 0) + 1;
+        }
+      }
+      await storage.createOrUpdateUserStreak(userId, {
+        currentStreak: newCurrentStreak,
+        longestStreak: Math.max(newCurrentStreak, streak?.longestStreak || 0),
+        lastActivityDate: today,
+        totalActiveDays: (streak?.totalActiveDays || 0) + 1,
+      });
+      try {
+        const { addCredits } = await import('./creditService');
+        await addCredits(userId, 10, 'bonus', 'Daily loop check-in', { streak: newCurrentStreak });
+      } catch {}
+      res.json({ checkin });
+    } catch (error) {
+      console.error("[checkin PATCH] error:", error);
+      res.status(500).json({ message: "Failed to update check-in." });
+    }
+  });
+
+  // Daily loop morning brief — Gemini reads 7-day history and generates a trend observation + 3 focus items.
+  // Cached to never_zero_audits.morning_brief so only one Gemini call per day per user.
+  app.post('/api/recovery/daily-loop/brief', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const todayKey = (() => {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      })();
+
+      // Serve cache if it exists
+      const cached = await storage.getMorningBrief(userId, todayKey);
+      if (cached) return res.json({ ...cached, fromCache: true });
+
+      // Build context
+      const [recentCheckins, recentAudits, userData] = await Promise.all([
+        storage.getRecentCheckins(userId, 7).catch(() => [] as any[]),
+        storage.getNeverZeroAudits(userId, 7).catch(() => [] as any[]),
+        storage.getUser(userId).catch(() => null),
+      ]);
+
+      const checkinSummary = recentCheckins.length
+        ? recentCheckins.map((c: any) => {
+            const d = new Date(c.checkinDate);
+            const label = `${d.getMonth() + 1}/${d.getDate()}`;
+            const exs = Array.isArray(c.exercisesLogged) ? c.exercisesLogged.map((e: any) => e.name).join(', ') : '';
+            const habs = Array.isArray(c.habitsCompleted) ? c.habitsCompleted.join(', ') : '';
+            return `${label}: mood=${c.moodScore ?? '?'}/10, energy=${c.energyScore ?? '?'}/10, pain=${c.painScore ?? '?'}/10${exs ? `, exercises=[${exs}]` : ''}${habs ? `, habits=[${habs}]` : ''}${c.winsToday ? `, win="${c.winsToday}"` : ''}`;
+          }).join('\n')
+        : 'No recent check-ins recorded.';
+
+      const auditSummary = recentAudits.length
+        ? recentAudits.slice(0, 7).map((a: any) =>
+            `${a.auditDate}: streak=${a.streak}, reps=${a.todayCount}${a.verdict ? `, verdict="${a.verdict}"` : ''}`
+          ).join('\n')
+        : 'No recent audits recorded.';
+
+      const u = userData as any;
+      const briefPrompt = `You are Sasquatch — Nick Kremers, 7-year stroke survivor. You are writing a MORNING ACCOUNTABILITY BRIEF for a stroke survivor starting their day.
+
+Survivor context:
+- Stroke type: ${u?.strokeType ?? 'unknown'}, affected side: ${u?.affectedSide ?? 'unknown'}
+- Deficits: ${JSON.stringify(u?.deficits ?? {})}
+
+Last 7 days check-ins:
+${checkinSummary}
+
+Last 7 days NeverZero reps/audits:
+${auditSummary}
+
+Write a morning brief. Read the actual trend — not the vibe, the data. Be direct and specific. If energy is dropping, say so. If they skipped exercises three days running, name it. One honest observation. One clear call to action.
+
+Return EXACTLY this JSON — no prose, no markdown fences, no commentary:
+{
+  "brief": "<2-3 sentences MAX. One honest trend observation. One specific call to action for today. Sasquatch voice: direct, never sycophantic, no medical advice.>",
+  "focusItems": [
+    "<specific accountability action, 10 words max>",
+    "<specific accountability action, 10 words max>",
+    "<specific accountability action, 10 words max>"
+  ]
+}
+
+Focus items are accountability actions (log your PT, take meds before coffee, text your pod), NOT clinical exercises.`;
+
+      const { generateCoachResponse } = await import('./geminiService');
+      const out = await generateCoachResponse(briefPrompt, [], "recovery");
+
+      let brief = "Show up today. The only job is not to quit.";
+      let focusItems: string[] = ["Log today's exercises", "Take your meds on time", "Check in with your squad"];
+
+      try {
+        const cleaned = (out.response || '').replace(/```json\s*|\s*```/g, '').trim();
+        const firstBrace = cleaned.indexOf('{');
+        const lastBrace = cleaned.lastIndexOf('}');
+        if (firstBrace !== -1 && lastBrace !== -1) {
+          const parsed = JSON.parse(cleaned.slice(firstBrace, lastBrace + 1));
+          if (typeof parsed.brief === 'string') brief = parsed.brief.slice(0, 500);
+          if (Array.isArray(parsed.focusItems)) {
+            focusItems = parsed.focusItems
+              .filter((x: any) => typeof x === 'string')
+              .slice(0, 3)
+              .map((x: string) => x.slice(0, 100));
+          }
+        }
+      } catch {}
+
+      await storage.saveMorningBrief(userId, todayKey, brief, focusItems);
+      res.json({ brief, focusItems, fromCache: false });
+    } catch (error) {
+      console.error("[daily-loop/brief] error:", error);
+      // Return a non-error fallback so the card still renders
+      res.json({
+        brief: "You showed up. That's the rep. Make today count.",
+        focusItems: ["Log today's exercises", "Take your meds on time", "Check in with your squad"],
+        fromCache: false,
+      });
     }
   });
 

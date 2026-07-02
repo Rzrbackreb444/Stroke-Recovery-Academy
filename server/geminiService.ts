@@ -114,6 +114,8 @@ export async function generateCoachResponse(
     todayVerdict?: string | null;
     tomorrowSuggestion?: string | null;
     hasLoggedToday?: boolean;
+    morningBrief?: string | null;
+    morningFocusItems?: string[] | null;
   }
 ): Promise<{ response: string; quote?: string }> {
   try {
@@ -152,6 +154,12 @@ export async function generateCoachResponse(
         if (userContext.exerciseCount) contextLines.push(`Lifetime exercises completed: ${userContext.exerciseCount}.`);
         if (userContext.lastExercises?.length) contextLines.push(`Recent exercises: ${userContext.lastExercises.slice(0, 3).join(', ')}.`);
         if (userContext.milestones?.length) contextLines.push(`Recent milestones: ${userContext.milestones.slice(0, 2).join(', ')}.`);
+        if (userContext.morningBrief) {
+          contextLines.push(`This morning's Daily Loop brief you already sent them: "${userContext.morningBrief}" — if they reference it or ask about their morning, you're consistent with it. Don't re-read it aloud; just know it was sent.`);
+        }
+        if (userContext.morningFocusItems?.length) {
+          contextLines.push(`Today's focus items from the daily loop: ${userContext.morningFocusItems.map((f) => `"${f}"`).join(', ')} — if they ask "what should I focus on?", reference these.`);
+        }
         if (contextLines.length > 0) {
           systemPrompt += `\n\nUSER CONTEXT (use this to make every reply feel personal — never echo it verbatim, weave it):\n${contextLines.join('\n')}`;
         }

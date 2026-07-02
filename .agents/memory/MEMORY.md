@@ -10,3 +10,4 @@
 - [Brand accent](brand-accent.md) — Canonical orange (`gold` token / #E2741B), retired amber #C9941A, and the rgba-spaces-break-className gotcha
 - [Recovery blog content pipeline](blog-post-series.md) — recovery_blog_posts content is DB-backed (edit via psql, live no-restart); pure-Markdown subset only; FAQ/image/link rules
 - [Replit OIDC e2e login](replit-oidc-e2e-login.md) — testReplitAuth + click in-app Sign In (never type creds); hard window.location redirects can hit the real login page
+- [Daily Accountability Loop](daily-accountability-loop.md) — DailyLoopCard on dashboard: morning brief (Gemini, cached to never_zero_audits.morning_brief), inline log (exercises/habits/mood/win PATCH checkin), coach context injection

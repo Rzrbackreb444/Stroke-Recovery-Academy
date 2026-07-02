@@ -25,7 +25,8 @@ import {
   Flame, Trophy, BookOpen, MessageCircle, Grid3X3, ShoppingBag, Users, Sparkles,
   CheckCircle2, Target, Star, TrendingUp, Calendar, Heart, Zap, LogOut,
   Plus, UserPlus, DoorOpen, Smile, Activity, Quote, RefreshCw, ArrowRight,
-  Play, Brain, ChevronDown, Footprints, Anchor
+  Play, Brain, ChevronDown, Footprints, Anchor, Sun, ClipboardList, Loader2,
+  Check, Dumbbell, Pill, Droplets, Moon, PenLine, PhoneCall, ChevronRight
 } from "lucide-react";
 import SixtyDayTracker from "@/components/recovery/SixtyDayTracker";
 import PushOptInBanner from "@/components/PushOptInBanner";
@@ -368,8 +369,10 @@ export default function RecoveryDashboard() {
 
         </FadeUpSection>
         </>)}
-        {/* NEVER ZERO AUDIT — The heart of the platform: daily check-in + Sasquatch audit.
-            Always rendered (even in Zen Mode) — this is the single "do this one thing next" focal card. */}
+        {/* DAILY LOOP — Morning brief + structured exercise/habit log. Always rendered. */}
+        <DailyLoopCard />
+
+        {/* NEVER ZERO AUDIT — Rep-level accountability + Gemini audit after reps are logged. */}
         <NeverZeroAuditHero />
 
         {!zenMode && (<>
@@ -1688,6 +1691,421 @@ function BonfireHeroCard() {
             </div>
           </div>
       </Link>
+    </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DAILY LOOP CARD
+// Morning brief (AI trend read) → structured log (exercises, habits, mood) →
+// completion badge. Sits above the NeverZero audit hero so the loop flows
+// naturally: brief → log → rep → audit → tomorrow.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const LOOP_EXERCISES = [
+  { id: "arm", label: "Arm exercises", icon: Dumbbell },
+  { id: "leg", label: "Leg exercises", icon: Footprints },
+  { id: "balance", label: "Balance", icon: Target },
+  { id: "walking", label: "Walking", icon: Activity },
+  { id: "speech", label: "Speech practice", icon: MessageCircle },
+  { id: "fine_motor", label: "Fine motor", icon: PenLine },
+  { id: "stretching", label: "Stretching", icon: Heart },
+  { id: "cardio", label: "Cardio", icon: TrendingUp },
+];
+
+const LOOP_HABITS = [
+  { id: "meds", label: "Took meds", icon: Pill },
+  { id: "water", label: "Drank water", icon: Droplets },
+  { id: "sleep", label: "Slept 7+ hrs", icon: Moon },
+  { id: "meditated", label: "Meditated", icon: Brain },
+  { id: "journaled", label: "Journaled", icon: PenLine },
+  { id: "squad", label: "Called my squad", icon: PhoneCall },
+];
+
+const ENERGY_LABELS = ["Empty", "Low", "Okay", "Good", "Charged"];
+const MOOD_LABELS   = ["Rough", "Hard", "Okay", "Good", "Great"];
+
+type DailyBrief = { brief: string; focusItems: string[]; fromCache: boolean };
+
+function DailyLoopCard() {
+  const { isAuthenticated } = useAuth();
+  const { toast } = useToast();
+
+  const [logOpen, setLogOpen]                     = useState(false);
+  const [selectedExercises, setSelectedExercises] = useState<string[]>([]);
+  const [selectedHabits, setSelectedHabits]       = useState<string[]>([]);
+  const [focusChecked, setFocusChecked]            = useState([false, false, false]);
+  const [energy, setEnergy]                        = useState(3); // 1-5
+  const [mood, setMood]                            = useState(3); // 1-5
+  const [winText, setWinText]                      = useState("");
+
+  const { data: brief, isLoading: briefLoading } = useQuery<DailyBrief>({
+    queryKey: ["/api/recovery/daily-loop/brief"],
+    queryFn: async () => {
+      const res = await apiRequest("POST", "/api/recovery/daily-loop/brief", {});
+      return res.json();
+    },
+    enabled: isAuthenticated,
+    staleTime: 60 * 60_000,
+    retry: false,
+  });
+
+  const { data: todayCheckin, isLoading: checkinLoading } = useQuery<any>({
+    queryKey: ["/api/recovery/checkin/today"],
+    enabled: isAuthenticated,
+    staleTime: 5 * 60_000,
+  });
+
+  const { data: audit } = useQuery<{ verdict: string | null; tomorrow: string | null; streak: number; streakBand: string; todayCount: number }>({
+    queryKey: ["/api/recovery/never-zero/report", "hero"],
+    queryFn: async () => {
+      const res = await apiRequest("POST", "/api/recovery/never-zero/report", { force: false });
+      return res.json();
+    },
+    enabled: isAuthenticated,
+    staleTime: 5 * 60_000,
+  });
+
+  const logMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("PATCH", "/api/recovery/checkin", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/recovery/checkin/today"] });
+      setLogOpen(false);
+      toast({ title: "Day logged", description: "Sasquatch has your data. Go log your reps." });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Couldn't save — try again.", variant: "destructive" });
+    },
+  });
+
+  const handleSubmit = () => {
+    logMutation.mutate({
+      exercisesLogged: selectedExercises.map((name) => ({ name })),
+      habitsCompleted: selectedHabits,
+      moodScore:   mood   * 2,
+      energyScore: energy * 2,
+      winsToday: winText.trim() || undefined,
+    });
+  };
+
+  const toggleExercise = (id: string) =>
+    setSelectedExercises((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
+
+  const toggleHabit = (id: string) =>
+    setSelectedHabits((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
+
+  if (!isAuthenticated) return null;
+  if (briefLoading || checkinLoading) {
+    return (
+      <section className="mb-6" data-testid="section-daily-loop-loading">
+        <div className="rounded-xl border border-[#222] bg-[#111] p-5 flex items-center gap-3">
+          <Loader2 className="h-4 w-4 text-[#E2741B] animate-spin shrink-0" />
+          <span className="text-xs text-gray-500 uppercase tracking-widest">Sasquatch is reading your week…</span>
+        </div>
+      </section>
+    );
+  }
+
+  const hasCheckin = !!todayCheckin;
+  const hasAuditVerdict = !!(audit?.verdict && (audit?.todayCount ?? 0) > 0);
+  const checkinExercises: string[] = Array.isArray(todayCheckin?.exercisesLogged)
+    ? todayCheckin.exercisesLogged.map((e: any) => e.name)
+    : [];
+  const checkinHabits: string[] = Array.isArray(todayCheckin?.habitsCompleted)
+    ? todayCheckin.habitsCompleted
+    : [];
+  const focusItems = brief?.focusItems ?? [];
+
+  // ── STATE: Day fully complete (checkin + audit)
+  if (hasCheckin && hasAuditVerdict) {
+    return (
+      <section className="mb-6" data-testid="section-daily-loop-complete">
+        <div
+          className="rounded-xl border-2 p-5"
+          style={{ borderColor: "#22c55e44", background: "linear-gradient(135deg, #22c55e11, #1a1a1a 60%)" }}
+        >
+          <div className="flex items-start gap-4">
+            <div className="h-10 w-10 rounded-full bg-green-500/20 flex items-center justify-center shrink-0">
+              <CheckCircle2 className="h-5 w-5 text-green-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-green-400 font-bold mb-1">Daily Loop Complete</p>
+              {audit?.verdict && (
+                <p className="text-sm text-gray-200 leading-relaxed mb-2" data-testid="text-loop-verdict">{audit.verdict}</p>
+              )}
+              {audit?.tomorrow && (
+                <p className="text-xs text-gray-400 italic flex items-center gap-1">
+                  <ChevronRight className="h-3 w-3 text-[#E2741B]" />
+                  Tomorrow: {audit.tomorrow}
+                </p>
+              )}
+              {(checkinExercises.length > 0 || checkinHabits.length > 0) && (
+                <div className="flex flex-wrap gap-1.5 mt-3">
+                  {checkinExercises.map((ex) => (
+                    <span key={ex} className="text-[10px] px-2 py-0.5 rounded-full bg-[#E2741B]/15 text-[#E2741B] border border-[#E2741B]/25">{ex}</span>
+                  ))}
+                  {checkinHabits.map((h) => (
+                    <span key={h} className="text-[10px] px-2 py-0.5 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">{h}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // ── STATE: Checkin logged, waiting on reps/audit
+  if (hasCheckin && !hasAuditVerdict) {
+    return (
+      <section className="mb-6" data-testid="section-daily-loop-logged">
+        <div className="rounded-xl border border-[#E2741B]/30 bg-[#E2741B]/05 p-5">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-3">
+              <CheckCircle2 className="h-5 w-5 text-[#E2741B]" />
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-[#E2741B] font-bold">Day logged</p>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  {checkinExercises.length > 0 ? checkinExercises.join(', ') : 'Exercises recorded'}
+                  {checkinHabits.length > 0 ? ` · ${checkinHabits.length} habit${checkinHabits.length !== 1 ? 's' : ''}` : ''}
+                </p>
+              </div>
+            </div>
+            <Link
+              href="/recovery/never-zero"
+              className="flex items-center gap-1.5 text-xs font-semibold text-[#E2741B] uppercase tracking-widest"
+              data-testid="link-log-reps"
+            >
+              Log your reps <ArrowRight className="h-3 w-3" />
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // ── STATE: Inline log form open
+  if (logOpen) {
+    return (
+      <section className="mb-6" data-testid="section-daily-loop-form">
+        <div className="rounded-xl border-2 border-[#E2741B] bg-[#111] p-6">
+          <div className="flex items-center gap-2 mb-5">
+            <ClipboardList className="h-4 w-4 text-[#E2741B]" />
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[#E2741B] font-bold">Log today's progress</p>
+          </div>
+
+          {/* Exercises */}
+          <div className="mb-5">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">Exercises done</p>
+            <div className="flex flex-wrap gap-2">
+              {LOOP_EXERCISES.map(({ id, label }) => {
+                const active = selectedExercises.includes(id);
+                return (
+                  <button
+                    key={id}
+                    data-testid={`toggle-exercise-${id}`}
+                    onClick={() => toggleExercise(id)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                      active
+                        ? "bg-[#E2741B] text-black border-[#E2741B]"
+                        : "bg-transparent text-gray-400 border-[#333] hover:border-[#E2741B]/50"
+                    }`}
+                  >
+                    {active && <Check className="h-3 w-3" />}
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Habits */}
+          <div className="mb-5">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">Habits completed</p>
+            <div className="flex flex-wrap gap-2">
+              {LOOP_HABITS.map(({ id, label }) => {
+                const active = selectedHabits.includes(id);
+                return (
+                  <button
+                    key={id}
+                    data-testid={`toggle-habit-${id}`}
+                    onClick={() => toggleHabit(id)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                      active
+                        ? "bg-green-500 text-black border-green-500"
+                        : "bg-transparent text-gray-400 border-[#333] hover:border-green-500/50"
+                    }`}
+                  >
+                    {active && <Check className="h-3 w-3" />}
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Energy + Mood */}
+          <div className="grid grid-cols-2 gap-4 mb-5">
+            <div>
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">Energy</p>
+              <div className="flex gap-1.5">
+                {ENERGY_LABELS.map((label, i) => (
+                  <button
+                    key={i}
+                    data-testid={`energy-${i + 1}`}
+                    onClick={() => setEnergy(i + 1)}
+                    title={label}
+                    className={`h-8 w-8 rounded-md text-xs font-bold border transition-all ${
+                      energy === i + 1
+                        ? "bg-[#E2741B] text-black border-[#E2741B]"
+                        : "bg-transparent text-gray-500 border-[#333] hover:border-[#E2741B]/50"
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
+              <p className="text-[10px] text-gray-600 mt-1">{ENERGY_LABELS[energy - 1]}</p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">Mood</p>
+              <div className="flex gap-1.5">
+                {MOOD_LABELS.map((label, i) => (
+                  <button
+                    key={i}
+                    data-testid={`mood-${i + 1}`}
+                    onClick={() => setMood(i + 1)}
+                    title={label}
+                    className={`h-8 w-8 rounded-md text-xs font-bold border transition-all ${
+                      mood === i + 1
+                        ? "bg-[#E2741B] text-black border-[#E2741B]"
+                        : "bg-transparent text-gray-500 border-[#333] hover:border-[#E2741B]/50"
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
+              <p className="text-[10px] text-gray-600 mt-1">{MOOD_LABELS[mood - 1]}</p>
+            </div>
+          </div>
+
+          {/* Win */}
+          <div className="mb-5">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">Win today (optional)</p>
+            <input
+              data-testid="input-win-today"
+              type="text"
+              placeholder="One thing that moved — any size"
+              value={winText}
+              onChange={(e) => setWinText(e.target.value)}
+              maxLength={200}
+              className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#E2741B]/50"
+            />
+          </div>
+
+          <div className="flex gap-3">
+            <Button
+              data-testid="button-save-day"
+              onClick={handleSubmit}
+              disabled={logMutation.isPending}
+              className="bg-[#E2741B] hover:bg-[#E2741B] text-black font-bold"
+            >
+              {logMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save my day"}
+            </Button>
+            <Button
+              data-testid="button-cancel-log"
+              variant="ghost"
+              onClick={() => setLogOpen(false)}
+              className="text-gray-500"
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // ── STATE: Morning brief (default — no checkin yet)
+  return (
+    <section className="mb-6" data-testid="section-daily-loop-brief">
+      <div
+        className="rounded-xl border-2 p-5"
+        style={{ borderColor: "#E2741B55", background: "linear-gradient(135deg, #E2741B0d, #1a1a1a 55%)" }}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Sun className="h-4 w-4 text-[#E2741B]" />
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[#E2741B] font-bold">Daily Accountability Loop</p>
+          </div>
+          {audit && (
+            <Badge className="text-[10px] border" style={{ background: "#E2741B20", color: "#E2741B", borderColor: "#E2741B44" }}>
+              Day {audit.streak ?? 0}
+            </Badge>
+          )}
+        </div>
+
+        {/* Morning brief */}
+        {brief?.brief && (
+          <div className="mb-4">
+            <p className="text-[10px] uppercase tracking-widest text-gray-600 mb-1.5">Sasquatch's morning read</p>
+            <p className="text-sm text-gray-200 leading-relaxed italic" data-testid="text-morning-brief">
+              "{brief.brief}"
+            </p>
+          </div>
+        )}
+
+        {/* Focus items */}
+        {focusItems.length > 0 && (
+          <div className="mb-5">
+            <p className="text-[10px] uppercase tracking-widest text-gray-600 mb-2">Today's focus</p>
+            <div className="space-y-2">
+              {focusItems.map((item, i) => (
+                <button
+                  key={i}
+                  data-testid={`focus-item-${i}`}
+                  onClick={() => setFocusChecked((prev) => {
+                    const next = [...prev];
+                    next[i] = !next[i];
+                    return next;
+                  })}
+                  className="flex items-center gap-3 w-full text-left group"
+                >
+                  <div
+                    className={`h-4 w-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                      focusChecked[i]
+                        ? "bg-[#E2741B] border-[#E2741B]"
+                        : "border-[#555] group-hover:border-[#E2741B]/60"
+                    }`}
+                  >
+                    {focusChecked[i] && <Check className="h-2.5 w-2.5 text-black" />}
+                  </div>
+                  <span className={`text-sm transition-all ${focusChecked[i] ? "line-through text-gray-600" : "text-gray-300"}`}>
+                    {item}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* CTA */}
+        <button
+          data-testid="button-log-today"
+          onClick={() => setLogOpen(true)}
+          className="flex items-center gap-2 text-sm font-semibold text-[#E2741B] uppercase tracking-widest hover-elevate"
+        >
+          <ClipboardList className="h-4 w-4" />
+          Log today's progress
+          <ArrowRight className="h-4 w-4" />
+        </button>
+      </div>
     </section>
   );
 }
