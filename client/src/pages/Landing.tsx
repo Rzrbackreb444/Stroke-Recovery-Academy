@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLocation, Link } from "wouter";
 import {
   Loader2, ArrowRight, Play, BrainCircuit, CalendarDays,
-  Users, CheckCircle2, ShieldCheck, Activity, Star, Flame,
+  Users, CheckCircle2, ShieldCheck, Activity, Star, Flame, Gift,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import RecoveryHeader from "@/components/RecoveryHeader";
@@ -45,23 +45,26 @@ function Hero() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
+                asChild
                 size="lg"
-                onClick={goToOnboarding}
                 className="bg-gold text-black h-14 px-8 text-base rounded-md w-full sm:w-auto font-semibold"
-                data-testid="button-start-recovery-hero"
+                data-testid="button-talk-to-coach-hero"
               >
-                Start your recovery <ArrowRight className="ml-2 h-5 w-5" />
+                <Link href="/recovery/sasquatch-coach">
+                  Talk to Coach — free <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                onClick={() => document.getElementById("proof")?.scrollIntoView({ behavior: "smooth" })}
+                onClick={goToOnboarding}
                 className="h-14 px-8 text-base rounded-md w-full sm:w-auto border-white/20 bg-white/5 text-white backdrop-blur"
-                data-testid="button-see-story"
+                data-testid="button-start-recovery-hero"
               >
-                See his story <ArrowRight className="ml-2 h-4 w-4" />
+                Start your recovery <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
+            <p className="mt-4 text-sm text-white/40">No signup to try — 3 free messages with Coach, then it's yours for $19/mo.</p>
             <div className="mt-12 flex items-center gap-4 text-sm text-white/50 font-medium">
               <div className="flex -space-x-2" aria-hidden="true">
                 {[1, 2, 3, 4].map((i) => <div key={i} className="w-8 h-8 rounded-full border-2 border-black bg-white/20" />)}
@@ -210,9 +213,17 @@ function Features() {
           <div className="order-1 md:order-2">
             <div className="w-12 h-12 rounded-lg bg-gold/10 text-gold flex items-center justify-center mb-6"><BrainCircuit className="w-6 h-6" /></div>
             <h3 className="text-2xl font-bold text-neutral-900 mb-4">AI Recovery Coach</h3>
-            <p className="text-neutral-600 text-lg leading-relaxed">
-              A personalized companion trained on the Sasquatch Method. It builds your daily protocols, adjusts to how you're doing, and keeps you on track — encouraging, never preachy.
+            <p className="text-neutral-600 text-lg leading-relaxed mb-6">
+              A personalized companion trained on the Sasquatch Method. It builds your daily protocols, adjusts to how you're doing, and keeps you on track — encouraging, never preachy. Try it free — no signup for your first messages, unlimited on Premium.
             </p>
+            <Button
+              asChild
+              size="lg"
+              className="bg-gold text-black h-12 px-7 rounded-md font-semibold"
+              data-testid="button-try-coach-features"
+            >
+              <Link href="/recovery/sasquatch-coach">Try the Coach — free <ArrowRight className="ml-2 h-5 w-5" /></Link>
+            </Button>
           </div>
         </div>
 
@@ -307,6 +318,31 @@ function Guides() {
   );
 }
 
+function GiftASurvivor() {
+  return (
+    <section className="bg-black py-24">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold/10 border border-gold/30 mb-6">
+          <Gift className="w-4 h-4 text-gold" />
+          <span className="text-xs font-semibold uppercase tracking-wider text-gold">Pay it forward</span>
+        </div>
+        <h2 className="font-display text-white text-4xl md:text-6xl mb-6 leading-[0.95]">Gift a survivor their comeback.</h2>
+        <p className="text-lg text-white/60 mb-10 max-w-2xl mx-auto leading-relaxed">
+          Recovery shouldn't hinge on what someone can afford. Sponsor a survivor who's rebuilding — the plan, the Coach, the squad — and cover the cost when they can't. Your gift shows up as a full membership.
+        </p>
+        <Button
+          asChild
+          size="lg"
+          className="bg-gold text-black h-14 px-8 text-base rounded-md font-semibold"
+          data-testid="button-gift-survivor-landing"
+        >
+          <Link href="/recovery/gift">Gift a Survivor <ArrowRight className="ml-2 h-5 w-5" /></Link>
+        </Button>
+      </div>
+    </section>
+  );
+}
+
 function FinalCTA() {
   return (
     <section className="relative bg-black py-32 text-center overflow-hidden">
@@ -314,16 +350,27 @@ function FinalCTA() {
       <div className="relative z-10 max-w-3xl mx-auto px-4">
         <h2 className="font-display text-white text-5xl md:text-7xl mb-8 leading-[0.9]">Time to put in the reps.</h2>
         <p className="text-xl text-white/60 mb-12">
-          Join 50,000+ survivors rebuilding their lives — at whatever pace recovery takes. Start when you're ready.
+          Join the next cohort of survivors rebuilding their lives — daily reps, your squad of five, and Coach in your corner. One price: $19/mo, 7 days free. Cancel anytime.
         </p>
-        <Button
-          size="lg"
-          onClick={goToOnboarding}
-          className="bg-gold text-black h-16 px-12 text-lg rounded-md font-semibold w-full sm:w-auto"
-          data-testid="button-start-recovery-final"
-        >
-          Start your recovery
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button
+            size="lg"
+            onClick={goToOnboarding}
+            className="bg-gold text-black h-16 px-12 text-lg rounded-md font-semibold w-full sm:w-auto"
+            data-testid="button-start-recovery-final"
+          >
+            Start your recovery
+          </Button>
+          <Button
+            asChild
+            size="lg"
+            variant="outline"
+            className="h-16 px-12 text-lg rounded-md w-full sm:w-auto border-white/20 bg-white/5 text-white backdrop-blur"
+            data-testid="button-see-premium-final"
+          >
+            <Link href="/recovery/premium">See Premium</Link>
+          </Button>
+        </div>
       </div>
     </section>
   );
@@ -394,6 +441,7 @@ export default function Landing() {
         <Proof />
         <Features />
         <Caregiver />
+        <GiftASurvivor />
         <Guides />
         <FinalCTA />
       </main>
