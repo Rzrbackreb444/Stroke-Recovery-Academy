@@ -3,6 +3,7 @@ import { db } from './db';
 import { sql, and, eq, gte, lte } from 'drizzle-orm';
 import { pushSubscriptions, dailyCheckins } from '../shared/schema';
 import { checkSasquatchDailyPings } from './sasquatchHistoryService';
+import { redactEmail } from './lib/redact';
 
 // Ensure push_subscriptions table exists
 export async function initPushSchema() {
@@ -121,7 +122,7 @@ async function runAccountabilityChecks() {
     await Promise.allSettled([
       checkMedicationReminders(now),
       checkAppointmentReminders(now),
-      ...(hour === 14 && minute === 0 ? [checkDailyCheckins(now)] : []),   // 9am EST (UTC-5)
+      ...(hour === 14 && minute === 0 ? [checkDailyCheckins(now), checkStreakBreakEmails()] : []),   // 9am EST (UTC-5)
       ...(hour === 20 && minute === 0 ? [checkMissedCheckins(now)] : []),   // 3pm EST fallback
       // Sasquatch's daily drop-in ping. Fires at 13:00 UTC (~8am EST) — 1 hour
       // before the check-in nudge so survivors get a friendly opener first.
@@ -189,6 +190,66 @@ async function checkMissedCheckins(now: Date) {
       const msg = pickRandom(ACCOUNTABILITY_MESSAGES.missed_day);
       await sendPushToUser(userId, { ...msg, type: 'checkin', url: '/recovery/dashboard?checkin=1', tag: 'missed-today' });
     }
+  }
+}
+
+// Fires once daily at 9am EST (14:00 UTC). Emails survivors who logged yesterday
+// but not yet today — streak is live but at risk. Email-only channel (no push
+// subscription required), so it reaches survivors who haven't installed the PWA.
+async function checkStreakBreakEmails() {
+  try {
+    const { sendEmail } = await import('./emailService');
+
+    // Users who have a never_zero_logs entry yesterday but NOT today
+    const atRisk = await db.execute(sql`
+      SELECT DISTINCT u.id, u.email, u.first_name
+      FROM users u
+      WHERE u.email IS NOT NULL
+        AND u.email NOT LIKE '%placeholder%'
+        AND u.email NOT LIKE '%replit%'
+        AND EXISTS (
+          SELECT 1 FROM never_zero_logs nzl
+          WHERE nzl.user_id = u.id
+            AND nzl.created_at >= (CURRENT_DATE - INTERVAL '1 day')
+            AND nzl.created_at <  CURRENT_DATE
+        )
+        AND NOT EXISTS (
+          SELECT 1 FROM never_zero_logs nzl
+          WHERE nzl.user_id = u.id
+            AND nzl.created_at >= CURRENT_DATE
+        )
+    `);
+
+    for (const user of (atRisk.rows as any[])) {
+      // nosemgrep: javascript.lang.security.html-in-template-string
+      const html = `<!DOCTYPE html><html><body style="background:#0D0D0D;color:#fff;font-family:Arial,sans-serif;padding:32px;margin:0;">
+<div style="max-width:560px;margin:0 auto;">
+  <div style="color:#E2741B;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px;">Stroke Recovery Academy</div>
+  <h1 style="font-size:26px;font-weight:900;margin:0 0 14px;line-height:1.2;">Your streak is on the line.</h1>
+  <p style="color:#ccc;font-size:16px;line-height:1.7;margin:0 0 8px;">You showed up yesterday. Today's window is still open.</p>
+  <p style="color:#ccc;font-size:16px;line-height:1.7;margin:0 0 28px;">One rep — log it before midnight and the streak lives.</p>
+  <a href="https://strokerecoveryacademy.com/recovery/never-zero" style="display:inline-block;background:#E2741B;color:#fff;font-weight:700;padding:14px 28px;border-radius:8px;text-decoration:none;font-size:15px;letter-spacing:.03em;">Log my rep now</a>
+  <p style="color:#555;font-size:12px;margin-top:40px;line-height:1.6;">You're getting this because you're building a recovery streak at Stroke Recovery Academy.<br><a href="https://strokerecoveryacademy.com/account/notifications" style="color:#E2741B;">Manage notifications</a> &nbsp;·&nbsp; <a href="https://strokerecoveryacademy.com/legal/medical-disclaimer" style="color:#666;">Medical disclaimer</a></p>
+  <p style="color:#666;font-size:12px;margin-top:4px;">If you're struggling, text 988 or call 911.</p>
+</div></body></html>`;
+
+      const text = `Your streak is on the line.\n\nYou showed up yesterday. One rep today keeps it alive.\n\nLog it: https://strokerecoveryacademy.com/recovery/never-zero\n\n— Sasquatch\n\nManage notifications: https://strokerecoveryacademy.com/account/notifications\nIf you're struggling, text 988 or call 911.`;
+
+      const result = await sendEmail({
+        to: user.email,
+        subject: "Your streak is on the line — one rep saves it",
+        html,
+        text,
+      });
+
+      if (result.success) {
+        console.log(`[streak-email] sent to ${redactEmail(user.email)}`);
+      } else {
+        console.warn(`[streak-email] failed for ${redactEmail(user.email)}: ${result.error}`);
+      }
+    }
+  } catch (err) {
+    console.error('[streak-email] error:', err);
   }
 }
 

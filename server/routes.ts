@@ -10101,9 +10101,28 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
       })();
 
-      // Serve cache if it exists
+      // Check premium status (needed for cache response AND for branch decision)
+      const userRec = await storage.getUser(userId).catch(() => null) as any;
+      const isPremium = ['active', 'trialing'].includes(String(userRec?.subscriptionStatus ?? ''));
+
+      // Serve cache if it exists — include live isPremium flag so UI is always accurate
       const cached = await storage.getMorningBrief(userId, todayKey);
-      if (cached) return res.json({ ...cached, fromCache: true });
+      if (cached) return res.json({ ...cached, fromCache: true, isPremium });
+
+      // Free users get a static rotation — no Gemini cost, still useful
+      if (!isPremium) {
+        const STATIC_BRIEFS = [
+          { brief: "You can't control what the stroke took. You can control today's reps. One movement, one minute — start there.", focusItems: ["Log one exercise below", "Take your meds before coffee", "Text your accountability buddy"] },
+          { brief: "Recovery is arithmetic — not inspiration. Every rep adds. Skipping subtracts. The math doesn't care about your mood today.", focusItems: ["Complete at least one habit below", "Log today's energy level", "Check in on Never Zero"] },
+          { brief: "The survivors who rebuild fastest aren't more motivated — they're more consistent. Same time, same reps, same standard. Do the thing.", focusItems: ["Log your exercises for today", "Drink water before anything else", "Open the coach if you're stuck"] },
+          { brief: "Pain without progress is just suffering. Pain with reps is data. Log what you did today so we can read the trend tomorrow.", focusItems: ["Log at least two exercises", "Rate your mood honestly", "Write down one win — anything counts"] },
+          { brief: "Seven years out I still log the day. Not because I'm motivated — because the streak is the evidence I'm still in the fight.", focusItems: ["Don't break the streak — log now", "Mark your habits for today", "Find one rep to do in the next hour"] },
+        ];
+        const dayIdx = Math.floor(Date.now() / 86400000) % STATIC_BRIEFS.length;
+        const { brief, focusItems } = STATIC_BRIEFS[dayIdx];
+        await storage.saveMorningBrief(userId, todayKey, brief, focusItems);
+        return res.json({ brief, focusItems, fromCache: false, isPremium: false });
+      }
 
       // Build context
       const [recentCheckins, recentAudits, userData] = await Promise.all([
@@ -10178,7 +10197,7 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
       } catch {}
 
       await storage.saveMorningBrief(userId, todayKey, brief, focusItems);
-      res.json({ brief, focusItems, fromCache: false });
+      res.json({ brief, focusItems, fromCache: false, isPremium: true });
     } catch (error) {
       console.error("[daily-loop/brief] error:", error);
       // Return a non-error fallback so the card still renders
@@ -10186,6 +10205,7 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
         brief: "You showed up. That's the rep. Make today count.",
         focusItems: ["Log today's exercises", "Take your meds on time", "Check in with your squad"],
         fromCache: false,
+        isPremium: false,
       });
     }
   });

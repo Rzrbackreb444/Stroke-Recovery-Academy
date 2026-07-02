@@ -370,7 +370,9 @@ export default function RecoveryDashboard() {
         </FadeUpSection>
         </>)}
         {/* DAILY LOOP — Morning brief + structured exercise/habit log. Always rendered. */}
-        <DailyLoopCard />
+        <div id="today">
+          <DailyLoopCard />
+        </div>
 
         {/* NEVER ZERO AUDIT — Rep-level accountability + Gemini audit after reps are logged. */}
         <NeverZeroAuditHero />
@@ -1725,7 +1727,7 @@ const LOOP_HABITS = [
 const ENERGY_LABELS = ["Empty", "Low", "Okay", "Good", "Charged"];
 const MOOD_LABELS   = ["Rough", "Hard", "Okay", "Good", "Great"];
 
-type DailyBrief = { brief: string; focusItems: string[]; fromCache: boolean };
+type DailyBrief = { brief: string; focusItems: string[]; fromCache: boolean; isPremium?: boolean };
 
 function DailyLoopCard() {
   const { isAuthenticated } = useAuth();
@@ -2058,6 +2060,13 @@ function DailyLoopCard() {
             <p className="text-sm text-gray-200 leading-relaxed italic" data-testid="text-morning-brief">
               "{brief.brief}"
             </p>
+            {brief.isPremium === false && (
+              <Link href="/recovery/premium">
+                <span className="mt-2 inline-block text-[10px] uppercase tracking-widest text-[#E2741B]/70 hover:text-[#E2741B] transition-colors cursor-pointer">
+                  Upgrade for personalized briefs →
+                </span>
+              </Link>
+            )}
           </div>
         )}
 
