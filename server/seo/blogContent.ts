@@ -5440,6 +5440,179 @@ export const POST_BROOKS_SURVIVOR_REVIEW = makeBlogPost({
 });
 
 // =============================================================================
+// 70. Stroke Recovery Coaching Program — what works, what doesn't
+// =============================================================================
+export const POST_COACHING_PROGRAM = makeBlogPost({
+  slug: 'stroke-recovery-coaching-program',
+  title: 'Stroke Recovery Coaching Program: What Works and What Doesn\'t',
+  description: 'Nick Kremers tried every stroke recovery coaching program on the market. This is what 7 years of trial found — real protocols, no marketing spin.',
+  h1: 'Stroke recovery coaching program',
+  keyword: 'stroke recovery coaching program',
+  extraKeywords: ['online stroke recovery coaching', 'stroke recovery program coach', 'stroke rehab coaching', 'stroke survivor coaching program', 'stroke recovery accountability program'],
+  subhead: 'Seven years in, I have tried every coaching model the stroke recovery world offers. Here is what works, what does not, and the program I built when I could not find one that met the standard.',
+  ctaPrimary: { href: '/recovery/sasquatch-coach', label: 'Try the Coach — free' },
+  ctaSecondary: { href: '/blog/online-stroke-recovery-coach', label: 'Read the full story' },
+  publishedDate: '2026-07-02',
+  sections: [
+    {
+      h2: 'The gap every stroke coaching program has to fill',
+      paragraphs: [
+        'The hospital stays average four days for ischemic stroke, eight for hemorrhagic. Inpatient rehab, if you qualify, runs twenty-one days. Outpatient physical therapy, if insurance approves it, covers twelve sessions before the door closes. That is roughly ninety days of structured support for a recovery arc that runs three to five years. The math does not work. A stroke recovery coaching program exists to survive the gap.',
+        'A coaching program is not a replacement for clinical care. It is the structure that keeps daily reps happening between sessions, between discharges, between years two and five when no one is watching and the recovery either compounds or stalls. The program I built is built specifically for that gap — the one the hospital creates when it sends you home.',
+      ],
+    },
+    {
+      h2: 'What the bad programs get wrong',
+      paragraphs: [
+        'Most stroke recovery coaching programs fail on one of three mistakes. The first is content without accountability — a library of videos, exercises, and worksheets with no human or AI holding you to any of it. Access without accountability is not a program. It is a subscription you eventually cancel.',
+        'The second mistake is clinical language without lived experience. A program designed by people who have studied stroke but never had one produces protocols that look correct on paper and feel tone-deaf in practice. It does not know what the depression at month eight feels like. It does not know what it costs to do the exercises when the fatigue is neurological, not motivational.',
+        'The third mistake is intensity without progression. A program that assigns the same protocol to a month-one survivor and a year-five survivor is not a coaching program — it is a workout video. Real recovery progression is non-linear, deficit-specific, and calibrated to where the brain actually is — not where the textbook says it should be.',
+      ],
+    },
+    {
+      h2: 'What the Sasquatch coaching program does differently',
+      paragraphs: [
+        'The Sasquatch Method coaching program is built on four commitments. First, accountability over content. The AI coach checks in, tracks the streak, calls out the drift. The curriculum is the back half of the program — the coach is the front half.',
+        'Second, lived experience as the primary credential. Every protocol in the program was field-tested on my own body during the worst years of my recovery. The supplements, the exercises, the electric stimulation, the hydrotherapy, the parallel bars in my garage — I tried everything and documented what moved the needle. The program only contains what moved the needle.',
+        'Third, deficit-specific progression. The intake asks four questions. The coach uses the answers to calibrate the daily protocol — not to the average survivor but to you. Brainstem vs cortical. Ischemic vs hemorrhagic. Month one vs year five. The protocol adapts.',
+        'Fourth, community as the force multiplier. The accountability pod structure — five to eight survivors checking in daily — creates social accountability the AI alone cannot replicate. The pod does not let you miss twice. The coach does not let the pod forget.',
+      ],
+      bullets: [
+        'Daily AI check-in — the streak, the protocol, the drift catch',
+        'Deficit-specific intake — four questions, calibrated protocol',
+        'Accountability pod — five to eight survivors, daily check-in',
+        '66-day arc — the habit formation research, applied to stroke rehab',
+        'Lived-experience library — only protocols field-tested on the founder\'s body',
+        'Crisis gate — routes mental health emergencies to 988 before continuing',
+      ],
+    },
+    {
+      h2: 'The 66-day arc: why the program uses this number',
+      paragraphs: [
+        'The European Journal of Social Psychology research on habit formation (Lally et al., 2010) found that the median time for a behavior to become automatic was sixty-six days. Not twenty-one. Not thirty. Sixty-six, on average — with a range from eighteen to two hundred and fifty-four days depending on the complexity of the behavior.',
+        'Stroke recovery is not a simple behavior. It is a complex daily system — exercises, sleep, nutrition, medication, mental hygiene, social accountability. The sixty-six day arc is the minimum credible commitment to the habit formation arc. The challenge starts at day one and does not ask for perfection. It asks for the same refusal to quit that got you out of the hospital.',
+      ],
+    },
+    {
+      h2: 'How to pick the right stroke recovery coaching program',
+      paragraphs: [
+        'Ask four questions before you commit. First: is it built by someone who has had a stroke, or someone who has studied stroke? Both can produce useful content. Only one produces a program that understands the 3 a.m. spasticity and the identity grief that comes six months after the stroke when the adrenaline of crisis wears off.',
+        'Second: does it hold you accountable, or does it give you access to resources? A library is not a program. A program has a check-in, a streak, a human or AI that notices when you go dark.',
+        'Third: is the protocol deficit-specific, or is it one-size-fits-all? Drop foot recovery is not the same protocol as aphasia recovery. A program that does not ask which deficits you are working on is not a coaching program — it is general fitness content rebranded.',
+        'Fourth: what is the community model? Stroke recovery is social. The science on social accountability for behavior change is unambiguous. A program with no community is fighting neuroplasticity with one hand tied behind its back.',
+      ],
+    },
+    {
+      h2: 'The free entry: three messages, no card',
+      paragraphs: [
+        'The Sasquatch coaching program starts free. Three messages with the online stroke recovery coach, no credit card, no appointment, no insurance code. Ask about the protocol. Ask about the plateau. Ask about the thing your PT cannot answer. See if the voice is right for you before you commit to anything.',
+        'The full program — daily AI coach, 66-day challenge, accountability pod, full doctrine library, survivor community — is nineteen dollars a month. The first week is free. If it is not the right fit, cancel on day six and pay nothing.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'What is a stroke recovery coaching program?', a: 'A stroke recovery coaching program is a structured system of daily accountability, deficit-specific protocols, and community support designed to keep a survivor\'s recovery progressing after the clinical system discharges them. A good program includes a check-in mechanism (AI or human), a calibrated protocol, a progression arc, and community accountability. It is not a replacement for physical or speech therapy — it is the structure that makes sure the daily reps happen between sessions.' },
+    { q: 'How long should a stroke recovery coaching program last?', a: 'At minimum, sixty-six days — the median time for a new behavior to become automatic (Lally et al., 2010). Most survivors benefit from twelve to twenty-four months of structured coaching before the daily routine becomes self-sustaining. The plateau most survivors hit in year two is a stimulus plateau, not a brain plateau. A good coaching program knows the difference and changes the protocol when the gains stop.' },
+    { q: 'Is an online stroke recovery coaching program as good as in-person?', a: 'For accountability, community, and protocol education — yes, online matches or beats in-person, especially for survivors with transportation barriers, fatigue, or scheduling constraints. For hands-on gait correction, manual therapy, or electrical stimulation — in-person clinical care is irreplaceable. The best model uses both: in-person for the clinical work, online for the daily accountability.' },
+    { q: 'How much does the Sasquatch stroke recovery coaching program cost?', a: 'Three messages free, no card. Free account with daily limits after that. Full program — AI coach, 66-day challenge, accountability pod, full library, survivor community — is nineteen dollars a month with a seven-day free trial. No contracts. Cancel any day.' },
+  ],
+  related: [
+    { href: '/online-stroke-recovery-coach', label: 'Online stroke recovery coach', blurb: 'The AI coach at the center of the program — free to start.' },
+    { href: '/blog/online-stroke-recovery-coach', label: 'Online stroke recovery coach — the full story', blurb: 'Nick\'s seven-year rebuild and the Academy it produced.' },
+    { href: '/programs/66-day-challenge', label: '66-Day Challenge', blurb: 'The accountability arc at the heart of the program.' },
+    { href: '/programs/sasquatch-method', label: 'The Sasquatch Method', blurb: 'The full doctrine — T.L.E.C.A. and the four layers.' },
+    { href: '/for/stroke-survivors', label: 'For stroke survivors', blurb: 'Where to start when you are the one in recovery.' },
+    { href: '/blog', label: 'The Stroke Recovery Blog', blurb: 'Every question survivors ask — answered from lived experience.' },
+  ],
+});
+
+// =============================================================================
+// 71. Virtual Stroke Rehabilitation Coach
+// =============================================================================
+export const POST_VIRTUAL_REHAB_COACH = makeBlogPost({
+  slug: 'virtual-stroke-rehabilitation-coach',
+  title: 'Virtual Stroke Rehabilitation Coach: Better Than In-Person?',
+  description: 'A 7-year stroke survivor\'s honest take on virtual vs in-person stroke rehab coaching. When online wins, when it doesn\'t, and the free tool to start now.',
+  h1: 'Virtual stroke rehabilitation coach',
+  keyword: 'virtual stroke rehabilitation coach',
+  extraKeywords: ['virtual stroke recovery', 'online stroke rehab coach', 'remote stroke rehabilitation', 'telehealth stroke recovery coach', 'stroke rehab online'],
+  subhead: 'The PT session is forty-five minutes twice a week. Recovery is every waking hour. A virtual stroke rehabilitation coach is what lives in the other twenty-three hours — and after seven years I can tell you exactly what it gets right and where it falls short.',
+  ctaPrimary: { href: '/recovery/sasquatch-coach', label: 'Try the virtual coach — free' },
+  ctaSecondary: { href: '/blog/stroke-recovery-coaching-program', label: 'See the full coaching program' },
+  publishedDate: '2026-07-02',
+  sections: [
+    {
+      h2: 'The honest case for virtual stroke rehabilitation',
+      paragraphs: [
+        'The case for virtual stroke rehabilitation coaching is not that it is better than in-person therapy. It is that in-person therapy ends — and virtual coaching does not have to. Insurance covers twelve outpatient PT sessions. The research says stroke recovery takes three to five years of consistent daily work. A virtual stroke rehabilitation coach bridges the years the clinical system cannot afford to cover.',
+        'Availability is the first and biggest advantage. A virtual coach is available at 6 a.m. when the spasticity is worst and your PT does not open until nine. It is available on weekends, on holidays, during the insurance gap between one plan and the next. Stroke recovery does not take weekends off. The coach should not either.',
+      ],
+    },
+    {
+      h2: 'What virtual coaching gets right that in-person misses',
+      paragraphs: [
+        'Three things. First, consistency. A virtual coach creates the daily check-in habit that in-person sessions, at two per week, cannot replicate. The research on neuroplasticity is unambiguous: repetition is the mechanism. More daily reps, compounded over years, produces more recovery. A twice-weekly session cannot compete with a daily AI check-in for sheer volume of accountability touchpoints.',
+        'Second, access. Roughly forty percent of stroke survivors live in rural areas or small towns with no specialized stroke rehabilitation center within thirty miles. For these survivors, virtual coaching is not a second choice — it is the only consistent option between discharge and the rare specialist visit.',
+        'Third, the record. A virtual coach that tracks every day produces a recoverable log — the plateau detection, the bad-week pattern, the progress proof that in-person notes rarely capture in a form the survivor can access. The log is the evidence that recovery is happening even when it does not feel like it.',
+      ],
+    },
+    {
+      h2: 'Where virtual coaching falls short',
+      paragraphs: [
+        'Hands-on work. A virtual coach cannot watch your gait from behind and correct the hip hike that is silently building a knee injury. It cannot apply manual therapy to the spastic shoulder. It cannot administer the NIRS electrode in the right position for motor cortex stimulation. For anything that requires physical touch, physical observation at clinical proximity, or licensed clinical judgment — in-person wins. There is no argument.',
+        'The honest answer is that virtual coaching and in-person therapy are not competitors. They are complements. The clinical team provides the hands-on work that virtual cannot. The virtual coach provides the daily accountability that the clinical schedule cannot. The survivors who use both recover furthest.',
+      ],
+    },
+    {
+      h2: 'The Sasquatch virtual coaching model: how it works',
+      paragraphs: [
+        'Sasquatch is a virtual stroke rehabilitation coach trained on seven years of lived recovery experience — Nick Kremers, hemorrhagic stroke at thirty-six, left-side paralysis, ninety percent recovered. The model is AI-driven, available twenty-four hours a day, and built on the same protocols in the book and the curriculum.',
+        'The intake is four questions: stroke type, deficits, time since stroke, daily time budget. The coach uses the answers to calibrate the daily protocol. It tracks the streak, calls out the drift, answers the 2 a.m. questions, and routes crisis language to 988 before continuing the conversation. The voice feature allows aphasia survivors to speak questions and hear answers. The first three conversations are free, no card required.',
+      ],
+      bullets: [
+        '24/7 availability — no appointment, no insurance code, no waiting list',
+        'Four-question intake — deficit-specific, stage-calibrated protocol',
+        'Daily streak tracking — the record a PT session cannot produce',
+        'Voice-enabled — push-to-talk for aphasia or limited hand function',
+        'Crisis gate — 988 routing before any mental health conversation continues',
+        'Rural-accessible — works from any device, any location, any time zone',
+      ],
+    },
+    {
+      h2: 'Telehealth vs AI coaching: which is right for you',
+      paragraphs: [
+        'Telehealth stroke rehabilitation — a licensed PT or SLP on a video call — is the closest virtual approximation to in-person clinical care. It can deliver gait observation, exercise prescription, and clinical judgment. Insurance often covers it. The limitation is schedule: two to three sessions per week, usually fifty minutes each.',
+        'AI coaching is not a replacement for telehealth therapy. It is the layer between telehealth sessions — the daily check-in, the streak tracker, the 2 a.m. question answer. The best virtual stroke rehabilitation model stacks them: telehealth for the clinical sessions, AI coaching for the daily accountability, and a survivor community for the social force multiplication that neither therapist nor AI can replicate alone.',
+        'If cost is the constraint: the Sasquatch Coach starts free. If clinical need is the priority: start with telehealth and add the AI coach for the daily work. If access is the barrier: the AI coach works from any device, any location, no insurance required.',
+      ],
+    },
+    {
+      h2: 'Three questions to ask before you start virtual coaching',
+      paragraphs: [
+        'First: is the coach built from lived experience or clinical literature alone? Both matter. Only one knows what day forty of left-side paralysis actually feels like at 6 a.m. before the coffee.',
+        'Second: does the program hold you accountable, or does it give you access to content? A content library is not coaching. Coaching has a check-in, a streak, a mechanism that notices when you disappear.',
+        'Third: what happens in a mental health crisis? Any virtual stroke rehabilitation coach that does not have an explicit crisis routing protocol — 988, Veterans Crisis Line, 911 — is not safe for this population. Post-stroke depression, anxiety, and suicidal ideation are clinical realities in stroke recovery. The coach must know what to do when the conversation goes there.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Is virtual stroke rehabilitation as effective as in-person?', a: 'For accountability, consistency, and protocol education — virtual rehabilitation coaching matches or exceeds in-person for most survivors, especially those with transportation barriers or limited session coverage. For hands-on clinical work (manual therapy, gait correction at proximity, clinical assessment) — in-person is irreplaceable. The best outcomes combine both: in-person for clinical sessions, virtual coaching for daily accountability.' },
+    { q: 'Does insurance cover virtual stroke rehabilitation coaching?', a: 'Licensed telehealth therapy (PT, SLP, OT via video) is often covered by insurance the same as in-person. AI coaching programs like Sasquatch are not covered by insurance — they operate outside the clinical billing system. At nineteen dollars a month with a free trial, the out-of-pocket cost is designed to be accessible without insurance.' },
+    { q: 'Can a virtual coach help with aphasia recovery?', a: 'Yes, with limitations. A virtual coach with a voice interface (Sasquatch has push-to-talk) can support aphasia survivors in asking questions and hearing answers. For actual speech therapy — articulation drills, language processing exercises, dysarthria treatment — a licensed speech-language pathologist (in-person or via telehealth) is required. The virtual coach supports the accountability and mindset layer; the SLP handles the clinical work.' },
+    { q: 'How do I start virtual stroke rehabilitation coaching?', a: 'The Sasquatch Coach starts with three free messages — no account, no credit card, no appointment. Navigate to the coach page, type or speak your question, and see if the voice fits. After three messages, create a free account to continue with daily limits. Full unlimited access is nineteen dollars a month with a seven-day free trial.' },
+    { q: 'What if I have a mental health crisis during virtual coaching?', a: 'The Sasquatch Coach detects crisis language before it continues any conversation and routes to the 988 Suicide and Crisis Lifeline, Veterans Crisis Line, and local 911. It does not try to handle clinical mental health emergencies — it routes, then stops until the user confirms they are safe. For immediate danger, call 911.' },
+  ],
+  related: [
+    { href: '/online-stroke-recovery-coach', label: 'Online stroke recovery coach', blurb: 'The full product page — start free, no card.' },
+    { href: '/blog/stroke-recovery-coaching-program', label: 'Stroke recovery coaching program', blurb: 'What makes a program worth committing to — and what doesn\'t.' },
+    { href: '/blog/online-stroke-recovery-coach', label: 'Online stroke recovery coach — the full story', blurb: 'Nick\'s seven-year rebuild and the Academy it produced.' },
+    { href: '/learn/neuroplasticity-after-stroke', label: 'Neuroplasticity after stroke', blurb: 'Why the daily reps the virtual coach assigns actually rewire the brain.' },
+    { href: '/programs/sasquatch-method', label: 'The Sasquatch Method', blurb: 'The doctrine behind the virtual coaching model.' },
+    { href: '/for/stroke-survivors', label: 'For stroke survivors', blurb: 'The full playbook — from discharge to year five.' },
+  ],
+});
+
+// =============================================================================
 // Aggregator
 // =============================================================================
 export const ALL_BLOG_POSTS: SsrPageConfig[] = [
@@ -5500,6 +5673,8 @@ export const ALL_BLOG_POSTS: SsrPageConfig[] = [
   POST_GSC_INDEXING,
   POST_ONLINE_COACH,
   POST_BROOKS_SURVIVOR_REVIEW,
+  POST_COACHING_PROGRAM,
+  POST_VIRTUAL_REHAB_COACH,
 ];
 
 // /blog hub page — lists all posts as internal-link cluster
