@@ -38,9 +38,11 @@ const primaryNav: { href: string; label: string; icon?: typeof Flame }[] = [
   { href: "/book", label: "Book", icon: BookOpen },
 ];
 
-// "More" — grouped megamenu. Four columns now (Practice / Connect / Music /
-// Earn) ordered by recovery progression. Music joined the megamenu in the
-// accountability refocus pass — still discoverable, no longer dominant.
+// "More" — grouped megamenu. Three survivor-focused columns: Practice
+// (recover), Connect (community + story sharing), Your Story (journal → write →
+// publish). Generic creator studios (lyrics/anthem/radio/puzzle/marketplace)
+// were pulled from the survivor nav in the focus pass — the product is one
+// thing now: recover, then tell your story.
 const resourcesGroups: { title: string; items: { href: string; label: string; pro?: boolean }[] }[] = [
   {
     title: "Practice",
@@ -50,6 +52,7 @@ const resourcesGroups: { title: string; items: { href: string; label: string; pr
       { href: "/recovery/routine", label: "Daily Routine" },
       { href: "/recovery/brain-gym", label: "Brain Gym" },
       { href: "/recovery/challenge", label: "66-Day Challenge" },
+      { href: "/recovery/motivation", label: "Recovery Anchor", pro: true },
     ],
   },
   {
@@ -63,28 +66,11 @@ const resourcesGroups: { title: string; items: { href: string; label: string; pr
     ],
   },
   {
-    title: "Music",
+    title: "Your Story",
     items: [
-      { href: "/recovery/motivation", label: "Anchor Studio", pro: true },
-      { href: "/recovery/lyrics", label: "Lyrics Studio", pro: true },
-      { href: "/recovery/anthem/build", label: "Anthem Builder" },
-      { href: "/recovery/radio", label: "Sasquatch Radio" },
-    ],
-  },
-  {
-    title: "Write",
-    items: [
-      { href: "/book-studio", label: "Book Editor" },
-      { href: "/book-perfection-suite", label: "Book Polish" },
-      { href: "/puzzle-studio", label: "Puzzle Studio" },
-    ],
-  },
-  {
-    title: "Earn",
-    items: [
-      { href: "/recovery/survivor-income", label: "Earn Income" },
-      { href: "/marketplace", label: "Marketplace" },
-      { href: "/recovery/pricing", label: "Pricing" },
+      { href: "/recovery/journal", label: "Journal" },
+      { href: "/book-studio", label: "Write Your Story" },
+      { href: "/book-perfection-suite", label: "Publish Your Book" },
     ],
   },
 ];
@@ -171,7 +157,7 @@ export default function RecoveryHeader() {
               );
             })}
 
-            {/* Resources megamenu — Practice / Connect / Music / Earn */}
+            {/* Resources megamenu — Practice / Connect / Your Story */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
@@ -181,8 +167,8 @@ export default function RecoveryHeader() {
                   More <ChevronDown className="h-3.5 w-3.5" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="bg-[#111] border-[#222] p-3 w-[680px]">
-                <div className="grid grid-cols-4 gap-4">
+              <DropdownMenuContent align="start" className="bg-[#111] border-[#222] p-3 w-[560px]">
+                <div className="grid grid-cols-3 gap-4">
                   {resourcesGroups.map((group) => (
                     <div key={group.title}>
                       <div className="text-[11px] font-bold uppercase tracking-wider text-gold/80 px-2 pb-1.5 mb-1 border-b border-[#222]">

@@ -1,5 +1,5 @@
 import { useState, useEffect, lazy, Suspense } from "react";
-import { Switch, Route } from "wouter";
+import { Switch, Route, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -307,7 +307,8 @@ function Router() {
       </Route>
       <Route path="/author/:slug" component={AuthorStorefront} />
       <Route path="/publishing" component={Publishing} />
-      <Route path="/pricing" component={Pricing} />
+      {/* Creator pricing folded into the single survivor tier. */}
+      <Route path="/pricing"><Redirect to="/recovery/premium" /></Route>
       <Route path="/auth" component={AuthPage} />
       <Route path="/auth/verify" component={AuthVerify} />
       <Route path="/auth/reset-password" component={ResetPassword} />
@@ -338,8 +339,9 @@ function Router() {
       <Route path="/magic-link" component={MagicLinkLogin} />
       <Route path="/magic-link/verify/:token" component={MagicLinkVerify} />
       
-      {/* Creator Studios */}
-      <Route path="/music-studio" component={MusicStudio} />
+      {/* Creator studios hidden — platform is survivor-only. Generic content
+          studios redirect to the survivor home; the book/story path stays. */}
+      <Route path="/music-studio"><Redirect to="/recovery" /></Route>
       <Route path="/music-sandbox">
         <ProtectedRoute>
           <MusicSandbox />
@@ -349,28 +351,24 @@ function Router() {
       <Route path="/book-studio/publish" component={BookPublishFlow} />
       <Route path="/book-studio/:id" component={BookStudioV3} />
       <Route path="/book-perfection-suite" component={BookPerfectionSuite} />
-      <Route path="/puzzle-studio" component={PuzzleStudioHub} />
-      <Route path="/puzzle-studio/:id" component={PuzzleBookEditor} />
-      <Route path="/write" component={MobileStudio} />
-      <Route path="/studio" component={MobileStudio} />
-      <Route path="/mobile-studio" component={MobileStudio} />
+      <Route path="/puzzle-studio"><Redirect to="/recovery" /></Route>
+      <Route path="/puzzle-studio/:id"><Redirect to="/recovery" /></Route>
+      <Route path="/write"><Redirect to="/book-studio" /></Route>
+      <Route path="/studio"><Redirect to="/recovery" /></Route>
+      <Route path="/mobile-studio"><Redirect to="/recovery" /></Route>
       <Route path="/creator-store" component={CreatorStore} />
-      <Route path="/video-studio" component={VideoStudio} />
+      <Route path="/video-studio"><Redirect to="/recovery" /></Route>
       <Route path="/free-analysis-for-video" component={FreeAnalysisForVideo} />
       <Route path="/Free-analysis-for-video" component={FreeAnalysisForVideo} />
-      <Route path="/course-studio" component={CourseStudio} />
-      <Route path="/image-studio" component={ImageStudio} />
-      <Route path="/website-studio" component={WebsiteStudio} />
+      <Route path="/course-studio"><Redirect to="/recovery" /></Route>
+      <Route path="/image-studio"><Redirect to="/recovery" /></Route>
+      <Route path="/website-studio"><Redirect to="/recovery" /></Route>
       <Route path="/creator-hub">
         <ProtectedRoute>
           <CreatorHub />
         </ProtectedRoute>
       </Route>
-      <Route path="/movie-studio">
-        <ProtectedRoute>
-          <MovieStudio />
-        </ProtectedRoute>
-      </Route>
+      <Route path="/movie-studio"><Redirect to="/recovery" /></Route>
       <Route path="/voice-library">
         <ProtectedRoute>
           <VoiceLibrary />
@@ -411,11 +409,7 @@ function Router() {
           <ProductionDashboard />
         </ProtectedRoute>
       </Route>
-      <Route path="/script-studio">
-        <ProtectedRoute>
-          <ScriptStudio />
-        </ProtectedRoute>
-      </Route>
+      <Route path="/script-studio"><Redirect to="/recovery" /></Route>
       <Route path="/life-story">
         <ProtectedRoute>
           <LifeStoryEngine />
@@ -447,11 +441,7 @@ function Router() {
         </ProtectedRoute>
       </Route>
       <Route path="/quick-create" component={QuickCreate} />
-      <Route path="/ai-consultant">
-        <ProtectedRoute>
-          <AIConsultant />
-        </ProtectedRoute>
-      </Route>
+      <Route path="/ai-consultant"><Redirect to="/recovery" /></Route>
       <Route path="/media-studio">
         <ProtectedRoute>
           <MediaStudioPage />
@@ -733,7 +723,8 @@ function Router() {
       <Route path="/recovery/lyrics" component={LyricsStudio} />
       <Route path="/lyrics/s/:shareId" component={LyricsStudioShare} />
       <Route path="/admin/radio" component={AdminRadioQueue} />
-      <Route path="/recovery/pricing" component={RecoveryPricing} />
+      {/* Pricing collapsed to ONE survivor tier — old survivor pricing surface redirects. */}
+      <Route path="/recovery/pricing"><Redirect to="/recovery/premium" /></Route>
       <Route path="/recovery/about-nick" component={AboutNick} />
       <Route path="/recovery/gift" component={GiftSurvivor} />
       

@@ -9,3 +9,4 @@
 - [staleTime Infinity list-mutation trap](staleinfinity-list-mutations.md) — Studio editor add/delete needs optimistic setQueryData, not just invalidateQueries
 - [Brand accent](brand-accent.md) — Canonical orange (`gold` token / #E2741B), retired amber #C9941A, and the rgba-spaces-break-className gotcha
 - [Recovery blog content pipeline](blog-post-series.md) — recovery_blog_posts content is DB-backed (edit via psql, live no-restart); pure-Markdown subset only; FAQ/image/link rules
+- [Replit OIDC e2e login](replit-oidc-e2e-login.md) — testReplitAuth + click in-app Sign In (never type creds); hard window.location redirects can hit the real login page
