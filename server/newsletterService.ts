@@ -506,56 +506,42 @@ export async function sendBroadcast(editionId: number): Promise<{ sent: number; 
   return { sent, failed };
 }
 
-// ─── Scheduler — runs every hour ─────────────────────────────────────────────
-let schedulerRunning = false;
+// ─── Recurring work (invoked by the durable scheduler) ───────────────────────
+// Sends every drip-queue item that is due. Errors from the query bubble up so
+// the scheduler records the failure; per-item send errors are swallowed so one
+// bad address doesn't abort the batch.
+export async function runNewsletterDrip() {
+  const { newsletterDripQueue } = await import('../shared/schema');
+  const due = await db
+    .select({
+      id: newsletterDripQueue.id,
+      subscriberId: newsletterDripQueue.subscriberId,
+      editionNumber: newsletterDripQueue.editionNumber,
+      email: newsletterSubscribers.email,
+      firstName: newsletterSubscribers.firstName,
+    })
+    .from(newsletterDripQueue)
+    .innerJoin(newsletterSubscribers, eq(newsletterDripQueue.subscriberId, newsletterSubscribers.id))
+    .where(
+      and(
+        eq(newsletterDripQueue.status, 'pending'),
+        lte(newsletterDripQueue.scheduledFor, new Date()),
+        eq(newsletterSubscribers.isActive, true)
+      )
+    );
 
-export function startNewsletterScheduler() {
-  if (schedulerRunning) return;
-  schedulerRunning = true;
-  console.log('[newsletter] Scheduler started — checking every hour at :00');
-
-  async function tick() {
-    try {
-      const { newsletterDripQueue } = await import('../shared/schema');
-      // Find all pending items due now
-      const due = await db
-        .select({
-          id: newsletterDripQueue.id,
-          subscriberId: newsletterDripQueue.subscriberId,
-          editionNumber: newsletterDripQueue.editionNumber,
-          email: newsletterSubscribers.email,
-          firstName: newsletterSubscribers.firstName,
-        })
-        .from(newsletterDripQueue)
-        .innerJoin(newsletterSubscribers, eq(newsletterDripQueue.subscriberId, newsletterSubscribers.id))
-        .where(
-          and(
-            eq(newsletterDripQueue.status, 'pending'),
-            lte(newsletterDripQueue.scheduledFor, new Date()),
-            eq(newsletterSubscribers.isActive, true)
-          )
-        );
-
-      if (due.length > 0) {
-        console.log(`[newsletter] Processing ${due.length} drip email(s)`);
-      }
-
-      for (const item of due) {
-        try {
-          await sendDripEdition(item.id, item.editionNumber, item.email, item.firstName);
-          await new Promise((r) => setTimeout(r, 200));
-        } catch (e) {
-          console.error(`[newsletter] drip send failed for queue ${item.id}:`, e);
-        }
-      }
-    } catch (e) {
-      console.error('[newsletter] scheduler tick error:', e);
-    }
+  if (due.length > 0) {
+    console.log(`[newsletter] Processing ${due.length} drip email(s)`);
   }
 
-  // Run immediately on startup, then every hour
-  tick();
-  setInterval(tick, 60 * 60 * 1000);
+  for (const item of due) {
+    try {
+      await sendDripEdition(item.id, item.editionNumber, item.email, item.firstName);
+      await new Promise((r) => setTimeout(r, 200));
+    } catch (e) {
+      console.error(`[newsletter] drip send failed for queue ${item.id}:`, e);
+    }
+  }
 }
 
 // ─── Subscribe helper (called from routes) ────────────────────────────────────

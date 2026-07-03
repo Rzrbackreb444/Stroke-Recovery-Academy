@@ -103,30 +103,36 @@ export async function sendPushToUser(userId: string, payload: object) {
   }
 }
 
-// === SCHEDULER ===
-export function startAccountabilityScheduler() {
-  // Run every minute
-  setInterval(runAccountabilityChecks, 60 * 1000);
-  console.log('[accountability] Scheduler started — checking every minute');
-}
-
-async function runAccountabilityChecks() {
+// === RECURRING WORK (invoked by the durable scheduler) ===
+// Fired by the durable scheduler on the quarter-hours (cron 0,15,30,45). Kept
+// the internal minute gate below as a defensive guard. Migrated off a per-process
+// setInterval so it single-fires across instances — no duplicate pings.
+export async function runAccountabilityChecks() {
   const now = new Date();
   const hour = now.getUTCHours();
   const minute = now.getUTCMinutes();
+  const second = now.getUTCSeconds();
 
-  // Only run whole-minute checks
-  if (minute !== 0 && minute !== 15 && minute !== 30 && minute !== 45) return;
+  // The durable scheduler fires this on the quarter-hours (cron 0,15,30,45),
+  // but the claim can land a few seconds — up to a tick — after the boundary.
+  // Floor to the scheduled 15-minute slot and accept a small tolerance window
+  // instead of demanding an exact minute, so the daily 13:00/14:00/20:00 pings
+  // are never silently dropped just because the tick claimed the job at
+  // :00:31. Genuinely off-slot invocations (e.g. the first-boot run at an
+  // arbitrary minute) still return early so per-slot work doesn't fire extra.
+  const slot = Math.floor(minute / 15) * 15;
+  const secondsPastSlot = (minute - slot) * 60 + second;
+  if (secondsPastSlot > 120) return;
 
   try {
     await Promise.allSettled([
       checkMedicationReminders(now),
       checkAppointmentReminders(now),
-      ...(hour === 14 && minute === 0 ? [checkDailyCheckins(now), checkStreakBreakEmails()] : []),   // 9am EST (UTC-5)
-      ...(hour === 20 && minute === 0 ? [checkMissedCheckins(now)] : []),   // 3pm EST fallback
+      ...(hour === 14 && slot === 0 ? [checkDailyCheckins(now), checkStreakBreakEmails()] : []),   // 9am EST (UTC-5)
+      ...(hour === 20 && slot === 0 ? [checkMissedCheckins(now)] : []),   // 3pm EST fallback
       // Sasquatch's daily drop-in ping. Fires at 13:00 UTC (~8am EST) — 1 hour
       // before the check-in nudge so survivors get a friendly opener first.
-      ...(hour === 13 && minute === 0 ? [checkSasquatchDailyPings(now)] : []),
+      ...(hour === 13 && slot === 0 ? [checkSasquatchDailyPings(now)] : []),
     ]);
   } catch (err) {
     console.error('[accountability] Scheduler error:', err);
