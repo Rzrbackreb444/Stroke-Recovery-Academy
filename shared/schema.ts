@@ -2305,6 +2305,7 @@ export const recoveryJournals = pgTable("recovery_journals", {
   tomorrowsIntention: text("tomorrows_intention"),
   tags: text("tags").array(),
   isPrivate: boolean("is_private").notNull().default(true),
+  isStoryMoment: boolean("is_story_moment").notNull().default(false), // survivor explicitly flags this entry as a chapter for their book
   // Reflections v2 fields
   entryType: text("entry_type"), // free, haiku, photo, voice
   entrySubType: text("entry_sub_type"), // triumph, pitfall

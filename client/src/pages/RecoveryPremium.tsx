@@ -29,6 +29,7 @@ import {
   X,
   Star,
   ArrowDown,
+  BookOpen,
 } from "lucide-react";
 
 type PremiumStatus = {
@@ -45,6 +46,11 @@ type PremiumStatus = {
 type Plan = "monthly" | "annual";
 
 const FEATURES = [
+  {
+    icon: BookOpen,
+    title: "Your Recovery Story — write your book as you go",
+    body: "Every journal entry, every check-in, every breakthrough is material. Mark the moments you want to keep. When you're ready, compile them into a real book — digital or print. Everything else stays between you and the Squatch.",
+  },
   {
     icon: Flame,
     title: "Daily Never Zero report to Sasquatch",
@@ -78,10 +84,12 @@ const OUTCOMES = [
   "You anchor every routine word that won't stick (medication name, therapist name, son's name) into a melody you actually remember.",
   "You hear your own voice — pre-stroke or post-stroke — read your daily cues back to you.",
   "You sit in a smaller fire with Nick and 8–12 other survivors instead of scrolling a feed alone.",
+  "You have a book — your recovery in your own words, something to hand to your doctor, your family, anyone who wasn't in the room.",
 ];
 
 // Free vs Premium — reframes the price as an upgrade, not a paywall.
 const COMPARISON: Array<{ feature: string; free: string; premium: string }> = [
+  { feature: "Your Story — mark chapters + compile book", free: "—", premium: "Mark + compile" },
   { feature: "Never Zero daily report to Sasquatch", free: "Log only", premium: "Daily AI report back" },
   { feature: "Sasquatch Coach messages", free: "5 / day", premium: "Unlimited" },
   { feature: "Recovery Anchor renders", free: "3 / month", premium: "Unlimited" },

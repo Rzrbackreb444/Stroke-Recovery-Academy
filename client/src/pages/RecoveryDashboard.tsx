@@ -377,6 +377,9 @@ export default function RecoveryDashboard() {
         {/* PREMIUM UPSELL — compact teaser card for free users. Hidden for premium subscribers. */}
         <PremiumUpgradeCard />
 
+        {/* YOUR STORY — persistent teaser: every rep/journal entry becomes book material. */}
+        <YourStoryCard />
+
         {/* COMMUNITY PULSE — "X survivors logged a rep today." Social proof. */}
         <CommunityPulse />
 
@@ -1535,6 +1538,32 @@ function PremiumUpgradeCard() {
               <Sparkles className="h-3 w-3" />
               Try free
             </span>
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+// Your Story card — always visible. Every entry is book material.
+// No extra API call; just a persistent CTA to /recovery/my-story.
+function YourStoryCard() {
+  return (
+    <Link href="/recovery/my-story">
+      <div
+        className="mx-1 mb-3 rounded-xl border border-white/8 bg-[#0d0d0d] p-4 hover-elevate"
+        data-testid="card-your-story"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0">
+            <BookOpen className="w-3.5 h-3.5 text-gray-400" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-gray-200 leading-tight">Your Recovery Story</p>
+            <p className="text-xs text-gray-500 mt-0.5">Every rep you log is material. Mark the chapters. Write the book.</p>
+          </div>
+          <div className="flex-shrink-0">
+            <span className="text-xs text-gray-600 font-medium">See story →</span>
           </div>
         </div>
       </div>
