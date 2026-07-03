@@ -386,8 +386,29 @@ function sectionSlug(heading: string): string {
     .replace(/^-|-$/g, '');
 }
 
+function renderEmailCapture(variant: 'inline' | 'final' = 'inline'): string {
+  const heading = variant === 'final'
+    ? 'Get the free stroke recovery cheat sheet'
+    : 'The cheat sheet I wish I had on day one';
+  const sub = variant === 'final'
+    ? 'One email. The first-90-days moves, plus the weekly field notes I send survivors and caregivers. No spam — unsubscribe anytime.'
+    : 'First-90-days moves from a 7-year survivor. Drop your email — I\'ll send the cheat sheet and my weekly field notes.';
+  return `
+<section class="sra-email-capture">
+  <h2>${esc(heading)}</h2>
+  <p>${esc(sub)}</p>
+  <form class="sra-email-form" method="POST" action="/api/newsletter/subscribe-form">
+    <input type="text" name="hp_field" class="sra-hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+    <input type="hidden" name="source" value="blog" />
+    <input type="email" name="email" required placeholder="you@email.com" aria-label="Email address" class="sra-email-input" />
+    <button type="submit" class="sra-btn-primary">Send me the cheat sheet</button>
+  </form>
+  <div class="sra-email-fineprint">No spam. Unsubscribe anytime. Written by a survivor, not a marketing team.</div>
+</section>`;
+}
+
 function renderSections(sections: ContentSection[]): string {
-  return sections.map((s, idx) => {
+  const blocks = sections.map((s, idx) => {
     const heading = s.h2 || s.heading || '';
     const html = s.rawHtml || s.body || '';
     const slug = heading ? sectionSlug(heading) : `section-${idx}`;
@@ -435,7 +456,12 @@ function renderSections(sections: ContentSection[]): string {
   ${s.relatedLinks && s.relatedLinks.length > 0 ? `<div class="sra-related-inline"><strong>Also check out:</strong> ${s.relatedLinks.map((l, i) => `<a href="${escAttr(l.href)}">${esc(l.label)}</a>${i < s.relatedLinks.length - 1 ? ', ' : ''}`).join('')}</div>` : ''}
   ${html}
 </section>`;
-  }).join('\n');
+  });
+  // Inject a mid-article email capture after the 2nd section on substantial pages.
+  if (blocks.length >= 4) {
+    blocks.splice(2, 0, renderEmailCapture('inline'));
+  }
+  return blocks.join('\n');
 }
 
 function renderTableOfContents(sections: ContentSection[]): string {
@@ -474,7 +500,6 @@ function renderRelated(related: InternalLink[]): string {
   ${related.map(r => `
     <a href="${escAttr(r.href)}" class="sra-related-card">
       <span class="sra-related-label">${esc(r.label)}</span>
-      // nosemgrep: javascript.lang.security.html-in-template-string
       ${r.blurb ? `<span class="sra-related-blurb">${esc(r.blurb)}</span>` : ''}
     </a>`).join('\n  ')}
   </div>
@@ -637,6 +662,26 @@ a:hover { text-decoration: underline; }
 .sra-affiliate-note { font-size: 12px; color: var(--sra-text-dim); margin-top: 12px; font-style: italic; }
 .sra-final-cta h2 { font-family: 'Crimson Pro', Georgia, serif; font-size: 28px; color: var(--sra-text); margin: 0 0 12px; }
 .sra-final-cta p { color: var(--sra-text-dim); margin: 0 0 20px; }
+.sra-email-capture {
+  margin: 40px 0; padding: 28px 24px;
+  background: var(--sra-bg-card); border: 1px solid var(--sra-gold); border-radius: 8px;
+}
+.sra-email-capture h2 { font-family: 'Crimson Pro', Georgia, serif; font-size: 24px; color: var(--sra-text); margin: 0 0 8px; }
+.sra-email-capture p { color: var(--sra-text-dim); margin: 0 0 16px; }
+.sra-email-form { display: flex; gap: 10px; flex-wrap: wrap; }
+.sra-email-input {
+  flex: 1 1 220px; min-width: 0; padding: 11px 14px; font-size: 15px;
+  background: var(--sra-bg); border: 1px solid var(--sra-border); border-radius: 4px; color: var(--sra-text);
+}
+.sra-email-input:focus { outline: none; border-color: var(--sra-gold); }
+.sra-email-form .sra-btn-primary { flex: 0 0 auto; border: 0; cursor: pointer; font-family: inherit; font-size: 15px; }
+.sra-email-fineprint { font-size: 12px; color: var(--sra-text-dim); margin-top: 10px; }
+.sra-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.sra-ftc-disclosure {
+  margin: 4px 0 20px; padding: 10px 14px; font-size: 12px; line-height: 1.5;
+  color: var(--sra-text-dim); background: var(--sra-bg-card);
+  border: 1px solid var(--sra-border); border-radius: 4px;
+}
 .sra-footer { border-top: 1px solid var(--sra-border); background: var(--sra-bg); padding: 40px 24px 24px; margin-top: 64px; }
 .sra-footer-grid {
   max-width: 1100px; margin: 0 auto;
@@ -719,6 +764,7 @@ export function renderSsrPage(cfg: SsrPageConfig): string {
 
   const productCard = cfg.productCard;
   const bookPromo = cfg.bookPromo;
+  const hasAffiliate = !!cfg.productCard || cfg.sections.some(s => Array.isArray(s.products) && s.products.length > 0);
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -787,7 +833,7 @@ ${renderHeader()}
   <div class="sra-author">
     <img src="${AUTHOR.image}" alt="${AUTHOR.name}" class="sra-author-img" loading="lazy" width="44" height="44" />
     <div>
-      Written by <a href="${AUTHOR.url}">Nick Kremers</a> · 7-year stroke survivor.
+      Written by <a href="${AUTHOR.url}">Nick Kremers</a> · Stroke survivor, 7 years in — full left-side paralysis to 90% back. I write what I actually lived.
       <br /><span style="font-size:12px;">Last reviewed: ${esc(cfg.modifiedDate || cfg.publishedDate || '2026-01-15')}</span>
       <br /><span style="font-size:12px; color: var(--sra-text-dim);">${estimateReadingTime(cfg.sections)} min read · ${cfg.sections.reduce((a, s) => {
         let w = 0;
@@ -795,9 +841,11 @@ ${renderHeader()}
         if (s.bullets) w += s.bullets.reduce((x, b) => x + b.split(/\s+/).length, 0);
         return a + w;
       }, 0).toLocaleString()} words</span>
-      <br /><span class="sra-medical-badge" style="font-size:12px; color: var(--sra-gold);">Medically reviewed by SRA clinical advisory team</span>
+      <br /><span class="sra-medical-badge" style="font-size:12px; color: var(--sra-text-dim);">Written from 7 years of lived recovery — not medical advice. <a href="/legal/medical-disclaimer" style="color: var(--sra-gold);">See your doctor, PT, or OT.</a></span>
     </div>
   </div>
+
+  ${hasAffiliate ? `<div class="sra-ftc-disclosure">Heads up — some links in this post are Amazon affiliate links. Buy through them and I earn a small commission at no extra cost to you. I only point at gear I'd tell another survivor to use.</div>` : ''}
 
   ${renderSections(cfg.sections)}
 
@@ -820,10 +868,12 @@ ${renderHeader()}
   </section>
   ` : ''}
 
+  ${renderEmailCapture('final')}
+
   <section class="sra-final-cta">
-    <h2>Start your recovery free.</h2>
+    <h2>Or start your recovery free.</h2>
     <p>Daily routine. AI coach. 66-day challenge. Built by a survivor for survivors.</p>
-    <a href="/api/login" class="sra-btn-primary">Create free account</a>
+    <a href="/api/login" class="sra-btn-secondary">Create free account</a>
   </section>
 
   ${renderRelated(cfg.related)}
@@ -831,6 +881,40 @@ ${renderHeader()}
 ${renderFooter()}
 </body>
 </html>`;
+}
+
+export function renderSsrThanks(ok: boolean = true): string {
+  const eyebrow = ok ? "You're in" : 'Hmm';
+  const h1 = ok ? 'Check your inbox.' : 'That email did not look right.';
+  const body = ok
+    ? "Your cheat sheet is on the way — should land in the next minute. If it's not there, check spam and add me to your contacts. My first field-note email hits in a few days."
+    : "I could not read that address, so nothing got sent. Head back and try once more — it's one field.";
+  return `<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>${esc(ok ? "You're in · Stroke Recovery Academy" : 'Try again · Stroke Recovery Academy')}</title>
+<meta name="description" content="Your stroke recovery cheat sheet is on the way." />
+<meta name="robots" content="noindex,follow" />
+<link rel="icon" href="/favicon.ico" />
+<style>${inlineCss()}</style>
+</head><body>
+${renderHeader()}
+<main class="sra-page">
+  <div class="sra-hero">
+    <div class="sra-eyebrow">${esc(eyebrow)}</div>
+    <h1>${esc(h1)}</h1>
+    <p>${esc(body)}</p>
+    <div class="sra-cta-row">
+      ${ok
+        ? `<a href="/api/sasch/cheat-sheet.pdf" class="sra-btn-primary">Download the cheat sheet now</a>
+      <a href="/blog" class="sra-btn-secondary">Back to the blog</a>`
+        : `<a href="/blog" class="sra-btn-primary">Back to the blog</a>`}
+    </div>
+  </div>
+</main>
+${renderFooter()}
+</body></html>`;
 }
 
 export function renderSsr404(): string {

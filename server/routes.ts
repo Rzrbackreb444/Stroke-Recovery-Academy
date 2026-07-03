@@ -2023,6 +2023,52 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
     }
   });
 
+  // No-JS SSR blog email capture — posts a plain <form>, responds with a 303 redirect
+  // to a styled thank-you page. Honeypot-gated, rate-limited, reuses the S.A.S.C.H. drip.
+  app.post('/api/newsletter/subscribe-form', subscribeRateLimit, async (req, res) => {
+    try {
+      const { email, hp_field, source } = req.body || {};
+      // Honeypot: real users never fill this hidden field. Bots do — fail soft.
+      if (hp_field) return res.redirect(303, '/newsletter/thanks');
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.redirect(303, '/newsletter/thanks?ok=0');
+      }
+      const cleanEmail = String(email).trim().toLowerCase();
+      const { newsletterSubscribers } = await import('../shared/schema');
+      const { db: nsDb } = await import('./db');
+      const existing = await nsDb
+        .select()
+        .from(newsletterSubscribers)
+        .where(eq(newsletterSubscribers.email, cleanEmail))
+        .limit(1);
+      const isNewSubscriber = existing.length === 0;
+
+      const { subscribeToNewsletter } = await import('./newsletterService');
+      await subscribeToNewsletter(cleanEmail, undefined, source === 'blog' ? 'blog' : 'website');
+
+      if (isNewSubscriber) {
+        const { sendSaschWelcomeEmail } = await import('./saschCheatSheet');
+        sendSaschWelcomeEmail(cleanEmail, undefined).catch((err) =>
+          console.error('[newsletter-form] welcome email background error:', err?.message),
+        );
+      }
+      return res.redirect(303, '/newsletter/thanks');
+    } catch (err: any) {
+      console.error('[newsletter-form] subscribe error:', err);
+      return res.redirect(303, '/newsletter/thanks?ok=0');
+    }
+  });
+
+  // Styled SSR thank-you page for the no-JS form flow above.
+  app.get('/newsletter/thanks', async (req, res) => {
+    const { renderSsrThanks } = await import('./seo/ssrShell');
+    const ok = req.query.ok !== '0';
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('X-SRA-SSR', '1');
+    res.send(renderSsrThanks(ok));
+  });
+
   // ── S.A.S.C.H. Cheat Sheet lead magnet ─────────────────────────────────────
   // Rate limit raw PDF generation: 20/hour per IP — stops DoS via repeated regen
   const pdfDownloadRateLimit = makeRateLimiter(20, 60 * 60 * 1000);
