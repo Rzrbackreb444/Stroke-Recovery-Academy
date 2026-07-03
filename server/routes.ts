@@ -1212,6 +1212,19 @@ Last updated: ${new Date().toISOString().split('T')[0]}
     }
   });
 
+  // GET /api/stats/community — public, cached, real survivor count for social proof
+  app.get('/api/stats/community', async (_req, res) => {
+    try {
+      const { pool: dbPool } = await import('./db');
+      const result = await dbPool.query(`SELECT COUNT(*)::int AS total FROM users`);
+      const total: number = result.rows[0]?.total ?? 0;
+      res.set('Cache-Control', 'public, max-age=300');
+      res.json({ total, display: total >= 1000 ? `${(total / 1000).toFixed(1)}k+` : `${total}` });
+    } catch {
+      res.json({ total: 0, display: '0' });
+    }
+  });
+
   // GET /api/community/members
   app.get('/api/community/members', async (_req, res) => {
     try {

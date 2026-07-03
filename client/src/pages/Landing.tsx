@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation, Link } from "wouter";
 import {
@@ -23,7 +24,17 @@ const goToOnboarding = () => {
   window.location.href = "/recovery/onboarding";
 };
 
+function useSurvivorCount() {
+  const { data } = useQuery<{ total: number; display: string }>({
+    queryKey: ["/api/stats/community"],
+    staleTime: 5 * 60_000,
+  });
+  if (!data || data.total === 0) return null;
+  return data.display;
+}
+
 function Hero() {
+  const count = useSurvivorCount();
   return (
     <section className="bg-[#1A1412]">
       {/* Mobile: full-bleed image on top, warm cream text below. Desktop: side-by-side with gradient overlay. */}
@@ -67,12 +78,14 @@ function Hero() {
             </Button>
           </div>
           <p className="mt-3 text-sm text-[#2A2421]/40">No signup to try — 3 free messages with Coach, then $19/mo.</p>
-          <div className="mt-8 flex items-center gap-4 text-sm text-[#2A2421]/50 font-medium">
-            <div className="flex -space-x-2" aria-hidden="true">
-              {[1, 2, 3, 4].map((i) => <div key={i} className="w-8 h-8 rounded-full border-2 border-[#FDFBF7] bg-[#2A2421]/15" />)}
+          {count && (
+            <div className="mt-8 flex items-center gap-4 text-sm text-[#2A2421]/50 font-medium">
+              <div className="flex -space-x-2" aria-hidden="true">
+                {[1, 2, 3, 4].map((i) => <div key={i} className="w-8 h-8 rounded-full border-2 border-[#FDFBF7] bg-[#2A2421]/15" />)}
+              </div>
+              <p>{count} survivors rebuilding their lives</p>
             </div>
-            <p>50,000+ survivors rebuilding their lives</p>
-          </div>
+          )}
         </div>
       </div>
 
@@ -122,12 +135,14 @@ function Hero() {
               </Button>
             </div>
             <p className="mt-4 text-sm text-[#FDFBF7]/50">No signup to try — 3 free messages with Coach, then $19/mo.</p>
-            <div className="mt-12 flex items-center gap-4 text-sm text-[#FDFBF7]/60 font-medium">
-              <div className="flex -space-x-2" aria-hidden="true">
-                {[1, 2, 3, 4].map((i) => <div key={i} className="w-8 h-8 rounded-full border-2 border-[#1C1917] bg-[#FDFBF7]/15" />)}
+            {count && (
+              <div className="mt-12 flex items-center gap-4 text-sm text-[#FDFBF7]/60 font-medium">
+                <div className="flex -space-x-2" aria-hidden="true">
+                  {[1, 2, 3, 4].map((i) => <div key={i} className="w-8 h-8 rounded-full border-2 border-[#1C1917] bg-[#FDFBF7]/15" />)}
+                </div>
+                <p>{count} survivors rebuilding their lives</p>
               </div>
-              <p>50,000+ survivors rebuilding their lives</p>
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -136,8 +151,9 @@ function Hero() {
 }
 
 function StatsStrip() {
+  const count = useSurvivorCount();
   const stats = [
-    { n: "50,000+", l: "Survivors" },
+    { n: count ?? "Growing", l: "Survivors" },
     { n: "0% → 90%", l: "Function restored" },
     { n: "365", l: "Days of reps" },
     { n: "7", l: "Years of proof" },
@@ -483,7 +499,7 @@ export default function Landing() {
     <div className="min-h-screen bg-[#FDFBF7] overflow-x-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
       <RecoverySEO
         title="Stroke Recovery Academy — Evidence-Based Rehab by Nick Kremers | 0% to 90% Recovery"
-        description="The #1 stroke recovery platform built by a stroke survivor. Nick Kremers went from 0% to 90% recovery using the Sasquatch Method. Join 50,000+ warriors rebuilding their lives."
+        description="The #1 stroke recovery platform built by a stroke survivor. Nick Kremers went from 0% to 90% recovery using the Sasquatch Method. Join survivors rebuilding their lives every day."
         canonical="/"
         pageType="website"
         keywords={[
