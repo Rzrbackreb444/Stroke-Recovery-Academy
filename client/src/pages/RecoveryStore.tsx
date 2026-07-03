@@ -23,7 +23,7 @@ import {
   Users,
   Quote,
 } from "lucide-react";
-import strokeLyfeLogo from "@assets/strokelyfe-logo-opt.webp";
+const sasquatchLogo = "/sasquatch-logo.png";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 
 interface Product {
@@ -553,7 +553,7 @@ export default function RecoveryStore() {
       <header className="bg-[#0D0D0D] border-b border-[#333] py-4 px-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src={strokeLyfeLogo} alt="Stroke Lyfe" className="h-10 w-auto" />
+            <img src={sasquatchLogo} alt="Stroked-Out Sasquatch" className="h-10 w-auto" />
             <span className="text-xl font-bold text-white">Recovery Store</span>
           </div>
           <Badge className="bg-[#E2741B]/20 text-[#E2741B] border border-[#E2741B]/30">
@@ -596,7 +596,7 @@ export default function RecoveryStore() {
       <section className="py-8 px-4 bg-[#1a1a1a] border-b border-[#333]">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center gap-3 mb-4">
-            <img src={strokeLyfeLogo} alt="Nick's Picks" className="w-10 h-10" />
+            <img src={sasquatchLogo} alt="Nick's Picks" className="w-10 h-10" />
             <div>
               <h2 className="text-xl font-bold text-white">Nick's Top Picks</h2>
               <p className="text-sm text-gray-400">Products I personally use in my recovery</p>
@@ -708,7 +708,7 @@ export default function RecoveryStore() {
 
       <footer className="bg-[#0D0D0D] border-t border-[#333] text-white py-12 px-4">
         <div className="max-w-6xl mx-auto text-center">
-          <img src={strokeLyfeLogo} alt="Stroke Lyfe" className="h-12 w-auto mx-auto mb-4" />
+          <img src={sasquatchLogo} alt="Stroked-Out Sasquatch" className="h-12 w-auto mx-auto mb-4" />
           <p className="text-gray-500 text-sm max-w-xl mx-auto">
             Stroke Lyfe Recovery Store is part of Stroke Lyfe Inc., a 501(c)(3) nonprofit. 
             Affiliate revenue from purchases supports our scholarship fund and free resources for stroke survivors.

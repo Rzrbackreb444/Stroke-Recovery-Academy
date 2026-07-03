@@ -19,8 +19,7 @@ import {
   Users,
 } from "lucide-react";
 import { SiTiktok, SiInstagram, SiYoutube, SiX } from "react-icons/si";
-import sasquatchLogo from "@assets/sasquatch-logo.png";
-import strokeLyfeLogo from "@assets/sasquatch-logo.png";
+const sasquatchLogo = "/sasquatch-logo.png";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -119,7 +118,7 @@ export default function Footer() {
             <div className="flex items-center gap-3 mb-5">
               <img
                 src={sasquatchLogo}
-                alt="Stroke Recovery Academy"
+                alt="Stroked-Out Sasquatch"
                 className="h-48 w-auto"
                 data-testid="img-footer-logo"
               />
@@ -374,8 +373,8 @@ export default function Footer() {
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <img
-                  src={strokeLyfeLogo}
-                  alt="Stroke Lyfe Inc."
+                  src={sasquatchLogo}
+                  alt="Stroked-Out Sasquatch"
                   className="h-44 w-auto opacity-90"
                 />
                 <div>

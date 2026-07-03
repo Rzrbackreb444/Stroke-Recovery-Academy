@@ -12,7 +12,7 @@ import {
   Gift, Heart, CheckCircle, Shield, ArrowRight,
   Users, Star, Zap, Crown
 } from "lucide-react";
-import strokeLyfeLogo from "@assets/strokelyfe-logo-opt.webp";
+const sasquatchLogo = "/sasquatch-logo.png";
 import RecoverySEO from "@/components/RecoverySEO";
 
 const GIFT_TIERS = [
@@ -186,8 +186,8 @@ export default function GiftSurvivor() {
           {/* Stroke Lyfe Logo */}
           <div className="flex items-center justify-center mb-8">
             <img
-              src={strokeLyfeLogo}
-              alt="Stroke Lyfe Inc."
+              src={sasquatchLogo}
+              alt="Stroked-Out Sasquatch"
               className="h-24 w-auto"
             />
           </div>
@@ -437,7 +437,7 @@ export default function GiftSurvivor() {
         <div className="max-w-4xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <img src={strokeLyfeLogo} alt="Stroke Lyfe Inc." className="h-16 mb-6 opacity-90" />
+              <img src={sasquatchLogo} alt="Stroked-Out Sasquatch" className="h-16 mb-6 opacity-90" />
               <h2 className="text-2xl font-black text-white mb-4">
                 Stroke Lyfe Inc.<br />
                 <span style={{ color: "#E2741B" }}>Rebuild. Rewire. Rise.</span>
