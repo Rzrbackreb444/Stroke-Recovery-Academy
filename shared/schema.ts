@@ -7234,4 +7234,36 @@ export const insertFreeVideoAnalysisSchema = createInsertSchema(freeVideoAnalyse
   ipAddress: true,
   userAgent: true,
 });
+
+// ============================================================================
+// PROGRESS ANALYTICS — encouragements + notification preferences
+// ============================================================================
+
+export const encouragements = pgTable("encouragements", {
+  id: serial("id").primaryKey(),
+  fromUserId: varchar("from_user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  toUserId: varchar("to_user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  loopDate: text("loop_date").notNull(), // YYYY-MM-DD
+  type: text("type").notNull().default("flame"), // flame | cheer | message
+  message: text("message"), // max 280 chars — optional
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [
+  index("encouragements_to_date_idx").on(t.toUserId, t.loopDate),
+  index("encouragements_from_idx").on(t.fromUserId, t.createdAt),
+]);
+export type Encouragement = typeof encouragements.$inferSelect;
+export const insertEncouragementSchema = createInsertSchema(encouragements).omit({ id: true, createdAt: true });
+
+export const notificationPreferences = pgTable("notification_preferences", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().unique().references(() => users.id, { onDelete: "cascade" }),
+  checkinReminderHour: integer("checkin_reminder_hour").default(9), // 0-23
+  streakBreakEmail: boolean("streak_break_email").notNull().default(true),
+  weeklyRepGoal: integer("weekly_rep_goal").default(21), // default 3/day × 7
+  weeklyDigestEnabled: boolean("weekly_digest_enabled").notNull().default(true),
+  caregiverShareEnabled: boolean("caregiver_share_enabled").notNull().default(false),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+export type NotificationPreference = typeof notificationPreferences.$inferSelect;
+export const insertNotificationPreferenceSchema = createInsertSchema(notificationPreferences).omit({ id: true, updatedAt: true });
 export type InsertFreeVideoAnalysis = z.infer<typeof insertFreeVideoAnalysisSchema>;
