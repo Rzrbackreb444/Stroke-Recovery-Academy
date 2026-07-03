@@ -1017,6 +1017,11 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   // so requireAdmin's session lookup works.
   const { default: schedulerRoutes } = await import('./scheduler/schedulerRoutes');
   app.use('/api/admin/scheduler', schedulerRoutes);
+
+  // Lifecycle messaging public routes — global email unsubscribe (HMAC) + Twilio
+  // inbound SMS webhook (STOP/HELP, signature-verified, inert until SMS_ENABLED).
+  const { registerMessagingRoutes } = await import('./messaging/routes');
+  registerMessagingRoutes(app);
   
   // Email Authentication Routes (must be after setupAuth for session access)
   app.use('/api/email-auth', emailAuthRoutes);

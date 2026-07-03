@@ -4,6 +4,8 @@ import { sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { notificationPreferences } from '@shared/schema';
 import { eq } from 'drizzle-orm';
+import { normalizeE164 } from '../messaging/phone';
+import { isValidTimezone } from '../messaging';
 
 const notifPrefSchema = z.object({
   checkinReminderHour: z.number().int().min(0).max(23).optional(),
@@ -11,6 +13,15 @@ const notifPrefSchema = z.object({
   weeklyRepGoal: z.number().int().min(1).max(200).optional(),
   weeklyDigestEnabled: z.boolean().optional(),
   caregiverShareEnabled: z.boolean().optional(),
+  // Lifecycle messaging engine — channel toggles, quiet hours, tz, global opt-out
+  emailEnabled: z.boolean().optional(),
+  pushEnabled: z.boolean().optional(),
+  smsEnabled: z.boolean().optional(),
+  smsPhone: z.string().max(32).nullable().optional(),
+  quietHoursStart: z.number().int().min(0).max(23).nullable().optional(),
+  quietHoursEnd: z.number().int().min(0).max(23).nullable().optional(),
+  timezone: z.string().max(64).optional(),
+  unsubscribedAll: z.boolean().optional(),
 });
 
 export function registerProgressRoutes(app: Express, isAuthenticated: any) {
@@ -172,7 +183,31 @@ export function registerProgressRoutes(app: Express, isAuthenticated: any) {
       const parsed = notifPrefSchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ message: 'Invalid input', errors: parsed.error.errors });
 
-      const update = { ...parsed.data, updatedAt: new Date() };
+      // Reject non-IANA timezones so inQuietHours' Intl call can never be fed a
+      // bad value.
+      if (parsed.data.timezone && !isValidTimezone(parsed.data.timezone)) {
+        return res.status(400).json({ message: 'Invalid timezone' });
+      }
+
+      const update: Record<string, any> = { ...parsed.data, updatedAt: new Date() };
+
+      // Normalize the phone to E.164 so the Twilio STOP matcher and outbound send
+      // agree on the same string. Empty clears it; unparseable input is rejected.
+      if ('smsPhone' in parsed.data) {
+        const raw = parsed.data.smsPhone;
+        if (raw == null || raw === '') {
+          update.smsPhone = null;
+        } else {
+          const norm = normalizeE164(raw);
+          if (!norm) return res.status(400).json({ message: 'Invalid phone number' });
+          update.smsPhone = norm;
+        }
+      }
+
+      // Record SMS consent server-side the moment a user turns SMS on (carrier
+      // compliance — proof of opt-in). Turning it off leaves the timestamp as an
+      // audit trail of the prior consent.
+      if (parsed.data.smsEnabled === true) update.smsConsentAt = new Date();
 
       const existing = await db.select().from(notificationPreferences).where(eq(notificationPreferences.userId, userId)).limit(1);
       let result;

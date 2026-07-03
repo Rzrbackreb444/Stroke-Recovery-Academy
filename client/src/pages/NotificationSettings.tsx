@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import {
   ChevronLeft, Bell, Flame, Target, Users, Mail, BarChart2,
-  Save, Eye, EyeOff,
+  Save, Eye, EyeOff, Smartphone, MessageSquare, Moon, Globe, BellOff,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -20,7 +20,30 @@ type Prefs = {
   weeklyRepGoal: number;
   weeklyDigestEnabled: boolean;
   caregiverShareEnabled: boolean;
+  emailEnabled: boolean;
+  pushEnabled: boolean;
+  smsEnabled: boolean;
+  smsPhone: string | null;
+  quietHoursStart: number | null;
+  quietHoursEnd: number | null;
+  timezone: string;
+  unsubscribedAll: boolean;
 };
+
+const TIMEZONES = [
+  { value: "America/New_York", label: "Eastern (New York)" },
+  { value: "America/Chicago", label: "Central (Chicago)" },
+  { value: "America/Denver", label: "Mountain (Denver)" },
+  { value: "America/Phoenix", label: "Arizona (Phoenix)" },
+  { value: "America/Los_Angeles", label: "Pacific (Los Angeles)" },
+  { value: "America/Anchorage", label: "Alaska (Anchorage)" },
+  { value: "Pacific/Honolulu", label: "Hawaii (Honolulu)" },
+  { value: "America/Toronto", label: "Canada Eastern (Toronto)" },
+  { value: "Europe/London", label: "UK (London)" },
+  { value: "Europe/Paris", label: "Central Europe (Paris)" },
+  { value: "Australia/Sydney", label: "Australia (Sydney)" },
+  { value: "UTC", label: "UTC" },
+];
 
 const HOURS = Array.from({ length: 24 }, (_, h) => {
   const ampm = h < 12 ? "AM" : "PM";
@@ -90,6 +113,14 @@ export default function NotificationSettings() {
     weeklyRepGoal: 21,
     weeklyDigestEnabled: true,
     caregiverShareEnabled: false,
+    emailEnabled: true,
+    pushEnabled: true,
+    smsEnabled: false,
+    smsPhone: null,
+    quietHoursStart: null,
+    quietHoursEnd: null,
+    timezone: "America/New_York",
+    unsubscribedAll: false,
   });
   const [dirty, setDirty] = useState(false);
 
@@ -101,6 +132,14 @@ export default function NotificationSettings() {
         weeklyRepGoal: prefs.weeklyRepGoal ?? 21,
         weeklyDigestEnabled: prefs.weeklyDigestEnabled ?? true,
         caregiverShareEnabled: prefs.caregiverShareEnabled ?? false,
+        emailEnabled: prefs.emailEnabled ?? true,
+        pushEnabled: prefs.pushEnabled ?? true,
+        smsEnabled: prefs.smsEnabled ?? false,
+        smsPhone: prefs.smsPhone ?? null,
+        quietHoursStart: prefs.quietHoursStart ?? null,
+        quietHoursEnd: prefs.quietHoursEnd ?? null,
+        timezone: prefs.timezone ?? "America/New_York",
+        unsubscribedAll: prefs.unsubscribedAll ?? false,
       });
     }
   }, [prefs]);
@@ -108,6 +147,12 @@ export default function NotificationSettings() {
   const update = (patch: Partial<Prefs>) => {
     setForm(f => ({ ...f, ...patch }));
     setDirty(true);
+  };
+
+  const quietOn = form.quietHoursStart != null && form.quietHoursEnd != null;
+  const toggleQuiet = () => {
+    if (quietOn) update({ quietHoursStart: null, quietHoursEnd: null });
+    else update({ quietHoursStart: 22, quietHoursEnd: 7 });
   };
 
   const saveMutation = useMutation({
@@ -240,6 +285,135 @@ export default function NotificationSettings() {
                   enabled={form.caregiverShareEnabled}
                   onToggle={() => update({ caregiverShareEnabled: !form.caregiverShareEnabled })}
                   testId="toggle-caregiver-share"
+                />
+              </SettingRow>
+            </Card>
+
+            {/* Channels & delivery */}
+            <Card className="bg-[#111] border-[#222] px-5 mb-4">
+              <div className="pt-4 pb-1">
+                <p className="text-[10px] uppercase tracking-widest text-gray-600">Channels &amp; delivery</p>
+              </div>
+
+              {/* Email channel */}
+              <SettingRow
+                icon={Mail}
+                label="Email"
+                description="Lifecycle emails — onboarding, win-back, trial reminders, and your weekly digest."
+              >
+                <Toggle
+                  enabled={form.emailEnabled}
+                  onToggle={() => update({ emailEnabled: !form.emailEnabled })}
+                  testId="toggle-email-enabled"
+                />
+              </SettingRow>
+
+              {/* Push channel */}
+              <SettingRow
+                icon={Smartphone}
+                label="Push notifications"
+                description="Browser and device push for reminders and nudges."
+              >
+                <Toggle
+                  enabled={form.pushEnabled}
+                  onToggle={() => update({ pushEnabled: !form.pushEnabled })}
+                  testId="toggle-push-enabled"
+                />
+              </SettingRow>
+
+              {/* SMS channel */}
+              <SettingRow
+                icon={MessageSquare}
+                label="Text messages (SMS)"
+                description="Opt in to text reminders. Reply STOP anytime. Msg & data rates may apply."
+              >
+                <Toggle
+                  enabled={form.smsEnabled}
+                  onToggle={() => update({ smsEnabled: !form.smsEnabled })}
+                  testId="toggle-sms-enabled"
+                />
+              </SettingRow>
+
+              {form.smsEnabled && (
+                <div className="pb-4">
+                  <Input
+                    data-testid="input-sms-phone"
+                    type="tel"
+                    placeholder="+1 555 123 4567"
+                    value={form.smsPhone ?? ""}
+                    onChange={e => update({ smsPhone: e.target.value })}
+                    className="bg-[#1a1a1a] border-[#333] text-white"
+                  />
+                  <p className="text-xs text-gray-600 mt-1.5">
+                    Include your country code. We only text what you opt into, and STOP ends it instantly.
+                  </p>
+                </div>
+              )}
+
+              {/* Quiet hours */}
+              <SettingRow
+                icon={Moon}
+                label="Quiet hours"
+                description="Pause push & SMS overnight (your time zone). Email is unaffected."
+              >
+                <Toggle
+                  enabled={quietOn}
+                  onToggle={toggleQuiet}
+                  testId="toggle-quiet-hours"
+                />
+              </SettingRow>
+
+              {quietOn && (
+                <div className="flex items-center gap-2 pb-4 text-sm text-gray-400">
+                  <span>From</span>
+                  <select
+                    data-testid="select-quiet-start"
+                    value={form.quietHoursStart ?? 22}
+                    onChange={e => update({ quietHoursStart: Number(e.target.value) })}
+                    className="bg-[#1a1a1a] border border-[#333] text-white text-xs rounded-md px-2 py-1.5 focus:outline-none focus:border-[#E2741B]/50"
+                  >
+                    {HOURS.map(h => <option key={h.value} value={h.value}>{h.label}</option>)}
+                  </select>
+                  <span>to</span>
+                  <select
+                    data-testid="select-quiet-end"
+                    value={form.quietHoursEnd ?? 7}
+                    onChange={e => update({ quietHoursEnd: Number(e.target.value) })}
+                    className="bg-[#1a1a1a] border border-[#333] text-white text-xs rounded-md px-2 py-1.5 focus:outline-none focus:border-[#E2741B]/50"
+                  >
+                    {HOURS.map(h => <option key={h.value} value={h.value}>{h.label}</option>)}
+                  </select>
+                </div>
+              )}
+
+              {/* Time zone */}
+              <SettingRow
+                icon={Globe}
+                label="Time zone"
+                description="Used for quiet hours and time-of-day sends."
+              >
+                <select
+                  data-testid="select-timezone"
+                  value={form.timezone}
+                  onChange={e => update({ timezone: e.target.value })}
+                  className="bg-[#1a1a1a] border border-[#333] text-white text-xs rounded-md px-2 py-1.5 focus:outline-none focus:border-[#E2741B]/50 max-w-[180px]"
+                >
+                  {TIMEZONES.map(tz => <option key={tz.value} value={tz.value}>{tz.label}</option>)}
+                </select>
+              </SettingRow>
+            </Card>
+
+            {/* Global unsubscribe */}
+            <Card className="bg-[#111] border-[#222] px-5 mb-4">
+              <SettingRow
+                icon={BellOff}
+                label="Unsubscribe from everything"
+                description="Stops every lifecycle message on all channels. Receipts and security emails still send."
+              >
+                <Toggle
+                  enabled={form.unsubscribedAll}
+                  onToggle={() => update({ unsubscribedAll: !form.unsubscribedAll })}
+                  testId="toggle-unsubscribed-all"
                 />
               </SettingRow>
             </Card>
