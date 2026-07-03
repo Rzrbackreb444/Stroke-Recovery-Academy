@@ -16,7 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import sraEmblem from "@assets/sra-emblem.png";
+import sasquatchLogo from "@assets/sasquatch-logo.png";
 
 // Shared site-header singleton — first mount wins (covers RecoveryHeader
 // and GlobalHeader both), so legacy per-page header mounts are suppressed.
@@ -123,7 +123,7 @@ export default function RecoveryHeader() {
           <Link href="/recovery" data-testid="link-recovery-home" className="min-w-0">
             <div className="flex items-center gap-3 cursor-pointer min-w-0">
               <img
-                src={sraEmblem}
+                src={sasquatchLogo}
                 alt="Stroke Recovery Academy"
                 className="h-12 w-auto sm:h-14"
                 style={{ flexShrink: 0 }}
