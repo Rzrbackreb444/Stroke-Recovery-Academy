@@ -8,7 +8,7 @@ import Footer from "@/components/Footer";
 import {
   Loader2, Lock, Download, ShoppingCart, BookOpen, FileText,
   ArrowRight, ChevronRight, ChevronLeft, Menu, X, BookMarked,
-  ArrowUp
+  ArrowUp, MessageCircle
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
@@ -294,8 +294,49 @@ function ChapterPane({ chapterId, toc, onNav, downloadUrl }: ChapterPaneProps) {
           data-testid="chapter-content"
         />
 
+        {/* Coach CTA — only for chapter-type entries */}
+        {(() => {
+          const entry = toc[idx];
+          if (!entry || entry.type !== "chapter") return null;
+          const shortTitle = data.title
+            .replace(/^Chapter \d+[\u00BD]?:\s*/, "")
+            .split("—")[0]
+            .trim();
+          const prompt = encodeURIComponent(
+            `I just read "${shortTitle}". Help me turn the key ideas into a personal protocol for my recovery.`
+          );
+          return (
+            <div className="mt-12 rounded-xl border border-[#E2741B]/30 bg-gradient-to-br from-[#1a1008] to-[#0f0c04] p-5">
+              <div className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-full bg-[#E2741B]/15 border border-[#E2741B]/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <MessageCircle className="w-4 h-4 text-[#E2741B]" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-200 mb-1">
+                    Apply <span className="text-[#E2741B]">"{shortTitle}"</span> to your recovery
+                  </p>
+                  <p className="text-xs text-gray-500 leading-relaxed mb-3">
+                    Ask Sasquatch to build a personal protocol from what you just read — specific to your deficits, schedule, and goals.
+                  </p>
+                  <Button
+                    asChild
+                    size="sm"
+                    className="bg-[#E2741B] text-black font-semibold"
+                    data-testid="btn-chapter-coach-cta"
+                  >
+                    <a href={`/recovery/sasquatch-coach?prompt=${prompt}`}>
+                      <MessageCircle className="h-3.5 w-3.5 mr-1.5" />
+                      Talk to Sasquatch about this
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+
         {/* Chapter navigation */}
-        <div className="mt-16 pt-8 border-t border-border/40 flex items-center justify-between gap-4">
+        <div className="mt-10 pt-8 border-t border-border/40 flex items-center justify-between gap-4">
           {prev ? (
             <button
               className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
