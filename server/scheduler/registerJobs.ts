@@ -12,6 +12,14 @@ export async function bootstrapScheduler(): Promise<void> {
   const { ensureMessagingSchema } = await import("../messaging");
   await ensureMessagingSchema();
 
+  // Provision the premium-subscription lifecycle state table early so the
+  // entitlement gate can read it from the first request (not just after the
+  // first webhook / scheduled run).
+  const { ensureSubStateSchema } = await import("../services/subscriptionLifecycleService");
+  await ensureSubStateSchema().catch((e) =>
+    console.warn("[scheduler] ensureSubStateSchema failed:", e?.message || e),
+  );
+
   // Email return-funnel nudges (3/7/14 days after last journal entry).
   registerJob({
     name: "journal-nudge",
@@ -70,6 +78,20 @@ export async function bootstrapScheduler(): Promise<void> {
     handler: async () => {
       const { runLifecycleJourneys } = await import("../lifecycleService");
       await runLifecycleJourneys();
+    },
+  });
+
+  // Subscription revenue durability — dunning reminders, grace-expiry
+  // downgrades, and trial-ending nudges for Sasquatch Premium. Idempotent:
+  // recomputes eligibility from state each run; message_deliveries dedupe keys
+  // make double-runs / restarts safe.
+  registerJob({
+    name: "subscription-lifecycle",
+    description: "Premium dunning reminders, grace-expiry downgrades, trial-ending nudges.",
+    cron: "25 * * * *", // hourly at :25 (offset to spread load)
+    handler: async () => {
+      const { runSubscriptionLifecycle } = await import("../services/subscriptionLifecycleService");
+      await runSubscriptionLifecycle();
     },
   });
 

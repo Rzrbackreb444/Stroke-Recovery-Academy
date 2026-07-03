@@ -88,6 +88,19 @@ export const publicPostLimiter = publicRateLimit({
   bucketName: "public-post",
 });
 
+/**
+ * Twilio inbound SMS webhook limiter. All legitimate inbound comes from Twilio's
+ * shared IP pool, so this is deliberately generous (60/min/IP) — a post-broadcast
+ * STOP/HELP wave from real survivors must never be dropped — while still blunting
+ * a single-IP spoofed-request flood. Kept in its own bucket so it doesn't share
+ * (and get starved by) the 10/min public-post counter used by the unsubscribe POST.
+ */
+export const smsWebhookLimiter = publicRateLimit({
+  windowMs: 60_000,
+  max: 60,
+  bucketName: "sms-webhook",
+});
+
 /** Stricter limiter for magic-link / password-reset / signup (5/min). */
 export const authActionLimiter = publicRateLimit({
   windowMs: 60_000,

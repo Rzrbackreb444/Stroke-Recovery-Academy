@@ -30,7 +30,20 @@ import {
   Star,
   ArrowDown,
   BookOpen,
+  Clock,
+  AlertTriangle,
 } from "lucide-react";
+
+type PremiumLifecycle = {
+  status: string;
+  plan: string;
+  currentPeriodEnd: string | null;
+  trialEnd: string | null;
+  cancelAtPeriodEnd: boolean;
+  pastDue: boolean;
+  graceEnd: string | null;
+  downgraded: boolean;
+};
 
 type PremiumStatus = {
   active: boolean;
@@ -41,6 +54,7 @@ type PremiumStatus = {
   annualMonthlyEquivalentUsd: number;
   annualSavingsUsd: number;
   trialDays: number;
+  lifecycle: PremiumLifecycle | null;
 };
 
 type Plan = "monthly" | "annual";
@@ -142,6 +156,148 @@ function trackFunnel(event: "premium_page_view" | "trial_start", plan?: Plan) {
   } catch {
     /* swallow */
   }
+}
+
+function fmtDate(d: string | null): string {
+  if (!d) return "";
+  const t = Date.parse(d);
+  if (Number.isNaN(t)) return "";
+  return new Date(t).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function LifecycleBanner({
+  lifecycle,
+  onManageBilling,
+  managing,
+}: {
+  lifecycle: PremiumLifecycle | null;
+  onManageBilling: () => void;
+  managing: boolean;
+}) {
+  if (!lifecycle) return null;
+
+  const { status, trialEnd, graceEnd, cancelAtPeriodEnd, currentPeriodEnd } = lifecycle;
+  const inGrace = lifecycle.pastDue && !lifecycle.downgraded && !!graceEnd;
+
+  // Past-due inside grace — most urgent. Update your card or you lose it.
+  if (inGrace) {
+    return (
+      <div
+        className="max-w-2xl mx-auto mb-6 rounded-xl bg-red-700/15 border border-red-700/40 px-5 py-4"
+        data-testid="banner-lifecycle-pastdue"
+      >
+        <div className="flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <div className="font-bold text-red-200">Your payment didn't go through.</div>
+            <p className="text-red-200/80 text-sm mt-1">
+              Premium's still on — for now. Update your card by{" "}
+              <span className="font-semibold">{fmtDate(graceEnd)}</span> or it pauses. No drama, just fix the card.
+            </p>
+            <Button
+              size="sm"
+              className="mt-3 bg-red-600 hover:bg-red-700 text-white"
+              onClick={onManageBilling}
+              disabled={managing}
+              data-testid="button-lifecycle-fix-card"
+            >
+              {managing ? "Opening..." : "Update payment"}
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Downgraded — grace lapsed, back on free.
+  if (lifecycle.downgraded) {
+    return (
+      <div
+        className="max-w-2xl mx-auto mb-6 rounded-xl bg-stone-700/15 border border-stone-500/40 px-5 py-4"
+        data-testid="banner-lifecycle-downgraded"
+      >
+        <div className="flex items-start gap-3">
+          <Lock className="w-5 h-5 text-stone-400 shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <div className="font-bold text-[#1C1917]">Premium's paused.</div>
+            <p className="text-[#78716C] text-sm mt-1">
+              The card never cleared, so you're back on free Coach. Start a plan again below whenever you're ready — heart's still thumpin'.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Trialing — show when the trial converts.
+  if (status === "trialing" && trialEnd) {
+    return (
+      <div
+        className="max-w-2xl mx-auto mb-6 rounded-xl bg-green-700/15 border border-green-700/40 px-5 py-4"
+        data-testid="banner-lifecycle-trialing"
+      >
+        <div className="flex items-start gap-3">
+          <Clock className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <div className="font-bold text-[#1C1917]">You're on the free trial.</div>
+            <p className="text-[#78716C] text-sm mt-1">
+              {cancelAtPeriodEnd ? (
+                <>Trial ends <span className="font-semibold">{fmtDate(trialEnd)}</span> — you won't be charged. Coach goes back to free after that.</>
+              ) : (
+                <>First charge lands <span className="font-semibold">{fmtDate(trialEnd)}</span> unless you cancel. Cancel anytime from billing.</>
+              )}
+            </p>
+            <Button
+              size="sm"
+              variant="outline"
+              className="mt-3 border-[#E2C2A4]/40 text-[#5C534D]"
+              onClick={onManageBilling}
+              disabled={managing}
+              data-testid="button-lifecycle-manage-trial"
+            >
+              {managing ? "Opening..." : "Manage billing"}
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Active but set to cancel at period end.
+  if (status === "active" && cancelAtPeriodEnd && currentPeriodEnd) {
+    return (
+      <div
+        className="max-w-2xl mx-auto mb-6 rounded-xl bg-amber-700/15 border border-amber-700/40 px-5 py-4"
+        data-testid="banner-lifecycle-canceling"
+      >
+        <div className="flex items-start gap-3">
+          <Clock className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <div className="font-bold text-[#1C1917]">Premium ends soon.</div>
+            <p className="text-[#78716C] text-sm mt-1">
+              You're set to cancel. Premium runs through <span className="font-semibold">{fmtDate(currentPeriodEnd)}</span>, then Coach goes back to free. Change your mind in billing.
+            </p>
+            <Button
+              size="sm"
+              variant="outline"
+              className="mt-3 border-[#E2C2A4]/40 text-[#5C534D]"
+              onClick={onManageBilling}
+              disabled={managing}
+              data-testid="button-lifecycle-resume"
+            >
+              {managing ? "Opening..." : "Manage billing"}
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
 }
 
 export default function RecoveryPremium() {
@@ -513,6 +669,13 @@ export default function RecoveryPremium() {
           <h2 className="text-2xl md:text-3xl font-black mb-6 text-center">
             Pick a plan. <span style={{ color: "#C06B3E" }}>Try it free.</span>
           </h2>
+
+          <LifecycleBanner
+            lifecycle={status?.lifecycle ?? null}
+            onManageBilling={() => portalMut.mutate()}
+            managing={portalMut.isPending}
+          />
+
 
           <div className="flex justify-center mb-6">
             <div

@@ -53,6 +53,7 @@ VITE_GOOGLE_ANALYTICS_ID = "G-93Y51Z5LWX"
 VAPID_PUBLIC_KEY = "BMR9iOKan69Lel5msGAuBipfJoV9GLdFHnxnx9G_JYmkd7QFKWoiCFp0vY4rO8aoDzaI_iq8ayXIsex96bDam6k"
 VAPID_PRIVATE_KEY = "Qj2cvyt9Sk0Wxbv92hVbY7jwSowFCwAnh_VzoG9URb0"
 VAPID_EMAIL = "mailto:nick@strokerecoveryacademy.com"
+SMS_ENABLED = "true"
 
 [objectStorage]
 defaultBucketID = "replit-objstore-6695a99c-acae-4297-ba17-54ca57afa29e"

@@ -22933,6 +22933,29 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
+  // GET /api/admin/subscriptions/risk - Sasquatch Premium at-risk / recovered
+  // view (Task #3). At-risk = failed payment in grace; downgraded = grace
+  // lapsed; recovered = card cleared in the last 30 days.
+  app.get('/api/admin/subscriptions/risk', isAuthenticated, requireAdmin, async (req: any, res) => {
+    try {
+      const { getAtRiskSubscriptions } = await import('./services/subscriptionLifecycleService');
+      const data = await getAtRiskSubscriptions();
+      res.json({
+        atRisk: data.atRisk,
+        downgraded: data.downgraded,
+        recovered: data.recovered,
+        counts: {
+          atRisk: data.atRisk.length,
+          downgraded: data.downgraded.length,
+          recovered: data.recovered.length,
+        },
+      });
+    } catch (error: any) {
+      console.error("Error fetching subscription risk view:", error?.message || error);
+      res.status(500).json({ message: "Failed to fetch subscription risk view" });
+    }
+  });
+
   // GET /api/admin/analytics - Rich growth/engagement analytics (admin only)
   app.get('/api/admin/analytics', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {

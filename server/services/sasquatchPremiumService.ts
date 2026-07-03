@@ -159,6 +159,48 @@ export async function hasActiveSasquatchPremium(
     if (cached && cached.expiresAt > Date.now()) return cached.value;
   }
 
+  // ── Durable lifecycle state (Task #3) ──────────────────────────────────
+  // If a `sasquatch_premium_subscriptions` row exists for this customer it is
+  // authoritative — it encodes grace periods on failed payments + explicit
+  // downgrades that the raw `stripe.subscriptions` status can't express. No
+  // row (or the table not yet provisioned) → fall through to the Stripe DB /
+  // API path below (preserves fresh-checkout lag handling + legacy subs).
+  // Entitlement logic is inlined here (rather than importing the lifecycle
+  // service) to avoid a circular import.
+  try {
+    const st = await db.execute(sql`
+      SELECT status, grace_period_end, downgraded_at
+        FROM sasquatch_premium_subscriptions
+       WHERE stripe_customer_id = ${stripeCustomerId}
+       ORDER BY updated_at DESC LIMIT 1
+    `);
+    const row = (st.rows as any[])[0];
+    if (row) {
+      const status = String(row.status);
+      let entitled: boolean;
+      if (status === "active" || status === "trialing") {
+        entitled = true;
+      } else if ((status === "past_due" || status === "unpaid") && !row.downgraded_at) {
+        const grace = row.grace_period_end ? Date.parse(String(row.grace_period_end)) : 0;
+        entitled = grace > Date.now();
+      } else {
+        entitled = false; // canceled / paused / incomplete / downgraded
+      }
+      entitlementCache.set(stripeCustomerId, {
+        value: entitled,
+        expiresAt: Date.now() + ENTITLEMENT_CACHE_MS,
+      });
+      return entitled;
+    }
+  } catch (e: any) {
+    // Table may not exist yet, or a transient DB hiccup — fall through to the
+    // Stripe-backed path so the gate degrades safely.
+    console.warn(
+      "[sasquatch-premium] lifecycle state lookup skipped:",
+      e?.message || e,
+    );
+  }
+
   // ── Webhook-backed entitlement (Wave I) ────────────────────────────────
   // The `stripe-replit-sync` integration mirrors all Stripe state into the
   // `stripe.*` Postgres schema in near-realtime. Querying that locally is
