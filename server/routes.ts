@@ -13343,6 +13343,57 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
+  // Toggle the "story moment" flag on a journal entry — survivor explicitly
+  // marks this entry as a chapter they want in their compiled book.
+  app.patch('/api/recovery/journal/:id/story-moment', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const entryId = parseInt(req.params.id, 10);
+      if (!Number.isFinite(entryId)) return res.status(400).json({ message: "Invalid entry id" });
+      const { isStoryMoment } = req.body;
+      const { recoveryJournals } = await import('../shared/schema');
+      const [updated] = await db
+        .update(recoveryJournals)
+        .set({ isStoryMoment: !!isStoryMoment })
+        .where(and(eq(recoveryJournals.id, entryId), eq(recoveryJournals.userId, userId)))
+        .returning();
+      if (!updated) return res.status(404).json({ message: "Entry not found" });
+      res.json(updated);
+    } catch (error) {
+      console.error("Error toggling story moment:", error);
+      res.status(500).json({ message: "Failed to update entry" });
+    }
+  });
+
+  // Survivor story stats — journal count, chapter count, check-in count.
+  // Used by /recovery/my-story to show progress without loading full entries.
+  app.get('/api/recovery/my-story/stats', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const { recoveryJournals, dailyCheckins } = await import('../shared/schema');
+      const [[journalRow], [storyRow], [checkinRow]] = await Promise.all([
+        db.select({ cnt: count() }).from(recoveryJournals).where(eq(recoveryJournals.userId, userId)),
+        db.select({ cnt: count() }).from(recoveryJournals).where(and(eq(recoveryJournals.userId, userId), eq(recoveryJournals.isStoryMoment, true))),
+        db.select({ cnt: count() }).from(dailyCheckins).where(eq(dailyCheckins.userId, userId)),
+      ]);
+      const recentChapters = await db
+        .select()
+        .from(recoveryJournals)
+        .where(and(eq(recoveryJournals.userId, userId), eq(recoveryJournals.isStoryMoment, true)))
+        .orderBy(desc(recoveryJournals.createdAt))
+        .limit(5);
+      res.json({
+        journalEntries: Number(journalRow?.cnt ?? 0),
+        storyMoments: Number(storyRow?.cnt ?? 0),
+        checkins: Number(checkinRow?.cnt ?? 0),
+        recentChapters,
+      });
+    } catch (error) {
+      console.error("Error fetching story stats:", error);
+      res.status(500).json({ message: "Failed to fetch story stats" });
+    }
+  });
+
   // Buy a personalized Reflections edition (digital $19 / print $29). The
   // per-buyer PDF is generated NOW from their own entries, uploaded to object
   // storage, and stamped onto the order item's downloadUrl BEFORE checkout — so

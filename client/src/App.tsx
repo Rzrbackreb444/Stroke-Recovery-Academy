@@ -170,6 +170,7 @@ const ProgressHub = lazy(() => import("@/pages/ProgressHub"));
 const SupporterView = lazy(() => import("@/pages/SupporterView"));
 const NotificationSettings = lazy(() => import("@/pages/NotificationSettings"));
 const RecoveryJournal = lazy(() => import("@/pages/RecoveryJournal"));
+const MyStory = lazy(() => import("@/pages/MyStory"));
 const RecoveryResources = lazy(() => import("@/pages/RecoveryResources"));
 const RecoveryCenterFinder = lazy(() => import("@/pages/RecoveryCenterFinder"));
 const RecoveryBlog = lazy(() => import("@/pages/RecoveryBlog"));
@@ -683,6 +684,11 @@ function Router() {
       <Route path="/recovery/journal">
         <ProtectedRoute>
           <RecoveryJournal />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/recovery/my-story">
+        <ProtectedRoute>
+          <MyStory />
         </ProtectedRoute>
       </Route>
       <Route path="/recovery/resources" component={RecoveryResources} />

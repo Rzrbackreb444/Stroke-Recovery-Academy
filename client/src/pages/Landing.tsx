@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLocation, Link } from "wouter";
 import {
   Loader2, ArrowRight, Play, BrainCircuit, CalendarDays,
-  Users, CheckCircle2, ShieldCheck, Activity, Star, Flame, Gift,
+  Users, CheckCircle2, ShieldCheck, Activity, Star, Flame, Gift, BookOpen, Lock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import RecoveryHeader from "@/components/RecoveryHeader";
@@ -254,6 +254,50 @@ function Features() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+
+        {/* Write Your Recovery Story */}
+        <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center mt-24">
+          <div className="order-2 md:order-1 rounded-2xl border border-neutral-200 bg-neutral-50 p-8">
+            <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4">
+              {[
+                { label: "Day 1 — first step on the left side", chapter: true },
+                { label: "Week 3 — full sentence in PT", chapter: true },
+                { label: "Month 2 — back behind the wheel", chapter: false },
+                { label: "Year 1 — told the story in public", chapter: true },
+              ].map((row, i) => (
+                <div key={i} className="flex items-center justify-between gap-3">
+                  <div className="flex gap-3 items-center">
+                    <div className={`w-2 h-2 rounded-full shrink-0 ${row.chapter ? "bg-gold" : "bg-neutral-300"}`} />
+                    <span className={`text-sm ${row.chapter ? "text-neutral-900 font-medium" : "text-neutral-400"}`}>{row.label}</span>
+                  </div>
+                  {row.chapter && <span className="text-xs font-semibold text-gold uppercase tracking-wider">Chapter</span>}
+                </div>
+              ))}
+              <div className="pt-2 border-t border-neutral-100 flex items-center gap-2">
+                <Lock className="w-3.5 h-3.5 text-neutral-400" />
+                <span className="text-xs text-neutral-400">Everything else stays between you and the Squatch</span>
+              </div>
+            </div>
+          </div>
+          <div className="order-1 md:order-2">
+            <div className="w-12 h-12 rounded-lg bg-neutral-900 text-white flex items-center justify-center mb-6"><BookOpen className="w-6 h-6" /></div>
+            <h3 className="text-2xl font-bold text-neutral-900 mb-4">Write Your Recovery Story</h3>
+            <p className="text-neutral-600 text-lg leading-relaxed mb-6">
+              Every check-in. Every journal entry. Every breakthrough you tell the Coach. It's all material — and it's all yours. Mark the moments that matter, and when you're ready, compile them into a real book. Digital or print. In your voice. About your life.
+            </p>
+            <p className="text-sm font-semibold text-neutral-500 mb-6 italic">
+              Everything else is between you and the Squatch.
+            </p>
+            <Button
+              asChild
+              size="lg"
+              className="bg-gold text-black h-12 px-7 rounded-md font-semibold"
+              data-testid="button-write-story-features"
+            >
+              <Link href="/recovery/my-story">See your story <ArrowRight className="ml-2 h-5 w-5" /></Link>
+            </Button>
           </div>
         </div>
       </div>
