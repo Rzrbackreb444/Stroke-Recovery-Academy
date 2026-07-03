@@ -5,7 +5,7 @@
 // anyone). The SMS webhook is Twilio-signature-verified and rate-limited.
 
 import type { Express } from "express";
-import { publicPostLimiter } from "../middleware/publicRateLimit";
+import { publicPostLimiter, smsWebhookLimiter } from "../middleware/publicRateLimit";
 import { verifyUnsubToken, optOutAll } from "./unsubscribe";
 import { normalizeE164 } from "./phone";
 import { db } from "../db";
@@ -100,7 +100,7 @@ export function registerMessagingRoutes(app: Express) {
   // Ships inert: when SMS is not enabled we accept-and-noop so Twilio (if ever
   // pointed here by mistake) doesn't retry. When enabled we verify the Twilio
   // signature against the exact configured URL before doing anything.
-  app.post("/api/sms/inbound", publicPostLimiter, async (req, res) => {
+  app.post("/api/sms/inbound", smsWebhookLimiter, async (req, res) => {
     const { isSmsEnabled, validateInboundSignature } = await import("./smsProvider");
 
     res.type("text/xml");
