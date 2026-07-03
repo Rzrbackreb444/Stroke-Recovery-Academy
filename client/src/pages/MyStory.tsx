@@ -4,7 +4,6 @@ import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
-import RecoveryHeader from "@/components/RecoveryHeader";
 import RecoverySEO from "@/components/RecoverySEO";
 import {
   BookOpen,
@@ -35,9 +34,9 @@ type StoryStats = {
 
 function StatPill({ value, label }: { value: number; label: string }) {
   return (
-    <div className="flex flex-col items-center gap-1 px-5 py-4 rounded-xl bg-white/5 border border-white/8 min-w-[90px]">
-      <span className="text-2xl font-bold text-white tabular-nums">{value}</span>
-      <span className="text-xs text-gray-500 text-center leading-tight">{label}</span>
+    <div className="flex flex-col items-center gap-1 px-5 py-4 rounded-xl bg-white border border-[#E2C2A4]/40 min-w-[90px]">
+      <span className="text-2xl font-bold text-[#C06B3E] tabular-nums">{value}</span>
+      <span className="text-xs text-[#78716C] text-center leading-tight">{label}</span>
     </div>
   );
 }
@@ -58,27 +57,27 @@ function ChapterCard({
 
   return (
     <div
-      className="rounded-xl border border-[#E2741B]/25 bg-[#0d0d0d] p-5"
+      className="rounded-xl border border-[#C06B3E]/25 bg-white p-5"
       data-testid={`card-chapter-${entry.id}`}
     >
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-full bg-[#E2741B]/15 border border-[#E2741B]/25 flex items-center justify-center flex-shrink-0">
-            <BookMarked className="w-3 h-3 text-[#E2741B]" />
+          <div className="w-6 h-6 rounded-full bg-[#C06B3E]/15 border border-[#C06B3E]/25 flex items-center justify-center flex-shrink-0">
+            <BookMarked className="w-3 h-3 text-[#C06B3E]" />
           </div>
-          <span className="text-xs font-semibold text-[#E2741B] uppercase tracking-wider">Chapter</span>
+          <span className="text-xs font-semibold text-[#C06B3E] uppercase tracking-wider">Chapter</span>
         </div>
-        <span className="text-xs text-gray-600">{date}</span>
+        <span className="text-xs text-[#A8A29E]">{date}</span>
       </div>
       {entry.title && (
-        <p className="text-sm font-semibold text-gray-100 mb-2 leading-snug">{entry.title}</p>
+        <p className="text-sm font-semibold text-[#2A2421] mb-2 leading-snug">{entry.title}</p>
       )}
-      <p className="text-sm text-gray-400 leading-relaxed mb-4">
+      <p className="text-sm text-[#78716C] leading-relaxed mb-4">
         {preview}{preview.length < entry.content.length ? "…" : ""}
       </p>
       <button
         onClick={() => onUnmark(entry.id)}
-        className="text-xs text-gray-600 hover:text-gray-400 transition-colors"
+        className="text-xs text-[#A8A29E] hover:text-[#78716C] transition-colors"
         data-testid={`button-unmark-chapter-${entry.id}`}
       >
         Remove from story
@@ -119,24 +118,23 @@ export default function MyStory() {
         title="Your Recovery Story | Stroke Recovery Academy"
         description="Document your journey. Mark your chapters. Compile your recovery into a real book — in your own voice."
       />
-      <RecoveryHeader />
 
-      <div className="min-h-screen bg-[#0a0a0a] pt-20">
+      <div className="min-h-screen bg-[#FDFBF7] pt-20">
         {/* HERO */}
-        <section className="max-w-4xl mx-auto px-4 sm:px-6 pt-16 pb-12">
+        <section className="max-w-4xl mx-auto px-4 sm:px-6 pt-10 pb-10">
           <div className="mb-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-8">
-              <BookOpen className="w-3.5 h-3.5 text-[#E2741B]" />
-              <span className="text-xs font-semibold uppercase tracking-wider text-white/70">Your Recovery Story</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C06B3E]/8 border border-[#C06B3E]/20 mb-6">
+              <BookOpen className="w-3.5 h-3.5 text-[#C06B3E]" />
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#C06B3E]">Your Recovery Story</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight mb-5">
+            <h1 className="text-4xl md:text-5xl font-bold text-[#2A2421] leading-tight mb-4">
               You're writing a book<br />
-              <span className="text-[#E2741B]">one rep at a time.</span>
+              <span className="text-[#C06B3E]">one rep at a time.</span>
             </h1>
-            <p className="text-lg text-gray-400 leading-relaxed max-w-2xl">
+            <p className="text-lg text-[#78716C] leading-relaxed max-w-2xl">
               Every check-in, every journal entry, every breakthrough you tell Sasquatch — it's all material. Mark the moments that matter. When you're ready, compile them into a real book. Digital or print. In your voice. About your life.
             </p>
-            <p className="mt-4 text-sm text-gray-600 flex items-center gap-2">
+            <p className="mt-4 text-sm text-[#A8A29E] flex items-center gap-2">
               <Lock className="w-3.5 h-3.5" />
               Everything else stays between you and the Squatch.
             </p>
@@ -144,7 +142,7 @@ export default function MyStory() {
 
           {/* STATS */}
           {isLoading ? (
-            <div className="h-24 rounded-xl bg-white/5 animate-pulse" />
+            <div className="h-24 rounded-xl bg-[#E2C2A4]/20 animate-pulse mt-8" />
           ) : (
             <div className="flex flex-wrap gap-3 mt-8">
               <StatPill value={stats?.journalEntries ?? 0} label="Journal entries" />
@@ -155,9 +153,9 @@ export default function MyStory() {
         </section>
 
         {/* HOW IT WORKS */}
-        <section className="max-w-4xl mx-auto px-4 sm:px-6 pb-12">
-          <div className="rounded-2xl border border-white/8 bg-[#0d0d0d] p-6 md:p-8">
-            <h2 className="text-lg font-bold text-white mb-6">How it works</h2>
+        <section className="max-w-4xl mx-auto px-4 sm:px-6 pb-10">
+          <div className="rounded-2xl border border-[#E2C2A4]/40 bg-white p-6 md:p-8">
+            <h2 className="text-lg font-bold text-[#2A2421] mb-6">How it works</h2>
             <div className="grid md:grid-cols-3 gap-6">
               {[
                 {
@@ -181,13 +179,13 @@ export default function MyStory() {
               ].map((item) => (
                 <div key={item.step} className="flex flex-col gap-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-7 h-7 rounded-full bg-[#E2741B]/15 border border-[#E2741B]/25 flex items-center justify-center flex-shrink-0">
-                      <span className="text-xs font-bold text-[#E2741B]">{item.step}</span>
+                    <div className="w-7 h-7 rounded-full bg-[#C06B3E]/15 border border-[#C06B3E]/25 flex items-center justify-center flex-shrink-0">
+                      <span className="text-xs font-bold text-[#C06B3E]">{item.step}</span>
                     </div>
-                    <item.icon className="w-4 h-4 text-gray-500" />
+                    <item.icon className="w-4 h-4 text-[#A8A29E]" />
                   </div>
-                  <h3 className="text-sm font-semibold text-gray-100">{item.title}</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">{item.body}</p>
+                  <h3 className="text-sm font-semibold text-[#2A2421]">{item.title}</h3>
+                  <p className="text-sm text-[#78716C] leading-relaxed">{item.body}</p>
                 </div>
               ))}
             </div>
@@ -195,14 +193,14 @@ export default function MyStory() {
         </section>
 
         {/* CHAPTERS */}
-        <section className="max-w-4xl mx-auto px-4 sm:px-6 pb-12">
+        <section className="max-w-4xl mx-auto px-4 sm:px-6 pb-10">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-white">
+            <h2 className="text-lg font-bold text-[#2A2421]">
               {hasChapters ? "Your chapters" : "No chapters yet"}
             </h2>
             <Link href="/recovery/journal">
               <button
-                className="text-xs font-semibold text-[#E2741B] hover:text-[#E2741B]/80 transition-colors"
+                className="text-xs font-semibold text-[#C06B3E] hover:text-[#A85B33] transition-colors"
                 data-testid="link-go-to-journal"
               >
                 Go to journal →
@@ -211,16 +209,16 @@ export default function MyStory() {
           </div>
 
           {!hasChapters ? (
-            <div className="rounded-xl border border-white/8 bg-[#0d0d0d] p-8 text-center">
-              <FileText className="w-8 h-8 text-gray-700 mx-auto mb-3" />
-              <p className="text-sm text-gray-500 mb-2">You haven't marked any chapters yet.</p>
-              <p className="text-xs text-gray-700">
+            <div className="rounded-xl border border-[#E2C2A4]/40 bg-white p-8 text-center">
+              <FileText className="w-8 h-8 text-[#E2C2A4] mx-auto mb-3" />
+              <p className="text-sm text-[#78716C] mb-2">You haven't marked any chapters yet.</p>
+              <p className="text-xs text-[#A8A29E]">
                 Open any journal entry and tap "Mark as chapter" — those moments will appear here.
               </p>
               <Button
                 asChild
                 size="sm"
-                className="mt-5 bg-[#E2741B] text-black font-semibold hover:bg-[#E2741B]/90"
+                className="mt-5 bg-[#C06B3E] text-white font-semibold hover:bg-[#A85B33]"
                 data-testid="button-go-journal-empty"
               >
                 <Link href="/recovery/journal">Open journal</Link>
@@ -237,19 +235,19 @@ export default function MyStory() {
 
         {/* COMPILE CTA */}
         <section className="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
-          <div className="rounded-2xl border border-white/8 bg-gradient-to-br from-[#120d04] to-[#0d0d0d] p-8 text-center">
-            <div className="w-12 h-12 rounded-full bg-[#E2741B]/15 border border-[#E2741B]/25 flex items-center justify-center mx-auto mb-4">
-              <Sparkles className="w-5 h-5 text-[#E2741B]" />
+          <div className="rounded-2xl border border-[#E2C2A4]/40 bg-white p-8 text-center">
+            <div className="w-12 h-12 rounded-full bg-[#C06B3E]/15 border border-[#C06B3E]/25 flex items-center justify-center mx-auto mb-4">
+              <Sparkles className="w-5 h-5 text-[#C06B3E]" />
             </div>
-            <h2 className="text-xl font-bold text-white mb-3">Ready to compile your book?</h2>
-            <p className="text-gray-400 text-sm leading-relaxed max-w-lg mx-auto mb-6">
+            <h2 className="text-xl font-bold text-[#2A2421] mb-3">Ready to compile your book?</h2>
+            <p className="text-[#78716C] text-sm leading-relaxed max-w-lg mx-auto mb-6">
               Your journal entries become a real book — digital PDF ($19) or printed paperback ($29). Your words. Your story. Something to hand to your family, your doctor, anyone who wasn't in the room.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button
                 asChild
                 size="lg"
-                className="bg-[#E2741B] text-black font-semibold h-11 px-6 rounded-md"
+                className="bg-[#C06B3E] text-white font-semibold h-11 px-6 rounded-md hover:bg-[#A85B33]"
                 data-testid="button-compile-book"
               >
                 <Link href="/recovery/journal">
@@ -260,15 +258,15 @@ export default function MyStory() {
                 asChild
                 size="lg"
                 variant="outline"
-                className="h-11 px-6 rounded-md border-white/15 text-gray-300"
+                className="h-11 px-6 rounded-md border-[#E2C2A4]/50 text-[#78716C] hover:border-[#C06B3E]/40 hover:text-[#2A2421]"
                 data-testid="button-learn-more-premium"
               >
                 <Link href="/recovery/premium">Learn about Premium</Link>
               </Button>
             </div>
             <div className="flex items-center gap-2 justify-center mt-6">
-              <CheckCircle2 className="w-4 h-4 text-gray-700" />
-              <span className="text-xs text-gray-700">
+              <CheckCircle2 className="w-4 h-4 text-[#E2C2A4]" />
+              <span className="text-xs text-[#A8A29E]">
                 Only the chapters you mark. Everything else stays private.
               </span>
             </div>
