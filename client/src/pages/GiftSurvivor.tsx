@@ -12,7 +12,7 @@ import {
   Gift, Heart, CheckCircle, Shield, ArrowRight,
   Users, Star, Zap, Crown
 } from "lucide-react";
-const sasquatchLogo = "/sasquatch-logo.png";
+const sasquatchLogo = "/sasquatch-logo.webp";
 import RecoverySEO from "@/components/RecoverySEO";
 
 const GIFT_TIERS = [

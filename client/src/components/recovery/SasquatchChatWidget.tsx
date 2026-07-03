@@ -16,7 +16,7 @@ import {
   MicOff,
   Trash2
 } from "lucide-react";
-const sasquatchLogo = "/sasquatch-logo.png";
+const sasquatchLogo = "/sasquatch-logo.webp";
 
 interface Message {
   id: string;

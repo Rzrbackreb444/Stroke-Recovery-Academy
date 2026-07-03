@@ -557,6 +557,31 @@ export default function Landing() {
             answer:
               "Yes — Nick Kremers is living proof. After suffering a stroke that left him with 0% function on one side, he achieved 90% recovery through relentless daily rehabilitation using the techniques now taught in Stroke Recovery Academy.",
           },
+          {
+            question: "Is Stroke Recovery Academy a replacement for my doctor or therapist?",
+            answer:
+              "No. Stroke Recovery Academy is a non-clinical accountability and daily-reps platform built from a survivor's lived experience. It works alongside your medical team — not instead of it. Any new symptoms go to your doctor, and if you're in crisis we route you to 988 and 911.",
+          },
+          {
+            question: "How much does Stroke Recovery Academy cost?",
+            answer:
+              "One survivor plan: $19/month or $190/year, with a 7-day free trial. You can also talk to the AI Sasquatch Coach free before signing up. If cost is a barrier, Stroke Lyfe Inc. — a 501(c)(3) nonprofit — funds scholarships so no survivor is turned away.",
+          },
+          {
+            question: "What is the Sasquatch Method?",
+            answer:
+              "The Sasquatch Method is Nick Kremers' survivor-built system of relentless daily reps — mirror therapy, task-specific practice, and the mindset work that carried him from 0% to 90%. It's the framework behind the daily routines, the AI Coach, and the book.",
+          },
+          {
+            question: "Do I have to be a recent stroke survivor to benefit?",
+            answer:
+              "No. The platform is built for survivors at any stage — weeks, months, or years out. Neuroplasticity doesn't have an expiration date, and the daily-reps system meets you wherever your recovery is right now.",
+          },
+          {
+            question: "Is there support for caregivers and family?",
+            answer:
+              "Yes. Caregivers get dedicated resources, and survivors can build an accountability pod — a small squad walking the same road — so nobody rebuilds alone.",
+          },
         ]}
       />
       <RecoveryHeader />

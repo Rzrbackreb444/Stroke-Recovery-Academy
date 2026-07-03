@@ -236,7 +236,7 @@ export default function BookBuy() {
             <div className="flex flex-col gap-5">
               {/* Breadcrumb style label */}
               <p className="text-xs tracking-widest uppercase text-muted-foreground font-medium">
-                Stroke Lyfe Publishing · 2026
+                Stroke Recovery Academy Publishing · 2026
               </p>
 
               <div>

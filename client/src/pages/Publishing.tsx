@@ -488,7 +488,7 @@ function HeroSection() {
         <div className="flex justify-center mb-8">
           <img 
             src={strokeLyfePublishingLogo} 
-            alt="Stroke Lyfe Publishing" 
+            alt="Stroke Recovery Academy Publishing" 
             className="h-32 md:h-40 w-auto"
             data-testid="img-publishing-logo"
           />
@@ -606,15 +606,15 @@ function HowItWorksSection() {
 
 export default function Publishing() {
   useEffect(() => {
-    document.title = "Publishing Studio - Stroke Lyfe Publishing | StrokeRecoveryAcademy.com";
+    document.title = "Publishing Studio - Stroke Recovery Academy Publishing | StrokeRecoveryAcademy.com";
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute("content", "Turn your recovery story into a legacy with Stroke Lyfe Publishing. AI-powered book writing studio with ghostwriting assistance and course builder for stroke survivors.");
+      metaDescription.setAttribute("content", "Turn your recovery story into a legacy with Stroke Recovery Academy Publishing. AI-powered book writing studio with ghostwriting assistance and course builder for stroke survivors.");
     } else {
       const meta = document.createElement("meta");
       meta.name = "description";
-      meta.content = "Turn your recovery story into a legacy with Stroke Lyfe Publishing. AI-powered book writing studio with ghostwriting assistance and course builder for stroke survivors.";
+      meta.content = "Turn your recovery story into a legacy with Stroke Recovery Academy Publishing. AI-powered book writing studio with ghostwriting assistance and course builder for stroke survivors.";
       document.head.appendChild(meta);
     }
 
@@ -622,7 +622,7 @@ export default function Publishing() {
     if (!ogTitle) {
       const meta = document.createElement("meta");
       meta.setAttribute("property", "og:title");
-      meta.content = "Publishing Studio - Stroke Lyfe Publishing";
+      meta.content = "Publishing Studio - Stroke Recovery Academy Publishing";
       document.head.appendChild(meta);
     }
 

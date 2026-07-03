@@ -12,3 +12,5 @@
 - [Replit OIDC e2e login](replit-oidc-e2e-login.md) — testReplitAuth + click in-app Sign In (never type creds); hard window.location redirects can hit the real login page
 - [Image performance pass](image-perf-pass.md) — sharp→webp+sed-repoint pattern; React 18 needs lowercase `fetchpriority` spread; app_preview caches un-versioned Vite modules (stale console)
 - [Daily Accountability Loop](daily-accountability-loop.md) — DailyLoopCard on dashboard: morning brief (Gemini, cached to never_zero_audits.morning_brief), inline log (exercises/habits/mood/win PATCH checkin), coach context injection
+- [Brand taxonomy](brand-taxonomy.md) — Stroke Lyfe Inc (nonprofit, keep) vs Stroked-Out Sasquatch / Stroke Recovery Academy (consumer); do not blanket-replace
+- [Sasquatch logo asset](logo-asset.md) — served logo is 512px webp/png; 2000px master preserved at attached_assets/sasquatch-logo-master-2000.png
