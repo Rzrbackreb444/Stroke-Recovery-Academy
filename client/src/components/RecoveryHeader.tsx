@@ -99,6 +99,9 @@ export default function RecoveryHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Only the landing root has a dark hero — everywhere else the bg is cream/white
+  const isLandingRoot = location === "/" || location === "";
+
   useEffect(() => {
     setMobileOpen(false);
     setResourcesOpen(false);
@@ -109,7 +112,7 @@ export default function RecoveryHeader() {
   return (
     <header
       className={`sticky top-0 z-50 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-200 ${
-        scrolled
+        scrolled || !isLandingRoot
           ? "bg-white/95 backdrop-blur-md border-b border-[#E2C2A4]/30"
           : "bg-transparent"
       }`}
@@ -128,7 +131,7 @@ export default function RecoveryHeader() {
                 data-testid="img-recovery-logo"
               />
               <div className="flex flex-col leading-none min-w-0">
-                <span className={`font-bold tracking-tight text-lg sm:text-xl truncate ${scrolled ? "text-[#1C1917]" : "text-[#FDFBF7]"}`}>
+                <span className={`font-bold tracking-tight text-lg sm:text-xl truncate ${scrolled || !isLandingRoot ? "text-[#1C1917]" : "text-[#FDFBF7]"}`}>
                   Stroke Recovery Academy
                 </span>
                 <span className="hidden sm:block mt-1 text-[10px] font-semibold uppercase tracking-[0.28em] text-gold">
