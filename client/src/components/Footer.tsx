@@ -110,7 +110,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-[#FDFBF7] border-t border-[#E8E0D8]">
+    <footer className="bg-[#FDFBF7] border-t border-[#E2C2A4]/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid md:grid-cols-2 lg:grid-cols-7 gap-10 mb-12">
 
@@ -149,7 +149,7 @@ export default function Footer() {
                     }
                   }}
                   disabled={subscribe.isPending}
-                  className="flex-1 border-[#E8E0D8] bg-white text-[#1C1917] placeholder:text-[#A8A29E] focus:border-gold"
+                  className="flex-1 border-[#E2C2A4]/30 bg-white text-[#1C1917] placeholder:text-[#A8A29E] focus:border-gold"
                   data-testid="input-newsletter-email"
                 />
                 <Button
@@ -285,7 +285,7 @@ export default function Footer() {
         </div>
 
         {/* Legal links — Medical Disclaimer + Refund Policy + Account/Privacy */}
-        <div className="border-t border-[#E8E0D8] pt-6 pb-2">
+        <div className="border-t border-[#E2C2A4]/30 pt-6 pb-2">
           <ul className="flex flex-wrap gap-x-5 gap-y-2 justify-center md:justify-start">
             {legalLinks.map((link) => (
               <li key={link.label}>
@@ -310,7 +310,7 @@ export default function Footer() {
           </ul>
         </div>
 
-        <div className="border-t border-[#E8E0D8] pt-8">
+        <div className="border-t border-[#E2C2A4]/30 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex flex-col md:flex-row items-center gap-4">
               <div className="text-sm text-[#A8A29E]">
@@ -370,7 +370,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-[#E8E0D8]">
+          <div className="mt-8 pt-6 border-t border-[#E2C2A4]/30">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <img

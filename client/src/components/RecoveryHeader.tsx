@@ -108,9 +108,9 @@ export default function RecoveryHeader() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-200 ${
+      className={`sticky top-0 z-50 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-200 ${
         scrolled
-          ? "bg-white/95 backdrop-blur-md border-b border-[#E8E0D8]"
+          ? "bg-white/95 backdrop-blur-md border-b border-[#E2C2A4]/30"
           : "bg-transparent"
       }`}
     >
@@ -169,11 +169,11 @@ export default function RecoveryHeader() {
                   More <ChevronDown className="h-3.5 w-3.5" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="bg-white border-[#E8E0D8] p-3 w-[560px]">
+              <DropdownMenuContent align="start" className="bg-white border-[#E2C2A4]/30 p-3 w-[560px]">
                 <div className="grid grid-cols-3 gap-4">
                   {resourcesGroups.map((group) => (
                     <div key={group.title}>
-                      <div className="text-[11px] font-bold uppercase tracking-wider text-gold/80 px-2 pb-1.5 mb-1 border-b border-[#E8E0D8]">
+                      <div className="text-[11px] font-bold uppercase tracking-wider text-gold/80 px-2 pb-1.5 mb-1 border-b border-[#E2C2A4]/30">
                         {group.title}
                       </div>
                       <div className="flex flex-col">
@@ -219,7 +219,7 @@ export default function RecoveryHeader() {
                   </button>
                 </Link>
               </HoverCardTrigger>
-              <HoverCardContent className="bg-white border-[#E8E0D8] w-72 p-4">
+              <HoverCardContent className="bg-white border-[#E2C2A4]/30 w-72 p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Crown className="h-4 w-4 text-gold" />
                   <div className="font-bold text-[#1C1917] text-sm">Sasquatch Premium</div>
@@ -278,8 +278,8 @@ export default function RecoveryHeader() {
                     </span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-52 bg-white border-[#E8E0D8]">
-                  <div className="px-3 py-2 border-b border-[#E8E0D8]">
+                <DropdownMenuContent align="end" className="w-52 bg-white border-[#E2C2A4]/30">
+                  <div className="px-3 py-2 border-b border-[#E2C2A4]/30">
                     <p className="text-sm font-semibold text-[#1C1917]">{user.firstName || "Survivor"}</p>
                     <p className="text-xs text-gray-500">{user.email}</p>
                   </div>
@@ -295,7 +295,7 @@ export default function RecoveryHeader() {
                       Settings
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-[#E8E0D8]" />
+                  <DropdownMenuSeparator className="bg-[#E2C2A4]/30" />
                   <DropdownMenuItem
                     className="cursor-pointer text-[#78716C]"
                     onClick={() => (window.location.href = "/api/logout")}
@@ -422,7 +422,7 @@ export default function RecoveryHeader() {
               {user ? (
                 <>
                   <Link href="/recovery/dashboard">
-                    <Button variant="outline" className="w-full border-[#E8E0D8] text-[#1C1917] justify-start gap-2">
+                    <Button variant="outline" className="w-full border-[#E2C2A4]/30 text-[#1C1917] justify-start gap-2">
                       <LayoutDashboard className="h-4 w-4 text-gold" />
                       My Dashboard
                     </Button>
