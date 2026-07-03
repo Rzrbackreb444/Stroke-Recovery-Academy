@@ -195,6 +195,49 @@ export class WebhookHandlers {
           console.warn('[stripe-webhook] sasq-studio sync failed:', e);
         }
       }
+
+      // ── 6. Sasquatch Premium lifecycle (Task #3) — durable payment health,
+      //      7-day grace on failed payments, dunning, receipts, recovery,
+      //      trial-ending. Invoice objects carry their own line items so no
+      //      extra Stripe fetch is needed. All messaging is idempotent via
+      //      message_deliveries dedupe keys inside the service; best-effort so
+      //      it never blocks the webhook ack.
+      if (parsedEvent) {
+        try {
+          const obj: any = (parsedEvent as any).data?.object;
+          if (
+            eventType === 'customer.subscription.created' ||
+            eventType === 'customer.subscription.updated' ||
+            eventType === 'customer.subscription.deleted' ||
+            // trial_will_end (fires ~3 days before the trial converts) carries a
+            // full subscription object — sync it so our durable state reflects
+            // the imminent conversion immediately. The T-3/T-1 trial-ending
+            // nudge itself is owned by the hourly scheduler (idempotent via
+            // message_deliveries), so this branch only refreshes state.
+            eventType === 'customer.subscription.trial_will_end'
+          ) {
+            const { syncPremiumSubFromStripe } = await import(
+              './services/subscriptionLifecycleService'
+            );
+            await syncPremiumSubFromStripe(obj);
+          } else if (eventType === 'invoice.payment_failed') {
+            const { handlePremiumInvoicePaymentFailed } = await import(
+              './services/subscriptionLifecycleService'
+            );
+            await handlePremiumInvoicePaymentFailed(obj);
+          } else if (
+            eventType === 'invoice.paid' ||
+            eventType === 'invoice.payment_succeeded'
+          ) {
+            const { handlePremiumInvoicePaid } = await import(
+              './services/subscriptionLifecycleService'
+            );
+            await handlePremiumInvoicePaid(obj);
+          }
+        } catch (e) {
+          console.warn('[stripe-webhook] premium lifecycle sync failed:', e);
+        }
+      }
     } catch (err) {
       if (reserved && eventId) {
         await dbPool

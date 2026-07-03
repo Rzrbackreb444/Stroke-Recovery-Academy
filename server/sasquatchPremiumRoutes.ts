@@ -54,6 +54,39 @@ export function registerSasquatchPremiumRoutes(app: Express) {
       const [u] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
       const customerId = u?.stripeCustomerId || null;
       const active = await hasActiveSasquatchPremium(customerId);
+
+      // Lifecycle state (Task #3) — lets the client render trial / past-due /
+      // grace banners. Best-effort: a missing row or DB hiccup just omits the
+      // extra fields, never fails the status call.
+      let lifecycle: {
+        status: string;
+        plan: string;
+        currentPeriodEnd: string | null;
+        trialEnd: string | null;
+        cancelAtPeriodEnd: boolean;
+        pastDue: boolean;
+        graceEnd: string | null;
+        downgraded: boolean;
+      } | null = null;
+      try {
+        const { getSubStateByUserId } = await import("./services/subscriptionLifecycleService");
+        const st = await getSubStateByUserId(userId);
+        if (st) {
+          lifecycle = {
+            status: st.status,
+            plan: st.plan,
+            currentPeriodEnd: st.current_period_end,
+            trialEnd: st.trial_end,
+            cancelAtPeriodEnd: st.cancel_at_period_end,
+            pastDue: st.payment_state === "failed" && !st.downgraded_at,
+            graceEnd: st.grace_period_end,
+            downgraded: !!st.downgraded_at,
+          };
+        }
+      } catch (e: any) {
+        console.warn("[sasquatch-premium] status lifecycle lookup failed", e?.message || e);
+      }
+
       res.json({
         active,
         priceCents: SASQUATCH_PREMIUM_PRICE_AMOUNT,
@@ -65,6 +98,7 @@ export function registerSasquatchPremiumRoutes(app: Express) {
         annualSavingsUsd:
           (SASQUATCH_PREMIUM_PRICE_AMOUNT * 12 - SASQUATCH_PREMIUM_ANNUAL_AMOUNT) / 100,
         trialDays: SASQUATCH_PREMIUM_TRIAL_DAYS,
+        lifecycle,
       });
     } catch (err: any) {
       console.error("[sasquatch-premium] status failed", err?.message || err);
