@@ -151,6 +151,12 @@ export default function TodaySessionPanel() {
     staleTime: 5 * 60_000,
   });
 
+  const { data: weeklyActivity } = useQuery<{ days: { date: string; label: string; hasSession: boolean; exercisesDone: number; moodScore: number | null }[] }>({
+    queryKey: ["/api/recovery/weekly-activity"],
+    enabled: isAuthenticated,
+    staleTime: 5 * 60_000,
+  });
+
   // Hydrate from today's checkin
   useEffect(() => {
     if (todayCheckin?.exercisesLogged) {
@@ -252,15 +258,12 @@ export default function TodaySessionPanel() {
   const streak = dashboard?.streak?.currentStreak ?? 0;
   const completionPct = done.length / EXERCISES.length;
   const weeklyTarget = 5;
-  const weeklyDone = Math.min(streak, 7);
 
-  // Weekly bars — last 7 days (simplified: mark done if streak covers them)
-  const days = ["M", "T", "W", "T", "F", "S", "S"];
-  const today = new Date().getDay(); // 0=Sun
-  const weekBars = days.map((day, i) => {
-    const dayOffset = (i + 1 - today + 7) % 7;
-    return { day, done: dayOffset < weeklyDone };
-  });
+  // Weekly bars — real per-day data from API, fallback to empty skeleton
+  const weekBars = weeklyActivity?.days
+    ? weeklyActivity.days.map((d) => ({ day: d.label, done: d.hasSession, exercisesDone: d.exercisesDone }))
+    : Array.from({ length: 7 }, (_, i) => ({ day: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][i], done: false, exercisesDone: 0 }));
+  const weeklyDone = weekBars.filter((d) => d.done).length;
 
   const displayElapsed = mode === "countdown" ? Math.max(0, targetDuration - elapsed) : elapsed;
   const timerPct = mode === "countdown"

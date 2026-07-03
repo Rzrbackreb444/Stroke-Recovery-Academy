@@ -10091,6 +10091,50 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     }
   });
 
+  // Weekly activity — last 7 days of checkin data for the dashboard activity bars.
+  app.get('/api/recovery/weekly-activity', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const rows = await db.execute(`
+        SELECT
+          DATE(checkin_date AT TIME ZONE 'UTC') AS day,
+          COUNT(*)::int AS sessions,
+          COALESCE(
+            jsonb_array_length(exercises_logged),
+            0
+          ) AS exercises_done,
+          mood_score,
+          energy_score
+        FROM daily_checkins
+        WHERE user_id = $1
+          AND checkin_date >= NOW() - INTERVAL '7 days'
+        GROUP BY DATE(checkin_date AT TIME ZONE 'UTC'), exercises_logged, mood_score, energy_score
+        ORDER BY day ASC
+      `, [userId]);
+      // Build a 7-slot array (Mon–Sun relative to today)
+      const today = new Date();
+      const days: { date: string; label: string; hasSession: boolean; exercisesDone: number; moodScore: number | null }[] = [];
+      const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(today.getDate() - i);
+        const key = d.toISOString().split("T")[0];
+        const match = (rows.rows as any[]).find((r: any) => r.day === key || String(r.day).startsWith(key));
+        days.push({
+          date: key,
+          label: DAY_LABELS[d.getDay()],
+          hasSession: !!match,
+          exercisesDone: match ? (match.exercises_done ?? 0) : 0,
+          moodScore: match ? match.mood_score : null,
+        });
+      }
+      res.json({ days });
+    } catch (error) {
+      console.error("[weekly-activity] error:", error);
+      res.status(500).json({ message: "Failed to fetch weekly activity" });
+    }
+  });
+
   // Daily loop morning brief — Gemini reads 7-day history and generates a trend observation + 3 focus items.
   // Cached to never_zero_audits.morning_brief so only one Gemini call per day per user.
   app.post('/api/recovery/daily-loop/brief', isAuthenticated, async (req: any, res) => {
