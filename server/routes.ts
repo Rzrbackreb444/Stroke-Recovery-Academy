@@ -10122,12 +10122,16 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   app.get('/api/recovery/weekly-activity', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      const rows = await db.execute(`
+      const { pool: dbPool } = await import('./db');
+      const result = await dbPool.query(`
         SELECT
           DATE(checkin_date AT TIME ZONE 'UTC') AS day,
           COUNT(*)::int AS sessions,
           COALESCE(
-            jsonb_array_length(exercises_logged),
+            CASE WHEN exercises_logged IS NOT NULL AND jsonb_typeof(exercises_logged) = 'array'
+              THEN jsonb_array_length(exercises_logged)
+              ELSE 0
+            END,
             0
           ) AS exercises_done,
           mood_score,
@@ -10146,7 +10150,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         const d = new Date(today);
         d.setDate(today.getDate() - i);
         const key = d.toISOString().split("T")[0];
-        const match = (rows.rows as any[]).find((r: any) => r.day === key || String(r.day).startsWith(key));
+        const match = (result.rows as any[]).find((r: any) => r.day === key || String(r.day).startsWith(key));
         days.push({
           date: key,
           label: DAY_LABELS[d.getDay()],

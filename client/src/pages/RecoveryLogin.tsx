@@ -103,26 +103,33 @@ export default function RecoveryLogin() {
     otpVerifyMut.mutate({ email: otpEmail, otp: otpCode.trim() });
   }
 
+  const C = {
+    page: "#FDFBF7",
+    card: "#FFFFFF",
+    border: "#E2C2A4",
+    borderLight: "#EDD9C3",
+    inputBg: "#FDFBF7",
+    text: "#2A2421",
+    secondary: "#78716C",
+    tertiary: "#A8A29E",
+    accent: "#C06B3E",
+    accentHover: "#A85B33",
+  };
+
   return (
-    <div
-      className="min-h-screen flex flex-col"
-      style={{ background: "#0D0D0D", color: "#E5E5E5" }}
-    >
+    <div className="min-h-screen flex flex-col" style={{ background: C.page, color: C.text }}>
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-5" style={{ borderBottom: "1px solid #222" }}>
+      <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: C.borderLight }}>
         <button
           onClick={() => setLocation("/recovery")}
-          className="flex items-center gap-2 text-sm"
-          style={{ color: "#999" }}
+          className="flex items-center gap-2 text-sm transition-colors hover:text-[#C06B3E]"
+          style={{ color: C.secondary }}
           data-testid="link-back"
         >
           <ChevronLeft className="h-4 w-4" />
-          Back to Recovery OS
+          Back
         </button>
-        <span
-          className="text-xs tracking-widest uppercase font-bold"
-          style={{ color: "#E2741B" }}
-        >
+        <span className="text-xs tracking-widest uppercase font-bold" style={{ color: C.accent }}>
           Stroke Recovery Academy
         </span>
       </div>
@@ -130,37 +137,34 @@ export default function RecoveryLogin() {
       {/* Card */}
       <div className="flex flex-1 items-center justify-center px-4 py-12">
         <div
-          className="w-full max-w-md rounded-lg p-8"
-          style={{ background: "#1a1a1a", border: "1px solid #333" }}
+          className="w-full max-w-md rounded-xl p-8 shadow-[0_2px_16px_rgba(44,34,27,0.08)]"
+          style={{ background: C.card, border: `1px solid ${C.border}` }}
         >
           {/* Logo mark */}
           <div className="mb-8 text-center">
-            <div
-              className="inline-block text-3xl font-bold tracking-tight mb-1"
-              style={{ fontFamily: "Georgia, serif", color: "#FFF" }}
-            >
+            <div className="text-2xl font-bold tracking-tight mb-1" style={{ color: C.text, fontFamily: "Georgia, serif" }}>
               Recovery OS
             </div>
-            <div className="text-xs tracking-widest uppercase" style={{ color: "#E2741B" }}>
+            <div className="text-xs tracking-widest uppercase font-semibold" style={{ color: C.accent }}>
               by Nick Kremers · Stroke Survivor Year 7
             </div>
           </div>
 
-          {/* Tab switcher — only show for signin/signup */}
+          {/* Tab switcher */}
           {tab !== "otp" && (
             <div
-              className="flex rounded-md mb-8 overflow-hidden"
-              style={{ background: "#111", border: "1px solid #333" }}
+              className="flex rounded-lg mb-7 overflow-hidden"
+              style={{ background: "#F5EFE8", border: `1px solid ${C.borderLight}` }}
             >
               {(["signin", "signup"] as const).map((t) => (
                 <button
                   key={t}
                   onClick={() => setTab(t)}
-                  className="flex-1 py-2.5 text-sm font-semibold transition-colors"
+                  className="flex-1 py-2.5 text-sm font-semibold transition-all"
                   style={{
-                    background: tab === t ? "#E2741B" : "transparent",
-                    color: tab === t ? "#000" : "#999",
-                    fontFamily: "Arial, sans-serif",
+                    background: tab === t ? C.accent : "transparent",
+                    color: tab === t ? "#FFF" : C.secondary,
+                    borderRadius: "6px",
                   }}
                   data-testid={`tab-${t}`}
                 >
@@ -170,13 +174,13 @@ export default function RecoveryLogin() {
             </div>
           )}
 
-          {/* ── SIGN IN ────────────────────────────────────────────────────── */}
+          {/* ── SIGN IN ────────────────────────────────────────────────── */}
           {tab === "signin" && (
             <form onSubmit={handleSignIn} className="space-y-5" data-testid="form-signin">
               <div className="space-y-1.5">
-                <Label className="text-xs tracking-wider uppercase" style={{ color: "#999" }}>Email</Label>
+                <Label className="text-xs tracking-wider uppercase font-semibold" style={{ color: C.secondary }}>Email</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: "#555" }} />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: C.tertiary }} />
                   <Input
                     type="email"
                     value={siEmail}
@@ -184,16 +188,16 @@ export default function RecoveryLogin() {
                     required
                     placeholder="you@email.com"
                     className="pl-9"
-                    style={{ background: "#111", border: "1px solid #333", color: "#E5E5E5" }}
+                    style={{ background: C.inputBg, borderColor: C.border, color: C.text }}
                     data-testid="input-signin-email"
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs tracking-wider uppercase" style={{ color: "#999" }}>Password</Label>
+                <Label className="text-xs tracking-wider uppercase font-semibold" style={{ color: C.secondary }}>Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: "#555" }} />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: C.tertiary }} />
                   <Input
                     type={showPw ? "text" : "password"}
                     value={siPw}
@@ -201,14 +205,14 @@ export default function RecoveryLogin() {
                     required
                     placeholder="Your password"
                     className="pl-9 pr-10"
-                    style={{ background: "#111", border: "1px solid #333", color: "#E5E5E5" }}
+                    style={{ background: C.inputBg, borderColor: C.border, color: C.text }}
                     data-testid="input-signin-password"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPw(!showPw)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2"
-                    style={{ color: "#555" }}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors hover:text-[#C06B3E]"
+                    style={{ color: C.tertiary }}
                   >
                     {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -217,25 +221,25 @@ export default function RecoveryLogin() {
 
               <Button
                 type="submit"
-                className="w-full font-bold tracking-wide"
-                style={{ background: "#E2741B", color: "#000" }}
+                className="w-full font-bold tracking-wide text-white"
+                style={{ background: C.accent }}
                 disabled={signInMut.isPending}
                 data-testid="button-signin-submit"
               >
                 {signInMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Sign In <ArrowRight className="h-4 w-4 ml-1" /></>}
               </Button>
 
-              <div className="relative flex items-center gap-3 my-2">
-                <div className="flex-1 h-px" style={{ background: "#333" }} />
-                <span className="text-xs" style={{ color: "#555" }}>or sign in with a code</span>
-                <div className="flex-1 h-px" style={{ background: "#333" }} />
+              <div className="relative flex items-center gap-3 my-1">
+                <div className="flex-1 h-px" style={{ background: C.borderLight }} />
+                <span className="text-xs" style={{ color: C.tertiary }}>or sign in with a one-time code</span>
+                <div className="flex-1 h-px" style={{ background: C.borderLight }} />
               </div>
 
               <Button
                 type="button"
                 variant="outline"
                 className="w-full"
-                style={{ borderColor: "#333", color: "#999", background: "transparent" }}
+                style={{ borderColor: C.border, color: C.secondary }}
                 disabled={otpSendMut.isPending || !siEmail}
                 onClick={() => handleSendOtp(siEmail)}
                 data-testid="button-signin-otp"
@@ -245,41 +249,41 @@ export default function RecoveryLogin() {
             </form>
           )}
 
-          {/* ── SIGN UP ────────────────────────────────────────────────────── */}
+          {/* ── SIGN UP ────────────────────────────────────────────────── */}
           {tab === "signup" && (
             <form onSubmit={handleSignUp} className="space-y-5" data-testid="form-signup">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <Label className="text-xs tracking-wider uppercase" style={{ color: "#999" }}>First name</Label>
+                  <Label className="text-xs tracking-wider uppercase font-semibold" style={{ color: C.secondary }}>First name</Label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: "#555" }} />
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: C.tertiary }} />
                     <Input
                       value={suFirst}
                       onChange={(e) => setSuFirst(e.target.value)}
                       required
                       placeholder="Nick"
                       className="pl-9"
-                      style={{ background: "#111", border: "1px solid #333", color: "#E5E5E5" }}
+                      style={{ background: C.inputBg, borderColor: C.border, color: C.text }}
                       data-testid="input-signup-firstname"
                     />
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs tracking-wider uppercase" style={{ color: "#999" }}>Last name</Label>
+                  <Label className="text-xs tracking-wider uppercase font-semibold" style={{ color: C.secondary }}>Last name</Label>
                   <Input
                     value={suLast}
                     onChange={(e) => setSuLast(e.target.value)}
                     placeholder="Kremers"
-                    style={{ background: "#111", border: "1px solid #333", color: "#E5E5E5" }}
+                    style={{ background: C.inputBg, borderColor: C.border, color: C.text }}
                     data-testid="input-signup-lastname"
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs tracking-wider uppercase" style={{ color: "#999" }}>Email</Label>
+                <Label className="text-xs tracking-wider uppercase font-semibold" style={{ color: C.secondary }}>Email</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: "#555" }} />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: C.tertiary }} />
                   <Input
                     type="email"
                     value={suEmail}
@@ -287,16 +291,16 @@ export default function RecoveryLogin() {
                     required
                     placeholder="you@email.com"
                     className="pl-9"
-                    style={{ background: "#111", border: "1px solid #333", color: "#E5E5E5" }}
+                    style={{ background: C.inputBg, borderColor: C.border, color: C.text }}
                     data-testid="input-signup-email"
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs tracking-wider uppercase" style={{ color: "#999" }}>Password</Label>
+                <Label className="text-xs tracking-wider uppercase font-semibold" style={{ color: C.secondary }}>Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: "#555" }} />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: C.tertiary }} />
                   <Input
                     type={showPw ? "text" : "password"}
                     value={suPw}
@@ -305,14 +309,14 @@ export default function RecoveryLogin() {
                     minLength={8}
                     placeholder="8+ characters"
                     className="pl-9 pr-10"
-                    style={{ background: "#111", border: "1px solid #333", color: "#E5E5E5" }}
+                    style={{ background: C.inputBg, borderColor: C.border, color: C.text }}
                     data-testid="input-signup-password"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPw(!showPw)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2"
-                    style={{ color: "#555" }}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors hover:text-[#C06B3E]"
+                    style={{ color: C.tertiary }}
                   >
                     {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -321,25 +325,25 @@ export default function RecoveryLogin() {
 
               <Button
                 type="submit"
-                className="w-full font-bold tracking-wide"
-                style={{ background: "#E2741B", color: "#000" }}
+                className="w-full font-bold tracking-wide text-white"
+                style={{ background: C.accent }}
                 disabled={signUpMut.isPending}
                 data-testid="button-signup-submit"
               >
                 {signUpMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Create Account <ArrowRight className="h-4 w-4 ml-1" /></>}
               </Button>
 
-              <div className="relative flex items-center gap-3 my-2">
-                <div className="flex-1 h-px" style={{ background: "#333" }} />
-                <span className="text-xs" style={{ color: "#555" }}>or join with a code</span>
-                <div className="flex-1 h-px" style={{ background: "#333" }} />
+              <div className="relative flex items-center gap-3 my-1">
+                <div className="flex-1 h-px" style={{ background: C.borderLight }} />
+                <span className="text-xs" style={{ color: C.tertiary }}>or join with a one-time code</span>
+                <div className="flex-1 h-px" style={{ background: C.borderLight }} />
               </div>
 
               <Button
                 type="button"
                 variant="outline"
                 className="w-full"
-                style={{ borderColor: "#333", color: "#999", background: "transparent" }}
+                style={{ borderColor: C.border, color: C.secondary }}
                 disabled={otpSendMut.isPending || !suEmail}
                 onClick={() => handleSendOtp(suEmail)}
                 data-testid="button-signup-otp"
@@ -347,28 +351,26 @@ export default function RecoveryLogin() {
                 {otpSendMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Email me a one-time code instead"}
               </Button>
 
-              <p className="text-xs text-center" style={{ color: "#555" }}>
-                By joining you agree to receive The Sasquatch Dispatch newsletter.
+              <p className="text-xs text-center" style={{ color: C.tertiary }}>
+                By joining you agree to receive The Sasquatch Dispatch newsletter.{" "}
                 Unsubscribe any time.
               </p>
             </form>
           )}
 
-          {/* ── OTP VERIFY ─────────────────────────────────────────────────── */}
+          {/* ── OTP VERIFY ──────────────────────────────────────────────── */}
           {tab === "otp" && (
             <div data-testid="form-otp">
               <div className="mb-6 text-center">
-                <Mail className="h-10 w-10 mx-auto mb-3" style={{ color: "#E2741B" }} />
-                <p className="text-sm" style={{ color: "#999" }}>
-                  We sent a 6-digit code to
-                </p>
-                <p className="font-semibold" style={{ color: "#E5E5E5" }}>{otpEmail}</p>
-                <p className="text-xs mt-1" style={{ color: "#666" }}>Code expires in 10 minutes</p>
+                <Mail className="h-10 w-10 mx-auto mb-3" style={{ color: C.accent }} />
+                <p className="text-sm" style={{ color: C.secondary }}>We sent a 6-digit code to</p>
+                <p className="font-semibold mt-1" style={{ color: C.text }}>{otpEmail}</p>
+                <p className="text-xs mt-1" style={{ color: C.tertiary }}>Code expires in 10 minutes</p>
               </div>
 
               <form onSubmit={handleOtpVerify} className="space-y-5">
                 <div className="space-y-1.5">
-                  <Label className="text-xs tracking-wider uppercase" style={{ color: "#999" }}>
+                  <Label className="text-xs tracking-wider uppercase font-semibold" style={{ color: C.secondary }}>
                     Enter your code
                   </Label>
                   <Input
@@ -377,7 +379,7 @@ export default function RecoveryLogin() {
                     placeholder="123456"
                     maxLength={6}
                     className="text-center text-2xl tracking-[0.5em] font-bold"
-                    style={{ background: "#111", border: "1px solid #333", color: "#E5E5E5", height: "56px" }}
+                    style={{ background: C.inputBg, borderColor: C.border, color: C.text, height: "56px" }}
                     data-testid="input-otp-code"
                     autoFocus
                   />
@@ -385,8 +387,8 @@ export default function RecoveryLogin() {
 
                 <Button
                   type="submit"
-                  className="w-full font-bold"
-                  style={{ background: "#E2741B", color: "#000" }}
+                  className="w-full font-bold text-white"
+                  style={{ background: C.accent }}
                   disabled={otpVerifyMut.isPending || otpCode.length < 6}
                   data-testid="button-otp-verify"
                 >
@@ -397,7 +399,7 @@ export default function RecoveryLogin() {
                   type="button"
                   variant="ghost"
                   className="w-full text-sm"
-                  style={{ color: "#666" }}
+                  style={{ color: C.secondary }}
                   onClick={() => { setOtpCode(""); setTab(initialTab); }}
                   data-testid="button-otp-back"
                 >
@@ -406,8 +408,8 @@ export default function RecoveryLogin() {
 
                 <button
                   type="button"
-                  className="w-full text-xs text-center"
-                  style={{ color: "#555" }}
+                  className="w-full text-xs text-center transition-colors hover:text-[#C06B3E]"
+                  style={{ color: C.tertiary }}
                   onClick={() => handleSendOtp(otpEmail)}
                   data-testid="button-otp-resend"
                 >
@@ -421,7 +423,7 @@ export default function RecoveryLogin() {
 
       {/* Footer quote */}
       <div className="text-center pb-8 px-4">
-        <p className="text-xs italic" style={{ color: "#444" }}>
+        <p className="text-xs italic" style={{ color: C.tertiary }}>
           "Heart still thumpin'? Then your life is still pumpin'. Get to work." — Nick Kremers
         </p>
       </div>

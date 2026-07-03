@@ -644,14 +644,16 @@ export default function SasquatchCoach() {
                 </Button>
               </div>
 
-              {/* Anon quota counter */}
-              {!user && anonQuota && anonQuota.used < anonQuota.limit && (
+              {/* Anon quota counter — show from first visit, not just after first send */}
+              {!user && (
                 <p className="text-xs text-center text-[#C06B3E]/70 mt-2" data-testid="text-anon-quota">
-                  {anonQuota.limit - anonQuota.used} of {anonQuota.limit} free messages left.{" "}
+                  {anonQuota
+                    ? `${anonQuota.limit - anonQuota.used} of ${anonQuota.limit} free messages left.`
+                    : "3 free messages — no sign-up needed."}{" "}
                   <a href="/api/login" className="underline hover:text-[#C06B3E]" data-testid="link-anon-signin">
                     Sign in free
                   </a>{" "}
-                  for voice + push-to-talk + more turns.
+                  for voice + more turns.
                 </p>
               )}
 
