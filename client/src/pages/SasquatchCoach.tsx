@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Volume2, VolumeX, Loader2, Mic, MicOff, Flame, Sparkles, ShoppingBag, LogIn } from "lucide-react";
+import { Send, Volume2, VolumeX, Loader2, Mic, MicOff, Flame, Sparkles, ShoppingBag, LogIn, Check } from "lucide-react";
 import { Link } from "wouter";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import RecoveryHeader from "@/components/RecoveryHeader";
@@ -19,6 +19,9 @@ interface Message {
   crisis?: boolean;
   crisisResources?: CrisisResource[];
   requireAuth?: boolean;
+  capped?: boolean;
+  cappedUsed?: number;
+  cappedLimit?: number;
 }
 
 const STARTER_PROMPTS = [
@@ -98,6 +101,15 @@ export default function SasquatchCoach() {
     };
   }, []);
 
+  // Pre-fill input from ?prompt= query param (e.g. arriving from book chapter CTAs).
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const pre = params.get("prompt");
+      if (pre) setInput(decodeURIComponent(pre));
+    } catch {}
+  }, []);
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -128,6 +140,14 @@ export default function SasquatchCoach() {
           anon: { used: json.anonLimit ?? 3, limit: json.anonLimit ?? 3 },
         };
       }
+      if (res.status === 429 && json?.capped) {
+        return {
+          response: json.message ?? `You've hit your daily Coach message limit.`,
+          capped: true as const,
+          used: json.used as number,
+          limit: json.limit as number,
+        };
+      }
       if (!res.ok) {
         throw new Error(json?.message || `${res.status}`);
       }
@@ -148,11 +168,14 @@ export default function SasquatchCoach() {
         crisis: data.crisis === true,
         crisisResources: data.crisis ? data.resources : undefined,
         requireAuth: data.requireAuth === true,
+        capped: (data as any).capped === true,
+        cappedUsed: (data as any).used,
+        cappedLimit: (data as any).limit,
       };
       setMessages((prev) => [...prev, coachMsg]);
       if (data.anon) setAnonQuota(data.anon);
-      // Never autoplay or fetch audio on crisis or sign-in-gate responses.
-      if (data.crisis || data.requireAuth) return;
+      // Never autoplay or fetch audio on crisis, sign-in-gate, or capped responses.
+      if (data.crisis || data.requireAuth || (data as any).capped) return;
       // Inline audio (legacy path) → just play.
       if (data.audioBase64 && audioEnabled) {
         playAudio(data.audioBase64);
@@ -333,6 +356,61 @@ export default function SasquatchCoach() {
               {msg.role === "coach" && msg.crisis && msg.crisisResources ? (
                 <div className="max-w-[90%] flex-1">
                   <CrisisCard message={msg.content} resources={msg.crisisResources} />
+                </div>
+              ) : msg.role === "coach" && msg.capped ? (
+                /* ── Premium upgrade gate ── */
+                <div
+                  className="max-w-[90%] flex-1 rounded-2xl overflow-hidden border border-[#E2741B]/50 bg-gradient-to-br from-[#1a1008] via-[#141008] to-[#0f0c04]"
+                  data-testid="coach-upgrade-card"
+                >
+                  <div className="px-5 py-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Flame className="h-4 w-4 text-[#E2741B]" />
+                      <span className="text-[10px] uppercase tracking-widest text-[#E2741B] font-bold">Daily limit reached — {msg.cappedUsed}/{msg.cappedLimit} messages used</span>
+                    </div>
+                    <p className="text-sm text-gray-200 leading-relaxed mb-1">
+                      You've used all your free Coach messages for today.
+                    </p>
+                    <p className="text-xs text-gray-500 leading-relaxed mb-4">
+                      Tomorrow you get {msg.cappedLimit} more — or go unlimited right now. Premium also unlocks daily AI accountability reports, voice cloning, and premium Campfire circles.
+                    </p>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 mb-4">
+                      {[
+                        "Unlimited Coach messages",
+                        "Daily AI report from Sasquatch",
+                        "Survivor Voice Cloning",
+                        "Premium Campfire circles",
+                      ].map((f) => (
+                        <div key={f} className="flex items-center gap-1.5 text-xs text-gray-400">
+                          <Check className="h-3 w-3 text-[#E2741B] flex-shrink-0" />
+                          <span>{f}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-[11px] text-gray-600 mb-3">7-day free trial · $19/mo or $190/yr · Cancel anytime</p>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        asChild
+                        size="sm"
+                        className="bg-[#E2741B] text-black font-bold"
+                        data-testid="button-coach-start-trial"
+                      >
+                        <Link href="/recovery/premium">
+                          <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                          Start 7-day free trial
+                        </Link>
+                      </Button>
+                      <Button
+                        asChild
+                        size="sm"
+                        variant="outline"
+                        className="border-[#1e1e1e] text-gray-500 text-xs"
+                        data-testid="button-coach-see-premium"
+                      >
+                        <Link href="/recovery/premium">See what's included</Link>
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               ) : msg.role === "coach" && msg.requireAuth ? (
                 <div

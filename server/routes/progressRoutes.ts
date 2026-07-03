@@ -143,6 +143,26 @@ export function registerProgressRoutes(app: Express, isAuthenticated: any) {
     }
   });
 
+  // GET /api/recovery/community-stats — public, no auth, used for social proof widget
+  app.get('/api/recovery/community-stats', async (_req, res) => {
+    try {
+      const result = await db.execute(sql`
+        SELECT
+          COUNT(DISTINCT user_id)::int AS today_active,
+          COUNT(DISTINCT CASE WHEN created_at >= NOW() - INTERVAL '7 days' THEN user_id END)::int AS week_active
+        FROM daily_checkins
+        WHERE created_at >= CURRENT_DATE
+      `);
+      const row = (result.rows as any[])[0] ?? {};
+      res.json({
+        todayActive: Number(row.today_active ?? 0),
+        weekActive: Number(row.week_active ?? 0),
+      });
+    } catch {
+      res.json({ todayActive: 0, weekActive: 0 });
+    }
+  });
+
   // PATCH /api/recovery/notification-prefs
   app.patch('/api/recovery/notification-prefs', isAuthenticated, async (req: any, res) => {
     try {

@@ -374,6 +374,9 @@ export default function RecoveryDashboard() {
           <DailyLoopCard />
         </div>
 
+        {/* COMMUNITY PULSE — "X survivors logged a rep today." Social proof. */}
+        <CommunityPulse />
+
         {/* WEEKLY GOAL — inline progress bar, links to Progress Hub */}
         <WeeklyGoalCard />
 
@@ -1496,6 +1499,42 @@ function AnchorHeroCard() {
           </div>
       </Link>
     </section>
+  );
+}
+
+// Community pulse — "X survivors active today. You're one of them."
+// Public endpoint, no auth required. Only renders when count > 0.
+function CommunityPulse() {
+  const { data } = useQuery<{ todayActive: number; weekActive: number }>({
+    queryKey: ["/api/recovery/community-stats"],
+    staleTime: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
+  });
+
+  const count = data?.todayActive ?? 0;
+  if (count < 1) return null;
+
+  return (
+    <div
+      className="mx-1 mb-3 flex items-center gap-2 px-3 py-2 rounded-lg border border-[#1a1a1a] bg-[#0d0d0d]"
+      data-testid="section-community-pulse"
+    >
+      <div className="flex -space-x-1">
+        {[...Array(Math.min(count, 4))].map((_, i) => (
+          <div
+            key={i}
+            className="w-4 h-4 rounded-full border border-[#0d0d0d] bg-[#E2741B]/20 flex items-center justify-center"
+          >
+            <div className="w-1.5 h-1.5 rounded-full bg-[#E2741B]/60" />
+          </div>
+        ))}
+      </div>
+      <p className="text-[11px] text-gray-500 leading-tight">
+        <span className="text-[#E2741B] font-semibold">{count.toLocaleString()}</span>
+        {" "}survivor{count !== 1 ? "s" : ""} logged a rep today.{" "}
+        <span className="text-gray-600">You're one of them.</span>
+      </p>
+    </div>
   );
 }
 
