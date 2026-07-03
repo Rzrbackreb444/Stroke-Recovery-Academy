@@ -31,11 +31,11 @@ import { siteHeaderRegistry } from "./siteHeaderRegistry";
 // two clicks, but it no longer competes for primary attention with the
 // daily reps that actually move recovery.
 const primaryNav: { href: string; label: string; icon?: typeof Flame }[] = [
+  { href: "/recovery/onboarding", label: "Recovery Plan" },
+  { href: "/recovery/today", label: "Daily Reps" },
+  { href: "/recovery/community", label: "Community" },
   { href: "/recovery/sasquatch-coach", label: "Coach" },
-  { href: "/recovery#today", label: "Today" },
-  { href: "/recovery/never-zero", label: "Never Zero", icon: Flame },
-  { href: "/recovery/buddy", label: "Bonfire", icon: Users },
-  { href: "/book", label: "Book", icon: BookOpen },
+  { href: "/recovery/my-story", label: "My Story" },
 ];
 
 // "More" — grouped megamenu. Three survivor-focused columns: Practice
@@ -51,6 +51,7 @@ const resourcesGroups: { title: string; items: { href: string; label: string; pr
       { href: "/recovery/academy", label: "Learn" },
       { href: "/recovery/exercises", label: "Exercises" },
       { href: "/recovery/routine", label: "Daily Routine" },
+      { href: "/recovery/never-zero", label: "Never Zero" },
       { href: "/recovery/brain-gym", label: "Brain Gym" },
       { href: "/recovery/challenge", label: "66-Day Challenge" },
       { href: "/recovery/motivation", label: "Recovery Anchor", pro: true },
@@ -59,9 +60,9 @@ const resourcesGroups: { title: string; items: { href: string; label: string; pr
   {
     title: "Connect",
     items: [
-      { href: "/recovery/community", label: "Community" },
       { href: "/recovery/campfire", label: "Campfire (Live)" },
       { href: "/recovery/spotlight", label: "Spotlight" },
+      { href: "/recovery/buddy", label: "Accountability Buddy" },
       { href: "/groups", label: "Groups" },
       { href: "/blog", label: "Blog" },
     ],
@@ -69,9 +70,9 @@ const resourcesGroups: { title: string; items: { href: string; label: string; pr
   {
     title: "Your Story",
     items: [
+      { href: "/recovery/my-story", label: "My Story" },
       { href: "/recovery/journal", label: "Journal" },
-      { href: "/book-studio", label: "Write Your Story" },
-      { href: "/book-perfection-suite", label: "Publish Your Book" },
+      { href: "/book", label: "Nick's Book" },
     ],
   },
 ];
