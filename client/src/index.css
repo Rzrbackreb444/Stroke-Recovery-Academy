@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Stroke Recovery OS - Dark Theme Platform */
-/* Dark background #0D0D0D, Gold accent #E2741B, Orange highlights */
+/* Stroke Recovery Academy - Warm Premium Theme */
+/* Warm cream #FDFBF7, Warm dark #2A2421, Terracotta accent #C06B3E */
 :root {
   --button-outline: rgba(255,255,255, .10);
   --badge-outline: rgba(255,255,255, .05);
@@ -95,6 +95,8 @@
   --destructive-border: hsl(var(--destructive));
   --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 }
+
+  /* Warm Premium Theme — Sasquatch Colors (merged into primary :root above) */
 
 /* Dark mode is identical since we're using a dark-first design */
 .dark {
@@ -305,11 +307,11 @@
 :root {
   --stone-bg: #FAF8F3;
   --ink-black: #1A1A1A;
-  --gold-primary: #E2741B;
-  --gold-muted: rgba(226,116,27, 0.1);
-  --gold-glow: rgba(226,116,27, 0.3);
-  /* Homepage brand accent — orange #E2741B (Tailwind `gold` token) */
-  --gold: 27 78% 50%;
+  --gold-primary: #C06B3E;
+  --gold-muted: rgba(192,107,62, 0.1);
+  --gold-glow: rgba(192,107,62, 0.3);
+  /* Homepage brand accent — terracotta #C06B3E (Tailwind `gold` token) */
+  --gold: 21 54% 50%;
 }
 
 /* Display type for dramatic headlines (homepage) */

@@ -26,7 +26,8 @@ import {
   CheckCircle2, Target, Star, TrendingUp, Calendar, Heart, Zap, LogOut,
   Plus, UserPlus, DoorOpen, Smile, Activity, Quote, RefreshCw, ArrowRight,
   Play, Brain, ChevronDown, Footprints, Anchor, Sun, ClipboardList, Loader2,
-  Check, Dumbbell, Pill, Droplets, Moon, PenLine, PhoneCall, ChevronRight
+  Check, Dumbbell, Pill, Droplets, Moon, PenLine, PhoneCall, ChevronRight,
+  LayoutDashboard
 } from "lucide-react";
 import SixtyDayTracker from "@/components/recovery/SixtyDayTracker";
 import PushOptInBanner from "@/components/PushOptInBanner";
@@ -78,7 +79,7 @@ export default function RecoveryDashboard() {
     queryKey: ['/api/persona/me'],
   });
   const persona = personaData?.persona ?? null;
-  const personaAccent = persona?.accentColor || "#E2741B";
+  const personaAccent = persona?.accentColor || "#C06B3E";
   const [checkinForm, setCheckinForm] = useState({
     moodScore: 6,
     energyScore: 6,
@@ -228,7 +229,7 @@ export default function RecoveryDashboard() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
-        <div className="animate-pulse text-[#E2741B] text-xl">Loading your command center...</div>
+        <div className="animate-pulse text-[#C06B3E] text-xl">Loading your command center...</div>
       </div>
     );
   }
@@ -242,7 +243,60 @@ export default function RecoveryDashboard() {
   const totalPoints = dashboard?.totalPoints || 0;
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] text-[#1C1917]">
+    <div className="min-h-screen flex bg-[#FDFBF7] text-[#1C1917]">
+
+        {/* ── SIDEBAR ── dark refined, warm accent ── */}
+        <aside className="hidden lg:flex w-[260px] flex-col bg-[#2A2421] border-r border-[#3E322C] fixed left-0 top-0 h-screen z-40 overflow-y-auto">
+          <div className="p-6">
+            <Link href="/recovery/dashboard" className="flex items-center gap-3 mb-8">
+              <div className="w-9 h-9 rounded-full bg-[#C06B3E] flex items-center justify-center">
+                <Flame className="h-5 w-5 text-white" />
+              </div>
+              <span className="font-bold text-[#FDFBF7] text-sm tracking-tight">SRA</span>
+            </Link>
+
+            <nav className="space-y-1">
+              {[
+                { href: "/recovery/dashboard", label: "Dashboard", icon: LayoutDashboard },
+                { href: "/recovery/today", label: "Daily Reps", icon: Dumbbell },
+                { href: "/recovery/sasquatch-coach", label: "Coach", icon: MessageCircle },
+                { href: "/recovery/community", label: "Community", icon: Users },
+                { href: "/recovery/my-story", label: "My Story", icon: BookOpen },
+                { href: "/recovery/progress", label: "Progress", icon: TrendingUp },
+              ].map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#D8CFCD] hover:text-[#FDFBF7] hover:bg-[#3E322C] transition-colors text-sm"
+                >
+                  <item.icon className="h-4 w-4" />
+                  <span>{item.label}</span>
+                </Link>
+              ))}
+            </nav>
+          </div>
+
+          <div className="mt-auto p-6 border-t border-[#3E322C]">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 rounded-full bg-[#C06B3E]/20 border border-[#C06B3E]/40 flex items-center justify-center text-xs font-bold text-[#E8B986]">
+                {(user?.firstName?.[0] || "Y").toUpperCase()}
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-[#FDFBF7] truncate">{user?.firstName || "Warrior"}</p>
+                <p className="text-[10px] text-[#D8CFCD]/60">{streak.currentStreak} day streak</p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start text-[#D8CFCD] hover:text-[#FDFBF7] hover:bg-[#3E322C] text-xs"
+              onClick={() => { window.location.href = "/api/logout"; }}
+            >
+              <LogOut className="h-3.5 w-3.5 mr-2" /> Sign out
+            </Button>
+          </div>
+        </aside>
+        <div className="lg:ml-[260px] flex-1 min-h-screen">
       <SEO
         title="Recovery Dashboard | Stroke Recovery Academy"
         description="Track your stroke recovery progress with comprehensive metrics, daily check-ins, habit tracking, and personalized recovery programs designed by medical professionals."
@@ -256,7 +310,7 @@ export default function RecoveryDashboard() {
         breadcrumbs={[{ name: "Home", url: "/" }, { name: "Recovery Dashboard", url: "/recovery/dashboard" }]}
       />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="px-4 sm:px-6 lg:px-8 py-6">
         <PushOptInBanner />
         {/* Zen Mode toggle — neuro-fatigue accommodation. When on, the dashboard
             collapses to a single focal card (the daily audit) so survivors who
@@ -266,7 +320,7 @@ export default function RecoveryDashboard() {
             variant="outline"
             size="sm"
             onClick={toggleZenMode}
-            className={`border-[#E8E0D8] text-xs uppercase tracking-widest ${zenMode ? "bg-[#E2741B]/10 text-[#E2741B] border-[#E2741B]/40" : "text-[#78716C]"}`}
+            className={`border-[#E2C2A4]/30 text-xs uppercase tracking-widest ${zenMode ? "bg-[#C06B3E]/10 text-[#C06B3E] border-[#C06B3E]/40" : "text-[#78716C]"}`}
             data-testid="button-zen-mode-toggle"
             aria-pressed={zenMode}
           >
@@ -303,7 +357,7 @@ export default function RecoveryDashboard() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="border-[#E8E0D8] hover:bg-white"
+                    className="border-[#E2C2A4]/30 hover:bg-white"
                     style={{ color: personaAccent, borderColor: `${personaAccent}66` }}
                     data-testid={persona ? "button-reforge-persona" : "button-forge-persona"}
                   >
@@ -313,32 +367,33 @@ export default function RecoveryDashboard() {
               </div>
             </div>
             
-            <div className="flex flex-col items-center justify-center p-6 rounded-lg border border-[#E8E0D8] bg-white">
-              <div className="relative w-32 h-32">
-                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                  <circle cx="50" cy="50" r="45" stroke="#333" strokeWidth="8" fill="none" />
-                  <circle 
-                    cx="50" cy="50" r="45" 
-                    stroke="#E2741B" strokeWidth="8" fill="none"
-                    strokeDasharray={`${recoveryScore * 2.83} 283`}
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-3xl font-black text-[#1C1917]" data-testid="text-recovery-score">{recoveryScore}</span>
-                  <span className="text-xs text-[#78716C] uppercase">Recovery Score</span>
+            {/* KPI Metric Cards */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-2xl bg-white border border-[#E2C2A4]/40 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 text-center">
+                <div className="text-[10px] uppercase tracking-[0.2em] text-[#A8A29E] mb-1">Recovery Score</div>
+                <div className="text-3xl font-black text-[#1C1917]" data-testid="text-recovery-score">{recoveryScore}</div>
+                <div className="mt-2 h-1.5 w-full rounded-full bg-[#F5F0EB] overflow-hidden">
+                  <div className="h-full rounded-full bg-[#C06B3E] transition-all" style={{ width: `${Math.min(recoveryScore, 100)}%` }} />
                 </div>
               </div>
-              
-              <div className="mt-4 bg-[#E2741B]/10 border border-[#E2741B]/30 rounded-lg p-3">
-                <div className="flex items-center gap-2 mb-1">
-                  <Flame className="h-6 w-6 text-[#E2741B]" />
-                  <span className="text-2xl font-bold text-[#1C1917]" data-testid="text-streak">{streak.currentStreak}</span>
-                  <span className="text-[#78716C]">day streak</span>
+              <div className="rounded-2xl bg-white border border-[#E2C2A4]/40 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 text-center">
+                <div className="text-[10px] uppercase tracking-[0.2em] text-[#A8A29E] mb-1">Day Streak</div>
+                <div className="text-3xl font-black text-[#C06B3E]" data-testid="text-streak">{streak.currentStreak}</div>
+                <p className="text-[10px] text-[#A8A29E] mt-1 uppercase tracking-wider">Never Zero</p>
+              </div>
+              <div className="col-span-2 rounded-2xl bg-[#C06B3E]/8 border border-[#C06B3E]/20 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-[#C06B3E]/15 flex items-center justify-center">
+                    <Flame className="h-4 w-4 text-[#C06B3E]" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-[#1C1917]">Keep the signal alive</p>
+                    <p className="text-xs text-[#A8A29E]">{totalPoints.toLocaleString()} total reps logged</p>
+                  </div>
                 </div>
-                <p className="text-xs text-[#E2741B] font-semibold uppercase tracking-wider">
-                  NEVER ZERO - Keep the signal alive
-                </p>
+                <Link href="/recovery/today">
+                  <span className="text-xs font-semibold text-[#C06B3E] uppercase tracking-widest">Log rep →</span>
+                </Link>
               </div>
             </div>
           </div>
@@ -348,21 +403,21 @@ export default function RecoveryDashboard() {
         <section className="mb-6">
           <Link
             href="/recovery/me"
-            className="block rounded-xl border border-[#E2741B]/40 bg-gradient-to-r from-[#F5F0EB] via-[#FDFBF7] to-[#F5F0EB] p-5 hover-elevate"
+            className="block rounded-2xl border border-[#E2C2A4]/30 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 hover-elevate"
             data-testid="link-recovery-me"
           >
               <div className="flex items-center justify-between gap-4 flex-wrap">
                 <div className="flex items-center gap-3">
-                  <div className="h-11 w-11 rounded-md bg-[#E2741B] flex items-center justify-center">
+                  <div className="h-11 w-11 rounded-md bg-[#C06B3E] flex items-center justify-center">
                     <Sparkles className="h-5 w-5 text-black" />
                   </div>
                   <div>
-                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#E2741B]">Survivor OS</p>
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#C06B3E]">Survivor OS</p>
                     <p className="text-base font-bold text-[#1C1917]">Open your personal recovery plan</p>
                     <p className="text-xs text-[#A8A29E]">Sasquatch Scale, AI plan, today's prescription</p>
                   </div>
                 </div>
-                <span className="text-xs text-[#E2741B] font-semibold uppercase tracking-widest">Open →</span>
+                <span className="text-xs text-[#C06B3E] font-semibold uppercase tracking-widest">Open →</span>
               </div>
           </Link>
         </section>
@@ -401,37 +456,37 @@ export default function RecoveryDashboard() {
             stickiest retention feature on the platform. */}
         <section className="mb-8" data-testid="section-squad-hero">
           {userPod ? (
-            <div className="block rounded-xl border border-[#E2741B]/40 bg-gradient-to-r from-[#F5F0EB] via-[#FDFBF7] to-[#F5F0EB] p-5">
+            <div className="block rounded-2xl border border-[#E2C2A4]/30 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5">
               <div className="flex items-center justify-between gap-4 flex-wrap">
                 <div className="flex items-center gap-3">
-                  <div className="h-11 w-11 rounded-md bg-[#E2741B] flex items-center justify-center">
+                  <div className="h-11 w-11 rounded-md bg-[#C06B3E] flex items-center justify-center">
                     <Users className="h-5 w-5 text-black" />
                   </div>
                   <div>
-                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#E2741B]">Your Squad</p>
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#C06B3E]">Your Squad</p>
                     <p className="text-base font-bold text-[#1C1917]" data-testid="text-squad-hero-name">{userPod.name}</p>
                     <p className="text-xs text-[#A8A29E]">
                       {userPod.memberCount}/{userPod.maxMembers} survivors checking in together — your day is somebody else's reason to show up
                     </p>
                   </div>
                 </div>
-                <a href="#pod-section" className="text-xs text-[#E2741B] font-semibold uppercase tracking-widest hover-elevate px-3 py-2 rounded-md">Open squad →</a>
+                <a href="#pod-section" className="text-xs text-[#C06B3E] font-semibold uppercase tracking-widest hover-elevate px-3 py-2 rounded-md">Open squad →</a>
               </div>
             </div>
           ) : (
-            <div className="block rounded-xl border border-[#E2741B]/40 bg-gradient-to-r from-[#F5F0EB] via-[#FDFBF7] to-[#F5F0EB] p-5">
+            <div className="block rounded-2xl border border-[#E2C2A4]/30 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5">
               <div className="flex items-center justify-between gap-4 flex-wrap">
                 <div className="flex items-center gap-3">
-                  <div className="h-11 w-11 rounded-md bg-[#E2741B] flex items-center justify-center">
+                  <div className="h-11 w-11 rounded-md bg-[#C06B3E] flex items-center justify-center">
                     <UserPlus className="h-5 w-5 text-black" />
                   </div>
                   <div>
-                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#E2741B]">Draft your team</p>
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#C06B3E]">Draft your team</p>
                     <p className="text-base font-bold text-[#1C1917]">3–5 survivors. Daily check-ins. Nobody walks alone.</p>
                     <p className="text-xs text-[#A8A29E]">The accountability pod is the stickiest retention feature on the platform — because the days in between are where recovery actually happens.</p>
                   </div>
                 </div>
-                <a href="#pod-section" className="text-xs text-[#E2741B] font-semibold uppercase tracking-widest hover-elevate px-3 py-2 rounded-md" data-testid="link-squad-hero-join">Find your squad →</a>
+                <a href="#pod-section" className="text-xs text-[#C06B3E] font-semibold uppercase tracking-widest hover-elevate px-3 py-2 rounded-md" data-testid="link-squad-hero-join">Find your squad →</a>
               </div>
             </div>
           )}
@@ -445,22 +500,22 @@ export default function RecoveryDashboard() {
         <section className="mb-8" data-testid="section-survivor-shop">
           <Link
             href="/recovery/shop"
-            className="block rounded-xl border border-[#E2741B]/40 bg-gradient-to-r from-[#F5F0EB] via-[#FDFBF7] to-[#F5F0EB] p-5 hover-elevate"
+            className="block rounded-2xl border border-[#E2C2A4]/30 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 hover-elevate"
             data-testid="link-survivor-shop"
             aria-label="Open the Survivor Shop"
           >
               <div className="flex items-center justify-between gap-4 flex-wrap">
                 <div className="flex items-center gap-3">
-                  <div className="h-11 w-11 rounded-md bg-[#E2741B] flex items-center justify-center">
+                  <div className="h-11 w-11 rounded-md bg-[#C06B3E] flex items-center justify-center">
                     <ShoppingBag className="h-5 w-5 text-black" />
                   </div>
                   <div>
-                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#E2741B]">Survivor Shop</p>
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#C06B3E]">Survivor Shop</p>
                     <p className="text-base font-bold text-[#1C1917]">The gear that actually helped</p>
                     <p className="text-xs text-[#A8A29E]">AFOs, putty, grab bars, wedge pillows — survivor-curated, never prescriptive</p>
                   </div>
                 </div>
-                <span className="text-xs text-[#E2741B] font-semibold uppercase tracking-widest">Browse →</span>
+                <span className="text-xs text-[#C06B3E] font-semibold uppercase tracking-widest">Browse →</span>
               </div>
           </Link>
         </section>
@@ -469,22 +524,22 @@ export default function RecoveryDashboard() {
         <section className="mb-8" data-testid="section-motivation-studio">
           <Link
             href="/recovery/motivation"
-            className="block rounded-xl border border-[#E2741B]/40 bg-gradient-to-r from-[#F5F0EB] via-[#FDFBF7] to-[#F5F0EB] p-5 hover-elevate"
+            className="block rounded-2xl border border-[#E2C2A4]/30 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 hover-elevate"
             data-testid="link-motivation-studio"
             aria-label="Open the Motivation Studio"
           >
               <div className="flex items-center justify-between gap-4 flex-wrap">
                 <div className="flex items-center gap-3">
-                  <div className="h-11 w-11 rounded-md bg-[#E2741B] flex items-center justify-center">
+                  <div className="h-11 w-11 rounded-md bg-[#C06B3E] flex items-center justify-center">
                     <Sparkles className="h-5 w-5 text-black" />
                   </div>
                   <div>
-                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#E2741B]">Motivation Studio</p>
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#C06B3E]">Motivation Studio</p>
                     <p className="text-base font-bold text-[#1C1917]">The fuel for tomorrow</p>
                     <p className="text-xs text-[#A8A29E]">Anthem maker · vision card · daily Sasquatch quote</p>
                   </div>
                 </div>
-                <span className="text-xs text-[#E2741B] font-semibold uppercase tracking-widest">Create →</span>
+                <span className="text-xs text-[#C06B3E] font-semibold uppercase tracking-widest">Create →</span>
               </div>
           </Link>
         </section>
@@ -493,7 +548,7 @@ export default function RecoveryDashboard() {
         <section className="mb-8" data-testid="section-anthem-hero">
           <Link
             href="/recovery/anthem"
-            className="block group rounded-xl border border-[#E2741B]/40 bg-gradient-to-br from-[#E2741B]/15 via-[#F5F0EB] to-[#F5F0EB] hover-elevate active-elevate-2"
+            className="block group rounded-2xl border border-[#E2C2A4]/30 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover-elevate active-elevate-2"
             data-testid="link-anthem-hero"
             aria-label="Squatchy — the recovery anthem. Watch the video."
           >
@@ -508,18 +563,18 @@ export default function RecoveryDashboard() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#F5F0EB]/40 pointer-events-none" />
                   <div className="absolute top-3 left-3">
-                    <Badge className="bg-[#E2741B] text-black font-bold tracking-widest text-[10px] no-default-hover-elevate no-default-active-elevate">
+                    <Badge className="bg-[#C06B3E] text-black font-bold tracking-widest text-[10px] no-default-hover-elevate no-default-active-elevate">
                       <Play className="h-3 w-3 mr-1" /> NEW ANTHEM
                     </Badge>
                   </div>
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="w-14 h-14 rounded-full bg-[#E2741B]/95 group-hover:bg-[#E2741B] flex items-center justify-center shadow-lg transition-colors">
+                    <div className="w-14 h-14 rounded-full bg-[#C06B3E]/95 group-hover:bg-[#C06B3E] flex items-center justify-center shadow-lg transition-colors">
                       <Play className="h-6 w-6 text-black ml-0.5" fill="currentColor" />
                     </div>
                   </div>
                 </div>
                 <div className="p-6 flex flex-col justify-center">
-                  <p className="text-[10px] uppercase tracking-[0.3em] text-[#E2741B] font-bold mb-2">
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-[#C06B3E] font-bold mb-2">
                     Stroked-Out Sasquatch · Rock Anthem
                   </p>
                   <h2
@@ -529,9 +584,9 @@ export default function RecoveryDashboard() {
                   </h2>
                   <p className="text-sm text-[#78716C] leading-relaxed mb-4 max-w-xl">
                     From wheelchair to warrior. Heart still thumpin'? Life still pumpin'.{" "}
-                    <span className="text-[#E2741B] font-semibold">Get up. Get loud. Get Squatchy.</span>
+                    <span className="text-[#C06B3E] font-semibold">Get up. Get loud. Get Squatchy.</span>
                   </p>
-                  <div className="flex items-center gap-2 text-[#E2741B] text-sm font-semibold uppercase tracking-widest">
+                  <div className="flex items-center gap-2 text-[#C06B3E] text-sm font-semibold uppercase tracking-widest">
                     Watch & Share
                     <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </div>
@@ -545,10 +600,10 @@ export default function RecoveryDashboard() {
         {/* CHALLENGE COMMAND CENTER */}
         <FadeUpSection delay={100}>
         <section className="mb-8" data-testid="section-challenge-command">
-          <div className="bg-gradient-to-r from-[#E2741B]/15 via-[#F5F0EB] to-[#F5F0EB] border border-[#E2741B]/30 rounded-xl p-6 mb-4">
+          <div className="bg-white border border-[#E2C2A4]/30 rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 mb-4">
             <div className="flex flex-wrap items-center justify-between gap-4 mb-5">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-[#E2741B] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-[#C06B3E] flex items-center justify-center">
                   <Flame className="h-5 w-5 text-black" />
                 </div>
                 <div>
@@ -557,11 +612,11 @@ export default function RecoveryDashboard() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <div className="text-center px-4 py-2 rounded-lg bg-[#FDFBF7] border border-[#E8E0D8]">
-                  <div className="text-2xl font-black text-[#E2741B]" data-testid="text-command-streak">{streak.currentStreak}</div>
+                <div className="text-center px-4 py-2 rounded-xl bg-white border border-[#E2C2A4]/30 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+                  <div className="text-2xl font-black text-[#C06B3E]" data-testid="text-command-streak">{streak.currentStreak}</div>
                   <div className="text-xs text-[#78716C] uppercase tracking-wider">Day Streak</div>
                 </div>
-                <div className="text-center px-4 py-2 rounded-lg bg-[#FDFBF7] border border-[#E8E0D8]">
+                <div className="text-center px-4 py-2 rounded-xl bg-white border border-[#E2C2A4]/30 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
                   <div className="text-2xl font-black text-[#1C1917]" data-testid="text-command-score">{recoveryScore}</div>
                   <div className="text-xs text-[#78716C] uppercase tracking-wider">Score</div>
                 </div>
@@ -570,16 +625,16 @@ export default function RecoveryDashboard() {
 
             {/* Daily Mission Cards */}
             <div className="grid sm:grid-cols-3 gap-3 mb-5">
-              <div className={`rounded-lg p-4 border ${todayCheckin ? "bg-[#E2741B]/10 border-[#E2741B]/40" : "bg-[#FDFBF7] border-[#E8E0D8]"}`} data-testid="mission-checkin">
+              <div className={`rounded-lg p-4 border ${todayCheckin ? "bg-[#C06B3E]/10 border-[#C06B3E]/40" : "bg-[#FDFBF7] border-[#E2C2A4]/30"}`} data-testid="mission-checkin">
                 <div className="flex items-center gap-2 mb-2">
-                  <Calendar className={`h-4 w-4 ${todayCheckin ? "text-[#E2741B]" : "text-[#A8A29E]"}`} />
+                  <Calendar className={`h-4 w-4 ${todayCheckin ? "text-[#C06B3E]" : "text-[#A8A29E]"}`} />
                   <span className="text-sm font-bold text-[#1C1917]">Daily Check-in</span>
-                  {todayCheckin && <CheckCircle2 className="h-4 w-4 text-[#E2741B] ml-auto" />}
+                  {todayCheckin && <CheckCircle2 className="h-4 w-4 text-[#C06B3E] ml-auto" />}
                 </div>
                 <p className="text-xs text-[#78716C] mb-3">Log mood, energy, pain. Run your audit.</p>
                 {!todayCheckin && (
                   <button
-                    className="text-xs text-[#E2741B] font-bold flex items-center gap-1"
+                    className="text-xs text-[#C06B3E] font-bold flex items-center gap-1"
                     onClick={() => {
                       const el = document.querySelector('[data-testid="card-checkin"]');
                       el?.scrollIntoView({ behavior: "smooth" });
@@ -589,30 +644,30 @@ export default function RecoveryDashboard() {
                     Do it now <ArrowRight className="h-3 w-3" />
                   </button>
                 )}
-                {todayCheckin && <span className="text-xs text-[#E2741B] font-bold">Complete</span>}
+                {todayCheckin && <span className="text-xs text-[#C06B3E] font-bold">Complete</span>}
               </div>
 
-              <div className={`rounded-lg p-4 border ${habits.some((h: any) => h.logs?.some((l: any) => new Date(l.logDate).toDateString() === new Date().toDateString() && l.isCompleted)) ? "bg-[#E2741B]/10 border-[#E2741B]/40" : "bg-[#FDFBF7] border-[#E8E0D8]"}`} data-testid="mission-habits">
+              <div className={`rounded-lg p-4 border ${habits.some((h: any) => h.logs?.some((l: any) => new Date(l.logDate).toDateString() === new Date().toDateString() && l.isCompleted)) ? "bg-[#C06B3E]/10 border-[#C06B3E]/40" : "bg-[#FDFBF7] border-[#E2C2A4]/30"}`} data-testid="mission-habits">
                 <div className="flex items-center gap-2 mb-2">
                   <Target className="h-4 w-4 text-[#A8A29E]" />
                   <span className="text-sm font-bold text-[#1C1917]">Habit Stack</span>
                 </div>
                 <p className="text-xs text-[#78716C] mb-3">Complete your tracked recovery habits.</p>
                 <Link href="/recovery/builder">
-                  <span className="text-xs text-[#E2741B] font-bold flex items-center gap-1">
+                  <span className="text-xs text-[#C06B3E] font-bold flex items-center gap-1">
                     Manage habits <ArrowRight className="h-3 w-3" />
                   </span>
                 </Link>
               </div>
 
-              <div className="rounded-lg p-4 border bg-[#FDFBF7] border-[#E8E0D8]" data-testid="mission-lesson">
+              <div className="rounded-lg p-4 border bg-[#FDFBF7] border-[#E2C2A4]/30" data-testid="mission-lesson">
                 <div className="flex items-center gap-2 mb-2">
                   <Play className="h-4 w-4 text-[#A8A29E]" />
                   <span className="text-sm font-bold text-[#1C1917]">Today's Lesson</span>
                 </div>
                 <p className="text-xs text-[#78716C] mb-3">Continue your Sasquatch curriculum.</p>
                 <Link href="/recovery/academy">
-                  <span className="text-xs text-[#E2741B] font-bold flex items-center gap-1">
+                  <span className="text-xs text-[#C06B3E] font-bold flex items-center gap-1">
                     Go to Academy <ArrowRight className="h-3 w-3" />
                   </span>
                 </Link>
@@ -620,9 +675,9 @@ export default function RecoveryDashboard() {
             </div>
 
             {/* Phase Progress Banner */}
-            <div className="bg-[#FDFBF7] rounded-lg p-4 border border-[#E8E0D8] flex flex-wrap items-center gap-4">
+            <div className="bg-[#FDFBF7] rounded-lg p-4 border border-[#E2C2A4]/30 flex flex-wrap items-center gap-4">
               {[
-                { name: "SURVIVAL PHASE", days: "Days 1–22", color: "#E2741B", icon: Target },
+                { name: "SURVIVAL PHASE", days: "Days 1–22", color: "#C06B3E", icon: Target },
                 { name: "BREAKTHROUGH PHASE", days: "Days 23–44", color: "#FF6B35", icon: Flame },
                 { name: "OPTIMIZATION PHASE", days: "Days 45–66", color: "#22C55E", icon: Trophy },
               ].map(({ name, days, color, icon: Icon }) => {
@@ -632,7 +687,7 @@ export default function RecoveryDashboard() {
                 const isComplete = totalDays >= end;
                 return (
                   <div key={name} className={`flex items-center gap-2 text-xs flex-1 min-w-fit ${isActive ? "opacity-100" : isComplete ? "opacity-60" : "opacity-30"}`} data-testid={`phase-status-${name.toLowerCase().split(" ")[0]}`}>
-                    <div className={`w-7 h-7 rounded-full flex items-center justify-center`} style={{ background: isComplete ? color : isActive ? `${color}33` : "#1a1a1a", border: `1px solid ${color}50` }}>
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center`} style={{ background: isComplete ? color : isActive ? `${color}33` : "#E2C2A430", border: `1px solid ${color}50` }}>
                       {isComplete ? <CheckCircle2 className="h-3.5 w-3.5" style={{ color }} /> : <Icon className="h-3 w-3" style={{ color }} />}
                     </div>
                     <div>
@@ -662,14 +717,14 @@ export default function RecoveryDashboard() {
 
         <FadeUpSection delay={200}>
         <div className="grid lg:grid-cols-2 gap-6 mb-8">
-          <Card className="bg-white border-[#E8E0D8] p-6" data-testid="card-checkin">
+          <Card className="bg-white border-[#E2C2A4]/30 p-6" data-testid="card-checkin">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-[#1C1917] flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-[#E2741B]" />
+                <Calendar className="h-5 w-5 text-[#C06B3E]" />
                 Today's Check-in
               </h2>
               {todayCheckin && (
-                <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30">
+                <Badge className="bg-[#C06B3E]/20 text-[#C06B3E] border-[#C06B3E]/30">
                   <CheckCircle2 className="h-3 w-3 mr-1" /> Completed
                 </Badge>
               )}
@@ -679,23 +734,23 @@ export default function RecoveryDashboard() {
               <div className="space-y-3">
                 <div className="grid grid-cols-3 gap-4">
                   <div className="text-center">
-                    <Heart className="h-5 w-5 text-[#E2741B] mx-auto mb-1" />
+                    <Heart className="h-5 w-5 text-[#C06B3E] mx-auto mb-1" />
                     <div className="text-2xl font-bold text-[#1C1917]">{todayCheckin.moodScore}/10</div>
                     <div className="text-xs text-[#78716C]">Mood</div>
                   </div>
                   <div className="text-center">
-                    <Zap className="h-5 w-5 text-[#E2741B] mx-auto mb-1" />
+                    <Zap className="h-5 w-5 text-[#C06B3E] mx-auto mb-1" />
                     <div className="text-2xl font-bold text-[#1C1917]">{todayCheckin.energyScore}/10</div>
                     <div className="text-xs text-[#78716C]">Energy</div>
                   </div>
                   <div className="text-center">
-                    <Activity className="h-5 w-5 text-[#E2741B] mx-auto mb-1" />
+                    <Activity className="h-5 w-5 text-[#C06B3E] mx-auto mb-1" />
                     <div className="text-2xl font-bold text-[#1C1917]">{todayCheckin.painScore}/10</div>
                     <div className="text-xs text-[#78716C]">Pain</div>
                   </div>
                 </div>
                 {todayCheckin.winsToday && (
-                  <div className="bg-[#FDFBF7] rounded p-3 border border-[#E8E0D8]">
+                  <div className="bg-[#FDFBF7] rounded p-3 border border-[#E2C2A4]/30">
                     <span className="text-xs text-[#78716C] uppercase">Wins:</span>
                     <p className="text-sm text-[#78716C]">{todayCheckin.winsToday}</p>
                   </div>
@@ -705,7 +760,7 @@ export default function RecoveryDashboard() {
               <div className="space-y-4">
                 {/* Skip escape hatch */}
                 <Link href="/recovery/community">
-                  <div className="text-center text-xs text-[#A8A29E] hover:text-[#E2741B] cursor-pointer transition-colors pb-1" data-testid="link-skip-checkin">
+                  <div className="text-center text-xs text-[#A8A29E] hover:text-[#C06B3E] cursor-pointer transition-colors pb-1" data-testid="link-skip-checkin">
                     Skip for now → Explore Community
                   </div>
                 </Link>
@@ -714,9 +769,9 @@ export default function RecoveryDashboard() {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-sm font-medium text-[#78716C] flex items-center gap-1.5">
-                      <Heart className="h-3.5 w-3.5 text-[#E2741B]" /> Mood
+                      <Heart className="h-3.5 w-3.5 text-[#C06B3E]" /> Mood
                     </label>
-                    <span className="text-[#E2741B] font-bold text-xs">
+                    <span className="text-[#C06B3E] font-bold text-xs">
                       {MOOD_OPTIONS.find(o => o.value === checkinForm.moodScore)?.label}
                     </span>
                   </div>
@@ -728,8 +783,8 @@ export default function RecoveryDashboard() {
                         onClick={() => setCheckinForm({ ...checkinForm, moodScore: opt.value })}
                         className={`py-3 rounded-lg text-xs font-bold border transition-colors ${
                           checkinForm.moodScore === opt.value
-                            ? "bg-[#E2741B] text-black border-[#E2741B]"
-                            : "bg-[#FDFBF7] text-[#78716C] border-[#E8E0D8] hover:border-[#E2741B]/50"
+                            ? "bg-[#C06B3E] text-black border-[#C06B3E]"
+                            : "bg-[#FDFBF7] text-[#78716C] border-[#E2C2A4]/30 hover:border-[#C06B3E]/50"
                         }`}
                         data-testid={`mood-${opt.value}`}
                       >{opt.label}</button>
@@ -741,9 +796,9 @@ export default function RecoveryDashboard() {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-sm font-medium text-[#78716C] flex items-center gap-1.5">
-                      <Zap className="h-3.5 w-3.5 text-[#E2741B]" /> Energy
+                      <Zap className="h-3.5 w-3.5 text-[#C06B3E]" /> Energy
                     </label>
-                    <span className="text-[#E2741B] font-bold text-xs">
+                    <span className="text-[#C06B3E] font-bold text-xs">
                       {ENERGY_OPTIONS.find(o => o.value === checkinForm.energyScore)?.label}
                     </span>
                   </div>
@@ -755,8 +810,8 @@ export default function RecoveryDashboard() {
                         onClick={() => setCheckinForm({ ...checkinForm, energyScore: opt.value })}
                         className={`py-3 rounded-lg text-xs font-bold border transition-colors ${
                           checkinForm.energyScore === opt.value
-                            ? "bg-[#E2741B] text-black border-[#E2741B]"
-                            : "bg-[#FDFBF7] text-[#78716C] border-[#E8E0D8] hover:border-[#E2741B]/50"
+                            ? "bg-[#C06B3E] text-black border-[#C06B3E]"
+                            : "bg-[#FDFBF7] text-[#78716C] border-[#E2C2A4]/30 hover:border-[#C06B3E]/50"
                         }`}
                         data-testid={`energy-${opt.value}`}
                       >{opt.label}</button>
@@ -768,10 +823,10 @@ export default function RecoveryDashboard() {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-sm font-medium text-[#78716C] flex items-center gap-1.5">
-                      <Activity className="h-3.5 w-3.5 text-[#E2741B]" /> Pain
+                      <Activity className="h-3.5 w-3.5 text-[#C06B3E]" /> Pain
                     </label>
                     <span className={`font-bold text-xs ${
-                      checkinForm.painScore >= 8 ? "text-red-400" : checkinForm.painScore >= 6 ? "text-orange-400" : "text-[#E2741B]"
+                      checkinForm.painScore >= 8 ? "text-red-400" : checkinForm.painScore >= 6 ? "text-orange-400" : "text-[#C06B3E]"
                     }`}>
                       {PAIN_OPTIONS.find(o => o.value === checkinForm.painScore)?.label}
                     </span>
@@ -786,8 +841,8 @@ export default function RecoveryDashboard() {
                           checkinForm.painScore === opt.value
                             ? opt.value >= 8 ? "bg-red-500 text-[#1C1917] border-red-500"
                               : opt.value >= 6 ? "bg-orange-500 text-[#1C1917] border-orange-500"
-                              : "bg-[#E2741B] text-black border-[#E2741B]"
-                            : "bg-[#FDFBF7] text-[#78716C] border-[#E8E0D8] hover:border-[#E2741B]/50"
+                              : "bg-[#C06B3E] text-black border-[#C06B3E]"
+                            : "bg-[#FDFBF7] text-[#78716C] border-[#E2C2A4]/30 hover:border-[#C06B3E]/50"
                         }`}
                         data-testid={`pain-${opt.value}`}
                       >{opt.label}</button>
@@ -800,7 +855,7 @@ export default function RecoveryDashboard() {
                   size="lg"
                   onClick={handleCheckinSubmit}
                   disabled={checkinMutation.isPending}
-                  className="w-full bg-[#E2741B] text-black font-bold"
+                  className="w-full bg-[#C06B3E] text-black font-bold"
                   data-testid="button-checkin-submit"
                 >
                   {checkinMutation.isPending ? "Saving..." : "Submit Check-in"}
@@ -819,9 +874,9 @@ export default function RecoveryDashboard() {
 
                 {/* Optional Sasquatch Daily Audit */}
                 {showNotes && (
-                  <div className="space-y-3 pt-2 border-t border-[#E8E0D8]">
-                    <div className="bg-[#E2741B]/10 border border-[#E2741B]/30 rounded-lg p-4">
-                      <h3 className="text-sm font-bold text-[#E2741B] uppercase tracking-wider mb-3 flex items-center gap-2">
+                  <div className="space-y-3 pt-2 border-t border-[#E2C2A4]/30">
+                    <div className="bg-[#C06B3E]/10 border border-[#C06B3E]/30 rounded-lg p-4">
+                      <h3 className="text-sm font-bold text-[#C06B3E] uppercase tracking-wider mb-3 flex items-center gap-2">
                         <Flame className="w-4 h-4" />
                         Sasquatch Daily Audit
                       </h3>
@@ -832,7 +887,7 @@ export default function RecoveryDashboard() {
                             placeholder="Every small action counts — a flicker is still progress..."
                             value={checkinForm.winsToday}
                             onChange={(e) => setCheckinForm({ ...checkinForm, winsToday: e.target.value })}
-                            className="bg-white border-[#E8E0D8] text-[#1C1917] text-sm min-h-[60px]"
+                            className="bg-white border-[#E2C2A4]/30 text-[#1C1917] text-sm min-h-[60px]"
                             data-testid="input-wins"
                           />
                         </div>
@@ -842,7 +897,7 @@ export default function RecoveryDashboard() {
                             placeholder="Honesty heals faster than denial..."
                             value={checkinForm.challengesToday}
                             onChange={(e) => setCheckinForm({ ...checkinForm, challengesToday: e.target.value })}
-                            className="bg-white border-[#E8E0D8] text-[#1C1917] text-sm min-h-[60px]"
+                            className="bg-white border-[#E2C2A4]/30 text-[#1C1917] text-sm min-h-[60px]"
                             data-testid="input-challenges"
                           />
                         </div>
@@ -852,7 +907,7 @@ export default function RecoveryDashboard() {
                             placeholder="Your next rep, your next step..."
                             value={checkinForm.tomorrowsTarget}
                             onChange={(e) => setCheckinForm({ ...checkinForm, tomorrowsTarget: e.target.value })}
-                            className="bg-white border-[#E8E0D8] text-[#1C1917] text-sm min-h-[60px]"
+                            className="bg-white border-[#E2C2A4]/30 text-[#1C1917] text-sm min-h-[60px]"
                             data-testid="input-target"
                           />
                         </div>
@@ -862,7 +917,7 @@ export default function RecoveryDashboard() {
                             placeholder="One thing I'm grateful for..."
                             value={checkinForm.gratitude}
                             onChange={(e) => setCheckinForm({ ...checkinForm, gratitude: e.target.value })}
-                            className="bg-white border-[#E8E0D8] text-[#1C1917] text-sm min-h-[60px]"
+                            className="bg-white border-[#E2C2A4]/30 text-[#1C1917] text-sm min-h-[60px]"
                             data-testid="input-gratitude"
                           />
                         </div>
@@ -872,7 +927,7 @@ export default function RecoveryDashboard() {
                       size="lg"
                       onClick={handleCheckinSubmit}
                       disabled={checkinMutation.isPending}
-                      className="w-full bg-[#E2741B] text-black font-bold"
+                      className="w-full bg-[#C06B3E] text-black font-bold"
                       data-testid="button-checkin-submit-notes"
                     >
                       {checkinMutation.isPending ? "Saving..." : "Submit with Notes"}
@@ -883,10 +938,10 @@ export default function RecoveryDashboard() {
             )}
           </Card>
 
-          <Card className="bg-white border-[#E8E0D8] p-6" data-testid="card-program">
+          <Card className="bg-white border-[#E2C2A4]/30 p-6" data-testid="card-program">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-[#1C1917] flex items-center gap-2">
-                <BookOpen className="h-5 w-5 text-[#E2741B]" />
+                <BookOpen className="h-5 w-5 text-[#C06B3E]" />
                 Program Progress
               </h2>
             </div>
@@ -896,11 +951,11 @@ export default function RecoveryDashboard() {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-semibold text-[#1C1917]">{enrollment.program?.name || "Recovery Program"}</span>
-                    <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30">
+                    <Badge className="bg-[#C06B3E]/20 text-[#C06B3E] border-[#C06B3E]/30">
                       {enrollment.program?.tier || "Active"}
                     </Badge>
                   </div>
-                  <Progress value={enrollment.progressPercentage || 0} className="h-3 bg-[#333] [&>div]:bg-[#E2741B]" />
+                  <Progress value={enrollment.progressPercentage || 0} className="h-3 bg-[#E2C2A4]/30 [&>div]:bg-[#C06B3E]" />
                   <div className="flex justify-between mt-1 text-sm text-[#78716C]">
                     <span>{enrollment.progressPercentage || 0}% complete</span>
                     <span>{enrollment.program?.estimatedWeeks || 12} weeks</span>
@@ -908,7 +963,7 @@ export default function RecoveryDashboard() {
                 </div>
                 
                 {enrollment.currentModule && (
-                  <div className="bg-[#FDFBF7] rounded-lg p-4 border border-[#E8E0D8]">
+                  <div className="bg-[#FDFBF7] rounded-lg p-4 border border-[#E2C2A4]/30">
                     <div className="text-xs text-[#78716C] uppercase mb-1">Current Module</div>
                     <div className="font-semibold text-[#1C1917]">{enrollment.currentModule.title}</div>
                     {enrollment.currentLesson && (
@@ -918,7 +973,7 @@ export default function RecoveryDashboard() {
                 )}
                 
                 <Link href="/recovery/academy">
-                  <Button className="w-full bg-[#E2741B] text-black font-bold" data-testid="button-continue-learning">
+                  <Button className="w-full bg-[#C06B3E] text-black font-bold" data-testid="button-continue-learning">
                     Continue Learning
                   </Button>
                 </Link>
@@ -928,7 +983,7 @@ export default function RecoveryDashboard() {
                 <Target className="h-12 w-12 text-[#A8A29E] mx-auto mb-4" />
                 <p className="text-[#78716C] mb-4">Start your personalized recovery journey</p>
                 <Link href="/recovery/builder">
-                  <Button className="bg-[#E2741B] text-black font-bold" data-testid="button-start-program">
+                  <Button className="bg-[#C06B3E] text-black font-bold" data-testid="button-start-program">
                     Build Your Program
                   </Button>
                 </Link>
@@ -940,13 +995,13 @@ export default function RecoveryDashboard() {
 
         <FadeUpSection delay={250}>
         <div className="grid lg:grid-cols-2 gap-6 mb-8">
-          <Card className="bg-white border-[#E8E0D8] p-6" data-testid="card-habits">
+          <Card className="bg-white border-[#E2C2A4]/30 p-6" data-testid="card-habits">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-[#1C1917] flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-[#E2741B]" />
+                <TrendingUp className="h-5 w-5 text-[#C06B3E]" />
                 66-Day Habit Tracker
               </h2>
-              <Badge className="bg-[#FDFBF7] text-[#78716C] border-[#E8E0D8]">{streak.totalActiveDays}/66 days</Badge>
+              <Badge className="bg-[#FDFBF7] text-[#78716C] border-[#E2C2A4]/30">{streak.totalActiveDays}/66 days</Badge>
             </div>
             
             <div className="grid grid-cols-11 gap-1 mb-6">
@@ -955,7 +1010,7 @@ export default function RecoveryDashboard() {
                 return (
                   <div 
                     key={i}
-                    className={`w-5 h-5 rounded-sm ${isComplete ? 'bg-[#E2741B]' : 'bg-[#333]'}`}
+                    className={`w-5 h-5 rounded-sm ${isComplete ? 'bg-[#C06B3E]' : 'bg-[#E2C2A4]/40'}`}
                     title={`Day ${i + 1}`}
                     data-testid={`habit-day-${i + 1}`}
                   />
@@ -977,14 +1032,14 @@ export default function RecoveryDashboard() {
                   return (
                     <div 
                       key={habit.id}
-                      className="flex items-center gap-3 p-3 bg-[#FDFBF7] rounded-lg border border-[#E8E0D8]"
+                      className="flex items-center gap-3 p-3 bg-[#FDFBF7] rounded-lg border border-[#E2C2A4]/30"
                     >
                       <Checkbox
                         checked={isCompleted}
                         onCheckedChange={() => habitLogMutation.mutate(habit.id)}
                         disabled={habitLogMutation.isPending}
                         data-testid={`checkbox-habit-${habit.id}`}
-                        className="border-[#E2741B] data-[state=checked]:bg-[#E2741B]"
+                        className="border-[#C06B3E] data-[state=checked]:bg-[#C06B3E]"
                       />
                       <div className="flex-1">
                         <div className={`font-medium ${isCompleted ? 'line-through text-[#A8A29E]' : 'text-[#1C1917]'}`}>
@@ -992,7 +1047,7 @@ export default function RecoveryDashboard() {
                         </div>
                         <div className="text-xs text-[#78716C]">{habit.totalCompletions} completions</div>
                       </div>
-                      <div className="text-sm text-[#E2741B]">{habit.currentStreak} day streak</div>
+                      <div className="text-sm text-[#C06B3E]">{habit.currentStreak} day streak</div>
                     </div>
                   );
                 })}
@@ -1001,7 +1056,7 @@ export default function RecoveryDashboard() {
               <div className="text-center py-4">
                 <p className="text-[#78716C] mb-3">No habits tracked yet</p>
                 <Link href="/recovery/builder">
-                  <Button variant="outline" className="border-[#E2741B] text-[#E2741B]" data-testid="button-add-habit">
+                  <Button variant="outline" className="border-[#C06B3E] text-[#C06B3E]" data-testid="button-add-habit">
                     Add New Habit
                   </Button>
                 </Link>
@@ -1009,13 +1064,13 @@ export default function RecoveryDashboard() {
             )}
           </Card>
 
-          <Card className="bg-white border-[#E8E0D8] p-6" data-testid="card-milestones">
+          <Card className="bg-white border-[#E2C2A4]/30 p-6" data-testid="card-milestones">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-[#1C1917] flex items-center gap-2">
-                <Trophy className="h-5 w-5 text-[#E2741B]" />
+                <Trophy className="h-5 w-5 text-[#C06B3E]" />
                 Milestones & Achievements
               </h2>
-              <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30">
+              <Badge className="bg-[#C06B3E]/20 text-[#C06B3E] border-[#C06B3E]/30">
                 <Star className="h-3 w-3 mr-1" /> {totalPoints} pts
               </Badge>
             </div>
@@ -1025,22 +1080,22 @@ export default function RecoveryDashboard() {
                 {milestones.slice(0, 5).map((milestone: any) => (
                   <div 
                     key={milestone.id}
-                    className="flex items-center gap-3 p-3 bg-[#FDFBF7] rounded-lg border border-[#E8E0D8]"
+                    className="flex items-center gap-3 p-3 bg-[#FDFBF7] rounded-lg border border-[#E2C2A4]/30"
                   >
-                    <div className="w-10 h-10 rounded-full bg-[#E2741B]/20 flex items-center justify-center">
-                      <Trophy className="h-5 w-5 text-[#E2741B]" />
+                    <div className="w-10 h-10 rounded-full bg-[#C06B3E]/20 flex items-center justify-center">
+                      <Trophy className="h-5 w-5 text-[#C06B3E]" />
                     </div>
                     <div className="flex-1">
                       <div className="font-medium text-[#1C1917]">{milestone.name}</div>
                       <div className="text-xs text-[#78716C]">{milestone.description}</div>
                     </div>
-                    <Badge className="bg-[#333] text-[#78716C] border-[#E8E0D8]">+{milestone.pointsAwarded}</Badge>
+                    <Badge className="bg-[#F5F0EB] text-[#78716C] border-[#E2C2A4]/40">+{milestone.pointsAwarded}</Badge>
                   </div>
                 ))}
                 <Link href="/recovery/achievements">
                   <Button 
                     variant="outline" 
-                    className="w-full mt-4 border-[#E2741B] text-[#E2741B]"
+                    className="w-full mt-4 border-[#C06B3E] text-[#C06B3E]"
                     data-testid="button-view-achievements"
                   >
                     View All Achievements
@@ -1054,7 +1109,7 @@ export default function RecoveryDashboard() {
                 <Link href="/recovery/achievements">
                   <Button 
                     variant="outline" 
-                    className="mt-4 border-[#E2741B] text-[#E2741B]"
+                    className="mt-4 border-[#C06B3E] text-[#C06B3E]"
                     data-testid="button-view-achievements-empty"
                   >
                     View Achievement Center
@@ -1070,14 +1125,14 @@ export default function RecoveryDashboard() {
             scrolls here via #pod-section). Stays in the deeper page so the
             create/join/leave + member list + activity stream lives in one place. */}
         <FadeUpSection delay={300}>
-        <Card id="pod-section" className="bg-white border-[#E8E0D8] p-6 mb-8" data-testid="card-accountability-pod">
+        <Card id="pod-section" className="bg-white border-[#E2C2A4]/30 p-6 mb-8" data-testid="card-accountability-pod">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-[#1C1917] flex items-center gap-2">
-              <Users className="h-5 w-5 text-[#E2741B]" />
+              <Users className="h-5 w-5 text-[#C06B3E]" />
               My Accountability Pod
             </h2>
             {userPod && (
-              <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30">
+              <Badge className="bg-[#C06B3E]/20 text-[#C06B3E] border-[#C06B3E]/30">
                 {userPod.memberCount}/{userPod.maxMembers} members
               </Badge>
             )}
@@ -1091,7 +1146,7 @@ export default function RecoveryDashboard() {
                   <p className="text-sm text-[#78716C] mb-3">{userPod.description}</p>
                 )}
                 {userPod.focusArea && (
-                  <Badge className="bg-[#FDFBF7] text-[#78716C] border-[#E8E0D8] mb-4">{userPod.focusArea}</Badge>
+                  <Badge className="bg-[#FDFBF7] text-[#78716C] border-[#E2C2A4]/30 mb-4">{userPod.focusArea}</Badge>
                 )}
               </div>
 
@@ -1102,19 +1157,19 @@ export default function RecoveryDashboard() {
                   {userPod.members?.map((member: any) => (
                     <div 
                       key={member.id} 
-                      className="flex items-center gap-2 bg-[#FDFBF7] rounded-full pr-3 border border-[#E8E0D8]"
+                      className="flex items-center gap-2 bg-[#FDFBF7] rounded-full pr-3 border border-[#E2C2A4]/30"
                       data-testid={`pod-member-${member.id}`}
                     >
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={member.profileImageUrl} />
-                        <AvatarFallback className="bg-[#E2741B]/20 text-[#E2741B] text-xs">
+                        <AvatarFallback className="bg-[#C06B3E]/20 text-[#C06B3E] text-xs">
                           {member.firstName?.[0] || "?"}{member.lastName?.[0] || ""}
                         </AvatarFallback>
                       </Avatar>
                       <span className="text-sm text-[#1C1917]">
                         {member.firstName || "Member"}
                         {member.role === "leader" && (
-                          <Star className="h-3 w-3 inline ml-1 text-[#E2741B]" />
+                          <Star className="h-3 w-3 inline ml-1 text-[#C06B3E]" />
                         )}
                       </span>
                     </div>
@@ -1133,12 +1188,12 @@ export default function RecoveryDashboard() {
                     {podActivity.slice(0, 5).map((activity: any) => (
                       <div 
                         key={activity.id} 
-                        className="flex items-center gap-3 p-3 bg-[#FDFBF7] rounded-lg border border-[#E8E0D8]"
+                        className="flex items-center gap-3 p-3 bg-[#FDFBF7] rounded-lg border border-[#E2C2A4]/30"
                         data-testid={`activity-${activity.id}`}
                       >
                         <Avatar className="h-8 w-8">
                           <AvatarImage src={activity.profileImageUrl} />
-                          <AvatarFallback className="bg-[#E2741B]/20 text-[#E2741B] text-xs">
+                          <AvatarFallback className="bg-[#C06B3E]/20 text-[#C06B3E] text-xs">
                             {activity.firstName?.[0] || "?"}{activity.lastName?.[0] || ""}
                           </AvatarFallback>
                         </Avatar>
@@ -1146,7 +1201,7 @@ export default function RecoveryDashboard() {
                           <div className="flex items-center gap-2">
                             <span className="text-sm font-medium text-[#1C1917]">{activity.firstName || "Member"}</span>
                             {activity.type === "checkin" && (
-                              <Badge className="bg-[#E2741B]/20 text-[#E2741B] text-xs border-[#E2741B]/30">
+                              <Badge className="bg-[#C06B3E]/20 text-[#C06B3E] text-xs border-[#C06B3E]/30">
                                 <CheckCircle2 className="h-3 w-3 mr-1" />
                                 Checked in
                               </Badge>
@@ -1174,7 +1229,7 @@ export default function RecoveryDashboard() {
                 variant="outline" 
                 onClick={() => leavePodMutation.mutate(userPod.id)}
                 disabled={leavePodMutation.isPending}
-                className="border-[#E8E0D8] text-[#78716C]"
+                className="border-[#E2C2A4]/30 text-[#78716C]"
                 data-testid="button-leave-pod"
               >
                 <DoorOpen className="h-4 w-4 mr-2" />
@@ -1197,7 +1252,7 @@ export default function RecoveryDashboard() {
                     {openPods.slice(0, 3).map((pod: any) => (
                       <div 
                         key={pod.id}
-                        className="flex items-center justify-between p-3 bg-[#FDFBF7] rounded-lg border border-[#E8E0D8]"
+                        className="flex items-center justify-between p-3 bg-[#FDFBF7] rounded-lg border border-[#E2C2A4]/30"
                         data-testid={`open-pod-${pod.id}`}
                       >
                         <div>
@@ -1211,7 +1266,7 @@ export default function RecoveryDashboard() {
                           size="sm"
                           onClick={() => joinPodMutation.mutate(pod.id)}
                           disabled={joinPodMutation.isPending}
-                          className="bg-[#E2741B] text-black"
+                          className="bg-[#C06B3E] text-black"
                           data-testid={`button-join-pod-${pod.id}`}
                         >
                           <UserPlus className="h-4 w-4 mr-1" />
@@ -1228,14 +1283,14 @@ export default function RecoveryDashboard() {
                 <Dialog open={createPodOpen} onOpenChange={setCreatePodOpen}>
                   <DialogTrigger asChild>
                     <Button 
-                      className="bg-[#E2741B] text-black"
+                      className="bg-[#C06B3E] text-black"
                       data-testid="button-create-pod"
                     >
                       <Plus className="h-4 w-4 mr-2" />
                       Create a Pod
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="bg-white border-[#E8E0D8] text-[#1C1917]">
+                  <DialogContent className="bg-white border-[#E2C2A4]/30 text-[#1C1917]">
                     <DialogHeader>
                       <DialogTitle className="text-[#1C1917]">Create Accountability Pod</DialogTitle>
                       <DialogDescription className="text-[#78716C]">
@@ -1249,7 +1304,7 @@ export default function RecoveryDashboard() {
                           placeholder="e.g., Morning Warriors"
                           value={newPodName}
                           onChange={(e) => setNewPodName(e.target.value)}
-                          className="bg-white border-[#E8E0D8] text-[#1C1917]"
+                          className="bg-white border-[#E2C2A4]/30 text-[#1C1917]"
                           data-testid="input-pod-name"
                         />
                       </div>
@@ -1259,7 +1314,7 @@ export default function RecoveryDashboard() {
                           placeholder="What's your pod about?"
                           value={newPodDescription}
                           onChange={(e) => setNewPodDescription(e.target.value)}
-                          className="bg-white border-[#E8E0D8] text-[#1C1917]"
+                          className="bg-white border-[#E2C2A4]/30 text-[#1C1917]"
                           data-testid="input-pod-description"
                         />
                       </div>
@@ -1269,14 +1324,14 @@ export default function RecoveryDashboard() {
                           placeholder="e.g., Physical Therapy, Mindfulness"
                           value={newPodFocus}
                           onChange={(e) => setNewPodFocus(e.target.value)}
-                          className="bg-white border-[#E8E0D8] text-[#1C1917]"
+                          className="bg-white border-[#E2C2A4]/30 text-[#1C1917]"
                           data-testid="input-pod-focus"
                         />
                       </div>
                       <Button
                         onClick={handleCreatePod}
                         disabled={createPodMutation.isPending || !newPodName.trim()}
-                        className="w-full bg-[#E2741B] text-black"
+                        className="w-full bg-[#C06B3E] text-black"
                         data-testid="button-confirm-create-pod"
                       >
                         {createPodMutation.isPending ? "Creating..." : "Create Pod"}
@@ -1291,21 +1346,21 @@ export default function RecoveryDashboard() {
         </FadeUpSection>
 
         <FadeUpSection delay={350}>
-        <Card className="bg-white border-[#E8E0D8] p-6 mb-8" data-testid="card-ai-coach">
+        <Card className="bg-white border-[#E2C2A4]/30 p-6 mb-8" data-testid="card-ai-coach">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-[#1C1917] flex items-center gap-2">
-              <MessageCircle className="h-5 w-5 text-[#E2741B]" />
+              <MessageCircle className="h-5 w-5 text-[#C06B3E]" />
               AI Coach Insight
             </h2>
           </div>
           
-          <div className="bg-gradient-to-r from-[#E2741B]/10 to-[#FDFBF7] rounded-lg p-6 border border-[#E2741B]/20">
+          <div className="bg-white rounded-2xl p-6 border border-[#E2C2A4]/30 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
             <p className="text-[#78716C] mb-4">
               {todayCheckin 
                 ? `Great check-in today! Your mood is at ${todayCheckin.moodScore}/10 and energy at ${todayCheckin.energyScore}/10. ${todayCheckin.moodScore >= 7 ? "You're doing amazing - keep that momentum going!" : "Remember, recovery isn't linear. Every day you show up matters."}`
                 : "Hey warrior! Don't forget to complete your daily check-in. Tracking your progress is key to seeing how far you've come."}
             </p>
-            <Button variant="outline" className="border-[#E2741B] text-[#E2741B]" data-testid="button-chat-coach">
+            <Button variant="outline" className="border-[#C06B3E] text-[#C06B3E]" data-testid="button-chat-coach">
               Chat with Sasquatch Coach
             </Button>
           </div>
@@ -1314,7 +1369,7 @@ export default function RecoveryDashboard() {
 
         <FadeUpSection delay={400}>
         <section className="mb-8">
-          <Card className="bg-gradient-to-r from-[#E2741B]/20 to-[#F5F0EB] border-[#E2741B]/30 p-6" data-testid="card-donation-cta">
+          <Card className="bg-[#FFF8F0] border-[#C06B3E]/30 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6" data-testid="card-donation-cta">
             <div className="flex flex-col md:flex-row items-center gap-4">
               <div className="flex-1">
                 <h3 className="text-xl font-bold text-[#1C1917] mb-2">Gift the Rebuild</h3>
@@ -1325,13 +1380,13 @@ export default function RecoveryDashboard() {
               </div>
               <div className="flex gap-3">
                 <a href="https://strokelyfe.org" target="_blank" rel="noopener noreferrer">
-                  <Button className="bg-[#E2741B] text-black font-bold" data-testid="button-donate">
+                  <Button className="bg-[#C06B3E] text-black font-bold" data-testid="button-donate">
                     <Heart className="w-4 h-4 mr-2" />
                     Donate Now
                   </Button>
                 </a>
                 <a href="https://strokerecoveryacademy.com" target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" className="border-[#E2741B]/50 text-[#E2741B]" data-testid="button-coaching">
+                  <Button variant="outline" className="border-[#C06B3E]/50 text-[#C06B3E]" data-testid="button-coaching">
                     Book Coaching
                   </Button>
                 </a>
@@ -1346,40 +1401,40 @@ export default function RecoveryDashboard() {
           <h2 className="text-xl font-bold mb-4 text-[#1C1917]">Quick Actions</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             <Link href="/recovery/survival-grid">
-              <Card className="bg-white border-[#E8E0D8] p-4 hover-elevate cursor-pointer" data-testid="action-survival-grid">
-                <Grid3X3 className="h-8 w-8 text-[#E2741B] mb-2" />
+              <Card className="bg-white border-[#E2C2A4]/30 p-4 hover-elevate cursor-pointer" data-testid="action-survival-grid">
+                <Grid3X3 className="h-8 w-8 text-[#C06B3E] mb-2" />
                 <div className="font-semibold text-[#1C1917]">Survival Grid</div>
                 <div className="text-xs text-[#78716C]">Exercises & Protocols</div>
               </Card>
             </Link>
 
             <Link href="/recovery/brain-gym">
-              <Card className="bg-white border-[#E8E0D8] p-4 hover-elevate cursor-pointer" data-testid="action-brain-gym">
-                <Brain className="h-8 w-8 text-[#E2741B] mb-2" />
+              <Card className="bg-white border-[#E2C2A4]/30 p-4 hover-elevate cursor-pointer" data-testid="action-brain-gym">
+                <Brain className="h-8 w-8 text-[#C06B3E] mb-2" />
                 <div className="font-semibold text-[#1C1917]">Brain Gym</div>
                 <div className="text-xs text-[#78716C]">Word Search · Crossword · Memory</div>
               </Card>
             </Link>
 
             <Link href="/recovery/community">
-              <Card className="bg-white border-[#E8E0D8] p-4 hover-elevate cursor-pointer" data-testid="action-community">
-                <Users className="h-8 w-8 text-[#E2741B] mb-2" />
+              <Card className="bg-white border-[#E2C2A4]/30 p-4 hover-elevate cursor-pointer" data-testid="action-community">
+                <Users className="h-8 w-8 text-[#C06B3E] mb-2" />
                 <div className="font-semibold text-[#1C1917]">Community</div>
                 <div className="text-xs text-[#78716C]">Share Your Progress</div>
               </Card>
             </Link>
             
             <Link href="/recovery/academy">
-              <Card className="bg-white border-[#E8E0D8] p-4 hover-elevate cursor-pointer" data-testid="action-academy">
-                <BookOpen className="h-8 w-8 text-[#E2741B] mb-2" />
+              <Card className="bg-white border-[#E2C2A4]/30 p-4 hover-elevate cursor-pointer" data-testid="action-academy">
+                <BookOpen className="h-8 w-8 text-[#C06B3E] mb-2" />
                 <div className="font-semibold text-[#1C1917]">Academy</div>
                 <div className="text-xs text-[#78716C]">Courses & Learning</div>
               </Card>
             </Link>
             
             <Link href="/marketplace">
-              <Card className="bg-white border-[#E8E0D8] p-4 hover-elevate cursor-pointer" data-testid="action-marketplace">
-                <ShoppingBag className="h-8 w-8 text-[#E2741B] mb-2" />
+              <Card className="bg-white border-[#E2C2A4]/30 p-4 hover-elevate cursor-pointer" data-testid="action-marketplace">
+                <ShoppingBag className="h-8 w-8 text-[#C06B3E] mb-2" />
                 <div className="font-semibold text-[#1C1917]">Marketplace</div>
                 <div className="text-xs text-[#78716C]">Recovery Tools</div>
               </Card>
@@ -1399,6 +1454,7 @@ export default function RecoveryDashboard() {
         />
         </>)}
       </main>
+      </div>
     </div>
   );
 }
@@ -1434,16 +1490,16 @@ function AnchorHeroCard() {
     <section className="mb-8" data-testid="section-anchor-hero">
       <Link
         href="/recovery/anchor/today"
-        className="block group rounded-xl border-2 border-[#E2741B]/40 bg-gradient-to-br from-[#E2741B]/15 via-[#F5F0EB] to-[#F5F0EB] hover-elevate active-elevate-2 p-6"
+        className="block group rounded-2xl border border-[#E2C2A4]/30 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover-elevate active-elevate-2 p-6"
         data-testid="link-anchor-hero"
         aria-label="Open today's recovery anchor"
       >
           <div className="flex items-start gap-5">
-            <div className="hidden sm:flex h-16 w-16 rounded-full bg-[#E2741B] items-center justify-center shrink-0 shadow-[0_0_24px_rgba(226,116,27,0.35)]">
+            <div className="hidden sm:flex h-16 w-16 rounded-full bg-[#C06B3E] items-center justify-center shrink-0 shadow-[0_0_24px_rgba(192,107,62,0.35)]">
               <Anchor className="h-8 w-8 text-black" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-[#E2741B] font-bold mb-1">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-[#C06B3E] font-bold mb-1">
                 Today's Anchor · Recovery Anchor Studio
               </p>
               <h2
@@ -1456,7 +1512,7 @@ function AnchorHeroCard() {
               {isLoading || !data ? (
                 <p className="text-sm text-[#78716C] leading-relaxed mb-3">
                   Encode an affirmation, a speech-recovery phrase, or a memory
-                  list as a sung anchor. <span className="text-[#E2741B] font-semibold">Practice once a day.</span>
+                  list as a sung anchor. <span className="text-[#C06B3E] font-semibold">Practice once a day.</span>
                 </p>
               ) : (
                 <div className="mb-3" data-testid="preview-anchor-today">
@@ -1470,13 +1526,13 @@ function AnchorHeroCard() {
                   ) : (
                     <p className="text-sm text-[#78716C] leading-relaxed mb-2">
                       No anchor for today yet.{" "}
-                      <span className="text-[#E2741B] font-semibold">Pick one or render a new one.</span>
+                      <span className="text-[#C06B3E] font-semibold">Pick one or render a new one.</span>
                     </p>
                   )}
                   <div className="flex flex-wrap gap-2 mt-2">
                     <Badge
                       variant="outline"
-                      className="border-[#E2741B]/50 text-[#E2741B] bg-[#E2741B]/10 text-[11px]"
+                      className="border-[#C06B3E]/50 text-[#C06B3E] bg-[#C06B3E]/10 text-[11px]"
                       data-testid="chip-anchor-streak"
                     >
                       <Flame className="h-3 w-3 mr-1" />
@@ -1485,7 +1541,7 @@ function AnchorHeroCard() {
                     {data.longestStreak > 0 && (
                       <Badge
                         variant="outline"
-                        className="border-[#E2741B]/30 text-[#E2741B]/80 bg-[#E2741B]/5 text-[11px]"
+                        className="border-[#C06B3E]/30 text-[#C06B3E]/80 bg-[#C06B3E]/5 text-[11px]"
                         data-testid="chip-anchor-longest"
                       >
                         <Trophy className="h-3 w-3 mr-1" />
@@ -1496,7 +1552,7 @@ function AnchorHeroCard() {
                 </div>
               )}
 
-              <div className="flex items-center gap-2 text-[#E2741B] text-sm font-semibold uppercase tracking-widest">
+              <div className="flex items-center gap-2 text-[#C06B3E] text-sm font-semibold uppercase tracking-widest">
                 <Anchor className="h-4 w-4" />
                 Open Today's Anchor
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -1522,19 +1578,19 @@ function PremiumUpgradeCard() {
   return (
     <Link href="/recovery/premium">
       <div
-        className="mx-1 mb-3 rounded-xl border border-[#E2741B]/25 bg-gradient-to-r from-[#120d04] to-[#0d0d0d] p-4 hover-elevate"
+        className="mx-1 mb-3 rounded-2xl border border-[#E2C2A4]/25 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4 hover-elevate"
         data-testid="card-premium-upsell"
       >
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-[#E2741B]/15 border border-[#E2741B]/25 flex items-center justify-center flex-shrink-0">
-            <Flame className="w-3.5 h-3.5 text-[#E2741B]" />
+          <div className="w-8 h-8 rounded-full bg-[#C06B3E]/15 border border-[#C06B3E]/25 flex items-center justify-center flex-shrink-0">
+            <Flame className="w-3.5 h-3.5 text-[#C06B3E]" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-[#292524] leading-tight">Unlimited Coach · Daily AI reports · Voice Cloning</p>
+            <p className="text-sm font-semibold text-[#1C1917] leading-tight">Unlimited Coach · Daily AI reports · Voice Cloning</p>
             <p className="text-xs text-[#A8A29E] mt-0.5">7-day free trial · $19/mo or $190/yr</p>
           </div>
           <div className="flex-shrink-0">
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#E2741B] text-black text-xs font-bold">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#C06B3E] text-black text-xs font-bold">
               <Sparkles className="h-3 w-3" />
               Try free
             </span>
@@ -1551,15 +1607,15 @@ function YourStoryCard() {
   return (
     <Link href="/recovery/my-story">
       <div
-        className="mx-1 mb-3 rounded-xl border border-white/8 bg-[#0d0d0d] p-4 hover-elevate"
+        className="mx-1 mb-3 rounded-2xl border border-[#E2C2A4]/30 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4 hover-elevate"
         data-testid="card-your-story"
       >
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0">
+          <div className="w-8 h-8 rounded-full bg-[#F5F0EB] border border-[#E2C2A4]/40 flex items-center justify-center flex-shrink-0">
             <BookOpen className="w-3.5 h-3.5 text-[#78716C]" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-[#292524] leading-tight">Your Recovery Story</p>
+            <p className="text-sm font-semibold text-[#1C1917] leading-tight">Your Recovery Story</p>
             <p className="text-xs text-[#A8A29E] mt-0.5">Every rep you log is material. Mark the chapters. Write the book.</p>
           </div>
           <div className="flex-shrink-0">
@@ -1585,21 +1641,21 @@ function CommunityPulse() {
 
   return (
     <div
-      className="mx-1 mb-3 flex items-center gap-2 px-3 py-2 rounded-lg border border-[#1a1a1a] bg-[#0d0d0d]"
+      className="mx-1 mb-3 flex items-center gap-2 px-3 py-2 rounded-xl border border-[#E2C2A4]/30 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
       data-testid="section-community-pulse"
     >
       <div className="flex -space-x-1">
         {[...Array(Math.min(count, 4))].map((_, i) => (
           <div
             key={i}
-            className="w-4 h-4 rounded-full border border-[#0d0d0d] bg-[#E2741B]/20 flex items-center justify-center"
+            className="w-4 h-4 rounded-full border border-white bg-[#C06B3E]/20 flex items-center justify-center"
           >
-            <div className="w-1.5 h-1.5 rounded-full bg-[#E2741B]/60" />
+            <div className="w-1.5 h-1.5 rounded-full bg-[#C06B3E]/60" />
           </div>
         ))}
       </div>
       <p className="text-[11px] text-[#A8A29E] leading-tight">
-        <span className="text-[#E2741B] font-semibold">{count.toLocaleString()}</span>
+        <span className="text-[#C06B3E] font-semibold">{count.toLocaleString()}</span>
         {" "}survivor{count !== 1 ? "s" : ""} logged a rep today.{" "}
         <span className="text-[#A8A29E]">You're one of them.</span>
       </p>
@@ -1627,10 +1683,10 @@ function WeeklyGoalCard() {
   return (
     <section className="mb-4 mt-3 px-1" data-testid="section-weekly-goal">
       <Link href="/recovery/progress">
-        <div className="rounded-xl border border-[#E8E0D8] bg-white px-4 py-3 hover-elevate cursor-pointer">
+        <div className="rounded-xl border border-[#E2C2A4]/30 bg-white px-4 py-3 hover-elevate cursor-pointer">
           <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
             <div className="flex items-center gap-2">
-              <Target className="h-3.5 w-3.5 text-[#E2741B]" />
+              <Target className="h-3.5 w-3.5 text-[#C06B3E]" />
               <span className="text-xs font-semibold text-[#1C1917]">
                 {done ? "Weekly goal hit" : "Weekly goal"}
               </span>
@@ -1642,7 +1698,7 @@ function WeeklyGoalCard() {
           <Progress value={pct} className="h-1.5" />
           <div className="flex justify-between mt-1.5 text-[10px] text-[#A8A29E]">
             <span>{pct}% this week</span>
-            <span className="text-[#E2741B]/60">View progress →</span>
+            <span className="text-[#C06B3E]/60">View progress →</span>
           </div>
         </div>
       </Link>
@@ -1663,7 +1719,7 @@ type NeverZeroAuditHeroPayload = {
 function NeverZeroAuditHero() {
   const { isAuthenticated } = useAuth();
   const tierColor: Record<NeverZeroAuditHeroPayload['streakBand'], string> = {
-    spark: "#E2741B", ember: "#E07B00", blaze: "#F97316", wildfire: "#EF4444", legend: "#FACC15",
+    spark: "#C06B3E", ember: "#E07B00", blaze: "#F97316", wildfire: "#EF4444", legend: "#FACC15",
   };
   const tierLabel: Record<NeverZeroAuditHeroPayload['streakBand'], string> = {
     spark: "Spark", ember: "Ember", blaze: "Blaze", wildfire: "Wildfire", legend: "Legend",
@@ -1680,7 +1736,7 @@ function NeverZeroAuditHero() {
     staleTime: 5 * 60_000,
   });
 
-  const color = audit ? tierColor[audit.streakBand] : "#E2741B";
+  const color = audit ? tierColor[audit.streakBand] : "#C06B3E";
   const tier = audit ? tierLabel[audit.streakBand] : "Spark";
   const hasReps = (audit?.todayCount ?? 0) > 0;
 
@@ -1689,7 +1745,7 @@ function NeverZeroAuditHero() {
       <Link
         href="/recovery/never-zero"
         className="block group rounded-xl border-2 hover-elevate active-elevate-2 p-6"
-        style={{ borderColor: color, background: `linear-gradient(135deg, ${color}22, #1a1a1a 60%, #1a1a1a)` }}
+        style={{ borderColor: color, background: `linear-gradient(135deg, ${color}22, #FFF8F0 60%, #FFF8F0)` }}
         data-testid="link-never-zero-hero"
         aria-label="Open today's Sasquatch audit"
       >
@@ -1719,7 +1775,7 @@ function NeverZeroAuditHero() {
               <p className="text-sm text-[#78716C] italic">Loading today's audit…</p>
             ) : audit && hasReps && audit.verdict ? (
               <>
-                <p className="text-sm text-[#292524] leading-relaxed mb-2 line-clamp-3" data-testid="text-audit-verdict">
+                <p className="text-sm text-[#1C1917] leading-relaxed mb-2 line-clamp-3" data-testid="text-audit-verdict">
                   {audit.verdict}
                 </p>
                 {audit.tomorrow && (
@@ -1764,16 +1820,16 @@ function BonfireHeroCard() {
     <section className="mb-8" data-testid="section-bonfire-hero">
       <Link
         href="/recovery/today"
-        className="block group rounded-xl border-2 border-[#E2741B] bg-gradient-to-br from-[#E2741B]/20 via-[#F5F0EB] to-[#F5F0EB] hover-elevate active-elevate-2 p-6"
+        className="block group rounded-2xl border border-[#C06B3E]/40 bg-[#FFF8F0] shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover-elevate active-elevate-2 p-6"
         data-testid="link-bonfire-hero"
         aria-label="Start today's Bonfire session"
       >
           <div className="flex items-start gap-5">
-            <div className="hidden sm:flex h-16 w-16 rounded-full bg-[#E2741B] items-center justify-center shrink-0 shadow-[0_0_24px_rgba(226,116,27,0.45)]">
+            <div className="hidden sm:flex h-16 w-16 rounded-full bg-[#C06B3E] items-center justify-center shrink-0 shadow-[0_0_24px_rgba(192,107,62,0.45)]">
               <Flame className="h-8 w-8 text-black" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-[#E2741B] font-bold mb-1">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-[#C06B3E] font-bold mb-1">
                 Today's Session · The Bonfire
               </p>
               <h2
@@ -1786,7 +1842,7 @@ function BonfireHeroCard() {
               {isLoading || !rec ? (
                 <p className="text-sm text-[#78716C] leading-relaxed mb-3">
                   One adaptive walkthrough, tuned to how yesterday felt. Ends with a
-                  supervised walking cooldown <span className="text-[#E2741B] font-semibold">when you're ready for it.</span>
+                  supervised walking cooldown <span className="text-[#C06B3E] font-semibold">when you're ready for it.</span>
                 </p>
               ) : (
                 <div className="mb-3" data-testid="preview-today-recommendation">
@@ -1800,7 +1856,7 @@ function BonfireHeroCard() {
                       {p?.energyPattern && (
                         <Badge
                           variant="outline"
-                          className="border-[#E2741B]/50 text-[#E2741B] bg-[#E2741B]/10 text-[11px]"
+                          className="border-[#C06B3E]/50 text-[#C06B3E] bg-[#C06B3E]/10 text-[11px]"
                           data-testid="chip-energy"
                         >
                           {ENERGY_LABEL[p.energyPattern] ?? p.energyPattern}
@@ -1809,7 +1865,7 @@ function BonfireHeroCard() {
                       {p?.timeBudgetMinutes ? (
                         <Badge
                           variant="outline"
-                          className="border-[#E2741B]/50 text-[#E2741B] bg-[#E2741B]/10 text-[11px]"
+                          className="border-[#C06B3E]/50 text-[#C06B3E] bg-[#C06B3E]/10 text-[11px]"
                           data-testid="chip-time-budget"
                         >
                           {p.timeBudgetMinutes} min budget
@@ -1818,7 +1874,7 @@ function BonfireHeroCard() {
                       {goalCount > 0 && (
                         <Badge
                           variant="outline"
-                          className="border-[#E2741B]/50 text-[#E2741B] bg-[#E2741B]/10 text-[11px]"
+                          className="border-[#C06B3E]/50 text-[#C06B3E] bg-[#C06B3E]/10 text-[11px]"
                           data-testid="chip-goal-count"
                         >
                           <Sparkles className="h-3 w-3 mr-1" />
@@ -1828,7 +1884,7 @@ function BonfireHeroCard() {
                       {p?.capReason && (
                         <Badge
                           variant="outline"
-                          className="border-[#E2741B]/50 text-[#E2741B] bg-[#E2741B]/10 text-[11px]"
+                          className="border-[#C06B3E]/50 text-[#C06B3E] bg-[#C06B3E]/10 text-[11px]"
                           data-testid="chip-cap-reason"
                         >
                           Capped: {p.capReason}
@@ -1839,7 +1895,7 @@ function BonfireHeroCard() {
                 </div>
               )}
 
-              <div className="flex items-center gap-2 text-[#E2741B] text-sm font-semibold uppercase tracking-widest">
+              <div className="flex items-center gap-2 text-[#C06B3E] text-sm font-semibold uppercase tracking-widest">
                 <Footprints className="h-4 w-4" />
                 Begin Today's Session
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -1957,8 +2013,8 @@ function DailyLoopCard() {
   if (briefLoading || checkinLoading) {
     return (
       <section className="mb-6" data-testid="section-daily-loop-loading">
-        <div className="rounded-xl border border-[#E8E0D8] bg-white p-5 flex items-center gap-3">
-          <Loader2 className="h-4 w-4 text-[#E2741B] animate-spin shrink-0" />
+        <div className="rounded-xl border border-[#E2C2A4]/30 bg-white p-5 flex items-center gap-3">
+          <Loader2 className="h-4 w-4 text-[#C06B3E] animate-spin shrink-0" />
           <span className="text-xs text-[#A8A29E] uppercase tracking-widest">Sasquatch is reading your week…</span>
         </div>
       </section>
@@ -1981,7 +2037,7 @@ function DailyLoopCard() {
       <section className="mb-6" data-testid="section-daily-loop-complete">
         <div
           className="rounded-xl border-2 p-5"
-          style={{ borderColor: "#22c55e44", background: "linear-gradient(135deg, #22c55e11, #1a1a1a 60%)" }}
+          style={{ borderColor: "#22c55e44", background: "linear-gradient(135deg, #22c55e11, #FDFBF7 60%)" }}
         >
           <div className="flex items-start gap-4">
             <div className="h-10 w-10 rounded-full bg-green-500/20 flex items-center justify-center shrink-0">
@@ -1990,18 +2046,18 @@ function DailyLoopCard() {
             <div className="flex-1 min-w-0">
               <p className="text-[10px] uppercase tracking-[0.3em] text-green-400 font-bold mb-1">Daily Loop Complete</p>
               {audit?.verdict && (
-                <p className="text-sm text-[#292524] leading-relaxed mb-2" data-testid="text-loop-verdict">{audit.verdict}</p>
+                <p className="text-sm text-[#1C1917] leading-relaxed mb-2" data-testid="text-loop-verdict">{audit.verdict}</p>
               )}
               {audit?.tomorrow && (
                 <p className="text-xs text-[#78716C] italic flex items-center gap-1">
-                  <ChevronRight className="h-3 w-3 text-[#E2741B]" />
+                  <ChevronRight className="h-3 w-3 text-[#C06B3E]" />
                   Tomorrow: {audit.tomorrow}
                 </p>
               )}
               {(checkinExercises.length > 0 || checkinHabits.length > 0) && (
                 <div className="flex flex-wrap gap-1.5 mt-3">
                   {checkinExercises.map((ex) => (
-                    <span key={ex} className="text-[10px] px-2 py-0.5 rounded-full bg-[#E2741B]/15 text-[#E2741B] border border-[#E2741B]/25">{ex}</span>
+                    <span key={ex} className="text-[10px] px-2 py-0.5 rounded-full bg-[#C06B3E]/15 text-[#C06B3E] border border-[#C06B3E]/25">{ex}</span>
                   ))}
                   {checkinHabits.map((h) => (
                     <span key={h} className="text-[10px] px-2 py-0.5 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">{h}</span>
@@ -2019,12 +2075,12 @@ function DailyLoopCard() {
   if (hasCheckin && !hasAuditVerdict) {
     return (
       <section className="mb-6" data-testid="section-daily-loop-logged">
-        <div className="rounded-xl border border-[#E2741B]/30 bg-[#E2741B]/05 p-5">
+        <div className="rounded-xl border border-[#C06B3E]/30 bg-[#C06B3E]/05 p-5">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-3">
-              <CheckCircle2 className="h-5 w-5 text-[#E2741B]" />
+              <CheckCircle2 className="h-5 w-5 text-[#C06B3E]" />
               <div>
-                <p className="text-[10px] uppercase tracking-[0.3em] text-[#E2741B] font-bold">Day logged</p>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-[#C06B3E] font-bold">Day logged</p>
                 <p className="text-xs text-[#78716C] mt-0.5">
                   {checkinExercises.length > 0 ? checkinExercises.join(', ') : 'Exercises recorded'}
                   {checkinHabits.length > 0 ? ` · ${checkinHabits.length} habit${checkinHabits.length !== 1 ? 's' : ''}` : ''}
@@ -2033,7 +2089,7 @@ function DailyLoopCard() {
             </div>
             <Link
               href="/recovery/never-zero"
-              className="flex items-center gap-1.5 text-xs font-semibold text-[#E2741B] uppercase tracking-widest"
+              className="flex items-center gap-1.5 text-xs font-semibold text-[#C06B3E] uppercase tracking-widest"
               data-testid="link-log-reps"
             >
               Log your reps <ArrowRight className="h-3 w-3" />
@@ -2048,10 +2104,10 @@ function DailyLoopCard() {
   if (logOpen) {
     return (
       <section className="mb-6" data-testid="section-daily-loop-form">
-        <div className="rounded-xl border-2 border-[#E2741B] bg-white p-6">
+        <div className="rounded-xl border-2 border-[#C06B3E] bg-white p-6">
           <div className="flex items-center gap-2 mb-5">
-            <ClipboardList className="h-4 w-4 text-[#E2741B]" />
-            <p className="text-[10px] uppercase tracking-[0.3em] text-[#E2741B] font-bold">Log today's progress</p>
+            <ClipboardList className="h-4 w-4 text-[#C06B3E]" />
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[#C06B3E] font-bold">Log today's progress</p>
           </div>
 
           {/* Exercises */}
@@ -2067,8 +2123,8 @@ function DailyLoopCard() {
                     onClick={() => toggleExercise(id)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                       active
-                        ? "bg-[#E2741B] text-black border-[#E2741B]"
-                        : "bg-transparent text-[#78716C] border-[#E8E0D8] hover:border-[#E2741B]/50"
+                        ? "bg-[#C06B3E] text-black border-[#C06B3E]"
+                        : "bg-transparent text-[#78716C] border-[#E2C2A4]/30 hover:border-[#C06B3E]/50"
                     }`}
                   >
                     {active && <Check className="h-3 w-3" />}
@@ -2093,7 +2149,7 @@ function DailyLoopCard() {
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                       active
                         ? "bg-green-500 text-black border-green-500"
-                        : "bg-transparent text-[#78716C] border-[#E8E0D8] hover:border-green-500/50"
+                        : "bg-transparent text-[#78716C] border-[#E2C2A4]/30 hover:border-green-500/50"
                     }`}
                   >
                     {active && <Check className="h-3 w-3" />}
@@ -2117,8 +2173,8 @@ function DailyLoopCard() {
                     title={label}
                     className={`h-8 w-8 rounded-md text-xs font-bold border transition-all ${
                       energy === i + 1
-                        ? "bg-[#E2741B] text-black border-[#E2741B]"
-                        : "bg-transparent text-[#A8A29E] border-[#E8E0D8] hover:border-[#E2741B]/50"
+                        ? "bg-[#C06B3E] text-black border-[#C06B3E]"
+                        : "bg-transparent text-[#A8A29E] border-[#E2C2A4]/30 hover:border-[#C06B3E]/50"
                     }`}
                   >
                     {i + 1}
@@ -2138,8 +2194,8 @@ function DailyLoopCard() {
                     title={label}
                     className={`h-8 w-8 rounded-md text-xs font-bold border transition-all ${
                       mood === i + 1
-                        ? "bg-[#E2741B] text-black border-[#E2741B]"
-                        : "bg-transparent text-[#A8A29E] border-[#E8E0D8] hover:border-[#E2741B]/50"
+                        ? "bg-[#C06B3E] text-black border-[#C06B3E]"
+                        : "bg-transparent text-[#A8A29E] border-[#E2C2A4]/30 hover:border-[#C06B3E]/50"
                     }`}
                   >
                     {i + 1}
@@ -2160,7 +2216,7 @@ function DailyLoopCard() {
               value={winText}
               onChange={(e) => setWinText(e.target.value)}
               maxLength={200}
-              className="w-full bg-white border border-[#E8E0D8] rounded-lg px-3 py-2 text-sm text-[#1C1917] placeholder-gray-600 focus:outline-none focus:border-[#E2741B]/50"
+              className="w-full bg-white border border-[#E2C2A4]/30 rounded-lg px-3 py-2 text-sm text-[#1C1917] placeholder-gray-600 focus:outline-none focus:border-[#C06B3E]/50"
             />
           </div>
 
@@ -2169,7 +2225,7 @@ function DailyLoopCard() {
               data-testid="button-save-day"
               onClick={handleSubmit}
               disabled={logMutation.isPending}
-              className="bg-[#E2741B] hover:bg-[#E2741B] text-black font-bold"
+              className="bg-[#C06B3E] hover:bg-[#C06B3E] text-black font-bold"
             >
               {logMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save my day"}
             </Button>
@@ -2192,16 +2248,16 @@ function DailyLoopCard() {
     <section className="mb-6" data-testid="section-daily-loop-brief">
       <div
         className="rounded-xl border-2 p-5"
-        style={{ borderColor: "#E2741B55", background: "linear-gradient(135deg, #E2741B0d, #1a1a1a 55%)" }}
+        style={{ borderColor: "#C06B3E44", background: "linear-gradient(135deg, #C06B3E0d, #FDFBF7 55%)" }}
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Sun className="h-4 w-4 text-[#E2741B]" />
-            <p className="text-[10px] uppercase tracking-[0.3em] text-[#E2741B] font-bold">Daily Accountability Loop</p>
+            <Sun className="h-4 w-4 text-[#C06B3E]" />
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[#C06B3E] font-bold">Daily Accountability Loop</p>
           </div>
           {audit && (
-            <Badge className="text-[10px] border" style={{ background: "#E2741B20", color: "#E2741B", borderColor: "#E2741B44" }}>
+            <Badge className="text-[10px] border" style={{ background: "#C06B3E15", color: "#C06B3E", borderColor: "#C06B3E44" }}>
               Day {audit.streak ?? 0}
             </Badge>
           )}
@@ -2211,12 +2267,12 @@ function DailyLoopCard() {
         {brief?.brief && (
           <div className="mb-4">
             <p className="text-[10px] uppercase tracking-widest text-[#A8A29E] mb-1.5">Sasquatch's morning read</p>
-            <p className="text-sm text-[#292524] leading-relaxed italic" data-testid="text-morning-brief">
+            <p className="text-sm text-[#1C1917] leading-relaxed italic" data-testid="text-morning-brief">
               "{brief.brief}"
             </p>
             {brief.isPremium === false && (
               <Link href="/recovery/premium">
-                <span className="mt-2 inline-block text-[10px] uppercase tracking-widest text-[#E2741B]/70 hover:text-[#E2741B] transition-colors cursor-pointer">
+                <span className="mt-2 inline-block text-[10px] uppercase tracking-widest text-[#C06B3E]/70 hover:text-[#C06B3E] transition-colors cursor-pointer">
                   Upgrade for personalized briefs →
                 </span>
               </Link>
@@ -2243,8 +2299,8 @@ function DailyLoopCard() {
                   <div
                     className={`h-4 w-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
                       focusChecked[i]
-                        ? "bg-[#E2741B] border-[#E2741B]"
-                        : "border-[#555] group-hover:border-[#E2741B]/60"
+                        ? "bg-[#C06B3E] border-[#C06B3E]"
+                        : "border-[#555] group-hover:border-[#C06B3E]/60"
                     }`}
                   >
                     {focusChecked[i] && <Check className="h-2.5 w-2.5 text-black" />}
@@ -2262,7 +2318,7 @@ function DailyLoopCard() {
         <button
           data-testid="button-log-today"
           onClick={() => setLogOpen(true)}
-          className="flex items-center gap-2 text-sm font-semibold text-[#E2741B] uppercase tracking-widest hover-elevate"
+          className="flex items-center gap-2 text-sm font-semibold text-[#C06B3E] uppercase tracking-widest hover-elevate"
         >
           <ClipboardList className="h-4 w-4" />
           Log today's progress
