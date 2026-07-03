@@ -63,6 +63,9 @@ export default function SasquatchCoach() {
   // Anonymous-quota hint shown subtly under the input. null = unknown
   // (haven't sent yet), { used, limit } = "X of Y free messages used".
   const [anonQuota, setAnonQuota] = useState<{ used: number; limit: number } | null>(null);
+  // Signed-in free-user daily quota (from server's `quota` field on each response).
+  // null = not yet received. { used, limit } = known.
+  const [freeQuota, setFreeQuota] = useState<{ used: number; limit: number } | null>(null);
   // Push-to-talk state (browser SpeechRecognition — free, on-device, instant).
   const [isListening, setIsListening] = useState(false);
   const [micUnsupported, setMicUnsupported] = useState(false);
@@ -174,6 +177,9 @@ export default function SasquatchCoach() {
       };
       setMessages((prev) => [...prev, coachMsg]);
       if (data.anon) setAnonQuota(data.anon);
+      // Track free quota from server's quota field (present on every successful response).
+      const q = (data as any).quota as { used: number; limit: number; premium: boolean } | undefined;
+      if (q && !q.premium) setFreeQuota({ used: q.used, limit: q.limit });
       // Never autoplay or fetch audio on crisis, sign-in-gate, or capped responses.
       if (data.crisis || data.requireAuth || (data as any).capped) return;
       // Inline audio (legacy path) → just play.
@@ -578,75 +584,116 @@ export default function SasquatchCoach() {
         )}
 
         {/* Input */}
-        <div className="flex gap-3 items-end">
-          <Textarea
-            ref={textareaRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKey}
-            placeholder={
-              !user && anonQuota && anonQuota.used >= anonQuota.limit
-                ? "Sign in to keep talking with Sasquatch..."
-                : isListening
-                ? "Listening — speak naturally, tap mic to stop..."
-                : "Tell the coach what's going on, or tap the mic to talk..."
-            }
-            className="resize-none bg-[#111] border-[#1e1e1e] text-white placeholder:text-gray-600 focus-visible:ring-[#E2741B]/30 focus-visible:border-[#E2741B]/40 min-h-[52px] max-h-32"
-            rows={1}
-            disabled={chatMutation.isPending || (!user && !!anonQuota && anonQuota.used >= anonQuota.limit)}
-            data-testid="input-chat-message"
-          />
-          {!micUnsupported && (
-            <Button
-              onClick={isListening ? stopListening : startListening}
-              disabled={
-                chatMutation.isPending ||
-                (!user && !!anonQuota && anonQuota.used >= anonQuota.limit)
-              }
-              variant={isListening ? "default" : "outline"}
-              className={
-                isListening
-                  ? "bg-[#E2741B] text-black hover:bg-[#b8841a] flex-shrink-0 animate-pulse"
-                  : "border-[#1e1e1e] text-[#E2741B] hover:bg-[#E2741B]/10 flex-shrink-0"
-              }
-              title={isListening ? "Tap to stop" : "Push to talk"}
-              data-testid="button-mic-toggle"
-            >
-              {isListening ? (
-                <MicOff className="h-4 w-4" />
-              ) : (
-                <Mic className="h-4 w-4" />
+        {/* isCapped: any message in the thread is the cap card → block input until tomorrow or upgrade */}
+        {(() => {
+          const isCapped = messages.some((m) => m.capped);
+          const anonBlocked = !user && !!anonQuota && anonQuota.used >= anonQuota.limit;
+          const inputDisabled = chatMutation.isPending || isCapped || anonBlocked;
+          const remaining = freeQuota ? freeQuota.limit - freeQuota.used : null;
+          const nearLimit = remaining !== null && remaining <= 1 && remaining > 0;
+
+          return (
+            <>
+              <div className="flex gap-3 items-end">
+                <Textarea
+                  ref={textareaRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKey}
+                  placeholder={
+                    isCapped
+                      ? "Daily limit reached — upgrade for unlimited →"
+                      : anonBlocked
+                      ? "Sign in to keep talking with Sasquatch..."
+                      : isListening
+                      ? "Listening — speak naturally, tap mic to stop..."
+                      : "Tell the coach what's going on, or tap the mic to talk..."
+                  }
+                  className="resize-none bg-[#111] border-[#1e1e1e] text-white placeholder:text-gray-600 focus-visible:ring-[#E2741B]/30 focus-visible:border-[#E2741B]/40 min-h-[52px] max-h-32"
+                  rows={1}
+                  disabled={inputDisabled}
+                  data-testid="input-chat-message"
+                />
+                {!micUnsupported && (
+                  <Button
+                    onClick={isListening ? stopListening : startListening}
+                    disabled={inputDisabled}
+                    variant={isListening ? "default" : "outline"}
+                    className={
+                      isListening
+                        ? "bg-[#E2741B] text-black hover:bg-[#b8841a] flex-shrink-0 animate-pulse"
+                        : "border-[#1e1e1e] text-[#E2741B] hover:bg-[#E2741B]/10 flex-shrink-0"
+                    }
+                    title={isListening ? "Tap to stop" : "Push to talk"}
+                    data-testid="button-mic-toggle"
+                  >
+                    {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                  </Button>
+                )}
+                <Button
+                  onClick={handleSend}
+                  disabled={!input.trim() || inputDisabled}
+                  className="bg-[#E2741B] text-black hover:bg-[#b8841a] flex-shrink-0"
+                  data-testid="button-send-message"
+                >
+                  {chatMutation.isPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+
+              {/* Anon quota counter */}
+              {!user && anonQuota && anonQuota.used < anonQuota.limit && (
+                <p className="text-xs text-center text-[#E2741B]/70 mt-2" data-testid="text-anon-quota">
+                  {anonQuota.limit - anonQuota.used} of {anonQuota.limit} free messages left.{" "}
+                  <a href="/api/login" className="underline hover:text-[#E2741B]" data-testid="link-anon-signin">
+                    Sign in free
+                  </a>{" "}
+                  for voice + push-to-talk + more turns.
+                </p>
               )}
-            </Button>
-          )}
-          <Button
-            onClick={handleSend}
-            disabled={!input.trim() || chatMutation.isPending || (!user && !!anonQuota && anonQuota.used >= anonQuota.limit)}
-            className="bg-[#E2741B] text-black hover:bg-[#b8841a] flex-shrink-0"
-            data-testid="button-send-message"
-          >
-            {chatMutation.isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Send className="h-4 w-4" />
-            )}
-          </Button>
-        </div>
-        {!user && anonQuota && anonQuota.used < anonQuota.limit && (
-          <p
-            className="text-xs text-center text-[#E2741B]/70 mt-2"
-            data-testid="text-anon-quota"
-          >
-            {anonQuota.limit - anonQuota.used} of {anonQuota.limit} free Coach messages left.{" "}
-            <a href="/api/login" className="underline hover:text-[#E2741B]" data-testid="link-anon-signin">
-              Sign in free
-            </a>{" "}
-            for Sasquatch's voice + push-to-talk + unlimited turns.
-          </p>
-        )}
-        <p className="text-xs text-center text-gray-600 mt-3">
-          Sasquatch Coach is an AI trained on Nick's recovery methodology — not a substitute for medical advice.
-        </p>
+
+              {/* Signed-in free user quota counter */}
+              {user && freeQuota && !isCapped && (
+                <p
+                  className={`text-xs text-center mt-2 transition-colors ${nearLimit ? "text-amber-500" : "text-gray-600"}`}
+                  data-testid="text-free-quota"
+                >
+                  {nearLimit ? (
+                    <>
+                      <span className="font-semibold">1 free message left today.</span>{" "}
+                      <Link href="/recovery/premium" className="underline hover:text-amber-400">
+                        Upgrade for unlimited →
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      {freeQuota.limit - freeQuota.used} of {freeQuota.limit} free messages left today.{" "}
+                      <Link href="/recovery/premium" className="text-[#E2741B]/60 hover:text-[#E2741B] underline">
+                        Go unlimited →
+                      </Link>
+                    </>
+                  )}
+                </p>
+              )}
+
+              {/* Capped state — upgrade prompt replaces disclaimer */}
+              {isCapped ? (
+                <p className="text-xs text-center mt-2">
+                  <Link href="/recovery/premium" className="text-[#E2741B] font-semibold underline" data-testid="link-capped-upgrade">
+                    Start 7-day free trial — unlock unlimited Coach →
+                  </Link>
+                </p>
+              ) : (
+                <p className="text-xs text-center text-gray-600 mt-3">
+                  Sasquatch Coach is an AI trained on Nick's recovery methodology — not a substitute for medical advice.
+                </p>
+              )}
+            </>
+          );
+        })()}
       </main>
       <Footer />
     </div>

@@ -374,6 +374,9 @@ export default function RecoveryDashboard() {
           <DailyLoopCard />
         </div>
 
+        {/* PREMIUM UPSELL — compact teaser card for free users. Hidden for premium subscribers. */}
+        <PremiumUpgradeCard />
+
         {/* COMMUNITY PULSE — "X survivors logged a rep today." Social proof. */}
         <CommunityPulse />
 
@@ -1499,6 +1502,43 @@ function AnchorHeroCard() {
           </div>
       </Link>
     </section>
+  );
+}
+
+// Free-user premium upgrade teaser card. Hidden for premium users and unauthenticated visitors.
+function PremiumUpgradeCard() {
+  const { isAuthenticated } = useAuth();
+  const { data: premiumStatus } = useQuery<{ active: boolean }>({
+    queryKey: ["/api/sasquatch-premium/status"],
+    enabled: isAuthenticated,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  if (!isAuthenticated || premiumStatus?.active) return null;
+
+  return (
+    <Link href="/recovery/premium">
+      <div
+        className="mx-1 mb-3 rounded-xl border border-[#E2741B]/25 bg-gradient-to-r from-[#120d04] to-[#0d0d0d] p-4 hover-elevate"
+        data-testid="card-premium-upsell"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-[#E2741B]/15 border border-[#E2741B]/25 flex items-center justify-center flex-shrink-0">
+            <Flame className="w-3.5 h-3.5 text-[#E2741B]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-gray-200 leading-tight">Unlimited Coach · Daily AI reports · Voice Cloning</p>
+            <p className="text-xs text-gray-500 mt-0.5">7-day free trial · $19/mo or $190/yr</p>
+          </div>
+          <div className="flex-shrink-0">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#E2741B] text-black text-xs font-bold">
+              <Sparkles className="h-3 w-3" />
+              Try free
+            </span>
+          </div>
+        </div>
+      </div>
+    </Link>
   );
 }
 

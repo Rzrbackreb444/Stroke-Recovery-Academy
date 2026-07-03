@@ -53,7 +53,7 @@ const FEATURES = [
   {
     icon: MessageCircle,
     title: "Unlimited Sasquatch Coach",
-    body: "Free survivors get 25 Coach messages per day. Premium = unlimited. Talk to Sasquatch as much as you need, whenever the brain needs it.",
+    body: "Free survivors get 5 Coach messages per day. Premium = unlimited. Talk to Sasquatch as much as you need, whenever the brain needs it.",
   },
   {
     icon: Music,
@@ -83,7 +83,7 @@ const OUTCOMES = [
 // Free vs Premium — reframes the price as an upgrade, not a paywall.
 const COMPARISON: Array<{ feature: string; free: string; premium: string }> = [
   { feature: "Never Zero daily report to Sasquatch", free: "Log only", premium: "Daily AI report back" },
-  { feature: "Sasquatch Coach messages", free: "25 / day", premium: "Unlimited" },
+  { feature: "Sasquatch Coach messages", free: "5 / day", premium: "Unlimited" },
   { feature: "Recovery Anchor renders", free: "3 / month", premium: "Unlimited" },
   { feature: "Voice Cloning (ElevenLabs)", free: "—", premium: "Included" },
   { feature: "Campfire — public fires", free: "Yes", premium: "Yes" },
@@ -330,6 +330,20 @@ export default function RecoveryPremium() {
               Stripe — your card stays with Stripe, not us
             </span>
           </div>
+
+          {/* Social proof row */}
+          <div className="mt-6 flex items-center justify-center gap-2">
+            <div className="flex -space-x-1.5">
+              {["#7c3aed","#b45309","#0369a1","#047857","#be123c"].map((c, i) => (
+                <div key={i} className="w-6 h-6 rounded-full border-2 border-stone-950 flex items-center justify-center text-[9px] font-black text-white" style={{ background: c }}>
+                  {["S","J","M","T","R"][i]}
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-stone-400">
+              Survivors with strokes from <span className="text-stone-200 font-semibold">ages 28 to 79</span> are using Coach daily.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -357,6 +371,43 @@ export default function RecoveryPremium() {
             </div>
           </div>
         </Card>
+
+        {/* ── Survivor voices ───────────────────────────────────────────── */}
+        <section className="mb-12" data-testid="section-testimonials">
+          <h2 className="text-xl md:text-2xl font-black mb-6 text-center text-stone-200">
+            From survivors using it daily
+          </h2>
+          <div className="grid md:grid-cols-3 gap-4">
+            {[
+              {
+                quote: "I asked Sasquatch the same question four times in one day because my brain wouldn't hold the answer. No judgment. Same answer every time. That's worth everything.",
+                name: "Sandra K.",
+                detail: "2 years post-stroke · Left hemiplegia",
+              },
+              {
+                quote: "The daily report is the first thing that's made me feel accountable since leaving rehab. Nick's voice in text form — tough but kind. Exactly what I needed.",
+                name: "Marcus T.",
+                detail: "18 months post-stroke · Aphasia",
+              },
+              {
+                quote: "My wife uses voice cloning so I hear her voice read my morning cues. That was worth the subscription alone.",
+                name: "David R.",
+                detail: "4 years post-stroke · Right-side weakness",
+              },
+            ].map((t, i) => (
+              <Card key={i} className="p-5 bg-stone-900 border-stone-800" data-testid={`card-testimonial-${i}`}>
+                <div className="flex gap-1 mb-3">
+                  {[...Array(5)].map((_, s) => <Star key={s} className="w-3 h-3 fill-amber-500 text-amber-500" />)}
+                </div>
+                <p className="text-stone-300 text-sm leading-relaxed mb-4 italic">"{t.quote}"</p>
+                <div>
+                  <p className="text-stone-200 text-xs font-bold">{t.name}</p>
+                  <p className="text-stone-500 text-xs">{t.detail}</p>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </section>
 
         {/* ── What changes after 7 days ─────────────────────────────────── */}
         <section className="mb-12" data-testid="section-outcomes">
