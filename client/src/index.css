@@ -94,9 +94,13 @@
   /* Fallback for older browsers */
   --destructive-border: hsl(var(--destructive));
   --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-}
 
-  /* Warm Premium Theme — Sasquatch Colors (merged into primary :root above) */
+  /* Warm accent tokens — shared across all surfaces */
+  --stone-bg: #FAF8F3;
+  --gold-primary: #C06B3E;
+  --gold-muted: rgba(192,107,62, 0.1);
+  --gold-glow: rgba(192,107,62, 0.3);
+}
 
 /* Dark mode is identical since we're using a dark-first design */
 .dark {
@@ -299,18 +303,8 @@
   }
 }
 
-/* ========================================
-   STONE & INK INDUSTRIAL THEME SYSTEM
-   Premium high-contrast studio styling
-   ======================================== */
-
+/* Homepage brand accent — terracotta #C06B3E (Tailwind `gold` token) */
 :root {
-  --stone-bg: #FAF8F3;
-  --ink-black: #1A1A1A;
-  --gold-primary: #C06B3E;
-  --gold-muted: rgba(192,107,62, 0.1);
-  --gold-glow: rgba(192,107,62, 0.3);
-  /* Homepage brand accent — terracotta #C06B3E (Tailwind `gold` token) */
   --gold: 21 54% 50%;
 }
 
@@ -671,7 +665,7 @@
 }
 
 .compass-badge {
-  background: linear-gradient(135deg, #E2741B 0%, #B8860B 100%);
+  background: linear-gradient(135deg, #C06B3E 0%, #B8860B 100%);
   color: white;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -865,22 +859,22 @@
 .prose-recovery li strong { color: #f3f4f6; }
 .prose-recovery strong { color: #f3f4f6; font-weight: 600; }
 .prose-recovery em { color: #d1d5db; }
-.prose-recovery a { color: #E2741B; text-decoration: underline; text-underline-offset: 2px; }
+.prose-recovery a { color: #C06B3E; text-decoration: underline; text-underline-offset: 2px; }
 .prose-recovery a:hover { color: #e8b03d; }
 .prose-recovery figure { margin: 2rem 0; }
 .prose-recovery figure img { border-radius: 8px; width: 100%; height: auto; object-fit: cover; }
 .prose-recovery figcaption { font-size: 0.8125rem; color: #6b7280; margin-top: 0.5rem; text-align: center; }
 .prose-recovery nav.breadcrumb { margin-bottom: 1rem; font-size: 0.8125rem; color: #6b7280; }
 .prose-recovery nav.breadcrumb a { color: #9ca3af; text-decoration: none; }
-.prose-recovery nav.breadcrumb a:hover { color: #E2741B; }
+.prose-recovery nav.breadcrumb a:hover { color: #C06B3E; }
 .prose-recovery nav.breadcrumb ol { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.25rem; }
 .prose-recovery nav.breadcrumb li::after { content: " /"; margin-left: 0.25rem; }
 .prose-recovery nav.breadcrumb li:last-child::after { content: ""; }
 .prose-recovery table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: 0.9rem; }
-.prose-recovery th { background: #1a1a1a; color: #E2741B; font-weight: 600; text-align: left; padding: 0.625rem 0.875rem; border: 1px solid #333; }
+.prose-recovery th { background: #2A2421; color: #C06B3E; font-weight: 600; text-align: left; padding: 0.625rem 0.875rem; border: 1px solid #333; }
 .prose-recovery td { padding: 0.5rem 0.875rem; border: 1px solid #222; color: #d1d5db; }
 .prose-recovery tr:nth-child(even) td { background: #111; }
-.prose-recovery blockquote { border-left: 3px solid #E2741B; padding: 0.75rem 1.25rem; margin: 1.5rem 0; background: #111; border-radius: 0 6px 6px 0; color: #e5e7eb; }
+.prose-recovery blockquote { border-left: 3px solid #C06B3E; padding: 0.75rem 1.25rem; margin: 1.5rem 0; background: #111; border-radius: 0 6px 6px 0; color: #e5e7eb; }
 
 /* ── Fade-up entrance animation ───────────────────────────── */
 @keyframes fadeUp {
@@ -996,13 +990,13 @@ html.a11y-reduce-motion *::after {
 }
 .sasquatch-progress [data-slot="slider-range"],
 .sasquatch-progress [data-orientation="horizontal"] > span:first-child > span {
-  background: linear-gradient(90deg, #E2741B 0%, #E0B040 100%);
+  background: linear-gradient(90deg, #C06B3E 0%, #E0B040 100%);
 }
 .sasquatch-progress [data-slot="slider-thumb"],
 .sasquatch-progress [role="slider"] {
-  background-color: #E2741B;
-  border: 2px solid #0D0D0D;
-  box-shadow: 0 0 0 1px rgba(226,116,27, 0.5), 0 0 12px -2px rgba(226,116,27, 0.6);
+  background-color: #C06B3E;
+  border: 2px solid #1C1917;
+  box-shadow: 0 0 0 1px rgba(192,107,62, 0.5), 0 0 12px -2px rgba(192,107,62, 0.6);
   width: 14px;
   height: 14px;
   transition: transform 150ms ease;

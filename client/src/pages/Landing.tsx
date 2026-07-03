@@ -93,7 +93,7 @@ function Hero() {
               <span className="block text-[#FDFBF7] text-5xl md:text-7xl lg:text-8xl">Nobody was watching</span>
               <span className="block text-[#FDFBF7]/40 text-5xl md:text-7xl lg:text-8xl">the days in between.</span>
             </h1>
-            <p className="font-display text-[#E8B986] text-3xl md:text-5xl mb-10">We are.</p>
+            <p className="font-display text-[#C06B3E] text-3xl md:text-5xl mb-10">We are.</p>
             <p className="hero-description text-lg md:text-xl text-[#FDFBF7]/70 mb-6 leading-relaxed max-w-2xl">
               December 3, 2018 — Hoyer lift. 50 staples. Complete paralysis on one side. The hospital stabilized him and sent him home. Six weeks later, a follow-up appointment. Nobody checked on the days in between — whether he did his exercises, cried at 2 a.m., or almost quit.
             </p>
@@ -169,7 +169,7 @@ function AccountabilityGap() {
     <section id="method" className="bg-[#FDFBF7] py-28">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-20">
         <p className="text-sm font-bold tracking-widest uppercase text-[#C06B3E] mb-5">The Accountability Gap</p>
-        <h2 className="font-display text-[#2B2623] text-4xl md:text-6xl mb-6 leading-[0.95]">
+        <h2 className="font-display text-[#2A2421] text-4xl md:text-6xl mb-6 leading-[0.95]">
           The most underserved part of stroke recovery isn't information.
         </h2>
         <p className="font-display text-[#C06B3E] italic font-serif text-3xl md:text-4xl mb-10">It's someone checking on you.</p>
@@ -178,7 +178,7 @@ function AccountabilityGap() {
             You leave the hospital with a stack of papers and a follow-up appointment in six weeks. Nobody is watching the days in between — whether you did your exercises, skipped them, cried at 2 a.m., or decided recovery wasn't worth it.
           </p>
           <p>
-            That gap is where the plateau lives. That's where survivors fall off. Not because they gave up — <strong className="text-[#2B2623] font-semibold">because nobody was there.</strong>
+            That gap is where the plateau lives. That's where survivors fall off. Not because they gave up — <strong className="text-[#2A2421] font-semibold">because nobody was there.</strong>
           </p>
         </div>
       </div>
@@ -188,7 +188,7 @@ function AccountabilityGap() {
             <div className="w-12 h-12 rounded-2xl bg-[#FDFBF7] border border-[#E2C2A4]/30 flex items-center justify-center mb-5 text-[#C06B3E]">
               <c.icon className="w-6 h-6" />
             </div>
-            <h3 className="font-bold text-lg mb-2 text-[#2B2623]">{c.t}</h3>
+            <h3 className="font-bold text-lg mb-2 text-[#2A2421]">{c.t}</h3>
             <p className="text-[#5C534D] text-sm leading-relaxed">{c.d}</p>
           </div>
         ))}
@@ -221,7 +221,7 @@ function Proof() {
               </div>
             </div>
           </div>
-          <div className="relative aspect-video bg-white rounded-2xl overflow-hidden border border-[#E2C2A4]/30 shadow-[0_4px_24px_rgba(0,0,0,0.06)]" aria-hidden="true">
+          <div className="relative aspect-video bg-white rounded-2xl overflow-hidden border border-[#E2C2A4]/30 shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(192,107,62,0.08)] transition-shadow" aria-hidden="true">
             <img src={manifestoStairs} alt="" className="w-full h-full object-cover opacity-60" />
             <div className="absolute inset-0 bg-[#1C1917]/30 flex items-center justify-center">
               <div className="w-20 h-20 rounded-full bg-gold/90 flex items-center justify-center">
@@ -241,7 +241,7 @@ function Features() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-20">
           <p className="text-sm font-bold tracking-widest uppercase text-[#C06B3E] mb-4">The Toolkit</p>
-          <h2 className="font-display text-[#2B2623] text-4xl md:text-5xl">Everything you need to <span className="italic font-serif text-[#C06B3E]">rebuild.</span></h2>
+          <h2 className="font-display text-[#2A2421] text-4xl md:text-5xl">Everything you need to <span className="italic font-serif text-[#C06B3E]">rebuild.</span></h2>
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center mb-24">
@@ -250,14 +250,14 @@ function Features() {
           </div>
           <div className="order-1 md:order-2">
             <div className="w-12 h-12 rounded-2xl bg-[#F6EFEA] border border-[#E2C2A4]/30 text-[#C06B3E] flex items-center justify-center mb-6"><BrainCircuit className="w-6 h-6" /></div>
-            <h3 className="text-2xl font-bold text-[#2B2623] mb-4">AI Recovery Coach</h3>
+            <h3 className="text-2xl font-bold text-[#2A2421] mb-4">AI Recovery Coach</h3>
             <p className="text-[#5C534D] text-lg leading-relaxed mb-6">
               A personalized companion trained on the Sasquatch Method. It builds your daily protocols, adjusts to how you're doing, and keeps you on track — encouraging, never preachy. Try it free — no signup for your first messages, unlimited on Premium.
             </p>
             <Button
               asChild
               size="lg"
-              className="bg-[#C06B3E] hover:bg-[#A85B33] text-white h-12 px-7 rounded-full font-semibold shadow-[0_2px_8px_rgba(192,107,62,0.12)] transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(192,107,62,0.15)]"
+              className="bg-[#C06B3E] hover:bg-[#A85B33] text-white h-12 px-7 rounded-full font-semibold shadow-[0_2px_8px_rgba(192,107,62,0.15)] transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(192,107,62,0.2)]"
               data-testid="button-try-coach-features"
             >
               <Link href="/recovery/sasquatch-coach">Try the Coach — free <ArrowRight className="ml-2 h-5 w-5" /></Link>
@@ -284,7 +284,7 @@ function Features() {
                   <div className="flex gap-3 items-center">
                     <div className="w-10 h-10 rounded-xl bg-[#F6EFEA] text-[#C06B3E] flex items-center justify-center"><row.icon className="w-5 h-5" /></div>
                     <div>
-                      <div className="font-semibold text-sm text-[#2B2623]">{row.t}</div>
+                      <div className="font-semibold text-sm text-[#2A2421]">{row.t}</div>
                       <div className="text-xs text-[#5C534D]">{row.s}</div>
                     </div>
                   </div>
@@ -320,8 +320,8 @@ function Features() {
             </div>
           </div>
           <div className="order-1 md:order-2">
-            <div className="w-12 h-12 rounded-2xl bg-[#2B2623] text-white flex items-center justify-center mb-6"><BookOpen className="w-6 h-6" /></div>
-            <h3 className="text-2xl font-bold text-[#2B2623] mb-4">Write Your Recovery Story</h3>
+            <div className="w-12 h-12 rounded-2xl bg-[#2A2421] text-white flex items-center justify-center mb-6"><BookOpen className="w-6 h-6" /></div>
+            <h3 className="text-2xl font-bold text-[#2A2421] mb-4">Write Your Recovery Story</h3>
             <p className="text-[#5C534D] text-lg leading-relaxed mb-6">
               Every check-in. Every journal entry. Every breakthrough you tell the Coach. It's all material — and it's all yours. Mark the moments that matter, and when you're ready, compile them into a real book. Digital or print. In your voice. About your life.
             </p>
@@ -331,7 +331,7 @@ function Features() {
             <Button
               asChild
               size="lg"
-              className="bg-[#C06B3E] hover:bg-[#A85B33] text-white h-12 px-7 rounded-full font-semibold shadow-[0_2px_8px_rgba(192,107,62,0.12)] transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(192,107,62,0.15)]"
+              className="bg-[#C06B3E] hover:bg-[#A85B33] text-white h-12 px-7 rounded-full font-semibold shadow-[0_2px_8px_rgba(192,107,62,0.15)] transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(192,107,62,0.2)]"
               data-testid="button-write-story-features"
             >
               <Link href="/recovery/my-story">See your story <ArrowRight className="ml-2 h-5 w-5" /></Link>
@@ -355,7 +355,7 @@ function Caregiver() {
         <Button
           asChild
           size="lg"
-          className="bg-[#FDFBF7] text-[#2B2623] hover:bg-[#E2C2A4] h-14 px-8 text-base rounded-full font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)]"
+          className="bg-[#FDFBF7] text-[#2A2421] hover:bg-[#E2C2A4] h-14 px-8 text-base rounded-full font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)]"
           data-testid="button-caregiver-kit"
         >
           <a href="/for/caregivers">Open the caregiver kit <ArrowRight className="ml-2 h-5 w-5" /></a>
@@ -377,10 +377,10 @@ function Guides() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
           <div className="max-w-2xl">
             <p className="text-sm font-bold tracking-widest uppercase text-[#C06B3E] mb-4">Latest Guides</p>
-            <h2 className="font-display text-[#2B2623] text-3xl md:text-5xl mb-3">The questions every survivor asks.</h2>
+            <h2 className="font-display text-[#2A2421] text-3xl md:text-5xl mb-3">The questions every survivor asks.</h2>
             <p className="text-lg text-[#5C534D]">Honest, in-the-trenches answers. No fluff, no fake hope.</p>
           </div>
-          <Link href="/recovery/blog" className="text-[#2B2623] font-semibold inline-flex items-center hover:text-[#C06B3E] transition-colors shrink-0" data-testid="link-all-guides">
+          <Link href="/recovery/blog" className="text-[#2A2421] font-semibold inline-flex items-center hover:text-[#C06B3E] transition-colors shrink-0" data-testid="link-all-guides">
             See all guides <ArrowRight className="ml-2 w-4 h-4" />
           </Link>
         </div>
@@ -390,7 +390,7 @@ function Guides() {
               <div className="w-10 h-10 rounded-full bg-[#F6EFEA] border border-[#E2C2A4]/30 flex items-center justify-center mb-6 group-hover:bg-[#C06B3E] group-hover:text-white group-hover:border-[#C06B3E] transition-colors">
                 <ArrowRight className="w-4 h-4" />
               </div>
-              <h3 className="text-xl font-bold text-[#2B2623] mb-3 group-hover:text-[#C06B3E] transition-colors">{g.t}</h3>
+              <h3 className="text-xl font-bold text-[#2A2421] mb-3 group-hover:text-[#C06B3E] transition-colors">{g.t}</h3>
               <p className="text-[#5C534D] leading-relaxed">{g.d}</p>
             </Link>
           ))}
