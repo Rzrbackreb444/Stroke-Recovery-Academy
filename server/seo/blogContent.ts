@@ -155,7 +155,7 @@ export const POST_REHAB_DURATION = makeBlogPost({
 export const POST_FULL_RECOVERY = makeBlogPost({
   slug: 'can-you-fully-recover-from-a-stroke',
   title: 'Can You Fully Recover From a Stroke? A Survivor\'s Honest Answer',
-  description: 'Can you fully recover from a stroke? Here\'s the honest answer from a survivor who went from total paralysis to 90% function in 7 years.',
+  description: 'Can you fully recover from a stroke? The honest answer from a survivor who went from total paralysis to 90% function over seven years of daily recovery work.',
   h1: 'Can you fully recover from a stroke?',
   keyword: 'can you fully recover from a stroke',
   image: '/images/blog/walking-recovery-dark.png',
@@ -511,7 +511,7 @@ export const POST_ISCHEMIC_VS_HEMORRHAGIC = makeBlogPost({
 export const POST_DRIVING_AFTER_STROKE = makeBlogPost({
   slug: 'can-you-drive-after-a-stroke',
   title: 'Can You Drive After a Stroke? The Honest Survivor Guide',
-  description: 'When and how to return to driving after a stroke. The medical clearance process, driving evaluations, and the honest answer survivors need.',
+  description: 'When and how to return to driving after a stroke — the medical clearance process, driving evaluations, and the honest answer survivors actually need to hear.',
   h1: 'Can you drive after a stroke?',
   keyword: 'can you drive after a stroke',
   image: '/images/blog/driving-dark.png',
@@ -1045,7 +1045,7 @@ export const POST_FOOT_DROP_REHAB = makeBlogPost({
 export const POST_AFO_VS_ELECTRIC = makeBlogPost({
   slug: 'afo-vs-electric-ankle-trainer',
   title: 'AFO vs Electric Ankle Trainer: Which Should You Buy First?',
-  description: 'AFO braces vs electric ankle rehabilitation trainers — the pros, cons, and the exact order I wish I had bought them in.',
+  description: 'AFO braces vs electric ankle rehabilitation trainers for foot drop — the pros, cons, costs, and the exact order I wish I\'d bought them in after my stroke.',
   h1: 'AFO vs electric ankle trainer: which one first?',
   keyword: 'afo vs electric ankle trainer',
   subhead: 'I bought the AFO first and used it for two years. I bought the electric trainer second and left the AFO in a drawer four months later. Here is the order I wish I had used.',
@@ -1140,7 +1140,7 @@ export const POST_AFO_VS_ELECTRIC = makeBlogPost({
 // =============================================================================
 export const POST_HOME_BP_MONITOR = makeBlogPost({
   slug: 'best-blood-pressure-monitor-stroke-survivor',
-  title: 'The Best Blood Pressure Monitor for Stroke Survivors: Why I Track Twice Daily',
+  title: 'Best Blood Pressure Monitor for Stroke Survivors',
   description: 'The home blood pressure monitor I use after stroke. Why twice-daily tracking is non-negotiable for preventing a second stroke, and which features matter.',
   h1: 'The best blood pressure monitor for stroke survivors',
   keyword: 'best blood pressure monitor stroke survivor',
@@ -1216,7 +1216,7 @@ export const POST_HOME_BP_MONITOR = makeBlogPost({
 // =============================================================================
 export const POST_RESISTANCE_BANDS = makeBlogPost({
   slug: 'best-resistance-bands-stroke-recovery',
-  title: 'The Best Resistance Bands for Stroke Recovery (That I Actually Used)',
+  title: 'Best Resistance Bands for Stroke Recovery',
   description: 'The resistance bands that helped me rebuild strength after stroke. How to use them safely, which types to buy, and why they beat weights in the first year.',
   h1: 'The best resistance bands for stroke recovery',
   keyword: 'best resistance bands stroke recovery',
@@ -1371,7 +1371,7 @@ export const POST_SHOWER_SAFETY = makeBlogPost({
 // =============================================================================
 export const POST_ADAPTIVE_EATING = makeBlogPost({
   slug: 'adaptive-eating-utensils-stroke',
-  title: 'Adaptive Eating Utensils for Stroke: What I Used When One Hand Did the Work of Two',
+  title: 'Adaptive Eating Utensils for Stroke Survivors',
   description: 'The adaptive eating utensils that helped me feed myself with one functional hand after stroke. Real recommendations, real prices, and what to skip.',
   h1: 'Adaptive eating utensils for stroke survivors',
   keyword: 'adaptive eating utensils stroke',
@@ -1519,7 +1519,7 @@ export const POST_CPAP_STROKE = makeBlogPost({
 // =============================================================================
 export const POST_GAIT_TRAINING_HOME = makeBlogPost({
   slug: 'gait-training-home-stroke-recovery',
-  title: 'Gait Training at Home After Stroke: The Equipment I Used to Walk Again',
+  title: 'Gait Training at Home After Stroke: Gear Guide',
   description: 'The gait training equipment I used at home to rebuild my walking after stroke. Parallel bars, balance boards, and the exact setup that worked.',
   h1: 'Gait training at home after stroke',
   keyword: 'gait training home stroke recovery',
@@ -1594,7 +1594,7 @@ export const POST_GAIT_TRAINING_HOME = makeBlogPost({
 // =============================================================================
 export const POST_STROKE_GIFT_GUIDE = makeBlogPost({
   slug: 'stroke-recovery-gift-guide',
-  title: 'Stroke Recovery Gift Guide: What Actually Helps (From Someone Who Got It Wrong)',
+  title: 'Stroke Recovery Gift Guide: What Actually Helps',
   description: 'The gifts that actually help stroke survivors — and the ones that do not. Written by a survivor who received both the helpful and the useless.',
   h1: 'Stroke recovery gift guide',
   keyword: 'stroke recovery gift guide',
@@ -1675,7 +1675,7 @@ export const POST_STROKE_GIFT_GUIDE = makeBlogPost({
 // =============================================================================
 export const POST_COMPLETE_HOME_KIT = makeBlogPost({
   slug: 'complete-stroke-recovery-home-kit',
-  title: 'The Complete Stroke Recovery Home Kit: Every Item I Used in My First Year',
+  title: 'The Complete Stroke Recovery Home Kit',
   description: 'The complete home kit for stroke recovery. Every item I used in my first year, from the first week to the first milestone, with links and honest reviews.',
   h1: 'The complete stroke recovery home kit',
   keyword: 'complete stroke recovery home kit',
@@ -2053,7 +2053,7 @@ export const POST_BEST_SHOES = makeBlogPost({
 // =============================================================================
 export const POST_WALKING_AIDS = makeBlogPost({
   slug: 'best-walking-aids-stroke-survivors',
-  title: 'Best Walking Aids for Stroke Survivors: Canes, Walkers & Rollators',
+  title: 'Best Walking Aids for Stroke: Canes to Rollators',
   description: 'The wrong cane doesn\'t support you — it tilts you and teaches a bad compensation. Quad canes, rollators, and when to use each — a survivor\'s real guide.',
   h1: 'Best walking aids for stroke survivors',
   keyword: 'best walking aids stroke survivors',
@@ -2397,7 +2397,7 @@ export const POST_MOBILITY_SCOOTER = makeBlogPost({
 export const POST_WHEELCHAIR = makeBlogPost({
   slug: 'best-wheelchair-stroke-survivor',
   title: 'Best Wheelchairs for Stroke Survivors: What to Look For',
-  description: 'The right wheelchair after stroke isn\'t just lighter — it supports a hemiplegic posture, one-handed propulsion, and transfers that preserve independence. A survivor\'s guide.',
+  description: 'The right wheelchair after stroke supports a hemiplegic posture, one-handed propulsion, and safe transfers that preserve independence. A survivor\'s guide.',
   h1: 'Best wheelchairs for stroke survivors',
   keyword: 'best wheelchair for stroke survivor',
   subhead: 'A wheelchair is not the end of the mobility story. It is a tool — one that should support your posture, your transfers, and your independence as aggressively as possible. Here is how to choose.',
@@ -2485,7 +2485,7 @@ export const POST_WHEELCHAIR = makeBlogPost({
 export const POST_PEDAL_EXERCISER = makeBlogPost({
   slug: 'best-pedal-exerciser-stroke-recovery',
   title: 'Best Pedal Exercisers for Stroke Recovery (2026)',
-  description: 'Passive leg cycling increases spasticity. Active pedaling rebuilds it. A 7-year survivor\'s guide to the under-desk pedal exerciser that actually works for stroke.',
+  description: 'Passive leg cycling can increase spasticity; active pedaling rebuilds it. A 7-year survivor\'s guide to the under-desk pedal exerciser that works for stroke.',
   h1: 'Best pedal exerciser for stroke recovery',
   keyword: 'pedal exerciser stroke recovery',
   subhead: 'Cycling motion is one of the earliest things stroke survivors can do on the affected leg — but only the right type of device captures the full benefit. Here is the breakdown.',
@@ -2876,7 +2876,7 @@ export const POST_ANKLE_BRACE = makeBlogPost({
 export const POST_BALANCE_BOARD_GUIDE = makeBlogPost({
   slug: 'best-balance-board-stroke-recovery',
   title: 'Best Balance Boards for Stroke Recovery (2026 Guide)',
-  description: 'Balance board training after stroke reduces fall risk by rebuilding the proprioceptive pathways that stroke damages. A 7-year survivor\'s guide to the boards worth buying.',
+  description: 'Balance board training after stroke rebuilds the proprioceptive pathways stroke damages and cuts fall risk. A 7-year survivor\'s guide to boards worth buying.',
   h1: 'Best balance boards for stroke recovery',
   keyword: 'balance board stroke recovery',
   subhead: 'Balance training after stroke isn\'t about not falling — it\'s about rebuilding the sensory feedback loops that stroke severed. Here is what works, what doesn\'t, and the boards I recommend.',
@@ -2980,7 +2980,7 @@ export const POST_BALANCE_BOARD_GUIDE = makeBlogPost({
 export const POST_BRAIN_BOOKS = makeBlogPost({
   slug: 'best-brain-games-books-stroke-cognitive-recovery',
   title: 'Best Brain Games & Books for Stroke Cognitive Recovery (2026)',
-  description: 'Memory, processing speed, attention, word-finding — cognitive deficits after stroke are real and addressable. The books and games that actually challenge recovery.',
+  description: 'Memory, processing speed, attention, word-finding — cognitive deficits after stroke are real and addressable. The books and games that actually challenge you.',
   h1: 'Best brain games and books for stroke cognitive recovery',
   keyword: 'brain games stroke cognitive recovery',
   subhead: 'Cognitive recovery after stroke follows the same principle as physical recovery: the brain rewires based on what you practice. The games and books below are the tools I use. Here is why they work.',
@@ -3093,8 +3093,8 @@ export const POST_BRAIN_BOOKS = makeBlogPost({
 
 export const POST_ELLIPTICAL = makeBlogPost({
   slug: 'best-elliptical-machine-stroke-recovery',
-  title: 'Best Elliptical Machines for Stroke Recovery: Low-Impact Cardio That Works',
-  description: 'Ellipticals are one of the best low-impact cardio tools for stroke survivors — reciprocal arm-leg motion, zero impact on joints, and real neuroplasticity stimulus. Here\'s what to buy and what to avoid.',
+  title: 'Best Elliptical Machines for Stroke Recovery',
+  description: 'Ellipticals are one of the best low-impact cardio tools for stroke survivors: reciprocal arm-leg motion, zero joint impact. What to buy and what to avoid.',
   h1: 'Best Elliptical Machines for Stroke Recovery',
   keyword: 'best elliptical machine stroke recovery',
   subhead: 'Reciprocal motion. Zero impact. Real cardio. The elliptical is underrated for hemiparetic survivors who need to rebuild endurance without wrecking joints.',
@@ -3170,8 +3170,8 @@ export const POST_ELLIPTICAL = makeBlogPost({
 
 export const POST_STATIONARY_BIKE = makeBlogPost({
   slug: 'best-stationary-bike-stroke-recovery',
-  title: 'Best Stationary Bikes for Stroke Recovery: Recumbent vs. Upright, and When Each Makes Sense',
-  description: 'Stationary bikes are the safest cardio starting point for most stroke survivors. Back support, no balance demand, bilateral leg training. Here\'s what actually works.',
+  title: 'Best Stationary Bikes for Stroke Recovery',
+  description: 'Stationary bikes are the safest cardio starting point for most stroke survivors: back support, no balance demand, bilateral leg training. What actually works.',
   h1: 'Best Stationary Bikes for Stroke Recovery',
   keyword: 'best stationary bike stroke recovery',
   subhead: 'Seated. Supported. Safe. The recumbent bike is how most stroke survivors should start building cardiovascular fitness — and the evidence agrees.',
@@ -3241,8 +3241,8 @@ export const POST_STATIONARY_BIKE = makeBlogPost({
 
 export const POST_TREADMILL = makeBlogPost({
   slug: 'best-treadmill-stroke-recovery',
-  title: 'Best Treadmills for Stroke Recovery: What PTs Recommend and What to Know Before You Buy',
-  description: 'A treadmill at home can extend gait retraining beyond clinic hours — but only if it\'s the right machine, used the right way. Here\'s what matters for stroke survivors.',
+  title: 'Best Treadmills for Stroke Recovery: PT Picks',
+  description: 'A home treadmill can extend gait retraining beyond clinic hours — but only the right machine, used the right way. Here\'s what matters for stroke survivors.',
   h1: 'Best Treadmills for Stroke Recovery',
   keyword: 'best treadmill stroke recovery',
   subhead: 'Gait retraining doesn\'t stop when your PT appointment ends. The right home treadmill closes that gap — if you buy correctly and use it correctly.',
@@ -3317,8 +3317,8 @@ export const POST_TREADMILL = makeBlogPost({
 
 export const POST_GRIP_STRENGTHENER = makeBlogPost({
   slug: 'best-grip-strengthener-stroke-recovery',
-  title: 'Best Grip Strengtheners for Stroke Recovery: Rebuilding Hand Strength That Actually Transfers',
-  description: 'Grip strength after stroke doesn\'t rebuild itself. The right tools, used correctly, accelerate the process. Here\'s what works — and what to avoid if spasticity is still present.',
+  title: 'Best Grip Strengtheners for Stroke Recovery',
+  description: 'Grip strength after stroke doesn\'t rebuild itself. The right tools, used correctly, speed it up. What works — and what to avoid if spasticity is still present.',
   h1: 'Best Grip Strengtheners for Stroke Recovery',
   keyword: 'best grip strengthener stroke recovery',
   subhead: 'Grip strength is a reliable predictor of upper extremity function outcomes after stroke. Here\'s how to train it at home without making spasticity worse.',
@@ -3398,8 +3398,8 @@ export const POST_GRIP_STRENGTHENER = makeBlogPost({
 
 export const POST_TENS_UNIT = makeBlogPost({
   slug: 'best-tens-unit-stroke-recovery',
-  title: 'Best TENS Units for Stroke Recovery: Shoulder Pain, Spasticity, and NMES Explained',
-  description: 'TENS and NMES devices are some of the most clinically relevant tools for post-stroke shoulder pain and spasticity management. Here\'s what the evidence supports and which devices to buy.',
+  title: 'Best TENS Units for Stroke Recovery: NMES Guide',
+  description: 'TENS and NMES units are among the most clinically relevant tools for post-stroke shoulder pain and spasticity. What the evidence supports and which to buy.',
   h1: 'Best TENS Units for Stroke Recovery',
   keyword: 'best TENS unit stroke recovery',
   subhead: 'Hemiplegic shoulder pain affects up to 84% of stroke survivors. Electrical stimulation is one of the most evidence-backed interventions. Here\'s what to buy and how to use it safely.',
@@ -3479,8 +3479,8 @@ export const POST_TENS_UNIT = makeBlogPost({
 
 export const POST_MASSAGE_GUN = makeBlogPost({
   slug: 'best-massage-gun-stroke-spasticity',
-  title: 'Best Massage Guns for Stroke Spasticity: What Works, What to Avoid, and How to Use One Safely',
-  description: 'Percussion therapy can reduce spasticity tone before exercise and improve range of motion post-stroke — if you use the right device in the right areas. Here\'s the honest guide.',
+  title: 'Best Massage Guns for Stroke Spasticity',
+  description: 'Percussion therapy can reduce spasticity tone before exercise and improve range of motion after stroke — if you use the right device. Here\'s the honest guide.',
   h1: 'Best Massage Guns for Stroke Spasticity and Muscle Recovery',
   keyword: 'best massage gun stroke spasticity',
   subhead: 'Percussion massage before your PT session can reduce tone enough to get meaningful work done. After exercise it accelerates recovery. But there are areas you must avoid — and a technique that makes the difference.',
@@ -3553,8 +3553,8 @@ export const POST_MASSAGE_GUN = makeBlogPost({
 
 export const POST_SMART_HOME = makeBlogPost({
   slug: 'best-smart-home-devices-stroke-survivors',
-  title: 'Best Smart Home Devices for Stroke Survivors: Independence Through Voice and Automation',
-  description: 'For stroke survivors with aphasia, hemiplegia, or fatigue, smart home technology can restore independence that seemed gone. Here\'s what actually works and what\'s worth the money.',
+  title: 'Best Smart Home Devices for Stroke Survivors',
+  description: 'For survivors with aphasia, hemiplegia, or fatigue, smart home tech can restore independence that seemed gone. What actually works and what\'s worth the money.',
   h1: 'Best Smart Home Devices for Stroke Survivors',
   keyword: 'smart home devices stroke survivors independence',
   subhead: 'Controlling your home without two working hands, clear speech, or unlimited energy isn\'t a luxury — it\'s a functional independence goal. Here\'s the technology that closes the gap.',
@@ -3622,7 +3622,7 @@ export const POST_SMART_HOME = makeBlogPost({
 export const POST_RED_LIGHT = makeBlogPost({
   slug: 'red-light-therapy-stroke-recovery',
   title: 'Red Light Therapy After Stroke: What the Evidence Actually Says',
-  description: 'Red light therapy (photobiomodulation) has emerging evidence for neurological recovery and strong evidence for muscle soreness and inflammation. Here\'s an honest assessment for stroke survivors.',
+  description: 'Red light therapy (photobiomodulation) has emerging evidence for neurological recovery and solid evidence for muscle and inflammation. An honest take.',
   h1: 'Red Light Therapy for Stroke Recovery: Evidence, Limits, and What I Actually Use',
   keyword: 'red light therapy stroke recovery',
   subhead: 'Photobiomodulation is not a cure. It is not fringe science either. For post-stroke inflammation, muscle recovery, and the mitochondrial support that underlies everything else, it\'s worth understanding.',
@@ -3694,8 +3694,8 @@ export const POST_RED_LIGHT = makeBlogPost({
 
 export const POST_ADJUSTABLE_BED = makeBlogPost({
   slug: 'best-adjustable-bed-wedge-pillow-stroke-recovery',
-  title: 'Best Adjustable Beds and Wedge Pillows for Stroke Recovery: Sleep, Positioning, and Spasticity',
-  description: 'Bed positioning after stroke directly affects spasticity, shoulder subluxation, aspiration risk, and sleep quality. Here\'s what to buy and how to set it up correctly.',
+  title: 'Best Adjustable Beds & Wedge Pillows for Stroke',
+  description: 'Bed positioning after stroke affects spasticity, shoulder subluxation, aspiration risk, and sleep. Here\'s exactly what to buy and how to set it up right.',
   h1: 'Best Adjustable Beds and Wedge Pillows for Stroke Recovery',
   keyword: 'best adjustable bed wedge pillow stroke recovery',
   subhead: 'How you sleep is part of your rehabilitation. Positioning affects spasticity tone, shoulder integrity, and whether you wake up ready to work or already behind.',
@@ -3763,8 +3763,8 @@ export const POST_ADJUSTABLE_BED = makeBlogPost({
 
 export const POST_COMPRESSION = makeBlogPost({
   slug: 'compression-garments-stroke-recovery-edema',
-  title: 'Compression Socks and Sleeves for Stroke Recovery: Managing Edema, DVT Risk, and Circulation',
-  description: 'Post-stroke edema in the affected limb is nearly universal. Compression garments are one of the most evidence-backed interventions. Here\'s what to buy, how to put them on one-handed, and when to call your doctor.',
+  title: 'Compression Socks & Sleeves for Stroke Edema',
+  description: 'Post-stroke edema in the affected limb is nearly universal, and compression garments are one of the best-evidenced fixes. What to buy and how to use them.',
   h1: 'Compression Garments for Stroke Recovery: Socks, Sleeves, and Edema Management',
   keyword: 'compression socks stroke recovery edema',
   subhead: 'A swollen affected leg isn\'t just uncomfortable — it limits movement, increases DVT risk, and compounds the fatigue that already makes everything harder. Compression is the answer most survivors underuse.',
@@ -3840,8 +3840,8 @@ export const POST_COMPRESSION = makeBlogPost({
 
 export const POST_STANDING_DESK = makeBlogPost({
   slug: 'best-standing-desk-stroke-recovery-return-to-work',
-  title: 'Best Standing Desks for Stroke Survivors: Return to Work, Posture, and Active Recovery',
-  description: 'Returning to a desk job after stroke requires more than willpower — it requires a workstation built for hemiplegia, fatigue, and the posture asymmetries that make prolonged sitting a recovery setback.',
+  title: 'Best Standing Desks for Stroke Survivors',
+  description: 'Returning to a desk job after stroke takes more than willpower — it takes a workstation built for hemiplegia, fatigue, and posture asymmetry. Here\'s the setup.',
   h1: 'Best Standing Desks for Stroke Survivors and Return to Work',
   keyword: 'best standing desk stroke recovery return to work',
   subhead: 'Sitting eight hours a day with hemiplegia reinforces every asymmetry you\'re trying to correct in PT. A height-adjustable desk isn\'t a luxury — it\'s a functional tool for recovering while working.',
@@ -3911,8 +3911,8 @@ export const POST_STANDING_DESK = makeBlogPost({
 
 export const POST_WEIGHTED_VEST = makeBlogPost({
   slug: 'best-weighted-vest-stroke-balance-training',
-  title: 'Best Weighted Vests for Stroke Recovery: Balance Training, Proprioception, and Gait',
-  description: 'Weighted vests add load to gait and balance training in a way that challenges the nervous system without requiring additional equipment. Here\'s the evidence and what to buy.',
+  title: 'Best Weighted Vests for Stroke Balance Training',
+  description: 'Weighted vests add load to gait and balance training in a way that challenges the nervous system after stroke. Here\'s the evidence and which vests to buy.',
   h1: 'Best Weighted Vests for Stroke Balance Training and Gait Rehab',
   keyword: 'best weighted vest stroke recovery balance training',
   subhead: 'Adding body weight through a vest changes the proprioceptive input during walking and balance work — a different neuroplasticity stimulus that complements standard exercise without requiring different equipment.',
@@ -3980,8 +3980,8 @@ export const POST_WEIGHTED_VEST = makeBlogPost({
 
 export const POST_SPEECH_THERAPY = makeBlogPost({
   slug: 'best-speech-therapy-apps-tools-aphasia-stroke',
-  title: 'Best Speech Therapy Apps and Tools for Aphasia After Stroke: What Actually Works at Home',
-  description: 'Aphasia and dysarthria affect over a third of stroke survivors. Between clinic visits, daily practice is the difference between plateauing and continuing to improve. Here are the tools that make it possible.',
+  title: 'Best Speech Therapy Apps for Aphasia After Stroke',
+  description: 'Aphasia and dysarthria affect a third of stroke survivors. Between clinic visits, daily practice prevents plateau. The apps and tools that make it work at home.',
   h1: 'Best Speech Therapy Apps and Tools for Aphasia After Stroke',
   keyword: 'best speech therapy app aphasia stroke recovery',
   subhead: 'Your SLP sees you once or twice a week. The other 22+ hours belong to you. The right tools turn that time into meaningful practice instead of missed recovery.',
@@ -4058,8 +4058,8 @@ export const POST_SPEECH_THERAPY = makeBlogPost({
 
 export const POST_THRESHOLD_RAMP = makeBlogPost({
   slug: 'threshold-ramps-grab-bars-stroke-home-accessibility',
-  title: 'Threshold Ramps, Grab Bars, and Home Accessibility Upgrades for Stroke Survivors',
-  description: 'Falls kill stroke recovery momentum — and most falls happen at thresholds, in bathrooms, and on stairs. Here\'s how to spend $50–$500 on the modifications that actually prevent them.',
+  title: 'Home Accessibility After Stroke: Ramps & Grab Bars',
+  description: 'Most falls after stroke happen at thresholds, in bathrooms, and on stairs. Here\'s how to spend $50-$500 on the home modifications that actually prevent them.',
   h1: 'Threshold Ramps and Home Accessibility for Stroke Survivors: What to Buy and Where to Put It',
   keyword: 'threshold ramp grab bar stroke survivor home accessibility',
   subhead: 'A threshold is a two-inch ledge. After stroke it\'s a fall risk. A $30 rubber ramp eliminates it. Most survivors don\'t buy it until after they fall. Don\'t be that survivor.',
@@ -4142,7 +4142,7 @@ export const POST_THRESHOLD_RAMP = makeBlogPost({
 export const POST_HOME_GYM_STATIONS = makeBlogPost({
   slug: 'best-home-gym-stroke-recovery',
   title: 'Best Home Gym Stations for Stroke Recovery: From $500 to $5,000',
-  description: 'The home gym stations that actually work for stroke survivors — one-sided weakness, seated exercise, and full-body rebuilding. Real equipment, real prices, real recommendations.',
+  description: 'The home gym stations that actually work for stroke survivors — one-sided weakness, seated exercise, full-body rebuilding. Real equipment, real prices.',
   h1: 'Best home gym stations for stroke recovery',
   keyword: 'best home gym stroke recovery',
   extraKeywords: ['home gym for stroke survivors', 'stroke recovery exercise equipment', 'seated exercise machine', 'one-sided workout', 'resistance training after stroke', 'stroke survivor fitness', 'home rehab equipment', 'affiliate'],
@@ -4307,8 +4307,8 @@ export const POST_HOME_GYM_STATIONS = makeBlogPost({
 // =============================================================================
 export const POST_STAIR_LIFT = makeBlogPost({
   slug: 'stair-lift-stroke-survivor',
-  title: 'Stair Lifts for Stroke Survivors: When One Floor Stops Being a Recovery Plan',
-  description: 'The stair lift decision after stroke — when to buy, what to pay, and why the stair lift is independence, not surrender. Real prices, real brands, real recommendations.',
+  title: 'Stair Lifts for Stroke Survivors: When to Buy',
+  description: 'The stair lift decision after stroke — when to buy, what to pay, and why a stair lift is independence, not surrender. Real prices, brands, and recommendations.',
   h1: 'Stair lifts for stroke survivors',
   keyword: 'stair lift stroke survivor',
   extraKeywords: ['stair lift for disabled', 'home accessibility after stroke', 'stair chair lift', 'stair lift cost', 'stair lift installation', 'mobility equipment', 'aging in place', 'affiliate'],
@@ -4436,7 +4436,7 @@ export const POST_STAIR_LIFT = makeBlogPost({
 // =============================================================================
 export const POST_PARALLEL_BARS = makeBlogPost({
   slug: 'parallel-bars-stroke-recovery',
-  title: 'Parallel Bars for Stroke Recovery at Home: Clinical Equipment in Your Garage',
+  title: 'Parallel Bars for Stroke Recovery at Home',
   description: 'The parallel bars that bridge the gap between clinic gait training and real-world walking. Real prices, real brands, and the setup that actually works at home.',
   h1: 'Parallel bars for stroke recovery at home',
   keyword: 'parallel bars stroke recovery',
@@ -4564,8 +4564,8 @@ export const POST_PARALLEL_BARS = makeBlogPost({
 // =============================================================================
 export const POST_HYDROTHERAPY = makeBlogPost({
   slug: 'hot-tub-hydrotherapy-stroke-recovery',
-  title: 'Hot Tub Hydrotherapy for Stroke Recovery: Why I Spent $5,000 and Don\'t Regret It',
-  description: 'Hydrotherapy for stroke recovery — how hot tubs reduce spasticity, improve circulation, and rebuild proprioception. Real brands, real prices, and the setup that actually works.',
+  title: 'Hot Tub Hydrotherapy for Stroke Recovery',
+  description: 'Hydrotherapy for stroke recovery — how hot tubs reduce spasticity, improve circulation, and rebuild proprioception. Real brands, prices, and setup that works.',
   h1: 'Hot tub hydrotherapy for stroke recovery',
   keyword: 'hot tub hydrotherapy stroke recovery',
   extraKeywords: ['hydrotherapy for stroke', 'hot tub for spasticity', 'warm water therapy', 'aquatic therapy at home', 'stroke muscle relaxation', 'spa therapy for stroke', 'home hydrotherapy', 'affiliate'],
@@ -4693,7 +4693,7 @@ export const POST_HYDROTHERAPY = makeBlogPost({
 // =============================================================================
 export const POST_SUPPLEMENTS = makeBlogPost({
   slug: 'supplements-stroke-recovery',
-  title: '5 Supplements I Took During Stroke Recovery — And the One I Wish I Started Earlier',
+  title: 'Supplements for Stroke Recovery: What I Took',
   description: 'The supplement stack that actually moved the needle for stroke recovery. Omega-3, vitamin D, B-complex, CoQ10, and magnesium — with the evidence and the dosage.',
   h1: 'Supplements for stroke recovery',
   keyword: 'supplements stroke recovery',
@@ -4858,8 +4858,8 @@ export const POST_SUPPLEMENTS = makeBlogPost({
 // =============================================================================
 export const POST_SAEBO = makeBlogPost({
   slug: 'saebo-stroke-recovery-devices',
-  title: 'Saebo Stroke Recovery Devices: The Hand Therapy System I Wish I Found Sooner',
-  description: 'Saebo stroke recovery devices — the Flex, the ReJoyce, and the Glove. Real reviews, real results, and the protocol that makes them work.',
+  title: 'Saebo Devices for Stroke Recovery: Honest Review',
+  description: 'Saebo stroke recovery devices — the Flex, the ReJoyce, and the Glove. Real reviews, real results, and the daily protocol that actually makes them work for you.',
   h1: 'Saebo stroke recovery devices',
   keyword: 'saebo stroke recovery',
   extraKeywords: ['Saebo Flex review', 'hand therapy after stroke', 'finger recovery stroke', 'stroke hand rehabilitation', 'active assistive therapy', 'Saebo ReJoyce', 'stroke glove therapy', 'affiliate'],
@@ -4985,8 +4985,8 @@ export const POST_SAEBO = makeBlogPost({
 // =============================================================================
 export const POST_GSC_INDEXING = makeBlogPost({
   slug: 'google-search-console-indexing-website',
-  title: 'How to Get Google Search Console to Index Your Website: The No-Fluff Guide',
-  description: 'Getting Google Search Console to index your website is not a mystery. It is a checklist. Here is the exact process that got 48 stroke recovery blog posts indexed in 90 days.',
+  title: 'Get Google Search Console to Index Your Site',
+  description: 'Getting Google Search Console to index your site isn\'t a mystery, it\'s a checklist. Here\'s the exact process that got 48 blog posts indexed in 90 days.',
   h1: 'How to get Google Search Console to index your website',
   keyword: 'google search console indexing website',
   image: '/images/blog/therapy-exercises-dark.png',
@@ -5111,7 +5111,7 @@ export const POST_GSC_INDEXING = makeBlogPost({
 export const POST_ONLINE_COACH = makeBlogPost({
   slug: 'online-stroke-recovery-coach',
   title: 'Online Stroke Recovery Coach: Real Story, Real Results',
-  description: 'Nick Kremers, a 7-year stroke survivor, built the top-ranked stroke recovery resource from a wheelchair. Real protocols, real accountability, and the story behind the results.',
+  description: 'Nick Kremers, a 7-year stroke survivor, built a top stroke recovery resource from a wheelchair. Real protocols, real accountability, and the story behind it.',
   h1: 'Online stroke recovery coach',
   keyword: 'online stroke recovery coach',
   extraKeywords: ['stroke recovery coach', 'stroke survivor coaching', 'virtual stroke coach', 'stroke recovery mentor', 'stroke recovery accountability', 'personal stroke coach', 'stroke coaching program', 'online coach for stroke survivors'],
