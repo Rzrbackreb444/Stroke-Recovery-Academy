@@ -71,7 +71,7 @@ async function sendStep(c: Candidate, category: string, copy: StepCopy, whyRecei
     toEmail: c.email,
     channel: "email",
     category,
-    dedupeKey: `${category}:email:${c.user_id}`,
+    dedupeKey: lifecycleDedupeKey(category, c.user_id),
     subject: copy.subject,
     html,
     text,
@@ -190,10 +190,24 @@ function trialEndingCopy(daysLeft: number, firstName?: string | null): StepCopy 
   };
 }
 
-// ─── Journeys ────────────────────────────────────────────────────────────────
+// ─── Dedupe key ──────────────────────────────────────────────────────────────
+// One stable key per (step, channel, user). The message_deliveries UNIQUE(key)
+// claim uses this, so it MUST be deterministic — the same user in the same step
+// window always maps to the same key, blocking a second send. Exported so the
+// tests can assert the exact key shape rather than duplicating the string.
+export function lifecycleDedupeKey(category: string, userId: string): string {
+  return `${category}:email:${userId}`;
+}
+
+// ─── Audience selection (the SQL under test) ─────────────────────────────────
+// These three functions ARE the cohort logic. They are exported and side-effect
+// free (SELECT only) so the correctness of the windows/dedupe can be verified in
+// isolation, without touching the send path. The run* wrappers below add the
+// send loop on top.
+
 // Onboarding: brand-new users with zero activity (no check-ins AND no journals),
 // at exactly day 1 / 3 / 7 since signup.
-async function runOnboarding() {
+export async function selectOnboardingCandidates(): Promise<Array<Candidate & { age_days: number }>> {
   const result = await db.execute(sql`
     SELECT u.id AS user_id, u.email, u.first_name,
            FLOOR(EXTRACT(EPOCH FROM (now() - u.created_at)) / 86400)::int AS age_days
@@ -204,26 +218,13 @@ async function runOnboarding() {
       AND NOT EXISTS (SELECT 1 FROM daily_checkins c WHERE c.user_id = u.id)
       AND NOT EXISTS (SELECT 1 FROM recovery_journals j WHERE j.user_id = u.id)
   `);
-  const rows = (result.rows || []) as Array<Candidate & { age_days: number }>;
-  for (const r of rows) {
-    try {
-      await sendStep(
-        r,
-        `onboarding-d${r.age_days}`,
-        onboardingCopy(r.age_days, r.first_name),
-        "You're receiving this because you created an account at Stroke Recovery Academy. One click below stops these.",
-      );
-      await new Promise((res) => setTimeout(res, 150));
-    } catch (e) {
-      console.error(`[lifecycle] onboarding send failed for ${r.user_id}:`, e);
-    }
-  }
+  return (result.rows || []) as Array<Candidate & { age_days: number }>;
 }
 
 // Win-back: users who had activity but whose most recent check-in OR journal is
 // 14 / 30 days old. Day-14 guard skips anyone who just got a day-14 journal
 // nudge this week so we don't double up.
-async function runWinback() {
+export async function selectWinbackCandidates(): Promise<Array<Candidate & { age_days: number }>> {
   const result = await db.execute(sql`
     WITH last_activity AS (
       SELECT user_id, MAX(ts) AS last_ts FROM (
@@ -248,7 +249,46 @@ async function runWinback() {
         )
       )
   `);
-  const rows = (result.rows || []) as Array<Candidate & { age_days: number }>;
+  return (result.rows || []) as Array<Candidate & { age_days: number }>;
+}
+
+// Trial-ending: trialing subscriptions with a renewal 1-3 days out. Callers
+// still filter to exactly T-3 / T-1 via days_left.
+export async function selectTrialEndingCandidates(): Promise<Array<Candidate & { days_left: number }>> {
+  const result = await db.execute(sql`
+    SELECT u.id AS user_id, u.email, u.first_name,
+           CEIL(EXTRACT(EPOCH FROM (s.current_period_end - now())) / 86400)::int AS days_left
+    FROM user_subscriptions s
+    JOIN users u ON u.id = s.user_id
+    WHERE s.status = 'trialing'
+      AND u.email IS NOT NULL
+      AND s.current_period_end IS NOT NULL
+      AND s.current_period_end > now()
+      AND s.current_period_end <= now() + interval '3 days'
+  `);
+  return (result.rows || []) as Array<Candidate & { days_left: number }>;
+}
+
+// ─── Journeys ────────────────────────────────────────────────────────────────
+async function runOnboarding() {
+  const rows = await selectOnboardingCandidates();
+  for (const r of rows) {
+    try {
+      await sendStep(
+        r,
+        `onboarding-d${r.age_days}`,
+        onboardingCopy(r.age_days, r.first_name),
+        "You're receiving this because you created an account at Stroke Recovery Academy. One click below stops these.",
+      );
+      await new Promise((res) => setTimeout(res, 150));
+    } catch (e) {
+      console.error(`[lifecycle] onboarding send failed for ${r.user_id}:`, e);
+    }
+  }
+}
+
+async function runWinback() {
+  const rows = await selectWinbackCandidates();
   for (const r of rows) {
     try {
       await sendStep(
@@ -264,21 +304,9 @@ async function runWinback() {
   }
 }
 
-// Trial-ending: trialing subscriptions with a renewal 1-3 days out. Send at
-// T-3 and T-1 only.
+// Send at T-3 and T-1 only.
 async function runTrialEnding() {
-  const result = await db.execute(sql`
-    SELECT u.id AS user_id, u.email, u.first_name,
-           CEIL(EXTRACT(EPOCH FROM (s.current_period_end - now())) / 86400)::int AS days_left
-    FROM user_subscriptions s
-    JOIN users u ON u.id = s.user_id
-    WHERE s.status = 'trialing'
-      AND u.email IS NOT NULL
-      AND s.current_period_end IS NOT NULL
-      AND s.current_period_end > now()
-      AND s.current_period_end <= now() + interval '3 days'
-  `);
-  const rows = (result.rows || []) as Array<Candidate & { days_left: number }>;
+  const rows = await selectTrialEndingCandidates();
   for (const r of rows) {
     const d = Number(r.days_left);
     if (d !== 3 && d !== 1) continue;
