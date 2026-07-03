@@ -19,7 +19,7 @@ import {
   getFunnelSummary,
 } from "./services/sasquatchFunnelService";
 import { requireAdmin } from "./middleware/requireAdmin";
-import { publicPostLimiter } from "./middleware/publicRateLimit";
+import { publicPostLimiter, paymentCheckoutLimiter, billingPortalLimiter } from "./middleware/publicRateLimit";
 
 // 7-day free trial for first-time subscribers. Survivors get the full premium
 // surface (unlimited Coach, unlimited Anchor renders, voice cloning, premium
@@ -75,18 +75,38 @@ export function registerSasquatchPremiumRoutes(app: Express) {
   // POST /api/sasquatch-premium/checkout — create recurring checkout session.
   // Body: { plan?: 'monthly' | 'annual' } (default 'monthly'). Lazy-creates
   // BOTH Stripe prices on first call; subsequent calls hit the cache.
-  app.post("/api/sasquatch-premium/checkout", isAuthenticated, async (req: any, res: Response) => {
+  app.post("/api/sasquatch-premium/checkout", isAuthenticated, paymentCheckoutLimiter, async (req: any, res: Response) => {
     try {
       const userId = getUserId(req);
       if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
       const requestedPlan = req.body?.plan === "annual" ? "annual" : "monthly";
-      // Promo code (Wave H). Optional, length-capped to a sane maximum so a
-      // malformed body can't blow up the Stripe API call. Stripe promotion
-      // codes are typically ≤32 chars; we accept up to 64 for headroom and
-      // strip whitespace. Empty string → no code.
-      const rawPromo = String(req.body?.promoCode ?? "").trim().slice(0, 64);
+      // Promo code (Wave H). Optional, format-validated: only alphanumeric,
+      // dash, and underscore allowed (matches all real Stripe promo code
+      // formats). Length-capped at 64. Empty string → no code.
+      const rawPromo = String(req.body?.promoCode ?? "").trim().toUpperCase().replace(/[^A-Z0-9_-]/g, "").slice(0, 64);
       const promotionCode = rawPromo.length > 0 ? rawPromo : undefined;
+
+      // Double-subscription guard — if the user already has an active
+      // subscription, redirect them to the billing portal instead of creating
+      // a new Stripe session. Prevents duplicate subscriptions.
+      const [u] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+      const existingCustomerId = u?.stripeCustomerId || null;
+      if (existingCustomerId) {
+        const alreadyActive = await hasActiveSasquatchPremium(existingCustomerId);
+        if (alreadyActive) {
+          const baseUrl = `${req.protocol}://${req.get("host")}`;
+          try {
+            const portalSession = await stripeService.createCustomerPortalSession(
+              existingCustomerId,
+              `${baseUrl}/recovery/premium`,
+            );
+            return res.json({ url: portalSession.url, alreadyActive: true });
+          } catch {
+            return res.json({ alreadyActive: true });
+          }
+        }
+      }
 
       let prices: { monthlyPriceId: string; annualPriceId: string };
       try {
@@ -139,7 +159,7 @@ export function registerSasquatchPremiumRoutes(app: Express) {
   // POST /api/sasquatch-premium/portal — Stripe customer portal for cancel /
   // payment-method update. Also invalidates entitlement cache so post-cancel
   // status flips quickly when the user returns.
-  app.post("/api/sasquatch-premium/portal", isAuthenticated, async (req: any, res: Response) => {
+  app.post("/api/sasquatch-premium/portal", isAuthenticated, billingPortalLimiter, async (req: any, res: Response) => {
     try {
       const userId = getUserId(req);
       if (!userId) return res.status(401).json({ message: "Unauthorized" });

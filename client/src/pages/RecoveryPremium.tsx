@@ -166,11 +166,16 @@ export default function RecoveryPremium() {
         plan: selectedPlan,
         promoCode: promoCode || undefined,
       });
-      return (await res.json()) as { url?: string; plan?: Plan };
+      return (await res.json()) as { url?: string; plan?: Plan; alreadyActive?: boolean };
     },
     onSuccess: (data) => {
-      if (data?.url) window.location.href = data.url;
-      else toast({ title: "Couldn't start checkout", variant: "destructive" });
+      if (data?.url) {
+        window.location.href = data.url;
+      } else if (data?.alreadyActive) {
+        toast({ title: "You're already a premium member", description: "Redirecting to billing portal..." });
+      } else {
+        toast({ title: "Couldn't start checkout", variant: "destructive" });
+      }
     },
     onError: (err: any) => {
       toast({

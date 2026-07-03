@@ -94,3 +94,17 @@ export const authActionLimiter = publicRateLimit({
   max: 5,
   bucketName: "auth-action",
 });
+
+/** Payment checkout limiter — 10 Stripe session creations per IP per hour. */
+export const paymentCheckoutLimiter = publicRateLimit({
+  windowMs: 60 * 60_000,
+  max: 10,
+  bucketName: "payment-checkout",
+});
+
+/** Billing portal limiter — 20 portal opens per IP per hour. */
+export const billingPortalLimiter = publicRateLimit({
+  windowMs: 60 * 60_000,
+  max: 20,
+  bucketName: "billing-portal",
+});
