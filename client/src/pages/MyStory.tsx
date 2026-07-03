@@ -117,6 +117,7 @@ export default function MyStory() {
       <RecoverySEO
         title="Your Recovery Story | Stroke Recovery Academy"
         description="Document your journey. Mark your chapters. Compile your recovery into a real book — in your own voice."
+        canonical="/recovery/my-story"
       />
 
       <div className="min-h-screen bg-[#FDFBF7] pt-20">
