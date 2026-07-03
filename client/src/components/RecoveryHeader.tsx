@@ -128,7 +128,7 @@ export default function RecoveryHeader() {
                 data-testid="img-recovery-logo"
               />
               <div className="flex flex-col leading-none min-w-0">
-                <span className="font-bold tracking-tight text-[#1C1917] text-lg sm:text-xl truncate">
+                <span className={`font-bold tracking-tight text-lg sm:text-xl truncate ${scrolled ? "text-[#1C1917]" : "text-[#FDFBF7]"}`}>
                   Stroke Recovery Academy
                 </span>
                 <span className="hidden sm:block mt-1 text-[10px] font-semibold uppercase tracking-[0.28em] text-gold">
