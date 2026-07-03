@@ -7263,11 +7263,45 @@ export const notificationPreferences = pgTable("notification_preferences", {
   weeklyRepGoal: integer("weekly_rep_goal").default(21), // default 3/day × 7
   weeklyDigestEnabled: boolean("weekly_digest_enabled").notNull().default(true),
   caregiverShareEnabled: boolean("caregiver_share_enabled").notNull().default(false),
+  // Unified messaging engine — per-user channel routing + delivery guardrails.
+  emailEnabled: boolean("email_enabled").notNull().default(true),
+  pushEnabled: boolean("push_enabled").notNull().default(true),
+  smsEnabled: boolean("sms_enabled").notNull().default(false), // opt-in; A2P 10DLC gated
+  smsPhone: text("sms_phone"),
+  smsConsentAt: timestamp("sms_consent_at"),
+  quietHoursStart: integer("quiet_hours_start"), // local hour 0-23, nullable = no quiet window (push/sms only)
+  quietHoursEnd: integer("quiet_hours_end"),     // local hour 0-23, nullable
+  timezone: text("timezone").notNull().default("America/New_York"), // platform assumes EST
+  unsubscribedAll: boolean("unsubscribed_all").notNull().default(false), // global opt-out of non-transactional
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 export type NotificationPreference = typeof notificationPreferences.$inferSelect;
 export const insertNotificationPreferenceSchema = createInsertSchema(notificationPreferences).omit({ id: true, updatedAt: true });
 export type InsertFreeVideoAnalysis = z.infer<typeof insertFreeVideoAnalysisSchema>;
+
+// Unified delivery log for the lifecycle messaging engine. One row per
+// (step, channel, user) attempt. UNIQUE(dedupe_key) makes sends idempotent:
+// the scheduler recomputes eligibility every hour, and the claim-before-send
+// insert blocks any repeat. Mirrors the journal_nudge_log dedupe pattern but
+// generalized across email/push/sms and every lifecycle journey.
+export const messageDeliveries = pgTable("message_deliveries", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id"),                 // nullable — email-only newsletter sends have no user
+  email: text("email"),                       // recipient email when known (for audit/debug)
+  channel: text("channel").notNull(),         // email | push | sms
+  category: text("category").notNull(),       // e.g. onboarding-d1, winback-d14, trial-ending-d3
+  dedupeKey: text("dedupe_key").notNull().unique(),
+  status: text("status").notNull().default("sent"), // sent | failed | skipped
+  providerId: text("provider_id"),            // Resend/Twilio message id when available
+  error: text("error"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  index("idx_message_deliveries_user").on(table.userId, table.createdAt),
+  index("idx_message_deliveries_category").on(table.category),
+]);
+export type MessageDelivery = typeof messageDeliveries.$inferSelect;
+export const insertMessageDeliverySchema = createInsertSchema(messageDeliveries).omit({ id: true, createdAt: true });
+export type InsertMessageDelivery = z.infer<typeof insertMessageDeliverySchema>;
 
 // ============================================================================
 // DURABLE JOB SCHEDULER

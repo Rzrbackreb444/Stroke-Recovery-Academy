@@ -7,6 +7,11 @@ import { db } from "../db";
 import { registerJob, startScheduler } from "./scheduler";
 
 export async function bootstrapScheduler(): Promise<void> {
+  // Self-provision the messaging engine's tables/columns before any job that
+  // writes to message_deliveries runs (mirrors ensureSchedulerSchema).
+  const { ensureMessagingSchema } = await import("../messaging");
+  await ensureMessagingSchema();
+
   // Email return-funnel nudges (3/7/14 days after last journal entry).
   registerJob({
     name: "journal-nudge",
@@ -51,6 +56,20 @@ export async function bootstrapScheduler(): Promise<void> {
     handler: async (ctx) => {
       const { runAccountabilityChecks } = await import("../pushNotificationService");
       await runAccountabilityChecks(ctx.scheduledFor);
+    },
+  });
+
+  // Lifecycle journeys — onboarding activation, win-back, trial-ending. Each
+  // run recomputes eligibility from real state (no enrollment table); the
+  // message_deliveries dedupe makes it safe to run every hour and idempotent
+  // across double-runs / restarts.
+  registerJob({
+    name: "lifecycle-journeys",
+    description: "State-driven lifecycle messages: onboarding activation, win-back, trial-ending.",
+    cron: "20 * * * *", // hourly at :20 (offset to spread load)
+    handler: async () => {
+      const { runLifecycleJourneys } = await import("../lifecycleService");
+      await runLifecycleJourneys();
     },
   });
 
