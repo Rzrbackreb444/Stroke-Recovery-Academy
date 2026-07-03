@@ -28,7 +28,7 @@ function Hero() {
     <section className="bg-[#1A1412]">
       {/* Mobile: full-bleed image on top, warm cream text below. Desktop: side-by-side with gradient overlay. */}
       <div className="sm:hidden">
-        <img src={heroWarrior} alt="Nick Kremers — stroke survivor" className="w-full h-[55vh] object-cover object-top" />
+        <img src={heroWarrior} alt="Nick Kremers — stroke survivor" className="w-full h-[38vh] max-h-[340px] object-cover object-top" />
         <div className="bg-[#FDFBF7] px-5 pt-8 pb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2A2421]/8 border border-[#E2C2A4]/40 mb-6">
             <span className="flex h-2 w-2 rounded-full bg-gold" />
