@@ -16,7 +16,7 @@ import {
   MicOff,
   Trash2
 } from "lucide-react";
-import strokeLyfeLogo from "@assets/Untitled_design_1776789083877.png";
+import strokeLyfeLogo from "@assets/strokelyfe-logo-opt.webp";
 
 interface Message {
   id: string;

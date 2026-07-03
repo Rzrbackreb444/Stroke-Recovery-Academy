@@ -40,7 +40,7 @@ import {
   Compass,
   Mountain,
 } from "lucide-react";
-import strokeLyfeLogo from "@assets/Untitled_design_1776789083877.png";
+import strokeLyfeLogo from "@assets/strokelyfe-logo-opt.webp";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 
 const donationAmounts = [25, 50, 100, 250, 500, 1000];

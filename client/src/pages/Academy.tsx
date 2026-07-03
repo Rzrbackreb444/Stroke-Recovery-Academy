@@ -28,9 +28,9 @@ import {
   ChevronRight,
   Flame
 } from "lucide-react";
-import mirrorTherapyImage from "@assets/generated_images/mirror_therapy_exercise.png";
-import baseballBatImage from "@assets/generated_images/baseball_bat_therapy_equipment.png";
-import dropFootImage from "@assets/generated_images/drop_foot_recovery_protocol.png";
+import mirrorTherapyImage from "@assets/mirror-therapy-opt.webp";
+import baseballBatImage from "@assets/baseball-bat-opt.webp";
+import dropFootImage from "@assets/drop-foot-opt.webp";
 
 const books = [
   {

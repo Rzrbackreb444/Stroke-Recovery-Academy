@@ -1,5 +1,5 @@
 import ExerciseCard from '../ExerciseCard';
-import baseballBatImage from "@assets/generated_images/baseball_bat_therapy_equipment.png";
+import baseballBatImage from "@assets/baseball-bat-opt.webp";
 
 export default function ExerciseCardExample() {
   return (

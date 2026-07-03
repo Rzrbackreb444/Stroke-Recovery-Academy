@@ -12,7 +12,7 @@ import {
   Gift, Heart, CheckCircle, Shield, ArrowRight,
   Users, Star, Zap, Crown
 } from "lucide-react";
-import strokeLyfeLogo from "@assets/Untitled_design_1776789083877.png";
+import strokeLyfeLogo from "@assets/strokelyfe-logo-opt.webp";
 import RecoverySEO from "@/components/RecoverySEO";
 
 const GIFT_TIERS = [
