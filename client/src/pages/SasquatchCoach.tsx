@@ -366,7 +366,7 @@ export default function SasquatchCoach() {
               ) : msg.role === "coach" && msg.capped ? (
                 /* ── Premium upgrade gate ── */
                 <div
-                  className="max-w-[90%] flex-1 rounded-2xl overflow-hidden border border-[#C06B3E]/40 bg-gradient-to-br from-[#FFF8F0] via-[#FFF5E8] to-[#FDFBF7] shadow-[0_4px_24px_rgba(226,116,27,0.10)]"
+                  className="max-w-[90%] flex-1 rounded-2xl overflow-hidden border border-[#C06B3E]/40 bg-gradient-to-br from-[#FFF8F0] via-[#FFF5E8] to-[#FDFBF7] shadow-[0_4px_16px_rgba(192,107,62,0.08)]"
                   data-testid="coach-upgrade-card"
                 >
                   <div className="px-5 py-4">
