@@ -1216,12 +1216,26 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   app.get('/api/stats/community', async (_req, res) => {
     try {
       const { pool: dbPool } = await import('./db');
-      const result = await dbPool.query(`SELECT COUNT(*)::int AS total FROM users`);
-      const total: number = result.rows[0]?.total ?? 0;
+      const [countRow, avatarRows] = await Promise.all([
+        dbPool.query(`SELECT COUNT(*)::int AS total FROM users`),
+        dbPool.query(
+          `SELECT COALESCE(us.avatar_url, u.profile_image_url) AS avatar,
+                  COALESCE(us.display_name, u.first_name, 'S') AS name
+           FROM users u
+           LEFT JOIN user_settings us ON us.user_id = u.id
+           WHERE COALESCE(us.avatar_url, u.profile_image_url) IS NOT NULL
+           ORDER BY u.created_at DESC LIMIT 4`
+        ),
+      ]);
+      const total: number = countRow.rows[0]?.total ?? 0;
+      const avatars = avatarRows.rows.map((r: { avatar: string; name: string }) => ({
+        src: r.avatar as string,
+        name: r.name as string,
+      }));
       res.set('Cache-Control', 'public, max-age=300');
-      res.json({ total, display: total >= 1000 ? `${(total / 1000).toFixed(1)}k+` : `${total}` });
+      res.json({ total, display: total >= 1000 ? `${(total / 1000).toFixed(1)}k+` : `${total}`, avatars });
     } catch {
-      res.json({ total: 0, display: '0' });
+      res.json({ total: 0, display: '0', avatars: [] });
     }
   });
 

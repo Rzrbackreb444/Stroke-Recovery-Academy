@@ -24,17 +24,46 @@ const goToOnboarding = () => {
   window.location.href = "/recovery/onboarding";
 };
 
-function useSurvivorCount() {
-  const { data } = useQuery<{ total: number; display: string }>({
+type CommunityStats = { total: number; display: string; avatars: { src: string; name: string }[] };
+
+function useCommunityStats() {
+  const { data } = useQuery<CommunityStats>({
     queryKey: ["/api/stats/community"],
     staleTime: 5 * 60_000,
   });
-  if (!data || data.total === 0) return null;
-  return data.display;
+  return data && data.total > 0 ? data : null;
+}
+
+function AvatarCluster({ avatars, border }: { avatars: { src: string; name: string }[]; border: string }) {
+  const COLORS = ["#C06B3E", "#7C5C3A", "#A0522D", "#8B4513"];
+  const slots = avatars.length > 0 ? avatars : [];
+  const placeholders = Math.max(0, 4 - slots.length);
+  return (
+    <div className="flex -space-x-2" aria-hidden="true">
+      {slots.map((av, i) => (
+        <img
+          key={i}
+          src={av.src}
+          alt={av.name}
+          className={`w-8 h-8 rounded-full border-2 ${border} object-cover`}
+          onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+        />
+      ))}
+      {Array.from({ length: placeholders }).map((_, i) => (
+        <div
+          key={`ph-${i}`}
+          className={`w-8 h-8 rounded-full border-2 ${border} flex items-center justify-center text-white text-[10px] font-bold`}
+          style={{ backgroundColor: COLORS[(slots.length + i) % COLORS.length] }}
+        >
+          S
+        </div>
+      ))}
+    </div>
+  );
 }
 
 function Hero() {
-  const count = useSurvivorCount();
+  const stats = useCommunityStats();
   return (
     <section className="bg-[#1A1412]">
       {/* Mobile: full-bleed image on top, warm cream text below. Desktop: side-by-side with gradient overlay. */}
@@ -78,12 +107,10 @@ function Hero() {
             </Button>
           </div>
           <p className="mt-3 text-sm text-[#2A2421]/40">No signup to try — 3 free messages with Coach, then $19/mo.</p>
-          {count && (
-            <div className="mt-8 flex items-center gap-4 text-sm text-[#2A2421]/50 font-medium">
-              <div className="flex -space-x-2" aria-hidden="true">
-                {[1, 2, 3, 4].map((i) => <div key={i} className="w-8 h-8 rounded-full border-2 border-[#FDFBF7] bg-[#2A2421]/15" />)}
-              </div>
-              <p>{count} survivors rebuilding their lives</p>
+          {stats && (
+            <div className="mt-8 flex items-center gap-3 text-sm text-[#2A2421]/50 font-medium">
+              <AvatarCluster avatars={stats.avatars} border="border-[#FDFBF7]" />
+              <p>{stats.display} survivors rebuilding their lives</p>
             </div>
           )}
         </div>
@@ -135,12 +162,10 @@ function Hero() {
               </Button>
             </div>
             <p className="mt-4 text-sm text-[#FDFBF7]/50">No signup to try — 3 free messages with Coach, then $19/mo.</p>
-            {count && (
-              <div className="mt-12 flex items-center gap-4 text-sm text-[#FDFBF7]/60 font-medium">
-                <div className="flex -space-x-2" aria-hidden="true">
-                  {[1, 2, 3, 4].map((i) => <div key={i} className="w-8 h-8 rounded-full border-2 border-[#1C1917] bg-[#FDFBF7]/15" />)}
-                </div>
-                <p>{count} survivors rebuilding their lives</p>
+            {stats && (
+              <div className="mt-12 flex items-center gap-3 text-sm text-[#FDFBF7]/60 font-medium">
+                <AvatarCluster avatars={stats.avatars} border="border-[#1C1917]" />
+                <p>{stats.display} survivors rebuilding their lives</p>
               </div>
             )}
           </div>
@@ -151,9 +176,9 @@ function Hero() {
 }
 
 function StatsStrip() {
-  const count = useSurvivorCount();
+  const community = useCommunityStats();
   const stats = [
-    { n: count ?? "Growing", l: "Survivors" },
+    { n: community?.display ?? "Growing", l: "Survivors" },
     { n: "0% → 90%", l: "Function restored" },
     { n: "365", l: "Days of reps" },
     { n: "7", l: "Years of proof" },
