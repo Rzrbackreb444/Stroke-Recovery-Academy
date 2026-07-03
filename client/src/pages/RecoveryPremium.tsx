@@ -272,7 +272,7 @@ export default function RecoveryPremium() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100">
+    <div className="min-h-screen bg-[#FDFBF7] text-[#1C1917]">
       <RecoverySEO
         title="Sasquatch Premium — Unlimited Survivor Tools | Stroke Recovery Academy"
         description="7-day free trial. Unlimited AI Sasquatch Coach. Unlimited Recovery Anchor renders. Voice Cloning. Premium Campfire circles. Then $19/month or $190/year. Cancel anytime."
@@ -282,10 +282,10 @@ export default function RecoveryPremium() {
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-amber-900/10 via-stone-950 to-stone-950 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#E2741B]/5 via-[#FDFBF7] to-[#FDFBF7] pointer-events-none" />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-10 text-center">
           <Badge
-            className="bg-amber-600/20 text-amber-400 border-amber-700/40 mb-4"
+            className="bg-[#E2741B]/10 text-[#E2741B] border-[#E2741B]/20 mb-4"
             data-testid="badge-premium-tag"
           >
             <Flame className="w-3 h-3 mr-1" />
@@ -299,14 +299,14 @@ export default function RecoveryPremium() {
             <br />
             <span style={{ color: "#E2741B" }}>recovery.</span>
           </h1>
-          <p className="text-stone-300 text-lg md:text-xl max-w-2xl mx-auto mb-8">
+          <p className="text-[#78716C] text-lg md:text-xl max-w-2xl mx-auto mb-8">
             Unlimited Coach. Unlimited Recovery Anchors. Voice Cloning included.
             Premium fires with Nick. Built by a 7-year survivor, for survivors.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-4">
             <Button
               size="lg"
-              className="bg-amber-600 hover:bg-amber-700 text-white text-base px-8"
+              className="bg-[#E2741B] hover:bg-[#C65F12] text-white text-base px-8"
               onClick={startCheckout}
               disabled={ctaDisabled}
               data-testid="button-hero-cta"
@@ -316,7 +316,7 @@ export default function RecoveryPremium() {
             <Button
               size="lg"
               variant="outline"
-              className="border-stone-700 text-stone-200 hover:bg-stone-900"
+              className="border-[#E8E0D8] text-[#292524] hover:bg-white"
               onClick={scrollToPricing}
               data-testid="button-hero-see-pricing"
             >
@@ -324,17 +324,17 @@ export default function RecoveryPremium() {
               <ArrowDown className="w-4 h-4 ml-1" />
             </Button>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-stone-400 text-xs">
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[#78716C] text-xs">
             <span className="inline-flex items-center gap-1">
               <ShieldCheck className="w-3.5 h-3.5 text-green-500" />
               Cancel anytime in one click
             </span>
             <span className="inline-flex items-center gap-1">
-              <Zap className="w-3.5 h-3.5 text-amber-500" />
+              <Zap className="w-3.5 h-3.5 text-[#E2741B]" />
               Full access from minute one
             </span>
             <span className="inline-flex items-center gap-1">
-              <Lock className="w-3.5 h-3.5 text-stone-500" />
+              <Lock className="w-3.5 h-3.5 text-[#A8A29E]" />
               Stripe — your card stays with Stripe, not us
             </span>
           </div>
@@ -348,8 +348,8 @@ export default function RecoveryPremium() {
                 </div>
               ))}
             </div>
-            <p className="text-xs text-stone-400">
-              Survivors with strokes from <span className="text-stone-200 font-semibold">ages 28 to 79</span> are using Coach daily.
+            <p className="text-xs text-[#78716C]">
+              Survivors with strokes from <span className="text-[#292524] font-semibold">ages 28 to 79</span> are using Coach daily.
             </p>
           </div>
         </div>
@@ -358,20 +358,20 @@ export default function RecoveryPremium() {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-32">
         {/* ── Founder bar ───────────────────────────────────────────────── */}
         <Card
-          className="p-5 md:p-6 bg-stone-900 border-stone-800 mb-10"
+          className="p-5 md:p-6 bg-white border-[#E8E0D8] mb-10"
           data-testid="card-founder-bar"
         >
           <div className="flex items-start gap-4">
-            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-700 flex items-center justify-center text-xl font-black text-white">
+            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#E2741B] flex items-center justify-center text-xl font-black text-white">
               N
             </div>
             <div className="flex-1">
-              <div className="text-sm text-stone-400 mb-1">
-                Built by <span className="text-stone-200 font-bold">Nick Kremers</span> —
+              <div className="text-sm text-[#78716C] mb-1">
+                Built by <span className="text-[#292524] font-bold">Nick Kremers</span> —
                 7 years post-stroke
               </div>
-              <p className="text-stone-300 text-sm md:text-base leading-relaxed">
-                <Quote className="w-4 h-4 inline-block -mt-1 mr-1 text-amber-500" />
+              <p className="text-[#78716C] text-sm md:text-base leading-relaxed">
+                <Quote className="w-4 h-4 inline-block -mt-1 mr-1 text-[#E2741B]" />
                 I went from 0% to 90% recovery without a clinic-shaped roadmap.
                 I built Sasquatch so the next survivor doesn't have to figure it
                 out alone at 3am.
@@ -382,7 +382,7 @@ export default function RecoveryPremium() {
 
         {/* ── Survivor voices ───────────────────────────────────────────── */}
         <section className="mb-12" data-testid="section-testimonials">
-          <h2 className="text-xl md:text-2xl font-black mb-6 text-center text-stone-200">
+          <h2 className="text-xl md:text-2xl font-black mb-6 text-center text-[#292524]">
             From survivors using it daily
           </h2>
           <div className="grid md:grid-cols-3 gap-4">
@@ -403,14 +403,14 @@ export default function RecoveryPremium() {
                 detail: "4 years post-stroke · Right-side weakness",
               },
             ].map((t, i) => (
-              <Card key={i} className="p-5 bg-stone-900 border-stone-800" data-testid={`card-testimonial-${i}`}>
+              <Card key={i} className="p-5 bg-white border-[#E8E0D8]" data-testid={`card-testimonial-${i}`}>
                 <div className="flex gap-1 mb-3">
-                  {[...Array(5)].map((_, s) => <Star key={s} className="w-3 h-3 fill-amber-500 text-amber-500" />)}
+                  {[...Array(5)].map((_, s) => <Star key={s} className="w-3 h-3 fill-[#E2741B] text-[#E2741B]" />)}
                 </div>
-                <p className="text-stone-300 text-sm leading-relaxed mb-4 italic">"{t.quote}"</p>
+                <p className="text-[#78716C] text-sm leading-relaxed mb-4 italic">"{t.quote}"</p>
                 <div>
-                  <p className="text-stone-200 text-xs font-bold">{t.name}</p>
-                  <p className="text-stone-500 text-xs">{t.detail}</p>
+                  <p className="text-[#292524] text-xs font-bold">{t.name}</p>
+                  <p className="text-[#A8A29E] text-xs">{t.detail}</p>
                 </div>
               </Card>
             ))}
@@ -426,13 +426,13 @@ export default function RecoveryPremium() {
             {OUTCOMES.map((o, i) => (
               <Card
                 key={i}
-                className="p-5 bg-stone-900 border-stone-800 flex items-start gap-3"
+                className="p-5 bg-white border-[#E8E0D8] flex items-start gap-3"
                 data-testid={`card-outcome-${i}`}
               >
                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-green-700/30 flex items-center justify-center mt-0.5">
                   <Check className="w-4 h-4 text-green-400" />
                 </div>
-                <p className="text-stone-200 text-sm md:text-base leading-relaxed">{o}</p>
+                <p className="text-[#292524] text-sm md:text-base leading-relaxed">{o}</p>
               </Card>
             ))}
           </div>
@@ -449,16 +449,16 @@ export default function RecoveryPremium() {
               return (
                 <Card
                   key={f.title}
-                  className="p-5 bg-stone-900 border-stone-800"
+                  className="p-5 bg-white border-[#E8E0D8]"
                   data-testid={`feature-${f.title.toLowerCase().replace(/\s+/g, "-")}`}
                 >
                   <div className="flex gap-3">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-md bg-amber-900/30 flex items-center justify-center">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-md bg-[#E2741B]/10 flex items-center justify-center">
                       <Icon className="w-5 h-5" style={{ color: "#E2741B" }} />
                     </div>
                     <div>
-                      <h3 className="font-bold text-stone-100 mb-1">{f.title}</h3>
-                      <p className="text-sm text-stone-400">{f.body}</p>
+                      <h3 className="font-bold text-[#1C1917] mb-1">{f.title}</h3>
+                      <p className="text-sm text-[#78716C]">{f.body}</p>
                     </div>
                   </div>
                 </Card>
@@ -472,22 +472,22 @@ export default function RecoveryPremium() {
           <h2 className="text-2xl md:text-3xl font-black mb-6 text-center">
             Free vs <span style={{ color: "#E2741B" }}>Premium.</span>
           </h2>
-          <Card className="bg-stone-900 border-stone-800 overflow-hidden">
+          <Card className="bg-white border-[#E8E0D8] overflow-hidden">
             <div className="grid grid-cols-3 text-sm">
-              <div className="px-4 py-3 font-bold text-stone-400 border-b border-stone-800">Feature</div>
-              <div className="px-4 py-3 font-bold text-stone-400 border-b border-stone-800 text-center">Free</div>
-              <div className="px-4 py-3 font-bold text-amber-400 border-b border-stone-800 text-center">
+              <div className="px-4 py-3 font-bold text-[#78716C] border-b border-[#E8E0D8]">Feature</div>
+              <div className="px-4 py-3 font-bold text-[#78716C] border-b border-[#E8E0D8] text-center">Free</div>
+              <div className="px-4 py-3 font-bold text-[#E2741B] border-b border-[#E8E0D8] text-center">
                 Premium
               </div>
               {COMPARISON.map((row, idx) => (
                 <div key={row.feature} className="contents" data-testid={`row-compare-${idx}`}>
-                  <div className="px-4 py-3 text-stone-200 border-b border-stone-800/60">
+                  <div className="px-4 py-3 text-[#292524] border-b border-[#E8E0D8]/60">
                     {row.feature}
                   </div>
-                  <div className="px-4 py-3 text-stone-400 text-center border-b border-stone-800/60">
+                  <div className="px-4 py-3 text-[#78716C] text-center border-b border-[#E8E0D8]/60">
                     {row.free === "—" ? <X className="w-4 h-4 inline text-stone-600" /> : row.free}
                   </div>
-                  <div className="px-4 py-3 text-amber-300 text-center font-semibold border-b border-stone-800/60 bg-amber-950/15">
+                  <div className="px-4 py-3 text-[#E2741B] text-center font-semibold border-b border-[#E8E0D8]/60 bg-[#E2741B]/5">
                     {row.premium === "Included" || row.premium === "Unlimited" ? (
                       <span className="inline-flex items-center gap-1">
                         <Check className="w-4 h-4 text-green-400" />
@@ -511,7 +511,7 @@ export default function RecoveryPremium() {
 
           <div className="flex justify-center mb-6">
             <div
-              className="inline-flex rounded-md border border-stone-800 bg-stone-900 p-1 gap-1"
+              className="inline-flex rounded-md border border-[#E8E0D8] bg-white p-1 gap-1"
               role="tablist"
               aria-label="Billing interval"
             >
@@ -520,8 +520,8 @@ export default function RecoveryPremium() {
                 variant={plan === "monthly" ? "default" : "ghost"}
                 className={
                   plan === "monthly"
-                    ? "bg-amber-600 hover:bg-amber-700 text-white"
-                    : "text-stone-300"
+                    ? "bg-[#E2741B] hover:bg-[#C65F12] text-white"
+                    : "text-[#78716C]"
                 }
                 onClick={() => setPlan("monthly")}
                 data-testid="button-plan-monthly"
@@ -535,8 +535,8 @@ export default function RecoveryPremium() {
                 variant={plan === "annual" ? "default" : "ghost"}
                 className={
                   plan === "annual"
-                    ? "bg-amber-600 hover:bg-amber-700 text-white"
-                    : "text-stone-300"
+                    ? "bg-[#E2741B] hover:bg-[#C65F12] text-white"
+                    : "text-[#78716C]"
                 }
                 onClick={() => setPlan("annual")}
                 data-testid="button-plan-annual"
@@ -565,13 +565,13 @@ export default function RecoveryPremium() {
           )}
 
           <Card
-            className={`relative p-8 md:p-10 bg-stone-900 mb-3 ${
-              plan === "annual" ? "border-amber-700/60 shadow-[0_0_0_1px_rgba(226,116,27,0.2)]" : "border-stone-800"
+            className={`relative p-8 md:p-10 bg-white mb-3 ${
+              plan === "annual" ? "border-[#E2741B]/40 shadow-[0_0_0_1px_rgba(226,116,27,0.2)]" : "border-[#E8E0D8]"
             }`}
           >
             {plan === "annual" && (
               <Badge
-                className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-600 text-white border-amber-700"
+                className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#E2741B] text-white border-[#E2741B]/30"
                 data-testid="badge-best-value"
               >
                 <Sparkles className="w-3 h-3 mr-1" />
@@ -588,14 +588,14 @@ export default function RecoveryPremium() {
                   >
                     ${displayUsd}
                   </span>
-                  <span className="text-stone-400 text-lg">/month</span>
+                  <span className="text-[#78716C] text-lg">/month</span>
                   {plan === "annual" && (
-                    <span className="text-stone-500 text-sm line-through ml-2" data-testid="text-strikethrough">
+                    <span className="text-[#A8A29E] text-sm line-through ml-2" data-testid="text-strikethrough">
                       ${monthlyUsd}/mo
                     </span>
                   )}
                 </div>
-                <p className="text-stone-400 text-sm mt-1" data-testid="text-billed-subline">
+                <p className="text-[#78716C] text-sm mt-1" data-testid="text-billed-subline">
                   {trialDays}-day free trial. {billedSubline}
                 </p>
               </div>
@@ -603,7 +603,7 @@ export default function RecoveryPremium() {
               {!isAuthenticated ? (
                 <Button
                   size="lg"
-                  className="bg-amber-600 hover:bg-amber-700 text-white"
+                  className="bg-[#E2741B] hover:bg-[#C65F12] text-white"
                   onClick={() => setLocation("/auth?next=/recovery/premium")}
                   data-testid="button-signin-to-subscribe"
                 >
@@ -621,7 +621,7 @@ export default function RecoveryPremium() {
                   </Badge>
                   <Button
                     variant="outline"
-                    className="border-stone-700 text-stone-300"
+                    className="border-[#E8E0D8] text-[#78716C]"
                     onClick={() => portalMut.mutate()}
                     disabled={portalMut.isPending}
                     data-testid="button-manage-billing"
@@ -632,7 +632,7 @@ export default function RecoveryPremium() {
               ) : (
                 <Button
                   size="lg"
-                  className="bg-amber-600 hover:bg-amber-700 text-white"
+                  className="bg-[#E2741B] hover:bg-[#C65F12] text-white"
                   onClick={() => checkoutMut.mutate(plan)}
                   disabled={checkoutMut.isPending}
                   data-testid="button-subscribe"
@@ -645,7 +645,7 @@ export default function RecoveryPremium() {
             <div className="grid sm:grid-cols-2 gap-2 text-sm">
               {COMPARISON.filter((r) => r.premium === "Unlimited" || r.premium === "Included")
                 .map((r) => (
-                  <div key={r.feature} className="flex items-center gap-2 text-stone-300">
+                  <div key={r.feature} className="flex items-center gap-2 text-[#78716C]">
                     <Check className="w-4 h-4 text-green-400 flex-shrink-0" />
                     <span>{r.feature}</span>
                   </div>
@@ -653,7 +653,7 @@ export default function RecoveryPremium() {
             </div>
           </Card>
 
-          <p className="text-center text-stone-500 text-xs">
+          <p className="text-center text-[#A8A29E] text-xs">
             We collect your card so the subscription auto-starts on day {trialDays + 1}.
             Cancel before day {trialDays + 1} → $0 charged. Stripe-hosted checkout.
           </p>
@@ -684,26 +684,26 @@ export default function RecoveryPremium() {
             ].map((s) => (
               <Card
                 key={s.step}
-                className="p-5 bg-stone-900 border-stone-800"
+                className="p-5 bg-white border-[#E8E0D8]"
                 data-testid={`card-step-${s.step}`}
               >
-                <div className="w-8 h-8 rounded-full bg-amber-600 text-white font-black flex items-center justify-center mb-3">
+                <div className="w-8 h-8 rounded-full bg-[#E2741B] text-white font-black flex items-center justify-center mb-3">
                   {s.step}
                 </div>
-                <h3 className="font-bold text-stone-100 mb-1">{s.title}</h3>
-                <p className="text-sm text-stone-400">{s.body}</p>
+                <h3 className="font-bold text-[#1C1917] mb-1">{s.title}</h3>
+                <p className="text-sm text-[#78716C]">{s.body}</p>
               </Card>
             ))}
           </div>
         </section>
 
         {/* ── Why $19 ───────────────────────────────────────────────────── */}
-        <Card className="p-6 bg-stone-900 border-stone-800 mb-12">
+        <Card className="p-6 bg-white border-[#E8E0D8] mb-12">
           <div className="flex items-start gap-3">
             <Lock className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: "#E2741B" }} />
             <div>
               <h3 className="font-bold mb-1">Why $19?</h3>
-              <p className="text-sm text-stone-400">
+              <p className="text-sm text-[#78716C]">
                 Voice Cloning alone is $9/mo as a standalone add-on — Sasquatch
                 Premium bundles it with unlimited Coach and Anchor renders for
                 $10 more. The math says: if you use Coach more than ~5 days a
@@ -719,19 +719,19 @@ export default function RecoveryPremium() {
           <h2 className="text-2xl md:text-3xl font-black mb-6 text-center">
             Common <span style={{ color: "#E2741B" }}>questions.</span>
           </h2>
-          <Card className="p-2 md:p-4 bg-stone-900 border-stone-800">
+          <Card className="p-2 md:p-4 bg-white border-[#E8E0D8]">
             <Accordion type="single" collapsible className="w-full">
               {FAQ.map((f, i) => (
                 <AccordionItem
                   key={i}
                   value={`faq-${i}`}
-                  className="border-stone-800"
+                  className="border-[#E8E0D8]"
                   data-testid={`faq-item-${i}`}
                 >
-                  <AccordionTrigger className="text-left text-stone-100 hover:text-amber-400 px-2">
+                  <AccordionTrigger className="text-left text-[#1C1917] hover:text-[#E2741B] px-2">
                     {f.q}
                   </AccordionTrigger>
-                  <AccordionContent className="text-stone-400 px-2 leading-relaxed">
+                  <AccordionContent className="text-[#78716C] px-2 leading-relaxed">
                     {f.a}
                   </AccordionContent>
                 </AccordionItem>
@@ -741,25 +741,25 @@ export default function RecoveryPremium() {
         </section>
 
         {/* ── Final CTA ─────────────────────────────────────────────────── */}
-        <Card className="p-8 md:p-10 bg-gradient-to-br from-amber-900/30 to-stone-900 border-amber-700/40 text-center mb-6">
-          <Star className="w-8 h-8 mx-auto mb-3 text-amber-400" />
+        <Card className="p-8 md:p-10 bg-gradient-to-br from-[#E2741B]/10 to-white border-[#E2741B]/30 text-center mb-6">
+          <Star className="w-8 h-8 mx-auto mb-3 text-[#E2741B]" />
           <h2 className="text-2xl md:text-3xl font-black mb-3">
             Try it free for {trialDays} days.
           </h2>
-          <p className="text-stone-300 mb-6 max-w-lg mx-auto">
+          <p className="text-[#78716C] mb-6 max-w-lg mx-auto">
             If Sasquatch Premium doesn't earn its keep before day {trialDays + 1},
             cancel in one click and owe $0. The free tier stays yours forever.
           </p>
           <Button
             size="lg"
-            className="bg-amber-600 hover:bg-amber-700 text-white text-base px-8"
+            className="bg-[#E2741B] hover:bg-[#C65F12] text-white text-base px-8"
             onClick={startCheckout}
             disabled={ctaDisabled}
             data-testid="button-final-cta"
           >
             {ctaLabel}
           </Button>
-          <p className="text-stone-500 text-xs mt-4">
+          <p className="text-[#A8A29E] text-xs mt-4">
             Stroke Recovery Academy is non-clinical. Always coordinate with your
             healthcare team. In crisis, call 988 or 911.
           </p>
@@ -772,18 +772,18 @@ export default function RecoveryPremium() {
        */}
       {!isActive && (
         <div
-          className="md:hidden fixed bottom-0 inset-x-0 z-50 border-t border-stone-800 bg-stone-950/95 backdrop-blur px-4 py-3 flex items-center justify-between gap-3"
+          className="md:hidden fixed bottom-0 inset-x-0 z-50 border-t border-[#E8E0D8] bg-[#FDFBF7]/95 backdrop-blur px-4 py-3 flex items-center justify-between gap-3"
           data-testid="bar-sticky-cta"
         >
           <div>
-            <div className="text-stone-200 text-sm font-bold leading-tight">
+            <div className="text-[#292524] text-sm font-bold leading-tight">
               ${displayUsd}/mo · {trialDays}-day free trial
             </div>
-            <div className="text-stone-500 text-[11px]">Cancel anytime</div>
+            <div className="text-[#A8A29E] text-[11px]">Cancel anytime</div>
           </div>
           <Button
             size="default"
-            className="bg-amber-600 hover:bg-amber-700 text-white"
+            className="bg-[#E2741B] hover:bg-[#C65F12] text-white"
             onClick={startCheckout}
             disabled={ctaDisabled}
             data-testid="button-sticky-cta"

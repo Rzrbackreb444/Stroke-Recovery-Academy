@@ -308,7 +308,7 @@ export default function SasquatchCoach() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0D0D0D] flex flex-col">
+    <div className="min-h-screen bg-[#FDFBF7] flex flex-col">
       <RecoverySEO
         title="Online Stroke Recovery Coach — Sasquatch AI | Stroke Recovery Academy"
         description="Get a free online stroke recovery coach built by Nick Kremers, a 7-year stroke survivor. 3 free messages, no card. 24/7 accountability — no waiting list, no insurance."
@@ -326,13 +326,13 @@ export default function SasquatchCoach() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-display text-white">Online Stroke Recovery Coach</h1>
-            <p className="text-sm text-gray-500 mt-0.5">Sasquatch — trained on Nick Kremers' 7-year rebuild</p>
+            <h1 className="text-3xl font-display text-[#1C1917]">Online Stroke Recovery Coach</h1>
+            <p className="text-sm text-[#78716C] mt-0.5">Sasquatch — trained on Nick Kremers' 7-year rebuild</p>
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={() => setAudioEnabled(!audioEnabled)}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white border border-[#1e1e1e] hover:border-[#333] transition-colors"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-[#78716C] hover:text-[#1C1917] border border-[#E8E0D8] hover:border-[#E2741B]/30 transition-colors bg-white"
               data-testid="button-toggle-audio"
               title={audioEnabled ? "Mute voice" : "Enable voice"}
             >
@@ -366,7 +366,7 @@ export default function SasquatchCoach() {
               ) : msg.role === "coach" && msg.capped ? (
                 /* ── Premium upgrade gate ── */
                 <div
-                  className="max-w-[90%] flex-1 rounded-2xl overflow-hidden border border-[#E2741B]/50 bg-gradient-to-br from-[#1a1008] via-[#141008] to-[#0f0c04]"
+                  className="max-w-[90%] flex-1 rounded-2xl overflow-hidden border border-[#E2741B]/50 bg-gradient-to-br from-[#FFF8F0] via-[#FFF5E8] to-[#FDFBF7]"
                   data-testid="coach-upgrade-card"
                 >
                   <div className="px-5 py-4">
@@ -374,10 +374,10 @@ export default function SasquatchCoach() {
                       <Flame className="h-4 w-4 text-[#E2741B]" />
                       <span className="text-[10px] uppercase tracking-widest text-[#E2741B] font-bold">Daily limit reached — {msg.cappedUsed}/{msg.cappedLimit} messages used</span>
                     </div>
-                    <p className="text-sm text-gray-200 leading-relaxed mb-1">
+                    <p className="text-sm text-[#292524] leading-relaxed mb-1">
                       You've used all your free Coach messages for today.
                     </p>
-                    <p className="text-xs text-gray-500 leading-relaxed mb-4">
+                    <p className="text-xs text-[#A8A29E] leading-relaxed mb-4">
                       Tomorrow you get {msg.cappedLimit} more — or go unlimited right now. Premium also unlocks daily AI accountability reports, voice cloning, and premium Campfire circles.
                     </p>
                     <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 mb-4">
@@ -387,13 +387,13 @@ export default function SasquatchCoach() {
                         "Survivor Voice Cloning",
                         "Premium Campfire circles",
                       ].map((f) => (
-                        <div key={f} className="flex items-center gap-1.5 text-xs text-gray-400">
+                        <div key={f} className="flex items-center gap-1.5 text-xs text-[#78716C]">
                           <Check className="h-3 w-3 text-[#E2741B] flex-shrink-0" />
                           <span>{f}</span>
                         </div>
                       ))}
                     </div>
-                    <p className="text-[11px] text-gray-600 mb-3">7-day free trial · $19/mo or $190/yr · Cancel anytime</p>
+                    <p className="text-[11px] text-[#A8A29E] mb-3">7-day free trial · $19/mo or $190/yr · Cancel anytime</p>
                     <div className="flex flex-wrap gap-2">
                       <Button
                         asChild
@@ -410,7 +410,7 @@ export default function SasquatchCoach() {
                         asChild
                         size="sm"
                         variant="outline"
-                        className="border-[#1e1e1e] text-gray-500 text-xs"
+                        className="border-[#E8E0D8] text-[#78716C] text-xs"
                         data-testid="button-coach-see-premium"
                       >
                         <Link href="/recovery/premium">See what's included</Link>
@@ -420,7 +420,7 @@ export default function SasquatchCoach() {
                 </div>
               ) : msg.role === "coach" && msg.requireAuth ? (
                 <div
-                  className="max-w-[90%] flex-1 rounded-2xl border border-[#E2741B]/40 bg-gradient-to-br from-[#1a1410] to-[#0f0c08] p-4"
+                  className="max-w-[90%] flex-1 rounded-2xl border border-[#E2741B]/40 bg-gradient-to-br from-[#FFF8F0] to-[#FDFBF7] p-4"
                   data-testid="coach-signin-card"
                 >
                   <div className="flex items-start gap-3">
@@ -428,13 +428,13 @@ export default function SasquatchCoach() {
                       <LogIn className="h-4 w-4 text-[#E2741B]" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-gray-200 leading-relaxed mb-3">
+                      <p className="text-sm text-[#292524] leading-relaxed mb-3">
                         {msg.content}
                       </p>
-                      <p className="text-xs italic text-gray-400 leading-relaxed mb-3">
+                      <p className="text-xs italic text-[#A8A29E] leading-relaxed mb-3">
                         Built by a 7-year survivor — not textbook theory, lived experience and real feedback baked in. I learned from the doctors, experimented, failed, then recovered. I'll give you the blueprint. The work is on you.
                       </p>
-                      <p className="text-xs text-gray-500 leading-relaxed mb-3">
+                      <p className="text-xs text-[#A8A29E] leading-relaxed mb-3">
                         Sign in unlocks <span className="text-[#E2741B] font-semibold">Sasquatch's actual voice replies</span>, <span className="text-[#E2741B] font-semibold">push-to-talk</span> so you can speak instead of type, <span className="text-[#E2741B] font-semibold">unlimited Coach turns</span>, and a thread that resumes where you left off. 7 days free, then cancel anytime — no card needed to start.
                       </p>
                       <p className="text-xs italic text-[#E2741B]/80 mb-3">
@@ -456,7 +456,7 @@ export default function SasquatchCoach() {
                           asChild
                           size="sm"
                           variant="outline"
-                          className="border-[#E2741B]/40 text-[#E2741B] hover:bg-[#E2741B]/10"
+                          className="border-[#E2741B]/40 text-[#E2741B] hover:bg-[#E2741B]/10 bg-white"
                           data-testid="button-coach-premium"
                         >
                           <Link href="/recovery/premium">
@@ -473,7 +473,7 @@ export default function SasquatchCoach() {
                   className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                     msg.role === "user"
                       ? "bg-[#E2741B] text-black font-medium rounded-tr-sm"
-                      : "bg-[#111] text-gray-200 border border-[#1e1e1e] rounded-tl-sm"
+                      : "bg-white text-[#292524] border border-[#E8E0D8] rounded-tl-sm"
                   }`}
                 >
                   {msg.content}
@@ -490,10 +490,10 @@ export default function SasquatchCoach() {
               )}
               {msg.role === "user" && (
                 <div
-                  className="w-8 h-8 rounded-full bg-[#1a1a1a] flex items-center justify-center flex-shrink-0 mt-1 text-xs font-bold border"
+                  className="w-8 h-8 rounded-full bg-[#F5F0EB] flex items-center justify-center flex-shrink-0 mt-1 text-xs font-bold border"
                   style={{
-                    color: persona ? safeAccent : "#FFFFFF",
-                    borderColor: persona ? `${safeAccent}55` : "#333",
+                    color: persona ? safeAccent : "#1C1917",
+                    borderColor: persona ? `${safeAccent}55` : "#E8E0D8",
                   }}
                   data-testid="avatar-coach-user"
                 >
@@ -508,7 +508,7 @@ export default function SasquatchCoach() {
               <div className="w-8 h-8 rounded-full bg-[#E2741B]/10 border border-[#E2741B]/30 flex items-center justify-center flex-shrink-0 mt-1">
                 <Mic className="h-3.5 w-3.5 text-[#E2741B]" />
               </div>
-              <div className="bg-[#111] border border-[#1e1e1e] rounded-2xl rounded-tl-sm px-4 py-3">
+              <div className="bg-white border border-[#E8E0D8] rounded-2xl rounded-tl-sm px-4 py-3">
                 <div className="flex gap-1.5 items-center h-4">
                   <span className="w-1.5 h-1.5 bg-[#E2741B]/60 rounded-full animate-bounce [animation-delay:0ms]" />
                   <span className="w-1.5 h-1.5 bg-[#E2741B]/60 rounded-full animate-bounce [animation-delay:150ms]" />
@@ -528,35 +528,35 @@ export default function SasquatchCoach() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <Link
                   href="/recovery/today"
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-md border border-[#E2741B]/30 bg-[#1a1610] hover-elevate text-left"
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-md border border-[#E2741B]/30 bg-white hover-elevate text-left"
                   data-testid="coach-quick-today"
                 >
                   <Flame className="h-4 w-4 text-[#E2741B] flex-shrink-0" />
                   <div className="min-w-0">
-                    <p className="text-xs font-semibold text-white">What should I do today?</p>
-                    <p className="text-[11px] text-gray-400 truncate">Open The Bonfire</p>
+                    <p className="text-xs font-semibold text-[#1C1917]">What should I do today?</p>
+                    <p className="text-[11px] text-[#78716C] truncate">Open The Bonfire</p>
                   </div>
                 </Link>
                 <Link
                   href="/recovery/motivation"
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-md border border-[#E2741B]/30 bg-[#1a1610] hover-elevate text-left"
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-md border border-[#E2741B]/30 bg-white hover-elevate text-left"
                   data-testid="coach-quick-motivation"
                 >
                   <Sparkles className="h-4 w-4 text-[#E2741B] flex-shrink-0" />
                   <div className="min-w-0">
-                    <p className="text-xs font-semibold text-white">I need a fire-up</p>
-                    <p className="text-[11px] text-gray-400 truncate">Motivation Studio</p>
+                    <p className="text-xs font-semibold text-[#1C1917]">I need a fire-up</p>
+                    <p className="text-[11px] text-[#78716C] truncate">Motivation Studio</p>
                   </div>
                 </Link>
                 <Link
                   href="/recovery/shop"
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-md border border-[#E2741B]/30 bg-[#1a1610] hover-elevate text-left"
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-md border border-[#E2741B]/30 bg-white hover-elevate text-left"
                   data-testid="coach-quick-shop"
                 >
                   <ShoppingBag className="h-4 w-4 text-[#E2741B] flex-shrink-0" />
                   <div className="min-w-0">
-                    <p className="text-xs font-semibold text-white">Gear that helped me</p>
-                    <p className="text-[11px] text-gray-400 truncate">Survivor Shop</p>
+                    <p className="text-xs font-semibold text-[#1C1917]">Gear that helped me</p>
+                    <p className="text-[11px] text-[#78716C] truncate">Survivor Shop</p>
                   </div>
                 </Link>
               </div>
@@ -567,7 +567,7 @@ export default function SasquatchCoach() {
                 key={prompt}
                 onClick={() => handleStarter(prompt)}
                 disabled={chatMutation.isPending}
-                className="text-left px-4 py-3 rounded-xl border border-[#1e1e1e] text-sm text-gray-400 hover:text-white hover:border-[#E2741B]/40 transition-colors bg-[#0a0a0a] disabled:opacity-40"
+                className="text-left px-4 py-3 rounded-xl border border-[#E8E0D8] text-sm text-[#78716C] hover:text-[#1C1917] hover:border-[#E2741B]/40 transition-colors bg-white disabled:opacity-40"
                 data-testid={`starter-prompt-${prompt.slice(0, 20).replace(/\s/g, "-")}`}
               >
                 {prompt}
@@ -609,7 +609,7 @@ export default function SasquatchCoach() {
                       ? "Listening — speak naturally, tap mic to stop..."
                       : "Tell the coach what's going on, or tap the mic to talk..."
                   }
-                  className="resize-none bg-[#111] border-[#1e1e1e] text-white placeholder:text-gray-600 focus-visible:ring-[#E2741B]/30 focus-visible:border-[#E2741B]/40 min-h-[52px] max-h-32"
+                  className="resize-none bg-white border-[#E8E0D8] text-[#1C1917] placeholder:text-[#A8A29E] focus-visible:ring-[#E2741B]/30 focus-visible:border-[#E2741B]/40 min-h-[52px] max-h-32"
                   rows={1}
                   disabled={inputDisabled}
                   data-testid="input-chat-message"
@@ -622,7 +622,7 @@ export default function SasquatchCoach() {
                     className={
                       isListening
                         ? "bg-[#E2741B] text-black hover:bg-[#b8841a] flex-shrink-0 animate-pulse"
-                        : "border-[#1e1e1e] text-[#E2741B] hover:bg-[#E2741B]/10 flex-shrink-0"
+                        : "border-[#E8E0D8] text-[#E2741B] hover:bg-[#E2741B]/10 flex-shrink-0"
                     }
                     title={isListening ? "Tap to stop" : "Push to talk"}
                     data-testid="button-mic-toggle"
@@ -658,13 +658,13 @@ export default function SasquatchCoach() {
               {/* Signed-in free user quota counter */}
               {user && freeQuota && !isCapped && (
                 <p
-                  className={`text-xs text-center mt-2 transition-colors ${nearLimit ? "text-amber-500" : "text-gray-600"}`}
+                  className={`text-xs text-center mt-2 transition-colors ${nearLimit ? "text-amber-500" : "text-[#A8A29E]"}`}
                   data-testid="text-free-quota"
                 >
                   {nearLimit ? (
                     <>
                       <span className="font-semibold">1 free message left today.</span>{" "}
-                      <Link href="/recovery/premium" className="underline hover:text-amber-400">
+                      <Link href="/recovery/premium" className="underline hover:text-[#E2741B]">
                         Upgrade for unlimited →
                       </Link>
                     </>
@@ -687,7 +687,7 @@ export default function SasquatchCoach() {
                   </Link>
                 </p>
               ) : (
-                <p className="text-xs text-center text-gray-600 mt-3">
+                <p className="text-xs text-center text-[#A8A29E] mt-3">
                   Sasquatch Coach is an AI trained on Nick's recovery methodology — not a substitute for medical advice.
                 </p>
               )}
