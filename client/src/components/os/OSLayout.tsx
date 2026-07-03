@@ -30,7 +30,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
-const sasquatchLogo = "/sasquatch-logo.png";
+const sasquatchLogo = "/sasquatch-logo.webp";
 
 const studios = [
   { id: "book", name: "Book Studio", icon: BookOpen, path: "/book-studio", color: "text-amber-500" },

@@ -16,7 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-const sasquatchLogo = "/sasquatch-logo.png";
+const sasquatchLogo = "/sasquatch-logo.webp";
 
 // Shared site-header singleton — first mount wins (covers RecoveryHeader
 // and GlobalHeader both), so legacy per-page header mounts are suppressed.

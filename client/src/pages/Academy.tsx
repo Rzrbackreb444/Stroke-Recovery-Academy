@@ -671,7 +671,7 @@ export default function Academy() {
                   Nicholas "Stroked-Out Sasquatch" Kremers
                 </p>
                 <p className="text-sm text-[#E2741B] font-medium mt-1">
-                  Stroke Lyfe Publishing
+                  Stroke Recovery Academy Publishing
                 </p>
               </div>
             </div>

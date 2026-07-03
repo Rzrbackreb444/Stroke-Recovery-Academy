@@ -12,7 +12,7 @@ import {
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
-const sasquatchLogo = "/sasquatch-logo.png";
+const sasquatchLogo = "/sasquatch-logo.webp";
 
 interface GameState {
   health: number;

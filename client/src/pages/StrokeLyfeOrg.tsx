@@ -40,7 +40,7 @@ import {
   Compass,
   Mountain,
 } from "lucide-react";
-const sasquatchLogo = "/sasquatch-logo.png";
+const sasquatchLogo = "/sasquatch-logo.webp";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 
 const donationAmounts = [25, 50, 100, 250, 500, 1000];

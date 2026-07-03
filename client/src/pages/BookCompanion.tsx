@@ -201,7 +201,7 @@ export default function BookCompanion() {
       <section className="border-b border-border/50 bg-card/30">
         <div className="container mx-auto px-4 py-12 md:py-20 max-w-6xl">
           <p className="text-xs tracking-widest uppercase text-muted-foreground font-medium mb-5">
-            Stroke Lyfe Publishing · 2026 · Companion Index
+            Stroke Recovery Academy Publishing · 2026 · Companion Index
           </p>
           <div className="grid md:grid-cols-[1fr_auto] gap-8 items-end">
             <div>

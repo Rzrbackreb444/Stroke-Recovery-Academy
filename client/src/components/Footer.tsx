@@ -19,7 +19,7 @@ import {
   Users,
 } from "lucide-react";
 import { SiTiktok, SiInstagram, SiYoutube, SiX } from "react-icons/si";
-const sasquatchLogo = "/sasquatch-logo.png";
+const sasquatchLogo = "/sasquatch-logo.webp";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();

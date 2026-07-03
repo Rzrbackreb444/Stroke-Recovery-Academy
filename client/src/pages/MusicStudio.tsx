@@ -1805,7 +1805,7 @@ export default function MusicStudio() {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <Music className="w-6 h-6 text-[#E2741B]" />
-              <span className="font-bold text-xl">Stroke Lyfe Studio</span>
+              <span className="font-bold text-xl">Stroke Recovery Academy Studio</span>
             </div>
             <Input
               value={projectTitle}

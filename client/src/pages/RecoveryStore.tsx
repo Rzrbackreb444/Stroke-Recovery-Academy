@@ -23,7 +23,7 @@ import {
   Users,
   Quote,
 } from "lucide-react";
-const sasquatchLogo = "/sasquatch-logo.png";
+const sasquatchLogo = "/sasquatch-logo.webp";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 
 interface Product {
@@ -485,7 +485,7 @@ export default function RecoveryStore() {
   const configReady = !affiliateLoading;
 
   useEffect(() => {
-    document.title = "Recovery Store | Stroke Lyfe - Curated Products for Stroke Survivors";
+    document.title = "Recovery Store | Stroke Recovery Academy - Curated Products for Stroke Survivors";
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
@@ -499,7 +499,7 @@ export default function RecoveryStore() {
 
     const ogTitle = document.querySelector('meta[property="og:title"]');
     if (ogTitle) {
-      ogTitle.setAttribute("content", "Recovery Store | Stroke Lyfe");
+      ogTitle.setAttribute("content", "Recovery Store | Stroke Recovery Academy");
     }
 
     const ogDescription = document.querySelector('meta[property="og:description"]');
@@ -531,10 +531,10 @@ export default function RecoveryStore() {
   const pageSchema = {
     "@context": "https://schema.org",
     "@type": "Store",
-    name: "Stroke Lyfe Recovery Store",
+    name: "Stroke Recovery Academy Recovery Store",
     description: "Curated recovery products recommended by stroke survivor Nick Kremers. Every product is hand-picked for stroke recovery success.",
     url: "https://strokelyfe.org/store",
-    brand: { "@type": "Brand", name: "Stroke Lyfe" },
+    brand: { "@type": "Brand", name: "Stroked-Out Sasquatch" },
     founder: {
       "@type": "Person",
       name: "Nick Kremers",
@@ -710,7 +710,7 @@ export default function RecoveryStore() {
         <div className="max-w-6xl mx-auto text-center">
           <img src={sasquatchLogo} alt="Stroked-Out Sasquatch" className="h-12 w-auto mx-auto mb-4" />
           <p className="text-gray-500 text-sm max-w-xl mx-auto">
-            Stroke Lyfe Recovery Store is part of Stroke Lyfe Inc., a 501(c)(3) nonprofit. 
+            The Recovery Store is part of Stroke Lyfe Inc., a 501(c)(3) nonprofit. 
             Affiliate revenue from purchases supports our scholarship fund and free resources for stroke survivors.
           </p>
           <p className="text-[#E2741B] mt-4 font-semibold">REBUILD. REWIRE. RISE.</p>
