@@ -4306,7 +4306,7 @@ export const bookPublishingProjects = pgTable("book_publishing_projects", {
   // ISBN & Publishing Details
   isbn: text("isbn"),
   isbnBarcode: boolean("isbn_barcode").default(true),
-  publisherName: text("publisher_name").default("Stroke Lyfe Publishing"),
+  publisherName: text("publisher_name").default("Stroke Recovery Academy Publishing"),
   copyrightYear: integer("copyright_year"),
   edition: text("edition"),
   

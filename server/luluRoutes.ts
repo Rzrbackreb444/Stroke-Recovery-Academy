@@ -195,7 +195,7 @@ router.post('/projects', async (req: Request, res: Response) => {
         coverFinish: validated.coverFinish,
         pageCount: validated.pageCount,
         isbn: validated.isbn,
-        publisherName: validated.publisherName || 'Stroke Lyfe Publishing',
+        publisherName: validated.publisherName || 'Stroke Recovery Academy Publishing',
         retailPrice: validated.retailPrice,
         copyrightYear: new Date().getFullYear(),
       })

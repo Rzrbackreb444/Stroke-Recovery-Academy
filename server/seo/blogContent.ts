@@ -950,13 +950,13 @@ export const POST_FOOT_DROP_REHAB = makeBlogPost({
   h1: 'Foot drop rehab equipment: what actually worked after stroke',
   keyword: 'foot drop rehab equipment',
   subhead: 'I went from drop foot so bad I tripped over flat ground to walking without an AFO. This electric ankle trainer was the bridge — here is the honest breakdown.',
-  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See the trainer on Amazon' },
+  ctaPrimary: { href: 'https://www.amazon.com/s?k=electric+ankle+rehabilitation+trainer', label: 'See the trainer on Amazon' },
   ctaSecondary: { href: '/blog/spasticity-after-stroke', label: 'Read the spasticity guide' },
   image: '/images/blog/foot-drop-trainer.jpg',
   productCard: {
     title: 'Electric Ankle Rehabilitation Trainer',
     description: '3-speed motorized ankle rehab with -30\u00B0 to +40\u00B0 full arc. Active-assisted design forces the brain to rebuild the motor pathway.',
-    link: 'https://a.co/d/0dvZe7BM',
+    link: 'https://www.amazon.com/s?k=electric+ankle+rehabilitation+trainer',
     label: 'Check price on Amazon',
     note: 'Affiliate link — I earn a small commission at no extra cost to you. I only recommend products I have used.',
   },
@@ -1049,12 +1049,12 @@ export const POST_AFO_VS_ELECTRIC = makeBlogPost({
   h1: 'AFO vs electric ankle trainer: which one first?',
   keyword: 'afo vs electric ankle trainer',
   subhead: 'I bought the AFO first and used it for two years. I bought the electric trainer second and left the AFO in a drawer four months later. Here is the order I wish I had used.',
-  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See the electric trainer on Amazon' },
+  ctaPrimary: { href: 'https://www.amazon.com/s?k=electric+ankle+rehabilitation+trainer', label: 'See the electric trainer on Amazon' },
   ctaSecondary: { href: '/blog/foot-drop-rehab-equipment-review', label: 'Full foot drop review' },
   productCard: {
     title: 'Electric Ankle Rehabilitation Trainer',
     description: '3-speed motorized ankle rehab with full arc. The active trainer I used to leave my AFO in a drawer for good.',
-    link: 'https://a.co/d/0dvZe7BM',
+    link: 'https://www.amazon.com/s?k=electric+ankle+rehabilitation+trainer',
     label: 'Check price on Amazon',
     note: 'Affiliate link — I earn a small commission at no extra cost to you.',
   },
@@ -1145,13 +1145,13 @@ export const POST_HOME_BP_MONITOR = makeBlogPost({
   h1: 'The best blood pressure monitor for stroke survivors',
   keyword: 'best blood pressure monitor stroke survivor',
   subhead: 'Blood pressure control is the single most important thing you can do to prevent a second stroke. I have tracked mine twice daily for seven years. Here is the monitor I trust and why.',
-  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See recommended monitors on Amazon' },
+  ctaPrimary: { href: 'https://www.amazon.com/s?k=upper+arm+blood+pressure+monitor', label: 'See recommended monitors on Amazon' },
   ctaSecondary: { href: '/blog/how-to-prevent-a-second-stroke', label: 'Full prevention checklist' },
   image: '/images/blog/bp-monitor.jpg',
   productCard: {
     title: 'Home Blood Pressure Monitor',
     description: 'Upper-arm cuff with validated accuracy (AAMI/ESH), irregular heartbeat detection, and memory for 60+ readings. The same type I have used twice daily for seven years.',
-    link: 'https://a.co/d/0dvZe7BM',
+    link: 'https://www.amazon.com/s?k=upper+arm+blood+pressure+monitor',
     label: 'See recommended monitors on Amazon',
     note: 'Affiliate link — I earn a small commission at no extra cost to you.',
   },
@@ -1221,12 +1221,12 @@ export const POST_RESISTANCE_BANDS = makeBlogPost({
   h1: 'The best resistance bands for stroke recovery',
   keyword: 'best resistance bands stroke recovery',
   subhead: 'I rebuilt my left side with a $20 set of resistance bands before I ever touched a dumbbell. Here is the exact set I used and how to use them without hurting yourself.',
-  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See band sets on Amazon' },
+  ctaPrimary: { href: 'https://www.amazon.com/s?k=resistance+band+set', label: 'See band sets on Amazon' },
   ctaSecondary: { href: '/programs/daily-routine', label: 'The Daily Routine' },
   productCard: {
     title: 'Resistance Band Set for Stroke Recovery',
     description: 'Light to heavy loop and tube bands with handles. The exact progression I used to rebuild strength before touching a dumbbell.',
-    link: 'https://a.co/d/0dvZe7BM',
+    link: 'https://www.amazon.com/s?k=resistance+band+set',
     label: 'See band sets on Amazon',
     note: 'Affiliate link — I earn a small commission at no extra cost to you.',
   },
@@ -1300,12 +1300,12 @@ export const POST_SHOWER_SAFETY = makeBlogPost({
   keyword: 'shower safety stroke survivor',
   image: '/images/blog/shower-safety-dark.png',
   subhead: 'I fell twice in the shower. The second fall was the last one because I finally installed the right gear. Here is the setup that kept me safe for six years.',
-  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See shower safety gear on Amazon' },
+  ctaPrimary: { href: 'https://www.amazon.com/s?k=shower+safety+grab+bar+bench', label: 'See shower safety gear on Amazon' },
   ctaSecondary: { href: '/for/caregivers', label: 'For caregivers' },
   productCard: {
     title: 'Shower Safety Kit',
     description: 'Shower chair, professional grab bars, non-slip mat, and handheld showerhead. The exact setup I used for 6+ years without a single fall.',
-    link: 'https://a.co/d/0dvZe7BM',
+    link: 'https://www.amazon.com/s?k=shower+safety+grab+bar+bench',
     label: 'See shower safety gear on Amazon',
     note: 'Affiliate link — I earn a small commission at no extra cost to you.',
   },
@@ -1376,13 +1376,13 @@ export const POST_ADAPTIVE_EATING = makeBlogPost({
   h1: 'Adaptive eating utensils for stroke survivors',
   keyword: 'adaptive eating utensils stroke',
   subhead: 'The first time I tried to eat with one hand after my stroke, I knocked a bowl of soup across the table. These utensils were the bridge between that moment and feeding myself with dignity.',
-  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See adaptive utensils on Amazon' },
+  ctaPrimary: { href: 'https://www.amazon.com/s?k=adaptive+eating+utensils', label: 'See adaptive utensils on Amazon' },
   ctaSecondary: { href: '/blog/foot-drop-rehab-equipment-review', label: 'Read the foot drop guide' },
   image: '/images/blog/adaptive-utensils.jpg',
   productCard: {
     title: 'Adaptive Eating Utensil Set',
     description: 'Rocker knife, weighted spoon, plate guard, and non-slip mat. The bridge from "I cannot eat" to independent meals.',
-    link: 'https://a.co/d/0dvZe7BM',
+    link: 'https://www.amazon.com/s?k=adaptive+eating+utensils',
     label: 'See adaptive utensils on Amazon',
     note: 'Affiliate link — I earn a small commission at no extra cost to you.',
   },
@@ -1450,13 +1450,13 @@ export const POST_CPAP_STROKE = makeBlogPost({
   h1: 'CPAP machine after stroke: why I wish I had started sooner',
   keyword: 'cpap machine stroke survivor',
   subhead: 'I found out I had sleep apnea three years after my stroke. Three years of uncontrolled hypertension, three years of morning headaches, three years of fatigue I blamed on recovery. CPAP changed everything.',
-  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See CPAP machines on Amazon' },
+  ctaPrimary: { href: 'https://www.amazon.com/s?k=cpap+machine', label: 'See CPAP machines on Amazon' },
   ctaSecondary: { href: '/blog/how-to-prevent-a-second-stroke', label: 'Full prevention checklist' },
   image: '/images/blog/cpap-machine.jpg',
   productCard: {
     title: 'CPAP Machine for Sleep Apnea',
     description: 'Auto-adjusting APAP with heated humidifier and quiet motor. The machine that ended my morning headaches and cut my fatigue in half.',
-    link: 'https://a.co/d/0dvZe7BM',
+    link: 'https://www.amazon.com/s?k=cpap+machine',
     label: 'See CPAP machines on Amazon',
     note: 'Affiliate link — I earn a small commission at no extra cost to you.',
   },
@@ -1524,13 +1524,13 @@ export const POST_GAIT_TRAINING_HOME = makeBlogPost({
   h1: 'Gait training at home after stroke',
   keyword: 'gait training home stroke recovery',
   subhead: 'I walked in parallel bars at a clinic, then in my hallway at home, then down the block, then up a trail. Here is the equipment that bridged the gap between clinic and real life.',
-  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See gait training equipment on Amazon' },
+  ctaPrimary: { href: 'https://www.amazon.com/s?k=gait+training+equipment', label: 'See gait training equipment on Amazon' },
   ctaSecondary: { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab guide' },
   image: '/images/blog/gait-training-home.jpg',
   productCard: {
     title: 'Gait Training Equipment Kit',
     description: 'Doorway pull-up bar, wobble board, gait belt, and balance training tools. The same setup I used to go from wheelchair to unassisted walking.',
-    link: 'https://a.co/d/0dvZe7BM',
+    link: 'https://www.amazon.com/s?k=gait+training+equipment',
     label: 'See gait training equipment on Amazon',
     note: 'Affiliate link — I earn a small commission at no extra cost to you.',
   },
@@ -1599,13 +1599,13 @@ export const POST_STROKE_GIFT_GUIDE = makeBlogPost({
   h1: 'Stroke recovery gift guide',
   keyword: 'stroke recovery gift guide',
   subhead: 'I got a lot of gifts after my stroke. Some of them sit in a closet. Some of them are still in use seven years later. Here is the honest list.',
-  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See gift ideas on Amazon' },
+  ctaPrimary: { href: 'https://www.amazon.com/s?k=stroke+recovery+gifts', label: 'See gift ideas on Amazon' },
   ctaSecondary: { href: '/for/caregivers', label: 'For caregivers' },
   image: '/images/blog/stroke-gift-bundle.jpg',
   productCard: {
     title: 'Stroke Recovery Gift Bundle',
     description: 'Shower chair, grab bars, adaptive utensils, BP monitor, and resistance bands. The practical gifts that say "I see what you are going through."',
-    link: 'https://a.co/d/0dvZe7BM',
+    link: 'https://www.amazon.com/s?k=stroke+recovery+gifts',
     label: 'See gift ideas on Amazon',
     note: 'Affiliate link — I earn a small commission at no extra cost to you.',
   },
@@ -1680,13 +1680,13 @@ export const POST_COMPLETE_HOME_KIT = makeBlogPost({
   h1: 'The complete stroke recovery home kit',
   keyword: 'complete stroke recovery home kit',
   subhead: 'I built my recovery at home. Here is every item I used in the first year, from the week I got home to the month I walked unassisted. No fluff. No sponsorship. Just the gear that worked.',
-  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See the full kit on Amazon' },
+  ctaPrimary: { href: 'https://www.amazon.com/s?k=stroke+recovery+equipment', label: 'See the full kit on Amazon' },
   ctaSecondary: { href: '/blog/stroke-recovery-gift-guide', label: 'Gift guide version' },
   image: '/images/blog/survivor-shower-safety-scene.png',
   productCard: {
     title: 'Complete Stroke Recovery Home Kit',
     description: 'Every item I used in my first year: shower chair, grab bars, adaptive utensils, BP monitor, resistance bands, ankle trainer, and more. The full kit in one place.',
-    link: 'https://a.co/d/0dvZe7BM',
+    link: 'https://www.amazon.com/s?k=stroke+recovery+equipment',
     label: 'See the full kit on Amazon',
     note: 'Affiliate link \u2014 I earn a small commission at no extra cost to you.',
   },
@@ -3106,7 +3106,7 @@ export const POST_ELLIPTICAL = makeBlogPost({
       heading: 'Why the elliptical is worth considering',
       body: `<p>Seven years post-stroke, the elliptical is still in my weekly rotation. Here's why it made the list over a treadmill for many survivors: the reciprocal arm-leg cross-body motion forces the brain to coordinate both sides simultaneously — exactly the bilateral integration that neuroplasticity research says matters. Zero impact on the knee and ankle means compensated gait patterns don't get reinforced the way they can on a treadmill. And the moving handlebars give a hemiparetic arm something to do that isn't just hanging there.</p>
 <p>Caveat upfront: if you have significant balance deficits or can't weight-shift laterally without losing balance, a recumbent bike is the safer starting point. The elliptical requires standing balance. Come back to it once that's more stable.</p>`,
-      image: '/images/blog/fig-04.jpg',
+      image: '/images/blog/fig-04-open-hand.png',
     },
     {
       heading: 'What to look for in a stroke-recovery elliptical',
@@ -3184,7 +3184,7 @@ export const POST_STATIONARY_BIKE = makeBlogPost({
       body: `<p>I started on a recumbent bike three weeks post-discharge. Couldn't stand for more than a minute without significant fatigue, balance was unreliable, affected leg wasn't doing much. The recumbent didn't care. Back supported, pedals out in front, nothing to fall off of. Fifteen minutes at almost zero resistance. That was enough to start.</p>
 <p>The recumbent vs. upright decision isn't about fitness preference — it's a clinical one. If you have: significant trunk weakness, balance deficits that require concentration to maintain, or fatigue that limits standing tolerance, start recumbent. Move to upright when your PT clears you for seated-balance work without back support.</p>
 <p>The upright bike gets added value for core engagement and posture — but that value is zero if you're gripping the handlebars to stay upright rather than pedaling effectively.</p>`,
-      image: '/images/blog/fig-05.jpg',
+      image: '/images/blog/fig-05-sit-to-stand.png',
     },
     {
       heading: 'Marcy ME-709 — the recumbent for most stroke survivors',
@@ -3254,7 +3254,7 @@ export const POST_TREADMILL = makeBlogPost({
       heading: 'Treadmill vs. overground walking — what the research says',
       body: `<p>There\'s legitimate debate in the rehab literature about treadmill gait training vs. overground. The short version: body-weight-supported treadmill training (BWSTT) in clinical settings has solid evidence for gait improvement. Home treadmill use without support has less evidence but is widely recommended by PTs as a way to accumulate walking volume — and walking volume is the variable that predicts long-term mobility outcomes.</p>
 <p>The key word is supervised. A treadmill at home is not a replacement for clinical gait training — it\'s a supplement for accumulating steps in a controlled environment. Set the speed low. Use the handrails when you need them. Have someone present until your PT gives you the solo green light.</p>`,
-      image: '/images/blog/fig-06.jpg',
+      image: '/images/blog/fig-06-walking-gait.png',
     },
     {
       heading: 'What to look for in a stroke-recovery treadmill',
@@ -3492,7 +3492,7 @@ export const POST_MASSAGE_GUN = makeBlogPost({
       heading: 'Why percussion therapy for stroke survivors',
       body: `<p>Vibration and percussion stimulate Golgi tendon organs — mechanoreceptors that signal muscle lengthening and trigger inhibitory reflexes that reduce muscle tone. That\'s the mechanism behind the anecdotal experience of using a massage gun on a spastic calf and having the foot easier to dorsiflex for the next 20–30 minutes. The effect is temporary, but temporary is enough to get therapeutic range of motion work done.</p>
 <p>The research on percussion specifically (vs. vibration) for post-stroke spasticity is thin but growing. The anecdotal evidence from stroke survivor communities is consistent: pre-exercise percussive massage to the affected arm or leg reduces tone enough to make subsequent exercises more effective. It\'s a warm-up tool, not a cure.</p>`,
-      image: '/images/blog/fig-09.jpg',
+      image: '/images/blog/fig-09-cimt.png',
     },
     {
       heading: 'Where not to use a massage gun — non-negotiable',
@@ -3565,7 +3565,7 @@ export const POST_SMART_HOME = makeBlogPost({
       heading: 'Why smart home tech matters for stroke recovery',
       body: `<p>Six months post-stroke I couldn\'t reliably operate my thermostat, unlock my front door for a home health aide, or turn off a light across the room without a full trip across unstable ground. These aren\'t trivial inconveniences — they\'re independence losses that compound fatigue, create safety risks, and grind on dignity in ways that don\'t show up on a Fugl-Meyer assessment.</p>
 <p>Smart home technology addresses the asymmetry between cognitive ability and physical execution. Most stroke survivors have intact intelligence, partially intact speech, and severely limited bilateral motor function. Voice control and automation bypass the motor bottleneck entirely. This is assistive technology that doesn\'t look like assistive technology — and that matters for motivation.</p>`,
-      image: '/images/blog/fig-10.jpg',
+      image: '/images/blog/fig-10-single-leg-balance.png',
     },
     {
       heading: 'Amazon Echo Show 8 — the control center that works',
@@ -3634,7 +3634,7 @@ export const POST_RED_LIGHT = makeBlogPost({
       heading: 'What photobiomodulation actually does',
       body: `<p>Red and near-infrared light in the 630–850 nm range is absorbed by cytochrome c oxidase — a mitochondrial enzyme involved in the final step of cellular energy production. Stimulating this pathway increases ATP production, reduces oxidative stress, and modulates inflammatory cytokines. This isn\'t speculative — the cellular mechanisms are well-characterized. The clinical question is whether those cellular effects are large enough to matter at the systemic level for stroke recovery outcomes.</p>
 <p>The honest answer: the neurological evidence is promising but not definitive. Multiple animal models show neuroprotection and improved recovery post-stroke. Human clinical trials for acute stroke neurological recovery exist but are small. For the musculoskeletal effects — reducing DOMS, improving muscle function after exercise, joint inflammation — the evidence base is substantially stronger and more mature.</p>`,
-      image: '/images/blog/fig-11.jpg',
+      image: '/images/blog/fig-11-theraband-row.png',
     },
     {
       heading: 'The practical case for stroke survivors',
@@ -3707,7 +3707,7 @@ export const POST_ADJUSTABLE_BED = makeBlogPost({
       heading: 'Why positioning matters more than most survivors realize',
       body: `<p>In the acute and subacute phases, my affected arm position overnight made a measurable difference in morning tone. A shoulder left to fall into internal rotation and adduction through eight hours of sleep showed up as tighter, more resistant, and more painful in morning PT. A shoulder properly supported in slight abduction and external rotation showed up ready to work.</p>
 <p>The neurological mechanism: prolonged positioning in a shortened muscle length maintains hypertonicity. The inverse — positioning in a lengthened state — has a genuine, if modest, tone-reducing effect over time. This is why occupational therapists give detailed positioning instructions at discharge. Most survivors follow them for two weeks and then revert to whatever's comfortable. Comfortable is often the wrong position for recovery.</p>`,
-      image: '/images/blog/fig-12.jpg',
+      image: '/images/blog/fig-12-recovery-position.png',
     },
     {
       heading: 'InteVision Foam Wedge Pillow — the essential base',
@@ -3776,7 +3776,7 @@ export const POST_COMPRESSION = makeBlogPost({
       heading: 'Why stroke survivors need compression',
       body: `<p>Paralysis or significant weakness in the affected limb impairs the muscle pump — the mechanism by which skeletal muscle contraction pushes blood and lymph back toward the heart. No pump, fluid pools. Edema in the affected hand, ankle, and lower leg is nearly universal in the first weeks post-stroke, and many survivors deal with it for months or years.</p>
 <p>The consequences go beyond appearance. Edematous tissue is stiffer and more resistant to the range-of-motion work you need to do. Swollen fingers are harder to rehabilitate. Ankle edema in an already-compromised gait pattern adds instability and fatigue cost. DVT risk is elevated in the first 3–6 months post-stroke — immobility, hemiplegia, and hospital-acquired deconditioning are all independent risk factors. Compression addresses all of these.</p>`,
-      image: '/images/blog/fig-13.jpg',
+      image: '/images/blog/fig-13-nmes-placement.png',
     },
     {
       heading: 'Compression levels — what the numbers mean',
@@ -3853,7 +3853,7 @@ export const POST_STANDING_DESK = makeBlogPost({
       heading: 'Why a regular desk works against stroke recovery',
       body: `<p>I went back to part-time desk work at eight months post-stroke. Standard fixed-height desk, standard chair. Within two weeks my affected shoulder was worse, my trunk was listing right, and my PT was asking what changed. What changed was six hours per day of asymmetric loading in a fixed position — the affected arm resting at an angle that maintained internal rotation, the trunk habitually shifting to the stronger side, the affected leg hanging in less-than-ideal position because the seat height was wrong for my gait mechanics.</p>
 <p>Height-adjustable desks address this by giving you options. Alternate between sitting and standing. Set the height for your affected arm to rest at desk level rather than hanging. Stand during video calls to get bilateral weight-bearing. None of this replaces PT — but all of it stops compounding the asymmetries that PT is trying to reduce.</p>`,
-      image: '/images/blog/fig-14.jpg',
+      image: '/images/blog/fig-14-foam-roller.png',
     },
     {
       heading: 'FlexiSpot E7 — the best value electric sit-stand desk',
@@ -3924,7 +3924,7 @@ export const POST_WEIGHTED_VEST = makeBlogPost({
       heading: 'Why weighted vests for stroke recovery',
       body: `<p>The research on weighted vests for post-stroke gait comes primarily from studies using trunk weighting — adding load at the trunk or affected shoulder to improve trunk symmetry and gait pattern. The mechanism: increased proprioceptive input through the trunk and lower extremities during weight-bearing enhances sensory feedback that post-stroke hemiplegia has disrupted. More feedback means more material for the nervous system to use in recalibrating motor patterns.</p>
 <p>Weighted vests are also used for general strength conditioning during recovery-phase walking — adding load to gait without requiring separate equipment or a gym. As walking capacity improves and the same distance feels too easy, a vest is the lowest-friction way to increase the training stimulus.</p>`,
-      image: '/images/blog/fig-15.jpg',
+      image: '/images/blog/fig-15-parallel-bars.png',
     },
     {
       heading: 'ZFOsports Weighted Vest — best adjustable option',
@@ -3993,7 +3993,7 @@ export const POST_SPEECH_THERAPY = makeBlogPost({
       heading: 'The home practice gap — why it matters more than your SLP can say',
       body: `<p>The research on aphasia recovery is unambiguous on one point: intensity matters. The number of hours of practice per week is the strongest predictor of language recovery, more than the specific therapy approach used. Clinical SLP visits are typically 1–3 hours per week. The survivors who make the most progress practice daily — often 45–90 minutes per day — using apps and structured exercises between sessions.</p>
 <p>Most SLPs want their patients practicing at home and will often provide specific targets. The problem is follow-through: the exercises feel hard, progress is slow, and without external structure it\'s easy to skip days. The best tools listed here address the motivation and structure problem, not just the content problem.</p>`,
-      image: '/images/blog/fig-16.jpg',
+      image: '/images/blog/fig-16-chin-tuck-swallow.png',
     },
     {
       heading: 'Constant Therapy — the most clinically validated app',
@@ -4071,7 +4071,7 @@ export const POST_THRESHOLD_RAMP = makeBlogPost({
       heading: 'The fall risk reality of post-stroke home environments',
       body: `<p>Falls are the most common serious adverse event in stroke recovery — in both inpatient and outpatient settings. Up to 73% of stroke survivors fall in the first six months post-discharge. More than half of those falls happen in the home. The majority happen during transitions: transferring from sitting to standing, crossing thresholds, bathroom activities, and stair navigation.</p>
 <p>Home modification is the highest-leverage fall prevention intervention available. It\'s not as visible as PT progress or as exciting as adaptive equipment. But a grab bar that prevents one fall in year one is worth more to your recovery than six months of resistance training — because a fall-related injury resets the entire timeline.</p>`,
-      image: '/images/blog/fig-17.jpg',
+      image: '/images/blog/fig-17-brushing-teeth.png',
     },
     {
       heading: 'EZ-ACCESS TRANSITIONS threshold ramp — the essential first purchase',
@@ -4300,13 +4300,6 @@ export const POST_HOME_GYM_STATIONS = makeBlogPost({
     link: '/book',
     label: 'Get the book',
   },
-  video: {
-    name: 'Best Home Gym Stations for Stroke Recovery',
-    description: 'From $500 to $5,000 — the home gym stations that actually work for stroke survivors with one-sided weakness, seated exercise, and full-body rebuilding.',
-    thumbnailUrl: '/images/blog/home-gym-stroke-recovery.png',
-    uploadDate: '2026-06-07',
-    duration: 'PT9M15S',
-  },
 });
 
 // =============================================================================
@@ -4436,13 +4429,6 @@ export const POST_STAIR_LIFT = makeBlogPost({
     link: '/book',
     label: 'Get the book',
   },
-  video: {
-    name: 'Stair Lifts for Stroke Survivors: Installation and Safety',
-    description: 'The $1,499 decision that buys independence. How to choose, install, and safely use a stair lift after stroke.',
-    thumbnailUrl: '/images/blog/stair-lift-stroke-survivor.png',
-    uploadDate: '2026-06-07',
-    duration: 'PT6M20S',
-  },
 });
 
 // =============================================================================
@@ -4570,13 +4556,6 @@ export const POST_PARALLEL_BARS = makeBlogPost({
     description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the gait training protocol, the parallel bars setup, the daily routine, and the mindset that takes you from bars to open ground.',
     link: '/book',
     label: 'Get the book',
-  },
-  video: {
-    name: 'Parallel Bars for Stroke Recovery at Home',
-    description: 'Portable, adjustable-height parallel bars that assemble in 15 minutes. The bridge from clinic gait training to walking in the real world.',
-    thumbnailUrl: '/images/blog/parallel-bars-stroke-recovery.png',
-    uploadDate: '2026-06-07',
-    duration: 'PT7M45S',
   },
 });
 
@@ -4706,13 +4685,6 @@ export const POST_HYDROTHERAPY = makeBlogPost({
     description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers spasticity protocols, hydrotherapy, medication decisions, and the daily routine that reduces spasticity without sedation.',
     link: '/book',
     label: 'Get the book',
-  },
-  video: {
-    name: 'Hot Tub Hydrotherapy for Stroke Recovery',
-    description: 'Warm water therapy that reduces spasticity, improves sleep, and rebuilds the nervous system. The $2,500 investment that changed my recovery.',
-    thumbnailUrl: '/images/blog/hydrotherapy-stroke-recovery.png',
-    uploadDate: '2026-06-07',
-    duration: 'PT8M10S',
   },
 });
 
@@ -4879,13 +4851,6 @@ export const POST_SUPPLEMENTS = makeBlogPost({
     link: '/book',
     label: 'Get the book',
   },
-  video: {
-    name: '5 Supplements for Stroke Recovery — And the One I Wish I Started Earlier',
-    description: 'The exact supplement stack, dosage, and timing that moved the needle. Omega-3, vitamin D, B-complex, CoQ10, and magnesium — with the evidence.',
-    thumbnailUrl: '/images/blog/supplements-stroke-recovery.png',
-    uploadDate: '2026-06-07',
-    duration: 'PT11M05S',
-  },
 });
 
 // =============================================================================
@@ -5013,13 +4978,6 @@ export const POST_SAEBO = makeBlogPost({
     link: '/book',
     label: 'Get the book',
   },
-  video: {
-    name: 'Saebo Stroke Recovery Devices: Flex, ReJoyce, and Glove Review',
-    description: 'The hand therapy system I wish I found at month one. The Flex, ReJoyce, and Glove — real reviews, real protocol, and the results that made the difference.',
-    thumbnailUrl: '/images/blog/saebo-stroke-recovery-devices.png',
-    uploadDate: '2026-06-07',
-    duration: 'PT10M30S',
-  },
 });
 
 // =============================================================================
@@ -5145,13 +5103,6 @@ export const POST_GSC_INDEXING = makeBlogPost({
     link: '/book',
     label: 'Get the book',
   },
-  video: {
-    name: 'How to Get Google Search Console to Index Your Website',
-    description: 'The exact checklist that got 48 stroke recovery blog posts indexed in 90 days. No fluff. No SEO guru secrets. Just the steps that work.',
-    thumbnailUrl: '/images/blog/gsc-indexing-thumb.png',
-    uploadDate: '2026-06-07',
-    duration: 'PT12M30S',
-  },
 });
 
 // =============================================================================
@@ -5276,13 +5227,6 @@ export const POST_ONLINE_COACH = makeBlogPost({
     description: '30 chapters, 50,000+ words, the daily routine, the protocols, the mindset, and the story that built the #1-ranked stroke recovery resource online. Digital PDF $19. Print paperback $29. The book every survivor wishes they had in the hospital.',
     link: '/book/buy',
     label: 'Get the book — $19 PDF / $29 paperback',
-  },
-  video: {
-    name: 'Online Stroke Recovery Coach: The Real Story Behind the Rankings',
-    description: 'From a wheelchair in Lavaca, Arkansas to coaching 15,000 survivors a day. The story, the protocol, and the proof that recovery is a refusal — not a diagnosis.',
-    thumbnailUrl: '/images/blog/nick-2018-2026.png',
-    uploadDate: '2026-06-07',
-    duration: 'PT14M00S',
   },
 });
 
@@ -5428,14 +5372,6 @@ export const POST_BROOKS_SURVIVOR_REVIEW = makeBlogPost({
     link: 'https://www.amazon.com/Brooks-Cascadia-18-Trail-Running/dp/B0D6R3K9Z2',
     label: 'View on Amazon',
     note: 'Affiliate link. Costs you nothing extra. I wear this shoe. I recommend it because it works.',
-  },
-  video: {
-    name: 'Nick Kremers — Stroke Survivor Testimonial',
-    description: 'Nick Kremers, 7-year stroke survivor who went from complete paralysis to 90% recovery, talks about the Brooks Cascadia trail shoe and what actually works after stroke. Real review, no marketing.',
-    thumbnailUrl: '/images/blog/nick-author-bio.jpg',
-    uploadDate: '2026-06-07',
-    duration: 'PT2M34S',
-    contentUrl: '/videos/nick-testimonial.mp4',
   },
 });
 

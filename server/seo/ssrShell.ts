@@ -146,7 +146,7 @@ function estimateReadingTime(sections: ContentSection[]): number {
 function buildArticleSchema(cfg: SsrPageConfig): object {
   const url = `${SITE_URL}${cfg.url}`;
   const date = cfg.publishedDate || '2026-01-15';
-  const modified = cfg.modifiedDate || new Date().toISOString().split('T')[0];
+  const modified = cfg.modifiedDate || cfg.publishedDate || '2026-01-15';
   const readTime = estimateReadingTime(cfg.sections);
   // Prefer the featured image, then first section image, then default
   const featuredImage = cfg.image;
@@ -239,12 +239,6 @@ function buildProductReviewSchema(cfg: SsrPageConfig): object | null {
       name: 'Stroke Recovery Academy',
       url: SITE_URL,
     },
-    reviewRating: {
-      '@type': 'Rating',
-      ratingValue: '4.5',
-      bestRating: '5',
-      worstRating: '1',
-    },
     itemReviewed: {
       '@type': 'Product',
       name: pc.title || pc.name || cfg.h1,
@@ -291,6 +285,10 @@ function buildBreadcrumbSchema(cfg: SsrPageConfig): object | null {
 function buildVideoObjectSchema(cfg: SsrPageConfig): object | null {
   const v = cfg.video;
   if (!v) return null;
+  // Only emit VideoObject when a real video is actually present on the page.
+  // Schema-only video (no contentUrl/embedUrl, no player) violates Google's
+  // structured-data policy and can suppress rankings.
+  if (!v.contentUrl && !v.embedUrl) return null;
   const url = `${SITE_URL}${cfg.url}`;
   return {
     '@context': 'https://schema.org',
@@ -746,7 +744,7 @@ ${cfg.keywords && cfg.keywords.length > 0 ? `<meta name="keywords" content="${es
 <meta property="og:locale" content="en_US" />
 <meta property="article:author" content="Nick Kremers" />
 <meta property="article:published_time" content="${escAttr(cfg.publishedDate || '2026-01-15')}" />
-<meta property="article:modified_time" content="${escAttr(cfg.modifiedDate || new Date().toISOString().split('T')[0])}" />
+<meta property="article:modified_time" content="${escAttr(cfg.modifiedDate || cfg.publishedDate || '2026-01-15')}" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="@strokerecovery" />
 <meta name="twitter:title" content="${escAttr(cfg.title)}" />
@@ -790,7 +788,7 @@ ${renderHeader()}
     <img src="${AUTHOR.image}" alt="${AUTHOR.name}" class="sra-author-img" loading="lazy" width="44" height="44" />
     <div>
       Written by <a href="${AUTHOR.url}">Nick Kremers</a> · 7-year stroke survivor.
-      <br /><span style="font-size:12px;">Last reviewed: ${esc(cfg.modifiedDate || new Date().toISOString().split('T')[0])}</span>
+      <br /><span style="font-size:12px;">Last reviewed: ${esc(cfg.modifiedDate || cfg.publishedDate || '2026-01-15')}</span>
       <br /><span style="font-size:12px; color: var(--sra-text-dim);">${estimateReadingTime(cfg.sections)} min read · ${cfg.sections.reduce((a, s) => {
         let w = 0;
         if (s.paragraphs) w += s.paragraphs.reduce((x, p) => x + p.split(/\s+/).length, 0);
