@@ -27,10 +27,12 @@ function Hero() {
   return (
     <section className="bg-[#1A1412]">
       {/* Mobile: full-bleed image on top, warm cream text below. Desktop: side-by-side with gradient overlay. */}
-      <div className="sm:hidden relative">
-        <img src={heroWarrior} alt="Nick Kremers — stroke survivor" className="w-full h-[50vh] max-h-[420px] object-cover object-center" />
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#1A1412]/70 via-[#1A1412]/25 to-transparent pt-12 pb-4 px-5">
-          <p className="font-display text-[#FDFBF7] text-xl tracking-wide">Stroke Recovery Academy</p>
+      <div className="sm:hidden">
+        <div className="relative">
+          <img src={heroWarrior} alt="Nick Kremers — stroke survivor" className="w-full h-[50vh] max-h-[420px] object-cover object-center" />
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#1A1412]/70 via-[#1A1412]/25 to-transparent pt-12 pb-4 px-5">
+            <p className="font-display text-[#FDFBF7] text-xl tracking-wide">Stroke Recovery Academy</p>
+          </div>
         </div>
         <div className="bg-[#FDFBF7] px-5 pt-8 pb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2A2421]/8 border border-[#E2C2A4]/40 mb-6">
