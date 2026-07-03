@@ -6,5 +6,9 @@ export const modules: ModuleMap = {
   "./components/mockups/home-clean/Homepage.tsx": () => import("../components/mockups/home-clean/Homepage.tsx"),
   "./components/mockups/home-hybrid/Homepage.tsx": () => import("../components/mockups/home-hybrid/Homepage.tsx"),
   "./components/mockups/home-warm/Homepage.tsx": () => import("../components/mockups/home-warm/Homepage.tsx"),
+  "./components/mockups/logo-concepts/AxeWordmark.tsx": () => import("../components/mockups/logo-concepts/AxeWordmark.tsx"),
+  "./components/mockups/logo-concepts/CurrentEmblem.tsx": () => import("../components/mockups/logo-concepts/CurrentEmblem.tsx"),
+  "./components/mockups/logo-concepts/SasquatchWordmark.tsx": () => import("../components/mockups/logo-concepts/SasquatchWordmark.tsx"),
+  "./components/mockups/logo-concepts/SurvivorBadge.tsx": () => import("../components/mockups/logo-concepts/SurvivorBadge.tsx"),
   "./components/mockups/reflections/ReflectionsFlow.tsx": () => import("../components/mockups/reflections/ReflectionsFlow.tsx")
 };
