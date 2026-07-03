@@ -27,76 +27,54 @@ function Hero() {
   return (
     <section className="relative bg-black overflow-hidden">
       <div className="absolute inset-0">
-        <img src={heroWarrior} alt="" aria-hidden="true" className="w-full h-full object-cover opacity-35" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-black/40" />
+        <img src={heroWarrior} alt="" aria-hidden="true" className="w-full h-full object-cover opacity-25" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/90 to-black/60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
       </div>
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-28">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-8">
-              <span className="flex h-2 w-2 rounded-full bg-gold" />
-              <span className="text-xs font-semibold uppercase tracking-wider text-white/70">By Nick Kremers — 7-year survivor</span>
-            </div>
-            <h1 className="font-display text-white text-6xl md:text-7xl lg:text-8xl leading-[0.9] mb-8">
-              From <span className="text-gold">0%</span> to <span className="text-gold">90%</span> recovery.
-            </h1>
-            <p className="hero-description text-xl text-white/70 mb-10 leading-relaxed max-w-xl">
-              The medical system stabilizes you. We help you rebuild — with a clear plan, daily reps, and people who keep showing up. At your pace, whether you're six weeks out or six years in.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                asChild
-                size="lg"
-                className="bg-gold text-black h-14 px-8 text-base rounded-md w-full sm:w-auto font-semibold"
-                data-testid="button-talk-to-coach-hero"
-              >
-                <Link href="/recovery/sasquatch-coach">
-                  Talk to Coach — free <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={goToOnboarding}
-                className="h-14 px-8 text-base rounded-md w-full sm:w-auto border-white/20 bg-white/5 text-white backdrop-blur"
-                data-testid="button-start-recovery-hero"
-              >
-                Start your recovery <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-            <p className="mt-4 text-sm text-white/40">No signup to try — 3 free messages with Coach, then it's yours for $19/mo.</p>
-            <div className="mt-12 flex items-center gap-4 text-sm text-white/50 font-medium">
-              <div className="flex -space-x-2" aria-hidden="true">
-                {[1, 2, 3, 4].map((i) => <div key={i} className="w-8 h-8 rounded-full border-2 border-black bg-white/20" />)}
-              </div>
-              <p>Join 50,000+ survivors rebuilding their lives</p>
-            </div>
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
+        <div className="max-w-3xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-10">
+            <span className="flex h-2 w-2 rounded-full bg-gold" />
+            <span className="text-xs font-semibold uppercase tracking-wider text-white/70">By Nick Kremers — 7-year survivor</span>
           </div>
-
-          <div className="relative hidden lg:block">
-            <div className="rounded-2xl bg-white/95 backdrop-blur-md p-6 shadow-2xl border border-white/40 max-w-sm ml-auto">
-              <div className="flex items-center justify-between gap-2 mb-4">
-                <div className="font-semibold text-neutral-900">Today's Protocol</div>
-                <span className="text-xs font-bold text-gold-ink bg-gold/10 px-2 py-1 rounded">3/5 done</span>
-              </div>
-              <div className="space-y-3">
-                {[
-                  { t: "Mirror Therapy (15m)", done: true },
-                  { t: "Sit-to-Stand Drills (20 reps)", done: false },
-                  { t: "Mental Rehearsal (10m)", done: false },
-                ].map((row, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    {row.done
-                      ? <CheckCircle2 className="text-gold w-5 h-5 shrink-0" />
-                      : <div className="w-5 h-5 rounded-full border-2 border-neutral-300 shrink-0" />}
-                    <span className={`text-sm font-medium ${row.done ? "text-neutral-400 line-through" : "text-neutral-800"}`}>{row.t}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-5 pt-4 border-t border-neutral-100 flex items-center gap-2 text-xs text-neutral-500">
-                <Flame className="w-4 h-4 text-gold" /> 412-day streak — heart's still thumpin'
-              </div>
+          <h1 className="font-display leading-[0.9] mb-6">
+            <span className="block text-white text-6xl md:text-7xl lg:text-8xl">Nobody was watching</span>
+            <span className="block text-white/35 text-6xl md:text-7xl lg:text-8xl">the days in between.</span>
+          </h1>
+          <p className="font-display text-gold text-4xl md:text-5xl mb-10">We are.</p>
+          <p className="hero-description text-xl text-white/65 mb-6 leading-relaxed max-w-2xl">
+            December 3, 2018 — Hoyer lift. 50 staples. Complete paralysis on one side. The hospital stabilized him and sent him home. Six weeks later, a follow-up appointment. Nobody checked on the days in between — whether he did his exercises, cried at 2 a.m., or almost quit.
+          </p>
+          <p className="text-lg text-white/45 mb-10 leading-relaxed max-w-2xl">
+            That gap is where survivors fall off. Not because they gave up — because nobody was there. We built the thing that fills it: daily reps, a coach who notices when you go quiet, and a squad that keeps showing up.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button
+              size="lg"
+              onClick={goToOnboarding}
+              className="bg-gold text-black h-14 px-8 text-base rounded-md w-full sm:w-auto font-semibold"
+              data-testid="button-build-plan-hero"
+            >
+              Build my recovery plan <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="h-14 px-8 text-base rounded-md w-full sm:w-auto border-white/20 bg-white/5 text-white backdrop-blur"
+              data-testid="button-talk-to-coach-hero"
+            >
+              <Link href="/recovery/sasquatch-coach">
+                Talk to Coach — free
+              </Link>
+            </Button>
+          </div>
+          <p className="mt-4 text-sm text-white/40">No signup to try — 3 free messages with Coach, then $19/mo.</p>
+          <div className="mt-12 flex items-center gap-4 text-sm text-white/50 font-medium">
+            <div className="flex -space-x-2" aria-hidden="true">
+              {[1, 2, 3, 4].map((i) => <div key={i} className="w-8 h-8 rounded-full border-2 border-black bg-white/20" />)}
             </div>
+            <p>50,000+ survivors rebuilding their lives</p>
           </div>
         </div>
       </div>
@@ -127,33 +105,40 @@ function StatsStrip() {
   );
 }
 
-function Method() {
-  const cards = [
-    { icon: Activity, t: "Track everything", d: "Data drives recovery. Log your reps, mood, and the small wins that add up." },
-    { icon: ShieldCheck, t: "Gentle accountability", d: "The system checks in. Miss a day and we notice — and so does your squad." },
-    { icon: BrainCircuit, t: "Force adaptation", d: "Specific, targeted protocols designed to help your brain rewire itself." },
+function AccountabilityGap() {
+  const pillars = [
+    { icon: Activity, t: "Daily Reps", d: "Every task tracked. The system knows when you haven't shown up — and so does your squad." },
+    { icon: Users, t: "Your Squad", d: "Accountability pods of 3–5 survivors. Day 3 and Day 700, showing up for each other." },
+    { icon: BrainCircuit, t: "Sasquatch Coach", d: "An AI coach trained on the Sasquatch Method. It notices when you go quiet and calls you back." },
+    { icon: BookOpen, t: "Recovery Journal", d: "Name the wins, name the hard parts. Every entry is a chapter in the story you're writing." },
   ];
   return (
-    <section id="method" className="bg-[#FAF9F6] py-28">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <p className="text-sm font-bold tracking-widest uppercase text-gold-ink mb-5">The Sasquatch Method</p>
-        <h2 className="font-display text-neutral-900 text-4xl md:text-6xl mb-8 leading-[0.95]">
-          No fake hope.<br />Just the work — together.
+    <section id="method" className="bg-[#FDFBF7] py-28">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-20">
+        <p className="text-sm font-bold tracking-widest uppercase text-gold-ink mb-5">The Accountability Gap</p>
+        <h2 className="font-display text-neutral-900 text-4xl md:text-6xl mb-6 leading-[0.95]">
+          The most underserved part of stroke recovery isn't information.
         </h2>
-        <p className="text-xl text-neutral-600 leading-relaxed mb-14 max-w-3xl mx-auto">
-          The hospital sends you home when you're "stable." We pick it up from there. Recovery is thousands of daily repetitions — so we give you the structure, the routines, and the steady accountability to keep going when nobody else is watching.
-        </p>
-        <div className="grid sm:grid-cols-3 gap-6 text-left">
-          {cards.map((c, i) => (
-            <div key={i} className="p-7 rounded-xl bg-white border border-neutral-200">
-              <div className="w-12 h-12 rounded-lg bg-gold/10 text-gold flex items-center justify-center mb-5">
-                <c.icon className="w-6 h-6" />
-              </div>
-              <h3 className="font-bold text-lg mb-2 text-neutral-900">{c.t}</h3>
-              <p className="text-neutral-600 text-sm leading-relaxed">{c.d}</p>
-            </div>
-          ))}
+        <p className="font-display text-gold-ink text-3xl md:text-4xl mb-10">It's someone checking on you.</p>
+        <div className="space-y-5 text-neutral-600 text-lg leading-relaxed max-w-3xl mx-auto">
+          <p>
+            You leave the hospital with a stack of papers and a follow-up appointment in six weeks. Nobody is watching the days in between — whether you did your exercises, skipped them, cried at 2 a.m., or decided recovery wasn't worth it.
+          </p>
+          <p>
+            That gap is where the plateau lives. That's where survivors fall off. Not because they gave up — <strong className="text-neutral-900 font-semibold">because nobody was there.</strong>
+          </p>
         </div>
+      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {pillars.map((c, i) => (
+          <div key={i} className="p-7 rounded-2xl bg-white border border-amber-100 shadow-sm">
+            <div className="w-12 h-12 rounded-xl bg-gold/10 text-gold flex items-center justify-center mb-5">
+              <c.icon className="w-6 h-6" />
+            </div>
+            <h3 className="font-bold text-lg mb-2 text-neutral-900">{c.t}</h3>
+            <p className="text-neutral-600 text-sm leading-relaxed">{c.d}</p>
+          </div>
+        ))}
       </div>
     </section>
   );
@@ -199,7 +184,7 @@ function Proof() {
 
 function Features() {
   return (
-    <section id="features" className="bg-white py-28">
+    <section id="features" className="bg-[#F6EFEA] py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-20">
           <p className="text-sm font-bold tracking-widest uppercase text-gold-ink mb-4">The Toolkit</p>
@@ -207,8 +192,8 @@ function Features() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center mb-24">
-          <div className="order-2 md:order-1 rounded-2xl overflow-hidden border border-neutral-200 bg-neutral-50 p-8">
-            <img src={cleanUi} alt="AI Coach interface" className="w-full h-auto rounded-lg border border-neutral-200" />
+          <div className="order-2 md:order-1 rounded-2xl overflow-hidden border border-amber-100 bg-white/70 p-8">
+            <img src={cleanUi} alt="AI Coach interface" className="w-full h-auto rounded-xl border border-amber-100/60" />
           </div>
           <div className="order-1 md:order-2">
             <div className="w-12 h-12 rounded-lg bg-gold/10 text-gold flex items-center justify-center mb-6"><BrainCircuit className="w-6 h-6" /></div>
@@ -235,8 +220,8 @@ function Features() {
               Stop guessing what to do. Get structured daily regimens that target neuroplasticity — from mirror therapy to mental rehearsal — scaled to your level and delivered when you need them.
             </p>
           </div>
-          <div className="rounded-2xl overflow-hidden border border-neutral-200 bg-neutral-50 p-8">
-            <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-3">
+          <div className="rounded-2xl overflow-hidden border border-amber-100 bg-white/70 p-8">
+            <div className="bg-white rounded-xl border border-amber-100/60 p-6 space-y-3">
               {[
                 { icon: Users, t: "Accountability Pod", s: "Your squad of 5" },
                 { icon: Activity, t: "Daily Reps Log", s: "Streak: 412 days" },
@@ -259,7 +244,7 @@ function Features() {
 
         {/* Write Your Recovery Story */}
         <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center mt-24">
-          <div className="order-2 md:order-1 rounded-2xl border border-neutral-200 bg-neutral-50 p-8">
+          <div className="order-2 md:order-1 rounded-2xl border border-amber-100 bg-white/70 p-8">
             <div className="bg-white rounded-xl border border-neutral-200 p-6 space-y-4">
               {[
                 { label: "Day 1 — first step on the left side", chapter: true },
@@ -392,9 +377,12 @@ function FinalCTA() {
     <section className="relative bg-black py-32 text-center overflow-hidden">
       <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_center,_rgba(226,116,27,0.5),_transparent_60%)]" />
       <div className="relative z-10 max-w-3xl mx-auto px-4">
-        <h2 className="font-display text-white text-5xl md:text-7xl mb-8 leading-[0.9]">Time to put in the reps.</h2>
+        <h2 className="font-display text-white text-5xl md:text-7xl mb-8 leading-[0.9]">
+          The hospital did its job.<br />
+          <span className="text-gold">Now it's your turn.</span>
+        </h2>
         <p className="text-xl text-white/60 mb-12">
-          Join the next cohort of survivors rebuilding their lives — daily reps, your squad of five, and Coach in your corner. One price: $19/mo, 7 days free. Cancel anytime.
+          We'll be there for every rep of it — daily reps, your squad of five, and Coach in your corner. $19/mo, 7 days free. Cancel anytime.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button
@@ -481,7 +469,7 @@ export default function Landing() {
       <main>
         <Hero />
         <StatsStrip />
-        <Method />
+        <AccountabilityGap />
         <Proof />
         <Features />
         <Caregiver />
