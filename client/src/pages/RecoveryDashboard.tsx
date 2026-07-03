@@ -30,6 +30,7 @@ import {
   LayoutDashboard
 } from "lucide-react";
 import SixtyDayTracker from "@/components/recovery/SixtyDayTracker";
+import TodaySessionPanel from "@/components/recovery/TodaySessionPanel";
 import PushOptInBanner from "@/components/PushOptInBanner";
 import { RecommendationCards } from "@/components/RecommendationCard";
 import { TodaysSpark } from "@/components/TodaysSpark";
@@ -424,6 +425,9 @@ export default function RecoveryDashboard() {
 
         </FadeUpSection>
         </>)}
+        {/* TODAY SESSION — Exercise queue with inline timer, rings, reminders. Always rendered. */}
+        <TodaySessionPanel />
+
         {/* DAILY LOOP — Morning brief + structured exercise/habit log. Always rendered. */}
         <div id="today">
           <DailyLoopCard />
