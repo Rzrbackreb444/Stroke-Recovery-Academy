@@ -25,16 +25,66 @@ const goToOnboarding = () => {
 
 function Hero() {
   return (
-    <section className="relative bg-[#1A1412] overflow-hidden">
-      <div className="absolute inset-0">
-        <img src={heroWarrior} alt="" aria-hidden="true" className="w-full h-full object-cover object-center" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#1A1412]/80 via-[#2A2421]/50 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1412] via-transparent to-transparent" />
+    <section className="bg-[#1A1412]">
+      {/* Mobile: full-bleed image on top, warm cream text below. Desktop: side-by-side with gradient overlay. */}
+      <div className="sm:hidden">
+        <img src={heroWarrior} alt="Nick Kremers — stroke survivor" className="w-full h-[55vh] object-cover object-top" />
+        <div className="bg-[#FDFBF7] px-5 pt-8 pb-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2A2421]/8 border border-[#E2C2A4]/40 mb-6">
+            <span className="flex h-2 w-2 rounded-full bg-gold" />
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#2A2421]/70">By Nick Kremers — 7-year survivor</span>
+          </div>
+          <h1 className="font-display leading-[0.9] mb-4">
+            <span className="block text-[#2A2421] text-4xl">Nobody was watching</span>
+            <span className="block text-[#2A2421]/40 text-4xl">the days in between.</span>
+          </h1>
+          <p className="font-display text-[#C06B3E] text-2xl mb-6">We are.</p>
+          <p className="text-base text-[#2A2421]/75 mb-4 leading-relaxed">
+            December 3, 2018 — Hoyer lift. 50 staples. Complete paralysis on one side. The hospital stabilized him and sent him home. Six weeks later, a follow-up appointment. Nobody checked on the days in between — whether he did his exercises, cried at 2 a.m., or almost quit.
+          </p>
+          <p className="text-base text-[#2A2421]/55 mb-8 leading-relaxed">
+            That gap is where survivors fall off. Not because they gave up — because nobody was there. We built the thing that fills it: daily reps, a coach who notices when you go quiet, and a squad that keeps showing up.
+          </p>
+          <div className="flex flex-col gap-3">
+            <Button
+              size="lg"
+              onClick={goToOnboarding}
+              className="bg-[#C06B3E] hover:bg-[#A85B33] text-white h-14 px-8 text-base rounded-full w-full font-semibold shadow-[0_2px_8px_rgba(192,107,62,0.15)] transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(192,107,62,0.2)]"
+              data-testid="button-build-plan-hero"
+            >
+              Build my recovery plan <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="h-14 px-8 text-base rounded-md w-full border-[#2A2421]/15 bg-[#2A2421]/5 text-[#2A2421] hover:bg-[#2A2421]/10 hover:border-[#2A2421]/25 transition-colors"
+              data-testid="button-talk-to-coach-hero"
+            >
+              <Link href="/recovery/sasquatch-coach">
+                Talk to Coach — free
+              </Link>
+            </Button>
+          </div>
+          <p className="mt-3 text-sm text-[#2A2421]/40">No signup to try — 3 free messages with Coach, then $19/mo.</p>
+          <div className="mt-8 flex items-center gap-4 text-sm text-[#2A2421]/50 font-medium">
+            <div className="flex -space-x-2" aria-hidden="true">
+              {[1, 2, 3, 4].map((i) => <div key={i} className="w-8 h-8 rounded-full border-2 border-[#FDFBF7] bg-[#2A2421]/15" />)}
+            </div>
+            <p>50,000+ survivors rebuilding their lives</p>
+          </div>
+        </div>
       </div>
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
-        <div className="max-w-3xl">
-          {/* Mobile readability card — desktop stays transparent via gradient overlay */}
-          <div className="md:bg-transparent md:p-0 md:backdrop-blur-none bg-[#1A1412]/70 backdrop-blur-md rounded-2xl p-6 sm:p-0 sm:bg-transparent sm:backdrop-blur-none">
+
+      {/* Desktop: original side-by-side with gradient overlay */}
+      <div className="hidden sm:block relative overflow-hidden">
+        <div className="absolute inset-0">
+          <img src={heroWarrior} alt="" aria-hidden="true" className="w-full h-full object-cover object-center" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#1A1412]/80 via-[#2A2421]/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1A1412] via-transparent to-transparent" />
+        </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-20 pb-32">
+          <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FDFBF7]/8 border border-[#E2C2A4]/30 mb-10">
               <span className="flex h-2 w-2 rounded-full bg-gold" />
               <span className="text-xs font-semibold uppercase tracking-wider text-[#FDFBF7]/80">By Nick Kremers — 7-year survivor</span>
@@ -51,33 +101,33 @@ function Hero() {
               That gap is where survivors fall off. Not because they gave up — because nobody was there. We built the thing that fills it: daily reps, a coach who notices when you go quiet, and a squad that keeps showing up.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-            <Button
-              size="lg"
-              onClick={goToOnboarding}
-              className="bg-[#C06B3E] hover:bg-[#A85B33] text-white h-14 px-8 text-base rounded-full w-full sm:w-auto font-semibold shadow-[0_2px_8px_rgba(192,107,62,0.15)] transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(192,107,62,0.2)]"
-              data-testid="button-build-plan-hero"
-            >
-              Build my recovery plan <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="h-14 px-8 text-base rounded-md w-full sm:w-auto border-[#FDFBF7]/20 bg-[#FDFBF7]/8 text-[#FDFBF7] backdrop-blur hover:bg-[#FDFBF7]/15 hover:border-[#FDFBF7]/30 transition-colors"
-              data-testid="button-talk-to-coach-hero"
-            >
-              <Link href="/recovery/sasquatch-coach">
-                Talk to Coach — free
-              </Link>
-            </Button>
-          </div>
-          <p className="mt-4 text-sm text-[#FDFBF7]/50">No signup to try — 3 free messages with Coach, then $19/mo.</p>
-          <div className="mt-12 flex items-center gap-4 text-sm text-[#FDFBF7]/60 font-medium">
-            <div className="flex -space-x-2" aria-hidden="true">
-              {[1, 2, 3, 4].map((i) => <div key={i} className="w-8 h-8 rounded-full border-2 border-[#1C1917] bg-[#FDFBF7]/15" />)}
+              <Button
+                size="lg"
+                onClick={goToOnboarding}
+                className="bg-[#C06B3E] hover:bg-[#A85B33] text-white h-14 px-8 text-base rounded-full w-full sm:w-auto font-semibold shadow-[0_2px_8px_rgba(192,107,62,0.15)] transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(192,107,62,0.2)]"
+                data-testid="button-build-plan-hero"
+              >
+                Build my recovery plan <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="h-14 px-8 text-base rounded-md w-full sm:w-auto border-[#FDFBF7]/20 bg-[#FDFBF7]/8 text-[#FDFBF7] backdrop-blur hover:bg-[#FDFBF7]/15 hover:border-[#FDFBF7]/30 transition-colors"
+                data-testid="button-talk-to-coach-hero"
+              >
+                <Link href="/recovery/sasquatch-coach">
+                  Talk to Coach — free
+                </Link>
+              </Button>
             </div>
-            <p>50,000+ survivors rebuilding their lives</p>
-          </div>
+            <p className="mt-4 text-sm text-[#FDFBF7]/50">No signup to try — 3 free messages with Coach, then $19/mo.</p>
+            <div className="mt-12 flex items-center gap-4 text-sm text-[#FDFBF7]/60 font-medium">
+              <div className="flex -space-x-2" aria-hidden="true">
+                {[1, 2, 3, 4].map((i) => <div key={i} className="w-8 h-8 rounded-full border-2 border-[#1C1917] bg-[#FDFBF7]/15" />)}
+              </div>
+              <p>50,000+ survivors rebuilding their lives</p>
+            </div>
           </div>
         </div>
       </div>
