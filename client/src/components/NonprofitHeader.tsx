@@ -27,7 +27,7 @@ import {
   ShoppingBag,
   Bell,
 } from "lucide-react";
-import strokeLyfeLogo from "@assets/Untitled_design_1776789083877.png";
+import strokeLyfeLogo from "@assets/strokelyfe-logo-opt.webp";
 
 const navLinks = [
   { href: "/strokelyfe", label: "HOME", icon: Home },

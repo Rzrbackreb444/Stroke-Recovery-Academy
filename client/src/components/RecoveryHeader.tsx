@@ -16,7 +16,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import strokeLyfeLogo from "@assets/Untitled_design_1776803832326.png";
 import sraEmblem from "@assets/sra-emblem.png";
 
 // Shared site-header singleton — first mount wins (covers RecoveryHeader

@@ -7,7 +7,7 @@ import { Link as WouterLink } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import sraLogo from "@assets/Untitled_design_1776803832326.png";
+import sraLogo from "@assets/global-logo-opt.webp";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {

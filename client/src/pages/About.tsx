@@ -7,7 +7,7 @@ import { ArrowRight, Heart, Target, Zap, Users } from "lucide-react";
 import { Link } from "wouter";
 import SEO from "@/components/SEO";
 import nickBeforeImage from "@assets/Nick crooked smile_1764268708613.jpg";
-import nickTodayImage from "@assets/Untitled_design_1781030529179.png";
+import nickTodayImage from "@assets/nick-portrait-opt.webp";
 
 export default function About() {
   return (

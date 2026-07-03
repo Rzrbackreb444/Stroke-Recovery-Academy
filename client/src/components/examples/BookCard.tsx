@@ -1,5 +1,5 @@
 import BookCard from '../BookCard';
-import bookCoverImage from "@assets/generated_images/sasquatch_recovery_book_cover.png";
+import bookCoverImage from "@assets/book-cover-opt.webp";
 
 export default function BookCardExample() {
   return (

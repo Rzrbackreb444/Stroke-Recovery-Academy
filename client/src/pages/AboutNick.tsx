@@ -7,8 +7,8 @@ import {
   Heart, Star, Award, Users, BookOpen, Video, 
   Mic, Target, Flame, Mountain, Quote, ArrowRight
 } from "lucide-react";
-import nickPortrait from "@assets/Untitled_design_1781030529179.png";
-import nickCasual from "@assets/Untitled_design_1781030529179.png";
+import nickPortrait from "@assets/nick-portrait-opt.webp";
+import nickCasual from "@assets/nick-portrait-opt.webp";
 
 const milestones = [
   { year: "Dec 2018", title: "The Day Everything Changed", description: "December 3, 2018 — a massive hemorrhagic stroke. Left side paralyzed, speech gone, 50 pounds lost in the ICU on tube feedings. Told he might never walk normally again." },

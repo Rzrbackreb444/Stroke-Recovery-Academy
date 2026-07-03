@@ -19,8 +19,8 @@ import {
   Users,
 } from "lucide-react";
 import { SiTiktok, SiInstagram, SiYoutube, SiX } from "react-icons/si";
-import sasquatchLogo from "@assets/Untitled_design_1776789083877.png";
-import strokeLyfeLogo from "@assets/Untitled_design_1776789083877.png";
+import sasquatchLogo from "@assets/strokelyfe-logo-opt.webp";
+import strokeLyfeLogo from "@assets/strokelyfe-logo-opt.webp";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();

@@ -15,10 +15,10 @@ import RecoverySEO, {
   STROKE_CONDITION_SCHEMA,
 } from "@/components/RecoverySEO";
 import Footer from "@/components/Footer";
-import heroWarrior from "@assets/image_1783088334022.png";
-import nickPortrait from "@assets/Untitled_design_1781030529179.png";
-import manifestoStairs from "@assets/manifesto-stairs.png";
-import cleanUi from "@assets/home-clean-ui.png";
+import heroWarrior from "@assets/hero-warrior-opt.webp";
+import nickPortrait from "@assets/nick-portrait-opt.webp";
+import manifestoStairs from "@assets/manifesto-stairs-opt.webp";
+import cleanUi from "@assets/home-clean-ui-opt.webp";
 
 const goToOnboarding = () => {
   window.location.href = "/recovery/onboarding";
@@ -68,7 +68,7 @@ function Hero() {
     <section className="bg-[#1A1412]">
       {/* Mobile: full-bleed image on top, warm cream text below. Desktop: side-by-side with gradient overlay. */}
       <div className="sm:hidden">
-        <img src={heroWarrior} alt="Nick Kremers — stroke survivor" className="w-full h-[50vh] max-h-[420px] object-cover object-center" />
+        <img src={heroWarrior} alt="Nick Kremers — stroke survivor" {...({ fetchpriority: "high" } as any)} decoding="async" className="w-full h-[50vh] max-h-[420px] object-cover object-center" />
         <div className="bg-[#FDFBF7] px-5 pt-8 pb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2A2421]/8 border border-[#E2C2A4]/40 mb-6">
             <span className="flex h-2 w-2 rounded-full bg-gold" />
@@ -119,7 +119,7 @@ function Hero() {
       {/* Desktop: original side-by-side with gradient overlay */}
       <div className="hidden sm:block relative overflow-hidden">
         <div className="absolute inset-0">
-          <img src={heroWarrior} alt="" aria-hidden="true" className="w-full h-full object-cover object-center" />
+          <img src={heroWarrior} alt="" aria-hidden="true" {...({ fetchpriority: "high" } as any)} decoding="async" className="w-full h-full object-cover object-center" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#1A1412]/80 via-[#2A2421]/50 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1412] via-transparent to-transparent" />
         </div>
@@ -254,7 +254,7 @@ function Proof() {
             </p>
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gold/40">
-                <img src={nickPortrait} alt="Nick Kremers" className="w-full h-full object-cover" />
+                <img src={nickPortrait} alt="Nick Kremers" loading="lazy" decoding="async" className="w-full h-full object-cover" />
               </div>
               <div>
                 <div className="font-bold text-lg text-[#1C1917]">Nick Kremers</div>
@@ -263,7 +263,7 @@ function Proof() {
             </div>
           </div>
           <div className="relative aspect-video bg-white rounded-2xl overflow-hidden border border-[#E2C2A4]/30 shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(192,107,62,0.08)] transition-shadow" aria-hidden="true">
-            <img src={manifestoStairs} alt="" className="w-full h-full object-cover opacity-60" />
+            <img src={manifestoStairs} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover opacity-60" />
             <div className="absolute inset-0 bg-[#1C1917]/30 flex items-center justify-center">
               <div className="w-20 h-20 rounded-full bg-gold/90 flex items-center justify-center">
                 <Play className="w-8 h-8 text-black fill-black ml-1" />
@@ -287,7 +287,7 @@ function Features() {
 
         <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center mb-24">
           <div className="order-2 md:order-1 rounded-3xl overflow-hidden border border-[#E2C2A4]/20 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-8">
-            <img src={cleanUi} alt="AI Coach interface" className="w-full h-auto rounded-xl border border-[#E2C2A4]/30" />
+            <img src={cleanUi} alt="AI Coach interface" loading="lazy" decoding="async" className="w-full h-auto rounded-xl border border-[#E2C2A4]/30" />
           </div>
           <div className="order-1 md:order-2">
             <div className="w-12 h-12 rounded-2xl bg-[#F6EFEA] border border-[#E2C2A4]/30 text-[#C06B3E] flex items-center justify-center mb-6"><BrainCircuit className="w-6 h-6" /></div>
