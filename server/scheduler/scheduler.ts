@@ -30,6 +30,23 @@ const registry = new Map<string, JobDefinition>();
 const INSTANCE_ID = `${os.hostname()}:${process.pid}:${crypto.randomBytes(3).toString("hex")}`;
 const TICK_INTERVAL_MS = 30 * 1000;
 
+// While a claimed job runs, its owner refreshes locked_at every
+// HEARTBEAT_INTERVAL_MS. STALE_LOCK_SECONDS is therefore NOT a maximum job
+// runtime — a live worker keeps its lease fresh no matter how long the handler
+// takes, so a legitimately long-running job is never re-claimed and never runs
+// twice. The lease only looks stale once the owner has actually stopped
+// heartbeating (crashed / hung process), at which point another instance may
+// safely reclaim the row. 5 min ≈ 5 missed heartbeats ⇒ the owner is dead.
+const HEARTBEAT_INTERVAL_MS = 60 * 1000;
+const STALE_LOCK_SECONDS = 300;
+
+// Shared "this row is free to claim" predicate: never running, or running but
+// its owner's lease has gone stale (crashed mid-run with no heartbeat). Used by
+// both the periodic claimer and the by-id claimer so the two can never diverge.
+function claimablePredicate() {
+  return sql`(status <> 'running' OR locked_at IS NULL OR locked_at < now() - (interval '1 second' * ${STALE_LOCK_SECONDS}))`;
+}
+
 let tickTimer: NodeJS.Timeout | null = null;
 let claiming = false;
 let started = false;
@@ -59,10 +76,10 @@ async function ensureJobRow(def: JobDefinition): Promise<void> {
   `);
 }
 
-async function claimDueJobs(): Promise<Array<{ id: number; name: string }>> {
-  // Atomic claim. FOR UPDATE SKIP LOCKED + the status/lock predicate guarantees
-  // that two instances ticking simultaneously never grab the same row. A row
-  // stuck "running" for >15 min (crashed worker) is reclaimable.
+export async function claimDueJobs(): Promise<Array<{ id: number; name: string }>> {
+  // Atomic claim. FOR UPDATE SKIP LOCKED + claimablePredicate() guarantees that
+  // two instances ticking simultaneously never grab the same row, and that a row
+  // whose owner has stopped heartbeating (crashed worker) becomes reclaimable.
   const res = await db.execute(sql`
     UPDATE scheduled_jobs
     SET status = 'running', locked_at = now(), locked_by = ${INSTANCE_ID}, updated_at = now()
@@ -70,7 +87,7 @@ async function claimDueJobs(): Promise<Array<{ id: number; name: string }>> {
       SELECT id FROM scheduled_jobs
       WHERE enabled = true
         AND next_run_at <= now()
-        AND (status <> 'running' OR locked_at IS NULL OR locked_at < now() - interval '15 minutes')
+        AND ${claimablePredicate()}
       ORDER BY next_run_at ASC
       FOR UPDATE SKIP LOCKED
       LIMIT 20
@@ -80,7 +97,33 @@ async function claimDueJobs(): Promise<Array<{ id: number; name: string }>> {
   return (res.rows || []) as Array<{ id: number; name: string }>;
 }
 
-async function runClaimedJob(row: { id: number; name: string }): Promise<void> {
+// Atomically claim a specific row by id, ignoring enabled + schedule. Used by
+// the manual "run now" trigger and by tests. Returns the row if we won the
+// claim, else null (not found, or already running with a live lease).
+export async function claimJobById(id: number): Promise<{ id: number; name: string } | null> {
+  const res = await db.execute(sql`
+    UPDATE scheduled_jobs
+    SET status = 'running', locked_at = now(), locked_by = ${INSTANCE_ID}, updated_at = now()
+    WHERE id = ${id} AND ${claimablePredicate()}
+    RETURNING id, name
+  `);
+  return ((res.rows || [])[0] as { id: number; name: string } | undefined) ?? null;
+}
+
+// Renew our lease on a running job we own. Guarded by locked_by so we can never
+// refresh a lease another instance has taken over, and by status so we stop once
+// the job is finalized. Returns rows touched (0 ⇒ we no longer own it).
+export async function heartbeatJob(id: number): Promise<number> {
+  const res = await db.execute(sql`
+    UPDATE scheduled_jobs
+    SET locked_at = now(), updated_at = now()
+    WHERE id = ${id} AND locked_by = ${INSTANCE_ID} AND status = 'running'
+    RETURNING id
+  `);
+  return (res.rows || []).length;
+}
+
+export async function runClaimedJob(row: { id: number; name: string }): Promise<void> {
   const def = registry.get(row.name);
   const startedAt = new Date();
 
@@ -98,6 +141,16 @@ async function runClaimedJob(row: { id: number; name: string }): Promise<void> {
     return;
   }
 
+  // Keep our lease alive for the whole run so a long-running handler is never
+  // mistaken for a crashed worker and re-claimed by another instance. unref() so
+  // this timer can never keep the process alive on its own.
+  const heartbeat = setInterval(() => {
+    void heartbeatJob(row.id).catch((err) =>
+      console.error(`[scheduler] heartbeat error for "${row.name}":`, err),
+    );
+  }, HEARTBEAT_INTERVAL_MS);
+  heartbeat.unref?.();
+
   let failed = false;
   let errorMsg: string | null = null;
   try {
@@ -106,6 +159,8 @@ async function runClaimedJob(row: { id: number; name: string }): Promise<void> {
     failed = true;
     errorMsg = String(err?.message ?? err).slice(0, 2000);
     console.error(`[scheduler] job "${row.name}" failed:`, err);
+  } finally {
+    clearInterval(heartbeat);
   }
 
   const finishedAt = new Date();
@@ -120,7 +175,11 @@ async function runClaimedJob(row: { id: number; name: string }): Promise<void> {
     nextRunAt = new Date(finishedAt.getTime() + 60 * 60 * 1000);
   }
 
-  await db.execute(sql`
+  // Finalize ONLY if we still own the lease (locked_by = us). If our heartbeat
+  // lapsed long enough for another instance to consider us dead and re-claim the
+  // row, this UPDATE matches 0 rows and we discard our result rather than
+  // clobbering the new owner's next_run_at / counters or double-recording a run.
+  const finalize = await db.execute(sql`
     UPDATE scheduled_jobs SET
       status = ${status},
       last_status = ${status},
@@ -133,8 +192,16 @@ async function runClaimedJob(row: { id: number; name: string }): Promise<void> {
       locked_at = NULL,
       locked_by = NULL,
       updated_at = now()
-    WHERE id = ${row.id}
+    WHERE id = ${row.id} AND locked_by = ${INSTANCE_ID}
+    RETURNING id
   `);
+
+  if ((finalize.rows || []).length === 0) {
+    console.warn(
+      `[scheduler] job "${row.name}" lost its lease during execution — result discarded to avoid a duplicate run.`,
+    );
+    return;
+  }
 
   await db.execute(sql`
     INSERT INTO scheduled_job_runs (job_id, job_name, status, started_at, finished_at, duration_ms, error)
@@ -279,16 +346,9 @@ export async function triggerJobNow(id: number) {
   // of its schedule) as long as it isn't already running, then run it
   // out-of-band immediately. Does NOT flip `enabled`, so triggering a disabled
   // job runs it once without silently resuming its recurring schedule. The
-  // same 15-min stale-lock guard lets a wedged job be re-triggered manually.
-  const res = await db.execute(sql`
-    UPDATE scheduled_jobs
-    SET status = 'running', locked_at = now(), locked_by = ${INSTANCE_ID}, updated_at = now()
-    WHERE id = ${id}
-      AND (status <> 'running' OR locked_at IS NULL OR locked_at < now() - interval '15 minutes')
-    RETURNING id, name
-  `);
-  const row = (res.rows || [])[0] as { id: number; name: string } | undefined;
-  if (!row) return null; // not found, or already running
+  // shared stale-lock guard lets a wedged job be re-triggered manually.
+  const row = await claimJobById(id);
+  if (!row) return null; // not found, or already running with a live lease
   runClaimedJob(row).catch((err) =>
     console.error(`[scheduler] manual run error for "${row.name}":`, err),
   );
