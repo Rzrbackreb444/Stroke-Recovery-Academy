@@ -1,5 +1,6 @@
 import { db } from './db';
 import { sendEmail } from './emailService';
+import { sendMessage } from './messaging/messagingService';
 import { redactEmail } from './lib/redact';
 import { newsletterSubscribers, newsletterEditions } from '../shared/schema';
 import { eq, and, lte, isNull, sql } from 'drizzle-orm';
@@ -460,12 +461,24 @@ async function sendDripEdition(queueId: number, editionNumber: number, email: st
     bodyHtml: personalizedContent,
   });
 
-  await sendEmail({
-    to: email,
-    subject: edition.subject,
-    html,
-    text: `The Sasquatch Dispatch — Edition ${editionNumber}\n\n${edition.previewText}\n\nRead online: ${BRAND.siteUrl}`,
+  // Route through the unified messaging layer so the drip inherits delivery
+  // logging (message_deliveries), the crisis gate, and channel handling. No
+  // dedupeKey — the newsletterDripQueue.status transition below is the source of
+  // idempotency, so a failed send stays 'pending' and retries next run.
+  const dm = await sendMessage({
+    userId: null,
+    category: 'drip',
+    channels: ['email'],
+    email: {
+      to: email,
+      subject: edition.subject,
+      html,
+      text: `The Sasquatch Dispatch — Edition ${editionNumber}\n\n${edition.previewText}\n\nRead online: ${BRAND.siteUrl}`,
+    },
   });
+  if (!dm.sent.includes('email')) {
+    throw new Error(`drip edition ${editionNumber} not delivered: ${dm.skipped.email || 'unknown'}`);
+  }
 
   const { newsletterDripQueue } = await import('../shared/schema');
   await db.update(newsletterDripQueue).set({ sentAt: new Date(), status: 'sent' }).where(eq(newsletterDripQueue.id, queueId));
