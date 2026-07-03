@@ -22511,6 +22511,41 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // ADMIN PANEL ROUTES
   // ============================================================================
 
+  // GET /api/admin/stats/signups — compact signup dashboard for inline admin widget
+  app.get('/api/admin/stats/signups', isAuthenticated, requireAdmin, async (_req, res) => {
+    try {
+      const now = new Date();
+      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+      const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+      const [totalRow, todayRow, weekRow, recent] = await Promise.all([
+        dbPool.query('SELECT COUNT(*)::int AS count FROM users'),
+        dbPool.query('SELECT COUNT(*)::int AS count FROM users WHERE created_at >= $1', [todayStart]),
+        dbPool.query('SELECT COUNT(*)::int AS count FROM users WHERE created_at >= $1', [weekStart]),
+        dbPool.query(
+          `SELECT id, email, first_name, last_name, subscription_status, created_at
+           FROM users ORDER BY created_at DESC LIMIT 20`,
+        ),
+      ]);
+
+      res.json({
+        total: totalRow.rows[0].count,
+        today: todayRow.rows[0].count,
+        week: weekRow.rows[0].count,
+        recent: recent.rows.map((u: any) => ({
+          id: u.id,
+          email: u.email,
+          name: [u.first_name, u.last_name].filter(Boolean).join(' ') || u.email?.split('@')[0] || 'Survivor',
+          subscriptionStatus: u.subscription_status,
+          createdAt: u.created_at,
+        })),
+      });
+    } catch (err) {
+      console.error('admin/stats/signups error:', err);
+      res.status(500).json({ message: 'Failed to load signup stats' });
+    }
+  });
+
   // GET /api/admin/users - List/search users (admin only)
   app.get('/api/admin/users', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {

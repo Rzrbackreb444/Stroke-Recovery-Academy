@@ -73,6 +73,81 @@ const motivationalQuotes = [
   "Your recovery is your superpower. Keep pushing.",
 ];
 
+function timeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  return `${days}d ago`;
+}
+
+function AdminSignupWidget() {
+  const { data, isLoading } = useQuery<{
+    total: number;
+    today: number;
+    week: number;
+    recent: { id: string; email: string; name: string; subscriptionStatus: string | null; createdAt: string }[];
+  }>({
+    queryKey: ["/api/admin/stats/signups"],
+    refetchInterval: 60_000,
+    staleTime: 30_000,
+  });
+  const [expanded, setExpanded] = useState(false);
+
+  if (isLoading || !data) return null;
+
+  return (
+    <div className="mb-5 rounded-xl border border-[#C06B3E]/25 bg-[#C06B3E]/5 overflow-hidden" data-testid="admin-signup-widget">
+      <button
+        onClick={() => setExpanded(e => !e)}
+        className="w-full flex items-center gap-4 px-4 py-3 text-left hover-elevate"
+        aria-expanded={expanded}
+      >
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <span className="text-2xl font-display font-bold text-[#C06B3E]">{data.total}</span>
+          <span className="text-sm font-medium text-[#2A2421]">survivors</span>
+          <span className="h-4 w-px bg-[#E2C2A4]" />
+          <span className="text-xs text-[#78716C]">+{data.today} today</span>
+          <span className="text-xs text-[#78716C]">· +{data.week} this week</span>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <Badge className="text-[10px] bg-[#C06B3E]/15 text-[#C06B3E] border-[#C06B3E]/30 no-default-hover-elevate no-default-active-elevate">
+            ADMIN
+          </Badge>
+          <ChevronDown className={`h-4 w-4 text-[#78716C] transition-transform ${expanded ? "rotate-180" : ""}`} />
+        </div>
+      </button>
+
+      {expanded && (
+        <div className="border-t border-[#E2C2A4]/40 divide-y divide-[#E2C2A4]/20">
+          {data.recent.length === 0 ? (
+            <p className="px-4 py-3 text-sm text-[#78716C]">No signups yet.</p>
+          ) : data.recent.map((u) => (
+            <div key={u.id} className="flex items-center gap-3 px-4 py-2.5">
+              <div className="w-7 h-7 rounded-full bg-[#C06B3E]/15 flex items-center justify-center text-[#C06B3E] text-xs font-bold shrink-0">
+                {u.name.charAt(0).toUpperCase()}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-[#2A2421] truncate">{u.name}</p>
+                <p className="text-xs text-[#78716C] truncate">{u.email}</p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                {u.subscriptionStatus === "active" && (
+                  <Badge className="text-[9px] bg-[#C06B3E] text-white border-none no-default-hover-elevate no-default-active-elevate">PRO</Badge>
+                )}
+                <span className="text-xs text-[#A8A29E]">{timeAgo(u.createdAt)}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function RecoveryDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -313,6 +388,7 @@ export default function RecoveryDashboard() {
 
       <main className="px-4 sm:px-6 lg:px-8 py-6">
         <PushOptInBanner />
+        {user?.role === 'admin' && <AdminSignupWidget />}
         {/* Zen Mode toggle — neuro-fatigue accommodation. When on, the dashboard
             collapses to a single focal card (the daily audit) so survivors who
             log in exhausted aren't drowned in a menu. */}
