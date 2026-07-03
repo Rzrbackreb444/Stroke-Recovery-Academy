@@ -166,6 +166,9 @@ const Compass = lazy(() => import("@/pages/Compass"));
 const DraftYourLegend = lazy(() => import("@/pages/DraftYourLegend"));
 const CourseBuilder = lazy(() => import("@/pages/CourseBuilder"));
 const NeverZero = lazy(() => import("@/pages/NeverZero"));
+const ProgressHub = lazy(() => import("@/pages/ProgressHub"));
+const SupporterView = lazy(() => import("@/pages/SupporterView"));
+const NotificationSettings = lazy(() => import("@/pages/NotificationSettings"));
 const RecoveryJournal = lazy(() => import("@/pages/RecoveryJournal"));
 const RecoveryResources = lazy(() => import("@/pages/RecoveryResources"));
 const RecoveryCenterFinder = lazy(() => import("@/pages/RecoveryCenterFinder"));
@@ -660,6 +663,21 @@ function Router() {
       <Route path="/recovery/never-zero">
         <ProtectedRoute>
           <NeverZero />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/recovery/progress">
+        <ProtectedRoute>
+          <ProgressHub />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/recovery/supporter/:survivorId">
+        <ProtectedRoute>
+          <SupporterView />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/recovery/notifications">
+        <ProtectedRoute>
+          <NotificationSettings />
         </ProtectedRoute>
       </Route>
       <Route path="/recovery/journal">

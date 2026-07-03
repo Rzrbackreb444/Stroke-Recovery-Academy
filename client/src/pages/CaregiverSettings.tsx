@@ -222,6 +222,20 @@ export default function CaregiverSettings() {
                           <Copy className="w-3.5 h-3.5 mr-1" /> Copy link
                         </Button>
                       )}
+                      {l.status === "active" && l.survivor_id && (
+                        <a
+                          href={`/recovery/supporter/${l.survivor_id}`}
+                          data-testid={`button-view-supporter-${l.id}`}
+                        >
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="border-[#E2741B]/40 text-[#E2741B] hover:bg-[#E2741B]/10"
+                          >
+                            View progress
+                          </Button>
+                        </a>
+                      )}
                       {l.status !== "revoked" && l.status !== "expired" && (
                         <Button
                           data-testid={`button-revoke-${l.id}`}

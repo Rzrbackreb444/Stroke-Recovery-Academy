@@ -47,6 +47,7 @@ const resourcesGroups: { title: string; items: { href: string; label: string; pr
   {
     title: "Practice",
     items: [
+      { href: "/recovery/progress", label: "My Progress" },
       { href: "/recovery/academy", label: "Learn" },
       { href: "/recovery/exercises", label: "Exercises" },
       { href: "/recovery/routine", label: "Daily Routine" },

@@ -374,6 +374,9 @@ export default function RecoveryDashboard() {
           <DailyLoopCard />
         </div>
 
+        {/* WEEKLY GOAL — inline progress bar, links to Progress Hub */}
+        <WeeklyGoalCard />
+
         {/* NEVER ZERO AUDIT — Rep-level accountability + Gemini audit after reps are logged. */}
         <NeverZeroAuditHero />
 
@@ -1491,6 +1494,49 @@ function AnchorHeroCard() {
               </div>
             </div>
           </div>
+      </Link>
+    </section>
+  );
+}
+
+// Weekly goal card — compact progress bar anchored between DailyLoopCard and NeverZeroAuditHero.
+// Pulls from /api/recovery/progress (shared cache with Progress Hub, staleTime 5min).
+function WeeklyGoalCard() {
+  const { data } = useQuery<{
+    goal: { weeklyReps: number; thisWeekReps: number };
+    streak: { current: number };
+  }>({
+    queryKey: ["/api/recovery/progress"],
+    staleTime: 1000 * 60 * 5,
+  });
+
+  if (!data) return null;
+
+  const { weeklyReps, thisWeekReps } = data.goal;
+  const pct = Math.min(100, Math.round((thisWeekReps / (weeklyReps || 21)) * 100));
+  const done = thisWeekReps >= weeklyReps;
+
+  return (
+    <section className="mb-4 mt-3 px-1" data-testid="section-weekly-goal">
+      <Link href="/recovery/progress">
+        <div className="rounded-xl border border-[#1e1e1e] bg-[#111] px-4 py-3 hover-elevate cursor-pointer">
+          <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
+            <div className="flex items-center gap-2">
+              <Target className="h-3.5 w-3.5 text-[#E2741B]" />
+              <span className="text-xs font-semibold text-white">
+                {done ? "Weekly goal hit" : "Weekly goal"}
+              </span>
+            </div>
+            <span className="text-xs text-gray-500 font-mono">
+              {thisWeekReps} / {weeklyReps} reps{done ? " ✓" : ""}
+            </span>
+          </div>
+          <Progress value={pct} className="h-1.5" />
+          <div className="flex justify-between mt-1.5 text-[10px] text-gray-600">
+            <span>{pct}% this week</span>
+            <span className="text-[#E2741B]/60">View progress →</span>
+          </div>
+        </div>
       </Link>
     </section>
   );
