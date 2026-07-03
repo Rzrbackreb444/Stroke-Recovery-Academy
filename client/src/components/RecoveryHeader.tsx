@@ -127,11 +127,11 @@ export default function RecoveryHeader() {
                 style={{ flexShrink: 0 }}
                 data-testid="img-recovery-logo"
               />
-              <div className="hidden 2xl:flex flex-col leading-none min-w-0">
-                <span className="font-bold tracking-tight text-[#1C1917] text-xl truncate">
+              <div className="flex flex-col leading-none min-w-0">
+                <span className="font-bold tracking-tight text-[#1C1917] text-lg sm:text-xl truncate">
                   Stroke Recovery Academy
                 </span>
-                <span className="mt-1 text-[10px] font-semibold uppercase tracking-[0.28em] text-gold">
+                <span className="hidden sm:block mt-1 text-[10px] font-semibold uppercase tracking-[0.28em] text-gold">
                   Rebuild · Rewire · Rise
                 </span>
               </div>
