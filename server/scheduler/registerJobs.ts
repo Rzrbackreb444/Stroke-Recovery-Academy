@@ -41,15 +41,16 @@ export async function bootstrapScheduler(): Promise<void> {
   });
 
   // Accountability — check-ins, meds, appointments, Sasquatch daily ping.
-  // Cron fires exactly on the quarter-hours; the handler keeps its own internal
-  // minute gate as a defensive guard.
+  // Cron fires on the quarter-hours. The handler keys its slot/time-of-day work
+  // off ctx.scheduledFor (the intended fire time), NOT the wall clock, so a slot
+  // missed while the server was down still does its work when claimed on boot.
   registerJob({
     name: "accountability-checks",
     description: "Push/email accountability: check-ins, meds, appointments, Sasquatch daily ping.",
     cron: "0,15,30,45 * * * *",
-    handler: async () => {
+    handler: async (ctx) => {
       const { runAccountabilityChecks } = await import("../pushNotificationService");
-      await runAccountabilityChecks();
+      await runAccountabilityChecks(ctx.scheduledFor);
     },
   });
 

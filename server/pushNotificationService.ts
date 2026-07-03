@@ -104,35 +104,33 @@ export async function sendPushToUser(userId: string, payload: object) {
 }
 
 // === RECURRING WORK (invoked by the durable scheduler) ===
-// Fired by the durable scheduler on the quarter-hours (cron 0,15,30,45). Kept
-// the internal minute gate below as a defensive guard. Migrated off a per-process
-// setInterval so it single-fires across instances — no duplicate pings.
-export async function runAccountabilityChecks() {
-  const now = new Date();
-  const hour = now.getUTCHours();
-  const minute = now.getUTCMinutes();
-  const second = now.getUTCSeconds();
-
-  // The durable scheduler fires this on the quarter-hours (cron 0,15,30,45),
-  // but the claim can land a few seconds — up to a tick — after the boundary.
-  // Floor to the scheduled 15-minute slot and accept a small tolerance window
-  // instead of demanding an exact minute, so the daily 13:00/14:00/20:00 pings
-  // are never silently dropped just because the tick claimed the job at
-  // :00:31. Genuinely off-slot invocations (e.g. the first-boot run at an
-  // arbitrary minute) still return early so per-slot work doesn't fire extra.
+// Fired by the durable scheduler on the quarter-hours (cron 0,15,30,45).
+// Migrated off a per-process setInterval so it single-fires across instances —
+// no duplicate pings.
+//
+// IMPORTANT — restart-safe catch-up: the slot/time-of-day work below is keyed
+// off `scheduledFor` (the time the run was SUPPOSED to fire, passed in by the
+// scheduler), NOT wall-clock now. If the server was down over a scheduled slot
+// and the scheduler claims the overdue row on recovery, `scheduledFor` is that
+// missed slot — so the missed slot's work actually runs instead of being
+// dropped because the clock has moved on. `scheduledFor` is cron-aligned
+// (minute ∈ {0,15,30,45}, second 0), so the slot math is exact with no
+// tolerance window needed.
+export async function runAccountabilityChecks(scheduledFor: Date = new Date()) {
+  const asOf = scheduledFor;
+  const hour = asOf.getUTCHours();
+  const minute = asOf.getUTCMinutes();
   const slot = Math.floor(minute / 15) * 15;
-  const secondsPastSlot = (minute - slot) * 60 + second;
-  if (secondsPastSlot > 120) return;
 
   try {
     await Promise.allSettled([
-      checkMedicationReminders(now),
-      checkAppointmentReminders(now),
-      ...(hour === 14 && slot === 0 ? [checkDailyCheckins(now), checkStreakBreakEmails()] : []),   // 9am EST (UTC-5)
-      ...(hour === 20 && slot === 0 ? [checkMissedCheckins(now)] : []),   // 3pm EST fallback
+      checkMedicationReminders(asOf),
+      checkAppointmentReminders(asOf),
+      ...(hour === 14 && slot === 0 ? [checkDailyCheckins(asOf), checkStreakBreakEmails()] : []),   // 9am EST (UTC-5)
+      ...(hour === 20 && slot === 0 ? [checkMissedCheckins(asOf)] : []),   // 3pm EST fallback
       // Sasquatch's daily drop-in ping. Fires at 13:00 UTC (~8am EST) — 1 hour
       // before the check-in nudge so survivors get a friendly opener first.
-      ...(hour === 13 && slot === 0 ? [checkSasquatchDailyPings(now)] : []),
+      ...(hour === 13 && slot === 0 ? [checkSasquatchDailyPings(asOf)] : []),
     ]);
   } catch (err) {
     console.error('[accountability] Scheduler error:', err);
