@@ -104,56 +104,43 @@ async function sendNudge(userId: string, email: string, firstName: string | null
   console.log(`[journal-nudge] Sent day-${day} nudge to ${redactEmail(email)}`);
 }
 
-// ─── Scheduler — runs hourly ─────────────────────────────────────────────────
-let schedulerRunning = false;
+// ─── Recurring work (invoked by the durable scheduler) ───────────────────────
+// Candidates: users whose MOST RECENT journal entry is exactly 3/7/14 days old
+// (floor), who haven't opted out, and who haven't already gotten that specific
+// day's nudge. Real data only — no fabrication, no spam. The outer query error
+// bubbles up so the scheduler records the failure; per-user send errors are
+// swallowed so one bad address doesn't abort the batch.
+export async function runJournalNudges() {
+  const result = await db.execute(sql`
+    SELECT u.id AS user_id, u.email, u.first_name,
+           FLOOR(EXTRACT(EPOCH FROM (now() - MAX(j.created_at))) / 86400)::int AS age_days
+    FROM recovery_journals j
+    JOIN users u ON u.id = j.user_id
+    WHERE u.email IS NOT NULL
+      AND (u.notification_preferences->>'journalNudges') IS DISTINCT FROM 'false'
+    GROUP BY u.id, u.email, u.first_name
+    HAVING FLOOR(EXTRACT(EPOCH FROM (now() - MAX(j.created_at))) / 86400)::int IN (3, 7, 14)
+      AND NOT EXISTS (
+        SELECT 1 FROM journal_nudge_log l
+        WHERE l.user_id = u.id
+          AND l.nudge_day = FLOOR(EXTRACT(EPOCH FROM (now() - MAX(j.created_at))) / 86400)::int
+      )
+  `);
 
-export function startJournalNudgeScheduler() {
-  if (schedulerRunning) return;
-  schedulerRunning = true;
-  console.log('[journal-nudge] Scheduler started — checking every hour at :00');
-
-  async function tick() {
-    try {
-      // Candidates: users whose MOST RECENT journal entry is exactly 3/7/14 days
-      // old (floor), who haven't opted out, and who haven't already gotten that
-      // specific day's nudge. Real data only — no fabrication, no spam.
-      const result = await db.execute(sql`
-        SELECT u.id AS user_id, u.email, u.first_name,
-               FLOOR(EXTRACT(EPOCH FROM (now() - MAX(j.created_at))) / 86400)::int AS age_days
-        FROM recovery_journals j
-        JOIN users u ON u.id = j.user_id
-        WHERE u.email IS NOT NULL
-          AND (u.notification_preferences->>'journalNudges') IS DISTINCT FROM 'false'
-        GROUP BY u.id, u.email, u.first_name
-        HAVING FLOOR(EXTRACT(EPOCH FROM (now() - MAX(j.created_at))) / 86400)::int IN (3, 7, 14)
-          AND NOT EXISTS (
-            SELECT 1 FROM journal_nudge_log l
-            WHERE l.user_id = u.id
-              AND l.nudge_day = FLOOR(EXTRACT(EPOCH FROM (now() - MAX(j.created_at))) / 86400)::int
-          )
-      `);
-
-      const due = (result.rows || []) as Array<{ user_id: string; email: string; first_name: string | null; age_days: number }>;
-      if (due.length > 0) {
-        console.log(`[journal-nudge] Processing ${due.length} nudge(s)`);
-      }
-
-      for (const row of due) {
-        if (!NUDGE_DAYS.includes(row.age_days as any)) continue;
-        try {
-          await sendNudge(row.user_id, row.email, row.first_name, row.age_days);
-          await new Promise((r) => setTimeout(r, 200));
-        } catch (e) {
-          console.error(`[journal-nudge] send failed for user ${row.user_id}:`, e);
-        }
-      }
-    } catch (e) {
-      console.error('[journal-nudge] scheduler tick error:', e);
-    }
+  const due = (result.rows || []) as Array<{ user_id: string; email: string; first_name: string | null; age_days: number }>;
+  if (due.length > 0) {
+    console.log(`[journal-nudge] Processing ${due.length} nudge(s)`);
   }
 
-  tick();
-  setInterval(tick, 60 * 60 * 1000);
+  for (const row of due) {
+    if (!NUDGE_DAYS.includes(row.age_days as any)) continue;
+    try {
+      await sendNudge(row.user_id, row.email, row.first_name, row.age_days);
+      await new Promise((r) => setTimeout(r, 200));
+    } catch (e) {
+      console.error(`[journal-nudge] send failed for user ${row.user_id}:`, e);
+    }
+  }
 }
 
 // ─── Opt-out (called from the unsubscribe route) ─────────────────────────────

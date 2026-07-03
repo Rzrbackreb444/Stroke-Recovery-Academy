@@ -7268,3 +7268,55 @@ export const notificationPreferences = pgTable("notification_preferences", {
 export type NotificationPreference = typeof notificationPreferences.$inferSelect;
 export const insertNotificationPreferenceSchema = createInsertSchema(notificationPreferences).omit({ id: true, updatedAt: true });
 export type InsertFreeVideoAnalysis = z.infer<typeof insertFreeVideoAnalysisSchema>;
+
+// ============================================================================
+// DURABLE JOB SCHEDULER
+// ============================================================================
+// Restart-safe, single-fire-across-instances recurring job engine. Recurring
+// DB-backed work (journal nudges, newsletter drip, accountability pings,
+// stale-analysis reaper) is claimed atomically here instead of running on a
+// per-process setInterval. See server/scheduler/.
+
+export const scheduledJobs = pgTable("scheduled_jobs", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull().unique(),
+  description: text("description"),
+  intervalSeconds: integer("interval_seconds"),
+  cron: text("cron"),
+  enabled: boolean("enabled").notNull().default(true),
+  status: text("status").notNull().default("idle"),   // idle | running | success | failed
+  nextRunAt: timestamp("next_run_at", { withTimezone: true }).notNull().defaultNow(),
+  lastRunAt: timestamp("last_run_at", { withTimezone: true }),
+  lastStatus: text("last_status"),                     // success | failed
+  lastError: text("last_error"),
+  lastDurationMs: integer("last_duration_ms"),
+  runCount: integer("run_count").notNull().default(0),
+  failureCount: integer("failure_count").notNull().default(0),
+  lockedAt: timestamp("locked_at", { withTimezone: true }),
+  lockedBy: text("locked_by"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const scheduledJobRuns = pgTable("scheduled_job_runs", {
+  id: serial("id").primaryKey(),
+  jobId: integer("job_id").notNull().references(() => scheduledJobs.id, { onDelete: "cascade" }),
+  jobName: text("job_name").notNull(),
+  status: text("status").notNull(),                    // success | failed
+  startedAt: timestamp("started_at", { withTimezone: true }).notNull(),
+  finishedAt: timestamp("finished_at", { withTimezone: true }).notNull(),
+  durationMs: integer("duration_ms").notNull(),
+  error: text("error"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => ({
+  jobIdx: index("sjr_job_idx").on(t.jobId, t.createdAt),
+}));
+
+export type ScheduledJob = typeof scheduledJobs.$inferSelect;
+export type ScheduledJobRun = typeof scheduledJobRuns.$inferSelect;
+export const insertScheduledJobSchema = createInsertSchema(scheduledJobs).omit({
+  id: true, createdAt: true, updatedAt: true, status: true, lastRunAt: true,
+  lastStatus: true, lastError: true, lastDurationMs: true, runCount: true,
+  failureCount: true, lockedAt: true, lockedBy: true,
+});
+export type InsertScheduledJob = z.infer<typeof insertScheduledJobSchema>;

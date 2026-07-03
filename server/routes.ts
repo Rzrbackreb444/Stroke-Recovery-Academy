@@ -1012,6 +1012,11 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   app.use('/api/account', accountRoutes);
   app.use('/api/lulu', luluRoutes);
   app.use('/api/puzzle', puzzleRoutes);
+
+  // Durable scheduler admin observability (admin-only). Mounted after setupAuth
+  // so requireAdmin's session lookup works.
+  const { default: schedulerRoutes } = await import('./scheduler/schedulerRoutes');
+  app.use('/api/admin/scheduler', schedulerRoutes);
   
   // Email Authentication Routes (must be after setupAuth for session access)
   app.use('/api/email-auth', emailAuthRoutes);
@@ -1346,33 +1351,31 @@ Last updated: ${new Date().toISOString().split('T')[0]}
     console.warn("[startup] initRecoveryBlogPosts skipped:", err?.message ?? err);
   }
 
-  // Start newsletter drip scheduler (non-fatal)
+  // Init push_subscriptions table (non-fatal). The accountability *scheduler*
+  // itself is now owned by the durable scheduler (bootstrapScheduler below),
+  // not a per-process setInterval.
   try {
-    const { startNewsletterScheduler } = await import('./newsletterService');
-    startNewsletterScheduler();
-  } catch (err: any) {
-    console.warn("[startup] newsletter scheduler skipped:", err?.message ?? err);
-  }
-
-  // Start journal return-funnel nudge scheduler (non-fatal)
-  try {
-    const { startJournalNudgeScheduler } = await import('./journalNudgeService');
-    startJournalNudgeScheduler();
-  } catch (err: any) {
-    console.warn("[startup] journal nudge scheduler skipped:", err?.message ?? err);
-  }
-
-  // Init push_subscriptions table + start accountability scheduler (non-fatal)
-  try {
-    const { initPushSchema, startAccountabilityScheduler } = await import('./pushNotificationService');
+    const { initPushSchema } = await import('./pushNotificationService');
     await initPushSchema();
-    startAccountabilityScheduler();
   } catch (err: any) {
-    console.warn("[startup] accountability scheduler skipped:", err?.message ?? err);
+    console.warn("[startup] push schema init skipped:", err?.message ?? err);
+  }
+
+  // Durable job scheduler — owns all recurring, DB-backed, must-not-double-fire
+  // work (journal nudges, newsletter drip, accountability pings, stale-analysis
+  // reaper, run-history pruning). Restart-safe + single-fire across instances via
+  // an atomic claim in Postgres. In-memory prunes (rate-limiter map, in-process
+  // job-queue cleanup) intentionally stay as per-process setInterval — they must
+  // run in EVERY process, so single-firing them would be a bug.
+  try {
+    const { bootstrapScheduler } = await import('./scheduler/registerJobs');
+    await bootstrapScheduler();
+  } catch (err: any) {
+    console.warn("[startup] durable scheduler skipped:", err?.message ?? err);
   }
 
   // Init Sasquatch personal-chat persistence + daily-ping ledger (non-fatal).
-  // The ping itself is fired by the accountability scheduler in pushNotificationService.
+  // The ping itself is fired by the accountability job on the durable scheduler.
   try {
     const { initSasquatchSchema } = await import('./sasquatchHistoryService');
     await initSasquatchSchema();

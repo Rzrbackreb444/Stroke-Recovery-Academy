@@ -28,6 +28,31 @@ import { requireAdmin } from "../middleware/requireAdmin";
 import { transcribeVideo } from "../videoTranscription";
 import { analyzeFreeVideo } from "../services/freeAnalysis/freeAnalysisEngine";
 
+// ── Crash-recovery sweep (invoked by the durable scheduler) ──────────────
+// The submission pipeline runs as a fire-and-forget background task. If the
+// process restarts mid-analysis (deploy, OOM, anything), the row would be stuck
+// in "processing" forever and the polling client would spin until the user gave
+// up. Mark anything older than the stale window that's still "processing" as
+// "failed" with a clear, retry-friendly message. Migrated off a per-process
+// setTimeout/setInterval to the durable scheduler (job "free-analysis-reap"):
+// single-fires across instances and is observable in the admin panel. Errors
+// bubble up so the scheduler records the failure.
+const FREE_ANALYSIS_STALE_AFTER_MS = 10 * 60_000;
+export async function runFreeAnalysisReap() {
+  const cutoff = new Date(Date.now() - FREE_ANALYSIS_STALE_AFTER_MS);
+  const reaped = await db.update(freeVideoAnalyses).set({
+    status: "failed",
+    errorMessage: "Processing timed out. Please resubmit your video.",
+    completedAt: new Date(),
+  }).where(and(
+    eq(freeVideoAnalyses.status, "processing"),
+    lt(freeVideoAnalyses.submittedAt, cutoff),
+  )).returning({ id: freeVideoAnalyses.id });
+  if (reaped.length > 0) {
+    console.warn(`[free-analysis] reaped ${reaped.length} stale processing rows`);
+  }
+}
+
 // ── Validation ─────────────────────────────────────────────────────────
 const submitBodySchema = z.object({
   name: z.string().trim().min(2, "Tell us your name.").max(120),
@@ -298,37 +323,10 @@ export function registerFreeAnalysisRoutes(app: Express, isAuthenticated: any, u
     }
   });
 
-  // ── Crash-recovery sweep ────────────────────────────────────────────
-  // The submission pipeline runs as a fire-and-forget background task.
-  // If the process restarts mid-analysis (deploy, OOM, anything), the
-  // row would be stuck in "processing" forever and the polling client
-  // would spin until the user gave up. Once at boot — and again hourly —
-  // mark anything older than 10 minutes that's still "processing" as
-  // "failed" with a clear, retry-friendly message. The submitter sees
-  // the failure card and can resubmit with one click.
-  const STALE_AFTER_MS = 10 * 60_000;
-  async function reapStaleProcessing() {
-    try {
-      const cutoff = new Date(Date.now() - STALE_AFTER_MS);
-      const reaped = await db.update(freeVideoAnalyses).set({
-        status: "failed",
-        errorMessage: "Processing timed out. Please resubmit your video.",
-        completedAt: new Date(),
-      }).where(and(
-        eq(freeVideoAnalyses.status, "processing"),
-        lt(freeVideoAnalyses.submittedAt, cutoff),
-      )).returning({ id: freeVideoAnalyses.id });
-      if (reaped.length > 0) {
-        console.warn(`[free-analysis] reaped ${reaped.length} stale processing rows`);
-      }
-    } catch (err) {
-      console.error("[free-analysis] reap sweep failed", err);
-    }
-  }
-  // Run once at startup (after a small delay so we don't fight DB warm-up)
-  // and then hourly for as long as the process lives.
-  setTimeout(reapStaleProcessing, 15_000);
-  setInterval(reapStaleProcessing, 60 * 60_000);
+  // Crash-recovery sweep (stale "processing" rows) is now owned by the durable
+  // scheduler as the "free-analysis-reap" job — see runFreeAnalysisReap() above
+  // and server/scheduler/registerJobs.ts. Single-fires across instances +
+  // observable in the admin scheduler panel.
 
   // ── ADMIN: moderate (approve / reject / set published handle) ───────
   const moderateBodySchema = z.object({
