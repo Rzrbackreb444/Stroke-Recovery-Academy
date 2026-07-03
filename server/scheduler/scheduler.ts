@@ -18,13 +18,25 @@ import { sql } from "drizzle-orm";
 import { db } from "../db";
 import { computeNextRun, cronNextRun } from "./cron";
 
+// Context handed to every job handler. `scheduledFor` is the time the run was
+// SUPPOSED to fire (the row's next_run_at at claim time), NOT wall-clock now.
+// Handlers that do slot/time-of-day work MUST key off this so a run that was
+// missed while the server was down still performs the missed slot's work when
+// it is finally claimed on recovery — instead of looking at the (late) clock
+// and deciding it's the wrong slot.
+export interface JobRunContext {
+  scheduledFor: Date;
+}
+
 export interface JobDefinition {
   name: string;
   description?: string;
   intervalSeconds?: number | null;
   cron?: string | null;
-  handler: () => Promise<void>;
+  handler: (ctx: JobRunContext) => Promise<void>;
 }
+
+type ClaimedRow = { id: number; name: string; next_run_at?: string | Date | null };
 
 const registry = new Map<string, JobDefinition>();
 const INSTANCE_ID = `${os.hostname()}:${process.pid}:${crypto.randomBytes(3).toString("hex")}`;
@@ -62,12 +74,18 @@ export function registerJob(def: JobDefinition): void {
 }
 
 async function ensureJobRow(def: JobDefinition): Promise<void> {
-  // Insert the definition on first boot with next_run_at=now() so it fires
-  // promptly once. On subsequent boots we only sync the *definition* columns —
-  // never next_run_at / enabled / counters — so the live schedule is preserved.
+  // First-boot next_run_at:
+  //   - cron jobs align to their NEXT scheduled slot (cronNextRun) so the first
+  //     run lands on a real cron boundary — a job that fires at :00/:15/:30/:45
+  //     never fires once at an arbitrary first-boot minute and does per-slot
+  //     work off-schedule.
+  //   - interval jobs fire promptly (now()) since they have no wall-clock slot.
+  // On subsequent boots we only sync the *definition* columns — never
+  // next_run_at / enabled / counters — so the live schedule is preserved.
+  const firstRun = def.cron ? cronNextRun(def.cron, new Date()) : new Date();
   await db.execute(sql`
     INSERT INTO scheduled_jobs (name, description, interval_seconds, cron, next_run_at)
-    VALUES (${def.name}, ${def.description ?? null}, ${def.intervalSeconds ?? null}, ${def.cron ?? null}, now())
+    VALUES (${def.name}, ${def.description ?? null}, ${def.intervalSeconds ?? null}, ${def.cron ?? null}, ${firstRun.toISOString()}::timestamptz)
     ON CONFLICT (name) DO UPDATE SET
       description = EXCLUDED.description,
       interval_seconds = EXCLUDED.interval_seconds,
@@ -76,10 +94,12 @@ async function ensureJobRow(def: JobDefinition): Promise<void> {
   `);
 }
 
-export async function claimDueJobs(): Promise<Array<{ id: number; name: string }>> {
+export async function claimDueJobs(): Promise<ClaimedRow[]> {
   // Atomic claim. FOR UPDATE SKIP LOCKED + claimablePredicate() guarantees that
   // two instances ticking simultaneously never grab the same row, and that a row
   // whose owner has stopped heartbeating (crashed worker) becomes reclaimable.
+  // We RETURN next_run_at (the pre-advance intended fire time) so the handler
+  // can do slot work against the scheduled time, not the late wall clock.
   const res = await db.execute(sql`
     UPDATE scheduled_jobs
     SET status = 'running', locked_at = now(), locked_by = ${INSTANCE_ID}, updated_at = now()
@@ -92,22 +112,22 @@ export async function claimDueJobs(): Promise<Array<{ id: number; name: string }
       FOR UPDATE SKIP LOCKED
       LIMIT 20
     )
-    RETURNING id, name
+    RETURNING id, name, next_run_at
   `);
-  return (res.rows || []) as Array<{ id: number; name: string }>;
+  return (res.rows || []) as ClaimedRow[];
 }
 
 // Atomically claim a specific row by id, ignoring enabled + schedule. Used by
 // the manual "run now" trigger and by tests. Returns the row if we won the
 // claim, else null (not found, or already running with a live lease).
-export async function claimJobById(id: number): Promise<{ id: number; name: string } | null> {
+export async function claimJobById(id: number): Promise<ClaimedRow | null> {
   const res = await db.execute(sql`
     UPDATE scheduled_jobs
     SET status = 'running', locked_at = now(), locked_by = ${INSTANCE_ID}, updated_at = now()
     WHERE id = ${id} AND ${claimablePredicate()}
-    RETURNING id, name
+    RETURNING id, name, next_run_at
   `);
-  return ((res.rows || [])[0] as { id: number; name: string } | undefined) ?? null;
+  return ((res.rows || [])[0] as ClaimedRow | undefined) ?? null;
 }
 
 // Renew our lease on a running job we own. Guarded by locked_by so we can never
@@ -123,9 +143,14 @@ export async function heartbeatJob(id: number): Promise<number> {
   return (res.rows || []).length;
 }
 
-export async function runClaimedJob(row: { id: number; name: string }): Promise<void> {
+export async function runClaimedJob(row: ClaimedRow): Promise<void> {
   const def = registry.get(row.name);
   const startedAt = new Date();
+  // The time this run was SUPPOSED to fire. For an on-time run this ≈ now; for a
+  // run claimed late (server was down over its slot) this is the missed slot's
+  // time, so slot-aware handlers do the missed work rather than reading the late
+  // clock and skipping. Falls back to now for rows with no next_run_at.
+  const scheduledFor = row.next_run_at ? new Date(row.next_run_at) : startedAt;
 
   if (!def) {
     // Orphaned row (handler removed from code). Disable it so we stop claiming
@@ -154,7 +179,7 @@ export async function runClaimedJob(row: { id: number; name: string }): Promise<
   let failed = false;
   let errorMsg: string | null = null;
   try {
-    await def.handler();
+    await def.handler({ scheduledFor });
   } catch (err: any) {
     failed = true;
     errorMsg = String(err?.message ?? err).slice(0, 2000);

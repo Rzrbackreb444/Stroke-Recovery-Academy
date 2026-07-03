@@ -190,6 +190,62 @@ async function run() {
 
     const beats2 = await heartbeatJob(id2);
     assert(beats2 === 1, "the true owner CAN heartbeat it (ownership keyed on locked_by)");
+
+    // ── Part D: missed-slot catch-up (server was down over a scheduled slot) ──
+    console.log("\n• Overdue run executes for its SCHEDULED slot, not wall-clock now");
+    const catchupName = `__test_catchup_${runId}`;
+    let capturedScheduledFor: Date | null = null;
+    let catchupRuns = 0;
+    registerJob({
+      name: catchupName,
+      intervalSeconds: 3600,
+      handler: async (ctx) => {
+        catchupRuns++;
+        capturedScheduledFor = ctx.scheduledFor;
+      },
+    });
+
+    // Simulate a quarter-hour slot that was missed ~40 min ago while the server
+    // was down: a row whose next_run_at is that past, cron-aligned slot.
+    const missedSlot = new Date();
+    missedSlot.setUTCSeconds(0, 0);
+    missedSlot.setUTCMinutes(Math.floor(missedSlot.getUTCMinutes() / 15) * 15);
+    missedSlot.setUTCMinutes(missedSlot.getUTCMinutes() - 45); // ~45 min overdue
+    const r3 = await dbPool.query(
+      `INSERT INTO scheduled_jobs (name, description, interval_seconds, cron, enabled, status, next_run_at)
+       VALUES ($1, 'catchup test', 3600, NULL, false, 'idle', $2::timestamptz)
+       RETURNING id`,
+      [catchupName, missedSlot.toISOString()],
+    );
+    const id3 = r3.rows[0].id as number;
+    created.push(id3);
+
+    const claim3 = await claimJobById(id3);
+    assert(claim3?.id === id3, "overdue row is claimed on recovery");
+
+    await runClaimedJob(claim3!);
+    assert(catchupRuns === 1, "overdue job performs its work exactly once on recovery");
+    assert(
+      capturedScheduledFor !== null &&
+        Math.abs((capturedScheduledFor as Date).getTime() - missedSlot.getTime()) < 1000,
+      "handler receives the MISSED slot time (scheduledFor), not wall-clock now",
+    );
+    assert(
+      capturedScheduledFor !== null &&
+        Date.now() - (capturedScheduledFor as Date).getTime() > 30 * 60 * 1000,
+      "scheduledFor is well in the past (proves catch-up, not a fresh now())",
+    );
+
+    // After finalize the schedule jumps forward past now (no infinite replay of
+    // every missed slot — one run on recovery, then back on cadence).
+    const afterCatchup = await dbPool.query(
+      `SELECT next_run_at FROM scheduled_jobs WHERE id = $1`,
+      [id3],
+    );
+    assert(
+      new Date(afterCatchup.rows[0].next_run_at).getTime() > Date.now(),
+      "next_run_at advanced past now after the catch-up run",
+    );
   } finally {
     await cleanup(created).catch((e) => console.error("[cleanup] failed:", e));
   }
