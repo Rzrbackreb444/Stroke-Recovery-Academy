@@ -792,17 +792,17 @@ export default function RecoveryBlogPost() {
             <Card className="bg-gradient-to-br from-[#E2741B]/20 to-[#1a1a1a] border-[#E2741B]/30 p-8 mt-12 text-center">
               <h2 className="text-2xl font-bold mb-3">Ready to Start Your Recovery?</h2>
               <p className="text-gray-300 mb-6">
-                Join the 66-Day Sasquatch Transformation Challenge and go from surviving to thriving.
+                Talk to Coach free — no signup for your first messages — then go all-in with a survivor plan built for reps and accountability.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Link href="/recovery/challenge">
+                <Link href="/recovery/sasquatch-coach">
                   <Button className="bg-[#E2741B] text-black font-semibold gap-2">
-                    Join the Challenge <ArrowRight className="h-4 w-4" />
+                    Talk to Coach — free <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
-                <Link href="/recovery/community">
+                <Link href="/recovery/premium">
                   <Button variant="outline" className="border-[#E2741B]/50 text-[#E2741B] gap-2">
-                    Join the Community
+                    See Premium
                   </Button>
                 </Link>
               </div>

@@ -167,7 +167,9 @@ function buildArticleSchema(cfg: SsrPageConfig): object {
   const chosenImage = featuredImage || (firstSectionImage
     ? (typeof firstSectionImage === 'string' ? firstSectionImage : firstSectionImage.src)
     : null);
-  const imageUrl = chosenImage ? `${SITE_URL}${chosenImage}` : `${SITE_URL}/og-image.jpg`;
+  const imageUrl = chosenImage
+    ? (chosenImage.startsWith('http') ? chosenImage : `${SITE_URL}${chosenImage}`)
+    : `${SITE_URL}/og-image.jpg`;
   return {
     '@context': 'https://schema.org',
     '@type': cfg.schemaType === 'MedicalWebPage' ? 'MedicalWebPage' : 'Article',
@@ -633,7 +635,13 @@ a:hover { text-decoration: underline; }
 }
 .sra-section p { margin: 0 0 16px; color: var(--sra-text); }
 .sra-section ul { padding-left: 22px; margin: 0 0 16px; }
+.sra-section ol { padding-left: 22px; margin: 0 0 16px; }
 .sra-section li { margin-bottom: 8px; color: var(--sra-text); }
+.sra-section h3 { font-family: 'Crimson Pro', Georgia, serif; font-size: 21px; font-weight: 700; color: var(--sra-gold); margin: 28px 0 10px; }
+.sra-section h4 { font-size: 17px; font-weight: 600; color: var(--sra-text); margin: 20px 0 8px; }
+.sra-section a { color: var(--sra-gold); text-decoration: underline; }
+.sra-section strong { color: var(--sra-text); font-weight: 600; }
+.sra-section blockquote { margin: 20px 0; padding: 8px 0 8px 18px; border-left: 3px solid var(--sra-gold); color: var(--sra-text-dim); font-style: italic; font-size: 18px; }
 .sra-faq { margin: 48px 0 32px; padding: 24px; background: var(--sra-bg-card); border: 1px solid var(--sra-border); border-radius: 6px; }
 .sra-faq h2 { font-family: 'Crimson Pro', Georgia, serif; font-size: 24px; margin: 0 0 16px; color: var(--sra-text); }
 .sra-faq-item { border-top: 1px solid var(--sra-border); padding: 14px 0; }
@@ -789,7 +797,7 @@ ${cfg.keywords && cfg.keywords.length > 0 ? `<meta name="keywords" content="${es
 <meta property="og:url" content="${escAttr(url)}" />
 <meta property="og:title" content="${escAttr(cfg.title)}" />
 <meta property="og:description" content="${escAttr(cfg.description)}" />
-<meta property="og:image" content="${cfg.image ? (cfg.image.startsWith('http') ? cfg.image : `${SITE_URL}${cfg.image}`) : `${SITE_URL}/og-image-1200x630.png`}" />
+<meta property="og:image" content="${escAttr(cfg.image ? (cfg.image.startsWith('http') ? cfg.image : `${SITE_URL}${cfg.image}`) : `${SITE_URL}/og-image-1200x630.png`)}" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:type" content="image/png" />
@@ -803,7 +811,7 @@ ${cfg.keywords && cfg.keywords.length > 0 ? `<meta name="keywords" content="${es
 <meta name="twitter:site" content="@strokerecovery" />
 <meta name="twitter:title" content="${escAttr(cfg.title)}" />
 <meta name="twitter:description" content="${escAttr(cfg.description)}" />
-<meta name="twitter:image" content="${cfg.image ? (cfg.image.startsWith('http') ? cfg.image : `${SITE_URL}${cfg.image}`) : `${SITE_URL}/og-image-1200x630.png`}" />
+<meta name="twitter:image" content="${escAttr(cfg.image ? (cfg.image.startsWith('http') ? cfg.image : `${SITE_URL}${cfg.image}`) : `${SITE_URL}/og-image-1200x630.png`)}" />
 <meta name="twitter:image:alt" content="${escAttr(cfg.title)}" />
 <meta name="theme-color" content="#0D0D0D" />
 <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -826,7 +834,7 @@ ${renderHeader()}
 <main class="sra-page">
   ${renderBreadcrumbs(cfg)}
   <div class="sra-hero">
-    ${cfg.image ? `<img src="${cfg.image}" alt="${escAttr(cfg.title)}" class="sra-hero-img" loading="eager" />` : ''}
+    ${cfg.image ? `<img src="${escAttr(cfg.image)}" alt="${escAttr(cfg.title)}" class="sra-hero-img" loading="eager" />` : ''}
     ${hero.eyebrow ? `<div class="sra-eyebrow">${esc(hero.eyebrow)}</div>` : ''}
     <h1>${esc(cfg.h1)}</h1>
     <p>${esc(hero.subhead)}</p>

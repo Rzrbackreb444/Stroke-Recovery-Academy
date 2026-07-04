@@ -25596,6 +25596,12 @@ Format as structured JSON with clear sections.`;
   const { registerBlogRoutes } = await import('./seo/blogRoutes');
   registerBlogRoutes(app);
 
+  // SEO: SSR for DB-backed recovery blog posts at /recovery/blog/[slug].
+  // Registered before the Vite catch-all so crawlers get real per-post body,
+  // meta, and Article/MedicalWebPage + FAQ + Breadcrumb JSON-LD.
+  const { registerRecoveryBlogRoutes } = await import('./seo/recoveryBlogRoutes');
+  registerRecoveryBlogRoutes(app);
+
   // SEO: Programmatic SSR — per-exercise, week-N, state-centers (G4)
   const { registerProgrammaticSeoRoutes } = await import('./seo/programmaticRoutes');
   registerProgrammaticSeoRoutes(app);
