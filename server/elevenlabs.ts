@@ -12,14 +12,14 @@ const ELEVENLABS_API_URL = "https://api.elevenlabs.io/v1";
 //   - Daniel   onwK4e9ZLuTAKqWW03F9   (deep British authoritative)
 //   - Bill     pqHfZKP75CvOlQylNhV4   (warm older American — not raspy, kept for contrast)
 //   - Adam     pNInz6obpgDQGcFmaJgB   (prior default — generic deep narrator)
-// Default is a public Voice Library voice (aOcS60CY8CoaVaZfqqb5) selected for
+// Default is a public Voice Library voice (kD6IJb5t3FCR9ICe0ZJ8) selected for
 // the Sasquatch Coach. Note: Library voices are usable by ID via the TTS
 // endpoint but do NOT appear in GET /voices (which lists only owned voices), so
 // a membership check will read "not reachable" — a real text-to-speech call is
-// the authoritative test. Prior defaults: Mtmp3KhFIjYpWYRycDe3, "Titan" premade
-// (dtSEyYGNJqjrtBArPCVZ), Nick's clone (vn2rUKJYxR85xDKQNeFJ). Override with
-// SASQUATCH_VOICE_ID env.
-export const SASQUATCH_VOICE_ID = process.env.SASQUATCH_VOICE_ID || 'aOcS60CY8CoaVaZfqqb5';
+// the authoritative test. Prior defaults: aOcS60CY8CoaVaZfqqb5,
+// Mtmp3KhFIjYpWYRycDe3, "Titan" premade (dtSEyYGNJqjrtBArPCVZ), Nick's clone
+// (vn2rUKJYxR85xDKQNeFJ). Override with SASQUATCH_VOICE_ID env.
+export const SASQUATCH_VOICE_ID = process.env.SASQUATCH_VOICE_ID || 'kD6IJb5t3FCR9ICe0ZJ8';
 
 // Default voice settings tuned for the Sasquatch character: lower stability lets
 // the raspy texture come through (less averaging); higher style amplifies the
