@@ -20,6 +20,7 @@ import { db } from "../db";
 import { sql } from "drizzle-orm";
 import { sendMessage } from "../messaging";
 import { renderEmail, ctaButton } from "../emailTemplate";
+import { getUncachableStripeClient } from "../stripeClient";
 import {
   getSasquatchPremiumPriceIds,
   getSasquatchPremiumPriceId,
@@ -203,7 +204,12 @@ export async function syncPremiumSubFromStripe(sub: any): Promise<void> {
 
     const status: string = String(sub.status || "active");
     const subId: string = String(sub.id || "");
-    const periodEnd = tsFromUnix(sub.current_period_end);
+    // Basil (2025-08-27) moved current_period_end off the top-level subscription
+    // object onto each item; fall back so period-end never lands NULL (the cancel
+    // UI's "access until <date>" promise + the grace window both depend on it).
+    const periodEnd = tsFromUnix(
+      sub.current_period_end ?? sub.items?.data?.[0]?.current_period_end,
+    );
     const trialEnd = tsFromUnix(sub.trial_end);
     const cancelAtPeriodEnd = !!sub.cancel_at_period_end;
 
@@ -432,6 +438,43 @@ export async function getSubStateByCustomerId(customerId: string): Promise<Premi
   `);
   return ((r.rows as any[])[0] as PremiumSubState) || null;
 }
+
+// Resolve the survivor's Sasquatch Premium Stripe subscription object. A customer
+// can hold subscriptions for OTHER products (KreAIte tiers, voice clone), so we
+// list + filter against the premium price set via `premiumPlanFromSubscription`
+// rather than blindly grabbing the newest. Prefers a live (non-terminal) premium
+// sub; falls back to the newest premium sub of any status. Returns the raw Stripe
+// object so callers can read status/plan/items without a second round-trip.
+export async function resolvePremiumStripeSubscription(customerId: string): Promise<any | null> {
+  if (!customerId) return null;
+  try {
+    const stripe = await getUncachableStripeClient();
+    const list = await stripe.subscriptions.list({
+      customer: customerId,
+      status: "all",
+      limit: 20,
+    });
+    let fallback: any | null = null;
+    for (const sub of list.data) {
+      const plan = await premiumPlanFromSubscription(sub);
+      if (plan === null) continue; // not a premium sub — skip
+      if (!fallback) fallback = sub;
+      if (LIVE_STRIPE_STATUSES.has(String(sub.status))) return sub;
+    }
+    return fallback;
+  } catch (e: any) {
+    console.warn("[sub-lifecycle] resolvePremiumStripeSubscription failed", e?.message || e);
+    return null;
+  }
+}
+
+const LIVE_STRIPE_STATUSES = new Set([
+  "active",
+  "trialing",
+  "past_due",
+  "unpaid",
+  "paused",
+]);
 
 // ── Scheduler job: dunning reminders + grace-expiry downgrade + trial-ending ─
 export async function runSubscriptionLifecycle(): Promise<void> {

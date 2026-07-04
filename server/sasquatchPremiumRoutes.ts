@@ -1,10 +1,12 @@
 import type { Express, Response } from "express";
+import { z } from "zod";
 import { eq } from "drizzle-orm";
 import { db } from "./db";
 import { users } from "@shared/schema";
 import { isAuthenticated } from "./replitAuth";
 import { getUserId } from "./lib/authUtils";
 import { stripeService } from "./stripeService";
+import { getUncachableStripeClient } from "./stripeClient";
 import {
   SASQUATCH_PREMIUM_PRICE_AMOUNT,
   SASQUATCH_PREMIUM_ANNUAL_AMOUNT,
@@ -18,6 +20,23 @@ import {
   isValidFunnelPlan,
   getFunnelSummary,
 } from "./services/sasquatchFunnelService";
+import {
+  getSubStateByUserId,
+  resolvePremiumStripeSubscription,
+  syncPremiumSubFromStripe,
+} from "./services/subscriptionLifecycleService";
+import {
+  FEEDBACK_MAX,
+  isValidCancelReason,
+  eligibleOffers,
+  describeOffers,
+  couponKindForPlan,
+  ensureRetentionCoupon,
+  recordRetentionEvent,
+  hasAcceptedSaveOffer,
+  PAUSE_DAYS,
+  type SaveOffer,
+} from "./services/retentionService";
 import { requireAdmin } from "./middleware/requireAdmin";
 import { publicPostLimiter, paymentCheckoutLimiter, billingPortalLimiter } from "./middleware/publicRateLimit";
 
@@ -41,6 +60,38 @@ async function getOrCreateStripeCustomer(userId: string): Promise<string | null>
     .set({ stripeCustomerId: customer.id })
     .where(eq(users.id, userId));
   return customer.id;
+}
+
+// Resolve the survivor's premium subscription context for the cancel/retention
+// flow. Prefers the durable state row's stripe_subscription_id; falls back to a
+// Stripe list+filter (a customer may hold subscriptions for other products).
+// Never trusts the client for the subscription id or customer id.
+async function resolvePremiumContext(userId: string): Promise<{
+  customerId: string | null;
+  subId: string | null;
+  state: Awaited<ReturnType<typeof getSubStateByUserId>>;
+}> {
+  const [u] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+  const customerId = u?.stripeCustomerId || null;
+  let state = await getSubStateByUserId(userId);
+  let subId = state?.stripe_subscription_id || null;
+  if (!subId && customerId) {
+    const sub = await resolvePremiumStripeSubscription(customerId);
+    subId = sub?.id || null;
+    // Webhook-miss recovery: a live premium sub exists in Stripe but the
+    // durable state row never landed. Backfill it so cancel/context (and the
+    // offer/cancel/resume endpoints) see real status/plan/period fields
+    // instead of treating the survivor as having no subscription.
+    if (sub && !state) {
+      try {
+        await syncPremiumSubFromStripe(sub);
+        state = await getSubStateByUserId(userId);
+      } catch (e: any) {
+        console.warn("[sasquatch-premium] context state backfill failed", e?.message || e);
+      }
+    }
+  }
+  return { customerId, subId, state };
 }
 
 export function registerSasquatchPremiumRoutes(app: Express) {
@@ -253,6 +304,267 @@ export function registerSasquatchPremiumRoutes(app: Express) {
       } catch (err: any) {
         console.error("[sasquatch-premium] funnel failed", err?.message || err);
         res.status(500).json({ message: "Funnel lookup failed" });
+      }
+    },
+  );
+
+  // ── Native cancel + retention flow (Task #18) ─────────────────────────────
+  // Replaces the Stripe-portal round-trip with an in-app multi-step cancel:
+  // reason → save offer → confirm. All money/offer decisions are server-side.
+
+  // GET /cancel/context — what the cancel dialog needs: live status, plan,
+  // access-until date, and the server-computed save offers this survivor
+  // qualifies for. Offers are suppressed once one has been accepted or the sub
+  // is already scheduled to cancel.
+  app.get(
+    "/api/sasquatch-premium/cancel/context",
+    isAuthenticated,
+    async (req: any, res: Response) => {
+      try {
+        const userId = getUserId(req);
+        if (!userId) return res.status(401).json({ message: "Unauthorized" });
+        const { subId, state } = await resolvePremiumContext(userId);
+        if (!subId || !state) return res.json({ eligible: false });
+        const plan = state.plan || "monthly";
+        const status = state.status || "active";
+        const cancelable = ["active", "trialing", "past_due", "paused"].includes(status);
+        const alreadySaved = await hasAcceptedSaveOffer(subId);
+        let offers = describeOffers(plan, status);
+        if (alreadySaved || state.cancel_at_period_end) offers = [];
+        res.json({
+          eligible: cancelable,
+          status,
+          plan,
+          currentPeriodEnd: state.current_period_end,
+          trialEnd: state.trial_end,
+          cancelAtPeriodEnd: state.cancel_at_period_end,
+          alreadySaved,
+          offers,
+        });
+      } catch (err: any) {
+        console.error("[sasquatch-premium] cancel/context failed", err?.message || err);
+        res.status(500).json({ message: "Cancel context failed" });
+      }
+    },
+  );
+
+  const reasonSchema = z.object({
+    reason: z.string().refine(isValidCancelReason, "Invalid reason"),
+    feedback: z.string().max(FEEDBACK_MAX).optional(),
+  });
+
+  // POST /cancel/reason — record the churn reason as the survivor advances past
+  // the reason step. Fire-and-forget from the client's perspective; captured
+  // even if they ultimately stay (so we learn what nearly churned them).
+  app.post(
+    "/api/sasquatch-premium/cancel/reason",
+    isAuthenticated,
+    billingPortalLimiter,
+    async (req: any, res: Response) => {
+      try {
+        const userId = getUserId(req);
+        if (!userId) return res.status(401).json({ message: "Unauthorized" });
+        const parsed = reasonSchema.safeParse(req.body);
+        if (!parsed.success) return res.status(400).json({ message: "Invalid reason" });
+        const { subId, state } = await resolvePremiumContext(userId);
+        await recordRetentionEvent({
+          userId,
+          subscriptionId: subId,
+          plan: state?.plan ?? null,
+          stage: "reason",
+          reason: parsed.data.reason,
+          feedback: parsed.data.feedback ?? null,
+          outcome: "reason_captured",
+        });
+        res.json({ ok: true });
+      } catch (err: any) {
+        console.error("[sasquatch-premium] cancel/reason failed", err?.message || err);
+        res.status(500).json({ message: "Could not record reason" });
+      }
+    },
+  );
+
+  const offerSchema = z.object({
+    offer: z.enum(["pause", "discount"]),
+    reason: z.string().optional(),
+    feedback: z.string().max(FEEDBACK_MAX).optional(),
+  });
+
+  // POST /retention-offer — apply a save offer. Server re-derives eligibility
+  // (never trusts the client's choice), enforces one accepted offer per
+  // subscription, applies it in Stripe, THEN records the outcome.
+  app.post(
+    "/api/sasquatch-premium/retention-offer",
+    isAuthenticated,
+    billingPortalLimiter,
+    async (req: any, res: Response) => {
+      try {
+        const userId = getUserId(req);
+        if (!userId) return res.status(401).json({ message: "Unauthorized" });
+        const parsed = offerSchema.safeParse(req.body);
+        if (!parsed.success) return res.status(400).json({ message: "Invalid offer" });
+        const offer = parsed.data.offer as SaveOffer;
+        const { subId, state, customerId } = await resolvePremiumContext(userId);
+        if (!subId || !state || !customerId) {
+          return res.status(404).json({ message: "No subscription on file" });
+        }
+        const plan = state.plan || "monthly";
+        const status = state.status || "active";
+        if (!eligibleOffers(plan, status).includes(offer)) {
+          return res.status(400).json({ message: "Offer not available for this plan" });
+        }
+        if (await hasAcceptedSaveOffer(subId)) {
+          return res.status(409).json({ message: "A save offer was already applied" });
+        }
+
+        const stripe = await getUncachableStripeClient();
+        let updated: any;
+        if (offer === "discount") {
+          const couponId = await ensureRetentionCoupon(couponKindForPlan(plan));
+          // Basil: coupons attach via `discounts`, not the removed top-level
+          // `coupon` field. Clear any pending cancel so the offer is a win-back.
+          updated = await stripe.subscriptions.update(subId, {
+            discounts: [{ coupon: couponId }],
+            cancel_at_period_end: false,
+          });
+        } else {
+          const resumesAt = Math.floor(Date.now() / 1000) + PAUSE_DAYS * 86400;
+          updated = await stripe.subscriptions.update(subId, {
+            pause_collection: { behavior: "void", resumes_at: resumesAt },
+            cancel_at_period_end: false,
+          });
+        }
+
+        await syncPremiumSubFromStripe(updated);
+        invalidateSasquatchPremium(customerId);
+
+        await recordRetentionEvent({
+          userId,
+          subscriptionId: subId,
+          plan,
+          stage: "offer",
+          reason: parsed.data.reason ?? null,
+          feedback: parsed.data.feedback ?? null,
+          offer,
+          outcome: offer === "pause" ? "paused" : "saved",
+          metadata: { status },
+        });
+        res.json({ ok: true, offer });
+      } catch (err: any) {
+        console.error("[sasquatch-premium] retention-offer failed", err?.message || err);
+        res.status(500).json({ message: "Could not apply offer" });
+      }
+    },
+  );
+
+  const cancelSchema = z.object({
+    reason: z.string().optional(),
+    feedback: z.string().max(FEEDBACK_MAX).optional(),
+  });
+
+  // POST /cancel — schedule cancel at period end (survivor keeps access until
+  // the paid-through date). Idempotent: a repeat call on an already-canceling
+  // sub returns the same shape without a second Stripe write.
+  app.post(
+    "/api/sasquatch-premium/cancel",
+    isAuthenticated,
+    billingPortalLimiter,
+    async (req: any, res: Response) => {
+      try {
+        const userId = getUserId(req);
+        if (!userId) return res.status(401).json({ message: "Unauthorized" });
+        const parsed = cancelSchema.safeParse(req.body);
+        const reason = parsed.success ? parsed.data.reason ?? null : null;
+        const feedback = parsed.success ? parsed.data.feedback ?? null : null;
+
+        const { subId, state, customerId } = await resolvePremiumContext(userId);
+        if (!subId || !customerId) {
+          return res.status(404).json({ message: "No subscription on file" });
+        }
+        if (state?.cancel_at_period_end) {
+          return res.json({
+            ok: true,
+            cancelAtPeriodEnd: true,
+            alreadyScheduled: true,
+            currentPeriodEnd: state.current_period_end,
+            trialEnd: state.trial_end,
+            status: state.status,
+          });
+        }
+
+        const stripe = await getUncachableStripeClient();
+        const updated = await stripe.subscriptions.update(subId, {
+          cancel_at_period_end: true,
+        });
+        await syncPremiumSubFromStripe(updated);
+        invalidateSasquatchPremium(customerId);
+
+        const after = await getSubStateByUserId(userId);
+        await recordRetentionEvent({
+          userId,
+          subscriptionId: subId,
+          plan: after?.plan ?? state?.plan ?? null,
+          stage: "cancel",
+          reason,
+          feedback,
+          outcome: "cancelled",
+          metadata: { status: after?.status ?? state?.status },
+        });
+        res.json({
+          ok: true,
+          cancelAtPeriodEnd: true,
+          currentPeriodEnd: after?.current_period_end ?? null,
+          trialEnd: after?.trial_end ?? null,
+          status: after?.status ?? state?.status ?? "active",
+        });
+      } catch (err: any) {
+        console.error("[sasquatch-premium] cancel failed", err?.message || err);
+        res.status(500).json({ message: "Cancel failed" });
+      }
+    },
+  );
+
+  // POST /resume — undo a scheduled cancel AND lift any pause. Sends both
+  // cancel_at_period_end:false and pause_collection:'' (Stripe's unset idiom)
+  // so a paused-then-resumed sub bills normally again.
+  app.post(
+    "/api/sasquatch-premium/resume",
+    isAuthenticated,
+    billingPortalLimiter,
+    async (req: any, res: Response) => {
+      try {
+        const userId = getUserId(req);
+        if (!userId) return res.status(401).json({ message: "Unauthorized" });
+        const { subId, customerId } = await resolvePremiumContext(userId);
+        if (!subId || !customerId) {
+          return res.status(404).json({ message: "No subscription on file" });
+        }
+        const stripe = await getUncachableStripeClient();
+        const updated = await stripe.subscriptions.update(subId, {
+          cancel_at_period_end: false,
+          pause_collection: "",
+        });
+        await syncPremiumSubFromStripe(updated);
+        invalidateSasquatchPremium(customerId);
+
+        const after = await getSubStateByUserId(userId);
+        await recordRetentionEvent({
+          userId,
+          subscriptionId: subId,
+          plan: after?.plan ?? null,
+          stage: "resume",
+          outcome: "resumed",
+          metadata: { status: after?.status },
+        });
+        res.json({
+          ok: true,
+          cancelAtPeriodEnd: false,
+          currentPeriodEnd: after?.current_period_end ?? null,
+          status: after?.status ?? "active",
+        });
+      } catch (err: any) {
+        console.error("[sasquatch-premium] resume failed", err?.message || err);
+        res.status(500).json({ message: "Resume failed" });
       }
     },
   );

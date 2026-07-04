@@ -13,6 +13,16 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import RecoveryHeader from "@/components/RecoveryHeader";
 import RecoverySEO from "@/components/RecoverySEO";
 import {
@@ -29,9 +39,14 @@ import {
   X,
   Star,
   ArrowDown,
+  ArrowLeft,
   BookOpen,
   Clock,
   AlertTriangle,
+  Loader2,
+  PauseCircle,
+  Percent,
+  Heart,
 } from "lucide-react";
 
 type PremiumLifecycle = {
@@ -58,6 +73,21 @@ type PremiumStatus = {
 };
 
 type Plan = "monthly" | "annual";
+
+type SaveOffer = "pause" | "discount";
+
+type CancelOffer = { offer: SaveOffer; title: string; body: string };
+
+type CancelContext = {
+  eligible: boolean;
+  status?: string;
+  plan?: string;
+  currentPeriodEnd?: string | null;
+  trialEnd?: string | null;
+  cancelAtPeriodEnd?: boolean;
+  alreadySaved?: boolean;
+  offers?: CancelOffer[];
+};
 
 const FEATURES = [
   {
@@ -173,10 +203,14 @@ function LifecycleBanner({
   lifecycle,
   onManageBilling,
   managing,
+  onResume,
+  resuming,
 }: {
   lifecycle: PremiumLifecycle | null;
   onManageBilling: () => void;
   managing: boolean;
+  onResume: () => void;
+  resuming: boolean;
 }) {
   if (!lifecycle) return null;
 
@@ -251,24 +285,40 @@ function LifecycleBanner({
                 <>First charge lands <span className="font-semibold">{fmtDate(trialEnd)}</span> unless you cancel. Cancel anytime from billing.</>
               )}
             </p>
-            <Button
-              size="sm"
-              variant="outline"
-              className="mt-3 border-[#E2C2A4]/40 text-[#5C534D]"
-              onClick={onManageBilling}
-              disabled={managing}
-              data-testid="button-lifecycle-manage-trial"
-            >
-              {managing ? "Opening..." : "Manage billing"}
-            </Button>
+            {cancelAtPeriodEnd ? (
+              <Button
+                size="sm"
+                className="mt-3 bg-[#C06B3E] hover:bg-[#A85B33] text-white"
+                onClick={onResume}
+                disabled={resuming}
+                data-testid="button-lifecycle-resume-trial"
+              >
+                {resuming ? (
+                  <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" />Bringing it back...</>
+                ) : (
+                  <><Heart className="w-4 h-4 mr-1.5" />Keep my premium</>
+                )}
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                variant="outline"
+                className="mt-3 border-[#E2C2A4]/40 text-[#5C534D]"
+                onClick={onManageBilling}
+                disabled={managing}
+                data-testid="button-lifecycle-manage-trial"
+              >
+                {managing ? "Opening..." : "Manage billing"}
+              </Button>
+            )}
           </div>
         </div>
       </div>
     );
   }
 
-  // Active but set to cancel at period end.
-  if (status === "active" && cancelAtPeriodEnd && currentPeriodEnd) {
+  // Active/paused but set to cancel at period end — one-click resume.
+  if (cancelAtPeriodEnd && (status === "active" || status === "paused") && currentPeriodEnd) {
     return (
       <div
         className="max-w-2xl mx-auto mb-6 rounded-xl bg-amber-700/15 border border-amber-700/40 px-5 py-4"
@@ -279,18 +329,33 @@ function LifecycleBanner({
           <div className="flex-1">
             <div className="font-bold text-[#1C1917]">Premium ends soon.</div>
             <p className="text-[#78716C] text-sm mt-1">
-              You're set to cancel. Premium runs through <span className="font-semibold">{fmtDate(currentPeriodEnd)}</span>, then Coach goes back to free. Change your mind in billing.
+              You're set to cancel. Premium runs through <span className="font-semibold">{fmtDate(currentPeriodEnd)}</span>, then Coach goes back to free. Changed your mind?
             </p>
-            <Button
-              size="sm"
-              variant="outline"
-              className="mt-3 border-[#E2C2A4]/40 text-[#5C534D]"
-              onClick={onManageBilling}
-              disabled={managing}
-              data-testid="button-lifecycle-resume"
-            >
-              {managing ? "Opening..." : "Manage billing"}
-            </Button>
+            <div className="flex flex-wrap items-center gap-2 mt-3">
+              <Button
+                size="sm"
+                className="bg-[#C06B3E] hover:bg-[#A85B33] text-white"
+                onClick={onResume}
+                disabled={resuming}
+                data-testid="button-lifecycle-resume"
+              >
+                {resuming ? (
+                  <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" />Bringing it back...</>
+                ) : (
+                  <><Heart className="w-4 h-4 mr-1.5" />Keep my premium</>
+                )}
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="text-[#78716C]"
+                onClick={onManageBilling}
+                disabled={managing}
+                data-testid="button-lifecycle-manage-canceling"
+              >
+                {managing ? "Opening..." : "Manage billing"}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -298,6 +363,356 @@ function LifecycleBanner({
   }
 
   return null;
+}
+
+// Mirrors server FEEDBACK_MAX in retentionService.ts — kept local (never
+// imported from server code) so the cap holds without a cross-boundary import.
+const FEEDBACK_MAX = 1000;
+
+const CANCEL_REASONS: { code: string; label: string }[] = [
+  { code: "too_expensive", label: "It's too expensive right now" },
+  { code: "not_using", label: "I'm not using it enough" },
+  { code: "missing_features", label: "It's missing something I need" },
+  { code: "technical_issues", label: "Something's not working right" },
+  { code: "recovered", label: "I got what I came for" },
+  { code: "temporary_break", label: "Just need a break for now" },
+  { code: "other", label: "Something else" },
+];
+
+type CancelStep = "confirm" | "reason" | "offer" | "final" | "done";
+type CancelOutcome = "saved" | "paused" | "cancelled" | null;
+
+function OfferIcon({ offer }: { offer: SaveOffer }) {
+  return offer === "pause" ? (
+    <PauseCircle className="w-5 h-5 text-[#C06B3E] shrink-0 mt-0.5" />
+  ) : (
+    <Percent className="w-5 h-5 text-[#C06B3E] shrink-0 mt-0.5" />
+  );
+}
+
+// Native cancel + retention flow. Owns its own steps and mutations so the parent
+// page stays thin. Server re-derives every money decision — the client only
+// forwards the reason and the chosen offer key.
+function CancelFlowDialog({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const { toast } = useToast();
+  const [step, setStep] = useState<CancelStep>("confirm");
+  const [reason, setReason] = useState<string>("");
+  const [feedback, setFeedback] = useState<string>("");
+  const [outcome, setOutcome] = useState<CancelOutcome>(null);
+
+  const contextQuery = useQuery<CancelContext>({
+    queryKey: ["/api/sasquatch-premium/cancel/context"],
+    enabled: open,
+  });
+  const ctx = contextQuery.data;
+  const offers = ctx?.offers ?? [];
+  const accessUntil = fmtDate(ctx?.currentPeriodEnd ?? ctx?.trialEnd ?? null);
+
+  // Fresh dialog every open.
+  useEffect(() => {
+    if (open) {
+      setStep("confirm");
+      setReason("");
+      setFeedback("");
+      setOutcome(null);
+    }
+  }, [open]);
+
+  function finish(o: CancelOutcome) {
+    queryClient.invalidateQueries({ queryKey: ["/api/sasquatch-premium/status"] });
+    queryClient.invalidateQueries({ queryKey: ["/api/sasquatch-premium/cancel/context"] });
+    setOutcome(o);
+    setStep("done");
+  }
+
+  const reasonMut = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/sasquatch-premium/cancel/reason", {
+        reason,
+        feedback: feedback.trim() || undefined,
+      });
+      return (await res.json()) as { ok?: boolean };
+    },
+    // Recording the reason is telemetry — never block the survivor's path on it.
+    onSuccess: () => setStep(offers.length > 0 ? "offer" : "final"),
+    onError: () => setStep(offers.length > 0 ? "offer" : "final"),
+  });
+
+  const offerMut = useMutation({
+    mutationFn: async (offer: SaveOffer) => {
+      const res = await apiRequest("POST", "/api/sasquatch-premium/retention-offer", {
+        offer,
+        reason: reason || undefined,
+        feedback: feedback.trim() || undefined,
+      });
+      return (await res.json()) as { ok?: boolean; offer?: SaveOffer };
+    },
+    onSuccess: (data) => finish(data?.offer === "pause" ? "paused" : "saved"),
+    onError: (err: any) => {
+      toast({
+        title: "Couldn't apply that offer",
+        description: String(err?.message ?? "Try again in a moment"),
+        variant: "destructive",
+      });
+    },
+  });
+
+  const cancelMut = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/sasquatch-premium/cancel", {
+        reason: reason || undefined,
+        feedback: feedback.trim() || undefined,
+      });
+      return (await res.json()) as { ok?: boolean };
+    },
+    onSuccess: () => finish("cancelled"),
+    onError: (err: any) => {
+      toast({
+        title: "Couldn't cancel",
+        description: String(err?.message ?? "Try again in a moment"),
+        variant: "destructive",
+      });
+    },
+  });
+
+  const busy = reasonMut.isPending || offerMut.isPending || cancelMut.isPending;
+
+  return (
+    <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
+      <DialogContent className="sm:max-w-md" data-testid="dialog-cancel-flow">
+        {contextQuery.isLoading ? (
+          <div className="py-10 flex items-center justify-center" data-testid="cancel-loading">
+            <Loader2 className="w-6 h-6 animate-spin text-[#C06B3E]" />
+          </div>
+        ) : ctx && ctx.eligible === false ? (
+          <>
+            <DialogHeader>
+              <DialogTitle>No active subscription</DialogTitle>
+              <DialogDescription>
+                There's nothing to cancel on this account right now.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-end">
+              <Button variant="outline" onClick={() => onOpenChange(false)} data-testid="button-cancel-close">
+                Close
+              </Button>
+            </div>
+          </>
+        ) : step === "confirm" ? (
+          <>
+            <DialogHeader>
+              <DialogTitle>Before you go.</DialogTitle>
+              <DialogDescription>
+                Cancel and Coach drops back to the free tier — no more unlimited
+                Coach, Anchor, or Voice Cloning.{accessUntil ? ` You'd keep premium through ${accessUntil}.` : ""}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col gap-2 pt-2">
+              <Button
+                className="bg-[#C06B3E] hover:bg-[#A85B33] text-white"
+                onClick={() => onOpenChange(false)}
+                data-testid="button-keep-premium"
+              >
+                <Heart className="w-4 h-4 mr-1.5" />
+                Keep my premium
+              </Button>
+              <Button
+                variant="ghost"
+                className="text-[#78716C]"
+                onClick={() => setStep("reason")}
+                data-testid="button-continue-cancel"
+              >
+                Continue to cancel
+              </Button>
+            </div>
+          </>
+        ) : step === "reason" ? (
+          <>
+            <DialogHeader>
+              <DialogTitle>What's driving this?</DialogTitle>
+              <DialogDescription>
+                Straight talk helps us fix it. One tap — takes a second.
+              </DialogDescription>
+            </DialogHeader>
+            <RadioGroup value={reason} onValueChange={setReason} className="gap-1 py-1">
+              {CANCEL_REASONS.map((r) => (
+                <Label
+                  key={r.code}
+                  htmlFor={`reason-${r.code}`}
+                  className="flex items-center gap-3 rounded-md px-3 py-2 hover-elevate cursor-pointer text-[#1C1917] font-normal"
+                  data-testid={`reason-option-${r.code}`}
+                >
+                  <RadioGroupItem value={r.code} id={`reason-${r.code}`} />
+                  <span>{r.label}</span>
+                </Label>
+              ))}
+            </RadioGroup>
+            <Textarea
+              placeholder="Anything else? (optional)"
+              value={feedback}
+              maxLength={FEEDBACK_MAX}
+              onChange={(e) => setFeedback(e.target.value.slice(0, FEEDBACK_MAX))}
+              className="resize-none border-[#E2C2A4]/40"
+              rows={3}
+              data-testid="input-cancel-feedback"
+            />
+            <div className="flex items-center justify-between gap-2 pt-1">
+              <Button
+                variant="ghost"
+                className="text-[#78716C]"
+                onClick={() => setStep("confirm")}
+                disabled={busy}
+                data-testid="button-reason-back"
+              >
+                <ArrowLeft className="w-4 h-4 mr-1" />
+                Back
+              </Button>
+              <Button
+                className="bg-[#C06B3E] hover:bg-[#A85B33] text-white"
+                onClick={() => reasonMut.mutate()}
+                disabled={!reason || busy}
+                data-testid="button-reason-next"
+              >
+                {reasonMut.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Next"}
+              </Button>
+            </div>
+          </>
+        ) : step === "offer" ? (
+          <>
+            <DialogHeader>
+              <DialogTitle>Wait — one thing first.</DialogTitle>
+              <DialogDescription>
+                Before you drop off, here's a way to stay without the sting.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col gap-3 py-1">
+              {offers.map((o) => (
+                <Card
+                  key={o.offer}
+                  className="p-4 bg-white border-[#E2C2A4]/40"
+                  data-testid={`offer-card-${o.offer}`}
+                >
+                  <div className="flex items-start gap-3">
+                    <OfferIcon offer={o.offer} />
+                    <div className="flex-1">
+                      <div className="font-bold text-[#1C1917]">{o.title}</div>
+                      <p className="text-sm text-[#78716C] mt-0.5">{o.body}</p>
+                      <Button
+                        size="sm"
+                        className="mt-3 bg-[#C06B3E] hover:bg-[#A85B33] text-white"
+                        onClick={() => offerMut.mutate(o.offer)}
+                        disabled={busy}
+                        data-testid={`button-accept-${o.offer}`}
+                      >
+                        {offerMut.isPending && offerMut.variables === o.offer ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : o.offer === "pause" ? (
+                          "Pause instead"
+                        ) : (
+                          "Take the discount"
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+            <div className="flex items-center justify-between gap-2 pt-1">
+              <Button
+                variant="ghost"
+                className="text-[#78716C]"
+                onClick={() => setStep("reason")}
+                disabled={busy}
+                data-testid="button-offer-back"
+              >
+                <ArrowLeft className="w-4 h-4 mr-1" />
+                Back
+              </Button>
+              <Button
+                variant="ghost"
+                className="text-[#A8A29E]"
+                onClick={() => setStep("final")}
+                disabled={busy}
+                data-testid="button-offer-decline"
+              >
+                No thanks, cancel
+              </Button>
+            </div>
+          </>
+        ) : step === "final" ? (
+          <>
+            <DialogHeader>
+              <DialogTitle>Cancel your premium?</DialogTitle>
+              <DialogDescription>
+                {accessUntil
+                  ? `You'll keep everything through ${accessUntil}, then Coach goes back to free. No charge after that.`
+                  : "Coach goes back to free at the end of your current period. No charge after that."}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col gap-2 pt-2">
+              <Button
+                variant="destructive"
+                onClick={() => cancelMut.mutate()}
+                disabled={busy}
+                data-testid="button-confirm-cancel"
+              >
+                {cancelMut.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  "Cancel my premium"
+                )}
+              </Button>
+              <Button
+                variant="ghost"
+                className="text-[#78716C]"
+                onClick={() => onOpenChange(false)}
+                disabled={busy}
+                data-testid="button-final-keep"
+              >
+                Never mind — keep it
+              </Button>
+            </div>
+          </>
+        ) : (
+          <>
+            <DialogHeader>
+              <DialogTitle>
+                {outcome === "cancelled"
+                  ? "You're all set."
+                  : outcome === "paused"
+                    ? "Paused — not gone."
+                    : "Glad you're staying."}
+              </DialogTitle>
+              <DialogDescription>
+                {outcome === "cancelled"
+                  ? accessUntil
+                    ? `Premium runs through ${accessUntil}, then Coach goes back to free. Change your mind anytime — heart's still thumpin'.`
+                    : "Premium runs through the end of your period, then Coach goes back to free. Change your mind anytime."
+                  : outcome === "paused"
+                    ? "We skipped your next charge and kept your access. Billing picks back up automatically after the pause."
+                    : "Your discount's locked in and you keep everything. Heart's still thumpin'."}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-end pt-2">
+              <Button
+                className="bg-[#C06B3E] hover:bg-[#A85B33] text-white"
+                onClick={() => onOpenChange(false)}
+                data-testid="button-done-close"
+              >
+                Done
+              </Button>
+            </div>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
 }
 
 export default function RecoveryPremium() {
@@ -354,6 +769,35 @@ export default function RecoveryPremium() {
       toast({
         title: "Couldn't open billing portal",
         description: String(err?.message ?? ""),
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Native cancel/retention flow. The dialog owns its own steps + mutations;
+  // this level owns one-click Resume (used by the lifecycle banner) and the
+  // dialog open state.
+  const [cancelOpen, setCancelOpen] = useState(false);
+
+  const resumeMut = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/sasquatch-premium/resume", {});
+      return (await res.json()) as { ok?: boolean };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/sasquatch-premium/status"] });
+      // Also bust cancel/context — global staleTime:Infinity would otherwise
+      // serve a resumed survivor a stale offers:[] the next time they reopen.
+      queryClient.invalidateQueries({ queryKey: ["/api/sasquatch-premium/cancel/context"] });
+      toast({
+        title: "Premium's back on.",
+        description: "Nothing changes — you keep everything. Heart's still thumpin'.",
+      });
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Couldn't resume premium",
+        description: String(err?.message ?? "Try again in a moment"),
         variant: "destructive",
       });
     },
@@ -674,6 +1118,8 @@ export default function RecoveryPremium() {
             lifecycle={status?.lifecycle ?? null}
             onManageBilling={() => portalMut.mutate()}
             managing={portalMut.isPending}
+            onResume={() => resumeMut.mutate()}
+            resuming={resumeMut.isPending}
           />
 
 
@@ -796,6 +1242,16 @@ export default function RecoveryPremium() {
                   >
                     {portalMut.isPending ? "Opening..." : "Manage billing"}
                   </Button>
+                  {!status?.lifecycle?.cancelAtPeriodEnd && (
+                    <button
+                      type="button"
+                      className="text-xs text-[#A8A29E] underline underline-offset-2 hover:text-[#78716C]"
+                      onClick={() => setCancelOpen(true)}
+                      data-testid="button-open-cancel"
+                    >
+                      Cancel subscription
+                    </button>
+                  )}
                 </div>
               ) : (
                 <Button
@@ -933,6 +1389,8 @@ export default function RecoveryPremium() {
           </p>
         </Card>
       </main>
+
+      <CancelFlowDialog open={cancelOpen} onOpenChange={setCancelOpen} />
 
       {/* ── Sticky mobile CTA bar ────────────────────────────────────────
           Shown only on small screens, only when not already active. Keeps the

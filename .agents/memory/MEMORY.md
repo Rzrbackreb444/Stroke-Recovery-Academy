@@ -19,3 +19,4 @@
 - [Sasquatch logo asset](logo-asset.md) — served logo is 512px webp/png; 2000px master preserved at attached_assets/sasquatch-logo-master-2000.png
 - [Messaging engine](messaging-engine.md) — unified sendMessage: unsubscribed→dedupe(claim-release)→channel/consent/quiet-hours; self-provisions schema on boot; SMS behind SMS_ENABLED; no crisis gate (static copy only)
 - [db:push blocked by stripe schema](db-push-stripe-schema.md) — db:push prompts (non-TTY error) over external `stripe` schema; apply additive DDL via psql instead
+- [Type errors in gated components](type-errors-in-gated-components.md) — tsx strips types w/o check; undefined ids in auth/sub-gated UI crash only at render, pass workflow start + ungated screenshot
