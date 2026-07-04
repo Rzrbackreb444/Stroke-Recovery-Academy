@@ -23,7 +23,7 @@ export interface SmsResult {
 // and handles sticky sender / number pooling). Otherwise fall back to a single
 // long-code number — TWILIO_PHONE_NUMBER (the console's label) or the legacy
 // TWILIO_FROM_NUMBER. Returns null when neither is configured.
-function resolveSender(): { messagingServiceSid: string } | { from: string } | null {
+export function resolveSender(): { messagingServiceSid: string } | { from: string } | null {
   const svc = process.env.TWILIO_MESSAGING_SERVICE_SID;
   if (svc) return { messagingServiceSid: svc };
   const from = process.env.TWILIO_PHONE_NUMBER || process.env.TWILIO_FROM_NUMBER;
