@@ -132,15 +132,28 @@ function jsonLd(obj: unknown): string {
   return JSON.stringify(obj).replace(/<\/script/gi, '<\\/script');
 }
 
-function estimateReadingTime(sections: ContentSection[]): number {
+function stripHtmlToText(html: string): string {
+  return html.replace(/<[^>]+>/g, ' ').replace(/&[a-z0-9#]+;/gi, ' ');
+}
+
+// Single source of truth for word count. Counts structured fields AND the
+// trusted rawHtml/body path (DB-backed recovery blog posts render their whole
+// body as rawHtml — without this they'd report wordCount:0 / "1 min read").
+function countWords(sections: ContentSection[]): number {
   let words = 0;
   for (const s of sections) {
-    if (s.paragraphs) words += s.paragraphs.reduce((a, p) => a + p.split(/\s+/).length, 0);
-    if (s.bullets) words += s.bullets.reduce((a, b) => a + b.split(/\s+/).length, 0);
-    if (s.table) words += s.table.rows.reduce((a, r) => a + r.reduce((b, c) => b + c.split(/\s+/).length, 0), 0);
-    if (s.steps) words += s.steps.reduce((a, st) => a + st.name.split(/\s+/).length + st.text.split(/\s+/).length, 0);
+    if (s.paragraphs) words += s.paragraphs.reduce((a, p) => a + p.split(/\s+/).filter(Boolean).length, 0);
+    if (s.bullets) words += s.bullets.reduce((a, b) => a + b.split(/\s+/).filter(Boolean).length, 0);
+    if (s.table) words += s.table.rows.reduce((a, r) => a + r.reduce((b, c) => b + c.split(/\s+/).filter(Boolean).length, 0), 0);
+    if (s.steps) words += s.steps.reduce((a, st) => a + st.name.split(/\s+/).filter(Boolean).length + st.text.split(/\s+/).filter(Boolean).length, 0);
+    const raw = s.rawHtml || s.body;
+    if (raw) words += stripHtmlToText(raw).split(/\s+/).filter(Boolean).length;
   }
-  return Math.max(1, Math.round(words / 200));
+  return words;
+}
+
+function estimateReadingTime(sections: ContentSection[]): number {
+  return Math.max(1, Math.round(countWords(sections) / 200));
 }
 
 function buildArticleSchema(cfg: SsrPageConfig): object {
@@ -188,12 +201,7 @@ function buildArticleSchema(cfg: SsrPageConfig): object {
       lastReviewed: modified,
     } : {}),
     // Word count and reading time for rich snippet eligibility
-    wordCount: cfg.sections.reduce((a, s) => {
-      let w = 0;
-      if (s.paragraphs) w += s.paragraphs.reduce((x, p) => x + p.split(/\s+/).length, 0);
-      if (s.bullets) w += s.bullets.reduce((x, b) => x + b.split(/\s+/).length, 0);
-      return a + w;
-    }, 0),
+    wordCount: countWords(cfg.sections),
     timeRequired: `PT${readTime}M`,
   };
 }
@@ -835,12 +843,7 @@ ${renderHeader()}
     <div>
       Written by <a href="${AUTHOR.url}">Nick Kremers</a> · Stroke survivor, 7 years in — full left-side paralysis to 90% back. I write what I actually lived.
       <br /><span style="font-size:12px;">Last reviewed: ${esc(cfg.modifiedDate || cfg.publishedDate || '2026-01-15')}</span>
-      <br /><span style="font-size:12px; color: var(--sra-text-dim);">${estimateReadingTime(cfg.sections)} min read · ${cfg.sections.reduce((a, s) => {
-        let w = 0;
-        if (s.paragraphs) w += s.paragraphs.reduce((x, p) => x + p.split(/\s+/).length, 0);
-        if (s.bullets) w += s.bullets.reduce((x, b) => x + b.split(/\s+/).length, 0);
-        return a + w;
-      }, 0).toLocaleString()} words</span>
+      <br /><span style="font-size:12px; color: var(--sra-text-dim);">${estimateReadingTime(cfg.sections)} min read · ${countWords(cfg.sections).toLocaleString()} words</span>
       <br /><span class="sra-medical-badge" style="font-size:12px; color: var(--sra-text-dim);">Written from 7 years of lived recovery — not medical advice. <a href="/legal/medical-disclaimer" style="color: var(--sra-gold);">See your doctor, PT, or OT.</a></span>
     </div>
   </div>
