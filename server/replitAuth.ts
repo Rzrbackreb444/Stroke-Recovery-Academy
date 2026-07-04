@@ -64,6 +64,14 @@ async function upsertUser(
     lastName: claims["last_name"],
     profileImageUrl: claims["profile_image_url"],
   });
+  // Funnel: record the signup milestone once per user (idempotent — safe to
+  // call on every login). Fire-and-forget; never block auth on telemetry.
+  const sub = claims["sub"];
+  if (sub) {
+    void import("./services/sasquatchFunnelService").then((f) =>
+      f.recordFunnelEventOnce({ userId: String(sub), eventType: "signup" }),
+    ).catch(() => {});
+  }
 }
 
 export async function setupAuth(app: Express) {

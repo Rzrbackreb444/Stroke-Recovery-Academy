@@ -66,6 +66,10 @@ export async function persistChatTurn(
       VALUES (${userId}, 'user', ${userMessage}),
              (${userId}, 'coach', ${coachReply})
     `);
+    // Funnel: a coach turn may have just satisfied the activation condition.
+    void import('./services/sasquatchFunnelService').then((f) =>
+      f.maybeRecordActivation(userId),
+    ).catch(() => {});
   } catch (err: any) {
     console.warn('[sasquatch-history] persist failed:', err?.message ?? err);
   }

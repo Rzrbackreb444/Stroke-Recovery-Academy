@@ -1018,6 +1018,11 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   const { default: schedulerRoutes } = await import('./scheduler/schedulerRoutes');
   app.use('/api/admin/scheduler', schedulerRoutes);
 
+  // Business Intelligence admin API (funnel + revenue + engagement metrics,
+  // trend snapshots). Admin-only; mounted after setupAuth for requireAdmin.
+  const { default: biRoutes } = await import('./biRoutes');
+  app.use('/api/admin/business', biRoutes);
+
   // Lifecycle messaging public routes — global email unsubscribe (HMAC) + Twilio
   // inbound SMS webhook (STOP/HELP, signature-verified, inert until SMS_ENABLED).
   const { registerMessagingRoutes } = await import('./messaging/routes');
@@ -10067,7 +10072,12 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         challengesToday,
         gratitude,
       });
-      
+
+      // Funnel: a check-in may have just satisfied the activation condition.
+      void import('./services/sasquatchFunnelService').then((f) =>
+        f.maybeRecordActivation(userId),
+      ).catch(() => {});
+
       const streak = await storage.getUserStreak(userId);
       const today = new Date();
       const yesterday = new Date(today);

@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { trackEvent } from "@/hooks/useAnalytics";
 import { 
   Mail, 
   Lock, 
@@ -67,6 +68,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "login" }: Au
       return apiRequest("POST", "/api/auth/register", data);
     },
     onSuccess: () => {
+      trackEvent("signup", "funnel");
       toast({ title: "Account created!", description: "Welcome to Stroke Recovery Academy! You're now logged in." });
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       onClose();

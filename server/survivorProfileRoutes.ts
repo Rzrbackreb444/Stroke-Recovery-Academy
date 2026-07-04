@@ -164,6 +164,18 @@ router.post("/profile/complete", isAuthenticated, perUserWriteLimit, async (req:
       })
       .returning();
 
+    // Funnel: record the intake_complete milestone + re-check activation
+    // (intake may be the last of the three activation criteria to land).
+    // Idempotent, fire-and-forget — log failures rather than swallow silently.
+    void import("./services/sasquatchFunnelService")
+      .then(async (f) => {
+        await f.recordFunnelEventOnce({ userId, eventType: "intake_complete" });
+        await f.maybeRecordActivation(userId);
+      })
+      .catch((e) =>
+        console.warn("[survivor/profile/complete] funnel hook failed", e?.message || e),
+      );
+
     res.json({ profile: { ...row, intakeComplete: true } });
   } catch (err: any) {
     console.error("[survivor/profile/complete]", err);

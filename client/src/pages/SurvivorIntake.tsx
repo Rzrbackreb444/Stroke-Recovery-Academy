@@ -23,6 +23,7 @@ import { useSurvivorProfile, type SurvivorProfile } from "@/hooks/useSurvivorPro
 import { useVoiceInput } from "@/hooks/useVoiceInput";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { trackEvent } from "@/hooks/useAnalytics";
 
 type Draft = Partial<SurvivorProfile>;
 
@@ -229,6 +230,7 @@ export default function SurvivorIntake() {
       const { id, userId, intakeCompletedAt, intakeComplete, updatedAt, ...patchable } = draft as any;
       await patch(patchable);
       await complete();
+      trackEvent("intake_complete", "funnel");
       toast({
         title: "Profile complete",
         description: "Your dashboard is now tuned to your recovery.",

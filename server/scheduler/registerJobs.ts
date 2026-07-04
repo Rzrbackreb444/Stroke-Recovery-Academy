@@ -95,6 +95,19 @@ export async function bootstrapScheduler(): Promise<void> {
     },
   });
 
+  // Business Intelligence — daily snapshot of funnel/revenue/engagement metrics
+  // for trend history. Idempotent (upsert keyed on UTC date); ctx.scheduledFor
+  // stamps the snapshot day so a run claimed late still writes its own date.
+  registerJob({
+    name: "bi-daily-snapshot",
+    description: "Capture a daily Business Intelligence metrics snapshot for trend history.",
+    cron: "45 4 * * *", // daily at 04:45 UTC (after the run-prune at 04:30)
+    handler: async (ctx) => {
+      const { captureDailySnapshot } = await import("../services/biMetricsService");
+      await captureDailySnapshot(ctx.scheduledFor);
+    },
+  });
+
   // Self-maintenance — prune the run-history table so it doesn't grow forever.
   registerJob({
     name: "scheduler-run-prune",

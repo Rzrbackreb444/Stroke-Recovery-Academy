@@ -149,6 +149,7 @@ const FeedbackInbox = lazy(() => import("@/pages/FeedbackInbox"));
 const BlogDraftStudio = lazy(() => import("@/pages/BlogDraftStudio"));
 const AdminVoiceLab = lazy(() => import("@/pages/AdminVoiceLab"));
 const AdminSasquatchFunnel = lazy(() => import("@/pages/AdminSasquatchFunnel"));
+const AdminBusinessDashboard = lazy(() => import("@/pages/AdminBusinessDashboard"));
 const AdminSubscriptionRisk = lazy(() => import("@/pages/AdminSubscriptionRisk"));
 const AdminScheduler = lazy(() => import("@/pages/AdminScheduler"));
 const RecoveryUniversity = lazy(() => import("@/pages/RecoveryUniversity"));
@@ -622,6 +623,9 @@ function Router() {
       </Route>
       <Route path="/admin/sasquatch-funnel">
         <AdminRoute><AdminSasquatchFunnel /></AdminRoute>
+      </Route>
+      <Route path="/admin/business">
+        <AdminRoute><AdminBusinessDashboard /></AdminRoute>
       </Route>
       <Route path="/admin/subscriptions-risk">
         <AdminRoute><AdminSubscriptionRisk /></AdminRoute>
