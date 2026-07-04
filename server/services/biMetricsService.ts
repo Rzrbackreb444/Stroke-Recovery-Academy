@@ -36,8 +36,8 @@ let snapshotSchemaReady: Promise<void> | null = null;
 
 export async function ensureBiSchema(): Promise<void> {
   if (snapshotSchemaReady) return snapshotSchemaReady;
-  snapshotSchemaReady = db
-    .execute(sql`
+  snapshotSchemaReady = (async () => {
+    await db.execute(sql`
       CREATE TABLE IF NOT EXISTS bi_daily_snapshots (
         snapshot_date DATE PRIMARY KEY,
         signups_total INTEGER NOT NULL DEFAULT 0,
@@ -53,7 +53,12 @@ export async function ensureBiSchema(): Promise<void> {
         metrics JSONB NOT NULL DEFAULT '{}'::jsonb,
         created_at TIMESTAMPTZ NOT NULL DEFAULT now()
       )
-    `)
+    `);
+    // Depth columns added after the base table shipped — additive so an existing
+    // snapshots table is upgraded in place (db:push is blocked on this repl).
+    await db.execute(sql`ALTER TABLE bi_daily_snapshots ADD COLUMN IF NOT EXISTS loop_completion_rate REAL`);
+    await db.execute(sql`ALTER TABLE bi_daily_snapshots ADD COLUMN IF NOT EXISTS return_rate REAL`);
+  })()
     .then(() => undefined)
     .catch((err: any) => {
       snapshotSchemaReady = null; // let a transient hiccup retry
@@ -100,6 +105,17 @@ export interface BusinessMetrics {
   churn: {
     downgradedLast30: number;
     canceledTrialsLast30: number;
+  };
+  depth: {
+    // Of survivors active today, the share that closed the daily accountability
+    // loop (logged a Never Zero audit rep today).
+    loopCompletionRate: number | null;
+    loopCompletedToday: number;
+    // Of survivors active 8–30 days ago, the share that came back in the last 7
+    // days — a durable return/retention proxy independent of subscription state.
+    returnRate: number | null;
+    priorCohort: number;
+    returnedCohort: number;
   };
   lifecycleMessages: Array<{ category: string; sent: number; failed: number }>;
 }
@@ -305,6 +321,76 @@ async function computeFunnelAndEngagement(): Promise<{
   };
 }
 
+// ── Depth / retention ───────────────────────────────────────────────────────
+async function computeDepth(): Promise<BusinessMetrics["depth"]> {
+  // Daily loop completion: of survivors active today, how many closed the loop
+  // (logged a Never Zero audit rep today). Denominator matches DAU's activity
+  // union so the ratio is "of people who showed up, how many finished".
+  const dauR = await db.execute(sql`
+    SELECT COUNT(DISTINCT uid)::int AS c FROM (
+      SELECT user_id AS uid FROM daily_checkins WHERE created_at >= now() - interval '1 day'
+      UNION
+      SELECT user_id AS uid FROM sasquatch_chat_messages WHERE created_at >= now() - interval '1 day'
+      UNION
+      SELECT user_id AS uid FROM never_zero_audits WHERE created_at >= now() - interval '1 day'
+    ) t WHERE uid IS NOT NULL
+  `);
+  const activeToday = num((dauR.rows as any[])[0]?.c);
+
+  const loopR = await db.execute(sql`
+    SELECT COUNT(DISTINCT user_id)::int AS c
+      FROM never_zero_audits
+     WHERE created_at >= now() - interval '1 day'
+       AND today_count > 0
+       AND user_id IS NOT NULL
+  `);
+  const loopCompletedToday = num((loopR.rows as any[])[0]?.c);
+
+  // Return rate: of survivors active 8–30 days ago, how many returned in the
+  // last 7 days. Both windows use the same activity union as DAU/WAU.
+  const priorR = await db.execute(sql`
+    SELECT COUNT(DISTINCT uid)::int AS c FROM (
+      SELECT user_id AS uid FROM daily_checkins WHERE created_at >= now() - interval '30 days' AND created_at < now() - interval '7 days'
+      UNION
+      SELECT user_id AS uid FROM sasquatch_chat_messages WHERE created_at >= now() - interval '30 days' AND created_at < now() - interval '7 days'
+      UNION
+      SELECT user_id AS uid FROM never_zero_audits WHERE created_at >= now() - interval '30 days' AND created_at < now() - interval '7 days'
+    ) t WHERE uid IS NOT NULL
+  `);
+  const priorCohort = num((priorR.rows as any[])[0]?.c);
+
+  const returnedR = await db.execute(sql`
+    WITH prior AS (
+      SELECT DISTINCT uid FROM (
+        SELECT user_id AS uid FROM daily_checkins WHERE created_at >= now() - interval '30 days' AND created_at < now() - interval '7 days'
+        UNION
+        SELECT user_id AS uid FROM sasquatch_chat_messages WHERE created_at >= now() - interval '30 days' AND created_at < now() - interval '7 days'
+        UNION
+        SELECT user_id AS uid FROM never_zero_audits WHERE created_at >= now() - interval '30 days' AND created_at < now() - interval '7 days'
+      ) t WHERE uid IS NOT NULL
+    ),
+    recent AS (
+      SELECT DISTINCT uid FROM (
+        SELECT user_id AS uid FROM daily_checkins WHERE created_at >= now() - interval '7 days'
+        UNION
+        SELECT user_id AS uid FROM sasquatch_chat_messages WHERE created_at >= now() - interval '7 days'
+        UNION
+        SELECT user_id AS uid FROM never_zero_audits WHERE created_at >= now() - interval '7 days'
+      ) t WHERE uid IS NOT NULL
+    )
+    SELECT COUNT(*)::int AS c FROM prior p JOIN recent r ON r.uid = p.uid
+  `);
+  const returnedCohort = num((returnedR.rows as any[])[0]?.c);
+
+  return {
+    loopCompletionRate: ratio(loopCompletedToday, activeToday),
+    loopCompletedToday,
+    returnRate: ratio(returnedCohort, priorCohort),
+    priorCohort,
+    returnedCohort,
+  };
+}
+
 // ── Lifecycle message performance ───────────────────────────────────────────
 async function computeLifecycleMessages(): Promise<
   BusinessMetrics["lifecycleMessages"]
@@ -334,9 +420,10 @@ async function computeLifecycleMessages(): Promise<
 
 // ── Public: full metrics snapshot for the dashboard ─────────────────────────
 export async function computeBusinessMetrics(): Promise<BusinessMetrics> {
-  const [rev, fe, lifecycle] = await Promise.all([
+  const [rev, fe, depth, lifecycle] = await Promise.all([
     computeRevenue(),
     computeFunnelAndEngagement(),
+    computeDepth(),
     computeLifecycleMessages(),
   ]);
 
@@ -370,6 +457,7 @@ export async function computeBusinessMetrics(): Promise<BusinessMetrics> {
     },
     engagement: fe.engagement,
     churn: fe.churn,
+    depth,
     lifecycleMessages: lifecycle,
   };
 }
@@ -385,14 +473,16 @@ export async function captureDailySnapshot(scheduledFor?: Date): Promise<void> {
     INSERT INTO bi_daily_snapshots
       (snapshot_date, signups_total, intake_total, activated_total,
        active_subs, trialing_subs, at_risk_subs, mrr_cents, dau, wau,
-       activation_rate, metrics)
+       activation_rate, loop_completion_rate, return_rate, metrics)
     VALUES
       (${day}::date, ${m.engagement.signupsTotal},
        ${m.funnel.find((f) => f.key === "intake")?.count ?? 0},
        ${m.engagement.activatedTotal}, ${m.revenue.activeSubs},
        ${m.revenue.trialingSubs}, ${m.revenue.atRiskSubs}, ${m.revenue.mrrCents},
        ${m.engagement.dau}, ${m.engagement.wau},
-       ${m.engagement.activationRate ?? 0}, ${JSON.stringify(m)}::jsonb)
+       ${m.engagement.activationRate ?? 0},
+       ${m.depth.loopCompletionRate}, ${m.depth.returnRate},
+       ${JSON.stringify(m)}::jsonb)
     ON CONFLICT (snapshot_date) DO UPDATE SET
       signups_total = EXCLUDED.signups_total,
       intake_total = EXCLUDED.intake_total,
@@ -404,6 +494,8 @@ export async function captureDailySnapshot(scheduledFor?: Date): Promise<void> {
       dau = EXCLUDED.dau,
       wau = EXCLUDED.wau,
       activation_rate = EXCLUDED.activation_rate,
+      loop_completion_rate = EXCLUDED.loop_completion_rate,
+      return_rate = EXCLUDED.return_rate,
       metrics = EXCLUDED.metrics,
       created_at = now()
   `);
@@ -416,7 +508,7 @@ export async function getTrends(days = 30): Promise<any[]> {
   const r = await db.execute(sql`
     SELECT snapshot_date, signups_total, intake_total, activated_total,
            active_subs, trialing_subs, at_risk_subs, mrr_cents, dau, wau,
-           activation_rate
+           activation_rate, loop_completion_rate, return_rate
       FROM bi_daily_snapshots
      WHERE snapshot_date >= (now()::date - (${lim} || ' days')::interval)
   ORDER BY snapshot_date ASC

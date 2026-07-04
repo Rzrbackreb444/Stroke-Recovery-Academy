@@ -318,6 +318,34 @@ export default function RecoveryDashboard() {
   const recoveryScore = dashboard?.recoveryScore || 0;
   const totalPoints = dashboard?.totalPoints || 0;
 
+  // ── Coherent daily journey loop ──────────────────────────────────────────
+  // One honest thread through the day, morning to night: check in → move →
+  // stay accountable → your squad → reflect. Completion is read from the same
+  // dashboard payload the rest of the page uses, so it never drifts from the
+  // detail cards below.
+  const repsDoneToday = Array.isArray(habits) && habits.some((h: any) =>
+    Array.isArray(h.logs) && h.logs.some((l: any) =>
+      l?.isCompleted && new Date(l.logDate).toDateString() === new Date().toDateString()
+    )
+  );
+  const inSquad = !!userPod;
+  // Evening reflection is "done" once the survivor has logged today's win —
+  // the reflective field of the daily check-in. Closes the loop for the day.
+  const reflectedToday = !!(todayCheckin && (todayCheckin as any).winsToday);
+  const journeySteps: Array<{
+    key: string; label: string; desc: string; href: string;
+    done?: boolean; Icon: any;
+  }> = [
+    { key: "checkin", label: "Check in", desc: "Mood & energy", href: "#mission-checkin", done: !!todayCheckin, Icon: Calendar },
+    { key: "reps", label: "Daily reps", desc: "Move your body", href: "/recovery/today", done: repsDoneToday, Icon: Dumbbell },
+    { key: "coach", label: "Talk to Coach", desc: "Stay accountable", href: "/recovery/sasquatch-coach", Icon: MessageCircle },
+    { key: "squad", label: "Your squad", desc: inSquad ? "Check the fire" : "Join a squad", href: "/recovery/community", done: inSquad, Icon: Users },
+    { key: "reflect", label: "Reflect", desc: reflectedToday ? "Win logged" : "Name today's win", href: "#mission-checkin", done: reflectedToday, Icon: Sparkles },
+  ];
+  const trackableSteps = journeySteps.filter((s) => s.done !== undefined);
+  const loopDone = trackableSteps.filter((s) => s.done).length;
+  const loopTotal = trackableSteps.length;
+
   return (
     <div className="min-h-screen flex bg-[#FDFBF7] text-[#1C1917]">
 
@@ -406,6 +434,74 @@ export default function RecoveryDashboard() {
         </div>
         <TodaysSpark />
         {!zenMode && (<>
+        {/* ── Today's loop ── coherent daily journey strip ── */}
+        <section className="mb-6" data-testid="section-daily-loop">
+          <div className="rounded-2xl bg-white border border-[#E2C2A4]/40 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5">
+            <div className="flex items-center justify-between gap-3 flex-wrap mb-4">
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.2em] text-[#A8A29E]">Today's loop</div>
+                <div className="text-sm text-[#78716C]">
+                  {loopDone >= loopTotal
+                    ? "Loop closed. Heart's still thumpin'."
+                    : "One thread through the day — check in, move, stay accountable."}
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="text-2xl font-black text-[#C06B3E]" data-testid="text-loop-progress">{loopDone}</span>
+                <span className="text-sm text-[#A8A29E]">/ {loopTotal} done</span>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {journeySteps.map((step) => {
+                const done = step.done === true;
+                const isHash = step.href.startsWith("#");
+                const cls = `group flex items-start gap-3 rounded-xl border p-3 transition-colors hover-elevate ${
+                  done
+                    ? "bg-[#C06B3E]/10 border-[#C06B3E]/40"
+                    : "bg-[#FDFBF7] border-[#E2C2A4]/40"
+                }`;
+                const inner = (
+                  <>
+                    <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${
+                      done ? "bg-[#C06B3E]/20 text-[#C06B3E]" : "bg-[#F5F0EB] text-[#A8A29E]"
+                    }`}>
+                      {done ? <CheckCircle2 className="h-4 w-4" /> : <step.Icon className="h-4 w-4" />}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-sm font-bold text-[#1C1917] truncate">{step.label}</div>
+                      <div className="text-xs text-[#78716C] truncate">
+                        {done ? "Done" : step.desc}
+                      </div>
+                    </div>
+                  </>
+                );
+                return isHash ? (
+                  <a
+                    key={step.key}
+                    href={step.href}
+                    data-testid={`step-loop-${step.key}`}
+                    className={cls}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document.getElementById(step.href.slice(1))?.scrollIntoView({ behavior: "smooth", block: "center" });
+                    }}
+                  >
+                    {inner}
+                  </a>
+                ) : (
+                  <Link
+                    key={step.key}
+                    href={step.href}
+                    data-testid={`step-loop-${step.key}`}
+                    className={cls}
+                  >
+                    {inner}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
         <div className="mb-6">
           <RecommendationCards surface="dashboard" />
         </div>
@@ -705,7 +801,7 @@ export default function RecoveryDashboard() {
 
             {/* Daily Mission Cards */}
             <div className="grid sm:grid-cols-3 gap-3 mb-5">
-              <div className={`rounded-lg p-4 border ${todayCheckin ? "bg-[#C06B3E]/10 border-[#C06B3E]/40" : "bg-[#FDFBF7] border-[#E2C2A4]/30"}`} data-testid="mission-checkin">
+              <div id="mission-checkin" className={`rounded-lg p-4 border ${todayCheckin ? "bg-[#C06B3E]/10 border-[#C06B3E]/40" : "bg-[#FDFBF7] border-[#E2C2A4]/30"}`} data-testid="mission-checkin">
                 <div className="flex items-center gap-2 mb-2">
                   <Calendar className={`h-4 w-4 ${todayCheckin ? "text-[#C06B3E]" : "text-[#A8A29E]"}`} />
                   <span className="text-sm font-bold text-[#1C1917]">Daily Check-in</span>

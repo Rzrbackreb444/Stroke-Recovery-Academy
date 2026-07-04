@@ -42,6 +42,31 @@ export async function bootstrapScheduler(): Promise<void> {
     },
   });
 
+  // Scheduled blog auto-publish — flip due status='scheduled' recovery-blog
+  // posts live and broadcast each to the newsletter list exactly once.
+  registerJob({
+    name: "blog-auto-publish",
+    description: "Publish due scheduled recovery-blog posts and broadcast them to the newsletter.",
+    cron: "35 * * * *", // hourly at :35 (offset to spread load)
+    handler: async () => {
+      const { runScheduledBlogPublish } = await import("../blogPublishService");
+      await runScheduledBlogPublish();
+    },
+  });
+
+  // Proactive coach outreach — static survivor-voice nudges on survivor-state
+  // events (missed day, streak milestone, plateau). Static copy only, so the
+  // crisis gate is not needed; message_deliveries dedupe keeps it idempotent.
+  registerJob({
+    name: "coach-outreach",
+    description: "State-driven survivor nudges: missed-day, milestone, plateau (static copy).",
+    cron: "40 * * * *", // hourly at :40 (offset to spread load)
+    handler: async () => {
+      const { runCoachOutreach } = await import("../coachOutreachService");
+      await runCoachOutreach();
+    },
+  });
+
   // Free-analysis crash recovery — fail rows stuck in "processing".
   registerJob({
     name: "free-analysis-reap",

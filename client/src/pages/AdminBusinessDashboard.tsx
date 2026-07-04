@@ -40,6 +40,13 @@ interface BusinessMetrics {
     signupsTotal: number;
   };
   churn: { downgradedLast30: number; canceledTrialsLast30: number };
+  depth: {
+    loopCompletionRate: number | null;
+    loopCompletedToday: number;
+    returnRate: number | null;
+    priorCohort: number;
+    returnedCohort: number;
+  };
   lifecycleMessages: Array<{ category: string; sent: number; failed: number }>;
 }
 type TrendRow = {
@@ -50,6 +57,8 @@ type TrendRow = {
   wau: number;
   activation_rate: number;
   signups_total: number;
+  loop_completion_rate: number | null;
+  return_rate: number | null;
 };
 
 function usd(cents: number): string {
@@ -216,6 +225,20 @@ export default function AdminBusinessDashboard() {
                 testId="stat-churn"
                 accent="text-red-400"
               />
+              <Stat
+                label="Loop completion"
+                value={pct(data.depth.loopCompletionRate)}
+                sub={`${data.depth.loopCompletedToday} closed the loop today`}
+                testId="stat-loop-completion"
+                accent="text-amber-400"
+              />
+              <Stat
+                label="Return rate"
+                value={pct(data.depth.returnRate)}
+                sub={`${data.depth.returnedCohort} of ${data.depth.priorCohort} came back`}
+                testId="stat-return-rate"
+                accent="text-green-400"
+              />
             </div>
 
             {/* Lifecycle funnel */}
@@ -274,6 +297,20 @@ export default function AdminBusinessDashboard() {
                     value={(r) => r.dau}
                     format={(v) => String(v)}
                     color="bg-amber-600"
+                  />
+                  <TrendBars
+                    label="Loop completion"
+                    rows={trends}
+                    value={(r) => Math.round((r.loop_completion_rate ?? 0) * 1000) / 10}
+                    format={(v) => `${v}%`}
+                    color="bg-orange-500"
+                  />
+                  <TrendBars
+                    label="Return rate"
+                    rows={trends}
+                    value={(r) => Math.round((r.return_rate ?? 0) * 1000) / 10}
+                    format={(v) => `${v}%`}
+                    color="bg-green-600"
                   />
                 </div>
               )}
