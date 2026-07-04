@@ -1,6 +1,6 @@
 import { db } from './db';
 import { sendEmail } from './emailService';
-import { sendMessage } from './messaging/messagingService';
+import { sendMessage } from './messaging';
 import { redactEmail } from './lib/redact';
 import { newsletterSubscribers, newsletterEditions } from '../shared/schema';
 import { eq, and, lte, isNull, sql } from 'drizzle-orm';
