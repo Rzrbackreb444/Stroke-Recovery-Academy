@@ -13,12 +13,13 @@
 - [ripgrep match-display truncation](rg-output-truncation.md) — rg-printed matches can clip at the highlight boundary; re-verify a suspicious path with grep/sed/read before editing
 - [Blog SSR gotchas](blog-ssr-gotchas.md) — integrateExpansions.ts is NOT idempotent (re-run doubles content, audit misses it); inline FTC disclosure is conditional on affiliate links, not sitewide
 - [Amazon PA-API eligibility](paapi-eligibility.md) — creds are valid+matched; blocked by 3-sales/180-day gate (AssociateNotEligible); interim = static affiliate search links
-- [Image performance pass](image-perf-pass.md) — sharp→webp+sed-repoint pattern; React 18 needs lowercase `fetchpriority` spread; app_preview caches un-versioned Vite modules (stale console)
-- [Daily Accountability Loop](daily-accountability-loop.md) — DailyLoopCard on dashboard: morning brief (Gemini, cached to never_zero_audits.morning_brief), inline log (exercises/habits/mood/win PATCH checkin), coach context injection
+- [Image performance pass](image-perf-pass.md) — sharp→webp+sed-repoint; React 18 needs lowercase `fetchpriority`; app_preview caches stale un-versioned Vite modules
+- [Daily Accountability Loop](daily-accountability-loop.md) — DailyLoopCard: cached Gemini morning brief + inline daily log (exercises/habits/mood/win) + coach context injection
 - [Brand taxonomy](brand-taxonomy.md) — Stroke Lyfe Inc (nonprofit, keep) vs Stroked-Out Sasquatch / Stroke Recovery Academy (consumer); do not blanket-replace
 - [Sasquatch logo asset](logo-asset.md) — served logo is 512px webp/png; 2000px master preserved at attached_assets/sasquatch-logo-master-2000.png
-- [Messaging engine](messaging-engine.md) — unified sendMessage: unsubscribed→dedupe(claim-release)→channel/consent/quiet-hours; self-provisions schema on boot; SMS behind SMS_ENABLED; no crisis gate (static copy only)
+- [Messaging engine](messaging-engine.md) — unified sendMessage: dedupe→channel/consent/quiet-hours; self-provisions schema; SMS behind SMS_ENABLED; static copy only
 - [db:push blocked by stripe schema](db-push-stripe-schema.md) — db:push prompts (non-TTY error) over external `stripe` schema; apply additive DDL via psql instead
+- [SSR image escaping](ssr-image-escaping.md) — ssrShell cfg.image must be RAW url (it escapes per-context); pre-escaping corrupts JSON-LD; absolute urls need startsWith('http') guard
 - [Dev lazy import vs prod bundle](dev-lazy-vs-prod-bundle.md) — bad static import passes tsx dev (lazy) but fails esbuild --bundle publish; verify with the esbuild step before publishing
 - [dispatcher.useContext dev overlay](dev-dispatcher-usecontext-overlay.md) — the Vite red dispatcher.useContext overlay is a dev HMR-across-restart artifact, not an app bug; hard-reload fixes it, prod unaffected
 - [Type errors in gated components](type-errors-in-gated-components.md) — tsx strips types w/o check; undefined ids in auth/sub-gated UI crash only at render, pass workflow start + ungated screenshot
