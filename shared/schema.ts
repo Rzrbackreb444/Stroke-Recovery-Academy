@@ -1251,6 +1251,8 @@ export const recoveryBlogPosts = pgTable("recovery_blog_posts", {
   slug: text("slug").notNull().unique(),
   title: text("title").notNull(),
   excerpt: text("excerpt"),
+  seoTitle: text("seo_title"), // optional SERP <title> override (<=60 chars); falls back to title
+  metaDescription: text("meta_description"), // optional SERP meta description (140-160 chars); falls back to excerpt
   content: text("content").notNull(),
   category: text("category").notNull().default("philosophy"), // philosophy, therapy, science, exercises, caregivers, income
   tags: text("tags").array().default([]),
