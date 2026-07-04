@@ -15,6 +15,7 @@ const SITE = process.env.PUBLIC_SITE_URL || "https://strokerecoveryacademy.com";
 const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL || "support@strokerecoveryacademy.com";
 
 export const STOP_WORDS = new Set(["STOP", "STOPALL", "UNSUBSCRIBE", "CANCEL", "END", "QUIT", "REVOKE", "OPTOUT"]);
+export const START_WORDS = new Set(["START", "UNSTOP", "YES"]);
 export const HELP_WORDS = new Set(["HELP", "INFO"]);
 
 // Flip SMS off for whoever owns this number. The inbound `From` and the stored
@@ -27,6 +28,20 @@ export async function optOutSmsByPhone(rawFrom: string): Promise<string | null> 
   if (!from) return null;
   await db.execute(sql`
     UPDATE notification_preferences SET sms_enabled = FALSE, updated_at = NOW()
+    WHERE sms_phone = ${from}
+  `);
+  return from;
+}
+
+// Flip SMS back on for whoever owns this number. Mirror of optOutSmsByPhone so
+// the inbound START handler and any opt-in test exercise the same normalized
+// path. Returns the matched normalized number, or null when the raw input
+// can't be coerced to E.164 (nothing to opt in).
+export async function optInSmsByPhone(rawFrom: string): Promise<string | null> {
+  const from = normalizeE164(rawFrom);
+  if (!from) return null;
+  await db.execute(sql`
+    UPDATE notification_preferences SET sms_enabled = TRUE, updated_at = NOW()
     WHERE sms_phone = ${from}
   `);
   return from;
@@ -141,6 +156,15 @@ export function registerMessagingRoutes(app: Express) {
         // Advanced Opt-Out sends the carrier-required confirmation itself.
         if (from) {
           await optOutSmsByPhone(from);
+        }
+        return res.status(200).send(twiml());
+      }
+
+      if (START_WORDS.has(text)) {
+        // Flip SMS back on for whoever owns this number. Empty TwiML — Twilio's
+        // Advanced Opt-Out sends the carrier-required confirmation itself.
+        if (from) {
+          await optInSmsByPhone(from);
         }
         return res.status(200).send(twiml());
       }
