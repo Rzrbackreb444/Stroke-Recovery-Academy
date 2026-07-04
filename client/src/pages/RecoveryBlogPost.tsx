@@ -149,6 +149,67 @@ function renderMarkdown(text: string): string {
   return output.join('\n');
 }
 
+// ── Programmatic internal cross-linking ──────────────────────────────────────
+// Auto-links the first in-body mention of another post's exact title to that
+// post, capped so a page never over-links. Corpus-driven (no hardcoded map):
+// candidates come from the already-fetched post list. Only rewrites plain text
+// OUTSIDE existing anchors / headings so we never nest links or hijack a TOC
+// heading, and each target post is linked at most once. Real <a href> anchors
+// (not client Links) — SEO-friendly and safe since text/slug are our own data.
+
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+interface CrossLinkable { slug: string; title: string; }
+
+function linkifyInternal(
+  html: string,
+  posts: CrossLinkable[],
+  currentSlug: string,
+  maxLinks = 5,
+): string {
+  const candidates = posts
+    .filter((p) => p.slug !== currentSlug && p.title && p.title.trim().length >= 12)
+    .sort((a, b) => b.title.length - a.title.length); // longer (more specific) first
+  if (candidates.length === 0) return html;
+
+  const parts = html.split(/(<[^>]+>)/g); // keep tags as their own tokens
+  const usedSlugs = new Set<string>();
+  let linksAdded = 0;
+  let noLinkDepth = 0; // >0 while inside an <a> or heading
+
+  for (let i = 0; i < parts.length; i++) {
+    const tok = parts[i];
+    if (tok.startsWith('<')) {
+      const tl = tok.toLowerCase();
+      if (/^<a\b/.test(tl) || /^<h[1-6]\b/.test(tl)) noLinkDepth++;
+      else if (/^<\/a>/.test(tl) || /^<\/h[1-6]>/.test(tl)) noLinkDepth = Math.max(0, noLinkDepth - 1);
+      continue;
+    }
+    if (noLinkDepth > 0 || linksAdded >= maxLinks || !tok.trim()) continue;
+
+    let segment = tok;
+    for (const c of candidates) {
+      if (linksAdded >= maxLinks) break;
+      if (usedSlugs.has(c.slug)) continue;
+      const re = new RegExp(`\\b(${escapeRegExp(c.title.trim())})\\b`, 'i');
+      const m = re.exec(segment);
+      if (m) {
+        const anchor =
+          `<a href="/recovery/blog/${c.slug}" ` +
+          `class="text-[#E2741B] underline decoration-[#E2741B]/40 hover:decoration-[#E2741B] underline-offset-2" ` +
+          `data-testid="link-internal-${c.slug}">${m[1]}</a>`;
+        segment = segment.slice(0, m.index) + anchor + segment.slice(m.index + m[0].length);
+        usedSlugs.add(c.slug);
+        linksAdded++;
+      }
+    }
+    parts[i] = segment;
+  }
+  return parts.join('');
+}
+
 // ── TOC extractor ────────────────────────────────────────────────────────────
 // Injects id attributes into h2/h3 tags and returns the TOC item list
 
@@ -246,9 +307,16 @@ export default function RecoveryBlogPost() {
     [rawContent]
   );
 
-  const { items: tocItems, html: renderedContent } = useMemo(
+  const { items: tocItems, html: tocHtml } = useMemo(
     () => (post ? extractTOC(rawRendered) : { items: [], html: '' }),
     [rawRendered, post]
+  );
+
+  // Programmatic internal cross-linking — runs after TOC ids are injected so the
+  // linker can skip headings, and keyed on the corpus so links appear once posts load.
+  const renderedContent = useMemo(
+    () => (post ? linkifyInternal(tocHtml, allPosts, post.slug) : tocHtml),
+    [tocHtml, allPosts, post]
   );
 
   const faqItems = useMemo(() => extractFAQs(rawRendered), [rawRendered]);

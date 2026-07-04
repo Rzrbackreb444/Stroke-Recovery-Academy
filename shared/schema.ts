@@ -1257,12 +1257,14 @@ export const recoveryBlogPosts = pgTable("recovery_blog_posts", {
   heroImageUrl: text("hero_image_url"),
   authorName: text("author_name").notNull().default("Nick Kremers"),
   authorBio: text("author_bio"),
-  status: text("status").notNull().default("published"), // published, draft
+  status: text("status").notNull().default("published"), // published, draft, scheduled
   featured: boolean("featured").notNull().default(false),
   viewCount: integer("view_count").notNull().default(0),
   likeCount: integer("like_count").notNull().default(0),
   commentCount: integer("comment_count").notNull().default(0),
   readTime: integer("read_time").notNull().default(5),
+  scheduledFor: timestamp("scheduled_for"), // when a status='scheduled' post should auto-publish
+  newsletterBroadcastAt: timestamp("newsletter_broadcast_at"), // set once the auto-publish broadcast fired (idempotency)
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

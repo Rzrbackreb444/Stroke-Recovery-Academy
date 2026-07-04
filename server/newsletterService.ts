@@ -497,15 +497,22 @@ export async function sendBroadcast(editionId: number): Promise<{ sent: number; 
 
   for (const sub of subscribers) {
     try {
-      await sendEmail({
+      // sendEmail resolves with { success:false } on a provider rejection
+      // instead of throwing — treat that as a failed delivery, not a send.
+      const result = await sendEmail({
         to: sub.email,
         subject: edition.subject,
         html: edition.htmlContent,
         text: edition.textContent || '',
       });
-      sent++;
+      if (result?.success) {
+        sent++;
+      } else {
+        failed++;
+        console.error(`[newsletter] broadcast failed for ${redactEmail(sub.email)}: ${result?.error || 'unknown error'}`);
+      }
     } catch (e) {
-      console.error(`[newsletter] broadcast failed for ${redactEmail(sub.email)}:`, e);
+      console.error(`[newsletter] broadcast threw for ${redactEmail(sub.email)}:`, e);
       failed++;
     }
     // 5 req/s safety throttle
