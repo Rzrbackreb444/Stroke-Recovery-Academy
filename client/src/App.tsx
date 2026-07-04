@@ -1,5 +1,5 @@
 import { useState, useEffect, lazy, Suspense } from "react";
-import { Switch, Route, Redirect } from "wouter";
+import { Switch, Route, Redirect, useSearch } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -105,7 +105,6 @@ const TemplateMarketplacePage = lazy(() => import("@/pages/TemplateMarketplacePa
 const DocHubPage = lazy(() => import("@/pages/DocHubPage"));
 const CreatorStore = lazy(() => import("@/pages/CreatorStore"));
 const Settings = lazy(() => import("@/pages/Settings"));
-const MagicLinkLogin = lazy(() => import("@/pages/MagicLinkLogin"));
 const MagicLinkVerify = lazy(() => import("@/pages/MagicLinkLogin").then(m => ({ default: m.MagicLinkVerify })));
 const AuthorProfile = lazy(() => import("@/pages/AuthorProfile"));
 const AuthorStorefront = lazy(() => import("@/pages/AuthorStorefront"));
@@ -183,7 +182,6 @@ const RecoveryMe = lazy(() => import("@/pages/RecoveryMe"));
 const RecoveryExercises = lazy(() => import("@/pages/RecoveryExercises"));
 const RecoveryExerciseDetail = lazy(() => import("@/pages/RecoveryExerciseDetail"));
 const RecoverySpotlight = lazy(() => import("@/pages/RecoverySpotlight"));
-const RecoveryLogin = lazy(() => import("@/pages/RecoveryLogin"));
 const SasquatchCoach = lazy(() => import("@/pages/SasquatchCoach"));
 const SurvivorIncome = lazy(() => import("@/pages/SurvivorIncome"));
 const RecoveryProtocols = lazy(() => import("@/pages/RecoveryProtocols"));
@@ -261,6 +259,17 @@ function LazyRouteFallback() {
       </div>
     </div>
   );
+}
+
+// Redirect a deprecated route to the canonical /auth page while preserving the
+// original query string (?next=, ?tab=signup, etc.) so deep-link intent and
+// emailed/bookmarked links survive the consolidation.
+function AuthRedirect({ to = "/auth" }: { to?: string }) {
+  const search = useSearch();
+  const target = to.includes("?")
+    ? (search ? `${to}&${search}` : to)
+    : (search ? `${to}?${search}` : to);
+  return <Redirect to={target} />;
 }
 
 function Router() {
@@ -342,8 +351,8 @@ function Router() {
         </ProtectedRoute>
       </Route>
       
-      {/* Magic Link Authentication */}
-      <Route path="/magic-link" component={MagicLinkLogin} />
+      {/* Magic Link Authentication — form consolidated into /auth; verify kept for emailed links */}
+      <Route path="/magic-link"><AuthRedirect to="/auth?mode=magic-link" /></Route>
       <Route path="/magic-link/verify/:token" component={MagicLinkVerify} />
       
       {/* Creator studios hidden — platform is survivor-only. Generic content
@@ -705,7 +714,7 @@ function Router() {
       </Route>
       <Route path="/recovery/resources" component={RecoveryResources} />
       <Route path="/recovery/center-finder" component={RecoveryCenterFinder} />
-      <Route path="/recovery/login" component={RecoveryLogin} />
+      <Route path="/recovery/login"><AuthRedirect to="/auth" /></Route>
       <Route path="/recovery/onboarding" component={RecoveryOnboarding} />
       <Route path="/recovery/me" component={RecoveryMe} />
       <Route path="/recovery/routine" component={DailyRoutine} />

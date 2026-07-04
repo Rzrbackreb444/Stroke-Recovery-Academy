@@ -1442,41 +1442,12 @@ Last updated: ${new Date().toISOString().split('T')[0]}
     }
   });
 
+  // Canonical magic-link verification. The alias /api/email-auth/verify-magic-link
+  // delegates to this same handler (see magicLinkService.handleMagicLinkVerify) so
+  // both emailed link shapes terminate in one verifier code path.
   app.get('/api/auth/magic-link/verify/:token', async (req: any, res) => {
-    try {
-      const { token } = req.params;
-      if (!token) {
-        return res.status(400).json({ message: "Token is required" });
-      }
-
-      const { verifyMagicLink } = await import('./magicLinkService');
-      const result = await verifyMagicLink(token);
-
-      if (!result.success) {
-        return res.status(400).json({ message: result.error || "Invalid magic link" });
-      }
-
-      const user = await storage.getUser(result.userId!);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      req.login({ 
-        claims: { sub: user.id, email: user.email },
-        access_token: null,
-        refresh_token: null,
-        expires_at: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60)
-      }, (err: any) => {
-        if (err) {
-          console.error("Login error:", err);
-          return res.status(500).json({ message: "Failed to create session" });
-        }
-        res.json({ success: true, user });
-      });
-    } catch (error: any) {
-      console.error("Magic link verification error:", error);
-      res.status(500).json({ message: error.message || "Failed to verify magic link" });
-    }
+    const { handleMagicLinkVerify } = await import('./magicLinkService');
+    return handleMagicLinkVerify(req, res);
   });
 
   // Email/Password Login route

@@ -7,6 +7,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Loader2, CheckCircle, XCircle } from "lucide-react";
 import kreaiteLogo from "@assets/Untitled_design.zip_-_1_1769816069353.png";
 import { Button } from "@/components/ui/button";
+import { routeAfterAuth } from "@/lib/postAuthRedirect";
 
 export default function AuthVerify() {
   const [, setLocation] = useLocation();
@@ -20,11 +21,12 @@ export default function AuthVerify() {
       const response = await apiRequest("GET", `/api/email-auth/verify-magic-link?token=${token}`);
       return response.json();
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       setStatus("success");
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       queryClient.invalidateQueries({ queryKey: ["/api/email-auth/me"] });
       toast({ title: "Welcome back!", description: "You've been signed in successfully" });
-      setTimeout(() => setLocation("/creator-hub"), 2000);
+      setTimeout(() => routeAfterAuth(setLocation), 1500);
     },
     onError: (error: any) => {
       setStatus("error");
