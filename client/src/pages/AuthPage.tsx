@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "wouter";
+import { useLocation, useSearch } from "wouter";
+import { routeAfterAuth } from "@/lib/postAuthRedirect";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import kreaiteLogo from "@assets/Untitled_design.zip_-_1_1769816069353.png";
 import { Button } from "@/components/ui/button";
@@ -29,10 +30,25 @@ import {
 // confusing/cheap-looking.
 type AuthMode = "otp" | "password" | "register" | "magic-link" | "forgot-password";
 
+const AUTH_MODES: AuthMode[] = ["otp", "password", "register", "magic-link", "forgot-password"];
+
 export default function AuthPage() {
   const [, setLocation] = useLocation();
+  const searchStr = useSearch();
+  const searchParams = new URLSearchParams(searchStr);
+  // Canonical entry point honors deep-link intent forwarded from redirected
+  // routes (e.g. /recovery/login?next=…&tab=signup → /auth?next=…&tab=signup).
+  const nextParam = searchParams.get("next");
+  const modeParam = searchParams.get("mode");
+  const tabParam = searchParams.get("tab");
+  const initialMode: AuthMode = modeParam && AUTH_MODES.includes(modeParam as AuthMode)
+    ? (modeParam as AuthMode)
+    : tabParam === "signup"
+      ? "register"
+      : "otp";
+
   const { toast } = useToast();
-  const [mode, setMode] = useState<AuthMode>("otp");
+  const [mode, setMode] = useState<AuthMode>(initialMode);
   const [showPassword, setShowPassword] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -73,13 +89,13 @@ export default function AuthPage() {
       const r = await apiRequest("POST", "/api/auth/otp/verify", { email, otp });
       return r.json();
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       queryClient.invalidateQueries({ queryKey: ["/api/email-auth/me"] });
       toast({ title: "Welcome!", description: "You're signed in" });
-      // New OTP accounts go to /welcome (intake-first); returning users go to
-      // the creator hub. Server flags isNewUser via the OTP verify response.
-      setLocation(data?.isNewUser ? "/welcome" : "/creator-hub");
+      // Consistent post-auth routing: honor ?next=, else new→onboarding /
+      // returning→dashboard via /api/recovery/me/state.
+      routeAfterAuth(setLocation, nextParam);
     },
     onError: (e: any) => {
       toast({ title: "Invalid code", description: e.message || "Check the code and try again", variant: "destructive" });
@@ -88,13 +104,14 @@ export default function AuthPage() {
 
   const loginMutation = useMutation({
     mutationFn: async () => {
-      const r = await apiRequest("POST", "/api/email-auth/login", { email, password });
+      const r = await apiRequest("POST", "/api/auth/login", { email, password });
       return r.json();
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       queryClient.invalidateQueries({ queryKey: ["/api/email-auth/me"] });
       toast({ title: "Welcome back!", description: "You've successfully signed in" });
-      setLocation("/creator-hub");
+      routeAfterAuth(setLocation, nextParam);
     },
     onError: (e: any) => {
       toast({ title: "Login failed", description: e.message || "Invalid credentials", variant: "destructive" });
@@ -103,13 +120,14 @@ export default function AuthPage() {
 
   const registerMutation = useMutation({
     mutationFn: async () => {
-      const r = await apiRequest("POST", "/api/email-auth/register", { email, password, firstName, lastName });
+      const r = await apiRequest("POST", "/api/auth/register", { email, password, firstName, lastName });
       return r.json();
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       queryClient.invalidateQueries({ queryKey: ["/api/email-auth/me"] });
       toast({ title: "Account created!", description: "Welcome to Stroke Recovery Academy" });
-      setLocation("/welcome");
+      routeAfterAuth(setLocation, nextParam);
     },
     onError: (e: any) => {
       toast({ title: "Registration failed", description: e.message, variant: "destructive" });
@@ -118,7 +136,7 @@ export default function AuthPage() {
 
   const magicLinkMutation = useMutation({
     mutationFn: async () => {
-      const r = await apiRequest("POST", "/api/email-auth/magic-link", { email });
+      const r = await apiRequest("POST", "/api/auth/magic-link", { email });
       return r.json();
     },
     onSuccess: () => {

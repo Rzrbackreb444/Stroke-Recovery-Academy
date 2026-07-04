@@ -160,7 +160,12 @@ export async function registerLocalUser(email: string, password: string, firstNa
     lastName: lastName || null,
     role: "creator",
   }).returning();
-  
+
+  // Funnel: record the signup milestone (idempotent). Fire-and-forget.
+  void import("./services/sasquatchFunnelService").then((f) =>
+    f.recordFunnelEventOnce({ userId, eventType: "signup" }),
+  ).catch(() => {});
+
   return newUser;
 }
 

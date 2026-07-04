@@ -1018,6 +1018,11 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   const { default: schedulerRoutes } = await import('./scheduler/schedulerRoutes');
   app.use('/api/admin/scheduler', schedulerRoutes);
 
+  // Business Intelligence admin API (funnel + revenue + engagement metrics,
+  // trend snapshots). Admin-only; mounted after setupAuth for requireAdmin.
+  const { default: biRoutes } = await import('./biRoutes');
+  app.use('/api/admin/business', biRoutes);
+
   // Lifecycle messaging public routes — global email unsubscribe (HMAC) + Twilio
   // inbound SMS webhook (STOP/HELP, signature-verified, inert until SMS_ENABLED).
   const { registerMessagingRoutes } = await import('./messaging/routes');
@@ -1437,41 +1442,12 @@ Last updated: ${new Date().toISOString().split('T')[0]}
     }
   });
 
+  // Canonical magic-link verification. The alias /api/email-auth/verify-magic-link
+  // delegates to this same handler (see magicLinkService.handleMagicLinkVerify) so
+  // both emailed link shapes terminate in one verifier code path.
   app.get('/api/auth/magic-link/verify/:token', async (req: any, res) => {
-    try {
-      const { token } = req.params;
-      if (!token) {
-        return res.status(400).json({ message: "Token is required" });
-      }
-
-      const { verifyMagicLink } = await import('./magicLinkService');
-      const result = await verifyMagicLink(token);
-
-      if (!result.success) {
-        return res.status(400).json({ message: result.error || "Invalid magic link" });
-      }
-
-      const user = await storage.getUser(result.userId!);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      req.login({ 
-        claims: { sub: user.id, email: user.email },
-        access_token: null,
-        refresh_token: null,
-        expires_at: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60)
-      }, (err: any) => {
-        if (err) {
-          console.error("Login error:", err);
-          return res.status(500).json({ message: "Failed to create session" });
-        }
-        res.json({ success: true, user });
-      });
-    } catch (error: any) {
-      console.error("Magic link verification error:", error);
-      res.status(500).json({ message: error.message || "Failed to verify magic link" });
-    }
+    const { handleMagicLinkVerify } = await import('./magicLinkService');
+    return handleMagicLinkVerify(req, res);
   });
 
   // Email/Password Login route
@@ -10067,7 +10043,12 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         challengesToday,
         gratitude,
       });
-      
+
+      // Funnel: a check-in may have just satisfied the activation condition.
+      void import('./services/sasquatchFunnelService').then((f) =>
+        f.maybeRecordActivation(userId),
+      ).catch(() => {});
+
       const streak = await storage.getUserStreak(userId);
       const today = new Date();
       const yesterday = new Date(today);

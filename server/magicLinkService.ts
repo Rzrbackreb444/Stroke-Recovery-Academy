@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import type { Request, Response } from 'express';
 import { db } from './db';
 import { magicLinkTokens, users } from '../shared/schema';
 import { eq, and, gt, isNull } from 'drizzle-orm';
@@ -100,6 +101,76 @@ export async function verifyMagicLink(token: string): Promise<{ success: boolean
   } catch (error: any) {
     console.error('Magic link verification error:', error);
     return { success: false, error: error.message || 'Failed to verify magic link' };
+  }
+}
+
+// Canonical magic-link verification. Checks the canonical token store first
+// (magicLinkTokens, minted by generateMagicLink above), then falls back to the
+// legacy store (emailAuthService `magicLinks` table) so links already emailed by
+// the old backend continue to work. This is the single source of truth both the
+// canonical route and the alias route delegate to.
+export async function verifyMagicLinkToken(
+  token: string,
+): Promise<{ success: boolean; userId?: string; email?: string; error?: string }> {
+  const canonical = await verifyMagicLink(token);
+  if (canonical.success) return canonical;
+
+  // Fall back to the legacy emailAuthService store for backward compatibility.
+  const { verifyMagicLink: verifyLegacyMagicLink } = await import('./emailAuthService');
+  const legacy = await verifyLegacyMagicLink(token);
+  if (legacy.success && legacy.user) {
+    return { success: true, userId: legacy.user.id, email: legacy.user.email };
+  }
+
+  return {
+    success: false,
+    error: canonical.error || legacy.error || 'Invalid or expired magic link',
+  };
+}
+
+// Shared Express handler so /api/auth/magic-link/verify/:token (canonical) and
+// /api/email-auth/verify-magic-link?token= (alias) terminate in the exact same
+// verification + session-creation code path. Both establish a passport session
+// via req.login so the resulting session is identical regardless of link shape.
+export async function handleMagicLinkVerify(req: Request, res: Response) {
+  try {
+    const token = (req.params as any)?.token || (req.query?.token as string);
+    if (!token) {
+      return res.status(400).json({ message: 'Token is required', error: 'Token is required' });
+    }
+
+    const result = await verifyMagicLinkToken(token);
+    if (!result.success) {
+      const msg = result.error || 'Invalid or expired magic link';
+      return res.status(400).json({ message: msg, error: msg });
+    }
+
+    const [user] = await db.select().from(users).where(eq(users.id, result.userId!)).limit(1);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found', error: 'User not found' });
+    }
+
+    (req as any).login(
+      {
+        claims: { sub: user.id, email: user.email },
+        access_token: null,
+        refresh_token: null,
+        expires_at: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60,
+      },
+      (err: any) => {
+        if (err) {
+          console.error('Magic link login error:', err);
+          return res
+            .status(500)
+            .json({ message: 'Failed to create session', error: 'Failed to create session' });
+        }
+        res.json({ success: true, user });
+      },
+    );
+  } catch (error: any) {
+    console.error('Magic link verification error:', error);
+    const msg = error.message || 'Failed to verify magic link';
+    res.status(500).json({ message: msg, error: msg });
   }
 }
 

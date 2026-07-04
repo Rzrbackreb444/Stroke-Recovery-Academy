@@ -20,3 +20,5 @@
 - [Messaging engine](messaging-engine.md) — unified sendMessage: unsubscribed→dedupe(claim-release)→channel/consent/quiet-hours; self-provisions schema on boot; SMS behind SMS_ENABLED; no crisis gate (static copy only)
 - [db:push blocked by stripe schema](db-push-stripe-schema.md) — db:push prompts (non-TTY error) over external `stripe` schema; apply additive DDL via psql instead
 - [Type errors in gated components](type-errors-in-gated-components.md) — tsx strips types w/o check; undefined ids in auth/sub-gated UI crash only at render, pass workflow start + ungated screenshot
+- [Business Intelligence metrics](bi-metrics.md) — admin BI dashboard: activation def, compute-from-source approach, daily snapshot trends, mrr_cents BIGINT-as-string
+- [Auth backend topology](auth-backends.md) — canonical passport family + kept session family; one sign-in page, one magic-link verifier (canonical+legacy fallback), centralized post-auth routing

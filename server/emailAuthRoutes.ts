@@ -4,7 +4,6 @@ import {
   registerUser,
   loginUser,
   createMagicLink,
-  verifyMagicLink,
   createPasswordResetToken,
   resetPassword,
   getUserById,
@@ -110,26 +109,14 @@ router.post("/magic-link", authActionLimiter, async (req: Request, res: Response
   }
 });
 
+// Alias for the canonical magic-link verifier. Old emailAuthService links point
+// at /auth/verify?token= (this route); it now delegates to the single shared
+// handler so both link shapes terminate in the same verification + session code
+// path (passport session via req.login). The shared verifier still checks the
+// legacy magicLinks store, so previously-emailed links keep working.
 router.get("/verify-magic-link", async (req: Request, res: Response) => {
-  try {
-    const token = req.query.token as string;
-    
-    if (!token) {
-      return res.status(400).json({ error: "Token is required" });
-    }
-    
-    const result = await verifyMagicLink(token);
-    
-    if (!result.success) {
-      return res.status(400).json({ error: result.error });
-    }
-    
-    req.session.userId = result.user.id;
-    
-    res.json({ success: true, user: result.user });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message || "Verification failed" });
-  }
+  const { handleMagicLinkVerify } = await import("./magicLinkService");
+  return handleMagicLinkVerify(req, res);
 });
 
 router.post("/forgot-password", authActionLimiter, async (req: Request, res: Response) => {
