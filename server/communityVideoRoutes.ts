@@ -164,6 +164,8 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
     try {
       const userId = getUserId(req) ?? null;
       const page = Math.max(0, parseInt(String(req.query.page ?? "0"), 10));
+      const q = String(req.query.q ?? "").trim().slice(0, 100);
+      const topic = String(req.query.topic ?? "").trim().slice(0, 40);
       const limit = 24;
 
       const [{ deficits, goals }, allVideos] = await Promise.all([
@@ -173,9 +175,13 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
           .from(communityVideos)
           .leftJoin(users, eq(communityVideos.uploaderId, users.id))
           .leftJoin(userSettings, eq(communityVideos.uploaderId, userSettings.userId))
-          .where(eq(communityVideos.isPublic, true))
+          .where(and(
+            eq(communityVideos.isPublic, true),
+            q ? sql`(${communityVideos.title} ILIKE ${`%${q}%`} OR ${communityVideos.description} ILIKE ${`%${q}%`})` : undefined,
+            topic ? sql`${topic}::text = ANY(${communityVideos.deficitTags})` : undefined,
+          ))
           .orderBy(desc(communityVideos.isPinned), desc(communityVideos.isFeatured), desc(communityVideos.createdAt))
-          .limit(200),
+          .limit(q || topic ? 500 : 200),
       ]);
 
       const scored = allVideos
@@ -381,6 +387,52 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
     } catch (err) {
       console.error("[sparks] profile error:", err);
       res.status(500).json({ message: "Could not load profile." });
+    }
+  });
+
+  // ── Adjacent videos (prev/next for swipe navigation) ───────────────────────
+  app.get("/api/community/videos/adjacent/:id", async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id, 10);
+      if (isNaN(id)) return res.status(400).json({ message: "Invalid id." });
+
+      const [currentRows] = await Promise.all([
+        db.select({ createdAt: communityVideos.createdAt })
+          .from(communityVideos)
+          .where(and(eq(communityVideos.id, id), eq(communityVideos.isPublic, true)))
+          .limit(1),
+      ]);
+      const current = currentRows[0];
+      if (!current) return res.json({ prevId: null, nextId: null });
+
+      const [nextRows, prevRows] = await Promise.all([
+        db.select({ id: communityVideos.id })
+          .from(communityVideos)
+          .where(and(
+            eq(communityVideos.isPublic, true),
+            ne(communityVideos.id, id),
+            sql`${communityVideos.createdAt} < ${current.createdAt}`,
+          ))
+          .orderBy(desc(communityVideos.createdAt))
+          .limit(1),
+        db.select({ id: communityVideos.id })
+          .from(communityVideos)
+          .where(and(
+            eq(communityVideos.isPublic, true),
+            ne(communityVideos.id, id),
+            sql`${communityVideos.createdAt} > ${current.createdAt}`,
+          ))
+          .orderBy(communityVideos.createdAt)
+          .limit(1),
+      ]);
+
+      res.json({
+        nextId: nextRows[0]?.id ?? null,
+        prevId: prevRows[0]?.id ?? null,
+      });
+    } catch (err) {
+      console.error("[sparks] adjacent error:", err);
+      res.status(500).json({ message: "Could not load adjacent." });
     }
   });
 
@@ -666,6 +718,22 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
     } catch (err) {
       console.error("[sparks] patch error:", err);
       res.status(500).json({ message: "Could not update video." });
+    }
+  });
+
+  // ── Report video ─────────────────────────────────────────────────────────────
+  app.post("/api/community/video/:id/report", isAuthenticated, async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id, 10);
+      if (isNaN(id)) return res.status(400).json({ message: "Invalid id." });
+      const userId = getUserId(req);
+      if (!userId) return res.status(401).json({ message: "Sign in to report." });
+      const reason = String(req.body?.reason ?? "").trim().slice(0, 200) || "unspecified";
+      console.log(JSON.stringify({ event: "sparks_report", videoId: id, reporterId: userId, reason, ts: new Date().toISOString() }));
+      res.json({ ok: true });
+    } catch (err) {
+      console.error("[sparks] report error:", err);
+      res.status(500).json({ message: "Could not submit report." });
     }
   });
 

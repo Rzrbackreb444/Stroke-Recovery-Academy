@@ -642,13 +642,33 @@ export default function CommunityVideos() {
   const [page, setPage] = useState(0);
   const [allVideos, setAllVideos] = useState<VideoCard[]>([]);
   const loadMoreRef = useRef<HTMLDivElement>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeTopic, setActiveTopic] = useState<string | null>(null);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
   // Which userId to show on the profile tab
   const profileUserId = urlUserId ?? ownUserId;
 
+  // Debounce search input (300ms)
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(searchQuery), 300);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
+
+  // Reset page + accumulated list when search/topic changes
+  useEffect(() => {
+    setPage(0);
+    setAllVideos([]);
+  }, [debouncedSearch, activeTopic]);
+
   const feedQuery = useQuery<{ videos: VideoCard[]; hasMore: boolean; page: number }>({
-    queryKey: ["/api/community/videos", page],
-    queryFn: () => fetch(`/api/community/videos?page=${page}`).then((r) => r.json()),
+    queryKey: ["/api/community/videos", page, debouncedSearch, activeTopic],
+    queryFn: () => {
+      const p = new URLSearchParams({ page: String(page) });
+      if (debouncedSearch) p.set("q", debouncedSearch);
+      if (activeTopic) p.set("topic", activeTopic);
+      return fetch(`/api/community/videos?${p}`).then((r) => r.json());
+    },
     staleTime: 30_000,
   });
 
@@ -699,10 +719,24 @@ export default function CommunityVideos() {
     qc.invalidateQueries({ queryKey: ["/api/community/videos/profile", profileUserId] });
   };
 
-  const displayVideos =
+  const rawVideos =
     activeTab === "feed" ? allVideos :
     activeTab === "following" ? (followingQuery.data?.videos ?? []) :
     (profileQuery.data?.videos ?? []);
+
+  // Client-side filter for instant chip + search response
+  const displayVideos = rawVideos.filter((v) => {
+    if (activeTopic && !v.deficitTags.includes(activeTopic)) return false;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      return (
+        v.title.toLowerCase().includes(q) ||
+        v.uploaderName.toLowerCase().includes(q) ||
+        v.tags.some((t) => t.toLowerCase().includes(q))
+      );
+    }
+    return true;
+  });
   const isLoading =
     activeTab === "feed" ? (feedQuery.isLoading && page === 0) :
     activeTab === "following" ? followingQuery.isLoading :
@@ -771,6 +805,35 @@ export default function CommunityVideos() {
           )}
         </div>
       </div>
+
+      {/* Search bar + deficit chips — feed / following */}
+      {(activeTab === "feed" || activeTab === "following") && (
+        <div className="max-w-5xl mx-auto px-4 pt-3 pb-1 space-y-2">
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search Sparks, creators, tags…"
+            className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 h-9 text-sm"
+            data-testid="input-search"
+          />
+          <div className="flex gap-2 overflow-x-auto pb-0.5" style={{ scrollbarWidth: "none" }}>
+            {Object.entries(DEFICIT_LABELS).map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setActiveTopic(activeTopic === key ? null : key)}
+                className={`px-3 py-1 rounded-full text-xs font-semibold border whitespace-nowrap transition-colors flex-shrink-0 ${
+                  activeTopic === key
+                    ? "bg-[#E2741B] border-[#E2741B] text-white"
+                    : "bg-zinc-800/80 border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-300"
+                }`}
+                data-testid={`chip-topic-${key}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Profile header (profile tab) */}
       {activeTab === "profile" && profileData && (
