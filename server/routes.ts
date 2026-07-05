@@ -25551,6 +25551,8 @@ Format as structured JSON with clear sections.`;
   registerLessonVideoRoutes(app, isAuthenticated, uploadsDir);
   const { registerJournalMediaRoutes } = await import('./journalMediaRoutes');
   registerJournalMediaRoutes(app, isAuthenticated, uploadsDir);
+  const { registerCommunityVideoRoutes } = await import('./communityVideoRoutes');
+  registerCommunityVideoRoutes(app, isAuthenticated);
   const { registerFreeAnalysisRoutes } = await import('./routes/freeAnalysisRoutes');
   registerFreeAnalysisRoutes(app, isAuthenticated, uploadsDir);
   registerQuizRoutes(app, isAuthenticated, uploadsDir);

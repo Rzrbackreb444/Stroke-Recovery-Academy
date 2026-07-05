@@ -59,6 +59,7 @@ const resourcesGroups: { title: string; items: { href: string; label: string; pr
   {
     title: "Connect",
     items: [
+      { href: "/recovery/videos", label: "Recovery Videos" },
       { href: "/recovery/campfire", label: "Campfire (Live)" },
       { href: "/recovery/spotlight", label: "Spotlight" },
       { href: "/recovery/buddy", label: "Accountability Buddy" },
