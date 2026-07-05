@@ -25,3 +25,4 @@
 - [Type errors in gated components](type-errors-in-gated-components.md) — tsx strips types w/o check; undefined ids in auth/sub-gated UI crash only at render, pass workflow start + ungated screenshot
 - [Business Intelligence metrics](bi-metrics.md) — admin BI dashboard: activation def, compute-from-source approach, daily snapshot trends, mrr_cents BIGINT-as-string
 - [Auth backend topology](auth-backends.md) — canonical passport family + kept session family; one sign-in page, one magic-link verifier (canonical+legacy fallback), centralized post-auth routing
+- [Object storage video URL path](object-storage-video-path.md) — DB stores /objects/uploads/<uuid>; getObjectEntityFile prepends PRIVATE_OBJECT_DIR internally; never store the private dir prefix in videoUrl

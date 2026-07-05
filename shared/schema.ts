@@ -7358,3 +7358,64 @@ export const insertScheduledJobSchema = createInsertSchema(scheduledJobs).omit({
   failureCount: true, lockedAt: true, lockedBy: true,
 });
 export type InsertScheduledJob = z.infer<typeof insertScheduledJobSchema>;
+
+// ============================================================================
+// COMMUNITY VIDEOS
+// ============================================================================
+
+export const communityVideos = pgTable("community_videos", {
+  id: serial("id").primaryKey(),
+  uploaderId: text("uploader_id").references(() => users.id, { onDelete: "set null" }),
+  title: text("title").notNull(),
+  description: text("description"),
+  tags: text("tags").array().notNull().default([]),
+  deficitTags: text("deficit_tags").array().notNull().default([]),
+  videoUrl: text("video_url").notNull(),
+  thumbnailUrl: text("thumbnail_url"),
+  durationSeconds: integer("duration_seconds"),
+  fileSizeBytes: integer("file_size_bytes"),
+  viewCount: integer("view_count").notNull().default(0),
+  likeCount: integer("like_count").notNull().default(0),
+  commentCount: integer("comment_count").notNull().default(0),
+  isPublic: boolean("is_public").notNull().default(true),
+  isFeatured: boolean("is_featured").notNull().default(false),
+  isPinned: boolean("is_pinned").notNull().default(false),
+  isPremium: boolean("is_premium").notNull().default(false),
+  source: text("source").notNull().default("upload"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  index("idx_community_videos_uploader").on(table.uploaderId),
+  index("idx_community_videos_created").on(table.createdAt),
+  index("idx_community_videos_public").on(table.isPublic, table.createdAt),
+]);
+
+export type CommunityVideo = typeof communityVideos.$inferSelect;
+export const insertCommunityVideoSchema = createInsertSchema(communityVideos).omit({
+  id: true, createdAt: true, viewCount: true, likeCount: true, commentCount: true,
+});
+export type InsertCommunityVideo = z.infer<typeof insertCommunityVideoSchema>;
+
+export const videoLikes = pgTable("video_likes", {
+  id: serial("id").primaryKey(),
+  videoId: integer("video_id").notNull().references(() => communityVideos.id, { onDelete: "cascade" }),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  uniqueIndex("idx_video_likes_unique").on(table.videoId, table.userId),
+]);
+
+export type VideoLike = typeof videoLikes.$inferSelect;
+
+export const videoComments = pgTable("video_comments", {
+  id: serial("id").primaryKey(),
+  videoId: integer("video_id").notNull().references(() => communityVideos.id, { onDelete: "cascade" }),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  body: text("body").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  index("idx_video_comments_video").on(table.videoId, table.createdAt),
+]);
+
+export type VideoComment = typeof videoComments.$inferSelect;
+export const insertVideoCommentSchema = createInsertSchema(videoComments).omit({ id: true, createdAt: true });
+export type InsertVideoComment = z.infer<typeof insertVideoCommentSchema>;
