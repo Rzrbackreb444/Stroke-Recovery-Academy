@@ -120,6 +120,16 @@ export function applyRouteMeta(html: string, url: string, host?: string): string
     .replace(/<meta\s+name=["']twitter:title["'][^>]*>/gi, "")
     .replace(/<meta\s+name=["']twitter:description["'][^>]*>/gi, "");
 
+  // Strip all shell JSON-LD blocks so route-injected schema is the sole
+  // source of truth. This prevents duplicate WebSite/Organization/page-type
+  // blocks when applyRouteMeta overlays a matched SPA route.
+  if (jsonLd) {
+    out = out.replace(
+      /<script\s+type=["']application\/ld\+json["'][\s\S]*?<\/script>/gi,
+      "",
+    );
+  }
+
   // Inject the new head block (and any JSON-LD) right after <head>.
   const inject = jsonLd ? `${newHead}\n    ${jsonLd}` : newHead;
   out = out.replace(/<head([^>]*)>/i, (m) => `${m}\n    ${inject}`);
