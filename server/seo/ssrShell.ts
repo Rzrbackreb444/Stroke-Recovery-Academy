@@ -340,7 +340,7 @@ function renderHeader(): string {
     <a href="/recovery/challenge">66-Day Challenge</a>
     <a href="/blog">Blog</a>
     <a href="/recovery/center-finder">Center Finder</a>
-    <a href="/recovery/pricing" class="sra-cta-btn">Start Free</a>
+    <a href="/recovery/premium" class="sra-cta-btn">Start Free</a>
   </nav>
 </header>`;
 }
@@ -379,7 +379,7 @@ function renderFooter(): string {
       <a href="/recovery/center-finder">Find a recovery center</a>
       <a href="/blog">Survivor blog</a>
       <a href="/recovery/about-nick">About Nick</a>
-      <a href="/recovery/pricing">Pricing</a>
+      <a href="/recovery/premium">Premium</a>
     </div>
   </div>
   <div class="sra-footer-bottom">
