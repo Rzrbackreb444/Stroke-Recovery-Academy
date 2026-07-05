@@ -587,7 +587,7 @@ export default function CommunityVideoPlayer() {
             <span className="text-sm hidden sm:inline">Feed</span>
           </button>
           <div className="flex items-center gap-2 flex-1">
-            <Zap className="w-4 h-4 text-[#E2741B]" />
+            <img src="/sparks-logo.png" alt="Sparks" className="h-7 w-7 rounded-lg object-cover" />
             <span className="text-white font-semibold">Sparks</span>
           </div>
 

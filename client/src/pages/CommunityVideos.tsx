@@ -717,7 +717,7 @@ export default function CommunityVideos() {
       <div className="sticky top-0 z-40 bg-zinc-950/90 backdrop-blur-md border-b border-zinc-800">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Zap className="w-5 h-5 text-[#E2741B]" />
+            <img src="/sparks-logo.png" alt="Sparks" className="h-8 w-8 rounded-lg object-cover" />
             <h1 className="text-lg font-bold tracking-tight">Sparks</h1>
           </div>
           <div className="flex items-center gap-2">
@@ -784,9 +784,12 @@ export default function CommunityVideos() {
             <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-[#E2741B]/5 blur-3xl pointer-events-none" />
             <div className="relative flex flex-col sm:flex-row sm:items-center gap-6">
               <div className="flex-1 space-y-3">
-                <div className="flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-[#E2741B]" />
-                  <span className="text-[#E2741B] font-bold text-sm uppercase tracking-widest">Sparks</span>
+                <div className="flex items-center gap-3">
+                  <img src="/sparks-logo.png" alt="Sparks" className="h-12 w-12 rounded-xl object-cover flex-shrink-0" />
+                  <div>
+                    <p className="text-white font-bold text-base leading-none">Sparks</p>
+                    <p className="text-zinc-500 text-xs mt-0.5">by Stroke Recovery Academy</p>
+                  </div>
                 </div>
                 <h2 className="text-white font-bold text-xl sm:text-2xl leading-snug">
                   Short recovery videos.<br className="hidden sm:block" /> Made by survivors, for survivors.
