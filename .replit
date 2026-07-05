@@ -7,7 +7,7 @@ channel = "stable-24_05"
 
 [deployment]
 deploymentTarget = "autoscale"
-build = ["bash", "-c", "rm -rf dist && NODE_OPTIONS='--max-old-space-size=6144' npm run build && test -f dist/public/index.html && test -f dist/index.js"]
+build = ["bash", "-c", "rm -rf dist && NODE_OPTIONS='--max-old-space-size=4096' npm run build && test -f dist/public/index.html && test -f dist/index.js"]
 run = ["bash", "-c", "NODE_ENV=production node dist/index.js"]
 
 [[ports]]
