@@ -118,8 +118,8 @@ export default function GlobalHeader() {
               <DropdownMenuItem className="cursor-pointer text-[11px] font-bold uppercase py-3" onClick={() => navigate('/recovery/community')}>
                 Community Feed
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer text-[11px] font-bold uppercase py-3" onClick={() => navigate('/recovery/videos')}>
-                Recovery Videos
+              <DropdownMenuItem className="cursor-pointer text-[11px] font-bold uppercase py-3" onClick={() => navigate('/sparks')}>
+                Sparks
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

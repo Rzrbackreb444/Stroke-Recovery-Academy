@@ -1272,8 +1272,8 @@ function CommunityVideosTab() {
       <div className="text-center py-16 space-y-4">
         <PlayCircle className="w-12 h-12 text-gray-600 mx-auto" />
         <p className="text-gray-400">No videos yet — be the first to share your recovery.</p>
-        <a href="/recovery/videos">
-          <Button className="bg-[#E2741B] text-black font-bold mt-2">Go to Recovery Videos</Button>
+        <a href="/sparks">
+          <Button className="bg-[#E2741B] text-black font-bold mt-2">Go to Sparks</Button>
         </a>
       </div>
     );
@@ -1283,13 +1283,13 @@ function CommunityVideosTab() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-gray-400 text-sm">Real reps. Real progress. Your people, on camera.</p>
-        <a href="/recovery/videos" className="text-[#E2741B] text-sm font-semibold hover:underline shrink-0">Browse all →</a>
+        <a href="/sparks" className="text-[#E2741B] text-sm font-semibold hover:underline shrink-0">Browse all →</a>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {videos.slice(0, 9).map((v: any) => (
           <a
             key={v.id}
-            href={`/recovery/videos/${v.id}`}
+            href={`/sparks/${v.id}`}
             className="relative aspect-[9/16] rounded-xl overflow-hidden bg-[#1a1a1a] cursor-pointer block"
             data-testid={`community-video-card-${v.id}`}
           >
@@ -1311,9 +1311,9 @@ function CommunityVideosTab() {
         ))}
       </div>
       <div className="text-center pt-2">
-        <a href="/recovery/videos">
+        <a href="/sparks">
           <Button variant="outline" className="border-[#333] text-gray-300 gap-2">
-            <PlayCircle className="w-4 h-4" /> Browse all recovery videos
+            <PlayCircle className="w-4 h-4" /> Browse all Sparks
           </Button>
         </a>
       </div>

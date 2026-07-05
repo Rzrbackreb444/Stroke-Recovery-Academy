@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Upload, Play, Heart, MessageCircle, Eye, CheckCircle2,
   Sparkles, Pin, X, ImagePlus, Video, ChevronLeft,
-  ArrowUpFromLine, BarChart2, Grid3X3
+  ArrowUpFromLine, BarChart2, Grid3X3, Zap, UserPlus, UserCheck,
 } from "lucide-react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -50,12 +50,16 @@ interface ProfileData {
     avatar: string | null;
     isTherapist: boolean;
     bio: string | null;
+    username: string | null;
     videoCount: number;
     totalViews: number;
     totalLikes: number;
+    followerCount: number;
+    followingCount: number;
   };
   videos: VideoCard[];
   isOwnProfile: boolean;
+  isFollowedByMe: boolean;
 }
 
 const DEFICIT_LABELS: Record<string, string> = {
@@ -448,42 +452,88 @@ function UploadModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
 // ── Profile header ─────────────────────────────────────────────────────────────
 
 function ProfileHeader({ data, onUpload }: { data: ProfileData; onUpload: () => void }) {
-  const { uploader, isOwnProfile } = data;
+  const { uploader, isOwnProfile, isFollowedByMe } = data;
+  const { user } = useAuth();
+  const qc = useQueryClient();
+  const { toast } = useToast();
+  const ownUserId: string | null = user ? ((user as any).claims?.sub ?? (user as any).id) : null;
+
+  const [following, setFollowing] = useState(isFollowedByMe);
+  const [followerCount, setFollowerCount] = useState(uploader.followerCount);
+
+  const followMutation = useMutation({
+    mutationFn: () => apiRequest("POST", `/api/sparks/follow/${uploader.id}`),
+    onMutate: () => {
+      setFollowing((f) => !f);
+      setFollowerCount((c) => following ? Math.max(0, c - 1) : c + 1);
+    },
+    onSuccess: (d: any) => { setFollowing(d.following); setFollowerCount(d.followerCount); },
+    onError: () => { setFollowing(isFollowedByMe); setFollowerCount(uploader.followerCount); },
+  });
+
+  const profileHref = uploader.username ? `/sparks/u/${uploader.username}` : `/sparks/profile/${uploader.id}`;
+
   return (
-    <div className="text-center py-8 px-4 border-b border-zinc-800">
-      <div className="relative inline-block mb-4">
-        <Avatar className="w-24 h-24 border-2 border-[#E2741B]/50">
-          <AvatarImage src={uploader.avatar ?? undefined} />
-          <AvatarFallback className="text-2xl font-bold bg-zinc-800 text-white">{uploader.name[0]}</AvatarFallback>
-        </Avatar>
-        {uploader.isTherapist && (
-          <span className="absolute -bottom-1 -right-1 bg-blue-500 rounded-full p-0.5">
-            <CheckCircle2 className="w-4 h-4 text-white" />
-          </span>
-        )}
+    <div className="py-8 px-4 border-b border-zinc-800">
+      <div className="max-w-5xl mx-auto flex flex-col items-center sm:flex-row sm:items-start gap-6">
+        <div className="relative flex-shrink-0">
+          <Avatar className="w-24 h-24 border-2 border-[#E2741B]/50">
+            <AvatarImage src={uploader.avatar ?? undefined} />
+            <AvatarFallback className="text-2xl font-bold bg-zinc-800 text-white">{uploader.name[0]}</AvatarFallback>
+          </Avatar>
+          {uploader.isTherapist && (
+            <span className="absolute -bottom-1 -right-1 bg-blue-500 rounded-full p-0.5">
+              <CheckCircle2 className="w-4 h-4 text-white" />
+            </span>
+          )}
+        </div>
+        <div className="flex-1 min-w-0 text-center sm:text-left">
+          <h2 className="text-xl font-bold text-white mb-0.5">{uploader.name}</h2>
+          {uploader.username && <p className="text-zinc-500 text-sm mb-1">@{uploader.username}</p>}
+          {uploader.isTherapist && <p className="text-blue-400 text-xs font-medium mb-2">Verified Therapist</p>}
+          {uploader.bio && <p className="text-zinc-400 text-sm max-w-sm mb-3 line-clamp-2">{uploader.bio}</p>}
+          <div className="flex gap-6 justify-center sm:justify-start mb-4">
+            <div className="text-center">
+              <p className="text-white font-bold text-base leading-none">{fmtCount(uploader.videoCount)}</p>
+              <p className="text-zinc-500 text-xs mt-0.5">Sparks</p>
+            </div>
+            <div className="text-center">
+              <p className="text-white font-bold text-base leading-none">{fmtCount(followerCount)}</p>
+              <p className="text-zinc-500 text-xs mt-0.5">Followers</p>
+            </div>
+            <div className="text-center">
+              <p className="text-white font-bold text-base leading-none">{fmtCount(uploader.followingCount)}</p>
+              <p className="text-zinc-500 text-xs mt-0.5">Following</p>
+            </div>
+            <div className="text-center">
+              <p className="text-white font-bold text-base leading-none">{fmtCount(uploader.totalViews)}</p>
+              <p className="text-zinc-500 text-xs mt-0.5">Views</p>
+            </div>
+          </div>
+          <div className="flex gap-2 justify-center sm:justify-start">
+            {isOwnProfile ? (
+              <>
+                <Button onClick={onUpload} className="bg-[#E2741B] text-white font-semibold hover:bg-[#E2741B]/90" data-testid="button-upload-video">
+                  <Upload className="w-4 h-4 mr-2" /> Upload Spark
+                </Button>
+                <Button variant="outline" onClick={() => window.location.href = "/sparks/settings"} className="border-zinc-700 text-zinc-300">
+                  Edit Profile
+                </Button>
+              </>
+            ) : (
+              <Button
+                size="sm"
+                onClick={() => { if (!user) { toast({ title: "Sign in to follow" }); return; } followMutation.mutate(); }}
+                disabled={followMutation.isPending}
+                className={following ? "border-zinc-700 text-zinc-300 bg-transparent border hover:bg-zinc-800" : "bg-[#E2741B] hover:bg-[#E2741B]/90 text-white"}
+                data-testid="button-follow-profile"
+              >
+                {following ? <><UserCheck className="w-3.5 h-3.5 mr-1.5" /> Following</> : <><UserPlus className="w-3.5 h-3.5 mr-1.5" /> Follow</>}
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
-      <h2 className="text-xl font-bold text-white mb-1">{uploader.name}</h2>
-      {uploader.isTherapist && <p className="text-blue-400 text-sm font-medium mb-2">Verified Therapist</p>}
-      {uploader.bio && <p className="text-zinc-400 text-sm max-w-sm mx-auto mb-4 line-clamp-3">{uploader.bio}</p>}
-      <div className="flex justify-center gap-8 mb-5">
-        <div className="text-center">
-          <p className="text-white font-bold text-lg">{uploader.videoCount}</p>
-          <p className="text-zinc-500 text-xs">Videos</p>
-        </div>
-        <div className="text-center">
-          <p className="text-white font-bold text-lg">{fmtCount(uploader.totalViews)}</p>
-          <p className="text-zinc-500 text-xs">Views</p>
-        </div>
-        <div className="text-center">
-          <p className="text-white font-bold text-lg">{fmtCount(uploader.totalLikes)}</p>
-          <p className="text-zinc-500 text-xs">Likes</p>
-        </div>
-      </div>
-      {isOwnProfile && (
-        <Button onClick={onUpload} className="bg-[#E2741B] text-white font-semibold hover:bg-[#E2741B]/90" data-testid="button-upload-video">
-          <Upload className="w-4 h-4 mr-2" /> Upload Video
-        </Button>
-      )}
     </div>
   );
 }
@@ -531,7 +581,7 @@ export default function CommunityVideos() {
   const urlUserId = params.userId ?? null;
   const ownUserId: string | null = user ? ((user as any).claims?.sub ?? (user as any).id) : null;
 
-  const [activeTab, setActiveTab] = useState<"feed" | "profile">(urlUserId ? "profile" : "feed");
+  const [activeTab, setActiveTab] = useState<"feed" | "following" | "profile">(urlUserId ? "profile" : "feed");
   const [showUpload, setShowUpload] = useState(false);
   const [page, setPage] = useState(0);
   const [allVideos, setAllVideos] = useState<VideoCard[]>([]);
@@ -543,6 +593,13 @@ export default function CommunityVideos() {
   const feedQuery = useQuery<{ videos: VideoCard[]; hasMore: boolean; page: number }>({
     queryKey: ["/api/community/videos", page],
     queryFn: () => fetch(`/api/community/videos?page=${page}`).then((r) => r.json()),
+    staleTime: 30_000,
+  });
+
+  const followingQuery = useQuery<{ videos: VideoCard[]; hasMore: boolean; page: number }>({
+    queryKey: ["/api/community/videos/following", 0],
+    queryFn: () => fetch("/api/community/videos/following?page=0").then((r) => r.json()),
+    enabled: activeTab === "following" && !!user,
     staleTime: 30_000,
   });
 
@@ -577,7 +634,7 @@ export default function CommunityVideos() {
     return () => obs.disconnect();
   }, [feedQuery.data?.hasMore, feedQuery.isFetching]);
 
-  const handleVideoClick = (id: number) => navigate(`/recovery/videos/${id}`);
+  const handleVideoClick = (id: number) => navigate(`/sparks/${id}`);
 
   const handleUploadSuccess = () => {
     setPage(0);
@@ -586,8 +643,14 @@ export default function CommunityVideos() {
     qc.invalidateQueries({ queryKey: ["/api/community/videos/profile", profileUserId] });
   };
 
-  const displayVideos = activeTab === "feed" ? allVideos : (profileQuery.data?.videos ?? []);
-  const isLoading = activeTab === "feed" ? (feedQuery.isLoading && page === 0) : profileQuery.isLoading;
+  const displayVideos =
+    activeTab === "feed" ? allVideos :
+    activeTab === "following" ? (followingQuery.data?.videos ?? []) :
+    (profileQuery.data?.videos ?? []);
+  const isLoading =
+    activeTab === "feed" ? (feedQuery.isLoading && page === 0) :
+    activeTab === "following" ? followingQuery.isLoading :
+    profileQuery.isLoading;
   const profileData = profileQuery.data;
 
   return (
@@ -598,8 +661,8 @@ export default function CommunityVideos() {
       <div className="sticky top-0 z-40 bg-zinc-950/90 backdrop-blur-md border-b border-zinc-800">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Play className="w-5 h-5 text-[#E2741B] fill-[#E2741B]" />
-            <h1 className="text-lg font-bold tracking-tight">Recovery Videos</h1>
+            <Zap className="w-5 h-5 text-[#E2741B]" />
+            <h1 className="text-lg font-bold tracking-tight">Sparks</h1>
           </div>
           <div className="flex items-center gap-2">
             {user && (
@@ -616,26 +679,35 @@ export default function CommunityVideos() {
         </div>
 
         {/* Tabs */}
-        <div className="max-w-5xl mx-auto px-4 flex gap-6 border-t border-zinc-800">
+        <div className="max-w-5xl mx-auto px-4 flex gap-6 border-t border-zinc-800 overflow-x-auto">
           <button
-            className={`flex items-center gap-1.5 py-2.5 text-sm font-semibold border-b-2 transition-colors ${activeTab === "feed" ? "border-[#E2741B] text-white" : "border-transparent text-zinc-500 hover:text-zinc-300"}`}
+            className={`flex items-center gap-1.5 py-2.5 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap ${activeTab === "feed" ? "border-[#E2741B] text-white" : "border-transparent text-zinc-500 hover:text-zinc-300"}`}
             onClick={() => setActiveTab("feed")}
             data-testid="tab-feed"
           >
-            <Grid3X3 className="w-4 h-4" /> Community Feed
+            <Grid3X3 className="w-4 h-4" /> For You
           </button>
+          {user && (
+            <button
+              className={`flex items-center gap-1.5 py-2.5 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap ${activeTab === "following" ? "border-[#E2741B] text-white" : "border-transparent text-zinc-500 hover:text-zinc-300"}`}
+              onClick={() => setActiveTab("following")}
+              data-testid="tab-following"
+            >
+              <UserCheck className="w-4 h-4" /> Following
+            </button>
+          )}
           {user && (!urlUserId || urlUserId === ownUserId) && (
             <button
-              className={`flex items-center gap-1.5 py-2.5 text-sm font-semibold border-b-2 transition-colors ${activeTab === "profile" ? "border-[#E2741B] text-white" : "border-transparent text-zinc-500 hover:text-zinc-300"}`}
+              className={`flex items-center gap-1.5 py-2.5 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap ${activeTab === "profile" ? "border-[#E2741B] text-white" : "border-transparent text-zinc-500 hover:text-zinc-300"}`}
               onClick={() => setActiveTab("profile")}
               data-testid="tab-profile"
             >
-              <BarChart2 className="w-4 h-4" /> My Videos
+              <BarChart2 className="w-4 h-4" /> My Sparks
             </button>
           )}
           {urlUserId && urlUserId !== ownUserId && (
             <button
-              className={`flex items-center gap-1.5 py-2.5 text-sm font-semibold border-b-2 border-[#E2741B] text-white`}
+              className="flex items-center gap-1.5 py-2.5 text-sm font-semibold border-b-2 border-[#E2741B] text-white whitespace-nowrap"
               data-testid="tab-profile-other"
             >
               <BarChart2 className="w-4 h-4" /> Profile

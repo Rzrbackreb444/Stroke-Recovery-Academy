@@ -677,10 +677,10 @@ export default function RecoveryDashboard() {
         {/* RECOVERY VIDEOS — Community video feed */}
         <section className="mb-8" data-testid="section-recovery-videos">
           <Link
-            href="/recovery/videos"
+            href="/sparks"
             className="block rounded-2xl border border-[#E2C2A4]/30 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover-elevate overflow-hidden"
             data-testid="link-recovery-videos"
-            aria-label="Watch recovery videos"
+            aria-label="Watch Sparks"
           >
             <div className="p-5 pb-3">
               <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -689,7 +689,7 @@ export default function RecoveryDashboard() {
                     <Video className="h-5 w-5 text-black" />
                   </div>
                   <div>
-                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#C06B3E]">Recovery Videos</p>
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#C06B3E]">Sparks</p>
                     <p className="text-base font-bold text-[#1C1917]">See how others are doing it</p>
                     <p className="text-xs text-[#A8A29E]">Real reps. Real progress. Your people, on camera.</p>
                   </div>
