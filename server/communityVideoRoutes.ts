@@ -1,14 +1,16 @@
 import type { Express, RequestHandler } from "express";
 import { db } from "./db";
-import { communityVideos, videoLikes, videoComments, users, userProfiles } from "@shared/schema";
-import { eq, desc, and, sql, inArray } from "drizzle-orm";
+import {
+  communityVideos, videoLikes, videoComments, videoReposts, videoSaves,
+  sparksFollows, users, userProfiles, userSettings,
+} from "@shared/schema";
+import { eq, desc, and, sql, inArray, ne } from "drizzle-orm";
 import { getUserId } from "./lib/authUtils";
 import { ObjectStorageService } from "./replit_integrations/object_storage/objectStorage";
 import { z } from "zod";
 
-const VIDEO_MAX_BYTES = 500 * 1024 * 1024; // 500MB
+const VIDEO_MAX_BYTES = 500 * 1024 * 1024;
 const COMMENT_MAX_LEN = 1000;
-
 const objectStorage = new ObjectStorageService();
 
 // ── helpers ──────────────────────────────────────────────────────────────────
@@ -49,11 +51,39 @@ async function getUserContext(userId: string | null): Promise<{ deficits: string
   return { deficits, goals };
 }
 
+// Shared SELECT columns for feed + single-video
+const videoSelectCols = {
+  id: communityVideos.id,
+  uploaderId: communityVideos.uploaderId,
+  title: communityVideos.title,
+  description: communityVideos.description,
+  tags: communityVideos.tags,
+  deficitTags: communityVideos.deficitTags,
+  videoUrl: communityVideos.videoUrl,
+  thumbnailUrl: communityVideos.thumbnailUrl,
+  durationSeconds: communityVideos.durationSeconds,
+  viewCount: communityVideos.viewCount,
+  likeCount: communityVideos.likeCount,
+  commentCount: communityVideos.commentCount,
+  repostCount: communityVideos.repostCount,
+  saveCount: communityVideos.saveCount,
+  shareCount: communityVideos.shareCount,
+  isFeatured: communityVideos.isFeatured,
+  isPinned: communityVideos.isPinned,
+  isPremium: communityVideos.isPremium,
+  source: communityVideos.source,
+  createdAt: communityVideos.createdAt,
+  uploaderName: sql<string>`COALESCE(${users.firstName} || ' ' || ${users.lastName}, ${users.firstName}, 'Survivor')`,
+  uploaderAvatar: users.profileImageUrl,
+  uploaderIsTherapist: users.isVerifiedTherapist,
+  uploaderUsername: userSettings.username,
+};
+
 // ── route registration ────────────────────────────────────────────────────────
 
 export function registerCommunityVideoRoutes(app: Express, isAuthenticated: RequestHandler): void {
 
-  // ── Request presigned upload URL ────────────────────────────────────────────
+  // ── Upload presigned URLs ───────────────────────────────────────────────────
   app.post("/api/community/video/upload-url", isAuthenticated, async (req: any, res) => {
     try {
       const userId = getUserId(req);
@@ -62,12 +92,11 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
       const objectPath = objectStorage.normalizeObjectEntityPath(uploadURL);
       res.json({ uploadURL, objectPath });
     } catch (err) {
-      console.error("[community-video] upload-url error:", err);
+      console.error("[sparks] upload-url error:", err);
       res.status(500).json({ message: "Could not start upload — try again." });
     }
   });
 
-  // ── Request presigned thumbnail upload URL ──────────────────────────────────
   app.post("/api/community/video/thumbnail-url", isAuthenticated, async (req: any, res) => {
     try {
       const userId = getUserId(req);
@@ -76,7 +105,7 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
       const objectPath = objectStorage.normalizeObjectEntityPath(uploadURL);
       res.json({ uploadURL, objectPath });
     } catch (err) {
-      console.error("[community-video] thumbnail-url error:", err);
+      console.error("[sparks] thumbnail-url error:", err);
       res.status(500).json({ message: "Could not start thumbnail upload." });
     }
   });
@@ -102,7 +131,6 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
       if (!parsed.success) return res.status(400).json({ message: "Invalid fields.", errors: parsed.error.issues });
       const { objectPath, thumbnailObjectPath, title, description, tags, deficitTags, durationSeconds, fileSizeBytes } = parsed.data;
 
-      // Validate video file
       const file = await objectStorage.getObjectEntityFile(objectPath);
       const [metadata] = await file.getMetadata();
       const size = parseInt(String(metadata.size || "0"), 10);
@@ -117,26 +145,16 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
         return res.status(413).json({ message: "Video must be under 500 MB." });
       }
 
-      // No ACL policy needed — null-policy objects are served as public passthrough
-      // by the existing /objects/:objectPath(*) route (community videos are intentionally public).
-
       const [video] = await db.insert(communityVideos).values({
-        uploaderId: userId,
-        title,
-        description: description ?? null,
-        tags,
-        deficitTags,
-        videoUrl: objectPath,
-        thumbnailUrl: thumbnailObjectPath ?? null,
-        durationSeconds: durationSeconds ?? null,
-        fileSizeBytes: fileSizeBytes ?? size ?? null,
-        isPublic: true,
-        source: "upload",
+        uploaderId: userId, title, description: description ?? null, tags, deficitTags,
+        videoUrl: objectPath, thumbnailUrl: thumbnailObjectPath ?? null,
+        durationSeconds: durationSeconds ?? null, fileSizeBytes: fileSizeBytes ?? size ?? null,
+        isPublic: true, source: "upload",
       }).returning();
 
       res.json(video);
     } catch (err) {
-      console.error("[community-video] create error:", err);
+      console.error("[sparks] create error:", err);
       res.status(500).json({ message: "Could not save video — try again." });
     }
   });
@@ -151,70 +169,133 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
       const [{ deficits, goals }, allVideos] = await Promise.all([
         getUserContext(userId),
         db
-          .select({
-            id: communityVideos.id,
-            uploaderId: communityVideos.uploaderId,
-            title: communityVideos.title,
-            description: communityVideos.description,
-            tags: communityVideos.tags,
-            deficitTags: communityVideos.deficitTags,
-            videoUrl: communityVideos.videoUrl,
-            thumbnailUrl: communityVideos.thumbnailUrl,
-            durationSeconds: communityVideos.durationSeconds,
-            viewCount: communityVideos.viewCount,
-            likeCount: communityVideos.likeCount,
-            commentCount: communityVideos.commentCount,
-            isFeatured: communityVideos.isFeatured,
-            isPinned: communityVideos.isPinned,
-            isPremium: communityVideos.isPremium,
-            source: communityVideos.source,
-            createdAt: communityVideos.createdAt,
-            uploaderName: sql<string>`COALESCE(${users.firstName} || ' ' || ${users.lastName}, ${users.firstName}, 'Survivor')`,
-            uploaderAvatar: users.profileImageUrl,
-            uploaderIsTherapist: users.isVerifiedTherapist,
-          })
+          .select(videoSelectCols)
           .from(communityVideos)
           .leftJoin(users, eq(communityVideos.uploaderId, users.id))
+          .leftJoin(userSettings, eq(communityVideos.uploaderId, userSettings.userId))
           .where(eq(communityVideos.isPublic, true))
           .orderBy(desc(communityVideos.isPinned), desc(communityVideos.isFeatured), desc(communityVideos.createdAt))
           .limit(200),
       ]);
 
-      // Score + sort
       const scored = allVideos
         .map((v) => ({ ...v, score: scoreVideo(v as any, deficits, goals) }))
         .sort((a, b) => b.score - a.score)
         .slice(page * limit, (page + 1) * limit);
 
-      // Attach like status for auth user
       let likedIds = new Set<number>();
+      let repostedIds = new Set<number>();
+      let savedIds = new Set<number>();
       if (userId && scored.length) {
         const ids = scored.map((v) => v.id);
-        const likes = await db
-          .select({ videoId: videoLikes.videoId })
-          .from(videoLikes)
-          .where(and(eq(videoLikes.userId, userId), inArray(videoLikes.videoId, ids)));
+        const [likes, reposts, saves] = await Promise.all([
+          db.select({ videoId: videoLikes.videoId }).from(videoLikes).where(and(eq(videoLikes.userId, userId), inArray(videoLikes.videoId, ids))),
+          db.select({ videoId: videoReposts.videoId }).from(videoReposts).where(and(eq(videoReposts.userId, userId), inArray(videoReposts.videoId, ids))),
+          db.select({ videoId: videoSaves.videoId }).from(videoSaves).where(and(eq(videoSaves.userId, userId), inArray(videoSaves.videoId, ids))),
+        ]);
         likedIds = new Set(likes.map((l) => l.videoId));
+        repostedIds = new Set(reposts.map((r) => r.videoId));
+        savedIds = new Set(saves.map((s) => s.videoId));
       }
 
       res.json({
-        videos: scored.map((v) => ({ ...v, isLikedByMe: likedIds.has(v.id) })),
+        videos: scored.map((v) => ({
+          ...v,
+          isLikedByMe: likedIds.has(v.id),
+          isRepostedByMe: repostedIds.has(v.id),
+          isSavedByMe: savedIds.has(v.id),
+        })),
         hasMore: allVideos.length > (page + 1) * limit,
         page,
       });
     } catch (err) {
-      console.error("[community-video] feed error:", err);
+      console.error("[sparks] feed error:", err);
       res.status(500).json({ message: "Could not load feed." });
     }
   });
 
-  // ── Profile videos for a specific user ─────────────────────────────────────
+  // ── Following feed ──────────────────────────────────────────────────────────
+  app.get("/api/community/videos/following", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      if (!userId) return res.status(401).json({ message: "Sign in." });
+      const page = Math.max(0, parseInt(String(req.query.page ?? "0"), 10));
+      const limit = 24;
+
+      const followingIds = await db
+        .select({ followingId: sparksFollows.followingId })
+        .from(sparksFollows)
+        .where(eq(sparksFollows.followerId, userId));
+      const ids = followingIds.map((f) => f.followingId);
+
+      if (!ids.length) return res.json({ videos: [], hasMore: false, page });
+
+      const allVideos = await db
+        .select(videoSelectCols)
+        .from(communityVideos)
+        .leftJoin(users, eq(communityVideos.uploaderId, users.id))
+        .leftJoin(userSettings, eq(communityVideos.uploaderId, userSettings.userId))
+        .where(and(eq(communityVideos.isPublic, true), inArray(communityVideos.uploaderId as any, ids)))
+        .orderBy(desc(communityVideos.createdAt))
+        .limit(200);
+
+      const paged = allVideos.slice(page * limit, (page + 1) * limit);
+
+      const videoIds = paged.map((v) => v.id);
+      const [likes, reposts, saves] = videoIds.length
+        ? await Promise.all([
+            db.select({ videoId: videoLikes.videoId }).from(videoLikes).where(and(eq(videoLikes.userId, userId), inArray(videoLikes.videoId, videoIds))),
+            db.select({ videoId: videoReposts.videoId }).from(videoReposts).where(and(eq(videoReposts.userId, userId), inArray(videoReposts.videoId, videoIds))),
+            db.select({ videoId: videoSaves.videoId }).from(videoSaves).where(and(eq(videoSaves.userId, userId), inArray(videoSaves.videoId, videoIds))),
+          ])
+        : [[], [], []];
+
+      const likedSet = new Set(likes.map((l) => l.videoId));
+      const repostedSet = new Set(reposts.map((r) => r.videoId));
+      const savedSet = new Set(saves.map((s) => s.videoId));
+
+      res.json({
+        videos: paged.map((v) => ({
+          ...v,
+          isLikedByMe: likedSet.has(v.id),
+          isRepostedByMe: repostedSet.has(v.id),
+          isSavedByMe: savedSet.has(v.id),
+        })),
+        hasMore: allVideos.length > (page + 1) * limit,
+        page,
+      });
+    } catch (err) {
+      console.error("[sparks] following feed error:", err);
+      res.status(500).json({ message: "Could not load feed." });
+    }
+  });
+
+  // ── Profile by username ─────────────────────────────────────────────────────
+  app.get("/api/sparks/profile/:username", async (req: any, res) => {
+    try {
+      const { username } = req.params;
+      const currentUserId = getUserId(req) ?? null;
+
+      const usernameRow = await db
+        .select({ userId: userSettings.userId })
+        .from(userSettings)
+        .where(eq(userSettings.username, username))
+        .limit(1);
+      if (!usernameRow[0]) return res.status(404).json({ message: "User not found." });
+      return res.json({ userId: usernameRow[0].userId });
+    } catch (err) {
+      console.error("[sparks] profile-by-username error:", err);
+      res.status(500).json({ message: "Could not load profile." });
+    }
+  });
+
+  // ── Profile by userId ───────────────────────────────────────────────────────
   app.get("/api/community/videos/profile/:userId", async (req: any, res) => {
     try {
       const { userId: profileUserId } = req.params;
       const currentUserId = getUserId(req) ?? null;
 
-      const [profileVideos, uploader, profileRow] = await Promise.all([
+      const [profileVideos, uploader, profileRow, usernameRow, followerCount, followingCount, isFollowedRow] = await Promise.all([
         db
           .select({
             id: communityVideos.id,
@@ -225,8 +306,13 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
             viewCount: communityVideos.viewCount,
             likeCount: communityVideos.likeCount,
             commentCount: communityVideos.commentCount,
+            repostCount: communityVideos.repostCount,
+            saveCount: communityVideos.saveCount,
             isFeatured: communityVideos.isFeatured,
             isPinned: communityVideos.isPinned,
+            isPremium: communityVideos.isPremium,
+            deficitTags: communityVideos.deficitTags,
+            tags: communityVideos.tags,
             createdAt: communityVideos.createdAt,
           })
           .from(communityVideos)
@@ -234,23 +320,32 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
           .orderBy(desc(communityVideos.isPinned), desc(communityVideos.createdAt)),
         db.select().from(users).where(eq(users.id, profileUserId)).limit(1),
         db.select({ bio: userProfiles.bio }).from(userProfiles).where(eq(userProfiles.userId, profileUserId)).limit(1),
+        db.select({ username: userSettings.username }).from(userSettings).where(eq(userSettings.userId, profileUserId)).limit(1),
+        db.select({ count: sql<number>`cast(count(*) as int)` }).from(sparksFollows).where(eq(sparksFollows.followingId, profileUserId)),
+        db.select({ count: sql<number>`cast(count(*) as int)` }).from(sparksFollows).where(eq(sparksFollows.followerId, profileUserId)),
+        currentUserId
+          ? db.select({ id: sparksFollows.id }).from(sparksFollows).where(and(eq(sparksFollows.followerId, currentUserId), eq(sparksFollows.followingId, profileUserId))).limit(1)
+          : Promise.resolve([]),
       ]);
 
       if (!uploader[0]) return res.status(404).json({ message: "User not found." });
-
       const u = uploader[0];
       const totalViews = profileVideos.reduce((s, v) => s + v.viewCount, 0);
       const totalLikes = profileVideos.reduce((s, v) => s + v.likeCount, 0);
 
-      // Like status
       let likedIds = new Set<number>();
+      let repostedIds = new Set<number>();
+      let savedIds = new Set<number>();
       if (currentUserId && profileVideos.length) {
         const ids = profileVideos.map((v) => v.id);
-        const likes = await db
-          .select({ videoId: videoLikes.videoId })
-          .from(videoLikes)
-          .where(and(eq(videoLikes.userId, currentUserId), inArray(videoLikes.videoId, ids)));
+        const [likes, reposts, saves] = await Promise.all([
+          db.select({ videoId: videoLikes.videoId }).from(videoLikes).where(and(eq(videoLikes.userId, currentUserId), inArray(videoLikes.videoId, ids))),
+          db.select({ videoId: videoReposts.videoId }).from(videoReposts).where(and(eq(videoReposts.userId, currentUserId), inArray(videoReposts.videoId, ids))),
+          db.select({ videoId: videoSaves.videoId }).from(videoSaves).where(and(eq(videoSaves.userId, currentUserId), inArray(videoSaves.videoId, ids))),
+        ]);
         likedIds = new Set(likes.map((l) => l.videoId));
+        repostedIds = new Set(reposts.map((r) => r.videoId));
+        savedIds = new Set(saves.map((s) => s.videoId));
       }
 
       res.json({
@@ -260,20 +355,36 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
           avatar: u.profileImageUrl,
           isTherapist: u.isVerifiedTherapist,
           bio: profileRow[0]?.bio ?? null,
+          username: usernameRow[0]?.username ?? null,
           videoCount: profileVideos.length,
           totalViews,
           totalLikes,
+          followerCount: followerCount[0]?.count ?? 0,
+          followingCount: followingCount[0]?.count ?? 0,
         },
-        videos: profileVideos.map((v) => ({ ...v, isLikedByMe: likedIds.has(v.id) })),
+        videos: profileVideos.map((v) => ({
+          ...v,
+          uploaderId: profileUserId,
+          source: "upload",
+          isPremium: (v as any).isPremium ?? false,
+          uploaderName: [u.firstName, u.lastName].filter(Boolean).join(" ") || "Survivor",
+          uploaderAvatar: u.profileImageUrl,
+          uploaderIsTherapist: u.isVerifiedTherapist,
+          uploaderUsername: usernameRow[0]?.username ?? null,
+          isLikedByMe: likedIds.has(v.id),
+          isRepostedByMe: repostedIds.has(v.id),
+          isSavedByMe: savedIds.has(v.id),
+        })),
         isOwnProfile: currentUserId === profileUserId,
+        isFollowedByMe: (isFollowedRow as any[]).length > 0,
       });
     } catch (err) {
-      console.error("[community-video] profile error:", err);
+      console.error("[sparks] profile error:", err);
       res.status(500).json({ message: "Could not load profile." });
     }
   });
 
-  // ── Single video ────────────────────────────────────────────────────────────
+  // ── Single video ─────────────────────────────────────────────────────────────
   app.get("/api/community/video/:id", async (req: any, res) => {
     try {
       const id = parseInt(req.params.id, 10);
@@ -282,53 +393,50 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
 
       const rows = await db
         .select({
-          id: communityVideos.id,
-          uploaderId: communityVideos.uploaderId,
-          title: communityVideos.title,
-          description: communityVideos.description,
-          tags: communityVideos.tags,
-          deficitTags: communityVideos.deficitTags,
-          videoUrl: communityVideos.videoUrl,
-          thumbnailUrl: communityVideos.thumbnailUrl,
-          durationSeconds: communityVideos.durationSeconds,
-          viewCount: communityVideos.viewCount,
-          likeCount: communityVideos.likeCount,
-          commentCount: communityVideos.commentCount,
-          isFeatured: communityVideos.isFeatured,
-          isPinned: communityVideos.isPinned,
-          isPremium: communityVideos.isPremium,
-          source: communityVideos.source,
-          createdAt: communityVideos.createdAt,
-          uploaderName: sql<string>`COALESCE(${users.firstName} || ' ' || ${users.lastName}, ${users.firstName}, 'Survivor')`,
-          uploaderAvatar: users.profileImageUrl,
-          uploaderIsTherapist: users.isVerifiedTherapist,
+          ...videoSelectCols,
+          uploaderFollowerCount: sql<number>`(SELECT CAST(COUNT(*) AS INT) FROM sparks_follows WHERE following_id = ${communityVideos.uploaderId})`,
         })
         .from(communityVideos)
         .leftJoin(users, eq(communityVideos.uploaderId, users.id))
+        .leftJoin(userSettings, eq(communityVideos.uploaderId, userSettings.userId))
         .where(and(eq(communityVideos.id, id), eq(communityVideos.isPublic, true)))
         .limit(1);
 
       if (!rows[0]) return res.status(404).json({ message: "Video not found." });
 
-      // Increment view count (fire-and-forget)
       db.update(communityVideos)
         .set({ viewCount: sql`${communityVideos.viewCount} + 1` })
         .where(eq(communityVideos.id, id))
         .catch(() => {});
 
       let isLikedByMe = false;
+      let isRepostedByMe = false;
+      let isSavedByMe = false;
+      let isFollowingUploader = false;
+
       if (userId) {
-        const like = await db
-          .select({ id: videoLikes.id })
-          .from(videoLikes)
-          .where(and(eq(videoLikes.videoId, id), eq(videoLikes.userId, userId)))
-          .limit(1);
+        const [like, repost, save_, follow] = await Promise.all([
+          db.select({ id: videoLikes.id }).from(videoLikes).where(and(eq(videoLikes.videoId, id), eq(videoLikes.userId, userId))).limit(1),
+          db.select({ id: videoReposts.id }).from(videoReposts).where(and(eq(videoReposts.videoId, id), eq(videoReposts.userId, userId))).limit(1),
+          db.select({ id: videoSaves.id }).from(videoSaves).where(and(eq(videoSaves.videoId, id), eq(videoSaves.userId, userId))).limit(1),
+          rows[0].uploaderId ? db.select({ id: sparksFollows.id }).from(sparksFollows).where(and(eq(sparksFollows.followerId, userId), eq(sparksFollows.followingId, rows[0].uploaderId))).limit(1) : Promise.resolve([]),
+        ]);
         isLikedByMe = like.length > 0;
+        isRepostedByMe = repost.length > 0;
+        isSavedByMe = save_.length > 0;
+        isFollowingUploader = (follow as any[]).length > 0;
       }
 
-      res.json({ ...rows[0], isLikedByMe, viewCount: rows[0].viewCount + 1 });
+      res.json({
+        ...rows[0],
+        viewCount: rows[0].viewCount + 1,
+        isLikedByMe,
+        isRepostedByMe,
+        isSavedByMe,
+        isFollowingUploader,
+      });
     } catch (err) {
-      console.error("[community-video] get error:", err);
+      console.error("[sparks] get error:", err);
       res.status(500).json({ message: "Could not load video." });
     }
   });
@@ -341,32 +449,137 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
       const userId = getUserId(req);
       if (!userId) return res.status(401).json({ message: "Sign in to like." });
 
-      const existing = await db
-        .select({ id: videoLikes.id })
-        .from(videoLikes)
-        .where(and(eq(videoLikes.videoId, id), eq(videoLikes.userId, userId)))
-        .limit(1);
-
+      const existing = await db.select({ id: videoLikes.id }).from(videoLikes).where(and(eq(videoLikes.videoId, id), eq(videoLikes.userId, userId))).limit(1);
       if (existing.length > 0) {
         await db.delete(videoLikes).where(and(eq(videoLikes.videoId, id), eq(videoLikes.userId, userId)));
-        const [updated] = await db
-          .update(communityVideos)
-          .set({ likeCount: sql`GREATEST(0, ${communityVideos.likeCount} - 1)` })
-          .where(eq(communityVideos.id, id))
-          .returning({ likeCount: communityVideos.likeCount });
+        const [updated] = await db.update(communityVideos).set({ likeCount: sql`GREATEST(0, ${communityVideos.likeCount} - 1)` }).where(eq(communityVideos.id, id)).returning({ likeCount: communityVideos.likeCount });
         return res.json({ liked: false, likeCount: updated?.likeCount ?? 0 });
       } else {
         await db.insert(videoLikes).values({ videoId: id, userId }).onConflictDoNothing();
-        const [updated] = await db
-          .update(communityVideos)
-          .set({ likeCount: sql`${communityVideos.likeCount} + 1` })
-          .where(eq(communityVideos.id, id))
-          .returning({ likeCount: communityVideos.likeCount });
+        const [updated] = await db.update(communityVideos).set({ likeCount: sql`${communityVideos.likeCount} + 1` }).where(eq(communityVideos.id, id)).returning({ likeCount: communityVideos.likeCount });
         return res.json({ liked: true, likeCount: updated?.likeCount ?? 0 });
       }
     } catch (err) {
-      console.error("[community-video] like error:", err);
+      console.error("[sparks] like error:", err);
       res.status(500).json({ message: "Could not update like." });
+    }
+  });
+
+  // ── Toggle repost ───────────────────────────────────────────────────────────
+  app.post("/api/community/video/:id/repost", isAuthenticated, async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id, 10);
+      if (isNaN(id)) return res.status(400).json({ message: "Invalid id." });
+      const userId = getUserId(req);
+      if (!userId) return res.status(401).json({ message: "Sign in." });
+
+      const existing = await db.select({ id: videoReposts.id }).from(videoReposts).where(and(eq(videoReposts.videoId, id), eq(videoReposts.userId, userId))).limit(1);
+      if (existing.length > 0) {
+        await db.delete(videoReposts).where(and(eq(videoReposts.videoId, id), eq(videoReposts.userId, userId)));
+        const [updated] = await db.update(communityVideos).set({ repostCount: sql`GREATEST(0, ${communityVideos.repostCount} - 1)` }).where(eq(communityVideos.id, id)).returning({ repostCount: communityVideos.repostCount });
+        return res.json({ reposted: false, repostCount: updated?.repostCount ?? 0 });
+      } else {
+        await db.insert(videoReposts).values({ videoId: id, userId }).onConflictDoNothing();
+        const [updated] = await db.update(communityVideos).set({ repostCount: sql`${communityVideos.repostCount} + 1` }).where(eq(communityVideos.id, id)).returning({ repostCount: communityVideos.repostCount });
+        return res.json({ reposted: true, repostCount: updated?.repostCount ?? 0 });
+      }
+    } catch (err) {
+      console.error("[sparks] repost error:", err);
+      res.status(500).json({ message: "Could not update repost." });
+    }
+  });
+
+  // ── Toggle save ─────────────────────────────────────────────────────────────
+  app.post("/api/community/video/:id/save", isAuthenticated, async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id, 10);
+      if (isNaN(id)) return res.status(400).json({ message: "Invalid id." });
+      const userId = getUserId(req);
+      if (!userId) return res.status(401).json({ message: "Sign in." });
+
+      const existing = await db.select({ id: videoSaves.id }).from(videoSaves).where(and(eq(videoSaves.videoId, id), eq(videoSaves.userId, userId))).limit(1);
+      if (existing.length > 0) {
+        await db.delete(videoSaves).where(and(eq(videoSaves.videoId, id), eq(videoSaves.userId, userId)));
+        const [updated] = await db.update(communityVideos).set({ saveCount: sql`GREATEST(0, ${communityVideos.saveCount} - 1)` }).where(eq(communityVideos.id, id)).returning({ saveCount: communityVideos.saveCount });
+        return res.json({ saved: false, saveCount: updated?.saveCount ?? 0 });
+      } else {
+        await db.insert(videoSaves).values({ videoId: id, userId }).onConflictDoNothing();
+        const [updated] = await db.update(communityVideos).set({ saveCount: sql`${communityVideos.saveCount} + 1` }).where(eq(communityVideos.id, id)).returning({ saveCount: communityVideos.saveCount });
+        return res.json({ saved: true, saveCount: updated?.saveCount ?? 0 });
+      }
+    } catch (err) {
+      console.error("[sparks] save error:", err);
+      res.status(500).json({ message: "Could not update save." });
+    }
+  });
+
+  // ── Toggle follow ───────────────────────────────────────────────────────────
+  app.post("/api/sparks/follow/:targetId", isAuthenticated, async (req: any, res) => {
+    try {
+      const { targetId } = req.params;
+      const userId = getUserId(req);
+      if (!userId) return res.status(401).json({ message: "Sign in." });
+      if (userId === targetId) return res.status(400).json({ message: "Cannot follow yourself." });
+
+      const existing = await db.select({ id: sparksFollows.id }).from(sparksFollows).where(and(eq(sparksFollows.followerId, userId), eq(sparksFollows.followingId, targetId))).limit(1);
+      if (existing.length > 0) {
+        await db.delete(sparksFollows).where(and(eq(sparksFollows.followerId, userId), eq(sparksFollows.followingId, targetId)));
+        const [{ count }] = await db.select({ count: sql<number>`cast(count(*) as int)` }).from(sparksFollows).where(eq(sparksFollows.followingId, targetId));
+        return res.json({ following: false, followerCount: count });
+      } else {
+        await db.insert(sparksFollows).values({ followerId: userId, followingId: targetId }).onConflictDoNothing();
+        const [{ count }] = await db.select({ count: sql<number>`cast(count(*) as int)` }).from(sparksFollows).where(eq(sparksFollows.followingId, targetId));
+        return res.json({ following: true, followerCount: count });
+      }
+    } catch (err) {
+      console.error("[sparks] follow error:", err);
+      res.status(500).json({ message: "Could not update follow." });
+    }
+  });
+
+  // ── Sparks profile settings (username) ─────────────────────────────────────
+  app.patch("/api/sparks/settings", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      if (!userId) return res.status(401).json({ message: "Sign in." });
+
+      const schema = z.object({
+        username: z.string().min(3).max(30).regex(/^[a-z0-9_]+$/, "Lowercase, numbers, underscores only").optional(),
+        displayName: z.string().min(1).max(60).optional(),
+      });
+      const parsed = schema.safeParse(req.body);
+      if (!parsed.success) return res.status(400).json({ message: "Invalid fields.", errors: parsed.error.issues });
+
+      const updates: Record<string, any> = {};
+      if (parsed.data.username) updates.username = parsed.data.username;
+      if (parsed.data.displayName) updates.displayName = parsed.data.displayName;
+      if (!Object.keys(updates).length) return res.status(400).json({ message: "Nothing to update." });
+
+      const existing = await db.select().from(userSettings).where(eq(userSettings.userId, userId)).limit(1);
+      if (existing.length) {
+        const [row] = await db.update(userSettings).set(updates).where(eq(userSettings.userId, userId)).returning();
+        return res.json(row);
+      } else {
+        const [row] = await db.insert(userSettings).values({ userId, ...updates }).returning();
+        return res.json(row);
+      }
+    } catch (err: any) {
+      if (err?.code === "23505") return res.status(409).json({ message: "That username is already taken." });
+      console.error("[sparks] settings error:", err);
+      res.status(500).json({ message: "Could not update settings." });
+    }
+  });
+
+  // ── Get current user's Sparks settings ────────────────────────────────────
+  app.get("/api/sparks/settings", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      if (!userId) return res.status(401).json({ message: "Sign in." });
+      const rows = await db.select().from(userSettings).where(eq(userSettings.userId, userId)).limit(1);
+      res.json(rows[0] ?? { userId, username: null, displayName: null });
+    } catch (err) {
+      console.error("[sparks] get settings error:", err);
+      res.status(500).json({ message: "Could not load settings." });
     }
   });
 
@@ -393,7 +606,7 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
         .limit(100);
       res.json(comments);
     } catch (err) {
-      console.error("[community-video] comments error:", err);
+      console.error("[sparks] comments error:", err);
       res.status(500).json({ message: "Could not load comments." });
     }
   });
@@ -409,11 +622,7 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
       if (!body) return res.status(400).json({ message: "Comment cannot be empty." });
 
       const [comment] = await db.insert(videoComments).values({ videoId: id, userId, body }).returning();
-      await db
-        .update(communityVideos)
-        .set({ commentCount: sql`${communityVideos.commentCount} + 1` })
-        .where(eq(communityVideos.id, id))
-        .catch(() => {});
+      await db.update(communityVideos).set({ commentCount: sql`${communityVideos.commentCount} + 1` }).where(eq(communityVideos.id, id)).catch(() => {});
 
       const user = await db.select().from(users).where(eq(users.id, userId)).limit(1);
       const u = user[0];
@@ -424,7 +633,7 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
         userIsTherapist: u?.isVerifiedTherapist ?? false,
       });
     } catch (err) {
-      console.error("[community-video] comment error:", err);
+      console.error("[sparks] comment error:", err);
       res.status(500).json({ message: "Could not post comment." });
     }
   });
@@ -451,11 +660,11 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
       if (typeof req.body.title === "string" && isOwner) updates.title = req.body.title.slice(0, 120);
       if (typeof req.body.description === "string" && isOwner) updates.description = req.body.description.slice(0, 2000);
 
-      if (Object.keys(updates).length === 0) return res.status(400).json({ message: "Nothing to update." });
+      if (!Object.keys(updates).length) return res.status(400).json({ message: "Nothing to update." });
       const [updated] = await db.update(communityVideos).set(updates).where(eq(communityVideos.id, id)).returning();
       res.json(updated);
     } catch (err) {
-      console.error("[community-video] patch error:", err);
+      console.error("[sparks] patch error:", err);
       res.status(500).json({ message: "Could not update video." });
     }
   });
@@ -478,7 +687,7 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
       await db.delete(communityVideos).where(eq(communityVideos.id, id));
       res.json({ ok: true });
     } catch (err) {
-      console.error("[community-video] delete error:", err);
+      console.error("[sparks] delete error:", err);
       res.status(500).json({ message: "Could not delete video." });
     }
   });

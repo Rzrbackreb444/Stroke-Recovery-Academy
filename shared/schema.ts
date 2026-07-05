@@ -7382,6 +7382,9 @@ export const communityVideos = pgTable("community_videos", {
   isPinned: boolean("is_pinned").notNull().default(false),
   isPremium: boolean("is_premium").notNull().default(false),
   source: text("source").notNull().default("upload"),
+  repostCount: integer("repost_count").notNull().default(0),
+  saveCount: integer("save_count").notNull().default(0),
+  shareCount: integer("share_count").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (table) => [
   index("idx_community_videos_uploader").on(table.uploaderId),
@@ -7392,6 +7395,7 @@ export const communityVideos = pgTable("community_videos", {
 export type CommunityVideo = typeof communityVideos.$inferSelect;
 export const insertCommunityVideoSchema = createInsertSchema(communityVideos).omit({
   id: true, createdAt: true, viewCount: true, likeCount: true, commentCount: true,
+  repostCount: true, saveCount: true, shareCount: true,
 });
 export type InsertCommunityVideo = z.infer<typeof insertCommunityVideoSchema>;
 
@@ -7419,3 +7423,33 @@ export const videoComments = pgTable("video_comments", {
 export type VideoComment = typeof videoComments.$inferSelect;
 export const insertVideoCommentSchema = createInsertSchema(videoComments).omit({ id: true, createdAt: true });
 export type InsertVideoComment = z.infer<typeof insertVideoCommentSchema>;
+
+export const videoReposts = pgTable("video_reposts", {
+  id: serial("id").primaryKey(),
+  videoId: integer("video_id").notNull().references(() => communityVideos.id, { onDelete: "cascade" }),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  uniqueIndex("idx_video_reposts_unique").on(table.videoId, table.userId),
+]);
+export type VideoRepost = typeof videoReposts.$inferSelect;
+
+export const videoSaves = pgTable("video_saves", {
+  id: serial("id").primaryKey(),
+  videoId: integer("video_id").notNull().references(() => communityVideos.id, { onDelete: "cascade" }),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  uniqueIndex("idx_video_saves_unique").on(table.videoId, table.userId),
+]);
+export type VideoSave = typeof videoSaves.$inferSelect;
+
+export const sparksFollows = pgTable("sparks_follows", {
+  id: serial("id").primaryKey(),
+  followerId: text("follower_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  followingId: text("following_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  uniqueIndex("idx_sparks_follows_unique").on(table.followerId, table.followingId),
+]);
+export type SparksFollow = typeof sparksFollows.$inferSelect;

@@ -138,6 +138,8 @@ const SocialNetwork = lazy(() => import("@/pages/SocialNetwork"));
 const RecoveryCommunity = lazy(() => import("@/pages/RecoveryCommunity"));
 const CommunityVideos = lazy(() => import("@/pages/CommunityVideos"));
 const CommunityVideoPlayer = lazy(() => import("@/pages/CommunityVideoPlayer"));
+const UserProfile = lazy(() => import("@/pages/UserProfile"));
+const ProfileSettings = lazy(() => import("@/pages/ProfileSettings"));
 const RecoveryCampfire = lazy(() => import("@/pages/RecoveryCampfire"));
 const RecoveryPremium = lazy(() => import("@/pages/RecoveryPremium"));
 const RecoveryJourney = lazy(() => import("@/pages/RecoveryJourney"));
@@ -602,6 +604,11 @@ function Router() {
         </ProtectedRoute>
       </Route>
       <Route path="/recovery/community" component={RecoveryCommunity} />
+      <Route path="/sparks/settings" component={ProfileSettings} />
+      <Route path="/sparks/u/:username" component={UserProfile} />
+      <Route path="/sparks/profile/:userId" component={CommunityVideos} />
+      <Route path="/sparks/:id" component={CommunityVideoPlayer} />
+      <Route path="/sparks" component={CommunityVideos} />
       <Route path="/recovery/videos" component={CommunityVideos} />
       <Route path="/recovery/videos/profile/:userId" component={CommunityVideos} />
       <Route path="/recovery/videos/:id" component={CommunityVideoPlayer} />
