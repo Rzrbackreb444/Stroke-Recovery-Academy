@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Lock, Eye, EyeOff, Loader2, CheckCircle } from "lucide-react";
-import kreaiteLogo from "@assets/Untitled_design.zip_-_1_1769816069353.png";
+const sraLogo = "/favicon.png";
 
 export default function ResetPassword() {
   const [, setLocation] = useLocation();
@@ -87,9 +87,9 @@ export default function ResetPassword() {
       <div className="w-full max-w-md">
         <div className="flex items-center justify-center mb-8">
           <img 
-            src={kreaiteLogo} 
+            src={sraLogo} 
             alt="Stroke Recovery Academy" 
-            className="h-10 w-auto object-contain"
+            className="h-10 w-10 object-cover rounded-xl"
           />
         </div>
         
