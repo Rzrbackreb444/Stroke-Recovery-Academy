@@ -107,13 +107,22 @@ export default function GlobalHeader() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Link
-            href="/recovery/community"
-            className="flex items-center gap-2 hover:text-[#E2741B] transition-colors"
-            data-testid="link-nav-community"
-          >
-            <Users className="w-3.5 h-3.5" /> Community
-          </Link>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              className="flex items-center gap-2 hover:text-[#E2741B] transition-colors outline-none"
+              data-testid="dropdown-nav-community"
+            >
+              <Users className="w-3.5 h-3.5" /> Community <ChevronDown className="w-3 h-3" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-white border-[#E2741B]/20 shadow-2xl p-2 w-52">
+              <DropdownMenuItem className="cursor-pointer text-[11px] font-bold uppercase py-3" onClick={() => navigate('/recovery/community')}>
+                Community Feed
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer text-[11px] font-bold uppercase py-3" onClick={() => navigate('/recovery/videos')}>
+                Recovery Videos
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           <Link
             href="/store"
