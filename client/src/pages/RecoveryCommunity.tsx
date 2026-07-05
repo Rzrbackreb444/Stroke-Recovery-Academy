@@ -1247,6 +1247,80 @@ function LiveTab({ isAdmin }: { isAdmin: boolean }) {
   );
 }
 
+// ─── Community Videos Tab ─────────────────────────────────────────────────────
+function CommunityVideosTab() {
+  const { data, isLoading } = useQuery<{ videos: any[] }>({
+    queryKey: ["/api/community/videos", 0],
+    queryFn: () => fetch("/api/community/videos?page=0").then((r) => r.json()),
+    staleTime: 5 * 60_000,
+  });
+
+  const videos = data?.videos ?? [];
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="aspect-[9/16] rounded-xl bg-[#1a1a1a] animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
+  if (videos.length === 0) {
+    return (
+      <div className="text-center py-16 space-y-4">
+        <PlayCircle className="w-12 h-12 text-gray-600 mx-auto" />
+        <p className="text-gray-400">No videos yet — be the first to share your recovery.</p>
+        <a href="/recovery/videos">
+          <Button className="bg-[#E2741B] text-black font-bold mt-2">Go to Recovery Videos</Button>
+        </a>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <p className="text-gray-400 text-sm">Real reps. Real progress. Your people, on camera.</p>
+        <a href="/recovery/videos" className="text-[#E2741B] text-sm font-semibold hover:underline shrink-0">Browse all →</a>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        {videos.slice(0, 9).map((v: any) => (
+          <a
+            key={v.id}
+            href={`/recovery/videos/${v.id}`}
+            className="relative aspect-[9/16] rounded-xl overflow-hidden bg-[#1a1a1a] cursor-pointer block"
+            data-testid={`community-video-card-${v.id}`}
+          >
+            {v.thumbnailUrl
+              ? <img src={v.thumbnailUrl} alt={v.title} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+              : <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] to-[#2a2a2a]" />
+            }
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center">
+                <PlayCircle className="w-6 h-6 text-white" />
+              </div>
+            </div>
+            <div className="absolute bottom-0 left-0 right-0 p-2.5">
+              <p className="text-white text-xs font-semibold line-clamp-2 leading-tight">{v.title}</p>
+              {v.uploaderName && <p className="text-white/60 text-[10px] mt-0.5">{v.uploaderName}</p>}
+            </div>
+          </a>
+        ))}
+      </div>
+      <div className="text-center pt-2">
+        <a href="/recovery/videos">
+          <Button variant="outline" className="border-[#333] text-gray-300 gap-2">
+            <PlayCircle className="w-4 h-4" /> Browse all recovery videos
+          </Button>
+        </a>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Community Page ───────────────────────────────────────────────────────
 export default function RecoveryCommunity() {
   const { user, isAuthenticated } = useAuth();
@@ -1296,6 +1370,10 @@ export default function RecoveryCommunity() {
               <Activity className="w-4 h-4 mr-1.5" />
               Feed
             </TabsTrigger>
+            <TabsTrigger value="videos" className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black text-gray-400" data-testid="tab-videos">
+              <PlayCircle className="w-4 h-4 mr-1.5" />
+              Videos
+            </TabsTrigger>
             <TabsTrigger value="members" className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black text-gray-400" data-testid="tab-members">
               <Users className="w-4 h-4 mr-1.5" />
               Members
@@ -1313,6 +1391,10 @@ export default function RecoveryCommunity() {
 
           <TabsContent value="feed" className="mt-4">
             <FeedTab user={user} settings={settings} />
+          </TabsContent>
+
+          <TabsContent value="videos" className="mt-4">
+            <CommunityVideosTab />
           </TabsContent>
 
           <TabsContent value="members" className="mt-4">

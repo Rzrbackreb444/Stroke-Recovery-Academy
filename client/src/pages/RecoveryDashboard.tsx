@@ -27,7 +27,7 @@ import {
   Plus, UserPlus, DoorOpen, Smile, Activity, Quote, RefreshCw, ArrowRight,
   Play, Brain, ChevronDown, Footprints, Anchor, Sun, ClipboardList, Loader2,
   Check, Dumbbell, Pill, Droplets, Moon, PenLine, PhoneCall, ChevronRight,
-  LayoutDashboard
+  LayoutDashboard, Video
 } from "lucide-react";
 import SixtyDayTracker from "@/components/recovery/SixtyDayTracker";
 import TodaySessionPanel from "@/components/recovery/TodaySessionPanel";
@@ -205,6 +205,12 @@ export default function RecoveryDashboard() {
   const { data: podActivity } = useQuery<any[]>({
     queryKey: ["/api/pods", userPod?.id, "activity"],
     enabled: !!userPod?.id,
+  });
+
+  const { data: communityVideos } = useQuery<{ videos: any[]; hasMore: boolean }>({
+    queryKey: ["/api/community/videos", 0],
+    queryFn: () => fetch("/api/community/videos?page=0").then((r) => r.json()),
+    staleTime: 5 * 60_000,
   });
 
   const checkinMutation = useMutation({
@@ -666,6 +672,53 @@ export default function RecoveryDashboard() {
               </div>
             </div>
           )}
+        </section>
+
+        {/* RECOVERY VIDEOS — Community video feed */}
+        <section className="mb-8" data-testid="section-recovery-videos">
+          <Link
+            href="/recovery/videos"
+            className="block rounded-2xl border border-[#E2C2A4]/30 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover-elevate overflow-hidden"
+            data-testid="link-recovery-videos"
+            aria-label="Watch recovery videos"
+          >
+            <div className="p-5 pb-3">
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div className="flex items-center gap-3">
+                  <div className="h-11 w-11 rounded-md bg-[#C06B3E] flex items-center justify-center flex-shrink-0">
+                    <Video className="h-5 w-5 text-black" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#C06B3E]">Recovery Videos</p>
+                    <p className="text-base font-bold text-[#1C1917]">See how others are doing it</p>
+                    <p className="text-xs text-[#A8A29E]">Real reps. Real progress. Your people, on camera.</p>
+                  </div>
+                </div>
+                <span className="text-xs text-[#C06B3E] font-semibold uppercase tracking-widest shrink-0">Watch →</span>
+              </div>
+            </div>
+            {(communityVideos?.videos?.length ?? 0) > 0 && (
+              <div className="px-5 pb-5">
+                <div className="grid grid-cols-4 gap-2">
+                  {communityVideos!.videos.slice(0, 4).map((v: any) => (
+                    <div key={v.id} className="relative aspect-[9/16] rounded-lg overflow-hidden bg-zinc-100">
+                      {v.thumbnailUrl
+                        ? <img src={v.thumbnailUrl} alt={v.title} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+                        : <div className="absolute inset-0 bg-gradient-to-br from-zinc-200 to-zinc-300" />
+                      }
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-full bg-white/25 flex items-center justify-center">
+                          <Play className="w-3 h-3 text-white fill-white ml-0.5" />
+                        </div>
+                      </div>
+                      <p className="absolute bottom-1 left-1 right-1 text-white text-[8px] font-semibold line-clamp-2 leading-tight">{v.title}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </Link>
         </section>
 
         {/* Music intentionally not surfaced here. Anchor + Anthem live in the
