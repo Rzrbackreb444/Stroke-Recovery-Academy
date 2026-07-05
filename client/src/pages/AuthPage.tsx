@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation, useSearch } from "wouter";
 import { routeAfterAuth } from "@/lib/postAuthRedirect";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import kreaiteLogo from "@assets/Untitled_design.zip_-_1_1769816069353.png";
+const sraLogo = "/favicon.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -233,9 +233,9 @@ export default function AuthPage() {
           <div>
             <div className="flex items-center gap-3 mb-12">
               <img
-                src={kreaiteLogo}
+                src={sraLogo}
                 alt="Stroke Recovery Academy"
-                className="h-12 w-auto object-contain"
+                className="h-12 w-12 object-cover rounded-xl"
               />
             </div>
 
@@ -278,9 +278,9 @@ export default function AuthPage() {
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center justify-center mb-8">
             <img
-              src={kreaiteLogo}
+              src={sraLogo}
               alt="Stroke Recovery Academy"
-              className="h-10 w-auto object-contain"
+              className="h-10 w-10 object-cover rounded-xl"
             />
           </div>
 

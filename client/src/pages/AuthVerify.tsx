@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Loader2, CheckCircle, XCircle } from "lucide-react";
-import kreaiteLogo from "@assets/Untitled_design.zip_-_1_1769816069353.png";
+const sraLogo = "/favicon.png";
 import { Button } from "@/components/ui/button";
 import { routeAfterAuth } from "@/lib/postAuthRedirect";
 
@@ -69,9 +69,9 @@ export default function AuthVerify() {
               <p className="text-white/60 mb-6">Redirecting you to your dashboard...</p>
               <div className="flex items-center justify-center">
                 <img 
-                  src={kreaiteLogo} 
+                  src={sraLogo} 
                   alt="Welcome to Stroke Recovery Academy" 
-                  className="h-8 w-auto object-contain"
+                  className="h-8 w-8 object-cover rounded-lg"
                 />
               </div>
             </>
