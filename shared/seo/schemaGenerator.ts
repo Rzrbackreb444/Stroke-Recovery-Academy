@@ -83,7 +83,7 @@ export function generateNickPersonSchema() {
   };
 }
 
-/** WebSite JSON-LD with SearchAction — improves sitelinks search box. */
+/** WebSite JSON-LD — stable entity anchor for the site knowledge graph. */
 export function generateWebSiteSchema() {
   return {
     "@context": "https://schema.org",
@@ -92,11 +92,6 @@ export function generateWebSiteSchema() {
     url: SITE_URL,
     name: SITE,
     publisher: { "@id": ID_ORG },
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${SITE_URL}/?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
   };
 }
 

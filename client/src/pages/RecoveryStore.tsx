@@ -533,7 +533,7 @@ export default function RecoveryStore() {
     "@type": "Store",
     name: "Stroke Recovery Academy Recovery Store",
     description: "Curated recovery products recommended by stroke survivor Nick Kremers. Every product is hand-picked for stroke recovery success.",
-    url: "https://strokelyfe.org/store",
+    url: "https://strokerecoveryacademy.com/recovery/store",
     brand: { "@type": "Brand", name: "Stroked-Out Sasquatch" },
     founder: {
       "@type": "Person",

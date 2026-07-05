@@ -25610,6 +25610,147 @@ Format as structured JSON with clear sections.`;
   const { registerPodcastPipelineRoutes } = await import('./podcastRoutes');
   registerPodcastPipelineRoutes(app);
 
+  // ── Book alias server-side redirects ─────────────────────────────────────
+  // Printed shortlinks and companion aliases must resolve server-side so that
+  // crawlers and social bots receive a proper 308 (permanent) redirect with the
+  // correct canonical destination instead of a generic SPA HTML shell.
+  //
+  // Rules:
+  //   • Top-level slugs  (/workbook, /tracker, …)  → their target pages
+  //   • /protocols/:slug                            → protocol section anchors
+  //   • /resources/:slug                            → resource section anchors
+  //   • /book/index and /book/companion             → /book
+  //   • Bare /protocols and /resources              → hub pages
+  //
+  // These are registered AFTER the SSR routes so they don't shadow any real
+  // SSR landing pages, but BEFORE the Vite catch-all which is wired outside
+  // registerRoutes().
+
+  const BOOK_SLUG_MAP: Record<string, string> = {
+    "/workbook":      "/recovery/journal",
+    "/tracker":       "/recovery/today",
+    "/90day":         "/recovery/circuit",
+    "/tribe":         "/recovery/community",
+    "/soundtrack":    "/hostile-construction",
+    "/officehours":   "/recovery/community",
+    "/persona":       "/recovery/forge",
+    "/plateau":       "/book#mindset",
+    "/doctrine":      "/recovery/sasch",
+    "/clinicians":    "/recovery/therapist",
+    "/ceu":           "/recovery/university",
+    "/quicksheet":    "/book#clinicians",
+    "/glossary":      "/book#science",
+    "/reading":       "/book#science",
+    "/science":       "/book#science",
+    "/walletcard":    "/book#fuel",
+    "/risk":          "/recovery/quiz",
+    "/nutrition":     "/book#fuel",
+    "/gear":          "/recovery/store",
+    "/posters":       "/book#fuel",
+    "/combos":        "/book#fuel",
+    "/letters":       "/recovery/journal",
+    "/math":          "/book#structure",
+    "/desert":        "/book#structure",
+    "/bereaved":      "/book#caregivers",
+    "/questions":     "/book#structure",
+    "/rights":        "/book#structure",
+    "/100lines":      "/book#mindset",
+    "/podcast":       "/book#soundtrack-album",
+    "/youngsurvivor": "/book#tribe-stories",
+    "/app":           "/recovery/today",
+    // Companion aliases
+    "/book/index":    "/book",
+    "/book/companion": "/book",
+    // science sub-path
+    "/science/corrections": "/book#science",
+    // bare hub redirects
+    "/protocols":     "/recovery/protocols",
+    "/resources":     "/recovery/resources",
+  };
+
+  for (const [alias, target] of Object.entries(BOOK_SLUG_MAP)) {
+    app.get(alias, (_req, res) => res.redirect(308, target));
+  }
+
+  const BOOK_PROTOCOL_MAP: Record<string, string> = {
+    think:         "/recovery/protocols#think",
+    bat:           "/recovery/protocols#bat",
+    "weight-bearing": "/recovery/protocols#weight-bearing",
+    mirror:        "/recovery/protocols#mirror",
+    dropfoot:      "/recovery/protocols#dropfoot",
+    hand:          "/recovery/protocols#hand",
+    speech:        "/recovery/protocols#speech",
+    "open-hand":   "/recovery/protocols#open-hand",
+    openhand:      "/recovery/protocols#open-hand",
+    chopwood:      "/recovery/protocols#chopwood",
+    sasch:         "/recovery/protocols#sasch",
+    print:         "/recovery/resources",
+    ankle:         "/recovery/protocols#dropfoot",
+    heelwalk:      "/recovery/protocols#dropfoot",
+    walllean:      "/recovery/protocols#weight-bearing",
+    grip:          "/recovery/protocols#hand",
+    rubberband:    "/recovery/protocols#hand",
+    fingerlift:    "/recovery/protocols#hand",
+    conetap:       "/recovery/protocols#hand",
+    lsvt:          "/recovery/protocols#speech",
+    dia:           "/recovery/protocols#speech",
+    oralmotor:     "/recovery/protocols#speech",
+    readaloud:     "/recovery/protocols#speech",
+    swallow:       "/recovery/protocols#speech",
+    sit2stand:     "/recovery/protocols#weight-bearing",
+    sls:           "/recovery/protocols#weight-bearing",
+  };
+
+  app.get("/protocols/:slug", (req, res) => {
+    const target = BOOK_PROTOCOL_MAP[req.params.slug] ?? "/recovery/protocols";
+    res.redirect(308, target);
+  });
+
+  const BOOK_RESOURCES_MAP: Record<string, string> = {
+    day1:          "/book#tribe-stories",
+    icu:           "/book#caregivers",
+    foundation:    "/book#mindset",
+    mentor:        "/recovery/community",
+    architect:     "/book#mindset",
+    brain:         "/book#science",
+    neuroplasticity: "/book#science",
+    wheelchair:    "/recovery/protocols",
+    "66day":       "/recovery/today",
+    tleca:         "/recovery/sasch",
+    twitch:        "/recovery/protocols#think",
+    bat:           "/recovery/protocols#bat",
+    weightbearing: "/recovery/protocols#weight-bearing",
+    mirror:        "/recovery/protocols#mirror",
+    dropfoot:      "/recovery/protocols#dropfoot",
+    arm:           "/recovery/protocols#hand",
+    speech:        "/recovery/protocols#speech",
+    tech:          "/recovery/store",
+    openhand:      "/recovery/protocols#open-hand",
+    engine:        "/recovery/anchor/today",
+    persona:       "/recovery/forge",
+    emotional:     "/recovery/coach",
+    plateau:       "/recovery/protocols#plateau",
+    "care-audit":  "/recovery/therapist",
+    home:          "/recovery/resources",
+    family:        "/book#caregivers",
+    work:          "/book#structure",
+    tribe:         "/recovery/community",
+    empire:        "/book#tribe-stories",
+    caregiver:     "/book#caregivers",
+    doctrine:      "/recovery/sasch",
+    tuesday:       "/book#tribe-stories",
+    promise:       "/book#mindset",
+    "day1-print":  "/recovery/resources",
+    print:         "/recovery/resources",
+    printable:     "/recovery/resources",
+  };
+
+  app.get("/resources/:slug", (req, res) => {
+    const target = BOOK_RESOURCES_MAP[req.params.slug] ?? "/recovery/resources";
+    res.redirect(308, target);
+  });
+  // ── End book alias redirects ──────────────────────────────────────────────
+
   const httpServer = createServer(app);
   return httpServer;
 }

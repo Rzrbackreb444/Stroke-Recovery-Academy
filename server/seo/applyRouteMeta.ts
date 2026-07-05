@@ -91,7 +91,14 @@ export function applyRouteMeta(html: string, url: string, host?: string): string
   if (!meta) return html; // unknown route — leave default homepage meta intact
 
   const origin = resolveCanonicalOrigin(host);
-  const canonical = `${origin}${path}`;
+  // Prefer the registry's explicit canonical path when one is defined.
+  // This ensures alias routes (e.g. /album/hostile-construction) canonicalize
+  // to the declared canonical (/hostile-construction), and redirect-only
+  // stubs (e.g. /pricing, /recovery/pricing) self-canonicalize to their own
+  // path which is fine — they carry noindex so they won't be indexed anyway.
+  const entry = lookupRoute(path);
+  const canonicalPath = entry?.canonical ?? path;
+  const canonical = `${origin}${canonicalPath}`;
   const newHead = buildHead(meta, canonical);
 
   // JSON-LD: emit Org + WebSite + Person + page schema for every indexable
@@ -99,7 +106,6 @@ export function applyRouteMeta(html: string, url: string, host?: string): string
   // private surfaces).
   let jsonLd = "";
   if (!meta.noindex) {
-    const entry = lookupRoute(path);
     if (entry) {
       jsonLd = renderJsonLdScripts(generateRouteSchemas(entry, canonical));
     }
@@ -119,6 +125,16 @@ export function applyRouteMeta(html: string, url: string, host?: string): string
     .replace(/<meta\s+name=["']twitter:card["'][^>]*>/gi, "")
     .replace(/<meta\s+name=["']twitter:title["'][^>]*>/gi, "")
     .replace(/<meta\s+name=["']twitter:description["'][^>]*>/gi, "");
+
+  // Strip all shell JSON-LD blocks so route-injected schema is the sole
+  // source of truth. This prevents duplicate WebSite/Organization/page-type
+  // blocks when applyRouteMeta overlays a matched SPA route.
+  if (jsonLd) {
+    out = out.replace(
+      /<script\s+type=["']application\/ld\+json["'][\s\S]*?<\/script>/gi,
+      "",
+    );
+  }
 
   // Inject the new head block (and any JSON-LD) right after <head>.
   const inject = jsonLd ? `${newHead}\n    ${jsonLd}` : newHead;
