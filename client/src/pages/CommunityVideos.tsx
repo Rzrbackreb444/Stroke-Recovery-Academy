@@ -198,7 +198,7 @@ function VideoThumbnailCard({ video, onClick }: { video: VideoCard; onClick: () 
 
 function UploadModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: () => void }) {
   const { toast } = useToast();
-  const [step, setStep] = useState<"select" | "details" | "uploading" | "done">("select");
+  const [step, setStep] = useState<"guide" | "select" | "details" | "uploading" | "done">("guide");
   const [file, setFile] = useState<File | null>(null);
   const [thumbnail, setThumbnail] = useState<Blob | null>(null);
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
@@ -323,13 +323,69 @@ function UploadModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
       <div className="relative bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl" data-testid="upload-modal">
         <div className="sticky top-0 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between px-5 py-4 rounded-t-2xl z-10">
           <div className="flex items-center gap-2">
-            <Video className="w-5 h-5 text-[#E2741B]" />
-            <span className="font-semibold text-white">Upload Recovery Video</span>
+            <Zap className="w-5 h-5 text-[#E2741B]" />
+            <span className="font-semibold text-white">Post a Spark</span>
           </div>
           <Button size="icon" variant="ghost" onClick={onClose} data-testid="button-close-upload"><X className="w-4 h-4" /></Button>
         </div>
 
         <div className="p-5 space-y-5">
+          {step === "guide" && (
+            <div className="space-y-5">
+              <div className="text-center space-y-2 pb-1">
+                <div className="w-14 h-14 rounded-full bg-[#E2741B]/10 border border-[#E2741B]/30 flex items-center justify-center mx-auto">
+                  <Zap className="w-7 h-7 text-[#E2741B]" />
+                </div>
+                <h2 className="text-white font-bold text-lg">What is a Spark?</h2>
+                <p className="text-zinc-400 text-sm leading-relaxed">
+                  Sparks are short recovery videos — raw, real, and made by survivors. No studio. No script. Just proof that the work is happening.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <p className="text-zinc-500 text-xs font-semibold uppercase tracking-wider">What to post</p>
+                {[
+                  { icon: "💪", label: "A rep you couldn't do last month", sub: "Show the before, the struggle, or the win" },
+                  { icon: "🧠", label: "A cognitive or speech moment", sub: "Word-finding, reading aloud, memory exercises" },
+                  { icon: "📅", label: "A day-in-the-life clip", sub: "Morning routine, PT appointment, small victory" },
+                  { icon: "💡", label: "A tip that actually helped you", sub: "Tools, hacks, mindset — share what works" },
+                ].map(({ icon, label, sub }) => (
+                  <div key={label} className="flex gap-3 items-start bg-zinc-800/50 rounded-xl p-3">
+                    <span className="text-xl mt-0.5">{icon}</span>
+                    <div>
+                      <p className="text-white text-sm font-medium">{label}</p>
+                      <p className="text-zinc-500 text-xs">{sub}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="bg-zinc-800/50 rounded-xl p-4 space-y-2">
+                <p className="text-zinc-400 text-xs font-semibold uppercase tracking-wider">Format tips</p>
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  {[
+                    { top: "Portrait", bot: "vertical 9:16" },
+                    { top: "15 sec – 3 min", bot: "shorter = more views" },
+                    { top: "Raw wins", bot: "perfect loses" },
+                  ].map(({ top, bot }) => (
+                    <div key={top} className="space-y-0.5">
+                      <p className="text-white text-xs font-semibold">{top}</p>
+                      <p className="text-zinc-500 text-xs">{bot}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <Button
+                className="w-full bg-[#E2741B] hover:bg-[#E2741B]/90 text-white font-semibold"
+                onClick={() => setStep("select")}
+                data-testid="button-guide-continue"
+              >
+                <Upload className="w-4 h-4 mr-2" /> Pick my video
+              </Button>
+            </div>
+          )}
+
           {step === "select" && (
             <div
               className="border-2 border-dashed border-zinc-700 rounded-xl p-10 text-center cursor-pointer hover-elevate transition-colors"
@@ -423,7 +479,7 @@ function UploadModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
                   className="flex-1 bg-[#E2741B] hover:bg-[#E2741B]/90 text-white font-semibold"
                   data-testid="button-submit-upload"
                 >
-                  <Upload className="w-4 h-4 mr-2" /> Post Video
+                  <Zap className="w-4 h-4 mr-2" /> Post Spark
                 </Button>
               </div>
             </>
@@ -719,6 +775,55 @@ export default function CommunityVideos() {
       {/* Profile header (profile tab) */}
       {activeTab === "profile" && profileData && (
         <ProfileHeader data={profileData} onUpload={() => setShowUpload(true)} />
+      )}
+
+      {/* Sparks intro hero — feed tab only */}
+      {activeTab === "feed" && (
+        <div className="max-w-5xl mx-auto px-4 pt-6 pb-2">
+          <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-900 to-[#E2741B]/10 border border-zinc-800 p-6 sm:p-8">
+            <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-[#E2741B]/5 blur-3xl pointer-events-none" />
+            <div className="relative flex flex-col sm:flex-row sm:items-center gap-6">
+              <div className="flex-1 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-[#E2741B]" />
+                  <span className="text-[#E2741B] font-bold text-sm uppercase tracking-widest">Sparks</span>
+                </div>
+                <h2 className="text-white font-bold text-xl sm:text-2xl leading-snug">
+                  Short recovery videos.<br className="hidden sm:block" /> Made by survivors, for survivors.
+                </h2>
+                <p className="text-zinc-400 text-sm leading-relaxed max-w-lg">
+                  No studio. No script. Just real people doing the real work — showing up for reps, celebrating small wins, and proving every day that recovery is possible. Post a clip from your session. Share what's working. Inspire the next person in the fight.
+                </p>
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {["Real reps", "Honest wins", "Tips that work", "Day-in-the-life", "Speech & cognition"].map((tag) => (
+                    <span key={tag} className="px-2.5 py-1 rounded-full bg-zinc-800 text-zinc-400 text-xs font-medium border border-zinc-700">{tag}</span>
+                  ))}
+                </div>
+              </div>
+              {user ? (
+                <div className="flex-shrink-0">
+                  <Button
+                    onClick={() => setShowUpload(true)}
+                    className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-white font-bold px-6 py-5 text-base"
+                    data-testid="button-upload-hero"
+                  >
+                    <Zap className="w-4 h-4 mr-2" /> Post your first Spark
+                  </Button>
+                  <p className="text-zinc-600 text-xs text-center mt-2">Portrait · 15 sec – 3 min · Raw beats perfect</p>
+                </div>
+              ) : (
+                <div className="flex-shrink-0">
+                  <a href="/api/login">
+                    <Button className="bg-[#E2741B] hover:bg-[#E2741B]/90 text-white font-bold px-6 py-5 text-base" data-testid="button-hero-signin">
+                      Sign in to post
+                    </Button>
+                  </a>
+                  <p className="text-zinc-600 text-xs text-center mt-2">Free to watch. Sign in to post.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Video grid */}
