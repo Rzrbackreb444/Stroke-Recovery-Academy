@@ -271,19 +271,20 @@ export default function RecoveryHeader() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm" className="gap-2" data-testid="dropdown-user">
                     <Avatar className="h-7 w-7">
-                      <AvatarImage src={user.profileImageUrl || undefined} />
+                      <AvatarImage src={(user as any).avatarUrl || user.profileImageUrl || undefined} />
                       <AvatarFallback className="bg-gold/20 text-gold text-xs font-bold">
-                        {user.firstName?.[0] || user.email?.[0]?.toUpperCase() || "U"}
+                        {((user as any).displayName || user.firstName)?.[0] || user.email?.[0]?.toUpperCase() || "U"}
                       </AvatarFallback>
                     </Avatar>
                     <span className="text-sm text-[#1C1917] font-medium">
-                      {user.firstName || "My Account"}
+                      {(user as any).displayName || user.firstName || "My Account"}
                     </span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-52 bg-white border-[#E2C2A4]/30">
                   <div className="px-3 py-2 border-b border-[#E2C2A4]/30">
-                    <p className="text-sm font-semibold text-[#1C1917]">{user.firstName || "Survivor"}</p>
+                    <p className="text-sm font-semibold text-[#1C1917]">{(user as any).displayName || user.firstName || "Survivor"}</p>
+                    {(user as any).username && <p className="text-xs text-gold/70">@{(user as any).username}</p>}
                     <p className="text-xs text-gray-500">{user.email}</p>
                   </div>
                   <DropdownMenuItem asChild>

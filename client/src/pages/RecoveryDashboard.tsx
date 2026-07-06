@@ -390,11 +390,14 @@ export default function RecoveryDashboard() {
 
           <div className="mt-auto p-6 border-t border-[#3E322C]">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-full bg-[#C06B3E]/20 border border-[#C06B3E]/40 flex items-center justify-center text-xs font-bold text-[#E8B986]">
-                {(user?.firstName?.[0] || "Y").toUpperCase()}
+              <div className="w-8 h-8 rounded-full bg-[#C06B3E]/20 border border-[#C06B3E]/40 flex items-center justify-center text-xs font-bold text-[#E8B986] overflow-hidden">
+                {(user as any)?.avatarUrl
+                  ? <img src={(user as any).avatarUrl} alt="avatar" className="w-full h-full object-cover" />
+                  : ((user as any)?.displayName || user?.firstName || "Y")[0].toUpperCase()
+                }
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-semibold text-[#FDFBF7] truncate">{user?.firstName || "Warrior"}</p>
+                <p className="text-xs font-semibold text-[#FDFBF7] truncate">{(user as any)?.displayName || user?.firstName || "Warrior"}</p>
                 <p className="text-[10px] text-[#D8CFCD]/60">{streak.currentStreak} day streak</p>
               </div>
             </div>
@@ -526,7 +529,7 @@ export default function RecoveryDashboard() {
               <h1 className="text-4xl md:text-5xl font-display mb-3" data-testid="text-dashboard-title">
                 Welcome back,{" "}
                 <span style={{ color: personaAccent }}>
-                  {persona?.name || user?.firstName || "Warrior"}
+                  {persona?.name || (user as any)?.displayName || user?.firstName || "Warrior"}
                 </span>
               </h1>
               {persona?.creed ? (
