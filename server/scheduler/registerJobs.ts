@@ -120,6 +120,18 @@ export async function bootstrapScheduler(): Promise<void> {
     },
   });
 
+  // Survivor onboarding drip — Days 1, 3, 5, 7, 10, 14 post-signup.
+  // Self-provisions survivor_drip_sends. Idempotent via UNIQUE (user_id, drip_day).
+  registerJob({
+    name: "survivor-drip",
+    description: "Onboarding email drip for platform users (days 1/3/5/7/10/14 post-signup).",
+    cron: "15 * * * *", // hourly at :15 (offset from other jobs)
+    handler: async () => {
+      const { runSurvivorDrip } = await import("../survivorDripService");
+      await runSurvivorDrip();
+    },
+  });
+
   // Business Intelligence — daily snapshot of funnel/revenue/engagement metrics
   // for trend history. Idempotent (upsert keyed on UTC date); ctx.scheduledFor
   // stamps the snapshot day so a run claimed late still writes its own date.
