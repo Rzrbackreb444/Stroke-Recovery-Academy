@@ -121,6 +121,7 @@ const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
 const RecoveryDashboard = lazy(() => import("@/pages/RecoveryDashboard"));
 const Scholarship = lazy(() => import("@/pages/Scholarship"));
 const CaregiverSettings = lazy(() => import("@/pages/CaregiverSettings"));
+const CaregiverDashboard = lazy(() => import("@/pages/CaregiverDashboard"));
 const Academy = lazy(() => import("@/pages/Academy"));
 const SaschLanding = lazy(() => import("@/pages/SaschLanding"));
 const Builder = lazy(() => import("@/pages/Builder"));
@@ -794,6 +795,7 @@ function Router() {
       <Route path="/recovery/scholarship" component={Scholarship} />
       <Route path="/settings/caregivers" component={CaregiverSettings} />
       <Route path="/settings/caregivers/accept/:token" component={CaregiverSettings} />
+      <Route path="/caregiver/:survivorId" component={CaregiverDashboard} />
       <Route path="/course/:courseId/quiz/:quizId" component={CourseQuiz} />
       <Route path="/certificate/:courseId" component={CourseCertificate} />
       <Route path="/my-learning">

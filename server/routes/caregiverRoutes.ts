@@ -220,6 +220,120 @@ export function registerCaregiverRoutes(app: Express, isAuthenticated: any) {
     }
   });
 
+  // Caregiver dashboard: read the linked survivor's key recovery metrics.
+  // Only an active caregiver for that survivor can call this.
+  // Returns 404 (not 403) on auth failure to avoid leaking survivor existence.
+  app.get('/api/caregivers/survivor/:survivorId/dashboard', isAuthenticated, async (req: any, res) => {
+    const caregiverId = req.user.claims.sub as string;
+    const survivorId = req.params.survivorId;
+
+    try {
+      // Verify active link
+      const link = await db.execute(sql`
+        SELECT id FROM caregiver_links
+         WHERE caregiver_id = ${caregiverId}
+           AND survivor_id  = ${survivorId}
+           AND status = 'active'
+         LIMIT 1
+      `);
+      const linkRows = link.rows ?? link as any;
+      if (!linkRows || linkRows.length === 0) {
+        return res.status(404).json({ message: 'Not found' });
+      }
+
+      // Survivor basic info
+      const survivorRow = await db.execute(sql`
+        SELECT first_name, last_name, avatar_url, created_at FROM users
+         WHERE id = ${survivorId} LIMIT 1
+      `);
+      const survivor = ((survivorRow.rows ?? survivorRow) as any[])[0];
+      if (!survivor) return res.status(404).json({ message: 'Not found' });
+
+      // NeverZero streak — read from pre-computed user_streaks table
+      const streakRow = await db.execute(sql`
+        SELECT current_streak AS streak, last_activity_date
+          FROM user_streaks
+         WHERE user_id = ${survivorId}
+         LIMIT 1
+      `).catch(() => ({ rows: [] }));
+      const streakData = ((streakRow.rows ?? streakRow) as any[])[0];
+      const streak = streakData?.streak ?? 0;
+
+      // Total check-ins as a proxy for activity volume
+      const checkinsRow = await db.execute(sql`
+        SELECT COUNT(*)::int AS total FROM daily_checkins WHERE user_id = ${survivorId}
+      `).catch(() => ({ rows: [{ total: 0 }] }));
+      const totalReps = ((checkinsRow.rows ?? checkinsRow) as any[])[0]?.total ?? 0;
+
+      // Recent check-in activity (last 7 days) — extract exercise labels from JSONB
+      const recentReps = await db.execute(sql`
+        SELECT DATE(checkin_date) AS checkin_day,
+               exercise_minutes,
+               wins_today,
+               checkin_date AS last_at
+          FROM daily_checkins
+         WHERE user_id = ${survivorId}
+           AND checkin_date >= NOW() - INTERVAL '7 days'
+         ORDER BY checkin_date DESC
+         LIMIT 7
+      `).catch(() => ({ rows: [] }));
+
+      // Survivor profile (deficit info) — stored in user_profiles
+      const profileRow = await db.execute(sql`
+        SELECT stroke_type, affected_side, deficits, stroke_date,
+               daily_time_budget_minutes, energy_pattern
+          FROM user_profiles WHERE user_id = ${survivorId} LIMIT 1
+      `).catch(() => ({ rows: [] }));
+      const profile = ((profileRow.rows ?? profileRow) as any[])[0] ?? null;
+
+      // Days since stroke
+      const daysSinceStroke = profile?.stroke_date
+        ? Math.floor((Date.now() - new Date(profile.stroke_date).getTime()) / 86_400_000)
+        : null;
+
+      // Last check-in date
+      const lastCheckinRow = await db.execute(sql`
+        SELECT MAX(checkin_date) AS last_at FROM daily_checkins WHERE user_id = ${survivorId}
+      `).catch(() => ({ rows: [{ last_at: null }] }));
+      const lastCheckinAt = ((lastCheckinRow.rows ?? lastCheckinRow) as any[])[0]?.last_at ?? null;
+
+      return res.json({
+        survivor: {
+          firstName: survivor.first_name,
+          lastName: survivor.last_name,
+          avatarUrl: survivor.avatar_url,
+          joinedAt: survivor.created_at,
+        },
+        metrics: {
+          streak,
+          totalReps,
+          daysSinceStroke,
+          lastCheckinAt,
+        },
+        recentActivity: (recentReps.rows ?? recentReps as any).map((r: any) => ({
+          label: r.checkin_day
+            ? new Date(r.checkin_day).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+            : 'Check-in',
+          exerciseMinutes: r.exercise_minutes ?? 0,
+          winsToday: r.wins_today ?? null,
+          lastAt: r.last_at,
+        })),
+        profile: profile
+          ? {
+              strokeType: profile.stroke_type,
+              affectedSide: profile.affected_side,
+              deficits: profile.deficits,
+              dailyTimeBudgetMinutes: profile.daily_time_budget_minutes,
+              energyPattern: profile.energy_pattern,
+            }
+          : null,
+      });
+    } catch (err: any) {
+      console.error('[caregivers] dashboard', err);
+      res.status(500).json({ message: 'Failed to load dashboard' });
+    }
+  });
+
   // Internal: when caregiver unlocks course X, mirror access to all linked survivors.
   // Exposed as a route so courseUnlockRoutes can hand off post-unlock; also called
   // directly in this file after accept.

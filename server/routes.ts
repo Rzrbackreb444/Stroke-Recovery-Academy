@@ -9726,7 +9726,25 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         }
       }
 
-      const result = await generateCoachResponse(message, history || [], getSasquatchCoachPrompt(coachPersona), userContext);
+      // Cross-session memory injection: if the client sent no/short history,
+      // load the last 12 persisted messages from DB so the Coach remembers
+      // previous conversations without requiring any client changes.
+      let contextHistory: typeof history = history || [];
+      if (capUserId && contextHistory.length < 4) {
+        try {
+          const { getChatHistory } = await import('./sasquatchHistoryService');
+          const dbMsgs = await getChatHistory(capUserId);
+          if (dbMsgs.length > 0) {
+            // Take the last 12 messages (6 exchanges), map to Gemini role names.
+            contextHistory = dbMsgs.slice(-12).map((m) => ({
+              role: m.role === 'coach' ? 'model' : 'user',
+              content: m.content,
+            }));
+          }
+        } catch { /* non-fatal — Coach works without persistent memory */ }
+      }
+
+      const result = await generateCoachResponse(message, contextHistory, getSasquatchCoachPrompt(coachPersona), userContext);
 
       // Hard rule: every Sasquatch reply MUST end with a quote on its own
       // line, prefixed with "— ". The system prompt instructs Gemini to do
@@ -13649,6 +13667,29 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       );
     } catch (error) {
       console.error("Error processing journal nudge unsubscribe:", error);
+      res.status(500).send('<p style="font-family:Georgia,serif;padding:40px;">Something went wrong. Try again later.</p>');
+    }
+  });
+
+  // Drip email one-click unsubscribe
+  app.get('/api/survivor/drip/unsubscribe', async (req: any, res) => {
+    try {
+      const uid = String(req.query.uid || '');
+      if (!uid) return res.status(400).send('<p style="font-family:Georgia,serif;padding:40px;">Invalid unsubscribe link.</p>');
+      await db.execute(sql`
+        INSERT INTO notification_preferences (user_id, unsubscribed_all, created_at, updated_at)
+        VALUES (${uid}, TRUE, NOW(), NOW())
+        ON CONFLICT (user_id) DO UPDATE SET unsubscribed_all = TRUE, updated_at = NOW()
+      `);
+      res.status(200).send(
+        '<div style="font-family:Georgia,serif;max-width:520px;margin:60px auto;padding:0 24px;color:#1A1614;">' +
+        '<h1 style="color:#C06B3E;">You\'re off the list.</h1>' +
+        '<p>No more recovery emails — your platform access stays fully intact.</p>' +
+        '<p><a href="' + (process.env.PUBLIC_SITE_URL || 'https://strokerecoveryacademy.com') + '/recovery" style="color:#C06B3E;">Back to your dashboard</a></p>' +
+        '</div>'
+      );
+    } catch (err) {
+      console.error('Drip unsubscribe error:', err);
       res.status(500).send('<p style="font-family:Georgia,serif;padding:40px;">Something went wrong. Try again later.</p>');
     }
   });
@@ -25600,6 +25641,8 @@ Format as structured JSON with clear sections.`;
   registerRefundRoutes(app, isAuthenticated);
   registerScholarshipRoutes(app, isAuthenticated);
   registerCaregiverRoutes(app, isAuthenticated);
+  const { registerPremiumCancelRoutes } = await import('./routes/premiumCancelRoutes');
+  registerPremiumCancelRoutes(app, isAuthenticated);
   registerProgressRoutes(app, isAuthenticated);
   registerEncouragementRoutes(app, isAuthenticated);
   registerTranslationRoutes(app, isAuthenticated);
