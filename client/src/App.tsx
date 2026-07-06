@@ -26,6 +26,7 @@ import SurvivorIntakeBanner from "@/components/SurvivorIntakeBanner";
 import AccessibilityProvider from "@/components/AccessibilityProvider";
 import AdminRoute from "@/components/AdminRoute";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 // ─── Lazy pages (everything else — code-split per route) ───────────────
 // Each line below produces its own JS chunk. The bundle for cold load
@@ -283,6 +284,7 @@ function Router() {
     <AccessibilityProvider />
     <SurvivorIntakeBanner />
     <RecoveryHeader />
+    <ErrorBoundary>
     <Suspense fallback={<LazyRouteFallback />}>
       <Switch>
       {/* ============================================ */}
@@ -853,6 +855,7 @@ function Router() {
       <Route component={NotFound} />
       </Switch>
     </Suspense>
+    </ErrorBoundary>
     </>
   );
 }

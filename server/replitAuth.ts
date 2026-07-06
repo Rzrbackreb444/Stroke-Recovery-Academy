@@ -156,6 +156,13 @@ export const isAuthenticated: RequestHandler = async (req: any, res, next) => {
 
   const user = req.user as any;
 
+  // Multi-provider path: Google OAuth / email-password users are deserialized
+  // by Passport into a full DB user row (has .id, no .claims/.expires_at).
+  // req.isAuthenticated() is the authoritative Passport check for these.
+  if (req.isAuthenticated && req.isAuthenticated() && user?.id && !user?.claims) {
+    return next();
+  }
+
   if (!req.isAuthenticated || !req.isAuthenticated() || !user?.expires_at) {
     return res.status(401).json({ message: "Unauthorized" });
   }

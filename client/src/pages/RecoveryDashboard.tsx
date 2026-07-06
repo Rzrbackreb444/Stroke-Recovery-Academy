@@ -191,7 +191,7 @@ export default function RecoveryDashboard() {
     });
   };
 
-  const { data: dashboard, isLoading } = useQuery<any>({
+  const { data: dashboard, isLoading, isError } = useQuery<any>({
     queryKey: ["/api/recovery/dashboard"],
   });
 
@@ -313,7 +313,29 @@ export default function RecoveryDashboard() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
-        <div className="animate-pulse text-[#C06B3E] text-xl">Loading your command center...</div>
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 rounded-full border-2 border-[#C06B3E]/30 border-t-[#C06B3E] animate-spin" />
+          <div className="text-[#C06B3E]/70 text-sm font-medium">Loading your command center...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center px-4">
+        <div className="text-center max-w-sm">
+          <p className="text-[#2A2421] font-semibold mb-2">Couldn't load your dashboard</p>
+          <p className="text-[#5C534D] text-sm mb-5">Your session may have expired. Sign in again to continue.</p>
+          <Button
+            size="sm"
+            className="bg-[#C06B3E] text-white"
+            onClick={() => window.location.assign("/api/login")}
+            data-testid="button-dashboard-signin"
+          >
+            Sign in again
+          </Button>
+        </div>
       </div>
     );
   }
