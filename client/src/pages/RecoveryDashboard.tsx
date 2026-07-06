@@ -31,6 +31,8 @@ import {
 } from "lucide-react";
 import SixtyDayTracker from "@/components/recovery/SixtyDayTracker";
 import TodaySessionPanel from "@/components/recovery/TodaySessionPanel";
+import DeficitPrescriptionCard from "@/components/recovery/DeficitPrescriptionCard";
+import RecoveryArcCard from "@/components/recovery/RecoveryArcCard";
 import PushOptInBanner from "@/components/PushOptInBanner";
 import { RecommendationCards } from "@/components/RecommendationCard";
 import { TodaysSpark } from "@/components/TodaysSpark";
@@ -439,6 +441,12 @@ export default function RecoveryDashboard() {
           </Button>
         </div>
         <TodaysSpark />
+
+        {/* RECOVERY ARC — milestone card at 30/60/90/180/365 days. Renders only
+            when within the ±4-day window of a milestone. Hidden in Zen Mode so
+            the milestone doesn't compete with the single focal audit card. */}
+        {!zenMode && <RecoveryArcCard />}
+
         {!zenMode && (<>
         {/* ── Today's loop ── coherent daily journey strip ── */}
         <section className="mb-6" data-testid="section-daily-loop">
@@ -603,6 +611,12 @@ export default function RecoveryDashboard() {
 
         </FadeUpSection>
         </>)}
+        {/* DEFICIT PRESCRIPTION — Personalized daily reps built from the survivor's
+            deficit profile. Always rendered (including Zen Mode) so the "what do I
+            do today?" answer is never more than one scroll away. Shows an intake CTA
+            if the profile hasn't been filled out yet. */}
+        <DeficitPrescriptionCard />
+
         {/* TODAY SESSION — Exercise queue with inline timer, rings, reminders. Always rendered. */}
         <TodaySessionPanel />
 

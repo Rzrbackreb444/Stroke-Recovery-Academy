@@ -116,6 +116,13 @@ export async function generateCoachResponse(
     hasLoggedToday?: boolean;
     morningBrief?: string | null;
     morningFocusItems?: string[] | null;
+    // Deficit profile — the survivor's actual clinical picture
+    strokeType?: string | null;
+    affectedSide?: string | null;
+    deficits?: Record<string, number> | null;
+    timeBudgetMinutes?: number | null;
+    energyPattern?: string | null;
+    daysSinceStroke?: number | null;
   }
 ): Promise<{ response: string; quote?: string }> {
   try {
@@ -159,6 +166,45 @@ export async function generateCoachResponse(
         }
         if (userContext.morningFocusItems?.length) {
           contextLines.push(`Today's focus items from the daily loop: ${userContext.morningFocusItems.map((f) => `"${f}"`).join(', ')} — if they ask "what should I focus on?", reference these.`);
+        }
+        // Deficit profile — the survivor's actual clinical picture. This is the most
+        // important personalization data. Every exercise recommendation must be filtered
+        // through it. Never give generic stroke advice when you know their specific deficits.
+        if (userContext.strokeType && userContext.strokeType !== 'unknown') {
+          contextLines.push(`Stroke type: ${userContext.strokeType}.`);
+        }
+        if (userContext.affectedSide && userContext.affectedSide !== 'unsure') {
+          contextLines.push(`Affected side: ${userContext.affectedSide}. Reference this when recommending movement — "your ${userContext.affectedSide} side" not just "the affected side."`);
+        }
+        if (userContext.deficits && Object.keys(userContext.deficits).length > 0) {
+          const deficitLabels: Record<string, string> = {
+            motor: 'motor function', speech: 'speech/language', cognitive: 'cognitive processing',
+            fatigue: 'fatigue management', vision: 'vision', swallowing: 'swallowing',
+            emotional: 'emotional regulation', sensory: 'sensory processing',
+          };
+          const deficitSeverity = ['none', 'mild', 'moderate', 'severe', 'complete'];
+          const activeDeficits = Object.entries(userContext.deficits)
+            .filter(([, v]) => v > 0)
+            .sort(([, a], [, b]) => b - a)
+            .map(([k, v]) => `${deficitLabels[k] || k}: ${deficitSeverity[v] ?? v}/4`);
+          if (activeDeficits.length > 0) {
+            contextLines.push(`DEFICIT PROFILE (critical — tailor EVERY exercise recommendation to these specific deficits): ${activeDeficits.join('; ')}. Don't suggest exercises that ignore their actual limitations. Don't recommend high-motor tasks when motor deficit is severe. Don't give lengthy text when cognitive or speech deficit is severe. Match the depth of your response to their cognitive load capacity.`);
+          }
+        }
+        if (userContext.timeBudgetMinutes && userContext.timeBudgetMinutes > 0) {
+          contextLines.push(`Their daily time budget: ${userContext.timeBudgetMinutes} minutes. Never recommend a session longer than this. Break it up if needed — "two 10-minute windows" instead of "20 minutes straight."`);
+        }
+        if (userContext.energyPattern) {
+          const energyMap: Record<string, string> = { morning: 'mornings', afternoon: 'afternoons', evening: 'evenings', variable: 'unpredictably throughout the day' };
+          contextLines.push(`Peak energy: ${energyMap[userContext.energyPattern] || userContext.energyPattern}. Time exercise recommendations accordingly — don't suggest hard reps at low-energy times.`);
+        }
+        if (userContext.daysSinceStroke && userContext.daysSinceStroke > 0) {
+          const months = Math.floor(userContext.daysSinceStroke / 30);
+          const timeRef = months >= 12
+            ? `${Math.floor(months / 12)} year${Math.floor(months / 12) > 1 ? 's' : ''} post-stroke`
+            : months > 0 ? `${months} month${months > 1 ? 's' : ''} post-stroke`
+            : `${userContext.daysSinceStroke} days post-stroke`;
+          contextLines.push(`They are ${timeRef}. Reference their timeline naturally when relevant — early recovery (0-3mo) needs different framing than long-haul (12mo+).`);
         }
         if (contextLines.length > 0) {
           systemPrompt += `\n\nUSER CONTEXT (use this to make every reply feel personal — never echo it verbatim, weave it):\n${contextLines.join('\n')}`;

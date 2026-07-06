@@ -9652,6 +9652,12 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         hasLoggedToday?: boolean;
         morningBrief?: string | null;
         morningFocusItems?: string[] | null;
+        strokeType?: string | null;
+        affectedSide?: string | null;
+        deficits?: Record<string, number> | null;
+        timeBudgetMinutes?: number | null;
+        energyPattern?: string | null;
+        daysSinceStroke?: number | null;
       } | undefined;
 
       let coachPersona: { name: string; creed: string; archetypeKey: string } | null = null;
@@ -9664,7 +9670,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
           // day instead of generic "keep pushing" lines.
           const { loadPersonaFor } = await import('./personaRoutes');
           const todayKey = localDateKey(new Date());
-          const [exerciseScores, streakData, milestonesData, userData, personaRow, neverZero, todayAudit, todayBrief] = await Promise.all([
+          const [exerciseScores, streakData, milestonesData, userData, personaRow, neverZero, todayAudit, todayBrief, survivorProfile] = await Promise.all([
             storage.getUserExerciseScores(userId).catch((err) => { console.error('[coach] getUserExerciseScores failed:', err); return []; }),
             storage.getUserStreak(userId).catch(() => ({ currentStreak: 0 })),
             storage.getUserMilestones(userId).catch(() => []),
@@ -9673,6 +9679,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
             storage.getNeverZeroData(userId).catch(() => null),
             storage.getNeverZeroAuditByDate(userId, todayKey).catch(() => null),
             storage.getMorningBrief(userId, todayKey).catch(() => null),
+            storage.getUserProfile(userId).catch(() => null),
           ]);
 
           if (personaRow) {
@@ -9689,6 +9696,9 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
           const todayReps = todayLogs.map((l) => l.action).slice(0, 6);
           const nzStreak = neverZero?.currentStreak ?? streakData?.currentStreak ?? 0;
 
+          const strokeDateMs = survivorProfile?.strokeDate ? new Date(survivorProfile.strokeDate).getTime() : null;
+          const daysSinceStroke = strokeDateMs ? Math.floor((Date.now() - strokeDateMs) / 86_400_000) : null;
+
           userContext = {
             // Prefer persona name so the coach addresses the survivor as their forged self.
             name: personaRow?.name || userData?.firstName || userData?.email || undefined,
@@ -9703,6 +9713,13 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
             hasLoggedToday: todayLogs.length > 0,
             morningBrief: todayBrief?.brief ?? null,
             morningFocusItems: todayBrief?.focusItems ?? null,
+            // Deficit profile — the heart of personalized coaching
+            strokeType: survivorProfile?.strokeType ?? null,
+            affectedSide: survivorProfile?.affectedSide ?? null,
+            deficits: survivorProfile?.deficits ?? null,
+            timeBudgetMinutes: survivorProfile?.dailyTimeBudgetMinutes ?? null,
+            energyPattern: survivorProfile?.energyPattern ?? null,
+            daysSinceStroke,
           };
         } catch (e) {
           console.error('Error fetching user context:', e);
