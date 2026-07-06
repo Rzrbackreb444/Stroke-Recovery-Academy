@@ -610,10 +610,15 @@ ${allRoutes.map(r => `  <url>
   </url>`;
       }).join('\n');
 
+      // Pillar hub topic pages — high-priority cluster hubs for topical authority
+      const PILLAR_SLUGS = ['exercises-at-home', 'life-after-stroke', 'stroke-recovery-timeline', 'journaling-after-stroke', 'caregivers', 'survivor-income'];
+      const pillarBlocks = PILLAR_SLUGS.map(s => `  <url>\n    <loc>${baseUrl}/recovery/blog/topic/${s}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.90</priority>\n  </url>`).join('\n');
+
       const finalSitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
         xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+${pillarBlocks}
 ${postUrls}${ssrBlocks ? '\n' + ssrBlocks : ''}
 </urlset>`;
 
