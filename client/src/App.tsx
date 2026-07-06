@@ -337,6 +337,7 @@ function Router() {
       <Route path="/wilderness-survival" component={WildernessSurvival} />
       <Route path="/seo-command-center" component={SEOCommandCenter} />
       <Route path="/terms" component={TermsOfService} />
+      <Route path="/tos" component={TermsOfService} />
       <Route path="/privacy" component={PrivacyPolicy} />
       <Route path="/legal/medical-disclaimer" component={MedicalDisclaimer} />
       <Route path="/legal/refund-policy" component={RefundPolicy} />
