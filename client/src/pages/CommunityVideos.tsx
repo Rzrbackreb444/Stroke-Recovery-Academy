@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import {
-  Upload, Play, Heart, MessageCircle, Eye, CheckCircle2,
+  Upload, Play, Heart, MessageCircle, Eye, CheckCircle2, Camera,
   Sparkles, Pin, X, ImagePlus, Video, ChevronLeft,
   ArrowUpFromLine, BarChart2, Grid3X3, Zap, UserPlus, UserCheck, Hash, Loader2, Flame,
 } from "lucide-react";
@@ -758,6 +758,27 @@ function ProfileHeader({ data, onUpload }: { data: ProfileData; onUpload: () => 
 
   const [following, setFollowing] = useState(isFollowedByMe);
   const [followerCount, setFollowerCount] = useState(uploader.followerCount);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+
+  async function handleAvatarSelected(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatarUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/upload/avatar", { method: "POST", body: fd });
+      if (!res.ok) throw new Error((await res.json()).message ?? "Upload failed");
+      await qc.invalidateQueries({ queryKey: ["/api/community/videos/profile"] });
+      toast({ title: "Avatar updated." });
+    } catch (err: any) {
+      toast({ title: err.message ?? "Upload failed", variant: "destructive" });
+    } finally {
+      setAvatarUploading(false);
+      e.target.value = "";
+    }
+  }
 
   const followMutation = useMutation({
     mutationFn: () => apiRequest("POST", `/api/sparks/follow/${uploader.id}`),
@@ -779,6 +800,27 @@ function ProfileHeader({ data, onUpload }: { data: ProfileData; onUpload: () => 
             <AvatarImage src={uploader.avatar ?? undefined} />
             <AvatarFallback className="text-2xl font-bold bg-zinc-800 text-white">{uploader.name[0]}</AvatarFallback>
           </Avatar>
+          {isOwnProfile && (
+            <button
+              onClick={() => avatarInputRef.current?.click()}
+              disabled={avatarUploading}
+              className="absolute inset-0 rounded-full flex items-center justify-center bg-black/0 hover:bg-black/50 transition-colors group"
+              data-testid="button-change-avatar"
+              aria-label="Change avatar"
+            >
+              {avatarUploading
+                ? <Loader2 className="w-6 h-6 text-white animate-spin opacity-100" />
+                : <Camera className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+              }
+            </button>
+          )}
+          <input
+            ref={avatarInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            className="hidden"
+            onChange={handleAvatarSelected}
+          />
           {uploader.isTherapist && (
             <span className="absolute -bottom-1 -right-1 bg-blue-500 rounded-full p-0.5">
               <CheckCircle2 className="w-4 h-4 text-white" />

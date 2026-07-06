@@ -1412,8 +1412,19 @@ Last updated: ${new Date().toISOString().split('T')[0]}
       if (!userId) {
         return res.json(null);
       }
-      const user = await storage.getUser(userId);
-      res.json(user);
+      const [user, settings] = await Promise.all([
+        storage.getUser(userId),
+        storage.getUserSettings(userId).catch(() => undefined),
+      ]);
+      if (!user) return res.json(null);
+      // Merge userSettings fields so the client always gets the best available identity.
+      // Priority: userSettings (platform upload) > users.avatarUrl (AI avatar) > OAuth photo.
+      res.json({
+        ...user,
+        avatarUrl: settings?.avatarUrl || user.avatarUrl || user.profileImageUrl || null,
+        displayName: settings?.displayName || user.firstName || null,
+        username: settings?.username || null,
+      });
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
