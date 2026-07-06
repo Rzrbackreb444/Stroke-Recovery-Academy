@@ -1005,3 +1005,11 @@ html.a11y-reduce-motion *::after {
 .sasquatch-progress [role="slider"]:focus-visible {
   transform: scale(1.15);
 }
+
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.msg-in {
+  animation: msgIn 0.32s ease-out forwards;
+}

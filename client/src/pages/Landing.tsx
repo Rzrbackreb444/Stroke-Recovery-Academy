@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation, Link } from "wouter";
@@ -226,16 +226,65 @@ function ActivityTicker() {
   );
 }
 
+const COACH_MESSAGES = [
+  { from: "survivor", text: "I skipped my exercises three days in a row. I don't know what's wrong with me." },
+  { from: "coach",    text: "Three days is just three days. It's not a pattern unless you let it become one. What's actually going on — tired, or something heavier?" },
+  { from: "survivor", text: "Honestly both. My arm still doesn't move the way I want it to after 8 months." },
+  { from: "coach",    text: "Eight months feels long when you're in it. It's not. The reps you did in month one still live in your nervous system — you're not starting over. You're continuing. What did the arm do last week that it couldn't do in month one?" },
+] as const;
+
 function CoachPreview() {
-  const messages = [
-    { from: "survivor", text: "I skipped my exercises three days in a row. I don't know what's wrong with me." },
-    { from: "coach", text: "Three days is just three days. It's not a pattern unless you let it become one. What's actually going on — tired, or something heavier?" },
-    { from: "survivor", text: "Honestly both. My arm still doesn't move the way I want it to after 8 months." },
-    { from: "coach", text: "Eight months feels long when you're in it. It's not. The reps you did in month one still live in your nervous system — you're not starting over. You're continuing. What did the arm do last week that it couldn't do in month one?" },
-  ];
+  const [visibleCount, setVisibleCount] = useState(0);
+  const [showTyping, setShowTyping]     = useState(false);
+  const scrollRef   = useRef<HTMLDivElement>(null);
+  const sectionRef  = useRef<HTMLDivElement>(null);
+  const timersRef   = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const loopRef     = useRef<() => void>(() => {});
+
+  function clear() {
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
+  }
+  function after(ms: number, fn: () => void) {
+    const id = setTimeout(fn, ms);
+    timersRef.current.push(id);
+  }
+
+  loopRef.current = () => {
+    clear();
+    setVisibleCount(0);
+    setShowTyping(false);
+    let t = 0;
+    t += 700;  after(t, () => setVisibleCount(1));
+    t += 900;  after(t, () => setShowTyping(true));
+    t += 2300; after(t, () => { setShowTyping(false); setVisibleCount(2); });
+    t += 1400; after(t, () => setVisibleCount(3));
+    t += 900;  after(t, () => setShowTyping(true));
+    t += 3200; after(t, () => { setShowTyping(false); setVisibleCount(4); });
+    t += 6000; after(t, () => loopRef.current());
+  };
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) loopRef.current();
+        else { clear(); setVisibleCount(0); setShowTyping(false); }
+      },
+      { threshold: 0.25 }
+    );
+    obs.observe(el);
+    return () => { obs.disconnect(); clear(); };
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+  }, [visibleCount, showTyping]);
 
   return (
-    <section className="bg-[#1A1412] py-24">
+    <section ref={sectionRef} className="bg-[#1A1412] py-24">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div>
@@ -261,38 +310,53 @@ function CoachPreview() {
             </Button>
           </div>
 
-          <div className="bg-[#0F0C0A] rounded-2xl border border-[#3A3230] p-6 space-y-4">
-            <div className="flex items-center gap-3 pb-4 border-b border-[#2A2421]">
+          <div className="bg-[#0F0C0A] rounded-2xl border border-[#3A3230] p-5 flex flex-col" style={{ minHeight: 380 }}>
+            {/* Header */}
+            <div className="flex items-center gap-3 pb-4 mb-2 border-b border-[#2A2421] shrink-0">
               <div className="w-9 h-9 rounded-full bg-[#C06B3E]/20 flex items-center justify-center">
                 <MessageSquare className="w-4 h-4 text-[#C06B3E]" />
               </div>
               <div>
                 <div className="text-sm font-semibold text-[#FDFBF7]/90">Sasquatch Coach</div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                  <span className="text-xs text-[#FDFBF7]/40">Online</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-xs text-[#FDFBF7]/40">Active now</span>
                 </div>
               </div>
             </div>
-            {messages.map((m, i) => (
-              <div key={i} className={`flex ${m.from === "survivor" ? "justify-end" : "justify-start"}`}>
-                <div
-                  className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+
+            {/* Messages */}
+            <div ref={scrollRef} className="flex-1 overflow-y-hidden space-y-3 py-1">
+              {COACH_MESSAGES.slice(0, visibleCount).map((m, i) => (
+                <div key={i} className={`flex msg-in ${m.from === "survivor" ? "justify-end" : "justify-start"}`}>
+                  <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                     m.from === "survivor"
                       ? "bg-[#2A2421] text-[#FDFBF7]/80 rounded-br-sm"
                       : "bg-[#C06B3E]/15 border border-[#C06B3E]/20 text-[#FDFBF7]/85 rounded-bl-sm"
-                  }`}
-                >
-                  {m.text}
+                  }`}>
+                    {m.text}
+                  </div>
                 </div>
-              </div>
-            ))}
-            <div className="flex items-center gap-2 pt-2 border-t border-[#2A2421]">
+              ))}
+
+              {showTyping && (
+                <div className="flex justify-start msg-in">
+                  <div className="bg-[#C06B3E]/15 border border-[#C06B3E]/20 rounded-2xl rounded-bl-sm px-4 py-3.5 flex gap-1.5 items-center">
+                    <span className="w-2 h-2 rounded-full bg-[#C06B3E]/70 animate-bounce" style={{ animationDelay: "0ms",   animationDuration: "0.9s" }} />
+                    <span className="w-2 h-2 rounded-full bg-[#C06B3E]/70 animate-bounce" style={{ animationDelay: "160ms", animationDuration: "0.9s" }} />
+                    <span className="w-2 h-2 rounded-full bg-[#C06B3E]/70 animate-bounce" style={{ animationDelay: "320ms", animationDuration: "0.9s" }} />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Input bar */}
+            <div className="flex items-center gap-2 pt-3 mt-2 border-t border-[#2A2421] shrink-0">
               <div className="flex-1 bg-[#2A2421] rounded-full px-4 py-2.5 text-sm text-[#FDFBF7]/25">
                 Message Coach...
               </div>
               <Link href="/recovery/sasquatch-coach">
-                <div className="w-9 h-9 rounded-full bg-[#C06B3E] flex items-center justify-center cursor-pointer">
+                <div className="w-9 h-9 rounded-full bg-[#C06B3E] flex items-center justify-center cursor-pointer hover:bg-[#A85B33] transition-colors">
                   <ArrowRight className="w-4 h-4 text-white" />
                 </div>
               </Link>
@@ -412,27 +476,6 @@ function Features() {
         <div className="text-center max-w-3xl mx-auto mb-20">
           <p className="text-sm font-bold tracking-widest uppercase text-[#C06B3E] mb-4">The Toolkit</p>
           <h2 className="font-display text-[#2A2421] text-4xl md:text-5xl">Everything you need to <span className="italic font-serif text-[#C06B3E]">rebuild.</span></h2>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center mb-24">
-          <div className="order-2 md:order-1 rounded-3xl overflow-hidden border border-[#E2C2A4]/20 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-8">
-            <img src={cleanUi} alt="AI Coach interface" loading="lazy" decoding="async" className="w-full h-auto rounded-xl border border-[#E2C2A4]/30" />
-          </div>
-          <div className="order-1 md:order-2">
-            <div className="w-12 h-12 rounded-2xl bg-[#F6EFEA] border border-[#E2C2A4]/30 text-[#C06B3E] flex items-center justify-center mb-6"><BrainCircuit className="w-6 h-6" /></div>
-            <h3 className="text-2xl font-bold text-[#2A2421] mb-4">AI Recovery Coach</h3>
-            <p className="text-[#5C534D] text-lg leading-relaxed mb-6">
-              A personalized companion trained on the Sasquatch Method. It builds your daily protocols, adjusts to how you're doing, and keeps you on track — encouraging, never preachy. Try it free — no signup for your first messages, unlimited on Premium.
-            </p>
-            <Button
-              asChild
-              size="lg"
-              className="bg-[#C06B3E] hover:bg-[#A85B33] text-white h-12 px-7 rounded-full font-semibold shadow-[0_2px_8px_rgba(192,107,62,0.15)] transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(192,107,62,0.2)]"
-              data-testid="button-try-coach-features"
-            >
-              <Link href="/recovery/sasquatch-coach">Try the Coach — free <ArrowRight className="ml-2 h-5 w-5" /></Link>
-            </Button>
-          </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
