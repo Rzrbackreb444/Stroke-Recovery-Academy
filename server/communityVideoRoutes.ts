@@ -825,6 +825,43 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
     }
   });
 
+  // ── Admin: reindex (recompute counts + return catalog stats) ────────────────
+  app.post("/api/admin/community/videos/reindex", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      if (!userId) return res.status(401).json({ message: "Unauthorized." });
+      const [user] = await db.select({ role: users.role }).from(users).where(eq(users.id, userId)).limit(1);
+      if (user?.role !== "admin") return res.status(403).json({ message: "Admin only." });
+
+      // Recompute like_count, comment_count, repost_count, save_count from junction tables
+      await db.execute(sql`
+        UPDATE community_videos cv SET
+          like_count    = (SELECT COUNT(*) FROM video_likes     WHERE video_id = cv.id),
+          comment_count = (SELECT COUNT(*) FROM video_comments  WHERE video_id = cv.id),
+          repost_count  = (SELECT COUNT(*) FROM video_reposts   WHERE video_id = cv.id),
+          save_count    = (SELECT COUNT(*) FROM video_saves     WHERE video_id = cv.id)
+      `);
+
+      const [stats] = await db.execute(sql`
+        SELECT
+          COUNT(*)::int                                        AS total,
+          COUNT(*) FILTER (WHERE is_public  = true)::int      AS public,
+          COUNT(*) FILTER (WHERE is_featured = true)::int     AS featured,
+          COUNT(*) FILTER (WHERE is_pinned   = true)::int     AS pinned,
+          COUNT(*) FILTER (WHERE source = 'upload')::int      AS uploaded,
+          COUNT(*) FILTER (WHERE source = 'seed')::int        AS seeded,
+          SUM(view_count)::int                                AS total_views,
+          SUM(like_count)::int                                AS total_likes
+        FROM community_videos
+      `);
+
+      res.json({ ok: true, reindexed: true, stats: (stats as any).rows?.[0] ?? stats });
+    } catch (err) {
+      console.error("[sparks] reindex error:", err);
+      res.status(500).json({ message: "Reindex failed." });
+    }
+  });
+
   // ── Delete video ────────────────────────────────────────────────────────────
   app.delete("/api/community/video/:id", isAuthenticated, async (req: any, res) => {
     try {
