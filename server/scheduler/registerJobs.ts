@@ -145,6 +145,17 @@ export async function bootstrapScheduler(): Promise<void> {
     },
   });
 
+  // Daily Spark video indexer — enrich untagged videos + expire stale boosts.
+  registerJob({
+    name: "spark-daily-index",
+    description: "Enrich community videos with missing tags; expire expired video boosts.",
+    cron: "0 3 * * *", // daily at 03:00 UTC
+    handler: async () => {
+      const { runDailyVideoIndex } = await import("../sparkIndexService");
+      await runDailyVideoIndex();
+    },
+  });
+
   // Self-maintenance — prune the run-history table so it doesn't grow forever.
   registerJob({
     name: "scheduler-run-prune",

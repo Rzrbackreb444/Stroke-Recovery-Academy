@@ -379,4 +379,45 @@ Generate professional, publication-ready content. Do not include meta-commentary
   }
 }
 
+// ── Spark vid metadata generation (vision-aware) ──────────────────────────────
+export async function generateSparkMetadata(
+  prompt: string,
+  frames: string[] = [],
+): Promise<{ title: string; description: string; hashtags: string[] }> {
+  const textPart = {
+    text:
+      `Generate metadata for a short stroke recovery video (a "Spark vid").\n` +
+      `Creator context: "${prompt.trim().slice(0, 500)}"\n\n` +
+      `${frames.length > 0 ? "The attached JPEG frames are sampled from the actual video — use them to inform the content.\n\n" : ""}` +
+      `Return ONLY valid JSON, no markdown fences:\n` +
+      `{\n` +
+      `  "title": "<punchy title, under 80 chars, survivor voice>",\n` +
+      `  "description": "<1–3 sentences, stroke-recovery tone, under 220 chars>",\n` +
+      `  "hashtags": ["<5–8 lowercase tags without #, stroke-focused>", ...]\n` +
+      `}`,
+  };
+  const parts: any[] = [textPart, ...frames.map((f) => ({ inlineData: { mimeType: "image/jpeg", data: f } }))];
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: [{ role: "user", parts }],
+    config: {
+      systemInstruction:
+        "You are a social media copy expert for stroke survivor content on Stroke Recovery Academy. " +
+        "Reply ONLY with a valid JSON object — no markdown fences, no extra text.",
+    },
+  });
+  const jsonStr = (response as any).text ?? "";
+  const match = jsonStr.match(/\{[\s\S]*\}/);
+  if (!match) throw new Error("Model returned unexpected format");
+  const meta = JSON.parse(match[0]) as { title?: string; description?: string; hashtags?: string[] };
+  return {
+    title: String(meta.title ?? "").slice(0, 120),
+    description: String(meta.description ?? "").slice(0, 2000),
+    hashtags: (Array.isArray(meta.hashtags) ? meta.hashtags : [])
+      .map((t: unknown) => String(t).toLowerCase().replace(/^#/, "").replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "").slice(0, 40))
+      .filter(Boolean)
+      .slice(0, 10),
+  };
+}
+
 export { SASQUATCH_QUOTES };
