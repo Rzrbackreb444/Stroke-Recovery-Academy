@@ -69,7 +69,7 @@ function Hero() {
     <section className="bg-[#1A1412]">
       {/* Mobile: full-bleed image on top, warm cream text below. Desktop: side-by-side with gradient overlay. */}
       <div className="sm:hidden">
-        <img src={heroWarrior} alt="Nick Kremers — stroke survivor" {...({ fetchpriority: "high" } as any)} decoding="async" className="w-full h-[50vh] max-h-[420px] object-cover object-center" />
+        <img src={heroWarrior} alt="Nick Kremers — stroke survivor" {...({ fetchpriority: "high" } as any)} decoding="async" className="w-full h-[72vh] object-cover" style={{ objectPosition: "65% 22%" }} />
         <div className="bg-[#FDFBF7] px-5 pt-8 pb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2A2421]/8 border border-[#E2C2A4]/40 mb-6">
             <span className="flex h-2 w-2 rounded-full bg-gold" />
@@ -118,13 +118,13 @@ function Hero() {
       </div>
 
       {/* Desktop: original side-by-side with gradient overlay */}
-      <div className="hidden sm:block relative overflow-hidden">
+      <div className="hidden sm:block relative overflow-hidden min-h-screen">
         <div className="absolute inset-0">
-          <img src={heroWarrior} alt="" aria-hidden="true" {...({ fetchpriority: "high" } as any)} decoding="async" className="w-full h-full object-cover object-center" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#1A1412]/80 via-[#2A2421]/50 to-transparent" />
+          <img src={heroWarrior} alt="" aria-hidden="true" {...({ fetchpriority: "high" } as any)} decoding="async" className="w-full h-full object-cover" style={{ objectPosition: "65% 22%" }} />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#1A1412]/85 via-[#2A2421]/55 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1412] via-transparent to-transparent" />
         </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-20 pb-32">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-20 pb-40">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FDFBF7]/8 border border-[#E2C2A4]/30 mb-10">
               <span className="flex h-2 w-2 rounded-full bg-gold" />
