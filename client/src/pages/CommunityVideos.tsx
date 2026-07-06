@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Upload, Play, Heart, MessageCircle, Eye, CheckCircle2,
   Sparkles, Pin, X, ImagePlus, Video, ChevronLeft,
-  ArrowUpFromLine, BarChart2, Grid3X3, Zap, UserPlus, UserCheck,
+  ArrowUpFromLine, BarChart2, Grid3X3, Zap, UserPlus, UserCheck, Hash,
 } from "lucide-react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -205,18 +205,30 @@ function UploadModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [selectedDeficits, setSelectedDeficits] = useState<string[]>([]);
-  const [tags, setTags] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState("");
+  const [showTagSuggestions, setShowTagSuggestions] = useState(false);
   const [progress, setProgress] = useState(0);
   const [progressLabel, setProgressLabel] = useState("");
   const [duration, setDuration] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const videoPreviewRef = useRef<HTMLVideoElement>(null);
 
-  const captureThumbnail = (videoFile: File) => {
-    return new Promise<Blob | null>((resolve) => {
+  const debouncedTagQ = tagInput.replace(/^#/, "").trim();
+  const { data: tagSuggestions } = useQuery<{ tags: { tag: string; count: number }[] }>({
+    queryKey: ["/api/community/tags/search", debouncedTagQ],
+    queryFn: () =>
+      fetch(`/api/community/tags/search?q=${encodeURIComponent(debouncedTagQ)}`).then((r) => r.json()),
+    enabled: debouncedTagQ.length >= 1,
+    staleTime: 10_000,
+  });
+  const filteredSuggestions = (tagSuggestions?.tags ?? []).filter(
+    (s) => !selectedTags.includes(s.tag.toLowerCase()),
+  );
+
+  const captureThumbnail = (videoFile: File) =>
+    new Promise<Blob | null>((resolve) => {
       const v = document.createElement("video");
-      v.muted = true;
-      v.playsInline = true;
+      v.muted = true; v.playsInline = true;
       v.src = URL.createObjectURL(videoFile);
       v.addEventListener("loadedmetadata", () => {
         setDuration(Math.round(v.duration));
@@ -224,8 +236,7 @@ function UploadModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
       });
       v.addEventListener("seeked", () => {
         const canvas = document.createElement("canvas");
-        canvas.width = v.videoWidth || 640;
-        canvas.height = v.videoHeight || 360;
+        canvas.width = v.videoWidth || 640; canvas.height = v.videoHeight || 360;
         const ctx = canvas.getContext("2d");
         if (!ctx) return resolve(null);
         ctx.drawImage(v, 0, 0);
@@ -235,17 +246,10 @@ function UploadModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
       v.addEventListener("error", () => resolve(null));
       v.load();
     });
-  };
 
   const handleFileSelected = async (f: File) => {
-    if (!f.type.startsWith("video/")) {
-      toast({ title: "Select a video file", variant: "destructive" });
-      return;
-    }
-    if (f.size > 500 * 1024 * 1024) {
-      toast({ title: "File must be under 500 MB", variant: "destructive" });
-      return;
-    }
+    if (!f.type.startsWith("video/")) { toast({ title: "Select a video file", variant: "destructive" }); return; }
+    if (f.size > 500 * 1024 * 1024) { toast({ title: "File must be under 500 MB", variant: "destructive" }); return; }
     setFile(f);
     setTitle(f.name.replace(/\.[^.]+$/, "").replace(/[-_]/g, " "));
     const thumb = await captureThumbnail(f);
@@ -254,43 +258,38 @@ function UploadModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
     setStep("details");
   };
 
-  const uploadWithProgress = (url: string, data: Blob | File, onProgress: (pct: number) => void) => {
-    return new Promise<void>((resolve, reject) => {
+  const uploadWithProgress = (url: string, data: Blob | File, onProgress: (pct: number) => void) =>
+    new Promise<void>((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.upload.addEventListener("progress", (e) => {
-        if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100));
-      });
+      xhr.upload.addEventListener("progress", (e) => { if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100)); });
       xhr.addEventListener("load", () => (xhr.status < 300 ? resolve() : reject(new Error(`Upload failed: ${xhr.status}`))));
       xhr.addEventListener("error", () => reject(new Error("Network error")));
       xhr.open("PUT", url);
       xhr.setRequestHeader("Content-Type", data instanceof File ? data.type : "image/jpeg");
       xhr.send(data);
     });
-  };
 
   const handleSubmit = async () => {
     if (!file || !title.trim()) return;
     setStep("uploading");
     try {
-      // 1. Get video upload URL
       setProgressLabel("Requesting upload slot…");
-      const { uploadURL: videoUploadUrl, objectPath: videoObjectPath } = await apiRequest("POST", "/api/community/video/upload-url");
+      const videoUrlRes = await apiRequest("POST", "/api/community/video/upload-url");
+      const { uploadURL: videoUploadUrl, objectPath: videoObjectPath } = await videoUrlRes.json();
 
-      // 2. Upload video
       setProgressLabel("Uploading video…");
       await uploadWithProgress(videoUploadUrl, file, (pct) => setProgress(Math.round(pct * 0.85)));
 
-      // 3. Upload thumbnail if we have one
       let thumbnailObjectPath: string | undefined;
       if (thumbnail) {
         setProgressLabel("Uploading thumbnail…");
         setProgress(86);
-        const { uploadURL: thumbUrl, objectPath: thumbPath } = await apiRequest("POST", "/api/community/video/thumbnail-url");
+        const thumbUrlRes = await apiRequest("POST", "/api/community/video/thumbnail-url");
+        const { uploadURL: thumbUrl, objectPath: thumbPath } = await thumbUrlRes.json();
         await uploadWithProgress(thumbUrl, thumbnail, () => {});
         thumbnailObjectPath = thumbPath;
       }
 
-      // 4. Finalize
       setProgressLabel("Saving video…");
       setProgress(95);
       await apiRequest("POST", "/api/community/video", {
@@ -298,7 +297,7 @@ function UploadModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
         thumbnailObjectPath,
         title: title.trim(),
         description: description.trim() || undefined,
-        tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
+        tags: selectedTags,
         deficitTags: selectedDeficits,
         durationSeconds: duration ?? undefined,
         fileSizeBytes: file.size,
@@ -318,66 +317,95 @@ function UploadModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
   const toggleDeficit = (key: string) =>
     setSelectedDeficits((prev) => prev.includes(key) ? prev.filter((d) => d !== key) : [...prev, key]);
 
+  const addTag = (raw: string) => {
+    const clean = raw.replace(/^#/, "").trim().toLowerCase().replace(/\s+/g, "");
+    if (clean && !selectedTags.includes(clean) && selectedTags.length < 10) {
+      setSelectedTags((prev) => [...prev, clean]);
+    }
+    setTagInput("");
+    setShowTagSuggestions(false);
+  };
+
+  const removeTag = (tag: string) => setSelectedTags((prev) => prev.filter((t) => t !== tag));
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="relative bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl" data-testid="upload-modal">
-        <div className="sticky top-0 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between px-5 py-4 rounded-t-2xl z-10">
-          <div className="flex items-center gap-2">
-            <Zap className="w-5 h-5 text-[#E2741B]" />
-            <span className="font-semibold text-white">Post a Spark</span>
-          </div>
-          <Button size="icon" variant="ghost" onClick={onClose} data-testid="button-close-upload"><X className="w-4 h-4" /></Button>
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <div
+        className="relative bg-white w-full max-w-lg max-h-[95vh] overflow-y-auto shadow-2xl rounded-t-3xl sm:rounded-2xl"
+        data-testid="upload-modal"
+      >
+        {/* Header */}
+        <div className="sticky top-0 bg-white border-b border-gray-100 flex items-center gap-2 px-4 py-3 z-10 rounded-t-3xl sm:rounded-t-2xl">
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => (step === "details" ? setStep("select") : onClose())}
+            className="text-gray-600 -ml-1 flex-shrink-0"
+            data-testid="button-close-upload"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </Button>
+          <span className="font-semibold text-gray-900 text-base flex-1">Post a Spark</span>
+          {step === "details" && (
+            <Button
+              size="sm"
+              onClick={handleSubmit}
+              disabled={!title.trim()}
+              className="bg-[#E2741B] text-white rounded-full px-5 font-semibold text-sm h-8"
+              data-testid="button-submit-upload"
+            >
+              Post
+            </Button>
+          )}
         </div>
 
-        <div className="p-5 space-y-5">
+        <div className="p-4 space-y-0">
+          {/* ── Guide ── */}
           {step === "guide" && (
-            <div className="space-y-5">
-              <div className="text-center space-y-2 pb-1">
-                <div className="w-14 h-14 rounded-full bg-[#E2741B]/10 border border-[#E2741B]/30 flex items-center justify-center mx-auto">
+            <div className="space-y-4 py-1">
+              <div className="text-center space-y-2">
+                <div className="w-14 h-14 rounded-full bg-[#E2741B]/10 border border-[#E2741B]/20 flex items-center justify-center mx-auto">
                   <Zap className="w-7 h-7 text-[#E2741B]" />
                 </div>
-                <h2 className="text-white font-bold text-lg">What is a Spark?</h2>
-                <p className="text-zinc-400 text-sm leading-relaxed">
-                  Sparks are short recovery videos — raw, real, and made by survivors. No studio. No script. Just proof that the work is happening.
+                <h2 className="text-gray-900 font-bold text-lg">What is a Spark?</h2>
+                <p className="text-gray-500 text-sm leading-relaxed">
+                  Short recovery videos — raw, real, made by survivors. No studio. No script. Just proof the work is happening.
                 </p>
               </div>
-
-              <div className="space-y-3">
-                <p className="text-zinc-500 text-xs font-semibold uppercase tracking-wider">What to post</p>
+              <div className="space-y-2">
+                <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider px-1">What to post</p>
                 {[
-                  { icon: "💪", label: "A rep you couldn't do last month", sub: "Show the before, the struggle, or the win" },
-                  { icon: "🧠", label: "A cognitive or speech moment", sub: "Word-finding, reading aloud, memory exercises" },
-                  { icon: "📅", label: "A day-in-the-life clip", sub: "Morning routine, PT appointment, small victory" },
-                  { icon: "💡", label: "A tip that actually helped you", sub: "Tools, hacks, mindset — share what works" },
-                ].map(({ icon, label, sub }) => (
-                  <div key={label} className="flex gap-3 items-start bg-zinc-800/50 rounded-xl p-3">
-                    <span className="text-xl mt-0.5">{icon}</span>
+                  { label: "A rep you couldn't do last month", sub: "Show the before, the struggle, or the win" },
+                  { label: "A cognitive or speech moment", sub: "Word-finding, reading aloud, memory exercises" },
+                  { label: "A day-in-the-life clip", sub: "Morning routine, PT appointment, small victory" },
+                  { label: "A tip that actually helped you", sub: "Tools, hacks, mindset — share what works" },
+                ].map(({ label, sub }) => (
+                  <div key={label} className="flex gap-3 items-start bg-gray-50 rounded-xl p-3 border border-gray-100">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#E2741B] mt-1.5 flex-shrink-0" />
                     <div>
-                      <p className="text-white text-sm font-medium">{label}</p>
-                      <p className="text-zinc-500 text-xs">{sub}</p>
+                      <p className="text-gray-900 text-sm font-medium">{label}</p>
+                      <p className="text-gray-400 text-xs mt-0.5">{sub}</p>
                     </div>
                   </div>
                 ))}
               </div>
-
-              <div className="bg-zinc-800/50 rounded-xl p-4 space-y-2">
-                <p className="text-zinc-400 text-xs font-semibold uppercase tracking-wider">Format tips</p>
-                <div className="grid grid-cols-3 gap-2 text-center">
-                  {[
-                    { top: "Portrait", bot: "vertical 9:16" },
-                    { top: "15 sec – 3 min", bot: "shorter = more views" },
-                    { top: "Raw wins", bot: "perfect loses" },
-                  ].map(({ top, bot }) => (
-                    <div key={top} className="space-y-0.5">
-                      <p className="text-white text-xs font-semibold">{top}</p>
-                      <p className="text-zinc-500 text-xs">{bot}</p>
-                    </div>
-                  ))}
-                </div>
+              <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 grid grid-cols-3 gap-2 text-center">
+                {[
+                  { top: "Portrait", bot: "9:16 vertical" },
+                  { top: "15s – 3min", bot: "shorter = more views" },
+                  { top: "Raw wins", bot: "perfect loses" },
+                ].map(({ top, bot }) => (
+                  <div key={top}>
+                    <p className="text-gray-900 text-xs font-bold">{top}</p>
+                    <p className="text-gray-400 text-xs">{bot}</p>
+                  </div>
+                ))}
               </div>
-
               <Button
-                className="w-full bg-[#E2741B] hover:bg-[#E2741B]/90 text-white font-semibold"
+                className="w-full bg-[#E2741B] hover:bg-[#E2741B]/90 text-white font-semibold rounded-full"
                 onClick={() => setStep("select")}
                 data-testid="button-guide-continue"
               >
@@ -386,59 +414,157 @@ function UploadModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
             </div>
           )}
 
+          {/* ── Select ── */}
           {step === "select" && (
             <div
-              className="border-2 border-dashed border-zinc-700 rounded-xl p-10 text-center cursor-pointer hover-elevate transition-colors"
+              className="border-2 border-dashed border-gray-200 rounded-2xl p-12 text-center cursor-pointer hover:border-[#E2741B]/40 transition-colors my-2"
               onClick={() => fileInputRef.current?.click()}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) handleFileSelected(f); }}
               data-testid="drop-zone"
             >
-              <ArrowUpFromLine className="w-10 h-10 text-zinc-500 mx-auto mb-3" />
-              <p className="text-zinc-300 font-medium mb-1">Drag & drop your video</p>
-              <p className="text-zinc-500 text-sm">or click to select — MP4, MOV, WebM up to 500 MB</p>
+              <ArrowUpFromLine className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+              <p className="text-gray-700 font-medium mb-1">Drag & drop your video</p>
+              <p className="text-gray-400 text-sm">or click to select — MP4, MOV, WebM up to 500 MB</p>
               <input ref={fileInputRef} type="file" accept="video/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFileSelected(f); }} />
             </div>
           )}
 
+          {/* ── Details ── */}
           {step === "details" && (
-            <>
-              {thumbnailUrl && (
-                <div className="relative aspect-video rounded-xl overflow-hidden bg-zinc-800">
-                  <img src={thumbnailUrl} alt="Thumbnail" className="w-full h-full object-cover" />
-                  <div className="absolute bottom-2 right-2">
-                    <Badge variant="secondary" className="text-xs bg-black/60 text-white border-0">Auto-captured thumbnail</Badge>
-                  </div>
+            <div className="space-y-0">
+              {/* Caption + cover */}
+              <div className="flex gap-3 items-start py-3">
+                <div className="flex-1 min-w-0 space-y-2">
+                  <Textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Describe your recovery moment…"
+                    className="bg-transparent border-0 shadow-none resize-none text-gray-900 placeholder:text-gray-300 p-0 text-sm focus-visible:ring-0 leading-relaxed min-h-[80px]"
+                    rows={4}
+                    maxLength={2000}
+                    data-testid="input-video-description"
+                  />
+                  <input
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Add a title *"
+                    maxLength={120}
+                    className="w-full text-sm text-gray-500 placeholder:text-gray-300 border-0 outline-none bg-transparent"
+                    data-testid="input-video-title"
+                  />
                 </div>
-              )}
-
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-zinc-300">Title *</label>
-                <Input
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="What's this recovery moment about?"
-                  className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
-                  maxLength={120}
-                  data-testid="input-video-title"
-                />
+                {thumbnailUrl && (
+                  <div
+                    className="w-[72px] flex-shrink-0 rounded-xl overflow-hidden border border-gray-200 relative bg-gray-100"
+                    style={{ aspectRatio: "9/16" }}
+                  >
+                    <img src={thumbnailUrl} alt="Cover" className="w-full h-full object-cover" />
+                    <div className="absolute bottom-0 inset-x-0 bg-black/50 text-white text-[9px] font-medium text-center py-0.5">
+                      Preview
+                    </div>
+                  </div>
+                )}
               </div>
 
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-zinc-300">Description</label>
-                <Textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Share your story, what you were working on, any wins or struggles…"
-                  className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 resize-none"
-                  rows={3}
-                  maxLength={2000}
-                  data-testid="input-video-description"
-                />
+              {/* Hashtags row */}
+              <div className="border-t border-gray-100 py-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <button
+                    type="button"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 bg-gray-50 text-gray-600 text-sm font-medium hover:border-gray-300 transition-colors"
+                  >
+                    <Hash className="w-3.5 h-3.5" />
+                    Hashtags
+                  </button>
+                </div>
+
+                {selectedTags.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mb-2.5">
+                    {selectedTags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="inline-flex items-center gap-1 bg-orange-50 text-[#E2741B] text-xs font-semibold px-2.5 py-1 rounded-full border border-orange-100"
+                      >
+                        #{tag}
+                        <button
+                          type="button"
+                          onClick={() => removeTag(tag)}
+                          className="text-orange-300 hover:text-orange-500 leading-none"
+                        >
+                          <X className="w-2.5 h-2.5" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                <div className="relative">
+                  <div className="flex items-center gap-2 border border-gray-200 rounded-full px-3.5 py-2 bg-gray-50 focus-within:border-[#E2741B] focus-within:bg-white transition-colors">
+                    <span className="text-gray-400 text-sm font-medium">#</span>
+                    <input
+                      value={tagInput}
+                      onChange={(e) => { setTagInput(e.target.value); setShowTagSuggestions(true); }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") { e.preventDefault(); if (tagInput.trim()) addTag(tagInput); }
+                        if (e.key === "Backspace" && !tagInput && selectedTags.length > 0) removeTag(selectedTags[selectedTags.length - 1]);
+                      }}
+                      onFocus={() => { if (tagInput.trim()) setShowTagSuggestions(true); }}
+                      onBlur={() => setTimeout(() => setShowTagSuggestions(false), 160)}
+                      placeholder="Search or add tags…"
+                      className="bg-transparent text-sm text-gray-900 placeholder:text-gray-400 outline-none flex-1"
+                      data-testid="input-video-tags"
+                    />
+                    {tagInput.trim() && (
+                      <button
+                        type="button"
+                        onMouseDown={(e) => { e.preventDefault(); addTag(tagInput); }}
+                        className="text-xs font-semibold text-[#E2741B] flex-shrink-0"
+                      >
+                        Add
+                      </button>
+                    )}
+                  </div>
+
+                  {showTagSuggestions && filteredSuggestions.length > 0 && (
+                    <div className="absolute left-0 right-0 mt-1.5 bg-white border border-gray-200 rounded-2xl shadow-lg z-20 overflow-hidden">
+                      {filteredSuggestions.map((item) => (
+                        <button
+                          key={item.tag}
+                          type="button"
+                          onMouseDown={(e) => { e.preventDefault(); addTag(item.tag); }}
+                          className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-gray-50 text-left border-b border-gray-50 last:border-0"
+                        >
+                          <span className="text-sm font-medium text-gray-900">#{item.tag}</span>
+                          <span className="text-xs text-gray-400">
+                            {item.count === 0 ? "New" : `${item.count} video${item.count !== 1 ? "s" : ""}`}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {showTagSuggestions && debouncedTagQ.length >= 1 && filteredSuggestions.length === 0 && (
+                    <div className="absolute left-0 right-0 mt-1.5 bg-white border border-gray-200 rounded-2xl shadow-lg z-20 overflow-hidden">
+                      <button
+                        type="button"
+                        onMouseDown={(e) => { e.preventDefault(); addTag(tagInput); }}
+                        className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-gray-50 text-left"
+                      >
+                        <span className="text-sm font-medium text-gray-900">#{debouncedTagQ}</span>
+                        <span className="text-xs text-[#E2741B] font-semibold">New tag</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-300">Recovery areas in this video</label>
+              {/* Recovery areas */}
+              <div className="border-t border-gray-100 py-3">
+                <div className="flex items-center gap-2 mb-2.5">
+                  <Zap className="w-3.5 h-3.5 text-gray-400" />
+                  <span className="text-sm font-medium text-gray-700">Recovery areas</span>
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {Object.entries(DEFICIT_LABELS).map(([key, label]) => (
                     <button
@@ -448,7 +574,7 @@ function UploadModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
                       className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
                         selectedDeficits.includes(key)
                           ? "bg-[#E2741B] border-[#E2741B] text-white"
-                          : "bg-zinc-800 border-zinc-700 text-zinc-400 hover:border-zinc-500"
+                          : "bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300"
                       }`}
                       data-testid={`toggle-deficit-${key}`}
                     >
@@ -458,45 +584,32 @@ function UploadModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-zinc-300">Tags <span className="text-zinc-500 text-xs">(comma-separated)</span></label>
-                <Input
-                  value={tags}
-                  onChange={(e) => setTags(e.target.value)}
-                  placeholder="walking, arm exercises, speech therapy…"
-                  className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
-                  data-testid="input-video-tags"
-                />
-              </div>
-
-              <div className="flex gap-3 pt-2">
-                <Button variant="ghost" onClick={() => { setStep("select"); setFile(null); setThumbnailUrl(null); }} className="flex-1">
-                  <ChevronLeft className="w-4 h-4 mr-1" /> Back
-                </Button>
+              {/* Bottom Post button */}
+              <div className="border-t border-gray-100 pt-4 pb-2">
                 <Button
                   onClick={handleSubmit}
                   disabled={!title.trim()}
-                  className="flex-1 bg-[#E2741B] hover:bg-[#E2741B]/90 text-white font-semibold"
-                  data-testid="button-submit-upload"
+                  className="w-full bg-[#E2741B] hover:bg-[#E2741B]/90 text-white font-semibold rounded-full h-11"
+                  data-testid="button-submit-upload-bottom"
                 >
                   <Zap className="w-4 h-4 mr-2" /> Post Spark
                 </Button>
               </div>
-            </>
+            </div>
           )}
 
+          {/* ── Uploading / done ── */}
           {(step === "uploading" || step === "done") && (
-            <div className="py-8 text-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-[#E2741B]/10 border border-[#E2741B]/30 flex items-center justify-center mx-auto">
+            <div className="py-12 text-center space-y-4">
+              <div className="w-16 h-16 rounded-full bg-[#E2741B]/10 border border-[#E2741B]/20 flex items-center justify-center mx-auto">
                 {step === "done"
                   ? <CheckCircle2 className="w-8 h-8 text-[#E2741B]" />
-                  : <ArrowUpFromLine className="w-8 h-8 text-[#E2741B] animate-bounce" />
-                }
+                  : <ArrowUpFromLine className="w-8 h-8 text-[#E2741B] animate-bounce" />}
               </div>
-              <p className="text-white font-semibold">{step === "done" ? "Video posted!" : "Uploading…"}</p>
-              <p className="text-zinc-400 text-sm">{progressLabel}</p>
-              <Progress value={progress} className="h-2" />
-              <p className="text-zinc-500 text-xs">{progress}%</p>
+              <p className="text-gray-900 font-semibold">{step === "done" ? "Video posted!" : "Uploading…"}</p>
+              <p className="text-gray-500 text-sm">{progressLabel}</p>
+              <Progress value={progress} className="h-1.5 mx-4" />
+              <p className="text-gray-400 text-xs">{progress}%</p>
             </div>
           )}
         </div>

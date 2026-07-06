@@ -110,6 +110,27 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
     }
   });
 
+  // ── Tag autocomplete ────────────────────────────────────────────────────────
+  app.get("/api/community/tags/search", async (req: any, res) => {
+    try {
+      const q = String(req.query.q ?? "").replace(/^#/, "").trim();
+      if (!q) return res.json({ tags: [] });
+      const rows = await db.execute(sql`
+        SELECT tag, COUNT(*)::int AS video_count
+          FROM community_videos cv, unnest(cv.tags) AS tag
+         WHERE LOWER(tag) LIKE LOWER(${q + "%"})
+           AND cv.is_public = true
+         GROUP BY tag
+         ORDER BY video_count DESC
+         LIMIT 10
+      `);
+      res.json({ tags: (rows.rows as any[]).map((r) => ({ tag: r.tag, count: Number(r.video_count) })) });
+    } catch (err) {
+      console.error("[sparks] tag-search error:", err);
+      res.json({ tags: [] });
+    }
+  });
+
   // ── Finalize + create video record ─────────────────────────────────────────
   app.post("/api/community/video", isAuthenticated, async (req: any, res) => {
     try {
