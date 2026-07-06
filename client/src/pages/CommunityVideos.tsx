@@ -9,11 +9,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import {
   Upload, Play, Heart, MessageCircle, Eye, CheckCircle2,
   Sparkles, Pin, X, ImagePlus, Video, ChevronLeft,
-  ArrowUpFromLine, BarChart2, Grid3X3, Zap, UserPlus, UserCheck, Hash,
+  ArrowUpFromLine, BarChart2, Grid3X3, Zap, UserPlus, UserCheck, Hash, Loader2, Flame,
 } from "lucide-react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -40,6 +41,7 @@ interface VideoCard {
   uploaderAvatar: string | null;
   uploaderIsTherapist: boolean;
   isLikedByMe: boolean;
+  boostedUntil?: string | null;
   score?: number;
 }
 
@@ -88,7 +90,7 @@ function fmtCount(n: number): string {
 
 // ── Video card with hover-preview ─────────────────────────────────────────────
 
-function VideoThumbnailCard({ video, onClick }: { video: VideoCard; onClick: () => void }) {
+function VideoThumbnailCard({ video, onClick, onBoost }: { video: VideoCard; onClick: () => void; onBoost?: () => void }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [hovering, setHovering] = useState(false);
 
@@ -152,6 +154,11 @@ function VideoThumbnailCard({ video, onClick }: { video: VideoCard; onClick: () 
             <Sparkles className="w-2.5 h-2.5" /> Featured
           </span>
         )}
+        {video.boostedUntil && new Date(video.boostedUntil) > new Date() && (
+          <span className="flex items-center gap-1 text-[10px] font-semibold bg-amber-500/90 text-white px-2 py-0.5 rounded-full">
+            <Flame className="w-2.5 h-2.5" /> Boosted
+          </span>
+        )}
       </div>
 
       {/* Duration */}
@@ -189,6 +196,17 @@ function VideoThumbnailCard({ video, onClick }: { video: VideoCard; onClick: () 
             </span>
           </div>
         </div>
+        {/* Boost button — only shown on own profile */}
+        {onBoost && (
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onBoost(); }}
+            className="absolute top-2 right-2 flex items-center gap-1 text-[10px] font-semibold bg-black/60 text-amber-400 px-2 py-0.5 rounded-full backdrop-blur-sm hover:bg-black/80 transition-colors"
+            data-testid={`button-boost-video-${video.id}`}
+          >
+            <Flame className="w-2.5 h-2.5" /> Boost
+          </button>
+        )}
       </div>
     </div>
   );
@@ -211,7 +229,91 @@ function UploadModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
   const [progress, setProgress] = useState(0);
   const [progressLabel, setProgressLabel] = useState("");
   const [duration, setDuration] = useState<number | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+
+  const extractFrames = (videoFile: File, count: number): Promise<string[]> =>
+    new Promise((resolve) => {
+      const vid = document.createElement("video");
+      vid.muted = true; vid.playsInline = true; vid.preload = "metadata";
+      vid.src = URL.createObjectURL(videoFile);
+      const frames: string[] = [];
+      let seekIndex = 0;
+      vid.addEventListener("loadedmetadata", () => {
+        const dur = Math.min(vid.duration || 1, 90);
+        const timestamps = Array.from({ length: count }, (_, i) => ((i + 1) / (count + 1)) * dur);
+        const seekNext = () => {
+          if (seekIndex >= timestamps.length) { URL.revokeObjectURL(vid.src); resolve(frames); return; }
+          vid.currentTime = timestamps[seekIndex];
+        };
+        vid.addEventListener("seeked", () => {
+          try {
+            const canvas = document.createElement("canvas");
+            const scale = Math.min(1, 480 / (vid.videoWidth || 480));
+            canvas.width = Math.round((vid.videoWidth || 480) * scale);
+            canvas.height = Math.round((vid.videoHeight || 270) * scale);
+            canvas.getContext("2d")?.drawImage(vid, 0, 0, canvas.width, canvas.height);
+            const b64 = canvas.toDataURL("image/jpeg", 0.72).split(",")[1];
+            if (b64) frames.push(b64);
+          } catch {}
+          seekIndex++;
+          seekNext();
+        });
+        seekNext();
+      });
+      vid.addEventListener("error", () => resolve([]));
+      vid.load();
+    });
+
+  const handleCoverSelected = (f: File) => {
+    if (!f.type.startsWith("image/")) { toast({ title: "Select an image file", variant: "destructive" }); return; }
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const maxW = 720, maxH = 1280;
+      const ratio = Math.min(maxW / img.width, maxH / img.height, 1);
+      canvas.width = Math.round(img.width * ratio);
+      canvas.height = Math.round(img.height * ratio);
+      canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        setThumbnail(blob);
+        setThumbnailUrl(URL.createObjectURL(blob));
+        toast({ title: "Cover updated — looks great." });
+      }, "image/jpeg", 0.92);
+      URL.revokeObjectURL(img.src);
+    };
+    img.src = URL.createObjectURL(f);
+  };
+
+  const generateMetadata = async () => {
+    setIsGenerating(true);
+    try {
+      const frames = file ? await extractFrames(file, 3) : [];
+      const context = [title.trim(), description.trim()].filter(Boolean).join(" — ");
+      if (!context && frames.length === 0) {
+        toast({ title: "Add a brief description first so AI has something to work with.", variant: "destructive" });
+        return;
+      }
+      const res = await apiRequest("POST", "/api/community/video/generate-metadata", {
+        prompt: context || "stroke recovery video",
+        frames,
+      });
+      const data = await res.json();
+      if (data.message) throw new Error(data.message);
+      if (data.title) setTitle(data.title);
+      if (data.description) setDescription(data.description);
+      if (Array.isArray(data.hashtags) && data.hashtags.length) {
+        setSelectedTags((prev) => [...new Set([...prev, ...data.hashtags])].slice(0, 20));
+      }
+      toast({ title: "Generated — review and tweak before posting." });
+    } catch (err: any) {
+      toast({ title: err.message ?? "Generation failed", variant: "destructive" });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const debouncedTagQ = tagInput.replace(/^#/, "").trim();
   const { data: tagSuggestions } = useQuery<{ tags: { tag: string; count: number }[] }>({
@@ -427,12 +529,29 @@ function UploadModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
               <p className="text-gray-700 font-medium mb-1">Drag & drop your video</p>
               <p className="text-gray-400 text-sm">or click to select — MP4, MOV, WebM up to 500 MB</p>
               <input ref={fileInputRef} type="file" accept="video/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFileSelected(f); }} />
+              <input ref={coverInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) { handleCoverSelected(f); e.target.value = ""; }}} />
             </div>
           )}
 
           {/* ── Details ── */}
           {step === "details" && (
             <div className="space-y-0">
+              {/* AI generate row */}
+              <div className="flex justify-end pt-2 pb-1">
+                <button
+                  type="button"
+                  onClick={generateMetadata}
+                  disabled={isGenerating}
+                  data-testid="button-ai-generate-metadata"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#E2741B] hover:text-[#C06B3E] disabled:opacity-50 transition-colors"
+                >
+                  {isGenerating
+                    ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    : <Sparkles className="w-3.5 h-3.5" />}
+                  {isGenerating ? "Generating…" : "Auto-fill with AI"}
+                </button>
+              </div>
+
               {/* Caption + cover */}
               <div className="flex gap-3 items-start py-3">
                 <div className="flex-1 min-w-0 space-y-2">
@@ -454,17 +573,27 @@ function UploadModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
                     data-testid="input-video-title"
                   />
                 </div>
-                {thumbnailUrl && (
-                  <div
-                    className="w-[72px] flex-shrink-0 rounded-xl overflow-hidden border border-gray-200 relative bg-gray-100"
-                    style={{ aspectRatio: "9/16" }}
-                  >
+                <div
+                  className="w-[72px] flex-shrink-0 rounded-xl overflow-hidden border border-gray-200 relative bg-gray-100 cursor-pointer group"
+                  style={{ aspectRatio: "9/16" }}
+                  onClick={() => coverInputRef.current?.click()}
+                  title="Set cover photo"
+                  data-testid="button-change-cover"
+                >
+                  {thumbnailUrl ? (
                     <img src={thumbnailUrl} alt="Cover" className="w-full h-full object-cover" />
-                    <div className="absolute bottom-0 inset-x-0 bg-black/50 text-white text-[9px] font-medium text-center py-0.5">
-                      Preview
+                  ) : (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
+                      <ImagePlus className="w-5 h-5 text-gray-300" />
                     </div>
+                  )}
+                  <div className="absolute inset-x-0 bottom-0 bg-black/60 text-white text-[9px] font-semibold text-center py-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                    {thumbnailUrl ? "Change" : "Set cover"}
                   </div>
-                )}
+                  <div className="absolute top-1 right-1 bg-black/50 rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <ImagePlus className="w-2.5 h-2.5 text-white" />
+                  </div>
+                </div>
               </div>
 
               {/* Hashtags row */}
@@ -752,6 +881,22 @@ export default function CommunityVideos() {
 
   const [activeTab, setActiveTab] = useState<"feed" | "following" | "profile">(urlUserId ? "profile" : "feed");
   const [showUpload, setShowUpload] = useState(false);
+  const [boostVideoId, setBoostVideoId] = useState<number | null>(null);
+
+  const boostMutation = useMutation({
+    mutationFn: async ({ id, days }: { id: number; days: number }) => {
+      const res = await apiRequest("POST", `/api/community/video/${id}/boost`, { days });
+      if (!res.ok) throw new Error((await res.json()).message ?? "Boost failed");
+      return res.json();
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["/api/community/videos"] });
+      qc.invalidateQueries({ queryKey: ["/api/community/profile"] });
+      setBoostVideoId(null);
+      toast({ title: "Boosted — your Spark will rank higher in the feed." });
+    },
+    onError: (e: any) => toast({ title: e.message ?? "Boost failed", variant: "destructive" }),
+  });
   const [page, setPage] = useState(0);
   const [allVideos, setAllVideos] = useState<VideoCard[]>([]);
   const loadMoreRef = useRef<HTMLDivElement>(null);
@@ -1020,7 +1165,12 @@ export default function CommunityVideos() {
           <>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               {displayVideos.map((v) => (
-                <VideoThumbnailCard key={v.id} video={v} onClick={() => handleVideoClick(v.id)} />
+                <VideoThumbnailCard
+                  key={v.id}
+                  video={v}
+                  onClick={() => handleVideoClick(v.id)}
+                  onBoost={activeTab === "profile" && v.uploaderId === ownUserId ? () => setBoostVideoId(v.id) : undefined}
+                />
               ))}
             </div>
 
@@ -1039,6 +1189,41 @@ export default function CommunityVideos() {
           </>
         )}
       </div>
+
+      {/* Boost dialog */}
+      {boostVideoId !== null && (
+        <Dialog open onOpenChange={() => setBoostVideoId(null)}>
+          <DialogContent className="max-w-xs bg-zinc-950 border-zinc-800 text-white">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-white">
+                <Flame className="w-4 h-4 text-amber-500" /> Boost this Spark
+              </DialogTitle>
+              <DialogDescription className="text-zinc-400">
+                Boosted videos rank higher in the Sparks feed. Choose how long.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid grid-cols-2 gap-2 pt-2">
+              {([1, 3, 7, 30] as const).map((days) => (
+                <Button
+                  key={days}
+                  variant="outline"
+                  className="border-zinc-700 text-white"
+                  disabled={boostMutation.isPending}
+                  onClick={() => boostMutation.mutate({ id: boostVideoId, days })}
+                  data-testid={`button-boost-${days}d`}
+                >
+                  {days} {days === 1 ? "day" : "days"}
+                </Button>
+              ))}
+            </div>
+            {boostMutation.isPending && (
+              <div className="flex justify-center pt-2">
+                <Loader2 className="w-4 h-4 animate-spin text-[#E2741B]" />
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

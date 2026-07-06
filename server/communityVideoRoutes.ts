@@ -16,10 +16,11 @@ const objectStorage = new ObjectStorageService();
 // ── helpers ──────────────────────────────────────────────────────────────────
 
 function scoreVideo(
-  video: { deficitTags: string[]; tags: string[]; likeCount: number; commentCount: number; isFeatured: boolean; isPinned: boolean; createdAt: Date },
+  video: { deficitTags: string[]; tags: string[]; likeCount: number; commentCount: number; isFeatured: boolean; isPinned: boolean; createdAt: Date; boostedUntil?: Date | string | null },
   userDeficits: string[],
   userGoals: string[],
 ): number {
+  const isBoosted = video.boostedUntil ? new Date(video.boostedUntil) > new Date() : false;
   const deficitOverlap = video.deficitTags.filter((t) => userDeficits.includes(t)).length;
   const goalOverlap = video.tags.filter((t) =>
     userGoals.some((g) => g.toLowerCase().includes(t.toLowerCase()) || t.toLowerCase().includes(g.toLowerCase()))
@@ -30,6 +31,7 @@ function scoreVideo(
   return (
     (video.isFeatured ? 8 : 0) +
     (video.isPinned ? 4 : 0) +
+    (isBoosted ? 6 : 0) +
     deficitOverlap * 3 +
     goalOverlap * 2 +
     recencyScore +
@@ -73,6 +75,7 @@ const videoSelectCols = {
   isPremium: communityVideos.isPremium,
   source: communityVideos.source,
   createdAt: communityVideos.createdAt,
+  boostedUntil: sql<Date | null>`community_videos.boosted_until`,
   uploaderName: sql<string>`COALESCE(${users.firstName} || ' ' || ${users.lastName}, ${users.firstName}, 'Survivor')`,
   uploaderAvatar: users.profileImageUrl,
   uploaderIsTherapist: users.isVerifiedTherapist,
@@ -82,6 +85,9 @@ const videoSelectCols = {
 // ── route registration ────────────────────────────────────────────────────────
 
 export function registerCommunityVideoRoutes(app: Express, isAuthenticated: RequestHandler): void {
+
+  // Self-provision boosted_until column (can't db:push over stripe schema)
+  db.execute(sql`ALTER TABLE community_videos ADD COLUMN IF NOT EXISTS boosted_until TIMESTAMP`).catch(() => {});
 
   // ── Upload presigned URLs ───────────────────────────────────────────────────
   app.post("/api/community/video/upload-url", isAuthenticated, async (req: any, res) => {
@@ -732,6 +738,9 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
       if (typeof req.body.isPublic === "boolean" && (isOwner || isAdmin)) updates.isPublic = req.body.isPublic;
       if (typeof req.body.title === "string" && isOwner) updates.title = req.body.title.slice(0, 120);
       if (typeof req.body.description === "string" && isOwner) updates.description = req.body.description.slice(0, 2000);
+      if (typeof req.body.thumbnailUrl === "string" && isOwner && req.body.thumbnailUrl.startsWith("/objects/")) {
+        updates.thumbnailUrl = req.body.thumbnailUrl;
+      }
 
       if (!Object.keys(updates).length) return res.status(400).json({ message: "Nothing to update." });
       const [updated] = await db.update(communityVideos).set(updates).where(eq(communityVideos.id, id)).returning();
@@ -755,6 +764,64 @@ export function registerCommunityVideoRoutes(app: Express, isAuthenticated: Requ
     } catch (err) {
       console.error("[sparks] report error:", err);
       res.status(500).json({ message: "Could not submit report." });
+    }
+  });
+
+  // ── AI metadata generation ─────────────────────────────────────────────────
+  app.post("/api/community/video/generate-metadata", isAuthenticated, async (req: any, res) => {
+    try {
+      const parsed = z
+        .object({
+          prompt: z.string().max(600).default(""),
+          frames: z.array(z.string().max(500_000)).max(5).default([]),
+        })
+        .safeParse(req.body);
+      if (!parsed.success) return res.status(400).json({ message: "Invalid request body." });
+
+      const { prompt, frames } = parsed.data;
+      if (!prompt.trim() && frames.length === 0) {
+        return res.status(400).json({ message: "Provide a prompt or video frames." });
+      }
+
+      const { generateSparkMetadata } = await import("./geminiService");
+      const meta = await generateSparkMetadata(prompt || "stroke recovery video", frames);
+      res.json(meta);
+    } catch (err) {
+      console.error("[sparks] generate-metadata error:", err);
+      res.status(500).json({ message: "Generation failed — try again." });
+    }
+  });
+
+  // ── Boost video ─────────────────────────────────────────────────────────────
+  app.post("/api/community/video/:id/boost", isAuthenticated, async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id, 10);
+      if (isNaN(id)) return res.status(400).json({ message: "Invalid id." });
+      const userId = getUserId(req);
+      if (!userId) return res.status(401).json({ message: "Sign in to boost." });
+
+      const parsed = z.object({ days: z.number().int().min(1).max(30) }).safeParse(req.body);
+      if (!parsed.success) return res.status(400).json({ message: "days (1–30) required." });
+
+      const [video] = await db.select().from(communityVideos).where(eq(communityVideos.id, id)).limit(1);
+      if (!video) return res.status(404).json({ message: "Video not found." });
+
+      const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+      const isOwner = video.uploaderId === userId;
+      const isAdmin = user?.role === "admin";
+      if (!isOwner && !isAdmin) return res.status(403).json({ message: "Not your video." });
+
+      await db.execute(
+        sql`UPDATE community_videos
+               SET boosted_until = GREATEST(COALESCE(boosted_until, NOW()), NOW()) + (${parsed.data.days} || ' days')::interval
+             WHERE id = ${id}`,
+      );
+
+      const boostedUntil = new Date(Date.now() + parsed.data.days * 86_400_000);
+      res.json({ ok: true, boostedUntil });
+    } catch (err) {
+      console.error("[sparks] boost error:", err);
+      res.status(500).json({ message: "Could not boost video." });
     }
   });
 
