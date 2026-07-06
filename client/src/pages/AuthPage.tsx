@@ -198,9 +198,9 @@ export default function AuthPage() {
     forgotPasswordMutation.isPending;
 
   const features = [
-    { icon: Crown, text: "7 Premium AI Studios" },
-    { icon: Zap, text: "10+ AI Models Integrated" },
-    { icon: Star, text: "85/15 Creator Revenue Split" },
+    { icon: Crown, text: "Sasquatch Coach — daily accountability" },
+    { icon: Zap, text: "Daily Reps System — 5 levels of recovery" },
+    { icon: Star, text: "Your Squad — 5 survivors rebuilding together" },
   ];
 
   // Title/description derived from mode so we keep one card layout.
@@ -240,18 +240,17 @@ export default function AuthPage() {
             </div>
 
             <h1 className="text-5xl font-bold text-white mb-6 leading-tight">
-              Rebuild.<br />
+              Nobody was watching<br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">
-                Rewire.
-              </span><br />
-              Rise.
+                the days in between.
+              </span>
             </h1>
 
-            <p className="text-xl text-white/60 mb-12 max-w-md">
-              The survivor-first stroke recovery platform. Daily routines, AI coach, and a community that gets it.
+            <p className="text-lg text-white/60 mb-10 max-w-md">
+              Daily reps, a coach who notices when you go quiet, and a squad that keeps showing up.
             </p>
 
-            <div className="space-y-4">
+            <div className="space-y-4 mb-12">
               {features.map((feature, i) => {
                 const Icon = feature.icon;
                 return (
@@ -264,10 +263,23 @@ export default function AuthPage() {
                 );
               })}
             </div>
+
+            <div className="border-l-2 border-[#E2741B]/40 pl-5">
+              <p className="text-white/70 text-sm italic leading-relaxed mb-3">
+                "I went from not being able to lift my arm to playing catch with my son. The daily reps and the Coach kept me honest on the days I wanted to quit."
+              </p>
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-full bg-[#E2741B]/30 flex items-center justify-center text-[#E2741B] text-xs font-bold">D</div>
+                <div>
+                  <div className="text-white/60 text-xs font-semibold">David R.</div>
+                  <div className="text-white/35 text-xs">Left-side stroke — Day 847</div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="text-white/40 text-sm">
-            Built by survivors, for survivors.
+            Built by survivors, for survivors. $19/mo — 7 days free.
           </div>
         </div>
       </div>

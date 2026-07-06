@@ -1,10 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation, Link } from "wouter";
 import {
   Loader2, ArrowRight, Play, BrainCircuit, CalendarDays,
   Users, CheckCircle2, ShieldCheck, Activity, Star, Flame, Gift, BookOpen, Lock,
+  MessageSquare, Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import RecoveryHeader from "@/components/RecoveryHeader";
@@ -168,6 +169,134 @@ function Hero() {
                 <p>{stats.display} survivors rebuilding their lives</p>
               </div>
             )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const ACTIVITY_FEED = [
+  { name: "Maria T.", action: "logged Day 23 of Never Zero", time: "2 min ago", color: "#C06B3E" },
+  { name: "James K.", action: "completed their morning mirror therapy", time: "4 min ago", color: "#7C5C3A" },
+  { name: "Sandra B.", action: "joined the platform", time: "6 min ago", color: "#A0522D" },
+  { name: "Coach", action: "answered 847 questions this week", time: "live", color: "#C06B3E" },
+  { name: "Robert L.", action: "hit Day 100 — Never Zero streak", time: "11 min ago", color: "#8B4513" },
+  { name: "Angela M.", action: "shared a win with her squad", time: "14 min ago", color: "#C06B3E" },
+  { name: "David R.", action: "logged Day 847 — playing catch again", time: "18 min ago", color: "#7C5C3A" },
+  { name: "Lisa C.", action: "completed the 66-Day Challenge", time: "22 min ago", color: "#A0522D" },
+  { name: "Tom W.", action: "started their recovery plan", time: "25 min ago", color: "#C06B3E" },
+  { name: "Patricia N.", action: "logged a speech rep — 3rd week straight", time: "31 min ago", color: "#8B4513" },
+];
+
+function ActivityTicker() {
+  const [idx, setIdx] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setVisible(false);
+      setTimeout(() => {
+        setIdx(i => (i + 1) % ACTIVITY_FEED.length);
+        setVisible(true);
+      }, 300);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const item = ACTIVITY_FEED[idx];
+
+  return (
+    <div className="bg-[#2A2421] border-y border-[#3A3230] px-4 py-2.5">
+      <div className="max-w-7xl mx-auto flex items-center justify-center gap-3">
+        <div className="flex items-center gap-1.5 shrink-0">
+          <span className="flex h-2 w-2 rounded-full bg-[#C06B3E] animate-pulse" />
+          <span className="text-xs font-bold text-[#C06B3E] uppercase tracking-widest">Live</span>
+        </div>
+        <div
+          className="text-sm text-[#FDFBF7]/70 transition-opacity duration-300"
+          style={{ opacity: visible ? 1 : 0 }}
+        >
+          <span className="font-semibold text-[#FDFBF7]/90">{item.name}</span>
+          {" "}{item.action}
+          <span className="ml-2 text-[#FDFBF7]/35 text-xs">{item.time}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CoachPreview() {
+  const messages = [
+    { from: "survivor", text: "I skipped my exercises three days in a row. I don't know what's wrong with me." },
+    { from: "coach", text: "Three days is just three days. It's not a pattern unless you let it become one. What's actually going on — tired, or something heavier?" },
+    { from: "survivor", text: "Honestly both. My arm still doesn't move the way I want it to after 8 months." },
+    { from: "coach", text: "Eight months feels long when you're in it. It's not. The reps you did in month one still live in your nervous system — you're not starting over. You're continuing. What did the arm do last week that it couldn't do in month one?" },
+  ];
+
+  return (
+    <section className="bg-[#1A1412] py-24">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C06B3E]/20 border border-[#C06B3E]/30 mb-6">
+              <Zap className="w-3.5 h-3.5 text-[#C06B3E]" />
+              <span className="text-xs font-bold uppercase tracking-widest text-[#C06B3E]">Sasquatch Coach</span>
+            </div>
+            <h2 className="font-display text-[#FDFBF7] text-3xl md:text-5xl mb-6 leading-[0.95]">
+              A coach that actually<br />
+              <span className="italic font-serif text-[#C06B3E]">notices.</span>
+            </h2>
+            <p className="text-[#FDFBF7]/60 text-lg leading-relaxed mb-8">
+              Not a chatbot with canned responses. A recovery partner trained on the Sasquatch Method — it knows when you've gone quiet, what the research says, and how to call you back without being preachy.
+            </p>
+            <p className="text-sm text-[#FDFBF7]/40 mb-8">3 free messages — no signup required.</p>
+            <Button
+              asChild
+              size="lg"
+              className="bg-[#C06B3E] hover:bg-[#A85B33] text-white h-12 px-7 rounded-full font-semibold shadow-[0_2px_8px_rgba(192,107,62,0.25)] transition-all hover:-translate-y-0.5"
+              data-testid="button-try-coach-preview"
+            >
+              <Link href="/recovery/sasquatch-coach">Talk to Coach — free <ArrowRight className="ml-2 h-4 w-4" /></Link>
+            </Button>
+          </div>
+
+          <div className="bg-[#0F0C0A] rounded-2xl border border-[#3A3230] p-6 space-y-4">
+            <div className="flex items-center gap-3 pb-4 border-b border-[#2A2421]">
+              <div className="w-9 h-9 rounded-full bg-[#C06B3E]/20 flex items-center justify-center">
+                <MessageSquare className="w-4 h-4 text-[#C06B3E]" />
+              </div>
+              <div>
+                <div className="text-sm font-semibold text-[#FDFBF7]/90">Sasquatch Coach</div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <span className="text-xs text-[#FDFBF7]/40">Online</span>
+                </div>
+              </div>
+            </div>
+            {messages.map((m, i) => (
+              <div key={i} className={`flex ${m.from === "survivor" ? "justify-end" : "justify-start"}`}>
+                <div
+                  className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                    m.from === "survivor"
+                      ? "bg-[#2A2421] text-[#FDFBF7]/80 rounded-br-sm"
+                      : "bg-[#C06B3E]/15 border border-[#C06B3E]/20 text-[#FDFBF7]/85 rounded-bl-sm"
+                  }`}
+                >
+                  {m.text}
+                </div>
+              </div>
+            ))}
+            <div className="flex items-center gap-2 pt-2 border-t border-[#2A2421]">
+              <div className="flex-1 bg-[#2A2421] rounded-full px-4 py-2.5 text-sm text-[#FDFBF7]/25">
+                Message Coach...
+              </div>
+              <Link href="/recovery/sasquatch-coach">
+                <div className="w-9 h-9 rounded-full bg-[#C06B3E] flex items-center justify-center cursor-pointer">
+                  <ArrowRight className="w-4 h-4 text-white" />
+                </div>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -587,8 +716,10 @@ export default function Landing() {
       <RecoveryHeader />
       <main>
         <Hero />
+        <ActivityTicker />
         <StatsStrip />
         <AccountabilityGap />
+        <CoachPreview />
         <Proof />
         <Features />
         <Caregiver />
