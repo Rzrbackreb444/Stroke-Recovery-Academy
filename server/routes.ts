@@ -8,6 +8,7 @@ import fs from "fs";
 import { storage } from "./storage";
 import { yearsSinceStroke } from "@shared/strokeAnniversary";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { findOrCreateOAuthUser } from "./multiProviderAuth";
 import { publicPostLimiter, authActionLimiter } from "./middleware/publicRateLimit";
 import {
   ANON_COACH_LIMIT,
@@ -2280,6 +2281,52 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
       return res.status(503).json({ message: "Google authentication not configured" });
     }
     res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(req.protocol + '://' + req.get('host') + '/api/auth/google/callback')}&response_type=code&scope=email%20profile`);
+  });
+
+  app.get('/api/auth/google/callback', async (req, res) => {
+    const { code, error } = req.query;
+    if (error || !code) {
+      return res.redirect('/auth?error=google_denied');
+    }
+    try {
+      const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          code: code as string,
+          client_id: process.env.GOOGLE_CLIENT_ID!,
+          client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+          redirect_uri: `${req.protocol}://${req.get('host')}/api/auth/google/callback`,
+          grant_type: 'authorization_code',
+        }),
+      });
+      const tokens = await tokenRes.json() as any;
+      if (!tokens.access_token) {
+        console.error('Google token exchange failed:', tokens);
+        return res.redirect('/auth?error=google_token');
+      }
+      const profileRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+        headers: { Authorization: `Bearer ${tokens.access_token}` },
+      });
+      const profile = await profileRes.json() as any;
+      const user = await findOrCreateOAuthUser({
+        id: profile.id,
+        displayName: profile.name || profile.email,
+        emails: profile.email ? [{ value: profile.email }] : [],
+        photos: profile.picture ? [{ value: profile.picture }] : [],
+        provider: 'google',
+      });
+      req.logIn(user, (err) => {
+        if (err) {
+          console.error('Google auth session error:', err);
+          return res.redirect('/auth?error=google_session');
+        }
+        res.redirect('/recovery/dashboard');
+      });
+    } catch (err) {
+      console.error('Google OAuth callback error:', err);
+      res.redirect('/auth?error=google_failed');
+    }
   });
 
   app.get('/api/auth/facebook', (req, res) => {
