@@ -1269,6 +1269,9 @@ export const recoveryBlogPosts = pgTable("recovery_blog_posts", {
   newsletterBroadcastAt: timestamp("newsletter_broadcast_at"), // set once the auto-publish broadcast fired (idempotency)
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  pillarSlug: text("pillar_slug"),
+  pillarTitle: text("pillar_title"),
+  pillarOrder: integer("pillar_order").notNull().default(0),
 });
 
 export const insertRecoveryBlogPostSchema = createInsertSchema(recoveryBlogPosts).omit({ id: true, createdAt: true, updatedAt: true });
