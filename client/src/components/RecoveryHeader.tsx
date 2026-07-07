@@ -336,7 +336,7 @@ export default function RecoveryHeader() {
           <Button
             variant="ghost"
             size="icon"
-            className="xl:hidden text-[#78716C]"
+            className={`xl:hidden ${scrolled || !isLandingRoot ? "text-[#78716C]" : "text-[#FDFBF7]"}`}
             onClick={() => setMobileOpen(!mobileOpen)}
             data-testid="button-menu"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
