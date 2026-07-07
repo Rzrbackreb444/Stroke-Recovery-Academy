@@ -22,19 +22,14 @@ const sasquatchLogo = "/favicon.png";
 // and GlobalHeader both), so legacy per-page header mounts are suppressed.
 import { siteHeaderRegistry } from "./siteHeaderRegistry";
 
-// Accountability-focused primary nav (May 2026 refocus pass): every primary
-// slot is now a daily-action surface. Coach = the conversation. Today = the
-// daily funnel. Never Zero = the streak-protection check-in (THE moat).
-// Bonfire = the survivor accountability buddy. Music demoted to a column
-// inside the More megamenu — survivors who want it can still reach it in
-// two clicks, but it no longer competes for primary attention with the
-// daily reps that actually move recovery.
+// July 2026 refocus: Coach is top-of-funnel — first slot, no exceptions.
+// "My Story" dropped from primary (still reachable via More → Your Story).
+// Order mirrors the landing hero CTA sequence: Coach → reps → plan → community.
 const primaryNav: { href: string; label: string; icon?: typeof Flame }[] = [
-  { href: "/recovery/onboarding", label: "Recovery Plan" },
-  { href: "/recovery/today", label: "Daily Reps" },
-  { href: "/recovery/community", label: "Community" },
   { href: "/recovery/sasquatch-coach", label: "Coach" },
-  { href: "/recovery/my-story", label: "My Story" },
+  { href: "/recovery/today", label: "Daily Reps" },
+  { href: "/recovery/onboarding", label: "Recovery Plan" },
+  { href: "/recovery/community", label: "Community" },
 ];
 
 // "More" — grouped megamenu. Three survivor-focused columns: Practice
@@ -73,6 +68,14 @@ const resourcesGroups: { title: string; items: { href: string; label: string; pr
       { href: "/recovery/my-story", label: "My Story" },
       { href: "/recovery/journal", label: "Journal" },
       { href: "/book", label: "Nick's Book" },
+    ],
+  },
+  {
+    title: "Work with Nick",
+    items: [
+      { href: "/recovery/coaching", label: "1:1 Coaching", pro: true },
+      { href: "/for/partners", label: "Partner with Us" },
+      { href: "/recovery/gift", label: "Gift a Survivor" },
     ],
   },
 ];
@@ -172,8 +175,8 @@ export default function RecoveryHeader() {
                   More <ChevronDown className="h-3.5 w-3.5" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="bg-white border-[#E2C2A4]/30 p-3 w-[560px]">
-                <div className="grid grid-cols-3 gap-4">
+              <DropdownMenuContent align="start" className="bg-white border-[#E2C2A4]/30 p-3 w-[700px]">
+                <div className="grid grid-cols-4 gap-4">
                   {resourcesGroups.map((group) => (
                     <div key={group.title}>
                       <div className="text-[11px] font-bold uppercase tracking-wider text-gold/80 px-2 pb-1.5 mb-1 border-b border-[#E2C2A4]/30">
@@ -225,7 +228,7 @@ export default function RecoveryHeader() {
               <HoverCardContent className="bg-white border-[#E2C2A4]/30 w-72 p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Crown className="h-4 w-4 text-gold" />
-                  <div className="font-bold text-[#1C1917] text-sm">Sasquatch Premium</div>
+                  <div className="font-bold text-[#1C1917] text-sm">Solo — $19/mo</div>
                   <span className="text-xs text-[#A8A29E] ml-auto">7 days free</span>
                 </div>
                 <ul className="space-y-1.5 mb-3 text-xs text-[#78716C]">
@@ -243,7 +246,7 @@ export default function RecoveryHeader() {
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-3.5 w-3.5 text-green-400 mt-0.5 flex-shrink-0" />
-                    Premium Campfire circles with Nick
+                    Live sessions with Nick
                   </li>
                 </ul>
                 <Link href="/recovery/premium">
