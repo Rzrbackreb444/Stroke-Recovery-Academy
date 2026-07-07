@@ -11241,6 +11241,257 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
     }
   });
 
+  // ─── Recovery Goals ─────────────────────────────────────────────────────────
+  // Long-term goals + micro-goal breakdown. All owned by the authenticated user.
+
+  app.get('/api/recovery/goals', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub ?? req.user?.id;
+      const goals = await db.execute(sql`
+        SELECT g.id, g.title, g.why, g.target_date, g.status,
+               g.completed_at, g.created_at,
+               COALESCE(
+                 JSON_AGG(
+                   JSON_BUILD_OBJECT(
+                     'id', m.id, 'goalId', m.goal_id, 'title', m.title,
+                     'targetWeek', m.target_week, 'status', m.status,
+                     'sortOrder', m.sort_order, 'completedAt', m.completed_at
+                   ) ORDER BY m.sort_order ASC, m.id ASC
+                 ) FILTER (WHERE m.id IS NOT NULL),
+                 '[]'
+               ) AS "microGoals"
+        FROM recovery_goals g
+        LEFT JOIN recovery_micro_goals m ON m.goal_id = g.id
+        WHERE g.user_id = ${userId}
+          AND g.status != 'abandoned'
+        GROUP BY g.id
+        ORDER BY g.status ASC, g.created_at DESC
+      `);
+      res.json((goals as any).rows ?? goals);
+    } catch (err: any) { res.status(500).json({ message: err?.message }); }
+  });
+
+  app.post('/api/recovery/goals', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub ?? req.user?.id;
+      const { title, why, targetDate } = req.body;
+      if (!title || typeof title !== 'string' || !title.trim()) {
+        return res.status(400).json({ message: 'Title required' });
+      }
+      const result = await db.execute(sql`
+        INSERT INTO recovery_goals (user_id, title, why, target_date)
+        VALUES (${userId}, ${title.trim().slice(0,200)},
+                ${why ? String(why).trim().slice(0,1000) : null},
+                ${targetDate ? String(targetDate).trim().slice(0,100) : null})
+        RETURNING id, title, why, target_date, status, created_at
+      `);
+      res.status(201).json(((result as any).rows ?? [])[0]);
+    } catch (err: any) { res.status(500).json({ message: err?.message }); }
+  });
+
+  app.patch('/api/recovery/goals/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub ?? req.user?.id;
+      const goalId = Number(req.params.id);
+      const { title, why, targetDate, status } = req.body;
+      const allowedStatus = ['active','completed','abandoned'];
+
+      // Use ?? null so we never pass `undefined` into a sql template (drizzle would error)
+      const titleVal      = title ? String(title).trim().slice(0,200) : null;
+      const whyVal        = why !== undefined ? (why ? String(why).trim().slice(0,1000) : null) : null;
+      const targetVal     = targetDate !== undefined ? (targetDate ? String(targetDate).trim().slice(0,100) : null) : null;
+      const statusVal     = status && allowedStatus.includes(status) ? status : null;
+      const markCompleted = status === 'completed';
+
+      await db.execute(sql`
+        UPDATE recovery_goals SET
+          title        = COALESCE(${titleVal},   title),
+          why          = COALESCE(${whyVal},     why),
+          target_date  = COALESCE(${targetVal},  target_date),
+          status       = COALESCE(${statusVal},  status),
+          completed_at = CASE WHEN ${markCompleted}::boolean THEN NOW() ELSE completed_at END,
+          updated_at   = NOW()
+        WHERE id = ${goalId} AND user_id = ${userId}
+      `);
+
+      // Award goal_complete badge if marking complete
+      if (status === 'completed') {
+        const { checkAutomatedBadgesForUser } = await import('./badgeService');
+        await checkAutomatedBadgesForUser(userId).catch(() => {});
+      }
+
+      res.json({ ok: true });
+    } catch (err: any) { res.status(500).json({ message: err?.message }); }
+  });
+
+  app.delete('/api/recovery/goals/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub ?? req.user?.id;
+      await db.execute(sql`DELETE FROM recovery_goals WHERE id = ${Number(req.params.id)} AND user_id = ${userId}`);
+      res.json({ ok: true });
+    } catch (err: any) { res.status(500).json({ message: err?.message }); }
+  });
+
+  // Micro-goals
+  app.post('/api/recovery/goals/:goalId/micro', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub ?? req.user?.id;
+      const goalId = Number(req.params.goalId);
+      const { title, targetWeek, sortOrder } = req.body;
+      if (!title || typeof title !== 'string' || !title.trim()) {
+        return res.status(400).json({ message: 'Title required' });
+      }
+      // Verify goal ownership
+      const own = await db.execute(sql`SELECT id FROM recovery_goals WHERE id = ${goalId} AND user_id = ${userId}`);
+      if (((own as any).rows?.length ?? 0) === 0) return res.status(404).json({ message: 'Not found' });
+
+      const result = await db.execute(sql`
+        INSERT INTO recovery_micro_goals (goal_id, user_id, title, target_week, sort_order)
+        VALUES (${goalId}, ${userId}, ${title.trim().slice(0,300)},
+                ${targetWeek ? String(targetWeek).trim().slice(0,50) : null},
+                ${Number(sortOrder ?? 0)})
+        RETURNING id, goal_id, title, target_week, status, sort_order
+      `);
+      res.status(201).json(((result as any).rows ?? [])[0]);
+    } catch (err: any) { res.status(500).json({ message: err?.message }); }
+  });
+
+  app.patch('/api/recovery/goals/:goalId/micro/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub ?? req.user?.id;
+      const microId = Number(req.params.id);
+      const goalId  = Number(req.params.goalId);
+      const { title, status, sortOrder } = req.body;
+      const allowedStatus = ['pending','completed','skipped'];
+
+      await db.execute(sql`
+        UPDATE recovery_micro_goals SET
+          title      = COALESCE(${title ? title.trim().slice(0,300) : null}, title),
+          status     = COALESCE(${status && allowedStatus.includes(status) ? status : null}, status),
+          sort_order = COALESCE(${sortOrder != null ? Number(sortOrder) : null}, sort_order),
+          completed_at = CASE WHEN ${status === 'completed' ? 'true' : 'false'}::boolean THEN NOW() ELSE completed_at END
+        WHERE id = ${microId} AND goal_id = ${goalId} AND user_id = ${userId}
+      `);
+
+      // Award consistent_4 badge if enough micro-goals now completed
+      if (status === 'completed') {
+        const { checkAutomatedBadgesForUser } = await import('./badgeService');
+        await checkAutomatedBadgesForUser(userId).catch(() => {});
+      }
+
+      res.json({ ok: true });
+    } catch (err: any) { res.status(500).json({ message: err?.message }); }
+  });
+
+  app.delete('/api/recovery/goals/:goalId/micro/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub ?? req.user?.id;
+      await db.execute(sql`
+        DELETE FROM recovery_micro_goals WHERE id = ${Number(req.params.id)} AND user_id = ${userId}
+      `);
+      res.json({ ok: true });
+    } catch (err: any) { res.status(500).json({ message: err?.message }); }
+  });
+
+  // ─── Survivor Badges + Tiers ─────────────────────────────────────────────────
+
+  // My badges + tier
+  app.get('/api/recovery/badges', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub ?? req.user?.id;
+      const [badgeRows, tierRow] = await Promise.all([
+        db.execute(sql`
+          SELECT badge_key, badge_name, reason, category, awarded_at
+          FROM survivor_badges WHERE user_id = ${userId}
+          ORDER BY awarded_at ASC
+        `),
+        db.execute(sql`
+          SELECT tier, quarter_key, is_legend_awarded, last_active_at
+          FROM survivor_tiers WHERE user_id = ${userId}
+        `),
+      ]);
+      res.json({
+        badges: (badgeRows as any).rows ?? [],
+        tier: (((tierRow as any).rows ?? [])[0]) ?? null,
+      });
+    } catch (err: any) { res.status(500).json({ message: err?.message }); }
+  });
+
+  // Public badges for a survivor profile (by slug)
+  app.get('/api/survivors/:slug/badges', async (req: any, res) => {
+    try {
+      const { slug } = req.params;
+      const userRow = await db.execute(sql`
+        SELECT id FROM users WHERE slug = ${slug} LIMIT 1
+      `);
+      const user = ((userRow as any).rows ?? [])[0];
+      if (!user) return res.status(404).json({ message: 'Not found' });
+
+      const [badgeRows, tierRow] = await Promise.all([
+        db.execute(sql`
+          SELECT badge_key, badge_name, category, awarded_at
+          FROM survivor_badges WHERE user_id = ${user.id}
+          ORDER BY awarded_at ASC
+        `),
+        db.execute(sql`
+          SELECT tier, is_legend_awarded FROM survivor_tiers WHERE user_id = ${user.id}
+        `),
+      ]);
+      res.json({
+        badges: (badgeRows as any).rows ?? [],
+        tier: (((tierRow as any).rows ?? [])[0]) ?? null,
+      });
+    } catch (err: any) { res.status(500).json({ message: err?.message }); }
+  });
+
+  // Admin — recent badge awards
+  app.get('/api/admin/badges/recent', isAuthenticated, requireAdmin, async (_req, res) => {
+    try {
+      const rows = await db.execute(sql`
+        SELECT b.id, b.user_id, b.badge_key, b.badge_name, b.reason, b.category,
+               b.awarded_at, b.awarded_by_user_id,
+               u.email, u.first_name, u.last_name, u.slug
+        FROM survivor_badges b
+        JOIN users u ON u.id = b.user_id
+        ORDER BY b.awarded_at DESC
+        LIMIT 100
+      `);
+      res.json((rows as any).rows ?? []);
+    } catch (err: any) { res.status(500).json({ message: err?.message }); }
+  });
+
+  // Admin — search users for badge award (by email fragment)
+  app.get('/api/admin/badges/users', isAuthenticated, requireAdmin, async (req: any, res) => {
+    try {
+      const q = String(req.query.q ?? '').trim().slice(0, 100);
+      if (!q || q.length < 2) return res.json([]);
+      const rows = await db.execute(sql`
+        SELECT id, email, first_name, last_name, slug
+        FROM users
+        WHERE email ILIKE ${'%' + q + '%'} OR first_name ILIKE ${'%' + q + '%'}
+        LIMIT 20
+      `);
+      res.json((rows as any).rows ?? []);
+    } catch (err: any) { res.status(500).json({ message: err?.message }); }
+  });
+
+  // Admin — award a nominated badge to a user
+  app.post('/api/admin/badges/award', isAuthenticated, requireAdmin, async (req: any, res) => {
+    try {
+      const adminId = req.user?.claims?.sub ?? req.user?.id;
+      const { userId, badgeKey, reason } = req.body;
+
+      const NOMINATED = ['forge','lighthouse','teacher','pioneer','legend'];
+      if (!userId || typeof userId !== 'string') return res.status(400).json({ message: 'userId required' });
+      if (!NOMINATED.includes(badgeKey)) return res.status(400).json({ message: 'Must be a nominated badge key' });
+      if (!reason || typeof reason !== 'string' || !reason.trim()) return res.status(400).json({ message: 'Reason required for nominated badges' });
+
+      const { awardBadge } = await import('./badgeService');
+      const wasNew = await awardBadge(userId, badgeKey, reason.trim().slice(0, 1000), adminId);
+      res.json({ ok: true, wasNew });
+    } catch (err: any) { res.status(500).json({ message: err?.message }); }
+  });
+
   // ─── Survivor OS: Sasquatch Scale + AI Plan ─────────────────────────────────
   // GET /api/recovery/me/state — aggregated personal dashboard state
   app.get('/api/recovery/me/state', isAuthenticated, async (req: any, res) => {

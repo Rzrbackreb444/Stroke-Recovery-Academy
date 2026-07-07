@@ -7467,6 +7467,72 @@ export const squadWaitlist = pgTable("squad_waitlist", {
 });
 export type SquadWaitlistEntry = typeof squadWaitlist.$inferSelect;
 
+// ── Recovery Goals ────────────────────────────────────────────────────────────
+// Long-term goals survivors set for themselves, broken into micro-goals.
+export const recoveryGoals = pgTable("recovery_goals", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  why: text("why"),                         // why this goal matters to them
+  targetDate: text("target_date"),          // optional free text: "by December", "in 6 months"
+  status: text("status").notNull().default("active"), // active | completed | abandoned
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (t) => ({
+  userIdx: index("recovery_goals_user_idx").on(t.userId),
+}));
+export type RecoveryGoal = typeof recoveryGoals.$inferSelect;
+
+// Micro-goals: 3–5 steps that break down a long-term goal.
+export const recoveryMicroGoals = pgTable("recovery_micro_goals", {
+  id: serial("id").primaryKey(),
+  goalId: integer("goal_id").notNull().references(() => recoveryGoals.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull(),
+  title: text("title").notNull(),
+  targetWeek: text("target_week"),          // optional: "Week 1", "Month 2"
+  status: text("status").notNull().default("pending"), // pending | completed | skipped
+  sortOrder: integer("sort_order").notNull().default(0),
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  goalIdx: index("micro_goals_goal_idx").on(t.goalId),
+}));
+export type RecoveryMicroGoal = typeof recoveryMicroGoals.$inferSelect;
+
+// ── Survivor Badges ───────────────────────────────────────────────────────────
+// Each badge is earned once (UNIQUE user_id + badge_key).
+// Automated badges: system detects from real behavior.
+// Nominated badges: Nick or community awards manually.
+export const survivorBadges = pgTable("survivor_badges", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  badgeKey: text("badge_key").notNull(),    // streak_7 | streak_30 | streak_66 | streak_365 | first_log | first_spark | goal_complete | consistent_4 | forge | lighthouse | teacher | pioneer | legend
+  badgeName: text("badge_name").notNull(),
+  reason: text("reason"),                   // human-readable; required for nominated badges
+  category: text("category").notNull().default("automated"), // automated | nominated
+  awardedByUserId: varchar("awarded_by_user_id"), // null = system; set = admin who awarded
+  awardedAt: timestamp("awarded_at").notNull().defaultNow(),
+}, (t) => ({
+  userBadgeUnique: uniqueIndex("survivor_badges_user_key_idx").on(t.userId, t.badgeKey),
+  userIdx: index("survivor_badges_user_idx").on(t.userId),
+}));
+export type SurvivorBadge = typeof survivorBadges.$inferSelect;
+
+// ── Survivor Tiers ────────────────────────────────────────────────────────────
+// One row per user. Tier is computed from badge count/types + recomputed on
+// every badge award and daily by the scheduler. Decays one tier per idle quarter.
+export const survivorTiers = pgTable("survivor_tiers", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().unique().references(() => users.id, { onDelete: "cascade" }),
+  tier: text("tier").notNull().default("ember"), // ember | bonfire | forge | legend
+  quarterKey: text("quarter_key").notNull(),      // YYYY-Q1/Q2/Q3/Q4
+  lastActiveAt: timestamp("last_active_at"),
+  isLegendAwarded: boolean("is_legend_awarded").notNull().default(false), // Nick manually awarded
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+export type SurvivorTier = typeof survivorTiers.$inferSelect;
+
 // ── Spotlight nominations ─────────────────────────────────────────────────────
 // Survivors apply for or nominate others for the monthly spotlight.
 // Nick reviews, picks the winner, writes the article.

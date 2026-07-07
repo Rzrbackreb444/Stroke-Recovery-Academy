@@ -37,6 +37,7 @@ import ProgressArcChart from "@/components/recovery/ProgressArcChart";
 import PushOptInBanner from "@/components/PushOptInBanner";
 import { RecommendationCards } from "@/components/RecommendationCard";
 import { TodaysSpark } from "@/components/TodaysSpark";
+import GoalsWidget from "@/components/GoalsWidget";
 import MyPathRecommender from "@/components/recovery/MyPathRecommender";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import FadeUpSection from "@/components/FadeUpSection";
@@ -666,6 +667,9 @@ export default function RecoveryDashboard() {
 
         {/* WEEKLY GOAL — inline progress bar, links to Progress Hub */}
         <WeeklyGoalCard />
+
+        {/* RECOVERY GOALS — active goal + micro-goal progress. */}
+        <GoalsWidget />
 
         {/* NEVER ZERO AUDIT — Rep-level accountability + Gemini audit after reps are logged. */}
         <NeverZeroAuditHero />
