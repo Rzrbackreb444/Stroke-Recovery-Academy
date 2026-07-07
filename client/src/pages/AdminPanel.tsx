@@ -42,7 +42,7 @@ import {
   Tooltip as ChartTooltip,
   CartesianGrid,
 } from "recharts";
-import { Activity, UserPlus, AlertCircle } from "lucide-react";
+import { Activity, UserPlus, AlertCircle, CheckCircle, X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -553,6 +553,177 @@ const NOM_STATUS_COLORS: Record<string, string> = {
   declined: "bg-gray-100 text-gray-600",
 };
 
+// ── Badges Admin Panel ────────────────────────────────────────────────────────
+const NOMINATED_BADGE_KEYS = [
+  { key: "forge",      label: "The Forge",   desc: "Found a new way through when the old way stopped working." },
+  { key: "lighthouse", label: "Lighthouse",  desc: "Pulled another survivor back from a dark place." },
+  { key: "teacher",    label: "The Teacher", desc: "Taught another survivor something that helped them." },
+  { key: "pioneer",    label: "Pioneer",     desc: "Invented an adaptation the community adopted." },
+  { key: "legend",     label: "Legend",      desc: "Nick's rarest badge — for the truly exceptional." },
+];
+
+function BadgesAdminPanel() {
+  const { toast } = useToast();
+  const qc = useQueryClient();
+  const [search, setSearch] = useState("");
+  const [selectedUser, setSelectedUser] = useState<{ id: string; email: string; first_name?: string } | null>(null);
+  const [badgeKey, setBadgeKey] = useState("forge");
+  const [reason, setReason] = useState("");
+
+  const userSearch = useQuery<any[]>({
+    queryKey: ["/api/admin/badges/users", search],
+    queryFn: async () => {
+      if (search.length < 2) return [];
+      const r = await fetch(`/api/admin/badges/users?q=${encodeURIComponent(search)}`);
+      return r.ok ? r.json() : [];
+    },
+    enabled: search.length >= 2,
+  });
+
+  const recentBadges = useQuery<any[]>({
+    queryKey: ["/api/admin/badges/recent"],
+  });
+
+  const awardMut = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/admin/badges/award", {
+        userId: selectedUser?.id,
+        badgeKey,
+        reason: reason.trim(),
+      });
+      if (!res.ok) throw new Error((await res.json()).message ?? "Failed");
+    },
+    onSuccess: (_data, _vars) => {
+      qc.invalidateQueries({ queryKey: ["/api/admin/badges/recent"] });
+      toast({ title: `Badge awarded to ${selectedUser?.email}` });
+      setSelectedUser(null); setReason(""); setBadgeKey("forge"); setSearch("");
+    },
+    onError: (e: any) => toast({ title: "Error", description: e?.message, variant: "destructive" }),
+  });
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardContent className="p-6 space-y-4">
+          <h3 className="font-bold text-lg">Award a Nominated Badge</h3>
+          <p className="text-sm text-gray-500">
+            Nominated badges are awarded by Nick for real contributions — not automatically. Each one
+            is permanent and public on the survivor's profile.
+          </p>
+
+          {/* User search */}
+          <div className="space-y-1">
+            <label className="text-xs uppercase tracking-wider text-gray-500">Survivor (search by email or name)</label>
+            <Input
+              value={selectedUser ? `${selectedUser.first_name ?? ""} ${selectedUser.email}`.trim() : search}
+              onChange={e => { setSearch(e.target.value); setSelectedUser(null); }}
+              placeholder="Search survivors…"
+              className="bg-background"
+              data-testid="input-badge-user-search"
+            />
+            {search.length >= 2 && !selectedUser && (userSearch.data ?? []).length > 0 && (
+              <div className="border rounded-md divide-y mt-1 max-h-40 overflow-y-auto">
+                {(userSearch.data ?? []).map((u: any) => (
+                  <button
+                    key={u.id}
+                    className="w-full text-left px-3 py-2 text-sm hover-elevate"
+                    onClick={() => { setSelectedUser(u); setSearch(""); }}
+                    data-testid={`user-result-${u.id}`}
+                  >
+                    <span className="font-medium">{u.first_name} {u.last_name}</span>
+                    <span className="ml-2 text-gray-500 text-xs">{u.email}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+            {selectedUser && (
+              <div className="flex items-center gap-2 mt-1 px-3 py-2 rounded-md bg-green-50 dark:bg-green-900/20 text-sm">
+                <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
+                <span>{selectedUser.first_name} — {selectedUser.email}</span>
+                <button onClick={() => setSelectedUser(null)} className="ml-auto text-gray-400">
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Badge selector */}
+          <div className="space-y-1">
+            <label className="text-xs uppercase tracking-wider text-gray-500">Badge</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {NOMINATED_BADGE_KEYS.map(b => (
+                <button
+                  key={b.key}
+                  onClick={() => setBadgeKey(b.key)}
+                  className={`text-left rounded-md border p-3 text-sm transition-colors ${badgeKey === b.key ? "border-orange-500 bg-orange-50 dark:bg-orange-950/30" : "border-border hover-elevate"}`}
+                  data-testid={`badge-option-${b.key}`}
+                >
+                  <p className="font-bold">{b.label}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{b.desc}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Reason */}
+          <div className="space-y-1">
+            <label className="text-xs uppercase tracking-wider text-gray-500">Reason (required — shown on their profile)</label>
+            <Textarea
+              value={reason}
+              onChange={e => setReason(e.target.value)}
+              placeholder="What did they do that earned this? Be specific — they'll read this."
+              className="min-h-[80px]"
+              maxLength={1000}
+              data-testid="textarea-badge-reason"
+            />
+          </div>
+
+          <Button
+            onClick={() => awardMut.mutate()}
+            disabled={!selectedUser || !reason.trim() || awardMut.isPending}
+            className="w-full font-bold"
+            data-testid="button-award-badge"
+          >
+            {awardMut.isPending ? "Awarding…" : `Award "${NOMINATED_BADGE_KEYS.find(b => b.key === badgeKey)?.label}" to ${selectedUser?.email ?? "…"}`}
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Recent awards */}
+      <Card>
+        <CardContent className="p-6 space-y-3">
+          <h3 className="font-bold text-lg">Recent Badge Awards</h3>
+          {recentBadges.isLoading ? (
+            <p className="text-sm text-gray-500">Loading…</p>
+          ) : (recentBadges.data ?? []).length === 0 ? (
+            <p className="text-sm text-gray-500">No badges awarded yet.</p>
+          ) : (
+            <div className="space-y-2">
+              {(recentBadges.data ?? []).slice(0, 50).map((row: any) => (
+                <div key={row.id} className="flex items-start gap-3 py-2 border-b border-border last:border-0">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-medium text-sm">{row.first_name ?? ""} {row.last_name ?? ""}</span>
+                      <span className="text-xs text-gray-500">{row.email}</span>
+                      <Badge variant={row.category === "nominated" ? "default" : "secondary"} className="text-[10px]">
+                        {row.badge_name}
+                      </Badge>
+                    </div>
+                    {row.reason && <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">"{row.reason}"</p>}
+                  </div>
+                  <span className="text-[10px] text-gray-500 shrink-0">
+                    {new Date(row.awarded_at).toLocaleDateString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 function SpotlightNominationsPanel() {
   const { toast } = useToast();
   const qc = useQueryClient();
@@ -1050,13 +1221,14 @@ export default function AdminPanel() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-7 mb-6">
+          <TabsList className="grid w-full grid-cols-8 mb-6">
             <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
             <TabsTrigger value="analytics" data-testid="tab-analytics">Analytics</TabsTrigger>
             <TabsTrigger value="revenue" data-testid="tab-revenue">Revenue</TabsTrigger>
             <TabsTrigger value="credits" data-testid="tab-credits">Credits</TabsTrigger>
             <TabsTrigger value="users" data-testid="tab-users">Users</TabsTrigger>
             <TabsTrigger value="spotlight" data-testid="tab-spotlight">Spotlight</TabsTrigger>
+            <TabsTrigger value="badges" data-testid="tab-badges">Badges</TabsTrigger>
             <TabsTrigger value="leads" data-testid="tab-leads">Leads</TabsTrigger>
           </TabsList>
 
@@ -1067,6 +1239,10 @@ export default function AdminPanel() {
           <TabsContent value="spotlight" className="space-y-6">
             <SpotlightAdminPanel />
             <SpotlightNominationsPanel />
+          </TabsContent>
+
+          <TabsContent value="badges" className="space-y-6">
+            <BadgesAdminPanel />
           </TabsContent>
 
           <TabsContent value="leads" className="space-y-6">

@@ -144,6 +144,7 @@ const UserProfile = lazy(() => import("@/pages/UserProfile"));
 const ProfileSettings = lazy(() => import("@/pages/ProfileSettings"));
 const RecoveryCampfire = lazy(() => import("@/pages/RecoveryCampfire"));
 const RecoveryPremium = lazy(() => import("@/pages/RecoveryPremium"));
+const RecoveryGoals = lazy(() => import("@/pages/RecoveryGoals"));
 const RecoveryJourney = lazy(() => import("@/pages/RecoveryJourney"));
 const RecoveryWelcome = lazy(() => import("@/pages/RecoveryWelcome"));
 const TherapistMarketplace = lazy(() => import("@/pages/TherapistMarketplace"));
@@ -619,6 +620,7 @@ function Router() {
       <Route path="/recovery/videos/profile/:userId" component={CommunityVideos} />
       <Route path="/recovery/videos/:id" component={CommunityVideoPlayer} />
       <Route path="/recovery/campfire" component={RecoveryCampfire} />
+      <Route path="/recovery/goals" component={RecoveryGoals} />
       <Route path="/recovery/premium" component={RecoveryPremium} />
       <Route path="/recovery/journey" component={RecoveryJourney} />
       <Route path="/recovery/welcome" component={RecoveryWelcome} />

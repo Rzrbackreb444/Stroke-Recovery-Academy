@@ -248,6 +248,19 @@ export async function bootstrapScheduler(): Promise<void> {
     },
   });
 
+  // Daily badge check — award automated badges (streaks, first-log, first-spark,
+  // goal-complete, consistent-4) for all active users. Also runs quarterly tier
+  // decay for users who haven't checked in for 90+ days.
+  registerJob({
+    name: "badge-check",
+    description: "Award automated badges for active survivors; decay tiers for inactive ones.",
+    cron: "30 2 * * *", // daily at 02:30 UTC (low traffic, after BI snapshot)
+    handler: async () => {
+      const { runDailyBadgeCheck } = await import("../badgeService");
+      await runDailyBadgeCheck();
+    },
+  });
+
   // Self-maintenance — prune the run-history table so it doesn't grow forever.
   registerJob({
     name: "scheduler-run-prune",
