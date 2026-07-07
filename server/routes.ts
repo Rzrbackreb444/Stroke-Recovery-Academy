@@ -12972,6 +12972,92 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
+  // ── Nick Kremers 1:1 coaching checkout (public — no auth required) ──────────
+  app.post('/api/coaching/checkout', async (req: any, res) => {
+    try {
+      const { getRecoveryStripeClient, isRecoveryStripeConfigured } = await import('./recoveryStripeClient');
+      if (!isRecoveryStripeConfigured()) {
+        return res.status(503).json({ message: 'Payment processing not configured. Email nick@strokerecoveryacademy.com to book directly.' });
+      }
+      const stripe = getRecoveryStripeClient();
+      const { option, returnUrl } = req.body;
+      if (!option || !['session', 'intensive'].includes(option)) {
+        return res.status(400).json({ message: 'Invalid coaching option' });
+      }
+      const products: Record<string, { amount: number; name: string; description: string; mode: 'payment' | 'subscription' }> = {
+        session: {
+          amount: 35000,
+          name: '1-on-1 Session with Nick Kremers',
+          description: '60-minute private Zoom, custom protocol, recording within 24h, 30-day follow-up',
+          mode: 'payment',
+        },
+        intensive: {
+          amount: 150000,
+          name: 'Monthly Intensive with Nick Kremers',
+          description: 'Bi-weekly 60-min Zoom, direct message access, progress reviews, accountability pod placement',
+          mode: 'subscription',
+        },
+      };
+      const product = products[option];
+      const origin = process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : (returnUrl ? new URL(returnUrl).origin : 'https://strokerecoveryacademy.com');
+      const sessionParams: any = {
+        payment_method_types: ['card'],
+        line_items: [{
+          price_data: {
+            currency: 'usd',
+            product_data: { name: product.name, description: product.description },
+            unit_amount: product.amount,
+            ...(product.mode === 'subscription' && { recurring: { interval: 'month' } }),
+          },
+          quantity: 1,
+        }],
+        mode: product.mode,
+        success_url: `${origin}/recovery/coaching-with-nick?success=1`,
+        cancel_url: `${origin}/recovery/coaching-with-nick`,
+        metadata: { type: 'nick_coaching', option, platform: 'stroke_recovery_academy' },
+        allow_promotion_codes: true,
+      };
+      // Attach customer if authenticated
+      if (req.user?.claims?.sub) {
+        try {
+          const user = await storage.getUser(req.user.claims.sub);
+          if (user?.stripeCustomerId) sessionParams.customer = user.stripeCustomerId;
+        } catch { /* non-fatal */ }
+      }
+      const session = await stripe.checkout.sessions.create(sessionParams);
+      res.json({ url: session.url });
+    } catch (error: any) {
+      console.error('[coaching/checkout]', error?.message);
+      res.status(500).json({ message: error?.message ?? 'Checkout failed' });
+    }
+  });
+
+  // ── B2B partner inquiry (public) ────────────────────────────────────────────
+  app.post('/api/partners/inquiry', async (req: any, res) => {
+    try {
+      const { name, facility, email, role, message, partnershipType } = req.body;
+      if (!name || !facility || !email) {
+        return res.status(400).json({ message: 'name, facility, and email are required' });
+      }
+      // Log to console for now; HubSpot tracking can be wired here
+      console.log('[partners/inquiry]', JSON.stringify({ name, facility, email, role, partnershipType, message: message?.slice(0, 200) }));
+      // Best-effort: send an internal notification email via Resend
+      try {
+        const { sendEmail } = await import('./emailService');
+        await sendEmail({
+          to: 'nick@strokerecoveryacademy.com',
+          subject: `Partner inquiry — ${partnershipType ?? 'unknown'} — ${facility}`,
+          html: `<p><strong>${name}</strong> (${role || 'n/a'}) from <strong>${facility}</strong><br>Email: ${email}<br>Type: ${partnershipType}<br><br>${message ?? ''}</p>`,
+          text: `${name} (${role}) from ${facility}\n${email}\nType: ${partnershipType}\n\n${message ?? ''}`,
+        });
+      } catch { /* non-fatal */ }
+      res.json({ ok: true });
+    } catch (error: any) {
+      console.error('[partners/inquiry]', error?.message);
+      res.status(500).json({ message: 'Failed to submit inquiry' });
+    }
+  });
+
   // ============================================================================
   // SASQUATCH DOCTRINE - FLICKER LOG
   // ============================================================================

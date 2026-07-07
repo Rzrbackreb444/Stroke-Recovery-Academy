@@ -5,7 +5,7 @@ import { useLocation, Link } from "wouter";
 import {
   Loader2, ArrowRight, Play, BrainCircuit, CalendarDays,
   Users, CheckCircle2, ShieldCheck, Activity, Star, Flame, Gift, BookOpen, Lock,
-  MessageSquare, Zap,
+  MessageSquare, Zap, Video, Building2, Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import RecoveryHeader from "@/components/RecoveryHeader";
@@ -556,6 +556,173 @@ function Features() {
   );
 }
 
+const TIERS = [
+  {
+    name: "Free",
+    price: "$0",
+    sub: "forever",
+    cta: "Start free",
+    href: "/recovery/onboarding",
+    highlight: false,
+    features: [
+      "5 Coach messages / day",
+      "Daily reps + journal",
+      "66-Day Challenge",
+      "3 Recovery Anchors / month",
+      "Public Campfire circles",
+    ],
+  },
+  {
+    name: "Solo",
+    price: "$19",
+    sub: "/mo · 7-day free trial",
+    cta: "Start free trial",
+    href: "/recovery/premium",
+    highlight: true,
+    badge: "Most popular",
+    features: [
+      "Unlimited Coach",
+      "Unlimited Recovery Anchors",
+      "Voice Cloning included",
+      "Write Your Recovery Story",
+      "Never Zero daily report",
+      "Premium Campfire + Live with Nick",
+    ],
+  },
+  {
+    name: "Squad",
+    price: "$59",
+    sub: "/mo · coming soon",
+    cta: "Join waitlist",
+    href: "/recovery/premium?squad=waitlist",
+    highlight: false,
+    badge: "Group accountability",
+    features: [
+      "Everything in Solo",
+      "Dedicated accountability pod with Nick",
+      "Bi-weekly group Zoom with Nick",
+      "Priority Coach queue",
+      "Squad-only check-in feed",
+      "Direct message Nick between sessions",
+    ],
+  },
+];
+
+function PricingStrip() {
+  return (
+    <section id="pricing" className="bg-[#1A1412] py-20 px-4">
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center mb-14">
+          <p className="text-xs font-bold uppercase tracking-widest text-[#C06B3E] mb-3">Pick your level</p>
+          <h2 className="font-display text-[#FDFBF7] text-3xl sm:text-5xl leading-[0.95] mb-4">
+            How much of your recovery<br />
+            <span className="italic font-serif text-[#C06B3E]">do you want to own?</span>
+          </h2>
+          <p className="text-[#FDFBF7]/55 text-lg max-w-2xl mx-auto">
+            Free gets you started. Solo gets you moving. Squad gets you accountable with other survivors — and with Nick.
+          </p>
+        </div>
+        <div className="grid md:grid-cols-3 gap-5">
+          {TIERS.map((tier) => (
+            <div
+              key={tier.name}
+              className={`rounded-2xl border-2 p-7 flex flex-col relative ${
+                tier.highlight
+                  ? "border-[#C06B3E] bg-[#C06B3E]/8"
+                  : "border-[#3A3230] bg-[#0F0C0A]"
+              }`}
+            >
+              {tier.badge && (
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                  <span className="bg-[#C06B3E] text-white text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full whitespace-nowrap">
+                    {tier.badge}
+                  </span>
+                </div>
+              )}
+              <div className="mb-6">
+                <div className="text-xs font-bold uppercase tracking-widest text-[#C06B3E] mb-1">{tier.name}</div>
+                <div className="font-display text-[#FDFBF7] text-4xl">{tier.price}</div>
+                <div className="text-[#FDFBF7]/40 text-sm mt-0.5">{tier.sub}</div>
+              </div>
+              <ul className="space-y-2.5 flex-1 mb-7">
+                {tier.features.map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm text-[#FDFBF7]/70">
+                    <Check className="w-4 h-4 text-[#C06B3E] shrink-0 mt-0.5" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Button
+                asChild
+                size="lg"
+                className={`h-11 rounded-full font-semibold text-sm ${
+                  tier.highlight
+                    ? "bg-[#C06B3E] hover:bg-[#A85B33] text-white"
+                    : "bg-[#2A2421] hover:bg-[#3A3230] text-[#FDFBF7] border border-[#3A3230]"
+                }`}
+                data-testid={`button-tier-${tier.name.toLowerCase()}`}
+              >
+                <Link href={tier.href}>{tier.cta} <ArrowRight className="ml-1.5 h-3.5 w-3.5" /></Link>
+              </Button>
+            </div>
+          ))}
+        </div>
+        <p className="text-center text-[#FDFBF7]/30 text-xs mt-8">
+          Need something more? <Link href="/recovery/coaching-with-nick" className="text-[#C06B3E] underline underline-offset-2">Work directly with Nick.</Link>
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function WorkWithNick() {
+  return (
+    <section className="bg-[#F6EFEA] py-20 px-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-10 items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C06B3E]/15 border border-[#C06B3E]/30 mb-6">
+              <Video className="w-3.5 h-3.5 text-[#C06B3E]" />
+              <span className="text-xs font-bold uppercase tracking-widest text-[#C06B3E]">Private Coaching</span>
+            </div>
+            <h2 className="font-display text-[#1C1917] text-3xl md:text-4xl leading-[0.95] mb-5">
+              Not ready for a plan?<br />
+              <span className="italic font-serif text-[#C06B3E]">Talk to the person behind it.</span>
+            </h2>
+            <p className="text-[#5C534D] text-lg leading-relaxed mb-8">
+              Nick takes a limited number of private 1:1 clients. An hour on Zoom with someone who rebuilt himself from a Hoyer lift — no canned responses, no protocol handoffs. Just the person who lived it.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button
+                asChild
+                size="lg"
+                className="bg-[#1A1412] hover:bg-[#2A2421] text-[#FDFBF7] h-12 px-7 rounded-full font-semibold"
+                data-testid="button-work-with-nick-landing"
+              >
+                <Link href="/recovery/coaching-with-nick">Book a session — $350 <ArrowRight className="ml-2 h-4 w-4" /></Link>
+              </Button>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            {[
+              { icon: Video, title: "60-min Zoom", body: "Private, recorded, on your schedule." },
+              { icon: Check, title: "Custom protocol", body: "Built live for your exact deficits." },
+              { icon: Users, title: "Limited spots", body: "Nick keeps his roster small on purpose." },
+              { icon: Building2, title: "Facility options", body: "Rehab networks — see our partner program." },
+            ].map((item, i) => (
+              <div key={i} className="bg-white rounded-xl p-5 border border-[#E2C2A4]/30">
+                <item.icon className="w-5 h-5 text-[#C06B3E] mb-3" />
+                <div className="font-bold text-[#1C1917] text-sm mb-1">{item.title}</div>
+                <div className="text-[#78716C] text-xs leading-relaxed">{item.body}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Caregiver() {
   return (
     <section className="bg-[#C06B3E] py-16 sm:py-24">
@@ -762,9 +929,11 @@ export default function Landing() {
         <ActivityTicker />
         <StatsStrip />
         <AccountabilityGap />
+        <PricingStrip />
         <CoachPreview />
         <Proof />
         <Features />
+        <WorkWithNick />
         <Caregiver />
         <GiftASurvivor />
         <Guides />
