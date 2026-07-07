@@ -156,6 +156,98 @@ export async function bootstrapScheduler(): Promise<void> {
     },
   });
 
+  // HubSpot behavioral triggers — sync quiet survivors (3+ days silent),
+  // streak milestones, and abandoned-onboarding signals to HubSpot CRM.
+  // Runs daily at 05:00 UTC; idempotent (HubSpot upsert dedupes by email).
+  registerJob({
+    name: "hubspot-behavioral-sync",
+    description: "Sync quiet survivors, streak milestones, and onboarding-abandoned signals to HubSpot CRM.",
+    cron: "0 5 * * *", // daily at 05:00 UTC
+    handler: async () => {
+      const { isHubSpotConfigured, syncQuietSurvivorSignals, syncStreakMilestone, syncOnboardingAbandoned } =
+        await import("../hubspotService");
+      if (!isHubSpotConfigured()) return;
+
+      const { db } = await import("../db");
+      const { sql } = await import("drizzle-orm");
+
+      // ── 1. Quiet survivors: last checkin ≥ 3 days ago, email set ──────────
+      const quiet = await db.execute(sql`
+        SELECT u.id, u.email, u.created_at,
+               COALESCE(s.current_streak, 0)       AS streak,
+               COALESCE(s.total_active_days, 0)    AS total_active_days,
+               EXTRACT(EPOCH FROM (NOW() - MAX(dc.created_at))) / 86400 AS days_since
+        FROM users u
+        LEFT JOIN streaks s ON s.user_id = u.id
+        LEFT JOIN daily_checkins dc ON dc.user_id = u.id
+        WHERE u.email IS NOT NULL
+        GROUP BY u.id, u.email, u.created_at, s.current_streak, s.total_active_days
+        HAVING MAX(dc.created_at) < NOW() - INTERVAL '3 days'
+           AND COUNT(dc.id) > 0
+        LIMIT 200
+      `);
+      const quietRows: any[] = Array.isArray((quiet as any).rows) ? (quiet as any).rows : (quiet as any);
+      if (quietRows.length > 0) {
+        await syncQuietSurvivorSignals(
+          quietRows.map((r: any) => ({
+            email: r.email,
+            daysSinceLastCheckin: Math.round(Number(r.days_since)),
+            streak: Number(r.streak),
+            totalActiveDays: Number(r.total_active_days),
+          })),
+        );
+      }
+
+      // ── 2. Streak milestones: hit exactly today ────────────────────────────
+      const MILESTONES = [30, 60, 90, 180, 365];
+      for (const m of MILESTONES) {
+        const milestoneRows = await db.execute(sql`
+          SELECT u.id, u.email, s.current_streak, s.total_active_days
+          FROM streaks s
+          JOIN users u ON u.id = s.user_id
+          WHERE u.email IS NOT NULL
+            AND s.current_streak = ${m}
+            AND s.updated_at::date = CURRENT_DATE
+          LIMIT 50
+        `);
+        const rows: any[] = Array.isArray((milestoneRows as any).rows)
+          ? (milestoneRows as any).rows : (milestoneRows as any);
+        for (const r of rows) {
+          await syncStreakMilestone({
+            email: r.email,
+            streakDays: m,
+            totalActiveDays: Number(r.total_active_days),
+          });
+        }
+      }
+
+      // ── 3. Abandoned onboarding: signed up ≥ 48h ago, no checkin ever ─────
+      const abandoned = await db.execute(sql`
+        SELECT u.id, u.email, u.created_at
+        FROM users u
+        WHERE u.email IS NOT NULL
+          AND u.created_at < NOW() - INTERVAL '48 hours'
+          AND NOT EXISTS (SELECT 1 FROM daily_checkins dc WHERE dc.user_id = u.id)
+        LIMIT 100
+      `);
+      const abandonedRows: any[] = Array.isArray((abandoned as any).rows)
+        ? (abandoned as any).rows : (abandoned as any);
+      for (const r of abandonedRows) {
+        await syncOnboardingAbandoned({
+          email: r.email,
+          signupDate: new Date(r.created_at).toISOString().split("T")[0],
+          hoursSinceSignup: Math.round(
+            (Date.now() - new Date(r.created_at).getTime()) / 3_600_000,
+          ),
+        });
+      }
+
+      console.log(
+        `[hubspot-behavioral-sync] quiet=${quietRows.length} abandoned=${abandonedRows.length}`,
+      );
+    },
+  });
+
   // Self-maintenance — prune the run-history table so it doesn't grow forever.
   registerJob({
     name: "scheduler-run-prune",

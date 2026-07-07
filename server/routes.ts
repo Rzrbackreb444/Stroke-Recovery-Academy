@@ -10107,6 +10107,29 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     }
   });
 
+  // 90-day progress arc — daily reps + mood trend for the Progress Arc chart.
+  app.get('/api/recovery/progress-arc', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      if (!userId) return res.status(401).json({ message: "Unauthorized" });
+      const checkins = await storage.getRecentCheckins(userId, 90);
+      const arc = checkins
+        .map((c: any) => ({
+          date: new Date(c.createdAt || c.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+          mood: c.moodScore != null ? Math.round(c.moodScore) : (c.mood_score != null ? Math.round(c.mood_score) : null),
+          energy: c.energyScore != null ? Math.round(c.energyScore) : (c.energy_score != null ? Math.round(c.energy_score) : null),
+          reps: Array.isArray(c.exercisesLogged ?? c.exercises_logged)
+            ? (c.exercisesLogged ?? c.exercises_logged).length
+            : 0,
+        }))
+        .reverse(); // oldest → newest
+      res.json({ arc, totalDays: 90 });
+    } catch (error) {
+      console.error("Error fetching progress arc:", error);
+      res.status(500).json({ message: "Failed to fetch progress arc" });
+    }
+  });
+
   // Get today's check-in
   app.get('/api/recovery/checkin/today', isAuthenticated, async (req: any, res) => {
     try {
