@@ -27,12 +27,13 @@ import {
   Plus, UserPlus, DoorOpen, Smile, Activity, Quote, RefreshCw, ArrowRight,
   Play, Brain, ChevronDown, Footprints, Anchor, Sun, ClipboardList, Loader2,
   Check, Dumbbell, Pill, Droplets, Moon, PenLine, PhoneCall, ChevronRight,
-  LayoutDashboard, Video
+  LayoutDashboard, Video, Music2, ExternalLink
 } from "lucide-react";
 import SixtyDayTracker from "@/components/recovery/SixtyDayTracker";
 import TodaySessionPanel from "@/components/recovery/TodaySessionPanel";
 import DeficitPrescriptionCard from "@/components/recovery/DeficitPrescriptionCard";
 import RecoveryArcCard from "@/components/recovery/RecoveryArcCard";
+import ProgressArcChart from "@/components/recovery/ProgressArcChart";
 import PushOptInBanner from "@/components/PushOptInBanner";
 import { RecommendationCards } from "@/components/RecommendationCard";
 import { TodaysSpark } from "@/components/TodaysSpark";
@@ -471,6 +472,10 @@ export default function RecoveryDashboard() {
             when within the ±4-day window of a milestone. Hidden in Zen Mode so
             the milestone doesn't compete with the single focal audit card. */}
         {!zenMode && <RecoveryArcCard />}
+
+        {/* 90-DAY PROGRESS ARC — reps + mood trend over the last 90 days.
+            Hidden in Zen Mode. Only renders once the user has logged data. */}
+        {!zenMode && <ProgressArcChart />}
 
         {!zenMode && (<>
         {/* ── Today's loop ── coherent daily journey strip ── */}
@@ -2207,6 +2212,65 @@ const MOOD_LABELS   = ["Rough", "Hard", "Okay", "Good", "Great"];
 
 type DailyBrief = { brief: string; focusItems: string[]; fromCache: boolean; isPremium?: boolean };
 
+// ── Spotify Daily Reps banner — shows inside the log form ─────────────────
+// Queries Spotify for 3 recovery-focus tracks and renders quick-open links.
+// Renders null when Spotify isn't configured or returns no results.
+function SpotifyRepsBanner() {
+  const { data: status } = useQuery<{ configured: boolean }>({
+    queryKey: ["/api/spotify/status"],
+    staleTime: Infinity,
+  });
+
+  const { data: tracks } = useQuery<any[]>({
+    queryKey: ["/api/spotify/search/tracks", "recovery-reps"],
+    queryFn: async () => {
+      const res = await fetch("/api/spotify/search/tracks?q=stroke+recovery+focus+motivation&limit=3", {
+        credentials: "include",
+      });
+      if (!res.ok) return [];
+      return res.json();
+    },
+    enabled: status?.configured === true,
+    staleTime: 30 * 60_000,
+    retry: false,
+  });
+
+  if (!status?.configured || !tracks?.length) return null;
+
+  return (
+    <div className="mb-5 rounded-lg border border-[#1DB95433] bg-[#1DB95408] p-3" data-testid="spotify-reps-banner">
+      <div className="flex items-center gap-2 mb-2.5">
+        <Music2 className="h-3.5 w-3.5 text-[#1DB954]" />
+        <p className="text-xs font-semibold uppercase tracking-widest text-[#1DB954]">Sound for your reps</p>
+      </div>
+      <div className="space-y-1.5">
+        {tracks.slice(0, 3).map((t: any) => (
+          <a
+            key={t.id}
+            href={t.spotifyUrl || `https://open.spotify.com/track/${t.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-between gap-3 px-2 py-1.5 rounded-md hover:bg-[#1DB95415] transition-colors group"
+            data-testid={`spotify-track-${t.id}`}
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              {t.albumArt && (
+                <img src={t.albumArt} alt="" className="w-7 h-7 rounded shrink-0 object-cover" />
+              )}
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-[#1C1917] truncate">{t.name}</p>
+                <p className="text-[10px] text-[#A8A29E] truncate">{t.artist}</p>
+              </div>
+            </div>
+            <ExternalLink className="h-3 w-3 text-[#1DB954] shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
 function DailyLoopCard() {
   const { isAuthenticated } = useAuth();
   const { toast } = useToast();
@@ -2473,6 +2537,9 @@ function DailyLoopCard() {
               <p className="text-[10px] text-[#A8A29E] mt-1">{MOOD_LABELS[mood - 1]}</p>
             </div>
           </div>
+
+          {/* Spotify Daily Reps — offer recovery playlist when logging reps */}
+          <SpotifyRepsBanner />
 
           {/* Win */}
           <div className="mb-5">

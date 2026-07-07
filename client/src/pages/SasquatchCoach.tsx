@@ -1,12 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Volume2, VolumeX, Loader2, Mic, MicOff, Flame, Sparkles, ShoppingBag, LogIn, Check } from "lucide-react";
+import {
+  Send, Volume2, VolumeX, Loader2, Mic, MicOff, Flame, Sparkles,
+  ShoppingBag, LogIn, Check, ArrowLeft, TrendingUp, Zap, Users,
+  ChevronRight,
+} from "lucide-react";
 import { Link } from "wouter";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import RecoveryHeader from "@/components/RecoveryHeader";
 import RecoverySEO from "@/components/RecoverySEO";
-import Footer from "@/components/Footer";
 import CrisisCard, { type CrisisResource } from "@/components/recovery/CrisisCard";
 import { useAuth } from "@/hooks/useAuth";
 import { safeAccentForDark } from "@/lib/personaContrast";
@@ -31,21 +33,51 @@ const STARTER_PROMPTS = [
   "How do I stay consistent when progress feels invisible?",
 ];
 
+function WaveformBars({ active }: { active: boolean }) {
+  return (
+    <div className="flex items-end gap-[3px] h-4 ml-1 shrink-0">
+      {[3, 6, 2, 8, 4].map((base, i) => (
+        <span
+          key={i}
+          className="w-[3px] rounded-full transition-all duration-150"
+          style={{
+            background: active ? "#C06B3E" : "rgba(192,107,62,0.3)",
+            height: active ? `${base + 2}px` : "3px",
+            animation: active ? `waveBar 0.7s ease-in-out ${i * 0.1}s infinite alternate` : undefined,
+          }}
+        />
+      ))}
+      <style>{`
+        @keyframes waveBar {
+          from { transform: scaleY(0.4); }
+          to   { transform: scaleY(1.4); }
+        }
+      `}</style>
+    </div>
+  );
+}
+
 export default function SasquatchCoach() {
   const { user } = useAuth();
   const { data: personaData } = useQuery<{ persona: { name: string; creed: string; accentColor: string } | null }>({
-    queryKey: ['/api/persona/me'],
+    queryKey: ["/api/persona/me"],
   });
   const persona = personaData?.persona ?? null;
   const safeAccent = safeAccentForDark(persona?.accentColor);
+
+  const { data: dashData } = useQuery<any>({
+    queryKey: ["/api/recovery/dashboard"],
+    enabled: !!user,
+    staleTime: 5 * 60_000,
+  });
+
   const buildWelcome = (name: string) =>
     `Hey ${name}. I'm Sasquatch — your round-the-clock recovery coach. I've been through what you're going through, and I'm here to push you when you need pushing and steady you when you need steadying. Heads up — I'm here for accountability and reps, not diagnosis. New symptoms or anything that feels medical go to your doctor; the daily work goes to me. What's on your mind today?`;
+
   const [messages, setMessages] = useState<Message[]>([
     { role: "coach", content: buildWelcome("warrior") },
   ]);
 
-  // When persona resolves after first paint, swap the welcome line in-place
-  // (only if the user hasn't started chatting yet).
   useEffect(() => {
     if (!persona) return;
     setMessages((prev) => {
@@ -58,29 +90,20 @@ export default function SasquatchCoach() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [persona?.name]);
+
   const [input, setInput] = useState("");
   const [audioEnabled, setAudioEnabled] = useState(true);
-  // Anonymous-quota hint shown subtly under the input. null = unknown
-  // (haven't sent yet), { used, limit } = "X of Y free messages used".
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [anonQuota, setAnonQuota] = useState<{ used: number; limit: number } | null>(null);
-  // Signed-in free-user daily quota (from server's `quota` field on each response).
-  // null = not yet received. { used, limit } = known.
   const [freeQuota, setFreeQuota] = useState<{ used: number; limit: number } | null>(null);
-  // Push-to-talk state (browser SpeechRecognition — free, on-device, instant).
   const [isListening, setIsListening] = useState(false);
   const [micUnsupported, setMicUnsupported] = useState(false);
   const recognitionRef = useRef<any>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  // Track every Blob URL we mint for parallel-fetched TTS audio so we can
-  // revoke them all on unmount. Without this they'd accumulate in browser
-  // memory across a long conversation.
   const blobUrlsRef = useRef<string[]>([]);
 
-  // Probe for SpeechRecognition once on mount, and clean up an in-flight
-  // recognition + any orphan Blob URLs on unmount so the browser's "mic in
-  // use" indicator and the audio Blobs don't leak across navigations.
   useEffect(() => {
     const SR =
       (typeof window !== "undefined" &&
@@ -89,14 +112,11 @@ export default function SasquatchCoach() {
       null;
     if (!SR) setMicUnsupported(true);
     return () => {
-      try {
-        recognitionRef.current?.stop();
-      } catch {}
+      try { recognitionRef.current?.stop(); } catch {}
       recognitionRef.current = null;
-      try {
-        audioRef.current?.pause();
-      } catch {}
+      try { audioRef.current?.pause(); } catch {}
       audioRef.current = null;
+      setIsPlayingAudio(false);
       for (const u of blobUrlsRef.current) {
         try { URL.revokeObjectURL(u); } catch {}
       }
@@ -104,7 +124,6 @@ export default function SasquatchCoach() {
     };
   }, []);
 
-  // Pre-fill input from ?prompt= query param (e.g. arriving from book chapter CTAs).
   useEffect(() => {
     try {
       const params = new URLSearchParams(window.location.search);
@@ -123,12 +142,6 @@ export default function SasquatchCoach() {
         role: m.role === "coach" ? "assistant" : "user",
         content: m.content,
       }));
-      // Direct fetch (not apiRequest) so we can read the body on 401 — the
-      // anonymous gate returns 401 { requireAuth: true } which we render
-      // inline as a sign-in card, not as a thrown error.
-      // skipAudio: true — server returns text the instant Gemini finishes
-      // and we fetch the ElevenLabs voice in parallel via /api/coach/speak
-      // below. Drops perceived latency by the full TTS round-trip.
       const res = await fetch("/api/coach/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -151,9 +164,7 @@ export default function SasquatchCoach() {
           limit: json.limit as number,
         };
       }
-      if (!res.ok) {
-        throw new Error(json?.message || `${res.status}`);
-      }
+      if (!res.ok) throw new Error(json?.message || `${res.status}`);
       return json as {
         response: string;
         audioBase64?: string;
@@ -177,24 +188,13 @@ export default function SasquatchCoach() {
       };
       setMessages((prev) => [...prev, coachMsg]);
       if (data.anon) setAnonQuota(data.anon);
-      // Track free quota from server's quota field (present on every successful response).
       const q = (data as any).quota as { used: number; limit: number; premium: boolean } | undefined;
       if (q && !q.premium) setFreeQuota({ used: q.used, limit: q.limit });
-      // Never autoplay or fetch audio on crisis, sign-in-gate, or capped responses.
       if (data.crisis || data.requireAuth || (data as any).capped) return;
-      // Inline audio (legacy path) → just play.
       if (data.audioBase64 && audioEnabled) {
         playAudio(data.audioBase64);
         return;
       }
-      // Fast-path: text already on screen, kick off TTS in parallel and
-      // play it as soon as it lands. We deliberately don't try to stash
-      // the URL back onto the message for "Replay" — by the time the TTS
-      // resolves the user may have sent another turn and any index/id we
-      // recorded would race. The "Replay" affordance only renders when
-      // the server returned base64 inline (legacy/non-fast path).
-      // Voice is signed-in only (server enforces via isAuthenticated on
-      // /api/coach/speak); no point firing for anon users.
       if (audioEnabled && user) {
         fetch("/api/coach/speak", {
           method: "POST",
@@ -211,13 +211,15 @@ export default function SasquatchCoach() {
             if (audioRef.current) audioRef.current.pause();
             const audio = new Audio(url);
             audioRef.current = audio;
-            audio.play().catch(() => {});
+            setIsPlayingAudio(true);
             const cleanup = () => {
+              setIsPlayingAudio(false);
               try { URL.revokeObjectURL(url); } catch {}
               blobUrlsRef.current = blobUrlsRef.current.filter((u) => u !== url);
             };
             audio.onended = cleanup;
             audio.onerror = cleanup;
+            audio.play().catch(() => { setIsPlayingAudio(false); });
           })
           .catch(() => {});
       }
@@ -225,12 +227,13 @@ export default function SasquatchCoach() {
   });
 
   const playAudio = (base64: string) => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-    }
+    if (audioRef.current) audioRef.current.pause();
     const audio = new Audio(`data:audio/mpeg;base64,${base64}`);
     audioRef.current = audio;
-    audio.play().catch(() => {});
+    setIsPlayingAudio(true);
+    audio.onended = () => setIsPlayingAudio(false);
+    audio.onerror = () => setIsPlayingAudio(false);
+    audio.play().catch(() => setIsPlayingAudio(false));
   };
 
   const handleSend = () => {
@@ -253,16 +256,10 @@ export default function SasquatchCoach() {
     chatMutation.mutate(prompt);
   };
 
-  // Push-to-talk: tap to start, tap again to stop. On `result` we drop
-  // the transcript into the input box and auto-send so the survivor
-  // doesn't have to reach for the keyboard. All STT runs on-device via
-  // the browser's SpeechRecognition — no audio leaves the laptop.
   const startListening = () => {
     if (micUnsupported || isListening || chatMutation.isPending) return;
     if (!user && anonQuota && anonQuota.used >= anonQuota.limit) return;
-    const SR =
-      (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SR) return;
     const recognition = new SR();
     recognition.lang = "en-US";
@@ -279,9 +276,7 @@ export default function SasquatchCoach() {
       }
       setInput((finalTranscript + interim).trim());
     };
-    recognition.onerror = () => {
-      setIsListening(false);
-    };
+    recognition.onerror = () => setIsListening(false);
     recognition.onend = () => {
       setIsListening(false);
       const text = finalTranscript.trim();
@@ -293,22 +288,28 @@ export default function SasquatchCoach() {
     };
     recognitionRef.current = recognition;
     setIsListening(true);
-    try {
-      recognition.start();
-    } catch {
-      setIsListening(false);
-    }
+    try { recognition.start(); } catch { setIsListening(false); }
   };
 
   const stopListening = () => {
-    try {
-      recognitionRef.current?.stop();
-    } catch {}
+    try { recognitionRef.current?.stop(); } catch {}
     setIsListening(false);
   };
 
+  const streak = dashData?.streak?.currentStreak ?? 0;
+  const totalDays = dashData?.streak?.totalActiveDays ?? 0;
+  const lastWin = dashData?.todayCheckin?.winsToday ?? null;
+  const personaName = persona?.name || (user as any)?.firstName || (user as any)?.displayName || "Warrior";
+  const noUserMessages = messages.filter((m) => m.role === "user").length === 0;
+
+  const isCapped = messages.some((m) => m.capped);
+  const anonBlocked = !user && !!anonQuota && anonQuota.used >= anonQuota.limit;
+  const inputDisabled = chatMutation.isPending || isCapped || anonBlocked;
+  const remaining = freeQuota ? freeQuota.limit - freeQuota.used : null;
+  const nearLimit = remaining !== null && remaining <= 1 && remaining > 0;
+
   return (
-    <div className="min-h-screen bg-[#FDFBF7] flex flex-col">
+    <div className="flex flex-col overflow-hidden" style={{ position: "fixed", inset: 0, zIndex: 100, background: "#0F0D0B" }}>
       <RecoverySEO
         title="Online Stroke Recovery Coach — Sasquatch AI | Stroke Recovery Academy"
         description="Get a free online stroke recovery coach built by Nick Kremers, a 7-year stroke survivor. 3 free messages, no card. 24/7 accountability — no waiting list, no insurance."
@@ -320,384 +321,432 @@ export default function SasquatchCoach() {
           { name: "Online Stroke Recovery Coach", url: "/recovery/sasquatch-coach" },
         ]}
       />
-      <RecoveryHeader />
 
-      <main className="flex flex-col flex-1 max-w-3xl w-full mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-display text-[#1C1917]">Online Stroke Recovery Coach</h1>
-            <p className="text-sm text-[#78716C] mt-0.5">Sasquatch — trained on Nick Kremers' 7-year rebuild</p>
+      {/* ── Header ─────────────────────────────────────────────────────── */}
+      <header
+        className="flex items-center justify-between px-4 sm:px-6 py-3 border-b shrink-0 z-10"
+        style={{ background: "#1A1410", borderColor: "rgba(255,255,255,0.05)" }}
+      >
+        <div className="flex items-center gap-3 min-w-0">
+          <Link
+            href="/recovery/dashboard"
+            className="p-1.5 rounded-lg transition-colors shrink-0"
+            style={{ color: "rgba(255,255,255,0.3)" }}
+            data-testid="link-coach-back"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
+          <div className="w-8 h-8 rounded-full bg-[#C06B3E] flex items-center justify-center shrink-0">
+            <Flame className="h-4 w-4 text-black" />
           </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setAudioEnabled(!audioEnabled)}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-[#78716C] hover:text-[#1C1917] border border-[#E2C2A4]/30 hover:border-[#C06B3E]/30 transition-colors bg-white"
-              data-testid="button-toggle-audio"
-              title={audioEnabled ? "Mute voice" : "Enable voice"}
-            >
-              {audioEnabled ? (
-                <Volume2 className="h-4 w-4 text-[#C06B3E]" />
-              ) : (
-                <VolumeX className="h-4 w-4" />
-              )}
-              <span className="hidden sm:inline">{audioEnabled ? "Voice on" : "Voice off"}</span>
-            </button>
+          <div className="min-w-0">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[#C06B3E] font-bold leading-none">
+              Sasquatch Coach
+            </p>
+            <p className="text-[11px] truncate" style={{ color: "rgba(255,255,255,0.3)" }}>
+              trained on Nick Kremers' 7-year rebuild
+            </p>
           </div>
+          <WaveformBars active={isPlayingAudio} />
         </div>
 
-        {/* Messages */}
-        <div className="flex-1 space-y-4 mb-6 min-h-0">
-          {messages.map((msg, i) => (
-            <div
-              key={i}
-              className={`flex gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-              data-testid={`message-${msg.role}-${i}`}
-            >
-              {msg.role === "coach" && (
-                <div className="w-8 h-8 rounded-full bg-[#C06B3E]/10 border border-[#C06B3E]/30 flex items-center justify-center flex-shrink-0 mt-1">
-                  <Mic className="h-3.5 w-3.5 text-[#C06B3E]" />
-                </div>
-              )}
-              {msg.role === "coach" && msg.crisis && msg.crisisResources ? (
-                <div className="max-w-[90%] flex-1">
-                  <CrisisCard message={msg.content} resources={msg.crisisResources} />
-                </div>
-              ) : msg.role === "coach" && msg.capped ? (
-                /* ── Premium upgrade gate ── */
-                <div
-                  className="max-w-[90%] flex-1 rounded-2xl overflow-hidden border border-[#C06B3E]/40 bg-gradient-to-br from-[#FFF8F0] via-[#FFF5E8] to-[#FDFBF7] shadow-[0_4px_16px_rgba(192,107,62,0.08)]"
-                  data-testid="coach-upgrade-card"
-                >
-                  <div className="px-5 py-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Flame className="h-4 w-4 text-[#C06B3E]" />
-                      <span className="text-[10px] uppercase tracking-widest text-[#C06B3E] font-bold">Daily limit reached — {msg.cappedUsed}/{msg.cappedLimit} messages used</span>
-                    </div>
-                    <p className="text-sm text-[#1C1917] leading-relaxed mb-1">
-                      You've used all your free Coach messages for today.
-                    </p>
-                    <p className="text-xs text-[#A8A29E] leading-relaxed mb-4">
-                      Tomorrow you get {msg.cappedLimit} more — or go unlimited right now. Premium also unlocks daily AI accountability reports, voice cloning, and premium Campfire circles.
-                    </p>
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 mb-4">
-                      {[
-                        "Unlimited Coach messages",
-                        "Daily AI report from Sasquatch",
-                        "Survivor Voice Cloning",
-                        "Premium Campfire circles",
-                      ].map((f) => (
-                        <div key={f} className="flex items-center gap-1.5 text-xs text-[#78716C]">
-                          <Check className="h-3 w-3 text-[#C06B3E] flex-shrink-0" />
-                          <span>{f}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <p className="text-[11px] text-[#A8A29E] mb-3">7-day free trial · $19/mo or $190/yr · Cancel anytime</p>
-                    <div className="flex flex-wrap gap-2">
-                      <Button
-                        asChild
-                        size="sm"
-                        className="bg-[#C06B3E] text-black font-bold"
-                        data-testid="button-coach-start-trial"
-                      >
-                        <Link href="/recovery/premium">
-                          <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                          Start 7-day free trial
-                        </Link>
-                      </Button>
-                      <Button
-                        asChild
-                        size="sm"
-                        variant="outline"
-                        className="border-[#E2C2A4]/30 text-[#78716C] text-xs"
-                        data-testid="button-coach-see-premium"
-                      >
-                        <Link href="/recovery/premium">See what's included</Link>
-                      </Button>
-                    </div>
+        <button
+          onClick={() => setAudioEnabled(!audioEnabled)}
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition-colors shrink-0"
+          style={{
+            color: audioEnabled ? "#C06B3E" : "rgba(255,255,255,0.3)",
+            background: audioEnabled ? "rgba(192,107,62,0.12)" : "transparent",
+          }}
+          data-testid="button-toggle-audio"
+        >
+          {audioEnabled ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
+          <span className="hidden sm:inline">{audioEnabled ? "Voice on" : "Voice off"}</span>
+        </button>
+      </header>
+
+      {/* ── Body: chat + context panel ─────────────────────────────────── */}
+      <div className="flex-1 flex min-h-0">
+        {/* Chat column */}
+        <div className="flex-1 flex flex-col min-h-0">
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-5 space-y-5">
+            {messages.map((msg, i) => (
+              <div
+                key={i}
+                className={`flex gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                data-testid={`message-${msg.role}-${i}`}
+              >
+                {/* Coach avatar */}
+                {msg.role === "coach" && (
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 border"
+                    style={{ background: "rgba(192,107,62,0.15)", borderColor: "rgba(192,107,62,0.3)" }}
+                  >
+                    <Flame className="h-3.5 w-3.5 text-[#C06B3E]" />
                   </div>
-                </div>
-              ) : msg.role === "coach" && msg.requireAuth ? (
-                <div
-                  className="max-w-[90%] flex-1 rounded-2xl border border-[#C06B3E]/40 bg-gradient-to-br from-[#FFF8F0] to-[#FDFBF7] p-4 shadow-[0_4px_24px_rgba(192,107,62,0.08)]"
-                  data-testid="coach-signin-card"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-full bg-[#C06B3E]/15 border border-[#C06B3E]/40 flex items-center justify-center flex-shrink-0">
-                      <LogIn className="h-4 w-4 text-[#C06B3E]" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-[#1C1917] leading-relaxed mb-3">
-                        {msg.content}
+                )}
+
+                {/* Message content */}
+                {msg.role === "coach" && msg.crisis && msg.crisisResources ? (
+                  <div className="max-w-[90%] flex-1">
+                    <CrisisCard message={msg.content} resources={msg.crisisResources} />
+                  </div>
+                ) : msg.role === "coach" && msg.capped ? (
+                  <div
+                    className="max-w-[90%] flex-1 rounded-2xl overflow-hidden border"
+                    style={{ background: "linear-gradient(135deg,#2A1F14,#1A1410)", borderColor: "rgba(192,107,62,0.35)" }}
+                    data-testid="coach-upgrade-card"
+                  >
+                    <div className="px-5 py-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Flame className="h-4 w-4 text-[#C06B3E]" />
+                        <span className="text-[10px] uppercase tracking-widest text-[#C06B3E] font-bold">
+                          Daily limit — {msg.cappedUsed}/{msg.cappedLimit} messages used
+                        </span>
+                      </div>
+                      <p className="text-sm text-white/80 leading-relaxed mb-1">
+                        You've used all your free Coach messages for today.
                       </p>
-                      <p className="text-xs italic text-[#A8A29E] leading-relaxed mb-3">
-                        Built by a 7-year survivor — not textbook theory, lived experience and real feedback baked in. I learned from the doctors, experimented, failed, then recovered. I'll give you the blueprint. The work is on you.
+                      <p className="text-xs leading-relaxed mb-4" style={{ color: "rgba(255,255,255,0.35)" }}>
+                        Tomorrow you get {msg.cappedLimit} more — or go unlimited right now.
                       </p>
-                      <p className="text-xs text-[#A8A29E] leading-relaxed mb-3">
-                        Sign in unlocks <span className="text-[#C06B3E] font-semibold">Sasquatch's actual voice replies</span>, <span className="text-[#C06B3E] font-semibold">push-to-talk</span> so you can speak instead of type, <span className="text-[#C06B3E] font-semibold">unlimited Coach turns</span>, and a thread that resumes where you left off. 7 days free, then cancel anytime — no card needed to start.
-                      </p>
-                      <p className="text-xs italic text-[#C06B3E]/80 mb-3">
-                        Sasquatch has your back. Heart still thumpin', life's still pumpin'.
-                      </p>
+                      <div className="grid grid-cols-2 gap-2 mb-4">
+                        {["Unlimited Coach messages", "Daily AI report from Sasquatch", "Survivor Voice Cloning", "Premium Campfire circles"].map((f) => (
+                          <div key={f} className="flex items-center gap-1.5 text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
+                            <Check className="h-3 w-3 text-[#C06B3E] shrink-0" />
+                            <span>{f}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-[11px] mb-3" style={{ color: "rgba(255,255,255,0.3)" }}>7-day free trial · $19/mo or $190/yr · Cancel anytime</p>
                       <div className="flex flex-wrap gap-2">
-                        <Button
-                          asChild
-                          size="sm"
-                          className="bg-[#C06B3E] hover:bg-[#A85B33] text-white font-semibold rounded-full shadow-md"
-                          data-testid="button-coach-signin"
-                        >
-                          <a href="/api/login">
-                            <LogIn className="h-3.5 w-3.5 mr-1.5" />
-                            Sign in free
-                          </a>
-                        </Button>
-                        <Button
-                          asChild
-                          size="sm"
-                          variant="outline"
-                          className="border-[#C06B3E]/40 text-[#C06B3E] hover:bg-[#C06B3E]/10 bg-white"
-                          data-testid="button-coach-premium"
-                        >
+                        <Button asChild size="sm" className="bg-[#C06B3E] text-black font-bold" data-testid="button-coach-start-trial">
                           <Link href="/recovery/premium">
                             <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                            See Premium
+                            Start 7-day free trial
                           </Link>
+                        </Button>
+                        <Button asChild size="sm" variant="outline" className="text-xs border-white/10 text-white/50" data-testid="button-coach-see-premium">
+                          <Link href="/recovery/premium">See what's included</Link>
                         </Button>
                       </div>
                     </div>
                   </div>
-                </div>
-              ) : (
-                <div
-                  className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-[0_1px_3px_rgba(0,0,0,0.04)] ${
-                    msg.role === "user"
-                      ? "bg-[#C06B3E] text-white font-medium rounded-tr-sm"
-                      : "bg-white text-[#1C1917] border border-[#E2C2A4]/30 rounded-tl-sm"
-                  }`}
-                >
-                  {msg.content}
-                  {msg.role === "coach" && msg.audioBase64 && audioEnabled && (
-                    <button
-                      className="mt-2 flex items-center gap-1 text-xs text-[#C06B3E] opacity-60 hover:opacity-100 transition-opacity"
-                      onClick={() => playAudio(msg.audioBase64!)}
-                      data-testid={`button-replay-audio-${i}`}
-                    >
-                      <Volume2 className="h-3 w-3" /> Replay
-                    </button>
-                  )}
-                </div>
-              )}
-              {msg.role === "user" && (
-                <div
-                  className="w-8 h-8 rounded-full bg-[#F5F0EB] flex items-center justify-center flex-shrink-0 mt-1 text-xs font-bold border"
-                  style={{
-                    color: persona ? safeAccent : "#1C1917",
-                    borderColor: persona ? `${safeAccent}55` : "#E2C2A430",
-                  }}
-                  data-testid="avatar-coach-user"
-                >
-                  {(persona?.name?.[0] || (user as any)?.firstName?.[0] || "Y").toUpperCase()}
-                </div>
-              )}
-            </div>
-          ))}
+                ) : msg.role === "coach" && msg.requireAuth ? (
+                  <div
+                    className="max-w-[90%] flex-1 rounded-2xl border p-4"
+                    style={{ background: "linear-gradient(135deg,#2A1F14,#1A1410)", borderColor: "rgba(192,107,62,0.35)" }}
+                    data-testid="coach-signin-card"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 border" style={{ background: "rgba(192,107,62,0.15)", borderColor: "rgba(192,107,62,0.4)" }}>
+                        <LogIn className="h-4 w-4 text-[#C06B3E]" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-white/80 leading-relaxed mb-3">{msg.content}</p>
+                        <p className="text-xs italic leading-relaxed mb-3" style={{ color: "rgba(255,255,255,0.35)" }}>
+                          Built by a 7-year survivor — not textbook theory, lived experience baked in.
+                        </p>
+                        <p className="text-xs leading-relaxed mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>
+                          Sign in unlocks <span className="text-[#C06B3E] font-semibold">Sasquatch's voice replies</span>, <span className="text-[#C06B3E] font-semibold">push-to-talk</span>, and <span className="text-[#C06B3E] font-semibold">unlimited turns</span>.
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          <Button asChild size="sm" className="bg-[#C06B3E] text-black font-semibold" data-testid="button-coach-signin">
+                            <a href="/api/login">
+                              <LogIn className="h-3.5 w-3.5 mr-1.5" />
+                              Sign in free
+                            </a>
+                          </Button>
+                          <Button asChild size="sm" variant="outline" className="border-white/10 text-white/50" data-testid="button-coach-premium">
+                            <Link href="/recovery/premium">
+                              <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                              See Premium
+                            </Link>
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                      msg.role === "user"
+                        ? "rounded-tr-sm text-black font-medium"
+                        : "rounded-tl-sm"
+                    }`}
+                    style={
+                      msg.role === "user"
+                        ? { background: "#C06B3E", color: "#000" }
+                        : { background: "#2A2118", color: "rgba(253,251,247,0.9)", border: "1px solid rgba(255,255,255,0.06)" }
+                    }
+                  >
+                    {msg.content}
+                    {msg.role === "coach" && msg.audioBase64 && audioEnabled && (
+                      <button
+                        className="mt-2 flex items-center gap-1 text-xs opacity-50 hover:opacity-90 transition-opacity"
+                        style={{ color: "#C06B3E" }}
+                        onClick={() => playAudio(msg.audioBase64!)}
+                        data-testid={`button-replay-audio-${i}`}
+                      >
+                        <Volume2 className="h-3 w-3" /> Replay
+                      </button>
+                    )}
+                  </div>
+                )}
 
-          {chatMutation.isPending && (
-            <div className="flex gap-3 justify-start" data-testid="coach-typing">
-              <div className="w-8 h-8 rounded-full bg-[#C06B3E]/10 border border-[#C06B3E]/30 flex items-center justify-center flex-shrink-0 mt-1">
-                <Mic className="h-3.5 w-3.5 text-[#C06B3E]" />
+                {/* User avatar */}
+                {msg.role === "user" && (
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-bold border"
+                    style={{
+                      background: "rgba(192,107,62,0.15)",
+                      borderColor: persona ? `${safeAccent}55` : "rgba(192,107,62,0.3)",
+                      color: persona ? safeAccent : "#C06B3E",
+                    }}
+                    data-testid="avatar-coach-user"
+                  >
+                    {(persona?.name?.[0] || (user as any)?.firstName?.[0] || "Y").toUpperCase()}
+                  </div>
+                )}
               </div>
-              <div className="bg-white border border-[#E2C2A4]/30 rounded-2xl rounded-tl-sm px-4 py-3 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-                <div className="flex gap-1.5 items-center h-4">
-                  <span className="w-1.5 h-1.5 bg-[#C06B3E]/60 rounded-full animate-bounce [animation-delay:0ms]" />
-                  <span className="w-1.5 h-1.5 bg-[#C06B3E]/60 rounded-full animate-bounce [animation-delay:150ms]" />
-                  <span className="w-1.5 h-1.5 bg-[#C06B3E]/60 rounded-full animate-bounce [animation-delay:300ms]" />
+            ))}
+
+            {chatMutation.isPending && (
+              <div className="flex gap-3 justify-start" data-testid="coach-typing">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 border" style={{ background: "rgba(192,107,62,0.15)", borderColor: "rgba(192,107,62,0.3)" }}>
+                  <Flame className="h-3.5 w-3.5 text-[#C06B3E]" />
                 </div>
+                <div className="rounded-2xl rounded-tl-sm px-4 py-3" style={{ background: "#2A2118", border: "1px solid rgba(255,255,255,0.06)" }}>
+                  <div className="flex gap-1.5 items-center h-4">
+                    {[0, 150, 300].map((delay) => (
+                      <span key={delay} className="w-1.5 h-1.5 rounded-full bg-[#C06B3E]/60 animate-bounce" style={{ animationDelay: `${delay}ms` }} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+            <div ref={bottomRef} />
+          </div>
+
+          {/* Starter prompts — shown before first user message */}
+          {noUserMessages && (
+            <div className="px-4 sm:px-6 pb-3 space-y-3">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-[#C06B3E] mb-2">Jump straight to action</p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  {[
+                    { href: "/recovery/today", icon: Flame, label: "What should I do today?", sub: "Open The Bonfire", testId: "coach-quick-today" },
+                    { href: "/recovery/motivation", icon: Sparkles, label: "I need a fire-up", sub: "Motivation Studio", testId: "coach-quick-motivation" },
+                    { href: "/recovery/shop", icon: ShoppingBag, label: "Gear that helped me", sub: "Survivor Shop", testId: "coach-quick-shop" },
+                  ].map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="flex items-center gap-2 px-3 py-2.5 rounded-md border text-left transition-colors hover-elevate"
+                      style={{ borderColor: "rgba(192,107,62,0.25)", background: "rgba(192,107,62,0.04)" }}
+                      data-testid={item.testId}
+                    >
+                      <item.icon className="h-4 w-4 text-[#C06B3E] shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold" style={{ color: "rgba(253,251,247,0.85)" }}>{item.label}</p>
+                        <p className="text-[11px] truncate" style={{ color: "rgba(255,255,255,0.35)" }}>{item.sub}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {STARTER_PROMPTS.map((prompt) => (
+                  <button
+                    key={prompt}
+                    onClick={() => handleStarter(prompt)}
+                    disabled={chatMutation.isPending}
+                    className="text-left px-4 py-3 rounded-xl border text-sm transition-all disabled:opacity-40"
+                    style={{ borderColor: "rgba(255,255,255,0.07)", background: "rgba(255,255,255,0.03)", color: "rgba(255,255,255,0.5)" }}
+                    data-testid={`starter-prompt-${prompt.slice(0, 20).replace(/\s/g, "-")}`}
+                  >
+                    {prompt}
+                  </button>
+                ))}
+              </div>
+              <div>
+                <RecommendationCards surface="coach" />
               </div>
             </div>
           )}
-          <div ref={bottomRef} />
-        </div>
 
-        {/* Quick actions + starter prompts — only shown before first user message */}
-        {messages.filter((m) => m.role === "user").length === 0 && (
-          <>
-            <div className="mb-3">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-[#C06B3E] mb-2">Jump straight to action</p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <Link
-                  href="/recovery/today"
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-md border border-[#C06B3E]/30 bg-white hover-elevate text-left"
-                  data-testid="coach-quick-today"
-                >
-                  <Flame className="h-4 w-4 text-[#C06B3E] flex-shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-xs font-semibold text-[#1C1917]">What should I do today?</p>
-                    <p className="text-[11px] text-[#78716C] truncate">Open The Bonfire</p>
-                  </div>
-                </Link>
-                <Link
-                  href="/recovery/motivation"
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-md border border-[#C06B3E]/30 bg-white hover-elevate text-left shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
-                  data-testid="coach-quick-motivation"
-                >
-                  <Sparkles className="h-4 w-4 text-[#C06B3E] flex-shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-xs font-semibold text-[#1C1917]">I need a fire-up</p>
-                    <p className="text-[11px] text-[#78716C] truncate">Motivation Studio</p>
-                  </div>
-                </Link>
-                <Link
-                  href="/recovery/shop"
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-md border border-[#C06B3E]/30 bg-white hover-elevate text-left shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
-                  data-testid="coach-quick-shop"
-                >
-                  <ShoppingBag className="h-4 w-4 text-[#C06B3E] flex-shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-xs font-semibold text-[#1C1917]">Gear that helped me</p>
-                    <p className="text-[11px] text-[#78716C] truncate">Survivor Shop</p>
-                  </div>
-                </Link>
-              </div>
-            </div>
-          <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {STARTER_PROMPTS.map((prompt) => (
-              <button
-                key={prompt}
-                onClick={() => handleStarter(prompt)}
-                disabled={chatMutation.isPending}
-                className="text-left px-4 py-3 rounded-xl border border-[#E2C2A4]/30 text-sm text-[#78716C] hover:text-[#1C1917] hover:border-[#C06B3E]/40 transition-all bg-white disabled:opacity-40 shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(192,107,62,0.08)]"
-                data-testid={`starter-prompt-${prompt.slice(0, 20).replace(/\s/g, "-")}`}
-              >
-                {prompt}
-              </button>
-            ))}
-          </div>
-          {/* Further reading — Gemini-curated Nick quote + deep link.
-              Sits after the primary "Quick actions" + starter prompts so
-              it never competes with them as a primary CTA. */}
-          <div className="mb-4">
-            <RecommendationCards surface="coach" />
-          </div>
-          </>
-        )}
-
-        {/* Input */}
-        {/* isCapped: any message in the thread is the cap card → block input until tomorrow or upgrade */}
-        {(() => {
-          const isCapped = messages.some((m) => m.capped);
-          const anonBlocked = !user && !!anonQuota && anonQuota.used >= anonQuota.limit;
-          const inputDisabled = chatMutation.isPending || isCapped || anonBlocked;
-          const remaining = freeQuota ? freeQuota.limit - freeQuota.used : null;
-          const nearLimit = remaining !== null && remaining <= 1 && remaining > 0;
-
-          return (
-            <>
-              <div className="flex gap-3 items-end">
-                <Textarea
-                  ref={textareaRef}
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={handleKey}
-                  placeholder={
-                    isCapped
-                      ? "Daily limit reached — upgrade for unlimited →"
-                      : anonBlocked
-                      ? "Sign in to keep talking with Sasquatch..."
-                      : isListening
-                      ? "Listening — speak naturally, tap mic to stop..."
-                      : "Tell the coach what's going on, or tap the mic to talk..."
-                  }
-                  className="resize-none bg-white border-[#E2C2A4]/30 text-[#1C1917] shadow-[0_1px_3px_rgba(0,0,0,0.04)] placeholder:text-[#A8A29E] focus-visible:ring-[#C06B3E]/30 focus-visible:border-[#C06B3E]/40 min-h-[52px] max-h-32"
-                  rows={1}
-                  disabled={inputDisabled}
-                  data-testid="input-chat-message"
-                />
-                {!micUnsupported && (
-                  <Button
-                    onClick={isListening ? stopListening : startListening}
-                    disabled={inputDisabled}
-                    variant={isListening ? "default" : "outline"}
-                    className={
-                      isListening
-                        ? "bg-[#C06B3E] text-white hover:bg-[#A85B33] flex-shrink-0 animate-pulse shadow-md"
-                        : "border-[#E2C2A4]/30 text-[#C06B3E] hover:bg-[#C06B3E]/10 flex-shrink-0"
-                    }
-                    title={isListening ? "Tap to stop" : "Push to talk"}
-                    data-testid="button-mic-toggle"
-                  >
-                    {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                  </Button>
-                )}
+          {/* Input bar */}
+          <div className="border-t px-4 sm:px-6 py-3 shrink-0" style={{ background: "#1A1410", borderColor: "rgba(255,255,255,0.05)" }}>
+            <div className="flex gap-2 items-end">
+              <Textarea
+                ref={textareaRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKey}
+                placeholder={
+                  isCapped
+                    ? "Daily limit reached — upgrade for unlimited →"
+                    : anonBlocked
+                    ? "Sign in to keep talking with Sasquatch..."
+                    : isListening
+                    ? "Listening — speak naturally..."
+                    : "Tell the coach what's going on, or tap the mic..."
+                }
+                className="resize-none min-h-[48px] max-h-32 text-sm border"
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  borderColor: "rgba(255,255,255,0.08)",
+                  color: "rgba(253,251,247,0.9)",
+                  caretColor: "#C06B3E",
+                }}
+                rows={1}
+                disabled={inputDisabled}
+                data-testid="input-chat-message"
+              />
+              {!micUnsupported && (
                 <Button
-                  onClick={handleSend}
-                  disabled={!input.trim() || inputDisabled}
-                  className="bg-[#C06B3E] text-white hover:bg-[#A85B33] flex-shrink-0 shadow-md"
-                  data-testid="button-send-message"
+                  onClick={isListening ? stopListening : startListening}
+                  disabled={inputDisabled}
+                  size="icon"
+                  variant={isListening ? "default" : "outline"}
+                  className={isListening ? "bg-[#C06B3E] text-black shrink-0 animate-pulse" : "shrink-0 border-white/10 text-white/40"}
+                  title={isListening ? "Tap to stop" : "Push to talk"}
+                  data-testid="button-mic-toggle"
                 >
-                  {chatMutation.isPending ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Send className="h-4 w-4" />
-                  )}
+                  {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                 </Button>
-              </div>
+              )}
+              <Button
+                onClick={handleSend}
+                disabled={!input.trim() || inputDisabled}
+                size="icon"
+                className="bg-[#C06B3E] text-black shrink-0 disabled:opacity-30"
+                data-testid="button-send-message"
+              >
+                {chatMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+              </Button>
+            </div>
 
-              {/* Anon quota counter — show from first visit, not just after first send */}
-              {!user && (
-                <p className="text-xs text-center text-[#C06B3E]/70 mt-2" data-testid="text-anon-quota">
+            <div className="mt-2 flex items-center justify-between gap-3">
+              {!user ? (
+                <p className="text-xs" style={{ color: "rgba(192,107,62,0.65)" }} data-testid="text-anon-quota">
                   {anonQuota
                     ? `${anonQuota.limit - anonQuota.used} of ${anonQuota.limit} free messages left.`
                     : "3 free messages — no sign-up needed."}{" "}
-                  <a href="/api/login" className="underline hover:text-[#C06B3E]" data-testid="link-anon-signin">
-                    Sign in free
-                  </a>{" "}
-                  for voice + more turns.
+                  <a href="/api/login" className="underline" data-testid="link-anon-signin">Sign in free</a> for voice + more.
                 </p>
-              )}
-
-              {/* Signed-in free user quota counter */}
-              {user && freeQuota && !isCapped && (
-                <p
-                  className={`text-xs text-center mt-2 transition-colors ${nearLimit ? "text-[#C06B3E]" : "text-[#A8A29E]"}`}
-                  data-testid="text-free-quota"
-                >
+              ) : freeQuota && !isCapped ? (
+                <p className={`text-xs ${nearLimit ? "text-[#C06B3E]" : ""}` } style={nearLimit ? undefined : { color: "rgba(255,255,255,0.25)" }} data-testid="text-free-quota">
                   {nearLimit ? (
-                    <>
-                      <span className="font-semibold">1 free message left today.</span>{" "}
-                      <Link href="/recovery/premium" className="underline hover:text-[#C06B3E]">
-                        Upgrade for unlimited →
-                      </Link>
-                    </>
+                    <><span className="font-semibold">1 free message left today.</span>{" "}<Link href="/recovery/premium" className="underline">Upgrade →</Link></>
                   ) : (
-                    <>
-                      {freeQuota.limit - freeQuota.used} of {freeQuota.limit} free messages left today.{" "}
-                      <Link href="/recovery/premium" className="text-[#C06B3E]/60 hover:text-[#C06B3E] underline">
-                        Go unlimited →
-                      </Link>
-                    </>
+                    <>{freeQuota.limit - freeQuota.used} of {freeQuota.limit} free messages today.{" "}<Link href="/recovery/premium" className="underline" style={{ color: "rgba(192,107,62,0.5)" }}>Go unlimited →</Link></>
                   )}
                 </p>
-              )}
-
-              {/* Capped state — upgrade prompt replaces disclaimer */}
-              {isCapped ? (
-                <p className="text-xs text-center mt-2">
+              ) : isCapped ? (
+                <p className="text-xs">
                   <Link href="/recovery/premium" className="text-[#C06B3E] font-semibold underline" data-testid="link-capped-upgrade">
                     Start 7-day free trial — unlock unlimited Coach →
                   </Link>
                 </p>
               ) : (
-                <p className="text-xs text-center text-[#A8A29E] mt-3">
-                  Sasquatch Coach is an AI trained on Nick's recovery methodology — not a substitute for medical advice.
+                <p className="text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>
+                  Not a substitute for medical advice.
                 </p>
               )}
-            </>
-          );
-        })()}
-      </main>
-      <Footer />
+            </div>
+          </div>
+        </div>
+
+        {/* ── "Sasquatch Knows" context panel ────────────────────────── */}
+        <aside
+          className="hidden xl:flex w-72 flex-col border-l overflow-y-auto shrink-0"
+          style={{ background: "#141210", borderColor: "rgba(255,255,255,0.05)" }}
+        >
+          <div className="p-5">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[#C06B3E] font-bold mb-5">Sasquatch Knows</p>
+
+            {user ? (
+              <>
+                {/* Identity */}
+                <div className="mb-5">
+                  <p className="text-lg font-bold text-white/90 leading-tight">{personaName}</p>
+                  {persona?.creed && (
+                    <p className="text-xs italic mt-1 leading-relaxed" style={{ color: "rgba(255,255,255,0.35)" }}>
+                      "{persona.creed}"
+                    </p>
+                  )}
+                </div>
+
+                {/* Stats grid */}
+                <div className="grid grid-cols-2 gap-2 mb-5">
+                  <div className="rounded-lg p-3" style={{ background: "rgba(255,255,255,0.04)" }}>
+                    <p className="text-[9px] uppercase tracking-widest mb-1" style={{ color: "rgba(255,255,255,0.3)" }}>Streak</p>
+                    <p className="text-2xl font-bold text-[#C06B3E] leading-none">{streak}</p>
+                    <p className="text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.25)" }}>days</p>
+                  </div>
+                  <div className="rounded-lg p-3" style={{ background: "rgba(255,255,255,0.04)" }}>
+                    <p className="text-[9px] uppercase tracking-widest mb-1" style={{ color: "rgba(255,255,255,0.3)" }}>Active days</p>
+                    <p className="text-2xl font-bold leading-none" style={{ color: "rgba(255,255,255,0.6)" }}>{totalDays}</p>
+                    <p className="text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.25)" }}>total</p>
+                  </div>
+                </div>
+
+                {/* Last win */}
+                {lastWin && (
+                  <div className="rounded-lg p-3 mb-5" style={{ background: "rgba(255,255,255,0.04)", borderLeft: "2px solid rgba(192,107,62,0.4)" }}>
+                    <p className="text-[9px] uppercase tracking-widest mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Today's win</p>
+                    <p className="text-xs leading-relaxed" style={{ color: "rgba(253,251,247,0.75)" }}>"{lastWin}"</p>
+                  </div>
+                )}
+
+                {/* Divider */}
+                <div className="border-t mb-4" style={{ borderColor: "rgba(255,255,255,0.05)" }} />
+
+                {/* Quick nav */}
+                <div className="space-y-1">
+                  {[
+                    { href: "/recovery/dashboard", Icon: TrendingUp, label: "Dashboard" },
+                    { href: "/recovery/today", Icon: Zap, label: "Daily reps" },
+                    { href: "/recovery/community", Icon: Users, label: "Your squad" },
+                    { href: "/recovery/premium", Icon: Sparkles, label: "Premium" },
+                  ].map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs transition-colors hover-elevate"
+                      style={{ color: "rgba(255,255,255,0.4)" }}
+                    >
+                      <item.Icon className="h-3.5 w-3.5 shrink-0" />
+                      {item.label}
+                      <ChevronRight className="h-3 w-3 ml-auto opacity-40" />
+                    </Link>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-8">
+                <div className="w-12 h-12 rounded-full bg-[#C06B3E]/15 flex items-center justify-center mx-auto mb-3">
+                  <Flame className="h-5 w-5 text-[#C06B3E]" />
+                </div>
+                <p className="text-sm mb-1 font-semibold" style={{ color: "rgba(255,255,255,0.7)" }}>
+                  Sign in so Sasquatch knows who you are.
+                </p>
+                <p className="text-xs mb-4 leading-relaxed" style={{ color: "rgba(255,255,255,0.3)" }}>
+                  Your streak, wins, and profile give Sasquatch the context to coach you right.
+                </p>
+                <a
+                  href="/api/login"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#C06B3E] text-black text-xs font-semibold"
+                >
+                  <LogIn className="h-3.5 w-3.5" />
+                  Sign in free
+                </a>
+              </div>
+            )}
+          </div>
+        </aside>
+      </div>
     </div>
   );
 }
