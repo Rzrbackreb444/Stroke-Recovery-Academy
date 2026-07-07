@@ -54,7 +54,7 @@ export default function SEO({
 }: SEOProps) {
   const fullTitle = title
     ? `${title} | ${SITE_NAME}`
-    : `${SITE_NAME} | AI-Powered Creator Studio`;
+    : `${SITE_NAME} | Survivor-Built Stroke Recovery Platform`;
   
   const finalCanonicalUrl = canonicalUrl
     ? canonicalUrl.startsWith("http") 
@@ -126,23 +126,38 @@ export default function SEO({
     : ["AI Content Creation", "Digital Publishing", "Book Writing", "Video Production", "Music Composition"];
 
   const organizationSchema = {
-    "@type": "Organization",
+    "@type": "MedicalOrganization",
+    "@id": `${BASE_URL}/#organization`,
     name: SITE_NAME,
     url: BASE_URL,
-    logo: `${BASE_URL}/logo.png`,
+    logo: {
+      "@type": "ImageObject",
+      url: `${BASE_URL}/images/stroke-recovery-academy-logo.png`,
+    },
     sameAs: [
-      "https://twitter.com/strokerecoveryacademy",
-      "https://linkedin.com/company/stroke-recovery-academy"
+      "https://www.tiktok.com/@nickkremers",
+      "https://www.facebook.com/strokerecoveryacademy",
+      "https://twitter.com/strokerecovery",
+      "https://www.youtube.com/@strokerecoveryacademy",
     ],
     contactPoint: {
       "@type": "ContactPoint",
-      contactType: "customer service",
-      availableLanguage: ["English"]
+      contactType: "customer support",
+      email: "info@strokerecoveryacademy.com",
+      availableLanguage: ["English"],
     },
-    foundingDate: "2024",
-    description: "AI-powered creator platform with 7 professional studios",
-    knowsAbout: expertiseArray,
-    slogan: "Create. Publish. Earn.",
+    foundingDate: "2023",
+    description: "Stroke Recovery Academy is a survivor-built platform offering evidence-based stroke rehabilitation protocols, AI-powered coaching, a 66-day recovery challenge, and a global survivor community. Founded by Nick Kremers, 7-year stroke survivor.",
+    knowsAbout: expertiseArray.length > 0 && expertiseArray[0] !== "AI Content Creation"
+      ? expertiseArray
+      : ["Stroke recovery", "Neuroplasticity", "Physical therapy for stroke", "Cognitive rehabilitation", "Post-stroke depression management", "Stroke survivor mindset"],
+    slogan: "Never Zero. Always Forward.",
+    founder: {
+      "@type": "Person",
+      name: "Nick Kremers",
+      url: `${BASE_URL}/recovery/about-nick`,
+      description: "7-year stroke survivor, founder, author",
+    },
     ...(authoritativeness && { authoritativeness }),
     ...(trustworthiness && { trustworthiness }),
     ...(experience && { experience })
