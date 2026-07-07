@@ -885,6 +885,16 @@ export default function RecoveryPremium() {
       />
       <RecoveryHeader />
 
+      {/* ── Tier nav ──────────────────────────────────────────────────────── */}
+      <div className="bg-[#1C1917] border-b border-[#2A2421]">
+        <div className="max-w-5xl mx-auto px-4 py-4 flex flex-wrap items-center justify-center gap-3 text-sm">
+          <a href="/recovery/premium" className="px-4 py-2 rounded-full bg-[#C06B3E] text-white font-semibold text-xs uppercase tracking-wider" data-testid="tab-solo">Solo — $19/mo</a>
+          <a href="/recovery/premium?squad=waitlist" className="px-4 py-2 rounded-full bg-[#2A2421] text-[#FDFBF7]/60 font-semibold text-xs uppercase tracking-wider hover:bg-[#3A3230] transition-colors" data-testid="tab-squad">Squad — $59/mo <span className="ml-1.5 bg-[#3A3230] text-[#FDFBF7]/40 text-[10px] px-1.5 py-0.5 rounded-full">Soon</span></a>
+          <a href="/recovery/coaching-with-nick" className="px-4 py-2 rounded-full bg-[#2A2421] text-[#FDFBF7]/60 font-semibold text-xs uppercase tracking-wider hover:bg-[#3A3230] transition-colors" data-testid="tab-nick">1:1 with Nick — $350/session</a>
+          <a href="/partners" className="px-4 py-2 rounded-full bg-[#2A2421] text-[#FDFBF7]/60 font-semibold text-xs uppercase tracking-wider hover:bg-[#3A3230] transition-colors" data-testid="tab-partners">Rehab Partners</a>
+        </div>
+      </div>
+
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-[#C06B3E]/5 via-[#FDFBF7] to-[#FDFBF7] pointer-events-none" />

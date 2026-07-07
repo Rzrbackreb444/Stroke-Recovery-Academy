@@ -213,6 +213,8 @@ const TodayAnchor = lazy(() => import("@/pages/TodayAnchor"));
 const AnchorShare = lazy(() => import("@/pages/AnchorShare"));
 const RecoveryPricing = lazy(() => import("@/pages/RecoveryPricing"));
 const GiftSurvivor = lazy(() => import("@/pages/GiftSurvivor"));
+const CoachingWithNick = lazy(() => import("@/pages/CoachingWithNick"));
+const Partners = lazy(() => import("@/pages/Partners"));
 const CoursePlayer = lazy(() => import("@/pages/CoursePlayer"));
 const InstructorAnalytics = lazy(() => import("@/pages/InstructorAnalytics"));
 const TherapistHoursSettings = lazy(() => import("@/pages/TherapistHoursSettings"));
@@ -788,6 +790,8 @@ function Router() {
       <Route path="/recovery/pricing"><Redirect to="/recovery/premium" /></Route>
       <Route path="/recovery/about-nick" component={AboutNick} />
       <Route path="/recovery/gift" component={GiftSurvivor} />
+      <Route path="/recovery/coaching-with-nick" component={CoachingWithNick} />
+      <Route path="/partners" component={Partners} />
       
       {/* Course Learning Pages */}
       <Route path="/course/:courseId" component={CoursePlayer} />
