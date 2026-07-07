@@ -27,6 +27,9 @@ import {
   Star,
   Check,
   X as XIcon,
+  Building2,
+  Mail,
+  UserPlus,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
@@ -772,6 +775,106 @@ function AnalyticsTab() {
   );
 }
 
+const STATUS_COLORS: Record<string, string> = {
+  new: "bg-blue-100 text-blue-800",
+  contacted: "bg-yellow-100 text-yellow-800",
+  active: "bg-green-100 text-green-800",
+  closed: "bg-gray-100 text-gray-600",
+};
+
+function LeadsTab() {
+  const { toast } = useToast();
+  const partnerQuery = useQuery<any[]>({ queryKey: ["/api/admin/partners/inquiries"] });
+  const waitlistQuery = useQuery<any[]>({ queryKey: ["/api/admin/squad-waitlist"] });
+
+  const statusMut = useMutation({
+    mutationFn: async ({ id, status }: { id: number; status: string }) => {
+      const res = await apiRequest("PATCH", `/api/admin/partners/inquiries/${id}/status`, { status });
+      if (!res.ok) throw new Error("Failed");
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/admin/partners/inquiries"] }),
+    onError: () => toast({ title: "Failed to update status", variant: "destructive" }),
+  });
+
+  return (
+    <div className="space-y-8">
+      {/* Partner Inquiries */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Building2 className="w-5 h-5" /> Partner Inquiries
+            <Badge variant="secondary" className="ml-auto">{partnerQuery.data?.length ?? 0}</Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {partnerQuery.isLoading ? (
+            <div className="flex items-center justify-center h-24"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>
+          ) : !partnerQuery.data?.length ? (
+            <p className="text-sm text-muted-foreground text-center py-8">No partner inquiries yet.</p>
+          ) : (
+            <div className="space-y-3">
+              {partnerQuery.data.map((row: any) => (
+                <div key={row.id} className="border rounded-lg p-4 space-y-2">
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <div>
+                      <p className="font-semibold text-sm">{row.name} — {row.facility}</p>
+                      <p className="text-xs text-muted-foreground">{row.email} {row.role ? `· ${row.role}` : ""}</p>
+                    </div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {row.partnership_type && <Badge variant="outline" className="text-xs">{row.partnership_type}</Badge>}
+                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${STATUS_COLORS[row.status] ?? STATUS_COLORS.new}`}>{row.status}</span>
+                      {["new","contacted","active","closed"].map((s) => (
+                        <button
+                          key={s}
+                          onClick={() => statusMut.mutate({ id: row.id, status: s })}
+                          disabled={row.status === s || statusMut.isPending}
+                          className={`text-[10px] px-2 py-0.5 rounded border transition-colors ${row.status === s ? "bg-muted text-muted-foreground border-transparent" : "hover:bg-muted border-border"}`}
+                          data-testid={`button-status-${row.id}-${s}`}
+                        >{s}</button>
+                      ))}
+                    </div>
+                  </div>
+                  {row.message && <p className="text-xs text-muted-foreground leading-relaxed border-t pt-2 mt-2">{row.message}</p>}
+                  <p className="text-[10px] text-muted-foreground">{new Date(row.created_at).toLocaleString()}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Squad Waitlist */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <UserPlus className="w-5 h-5" /> Squad Waitlist
+            <Badge variant="secondary" className="ml-auto">{waitlistQuery.data?.length ?? 0}</Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {waitlistQuery.isLoading ? (
+            <div className="flex items-center justify-center h-24"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>
+          ) : !waitlistQuery.data?.length ? (
+            <p className="text-sm text-muted-foreground text-center py-8">No waitlist signups yet.</p>
+          ) : (
+            <div className="divide-y">
+              {waitlistQuery.data.map((row: any) => (
+                <div key={row.id} className="py-3 flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-medium">{row.name || <span className="text-muted-foreground italic">unnamed</span>}</p>
+                    <p className="text-xs text-muted-foreground flex items-center gap-1"><Mail className="w-3 h-3" /> {row.email}</p>
+                  </div>
+                  <p className="text-xs text-muted-foreground shrink-0">{new Date(row.created_at).toLocaleDateString()}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 export default function AdminPanel() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
@@ -831,13 +934,14 @@ export default function AdminPanel() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-6 mb-6">
+          <TabsList className="grid w-full grid-cols-7 mb-6">
             <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
             <TabsTrigger value="analytics" data-testid="tab-analytics">Analytics</TabsTrigger>
             <TabsTrigger value="revenue" data-testid="tab-revenue">Revenue</TabsTrigger>
             <TabsTrigger value="credits" data-testid="tab-credits">Credits</TabsTrigger>
             <TabsTrigger value="users" data-testid="tab-users">Users</TabsTrigger>
             <TabsTrigger value="spotlight" data-testid="tab-spotlight">Spotlight</TabsTrigger>
+            <TabsTrigger value="leads" data-testid="tab-leads">Leads</TabsTrigger>
           </TabsList>
 
           <TabsContent value="analytics" className="space-y-6">
@@ -846,6 +950,10 @@ export default function AdminPanel() {
 
           <TabsContent value="spotlight" className="space-y-6">
             <SpotlightAdminPanel />
+          </TabsContent>
+
+          <TabsContent value="leads" className="space-y-6">
+            <LeadsTab />
           </TabsContent>
 
           <TabsContent value="overview" className="space-y-6">
