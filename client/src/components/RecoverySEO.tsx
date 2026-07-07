@@ -388,9 +388,21 @@ export default function RecoverySEO({
       : [additionalSchema]
     : [];
 
+  const nickSchema = {
+    "@context": "https://schema.org",
+    ...NICK_KREMERS_SCHEMA,
+  };
+
+  const strokeConditionSchema = {
+    "@context": "https://schema.org",
+    ...STROKE_CONDITION_SCHEMA,
+  };
+
   const allSchemas = [
     webPageSchema,
     orgSchema,
+    nickSchema,
+    strokeConditionSchema,
     faqSchema,
     breadcrumbSchema,
     speakableSchema,

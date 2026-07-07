@@ -156,6 +156,43 @@ function estimateReadingTime(sections: ContentSection[]): number {
   return Math.max(1, Math.round(countWords(sections) / 200));
 }
 
+// Canonical Nick Kremers author object — @id links all articles to the same entity graph node
+const NICK_AUTHOR_SCHEMA = {
+  '@type': 'Person',
+  '@id': `${SITE_URL}/#nick-kremers`,
+  name: AUTHOR.name,
+  description: AUTHOR.bio,
+  url: AUTHOR.url,
+  image: { '@type': 'ImageObject', url: AUTHOR.image, width: 400, height: 400 },
+  jobTitle: 'Founder, Stroke Recovery Academy',
+  sameAs: [
+    'https://twitter.com/strokerecoveryacademy',
+    'https://youtube.com/@strokerecoveryacademy',
+    'https://linkedin.com/company/stroke-recovery-academy',
+  ],
+  knowsAbout: [
+    'stroke recovery', 'neuroplasticity', 'hemiparesis rehabilitation',
+    'aphasia recovery', 'post-stroke fatigue management', 'spasticity management',
+    'constraint-induced movement therapy', 'balance training after stroke',
+    'home stroke rehabilitation', 'stroke survivor mental health',
+  ],
+  hasCredential: {
+    '@type': 'EducationalOccupationalCredential',
+    credentialCategory: 'Lived Experience',
+    name: '7-year stroke survivor — full left-side paralysis to 90% recovery',
+  },
+  affiliation: { '@id': `${SITE_URL}/#organization` },
+};
+
+// The core medical condition entity all health content is about
+const STROKE_ENTITY = {
+  '@type': 'MedicalCondition',
+  '@id': `${SITE_URL}/#stroke`,
+  name: 'Stroke',
+  alternateName: ['Cerebrovascular Accident', 'CVA', 'Brain Attack'],
+  code: { '@type': 'MedicalCode', code: 'I63-I64', codingSystem: 'ICD-10' },
+};
+
 function buildArticleSchema(cfg: SsrPageConfig): object {
   const url = `${SITE_URL}${cfg.url}`;
   const date = cfg.publishedDate || '2026-01-15';
@@ -170,41 +207,68 @@ function buildArticleSchema(cfg: SsrPageConfig): object {
   const imageUrl = chosenImage
     ? (chosenImage.startsWith('http') ? chosenImage : `${SITE_URL}${chosenImage}`)
     : `${SITE_URL}/og-image.jpg`;
+
+  const isMedical = cfg.schemaType === 'MedicalWebPage';
+
   return {
     '@context': 'https://schema.org',
-    '@type': cfg.schemaType === 'MedicalWebPage' ? 'MedicalWebPage' : 'Article',
+    '@type': isMedical ? 'MedicalWebPage' : 'Article',
+    '@id': `${url}#article`,
     headline: cfg.h1,
     description: cfg.description,
     url,
     datePublished: date,
     dateModified: modified,
     inLanguage: 'en-US',
-    author: {
-      '@type': 'Person',
-      name: AUTHOR.name,
-      description: AUTHOR.bio,
-      url: AUTHOR.url,
-      image: AUTHOR.image,
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Stroke Recovery Academy',
-      url: SITE_URL,
-      logo: {
-        '@type': 'ImageObject',
-        url: `${SITE_URL}/icon-512.png`,
-      },
-    },
+    author: NICK_AUTHOR_SCHEMA,
+    // publisher uses @id ref — lets Google resolve the full Organization entity
+    publisher: { '@id': `${SITE_URL}/#organization` },
     mainEntityOfPage: { '@type': 'WebPage', '@id': url },
-    image: imageUrl,
+    image: {
+      '@type': 'ImageObject',
+      url: imageUrl,
+      width: 1200,
+      height: 630,
+    },
+    // Every article is about the core condition — helps AI crawlers classify topical relevance
+    about: STROKE_ENTITY,
     ...(cfg.keywords && cfg.keywords.length > 0 ? { keywords: cfg.keywords.join(', ') } : {}),
-    ...(cfg.schemaType === 'MedicalWebPage' ? {
-      medicalAudience: { '@type': 'MedicalAudience', audienceType: 'Patient' },
+    // MedicalWebPage-specific E-E-A-T fields
+    ...(isMedical ? {
+      medicalAudience: {
+        '@type': 'MedicalAudience',
+        audienceType: 'Patient',
+        healthCondition: STROKE_ENTITY,
+      },
       lastReviewed: modified,
+      reviewedBy: {
+        '@type': 'Person',
+        '@id': `${SITE_URL}/#nick-kremers`,
+        name: 'Nick Kremers',
+        description: '7-year stroke survivor with lived expertise in post-stroke rehabilitation',
+      },
+      specialty: { '@type': 'MedicalSpecialty', name: 'Physical Medicine and Rehabilitation' },
     } : {}),
     // Word count and reading time for rich snippet eligibility
     wordCount: countWords(cfg.sections),
     timeRequired: `PT${readTime}M`,
+  };
+}
+
+// Speakable — tells Google/AI which content to read aloud or quote in voice/AI responses
+function buildSpeakableSchema(cfg: SsrPageConfig): object {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': `${SITE_URL}${cfg.url}`,
+    name: cfg.h1,
+    description: cfg.description,
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      // Target h1, the hero subhead, and FAQ answers — the most quotable content
+      cssSelector: ['h1', '.sra-hero p', '.sra-faq-answer', '.sra-speakable'],
+    },
+    url: `${SITE_URL}${cfg.url}`,
   };
 }
 
@@ -496,7 +560,7 @@ function renderFaqs(faqs: FAQItem[]): string {
   ${faqs.map(f => `
   <details class="sra-faq-item">
     <summary>${esc(f.q)}</summary>
-    <p>${esc(f.a)}</p>
+    <p class="sra-faq-answer">${esc(f.a)}</p>
   </details>`).join('\n')}
 </section>`;
 }
@@ -823,6 +887,8 @@ ${cfg.keywords && cfg.keywords.length > 0 ? `<meta name="keywords" content="${es
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@600;700&family=Inter:wght@400;500;600&display=swap" />
 <style>${inlineCss()}</style>
 <script type="application/ld+json">${jsonLd(articleSchema)}</script>
+<script type="application/ld+json">${jsonLd(buildSpeakableSchema(cfg))}</script>
+<script type="application/ld+json">${jsonLd({ '@context': 'https://schema.org', ...NICK_AUTHOR_SCHEMA })}</script>
 ${faqSchema ? `<script type="application/ld+json">${jsonLd(faqSchema)}</script>` : ''}
 ${breadcrumbSchema ? `<script type="application/ld+json">${jsonLd(breadcrumbSchema)}</script>` : ''}
 ${howToSchema ? `<script type="application/ld+json">${jsonLd(howToSchema)}</script>` : ''}
