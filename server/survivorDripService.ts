@@ -50,7 +50,7 @@ function escapeHtml(s: string): string {
   );
 }
 
-function buildDripEmail(day: number, name: string, userId: string): {
+function buildDripEmail(day: number, name: string, userId: string, opts?: { isTrial?: boolean }): {
   subject: string;
   html: string;
   text: string;
@@ -166,6 +166,45 @@ function buildDripEmail(day: number, name: string, userId: string): {
   }
 
   if (day === 7) {
+    // trial-specific variant — fired when the runner detects the user is trialing
+    if (opts?.isTrial) {
+      const PREMIUM_URL = `${BASE_URL}/recovery/premium`;
+      const bodyHtml = `
+        <p class="body-text" style="font-size:18px;color:#FFFFFF;">Hey ${n},</p>
+        <p class="body-text">Your free trial ends today.</p>
+        <p class="body-text">You've had 7 days of unlimited Coach, unlimited Recovery Anchors, voice cloning, and the premium Campfire. After midnight, that goes back to the free tier unless you keep it.</p>
+        <div class="quote-block">
+          <div class="quote-text">"I built Solo because I needed it at year one. Not therapy. Not medical advice. A system that wouldn't let me quit on a bad day."</div>
+          <div class="quote-attr">— Nick Kremers</div>
+        </div>
+        <p class="body-text">Solo is $19/month. That's less than one co-pay, less than one missed PT session. If the last 7 days moved anything — a little function, a little hope, a clearer protocol — keep going.</p>
+        <div class="tip-box">
+          <div class="tip-label">What you keep with Solo</div>
+          <p class="body-text" style="margin:0;">Unlimited Sasquatch Coach · Unlimited Recovery Anchors · Voice Cloning · Never Zero daily report · Premium Campfire + Live sessions with Nick</p>
+        </div>
+        <div class="cta-block">
+          <a class="cta-btn" href="${PREMIUM_URL}">Keep my access — $19/mo</a>
+        </div>
+        <p class="body-text">If you're not ready — no call, no form. Cancel takes one click and keeps you on free. The reps still count.</p>
+        <p class="body-text" style="margin-top:24px;">
+          <strong style="color:#FFFFFF;">Nick Kremers</strong><br/>
+          <span style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:${EMAIL.muted};letter-spacing:1px;">STROKE SURVIVOR · FOUNDER, STROKE RECOVERY ACADEMY</span>
+        </p>
+      `;
+      const html = renderEmail({
+        previewText: 'Your free trial ends today. Here\'s what you keep — or don\'t.',
+        eyebrow: 'TRIAL ENDS TODAY',
+        headline: 'Keep it — or step back to free.',
+        subheadline: 'Your call. No calls, no forms. One click either way.',
+        bodyHtml,
+        showCrisisCallout: true,
+        whyReceiving: 'You\'re receiving this because you started a Sasquatch Premium trial.',
+        unsubscribeUrl: unsubUrl,
+      });
+      const text = `Hey ${name},\n\nYour free trial ends today.\n\nSolo is $19/month — unlimited Coach, Anchors, Voice Cloning, premium Campfire.\n\nKeep it: ${PREMIUM_URL}\n\nCancel anytime. No forms. One click.\n\n— Nick Kremers\nFounder, Stroke Recovery Academy\n\nNOT MEDICAL ADVICE. If you're in crisis, call or text 988.`;
+      return { subject: 'Your free trial ends today.', html, text };
+    }
+
     const bodyHtml = `
       <p class="body-text" style="font-size:18px;color:#FFFFFF;">Hey ${n},</p>
       <p class="body-text">Seven days.</p>
@@ -341,7 +380,23 @@ export async function runSurvivorDrip(): Promise<void> {
         }
 
         const name = user.first_name ? user.first_name.split(' ')[0] : 'Warrior';
-        const email = buildDripEmail(day, name, user.id);
+
+        // For Day 7: detect if user is trialing so we send the conversion variant
+        let isTrial = false;
+        if (day === 7) {
+          try {
+            const trialCheck = await db.execute(sql`
+              SELECT 1 FROM sasquatch_premium_subscriptions
+               WHERE user_id = ${user.id}
+                 AND status = 'trialing'
+                 AND cancel_at_period_end = false
+               LIMIT 1
+            `);
+            isTrial = (trialCheck.rows?.length ?? 0) > 0;
+          } catch { /* table may not exist yet */ }
+        }
+
+        const email = buildDripEmail(day, name, user.id, { isTrial });
         if (!email) continue;
 
         try {

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useLocation } from "wouter";
+import { useLocation, useSearch } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -21,6 +21,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import RecoveryHeader from "@/components/RecoveryHeader";
@@ -715,11 +716,86 @@ function CancelFlowDialog({
   );
 }
 
+// ── Squad waitlist dialog ─────────────────────────────────────────────────────
+function SquadWaitlistDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
+  const { toast } = useToast();
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [done, setDone] = useState(false);
+  const mut = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/squad-waitlist", { email: email.trim(), name: name.trim() || undefined });
+      if (!res.ok) throw new Error("Failed");
+      return res.json();
+    },
+    onSuccess: () => { setDone(true); },
+    onError: () => { toast({ title: "Something went wrong", description: "Try again in a moment.", variant: "destructive" }); },
+  });
+  useEffect(() => { if (!open) { setDone(false); setEmail(""); setName(""); } }, [open]);
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-md bg-[#1C1917] border-[#3A3230] text-[#FDFBF7]">
+        <DialogHeader>
+          <DialogTitle className="text-[#FDFBF7] text-xl font-bold">
+            {done ? "You're on the list." : "Join the Squad waitlist"}
+          </DialogTitle>
+          <DialogDescription className="text-[#FDFBF7]/55">
+            {done
+              ? "We'll email you the day Squad launches. You'll have first-access pricing."
+              : "Squad is $59/mo — bi-weekly Zoom with Nick, accountability pods, direct message access. Launching soon. Get notified first."}
+          </DialogDescription>
+        </DialogHeader>
+        {!done ? (
+          <div className="space-y-3 pt-2">
+            <Input
+              placeholder="Your first name (optional)"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="bg-[#2A2421] border-[#3A3230] text-[#FDFBF7] placeholder:text-[#FDFBF7]/30"
+              data-testid="input-waitlist-name"
+            />
+            <Input
+              placeholder="your@email.com"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="bg-[#2A2421] border-[#3A3230] text-[#FDFBF7] placeholder:text-[#FDFBF7]/30"
+              data-testid="input-waitlist-email"
+            />
+            <Button
+              onClick={() => email.includes("@") && mut.mutate()}
+              disabled={mut.isPending || !email.includes("@")}
+              className="w-full bg-[#C06B3E] hover:bg-[#A85B33] text-white h-11"
+              data-testid="button-waitlist-submit"
+            >
+              {mut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Notify me when Squad launches"}
+            </Button>
+            <p className="text-xs text-[#FDFBF7]/30 text-center">No spam. One email when Squad goes live.</p>
+          </div>
+        ) : (
+          <div className="pt-2 text-center">
+            <div className="w-12 h-12 rounded-full bg-[#C06B3E]/20 flex items-center justify-center mx-auto mb-3">
+              <Check className="w-6 h-6 text-[#C06B3E]" />
+            </div>
+            <p className="text-[#FDFBF7]/70 text-sm">Check your inbox — confirmation incoming.</p>
+            <Button variant="ghost" className="mt-4 text-[#FDFBF7]/40 text-xs" onClick={() => onOpenChange(false)}>Close</Button>
+          </div>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export default function RecoveryPremium() {
   const { isAuthenticated } = useAuth();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const search = useSearch();
   const [plan, setPlan] = useState<Plan>("annual"); // default annual — anchors price + lifts ARPU
+  const [squadWaitlistOpen, setSquadWaitlistOpen] = useState(() => {
+    const p = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
+    return p.get("squad") === "waitlist";
+  });
   // Promo code (Wave H). Captured from `?promo=NICKLAUNCH` on first mount and
   // forwarded to the checkout body. The Stripe page also shows an "Add promo
   // code" link via allow_promotion_codes for survivors who didn't arrive via
@@ -884,6 +960,7 @@ export default function RecoveryPremium() {
         canonical="/recovery/premium"
       />
       <RecoveryHeader />
+      <SquadWaitlistDialog open={squadWaitlistOpen} onOpenChange={setSquadWaitlistOpen} />
 
       {/* ── Tier nav ──────────────────────────────────────────────────────── */}
       <div className="bg-[#1C1917] border-b border-[#2A2421]">

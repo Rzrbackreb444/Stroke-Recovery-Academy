@@ -13039,9 +13039,14 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
       if (!name || !facility || !email) {
         return res.status(400).json({ message: 'name, facility, and email are required' });
       }
-      // Log to console for now; HubSpot tracking can be wired here
-      console.log('[partners/inquiry]', JSON.stringify({ name, facility, email, role, partnershipType, message: message?.slice(0, 200) }));
-      // Best-effort: send an internal notification email via Resend
+      // Persist to DB
+      await db.execute(sql`
+        INSERT INTO partner_inquiries (name, facility, email, role, partnership_type, message)
+        VALUES (${String(name)}, ${String(facility)}, ${String(email)},
+                ${role ? String(role) : null}, ${partnershipType ? String(partnershipType) : null},
+                ${message ? String(message).slice(0, 2000) : null})
+      `);
+      // Best-effort: notify Nick
       try {
         const { sendEmail } = await import('./emailService');
         await sendEmail({
@@ -13055,6 +13060,68 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     } catch (error: any) {
       console.error('[partners/inquiry]', error?.message);
       res.status(500).json({ message: 'Failed to submit inquiry' });
+    }
+  });
+
+  // GET /api/admin/partners/inquiries — admin view
+  app.get('/api/admin/partners/inquiries', isAuthenticated, requireAdmin, async (req: any, res) => {
+    try {
+      const rows = await db.execute(sql`
+        SELECT id, name, facility, email, role, partnership_type, message, status, created_at
+          FROM partner_inquiries
+         ORDER BY created_at DESC
+         LIMIT 200
+      `);
+      res.json(rows.rows ?? []);
+    } catch (err: any) {
+      res.status(500).json({ message: err?.message ?? 'Failed to fetch partner inquiries' });
+    }
+  });
+
+  // PATCH /api/admin/partners/inquiries/:id/status
+  app.patch('/api/admin/partners/inquiries/:id/status', isAuthenticated, requireAdmin, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      if (!['new', 'contacted', 'active', 'closed'].includes(status)) {
+        return res.status(400).json({ message: 'Invalid status' });
+      }
+      await db.execute(sql`UPDATE partner_inquiries SET status = ${status} WHERE id = ${Number(id)}`);
+      res.json({ ok: true });
+    } catch (err: any) {
+      res.status(500).json({ message: err?.message ?? 'Failed to update status' });
+    }
+  });
+
+  // POST /api/squad-waitlist — public signup
+  app.post('/api/squad-waitlist', async (req: any, res) => {
+    try {
+      const { email, name } = req.body;
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ message: 'Valid email required' });
+      }
+      const userId = req.user?.claims?.sub ?? null;
+      await db.execute(sql`
+        INSERT INTO squad_waitlist (email, name, user_id)
+        VALUES (${String(email).toLowerCase()}, ${name ? String(name).slice(0, 100) : null}, ${userId})
+        ON CONFLICT (email) DO NOTHING
+      `);
+      res.json({ ok: true });
+    } catch (err: any) {
+      console.error('[squad-waitlist]', err?.message);
+      res.status(500).json({ message: 'Failed to join waitlist' });
+    }
+  });
+
+  // GET /api/admin/squad-waitlist — admin view
+  app.get('/api/admin/squad-waitlist', isAuthenticated, requireAdmin, async (req: any, res) => {
+    try {
+      const rows = await db.execute(sql`
+        SELECT id, email, name, user_id, created_at FROM squad_waitlist ORDER BY created_at DESC LIMIT 500
+      `);
+      res.json(rows.rows ?? []);
+    } catch (err: any) {
+      res.status(500).json({ message: err?.message ?? 'Failed to fetch waitlist' });
     }
   });
 

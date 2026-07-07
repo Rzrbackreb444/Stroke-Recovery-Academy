@@ -7456,3 +7456,27 @@ export const sparksFollows = pgTable("sparks_follows", {
   uniqueIndex("idx_sparks_follows_unique").on(table.followerId, table.followingId),
 ]);
 export type SparksFollow = typeof sparksFollows.$inferSelect;
+
+// ── Squad waitlist ────────────────────────────────────────────────────────────
+export const squadWaitlist = pgTable("squad_waitlist", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  name: text("name"),
+  userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+export type SquadWaitlistEntry = typeof squadWaitlist.$inferSelect;
+
+// ── Partner inquiries ─────────────────────────────────────────────────────────
+export const partnerInquiries = pgTable("partner_inquiries", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  facility: text("facility").notNull(),
+  email: text("email").notNull(),
+  role: text("role"),
+  partnershipType: text("partnership_type"),
+  message: text("message"),
+  status: text("status").notNull().default("new"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+export type PartnerInquiry = typeof partnerInquiries.$inferSelect;
