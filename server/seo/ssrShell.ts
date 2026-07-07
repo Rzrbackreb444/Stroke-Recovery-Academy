@@ -158,7 +158,7 @@ function estimateReadingTime(sections: ContentSection[]): number {
 
 // Canonical Nick Kremers author object — @id links all articles to the same entity graph node
 const NICK_AUTHOR_SCHEMA = {
-  '@type': 'Person',
+  '@type': ['Person', 'Patient'],
   '@id': `${SITE_URL}/#nick-kremers`,
   name: AUTHOR.name,
   description: AUTHOR.bio,
