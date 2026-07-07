@@ -11136,6 +11136,111 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
     }
   });
 
+  // ── Spotlight nominations ─────────────────────────────────────────────────
+  // Presigned upload URL for nomination media (images / short videos)
+  app.post('/api/spotlight/nominations/upload-url', isAuthenticated, async (_req, res) => {
+    try {
+      const { ObjectStorageService } = await import('./replit_integrations/object_storage/objectStorage');
+      const objectStorage = new ObjectStorageService();
+      const uploadURL = await objectStorage.getObjectEntityUploadURL();
+      const objectPath = objectStorage.normalizeObjectEntityPath(uploadURL);
+      res.json({ uploadURL, objectPath });
+    } catch (err: any) {
+      console.error('[spotlight/upload-url]', err?.message);
+      res.status(500).json({ message: 'Failed to create upload URL' });
+    }
+  });
+
+  // Submit a spotlight application or nomination
+  app.post('/api/spotlight/nominations', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub ?? req.user?.id;
+      if (!userId) return res.status(401).json({ message: 'Authentication required' });
+      const { type, nomineeName, nomineeEmail, nomineeLocation, strokeDate, relationship, description, mediaUrls } = req.body;
+      if (!nomineeName?.trim() || !description?.trim()) {
+        return res.status(400).json({ message: 'Name and description are required' });
+      }
+      if (description.length > 3000) {
+        return res.status(400).json({ message: 'Description too long (max 3000 chars)' });
+      }
+      const safeType = type === 'other' ? 'other' : 'self';
+      const safeMedia = (Array.isArray(mediaUrls) ? mediaUrls.slice(0, 10) : []).map(String);
+      await db.execute(sql`
+        INSERT INTO spotlight_nominations
+          (submitter_user_id, type, nominee_name, nominee_email, nominee_location,
+           stroke_date, relationship, description, media_urls)
+        VALUES
+          (${userId}, ${safeType},
+           ${String(nomineeName).trim().slice(0, 200)},
+           ${nomineeEmail ? String(nomineeEmail).trim().slice(0, 200) : null},
+           ${nomineeLocation ? String(nomineeLocation).trim().slice(0, 200) : null},
+           ${strokeDate ? String(strokeDate).trim().slice(0, 100) : null},
+           ${relationship ? String(relationship).trim().slice(0, 200) : null},
+           ${String(description).trim().slice(0, 3000)},
+           ${JSON.stringify(safeMedia)}::text[])
+      `);
+      // Notify Nick
+      try {
+        const { sendEmail } = await import('./emailService');
+        const label = safeType === 'other' ? 'Nomination' : 'Self-application';
+        await sendEmail({
+          to: 'nick@strokerecoveryacademy.com',
+          subject: `Spotlight ${label} — ${String(nomineeName).trim()}`,
+          html: `<p><strong>Type:</strong> ${label}<br>
+                 <strong>Nominee:</strong> ${String(nomineeName).trim()}${nomineeEmail ? ` &lt;${String(nomineeEmail).trim()}&gt;` : ''}<br>
+                 ${nomineeLocation ? `<strong>Location:</strong> ${String(nomineeLocation).trim()}<br>` : ''}
+                 ${strokeDate ? `<strong>Stroke date:</strong> ${String(strokeDate).trim()}<br>` : ''}
+                 ${relationship ? `<strong>Relationship to nominee:</strong> ${String(relationship).trim()}<br>` : ''}
+                 <strong>Media files attached:</strong> ${safeMedia.length}<br><br>
+                 <strong>Why they deserve the spotlight:</strong><br>
+                 ${String(description).trim().replace(/\n/g, '<br>')}</p>`,
+          text: `Spotlight ${label}\n\nNominee: ${nomineeName}\n\n${description}`,
+        });
+      } catch { /* non-fatal */ }
+      res.json({ ok: true });
+    } catch (err: any) {
+      console.error('[spotlight/nominations]', err?.message);
+      res.status(500).json({ message: 'Failed to submit' });
+    }
+  });
+
+  // Admin — list nominations
+  app.get('/api/admin/spotlight/nominations', isAuthenticated, requireAdmin, async (_req, res) => {
+    try {
+      const rows = await db.execute(sql`
+        SELECT sn.*, u.email AS submitter_email,
+               u.first_name AS submitter_first, u.last_name AS submitter_last
+          FROM spotlight_nominations sn
+          JOIN users u ON u.id = sn.submitter_user_id
+         ORDER BY sn.created_at DESC
+         LIMIT 300
+      `);
+      res.json(rows.rows ?? []);
+    } catch (err: any) {
+      res.status(500).json({ message: err?.message });
+    }
+  });
+
+  // Admin — update nomination status + notes
+  app.patch('/api/admin/spotlight/nominations/:id/status', isAuthenticated, requireAdmin, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { status, adminNotes } = req.body;
+      if (!['pending', 'reviewed', 'selected', 'declined'].includes(status)) {
+        return res.status(400).json({ message: 'Invalid status' });
+      }
+      await db.execute(sql`
+        UPDATE spotlight_nominations
+           SET status = ${status},
+               admin_notes = ${adminNotes ? String(adminNotes).slice(0, 1000) : null}
+         WHERE id = ${Number(id)}
+      `);
+      res.json({ ok: true });
+    } catch (err: any) {
+      res.status(500).json({ message: err?.message });
+    }
+  });
+
   // ─── Survivor OS: Sasquatch Scale + AI Plan ─────────────────────────────────
   // GET /api/recovery/me/state — aggregated personal dashboard state
   app.get('/api/recovery/me/state', isAuthenticated, async (req: any, res) => {

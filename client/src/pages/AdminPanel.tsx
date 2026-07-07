@@ -546,6 +546,122 @@ function SpotlightAdminPanel() {
   );
 }
 
+const NOM_STATUS_COLORS: Record<string, string> = {
+  pending: "bg-blue-100 text-blue-800",
+  reviewed: "bg-yellow-100 text-yellow-800",
+  selected: "bg-green-100 text-green-800",
+  declined: "bg-gray-100 text-gray-600",
+};
+
+function SpotlightNominationsPanel() {
+  const { toast } = useToast();
+  const qc = useQueryClient();
+  const { data: nominations, isLoading } = useQuery<any[]>({
+    queryKey: ["/api/admin/spotlight/nominations"],
+  });
+  const [notes, setNotes] = useState<Record<number, string>>({});
+
+  const statusMut = useMutation({
+    mutationFn: async ({ id, status }: { id: number; status: string }) => {
+      const res = await apiRequest("PATCH", `/api/admin/spotlight/nominations/${id}/status`, {
+        status,
+        adminNotes: notes[id] ?? undefined,
+      });
+      if (!res.ok) throw new Error("Failed");
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["/api/admin/spotlight/nominations"] });
+      toast({ title: "Status updated" });
+    },
+    onError: () => toast({ title: "Failed to update", variant: "destructive" }),
+  });
+
+  return (
+    <Card className="mt-6">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Star className="h-5 w-5 text-[#E2741B]" />
+          Spotlight Applications & Nominations
+          <Badge variant="secondary" className="ml-auto">{nominations?.length ?? 0}</Badge>
+        </CardTitle>
+        <p className="text-sm text-gray-400">Submissions from survivors applying or nominating others for the monthly feature.</p>
+      </CardHeader>
+      <CardContent>
+        {isLoading ? (
+          <div className="flex items-center justify-center h-20"><Loader2 className="w-5 h-5 animate-spin text-muted-foreground" /></div>
+        ) : !nominations?.length ? (
+          <p className="text-sm text-gray-400 py-4 text-center">No submissions yet.</p>
+        ) : (
+          <div className="space-y-4">
+            {nominations.map((nom: any) => (
+              <div key={nom.id} className="rounded-lg border border-[#222] bg-[#0D0D0D] p-4 space-y-3"
+                data-testid={`nom-row-${nom.id}`}>
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Badge variant="outline" className="text-[10px]">
+                        {nom.type === "other" ? "Nomination" : "Self-application"}
+                      </Badge>
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${NOM_STATUS_COLORS[nom.status] ?? NOM_STATUS_COLORS.pending}`}>
+                        {nom.status}
+                      </span>
+                    </div>
+                    <p className="font-bold text-white mt-1">{nom.nominee_name}</p>
+                    <p className="text-xs text-gray-500">
+                      {nom.nominee_email && <>{nom.nominee_email} · </>}
+                      {nom.nominee_location && <>{nom.nominee_location} · </>}
+                      {nom.stroke_date && <>Stroke: {nom.stroke_date} · </>}
+                      {nom.type === "other" && nom.relationship && <>Nominated by: {nom.submitter_first} ({nom.relationship})</>}
+                      {nom.type === "self" && <>Submitted by: {nom.submitter_first} ({nom.submitter_email})</>}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {["pending","reviewed","selected","declined"].map((s) => (
+                      <button key={s}
+                        onClick={() => statusMut.mutate({ id: nom.id, status: s })}
+                        disabled={nom.status === s || statusMut.isPending}
+                        className={`text-[10px] px-2 py-0.5 rounded border transition-colors ${nom.status === s ? "bg-muted text-muted-foreground border-transparent" : "hover:bg-muted border-[#333] text-gray-300"}`}
+                        data-testid={`btn-nom-status-${nom.id}-${s}`}
+                      >{s}</button>
+                    ))}
+                  </div>
+                </div>
+                <p className="text-sm text-gray-300 leading-relaxed border-t border-[#1a1a1a] pt-3 whitespace-pre-line">
+                  {nom.description}
+                </p>
+                {Array.isArray(nom.media_urls) && nom.media_urls.length > 0 && (
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {nom.media_urls.map((url: string, i: number) => (
+                      <a key={i} href={`/objects/${url}`} target="_blank" rel="noopener noreferrer"
+                        className="text-xs text-[#E2741B] underline" data-testid={`link-media-${nom.id}-${i}`}>
+                        Media {i + 1}
+                      </a>
+                    ))}
+                  </div>
+                )}
+                <div className="flex gap-2 items-end pt-1">
+                  <div className="flex-1">
+                    <input
+                      placeholder="Admin notes (optional)"
+                      value={notes[nom.id] ?? nom.admin_notes ?? ""}
+                      onChange={(e) => setNotes((prev) => ({ ...prev, [nom.id]: e.target.value }))}
+                      className="w-full text-xs bg-[#1a1a1a] border border-[#333] rounded px-2 py-1 text-white placeholder:text-gray-600"
+                      data-testid={`input-admin-notes-${nom.id}`}
+                    />
+                  </div>
+                  <p className="text-[10px] text-gray-600 shrink-0">
+                    {new Date(nom.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 interface AnalyticsData {
   rangeDays: number;
   signupsByDay: { day: string; count: number }[];
@@ -950,6 +1066,7 @@ export default function AdminPanel() {
 
           <TabsContent value="spotlight" className="space-y-6">
             <SpotlightAdminPanel />
+            <SpotlightNominationsPanel />
           </TabsContent>
 
           <TabsContent value="leads" className="space-y-6">

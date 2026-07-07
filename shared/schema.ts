@@ -7467,6 +7467,26 @@ export const squadWaitlist = pgTable("squad_waitlist", {
 });
 export type SquadWaitlistEntry = typeof squadWaitlist.$inferSelect;
 
+// ── Spotlight nominations ─────────────────────────────────────────────────────
+// Survivors apply for or nominate others for the monthly spotlight.
+// Nick reviews, picks the winner, writes the article.
+export const spotlightNominations = pgTable("spotlight_nominations", {
+  id: serial("id").primaryKey(),
+  submitterUserId: varchar("submitter_user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  type: text("type").notNull().default("self"), // 'self' | 'other'
+  nomineeName: text("nominee_name").notNull(),
+  nomineeEmail: text("nominee_email"),
+  nomineeLocation: text("nominee_location"),
+  strokeDate: text("stroke_date"),      // free text — "June 2019"
+  relationship: text("relationship"),   // if nominating another: "My husband", "A friend", etc.
+  description: text("description").notNull(), // why they deserve the spotlight
+  mediaUrls: text("media_urls").array().notNull().default([]),
+  status: text("status").notNull().default("pending"), // pending | reviewed | selected | declined
+  adminNotes: text("admin_notes"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+export type SpotlightNomination = typeof spotlightNominations.$inferSelect;
+
 // ── Partner inquiries ─────────────────────────────────────────────────────────
 export const partnerInquiries = pgTable("partner_inquiries", {
   id: serial("id").primaryKey(),
