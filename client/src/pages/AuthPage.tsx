@@ -223,7 +223,7 @@ export default function AuthPage() {
   }[mode];
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex">
+    <div className="min-h-screen bg-[#0a0a0a] flex flex-col lg:flex-row">
       {/* Left Panel - Branding */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 via-orange-500/10 to-rose-500/20" />
@@ -285,15 +285,16 @@ export default function AuthPage() {
       </div>
 
       {/* Right Panel - Auth Form */}
-      <div className="flex-1 flex items-center justify-center p-6">
+      <div className="flex-1 flex items-center justify-center px-4 py-10 sm:p-6">
         <div className="w-full max-w-md">
-          {/* Mobile Logo */}
-          <div className="lg:hidden flex items-center justify-center mb-8">
+          {/* Mobile Logo + header strip */}
+          <div className="lg:hidden flex flex-col items-center mb-8 gap-2">
             <img
               src={sraLogo}
               alt="Stroke Recovery Academy"
-              className="h-10 w-10 object-cover rounded-xl"
+              className="h-12 w-12 object-cover rounded-xl"
             />
+            <p className="text-white/50 text-sm">Stroke Recovery Academy</p>
           </div>
 
           <Card className="bg-white/5 border-white/10 backdrop-blur-xl">

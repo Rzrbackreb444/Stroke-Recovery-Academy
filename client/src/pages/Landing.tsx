@@ -284,9 +284,9 @@ function CoachPreview() {
   }, [visibleCount, showTyping]);
 
   return (
-    <section ref={sectionRef} className="bg-[#1A1412] py-24">
+    <section ref={sectionRef} className="bg-[#1A1412] py-16 sm:py-24">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C06B3E]/20 border border-[#C06B3E]/30 mb-6">
               <Zap className="w-3.5 h-3.5 text-[#C06B3E]" />
@@ -310,7 +310,7 @@ function CoachPreview() {
             </Button>
           </div>
 
-          <div className="bg-[#0F0C0A] rounded-2xl border border-[#3A3230] p-5 flex flex-col" style={{ minHeight: 380 }}>
+          <div className="bg-[#0F0C0A] rounded-2xl border border-[#3A3230] p-4 sm:p-5 flex flex-col" style={{ minHeight: 320 }}>
             {/* Header */}
             <div className="flex items-center gap-3 pb-4 mb-2 border-b border-[#2A2421] shrink-0">
               <div className="w-9 h-9 rounded-full bg-[#C06B3E]/20 flex items-center justify-center">
@@ -379,10 +379,10 @@ function StatsStrip() {
   return (
     <section className="bg-[#C06B3E]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
           {stats.map((s, i) => (
-            <div key={i} className="text-center px-4">
-              <div className="font-display text-[#FDFBF7] text-4xl md:text-5xl mb-1">{s.n}</div>
+            <div key={i} className="text-center px-2 sm:px-4">
+              <div className="font-display text-[#FDFBF7] text-3xl sm:text-4xl md:text-5xl mb-1">{s.n}</div>
               <div className="text-sm font-bold text-[#FDFBF7]/80 uppercase tracking-wider">{s.l}</div>
             </div>
           ))}
@@ -400,13 +400,13 @@ function AccountabilityGap() {
     { icon: BookOpen, t: "Recovery Journal", d: "Name the wins, name the hard parts. Every entry is a chapter in the story you're writing." },
   ];
   return (
-    <section id="method" className="bg-[#FDFBF7] py-28">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-20">
+    <section id="method" className="bg-[#FDFBF7] py-16 sm:py-28">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-12 sm:mb-20">
         <p className="text-sm font-bold tracking-widest uppercase text-[#C06B3E] mb-5">The Accountability Gap</p>
-        <h2 className="font-display text-[#2A2421] text-4xl md:text-6xl mb-6 leading-[0.95]">
+        <h2 className="font-display text-[#2A2421] text-3xl sm:text-4xl md:text-6xl mb-6 leading-[0.95]">
           The most underserved part of stroke recovery isn't information.
         </h2>
-        <p className="font-display text-[#C06B3E] italic font-serif text-3xl md:text-4xl mb-10">It's someone checking on you.</p>
+        <p className="font-display text-[#C06B3E] italic font-serif text-2xl sm:text-3xl md:text-4xl mb-10">It's someone checking on you.</p>
         <div className="space-y-5 text-[#5C534D] text-lg leading-relaxed max-w-3xl mx-auto">
           <p>
             You leave the hospital with a stack of papers and a follow-up appointment in six weeks. Nobody is watching the days in between — whether you did your exercises, skipped them, cried at 2 a.m., or decided recovery wasn't worth it.
@@ -433,10 +433,10 @@ function AccountabilityGap() {
 
 function Proof() {
   return (
-    <section id="proof" className="relative bg-[#F5F0EB] py-28 text-[#1C1917] overflow-hidden">
+    <section id="proof" className="relative bg-[#F5F0EB] py-16 sm:py-28 text-[#1C1917] overflow-hidden">
       <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_30%_50%,_rgba(226,116,27,0.15),_transparent_60%)]" />
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <div>
             <Star className="w-8 h-8 text-gold mb-6" fill="currentColor" />
             <h2 className="font-display text-3xl md:text-5xl mb-6 leading-[0.95]">
@@ -471,14 +471,14 @@ function Proof() {
 
 function Features() {
   return (
-    <section id="features" className="bg-[#F6EFEA] py-28">
+    <section id="features" className="bg-[#F6EFEA] py-16 sm:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-20">
+        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-20">
           <p className="text-sm font-bold tracking-widest uppercase text-[#C06B3E] mb-4">The Toolkit</p>
-          <h2 className="font-display text-[#2A2421] text-4xl md:text-5xl">Everything you need to <span className="italic font-serif text-[#C06B3E]">rebuild.</span></h2>
+          <h2 className="font-display text-[#2A2421] text-3xl sm:text-4xl md:text-5xl">Everything you need to <span className="italic font-serif text-[#C06B3E]">rebuild.</span></h2>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div className="grid md:grid-cols-2 gap-10 lg:gap-20 items-center">
           <div>
             <div className="w-12 h-12 rounded-lg bg-neutral-900 text-white flex items-center justify-center mb-6"><CalendarDays className="w-6 h-6" /></div>
             <h3 className="text-2xl font-bold text-neutral-900 mb-4">Daily Routines & Protocols</h3>
@@ -509,7 +509,7 @@ function Features() {
         </div>
 
         {/* Write Your Recovery Story */}
-        <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center mt-24">
+        <div className="grid md:grid-cols-2 gap-10 lg:gap-20 items-center mt-16 sm:mt-24">
           <div className="order-2 md:order-1 rounded-3xl border border-[#E2C2A4]/20 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-8">
             <div className="bg-white rounded-xl border border-[#E2C2A4]/20 p-6 space-y-4">
               {[
@@ -558,10 +558,10 @@ function Features() {
 
 function Caregiver() {
   return (
-    <section className="bg-[#C06B3E] py-24">
+    <section className="bg-[#C06B3E] py-16 sm:py-24">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-[#FDFBF7]">
         <p className="text-sm font-bold tracking-[0.3em] uppercase mb-5 text-[#FDFBF7]/80">For Caregivers</p>
-        <h2 className="font-display text-4xl md:text-6xl mb-6 leading-[0.95] text-[#FDFBF7]">You're not the patient — but you carry it too.</h2>
+        <h2 className="font-display text-3xl sm:text-4xl md:text-6xl mb-6 leading-[0.95] text-[#FDFBF7]">You're not the patient — but you carry it too.</h2>
         <p className="text-lg font-medium text-[#FDFBF7]/80 mb-10 max-w-2xl mx-auto leading-relaxed">
           You're the one Googling at 2 a.m., scheduling the appointments, quietly holding it together. Nobody built a system that took your seat seriously — until now. Let us handle the daily reminders. You just have to keep standing.
         </p>
@@ -585,9 +585,9 @@ function Guides() {
     { t: "Neuroplasticity explained", d: "How your brain rewires itself — the science behind every rep." },
   ];
   return (
-    <section id="guides" className="bg-[#FDFBF7] py-28">
+    <section id="guides" className="bg-[#FDFBF7] py-16 sm:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 sm:mb-14">
           <div className="max-w-2xl">
             <p className="text-sm font-bold tracking-widest uppercase text-[#C06B3E] mb-4">Latest Guides</p>
             <h2 className="font-display text-[#2A2421] text-3xl md:text-5xl mb-3">The questions every survivor asks.</h2>
@@ -615,13 +615,13 @@ function Guides() {
 
 function GiftASurvivor() {
   return (
-    <section className="bg-[#FDFBF7] py-24 border-y border-[#E2C2A4]/30">
+    <section className="bg-[#FDFBF7] py-16 sm:py-24 border-y border-[#E2C2A4]/30">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C06B3E]/10 border border-[#C06B3E]/30 mb-6">
           <Gift className="w-4 h-4 text-gold" />
           <span className="text-xs font-semibold uppercase tracking-wider text-[#C06B3E]">Pay it forward</span>
         </div>
-        <h2 className="font-display text-[#1C1917] text-4xl md:text-6xl mb-6 leading-[0.95]">Gift a survivor their comeback.</h2>
+        <h2 className="font-display text-[#1C1917] text-3xl sm:text-4xl md:text-6xl mb-6 leading-[0.95]">Gift a survivor their comeback.</h2>
         <p className="text-lg text-[#78716C] mb-10 max-w-2xl mx-auto leading-relaxed">
           Recovery shouldn't hinge on what someone can afford. Sponsor a survivor who's rebuilding — the plan, the Coach, the squad — and cover the cost when they can't. Your gift shows up as a full membership.
         </p>
@@ -640,14 +640,14 @@ function GiftASurvivor() {
 
 function FinalCTA() {
   return (
-    <section className="relative bg-[#F5F0EB] py-32 text-center overflow-hidden">
+    <section className="relative bg-[#F5F0EB] py-20 sm:py-32 text-center overflow-hidden">
       <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_center,_rgba(226,116,27,0.12),_transparent_60%)]" />
       <div className="relative z-10 max-w-3xl mx-auto px-4">
-        <h2 className="font-display text-[#1C1917] text-5xl md:text-7xl mb-8 leading-[0.9]">
+        <h2 className="font-display text-[#1C1917] text-4xl sm:text-5xl md:text-7xl mb-6 sm:mb-8 leading-[0.9]">
           The hospital did its job.<br />
           <span className="italic font-serif text-[#C06B3E]">Now it's your turn.</span>
         </h2>
-        <p className="text-xl text-[#78716C] mb-12">
+        <p className="text-lg sm:text-xl text-[#78716C] mb-10 sm:mb-12">
           We'll be there for every rep of it — daily reps, your squad of five, and Coach in your corner. $19/mo, 7 days free. Cancel anytime.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
