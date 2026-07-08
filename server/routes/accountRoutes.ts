@@ -15,11 +15,12 @@ import { eq, sql } from "drizzle-orm";
 import { isAuthenticated } from "../replitAuth";
 import { db } from "../db";
 import { users, userProfiles } from "@shared/schema";
+import { getUserId } from "../lib/authUtils";
 
 const router = Router();
 
 function authedUserId(req: any): string | null {
-  return req.user?.claims?.sub ?? req.session?.userId ?? null;
+  return getUserId(req) ?? req.session?.userId ?? null;
 }
 
 /**

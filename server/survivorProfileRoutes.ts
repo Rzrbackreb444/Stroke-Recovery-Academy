@@ -6,6 +6,7 @@ import { storage } from "./storage";
 import { db } from "./db";
 import { userProfiles } from "@shared/schema";
 import { publicRateLimit } from "./middleware/publicRateLimit";
+import { getUserId } from "./lib/authUtils";
 
 const router = Router();
 
@@ -57,7 +58,7 @@ const profilePatchSchema = z.object({
 }).strict().partial();
 
 function authedUserId(req: any): string | null {
-  return req.user?.claims?.sub ?? req.session?.userId ?? null;
+  return getUserId(req) ?? req.session?.userId ?? null;
 }
 
 // Per-user write limiter — generous (60/min) to accommodate typing-driven autosave

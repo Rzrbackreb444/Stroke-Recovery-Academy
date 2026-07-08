@@ -10,6 +10,7 @@ import {
 } from '@shared/schema';
 import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm';
 import { transcribeVideo } from '../videoTranscription';
+import { getUserId } from "../lib/authUtils";
 
 // ── Crisis detection: returns true if any phrase matches (case-insensitive) ──
 const CRISIS_PATTERNS = [
@@ -144,7 +145,7 @@ export function registerForumRoutes(app: Express, isAuthenticated: any, uploadsD
 
       // User's own votes on these posts
       let myVotes: Record<number, number> = {};
-      const uid = req.user?.claims?.sub;
+      const uid = getUserId(req);
       if (uid && posts.length) {
         const ids = posts.map(p => p.id);
         const v = await db.select().from(forumVotes)
@@ -166,7 +167,7 @@ export function registerForumRoutes(app: Express, isAuthenticated: any, uploadsD
   // existing handler wins; this is a no-op in practice.
   app.post('/api/forum/threads/new', isAuthenticated, async (req: any, res: Response) => {
     try {
-      const uid = req.user?.claims?.sub;
+      const uid = getUserId(req);
       if (!uid) return res.status(401).json({ error: 'Auth required' });
       const boardId = parseInt(req.body?.boardId, 10);
       const title = String(req.body?.title || '').trim().slice(0, MAX_TITLE);
@@ -205,7 +206,7 @@ export function registerForumRoutes(app: Express, isAuthenticated: any, uploadsD
   // POST /api/forum/threads/:id/posts — reply (text)
   app.post('/api/forum/threads/:id/posts', isAuthenticated, async (req: any, res: Response) => {
     try {
-      const uid = req.user?.claims?.sub;
+      const uid = getUserId(req);
       const threadId = parseInt(req.params.id, 10);
       if (!uid || !Number.isFinite(threadId)) return res.status(400).json({ error: 'Invalid request' });
       const content = String(req.body?.content || '').trim().slice(0, MAX_BODY);
@@ -237,7 +238,7 @@ export function registerForumRoutes(app: Express, isAuthenticated: any, uploadsD
   app.post('/api/forum/threads/:id/voice', isAuthenticated, audioUpload.single('file'),
     async (req: any, res: Response) => {
       try {
-        const uid = req.user?.claims?.sub;
+        const uid = getUserId(req);
         const threadId = parseInt(req.params.id, 10);
         if (!uid || !Number.isFinite(threadId)) return res.status(400).json({ error: 'Invalid request' });
         if (!req.file) return res.status(400).json({ error: 'No audio uploaded' });
@@ -278,7 +279,7 @@ export function registerForumRoutes(app: Express, isAuthenticated: any, uploadsD
   // POST /api/forum/posts/:id/vote — body: { value: 1 | -1 | 0 }
   app.post('/api/forum/posts/:id/vote', isAuthenticated, async (req: any, res: Response) => {
     try {
-      const uid = req.user?.claims?.sub;
+      const uid = getUserId(req);
       const postId = parseInt(req.params.id, 10);
       const value = parseInt(req.body?.value, 10);
       if (!uid || !Number.isFinite(postId) || ![1, -1, 0].includes(value)) {
@@ -321,7 +322,7 @@ export function registerForumRoutes(app: Express, isAuthenticated: any, uploadsD
   // POST /api/forum/posts/:id/mark-answer — thread author only
   app.post('/api/forum/posts/:id/mark-answer', isAuthenticated, async (req: any, res: Response) => {
     try {
-      const uid = req.user?.claims?.sub;
+      const uid = getUserId(req);
       const postId = parseInt(req.params.id, 10);
       if (!uid || !Number.isFinite(postId)) return res.status(400).json({ error: 'Invalid request' });
       const post = (await db.select().from(forumPosts).where(eq(forumPosts.id, postId)).limit(1))[0];
@@ -353,7 +354,7 @@ export function registerForumRoutes(app: Express, isAuthenticated: any, uploadsD
   // DELETE handler is already registered in server/routes.ts — omitted here to avoid conflict.
   app.delete('/api/forum/posts/:id/soft', isAuthenticated, async (req: any, res: Response) => {
     try {
-      const uid = req.user?.claims?.sub;
+      const uid = getUserId(req);
       const id = parseInt(req.params.id, 10);
       if (!uid || !Number.isFinite(id)) return res.status(400).json({ error: 'Invalid' });
       const post = (await db.select().from(forumPosts).where(eq(forumPosts.id, id)).limit(1))[0];

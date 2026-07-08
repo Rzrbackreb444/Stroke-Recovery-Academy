@@ -41,6 +41,7 @@ import {
   type NickQuoteWithId,
   type QuoteCategory,
 } from "../data/nickQuotes";
+import { getUserId } from "../lib/authUtils";
 import {
   sasquatchSpeak,
   isElevenLabsConfigured,
@@ -243,7 +244,7 @@ export function registerCircuitRoutes(
     "/api/circuit/session/start",
     isAuthenticated,
     async (req: any, res: Response) => {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req);
       const parsed = startSessionSchema.safeParse(req.body || {});
       if (!parsed.success) {
         return res.status(400).json({ error: "Invalid", details: parsed.error.format() });
@@ -270,7 +271,7 @@ export function registerCircuitRoutes(
     "/api/circuit/session/:id/station",
     isAuthenticated,
     async (req: any, res: Response) => {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req);
       const id = Number(req.params.id);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "Bad id" });
       const parsed = stationCompleteSchema.safeParse(req.body || {});
@@ -360,7 +361,7 @@ export function registerCircuitRoutes(
     "/api/circuit/session/:id/feeling",
     isAuthenticated,
     async (req: any, res: Response) => {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req);
       const id = Number(req.params.id);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "Bad id" });
       const parsed = sessionFeelingSchema.safeParse(req.body || {});
@@ -384,7 +385,7 @@ export function registerCircuitRoutes(
     "/api/circuit/session/:id/complete",
     isAuthenticated,
     async (req: any, res: Response) => {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req);
       const id = Number(req.params.id);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "Bad id" });
       const [session] = await db
@@ -429,7 +430,7 @@ export function registerCircuitRoutes(
     "/api/circuit/session/recent",
     isAuthenticated,
     async (req: any, res: Response) => {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req);
       const limit = Math.min(Number(req.query.limit) || 10, 50);
       const [rows, streakRows] = await Promise.all([
         db
@@ -470,7 +471,7 @@ export function registerCircuitRoutes(
     "/api/circuit/quote/bridge",
     isAuthenticated,
     async (req: any, res: Response) => {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req);
       const sessionId = Number(req.query.sessionId);
       const fromStation = String(req.query.fromStation || "");
       const toStation = String(req.query.toStation || "");
@@ -563,7 +564,7 @@ export function registerCircuitRoutes(
     "/api/circuit/quote/coach",
     isAuthenticated,
     async (req: any, res: Response) => {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req);
       const sessionId = Number(req.query.sessionId);
       let previouslyPlayed: string[] = [];
       let session: typeof circuitSessions.$inferSelect | null = null;

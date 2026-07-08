@@ -5,6 +5,7 @@ import {
   sraCourseRatings, sraCourseRatingHelpful, courses, users, userCourseProgress,
 } from "@shared/schema";
 import { and, desc, eq, sql } from "drizzle-orm";
+import { getUserId } from "../lib/authUtils";
 
 async function isVerifiedCompletion(userId: string, courseId: number): Promise<boolean> {
   const r = await db.select({ completedAt: userCourseProgress.completedAt })
@@ -60,7 +61,7 @@ export function registerReviewRoutes(app: Express, isAuthenticated: any) {
         distribution: { 5: Number(a.r5||0), 4: Number(a.r4||0), 3: Number(a.r3||0), 2: Number(a.r2||0), 1: Number(a.r1||0) },
       };
 
-      const uid = req.user?.claims?.sub;
+      const uid = getUserId(req);
       let myReviewId: number | null = null;
       let myHelpful: Record<number, boolean> = {};
       let myCompletion = false;
@@ -89,7 +90,7 @@ export function registerReviewRoutes(app: Express, isAuthenticated: any) {
   // Create / update own review (one per user per course)
   app.post("/api/courses/:courseId/reviews", isAuthenticated, async (req: any, res) => {
     try {
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req);
       const courseId = parseInt(req.params.courseId, 10);
       if (!Number.isFinite(courseId)) return res.status(400).json({ error: "Invalid course id" });
 
@@ -130,7 +131,7 @@ export function registerReviewRoutes(app: Express, isAuthenticated: any) {
 
   app.delete("/api/reviews/:id", isAuthenticated, async (req: any, res) => {
     try {
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req);
       const id = parseInt(req.params.id, 10);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "Invalid id" });
       const del = await db.delete(sraCourseRatings)
@@ -145,7 +146,7 @@ export function registerReviewRoutes(app: Express, isAuthenticated: any) {
   // Toggle helpful — race-safe via transaction + idempotent insert
   app.post("/api/reviews/:id/helpful", isAuthenticated, async (req: any, res) => {
     try {
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req);
       const id = parseInt(req.params.id, 10);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "Invalid id" });
 

@@ -6,6 +6,7 @@ import { notificationPreferences } from '@shared/schema';
 import { eq } from 'drizzle-orm';
 import { normalizeE164 } from '../messaging/phone';
 import { isValidTimezone } from '../messaging';
+import { getUserId } from "../lib/authUtils";
 
 const notifPrefSchema = z.object({
   checkinReminderHour: z.number().int().min(0).max(23).optional(),
@@ -29,7 +30,7 @@ export function registerProgressRoutes(app: Express, isAuthenticated: any) {
   // GET /api/recovery/progress — full history for the Progress Hub
   app.get('/api/recovery/progress', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub ?? req.user?.id as string;
+      const userId = getUserId(req) as string;
       if (!userId) return res.status(401).json({ message: 'Unauthorized' });
 
       const today = new Date();
@@ -138,7 +139,7 @@ export function registerProgressRoutes(app: Express, isAuthenticated: any) {
   // GET /api/recovery/notification-prefs
   app.get('/api/recovery/notification-prefs', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub ?? req.user?.id as string;
+      const userId = getUserId(req) as string;
       if (!userId) return res.status(401).json({ message: 'Unauthorized' });
 
       let rows = await db.select().from(notificationPreferences).where(eq(notificationPreferences.userId, userId)).limit(1);
@@ -177,7 +178,7 @@ export function registerProgressRoutes(app: Express, isAuthenticated: any) {
   // PATCH /api/recovery/notification-prefs
   app.patch('/api/recovery/notification-prefs', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub ?? req.user?.id as string;
+      const userId = getUserId(req) as string;
       if (!userId) return res.status(401).json({ message: 'Unauthorized' });
 
       const parsed = notifPrefSchema.safeParse(req.body);

@@ -15,6 +15,7 @@ import {
   type PowerPointPackageKey,
 } from '../powerPointsService';
 import { recoveryStripeService } from '../recoveryStripeService';
+import { getUserId } from "../lib/authUtils";
 
 // Tiny profanity filter — list intentionally short; production should plug in a real moderation API.
 const SLUR_PATTERNS = [
@@ -47,7 +48,7 @@ export function registerPowerPointsRoutes(app: Express, isAuthenticated: any) {
   // Authenticated: send a power-points gift via Stripe checkout
   app.post('/api/power-points/checkout', isAuthenticated, async (req: any, res) => {
     try {
-      const senderId = req.user.claims.sub as string;
+      const senderId = getUserId(req) as string;
       const parsed = checkoutSchema.safeParse(req.body);
       if (!parsed.success) {
         return res.status(400).json({ error: 'Invalid request', details: parsed.error.format() });
@@ -110,28 +111,28 @@ export function registerPowerPointsRoutes(app: Express, isAuthenticated: any) {
 
   // Authenticated: my received gifts (inbox)
   app.get('/api/power-points/received', isAuthenticated, async (req: any, res) => {
-    const userId = req.user.claims.sub as string;
+    const userId = getUserId(req) as string;
     const gifts = await getReceivedGifts(userId);
     res.json({ gifts });
   });
 
   // Authenticated: my sent gifts
   app.get('/api/power-points/sent', isAuthenticated, async (req: any, res) => {
-    const userId = req.user.claims.sub as string;
+    const userId = getUserId(req) as string;
     const gifts = await getSentGifts(userId);
     res.json({ gifts });
   });
 
   // Authenticated: unread count for header badge
   app.get('/api/power-points/unread-count', isAuthenticated, async (req: any, res) => {
-    const userId = req.user.claims.sub as string;
+    const userId = getUserId(req) as string;
     const count = await getUnreadCount(userId);
     res.json({ count });
   });
 
   // Authenticated: mark a gift read
   app.post('/api/power-points/:id/read', isAuthenticated, async (req: any, res) => {
-    const userId = req.user.claims.sub as string;
+    const userId = getUserId(req) as string;
     const id = parseInt(req.params.id, 10);
     if (!Number.isFinite(id)) return res.status(400).json({ error: 'Invalid id' });
     await markRead(userId, id);
@@ -147,7 +148,7 @@ export function registerPowerPointsRoutes(app: Express, isAuthenticated: any) {
 
   // Authenticated: block a sender
   app.post('/api/power-points/block/:senderId', isAuthenticated, async (req: any, res) => {
-    const userId = req.user.claims.sub as string;
+    const userId = getUserId(req) as string;
     const senderId = req.params.senderId;
     if (!senderId || senderId === userId) return res.status(400).json({ error: 'Invalid sender' });
     await db.insert(giftSenderBlocks).values({ receiverId: userId, blockedSenderId: senderId }).onConflictDoNothing();
@@ -156,7 +157,7 @@ export function registerPowerPointsRoutes(app: Express, isAuthenticated: any) {
 
   // Authenticated: unblock
   app.post('/api/power-points/unblock/:senderId', isAuthenticated, async (req: any, res) => {
-    const userId = req.user.claims.sub as string;
+    const userId = getUserId(req) as string;
     const senderId = req.params.senderId;
     await db.delete(giftSenderBlocks).where(and(
       eq(giftSenderBlocks.receiverId, userId),
@@ -167,7 +168,7 @@ export function registerPowerPointsRoutes(app: Express, isAuthenticated: any) {
 
   // Authenticated: read current prefs (accepts + public slug)
   app.get('/api/power-points/preferences', isAuthenticated, async (req: any, res) => {
-    const userId = req.user.claims.sub as string;
+    const userId = getUserId(req) as string;
     const [row] = await db.select({
       acceptsPowerPoints: users.acceptsPowerPoints,
       publicSlug: users.publicSlug,
@@ -180,7 +181,7 @@ export function registerPowerPointsRoutes(app: Express, isAuthenticated: any) {
 
   // Authenticated: toggle accepting Power Points
   app.post('/api/power-points/preferences', isAuthenticated, async (req: any, res) => {
-    const userId = req.user.claims.sub as string;
+    const userId = getUserId(req) as string;
     const accepts = !!req.body?.acceptsPowerPoints;
     await db.update(users).set({ acceptsPowerPoints: accepts }).where(eq(users.id, userId));
     res.json({ ok: true, acceptsPowerPoints: accepts });

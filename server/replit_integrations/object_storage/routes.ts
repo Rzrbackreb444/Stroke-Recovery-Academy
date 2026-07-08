@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 import { getObjectAclPolicy, ObjectPermission } from "./objectAcl";
+import { getUserId } from "../../lib/authUtils";
 
 /**
  * Register object storage routes for file uploads.
@@ -80,8 +81,7 @@ export function registerObjectStorageRoutes(app: Express): void {
       // (survivor journal photos/voice/PDFs) require the owner.
       const aclPolicy = await getObjectAclPolicy(objectFile);
       if (aclPolicy && aclPolicy.visibility === "private") {
-        const userId =
-          (req as any).user?.claims?.sub ?? (req as any).user?.id;
+        const userId = getUserId(req as any);
         const allowed = await objectStorageService.canAccessObjectEntity({
           userId,
           objectFile,
