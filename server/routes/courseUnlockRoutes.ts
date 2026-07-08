@@ -4,6 +4,7 @@ import { courseCreditUnlocks, courses, users } from '@shared/schema';
 import { and, eq } from 'drizzle-orm';
 import { deductCredits, addCredits } from '../creditService';
 import { getRecoveryStripeClient } from '../recoveryStripeClient';
+import { getUserId } from "../lib/authUtils";
 
 // Each Power Point is worth $0.04 in cash equivalent on payouts.
 // (Spark = 100 pts = $5 retail → therapist payout 100 * 0.04 * 0.85 ≈ $3.40)
@@ -14,7 +15,7 @@ const CREATOR_SHARE_PERCENT = 85;
 export function registerCourseUnlockRoutes(app: Express, isAuthenticated: any) {
   // Get the credit price + unlock status for a course
   app.get('/api/courses/:id/unlock-info', isAuthenticated, async (req: any, res) => {
-    const userId = req.user.claims.sub as string;
+    const userId = getUserId(req) as string;
     const courseId = parseInt(req.params.id, 10);
     if (!Number.isFinite(courseId)) return res.status(400).json({ error: 'Invalid course id' });
 
@@ -41,7 +42,7 @@ export function registerCourseUnlockRoutes(app: Express, isAuthenticated: any) {
   // Spend credits to unlock a course; queue 85% Connect payout to instructor
   app.post('/api/courses/:id/unlock', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub as string;
+      const userId = getUserId(req) as string;
       const courseId = parseInt(req.params.id, 10);
       if (!Number.isFinite(courseId)) return res.status(400).json({ error: 'Invalid course id' });
 
@@ -176,7 +177,7 @@ export function registerCourseUnlockRoutes(app: Express, isAuthenticated: any) {
 
   // List my unlocks
   app.get('/api/me/course-unlocks', isAuthenticated, async (req: any, res) => {
-    const userId = req.user.claims.sub as string;
+    const userId = getUserId(req) as string;
     const list = await db.select({
       unlock: courseCreditUnlocks,
       course: courses,

@@ -91,7 +91,7 @@ export function registerRecoveryAnthemRoutes(app: Express) {
   // ── Free preview (script only, no music synthesis) ─────────────────
   app.post("/api/recovery/anthem/preview", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req);
       const parsed = composeInputSchema.safeParse(req.body ?? {});
       if (!parsed.success) {
         return res.status(400).json({
@@ -111,7 +111,7 @@ export function registerRecoveryAnthemRoutes(app: Express) {
 
   // ── Paid render (script + ElevenLabs Music) ────────────────────────
   app.post("/api/recovery/anthem/compose", isAuthenticated, async (req: any, res: Response) => {
-    const userId = req.user.claims.sub;
+    const userId = getUserId(req);
     const parsed = composeInputSchema.safeParse(req.body ?? {});
     if (!parsed.success) {
       return res.status(400).json({
@@ -195,7 +195,7 @@ export function registerRecoveryAnthemRoutes(app: Express) {
   // ── List user's anthems ────────────────────────────────────────────
   app.get("/api/recovery/anthem/list", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req);
       const rows = await db
         .select({
           id: recoveryAnthems.id,
@@ -224,7 +224,7 @@ export function registerRecoveryAnthemRoutes(app: Express) {
     isAuthenticated,
     async (req: any, res: Response) => {
       try {
-        const userId = req.user.claims.sub;
+        const userId = getUserId(req);
         const id = Number(req.params.id);
         if (!Number.isFinite(id)) return res.status(400).json({ error: "bad_id" });
 
@@ -308,7 +308,7 @@ export function registerRecoveryAnthemRoutes(app: Express) {
     isAuthenticated,
     async (req: any, res: Response) => {
       try {
-        const userId = req.user.claims.sub;
+        const userId = getUserId(req);
         const id = Number(req.params.id);
         if (!Number.isFinite(id)) return res.status(400).json({ error: "bad_id" });
 
@@ -494,7 +494,7 @@ export function registerRecoveryAnthemRoutes(app: Express) {
   // ── Usage status ───────────────────────────────────────────────────
   app.get("/api/recovery/anthem/usage", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req);
       const [usage, premium] = await Promise.all([ensureUsage(userId), isPremium(userId)]);
       return res.json({
         month: usage.month,

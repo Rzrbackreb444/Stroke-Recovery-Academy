@@ -3,11 +3,12 @@ import type { Express } from "express";
 import { db } from "../db";
 import { courses, userCourseProgress, sraCourseRatings, creatorEarnings } from "@shared/schema";
 import { and, eq, sql } from "drizzle-orm";
+import { getUserId } from "../lib/authUtils";
 
 export function registerInstructorAnalyticsRoutes(app: Express, isAuthenticated: any) {
   app.get("/api/instructor/analytics", isAuthenticated, async (req: any, res) => {
     try {
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req);
 
       const myCourses = await db.select({
         id: courses.id, slug: courses.slug, title: courses.title,
@@ -133,7 +134,7 @@ export function registerInstructorAnalyticsRoutes(app: Express, isAuthenticated:
   // Most recent reviews across instructor's courses
   app.get("/api/instructor/analytics/recent-reviews", isAuthenticated, async (req: any, res) => {
     try {
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req);
       const rows = await db.execute(sql`
         SELECT r.id, r.course_id, r.rating, r.title, r.body, r.is_verified_completion,
                r.created_at, c.title AS course_title

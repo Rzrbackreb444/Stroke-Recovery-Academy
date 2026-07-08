@@ -14,6 +14,7 @@ import { type Request, type Response, type NextFunction, type Express } from "ex
 import { randomUUID } from "node:crypto";
 import { sql } from "drizzle-orm";
 import { db } from "../db";
+import { getUserId } from "../lib/authUtils";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -44,7 +45,7 @@ export function structuredErrorLogger(
 ) {
   const status = err?.status || err?.statusCode || 500;
   const userId =
-    (req as any)?.user?.claims?.sub ??
+    getUserId(req as any) ??
     (req as any)?.session?.userId ??
     null;
 

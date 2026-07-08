@@ -27,6 +27,7 @@ import { publicRateLimit } from "../middleware/publicRateLimit";
 import { requireAdmin } from "../middleware/requireAdmin";
 import { transcribeVideo } from "../videoTranscription";
 import { analyzeFreeVideo } from "../services/freeAnalysis/freeAnalysisEngine";
+import { getUserId } from "../lib/authUtils";
 
 // ── Crash-recovery sweep (invoked by the durable scheduler) ──────────────
 // The submission pipeline runs as a fire-and-forget background task. If the
@@ -343,7 +344,7 @@ export function registerFreeAnalysisRoutes(app: Express, isAuthenticated: any, u
       }
       const next: Partial<FreeVideoAnalysis> = {
         moderationStatus: parsed.data.action === "approve" ? "approved" : parsed.data.action === "reject" ? "rejected" : "pending",
-        moderatedBy: req.user?.id || req.user?.claims?.sub || null,
+        moderatedBy: getUserId(req) ?? null,
         moderatedAt: new Date(),
       };
       if (parsed.data.publishedHandle) next.publishedHandle = parsed.data.publishedHandle;

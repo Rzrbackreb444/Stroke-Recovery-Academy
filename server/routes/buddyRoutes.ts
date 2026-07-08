@@ -8,6 +8,7 @@ import { z } from "zod";
 import { db } from "../db";
 import { buddyProfiles, buddyPairs, users } from "@shared/schema";
 import { and, eq, or, sql } from "drizzle-orm";
+import { getUserId } from "../lib/authUtils";
 
 const profileSchema = z.object({
   optedIn: z.boolean(),
@@ -44,7 +45,7 @@ async function withPartner(uid: string) {
 export function registerBuddyRoutes(app: Express, isAuthenticated: any) {
   // Get my opt-in profile
   app.get("/api/buddy/profile", isAuthenticated, async (req: any, res) => {
-    const uid = req.user.claims.sub;
+    const uid = getUserId(req);
     const [p] = await db.select().from(buddyProfiles).where(eq(buddyProfiles.userId, uid)).limit(1);
     res.json(p || null);
   });
@@ -52,7 +53,7 @@ export function registerBuddyRoutes(app: Express, isAuthenticated: any) {
   // Upsert my opt-in profile
   app.put("/api/buddy/profile", isAuthenticated, async (req: any, res) => {
     try {
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req);
       const parsed = profileSchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ error: "Invalid", details: parsed.error.format() });
       const interests = parsed.data.interests.map(s => s.trim().toLowerCase()).filter(Boolean);
@@ -89,7 +90,7 @@ export function registerBuddyRoutes(app: Express, isAuthenticated: any) {
 
   // My current buddy (or null)
   app.get("/api/buddy/me", isAuthenticated, async (req: any, res) => {
-    const uid = req.user.claims.sub;
+    const uid = getUserId(req);
     const result = await withPartner(uid);
     res.json(result);
   });
@@ -97,7 +98,7 @@ export function registerBuddyRoutes(app: Express, isAuthenticated: any) {
   // Run the matcher and create a pair atomically
   app.post("/api/buddy/find", isAuthenticated, async (req: any, res) => {
     try {
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req);
       const [me] = await db.select().from(buddyProfiles).where(eq(buddyProfiles.userId, uid)).limit(1);
       if (!me || !me.optedIn) {
         return res.status(400).json({ error: "Opt in to buddy matching first" });
@@ -173,7 +174,7 @@ export function registerBuddyRoutes(app: Express, isAuthenticated: any) {
   // can be matched again immediately.
   app.post("/api/buddy/end", isAuthenticated, async (req: any, res) => {
     try {
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req);
       const reason = typeof req.body?.reason === "string" ? req.body.reason.slice(0, 200) : null;
       const pair = await findActivePair(uid);
       if (!pair) return res.status(404).json({ error: "No active buddy" });

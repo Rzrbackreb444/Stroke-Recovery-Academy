@@ -10,6 +10,7 @@ import { storage } from "./storage";
 import { isAuthenticated } from "./replitAuth";
 import { requireAdmin } from "./middleware/requireAdmin";
 import { sasquatchSpeak } from "./elevenlabs";
+import { getUserId } from "./lib/authUtils";
 
 const SITE_URL = "https://strokerecoveryacademy.com";
 const SHOW_TITLE = "Stroke Recovery Academy with Nick Kremers";
@@ -125,7 +126,7 @@ Return ONLY the spoken script, nothing else.`;
       const estimatedDuration = Math.max(60, Math.round((wordCount / 165) * 60));
 
       // 3) Persist episode under the admin's default show.
-      const show = await getOrCreateDefaultShow(req.user.claims.sub);
+      const show = await getOrCreateDefaultShow(getUserId(req));
 
       const existingEpisodes = await db.select({ episodeNumber: podcastEpisodes.episodeNumber })
         .from(podcastEpisodes)

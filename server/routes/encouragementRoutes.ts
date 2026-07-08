@@ -4,6 +4,7 @@ import { sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { encouragements, notificationPreferences } from '@shared/schema';
 import { eq, and, desc } from 'drizzle-orm';
+import { getUserId } from "../lib/authUtils";
 
 const sendSchema = z.object({
   toUserId: z.string().min(1).max(200),
@@ -37,7 +38,7 @@ export function registerEncouragementRoutes(app: Express, isAuthenticated: any) 
   // POST /api/recovery/encouragements — send an encouragement
   app.post('/api/recovery/encouragements', isAuthenticated, async (req: any, res) => {
     try {
-      const fromUserId = req.user?.claims?.sub ?? req.user?.id as string;
+      const fromUserId = getUserId(req) as string;
       if (!fromUserId) return res.status(401).json({ message: 'Unauthorized' });
 
       const parsed = sendSchema.safeParse(req.body);
@@ -76,7 +77,7 @@ export function registerEncouragementRoutes(app: Express, isAuthenticated: any) 
   // GET /api/recovery/encouragements?date=YYYY-MM-DD — encouragements received by the caller
   app.get('/api/recovery/encouragements', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub ?? req.user?.id as string;
+      const userId = getUserId(req) as string;
       if (!userId) return res.status(401).json({ message: 'Unauthorized' });
 
       const date = String(req.query.date || new Date().toISOString().slice(0, 10));
@@ -102,7 +103,7 @@ export function registerEncouragementRoutes(app: Express, isAuthenticated: any) 
   // GET /api/recovery/supporter/:survivorId — caregiver read-only summary view
   app.get('/api/recovery/supporter/:survivorId', isAuthenticated, async (req: any, res) => {
     try {
-      const viewerId = req.user?.claims?.sub ?? req.user?.id as string;
+      const viewerId = getUserId(req) as string;
       if (!viewerId) return res.status(401).json({ message: 'Unauthorized' });
 
       const survivorId = req.params.survivorId;
@@ -198,7 +199,7 @@ export function registerEncouragementRoutes(app: Express, isAuthenticated: any) 
   // (survivor calls this to see who is watching their progress)
   app.get('/api/recovery/my-caregivers', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub ?? req.user?.id as string;
+      const userId = getUserId(req) as string;
       if (!userId) return res.status(401).json({ message: 'Unauthorized' });
 
       const rows = await db.execute(sql`

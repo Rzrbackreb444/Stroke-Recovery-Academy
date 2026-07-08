@@ -3,6 +3,7 @@ import { db } from '../db';
 import { lessonVideoTranslations, lessonVideos } from '@shared/schema';
 import { sql, eq, and } from 'drizzle-orm';
 import { z } from 'zod';
+import { getUserId } from "../lib/authUtils";
 
 // Locales we expose to the i18n switcher. Subset of the full 20-lang catalog;
 // translation jobs are only allowed for these to keep cost bounded.
@@ -77,7 +78,7 @@ export function registerTranslationRoutes(app: Express, isAuthenticated: any) {
   // Authed: trigger a translation job for one locale. Cached unless force=true.
   // Translates BOTH the plaintext transcript and the VTT cue text via Gemini.
   app.post('/api/lessons/:videoId/translate', isAuthenticated, async (req: any, res) => {
-    const userId = req.user.claims.sub as string;
+    const userId = getUserId(req) as string;
     const videoId = parseInt(req.params.videoId, 10);
     if (!Number.isFinite(videoId)) return res.status(400).json({ error: 'Invalid video id' });
     const parsed = requestSchema.safeParse(req.body ?? {});

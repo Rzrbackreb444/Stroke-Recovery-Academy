@@ -8,6 +8,7 @@ import { db } from '../db';
 import { courseBuilderQuestions, courseBuilderQuizzes, quizAttempts, quizReviewQueue } from '@shared/schema';
 import { and, eq, lte, sql } from 'drizzle-orm';
 import { gradeAnswer, fuzzySimilarity, sm2Update } from '../services/quizGrading';
+import { getUserId } from "../lib/authUtils";
 
 export function registerQuizRoutes(app: Express, isAuthenticated: any, uploadsDir: string) {
   const audioStorage = multer.diskStorage({
@@ -75,7 +76,7 @@ export function registerQuizRoutes(app: Express, isAuthenticated: any, uploadsDi
   app.post('/api/quizzes/:id/attempt', isAuthenticated, async (req: any, res: Response) => {
     try {
       const quizId = parseInt(req.params.id, 10);
-      const userId = req.user?.claims?.sub || req.user?.id;
+      const userId = getUserId(req);
       if (!userId) return res.status(401).json({ error: 'Unauthorized' });
       const answers = (req.body?.answers || {}) as Record<string, any>;
       const timeTaken = Number(req.body?.timeTaken) || 0;
@@ -156,7 +157,7 @@ export function registerQuizRoutes(app: Express, isAuthenticated: any, uploadsDi
 
   // GET /api/review-queue — today's due questions for the user
   app.get('/api/review-queue', isAuthenticated, async (req: any, res: Response) => {
-    const userId = req.user?.claims?.sub || req.user?.id;
+    const userId = getUserId(req);
     if (!userId) return res.status(401).json({ error: 'Unauthorized' });
     const limit = Math.min(50, Math.max(1, parseInt(String(req.query.limit || '20'), 10)));
     const due = await db.select().from(quizReviewQueue)
@@ -187,7 +188,7 @@ export function registerQuizRoutes(app: Express, isAuthenticated: any, uploadsDi
 
   // POST /api/review-queue/:reviewId/answer — grade one spaced-review answer
   app.post('/api/review-queue/:reviewId/answer', isAuthenticated, async (req: any, res: Response) => {
-    const userId = req.user?.claims?.sub || req.user?.id;
+    const userId = getUserId(req);
     const reviewId = parseInt(req.params.reviewId, 10);
     const [row] = await db.select().from(quizReviewQueue).where(eq(quizReviewQueue.id, reviewId)).limit(1);
     if (!row || row.userId !== userId) return res.status(404).json({ error: 'Not found' });
