@@ -106,6 +106,35 @@ export default function RecoveryBlog() {
 
   const featuredPosts = posts.filter(p => p.featured);
 
+  const BlogCardImage = ({ src, alt, height }: { src?: string; alt: string; height: string }) => {
+    if (src) {
+      const webpSrc = src.replace(/\.(jpe?g|png)(\?|$)/i, '.webp$2');
+      const hasWebp = webpSrc !== src;
+      return (
+        <div className={`${height} relative overflow-hidden flex-shrink-0`} style={{ contain: "strict" }}>
+          <picture>
+            {hasWebp && <source srcSet={webpSrc} type="image/webp" />}
+            <img
+              src={src}
+              alt={alt}
+              loading="lazy"
+              decoding="async"
+              width={800}
+              height={height === "h-48" ? 192 : 128}
+              className="w-full h-full object-cover"
+              style={{ display: "block" }}
+            />
+          </picture>
+        </div>
+      );
+    }
+    return (
+      <div className={`${height} bg-gradient-to-br from-[#E2741B]/10 to-[#0D0D0D] flex items-center justify-center flex-shrink-0`} aria-hidden="true">
+        <BookOpen className="h-10 w-10 text-[#E2741B]/30 group-hover:scale-110 transition-transform" />
+      </div>
+    );
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       month: 'short',
@@ -222,8 +251,11 @@ export default function RecoveryBlog() {
                     className="bg-[#1a1a1a] border-[#333] overflow-hidden hover:border-[#E2741B]/50 transition-all duration-200 cursor-pointer group h-full"
                     data-testid={`card-featured-${post.id}`}
                   >
-                    <div className="h-48 bg-gradient-to-br from-[#E2741B]/20 to-[#0D0D0D] flex items-center justify-center relative">
-                      <BookOpen className="h-16 w-16 text-[#E2741B]/50 group-hover:scale-110 transition-transform" />
+                    <div className="relative">
+                      <BlogCardImage src={post.featuredImage} alt={post.title} height="h-48" />
+                      {!post.featuredImage && (
+                        <BookOpen className="h-16 w-16 text-[#E2741B]/50 group-hover:scale-110 transition-transform absolute inset-0 m-auto pointer-events-none" />
+                      )}
                       <div className="absolute top-4 left-4">
                         <Badge className="bg-[#E2741B] text-black">
                           <Sparkles className="h-3 w-3 mr-1" />
@@ -288,9 +320,7 @@ export default function RecoveryBlog() {
                   className="bg-[#1a1a1a] border-[#333] overflow-hidden hover:border-[#E2741B]/50 transition-all duration-200 cursor-pointer group h-full flex flex-col"
                   data-testid={`card-post-${post.id}`}
                 >
-                  <div className="h-32 bg-gradient-to-br from-[#E2741B]/10 to-[#0D0D0D] flex items-center justify-center flex-shrink-0">
-                    <BookOpen className="h-10 w-10 text-[#E2741B]/30 group-hover:scale-110 transition-transform" />
-                  </div>
+                  <BlogCardImage src={post.featuredImage} alt={post.title} height="h-32" />
                   <div className="p-5 flex flex-col flex-1">
                     <Badge className={`${categoryColors[post.category] || "bg-gray-500/20 text-gray-400 border-gray-500/30"} self-start mb-1`}>
                       {categoryLabels[post.category] || post.category}
