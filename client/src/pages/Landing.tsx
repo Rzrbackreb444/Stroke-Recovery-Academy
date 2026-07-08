@@ -16,6 +16,7 @@ import RecoverySEO, {
   STROKE_CONDITION_SCHEMA,
 } from "@/components/RecoverySEO";
 import Footer from "@/components/Footer";
+import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import heroWarrior from "@assets/hero-warrior-opt.webp";
 import nickPortrait from "@assets/nick-portrait-opt.webp";
 import manifestoStairs from "@assets/manifesto-stairs-opt.webp";
@@ -66,7 +67,7 @@ function AvatarCluster({ avatars, border }: { avatars: { src: string; name: stri
 function Hero() {
   const stats = useCommunityStats();
   return (
-    <section className="bg-[#1A1412]">
+    <section id="hero-section" className="bg-[#1A1412]">
       {/* Mobile: full-bleed image on top, warm cream text below. Desktop: side-by-side with gradient overlay. */}
       <div className="sm:hidden">
         <img src={heroWarrior} alt="Nick Kremers — stroke survivor" {...({ fetchpriority: "high" } as any)} decoding="async" className="w-full h-[72vh] object-cover" style={{ objectPosition: "65% 22%" }} />
@@ -844,12 +845,31 @@ function FinalCTA() {
 export default function Landing() {
   const { isLoading, isAuthenticated } = useAuth();
   const [, setLocation] = useLocation();
+  const [pastHero, setPastHero] = useState(false);
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
       setLocation("/recovery/dashboard");
     }
   }, [isLoading, isAuthenticated, setLocation]);
+
+  useEffect(() => {
+    const hero = document.getElementById("hero-section");
+    if (!hero) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        // Only flip true when hero has actually scrolled above the viewport
+        if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
+          setPastHero(true);
+        } else if (entry.isIntersecting) {
+          setPastHero(false);
+        }
+      },
+      { threshold: 0 }
+    );
+    obs.observe(hero);
+    return () => obs.disconnect();
+  }, []);
 
   if (isLoading) {
     return (
@@ -940,6 +960,7 @@ export default function Landing() {
         <FinalCTA />
       </main>
       <Footer />
+      {pastHero && <SasquatchChatWidget />}
     </div>
   );
 }

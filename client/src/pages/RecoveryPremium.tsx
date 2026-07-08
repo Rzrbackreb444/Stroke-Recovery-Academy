@@ -966,7 +966,6 @@ export default function RecoveryPremium() {
       <div className="bg-[#1C1917] border-b border-[#2A2421]">
         <div className="max-w-5xl mx-auto px-4 py-4 flex flex-wrap items-center justify-center gap-3 text-sm">
           <a href="/recovery/premium" className="px-4 py-2 rounded-full bg-[#C06B3E] text-white font-semibold text-xs uppercase tracking-wider" data-testid="tab-solo">Solo — $19/mo</a>
-          <a href="/recovery/premium?squad=waitlist" className="px-4 py-2 rounded-full bg-[#2A2421] text-[#FDFBF7]/60 font-semibold text-xs uppercase tracking-wider hover:bg-[#3A3230] transition-colors" data-testid="tab-squad">Squad — $59/mo <span className="ml-1.5 bg-[#3A3230] text-[#FDFBF7]/40 text-[10px] px-1.5 py-0.5 rounded-full">Soon</span></a>
           <a href="/recovery/coaching-with-nick" className="px-4 py-2 rounded-full bg-[#2A2421] text-[#FDFBF7]/60 font-semibold text-xs uppercase tracking-wider hover:bg-[#3A3230] transition-colors" data-testid="tab-nick">1:1 with Nick — $350/session</a>
           <a href="/partners" className="px-4 py-2 rounded-full bg-[#2A2421] text-[#FDFBF7]/60 font-semibold text-xs uppercase tracking-wider hover:bg-[#3A3230] transition-colors" data-testid="tab-partners">Rehab Partners</a>
         </div>
@@ -1157,6 +1156,25 @@ export default function RecoveryPremium() {
               );
             })}
           </div>
+        </section>
+
+        {/* ── Squad coming-soon teaser ──────────────────────────────────── */}
+        <section className="mb-12" data-testid="section-squad-teaser">
+          <Card className="p-6 bg-[#1C1917]/[0.04] border-[#C06B3E]/20 text-center shadow-none">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <svg className="w-5 h-5 text-[#C06B3E]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.768-.231-1.48-.63-2.074M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.768.231-1.48.63-2.074m0 0a5.002 5.002 0 019.288-2.076M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <h3 className="font-bold text-[#1C1917] text-sm uppercase tracking-wider">Squad accountability pods — coming soon</h3>
+            </div>
+            <p className="text-sm text-[#78716C] max-w-md mx-auto">
+              A small group of survivors walking the same road, with Nick in the room. Bi-weekly Zoom, private feed, dedicated pod.{" "}
+              <a href="/recovery/premium?squad=waitlist" className="text-[#C06B3E] underline underline-offset-2 hover:no-underline" data-testid="link-squad-waitlist-teaser">
+                Join the waitlist
+              </a>{" "}
+              to be first.
+            </p>
+          </Card>
         </section>
 
         {/* ── Free vs Premium comparison ────────────────────────────────── */}

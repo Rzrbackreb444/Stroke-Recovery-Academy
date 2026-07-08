@@ -124,17 +124,16 @@ export default function RecoveryHeader() {
         <div className="flex items-center justify-between gap-4 py-2">
 
           {/* Logo — 3× scale, dominant on every viewport including mobile */}
-          <Link href="/recovery" data-testid="link-recovery-home" className="min-w-0">
-            <div className="flex items-center gap-3 cursor-pointer min-w-0">
+          <Link href="/recovery" data-testid="link-recovery-home" className="flex-shrink-0">
+            <div className="flex items-center gap-3 cursor-pointer">
               <img
                 src={sasquatchLogo}
                 alt="Stroke Recovery Academy"
-                className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl object-cover"
-                style={{ flexShrink: 0 }}
+                className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl object-cover flex-shrink-0"
                 data-testid="img-recovery-logo"
               />
-              <div className="flex flex-col leading-none min-w-0">
-                <span className={`font-bold tracking-tight text-lg sm:text-xl truncate ${scrolled || !isLandingRoot ? "text-[#1C1917]" : "text-[#FDFBF7]"}`}>
+              <div className="flex flex-col leading-none">
+                <span className={`font-bold tracking-tight text-lg sm:text-xl whitespace-nowrap ${scrolled || !isLandingRoot ? "text-[#1C1917]" : "text-[#FDFBF7]"}`}>
                   Stroke Recovery Academy
                 </span>
                 <span className="hidden sm:block mt-1 text-[10px] font-semibold uppercase tracking-[0.28em] text-gold">

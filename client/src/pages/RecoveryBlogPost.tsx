@@ -266,12 +266,12 @@ const categoryColors: Record<string, string> = {
 };
 
 const categoryGradients: Record<string, string> = {
-  philosophy: "from-purple-900/30 to-[#0D0D0D]",
-  therapy: "from-blue-900/30 to-[#0D0D0D]",
-  science: "from-green-900/30 to-[#0D0D0D]",
-  exercises: "from-orange-900/30 to-[#0D0D0D]",
-  caregivers: "from-pink-900/30 to-[#0D0D0D]",
-  "work-career": "from-yellow-900/30 to-[#0D0D0D]",
+  philosophy: "from-purple-900/30 to-[#1C1917]",
+  therapy: "from-blue-900/30 to-[#1C1917]",
+  science: "from-green-900/30 to-[#1C1917]",
+  exercises: "from-orange-900/30 to-[#1C1917]",
+  caregivers: "from-pink-900/30 to-[#1C1917]",
+  income: "from-yellow-900/30 to-[#1C1917]",
 };
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -412,13 +412,13 @@ export default function RecoveryBlogPost() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#0D0D0D] text-white">
+      <div className="min-h-screen bg-[#FDFBF7] text-[#1C1917]">
         <RecoveryHeader />
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-6">
-          <Skeleton className="h-8 w-24 bg-[#1a1a1a]" />
-          <Skeleton className="h-12 w-full bg-[#1a1a1a]" />
-          <Skeleton className="h-48 w-full bg-[#1a1a1a]" />
-          {[...Array(6)].map((_, i) => <Skeleton key={i} className="h-5 w-full bg-[#1a1a1a]" />)}
+          <Skeleton className="h-8 w-24 bg-[#E2C2A4]/20" />
+          <Skeleton className="h-12 w-full bg-[#E2C2A4]/20" />
+          <Skeleton className="h-48 w-full bg-[#E2C2A4]/20" />
+          {[...Array(6)].map((_, i) => <Skeleton key={i} className="h-5 w-full bg-[#E2C2A4]/20" />)}
         </div>
       </div>
     );
@@ -426,14 +426,14 @@ export default function RecoveryBlogPost() {
 
   if (error || !post) {
     return (
-      <div className="min-h-screen bg-[#0D0D0D] text-white">
+      <div className="min-h-screen bg-[#FDFBF7] text-[#1C1917]">
         <RecoveryHeader />
         <div className="max-w-3xl mx-auto px-4 py-24 text-center">
-          <BookOpen className="h-16 w-16 text-[#E2741B] mx-auto mb-6" />
-          <h1 className="text-2xl font-bold mb-3">Article Not Found</h1>
-          <p className="text-gray-400 mb-6">This article may have been moved or doesn't exist.</p>
+          <BookOpen className="h-16 w-16 text-[#C06B3E] mx-auto mb-6" />
+          <h1 className="text-2xl font-bold mb-3 text-[#1C1917]">Article Not Found</h1>
+          <p className="text-[#78716C] mb-6">This article may have been moved or doesn't exist.</p>
           <Link href="/recovery/blog">
-            <Button className="bg-[#E2741B] text-black font-semibold">
+            <Button className="bg-[#C06B3E] text-white font-semibold">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Blog
             </Button>
@@ -443,7 +443,7 @@ export default function RecoveryBlogPost() {
     );
   }
 
-  const gradient = categoryGradients[post.category] || "from-[#E2741B]/20 to-[#0D0D0D]";
+  const gradient = categoryGradients[post.category] || "from-[#C06B3E]/20 to-[#1C1917]";
   const authorName = post.authorName || "Nick Kremers";
   const authorBioText = post.authorBio ||
     "Nick Kremers is a hemorrhagic stroke survivor (December 3, 2018) and founder of Stroke Recovery Academy. He developed the Sasquatch Method and SASCH framework after recovering from complete left-side paralysis to full independent mobility.";
@@ -540,7 +540,7 @@ export default function RecoveryBlogPost() {
   // ── Render ────────────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-[#0D0D0D] text-white">
+    <div className="min-h-screen bg-[#FDFBF7]">
       {/* Reading progress bar — fixed at top */}
       <div
         className="fixed top-0 left-0 h-0.5 bg-[#E2741B] z-[9999] transition-all duration-150"
@@ -652,62 +652,65 @@ export default function RecoveryBlogPost() {
 
           {/* Article column */}
           <div>
-            {/* Mobile TOC — collapsible */}
-            {tocItems.length > 3 && (
-              <div className="lg:hidden mb-8 bg-[#1a1a1a] border border-[#333] rounded-md overflow-hidden">
-                <button
-                  onClick={() => setMobileTocOpen(o => !o)}
-                  className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-white"
-                  data-testid="button-mobile-toc-toggle"
-                >
-                  <span className="flex items-center gap-2">
-                    <List className="h-4 w-4 text-[#E2741B]" />
-                    In this article
-                  </span>
-                  {mobileTocOpen ? <ChevronUp className="h-4 w-4 text-gray-400" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
-                </button>
-                {mobileTocOpen && (
-                  <nav className="px-4 pb-4 border-t border-[#333] pt-3 space-y-1">
-                    {tocItems.map(item => (
-                      <a
-                        key={item.id}
-                        href={`#${item.id}`}
-                        onClick={() => setMobileTocOpen(false)}
-                        className={`block py-1 text-sm transition-colors ${item.level === 3 ? 'pl-4 text-gray-500' : 'text-gray-300'} hover:text-[#E2741B]`}
-                      >
-                        {item.text}
-                      </a>
-                    ))}
-                  </nav>
-                )}
-              </div>
-            )}
+            {/* Article reading pane — intentionally dark for prose readability */}
+            <div className="bg-[#1C1917] rounded-xl px-5 md:px-8 py-8 mb-8">
+              {/* Mobile TOC — collapsible */}
+              {tocItems.length > 3 && (
+                <div className="lg:hidden mb-8 bg-[#2A2421] border border-[#333] rounded-md overflow-hidden">
+                  <button
+                    onClick={() => setMobileTocOpen(o => !o)}
+                    className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-white"
+                    data-testid="button-mobile-toc-toggle"
+                  >
+                    <span className="flex items-center gap-2">
+                      <List className="h-4 w-4 text-[#E2741B]" />
+                      In this article
+                    </span>
+                    {mobileTocOpen ? <ChevronUp className="h-4 w-4 text-gray-400" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
+                  </button>
+                  {mobileTocOpen && (
+                    <nav className="px-4 pb-4 border-t border-[#333] pt-3 space-y-1">
+                      {tocItems.map(item => (
+                        <a
+                          key={item.id}
+                          href={`#${item.id}`}
+                          onClick={() => setMobileTocOpen(false)}
+                          className={`block py-1 text-sm transition-colors ${item.level === 3 ? 'pl-4 text-gray-500' : 'text-gray-300'} hover:text-[#E2741B]`}
+                        >
+                          {item.text}
+                        </a>
+                      ))}
+                    </nav>
+                  )}
+                </div>
+              )}
 
-            <article
-              ref={articleRef}
-              className="prose-recovery"
-              dangerouslySetInnerHTML={{ __html: renderedContent }}
-              data-testid="article-content"
-            />
+              <article
+                ref={articleRef}
+                className="prose-recovery"
+                dangerouslySetInnerHTML={{ __html: renderedContent }}
+                data-testid="article-content"
+              />
+            </div>
 
-            <Separator className="my-10 bg-[#333]" />
+            <Separator className="my-10 bg-[#E2C2A4]/30" />
 
             {/* Action row: Like + social share + tags */}
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-2 flex-wrap">
                 <Button
                   variant="outline"
-                  className={`border-[#333] gap-2 ${liked ? 'text-red-400 border-red-400/30' : 'text-gray-400'}`}
+                  className={`border-[#E2C2A4]/40 gap-2 ${liked ? 'text-red-500 border-red-300' : 'text-[#78716C]'}`}
                   onClick={handleLike}
                   data-testid="button-like-article"
                 >
-                  <Heart className={`h-4 w-4 ${liked ? 'fill-red-400' : ''}`} />
+                  <Heart className={`h-4 w-4 ${liked ? 'fill-red-500' : ''}`} />
                   {formatNumber(post.likeCount + localLikes)}
                 </Button>
                 <Button
                   variant="outline"
                   size="icon"
-                  className="border-[#333] text-[#1DA1F2]"
+                  className="border-[#E2C2A4]/40 text-[#1DA1F2]"
                   onClick={shareTwitter}
                   data-testid="button-share-twitter"
                   title="Share on Twitter / X"
@@ -717,7 +720,7 @@ export default function RecoveryBlogPost() {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="border-[#333] text-[#0A66C2]"
+                  className="border-[#E2C2A4]/40 text-[#0A66C2]"
                   onClick={shareLinkedIn}
                   data-testid="button-share-linkedin"
                   title="Share on LinkedIn"
@@ -727,7 +730,7 @@ export default function RecoveryBlogPost() {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="border-[#333] text-gray-400"
+                  className="border-[#E2C2A4]/40 text-[#78716C]"
                   onClick={copyLink}
                   data-testid="button-copy-link"
                   title="Copy link"
@@ -739,7 +742,7 @@ export default function RecoveryBlogPost() {
               {post.tags && post.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {post.tags.map(tag => (
-                    <Badge key={tag} variant="outline" className="border-[#333] text-gray-400 text-xs">
+                    <Badge key={tag} variant="outline" className="border-[#E2C2A4]/40 text-[#78716C] text-xs">
                       {tag}
                     </Badge>
                   ))}
@@ -748,15 +751,15 @@ export default function RecoveryBlogPost() {
             </div>
 
             {/* Author card */}
-            <Card className="bg-[#1a1a1a] border-[#333] p-6 mt-10">
+            <Card className="bg-white border-[#E2C2A4]/30 p-6 mt-10">
               <div className="flex gap-4">
-                <div className="w-14 h-14 rounded-full bg-[#E2741B]/20 flex items-center justify-center flex-shrink-0">
-                  <User className="h-7 w-7 text-[#E2741B]" />
+                <div className="w-14 h-14 rounded-full bg-[#C06B3E]/10 flex items-center justify-center flex-shrink-0">
+                  <User className="h-7 w-7 text-[#C06B3E]" />
                 </div>
                 <div>
-                  <p className="font-bold text-white mb-0.5">{authorName}</p>
-                  <p className="text-base text-[#E2741B] mb-2">Stroke Survivor · Founder, Stroke Recovery Academy</p>
-                  <p className="text-base text-gray-400 leading-relaxed">{authorBioText}</p>
+                  <p className="font-bold text-[#1C1917] mb-0.5">{authorName}</p>
+                  <p className="text-xs text-[#C06B3E] mb-2">Stroke Survivor · Founder, Stroke Recovery Academy</p>
+                  <p className="text-sm text-[#78716C] leading-relaxed">{authorBioText}</p>
                 </div>
               </div>
             </Card>
@@ -773,22 +776,22 @@ export default function RecoveryBlogPost() {
             {/* Related articles */}
             {relatedPosts.length > 0 && (
               <div className="mt-12">
-                <h2 className="text-xl font-bold mb-5 text-white">Related Articles</h2>
+                <h2 className="text-xl font-bold mb-5 text-[#1C1917]">Related Articles</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {relatedPosts.map(related => (
                     <Link key={related.id} href={`/recovery/blog/${related.slug}`}>
-                      <Card className="bg-[#1a1a1a] border-[#333] hover-elevate cursor-pointer h-full">
-                        <div className="h-24 bg-gradient-to-br from-[#E2741B]/15 to-[#0D0D0D] flex items-center justify-center">
-                          <BookOpen className="h-8 w-8 text-[#E2741B]/40" />
+                      <Card className="bg-white border-[#E2C2A4]/30 hover-elevate cursor-pointer h-full">
+                        <div className="h-24 bg-gradient-to-br from-[#C06B3E]/10 to-[#F5F0EB] flex items-center justify-center">
+                          <BookOpen className="h-8 w-8 text-[#C06B3E]/40" />
                         </div>
                         <div className="p-4">
-                          <Badge className={`${categoryColors[related.category] || "bg-gray-500/20 text-gray-400"} text-xs mb-2`}>
+                          <Badge className={`${categoryColors[related.category] || "bg-stone-100 text-stone-500"} text-xs mb-2`}>
                             {related.category}
                           </Badge>
-                          <h3 className="font-semibold text-white text-sm leading-snug line-clamp-2 mb-2">
+                          <h3 className="font-semibold text-[#1C1917] text-sm leading-snug line-clamp-2 mb-2">
                             {related.title}
                           </h3>
-                          <p className="text-base text-gray-500 flex items-center gap-1">
+                          <p className="text-xs text-[#A8A29E] flex items-center gap-1">
                             <Clock className="h-3 w-3" />
                             {related.readTime || calculatedReadTime} min
                           </p>
@@ -801,19 +804,19 @@ export default function RecoveryBlogPost() {
             )}
 
             {/* CTA */}
-            <Card className="bg-gradient-to-br from-[#E2741B]/20 to-[#1a1a1a] border-[#E2741B]/30 p-8 mt-12 text-center">
-              <h2 className="text-2xl font-bold mb-3">Ready to Start Your Recovery?</h2>
-              <p className="text-gray-300 mb-6">
+            <Card className="bg-gradient-to-br from-[#C06B3E]/8 to-white border-[#C06B3E]/20 p-8 mt-12 text-center">
+              <h2 className="text-2xl font-bold mb-3 text-[#1C1917]">Ready to Start Your Recovery?</h2>
+              <p className="text-[#78716C] mb-6">
                 Talk to Coach free — no signup for your first messages — then go all-in with a survivor plan built for reps and accountability.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link href="/recovery/sasquatch-coach">
-                  <Button className="bg-[#E2741B] text-black font-semibold gap-2">
+                  <Button className="bg-[#C06B3E] text-white font-semibold gap-2">
                     Talk to Coach — free <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
                 <Link href="/recovery/premium">
-                  <Button variant="outline" className="border-[#E2741B]/50 text-[#E2741B] gap-2">
+                  <Button variant="outline" className="border-[#C06B3E]/40 text-[#C06B3E] gap-2">
                     See Premium
                   </Button>
                 </Link>
@@ -825,8 +828,8 @@ export default function RecoveryBlogPost() {
           {tocItems.length > 3 && (
             <aside className="hidden lg:block">
               <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto">
-                <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-                  <List className="h-3.5 w-3.5 text-[#E2741B]" />
+                <h4 className="text-xs font-semibold text-[#78716C] uppercase tracking-widest mb-3 flex items-center gap-2">
+                  <List className="h-3.5 w-3.5 text-[#C06B3E]" />
                   In this article
                 </h4>
                 <nav className="space-y-0.5">
@@ -838,8 +841,8 @@ export default function RecoveryBlogPost() {
                         item.level === 3 ? 'pl-5' : 'pl-3'
                       } ${
                         activeTocId === item.id
-                          ? 'border-[#E2741B] text-[#E2741B] font-medium'
-                          : 'border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-600'
+                          ? 'border-[#C06B3E] text-[#C06B3E] font-medium'
+                          : 'border-transparent text-[#78716C] hover:text-[#1C1917] hover:border-[#E2C2A4]'
                       }`}
                       data-testid={`toc-link-${item.id}`}
                     >
@@ -849,12 +852,12 @@ export default function RecoveryBlogPost() {
                 </nav>
 
                 {/* Mini share panel in sidebar */}
-                <div className="mt-8 pt-6 border-t border-[#333]">
-                  <p className="text-sm text-gray-500 uppercase tracking-widest mb-3">Share</p>
+                <div className="mt-8 pt-6 border-t border-[#E2C2A4]/40">
+                  <p className="text-xs text-[#78716C] uppercase tracking-widest mb-3">Share</p>
                   <div className="flex flex-col gap-2">
                     <button
                       onClick={shareTwitter}
-                      className="flex items-center gap-2 min-h-[44px] text-sm text-gray-400 hover:text-[#1DA1F2] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E2741B] focus-visible:ring-offset-2 rounded"
+                      className="flex items-center gap-2 text-sm text-[#78716C] hover:text-[#1DA1F2] transition-colors"
                       data-testid="button-sidebar-share-twitter"
                     >
                       <Twitter className="h-4 w-4" />
@@ -862,7 +865,7 @@ export default function RecoveryBlogPost() {
                     </button>
                     <button
                       onClick={shareLinkedIn}
-                      className="flex items-center gap-2 min-h-[44px] text-sm text-gray-400 hover:text-[#0A66C2] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E2741B] focus-visible:ring-offset-2 rounded"
+                      className="flex items-center gap-2 text-sm text-[#78716C] hover:text-[#0A66C2] transition-colors"
                       data-testid="button-sidebar-share-linkedin"
                     >
                       <Linkedin className="h-4 w-4" />
@@ -870,7 +873,7 @@ export default function RecoveryBlogPost() {
                     </button>
                     <button
                       onClick={copyLink}
-                      className="flex items-center gap-2 min-h-[44px] text-sm text-gray-400 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E2741B] focus-visible:ring-offset-2 rounded"
+                      className="flex items-center gap-2 text-sm text-[#78716C] hover:text-[#1C1917] transition-colors"
                       data-testid="button-sidebar-copy-link"
                     >
                       <Link2 className="h-4 w-4" />
