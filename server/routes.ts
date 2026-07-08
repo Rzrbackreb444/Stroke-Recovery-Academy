@@ -2318,12 +2318,20 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
         photos: profile.picture ? [{ value: profile.picture }] : [],
         provider: 'google',
       });
-      req.logIn(user, (err) => {
+      req.logIn(user, async (err) => {
         if (err) {
           console.error('Google auth session error:', err);
           return res.redirect('/auth?error=google_session');
         }
-        res.redirect('/recovery/dashboard');
+        try {
+          const profile = await storage.getUserProfile(user.id);
+          if (profile?.intakeCompletedAt) {
+            return res.redirect('/recovery/dashboard');
+          }
+        } catch (_) {
+          // fall through on DB error — intake is a safe landing
+        }
+        return res.redirect('/recovery/intake');
       });
     } catch (err) {
       console.error('Google OAuth callback error:', err);

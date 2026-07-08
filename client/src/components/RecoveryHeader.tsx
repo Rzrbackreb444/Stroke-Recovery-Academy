@@ -444,13 +444,23 @@ export default function RecoveryHeader() {
                   </Button>
                 </>
               ) : (
-                <Button
-                  className="w-full bg-gold text-black font-semibold"
-                  onClick={() => (window.location.href = "/recovery/login?tab=signup")}
-                  data-testid="mobile-button-join"
-                >
-                  Start Free
-                </Button>
+                <>
+                  <Button
+                    className="w-full bg-gold text-black font-semibold"
+                    onClick={() => (window.location.href = "/recovery/login?tab=signup")}
+                    data-testid="mobile-button-join"
+                  >
+                    Start Free
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="w-full text-[#78716C] justify-center"
+                    onClick={() => (window.location.href = "/recovery/login")}
+                    data-testid="mobile-button-sign-in"
+                  >
+                    Sign In
+                  </Button>
+                </>
               )}
             </div>
           </div>

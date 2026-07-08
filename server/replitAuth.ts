@@ -126,9 +126,30 @@ export async function setupAuth(app: Express) {
 
   app.get("/api/callback", (req, res, next) => {
     ensureStrategy(req.hostname);
-    passport.authenticate(`replitauth:${req.hostname}`, {
-      successReturnToOrRedirect: "/",
-      failureRedirect: "/api/login",
+    passport.authenticate(`replitauth:${req.hostname}`, async (err: any, user: any) => {
+      if (err || !user) return res.redirect("/api/login");
+      req.logIn(user, async (loginErr) => {
+        if (loginErr) return res.redirect("/api/login");
+        // Honour an explicit returnTo set before the auth redirect.
+        const returnTo = (req.session as any)?.returnTo as string | undefined;
+        if (returnTo && returnTo.startsWith("/") && !returnTo.startsWith("//")) {
+          delete (req.session as any).returnTo;
+          return res.redirect(returnTo);
+        }
+        // Route based on whether the survivor has already completed intake.
+        try {
+          const userId = user.claims?.sub as string | undefined;
+          if (userId) {
+            const profile = await storage.getUserProfile(userId);
+            if (profile?.intakeCompletedAt) {
+              return res.redirect("/recovery/dashboard");
+            }
+          }
+        } catch (_) {
+          // fall through on DB error — intake is a safe landing
+        }
+        return res.redirect("/recovery/intake");
+      });
     })(req, res, next);
   });
 

@@ -372,6 +372,9 @@ function WelcomeStep({ userName }: { userName?: string }) {
         <Stat label="Steps" value="3" />
         <Stat label="Save" value="As you go" />
       </div>
+      <p className="mt-5 text-xs text-gray-500 bg-[#0D0D0D] rounded-md border border-[#333] px-4 py-2.5" data-testid="text-zen-mode-hint">
+        Feeling overwhelmed? You can switch to a simpler view anytime from your dashboard — it's called Zen Mode.
+      </p>
     </div>
   );
 }
