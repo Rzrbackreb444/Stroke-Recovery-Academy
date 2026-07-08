@@ -2318,12 +2318,20 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
         photos: profile.picture ? [{ value: profile.picture }] : [],
         provider: 'google',
       });
-      req.logIn(user, (err) => {
+      req.logIn(user, async (err) => {
         if (err) {
           console.error('Google auth session error:', err);
           return res.redirect('/auth?error=google_session');
         }
-        res.redirect('/recovery/dashboard');
+        try {
+          const profile = await storage.getUserProfile(user.id);
+          if (profile?.intakeCompletedAt) {
+            return res.redirect('/recovery/dashboard');
+          }
+        } catch (_) {
+          // fall through on DB error — intake is a safe landing
+        }
+        return res.redirect('/recovery/intake');
       });
     } catch (err) {
       console.error('Google OAuth callback error:', err);
@@ -13671,6 +13679,19 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     } catch (error) {
       console.error("Error fetching recovery blog:", error);
       res.status(500).json({ message: "Failed to fetch blog posts" });
+    }
+  });
+
+  app.get('/api/recovery/blog/counts', async (req, res) => {
+    try {
+      const results = await db
+        .select({ category: recoveryBlogPosts.category, count: count() })
+        .from(recoveryBlogPosts)
+        .where(eq(recoveryBlogPosts.status, 'published'))
+        .groupBy(recoveryBlogPosts.category);
+      res.json(results);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch category counts" });
     }
   });
 

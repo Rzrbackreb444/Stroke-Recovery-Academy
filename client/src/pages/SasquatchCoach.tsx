@@ -98,6 +98,10 @@ export default function SasquatchCoach() {
   const [freeQuota, setFreeQuota] = useState<{ used: number; limit: number } | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [micUnsupported, setMicUnsupported] = useState(false);
+  const [thinkingLong, setThinkingLong] = useState(false);
+  const [lastError, setLastError] = useState<string | null>(null);
+  const [lastFailedInput, setLastFailedInput] = useState<string | null>(null);
+  const thinkingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const recognitionRef = useRef<any>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -174,7 +178,12 @@ export default function SasquatchCoach() {
         requireAuth?: boolean;
       };
     },
+    onError: (err: Error) => {
+      setLastError(err.message || "Something went wrong");
+    },
     onSuccess: (data) => {
+      setLastError(null);
+      setLastFailedInput(null);
       const coachMsg: Message = {
         role: "coach",
         content: data.response,
@@ -226,6 +235,25 @@ export default function SasquatchCoach() {
     },
   });
 
+  useEffect(() => {
+    if (chatMutation.isPending) {
+      setThinkingLong(false);
+      thinkingTimerRef.current = setTimeout(() => setThinkingLong(true), 8000);
+    } else {
+      if (thinkingTimerRef.current) {
+        clearTimeout(thinkingTimerRef.current);
+        thinkingTimerRef.current = null;
+      }
+      setThinkingLong(false);
+    }
+    return () => {
+      if (thinkingTimerRef.current) {
+        clearTimeout(thinkingTimerRef.current);
+        thinkingTimerRef.current = null;
+      }
+    };
+  }, [chatMutation.isPending]);
+
   const playAudio = (base64: string) => {
     if (audioRef.current) audioRef.current.pause();
     const audio = new Audio(`data:audio/mpeg;base64,${base64}`);
@@ -239,9 +267,17 @@ export default function SasquatchCoach() {
   const handleSend = () => {
     const text = input.trim();
     if (!text || chatMutation.isPending) return;
+    setLastError(null);
+    setLastFailedInput(text);
     setMessages((prev) => [...prev, { role: "user", content: text }]);
     setInput("");
     chatMutation.mutate(text);
+  };
+
+  const handleRetry = () => {
+    if (!lastFailedInput || chatMutation.isPending) return;
+    setLastError(null);
+    chatMutation.mutate(lastFailedInput);
   };
 
   const handleKey = (e: React.KeyboardEvent) => {
@@ -252,6 +288,8 @@ export default function SasquatchCoach() {
   };
 
   const handleStarter = (prompt: string) => {
+    setLastError(null);
+    setLastFailedInput(prompt);
     setMessages((prev) => [...prev, { role: "user", content: prompt }]);
     chatMutation.mutate(prompt);
   };
@@ -512,16 +550,48 @@ export default function SasquatchCoach() {
             ))}
 
             {chatMutation.isPending && (
-              <div className="flex gap-3 justify-start" data-testid="coach-typing">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 border" style={{ background: "rgba(192,107,62,0.15)", borderColor: "rgba(192,107,62,0.3)" }}>
-                  <Flame className="h-3.5 w-3.5 text-[#C06B3E]" />
-                </div>
-                <div className="rounded-2xl rounded-tl-sm px-4 py-3" style={{ background: "#2A2118", border: "1px solid rgba(255,255,255,0.06)" }}>
-                  <div className="flex gap-1.5 items-center h-4">
-                    {[0, 150, 300].map((delay) => (
-                      <span key={delay} className="w-1.5 h-1.5 rounded-full bg-[#C06B3E]/60 animate-bounce" style={{ animationDelay: `${delay}ms` }} />
-                    ))}
+              <div className="flex flex-col gap-2" data-testid="coach-typing">
+                <div className="flex gap-3 justify-start">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 border" style={{ background: "rgba(192,107,62,0.15)", borderColor: "rgba(192,107,62,0.3)" }}>
+                    <Flame className="h-3.5 w-3.5 text-[#C06B3E]" />
                   </div>
+                  <div className="rounded-2xl rounded-tl-sm px-4 py-3" style={{ background: "#2A2118", border: "1px solid rgba(255,255,255,0.06)" }}>
+                    <div className="flex gap-1.5 items-center h-4">
+                      {[0, 150, 300].map((delay) => (
+                        <span key={delay} className="w-1.5 h-1.5 rounded-full bg-[#C06B3E]/60 animate-bounce" style={{ animationDelay: `${delay}ms` }} />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                {thinkingLong && (
+                  <div className="flex gap-3 justify-start" data-testid="coach-thinking-long">
+                    <div className="w-8 h-8 shrink-0" />
+                    <p className="text-xs italic px-1" style={{ color: "rgba(192,107,62,0.55)" }}>
+                      Still on it — stroke recovery takes patience too.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+            {!chatMutation.isPending && lastError && (
+              <div className="flex gap-3 justify-start" data-testid="coach-error">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 border" style={{ background: "rgba(192,107,62,0.1)", borderColor: "rgba(192,107,62,0.2)" }}>
+                  <Flame className="h-3.5 w-3.5 text-[#C06B3E]/50" />
+                </div>
+                <div className="rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-3" style={{ background: "#2A2118", border: "1px solid rgba(255,80,80,0.15)" }}>
+                  <p className="text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>
+                    Something went wrong. Try again.
+                  </p>
+                  {lastFailedInput && (
+                    <button
+                      onClick={handleRetry}
+                      className="text-xs font-semibold underline shrink-0"
+                      style={{ color: "#C06B3E" }}
+                      data-testid="button-coach-retry"
+                    >
+                      Retry
+                    </button>
+                  )}
                 </div>
               </div>
             )}

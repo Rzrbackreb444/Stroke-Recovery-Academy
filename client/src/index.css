@@ -32,7 +32,7 @@
   --secondary: 30 25% 92%;
   --secondary-foreground: 20 10% 15%;
   --muted: 30 25% 92%;
-  --muted-foreground: 25 6% 47%;
+  --muted-foreground: 25 8% 40%;
   --accent: 17 57% 50%;
   --accent-foreground: 0 0% 100%;
   --destructive: 0 72% 45%;
@@ -188,6 +188,18 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* Global focus-visible ring for bare interactive elements not using Shadcn.
+     Uses focus-visible so mouse users are unaffected. */
+  button:focus-visible,
+  a:focus-visible,
+  [role="button"]:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 4px;
   }
 }
 
