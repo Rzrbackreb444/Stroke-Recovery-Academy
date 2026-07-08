@@ -10,6 +10,7 @@ import { storage } from "./storage";
 import { isAuthenticated } from "./replitAuth";
 import { requireAdmin } from "./middleware/requireAdmin";
 import { sasquatchSpeak } from "./elevenlabs";
+import { uploadAudioBuffer, serveAudioResponse } from "./lib/audioStorage";
 import { getUserId } from "./lib/authUtils";
 
 const SITE_URL = "https://strokerecoveryacademy.com";
@@ -120,12 +121,26 @@ Return ONLY the spoken script, nothing else.`;
         return res.status(502).json({ message: "Voice synthesis failed", detail: String(e?.message || e) });
       }
 
-      const dataUrl = `data:audio/mpeg;base64,${audioBuffer.toString("base64")}`;
-      // Estimate duration: rough wpm 165, then * 60 / 1000 → seconds.
+      // Estimate duration: rough wpm 165, then * 60 → seconds.
       const wordCount = finalScript.split(/\s+/).length;
       const estimatedDuration = Math.max(60, Math.round((wordCount / 165) * 60));
 
-      // 3) Persist episode under the admin's default show.
+      // 3) Upload audio to object storage (public — RSS enclosure must be open).
+      let audioUrl: string;
+      try {
+        audioUrl = await uploadAudioBuffer({
+          buffer: audioBuffer,
+          contentType: "audio/mpeg",
+          owner: null,
+          visibility: "public",
+          context: "podcast",
+        });
+      } catch (uploadErr: any) {
+        console.error("[podcast] audio upload failed:", uploadErr?.message ?? uploadErr);
+        return res.status(502).json({ message: "Audio upload failed", detail: String(uploadErr?.message ?? uploadErr) });
+      }
+
+      // 4) Persist episode under the admin's default show.
       const show = await getOrCreateDefaultShow(getUserId(req));
 
       const existingEpisodes = await db.select({ episodeNumber: podcastEpisodes.episodeNumber })
@@ -140,7 +155,7 @@ Return ONLY the spoken script, nothing else.`;
         title: post.title,
         description: (post.excerpt || post.metaDescription || "").slice(0, 500),
         showNotes: post.content,
-        audioUrl: dataUrl,
+        audioUrl,
         coverArtUrl: post.heroImageUrl || null,
         duration: estimatedDuration,
         transcript: finalScript,
@@ -166,26 +181,21 @@ Return ONLY the spoken script, nothing else.`;
   });
 
   // GET /podcast/episode/:id/audio.mp3 — stream the stored audio for a published episode.
+  // Handles both modern /objects/... paths and legacy base64 data URLs transparently.
   app.get("/podcast/episode/:id/audio.mp3", async (req, res) => {
     try {
       const id = parseInt(req.params.id, 10);
       if (isNaN(id)) return res.status(400).send("Invalid id");
-      const [ep] = await db.select().from(podcastEpisodes).where(and(eq(podcastEpisodes.id, id), eq(podcastEpisodes.isPublished, true))).limit(1);
-      if (!ep || !ep.audioUrl) return res.status(404).send("Not found");
-      const m = ep.audioUrl.match(/^data:(audio\/[^;]+);base64,(.+)$/);
-      if (!m) return res.status(500).send("Invalid stored audio");
-      const buf = Buffer.from(m[2], "base64");
-      res.set("Content-Type", m[1]);
-      res.set("Accept-Ranges", "bytes");
-      res.set("Cache-Control", "public, max-age=86400");
-      res.set("Content-Length", String(buf.length));
-      // `buf` is a Buffer (binary audio bytes), not a string — Express writes
-      // it as raw binary with no escaping, so there is no XSS path here.
-      // nosemgrep: javascript.express.security.audit.xss.direct-response-write
-      res.send(buf);
+      const [ep] = await db
+        .select({ audioUrl: podcastEpisodes.audioUrl })
+        .from(podcastEpisodes)
+        .where(and(eq(podcastEpisodes.id, id), eq(podcastEpisodes.isPublished, true)))
+        .limit(1);
+      if (!ep?.audioUrl) return res.status(404).send("Not found");
+      await serveAudioResponse(ep.audioUrl, res, { cacheMaxAge: 86_400 });
     } catch (e) {
       console.error("Episode audio error:", e);
-      res.status(500).send("Internal error");
+      if (!res.headersSent) res.status(500).send("Internal error");
     }
   });
 
@@ -196,8 +206,9 @@ Return ONLY the spoken script, nothing else.`;
       const showRow = await db.select().from(podcasts).where(eq(podcasts.isPublished, true)).orderBy(desc(podcasts.createdAt)).limit(1);
       const show = showRow[0];
 
-      // Project only the columns the feed needs; compute audio byte length in SQL
-      // so we never load full base64 blobs into Node memory.
+      // Project only display columns — never load full audio payloads into Node memory.
+      // For object-storage paths (/objects/...) the DB row is tiny; for legacy base64 rows
+      // we approximate the raw byte length from the stored string length.
       const eps = show
         ? await db.select({
             id: podcastEpisodes.id,
@@ -206,9 +217,16 @@ Return ONLY the spoken script, nothing else.`;
             duration: podcastEpisodes.duration,
             episodeNumber: podcastEpisodes.episodeNumber,
             publishedAt: podcastEpisodes.publishedAt,
-            // Approx MP3 byte length: base64 payload = 4/3 of raw bytes; we strip the
-            // "data:audio/mpeg;base64," prefix (~23 chars) before dividing.
-            audioBytes: sql<number>`CASE WHEN ${podcastEpisodes.audioUrl} IS NULL THEN 0 ELSE FLOOR((OCTET_LENGTH(${podcastEpisodes.audioUrl}) - 23) * 3 / 4) END`,
+            // Byte-length for RSS <enclosure length>:
+            //   • object-storage path → 0 (iTunes players treat 0 as "unknown", which is fine)
+            //   • legacy base64 data URL → decode the approximate raw byte count from the
+            //     base64 string length, subtracting the "data:audio/mpeg;base64," prefix (~23 chars)
+            audioBytes: sql<number>`CASE
+              WHEN ${podcastEpisodes.audioUrl} IS NULL THEN 0
+              WHEN ${podcastEpisodes.audioUrl} LIKE 'data:%' THEN
+                FLOOR((OCTET_LENGTH(${podcastEpisodes.audioUrl}) - 23) * 3 / 4)
+              ELSE 0
+            END`,
           }).from(podcastEpisodes)
             .where(and(eq(podcastEpisodes.podcastId, show.id), eq(podcastEpisodes.isPublished, true)))
             .orderBy(desc(podcastEpisodes.publishedAt))
