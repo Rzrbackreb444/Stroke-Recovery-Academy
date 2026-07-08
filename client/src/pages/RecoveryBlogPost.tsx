@@ -755,8 +755,8 @@ export default function RecoveryBlogPost() {
                 </div>
                 <div>
                   <p className="font-bold text-white mb-0.5">{authorName}</p>
-                  <p className="text-xs text-[#E2741B] mb-2">Stroke Survivor · Founder, Stroke Recovery Academy</p>
-                  <p className="text-sm text-gray-400 leading-relaxed">{authorBioText}</p>
+                  <p className="text-base text-[#E2741B] mb-2">Stroke Survivor · Founder, Stroke Recovery Academy</p>
+                  <p className="text-base text-gray-400 leading-relaxed">{authorBioText}</p>
                 </div>
               </div>
             </Card>
@@ -788,7 +788,7 @@ export default function RecoveryBlogPost() {
                           <h3 className="font-semibold text-white text-sm leading-snug line-clamp-2 mb-2">
                             {related.title}
                           </h3>
-                          <p className="text-xs text-gray-500 flex items-center gap-1">
+                          <p className="text-base text-gray-500 flex items-center gap-1">
                             <Clock className="h-3 w-3" />
                             {related.readTime || calculatedReadTime} min
                           </p>
@@ -825,7 +825,7 @@ export default function RecoveryBlogPost() {
           {tocItems.length > 3 && (
             <aside className="hidden lg:block">
               <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto">
-                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
                   <List className="h-3.5 w-3.5 text-[#E2741B]" />
                   In this article
                 </h4>
@@ -850,11 +850,11 @@ export default function RecoveryBlogPost() {
 
                 {/* Mini share panel in sidebar */}
                 <div className="mt-8 pt-6 border-t border-[#333]">
-                  <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">Share</p>
+                  <p className="text-sm text-gray-500 uppercase tracking-widest mb-3">Share</p>
                   <div className="flex flex-col gap-2">
                     <button
                       onClick={shareTwitter}
-                      className="flex items-center gap-2 text-sm text-gray-400 hover:text-[#1DA1F2] transition-colors"
+                      className="flex items-center gap-2 min-h-[44px] text-sm text-gray-400 hover:text-[#1DA1F2] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E2741B] focus-visible:ring-offset-2 rounded"
                       data-testid="button-sidebar-share-twitter"
                     >
                       <Twitter className="h-4 w-4" />
@@ -862,7 +862,7 @@ export default function RecoveryBlogPost() {
                     </button>
                     <button
                       onClick={shareLinkedIn}
-                      className="flex items-center gap-2 text-sm text-gray-400 hover:text-[#0A66C2] transition-colors"
+                      className="flex items-center gap-2 min-h-[44px] text-sm text-gray-400 hover:text-[#0A66C2] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E2741B] focus-visible:ring-offset-2 rounded"
                       data-testid="button-sidebar-share-linkedin"
                     >
                       <Linkedin className="h-4 w-4" />
@@ -870,7 +870,7 @@ export default function RecoveryBlogPost() {
                     </button>
                     <button
                       onClick={copyLink}
-                      className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"
+                      className="flex items-center gap-2 min-h-[44px] text-sm text-gray-400 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E2741B] focus-visible:ring-offset-2 rounded"
                       data-testid="button-sidebar-copy-link"
                     >
                       <Link2 className="h-4 w-4" />

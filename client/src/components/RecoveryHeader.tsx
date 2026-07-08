@@ -151,7 +151,7 @@ export default function RecoveryHeader() {
               return (
                 <Link key={link.href} href={link.href}>
                   <button
-                    className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
+                    className={`flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
                       location === link.href
                         ? "text-gold"
                         : "text-[#78716C] hover:text-[#1C1917]"
@@ -169,7 +169,7 @@ export default function RecoveryHeader() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
-                  className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#78716C] hover:text-[#1C1917] rounded-lg transition-colors"
+                  className="flex items-center gap-1 px-3 py-2 min-h-[44px] text-sm font-medium text-[#78716C] hover:text-[#1C1917] rounded-lg transition-colors"
                   data-testid="nav-resources"
                 >
                   More <ChevronDown className="h-3.5 w-3.5" />
@@ -217,7 +217,7 @@ export default function RecoveryHeader() {
               <HoverCardTrigger asChild>
                 <Link href="/recovery/premium">
                   <button
-                    className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-gold hover:text-amber-300 rounded-lg transition-colors whitespace-nowrap"
+                    className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-sm font-semibold text-gold hover:text-amber-300 rounded-lg transition-colors whitespace-nowrap"
                     data-testid="nav-premium"
                   >
                     <Sparkles className="h-4 w-4" />
@@ -359,7 +359,7 @@ export default function RecoveryHeader() {
               return (
                 <Link key={link.href} href={link.href}>
                   <button
-                    className={`w-full text-left px-4 py-3 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 ${
+                    className={`w-full text-left px-4 py-3 min-h-[44px] text-sm font-medium rounded-lg transition-colors flex items-center gap-2 ${
                       location === link.href
                         ? "text-gold bg-gold/5"
                         : "text-[#78716C] hover:text-[#1C1917] hover:bg-[#F5F0EB]"
@@ -375,7 +375,7 @@ export default function RecoveryHeader() {
             {/* Resources — collapsible like desktop dropdown */}
             <div>
               <button
-                className="w-full text-left px-4 py-3 text-sm font-medium rounded-lg text-[#78716C] hover:text-[#1C1917] hover:bg-[#F5F0EB] flex items-center justify-between transition-colors"
+                className="w-full text-left px-4 py-3 min-h-[44px] text-sm font-medium rounded-lg text-[#78716C] hover:text-[#1C1917] hover:bg-[#F5F0EB] flex items-center justify-between transition-colors"
                 onClick={() => setResourcesOpen((v) => !v)}
                 data-testid="mobile-nav-resources"
               >
