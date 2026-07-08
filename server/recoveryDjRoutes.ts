@@ -8,6 +8,7 @@ import { publicRateLimit } from "./middleware/publicRateLimit";
 import { getUserId } from "./lib/authUtils";
 import { radioDjIntros } from "@shared/schema";
 import { getElevenLabsService, isElevenLabsConfigured } from "./elevenlabs";
+import { uploadAudioBuffer } from "./lib/audioStorage";
 
 // ──────────────────────────────────────────────────────────────────────
 // Coach Sasquatch DJ — between-track intros for Sasquatch Radio.
@@ -152,7 +153,14 @@ export function registerRecoveryDjRoutes(app: Express) {
           style: 0.35,
           use_speaker_boost: true,
         });
-        const audioUrl = `data:audio/mpeg;base64,${audioBuf.toString("base64")}`;
+        // Upload to object storage (public — all site visitors play DJ intros).
+        const audioUrl = await uploadAudioBuffer({
+          buffer: audioBuf,
+          contentType: "audio/mpeg",
+          owner: null,
+          visibility: "public",
+          context: "dj-intro",
+        });
 
         // Upsert by trackId — re-minting replaces the prior intro so
         // admins can iterate on script copy without DELETE+INSERT.

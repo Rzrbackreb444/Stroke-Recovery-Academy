@@ -11,6 +11,7 @@ import {
 import { GoogleGenAI } from "@google/genai";
 import { sasquatchSpeak, isElevenLabsConfigured } from "./elevenlabs";
 import { getUserId } from "./lib/authUtils";
+import { uploadAudioBuffer } from "./lib/audioStorage";
 
 const FREE_LIMITS = {
   anthem: 3,
@@ -239,7 +240,13 @@ export function registerMotivationRoutes(app: Express) {
       try {
         if (await isElevenLabsConfigured()) {
           const buf = await sasquatchSpeak(lyrics);
-          audioUrl = `data:audio/mpeg;base64,${buf.toString("base64")}`;
+          audioUrl = await uploadAudioBuffer({
+            buffer: buf,
+            contentType: "audio/mpeg",
+            owner: userId,
+            visibility: "private",
+            context: "motivation-anthem",
+          });
         }
       } catch (audioErr) {
         console.warn("[motivation] anthem audio failed (continuing without):", audioErr);
@@ -340,7 +347,14 @@ export function registerMotivationRoutes(app: Express) {
       try {
         if (await isElevenLabsConfigured()) {
           const buf = await sasquatchSpeak(text);
-          audioUrl = `data:audio/mpeg;base64,${buf.toString("base64")}`;
+          // Daily quote is platform-wide (no owner) and publicly accessible.
+          audioUrl = await uploadAudioBuffer({
+            buffer: buf,
+            contentType: "audio/mpeg",
+            owner: null,
+            visibility: "public",
+            context: "daily-quote",
+          });
         }
       } catch (e) {
         console.warn("[motivation] daily quote audio failed:", e);
