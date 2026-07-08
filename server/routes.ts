@@ -1402,12 +1402,14 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   // Auth routes
   app.get('/api/auth/user', async (req: any, res) => {
     try {
-      // Bridge: support both Replit Passport (req.user.claims.sub) and
-      // email/password/OTP sessions (req.session.userId).
+      // Bridge: support Replit Passport (req.user.claims.sub), Google OAuth /
+      // multi-provider Passport (req.user.id, no .claims), and email/password/OTP
+      // sessions (req.session.userId).
       let userId: string | undefined;
-      if (req.isAuthenticated && req.isAuthenticated() && req.user?.claims?.sub) {
-        userId = req.user.claims.sub;
-      } else if (req.session?.userId) {
+      if (req.isAuthenticated && req.isAuthenticated()) {
+        userId = getUserId(req);
+      }
+      if (!userId && req.session?.userId) {
         userId = req.session.userId;
       }
       if (!userId) {
