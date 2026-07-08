@@ -49,7 +49,7 @@ integrations = ["javascript_database:1.0.0", "javascript_log_in_with_replit:1.0.
 
 [userenv.shared]
 GOOGLE_CLOUD_PROJECT = "gen-lang-client-0671485232"
-VITE_GOOGLE_ANALYTICS_ID = "G-WDWQ3N18D5"
+VITE_GOOGLE_ANALYTICS_ID = "G-EEGF9F03G7"
 VAPID_PUBLIC_KEY = "BMR9iOKan69Lel5msGAuBipfJoV9GLdFHnxnx9G_JYmkd7QFKWoiCFp0vY4rO8aoDzaI_iq8ayXIsex96bDam6k"
 VAPID_PRIVATE_KEY = "Qj2cvyt9Sk0Wxbv92hVbY7jwSowFCwAnh_VzoG9URb0"
 VAPID_EMAIL = "mailto:nick@strokerecoveryacademy.com"
