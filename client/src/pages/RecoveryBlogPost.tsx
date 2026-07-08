@@ -40,6 +40,7 @@ interface BlogPost {
   createdAt: string;
   updatedAt: string;
   readTime?: number;
+  estimatedReadMinutes?: number;
 }
 
 interface TocItem {
@@ -246,13 +247,22 @@ function extractFAQs(html: string): FaqItem[] {
 
 // ── Styling maps ──────────────────────────────────────────────────────────────
 
+const categoryLabels: Record<string, string> = {
+  philosophy: "Philosophy",
+  therapy: "Therapy",
+  science: "Science",
+  exercises: "Exercises",
+  caregivers: "Caregivers",
+  "work-career": "Work & Career",
+};
+
 const categoryColors: Record<string, string> = {
   philosophy: "bg-purple-500/20 text-purple-400 border-purple-500/30",
   therapy: "bg-blue-500/20 text-blue-400 border-blue-500/30",
   science: "bg-green-500/20 text-green-400 border-green-500/30",
   exercises: "bg-orange-500/20 text-orange-400 border-orange-500/30",
   caregivers: "bg-pink-500/20 text-pink-400 border-pink-500/30",
-  income: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+  "work-career": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
 };
 
 const categoryGradients: Record<string, string> = {
@@ -261,7 +271,7 @@ const categoryGradients: Record<string, string> = {
   science: "from-green-900/30 to-[#0D0D0D]",
   exercises: "from-orange-900/30 to-[#0D0D0D]",
   caregivers: "from-pink-900/30 to-[#0D0D0D]",
-  income: "from-yellow-900/30 to-[#0D0D0D]",
+  "work-career": "from-yellow-900/30 to-[#0D0D0D]",
 };
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -326,9 +336,11 @@ export default function RecoveryBlogPost() {
     [rawContent]
   );
 
-  const calculatedReadTime = post?.readTime && post.readTime > 0
-    ? post.readTime
-    : Math.max(1, Math.round(wordCount / 238));
+  const calculatedReadTime = (post?.estimatedReadMinutes ?? 0) > 0
+    ? post!.estimatedReadMinutes!
+    : (post?.readTime ?? 0) > 0
+      ? post!.readTime!
+      : Math.max(1, Math.round(wordCount / 238));
 
   // Reading progress bar
   useEffect(() => {
@@ -571,7 +583,7 @@ export default function RecoveryBlogPost() {
 
           <div className="flex flex-wrap gap-2 mb-4">
             <Badge className={categoryColors[post.category] || "bg-gray-500/20 text-gray-400"}>
-              {post.category}
+              {categoryLabels[post.category] || post.category}
             </Badge>
             {post.featured && (
               <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30">
@@ -592,7 +604,7 @@ export default function RecoveryBlogPost() {
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-400">
             <span className="flex items-center gap-1.5">
               <User className="h-4 w-4" />
-              {authorName}
+              By {authorName}
             </span>
             <span className="flex items-center gap-1.5">
               <Calendar className="h-4 w-4" />

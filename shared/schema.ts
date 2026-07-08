@@ -1254,7 +1254,7 @@ export const recoveryBlogPosts = pgTable("recovery_blog_posts", {
   seoTitle: text("seo_title"), // optional SERP <title> override (<=60 chars); falls back to title
   metaDescription: text("meta_description"), // optional SERP meta description (140-160 chars); falls back to excerpt
   content: text("content").notNull(),
-  category: text("category").notNull().default("philosophy"), // philosophy, therapy, science, exercises, caregivers, income
+  category: text("category").notNull().default("philosophy"), // philosophy, therapy, science, exercises, caregivers, work-career
   tags: text("tags").array().default([]),
   heroImageUrl: text("hero_image_url"),
   authorName: text("author_name").notNull().default("Nick Kremers"),
@@ -1265,6 +1265,7 @@ export const recoveryBlogPosts = pgTable("recovery_blog_posts", {
   likeCount: integer("like_count").notNull().default(0),
   commentCount: integer("comment_count").notNull().default(0),
   readTime: integer("read_time").notNull().default(5),
+  estimatedReadMinutes: integer("estimated_read_minutes"),
   scheduledFor: timestamp("scheduled_for"), // when a status='scheduled' post should auto-publish
   newsletterBroadcastAt: timestamp("newsletter_broadcast_at"), // set once the auto-publish broadcast fired (idempotency)
   createdAt: timestamp("created_at").notNull().defaultNow(),

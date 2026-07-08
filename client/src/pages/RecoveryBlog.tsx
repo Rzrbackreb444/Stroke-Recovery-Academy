@@ -33,6 +33,7 @@ interface BlogPost {
   createdAt: string;
   updatedAt: string;
   readTime?: number;
+  estimatedReadMinutes?: number;
 }
 
 const categories = [
@@ -42,8 +43,17 @@ const categories = [
   { id: "science", label: "Science" },
   { id: "exercises", label: "Exercises" },
   { id: "caregivers", label: "Caregivers" },
-  { id: "income", label: "Income" },
+  { id: "work-career", label: "Work & Career" },
 ];
+
+const categoryLabels: Record<string, string> = {
+  philosophy: "Philosophy",
+  therapy: "Therapy",
+  science: "Science",
+  exercises: "Exercises",
+  caregivers: "Caregivers",
+  "work-career": "Work & Career",
+};
 
 const categoryColors: Record<string, string> = {
   philosophy: "bg-purple-500/20 text-purple-400 border-purple-500/30",
@@ -51,7 +61,7 @@ const categoryColors: Record<string, string> = {
   science: "bg-green-500/20 text-green-400 border-green-500/30",
   exercises: "bg-orange-500/20 text-orange-400 border-orange-500/30",
   caregivers: "bg-pink-500/20 text-pink-400 border-pink-500/30",
-  income: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+  "work-career": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
 };
 
 export default function RecoveryBlog() {
@@ -68,6 +78,24 @@ export default function RecoveryBlog() {
       return res.json();
     },
   });
+
+  const { data: categoryCounts = [] } = useQuery<{ category: string; count: number }[]>({
+    queryKey: ['/api/recovery/blog/counts'],
+    queryFn: async () => {
+      const res = await fetch('/api/recovery/blog/counts');
+      if (!res.ok) return [];
+      return res.json();
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const countMap: Record<string, number> = {};
+  let total = 0;
+  for (const row of categoryCounts) {
+    countMap[row.category] = Number(row.count);
+    total += Number(row.count);
+  }
+  countMap['all'] = total;
 
   const filteredPosts = posts.filter(post => {
     const matchesSearch = !searchQuery ||
@@ -146,7 +174,7 @@ export default function RecoveryBlog() {
               className={activeCategory === cat.id ? "bg-[#E2741B] text-black" : "border-[#333] text-gray-300"}
               data-testid={`button-category-${cat.id}`}
             >
-              {cat.label}
+              {cat.label}{countMap[cat.id] != null ? ` (${countMap[cat.id]})` : ''}
             </Button>
           ))}
         </div>
@@ -204,25 +232,28 @@ export default function RecoveryBlog() {
                       </div>
                     </div>
                     <div className="p-6">
-                      <Badge className={categoryColors[post.category] || "bg-gray-500/20 text-gray-400"}>
-                        {post.category}
-                      </Badge>
-                      <h3 className="text-xl font-bold mt-3 mb-2 text-white group-hover:text-[#E2741B] transition-colors">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Badge className={categoryColors[post.category] || "bg-gray-500/20 text-gray-400"}>
+                          {categoryLabels[post.category] || post.category}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-gray-500 mb-2">By {post.authorName || "Nick Kremers"}</p>
+                      <h3 className="text-xl font-bold mt-1 mb-2 text-white group-hover:text-[#E2741B] transition-colors">
                         {post.title}
                       </h3>
                       <p className="text-gray-400 mb-4 line-clamp-2">{post.excerpt}</p>
 
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3 text-sm text-gray-500 flex-wrap gap-y-1">
+                      <div className="flex items-center gap-3 text-sm text-gray-500 flex-wrap gap-y-1">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="h-4 w-4" />
+                          {formatDate(post.createdAt)}
+                        </span>
+                        {(post.estimatedReadMinutes ?? post.readTime ?? 0) > 0 && (
                           <span className="flex items-center gap-1">
-                            <User className="h-4 w-4" />
-                            {post.authorName}
+                            <Clock className="h-4 w-4" />
+                            {post.estimatedReadMinutes ?? post.readTime} min read
                           </span>
-                          <span className="flex items-center gap-1">
-                            <Calendar className="h-4 w-4" />
-                            {formatDate(post.createdAt)}
-                          </span>
-                        </div>
+                        )}
                       </div>
 
                       <div className="flex items-center justify-between mt-4 pt-4 border-t border-[#333]">
@@ -240,10 +271,6 @@ export default function RecoveryBlog() {
                             {post.commentCount}
                           </span>
                         </div>
-                        <span className="flex items-center gap-1 text-sm text-gray-500">
-                          <Clock className="h-4 w-4" />
-                          {post.readTime || 5} min read
-                        </span>
                       </div>
                     </div>
                   </Card>
@@ -265,38 +292,26 @@ export default function RecoveryBlog() {
                     <BookOpen className="h-10 w-10 text-[#E2741B]/30 group-hover:scale-110 transition-transform" />
                   </div>
                   <div className="p-5 flex flex-col flex-1">
-                    <Badge className={`${categoryColors[post.category] || "bg-gray-500/20 text-gray-400 border-gray-500/30"} self-start mb-2`}>
-                      {post.category}
+                    <Badge className={`${categoryColors[post.category] || "bg-gray-500/20 text-gray-400 border-gray-500/30"} self-start mb-1`}>
+                      {categoryLabels[post.category] || post.category}
                     </Badge>
+                    <p className="text-xs text-gray-500 mb-2">By {post.authorName || "Nick Kremers"}</p>
                     <h3 className="font-bold mb-2 text-white line-clamp-2 group-hover:text-[#E2741B] transition-colors flex-1">
                       {post.title}
                     </h3>
                     <p className="text-gray-400 text-sm mb-3 line-clamp-2">{post.excerpt}</p>
 
-                    <div className="flex items-center justify-between text-xs text-gray-500 mt-auto">
-                      <span className="flex items-center gap-1">
-                        <User className="h-3 w-3" />
-                        {post.authorName}
-                      </span>
+                    <div className="flex items-center gap-3 mt-auto pt-3 border-t border-[#333] text-xs text-gray-500">
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
                         {formatDate(post.createdAt)}
                       </span>
-                    </div>
-
-                    <div className="flex items-center gap-3 mt-3 pt-3 border-t border-[#333] text-xs text-gray-500">
-                      <span className="flex items-center gap-1">
-                        <Eye className="h-3 w-3" />
-                        {formatNumber(post.viewCount)}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Heart className="h-3 w-3" />
-                        {formatNumber(post.likeCount)}
-                      </span>
-                      <span className="flex items-center gap-1 ml-auto">
-                        <Clock className="h-3 w-3" />
-                        {post.readTime || 5} min
-                      </span>
+                      {(post.estimatedReadMinutes ?? post.readTime ?? 0) > 0 && (
+                        <span className="flex items-center gap-1 ml-auto">
+                          <Clock className="h-3 w-3" />
+                          {post.estimatedReadMinutes ?? post.readTime} min read
+                        </span>
+                      )}
                     </div>
                   </div>
                 </Card>

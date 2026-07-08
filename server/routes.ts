@@ -13674,6 +13674,19 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
+  app.get('/api/recovery/blog/counts', async (req, res) => {
+    try {
+      const results = await db
+        .select({ category: recoveryBlogPosts.category, count: count() })
+        .from(recoveryBlogPosts)
+        .where(eq(recoveryBlogPosts.status, 'published'))
+        .groupBy(recoveryBlogPosts.category);
+      res.json(results);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch category counts" });
+    }
+  });
+
   app.get('/api/recovery/blog/:slug', async (req, res) => {
     try {
       const post = await storage.getRecoveryBlogPostBySlug(req.params.slug);
