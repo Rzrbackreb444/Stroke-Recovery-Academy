@@ -11284,7 +11284,7 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
            ${strokeDate ? String(strokeDate).trim().slice(0, 100) : null},
            ${relationship ? String(relationship).trim().slice(0, 200) : null},
            ${String(description).trim().slice(0, 3000)},
-           ${JSON.stringify(safeMedia)}::text[])
+           ${safeMedia.length ? sql`ARRAY[${sql.join(safeMedia.map((m) => sql`${m}`), sql`, `)}]::text[]` : sql`ARRAY[]::text[]`})
       `);
       // Notify Nick
       try {

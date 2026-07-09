@@ -301,7 +301,7 @@ export async function hasActiveSasquatchPremium(
         JOIN stripe.subscription_items si ON si.subscription = s.id
        WHERE s.customer = ${stripeCustomerId}
          AND s.status IN ('active', 'trialing')
-         AND si.price = ANY(${eligibleArr}::text[])
+         AND si.price = ANY(${eligibleArr.length ? sql`ARRAY[${sql.join(eligibleArr.map((p) => sql`${p}`), sql`, `)}]::text[]` : sql`ARRAY[]::text[]`})
        LIMIT 1
     `);
     active = (r.rows?.length ?? 0) > 0;

@@ -84,8 +84,8 @@ export async function runDailyVideoIndex(): Promise<void> {
 
         await db.execute(sql`
           UPDATE community_videos
-             SET tags = ${tags},
-                 deficit_tags = ${deficitTags}
+             SET tags = ${tags.length ? sql`ARRAY[${sql.join(tags.map((t) => sql`${t}`), sql`, `)}]::text[]` : sql`ARRAY[]::text[]`},
+                 deficit_tags = ${deficitTags.length ? sql`ARRAY[${sql.join(deficitTags.map((t) => sql`${t}`), sql`, `)}]::text[]` : sql`ARRAY[]::text[]`}
            WHERE id = ${row.id} AND cardinality(tags) = 0
         `);
         enriched++;
