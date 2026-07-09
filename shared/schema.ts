@@ -1887,6 +1887,20 @@ export type BuddyProfile = typeof buddyProfiles.$inferSelect;
 export type BuddyPair = typeof buddyPairs.$inferSelect;
 export type BuddyRequest = typeof buddyRequests.$inferSelect;
 
+// Block list: a survivor blocking a peer who makes them uncomfortable/unsafe.
+// Directional (blocker → blocked). Either direction present hides DMs both ways
+// and prevents re-pairing. One row per (blocker, blocked) pair.
+export const buddyBlocks = pgTable("buddy_blocks", {
+  id: serial("id").primaryKey(),
+  blockerId: varchar("blocker_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  blockedId: varchar("blocked_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  reason: text("reason"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  uniqBlock: uniqueIndex("buddy_blocks_unique").on(t.blockerId, t.blockedId),
+}));
+export type BuddyBlock = typeof buddyBlocks.$inferSelect;
+
 // Recovery Creator Profiles (extended user profile for stroke survivors)
 export const recoveryCreatorProfiles = pgTable("recovery_creator_profiles", {
   id: serial("id").primaryKey(),

@@ -14864,8 +14864,16 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   app.post('/api/conversations/:id/messages', isAuthenticated, async (req: any, res) => {
     try {
       const userId = getUserId(req);
+      const conversationId = parseInt(req.params.id);
+      const blockedIds = await storage.getBuddyBlockedIds(userId);
+      if (blockedIds.length) {
+        const members = await storage.getConversationParticipantIds(conversationId);
+        if (members.some(m => blockedIds.includes(m))) {
+          return res.status(403).json({ message: "You can't message a blocked survivor." });
+        }
+      }
       const message = await storage.sendDirectMessage({
-        conversationId: parseInt(req.params.id),
+        conversationId,
         senderId: userId,
         ...req.body,
       });
@@ -15108,6 +15116,13 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       const userId = getUserId(req);
       const conversationId = parseInt(req.params.id);
       const { content } = req.body;
+      const blockedIds = await storage.getBuddyBlockedIds(userId);
+      if (blockedIds.length) {
+        const members = await storage.getConversationParticipantIds(conversationId);
+        if (members.some(m => blockedIds.includes(m))) {
+          return res.status(403).json({ message: "You can't message a blocked survivor." });
+        }
+      }
       // Safe messaging: run the same crisis gate as the AI Coach. Peer-to-peer
       // support is legitimate — a survivor confiding in their buddy must NOT be
       // blocked — so we still deliver the message, but attach 988/crisis

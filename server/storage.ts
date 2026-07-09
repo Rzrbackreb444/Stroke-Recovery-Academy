@@ -69,7 +69,7 @@ import {
   therapeuticExercises, exerciseSessions, exerciseScores,
   speechExercises, cognitiveExercises,
   wearableConnections, wearableMetrics,
-  conversations, conversationParticipants, directMessages,
+  conversations, conversationParticipants, directMessages, buddyBlocks,
   forumPostMedia, videoSessions, videoSessionParticipants, seoPages,
   blogPosts, blogPostReactions, blogPostComments,
   podcasts, podcastEpisodes,
@@ -1651,6 +1651,24 @@ export class DatabaseStorage implements IStorage {
   // DIRECT MESSAGING
   // ============================================================================
 
+  async getBuddyBlockedIds(userId: string): Promise<string[]> {
+    try {
+      const rows = await db.select().from(buddyBlocks)
+        .where(or(eq(buddyBlocks.blockerId, userId), eq(buddyBlocks.blockedId, userId)));
+      return rows.map(r => r.blockerId === userId ? r.blockedId : r.blockerId);
+    } catch {
+      // buddy_blocks is self-provisioned; tolerate a not-yet-created table.
+      return [];
+    }
+  }
+
+  async getConversationParticipantIds(conversationId: number): Promise<string[]> {
+    const rows = await db.select({ userId: conversationParticipants.userId })
+      .from(conversationParticipants)
+      .where(eq(conversationParticipants.conversationId, conversationId));
+    return rows.map(r => r.userId);
+  }
+
   async getConversations(userId: string): Promise<Conversation[]> {
     const participations = await db.select({ conversationId: conversationParticipants.conversationId })
       .from(conversationParticipants)
@@ -1659,9 +1677,47 @@ export class DatabaseStorage implements IStorage {
     if (participations.length === 0) return [];
     
     const conversationIds = participations.map(p => p.conversationId);
-    return db.select().from(conversations)
+    const convos = await db.select().from(conversations)
       .where(sql`${conversations.id} IN (${sql.join(conversationIds.map(id => sql`${id}`), sql`, `)})`)
       .orderBy(desc(conversations.lastMessageAt));
+
+    // Load participants (with user info) for name display + block enforcement.
+    const parts = await db.select({
+      conversationId: conversationParticipants.conversationId,
+      userId: conversationParticipants.userId,
+      lastReadAt: conversationParticipants.lastReadAt,
+      firstName: users.firstName,
+      lastName: users.lastName,
+      profileImageUrl: users.profileImageUrl,
+    })
+      .from(conversationParticipants)
+      .leftJoin(users, eq(users.id, conversationParticipants.userId))
+      .where(sql`${conversationParticipants.conversationId} IN (${sql.join(conversationIds.map(id => sql`${id}`), sql`, `)})`);
+
+    const byConv = new Map<number, any[]>();
+    for (const p of parts) {
+      const arr = byConv.get(p.conversationId) || [];
+      arr.push({
+        userId: p.userId,
+        lastReadAt: p.lastReadAt,
+        user: {
+          id: p.userId,
+          firstName: p.firstName,
+          lastName: p.lastName,
+          profileImageUrl: p.profileImageUrl,
+        },
+      });
+      byConv.set(p.conversationId, arr);
+    }
+
+    // Hide conversations that include a blocked survivor (either direction).
+    const blockedIds = new Set(await this.getBuddyBlockedIds(userId));
+    const visible = convos.filter(c => {
+      const members = byConv.get(c.id) || [];
+      return !members.some(m => blockedIds.has(m.userId));
+    });
+
+    return visible.map(c => ({ ...c, participants: byConv.get(c.id) || [] })) as any;
   }
 
   async getConversation(id: number): Promise<Conversation | undefined> {
