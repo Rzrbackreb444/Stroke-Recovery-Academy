@@ -10,8 +10,11 @@ import { getUncachableStripeClient } from "./stripeClient";
 import {
   SASQUATCH_PREMIUM_PRICE_AMOUNT,
   SASQUATCH_PREMIUM_ANNUAL_AMOUNT,
+  SASQUATCH_FOUNDER_PRICE_AMOUNT,
   ensureSasquatchPremiumPrices,
+  ensureSasquatchFounderPrice,
   hasActiveSasquatchPremium,
+  hasActiveSasquatchFounder,
   invalidateSasquatchPremium,
 } from "./services/sasquatchPremiumService";
 import {
@@ -105,6 +108,12 @@ export function registerSasquatchPremiumRoutes(app: Express) {
       const [u] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
       const customerId = u?.stripeCustomerId || null;
       const active = await hasActiveSasquatchPremium(customerId);
+      // Founder-specific flag so the client can show "Manage billing" (not
+      // "Join") to an existing Founder, while still offering premium→founder
+      // upgrades to premium-only subscribers (founderActive === false).
+      const founderActive = active
+        ? await hasActiveSasquatchFounder(customerId)
+        : false;
 
       // Lifecycle state (Task #3) — lets the client render trial / past-due /
       // grace banners. Best-effort: a missing row or DB hiccup just omits the
@@ -140,6 +149,7 @@ export function registerSasquatchPremiumRoutes(app: Express) {
 
       res.json({
         active,
+        founderActive,
         priceCents: SASQUATCH_PREMIUM_PRICE_AMOUNT,
         priceUsd: SASQUATCH_PREMIUM_PRICE_AMOUNT / 100,
         annualCents: SASQUATCH_PREMIUM_ANNUAL_AMOUNT,
@@ -148,6 +158,8 @@ export function registerSasquatchPremiumRoutes(app: Express) {
           Math.round((SASQUATCH_PREMIUM_ANNUAL_AMOUNT / 12) / 100 * 100) / 100,
         annualSavingsUsd:
           (SASQUATCH_PREMIUM_PRICE_AMOUNT * 12 - SASQUATCH_PREMIUM_ANNUAL_AMOUNT) / 100,
+        founderCents: SASQUATCH_FOUNDER_PRICE_AMOUNT,
+        founderUsd: SASQUATCH_FOUNDER_PRICE_AMOUNT / 100,
         trialDays: SASQUATCH_PREMIUM_TRIAL_DAYS,
         lifecycle,
       });
@@ -165,20 +177,33 @@ export function registerSasquatchPremiumRoutes(app: Express) {
       const userId = getUserId(req);
       if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
-      const requestedPlan = req.body?.plan === "annual" ? "annual" : "monthly";
+      const requestedTier = req.body?.tier === "founder" ? "founder" : "premium";
+      const requestedPlan =
+        requestedTier === "founder"
+          ? "monthly"
+          : req.body?.plan === "annual"
+            ? "annual"
+            : "monthly";
       // Promo code (Wave H). Optional, format-validated: only alphanumeric,
       // dash, and underscore allowed (matches all real Stripe promo code
       // formats). Length-capped at 64. Empty string → no code.
       const rawPromo = String(req.body?.promoCode ?? "").trim().toUpperCase().replace(/[^A-Z0-9_-]/g, "").slice(0, 64);
       const promotionCode = rawPromo.length > 0 ? rawPromo : undefined;
 
-      // Double-subscription guard — if the user already has an active
-      // subscription, redirect them to the billing portal instead of creating
-      // a new Stripe session. Prevents duplicate subscriptions.
+      // Double-subscription guard. For premium: block if the customer already
+      // has ANY active Sasquatch entitlement (premium OR founder). For founder:
+      // block only if they already hold an active FOUNDER sub (a premium
+      // subscriber upgrading to Founder is intentionally allowed to proceed —
+      // Founder is a separate product; they cancel the old premium from the
+      // portal). Either way, an already-subscribed customer is routed to the
+      // billing portal instead of minting a duplicate, double-charging sub.
       const [u] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
       const existingCustomerId = u?.stripeCustomerId || null;
       if (existingCustomerId) {
-        const alreadyActive = await hasActiveSasquatchPremium(existingCustomerId);
+        const alreadyActive =
+          requestedTier === "founder"
+            ? await hasActiveSasquatchFounder(existingCustomerId)
+            : await hasActiveSasquatchPremium(existingCustomerId);
         if (alreadyActive) {
           const baseUrl = `${req.protocol}://${req.get("host")}`;
           try {
@@ -193,15 +218,19 @@ export function registerSasquatchPremiumRoutes(app: Express) {
         }
       }
 
-      let prices: { monthlyPriceId: string; annualPriceId: string };
+      let priceId: string;
       try {
-        prices = await ensureSasquatchPremiumPrices();
+        if (requestedTier === "founder") {
+          priceId = await ensureSasquatchFounderPrice();
+        } else {
+          const prices = await ensureSasquatchPremiumPrices();
+          priceId =
+            requestedPlan === "annual" ? prices.annualPriceId : prices.monthlyPriceId;
+        }
       } catch (e: any) {
         console.error("[sasquatch-premium] product setup failed", e?.message || e);
         return res.status(503).json({ message: "Stripe billing not configured" });
       }
-      const priceId =
-        requestedPlan === "annual" ? prices.annualPriceId : prices.monthlyPriceId;
 
       const customerId = await getOrCreateStripeCustomer(userId);
       if (!customerId) return res.status(404).json({ message: "User not found" });
@@ -218,7 +247,9 @@ export function registerSasquatchPremiumRoutes(app: Express) {
         `${baseUrl}/recovery/premium?canceled=1`,
         "subscription",
         {
-          trialDays: SASQUATCH_PREMIUM_TRIAL_DAYS,
+          // Founder is a high-touch tier billed immediately — no free trial.
+          // Premium keeps the 7-day trial.
+          trialDays: requestedTier === "founder" ? 0 : SASQUATCH_PREMIUM_TRIAL_DAYS,
           // Always allow the survivor to type a code on the Stripe page —
           // unless they're pre-applying one we already validated server-side.
           allowPromotionCodes: true,
@@ -234,7 +265,7 @@ export function registerSasquatchPremiumRoutes(app: Express) {
         plan: requestedPlan,
       });
 
-      res.json({ url: session.url, plan: requestedPlan });
+      res.json({ url: session.url, plan: requestedPlan, tier: requestedTier });
     } catch (err: any) {
       console.error("[sasquatch-premium] checkout failed", err?.message || err);
       res.status(500).json({ message: "Checkout failed" });

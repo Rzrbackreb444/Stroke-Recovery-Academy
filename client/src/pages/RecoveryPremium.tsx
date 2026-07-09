@@ -63,17 +63,21 @@ type PremiumLifecycle = {
 
 type PremiumStatus = {
   active: boolean;
+  founderActive?: boolean;
   priceCents: number;
   priceUsd: number;
   annualCents: number;
   annualUsd: number;
   annualMonthlyEquivalentUsd: number;
   annualSavingsUsd: number;
+  founderCents: number;
+  founderUsd: number;
   trialDays: number;
   lifecycle: PremiumLifecycle | null;
 };
 
 type Plan = "monthly" | "annual";
+type CheckoutArgs = { plan?: Plan; tier?: "premium" | "founder" };
 
 type SaveOffer = "pause" | "discount";
 
@@ -808,9 +812,10 @@ export default function RecoveryPremium() {
   });
 
   const checkoutMut = useMutation({
-    mutationFn: async (selectedPlan: Plan) => {
+    mutationFn: async (args: CheckoutArgs) => {
       const res = await apiRequest("POST", "/api/sasquatch-premium/checkout", {
-        plan: selectedPlan,
+        plan: args.plan ?? plan,
+        tier: args.tier ?? "premium",
         promoCode: promoCode || undefined,
       });
       return (await res.json()) as { url?: string; plan?: Plan; alreadyActive?: boolean };
@@ -918,8 +923,10 @@ export default function RecoveryPremium() {
   const annualUsd = status?.annualUsd ?? 190;
   const annualPerMonth = status?.annualMonthlyEquivalentUsd ?? 15.83;
   const annualSavings = status?.annualSavingsUsd ?? 38;
+  const founderUsd = status?.founderUsd ?? 49;
   const trialDays = status?.trialDays ?? 7;
   const isActive = !!status?.active;
+  const isFounderActive = !!status?.founderActive;
 
   const displayUsd = plan === "annual" ? annualPerMonth : monthlyUsd;
   const billedSubline =
@@ -938,7 +945,7 @@ export default function RecoveryPremium() {
       portalMut.mutate();
       return;
     }
-    checkoutMut.mutate(plan);
+    checkoutMut.mutate({ plan });
   }
 
   const ctaLabel = isActive
@@ -965,7 +972,7 @@ export default function RecoveryPremium() {
       {/* ── Tier nav ──────────────────────────────────────────────────────── */}
       <div className="bg-[#1C1917] border-b border-[#2A2421]">
         <div className="max-w-5xl mx-auto px-4 py-4 flex flex-wrap items-center justify-center gap-3 text-sm">
-          <a href="/recovery/premium" className="px-4 py-2 rounded-full bg-[#C06B3E] text-white font-semibold text-xs uppercase tracking-wider" data-testid="tab-solo">Solo — $19/mo</a>
+          <a href="/recovery/premium" className="px-4 py-2 rounded-full bg-[#C06B3E] text-white font-semibold text-xs uppercase tracking-wider" data-testid="tab-premium">Premium — $19/mo</a>
           <a href="/recovery/coaching-with-nick" className="px-4 py-2 rounded-full bg-[#2A2421] text-[#FDFBF7]/60 font-semibold text-xs uppercase tracking-wider hover:bg-[#3A3230] transition-colors" data-testid="tab-nick">1:1 with Nick — $350/session</a>
           <a href="/partners" className="px-4 py-2 rounded-full bg-[#2A2421] text-[#FDFBF7]/60 font-semibold text-xs uppercase tracking-wider hover:bg-[#3A3230] transition-colors" data-testid="tab-partners">Rehab Partners</a>
         </div>
@@ -1029,20 +1036,6 @@ export default function RecoveryPremium() {
               Stripe — your card stays with Stripe, not us
             </span>
           </div>
-
-          {/* Social proof row */}
-          <div className="mt-6 flex items-center justify-center gap-2">
-            <div className="flex -space-x-1.5">
-              {["#7c3aed","#b45309","#0369a1","#047857","#be123c"].map((c, i) => (
-                <div key={i} className="w-6 h-6 rounded-full border-2 border-stone-950 flex items-center justify-center text-[9px] font-black text-white" style={{ background: c }}>
-                  {["S","J","M","T","R"][i]}
-                </div>
-              ))}
-            </div>
-            <p className="text-xs text-[#78716C]">
-              Survivors with strokes from <span className="text-[#1C1917] font-semibold">ages 28 to 79</span> are using Coach daily.
-            </p>
-          </div>
         </div>
       </section>
 
@@ -1070,43 +1063,6 @@ export default function RecoveryPremium() {
             </div>
           </div>
         </Card>
-
-        {/* ── Survivor voices ───────────────────────────────────────────── */}
-        <section className="mb-12" data-testid="section-testimonials">
-          <h2 className="text-xl md:text-2xl font-black mb-6 text-center text-[#1C1917]">
-            From survivors using it daily
-          </h2>
-          <div className="grid md:grid-cols-3 gap-4">
-            {[
-              {
-                quote: "I asked Sasquatch the same question four times in one day because my brain wouldn't hold the answer. No judgment. Same answer every time. That's worth everything.",
-                name: "Sandra K.",
-                detail: "2 years post-stroke · Left hemiplegia",
-              },
-              {
-                quote: "The daily report is the first thing that's made me feel accountable since leaving rehab. Nick's voice in text form — tough but kind. Exactly what I needed.",
-                name: "Marcus T.",
-                detail: "18 months post-stroke · Aphasia",
-              },
-              {
-                quote: "My wife uses voice cloning so I hear her voice read my morning cues. That was worth the subscription alone.",
-                name: "David R.",
-                detail: "4 years post-stroke · Right-side weakness",
-              },
-            ].map((t, i) => (
-              <Card key={i} className="p-5 bg-white border-[#E2C2A4]/30 shadow-[0_1px_3px_rgba(0,0,0,0.04)]" data-testid={`card-testimonial-${i}`}>
-                <div className="flex gap-1 mb-3">
-                  {[...Array(5)].map((_, s) => <Star key={s} className="w-3 h-3 fill-[#C06B3E] text-[#C06B3E]" />)}
-                </div>
-                <p className="text-[#78716C] text-sm leading-relaxed mb-4 italic">"{t.quote}"</p>
-                <div>
-                  <p className="text-[#1C1917] text-xs font-bold">{t.name}</p>
-                  <p className="text-[#A8A29E] text-xs">{t.detail}</p>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </section>
 
         {/* ── What changes after 7 days ─────────────────────────────────── */}
         <section className="mb-12" data-testid="section-outcomes">
@@ -1362,7 +1318,7 @@ export default function RecoveryPremium() {
                 <Button
                   size="lg"
                   className="bg-[#C06B3E] hover:bg-[#A85B33] text-white"
-                  onClick={() => checkoutMut.mutate(plan)}
+                  onClick={() => checkoutMut.mutate({ plan })}
                   disabled={checkoutMut.isPending}
                   data-testid="button-subscribe"
                 >
@@ -1386,6 +1342,88 @@ export default function RecoveryPremium() {
             We collect your card so the subscription auto-starts on day {trialDays + 1}.
             Cancel before day {trialDays + 1} → $0 charged. Stripe-hosted checkout.
           </p>
+
+          {/* ── Founder tier ──────────────────────────────────────────────── */}
+          <Card
+            className="relative mt-6 p-8 md:p-10 bg-[#2A2421] border-[#C06B3E]/40 shadow-[0_4px_16px_rgba(192,107,62,0.12)]"
+            data-testid="card-founder-tier"
+          >
+            <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-4 mb-4">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge
+                    className="bg-[#C06B3E] text-[#FDFBF7] border-[#C06B3E]/30 rounded-full px-3"
+                    data-testid="badge-founder"
+                  >
+                    <Sparkles className="w-3 h-3 mr-1" />
+                    Founder's Circle
+                  </Badge>
+                </div>
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span
+                    className="text-5xl md:text-6xl font-black text-[#C06B3E]"
+                    data-testid="text-founder-price"
+                  >
+                    ${founderUsd}
+                  </span>
+                  <span className="text-[#A8A29E] text-lg">/month</span>
+                </div>
+                <p className="text-[#A8A29E] text-sm mt-1">
+                  Everything in Premium, plus direct access to Nick and a hand in
+                  what gets built next. Billed monthly — no trial, cancel anytime.
+                </p>
+              </div>
+
+              {!isAuthenticated ? (
+                <Button
+                  size="lg"
+                  className="bg-[#C06B3E] hover:bg-[#A85B33] text-white flex-shrink-0"
+                  onClick={() => setLocation("/auth?next=/recovery/premium")}
+                  data-testid="button-founder-signin"
+                >
+                  Sign in to join
+                </Button>
+              ) : isFounderActive ? (
+                <Button
+                  size="lg"
+                  className="bg-[#C06B3E] hover:bg-[#A85B33] text-white flex-shrink-0"
+                  onClick={() => portalMut.mutate()}
+                  disabled={portalMut.isPending}
+                  data-testid="button-founder-manage"
+                >
+                  {portalMut.isPending ? "Opening..." : "Manage billing"}
+                </Button>
+              ) : (
+                <Button
+                  size="lg"
+                  className="bg-[#C06B3E] hover:bg-[#A85B33] text-white flex-shrink-0"
+                  onClick={() => checkoutMut.mutate({ tier: "founder" })}
+                  disabled={checkoutMut.isPending}
+                  data-testid="button-founder-subscribe"
+                >
+                  {checkoutMut.isPending
+                    ? "Starting checkout..."
+                    : isActive
+                      ? "Upgrade to Founder"
+                      : "Join the Founder's Circle"}
+                </Button>
+              )}
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-2 text-sm">
+              {[
+                "Everything in Premium, uncapped",
+                "Direct line to Nick",
+                "Vote on the roadmap",
+                "Founding-member recognition",
+              ].map((f) => (
+                <div key={f} className="flex items-center gap-2 text-[#FDFBF7]/70">
+                  <Check className="w-4 h-4 text-green-400 flex-shrink-0" />
+                  <span>{f}</span>
+                </div>
+              ))}
+            </div>
+          </Card>
         </section>
 
         {/* ── How it works ──────────────────────────────────────────────── */}
