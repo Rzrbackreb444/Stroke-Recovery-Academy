@@ -238,6 +238,27 @@ export class WebhookHandlers {
           console.warn('[stripe-webhook] premium lifecycle sync failed:', e);
         }
       }
+
+      // ── 7. Institutional seat billing (Task #80) — reconcile the org's
+      //      billing_status + seat_limit from its Stripe seat subscription.
+      //      Only acts on subscriptions carrying the institution_seat feature
+      //      tag; all other subscriptions are ignored inside the service.
+      //      Best-effort so it never blocks the webhook ack.
+      if (
+        parsedEvent &&
+        (eventType === 'customer.subscription.created' ||
+          eventType === 'customer.subscription.updated' ||
+          eventType === 'customer.subscription.deleted')
+      ) {
+        try {
+          const { syncOrgBillingFromStripe } = await import(
+            './services/institutionBillingService'
+          );
+          await syncOrgBillingFromStripe((parsedEvent as any).data?.object);
+        } catch (e) {
+          console.warn('[stripe-webhook] institution seat billing sync failed:', e);
+        }
+      }
     } catch (err) {
       if (reserved && eventId) {
         await dbPool

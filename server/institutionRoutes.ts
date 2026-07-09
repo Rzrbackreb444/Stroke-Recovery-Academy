@@ -16,7 +16,9 @@ import type { Express } from "express";
 import { z } from "zod";
 import { getUserId } from "./lib/authUtils";
 import { requireAdmin } from "./middleware/requireAdmin";
+import { paymentCheckoutLimiter, billingPortalLimiter } from "./middleware/publicRateLimit";
 import * as inst from "./services/institutionService";
+import * as billing from "./services/institutionBillingService";
 
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -33,6 +35,25 @@ export function registerInstitutionRoutes(app: Express, isAuthenticated: any) {
         // 404 (not 403) so org existence isn't leaked to non-members.
         return res.status(404).json({ message: "Not found" });
       }
+      req.orgId = orgId;
+      req.orgRole = role;
+      next();
+    } catch (err: any) {
+      res.status(500).json({ message: err?.message ?? "Authorization failed" });
+    }
+  }
+
+  // ── Org-owner authorization guard (owner of :orgId only) ───────────────────
+  // Billing is owner-only — clinicians manage the roster but never the payment
+  // method. 404 (not 403) on non-owners so org existence isn't leaked.
+  async function requireOrgOwner(req: any, res: any, next: any) {
+    try {
+      const userId = getUserId(req);
+      if (!userId) return res.status(401).json({ message: "Unauthorized" });
+      const orgId = Number(req.params.orgId);
+      if (!Number.isFinite(orgId)) return res.status(400).json({ message: "Invalid org" });
+      const role = await inst.getUserOrgRole(orgId, userId);
+      if (role !== "owner") return res.status(404).json({ message: "Not found" });
       req.orgId = orgId;
       req.orgRole = role;
       next();
@@ -97,6 +118,16 @@ export function registerInstitutionRoutes(app: Express, isAuthenticated: any) {
       if (!parsed.success) return res.status(400).json({ message: "Invalid input", errors: parsed.error.flatten() });
       const org = await inst.updateOrganization(orgId, parsed.data);
       if (!org) return res.status(404).json({ message: "Not found" });
+      // Seat-limit change → sync the Stripe subscription quantity (proration).
+      // No-op if the org has no active seat subscription yet. Best-effort so a
+      // Stripe hiccup never blocks the admin update.
+      if (parsed.data.seatLimit != null) {
+        try {
+          await billing.syncSeatSubscriptionQuantity(orgId, parsed.data.seatLimit);
+        } catch (e: any) {
+          console.warn("[institution-billing] seat quantity sync failed:", e?.message ?? e);
+        }
+      }
       res.json(org);
     } catch (err: any) {
       res.status(500).json({ message: err?.message ?? "Failed to update org" });
@@ -206,6 +237,68 @@ export function registerInstitutionRoutes(app: Express, isAuthenticated: any) {
       res.status(500).json({ message: err?.message ?? "Failed to remove member" });
     }
   });
+
+  // ════════════════════════════════════════════════════════════════════════
+  // ORG BILLING (owner-only) — per-seat Stripe subscription, invoices/receipts
+  // ════════════════════════════════════════════════════════════════════════
+  // Snapshot: billing status, current subscription, per-seat price, invoices.
+  app.get("/api/institutions/org/:orgId/billing", isAuthenticated, requireOrgOwner, async (req: any, res) => {
+    try {
+      res.json(await billing.getOrgBilling(req.orgId));
+    } catch (err: any) {
+      res.status(500).json({ message: err?.message ?? "Failed to load billing" });
+    }
+  });
+
+  // Start (or scale up to) a seat subscription via Stripe Checkout. `seats`
+  // sets the org's seat limit and the subscription quantity. If a subscription
+  // already exists, route the owner to the billing portal instead.
+  const checkoutSchema = z.object({ seats: z.number().int().min(1).max(100000) });
+  app.post(
+    "/api/institutions/org/:orgId/billing/checkout",
+    isAuthenticated,
+    paymentCheckoutLimiter,
+    requireOrgOwner,
+    async (req: any, res) => {
+      try {
+        const parsed = checkoutSchema.safeParse(req.body);
+        if (!parsed.success) return res.status(400).json({ message: "Provide a seat count (1+)" });
+        const current = await billing.getOrgBilling(req.orgId);
+        const baseUrl = process.env.PUBLIC_BASE_URL || `${req.protocol}://${req.get("host")}`;
+        if (current.hasSubscription) {
+          // Already subscribed — adjust quantity/seat limit in place and send
+          // them to the portal to review the prorated invoice.
+          await inst.updateOrganization(req.orgId, { seatLimit: parsed.data.seats });
+          await billing.syncSeatSubscriptionQuantity(req.orgId, parsed.data.seats);
+          const portal = await billing.createOrgBillingPortal(req.orgId, `${baseUrl}/institution`);
+          return res.json({ url: portal.url, adjusted: true });
+        }
+        // New subscription: persist the intended seat limit, then checkout.
+        await inst.updateOrganization(req.orgId, { seatLimit: parsed.data.seats });
+        const session = await billing.createSeatCheckoutSession(req.orgId, parsed.data.seats, baseUrl);
+        res.json({ url: session.url });
+      } catch (err: any) {
+        res.status(500).json({ message: err?.message ?? "Failed to start checkout" });
+      }
+    },
+  );
+
+  // Billing portal — manage payment method, view invoices/receipts, cancel.
+  app.post(
+    "/api/institutions/org/:orgId/billing/portal",
+    isAuthenticated,
+    billingPortalLimiter,
+    requireOrgOwner,
+    async (req: any, res) => {
+      try {
+        const baseUrl = process.env.PUBLIC_BASE_URL || `${req.protocol}://${req.get("host")}`;
+        const portal = await billing.createOrgBillingPortal(req.orgId, `${baseUrl}/institution`);
+        res.json({ url: portal.url });
+      } catch (err: any) {
+        res.status(500).json({ message: err?.message ?? "Failed to open billing portal" });
+      }
+    },
+  );
 
   // ════════════════════════════════════════════════════════════════════════
   // INVITE (public info + authed accept)

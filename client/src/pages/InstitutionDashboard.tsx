@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import RecoverySEO from "@/components/RecoverySEO";
 import {
   Loader2, Building2, Users, Activity, Flame, TrendingUp, ShieldAlert,
-  UserPlus, Trash2, Mail, Copy, Check,
+  UserPlus, Trash2, Mail, Copy, Check, CreditCard, FileText, ExternalLink,
 } from "lucide-react";
 
 const ACCENT = "#E2741B";
@@ -100,6 +100,169 @@ function InviteBox({ orgId }: { orgId: number }) {
   );
 }
 
+interface Invoice {
+  id: string; number: string | null; status: string; amountDueCents: number;
+  amountPaidCents: number; currency: string; created: string | null;
+  hostedInvoiceUrl: string | null; invoicePdf: string | null;
+}
+interface BillingData {
+  billingStatus: string; hasSubscription: boolean; seatLimit: number; seatsUsed: number;
+  perSeatCents: number;
+  subscription: {
+    id: string; status: string; quantity: number; perSeatCents: number;
+    monthlyTotalCents: number; currentPeriodEnd: string | null; cancelAtPeriodEnd: boolean;
+  } | null;
+  invoices: Invoice[];
+}
+
+function money(cents: number, currency = "usd") {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: currency.toUpperCase() }).format((cents ?? 0) / 100);
+}
+
+function BillingBox({ orgId, seatsUsed }: { orgId: number; seatsUsed: number }) {
+  const { toast } = useToast();
+  const { data: billing, isLoading } = useQuery<BillingData>({ queryKey: ["/api/institutions/org", orgId, "billing"] });
+  const [seats, setSeats] = useState<string>("");
+
+  const checkoutMutation = useMutation({
+    mutationFn: async (n: number) => {
+      const res = await apiRequest("POST", `/api/institutions/org/${orgId}/billing/checkout`, { seats: n });
+      return res.json();
+    },
+    onSuccess: (data: any) => {
+      if (data?.url) { window.location.href = data.url; return; }
+      queryClient.invalidateQueries({ queryKey: ["/api/institutions/org", orgId, "billing"] });
+      toast({ title: "Billing updated" });
+    },
+    onError: (e: any) => toast({ title: "Couldn't start billing", description: e?.message, variant: "destructive" }),
+  });
+
+  const portalMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", `/api/institutions/org/${orgId}/billing/portal`, {});
+      return res.json();
+    },
+    onSuccess: (data: any) => { if (data?.url) window.location.href = data.url; },
+    onError: (e: any) => toast({ title: "Couldn't open billing", description: e?.message, variant: "destructive" }),
+  });
+
+  const sub = billing?.subscription;
+  const defaultSeats = String(billing?.seatLimit || Math.max(1, seatsUsed) || 1);
+  const seatVal = seats === "" ? defaultSeats : seats;
+  const perSeat = billing?.perSeatCents ?? 1200;
+
+  return (
+    <div className="mt-6 bg-white rounded-md border border-[#E2C2A4]/40 p-5" data-testid={`billing-${orgId}`}>
+      <div className="flex items-center gap-2 mb-2">
+        <CreditCard className="w-4 h-4" style={{ color: ACCENT }} />
+        <h3 className="font-semibold text-[#1C1917]">Billing & seats</h3>
+      </div>
+      {isLoading ? (
+        <div className="text-[#78716C] text-sm py-4"><Loader2 className="w-5 h-5 animate-spin inline mr-2" /> Loading…</div>
+      ) : (
+        <>
+          <p className="text-sm text-[#5C534D] mb-4">
+            {money(perSeat)}/survivor seat per month, billed to your organization. You currently use {seatsUsed} of {billing?.seatLimit ?? 0} seats.
+          </p>
+
+          {sub ? (
+            <div className="rounded-md border border-[#E2C2A4]/50 p-4 mb-4" style={{ backgroundColor: "rgba(226,116,27,0.05)" }}>
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <p className="text-sm font-semibold text-[#1C1917] capitalize" data-testid={`billing-status-${orgId}`}>
+                    {sub.status.replace(/_/g, " ")}{sub.cancelAtPeriodEnd ? " · ending" : ""}
+                  </p>
+                  <p className="text-xs text-[#78716C]">
+                    {sub.quantity} seats × {money(sub.perSeatCents)} = <strong>{money(sub.monthlyTotalCents)}/mo</strong>
+                    {sub.currentPeriodEnd ? ` · renews ${new Date(sub.currentPeriodEnd).toLocaleDateString()}` : ""}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-[#1C1917] mb-1.5">Seats to purchase</label>
+              <div className="flex items-center gap-2 flex-wrap">
+                <input
+                  type="number"
+                  min={1}
+                  className="w-28 rounded-md border border-[#E2C2A4]/60 px-3 py-2 text-[#1C1917] focus:outline-none focus:ring-2 text-sm"
+                  style={{ ["--tw-ring-color" as any]: ACCENT }}
+                  value={seatVal}
+                  onChange={(e) => setSeats(e.target.value)}
+                  data-testid={`input-seats-${orgId}`}
+                />
+                <span className="text-sm text-[#78716C]">× {money(perSeat)} = <strong>{money((Number(seatVal) || 0) * perSeat)}/mo</strong></span>
+              </div>
+            </div>
+          )}
+
+          <div className="flex items-center gap-2 flex-wrap">
+            {sub ? (
+              <>
+                <Button
+                  className="text-white border"
+                  style={{ backgroundColor: ACCENT, borderColor: ACCENT }}
+                  disabled={portalMutation.isPending}
+                  onClick={() => portalMutation.mutate()}
+                  data-testid={`button-manage-billing-${orgId}`}
+                >
+                  {portalMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ExternalLink className="mr-2 h-4 w-4" />}
+                  Manage billing & invoices
+                </Button>
+                <Button
+                  variant="outline"
+                  disabled={checkoutMutation.isPending}
+                  onClick={() => checkoutMutation.mutate(Number(seatVal) || sub.quantity)}
+                  data-testid={`button-adjust-seats-${orgId}`}
+                >
+                  Change seat count
+                </Button>
+              </>
+            ) : (
+              <Button
+                className="text-white border"
+                style={{ backgroundColor: ACCENT, borderColor: ACCENT }}
+                disabled={checkoutMutation.isPending || !(Number(seatVal) > 0)}
+                onClick={() => checkoutMutation.mutate(Number(seatVal))}
+                data-testid={`button-subscribe-${orgId}`}
+              >
+                {checkoutMutation.isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Redirecting…</> : <><CreditCard className="mr-2 h-4 w-4" /> Subscribe & pay</>}
+              </Button>
+            )}
+          </div>
+
+          {billing?.invoices && billing.invoices.length > 0 && (
+            <div className="mt-5">
+              <p className="text-xs font-semibold uppercase tracking-wide text-[#78716C] mb-2">Invoices & receipts</p>
+              <div className="rounded-md border border-[#E2C2A4]/40 divide-y divide-[#E2C2A4]/30">
+                {billing.invoices.map((inv) => (
+                  <div key={inv.id} className="flex items-center justify-between gap-3 p-3 flex-wrap" data-testid={`invoice-${inv.id}`}>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <FileText className="w-4 h-4 text-[#78716C] shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-sm text-[#1C1917] truncate">{inv.number || inv.id}</p>
+                        <p className="text-xs text-[#78716C]">
+                          {inv.created ? new Date(inv.created).toLocaleDateString() : ""} · <span className="capitalize">{inv.status}</span> · {money(inv.amountPaidCents || inv.amountDueCents, inv.currency)}
+                        </p>
+                      </div>
+                    </div>
+                    {inv.hostedInvoiceUrl && (
+                      <a href={inv.hostedInvoiceUrl} target="_blank" rel="noreferrer" data-testid={`link-invoice-${inv.id}`}>
+                        <Button size="sm" variant="outline"><ExternalLink className="w-3.5 h-3.5" /><span className="ml-1.5">View</span></Button>
+                      </a>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
 function OrgPanel({ m }: { m: Membership }) {
   const orgId = m.orgId;
   const { toast } = useToast();
@@ -146,6 +309,9 @@ function OrgPanel({ m }: { m: Membership }) {
       )}
 
       <InviteBox orgId={orgId} />
+
+      {/* Billing — owner only */}
+      {m.role === "owner" && <BillingBox orgId={orgId} seatsUsed={seats?.used ?? 0} />}
 
       {/* Cohort metrics */}
       <div className="mt-6">
