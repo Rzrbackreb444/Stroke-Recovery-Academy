@@ -43,7 +43,7 @@ function todayKey(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-function isoWeekKey(d: Date = new Date()): string {
+export function isoWeekKey(d: Date = new Date()): string {
   const dt = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
   const day = dt.getUTCDay() || 7;
   dt.setUTCDate(dt.getUTCDate() + 4 - day);
@@ -177,7 +177,7 @@ export async function selectCaregiverNudgeCandidates(): Promise<CaregiverNudgeRo
   return ((result.rows ?? result) as any[]) as CaregiverNudgeRow[];
 }
 
-async function runCaregiverNudge() {
+export async function runCaregiverNudge() {
   const rows = await selectCaregiverNudgeCandidates();
   const week = isoWeekKey();
   for (const r of rows) {

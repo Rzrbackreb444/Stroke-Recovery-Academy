@@ -40,6 +40,8 @@ import { pool as dbPool } from "../server/db";
 import { ensureMessagingSchema } from "../server/messaging/index";
 import {
   runMedicationAdherence,
+  runCaregiverNudge,
+  isoWeekKey,
   selectSurvivorAdherenceCandidates,
   selectCaregiverNudgeCandidates,
 } from "../server/services/medicationAdherenceService";
@@ -329,6 +331,84 @@ async function run() {
         threw = true;
       }
       assert(!threw, "full run (survivor + caregiver loops) completes without throwing");
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // The proof the audience-selection tests can't give: the caregiver nudge is
+    // email-only, so a released claim (the neutralized-Resend path above) leaves
+    // NO durable row. Here we stub the email transport to SUCCEED without any
+    // real network call — global.fetch is intercepted for both the Resend
+    // connector lookup AND the Resend API send — so the claim is CONFIRMED, and
+    // we assert the caregiver-med-nudge delivery row actually persists as 'sent'.
+    console.log("\n• Caregiver nudge writes a durable 'sent' delivery row (email stubbed to succeed)");
+    const savedFetch = globalThis.fetch;
+    // getCredentials() needs a repl/depl token before it will look up the
+    // connector; provide a throwaway one (the connector fetch itself is stubbed).
+    process.env.REPL_IDENTITY = "test-identity";
+    // Only OUR test caregiver's send succeeds. runCaregiverNudge scans every
+    // user, so a blanket-success stub would leave durable 'sent' rows for real
+    // dev-DB caregivers and silently suppress their real weekly nudge. For any
+    // other recipient we return a transient failure so sendMessage releases the
+    // claim — no durable pollution of real users.
+    const cgEmail = emailFor("caregiver");
+    let resendSendCount = 0;
+    globalThis.fetch = (async (input: any, init?: any): Promise<any> => {
+      const url = typeof input === "string" ? input : input?.url ?? String(input);
+      // 1) Replit connector lookup → return fake Resend credentials.
+      if (url.includes("/api/v2/connection")) {
+        return new Response(
+          JSON.stringify({
+            items: [{ settings: { api_key: "re_test_key", from_email: "test@test.invalid" } }],
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      }
+      // 2) Resend send API → accept only the test caregiver; no real email.
+      if (url.includes("api.resend.com")) {
+        let to = "";
+        try {
+          to = JSON.parse(String(init?.body ?? "{}")).to ?? "";
+        } catch {}
+        if (to === cgEmail) {
+          resendSendCount++;
+          return new Response(JSON.stringify({ id: `stub-${randomUUID()}` }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+        return new Response(
+          JSON.stringify({ name: "rate_limit_exceeded", message: "stubbed-non-test-recipient" }),
+          { status: 429, headers: { "Content-Type": "application/json" } },
+        );
+      }
+      throw new Error(`unexpected fetch in test: ${url}`);
+    }) as any;
+
+    // seedUser always sets first_name to "Test", so the nudge's `who` = "Test".
+    const cgKey = `caregiver-med-nudge:email:${caregiver}:Test:${isoWeekKey()}`;
+    try {
+      await runCaregiverNudge();
+      const row = await deliveryRow(cgKey);
+      assert(row != null, "caregiver gets a durable delivery row (email send confirmed the claim)");
+      assert(row?.status === "sent", "caregiver delivery row status is sent");
+      assert(row?.channel === "email", "caregiver delivery row is the email channel");
+      assert(row?.user_id === caregiver, "caregiver delivery row is scoped to the caregiver");
+      assert(resendSendCount >= 1, "the email transport was actually invoked (stubbed, no real email)");
+
+      // Second run in the SAME ISO week must not double-send: the weekly dedupe
+      // key already claimed → the send short-circuits as a duplicate.
+      const sendsBefore = resendSendCount;
+      await runCaregiverNudge();
+      assert(
+        (await deliveryCount(cgKey)) === 1,
+        "second run same ISO week → still exactly one caregiver delivery row (weekly dedupe)",
+      );
+      assert(
+        resendSendCount === sendsBefore,
+        "second run same ISO week → email transport NOT invoked again (dedupe short-circuits before send)",
+      );
+    } finally {
+      globalThis.fetch = savedFetch;
     }
   } finally {
     // Restore env, then cleanup scoped strictly to the users this run seeded.
