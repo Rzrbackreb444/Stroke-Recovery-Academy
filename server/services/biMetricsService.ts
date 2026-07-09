@@ -86,6 +86,7 @@ export interface BusinessMetrics {
     downgradedSubs: number;
     monthlySubs: number;
     annualSubs: number;
+    founderSubs: number;
   };
   conversion: {
     signupToIntake: number | null;
@@ -135,25 +136,30 @@ function ratio(numer: number, denom: number): number | null {
 // amount is a full MRR contribution; annual amount is divided by 12. Returns
 // cents. Best-effort — if the catalog can't be read we fall back to 0 so the
 // dashboard still renders the rest of the metrics.
-async function getPlanAmounts(): Promise<{ monthlyCents: number; annualCents: number }> {
+async function getPlanAmounts(): Promise<{ monthlyCents: number; annualCents: number; founderCents: number }> {
   try {
-    const { getSasquatchPremiumPriceIds } = await import("./sasquatchPremiumService");
+    const { getSasquatchPremiumPriceIds, getSasquatchFounderPriceId } = await import("./sasquatchPremiumService");
     const prices = await getSasquatchPremiumPriceIds();
-    if (!prices) return { monthlyCents: 0, annualCents: 0 };
+    if (!prices) return { monthlyCents: 0, annualCents: 0, founderCents: 0 };
+    const founderPriceId = await getSasquatchFounderPriceId();
+    const ids = [prices.monthlyPriceId, prices.annualPriceId];
+    if (founderPriceId) ids.push(founderPriceId);
     const r = await db.execute(sql`
       SELECT id, unit_amount FROM stripe.prices
-       WHERE id IN (${prices.monthlyPriceId}, ${prices.annualPriceId})
+       WHERE id IN (${sql.join(ids, sql`, `)})
     `);
     let monthlyCents = 0;
     let annualCents = 0;
+    let founderCents = 0;
     for (const row of r.rows as any[]) {
       if (String(row.id) === prices.monthlyPriceId) monthlyCents = num(row.unit_amount);
       else if (String(row.id) === prices.annualPriceId) annualCents = num(row.unit_amount);
+      else if (founderPriceId && String(row.id) === founderPriceId) founderCents = num(row.unit_amount);
     }
-    return { monthlyCents, annualCents };
+    return { monthlyCents, annualCents, founderCents };
   } catch (e: any) {
     console.warn("[bi] getPlanAmounts failed", e?.message || e);
-    return { monthlyCents: 0, annualCents: 0 };
+    return { monthlyCents: 0, annualCents: 0, founderCents: 0 };
   }
 }
 
@@ -161,7 +167,7 @@ async function getPlanAmounts(): Promise<{ monthlyCents: number; annualCents: nu
 async function computeRevenue(): Promise<BusinessMetrics["revenue"]> {
   const { ensureSubStateSchema } = await import("./subscriptionLifecycleService");
   await ensureSubStateSchema();
-  const { monthlyCents, annualCents } = await getPlanAmounts();
+  const { monthlyCents, annualCents, founderCents } = await getPlanAmounts();
 
   // Entitled = active|trialing, OR past_due still within grace (not downgraded).
   // Count by plan among entitled subs to compute MRR.
@@ -175,15 +181,20 @@ async function computeRevenue(): Promise<BusinessMetrics["revenue"]> {
       ) AS at_risk_subs,
       COUNT(*) FILTER (WHERE downgraded_at IS NOT NULL) AS downgraded_subs,
       COUNT(*) FILTER (WHERE plan = 'monthly' AND status IN ('active','trialing')) AS monthly_subs,
-      COUNT(*) FILTER (WHERE plan = 'annual' AND status IN ('active','trialing')) AS annual_subs
+      COUNT(*) FILTER (WHERE plan = 'annual' AND status IN ('active','trialing')) AS annual_subs,
+      COUNT(*) FILTER (WHERE plan = 'founder' AND status IN ('active','trialing')) AS founder_subs
     FROM sasquatch_premium_subscriptions
   `);
   const row = (r.rows as any[])[0] || {};
   const monthlySubs = num(row.monthly_subs);
   const annualSubs = num(row.annual_subs);
+  const founderSubs = num(row.founder_subs);
   // MRR: monthly plans contribute the monthly amount; annual plans contribute
-  // their amount amortized over 12 months.
-  const mrrCents = Math.round(monthlySubs * monthlyCents + annualSubs * (annualCents / 12));
+  // their amount amortized over 12 months. Founder bills monthly, so it is a
+  // full MRR contribution at the Founder's Circle rate.
+  const mrrCents = Math.round(
+    monthlySubs * monthlyCents + annualSubs * (annualCents / 12) + founderSubs * founderCents,
+  );
 
   return {
     mrrCents,
@@ -194,6 +205,7 @@ async function computeRevenue(): Promise<BusinessMetrics["revenue"]> {
     downgradedSubs: num(row.downgraded_subs),
     monthlySubs,
     annualSubs,
+    founderSubs,
   };
 }
 

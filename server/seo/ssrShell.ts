@@ -2,6 +2,8 @@
 // Pixel-matches dark/gold theme of the live SPA so search-engine cache + first paint
 // look identical. JS still hydrates the SPA on top of this when the user clicks through.
 
+import { LEAD_MAGNET } from '@shared/survivorOffer';
+
 export interface FAQItem {
   q: string;
   a: string;
@@ -78,6 +80,8 @@ export interface SsrPageConfig {
     link: string;
     label: string;
   };
+  /** When true, render the "First 40 Days" free lead-magnet CTA (blog posts) */
+  leadMagnet?: boolean;
   /** Optional featured image URL for og:image, hero image, and schema */
   image?: string;
   /** Optional video — enables VideoObject schema for rich video snippets */
@@ -481,6 +485,22 @@ function renderEmailCapture(variant: 'inline' | 'final' = 'inline'): string {
 </section>`;
 }
 
+// Compact free-guide CTA — "The First 40 Days" lead magnet. Rendered on SSR
+// blog posts, the main organic-search entry point for brand-new survivors and
+// caregivers. Links to the capture page; copy comes from the single-source
+// LEAD_MAGNET constant so wording never drifts.
+function renderLeadMagnetCta(): string {
+  return `
+<section class="sra-lead-magnet">
+  <div class="sra-lead-magnet-body">
+    <div class="sra-lead-magnet-eyebrow">Free guide</div>
+    <h2>${esc(LEAD_MAGNET.headline)}</h2>
+    <p>${esc(LEAD_MAGNET.sub)}</p>
+  </div>
+  <a href="${escAttr(LEAD_MAGNET.path)}" class="sra-btn-primary">${esc(LEAD_MAGNET.cta)}</a>
+</section>`;
+}
+
 function renderSections(sections: ContentSection[]): string {
   const blocks = sections.map((s, idx) => {
     const heading = s.h2 || s.heading || '';
@@ -740,6 +760,19 @@ a:hover { text-decoration: underline; }
 .sra-affiliate p { color: var(--sra-text-dim); margin: 0 0 16px; }
 .sra-affiliate .sra-btn-primary { display: inline-block; }
 .sra-affiliate-note { font-size: 12px; color: var(--sra-text-dim); margin-top: 12px; font-style: italic; }
+.sra-lead-magnet {
+  margin: 40px 0; padding: 22px 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+  background: var(--sra-bg-card); border: 1px solid var(--sra-gold); border-radius: 8px;
+}
+.sra-lead-magnet-body { flex: 1 1 300px; min-width: 0; }
+.sra-lead-magnet-eyebrow {
+  font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--sra-gold); margin-bottom: 6px;
+}
+.sra-lead-magnet h2 { font-family: 'Crimson Pro', Georgia, serif; font-size: 22px; color: var(--sra-text); margin: 0 0 6px; }
+.sra-lead-magnet p { color: var(--sra-text-dim); margin: 0; font-size: 15px; }
+.sra-lead-magnet .sra-btn-primary { display: inline-block; flex: 0 0 auto; white-space: nowrap; }
 .sra-final-cta h2 { font-family: 'Crimson Pro', Georgia, serif; font-size: 28px; color: var(--sra-text); margin: 0 0 12px; }
 .sra-final-cta p { color: var(--sra-text-dim); margin: 0 0 20px; }
 .sra-email-capture {
@@ -925,6 +958,8 @@ ${renderHeader()}
   ${hasAffiliate ? `<div class="sra-ftc-disclosure">Heads up — some links in this post are Amazon affiliate links. Buy through them and I earn a small commission at no extra cost to you. I only point at gear I'd tell another survivor to use.</div>` : ''}
 
   ${renderSections(cfg.sections)}
+
+  ${cfg.leadMagnet ? renderLeadMagnetCta() : ''}
 
   ${renderFaqs(cfg.faqs)}
 

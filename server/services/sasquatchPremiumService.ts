@@ -256,12 +256,13 @@ export async function hasActiveSasquatchPremium(
       } else {
         entitled = false; // canceled / paused / incomplete / downgraded
       }
-      // Founder override: the lifecycle table only tracks PREMIUM subs
-      // (syncPremiumSubFromStripe skips founder-price subscriptions), so a
-      // stale/canceled premium row must never mask a live Founder sub — e.g.
-      // a survivor who upgraded premium→Founder and then canceled the old
-      // premium. Only runs when the row would deny, so the happy path stays
-      // one DB read.
+      // Founder override: the lifecycle table is keyed one-row-per-user, so a
+      // stale/denying premium row could still mask a live Founder sub — e.g. a
+      // survivor who upgraded premium→Founder where the premium-cancel webhook
+      // overwrote the row before the founder webhook landed. Founder subs DO
+      // persist their own plan:"founder" row now, but this remains a safety net
+      // for that ordering race. Only runs when the row would deny, so the happy
+      // path stays one DB read.
       if (!entitled) {
         try {
           if (await hasActiveSasquatchFounder(stripeCustomerId)) entitled = true;

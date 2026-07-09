@@ -18,6 +18,7 @@ import {
   Link2, ShieldCheck, List, ChevronDown, ChevronUp
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { LEAD_MAGNET } from "@shared/survivorOffer";
 import { categoryLabel, categoryDark, categoryGradient } from "@/lib/blogCategories";
 
 interface BlogPost {
@@ -734,6 +735,23 @@ export default function RecoveryBlogPost() {
                   <p className="text-sm text-[#78716C] leading-relaxed">{authorBioText}</p>
                 </div>
               </div>
+            </Card>
+
+            {/* Free guide lead magnet — top-of-funnel capture for new survivors */}
+            <Card
+              className="bg-white border-[#C06B3E]/30 p-6 mt-10 flex flex-col sm:flex-row sm:items-center gap-4 justify-between"
+              data-testid="card-lead-magnet"
+            >
+              <div className="min-w-0">
+                <p className="text-xs font-semibold uppercase tracking-wider text-[#C06B3E] mb-1">Free guide</p>
+                <h2 className="text-lg font-bold text-[#1C1917] mb-1">{LEAD_MAGNET.headline}</h2>
+                <p className="text-sm text-[#78716C]">{LEAD_MAGNET.sub}</p>
+              </div>
+              <Link href={LEAD_MAGNET.path} className="flex-shrink-0">
+                <Button className="bg-[#C06B3E] text-white font-semibold gap-2 whitespace-nowrap" data-testid="button-lead-magnet">
+                  {LEAD_MAGNET.cta} <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
             </Card>
 
             {/* Newsletter */}

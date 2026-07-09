@@ -95,40 +95,52 @@ async function resolvePremiumContext(userId: string): Promise<{
       }
     }
   }
-  // Founder fallback: Founder subs live under a SEPARATE Stripe product and
-  // are never written to `sasquatch_premium_subscriptions`, so a Founder-only
-  // member reaches here with no premium sub. Resolve their Founder sub
-  // directly from Stripe and synthesize a state view so the in-app
-  // cancel/resume flow works for them too (no support ticket, no portal-only
-  // dead end). plan:"founder" also keys the offer suppression downstream.
+  // Founder webhook-miss backstop: Founder subs DO flow through the durable
+  // lifecycle now (`syncPremiumSubFromStripe` recognizes the founder price and
+  // writes a plan:"founder" row), so a Founder-only member is normally served
+  // by the durable-row read above. This branch only fires when the founder
+  // webhook never landed — resolve the Founder sub from Stripe, backfill the
+  // durable row so subsequent cancel/resume/status reads hit the DB (no more
+  // live-listing), then re-read. plan:"founder" also keys offer suppression.
   if (!subId && customerId) {
     const fSub = await resolveFounderStripeSubscription(customerId);
     if (fSub?.id) {
       subId = String(fSub.id);
-      const unixToIso = (v: any): string | null =>
-        typeof v === "number" && Number.isFinite(v) && v > 0
-          ? new Date(v * 1000).toISOString()
-          : null;
-      state = {
-        user_id: userId,
-        stripe_customer_id: customerId,
-        stripe_subscription_id: subId,
-        status: String(fSub.status || "active"),
-        plan: "founder",
-        current_period_end: unixToIso(
-          fSub.current_period_end ?? fSub.items?.data?.[0]?.current_period_end,
-        ),
-        trial_end: unixToIso(fSub.trial_end),
-        cancel_at_period_end: !!fSub.cancel_at_period_end,
-        payment_state: "ok",
-        last_payment_failed_at: null,
-        dunning_attempts: 0,
-        grace_period_end: null,
-        last_recovered_at: null,
-        downgraded_at: null,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      } as NonNullable<Awaited<ReturnType<typeof getSubStateByUserId>>>;
+      try {
+        await syncPremiumSubFromStripe(fSub);
+        const backfilled = await getSubStateByUserId(userId);
+        if (backfilled) state = backfilled;
+      } catch (e: any) {
+        console.warn("[sasquatch-premium] founder context state backfill failed", e?.message || e);
+      }
+      // Defensive synthesis if the backfill couldn't persist a row (e.g. the
+      // customer isn't yet linked to a user for the resolveUserId lookup).
+      if (!state) {
+        const unixToIso = (v: any): string | null =>
+          typeof v === "number" && Number.isFinite(v) && v > 0
+            ? new Date(v * 1000).toISOString()
+            : null;
+        state = {
+          user_id: userId,
+          stripe_customer_id: customerId,
+          stripe_subscription_id: subId,
+          status: String(fSub.status || "active"),
+          plan: "founder",
+          current_period_end: unixToIso(
+            fSub.current_period_end ?? fSub.items?.data?.[0]?.current_period_end,
+          ),
+          trial_end: unixToIso(fSub.trial_end),
+          cancel_at_period_end: !!fSub.cancel_at_period_end,
+          payment_state: "ok",
+          last_payment_failed_at: null,
+          dunning_attempts: 0,
+          grace_period_end: null,
+          last_recovered_at: null,
+          downgraded_at: null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        } as NonNullable<Awaited<ReturnType<typeof getSubStateByUserId>>>;
+      }
     }
   }
   return { customerId, subId, state };
@@ -581,8 +593,9 @@ export function registerSasquatchPremiumRoutes(app: Express) {
         res.json({
           ok: true,
           cancelAtPeriodEnd: true,
-          // Founder subs have no durable row (`after` stays null) — fall back
-          // to the resolved context so the "access until" date still renders.
+          // `after` is the durable row (founder + premium both persist one now);
+          // fall back to the resolved context only for a webhook-lag race so the
+          // "access until" date still renders.
           currentPeriodEnd: after?.current_period_end ?? state?.current_period_end ?? null,
           trialEnd: after?.trial_end ?? state?.trial_end ?? null,
           status: after?.status ?? state?.status ?? "active",
@@ -626,8 +639,9 @@ export function registerSasquatchPremiumRoutes(app: Express) {
           outcome: "resumed",
           metadata: { status: after?.status },
         });
-        // Founder subs have no durable row (`after` stays null) — fall back to
-        // the fresh Stripe object so the renewal date still renders.
+        // `after` is the durable row (founder + premium both persist one now);
+        // fall back to the fresh Stripe object only for a webhook-lag race so
+        // the renewal date still renders.
         const updatedPeriodEnd =
           (updated as any)?.current_period_end ??
           (updated as any)?.items?.data?.[0]?.current_period_end ??
