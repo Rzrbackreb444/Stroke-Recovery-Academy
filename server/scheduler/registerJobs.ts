@@ -67,6 +67,19 @@ export async function bootstrapScheduler(): Promise<void> {
     },
   });
 
+  // Live Circle reminders — day-before + hour-before nudges to RSVP'd survivors,
+  // routed through the lifecycle messaging engine (email + push). Static copy so
+  // the crisis gate isn't needed; message_deliveries dedupe keeps it idempotent.
+  registerJob({
+    name: "circle-reminders",
+    description: "Remind RSVP'd survivors of upcoming Live Circles (day-before + hour-before, email + push).",
+    cron: "50 * * * *", // hourly at :50 (offset to spread load)
+    handler: async () => {
+      const { runCircleReminders } = await import("../circleReminderService");
+      await runCircleReminders();
+    },
+  });
+
   // Free-analysis crash recovery — fail rows stuck in "processing".
   registerJob({
     name: "free-analysis-reap",

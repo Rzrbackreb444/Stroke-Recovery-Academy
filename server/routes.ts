@@ -15055,7 +15055,13 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     try {
       const userId = getUserId(req);
       const { participantIds } = req.body;
-      const conversation = await storage.createConversation(userId, participantIds);
+      if (!Array.isArray(participantIds) || participantIds.length === 0) {
+        return res.status(400).json({ message: "participantIds required" });
+      }
+      const conversation = await storage.createConversation(
+        { createdById: userId, type: "direct" },
+        Array.from(new Set([userId, ...participantIds]))
+      );
       res.json(conversation);
     } catch (error) {
       res.status(500).json({ message: "Failed to create conversation" });
@@ -15077,7 +15083,23 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       const userId = getUserId(req);
       const conversationId = parseInt(req.params.id);
       const { content } = req.body;
+      // Safe messaging: run the same crisis gate as the AI Coach. Peer-to-peer
+      // support is legitimate — a survivor confiding in their buddy must NOT be
+      // blocked — so we still deliver the message, but attach 988/crisis
+      // resources for the sender and log a structured moderation event.
+      const crisis = detectCrisis(typeof content === "string" ? content : "");
       const message = await storage.createMessage({ conversationId, senderId: userId, content });
+      if (crisis.detected && crisis.category) {
+        console.log(JSON.stringify({
+          event: "dm_crisis_intercept",
+          userId,
+          conversationId,
+          category: crisis.category,
+          at: new Date().toISOString(),
+        }));
+        const payload = buildCrisisResponse(crisis.category);
+        return res.json({ ...message, crisis: { category: payload.category, resources: payload.resources, message: payload.response } });
+      }
       res.json(message);
     } catch (error) {
       res.status(500).json({ message: "Failed to send message" });

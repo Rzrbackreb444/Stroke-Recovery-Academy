@@ -1865,8 +1865,27 @@ export const buddyActiveMembers = pgTable("buddy_active_members", {
   userId: varchar("user_id").primaryKey().references(() => users.id, { onDelete: "cascade" }),
   pairId: integer("pair_id").notNull().references(() => buddyPairs.id, { onDelete: "cascade" }),
 });
+// Mutual-accept buddy requests: requester proposes, recipient accepts/declines.
+// One active pending request per direction (partial unique index).
+export const buddyRequests = pgTable("buddy_requests", {
+  id: serial("id").primaryKey(),
+  requesterId: varchar("requester_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  recipientId: varchar("recipient_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  note: text("note"),
+  score: integer("score"),
+  reasons: text("reasons").array(),
+  status: text("status").notNull().default("pending"), // pending, accepted, declined, cancelled
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  respondedAt: timestamp("responded_at"),
+}, (t) => ({
+  uniqPending: uniqueIndex("buddy_requests_pending_unique")
+    .on(t.requesterId, t.recipientId)
+    .where(sql`status = 'pending'`),
+}));
+
 export type BuddyProfile = typeof buddyProfiles.$inferSelect;
 export type BuddyPair = typeof buddyPairs.$inferSelect;
+export type BuddyRequest = typeof buddyRequests.$inferSelect;
 
 // Recovery Creator Profiles (extended user profile for stroke survivors)
 export const recoveryCreatorProfiles = pgTable("recovery_creator_profiles", {

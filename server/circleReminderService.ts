@@ -1,0 +1,102 @@
+// Live Circle reminders — flows through the unified lifecycle messaging engine.
+// Finds upcoming scheduled community video sessions with RSVP'd participants and
+// sends a day-before + hour-before nudge on email + push + SMS (consent-gated
+// per channel by the engine). Every send carries a
+// stable dedupeKey (circle-reminder-{sessionId}-{window}-{userId}-{channel}) so
+// the hourly cron is fully idempotent across double-runs and restarts.
+import { db } from "./db";
+import { sql } from "drizzle-orm";
+import { sendMessage } from "./messaging";
+
+type Window = "day" | "hour";
+
+const WINDOWS: Array<{ key: Window; from: string; to: string; label: string }> = [
+  { key: "day", from: "24 hours", to: "25 hours", label: "tomorrow" },
+  { key: "hour", from: "1 hours", to: "2 hours", label: "in about an hour" },
+];
+
+interface DueRow {
+  session_id: number;
+  title: string | null;
+  scheduled_at: string;
+  meeting_url: string | null;
+  user_id: string;
+}
+
+function fmtWhen(iso: string): string {
+  try {
+    return new Date(iso).toLocaleString("en-US", {
+      weekday: "short", month: "short", day: "numeric",
+      hour: "numeric", minute: "2-digit",
+    });
+  } catch {
+    return "soon";
+  }
+}
+
+export async function runCircleReminders(): Promise<void> {
+  let sent = 0;
+  for (const w of WINDOWS) {
+    // Scheduled, community-facing sessions falling into this reminder window,
+    // joined to every survivor who RSVP'd (participant not left).
+    const res = await db.execute(sql`
+      SELECT vs.id AS session_id, vs.title, vs.scheduled_at, vs.meeting_url, p.user_id
+      FROM video_sessions vs
+      JOIN video_session_participants p ON p.session_id = vs.id
+      WHERE vs.status = 'scheduled'
+        AND vs.scheduled_at IS NOT NULL
+        AND vs.scheduled_at BETWEEN now() + interval ${sql.raw(`'${w.from}'`)}
+                               AND now() + interval ${sql.raw(`'${w.to}'`)}
+        AND p.status <> 'left'
+    `);
+    const rows = ((res as any).rows ?? res) as DueRow[];
+
+    for (const r of rows) {
+      const title = r.title || "Live Circle";
+      const when = fmtWhen(r.scheduled_at);
+      const link = r.meeting_url || "/recovery/circles";
+      const base = `circle-reminder-${r.session_id}-${w.key}-${r.user_id}`;
+
+      // Email
+      await sendMessage({
+        userId: r.user_id,
+        channel: "email",
+        category: "circle-reminder",
+        dedupeKey: `${base}-email`,
+        subject: `Your circle is ${w.label} — ${title}`,
+        html: `<p>Heads up, survivor.</p>
+<p><strong>${title}</strong> starts ${w.label} — ${when}.</p>
+<p>Show up as you are. <a href="${link}">Join here</a> when it's time.</p>
+<p style="color:#888;font-size:12px">Live Circles are peer support — not a substitute for medical care. In a crisis, call or text 988.</p>`,
+        text: `${title} starts ${w.label} — ${when}. Join: ${link}. Peer support, not medical care. Crisis: call or text 988.`,
+      });
+
+      // Push
+      await sendMessage({
+        userId: r.user_id,
+        channel: "push",
+        category: "circle-reminder",
+        dedupeKey: `${base}-push`,
+        push: {
+          title: `Circle ${w.label}`,
+          body: `${title} — ${when}. Tap to join.`,
+          url: "/recovery/circles",
+          type: "circle-reminder",
+          tag: `circle-${r.session_id}`,
+        },
+      });
+
+      // SMS — the engine skips if the survivor hasn't consented (sms_disabled /
+      // no_phone) and defers in quiet hours, so attempting is always safe.
+      await sendMessage({
+        userId: r.user_id,
+        channel: "sms",
+        category: "circle-reminder",
+        dedupeKey: `${base}-sms`,
+        smsBody: `${title} starts ${w.label} — ${when}. Join: ${link}. Reply STOP to opt out. Crisis: call or text 988.`,
+      });
+      sent++;
+    }
+  }
+  if (sent > 0) console.log(`[circle-reminders] processed ${sent} participant reminder(s)`);
+}
