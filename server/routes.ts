@@ -9782,6 +9782,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         hasLoggedToday?: boolean;
         morningBrief?: string | null;
         morningFocusItems?: string[] | null;
+        sosState?: string | null;
         strokeType?: string | null;
         affectedSide?: string | null;
         deficits?: Record<string, number> | null;
@@ -9811,6 +9812,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
             storage.getMorningBrief(userId, todayKey).catch(() => null),
             storage.getUserProfile(userId).catch(() => null),
           ]);
+          const todayCheckin = await storage.getDailyCheckin(userId, new Date()).catch(() => null);
 
           if (personaRow) {
             coachPersona = {
@@ -9843,6 +9845,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
             hasLoggedToday: todayLogs.length > 0,
             morningBrief: todayBrief?.brief ?? null,
             morningFocusItems: todayBrief?.focusItems ?? null,
+            sosState: (todayCheckin as any)?.sosState ?? (todayCheckin as any)?.sos_state ?? null,
             // Deficit profile — the heart of personalized coaching
             strokeType: survivorProfile?.strokeType ?? null,
             affectedSide: survivorProfile?.affectedSide ?? null,
@@ -10297,10 +10300,11 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     try {
       const userId = getUserId(req);
       const { exercisesLogged, habitsCompleted, winsToday, challengesToday, moodScore, energyScore } = req.body;
+      const sosState = ['survive', 'organize', 'strive'].includes(req.body.sosState) ? req.body.sosState : undefined;
       const existing = await storage.getDailyCheckin(userId, new Date());
       if (existing) {
         const updated = await storage.updateDailyCheckin(userId, new Date(), {
-          exercisesLogged, habitsCompleted, winsToday, challengesToday, moodScore, energyScore,
+          exercisesLogged, habitsCompleted, winsToday, challengesToday, moodScore, energyScore, sosState,
         });
         return res.json({ checkin: updated ?? existing });
       }
@@ -10314,6 +10318,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         challengesToday: challengesToday ?? null,
         exercisesLogged: exercisesLogged ?? null,
         habitsCompleted: habitsCompleted ?? null,
+        sosState: sosState ?? null,
       });
       // Streak
       const streak = await storage.getUserStreak(userId);

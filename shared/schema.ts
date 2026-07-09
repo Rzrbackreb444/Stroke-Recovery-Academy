@@ -1164,6 +1164,7 @@ export const dailyCheckins = pgTable("daily_checkins", {
   gratitude: text("gratitude"),
   exercisesLogged: jsonb("exercises_logged").$type<Array<{ name: string; reps?: number; minutes?: number }>>(),
   habitsCompleted: jsonb("habits_completed").$type<string[]>(),
+  sosState: text("sos_state"), // Doctrine S.O.S. daily state: 'survive' | 'organize' | 'strive'
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

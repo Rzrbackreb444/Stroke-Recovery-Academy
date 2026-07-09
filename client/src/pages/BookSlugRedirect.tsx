@@ -10,7 +10,7 @@ const SLUG_MAP: Record<string, string> = {
   officehours: "/recovery/community",
   persona: "/recovery/forge",
   plateau: "/book#mindset",
-  doctrine: "/recovery/sasch",
+  doctrine: "/recovery/doctrine",
   clinicians: "/recovery/therapist",
   ceu: "/recovery/university",
   quicksheet: "/book#clinicians",
@@ -69,7 +69,7 @@ const RESOURCES_MAP: Record<string, string> = {
   tribe: "/recovery/community",
   empire: "/book#tribe-stories",
   caregiver: "/book#caregivers",
-  doctrine: "/recovery/sasch",
+  doctrine: "/recovery/doctrine",
   tuesday: "/book#tribe-stories",
   promise: "/book#mindset",
   // Bonus aliases used elsewhere in the book

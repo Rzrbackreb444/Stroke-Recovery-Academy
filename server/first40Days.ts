@@ -220,7 +220,9 @@ export function generateFirst40DaysPdf(): Promise<Buffer> {
 // ─── Welcome email (delivers the First 40 Days guide PDF) ─────────────────────
 
 export async function sendFirst40WelcomeEmail(toEmail: string, firstName?: string | null) {
-  const greeting = firstName ? `Hey ${firstName.split(' ')[0]},` : 'Hey Warrior,';
+  const escapeHtml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  const cleanFirst = firstName ? escapeHtml(firstName.split(' ')[0].slice(0, 40)) : null;
+  const greeting = cleanFirst ? `Hey ${cleanFirst},` : 'Hey Warrior,';
 
   // nosemgrep: javascript.lang.security.html-in-template-string
   const html = `<!DOCTYPE html>

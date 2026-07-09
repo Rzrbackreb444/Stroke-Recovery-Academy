@@ -125,6 +125,7 @@ const CaregiverSettings = lazy(() => import("@/pages/CaregiverSettings"));
 const CaregiverDashboard = lazy(() => import("@/pages/CaregiverDashboard"));
 const Academy = lazy(() => import("@/pages/Academy"));
 const SaschLanding = lazy(() => import("@/pages/SaschLanding"));
+const SasquatchDoctrine = lazy(() => import("@/pages/SasquatchDoctrine"));
 const Builder = lazy(() => import("@/pages/Builder"));
 const SurvivalGrid = lazy(() => import("@/pages/SurvivalGrid"));
 const Achievements = lazy(() => import("@/pages/Achievements"));
@@ -561,6 +562,7 @@ function Router() {
       </Route>
       <Route path="/recovery/academy" component={Academy} />
       <Route path="/recovery/sasch" component={SaschLanding} />
+      <Route path="/recovery/doctrine" component={SasquatchDoctrine} />
       <Route path="/recovery/builder" component={Builder} />
       <Route path="/recovery/survival-grid" component={SurvivalGrid} />
       <Route path="/recovery/achievements">
