@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { safeJsonLd } from "@/lib/safeJsonLd";
 import sasquatchPersonaLogo from "@assets/sos-persona-logo-opt.webp";
+import nickIcu from "@assets/nick-icu-opt.webp";
+import nickStaples from "@assets/nick-staples-opt.webp";
 
 interface Edition {
   id: number;
@@ -455,7 +457,34 @@ export default function BookBuy() {
         </div>
       </section>
 
-      {/* ── Divider quote ────────────────────────────────────── */}
+      {/* ── Where it started ─────────────────────────────────── */}
+      <section className="container mx-auto px-4 py-14 max-w-4xl">
+        <h2 className="text-xs tracking-widest uppercase text-muted-foreground font-medium mb-3">
+          Where it started
+        </h2>
+        <p className="text-sm text-muted-foreground leading-relaxed mb-8 max-w-2xl">
+          December 3, 2018. Massive hemorrhagic stroke at 36. Ventilator, emergency brain surgery, a row of staples, and a doctor saying "you'll probably never walk normally again." This book is what happened next.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <img
+            src={nickIcu}
+            alt="Nick Kremers on a ventilator in the ICU after his 2018 stroke"
+            loading="lazy"
+            decoding="async"
+            className="w-full h-full object-cover rounded-md border border-border/50"
+            data-testid="img-icu"
+          />
+          <img
+            src={nickStaples}
+            alt="Surgical staples across Nick's scalp after emergency brain surgery"
+            loading="lazy"
+            decoding="async"
+            className="w-full h-full object-cover rounded-md border border-border/50"
+            data-testid="img-staples"
+          />
+        </div>
+      </section>
+
       <section className="border-y border-border/40 bg-card/30 py-12">
         <div className="container mx-auto px-4 max-w-3xl text-center">
           <blockquote
