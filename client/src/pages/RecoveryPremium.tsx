@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useLocation, useSearch } from "wouter";
+import { useLocation, useSearch, Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -1531,6 +1531,19 @@ export default function RecoveryPremium() {
             healthcare team. In crisis, call 988 or 911.
           </p>
         </Card>
+
+        {/* ── Free lead magnet ─────────────────────────────────────────────── */}
+        <p className="text-center text-[#78716C] text-sm mb-6" data-testid="text-first40-offer">
+          Not ready yet? Get{" "}
+          <Link
+            href="/recovery/first-40-days"
+            className="text-[#C06B3E] font-semibold underline underline-offset-2 hover:text-[#A85B33]"
+            data-testid="link-first40-premium"
+          >
+            The First 40 Days
+          </Link>{" "}
+          — Nick's free field guide to the window that matters most.
+        </p>
       </main>
 
       <CancelFlowDialog open={cancelOpen} onOpenChange={setCancelOpen} />

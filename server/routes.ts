@@ -2137,6 +2137,68 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
     }
   });
 
+  // ── The First 40 Days lead magnet ──────────────────────────────────────────
+  // Public PDF download (also served as fallback link in welcome email)
+  app.get('/api/first-40-days/guide.pdf', pdfDownloadRateLimit, async (_req, res) => {
+    try {
+      const { generateFirst40DaysPdf } = await import('./first40Days');
+      const pdf = await generateFirst40DaysPdf();
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'attachment; filename="The-First-40-Days.pdf"');
+      res.setHeader('Cache-Control', 'public, max-age=3600');
+      res.send(pdf);
+    } catch (err: any) {
+      console.error('[first40] pdf generation error:', err);
+      res.status(500).json({ message: 'Could not generate the guide right now.' });
+    }
+  });
+
+  // Email gate — captures email, subscribes to nurture drip, sends welcome email with PDF
+  app.post('/api/first-40-days/subscribe', subscribeRateLimit, async (req, res) => {
+    try {
+      const { email, firstName } = req.body;
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ message: 'Enter a valid email so we can send your guide.' });
+      }
+      const cleanEmail = email.trim().toLowerCase();
+      const cleanName = firstName?.trim() || undefined;
+
+      // Prevent duplicate welcome+PDF spam on resubmits
+      const { newsletterSubscribers } = await import('../shared/schema');
+      const { db: nsDb } = await import('./db');
+      const existing = await nsDb
+        .select()
+        .from(newsletterSubscribers)
+        .where(eq(newsletterSubscribers.email, cleanEmail))
+        .limit(1);
+      const isNewSubscriber = existing.length === 0;
+
+      const { subscribeToNewsletter } = await import('./newsletterService');
+      await subscribeToNewsletter(cleanEmail, cleanName, 'first_40_days');
+
+      // Only send the welcome email + PDF on the first signup. Re-subscribers can grab
+      // the PDF directly from the public download link. Prevents inbox spam attacks.
+      if (isNewSubscriber) {
+        const { sendFirst40WelcomeEmail } = await import('./first40Days');
+        sendFirst40WelcomeEmail(cleanEmail, cleanName).catch((err) =>
+          console.error('[first40] welcome email background error:', err?.message),
+        );
+      }
+
+      res.json({
+        success: true,
+        alreadySubscribed: !isNewSubscriber,
+        message: isNewSubscriber
+          ? 'Guide incoming. Check your inbox in the next minute.'
+          : "You're already subscribed. Grab the PDF directly using the download link.",
+        downloadUrl: '/api/first-40-days/guide.pdf',
+      });
+    } catch (err: any) {
+      console.error('[first40] subscribe error:', err);
+      res.status(500).json({ message: err.message || 'Could not deliver the guide. Try again.' });
+    }
+  });
+
   // Unsubscribe (no auth — token-free for now, email param)
   app.get('/api/newsletter/unsubscribe', async (req, res) => {
     try {

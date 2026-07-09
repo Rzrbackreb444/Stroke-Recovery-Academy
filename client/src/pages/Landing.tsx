@@ -754,6 +754,40 @@ function GiftASurvivor() {
   );
 }
 
+function First40Strip() {
+  return (
+    <section className="bg-[#1A1412] py-16 sm:py-20">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+          <div className="max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FDFBF7]/8 border border-[#C06B3E]/30 mb-5">
+              <BookOpen className="w-3.5 h-3.5 text-[#C06B3E]" />
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#FDFBF7]/80">Free field guide</span>
+            </div>
+            <h2 className="font-display text-[#FDFBF7] text-3xl sm:text-4xl md:text-5xl mb-4 leading-[0.95]">
+              Just had a stroke?<br />
+              <span className="italic font-serif text-[#C06B3E]">Start with the first 40 days.</span>
+            </h2>
+            <p className="text-lg text-[#FDFBF7]/70 leading-relaxed">
+              Nick's toe did nothing for 37 straight days. On day 41 it moved. This free guide is those 40 days — three phases, one daily card, grounded in the window when the brain rewires fastest.
+            </p>
+          </div>
+          <div className="shrink-0">
+            <Button
+              asChild
+              size="lg"
+              className="bg-[#C06B3E] hover:bg-[#A85B33] text-white h-14 px-10 text-lg rounded-full font-semibold shadow-[0_2px_8px_rgba(192,107,62,0.15)] transition-all hover:-translate-y-0.5"
+              data-testid="button-first40-landing"
+            >
+              <Link href="/recovery/first-40-days">Get the free guide</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function FinalCTA() {
   return (
     <section className="relative bg-[#F5F0EB] py-20 sm:py-32 text-center overflow-hidden">
@@ -904,6 +938,7 @@ export default function Landing() {
         <Caregiver />
         <GiftASurvivor />
         <Guides />
+        <First40Strip />
         <FinalCTA />
       </main>
       <Footer />
