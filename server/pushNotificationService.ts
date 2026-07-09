@@ -101,6 +101,71 @@ export async function sendPushToUser(userId: string, payload: object) {
   for (const sub of result.rows as any[]) {
     await sendPush(sub.endpoint, sub.p256dh, sub.auth, payload);
   }
+  await sendExpoPushToUser(userId, payload);
+}
+
+// === MOBILE (Expo) PUSH ===
+// The mobile companion app registers Expo push tokens via POST /api/mobile/push-token.
+// Delivery rides the same sendPushToUser() path as web push, so every consent /
+// quiet-hours / dedupe decision made upstream by the messaging engine applies to
+// mobile automatically — no separate channel logic.
+
+export async function initMobilePushSchema() {
+  await db.execute(sql`
+    CREATE TABLE IF NOT EXISTS mobile_push_tokens (
+      id SERIAL PRIMARY KEY,
+      user_id VARCHAR NOT NULL,
+      token TEXT NOT NULL UNIQUE,
+      platform TEXT,
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+      last_used TIMESTAMP DEFAULT NOW()
+    )
+  `);
+}
+
+export async function registerMobilePushToken(userId: string, token: string, platform?: string) {
+  // A token can move between accounts on a shared device — reassign on conflict.
+  await db.execute(sql`
+    INSERT INTO mobile_push_tokens (user_id, token, platform)
+    VALUES (${userId}, ${token}, ${platform ?? null})
+    ON CONFLICT (token) DO UPDATE
+      SET user_id = ${userId}, platform = COALESCE(${platform ?? null}, mobile_push_tokens.platform), last_used = NOW()
+  `);
+}
+
+async function sendExpoPushToUser(userId: string, payload: object) {
+  try {
+    const result = await db.execute(sql`SELECT token FROM mobile_push_tokens WHERE user_id = ${userId}`);
+    const tokens = (result.rows as any[]).map((r) => r.token).filter(Boolean);
+    if (tokens.length === 0) return;
+
+    const p = payload as { title?: string; body?: string; url?: string; type?: string; tag?: string };
+    const messages = tokens.map((to) => ({
+      to,
+      title: p.title ?? 'Stroke Recovery Academy',
+      body: p.body ?? '',
+      data: { url: p.url, type: p.type, tag: p.tag },
+      sound: 'default' as const,
+    }));
+
+    const res = await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(messages),
+    });
+    if (!res.ok) return;
+    const json: any = await res.json().catch(() => null);
+    // Prune tokens Expo reports as dead so we stop sending to uninstalled apps.
+    const tickets: any[] = Array.isArray(json?.data) ? json.data : [];
+    for (let i = 0; i < tickets.length; i++) {
+      const t = tickets[i];
+      if (t?.status === 'error' && t?.details?.error === 'DeviceNotRegistered' && tokens[i]) {
+        await db.execute(sql`DELETE FROM mobile_push_tokens WHERE token = ${tokens[i]}`);
+      }
+    }
+  } catch {
+    // Expo push is best-effort; web push already attempted above.
+  }
 }
 
 // === RECURRING WORK (invoked by the durable scheduler) ===

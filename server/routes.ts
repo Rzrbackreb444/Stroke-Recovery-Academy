@@ -1,4 +1,5 @@
 import type { Express } from "express";
+import { z } from "zod";
 import { createServer, type Server } from "http";
 import express from "express";
 import path from "path";
@@ -1025,6 +1026,28 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   const { registerInstitutionRoutes } = await import('./institutionRoutes');
   registerInstitutionRoutes(app, isAuthenticated);
 
+  // Mobile companion app — Expo push token registration. Mounted after
+  // setupAuth so isAuthenticated + getUserId() see the session. Delivery
+  // rides sendPushToUser(), so messaging-engine consent/quiet-hours apply.
+  const mobilePushTokenSchema = z.object({
+    token: z.string().min(10).max(200).regex(/^Expo(nent)?PushToken\[.+\]$/),
+    platform: z.enum(['ios', 'android']).optional(),
+  });
+  app.post('/api/mobile/push-token', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+      const parsed = mobilePushTokenSchema.safeParse(req.body);
+      if (!parsed.success) return res.status(400).json({ message: 'Invalid push token payload' });
+      const { registerMobilePushToken } = await import('./pushNotificationService');
+      await registerMobilePushToken(userId, parsed.data.token, parsed.data.platform);
+      res.json({ ok: true });
+    } catch (err: any) {
+      console.error('[mobile-push] register failed:', err?.message ?? err);
+      res.status(500).json({ message: 'Failed to register push token' });
+    }
+  });
+
   // Durable scheduler admin observability (admin-only). Mounted after setupAuth
   // so requireAdmin's session lookup works.
   const { default: schedulerRoutes } = await import('./scheduler/schedulerRoutes');
@@ -1377,8 +1400,9 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   // itself is now owned by the durable scheduler (bootstrapScheduler below),
   // not a per-process setInterval.
   try {
-    const { initPushSchema } = await import('./pushNotificationService');
+    const { initPushSchema, initMobilePushSchema } = await import('./pushNotificationService');
     await initPushSchema();
+    await initMobilePushSchema();
   } catch (err: any) {
     console.warn("[startup] push schema init skipped:", err?.message ?? err);
   }
