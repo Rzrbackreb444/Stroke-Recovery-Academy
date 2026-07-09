@@ -6,6 +6,7 @@ import {
   Heart, Star, BookOpen, Target, Flame, Mountain, Quote, ArrowRight, Check,
 } from "lucide-react";
 import nickPortrait from "@assets/nick-portrait-opt.webp";
+import nickBeforeAfter from "@assets/Untitled_design_(1)_1783564981619.png";
 
 const milestones = [
   { year: "Dec 2018", title: "The Day Everything Changed", description: "December 3, 2018 — a massive hemorrhagic stroke. Left side paralyzed, speech gone, 50 pounds lost in the ICU on tube feedings. Told he might never walk normally again." },
@@ -139,6 +140,21 @@ export default function AboutNick() {
               from Lavaca, Arkansas.
             </p>
           </div>
+
+          <figure className="mt-10">
+            <div className="rounded-2xl overflow-hidden border border-[#E2C2A4]/40 shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
+              <img
+                src={nickBeforeAfter}
+                alt="Nick Kremers in 2018 right after his stroke, and in 2027 — seven years into recovery"
+                className="w-full h-auto"
+                loading="lazy"
+                data-testid="img-nick-before-after"
+              />
+            </div>
+            <figcaption className="text-center text-[#78716C] text-sm mt-3">
+              Left: 2018, right after the stroke. Right: seven years later. Same heart. Still thumpin'.
+            </figcaption>
+          </figure>
         </div>
       </section>
 

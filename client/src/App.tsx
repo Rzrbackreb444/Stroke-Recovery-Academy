@@ -194,6 +194,7 @@ const SurvivorIncome = lazy(() => import("@/pages/SurvivorIncome"));
 const RecoveryProtocols = lazy(() => import("@/pages/RecoveryProtocols"));
 const MyBook = lazy(() => import("@/pages/MyBook"));
 const AboutNick = lazy(() => import("@/pages/AboutNick"));
+const First40Days = lazy(() => import("@/pages/First40Days"));
 const Challenge = lazy(() => import("@/pages/Challenge"));
 const RecoveryAnthem = lazy(() => import("@/pages/RecoveryAnthem"));
 const RecoveryAnthemBuilder = lazy(() => import("@/pages/RecoveryAnthemBuilder"));
@@ -791,6 +792,7 @@ function Router() {
       {/* Pricing collapsed to ONE survivor tier — old survivor pricing surface redirects. */}
       <Route path="/recovery/pricing"><Redirect to="/recovery/premium" /></Route>
       <Route path="/recovery/about-nick" component={AboutNick} />
+      <Route path="/recovery/first-40-days" component={First40Days} />
       <Route path="/recovery/gift" component={GiftSurvivor} />
       <Route path="/recovery/coaching-with-nick" component={CoachingWithNick} />
       <Route path="/partners" component={Partners} />
