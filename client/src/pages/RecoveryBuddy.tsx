@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import {
   Users, HeartHandshake, MessageCircle, X, Search, Loader2, CheckCircle2, Sparkles,
-  Check, UserPlus, Inbox, Clock,
+  Check, UserPlus, Inbox, Clock, ShieldOff, Ban,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,28 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import RecoveryHeader from "@/components/RecoveryHeader";
+
+const REPORT_REASONS = [
+  "Harassment or abuse",
+  "Inappropriate messages",
+  "Spam or scam",
+  "Made me feel unsafe",
+  "Other",
+];
+
+interface BlockedSurvivor {
+  userId: string;
+  firstName: string | null;
+  lastName: string | null;
+  profileImageUrl: string | null;
+  reason: string | null;
+  createdAt: string;
+}
 
 interface BuddyProfile {
   userId: string;
@@ -188,6 +209,54 @@ export default function RecoveryBuddy() {
     },
   });
 
+  const [blockOpen, setBlockOpen] = useState(false);
+  const [alsoReport, setAlsoReport] = useState(true);
+  const [reportReason, setReportReason] = useState(REPORT_REASONS[0]);
+  const [reportDetails, setReportDetails] = useState("");
+
+  const { data: blocks } = useQuery<BlockedSurvivor[]>({
+    queryKey: ["/api/buddy/blocks"],
+    enabled: !!user,
+  });
+
+  const block = useMutation({
+    mutationFn: async (targetUserId: string) => {
+      const res = await apiRequest("POST", "/api/buddy/block", {
+        targetUserId,
+        report: alsoReport,
+        reportReason,
+        reportDetails: reportDetails.trim() || undefined,
+      });
+      return res.json();
+    },
+    onSuccess: (data: any) => {
+      setBlockOpen(false);
+      setReportDetails("");
+      toast({
+        title: "Buddy blocked",
+        description: data?.reported
+          ? "We ended the pairing, hid your messages, and sent the report to our team."
+          : "We ended the pairing and hid your messages.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/buddy/me"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/buddy/profile"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/buddy/blocks"] });
+    },
+    onError: (e: any) => toast({ title: "Couldn't block", description: e.message, variant: "destructive" }),
+  });
+
+  const unblock = useMutation({
+    mutationFn: async (targetUserId: string) => {
+      const res = await apiRequest("POST", "/api/buddy/unblock", { targetUserId });
+      return res.json();
+    },
+    onSuccess: () => {
+      toast({ title: "Unblocked" });
+      queryClient.invalidateQueries({ queryKey: ["/api/buddy/blocks"] });
+    },
+    onError: (e: any) => toast({ title: "Couldn't unblock", description: e.message, variant: "destructive" }),
+  });
+
   function toggleInterest(t: string) {
     setInterests((prev) => prev.includes(t) ? prev.filter(x => x !== t) : [...prev, t].slice(0, 12));
   }
@@ -251,6 +320,11 @@ export default function RecoveryBuddy() {
                   variant="outline" className="border-[#333] text-gray-300 hover:bg-[#1a1a1a]"
                   data-testid="button-end-buddy">
                   <X className="w-4 h-4 mr-2" /> End pairing
+                </Button>
+                <Button onClick={() => setBlockOpen(true)}
+                  variant="outline" className="border-red-900/60 text-red-300 hover:bg-red-950/40"
+                  data-testid="button-block-buddy">
+                  <Ban className="w-4 h-4 mr-2" /> Block or report
                 </Button>
               </div>
             </CardContent>
@@ -512,10 +586,101 @@ export default function RecoveryBuddy() {
           </CardContent>
         </Card>
 
+        {/* Blocked survivors */}
+        {blocks && blocks.length > 0 && (
+          <Card className="bg-[#1a1a1a] border-[#333]">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-white text-base flex items-center gap-2">
+                <ShieldOff className="w-4 h-4 text-red-400" /> Blocked survivors
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {blocks.map((b) => (
+                <div key={b.userId} className="flex items-center gap-3 p-2 rounded-md bg-[#0D0D0D] border border-[#333]"
+                  data-testid={`blocked-${b.userId}`}>
+                  <Avatar className="w-9 h-9">
+                    <AvatarImage src={b.profileImageUrl || undefined} />
+                    <AvatarFallback className="bg-zinc-700 text-[#E2741B] text-xs">{initials(b)}</AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm text-gray-300 flex-1">{fullName(b)}</span>
+                  <Button size="sm" variant="outline" onClick={() => unblock.mutate(b.userId)} disabled={unblock.isPending}
+                    className="border-[#333] text-gray-300 hover:bg-[#1a1a1a]" data-testid={`button-unblock-${b.userId}`}>
+                    Unblock
+                  </Button>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
+
         <div className="rounded-md border border-[#333] bg-[#1a1a1a] px-4 py-3 text-xs text-gray-400">
           Buddies are peer support — not a substitute for medical care. In a crisis, call or text 988.
         </div>
       </main>
+
+      {/* Block / report dialog */}
+      <Dialog open={blockOpen} onOpenChange={setBlockOpen}>
+        <DialogContent className="bg-[#1a1a1a] border-[#333] text-white">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Ban className="w-5 h-5 text-red-400" /> Block this buddy
+            </DialogTitle>
+            <DialogDescription className="text-gray-400">
+              This ends your pairing and hides your messages both ways. They won't be told you blocked them.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <Checkbox checked={alsoReport} onCheckedChange={(v) => setAlsoReport(v === true)}
+                className="mt-0.5" data-testid="checkbox-report" />
+              <span className="text-sm text-gray-300">
+                Also report them to our team for review.
+              </span>
+            </label>
+
+            {alsoReport && (
+              <div className="space-y-3">
+                <div>
+                  <span className="text-xs text-gray-400">Reason</span>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {REPORT_REASONS.map((r) => (
+                      <Badge key={r} role="button" tabIndex={0} aria-pressed={reportReason === r}
+                        onClick={() => setReportReason(r)}
+                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setReportReason(r); } }}
+                        className={`cursor-pointer text-xs ${reportReason === r
+                          ? "bg-[#E2741B] text-black border-0"
+                          : "bg-zinc-800 text-gray-300 border-0 hover:bg-zinc-700"}`}
+                        data-testid={`badge-reason-${r}`}>
+                        {r}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="report-details" className="text-xs text-gray-400">Anything else? (optional)</label>
+                  <Textarea id="report-details" value={reportDetails} onChange={(e) => setReportDetails(e.target.value)}
+                    placeholder="What happened."
+                    className="bg-[#0D0D0D] border-[#333] resize-none mt-1" rows={3}
+                    data-testid="input-report-details" />
+                </div>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setBlockOpen(false)}
+              className="border-[#333] text-gray-300 hover:bg-[#0D0D0D]" data-testid="button-cancel-block">
+              Cancel
+            </Button>
+            <Button onClick={() => me?.partner && block.mutate(me.partner.id)} disabled={block.isPending || !me?.partner}
+              className="bg-red-700 text-white hover:bg-red-700/90" data-testid="button-confirm-block">
+              {block.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Ban className="w-4 h-4 mr-2" />}
+              {alsoReport ? "Block & report" : "Block"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

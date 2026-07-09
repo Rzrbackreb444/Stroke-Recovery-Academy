@@ -6,15 +6,26 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   MessageCircle, Send, Search, Plus, Image, Smile, MoreVertical,
-  Phone, Video, Info, Check, CheckCheck, Loader2, Users, ArrowLeft, X
+  Phone, Video, Info, Check, CheckCheck, Loader2, Users, ArrowLeft, X, Ban
 } from "lucide-react";
 import TherapistAvailabilityBadge from "@/components/recovery/TherapistAvailabilityBadge";
+
+const REPORT_REASONS = [
+  "Harassment or abuse",
+  "Inappropriate messages",
+  "Spam or scam",
+  "Made me feel unsafe",
+  "Other",
+];
 
 interface Conversation {
   id: number;
@@ -127,6 +138,42 @@ export default function Messages() {
       setSelectedConversation(data);
       setMobileShowChat(true);
     },
+  });
+
+  const [blockOpen, setBlockOpen] = useState(false);
+  const [alsoReport, setAlsoReport] = useState(true);
+  const [reportReason, setReportReason] = useState(REPORT_REASONS[0]);
+  const [reportDetails, setReportDetails] = useState("");
+
+  const getOtherParticipantId = (conv: Conversation | null): string | undefined => {
+    if (!conv || conv.type !== "direct") return undefined;
+    return conv.participants?.find((p) => p.userId !== user?.id)?.userId;
+  };
+
+  const blockMutation = useMutation({
+    mutationFn: async (targetUserId: string) => {
+      const res = await apiRequest("POST", "/api/buddy/block", {
+        targetUserId,
+        report: alsoReport,
+        reportReason,
+        reportDetails: reportDetails.trim() || undefined,
+      });
+      return res.json();
+    },
+    onSuccess: (data: any) => {
+      setBlockOpen(false);
+      setReportDetails("");
+      setSelectedConversation(null);
+      setMobileShowChat(false);
+      toast({
+        title: "Survivor blocked",
+        description: data?.reported
+          ? "We hid this conversation and sent the report to our team."
+          : "We hid this conversation both ways.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/messages/conversations"] });
+    },
+    onError: (e: any) => toast({ title: "Couldn't block", description: e.message, variant: "destructive" }),
   });
 
   useEffect(() => {
@@ -362,6 +409,24 @@ export default function Messages() {
                     <Button size="icon" variant="ghost">
                       <Video className="w-5 h-5" />
                     </Button>
+                    {selectedConversation.type === "direct" && getOtherParticipantId(selectedConversation) && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button size="icon" variant="ghost" data-testid="button-conversation-menu">
+                            <MoreVertical className="w-5 h-5" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="bg-[#1a1a1a] border-[#333] text-white">
+                          <DropdownMenuItem
+                            onClick={() => setBlockOpen(true)}
+                            className="text-red-300 focus:text-red-200 focus:bg-red-950/40 cursor-pointer"
+                            data-testid="menu-block-user"
+                          >
+                            <Ban className="w-4 h-4 mr-2" /> Block or report
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
                     <Button size="icon" variant="ghost">
                       <Info className="w-5 h-5" />
                     </Button>
@@ -505,6 +570,73 @@ export default function Messages() {
           </div>
         </div>
       </div>
+
+      {/* Block / report dialog */}
+      <Dialog open={blockOpen} onOpenChange={setBlockOpen}>
+        <DialogContent className="bg-[#1a1a1a] border-[#333] text-white">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Ban className="w-5 h-5 text-red-400" /> Block this survivor
+            </DialogTitle>
+            <DialogDescription className="text-gray-400">
+              This ends any buddy pairing and hides this conversation both ways. They won't be told you blocked them.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <Checkbox checked={alsoReport} onCheckedChange={(v) => setAlsoReport(v === true)}
+                className="mt-0.5" data-testid="checkbox-report" />
+              <span className="text-sm text-gray-300">Also report them to our team for review.</span>
+            </label>
+
+            {alsoReport && (
+              <div className="space-y-3">
+                <div>
+                  <span className="text-xs text-gray-400">Reason</span>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {REPORT_REASONS.map((r) => (
+                      <Badge key={r} role="button" tabIndex={0} aria-pressed={reportReason === r}
+                        onClick={() => setReportReason(r)}
+                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setReportReason(r); } }}
+                        className={`cursor-pointer text-xs ${reportReason === r
+                          ? "bg-[#E2741B] text-black border-0"
+                          : "bg-zinc-800 text-gray-300 border-0 hover:bg-zinc-700"}`}
+                        data-testid={`badge-reason-${r}`}>
+                        {r}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="report-details" className="text-xs text-gray-400">Anything else? (optional)</label>
+                  <Textarea id="report-details" value={reportDetails} onChange={(e) => setReportDetails(e.target.value)}
+                    placeholder="What happened."
+                    className="bg-[#0D0D0D] border-[#333] resize-none mt-1" rows={3}
+                    data-testid="input-report-details" />
+                </div>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setBlockOpen(false)}
+              className="border-[#333] text-gray-300 hover:bg-[#0D0D0D]" data-testid="button-cancel-block">
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                const target = getOtherParticipantId(selectedConversation);
+                if (target) blockMutation.mutate(target);
+              }}
+              disabled={blockMutation.isPending || !getOtherParticipantId(selectedConversation)}
+              className="bg-red-700 text-white hover:bg-red-700/90" data-testid="button-confirm-block">
+              {blockMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Ban className="w-4 h-4 mr-2" />}
+              {alsoReport ? "Block & report" : "Block"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

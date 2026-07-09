@@ -1,0 +1,92 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "Arial",
+      "count": 64
+    },
+    {
+      "family": "Roboto",
+      "count": 60
+    },
+    {
+      "family": "sans-serif",
+      "count": 60
+    },
+    {
+      "family": "HelveticaNeue",
+      "count": 54
+    },
+    {
+      "family": "Google Sans",
+      "count": 4
+    }
+  ],
+  "colors": {
+    "primary": "#4285F4",
+    "accent": "#2962FF",
+    "background": "#FFFFFF",
+    "textPrimary": "#2962FF",
+    "link": "#2962FF"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "Roboto",
+      "heading": "Google Sans"
+    },
+    "fontStacks": {
+      "body": [
+        "Roboto",
+        "HelveticaNeue",
+        "Arial",
+        "sans-serif"
+      ],
+      "heading": [
+        "Google Sans",
+        "Roboto",
+        "Arial",
+        "sans-serif"
+      ],
+      "paragraph": [
+        "Roboto",
+        "HelveticaNeue",
+        "Arial",
+        "sans-serif"
+      ]
+    },
+    "fontSizes": {
+      "h1": "18px",
+      "h2": "14px",
+      "body": "13px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "8px"
+  },
+  "components": {},
+  "images": {
+    "logo": null,
+    "favicon": "https://www.gstatic.com/images/branding/searchlogo/ico/favicon.ico",
+    "ogImage": "https://i.etsystatic.com/43010353/r/il/236d45/4908006495/il_570xN.4908006495_a6md.jpg"
+  },
+  "__framework_hints": [],
+  "__llm_button_reasoning": {
+    "primary": {
+      "index": -1,
+      "text": "N/A",
+      "reasoning": "LLM failed"
+    },
+    "secondary": {
+      "index": -1,
+      "text": "N/A",
+      "reasoning": "LLM failed"
+    },
+    "confidence": 0
+  },
+  "confidence": {
+    "buttons": 0,
+    "colors": 0,
+    "overall": 0
+  }
+}

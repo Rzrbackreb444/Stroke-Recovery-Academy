@@ -16,6 +16,13 @@ export function buildAmazonUrl(asinOrUrl: string, tag: string | null | undefined
   }
 }
 
+export function buildAmazonSearchUrl(query: string, tag: string | null | undefined): string {
+  const url = new URL("https://www.amazon.com/s");
+  url.searchParams.set("k", query);
+  if (tag) url.searchParams.set("tag", tag);
+  return url.toString();
+}
+
 export function asinFromUrl(url: string): string | null {
   const m = url.match(/\/(?:dp|gp\/product)\/([A-Z0-9]{10})/i);
   return m ? m[1].toUpperCase() : null;

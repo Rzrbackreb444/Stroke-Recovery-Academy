@@ -16,7 +16,13 @@ import type { Express } from "express";
 import { z } from "zod";
 import { getUserId } from "./lib/authUtils";
 import { requireAdmin } from "./middleware/requireAdmin";
+import { paymentCheckoutLimiter, billingPortalLimiter } from "./middleware/publicRateLimit";
 import * as inst from "./services/institutionService";
+import * as billing from "./services/institutionBillingService";
+
+function escapeHtml(s: string): string {
+  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+}
 
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -33,6 +39,25 @@ export function registerInstitutionRoutes(app: Express, isAuthenticated: any) {
         // 404 (not 403) so org existence isn't leaked to non-members.
         return res.status(404).json({ message: "Not found" });
       }
+      req.orgId = orgId;
+      req.orgRole = role;
+      next();
+    } catch (err: any) {
+      res.status(500).json({ message: err?.message ?? "Authorization failed" });
+    }
+  }
+
+  // ── Org-owner authorization guard (owner of :orgId only) ───────────────────
+  // Billing is owner-only — clinicians manage the roster but never the payment
+  // method. 404 (not 403) on non-owners so org existence isn't leaked.
+  async function requireOrgOwner(req: any, res: any, next: any) {
+    try {
+      const userId = getUserId(req);
+      if (!userId) return res.status(401).json({ message: "Unauthorized" });
+      const orgId = Number(req.params.orgId);
+      if (!Number.isFinite(orgId)) return res.status(400).json({ message: "Invalid org" });
+      const role = await inst.getUserOrgRole(orgId, userId);
+      if (role !== "owner") return res.status(404).json({ message: "Not found" });
       req.orgId = orgId;
       req.orgRole = role;
       next();
@@ -97,6 +122,16 @@ export function registerInstitutionRoutes(app: Express, isAuthenticated: any) {
       if (!parsed.success) return res.status(400).json({ message: "Invalid input", errors: parsed.error.flatten() });
       const org = await inst.updateOrganization(orgId, parsed.data);
       if (!org) return res.status(404).json({ message: "Not found" });
+      // Seat-limit change → sync the Stripe subscription quantity (proration).
+      // No-op if the org has no active seat subscription yet. Best-effort so a
+      // Stripe hiccup never blocks the admin update.
+      if (parsed.data.seatLimit != null) {
+        try {
+          await billing.syncSeatSubscriptionQuantity(orgId, parsed.data.seatLimit);
+        } catch (e: any) {
+          console.warn("[institution-billing] seat quantity sync failed:", e?.message ?? e);
+        }
+      }
       res.json(org);
     } catch (err: any) {
       res.status(500).json({ message: err?.message ?? "Failed to update org" });
@@ -168,28 +203,63 @@ export function registerInstitutionRoutes(app: Express, isAuthenticated: any) {
 
   const bulkInviteSchema = z.object({
     emails: z.array(z.string().max(200)).min(1).max(500),
+    // When true (default), each invited survivor is emailed their join link via
+    // the crisis-safe template. Set false to just mint tokens (staff hand out links).
+    sendInviteEmail: z.boolean().optional().default(true),
   });
   app.post("/api/institutions/org/:orgId/invite", isAuthenticated, requireOrgStaff, async (req: any, res) => {
     try {
       const parsed = bulkInviteSchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ message: "Provide 1-500 emails" });
       const result = await inst.bulkInviteSurvivors(req.orgId, parsed.data.emails);
-      // Best-effort email of join links.
-      try {
-        const org = await inst.getOrganization(req.orgId);
-        const { sendEmail } = await import("./emailService");
-        const base = process.env.PUBLIC_BASE_URL || "https://strokerecoveryacademy.com";
-        for (const inv of result.invited) {
-          const link = `${base}/institution/join/${inv.token}`;
-          await sendEmail({
-            to: inv.email,
-            subject: `${org?.name ?? "Your care team"} set up your Stroke Recovery Academy access`,
-            html: `<p>Your care team at <strong>${org?.name ?? "your facility"}</strong> set up full access to Stroke Recovery Academy for you — no cost to you.</p><p><a href="${link}">Activate your account</a></p><p>You choose what your care team sees. It starts private and de-identified. Heart's still thumpin'.</p>`,
-            text: `Your care team at ${org?.name ?? "your facility"} set up Stroke Recovery Academy access for you.\n\nActivate: ${link}\n\nYou choose what your care team sees. Starts private and de-identified.`,
-          }).catch(() => {});
+      // Best-effort email of join links — never fatal to the invite itself.
+      let emailsSent = 0;
+      let emailsFailed = 0;
+      if (parsed.data.sendInviteEmail && result.invited.length) {
+        try {
+          const org = await inst.getOrganization(req.orgId);
+          const orgName = org?.name ?? "your care team";
+          const { sendEmail } = await import("./emailService");
+          const { renderEmail, ctaButton } = await import("./emailTemplate");
+          const base = process.env.PUBLIC_BASE_URL || "https://strokerecoveryacademy.com";
+          for (const inv of result.invited) {
+            const link = `${base}/institution/join/${inv.token}`;
+            const html = renderEmail({
+              previewText: `${orgName} set up full Stroke Recovery Academy access for you — no cost to you.`,
+              eyebrow: "YOUR CARE TEAM",
+              headline: "Your recovery access is ready",
+              subheadline: `${orgName} set up full access for you — no cost.`,
+              showCrisisCallout: true,
+              whyReceiving: `You're receiving this because ${orgName} provisioned Stroke Recovery Academy access for you.`,
+              bodyHtml: `
+                <p class="body-text">Your care team at <strong>${escapeHtml(orgName)}</strong> set up full access to Stroke Recovery Academy for you — no cost to you.</p>
+                <p class="body-text">Activate your account to start rebuilding. You choose what your care team sees — it starts private and de-identified, always your call. Heart's still thumpin'.</p>
+                ${ctaButton(link, "Activate your account")}
+                <p class="body-text">If the button doesn't work, paste this link into your browser:<br/><a href="${escapeHtml(link)}">${escapeHtml(link)}</a></p>
+              `,
+            });
+            try {
+              const sent = await sendEmail({
+                to: inv.email,
+                subject: `${orgName} set up your Stroke Recovery Academy access`,
+                html,
+                text: `Your care team at ${orgName} set up Stroke Recovery Academy access for you — no cost.\n\nActivate: ${link}\n\nYou choose what your care team sees. It starts private and de-identified.\n\nIf you are in crisis, call or text 988 (U.S.). In immediate danger, call 911.\n\nMedical disclaimer: Stroke Recovery Academy is educational and non-clinical. Always talk to your physician before starting, stopping, or changing any rehabilitation program.`,
+              });
+              if (sent?.success) emailsSent++;
+              else {
+                emailsFailed++;
+                console.error(`[institution-invite] Resend failed for invite email (org ${req.orgId}):`, sent?.error);
+              }
+            } catch (sendErr: any) {
+              emailsFailed++;
+              console.error(`[institution-invite] Error sending invite email (org ${req.orgId}):`, sendErr?.message ?? sendErr);
+            }
+          }
+        } catch (err: any) {
+          console.error(`[institution-invite] Invite email batch failed (org ${req.orgId}):`, err?.message ?? err);
         }
-      } catch { /* non-fatal */ }
-      res.json(result);
+      }
+      res.json({ ...result, emailsSent, emailsFailed });
     } catch (err: any) {
       res.status(500).json({ message: err?.message ?? "Failed to invite" });
     }
@@ -206,6 +276,68 @@ export function registerInstitutionRoutes(app: Express, isAuthenticated: any) {
       res.status(500).json({ message: err?.message ?? "Failed to remove member" });
     }
   });
+
+  // ════════════════════════════════════════════════════════════════════════
+  // ORG BILLING (owner-only) — per-seat Stripe subscription, invoices/receipts
+  // ════════════════════════════════════════════════════════════════════════
+  // Snapshot: billing status, current subscription, per-seat price, invoices.
+  app.get("/api/institutions/org/:orgId/billing", isAuthenticated, requireOrgOwner, async (req: any, res) => {
+    try {
+      res.json(await billing.getOrgBilling(req.orgId));
+    } catch (err: any) {
+      res.status(500).json({ message: err?.message ?? "Failed to load billing" });
+    }
+  });
+
+  // Start (or scale up to) a seat subscription via Stripe Checkout. `seats`
+  // sets the org's seat limit and the subscription quantity. If a subscription
+  // already exists, route the owner to the billing portal instead.
+  const checkoutSchema = z.object({ seats: z.number().int().min(1).max(100000) });
+  app.post(
+    "/api/institutions/org/:orgId/billing/checkout",
+    isAuthenticated,
+    paymentCheckoutLimiter,
+    requireOrgOwner,
+    async (req: any, res) => {
+      try {
+        const parsed = checkoutSchema.safeParse(req.body);
+        if (!parsed.success) return res.status(400).json({ message: "Provide a seat count (1+)" });
+        const current = await billing.getOrgBilling(req.orgId);
+        const baseUrl = process.env.PUBLIC_BASE_URL || `${req.protocol}://${req.get("host")}`;
+        if (current.hasSubscription) {
+          // Already subscribed — adjust quantity/seat limit in place and send
+          // them to the portal to review the prorated invoice.
+          await inst.updateOrganization(req.orgId, { seatLimit: parsed.data.seats });
+          await billing.syncSeatSubscriptionQuantity(req.orgId, parsed.data.seats);
+          const portal = await billing.createOrgBillingPortal(req.orgId, `${baseUrl}/institution`);
+          return res.json({ url: portal.url, adjusted: true });
+        }
+        // New subscription: persist the intended seat limit, then checkout.
+        await inst.updateOrganization(req.orgId, { seatLimit: parsed.data.seats });
+        const session = await billing.createSeatCheckoutSession(req.orgId, parsed.data.seats, baseUrl);
+        res.json({ url: session.url });
+      } catch (err: any) {
+        res.status(500).json({ message: err?.message ?? "Failed to start checkout" });
+      }
+    },
+  );
+
+  // Billing portal — manage payment method, view invoices/receipts, cancel.
+  app.post(
+    "/api/institutions/org/:orgId/billing/portal",
+    isAuthenticated,
+    billingPortalLimiter,
+    requireOrgOwner,
+    async (req: any, res) => {
+      try {
+        const baseUrl = process.env.PUBLIC_BASE_URL || `${req.protocol}://${req.get("host")}`;
+        const portal = await billing.createOrgBillingPortal(req.orgId, `${baseUrl}/institution`);
+        res.json({ url: portal.url });
+      } catch (err: any) {
+        res.status(500).json({ message: err?.message ?? "Failed to open billing portal" });
+      }
+    },
+  );
 
   // ════════════════════════════════════════════════════════════════════════
   // INVITE (public info + authed accept)

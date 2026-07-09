@@ -5,6 +5,7 @@
  */
 import { db } from "./db";
 import { sql } from "drizzle-orm";
+import { pgTextArray } from "./lib/pgArray";
 
 const DEFICIT_KEYWORDS: Record<string, string[]> = {
   motor: ["arm", "hand", "leg", "walk", "gait", "movement", "exercise", "physical", "strength", "balance", "coordination"],
@@ -84,8 +85,8 @@ export async function runDailyVideoIndex(): Promise<void> {
 
         await db.execute(sql`
           UPDATE community_videos
-             SET tags = ${tags},
-                 deficit_tags = ${deficitTags}
+             SET tags = ${pgTextArray(tags)},
+                 deficit_tags = ${pgTextArray(deficitTags)}
            WHERE id = ${row.id} AND cardinality(tags) = 0
         `);
         enriched++;

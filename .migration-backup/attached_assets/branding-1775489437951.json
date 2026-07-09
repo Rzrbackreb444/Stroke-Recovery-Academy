@@ -1,0 +1,130 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "Montserrat",
+      "role": "body"
+    }
+  ],
+  "colors": {
+    "primary": "#007BFF",
+    "secondary": "#EC2027",
+    "accent": "#EC2027",
+    "background": "#F7F7F7",
+    "textPrimary": "#000000",
+    "link": "#6C757D"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "Montserrat",
+      "heading": "Montserrat"
+    },
+    "fontStacks": {
+      "heading": [
+        "Montserrat",
+        "sans-serif"
+      ],
+      "body": [
+        "Montserrat",
+        "sans-serif"
+      ],
+      "paragraph": [
+        "Montserrat",
+        "sans-serif"
+      ]
+    },
+    "fontSizes": {
+      "h1": "40px",
+      "h2": "29px",
+      "body": "16px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "4px"
+  },
+  "components": {
+    "input": {
+      "background": "#F8F8F8",
+      "textColor": "#495057",
+      "borderColor": "#EEEEEE",
+      "borderRadius": "5px",
+      "borderRadiusCorners": {
+        "topLeft": "5px",
+        "topRight": "5px",
+        "bottomRight": "5px",
+        "bottomLeft": "5px"
+      },
+      "shadow": "none"
+    },
+    "buttonPrimary": {
+      "background": "#EC2027",
+      "textColor": "#FFFFFF",
+      "borderColor": "#EC2027",
+      "borderRadius": "30px",
+      "borderRadiusCorners": {
+        "topLeft": "30px",
+        "topRight": "30px",
+        "bottomRight": "30px",
+        "bottomLeft": "30px"
+      },
+      "shadow": "none"
+    }
+  },
+  "images": {
+    "logo": "https://go.mypartner.io/wp-content/uploads/upload-logo/rokweb-267.png",
+    "favicon": "https://go.mypartner.io/wp-content/uploads/upload-favicon/rokwebfavicon16.png",
+    "ogImage": null,
+    "logoHref": "File saved at: attached_assets/logoHref.html",
+    "logoAlt": "dev.rok.biz"
+  },
+  "__llm_logo_reasoning": {
+    "selectedIndex": 0,
+    "reasoning": "Selected #0 because it is located in the header, is visible, and matches the favicon domain, indicating it is the primary brand logo.",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  "__llm_button_reasoning": {
+    "primary": {
+      "index": 0,
+      "text": "Apply Now",
+      "reasoning": "Button #0 'Apply Now' is the primary CTA due to its action-oriented text and vibrant red color, which is consistent with the brand's accent color."
+    },
+    "secondary": {
+      "index": -1,
+      "text": "N/A",
+      "reasoning": "Both buttons share the same background color, making it impossible to select a secondary button with a different color."
+    },
+    "confidence": 0.9
+  },
+  "personality": {
+    "tone": "professional",
+    "energy": "medium",
+    "targetAudience": "business professionals"
+  },
+  "designSystem": {
+    "framework": "bootstrap",
+    "componentLibrary": ""
+  },
+  "confidence": {
+    "buttons": 0.9,
+    "colors": 0.9,
+    "overall": 0.9
+  },
+  "__llm_metadata": {
+    "logoSelection": {
+      "llmCalled": true,
+      "llmSucceeded": true,
+      "finalSource": "llm",
+      "rawLogoSelection": {
+        "selectedLogoIndex": 0,
+        "selectedLogoReasoning": "Selected #0 because it is located in the header, is visible, and matches the favicon domain, indicating it is the primary brand logo.",
+        "confidence": 0.9
+      }
+    },
+    "buttonClassification": {
+      "llmCalled": true,
+      "llmSucceeded": true
+    }
+  }
+}

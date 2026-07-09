@@ -48,6 +48,19 @@ function ensureBuddySchema() {
         CREATE UNIQUE INDEX IF NOT EXISTS buddy_requests_pending_unique
         ON buddy_requests (requester_id, recipient_id) WHERE status = 'pending'
       `);
+      await db.execute(sql`
+        CREATE TABLE IF NOT EXISTS buddy_blocks (
+          id SERIAL PRIMARY KEY,
+          blocker_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          blocked_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          reason TEXT,
+          created_at TIMESTAMP NOT NULL DEFAULT now()
+        )
+      `);
+      await db.execute(sql`
+        CREATE UNIQUE INDEX IF NOT EXISTS buddy_blocks_unique
+        ON buddy_blocks (blocker_id, blocked_id)
+      `);
     })().catch((e) => {
       schemaReady = null;
       throw e;
@@ -466,6 +479,127 @@ export function registerBuddyRoutes(app: Express, isAuthenticated: any) {
     } catch (e: any) {
       console.error("[buddy] end error", e);
       res.status(500).json({ error: e?.message || "Failed to end" });
+    }
+  });
+
+  // Block a survivor (and optionally report them). Blocking ends any active pair
+  // with them, cancels pending requests either way, hides DMs both ways
+  // (enforced in storage.getConversations / message send), and prevents re-pairing.
+  app.post("/api/buddy/block", isAuthenticated, async (req: any, res) => {
+    try {
+      await ensureBuddySchema();
+      const uid = getUserId(req);
+      const targetId = typeof req.body?.targetUserId === "string" ? req.body.targetUserId : "";
+      const reason = typeof req.body?.reason === "string" ? req.body.reason.slice(0, 300).trim() || null : null;
+      const shouldReport = req.body?.report === true;
+      const reportReason = typeof req.body?.reportReason === "string" ? req.body.reportReason.slice(0, 60) : "inappropriate";
+      const reportDetails = typeof req.body?.reportDetails === "string" ? req.body.reportDetails.slice(0, 2000).trim() : "";
+      if (!targetId || targetId === uid) return res.status(400).json({ error: "Invalid user" });
+
+      // Record the block (idempotent).
+      await db.execute(sql`
+        INSERT INTO buddy_blocks (blocker_id, blocked_id, reason)
+        VALUES (${uid}, ${targetId}, ${reason})
+        ON CONFLICT (blocker_id, blocked_id) DO NOTHING
+      `);
+
+      // End the active pair if it's with this survivor.
+      const pair = await findActivePair(uid);
+      if (pair && (pair.user1Id === targetId || pair.user2Id === targetId)) {
+        await db.transaction(async (tx) => {
+          await tx.update(buddyPairs)
+            .set({ status: "ended", endedAt: new Date(), endReason: "blocked" })
+            .where(eq(buddyPairs.id, pair.id));
+          await tx.execute(sql`DELETE FROM buddy_active_members WHERE pair_id = ${pair.id}`);
+          for (const id of [uid, targetId]) {
+            const [p] = await tx.select().from(buddyProfiles).where(eq(buddyProfiles.userId, id)).limit(1);
+            if (p) {
+              await tx.update(buddyProfiles)
+                .set({ status: p.optedIn ? "looking" : "paused", pairedAt: null, updatedAt: new Date() })
+                .where(eq(buddyProfiles.userId, id));
+            }
+          }
+        });
+      }
+
+      // Cancel any pending requests between the two survivors.
+      await db.update(buddyRequests)
+        .set({ status: "cancelled", respondedAt: new Date() })
+        .where(and(
+          eq(buddyRequests.status, "pending"),
+          or(
+            and(eq(buddyRequests.requesterId, uid), eq(buddyRequests.recipientId, targetId)),
+            and(eq(buddyRequests.requesterId, targetId), eq(buddyRequests.recipientId, uid)),
+          ),
+        ));
+
+      // Report lands in the existing admin feedback inbox (feedback_items).
+      if (shouldReport) {
+        const [target] = await db.select({ firstName: users.firstName, lastName: users.lastName })
+          .from(users).where(eq(users.id, targetId)).limit(1);
+        const targetName = `${target?.firstName || ""} ${target?.lastName || ""}`.trim() || "unknown";
+        const body =
+          `[BUDDY REPORT] Reporter ${uid} reported buddy ${targetId} (${targetName}). ` +
+          `Reason: ${reportReason}.` + (reportDetails ? ` Details: ${reportDetails}` : "");
+        await db.execute(sql`
+          INSERT INTO feedback_items (user_id, route, kind, body, severity)
+          VALUES (${uid}, '/recovery/buddy', 'general', ${body}, 'high')
+        `);
+        console.log(JSON.stringify({
+          event: "buddy_report", reporterId: uid, reportedId: targetId,
+          reason: reportReason, at: new Date().toISOString(),
+        }));
+      }
+
+      res.json({ ok: true, reported: shouldReport });
+    } catch (e: any) {
+      console.error("[buddy] block error", e);
+      res.status(500).json({ error: e?.message || "Failed to block" });
+    }
+  });
+
+  // Unblock a survivor I previously blocked.
+  app.post("/api/buddy/unblock", isAuthenticated, async (req: any, res) => {
+    try {
+      await ensureBuddySchema();
+      const uid = getUserId(req);
+      const targetId = typeof req.body?.targetUserId === "string" ? req.body.targetUserId : "";
+      if (!targetId) return res.status(400).json({ error: "Invalid user" });
+      await db.execute(sql`
+        DELETE FROM buddy_blocks WHERE blocker_id = ${uid} AND blocked_id = ${targetId}
+      `);
+      res.json({ ok: true });
+    } catch (e: any) {
+      console.error("[buddy] unblock error", e);
+      res.status(500).json({ error: e?.message || "Failed to unblock" });
+    }
+  });
+
+  // Survivors I've blocked (for a manage/unblock list).
+  app.get("/api/buddy/blocks", isAuthenticated, async (req: any, res) => {
+    try {
+      await ensureBuddySchema();
+      const uid = getUserId(req);
+      const raw = await db.execute(sql`
+        SELECT b.blocked_id, b.reason, b.created_at,
+               u.first_name, u.last_name, u.profile_image_url
+        FROM buddy_blocks b
+        JOIN users u ON u.id = b.blocked_id
+        WHERE b.blocker_id = ${uid}
+        ORDER BY b.created_at DESC
+      `);
+      const rows = ((raw as any).rows ?? raw) as any[];
+      res.json(rows.map((r) => ({
+        userId: r.blocked_id,
+        firstName: r.first_name,
+        lastName: r.last_name,
+        profileImageUrl: r.profile_image_url,
+        reason: r.reason,
+        createdAt: r.created_at,
+      })));
+    } catch (e: any) {
+      console.error("[buddy] blocks error", e);
+      res.status(500).json({ error: e?.message || "Failed to load blocks" });
     }
   });
 }

@@ -15,30 +15,31 @@ import {
   type ShopCategoryId,
   type ShopProduct,
 } from "@/data/survivorShop";
-import { buildAmazonUrl } from "@/lib/amazonLink";
+import { buildAmazonSearchUrl } from "@/lib/amazonLink";
 
 interface AffiliateConfig {
   amazonTag: string | null;
 }
 
 function ProductCard({ p, tag, configReady }: { p: ShopProduct; tag: string | null; configReady: boolean }) {
-  const url = buildAmazonUrl(p.asin, tag);
+  const brandWord = p.brand?.split(" ")[0]?.toLowerCase();
+  const query =
+    p.brand && brandWord && !p.name.toLowerCase().includes(brandWord)
+      ? `${p.brand} ${p.name}`
+      : p.name;
+  const url = buildAmazonSearchUrl(query, tag);
   return (
     <Card className="bg-zinc-900/60 border-amber-900/30 flex flex-col" data-testid={`card-product-${p.id}`}>
       <CardHeader>
-        <div className="flex items-start justify-between gap-2 flex-wrap">
-          <CardTitle className="text-amber-100 text-base leading-snug" data-testid={`text-product-name-${p.id}`}>
-            {p.name}
-          </CardTitle>
-          <Badge variant="outline" className="border-amber-800/50 text-amber-300 shrink-0">
+        <CardTitle className="text-amber-100 text-base leading-snug" data-testid={`text-product-name-${p.id}`}>
+          {p.name}
+        </CardTitle>
+        <CardDescription className="text-amber-100/50 text-xs flex items-center gap-2 flex-wrap">
+          <Badge variant="outline" className="border-amber-800/50 text-amber-300 shrink-0" data-testid={`badge-price-${p.id}`}>
             {p.priceClass}
           </Badge>
-        </div>
-        {p.brand && (
-          <CardDescription className="text-amber-100/50 text-xs">
-            {p.brand} · ASIN {p.asin}
-          </CardDescription>
-        )}
+          {p.brand && <span>{p.brand}</span>}
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col gap-3">
         <p className="text-amber-100/80 text-sm leading-relaxed">{p.whyNick}</p>

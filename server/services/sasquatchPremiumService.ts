@@ -12,6 +12,7 @@
 import { db } from "../db";
 import { sql, eq } from "drizzle-orm";
 import { users } from "@shared/schema";
+import { pgTextArray } from "../lib/pgArray";
 import { getUncachableStripeClient } from "../stripeClient";
 
 import { FOUNDER_MONTHLY_CENTS } from "@shared/survivorOffer";
@@ -301,7 +302,7 @@ export async function hasActiveSasquatchPremium(
         JOIN stripe.subscription_items si ON si.subscription = s.id
        WHERE s.customer = ${stripeCustomerId}
          AND s.status IN ('active', 'trialing')
-         AND si.price = ANY(${eligibleArr}::text[])
+         AND si.price = ANY(${pgTextArray(eligibleArr)})
        LIMIT 1
     `);
     active = (r.rows?.length ?? 0) > 0;

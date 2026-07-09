@@ -351,6 +351,55 @@ export async function listJobsWithStatus() {
   return rows.map((r) => ({ ...r, hasHandler: registry.has(r.name) }));
 }
 
+// Scheduler liveness snapshot. A silent scheduler failure (deploy that breaks
+// bootstrapScheduler, a crashed tick loop) shows up here as an enabled job whose
+// next_run_at has fallen far behind now() — a healthy tick keeps advancing it
+// into the future every cycle. `overdueGraceSeconds` is the slack past a job's
+// intended fire time before we call it stale (default 10 min ≫ the 30s tick, so
+// on-time jobs never flap). Returns a compact per-job view plus the names of any
+// overdue jobs, so both /api/health (summary) and the admin panel (detail) read
+// from one source of truth.
+export interface SchedulerJobHealth {
+  name: string;
+  enabled: boolean;
+  lastRunAt: string | null;
+  lastStatus: string | null;
+  nextRunAt: string | null;
+  runCount: number;
+  failureCount: number;
+  overdue: boolean;
+}
+
+export interface SchedulerHealth {
+  ok: boolean;
+  jobCount: number;
+  stale: string[];
+  jobs: SchedulerJobHealth[];
+}
+
+export async function getSchedulerHealth(overdueGraceSeconds = 600): Promise<SchedulerHealth> {
+  const res = await db.execute(sql`
+    SELECT name, enabled, last_run_at, last_status, next_run_at, run_count, failure_count,
+           (enabled = true
+             AND next_run_at < now() - (interval '1 second' * ${overdueGraceSeconds})) AS overdue
+    FROM scheduled_jobs
+    ORDER BY name ASC
+  `);
+  const rows = (res.rows || []) as any[];
+  const jobs: SchedulerJobHealth[] = rows.map((r) => ({
+    name: r.name,
+    enabled: r.enabled === true || r.enabled === "t",
+    lastRunAt: r.last_run_at ? new Date(r.last_run_at).toISOString() : null,
+    lastStatus: r.last_status ?? null,
+    nextRunAt: r.next_run_at ? new Date(r.next_run_at).toISOString() : null,
+    runCount: Number(r.run_count ?? 0),
+    failureCount: Number(r.failure_count ?? 0),
+    overdue: r.overdue === true || r.overdue === "t",
+  }));
+  const stale = jobs.filter((j) => j.overdue).map((j) => j.name);
+  return { ok: stale.length === 0, jobCount: jobs.length, stale, jobs };
+}
+
 export async function listRecentRuns(jobId?: number, limit = 50) {
   const lim = Math.min(Math.max(limit, 1), 200);
   if (jobId && Number.isFinite(jobId)) {

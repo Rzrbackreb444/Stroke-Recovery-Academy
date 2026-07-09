@@ -101,6 +101,8 @@ export const DRIP_EDITIONS: Array<{
   showBeforeAfter?: boolean;
   /** If true, show the 988 Suicide & Crisis Lifeline callout above the disclaimer. */
   showCrisisCallout?: boolean;
+  /** Footer line explaining why the subscriber is receiving this email. */
+  whyReceiving?: string;
 }> = [
   // ── EDITION 1 — Day 3 ───────────────────────────────────────────────────────
   {
@@ -421,10 +423,186 @@ export const DRIP_EDITIONS: Array<{
   },
 ];
 
+// ─── First 40 Days drip series (source: 'first_40_days') ──────────────────────
+// A dedicated 5-email nurture for subscribers who grabbed the free First 40 Days
+// field guide. Editions are numbered 101+ so they never collide with the general
+// Sasquatch Dispatch series above (sendDripEdition resolves across both arrays).
+// Every line is grounded in the guide's real arc — S.O.S., the 30–180 day
+// plasticity window, THINK work, the day-41 toe flicker after 37 days of nothing,
+// Never Zero, the flicker log — no fabrication. CTAs walk them from the guide to
+// onboarding, to the Coach, and finally to Premium.
+const F40_WHY = "You're receiving this because you downloaded The First 40 Days field guide from Stroke Recovery Academy.";
+const COACH_URL = `${BRAND.siteUrl}/recovery/sasquatch-coach`;
+const ONBOARD_URL = `${BRAND.siteUrl}/recovery/onboarding`;
+const PREMIUM_URL = `${BRAND.siteUrl}/recovery/premium`;
+
+export const FIRST_40_DAYS_DRIP: typeof DRIP_EDITIONS = [
+  // ── F40 EDITION 1 — Day 2 ───────────────────────────────────────────────────
+  {
+    editionNumber: 101,
+    dayOffset: 2,
+    subject: 'Did you open the guide? Start here.',
+    previewText: 'The window is open right now. Here is the one thing to do first.',
+    eyebrow: 'FIRST 40 DAYS · DAY 2',
+    headline: 'Refuse the verdict. Run S.O.S.',
+    subheadline: 'A prognosis is a data point, not a sentence. Here is how you start.',
+    whyReceiving: F40_WHY,
+    // nosemgrep: javascript.lang.security.html-in-template-string
+    content: `
+      <p class="body-text">You've got the guide. Now let me give you the one thing to do before anything else.</p>
+      <div class="quote-block">
+        <div class="quote-text">"A prognosis is one person's best guess on a survivor they've known 48 hours. It's a data point, not a verdict."</div>
+        <div class="quote-attr">— Nick Kremers</div>
+      </div>
+      <p class="body-text">A doctor looked at my scans and said I'd probably never walk normally again. I treated it as exactly what it was — limited data — and chose possible. You get to make that same choice today.</p>
+      <p class="body-text">Here's the part most people miss: the brain's rewiring density is highest in the first <strong>30 to 180 days</strong> after a stroke. The road is paved right now. Every honest rep you bank in this window is wiring you can spend for the next forty years.</p>
+      <div class="tip-box">
+        <div class="tip-label">Your First Assignment — S.O.S.</div>
+        <p class="body-text" style="margin:0;">Every morning, out loud, sixty seconds: <strong>Survive. Organize. Strive.</strong> It gives the worst days a name and a floor. Do it tomorrow morning before you do anything else.</p>
+      </div>
+      <p class="body-text">When you're ready, set up your recovery profile so the daily system has somewhere to live. It takes a few minutes.</p>
+      <div class="cta-block">
+        <a class="cta-btn" href="${ONBOARD_URL}">Set up your recovery — 7 days free</a>
+      </div>
+      <p class="body-text">Heart still thumpin'? Life still pumpin'.</p>
+      <p class="body-text">— Nick<br/><em>The Stroked Out Sasquatch</em></p>
+    `,
+  },
+
+  // ── F40 EDITION 2 — Day 5 ───────────────────────────────────────────────────
+  {
+    editionNumber: 102,
+    dayOffset: 5,
+    subject: 'Send the signal — even when nothing moves.',
+    previewText: 'THINK work is how you talk to a brain that has gone quiet. Here is the protocol.',
+    eyebrow: 'FIRST 40 DAYS · DAY 5',
+    headline: 'Think. Twitch. Move.',
+    subheadline: 'Pick one muscle. Three blocks a day. Send the signal whether it moves or not.',
+    whyReceiving: F40_WHY,
+    // nosemgrep: javascript.lang.security.html-in-template-string
+    content: `
+      <p class="body-text">The guide names it: <strong>THINK work.</strong> This is the engine of the whole first phase, so let me make it concrete.</p>
+      <div class="tip-box">
+        <div class="tip-label">The Daily Protocol</div>
+        <p class="body-text" style="margin:0 0 10px;">Pick <strong>one</strong> muscle. Three blocks a day, ten minutes each. Stare at it. Send the signal — <em>Lift. Lift. Lift.</em> — whether it moves or not. You are not waiting for motion. You are building the wire that makes motion possible.</p>
+        <p class="body-text" style="margin:0;color:${BRAND.muted};font-size:14px;">The science is motor imagery and repetition-driven plasticity. It's real. It works. I'm the proof.</p>
+      </div>
+      <p class="body-text">Rest is part of the work too — a stroke brain heals during sleep, so protect it like a rep. And remember the <strong>Never Zero</strong> rule: at least one honest rep every single day. Tired counts. Discouraged counts. Zero does not.</p>
+      <p class="body-text">If you hit a day where you don't know what to try, or you just need someone in your corner who's been there — talk to Coach. It's free to start, no card, any hour.</p>
+      <div class="cta-block">
+        <a class="cta-btn" href="${COACH_URL}">Talk to Coach — free</a>
+      </div>
+      <p class="body-text">Your brain is listening to every effort. Make it loud.</p>
+      <p class="body-text">— Nick</p>
+    `,
+  },
+
+  // ── F40 EDITION 3 — Day 8 ───────────────────────────────────────────────────
+  {
+    editionNumber: 103,
+    dayOffset: 8,
+    subject: 'My toe did nothing for 37 days.',
+    previewText: 'If week two feels like nothing is happening, you are not failing. You are on day three of forty-one.',
+    eyebrow: 'FIRST 40 DAYS · DAY 8',
+    headline: 'The day-41 toe.',
+    subheadline: 'Thirty-seven days of silence. Then three millimeters that changed everything.',
+    whyReceiving: F40_WHY,
+    // nosemgrep: javascript.lang.security.html-in-template-string
+    content: `
+      <div class="quote-block">
+        <div class="quote-text">"You are not failing. You are on day three of forty-one. Keep sending the signal."</div>
+        <div class="quote-attr">— Nick Kremers</div>
+      </div>
+      <p class="body-text">My left big toe did nothing for <strong>thirty-seven straight days.</strong> Nothing. I kept sending the signal anyway. On day forty-one it lifted — three millimeters, a quarter of a second. To anyone outside the work, nothing. To anyone inside it, the entire world.</p>
+      <p class="body-text">Every other piece of my recovery followed the same arc: THINK for weeks, twitch on a random Tuesday, then the work of moving. Foot, calf, knee, hip, arm, hand. Same pattern every time.</p>
+      <p class="body-text">So if you're a week or two in and the muscle hasn't moved — read that quote again. The silence is not the story. The silence is the setup.</p>
+      <div class="tip-box">
+        <div class="tip-label">This Week</div>
+        <p class="body-text" style="margin:0;">Do not measure progress by motion yet. Measure it by reps sent. Did you send the signal today? Then today was a win. The first 40 days are how you earn day 41.</p>
+      </div>
+      <p class="body-text">Stuck on a hard day? I built Coach for exactly the day-30 kind of discouragement. It's free to start.</p>
+      <div class="cta-block">
+        <a class="cta-btn" href="${COACH_URL}">Talk to Coach — free</a>
+      </div>
+      <p class="body-text">Keep swinging.</p>
+      <p class="body-text">— Nick</p>
+    `,
+  },
+
+  // ── F40 EDITION 4 — Day 11 ──────────────────────────────────────────────────
+  {
+    editionNumber: 104,
+    dayOffset: 11,
+    subject: 'Start a flicker log. Recruit your people.',
+    previewText: 'Evidence beats feelings. And nobody does this alone for long.',
+    eyebrow: 'FIRST 40 DAYS · DAY 11',
+    headline: 'Build the system that outlasts motivation.',
+    subheadline: 'A flicker log turns invisible progress into proof you can see.',
+    whyReceiving: F40_WHY,
+    // nosemgrep: javascript.lang.security.html-in-template-string
+    content: `
+      <p class="body-text">By now motivation is getting thin. That's expected — it always runs out before day 40. What carries you after that isn't willpower. It's the system.</p>
+      <div class="tip-box">
+        <div class="tip-label">Two Habits to Lock In</div>
+        <p class="body-text" style="margin:0 0 10px;"><strong>1. Start a flicker log.</strong> Write down every tiny sign of progress — a twitch, a millimeter, a word that came back. To anyone outside the work it's nothing. To you it's evidence. Log one swing (what you tried) and one flicker (what you noticed) every day. That's the whole daily report.</p>
+        <p class="body-text" style="margin:0;"><strong>2. Recruit your people.</strong> My friend showed up with resistance bands and no pity. Find the one who says "try again" instead of "poor you."</p>
+      </div>
+      <p class="body-text">Your recovery profile has the daily log and check-in built in — so the swing and the flicker have a home, and so the trajectory is something you can actually see over time.</p>
+      <div class="cta-block">
+        <a class="cta-btn" href="${ONBOARD_URL}">Set up your daily log — 7 days free</a>
+      </div>
+      <p class="body-text">Motivation gets you started. The system keeps you rising.</p>
+      <p class="body-text">— Nick</p>
+    `,
+  },
+
+  // ── F40 EDITION 5 — Day 14 ──────────────────────────────────────────────────
+  {
+    editionNumber: 105,
+    dayOffset: 14,
+    subject: 'Two weeks in. Here\u2019s the invitation.',
+    previewText: 'You have the guide and the habits. Here is the full system when you are ready.',
+    eyebrow: 'FIRST 40 DAYS · DAY 14',
+    headline: 'From the guide to the full system.',
+    subheadline: 'Daily reps, a squad in your corner, and Coach any hour.',
+    whyReceiving: F40_WHY,
+    // nosemgrep: javascript.lang.security.html-in-template-string
+    content: `
+      <p class="body-text">Two weeks ago you grabbed The First 40 Days. If you've been running even part of it — S.O.S. in the morning, signals during the day, one honest rep, the flicker log at night — you've already done more than most people do in their first two months.</p>
+      <p class="body-text">Here's the honest truth from Year 7: I'm still improving. Not metaphorically — literally still recovering function the chart said was gone. Because I never stopped treating my body like a construction project, and I never did it entirely alone.</p>
+      <p class="body-text">That's what Premium is. It's the guide, turned into a daily system that actually holds you:</p>
+      <div class="tip-box">
+        <div class="tip-label">What You Get</div>
+        <p class="body-text" style="margin:0 0 10px;"><strong>Daily reps and check-ins</strong> — the S.O.S. / signal / log rhythm, structured so you never guess what today is.</p>
+        <p class="body-text" style="margin:0 0 10px;"><strong>A squad</strong> — real survivors and caregivers who say "try again," not "poor you."</p>
+        <p class="body-text" style="margin:0;"><strong>Coach, unlimited</strong> — in your corner any hour, on the day-30 kind of discouragement the guide warned you about.</p>
+      </div>
+      <div class="cta-block">
+        <a class="cta-btn" href="${PREMIUM_URL}">Start your 7-day free trial</a>
+      </div>
+      <p class="body-text" style="text-align:center;font-size:14px;color:${BRAND.muted};">Cancel anytime — one click, no phone calls. Whether you join or not, thank you for fighting. You've made it two weeks of showing up. That means something.</p>
+      <p class="body-text">Keep swinging. Heart still thumpin'? Life still pumpin'.</p>
+      <p class="body-text">— Nick<br/><em>The Stroked Out Sasquatch</em></p>
+    `,
+  },
+];
+
+// All drip editions across every series, keyed by editionNumber. The number
+// ranges never overlap (general = 1–10, first_40_days = 101+), so a queue row's
+// editionNumber unambiguously resolves to exactly one edition regardless of
+// which series enrolled the subscriber.
+const ALL_DRIP_EDITIONS = [...DRIP_EDITIONS, ...FIRST_40_DAYS_DRIP];
+
+// Pick the right drip series for a subscriber based on their signup source.
+function dripEditionsForSource(source?: string | null): typeof DRIP_EDITIONS {
+  return source === 'first_40_days' ? FIRST_40_DAYS_DRIP : DRIP_EDITIONS;
+}
+
 // ─── Drip Queue Builder ───────────────────────────────────────────────────────
-export async function enrollSubscriberInDrip(subscriberId: number, subscribedAt: Date) {
+export async function enrollSubscriberInDrip(subscriberId: number, subscribedAt: Date, source?: string | null) {
   const { newsletterDripQueue } = await import('../shared/schema');
-  const rows = DRIP_EDITIONS.map((ed) => {
+  const editions = dripEditionsForSource(source);
+  const rows = editions.map((ed) => {
     const scheduledFor = new Date(subscribedAt.getTime() + ed.dayOffset * 24 * 60 * 60 * 1000);
     // Send at 9 AM EST (14:00 UTC)
     scheduledFor.setUTCHours(14, 0, 0, 0);
@@ -440,7 +618,7 @@ export async function enrollSubscriberInDrip(subscriberId: number, subscribedAt:
 
 // ─── Send one drip edition to a subscriber ───────────────────────────────────
 async function sendDripEdition(queueId: number, editionNumber: number, email: string, firstName?: string | null) {
-  const edition = DRIP_EDITIONS.find((e) => e.editionNumber === editionNumber);
+  const edition = ALL_DRIP_EDITIONS.find((e) => e.editionNumber === editionNumber);
   if (!edition) return;
 
   const escapedFirstName = firstName
@@ -458,8 +636,13 @@ async function sendDripEdition(queueId: number, editionNumber: number, email: st
     subheadline: edition.subheadline,
     showBeforeAfter: edition.showBeforeAfter,
     showCrisisCallout: edition.showCrisisCallout,
+    whyReceiving: edition.whyReceiving,
     bodyHtml: personalizedContent,
   });
+
+  // First 40 Days editions (101+) belong to a distinct series; label the plain-text
+  // fallback accordingly so it doesn't misname itself as the Sasquatch Dispatch.
+  const seriesLabel = editionNumber >= 101 ? 'The First 40 Days' : 'The Sasquatch Dispatch';
 
   // Route through the unified messaging layer so the drip inherits delivery
   // logging (message_deliveries), the crisis gate, and channel handling. No
@@ -473,7 +656,7 @@ async function sendDripEdition(queueId: number, editionNumber: number, email: st
       to: email,
       subject: edition.subject,
       html,
-      text: `The Sasquatch Dispatch — Edition ${editionNumber}\n\n${edition.previewText}\n\nRead online: ${BRAND.siteUrl}`,
+      text: `${seriesLabel}\n\n${edition.previewText}\n\nRead online: ${BRAND.siteUrl}`,
     },
   });
   if (!dm.sent.includes('email')) {
@@ -583,8 +766,9 @@ export async function subscribeToNewsletter(email: string, firstName?: string, s
     isActive: true,
   }).returning();
 
-  // Enroll in drip sequence immediately
-  await enrollSubscriberInDrip(sub.id, sub.subscribedAt);
+  // Enroll in the drip sequence matching their signup source (first_40_days
+  // gets the dedicated guide nurture; everyone else gets the Sasquatch Dispatch).
+  await enrollSubscriberInDrip(sub.id, sub.subscribedAt, source);
 
   return sub;
 }

@@ -1,0 +1,470 @@
+import { Button } from "@/components/ui/button";
+import { Menu, X, LogOut, LayoutDashboard, Settings, Heart, ChevronDown, Crown, Sparkles, Check, Flame, Users, BookOpen } from "lucide-react";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "wouter";
+import { useAuth } from "@/hooks/useAuth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+const sasquatchLogo = "/favicon.png";
+
+// Shared site-header singleton — first mount wins (covers RecoveryHeader
+// and GlobalHeader both), so legacy per-page header mounts are suppressed.
+import { siteHeaderRegistry } from "./siteHeaderRegistry";
+
+// July 2026 refocus: Coach is top-of-funnel — first slot, no exceptions.
+// "My Story" dropped from primary (still reachable via More → Your Story).
+// Order mirrors the landing hero CTA sequence: Coach → reps → plan → community.
+const primaryNav: { href: string; label: string; icon?: typeof Flame }[] = [
+  { href: "/recovery/sasquatch-coach", label: "Coach" },
+  { href: "/recovery/today", label: "Daily Reps" },
+  { href: "/recovery/onboarding", label: "Recovery Plan" },
+  { href: "/recovery/community", label: "Community" },
+];
+
+// "More" — grouped megamenu. Three survivor-focused columns: Practice
+// (recover), Connect (community + story sharing), Your Story (journal → write →
+// publish). Generic creator studios (lyrics/anthem/radio/puzzle/marketplace)
+// were pulled from the survivor nav in the focus pass — the product is one
+// thing now: recover, then tell your story.
+const resourcesGroups: { title: string; items: { href: string; label: string; pro?: boolean }[] }[] = [
+  {
+    title: "Practice",
+    items: [
+      { href: "/recovery/progress", label: "My Progress" },
+      { href: "/recovery/academy", label: "Learn" },
+      { href: "/recovery/exercises", label: "Exercises" },
+      { href: "/recovery/routine", label: "Daily Routine" },
+      { href: "/recovery/never-zero", label: "Never Zero" },
+      { href: "/recovery/brain-gym", label: "Brain Gym" },
+      { href: "/recovery/challenge", label: "66-Day Challenge" },
+      { href: "/recovery/motivation", label: "Recovery Anchor", pro: true },
+    ],
+  },
+  {
+    title: "Connect",
+    items: [
+      { href: "/sparks", label: "Sparks" },
+      { href: "/recovery/campfire", label: "Campfire (Live)" },
+      { href: "/recovery/spotlight", label: "Spotlight" },
+      { href: "/recovery/buddy", label: "Accountability Buddy" },
+      { href: "/groups", label: "Groups" },
+      { href: "/blog", label: "Blog" },
+    ],
+  },
+  {
+    title: "Your Story",
+    items: [
+      { href: "/recovery/my-story", label: "My Story" },
+      { href: "/recovery/journal", label: "Journal" },
+      { href: "/book", label: "Nick's Book" },
+    ],
+  },
+  {
+    title: "Work with Nick",
+    items: [
+      { href: "/recovery/coaching", label: "1:1 Coaching", pro: true },
+      { href: "/for/partners", label: "Partner with Us" },
+      { href: "/recovery/gift", label: "Gift a Survivor" },
+    ],
+  },
+];
+
+export default function RecoveryHeader() {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [resourcesOpen, setResourcesOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [isPrimary, setIsPrimary] = useState(false);
+  const [location] = useLocation();
+  const { user, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!siteHeaderRegistry.mounted) {
+      siteHeaderRegistry.mounted = true;
+      setIsPrimary(true);
+      return () => { siteHeaderRegistry.mounted = false; };
+    }
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Only the landing root has a dark hero — everywhere else the bg is cream/white
+  const isLandingRoot = location === "/" || location === "";
+
+  useEffect(() => {
+    setMobileOpen(false);
+    setResourcesOpen(false);
+  }, [location]);
+
+  if (!isPrimary) return null;
+
+  return (
+    <header
+      className={`sticky top-0 z-50 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-200 ${
+        scrolled || !isLandingRoot
+          ? "bg-white/95 backdrop-blur-md border-b border-[#E2C2A4]/30"
+          : "bg-transparent"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between gap-4 py-2">
+
+          {/* Logo — 3× scale, dominant on every viewport including mobile */}
+          <Link href="/recovery" data-testid="link-recovery-home" className="flex-shrink-0">
+            <div className="flex items-center gap-3 cursor-pointer">
+              <img
+                src={sasquatchLogo}
+                alt="Stroke Recovery Academy"
+                className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl object-cover flex-shrink-0"
+                data-testid="img-recovery-logo"
+              />
+              <div className="flex flex-col leading-none">
+                <span className={`font-bold tracking-tight text-lg sm:text-xl whitespace-nowrap ${scrolled || !isLandingRoot ? "text-[#1C1917]" : "text-[#FDFBF7]"}`}>
+                  Stroke Recovery Academy
+                </span>
+                <span className="hidden sm:block mt-1 text-[10px] font-semibold uppercase tracking-[0.28em] text-gold">
+                  Rebuild. Rewire. Rise.
+                </span>
+              </div>
+            </div>
+          </Link>
+
+          {/* Desktop nav — 4 accountability-focused primary + More megamenu */}
+          <nav className="hidden xl:flex items-center gap-0.5 shrink-0" aria-label="Main navigation">
+            {primaryNav.map((link) => {
+              const Icon = link.icon;
+              return (
+                <Link key={link.href} href={link.href}>
+                  <button
+                    className={`flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
+                      location === link.href
+                        ? "text-gold"
+                        : "text-[#78716C] hover:text-[#1C1917]"
+                    }`}
+                    data-testid={`nav-link-${link.label.toLowerCase().replace(/\s/g, "-")}`}
+                  >
+                    {Icon && <Icon className="h-3.5 w-3.5 text-gold" />}
+                    {link.label}
+                  </button>
+                </Link>
+              );
+            })}
+
+            {/* Resources megamenu — Practice / Connect / Your Story */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="flex items-center gap-1 px-3 py-2 min-h-[44px] text-sm font-medium text-[#78716C] hover:text-[#1C1917] rounded-lg transition-colors"
+                  data-testid="nav-resources"
+                >
+                  More <ChevronDown className="h-3.5 w-3.5" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="bg-white border-[#E2C2A4]/30 p-3 w-[700px]">
+                <div className="grid grid-cols-4 gap-4">
+                  {resourcesGroups.map((group) => (
+                    <div key={group.title}>
+                      <div className="text-[11px] font-bold uppercase tracking-wider text-gold/80 px-2 pb-1.5 mb-1 border-b border-[#E2C2A4]/30">
+                        {group.title}
+                      </div>
+                      <div className="flex flex-col">
+                        {group.items.map((link) => (
+                          <DropdownMenuItem key={link.href} asChild>
+                            <Link
+                              href={link.href}
+                              className={`px-2 py-1.5 text-sm rounded transition-colors cursor-pointer flex items-center gap-1.5 ${
+                                location === link.href ? "text-gold" : "text-[#78716C]"
+                              }`}
+                              data-testid={`nav-more-${link.label.toLowerCase().replace(/\s|\(|\)/g, "-")}`}
+                            >
+                              <span className="truncate">{link.label}</span>
+                              {link.pro && (
+                                <span className="inline-flex items-center gap-0.5 px-1 py-0 text-[9px] font-bold uppercase tracking-wide rounded bg-gold/15 text-gold border border-gold/30">
+                                  <Crown className="h-2 w-2" /> Pro
+                                </span>
+                              )}
+                            </Link>
+                          </DropdownMenuItem>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </nav>
+
+          {/* Right actions */}
+          <div className="hidden xl:flex items-center gap-2 shrink-0">
+            {/* Premium nav — always visible, never blocking. Hover popover
+                gives a 4-line free vs premium snapshot. One click → /recovery/premium. */}
+            <HoverCard openDelay={120} closeDelay={120}>
+              <HoverCardTrigger asChild>
+                <Link href="/recovery/premium">
+                  <button
+                    className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-sm font-semibold text-gold hover:text-amber-300 rounded-lg transition-colors whitespace-nowrap"
+                    data-testid="nav-premium"
+                  >
+                    <Sparkles className="h-4 w-4" />
+                    Premium
+                  </button>
+                </Link>
+              </HoverCardTrigger>
+              <HoverCardContent className="bg-white border-[#E2C2A4]/30 w-72 p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Crown className="h-4 w-4 text-gold" />
+                  <div className="font-bold text-[#1C1917] text-sm">Solo — $19/mo</div>
+                  <span className="text-xs text-[#A8A29E] ml-auto">7 days free</span>
+                </div>
+                <ul className="space-y-1.5 mb-3 text-xs text-[#78716C]">
+                  <li className="flex items-start gap-2">
+                    <Check className="h-3.5 w-3.5 text-green-400 mt-0.5 flex-shrink-0" />
+                    Unlimited Coach (free: 25/day)
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-3.5 w-3.5 text-green-400 mt-0.5 flex-shrink-0" />
+                    Unlimited Recovery Anchors (free: 3/mo)
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-3.5 w-3.5 text-green-400 mt-0.5 flex-shrink-0" />
+                    Voice Cloning included
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-3.5 w-3.5 text-green-400 mt-0.5 flex-shrink-0" />
+                    Live sessions with Nick
+                  </li>
+                </ul>
+                <Link href="/recovery/premium">
+                  <Button size="sm" className="w-full bg-gold text-black font-semibold" data-testid="nav-premium-cta">
+                    See Premium
+                  </Button>
+                </Link>
+              </HoverCardContent>
+            </HoverCard>
+            <Link href="/recovery/gift">
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-gold/50 text-gold font-semibold text-xs"
+                data-testid="button-nav-gift"
+              >
+                <Heart className="w-3.5 h-3.5 mr-1.5" />
+                Gift a Survivor
+              </Button>
+            </Link>
+            {isLoading ? (
+              <div className="w-8 h-8 rounded-full bg-[#F5F0EB] animate-pulse" />
+            ) : user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="gap-2" data-testid="dropdown-user">
+                    <Avatar className="h-7 w-7">
+                      <AvatarImage src={(user as any).avatarUrl || user.profileImageUrl || undefined} />
+                      <AvatarFallback className="bg-gold/20 text-gold text-xs font-bold">
+                        {((user as any).displayName || user.firstName)?.[0] || user.email?.[0]?.toUpperCase() || "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm text-[#1C1917] font-medium">
+                      {(user as any).displayName || user.firstName || "My Account"}
+                    </span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-52 bg-white border-[#E2C2A4]/30">
+                  <div className="px-3 py-2 border-b border-[#E2C2A4]/30">
+                    <p className="text-sm font-semibold text-[#1C1917]">{(user as any).displayName || user.firstName || "Survivor"}</p>
+                    {(user as any).username && <p className="text-xs text-gold/70">@{(user as any).username}</p>}
+                    <p className="text-xs text-gray-500">{user.email}</p>
+                  </div>
+                  <DropdownMenuItem asChild>
+                    <Link href="/recovery/dashboard" className="cursor-pointer">
+                      <LayoutDashboard className="w-4 h-4 mr-2 text-gold" />
+                      My Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/settings" className="cursor-pointer">
+                      <Settings className="w-4 h-4 mr-2 text-[#78716C]" />
+                      Settings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-[#E2C2A4]/30" />
+                  <DropdownMenuItem
+                    className="cursor-pointer text-[#78716C]"
+                    onClick={() => (window.location.href = "/api/logout")}
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-[#78716C] hover:text-[#1C1917] text-sm"
+                  onClick={() => (window.location.href = "/recovery/login")}
+                  data-testid="button-sign-in"
+                >
+                  Sign In
+                </Button>
+                <Button
+                  size="sm"
+                  className="bg-gold text-black font-semibold text-sm px-5"
+                  onClick={() => (window.location.href = "/recovery/login?tab=signup")}
+                  data-testid="button-join"
+                >
+                  Start Free
+                </Button>
+              </>
+            )}
+          </div>
+
+          {/* Mobile hamburger */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className={`xl:hidden ${scrolled || !isLandingRoot ? "text-[#78716C]" : "text-[#FDFBF7]"}`}
+            onClick={() => setMobileOpen(!mobileOpen)}
+            data-testid="button-menu"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          >
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </Button>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <div className="xl:hidden border-t border-[#1e1e1e] bg-[#FDFBF7]">
+          <div className="max-w-7xl mx-auto px-4 py-4 space-y-1">
+            {/* 4 accountability-focused primary links */}
+            {primaryNav.map((link) => {
+              const Icon = link.icon;
+              return (
+                <Link key={link.href} href={link.href}>
+                  <button
+                    className={`w-full text-left px-4 py-3 min-h-[44px] text-sm font-medium rounded-lg transition-colors flex items-center gap-2 ${
+                      location === link.href
+                        ? "text-gold bg-gold/5"
+                        : "text-[#78716C] hover:text-[#1C1917] hover:bg-[#F5F0EB]"
+                    }`}
+                    data-testid={`mobile-nav-${link.label.toLowerCase().replace(/\s/g, "-")}`}
+                  >
+                    {Icon && <Icon className="h-3.5 w-3.5 text-gold" />}
+                    {link.label}
+                  </button>
+                </Link>
+              );
+            })}
+            {/* Resources — collapsible like desktop dropdown */}
+            <div>
+              <button
+                className="w-full text-left px-4 py-3 min-h-[44px] text-sm font-medium rounded-lg text-[#78716C] hover:text-[#1C1917] hover:bg-[#F5F0EB] flex items-center justify-between transition-colors"
+                onClick={() => setResourcesOpen((v) => !v)}
+                data-testid="mobile-nav-resources"
+              >
+                More
+                <ChevronDown className={`h-3.5 w-3.5 transition-transform ${resourcesOpen ? "rotate-180" : ""}`} />
+              </button>
+              {resourcesOpen && (
+                <div className="pl-4 mt-1 space-y-3">
+                  {resourcesGroups.map((group) => (
+                    <div key={group.title}>
+                      <div className="px-4 text-[11px] font-bold uppercase tracking-wider text-gold/80 mb-1">
+                        {group.title}
+                      </div>
+                      <div className="space-y-1">
+                        {group.items.map((link) => (
+                          <Link key={link.href} href={link.href}>
+                            <button
+                              className={`w-full text-left px-4 py-2.5 text-sm rounded-lg transition-colors flex items-center gap-2 ${
+                                location === link.href
+                                  ? "text-gold"
+                                  : "text-[#78716C] hover:text-[#1C1917] hover:bg-[#F5F0EB]"
+                              }`}
+                              data-testid={`mobile-nav-${link.label.toLowerCase().replace(/\s|\(|\)/g, "-")}`}
+                            >
+                              {link.label}
+                              {link.pro && (
+                                <span className="inline-flex items-center gap-0.5 px-1 py-0 text-[9px] font-bold uppercase tracking-wide rounded bg-gold/15 text-gold border border-gold/30">
+                                  <Crown className="h-2 w-2" /> Pro
+                                </span>
+                              )}
+                            </button>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="pt-3 border-t border-[#1e1e1e] flex flex-col gap-2">
+              <Link href="/recovery/gift">
+                <Button
+                  variant="outline"
+                  className="w-full border-gold/50 text-gold justify-start gap-2"
+                  data-testid="mobile-button-gift"
+                >
+                  <Heart className="h-4 w-4" />
+                  Gift a Survivor
+                </Button>
+              </Link>
+              {user ? (
+                <>
+                  <Link href="/recovery/dashboard">
+                    <Button variant="outline" className="w-full border-[#E2C2A4]/30 text-[#1C1917] justify-start gap-2">
+                      <LayoutDashboard className="h-4 w-4 text-gold" />
+                      My Dashboard
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-[#78716C] gap-2"
+                    onClick={() => (window.location.href = "/api/logout")}
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    className="w-full bg-gold text-black font-semibold"
+                    onClick={() => (window.location.href = "/recovery/login?tab=signup")}
+                    data-testid="mobile-button-join"
+                  >
+                    Start Free
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="w-full text-[#78716C] justify-center"
+                    onClick={() => (window.location.href = "/recovery/login")}
+                    data-testid="mobile-button-sign-in"
+                  >
+                    Sign In
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}

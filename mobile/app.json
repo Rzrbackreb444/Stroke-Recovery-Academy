@@ -1,0 +1,55 @@
+{
+  "expo": {
+    "name": "Stroke Recovery Academy",
+    "slug": "sra-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FDFBF7"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.strokerecoveryacademy.mobile",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "SRA uses your microphone for voice input to the coach and check-in notes.",
+        "NSSpeechRecognitionUsageDescription": "SRA uses speech recognition so you can dictate messages to the coach."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FDFBF7"
+      },
+      "package": "com.strokerecoveryacademy.mobile",
+      "permissions": [
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE",
+        "RECORD_AUDIO"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-font",
+      "expo-speech",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#C06B3E"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "sra-mobile"
+      }
+    }
+  }
+}

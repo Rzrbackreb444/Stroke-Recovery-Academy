@@ -1,4 +1,5 @@
 import type { Express } from "express";
+import { z } from "zod";
 import { createServer, type Server } from "http";
 import express from "express";
 import path from "path";
@@ -19,6 +20,7 @@ import {
 import { redactEmail } from "./lib/redact";
 import { requireAdmin } from "./middleware/requireAdmin";
 import { getUserId } from "./lib/authUtils";
+import { pgTextArray } from "./lib/pgArray";
 import emailAuthRoutes from "./emailAuthRoutes";
 import luluRoutes from "./luluRoutes";
 import puzzleRoutes from "./puzzleRoutes";
@@ -1025,6 +1027,28 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   const { registerInstitutionRoutes } = await import('./institutionRoutes');
   registerInstitutionRoutes(app, isAuthenticated);
 
+  // Mobile companion app — Expo push token registration. Mounted after
+  // setupAuth so isAuthenticated + getUserId() see the session. Delivery
+  // rides sendPushToUser(), so messaging-engine consent/quiet-hours apply.
+  const mobilePushTokenSchema = z.object({
+    token: z.string().min(10).max(200).regex(/^Expo(nent)?PushToken\[.+\]$/),
+    platform: z.enum(['ios', 'android']).optional(),
+  });
+  app.post('/api/mobile/push-token', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+      const parsed = mobilePushTokenSchema.safeParse(req.body);
+      if (!parsed.success) return res.status(400).json({ message: 'Invalid push token payload' });
+      const { registerMobilePushToken } = await import('./pushNotificationService');
+      await registerMobilePushToken(userId, parsed.data.token, parsed.data.platform);
+      res.json({ ok: true });
+    } catch (err: any) {
+      console.error('[mobile-push] register failed:', err?.message ?? err);
+      res.status(500).json({ message: 'Failed to register push token' });
+    }
+  });
+
   // Durable scheduler admin observability (admin-only). Mounted after setupAuth
   // so requireAdmin's session lookup works.
   const { default: schedulerRoutes } = await import('./scheduler/schedulerRoutes');
@@ -1377,8 +1401,9 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   // itself is now owned by the durable scheduler (bootstrapScheduler below),
   // not a per-process setInterval.
   try {
-    const { initPushSchema } = await import('./pushNotificationService');
+    const { initPushSchema, initMobilePushSchema } = await import('./pushNotificationService');
     await initPushSchema();
+    await initMobilePushSchema();
   } catch (err: any) {
     console.warn("[startup] push schema init skipped:", err?.message ?? err);
   }
@@ -11260,7 +11285,7 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
            ${strokeDate ? String(strokeDate).trim().slice(0, 100) : null},
            ${relationship ? String(relationship).trim().slice(0, 200) : null},
            ${String(description).trim().slice(0, 3000)},
-           ${JSON.stringify(safeMedia)}::text[])
+           ${pgTextArray(safeMedia)})
       `);
       // Notify Nick
       try {
@@ -14839,8 +14864,16 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   app.post('/api/conversations/:id/messages', isAuthenticated, async (req: any, res) => {
     try {
       const userId = getUserId(req);
+      const conversationId = parseInt(req.params.id);
+      const blockedIds = await storage.getBuddyBlockedIds(userId);
+      if (blockedIds.length) {
+        const members = await storage.getConversationParticipantIds(conversationId);
+        if (members.some(m => blockedIds.includes(m))) {
+          return res.status(403).json({ message: "You can't message a blocked survivor." });
+        }
+      }
       const message = await storage.sendDirectMessage({
-        conversationId: parseInt(req.params.id),
+        conversationId,
         senderId: userId,
         ...req.body,
       });
@@ -15083,6 +15116,13 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       const userId = getUserId(req);
       const conversationId = parseInt(req.params.id);
       const { content } = req.body;
+      const blockedIds = await storage.getBuddyBlockedIds(userId);
+      if (blockedIds.length) {
+        const members = await storage.getConversationParticipantIds(conversationId);
+        if (members.some(m => blockedIds.includes(m))) {
+          return res.status(403).json({ message: "You can't message a blocked survivor." });
+        }
+      }
       // Safe messaging: run the same crisis gate as the AI Coach. Peer-to-peer
       // support is legitimate — a survivor confiding in their buddy must NOT be
       // blocked — so we still deliver the message, but attach 988/crisis
@@ -26157,10 +26197,7 @@ Format as structured JSON with clear sections.`;
       const { name, dosage, frequency, purpose, prescribedBy, startDate, notes, reminderTimes } = req.body;
       if (!name || !dosage || !frequency) return res.status(400).json({ message: 'Name, dosage, and frequency required' });
 
-      const rtArr: string[] = Array.isArray(reminderTimes) ? reminderTimes.map((t: any) => String(t)) : [];
-      const rtSql = rtArr.length
-        ? sql`ARRAY[${sql.join(rtArr.map((t) => sql`${t}`), sql`, `)}]::text[]`
-        : sql`ARRAY[]::text[]`;
+      const rtSql = pgTextArray(reminderTimes);
 
       const result = await db.execute(sql`
         INSERT INTO medications (user_id, name, dosage, frequency, purpose, prescribed_by, start_date, notes, reminder_times)
@@ -26179,11 +26216,7 @@ Format as structured JSON with clear sections.`;
       const userId = getUserId(req);
       const { id } = req.params;
       const { name, dosage, frequency, purpose, prescribedBy, notes, reminderTimes, isActive } = req.body;
-      const rtSql = Array.isArray(reminderTimes)
-        ? (reminderTimes.length
-            ? sql`ARRAY[${sql.join(reminderTimes.map((t: any) => sql`${String(t)}`), sql`, `)}]::text[]`
-            : sql`ARRAY[]::text[]`)
-        : sql`reminder_times`;
+      const rtSql = Array.isArray(reminderTimes) ? pgTextArray(reminderTimes) : sql`reminder_times`;
       await db.execute(sql`
         UPDATE medications SET
           name = COALESCE(${name}, name),

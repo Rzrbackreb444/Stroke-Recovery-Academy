@@ -1,0 +1,140 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "-apple-system",
+      "count": 62
+    },
+    {
+      "family": "BlinkMacSystemFont",
+      "count": 62
+    },
+    {
+      "family": "Segoe UI",
+      "count": 62
+    },
+    {
+      "family": "Roboto",
+      "count": 62
+    },
+    {
+      "family": "sans-serif",
+      "count": 62
+    },
+    {
+      "family": "Instrument Serif",
+      "count": 11
+    },
+    {
+      "family": "Georgia",
+      "count": 11
+    },
+    {
+      "family": "serif",
+      "count": 11
+    },
+    {
+      "family": "Oxygen",
+      "count": 1
+    },
+    {
+      "family": "Ubuntu",
+      "count": 1
+    }
+  ],
+  "colors": {
+    "primary": "#94A3B8",
+    "accent": "#1E293B",
+    "background": "#F8FAFC",
+    "textPrimary": "#1E293B",
+    "link": "#1E293B"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "-apple-system",
+      "heading": "Instrument Serif"
+    },
+    "fontStacks": {
+      "body": [
+        "-apple-system",
+        "BlinkMacSystemFont",
+        "Segoe UI",
+        "Roboto",
+        "Oxygen",
+        "Ubuntu",
+        "Cantarell",
+        "Fira Sans",
+        "Droid Sans",
+        "Helvetica Neue",
+        "sans-serif"
+      ],
+      "heading": [
+        "Instrument Serif",
+        "Georgia",
+        "serif"
+      ],
+      "paragraph": [
+        "-apple-system",
+        "BlinkMacSystemFont",
+        "Segoe UI",
+        "Roboto",
+        "sans-serif"
+      ]
+    },
+    "fontSizes": {
+      "h1": "72px",
+      "h2": "48px",
+      "body": "24px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "8px"
+  },
+  "components": {
+    "input": {
+      "background": "#FFFFFF",
+      "textColor": "#1E293B",
+      "borderColor": "#CBD5E1",
+      "borderRadius": "8px",
+      "borderRadiusCorners": {
+        "topLeft": "8px",
+        "topRight": "8px",
+        "bottomRight": "8px",
+        "bottomLeft": "8px"
+      },
+      "shadow": "none"
+    }
+  },
+  "images": {
+    "logo": "https://rivereditor.com/riverSymbolWordmark.svg",
+    "favicon": "https://rivereditor.com/favicon.ico",
+    "ogImage": "https://rivereditor.com/thumbnail.webp"
+  },
+  "__framework_hints": [
+    "React"
+  ],
+  "__llm_logo_reasoning": {
+    "selectedIndex": 0,
+    "reasoning": "Strong indicators: header logo linking to homepage, header location, visible, highest logo on page, alt matches logo/brand, class contains logo, alt contains brand name \"River\", src contains brand name \"River\", reasonable size. Score: 133 (clear winner by 133 points)",
+    "confidence": 0.9
+  },
+  "__llm_button_reasoning": {
+    "primary": {
+      "index": -1,
+      "text": "N/A",
+      "reasoning": "LLM failed"
+    },
+    "secondary": {
+      "index": -1,
+      "text": "N/A",
+      "reasoning": "LLM failed"
+    },
+    "confidence": 0
+  },
+  "confidence": {
+    "buttons": 0,
+    "colors": 0,
+    "overall": 0
+  }
+}

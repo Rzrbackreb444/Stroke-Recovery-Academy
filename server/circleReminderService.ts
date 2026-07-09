@@ -8,6 +8,12 @@ import { db } from "./db";
 import { sql } from "drizzle-orm";
 import { sendMessage } from "./messaging";
 
+// Circles now use access-restricted rooms (private Daily rooms need a per-user
+// token minted at /api/circles/:id/join). So reminders drive survivors to the
+// in-app Circles page where the Join button mints their token — never a raw
+// room URL, which would be useless (private) or bypass the enrollment gate.
+const SITE = process.env.PUBLIC_SITE_URL || "https://strokerecoveryacademy.com";
+
 type Window = "day" | "hour";
 
 const WINDOWS: Array<{ key: Window; from: string; to: string; label: string }> = [
@@ -36,6 +42,14 @@ function fmtWhen(iso: string): string {
 
 export async function runCircleReminders(): Promise<void> {
   let sent = 0;
+  // Track eligible-vs-delivered so we can distinguish a healthy quiet run from a
+  // silent failure. `windowRows` = participant-rows that fell into a reminder
+  // window this run; `freshAttempts` = rows with at least one non-duplicate
+  // channel attempt (a deduped repeat run of an already-reminded session is NOT
+  // a failure); `delivered` = rows where at least one channel actually sent.
+  let windowRows = 0;
+  let freshAttempts = 0;
+  let delivered = 0;
   for (const w of WINDOWS) {
     // Scheduled, community-facing sessions falling into this reminder window,
     // joined to every survivor who RSVP'd (participant not left).
@@ -54,11 +68,12 @@ export async function runCircleReminders(): Promise<void> {
     for (const r of rows) {
       const title = r.title || "Live Circle";
       const when = fmtWhen(r.scheduled_at);
-      const link = r.meeting_url || "/recovery/circles";
+      const link = `${SITE}/recovery/circles`;
       const base = `circle-reminder-${r.session_id}-${w.key}-${r.user_id}`;
+      windowRows++;
 
       // Email
-      await sendMessage({
+      const emailRes = await sendMessage({
         userId: r.user_id,
         channel: "email",
         category: "circle-reminder",
@@ -72,7 +87,7 @@ export async function runCircleReminders(): Promise<void> {
       });
 
       // Push
-      await sendMessage({
+      const pushRes = await sendMessage({
         userId: r.user_id,
         channel: "push",
         category: "circle-reminder",
@@ -88,15 +103,36 @@ export async function runCircleReminders(): Promise<void> {
 
       // SMS — the engine skips if the survivor hasn't consented (sms_disabled /
       // no_phone) and defers in quiet hours, so attempting is always safe.
-      await sendMessage({
+      const smsRes = await sendMessage({
         userId: r.user_id,
         channel: "sms",
         category: "circle-reminder",
         dedupeKey: `${base}-sms`,
         smsBody: `${title} starts ${w.label} — ${when}. Join: ${link}. Reply STOP to opt out. Crisis: call or text 988.`,
       });
+
+      const results = [emailRes, pushRes, smsRes];
+      // "duplicate" means an earlier run already reminded this channel — a
+      // deduped repeat, not a fresh eligible attempt. Only count rows that had
+      // at least one genuinely new attempt toward the silent-failure heuristic.
+      if (results.some((x) => x.status !== "duplicate")) freshAttempts++;
+      if (results.some((x) => x.status === "sent")) delivered++;
       sent++;
     }
   }
-  if (sent > 0) console.log(`[circle-reminders] processed ${sent} participant reminder(s)`);
+  if (sent > 0) {
+    console.log(
+      `[circle-reminders] processed ${sent} participant reminder(s) — ${delivered} delivered, ${freshAttempts} fresh`,
+    );
+  }
+  // Silent-failure signal: sessions WERE in a reminder window this run and had
+  // fresh (non-deduped) reminders to send, yet nothing landed on any channel.
+  // That points at the messaging engine dropping every send — a survivor-facing
+  // miss with no error otherwise. Warn so it's greppable / alertable in logs.
+  // (A run with only deduped repeats, or a genuinely quiet window, stays silent.)
+  if (windowRows > 0 && freshAttempts > 0 && delivered === 0) {
+    console.warn(
+      `[circle-reminders] 0 reminders delivered despite ${windowRows} upcoming-session participant(s) with fresh sends — messaging engine may be dropping circle reminders.`,
+    );
+  }
 }

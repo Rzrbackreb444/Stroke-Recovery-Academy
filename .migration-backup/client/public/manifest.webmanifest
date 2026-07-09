@@ -1,0 +1,25 @@
+{
+  "name": "Stroke Recovery Academy",
+  "short_name": "Recovery",
+  "description": "Daily routines, exercises, the 66-day Sasquatch challenge, AI coach, and a survivor community — built by a stroke survivor for stroke survivors.",
+  "start_url": "/recovery/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0D0D0D",
+  "theme_color": "#0D0D0D",
+  "categories": ["health", "medical", "education", "lifestyle"],
+  "lang": "en-US",
+  "dir": "ltr",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Today's check-in", "short_name": "Check-in", "url": "/recovery/dashboard?checkin=1", "description": "Log your daily recovery check-in" },
+    { "name": "Daily routine", "short_name": "Routine", "url": "/recovery/routine", "description": "Today's structured recovery routine" },
+    { "name": "My courses", "short_name": "Courses", "url": "/my-learning", "description": "Continue learning where you left off" },
+    { "name": "Sasquatch coach", "short_name": "Coach", "url": "/recovery/sasquatch", "description": "Talk to your 24/7 AI coach" }
+  ]
+}

@@ -435,18 +435,24 @@ export async function getCohortMetrics(orgId: number): Promise<any> {
     };
   }
 
+  // Bind the consented ids as a single text[] param. Interpolating a bare JS
+  // array into a raw sql template makes the neon driver emit ANY(($1,$2,$3))
+  // (a row constructor, not an array) which Postgres rejects with 42809. An
+  // explicit ARRAY[...]::text[] keeps every id parameterized (no injection).
+  const idArray = sql`ARRAY[${sql.join(ids.map((id) => sql`${id}`), sql`, `)}]::text[]`;
+
   // Aggregate engagement + outcome trends over the consented cohort.
   const engagement = await db.execute(sql`
     SELECT
       (SELECT COUNT(DISTINCT uid)::int FROM (
-         SELECT user_id AS uid FROM daily_checkins WHERE user_id = ANY(${ids}) AND created_at >= now() - interval '7 days'
-         UNION SELECT user_id AS uid FROM sasquatch_chat_messages WHERE user_id = ANY(${ids}) AND created_at >= now() - interval '7 days'
-         UNION SELECT user_id AS uid FROM never_zero_audits WHERE user_id = ANY(${ids}) AND created_at >= now() - interval '7 days'
+         SELECT user_id AS uid FROM daily_checkins WHERE user_id = ANY(${idArray}) AND created_at >= now() - interval '7 days'
+         UNION SELECT user_id AS uid FROM sasquatch_chat_messages WHERE user_id = ANY(${idArray}) AND created_at >= now() - interval '7 days'
+         UNION SELECT user_id AS uid FROM never_zero_audits WHERE user_id = ANY(${idArray}) AND created_at >= now() - interval '7 days'
       ) t) AS active_7d,
       (SELECT COUNT(DISTINCT uid)::int FROM (
-         SELECT user_id AS uid FROM daily_checkins WHERE user_id = ANY(${ids}) AND created_at >= now() - interval '30 days'
-         UNION SELECT user_id AS uid FROM sasquatch_chat_messages WHERE user_id = ANY(${ids}) AND created_at >= now() - interval '30 days'
-         UNION SELECT user_id AS uid FROM never_zero_audits WHERE user_id = ANY(${ids}) AND created_at >= now() - interval '30 days'
+         SELECT user_id AS uid FROM daily_checkins WHERE user_id = ANY(${idArray}) AND created_at >= now() - interval '30 days'
+         UNION SELECT user_id AS uid FROM sasquatch_chat_messages WHERE user_id = ANY(${idArray}) AND created_at >= now() - interval '30 days'
+         UNION SELECT user_id AS uid FROM never_zero_audits WHERE user_id = ANY(${idArray}) AND created_at >= now() - interval '30 days'
       ) t) AS active_30d
   `);
   const eng = (engagement.rows as any[])[0] || {};
@@ -454,7 +460,7 @@ export async function getCohortMetrics(orgId: number): Promise<any> {
   // Activation: intake complete AND ≥1 checkin AND ≥1 coach message.
   const activatedR = await db.execute(sql`
     SELECT COUNT(*)::int AS c FROM user_profiles up
-     WHERE up.user_id = ANY(${ids}) AND up.intake_completed_at IS NOT NULL
+     WHERE up.user_id = ANY(${idArray}) AND up.intake_completed_at IS NOT NULL
        AND EXISTS (SELECT 1 FROM daily_checkins dc WHERE dc.user_id = up.user_id)
        AND EXISTS (SELECT 1 FROM sasquatch_chat_messages msg WHERE msg.user_id = up.user_id AND msg.role = 'user')
   `);
@@ -465,7 +471,7 @@ export async function getCohortMetrics(orgId: number): Promise<any> {
     SELECT COALESCE(ROUND(AVG(current_streak)::numeric, 1), 0) AS avg_current,
            COALESCE(MAX(longest_streak), 0) AS max_longest,
            COALESCE(SUM(total_active_days), 0) AS total_active_days
-      FROM user_streaks WHERE user_id = ANY(${ids})
+      FROM user_streaks WHERE user_id = ANY(${idArray})
   `);
   const streak = (streakR.rows as any[])[0] || {};
 
@@ -475,7 +481,7 @@ export async function getCohortMetrics(orgId: number): Promise<any> {
     WITH latest AS (
       SELECT DISTINCT ON (user_id) user_id, physical, cognitive, speech, emotional, memory
         FROM sasquatch_assessments
-       WHERE user_id = ANY(${ids})
+       WHERE user_id = ANY(${idArray})
        ORDER BY user_id, taken_at DESC
     )
     SELECT COUNT(*)::int AS n,
@@ -492,7 +498,7 @@ export async function getCohortMetrics(orgId: number): Promise<any> {
   const repsR = await db.execute(sql`
     SELECT COUNT(*)::int AS actions, COALESCE(SUM(reps),0)::int AS total_reps
       FROM never_zero_logs
-     WHERE user_id = ANY(${ids}) AND created_at >= now() - interval '30 days'
+     WHERE user_id = ANY(${idArray}) AND created_at >= now() - interval '30 days'
   `).catch(() => ({ rows: [{ actions: 0, total_reps: 0 }] as any[] }));
   const reps = (repsR.rows as any[])[0] || {};
 

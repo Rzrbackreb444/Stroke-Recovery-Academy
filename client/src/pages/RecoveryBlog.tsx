@@ -10,11 +10,12 @@ import RecoveryHeader from "@/components/RecoveryHeader";
 import RecoverySEO from "@/components/RecoverySEO";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import {
-  BookOpen, Search, Calendar, Clock, User, ArrowRight,
+  BookOpen, Search, Calendar, Clock, ArrowRight,
   Eye, Heart, MessageCircle, TrendingUp, Sparkles,
-  Brain, Dumbbell, FlaskConical, Users,
 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import {
+  BLOG_FILTER_TABS, categoryLabel, categoryLight, categoryIllustration,
+} from "@/lib/blogCategories";
 
 interface BlogPost {
   id: number;
@@ -39,58 +40,8 @@ interface BlogPost {
   estimatedReadMinutes?: number;
 }
 
-const categories = [
-  { id: "all", label: "All Posts" },
-  { id: "philosophy", label: "Philosophy" },
-  { id: "therapy", label: "Therapy" },
-  { id: "science", label: "Science" },
-  { id: "exercises", label: "Exercises" },
-  { id: "caregivers", label: "Caregivers" },
-  { id: "income", label: "Income" },
-];
-
-const categoryLabels: Record<string, string> = {
-  philosophy: "Philosophy",
-  therapy: "Therapy",
-  science: "Science",
-  exercises: "Exercises",
-  caregivers: "Caregivers",
-  income: "Income",
-};
-
-const categoryColors: Record<string, string> = {
-  philosophy: "bg-purple-100 text-purple-700 border-purple-200",
-  therapy: "bg-blue-100 text-blue-700 border-blue-200",
-  science: "bg-green-100 text-green-700 border-green-200",
-  exercises: "bg-orange-100 text-orange-700 border-orange-200",
-  caregivers: "bg-pink-100 text-pink-700 border-pink-200",
-  income: "bg-yellow-100 text-yellow-800 border-yellow-200",
-};
-
-interface CategoryIllustrationDef {
-  gradient: string;
-  dotColor: string;
-  iconColor: string;
-  Icon: LucideIcon;
-}
-
-const CATEGORY_ILLUSTRATIONS: Record<string, CategoryIllustrationDef> = {
-  philosophy: { gradient: "from-purple-50 to-purple-100/60", dotColor: "bg-purple-200", iconColor: "#9333EA", Icon: Brain },
-  therapy:    { gradient: "from-blue-50 to-blue-100/60",   dotColor: "bg-blue-200",   iconColor: "#2563EB", Icon: Heart },
-  science:    { gradient: "from-green-50 to-green-100/60", dotColor: "bg-green-200",  iconColor: "#16A34A", Icon: FlaskConical },
-  exercises:  { gradient: "from-orange-50 to-orange-100/60", dotColor: "bg-orange-200", iconColor: "#C06B3E", Icon: Dumbbell },
-  caregivers: { gradient: "from-pink-50 to-pink-100/60",   dotColor: "bg-pink-200",   iconColor: "#DB2777", Icon: Users },
-  income:     { gradient: "from-yellow-50 to-amber-100/60", dotColor: "bg-yellow-200", iconColor: "#B45309", Icon: TrendingUp },
-};
-
 function CategoryIllustration({ category, tall = false }: { category: string; tall?: boolean }) {
-  const def = CATEGORY_ILLUSTRATIONS[category] ?? {
-    gradient: "from-stone-50 to-[#F5F0EB]",
-    dotColor: "bg-[#E2C2A4]",
-    iconColor: "#C06B3E",
-    Icon: BookOpen,
-  };
-  const { gradient, dotColor, iconColor, Icon } = def;
+  const { gradient, dotColor, iconColor, Icon } = categoryIllustration(category);
   return (
     <div className={`relative w-full ${tall ? "h-48" : "h-32"} bg-gradient-to-br ${gradient} flex items-center justify-center overflow-hidden`}>
       <div className={`absolute top-3 right-3 w-2 h-2 rounded-full opacity-40 ${dotColor}`} />
@@ -234,7 +185,7 @@ export default function RecoveryBlog() {
         </div>
 
         <div className="flex flex-wrap gap-2 mb-8">
-          {categories.map((cat) => (
+          {BLOG_FILTER_TABS.map((cat) => (
             <Button
               key={cat.id}
               variant={activeCategory === cat.id ? "default" : "outline"}
@@ -311,8 +262,8 @@ export default function RecoveryBlog() {
                       </div>
                     </div>
                     <div className="p-6">
-                      <Badge className={categoryColors[post.category] || "bg-stone-100 text-stone-600 border-stone-200"}>
-                        {categoryLabels[post.category] || post.category}
+                      <Badge className={categoryLight(post.category)}>
+                        {categoryLabel(post.category)}
                       </Badge>
                       <h3 className="text-xl font-bold mt-3 mb-2 text-[#1C1917] group-hover:text-[#C06B3E] transition-colors">
                         {post.title}
@@ -367,8 +318,8 @@ export default function RecoveryBlog() {
                     category={post.category}
                   />
                   <div className="p-5 flex flex-col flex-1">
-                    <Badge className={`${categoryColors[post.category] || "bg-stone-100 text-stone-600 border-stone-200"} self-start mb-2`}>
-                      {categoryLabels[post.category] || post.category}
+                    <Badge className={`${categoryLight(post.category)} self-start mb-2`}>
+                      {categoryLabel(post.category)}
                     </Badge>
                     <h3 className="font-bold mb-2 text-[#1C1917] line-clamp-2 group-hover:text-[#C06B3E] transition-colors flex-1">
                       {post.title}
