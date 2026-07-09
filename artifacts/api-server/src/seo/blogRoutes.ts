@@ -10,8 +10,12 @@ const ALL_BLOG_PAGES = [BLOG_HUB, ...ALL_BLOG_POSTS];
 
 export function registerBlogRoutes(app: Express): void {
   for (const page of ALL_BLOG_PAGES) {
+    // Show the free "First 40 Days" lead-magnet CTA on individual blog posts —
+    // the main organic-search entry point for brand-new survivors — but not on
+    // the /blog hub itself.
+    const pageToRender = page.url === BLOG_HUB.url ? page : { ...page, leadMagnet: true };
     app.get(page.url, (_req, res) => {
-      const html = renderSsrPage(page);
+      const html = renderSsrPage(pageToRender);
       res.set('Content-Type', 'text/html; charset=utf-8');
       res.set('Cache-Control', 'public, max-age=600, stale-while-revalidate=86400');
       res.set('X-SRA-SSR', '1');
