@@ -80,6 +80,20 @@ export async function bootstrapScheduler(): Promise<void> {
     },
   });
 
+  // Medication-adherence loop — daily survivor "did you take them?" nudge for
+  // active-med survivors who logged nothing today, plus a consent-gated weekly
+  // caregiver missed-meds heads-up. Static copy; routed through sendMessage so
+  // consent/quiet-hours apply; message_deliveries dedupe keeps it idempotent.
+  registerJob({
+    name: "med-adherence",
+    description: "Daily medication-adherence loop: survivor log nudge + consent-gated caregiver missed-meds heads-up.",
+    cron: "0 22 * * *", // daily at 22:00 UTC — engine defers/skips per quiet-hours
+    handler: async () => {
+      const { runMedicationAdherence } = await import("../services/medicationAdherenceService");
+      await runMedicationAdherence();
+    },
+  });
+
   // Free-analysis crash recovery — fail rows stuck in "processing".
   registerJob({
     name: "free-analysis-reap",

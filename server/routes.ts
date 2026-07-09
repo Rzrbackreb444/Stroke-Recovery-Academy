@@ -26157,9 +26157,14 @@ Format as structured JSON with clear sections.`;
       const { name, dosage, frequency, purpose, prescribedBy, startDate, notes, reminderTimes } = req.body;
       if (!name || !dosage || !frequency) return res.status(400).json({ message: 'Name, dosage, and frequency required' });
 
+      const rtArr: string[] = Array.isArray(reminderTimes) ? reminderTimes.map((t: any) => String(t)) : [];
+      const rtSql = rtArr.length
+        ? sql`ARRAY[${sql.join(rtArr.map((t) => sql`${t}`), sql`, `)}]::text[]`
+        : sql`ARRAY[]::text[]`;
+
       const result = await db.execute(sql`
         INSERT INTO medications (user_id, name, dosage, frequency, purpose, prescribed_by, start_date, notes, reminder_times)
-        VALUES (${userId}, ${name}, ${dosage}, ${frequency}, ${purpose || null}, ${prescribedBy || null}, ${startDate ? new Date(startDate) : null}, ${notes || null}, ${reminderTimes || []})
+        VALUES (${userId}, ${name}, ${dosage}, ${frequency}, ${purpose || null}, ${prescribedBy || null}, ${startDate ? new Date(startDate) : null}, ${notes || null}, ${rtSql})
         RETURNING *
       `);
       res.json(result.rows[0]);
@@ -26174,6 +26179,11 @@ Format as structured JSON with clear sections.`;
       const userId = getUserId(req);
       const { id } = req.params;
       const { name, dosage, frequency, purpose, prescribedBy, notes, reminderTimes, isActive } = req.body;
+      const rtSql = Array.isArray(reminderTimes)
+        ? (reminderTimes.length
+            ? sql`ARRAY[${sql.join(reminderTimes.map((t: any) => sql`${String(t)}`), sql`, `)}]::text[]`
+            : sql`ARRAY[]::text[]`)
+        : sql`reminder_times`;
       await db.execute(sql`
         UPDATE medications SET
           name = COALESCE(${name}, name),
@@ -26182,7 +26192,7 @@ Format as structured JSON with clear sections.`;
           purpose = ${purpose ?? null},
           prescribed_by = ${prescribedBy ?? null},
           notes = ${notes ?? null},
-          reminder_times = COALESCE(${reminderTimes}, reminder_times),
+          reminder_times = ${rtSql},
           is_active = COALESCE(${isActive}, is_active)
         WHERE id = ${parseInt(id)} AND user_id = ${userId}
       `);
@@ -26352,6 +26362,8 @@ Format as structured JSON with clear sections.`;
   const { registerPremiumCancelRoutes } = await import('./routes/premiumCancelRoutes');
   registerPremiumCancelRoutes(app, isAuthenticated);
   registerProgressRoutes(app, isAuthenticated);
+  const { registerPreventionRoutes } = await import('./routes/preventionRoutes');
+  registerPreventionRoutes(app, isAuthenticated);
   const { registerRecoveryReportRoutes } = await import('./routes/recoveryReportRoutes');
   registerRecoveryReportRoutes(app, isAuthenticated);
   registerEncouragementRoutes(app, isAuthenticated);
