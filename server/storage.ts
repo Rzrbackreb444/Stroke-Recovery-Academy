@@ -783,6 +783,7 @@ export class DatabaseStorage implements IStorage {
     if (updates.challengesToday !== undefined)  parts.push(sql`challenges_today = ${updates.challengesToday}`);
     if (updates.moodScore !== undefined)        parts.push(sql`mood_score = ${updates.moodScore}`);
     if (updates.energyScore !== undefined)      parts.push(sql`energy_score = ${updates.energyScore}`);
+    if (updates.sosState !== undefined)         parts.push(sql`sos_state = ${updates.sosState}`);
     if (parts.length === 0) return null;
     const result = await db.execute(sql`
       UPDATE daily_checkins

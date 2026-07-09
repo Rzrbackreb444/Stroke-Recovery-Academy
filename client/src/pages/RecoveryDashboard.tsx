@@ -2286,6 +2286,7 @@ function DailyLoopCard() {
   const [energy, setEnergy]                        = useState(3); // 1-5
   const [mood, setMood]                            = useState(3); // 1-5
   const [winText, setWinText]                      = useState("");
+  const [sosState, setSosState]                    = useState<"survive" | "organize" | "strive" | null>(null);
 
   const { data: brief, isLoading: briefLoading } = useQuery<DailyBrief>({
     queryKey: ["/api/recovery/daily-loop/brief"],
@@ -2336,6 +2337,7 @@ function DailyLoopCard() {
       moodScore:   mood   * 2,
       energyScore: energy * 2,
       winsToday: winText.trim() || undefined,
+      sosState: sosState || undefined,
     });
   };
 
@@ -2365,6 +2367,8 @@ function DailyLoopCard() {
   const checkinHabits: string[] = Array.isArray(todayCheckin?.habitsCompleted)
     ? todayCheckin.habitsCompleted
     : [];
+  const checkinSos: string | null =
+    (todayCheckin as any)?.sosState ?? (todayCheckin as any)?.sos_state ?? null;
   const focusItems = brief?.focusItems ?? [];
 
   // ── STATE: Day fully complete (checkin + audit)
@@ -2390,8 +2394,13 @@ function DailyLoopCard() {
                   Tomorrow: {audit.tomorrow}
                 </p>
               )}
-              {(checkinExercises.length > 0 || checkinHabits.length > 0) && (
+              {(checkinExercises.length > 0 || checkinHabits.length > 0 || checkinSos) && (
                 <div className="flex flex-wrap gap-1.5 mt-3">
+                  {checkinSos && (
+                    <span className="text-sm px-2 py-1 rounded-full bg-[#1C1917] text-[#E2C2A4] border border-[#1C1917] uppercase tracking-wide" data-testid="badge-sos-state">
+                      {checkinSos} day
+                    </span>
+                  )}
                   {checkinExercises.map((ex) => (
                     <span key={ex} className="text-sm px-2 py-1 rounded-full bg-[#C06B3E]/15 text-[#C06B3E] border border-[#C06B3E]/25">{ex}</span>
                   ))}
@@ -2416,7 +2425,9 @@ function DailyLoopCard() {
             <div className="flex items-center gap-3">
               <CheckCircle2 className="h-5 w-5 text-[#C06B3E]" />
               <div>
-                <p className="text-sm uppercase tracking-[0.3em] text-[#C06B3E] font-bold">Day logged</p>
+                <p className="text-sm uppercase tracking-[0.3em] text-[#C06B3E] font-bold">
+                  Day logged{checkinSos ? ` — ${checkinSos} day` : ''}
+                </p>
                 <p className="text-base text-[#78716C] mt-0.5">
                   {checkinExercises.length > 0 ? checkinExercises.join(', ') : 'Exercises recorded'}
                   {checkinHabits.length > 0 ? ` · ${checkinHabits.length} habit${checkinHabits.length !== 1 ? 's' : ''}` : ''}
@@ -2444,6 +2455,43 @@ function DailyLoopCard() {
           <div className="flex items-center gap-2 mb-5">
             <ClipboardList className="h-4 w-4 text-[#C06B3E]" />
             <p className="text-sm uppercase tracking-[0.3em] text-[#C06B3E] font-bold">Log today's progress</p>
+          </div>
+
+          {/* S.O.S. state — doctrine: name the day before you fight it */}
+          <div className="mb-5">
+            <p className="text-sm font-semibold text-[#78716C] uppercase tracking-widest mb-2">What kind of day is it? (S.O.S.)</p>
+            <div className="flex flex-wrap gap-2">
+              {([
+                { id: "survive",  label: "Survive",  hint: "Bare minimum. Don't quit." },
+                { id: "organize", label: "Organize", hint: "Rebuild structure." },
+                { id: "strive",   label: "Strive",   hint: "Attack. Push edges." },
+              ] as const).map(({ id, label, hint }) => {
+                const active = sosState === id;
+                return (
+                  <button
+                    key={id}
+                    data-testid={`toggle-sos-${id}`}
+                    onClick={() => setSosState(active ? null : id)}
+                    title={hint}
+                    className={`min-h-[44px] flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C06B3E] focus-visible:ring-offset-2 ${
+                      active
+                        ? "bg-[#C06B3E] text-black border-[#C06B3E]"
+                        : "bg-transparent text-[#78716C] border-[#E2C2A4]/30 hover:border-[#C06B3E]/50"
+                    }`}
+                  >
+                    {active && <Check className="h-3.5 w-3.5" />}
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+            {sosState && (
+              <p className="text-sm text-[#78716C] mt-1.5 italic">
+                {sosState === "survive" && "Survive day: the only mission is don't quit. One rep counts."}
+                {sosState === "organize" && "Organize day: line up the systems. Steady beats heroic."}
+                {sosState === "strive" && "Strive day: add a rep, chase a flicker, push an edge."}
+              </p>
+            )}
           </div>
 
           {/* Exercises */}

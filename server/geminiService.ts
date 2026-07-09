@@ -116,6 +116,7 @@ export async function generateCoachResponse(
     hasLoggedToday?: boolean;
     morningBrief?: string | null;
     morningFocusItems?: string[] | null;
+    sosState?: string | null;
     // Deficit profile — the survivor's actual clinical picture
     strokeType?: string | null;
     affectedSide?: string | null;
@@ -166,6 +167,13 @@ export async function generateCoachResponse(
         }
         if (userContext.morningFocusItems?.length) {
           contextLines.push(`Today's focus items from the daily loop: ${userContext.morningFocusItems.map((f) => `"${f}"`).join(', ')} — if they ask "what should I focus on?", reference these.`);
+        }
+        if (userContext.sosState === 'survive') {
+          contextLines.push(`S.O.S. state today: SURVIVE. They declared a survive day — bare-minimum mode. Doctrine says: on a survive day the only mission is don't quit and log one rep. No pep-talk pressure, no stacked plans. Honor the state, protect the streak, keep it small.`);
+        } else if (userContext.sosState === 'organize') {
+          contextLines.push(`S.O.S. state today: ORGANIZE. They declared an organize day — rebuilding structure. Doctrine says: help them line up systems, schedule, and the next small block of work. Steady cadence, not max effort.`);
+        } else if (userContext.sosState === 'strive') {
+          contextLines.push(`S.O.S. state today: STRIVE. They declared a strive day — attack mode. Doctrine says: this is the day to push edges, add a rep, chase a flicker. Match their energy and aim it.`);
         }
         // Deficit profile — the survivor's actual clinical picture. This is the most
         // important personalization data. Every exercise recommendation must be filtered
