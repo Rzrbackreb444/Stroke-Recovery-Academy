@@ -399,16 +399,16 @@ function renderHeader(): string {
   return `
 <header class="sra-header">
   <a href="/" class="sra-logo" aria-label="Stroke Recovery Academy home">
-    <span class="sra-logo-mark" aria-hidden="true"></span>
+    <img class="sra-logo-mark" src="/favicon.png" alt="" aria-hidden="true" width="28" height="28" />
     <span class="sra-logo-text">Stroke Recovery Academy</span>
   </a>
   <nav class="sra-nav" aria-label="Primary">
-    <a href="/recovery/university">University</a>
-    <a href="/recovery/exercises">Exercises</a>
-    <a href="/recovery/challenge">66-Day Challenge</a>
+    <a href="/recovery/sasquatch-coach">Coach</a>
+    <a href="/recovery/today">Daily Reps</a>
+    <a href="/recovery/community">Community</a>
+    <a href="/book">Nick's Book</a>
     <a href="/blog">Blog</a>
-    <a href="/recovery/center-finder">Center Finder</a>
-    <a href="/recovery/premium" class="sra-cta-btn">Start Free</a>
+    <a href="/recovery/sasquatch-coach" class="sra-cta-btn">Talk to Coach — free</a>
   </nav>
 </header>`;
 }
@@ -629,8 +629,8 @@ function inlineCss(): string {
   --sra-border: #333;
   --sra-text: #f5f1e6;
   --sra-text-dim: #a8a39a;
-  --sra-gold: #C9941A;
-  --sra-gold-soft: rgba(201, 148, 26, 0.15);
+  --sra-gold: #E2741B;
+  --sra-gold-soft: rgba(226, 116, 27, 0.15);
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
@@ -655,8 +655,7 @@ a:hover { text-decoration: underline; }
 .sra-logo:hover { text-decoration: none; }
 .sra-logo-mark {
   width: 28px; height: 28px; border-radius: 4px;
-  background: var(--sra-gold);
-  display: inline-block;
+  display: inline-block; object-fit: contain;
 }
 .sra-nav { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
 .sra-nav a { color: var(--sra-text-dim); font-size: 14px; }
