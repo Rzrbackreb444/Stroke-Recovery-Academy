@@ -18,6 +18,7 @@ import RecoverySEO, {
 import Footer from "@/components/Footer";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import heroWarrior from "@assets/hero-warrior-opt.webp";
+import heroWarriorDesktop from "@assets/hero-warrior-desktop.webp";
 import nickPortrait from "@assets/nick-portrait-opt.webp";
 import manifestoStairs from "@assets/manifesto-stairs-opt.webp";
 import cleanUi from "@assets/home-clean-ui-opt.webp";
@@ -121,7 +122,7 @@ function Hero() {
       {/* Desktop: original side-by-side with gradient overlay */}
       <div className="hidden sm:block relative overflow-hidden min-h-screen">
         <div className="absolute inset-0">
-          <img src={heroWarrior} alt="" aria-hidden="true" {...({ fetchpriority: "high" } as any)} decoding="async" className="w-full h-full object-cover" style={{ objectPosition: "65% 22%" }} />
+          <img src={heroWarriorDesktop} alt="" aria-hidden="true" {...({ fetchpriority: "high" } as any)} decoding="async" className="w-full h-full object-cover" style={{ objectPosition: "center 30%" }} />
           <div className="absolute inset-0 bg-gradient-to-r from-[#1A1412]/85 via-[#2A2421]/55 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1412] via-transparent to-transparent" />
         </div>
