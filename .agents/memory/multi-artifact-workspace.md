@@ -34,6 +34,12 @@ description: pnpm workspace structure, how imports are wired between artifacts, 
 - All `@shared/X` imports in frontend remain — resolved by vite alias at build/dev time
 - package.json must explicitly list `vite`, `@vitejs/plugin-react`, `react`, `react-dom` etc. as devDependencies
 
+## Canonical vs running tree (IMPORTANT — they have drifted)
+- **Deployment builds from `server/` + `client/`** (`.replit` `[deployment]` → `esbuild server/index-prod.ts` + `vite`). Task descriptions also reference `server/…` paths. Treat `server/`+`client/` as the canonical source of truth.
+- **The running dev preview is the `artifacts/` tree** (the "Project" runButton), which is a *behind, partial* migration: some `server/` files/features have NOT been copied over. Example seen: `server/circleReminderService.ts` and several `registerJobs.ts` cron blocks (circle-reminders, med-adherence, …) simply don't exist in `artifacts/api-server/src`.
+- **Consequence:** edit `server/`+`client/` for correctness/production, AND mirror the same edit into the corresponding `artifacts/**` copy if that file exists there, so the preview stays testable. Adjust imports when mirroring (`zod`→`zod/v4`, `@shared/schema`→`@workspace/db`).
+- Don't trust `tsc` on the artifacts tree — it has many pre-existing errors and runs via `tsx` (no typecheck). Verify by hitting endpoints (port 5000 API) / the Vite UI (port 3001).
+
 ## lib/
 - `lib/db/`, `lib/api-spec/`, `lib/api-client-react/` are stub packages (placeholders for future shared libs)
 

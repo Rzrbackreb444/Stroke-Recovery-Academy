@@ -8,6 +8,12 @@ import { db } from "./db";
 import { sql } from "drizzle-orm";
 import { sendMessage } from "./messaging";
 
+// Circles now use access-restricted rooms (private Daily rooms need a per-user
+// token minted at /api/circles/:id/join). So reminders drive survivors to the
+// in-app Circles page where the Join button mints their token — never a raw
+// room URL, which would be useless (private) or bypass the enrollment gate.
+const SITE = process.env.PUBLIC_SITE_URL || "https://strokerecoveryacademy.com";
+
 type Window = "day" | "hour";
 
 const WINDOWS: Array<{ key: Window; from: string; to: string; label: string }> = [
@@ -54,7 +60,7 @@ export async function runCircleReminders(): Promise<void> {
     for (const r of rows) {
       const title = r.title || "Live Circle";
       const when = fmtWhen(r.scheduled_at);
-      const link = r.meeting_url || "/recovery/circles";
+      const link = `${SITE}/recovery/circles`;
       const base = `circle-reminder-${r.session_id}-${w.key}-${r.user_id}`;
 
       // Email

@@ -36,6 +36,11 @@ async function createDailyRoom(name: string, scheduledAt: Date, durationMin: num
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
       body: JSON.stringify({
         name: name.slice(0, 40),
+        // private = the room URL alone is NOT enough to enter; a per-user
+        // meeting token (minted server-side only for enrolled participants at
+        // /api/circles/:id/join) is required. This is what restricts access to
+        // RSVP'd survivors rather than anyone who happens to see the link.
+        privacy: "private",
         properties: { exp: expSec, enable_chat: true, enable_screenshare: true, max_participants: 50 },
       }),
     });
@@ -46,6 +51,42 @@ async function createDailyRoom(name: string, scheduledAt: Date, durationMin: num
     return (await r.json()) as { name: string; url: string };
   } catch (e) {
     console.warn("[circles] Daily fetch error", e);
+    return null;
+  }
+}
+
+// Mint a short-lived, per-user Daily meeting token for a private room. Only
+// callers that have proven enrollment (see /api/circles/:id/join) should reach
+// this. Hosts get is_owner so they can admit/manage the room.
+async function createDailyMeetingToken(
+  roomName: string,
+  userName: string,
+  isOwner: boolean,
+  expSec: number,
+): Promise<string | null> {
+  const key = process.env.DAILY_API_KEY;
+  if (!key) return null;
+  try {
+    const r = await fetch("https://api.daily.co/v1/meeting-tokens", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+      body: JSON.stringify({
+        properties: {
+          room_name: roomName,
+          user_name: userName.slice(0, 60) || "Survivor",
+          is_owner: isOwner,
+          exp: expSec,
+        },
+      }),
+    });
+    if (!r.ok) {
+      console.warn("[circles] Daily token create failed", r.status, await r.text());
+      return null;
+    }
+    const j = (await r.json()) as { token: string };
+    return j.token || null;
+  } catch (e) {
+    console.warn("[circles] Daily token fetch error", e);
     return null;
   }
 }
@@ -224,6 +265,102 @@ export function registerLiveEventRoutes(app: Express, isAuthenticated: any) {
     } catch (e: any) {
       console.error("[circles] rsvp error", e);
       res.status(500).json({ error: e?.message || "Failed to update RSVP" });
+    }
+  });
+
+  // Join — mint an access-restricted entry link. Only enrolled participants get
+  // in: if the caller hasn't RSVP'd we attempt a capacity-checked auto-enroll
+  // (so "join" doubles as RSVP), and a full circle is refused. For auto-created
+  // Daily rooms (private) we mint a per-user meeting token; the room URL alone
+  // is useless without it. For host-supplied external URLs (Zoom/Meet) there's
+  // no token to mint, so enrollment is the gate and we return the raw URL.
+  app.post("/api/circles/:id/join", isAuthenticated, async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id, 10);
+      const uid = getUserId(req);
+      const [event] = await db.select().from(videoSessions).where(eq(videoSessions.id, id)).limit(1);
+      if (!event) return res.status(404).json({ error: "Not found" });
+      if (event.status === "ended" || event.status === "cancelled") {
+        return res.status(409).json({ error: "This circle has ended" });
+      }
+      if (!event.meetingUrl) {
+        return res.status(409).json({ error: "No room is attached to this circle yet" });
+      }
+
+      // Establish enrollment. Existing participant (not left) → allowed.
+      let [participant] = await db.select().from(videoSessionParticipants)
+        .where(and(
+          eq(videoSessionParticipants.sessionId, id),
+          eq(videoSessionParticipants.userId, uid),
+        )).limit(1);
+
+      if (participant?.status === "left") {
+        // Re-joining after leaving — flip back to invited so the capacity/token
+        // path below treats them as enrolled again.
+        await db.update(videoSessionParticipants)
+          .set({ status: "invited", leftAt: null })
+          .where(eq(videoSessionParticipants.id, participant.id));
+      } else if (!participant) {
+        // Not enrolled — capacity-checked auto-enroll (mirrors the RSVP guard).
+        const cap = event.maxParticipants ?? 999999;
+        const inserted = await db.execute(sql`
+          WITH locked AS (
+            SELECT id FROM video_sessions WHERE id = ${id} FOR UPDATE
+          ),
+          cnt AS (
+            SELECT COUNT(*)::int AS c FROM video_session_participants WHERE session_id = ${id}
+          )
+          INSERT INTO video_session_participants (session_id, user_id, role, status)
+          SELECT ${id}, ${uid}, 'participant', 'invited'
+          FROM cnt, locked
+          WHERE cnt.c < ${cap}
+          ON CONFLICT (session_id, user_id) DO NOTHING
+          RETURNING id
+        `);
+        const rows = ((inserted as any).rows ?? inserted) as any[];
+        if (!rows || rows.length === 0) {
+          const [dup] = await db.select().from(videoSessionParticipants)
+            .where(and(eq(videoSessionParticipants.sessionId, id), eq(videoSessionParticipants.userId, uid)))
+            .limit(1);
+          if (!dup) return res.status(409).json({ error: "Circle is full" });
+        }
+        [participant] = await db.select().from(videoSessionParticipants)
+          .where(and(
+            eq(videoSessionParticipants.sessionId, id),
+            eq(videoSessionParticipants.userId, uid),
+          )).limit(1);
+      }
+
+      // Mark them as joined for attendance/analytics.
+      if (participant) {
+        await db.update(videoSessionParticipants)
+          .set({ status: "joined", joinedAt: new Date() })
+          .where(eq(videoSessionParticipants.id, participant.id));
+      }
+
+      const isOwner = event.hostId === uid || participant?.role === "host";
+      let joinUrl = event.meetingUrl;
+
+      // Private Daily room → mint a per-user token and append it. Token lives
+      // until the session's end + a 1h buffer (min 2h from now).
+      if (event.roomId) {
+        const [u] = await db.select({
+          firstName: users.firstName, lastName: users.lastName,
+        }).from(users).where(eq(users.id, uid)).limit(1);
+        const userName = [u?.firstName, u?.lastName].filter(Boolean).join(" ") || "Survivor";
+        const endMs = (event.scheduledAt?.getTime() ?? Date.now())
+          + (event.duration ?? 60) * 60 * 1000 + 60 * 60 * 1000;
+        const expSec = Math.floor(Math.max(endMs, Date.now() + 2 * 60 * 60 * 1000) / 1000);
+        const token = await createDailyMeetingToken(event.roomId, userName, isOwner, expSec);
+        if (token) {
+          joinUrl = `${event.meetingUrl}${event.meetingUrl.includes("?") ? "&" : "?"}t=${token}`;
+        }
+      }
+
+      res.json({ url: joinUrl });
+    } catch (e: any) {
+      console.error("[circles] join error", e);
+      res.status(500).json({ error: e?.message || "Failed to join circle" });
     }
   });
 

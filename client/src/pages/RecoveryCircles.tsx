@@ -256,18 +256,41 @@ function HostBlock({ event }: { event: CircleEvent }) {
 }
 
 function JoinButton({ event }: { event: CircleEvent }) {
+  const { toast } = useToast();
   const mins = minutesUntil(event.scheduled_at);
   const live = mins <= 0 && mins > -(event.duration ?? 60);
   const soon = mins > 0 && mins <= 15;
+
+  // Open the room in a popup we control so the async token round-trip doesn't
+  // get blocked as a non-user-gesture popup after the fetch resolves.
+  const join = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", `/api/circles/${event.id}/join`, {});
+      return (await res.json()) as { url: string };
+    },
+    onSuccess: (data) => {
+      if (data?.url) window.open(data.url, "_blank", "noopener,noreferrer");
+    },
+    onError: (e: any) =>
+      toast({ title: "Couldn't join the circle", description: e.message, variant: "destructive" }),
+  });
+
   if (!live && !soon) return null;
   return (
-    <a href={event.meeting_url || "#"} target="_blank" rel="noopener noreferrer">
-      <Button className="bg-emerald-600 text-white hover:bg-emerald-600/90"
-        data-testid={`button-join-${event.id}`}>
-        <Video className="w-4 h-4 mr-1" /> {live ? "Join live" : "Join in 15m"}
-        <ExternalLink className="w-3 h-3 ml-1" />
-      </Button>
-    </a>
+    <Button
+      onClick={() => join.mutate()}
+      disabled={join.isPending}
+      className="bg-emerald-600 text-white hover:bg-emerald-600/90"
+      data-testid={`button-join-${event.id}`}
+    >
+      {join.isPending ? (
+        <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+      ) : (
+        <Video className="w-4 h-4 mr-1" />
+      )}
+      {live ? "Join live" : "Join in 15m"}
+      <ExternalLink className="w-3 h-3 ml-1" />
+    </Button>
   );
 }
 
