@@ -12,7 +12,7 @@ import {
 } from "recharts";
 import {
   Flame, TrendingUp, Calendar, Target, Award, Activity,
-  ArrowRight, Settings, ChevronLeft,
+  ArrowRight, Settings, ChevronLeft, FileText,
 } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useState } from "react";
@@ -154,7 +154,13 @@ export default function ProgressHub() {
             <h1 className="text-2xl font-bold text-white">My Progress</h1>
             <p className="text-xs text-gray-500">Reps logged. Days earned. Proof of work.</p>
           </div>
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-2">
+            <Link href="/recovery/report">
+              <Button variant="ghost" size="sm" className="text-gray-400 gap-1.5" data-testid="link-recovery-report">
+                <FileText className="h-4 w-4" />
+                <span className="hidden sm:inline">Full Report</span>
+              </Button>
+            </Link>
             <Link href="/recovery/notifications">
               <Button variant="ghost" size="sm" className="text-gray-400 gap-1.5">
                 <Settings className="h-4 w-4" />

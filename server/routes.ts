@@ -26324,6 +26324,8 @@ Format as structured JSON with clear sections.`;
   const { registerPremiumCancelRoutes } = await import('./routes/premiumCancelRoutes');
   registerPremiumCancelRoutes(app, isAuthenticated);
   registerProgressRoutes(app, isAuthenticated);
+  const { registerRecoveryReportRoutes } = await import('./routes/recoveryReportRoutes');
+  registerRecoveryReportRoutes(app, isAuthenticated);
   registerEncouragementRoutes(app, isAuthenticated);
   registerTranslationRoutes(app, isAuthenticated);
   seedCourseCategoriesIfEmpty().catch(() => {});

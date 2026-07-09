@@ -214,6 +214,8 @@ const LyricsStudioShare = lazy(() => import("@/pages/LyricsStudioShare"));
 const AdminRadioQueue = lazy(() => import("@/pages/AdminRadioQueue"));
 const TodayAnchor = lazy(() => import("@/pages/TodayAnchor"));
 const AnchorShare = lazy(() => import("@/pages/AnchorShare"));
+const RecoveryReport = lazy(() => import("@/pages/RecoveryReport"));
+const RecoveryReportShare = lazy(() => import("@/pages/RecoveryReportShare"));
 const RecoveryPricing = lazy(() => import("@/pages/RecoveryPricing"));
 const GiftSurvivor = lazy(() => import("@/pages/GiftSurvivor"));
 const CoachingWithNick = lazy(() => import("@/pages/CoachingWithNick"));
@@ -752,6 +754,12 @@ function Router() {
       <Route path="/recovery/motivation" component={MotivationStudio} />
       <Route path="/recovery/anchor/today" component={TodayAnchor} />
       <Route path="/anchor/s/:shareId" component={AnchorShare} />
+      <Route path="/recovery/report">
+        <ProtectedRoute>
+          <RecoveryReport />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/report/s/:shareId" component={RecoveryReportShare} />
       <Route path="/recovery/exercises" component={RecoveryExercises} />
       <Route path="/recovery/exercises/:slug" component={RecoveryExerciseDetail} />
       <Route path="/blog" component={RecoveryBlog} />

@@ -6423,6 +6423,22 @@ export const insertRecoveryAnchorSchema = createInsertSchema(recoveryAnchors).om
 export type RecoveryAnchor = typeof recoveryAnchors.$inferSelect;
 export type InsertRecoveryAnchor = z.infer<typeof insertRecoveryAnchorSchema>;
 
+// Shareable Recovery Report — consent-gated public share of outcome trends.
+// Private by default (no row until the survivor mints one). Revoking sets
+// isShared=false and nulls shareId so the public link 404s immediately.
+// One row per user; the shareId is a stable slug the survivor can revoke/re-mint.
+export const recoveryReportShares = pgTable("recovery_report_shares", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }).unique(),
+  isShared: boolean("is_shared").notNull().default(false),
+  shareId: text("share_id"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (t) => ({
+  byShareId: uniqueIndex("recovery_report_shares_share_id").on(t.shareId),
+}));
+export type RecoveryReportShare = typeof recoveryReportShares.$inferSelect;
+
 // One row per user. Daily-habit loop state.
 export const anchorStreaks = pgTable("anchor_streaks", {
   userId: varchar("user_id").primaryKey().references(() => users.id, { onDelete: "cascade" }),
