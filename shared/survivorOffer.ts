@@ -54,6 +54,19 @@ export const OFFER_COPY = {
   founderHeadline: `$${FOUNDER_MONTHLY_USD}/mo`,
 } as const;
 
+// ── Free lead magnet — "The First 40 Days" ──────────────────────────────────
+// Top-of-funnel capture above the Free tier. Grounded in the book's
+// Quick-Start Card (Day 1 / Day 7 / Day 30) and the 66-day habit science.
+export const LEAD_MAGNET = {
+  name: "The First 40 Days",
+  path: "/recovery/first-40-days",
+  pdfUrl: "/api/first-40-days/guide.pdf",
+  headline: "The First 40 Days After a Stroke",
+  sub: "The day-by-day field guide Nick wishes someone had handed him in the ICU — Day 1 through Day 40, free.",
+  cta: "Get the free guide",
+  emailCta: "Send me the First 40 Days — free",
+} as const;
+
 // Human-readable price string for a plan (no trailing cents when whole).
 export function priceLabel(plan: BillingPlan): string {
   return plan === "annual" ? OFFER_COPY.annualHeadline : OFFER_COPY.monthlyHeadline;
