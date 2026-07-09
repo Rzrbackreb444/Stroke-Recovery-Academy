@@ -263,26 +263,9 @@ const faqs = [
   },
 ];
 
-const testimonials = [
-  {
-    name: "Sarah M.",
-    role: "Self-Published Author",
-    quote: "I published 3 books in 6 months using the Book Studio. The AI helped me overcome writer's block and the marketplace got me real sales.",
-    avatar: "SM",
-  },
-  {
-    name: "Marcus T.",
-    role: "Music Producer",
-    quote: "Lyria music generation is insane. I create background tracks for my YouTube videos in minutes instead of hours.",
-    avatar: "MT",
-  },
-  {
-    name: "Jennifer K.",
-    role: "Course Creator",
-    quote: "From zero to a complete online course with slides and quizzes in one weekend. The Pro plan paid for itself after my first student enrolled.",
-    avatar: "JK",
-  },
-];
+// Integrity: no fabricated testimonials. Real founder-supplied quotes only.
+// This page is unreachable (route redirects to /recovery/premium) — left empty.
+const testimonials: { name: string; role: string; quote: string; avatar: string }[] = [];
 
 const trustBadges = [
   { icon: Shield, label: "Secure Payments" },

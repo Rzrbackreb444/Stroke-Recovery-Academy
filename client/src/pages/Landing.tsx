@@ -177,56 +177,6 @@ function Hero() {
   );
 }
 
-const ACTIVITY_FEED = [
-  { name: "Maria T.", action: "logged Day 23 of Never Zero", time: "2 min ago", color: "#C06B3E" },
-  { name: "James K.", action: "completed their morning mirror therapy", time: "4 min ago", color: "#7C5C3A" },
-  { name: "Sandra B.", action: "joined the platform", time: "6 min ago", color: "#A0522D" },
-  { name: "Coach", action: "answered 847 questions this week", time: "live", color: "#C06B3E" },
-  { name: "Robert L.", action: "hit Day 100 — Never Zero streak", time: "11 min ago", color: "#8B4513" },
-  { name: "Angela M.", action: "shared a win with her squad", time: "14 min ago", color: "#C06B3E" },
-  { name: "David R.", action: "logged Day 847 — playing catch again", time: "18 min ago", color: "#7C5C3A" },
-  { name: "Lisa C.", action: "completed the 66-Day Challenge", time: "22 min ago", color: "#A0522D" },
-  { name: "Tom W.", action: "started their recovery plan", time: "25 min ago", color: "#C06B3E" },
-  { name: "Patricia N.", action: "logged a speech rep — 3rd week straight", time: "31 min ago", color: "#8B4513" },
-];
-
-function ActivityTicker() {
-  const [idx, setIdx] = useState(0);
-  const [visible, setVisible] = useState(true);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setVisible(false);
-      setTimeout(() => {
-        setIdx(i => (i + 1) % ACTIVITY_FEED.length);
-        setVisible(true);
-      }, 300);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const item = ACTIVITY_FEED[idx];
-
-  return (
-    <div className="bg-[#2A2421] border-y border-[#3A3230] px-4 py-2.5">
-      <div className="max-w-7xl mx-auto flex items-center justify-center gap-3">
-        <div className="flex items-center gap-1.5 shrink-0">
-          <span className="flex h-2 w-2 rounded-full bg-[#C06B3E] animate-pulse" />
-          <span className="text-xs font-bold text-[#C06B3E] uppercase tracking-widest">Live</span>
-        </div>
-        <div
-          className="text-sm text-[#FDFBF7]/70 transition-opacity duration-300"
-          style={{ opacity: visible ? 1 : 0 }}
-        >
-          <span className="font-semibold text-[#FDFBF7]/90">{item.name}</span>
-          {" "}{item.action}
-          <span className="ml-2 text-[#FDFBF7]/35 text-xs">{item.time}</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 const COACH_MESSAGES = [
   { from: "survivor", text: "I skipped my exercises three days in a row. I don't know what's wrong with me." },
   { from: "coach",    text: "Three days is just three days. It's not a pattern unless you let it become one. What's actually going on — tired, or something heavier?" },
@@ -574,7 +524,7 @@ const TIERS = [
     ],
   },
   {
-    name: "Solo",
+    name: "Premium",
     price: "$19",
     sub: "/mo · 7-day free trial",
     cta: "Start free trial",
@@ -591,20 +541,18 @@ const TIERS = [
     ],
   },
   {
-    name: "Squad",
-    price: "$59",
-    sub: "/mo · coming soon",
-    cta: "Join waitlist",
-    href: "/recovery/premium?squad=waitlist",
+    name: "Founder",
+    price: "$49",
+    sub: "/mo · founding member",
+    cta: "Join the circle",
+    href: "/recovery/premium",
     highlight: false,
-    badge: "Group accountability",
+    badge: "Founder's Circle",
     features: [
-      "Everything in Solo",
-      "Dedicated accountability pod with Nick",
-      "Bi-weekly group Zoom with Nick",
-      "Priority Coach queue",
-      "Squad-only check-in feed",
-      "Direct message Nick between sessions",
+      "Everything in Premium, uncapped",
+      "Direct line to Nick",
+      "Vote on the roadmap",
+      "Founding-member recognition",
     ],
   },
 ];
@@ -620,7 +568,7 @@ function PricingStrip() {
             <span className="italic font-serif text-[#C06B3E]">do you want to own?</span>
           </h2>
           <p className="text-[#FDFBF7]/55 text-lg max-w-2xl mx-auto">
-            Free gets you started. Solo gets you moving. Squad gets you accountable with other survivors — and with Nick.
+            Free gets you started. Premium gets you moving. Founder puts you in the room with Nick — shaping what gets built next.
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-5">
@@ -946,7 +894,6 @@ export default function Landing() {
       <RecoveryHeader />
       <main>
         <Hero />
-        <ActivityTicker />
         <StatsStrip />
         <AccountabilityGap />
         <PricingStrip />

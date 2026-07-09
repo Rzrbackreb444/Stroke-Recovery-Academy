@@ -24,6 +24,7 @@ import { getUncachableStripeClient } from "../stripeClient";
 import {
   getSasquatchPremiumPriceIds,
   getSasquatchPremiumPriceId,
+  getSasquatchFounderPriceId,
   invalidateSasquatchPremium,
 } from "./sasquatchPremiumService";
 
@@ -115,6 +116,19 @@ export function isEntitledFromState(row: PremiumSubState | null): boolean {
 }
 
 // ── Stripe helpers ──────────────────────────────────────────────────────────
+export type PremiumPlan = "monthly" | "annual" | "founder" | "unknown";
+
+// Founder ⊇ Premium — Founder's Circle subs flow through the same durable
+// lifecycle (state row, cancel flow, receipts, dunning, grace). Lookup is
+// guarded so a founder-price failure never breaks the premium lifecycle.
+async function founderPriceIdSafe(): Promise<string | null> {
+  try {
+    return await getSasquatchFounderPriceId();
+  } catch {
+    return null;
+  }
+}
+
 async function eligiblePriceSet(): Promise<Set<string>> {
   const out = new Set<string>();
   const prices = await getSasquatchPremiumPriceIds();
@@ -125,11 +139,19 @@ async function eligiblePriceSet(): Promise<Set<string>> {
     const monthly = await getSasquatchPremiumPriceId();
     if (monthly) out.add(monthly);
   }
+  const founder = await founderPriceIdSafe();
+  if (founder) out.add(founder);
   return out;
 }
 
-function planForPriceId(priceId: string | undefined, prices: { monthlyPriceId: string; annualPriceId: string } | null): "monthly" | "annual" | "unknown" {
-  if (!priceId || !prices) return "unknown";
+function planForPriceId(
+  priceId: string | undefined,
+  prices: { monthlyPriceId: string; annualPriceId: string } | null,
+  founderPriceId: string | null,
+): PremiumPlan {
+  if (!priceId) return "unknown";
+  if (founderPriceId && priceId === founderPriceId) return "founder";
+  if (!prices) return "unknown";
   if (priceId === prices.monthlyPriceId) return "monthly";
   if (priceId === prices.annualPriceId) return "annual";
   return "unknown";
@@ -164,27 +186,29 @@ function tsFromUnix(v: any): Date | null {
 // Detect whether a Stripe subscription object is a Sasquatch Premium sub and
 // which interval. Returns null if it isn't premium (other products fire the
 // same webhooks).
-async function premiumPlanFromSubscription(sub: any): Promise<"monthly" | "annual" | "unknown" | null> {
+async function premiumPlanFromSubscription(sub: any): Promise<PremiumPlan | null> {
   const prices = await getSasquatchPremiumPriceIds();
+  const founderId = await founderPriceIdSafe();
   const eligible = await eligiblePriceSet();
   if (eligible.size === 0) return null;
   const items: any[] = sub?.items?.data ?? [];
   for (const it of items) {
     const pid = it?.price?.id;
-    if (pid && eligible.has(pid)) return planForPriceId(pid, prices);
+    if (pid && eligible.has(pid)) return planForPriceId(pid, prices, founderId);
   }
   return null;
 }
 
 // Detect premium from an invoice's line items (no extra Stripe API call).
-async function premiumPlanFromInvoice(invoice: any): Promise<"monthly" | "annual" | "unknown" | null> {
+async function premiumPlanFromInvoice(invoice: any): Promise<PremiumPlan | null> {
   const prices = await getSasquatchPremiumPriceIds();
+  const founderId = await founderPriceIdSafe();
   const eligible = await eligiblePriceSet();
   if (eligible.size === 0) return null;
   const lines: any[] = invoice?.lines?.data ?? [];
   for (const ln of lines) {
     const pid = ln?.price?.id;
-    if (pid && eligible.has(pid)) return planForPriceId(pid, prices);
+    if (pid && eligible.has(pid)) return planForPriceId(pid, prices, founderId);
   }
   return null;
 }
@@ -642,6 +666,13 @@ function fmtDate(d: Date): string {
   return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 }
 
+// Human label per plan for transactional copy. Founder is its own tier name.
+function planLabel(plan: string): string {
+  if (plan === "annual") return "annual";
+  if (plan === "founder") return "Founder's Circle";
+  return "monthly";
+}
+
 async function sendPremiumConfirmation(
   userId: string,
   subId: string,
@@ -657,7 +688,7 @@ async function sendPremiumConfirmation(
     ? `Your ${PREMIUM_GRACE_DAYS === 7 ? "7" : ""}-day free trial is running. Full access, minute one. First charge lands ${trialEnd ? fmtDate(trialEnd) : "when the trial ends"} — cancel before then and you owe nothing.`
     : `Payment cleared. Everything Sasquatch is uncapped from right now.`;
   const bodyHtml = `
-    <p class="body-text">Heart's still thumpin'. You just unlocked Sasquatch Premium — ${plan === "annual" ? "annual" : "monthly"} plan.</p>
+    <p class="body-text">Heart's still thumpin'. You just unlocked Sasquatch Premium — ${planLabel(plan)} plan.</p>
     <p class="body-text">${first}</p>
     <p class="body-text">What's uncapped: unlimited Coach, unlimited Recovery Anchor renders, voice cloning, the premium Campfire fires with Nick.</p>
     ${ctaButton(PORTAL_URL, "Open Sasquatch Premium")}
@@ -685,7 +716,7 @@ async function sendReceiptEmail(
   const invLine = opts.number ? `Invoice ${opts.number}. ` : "";
   const bodyHtml = `
     <p class="body-text">Payment received — thank you for keeping your recovery uncapped.</p>
-    <p class="body-text"><strong>${amount}</strong> · Sasquatch Premium (${opts.plan === "annual" ? "annual" : "monthly"}). ${invLine}Charged ${fmtDate(new Date())}.</p>
+    <p class="body-text"><strong>${amount}</strong> · Sasquatch Premium (${planLabel(opts.plan)}). ${invLine}Charged ${fmtDate(new Date())}.</p>
     ${opts.hostedUrl ? ctaButton(opts.hostedUrl, "View invoice") : ""}
     <p class="body-text">Manage billing anytime from the portal.</p>
     ${ctaButton(PORTAL_URL, "Manage billing")}

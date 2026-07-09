@@ -84,7 +84,8 @@ const COUPON_CATALOG: Record<"monthlyDiscount" | "annualDiscount", CouponSpec> =
 // trialing sub).
 export function eligibleOffers(plan: string, status: string): SaveOffer[] {
   const offers: SaveOffer[] = ["discount"];
-  if (status !== "trialing" && plan === "monthly") offers.push("pause");
+  // Founder bills monthly too — pause is coherent on any monthly cadence.
+  if (status !== "trialing" && (plan === "monthly" || plan === "founder")) offers.push("pause");
   return offers;
 }
 
@@ -103,11 +104,17 @@ export function describeOffers(
               title: "30% off your next year",
               body: "Stay on annual and knock 30% off your next renewal. Same tools, cheaper.",
             }
-          : {
-              offer,
-              title: "50% off for 3 months",
-              body: "Half price — $9.50/mo for the next three months. Keep everything, pay less while you find your footing.",
-            },
+          : plan === "founder"
+            ? {
+                offer,
+                title: "50% off for 3 months",
+                body: "Half price — $24.50/mo for the next three months. Keep the Founder's Circle, the direct line to Nick, all of it.",
+              }
+            : {
+                offer,
+                title: "50% off for 3 months",
+                body: "Half price — $9.50/mo for the next three months. Keep everything, pay less while you find your footing.",
+              },
       );
     } else {
       out.push({

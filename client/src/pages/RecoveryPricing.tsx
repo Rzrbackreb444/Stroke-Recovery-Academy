@@ -202,44 +202,9 @@ const TIMELINE = [
 ];
 
 // ─── Testimonials ────────────────────────────────────────────────────────────
-const TESTIMONIALS = [
-  {
-    name: "David R.",
-    detail: "Left-side stroke, 14 months post",
-    quote: "I was in a dark place 8 months out. The 66-Day Challenge gave me structure when nothing else did. First time I felt like I was actually doing something.",
-    avatar: "DR",
-  },
-  {
-    name: "Linda K.",
-    detail: "Caregiver, husband 2.5 years post-stroke",
-    quote: "My husband finally found something that keeps him accountable. The Sasquatch Coach is the only thing he listens to — it tells him the truth without sugarcoating.",
-    avatar: "LK",
-  },
-  {
-    name: "Marcus T.",
-    detail: "Hemorrhagic stroke, 3 years post",
-    quote: "I tried four other programs. This one stuck because Nick actually survived a stroke. He's not guessing. He knows the darkness and he knows the way out.",
-    avatar: "MT",
-  },
-  {
-    name: "Teresa M.",
-    detail: "Caregiver and spouse, 18 months post",
-    quote: "The Daily Routine system is the first thing my husband has used consistently. He sets his level every morning. That alone changed the household.",
-    avatar: "TM",
-  },
-  {
-    name: "James B.",
-    detail: "Ischemic stroke, 7 months post",
-    quote: "The community doesn't give you sympathy. They give you accountability. There's a difference. This is the second kind.",
-    avatar: "JB",
-  },
-  {
-    name: "Angela C.",
-    detail: "Occupational Therapist, recommends to patients",
-    quote: "My patients use this between sessions. The Daily Routine system bridges the gap in a way I couldn't on my own. Nick built what we needed.",
-    avatar: "AC",
-  },
-];
+// Integrity: no fabricated testimonials. Real founder-supplied quotes only.
+// This page is unreachable (route redirects to /recovery/premium) — left empty.
+const TESTIMONIALS: { name: string; detail: string; quote: string; avatar: string }[] = [];
 
 // ─── FAQs ────────────────────────────────────────────────────────────────────
 const FAQS = [
