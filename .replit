@@ -31,20 +31,11 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Start application"
+args = "artifacts/stroke-recovery-academy: App"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "artifacts/stroke-recovery-academy: App"
-
-[[workflows.workflow]]
-name = "Start application"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run dev"
-waitForPort = 5000
+args = "Start api-server"
 
 [[workflows.workflow]]
 name = "artifacts/stroke-recovery-academy: App"
@@ -56,6 +47,18 @@ args = "cd artifacts/stroke-recovery-academy && PORT=3001 BASE_PATH=/ npm run de
 
 [workflows.workflow.metadata]
 outputType = "console"
+
+[[workflows.workflow]]
+name = "Start api-server"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "PORT=5000 NODE_ENV=development TSX_TSCONFIG_PATH=artifacts/api-server/tsconfig.json tsx artifacts/api-server/src/index.ts"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
 
 [agent]
 integrations = ["javascript_database:1.0.0", "javascript_log_in_with_replit:1.0.0", "stripe:1.0.0", "javascript_openai_ai_integrations:1.0.0", "javascript_gemini_ai_integrations:1.0.0", "resend:1.0.0", "spotify:1.0.0", "google-drive:1.0.0", "hubspot:1.0.0", "notion:1.0.0", "google-docs:1.0.0", "elevenlabs:1.0.0", "javascript_object_storage:2.0.0"]

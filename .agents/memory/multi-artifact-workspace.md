@@ -20,7 +20,8 @@ description: pnpm workspace structure, how imports are wired between artifacts, 
   - `@shared/schema` static: replaced with `@workspace/db`
   - `../shared/schema` relative: replaced with `@workspace/db`
   - `import('@shared/schema')` dynamic: replaced with `import('@workspace/db')`
-- Entry point: `artifacts/api-server/src/index.ts` calls `runApp(noopSetup)` (no Vite)
+- Entry point: `artifacts/api-server/src/index.ts` calls `runApp(noopSetup)` (no Vite). `noopSetup` also adds a minimal `GET /` 200 JSON handler so the port-5000 webview health-check stays green without serving any frontend.
+- **tsx tsconfig gotcha:** running `tsx artifacts/api-server/src/index.ts` from the workspace root picks up the ROOT tsconfig (which lacks `@workspace/db`) and fails with `ERR_MODULE_NOT_FOUND`. The workflow command MUST set `TSX_TSCONFIG_PATH=artifacts/api-server/tsconfig.json` so tsx resolves the artifact's path aliases.
 
 ## artifacts/stroke-recovery-academy (frontend)
 - All `client/src/*` copied to `artifacts/stroke-recovery-academy/src/`
@@ -36,6 +37,7 @@ description: pnpm workspace structure, how imports are wired between artifacts, 
 ## lib/
 - `lib/db/`, `lib/api-spec/`, `lib/api-client-react/` are stub packages (placeholders for future shared libs)
 
-## Workflow pattern
-- "Start application": `npm run dev` (port 5000) — legacy, serves API + Vite together, unchanged
-- "artifacts/stroke-recovery-academy: App": `cd artifacts/stroke-recovery-academy && PORT=3001 BASE_PATH=/ npm run dev` — no waitForPort (see waitForPort gotcha)
+## Workflow pattern (current — standalone split)
+- "Start api-server" (port 5000, webview): `PORT=5000 NODE_ENV=development TSX_TSCONFIG_PATH=artifacts/api-server/tsconfig.json tsx artifacts/api-server/src/index.ts` — API only, no Vite. Replaced the retired root "Start application"/`npm run dev` monolith.
+- "artifacts/stroke-recovery-academy: App": `cd artifacts/stroke-recovery-academy && PORT=3001 BASE_PATH=/ npm run dev` — Vite dev server, proxies /api,/auth,/objects,/anchor → localhost:5000. This is the actual web UI (the port-5000 webview is now just the API).
+- Root `npm run dev` still exists in root package.json (cannot edit — forbidden) but is no longer wired to any workflow = retired.
