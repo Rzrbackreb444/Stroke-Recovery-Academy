@@ -114,6 +114,10 @@ const ProductionDashboard = lazy(() => import("@/pages/ProductionDashboard"));
 const ScriptStudio = lazy(() => import("@/pages/ScriptStudio"));
 const LifeStoryEngine = lazy(() => import("@/pages/LifeStoryEngine"));
 const WhiteLabel = lazy(() => import("@/pages/white-label"));
+const InstitutionJoin = lazy(() => import("@/pages/InstitutionJoin"));
+const InstitutionDashboard = lazy(() => import("@/pages/InstitutionDashboard"));
+const InstitutionConsent = lazy(() => import("@/pages/InstitutionConsent"));
+const AdminInstitutions = lazy(() => import("@/pages/AdminInstitutions"));
 const WebsiteStudio = lazy(() => import("@/pages/WebsiteStudio"));
 const MobileStudio = lazy(() => import("@/pages/MobileStudio"));
 const AuthPage = lazy(() => import("@/pages/AuthPage"));
@@ -360,10 +364,22 @@ function Router() {
           <Welcome />
         </ProtectedRoute>
       </Route>
-      <Route path="/white-label">
+      <Route path="/white-label"><WhiteLabel /></Route>
+      <Route path="/institution/join/:token"><InstitutionJoin /></Route>
+      <Route path="/institution/consent">
         <ProtectedRoute>
-          <WhiteLabel />
+          <InstitutionConsent />
         </ProtectedRoute>
+      </Route>
+      <Route path="/institution">
+        <ProtectedRoute>
+          <InstitutionDashboard />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/institutions">
+        <AdminRoute>
+          <AdminInstitutions />
+        </AdminRoute>
       </Route>
       
       {/* Magic Link Authentication — form consolidated into /auth; verify kept for emailed links */}

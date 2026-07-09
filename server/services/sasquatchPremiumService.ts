@@ -461,7 +461,14 @@ export async function isSasquatchPremium(userId: string | null | undefined): Pro
       .from(users)
       .where(eq(users.id, userId))
       .limit(1);
-    return await hasActiveSasquatchPremium(u?.stripeCustomerId || null);
+    if (await hasActiveSasquatchPremium(u?.stripeCustomerId || null)) return true;
+    // Institutional entitlement: an active survivor seat in an active/trial org
+    // grants premium (org-level billing replaces the per-survivor sub).
+    try {
+      const { hasActiveSurvivorSeat } = await import("./institutionService");
+      if (await hasActiveSurvivorSeat(userId)) return true;
+    } catch { /* non-fatal — degrade to per-user entitlement */ }
+    return false;
   } catch (e: any) {
     console.warn("[sasquatch-premium] isSasquatchPremium failed:", e?.message || e);
     return false;

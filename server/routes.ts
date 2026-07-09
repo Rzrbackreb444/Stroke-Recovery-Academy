@@ -1019,6 +1019,12 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   app.use('/api/lulu', luluRoutes);
   app.use('/api/puzzle', puzzleRoutes);
 
+  // Institutional / Clinical Partnership Platform (B2B) — org accounts, seat
+  // provisioning, revocable survivor consent, consent-gated cohort dashboard.
+  // Mounted after setupAuth so isAuthenticated/getUserId/requireAdmin work.
+  const { registerInstitutionRoutes } = await import('./institutionRoutes');
+  registerInstitutionRoutes(app, isAuthenticated);
+
   // Durable scheduler admin observability (admin-only). Mounted after setupAuth
   // so requireAdmin's session lookup works.
   const { default: schedulerRoutes } = await import('./scheduler/schedulerRoutes');
