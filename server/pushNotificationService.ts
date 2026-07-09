@@ -322,7 +322,7 @@ async function checkStreakBreakEmails() {
   }
 }
 
-async function checkMedicationReminders(now: Date) {
+export async function checkMedicationReminders(now: Date) {
   const hour = now.getUTCHours();
   const minute = now.getUTCMinutes();
   const timeStr = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;

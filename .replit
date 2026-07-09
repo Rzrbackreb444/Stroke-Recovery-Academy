@@ -11,6 +11,10 @@ build = ["bash", "-c", "rm -rf dist && NODE_OPTIONS='--max-old-space-size=4096' 
 run = ["bash", "-c", "NODE_ENV=production node dist/index.js"]
 
 [[ports]]
+localPort = 3001
+externalPort = 3002
+
+[[ports]]
 localPort = 5000
 externalPort = 80
 
