@@ -17,8 +17,7 @@ import RecoverySEO, {
 } from "@/components/RecoverySEO";
 import Footer from "@/components/Footer";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
-import heroWarrior from "@assets/hero-warrior-opt.webp";
-import heroWarriorDesktop from "@assets/hero-warrior-desktop.webp";
+import heroIntersection from "@assets/sasquatch-intersection-hero.webp";
 import nickPortrait from "@assets/nick-portrait-opt.webp";
 import cleanUi from "@assets/home-clean-ui-opt.webp";
 import doctrineSix from "@assets/sasquatch-doctrine-six-opt.webp";
@@ -72,7 +71,9 @@ function Hero() {
     <section id="hero-section" className="bg-[#1A1412]">
       {/* Mobile: full-bleed image on top, warm cream text below. Desktop: side-by-side with gradient overlay. */}
       <div className="sm:hidden">
-        <img src={heroWarrior} alt="Nick Kremers — stroke survivor" {...({ fetchpriority: "high" } as any)} decoding="async" className="w-full h-[72vh] object-cover" style={{ objectPosition: "65% 22%" }} />
+        <div className="bg-black">
+          <img src={heroIntersection} alt="Woodcut illustration — the Sasquatch stands over a survivor in a spotlight at a dark intersection" {...({ fetchpriority: "high" } as any)} decoding="async" className="w-full h-[72vh] object-contain" />
+        </div>
         <div className="bg-[#FDFBF7] px-5 pt-8 pb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2A2421]/8 border border-[#E2C2A4]/40 mb-6">
             <span className="flex h-2 w-2 rounded-full bg-gold" />
@@ -121,10 +122,10 @@ function Hero() {
       </div>
 
       {/* Desktop: original side-by-side with gradient overlay */}
-      <div className="hidden sm:block relative overflow-hidden min-h-screen">
+      <div className="hidden sm:block relative overflow-hidden min-h-screen bg-black">
         <div className="absolute inset-0">
-          <img src={heroWarriorDesktop} alt="" aria-hidden="true" {...({ fetchpriority: "high" } as any)} decoding="async" className="w-full h-full object-cover" style={{ objectPosition: "center 30%" }} />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#1A1412]/85 via-[#2A2421]/55 to-transparent" />
+          <img src={heroIntersection} alt="" aria-hidden="true" {...({ fetchpriority: "high" } as any)} decoding="async" className="absolute right-0 top-0 h-full w-auto max-w-[55%] object-contain object-right" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1412] via-transparent to-transparent" />
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-20 pb-40">
