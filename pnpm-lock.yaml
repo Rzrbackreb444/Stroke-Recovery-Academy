@@ -431,7 +431,7 @@ importers:
         version: 0.5.20(tailwindcss@3.4.19(tsx@4.23.0))
       '@tailwindcss/vite':
         specifier: ^4.1.3
-        version: 4.3.2(vite@6.4.3(@types/node@20.16.11)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.0))
+        version: 4.3.2(vite@6.4.3(@types/node@20.16.11)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.23.0))
       '@types/connect-pg-simple':
         specifier: ^7.0.3
         version: 7.0.3
@@ -461,7 +461,7 @@ importers:
         version: 8.18.1
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.4.3(@types/node@20.16.11)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.0))
+        version: 4.7.0(vite@6.4.3(@types/node@20.16.11)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.23.0))
       autoprefixer:
         specifier: ^10.4.20
         version: 10.5.2(postcss@8.5.16)
@@ -482,17 +482,171 @@ importers:
         version: 5.6.3
       vite:
         specifier: ^6.4.3
-        version: 6.4.3(@types/node@20.16.11)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.0)
+        version: 6.4.3(@types/node@20.16.11)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.23.0)
     optionalDependencies:
       bufferutil:
         specifier: ^4.0.8
         version: 4.1.0
 
   artifacts/api-server:
+    dependencies:
+      '@anthropic-ai/sdk':
+        specifier: ^0.71.2
+        version: 0.71.2(zod@3.25.76)
+      '@google-cloud/storage':
+        specifier: ^7.21.0
+        version: 7.21.0
+      '@google/genai':
+        specifier: ^1.30.0
+        version: 1.52.0(bufferutil@4.1.0)
+      '@neondatabase/serverless':
+        specifier: ^0.10.4
+        version: 0.10.4
+      '@spotify/web-api-ts-sdk':
+        specifier: ^1.2.0
+        version: 1.2.0
+      archiver:
+        specifier: ^7.0.1
+        version: 7.0.1
+      axios:
+        specifier: ^1.13.2
+        version: 1.18.1
+      connect-pg-simple:
+        specifier: ^10.0.0
+        version: 10.0.0
+      drizzle-orm:
+        specifier: ^0.45.2
+        version: 0.45.2(@neondatabase/serverless@0.10.4)(@types/pg@8.20.0)(pg@8.22.0)
+      drizzle-zod:
+        specifier: ^0.7.0
+        version: 0.7.1(drizzle-orm@0.45.2(@neondatabase/serverless@0.10.4)(@types/pg@8.20.0)(pg@8.22.0))(zod@3.25.76)
+      express:
+        specifier: ^4.21.2
+        version: 4.22.2
+      express-session:
+        specifier: ^1.18.1
+        version: 1.19.0
+      form-data:
+        specifier: ^2.5.6
+        version: 2.5.6
+      googleapis:
+        specifier: ^171.4.0
+        version: 171.4.0
+      mammoth:
+        specifier: ^1.11.0
+        version: 1.12.0
+      memoizee:
+        specifier: ^0.4.17
+        version: 0.4.17
+      multer:
+        specifier: ^2.1.1
+        version: 2.2.0
+      nanoid:
+        specifier: ^3.3.12
+        version: 3.3.15
+      node-fetch:
+        specifier: ^3.3.2
+        version: 3.3.2
+      openai:
+        specifier: ^6.9.1
+        version: 6.45.0(ws@8.21.0(bufferutil@4.1.0))(zod@3.25.76)
+      openid-client:
+        specifier: ^6.8.1
+        version: 6.8.4
+      passport:
+        specifier: ^0.7.0
+        version: 0.7.0
+      passport-google-oauth20:
+        specifier: ^2.0.0
+        version: 2.0.0
+      passport-local:
+        specifier: ^1.0.0
+        version: 1.0.0
+      pdf-parse:
+        specifier: ^2.4.5
+        version: 2.4.5
+      pdfkit:
+        specifier: ^0.17.2
+        version: 0.17.2
+      puppeteer:
+        specifier: ^24.43.0
+        version: 24.43.1(bufferutil@4.1.0)(typescript@5.6.3)
+      resend:
+        specifier: ^4.0.0
+        version: 4.8.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      stripe:
+        specifier: ^18.5.0
+        version: 18.5.0(@types/node@20.16.11)
+      stripe-replit-sync:
+        specifier: ^0.0.12
+        version: 0.0.12(bufferutil@4.1.0)(stripe@18.5.0(@types/node@20.16.11))
+      twilio:
+        specifier: ^6.0.2
+        version: 6.0.2
+      web-push:
+        specifier: ^3.6.7
+        version: 3.6.7
+      ws:
+        specifier: ^8.18.0
+        version: 8.21.0(bufferutil@4.1.0)
+      zod:
+        specifier: ^3.24.2
+        version: 3.25.76
     devDependencies:
+      '@types/archiver':
+        specifier: ^7.0.0
+        version: 7.0.0
+      '@types/connect-pg-simple':
+        specifier: ^7.0.3
+        version: 7.0.3
+      '@types/express':
+        specifier: 4.17.21
+        version: 4.17.21
+      '@types/express-session':
+        specifier: ^1.18.0
+        version: 1.19.0
+      '@types/memoizee':
+        specifier: ^0.4.12
+        version: 0.4.12
+      '@types/multer':
+        specifier: ^2.1.0
+        version: 2.2.0
+      '@types/node':
+        specifier: 20.16.11
+        version: 20.16.11
+      '@types/passport':
+        specifier: ^1.0.16
+        version: 1.0.17
+      '@types/passport-google-oauth20':
+        specifier: ^2.0.17
+        version: 2.0.17
+      '@types/passport-local':
+        specifier: ^1.0.38
+        version: 1.0.38
+      '@types/pdf-parse':
+        specifier: ^1.1.5
+        version: 1.1.5
+      '@types/pdfkit':
+        specifier: ^0.17.4
+        version: 0.17.6
+      '@types/web-push':
+        specifier: ^3.6.4
+        version: 3.6.4
+      '@types/ws':
+        specifier: ^8.5.13
+        version: 8.18.1
+      esbuild:
+        specifier: ^0.25.12
+        version: 0.25.12
       tsx:
-        specifier: '*'
+        specifier: ^4.23.0
         version: 4.23.0
+      typescript:
+        specifier: 5.6.3
+        version: 5.6.3
+      vite:
+        specifier: ^6.4.3
+        version: 6.4.3(@types/node@20.16.11)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.0)
 
   artifacts/mockup-sandbox:
     devDependencies:
@@ -706,7 +860,7 @@ importers:
         version: 18.3.7(@types/react@18.3.31)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.4.3(@types/node@25.9.5)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.23.0))
+        version: 4.7.0(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.0))
       autoprefixer:
         specifier: ^10.5.2
         version: 10.5.2(postcss@8.5.16)
@@ -718,7 +872,7 @@ importers:
         version: 3.4.19(tsx@4.23.0)
       vite:
         specifier: ^6.4.3
-        version: 6.4.3(@types/node@25.9.5)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.23.0)
+        version: 6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.0)
 
   lib/api-client-react: {}
 
@@ -8312,12 +8466,12 @@ snapshots:
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.4.19(tsx@4.23.0)
 
-  '@tailwindcss/vite@4.3.2(vite@6.4.3(@types/node@20.16.11)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.0))':
+  '@tailwindcss/vite@4.3.2(vite@6.4.3(@types/node@20.16.11)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.23.0))':
     dependencies:
       '@tailwindcss/node': 4.3.2
       '@tailwindcss/oxide': 4.3.2
       tailwindcss: 4.3.2
-      vite: 6.4.3(@types/node@20.16.11)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.0)
+      vite: 6.4.3(@types/node@20.16.11)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.23.0)
 
   '@tailwindcss/vite@4.3.2(vite@7.3.6(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.0))':
     dependencies:
@@ -8904,7 +9058,7 @@ snapshots:
     transitivePeerDependencies:
       - preact-render-to-string
 
-  '@vitejs/plugin-react@4.7.0(vite@6.4.3(@types/node@20.16.11)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.0))':
+  '@vitejs/plugin-react@4.7.0(vite@6.4.3(@types/node@20.16.11)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.23.0))':
     dependencies:
       '@babel/core': 7.29.7
       '@babel/plugin-transform-react-jsx-self': 7.29.7(@babel/core@7.29.7)
@@ -8912,11 +9066,11 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.27
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 6.4.3(@types/node@20.16.11)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.0)
+      vite: 6.4.3(@types/node@20.16.11)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.23.0)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@4.7.0(vite@6.4.3(@types/node@25.9.5)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.23.0))':
+  '@vitejs/plugin-react@4.7.0(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.0))':
     dependencies:
       '@babel/core': 7.29.7
       '@babel/plugin-transform-react-jsx-self': 7.29.7(@babel/core@7.29.7)
@@ -8924,7 +9078,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.27
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 6.4.3(@types/node@25.9.5)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.23.0)
+      vite: 6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -10119,7 +10273,7 @@ snapshots:
     dependencies:
       base64-js: 1.5.1
       ecdsa-sig-formatter: 1.0.11
-      gaxios: 7.1.3
+      gaxios: 7.2.0
       gcp-metadata: 8.1.3
       google-logging-utils: 1.1.3
       gtoken: 8.0.0
@@ -10186,7 +10340,7 @@ snapshots:
 
   gtoken@8.0.0:
     dependencies:
-      gaxios: 7.1.3
+      gaxios: 7.2.0
       jws: 4.0.1
     transitivePeerDependencies:
       - supports-color
@@ -12081,6 +12235,21 @@ snapshots:
       d3-time: 3.1.0
       d3-timer: 3.0.1
 
+  vite@6.4.3(@types/node@20.16.11)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.23.0):
+    dependencies:
+      esbuild: 0.25.12
+      fdir: 6.5.0(picomatch@4.0.5)
+      picomatch: 4.0.5
+      postcss: 8.5.16
+      rollup: 4.62.2
+      tinyglobby: 0.2.17
+    optionalDependencies:
+      '@types/node': 20.16.11
+      fsevents: 2.3.3
+      jiti: 1.21.7
+      lightningcss: 1.32.0
+      tsx: 4.23.0
+
   vite@6.4.3(@types/node@20.16.11)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.0):
     dependencies:
       esbuild: 0.25.12
@@ -12096,7 +12265,7 @@ snapshots:
       lightningcss: 1.32.0
       tsx: 4.23.0
 
-  vite@6.4.3(@types/node@25.9.5)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.23.0):
+  vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.0):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.5)
@@ -12107,7 +12276,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 25.9.5
       fsevents: 2.3.3
-      jiti: 1.21.7
+      jiti: 2.7.0
       lightningcss: 1.32.0
       tsx: 4.23.0
 
