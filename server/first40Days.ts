@@ -1,5 +1,6 @@
 import PDFDocument from 'pdfkit';
 import { sendEmail } from './emailService';
+import { redactEmail } from './lib/redact';
 
 // New funnel palette (matches Landing / AboutNick)
 const INK = '#1C1917';
@@ -313,30 +314,47 @@ export async function sendFirst40WelcomeEmail(toEmail: string, firstName?: strin
     });
 
     if (result.error) {
-      console.error('[first40] welcome email error:', result.error);
-      await sendEmail({
-        to: toEmail,
-        subject: 'Your First 40 Days guide (the window is open)',
-        html: html.replace(
-          '<p>Your free First 40 Days field guide is attached to this email as a PDF.',
-          // nosemgrep: javascript.lang.security.html-in-template-string
-          `<p>Your free First 40 Days field guide is ready: <a href="${SITE_URL}/api/first-40-days/guide.pdf">click here to download the PDF</a>.`,
-        ),
-      });
+      console.error(
+        `[first40] welcome email (with PDF) rejected by Resend for ${redactEmail(toEmail)}:`,
+        result.error.message,
+        '— falling back to link email',
+      );
+      const fallback = await sendFallbackLinkEmail(toEmail, html);
+      if (fallback.success) {
+        console.log(`[first40] fallback link email sent to ${redactEmail(toEmail)} (id: ${fallback.id})`);
+      } else {
+        console.error(`[first40] fallback link email ALSO failed for ${redactEmail(toEmail)}:`, fallback.error);
+      }
       return { success: false, error: result.error.message };
     }
+    console.log(`[first40] welcome email (with PDF) sent to ${redactEmail(toEmail)} (id: ${result.data?.id})`);
     return { success: true, id: result.data?.id };
   } catch (err: any) {
-    console.error('[first40] welcome email failed, falling back:', err?.message);
-    await sendEmail({
-      to: toEmail,
-      subject: 'Your First 40 Days guide (the window is open)',
-      html: html.replace(
-        '<p>Your free First 40 Days field guide is attached to this email as a PDF.',
-        // nosemgrep: javascript.lang.security.html-in-template-string
-        `<p>Your free First 40 Days field guide is ready: <a href="${SITE_URL}/api/first-40-days/guide.pdf">click here to download the PDF</a>.`,
-      ),
-    });
+    console.error(
+      `[first40] welcome email (with PDF) threw for ${redactEmail(toEmail)}:`,
+      err?.message,
+      '— falling back to link email',
+    );
+    const fallback = await sendFallbackLinkEmail(toEmail, html);
+    if (fallback.success) {
+      console.log(`[first40] fallback link email sent to ${redactEmail(toEmail)} (id: ${fallback.id})`);
+    } else {
+      console.error(`[first40] fallback link email ALSO failed for ${redactEmail(toEmail)}:`, fallback.error);
+    }
     return { success: false, error: err?.message };
   }
+}
+
+// Fallback delivery: the attachment path failed, so send the same email with the
+// PDF swapped for a public download link via the plain sendEmail wrapper.
+async function sendFallbackLinkEmail(toEmail: string, html: string) {
+  return sendEmail({
+    to: toEmail,
+    subject: 'Your First 40 Days guide (the window is open)',
+    html: html.replace(
+      '<p>Your free First 40 Days field guide is attached to this email as a PDF.',
+      // nosemgrep: javascript.lang.security.html-in-template-string
+      `<p>Your free First 40 Days field guide is ready: <a href="${SITE_URL}/api/first-40-days/guide.pdf">click here to download the PDF</a>.`,
+    ),
+  });
 }
