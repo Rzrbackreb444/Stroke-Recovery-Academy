@@ -1,0 +1,86 @@
+import { useMemo } from "react";
+
+export type Platform = "creator" | "recovery" | "nonprofit";
+
+const RECOVERY_DOMAINS = [
+  "strokerecoveryacademy.com",
+  "www.strokerecoveryacademy.com",
+];
+
+const CREATOR_DOMAINS = [
+  "strokerecoveryacademy.com",
+  "www.strokerecoveryacademy.com",
+];
+
+const NONPROFIT_DOMAINS = [
+  "strokelyfe.org",
+  "www.strokelyfe.org",
+];
+
+const RECOVERY_KEYWORDS = ["strokerecovery", "sasquatch"];
+const NONPROFIT_KEYWORDS = ["strokelyfe"];
+
+function isNonprofitHostname(hostname: string): boolean {
+  const lowerHostname = hostname.toLowerCase();
+  
+  if (NONPROFIT_DOMAINS.some(domain => lowerHostname === domain || lowerHostname.endsWith(`.${domain}`))) {
+    return true;
+  }
+  
+  if (NONPROFIT_KEYWORDS.some(keyword => lowerHostname.includes(keyword))) {
+    return true;
+  }
+  
+  return false;
+}
+
+function isRecoveryHostname(hostname: string): boolean {
+  const lowerHostname = hostname.toLowerCase();
+  
+  if (RECOVERY_DOMAINS.some(domain => lowerHostname === domain || lowerHostname.endsWith(`.${domain}`))) {
+    return true;
+  }
+  
+  if (RECOVERY_KEYWORDS.some(keyword => lowerHostname.includes(keyword))) {
+    return true;
+  }
+  
+  return false;
+}
+
+export function usePlatform(): Platform {
+  return useMemo(() => {
+    const hostname = window.location.hostname;
+    
+    if (isNonprofitHostname(hostname)) {
+      return "nonprofit";
+    }
+    
+    // Default to recovery — Stroke Recovery Academy is the primary platform
+    return "recovery";
+  }, []);
+}
+
+export function isRecoveryDomain(): boolean {
+  return isRecoveryHostname(window.location.hostname);
+}
+
+export function isNonprofitDomain(): boolean {
+  return isNonprofitHostname(window.location.hostname);
+}
+
+export function isCreatorDomain(): boolean {
+  const hostname = window.location.hostname.toLowerCase();
+  return CREATOR_DOMAINS.some(domain => hostname === domain || hostname.endsWith(`.${domain}`));
+}
+
+export function getPlatformFromHostname(hostname?: string): Platform {
+  const h = hostname || window.location.hostname;
+  
+  if (isNonprofitHostname(h)) {
+    return "nonprofit";
+  }
+  
+  // Default to recovery — Stroke Recovery Academy is the primary platform
+  return "recovery";
+}

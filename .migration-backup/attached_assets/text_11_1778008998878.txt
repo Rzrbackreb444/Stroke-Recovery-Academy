@@ -1,0 +1,172 @@
+LaundroTech.xyz — Comprehensive Build Spec
+
+🔷 Core Mission
+
+“Valuate, optimize, and scale laundromats with CLEANBI scoring, AI-powered diagnostics, and real estate-grade intelligence.”
+
+---
+
+🏗️ Platform Architecture
+
+Layer	Stack & Tools	
+Frontend	React + Next.js + Tailwind CSS	
+Backend	Node.js + Fastify + Supabase (Postgres)	
+Auth	Clerk.dev (secure, scalable, role-based)	
+Payments	Stripe (subscriptions, one-time reports, tiered access)	
+Email	SendGrid (transactional + marketing + drip campaigns)	
+AI	Gemini API (valuation summaries, SOPs, outreach copy)	
+Geospatial	Mapbox (heatmaps, overlays, ingress/egress, saturation)	
+Data APIs	ATTOM, Google Places, Google Routes, US Census	
+Reporting	PDF export engine + shareable dashboards	
+CMS	MDX-powered blog suite with SEO schema and dynamic sitemap	
+
+
+---
+
+🧮 Core Modules
+
+1. CLEANBI Valuation Engine
+
+• Inputs: ZIP, rent, lease terms, equipment mix, store size, utility bills
+• Outputs: CLEANBI score, A–C grade, valuation range, Gemini summary
+• PDF export: Mapbox visuals + Gemini narrative + FSBO readiness
+
+
+2. Drag-and-Drop Equipment Calculator
+
+• Canvas: Interactive layout builder
+• Modules: Washer/dryer by brand, size, spec
+• Logic: Revenue delta, space usage, utility load, CLEANBI impact
+• Gemini: Suggests optimal mix based on demographics + store profile
+
+
+3. Optimal Dashboard
+
+• Multi-store metrics: TPD, utility %, labor %, net margin
+• SOP builder: Gemini-generated checklists, training guides
+• Lease analyzer: Flags risk, scores terms, suggests negotiation levers
+
+
+4. Blog Suite (SEO-Optimized)
+
+• MDX-powered posts
+• JSON-LD schema for articles, authors, FAQs
+• Dynamic sitemap
+• Gemini-assisted summaries, intros, meta descriptions
+• Embedded lead capture: valuation teaser + email opt-in
+
+
+---
+
+💰 Stripe Integration
+
+Tier	Features	Price	
+Free	Basic CLEANBI score + teaser grade	$0	
+Pro	Full valuation report + Gemini summary	$149/report	
+Operator+	Dashboard, SOP builder, lender match	$299/mo	
+Broker	Unlimited reports, white-label dashboards	$499+/mo	
+
+
+---
+
+📧 SendGrid Integration
+
+Flow	Purpose	
+Transactional	Report delivery, password resets, dashboard alerts	
+Marketing	Blog updates, feature announcements, lead nurture	
+Drip Campaigns	“Your store scored a B—here’s how to improve…”	
+Broker Outreach	“New high-grade listing in your territory”	
+
+
+---
+
+🧭 CLEANBI Grading System
+
+Grade	Score Range	Meaning	
+A	90–100	Top 5% of locations. Premium valuation, ideal for scaling or sale.	
+B	75–89	Solid investment. Minor improvements unlock major upside.	
+C	60–74	Workable but risky. Needs lease, equipment, or location upgrades.	
+D	<60	High-risk. Only viable with deep discount or repositioning.	
+
+
+Gemini generates a full SWOT analysis, lease health breakdown, and optimization roadmap per grade.
+
+---
+
+🧱 Wireframe Overview
+
+🖥️ Home Page
+
+• Hero: “Valuate Your Laundromat Like a Pro”
+• CTA: [Get Intelligence Report]
+• Teaser: CLEANBI score preview + A–C grading system
+• Blog highlights: “Lease Logic”, “Equipment ROI”, “Scaling Smart”
+
+
+---
+
+📊 Valuation Flow
+
+1. Input Form• Address / ZIP
+• Store size
+• Rent amount
+• Lease terms
+• Equipment mix (drag-and-drop or dropdown)
+• Utility bills (optional)
+• EBITDA (optional)
+
+2. Processing Screen• Mapbox visual overlays
+• Gemini summary generation
+• CLEANBI scoring logic
+
+3. Results Page• CLEANBI score + A–C grade
+• Valuation range
+• SWOT summary
+• Optimization tips
+• CTA: [Download PDF] [Upgrade Tier]
+
+
+
+---
+
+🧮 Equipment Calculator
+
+• Canvas: Drag-and-drop layout
+• Sidebar: Washer/dryer modules by brand, size, spec
+• Real-time metrics:• Revenue delta
+• Space usage
+• Utility load
+• CLEANBI impact
+
+• Gemini suggestions: “Swap 2 Dexter 60s for 3 Speed Queen 40s to improve ROI”
+
+
+---
+
+📈 Dashboard
+
+• Multi-store metrics
+• SOP builder
+• Lease analyzer
+• Report archive
+• Tier upgrade CTA
+
+
+---
+
+📝 Blog Suite
+
+• SEO-optimized articles
+• Categories: Valuation, Lease, Equipment, Scaling
+• Embedded CTAs: [Get Your Score], [Download Report]
+• Author bios: “Nick Kremers, 3rd Gen Operator”
+
+
+---
+
+📧 Email Flows
+
+• Welcome email: “Your CLEANBI score is ready”
+• Report delivery: PDF + dashboard link
+• Drip: “Your store scored a B—here’s how to reach A”
+• Blog updates: “New post: Lease Logic That Protects You”

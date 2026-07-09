@@ -1,0 +1,15 @@
+{
+  "name": "@workspace/api-server",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "NODE_ENV=development tsx src/index.ts",
+    "start": "NODE_ENV=production node dist/index.js",
+    "build": "esbuild src/index.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "tsx": "*"
+  }
+}

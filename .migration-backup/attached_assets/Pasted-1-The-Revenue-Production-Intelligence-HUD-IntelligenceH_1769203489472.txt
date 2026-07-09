@@ -1,0 +1,169 @@
+1. The Revenue & Production Intelligence HUD (IntelligenceHUD.tsx)
+This is the command center's heart. It performs Market-Fit Analysis, Semantic Verification, and Monetization Strategy in real-time.
+
+TypeScript
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Brain, TrendingUp, AlertCircle, DollarSign, BarChart3, ShieldCheck, Zap } from "lucide-react";
+
+export default function IntelligenceHUD() {
+  return (
+    <div className="p-4 space-y-6 font-sans bg-white/40 backdrop-blur-xl h-full border-l border-[#C9941A]/10 shadow-inner overflow-y-auto">
+      <div className="flex items-center justify-between border-b border-[#C9941A]/20 pb-4">
+        <div className="flex flex-col">
+          <h2 className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#C9941A]">Neural Monitor</h2>
+          <span className="text-[14px] font-serif italic text-[#1A1A1A]">Deep Intelligence Active</span>
+        </div>
+        <Badge variant="outline" className="animate-pulse bg-[#C9941A]/5 text-[#C9941A] border-[#C9941A]/30 text-[9px]">
+          Institutional Grade
+        </Badge>
+      </div>
+
+      {/* Semantic Integrity Engine */}
+      <Card className="bg-white/80 border-[#C9941A]/10 shadow-md backdrop-blur-md">
+        <CardHeader className="py-3 px-4 flex flex-row items-center gap-2 border-b border-[#C9941A]/5">
+          <Brain className="w-4 h-4 text-[#C9941A]" />
+          <CardTitle className="text-[10px] font-bold uppercase tracking-widest">Consistency Codex</CardTitle>
+        </CardHeader>
+        <CardContent className="p-4 space-y-3">
+          <div className="flex items-start gap-2 text-[11px] p-3 bg-amber-50/50 rounded-sm border border-amber-100/50 text-amber-900 leading-relaxed">
+            <AlertCircle className="w-3.5 h-3.5 mt-0.5 shrink-0 text-amber-600" />
+            <p><strong>Structural Conflict:</strong> Principle #4 in Ch. 1 contradicts the methodology proposed in Ch. 8. Auto-correction available.</p>
+          </div>
+          <div className="space-y-1.5">
+            <div className="flex justify-between text-[10px] uppercase font-semibold opacity-60">
+              <span>Voice Authority</span>
+              <span>94%</span>
+            </div>
+            <Progress value={94} className="h-1 bg-[#C9941A]/10" />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 2026 Monetization Intelligence */}
+      <Card className="bg-[#1A1A1A] text-[#FAF8F3] border-none shadow-xl">
+        <CardHeader className="py-3 px-4 flex flex-row items-center gap-2 border-b border-white/10">
+          <TrendingUp className="w-4 h-4 text-[#C9941A]" />
+          <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-white/70">Revenue Pulse</CardTitle>
+        </CardHeader>
+        <CardContent className="p-4 space-y-4">
+          <div className="flex justify-between items-end">
+            <div className="space-y-1">
+              <span className="text-[9px] uppercase opacity-50 block">Target Retail (KDP)</span>
+              <span className="text-xl font-serif text-[#C9941A]">$24.95 — $34.95</span>
+            </div>
+            <Badge className="bg-green-500/20 text-green-400 border-none text-[9px]">Top 1% Trend</Badge>
+          </div>
+          <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/10 text-[10px]">
+            <div className="p-2 bg-white/5 rounded-sm">
+              <span className="opacity-40 block uppercase">Net Per Unit</span>
+              <span className="font-bold text-white">+$18.42</span>
+            </div>
+            <div className="p-2 bg-white/5 rounded-sm">
+              <span className="opacity-40 block uppercase">Market Sat.</span>
+              <span className="font-bold text-white">Low</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+2. The Institutional Shell (WorkspaceShell.tsx)
+This creates the triple-pane professional architecture for multi-document management, incorporating the "Stone & Ink" theme.
+
+TypeScript
+import React from 'react';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import ProjectNavigator from "./ProjectNavigator";
+import IntelligenceHUD from "./IntelligenceHUD";
+
+export default function WorkspaceShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="h-screen w-full bg-[#FAF8F3] text-[#1A1A1A] flex flex-col overflow-hidden antialiased">
+      {/* Institutional Global Command Bar */}
+      <header className="h-14 border-b border-[#C9941A]/20 bg-white/90 backdrop-blur-xl flex items-center px-6 justify-between z-50">
+        <div className="flex items-center gap-6">
+          <div className="flex flex-col leading-none">
+            <span className="text-[#C9941A] font-black text-lg tracking-tighter uppercase">Stroke Recovery Academy</span>
+            <span className="text-[8px] tracking-[0.4em] font-bold opacity-40 uppercase">Author Intelligence V3</span>
+          </div>
+          <div className="h-8 w-[1px] bg-[#C9941A]/10 mx-2" />
+          <h1 className="text-sm font-serif italic text-black/80 tracking-tight">System Active: The Industry Doctrine</h1>
+        </div>
+        
+        <div className="flex items-center gap-4">
+          <div className="text-right border-r border-[#C9941A]/10 px-4">
+            <span className="text-[9px] uppercase font-bold opacity-40 block">Project Status</span>
+            <span className="text-[11px] font-bold text-green-600">85% Profit Margin Mode</span>
+          </div>
+          <button className="bg-[#1A1A1A] text-white text-[10px] font-bold uppercase tracking-widest px-6 py-2 rounded-sm hover:bg-[#C9941A] transition-all shadow-xl">
+            Production Export
+          </button>
+        </div>
+      </header>
+
+      <ResizablePanelGroup direction="horizontal" className="flex-1">
+        <ResizablePanel defaultSize={18} minSize={15} className="bg-white/50 border-r border-[#C9941A]/10">
+          <ProjectNavigator />
+        </ResizablePanel>
+
+        <ResizableHandle withHandle className="bg-transparent hover:bg-[#C9941A]/20 transition-all w-1" />
+
+        <ResizablePanel defaultSize={57}>
+          <ScrollArea className="h-full bg-[#FAF8F3]">
+            <main className="max-w-[850px] mx-auto min-h-full py-20 px-16 bg-white shadow-2xl my-12 rounded-sm text-lg leading-[1.8] font-serif selection:bg-[#C9941A]/20">
+              {children}
+            </main>
+          </ScrollArea>
+        </ResizablePanel>
+
+        <ResizableHandle withHandle className="bg-transparent hover:bg-[#C9941A]/20 transition-all w-1" />
+
+        <ResizablePanel defaultSize={25} minSize={20}>
+          <IntelligenceHUD />
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    </div>
+  );
+}
+3. The 85% Revenue Payout System (stripe.ts)
+This server-side logic handles the Institutional Revenue Bridge, automating the 85/15 split.
+
+TypeScript
+import { Request, Response } from 'express';
+import Stripe from 'stripe';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2023-10-16',
+});
+
+export const handleStripeWebhook = async (req: Request, res: Response) => {
+  const sig = req.headers['stripe-signature']!;
+  let event: Stripe.Event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET!);
+  } catch (err: any) {
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object as Stripe.Checkout.Session;
+    
+    // Auto-Allocation: 85% to Creator, 15% to Platform
+    const totalAmount = session.amount_total || 0;
+    const creatorShare = Math.floor(totalAmount * 0.85);
+    
+    await recordRevenueEvent({
+      userId: session.client_reference_id!,
+      total: totalAmount,
+      creatorPayout: creatorShare,
+      platformFee: totalAmount - creatorShare
+    });
+  }
+  res.json({ received: true });
+};

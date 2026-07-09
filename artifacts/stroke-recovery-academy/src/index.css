@@ -1,0 +1,1027 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Stroke Recovery Academy - Warm Premium Theme */
+/* Warm cream #FDFBF7, Warm dark #2A2421, Terracotta accent #C06B3E */
+:root {
+  --button-outline: rgba(0,0,0, .08);
+  --badge-outline: rgba(0,0,0, .04);
+  --opaque-button-border-intensity: 5;
+  --elevate-1: rgba(0,0,0, .04);
+  --elevate-2: rgba(0,0,0, .09);
+  --background: 40 57% 97%;
+  --foreground: 20 10% 15%;
+  --border: 27 40% 82%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 10% 15%;
+  --card-border: 27 40% 82%;
+  --sidebar: 20 13% 15%;
+  --sidebar-foreground: 36 56% 93%;
+  --sidebar-border: 20 8% 22%;
+  --sidebar-primary: 43 75% 45%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 20 8% 22%;
+  --sidebar-accent-foreground: 36 56% 93%;
+  --sidebar-ring: 43 75% 45%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 10% 15%;
+  --popover-border: 27 40% 82%;
+  --primary: 43 75% 45%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 30 25% 92%;
+  --secondary-foreground: 20 10% 15%;
+  --muted: 30 25% 92%;
+  --muted-foreground: 25 8% 40%;
+  --accent: 17 57% 50%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 72% 45%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 27 40% 82%;
+  --ring: 43 75% 45%;
+  --chart-1: 43 75% 45%;
+  --chart-2: 25 95% 53%;
+  --chart-3: 142 76% 50%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 320 70% 65%;
+  --font-sans: 'Anton', sans-serif;
+  --font-serif: 'Crimson Pro', 'Playfair Display', 'Merriweather', serif;
+  --font-mono: Menlo, monospace;
+  --radius: .5rem;
+  --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.25);
+  --shadow-xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.25);
+  --shadow-sm: 0px 2px 0px 0px hsl(0 0% 0% / 0.25), 0px 1px 2px -1px hsl(0 0% 0% / 0.25);
+  --shadow: 0px 2px 0px 0px hsl(0 0% 0% / 0.25), 0px 1px 2px -1px hsl(0 0% 0% / 0.25);
+  --shadow-md: 0px 2px 0px 0px hsl(0 0% 0% / 0.30), 0px 2px 4px -1px hsl(0 0% 0% / 0.30);
+  --shadow-lg: 0px 2px 0px 0px hsl(0 0% 0% / 0.35), 0px 4px 6px -1px hsl(0 0% 0% / 0.35);
+  --shadow-xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.40), 0px 8px 10px -1px hsl(0 0% 0% / 0.40);
+  --shadow-2xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.50);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  /* OS Theme specific colors */
+  --os-gold: 43 75% 45%;
+  --os-orange: 25 95% 53%;
+  --os-green: 142 76% 40%;
+  --os-dark: 0 0% 5%;
+  --os-card: 0 0% 10%;
+  --os-border: 0 0% 20%;
+
+/* Fallback for older browsers */
+  --sidebar-primary-border: hsl(var(--sidebar-primary));
+  --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  /* Fallback for older browsers */
+  --sidebar-accent-border: hsl(var(--sidebar-accent));
+  --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  /* Fallback for older browsers */
+  --primary-border: hsl(var(--primary));
+  --primary-border: hsl(from hsl(var(--primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  /* Fallback for older browsers */
+  --secondary-border: hsl(var(--secondary));
+  --secondary-border: hsl(from hsl(var(--secondary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  /* Fallback for older browsers */
+  --muted-border: hsl(var(--muted));
+  --muted-border: hsl(from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  /* Fallback for older browsers */
+  --accent-border: hsl(var(--accent));
+  --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  /* Fallback for older browsers */
+  --destructive-border: hsl(var(--destructive));
+  --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  /* Warm accent tokens — shared across all surfaces */
+  --stone-bg: #FAF8F3;
+  --gold-primary: #C06B3E;
+  --gold-muted: rgba(192,107,62, 0.1);
+  --gold-glow: rgba(192,107,62, 0.3);
+}
+
+/* Dark mode is identical since we're using a dark-first design */
+.dark {
+  --button-outline: rgba(255,255,255, .10);
+  --badge-outline: rgba(255,255,255, .05);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(255,255,255, .04);
+  --elevate-2: rgba(255,255,255, .09);
+  --background: 0 0% 0%;
+  --foreground: 0 0% 95%;
+  --border: 0 0% 18%;
+  --card: 0 0% 8%;
+  --card-foreground: 0 0% 92%;
+  --card-border: 0 0% 15%;
+  --sidebar: 0 0% 6%;
+  --sidebar-foreground: 0 0% 88%;
+  --sidebar-border: 0 0% 14%;
+  --sidebar-primary: 18 100% 60%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 0 0% 16%;
+  --sidebar-accent-foreground: 0 0% 88%;
+  --sidebar-ring: 18 100% 60%;
+  --popover: 0 0% 10%;
+  --popover-foreground: 0 0% 90%;
+  --popover-border: 0 0% 16%;
+  --primary: 18 100% 60%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 20%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 14%;
+  --muted-foreground: 0 0% 60%;
+  --accent: 142 76% 40%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 72% 45%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 0 0% 20%;
+  --ring: 18 100% 60%;
+  --chart-1: 18 100% 60%;
+  --chart-2: 142 76% 50%;
+  --chart-3: 45 93% 58%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 320 70% 65%;
+  --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.25);
+  --shadow-xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.25);
+  --shadow-sm: 0px 2px 0px 0px hsl(0 0% 0% / 0.25), 0px 1px 2px -1px hsl(0 0% 0% / 0.25);
+  --shadow: 0px 2px 0px 0px hsl(0 0% 0% / 0.25), 0px 1px 2px -1px hsl(0 0% 0% / 0.25);
+  --shadow-md: 0px 2px 0px 0px hsl(0 0% 0% / 0.30), 0px 2px 4px -1px hsl(0 0% 0% / 0.30);
+  --shadow-lg: 0px 2px 0px 0px hsl(0 0% 0% / 0.35), 0px 4px 6px -1px hsl(0 0% 0% / 0.35);
+  --shadow-xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.40), 0px 8px 10px -1px hsl(0 0% 0% / 0.40);
+  --shadow-2xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.50);
+
+/* Fallback for older browsers */
+  --sidebar-primary-border: hsl(var(--sidebar-primary));
+  --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  /* Fallback for older browsers */
+  --sidebar-accent-border: hsl(var(--sidebar-accent));
+  --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  /* Fallback for older browsers */
+  --primary-border: hsl(var(--primary));
+  --primary-border: hsl(from hsl(var(--primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  /* Fallback for older browsers */
+  --secondary-border: hsl(var(--secondary));
+  --secondary-border: hsl(from hsl(var(--secondary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  /* Fallback for older browsers */
+  --muted-border: hsl(var(--muted));
+  --muted-border: hsl(from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  /* Fallback for older browsers */
+  --accent-border: hsl(var(--accent));
+  --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  /* Fallback for older browsers */
+  --destructive-border: hsl(var(--destructive));
+  --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* Global focus-visible ring for bare interactive elements not using Shadcn.
+     Uses focus-visible so mouse users are unaffected. */
+  button:focus-visible,
+  a:focus-visible,
+  [role="button"]:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+/**
+ * Using the elevate system.
+ * Automatic contrast adjustment.
+ *
+ * <element className="hover-elevate" />
+ * <element className="active-elevate-2" />
+ *
+ * // Using the tailwind utility when a data attribute is "on"
+ * <element className="toggle-elevate data-[state=on]:toggle-elevated" />
+ * // Or manually controlling the toggle state
+ * <element className="toggle-elevate toggle-elevated" />
+ *
+ * Elevation systems have to handle many states.
+ * - not-hovered, vs. hovered vs. active  (three mutually exclusive states)
+ * - toggled or not
+ * - focused or not (this is not handled with these utilities)
+ *
+ * Even without handling focused or not, this is six possible combinations that
+ * need to be distinguished from eachother visually.
+ */
+@layer utilities {
+
+  /* Hide ugly search cancel button in Chrome until we can style it properly */
+  input[type="search"]::-webkit-search-cancel-button {
+    @apply hidden;
+  }
+
+  /* Placeholder styling for contentEditable div */
+  [contenteditable][data-placeholder]:empty::before {
+    content: attr(data-placeholder);
+    color: hsl(var(--muted-foreground));
+    pointer-events: none;
+  }
+
+  /* .no-default-hover-elevate/no-default-active-elevate is an escape hatch so consumers of
+   * buttons/badges can remove the automatic brightness adjustment on interactions
+   * and program their own. */
+  .no-default-hover-elevate {}
+
+  .no-default-active-elevate {}
+
+
+  /**
+   * Toggleable backgrounds go behind the content. Hoverable/active goes on top.
+   * This way they can stack/compound. Both will overlap the parent's borders!
+   * So borders will be automatically adjusted both on toggle, and hover/active,
+   * and they will be compounded.
+   */
+  .toggle-elevate::before,
+  .toggle-elevate-2::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0px;
+    /*border-radius: inherit;   match rounded corners */
+    border-radius: inherit;
+    z-index: -1;
+    /* sits behind content but above backdrop */
+  }
+
+  .toggle-elevate.toggle-elevated::before {
+    background-color: var(--elevate-2);
+  }
+
+  /* If there's a 1px border, adjust the inset so that it covers that parent's border */
+  .border.toggle-elevate::before {
+    inset: -1px;
+  }
+
+  /* Does not work on elements with overflow:hidden! */
+  .hover-elevate:not(.no-default-hover-elevate),
+  .active-elevate:not(.no-default-active-elevate),
+  .hover-elevate-2:not(.no-default-hover-elevate),
+  .active-elevate-2:not(.no-default-active-elevate) {
+    position: relative;
+    z-index: 0;
+  }
+
+  .hover-elevate:not(.no-default-hover-elevate)::after,
+  .active-elevate:not(.no-default-active-elevate)::after,
+  .hover-elevate-2:not(.no-default-hover-elevate)::after,
+  .active-elevate-2:not(.no-default-active-elevate)::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0px;
+    /*border-radius: inherit;   match rounded corners */
+    border-radius: inherit;
+    z-index: 999;
+    /* sits in front of content */
+  }
+
+  .hover-elevate:hover:not(.no-default-hover-elevate)::after,
+  .active-elevate:active:not(.no-default-active-elevate)::after {
+    background-color: var(--elevate-1);
+  }
+
+  .hover-elevate-2:hover:not(.no-default-hover-elevate)::after,
+  .active-elevate-2:active:not(.no-default-active-elevate)::after {
+    background-color: var(--elevate-2);
+  }
+
+  /* If there's a 1px border, adjust the inset so that it covers that parent's border */
+  .border.hover-elevate:not(.no-hover-interaction-elevate)::after,
+  .border.active-elevate:not(.no-active-interaction-elevate)::after,
+  .border.hover-elevate-2:not(.no-hover-interaction-elevate)::after,
+  .border.active-elevate-2:not(.no-active-interaction-elevate)::after,
+  .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
+    inset: -1px;
+  }
+}
+
+/* Homepage brand accent — terracotta #C06B3E (Tailwind `gold` token) */
+:root {
+  --gold: 21 54% 50%;
+}
+
+/* Display type for dramatic headlines (homepage) */
+.font-display {
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+}
+
+/* Darker orange for small accent text on light backgrounds (AA contrast) */
+.text-gold-ink {
+  color: hsl(24 88% 36%);
+}
+
+/* Industrial Dark Cards - High contrast white text */
+.industrial-card {
+  background-color: var(--ink-black);
+  border: 2px solid rgba(226,116,27, 0.2);
+  border-radius: 0;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.industrial-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 30px rgba(226,116,27, 0.15);
+}
+
+.industrial-card .stat-label {
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--gold-primary);
+}
+
+.industrial-card .stat-value {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  letter-spacing: -0.05em;
+}
+
+.industrial-card .stat-muted {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Stone background with ink text */
+.stone-ink-bg {
+  background-color: var(--stone-bg);
+  color: var(--ink-black);
+}
+
+/* Gold accent utilities */
+.gold-glow {
+  box-shadow: 0 0 20px var(--gold-glow);
+}
+
+.gold-border-glow {
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 15px var(--gold-glow);
+}
+
+/* Navigation active state with gold underglow */
+.nav-link-active {
+  color: var(--gold-primary) !important;
+  border-bottom: 2px solid var(--gold-primary);
+  box-shadow: 0 4px 12px rgba(226,116,27, 0.3);
+}
+
+/* Industrial typography */
+.industrial-heading {
+  color: var(--ink-black);
+  letter-spacing: -0.05em;
+  font-weight: 900;
+}
+
+.dark .industrial-heading {
+  color: #FFFFFF;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   MOBILE-FIRST RESPONSIVE UTILITIES
+   Comprehensive breakpoint system for seamless cross-device experience
+══════════════════════════════════════════════════════════════════════════════ */
+
+/* Touch-friendly minimum sizes */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.touch-target-sm {
+  min-height: 36px;
+  min-width: 36px;
+}
+
+/* Safe area handling for notched devices */
+.safe-area-top {
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.safe-area-left {
+  padding-left: env(safe-area-inset-left, 0);
+}
+
+.safe-area-right {
+  padding-right: env(safe-area-inset-right, 0);
+}
+
+.safe-area-all {
+  padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
+}
+
+/* Mobile-optimized scrolling */
+.scroll-smooth-touch {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}
+
+.scroll-snap-x {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-snap-y {
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-snap-start {
+  scroll-snap-align: start;
+}
+
+.scroll-snap-center {
+  scroll-snap-align: center;
+}
+
+/* Mobile text utilities */
+.text-balance {
+  text-wrap: balance;
+}
+
+.text-pretty {
+  text-wrap: pretty;
+}
+
+/* Prevent text selection on interactive elements */
+.no-select {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Haptic feedback visual cue */
+.haptic-tap {
+  transition: transform 0.1s ease;
+}
+
+.haptic-tap:active {
+  transform: scale(0.97);
+}
+
+/* Mobile-first responsive containers */
+.container-mobile {
+  width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container-mobile {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-mobile {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Mobile drawer/panel utilities */
+.mobile-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: hsl(var(--background));
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.mobile-panel.open {
+  transform: translateX(0);
+}
+
+.mobile-panel-right {
+  transform: translateX(100%);
+}
+
+.mobile-panel-right.open {
+  transform: translateX(0);
+}
+
+/* Bottom sheet for mobile */
+.bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: hsl(var(--background));
+  border-radius: 1.5rem 1.5rem 0 0;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  max-height: 85vh;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.bottom-sheet.open {
+  transform: translateY(0);
+}
+
+.bottom-sheet-handle {
+  width: 36px;
+  height: 4px;
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 2px;
+  margin: 0.75rem auto;
+}
+
+/* Mobile floating action button */
+.fab {
+  position: fixed;
+  bottom: calc(1.5rem + env(safe-area-inset-bottom, 0));
+  right: 1.5rem;
+  z-index: 40;
+  width: 56px;
+  height: 56px;
+  border-radius: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  box-shadow: 0 4px 12px hsl(var(--primary) / 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.fab:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px hsl(var(--primary) / 0.5);
+}
+
+.fab:active {
+  transform: scale(0.95);
+}
+
+/* Mobile toolbar at bottom */
+.mobile-toolbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background: hsl(var(--background) / 0.95);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid hsl(var(--border));
+  padding: 0.5rem 1rem;
+  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0));
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.mobile-toolbar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  color: hsl(var(--muted-foreground));
+  transition: color 0.2s;
+}
+
+.mobile-toolbar-item.active {
+  color: hsl(var(--primary));
+}
+
+.mobile-toolbar-item:active {
+  transform: scale(0.95);
+}
+
+/* Responsive typography scaling */
+.prose-mobile {
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+@media (min-width: 640px) {
+  .prose-mobile {
+    font-size: 1.0625rem;
+    line-height: 1.8;
+  }
+}
+
+@media (min-width: 1024px) {
+  .prose-mobile {
+    font-size: 1.125rem;
+    line-height: 1.85;
+  }
+}
+
+/* Professional editor typography */
+.prose-editor {
+  font-family: 'Source Serif 4', 'Crimson Pro', Georgia, serif;
+  font-size: 1.125rem;
+  line-height: 1.9;
+  letter-spacing: -0.01em;
+}
+
+@media (min-width: 768px) {
+  .prose-editor {
+    font-size: 1.1875rem;
+  }
+}
+
+/* Recovery Academy specific styles */
+.recovery-card {
+  background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--card) / 0.95) 100%);
+  border: 1px solid hsl(var(--border));
+  border-radius: 1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.recovery-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px hsl(var(--primary) / 0.1);
+}
+
+.streak-fire {
+  background: linear-gradient(135deg, #f97316 0%, #ef4444 50%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.compass-badge {
+  background: linear-gradient(135deg, #C06B3E 0%, #B8860B 100%);
+  color: white;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+/* Never Zero indicator */
+.never-zero-glow {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.4), 0 0 40px rgba(34, 197, 94, 0.2);
+  animation: never-zero-pulse 2s ease-in-out infinite;
+}
+
+@keyframes never-zero-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.4), 0 0 40px rgba(34, 197, 94, 0.2); }
+  50% { box-shadow: 0 0 30px rgba(34, 197, 94, 0.6), 0 0 60px rgba(34, 197, 94, 0.3); }
+}
+
+/* Flicker log animation */
+.flicker-indicator {
+  animation: flicker 0.5s ease-in-out;
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.1); }
+}
+
+/* Mobile-first hide/show utilities */
+.hide-mobile {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .hide-mobile {
+    display: block;
+  }
+  
+  .hide-desktop {
+    display: none;
+  }
+}
+
+/* Gesture hint for swipeable elements */
+.swipe-hint::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  width: 4px;
+  height: 24px;
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 2px;
+  transform: translateY(-50%);
+}
+
+/* Loading skeleton for mobile */
+.skeleton-mobile {
+  background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--muted) / 0.5) 50%, hsl(var(--muted)) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ENTERPRISE HEADER ANIMATIONS
+   Premium motion for global header enhancements
+═══════════════════════════════════════════════════════════════════ */
+
+/* Studios dropdown glow and pulse effect */
+@keyframes studios-glow {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(226,116,27, 0.3), 0 0 16px rgba(226,116,27, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(226,116,27, 0.5), 0 0 24px rgba(226,116,27, 0.25);
+  }
+}
+
+/* Animated underline for navigation items */
+@keyframes underline-expand {
+  from {
+    width: 0;
+    left: 50%;
+  }
+  to {
+    width: 100%;
+    left: 0;
+  }
+}
+
+/* Search bar slide-out animation */
+@keyframes search-slide-out {
+  from {
+    width: 2.5rem;
+    opacity: 0;
+  }
+  to {
+    width: 20rem;
+    opacity: 1;
+  }
+}
+
+/* Scale animation for interactive elements */
+@keyframes scale-in-smooth {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Mobile menu slide-in from right */
+@keyframes menu-slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Subtle float animation for premium feel */
+@keyframes subtle-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+/* Glow animation for accent elements */
+@keyframes accent-glow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.5);
+  }
+}
+
+/* Utility classes for animations */
+.animate-studios-glow {
+  animation: studios-glow 2s ease-in-out infinite;
+}
+
+.animate-underline-expand {
+  animation: underline-expand 0.3s ease-out forwards;
+}
+
+.animate-search-slide-out {
+  animation: search-slide-out 0.4s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in-smooth 0.3s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+.animate-menu-slide-in {
+  animation: menu-slide-in 0.3s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+.animate-subtle-float {
+  animation: subtle-float 3s ease-in-out infinite;
+}
+
+.animate-accent-glow {
+  animation: accent-glow 2s ease-in-out infinite;
+}
+
+/* ========= prose-recovery: HTML article content rendering for blog posts ========= */
+.prose-recovery { color: #d1d5db; line-height: 1.8; font-size: 1.0625rem; }
+.prose-recovery h2 { color: #fff; font-size: 1.5rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #333; }
+.prose-recovery h3 { color: #f3f4f6; font-size: 1.2rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.75rem; }
+.prose-recovery h4 { color: #e5e7eb; font-size: 1.05rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+.prose-recovery p { margin-bottom: 1.25rem; }
+.prose-recovery p.lead { font-size: 1.15rem; color: #e5e7eb; line-height: 1.9; }
+.prose-recovery p.post-meta { font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.75rem; }
+.prose-recovery p.post-disclaimer { font-size: 0.8125rem; color: #6b7280; background: #111; border: 1px solid #222; border-radius: 6px; padding: 0.75rem 1rem; margin-bottom: 1.5rem; }
+.prose-recovery ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.25rem; }
+.prose-recovery ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1.25rem; }
+.prose-recovery li { margin-bottom: 0.5rem; }
+.prose-recovery li strong { color: #f3f4f6; }
+.prose-recovery strong { color: #f3f4f6; font-weight: 600; }
+.prose-recovery em { color: #d1d5db; }
+.prose-recovery a { color: #C06B3E; text-decoration: underline; text-underline-offset: 2px; }
+.prose-recovery a:hover { color: #e8b03d; }
+.prose-recovery figure { margin: 2rem 0; }
+.prose-recovery figure img { border-radius: 8px; width: 100%; height: auto; object-fit: cover; }
+.prose-recovery figcaption { font-size: 0.8125rem; color: #6b7280; margin-top: 0.5rem; text-align: center; }
+.prose-recovery nav.breadcrumb { margin-bottom: 1rem; font-size: 0.8125rem; color: #6b7280; }
+.prose-recovery nav.breadcrumb a { color: #9ca3af; text-decoration: none; }
+.prose-recovery nav.breadcrumb a:hover { color: #C06B3E; }
+.prose-recovery nav.breadcrumb ol { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.25rem; }
+.prose-recovery nav.breadcrumb li::after { content: " /"; margin-left: 0.25rem; }
+.prose-recovery nav.breadcrumb li:last-child::after { content: ""; }
+.prose-recovery table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: 0.9rem; }
+.prose-recovery th { background: #2A2421; color: #C06B3E; font-weight: 600; text-align: left; padding: 0.625rem 0.875rem; border: 1px solid #333; }
+.prose-recovery td { padding: 0.5rem 0.875rem; border: 1px solid #222; color: #d1d5db; }
+.prose-recovery tr:nth-child(even) td { background: #111; }
+.prose-recovery blockquote { border-left: 3px solid #C06B3E; padding: 0.75rem 1.25rem; margin: 1.5rem 0; background: #111; border-radius: 0 6px 6px 0; color: #e5e7eb; }
+
+/* ── Fade-up entrance animation ───────────────────────────── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Staggered delay helpers */
+.animate-delay-100 { animation-delay: 100ms; }
+.animate-delay-150 { animation-delay: 150ms; }
+.animate-delay-200 { animation-delay: 200ms; }
+.animate-delay-300 { animation-delay: 300ms; }
+.animate-delay-400 { animation-delay: 400ms; }
+.animate-delay-500 { animation-delay: 500ms; }
+.animate-delay-600 { animation-delay: 600ms; }
+.animate-delay-700 { animation-delay: 700ms; }
+
+/* Scroll-triggered fade-up via Intersection Observer pattern */
+.fade-up-hidden {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.fade-up-hidden.fade-up-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/* Survivor a11y — toggled by AccessibilityProvider based on user prefs   */
+/* set during intake. These mirror options the user explicitly opted into.*/
+/* ─────────────────────────────────────────────────────────────────────── */
+
+/* Bigger touch targets and slightly larger text. Scoped to interactive
+   controls so layout stays sensible. */
+html.a11y-big-button button,
+html.a11y-big-button [role="button"],
+html.a11y-big-button input,
+html.a11y-big-button select,
+html.a11y-big-button textarea,
+html.a11y-big-button a[href] {
+  min-height: 48px;
+  font-size: 1.0625rem;
+  line-height: 1.4;
+}
+html.a11y-big-button button[aria-label],
+html.a11y-big-button [role="button"][aria-label] {
+  min-width: 48px;
+}
+/* Bonfire personalization signals — bump the small "tailored" panel and
+   the "your goal" badge so survivors using big-button mode can actually
+   read why a task is highlighted. */
+html.a11y-big-button [data-testid="banner-personalization"],
+html.a11y-big-button [data-testid="banner-personalization"] li {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+html.a11y-big-button [data-testid="badge-goal-task"] {
+  font-size: 0.875rem;
+  padding: 0.375rem 0.75rem;
+}
+
+/* Dyslexia-friendly font. We don't ship a custom font file (keeps bundle
+   light); instead we fall back to the most legible system fonts available. */
+html.a11y-dyslexia-font,
+html.a11y-dyslexia-font body {
+  font-family: 'OpenDyslexic', 'Atkinson Hyperlegible', 'Verdana', 'Comic Sans MS', system-ui, sans-serif;
+  letter-spacing: 0.015em;
+  word-spacing: 0.05em;
+}
+
+/* Reduced motion — neutralizes long animations / transitions for users
+   prone to fatigue or vestibular issues post-stroke. */
+html.a11y-reduce-motion *,
+html.a11y-reduce-motion *::before,
+html.a11y-reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Sasquatch Radio — equalizer bars (now-playing indicator) */
+@keyframes sasquatch-eq {
+  0%, 100% { height: 25%; }
+  50% { height: 100%; }
+}
+.sasquatch-eq-bar {
+  height: 25%;
+  animation: sasquatch-eq 900ms ease-in-out infinite;
+  transform-origin: bottom;
+}
+.sasquatch-eq-bar-1 { animation-delay: 0ms;   animation-duration: 750ms; }
+.sasquatch-eq-bar-2 { animation-delay: 150ms; animation-duration: 1100ms; }
+.sasquatch-eq-bar-3 { animation-delay: 300ms; animation-duration: 850ms; }
+
+/* Sasquatch Radio — gold-tinted progress + volume sliders */
+.sasquatch-progress [data-slot="slider-track"],
+.sasquatch-progress [data-orientation="horizontal"] > span:first-child {
+  background-color: rgba(255, 255, 255, 0.10);
+  height: 4px;
+}
+.sasquatch-progress [data-slot="slider-range"],
+.sasquatch-progress [data-orientation="horizontal"] > span:first-child > span {
+  background: linear-gradient(90deg, #C06B3E 0%, #E0B040 100%);
+}
+.sasquatch-progress [data-slot="slider-thumb"],
+.sasquatch-progress [role="slider"] {
+  background-color: #C06B3E;
+  border: 2px solid #1C1917;
+  box-shadow: 0 0 0 1px rgba(192,107,62, 0.5), 0 0 12px -2px rgba(192,107,62, 0.6);
+  width: 14px;
+  height: 14px;
+  transition: transform 150ms ease;
+}
+.sasquatch-progress [role="slider"]:hover,
+.sasquatch-progress [role="slider"]:focus-visible {
+  transform: scale(1.15);
+}
+
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.msg-in {
+  animation: msgIn 0.32s ease-out forwards;
+}
