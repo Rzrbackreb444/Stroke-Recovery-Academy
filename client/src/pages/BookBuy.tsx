@@ -15,6 +15,7 @@ import {
   ChevronDown, FileText, ArrowRight, Star
 } from "lucide-react";
 import { safeJsonLd } from "@/lib/safeJsonLd";
+import sasquatchPersonaLogo from "@assets/sos-persona-logo-opt.webp";
 
 interface Edition {
   id: number;
@@ -235,9 +236,18 @@ export default function BookBuy() {
             {/* Title block */}
             <div className="flex flex-col gap-5">
               {/* Breadcrumb style label */}
-              <p className="text-xs tracking-widest uppercase text-muted-foreground font-medium">
-                Stroke Recovery Academy Publishing · 2026
-              </p>
+              <div className="flex items-center gap-3 flex-wrap">
+                <img
+                  src={sasquatchPersonaLogo}
+                  alt="Stroked-Out Sasquatch"
+                  className="w-10 h-10"
+                  loading="lazy"
+                  data-testid="img-sasquatch-logo-bookbuy"
+                />
+                <p className="text-xs tracking-widest uppercase text-muted-foreground font-medium">
+                  Stroke Recovery Academy Publishing · 2026
+                </p>
+              </div>
 
               <div>
                 <h1
