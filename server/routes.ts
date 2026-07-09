@@ -20,6 +20,7 @@ import {
 import { redactEmail } from "./lib/redact";
 import { requireAdmin } from "./middleware/requireAdmin";
 import { getUserId } from "./lib/authUtils";
+import { pgTextArray } from "./lib/pgArray";
 import emailAuthRoutes from "./emailAuthRoutes";
 import luluRoutes from "./luluRoutes";
 import puzzleRoutes from "./puzzleRoutes";
@@ -11284,7 +11285,7 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
            ${strokeDate ? String(strokeDate).trim().slice(0, 100) : null},
            ${relationship ? String(relationship).trim().slice(0, 200) : null},
            ${String(description).trim().slice(0, 3000)},
-           ${safeMedia.length ? sql`ARRAY[${sql.join(safeMedia.map((m) => sql`${m}`), sql`, `)}]::text[]` : sql`ARRAY[]::text[]`})
+           ${pgTextArray(safeMedia)})
       `);
       // Notify Nick
       try {
@@ -26181,10 +26182,7 @@ Format as structured JSON with clear sections.`;
       const { name, dosage, frequency, purpose, prescribedBy, startDate, notes, reminderTimes } = req.body;
       if (!name || !dosage || !frequency) return res.status(400).json({ message: 'Name, dosage, and frequency required' });
 
-      const rtArr: string[] = Array.isArray(reminderTimes) ? reminderTimes.map((t: any) => String(t)) : [];
-      const rtSql = rtArr.length
-        ? sql`ARRAY[${sql.join(rtArr.map((t) => sql`${t}`), sql`, `)}]::text[]`
-        : sql`ARRAY[]::text[]`;
+      const rtSql = pgTextArray(reminderTimes);
 
       const result = await db.execute(sql`
         INSERT INTO medications (user_id, name, dosage, frequency, purpose, prescribed_by, start_date, notes, reminder_times)
@@ -26203,11 +26201,7 @@ Format as structured JSON with clear sections.`;
       const userId = getUserId(req);
       const { id } = req.params;
       const { name, dosage, frequency, purpose, prescribedBy, notes, reminderTimes, isActive } = req.body;
-      const rtSql = Array.isArray(reminderTimes)
-        ? (reminderTimes.length
-            ? sql`ARRAY[${sql.join(reminderTimes.map((t: any) => sql`${String(t)}`), sql`, `)}]::text[]`
-            : sql`ARRAY[]::text[]`)
-        : sql`reminder_times`;
+      const rtSql = Array.isArray(reminderTimes) ? pgTextArray(reminderTimes) : sql`reminder_times`;
       await db.execute(sql`
         UPDATE medications SET
           name = COALESCE(${name}, name),
