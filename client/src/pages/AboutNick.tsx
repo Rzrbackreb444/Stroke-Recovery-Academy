@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import nickPortrait from "@assets/nick-portrait-opt.webp";
 import nickBeforeAfter from "@assets/Untitled_design_(1)_1783564981619.png";
+import sasquatchPersonaLogo from "@assets/sos-persona-logo-opt.webp";
 
 const milestones = [
   { year: "Dec 2018", title: "The Day Everything Changed", description: "December 3, 2018 — a massive hemorrhagic stroke. Left side paralyzed, speech gone, 50 pounds lost in the ICU on tube feedings. Told he might never walk normally again." },
@@ -138,6 +139,20 @@ export default function AboutNick() {
               Just like Sasquatch — dismissed, doubted, but undeniably, stubbornly present.
               Today Nick is 90%+ functional, still rising, and coaching thousands of warriors
               from Lavaca, Arkansas.
+            </p>
+          </div>
+
+          <div className="mt-12 flex flex-col items-center text-center">
+            <img
+              src={sasquatchPersonaLogo}
+              alt="The Stroked-Out Sasquatch — Nick's persona mark"
+              className="w-40 h-40 sm:w-48 sm:h-48"
+              loading="lazy"
+              data-testid="img-sasquatch-persona-logo"
+            />
+            <p className="text-[#78716C] text-sm mt-4 max-w-md">
+              The Stroked-Out Sasquatch — the switch Nick flips in his head.
+              The version of him that is relentless and does not accept defeat.
             </p>
           </div>
 
