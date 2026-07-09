@@ -16,6 +16,7 @@ import {
   hasActiveSasquatchPremium,
   hasActiveSasquatchFounder,
   invalidateSasquatchPremium,
+  resolveFounderStripeSubscription,
 } from "./services/sasquatchPremiumService";
 import {
   recordFunnelEvent,
@@ -92,6 +93,42 @@ async function resolvePremiumContext(userId: string): Promise<{
       } catch (e: any) {
         console.warn("[sasquatch-premium] context state backfill failed", e?.message || e);
       }
+    }
+  }
+  // Founder fallback: Founder subs live under a SEPARATE Stripe product and
+  // are never written to `sasquatch_premium_subscriptions`, so a Founder-only
+  // member reaches here with no premium sub. Resolve their Founder sub
+  // directly from Stripe and synthesize a state view so the in-app
+  // cancel/resume flow works for them too (no support ticket, no portal-only
+  // dead end). plan:"founder" also keys the offer suppression downstream.
+  if (!subId && customerId) {
+    const fSub = await resolveFounderStripeSubscription(customerId);
+    if (fSub?.id) {
+      subId = String(fSub.id);
+      const unixToIso = (v: any): string | null =>
+        typeof v === "number" && Number.isFinite(v) && v > 0
+          ? new Date(v * 1000).toISOString()
+          : null;
+      state = {
+        user_id: userId,
+        stripe_customer_id: customerId,
+        stripe_subscription_id: subId,
+        status: String(fSub.status || "active"),
+        plan: "founder",
+        current_period_end: unixToIso(
+          fSub.current_period_end ?? fSub.items?.data?.[0]?.current_period_end,
+        ),
+        trial_end: unixToIso(fSub.trial_end),
+        cancel_at_period_end: !!fSub.cancel_at_period_end,
+        payment_state: "ok",
+        last_payment_failed_at: null,
+        dunning_attempts: 0,
+        grace_period_end: null,
+        last_recovered_at: null,
+        downgraded_at: null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      } as NonNullable<Awaited<ReturnType<typeof getSubStateByUserId>>>;
     }
   }
   return { customerId, subId, state };
@@ -544,8 +581,10 @@ export function registerSasquatchPremiumRoutes(app: Express) {
         res.json({
           ok: true,
           cancelAtPeriodEnd: true,
-          currentPeriodEnd: after?.current_period_end ?? null,
-          trialEnd: after?.trial_end ?? null,
+          // Founder subs have no durable row (`after` stays null) — fall back
+          // to the resolved context so the "access until" date still renders.
+          currentPeriodEnd: after?.current_period_end ?? state?.current_period_end ?? null,
+          trialEnd: after?.trial_end ?? state?.trial_end ?? null,
           status: after?.status ?? state?.status ?? "active",
         });
       } catch (err: any) {
@@ -587,11 +626,21 @@ export function registerSasquatchPremiumRoutes(app: Express) {
           outcome: "resumed",
           metadata: { status: after?.status },
         });
+        // Founder subs have no durable row (`after` stays null) — fall back to
+        // the fresh Stripe object so the renewal date still renders.
+        const updatedPeriodEnd =
+          (updated as any)?.current_period_end ??
+          (updated as any)?.items?.data?.[0]?.current_period_end ??
+          null;
         res.json({
           ok: true,
           cancelAtPeriodEnd: false,
-          currentPeriodEnd: after?.current_period_end ?? null,
-          status: after?.status ?? "active",
+          currentPeriodEnd:
+            after?.current_period_end ??
+            (typeof updatedPeriodEnd === "number"
+              ? new Date(updatedPeriodEnd * 1000).toISOString()
+              : null),
+          status: after?.status ?? (updated as any)?.status ?? "active",
         });
       } catch (err: any) {
         console.error("[sasquatch-premium] resume failed", err?.message || err);

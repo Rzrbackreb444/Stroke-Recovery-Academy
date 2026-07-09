@@ -1865,8 +1865,27 @@ export const buddyActiveMembers = pgTable("buddy_active_members", {
   userId: varchar("user_id").primaryKey().references(() => users.id, { onDelete: "cascade" }),
   pairId: integer("pair_id").notNull().references(() => buddyPairs.id, { onDelete: "cascade" }),
 });
+// Mutual-accept buddy requests: requester proposes, recipient accepts/declines.
+// One active pending request per direction (partial unique index).
+export const buddyRequests = pgTable("buddy_requests", {
+  id: serial("id").primaryKey(),
+  requesterId: varchar("requester_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  recipientId: varchar("recipient_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  note: text("note"),
+  score: integer("score"),
+  reasons: text("reasons").array(),
+  status: text("status").notNull().default("pending"), // pending, accepted, declined, cancelled
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  respondedAt: timestamp("responded_at"),
+}, (t) => ({
+  uniqPending: uniqueIndex("buddy_requests_pending_unique")
+    .on(t.requesterId, t.recipientId)
+    .where(sql`status = 'pending'`),
+}));
+
 export type BuddyProfile = typeof buddyProfiles.$inferSelect;
 export type BuddyPair = typeof buddyPairs.$inferSelect;
+export type BuddyRequest = typeof buddyRequests.$inferSelect;
 
 // Recovery Creator Profiles (extended user profile for stroke survivors)
 export const recoveryCreatorProfiles = pgTable("recovery_creator_profiles", {
@@ -7584,3 +7603,82 @@ export const partnerInquiries = pgTable("partner_inquiries", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 export type PartnerInquiry = typeof partnerInquiries.$inferSelect;
+
+// ════════════════════════════════════════════════════════════════════════════
+// INSTITUTIONAL / CLINICAL PARTNERSHIP PLATFORM (B2B channel) — Task #59
+// ════════════════════════════════════════════════════════════════════════════
+// Organizations (rehab centers, hospitals, discharge programs) provision
+// premium access for their survivors via purchased seats, billed at the org
+// level. Survivors control what the org sees through a revocable consent layer
+// that DEFAULTS to de-identified/aggregate. Clinicians see cohort engagement +
+// consented aggregate outcome trends only — never unconsented PHI. Non-clinical.
+
+// ── Organizations ─────────────────────────────────────────────────────────────
+export const organizations = pgTable("organizations", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),           // stable id for join links
+  orgType: text("org_type").notNull().default("rehab_center"), // rehab_center|hospital|clinic|discharge_program|research|other
+  contactName: text("contact_name"),
+  contactEmail: text("contact_email"),
+  seatLimit: integer("seat_limit").notNull().default(0), // purchased survivor seats
+  status: text("status").notNull().default("trial"),     // trial|active|suspended
+  // Org-level billing (seat-based). Stripe references only — never raw cards.
+  stripeCustomerId: text("stripe_customer_id"),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  billingStatus: text("billing_status").notNull().default("none"), // none|active|past_due|canceled
+  notes: text("notes"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+export const insertOrganizationSchema = createInsertSchema(organizations).omit({
+  id: true, createdAt: true, updatedAt: true,
+});
+export type InsertOrganization = z.infer<typeof insertOrganizationSchema>;
+export type Organization = typeof organizations.$inferSelect;
+
+// ── Organization members (seats + staff) ───────────────────────────────────────
+// role: owner|clinician (staff who see the dashboard) | survivor (a seat).
+// status: invited (link minted, not yet accepted) | active | removed.
+// A survivor seat is consumed by invited + active rows (removed frees the seat).
+export const organizationMembers = pgTable("organization_members", {
+  id: serial("id").primaryKey(),
+  orgId: integer("org_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").references(() => users.id, { onDelete: "set null" }), // null until accepted
+  role: text("role").notNull().default("survivor"), // owner|clinician|survivor
+  status: text("status").notNull().default("invited"), // invited|active|removed
+  invitedEmail: text("invited_email"),
+  inviteToken: text("invite_token").unique(),
+  invitedAt: timestamp("invited_at").notNull().defaultNow(),
+  joinedAt: timestamp("joined_at"),
+  removedAt: timestamp("removed_at"),
+}, (t) => ({
+  orgUserIdx: index("org_members_org_user_idx").on(t.orgId, t.userId),
+}));
+export const insertOrganizationMemberSchema = createInsertSchema(organizationMembers).omit({
+  id: true, invitedAt: true, joinedAt: true, removedAt: true,
+});
+export type InsertOrganizationMember = z.infer<typeof insertOrganizationMemberSchema>;
+export type OrganizationMember = typeof organizationMembers.$inferSelect;
+
+// ── Organization consents (revocable, per survivor+org) ─────────────────────────
+// shareLevel governs what the org can see about this survivor:
+//   none       — excluded from ALL org views (full opt-out).
+//   aggregate  — DEFAULT. Contributes to de-identified cohort stats only. No PII,
+//                no identified row ever leaves.
+//   identified — care team may additionally see this survivor's name + engagement
+//                summary. Raw journal/medical/flicker text is NEVER exposed here.
+export const organizationConsents = pgTable("organization_consents", {
+  id: serial("id").primaryKey(),
+  orgId: integer("org_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  shareLevel: text("share_level").notNull().default("aggregate"), // none|aggregate|identified
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (t) => ({
+  orgUserUnique: uniqueIndex("org_consents_org_user_unique").on(t.orgId, t.userId),
+}));
+export const insertOrganizationConsentSchema = createInsertSchema(organizationConsents).omit({
+  id: true, updatedAt: true,
+});
+export type InsertOrganizationConsent = z.infer<typeof insertOrganizationConsentSchema>;
+export type OrganizationConsent = typeof organizationConsents.$inferSelect;

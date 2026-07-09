@@ -14,6 +14,8 @@ import {
   Heart,
   ArrowLeft,
   AlertCircle,
+  ShieldPlus,
+  Pill,
 } from "lucide-react";
 
 interface SurvivorDashboard {
@@ -42,6 +44,13 @@ interface SurvivorDashboard {
     dailyTimeBudgetMinutes: number | null;
     energyPattern: string | null;
   } | null;
+  prevention?: {
+    shared: boolean;
+    activeMedications?: number;
+    adherence7?: number | null;
+    lastMedLoggedAt?: string | null;
+    lastBpAt?: string | null;
+  };
 }
 
 function fmtRelative(iso: string | null): string {
@@ -114,7 +123,7 @@ export default function CaregiverDashboard() {
     );
   }
 
-  const { survivor, metrics, recentActivity, profile } = data;
+  const { survivor, metrics, recentActivity, profile, prevention } = data;
   const firstName = survivor.firstName ?? "Your survivor";
   const initials =
     `${survivor.firstName?.[0] ?? ""}${survivor.lastName?.[0] ?? ""}`.toUpperCase() || "S";
@@ -277,6 +286,39 @@ export default function CaregiverDashboard() {
                 </div>
               </div>
             )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Prevention (consent-gated) */}
+      {prevention?.shared && (
+        <Card data-testid="card-prevention">
+          <CardHeader className="flex flex-row items-center gap-2 flex-wrap pb-2">
+            <ShieldPlus className="w-4 h-4 text-[#E2741B] shrink-0" />
+            <CardTitle className="text-sm font-semibold">Prevention — awareness only</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-start gap-3">
+              <Pill className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
+              <div className="min-w-0">
+                <p className="text-sm font-medium" data-testid="text-prevention-adherence">
+                  {typeof prevention.adherence7 === "number"
+                    ? `${prevention.adherence7}% of doses logged this week`
+                    : prevention.activeMedications
+                    ? "Medications tracked — no doses logged yet"
+                    : "No medications tracked"}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Last logged: {fmtRelative(prevention.lastMedLoggedAt ?? null)}
+                  {prevention.lastBpAt ? ` — last BP: ${fmtRelative(prevention.lastBpAt)}` : ""}
+                </p>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              This is a consistency signal shared by {firstName} — not a medical score or diagnosis.
+              A gentle check-in beats a lecture. New or worsening symptoms go to their doctor;
+              any stroke warning sign is 911.
+            </p>
           </CardContent>
         </Card>
       )}

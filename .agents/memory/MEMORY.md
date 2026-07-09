@@ -28,3 +28,4 @@
 - [Object storage video URL path](object-storage-video-path.md) — DB stores /objects/uploads/<uuid>; getObjectEntityFile prepends PRIVATE_OBJECT_DIR internally; never store the private dir prefix in videoUrl
 - [Audio Object Storage migration](audio-object-storage.md) — uploadAudioBuffer/serveAudioResponse helpers; ACL rules per surface; migration script; never use base64 data URLs for audio again
 - [Coach full-screen overlay](coach-fullscreen-overlay.md) — SasquatchCoach uses position:fixed;inset:0;z-index:100 to cover global RecoveryHeader; my custom header is the only chrome on that route
+- [db.execute text[] arrays](db-execute-text-array.md) — bare JS array param to raw sql on neon driver → 22P02 malformed array literal; use ARRAY[]::text[] via sql.join

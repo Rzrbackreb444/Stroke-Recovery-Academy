@@ -67,6 +67,33 @@ export async function bootstrapScheduler(): Promise<void> {
     },
   });
 
+  // Live Circle reminders — day-before + hour-before nudges to RSVP'd survivors,
+  // routed through the lifecycle messaging engine (email + push). Static copy so
+  // the crisis gate isn't needed; message_deliveries dedupe keeps it idempotent.
+  registerJob({
+    name: "circle-reminders",
+    description: "Remind RSVP'd survivors of upcoming Live Circles (day-before + hour-before, email + push).",
+    cron: "50 * * * *", // hourly at :50 (offset to spread load)
+    handler: async () => {
+      const { runCircleReminders } = await import("../circleReminderService");
+      await runCircleReminders();
+    },
+  });
+
+  // Medication-adherence loop — daily survivor "did you take them?" nudge for
+  // active-med survivors who logged nothing today, plus a consent-gated weekly
+  // caregiver missed-meds heads-up. Static copy; routed through sendMessage so
+  // consent/quiet-hours apply; message_deliveries dedupe keeps it idempotent.
+  registerJob({
+    name: "med-adherence",
+    description: "Daily medication-adherence loop: survivor log nudge + consent-gated caregiver missed-meds heads-up.",
+    cron: "0 22 * * *", // daily at 22:00 UTC — engine defers/skips per quiet-hours
+    handler: async () => {
+      const { runMedicationAdherence } = await import("../services/medicationAdherenceService");
+      await runMedicationAdherence();
+    },
+  });
+
   // Free-analysis crash recovery — fail rows stuck in "processing".
   registerJob({
     name: "free-analysis-reap",

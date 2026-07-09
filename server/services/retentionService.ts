@@ -83,6 +83,10 @@ const COUPON_CATALOG: Record<"monthlyDiscount" | "annualDiscount", CouponSpec> =
 // Discount is always available (it lands on the first real invoice for a
 // trialing sub).
 export function eligibleOffers(plan: string, status: string): SaveOffer[] {
+  // Offers are priced against the PREMIUM plans only. Founder ($49 high-touch
+  // tier) and unknown/legacy plans get a clean cancel with no save offer —
+  // the premium coupon copy ("$9.50/mo") would be wrong math against them.
+  if (plan !== "monthly" && plan !== "annual") return [];
   const offers: SaveOffer[] = ["discount"];
   // Founder bills monthly too — pause is coherent on any monthly cadence.
   if (status !== "trialing" && (plan === "monthly" || plan === "founder")) offers.push("pause");

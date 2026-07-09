@@ -12,7 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import {
   MessageCircle, Send, Search, Plus, Image, Smile, MoreVertical,
-  Phone, Video, Info, Check, CheckCheck, Loader2, Users, ArrowLeft
+  Phone, Video, Info, Check, CheckCheck, Loader2, Users, ArrowLeft, X
 } from "lucide-react";
 import TherapistAvailabilityBadge from "@/components/recovery/TherapistAvailabilityBadge";
 
@@ -62,7 +62,9 @@ export default function Messages() {
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [newChatOpen, setNewChatOpen] = useState(false);
+  const [userSearch, setUserSearch] = useState("");
   const [mobileShowChat, setMobileShowChat] = useState(false);
+  const [crisis, setCrisis] = useState<{ category: string; message: string; resources: Array<{ label: string; detail: string; action: { type: string; value: string } }> } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { data: conversations, isLoading: conversationsLoading } = useQuery<Conversation[]>({
@@ -87,21 +89,25 @@ export default function Messages() {
   });
 
   const { data: users } = useQuery<any[]>({
-    queryKey: ["/api/users/search"],
+    queryKey: ["/api/users/search", userSearch],
     queryFn: async () => {
-      const res = await fetch("/api/users/search");
+      const res = await fetch(`/api/users/search?q=${encodeURIComponent(userSearch.trim())}`);
       if (!res.ok) return [];
       return res.json();
     },
-    enabled: newChatOpen,
+    enabled: newChatOpen && userSearch.trim().length > 0,
   });
 
   const sendMessageMutation = useMutation({
     mutationFn: async ({ conversationId, content }: { conversationId: number; content: string }) => {
-      return apiRequest("POST", `/api/messages/conversations/${conversationId}/messages`, { content });
+      const res = await apiRequest("POST", `/api/messages/conversations/${conversationId}/messages`, { content });
+      return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (data: any) => {
       setNewMessage("");
+      if (data?.crisis) {
+        setCrisis(data.crisis);
+      }
       refetchMessages();
       queryClient.invalidateQueries({ queryKey: ["/api/messages/conversations"] });
     },
@@ -112,7 +118,8 @@ export default function Messages() {
 
   const createConversationMutation = useMutation({
     mutationFn: async (participantId: string) => {
-      return apiRequest("POST", "/api/messages/conversations", { participantIds: [participantId] });
+      const res = await apiRequest("POST", "/api/messages/conversations", { participantIds: [participantId] });
+      return res.json();
     },
     onSuccess: (data: any) => {
       setNewChatOpen(false);
@@ -193,7 +200,10 @@ export default function Messages() {
               <div className="space-y-4 py-4">
                 <Input
                   placeholder="Search users..."
+                  value={userSearch}
+                  onChange={(e) => setUserSearch(e.target.value)}
                   className="bg-gray-800 border-[#333]"
+                  data-testid="input-user-search"
                 />
                 <ScrollArea className="h-64">
                   <div className="space-y-2">
@@ -418,6 +428,43 @@ export default function Messages() {
                     </div>
                   )}
                 </ScrollArea>
+
+                {crisis && (
+                  <div
+                    role="alert"
+                    aria-live="assertive"
+                    className="mx-4 mb-2 rounded-md border border-red-500/50 bg-red-950/40 p-4"
+                    data-testid="banner-crisis"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="text-sm text-red-100 flex-1">{crisis.message}</p>
+                      <button
+                        onClick={() => setCrisis(null)}
+                        aria-label="Dismiss crisis resources"
+                        className="p-1 rounded hover:bg-red-900/50"
+                        data-testid="button-dismiss-crisis"
+                      >
+                        <X className="w-4 h-4 text-red-200" />
+                      </button>
+                    </div>
+                    <ul className="mt-3 space-y-2">
+                      {crisis.resources.map((r, i) => (
+                        <li key={i} className="text-sm">
+                          <a
+                            href={r.action.type === "tel" ? `tel:${r.action.value}` : r.action.type === "sms" ? `sms:${r.action.value}` : r.action.value}
+                            target={r.action.type === "url" ? "_blank" : undefined}
+                            rel={r.action.type === "url" ? "noopener noreferrer" : undefined}
+                            className="text-red-200 underline font-medium"
+                            data-testid={`link-crisis-${i}`}
+                          >
+                            {r.label}
+                          </a>
+                          <span className="text-red-100/70"> — {r.detail}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 <div className="p-4 border-t border-[#333]">
                   <div className="flex items-center gap-2">

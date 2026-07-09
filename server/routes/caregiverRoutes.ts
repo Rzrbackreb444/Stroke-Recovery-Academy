@@ -298,6 +298,52 @@ export function registerCaregiverRoutes(app: Express, isAuthenticated: any) {
       `).catch(() => ({ rows: [{ last_at: null }] }));
       const lastCheckinAt = ((lastCheckinRow.rows ?? lastCheckinRow) as any[])[0]?.last_at ?? null;
 
+      // ── Prevention block (CONSENT-GATED) ──────────────────────────────────
+      // Only surfaced when the survivor explicitly enabled caregiver sharing in
+      // their notification preferences. Awareness-only: medication-adherence
+      // consistency + BP recency. Never a clinical score. Default = withheld.
+      const shareRow = await db.execute(sql`
+        SELECT caregiver_share_enabled FROM notification_preferences
+         WHERE user_id = ${survivorId} LIMIT 1
+      `).catch(() => ({ rows: [] }));
+      const shareEnabled = !!((shareRow.rows ?? shareRow) as any[])[0]?.caregiver_share_enabled;
+
+      let prevention: any = { shared: false };
+      if (shareEnabled) {
+        const activeMedRow = await db.execute(sql`
+          SELECT COUNT(*)::int AS n,
+                 COALESCE(SUM(GREATEST(COALESCE(array_length(reminder_times, 1), 1), 1)), 0)::int AS per_day
+            FROM medications WHERE user_id = ${survivorId} AND is_active = true
+        `).catch(() => ({ rows: [{ n: 0, per_day: 0 }] }));
+        const medAgg = ((activeMedRow.rows ?? activeMedRow) as any[])[0] ?? { n: 0, per_day: 0 };
+        const perDay = Number(medAgg.per_day ?? 0);
+
+        const takenRow = await db.execute(sql`
+          SELECT COUNT(*) FILTER (WHERE skipped = false AND taken_at >= NOW() - INTERVAL '7 days') AS taken_7,
+                 MAX(taken_at) AS last_logged
+            FROM medication_logs WHERE user_id = ${survivorId}
+        `).catch(() => ({ rows: [{ taken_7: 0, last_logged: null }] }));
+        const t = ((takenRow.rows ?? takenRow) as any[])[0] ?? {};
+        const taken7 = Number(t.taken_7 ?? 0);
+        const expected7 = perDay * 7;
+        const adherence7 = expected7 > 0 ? Math.min(100, Math.round((taken7 / expected7) * 100)) : null;
+
+        const bpRow = await db.execute(sql`
+          SELECT MAX(measured_at) AS last_bp FROM vitals_logs
+           WHERE user_id = ${survivorId}
+             AND (blood_pressure_systolic IS NOT NULL OR blood_pressure_diastolic IS NOT NULL)
+        `).catch(() => ({ rows: [{ last_bp: null }] }));
+        const lastBpAt = ((bpRow.rows ?? bpRow) as any[])[0]?.last_bp ?? null;
+
+        prevention = {
+          shared: true,
+          activeMedications: Number(medAgg.n ?? 0),
+          adherence7,
+          lastMedLoggedAt: t.last_logged ?? null,
+          lastBpAt,
+        };
+      }
+
       return res.json({
         survivor: {
           firstName: survivor.first_name,
@@ -328,6 +374,7 @@ export function registerCaregiverRoutes(app: Express, isAuthenticated: any) {
               energyPattern: profile.energy_pattern,
             }
           : null,
+        prevention,
       });
     } catch (err: any) {
       console.error('[caregivers] dashboard', err);

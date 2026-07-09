@@ -1019,6 +1019,12 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   app.use('/api/lulu', luluRoutes);
   app.use('/api/puzzle', puzzleRoutes);
 
+  // Institutional / Clinical Partnership Platform (B2B) — org accounts, seat
+  // provisioning, revocable survivor consent, consent-gated cohort dashboard.
+  // Mounted after setupAuth so isAuthenticated/getUserId/requireAdmin work.
+  const { registerInstitutionRoutes } = await import('./institutionRoutes');
+  registerInstitutionRoutes(app, isAuthenticated);
+
   // Durable scheduler admin observability (admin-only). Mounted after setupAuth
   // so requireAdmin's session lookup works.
   const { default: schedulerRoutes } = await import('./scheduler/schedulerRoutes');
@@ -15049,7 +15055,13 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     try {
       const userId = getUserId(req);
       const { participantIds } = req.body;
-      const conversation = await storage.createConversation(userId, participantIds);
+      if (!Array.isArray(participantIds) || participantIds.length === 0) {
+        return res.status(400).json({ message: "participantIds required" });
+      }
+      const conversation = await storage.createConversation(
+        { createdById: userId, type: "direct" },
+        Array.from(new Set([userId, ...participantIds]))
+      );
       res.json(conversation);
     } catch (error) {
       res.status(500).json({ message: "Failed to create conversation" });
@@ -15071,7 +15083,23 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       const userId = getUserId(req);
       const conversationId = parseInt(req.params.id);
       const { content } = req.body;
+      // Safe messaging: run the same crisis gate as the AI Coach. Peer-to-peer
+      // support is legitimate — a survivor confiding in their buddy must NOT be
+      // blocked — so we still deliver the message, but attach 988/crisis
+      // resources for the sender and log a structured moderation event.
+      const crisis = detectCrisis(typeof content === "string" ? content : "");
       const message = await storage.createMessage({ conversationId, senderId: userId, content });
+      if (crisis.detected && crisis.category) {
+        console.log(JSON.stringify({
+          event: "dm_crisis_intercept",
+          userId,
+          conversationId,
+          category: crisis.category,
+          at: new Date().toISOString(),
+        }));
+        const payload = buildCrisisResponse(crisis.category);
+        return res.json({ ...message, crisis: { category: payload.category, resources: payload.resources, message: payload.response } });
+      }
       res.json(message);
     } catch (error) {
       res.status(500).json({ message: "Failed to send message" });
@@ -26129,9 +26157,14 @@ Format as structured JSON with clear sections.`;
       const { name, dosage, frequency, purpose, prescribedBy, startDate, notes, reminderTimes } = req.body;
       if (!name || !dosage || !frequency) return res.status(400).json({ message: 'Name, dosage, and frequency required' });
 
+      const rtArr: string[] = Array.isArray(reminderTimes) ? reminderTimes.map((t: any) => String(t)) : [];
+      const rtSql = rtArr.length
+        ? sql`ARRAY[${sql.join(rtArr.map((t) => sql`${t}`), sql`, `)}]::text[]`
+        : sql`ARRAY[]::text[]`;
+
       const result = await db.execute(sql`
         INSERT INTO medications (user_id, name, dosage, frequency, purpose, prescribed_by, start_date, notes, reminder_times)
-        VALUES (${userId}, ${name}, ${dosage}, ${frequency}, ${purpose || null}, ${prescribedBy || null}, ${startDate ? new Date(startDate) : null}, ${notes || null}, ${reminderTimes || []})
+        VALUES (${userId}, ${name}, ${dosage}, ${frequency}, ${purpose || null}, ${prescribedBy || null}, ${startDate ? new Date(startDate) : null}, ${notes || null}, ${rtSql})
         RETURNING *
       `);
       res.json(result.rows[0]);
@@ -26146,6 +26179,11 @@ Format as structured JSON with clear sections.`;
       const userId = getUserId(req);
       const { id } = req.params;
       const { name, dosage, frequency, purpose, prescribedBy, notes, reminderTimes, isActive } = req.body;
+      const rtSql = Array.isArray(reminderTimes)
+        ? (reminderTimes.length
+            ? sql`ARRAY[${sql.join(reminderTimes.map((t: any) => sql`${String(t)}`), sql`, `)}]::text[]`
+            : sql`ARRAY[]::text[]`)
+        : sql`reminder_times`;
       await db.execute(sql`
         UPDATE medications SET
           name = COALESCE(${name}, name),
@@ -26154,7 +26192,7 @@ Format as structured JSON with clear sections.`;
           purpose = ${purpose ?? null},
           prescribed_by = ${prescribedBy ?? null},
           notes = ${notes ?? null},
-          reminder_times = COALESCE(${reminderTimes}, reminder_times),
+          reminder_times = ${rtSql},
           is_active = COALESCE(${isActive}, is_active)
         WHERE id = ${parseInt(id)} AND user_id = ${userId}
       `);
@@ -26324,6 +26362,8 @@ Format as structured JSON with clear sections.`;
   const { registerPremiumCancelRoutes } = await import('./routes/premiumCancelRoutes');
   registerPremiumCancelRoutes(app, isAuthenticated);
   registerProgressRoutes(app, isAuthenticated);
+  const { registerPreventionRoutes } = await import('./routes/preventionRoutes');
+  registerPreventionRoutes(app, isAuthenticated);
   const { registerRecoveryReportRoutes } = await import('./routes/recoveryReportRoutes');
   registerRecoveryReportRoutes(app, isAuthenticated);
   registerEncouragementRoutes(app, isAuthenticated);

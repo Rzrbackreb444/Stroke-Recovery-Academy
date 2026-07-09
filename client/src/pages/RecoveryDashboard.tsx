@@ -27,8 +27,9 @@ import {
   Plus, UserPlus, DoorOpen, Smile, Activity, Quote, RefreshCw, ArrowRight,
   Play, Brain, ChevronDown, Footprints, Anchor, Sun, ClipboardList, Loader2,
   Check, Dumbbell, Pill, Droplets, Moon, PenLine, PhoneCall, ChevronRight,
-  LayoutDashboard, Video, Music2, ExternalLink
+  LayoutDashboard, Video, Music2, ExternalLink, ShieldPlus
 } from "lucide-react";
+import FastWarningModule from "@/components/recovery/FastWarningModule";
 import SixtyDayTracker from "@/components/recovery/SixtyDayTracker";
 import TodaySessionPanel from "@/components/recovery/TodaySessionPanel";
 import DeficitPrescriptionCard from "@/components/recovery/DeficitPrescriptionCard";
@@ -399,6 +400,7 @@ export default function RecoveryDashboard() {
                 { href: "/recovery/community", label: "Community", icon: Users },
                 { href: "/recovery/my-story", label: "My Story", icon: BookOpen },
                 { href: "/recovery/progress", label: "Progress", icon: TrendingUp },
+                { href: "/recovery/prevention", label: "Prevention", icon: ShieldPlus },
               ].map((item) => (
                 <Link
                   key={item.href}
@@ -468,6 +470,12 @@ export default function RecoveryDashboard() {
           </Button>
         </div>
         <TodaysSpark />
+
+        {/* FAST warning signs — kept visible even in Zen Mode. Recurrence is
+            real; the emergency escalation should never be buried. */}
+        <div className="mb-6">
+          <FastWarningModule compact />
+        </div>
 
         {/* RECOVERY ARC — milestone card at 30/60/90/180/365 days. Renders only
             when within the ±4-day window of a milestone. Hidden in Zen Mode so
