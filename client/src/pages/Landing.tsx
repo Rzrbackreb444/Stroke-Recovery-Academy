@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation, Link } from "wouter";
 import {
-  Loader2, ArrowRight, Play, BrainCircuit, CalendarDays,
+  Loader2, ArrowRight, BrainCircuit, CalendarDays,
   Users, CheckCircle2, ShieldCheck, Activity, Star, Flame, Gift, BookOpen, Lock,
   MessageSquare, Zap, Video, Building2, Check,
 } from "lucide-react";
@@ -20,9 +20,9 @@ import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import heroWarrior from "@assets/hero-warrior-opt.webp";
 import heroWarriorDesktop from "@assets/hero-warrior-desktop.webp";
 import nickPortrait from "@assets/nick-portrait-opt.webp";
-import manifestoStairs from "@assets/manifesto-stairs-opt.webp";
 import cleanUi from "@assets/home-clean-ui-opt.webp";
 import doctrineSix from "@assets/sasquatch-doctrine-six-opt.webp";
+import nickBeforeAfter from "@assets/nick-before-after-opt.webp";
 
 const goToOnboarding = () => {
   window.location.href = "/recovery/onboarding";
@@ -408,12 +408,26 @@ function Proof() {
               </div>
             </div>
           </div>
-          <div className="relative aspect-video bg-white rounded-2xl overflow-hidden border border-[#E2C2A4]/30 shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(192,107,62,0.08)] transition-shadow" aria-hidden="true">
-            <img src={manifestoStairs} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover opacity-60" />
-            <div className="absolute inset-0 bg-[#1C1917]/30 flex items-center justify-center">
-              <div className="w-20 h-20 rounded-full bg-gold/90 flex items-center justify-center">
-                <Play className="w-8 h-8 text-black fill-black ml-1" />
-              </div>
+          <div className="space-y-6">
+            <img
+              src={nickBeforeAfter}
+              alt="Nick Kremers in 2018 with a walker behind him, and in 2027 — recovered and smiling"
+              loading="lazy"
+              decoding="async"
+              className="w-full rounded-2xl border border-[#E2C2A4]/30 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
+              data-testid="img-before-after"
+            />
+            <div className="flex justify-center">
+              <video
+                controls
+                preload="none"
+                poster="/videos/nick-picks-up-son-poster.jpg"
+                className="rounded-2xl border border-[#E2C2A4]/30 shadow-[0_1px_3px_rgba(0,0,0,0.04)] w-full max-w-[300px]"
+                data-testid="video-proof"
+              >
+                <source src="/videos/nick-picks-up-son.mp4" type="video/mp4" />
+                <p>Your browser does not support this video.</p>
+              </video>
             </div>
           </div>
         </div>
