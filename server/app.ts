@@ -125,6 +125,12 @@ export default async function runApp(
     throw err;
   }
 
+  // Seed blog posts (idempotent upsert-by-slug) — fire-and-forget so a slow
+  // DB never blocks startup. Guarantees prod carries the full blog library.
+  import("./seed/seedBlogPosts")
+    .then((m) => m.seedBlogPosts())
+    .catch((err) => console.error("[blog-seed] startup seed failed:", err?.message ?? err));
+
   // Structured error logger runs first — emits one JSON line per error with
   // the request id so the deployment logs can be greped by correlation.
   app.use(structuredErrorLogger);

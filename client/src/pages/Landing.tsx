@@ -22,6 +22,7 @@ import heroWarriorDesktop from "@assets/hero-warrior-desktop.webp";
 import nickPortrait from "@assets/nick-portrait-opt.webp";
 import manifestoStairs from "@assets/manifesto-stairs-opt.webp";
 import cleanUi from "@assets/home-clean-ui-opt.webp";
+import doctrineSix from "@assets/sasquatch-doctrine-six-opt.webp";
 
 const goToOnboarding = () => {
   window.location.href = "/recovery/onboarding";
@@ -414,6 +415,64 @@ function Proof() {
                 <Play className="w-8 h-8 text-black fill-black ml-1" />
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Doctrine() {
+  const laws = [
+    "You've already won. You survived.",
+    "Small wins are sacred. A flicker is a resurrection.",
+    "Control what you can. Rituals beat randomness.",
+    "Anger is a spark, not a wildfire. Burn clean.",
+    "Patience is a bitch — but it is a virtue.",
+    "Stack failures until they form steps.",
+  ];
+  return (
+    <section id="doctrine" className="bg-[#1C1917] py-16 sm:py-28 text-[#F5F0EB]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          <div className="order-2 lg:order-1">
+            <p className="text-sm font-bold tracking-widest uppercase text-[#E2741B] mb-4">The Sasquatch Doctrine</p>
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl mb-6 leading-[0.95]">
+              Six laws. Straight from the book. Run them daily.
+            </h2>
+            <p className="text-[#A8A29E] text-lg mb-8 leading-relaxed">
+              The whole doctrine fits on a wallet card — Survive, Organize, Strive. It's the operating system behind every rep on this platform.
+            </p>
+            <ol className="space-y-3 mb-10">
+              {laws.map((law, i) => (
+                <li key={i} className="flex items-start gap-3" data-testid={`text-doctrine-law-${i}`}>
+                  <span className="font-display text-[#E2741B] text-xl leading-none mt-0.5 w-6 shrink-0">{i + 1}</span>
+                  <span className="text-[#F5F0EB]">{law}</span>
+                </li>
+              ))}
+            </ol>
+            <div className="flex flex-wrap gap-4">
+              <Link href="/recovery/doctrine">
+                <Button size="lg" className="bg-[#E2741B] border-[#E2741B] text-black font-bold" data-testid="button-doctrine">
+                  Read the Doctrine
+                </Button>
+              </Link>
+              <Link href="/book">
+                <Button size="lg" variant="outline" className="border-[#F5F0EB]/30 text-[#F5F0EB]" data-testid="button-doctrine-book">
+                  Get Nick's book
+                </Button>
+              </Link>
+            </div>
+          </div>
+          <div className="order-1 lg:order-2">
+            <img
+              src={doctrineSix}
+              alt="Woodcut illustration of the Sasquatch Doctrine"
+              loading="lazy"
+              decoding="async"
+              className="w-full max-w-md mx-auto rounded-md border border-[#F5F0EB]/10"
+              data-testid="img-doctrine-woodcut"
+            />
           </div>
         </div>
       </div>
@@ -934,6 +993,7 @@ export default function Landing() {
         <PricingStrip />
         <CoachPreview />
         <Proof />
+        <Doctrine />
         <Features />
         <WorkWithNick />
         <Caregiver />
