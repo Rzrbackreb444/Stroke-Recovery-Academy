@@ -204,7 +204,7 @@ export default function GiftSurvivor() {
 
           <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-6 leading-relaxed">
             One in four stroke survivors can't afford rehabilitation. The Warrior system — 
-            accountability, protocols, AI Coach, community — costs $47 a month. 
+            accountability, protocols, AI Coach, community — costs $19 a month. 
             Your gift gives someone what the insurance system won't.
           </p>
 
