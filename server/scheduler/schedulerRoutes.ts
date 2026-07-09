@@ -10,6 +10,7 @@ import {
   listRecentRuns,
   triggerJobNow,
   setJobEnabled,
+  getSchedulerHealth,
 } from "./scheduler";
 
 const router = Router();
@@ -19,6 +20,17 @@ router.get("/jobs", isAuthenticated, requireAdmin, async (_req, res) => {
     res.json({ jobs: await listJobsWithStatus() });
   } catch (e: any) {
     res.status(500).json({ message: e?.message ?? "Failed to list jobs" });
+  }
+});
+
+// Full scheduler liveness detail (per-job last_run_at / next_run_at / overdue).
+// Admin-gated because it names every internal job; the public /api/health only
+// exposes the ok/staleCount summary.
+router.get("/health", isAuthenticated, requireAdmin, async (_req, res) => {
+  try {
+    res.json(await getSchedulerHealth());
+  } catch (e: any) {
+    res.status(500).json({ message: e?.message ?? "Failed to read scheduler health" });
   }
 });
 
