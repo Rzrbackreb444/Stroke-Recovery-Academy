@@ -67,6 +67,21 @@ export async function bootstrapScheduler(): Promise<void> {
     },
   });
 
+  // Buddy-message nudges — unread 1:1 buddy DMs older than ~1 hour trigger one
+  // digest-style "your buddy wrote to you" notification routed through the
+  // lifecycle messaging engine (email + push + SMS). Static copy so the crisis
+  // gate isn't needed; message_deliveries dedupe (keyed on newest unread msg id)
+  // keeps double-runs / restarts idempotent and prevents re-nudging a backlog.
+  registerJob({
+    name: "buddy-dm-nudge",
+    description: "Nudge survivors with unread buddy DMs older than ~1 hour (email + push + SMS, digest-style).",
+    cron: "55 * * * *", // hourly at :55 (offset to spread load)
+    handler: async () => {
+      const { runBuddyMessageNudges } = await import("../buddyMessageNudgeService");
+      await runBuddyMessageNudges();
+    },
+  });
+
   // Free-analysis crash recovery — fail rows stuck in "processing".
   registerJob({
     name: "free-analysis-reap",
