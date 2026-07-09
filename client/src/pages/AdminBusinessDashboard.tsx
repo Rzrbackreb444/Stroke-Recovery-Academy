@@ -51,6 +51,7 @@ interface BusinessMetrics {
     downgradedSubs: number;
     monthlySubs: number;
     annualSubs: number;
+    founderSubs: number;
   };
   conversion: {
     signupToIntake: number | null;
@@ -357,6 +358,7 @@ export default function AdminBusinessDashboard() {
     ? [
         { name: "Monthly active", value: data.revenue.monthlySubs, color: "#E2741B" },
         { name: "Annual active", value: data.revenue.annualSubs, color: "#f59e0b" },
+        { name: "Founder active", value: data.revenue.founderSubs, color: "#d97706" },
         { name: "Trialing", value: data.revenue.trialingSubs, color: "#6366f1" },
         { name: "At risk", value: data.revenue.atRiskSubs, color: "#ef4444" },
         { name: "Churned (30d)", value: data.churn.downgradedLast30, color: "#78716c" },
@@ -464,7 +466,7 @@ export default function AdminBusinessDashboard() {
               <KpiCard
                 label="Active subscribers"
                 value={String(data.revenue.activeSubs)}
-                sub={`${data.revenue.monthlySubs} monthly · ${data.revenue.annualSubs} annual`}
+                sub={`${data.revenue.monthlySubs} monthly · ${data.revenue.annualSubs} annual · ${data.revenue.founderSubs} founder`}
                 testId="stat-active-subs"
                 accent="text-stone-100"
               />
