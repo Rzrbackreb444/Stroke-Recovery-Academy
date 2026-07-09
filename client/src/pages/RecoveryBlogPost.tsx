@@ -18,6 +18,7 @@ import {
   Link2, ShieldCheck, List, ChevronDown, ChevronUp
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { categoryLabel, categoryDark, categoryGradient } from "@/lib/blogCategories";
 
 interface BlogPost {
   id: number;
@@ -245,35 +246,6 @@ function extractFAQs(html: string): FaqItem[] {
   return faqs.slice(0, 8);
 }
 
-// ── Styling maps ──────────────────────────────────────────────────────────────
-
-const categoryLabels: Record<string, string> = {
-  philosophy: "Philosophy",
-  therapy: "Therapy",
-  science: "Science",
-  exercises: "Exercises",
-  caregivers: "Caregivers",
-  "work-career": "Work & Career",
-};
-
-const categoryColors: Record<string, string> = {
-  philosophy: "bg-purple-500/20 text-purple-400 border-purple-500/30",
-  therapy: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  science: "bg-green-500/20 text-green-400 border-green-500/30",
-  exercises: "bg-orange-500/20 text-orange-400 border-orange-500/30",
-  caregivers: "bg-pink-500/20 text-pink-400 border-pink-500/30",
-  "work-career": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-};
-
-const categoryGradients: Record<string, string> = {
-  philosophy: "from-purple-900/30 to-[#1C1917]",
-  therapy: "from-blue-900/30 to-[#1C1917]",
-  science: "from-green-900/30 to-[#1C1917]",
-  exercises: "from-orange-900/30 to-[#1C1917]",
-  caregivers: "from-pink-900/30 to-[#1C1917]",
-  income: "from-yellow-900/30 to-[#1C1917]",
-};
-
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function RecoveryBlogPost() {
@@ -443,7 +415,7 @@ export default function RecoveryBlogPost() {
     );
   }
 
-  const gradient = categoryGradients[post.category] || "from-[#C06B3E]/20 to-[#1C1917]";
+  const gradient = categoryGradient(post.category);
   const authorName = post.authorName || "Nick Kremers";
   const authorBioText = post.authorBio ||
     "Nick Kremers is a hemorrhagic stroke survivor (December 3, 2018) and founder of Stroke Recovery Academy. He developed the Sasquatch Method and SASCH framework after recovering from complete left-side paralysis to full independent mobility.";
@@ -582,8 +554,8 @@ export default function RecoveryBlogPost() {
           </Link>
 
           <div className="flex flex-wrap gap-2 mb-4">
-            <Badge className={categoryColors[post.category] || "bg-gray-500/20 text-gray-400"}>
-              {categoryLabels[post.category] || post.category}
+            <Badge className={categoryDark(post.category)}>
+              {categoryLabel(post.category)}
             </Badge>
             {post.featured && (
               <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30">
@@ -785,8 +757,8 @@ export default function RecoveryBlogPost() {
                           <BookOpen className="h-8 w-8 text-[#C06B3E]/40" />
                         </div>
                         <div className="p-4">
-                          <Badge className={`${categoryColors[related.category] || "bg-stone-100 text-stone-500"} text-xs mb-2`}>
-                            {related.category}
+                          <Badge className={`${categoryDark(related.category)} text-xs mb-2`}>
+                            {categoryLabel(related.category)}
                           </Badge>
                           <h3 className="font-semibold text-[#1C1917] text-sm leading-snug line-clamp-2 mb-2">
                             {related.title}
