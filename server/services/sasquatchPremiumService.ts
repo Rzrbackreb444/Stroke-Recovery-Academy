@@ -255,6 +255,19 @@ export async function hasActiveSasquatchPremium(
       } else {
         entitled = false; // canceled / paused / incomplete / downgraded
       }
+      // Founder override: the lifecycle table only tracks PREMIUM subs
+      // (syncPremiumSubFromStripe skips founder-price subscriptions), so a
+      // stale/canceled premium row must never mask a live Founder sub — e.g.
+      // a survivor who upgraded premium→Founder and then canceled the old
+      // premium. Only runs when the row would deny, so the happy path stays
+      // one DB read.
+      if (!entitled) {
+        try {
+          if (await hasActiveSasquatchFounder(stripeCustomerId)) entitled = true;
+        } catch {
+          /* founder check is additive-only — never break the gate */
+        }
+      }
       entitlementCache.set(stripeCustomerId, {
         value: entitled,
         expiresAt: Date.now() + ENTITLEMENT_CACHE_MS,
@@ -392,6 +405,48 @@ export async function hasActiveSasquatchFounder(
     return false;
   }
   return false;
+}
+
+// Resolve the customer's Founder subscription object from Stripe (live
+// statuses preferred, newest-first fallback). Used by the cancel flow so a
+// Founder-only member can self-serve cancel in-app instead of being told
+// "nothing to cancel". Returns null on any missing-price / Stripe failure.
+export async function resolveFounderStripeSubscription(
+  stripeCustomerId: string | null,
+): Promise<any | null> {
+  if (!stripeCustomerId) return null;
+  let founderId: string | null = null;
+  try {
+    founderId = await getSasquatchFounderPriceId();
+  } catch {
+    return null;
+  }
+  if (!founderId) return null;
+  try {
+    const stripe = await getUncachableStripeClient();
+    const list = await stripe.subscriptions.list({
+      customer: stripeCustomerId,
+      status: "all",
+      limit: 20,
+    });
+    const LIVE = new Set(["active", "trialing", "past_due", "unpaid", "paused"]);
+    let fallback: any | null = null;
+    for (const sub of list.data) {
+      const isFounder = (sub.items?.data ?? []).some(
+        (it: any) => it?.price?.id === founderId,
+      );
+      if (!isFounder) continue;
+      if (LIVE.has(String(sub.status))) return sub;
+      if (!fallback) fallback = sub;
+    }
+    return fallback;
+  } catch (e: any) {
+    console.warn(
+      "[sasquatch-premium] founder sub resolve failed:",
+      e?.message || e,
+    );
+    return null;
+  }
 }
 
 // Convenience: load user → customerId → entitlement check. Used by the
