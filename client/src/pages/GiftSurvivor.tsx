@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
@@ -12,7 +12,6 @@ import {
   Gift, Heart, CheckCircle, Shield, ArrowRight,
   Users, Star, Zap, Crown
 } from "lucide-react";
-const sasquatchLogo = "/sasquatch-logo.webp";
 const strokeLyfeLogo = "/stroke-lyfe-os-logo.webp";
 import RecoverySEO from "@/components/RecoverySEO";
 
@@ -20,8 +19,8 @@ const GIFT_TIERS = [
   {
     id: "basic",
     label: "1 Month",
-    price: 47,
-    amount: 4700,
+    price: 19,
+    amount: 1900,
     headline: "One Month of Never Zero",
     description: "Give a survivor 30 days of the full Warrior system — check-ins, AI Coach, protocols, community.",
     features: [
@@ -37,8 +36,8 @@ const GIFT_TIERS = [
   {
     id: "mentored",
     label: "3 Months",
-    price: 141,
-    amount: 14100,
+    price: 57,
+    amount: 5700,
     headline: "The Habit-Building Window",
     description: "Science says 66 days builds a real habit. Give them 90 days — enough time to feel the shift.",
     features: [
@@ -55,8 +54,8 @@ const GIFT_TIERS = [
   {
     id: "elite",
     label: "Full Year",
-    price: 397,
-    amount: 39700,
+    price: 190,
+    amount: 19000,
     headline: "Give the Long Game",
     description: "Recovery isn't 66 days. It's years. Give them a full year with Nick's system. This changes lives.",
     features: [
@@ -71,12 +70,25 @@ const GIFT_TIERS = [
   },
 ];
 
+const DONATION_PRESETS = [10, 25, 50];
+
 const IMPACT_STATS = [
   { value: "1 in 4", label: "Survivors can't afford rehab" },
-  { value: "$47", label: "One month changes everything" },
+  { value: "$19", label: "One month changes everything" },
   { value: "50K+", label: "Warriors in the community" },
   { value: "Year 7", label: "Nick still recovering, still sharing" },
 ];
+
+const SS_KEY = "sra:gift-checkout-ctx";
+
+interface GiftConfirmation {
+  type: "gift" | "donation" | "gift_and_donation";
+  tierId: string;
+  recipientEmail: string;
+  survivorFund: boolean;
+  donorEmail: string;
+  donationAmountCents: number;
+}
 
 export default function GiftSurvivor() {
   const { isAuthenticated } = useAuth();
@@ -88,8 +100,60 @@ export default function GiftSurvivor() {
   const [donorName, setDonorName] = useState("");
   const [donorEmail, setDonorEmail] = useState("");
   const [message, setMessage] = useState("");
-  const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [success, setSuccess] = useState(false);
+  const [addDonation, setAddDonation] = useState(false);
+  const [donationPreset, setDonationPreset] = useState<number | null>(25);
+  const [donationCustom, setDonationCustom] = useState("");
+
+  const [confirmation, setConfirmation] = useState<GiftConfirmation | null>(null);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+
+  // After Stripe redirect, read ?donated=success&session_id=... from URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("donated") !== "success") return;
+
+    const sessionId = params.get("session_id");
+
+    // Remove query params from URL without reload
+    const cleanUrl = window.location.pathname;
+    window.history.replaceState({}, "", cleanUrl);
+
+    if (sessionId) {
+      setConfirmLoading(true);
+      fetch(`/api/recovery/payments/gift-checkout-session?sessionId=${encodeURIComponent(sessionId)}`)
+        .then(r => r.ok ? r.json() : Promise.reject(r))
+        .then((data: GiftConfirmation) => setConfirmation(data))
+        .catch(() => {
+          // Fall back to sessionStorage context saved before redirect
+          const raw = sessionStorage.getItem(SS_KEY);
+          if (raw) {
+            try { setConfirmation(JSON.parse(raw)); } catch {}
+          } else {
+            setConfirmation({ type: "gift", tierId: "", recipientEmail: "", survivorFund: false, donorEmail: "", donationAmountCents: 0 });
+          }
+        })
+        .finally(() => setConfirmLoading(false));
+    } else {
+      // No session_id — fall back to sessionStorage
+      const raw = sessionStorage.getItem(SS_KEY);
+      if (raw) {
+        try { setConfirmation(JSON.parse(raw)); } catch {}
+      } else {
+        setConfirmation({ type: "gift", tierId: "", recipientEmail: "", survivorFund: false, donorEmail: "", donationAmountCents: 0 });
+      }
+    }
+    sessionStorage.removeItem(SS_KEY);
+  }, []);
+
+  const resolvedDonationAmount = (() => {
+    if (!addDonation || recipientMode === "fund") return 0;
+    if (donationPreset !== null) return donationPreset;
+    const parsed = parseFloat(donationCustom);
+    return isNaN(parsed) || parsed < 1 ? 0 : Math.floor(parsed);
+  })();
+
+  const tier = GIFT_TIERS.find(t => t.id === selectedTier);
+  const giftTotal = tier ? tier.price + resolvedDonationAmount : 0;
 
   const giftMutation = useMutation({
     mutationFn: (data: any) => apiRequest("POST", "/api/recovery/payments/gift-scholarship", data),
@@ -97,7 +161,8 @@ export default function GiftSurvivor() {
       if (data?.url) {
         window.location.href = data.url;
       } else {
-        setSuccess(true);
+        // Direct success without Stripe redirect (shouldn't normally happen)
+        setConfirmation({ type: "gift", tierId: selectedTier || "", recipientEmail, survivorFund: recipientMode === "fund", donorEmail, donationAmountCents: 0 });
       }
     },
     onError: () => {
@@ -110,7 +175,6 @@ export default function GiftSurvivor() {
   });
 
   const handleGift = () => {
-    const tier = GIFT_TIERS.find(t => t.id === selectedTier);
     if (!tier) return;
     if (recipientMode === "specific" && !recipientEmail) {
       toast({ title: "Recipient email required", description: "Enter the survivor's email to send the gift.", variant: "destructive" });
@@ -120,38 +184,76 @@ export default function GiftSurvivor() {
       toast({ title: "Your email required", description: "We'll send you a tax receipt and confirmation.", variant: "destructive" });
       return;
     }
+    if (addDonation && resolvedDonationAmount < 1 && recipientMode === "specific") {
+      toast({ title: "Invalid donation amount", description: "Enter a donation amount of at least $1, or uncheck the donation.", variant: "destructive" });
+      return;
+    }
 
-    giftMutation.mutate({
-      tierId: selectedTier,
-      recipientEmail: recipientMode === "specific" ? recipientEmail : null,
-      message: message || `From ${donorName || "a supporter"}: You deserve to rebuild. Never Zero.`,
-      donorName,
-      donorEmail,
-      survivorFund: recipientMode === "fund",
-    });
+    const survivorFund = recipientMode === "fund";
+    const donationAmountCents = survivorFund ? 0 : resolvedDonationAmount * 100;
+    const type: GiftConfirmation["type"] = survivorFund ? "donation" : donationAmountCents > 0 ? "gift_and_donation" : "gift";
+
+    // Persist context to sessionStorage so confirmation survives Stripe redirect
+    const ctx: GiftConfirmation = { type, tierId: selectedTier || "", recipientEmail: survivorFund ? "" : recipientEmail, survivorFund, donorEmail, donationAmountCents };
+    sessionStorage.setItem(SS_KEY, JSON.stringify(ctx));
+
+    giftMutation.mutate({ tierId: selectedTier, recipientEmail: survivorFund ? null : recipientEmail, message: message || `From ${donorName || "a supporter"}: You deserve to rebuild. Never Zero.`, donorName, donorEmail, survivorFund, donationAmountCents });
   };
 
-  if (success) {
+  const SEOTags = (
+    <RecoverySEO
+      title="Gift a Survivor — Stroke Lyfe Inc."
+      description="Sponsor a stroke survivor's recovery through Stroke Lyfe Inc., a 501(c)(3) nonprofit. Gift 1 month ($19), 3 months ($57), or a full year ($190) of Warrior membership. Gift directly, donate to our Survivor Fund, or both. Tax-deductible."
+      canonical="/recovery/gift"
+      keywords={["gift stroke survivor", "stroke recovery donation", "stroke nonprofit donation", "Stroke Lyfe Inc", "sponsor stroke recovery", "501c3 stroke charity", "gift membership stroke", "stroke survivor fund"]}
+      breadcrumbs={[{ name: "Gift a Survivor", url: "/recovery/gift" }]}
+      additionalSchema={{
+        "@context": "https://schema.org",
+        "@type": "DonateAction",
+        name: "Gift a Survivor Warrior Membership",
+        description: "Donate a Stroke Recovery Academy Warrior membership to a stroke survivor in need through Stroke Lyfe Inc., a 501(c)(3) nonprofit.",
+        recipient: { "@type": "NGO", name: "Stroke Lyfe Inc.", url: "https://strokerecoveryacademy.com/recovery/strokelyfe-org" },
+      }}
+    />
+  );
+
+  if (confirmLoading) {
     return (
       <div className="min-h-screen bg-[#0D0D0D] text-white flex items-center justify-center px-4">
-        <RecoverySEO
-          title="Gift a Survivor — Stroke Lyfe Inc."
-          description="Sponsor a stroke survivor's recovery. Donate 1 month ($47), 3 months ($141), or a full year ($397) of Warrior membership through Stroke Lyfe Inc., a 501(c)(3) nonprofit. Gift directly to someone you know or donate to our Survivor Fund."
-          canonical="/recovery/gift"
-          keywords={["gift stroke survivor", "stroke recovery donation", "stroke nonprofit", "Stroke Lyfe Inc", "sponsor stroke recovery", "501c3 stroke charity"]}
-          noindex={false}
-        />
+        {SEOTags}
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-[#E2741B] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-400 text-sm">Confirming your gift…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (confirmation) {
+    const { type, recipientEmail: confRecipient, survivorFund: confFund, donorEmail: confDonor, donationAmountCents: confDonation } = confirmation;
+    const donationDollars = Math.round(confDonation / 100);
+    return (
+      <div className="min-h-screen bg-[#0D0D0D] text-white flex items-center justify-center px-4">
+        {SEOTags}
         <div className="max-w-md text-center">
           <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="h-10 w-10 text-green-400" />
           </div>
-          <h1 className="text-3xl font-black text-white mb-3">Gift Sent.</h1>
+          <h1 className="text-3xl font-black text-white mb-3">
+            {type === "donation" ? "Donation Received." : "Gift Sent."}
+          </h1>
           <p className="text-gray-400 mb-6">
-            {recipientMode === "fund"
+            {type === "donation"
               ? "Your donation to the Stroke Lyfe Survivor Fund has been received. A survivor who couldn't afford recovery will get access because of you."
-              : `Your gift has been sent to ${recipientEmail}. They'll receive an email with access instructions. You just changed a warrior's trajectory.`}
+              : type === "gift_and_donation"
+              ? `Your gift has been sent to ${confRecipient || "the recipient"}. Your $${donationDollars} Survivor Fund donation is also confirmed. You just doubled your impact.`
+              : `Your gift has been sent to ${confRecipient || "the recipient"}. They'll receive an email with access instructions. You just changed a warrior's trajectory.`}
           </p>
-          <p className="text-xs text-gray-600 mb-6">A tax receipt will be sent to {donorEmail}. Stroke Lyfe Inc. is a registered 501(c)(3) nonprofit.</p>
+          {confDonor && (
+            <p className="text-xs text-gray-600 mb-6">
+              A tax receipt will be sent to {confDonor}. Stroke Lyfe Inc. is a registered 501(c)(3) nonprofit.
+            </p>
+          )}
           <Button className="bg-[#E2741B] text-black font-black" onClick={() => window.location.href = "/recovery"}>
             Back to Recovery OS
           </Button>
@@ -162,53 +264,27 @@ export default function GiftSurvivor() {
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
-      <RecoverySEO
-        title="Gift a Survivor — Stroke Lyfe Inc."
-        description="Sponsor a stroke survivor's recovery through Stroke Lyfe Inc., a 501(c)(3) nonprofit. Gift 1 month ($47), 3 months ($141), or a full year ($397) of Warrior membership. Gift directly or donate to our Survivor Fund. Tax-deductible."
-        canonical="/recovery/gift"
-        keywords={["gift stroke survivor", "stroke recovery donation", "stroke nonprofit donation", "Stroke Lyfe Inc", "sponsor stroke recovery", "501c3 stroke charity", "gift membership stroke", "stroke survivor fund"]}
-        breadcrumbs={[{ name: "Gift a Survivor", url: "/recovery/gift" }]}
-        additionalSchema={{
-          "@context": "https://schema.org",
-          "@type": "DonateAction",
-          name: "Gift a Survivor Warrior Membership",
-          description: "Donate a Stroke Recovery Academy Warrior membership to a stroke survivor in need through Stroke Lyfe Inc., a 501(c)(3) nonprofit.",
-          recipient: {
-            "@type": "NGO",
-            name: "Stroke Lyfe Inc.",
-            url: "https://strokerecoveryacademy.com/recovery/strokelyfe-org",
-          },
-        }}
-      />
+      {SEOTags}
 
       {/* HERO */}
       <section className="py-16 px-4 border-b border-[#222]">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Stroke Lyfe Logo */}
           <div className="flex items-center justify-center mb-8">
-            <img
-              src={strokeLyfeLogo}
-              alt="Stroke Lyfe OS — Rebuild. Rewire. Rise."
-              className="h-32 w-auto"
-            />
+            <img src={strokeLyfeLogo} alt="Stroke Lyfe OS — Rebuild. Rewire. Rise." className="h-32 w-auto" />
           </div>
-
           <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 mb-5 uppercase tracking-widest text-xs">
             <Heart className="h-3 w-3 mr-1" />
             Stroke Lyfe Inc. — 501(c)(3) Nonprofit
           </Badge>
-
           <h1 className="text-4xl md:text-5xl font-black text-white mb-4 leading-tight">
             Gift a Survivor<br />
             <span style={{ color: "#E2741B" }}>Their Second Chance.</span>
           </h1>
-
           <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-6 leading-relaxed">
             One in four stroke survivors can't afford rehabilitation. The Warrior system — 
             accountability, protocols, AI Coach, community — costs $19 a month. 
             Your gift gives someone what the insurance system won't.
           </p>
-
           <p className="text-sm text-gray-500 italic">
             "I had nothing when I started. Someone believing in me made the difference." — Nick Kremers, Stroke Survivor, Year 7
           </p>
@@ -237,23 +313,18 @@ export default function GiftSurvivor() {
               <div className="w-7 h-7 rounded-full bg-[#E2741B] text-black font-black text-sm flex items-center justify-center flex-shrink-0">1</div>
               <h2 className="text-xl font-black text-white">Choose the gift</h2>
             </div>
-
             <div className="grid md:grid-cols-3 gap-4">
-              {GIFT_TIERS.map((tier) => {
-                const Icon = tier.icon;
-                const isSelected = selectedTier === tier.id;
+              {GIFT_TIERS.map((t) => {
+                const Icon = t.icon;
+                const isSelected = selectedTier === t.id;
                 return (
                   <button
-                    key={tier.id}
-                    onClick={() => setSelectedTier(tier.id)}
-                    className={`text-left rounded-lg border p-5 transition-all relative ${
-                      isSelected
-                        ? "border-[#E2741B] bg-[#E2741B]/10"
-                        : "border-[#333] bg-[#1a1a1a] hover:border-[#555]"
-                    }`}
-                    data-testid={`button-tier-${tier.id}`}
+                    key={t.id}
+                    onClick={() => setSelectedTier(t.id)}
+                    className={`text-left rounded-lg border p-5 transition-all relative ${isSelected ? "border-[#E2741B] bg-[#E2741B]/10" : "border-[#333] bg-[#1a1a1a] hover:border-[#555]"}`}
+                    data-testid={`button-tier-${t.id}`}
                   >
-                    {tier.popular && (
+                    {t.popular && (
                       <div className="absolute -top-2.5 left-4">
                         <Badge className="bg-[#E2741B] text-black text-xs font-black">Most Gifted</Badge>
                       </div>
@@ -264,16 +335,16 @@ export default function GiftSurvivor() {
                       </div>
                     )}
                     <div className="flex items-center gap-2 mb-3">
-                      <Icon className="h-5 w-5 flex-shrink-0" style={{ color: tier.color }} />
-                      <span className="text-xs uppercase tracking-widest text-gray-400 font-semibold">{tier.label}</span>
+                      <Icon className="h-5 w-5 flex-shrink-0" style={{ color: t.color }} />
+                      <span className="text-xs uppercase tracking-widest text-gray-400 font-semibold">{t.label}</span>
                     </div>
-                    <div className="text-3xl font-black text-white mb-1">${tier.price}</div>
-                    <p className="font-bold text-sm mb-1" style={{ color: tier.color }}>{tier.headline}</p>
-                    <p className="text-xs text-gray-400 mb-4 leading-relaxed">{tier.description}</p>
+                    <div className="text-3xl font-black text-white mb-1">${t.price}</div>
+                    <p className="font-bold text-sm mb-1" style={{ color: t.color }}>{t.headline}</p>
+                    <p className="text-xs text-gray-400 mb-4 leading-relaxed">{t.description}</p>
                     <ul className="space-y-1.5">
-                      {tier.features.map(f => (
+                      {t.features.map(f => (
                         <li key={f} className="flex items-start gap-2 text-xs text-gray-300">
-                          <CheckCircle className="h-3 w-3 flex-shrink-0 mt-0.5" style={{ color: tier.color }} />
+                          <CheckCircle className="h-3 w-3 flex-shrink-0 mt-0.5" style={{ color: t.color }} />
                           {f}
                         </li>
                       ))}
@@ -293,10 +364,9 @@ export default function GiftSurvivor() {
 
             {selectedTier && (
               <div className="space-y-4">
-                {/* Recipient mode toggle */}
                 <div className="grid grid-cols-2 gap-3">
                   <button
-                    onClick={() => setRecipientMode("specific")}
+                    onClick={() => { setRecipientMode("specific"); setAddDonation(false); }}
                     className={`rounded-lg border p-4 text-left transition-all ${recipientMode === "specific" ? "border-[#E2741B] bg-[#E2741B]/10" : "border-[#333] bg-[#1a1a1a]"}`}
                     data-testid="button-mode-specific"
                   >
@@ -305,7 +375,7 @@ export default function GiftSurvivor() {
                     <p className="text-xs text-gray-400">Send directly to a specific survivor's email</p>
                   </button>
                   <button
-                    onClick={() => setRecipientMode("fund")}
+                    onClick={() => { setRecipientMode("fund"); setAddDonation(false); }}
                     className={`rounded-lg border p-4 text-left transition-all ${recipientMode === "fund" ? "border-[#E2741B] bg-[#E2741B]/10" : "border-[#333] bg-[#1a1a1a]"}`}
                     data-testid="button-mode-fund"
                   >
@@ -316,17 +386,78 @@ export default function GiftSurvivor() {
                 </div>
 
                 {recipientMode === "specific" && (
-                  <div>
-                    <label className="text-xs text-gray-400 mb-1.5 block">Survivor's email address *</label>
-                    <Input
-                      type="email"
-                      placeholder="friend@email.com"
-                      value={recipientEmail}
-                      onChange={e => setRecipientEmail(e.target.value)}
-                      className="bg-[#1a1a1a] border-[#333] text-white max-w-md"
-                      data-testid="input-recipient-email"
-                    />
-                    <p className="text-xs text-gray-600 mt-1">They'll receive an email with their access details and your message.</p>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-xs text-gray-400 mb-1.5 block">Survivor's email address *</label>
+                      <Input
+                        type="email"
+                        placeholder="friend@email.com"
+                        value={recipientEmail}
+                        onChange={e => setRecipientEmail(e.target.value)}
+                        className="bg-[#1a1a1a] border-[#333] text-white max-w-md"
+                        data-testid="input-recipient-email"
+                      />
+                      <p className="text-xs text-gray-600 mt-1">They'll receive an email with their access details and your message.</p>
+                    </div>
+
+                    {/* Add-a-donation toggle */}
+                    <div className="border border-[#2a2a2a] rounded-lg p-4 bg-[#111]">
+                      <button
+                        onClick={() => setAddDonation(v => !v)}
+                        className="flex items-center gap-3 w-full text-left"
+                        data-testid="button-toggle-donation"
+                      >
+                        <div className={`w-5 h-5 rounded border flex items-center justify-center flex-shrink-0 transition-all ${addDonation ? "bg-[#E2741B] border-[#E2741B]" : "border-[#555] bg-transparent"}`}>
+                          {addDonation && <CheckCircle className="h-3.5 w-3.5 text-black" />}
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-white">Also donate to the Survivor Fund</p>
+                          <p className="text-xs text-gray-500">Gift a membership AND fund a stranger's access — both in one checkout.</p>
+                        </div>
+                      </button>
+
+                      {addDonation && (
+                        <div className="mt-4 pt-4 border-t border-[#2a2a2a]">
+                          <p className="text-xs text-gray-400 mb-3">Donation amount</p>
+                          <div className="flex flex-wrap gap-2">
+                            {DONATION_PRESETS.map(amt => (
+                              <button
+                                key={amt}
+                                onClick={() => { setDonationPreset(amt); setDonationCustom(""); }}
+                                className={`px-4 py-1.5 rounded text-sm font-bold transition-all border ${donationPreset === amt ? "bg-[#E2741B] border-[#E2741B] text-black" : "border-[#444] text-gray-300 bg-[#1a1a1a]"}`}
+                                data-testid={`button-donation-preset-${amt}`}
+                              >
+                                ${amt}
+                              </button>
+                            ))}
+                            <button
+                              onClick={() => setDonationPreset(null)}
+                              className={`px-4 py-1.5 rounded text-sm font-bold transition-all border ${donationPreset === null ? "bg-[#E2741B] border-[#E2741B] text-black" : "border-[#444] text-gray-300 bg-[#1a1a1a]"}`}
+                              data-testid="button-donation-custom"
+                            >
+                              Custom
+                            </button>
+                          </div>
+                          {donationPreset === null && (
+                            <div className="flex items-center gap-2 mt-3">
+                              <span className="text-gray-400 text-sm">$</span>
+                              <Input
+                                type="number"
+                                min="1"
+                                placeholder="Amount"
+                                value={donationCustom}
+                                onChange={e => setDonationCustom(e.target.value)}
+                                className="bg-[#1a1a1a] border-[#333] text-white w-32"
+                                data-testid="input-donation-custom-amount"
+                              />
+                            </div>
+                          )}
+                          <p className="text-xs text-gray-600 mt-2">
+                            Stroke Lyfe Inc. selects a verified applicant from our waitlist. 100% goes to survivor access.
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
 
@@ -367,7 +498,6 @@ export default function GiftSurvivor() {
               <div className={`w-7 h-7 rounded-full font-black text-sm flex items-center justify-center flex-shrink-0 ${selectedTier ? "bg-[#E2741B] text-black" : "bg-[#333] text-gray-500"}`}>3</div>
               <h2 className={`text-xl font-black ${selectedTier ? "text-white" : "text-gray-600"}`}>Your information</h2>
             </div>
-
             {selectedTier && (
               <div className="grid sm:grid-cols-2 gap-4 max-w-lg">
                 <div>
@@ -401,14 +531,18 @@ export default function GiftSurvivor() {
               <div className="flex flex-wrap items-center gap-6">
                 <div>
                   <div className="text-3xl font-black text-white">
-                    ${GIFT_TIERS.find(t => t.id === selectedTier)?.price}
-                    <span className="text-sm text-gray-400 font-normal ml-2">
-                      {GIFT_TIERS.find(t => t.id === selectedTier)?.label} gift
-                    </span>
+                    ${giftTotal}
+                    {addDonation && resolvedDonationAmount > 0 && recipientMode === "specific" ? (
+                      <span className="text-sm text-gray-400 font-normal ml-2">
+                        (${tier?.price} gift + ${resolvedDonationAmount} donation)
+                      </span>
+                    ) : (
+                      <span className="text-sm text-gray-400 font-normal ml-2">
+                        {tier?.label} {recipientMode === "fund" ? "donation" : "gift"}
+                      </span>
+                    )}
                   </div>
-                  <p className="text-xs text-gray-500">
-                    Tax-deductible donation to Stroke Lyfe Inc. 501(c)(3)
-                  </p>
+                  <p className="text-xs text-gray-500">Tax-deductible donation to Stroke Lyfe Inc. 501(c)(3)</p>
                 </div>
 
                 <Button
@@ -418,11 +552,13 @@ export default function GiftSurvivor() {
                   data-testid="button-complete-gift"
                 >
                   {giftMutation.isPending ? "Processing..." : (
-                    <>Gift This Warrior <ArrowRight className="ml-2 h-5 w-5" /></>
+                    <>
+                      {recipientMode === "fund" ? "Donate to Fund" : addDonation && resolvedDonationAmount > 0 ? "Gift + Donate" : "Gift This Warrior"}
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </>
                   )}
                 </Button>
               </div>
-
               <div className="flex flex-wrap gap-4 mt-4 text-xs text-gray-500">
                 <span className="flex items-center gap-1"><Shield className="h-3 w-3 text-[#E2741B]" />Secure payment via Stripe</span>
                 <span className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-[#E2741B]" />Tax-deductible receipt emailed</span>
@@ -462,7 +598,7 @@ export default function GiftSurvivor() {
                 { title: "No admin overhead", desc: "100% of your gift funds survivor access. Nick's platform costs are separate from the nonprofit." },
                 { title: "Survivor-selected recipients", desc: "We maintain a waitlist of survivors who apply for assistance. Real need, verified by our team." },
                 { title: "You see the impact", desc: "With recipient consent, we'll share who received your gift and their first 30-day progress update." },
-                { title: "Recurring giving available", desc: "Sponsor a warrior monthly — give the habit while building one yourself." },
+                { title: "Give both ways at once", desc: "Gift a membership to someone you know and donate to the Survivor Fund — both happen in one checkout." },
               ].map(({ title, desc }) => (
                 <div key={title} className="flex gap-3">
                   <CheckCircle className="h-5 w-5 text-[#E2741B] flex-shrink-0 mt-0.5" />
