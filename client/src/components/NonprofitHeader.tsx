@@ -27,7 +27,7 @@ import {
   ShoppingBag,
   Bell,
 } from "lucide-react";
-const sasquatchLogo = "/sasquatch-logo.webp";
+const strokeLyfeLogo = "/stroke-lyfe-logo.webp";
 
 const navLinks = [
   { href: "/strokelyfe", label: "HOME", icon: Home },
@@ -63,8 +63,8 @@ export default function NonprofitHeader() {
         <div className="flex items-center justify-between h-28">
           <Link href="/strokelyfe" className="flex items-center gap-3">
             <img 
-              src={sasquatchLogo} 
-              alt="Stroked-Out Sasquatch" 
+              src={strokeLyfeLogo} 
+              alt="Stroke Lyfe" 
               className="h-40 w-auto"
               data-testid="img-nonprofit-logo"
             />
@@ -173,7 +173,7 @@ export default function NonprofitHeader() {
               <SheetContent side="right" className="w-80 bg-[#E2741B] border-[#E2741B]/20">
                 <div className="flex flex-col gap-4 mt-8">
                   <div className="flex items-center gap-3 mb-4">
-                    <img src={sasquatchLogo} alt="Stroked-Out Sasquatch" className="h-40 w-auto" />
+                    <img src={strokeLyfeLogo} alt="Stroke Lyfe" className="h-40 w-auto" />
                     <div>
                       <span className="text-lg font-bold text-white">Stroke Lyfe</span>
                       <span className="text-xs text-[#E2741B] block">501(c)(3) Nonprofit</span>
