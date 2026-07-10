@@ -563,7 +563,7 @@ export default function RecoveryStore() {
         </div>
       </header>
 
-      <section className="bg-gradient-to-br from-[#1a1a1a] via-[#0D0D0D] to-[#1a1a1a] py-16 px-4 border-b border-[#333]">
+      <section className="bg-gradient-to-br from-[#1a1a1a] via-[#0D0D0D] to-[#1a1a1a] py-10 sm:py-16 px-4 border-b border-[#333]">
         <div className="max-w-6xl mx-auto text-center">
           <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 mb-4">
             <Award className="w-3 h-3 mr-1" />
@@ -593,7 +593,7 @@ export default function RecoveryStore() {
         </div>
       </section>
 
-      <section className="py-8 px-4 bg-[#1a1a1a] border-b border-[#333]">
+      <section className="py-6 sm:py-8 px-4 bg-[#1a1a1a] border-b border-[#333]">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center gap-3 mb-4">
             <img src={sasquatchLogo} alt="Nick's Picks" className="w-10 h-10" />
@@ -636,16 +636,17 @@ export default function RecoveryStore() {
         </div>
 
         <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
-          <TabsList className="bg-[#1a1a1a] border border-[#333] flex-wrap h-auto gap-1 p-1 mb-8">
+          <TabsList className="bg-[#1a1a1a] border border-[#333] flex-wrap h-auto gap-1 p-1 mb-8 w-full">
             {CATEGORIES.map((category) => (
               <TabsTrigger
                 key={category.id}
                 value={category.id}
-                className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black text-gray-400 flex items-center gap-2"
+                className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black text-gray-400 flex items-center gap-1.5 px-2 sm:px-3"
                 data-testid={`tab-${category.id}`}
               >
-                <category.icon className="w-4 h-4" />
-                {category.name}
+                <category.icon className="w-4 h-4 shrink-0" />
+                <span className="hidden sm:inline">{category.name}</span>
+                <span className="inline sm:hidden text-[11px] leading-tight">{category.name.split(" ")[0]}</span>
               </TabsTrigger>
             ))}
           </TabsList>
@@ -671,7 +672,7 @@ export default function RecoveryStore() {
           </TabsContent>
         </Tabs>
 
-        <section className="mt-16 bg-[#1a1a1a] border border-[#333] rounded-2xl p-8">
+        <section className="mt-16 bg-[#1a1a1a] border border-[#333] rounded-2xl p-5 sm:p-8">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-2xl font-bold text-white mb-4 font-serif">Why These Products?</h2>
             <p className="text-gray-400 mb-6">

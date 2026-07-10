@@ -107,7 +107,7 @@ export default function First40Days() {
           </p>
 
           {result ? (
-            <div className="max-w-xl mx-auto bg-[#0F0C0A] border border-[#3A3230] rounded-3xl p-8 text-left" data-testid="card-first40-success">
+            <div className="max-w-xl mx-auto bg-[#0F0C0A] border border-[#3A3230] rounded-3xl p-5 sm:p-8 text-left" data-testid="card-first40-success">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-9 h-9 rounded-full bg-[#C06B3E]/15 border border-[#C06B3E]/40 flex items-center justify-center">
                   <Check className="w-4 h-4 text-[#C06B3E]" />
@@ -192,7 +192,7 @@ export default function First40Days() {
             {phases.map((p, i) => (
               <div
                 key={i}
-                className="border border-[#E2C2A4]/30 rounded-3xl p-7 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
+                className="border border-[#E2C2A4]/30 rounded-3xl p-5 sm:p-7 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
                 data-testid={`card-first40-phase-${i}`}
               >
                 <p className="text-xs font-bold tracking-widest uppercase text-[#C06B3E] mb-3">{p.range}</p>
@@ -222,7 +222,7 @@ export default function First40Days() {
             <Button
               asChild
               size="lg"
-              className="bg-[#C06B3E] hover:bg-[#A85B33] text-white h-14 px-10 rounded-full font-semibold"
+              className="bg-[#C06B3E] hover:bg-[#A85B33] text-white h-12 sm:h-14 px-7 sm:px-10 rounded-full font-semibold w-full sm:w-auto"
               data-testid="button-first40-start"
             >
               <Link href="/recovery/onboarding">Start your recovery — 7 days free</Link>
@@ -231,7 +231,7 @@ export default function First40Days() {
               asChild
               size="lg"
               variant="outline"
-              className="h-14 px-10 rounded-full border-[#E2C2A4]/40 bg-white text-[#1C1917]"
+              className="h-12 sm:h-14 px-7 sm:px-10 rounded-full border-[#E2C2A4]/40 bg-white text-[#1C1917] w-full sm:w-auto"
               data-testid="button-first40-premium"
             >
               <Link href="/recovery/premium">
