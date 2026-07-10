@@ -1,6 +1,6 @@
 import type { Express } from "express";
 
-import runApp from "./app";
+import runApp from "../../../server/app.ts";
 
 async function noopSetup(app: Express) {
   // Frontend is served by the separate stroke-recovery-academy artifact
