@@ -13299,44 +13299,78 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   app.post('/api/recovery/payments/gift-scholarship', paymentCheckoutRateLimit, async (req, res) => {
     try {
       const { getRecoveryStripeClient, isRecoveryStripeConfigured } = await import('./recoveryStripeClient');
-      const { tierId, recipientEmail, message } = req.body;
+      const { tierId, recipientEmail, message, survivorFund, donorName, donorEmail, donationAmountCents } = req.body;
       
       if (!isRecoveryStripeConfigured()) {
         return res.status(503).json({ message: 'Payment processing not configured' });
       }
-      
-      const scholarshipPrices: Record<string, { amount: number; name: string; description: string }> = {
-        basic: { amount: 4700, name: 'Gift: 1 Month Warrior Access', description: 'One month of full Warrior membership — 66-Day Challenge, AI Coach, protocols, community' },
-        mentored: { amount: 14100, name: 'Gift: 3 Month Warrior Access', description: '3 months of Warrior membership — covers the full 66-Day Challenge window' },
-        elite: { amount: 39700, name: 'Gift: Full Year Warrior Access', description: 'A full year of Warrior membership — recovery is a long game, give them all of it' },
+
+      // Server-authoritative prices — never trust client amounts
+      const scholarshipPrices: Record<string, { amount: number; label: string; description: string }> = {
+        basic:    { amount: 1900,  label: '1 Month',   description: 'One month of full Warrior membership — 66-Day Challenge, AI Coach, protocols, community' },
+        mentored: { amount: 5700,  label: '3 Months',  description: '3 months of Warrior membership — covers the full 66-Day Challenge window' },
+        elite:    { amount: 19000, label: 'Full Year', description: 'A full year of Warrior membership — recovery is a long game, give them all of it' },
       };
       
       const scholarship = scholarshipPrices[tierId];
       if (!scholarship) {
         return res.status(400).json({ message: 'Invalid scholarship tier' });
       }
-      
-      const stripe = getRecoveryStripeClient();
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        line_items: [{
+
+      // Validate optional add-a-donation amount
+      const extraDonation = Number(donationAmountCents);
+      const hasDonation = !survivorFund && Number.isInteger(extraDonation) && extraDonation >= 100;
+
+      const giftName = survivorFund
+        ? `Survivor Fund Donation: ${scholarship.label} Warrior Access`
+        : `Gift: ${scholarship.label} Warrior Access`;
+
+      const chargeType = survivorFund ? 'donation' : hasDonation ? 'gift_and_donation' : 'gift';
+
+      const lineItems: any[] = [
+        {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: `Gift: ${scholarship.name}`,
+              name: giftName,
               description: scholarship.description,
             },
             unit_amount: scholarship.amount,
           },
           quantity: 1,
-        }],
+        },
+      ];
+
+      if (hasDonation) {
+        lineItems.push({
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'Survivor Fund Donation',
+              description: 'Additional donation to Stroke Lyfe Inc. Survivor Fund — funds access for a verified applicant',
+            },
+            unit_amount: extraDonation,
+          },
+          quantity: 1,
+        });
+      }
+
+      const baseUrl = process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : '';
+      const stripe = getRecoveryStripeClient();
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: lineItems,
         mode: 'payment',
-        success_url: `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/gift?donated=success`,
-        cancel_url: `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/gift`,
+        success_url: `${baseUrl}/recovery/gift?donated=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${baseUrl}/recovery/gift`,
         metadata: {
-          type: 'scholarship_gift',
+          type: chargeType,
           tierId,
-          recipientEmail,
+          recipientEmail: recipientEmail || '',
+          survivorFund: survivorFund ? 'true' : 'false',
+          donorName: donorName || '',
+          donorEmail: donorEmail || '',
+          donationAmountCents: hasDonation ? String(extraDonation) : '0',
           giftMessage: message || '',
           platform: 'stroke_recovery_academy',
         },
@@ -13346,6 +13380,38 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     } catch (error: any) {
       console.error('Scholarship gift error:', error);
       res.status(500).json({ message: error.message || 'Failed to create scholarship checkout' });
+    }
+  });
+
+  // Gift Scholarship — retrieve session metadata for post-redirect confirmation
+  app.get('/api/recovery/payments/gift-checkout-session', async (req, res) => {
+    try {
+      const { getRecoveryStripeClient, isRecoveryStripeConfigured } = await import('./recoveryStripeClient');
+      const { sessionId } = req.query as { sessionId?: string };
+      if (!sessionId || typeof sessionId !== 'string' || sessionId.length > 128) {
+        return res.status(400).json({ message: 'Invalid session ID' });
+      }
+      if (!isRecoveryStripeConfigured()) {
+        return res.status(503).json({ message: 'Payment processing not configured' });
+      }
+      const stripe = getRecoveryStripeClient();
+      const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: [] });
+      if (session.payment_status !== 'paid') {
+        return res.status(402).json({ message: 'Session not paid' });
+      }
+      const meta = session.metadata || {};
+      // Only return the fields needed for confirmation copy — no financial details
+      res.json({
+        type: meta.type || 'gift',
+        tierId: meta.tierId || '',
+        recipientEmail: meta.recipientEmail || '',
+        survivorFund: meta.survivorFund === 'true',
+        donorEmail: meta.donorEmail || '',
+        donationAmountCents: Number(meta.donationAmountCents || '0'),
+      });
+    } catch (error: any) {
+      console.error('Gift session retrieve error:', error);
+      res.status(500).json({ message: error.message || 'Failed to retrieve session' });
     }
   });
 
@@ -20086,59 +20152,6 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // Get success stories for marketplace
-  app.get('/api/success-stories', async (req, res) => {
-    try {
-      // Return featured success stories
-      const stories = [
-        {
-          id: 1,
-          creatorName: "Sarah Chen",
-          creatorImage: null,
-          title: "From Blog to Bestseller",
-          description: "Used Blog-to-Book tool to transform my travel blog into a published book. Made $12,000 in first month!",
-          earnings: 12000,
-          studio: "book",
-          featured: true,
-        },
-        {
-          id: 2,
-          creatorName: "Marcus Williams",
-          creatorImage: null,
-          title: "AI Music Producer",
-          description: "Created 50+ royalty-free tracks for my YouTube channel. Now selling them on Marketplace!",
-          earnings: 8500,
-          studio: "music",
-          featured: true,
-        },
-        {
-          id: 3,
-          creatorName: "Elena Rodriguez",
-          creatorImage: null,
-          title: "Course Empire",
-          description: "Turned my expertise into 5 courses using Instant Course. Passive income dream achieved.",
-          earnings: 25000,
-          studio: "course",
-          featured: true,
-        },
-        {
-          id: 4,
-          creatorName: "David Park",
-          creatorImage: null,
-          title: "AI Consultant Launch",
-          description: "Trained an AI on my business knowledge. Now earning $500/mo from AI chat subscriptions.",
-          earnings: 3000,
-          studio: "doctrine",
-          featured: false,
-        },
-      ];
-      
-      res.json(stories);
-    } catch (error: any) {
-      console.error("Error fetching success stories:", error);
-      res.status(500).json({ message: "Failed to fetch success stories" });
-    }
-  });
 
   // Apply watermark to content
   app.post('/api/watermark', isAuthenticated, async (req: any, res) => {
@@ -20208,24 +20221,6 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // Creator leaderboard
-  app.get('/api/leaderboard', async (req, res) => {
-    try {
-      // Get top creators (mock data for now)
-      const leaderboard = [
-        { rank: 1, name: "Sarah Chen", sales: 156, earnings: 12450, badge: "Gold Creator" },
-        { rank: 2, name: "Marcus Williams", sales: 89, earnings: 8520, badge: "Silver Creator" },
-        { rank: 3, name: "Elena Rodriguez", sales: 234, earnings: 25800, badge: "Platinum Creator" },
-        { rank: 4, name: "David Park", sales: 45, earnings: 3200, badge: "Rising Star" },
-        { rank: 5, name: "Jennifer Lee", sales: 67, earnings: 5430, badge: "Silver Creator" },
-      ];
-      
-      res.json(leaderboard);
-    } catch (error: any) {
-      console.error("Error fetching leaderboard:", error);
-      res.status(500).json({ message: "Failed to fetch leaderboard" });
-    }
-  });
 
   // ============================================================================
   // CREDIT SYSTEM - Wallets, Transactions, Balance

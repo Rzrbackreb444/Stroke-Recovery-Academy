@@ -16,7 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-const sasquatchLogo = "/favicon.png";
+const sasquatchLogo = "/sasquatch-logo.webp";
 
 // Shared site-header singleton — first mount wins (covers RecoveryHeader
 // and GlobalHeader both), so legacy per-page header mounts are suppressed.
@@ -129,7 +129,7 @@ export default function RecoveryHeader() {
               <img
                 src={sasquatchLogo}
                 alt="Stroke Recovery Academy"
-                className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl object-cover flex-shrink-0"
+                className="h-[120px] w-[120px] sm:h-[140px] sm:w-[140px] rounded-xl object-cover flex-shrink-0"
                 data-testid="img-recovery-logo"
               />
               <div className="flex flex-col leading-none">

@@ -40,7 +40,7 @@ import {
   Compass,
   Mountain,
 } from "lucide-react";
-const sasquatchLogo = "/sasquatch-logo.webp";
+const strokeLyfeLogo = "/stroke-lyfe-logo.webp";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 
 const donationAmounts = [25, 50, 100, 250, 500, 1000];
@@ -302,9 +302,9 @@ export default function StrokeLyfeOrg() {
         <div className="max-w-6xl mx-auto text-center relative z-10">
           <div className="flex justify-center mb-6">
             <img 
-              src={sasquatchLogo} 
-              alt="Stroked-Out Sasquatch" 
-              className="h-24 w-auto"
+              src={strokeLyfeLogo} 
+              alt="Stroke Lyfe" 
+              className="h-32 w-auto"
               data-testid="img-strokelyfe-logo"
             />
           </div>
@@ -750,7 +750,7 @@ export default function StrokeLyfeOrg() {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div>
-              <img src={sasquatchLogo} alt="Stroked-Out Sasquatch" className="h-12 w-auto mb-4" />
+              <img src={strokeLyfeLogo} alt="Stroke Lyfe" className="h-12 w-auto mb-4" />
               <p className="text-gray-400 text-sm">
                 Stroke Lyfe Inc. is a registered 501(c)(3) nonprofit organization. 
                 EIN: XX-XXXXXXX
