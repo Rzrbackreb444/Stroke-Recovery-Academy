@@ -437,7 +437,7 @@ export default function RecoveryDashboard() {
             </Button>
           </div>
         </aside>
-        <div className="lg:ml-[260px] flex-1 min-h-screen">
+        <div className="lg:ml-[260px] flex-1 min-h-screen overflow-x-hidden">
       <SEO
         title="Recovery Dashboard | Stroke Recovery Academy"
         description="Track your stroke recovery progress with comprehensive metrics, daily check-ins, habit tracking, and personalized recovery programs designed by medical professionals."
@@ -1066,11 +1066,12 @@ export default function RecoveryDashboard() {
                         key={opt.value}
                         type="button"
                         onClick={() => setCheckinForm({ ...checkinForm, moodScore: opt.value })}
-                        className={`py-2.5 rounded-lg text-[11px] sm:text-sm font-bold border transition-colors ${
+                        className={`flex items-center justify-center rounded-lg text-[11px] sm:text-sm font-bold border transition-colors ${
                           checkinForm.moodScore === opt.value
                             ? "bg-[#C06B3E] text-black border-[#C06B3E]"
                             : "bg-[#FDFBF7] text-[#78716C] border-[#E2C2A4]/30 hover:border-[#C06B3E]/50"
                         }`}
+                        style={{ minHeight: "44px" }}
                         data-testid={`mood-${opt.value}`}
                       >{opt.label}</button>
                     ))}
@@ -1093,11 +1094,12 @@ export default function RecoveryDashboard() {
                         key={opt.value}
                         type="button"
                         onClick={() => setCheckinForm({ ...checkinForm, energyScore: opt.value })}
-                        className={`py-2.5 rounded-lg text-[11px] sm:text-sm font-bold border transition-colors ${
+                        className={`flex items-center justify-center rounded-lg text-[11px] sm:text-sm font-bold border transition-colors ${
                           checkinForm.energyScore === opt.value
                             ? "bg-[#C06B3E] text-black border-[#C06B3E]"
                             : "bg-[#FDFBF7] text-[#78716C] border-[#E2C2A4]/30 hover:border-[#C06B3E]/50"
                         }`}
+                        style={{ minHeight: "44px" }}
                         data-testid={`energy-${opt.value}`}
                       >{opt.label}</button>
                     ))}
@@ -1122,13 +1124,14 @@ export default function RecoveryDashboard() {
                         key={opt.value}
                         type="button"
                         onClick={() => setCheckinForm({ ...checkinForm, painScore: opt.value })}
-                        className={`py-2.5 rounded-lg text-[11px] sm:text-sm font-bold border transition-colors ${
+                        className={`flex items-center justify-center rounded-lg text-[11px] sm:text-sm font-bold border transition-colors ${
                           checkinForm.painScore === opt.value
                             ? opt.value >= 8 ? "bg-red-500 text-[#1C1917] border-red-500"
                               : opt.value >= 6 ? "bg-orange-500 text-[#1C1917] border-orange-500"
                               : "bg-[#C06B3E] text-black border-[#C06B3E]"
                             : "bg-[#FDFBF7] text-[#78716C] border-[#E2C2A4]/30 hover:border-[#C06B3E]/50"
                         }`}
+                        style={{ minHeight: "44px" }}
                         data-testid={`pain-${opt.value}`}
                       >{opt.label}</button>
                     ))}
