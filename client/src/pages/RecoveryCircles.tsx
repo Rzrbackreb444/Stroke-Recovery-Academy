@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -209,10 +210,15 @@ export default function RecoveryCircles() {
           <Card className="bg-[#1a1a1a] border-[#333]">
             <CardContent className="py-12 text-center space-y-3">
               <Calendar className="w-12 h-12 text-[#E2741B] mx-auto" />
-              <h2 className="text-xl font-semibold">No circles scheduled</h2>
+              <h2 className="text-xl font-semibold">No circles scheduled yet</h2>
               <p className="text-gray-400 text-sm max-w-md mx-auto">
-                Verified therapists and admins can host the first circle. Survivors will see it here.
+                The next live circle hasn't been posted. Check the Campfire for real-time conversation in the meantime.
               </p>
+              <Link href="/recovery/campfire">
+                <Button variant="outline" className="mt-2 border-[#E2741B]/40 text-[#E2741B] hover:bg-[#E2741B]/10" data-testid="button-circles-goto-campfire">
+                  Open Campfire
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         ) : (

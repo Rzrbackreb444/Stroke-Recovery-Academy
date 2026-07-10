@@ -498,7 +498,7 @@ export default function TodaySessionPanel() {
         <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
           <div>
             <p className="text-[10px] uppercase tracking-[0.25em] text-[#C06B3E] font-bold">Daily reminders</p>
-            <p className="text-xs text-[#A8A29E] mt-0.5">Email nudges via Resend — SMS coming soon</p>
+            <p className="text-xs text-[#A8A29E] mt-0.5">Email nudges via Resend</p>
           </div>
           <div className="flex items-center gap-2">
             <input

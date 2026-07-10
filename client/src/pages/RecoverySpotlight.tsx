@@ -529,7 +529,7 @@ export default function RecoverySpotlight() {
               </div>
               <article className="prose prose-invert max-w-none">
                 {spotlight.story ? renderStory(spotlight.story) : (
-                  <p className="text-gray-400">Story coming soon.</p>
+                  <p className="text-gray-400">Full story pending — check back soon.</p>
                 )}
               </article>
             </div>
