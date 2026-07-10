@@ -8,4 +8,29 @@
 - [Reflections Feature Direction](reflections-feature-direction.md) — Founder wants survivor monetization proud/first-class; gentle only for brand-new users
 - [staleTime Infinity list-mutation trap](staleinfinity-list-mutations.md) — Studio editor add/delete needs optimistic setQueryData, not just invalidateQueries
 - [Brand accent](brand-accent.md) — Canonical orange (`gold` token / #E2741B), retired amber #C9941A, and the rgba-spaces-break-className gotcha
-- [Blog Post Series](blog-post-series.md) — The 8 high-ticket affiliate + EEAT posts added to the SSR blog cluster (home gym, stair lifts, parallel bars, hydrotherapy, supplements, Saebo, GSC indexing, and the online coach bio)
+- [Recovery blog content pipeline](blog-post-series.md) — recovery_blog_posts content is DB-backed (edit via psql, live no-restart); pure-Markdown subset only; FAQ/image/link rules
+- [Replit OIDC e2e login](replit-oidc-e2e-login.md) — testReplitAuth + click in-app Sign In (never type creds); hard window.location redirects can hit the real login page
+- [ripgrep match-display truncation](rg-output-truncation.md) — rg-printed matches can clip at the highlight boundary; re-verify a suspicious path with grep/sed/read before editing
+- [Blog SSR gotchas](blog-ssr-gotchas.md) — integrateExpansions.ts is NOT idempotent (re-run doubles content, audit misses it); inline FTC disclosure is conditional on affiliate links, not sitewide
+- [Amazon PA-API eligibility](paapi-eligibility.md) — creds are valid+matched; blocked by 3-sales/180-day gate (AssociateNotEligible); interim = static affiliate search links
+- [Image performance pass](image-perf-pass.md) — sharp→webp+sed-repoint; React 18 needs lowercase `fetchpriority`; app_preview caches stale un-versioned Vite modules
+- [Daily Accountability Loop](daily-accountability-loop.md) — DailyLoopCard: cached Gemini morning brief + inline daily log (exercises/habits/mood/win) + coach context injection
+- [Brand taxonomy](brand-taxonomy.md) — Stroke Lyfe Inc (nonprofit, keep) vs Stroked-Out Sasquatch / Stroke Recovery Academy (consumer); do not blanket-replace
+- [Sasquatch logo asset](logo-asset.md) — served logo is 512px webp/png; 2000px master preserved at attached_assets/sasquatch-logo-master-2000.png
+- [Messaging engine](messaging-engine.md) — unified sendMessage: dedupe→channel/consent/quiet-hours; self-provisions schema; SMS behind SMS_ENABLED; static copy only
+- [db:push blocked by stripe schema](db-push-stripe-schema.md) — db:push prompts (non-TTY error) over external `stripe` schema; apply additive DDL via psql instead
+- [SSR image escaping](ssr-image-escaping.md) — ssrShell cfg.image must be RAW url (it escapes per-context); pre-escaping corrupts JSON-LD; absolute urls need startsWith('http') guard
+- [Dev lazy import vs prod bundle](dev-lazy-vs-prod-bundle.md) — bad static import passes tsx dev (lazy) but fails esbuild --bundle publish; verify with the esbuild step before publishing
+- [dispatcher.useContext dev overlay](dev-dispatcher-usecontext-overlay.md) — the Vite red dispatcher.useContext overlay is a dev HMR-across-restart artifact, not an app bug; hard-reload fixes it, prod unaffected
+- [Type errors in gated components](type-errors-in-gated-components.md) — tsx strips types w/o check; undefined ids in auth/sub-gated UI crash only at render, pass workflow start + ungated screenshot
+- [Business Intelligence metrics](bi-metrics.md) — admin BI dashboard: activation def, compute-from-source approach, daily snapshot trends, mrr_cents BIGINT-as-string
+- [Auth backend topology](auth-backends.md) — canonical passport family + kept session family; one sign-in page, one magic-link verifier (canonical+legacy fallback), centralized post-auth routing
+- [Object storage video URL path](object-storage-video-path.md) — DB stores /objects/uploads/<uuid>; getObjectEntityFile prepends PRIVATE_OBJECT_DIR internally; never store the private dir prefix in videoUrl
+- [Audio Object Storage migration](audio-object-storage.md) — uploadAudioBuffer/serveAudioResponse helpers; ACL rules per surface; migration script; never use base64 data URLs for audio again
+- [Full-project typecheck](full-project-typecheck.md) — full tsc takes >15min here; verify via per-file LSP diagnostics; pkill of "tsc --noEmit" kills your own shell
+- [Coach full-screen overlay](coach-fullscreen-overlay.md) — SasquatchCoach uses position:fixed;inset:0;z-index:100 to cover global RecoveryHeader; my custom header is the only chrome on that route
+- [db.execute text[] arrays](db-execute-text-array.md) — bare JS array param to raw sql on neon driver → 22P02 malformed array literal; use ARRAY[]::text[] via sql.join
+- [Replit workflow waitForPort gotcha](workflow-waitforport-gotcha.md) — port 3001 with waitForPort marks FAILED even when vite binds it; omit waitForPort for console-type artifact workflows
+- [Multi-artifact workspace layout](multi-artifact-workspace.md) — pnpm-workspace.yaml, artifacts/api-server tsconfig paths, @workspace/db alias, frontend vite proxy pattern
+- [Google OAuth wiring](google-oauth-wiring.md) — three-part fix: configurePassport() in setupAuth, callback route, strip conflicting serialize from configurePassport
+- [Deployment image size limit](deployment-image-size.md) — Replit Cloud Run cap is 8 GiB; .migration-backup/ and raw media files are typical culprits; delete before re-publishing

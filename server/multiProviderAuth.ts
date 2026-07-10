@@ -205,21 +205,10 @@ export async function verifyMagicLink(token: string) {
   return user;
 }
 
-// Passport serialization
+// Passport serialization is handled by replitAuth.ts (stores/restores the full
+// user object, compatible with both Replit OIDC sessions and DB user rows).
+// configurePassport() only registers the Local + Google strategies.
 export function configurePassport() {
-  passport.serializeUser((user: any, done) => {
-    done(null, user.id);
-  });
-  
-  passport.deserializeUser(async (id: string, done) => {
-    try {
-      const [user] = await db.select().from(users).where(eq(users.id, id)).limit(1);
-      done(null, user || null);
-    } catch (error) {
-      done(error, null);
-    }
-  });
-  
   // Local strategy.
   // The `passwordField` value below is a passport-local CONFIGURATION FIELD
   // NAME (tells the strategy which req.body field to read), not a credential.
@@ -247,6 +236,7 @@ export function configurePassport() {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: "/api/auth/google/callback",
+      proxy: true,
     }, async (accessToken: string, refreshToken: string, profile: any, done: any) => {
       try {
         const user = await findOrCreateOAuthUser({

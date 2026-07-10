@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import express from "express";
+import passport from "passport";
 import path from "path";
 import { generateBookPDF, type BookExportData } from "./exportService";
 import multer from "multer";
@@ -2202,11 +2203,27 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   });
 
   // OAuth redirect routes (configured when provider credentials are set)
-  app.get('/api/auth/google', (req, res) => {
+  app.get('/api/auth/google', (req, res, next) => {
     if (!process.env.GOOGLE_CLIENT_ID) {
       return res.status(503).json({ message: "Google authentication not configured" });
     }
-    res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(req.protocol + '://' + req.get('host') + '/api/auth/google/callback')}&response_type=code&scope=email%20profile`);
+    passport.authenticate('google', { scope: ['email', 'profile'] })(req, res, next);
+  });
+
+  app.get('/api/auth/google/callback', (req, res, next) => {
+    passport.authenticate('google', { failureRedirect: '/sign-in' }, (err: any, user: any) => {
+      if (err || !user) {
+        return res.redirect('/sign-in');
+      }
+      req.logIn(user, (loginErr) => {
+        if (loginErr) {
+          return res.redirect('/sign-in');
+        }
+        const returnTo = (req.session as any)?.returnTo || '/recovery/dashboard';
+        delete (req.session as any).returnTo;
+        res.redirect(returnTo);
+      });
+    })(req, res, next);
   });
 
   app.get('/api/auth/facebook', (req, res) => {

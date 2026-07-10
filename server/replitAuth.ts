@@ -72,6 +72,11 @@ export async function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  // Register Local + Google strategies (serialize/deserialize stays below,
+  // owned by this file, compatible with both OIDC sessions and DB user rows).
+  const { configurePassport } = await import('./multiProviderAuth');
+  configurePassport();
+
   const config = await getOidcConfig();
 
   const verify: VerifyFunction = async (
