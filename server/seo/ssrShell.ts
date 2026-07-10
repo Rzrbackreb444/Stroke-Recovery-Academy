@@ -2,8 +2,6 @@
 // Pixel-matches dark/gold theme of the live SPA so search-engine cache + first paint
 // look identical. JS still hydrates the SPA on top of this when the user clicks through.
 
-import { LEAD_MAGNET } from '@shared/survivorOffer';
-
 export interface FAQItem {
   q: string;
   a: string;
@@ -80,8 +78,6 @@ export interface SsrPageConfig {
     link: string;
     label: string;
   };
-  /** When true, render the "First 40 Days" free lead-magnet CTA (blog posts) */
-  leadMagnet?: boolean;
   /** Optional featured image URL for og:image, hero image, and schema */
   image?: string;
   /** Optional video — enables VideoObject schema for rich video snippets */
@@ -136,71 +132,21 @@ function jsonLd(obj: unknown): string {
   return JSON.stringify(obj).replace(/<\/script/gi, '<\\/script');
 }
 
-function stripHtmlToText(html: string): string {
-  return html.replace(/<[^>]+>/g, ' ').replace(/&[a-z0-9#]+;/gi, ' ');
-}
-
-// Single source of truth for word count. Counts structured fields AND the
-// trusted rawHtml/body path (DB-backed recovery blog posts render their whole
-// body as rawHtml — without this they'd report wordCount:0 / "1 min read").
-function countWords(sections: ContentSection[]): number {
+function estimateReadingTime(sections: ContentSection[]): number {
   let words = 0;
   for (const s of sections) {
-    if (s.paragraphs) words += s.paragraphs.reduce((a, p) => a + p.split(/\s+/).filter(Boolean).length, 0);
-    if (s.bullets) words += s.bullets.reduce((a, b) => a + b.split(/\s+/).filter(Boolean).length, 0);
-    if (s.table) words += s.table.rows.reduce((a, r) => a + r.reduce((b, c) => b + c.split(/\s+/).filter(Boolean).length, 0), 0);
-    if (s.steps) words += s.steps.reduce((a, st) => a + st.name.split(/\s+/).filter(Boolean).length + st.text.split(/\s+/).filter(Boolean).length, 0);
-    const raw = s.rawHtml || s.body;
-    if (raw) words += stripHtmlToText(raw).split(/\s+/).filter(Boolean).length;
+    if (s.paragraphs) words += s.paragraphs.reduce((a, p) => a + p.split(/\s+/).length, 0);
+    if (s.bullets) words += s.bullets.reduce((a, b) => a + b.split(/\s+/).length, 0);
+    if (s.table) words += s.table.rows.reduce((a, r) => a + r.reduce((b, c) => b + c.split(/\s+/).length, 0), 0);
+    if (s.steps) words += s.steps.reduce((a, st) => a + st.name.split(/\s+/).length + st.text.split(/\s+/).length, 0);
   }
-  return words;
+  return Math.max(1, Math.round(words / 200));
 }
-
-function estimateReadingTime(sections: ContentSection[]): number {
-  return Math.max(1, Math.round(countWords(sections) / 200));
-}
-
-// Canonical Nick Kremers author object — @id links all articles to the same entity graph node
-const NICK_AUTHOR_SCHEMA = {
-  '@type': ['Person', 'Patient'],
-  '@id': `${SITE_URL}/#nick-kremers`,
-  name: AUTHOR.name,
-  description: AUTHOR.bio,
-  url: AUTHOR.url,
-  image: { '@type': 'ImageObject', url: AUTHOR.image, width: 400, height: 400 },
-  jobTitle: 'Founder, Stroke Recovery Academy',
-  sameAs: [
-    'https://twitter.com/strokerecoveryacademy',
-    'https://youtube.com/@strokerecoveryacademy',
-    'https://linkedin.com/company/stroke-recovery-academy',
-  ],
-  knowsAbout: [
-    'stroke recovery', 'neuroplasticity', 'hemiparesis rehabilitation',
-    'aphasia recovery', 'post-stroke fatigue management', 'spasticity management',
-    'constraint-induced movement therapy', 'balance training after stroke',
-    'home stroke rehabilitation', 'stroke survivor mental health',
-  ],
-  hasCredential: {
-    '@type': 'EducationalOccupationalCredential',
-    credentialCategory: 'Lived Experience',
-    name: '7-year stroke survivor — full left-side paralysis to 90% recovery',
-  },
-  affiliation: { '@id': `${SITE_URL}/#organization` },
-};
-
-// The core medical condition entity all health content is about
-const STROKE_ENTITY = {
-  '@type': 'MedicalCondition',
-  '@id': `${SITE_URL}/#stroke`,
-  name: 'Stroke',
-  alternateName: ['Cerebrovascular Accident', 'CVA', 'Brain Attack'],
-  code: { '@type': 'MedicalCode', code: 'I63-I64', codingSystem: 'ICD-10' },
-};
 
 function buildArticleSchema(cfg: SsrPageConfig): object {
   const url = `${SITE_URL}${cfg.url}`;
   const date = cfg.publishedDate || '2026-01-15';
-  const modified = cfg.modifiedDate || cfg.publishedDate || '2026-01-15';
+  const modified = cfg.modifiedDate || new Date().toISOString().split('T')[0];
   const readTime = estimateReadingTime(cfg.sections);
   // Prefer the featured image, then first section image, then default
   const featuredImage = cfg.image;
@@ -208,71 +154,47 @@ function buildArticleSchema(cfg: SsrPageConfig): object {
   const chosenImage = featuredImage || (firstSectionImage
     ? (typeof firstSectionImage === 'string' ? firstSectionImage : firstSectionImage.src)
     : null);
-  const imageUrl = chosenImage
-    ? (chosenImage.startsWith('http') ? chosenImage : `${SITE_URL}${chosenImage}`)
-    : `${SITE_URL}/og-image.jpg`;
-
-  const isMedical = cfg.schemaType === 'MedicalWebPage';
-
+  const imageUrl = chosenImage ? `${SITE_URL}${chosenImage}` : `${SITE_URL}/og-image.jpg`;
   return {
     '@context': 'https://schema.org',
-    '@type': isMedical ? 'MedicalWebPage' : 'Article',
-    '@id': `${url}#article`,
+    '@type': cfg.schemaType === 'MedicalWebPage' ? 'MedicalWebPage' : 'Article',
     headline: cfg.h1,
     description: cfg.description,
     url,
     datePublished: date,
     dateModified: modified,
     inLanguage: 'en-US',
-    author: NICK_AUTHOR_SCHEMA,
-    // publisher uses @id ref — lets Google resolve the full Organization entity
-    publisher: { '@id': `${SITE_URL}/#organization` },
-    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
-    image: {
-      '@type': 'ImageObject',
-      url: imageUrl,
-      width: 1200,
-      height: 630,
+    author: {
+      '@type': 'Person',
+      name: AUTHOR.name,
+      description: AUTHOR.bio,
+      url: AUTHOR.url,
+      image: AUTHOR.image,
     },
-    // Every article is about the core condition — helps AI crawlers classify topical relevance
-    about: STROKE_ENTITY,
+    publisher: {
+      '@type': 'Organization',
+      name: 'Stroke Recovery Academy',
+      url: SITE_URL,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${SITE_URL}/icon-512.png`,
+      },
+    },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+    image: imageUrl,
     ...(cfg.keywords && cfg.keywords.length > 0 ? { keywords: cfg.keywords.join(', ') } : {}),
-    // MedicalWebPage-specific E-E-A-T fields
-    ...(isMedical ? {
-      medicalAudience: {
-        '@type': 'MedicalAudience',
-        audienceType: 'Patient',
-        healthCondition: STROKE_ENTITY,
-      },
+    ...(cfg.schemaType === 'MedicalWebPage' ? {
+      medicalAudience: { '@type': 'MedicalAudience', audienceType: 'Patient' },
       lastReviewed: modified,
-      reviewedBy: {
-        '@type': 'Person',
-        '@id': `${SITE_URL}/#nick-kremers`,
-        name: 'Nick Kremers',
-        description: '7-year stroke survivor with lived expertise in post-stroke rehabilitation',
-      },
-      specialty: { '@type': 'MedicalSpecialty', name: 'Physical Medicine and Rehabilitation' },
     } : {}),
     // Word count and reading time for rich snippet eligibility
-    wordCount: countWords(cfg.sections),
+    wordCount: cfg.sections.reduce((a, s) => {
+      let w = 0;
+      if (s.paragraphs) w += s.paragraphs.reduce((x, p) => x + p.split(/\s+/).length, 0);
+      if (s.bullets) w += s.bullets.reduce((x, b) => x + b.split(/\s+/).length, 0);
+      return a + w;
+    }, 0),
     timeRequired: `PT${readTime}M`,
-  };
-}
-
-// Speakable — tells Google/AI which content to read aloud or quote in voice/AI responses
-function buildSpeakableSchema(cfg: SsrPageConfig): object {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'WebPage',
-    '@id': `${SITE_URL}${cfg.url}`,
-    name: cfg.h1,
-    description: cfg.description,
-    speakable: {
-      '@type': 'SpeakableSpecification',
-      // Target h1, the hero subhead, and FAQ answers — the most quotable content
-      cssSelector: ['h1', '.sra-hero p', '.sra-faq-answer', '.sra-speakable'],
-    },
-    url: `${SITE_URL}${cfg.url}`,
   };
 }
 
@@ -316,6 +238,12 @@ function buildProductReviewSchema(cfg: SsrPageConfig): object | null {
       '@type': 'Organization',
       name: 'Stroke Recovery Academy',
       url: SITE_URL,
+    },
+    reviewRating: {
+      '@type': 'Rating',
+      ratingValue: '4.5',
+      bestRating: '5',
+      worstRating: '1',
     },
     itemReviewed: {
       '@type': 'Product',
@@ -363,10 +291,6 @@ function buildBreadcrumbSchema(cfg: SsrPageConfig): object | null {
 function buildVideoObjectSchema(cfg: SsrPageConfig): object | null {
   const v = cfg.video;
   if (!v) return null;
-  // Only emit VideoObject when a real video is actually present on the page.
-  // Schema-only video (no contentUrl/embedUrl, no player) violates Google's
-  // structured-data policy and can suppress rankings.
-  if (!v.contentUrl && !v.embedUrl) return null;
   const url = `${SITE_URL}${cfg.url}`;
   return {
     '@context': 'https://schema.org',
@@ -399,16 +323,16 @@ function renderHeader(): string {
   return `
 <header class="sra-header">
   <a href="/" class="sra-logo" aria-label="Stroke Recovery Academy home">
-    <img class="sra-logo-mark" src="/favicon.png" alt="" aria-hidden="true" width="28" height="28" />
+    <span class="sra-logo-mark" aria-hidden="true"></span>
     <span class="sra-logo-text">Stroke Recovery Academy</span>
   </a>
   <nav class="sra-nav" aria-label="Primary">
-    <a href="/recovery/sasquatch-coach">Coach</a>
-    <a href="/recovery/today">Daily Reps</a>
-    <a href="/recovery/community">Community</a>
-    <a href="/book">Nick's Book</a>
+    <a href="/recovery/university">University</a>
+    <a href="/recovery/exercises">Exercises</a>
+    <a href="/recovery/challenge">66-Day Challenge</a>
     <a href="/blog">Blog</a>
-    <a href="/recovery/sasquatch-coach" class="sra-cta-btn">Talk to Coach — free</a>
+    <a href="/recovery/center-finder">Center Finder</a>
+    <a href="/recovery/pricing" class="sra-cta-btn">Start Free</a>
   </nav>
 </header>`;
 }
@@ -447,7 +371,7 @@ function renderFooter(): string {
       <a href="/recovery/center-finder">Find a recovery center</a>
       <a href="/blog">Survivor blog</a>
       <a href="/recovery/about-nick">About Nick</a>
-      <a href="/recovery/premium">Premium</a>
+      <a href="/recovery/pricing">Pricing</a>
     </div>
   </div>
   <div class="sra-footer-bottom">
@@ -464,45 +388,8 @@ function sectionSlug(heading: string): string {
     .replace(/^-|-$/g, '');
 }
 
-function renderEmailCapture(variant: 'inline' | 'final' = 'inline'): string {
-  const heading = variant === 'final'
-    ? 'Get the free stroke recovery cheat sheet'
-    : 'The cheat sheet I wish I had on day one';
-  const sub = variant === 'final'
-    ? 'One email. The first-90-days moves, plus the weekly field notes I send survivors and caregivers. No spam — unsubscribe anytime.'
-    : 'First-90-days moves from a 7-year survivor. Drop your email — I\'ll send the cheat sheet and my weekly field notes.';
-  return `
-<section class="sra-email-capture">
-  <h2>${esc(heading)}</h2>
-  <p>${esc(sub)}</p>
-  <form class="sra-email-form" method="POST" action="/api/newsletter/subscribe-form">
-    <input type="text" name="hp_field" class="sra-hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
-    <input type="hidden" name="source" value="blog" />
-    <input type="email" name="email" required placeholder="you@email.com" aria-label="Email address" class="sra-email-input" />
-    <button type="submit" class="sra-btn-primary">Send me the cheat sheet</button>
-  </form>
-  <div class="sra-email-fineprint">No spam. Unsubscribe anytime. Written by a survivor, not a marketing team.</div>
-</section>`;
-}
-
-// Compact free-guide CTA — "The First 40 Days" lead magnet. Rendered on SSR
-// blog posts, the main organic-search entry point for brand-new survivors and
-// caregivers. Links to the capture page; copy comes from the single-source
-// LEAD_MAGNET constant so wording never drifts.
-function renderLeadMagnetCta(): string {
-  return `
-<section class="sra-lead-magnet">
-  <div class="sra-lead-magnet-body">
-    <div class="sra-lead-magnet-eyebrow">Free guide</div>
-    <h2>${esc(LEAD_MAGNET.headline)}</h2>
-    <p>${esc(LEAD_MAGNET.sub)}</p>
-  </div>
-  <a href="${escAttr(LEAD_MAGNET.path)}" class="sra-btn-primary">${esc(LEAD_MAGNET.cta)}</a>
-</section>`;
-}
-
 function renderSections(sections: ContentSection[]): string {
-  const blocks = sections.map((s, idx) => {
+  return sections.map((s, idx) => {
     const heading = s.h2 || s.heading || '';
     const html = s.rawHtml || s.body || '';
     const slug = heading ? sectionSlug(heading) : `section-${idx}`;
@@ -550,12 +437,7 @@ function renderSections(sections: ContentSection[]): string {
   ${s.relatedLinks && s.relatedLinks.length > 0 ? `<div class="sra-related-inline"><strong>Also check out:</strong> ${s.relatedLinks.map((l, i) => `<a href="${escAttr(l.href)}">${esc(l.label)}</a>${i < s.relatedLinks.length - 1 ? ', ' : ''}`).join('')}</div>` : ''}
   ${html}
 </section>`;
-  });
-  // Inject a mid-article email capture after the 2nd section on substantial pages.
-  if (blocks.length >= 4) {
-    blocks.splice(2, 0, renderEmailCapture('inline'));
-  }
-  return blocks.join('\n');
+  }).join('\n');
 }
 
 function renderTableOfContents(sections: ContentSection[]): string {
@@ -580,7 +462,7 @@ function renderFaqs(faqs: FAQItem[]): string {
   ${faqs.map(f => `
   <details class="sra-faq-item">
     <summary>${esc(f.q)}</summary>
-    <p class="sra-faq-answer">${esc(f.a)}</p>
+    <p>${esc(f.a)}</p>
   </details>`).join('\n')}
 </section>`;
 }
@@ -594,6 +476,7 @@ function renderRelated(related: InternalLink[]): string {
   ${related.map(r => `
     <a href="${escAttr(r.href)}" class="sra-related-card">
       <span class="sra-related-label">${esc(r.label)}</span>
+      // nosemgrep: javascript.lang.security.html-in-template-string
       ${r.blurb ? `<span class="sra-related-blurb">${esc(r.blurb)}</span>` : ''}
     </a>`).join('\n  ')}
   </div>
@@ -629,8 +512,8 @@ function inlineCss(): string {
   --sra-border: #333;
   --sra-text: #f5f1e6;
   --sra-text-dim: #a8a39a;
-  --sra-gold: #E2741B;
-  --sra-gold-soft: rgba(226, 116, 27, 0.15);
+  --sra-gold: #C9941A;
+  --sra-gold-soft: rgba(201, 148, 26, 0.15);
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
@@ -655,7 +538,8 @@ a:hover { text-decoration: underline; }
 .sra-logo:hover { text-decoration: none; }
 .sra-logo-mark {
   width: 28px; height: 28px; border-radius: 4px;
-  display: inline-block; object-fit: contain;
+  background: var(--sra-gold);
+  display: inline-block;
 }
 .sra-nav { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
 .sra-nav a { color: var(--sra-text-dim); font-size: 14px; }
@@ -718,13 +602,7 @@ a:hover { text-decoration: underline; }
 }
 .sra-section p { margin: 0 0 16px; color: var(--sra-text); }
 .sra-section ul { padding-left: 22px; margin: 0 0 16px; }
-.sra-section ol { padding-left: 22px; margin: 0 0 16px; }
 .sra-section li { margin-bottom: 8px; color: var(--sra-text); }
-.sra-section h3 { font-family: 'Crimson Pro', Georgia, serif; font-size: 21px; font-weight: 700; color: var(--sra-gold); margin: 28px 0 10px; }
-.sra-section h4 { font-size: 17px; font-weight: 600; color: var(--sra-text); margin: 20px 0 8px; }
-.sra-section a { color: var(--sra-gold); text-decoration: underline; }
-.sra-section strong { color: var(--sra-text); font-weight: 600; }
-.sra-section blockquote { margin: 20px 0; padding: 8px 0 8px 18px; border-left: 3px solid var(--sra-gold); color: var(--sra-text-dim); font-style: italic; font-size: 18px; }
 .sra-faq { margin: 48px 0 32px; padding: 24px; background: var(--sra-bg-card); border: 1px solid var(--sra-border); border-radius: 6px; }
 .sra-faq h2 { font-family: 'Crimson Pro', Georgia, serif; font-size: 24px; margin: 0 0 16px; color: var(--sra-text); }
 .sra-faq-item { border-top: 1px solid var(--sra-border); padding: 14px 0; }
@@ -759,41 +637,8 @@ a:hover { text-decoration: underline; }
 .sra-affiliate p { color: var(--sra-text-dim); margin: 0 0 16px; }
 .sra-affiliate .sra-btn-primary { display: inline-block; }
 .sra-affiliate-note { font-size: 12px; color: var(--sra-text-dim); margin-top: 12px; font-style: italic; }
-.sra-lead-magnet {
-  margin: 40px 0; padding: 22px 24px;
-  display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
-  background: var(--sra-bg-card); border: 1px solid var(--sra-gold); border-radius: 8px;
-}
-.sra-lead-magnet-body { flex: 1 1 300px; min-width: 0; }
-.sra-lead-magnet-eyebrow {
-  font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--sra-gold); margin-bottom: 6px;
-}
-.sra-lead-magnet h2 { font-family: 'Crimson Pro', Georgia, serif; font-size: 22px; color: var(--sra-text); margin: 0 0 6px; }
-.sra-lead-magnet p { color: var(--sra-text-dim); margin: 0; font-size: 15px; }
-.sra-lead-magnet .sra-btn-primary { display: inline-block; flex: 0 0 auto; white-space: nowrap; }
 .sra-final-cta h2 { font-family: 'Crimson Pro', Georgia, serif; font-size: 28px; color: var(--sra-text); margin: 0 0 12px; }
 .sra-final-cta p { color: var(--sra-text-dim); margin: 0 0 20px; }
-.sra-email-capture {
-  margin: 40px 0; padding: 28px 24px;
-  background: var(--sra-bg-card); border: 1px solid var(--sra-gold); border-radius: 8px;
-}
-.sra-email-capture h2 { font-family: 'Crimson Pro', Georgia, serif; font-size: 24px; color: var(--sra-text); margin: 0 0 8px; }
-.sra-email-capture p { color: var(--sra-text-dim); margin: 0 0 16px; }
-.sra-email-form { display: flex; gap: 10px; flex-wrap: wrap; }
-.sra-email-input {
-  flex: 1 1 220px; min-width: 0; padding: 11px 14px; font-size: 15px;
-  background: var(--sra-bg); border: 1px solid var(--sra-border); border-radius: 4px; color: var(--sra-text);
-}
-.sra-email-input:focus { outline: none; border-color: var(--sra-gold); }
-.sra-email-form .sra-btn-primary { flex: 0 0 auto; border: 0; cursor: pointer; font-family: inherit; font-size: 15px; }
-.sra-email-fineprint { font-size: 12px; color: var(--sra-text-dim); margin-top: 10px; }
-.sra-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
-.sra-ftc-disclosure {
-  margin: 4px 0 20px; padding: 10px 14px; font-size: 12px; line-height: 1.5;
-  color: var(--sra-text-dim); background: var(--sra-bg-card);
-  border: 1px solid var(--sra-border); border-radius: 4px;
-}
 .sra-footer { border-top: 1px solid var(--sra-border); background: var(--sra-bg); padding: 40px 24px 24px; margin-top: 64px; }
 .sra-footer-grid {
   max-width: 1100px; margin: 0 auto;
@@ -876,7 +721,6 @@ export function renderSsrPage(cfg: SsrPageConfig): string {
 
   const productCard = cfg.productCard;
   const bookPromo = cfg.bookPromo;
-  const hasAffiliate = !!cfg.productCard || cfg.sections.some(s => Array.isArray(s.products) && s.products.length > 0);
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -893,7 +737,7 @@ ${cfg.keywords && cfg.keywords.length > 0 ? `<meta name="keywords" content="${es
 <meta property="og:url" content="${escAttr(url)}" />
 <meta property="og:title" content="${escAttr(cfg.title)}" />
 <meta property="og:description" content="${escAttr(cfg.description)}" />
-<meta property="og:image" content="${escAttr(cfg.image ? (cfg.image.startsWith('http') ? cfg.image : `${SITE_URL}${cfg.image}`) : `${SITE_URL}/og-image-1200x630.png`)}" />
+<meta property="og:image" content="${cfg.image ? (cfg.image.startsWith('http') ? cfg.image : `${SITE_URL}${cfg.image}`) : `${SITE_URL}/og-image-1200x630.png`}" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:type" content="image/png" />
@@ -902,12 +746,12 @@ ${cfg.keywords && cfg.keywords.length > 0 ? `<meta name="keywords" content="${es
 <meta property="og:locale" content="en_US" />
 <meta property="article:author" content="Nick Kremers" />
 <meta property="article:published_time" content="${escAttr(cfg.publishedDate || '2026-01-15')}" />
-<meta property="article:modified_time" content="${escAttr(cfg.modifiedDate || cfg.publishedDate || '2026-01-15')}" />
+<meta property="article:modified_time" content="${escAttr(cfg.modifiedDate || new Date().toISOString().split('T')[0])}" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="@strokerecovery" />
 <meta name="twitter:title" content="${escAttr(cfg.title)}" />
 <meta name="twitter:description" content="${escAttr(cfg.description)}" />
-<meta name="twitter:image" content="${escAttr(cfg.image ? (cfg.image.startsWith('http') ? cfg.image : `${SITE_URL}${cfg.image}`) : `${SITE_URL}/og-image-1200x630.png`)}" />
+<meta name="twitter:image" content="${cfg.image ? (cfg.image.startsWith('http') ? cfg.image : `${SITE_URL}${cfg.image}`) : `${SITE_URL}/og-image-1200x630.png`}" />
 <meta name="twitter:image:alt" content="${escAttr(cfg.title)}" />
 <meta name="theme-color" content="#0D0D0D" />
 <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -919,8 +763,6 @@ ${cfg.keywords && cfg.keywords.length > 0 ? `<meta name="keywords" content="${es
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@600;700&family=Inter:wght@400;500;600&display=swap" />
 <style>${inlineCss()}</style>
 <script type="application/ld+json">${jsonLd(articleSchema)}</script>
-<script type="application/ld+json">${jsonLd(buildSpeakableSchema(cfg))}</script>
-<script type="application/ld+json">${jsonLd({ '@context': 'https://schema.org', ...NICK_AUTHOR_SCHEMA })}</script>
 ${faqSchema ? `<script type="application/ld+json">${jsonLd(faqSchema)}</script>` : ''}
 ${breadcrumbSchema ? `<script type="application/ld+json">${jsonLd(breadcrumbSchema)}</script>` : ''}
 ${howToSchema ? `<script type="application/ld+json">${jsonLd(howToSchema)}</script>` : ''}
@@ -932,7 +774,7 @@ ${renderHeader()}
 <main class="sra-page">
   ${renderBreadcrumbs(cfg)}
   <div class="sra-hero">
-    ${cfg.image ? `<img src="${escAttr(cfg.image)}" alt="${escAttr(cfg.title)}" class="sra-hero-img" loading="eager" />` : ''}
+    ${cfg.image ? `<img src="${cfg.image}" alt="${escAttr(cfg.title)}" class="sra-hero-img" loading="eager" />` : ''}
     ${hero.eyebrow ? `<div class="sra-eyebrow">${esc(hero.eyebrow)}</div>` : ''}
     <h1>${esc(cfg.h1)}</h1>
     <p>${esc(hero.subhead)}</p>
@@ -947,18 +789,19 @@ ${renderHeader()}
   <div class="sra-author">
     <img src="${AUTHOR.image}" alt="${AUTHOR.name}" class="sra-author-img" loading="lazy" width="44" height="44" />
     <div>
-      Written by <a href="${AUTHOR.url}">Nick Kremers</a> · Stroke survivor, 7 years in — full left-side paralysis to 90% back. I write what I actually lived.
-      <br /><span style="font-size:12px;">Last reviewed: ${esc(cfg.modifiedDate || cfg.publishedDate || '2026-01-15')}</span>
-      <br /><span style="font-size:12px; color: var(--sra-text-dim);">${estimateReadingTime(cfg.sections)} min read · ${countWords(cfg.sections).toLocaleString()} words</span>
-      <br /><span class="sra-medical-badge" style="font-size:12px; color: var(--sra-text-dim);">Written from 7 years of lived recovery — not medical advice. <a href="/legal/medical-disclaimer" style="color: var(--sra-gold);">See your doctor, PT, or OT.</a></span>
+      Written by <a href="${AUTHOR.url}">Nick Kremers</a> · 7-year stroke survivor.
+      <br /><span style="font-size:12px;">Last reviewed: ${esc(cfg.modifiedDate || new Date().toISOString().split('T')[0])}</span>
+      <br /><span style="font-size:12px; color: var(--sra-text-dim);">${estimateReadingTime(cfg.sections)} min read · ${cfg.sections.reduce((a, s) => {
+        let w = 0;
+        if (s.paragraphs) w += s.paragraphs.reduce((x, p) => x + p.split(/\s+/).length, 0);
+        if (s.bullets) w += s.bullets.reduce((x, b) => x + b.split(/\s+/).length, 0);
+        return a + w;
+      }, 0).toLocaleString()} words</span>
+      <br /><span class="sra-medical-badge" style="font-size:12px; color: var(--sra-gold);">Medically reviewed by SRA clinical advisory team</span>
     </div>
   </div>
 
-  ${hasAffiliate ? `<div class="sra-ftc-disclosure">Heads up — some links in this post are Amazon affiliate links. Buy through them and I earn a small commission at no extra cost to you. I only point at gear I'd tell another survivor to use.</div>` : ''}
-
   ${renderSections(cfg.sections)}
-
-  ${cfg.leadMagnet ? renderLeadMagnetCta() : ''}
 
   ${renderFaqs(cfg.faqs)}
 
@@ -979,12 +822,10 @@ ${renderHeader()}
   </section>
   ` : ''}
 
-  ${renderEmailCapture('final')}
-
   <section class="sra-final-cta">
-    <h2>Or start your recovery free.</h2>
+    <h2>Start your recovery free.</h2>
     <p>Daily routine. AI coach. 66-day challenge. Built by a survivor for survivors.</p>
-    <a href="/api/login" class="sra-btn-secondary">Create free account</a>
+    <a href="/api/login" class="sra-btn-primary">Create free account</a>
   </section>
 
   ${renderRelated(cfg.related)}
@@ -992,40 +833,6 @@ ${renderHeader()}
 ${renderFooter()}
 </body>
 </html>`;
-}
-
-export function renderSsrThanks(ok: boolean = true): string {
-  const eyebrow = ok ? "You're in" : 'Hmm';
-  const h1 = ok ? 'Check your inbox.' : 'That email did not look right.';
-  const body = ok
-    ? "Your cheat sheet is on the way — should land in the next minute. If it's not there, check spam and add me to your contacts. My first field-note email hits in a few days."
-    : "I could not read that address, so nothing got sent. Head back and try once more — it's one field.";
-  return `<!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>${esc(ok ? "You're in · Stroke Recovery Academy" : 'Try again · Stroke Recovery Academy')}</title>
-<meta name="description" content="Your stroke recovery cheat sheet is on the way." />
-<meta name="robots" content="noindex,follow" />
-<link rel="icon" href="/favicon.ico" />
-<style>${inlineCss()}</style>
-</head><body>
-${renderHeader()}
-<main class="sra-page">
-  <div class="sra-hero">
-    <div class="sra-eyebrow">${esc(eyebrow)}</div>
-    <h1>${esc(h1)}</h1>
-    <p>${esc(body)}</p>
-    <div class="sra-cta-row">
-      ${ok
-        ? `<a href="/api/sasch/cheat-sheet.pdf" class="sra-btn-primary">Download the cheat sheet now</a>
-      <a href="/blog" class="sra-btn-secondary">Back to the blog</a>`
-        : `<a href="/blog" class="sra-btn-primary">Back to the blog</a>`}
-    </div>
-  </div>
-</main>
-${renderFooter()}
-</body></html>`;
 }
 
 export function renderSsr404(): string {

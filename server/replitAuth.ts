@@ -64,14 +64,6 @@ async function upsertUser(
     lastName: claims["last_name"],
     profileImageUrl: claims["profile_image_url"],
   });
-  // Funnel: record the signup milestone once per user (idempotent — safe to
-  // call on every login). Fire-and-forget; never block auth on telemetry.
-  const sub = claims["sub"];
-  if (sub) {
-    void import("./services/sasquatchFunnelService").then((f) =>
-      f.recordFunnelEventOnce({ userId: String(sub), eventType: "signup" }),
-    ).catch(() => {});
-  }
 }
 
 export async function setupAuth(app: Express) {
@@ -79,6 +71,11 @@ export async function setupAuth(app: Express) {
   app.use(getSession());
   app.use(passport.initialize());
   app.use(passport.session());
+
+  // Register Local + Google strategies (serialize/deserialize stays below,
+  // owned by this file, compatible with both OIDC sessions and DB user rows).
+  const { configurePassport } = await import('./multiProviderAuth');
+  configurePassport();
 
   const config = await getOidcConfig();
 
@@ -126,30 +123,9 @@ export async function setupAuth(app: Express) {
 
   app.get("/api/callback", (req, res, next) => {
     ensureStrategy(req.hostname);
-    passport.authenticate(`replitauth:${req.hostname}`, async (err: any, user: any) => {
-      if (err || !user) return res.redirect("/api/login");
-      req.logIn(user, async (loginErr) => {
-        if (loginErr) return res.redirect("/api/login");
-        // Honour an explicit returnTo set before the auth redirect.
-        const returnTo = (req.session as any)?.returnTo as string | undefined;
-        if (returnTo && returnTo.startsWith("/") && !returnTo.startsWith("//")) {
-          delete (req.session as any).returnTo;
-          return res.redirect(returnTo);
-        }
-        // Route based on whether the survivor has already completed intake.
-        try {
-          const userId = user.claims?.sub as string | undefined;
-          if (userId) {
-            const profile = await storage.getUserProfile(userId);
-            if (profile?.intakeCompletedAt) {
-              return res.redirect("/recovery/dashboard");
-            }
-          }
-        } catch (_) {
-          // fall through on DB error — intake is a safe landing
-        }
-        return res.redirect("/recovery/intake");
-      });
+    passport.authenticate(`replitauth:${req.hostname}`, {
+      successReturnToOrRedirect: "/",
+      failureRedirect: "/api/login",
     })(req, res, next);
   });
 
@@ -176,13 +152,6 @@ export const isAuthenticated: RequestHandler = async (req: any, res, next) => {
   }
 
   const user = req.user as any;
-
-  // Multi-provider path: Google OAuth / email-password users are deserialized
-  // by Passport into a full DB user row (has .id, no .claims/.expires_at).
-  // req.isAuthenticated() is the authoritative Passport check for these.
-  if (req.isAuthenticated && req.isAuthenticated() && user?.id && !user?.claims) {
-    return next();
-  }
 
   if (!req.isAuthenticated || !req.isAuthenticated() || !user?.expires_at) {
     return res.status(401).json({ message: "Unauthorized" });

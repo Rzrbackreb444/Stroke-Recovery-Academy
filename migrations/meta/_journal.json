@@ -15,13 +15,6 @@
       "when": 1781036792459,
       "tag": "0001_faulty_major_mapleleaf",
       "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1783563729534,
-      "tag": "0002_crazy_lyja",
-      "breakpoints": true
     }
   ]
 }

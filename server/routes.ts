@@ -1,7 +1,7 @@
 import type { Express } from "express";
-import { z } from "zod";
 import { createServer, type Server } from "http";
 import express from "express";
+import passport from "passport";
 import path from "path";
 import { generateBookPDF, type BookExportData } from "./exportService";
 import multer from "multer";
@@ -9,7 +9,6 @@ import fs from "fs";
 import { storage } from "./storage";
 import { yearsSinceStroke } from "@shared/strokeAnniversary";
 import { setupAuth, isAuthenticated } from "./replitAuth";
-import { findOrCreateOAuthUser } from "./multiProviderAuth";
 import { publicPostLimiter, authActionLimiter } from "./middleware/publicRateLimit";
 import {
   ANON_COACH_LIMIT,
@@ -20,7 +19,6 @@ import {
 import { redactEmail } from "./lib/redact";
 import { requireAdmin } from "./middleware/requireAdmin";
 import { getUserId } from "./lib/authUtils";
-import { pgTextArray } from "./lib/pgArray";
 import emailAuthRoutes from "./emailAuthRoutes";
 import luluRoutes from "./luluRoutes";
 import puzzleRoutes from "./puzzleRoutes";
@@ -613,15 +611,10 @@ ${allRoutes.map(r => `  <url>
   </url>`;
       }).join('\n');
 
-      // Pillar hub topic pages — high-priority cluster hubs for topical authority
-      const PILLAR_SLUGS = ['exercises-at-home', 'life-after-stroke', 'stroke-recovery-timeline', 'journaling-after-stroke', 'caregivers', 'survivor-income'];
-      const pillarBlocks = PILLAR_SLUGS.map(s => `  <url>\n    <loc>${baseUrl}/recovery/blog/topic/${s}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.90</priority>\n  </url>`).join('\n');
-
       const finalSitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
         xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
-${pillarBlocks}
 ${postUrls}${ssrBlocks ? '\n' + ssrBlocks : ''}
 </urlset>`;
 
@@ -1020,49 +1013,6 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   app.use('/api/account', accountRoutes);
   app.use('/api/lulu', luluRoutes);
   app.use('/api/puzzle', puzzleRoutes);
-
-  // Institutional / Clinical Partnership Platform (B2B) — org accounts, seat
-  // provisioning, revocable survivor consent, consent-gated cohort dashboard.
-  // Mounted after setupAuth so isAuthenticated/getUserId/requireAdmin work.
-  const { registerInstitutionRoutes } = await import('./institutionRoutes');
-  registerInstitutionRoutes(app, isAuthenticated);
-
-  // Mobile companion app — Expo push token registration. Mounted after
-  // setupAuth so isAuthenticated + getUserId() see the session. Delivery
-  // rides sendPushToUser(), so messaging-engine consent/quiet-hours apply.
-  const mobilePushTokenSchema = z.object({
-    token: z.string().min(10).max(200).regex(/^Expo(nent)?PushToken\[.+\]$/),
-    platform: z.enum(['ios', 'android']).optional(),
-  });
-  app.post('/api/mobile/push-token', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = getUserId(req);
-      if (!userId) return res.status(401).json({ message: 'Unauthorized' });
-      const parsed = mobilePushTokenSchema.safeParse(req.body);
-      if (!parsed.success) return res.status(400).json({ message: 'Invalid push token payload' });
-      const { registerMobilePushToken } = await import('./pushNotificationService');
-      await registerMobilePushToken(userId, parsed.data.token, parsed.data.platform);
-      res.json({ ok: true });
-    } catch (err: any) {
-      console.error('[mobile-push] register failed:', err?.message ?? err);
-      res.status(500).json({ message: 'Failed to register push token' });
-    }
-  });
-
-  // Durable scheduler admin observability (admin-only). Mounted after setupAuth
-  // so requireAdmin's session lookup works.
-  const { default: schedulerRoutes } = await import('./scheduler/schedulerRoutes');
-  app.use('/api/admin/scheduler', schedulerRoutes);
-
-  // Business Intelligence admin API (funnel + revenue + engagement metrics,
-  // trend snapshots). Admin-only; mounted after setupAuth for requireAdmin.
-  const { default: biRoutes } = await import('./biRoutes');
-  app.use('/api/admin/business', biRoutes);
-
-  // Lifecycle messaging public routes — global email unsubscribe (HMAC) + Twilio
-  // inbound SMS webhook (STOP/HELP, signature-verified, inert until SMS_ENABLED).
-  const { registerMessagingRoutes } = await import('./messaging/routes');
-  registerMessagingRoutes(app);
   
   // Email Authentication Routes (must be after setupAuth for session access)
   app.use('/api/email-auth', emailAuthRoutes);
@@ -1127,7 +1077,7 @@ Last updated: ${new Date().toISOString().split('T')[0]}
     if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
     const url = `/uploads/${req.file.filename}`;
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       await storage.createOrUpdateUserSettings(userId, { avatarUrl: url });
       res.json({ url });
     } catch (error) {
@@ -1139,7 +1089,7 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   // client never sits in an error state while the user is browsing logged-out.
   app.get('/api/user/settings', async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub;
       if (!userId) {
         return res.json({});
       }
@@ -1154,7 +1104,7 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   // PUT /api/user/settings
   app.put('/api/user/settings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { username, displayName, avatarUrl, bio, bannerUrl } = req.body;
       const settings = await storage.createOrUpdateUserSettings(userId, { username, displayName, avatarUrl, bannerUrl, bio } as any);
       res.json(settings);
@@ -1202,7 +1152,7 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   // POST /api/live/events
   app.post('/api/live/events', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { title, description, streamUrl, scheduledAt, coverImageUrl } = req.body;
       const { pool: dbPool } = await import('./db');
       await dbPool.query(`
@@ -1260,33 +1210,6 @@ Last updated: ${new Date().toISOString().split('T')[0]}
       res.json(result.rows[0]);
     } catch (error) {
       res.status(500).json({ message: 'Failed to end event' });
-    }
-  });
-
-  // GET /api/stats/community — public, cached, real survivor count for social proof
-  app.get('/api/stats/community', async (_req, res) => {
-    try {
-      const { pool: dbPool } = await import('./db');
-      const [countRow, avatarRows] = await Promise.all([
-        dbPool.query(`SELECT COUNT(*)::int AS total FROM users`),
-        dbPool.query(
-          `SELECT COALESCE(us.avatar_url, u.profile_image_url) AS avatar,
-                  COALESCE(us.display_name, u.first_name, 'S') AS name
-           FROM users u
-           LEFT JOIN user_settings us ON us.user_id = u.id
-           WHERE COALESCE(us.avatar_url, u.profile_image_url) IS NOT NULL
-           ORDER BY u.created_at DESC LIMIT 4`
-        ),
-      ]);
-      const total: number = countRow.rows[0]?.total ?? 0;
-      const avatars = avatarRows.rows.map((r: { avatar: string; name: string }) => ({
-        src: r.avatar as string,
-        name: r.name as string,
-      }));
-      res.set('Cache-Control', 'public, max-age=300');
-      res.json({ total, display: total >= 1000 ? `${(total / 1000).toFixed(1)}k+` : `${total}`, avatars });
-    } catch {
-      res.json({ total: 0, display: '0', avatars: [] });
     }
   });
 
@@ -1397,32 +1320,33 @@ Last updated: ${new Date().toISOString().split('T')[0]}
     console.warn("[startup] initRecoveryBlogPosts skipped:", err?.message ?? err);
   }
 
-  // Init push_subscriptions table (non-fatal). The accountability *scheduler*
-  // itself is now owned by the durable scheduler (bootstrapScheduler below),
-  // not a per-process setInterval.
+  // Start newsletter drip scheduler (non-fatal)
   try {
-    const { initPushSchema, initMobilePushSchema } = await import('./pushNotificationService');
-    await initPushSchema();
-    await initMobilePushSchema();
+    const { startNewsletterScheduler } = await import('./newsletterService');
+    startNewsletterScheduler();
   } catch (err: any) {
-    console.warn("[startup] push schema init skipped:", err?.message ?? err);
+    console.warn("[startup] newsletter scheduler skipped:", err?.message ?? err);
   }
 
-  // Durable job scheduler — owns all recurring, DB-backed, must-not-double-fire
-  // work (journal nudges, newsletter drip, accountability pings, stale-analysis
-  // reaper, run-history pruning). Restart-safe + single-fire across instances via
-  // an atomic claim in Postgres. In-memory prunes (rate-limiter map, in-process
-  // job-queue cleanup) intentionally stay as per-process setInterval — they must
-  // run in EVERY process, so single-firing them would be a bug.
+  // Start journal return-funnel nudge scheduler (non-fatal)
   try {
-    const { bootstrapScheduler } = await import('./scheduler/registerJobs');
-    await bootstrapScheduler();
+    const { startJournalNudgeScheduler } = await import('./journalNudgeService');
+    startJournalNudgeScheduler();
   } catch (err: any) {
-    console.warn("[startup] durable scheduler skipped:", err?.message ?? err);
+    console.warn("[startup] journal nudge scheduler skipped:", err?.message ?? err);
+  }
+
+  // Init push_subscriptions table + start accountability scheduler (non-fatal)
+  try {
+    const { initPushSchema, startAccountabilityScheduler } = await import('./pushNotificationService');
+    await initPushSchema();
+    startAccountabilityScheduler();
+  } catch (err: any) {
+    console.warn("[startup] accountability scheduler skipped:", err?.message ?? err);
   }
 
   // Init Sasquatch personal-chat persistence + daily-ping ledger (non-fatal).
-  // The ping itself is fired by the accountability job on the durable scheduler.
+  // The ping itself is fired by the accountability scheduler in pushNotificationService.
   try {
     const { initSasquatchSchema } = await import('./sasquatchHistoryService');
     await initSasquatchSchema();
@@ -1433,32 +1357,19 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   // Auth routes
   app.get('/api/auth/user', async (req: any, res) => {
     try {
-      // Bridge: support Replit Passport (req.user.claims.sub), Google OAuth /
-      // multi-provider Passport (req.user.id, no .claims), and email/password/OTP
-      // sessions (req.session.userId).
+      // Bridge: support both Replit Passport (req.user.claims.sub) and
+      // email/password/OTP sessions (req.session.userId).
       let userId: string | undefined;
-      if (req.isAuthenticated && req.isAuthenticated()) {
-        userId = getUserId(req);
-      }
-      if (!userId && req.session?.userId) {
+      if (req.isAuthenticated && req.isAuthenticated() && req.user?.claims?.sub) {
+        userId = req.user.claims.sub;
+      } else if (req.session?.userId) {
         userId = req.session.userId;
       }
       if (!userId) {
         return res.json(null);
       }
-      const [user, settings] = await Promise.all([
-        storage.getUser(userId),
-        storage.getUserSettings(userId).catch(() => undefined),
-      ]);
-      if (!user) return res.json(null);
-      // Merge userSettings fields so the client always gets the best available identity.
-      // Priority: userSettings (platform upload) > users.avatarUrl (AI avatar) > OAuth photo.
-      res.json({
-        ...user,
-        avatarUrl: settings?.avatarUrl || user.avatarUrl || user.profileImageUrl || null,
-        displayName: settings?.displayName || user.firstName || null,
-        username: settings?.username || null,
-      });
+      const user = await storage.getUser(userId);
+      res.json(user);
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
@@ -1492,12 +1403,41 @@ Last updated: ${new Date().toISOString().split('T')[0]}
     }
   });
 
-  // Canonical magic-link verification. The alias /api/email-auth/verify-magic-link
-  // delegates to this same handler (see magicLinkService.handleMagicLinkVerify) so
-  // both emailed link shapes terminate in one verifier code path.
   app.get('/api/auth/magic-link/verify/:token', async (req: any, res) => {
-    const { handleMagicLinkVerify } = await import('./magicLinkService');
-    return handleMagicLinkVerify(req, res);
+    try {
+      const { token } = req.params;
+      if (!token) {
+        return res.status(400).json({ message: "Token is required" });
+      }
+
+      const { verifyMagicLink } = await import('./magicLinkService');
+      const result = await verifyMagicLink(token);
+
+      if (!result.success) {
+        return res.status(400).json({ message: result.error || "Invalid magic link" });
+      }
+
+      const user = await storage.getUser(result.userId!);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      req.login({ 
+        claims: { sub: user.id, email: user.email },
+        access_token: null,
+        refresh_token: null,
+        expires_at: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60)
+      }, (err: any) => {
+        if (err) {
+          console.error("Login error:", err);
+          return res.status(500).json({ message: "Failed to create session" });
+        }
+        res.json({ success: true, user });
+      });
+    } catch (error: any) {
+      console.error("Magic link verification error:", error);
+      res.status(500).json({ message: error.message || "Failed to verify magic link" });
+    }
   });
 
   // Email/Password Login route
@@ -1680,7 +1620,7 @@ Last updated: ${new Date().toISOString().split('T')[0]}
         return res.status(400).json({ message: 'Invalid feedback', errors: parse.error.flatten() });
       }
       const { route, kind, body, severity, contactEmail } = parse.data;
-      const userId = getUserId(req) ?? null;
+      const userId = req.user?.claims?.sub ?? null;
       const userAgent = (req.headers['user-agent'] || '').toString().slice(0, 500);
       const { pool: dbPool } = await import('./db');
       const result = await dbPool.query(
@@ -1983,7 +1923,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
       const slugSafe = String(d.slug).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 200);
 
       const [row] = await dbInst.insert(blogPosts).values({
-        authorId: getUserId(req),
+        authorId: req.user.claims.sub,
         slug: `${slugSafe}-${Date.now().toString(36)}`,
         title: String(d.title).slice(0, 200),
         excerpt: String(d.excerpt || '').slice(0, 500),
@@ -2057,52 +1997,6 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
     }
   });
 
-  // No-JS SSR blog email capture — posts a plain <form>, responds with a 303 redirect
-  // to a styled thank-you page. Honeypot-gated, rate-limited, reuses the S.A.S.C.H. drip.
-  app.post('/api/newsletter/subscribe-form', subscribeRateLimit, async (req, res) => {
-    try {
-      const { email, hp_field, source } = req.body || {};
-      // Honeypot: real users never fill this hidden field. Bots do — fail soft.
-      if (hp_field) return res.redirect(303, '/newsletter/thanks');
-      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        return res.redirect(303, '/newsletter/thanks?ok=0');
-      }
-      const cleanEmail = String(email).trim().toLowerCase();
-      const { newsletterSubscribers } = await import('../shared/schema');
-      const { db: nsDb } = await import('./db');
-      const existing = await nsDb
-        .select()
-        .from(newsletterSubscribers)
-        .where(eq(newsletterSubscribers.email, cleanEmail))
-        .limit(1);
-      const isNewSubscriber = existing.length === 0;
-
-      const { subscribeToNewsletter } = await import('./newsletterService');
-      await subscribeToNewsletter(cleanEmail, undefined, source === 'blog' ? 'blog' : 'website');
-
-      if (isNewSubscriber) {
-        const { sendSaschWelcomeEmail } = await import('./saschCheatSheet');
-        sendSaschWelcomeEmail(cleanEmail, undefined).catch((err) =>
-          console.error('[newsletter-form] welcome email background error:', err?.message),
-        );
-      }
-      return res.redirect(303, '/newsletter/thanks');
-    } catch (err: any) {
-      console.error('[newsletter-form] subscribe error:', err);
-      return res.redirect(303, '/newsletter/thanks?ok=0');
-    }
-  });
-
-  // Styled SSR thank-you page for the no-JS form flow above.
-  app.get('/newsletter/thanks', async (req, res) => {
-    const { renderSsrThanks } = await import('./seo/ssrShell');
-    const ok = req.query.ok !== '0';
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.setHeader('Cache-Control', 'no-store');
-    res.setHeader('X-SRA-SSR', '1');
-    res.send(renderSsrThanks(ok));
-  });
-
   // ── S.A.S.C.H. Cheat Sheet lead magnet ─────────────────────────────────────
   // Rate limit raw PDF generation: 20/hour per IP — stops DoS via repeated regen
   const pdfDownloadRateLimit = makeRateLimiter(20, 60 * 60 * 1000);
@@ -2165,68 +2059,6 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
     } catch (err: any) {
       console.error('[sasch] subscribe error:', err);
       res.status(500).json({ message: err.message || 'Could not deliver the cheat sheet. Try again.' });
-    }
-  });
-
-  // ── The First 40 Days lead magnet ──────────────────────────────────────────
-  // Public PDF download (also served as fallback link in welcome email)
-  app.get('/api/first-40-days/guide.pdf', pdfDownloadRateLimit, async (_req, res) => {
-    try {
-      const { generateFirst40DaysPdf } = await import('./first40Days');
-      const pdf = await generateFirst40DaysPdf();
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', 'attachment; filename="The-First-40-Days.pdf"');
-      res.setHeader('Cache-Control', 'public, max-age=3600');
-      res.send(pdf);
-    } catch (err: any) {
-      console.error('[first40] pdf generation error:', err);
-      res.status(500).json({ message: 'Could not generate the guide right now.' });
-    }
-  });
-
-  // Email gate — captures email, subscribes to nurture drip, sends welcome email with PDF
-  app.post('/api/first-40-days/subscribe', subscribeRateLimit, async (req, res) => {
-    try {
-      const { email, firstName } = req.body;
-      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        return res.status(400).json({ message: 'Enter a valid email so we can send your guide.' });
-      }
-      const cleanEmail = email.trim().toLowerCase();
-      const cleanName = firstName?.trim() || undefined;
-
-      // Prevent duplicate welcome+PDF spam on resubmits
-      const { newsletterSubscribers } = await import('../shared/schema');
-      const { db: nsDb } = await import('./db');
-      const existing = await nsDb
-        .select()
-        .from(newsletterSubscribers)
-        .where(eq(newsletterSubscribers.email, cleanEmail))
-        .limit(1);
-      const isNewSubscriber = existing.length === 0;
-
-      const { subscribeToNewsletter } = await import('./newsletterService');
-      await subscribeToNewsletter(cleanEmail, cleanName, 'first_40_days');
-
-      // Only send the welcome email + PDF on the first signup. Re-subscribers can grab
-      // the PDF directly from the public download link. Prevents inbox spam attacks.
-      if (isNewSubscriber) {
-        const { sendFirst40WelcomeEmail } = await import('./first40Days');
-        sendFirst40WelcomeEmail(cleanEmail, cleanName).catch((err) =>
-          console.error('[first40] welcome email background error:', err?.message),
-        );
-      }
-
-      res.json({
-        success: true,
-        alreadySubscribed: !isNewSubscriber,
-        message: isNewSubscriber
-          ? 'Guide incoming. Check your inbox in the next minute.'
-          : "You're already subscribed. Grab the PDF directly using the download link.",
-        downloadUrl: '/api/first-40-days/guide.pdf',
-      });
-    } catch (err: any) {
-      console.error('[first40] subscribe error:', err);
-      res.status(500).json({ message: err.message || 'Could not deliver the guide. Try again.' });
     }
   });
 
@@ -2371,65 +2203,27 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   });
 
   // OAuth redirect routes (configured when provider credentials are set)
-  app.get('/api/auth/google', (req, res) => {
+  app.get('/api/auth/google', (req, res, next) => {
     if (!process.env.GOOGLE_CLIENT_ID) {
       return res.status(503).json({ message: "Google authentication not configured" });
     }
-    res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(req.protocol + '://' + req.get('host') + '/api/auth/google/callback')}&response_type=code&scope=email%20profile`);
+    passport.authenticate('google', { scope: ['email', 'profile'] })(req, res, next);
   });
 
-  app.get('/api/auth/google/callback', async (req, res) => {
-    const { code, error } = req.query;
-    if (error || !code) {
-      return res.redirect('/auth?error=google_denied');
-    }
-    try {
-      const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          code: code as string,
-          client_id: process.env.GOOGLE_CLIENT_ID!,
-          client_secret: process.env.GOOGLE_CLIENT_SECRET!,
-          redirect_uri: `${req.protocol}://${req.get('host')}/api/auth/google/callback`,
-          grant_type: 'authorization_code',
-        }),
-      });
-      const tokens = await tokenRes.json() as any;
-      if (!tokens.access_token) {
-        console.error('Google token exchange failed:', tokens);
-        return res.redirect('/auth?error=google_token');
+  app.get('/api/auth/google/callback', (req, res, next) => {
+    passport.authenticate('google', { failureRedirect: '/sign-in' }, (err: any, user: any) => {
+      if (err || !user) {
+        return res.redirect('/sign-in');
       }
-      const profileRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-        headers: { Authorization: `Bearer ${tokens.access_token}` },
-      });
-      const profile = await profileRes.json() as any;
-      const user = await findOrCreateOAuthUser({
-        id: profile.id,
-        displayName: profile.name || profile.email,
-        emails: profile.email ? [{ value: profile.email }] : [],
-        photos: profile.picture ? [{ value: profile.picture }] : [],
-        provider: 'google',
-      });
-      req.logIn(user, async (err) => {
-        if (err) {
-          console.error('Google auth session error:', err);
-          return res.redirect('/auth?error=google_session');
+      req.logIn(user, (loginErr) => {
+        if (loginErr) {
+          return res.redirect('/sign-in');
         }
-        try {
-          const profile = await storage.getUserProfile(user.id);
-          if (profile?.intakeCompletedAt) {
-            return res.redirect('/recovery/dashboard');
-          }
-        } catch (_) {
-          // fall through on DB error — intake is a safe landing
-        }
-        return res.redirect('/recovery/intake');
+        const returnTo = (req.session as any)?.returnTo || '/recovery/dashboard';
+        delete (req.session as any).returnTo;
+        res.redirect(returnTo);
       });
-    } catch (err) {
-      console.error('Google OAuth callback error:', err);
-      res.redirect('/auth?error=google_failed');
-    }
+    })(req, res, next);
   });
 
   app.get('/api/auth/facebook', (req, res) => {
@@ -2508,7 +2302,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
 
   app.post('/api/checkout', isAuthenticated, paymentCheckoutRateLimit, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -2543,7 +2337,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
 
   app.get('/api/subscription', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
       if (!user?.stripeSubscriptionId) {
         return res.json({ subscription: null });
@@ -2559,7 +2353,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
 
   app.post('/api/customer-portal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
       if (!user?.stripeCustomerId) {
         return res.status(400).json({ message: "No Stripe customer found" });
@@ -2584,7 +2378,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // Create Connect account and get onboarding link
   app.post('/api/stripe/connect/onboard', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -2603,7 +2397,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // Get Connect account status
   app.get('/api/stripe/connect/status', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const status = await stripeService.getConnectAccountStatus(userId);
       res.json(status);
     } catch (error: any) {
@@ -2615,7 +2409,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // Get Connect dashboard login link
   app.get('/api/stripe/connect/login', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const url = await stripeService.createConnectLoginLink(userId);
       res.json({ url });
     } catch (error: any) {
@@ -2627,7 +2421,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // Get creator earnings
   app.get('/api/creator/earnings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const data = await stripeService.getCreatorEarnings(userId);
       res.json(data);
     } catch (error: any) {
@@ -2639,7 +2433,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // Get creator payouts
   app.get('/api/creator/payouts', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const payouts = await stripeService.getCreatorPayouts(userId);
       res.json(payouts);
     } catch (error: any) {
@@ -2651,7 +2445,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // Request payout transfer
   app.post('/api/creator/payouts/transfer', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { earningIds } = req.body;
       
       if (!earningIds?.length) {
@@ -2707,7 +2501,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
 
   app.post('/api/forum/threads', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { categoryId, title, content } = req.body;
 
       // P2-01: crisis detection on the original post too
@@ -2745,7 +2539,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
 
   app.post('/api/forum/posts', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { threadId, content, parentId } = req.body;
 
       // P2-01: crisis detection
@@ -2790,7 +2584,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // Update a post (author or moderator)
   app.patch('/api/forum/posts/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const postId = parseInt(req.params.id);
       const { content } = req.body;
       
@@ -2815,7 +2609,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // Delete a post (author or moderator)
   app.delete('/api/forum/posts/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const postId = parseInt(req.params.id);
       
       const post = await storage.getForumPost(postId);
@@ -2839,7 +2633,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // React to a post
   app.post('/api/forum/posts/:id/react', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const postId = parseInt(req.params.id);
       const { reactionType = 'like' } = req.body;
       
@@ -2866,7 +2660,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // Moderation: Lock/unlock thread
   app.patch('/api/forum/threads/:id/moderate', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
       
       if (!['moderator', 'admin'].includes(user?.role || '')) {
@@ -2885,7 +2679,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // Delete thread (moderator only)
   app.delete('/api/forum/threads/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
       
       if (!['moderator', 'admin'].includes(user?.role || '')) {
@@ -4172,7 +3966,7 @@ Clean composition, artistic, evocative. No text or words in the image.`;
   // Create new book project
   app.post('/api/book-projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4205,7 +3999,7 @@ Clean composition, artistic, evocative. No text or words in the image.`;
   // Book Studio tier / quota info
   app.get('/api/book-studio/tier-info', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4239,7 +4033,7 @@ Clean composition, artistic, evocative. No text or words in the image.`;
   // List user's book projects
   app.get('/api/book-projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4259,7 +4053,7 @@ Clean composition, artistic, evocative. No text or words in the image.`;
   // Get single book project with sections
   app.get('/api/book-projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4292,7 +4086,7 @@ Clean composition, artistic, evocative. No text or words in the image.`;
   // Update book project (including autosave support)
   app.patch('/api/book-projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4340,7 +4134,7 @@ Clean composition, artistic, evocative. No text or words in the image.`;
   // Delete book project
   app.delete('/api/book-projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4369,7 +4163,7 @@ Clean composition, artistic, evocative. No text or words in the image.`;
   // Extract facts and update accumulated knowledge after each conversation
   app.post('/api/book-projects/:id/learn', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4499,7 +4293,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Get accumulated knowledge for a project
   app.get('/api/book-projects/:id/knowledge', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4707,7 +4501,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Create new workflow (authenticated)
   app.post('/api/workflows', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) return res.status(401).json({ message: 'Unauthorized' });
 
       const slug = req.body.title.toLowerCase()
@@ -4731,7 +4525,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Get user's owned/purchased workflows
   app.get('/api/workflows/my-workflows', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) return res.status(401).json({ message: 'Unauthorized' });
 
       // Get user's owned workflows
@@ -4759,7 +4553,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Add section/chapter to book project
   app.post('/api/book-projects/:id/sections', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4805,7 +4599,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Update section
   app.patch('/api/book-projects/:id/sections/:sectionId', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4856,7 +4650,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Delete section
   app.delete('/api/book-projects/:id/sections/:sectionId', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4898,7 +4692,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Reorder sections
   app.put('/api/book-projects/:id/sections/reorder', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4947,7 +4741,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Add image placement
   app.post('/api/book-projects/:id/image-placements', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4981,7 +4775,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Update image placement
   app.patch('/api/book-projects/:id/image-placements/:placementId', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -5029,7 +4823,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Delete image placement
   app.delete('/api/book-projects/:id/image-placements/:placementId', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -5067,7 +4861,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Get user's author profiles
   app.get('/api/author-profiles', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -5087,7 +4881,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Create author profile
   app.post('/api/author-profiles', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -5117,7 +4911,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Update author profile
   app.patch('/api/author-profiles/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -5215,7 +5009,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Analyze manuscript for publication readiness
   app.post('/api/book-projects/:id/analyze', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims?.sub || req.user.id;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -7575,7 +7369,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
   // Get music projects for user
   app.get('/api/music/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { musicProjects } = await import("@shared/schema");
       const rows = await db.select().from(musicProjects)
         .where(eq(musicProjects.userId, userId))
@@ -7590,7 +7384,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
   // Create music project
   app.post('/api/music/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { musicProjects } = await import("@shared/schema");
       const [row] = await db.insert(musicProjects).values({
         userId,
@@ -7615,7 +7409,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
   // Update music project
   app.patch('/api/music/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const id = parseInt(req.params.id, 10);
       const { musicProjects } = await import("@shared/schema");
       const [existing] = await db.select().from(musicProjects).where(eq(musicProjects.id, id));
@@ -7635,7 +7429,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
   // Publish / unpublish music project
   app.post('/api/music/projects/:id/publish', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const id = parseInt(req.params.id, 10);
       const { musicProjects } = await import("@shared/schema");
       const [existing] = await db.select().from(musicProjects).where(eq(musicProjects.id, id));
@@ -7656,7 +7450,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
   // ============================================================================
   app.get('/api/my-courses', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { courses } = await import("@shared/schema");
       const rows = await db.select().from(courses)
         .where(eq(courses.instructorId, userId))
@@ -7670,7 +7464,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.get('/api/my-courses/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const id = parseInt(req.params.id, 10);
       const { courses, courseModules, courseLessons } = await import("@shared/schema");
       const [course] = await db.select().from(courses).where(eq(courses.id, id));
@@ -7823,7 +7617,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.post('/api/my-courses', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const course = await saveCourseTree(userId, req.body);
       res.json(course);
     } catch (error) {
@@ -7834,7 +7628,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.patch('/api/my-courses/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const id = parseInt(req.params.id, 10);
       const course = await saveCourseTree(userId, req.body, id);
       res.json(course);
@@ -7847,7 +7641,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.post('/api/my-courses/:id/publish', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const id = parseInt(req.params.id, 10);
       const { courses } = await import("@shared/schema");
       const [existing] = await db.select().from(courses).where(eq(courses.id, id));
@@ -7865,7 +7659,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.delete('/api/my-courses/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const id = parseInt(req.params.id, 10);
       const { courses } = await import("@shared/schema");
       const [existing] = await db.select().from(courses).where(eq(courses.id, id));
@@ -7883,7 +7677,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
   // ============================================================================
   app.get('/api/video/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { videoProjects } = await import("@shared/schema");
       const rows = await db.select().from(videoProjects)
         .where(eq(videoProjects.userId, userId))
@@ -7897,7 +7691,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.post('/api/video/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { videoProjects } = await import("@shared/schema");
       const [row] = await db.insert(videoProjects).values({
         userId,
@@ -7921,7 +7715,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.patch('/api/video/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const id = parseInt(req.params.id, 10);
       const { videoProjects } = await import("@shared/schema");
       const [existing] = await db.select().from(videoProjects).where(eq(videoProjects.id, id));
@@ -7940,7 +7734,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.post('/api/video/projects/:id/publish', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const id = parseInt(req.params.id, 10);
       const { videoProjects } = await import("@shared/schema");
       const [existing] = await db.select().from(videoProjects).where(eq(videoProjects.id, id));
@@ -7958,7 +7752,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.delete('/api/video/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const id = parseInt(req.params.id, 10);
       const { videoProjects } = await import("@shared/schema");
       const [existing] = await db.select().from(videoProjects).where(eq(videoProjects.id, id));
@@ -7976,7 +7770,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
   // ============================================================================
   app.get('/api/image/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { imageProjects } = await import("@shared/schema");
       const rows = await db.select().from(imageProjects)
         .where(eq(imageProjects.userId, userId))
@@ -7990,7 +7784,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.post('/api/image/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { imageProjects } = await import("@shared/schema");
       if (!req.body.imageUrl) return res.status(400).json({ message: "imageUrl required" });
       const [row] = await db.insert(imageProjects).values({
@@ -8015,7 +7809,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.patch('/api/image/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const id = parseInt(req.params.id, 10);
       const { imageProjects } = await import("@shared/schema");
       const [existing] = await db.select().from(imageProjects).where(eq(imageProjects.id, id));
@@ -8034,7 +7828,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.post('/api/image/projects/:id/publish', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const id = parseInt(req.params.id, 10);
       const { imageProjects } = await import("@shared/schema");
       const [existing] = await db.select().from(imageProjects).where(eq(imageProjects.id, id));
@@ -8052,7 +7846,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.delete('/api/image/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const id = parseInt(req.params.id, 10);
       const { imageProjects } = await import("@shared/schema");
       const [existing] = await db.select().from(imageProjects).where(eq(imageProjects.id, id));
@@ -8416,7 +8210,7 @@ Respond in JSON format:
   // Revenue Pulse - Real-time market analytics for Intelligence HUD
   app.get('/api/book-studio/revenue-pulse', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub;
       
       // Fetch real earnings data
       const earnings = await db.select()
@@ -8612,7 +8406,7 @@ Respond in JSON format:
   // Entity Sync - Cross-studio entity sharing via Author Brain
   app.get('/api/book-studio/entities', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub;
       const { projectId, type } = req.query;
       
       // Fetch entities from book projects and related data
@@ -9728,7 +9522,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       // we never block a crisis message.
       const crisis = detectCrisis(message);
       if (crisis.detected && crisis.category) {
-        const userId = getUserId(req) ?? null;
+        const userId = req.user?.claims?.sub ?? null;
         console.warn(JSON.stringify({
           level: 'warn',
           ts: new Date().toISOString(),
@@ -9811,28 +9605,19 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         todayVerdict?: string | null;
         tomorrowSuggestion?: string | null;
         hasLoggedToday?: boolean;
-        morningBrief?: string | null;
-        morningFocusItems?: string[] | null;
-        sosState?: string | null;
-        strokeType?: string | null;
-        affectedSide?: string | null;
-        deficits?: Record<string, number> | null;
-        timeBudgetMinutes?: number | null;
-        energyPattern?: string | null;
-        daysSinceStroke?: number | null;
       } | undefined;
 
       let coachPersona: { name: string; creed: string; archetypeKey: string } | null = null;
 
-      if (getUserId(req)) {
-        const userId = getUserId(req);
+      if (req.user?.claims?.sub) {
+        const userId = req.user.claims.sub;
         try {
           // Fetch user's recovery context for personalized coaching, including
           // today's Never Zero reps + audit so Sasquatch references the actual
           // day instead of generic "keep pushing" lines.
           const { loadPersonaFor } = await import('./personaRoutes');
           const todayKey = localDateKey(new Date());
-          const [exerciseScores, streakData, milestonesData, userData, personaRow, neverZero, todayAudit, todayBrief, survivorProfile] = await Promise.all([
+          const [exerciseScores, streakData, milestonesData, userData, personaRow, neverZero, todayAudit] = await Promise.all([
             storage.getUserExerciseScores(userId).catch((err) => { console.error('[coach] getUserExerciseScores failed:', err); return []; }),
             storage.getUserStreak(userId).catch(() => ({ currentStreak: 0 })),
             storage.getUserMilestones(userId).catch(() => []),
@@ -9840,10 +9625,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
             loadPersonaFor(userId).catch(() => null),
             storage.getNeverZeroData(userId).catch(() => null),
             storage.getNeverZeroAuditByDate(userId, todayKey).catch(() => null),
-            storage.getMorningBrief(userId, todayKey).catch(() => null),
-            storage.getUserProfile(userId).catch(() => null),
           ]);
-          const todayCheckin = await storage.getDailyCheckin(userId, new Date()).catch(() => null);
 
           if (personaRow) {
             coachPersona = {
@@ -9859,9 +9641,6 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
           const todayReps = todayLogs.map((l) => l.action).slice(0, 6);
           const nzStreak = neverZero?.currentStreak ?? streakData?.currentStreak ?? 0;
 
-          const strokeDateMs = survivorProfile?.strokeDate ? new Date(survivorProfile.strokeDate).getTime() : null;
-          const daysSinceStroke = strokeDateMs ? Math.floor((Date.now() - strokeDateMs) / 86_400_000) : null;
-
           userContext = {
             // Prefer persona name so the coach addresses the survivor as their forged self.
             name: personaRow?.name || userData?.firstName || userData?.email || undefined,
@@ -9874,41 +9653,13 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
             todayVerdict: todayAudit?.verdict ?? null,
             tomorrowSuggestion: todayAudit?.tomorrow ?? null,
             hasLoggedToday: todayLogs.length > 0,
-            morningBrief: todayBrief?.brief ?? null,
-            morningFocusItems: todayBrief?.focusItems ?? null,
-            sosState: (todayCheckin as any)?.sosState ?? (todayCheckin as any)?.sos_state ?? null,
-            // Deficit profile — the heart of personalized coaching
-            strokeType: survivorProfile?.strokeType ?? null,
-            affectedSide: survivorProfile?.affectedSide ?? null,
-            deficits: survivorProfile?.deficits ?? null,
-            timeBudgetMinutes: survivorProfile?.dailyTimeBudgetMinutes ?? null,
-            energyPattern: survivorProfile?.energyPattern ?? null,
-            daysSinceStroke,
           };
         } catch (e) {
           console.error('Error fetching user context:', e);
         }
       }
 
-      // Cross-session memory injection: if the client sent no/short history,
-      // load the last 12 persisted messages from DB so the Coach remembers
-      // previous conversations without requiring any client changes.
-      let contextHistory: typeof history = history || [];
-      if (capUserId && contextHistory.length < 4) {
-        try {
-          const { getChatHistory } = await import('./sasquatchHistoryService');
-          const dbMsgs = await getChatHistory(capUserId);
-          if (dbMsgs.length > 0) {
-            // Take the last 12 messages (6 exchanges), map to Gemini role names.
-            contextHistory = dbMsgs.slice(-12).map((m) => ({
-              role: m.role === 'coach' ? 'model' : 'user',
-              content: m.content,
-            }));
-          }
-        } catch { /* non-fatal — Coach works without persistent memory */ }
-      }
-
-      const result = await generateCoachResponse(message, contextHistory, getSasquatchCoachPrompt(coachPersona), userContext);
+      const result = await generateCoachResponse(message, history || [], getSasquatchCoachPrompt(coachPersona), userContext);
 
       // Hard rule: every Sasquatch reply MUST end with a quote on its own
       // line, prefixed with "— ". The system prompt instructs Gemini to do
@@ -10074,7 +9825,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // Get comprehensive dashboard data
   app.get('/api/recovery/dashboard', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const enrollment = await storage.getUserEnrollment(userId);
       const streak = await storage.getUserStreak(userId);
       const todayCheckin = await storage.getDailyCheckin(userId, new Date());
@@ -10167,7 +9918,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // Get user enrollment
   app.get('/api/recovery/enrollment', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const enrollment = await storage.getUserEnrollment(userId);
       res.json(enrollment || null);
     } catch (error) {
@@ -10179,7 +9930,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // Create enrollment (from builder)
   app.post('/api/recovery/enrollment', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { programId } = req.body;
       
       const existing = await storage.getUserEnrollment(userId);
@@ -10204,7 +9955,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // Get user streak
   app.get('/api/recovery/streak', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const streak = await storage.getUserStreak(userId);
       res.json(streak || { currentStreak: 0, longestStreak: 0, totalActiveDays: 0 });
     } catch (error) {
@@ -10213,33 +9964,10 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     }
   });
 
-  // 90-day progress arc — daily reps + mood trend for the Progress Arc chart.
-  app.get('/api/recovery/progress-arc', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = getUserId(req);
-      if (!userId) return res.status(401).json({ message: "Unauthorized" });
-      const checkins = await storage.getRecentCheckins(userId, 90);
-      const arc = checkins
-        .map((c: any) => ({
-          date: new Date(c.createdAt || c.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-          mood: c.moodScore != null ? Math.round(c.moodScore) : (c.mood_score != null ? Math.round(c.mood_score) : null),
-          energy: c.energyScore != null ? Math.round(c.energyScore) : (c.energy_score != null ? Math.round(c.energy_score) : null),
-          reps: Array.isArray(c.exercisesLogged ?? c.exercises_logged)
-            ? (c.exercisesLogged ?? c.exercises_logged).length
-            : 0,
-        }))
-        .reverse(); // oldest → newest
-      res.json({ arc, totalDays: 90 });
-    } catch (error) {
-      console.error("Error fetching progress arc:", error);
-      res.status(500).json({ message: "Failed to fetch progress arc" });
-    }
-  });
-
   // Get today's check-in
   app.get('/api/recovery/checkin/today', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const checkin = await storage.getDailyCheckin(userId, new Date());
       res.json(checkin || null);
     } catch (error) {
@@ -10251,7 +9979,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // Create daily check-in
   app.post('/api/recovery/checkin', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { moodScore, energyScore, painScore, effortScore, winsToday, challengesToday, gratitude } = req.body;
       
       const existing = await storage.getDailyCheckin(userId, new Date());
@@ -10270,12 +9998,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         challengesToday,
         gratitude,
       });
-
-      // Funnel: a check-in may have just satisfied the activation condition.
-      void import('./services/sasquatchFunnelService').then((f) =>
-        f.maybeRecordActivation(userId),
-      ).catch(() => {});
-
+      
       const streak = await storage.getUserStreak(userId);
       const today = new Date();
       const yesterday = new Date(today);
@@ -10326,233 +10049,10 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     }
   });
 
-  // Update today's checkin with exercises / habits / structured fields (PATCH — additive, not replace)
-  app.patch('/api/recovery/checkin', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = getUserId(req);
-      const { exercisesLogged, habitsCompleted, winsToday, challengesToday, moodScore, energyScore } = req.body;
-      const sosState = ['survive', 'organize', 'strive'].includes(req.body.sosState) ? req.body.sosState : undefined;
-      const existing = await storage.getDailyCheckin(userId, new Date());
-      if (existing) {
-        const updated = await storage.updateDailyCheckin(userId, new Date(), {
-          exercisesLogged, habitsCompleted, winsToday, challengesToday, moodScore, energyScore, sosState,
-        });
-        return res.json({ checkin: updated ?? existing });
-      }
-      // No checkin yet — create one implicitly
-      const checkin = await storage.createDailyCheckin({
-        userId,
-        checkinDate: new Date(),
-        moodScore: moodScore ?? 6,
-        energyScore: energyScore ?? 6,
-        winsToday: winsToday ?? null,
-        challengesToday: challengesToday ?? null,
-        exercisesLogged: exercisesLogged ?? null,
-        habitsCompleted: habitsCompleted ?? null,
-        sosState: sosState ?? null,
-      });
-      // Streak
-      const streak = await storage.getUserStreak(userId);
-      const today = new Date();
-      const yesterday = new Date(today);
-      yesterday.setDate(yesterday.getDate() - 1);
-      yesterday.setHours(0, 0, 0, 0);
-      let newCurrentStreak = 1;
-      if (streak?.lastActivityDate) {
-        const lastDate = new Date(streak.lastActivityDate);
-        lastDate.setHours(0, 0, 0, 0);
-        if (lastDate.getTime() === yesterday.getTime()) {
-          newCurrentStreak = (streak.currentStreak || 0) + 1;
-        }
-      }
-      await storage.createOrUpdateUserStreak(userId, {
-        currentStreak: newCurrentStreak,
-        longestStreak: Math.max(newCurrentStreak, streak?.longestStreak || 0),
-        lastActivityDate: today,
-        totalActiveDays: (streak?.totalActiveDays || 0) + 1,
-      });
-      try {
-        const { addCredits } = await import('./creditService');
-        await addCredits(userId, 10, 'bonus', 'Daily loop check-in', { streak: newCurrentStreak });
-      } catch {}
-      res.json({ checkin });
-    } catch (error) {
-      console.error("[checkin PATCH] error:", error);
-      res.status(500).json({ message: "Failed to update check-in." });
-    }
-  });
-
-  // Weekly activity — last 7 days of checkin data for the dashboard activity bars.
-  app.get('/api/recovery/weekly-activity', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = getUserId(req);
-      const { pool: dbPool } = await import('./db');
-      const result = await dbPool.query(`
-        SELECT
-          DATE(checkin_date AT TIME ZONE 'UTC') AS day,
-          COUNT(*)::int AS sessions,
-          COALESCE(
-            CASE WHEN exercises_logged IS NOT NULL AND jsonb_typeof(exercises_logged) = 'array'
-              THEN jsonb_array_length(exercises_logged)
-              ELSE 0
-            END,
-            0
-          ) AS exercises_done,
-          mood_score,
-          energy_score
-        FROM daily_checkins
-        WHERE user_id = $1
-          AND checkin_date >= NOW() - INTERVAL '7 days'
-        GROUP BY DATE(checkin_date AT TIME ZONE 'UTC'), exercises_logged, mood_score, energy_score
-        ORDER BY day ASC
-      `, [userId]);
-      // Build a 7-slot array (Mon–Sun relative to today)
-      const today = new Date();
-      const days: { date: string; label: string; hasSession: boolean; exercisesDone: number; moodScore: number | null }[] = [];
-      const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-      for (let i = 6; i >= 0; i--) {
-        const d = new Date(today);
-        d.setDate(today.getDate() - i);
-        const key = d.toISOString().split("T")[0];
-        const match = (result.rows as any[]).find((r: any) => r.day === key || String(r.day).startsWith(key));
-        days.push({
-          date: key,
-          label: DAY_LABELS[d.getDay()],
-          hasSession: !!match,
-          exercisesDone: match ? (match.exercises_done ?? 0) : 0,
-          moodScore: match ? match.mood_score : null,
-        });
-      }
-      res.json({ days });
-    } catch (error) {
-      console.error("[weekly-activity] error:", error);
-      res.status(500).json({ message: "Failed to fetch weekly activity" });
-    }
-  });
-
-  // Daily loop morning brief — Gemini reads 7-day history and generates a trend observation + 3 focus items.
-  // Cached to never_zero_audits.morning_brief so only one Gemini call per day per user.
-  app.post('/api/recovery/daily-loop/brief', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = getUserId(req);
-      const todayKey = (() => {
-        const d = new Date();
-        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-      })();
-
-      // Check premium status (needed for cache response AND for branch decision)
-      const userRec = await storage.getUser(userId).catch(() => null) as any;
-      const isPremium = ['active', 'trialing'].includes(String(userRec?.subscriptionStatus ?? ''));
-
-      // Serve cache if it exists — include live isPremium flag so UI is always accurate
-      const cached = await storage.getMorningBrief(userId, todayKey);
-      if (cached) return res.json({ ...cached, fromCache: true, isPremium });
-
-      // Free users get a static rotation — no Gemini cost, still useful
-      if (!isPremium) {
-        const STATIC_BRIEFS = [
-          { brief: "You can't control what the stroke took. You can control today's reps. One movement, one minute — start there.", focusItems: ["Log one exercise below", "Take your meds before coffee", "Text your accountability buddy"] },
-          { brief: "Recovery is arithmetic — not inspiration. Every rep adds. Skipping subtracts. The math doesn't care about your mood today.", focusItems: ["Complete at least one habit below", "Log today's energy level", "Check in on Never Zero"] },
-          { brief: "The survivors who rebuild fastest aren't more motivated — they're more consistent. Same time, same reps, same standard. Do the thing.", focusItems: ["Log your exercises for today", "Drink water before anything else", "Open the coach if you're stuck"] },
-          { brief: "Pain without progress is just suffering. Pain with reps is data. Log what you did today so we can read the trend tomorrow.", focusItems: ["Log at least two exercises", "Rate your mood honestly", "Write down one win — anything counts"] },
-          { brief: "Seven years out I still log the day. Not because I'm motivated — because the streak is the evidence I'm still in the fight.", focusItems: ["Don't break the streak — log now", "Mark your habits for today", "Find one rep to do in the next hour"] },
-        ];
-        const dayIdx = Math.floor(Date.now() / 86400000) % STATIC_BRIEFS.length;
-        const { brief, focusItems } = STATIC_BRIEFS[dayIdx];
-        await storage.saveMorningBrief(userId, todayKey, brief, focusItems);
-        return res.json({ brief, focusItems, fromCache: false, isPremium: false });
-      }
-
-      // Build context
-      const [recentCheckins, recentAudits, userData] = await Promise.all([
-        storage.getRecentCheckins(userId, 7).catch(() => [] as any[]),
-        storage.getNeverZeroAudits(userId, 7).catch(() => [] as any[]),
-        storage.getUser(userId).catch(() => null),
-      ]);
-
-      const checkinSummary = recentCheckins.length
-        ? recentCheckins.map((c: any) => {
-            const d = new Date(c.checkinDate);
-            const label = `${d.getMonth() + 1}/${d.getDate()}`;
-            const exs = Array.isArray(c.exercisesLogged) ? c.exercisesLogged.map((e: any) => e.name).join(', ') : '';
-            const habs = Array.isArray(c.habitsCompleted) ? c.habitsCompleted.join(', ') : '';
-            return `${label}: mood=${c.moodScore ?? '?'}/10, energy=${c.energyScore ?? '?'}/10, pain=${c.painScore ?? '?'}/10${exs ? `, exercises=[${exs}]` : ''}${habs ? `, habits=[${habs}]` : ''}${c.winsToday ? `, win="${c.winsToday}"` : ''}`;
-          }).join('\n')
-        : 'No recent check-ins recorded.';
-
-      const auditSummary = recentAudits.length
-        ? recentAudits.slice(0, 7).map((a: any) =>
-            `${a.auditDate}: streak=${a.streak}, reps=${a.todayCount}${a.verdict ? `, verdict="${a.verdict}"` : ''}`
-          ).join('\n')
-        : 'No recent audits recorded.';
-
-      const u = userData as any;
-      const briefPrompt = `You are Sasquatch — Nick Kremers, 7-year stroke survivor. You are writing a MORNING ACCOUNTABILITY BRIEF for a stroke survivor starting their day.
-
-Survivor context:
-- Stroke type: ${u?.strokeType ?? 'unknown'}, affected side: ${u?.affectedSide ?? 'unknown'}
-- Deficits: ${JSON.stringify(u?.deficits ?? {})}
-
-Last 7 days check-ins:
-${checkinSummary}
-
-Last 7 days NeverZero reps/audits:
-${auditSummary}
-
-Write a morning brief. Read the actual trend — not the vibe, the data. Be direct and specific. If energy is dropping, say so. If they skipped exercises three days running, name it. One honest observation. One clear call to action.
-
-Return EXACTLY this JSON — no prose, no markdown fences, no commentary:
-{
-  "brief": "<2-3 sentences MAX. One honest trend observation. One specific call to action for today. Sasquatch voice: direct, never sycophantic, no medical advice.>",
-  "focusItems": [
-    "<specific accountability action, 10 words max>",
-    "<specific accountability action, 10 words max>",
-    "<specific accountability action, 10 words max>"
-  ]
-}
-
-Focus items are accountability actions (log your PT, take meds before coffee, text your pod), NOT clinical exercises.`;
-
-      const { generateCoachResponse } = await import('./geminiService');
-      const out = await generateCoachResponse(briefPrompt, [], "recovery");
-
-      let brief = "Show up today. The only job is not to quit.";
-      let focusItems: string[] = ["Log today's exercises", "Take your meds on time", "Check in with your squad"];
-
-      try {
-        const cleaned = (out.response || '').replace(/```json\s*|\s*```/g, '').trim();
-        const firstBrace = cleaned.indexOf('{');
-        const lastBrace = cleaned.lastIndexOf('}');
-        if (firstBrace !== -1 && lastBrace !== -1) {
-          const parsed = JSON.parse(cleaned.slice(firstBrace, lastBrace + 1));
-          if (typeof parsed.brief === 'string') brief = parsed.brief.slice(0, 500);
-          if (Array.isArray(parsed.focusItems)) {
-            focusItems = parsed.focusItems
-              .filter((x: any) => typeof x === 'string')
-              .slice(0, 3)
-              .map((x: string) => x.slice(0, 100));
-          }
-        }
-      } catch {}
-
-      await storage.saveMorningBrief(userId, todayKey, brief, focusItems);
-      res.json({ brief, focusItems, fromCache: false, isPremium: true });
-    } catch (error) {
-      console.error("[daily-loop/brief] error:", error);
-      // Return a non-error fallback so the card still renders
-      res.json({
-        brief: "You showed up. That's the rep. Make today count.",
-        focusItems: ["Log today's exercises", "Take your meds on time", "Check in with your squad"],
-        fromCache: false,
-        isPremium: false,
-      });
-    }
-  });
-
   // Get user habits
   app.get('/api/recovery/habits', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const habits = await storage.getUserHabits(userId);
       res.json(habits);
     } catch (error) {
@@ -10575,7 +10075,7 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
   // Add new habit
   app.post('/api/recovery/habits', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { habitId, customName, targetDays = 66 } = req.body;
       
       if (!habitId) {
@@ -10614,7 +10114,7 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
   // Brain Gym — log a completed game (gives streak credit, no-op for guests)
   app.post('/api/recovery/brain-gym/complete', async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub;
       if (!userId) {
         return res.json({ ok: true, guest: true });
       }
@@ -10689,7 +10189,7 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
   // Brain Gym — personal stats (lifetime totals + per-game breakdown)
   app.get('/api/recovery/brain-gym/stats', async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub;
       if (!userId) {
         return res.json({ totalSolved: 0, byGame: {}, fastestSec: null });
       }
@@ -10764,7 +10264,7 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
       // Keep only one fastest entry per user
       const seen = new Set<string>();
       const top = [] as Array<{ rank: number; name: string; durationSec: number; hintsUsed: number; isYou: boolean }>;
-      const me = getUserId(req);
+      const me = req.user?.claims?.sub;
       for (const r of rows) {
         if (seen.has(r.userId)) continue;
         seen.add(r.userId);
@@ -10917,7 +10417,7 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
   // GET my opt-in status
   app.get('/api/recovery/spotlight/me', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
       res.json({
         optedIn: !!user?.spotlightOptedIn,
@@ -10933,7 +10433,7 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
   // PUT my opt-in status (must consent if opting in)
   app.put('/api/recovery/spotlight/me', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const optedIn = Boolean(req.body?.optedIn);
       const consent = Boolean(req.body?.consent);
       if (optedIn && !consent) {
@@ -11244,367 +10744,11 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
     }
   });
 
-  // ── Spotlight nominations ─────────────────────────────────────────────────
-  // Presigned upload URL for nomination media (images / short videos)
-  app.post('/api/spotlight/nominations/upload-url', isAuthenticated, async (_req, res) => {
-    try {
-      const { ObjectStorageService } = await import('./replit_integrations/object_storage/objectStorage');
-      const objectStorage = new ObjectStorageService();
-      const uploadURL = await objectStorage.getObjectEntityUploadURL();
-      const objectPath = objectStorage.normalizeObjectEntityPath(uploadURL);
-      res.json({ uploadURL, objectPath });
-    } catch (err: any) {
-      console.error('[spotlight/upload-url]', err?.message);
-      res.status(500).json({ message: 'Failed to create upload URL' });
-    }
-  });
-
-  // Submit a spotlight application or nomination
-  app.post('/api/spotlight/nominations', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = getUserId(req);
-      if (!userId) return res.status(401).json({ message: 'Authentication required' });
-      const { type, nomineeName, nomineeEmail, nomineeLocation, strokeDate, relationship, description, mediaUrls } = req.body;
-      if (!nomineeName?.trim() || !description?.trim()) {
-        return res.status(400).json({ message: 'Name and description are required' });
-      }
-      if (description.length > 3000) {
-        return res.status(400).json({ message: 'Description too long (max 3000 chars)' });
-      }
-      const safeType = type === 'other' ? 'other' : 'self';
-      const safeMedia = (Array.isArray(mediaUrls) ? mediaUrls.slice(0, 10) : []).map(String);
-      await db.execute(sql`
-        INSERT INTO spotlight_nominations
-          (submitter_user_id, type, nominee_name, nominee_email, nominee_location,
-           stroke_date, relationship, description, media_urls)
-        VALUES
-          (${userId}, ${safeType},
-           ${String(nomineeName).trim().slice(0, 200)},
-           ${nomineeEmail ? String(nomineeEmail).trim().slice(0, 200) : null},
-           ${nomineeLocation ? String(nomineeLocation).trim().slice(0, 200) : null},
-           ${strokeDate ? String(strokeDate).trim().slice(0, 100) : null},
-           ${relationship ? String(relationship).trim().slice(0, 200) : null},
-           ${String(description).trim().slice(0, 3000)},
-           ${pgTextArray(safeMedia)})
-      `);
-      // Notify Nick
-      try {
-        const { sendEmail } = await import('./emailService');
-        const label = safeType === 'other' ? 'Nomination' : 'Self-application';
-        await sendEmail({
-          to: 'nick@strokerecoveryacademy.com',
-          subject: `Spotlight ${label} — ${String(nomineeName).trim()}`,
-          html: `<p><strong>Type:</strong> ${label}<br>
-                 <strong>Nominee:</strong> ${String(nomineeName).trim()}${nomineeEmail ? ` &lt;${String(nomineeEmail).trim()}&gt;` : ''}<br>
-                 ${nomineeLocation ? `<strong>Location:</strong> ${String(nomineeLocation).trim()}<br>` : ''}
-                 ${strokeDate ? `<strong>Stroke date:</strong> ${String(strokeDate).trim()}<br>` : ''}
-                 ${relationship ? `<strong>Relationship to nominee:</strong> ${String(relationship).trim()}<br>` : ''}
-                 <strong>Media files attached:</strong> ${safeMedia.length}<br><br>
-                 <strong>Why they deserve the spotlight:</strong><br>
-                 ${String(description).trim().replace(/\n/g, '<br>')}</p>`,
-          text: `Spotlight ${label}\n\nNominee: ${nomineeName}\n\n${description}`,
-        });
-      } catch { /* non-fatal */ }
-      res.json({ ok: true });
-    } catch (err: any) {
-      console.error('[spotlight/nominations]', err?.message);
-      res.status(500).json({ message: 'Failed to submit' });
-    }
-  });
-
-  // Admin — list nominations
-  app.get('/api/admin/spotlight/nominations', isAuthenticated, requireAdmin, async (_req, res) => {
-    try {
-      const rows = await db.execute(sql`
-        SELECT sn.*, u.email AS submitter_email,
-               u.first_name AS submitter_first, u.last_name AS submitter_last
-          FROM spotlight_nominations sn
-          JOIN users u ON u.id = sn.submitter_user_id
-         ORDER BY sn.created_at DESC
-         LIMIT 300
-      `);
-      res.json(rows.rows ?? []);
-    } catch (err: any) {
-      res.status(500).json({ message: err?.message });
-    }
-  });
-
-  // Admin — update nomination status + notes
-  app.patch('/api/admin/spotlight/nominations/:id/status', isAuthenticated, requireAdmin, async (req: any, res) => {
-    try {
-      const { id } = req.params;
-      const { status, adminNotes } = req.body;
-      if (!['pending', 'reviewed', 'selected', 'declined'].includes(status)) {
-        return res.status(400).json({ message: 'Invalid status' });
-      }
-      await db.execute(sql`
-        UPDATE spotlight_nominations
-           SET status = ${status},
-               admin_notes = ${adminNotes ? String(adminNotes).slice(0, 1000) : null}
-         WHERE id = ${Number(id)}
-      `);
-      res.json({ ok: true });
-    } catch (err: any) {
-      res.status(500).json({ message: err?.message });
-    }
-  });
-
-  // ─── Recovery Goals ─────────────────────────────────────────────────────────
-  // Long-term goals + micro-goal breakdown. All owned by the authenticated user.
-
-  app.get('/api/recovery/goals', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = getUserId(req);
-      const goals = await db.execute(sql`
-        SELECT g.id, g.title, g.why, g.target_date, g.status,
-               g.completed_at, g.created_at,
-               COALESCE(
-                 JSON_AGG(
-                   JSON_BUILD_OBJECT(
-                     'id', m.id, 'goalId', m.goal_id, 'title', m.title,
-                     'targetWeek', m.target_week, 'status', m.status,
-                     'sortOrder', m.sort_order, 'completedAt', m.completed_at
-                   ) ORDER BY m.sort_order ASC, m.id ASC
-                 ) FILTER (WHERE m.id IS NOT NULL),
-                 '[]'
-               ) AS "microGoals"
-        FROM recovery_goals g
-        LEFT JOIN recovery_micro_goals m ON m.goal_id = g.id
-        WHERE g.user_id = ${userId}
-          AND g.status != 'abandoned'
-        GROUP BY g.id
-        ORDER BY g.status ASC, g.created_at DESC
-      `);
-      res.json((goals as any).rows ?? goals);
-    } catch (err: any) { res.status(500).json({ message: err?.message }); }
-  });
-
-  app.post('/api/recovery/goals', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = getUserId(req);
-      const { title, why, targetDate } = req.body;
-      if (!title || typeof title !== 'string' || !title.trim()) {
-        return res.status(400).json({ message: 'Title required' });
-      }
-      const result = await db.execute(sql`
-        INSERT INTO recovery_goals (user_id, title, why, target_date)
-        VALUES (${userId}, ${title.trim().slice(0,200)},
-                ${why ? String(why).trim().slice(0,1000) : null},
-                ${targetDate ? String(targetDate).trim().slice(0,100) : null})
-        RETURNING id, title, why, target_date, status, created_at
-      `);
-      res.status(201).json(((result as any).rows ?? [])[0]);
-    } catch (err: any) { res.status(500).json({ message: err?.message }); }
-  });
-
-  app.patch('/api/recovery/goals/:id', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = getUserId(req);
-      const goalId = Number(req.params.id);
-      const { title, why, targetDate, status } = req.body;
-      const allowedStatus = ['active','completed','abandoned'];
-
-      // Use ?? null so we never pass `undefined` into a sql template (drizzle would error)
-      const titleVal      = title ? String(title).trim().slice(0,200) : null;
-      const whyVal        = why !== undefined ? (why ? String(why).trim().slice(0,1000) : null) : null;
-      const targetVal     = targetDate !== undefined ? (targetDate ? String(targetDate).trim().slice(0,100) : null) : null;
-      const statusVal     = status && allowedStatus.includes(status) ? status : null;
-      const markCompleted = status === 'completed';
-
-      await db.execute(sql`
-        UPDATE recovery_goals SET
-          title        = COALESCE(${titleVal},   title),
-          why          = COALESCE(${whyVal},     why),
-          target_date  = COALESCE(${targetVal},  target_date),
-          status       = COALESCE(${statusVal},  status),
-          completed_at = CASE WHEN ${markCompleted}::boolean THEN NOW() ELSE completed_at END,
-          updated_at   = NOW()
-        WHERE id = ${goalId} AND user_id = ${userId}
-      `);
-
-      // Award goal_complete badge if marking complete
-      if (status === 'completed') {
-        const { checkAutomatedBadgesForUser } = await import('./badgeService');
-        await checkAutomatedBadgesForUser(userId).catch(() => {});
-      }
-
-      res.json({ ok: true });
-    } catch (err: any) { res.status(500).json({ message: err?.message }); }
-  });
-
-  app.delete('/api/recovery/goals/:id', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = getUserId(req);
-      await db.execute(sql`DELETE FROM recovery_goals WHERE id = ${Number(req.params.id)} AND user_id = ${userId}`);
-      res.json({ ok: true });
-    } catch (err: any) { res.status(500).json({ message: err?.message }); }
-  });
-
-  // Micro-goals
-  app.post('/api/recovery/goals/:goalId/micro', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = getUserId(req);
-      const goalId = Number(req.params.goalId);
-      const { title, targetWeek, sortOrder } = req.body;
-      if (!title || typeof title !== 'string' || !title.trim()) {
-        return res.status(400).json({ message: 'Title required' });
-      }
-      // Verify goal ownership
-      const own = await db.execute(sql`SELECT id FROM recovery_goals WHERE id = ${goalId} AND user_id = ${userId}`);
-      if (((own as any).rows?.length ?? 0) === 0) return res.status(404).json({ message: 'Not found' });
-
-      const result = await db.execute(sql`
-        INSERT INTO recovery_micro_goals (goal_id, user_id, title, target_week, sort_order)
-        VALUES (${goalId}, ${userId}, ${title.trim().slice(0,300)},
-                ${targetWeek ? String(targetWeek).trim().slice(0,50) : null},
-                ${Number(sortOrder ?? 0)})
-        RETURNING id, goal_id, title, target_week, status, sort_order
-      `);
-      res.status(201).json(((result as any).rows ?? [])[0]);
-    } catch (err: any) { res.status(500).json({ message: err?.message }); }
-  });
-
-  app.patch('/api/recovery/goals/:goalId/micro/:id', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = getUserId(req);
-      const microId = Number(req.params.id);
-      const goalId  = Number(req.params.goalId);
-      const { title, status, sortOrder } = req.body;
-      const allowedStatus = ['pending','completed','skipped'];
-
-      await db.execute(sql`
-        UPDATE recovery_micro_goals SET
-          title      = COALESCE(${title ? title.trim().slice(0,300) : null}, title),
-          status     = COALESCE(${status && allowedStatus.includes(status) ? status : null}, status),
-          sort_order = COALESCE(${sortOrder != null ? Number(sortOrder) : null}, sort_order),
-          completed_at = CASE WHEN ${status === 'completed' ? 'true' : 'false'}::boolean THEN NOW() ELSE completed_at END
-        WHERE id = ${microId} AND goal_id = ${goalId} AND user_id = ${userId}
-      `);
-
-      // Award consistent_4 badge if enough micro-goals now completed
-      if (status === 'completed') {
-        const { checkAutomatedBadgesForUser } = await import('./badgeService');
-        await checkAutomatedBadgesForUser(userId).catch(() => {});
-      }
-
-      res.json({ ok: true });
-    } catch (err: any) { res.status(500).json({ message: err?.message }); }
-  });
-
-  app.delete('/api/recovery/goals/:goalId/micro/:id', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = getUserId(req);
-      await db.execute(sql`
-        DELETE FROM recovery_micro_goals WHERE id = ${Number(req.params.id)} AND user_id = ${userId}
-      `);
-      res.json({ ok: true });
-    } catch (err: any) { res.status(500).json({ message: err?.message }); }
-  });
-
-  // ─── Survivor Badges + Tiers ─────────────────────────────────────────────────
-
-  // My badges + tier
-  app.get('/api/recovery/badges', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = getUserId(req);
-      const [badgeRows, tierRow] = await Promise.all([
-        db.execute(sql`
-          SELECT badge_key, badge_name, reason, category, awarded_at
-          FROM survivor_badges WHERE user_id = ${userId}
-          ORDER BY awarded_at ASC
-        `),
-        db.execute(sql`
-          SELECT tier, quarter_key, is_legend_awarded, last_active_at
-          FROM survivor_tiers WHERE user_id = ${userId}
-        `),
-      ]);
-      res.json({
-        badges: (badgeRows as any).rows ?? [],
-        tier: (((tierRow as any).rows ?? [])[0]) ?? null,
-      });
-    } catch (err: any) { res.status(500).json({ message: err?.message }); }
-  });
-
-  // Public badges for a survivor profile (by slug)
-  app.get('/api/survivors/:slug/badges', async (req: any, res) => {
-    try {
-      const { slug } = req.params;
-      const userRow = await db.execute(sql`
-        SELECT id FROM users WHERE slug = ${slug} LIMIT 1
-      `);
-      const user = ((userRow as any).rows ?? [])[0];
-      if (!user) return res.status(404).json({ message: 'Not found' });
-
-      const [badgeRows, tierRow] = await Promise.all([
-        db.execute(sql`
-          SELECT badge_key, badge_name, category, awarded_at
-          FROM survivor_badges WHERE user_id = ${user.id}
-          ORDER BY awarded_at ASC
-        `),
-        db.execute(sql`
-          SELECT tier, is_legend_awarded FROM survivor_tiers WHERE user_id = ${user.id}
-        `),
-      ]);
-      res.json({
-        badges: (badgeRows as any).rows ?? [],
-        tier: (((tierRow as any).rows ?? [])[0]) ?? null,
-      });
-    } catch (err: any) { res.status(500).json({ message: err?.message }); }
-  });
-
-  // Admin — recent badge awards
-  app.get('/api/admin/badges/recent', isAuthenticated, requireAdmin, async (_req, res) => {
-    try {
-      const rows = await db.execute(sql`
-        SELECT b.id, b.user_id, b.badge_key, b.badge_name, b.reason, b.category,
-               b.awarded_at, b.awarded_by_user_id,
-               u.email, u.first_name, u.last_name, u.slug
-        FROM survivor_badges b
-        JOIN users u ON u.id = b.user_id
-        ORDER BY b.awarded_at DESC
-        LIMIT 100
-      `);
-      res.json((rows as any).rows ?? []);
-    } catch (err: any) { res.status(500).json({ message: err?.message }); }
-  });
-
-  // Admin — search users for badge award (by email fragment)
-  app.get('/api/admin/badges/users', isAuthenticated, requireAdmin, async (req: any, res) => {
-    try {
-      const q = String(req.query.q ?? '').trim().slice(0, 100);
-      if (!q || q.length < 2) return res.json([]);
-      const rows = await db.execute(sql`
-        SELECT id, email, first_name, last_name, slug
-        FROM users
-        WHERE email ILIKE ${'%' + q + '%'} OR first_name ILIKE ${'%' + q + '%'}
-        LIMIT 20
-      `);
-      res.json((rows as any).rows ?? []);
-    } catch (err: any) { res.status(500).json({ message: err?.message }); }
-  });
-
-  // Admin — award a nominated badge to a user
-  app.post('/api/admin/badges/award', isAuthenticated, requireAdmin, async (req: any, res) => {
-    try {
-      const adminId = getUserId(req);
-      const { userId, badgeKey, reason } = req.body;
-
-      const NOMINATED = ['forge','lighthouse','teacher','pioneer','legend'];
-      if (!userId || typeof userId !== 'string') return res.status(400).json({ message: 'userId required' });
-      if (!NOMINATED.includes(badgeKey)) return res.status(400).json({ message: 'Must be a nominated badge key' });
-      if (!reason || typeof reason !== 'string' || !reason.trim()) return res.status(400).json({ message: 'Reason required for nominated badges' });
-
-      const { awardBadge } = await import('./badgeService');
-      const wasNew = await awardBadge(userId, badgeKey, reason.trim().slice(0, 1000), adminId);
-      res.json({ ok: true, wasNew });
-    } catch (err: any) { res.status(500).json({ message: err?.message }); }
-  });
-
   // ─── Survivor OS: Sasquatch Scale + AI Plan ─────────────────────────────────
   // GET /api/recovery/me/state — aggregated personal dashboard state
   app.get('/api/recovery/me/state', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { db: dbInst } = await import('./db');
       const { sasquatchAssessments, survivorGoals, survivorPlans } = await import('../shared/schema');
       const { eq, desc } = await import('drizzle-orm');
@@ -11655,7 +10799,7 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
   // GET /api/recovery/routine/today — load or create today's routine entry
   app.get('/api/recovery/routine/today', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const today = new Date().toISOString().slice(0, 10);
       const row = await db.execute(
         sql`SELECT * FROM routine_completions WHERE user_id = ${userId} AND date = ${today} LIMIT 1`
@@ -11690,7 +10834,7 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
   // PUT /api/recovery/routine/today — upsert today's routine
   app.put('/api/recovery/routine/today', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const today = new Date().toISOString().slice(0, 10);
       const { level, completedTasks, notes } = req.body || {};
       const lvl = typeof level === 'number' ? Math.max(0, Math.min(4, level)) : 2;
@@ -11718,7 +10862,7 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
   // input to the Bonfire walkthrough.
   app.get('/api/recovery/today/recommendation', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const today = new Date().toISOString().slice(0, 10);
 
       // ── Read survivor profile so we can personalize. Optional: a brand-new
@@ -11961,7 +11105,7 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
   // Idempotent upsert keyed by (user_id, date, task_id).
   app.post('/api/recovery/today/feedback', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const today = new Date().toISOString().slice(0, 10);
       const { taskId, level, reaction, date } = req.body || {};
       const validReactions = new Set(['good', 'hard', 'too_hard', 'skipped']);
@@ -12013,7 +11157,7 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
   // POST /api/recovery/assessment — save a new Sasquatch Scale snapshot
   app.post('/api/recovery/assessment', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { physical, cognitive, speech, emotional, memory, notes } = req.body || {};
       const scores = { physical, cognitive, speech, emotional, memory };
       for (const [k, v] of Object.entries(scores)) {
@@ -12037,7 +11181,7 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
   // POST /api/recovery/goals — replace user's goal set with provided list
   app.post('/api/recovery/goals', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const goals = Array.isArray(req.body?.goals) ? req.body.goals : [];
       if (goals.length === 0 || goals.length > 10) {
         return res.status(400).json({ message: 'Provide 1–10 goals' });
@@ -12073,7 +11217,7 @@ Focus items are accountability actions (log your PT, take meds before coffee, te
   // POST /api/recovery/plan/generate — call Gemini, store + return structured plan
   app.post('/api/recovery/plan/generate', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { db: dbInst } = await import('./db');
       const { sasquatchAssessments, survivorGoals, survivorPlans } = await import('../shared/schema');
       const { eq, desc } = await import('drizzle-orm');
@@ -12372,7 +11516,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // POST /api/recovery/exercise-logs — log a completed set
   app.post('/api/recovery/exercise-logs', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { db: dbInst } = await import('./db');
       const { recoveryExerciseLogs, insertRecoveryExerciseLogSchema } = await import('../shared/schema');
       const data = insertRecoveryExerciseLogSchema.parse({ ...req.body, userId });
@@ -12388,7 +11532,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // GET /api/recovery/exercise-logs/recent — last N days for current user
   app.get('/api/recovery/exercise-logs/recent', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const days = Math.min(Math.max(parseInt(String(req.query.days || '7')) || 7, 1), 90);
       const { db: dbInst } = await import('./db');
       const { recoveryExerciseLogs, recoveryExercises } = await import('../shared/schema');
@@ -12433,7 +11577,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Get user milestones
   app.get('/api/recovery/milestones', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const milestones = await storage.getUserMilestones(userId);
       const allMilestones = await storage.getRecoveryMilestones();
       res.json({ earned: milestones, available: allMilestones });
@@ -12446,7 +11590,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Draft Your Legend - Export journal to Google Docs
   app.post('/api/recovery/export-legend', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
       const days = parseInt(req.body.days) || 30;
       
@@ -12511,7 +11655,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Get user's publishing projects
   app.get('/api/publishing/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projects = await storage.getPublishingProjects(userId);
       res.json(projects);
     } catch (error) {
@@ -12523,7 +11667,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Create new publishing project
   app.post('/api/publishing/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { title, subtitle, description, genre, targetAudience } = req.body;
       
       if (!title) {
@@ -12551,7 +11695,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Get single publishing project
   app.get('/api/publishing/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projectId = parseInt(req.params.id);
       
       const project = await storage.getPublishingProject(projectId);
@@ -12574,7 +11718,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Update publishing project
   app.patch('/api/publishing/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projectId = parseInt(req.params.id);
       
       const project = await storage.getPublishingProject(projectId);
@@ -12611,7 +11755,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Delete publishing project
   app.delete('/api/publishing/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projectId = parseInt(req.params.id);
       
       const project = await storage.getPublishingProject(projectId);
@@ -12704,7 +11848,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Recovery enrollment endpoint
   app.post('/api/recovery/enrollment', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { strokeDate, strokeType, affectedSide, mobilityLevel, handFunction, speechAbility, goals, dailyTime } = req.body;
       
       // 1. Update or create user profile
@@ -12790,7 +11934,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Get user's earned achievements
   app.get('/api/achievements', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const achievements = await storage.getUserAchievements(userId);
       res.json(achievements);
     } catch (error) {
@@ -12813,7 +11957,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Check and award streak-based milestones
   app.get('/api/achievements/check-streaks', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const streak = await storage.getUserStreak(userId);
       const currentStreak = streak?.currentStreak || 0;
       const awarded = await storage.checkAndAwardStreakMilestones(userId, currentStreak);
@@ -12827,7 +11971,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Claim a milestone achievement
   app.post('/api/achievements/:milestoneId/claim', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const milestoneId = parseInt(req.params.milestoneId);
       const { notes } = req.body;
       
@@ -12855,7 +11999,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Get achievement stats for report card
   app.get('/api/achievements/stats', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const achievements = await storage.getUserAchievements(userId);
       const streak = await storage.getUserStreak(userId);
       const milestones = await storage.getAvailableMilestones();
@@ -12906,7 +12050,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Get user's current pod
   app.get('/api/user/pod', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const pod = await storage.getUserPod(userId);
       if (!pod) {
         return res.json(null);
@@ -12962,7 +12106,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Create a new pod
   app.post('/api/pods', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { name, description, focusArea, meetingSchedule, isPrivate, maxMembers } = req.body;
       
       if (!name) {
@@ -12993,7 +12137,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Join a pod
   app.post('/api/pods/:id/join', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const podId = parseInt(req.params.id);
       
       // Check if pod exists and has space
@@ -13023,7 +12167,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Leave a pod
   app.post('/api/pods/:id/leave', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const podId = parseInt(req.params.id);
       
       await storage.leavePod(userId, podId);
@@ -13037,7 +12181,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Reminders
   app.get('/api/reminders', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const reminders = await storage.getUserReminders(userId);
       res.json(reminders);
     } catch (error) {
@@ -13047,7 +12191,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/reminders', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const reminder = await storage.createReminder({ ...req.body, userId });
       res.json(reminder);
     } catch (error) {
@@ -13076,7 +12220,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Stand Goals
   app.get('/api/wellness/stand-goal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const goal = await storage.getUserStandGoal(userId);
       const count = await storage.getTodayStandCount(userId);
       res.json({ goal, todayCount: count });
@@ -13087,7 +12231,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/wellness/stand-goal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const goal = await storage.createOrUpdateStandGoal(userId, req.body);
       res.json(goal);
     } catch (error) {
@@ -13097,7 +12241,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/wellness/stand-log', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const log = await storage.logStand(userId, req.body.duration);
       res.json(log);
     } catch (error) {
@@ -13108,7 +12252,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Hydration Goals
   app.get('/api/wellness/hydration-goal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const goal = await storage.getUserHydrationGoal(userId);
       const amount = await storage.getTodayHydration(userId);
       res.json({ goal, todayAmount: amount });
@@ -13119,7 +12263,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/wellness/hydration-goal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const goal = await storage.createOrUpdateHydrationGoal(userId, req.body);
       res.json(goal);
     } catch (error) {
@@ -13129,7 +12273,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/wellness/hydration-log', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const log = await storage.logHydration(userId, req.body.amount);
       res.json(log);
     } catch (error) {
@@ -13140,7 +12284,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Exercise Goals
   app.get('/api/wellness/exercise-goal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const goal = await storage.getUserExerciseGoal(userId);
       const duration = await storage.getTodayExercise(userId);
       res.json({ goal, todayDuration: duration });
@@ -13151,7 +12295,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/wellness/exercise-goal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const goal = await storage.createOrUpdateExerciseGoal(userId, req.body);
       res.json(goal);
     } catch (error) {
@@ -13161,7 +12305,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/wellness/exercise-log', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const log = await storage.logExercise(userId, req.body.type, req.body.duration, req.body.intensity);
       res.json(log);
     } catch (error) {
@@ -13200,7 +12344,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     try {
       const { recoveryStripeService } = await import('./recoveryStripeService');
       const { creatorId, amount, storyId } = req.body;
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
 
       let stripeCustomerId = user?.stripeCustomerId || '';
@@ -13235,7 +12379,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
       if (!validTiers.includes(tier)) {
         return res.status(400).json({ message: `Invalid tier. Must be one of: ${validTiers.join(', ')}` });
       }
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
       const baseUrl = process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : '';
       
@@ -13258,7 +12402,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     try {
       const { recoveryStripeService } = await import('./recoveryStripeService');
       const { coachingType } = req.body;
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
       
       const session = await recoveryStripeService.createCoachingCheckout(
@@ -13299,78 +12443,44 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   app.post('/api/recovery/payments/gift-scholarship', paymentCheckoutRateLimit, async (req, res) => {
     try {
       const { getRecoveryStripeClient, isRecoveryStripeConfigured } = await import('./recoveryStripeClient');
-      const { tierId, recipientEmail, message, survivorFund, donorName, donorEmail, donationAmountCents } = req.body;
+      const { tierId, recipientEmail, message } = req.body;
       
       if (!isRecoveryStripeConfigured()) {
         return res.status(503).json({ message: 'Payment processing not configured' });
       }
-
-      // Server-authoritative prices — never trust client amounts
-      const scholarshipPrices: Record<string, { amount: number; label: string; description: string }> = {
-        basic:    { amount: 1900,  label: '1 Month',   description: 'One month of full Warrior membership — 66-Day Challenge, AI Coach, protocols, community' },
-        mentored: { amount: 5700,  label: '3 Months',  description: '3 months of Warrior membership — covers the full 66-Day Challenge window' },
-        elite:    { amount: 19000, label: 'Full Year', description: 'A full year of Warrior membership — recovery is a long game, give them all of it' },
+      
+      const scholarshipPrices: Record<string, { amount: number; name: string; description: string }> = {
+        basic: { amount: 4700, name: 'Gift: 1 Month Warrior Access', description: 'One month of full Warrior membership — 66-Day Challenge, AI Coach, protocols, community' },
+        mentored: { amount: 14100, name: 'Gift: 3 Month Warrior Access', description: '3 months of Warrior membership — covers the full 66-Day Challenge window' },
+        elite: { amount: 39700, name: 'Gift: Full Year Warrior Access', description: 'A full year of Warrior membership — recovery is a long game, give them all of it' },
       };
       
       const scholarship = scholarshipPrices[tierId];
       if (!scholarship) {
         return res.status(400).json({ message: 'Invalid scholarship tier' });
       }
-
-      // Validate optional add-a-donation amount
-      const extraDonation = Number(donationAmountCents);
-      const hasDonation = !survivorFund && Number.isInteger(extraDonation) && extraDonation >= 100;
-
-      const giftName = survivorFund
-        ? `Survivor Fund Donation: ${scholarship.label} Warrior Access`
-        : `Gift: ${scholarship.label} Warrior Access`;
-
-      const chargeType = survivorFund ? 'donation' : hasDonation ? 'gift_and_donation' : 'gift';
-
-      const lineItems: any[] = [
-        {
+      
+      const stripe = getRecoveryStripeClient();
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [{
           price_data: {
             currency: 'usd',
             product_data: {
-              name: giftName,
+              name: `Gift: ${scholarship.name}`,
               description: scholarship.description,
             },
             unit_amount: scholarship.amount,
           },
           quantity: 1,
-        },
-      ];
-
-      if (hasDonation) {
-        lineItems.push({
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: 'Survivor Fund Donation',
-              description: 'Additional donation to Stroke Lyfe Inc. Survivor Fund — funds access for a verified applicant',
-            },
-            unit_amount: extraDonation,
-          },
-          quantity: 1,
-        });
-      }
-
-      const baseUrl = process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : '';
-      const stripe = getRecoveryStripeClient();
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        line_items: lineItems,
+        }],
         mode: 'payment',
-        success_url: `${baseUrl}/recovery/gift?donated=success&session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${baseUrl}/recovery/gift`,
+        success_url: `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/gift?donated=success`,
+        cancel_url: `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/gift`,
         metadata: {
-          type: chargeType,
+          type: 'scholarship_gift',
           tierId,
-          recipientEmail: recipientEmail || '',
-          survivorFund: survivorFund ? 'true' : 'false',
-          donorName: donorName || '',
-          donorEmail: donorEmail || '',
-          donationAmountCents: hasDonation ? String(extraDonation) : '0',
+          recipientEmail,
           giftMessage: message || '',
           platform: 'stroke_recovery_academy',
         },
@@ -13380,38 +12490,6 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     } catch (error: any) {
       console.error('Scholarship gift error:', error);
       res.status(500).json({ message: error.message || 'Failed to create scholarship checkout' });
-    }
-  });
-
-  // Gift Scholarship — retrieve session metadata for post-redirect confirmation
-  app.get('/api/recovery/payments/gift-checkout-session', async (req, res) => {
-    try {
-      const { getRecoveryStripeClient, isRecoveryStripeConfigured } = await import('./recoveryStripeClient');
-      const { sessionId } = req.query as { sessionId?: string };
-      if (!sessionId || typeof sessionId !== 'string' || sessionId.length > 128) {
-        return res.status(400).json({ message: 'Invalid session ID' });
-      }
-      if (!isRecoveryStripeConfigured()) {
-        return res.status(503).json({ message: 'Payment processing not configured' });
-      }
-      const stripe = getRecoveryStripeClient();
-      const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: [] });
-      if (session.payment_status !== 'paid') {
-        return res.status(402).json({ message: 'Session not paid' });
-      }
-      const meta = session.metadata || {};
-      // Only return the fields needed for confirmation copy — no financial details
-      res.json({
-        type: meta.type || 'gift',
-        tierId: meta.tierId || '',
-        recipientEmail: meta.recipientEmail || '',
-        survivorFund: meta.survivorFund === 'true',
-        donorEmail: meta.donorEmail || '',
-        donationAmountCents: Number(meta.donationAmountCents || '0'),
-      });
-    } catch (error: any) {
-      console.error('Gift session retrieve error:', error);
-      res.status(500).json({ message: error.message || 'Failed to retrieve session' });
     }
   });
 
@@ -13460,7 +12538,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
       }
       
       const stripe = getRecoveryStripeClient();
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
       
       const sessionParams: any = {
@@ -13502,166 +12580,13 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
-  // ── Nick Kremers 1:1 coaching checkout (public — no auth required) ──────────
-  app.post('/api/coaching/checkout', async (req: any, res) => {
-    try {
-      const { getRecoveryStripeClient, isRecoveryStripeConfigured } = await import('./recoveryStripeClient');
-      if (!isRecoveryStripeConfigured()) {
-        return res.status(503).json({ message: 'Payment processing not configured. Email nick@strokerecoveryacademy.com to book directly.' });
-      }
-      const stripe = getRecoveryStripeClient();
-      const { option, returnUrl } = req.body;
-      if (!option || !['session', 'intensive'].includes(option)) {
-        return res.status(400).json({ message: 'Invalid coaching option' });
-      }
-      const products: Record<string, { amount: number; name: string; description: string; mode: 'payment' | 'subscription' }> = {
-        session: {
-          amount: 35000,
-          name: '1-on-1 Session with Nick Kremers',
-          description: '60-minute private Zoom, custom protocol, recording within 24h, 30-day follow-up',
-          mode: 'payment',
-        },
-        intensive: {
-          amount: 150000,
-          name: 'Monthly Intensive with Nick Kremers',
-          description: 'Bi-weekly 60-min Zoom, direct message access, progress reviews, accountability pod placement',
-          mode: 'subscription',
-        },
-      };
-      const product = products[option];
-      const origin = process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : (returnUrl ? new URL(returnUrl).origin : 'https://strokerecoveryacademy.com');
-      const sessionParams: any = {
-        payment_method_types: ['card'],
-        line_items: [{
-          price_data: {
-            currency: 'usd',
-            product_data: { name: product.name, description: product.description },
-            unit_amount: product.amount,
-            ...(product.mode === 'subscription' && { recurring: { interval: 'month' } }),
-          },
-          quantity: 1,
-        }],
-        mode: product.mode,
-        success_url: `${origin}/recovery/coaching-with-nick?success=1`,
-        cancel_url: `${origin}/recovery/coaching-with-nick`,
-        metadata: { type: 'nick_coaching', option, platform: 'stroke_recovery_academy' },
-        allow_promotion_codes: true,
-      };
-      // Attach customer if authenticated
-      if (getUserId(req)) {
-        try {
-          const user = await storage.getUser(getUserId(req));
-          if (user?.stripeCustomerId) sessionParams.customer = user.stripeCustomerId;
-        } catch { /* non-fatal */ }
-      }
-      const session = await stripe.checkout.sessions.create(sessionParams);
-      res.json({ url: session.url });
-    } catch (error: any) {
-      console.error('[coaching/checkout]', error?.message);
-      res.status(500).json({ message: error?.message ?? 'Checkout failed' });
-    }
-  });
-
-  // ── B2B partner inquiry (public) ────────────────────────────────────────────
-  app.post('/api/partners/inquiry', async (req: any, res) => {
-    try {
-      const { name, facility, email, role, message, partnershipType } = req.body;
-      if (!name || !facility || !email) {
-        return res.status(400).json({ message: 'name, facility, and email are required' });
-      }
-      // Persist to DB
-      await db.execute(sql`
-        INSERT INTO partner_inquiries (name, facility, email, role, partnership_type, message)
-        VALUES (${String(name)}, ${String(facility)}, ${String(email)},
-                ${role ? String(role) : null}, ${partnershipType ? String(partnershipType) : null},
-                ${message ? String(message).slice(0, 2000) : null})
-      `);
-      // Best-effort: notify Nick
-      try {
-        const { sendEmail } = await import('./emailService');
-        await sendEmail({
-          to: 'nick@strokerecoveryacademy.com',
-          subject: `Partner inquiry — ${partnershipType ?? 'unknown'} — ${facility}`,
-          html: `<p><strong>${name}</strong> (${role || 'n/a'}) from <strong>${facility}</strong><br>Email: ${email}<br>Type: ${partnershipType}<br><br>${message ?? ''}</p>`,
-          text: `${name} (${role}) from ${facility}\n${email}\nType: ${partnershipType}\n\n${message ?? ''}`,
-        });
-      } catch { /* non-fatal */ }
-      res.json({ ok: true });
-    } catch (error: any) {
-      console.error('[partners/inquiry]', error?.message);
-      res.status(500).json({ message: 'Failed to submit inquiry' });
-    }
-  });
-
-  // GET /api/admin/partners/inquiries — admin view
-  app.get('/api/admin/partners/inquiries', isAuthenticated, requireAdmin, async (req: any, res) => {
-    try {
-      const rows = await db.execute(sql`
-        SELECT id, name, facility, email, role, partnership_type, message, status, created_at
-          FROM partner_inquiries
-         ORDER BY created_at DESC
-         LIMIT 200
-      `);
-      res.json(rows.rows ?? []);
-    } catch (err: any) {
-      res.status(500).json({ message: err?.message ?? 'Failed to fetch partner inquiries' });
-    }
-  });
-
-  // PATCH /api/admin/partners/inquiries/:id/status
-  app.patch('/api/admin/partners/inquiries/:id/status', isAuthenticated, requireAdmin, async (req: any, res) => {
-    try {
-      const { id } = req.params;
-      const { status } = req.body;
-      if (!['new', 'contacted', 'active', 'closed'].includes(status)) {
-        return res.status(400).json({ message: 'Invalid status' });
-      }
-      await db.execute(sql`UPDATE partner_inquiries SET status = ${status} WHERE id = ${Number(id)}`);
-      res.json({ ok: true });
-    } catch (err: any) {
-      res.status(500).json({ message: err?.message ?? 'Failed to update status' });
-    }
-  });
-
-  // POST /api/squad-waitlist — public signup
-  app.post('/api/squad-waitlist', async (req: any, res) => {
-    try {
-      const { email, name } = req.body;
-      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        return res.status(400).json({ message: 'Valid email required' });
-      }
-      const userId = getUserId(req) ?? null;
-      await db.execute(sql`
-        INSERT INTO squad_waitlist (email, name, user_id)
-        VALUES (${String(email).toLowerCase()}, ${name ? String(name).slice(0, 100) : null}, ${userId})
-        ON CONFLICT (email) DO NOTHING
-      `);
-      res.json({ ok: true });
-    } catch (err: any) {
-      console.error('[squad-waitlist]', err?.message);
-      res.status(500).json({ message: 'Failed to join waitlist' });
-    }
-  });
-
-  // GET /api/admin/squad-waitlist — admin view
-  app.get('/api/admin/squad-waitlist', isAuthenticated, requireAdmin, async (req: any, res) => {
-    try {
-      const rows = await db.execute(sql`
-        SELECT id, email, name, user_id, created_at FROM squad_waitlist ORDER BY created_at DESC LIMIT 500
-      `);
-      res.json(rows.rows ?? []);
-    } catch (err: any) {
-      res.status(500).json({ message: err?.message ?? 'Failed to fetch waitlist' });
-    }
-  });
-
   // ============================================================================
   // SASQUATCH DOCTRINE - FLICKER LOG
   // ============================================================================
 
   app.get('/api/recovery/flicker-log', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const entries = await storage.getFlickerLogs(userId);
       res.json(entries);
     } catch (error) {
@@ -13671,7 +12596,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/recovery/flicker-log', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const entry = await storage.createFlickerLog(userId, req.body);
       res.json(entry);
     } catch (error) {
@@ -13685,7 +12610,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.get('/api/recovery/medical-log', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const data = await storage.getMedicalLogs(userId);
       res.json(data);
     } catch (error) {
@@ -13695,7 +12620,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/recovery/medications', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const medication = await storage.createMedication(userId, req.body);
       res.json(medication);
     } catch (error) {
@@ -13705,7 +12630,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/recovery/appointments', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const appointment = await storage.createAppointment(userId, req.body);
       res.json(appointment);
     } catch (error) {
@@ -13715,7 +12640,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/recovery/vitals', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const vitals = await storage.logVitals(userId, req.body);
       res.json(vitals);
     } catch (error) {
@@ -13729,7 +12654,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.get('/api/recovery/compass', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const data = await storage.getCompassData(userId);
       res.json(data);
     } catch (error) {
@@ -13739,7 +12664,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/recovery/compass', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const entry = await storage.updateCompassPillar(userId, req.body);
       res.json(entry);
     } catch (error) {
@@ -13753,7 +12678,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.get('/api/recovery/legend', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const legend = await storage.getLegend(userId);
       res.json(legend);
     } catch (error) {
@@ -13763,7 +12688,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/recovery/legend', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const legend = await storage.saveLegend(userId, req.body);
       res.json(legend);
     } catch (error) {
@@ -13846,19 +12771,6 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
-  app.get('/api/recovery/blog/counts', async (req, res) => {
-    try {
-      const results = await db
-        .select({ category: recoveryBlogPosts.category, count: count() })
-        .from(recoveryBlogPosts)
-        .where(eq(recoveryBlogPosts.status, 'published'))
-        .groupBy(recoveryBlogPosts.category);
-      res.json(results);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch category counts" });
-    }
-  });
-
   app.get('/api/recovery/blog/:slug', async (req, res) => {
     try {
       const post = await storage.getRecoveryBlogPostBySlug(req.params.slug);
@@ -13877,7 +12789,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.get('/api/recovery/my-book', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const bookProject = await storage.getRecoveryBook(userId);
       res.json(bookProject);
     } catch (error) {
@@ -13887,7 +12799,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/recovery/my-book', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const bookProject = await storage.saveRecoveryBook(userId, req.body);
       res.json(bookProject);
     } catch (error) {
@@ -13897,7 +12809,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/recovery/my-book/chapter', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { chapterId, title, content } = req.body;
       const chapter = await storage.saveRecoveryChapter(userId, chapterId, title, content);
       res.json(chapter);
@@ -13912,7 +12824,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.get('/api/recovery/never-zero', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const data = await storage.getNeverZeroData(userId);
       res.json(data);
     } catch (error) {
@@ -13923,7 +12835,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/recovery/never-zero', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const log = await storage.logNeverZero(userId, req.body);
       res.json(log);
     } catch (error) {
@@ -13972,7 +12884,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.get('/api/recovery/never-zero/audit', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const audits = await storage.getNeverZeroAudits(userId, 30);
       res.json({ audits });
     } catch (error) {
@@ -13983,7 +12895,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/recovery/never-zero/report', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const force = req.body?.force === true;
       const data = await storage.getNeverZeroData(userId);
       const allLogs = (data?.logs ?? []) as Array<{ id: number; action: string; notes?: string | null; reps?: number; difficulty?: string; created_at: string }>;
@@ -14270,57 +13182,6 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  // Toggle the "story moment" flag on a journal entry — survivor explicitly
-  // marks this entry as a chapter they want in their compiled book.
-  app.patch('/api/recovery/journal/:id/story-moment', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = getUserId(req);
-      const entryId = parseInt(req.params.id, 10);
-      if (!Number.isFinite(entryId)) return res.status(400).json({ message: "Invalid entry id" });
-      const { isStoryMoment } = req.body;
-      const { recoveryJournals } = await import('../shared/schema');
-      const [updated] = await db
-        .update(recoveryJournals)
-        .set({ isStoryMoment: !!isStoryMoment })
-        .where(and(eq(recoveryJournals.id, entryId), eq(recoveryJournals.userId, userId)))
-        .returning();
-      if (!updated) return res.status(404).json({ message: "Entry not found" });
-      res.json(updated);
-    } catch (error) {
-      console.error("Error toggling story moment:", error);
-      res.status(500).json({ message: "Failed to update entry" });
-    }
-  });
-
-  // Survivor story stats — journal count, chapter count, check-in count.
-  // Used by /recovery/my-story to show progress without loading full entries.
-  app.get('/api/recovery/my-story/stats', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = getUserId(req);
-      const { recoveryJournals, dailyCheckins } = await import('../shared/schema');
-      const [[journalRow], [storyRow], [checkinRow]] = await Promise.all([
-        db.select({ cnt: count() }).from(recoveryJournals).where(eq(recoveryJournals.userId, userId)),
-        db.select({ cnt: count() }).from(recoveryJournals).where(and(eq(recoveryJournals.userId, userId), eq(recoveryJournals.isStoryMoment, true))),
-        db.select({ cnt: count() }).from(dailyCheckins).where(eq(dailyCheckins.userId, userId)),
-      ]);
-      const recentChapters = await db
-        .select()
-        .from(recoveryJournals)
-        .where(and(eq(recoveryJournals.userId, userId), eq(recoveryJournals.isStoryMoment, true)))
-        .orderBy(desc(recoveryJournals.createdAt))
-        .limit(5);
-      res.json({
-        journalEntries: Number(journalRow?.cnt ?? 0),
-        storyMoments: Number(storyRow?.cnt ?? 0),
-        checkins: Number(checkinRow?.cnt ?? 0),
-        recentChapters,
-      });
-    } catch (error) {
-      console.error("Error fetching story stats:", error);
-      res.status(500).json({ message: "Failed to fetch story stats" });
-    }
-  });
-
   // Buy a personalized Reflections edition (digital $19 / print $29). The
   // per-buyer PDF is generated NOW from their own entries, uploaded to object
   // storage, and stamped onto the order item's downloadUrl BEFORE checkout — so
@@ -14448,29 +13309,6 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  // Drip email one-click unsubscribe
-  app.get('/api/survivor/drip/unsubscribe', async (req: any, res) => {
-    try {
-      const uid = String(req.query.uid || '');
-      if (!uid) return res.status(400).send('<p style="font-family:Georgia,serif;padding:40px;">Invalid unsubscribe link.</p>');
-      await db.execute(sql`
-        INSERT INTO notification_preferences (user_id, unsubscribed_all, created_at, updated_at)
-        VALUES (${uid}, TRUE, NOW(), NOW())
-        ON CONFLICT (user_id) DO UPDATE SET unsubscribed_all = TRUE, updated_at = NOW()
-      `);
-      res.status(200).send(
-        '<div style="font-family:Georgia,serif;max-width:520px;margin:60px auto;padding:0 24px;color:#1A1614;">' +
-        '<h1 style="color:#C06B3E;">You\'re off the list.</h1>' +
-        '<p>No more recovery emails — your platform access stays fully intact.</p>' +
-        '<p><a href="' + (process.env.PUBLIC_SITE_URL || 'https://strokerecoveryacademy.com') + '/recovery" style="color:#C06B3E;">Back to your dashboard</a></p>' +
-        '</div>'
-      );
-    } catch (err) {
-      console.error('Drip unsubscribe error:', err);
-      res.status(500).send('<p style="font-family:Georgia,serif;padding:40px;">Something went wrong. Try again later.</p>');
-    }
-  });
-
   app.patch('/api/recovery/journal/:id', isAuthenticated, async (req: any, res) => {
     try {
       const userId = getUserId(req);
@@ -14499,7 +13337,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/settings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const settings = await storage.getUserSettings(userId);
       res.json(settings || {});
     } catch (error) {
@@ -14510,7 +13348,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/settings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const settings = await storage.createOrUpdateUserSettings(userId, req.body);
       res.json(settings);
     } catch (error) {
@@ -14521,7 +13359,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/settings/username', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { username } = req.body;
       
       if (!username || username.length < 3) {
@@ -14592,7 +13430,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/activity', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { content, postType, visibility, podId, media } = req.body;
       
       const post = await storage.createActivityPost({
@@ -14622,7 +13460,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.delete('/api/activity/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const post = await storage.getActivityPost(parseInt(req.params.id));
       if (!post || post.authorId !== userId) {
         return res.status(403).json({ message: "Not authorized" });
@@ -14636,7 +13474,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/activity/:id/react', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { reactionType } = req.body;
       const result = await storage.toggleActivityReaction(parseInt(req.params.id), userId, reactionType || 'like');
       res.json(result);
@@ -14647,7 +13485,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/activity/:id/comment', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { content, parentId } = req.body;
       const comment = await storage.createActivityComment({
         postId: parseInt(req.params.id),
@@ -14667,7 +13505,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/therapist/profile', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const profile = await storage.getTherapistProfile(userId);
       res.json(profile || null);
     } catch (error) {
@@ -14677,7 +13515,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/therapist/profile', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const existing = await storage.getTherapistProfile(userId);
       if (existing) {
         const profile = await storage.updateTherapistProfile(userId, req.body);
@@ -14704,7 +13542,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/therapist/patients', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const assignments = await storage.getPatientAssignments(userId);
       res.json(assignments);
     } catch (error) {
@@ -14714,7 +13552,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/patient/therapist', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const assignment = await storage.getTherapistForPatient(userId);
       res.json(assignment || null);
     } catch (error) {
@@ -14724,7 +13562,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/therapist/assign', isAuthenticated, async (req: any, res) => {
     try {
-      const therapistId = getUserId(req);
+      const therapistId = req.user.claims.sub;
       const { patientId, goals, sessionFrequency } = req.body;
       const assignment = await storage.createPatientAssignment({
         therapistId,
@@ -14740,7 +13578,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/therapy/sessions', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { assignmentId } = req.query;
       const sessions = await storage.getTherapySessions(
         assignmentId ? parseInt(assignmentId) : undefined,
@@ -14754,7 +13592,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/therapy/sessions', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const session = await storage.createTherapySession({
         ...req.body,
         therapistId: userId,
@@ -14767,7 +13605,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/patient/prescriptions', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const prescriptions = await storage.getExercisePrescriptions(userId);
       res.json(prescriptions);
     } catch (error) {
@@ -14777,7 +13615,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/therapist/prescribe', isAuthenticated, async (req: any, res) => {
     try {
-      const therapistId = getUserId(req);
+      const therapistId = req.user.claims.sub;
       const prescription = await storage.createExercisePrescription({
         ...req.body,
         therapistId,
@@ -14819,7 +13657,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/exercises/session', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const session = await storage.recordExerciseSession({
         userId,
         ...req.body,
@@ -14844,7 +13682,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/exercises/sessions/user', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { exerciseId } = req.query;
       const sessions = await storage.getExerciseSessions(userId, exerciseId ? parseInt(exerciseId) : undefined);
       res.json(sessions);
@@ -14855,7 +13693,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/exercises/scores', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const scores = await storage.getUserExerciseScores(userId);
       res.json(scores);
     } catch (error) {
@@ -14889,7 +13727,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/conversations', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const conversations = await storage.getConversations(userId);
       res.json(conversations);
     } catch (error) {
@@ -14899,7 +13737,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/conversations', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { participantIds, type, name } = req.body;
       const conversation = await storage.createConversation(
         { createdById: userId, type: type || 'direct', name },
@@ -14913,7 +13751,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/conversations/:id/messages', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { limit, offset } = req.query;
       const messages = await storage.getConversationMessages(
         parseInt(req.params.id),
@@ -14929,17 +13767,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/conversations/:id/messages', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
-      const conversationId = parseInt(req.params.id);
-      const blockedIds = await storage.getBuddyBlockedIds(userId);
-      if (blockedIds.length) {
-        const members = await storage.getConversationParticipantIds(conversationId);
-        if (members.some(m => blockedIds.includes(m))) {
-          return res.status(403).json({ message: "You can't message a blocked survivor." });
-        }
-      }
+      const userId = req.user.claims.sub;
       const message = await storage.sendDirectMessage({
-        conversationId,
+        conversationId: parseInt(req.params.id),
         senderId: userId,
         ...req.body,
       });
@@ -14955,7 +13785,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/video-sessions', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { status } = req.query;
       const sessions = await storage.getVideoSessions(userId, status as string);
       res.json(sessions);
@@ -14966,7 +13796,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/video-sessions', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const session = await storage.createVideoSession({
         hostId: userId,
         ...req.body,
@@ -14992,7 +13822,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/vitals', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const vitals = await storage.getVitals(userId);
       res.json(vitals);
     } catch (error) {
@@ -15002,7 +13832,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/vitals', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const vital = await storage.createVital({ userId, ...req.body });
       res.json(vital);
     } catch (error) {
@@ -15016,7 +13846,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/wearables/connections', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const connections = await storage.getWearableConnections(userId);
       res.json(connections);
     } catch (error) {
@@ -15026,7 +13856,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/wearables/connect', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { provider } = req.body;
       const connection = await storage.createWearableConnection({
         userId,
@@ -15062,7 +13892,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/wearables/metrics', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const metrics = await storage.getWearableMetrics(userId);
       res.json(metrics);
     } catch (error) {
@@ -15072,7 +13902,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/wearables/today', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const today = await storage.getWearableTodayStats(userId);
       res.json(today);
     } catch (error) {
@@ -15086,7 +13916,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/social/followers', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const followers = await storage.getFollowers(userId);
       res.json(followers);
     } catch (error) {
@@ -15096,7 +13926,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/social/following', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const following = await storage.getFollowing(userId);
       res.json(following);
     } catch (error) {
@@ -15106,7 +13936,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/social/follow/:userId', isAuthenticated, async (req: any, res) => {
     try {
-      const followerId = getUserId(req);
+      const followerId = req.user.claims.sub;
       const followingId = req.params.userId;
       await storage.followUser(followerId, followingId);
       res.json({ success: true });
@@ -15117,7 +13947,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.delete('/api/social/follow/:userId', isAuthenticated, async (req: any, res) => {
     try {
-      const followerId = getUserId(req);
+      const followerId = req.user.claims.sub;
       const followingId = req.params.userId;
       await storage.unfollowUser(followerId, followingId);
       res.json({ success: true });
@@ -15142,7 +13972,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/messages/conversations', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const conversations = await storage.getConversations(userId);
       res.json(conversations);
     } catch (error) {
@@ -15152,15 +13982,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/messages/conversations', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { participantIds } = req.body;
-      if (!Array.isArray(participantIds) || participantIds.length === 0) {
-        return res.status(400).json({ message: "participantIds required" });
-      }
-      const conversation = await storage.createConversation(
-        { createdById: userId, type: "direct" },
-        Array.from(new Set([userId, ...participantIds]))
-      );
+      const conversation = await storage.createConversation(userId, participantIds);
       res.json(conversation);
     } catch (error) {
       res.status(500).json({ message: "Failed to create conversation" });
@@ -15179,33 +14003,10 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/messages/conversations/:id/messages', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const conversationId = parseInt(req.params.id);
       const { content } = req.body;
-      const blockedIds = await storage.getBuddyBlockedIds(userId);
-      if (blockedIds.length) {
-        const members = await storage.getConversationParticipantIds(conversationId);
-        if (members.some(m => blockedIds.includes(m))) {
-          return res.status(403).json({ message: "You can't message a blocked survivor." });
-        }
-      }
-      // Safe messaging: run the same crisis gate as the AI Coach. Peer-to-peer
-      // support is legitimate — a survivor confiding in their buddy must NOT be
-      // blocked — so we still deliver the message, but attach 988/crisis
-      // resources for the sender and log a structured moderation event.
-      const crisis = detectCrisis(typeof content === "string" ? content : "");
       const message = await storage.createMessage({ conversationId, senderId: userId, content });
-      if (crisis.detected && crisis.category) {
-        console.log(JSON.stringify({
-          event: "dm_crisis_intercept",
-          userId,
-          conversationId,
-          category: crisis.category,
-          at: new Date().toISOString(),
-        }));
-        const payload = buildCrisisResponse(crisis.category);
-        return res.json({ ...message, crisis: { category: payload.category, resources: payload.resources, message: payload.response } });
-      }
       res.json(message);
     } catch (error) {
       res.status(500).json({ message: "Failed to send message" });
@@ -15218,7 +14019,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/video/sessions', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const sessions = await storage.getVideoSessions(userId);
       res.json(sessions);
     } catch (error) {
@@ -15228,7 +14029,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/video/sessions', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const session = await storage.createVideoSession({ hostId: userId, ...req.body });
       res.json(session);
     } catch (error) {
@@ -15238,7 +14039,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/video/sessions/:id/join', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const sessionId = parseInt(req.params.id);
       await storage.joinVideoSession(sessionId, userId);
       res.json({ success: true });
@@ -15272,7 +14073,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/therapist-marketplace/my-products', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const products = await storage.getTherapistProducts(userId);
       res.json(products);
     } catch (error) {
@@ -15282,7 +14083,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/therapist-marketplace/products', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const product = await storage.createTherapistProduct({ therapistId: userId, ...req.body });
       res.json(product);
     } catch (error) {
@@ -15292,7 +14093,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/therapist-marketplace/earnings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const earnings = await storage.getTherapistEarnings(userId);
       res.json(earnings);
     } catch (error) {
@@ -15302,7 +14103,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/therapist-marketplace/products/:id/purchase', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const productId = parseInt(req.params.id);
       const checkoutUrl = await storage.purchaseTherapistProduct(userId, productId);
       res.json({ checkoutUrl });
@@ -15326,7 +14127,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/admin/plans', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const plan = await storage.createRecoveryPlan({ createdBy: userId, ...req.body });
       res.json(plan);
     } catch (error) {
@@ -15423,7 +14224,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   // GET /api/subscription/current - Get user's current subscription
   app.get('/api/subscription/current', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const subscription = await getUserSubscription(userId);
       res.json({ success: true, subscription });
     } catch (error) {
@@ -15435,7 +14236,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   // GET /api/subscription/feature/:feature - Check feature access
   app.get('/api/subscription/feature/:feature', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const feature = req.params.feature;
       const hasAccess = await hasFeatureAccess(userId, feature);
       const tier = await getUserTier(userId);
@@ -15465,7 +14266,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   // GET /api/rate-limits/status - Get user's rate limit status
   app.get('/api/rate-limits/status', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const status = await getRateLimitStatus(userId);
       res.json({ success: true, ...status });
     } catch (error) {
@@ -15477,7 +14278,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   // GET /api/rate-limits/ai-generation - Check AI generation limit
   app.get('/api/rate-limits/ai-generation', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const result = await checkAiGenerationLimit(userId);
       res.json({ success: true, ...result });
     } catch (error) {
@@ -15489,7 +14290,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   // GET /api/rate-limits/export - Check export limit
   app.get('/api/rate-limits/export', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const result = await checkExportLimit(userId);
       res.json({ success: true, ...result });
     } catch (error) {
@@ -15643,7 +14444,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
 
   app.get('/api/blog/me', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const posts = await storage.getUserBlogPosts(userId);
       res.json(posts);
     } catch (error) {
@@ -15666,7 +14467,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
 
   app.post('/api/blog', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const post = await storage.createBlogPost({ ...req.body, authorId: userId });
       res.json(post);
     } catch (error) {
@@ -15676,7 +14477,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
 
   app.patch('/api/blog/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const postId = parseInt(req.params.id);
       const existing = await storage.getBlogPost(postId);
       if (!existing || existing.authorId !== userId) {
@@ -15691,7 +14492,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
 
   app.post('/api/blog/:id/publish', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const postId = parseInt(req.params.id);
       const existing = await storage.getBlogPost(postId);
       if (!existing || existing.authorId !== userId) {
@@ -15706,7 +14507,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
 
   app.delete('/api/blog/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const postId = parseInt(req.params.id);
       const existing = await storage.getBlogPost(postId);
       if (!existing || existing.authorId !== userId) {
@@ -15721,7 +14522,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
 
   app.post('/api/blog/:id/react', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const postId = parseInt(req.params.id);
       const { reactionType } = req.body;
       const result = await storage.toggleBlogReaction(postId, userId, reactionType || 'like');
@@ -15743,7 +14544,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
 
   app.post('/api/blog/:id/comments', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const postId = parseInt(req.params.id);
       const comment = await storage.createBlogComment({
         postId,
@@ -15833,7 +14634,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // POST /api/blog/:id/links/internal - Add internal links to post
   app.post('/api/blog/:id/links/internal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const postId = parseInt(req.params.id);
       const existing = await storage.getBlogPost(postId);
       if (!existing || existing.authorId !== userId) {
@@ -15859,7 +14660,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // POST /api/blog/:id/links/external - Add external links to post
   app.post('/api/blog/:id/links/external', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const postId = parseInt(req.params.id);
       const existing = await storage.getBlogPost(postId);
       if (!existing || existing.authorId !== userId) {
@@ -15928,7 +14729,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // POST /api/blog/:id/eeat - Update E-E-A-T signals
   app.post('/api/blog/:id/eeat', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const postId = parseInt(req.params.id);
       const existing = await storage.getBlogPost(postId);
       if (!existing || existing.authorId !== userId) {
@@ -15965,7 +14766,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // POST /api/blog/:id/meta - Update meta tags with validation
   app.post('/api/blog/:id/meta', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const postId = parseInt(req.params.id);
       const existing = await storage.getBlogPost(postId);
       if (!existing || existing.authorId !== userId) {
@@ -16084,7 +14885,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Get author's listings
   app.get('/api/marketplace/my-books', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = getUserId(req);
+      const authorId = req.user.claims.sub;
       const listings = await storage.getAuthorListings(authorId);
       res.json(listings);
     } catch (error) {
@@ -16096,7 +14897,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Create marketplace listing from publishing project
   app.post('/api/marketplace/publish', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = getUserId(req);
+      const authorId = req.user.claims.sub;
       const { projectId, title, subtitle, description, coverImageUrl, genre, tags, editions } = req.body;
 
       if (!projectId || !title || !description || !genre) {
@@ -16144,7 +14945,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Update marketplace listing
   app.patch('/api/marketplace/books/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = getUserId(req);
+      const authorId = req.user.claims.sub;
       const listingId = parseInt(req.params.id);
       
       const existing = await storage.getMarketplaceListing(listingId);
@@ -16163,7 +14964,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Add/update book edition
   app.post('/api/marketplace/books/:id/editions', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = getUserId(req);
+      const authorId = req.user.claims.sub;
       const listingId = parseInt(req.params.id);
       
       const listing = await storage.getMarketplaceListing(listingId);
@@ -16232,7 +15033,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Create checkout session for book purchase
   app.post('/api/marketplace/checkout', isAuthenticated, async (req: any, res) => {
     try {
-      const customerId = getUserId(req);
+      const customerId = req.user.claims.sub;
       const customerEmail = req.user.claims.email;
       const customerName = req.user.claims.name || 'Customer';
       const { items, shippingAddress } = req.body;
@@ -16389,7 +15190,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Get order by Stripe session ID (for success redirect)
   app.get('/api/marketplace/orders/session/:sessionId', isAuthenticated, async (req: any, res) => {
     try {
-      const customerId = getUserId(req);
+      const customerId = req.user.claims.sub;
       const sessionId = req.params.sessionId;
       
       const order = await storage.getBookOrderBySessionId(sessionId);
@@ -16420,7 +15221,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Get order details with full tracking info
   app.get('/api/marketplace/orders/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const customerId = getUserId(req);
+      const customerId = req.user.claims.sub;
       const orderId = parseInt(req.params.id);
       
       const order = await storage.getBookOrder(orderId);
@@ -16512,7 +15313,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // ───────────────────────────────────────────────────────────────────────
   app.get('/api/book/entitlement', isAuthenticated, async (req: any, res) => {
     try {
-      const customerId = getUserId(req);
+      const customerId = req.user.claims.sub;
       const orders = await storage.getCustomerOrders(customerId);
       const paidStatuses = new Set(['paid', 'processing', 'shipped', 'delivered']);
       // newest first
@@ -16555,7 +15356,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
 
   app.get('/api/book/chapter/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const customerId = getUserId(req);
+      const customerId = req.user.claims.sub;
       const { storage: st } = await import('./storage');
       const orders = await st.getCustomerOrders(customerId);
       const paid = new Set(['paid', 'processing', 'shipped', 'delivered']);
@@ -16581,7 +15382,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   app.get('/api/marketplace/orders/:orderId/items/:itemId/download',
     isAuthenticated, async (req: any, res) => {
     try {
-      const customerId = getUserId(req);
+      const customerId = req.user.claims.sub;
       const orderId = parseInt(req.params.orderId);
       const itemId = parseInt(req.params.itemId);
 
@@ -16633,7 +15434,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Get customer's orders
   app.get('/api/marketplace/my-orders', isAuthenticated, async (req: any, res) => {
     try {
-      const customerId = getUserId(req);
+      const customerId = req.user.claims.sub;
       const orders = await storage.getCustomerOrders(customerId);
       res.json(orders);
     } catch (error) {
@@ -16645,7 +15446,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Author dashboard - earnings
   app.get('/api/marketplace/author/earnings', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = getUserId(req);
+      const authorId = req.user.claims.sub;
       const earnings = await storage.getAuthorEarnings(authorId);
       const totals = await storage.getAuthorEarningsSummary(authorId);
       res.json({ earnings, totals });
@@ -16658,7 +15459,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Author dashboard - sales analytics
   app.get('/api/marketplace/author/analytics', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = getUserId(req);
+      const authorId = req.user.claims.sub;
       const analytics = await storage.getAuthorAnalytics(authorId);
       res.json(analytics);
     } catch (error) {
@@ -16670,7 +15471,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Submit book review
   app.post('/api/marketplace/books/:id/reviews', isAuthenticated, async (req: any, res) => {
     try {
-      const reviewerId = getUserId(req);
+      const reviewerId = req.user.claims.sub;
       const listingId = parseInt(req.params.id);
       const { rating, title, content, orderId } = req.body;
 
@@ -16750,7 +15551,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Get all book websites for current user
   app.get('/api/book-websites', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = getUserId(req);
+      const authorId = req.user.claims.sub;
       const websites = await bookWebsiteService.getMyBookWebsites(authorId);
       res.json(websites);
     } catch (error) {
@@ -16777,7 +15578,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Create new book website
   app.post('/api/book-websites', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = getUserId(req);
+      const authorId = req.user.claims.sub;
       const { title, subtitle, authorName, slug, theme, coverImageUrl, description, genre } = req.body;
 
       if (!title || !authorName || !slug) {
@@ -16806,7 +15607,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Create website from marketplace listing
   app.post('/api/book-websites/from-listing/:listingId', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = getUserId(req);
+      const authorId = req.user.claims.sub;
       const listingId = parseInt(req.params.listingId);
 
       const website = await bookWebsiteService.createWebsiteFromListing(listingId, authorId);
@@ -16820,7 +15621,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Update book website
   app.patch('/api/book-websites/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = getUserId(req);
+      const authorId = req.user.claims.sub;
       const websiteId = parseInt(req.params.id);
 
       const updated = await bookWebsiteService.updateBookWebsite(websiteId, authorId, req.body);
@@ -16834,7 +15635,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Publish book website
   app.post('/api/book-websites/:id/publish', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = getUserId(req);
+      const authorId = req.user.claims.sub;
       const websiteId = parseInt(req.params.id);
 
       const result = await bookWebsiteService.publishBookWebsite(websiteId, authorId);
@@ -16848,7 +15649,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Unpublish book website
   app.post('/api/book-websites/:id/unpublish', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = getUserId(req);
+      const authorId = req.user.claims.sub;
       const websiteId = parseInt(req.params.id);
 
       const result = await bookWebsiteService.unpublishBookWebsite(websiteId, authorId);
@@ -16862,7 +15663,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Delete book website
   app.delete('/api/book-websites/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = getUserId(req);
+      const authorId = req.user.claims.sub;
       const websiteId = parseInt(req.params.id);
 
       const deleted = await bookWebsiteService.deleteBookWebsite(websiteId, authorId);
@@ -16876,7 +15677,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Get website analytics
   app.get('/api/book-websites/:id/analytics', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = getUserId(req);
+      const authorId = req.user.claims.sub;
       const websiteId = parseInt(req.params.id);
 
       const analytics = await bookWebsiteService.getWebsiteAnalytics(websiteId, authorId);
@@ -16890,7 +15691,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Get website leads
   app.get('/api/book-websites/:id/leads', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = getUserId(req);
+      const authorId = req.user.claims.sub;
       const websiteId = parseInt(req.params.id);
 
       const leads = await bookWebsiteService.getWebsiteLeads(websiteId, authorId);
@@ -16904,7 +15705,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Generate AI content for website
   app.post('/api/book-websites/:id/generate', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = getUserId(req);
+      const authorId = req.user.claims.sub;
       const websiteId = parseInt(req.params.id);
       const { contentType } = req.body;
 
@@ -16923,7 +15724,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Update website page
   app.patch('/api/book-websites/:websiteId/pages/:pageId', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = getUserId(req);
+      const authorId = req.user.claims.sub;
       const websiteId = parseInt(req.params.websiteId);
       const pageId = parseInt(req.params.pageId);
 
@@ -16938,7 +15739,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Create new page
   app.post('/api/book-websites/:id/pages', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = getUserId(req);
+      const authorId = req.user.claims.sub;
       const websiteId = parseInt(req.params.id);
       const { slug, title, content, sortOrder } = req.body;
 
@@ -16957,7 +15758,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Delete page
   app.delete('/api/book-websites/:websiteId/pages/:pageId', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = getUserId(req);
+      const authorId = req.user.claims.sub;
       const websiteId = parseInt(req.params.websiteId);
       const pageId = parseInt(req.params.pageId);
 
@@ -17090,7 +15891,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Create a book product (printable)
   app.post('/api/lulu/create-printable', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { title, interiorSourceUrl, coverSourceUrl, podPackageId, externalId } = req.body;
 
       if (!title || !interiorSourceUrl || !coverSourceUrl || !podPackageId) {
@@ -17124,7 +15925,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Create a print order
   app.post('/api/lulu/create-order', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const userEmail = req.user.claims.email || '';
       const { lineItems, shippingAddress, shippingLevel, externalId } = req.body;
 
@@ -17203,7 +16004,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Unified content generation endpoint
   app.post('/api/ai/generate', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { prompt, systemPrompt, taskType, maxTokens, temperature, jsonMode } = req.body;
 
       if (!prompt || !taskType) {
@@ -17230,7 +16031,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Streaming content generation with Server-Sent Events
   app.post('/api/ai/generate-stream', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { prompt, systemPrompt, taskType, maxTokens, temperature } = req.body;
 
       if (!prompt || !taskType) {
@@ -17297,7 +16098,7 @@ High quality, suitable for print publication, no text or words in the image.`;
   // AI Image Analysis endpoint - analyzes images for placement, captions, alt text
   app.post('/api/ai/analyze-image', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { imageUrl, imageBase64, bookContext, chapterTitles } = req.body;
 
       if (!imageUrl && !imageBase64) {
@@ -17392,7 +16193,7 @@ Respond in JSON format:
   // Book outline generation
   app.post('/api/ai/book/outline', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { title, genre, description, chapterCount } = req.body;
 
       if (!title || !genre || !description) {
@@ -17410,7 +16211,7 @@ Respond in JSON format:
   // Book chapter generation
   app.post('/api/ai/book/chapter', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { bookTitle, chapterNumber, chapterTitle, outline, previousContext, targetWords } = req.body;
 
       if (!bookTitle || !chapterNumber || !chapterTitle || !outline) {
@@ -17436,7 +16237,7 @@ Respond in JSON format:
   // Content refinement
   app.post('/api/ai/book/refine', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { content, instructions } = req.body;
 
       if (!content || !instructions) {
@@ -17454,7 +16255,7 @@ Respond in JSON format:
   // Book blurb generation
   app.post('/api/ai/marketing/blurb', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { title, genre, synopsis, targetAudience } = req.body;
 
       if (!title || !genre || !synopsis || !targetAudience) {
@@ -17472,7 +16273,7 @@ Respond in JSON format:
   // Social media posts generation
   app.post('/api/ai/marketing/social', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { bookTitle, blurb, platforms } = req.body;
 
       if (!bookTitle || !blurb || !platforms || !Array.isArray(platforms)) {
@@ -17490,7 +16291,7 @@ Respond in JSON format:
   // Screenplay treatment generation
   app.post('/api/ai/screenplay/treatment', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { title, logline, genre, targetLength } = req.body;
 
       if (!title || !logline || !genre || !targetLength) {
@@ -17508,7 +16309,7 @@ Respond in JSON format:
   // Screenplay scene generation
   app.post('/api/ai/screenplay/scene', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { context, sceneDescription, characters } = req.body;
 
       if (!context || !sceneDescription || !characters || !Array.isArray(characters)) {
@@ -17526,7 +16327,7 @@ Respond in JSON format:
   // Course curriculum generation
   app.post('/api/ai/course/curriculum', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { courseName, description, targetAudience, duration } = req.body;
 
       if (!courseName || !description || !targetAudience || !duration) {
@@ -17544,7 +16345,7 @@ Respond in JSON format:
   // Course lesson generation
   app.post('/api/ai/course/lesson', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { moduleName, lessonTitle, learningObjectives, duration } = req.body;
 
       if (!moduleName || !lessonTitle || !learningObjectives || !Array.isArray(learningObjectives) || !duration) {
@@ -17562,7 +16363,7 @@ Respond in JSON format:
   // Research synthesis
   app.post('/api/ai/research/synthesize', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { topic, sources, outputFormat } = req.body;
 
       if (!topic || !sources || !Array.isArray(sources) || !outputFormat) {
@@ -17584,7 +16385,7 @@ Respond in JSON format:
   // AI usage statistics
   app.get('/api/ai/usage', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const days = parseInt(req.query.days as string) || 30;
 
       const stats = await getUsageStats(userId, days);
@@ -17598,7 +16399,7 @@ Respond in JSON format:
   // AI Quick Actions for Editor (expand, rewrite, continue)
   app.post('/api/ai/quick-action', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { action, text, projectId } = req.body;
 
       if (!action || !text) {
@@ -17637,7 +16438,7 @@ Respond in JSON format:
   // AI Inline Actions for Mobile Studio
   app.post('/api/ai/inline-action', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { action, text, context } = req.body;
 
       if (!action || !text) {
@@ -17696,7 +16497,7 @@ Context:
   // AI Tone Revision - rewrite text in a specific tone/style
   app.post('/api/ai/tone-rewrite', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { text, tone } = req.body;
 
       if (!text || !tone) {
@@ -17735,7 +16536,7 @@ Context:
   // AI Chat for Book Writing
   app.post('/api/ai/chat', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { message, projectId, context, manuscriptContent, conversationHistory } = req.body;
 
       if (!message) {
@@ -17808,7 +16609,7 @@ Tone: Professional, encouraging, specific. Like a trusted editor who genuinely w
   // Generate complete children's story with pages
   app.post('/api/books/childrens/generate-story', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       
       // Validate request body with Zod
       const parseResult = generateChildStoryRequestSchema.safeParse(req.body);
@@ -17925,7 +16726,7 @@ Generate the complete story with all ${pageCount} pages.`;
   // Generate consistent character illustration prompt
   app.post('/api/books/childrens/character-prompt', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { character, illustrationStyle } = req.body;
 
       if (!character || !illustrationStyle) {
@@ -18021,7 +16822,7 @@ OUTPUT FORMAT: Return valid JSON:
   // Generate page illustration prompt
   app.post('/api/books/childrens/page-illustration', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { spread, characters, illustrationStyle, projectColorPalette } = req.body;
 
       if (!spread || !illustrationStyle) {
@@ -18101,7 +16902,7 @@ OUTPUT FORMAT: Return valid JSON:
   // Convert prose to rhyming text
   app.post('/api/books/childrens/rhyme-convert', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       
       // Validate request body with Zod
       const parseResult = rhymeConvertRequestSchema.safeParse(req.body);
@@ -18364,7 +17165,7 @@ Return the rhyming version only, no explanation.`;
   // Create a new workflow
   app.post('/api/workflows', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { workflowType, sourceType, sourceId, customName } = req.body;
       
       if (!workflowType || !sourceType || !sourceId) {
@@ -18457,7 +17258,7 @@ Return the rhyming version only, no explanation.`;
   // Get user's voice clones
   app.get('/api/voices', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const userVoices = await db.select().from(voiceClones).where(eq(voiceClones.ownerId, userId));
       res.json({ voices: userVoices });
     } catch (error: any) {
@@ -18469,7 +17270,7 @@ Return the rhyming version only, no explanation.`;
   // Create a new voice clone
   app.post('/api/voices', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { name, description, voiceType, gender, ageRange, accent, sourceAudioUrl, styleSettings } = req.body;
       
       if (!name || !voiceType) {
@@ -18512,7 +17313,7 @@ Return the rhyming version only, no explanation.`;
   // Get user's DJ presets
   app.get('/api/dj/presets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const userPresets = await db.select().from(djPresets).where(eq(djPresets.creatorId, userId));
       res.json({ presets: userPresets });
     } catch (error: any) {
@@ -18524,7 +17325,7 @@ Return the rhyming version only, no explanation.`;
   // Save a DJ preset
   app.post('/api/dj/presets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { name, category, settings, isPublic } = req.body;
       
       if (!name || !category || !settings) {
@@ -18562,7 +17363,7 @@ Return the rhyming version only, no explanation.`;
   // Get user's audiobook projects
   app.get('/api/audiobooks', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const userAudiobooks = await db.select().from(audiobookProjects).where(eq(audiobookProjects.creatorId, userId));
       res.json({ audiobooks: userAudiobooks });
     } catch (error: any) {
@@ -18574,7 +17375,7 @@ Return the rhyming version only, no explanation.`;
   // Create audiobook from manuscript
   app.post('/api/audiobooks', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { title, author, sourceProjectId, narratorVoiceId, masteringPreset } = req.body;
       
       if (!title) {
@@ -18613,7 +17414,7 @@ Return the rhyming version only, no explanation.`;
   // Generate audio for a single audiobook chapter
   app.post('/api/audiobooks/:id/chapters/:chapterId/generate', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { id, chapterId } = req.params;
       const { text, voiceId, speakingRate } = req.body;
       
@@ -18667,7 +17468,7 @@ Return the rhyming version only, no explanation.`;
   // Batch generate all chapters for an audiobook
   app.post('/api/audiobooks/:id/generate-all', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { id } = req.params;
       const { chapters, voiceId, speakingRate } = req.body;
       
@@ -18935,7 +17736,7 @@ Return the rhyming version only, no explanation.`;
   // Get user's media projects
   app.get('/api/media/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projects = await db.select().from(mediaProjects).where(eq(mediaProjects.ownerId, userId));
       res.json({ projects });
     } catch (error: any) {
@@ -18947,7 +17748,7 @@ Return the rhyming version only, no explanation.`;
   // Create media project
   app.post('/api/media/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { name, mode, projectData, width, height, duration } = req.body;
       
       if (!name) {
@@ -18975,7 +17776,7 @@ Return the rhyming version only, no explanation.`;
   // Update media project
   app.patch('/api/media/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { id } = req.params;
       const { name, projectData, thumbnailUrl, status, width, height, duration } = req.body;
 
@@ -19015,7 +17816,7 @@ Return the rhyming version only, no explanation.`;
   // Upload media asset
   app.post('/api/media/assets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { name, type, url, thumbnailUrl, duration, width, height, fileSize, mimeType, metadata, projectId } = req.body;
       
       if (!name || !type || !url) {
@@ -19047,7 +17848,7 @@ Return the rhyming version only, no explanation.`;
   // Get user's media assets
   app.get('/api/media/assets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const assets = await db.select().from(mediaAssets).where(eq(mediaAssets.ownerId, userId));
       res.json({ assets });
     } catch (error: any) {
@@ -19061,7 +17862,7 @@ Return the rhyming version only, no explanation.`;
   // Get all user content across studios for import picker
   app.get('/api/studio/library', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { type } = req.query; // audio, image, video, text
       
       // Get media assets
@@ -19097,7 +17898,7 @@ Return the rhyming version only, no explanation.`;
   // Import asset from one studio to another (creates a link/reference)
   app.post('/api/studio/import', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { sourceType, sourceId, targetProject, targetType, name } = req.body;
       
       if (!sourceType || !sourceId) {
@@ -19160,7 +17961,7 @@ Return the rhyming version only, no explanation.`;
   // Author Profiles CRUD
   app.get('/api/author-profiles', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const profiles = await db.select().from(authorProfiles).where(eq(authorProfiles.userId, userId));
       res.json(profiles);
     } catch (error: any) {
@@ -19171,7 +17972,7 @@ Return the rhyming version only, no explanation.`;
 
   app.post('/api/author-profiles', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const validated = insertAuthorProfileSchema.parse({ ...req.body, userId });
       
       // If this is set as default, unset other defaults first
@@ -19191,7 +17992,7 @@ Return the rhyming version only, no explanation.`;
 
   app.patch('/api/author-profiles/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const profileId = parseInt(req.params.id);
       
       const [existing] = await db.select().from(authorProfiles)
@@ -19225,7 +18026,7 @@ Return the rhyming version only, no explanation.`;
 
   app.delete('/api/author-profiles/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const profileId = parseInt(req.params.id);
       
       const [existing] = await db.select().from(authorProfiles)
@@ -19244,7 +18045,7 @@ Return the rhyming version only, no explanation.`;
 
   app.post('/api/author-profiles/:id/set-default', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const profileId = parseInt(req.params.id);
       
       // Unset all defaults for this user
@@ -19271,7 +18072,7 @@ Return the rhyming version only, no explanation.`;
   // Publishing Presets CRUD
   app.get('/api/publishing-presets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const presets = await db.select().from(publishingPresets).where(eq(publishingPresets.userId, userId));
       res.json(presets);
     } catch (error: any) {
@@ -19282,7 +18083,7 @@ Return the rhyming version only, no explanation.`;
 
   app.post('/api/publishing-presets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const validated = insertPublishingPresetSchema.parse({ ...req.body, userId });
       
       if (validated.isDefault) {
@@ -19301,7 +18102,7 @@ Return the rhyming version only, no explanation.`;
 
   app.patch('/api/publishing-presets/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const presetId = parseInt(req.params.id);
       
       const [existing] = await db.select().from(publishingPresets)
@@ -19323,7 +18124,7 @@ Return the rhyming version only, no explanation.`;
 
   app.delete('/api/publishing-presets/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const presetId = parseInt(req.params.id);
       
       const [existing] = await db.select().from(publishingPresets)
@@ -19343,7 +18144,7 @@ Return the rhyming version only, no explanation.`;
   // Course Presets CRUD
   app.get('/api/course-presets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const presets = await db.select().from(coursePresets).where(eq(coursePresets.userId, userId));
       res.json(presets);
     } catch (error: any) {
@@ -19354,7 +18155,7 @@ Return the rhyming version only, no explanation.`;
 
   app.post('/api/course-presets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const validated = insertCoursePresetSchema.parse({ ...req.body, userId });
       
       if (validated.isDefault) {
@@ -19373,7 +18174,7 @@ Return the rhyming version only, no explanation.`;
 
   app.patch('/api/course-presets/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const presetId = parseInt(req.params.id);
       
       const [existing] = await db.select().from(coursePresets)
@@ -19395,7 +18196,7 @@ Return the rhyming version only, no explanation.`;
 
   app.delete('/api/course-presets/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const presetId = parseInt(req.params.id);
       
       const [existing] = await db.select().from(coursePresets)
@@ -19415,7 +18216,7 @@ Return the rhyming version only, no explanation.`;
   // Inspiration Library CRUD
   app.get('/api/inspiration', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const items = await db.select().from(inspirationLibrary).where(eq(inspirationLibrary.userId, userId));
       res.json(items);
     } catch (error: any) {
@@ -19426,7 +18227,7 @@ Return the rhyming version only, no explanation.`;
 
   app.post('/api/inspiration', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const validated = insertInspirationLibrarySchema.parse({ ...req.body, userId });
       const [item] = await db.insert(inspirationLibrary).values(validated).returning();
       res.json(item);
@@ -19438,7 +18239,7 @@ Return the rhyming version only, no explanation.`;
 
   app.delete('/api/inspiration/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const itemId = parseInt(req.params.id);
       
       const [existing] = await db.select().from(inspirationLibrary)
@@ -19458,7 +18259,7 @@ Return the rhyming version only, no explanation.`;
   // Saved Cover Designs CRUD
   app.get('/api/saved-covers', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const covers = await db.select().from(savedCoverDesigns).where(eq(savedCoverDesigns.userId, userId));
       res.json(covers);
     } catch (error: any) {
@@ -19469,7 +18270,7 @@ Return the rhyming version only, no explanation.`;
 
   app.post('/api/saved-covers', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const validated = insertSavedCoverDesignSchema.parse({ ...req.body, userId });
       const [cover] = await db.insert(savedCoverDesigns).values(validated).returning();
       res.json(cover);
@@ -19481,7 +18282,7 @@ Return the rhyming version only, no explanation.`;
 
   app.patch('/api/saved-covers/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const coverId = parseInt(req.params.id);
       
       const [existing] = await db.select().from(savedCoverDesigns)
@@ -19503,7 +18304,7 @@ Return the rhyming version only, no explanation.`;
 
   app.delete('/api/saved-covers/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const coverId = parseInt(req.params.id);
       
       const [existing] = await db.select().from(savedCoverDesigns)
@@ -19523,7 +18324,7 @@ Return the rhyming version only, no explanation.`;
   // Book to Course Conversion API
   app.post('/api/course/from-book', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { bookTitle, chapters, authorProfile, coursePreset, generateQuizzes, generateVideos } = req.body;
       
       if (!bookTitle || !chapters || !chapters.length) {
@@ -19608,7 +18409,7 @@ Return the rhyming version only, no explanation.`;
   // Get conversations for a studio
   app.get('/api/conversations/:studio', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { studio } = req.params;
       
       const sessions = await db.select()
@@ -19646,7 +18447,7 @@ Return the rhyming version only, no explanation.`;
   // Send a message in a conversation
   app.post('/api/conversations/message', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { sessionId, studio, projectId, systemPrompt, content } = req.body;
       
       let currentSessionId = sessionId;
@@ -19720,7 +18521,7 @@ Return the rhyming version only, no explanation.`;
 
   app.post('/api/quick-create', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { actionId, input } = req.body;
       
       let results: any[] = [];
@@ -19990,7 +18791,7 @@ Create 6 viral clip concepts:
 
   app.post('/api/manuscript-to-soundtrack', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { title, manuscript, chapters, genre, mood } = req.body;
       
       if (!manuscript && !chapters) {
@@ -20085,7 +18886,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.get('/api/assets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { type, studio } = req.query;
       
       let query = db.select().from(assetRegistry).where(eq(assetRegistry.userId, userId));
@@ -20110,7 +18911,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.post('/api/assets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const validated = insertAssetRegistrySchema.parse({ ...req.body, userId });
       
       const [asset] = await db.insert(assetRegistry).values(validated).returning();
@@ -20128,7 +18929,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Get affiliate stats for current user
   app.get('/api/affiliate/stats', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       
       // Get user's affiliate info
       const [userInfo] = await db.select()
@@ -20152,11 +18953,64 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
+  // Get success stories for marketplace
+  app.get('/api/success-stories', async (req, res) => {
+    try {
+      // Return featured success stories
+      const stories = [
+        {
+          id: 1,
+          creatorName: "Sarah Chen",
+          creatorImage: null,
+          title: "From Blog to Bestseller",
+          description: "Used Blog-to-Book tool to transform my travel blog into a published book. Made $12,000 in first month!",
+          earnings: 12000,
+          studio: "book",
+          featured: true,
+        },
+        {
+          id: 2,
+          creatorName: "Marcus Williams",
+          creatorImage: null,
+          title: "AI Music Producer",
+          description: "Created 50+ royalty-free tracks for my YouTube channel. Now selling them on Marketplace!",
+          earnings: 8500,
+          studio: "music",
+          featured: true,
+        },
+        {
+          id: 3,
+          creatorName: "Elena Rodriguez",
+          creatorImage: null,
+          title: "Course Empire",
+          description: "Turned my expertise into 5 courses using Instant Course. Passive income dream achieved.",
+          earnings: 25000,
+          studio: "course",
+          featured: true,
+        },
+        {
+          id: 4,
+          creatorName: "David Park",
+          creatorImage: null,
+          title: "AI Consultant Launch",
+          description: "Trained an AI on my business knowledge. Now earning $500/mo from AI chat subscriptions.",
+          earnings: 3000,
+          studio: "doctrine",
+          featured: false,
+        },
+      ];
+      
+      res.json(stories);
+    } catch (error: any) {
+      console.error("Error fetching success stories:", error);
+      res.status(500).json({ message: "Failed to fetch success stories" });
+    }
+  });
 
   // Apply watermark to content
   app.post('/api/watermark', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { contentType, contentId, watermarkStyle } = req.body;
       
       // Get user info for watermark
@@ -20221,6 +19075,24 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
+  // Creator leaderboard
+  app.get('/api/leaderboard', async (req, res) => {
+    try {
+      // Get top creators (mock data for now)
+      const leaderboard = [
+        { rank: 1, name: "Sarah Chen", sales: 156, earnings: 12450, badge: "Gold Creator" },
+        { rank: 2, name: "Marcus Williams", sales: 89, earnings: 8520, badge: "Silver Creator" },
+        { rank: 3, name: "Elena Rodriguez", sales: 234, earnings: 25800, badge: "Platinum Creator" },
+        { rank: 4, name: "David Park", sales: 45, earnings: 3200, badge: "Rising Star" },
+        { rank: 5, name: "Jennifer Lee", sales: 67, earnings: 5430, badge: "Silver Creator" },
+      ];
+      
+      res.json(leaderboard);
+    } catch (error: any) {
+      console.error("Error fetching leaderboard:", error);
+      res.status(500).json({ message: "Failed to fetch leaderboard" });
+    }
+  });
 
   // ============================================================================
   // CREDIT SYSTEM - Wallets, Transactions, Balance
@@ -20228,7 +19100,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.get('/api/credits/balance', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const balance = await creditService.getBalance(userId);
       res.json(balance);
     } catch (error: any) {
@@ -20239,7 +19111,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.get('/api/credits/transactions', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const limit = parseInt(req.query.limit as string) || 50;
       const transactions = await creditService.getTransactionHistory(userId, limit);
       res.json(transactions);
@@ -20251,7 +19123,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.get('/api/credits/usage', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const usage = await creditService.getDailyUsageStats(userId);
       res.json(usage);
     } catch (error: any) {
@@ -20262,7 +19134,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.post('/api/credits/check', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { amount } = req.body;
       const canAfford = await creditService.hasEnoughCredits(userId, amount);
       const balance = await creditService.getBalance(userId);
@@ -20280,7 +19152,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Provably fair slot machine with 92% RTP (8% house edge)
   app.post('/api/games/slot-spin', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { bet } = req.body;
       
       if (!bet || bet < 1 || bet > 1000) {
@@ -20348,7 +19220,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Daily free spin - one free spin per day
   app.post('/api/games/daily-spin', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       
       // Check if already spun today (using usage events)
       const today = new Date().toISOString().split('T')[0];
@@ -20410,7 +19282,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Staring contest - webcam-based game
   app.post('/api/games/staring-contest/start', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { bet } = req.body;
       
       if (bet && bet > 0) {
@@ -20438,7 +19310,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.post('/api/games/staring-contest/result', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { sessionId, playerBlinkTime, sasquatchBlinkTime, bet } = req.body;
       
       const playerWon = playerBlinkTime > sasquatchBlinkTime;
@@ -20468,7 +19340,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Roulette game
   app.post('/api/games/roulette-spin', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { bets } = req.body;
       
       if (!bets || !Array.isArray(bets) || bets.length === 0) {
@@ -20547,7 +19419,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.post('/api/games/blackjack-deal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { bet } = req.body;
       
       if (!bet || bet < 1) return res.status(400).json({ message: "Invalid bet" });
@@ -20583,7 +19455,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.post('/api/games/blackjack-action', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { action, playerHand, dealerHand, bet } = req.body;
 
       const deck = createDeck();
@@ -20646,7 +19518,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Texas Hold'em
   app.post('/api/games/holdem-start', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { buyIn } = req.body;
       
       if (!buyIn || buyIn < 50) return res.status(400).json({ message: "Minimum buy-in is 50" });
@@ -20686,7 +19558,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.post('/api/games/holdem-action', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { action, amount, gameState } = req.body;
       let { players, communityCards, pot, currentBet, gamePhase } = gameState;
 
@@ -20772,7 +19644,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Sasquatch Bingo
   app.post('/api/games/bingo-card', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { bet } = req.body;
       
       if (bet && bet > 0) {
@@ -20809,7 +19681,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Wilderness Survival - Outlast the Sasquatch
   app.post('/api/games/survival-start', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { bet } = req.body;
       
       if (bet && bet > 0) {
@@ -20837,7 +19709,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.post('/api/games/survival-action', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { action, gameState, bet } = req.body;
       let { health, warmth, hunger, day, inventory, sasquatchDistance, events } = gameState;
 
@@ -20936,7 +19808,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Bingo Start - with credit deduction
   app.post('/api/games/bingo-start', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { bet } = req.body;
       
       if (bet && bet > 0) {
@@ -20955,7 +19827,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Bingo Win
   app.post('/api/games/bingo-win', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { bet, pattern, multiplier } = req.body;
       const winAmount = (bet || 10) * multiplier;
       
@@ -20970,7 +19842,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Powerball Play
   app.post('/api/games/powerball-play', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { bet, numbers, powerball } = req.body;
       
       if (bet && bet > 0) {
@@ -20989,7 +19861,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Powerball Win
   app.post('/api/games/powerball-win', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { bet, winAmount } = req.body;
       
       if (winAmount > 0) {
@@ -21005,7 +19877,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Scratch-Off Buy
   app.post('/api/games/scratch-buy', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { cardType, cost } = req.body;
       
       if (cost && cost > 0) {
@@ -21024,7 +19896,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Scratch-Off Win
   app.post('/api/games/scratch-win', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { winAmount } = req.body;
       
       if (winAmount > 0) {
@@ -21040,7 +19912,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Prize entitlements management
   app.get('/api/games/prizes', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const prizes = await db.select()
         .from(prizeEntitlements)
         .where(eq(prizeEntitlements.userId, userId))
@@ -21056,7 +19928,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.post('/api/games/prizes/redeem', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { prizeId } = req.body;
       
       const [prize] = await db.select()
@@ -21127,7 +19999,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.post('/api/jobs', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { type, data, metadata } = req.body;
       const job = jobQueue.createJob(type, userId, data, metadata);
       res.json(job);
@@ -21139,7 +20011,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.get('/api/jobs', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const limit = parseInt(req.query.limit as string) || 50;
       const jobs = jobQueue.getUserJobs(userId, limit);
       res.json(jobs);
@@ -21223,7 +20095,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.get('/api/analytics/credits', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const days = parseInt(req.query.days as string) || 30;
       
       const endDate = new Date();
@@ -21267,7 +20139,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.get('/api/analytics/usage', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const days = parseInt(req.query.days as string) || 30;
       
       const endDate = new Date();
@@ -21427,7 +20299,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/marketplace/listings - Create new listing
   app.post('/api/marketplace/listings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const validatedData = insertMarketplaceListingSchema.parse({
         ...req.body,
         authorId: userId,
@@ -21450,7 +20322,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/marketplace/listings/:id - Update own listing
   app.patch('/api/marketplace/listings/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const listingId = parseInt(req.params.id);
       if (isNaN(listingId)) {
         return res.status(400).json({ message: "Invalid listing ID" });
@@ -21489,7 +20361,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // DELETE /api/marketplace/listings/:id - Delete own listing
   app.delete('/api/marketplace/listings/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const listingId = parseInt(req.params.id);
       if (isNaN(listingId)) {
         return res.status(400).json({ message: "Invalid listing ID" });
@@ -21521,7 +20393,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/marketplace/my-listings - Get current user's listings
   app.get('/api/marketplace/my-listings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
 
       const listings = await db.select()
         .from(marketplaceListings)
@@ -21542,7 +20414,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/marketplace/purchases - Get user's purchases
   app.get('/api/marketplace/purchases', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
 
       const orders = await db.select()
         .from(bookOrders)
@@ -21583,7 +20455,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // service which uses dynamic price_data (no pre-existing Stripe Price IDs needed).
   app.post('/api/marketplace/checkout', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { items } = req.body;
       if (!Array.isArray(items) || items.length === 0 || !items[0]?.editionId) {
         return res.status(400).json({ message: "Invalid cart items" });
@@ -21661,7 +20533,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/marketplace/checkout/credits - Buy credits
   app.post('/api/marketplace/checkout/credits', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { creditPackageId, amount } = req.body;
 
       if (!amount || amount <= 0) {
@@ -21777,7 +20649,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/marketplace/listings/:id/reviews - Add review (verified purchase only)
   app.post('/api/marketplace/listings/:id/reviews', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const listingId = parseInt(req.params.id);
 
       if (isNaN(listingId)) {
@@ -21865,7 +20737,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/marketplace/earnings - Get creator earnings summary
   app.get('/api/marketplace/earnings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
 
       const earnings = await db.select()
         .from(authorEarnings)
@@ -21916,7 +20788,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/marketplace/payouts - Get payout history
   app.get('/api/marketplace/payouts', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
 
       const payouts = await db.select()
         .from(creatorPayouts)
@@ -21954,7 +20826,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/affiliate/code - Get or create user's referral code
   app.get('/api/affiliate/code', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
 
       // Check for existing referral code
       let [existingCode] = await db.select()
@@ -22003,7 +20875,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/affiliate/stats - Get referral statistics
   app.get('/api/affiliate/stats', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
 
       // Get user's referral code
       const [referralCode] = await db.select()
@@ -22145,7 +21017,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/moderation/report - Submit a content report
   app.post('/api/moderation/report', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const validation = insertContentReportSchema.safeParse(req.body);
       
       if (!validation.success) {
@@ -22226,7 +21098,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/moderation/reports/:id - Update report status (admin only)
   app.patch('/api/moderation/reports/:id', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const reportId = parseInt(req.params.id);
       const { status } = req.body;
 
@@ -22259,7 +21131,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/moderation/listings/:id/status - Update listing moderation status (admin only)
   app.patch('/api/moderation/listings/:id/status', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const listingId = parseInt(req.params.id);
       const { moderationStatus, moderationNotes } = req.body;
 
@@ -22634,7 +21506,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     try {
       const { creatorId } = req.params;
       const { tierId } = req.body;
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
 
       // Placeholder for Stripe subscription creation
       res.json({
@@ -22702,7 +21574,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     try {
       const { id } = req.params;
       const { content } = req.body;
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
 
       if (!content || typeof content !== 'string' || content.trim().length === 0) {
         return res.status(400).json({ message: "Message content required" });
@@ -22734,7 +21606,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     try {
       const { projectId } = req.params;
       const { email, role } = req.body;
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
 
       if (!email || typeof email !== 'string' || !email.includes('@')) {
         return res.status(400).json({ message: "Valid email address required" });
@@ -22784,7 +21656,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/author-brain/projects - Create project context
   app.post('/api/author-brain/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { projectName, projectType, globalTone } = req.body;
       
       if (!projectName || !projectType) {
@@ -22809,7 +21681,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/author-brain/projects - List user's project contexts
   app.get('/api/author-brain/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { getProjectContexts } = await import('./authorBrainService');
       const projects = await getProjectContexts(userId);
       res.json(projects);
@@ -22822,7 +21694,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/author-brain/projects/:id - Get single project context
   app.get('/api/author-brain/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projectId = req.params.id;
       const { getProjectContext } = await import('./authorBrainService');
       const project = await getProjectContext(projectId, userId);
@@ -22841,7 +21713,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/author-brain/projects/:id - Update project context
   app.patch('/api/author-brain/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projectId = req.params.id;
       const { projectName, globalTone } = req.body;
       
@@ -22858,7 +21730,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // DELETE /api/author-brain/projects/:id - Delete project context
   app.delete('/api/author-brain/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projectId = req.params.id;
       
       const { deleteProjectContext } = await import('./authorBrainService');
@@ -23057,7 +21929,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/doc-hub/sources - Save parsed document source
   app.post('/api/doc-hub/sources', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { originalFilename, mimeType, parsedContent, parsedMetadata, wordCount } = req.body;
 
       if (!originalFilename || !parsedContent) {
@@ -23085,7 +21957,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/doc-hub/sources - List user's document sources
   app.get('/api/doc-hub/sources', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { docSources } = await import('../shared/schema');
       
       const sources = await db.select().from(docSources)
@@ -23102,7 +21974,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // DELETE /api/doc-hub/sources/:id - Delete document source
   app.delete('/api/doc-hub/sources/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const sourceId = parseInt(req.params.id);
       const { docSources } = await import('../shared/schema');
       
@@ -23119,7 +21991,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/doc-hub/sources/:id - Get single document content
   app.get('/api/doc-hub/sources/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const sourceId = parseInt(req.params.id);
       const { docSources } = await import('../shared/schema');
       
@@ -23140,7 +22012,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/doc-hub/sources/:id - Rename/update document source
   app.patch('/api/doc-hub/sources/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const sourceId = parseInt(req.params.id);
       const { originalFilename, status } = req.body;
       const { docSources } = await import('../shared/schema');
@@ -23168,7 +22040,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/doc-hub/search - Full-text search across documents
   app.get('/api/doc-hub/search', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { q } = req.query;
       
       if (!q || typeof q !== 'string') {
@@ -23212,7 +22084,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/doc-hub/snippets - Save content snippet
   app.post('/api/doc-hub/snippets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { label, content, tags, category, sourceId } = req.body;
 
       if (!label || !content) {
@@ -23240,7 +22112,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/doc-hub/snippets - List user's snippets
   app.get('/api/doc-hub/snippets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { docSnippets } = await import('../shared/schema');
       
       const snippets = await db.select().from(docSnippets)
@@ -23257,7 +22129,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // DELETE /api/doc-hub/snippets/:id - Delete snippet
   app.delete('/api/doc-hub/snippets/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const snippetId = parseInt(req.params.id);
       const { docSnippets } = await import('../shared/schema');
       
@@ -23274,7 +22146,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/doc-hub/merge - Create merge session
   app.post('/api/doc-hub/merge', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { title, description, sourceIds, sectionOrder, mergedContent } = req.body;
 
       if (!title) {
@@ -23302,7 +22174,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/doc-hub/merge - List user's merge sessions
   app.get('/api/doc-hub/merge', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { docMergeSessions } = await import('../shared/schema');
       
       const sessions = await db.select().from(docMergeSessions)
@@ -23319,7 +22191,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/doc-hub/merge/:id - Update merge session
   app.patch('/api/doc-hub/merge/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const sessionId = parseInt(req.params.id);
       const { title, description, sourceIds, sectionOrder, mergedContent, status } = req.body;
       const { docMergeSessions } = await import('../shared/schema');
@@ -23351,41 +22223,6 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // ============================================================================
   // ADMIN PANEL ROUTES
   // ============================================================================
-
-  // GET /api/admin/stats/signups — compact signup dashboard for inline admin widget
-  app.get('/api/admin/stats/signups', isAuthenticated, requireAdmin, async (_req, res) => {
-    try {
-      const now = new Date();
-      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
-      const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
-
-      const [totalRow, todayRow, weekRow, recent] = await Promise.all([
-        dbPool.query('SELECT COUNT(*)::int AS count FROM users'),
-        dbPool.query('SELECT COUNT(*)::int AS count FROM users WHERE created_at >= $1', [todayStart]),
-        dbPool.query('SELECT COUNT(*)::int AS count FROM users WHERE created_at >= $1', [weekStart]),
-        dbPool.query(
-          `SELECT id, email, first_name, last_name, subscription_status, created_at
-           FROM users ORDER BY created_at DESC LIMIT 20`,
-        ),
-      ]);
-
-      res.json({
-        total: totalRow.rows[0].count,
-        today: todayRow.rows[0].count,
-        week: weekRow.rows[0].count,
-        recent: recent.rows.map((u: any) => ({
-          id: u.id,
-          email: u.email,
-          name: [u.first_name, u.last_name].filter(Boolean).join(' ') || u.email?.split('@')[0] || 'Survivor',
-          subscriptionStatus: u.subscription_status,
-          createdAt: u.created_at,
-        })),
-      });
-    } catch (err) {
-      console.error('admin/stats/signups error:', err);
-      res.status(500).json({ message: 'Failed to load signup stats' });
-    }
-  });
 
   // GET /api/admin/users - List/search users (admin only)
   app.get('/api/admin/users', isAuthenticated, requireAdmin, async (req: any, res) => {
@@ -23475,7 +22312,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   app.post('/api/admin/users/:id/credits', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const targetUserId = req.params.id;
-      const adminId = getUserId(req);
+      const adminId = req.user.claims.sub;
       const { amount, reason } = req.body;
       
       if (!amount || typeof amount !== 'number' || amount <= 0) {
@@ -23510,7 +22347,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   app.post('/api/admin/users/:id/unlimited', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const targetUserId = req.params.id;
-      const adminId = getUserId(req);
+      const adminId = req.user.claims.sub;
       const { creditWallets } = await import('../shared/schema');
       
       const user = await storage.getUser(targetUserId);
@@ -23565,7 +22402,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   app.post('/api/admin/users/:id/role', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const targetUserId = req.params.id;
-      const adminId = getUserId(req);
+      const adminId = req.user.claims.sub;
       const { role } = req.body;
       
       if (!role || !['member', 'admin'].includes(role)) {
@@ -23720,29 +22557,6 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // GET /api/admin/subscriptions/risk - Sasquatch Premium at-risk / recovered
-  // view (Task #3). At-risk = failed payment in grace; downgraded = grace
-  // lapsed; recovered = card cleared in the last 30 days.
-  app.get('/api/admin/subscriptions/risk', isAuthenticated, requireAdmin, async (req: any, res) => {
-    try {
-      const { getAtRiskSubscriptions } = await import('./services/subscriptionLifecycleService');
-      const data = await getAtRiskSubscriptions();
-      res.json({
-        atRisk: data.atRisk,
-        downgraded: data.downgraded,
-        recovered: data.recovered,
-        counts: {
-          atRisk: data.atRisk.length,
-          downgraded: data.downgraded.length,
-          recovered: data.recovered.length,
-        },
-      });
-    } catch (error: any) {
-      console.error("Error fetching subscription risk view:", error?.message || error);
-      res.status(500).json({ message: "Failed to fetch subscription risk view" });
-    }
-  });
-
   // GET /api/admin/analytics - Rich growth/engagement analytics (admin only)
   app.get('/api/admin/analytics', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
@@ -23872,7 +22686,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/user/subscription - Get current user's subscription status
   app.get('/api/user/subscription', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { userSubscriptions, subscriptionTiers, creditWallets } = await import('../shared/schema');
       
       const [subscription] = await db.select()
@@ -23931,7 +22745,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/podcasts - List user's podcasts
   app.get('/api/podcasts', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const userPodcasts = await storage.getPodcasts(userId);
       res.json(userPodcasts);
     } catch (error) {
@@ -23943,7 +22757,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/podcasts - Create podcast
   app.post('/api/podcasts', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const validatedData = insertPodcastSchema.parse({ ...req.body, userId });
       const podcast = await storage.createPodcast(validatedData);
       res.status(201).json(podcast);
@@ -23956,7 +22770,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/podcasts/:id - Get single podcast
   app.get('/api/podcasts/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const podcastId = parseInt(req.params.id);
       const podcast = await storage.getPodcast(podcastId);
       
@@ -23978,7 +22792,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/podcasts/:id - Update podcast
   app.patch('/api/podcasts/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const podcastId = parseInt(req.params.id);
       const podcast = await storage.getPodcast(podcastId);
       
@@ -24001,7 +22815,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // DELETE /api/podcasts/:id - Delete podcast
   app.delete('/api/podcasts/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const podcastId = parseInt(req.params.id);
       const podcast = await storage.getPodcast(podcastId);
       
@@ -24024,7 +22838,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/podcasts/:id/episodes - List episodes
   app.get('/api/podcasts/:id/episodes', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const podcastId = parseInt(req.params.id);
       const podcast = await storage.getPodcast(podcastId);
       
@@ -24047,7 +22861,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/podcasts/:id/episodes - Create episode
   app.post('/api/podcasts/:id/episodes', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const podcastId = parseInt(req.params.id);
       const podcast = await storage.getPodcast(podcastId);
       
@@ -24071,7 +22885,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/podcasts/:id/episodes/:episodeId - Get single episode
   app.get('/api/podcasts/:id/episodes/:episodeId', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const podcastId = parseInt(req.params.id);
       const episodeId = parseInt(req.params.episodeId);
       const podcast = await storage.getPodcast(podcastId);
@@ -24095,7 +22909,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/podcasts/:id/episodes/:episodeId - Update episode
   app.patch('/api/podcasts/:id/episodes/:episodeId', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const podcastId = parseInt(req.params.id);
       const episodeId = parseInt(req.params.episodeId);
       const podcast = await storage.getPodcast(podcastId);
@@ -24120,7 +22934,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // DELETE /api/podcasts/:id/episodes/:episodeId - Delete episode
   app.delete('/api/podcasts/:id/episodes/:episodeId', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const podcastId = parseInt(req.params.id);
       const episodeId = parseInt(req.params.episodeId);
       const podcast = await storage.getPodcast(podcastId);
@@ -24145,7 +22959,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/podcasts/:id/episodes/:episodeId/transcribe - AI Transcription
   app.post('/api/podcasts/:id/episodes/:episodeId/transcribe', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const podcastId = parseInt(req.params.id);
       const episodeId = parseInt(req.params.episodeId);
       const podcast = await storage.getPodcast(podcastId);
@@ -24180,7 +22994,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/podcasts/:id/episodes/:episodeId/publish - Publish episode
   app.post('/api/podcasts/:id/episodes/:episodeId/publish', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const podcastId = parseInt(req.params.id);
       const episodeId = parseInt(req.params.episodeId);
       const podcast = await storage.getPodcast(podcastId);
@@ -24231,7 +23045,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/research/query - Search with caching (1 credit per fresh query)
   app.get('/api/research/query', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { q, market, num, skipCache } = req.query;
 
       if (!q || typeof q !== 'string') {
@@ -24324,7 +23138,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/research/insights - AI-analyze search results (1 credit)
   app.post('/api/research/insights', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { results, query, context, queryId } = req.body;
 
       if (!results || !Array.isArray(results) || results.length === 0) {
@@ -24382,7 +23196,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/research/history - Get user's research history (free)
   app.get('/api/research/history', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { limit } = req.query;
 
       const history = await getResearchHistory(
@@ -24407,7 +23221,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/vault/entries - List entries with category/tag filters
   app.get('/api/vault/entries', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { category, tag, status, limit: limitParam, offset: offsetParam } = req.query;
 
       let query = db.select().from(vaultEntries).where(eq(vaultEntries.userId, userId));
@@ -24449,7 +23263,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/vault/entries - Create entry
   app.post('/api/vault/entries', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const validationResult = insertVaultEntrySchema.safeParse({ ...req.body, userId });
 
       if (!validationResult.success) {
@@ -24473,7 +23287,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/vault/entries/:id - Get single entry
   app.get('/api/vault/entries/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const entryId = parseInt(req.params.id);
 
       const [entry] = await db.select()
@@ -24494,7 +23308,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/vault/entries/:id - Update entry
   app.patch('/api/vault/entries/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const entryId = parseInt(req.params.id);
 
       const [existing] = await db.select()
@@ -24534,7 +23348,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // DELETE /api/vault/entries/:id - Delete entry
   app.delete('/api/vault/entries/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const entryId = parseInt(req.params.id);
 
       const [existing] = await db.select()
@@ -24558,7 +23372,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/vault/folders - List folders
   app.get('/api/vault/folders', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { parentId, category } = req.query;
 
       const conditions: any[] = [eq(vaultFolders.userId, userId)];
@@ -24589,7 +23403,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/vault/folders - Create folder
   app.post('/api/vault/folders', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const validationResult = insertVaultFolderSchema.safeParse({ ...req.body, userId });
 
       if (!validationResult.success) {
@@ -24613,7 +23427,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/vault/folders/:id - Update folder
   app.patch('/api/vault/folders/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const folderId = parseInt(req.params.id);
 
       const [existing] = await db.select()
@@ -24649,7 +23463,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // DELETE /api/vault/folders/:id - Delete folder
   app.delete('/api/vault/folders/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const folderId = parseInt(req.params.id);
 
       const [existing] = await db.select()
@@ -24673,7 +23487,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/vault/entries/:id/save-to-folder - Add entry to folder
   app.post('/api/vault/entries/:id/save-to-folder', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const entryId = parseInt(req.params.id);
       const { folderId } = req.body;
 
@@ -24726,7 +23540,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/production/batches - Create batch job (check credits first)
   app.post('/api/production/batches', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const validationResult = insertProductionBatchSchema.safeParse({ ...req.body, userId });
 
       if (!validationResult.success) {
@@ -24777,7 +23591,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/production/batches - List user's batches
   app.get('/api/production/batches', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { status, batchType, limit: limitParam, offset: offsetParam } = req.query;
 
       const conditions: any[] = [eq(productionBatches.userId, userId)];
@@ -24810,7 +23624,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/production/batches/:id - Get batch with items
   app.get('/api/production/batches/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const batchId = parseInt(req.params.id);
 
       const [batch] = await db.select()
@@ -24839,7 +23653,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/production/batches/:id/cancel - Cancel batch
   app.post('/api/production/batches/:id/cancel', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const batchId = parseInt(req.params.id);
 
       const [batch] = await db.select()
@@ -24876,7 +23690,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/production/batches/:id/download - Download all outputs
   app.get('/api/production/batches/:id/download', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const batchId = parseInt(req.params.id);
 
       const [batch] = await db.select()
@@ -24922,7 +23736,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/life-story - Get user's life stories
   app.get('/api/life-story', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const stories = await db.select()
         .from(lifeStories)
         .where(eq(lifeStories.userId, userId))
@@ -24937,7 +23751,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/life-story - Create new life story
   app.post('/api/life-story', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const validatedData = insertLifeStorySchema.parse({ ...req.body, userId });
       const [story] = await db.insert(lifeStories).values(validatedData).returning();
       res.status(201).json(story);
@@ -24950,7 +23764,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/life-story/:id - Get specific story
   app.get('/api/life-story/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const storyId = parseInt(req.params.id);
       const [story] = await db.select()
         .from(lifeStories)
@@ -24968,7 +23782,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/life-story/:id - Update story
   app.patch('/api/life-story/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const storyId = parseInt(req.params.id);
       const [existing] = await db.select()
         .from(lifeStories)
@@ -24990,7 +23804,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/life-story/:id/milestones - Add milestone
   app.post('/api/life-story/:id/milestones', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const storyId = parseInt(req.params.id);
       const { milestone } = req.body;
       if (!milestone) {
@@ -25018,7 +23832,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/life-story/:id/generate-chapter - AI generate chapter
   app.post('/api/life-story/:id/generate-chapter', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const storyId = parseInt(req.params.id);
       const { chapterTitle, chapterContext } = req.body;
       const [story] = await db.select()
@@ -25057,7 +23871,7 @@ Write an engaging, emotionally resonant chapter of about 1000 words that capture
   // GET /api/screenplay - List projects
   app.get('/api/screenplay', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projects = await db.select()
         .from(screenplayProjects)
         .where(eq(screenplayProjects.userId, userId))
@@ -25072,7 +23886,7 @@ Write an engaging, emotionally resonant chapter of about 1000 words that capture
   // POST /api/screenplay - Create project
   app.post('/api/screenplay', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const validatedData = insertScreenplayProjectSchema.parse({ ...req.body, userId });
       const [project] = await db.insert(screenplayProjects).values(validatedData).returning();
       res.status(201).json(project);
@@ -25085,7 +23899,7 @@ Write an engaging, emotionally resonant chapter of about 1000 words that capture
   // GET /api/screenplay/:id - Get project
   app.get('/api/screenplay/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projectId = parseInt(req.params.id);
       const [project] = await db.select()
         .from(screenplayProjects)
@@ -25103,7 +23917,7 @@ Write an engaging, emotionally resonant chapter of about 1000 words that capture
   // PATCH /api/screenplay/:id - Update project
   app.patch('/api/screenplay/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projectId = parseInt(req.params.id);
       const [existing] = await db.select()
         .from(screenplayProjects)
@@ -25125,7 +23939,7 @@ Write an engaging, emotionally resonant chapter of about 1000 words that capture
   // POST /api/screenplay/:id/generate-logline - AI logline
   app.post('/api/screenplay/:id/generate-logline', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projectId = parseInt(req.params.id);
       const [project] = await db.select()
         .from(screenplayProjects)
@@ -25155,7 +23969,7 @@ Create a single-sentence logline (25-40 words) that captures the protagonist, co
   // POST /api/screenplay/:id/generate-beats - AI beat sheet
   app.post('/api/screenplay/:id/generate-beats', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projectId = parseInt(req.params.id);
       const [project] = await db.select()
         .from(screenplayProjects)
@@ -25209,7 +24023,7 @@ For each beat, provide: {"beat": "name", "description": "what happens", "timing"
   // POST /api/screenplay/:id/generate-dialogue - AI dialogue
   app.post('/api/screenplay/:id/generate-dialogue', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projectId = parseInt(req.params.id);
       const { sceneDescription, characters: sceneCharacters } = req.body;
       const [project] = await db.select()
@@ -25243,7 +24057,7 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
   // POST /api/screenplay/:id/voice-readthrough - Generate voice read-through
   app.post('/api/screenplay/:id/voice-readthrough', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projectId = parseInt(req.params.id);
       const { sceneId, characters, speed } = req.body;
 
@@ -25287,7 +24101,7 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
   // POST /api/screenplay/:id/storyboard - Generate storyboard
   app.post('/api/screenplay/:id/storyboard', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projectId = parseInt(req.params.id);
       const { sceneId, artStyle, framesPerScene, scenes } = req.body;
 
@@ -25361,7 +24175,7 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
   // POST /api/screenplay/:id/export - Export screenplay
   app.post('/api/screenplay/:id/export', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projectId = parseInt(req.params.id);
       const { format, options } = req.body;
 
@@ -25427,7 +24241,7 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
   // GET /api/screenplay/:id/text - Get script as plain text
   app.get('/api/screenplay/:id/text', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projectId = parseInt(req.params.id);
 
       const [project] = await db.select()
@@ -25459,7 +24273,7 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
   // POST /api/movie/from-script - Create movie project from screenplay
   app.post('/api/movie/from-script', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const { screenplayProjectId, title, scenes, characters, dialogue, settings } = req.body;
 
       const [movieProject] = await db.insert(mediaProjects).values({
@@ -25496,7 +24310,7 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
   // GET /api/music-sandbox - List projects
   app.get('/api/music-sandbox', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projects = await db.select()
         .from(musicSandboxProjects)
         .where(eq(musicSandboxProjects.userId, userId))
@@ -25511,7 +24325,7 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
   // POST /api/music-sandbox - Create project
   app.post('/api/music-sandbox', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const validatedData = insertMusicSandboxProjectSchema.parse({ ...req.body, userId });
       const [project] = await db.insert(musicSandboxProjects).values(validatedData).returning();
       res.status(201).json(project);
@@ -25524,7 +24338,7 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
   // GET /api/music-sandbox/:id - Get project
   app.get('/api/music-sandbox/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projectId = parseInt(req.params.id);
       const [project] = await db.select()
         .from(musicSandboxProjects)
@@ -25542,7 +24356,7 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
   // PATCH /api/music-sandbox/:id - Update project
   app.patch('/api/music-sandbox/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const projectId = parseInt(req.params.id);
       const [existing] = await db.select()
         .from(musicSandboxProjects)
@@ -25987,7 +24801,7 @@ Format as structured JSON with clear sections.`;
   // GET /api/website-builder/websites - Get user's websites
   app.get('/api/website-builder/websites', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req) || req.user?.id;
+      const userId = req.user?.claims?.sub || req.user?.id;
       if (!userId) return res.status(401).json({ message: 'Not authenticated' });
       res.json({ websites: websiteBuilderStore.get(userId) || [] });
     } catch (error: any) {
@@ -25998,7 +24812,7 @@ Format as structured JSON with clear sections.`;
   // POST /api/website-builder/websites - Create new website
   app.post('/api/website-builder/websites', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req) || req.user?.id;
+      const userId = req.user?.claims?.sub || req.user?.id;
       if (!userId) return res.status(401).json({ message: 'Not authenticated' });
 
       const { name, slug, templateId, industry, businessName, description, primaryColor, secondaryColor, accentColor, fontHeading, fontBody } = req.body;
@@ -26038,7 +24852,7 @@ Format as structured JSON with clear sections.`;
   // POST /api/website-builder/generate-logo - Generate logo with AI
   app.post('/api/website-builder/generate-logo', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req) || req.user?.id;
+      const userId = req.user?.claims?.sub || req.user?.id;
       if (!userId) return res.status(401).json({ message: 'Not authenticated' });
 
       const { businessName, industry, style, iconType, primaryColor } = req.body;
@@ -26065,7 +24879,7 @@ Format as structured JSON with clear sections.`;
   // POST /api/website-builder/publish/:websiteId - Publish website
   app.post('/api/website-builder/publish/:websiteId', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req) || req.user?.id;
+      const userId = req.user?.claims?.sub || req.user?.id;
       if (!userId) return res.status(401).json({ message: 'Not authenticated' });
 
       const { websiteId } = req.params;
@@ -26118,7 +24932,7 @@ Format as structured JSON with clear sections.`;
 
   app.post('/api/push/subscribe', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub;
       const { endpoint, p256dh, auth, userAgent } = req.body;
       if (!endpoint || !p256dh || !auth) return res.status(400).json({ message: 'Invalid subscription data' });
 
@@ -26136,7 +24950,7 @@ Format as structured JSON with clear sections.`;
 
   app.delete('/api/push/unsubscribe', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub;
       const { endpoint } = req.body;
       await db.execute(sql`DELETE FROM push_subscriptions WHERE user_id = ${userId} AND endpoint = ${endpoint}`);
       res.json({ success: true });
@@ -26147,7 +24961,7 @@ Format as structured JSON with clear sections.`;
 
   app.get('/api/push/status', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub;
       const subs = await db.execute(sql`SELECT id, created_at, last_used FROM push_subscriptions WHERE user_id = ${userId}`);
       res.json({ subscribed: subs.rows.length > 0, count: subs.rows.length });
     } catch {
@@ -26157,7 +24971,7 @@ Format as structured JSON with clear sections.`;
 
   app.post('/api/push/test', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub;
       const { sendPushToUser } = await import('./pushNotificationService');
       await sendPushToUser(userId, {
         title: "Sasquatch Coach is watching, Warrior.",
@@ -26178,7 +24992,7 @@ Format as structured JSON with clear sections.`;
 
   app.get('/api/medications', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub;
       const meds = await db.execute(sql`SELECT * FROM medications WHERE user_id = ${userId} AND is_active = true ORDER BY name ASC`);
       res.json(meds.rows);
     } catch (err: any) {
@@ -26188,15 +25002,13 @@ Format as structured JSON with clear sections.`;
 
   app.post('/api/medications', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub;
       const { name, dosage, frequency, purpose, prescribedBy, startDate, notes, reminderTimes } = req.body;
       if (!name || !dosage || !frequency) return res.status(400).json({ message: 'Name, dosage, and frequency required' });
 
-      const rtSql = pgTextArray(reminderTimes);
-
       const result = await db.execute(sql`
         INSERT INTO medications (user_id, name, dosage, frequency, purpose, prescribed_by, start_date, notes, reminder_times)
-        VALUES (${userId}, ${name}, ${dosage}, ${frequency}, ${purpose || null}, ${prescribedBy || null}, ${startDate ? new Date(startDate) : null}, ${notes || null}, ${rtSql})
+        VALUES (${userId}, ${name}, ${dosage}, ${frequency}, ${purpose || null}, ${prescribedBy || null}, ${startDate ? new Date(startDate) : null}, ${notes || null}, ${reminderTimes || []})
         RETURNING *
       `);
       res.json(result.rows[0]);
@@ -26208,10 +25020,9 @@ Format as structured JSON with clear sections.`;
 
   app.put('/api/medications/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub;
       const { id } = req.params;
       const { name, dosage, frequency, purpose, prescribedBy, notes, reminderTimes, isActive } = req.body;
-      const rtSql = Array.isArray(reminderTimes) ? pgTextArray(reminderTimes) : sql`reminder_times`;
       await db.execute(sql`
         UPDATE medications SET
           name = COALESCE(${name}, name),
@@ -26220,7 +25031,7 @@ Format as structured JSON with clear sections.`;
           purpose = ${purpose ?? null},
           prescribed_by = ${prescribedBy ?? null},
           notes = ${notes ?? null},
-          reminder_times = ${rtSql},
+          reminder_times = COALESCE(${reminderTimes}, reminder_times),
           is_active = COALESCE(${isActive}, is_active)
         WHERE id = ${parseInt(id)} AND user_id = ${userId}
       `);
@@ -26232,7 +25043,7 @@ Format as structured JSON with clear sections.`;
 
   app.delete('/api/medications/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub;
       const { id } = req.params;
       await db.execute(sql`UPDATE medications SET is_active = false WHERE id = ${parseInt(id)} AND user_id = ${userId}`);
       res.json({ success: true });
@@ -26243,7 +25054,7 @@ Format as structured JSON with clear sections.`;
 
   app.post('/api/medications/:id/log', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub;
       const { id } = req.params;
       const { skipped, skipReason, notes } = req.body;
       await db.execute(sql`
@@ -26262,7 +25073,7 @@ Format as structured JSON with clear sections.`;
 
   app.get('/api/appointments', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub;
       const appts = await db.execute(sql`
         SELECT * FROM appointments 
         WHERE user_id = ${userId} AND status != 'cancelled'
@@ -26276,7 +25087,7 @@ Format as structured JSON with clear sections.`;
 
   app.post('/api/appointments', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub;
       const { title, providerName, providerType, location, appointmentDate, duration, notes, prepNotes } = req.body;
       if (!title || !providerName || !appointmentDate) return res.status(400).json({ message: 'Title, provider, and date required' });
 
@@ -26294,7 +25105,7 @@ Format as structured JSON with clear sections.`;
 
   app.put('/api/appointments/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub;
       const { id } = req.params;
       const { title, providerName, providerType, location, appointmentDate, notes, prepNotes, followUpNotes, status } = req.body;
       await db.execute(sql`
@@ -26318,7 +25129,7 @@ Format as structured JSON with clear sections.`;
 
   app.delete('/api/appointments/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub;
       const { id } = req.params;
       await db.execute(sql`UPDATE appointments SET status = 'cancelled' WHERE id = ${parseInt(id)} AND user_id = ${userId}`);
       res.json({ success: true });
@@ -26349,8 +25160,6 @@ Format as structured JSON with clear sections.`;
   const { registerRefundRoutes } = await import('./routes/refundRoutes');
   const { registerScholarshipRoutes } = await import('./routes/scholarshipRoutes');
   const { registerCaregiverRoutes } = await import('./routes/caregiverRoutes');
-  const { registerProgressRoutes } = await import('./routes/progressRoutes');
-  const { registerEncouragementRoutes } = await import('./routes/encouragementRoutes');
   const { registerTranslationRoutes } = await import('./routes/translationRoutes');
   registerPowerPointsRoutes(app, isAuthenticated);
   registerTherapistRoutes(app, isAuthenticated);
@@ -26360,8 +25169,6 @@ Format as structured JSON with clear sections.`;
   registerLessonVideoRoutes(app, isAuthenticated, uploadsDir);
   const { registerJournalMediaRoutes } = await import('./journalMediaRoutes');
   registerJournalMediaRoutes(app, isAuthenticated, uploadsDir);
-  const { registerCommunityVideoRoutes } = await import('./communityVideoRoutes');
-  registerCommunityVideoRoutes(app, isAuthenticated);
   const { registerFreeAnalysisRoutes } = await import('./routes/freeAnalysisRoutes');
   registerFreeAnalysisRoutes(app, isAuthenticated, uploadsDir);
   registerQuizRoutes(app, isAuthenticated, uploadsDir);
@@ -26387,14 +25194,6 @@ Format as structured JSON with clear sections.`;
   registerRefundRoutes(app, isAuthenticated);
   registerScholarshipRoutes(app, isAuthenticated);
   registerCaregiverRoutes(app, isAuthenticated);
-  const { registerPremiumCancelRoutes } = await import('./routes/premiumCancelRoutes');
-  registerPremiumCancelRoutes(app, isAuthenticated);
-  registerProgressRoutes(app, isAuthenticated);
-  const { registerPreventionRoutes } = await import('./routes/preventionRoutes');
-  registerPreventionRoutes(app, isAuthenticated);
-  const { registerRecoveryReportRoutes } = await import('./routes/recoveryReportRoutes');
-  registerRecoveryReportRoutes(app, isAuthenticated);
-  registerEncouragementRoutes(app, isAuthenticated);
   registerTranslationRoutes(app, isAuthenticated);
   seedCourseCategoriesIfEmpty().catch(() => {});
   seedForumBoardsIfEmpty().catch(() => {});
@@ -26413,12 +25212,6 @@ Format as structured JSON with clear sections.`;
   const { registerBlogRoutes } = await import('./seo/blogRoutes');
   registerBlogRoutes(app);
 
-  // SEO: SSR for DB-backed recovery blog posts at /recovery/blog/[slug].
-  // Registered before the Vite catch-all so crawlers get real per-post body,
-  // meta, and Article/MedicalWebPage + FAQ + Breadcrumb JSON-LD.
-  const { registerRecoveryBlogRoutes } = await import('./seo/recoveryBlogRoutes');
-  registerRecoveryBlogRoutes(app);
-
   // SEO: Programmatic SSR — per-exercise, week-N, state-centers (G4)
   const { registerProgrammaticSeoRoutes } = await import('./seo/programmaticRoutes');
   registerProgrammaticSeoRoutes(app);
@@ -26426,147 +25219,6 @@ Format as structured JSON with clear sections.`;
   // G7: Podcast pipeline — admin generation + public RSS feed
   const { registerPodcastPipelineRoutes } = await import('./podcastRoutes');
   registerPodcastPipelineRoutes(app);
-
-  // ── Book alias server-side redirects ─────────────────────────────────────
-  // Printed shortlinks and companion aliases must resolve server-side so that
-  // crawlers and social bots receive a proper 308 (permanent) redirect with the
-  // correct canonical destination instead of a generic SPA HTML shell.
-  //
-  // Rules:
-  //   • Top-level slugs  (/workbook, /tracker, …)  → their target pages
-  //   • /protocols/:slug                            → protocol section anchors
-  //   • /resources/:slug                            → resource section anchors
-  //   • /book/index and /book/companion             → /book
-  //   • Bare /protocols and /resources              → hub pages
-  //
-  // These are registered AFTER the SSR routes so they don't shadow any real
-  // SSR landing pages, but BEFORE the Vite catch-all which is wired outside
-  // registerRoutes().
-
-  const BOOK_SLUG_MAP: Record<string, string> = {
-    "/workbook":      "/recovery/journal",
-    "/tracker":       "/recovery/today",
-    "/90day":         "/recovery/circuit",
-    "/tribe":         "/recovery/community",
-    "/soundtrack":    "/hostile-construction",
-    "/officehours":   "/recovery/community",
-    "/persona":       "/recovery/forge",
-    "/plateau":       "/book#mindset",
-    "/doctrine":      "/recovery/sasch",
-    "/clinicians":    "/recovery/therapist",
-    "/ceu":           "/recovery/university",
-    "/quicksheet":    "/book#clinicians",
-    "/glossary":      "/book#science",
-    "/reading":       "/book#science",
-    "/science":       "/book#science",
-    "/walletcard":    "/book#fuel",
-    "/risk":          "/recovery/quiz",
-    "/nutrition":     "/book#fuel",
-    "/gear":          "/recovery/store",
-    "/posters":       "/book#fuel",
-    "/combos":        "/book#fuel",
-    "/letters":       "/recovery/journal",
-    "/math":          "/book#structure",
-    "/desert":        "/book#structure",
-    "/bereaved":      "/book#caregivers",
-    "/questions":     "/book#structure",
-    "/rights":        "/book#structure",
-    "/100lines":      "/book#mindset",
-    "/podcast":       "/book#soundtrack-album",
-    "/youngsurvivor": "/book#tribe-stories",
-    "/app":           "/recovery/today",
-    // Companion aliases
-    "/book/index":    "/book",
-    "/book/companion": "/book",
-    // science sub-path
-    "/science/corrections": "/book#science",
-    // bare hub redirects
-    "/protocols":     "/recovery/protocols",
-    "/resources":     "/recovery/resources",
-  };
-
-  for (const [alias, target] of Object.entries(BOOK_SLUG_MAP)) {
-    app.get(alias, (_req, res) => res.redirect(308, target));
-  }
-
-  const BOOK_PROTOCOL_MAP: Record<string, string> = {
-    think:         "/recovery/protocols#think",
-    bat:           "/recovery/protocols#bat",
-    "weight-bearing": "/recovery/protocols#weight-bearing",
-    mirror:        "/recovery/protocols#mirror",
-    dropfoot:      "/recovery/protocols#dropfoot",
-    hand:          "/recovery/protocols#hand",
-    speech:        "/recovery/protocols#speech",
-    "open-hand":   "/recovery/protocols#open-hand",
-    openhand:      "/recovery/protocols#open-hand",
-    chopwood:      "/recovery/protocols#chopwood",
-    sasch:         "/recovery/protocols#sasch",
-    print:         "/recovery/resources",
-    ankle:         "/recovery/protocols#dropfoot",
-    heelwalk:      "/recovery/protocols#dropfoot",
-    walllean:      "/recovery/protocols#weight-bearing",
-    grip:          "/recovery/protocols#hand",
-    rubberband:    "/recovery/protocols#hand",
-    fingerlift:    "/recovery/protocols#hand",
-    conetap:       "/recovery/protocols#hand",
-    lsvt:          "/recovery/protocols#speech",
-    dia:           "/recovery/protocols#speech",
-    oralmotor:     "/recovery/protocols#speech",
-    readaloud:     "/recovery/protocols#speech",
-    swallow:       "/recovery/protocols#speech",
-    sit2stand:     "/recovery/protocols#weight-bearing",
-    sls:           "/recovery/protocols#weight-bearing",
-  };
-
-  app.get("/protocols/:slug", (req, res) => {
-    const target = BOOK_PROTOCOL_MAP[req.params.slug] ?? "/recovery/protocols";
-    res.redirect(308, target);
-  });
-
-  const BOOK_RESOURCES_MAP: Record<string, string> = {
-    day1:          "/book#tribe-stories",
-    icu:           "/book#caregivers",
-    foundation:    "/book#mindset",
-    mentor:        "/recovery/community",
-    architect:     "/book#mindset",
-    brain:         "/book#science",
-    neuroplasticity: "/book#science",
-    wheelchair:    "/recovery/protocols",
-    "66day":       "/recovery/today",
-    tleca:         "/recovery/sasch",
-    twitch:        "/recovery/protocols#think",
-    bat:           "/recovery/protocols#bat",
-    weightbearing: "/recovery/protocols#weight-bearing",
-    mirror:        "/recovery/protocols#mirror",
-    dropfoot:      "/recovery/protocols#dropfoot",
-    arm:           "/recovery/protocols#hand",
-    speech:        "/recovery/protocols#speech",
-    tech:          "/recovery/store",
-    openhand:      "/recovery/protocols#open-hand",
-    engine:        "/recovery/anchor/today",
-    persona:       "/recovery/forge",
-    emotional:     "/recovery/coach",
-    plateau:       "/recovery/protocols#plateau",
-    "care-audit":  "/recovery/therapist",
-    home:          "/recovery/resources",
-    family:        "/book#caregivers",
-    work:          "/book#structure",
-    tribe:         "/recovery/community",
-    empire:        "/book#tribe-stories",
-    caregiver:     "/book#caregivers",
-    doctrine:      "/recovery/sasch",
-    tuesday:       "/book#tribe-stories",
-    promise:       "/book#mindset",
-    "day1-print":  "/recovery/resources",
-    print:         "/recovery/resources",
-    printable:     "/recovery/resources",
-  };
-
-  app.get("/resources/:slug", (req, res) => {
-    const target = BOOK_RESOURCES_MAP[req.params.slug] ?? "/recovery/resources";
-    res.redirect(308, target);
-  });
-  // ── End book alias redirects ──────────────────────────────────────────────
 
   const httpServer = createServer(app);
   return httpServer;

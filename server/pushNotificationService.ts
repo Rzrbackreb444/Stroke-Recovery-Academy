@@ -3,7 +3,6 @@ import { db } from './db';
 import { sql, and, eq, gte, lte } from 'drizzle-orm';
 import { pushSubscriptions, dailyCheckins } from '../shared/schema';
 import { checkSasquatchDailyPings } from './sasquatchHistoryService';
-import { redactEmail } from './lib/redact';
 
 // Ensure push_subscriptions table exists
 export async function initPushSchema() {
@@ -101,101 +100,32 @@ export async function sendPushToUser(userId: string, payload: object) {
   for (const sub of result.rows as any[]) {
     await sendPush(sub.endpoint, sub.p256dh, sub.auth, payload);
   }
-  await sendExpoPushToUser(userId, payload);
 }
 
-// === MOBILE (Expo) PUSH ===
-// The mobile companion app registers Expo push tokens via POST /api/mobile/push-token.
-// Delivery rides the same sendPushToUser() path as web push, so every consent /
-// quiet-hours / dedupe decision made upstream by the messaging engine applies to
-// mobile automatically — no separate channel logic.
-
-export async function initMobilePushSchema() {
-  await db.execute(sql`
-    CREATE TABLE IF NOT EXISTS mobile_push_tokens (
-      id SERIAL PRIMARY KEY,
-      user_id VARCHAR NOT NULL,
-      token TEXT NOT NULL UNIQUE,
-      platform TEXT,
-      created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-      last_used TIMESTAMP DEFAULT NOW()
-    )
-  `);
+// === SCHEDULER ===
+export function startAccountabilityScheduler() {
+  // Run every minute
+  setInterval(runAccountabilityChecks, 60 * 1000);
+  console.log('[accountability] Scheduler started — checking every minute');
 }
 
-export async function registerMobilePushToken(userId: string, token: string, platform?: string) {
-  // A token can move between accounts on a shared device — reassign on conflict.
-  await db.execute(sql`
-    INSERT INTO mobile_push_tokens (user_id, token, platform)
-    VALUES (${userId}, ${token}, ${platform ?? null})
-    ON CONFLICT (token) DO UPDATE
-      SET user_id = ${userId}, platform = COALESCE(${platform ?? null}, mobile_push_tokens.platform), last_used = NOW()
-  `);
-}
+async function runAccountabilityChecks() {
+  const now = new Date();
+  const hour = now.getUTCHours();
+  const minute = now.getUTCMinutes();
 
-async function sendExpoPushToUser(userId: string, payload: object) {
-  try {
-    const result = await db.execute(sql`SELECT token FROM mobile_push_tokens WHERE user_id = ${userId}`);
-    const tokens = (result.rows as any[]).map((r) => r.token).filter(Boolean);
-    if (tokens.length === 0) return;
-
-    const p = payload as { title?: string; body?: string; url?: string; type?: string; tag?: string };
-    const messages = tokens.map((to) => ({
-      to,
-      title: p.title ?? 'Stroke Recovery Academy',
-      body: p.body ?? '',
-      data: { url: p.url, type: p.type, tag: p.tag },
-      sound: 'default' as const,
-    }));
-
-    const res = await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(messages),
-    });
-    if (!res.ok) return;
-    const json: any = await res.json().catch(() => null);
-    // Prune tokens Expo reports as dead so we stop sending to uninstalled apps.
-    const tickets: any[] = Array.isArray(json?.data) ? json.data : [];
-    for (let i = 0; i < tickets.length; i++) {
-      const t = tickets[i];
-      if (t?.status === 'error' && t?.details?.error === 'DeviceNotRegistered' && tokens[i]) {
-        await db.execute(sql`DELETE FROM mobile_push_tokens WHERE token = ${tokens[i]}`);
-      }
-    }
-  } catch {
-    // Expo push is best-effort; web push already attempted above.
-  }
-}
-
-// === RECURRING WORK (invoked by the durable scheduler) ===
-// Fired by the durable scheduler on the quarter-hours (cron 0,15,30,45).
-// Migrated off a per-process setInterval so it single-fires across instances —
-// no duplicate pings.
-//
-// IMPORTANT — restart-safe catch-up: the slot/time-of-day work below is keyed
-// off `scheduledFor` (the time the run was SUPPOSED to fire, passed in by the
-// scheduler), NOT wall-clock now. If the server was down over a scheduled slot
-// and the scheduler claims the overdue row on recovery, `scheduledFor` is that
-// missed slot — so the missed slot's work actually runs instead of being
-// dropped because the clock has moved on. `scheduledFor` is cron-aligned
-// (minute ∈ {0,15,30,45}, second 0), so the slot math is exact with no
-// tolerance window needed.
-export async function runAccountabilityChecks(scheduledFor: Date = new Date()) {
-  const asOf = scheduledFor;
-  const hour = asOf.getUTCHours();
-  const minute = asOf.getUTCMinutes();
-  const slot = Math.floor(minute / 15) * 15;
+  // Only run whole-minute checks
+  if (minute !== 0 && minute !== 15 && minute !== 30 && minute !== 45) return;
 
   try {
     await Promise.allSettled([
-      checkMedicationReminders(asOf),
-      checkAppointmentReminders(asOf),
-      ...(hour === 14 && slot === 0 ? [checkDailyCheckins(asOf), checkStreakBreakEmails()] : []),   // 9am EST (UTC-5)
-      ...(hour === 20 && slot === 0 ? [checkMissedCheckins(asOf)] : []),   // 3pm EST fallback
+      checkMedicationReminders(now),
+      checkAppointmentReminders(now),
+      ...(hour === 14 && minute === 0 ? [checkDailyCheckins(now)] : []),   // 9am EST (UTC-5)
+      ...(hour === 20 && minute === 0 ? [checkMissedCheckins(now)] : []),   // 3pm EST fallback
       // Sasquatch's daily drop-in ping. Fires at 13:00 UTC (~8am EST) — 1 hour
       // before the check-in nudge so survivors get a friendly opener first.
-      ...(hour === 13 && slot === 0 ? [checkSasquatchDailyPings(asOf)] : []),
+      ...(hour === 13 && minute === 0 ? [checkSasquatchDailyPings(now)] : []),
     ]);
   } catch (err) {
     console.error('[accountability] Scheduler error:', err);
@@ -262,67 +192,7 @@ async function checkMissedCheckins(now: Date) {
   }
 }
 
-// Fires once daily at 9am EST (14:00 UTC). Emails survivors who logged yesterday
-// but not yet today — streak is live but at risk. Email-only channel (no push
-// subscription required), so it reaches survivors who haven't installed the PWA.
-async function checkStreakBreakEmails() {
-  try {
-    const { sendEmail } = await import('./emailService');
-
-    // Users who have a never_zero_logs entry yesterday but NOT today
-    const atRisk = await db.execute(sql`
-      SELECT DISTINCT u.id, u.email, u.first_name
-      FROM users u
-      WHERE u.email IS NOT NULL
-        AND u.email NOT LIKE '%placeholder%'
-        AND u.email NOT LIKE '%replit%'
-        AND EXISTS (
-          SELECT 1 FROM never_zero_logs nzl
-          WHERE nzl.user_id = u.id
-            AND nzl.created_at >= (CURRENT_DATE - INTERVAL '1 day')
-            AND nzl.created_at <  CURRENT_DATE
-        )
-        AND NOT EXISTS (
-          SELECT 1 FROM never_zero_logs nzl
-          WHERE nzl.user_id = u.id
-            AND nzl.created_at >= CURRENT_DATE
-        )
-    `);
-
-    for (const user of (atRisk.rows as any[])) {
-      // nosemgrep: javascript.lang.security.html-in-template-string
-      const html = `<!DOCTYPE html><html><body style="background:#0D0D0D;color:#fff;font-family:Arial,sans-serif;padding:32px;margin:0;">
-<div style="max-width:560px;margin:0 auto;">
-  <div style="color:#E2741B;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px;">Stroke Recovery Academy</div>
-  <h1 style="font-size:26px;font-weight:900;margin:0 0 14px;line-height:1.2;">Your streak is on the line.</h1>
-  <p style="color:#ccc;font-size:16px;line-height:1.7;margin:0 0 8px;">You showed up yesterday. Today's window is still open.</p>
-  <p style="color:#ccc;font-size:16px;line-height:1.7;margin:0 0 28px;">One rep — log it before midnight and the streak lives.</p>
-  <a href="https://strokerecoveryacademy.com/recovery/never-zero" style="display:inline-block;background:#E2741B;color:#fff;font-weight:700;padding:14px 28px;border-radius:8px;text-decoration:none;font-size:15px;letter-spacing:.03em;">Log my rep now</a>
-  <p style="color:#555;font-size:12px;margin-top:40px;line-height:1.6;">You're getting this because you're building a recovery streak at Stroke Recovery Academy.<br><a href="https://strokerecoveryacademy.com/account/notifications" style="color:#E2741B;">Manage notifications</a> &nbsp;·&nbsp; <a href="https://strokerecoveryacademy.com/legal/medical-disclaimer" style="color:#666;">Medical disclaimer</a></p>
-  <p style="color:#666;font-size:12px;margin-top:4px;">If you're struggling, text 988 or call 911.</p>
-</div></body></html>`;
-
-      const text = `Your streak is on the line.\n\nYou showed up yesterday. One rep today keeps it alive.\n\nLog it: https://strokerecoveryacademy.com/recovery/never-zero\n\n— Sasquatch\n\nManage notifications: https://strokerecoveryacademy.com/account/notifications\nIf you're struggling, text 988 or call 911.`;
-
-      const result = await sendEmail({
-        to: user.email,
-        subject: "Your streak is on the line — one rep saves it",
-        html,
-        text,
-      });
-
-      if (result.success) {
-        console.log(`[streak-email] sent to ${redactEmail(user.email)}`);
-      } else {
-        console.warn(`[streak-email] failed for ${redactEmail(user.email)}: ${result.error}`);
-      }
-    }
-  } catch (err) {
-    console.error('[streak-email] error:', err);
-  }
-}
-
-export async function checkMedicationReminders(now: Date) {
+async function checkMedicationReminders(now: Date) {
   const hour = now.getUTCHours();
   const minute = now.getUTCMinutes();
   const timeStr = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;

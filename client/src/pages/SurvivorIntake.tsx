@@ -23,23 +23,21 @@ import { useSurvivorProfile, type SurvivorProfile } from "@/hooks/useSurvivorPro
 import { useVoiceInput } from "@/hooks/useVoiceInput";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { trackEvent } from "@/hooks/useAnalytics";
 
 type Draft = Partial<SurvivorProfile>;
 
-// Trimmed to the three personalization-critical steps (+ a short welcome) so a
-// new survivor can finish in about a minute. Identity, story, caregiver, and
-// accessibility fields stay editable later in Survivor Profile settings, and
-// recovery goals are still collected by the /recovery/onboarding enrollment
-// flow — cutting them here only removes first-run friction. Equipment, mobility
-// aids, and current challenges are no longer collected in the client; they
-// remain optional/nullable in the schema and simply go unused for now.
-// "Skip for now" remains for anyone who wants zero steps.
 const STEPS = [
   "welcome",
+  "identity",
   "stroke",
   "deficits",
+  "goals",
+  "equipment",
   "daily-life",
+  "caregiver",
+  "accessibility",
+  "story",
+  "review",
 ] as const;
 
 const TOTAL_STEPS = STEPS.length;
@@ -219,18 +217,8 @@ export default function SurvivorIntake() {
   };
 
   const handleComplete = async () => {
-    // daily-life is now a data-collecting final step, so flush any pending
-    // debounced edit before completing — otherwise last-second minutes/energy
-    // changes made inside the 700ms window would be lost.
-    if (debounceRef.current) {
-      window.clearTimeout(debounceRef.current);
-      debounceRef.current = null;
-    }
     try {
-      const { id, userId, intakeCompletedAt, intakeComplete, updatedAt, ...patchable } = draft as any;
-      await patch(patchable);
       await complete();
-      trackEvent("intake_complete", "funnel");
       toast({
         title: "Profile complete",
         description: "Your dashboard is now tuned to your recovery.",
@@ -290,6 +278,13 @@ export default function SurvivorIntake() {
         <Card className="bg-[#1a1a1a] border-[#333]">
           <CardContent className="p-6 sm:p-8">
             {stepName === "welcome" && <WelcomeStep userName={user?.firstName || user?.email?.split("@")[0]} />}
+            {stepName === "identity" && (
+              <IdentityStep
+                preferredName={draft.preferredName}
+                pronouns={draft.pronouns}
+                onChange={(k, v) => update(k as any, v)}
+              />
+            )}
             {stepName === "stroke" && (
               <StrokeStep
                 strokeType={draft.strokeType ?? null}
@@ -301,6 +296,24 @@ export default function SurvivorIntake() {
             {stepName === "deficits" && (
               <DeficitsStep deficits={draft.deficits || {}} onChange={updateDeficit} />
             )}
+            {stepName === "goals" && (
+              <GoalsStep
+                selected={draft.recoveryGoals || []}
+                customGoal={draft.customGoal}
+                challenges={draft.currentChallenges || []}
+                onToggleGoal={(v) => toggleArrayValue("recoveryGoals", v)}
+                onToggleChallenge={(v) => toggleArrayValue("currentChallenges", v)}
+                onCustomChange={(v) => update("customGoal", v)}
+              />
+            )}
+            {stepName === "equipment" && (
+              <EquipmentStep
+                equipment={draft.equipment || []}
+                aids={draft.mobilityAids || []}
+                onToggleEquip={(v) => toggleArrayValue("equipment", v)}
+                onToggleAid={(v) => toggleArrayValue("mobilityAids", v)}
+              />
+            )}
             {stepName === "daily-life" && (
               <DailyLifeStep
                 minutes={draft.dailyTimeBudgetMinutes ?? 20}
@@ -308,6 +321,34 @@ export default function SurvivorIntake() {
                 onMinutes={(v) => update("dailyTimeBudgetMinutes", v)}
                 onEnergy={(v) => update("energyPattern", v as any)}
               />
+            )}
+            {stepName === "caregiver" && (
+              <CaregiverStep
+                hasCaregiver={!!draft.hasCaregiver}
+                email={draft.caregiverEmail}
+                relationship={draft.caregiverRelationship}
+                onHas={(v) => update("hasCaregiver", v)}
+                onEmail={(v) => update("caregiverEmail", v)}
+                onRelationship={(v) => update("caregiverRelationship", v)}
+              />
+            )}
+            {stepName === "accessibility" && (
+              <AccessibilityStep
+                bigButtonMode={!!draft.bigButtonMode}
+                dyslexiaFont={!!draft.dyslexiaFont}
+                reducedMotion={!!draft.reducedMotion}
+                voicePrefersTts={!!draft.voicePrefersTts}
+                onChange={(k, v) => update(k as any, v)}
+              />
+            )}
+            {stepName === "story" && (
+              <StoryStep
+                story={draft.story}
+                onChange={(v) => update("story", v)}
+              />
+            )}
+            {stepName === "review" && (
+              <ReviewStep draft={draft} onJump={(idx) => setStepIdx(idx)} />
             )}
           </CardContent>
         </Card>
@@ -364,17 +405,14 @@ function WelcomeStep({ userName }: { userName?: string }) {
         {userName ? `Welcome, ${userName}.` : "Welcome, survivor."}
       </h1>
       <p className="text-gray-400 max-w-md mx-auto leading-relaxed">
-        A minute here tunes every screen, exercise, and Coach reply to your recovery.
-        Nothing leaves your account. Skip anything that doesn't fit.
+        Five minutes here gives every screen, exercise, and Coach reply something to work with.
+        Nothing leaves your account. Skip anything that doesn't feel right.
       </p>
       <div className="mt-6 grid grid-cols-3 gap-3 text-xs">
-        <Stat label="Total time" value="~1 min" />
-        <Stat label="Steps" value="3" />
+        <Stat label="Total time" value="~5 min" />
+        <Stat label="Steps" value="10" />
         <Stat label="Save" value="As you go" />
       </div>
-      <p className="mt-5 text-xs text-gray-500 bg-[#0D0D0D] rounded-md border border-[#333] px-4 py-2.5" data-testid="text-zen-mode-hint">
-        Feeling overwhelmed? You can switch to a simpler view anytime from your dashboard — it's called Zen Mode.
-      </p>
     </div>
   );
 }

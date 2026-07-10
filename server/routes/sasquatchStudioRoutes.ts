@@ -26,7 +26,6 @@ import {
   cloneVoiceWithElevenLabs,
   synthesizeWithElevenLabs,
 } from "../voiceService";
-import { getUserId } from "../lib/authUtils";
 
 // Pull current_period_end safely across Stripe API versions: top-level on
 // older versions, items.data[0].current_period_end on newer versions.
@@ -264,7 +263,7 @@ export function registerSasquatchStudioRoutes(
     "/api/sasquatch-studio/me",
     isAuthenticated,
     async (req: any, res: Response) => {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const [sub] = await db
         .select()
         .from(sasquatchStudioSubscriptions)
@@ -321,7 +320,7 @@ export function registerSasquatchStudioRoutes(
     isAuthenticated,
     async (req: any, res: Response) => {
       try {
-        const userId = getUserId(req);
+        const userId = req.user.claims.sub;
         const email =
           req.user.claims.email ||
           req.body?.email ||
@@ -386,7 +385,7 @@ export function registerSasquatchStudioRoutes(
     isAuthenticated,
     async (req: any, res: Response) => {
       try {
-        const userId = getUserId(req);
+        const userId = req.user.claims.sub;
         const sessionId = String(req.body?.sessionId || "");
         if (!sessionId) return res.status(400).json({ error: "Missing sessionId" });
         const stripe = await getUncachableStripeClient();
@@ -441,7 +440,7 @@ export function registerSasquatchStudioRoutes(
     isAuthenticated,
     async (req: any, res: Response) => {
       try {
-        const userId = getUserId(req);
+        const userId = req.user.claims.sub;
         const [sub] = await db
           .select()
           .from(sasquatchStudioSubscriptions)
@@ -473,7 +472,7 @@ export function registerSasquatchStudioRoutes(
     audioUpload.array("audio", 5),
     async (req: any, res: Response) => {
       try {
-        const userId = getUserId(req);
+        const userId = req.user.claims.sub;
         const active = await getActiveSub(userId);
         if (!active) {
           return res.status(402).json({ error: "Subscription required" });
@@ -560,7 +559,7 @@ export function registerSasquatchStudioRoutes(
     isAuthenticated,
     async (req: any, res: Response) => {
       try {
-        const userId = getUserId(req);
+        const userId = req.user.claims.sub;
         const id = Number(req.params.id);
         if (!Number.isFinite(id)) return res.status(400).json({ error: "Bad id" });
         const [voice] = await db
@@ -603,7 +602,7 @@ export function registerSasquatchStudioRoutes(
     isAuthenticated,
     async (req: any, res: Response) => {
       try {
-        const userId = getUserId(req);
+        const userId = req.user.claims.sub;
         const active = await getActiveSub(userId);
         if (!active) return res.status(402).json({ error: "Subscription required" });
         const parsed = generateSchema.safeParse(req.body);
@@ -701,7 +700,7 @@ export function registerSasquatchStudioRoutes(
     "/api/sasquatch-studio/generations",
     isAuthenticated,
     async (req: any, res: Response) => {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const rows = await db
         .select()
         .from(sasquatchVoiceGenerations)

@@ -69,7 +69,7 @@ import {
   therapeuticExercises, exerciseSessions, exerciseScores,
   speechExercises, cognitiveExercises,
   wearableConnections, wearableMetrics,
-  conversations, conversationParticipants, directMessages, buddyBlocks,
+  conversations, conversationParticipants, directMessages,
   forumPostMedia, videoSessions, videoSessionParticipants, seoPages,
   blogPosts, blogPostReactions, blogPostComments,
   podcasts, podcastEpisodes,
@@ -142,10 +142,7 @@ export interface IStorage {
   updateUserEnrollment(id: number, updates: any): Promise<any | undefined>;
   getDailyCheckin(userId: string, date: Date): Promise<any | undefined>;
   createDailyCheckin(checkin: any): Promise<any>;
-  updateDailyCheckin(userId: string, date: Date, updates: any): Promise<any | null>;
   getRecentCheckins(userId: string, days: number): Promise<any[]>;
-  saveMorningBrief(userId: string, dateKey: string, brief: string, focusItems: string[]): Promise<void>;
-  getMorningBrief(userId: string, dateKey: string): Promise<{ brief: string; focusItems: string[] } | null>;
   getUserStreak(userId: string): Promise<any | undefined>;
   createOrUpdateUserStreak(userId: string, data: any): Promise<any>;
   getUserHabits(userId: string): Promise<any[]>;
@@ -769,52 +766,6 @@ export class DatabaseStorage implements IStorage {
         gte(dailyCheckins.checkinDate, daysAgo)
       ))
       .orderBy(desc(dailyCheckins.checkinDate));
-  }
-
-  async updateDailyCheckin(userId: string, date: Date, updates: any): Promise<any | null> {
-    const startOfDay = new Date(date);
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date(date);
-    endOfDay.setHours(23, 59, 59, 999);
-    const parts: any[] = [];
-    if (updates.exercisesLogged !== undefined) parts.push(sql`exercises_logged = ${JSON.stringify(updates.exercisesLogged)}::jsonb`);
-    if (updates.habitsCompleted !== undefined) parts.push(sql`habits_completed = ${JSON.stringify(updates.habitsCompleted)}::jsonb`);
-    if (updates.winsToday !== undefined)       parts.push(sql`wins_today = ${updates.winsToday}`);
-    if (updates.challengesToday !== undefined)  parts.push(sql`challenges_today = ${updates.challengesToday}`);
-    if (updates.moodScore !== undefined)        parts.push(sql`mood_score = ${updates.moodScore}`);
-    if (updates.energyScore !== undefined)      parts.push(sql`energy_score = ${updates.energyScore}`);
-    if (updates.sosState !== undefined)         parts.push(sql`sos_state = ${updates.sosState}`);
-    if (parts.length === 0) return null;
-    const result = await db.execute(sql`
-      UPDATE daily_checkins
-      SET ${sql.join(parts, sql`, `)}
-      WHERE user_id = ${userId}
-        AND checkin_date >= ${startOfDay}
-        AND checkin_date <= ${endOfDay}
-      RETURNING *
-    `);
-    return (result.rows?.[0] as any) ?? null;
-  }
-
-  async saveMorningBrief(userId: string, dateKey: string, brief: string, focusItems: string[]): Promise<void> {
-    await db.execute(sql`
-      INSERT INTO never_zero_audits (user_id, audit_date, streak, today_count, morning_brief, morning_focus_items)
-      VALUES (${userId}, ${dateKey}, 0, 0, ${brief}, ${JSON.stringify(focusItems)}::jsonb)
-      ON CONFLICT (user_id, audit_date) DO UPDATE SET
-        morning_brief = EXCLUDED.morning_brief,
-        morning_focus_items = EXCLUDED.morning_focus_items
-    `);
-  }
-
-  async getMorningBrief(userId: string, dateKey: string): Promise<{ brief: string; focusItems: string[] } | null> {
-    const result = await db.execute(sql`
-      SELECT morning_brief AS "brief", morning_focus_items AS "focusItems"
-      FROM never_zero_audits
-      WHERE user_id = ${userId} AND audit_date = ${dateKey} AND morning_brief IS NOT NULL
-    `);
-    const row = result.rows?.[0] as any;
-    if (!row?.brief) return null;
-    return { brief: row.brief, focusItems: Array.isArray(row.focusItems) ? row.focusItems : [] };
   }
 
   async getUserStreak(userId: string): Promise<any | undefined> {
@@ -1651,24 +1602,6 @@ export class DatabaseStorage implements IStorage {
   // DIRECT MESSAGING
   // ============================================================================
 
-  async getBuddyBlockedIds(userId: string): Promise<string[]> {
-    try {
-      const rows = await db.select().from(buddyBlocks)
-        .where(or(eq(buddyBlocks.blockerId, userId), eq(buddyBlocks.blockedId, userId)));
-      return rows.map(r => r.blockerId === userId ? r.blockedId : r.blockerId);
-    } catch {
-      // buddy_blocks is self-provisioned; tolerate a not-yet-created table.
-      return [];
-    }
-  }
-
-  async getConversationParticipantIds(conversationId: number): Promise<string[]> {
-    const rows = await db.select({ userId: conversationParticipants.userId })
-      .from(conversationParticipants)
-      .where(eq(conversationParticipants.conversationId, conversationId));
-    return rows.map(r => r.userId);
-  }
-
   async getConversations(userId: string): Promise<Conversation[]> {
     const participations = await db.select({ conversationId: conversationParticipants.conversationId })
       .from(conversationParticipants)
@@ -1677,47 +1610,9 @@ export class DatabaseStorage implements IStorage {
     if (participations.length === 0) return [];
     
     const conversationIds = participations.map(p => p.conversationId);
-    const convos = await db.select().from(conversations)
+    return db.select().from(conversations)
       .where(sql`${conversations.id} IN (${sql.join(conversationIds.map(id => sql`${id}`), sql`, `)})`)
       .orderBy(desc(conversations.lastMessageAt));
-
-    // Load participants (with user info) for name display + block enforcement.
-    const parts = await db.select({
-      conversationId: conversationParticipants.conversationId,
-      userId: conversationParticipants.userId,
-      lastReadAt: conversationParticipants.lastReadAt,
-      firstName: users.firstName,
-      lastName: users.lastName,
-      profileImageUrl: users.profileImageUrl,
-    })
-      .from(conversationParticipants)
-      .leftJoin(users, eq(users.id, conversationParticipants.userId))
-      .where(sql`${conversationParticipants.conversationId} IN (${sql.join(conversationIds.map(id => sql`${id}`), sql`, `)})`);
-
-    const byConv = new Map<number, any[]>();
-    for (const p of parts) {
-      const arr = byConv.get(p.conversationId) || [];
-      arr.push({
-        userId: p.userId,
-        lastReadAt: p.lastReadAt,
-        user: {
-          id: p.userId,
-          firstName: p.firstName,
-          lastName: p.lastName,
-          profileImageUrl: p.profileImageUrl,
-        },
-      });
-      byConv.set(p.conversationId, arr);
-    }
-
-    // Hide conversations that include a blocked survivor (either direction).
-    const blockedIds = new Set(await this.getBuddyBlockedIds(userId));
-    const visible = convos.filter(c => {
-      const members = byConv.get(c.id) || [];
-      return !members.some(m => blockedIds.has(m.userId));
-    });
-
-    return visible.map(c => ({ ...c, participants: byConv.get(c.id) || [] })) as any;
   }
 
   async getConversation(id: number): Promise<Conversation | undefined> {
@@ -4020,7 +3915,7 @@ The ROK Financial partner program is a good starting point because it's genuinel
 Recovery takes time. Financial recovery doesn't have to wait until physical recovery is complete.`,
         authorId: "nick-kremers",
         authorName: "Nick Kremers",
-        category: "work-career",
+        category: "income",
         tags: ["income", "financial recovery", "work from home", "stroke survivor"],
         metaTitle: "How Stroke Survivors Can Earn Real Income From Home | Stroke Recovery Academy",
         metaDescription: "Cognitive and physical limitations don't have to mean financial helplessness. Nick Kremers shares realistic income strategies built specifically for stroke survivors.",
@@ -4083,7 +3978,7 @@ For a stroke survivor working from home, one funded referral per month could mea
 The application takes about 5 minutes. [Apply as a ROK Financial partner here](/recovery/survivor-income). Once approved, you'll have access to their partner portal and can start submitting referrals immediately.`,
         authorId: "nick-kremers",
         authorName: "Nick Kremers",
-        category: "work-career",
+        category: "income",
         tags: ["passive income", "business loans", "referral program", "income for survivors"],
         metaTitle: "Business Loan Referrals: Simple Passive Income for Stroke Survivors | Stroke Recovery Academy",
         metaDescription: "If you know business owners, you can earn real commissions referring them to commercial financing. Here's exactly how ROK Financial's referral program works for stroke survivors.",
@@ -4146,7 +4041,7 @@ At Stroke Recovery Academy, we've partnered with ROK Financial to give survivors
 Your recovery is your job right now. But financial recovery deserves attention too. You don't have to choose between them.`,
         authorId: "nick-kremers",
         authorName: "Nick Kremers",
-        category: "work-career",
+        category: "income",
         tags: ["financial recovery", "stroke identity", "income", "SSDI", "financial confidence"],
         metaTitle: "Rebuilding Financial Confidence After Stroke | Stroke Recovery Academy",
         metaDescription: "A stroke hits your income, your identity, and your sense of control. Nick Kremers shares a realistic, step-by-step approach to rebuilding financial confidence while still in recovery.",
@@ -4377,7 +4272,7 @@ Open [Reflections](/recovery/journal), keep writing the true thing each day, and
 Heart's still thumpin'. So is your story.`,
         authorId: "nick-kremers",
         authorName: "Nick Kremers",
-        category: "work-career",
+        category: "income",
         tags: ["journaling", "writing a book", "survivor income", "book studio", "stroke story"],
         metaTitle: "Turn Your Recovery Journal Into a Book | Stroke Recovery Academy",
         metaDescription: "The entries you write to survive can become a book that helps the next survivor — and maybe earns a little income. Learn how to compile your stroke recovery journal into a manuscript.",

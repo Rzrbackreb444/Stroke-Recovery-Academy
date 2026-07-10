@@ -13,17 +13,8 @@
     <!-- nosemgrep: html.security.audit.missing-integrity -->
     <link rel="canonical" href="https://strokerecoveryacademy.com/" />
 
-    <!-- Google Search Console verification -->
+    <!-- Google Search Console verification (replace content with your code from Search Console) -->
     <meta name="google-site-verification" content="tVs9caejjRhHjijSOdNpN-tB8Kuc75le0oN0HJvZFYo" />
-
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WDWQ3N18D5"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-WDWQ3N18D5');
-    </script>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -47,10 +38,10 @@
     <meta name="twitter:image:alt" content="Stroke Recovery Academy — From 0% to 90% Recovery" />
 
     <!-- Theme & PWA -->
-    <meta name="theme-color" content="#FDFBF7" />
-    <meta name="msapplication-TileColor" content="#FDFBF7" />
+    <meta name="theme-color" content="#0D0D0D" />
+    <meta name="msapplication-TileColor" content="#0D0D0D" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Recovery" />
     <meta name="application-name" content="Stroke Recovery Academy" />
     <meta name="format-detection" content="telephone=no" />
@@ -62,11 +53,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400..700;1,400..700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
     <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="mask-icon" href="/icon-512.png" color="#E2741B" />
+    <link rel="mask-icon" href="/icon-512.png" color="#C9941A" />
     <link rel="manifest" href="/manifest.webmanifest" />
 
     <!-- Structured Data — Organization -->
@@ -89,6 +82,21 @@
         "https://www.tiktok.com/@strokedoutsasquatch",
         "https://www.facebook.com/strokedoutsasquatch"
       ]
+    }
+    </script>
+
+    <!-- Structured Data — WebSite + SearchAction -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Stroke Recovery Academy",
+      "url": "https://strokerecoveryacademy.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://strokerecoveryacademy.com/recovery/blog?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
     }
     </script>
 
@@ -133,7 +141,7 @@
         "name": "Stroke Recovery Academy",
         "url": "https://strokerecoveryacademy.com"
       },
-      "url": "https://strokerecoveryacademy.com/recovery/challenge",
+      "url": "https://strokerecoveryacademy.com/recovery/sixty-six-day",
       "hasCourseInstance": {
         "@type": "CourseInstance",
         "courseMode": "online",

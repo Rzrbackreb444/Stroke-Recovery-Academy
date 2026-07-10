@@ -32,3 +32,5 @@
 - [db.execute text[] arrays](db-execute-text-array.md) — bare JS array param to raw sql on neon driver → 22P02 malformed array literal; use ARRAY[]::text[] via sql.join
 - [Replit workflow waitForPort gotcha](workflow-waitforport-gotcha.md) — port 3001 with waitForPort marks FAILED even when vite binds it; omit waitForPort for console-type artifact workflows
 - [Multi-artifact workspace layout](multi-artifact-workspace.md) — pnpm-workspace.yaml, artifacts/api-server tsconfig paths, @workspace/db alias, frontend vite proxy pattern
+- [Google OAuth wiring](google-oauth-wiring.md) — three-part fix: configurePassport() in setupAuth, callback route, strip conflicting serialize from configurePassport
+- [Deployment image size limit](deployment-image-size.md) — Replit Cloud Run cap is 8 GiB; .migration-backup/ and raw media files are typical culprits; delete before re-publishing

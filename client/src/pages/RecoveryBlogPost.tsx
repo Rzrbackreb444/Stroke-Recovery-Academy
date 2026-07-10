@@ -18,8 +18,6 @@ import {
   Link2, ShieldCheck, List, ChevronDown, ChevronUp
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { LEAD_MAGNET } from "@shared/survivorOffer";
-import { categoryLabel, categoryDark, categoryGradient } from "@/lib/blogCategories";
 
 interface BlogPost {
   id: number;
@@ -42,7 +40,6 @@ interface BlogPost {
   createdAt: string;
   updatedAt: string;
   readTime?: number;
-  estimatedReadMinutes?: number;
 }
 
 interface TocItem {
@@ -64,15 +61,8 @@ function escapeHtml(s: string): string {
 
 function safeUrl(s: string): string {
   const trimmed = s.trim();
-  if (/^(https?:|mailto:|\/(?!\/)|#)/i.test(trimmed)) return escapeHtml(trimmed);
+  if (/^(https?:|mailto:|\/|#)/i.test(trimmed)) return escapeHtml(trimmed);
   return '#';
-}
-
-// Image src allowlist: only https or vetted local asset paths. Blocks data:/javascript:.
-function safeImageUrl(s: string): string {
-  const t = s.trim();
-  if (/^https:\/\//i.test(t) || /^\/(images|book|assets)\//i.test(t)) return escapeHtml(t);
-  return '';
 }
 
 function processInline(text: string): string {
@@ -134,15 +124,6 @@ function renderMarkdown(text: string): string {
       flushParagraph(); closeList();
       // nosemgrep: javascript.lang.security.html-in-template-string
       output.push(`<blockquote class="border-l-4 border-[#E2741B] pl-4 my-6 italic text-gray-300 text-xl leading-relaxed">${processInline(line.slice(2))}</blockquote>`);
-    } else if (/^!\[[^\]]*\]\([^)]+\)\s*$/.test(line)) {
-      flushParagraph(); closeList();
-      const m = line.match(/^!\[([^\]]*)\]\(([^)]+)\)/);
-      const alt = m ? escapeHtml(m[1]) : '';
-      const src = m ? safeImageUrl(m[2]) : '';
-      if (src) {
-        // nosemgrep: javascript.lang.security.html-in-template-string
-        output.push(`<figure class="my-8"><img src="${src}" alt="${alt}" loading="lazy" class="w-full rounded-md border border-[#333]" />${alt ? `<figcaption class="text-sm text-gray-500 mt-3 text-center italic">${alt}</figcaption>` : ''}</figure>`);
-      }
     } else {
       if (inUl || inOl) closeList();
       pendingParagraph.push(line);
@@ -150,67 +131,6 @@ function renderMarkdown(text: string): string {
   }
   flushParagraph(); closeList();
   return output.join('\n');
-}
-
-// ── Programmatic internal cross-linking ──────────────────────────────────────
-// Auto-links the first in-body mention of another post's exact title to that
-// post, capped so a page never over-links. Corpus-driven (no hardcoded map):
-// candidates come from the already-fetched post list. Only rewrites plain text
-// OUTSIDE existing anchors / headings so we never nest links or hijack a TOC
-// heading, and each target post is linked at most once. Real <a href> anchors
-// (not client Links) — SEO-friendly and safe since text/slug are our own data.
-
-function escapeRegExp(s: string): string {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-interface CrossLinkable { slug: string; title: string; }
-
-function linkifyInternal(
-  html: string,
-  posts: CrossLinkable[],
-  currentSlug: string,
-  maxLinks = 5,
-): string {
-  const candidates = posts
-    .filter((p) => p.slug !== currentSlug && p.title && p.title.trim().length >= 12)
-    .sort((a, b) => b.title.length - a.title.length); // longer (more specific) first
-  if (candidates.length === 0) return html;
-
-  const parts = html.split(/(<[^>]+>)/g); // keep tags as their own tokens
-  const usedSlugs = new Set<string>();
-  let linksAdded = 0;
-  let noLinkDepth = 0; // >0 while inside an <a> or heading
-
-  for (let i = 0; i < parts.length; i++) {
-    const tok = parts[i];
-    if (tok.startsWith('<')) {
-      const tl = tok.toLowerCase();
-      if (/^<a\b/.test(tl) || /^<h[1-6]\b/.test(tl)) noLinkDepth++;
-      else if (/^<\/a>/.test(tl) || /^<\/h[1-6]>/.test(tl)) noLinkDepth = Math.max(0, noLinkDepth - 1);
-      continue;
-    }
-    if (noLinkDepth > 0 || linksAdded >= maxLinks || !tok.trim()) continue;
-
-    let segment = tok;
-    for (const c of candidates) {
-      if (linksAdded >= maxLinks) break;
-      if (usedSlugs.has(c.slug)) continue;
-      const re = new RegExp(`\\b(${escapeRegExp(c.title.trim())})\\b`, 'i');
-      const m = re.exec(segment);
-      if (m) {
-        const anchor =
-          `<a href="/recovery/blog/${c.slug}" ` +
-          `class="text-[#E2741B] underline decoration-[#E2741B]/40 hover:decoration-[#E2741B] underline-offset-2" ` +
-          `data-testid="link-internal-${c.slug}">${m[1]}</a>`;
-        segment = segment.slice(0, m.index) + anchor + segment.slice(m.index + m[0].length);
-        usedSlugs.add(c.slug);
-        linksAdded++;
-      }
-    }
-    parts[i] = segment;
-  }
-  return parts.join('');
 }
 
 // ── TOC extractor ────────────────────────────────────────────────────────────
@@ -246,6 +166,26 @@ function extractFAQs(html: string): FaqItem[] {
   }
   return faqs.slice(0, 8);
 }
+
+// ── Styling maps ──────────────────────────────────────────────────────────────
+
+const categoryColors: Record<string, string> = {
+  philosophy: "bg-purple-500/20 text-purple-400 border-purple-500/30",
+  therapy: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+  science: "bg-green-500/20 text-green-400 border-green-500/30",
+  exercises: "bg-orange-500/20 text-orange-400 border-orange-500/30",
+  caregivers: "bg-pink-500/20 text-pink-400 border-pink-500/30",
+  income: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+};
+
+const categoryGradients: Record<string, string> = {
+  philosophy: "from-purple-900/30 to-[#0D0D0D]",
+  therapy: "from-blue-900/30 to-[#0D0D0D]",
+  science: "from-green-900/30 to-[#0D0D0D]",
+  exercises: "from-orange-900/30 to-[#0D0D0D]",
+  caregivers: "from-pink-900/30 to-[#0D0D0D]",
+  income: "from-yellow-900/30 to-[#0D0D0D]",
+};
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
@@ -290,16 +230,9 @@ export default function RecoveryBlogPost() {
     [rawContent]
   );
 
-  const { items: tocItems, html: tocHtml } = useMemo(
+  const { items: tocItems, html: renderedContent } = useMemo(
     () => (post ? extractTOC(rawRendered) : { items: [], html: '' }),
     [rawRendered, post]
-  );
-
-  // Programmatic internal cross-linking — runs after TOC ids are injected so the
-  // linker can skip headings, and keyed on the corpus so links appear once posts load.
-  const renderedContent = useMemo(
-    () => (post ? linkifyInternal(tocHtml, allPosts, post.slug) : tocHtml),
-    [tocHtml, allPosts, post]
   );
 
   const faqItems = useMemo(() => extractFAQs(rawRendered), [rawRendered]);
@@ -309,11 +242,9 @@ export default function RecoveryBlogPost() {
     [rawContent]
   );
 
-  const calculatedReadTime = (post?.estimatedReadMinutes ?? 0) > 0
-    ? post!.estimatedReadMinutes!
-    : (post?.readTime ?? 0) > 0
-      ? post!.readTime!
-      : Math.max(1, Math.round(wordCount / 238));
+  const calculatedReadTime = post?.readTime && post.readTime > 0
+    ? post.readTime
+    : Math.max(1, Math.round(wordCount / 238));
 
   // Reading progress bar
   useEffect(() => {
@@ -385,13 +316,13 @@ export default function RecoveryBlogPost() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FDFBF7] text-[#1C1917]">
+      <div className="min-h-screen bg-[#0D0D0D] text-white">
         <RecoveryHeader />
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-6">
-          <Skeleton className="h-8 w-24 bg-[#E2C2A4]/20" />
-          <Skeleton className="h-12 w-full bg-[#E2C2A4]/20" />
-          <Skeleton className="h-48 w-full bg-[#E2C2A4]/20" />
-          {[...Array(6)].map((_, i) => <Skeleton key={i} className="h-5 w-full bg-[#E2C2A4]/20" />)}
+          <Skeleton className="h-8 w-24 bg-[#1a1a1a]" />
+          <Skeleton className="h-12 w-full bg-[#1a1a1a]" />
+          <Skeleton className="h-48 w-full bg-[#1a1a1a]" />
+          {[...Array(6)].map((_, i) => <Skeleton key={i} className="h-5 w-full bg-[#1a1a1a]" />)}
         </div>
       </div>
     );
@@ -399,14 +330,14 @@ export default function RecoveryBlogPost() {
 
   if (error || !post) {
     return (
-      <div className="min-h-screen bg-[#FDFBF7] text-[#1C1917]">
+      <div className="min-h-screen bg-[#0D0D0D] text-white">
         <RecoveryHeader />
         <div className="max-w-3xl mx-auto px-4 py-24 text-center">
-          <BookOpen className="h-16 w-16 text-[#C06B3E] mx-auto mb-6" />
-          <h1 className="text-2xl font-bold mb-3 text-[#1C1917]">Article Not Found</h1>
-          <p className="text-[#78716C] mb-6">This article may have been moved or doesn't exist.</p>
+          <BookOpen className="h-16 w-16 text-[#E2741B] mx-auto mb-6" />
+          <h1 className="text-2xl font-bold mb-3">Article Not Found</h1>
+          <p className="text-gray-400 mb-6">This article may have been moved or doesn't exist.</p>
           <Link href="/recovery/blog">
-            <Button className="bg-[#C06B3E] text-white font-semibold">
+            <Button className="bg-[#E2741B] text-black font-semibold">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Blog
             </Button>
@@ -416,14 +347,12 @@ export default function RecoveryBlogPost() {
     );
   }
 
-  const gradient = categoryGradient(post.category);
+  const gradient = categoryGradients[post.category] || "from-[#E2741B]/20 to-[#0D0D0D]";
   const authorName = post.authorName || "Nick Kremers";
   const authorBioText = post.authorBio ||
     "Nick Kremers is a hemorrhagic stroke survivor (December 3, 2018) and founder of Stroke Recovery Academy. He developed the Sasquatch Method and SASCH framework after recovering from complete left-side paralysis to full independent mobility.";
 
   // ── JSON-LD schemas ──────────────────────────────────────────────────────────
-
-  const heroSrc = safeImageUrl(post.heroImageUrl || '');
 
   const schemaGraph: object[] = [
     {
@@ -467,9 +396,9 @@ export default function RecoveryBlogPost() {
         "url": baseUrl,
         "logo": { "@type": "ImageObject", "url": `${baseUrl}/logo.png` }
       },
-      "image": heroSrc ? {
+      "image": post.heroImageUrl ? {
         "@type": "ImageObject",
-        "url": heroSrc,
+        "url": post.heroImageUrl,
         "width": 1200,
         "height": 630
       } : undefined,
@@ -513,7 +442,7 @@ export default function RecoveryBlogPost() {
   // ── Render ────────────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7]">
+    <div className="min-h-screen bg-[#0D0D0D] text-white">
       {/* Reading progress bar — fixed at top */}
       <div
         className="fixed top-0 left-0 h-0.5 bg-[#E2741B] z-[9999] transition-all duration-150"
@@ -528,7 +457,7 @@ export default function RecoveryBlogPost() {
         keywords={[...(post.tags || []), "stroke recovery", "Nick Kremers", post.category, "stroke survivor", "medical"]}
         pageType="article"
         author={authorName}
-        image={heroSrc || undefined}
+        image={post.heroImageUrl || undefined}
         publishedTime={post.createdAt}
         modifiedTime={post.updatedAt}
         breadcrumbs={[
@@ -555,8 +484,8 @@ export default function RecoveryBlogPost() {
           </Link>
 
           <div className="flex flex-wrap gap-2 mb-4">
-            <Badge className={categoryDark(post.category)}>
-              {categoryLabel(post.category)}
+            <Badge className={categoryColors[post.category] || "bg-gray-500/20 text-gray-400"}>
+              {post.category}
             </Badge>
             {post.featured && (
               <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30">
@@ -577,7 +506,7 @@ export default function RecoveryBlogPost() {
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-400">
             <span className="flex items-center gap-1.5">
               <User className="h-4 w-4" />
-              By {authorName}
+              {authorName}
             </span>
             <span className="flex items-center gap-1.5">
               <Calendar className="h-4 w-4" />
@@ -597,26 +526,6 @@ export default function RecoveryBlogPost() {
             </span>
           </div>
         </div>
-
-        {/* Hero image — dark wash for consistent legibility over any photo */}
-        {heroSrc && (
-          <div className="max-w-4xl mx-auto px-4 mt-8">
-            <div className="relative rounded-lg overflow-hidden border border-[#333]">
-              <img
-                src={heroSrc}
-                alt={post.title}
-                loading="eager"
-                className="w-full h-auto object-cover max-h-[440px]"
-                onError={(e) => {
-                  const fig = e.currentTarget.parentElement as HTMLElement | null;
-                  if (fig) fig.style.display = 'none';
-                }}
-                data-testid="img-hero"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D]/50 via-transparent to-transparent pointer-events-none" />
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Content grid — article + TOC sidebar */}
@@ -625,65 +534,62 @@ export default function RecoveryBlogPost() {
 
           {/* Article column */}
           <div>
-            {/* Article reading pane — intentionally dark for prose readability */}
-            <div className="bg-[#1C1917] rounded-xl px-5 md:px-8 py-8 mb-8">
-              {/* Mobile TOC — collapsible */}
-              {tocItems.length > 3 && (
-                <div className="lg:hidden mb-8 bg-[#2A2421] border border-[#333] rounded-md overflow-hidden">
-                  <button
-                    onClick={() => setMobileTocOpen(o => !o)}
-                    className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-white"
-                    data-testid="button-mobile-toc-toggle"
-                  >
-                    <span className="flex items-center gap-2">
-                      <List className="h-4 w-4 text-[#E2741B]" />
-                      In this article
-                    </span>
-                    {mobileTocOpen ? <ChevronUp className="h-4 w-4 text-gray-400" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
-                  </button>
-                  {mobileTocOpen && (
-                    <nav className="px-4 pb-4 border-t border-[#333] pt-3 space-y-1">
-                      {tocItems.map(item => (
-                        <a
-                          key={item.id}
-                          href={`#${item.id}`}
-                          onClick={() => setMobileTocOpen(false)}
-                          className={`block py-1 text-sm transition-colors ${item.level === 3 ? 'pl-4 text-gray-500' : 'text-gray-300'} hover:text-[#E2741B]`}
-                        >
-                          {item.text}
-                        </a>
-                      ))}
-                    </nav>
-                  )}
-                </div>
-              )}
+            {/* Mobile TOC — collapsible */}
+            {tocItems.length > 3 && (
+              <div className="lg:hidden mb-8 bg-[#1a1a1a] border border-[#333] rounded-md overflow-hidden">
+                <button
+                  onClick={() => setMobileTocOpen(o => !o)}
+                  className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-white"
+                  data-testid="button-mobile-toc-toggle"
+                >
+                  <span className="flex items-center gap-2">
+                    <List className="h-4 w-4 text-[#E2741B]" />
+                    In this article
+                  </span>
+                  {mobileTocOpen ? <ChevronUp className="h-4 w-4 text-gray-400" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
+                </button>
+                {mobileTocOpen && (
+                  <nav className="px-4 pb-4 border-t border-[#333] pt-3 space-y-1">
+                    {tocItems.map(item => (
+                      <a
+                        key={item.id}
+                        href={`#${item.id}`}
+                        onClick={() => setMobileTocOpen(false)}
+                        className={`block py-1 text-sm transition-colors ${item.level === 3 ? 'pl-4 text-gray-500' : 'text-gray-300'} hover:text-[#E2741B]`}
+                      >
+                        {item.text}
+                      </a>
+                    ))}
+                  </nav>
+                )}
+              </div>
+            )}
 
-              <article
-                ref={articleRef}
-                className="prose-recovery"
-                dangerouslySetInnerHTML={{ __html: renderedContent }}
-                data-testid="article-content"
-              />
-            </div>
+            <article
+              ref={articleRef}
+              className="prose-recovery"
+              dangerouslySetInnerHTML={{ __html: renderedContent }}
+              data-testid="article-content"
+            />
 
-            <Separator className="my-10 bg-[#E2C2A4]/30" />
+            <Separator className="my-10 bg-[#333]" />
 
             {/* Action row: Like + social share + tags */}
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-2 flex-wrap">
                 <Button
                   variant="outline"
-                  className={`border-[#E2C2A4]/40 gap-2 ${liked ? 'text-red-500 border-red-300' : 'text-[#78716C]'}`}
+                  className={`border-[#333] gap-2 ${liked ? 'text-red-400 border-red-400/30' : 'text-gray-400'}`}
                   onClick={handleLike}
                   data-testid="button-like-article"
                 >
-                  <Heart className={`h-4 w-4 ${liked ? 'fill-red-500' : ''}`} />
+                  <Heart className={`h-4 w-4 ${liked ? 'fill-red-400' : ''}`} />
                   {formatNumber(post.likeCount + localLikes)}
                 </Button>
                 <Button
                   variant="outline"
                   size="icon"
-                  className="border-[#E2C2A4]/40 text-[#1DA1F2]"
+                  className="border-[#333] text-[#1DA1F2]"
                   onClick={shareTwitter}
                   data-testid="button-share-twitter"
                   title="Share on Twitter / X"
@@ -693,7 +599,7 @@ export default function RecoveryBlogPost() {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="border-[#E2C2A4]/40 text-[#0A66C2]"
+                  className="border-[#333] text-[#0A66C2]"
                   onClick={shareLinkedIn}
                   data-testid="button-share-linkedin"
                   title="Share on LinkedIn"
@@ -703,7 +609,7 @@ export default function RecoveryBlogPost() {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="border-[#E2C2A4]/40 text-[#78716C]"
+                  className="border-[#333] text-gray-400"
                   onClick={copyLink}
                   data-testid="button-copy-link"
                   title="Copy link"
@@ -715,7 +621,7 @@ export default function RecoveryBlogPost() {
               {post.tags && post.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {post.tags.map(tag => (
-                    <Badge key={tag} variant="outline" className="border-[#E2C2A4]/40 text-[#78716C] text-xs">
+                    <Badge key={tag} variant="outline" className="border-[#333] text-gray-400 text-xs">
                       {tag}
                     </Badge>
                   ))}
@@ -724,34 +630,17 @@ export default function RecoveryBlogPost() {
             </div>
 
             {/* Author card */}
-            <Card className="bg-white border-[#E2C2A4]/30 p-6 mt-10">
+            <Card className="bg-[#1a1a1a] border-[#333] p-6 mt-10">
               <div className="flex gap-4">
-                <div className="w-14 h-14 rounded-full bg-[#C06B3E]/10 flex items-center justify-center flex-shrink-0">
-                  <User className="h-7 w-7 text-[#C06B3E]" />
+                <div className="w-14 h-14 rounded-full bg-[#E2741B]/20 flex items-center justify-center flex-shrink-0">
+                  <User className="h-7 w-7 text-[#E2741B]" />
                 </div>
                 <div>
-                  <p className="font-bold text-[#1C1917] mb-0.5">{authorName}</p>
-                  <p className="text-xs text-[#C06B3E] mb-2">Stroke Survivor · Founder, Stroke Recovery Academy</p>
-                  <p className="text-sm text-[#78716C] leading-relaxed">{authorBioText}</p>
+                  <p className="font-bold text-white mb-0.5">{authorName}</p>
+                  <p className="text-xs text-[#E2741B] mb-2">Stroke Survivor · Founder, Stroke Recovery Academy</p>
+                  <p className="text-sm text-gray-400 leading-relaxed">{authorBioText}</p>
                 </div>
               </div>
-            </Card>
-
-            {/* Free guide lead magnet — top-of-funnel capture for new survivors */}
-            <Card
-              className="bg-white border-[#C06B3E]/30 p-6 mt-10 flex flex-col sm:flex-row sm:items-center gap-4 justify-between"
-              data-testid="card-lead-magnet"
-            >
-              <div className="min-w-0">
-                <p className="text-xs font-semibold uppercase tracking-wider text-[#C06B3E] mb-1">Free guide</p>
-                <h2 className="text-lg font-bold text-[#1C1917] mb-1">{LEAD_MAGNET.headline}</h2>
-                <p className="text-sm text-[#78716C]">{LEAD_MAGNET.sub}</p>
-              </div>
-              <Link href={LEAD_MAGNET.path} className="flex-shrink-0">
-                <Button className="bg-[#C06B3E] text-white font-semibold gap-2 whitespace-nowrap" data-testid="button-lead-magnet">
-                  {LEAD_MAGNET.cta} <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
             </Card>
 
             {/* Newsletter */}
@@ -766,22 +655,22 @@ export default function RecoveryBlogPost() {
             {/* Related articles */}
             {relatedPosts.length > 0 && (
               <div className="mt-12">
-                <h2 className="text-xl font-bold mb-5 text-[#1C1917]">Related Articles</h2>
+                <h2 className="text-xl font-bold mb-5 text-white">Related Articles</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {relatedPosts.map(related => (
                     <Link key={related.id} href={`/recovery/blog/${related.slug}`}>
-                      <Card className="bg-white border-[#E2C2A4]/30 hover-elevate cursor-pointer h-full">
-                        <div className="h-24 bg-gradient-to-br from-[#C06B3E]/10 to-[#F5F0EB] flex items-center justify-center">
-                          <BookOpen className="h-8 w-8 text-[#C06B3E]/40" />
+                      <Card className="bg-[#1a1a1a] border-[#333] hover-elevate cursor-pointer h-full">
+                        <div className="h-24 bg-gradient-to-br from-[#E2741B]/15 to-[#0D0D0D] flex items-center justify-center">
+                          <BookOpen className="h-8 w-8 text-[#E2741B]/40" />
                         </div>
                         <div className="p-4">
-                          <Badge className={`${categoryDark(related.category)} text-xs mb-2`}>
-                            {categoryLabel(related.category)}
+                          <Badge className={`${categoryColors[related.category] || "bg-gray-500/20 text-gray-400"} text-xs mb-2`}>
+                            {related.category}
                           </Badge>
-                          <h3 className="font-semibold text-[#1C1917] text-sm leading-snug line-clamp-2 mb-2">
+                          <h3 className="font-semibold text-white text-sm leading-snug line-clamp-2 mb-2">
                             {related.title}
                           </h3>
-                          <p className="text-xs text-[#A8A29E] flex items-center gap-1">
+                          <p className="text-xs text-gray-500 flex items-center gap-1">
                             <Clock className="h-3 w-3" />
                             {related.readTime || calculatedReadTime} min
                           </p>
@@ -794,20 +683,20 @@ export default function RecoveryBlogPost() {
             )}
 
             {/* CTA */}
-            <Card className="bg-gradient-to-br from-[#C06B3E]/8 to-white border-[#C06B3E]/20 p-8 mt-12 text-center">
-              <h2 className="text-2xl font-bold mb-3 text-[#1C1917]">Ready to Start Your Recovery?</h2>
-              <p className="text-[#78716C] mb-6">
-                Talk to Coach free — no signup for your first messages — then go all-in with a survivor plan built for reps and accountability.
+            <Card className="bg-gradient-to-br from-[#E2741B]/20 to-[#1a1a1a] border-[#E2741B]/30 p-8 mt-12 text-center">
+              <h2 className="text-2xl font-bold mb-3">Ready to Start Your Recovery?</h2>
+              <p className="text-gray-300 mb-6">
+                Join the 66-Day Sasquatch Transformation Challenge and go from surviving to thriving.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Link href="/recovery/sasquatch-coach">
-                  <Button className="bg-[#C06B3E] text-white font-semibold gap-2">
-                    Talk to Coach — free <ArrowRight className="h-4 w-4" />
+                <Link href="/recovery/challenge">
+                  <Button className="bg-[#E2741B] text-black font-semibold gap-2">
+                    Join the Challenge <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
-                <Link href="/recovery/premium">
-                  <Button variant="outline" className="border-[#C06B3E]/40 text-[#C06B3E] gap-2">
-                    See Premium
+                <Link href="/recovery/community">
+                  <Button variant="outline" className="border-[#E2741B]/50 text-[#E2741B] gap-2">
+                    Join the Community
                   </Button>
                 </Link>
               </div>
@@ -818,8 +707,8 @@ export default function RecoveryBlogPost() {
           {tocItems.length > 3 && (
             <aside className="hidden lg:block">
               <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto">
-                <h4 className="text-xs font-semibold text-[#78716C] uppercase tracking-widest mb-3 flex items-center gap-2">
-                  <List className="h-3.5 w-3.5 text-[#C06B3E]" />
+                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                  <List className="h-3.5 w-3.5 text-[#E2741B]" />
                   In this article
                 </h4>
                 <nav className="space-y-0.5">
@@ -831,8 +720,8 @@ export default function RecoveryBlogPost() {
                         item.level === 3 ? 'pl-5' : 'pl-3'
                       } ${
                         activeTocId === item.id
-                          ? 'border-[#C06B3E] text-[#C06B3E] font-medium'
-                          : 'border-transparent text-[#78716C] hover:text-[#1C1917] hover:border-[#E2C2A4]'
+                          ? 'border-[#E2741B] text-[#E2741B] font-medium'
+                          : 'border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-600'
                       }`}
                       data-testid={`toc-link-${item.id}`}
                     >
@@ -842,12 +731,12 @@ export default function RecoveryBlogPost() {
                 </nav>
 
                 {/* Mini share panel in sidebar */}
-                <div className="mt-8 pt-6 border-t border-[#E2C2A4]/40">
-                  <p className="text-xs text-[#78716C] uppercase tracking-widest mb-3">Share</p>
+                <div className="mt-8 pt-6 border-t border-[#333]">
+                  <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">Share</p>
                   <div className="flex flex-col gap-2">
                     <button
                       onClick={shareTwitter}
-                      className="flex items-center gap-2 text-sm text-[#78716C] hover:text-[#1DA1F2] transition-colors"
+                      className="flex items-center gap-2 text-sm text-gray-400 hover:text-[#1DA1F2] transition-colors"
                       data-testid="button-sidebar-share-twitter"
                     >
                       <Twitter className="h-4 w-4" />
@@ -855,7 +744,7 @@ export default function RecoveryBlogPost() {
                     </button>
                     <button
                       onClick={shareLinkedIn}
-                      className="flex items-center gap-2 text-sm text-[#78716C] hover:text-[#0A66C2] transition-colors"
+                      className="flex items-center gap-2 text-sm text-gray-400 hover:text-[#0A66C2] transition-colors"
                       data-testid="button-sidebar-share-linkedin"
                     >
                       <Linkedin className="h-4 w-4" />
@@ -863,7 +752,7 @@ export default function RecoveryBlogPost() {
                     </button>
                     <button
                       onClick={copyLink}
-                      className="flex items-center gap-2 text-sm text-[#78716C] hover:text-[#1C1917] transition-colors"
+                      className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"
                       data-testid="button-sidebar-copy-link"
                     >
                       <Link2 className="h-4 w-4" />

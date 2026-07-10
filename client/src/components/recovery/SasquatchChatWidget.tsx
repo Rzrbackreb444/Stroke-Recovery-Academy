@@ -16,7 +16,7 @@ import {
   MicOff,
   Trash2
 } from "lucide-react";
-const sasquatchLogo = "/sasquatch-logo.webp";
+import strokeLyfeLogo from "@assets/Untitled_design_1776789083877.png";
 
 interface Message {
   id: string;
@@ -283,7 +283,7 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
         >
           <div className="w-16 h-16 rounded-full bg-[#0D0D0D] shadow-lg flex items-center justify-center overflow-hidden border-2 border-[#E2741B] hover:scale-110 transition-transform">
             <img 
-              src={sasquatchLogo} 
+              src={strokeLyfeLogo} 
               alt="Sasquatch Coach" 
               className="w-24 h-24 object-contain"
             />
@@ -301,7 +301,7 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
     return (
       <div className="fixed bottom-6 right-6 z-50">
         <div className="bg-[#0D0D0D] rounded-full shadow-lg flex items-center gap-2 px-4 py-2 border border-[#E2741B]">
-          <img src={sasquatchLogo} alt="Coach" className="w-16 h-16" />
+          <img src={strokeLyfeLogo} alt="Coach" className="w-16 h-16" />
           <span className="text-white font-medium">Coach Nick</span>
           <Button
             size="icon"
@@ -334,7 +334,7 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
         <div className="bg-gradient-to-r from-[#1a1a1a] to-[#0D0D0D] px-4 py-3 flex items-center justify-between border-b border-[#E2741B]/20">
           <div className="flex items-center gap-3">
             <div className="w-20 h-20 rounded-full bg-[#E2741B]/10 flex items-center justify-center overflow-hidden border border-[#E2741B]/50">
-              <img src={sasquatchLogo} alt="Coach" className="w-16 h-16" />
+              <img src={strokeLyfeLogo} alt="Coach" className="w-16 h-16" />
             </div>
             <div>
               <h3 className="text-white font-semibold text-sm">Coach Nick</h3>

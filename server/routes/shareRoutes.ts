@@ -6,7 +6,6 @@ import type { Express } from "express";
 import { db } from "../db";
 import { sql, eq } from "drizzle-orm";
 import { courses, referralCodes } from "@shared/schema";
-import { getUserId } from "../lib/authUtils";
 
 const ALLOWED_CHANNELS = new Set([
   "x", "facebook", "reddit", "linkedin", "whatsapp", "sms", "copy", "native",
@@ -52,7 +51,7 @@ export function registerShareRoutes(app: Express, isAuthenticated: any) {
       if (!course || !course.isPublished) return res.status(404).json({ error: "Not found" });
 
       let refCode: string | null = null;
-      const uid = getUserId(req);
+      const uid = req.user?.claims?.sub;
       if (uid) {
         const [rc] = await db.select().from(referralCodes).where(eq(referralCodes.userId, uid)).limit(1);
         if (rc) refCode = rc.code;
@@ -93,7 +92,7 @@ export function registerShareRoutes(app: Express, isAuthenticated: any) {
       if (!Number.isFinite(courseId) || !ALLOWED_CHANNELS.has(channel)) {
         return res.status(400).json({ error: "Bad payload" });
       }
-      const uid = getUserId(req) ?? null;
+      const uid = req.user?.claims?.sub ?? null;
 
       // Server-derived refCode only — never trust client-supplied codes
       // (prevents attribution fraud).

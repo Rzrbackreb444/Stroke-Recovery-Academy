@@ -10,8 +10,6 @@ import {
 } from "@shared/schema";
 import { GoogleGenAI } from "@google/genai";
 import { sasquatchSpeak, isElevenLabsConfigured } from "./elevenlabs";
-import { getUserId } from "./lib/authUtils";
-import { uploadAudioBuffer } from "./lib/audioStorage";
 
 const FREE_LIMITS = {
   anthem: 3,
@@ -194,7 +192,7 @@ export function registerMotivationRoutes(app: Express) {
   // ── Usage / status ──────────────────────────────────────────────────
   app.get("/api/motivation/usage", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const [usage, premium, ttsReady] = await Promise.all([
         getOrCreateUsage(userId),
         isPremiumUser(userId),
@@ -216,7 +214,7 @@ export function registerMotivationRoutes(app: Express) {
 
   // ── Anthem Maker ────────────────────────────────────────────────────
   app.post("/api/motivation/anthem/generate", isAuthenticated, async (req: any, res: Response) => {
-    const userId = getUserId(req);
+    const userId = req.user.claims.sub;
     const parsed = anthemSchema.safeParse(req.body ?? {});
     if (!parsed.success) {
       return res.status(400).json({ error: "bad_input", message: parsed.error.issues[0]?.message ?? "Invalid input" });
@@ -240,13 +238,7 @@ export function registerMotivationRoutes(app: Express) {
       try {
         if (await isElevenLabsConfigured()) {
           const buf = await sasquatchSpeak(lyrics);
-          audioUrl = await uploadAudioBuffer({
-            buffer: buf,
-            contentType: "audio/mpeg",
-            owner: userId,
-            visibility: "private",
-            context: "motivation-anthem",
-          });
+          audioUrl = `data:audio/mpeg;base64,${buf.toString("base64")}`;
         }
       } catch (audioErr) {
         console.warn("[motivation] anthem audio failed (continuing without):", audioErr);
@@ -273,7 +265,7 @@ export function registerMotivationRoutes(app: Express) {
 
   // ── Vision Card ─────────────────────────────────────────────────────
   app.post("/api/motivation/vision-card/generate", isAuthenticated, async (req: any, res: Response) => {
-    const userId = getUserId(req);
+    const userId = req.user.claims.sub;
     const parsed = visionSchema.safeParse(req.body ?? {});
     if (!parsed.success) {
       return res.status(400).json({ error: "bad_input", message: parsed.error.issues[0]?.message ?? "Invalid input" });
@@ -347,14 +339,7 @@ export function registerMotivationRoutes(app: Express) {
       try {
         if (await isElevenLabsConfigured()) {
           const buf = await sasquatchSpeak(text);
-          // Daily quote is platform-wide (no owner) and publicly accessible.
-          audioUrl = await uploadAudioBuffer({
-            buffer: buf,
-            contentType: "audio/mpeg",
-            owner: null,
-            visibility: "public",
-            context: "daily-quote",
-          });
+          audioUrl = `data:audio/mpeg;base64,${buf.toString("base64")}`;
         }
       } catch (e) {
         console.warn("[motivation] daily quote audio failed:", e);
@@ -380,7 +365,7 @@ export function registerMotivationRoutes(app: Express) {
   // ── List user's recent artifacts ────────────────────────────────────
   app.get("/api/motivation/artifacts", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const rows = await db
         .select()
         .from(motivationArtifacts)

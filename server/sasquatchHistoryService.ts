@@ -66,10 +66,6 @@ export async function persistChatTurn(
       VALUES (${userId}, 'user', ${userMessage}),
              (${userId}, 'coach', ${coachReply})
     `);
-    // Funnel: a coach turn may have just satisfied the activation condition.
-    void import('./services/sasquatchFunnelService').then((f) =>
-      f.maybeRecordActivation(userId),
-    ).catch(() => {});
   } catch (err: any) {
     console.warn('[sasquatch-history] persist failed:', err?.message ?? err);
   }
@@ -196,7 +192,7 @@ export async function checkSasquatchDailyPings(now: Date): Promise<void> {
 // Free survivors get COACH_FREE_DAILY_LIMIT messages/day, Premium = unlimited.
 // Atomic INSERT … ON CONFLICT DO UPDATE … RETURNING so we can't double-count
 // or under-count under concurrent requests. Returns { ok, used, limit }.
-export const COACH_FREE_DAILY_LIMIT = 5;
+export const COACH_FREE_DAILY_LIMIT = 25;
 
 export async function reserveCoachMessage(userId: string): Promise<
   { ok: true; used: number; limit: number } | { ok: false; used: number; limit: number }

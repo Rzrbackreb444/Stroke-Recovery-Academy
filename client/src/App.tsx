@@ -1,5 +1,5 @@
 import { useState, useEffect, lazy, Suspense } from "react";
-import { Switch, Route, Redirect, useSearch } from "wouter";
+import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -26,7 +26,6 @@ import SurvivorIntakeBanner from "@/components/SurvivorIntakeBanner";
 import AccessibilityProvider from "@/components/AccessibilityProvider";
 import AdminRoute from "@/components/AdminRoute";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import ErrorBoundary from "@/components/ErrorBoundary";
 
 // ─── Lazy pages (everything else — code-split per route) ───────────────
 // Each line below produces its own JS chunk. The bundle for cold load
@@ -106,6 +105,7 @@ const TemplateMarketplacePage = lazy(() => import("@/pages/TemplateMarketplacePa
 const DocHubPage = lazy(() => import("@/pages/DocHubPage"));
 const CreatorStore = lazy(() => import("@/pages/CreatorStore"));
 const Settings = lazy(() => import("@/pages/Settings"));
+const MagicLinkLogin = lazy(() => import("@/pages/MagicLinkLogin"));
 const MagicLinkVerify = lazy(() => import("@/pages/MagicLinkLogin").then(m => ({ default: m.MagicLinkVerify })));
 const AuthorProfile = lazy(() => import("@/pages/AuthorProfile"));
 const AuthorStorefront = lazy(() => import("@/pages/AuthorStorefront"));
@@ -114,10 +114,6 @@ const ProductionDashboard = lazy(() => import("@/pages/ProductionDashboard"));
 const ScriptStudio = lazy(() => import("@/pages/ScriptStudio"));
 const LifeStoryEngine = lazy(() => import("@/pages/LifeStoryEngine"));
 const WhiteLabel = lazy(() => import("@/pages/white-label"));
-const InstitutionJoin = lazy(() => import("@/pages/InstitutionJoin"));
-const InstitutionDashboard = lazy(() => import("@/pages/InstitutionDashboard"));
-const InstitutionConsent = lazy(() => import("@/pages/InstitutionConsent"));
-const AdminInstitutions = lazy(() => import("@/pages/AdminInstitutions"));
 const WebsiteStudio = lazy(() => import("@/pages/WebsiteStudio"));
 const MobileStudio = lazy(() => import("@/pages/MobileStudio"));
 const AuthPage = lazy(() => import("@/pages/AuthPage"));
@@ -126,10 +122,8 @@ const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
 const RecoveryDashboard = lazy(() => import("@/pages/RecoveryDashboard"));
 const Scholarship = lazy(() => import("@/pages/Scholarship"));
 const CaregiverSettings = lazy(() => import("@/pages/CaregiverSettings"));
-const CaregiverDashboard = lazy(() => import("@/pages/CaregiverDashboard"));
 const Academy = lazy(() => import("@/pages/Academy"));
 const SaschLanding = lazy(() => import("@/pages/SaschLanding"));
-const SasquatchDoctrine = lazy(() => import("@/pages/SasquatchDoctrine"));
 const Builder = lazy(() => import("@/pages/Builder"));
 const SurvivalGrid = lazy(() => import("@/pages/SurvivalGrid"));
 const Achievements = lazy(() => import("@/pages/Achievements"));
@@ -143,13 +137,8 @@ const Messages = lazy(() => import("@/pages/Messages"));
 const VideoSessions = lazy(() => import("@/pages/VideoSessions"));
 const SocialNetwork = lazy(() => import("@/pages/SocialNetwork"));
 const RecoveryCommunity = lazy(() => import("@/pages/RecoveryCommunity"));
-const CommunityVideos = lazy(() => import("@/pages/CommunityVideos"));
-const CommunityVideoPlayer = lazy(() => import("@/pages/CommunityVideoPlayer"));
-const UserProfile = lazy(() => import("@/pages/UserProfile"));
-const ProfileSettings = lazy(() => import("@/pages/ProfileSettings"));
 const RecoveryCampfire = lazy(() => import("@/pages/RecoveryCampfire"));
 const RecoveryPremium = lazy(() => import("@/pages/RecoveryPremium"));
-const RecoveryGoals = lazy(() => import("@/pages/RecoveryGoals"));
 const RecoveryJourney = lazy(() => import("@/pages/RecoveryJourney"));
 const RecoveryWelcome = lazy(() => import("@/pages/RecoveryWelcome"));
 const TherapistMarketplace = lazy(() => import("@/pages/TherapistMarketplace"));
@@ -160,9 +149,6 @@ const FeedbackInbox = lazy(() => import("@/pages/FeedbackInbox"));
 const BlogDraftStudio = lazy(() => import("@/pages/BlogDraftStudio"));
 const AdminVoiceLab = lazy(() => import("@/pages/AdminVoiceLab"));
 const AdminSasquatchFunnel = lazy(() => import("@/pages/AdminSasquatchFunnel"));
-const AdminBusinessDashboard = lazy(() => import("@/pages/AdminBusinessDashboard"));
-const AdminSubscriptionRisk = lazy(() => import("@/pages/AdminSubscriptionRisk"));
-const AdminScheduler = lazy(() => import("@/pages/AdminScheduler"));
 const RecoveryUniversity = lazy(() => import("@/pages/RecoveryUniversity"));
 const RecoveryLesson = lazy(() => import("@/pages/RecoveryLesson"));
 const RecoveryQuiz = lazy(() => import("@/pages/RecoveryQuiz"));
@@ -180,12 +166,7 @@ const Compass = lazy(() => import("@/pages/Compass"));
 const DraftYourLegend = lazy(() => import("@/pages/DraftYourLegend"));
 const CourseBuilder = lazy(() => import("@/pages/CourseBuilder"));
 const NeverZero = lazy(() => import("@/pages/NeverZero"));
-const ProgressHub = lazy(() => import("@/pages/ProgressHub"));
-const PreventionHub = lazy(() => import("@/pages/PreventionHub"));
-const SupporterView = lazy(() => import("@/pages/SupporterView"));
-const NotificationSettings = lazy(() => import("@/pages/NotificationSettings"));
 const RecoveryJournal = lazy(() => import("@/pages/RecoveryJournal"));
-const MyStory = lazy(() => import("@/pages/MyStory"));
 const RecoveryResources = lazy(() => import("@/pages/RecoveryResources"));
 const RecoveryCenterFinder = lazy(() => import("@/pages/RecoveryCenterFinder"));
 const RecoveryBlog = lazy(() => import("@/pages/RecoveryBlog"));
@@ -195,12 +176,12 @@ const RecoveryMe = lazy(() => import("@/pages/RecoveryMe"));
 const RecoveryExercises = lazy(() => import("@/pages/RecoveryExercises"));
 const RecoveryExerciseDetail = lazy(() => import("@/pages/RecoveryExerciseDetail"));
 const RecoverySpotlight = lazy(() => import("@/pages/RecoverySpotlight"));
+const RecoveryLogin = lazy(() => import("@/pages/RecoveryLogin"));
 const SasquatchCoach = lazy(() => import("@/pages/SasquatchCoach"));
 const SurvivorIncome = lazy(() => import("@/pages/SurvivorIncome"));
 const RecoveryProtocols = lazy(() => import("@/pages/RecoveryProtocols"));
 const MyBook = lazy(() => import("@/pages/MyBook"));
 const AboutNick = lazy(() => import("@/pages/AboutNick"));
-const First40Days = lazy(() => import("@/pages/First40Days"));
 const Challenge = lazy(() => import("@/pages/Challenge"));
 const RecoveryAnthem = lazy(() => import("@/pages/RecoveryAnthem"));
 const RecoveryAnthemBuilder = lazy(() => import("@/pages/RecoveryAnthemBuilder"));
@@ -219,12 +200,8 @@ const LyricsStudioShare = lazy(() => import("@/pages/LyricsStudioShare"));
 const AdminRadioQueue = lazy(() => import("@/pages/AdminRadioQueue"));
 const TodayAnchor = lazy(() => import("@/pages/TodayAnchor"));
 const AnchorShare = lazy(() => import("@/pages/AnchorShare"));
-const RecoveryReport = lazy(() => import("@/pages/RecoveryReport"));
-const RecoveryReportShare = lazy(() => import("@/pages/RecoveryReportShare"));
 const RecoveryPricing = lazy(() => import("@/pages/RecoveryPricing"));
 const GiftSurvivor = lazy(() => import("@/pages/GiftSurvivor"));
-const CoachingWithNick = lazy(() => import("@/pages/CoachingWithNick"));
-const Partners = lazy(() => import("@/pages/Partners"));
 const CoursePlayer = lazy(() => import("@/pages/CoursePlayer"));
 const InstructorAnalytics = lazy(() => import("@/pages/InstructorAnalytics"));
 const TherapistHoursSettings = lazy(() => import("@/pages/TherapistHoursSettings"));
@@ -269,25 +246,14 @@ function LazyRouteFallback() {
   return (
     <div
       data-testid="lazy-route-fallback"
-      className="min-h-[60vh] w-full bg-[#FDFBF7] flex items-center justify-center"
+      className="min-h-[60vh] w-full bg-[#0D0D0D] flex items-center justify-center"
     >
-      <div className="flex items-center gap-2 text-[#C06B3E]/80">
-        <span className="h-2 w-2 rounded-full bg-[#C06B3E] animate-pulse" />
-        <span className="text-sm text-[#78716C]">Loading…</span>
+      <div className="flex items-center gap-2 text-[#E2741B]/80">
+        <span className="h-2 w-2 rounded-full bg-[#E2741B] animate-pulse" />
+        <span className="text-sm">Loading…</span>
       </div>
     </div>
   );
-}
-
-// Redirect a deprecated route to the canonical /auth page while preserving the
-// original query string (?next=, ?tab=signup, etc.) so deep-link intent and
-// emailed/bookmarked links survive the consolidation.
-function AuthRedirect({ to = "/auth" }: { to?: string }) {
-  const search = useSearch();
-  const target = to.includes("?")
-    ? (search ? `${to}&${search}` : to)
-    : (search ? `${to}?${search}` : to);
-  return <Redirect to={target} />;
 }
 
 function Router() {
@@ -296,7 +262,6 @@ function Router() {
     <AccessibilityProvider />
     <SurvivorIntakeBanner />
     <RecoveryHeader />
-    <ErrorBoundary>
     <Suspense fallback={<LazyRouteFallback />}>
       <Switch>
       {/* ============================================ */}
@@ -342,8 +307,7 @@ function Router() {
       </Route>
       <Route path="/author/:slug" component={AuthorStorefront} />
       <Route path="/publishing" component={Publishing} />
-      {/* Creator pricing folded into the single survivor tier. */}
-      <Route path="/pricing"><Redirect to="/recovery/premium" /></Route>
+      <Route path="/pricing" component={Pricing} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/auth/verify" component={AuthVerify} />
       <Route path="/auth/reset-password" component={ResetPassword} />
@@ -351,7 +315,6 @@ function Router() {
       <Route path="/wilderness-survival" component={WildernessSurvival} />
       <Route path="/seo-command-center" component={SEOCommandCenter} />
       <Route path="/terms" component={TermsOfService} />
-      <Route path="/tos" component={TermsOfService} />
       <Route path="/privacy" component={PrivacyPolicy} />
       <Route path="/legal/medical-disclaimer" component={MedicalDisclaimer} />
       <Route path="/legal/refund-policy" component={RefundPolicy} />
@@ -365,31 +328,18 @@ function Router() {
           <Welcome />
         </ProtectedRoute>
       </Route>
-      <Route path="/white-label"><WhiteLabel /></Route>
-      <Route path="/institution/join/:token"><InstitutionJoin /></Route>
-      <Route path="/institution/consent">
+      <Route path="/white-label">
         <ProtectedRoute>
-          <InstitutionConsent />
+          <WhiteLabel />
         </ProtectedRoute>
-      </Route>
-      <Route path="/institution">
-        <ProtectedRoute>
-          <InstitutionDashboard />
-        </ProtectedRoute>
-      </Route>
-      <Route path="/admin/institutions">
-        <AdminRoute>
-          <AdminInstitutions />
-        </AdminRoute>
       </Route>
       
-      {/* Magic Link Authentication — form consolidated into /auth; verify kept for emailed links */}
-      <Route path="/magic-link"><AuthRedirect to="/auth?mode=magic-link" /></Route>
+      {/* Magic Link Authentication */}
+      <Route path="/magic-link" component={MagicLinkLogin} />
       <Route path="/magic-link/verify/:token" component={MagicLinkVerify} />
       
-      {/* Creator studios hidden — platform is survivor-only. Generic content
-          studios redirect to the survivor home; the book/story path stays. */}
-      <Route path="/music-studio"><Redirect to="/recovery" /></Route>
+      {/* Creator Studios */}
+      <Route path="/music-studio" component={MusicStudio} />
       <Route path="/music-sandbox">
         <ProtectedRoute>
           <MusicSandbox />
@@ -399,24 +349,28 @@ function Router() {
       <Route path="/book-studio/publish" component={BookPublishFlow} />
       <Route path="/book-studio/:id" component={BookStudioV3} />
       <Route path="/book-perfection-suite" component={BookPerfectionSuite} />
-      <Route path="/puzzle-studio"><Redirect to="/recovery" /></Route>
-      <Route path="/puzzle-studio/:id"><Redirect to="/recovery" /></Route>
-      <Route path="/write"><Redirect to="/book-studio" /></Route>
-      <Route path="/studio"><Redirect to="/recovery" /></Route>
-      <Route path="/mobile-studio"><Redirect to="/recovery" /></Route>
+      <Route path="/puzzle-studio" component={PuzzleStudioHub} />
+      <Route path="/puzzle-studio/:id" component={PuzzleBookEditor} />
+      <Route path="/write" component={MobileStudio} />
+      <Route path="/studio" component={MobileStudio} />
+      <Route path="/mobile-studio" component={MobileStudio} />
       <Route path="/creator-store" component={CreatorStore} />
-      <Route path="/video-studio"><Redirect to="/recovery" /></Route>
+      <Route path="/video-studio" component={VideoStudio} />
       <Route path="/free-analysis-for-video" component={FreeAnalysisForVideo} />
       <Route path="/Free-analysis-for-video" component={FreeAnalysisForVideo} />
-      <Route path="/course-studio"><Redirect to="/recovery" /></Route>
-      <Route path="/image-studio"><Redirect to="/recovery" /></Route>
-      <Route path="/website-studio"><Redirect to="/recovery" /></Route>
+      <Route path="/course-studio" component={CourseStudio} />
+      <Route path="/image-studio" component={ImageStudio} />
+      <Route path="/website-studio" component={WebsiteStudio} />
       <Route path="/creator-hub">
         <ProtectedRoute>
           <CreatorHub />
         </ProtectedRoute>
       </Route>
-      <Route path="/movie-studio"><Redirect to="/recovery" /></Route>
+      <Route path="/movie-studio">
+        <ProtectedRoute>
+          <MovieStudio />
+        </ProtectedRoute>
+      </Route>
       <Route path="/voice-library">
         <ProtectedRoute>
           <VoiceLibrary />
@@ -457,7 +411,11 @@ function Router() {
           <ProductionDashboard />
         </ProtectedRoute>
       </Route>
-      <Route path="/script-studio"><Redirect to="/recovery" /></Route>
+      <Route path="/script-studio">
+        <ProtectedRoute>
+          <ScriptStudio />
+        </ProtectedRoute>
+      </Route>
       <Route path="/life-story">
         <ProtectedRoute>
           <LifeStoryEngine />
@@ -489,7 +447,11 @@ function Router() {
         </ProtectedRoute>
       </Route>
       <Route path="/quick-create" component={QuickCreate} />
-      <Route path="/ai-consultant"><Redirect to="/recovery" /></Route>
+      <Route path="/ai-consultant">
+        <ProtectedRoute>
+          <AIConsultant />
+        </ProtectedRoute>
+      </Route>
       <Route path="/media-studio">
         <ProtectedRoute>
           <MediaStudioPage />
@@ -581,7 +543,6 @@ function Router() {
       </Route>
       <Route path="/recovery/academy" component={Academy} />
       <Route path="/recovery/sasch" component={SaschLanding} />
-      <Route path="/recovery/doctrine" component={SasquatchDoctrine} />
       <Route path="/recovery/builder" component={Builder} />
       <Route path="/recovery/survival-grid" component={SurvivalGrid} />
       <Route path="/recovery/achievements">
@@ -633,16 +594,7 @@ function Router() {
         </ProtectedRoute>
       </Route>
       <Route path="/recovery/community" component={RecoveryCommunity} />
-      <Route path="/sparks/settings" component={ProfileSettings} />
-      <Route path="/sparks/u/:username" component={UserProfile} />
-      <Route path="/sparks/profile/:userId" component={CommunityVideos} />
-      <Route path="/sparks/:id" component={CommunityVideoPlayer} />
-      <Route path="/sparks" component={CommunityVideos} />
-      <Route path="/recovery/videos" component={CommunityVideos} />
-      <Route path="/recovery/videos/profile/:userId" component={CommunityVideos} />
-      <Route path="/recovery/videos/:id" component={CommunityVideoPlayer} />
       <Route path="/recovery/campfire" component={RecoveryCampfire} />
-      <Route path="/recovery/goals" component={RecoveryGoals} />
       <Route path="/recovery/premium" component={RecoveryPremium} />
       <Route path="/recovery/journey" component={RecoveryJourney} />
       <Route path="/recovery/welcome" component={RecoveryWelcome} />
@@ -674,15 +626,6 @@ function Router() {
       </Route>
       <Route path="/admin/sasquatch-funnel">
         <AdminRoute><AdminSasquatchFunnel /></AdminRoute>
-      </Route>
-      <Route path="/admin/business">
-        <AdminRoute><AdminBusinessDashboard /></AdminRoute>
-      </Route>
-      <Route path="/admin/subscriptions-risk">
-        <AdminRoute><AdminSubscriptionRisk /></AdminRoute>
-      </Route>
-      <Route path="/admin/scheduler">
-        <AdminRoute><AdminScheduler /></AdminRoute>
       </Route>
       <Route path="/admin/voice-lab">
         <AdminRoute><AdminVoiceLab /></AdminRoute>
@@ -729,39 +672,14 @@ function Router() {
           <NeverZero />
         </ProtectedRoute>
       </Route>
-      <Route path="/recovery/progress">
-        <ProtectedRoute>
-          <ProgressHub />
-        </ProtectedRoute>
-      </Route>
-      <Route path="/recovery/prevention">
-        <ProtectedRoute>
-          <PreventionHub />
-        </ProtectedRoute>
-      </Route>
-      <Route path="/recovery/supporter/:survivorId">
-        <ProtectedRoute>
-          <SupporterView />
-        </ProtectedRoute>
-      </Route>
-      <Route path="/recovery/notifications">
-        <ProtectedRoute>
-          <NotificationSettings />
-        </ProtectedRoute>
-      </Route>
       <Route path="/recovery/journal">
         <ProtectedRoute>
           <RecoveryJournal />
         </ProtectedRoute>
       </Route>
-      <Route path="/recovery/my-story">
-        <ProtectedRoute>
-          <MyStory />
-        </ProtectedRoute>
-      </Route>
       <Route path="/recovery/resources" component={RecoveryResources} />
       <Route path="/recovery/center-finder" component={RecoveryCenterFinder} />
-      <Route path="/recovery/login"><AuthRedirect to="/auth" /></Route>
+      <Route path="/recovery/login" component={RecoveryLogin} />
       <Route path="/recovery/onboarding" component={RecoveryOnboarding} />
       <Route path="/recovery/me" component={RecoveryMe} />
       <Route path="/recovery/routine" component={DailyRoutine} />
@@ -776,12 +694,6 @@ function Router() {
       <Route path="/recovery/motivation" component={MotivationStudio} />
       <Route path="/recovery/anchor/today" component={TodayAnchor} />
       <Route path="/anchor/s/:shareId" component={AnchorShare} />
-      <Route path="/recovery/report">
-        <ProtectedRoute>
-          <RecoveryReport />
-        </ProtectedRoute>
-      </Route>
-      <Route path="/report/s/:shareId" component={RecoveryReportShare} />
       <Route path="/recovery/exercises" component={RecoveryExercises} />
       <Route path="/recovery/exercises/:slug" component={RecoveryExerciseDetail} />
       <Route path="/blog" component={RecoveryBlog} />
@@ -821,13 +733,9 @@ function Router() {
       <Route path="/recovery/lyrics" component={LyricsStudio} />
       <Route path="/lyrics/s/:shareId" component={LyricsStudioShare} />
       <Route path="/admin/radio" component={AdminRadioQueue} />
-      {/* Pricing collapsed to ONE survivor tier — old survivor pricing surface redirects. */}
-      <Route path="/recovery/pricing"><Redirect to="/recovery/premium" /></Route>
+      <Route path="/recovery/pricing" component={RecoveryPricing} />
       <Route path="/recovery/about-nick" component={AboutNick} />
-      <Route path="/recovery/first-40-days" component={First40Days} />
       <Route path="/recovery/gift" component={GiftSurvivor} />
-      <Route path="/recovery/coaching-with-nick" component={CoachingWithNick} />
-      <Route path="/partners" component={Partners} />
       
       {/* Course Learning Pages */}
       <Route path="/course/:courseId" component={CoursePlayer} />
@@ -838,7 +746,6 @@ function Router() {
       <Route path="/recovery/scholarship" component={Scholarship} />
       <Route path="/settings/caregivers" component={CaregiverSettings} />
       <Route path="/settings/caregivers/accept/:token" component={CaregiverSettings} />
-      <Route path="/caregiver/:survivorId" component={CaregiverDashboard} />
       <Route path="/course/:courseId/quiz/:quizId" component={CourseQuiz} />
       <Route path="/certificate/:courseId" component={CourseCertificate} />
       <Route path="/my-learning">
@@ -895,7 +802,6 @@ function Router() {
       <Route component={NotFound} />
       </Switch>
     </Suspense>
-    </ErrorBoundary>
     </>
   );
 }

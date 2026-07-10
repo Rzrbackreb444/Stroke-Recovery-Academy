@@ -9,7 +9,6 @@ import { sql, and, eq } from "drizzle-orm";
 import { courseCreditUnlocks, courses, userCourseProgress } from "@shared/schema";
 import { addCredits } from "../creditService";
 import { getRecoveryStripeClient } from "../recoveryStripeClient";
-import { getUserId } from "../lib/authUtils";
 
 const REFUND_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 const MAX_WATCHED_PERCENT = 25;
@@ -42,7 +41,7 @@ async function evaluate(userId: string, courseId: number) {
 export function registerRefundRoutes(app: Express, isAuthenticated: any) {
   app.get("/api/courses/:id/refund-eligibility", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req) as string;
+      const userId = req.user.claims.sub as string;
       const courseId = parseInt(req.params.id, 10);
       if (!Number.isFinite(courseId)) return res.status(400).json({ error: "Invalid course id" });
       const r = await evaluate(userId, courseId);
@@ -62,7 +61,7 @@ export function registerRefundRoutes(app: Express, isAuthenticated: any) {
 
   app.post("/api/courses/:id/refund", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req) as string;
+      const userId = req.user.claims.sub as string;
       const courseId = parseInt(req.params.id, 10);
       const reason = String(req.body?.reason ?? "").slice(0, 500) || null;
       if (!Number.isFinite(courseId)) return res.status(400).json({ error: "Invalid course id" });

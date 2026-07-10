@@ -7,7 +7,6 @@ import { isAuthenticated } from "./replitAuth";
 import { requireAdmin } from "./middleware/requireAdmin";
 import { publicRateLimit } from "./middleware/publicRateLimit";
 import { getUserId } from "./lib/authUtils";
-import { uploadAudioBuffer, setAudioObjectVisibility } from "./lib/audioStorage";
 import { motivationUsage, recoveryAnthems, users } from "@shared/schema";
 import {
   previewAnthem,
@@ -92,7 +91,7 @@ export function registerRecoveryAnthemRoutes(app: Express) {
   // ── Free preview (script only, no music synthesis) ─────────────────
   app.post("/api/recovery/anthem/preview", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const parsed = composeInputSchema.safeParse(req.body ?? {});
       if (!parsed.success) {
         return res.status(400).json({
@@ -112,7 +111,7 @@ export function registerRecoveryAnthemRoutes(app: Express) {
 
   // ── Paid render (script + ElevenLabs Music) ────────────────────────
   app.post("/api/recovery/anthem/compose", isAuthenticated, async (req: any, res: Response) => {
-    const userId = getUserId(req);
+    const userId = req.user.claims.sub;
     const parsed = composeInputSchema.safeParse(req.body ?? {});
     if (!parsed.success) {
       return res.status(400).json({
@@ -154,23 +153,9 @@ export function registerRecoveryAnthemRoutes(app: Express) {
       return res.json(result);
     }
 
-    // Upload audio to object storage (private — owner-only until explicitly shared).
-    let audioUrl: string | null = null;
-    try {
-      const buf = Buffer.from(result.audioBase64, "base64");
-      audioUrl = await uploadAudioBuffer({
-        buffer: buf,
-        contentType: result.audioMimeType ?? "audio/mpeg",
-        owner: userId,
-        visibility: "private",
-        context: "anthem",
-      });
-    } catch (uploadErr: any) {
-      console.warn("[anthem] audio upload failed (continuing without audio):", uploadErr?.message ?? uploadErr);
-    }
-
     let row;
     try {
+      const audioUrl = `data:${result.audioMimeType};base64,${result.audioBase64}`;
       [row] = await db
         .insert(recoveryAnthems)
         .values({
@@ -210,7 +195,7 @@ export function registerRecoveryAnthemRoutes(app: Express) {
   // ── List user's anthems ────────────────────────────────────────────
   app.get("/api/recovery/anthem/list", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const rows = await db
         .select({
           id: recoveryAnthems.id,
@@ -239,7 +224,7 @@ export function registerRecoveryAnthemRoutes(app: Express) {
     isAuthenticated,
     async (req: any, res: Response) => {
       try {
-        const userId = getUserId(req);
+        const userId = req.user.claims.sub;
         const id = Number(req.params.id);
         if (!Number.isFinite(id)) return res.status(400).json({ error: "bad_id" });
 
@@ -265,13 +250,6 @@ export function registerRecoveryAnthemRoutes(app: Express) {
             shareId: desired.data.isShared ? nextShareId : null,
           })
           .where(eq(recoveryAnthems.id, id));
-
-        // Flip the audio ACL so share-page visitors can stream it (or lock back).
-        await setAudioObjectVisibility(
-          anthem.audioUrl,
-          desired.data.isShared ? "public" : "private",
-          userId,
-        );
 
         return res.json({
           isShared: desired.data.isShared,
@@ -330,7 +308,7 @@ export function registerRecoveryAnthemRoutes(app: Express) {
     isAuthenticated,
     async (req: any, res: Response) => {
       try {
-        const userId = getUserId(req);
+        const userId = req.user.claims.sub;
         const id = Number(req.params.id);
         if (!Number.isFinite(id)) return res.status(400).json({ error: "bad_id" });
 
@@ -516,7 +494,7 @@ export function registerRecoveryAnthemRoutes(app: Express) {
   // ── Usage status ───────────────────────────────────────────────────
   app.get("/api/recovery/anthem/usage", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const [usage, premium] = await Promise.all([ensureUsage(userId), isPremium(userId)]);
       return res.json({
         month: usage.month,

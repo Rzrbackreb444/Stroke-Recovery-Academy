@@ -4,7 +4,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CheckCircle, Loader2, Mail } from "lucide-react";
-import nickPhoto from "@assets/nick-portrait-opt.webp";
+import nickPhoto from "@assets/Untitled_design_1781030529179.png";
 
 interface Props {
   source?: string;

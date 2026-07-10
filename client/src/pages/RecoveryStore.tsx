@@ -23,7 +23,7 @@ import {
   Users,
   Quote,
 } from "lucide-react";
-const sasquatchLogo = "/sasquatch-logo.webp";
+import strokeLyfeLogo from "@assets/Untitled_design_1776789083877.png";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 
 interface Product {
@@ -485,7 +485,7 @@ export default function RecoveryStore() {
   const configReady = !affiliateLoading;
 
   useEffect(() => {
-    document.title = "Recovery Store | Stroke Recovery Academy - Curated Products for Stroke Survivors";
+    document.title = "Recovery Store | Stroke Lyfe - Curated Products for Stroke Survivors";
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
@@ -499,7 +499,7 @@ export default function RecoveryStore() {
 
     const ogTitle = document.querySelector('meta[property="og:title"]');
     if (ogTitle) {
-      ogTitle.setAttribute("content", "Recovery Store | Stroke Recovery Academy");
+      ogTitle.setAttribute("content", "Recovery Store | Stroke Lyfe");
     }
 
     const ogDescription = document.querySelector('meta[property="og:description"]');
@@ -531,10 +531,10 @@ export default function RecoveryStore() {
   const pageSchema = {
     "@context": "https://schema.org",
     "@type": "Store",
-    name: "Stroke Recovery Academy Recovery Store",
+    name: "Stroke Lyfe Recovery Store",
     description: "Curated recovery products recommended by stroke survivor Nick Kremers. Every product is hand-picked for stroke recovery success.",
-    url: "https://strokerecoveryacademy.com/recovery/store",
-    brand: { "@type": "Brand", name: "Stroked-Out Sasquatch" },
+    url: "https://strokelyfe.org/store",
+    brand: { "@type": "Brand", name: "Stroke Lyfe" },
     founder: {
       "@type": "Person",
       name: "Nick Kremers",
@@ -553,7 +553,7 @@ export default function RecoveryStore() {
       <header className="bg-[#0D0D0D] border-b border-[#333] py-4 px-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src={sasquatchLogo} alt="Stroked-Out Sasquatch" className="h-10 w-auto" />
+            <img src={strokeLyfeLogo} alt="Stroke Lyfe" className="h-10 w-auto" />
             <span className="text-xl font-bold text-white">Recovery Store</span>
           </div>
           <Badge className="bg-[#E2741B]/20 text-[#E2741B] border border-[#E2741B]/30">
@@ -563,7 +563,7 @@ export default function RecoveryStore() {
         </div>
       </header>
 
-      <section className="bg-gradient-to-br from-[#1a1a1a] via-[#0D0D0D] to-[#1a1a1a] py-10 sm:py-16 px-4 border-b border-[#333]">
+      <section className="bg-gradient-to-br from-[#1a1a1a] via-[#0D0D0D] to-[#1a1a1a] py-16 px-4 border-b border-[#333]">
         <div className="max-w-6xl mx-auto text-center">
           <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 mb-4">
             <Award className="w-3 h-3 mr-1" />
@@ -593,10 +593,10 @@ export default function RecoveryStore() {
         </div>
       </section>
 
-      <section className="py-6 sm:py-8 px-4 bg-[#1a1a1a] border-b border-[#333]">
+      <section className="py-8 px-4 bg-[#1a1a1a] border-b border-[#333]">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center gap-3 mb-4">
-            <img src={sasquatchLogo} alt="Nick's Picks" className="w-10 h-10" />
+            <img src={strokeLyfeLogo} alt="Nick's Picks" className="w-10 h-10" />
             <div>
               <h2 className="text-xl font-bold text-white">Nick's Top Picks</h2>
               <p className="text-sm text-gray-400">Products I personally use in my recovery</p>
@@ -636,17 +636,16 @@ export default function RecoveryStore() {
         </div>
 
         <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
-          <TabsList className="bg-[#1a1a1a] border border-[#333] flex-wrap h-auto gap-1 p-1 mb-8 w-full">
+          <TabsList className="bg-[#1a1a1a] border border-[#333] flex-wrap h-auto gap-1 p-1 mb-8">
             {CATEGORIES.map((category) => (
               <TabsTrigger
                 key={category.id}
                 value={category.id}
-                className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black text-gray-400 flex items-center gap-1.5 px-2 sm:px-3"
+                className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black text-gray-400 flex items-center gap-2"
                 data-testid={`tab-${category.id}`}
               >
-                <category.icon className="w-4 h-4 shrink-0" />
-                <span className="hidden sm:inline">{category.name}</span>
-                <span className="inline sm:hidden text-[11px] leading-tight">{category.name.split(" ")[0]}</span>
+                <category.icon className="w-4 h-4" />
+                {category.name}
               </TabsTrigger>
             ))}
           </TabsList>
@@ -672,7 +671,7 @@ export default function RecoveryStore() {
           </TabsContent>
         </Tabs>
 
-        <section className="mt-16 bg-[#1a1a1a] border border-[#333] rounded-2xl p-5 sm:p-8">
+        <section className="mt-16 bg-[#1a1a1a] border border-[#333] rounded-2xl p-8">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-2xl font-bold text-white mb-4 font-serif">Why These Products?</h2>
             <p className="text-gray-400 mb-6">
@@ -709,9 +708,9 @@ export default function RecoveryStore() {
 
       <footer className="bg-[#0D0D0D] border-t border-[#333] text-white py-12 px-4">
         <div className="max-w-6xl mx-auto text-center">
-          <img src={sasquatchLogo} alt="Stroked-Out Sasquatch" className="h-12 w-auto mx-auto mb-4" />
+          <img src={strokeLyfeLogo} alt="Stroke Lyfe" className="h-12 w-auto mx-auto mb-4" />
           <p className="text-gray-500 text-sm max-w-xl mx-auto">
-            The Recovery Store is part of Stroke Lyfe Inc., a 501(c)(3) nonprofit. 
+            Stroke Lyfe Recovery Store is part of Stroke Lyfe Inc., a 501(c)(3) nonprofit. 
             Affiliate revenue from purchases supports our scholarship fund and free resources for stroke survivors.
           </p>
           <p className="text-[#E2741B] mt-4 font-semibold">REBUILD. REWIRE. RISE.</p>

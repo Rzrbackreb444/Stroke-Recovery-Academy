@@ -6,7 +6,6 @@ import { db } from '../db';
 import { users, powerPointGifts } from '@shared/schema';
 import { and, eq } from 'drizzle-orm';
 import { addCredits } from '../creditService';
-import { getUserId } from "../lib/authUtils";
 
 const DAILY_GIFT_POINTS = 25; // one free "Cheer" tier every 24h
 const GIFT_COOLDOWN_MS = 24 * 60 * 60 * 1000;
@@ -23,7 +22,7 @@ function sanitizeMsg(s: string) {
 export function registerEngagementRoutes(app: Express, isAuthenticated: any) {
   // Can I send my free daily gift?
   app.get('/api/engagement/daily-gift/status', isAuthenticated, async (req: any, res) => {
-    const userId = getUserId(req) as string;
+    const userId = req.user.claims.sub as string;
     const [me] = await db.select({ lastAt: users.lastDailyGiftAt }).from(users).where(eq(users.id, userId)).limit(1);
     const last = me?.lastAt ? new Date(me.lastAt).getTime() : 0;
     const now = Date.now();
@@ -39,7 +38,7 @@ export function registerEngagementRoutes(app: Express, isAuthenticated: any) {
   // Send the free daily gift to another survivor
   app.post('/api/engagement/daily-gift', isAuthenticated, async (req: any, res) => {
     try {
-      const senderId = getUserId(req) as string;
+      const senderId = req.user.claims.sub as string;
       const parsed = sendSchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ error: 'Invalid request' });
       const { receiverId, message } = parsed.data;

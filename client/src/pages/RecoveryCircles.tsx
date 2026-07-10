@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -210,15 +209,10 @@ export default function RecoveryCircles() {
           <Card className="bg-[#1a1a1a] border-[#333]">
             <CardContent className="py-12 text-center space-y-3">
               <Calendar className="w-12 h-12 text-[#E2741B] mx-auto" />
-              <h2 className="text-xl font-semibold">No circles scheduled yet</h2>
+              <h2 className="text-xl font-semibold">No circles scheduled</h2>
               <p className="text-gray-400 text-sm max-w-md mx-auto">
-                The next live circle hasn't been posted. Check the Campfire for real-time conversation in the meantime.
+                Verified therapists and admins can host the first circle. Survivors will see it here.
               </p>
-              <Link href="/recovery/campfire">
-                <Button variant="outline" className="mt-2 border-[#E2741B]/40 text-[#E2741B] hover:bg-[#E2741B]/10" data-testid="button-circles-goto-campfire">
-                  Open Campfire
-                </Button>
-              </Link>
             </CardContent>
           </Card>
         ) : (
@@ -262,41 +256,18 @@ function HostBlock({ event }: { event: CircleEvent }) {
 }
 
 function JoinButton({ event }: { event: CircleEvent }) {
-  const { toast } = useToast();
   const mins = minutesUntil(event.scheduled_at);
   const live = mins <= 0 && mins > -(event.duration ?? 60);
   const soon = mins > 0 && mins <= 15;
-
-  // Open the room in a popup we control so the async token round-trip doesn't
-  // get blocked as a non-user-gesture popup after the fetch resolves.
-  const join = useMutation({
-    mutationFn: async () => {
-      const res = await apiRequest("POST", `/api/circles/${event.id}/join`, {});
-      return (await res.json()) as { url: string };
-    },
-    onSuccess: (data) => {
-      if (data?.url) window.open(data.url, "_blank", "noopener,noreferrer");
-    },
-    onError: (e: any) =>
-      toast({ title: "Couldn't join the circle", description: e.message, variant: "destructive" }),
-  });
-
   if (!live && !soon) return null;
   return (
-    <Button
-      onClick={() => join.mutate()}
-      disabled={join.isPending}
-      className="bg-emerald-600 text-white hover:bg-emerald-600/90"
-      data-testid={`button-join-${event.id}`}
-    >
-      {join.isPending ? (
-        <Loader2 className="w-4 h-4 mr-1 animate-spin" />
-      ) : (
-        <Video className="w-4 h-4 mr-1" />
-      )}
-      {live ? "Join live" : "Join in 15m"}
-      <ExternalLink className="w-3 h-3 ml-1" />
-    </Button>
+    <a href={event.meeting_url || "#"} target="_blank" rel="noopener noreferrer">
+      <Button className="bg-emerald-600 text-white hover:bg-emerald-600/90"
+        data-testid={`button-join-${event.id}`}>
+        <Video className="w-4 h-4 mr-1" /> {live ? "Join live" : "Join in 15m"}
+        <ExternalLink className="w-3 h-3 ml-1" />
+      </Button>
+    </a>
   );
 }
 

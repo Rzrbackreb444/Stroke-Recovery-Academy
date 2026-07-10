@@ -272,7 +272,7 @@ export default function AboutUs() {
               { icon: Users, title: "Accountability Pods", desc: "Small group support with fellow warriors on the same journey." },
               { icon: Award, title: "Achievement System", desc: "Celebrate milestones with badges and shareable recovery cards." },
               { icon: Sparkles, title: "AI Sasquatch Coach", desc: "24/7 motivation and guidance from your AI recovery partner." },
-              { icon: BookOpen, title: "Stroke Recovery Academy Publishing", desc: "Write and publish your own recovery story with AI assistance." }
+              { icon: BookOpen, title: "Stroke Lyfe Publishing", desc: "Write and publish your own recovery story with AI assistance." }
             ].map((feature, index) => (
               <Card key={index} data-testid={`feature-card-${index}`}>
                 <CardContent className="pt-6">
@@ -322,7 +322,7 @@ export default function AboutUs() {
                 </Badge>
                 <Badge variant="outline">
                   <CheckCircle2 className="w-3 h-3 mr-1" />
-                  Stroke Recovery Academy Publishing
+                  Stroke Lyfe Publishing
                 </Badge>
                 <Badge variant="outline">
                   <CheckCircle2 className="w-3 h-3 mr-1" />

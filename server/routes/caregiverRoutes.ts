@@ -9,7 +9,6 @@ import {
 import { sql, eq, and, or, desc } from 'drizzle-orm';
 import { z } from 'zod';
 import crypto from 'crypto';
-import { getUserId } from "../lib/authUtils";
 
 const INVITE_TTL_DAYS = 14;
 
@@ -26,7 +25,7 @@ export function registerCaregiverRoutes(app: Express, isAuthenticated: any) {
   // List caregiver-side and survivor-side links for the signed-in user.
   app.get('/api/caregivers/links', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req) as string;
+      const userId = req.user.claims.sub as string;
 
       // Self-heal: any caregiver unlock that failed to mirror at purchase time
       // (DB blip, transient error) gets re-mirrored next time the survivor pulls
@@ -77,7 +76,7 @@ export function registerCaregiverRoutes(app: Express, isAuthenticated: any) {
   // Caregiver invites a survivor by email. If the email matches an existing
   // user we prelink to their account; otherwise the link is held until accept.
   app.post('/api/caregivers/invite', isAuthenticated, async (req: any, res) => {
-    const caregiverId = getUserId(req) as string;
+    const caregiverId = req.user.claims.sub as string;
     const parsed = inviteSchema.safeParse(req.body ?? {});
     if (!parsed.success) {
       return res.status(400).json({ error: 'Invalid invite', issues: parsed.error.issues });
@@ -141,7 +140,7 @@ export function registerCaregiverRoutes(app: Express, isAuthenticated: any) {
   // Survivor accepts an invite via token. Sets survivorId on the link and flips
   // status to active. Token is single-use (cleared on success).
   app.post('/api/caregivers/accept/:token', isAuthenticated, async (req: any, res) => {
-    const userId = getUserId(req) as string;
+    const userId = req.user.claims.sub as string;
     const token = String(req.params.token || '');
     if (!token) return res.status(400).json({ error: 'Missing token' });
 
@@ -198,7 +197,7 @@ export function registerCaregiverRoutes(app: Express, isAuthenticated: any) {
   // Either side can revoke an active link. Revokes future mirroring; existing
   // mirrored unlocks remain (the survivor keeps what was already gifted).
   app.post('/api/caregivers/:id/revoke', isAuthenticated, async (req: any, res) => {
-    const userId = getUserId(req) as string;
+    const userId = req.user.claims.sub as string;
     const linkId = parseInt(req.params.id, 10);
     if (!Number.isFinite(linkId)) return res.status(400).json({ error: 'Invalid id' });
 
@@ -221,172 +220,11 @@ export function registerCaregiverRoutes(app: Express, isAuthenticated: any) {
     }
   });
 
-  // Caregiver dashboard: read the linked survivor's key recovery metrics.
-  // Only an active caregiver for that survivor can call this.
-  // Returns 404 (not 403) on auth failure to avoid leaking survivor existence.
-  app.get('/api/caregivers/survivor/:survivorId/dashboard', isAuthenticated, async (req: any, res) => {
-    const caregiverId = getUserId(req) as string;
-    const survivorId = req.params.survivorId;
-
-    try {
-      // Verify active link
-      const link = await db.execute(sql`
-        SELECT id FROM caregiver_links
-         WHERE caregiver_id = ${caregiverId}
-           AND survivor_id  = ${survivorId}
-           AND status = 'active'
-         LIMIT 1
-      `);
-      const linkRows = link.rows ?? link as any;
-      if (!linkRows || linkRows.length === 0) {
-        return res.status(404).json({ message: 'Not found' });
-      }
-
-      // Survivor basic info
-      const survivorRow = await db.execute(sql`
-        SELECT first_name, last_name, avatar_url, created_at FROM users
-         WHERE id = ${survivorId} LIMIT 1
-      `);
-      const survivor = ((survivorRow.rows ?? survivorRow) as any[])[0];
-      if (!survivor) return res.status(404).json({ message: 'Not found' });
-
-      // NeverZero streak — read from pre-computed user_streaks table
-      const streakRow = await db.execute(sql`
-        SELECT current_streak AS streak, last_activity_date
-          FROM user_streaks
-         WHERE user_id = ${survivorId}
-         LIMIT 1
-      `).catch(() => ({ rows: [] }));
-      const streakData = ((streakRow.rows ?? streakRow) as any[])[0];
-      const streak = streakData?.streak ?? 0;
-
-      // Total check-ins as a proxy for activity volume
-      const checkinsRow = await db.execute(sql`
-        SELECT COUNT(*)::int AS total FROM daily_checkins WHERE user_id = ${survivorId}
-      `).catch(() => ({ rows: [{ total: 0 }] }));
-      const totalReps = ((checkinsRow.rows ?? checkinsRow) as any[])[0]?.total ?? 0;
-
-      // Recent check-in activity (last 7 days) — extract exercise labels from JSONB
-      const recentReps = await db.execute(sql`
-        SELECT DATE(checkin_date) AS checkin_day,
-               exercise_minutes,
-               wins_today,
-               checkin_date AS last_at
-          FROM daily_checkins
-         WHERE user_id = ${survivorId}
-           AND checkin_date >= NOW() - INTERVAL '7 days'
-         ORDER BY checkin_date DESC
-         LIMIT 7
-      `).catch(() => ({ rows: [] }));
-
-      // Survivor profile (deficit info) — stored in user_profiles
-      const profileRow = await db.execute(sql`
-        SELECT stroke_type, affected_side, deficits, stroke_date,
-               daily_time_budget_minutes, energy_pattern
-          FROM user_profiles WHERE user_id = ${survivorId} LIMIT 1
-      `).catch(() => ({ rows: [] }));
-      const profile = ((profileRow.rows ?? profileRow) as any[])[0] ?? null;
-
-      // Days since stroke
-      const daysSinceStroke = profile?.stroke_date
-        ? Math.floor((Date.now() - new Date(profile.stroke_date).getTime()) / 86_400_000)
-        : null;
-
-      // Last check-in date
-      const lastCheckinRow = await db.execute(sql`
-        SELECT MAX(checkin_date) AS last_at FROM daily_checkins WHERE user_id = ${survivorId}
-      `).catch(() => ({ rows: [{ last_at: null }] }));
-      const lastCheckinAt = ((lastCheckinRow.rows ?? lastCheckinRow) as any[])[0]?.last_at ?? null;
-
-      // ── Prevention block (CONSENT-GATED) ──────────────────────────────────
-      // Only surfaced when the survivor explicitly enabled caregiver sharing in
-      // their notification preferences. Awareness-only: medication-adherence
-      // consistency + BP recency. Never a clinical score. Default = withheld.
-      const shareRow = await db.execute(sql`
-        SELECT caregiver_share_enabled FROM notification_preferences
-         WHERE user_id = ${survivorId} LIMIT 1
-      `).catch(() => ({ rows: [] }));
-      const shareEnabled = !!((shareRow.rows ?? shareRow) as any[])[0]?.caregiver_share_enabled;
-
-      let prevention: any = { shared: false };
-      if (shareEnabled) {
-        const activeMedRow = await db.execute(sql`
-          SELECT COUNT(*)::int AS n,
-                 COALESCE(SUM(GREATEST(COALESCE(array_length(reminder_times, 1), 1), 1)), 0)::int AS per_day
-            FROM medications WHERE user_id = ${survivorId} AND is_active = true
-        `).catch(() => ({ rows: [{ n: 0, per_day: 0 }] }));
-        const medAgg = ((activeMedRow.rows ?? activeMedRow) as any[])[0] ?? { n: 0, per_day: 0 };
-        const perDay = Number(medAgg.per_day ?? 0);
-
-        const takenRow = await db.execute(sql`
-          SELECT COUNT(*) FILTER (WHERE skipped = false AND taken_at >= NOW() - INTERVAL '7 days') AS taken_7,
-                 MAX(taken_at) AS last_logged
-            FROM medication_logs WHERE user_id = ${survivorId}
-        `).catch(() => ({ rows: [{ taken_7: 0, last_logged: null }] }));
-        const t = ((takenRow.rows ?? takenRow) as any[])[0] ?? {};
-        const taken7 = Number(t.taken_7 ?? 0);
-        const expected7 = perDay * 7;
-        const adherence7 = expected7 > 0 ? Math.min(100, Math.round((taken7 / expected7) * 100)) : null;
-
-        const bpRow = await db.execute(sql`
-          SELECT MAX(measured_at) AS last_bp FROM vitals_logs
-           WHERE user_id = ${survivorId}
-             AND (blood_pressure_systolic IS NOT NULL OR blood_pressure_diastolic IS NOT NULL)
-        `).catch(() => ({ rows: [{ last_bp: null }] }));
-        const lastBpAt = ((bpRow.rows ?? bpRow) as any[])[0]?.last_bp ?? null;
-
-        prevention = {
-          shared: true,
-          activeMedications: Number(medAgg.n ?? 0),
-          adherence7,
-          lastMedLoggedAt: t.last_logged ?? null,
-          lastBpAt,
-        };
-      }
-
-      return res.json({
-        survivor: {
-          firstName: survivor.first_name,
-          lastName: survivor.last_name,
-          avatarUrl: survivor.avatar_url,
-          joinedAt: survivor.created_at,
-        },
-        metrics: {
-          streak,
-          totalReps,
-          daysSinceStroke,
-          lastCheckinAt,
-        },
-        recentActivity: (recentReps.rows ?? recentReps as any).map((r: any) => ({
-          label: r.checkin_day
-            ? new Date(r.checkin_day).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
-            : 'Check-in',
-          exerciseMinutes: r.exercise_minutes ?? 0,
-          winsToday: r.wins_today ?? null,
-          lastAt: r.last_at,
-        })),
-        profile: profile
-          ? {
-              strokeType: profile.stroke_type,
-              affectedSide: profile.affected_side,
-              deficits: profile.deficits,
-              dailyTimeBudgetMinutes: profile.daily_time_budget_minutes,
-              energyPattern: profile.energy_pattern,
-            }
-          : null,
-        prevention,
-      });
-    } catch (err: any) {
-      console.error('[caregivers] dashboard', err);
-      res.status(500).json({ message: 'Failed to load dashboard' });
-    }
-  });
-
   // Internal: when caregiver unlocks course X, mirror access to all linked survivors.
   // Exposed as a route so courseUnlockRoutes can hand off post-unlock; also called
   // directly in this file after accept.
   app.post('/api/caregivers/mirror-unlock', isAuthenticated, async (req: any, res) => {
-    const caregiverId = getUserId(req) as string;
+    const caregiverId = req.user.claims.sub as string;
     const courseId = parseInt(req.body?.courseId, 10);
     if (!Number.isFinite(courseId)) return res.status(400).json({ error: 'Invalid courseId' });
     try {

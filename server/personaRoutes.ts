@@ -5,7 +5,6 @@ import { db } from "./db";
 import { userPersonas, users, type UserPersona } from "@shared/schema";
 import { PERSONA_ARCHETYPES, getArchetype } from "@shared/personaArchetypes";
 import { isAuthenticated } from "./replitAuth";
-import { getUserId } from "./lib/authUtils";
 
 const upsertSchema = z.object({
   archetypeKey: z.string().min(1),
@@ -35,7 +34,7 @@ export function registerPersonaRoutes(app: Express) {
   // Get current user's persona
   app.get("/api/persona/me", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const [p] = await db.select().from(userPersonas).where(eq(userPersonas.userId, userId));
       res.json({ persona: p ?? null });
     } catch (e) {
@@ -47,7 +46,7 @@ export function registerPersonaRoutes(app: Express) {
   // Create or update persona (upsert)
   app.put("/api/persona", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user.claims.sub;
       const parsed = upsertSchema.safeParse(req.body);
       if (!parsed.success) {
         return res.status(400).json({ error: "Invalid persona", details: parsed.error.flatten() });
@@ -94,7 +93,7 @@ export function registerPersonaRoutes(app: Express) {
   // Falls back to seed creeds from the archetype if AI is unavailable.
   app.post("/api/persona/forge", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req) as string | undefined;
+      const userId = req.user?.claims?.sub as string | undefined;
       const parsed = forgeSchema.safeParse(req.body ?? {});
       if (!parsed.success) {
         return res.status(400).json({ error: "Invalid persona forge input", issues: parsed.error.flatten() });

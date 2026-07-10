@@ -9,7 +9,6 @@ import { db } from '../db';
 import { lessonVideos, courseLessons, courseModules, courses } from '@shared/schema';
 import { eq } from 'drizzle-orm';
 import { transcribeVideo, writeVttSidecar } from '../videoTranscription';
-import { getUserId } from "../lib/authUtils";
 
 // Returns { ok, ownedByUser } — ownedByUser is true only if the lesson's course belongs to userId.
 async function lessonOwnedByUser(lessonId: number, userId: string): Promise<boolean> {
@@ -45,7 +44,7 @@ export function registerLessonVideoRoutes(app: Express, isAuthenticated: any, up
       const lessonId = parseInt(req.params.id, 10);
       if (!Number.isFinite(lessonId)) return res.status(400).json({ error: 'Invalid lesson id' });
       if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub;
       if (!userId || !(await lessonOwnedByUser(lessonId, userId))) return res.status(403).json({ error: 'Not your lesson' });
 
       const url = `/uploads/${req.file.filename}`;
@@ -107,7 +106,7 @@ export function registerLessonVideoRoutes(app: Express, isAuthenticated: any, up
     const lessonId = parseInt(req.params.id, 10);
     const chapters = Array.isArray(req.body?.chapters) ? req.body.chapters : null;
     if (!chapters) return res.status(400).json({ error: 'chapters array required' });
-    const userId = getUserId(req);
+    const userId = req.user?.claims?.sub;
     if (!userId || !(await lessonOwnedByUser(lessonId, userId))) return res.status(403).json({ error: 'Not your lesson' });
     const clean = chapters
       .filter((c: any) => typeof c?.start === 'number' && typeof c?.title === 'string')

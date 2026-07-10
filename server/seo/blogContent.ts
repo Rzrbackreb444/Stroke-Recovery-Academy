@@ -132,35 +132,8 @@ export const POST_REHAB_DURATION = makeBlogPost({
         'The single highest-leverage thing you can do today is start a daily routine and do not miss a day. The Daily Routine in the Sasquatch Method is calibrated to your current ability and escalates as you improve. It is the operating system that closes the gap between "what therapy taught me" and "what I do every day."',
       ],
     },
-    {
-      h2: 'How to tell if your rehab is actually working',
-      paragraphs: [
-        'The timeline feels endless when you cannot see progress. The fix is measurement. Recovery at year one is slow enough that day-to-day you will swear nothing is changing — until you compare against where you were a month ago. So write it down. What you do not track, you cannot see.',
-        'I kept a dead-simple log: a few numbers and a short video every couple of weeks. Steps taken, seconds of single-leg balance, how many stairs, whether I could button a shirt. The video is the honest witness. You forget how bad it was; the phone does not. Numbers keep you honest when memory lies. Bring these notes to your PT and OT — they will spot trends you miss and adjust the plan.',
-      ],
-      bullets: [
-        'Pick 3 to 5 concrete metrics you can measure at home',
-        'Log weekly, not daily — the signal is clearer',
-        'Film a short movement clip every 2 to 4 weeks',
-        'Review month-over-month, never day-over-day',
-        'Share the data with your care team at every visit',
-      ],
-    },
-    {
-      h2: 'What to do when insurance-covered therapy ends',
-      paragraphs: [
-        'The hardest cliff in recovery is the day the covered sessions run out. It feels like getting cut loose mid-fight. It is not the end of recovery — it is the start of the part you run yourself. The gains are still there for the taking; the difference is now you are the one showing up. Do not wait until that day arrives to figure out your next move.',
-        'Before your last session, get your team to hand you a plan you can actually execute alone. Ask for a written home program, which movements to progress and how, and clear red flags for when to call. Then build a routine you do not negotiate with. That daily structure is what carries the work forward when nobody is scheduling it for you.',
-      ],
-      relatedLinks: [
-        { href: '/programs/daily-routine', label: 'The 5-level Daily Routine' },
-        { href: '/blog/virtual-stroke-rehabilitation-coach', label: 'Virtual stroke rehabilitation coaching' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'What should I ask my therapist before I get discharged?', a: 'Ask for a written home exercise program, and have them show you exactly how to progress each movement so you are not guessing later. Ask which specific gains they think are still realistic for you, what safe intensity looks like, and what warning signs should make you call the doctor. Ask whether outpatient, community programs, or a home health referral are options. The goal is to walk out with a plan you can run without them, not just a handshake.' },
-    { q: 'How do I stay motivated when rehab takes this long?', a: 'Stop staring at the finish line and shrink the target. I stopped asking whether I would ever be normal and started asking what one percent I could earn this week. Tracking helps — seeing month-over-month change is fuel. So does routine, because on the days motivation is gone, habit carries you. And treat the mental side seriously; depression and burnout stall recovery, so tell your care team if you are struggling to keep going.' },
     { q: 'Is stroke recovery really lifelong?', a: 'Yes. Functional improvements are documented at 5+ years post-stroke in survivors who continue daily training. The brain retains plasticity for life — the rate slows but the capacity remains.' },
     { q: 'When do you plateau after a stroke?', a: 'Plateaus are usually a sign that the current training stimulus has stopped being challenging, not that recovery is over. Increasing complexity, novelty, or intensity typically restarts gains within 4–8 weeks.' },
     { q: 'How many hours of therapy do you need per day?', a: 'Research suggests 3+ hours of meaningful task practice per day during the subacute window produces the best outcomes. After insurance coverage ends, this means home practice — which is what the Daily Routine is built for.' },
@@ -182,7 +155,7 @@ export const POST_REHAB_DURATION = makeBlogPost({
 export const POST_FULL_RECOVERY = makeBlogPost({
   slug: 'can-you-fully-recover-from-a-stroke',
   title: 'Can You Fully Recover From a Stroke? A Survivor\'s Honest Answer',
-  description: 'Can you fully recover from a stroke? The honest answer from a survivor who went from total paralysis to 90% function over seven years of daily recovery work.',
+  description: 'Can you fully recover from a stroke? Here\'s the honest answer from a survivor who went from total paralysis to 90% function in 7 years.',
   h1: 'Can you fully recover from a stroke?',
   keyword: 'can you fully recover from a stroke',
   image: '/images/blog/walking-recovery-dark.png',
@@ -224,40 +197,8 @@ export const POST_FULL_RECOVERY = makeBlogPost({
         'Stop asking "will I fully recover" and start asking "what is the next 1% of recovery I can earn this week." That is the question that produces results. Daily routine. Weekly progress check. Monthly stretch goal. Yearly milestone. That is how you stack 7 years of compounding gains.',
       ],
     },
-    {
-      h2: 'How I tracked progress once the fast gains stopped',
-      paragraphs: [
-        'The first few months, progress was obvious - a finger that moved, a step I couldn\'t take last week. After that it got quiet, and quiet feels like stopping. It is not. The trick that kept me going was measuring small things I could actually watch change over a month, not a day.',
-        'I timed how long I could stand on the weak leg. I counted reps before the arm gave out. I filmed myself walking every few weeks and compared. On any single day it looked flat. Stacked over a month, the trend was real. If you only judge by how you feel today, you will quit right before the next jump.',
-      ],
-      bullets: [
-        'Time a single hold - balance, grip, or standing - weekly',
-        'Count clean reps of one movement before failure',
-        'Film yourself walking every few weeks and compare',
-        'Write one sentence a day on what felt easier than last week',
-      ],
-      relatedLinks: [
-        { href: '/blog/how-long-does-stroke-rehab-take', label: 'How long does stroke rehab take?' },
-        { href: '/programs/daily-routine', label: 'The Daily Routine' },
-      ],
-    },
-    {
-      h2: 'What to ask your care team - and when to call',
-      paragraphs: [
-        'Doctors and therapists get asked \'will I fully recover\' constantly, and it is an impossible question for them to answer honestly. Better questions get better answers. Instead, ask what specific function they think is realistic to target next, what home exercises will actually move it, and what a reasonable timeline looks like for that one goal. Concrete beats vague every time, and it gives you something you can measure against.',
-        'And learn the difference between a plateau and a warning sign, because they are not the same thing. A plateau is slow, gradual, and stable - frustrating, but not dangerous. A sudden loss of function you already had - new weakness, new numbness, speech slipping, a drooping face - is not a plateau. Treat that as an emergency and get help immediately. Do not wait around to see if it passes on its own.',
-      ],
-      bullets: [
-        'Ask what single function is realistic to target next',
-        'Ask which home exercises drive that specific goal',
-        'Ask what a reasonable timeline looks like for it',
-        'Call immediately for sudden new weakness, numbness, or speech change',
-      ],
-    },
   ],
   faqs: [
-    { q: 'How do I stay motivated when recovery slows down?', a: 'I stopped chasing \'full\' and started chasing the next one percent I could earn that week. Small, trackable targets kept me showing up. Motivation followed action, not the other way around. On the days I did not feel it, I did the routine anyway and the feeling caught up. Talk to your therapist about setting concrete short-term goals.' },
-    { q: 'Can a setback mean I\'ve lost recovery for good?', a: 'Not usually. An illness, a bad stretch of sleep, or a break in training can make function slip temporarily, and it often comes back once you get consistent again. But a sudden, unexplained loss of function is different - that needs urgent medical attention, not patience. When in doubt, call your doctor rather than guess.' },
     { q: 'What percentage of stroke survivors fully recover?', a: 'Roughly 10% achieve a complete recovery as conventionally defined. Another 25% have only minor impairments and live functionally normal lives. With aggressive long-term training, many survivors exceed their initial population-average prognosis.' },
     { q: 'Can the brain heal itself after a stroke?', a: 'The dead tissue does not regenerate. But healthy brain regions can take over the work of damaged regions through neuroplasticity. This is the entire mechanism of stroke recovery.' },
     { q: 'How long until you know how much function will return?', a: 'The first 90 days predict a lot. The first year predicts more. But survivors continue to gain function for years with consistent training. Do not let a 6-month assessment define your 5-year outcome.' },
@@ -335,35 +276,8 @@ export const POST_SECOND_STROKE_SIGNS = makeBlogPost({
         'Lifestyle factors stack on top: blood pressure under 130/80, no smoking, daily movement, Mediterranean-style eating, and treatment of sleep apnea cut recurrence risk substantially. The Sasquatch Method covers all of these in the daily routine.',
       ],
     },
-    {
-      h2: 'Living with the fear of another one',
-      paragraphs: [
-        'Nobody warns you about the fear. After my stroke, every headache, every tingle, every odd moment of dizziness sent my brain straight to \'here we go again.\' That vigilance is not crazy — it kept me paying attention. But left unchecked it will run your whole life. The trick is turning fear into a checklist instead of a spiral.',
-        'What helped me: I stopped treating every strange sensation as an emergency and started treating it as data. If a symptom is sudden, one-sided, and matches BE-FAST, I move immediately. If it is gradual, both-sided, and fades, I note it and mention it at my next appointment. When in doubt, I call. Your doctor would rather hear from you ten times for nothing than miss the one that counts. If the fear itself is stealing your sleep, tell your care team — anxiety after stroke is common and treatable.',
-      ],
-    },
-    {
-      h2: 'Build the household emergency plan before you need it',
-      paragraphs: [
-        'In the middle of a real event, nobody thinks clearly. So do the thinking now, while everything is calm. I keep a plan that anyone in my house can run, because I might be the one who cannot speak. When your speech or your judgment is the thing that fails, a plan you only memorized alone is worthless.',
-        'Sit your family down and walk them through BE-FAST out loud. Make sure at least one other person knows where your medication list lives, which hospital you want, and who to call. Practice it once so it is not the first time under pressure. Review it every few months so it stays current. This is not morbid — it is the same reason you keep a fire extinguisher.',
-      ],
-      bullets: [
-        'Post a current medication and allergy list on the fridge and a photo of it on every family phone',
-        'Teach household members BE-FAST and how to note the exact time symptoms start',
-        'Decide in advance which hospital and confirm it treats strokes',
-        'Save an ICE (in case of emergency) contact and your neurologist\'s number where they are easy to find',
-        'Keep a spare door key or entry plan so EMS can get in fast',
-      ],
-      relatedLinks: [
-        { href: '/blog/how-to-prevent-a-second-stroke', label: 'How to prevent a second stroke' },
-        { href: '/blog/tia-vs-stroke', label: 'TIA vs stroke' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'How do I tell a second stroke apart from anxiety or a migraine?', a: 'It is not always easy, and you should not try to diagnose yourself. As a rule of thumb, stroke symptoms tend to be sudden, one-sided, and match BE-FAST — face droop, arm drift, slurred speech, balance or vision loss. Anxiety and migraine symptoms are more often gradual, both-sided, and build over minutes. But there is real overlap, and the cost of guessing wrong is too high. If anything matches BE-FAST or you simply cannot rule out a stroke, call 911 and let the professionals sort it out.' },
-    { q: 'What information should I keep on hand in case of another stroke?', a: 'Keep a current list of your medications and doses, your allergies, your medical conditions, your neurologist\'s name and number, and an emergency contact. A photo of your medication bottles on your phone works too. In an emergency this saves the hospital critical minutes and helps them decide on treatment. Update it every time a prescription changes and make sure someone besides you knows where it is.' },
     { q: 'Can a stroke happen without warning?', a: 'Most strokes happen suddenly, but many survivors report subtle warning signs in the days before — brief numbness, vision changes, or confusion that they dismissed. Take any new neurological symptom seriously.' },
     { q: 'What is the most common second stroke warning sign?', a: 'Sudden one-sided weakness or facial drooping is the most common, but balance and vision changes are the most commonly missed. Use BE-FAST, not just FAST.' },
     { q: 'How likely is a second stroke?', a: 'About 1 in 4 stroke survivors will have a second stroke within 5 years. The risk is highest in the first 90 days and drops dramatically with proper medical management and lifestyle changes.' },
@@ -436,45 +350,8 @@ export const POST_PREVENT_SECOND_STROKE = makeBlogPost({
         'The 90 days after a stroke are the highest-risk window for recurrence. Be religious about medication, BP measurement, and follow-ups during this period. After 90 days the risk drops substantially but never to zero. The habits you build in the first 90 days are the ones that will protect you for years.',
       ],
     },
-    {
-      h2: 'Making the plan stick when motivation fades',
-      paragraphs: [
-        'A prevention plan only works if you actually follow it, and willpower is a terrible long-term strategy. The survivors who keep it up build systems, not motivation. The goal is to make the right thing the easy thing, so you do not have to decide fresh every single day.',
-        'Habit stacking is the workhorse. Attach each new task to something you already do without thinking. Blood pressure cuff next to the coffee maker. Pills in a weekly organizer you fill every Sunday, sitting where you brush your teeth. Phone alarms for the doses you keep forgetting. Track it somewhere visible so a missed day is obvious, not hidden. None of this is glamorous, but boring and consistent beats ambitious and abandoned every time.',
-      ],
-      bullets: [
-        'Attach new habits to existing ones, like meds with brushing teeth',
-        'Fill a weekly pill organizer on the same day each week',
-        'Keep the BP cuff somewhere you cannot miss it',
-        'Set phone alarms for the doses you tend to forget',
-        'Log it so a missed day is visible, not buried',
-      ],
-      relatedLinks: [
-        { href: '/programs/daily-routine', label: 'The Daily Routine' },
-        { href: '/blog/best-blood-pressure-monitor-stroke-survivor', label: 'Best home blood pressure monitor' },
-      ],
-    },
-    {
-      h2: 'What to ask your stroke neurologist',
-      paragraphs: [
-        'Prevention is a partnership, and you get more out of it when you show up with questions instead of just nodding along. Appointments are short, so write them down beforehand, because you will forget half of them the moment you sit on the paper-covered table.',
-        'Ask what your personal blood pressure target is, since it is not the same for everyone. Ask whether every medication you take is still the right one and still necessary. Ask what your specific risk factors are and which ones you can move. And ask the practical safety question most people skip: what readings or symptoms should make me call you or go to the ER instead of waiting for the next visit. Get that line defined so you are not guessing in the moment.',
-      ],
-      bullets: [
-        'What is my personal blood pressure target?',
-        'Are all my current medications still right for me?',
-        'Which of my risk factors can I actually change?',
-        'What readings or symptoms mean I should call you right away?',
-        'Do I need any monitoring for an irregular heart rhythm?',
-      ],
-      relatedLinks: [
-        { href: '/blog/signs-of-a-second-stroke', label: 'Warning signs of a second stroke' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'How do I remember to take my medications every day?', a: 'Systems beat memory. A weekly pill organizer, filled on the same day each week, tells you at a glance whether you already took a dose. Pair it with a phone alarm and keep the pills somewhere you physically cannot avoid seeing them. If you still miss doses, tell your doctor or pharmacist, because sometimes simplifying to fewer pills or a combination medication solves it. Missing doses is a leading, preventable cause of second strokes.' },
-    { q: 'What blood pressure reading should make me call my doctor?', a: 'Your target is something to set with your doctor, because the right number depends on your history, especially if you had a bleed. As a general rule, a very high reading paired with symptoms like a severe headache, chest pain, vision changes, or weakness is an emergency, not a wait-and-see. Do not self-adjust medication doses on your own. Ask your care team to define your personal thresholds and what to do at each one.' },
     { q: 'What is the single most important thing to prevent a second stroke?', a: 'Blood pressure control, full stop. Hypertension is the largest modifiable risk factor for both first and recurrent strokes. Get it under 130/80 and keep it there.' },
     { q: 'Do I need to take aspirin forever?', a: 'Most ischemic stroke survivors are on lifelong antiplatelet therapy. Never stop without explicit instruction from your stroke neurologist — even for a procedure, get clearance first.' },
     { q: 'Does exercise prevent a second stroke?', a: 'Yes. 150 minutes of moderate aerobic activity per week is the standard recommendation, but even daily walking has measurable cardiovascular benefits.' },
@@ -544,37 +421,8 @@ export const POST_TIA_VS_STROKE = makeBlogPost({
         'Survivors of TIA who follow the protocol have outcomes nearly indistinguishable from people who never had one. Survivors who dismiss the warning have outcomes that are dramatically worse.',
       ],
     },
-    {
-      h2: 'The instinct to explain it away',
-      paragraphs: [
-        'The most dangerous thing about a TIA is how easy it is to talk yourself out of it. The symptoms fade, you feel fine, and your brain immediately starts building excuses. I was tired, I stood up too fast, I skipped lunch. I understand that instinct completely. Nobody wants to spend a day in the ER over something that already stopped.',
-        'But that reasoning is exactly backwards. The episode stopping is not the good news you want it to be. It is a warning that the wiring is vulnerable, and the window to act on it is short. If you have already had a stroke, you know how fast your life can change. Do not let a resolved episode con you into waiting. Treat it as the emergency it is, and let the ER decide it was nothing. That is their call to make, not yours.',
-      ],
-      relatedLinks: [
-        { href: '/blog/signs-of-a-second-stroke', label: 'Warning signs of a second stroke' },
-      ],
-    },
-    {
-      h2: 'Build the emergency plan before you need it',
-      paragraphs: [
-        'The time to figure out your response to a neurological emergency is not during one. Fear and confusion make you slow and indecisive at the exact moment speed matters most. A little preparation now removes the hesitation later.',
-        'Keep it simple and physical. A current medication list where anyone can find it. The name and route to the nearest hospital with a stroke center, not just the closest urgent care. Your key medical history in one place. And make sure the people you live with know BE-FAST cold, because there is a real chance you will not be the one who notices the symptoms first.',
-      ],
-      bullets: [
-        'Keep an up-to-date medication list somewhere obvious',
-        'Know your nearest stroke center, not just the nearest ER',
-        'Write down your stroke history and major conditions in one spot',
-        'Teach the people you live with the BE-FAST signs',
-        'Program emergency contacts and make 911 the default plan',
-      ],
-      relatedLinks: [
-        { href: '/blog/how-to-prevent-a-second-stroke', label: 'How to prevent a second stroke' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'Can a TIA happen while you are asleep?', a: 'It can, and that is part of what makes it easy to miss. Some survivors wake with brief symptoms that fade before they are fully awake and write it off as a weird morning. If you wake with any face, arm, speech, vision, or balance symptoms, even ones that pass quickly, treat it seriously and call 911. Note the time you last knew you were normal, because that detail matters to the ER.' },
-    { q: 'What should I keep in my phone in case of another episode?', a: 'Set up the medical ID feature so first responders can see your conditions and medications from the lock screen. Add emergency contacts, a note listing your stroke history and allergies, and your neurologist\'s number. It will not treat anything, but it saves precious minutes and answers questions when you may not be able to speak clearly. Keep it current, because an outdated med list can be worse than none.' },
     { q: 'Can a TIA cause permanent damage?', a: 'By definition no — if it caused permanent damage on imaging, it is reclassified as a stroke. But repeated TIAs can cause cumulative cognitive effects, and many "TIAs" turn out to be small strokes on MRI.' },
     { q: 'How long does a TIA last?', a: 'Most TIAs resolve within 5–60 minutes. Symptoms lasting longer than that are usually a stroke, not a TIA.' },
     { q: 'Do you need to be hospitalized for a TIA?', a: 'Many stroke centers will admit for 23-hour observation, especially if your ABCD2 score is moderate or high. Same-day rapid TIA clinics are also appropriate.' },
@@ -640,38 +488,8 @@ export const POST_ISCHEMIC_VS_HEMORRHAGIC = makeBlogPost({
         'Blood pressure control is the single most important factor for both. For hemorrhagic survivors, the BP target is often tighter (<130/80 or even lower).',
       ],
     },
-    {
-      h2: 'How to find out which type you had',
-      paragraphs: [
-        'A surprising number of survivors do not actually know whether their stroke was ischemic or hemorrhagic. In the hospital everything moves fast, you are terrified, and nobody sits you down with the plain-English version. But this is your body and your prevention plan depends on it. You are allowed to ask.',
-        'The fastest way to get the answer is your discharge summary and your imaging reports. Ask for copies. They will name the stroke type, usually the location, and often the suspected cause: a clot from the heart, small-vessel disease, a ruptured vessel, an aneurysm. If the cause was never pinned down, that is worth a direct conversation with your neurologist, because a stroke with no known cause still has one you have not found yet.',
-      ],
-      bullets: [
-        'Request copies of your discharge summary and imaging reports',
-        'Ask directly: was mine ischemic or hemorrhagic?',
-        'Ask what the suspected cause was, or if it is still unknown',
-        'Write down the location of the injury in the brain',
-        'Keep this in the same folder as your medication list',
-      ],
-      relatedLinks: [
-        { href: '/blog/how-to-prevent-a-second-stroke', label: 'How to prevent a second stroke' },
-        { href: '/blog/best-blood-pressure-monitor-stroke-survivor', label: 'Best home blood pressure monitor' },
-      ],
-    },
-    {
-      h2: 'What the type changes in your day-to-day recovery',
-      paragraphs: [
-        'The type mostly matters for prevention and medication, and those decisions belong to your doctor. But it shapes daily life more than people expect. If you are on blood thinners after an ischemic stroke, you learn to be careful about cuts, falls, and new bruising. If you had a bleed, your team may hold you to a tighter blood pressure target and be cautious about certain drugs.',
-        'Exercise is where survivors get nervous, and reasonably so. Both types benefit from movement, but how hard and how soon is not a decision to make off a blog post. Get specific clearance from your care team, especially about blood pressure during exertion if you had a hemorrhage. Then track how you feel. Dizziness, a pounding headache, or new symptoms during exercise are reasons to stop and call your doctor.',
-      ],
-      relatedLinks: [
-        { href: '/programs/daily-routine', label: 'The Daily Routine' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'How do I find out what caused my stroke?', a: 'Start with your discharge paperwork and imaging reports, then ask your neurologist directly. The workup often includes heart rhythm monitoring, carotid imaging, and blood work to look for a source. If your stroke was labeled cryptogenic, meaning no clear cause was found, ask what further testing is planned, because finding the cause is how you lower the odds of a repeat. This is a conversation for your care team, not something to guess at.' },
-    { q: 'Does the type of stroke change how I should exercise?', a: 'It can, which is exactly why you should not decide alone. Movement helps recovery for both ischemic and hemorrhagic survivors, but intensity, blood pressure limits, and timing depend on your specific situation. Survivors of a bleed in particular may need tighter blood pressure control during exertion. Ask your PT and doctor for clearance and a starting point, then build slowly from there.' },
     { q: 'Which type of stroke is more deadly?', a: 'Hemorrhagic strokes have higher early mortality (about 30-day case fatality 30-40% vs 10-15% for ischemic). But survivors of either type can recover excellent function.' },
     { q: 'Can you have both types?', a: 'Yes. Survivors with significant vascular disease are at risk for both, and any treatment plan must balance both risks.' },
     { q: 'Why does ischemic happen more often?', a: 'Atherosclerosis is extremely common. Risk factors (hypertension, smoking, diabetes, high cholesterol) are widespread. Atrial fibrillation also becomes more common with age.' },
@@ -693,7 +511,7 @@ export const POST_ISCHEMIC_VS_HEMORRHAGIC = makeBlogPost({
 export const POST_DRIVING_AFTER_STROKE = makeBlogPost({
   slug: 'can-you-drive-after-a-stroke',
   title: 'Can You Drive After a Stroke? The Honest Survivor Guide',
-  description: 'When and how to return to driving after a stroke — the medical clearance process, driving evaluations, and the honest answer survivors actually need to hear.',
+  description: 'When and how to return to driving after a stroke. The medical clearance process, driving evaluations, and the honest answer survivors need.',
   h1: 'Can you drive after a stroke?',
   keyword: 'can you drive after a stroke',
   image: '/images/blog/driving-dark.png',
@@ -742,37 +560,8 @@ export const POST_DRIVING_AFTER_STROKE = makeBlogPost({
         'When in doubt, get the formal evaluation. The hardest conversation in recovery is the one where a family member tells a survivor it is not safe yet. The formal evaluation moves it from a family argument to a professional recommendation.',
       ],
     },
-    {
-      h2: 'How to prepare for your driving evaluation',
-      paragraphs: [
-        'You can improve your odds on a driving evaluation without gaming it, and you should. Show up rested, because fatigue wrecks reaction time and attention, and those are exactly what the evaluator is measuring. Schedule the assessment for the time of day you feel sharpest, not squeezed in after three other appointments.',
-        'Do the boring prep. Bring your current glasses and any prescriptions, take your medications on your normal schedule, and be honest on the intake forms, because hiding a deficit only hurts you on the road. In the weeks before, keep working your vision, attention, and reaction drills with your OT so the evaluation catches you on an upswing rather than a bad day. This is a professional assessment, not a road test you cram for.',
-      ],
-      bullets: [
-        'Schedule it for the time of day you feel most alert',
-        'Sleep well the night before, since fatigue looks like impairment',
-        'Bring current glasses, medications, and your medical history',
-        'Keep up vision, attention, and reaction work with your OT beforehand',
-        'Be honest about your symptoms on the intake forms',
-      ],
-      relatedLinks: [
-        { href: '/blog/fatigue-after-stroke', label: 'Fatigue after stroke' },
-      ],
-    },
-    {
-      h2: 'Staying independent while you wait to drive',
-      paragraphs: [
-        'The gap between your stroke and your clearance to drive can be long, and it is one of the loneliest parts of recovery. Losing the car feels like losing your adulthood. It is not, but it will feel that way, so plan around it instead of white-knuckling it.',
-        'Stack your options. Rides from family, medical or senior transport services, rideshare, and public transit all cover different needs. For longer independent trips, some survivors use a mobility scooter to reach the store or the bus stop. And group your errands so a single ride does the work of three. The point is to protect your independence and your recovery energy while you earn the driving milestone back, not to rush it and risk everything.',
-      ],
-      relatedLinks: [
-        { href: '/blog/best-mobility-scooter-stroke-survivor', label: 'Best mobility scooters for stroke survivors' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'Should I practice driving in an empty parking lot before my evaluation?', a: 'Not on your own, and not before you have medical clearance to be behind the wheel at all. Driving without clearance can void your insurance and put people at risk, empty lot or not. If you want supervised practice, that belongs inside an adaptive driving program with a trained instructor and dual controls. Ask your OT or evaluator whether pre-assessment practice makes sense for you.' },
-    { q: 'Why am I so exhausted after driving since my stroke?', a: 'Driving that used to be automatic now takes deliberate effort, scanning, judging speed, filtering distractions, and after a stroke your brain spends far more energy on all of it. That mental load is real work, and it drains you. Start with short, familiar, low-traffic trips and build up. If fatigue is severe or you feel your attention slipping mid-drive, stop and talk to your care team.' },
     { q: 'How long after a stroke can you drive?', a: 'There is no universal timeline. Some survivors return in weeks; some in months; some never. The threshold is medical clearance and (often) a formal driving evaluation, not the calendar.' },
     { q: 'Do I have to tell the DMV about my stroke?', a: 'In most jurisdictions yes. Failure to disclose can void insurance coverage in the event of an incident. Check your local rules specifically.' },
     { q: 'Will my insurance still cover me?', a: 'Generally yes if you have medical clearance. Some insurers require updated documentation. Always disclose — non-disclosure can void coverage retroactively.' },
@@ -850,34 +639,8 @@ export const POST_BEST_FOODS = makeBlogPost({
         'Survivors who pair this with the Sasquatch Daily Routine (movement + mind + meals) see the steepest improvements in BP, cognitive scores, and energy levels in the first 90 days.',
       ],
     },
-    {
-      h2: 'Eating well when a stroke makes cooking hard',
-      paragraphs: [
-        'All the food advice in the world does not help if you cannot open the jar or stand at the stove long enough to cook. That was my reality early on. The move is to lower the effort, not the quality. Pre-chopped and frozen vegetables count. Canned salmon and sardines count. Bagged salad, microwave rice, canned beans - all fine. Convenience is not cheating when one hand and a short energy tank are the constraints.',
-        'Batch-cook on a good day and eat off it for three. Sit to prep food if standing tires you out. Adaptive tools - a rocker knife, a cutting board with a corner guard - make one-handed prep safer. And if you cough, choke, or feel food catching when you swallow, that is not something to muscle through. Ask your doctor for a swallow evaluation with a speech-language pathologist.',
-      ],
-      relatedLinks: [
-        { href: '/blog/adaptive-eating-utensils-stroke', label: 'Adaptive eating utensils for stroke' },
-        { href: '/blog/fatigue-after-stroke', label: 'Fatigue after stroke' },
-      ],
-    },
-    {
-      h2: 'Eating this way on a budget - and tracking what works',
-      paragraphs: [
-        'The Mediterranean pattern has a reputation for being expensive. It does not have to be. Dried and canned beans, oats, frozen vegetables and berries, eggs, canned fish, and in-season produce are cheap and hit the same targets as the pricey stuff. You are buying nutrients, not labels. Skip the specialty supplements and put the money into real food.',
-        'Track a couple of simple things so you know it is working: your morning blood pressure, your energy through the day, and your weight over weeks. Bring those numbers to your appointments - real data beats \'I\'ve been eating better.\' If you have diabetes, kidney issues, or you are on a blood thinner, some foods interact with your care, so ask your doctor or a registered dietitian before overhauling your plate.',
-      ],
-      bullets: [
-        'Beans, oats, eggs, and canned fish for cheap protein',
-        'Frozen vegetables and berries - same nutrients, lower cost',
-        'Track morning blood pressure, energy, and weekly weight',
-        'Ask a dietitian if you\'re on blood thinners or have kidney issues',
-      ],
-    },
   ],
   faqs: [
-    { q: 'What if I can\'t taste food the same way after my stroke?', a: 'Changed or dulled taste is common and it can kill your appetite. What helped me was leaning on texture, temperature, and herbs and acid - lemon, vinegar, spices - instead of reaching for salt. Do not fix bland food with a salt shaker if your blood pressure matters. If appetite or taste changes are serious, mention it to your doctor or a dietitian.' },
-    { q: 'How soon after a stroke should I change my diet?', a: 'There is no need to overhaul everything at once, and early on just eating enough safely is the win. Add one better habit at a time as your energy and swallowing allow. If you had swallowing trouble in the hospital, follow the texture guidance your speech-language pathologist gave you before changing anything about how you eat.' },
     { q: 'What is the single best food for stroke recovery?', a: 'No single food does it. The pattern matters more than any one item. That said, fatty fish 2–3 times per week has the most consistent evidence for vascular and cognitive benefit.' },
     { q: 'Should I take supplements?', a: 'Most supplements have weak evidence. Vitamin D if you are deficient, omega-3 if you do not eat fish, B12 if you are vegetarian or on metformin. Discuss with your doctor before starting anything else.' },
     { q: 'Is the keto or carnivore diet good after a stroke?', a: 'No high-quality evidence supports keto or carnivore for stroke recovery, and both can raise LDL cholesterol significantly in some people. The Mediterranean pattern has the best evidence for survivors.' },
@@ -951,40 +714,8 @@ export const POST_FATIGUE = makeBlogPost({
         'The Sasquatch Daily Routine is built around energy management. Each level is calibrated to the survivor\'s current capacity. The routine starts small, scales gradually, and explicitly includes rest. Survivors report better fatigue scores within 2–3 weeks of starting because the routine breaks the boom-bust cycle.',
       ],
     },
-    {
-      h2: 'How I run a low-energy day without crashing',
-      paragraphs: [
-        'On my worst days I stopped trying to do everything at half speed and instead picked one thing that mattered and protected it. One appointment, one workout, one errand - not all three. Everything else could wait. Trying to push through a full normal day was how I ended up flat on the couch for two days after.',
-        'A few things held up over seven years: I front-load the hard stuff in the morning when the tank is fuller, I take a short flat rest before I feel wrecked rather than after, and I keep naps short so they do not ruin my night sleep. None of this is a cure. It is management. What works for me may not fit you, so run big changes past your PT or doctor.',
-      ],
-      bullets: [
-        'Pick one priority for the day and protect it',
-        'Do the hardest task in the morning',
-        'Rest before the crash, not after',
-        'Keep naps short so night sleep survives',
-      ],
-      relatedLinks: [
-        { href: '/programs/daily-routine', label: 'The Daily Routine' },
-        { href: '/blog/best-foods-for-stroke-recovery', label: 'Best foods for stroke recovery' },
-      ],
-    },
-    {
-      h2: 'Tracking fatigue and knowing when it\'s more than fatigue',
-      paragraphs: [
-        'Fatigue is invisible, which makes it easy for you to underestimate and easy for your doctor to miss. I started rating my energy one to ten a few times a day and noting sleep, meals, and anything big. After a couple of weeks the patterns showed up - bad sleep and skipped meals were dragging me down more than the stroke was on those days.',
-        'Bring that log to your appointment and ask specific questions. Do not just say you are tired. Sudden, severe, new fatigue - especially with any new neurological symptom - is not ordinary post-stroke fatigue and deserves a same-day call, not a shrug. When in doubt, call your care team.',
-      ],
-      bullets: [
-        'Rate energy a few times daily, one to ten',
-        'Note sleep, meals, and any big exertion',
-        'Ask about sleep apnea, thyroid, and medication side effects',
-        'Call promptly for sudden new fatigue with any neurological change',
-      ],
-    },
   ],
   faqs: [
-    { q: 'Is it better to push through fatigue or rest?', a: 'Both, in the right dose. Total rest deconditions you and makes fatigue worse over weeks; pushing to collapse sets you back for days. The middle path - steady, planned daily activity with rest built in before the crash - is what worked for me. Your PT can help you set an activity level that challenges without wrecking you.' },
-    { q: 'Can post-stroke fatigue come back after it improved?', a: 'Yes. Mine flares when I get sick, sleep badly for a stretch, or overload a few days in a row. It usually settles once I get back to consistent sleep, meals, and pacing. If it comes back hard and stays without an obvious reason, tell your doctor - something treatable like apnea, anemia, or a medication issue could be behind it.' },
     { q: 'How long does post-stroke fatigue last?', a: 'For many survivors it improves significantly over 3–12 months. For some it persists for years and requires ongoing management. Treatment usually helps even when it does not fully resolve.' },
     { q: 'Is post-stroke fatigue different from depression fatigue?', a: 'Yes. PSF can occur without depression and often does not respond to depression treatment alone. But the two often coexist and treating both gives the best results.' },
     { q: 'Will I always be this tired?', a: 'Most survivors see substantial improvement within the first year. Without treatment, the trajectory can be flat — but with proper sleep, movement, and depression treatment, most see meaningful improvement.' },
@@ -1048,44 +779,8 @@ export const POST_SPASTICITY = makeBlogPost({
         'The Sasquatch Daily Routine includes spasticity-aware protocols: stretch, then activate, then strengthen the opposite (antagonist) muscles. Doing this daily for 12–16 weeks moves the needle in ways that no single intervention does in isolation.',
       ],
     },
-    {
-      h2: 'Everyday triggers that make my spasticity worse',
-      paragraphs: [
-        'Spasticity is not a flat line; it flares. Over seven years I learned which things reliably crank mine up. Cold is a big one — my arm tightens the second I step outside in winter. Fatigue does it. So does stress, a full bladder, pain anywhere in the body, or getting sick. None of these cause spasticity, but they turn the volume up on it.',
-        'Knowing your triggers is power, because most of them are manageable. I keep the affected arm warm in cold weather, treat pain instead of ignoring it, and do not let myself get so tired that tone takes over. If a flare shows up out of nowhere and will not settle, that can signal an infection or another problem, so mention a sudden lasting increase in tone to your doctor rather than waiting it out.',
-      ],
-      bullets: [
-        'Cold weather and cold limbs tighten tone',
-        'Fatigue, stress, and pain all raise spasticity',
-        'A full bladder or an infection can trigger a flare',
-        'Keep the affected limb warm and treat pain early',
-        'Tell your doctor about a sudden, lasting increase in tone',
-      ],
-      relatedLinks: [
-        { href: '/blog/fatigue-after-stroke', label: 'Fatigue after stroke' },
-      ],
-    },
-    {
-      h2: 'Tracking spasticity and what to ask your care team',
-      paragraphs: [
-        'You cannot manage what you do not measure. I keep a simple log — when the tightness is worst, what I had done beforehand, and whether stretching or movement helped. Over a few weeks, patterns show up that a single clinic visit would never catch. That log is also the most useful thing I bring to appointments, because it turns \'my arm feels tight sometimes\' into real information.',
-        'Come to your PT, OT, or doctor with specific questions. Ask whether your current tone is helping or hindering function, whether botulinum toxin or a change in oral medication fits your situation, and how to adjust your home stretching and splinting. Do not self-adjust prescribed medication. And call your care team if tone suddenly worsens, if a joint stops moving through its range, or if you notice skin breakdown where a limb stays clenched.',
-      ],
-      bullets: [
-        'Log when tone is worst and what preceded it',
-        'Bring the log to every appointment',
-        'Ask whether your tone helps or hurts function right now',
-        'Ask how home stretching and splinting should change',
-        'Call about sudden worsening, lost range, or skin breakdown',
-      ],
-      relatedLinks: [
-        { href: '/programs/daily-routine', label: 'The Daily Routine' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'Is spasticity the same as a muscle cramp or spasm?', a: 'Not exactly. A cramp is a brief, involuntary contraction that lets go. Spasticity is a sustained increase in muscle tone from the brain injury itself, so the muscle stays tight rather than clenching and releasing. You can have both, and painful spasms can ride on top of spasticity. Describe exactly what you feel to your doctor, since the treatments differ.' },
-    { q: 'Can I still exercise a spastic limb without making it worse?', a: 'Usually yes, and movement is part of managing it, not something to avoid. The key is to work in a range that does not trigger a hard flare, to warm up first, and to strengthen the opposing muscles as well. If a specific exercise reliably ramps up tone or causes pain, stop and ask your PT to adjust it rather than pushing through.' },
     { q: 'When does spasticity start after a stroke?', a: 'Typically 1–6 weeks after stroke, but it can emerge later. About one-third of survivors develop clinically significant spasticity within the first year.' },
     { q: 'Is spasticity permanent?', a: 'It can be reduced and managed but rarely fully cured. With consistent treatment, function improves and contractures are prevented. Without treatment, it usually worsens.' },
     { q: 'Does Botox cure spasticity?', a: 'No — it provides a 3–4 month window of reduced tone during which rehabilitation can build new motor patterns. Repeated injections plus active rehab produce the best long-term results.' },
@@ -1155,45 +850,8 @@ export const POST_MEMORY = makeBlogPost({
         'Memory should slowly improve or stabilize over the first 1–2 years, with continued slow gains possible after that. If memory is getting noticeably worse over months, that is not typical post-stroke recovery and warrants evaluation for other causes (vascular dementia, Alzheimer\'s comorbidity, depression, medication, sleep apnea).',
       ],
     },
-    {
-      h2: 'How to track whether your memory is actually improving',
-      paragraphs: [
-        'Memory recovery is slow and easy to miss day to day, which makes it discouraging. The fix is to measure it instead of guessing. Pick a few simple, repeatable markers and check them on the same day each week. Progress that feels invisible often shows up plainly once you have four weeks of notes side by side.',
-        'I keep it low-tech. A cheap notebook beats an app you will abandon. Log the things that actually matter to your life, not abstract puzzle scores. Did you miss any appointments this week, how many times did you lose your keys, could you follow a recipe without re-reading every line. Those are functional metrics, and they are the ones your OT or speech therapist will actually care about too.',
-      ],
-      bullets: [
-        'Count missed appointments or medication doses each week',
-        'Note how often you lose everyday items like keys or your phone',
-        'Track whether you can follow a multi-step task start to finish',
-        'Check on the same day weekly so you compare like with like',
-        'Bring the log to your therapy appointments',
-      ],
-      relatedLinks: [
-        { href: '/blog/best-brain-games-books-stroke-cognitive-recovery', label: 'Best brain games and books for cognitive recovery' },
-        { href: '/blog/fatigue-after-stroke', label: 'Fatigue after stroke' },
-      ],
-    },
-    {
-      h2: 'What to ask your care team about memory',
-      paragraphs: [
-        'Most survivors leave the hospital without a clear plan for cognitive recovery, and memory rarely gets the same attention as walking or the arm. You may have to ask for it. The people who help are speech-language pathologists, occupational therapists, and neuropsychologists, and a referral is not automatic. You often have to request one.',
-        'Bring specifics to the appointment. Vague complaints get vague answers. Tell them exactly what is failing and when, ask whether any of your medications could be fogging you, and ask what is realistic to expect. And know the line that should make you pick up the phone sooner rather than wait: memory that is clearly getting worse over weeks or months, not better, is not typical recovery and deserves a call to your doctor.',
-      ],
-      bullets: [
-        'Ask for a referral to a speech therapist, OT, or neuropsychologist',
-        'Ask whether any current medication could be affecting memory',
-        'Ask what type of memory is affected and what to train',
-        'Ask what improvement is realistic in the next 6 to 12 months',
-        'Call your doctor if memory is clearly worsening over time',
-      ],
-      relatedLinks: [
-        { href: '/programs/daily-routine', label: 'The Daily Routine' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'Does poor sleep make my stroke memory problems worse?', a: 'Almost certainly, yes. Sleep is when the brain consolidates what it learned during the day, and stroke survivors often have wrecked sleep from apnea, pain, depression, or medication timing. If your nights are bad, treating that may do more for your memory than any brain game. Mention your sleep to your doctor, and if you snore or wake up gasping, ask about a sleep study.' },
-    { q: 'How soon after my stroke should I get formal cognitive testing?', a: 'There is no single right day, and very early testing can be skewed by fatigue and the acute injury still settling. Many survivors get the most useful picture once they are past the first weeks and can concentrate for a longer session. If something feels off and a brief screen comes back normal, push for a full neuropsychological evaluation. Your care team can help you time it.' },
     { q: 'Will my memory ever come back after stroke?', a: 'Most survivors see substantial improvement in the first 6–12 months. Continued gains are possible with cognitive rehab, lifestyle factors, and compensatory strategies. Full pre-stroke baseline is uncommon but functional independence is achievable for most.' },
     { q: 'Are stroke memory problems the same as dementia?', a: 'No. Stroke causes focal injury to specific brain regions; dementia causes diffuse degeneration. They can coexist (vascular dementia is common after multiple strokes), but they are distinct.' },
     { q: 'Do brain games help?', a: 'Modestly. They improve performance on the games themselves but the transfer to real-world function is limited. Cognitive rehab with a therapist transfers better.' },
@@ -1265,33 +923,8 @@ export const POST_PBA = makeBlogPost({
         'Survivors who name PBA out loud to the people in their lives report dramatically less embarrassment and isolation. Caregivers should understand that the survivor is often more upset by the episode than the people around them.',
       ],
     },
-    {
-      h2: 'What my own episodes actually felt like',
-      paragraphs: [
-        'For me the tears showed up out of nowhere - a commercial, a kind word from a nurse, sometimes nothing I could name. Inside I felt fine. My face did not agree. The first few months I thought I was losing my mind. Putting a name to it, pseudobulbar affect, took most of the shame out of it. That alone helped more than I expected.',
-        'The thing nobody told me: fighting the episode made it last longer. When I tensed up and tried to force it down, it dragged out. When I let it run and slowed my breathing, it passed faster. I am not a doctor, and this is my experience, not a prescription - but slowing down and riding it out beat white-knuckling it every time. Ask your neurologist what is safe and appropriate for you.',
-      ],
-    },
-    {
-      h2: 'Tracking your episodes and what to ask your care team',
-      paragraphs: [
-        'If you want your doctor to help, give them data instead of a vague \'I cry a lot.\' I kept a simple note on my phone - date, what set it off, how long it lasted, and how I actually felt underneath. After a few weeks the pattern was obvious, and it made the appointment far more useful.',
-        'Bring that log to your neurologist or primary care doctor and ask direct questions. Do not diagnose yourself off the internet, and do not stop or start any medication on your own. If the episodes are getting more frequent, more intense, or bleeding into a real low mood you cannot shake, that is a reason to call sooner rather than wait.',
-      ],
-      bullets: [
-        'Log the trigger, the duration, and how you felt underneath each episode',
-        'Ask whether PBA, depression, or both is driving it',
-        'Ask what treatment options fit your other medications',
-        'Ask which symptoms mean you should call before your next visit',
-      ],
-      relatedLinks: [
-        { href: '/blog/fatigue-after-stroke', label: 'Fatigue after stroke' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'Why do my PBA episodes feel worse when I\'m exhausted?', a: 'In my experience the episodes hit harder and more often on days I was wiped out or hadn\'t slept. Fatigue seems to lower the brake even further. It is not a substitute for medical advice, but managing sleep and pacing your day is worth raising with your care team - post-stroke fatigue and PBA often travel together.' },
-    { q: 'Should my caregiver try to stop the crying when it starts?', a: 'Mostly no. Trying to talk me out of it or make it stop just added pressure and made me feel more exposed. What helped was someone staying calm, giving me a little space, and treating it as no big deal. Caregivers should ask the survivor directly what helps, because it varies person to person.' },
     { q: 'Is pseudobulbar affect dangerous?', a: 'Not physically. But it is genuinely disabling socially and can lead to isolation, missed work, and avoidance of public places. Treatment is worth pursuing.' },
     { q: 'Does PBA go away?', a: 'It often improves over the first year but can persist for years. Treatment usually produces substantial relief regardless of how long it has been present.' },
     { q: 'Can PBA be triggered by anything?', a: 'Often by emotional content (sad movies, conversations about loss) but also by anything mildly emotional including humor, attention, or physical sensation. Triggers can become unpredictable over time.' },
@@ -1317,13 +950,13 @@ export const POST_FOOT_DROP_REHAB = makeBlogPost({
   h1: 'Foot drop rehab equipment: what actually worked after stroke',
   keyword: 'foot drop rehab equipment',
   subhead: 'I went from drop foot so bad I tripped over flat ground to walking without an AFO. This electric ankle trainer was the bridge — here is the honest breakdown.',
-  ctaPrimary: { href: 'https://www.amazon.com/s?k=electric+ankle+rehabilitation+trainer', label: 'See the trainer on Amazon' },
+  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See the trainer on Amazon' },
   ctaSecondary: { href: '/blog/spasticity-after-stroke', label: 'Read the spasticity guide' },
   image: '/images/blog/foot-drop-trainer.jpg',
   productCard: {
     title: 'Electric Ankle Rehabilitation Trainer',
     description: '3-speed motorized ankle rehab with -30\u00B0 to +40\u00B0 full arc. Active-assisted design forces the brain to rebuild the motor pathway.',
-    link: 'https://www.amazon.com/s?k=electric+ankle+rehabilitation+trainer',
+    link: 'https://a.co/d/0dvZe7BM',
     label: 'Check price on Amazon',
     note: 'Affiliate link — I earn a small commission at no extra cost to you. I only recommend products I have used.',
   },
@@ -1412,16 +1045,16 @@ export const POST_FOOT_DROP_REHAB = makeBlogPost({
 export const POST_AFO_VS_ELECTRIC = makeBlogPost({
   slug: 'afo-vs-electric-ankle-trainer',
   title: 'AFO vs Electric Ankle Trainer: Which Should You Buy First?',
-  description: 'AFO braces vs electric ankle rehabilitation trainers for foot drop — the pros, cons, costs, and the exact order I wish I\'d bought them in after my stroke.',
+  description: 'AFO braces vs electric ankle rehabilitation trainers — the pros, cons, and the exact order I wish I had bought them in.',
   h1: 'AFO vs electric ankle trainer: which one first?',
   keyword: 'afo vs electric ankle trainer',
   subhead: 'I bought the AFO first and used it for two years. I bought the electric trainer second and left the AFO in a drawer four months later. Here is the order I wish I had used.',
-  ctaPrimary: { href: 'https://www.amazon.com/s?k=electric+ankle+rehabilitation+trainer', label: 'See the electric trainer on Amazon' },
+  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See the electric trainer on Amazon' },
   ctaSecondary: { href: '/blog/foot-drop-rehab-equipment-review', label: 'Full foot drop review' },
   productCard: {
     title: 'Electric Ankle Rehabilitation Trainer',
     description: '3-speed motorized ankle rehab with full arc. The active trainer I used to leave my AFO in a drawer for good.',
-    link: 'https://www.amazon.com/s?k=electric+ankle+rehabilitation+trainer',
+    link: 'https://a.co/d/0dvZe7BM',
     label: 'Check price on Amazon',
     note: 'Affiliate link — I earn a small commission at no extra cost to you.',
   },
@@ -1485,35 +1118,8 @@ export const POST_AFO_VS_ELECTRIC = makeBlogPost({
         'AFOs range from $50 for off-the-shelf models to $800+ for custom carbon-fiber. They are usually covered by insurance. The electric ankle trainer is a one-time purchase at a higher price point. Over two years, the AFO costs less. Over five years, the trainer costs far less — because it eliminates the need for the AFO and reduces the risk of falls, sprains, and the secondary costs that come with them.',
       ],
     },
-    {
-      h2: 'What to look for when buying an electric ankle trainer',
-      paragraphs: [
-        'Not all of these devices are equal, and the marketing does not tell you what matters. What matters is the range of motion, whether the speed is adjustable so you can start gentle, and whether it holds your foot securely without pinching. A device that only wiggles the ankle a few degrees is not going to rebuild much.',
-        'Common mistakes: buying the cheapest one with no speed control, or the priciest \'medical\' unit before you know it fits your foot and your goals. Cheaper units are fine to start if they move through a real arc. Upgrade when you have outgrown the resistance or need more range. Before you buy anything, ask your PT whether active-assisted ankle work is appropriate for your stage.',
-      ],
-      bullets: [
-        'Adjustable speed so you can begin slow and progress',
-        'A full, real range of motion — not a token wiggle',
-        'A secure, adjustable foot strap that works with foot drop',
-        'Stable base that will not slide across the floor',
-        'Simple controls you can operate with one working hand',
-      ],
-    },
-    {
-      h2: 'Working it into your day safely (and a caregiver tip)',
-      paragraphs: [
-        'The device only helps if it becomes routine. I parked mine by the couch and used it while watching something, every single day. Short, consistent sessions beat rare long ones. Habit is what carries you on the days motivation is gone. Keep wearing your AFO for outdoor safety in the early months while the trainer does the rebuilding at home — they are not either/or.',
-        'Caregiver tip: check the skin on the affected foot after each session, especially if sensation is reduced. The survivor may not feel a hot spot or a strap digging in. A ten-second look prevents a blister that sidelines training for a week. And confirm the daily plan with the PT so the intensity is right, not just enthusiastic.',
-      ],
-      relatedLinks: [
-        { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab equipment review' },
-        { href: '/blog/best-afo-brace-drop-foot', label: 'Best AFO braces for drop foot' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'How long each day should I use an electric ankle trainer?', a: 'There is no universal number, and this is a question for your PT, but most survivors do better with short, consistent daily sessions than occasional long grinds. Start conservative, watch how the ankle and calf feel the next day, and build up gradually if there is no increased soreness or spasticity. If tone spikes, pain shows up, or the skin gets irritated, back off and check with your therapist before continuing.' },
-    { q: 'Can I use an electric ankle trainer if I have no ankle movement at all?', a: 'Possibly, but get medical clearance first. Some devices move the joint passively, which can maintain range of motion and feed sensory input to the brain even before you have voluntary movement. That said, the bigger recovery benefit comes once you can actively participate in the motion. Ask your PT whether passive or active-assisted work fits your current stage, and how to progress as movement returns.' },
     { q: 'Can I use both at the same time?', a: 'Yes. Many survivors use the AFO for safety during outdoor walks while training with the electric device at home. This is the safest hybrid approach. The AFO protects you from falls; the trainer rebuilds the muscle that will eventually make the AFO unnecessary.' },
     { q: 'How do I know when to stop using the AFO?', a: 'Test indoors first. Walk across a room without the AFO. If you can lift the toe on every step and the gait is stable, you are close. A formal gait analysis by a physical therapist is the safest way to confirm.' },
     { q: 'Will insurance cover the electric trainer?', a: 'Some insurers cover it as durable medical equipment with a prescription. Others classify it as a consumer fitness device. Call your insurer and ask about coverage for "ankle rehabilitation device" or "motorized ankle trainer." A letter from your physical therapist helps.' },
@@ -1534,18 +1140,18 @@ export const POST_AFO_VS_ELECTRIC = makeBlogPost({
 // =============================================================================
 export const POST_HOME_BP_MONITOR = makeBlogPost({
   slug: 'best-blood-pressure-monitor-stroke-survivor',
-  title: 'Best Blood Pressure Monitor for Stroke Survivors',
+  title: 'The Best Blood Pressure Monitor for Stroke Survivors: Why I Track Twice Daily',
   description: 'The home blood pressure monitor I use after stroke. Why twice-daily tracking is non-negotiable for preventing a second stroke, and which features matter.',
   h1: 'The best blood pressure monitor for stroke survivors',
   keyword: 'best blood pressure monitor stroke survivor',
   subhead: 'Blood pressure control is the single most important thing you can do to prevent a second stroke. I have tracked mine twice daily for seven years. Here is the monitor I trust and why.',
-  ctaPrimary: { href: 'https://www.amazon.com/s?k=upper+arm+blood+pressure+monitor', label: 'See recommended monitors on Amazon' },
+  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See recommended monitors on Amazon' },
   ctaSecondary: { href: '/blog/how-to-prevent-a-second-stroke', label: 'Full prevention checklist' },
   image: '/images/blog/bp-monitor.jpg',
   productCard: {
     title: 'Home Blood Pressure Monitor',
     description: 'Upper-arm cuff with validated accuracy (AAMI/ESH), irregular heartbeat detection, and memory for 60+ readings. The same type I have used twice daily for seven years.',
-    link: 'https://www.amazon.com/s?k=upper+arm+blood+pressure+monitor',
+    link: 'https://a.co/d/0dvZe7BM',
     label: 'See recommended monitors on Amazon',
     note: 'Affiliate link — I earn a small commission at no extra cost to you.',
   },
@@ -1588,41 +1194,8 @@ export const POST_HOME_BP_MONITOR = makeBlogPost({
         { href: '/blog/how-to-prevent-a-second-stroke', label: 'How to prevent a second stroke' },
       ],
     },
-    {
-      h2: 'Cuff size and fit — the accuracy killer',
-      paragraphs: [
-        'The most common reason home readings are wrong is the wrong cuff. A cuff that is too small reads high; too large reads low. Measure the circumference of your upper arm and match it to the cuff\'s range before you buy, because the standard cuff that ships in the box does not fit every arm.',
-        'After a stroke, decide which arm to measure and stick with it. If one arm is weak or tends to swell, ask your doctor which side to use — sometimes there is a medical reason to favor one. Position matters as much as the cuff: bare arm, cuff snug but not tight, arm supported at heart level. A sloppy setup turns a good monitor into guesswork.',
-      ],
-      bullets: [
-        'Measure your upper-arm circumference and match the cuff range',
-        'A too-small cuff reads high; a too-large cuff reads low',
-        'Pick one arm and use it consistently',
-        'Ask your doctor if one arm should be avoided',
-        'Bare arm, supported at heart level, cuff snug not tight',
-      ],
-    },
-    {
-      h2: 'Budget vs premium: what you actually need to spend',
-      paragraphs: [
-        'A validated upper-arm monitor does not have to be expensive. The cheapest validated cuff measures blood pressure as accurately as a premium one — accuracy comes from validation, not price. Do not overpay for a fancy screen. Do pay for a correctly sized cuff and, if you have AFib, an irregular-heartbeat indicator.',
-        'Where premium can earn its price is logging. If writing numbers down is a barrier, a Bluetooth app that stores and charts readings makes it far more likely you will bring usable data to appointments. But an app is not a substitute for a validated cuff. Get the accurate device first, then decide if the convenience features are worth it. Bring your monitor to your next visit so your team can confirm it against theirs.',
-      ],
-      bullets: [
-        'Accuracy comes from validation, not price',
-        'Do not skip a correctly sized cuff to save a few dollars',
-        'Pay for irregular-heartbeat detection if you have AFib',
-        'Bluetooth logging helps only if manual logging is your barrier',
-        'Caregiver tip: a shared app lets family track trends between visits',
-      ],
-      relatedLinks: [
-        { href: '/programs/daily-routine', label: 'The Daily Routine' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'Why are my home readings different from the doctor\'s office?', a: 'Some difference is normal. Office readings can run higher from white-coat anxiety, and home readings vary with time of day, posture, and what you just did. That is exactly why home tracking is useful. Bring your monitor and a log to your appointment so your team can compare devices and see your real trend.' },
-    { q: 'What should I do if I get a very high reading at home?', a: 'First, rest five minutes and measure again with correct technique, since one-off high readings happen. If it stays very high, or you have stroke warning signs like weakness, vision changes, or a sudden severe headache, call 911. For readings that are high but without symptoms, contact your doctor for guidance rather than adjusting anything yourself.' },
     { q: 'What is the best BP target after stroke?', a: 'Most stroke survivors should aim for under 130/80. Hemorrhagic stroke survivors may need even tighter control. Your neurologist sets the target — track toward it, not a generic number.' },
     { q: 'How often should I check my BP at home?', a: 'Twice daily is the standard for the first year after stroke. Once daily is acceptable if your readings are stable for six months. Never less than three times per week.' },
     { q: 'Are wrist blood pressure monitors accurate?', a: 'Wrist monitors are less accurate than upper-arm cuffs because the wrist is farther from the heart and position changes affect the reading. Use an upper-arm cuff unless you have a medical reason not to.' },
@@ -1643,17 +1216,17 @@ export const POST_HOME_BP_MONITOR = makeBlogPost({
 // =============================================================================
 export const POST_RESISTANCE_BANDS = makeBlogPost({
   slug: 'best-resistance-bands-stroke-recovery',
-  title: 'Best Resistance Bands for Stroke Recovery',
+  title: 'The Best Resistance Bands for Stroke Recovery (That I Actually Used)',
   description: 'The resistance bands that helped me rebuild strength after stroke. How to use them safely, which types to buy, and why they beat weights in the first year.',
   h1: 'The best resistance bands for stroke recovery',
   keyword: 'best resistance bands stroke recovery',
   subhead: 'I rebuilt my left side with a $20 set of resistance bands before I ever touched a dumbbell. Here is the exact set I used and how to use them without hurting yourself.',
-  ctaPrimary: { href: 'https://www.amazon.com/s?k=resistance+band+set', label: 'See band sets on Amazon' },
+  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See band sets on Amazon' },
   ctaSecondary: { href: '/programs/daily-routine', label: 'The Daily Routine' },
   productCard: {
     title: 'Resistance Band Set for Stroke Recovery',
     description: 'Light to heavy loop and tube bands with handles. The exact progression I used to rebuild strength before touching a dumbbell.',
-    link: 'https://www.amazon.com/s?k=resistance+band+set',
+    link: 'https://a.co/d/0dvZe7BM',
     label: 'See band sets on Amazon',
     note: 'Affiliate link — I earn a small commission at no extra cost to you.',
   },
@@ -1699,43 +1272,8 @@ export const POST_RESISTANCE_BANDS = makeBlogPost({
         'Never anchor a band to a door without a proper door anchor. Never stand on a band with bare feet — it will slip. Never use a band that is frayed or cracked. Start with 2–3 sets of 10–15 reps. Rest 60–90 seconds between sets. If you feel pain that is sharp or joint-level, stop. If you feel fatigue that is muscular, continue.',
       ],
     },
-    {
-      h2: 'How to choose a band set without wasting money',
-      paragraphs: [
-        'The mistake I made first was buying a single medium band. One band gives you one resistance level, and a recovering muscle needs a ladder, not a rung. Buy a set that spans light to heavy so you can drop down on bad days and climb up on good ones. That range is the entire point.',
-        'Look for bands labeled by resistance, not just by color, because color coding is not standardized across brands. Handles should be stitched, not glued. If you go with tube bands, get a clip system so you can stack resistance instead of buying a whole new set later. And ask your PT or OT which movements to prioritize before you spend a dime — they can steer you toward the resistance range that matches your current strength.',
-      ],
-      bullets: [
-        'Buy a graduated set, not a single band — you need the full ladder',
-        'Check that resistance is labeled, not just color-coded',
-        'Choose stitched handles and a set that includes a door anchor',
-        'Fabric loop bands slip less than thin rubber ones for leg work',
-        'Ask your PT which resistance range fits your strength today',
-      ],
-      relatedLinks: [
-        { href: '/blog/best-grip-strengthener-stroke-recovery', label: 'Best grip strengtheners for stroke recovery' },
-      ],
-    },
-    {
-      h2: 'Working bands into a daily routine',
-      paragraphs: [
-        'Bands only work if you actually reach for them. I keep mine looped over a door handle in plain sight, not buried in a drawer. Two or three short sessions a day beat one long session your affected side is too fatigued to finish. I pair band work with something I already do — a few rows before coffee, a few presses before dinner. The habit carries the reps.',
-        'Progress is slow and quiet with bands, so track it. Write down the band color, the reps, and how the affected side felt. When the same band starts feeling easy for all your sets, that is your signal to move up. If something hurts at the joint rather than the muscle, back off and ask your therapist before you push again.',
-      ],
-      bullets: [
-        'Keep bands visible so you actually use them',
-        'Split work into short daily sessions instead of one long grind',
-        'Log band color, reps, and how the weak side felt',
-        'Caregiver tip: spot from the weak side and watch for the band slipping off a foot',
-      ],
-      relatedLinks: [
-        { href: '/programs/daily-routine', label: 'The 5-level Daily Routine' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'How long do resistance bands last before they wear out?', a: 'It depends on use and storage, but latex bands degrade with heat, sunlight, and stretching. Check for small cracks, tears, or shiny thinning spots before every session and replace any band that shows them. I keep mine out of direct sun and never store them stretched. A band that snaps mid-rep is a fall risk, so when in doubt, throw it out.' },
-    { q: 'Loop bands or tube bands with handles — which should I buy first?', a: 'If your grip is still weak, start with flat loop bands for leg and hip work, since they do not require a strong hand grip. Add tube bands with handles once your grip can hold on safely. Many survivors end up owning both. Ask your OT which fits your current hand function before buying.' },
     { q: 'Can resistance bands replace weights entirely?', a: 'For the first 12–18 months, yes. After that, most survivors benefit from adding light weights. Bands remain useful for warm-ups, mobility work, and travel. I still use bands daily for shoulder prehab and hip activation.' },
     { q: 'How do I know which resistance level to start with?', a: 'Start with the lightest band. You should be able to complete 15 reps with good form. If you can do more than 20, move to the next band. If you cannot do 8, drop to a lighter band.' },
     { q: 'Are bands safe for spastic muscles?', a: 'Yes, but with caution. Spastic muscles fatigue faster and can cramp. Use lighter resistance, fewer reps, and longer rest periods. Stretch after, not before. If the muscle cramps, stop and stretch gently.' },
@@ -1762,12 +1300,12 @@ export const POST_SHOWER_SAFETY = makeBlogPost({
   keyword: 'shower safety stroke survivor',
   image: '/images/blog/shower-safety-dark.png',
   subhead: 'I fell twice in the shower. The second fall was the last one because I finally installed the right gear. Here is the setup that kept me safe for six years.',
-  ctaPrimary: { href: 'https://www.amazon.com/s?k=shower+safety+grab+bar+bench', label: 'See shower safety gear on Amazon' },
+  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See shower safety gear on Amazon' },
   ctaSecondary: { href: '/for/caregivers', label: 'For caregivers' },
   productCard: {
     title: 'Shower Safety Kit',
     description: 'Shower chair, professional grab bars, non-slip mat, and handheld showerhead. The exact setup I used for 6+ years without a single fall.',
-    link: 'https://www.amazon.com/s?k=shower+safety+grab+bar+bench',
+    link: 'https://a.co/d/0dvZe7BM',
     label: 'See shower safety gear on Amazon',
     note: 'Affiliate link — I earn a small commission at no extra cost to you.',
   },
@@ -1811,41 +1349,8 @@ export const POST_SHOWER_SAFETY = makeBlogPost({
         { href: '/blog/complete-stroke-recovery-home-kit', label: 'Complete stroke recovery home kit' },
       ],
     },
-    {
-      h2: 'How to choose a shower chair for your bathroom',
-      paragraphs: [
-        'Not every chair fits every shower. Measure the inside of your tub or stall before you buy, because a bench that is too wide will not sit level and a chair that is too tall makes transfers harder. If you have a tub wall to climb over, a transfer bench that spans the wall is safer than a chair that lives entirely inside the tub.',
-        'Look for adjustable, rubber-tipped legs, a back and armrests if your balance is shaky, and drainage holes so you are not sitting in a puddle. Weight capacity matters — check it. If space is tight, a folding chair stores easily, but confirm it locks solidly open first. When in doubt, ask your OT to recommend a style for your specific setup and ability.',
-      ],
-      bullets: [
-        'Measure your tub or stall before buying',
-        'Use a transfer bench if you have a tub wall to cross',
-        'Get a back and armrests if balance is unsteady',
-        'Check weight capacity and non-slip rubber tips',
-        'Ask your OT which style fits your bathroom and ability',
-      ],
-      relatedLinks: [
-        { href: '/blog/threshold-ramps-grab-bars-stroke-home-accessibility', label: 'Threshold ramps and grab bars for a safer home' },
-      ],
-    },
-    {
-      h2: 'The mistakes that put survivors back on the floor',
-      paragraphs: [
-        'Most shower falls I hear about trace back to the same handful of shortcuts. People trust suction grab bars because they are easy to install. They skip the mat because the tub feels fine dry. They set the water too hot and stand up fast, and the blood pressure drop does the rest. Every one of those is avoidable.',
-        'The other big one is doing too much standing too soon. There is no prize for showering on your feet before you are ready. Sit, wash, and stand only to rinse if you must. Keep everything you need within reach so you are not twisting or bending. Build in a rest before and after — the shower is more work than it looks after a stroke.',
-      ],
-      bullets: [
-        'Do not trust suction-cup grab bars for real weight',
-        'Never skip the non-slip mat, even on a dry-feeling tub',
-        'Avoid very hot water and standing up quickly',
-        'Keep soap and shampoo within arm\'s reach',
-        'Caregiver tip: stay within earshot and agree on a check-in word',
-      ],
-    },
   ],
   faqs: [
-    { q: 'Does insurance or Medicare cover shower safety equipment?', a: 'Coverage is inconsistent. Standard shower chairs and grab bars are often treated as non-covered convenience items rather than durable medical equipment, though some plans and supplemental programs help. Ask your provider and your plan directly, and get any recommendation in writing from your OT, which can help your case.' },
-    { q: 'What water temperature is safest after a stroke?', a: 'Warm, not hot. Very hot water can widen blood vessels and drop your blood pressure, which raises dizziness and fall risk, and reduced sensation on the affected side makes scalding easier to miss. Set your water heater to a safe maximum and test the water with your unaffected hand first. Ask your doctor if you have specific concerns.' },
     { q: 'How long should I use a shower chair?', a: 'Use it until you can stand in the shower for 10 minutes without holding the grab bar. For most survivors, that is 6–12 months. Some use it longer. There is no shame in using it as long as you need it.' },
     { q: 'Are suction cup grab bars safe?', a: 'No. Suction cups can fail without warning, especially on textured tile or when the surface is wet. Only use grab bars installed with screws into wall studs. If you rent, ask your landlord. Medical necessity is a valid reason for installation.' },
     { q: 'What about walk-in tubs?', a: 'Walk-in tubs are expensive and slow to fill and drain. Most survivors are better served by a shower chair + handheld showerhead combo. If you have the budget and the bathroom space, a walk-in shower with a zero-threshold entry is ideal.' },
@@ -1866,18 +1371,18 @@ export const POST_SHOWER_SAFETY = makeBlogPost({
 // =============================================================================
 export const POST_ADAPTIVE_EATING = makeBlogPost({
   slug: 'adaptive-eating-utensils-stroke',
-  title: 'Adaptive Eating Utensils for Stroke Survivors',
+  title: 'Adaptive Eating Utensils for Stroke: What I Used When One Hand Did the Work of Two',
   description: 'The adaptive eating utensils that helped me feed myself with one functional hand after stroke. Real recommendations, real prices, and what to skip.',
   h1: 'Adaptive eating utensils for stroke survivors',
   keyword: 'adaptive eating utensils stroke',
   subhead: 'The first time I tried to eat with one hand after my stroke, I knocked a bowl of soup across the table. These utensils were the bridge between that moment and feeding myself with dignity.',
-  ctaPrimary: { href: 'https://www.amazon.com/s?k=adaptive+eating+utensils', label: 'See adaptive utensils on Amazon' },
+  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See adaptive utensils on Amazon' },
   ctaSecondary: { href: '/blog/foot-drop-rehab-equipment-review', label: 'Read the foot drop guide' },
   image: '/images/blog/adaptive-utensils.jpg',
   productCard: {
     title: 'Adaptive Eating Utensil Set',
     description: 'Rocker knife, weighted spoon, plate guard, and non-slip mat. The bridge from "I cannot eat" to independent meals.',
-    link: 'https://www.amazon.com/s?k=adaptive+eating+utensils',
+    link: 'https://a.co/d/0dvZe7BM',
     label: 'See adaptive utensils on Amazon',
     note: 'Affiliate link — I earn a small commission at no extra cost to you.',
   },
@@ -1918,43 +1423,8 @@ export const POST_ADAPTIVE_EATING = makeBlogPost({
         'I tried a universal cuff (a strap that holds the utensil to the hand). It worked but it was awkward and embarrassing. I used it for two weeks, then switched to the weighted spoon and never looked back. I also skipped the swivel spoon — the bowl stays level regardless of hand angle. It sounded smart but it was finicky and hard to clean.',
       ],
     },
-    {
-      h2: 'How to match utensils to your specific deficit',
-      paragraphs: [
-        'There is no single stroke utensil. What you need depends on what your affected side actually does. If your grip is weak, built-up or foam-handled utensils are easier to hold. If you have tremor, weight helps steady the hand. If one hand is essentially out of the picture, a rocker knife and a plate guard let the working hand do the whole job.',
-        'Buy for the problem in front of you, not the whole catalog. I wasted money on gadgets that solved problems I did not have. Start with one or two items that address your biggest daily frustration, use them for a couple of weeks, then add only if you hit a new wall. An OT can tell you which adaptation fits your grip and coordination right now.',
-      ],
-      bullets: [
-        'Weak grip: built-up or foam-handled utensils',
-        'Tremor: weighted utensils for steadiness',
-        'One working hand: rocker knife plus plate guard',
-        'Buy for your biggest frustration first, then reassess',
-        'Ask your OT which adaptation fits your hand today',
-      ],
-      relatedLinks: [
-        { href: '/blog/best-grip-strengthener-stroke-recovery', label: 'Best grip strengtheners for stroke recovery' },
-      ],
-    },
-    {
-      h2: 'Setup, cleanup, and keeping your dignity at the table',
-      paragraphs: [
-        'The gear is half of it; the setup is the other half. A non-slip mat under the plate, everything within reach of the working hand, and a cup you do not have to lift far all reduce the little failures that make meals stressful. I set my place the same way every time so I am not fighting the table before I even start eating.',
-        'Fatigue is real — eating with one hand is work, and a big plate can feel like a marathon. Smaller portions served more often beat one exhausting meal. Check that whatever you buy is easy to clean, because anything hard to wash ends up unused. If swallowing feels off, not just handling the food, tell your doctor or speech therapist rather than pushing through.',
-      ],
-      bullets: [
-        'Non-slip mat and everything within reach of the working hand',
-        'Set your place the same way every meal to build a routine',
-        'Smaller, more frequent portions beat one tiring meal',
-        'Caregiver tip: set up the plate, then step back and let them eat',
-      ],
-      relatedLinks: [
-        { href: '/blog/fatigue-after-stroke', label: 'Fatigue after stroke' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'Are adaptive utensils dishwasher safe?', a: 'Many are, but weighted and foam-handled pieces sometimes are not, since heat can loosen weights or break down foam. Check the label before you buy if easy cleaning matters to you. Anything that is a hassle to wash tends to end up in a drawer, so ease of cleaning is a real feature, not an afterthought.' },
-    { q: 'My hand tires quickly during meals — what can help?', a: 'Lighter utensils, smaller portions, and shorter, more frequent meals all reduce the load. Rest your forearm on the table so your hand is not fighting gravity the whole time. If fatigue is severe or getting worse, mention it to your OT or doctor, since it can point to something worth addressing in your therapy plan.' },
     { q: 'Where do I buy adaptive eating utensils?', a: 'Medical supply stores, Amazon, and adaptive equipment retailers all carry them. The rocker knife and plate guard are available on Amazon for under $20 each. Start with the basics and add as needed.' },
     { q: 'Will I always need adaptive utensils?', a: 'Most survivors do not. They are a bridge, not a permanent solution. I used mine for about 8 months. By month 6, I could use a standard fork most of the time. By month 10, I only used the rocker knife for tough foods. By year 2, I was back to standard utensils for everything.' },
     { q: 'Are weighted utensils just for tremor?', a: 'No. The weight also helps with proprioception — the brain\'s sense of where the hand is in space. After stroke, proprioception is often impaired. The weight gives the brain more feedback to work with.' },
@@ -1980,13 +1450,13 @@ export const POST_CPAP_STROKE = makeBlogPost({
   h1: 'CPAP machine after stroke: why I wish I had started sooner',
   keyword: 'cpap machine stroke survivor',
   subhead: 'I found out I had sleep apnea three years after my stroke. Three years of uncontrolled hypertension, three years of morning headaches, three years of fatigue I blamed on recovery. CPAP changed everything.',
-  ctaPrimary: { href: 'https://www.amazon.com/s?k=cpap+machine', label: 'See CPAP machines on Amazon' },
+  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See CPAP machines on Amazon' },
   ctaSecondary: { href: '/blog/how-to-prevent-a-second-stroke', label: 'Full prevention checklist' },
   image: '/images/blog/cpap-machine.jpg',
   productCard: {
     title: 'CPAP Machine for Sleep Apnea',
     description: 'Auto-adjusting APAP with heated humidifier and quiet motor. The machine that ended my morning headaches and cut my fatigue in half.',
-    link: 'https://www.amazon.com/s?k=cpap+machine',
+    link: 'https://a.co/d/0dvZe7BM',
     label: 'See CPAP machines on Amazon',
     note: 'Affiliate link — I earn a small commission at no extra cost to you.',
   },
@@ -2027,41 +1497,8 @@ export const POST_CPAP_STROKE = makeBlogPost({
         'Mask fit — nasal pillows for minimal contact, nasal mask for mouth-breathers, full-face for high-pressure needs',
       ],
     },
-    {
-      h2: 'Getting a CPAP: the prescription and insurance path',
-      paragraphs: [
-        'You cannot just buy a therapeutic CPAP off the shelf like a blood pressure cuff. In the US it requires a diagnosis from a sleep study and a prescription. That study can happen in a lab or, increasingly, at home with a take-home kit your doctor orders. Push for it if you suspect apnea — I lost three years I did not need to.',
-        'Once you have a prescription, most machines come through a durable medical equipment (DME) supplier, and insurance often covers a large share if you meet the criteria and prove you are using it. Many plans require a compliance period where the machine reports your nightly hours. Ask your provider exactly what usage they need to see, and keep the data — it protects your coverage.',
-      ],
-      bullets: [
-        'Start with a sleep study — lab or at-home, your doctor decides',
-        'A therapeutic machine needs a prescription in the US',
-        'Insurance often covers much of the cost through a DME supplier',
-        'Many plans require a documented compliance period',
-        'Ask exactly how many nightly hours your plan wants to see',
-      ],
-      relatedLinks: [
-        { href: '/blog/how-to-prevent-a-second-stroke', label: 'How to prevent a second stroke' },
-      ],
-    },
-    {
-      h2: 'How I stuck with CPAP when I wanted to quit',
-      paragraphs: [
-        'The first week I hated it. The mask felt claustrophobic and I ripped it off in my sleep more than once. What got me through was treating it like rehab: small, boring, repeated exposure. I wore the mask for twenty minutes while watching TV before ever trying to sleep in it, so my face got used to it without the pressure of the night.',
-        'The humidifier setting fixed the dry mouth that almost made me stop. A different mask fixed the leaks. If yours is not working, the answer is almost never to give up — it is a fit or a setting problem your DME provider or respiratory therapist can solve. Keep a note of what bothers you each night so the fix is specific, not a guess.',
-      ],
-      bullets: [
-        'Wear the mask awake first to desensitize before sleeping in it',
-        'Use the humidifier to stop dry mouth and nasal irritation',
-        'Fix leaks by trying a different mask style, not more strap tension',
-        'Log nightly problems so your provider can target the fix',
-        'Caregiver tip: a partner noticing gasping or silence is worth reporting',
-      ],
-    },
   ],
   faqs: [
-    { q: 'How do I clean a CPAP machine?', a: 'Wipe the mask cushion daily and wash the mask, tubing, and humidifier tub in warm soapy water regularly, letting everything air dry fully. Follow the manufacturer\'s instructions and replace filters and worn parts on their schedule. Dirty equipment causes irritation and leaks, which is a top reason people quit.' },
-    { q: 'Can I travel with a CPAP machine?', a: 'Yes. Most machines are travel-sized and, in the US, count as a medical device you can carry on a plane without it counting as a regular bag. Bring your prescription, an extension cord, and a way to keep it clean. Missing nights on the road is exactly when your blood pressure can drift, so pack it.' },
     { q: 'How do I know if I have sleep apnea after stroke?', a: 'Ask for a sleep study. If you snore, wake up tired, or your partner reports gasping or long pauses in breathing, get a sleep study. Most neurologists order one routinely after stroke, but if yours did not, ask for it.' },
     { q: 'Does CPAP prevent a second stroke?', a: 'CPAP significantly reduces blood pressure surges, improves oxygenation, and reduces cardiovascular strain. These are all stroke risk factors. The data is strongest for survivors with moderate-to-severe apnea. Even mild apnea benefits from treatment.' },
     { q: 'How long does it take to get used to CPAP?', a: 'Most people adapt within 2–4 weeks. The first week is the hardest. Start with short naps, use the ramp feature that starts at low pressure, and work with a respiratory therapist to adjust the mask fit. Do not give up in the first week.' },
@@ -2082,18 +1519,18 @@ export const POST_CPAP_STROKE = makeBlogPost({
 // =============================================================================
 export const POST_GAIT_TRAINING_HOME = makeBlogPost({
   slug: 'gait-training-home-stroke-recovery',
-  title: 'Gait Training at Home After Stroke: Gear Guide',
+  title: 'Gait Training at Home After Stroke: The Equipment I Used to Walk Again',
   description: 'The gait training equipment I used at home to rebuild my walking after stroke. Parallel bars, balance boards, and the exact setup that worked.',
   h1: 'Gait training at home after stroke',
   keyword: 'gait training home stroke recovery',
   subhead: 'I walked in parallel bars at a clinic, then in my hallway at home, then down the block, then up a trail. Here is the equipment that bridged the gap between clinic and real life.',
-  ctaPrimary: { href: 'https://www.amazon.com/s?k=gait+training+equipment', label: 'See gait training equipment on Amazon' },
+  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See gait training equipment on Amazon' },
   ctaSecondary: { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab guide' },
   image: '/images/blog/gait-training-home.jpg',
   productCard: {
     title: 'Gait Training Equipment Kit',
     description: 'Doorway pull-up bar, wobble board, gait belt, and balance training tools. The same setup I used to go from wheelchair to unassisted walking.',
-    link: 'https://www.amazon.com/s?k=gait+training+equipment',
+    link: 'https://a.co/d/0dvZe7BM',
     label: 'See gait training equipment on Amazon',
     note: 'Affiliate link — I earn a small commission at no extra cost to you.',
   },
@@ -2135,44 +1572,8 @@ export const POST_GAIT_TRAINING_HOME = makeBlogPost({
         { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids for stroke survivors' },
       ],
     },
-    {
-      h2: 'Setting up a safe home gait station',
-      paragraphs: [
-        'Before you add equipment, make the space safe. Clear a straight path with something solid to grab on both sides — a hallway with walls close enough to catch yourself is ideal. Get rid of throw rugs, cords, and clutter, because the whole point of gait practice is challenging your balance, and you want the falls that do not happen to be the ones you designed out.',
-        'Good lighting matters more than survivors expect, since vision fills in where balance is still weak. Anything you anchor, like a doorway bar, has to be rated for real weight and installed properly, not wedged in. Keep a phone within reach in case you go down. And do not train alone in the early weeks — a spotter or a gait belt with a caregiver is not optional until your PT says you are steady enough.',
-      ],
-      bullets: [
-        'Clear rugs, cords, and clutter from the practice path',
-        'Choose a route with something solid to grab on both sides',
-        'Add good lighting — vision supports weak balance',
-        'Only anchor equipment rated and installed for real weight',
-        'Keep a phone within reach and do not train alone early on',
-      ],
-      relatedLinks: [
-        { href: '/blog/threshold-ramps-grab-bars-stroke-home-accessibility', label: 'Threshold ramps and grab bars for a safer home' },
-      ],
-    },
-    {
-      h2: 'Tracking gait progress so you know it is working',
-      paragraphs: [
-        'Gait gains are slow enough that you will not feel them day to day, which is exactly why survivors quit. Measure instead of relying on how you feel. Time yourself walking a set distance, count how many steps it takes, or note how far you get before you have to rest. Write it down weekly. The number moving is proof the work is paying off even when your body feels the same.',
-        'Watch quality, not just speed. Are you clearing your toe, or catching it? Is your stance even, or are you rushing off the weak leg? A phone video from the side every couple of weeks shows changes your eyes miss. Bring those videos and numbers to your PT. And call your care team if something new appears — a knee that buckles, new pain, or a foot that starts catching more, not less.',
-      ],
-      bullets: [
-        'Time a set distance and log it weekly',
-        'Count steps or note how far you get before resting',
-        'Film yourself from the side every couple of weeks',
-        'Watch toe clearance and even weight-bearing, not just speed',
-        'Call your care team about buckling, new pain, or more tripping',
-      ],
-      relatedLinks: [
-        { href: '/programs/daily-routine', label: 'The Daily Routine' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'How much space do I need for home gait training?', a: 'Less than you think. A clear ten to fifteen foot straight path is enough for walking practice, and a doorway plus a couple of feet handles balance and weight-shift drills. What matters more than size is that the space is clear, well lit, and has something sturdy to grab. A hallway is often the best room in the house for it.' },
-    { q: 'What should I wear on my feet for gait training?', a: 'Supportive, closed shoes with a firm, non-slip sole and a snug fit — the same kind you would walk outside in. Skip socks alone, loose slippers, and slick floors, which all invite a slide. If you use an AFO or ankle brace, train in the shoe you actually wear it in so your practice matches real life.' },
     { q: 'How long does gait training take after stroke?', a: 'With daily practice, most survivors see meaningful improvement in 3–6 months. Full independence from assistive devices can take 6–18 months depending on severity, age, and consistency.' },
     { q: 'Can I do gait training without a therapist?', a: 'Early gait training should be supervised. After you have learned the basic mechanics from a physical therapist, home practice is essential. The therapist gives you the form; the home practice gives you the volume.' },
     { q: 'Is a treadmill better than walking outside?', a: 'A treadmill is safer and lets you control speed and incline. Walking outside is more functional but riskier. I used a treadmill for the first 6 months, then transitioned to outdoor walking. Both have value.' },
@@ -2193,18 +1594,18 @@ export const POST_GAIT_TRAINING_HOME = makeBlogPost({
 // =============================================================================
 export const POST_STROKE_GIFT_GUIDE = makeBlogPost({
   slug: 'stroke-recovery-gift-guide',
-  title: 'Stroke Recovery Gift Guide: What Actually Helps',
+  title: 'Stroke Recovery Gift Guide: What Actually Helps (From Someone Who Got It Wrong)',
   description: 'The gifts that actually help stroke survivors — and the ones that do not. Written by a survivor who received both the helpful and the useless.',
   h1: 'Stroke recovery gift guide',
   keyword: 'stroke recovery gift guide',
   subhead: 'I got a lot of gifts after my stroke. Some of them sit in a closet. Some of them are still in use seven years later. Here is the honest list.',
-  ctaPrimary: { href: 'https://www.amazon.com/s?k=stroke+recovery+gifts', label: 'See gift ideas on Amazon' },
+  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See gift ideas on Amazon' },
   ctaSecondary: { href: '/for/caregivers', label: 'For caregivers' },
   image: '/images/blog/stroke-gift-bundle.jpg',
   productCard: {
     title: 'Stroke Recovery Gift Bundle',
     description: 'Shower chair, grab bars, adaptive utensils, BP monitor, and resistance bands. The practical gifts that say "I see what you are going through."',
-    link: 'https://www.amazon.com/s?k=stroke+recovery+gifts',
+    link: 'https://a.co/d/0dvZe7BM',
     label: 'See gift ideas on Amazon',
     note: 'Affiliate link — I earn a small commission at no extra cost to you.',
   },
@@ -2252,41 +1653,8 @@ export const POST_STROKE_GIFT_GUIDE = makeBlogPost({
         { href: '/blog/adaptive-eating-utensils-stroke', label: 'Adaptive eating utensils for stroke' },
       ],
     },
-    {
-      h2: 'Match the gift to the recovery stage',
-      paragraphs: [
-        'A gift that lands in the hospital is the wrong gift a year later, and the reverse is true too. Early on, when I could barely use one side, the useful stuff was comfort and safety - nothing that demanded two hands or coordination I did not have. Mid-recovery, once I was working with my PT and OT, the rehab tools mattered: bands, a grip tool, an ankle trainer. Long-game, it shifted again toward real fitness and cognitive work.',
-        'So before you buy, ask where they actually are. If you are not sure, ask them or ask their caregiver. Matching the gift to the stage is the difference between something they use daily and something that sits in a closet reminding them of what is hard.',
-      ],
-      bullets: [
-        'Hospital and early weeks: soft blanket, one-hand water bottle, phone stand, headphones',
-        'Mid-recovery: resistance bands, grip tool, adaptive utensils, a good pair of shoes',
-        'Long-game: balance board, brain-game workbooks, fitness gear they can grow into',
-        'When unsure: a gift card for adaptive equipment or grocery delivery',
-      ],
-      relatedLinks: [
-        { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery' },
-        { href: '/blog/best-brain-games-books-stroke-cognitive-recovery', label: 'Best brain games and books for stroke recovery' },
-        { href: '/blog/best-balance-board-stroke-recovery', label: 'Best balance boards for stroke recovery' },
-      ],
-    },
-    {
-      h2: 'Common mistakes well-meaning gift-givers make',
-      paragraphs: [
-        'The pattern I saw over and over: people bought for the person I used to be, not the person recovering. That is the core mistake. The runner-up mistakes are practical - buying equipment that is too advanced, or too heavy, or that needs a setup the survivor cannot do alone.',
-        'The fix is boring but it works: keep it simple, keep it usable one-handed if the affected side is not back yet, and be willing to set the thing up yourself. A gift they cannot open or assemble is a chore, not a gift. When in doubt, err toward practical over sentimental - and if you buy rehab gear, check with their therapist that it fits their stage.',
-      ],
-      bullets: [
-        'Buying rehab equipment too advanced for their current ability',
-        'Heavy or bulky items they cannot lift or store one-handed',
-        'Anything that needs two-handed assembly with no help offered',
-        'Sentimental clutter over something that solves a daily problem',
-      ],
-    },
   ],
   faqs: [
-    { q: 'How much should I spend on a stroke recovery gift?', a: 'Price is not the point - fit is. Some of the best gifts I got cost under twenty dollars: a jar opener, a reacher, a good water bottle. If you want to spend more, put it toward something practical like a shower chair or a gift card for adaptive equipment. Expensive and useless is worse than cheap and used every day.' },
-    { q: 'What is a good gift for the caregiver instead of the survivor?', a: 'Caregivers get forgotten and they burn out. A meal delivery, a cleaning service, a gift card for a night off, or just showing up to handle a chore all help. Ask the caregiver what would take something off their plate. In my recovery, the people who helped my family helped me too.' },
     { q: 'What is the best gift for a stroke survivor in the hospital?', a: 'Comfort items that do not require two hands: a soft blanket, a phone stand that props the phone at a readable angle, a water bottle with a straw, headphones, and a handwritten note. Avoid flowers — many hospitals do not allow them in ICU or neuro units.' },
     { q: 'Should I ask what they need?', a: 'Yes. Some survivors are uncomfortable asking. Others have a clear list. Ask directly: "What would make your day easier?" The answer is usually practical and affordable. A reacher tool. A jar opener. A shower chair. These cost less than a fruit basket and do more.' },
     { q: 'What about gift cards?', a: 'Gift cards are fine if they are for a specific need. Amazon gift cards work because the survivor can buy adaptive equipment. Grocery delivery gift cards work. Restaurant gift cards work if the survivor can get there safely. Generic gift cards feel impersonal.' },
@@ -2307,18 +1675,18 @@ export const POST_STROKE_GIFT_GUIDE = makeBlogPost({
 // =============================================================================
 export const POST_COMPLETE_HOME_KIT = makeBlogPost({
   slug: 'complete-stroke-recovery-home-kit',
-  title: 'The Complete Stroke Recovery Home Kit',
+  title: 'The Complete Stroke Recovery Home Kit: Every Item I Used in My First Year',
   description: 'The complete home kit for stroke recovery. Every item I used in my first year, from the first week to the first milestone, with links and honest reviews.',
   h1: 'The complete stroke recovery home kit',
   keyword: 'complete stroke recovery home kit',
   subhead: 'I built my recovery at home. Here is every item I used in the first year, from the week I got home to the month I walked unassisted. No fluff. No sponsorship. Just the gear that worked.',
-  ctaPrimary: { href: 'https://www.amazon.com/s?k=stroke+recovery+equipment', label: 'See the full kit on Amazon' },
+  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See the full kit on Amazon' },
   ctaSecondary: { href: '/blog/stroke-recovery-gift-guide', label: 'Gift guide version' },
   image: '/images/blog/survivor-shower-safety-scene.png',
   productCard: {
     title: 'Complete Stroke Recovery Home Kit',
     description: 'Every item I used in my first year: shower chair, grab bars, adaptive utensils, BP monitor, resistance bands, ankle trainer, and more. The full kit in one place.',
-    link: 'https://www.amazon.com/s?k=stroke+recovery+equipment',
+    link: 'https://a.co/d/0dvZe7BM',
     label: 'See the full kit on Amazon',
     note: 'Affiliate link \u2014 I earn a small commission at no extra cost to you.',
   },
@@ -2391,38 +1759,8 @@ export const POST_COMPLETE_HOME_KIT = makeBlogPost({
         { href: '/blog/shower-safety-stroke-survivor', label: 'Shower safety for stroke survivors' },
       ],
     },
-    {
-      h2: 'The mistakes I see survivors make building a kit',
-      paragraphs: [
-        'The most common mistake is buying everything at once. You come home scared, you order a cartful of gear, and half of it sits in a closet because you were not ready for it yet. Buy for the stage you are in, not the stage you hope to reach next month. The kit is meant to grow with you.',
-        'The second mistake is chasing gadgets over basics. The flashy electronic device is exciting; the boring shower chair is what keeps you out of the ER. Get the safety and mobility foundation solid before you spend on anything clever. And the quiet mistake nobody talks about: buying without asking your PT or OT. They know your specific deficits and can tell you which item earns its place and which is a waste of money for your situation.',
-      ],
-      bullets: [
-        'Buying everything at once instead of stage by stage',
-        'Chasing electronic gadgets before nailing the safety basics',
-        'Skipping your PT or OT\'s input on what you actually need',
-        'Getting the wrong size or height on canes, chairs, and grab bars',
-        'Ignoring the manual and setting equipment up incorrectly',
-      ],
-      relatedLinks: [
-        { href: '/blog/shower-safety-stroke-survivor', label: 'Shower safety for stroke survivors' },
-        { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery' },
-      ],
-    },
-    {
-      h2: 'Where to spend and where to save',
-      paragraphs: [
-        'Not every item deserves the same budget. Spend on the things that carry your weight or prevent a fall: grab bars, a solid shower chair, a good BP monitor. Those are not the place to bargain-hunt, and cheap versions can literally fail underneath you. Buy them once, buy them right.',
-        'Save on the consumables and the simple stuff. Resistance bands, yoga blocks, a reacher, tennis balls, the discount versions are fine, and you may outgrow the light resistance anyway. A good rule: start cheap on anything you are not sure you will use daily, then upgrade the few items that become part of your routine. Also ask about HSA or FSA eligibility and check with a durable medical equipment supplier, since some safety items may be partly covered with a doctor\'s note.',
-      ],
-      relatedLinks: [
-        { href: '/programs/daily-routine', label: 'The Daily Routine' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'If I can only buy one thing first, what should it be?', a: 'A shower chair, paired with grab bars if you can swing both. The bathroom is where survivors fall, and a wet floor plus a weak side is a bad combination. Safety comes before strength gear every time, because you cannot train if you are back in the hospital with a broken hip. After that, add mobility and strength tools as your PT clears you for them.' },
-    { q: 'Should I buy used or refurbished recovery equipment?', a: 'For simple items like bands, blocks, or a reacher, used is fine. For anything that bears your weight or affects safety, like grab bars, shower chairs, and walkers, I would be cautious with used gear unless you can inspect it closely for wear, cracks, or missing hardware. Durable medical equipment suppliers sometimes offer certified refurbished units with a warranty, which is a safer middle ground. When in doubt, ask your PT.' },
     { q: 'Do I need all of these items?', a: 'No. Start with the week 1 basics. Add items as your recovery progresses and as your budget allows. The shower chair and grab bars are non-negotiable. Everything else is added based on your specific deficits and goals.' },
     { q: 'Can I use insurance or HSA/FSA funds?', a: 'Many of these items are eligible for HSA or FSA reimbursement if your doctor provides a letter of medical necessity. Shower chairs, grab bars, BP monitors, CPAP machines, and some adaptive equipment are often covered. Check with your insurer.' },
     { q: 'What if I live in a small apartment?', a: 'Most of these items are compact. The resistance bands, yoga blocks, and wobble board fit in a closet. The shower chair folds. The electric trainer sits under a desk. The only items that need installation are the grab bars, which are worth the effort regardless of space.' },
@@ -2715,7 +2053,7 @@ export const POST_BEST_SHOES = makeBlogPost({
 // =============================================================================
 export const POST_WALKING_AIDS = makeBlogPost({
   slug: 'best-walking-aids-stroke-survivors',
-  title: 'Best Walking Aids for Stroke: Canes to Rollators',
+  title: 'Best Walking Aids for Stroke Survivors: Canes, Walkers & Rollators',
   description: 'The wrong cane doesn\'t support you — it tilts you and teaches a bad compensation. Quad canes, rollators, and when to use each — a survivor\'s real guide.',
   h1: 'Best walking aids for stroke survivors',
   keyword: 'best walking aids stroke survivors',
@@ -2795,38 +2133,8 @@ export const POST_WALKING_AIDS = makeBlogPost({
         'If you are on a walker and your PT hasn\'t discussed transition to a rollator or cane, ask. Most survivors who plateau there simply haven\'t had the conversation.',
       ],
     },
-    {
-      h2: 'Maintaining your walking aid, the part nobody mentions',
-      paragraphs: [
-        'A walking aid is a safety device, and safety devices wear out. The rubber tip on a cane is the one that gets people. As it wears smooth, it grips less, and a tip that slips on a wet floor turns your balance aid into a fall risk. Check it regularly and replace it the moment the tread is gone. They cost almost nothing.',
-        'The same logic runs through the rest of the hardware. Tighten the height-adjustment clamps and buttons so nothing collapses mid-step. Test rollator brakes before every outing and have them adjusted when they get loose. Wipe grips so they do not get slick, and check wheels and bearings for grit. None of this is exciting, but a failed aid at the wrong moment undoes months of progress. When something feels off, ask your PT or the supplier rather than pushing through it.',
-      ],
-      bullets: [
-        'Replace worn cane and walker tips as soon as the tread smooths out',
-        'Add ice tips or grippier tips for winter and wet weather',
-        'Check that height-adjustment buttons and clamps are locked',
-        'Test rollator brakes before every trip out',
-        'Keep grips clean and wheels free of grit',
-      ],
-      relatedLinks: [
-        { href: '/blog/best-afo-brace-drop-foot', label: 'Best AFO braces for drop foot' },
-      ],
-    },
-    {
-      h2: 'Fitting the aid into your daily walking practice',
-      paragraphs: [
-        'An aid is a tool for practice, not a permanent crutch to hide behind. The survivors who progress use it deliberately, enough support to walk with a decent pattern, not so much that the brain stops trying. If you are leaning your whole weight on the cane, you are training your body to depend on it. Your PT can tell you when it is time to demand a little more of yourself.',
-        'Build walking into the day the same way you build any habit. Short, frequent bouts beat one exhausting marathon. Use more support outdoors or when tired, less indoors on familiar ground. And pair the aid with real gait work rather than treating it as the whole plan. One caregiver tip: walk beside the survivor on the affected side with a gait belt for the harder sessions, close enough to steady them without taking over the movement.',
-      ],
-      relatedLinks: [
-        { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home' },
-        { href: '/programs/daily-routine', label: 'The Daily Routine' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'How often should I replace the rubber tip on my cane?', a: 'Check it monthly and replace it the moment the tread looks smooth, cracked, or worn to one side. Tips are cheap, and a slick one is a genuine fall hazard on wet or polished floors. If you use your cane hard or outdoors a lot, expect to swap tips more often. In icy climates, a retractable ice tip is worth having for winter.' },
-    { q: 'Can I use trekking poles instead of a cane after a stroke?', a: 'Some survivors with good balance and only mild deficits use a trekking pole for outdoor walks, and it can encourage a taller, more upright posture. But poles are not built for load-bearing the way a cane or quad cane is, and they will not help much with real instability. Do not swap on your own. Ask your PT whether your balance and gait are ready for it first.' },
     { q: 'Should I hold my cane on my strong or weak side?', a: 'Strong side — the hand opposite your affected leg. This is the biomechanically correct position that reduces hip joint load during stance. Most survivors instinctively use the cane on the affected side; that provides some balance help but doesn\'t offload the hip correctly.' },
     { q: 'When can I stop using a walking aid after stroke?', a: 'When your gait speed, balance confidence, and ankle stability allow you to walk safely without it — not before. Your PT should lead this decision with functional gait assessments. Rushing independent ambulation before balance is ready significantly increases fall risk.' },
     { q: 'Is a rollator better than a walker for stroke survivors?', a: 'In most cases, yes — for survivors past the acute inpatient phase. A rollator allows a more natural walking pattern, supports a seat when needed, and moves with you rather than breaking stride. The Drive Nitro is the most common rollator in outpatient stroke rehab.' },
@@ -2962,35 +2270,8 @@ export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
         'Log reps. Note which fingers fired. Track weekly.',
       ],
     },
-    {
-      h2: 'How to choose hand tools without wasting money',
-      paragraphs: [
-        'I bought gadgets I never used. The lesson: match the tool to the hand you have today, not the hand you want in a year. If you have almost no movement, the fanciest grip trainer is a paperweight — start with putty and passive work. If you already have partial opening, adjustable resistance is what earns its keep.',
-        'The single biggest mistake I see is buying for strength before you have control. Grip force is easy to fake with a clenched, spastic hand, and that just deepens the wrong pattern. Budget tools cover the early stages fine, so save your money for a premium device only once you have genuinely outgrown the cheap one. Ask your OT which stage you are actually in before you spend a dime.',
-      ],
-      bullets: [
-        'Prioritize adjustable resistance over fixed — post-stroke hands change fast',
-        'Buy tools that train extension, not just squeezing',
-        'Start cheaper (putty, a basic trainer) and upgrade only when you outgrow it',
-        'Skip anything that requires grip you do not have yet',
-        'Get a small notebook — the cheapest \'tool\' that actually moves the needle',
-      ],
-    },
-    {
-      h2: 'Making it stick day to day (and one caregiver tip)',
-      paragraphs: [
-        'Tools do nothing in a drawer. What worked for me was anchoring hand practice to something I already do — coffee in the morning, TV at night. Two short sessions beat one heroic one. Leave the putty on the couch armrest where you cannot ignore it. Set a rough time goal, not a rep count, so a bad hand day does not feel like failure. Consistency, not intensity, is the whole game.',
-        'Caregiver tip: your job is not to do the reps for them. It is to set the tool out, reduce friction, and celebrate small wins without hovering. Passive stretching help is welcome; taking over the movement is not. Let the survivor own the effort and check in with the OT about how much assistance is right.',
-      ],
-      relatedLinks: [
-        { href: '/blog/best-grip-strengthener-stroke-recovery', label: 'Best grip strengtheners for stroke recovery' },
-        { href: '/programs/daily-routine', label: 'The Daily Routine' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'What hand therapy tools should I buy first on a tight budget?', a: 'Start with a set of therapy putty in a couple of resistance grades. It is inexpensive, does the most jobs — squeeze, pinch, roll, and finger extension — and works at almost any ability level. Add a coin or button for pinch practice, which costs nothing. Save the pricier gadgets for when you have outgrown the basics. Ask your OT to confirm the starting resistance so you are not fighting spasticity.' },
-    { q: 'How do I know if a hand tool is too advanced for my current stage?', a: 'If using the tool triggers a spasm, forces your wrist or fingers into a compensated position, or you cannot complete the movement with control, it is too advanced. Real progress looks like clean, controlled reps at a resistance you can actually move through. If you find yourself straining or clenching to make it work, back down a level or return to putty. When you are unsure, bring the tool to your OT and have them watch you use it.' },
     { q: 'What is the best therapy putty resistance level to start with after stroke?', a: 'Extra-soft or soft (tan or yellow in most color-coding systems). Most survivors start too hard — which triggers spasm and defeats the purpose. If you can complete 20 reps with good form without your hand locking up, the resistance is appropriate. Progress to the next color when 3 sets of 30 feels easy.' },
     { q: 'How often should I do hand therapy exercises at home?', a: 'Twice daily, every day. Morning and evening, 20 minutes each session. That\'s the minimum that produces measurable cortical change over 8–12 weeks. Weekends count. The brain doesn\'t take rest days from neuroplasticity.' },
     { q: 'Should I push through hand spasms during therapy?', a: 'No. A spasm is a protective response — pushing through it increases tone and can cause injury. If spasms occur during exercise, stop, passively stretch the hand flat, and apply gentle warmth. Resume at a lower resistance or a smaller range of motion. If spasms are frequent, discuss Botox or oral antispasmodic options with your neurologist.' },
@@ -3080,38 +2361,8 @@ export const POST_MOBILITY_SCOOTER = makeBlogPost({
         'The coverage process takes 4–12 weeks. If you need the scooter now, buy it and simultaneously initiate the coverage request. Retroactive coverage is not guaranteed — but an approved claim within the look-back window is possible.',
       ],
     },
-    {
-      h2: 'Mistakes survivors make buying their first scooter',
-      paragraphs: [
-        'The biggest mistake is buying a scooter you cannot get into your car. People fall in love with a heavy, comfortable model in the showroom, then discover the base weighs more than they can lift and it lives by the front door forever. If you plan to travel with it, the heaviest single piece is the number that matters, not the total weight.',
-        'The next mistake is skipping the test drive and ignoring the turning radius. A scooter that cannot turn in your hallway or the grocery aisle is useless where you actually live. Sit on it, drive it, back it up, and try the tiller with your working hand before you commit. And do not underbuy on battery range, because batteries fade over the years. Buy more range than you need today so you still have enough in two winters.',
-      ],
-      bullets: [
-        'Buying a model too heavy to load into your vehicle',
-        'Ignoring turning radius for your home and local stores',
-        'Skipping the test drive with your unaffected hand',
-        'Underbuying battery range for the miles you actually go',
-        'Forgetting to check weight capacity with bags and gear',
-      ],
-      relatedLinks: [
-        { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids for stroke survivors' },
-        { href: '/blog/best-wheelchair-stroke-survivor', label: 'Best wheelchairs for stroke survivors' },
-      ],
-    },
-    {
-      h2: 'Transporting, storing, and charging it',
-      paragraphs: [
-        'A scooter changes your logistics, so think it through before you buy. Travel models break down into pieces for the trunk, but you or a caregiver still have to lift each piece. Practice that before you rely on it. If lifting is out, you are looking at a vehicle lift or ramp, which is a bigger cost and a bigger decision.',
-        'Storage and charging matter more than people expect. The scooter needs a spot indoors near an outlet, ideally out of the cold, since batteries dislike freezing temperatures and charge best at room temperature. Get in the habit of charging it on a schedule rather than waiting for it to die on you a mile from home. One caregiver tip: practice the disassembly and loading together, calmly, in the driveway, not for the first time in a parking lot in the rain.',
-      ],
-      relatedLinks: [
-        { href: '/recovery', label: 'Browse recovery gear' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'How do I get a mobility scooter into my car without a lift?', a: 'Travel scooters are designed to disassemble into several pieces so each one is light enough to lift into a trunk. The catch is that even the heaviest single piece may be more than you or your caregiver can safely manage, so check that number before you buy. If lifting is not realistic, look into a vehicle ramp or a powered lift, and practice the whole process at home before you depend on it out in the world.' },
-    { q: 'How long do mobility scooter batteries last?', a: 'Batteries are consumable. They hold less charge as they age and eventually need replacing, usually after a few years of regular use, though it varies with how you charge and store them. Keeping them charged, avoiding deep drains, and storing the scooter at room temperature all help them last. Buy more range than you currently need so normal battery fade does not strand you, and factor replacement batteries into your long-term cost.' },
     { q: 'Can I drive a mobility scooter on a public sidewalk after stroke?', a: 'In most US states, yes — mobility scooters are classified as pedestrian devices and are permitted on sidewalks and in pedestrian areas. They are not street legal. Check your specific state regulations; some municipalities have speed restrictions on sidewalk devices.' },
     { q: 'Does getting a scooter mean I\'ve given up on walking?', a: 'No — this is a false dichotomy that costs survivors quality of life. Walking therapy is about rebuilding gait. The scooter handles distance. Many survivors walk intensively in therapy and use a scooter in the community. These are not competing strategies.' },
     { q: 'Will Medicare pay for a mobility scooter after stroke?', a: 'Medicare Part B may cover it as Durable Medical Equipment with physician documentation of medical necessity. You\'ll need a face-to-face physician exam, a written order, and enrollment with a Medicare-approved DME supplier. The process takes time — start early.' },
@@ -3146,7 +2397,7 @@ export const POST_MOBILITY_SCOOTER = makeBlogPost({
 export const POST_WHEELCHAIR = makeBlogPost({
   slug: 'best-wheelchair-stroke-survivor',
   title: 'Best Wheelchairs for Stroke Survivors: What to Look For',
-  description: 'The right wheelchair after stroke supports a hemiplegic posture, one-handed propulsion, and safe transfers that preserve independence. A survivor\'s guide.',
+  description: 'The right wheelchair after stroke isn\'t just lighter — it supports a hemiplegic posture, one-handed propulsion, and transfers that preserve independence. A survivor\'s guide.',
   h1: 'Best wheelchairs for stroke survivors',
   keyword: 'best wheelchair for stroke survivor',
   subhead: 'A wheelchair is not the end of the mobility story. It is a tool — one that should support your posture, your transfers, and your independence as aggressively as possible. Here is how to choose.',
@@ -3199,43 +2450,8 @@ export const POST_WHEELCHAIR = makeBlogPost({
         'Medicare Part B covers manual wheelchairs as Durable Medical Equipment with a physician\'s written order certifying medical necessity. The process requires a face-to-face exam and an enrolled Medicare DME supplier. Coverage typically runs 80% of the Medicare-approved amount after the Part B deductible.',
       ],
     },
-    {
-      h2: 'Cushions and pressure relief you should not skip',
-      paragraphs: [
-        'The chair gets all the attention; the cushion is what protects your skin. Sitting for hours in one position after a stroke, especially with reduced sensation or movement on one side, is how pressure sores start. The stock foam pad that comes with most chairs is not enough for all-day sitting. Budget for a proper cushion the same day you budget for the chair.',
-        'There are foam, gel, and air cushions, each with trade-offs in support, weight, and cost. The right one depends on how much you move, how you sit, and your skin\'s condition. This is a good question for your PT or OT, and for anyone with skin-breakdown risk it is worth a formal seating evaluation. Reposition often and check your skin daily, because a sore caught early is a small problem and one caught late is not.',
-      ],
-      bullets: [
-        'Do not rely on the stock foam pad for all-day sitting',
-        'Foam, gel, and air cushions each trade off support and cost',
-        'Reposition often and check skin daily on the affected side',
-        'Ask about a seating evaluation if skin breakdown is a risk',
-      ],
-      relatedLinks: [
-        { href: '/blog/best-adjustable-bed-wedge-pillow-stroke-recovery', label: 'Adjustable beds and wedge pillows for recovery' },
-      ],
-    },
-    {
-      h2: 'Measuring for the right fit and transferring safely',
-      paragraphs: [
-        'A wheelchair that does not fit causes more problems than it solves. Seat width, seat depth, and seat-to-floor height all need to match your body, not a generic average. Too wide and you slump sideways; too deep and you slide forward. Measure, or better, have a professional measure you, before you commit to a chair you will spend hours in.',
-        'Transfers are where a lot of survivors get hurt. Lock both brakes every single time, move the footrests out of the way, and lead with the stronger side. A transfer board can bridge the gap for a seated slide when standing is not safe. Have your PT teach you and your caregiver the technique in person — reading about a transfer is not the same as doing one under supervision.',
-      ],
-      bullets: [
-        'Match seat width, depth, and height to your body, not an average',
-        'Lock both brakes before every transfer',
-        'Swing footrests clear and lead with the stronger side',
-        'Consider a transfer board for seated slides',
-        'Caregiver tip: learn the transfer from a PT in person, not a video',
-      ],
-      relatedLinks: [
-        { href: '/programs/daily-routine', label: 'The Daily Routine' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'Should I buy a wheelchair or rent one first?', a: 'If your needs are still changing, renting or borrowing can make sense before you commit, since the chair that fits in month one may be wrong in month six. For a short-term need, rental is often cheaper. For a long-term need, buying the right fitted chair usually wins. Talk to your PT and your DME supplier about which path fits your situation.' },
-    { q: 'How do I keep from sliding forward in the wheelchair?', a: 'Sliding usually means the seat is too deep, the cushion is wrong, or the footrests are set too high, tilting your pelvis back. A proper cushion and correct footrest height fix most of it. If it keeps happening, ask for a seating evaluation, because sitting in a slid-forward posture strains the back and shoulders over time.' },
     { q: 'Can a stroke survivor propel a wheelchair with one arm?', a: 'Yes — the hemiparetic propulsion pattern (strong arm on the wheel, strong foot against the floor for steering and braking) is effective and widely used. One-arm drive wheelchairs with dual-rim systems on one side allow both wheels to be driven from a single side, which is an alternative for survivors with minimal lower extremity function on either side.' },
     { q: 'What wheelchair seat height is right for a hemiplegic survivor?', a: 'The hemiplegic seat height (often 17.5 or 18 inches, lower than standard) positions the foot flat on the floor for propulsion. Standard wheelchair height of 19–20 inches leaves many survivors\' feet dangling, which both prevents floor propulsion and creates pressure under the thigh. Ask your PT or OT for a seating evaluation before purchasing.' },
     { q: 'Should I get a lightweight or heavy-duty wheelchair?', a: 'Lightweight (sub-35 lb) is almost always better. A lighter chair is easier to transport, easier for a caregiver to lift into a vehicle, and requires less upper-body effort from the survivor during self-propulsion. Heavy-duty models serve bariatric weight requirements — otherwise, go lighter.' },
@@ -3269,7 +2485,7 @@ export const POST_WHEELCHAIR = makeBlogPost({
 export const POST_PEDAL_EXERCISER = makeBlogPost({
   slug: 'best-pedal-exerciser-stroke-recovery',
   title: 'Best Pedal Exercisers for Stroke Recovery (2026)',
-  description: 'Passive leg cycling can increase spasticity; active pedaling rebuilds it. A 7-year survivor\'s guide to the under-desk pedal exerciser that works for stroke.',
+  description: 'Passive leg cycling increases spasticity. Active pedaling rebuilds it. A 7-year survivor\'s guide to the under-desk pedal exerciser that actually works for stroke.',
   h1: 'Best pedal exerciser for stroke recovery',
   keyword: 'pedal exerciser stroke recovery',
   subhead: 'Cycling motion is one of the earliest things stroke survivors can do on the affected leg — but only the right type of device captures the full benefit. Here is the breakdown.',
@@ -3329,40 +2545,8 @@ export const POST_PEDAL_EXERCISER = makeBlogPost({
         'It won\'t resolve foot drop. The dorsiflexion component of pedaling is minimal compared to what\'s required for walking. Address drop foot with your AFO and ankle-specific work.',
       ],
     },
-    {
-      h2: 'What to look for before you buy',
-      paragraphs: [
-        'The pedal exerciser market is full of cheap units that skip and clunk at slow speeds. That matters more for stroke than for anyone else, because on your affected side you cannot always spin fast. A device that only feels smooth at high cadence will fight you at the exact speed you can actually pedal. Prioritize smooth low-RPM resistance over a long list of features.',
-        'The other thing that trips survivors up is stability. If the unit slides on hardwood or tips when your strong leg pushes, you will stop using it. Look for a wide base, rubber feet or a non-slip mat, and a frame that stays put. Foot straps are non-negotiable if your affected foot slips off the pedal. When in doubt about resistance settings or whether cycling is safe for you yet, ask your PT.',
-      ],
-      bullets: [
-        'Smooth magnetic resistance that works at slow RPM, not just fast',
-        'Resistance that adjusts down to near zero for early active pedaling',
-        'A stable, wide base with rubber feet or a grip mat underneath',
-        'Adjustable foot straps to keep the affected foot in place',
-        'Low enough profile to fit under your desk or chair',
-      ],
-      relatedLinks: [
-        { href: '/blog/best-stationary-bike-stroke-recovery', label: 'Best stationary bikes for stroke recovery' },
-        { href: '/recovery', label: 'Browse recovery gear' },
-      ],
-    },
-    {
-      h2: 'Budget models vs the upgrade, and when to make it',
-      paragraphs: [
-        'You do not need to spend a lot to start. A basic friction-resistance pedaler is fine for pure range-of-motion work in the first weeks, when the goal is just movement. If money is tight, start there and prove to yourself that you will actually use it before you spend more.',
-        'The upgrade to a quality magnetic unit is worth it once you start actively contributing with the affected leg. Smooth, quiet resistance lets you slow down, feel each stroke, and keep the affected side working instead of coasting. That is where the motor learning lives. I would rather see a survivor own one good pedaler they use every day than a drawer full of gadgets they bought and abandoned.',
-        'One caregiver tip: check the straps and the foot position every session. A foot that drifts off the pedal turns a good rep into a bad one, and the survivor may not notice until the pattern is already sloppy.',
-      ],
-      relatedLinks: [
-        { href: '/programs/daily-routine', label: 'The Daily Routine' },
-        { href: '/blog/fatigue-after-stroke', label: 'Fatigue after stroke' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'Magnetic or friction resistance, which should I buy?', a: 'For stroke recovery, magnetic resistance is usually the better choice. It stays smooth at the slow cadence most survivors need on the affected side, and it is quieter. Friction models are cheaper and fine for early passive range-of-motion work, but they tend to feel jerky at low speed. If you can only buy one, buy magnetic. Ask your PT if you are unsure whether you are ready for active resistance at all.' },
-    { q: 'Can I use a pedal exerciser for my arms too?', a: 'Some survivors set a pedal exerciser on a sturdy table to cycle with the arms, and it can work for gentle shoulder and elbow range of motion. It is not a substitute for targeted hand and arm therapy, and the table has to be rock solid so it does not slide toward you. Clear it with your OT or PT first, especially if you have shoulder pain or subluxation on the affected side.' },
     { q: 'Can I use a pedal exerciser if my affected leg barely moves?', a: 'Yes — start with minimal or zero resistance and let the unaffected leg drive the rhythm. The affected leg will follow passively, and you should actively attempt to contribute to the movement on every stroke. Even passive cycling with motor imagery provides more benefit than no movement at all.' },
     { q: 'How long should I pedal after stroke?', a: 'Start at 10 minutes twice daily. Add 5 minutes per session every two weeks. Target 30 minutes twice daily by week 8. This is a conservative progression that respects post-stroke fatigue — the most common reason survivors stop using equipment they bought.' },
     { q: 'Should I pedal with or without shoes?', a: 'With shoes, and specifically with your AFO if you wear one. The AFO holds the ankle in neutral during the cycling motion, which both prevents foot drop on the downstroke and provides more accurate proprioceptive feedback. Strapped pedals also help keep the affected foot on the pedal.' },
@@ -3467,34 +2651,8 @@ export const POST_PUSH_UP_BARS_GUIDE = makeBlogPost({
         'Cool down: passive overhead stretch, chest opener against doorframe.',
       ],
     },
-    {
-      h2: 'How to choose push-up bars for a recovering body',
-      paragraphs: [
-        'Stability is the whole game here. A tippy bar under a body that already has balance and one-sided weakness is a fall waiting to happen. Look for a wide base, non-slip feet that actually grip, and solid construction over a flimsy folding gimmick. Padded grips help if your hand sensation is off. You are not buying the lightest or the cheapest - you are buying the one that will not shift when you load it unevenly.',
-        'The common mistakes are predictable: grabbing the cheapest slippery set, buying elevated bars and immediately trying floor push-ups on them, or chasing some fancy angled design you do not need. Simple, stable, grippy, low to the ground. Start there. You can always add difficulty later - you cannot un-break a wrist or a fall.',
-      ],
-      bullets: [
-        'Wide, stable base that won\'t tip under uneven loading',
-        'Non-slip feet that grip your actual floor surface',
-        'Solid build over a flimsy folding design',
-        'Padded grips if hand sensation is reduced',
-      ],
-      relatedLinks: [
-        { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools for stroke recovery' },
-        { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery' },
-      ],
-    },
-    {
-      h2: 'Protect the affected shoulder before you load it',
-      paragraphs: [
-        'Here is the part the fitness crowd skips: after a stroke the affected shoulder can be unstable, even partially subluxed, and loading a weak or loose shoulder with pressing work can set you back. Before you put weight through that arm, get clearance from your PT that the shoulder is stable enough. Pain that is sharp or in the joint is a stop sign, not something to push through.',
-        'Fit the bars into the routine as a strength block on the days you are already doing upper-body work, and keep the affected arm in the movement even if it only contributes a little. Caregiver tip: spot from the affected side, keep the safe space clear, and watch for the shoulder hiking up to cheat the rep - that is the cue to drop to an easier angle. Ask your therapist before adding load.',
-      ],
-    },
   ],
   faqs: [
-    { q: 'Can push-up bars hurt my shoulder after a stroke?', a: 'They can if the shoulder isn\'t ready. A weak or subluxed shoulder loaded with pressing work is a real way to cause pain or a setback. Sharp or deep joint pain means stop. Get your PT to confirm the affected shoulder is stable enough for weight-bearing before you start, and progress slowly from wall to floor.' },
-    { q: 'Are push-up bars worth buying, or can I just use the floor?', a: 'If your affected wrist can\'t get into a flat, loaded position without pain, the bars are worth it - they change the wrist angle so you can train the pattern at all. If your wrist is mobile and pain-free, the floor is fine and free. Buy the bars to solve a specific wrist problem, not because they look serious.' },
     { q: 'Can I do push-ups with one-sided weakness after stroke?', a: 'Modified push-ups, yes. Wall push-ups, countertop push-ups, and incline push-ups are all accessible to survivors with significant weakness. As the affected side gets stronger, progress toward floor push-ups. The goal is to keep the affected arm in the movement — even if it contributes 10% of the force — rather than do one-armed push-ups on the strong side only.' },
     { q: 'Are rotating push-up bars better than fixed for stroke survivors?', a: 'For survivors with wrist or forearm spasticity, yes. The rotation allows the forearm to move naturally through its supination-pronation arc rather than fighting a fixed position. If your wrist has good mobility and no significant tone, fixed handles are fine.' },
     { q: 'What is the best starting push-up progression after stroke?', a: 'Wall push-ups at body-perpendicular angle. Then countertop height. Then incline (low box or bench). Then floor. Each step adds approximately 20% more body weight to the movement. Use the lowest accessible level and do full range of motion with good form rather than a partial rep at a harder level.' },
@@ -3592,34 +2750,8 @@ export const POST_AFO_OSSUR = makeBlogPost({
         'The transition test: can you clear your toe during the swing phase of walking on a flat surface for 10 consecutive strides without the AFO? If yes, trial ambulation without it in a safe supervised setting. If you trip once in 10 strides, keep the AFO for longer distances.',
       ],
     },
-    {
-      h2: 'Prefab vs custom AFO - when off-the-shelf isn\'t enough',
-      paragraphs: [
-        'An off-the-shelf brace works for a lot of survivors, and it is the sensible, affordable place to start. But it is not right for everyone. If your foot or ankle has significant deformity, if a prefab keeps rubbing the same spot raw, or if your drop foot comes with real instability, that is the point to stop buying online and see a certified orthotist.',
-        'A custom-molded AFO costs more and takes fitting appointments, but it is built to your leg - which for the wrong anatomy is the difference between a brace you wear and one that lives in the closet. This is a clinical call, not a shopping one. Your PT or orthotist should weigh in before you spend on a custom device.',
-      ],
-      relatedLinks: [
-        { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO vs. electric ankle trainer' },
-        { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors' },
-      ],
-    },
-    {
-      h2: 'Break-in, skin checks, and keeping the brace usable',
-      paragraphs: [
-        'The mistake I made early was wearing a new brace all day on day one. Skip that. Build up wear time gradually and check your skin every single time you take it off - red marks that fade in a few minutes are fine, marks that stay are a warning. After a stroke your sensation can be off, so you may not feel a pressure sore starting. Look, don\'t just feel.',
-        'Keep a clean sock or liner between the plastic and your skin, wipe the brace down so it does not break down or smell, and don\'t ignore a strap that has stretched out. Caregiver tip: help with the daily skin check, especially at the heel and the bony spots the survivor cannot see well. A small problem caught early saves weeks off your feet.',
-      ],
-      bullets: [
-        'Build wear time up gradually - don\'t go all-day on day one',
-        'Check skin at every removal; lasting red marks mean stop and adjust',
-        'Wear a clean liner sock and keep the brace wiped down',
-        'Have a caregiver check the heel and bony spots you can\'t see',
-      ],
-    },
   ],
   faqs: [
-    { q: 'How long does an AFO last before it needs replacing?', a: 'It depends on how hard you use it and how your body changes. Cracks in the plastic, stretched-out straps, a footplate that no longer holds the angle, or new pressure spots all mean it is time to have it checked. As your leg gets stronger the fit can change too. Have your orthotist or PT look at it if anything feels off.' },
-    { q: 'Can I have more than one AFO for different activities?', a: 'Some survivors do - a sturdier one for long walks or uneven ground and a lighter one for around the house. It is not required, and insurance may not cover a second. Talk to your orthotist about whether a second brace actually fits your activity level before spending on one. Match the tool to what you\'re doing.' },
     { q: 'Should I wear an AFO all day after stroke?', a: 'During all walking, yes — until dorsiflexion is reliable. During rest, sitting, and sleep, remove it unless your PT has prescribed overnight use for contracture prevention. Continuous wearing in bed can cause pressure points on a foot with reduced sensation.' },
     { q: 'What\'s the difference between the Ossur Foot-Up and a full plastic AFO?', a: 'The Ossur Foot-Up is a minimalist, non-custom device — a shoe insert connected to a strap-on cuff that holds the foot up during swing. A full plastic AFO (either prefab or custom-molded) provides more rigidity, covers more of the foot and ankle, and is better for moderate-to-severe drop foot with ankle instability. For mild drop foot, the Foot-Up is often sufficient.' },
     { q: 'Can I wear an AFO with Skechers GoWalk slip-in shoes?', a: 'The GoWalk Slip-In does not have enough heel counter rigidity or interior depth for most AFOs. Use a laced shoe with a firm heel counter — such as the Brooks Adrenaline GTS 24 in a wide width — for AFO use. The Skechers is a better choice for AFO-free days.' },
@@ -3708,40 +2840,8 @@ export const POST_ANKLE_BRACE = makeBlogPost({
         { label: 'TheraBand resistance bands for stroke recovery — full guide', href: '/blog/best-resistance-bands-stroke-recovery' },
       ],
     },
-    {
-      h2: 'Getting the size and fit right',
-      paragraphs: [
-        'A brace that does not fit does not work, and after a stroke a poor fit can do harm. Measure your ankle where the brace will sit and compare it to the manufacturer\'s chart rather than guessing from your shoe size. If your affected foot swells during the day, measure in the afternoon when it is largest so the brace is not cutting in by evening.',
-        'The affected foot often has reduced sensation, so you cannot rely on feel alone. Check the skin visually after the first few wears — red marks that do not fade within twenty minutes mean the fit is wrong. A lace-up should restrict rolling outward without squeezing the top of the foot numb. If you are unsure, bring the brace to your PT or OT and have them check the fit while you stand and take a few steps.',
-      ],
-      bullets: [
-        'Measure the ankle to the size chart — do not go by shoe size',
-        'Measure late in the day if your foot swells',
-        'Check skin visually since sensation may be reduced',
-        'Fit it while standing, not just sitting',
-        'Have your PT or OT confirm the fit under load',
-      ],
-      relatedLinks: [
-        { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors' },
-      ],
-    },
-    {
-      h2: 'Budget vs premium: when to spend more',
-      paragraphs: [
-        'A basic lace-up stabilizer is inexpensive and, for mild instability with preserved dorsiflexion, often all you need. Do not assume a pricier brace is a better brace for your situation — the right level of support matters more than the price tag. I started with the simplest option and only moved up when the simple one stopped keeping me steady.',
-        'Spend more when the cheap version wears out fast, when your therapist recommends a specific hinge or strap system, or when you are on your feet for long stretches and comfort decides whether you actually wear it. The most expensive brace in the drawer helps nobody. Match the tool to the job, and re-check with your care team as your ankle strength changes, because the brace you need in month three may not be the brace you need in year two.',
-      ],
-      bullets: [
-        'Start simple if instability is mild and you have some dorsiflexion',
-        'Upgrade when a cheap brace wears out or stops stabilizing',
-        'Pay for comfort if long wear time is the barrier',
-        'Re-assess with your PT as ankle strength changes',
-      ],
-    },
   ],
   faqs: [
-    { q: 'Can I wear an ankle brace with my regular shoes?', a: 'Usually yes with a lace-up stabilizer, but it takes up room inside the shoe. You may need a half size up or a wider shoe, and a removable insole helps make space. Try the brace and shoe together before committing, and check that the combination does not change your gait or trip you up.' },
-    { q: 'Will wearing an ankle brace make my ankle weaker over time?', a: 'A brace supports the ankle; it does not have to weaken it, as long as you keep doing your strengthening and balance work. The goal is to use the brace as a tool while you rebuild, not to replace the training. Ask your PT how to progress your exercises so you are not leaning on the brace forever.' },
     { q: 'Can I wear a regular ankle brace instead of an AFO after stroke?', a: 'If you have active dorsiflexion (can lift your foot during swing), a lace-up stabilizer may be sufficient for moderate activity. For complete drop foot with no active dorsiflexion, a full AFO is required for safe ambulation. Get a PT assessment to determine which applies to you.' },
     { q: 'Should I sleep with my ankle brace on?', a: 'Standard lace-up braces are not designed for overnight use. For contracture prevention at night, a dedicated resting splint (rigid or semi-rigid, designed for sustained low-load stretch) is more appropriate. Ask your OT for a night splint recommendation if contracture is a concern.' },
     { q: 'How tight should an ankle brace be after stroke?', a: 'Firm enough to restrict inversion (rolling outward) — the primary instability direction after stroke — without restricting plantar/dorsiflexion or cutting off circulation. You should not see skin blanching or feel tingling. If the affected foot has reduced sensation, check visually for pressure points.' },
@@ -3776,7 +2876,7 @@ export const POST_ANKLE_BRACE = makeBlogPost({
 export const POST_BALANCE_BOARD_GUIDE = makeBlogPost({
   slug: 'best-balance-board-stroke-recovery',
   title: 'Best Balance Boards for Stroke Recovery (2026 Guide)',
-  description: 'Balance board training after stroke rebuilds the proprioceptive pathways stroke damages and cuts fall risk. A 7-year survivor\'s guide to boards worth buying.',
+  description: 'Balance board training after stroke reduces fall risk by rebuilding the proprioceptive pathways that stroke damages. A 7-year survivor\'s guide to the boards worth buying.',
   h1: 'Best balance boards for stroke recovery',
   keyword: 'balance board stroke recovery',
   subhead: 'Balance training after stroke isn\'t about not falling — it\'s about rebuilding the sensory feedback loops that stroke severed. Here is what works, what doesn\'t, and the boards I recommend.',
@@ -3843,38 +2943,8 @@ export const POST_BALANCE_BOARD_GUIDE = makeBlogPost({
         { label: 'Best ankle braces for stroke survivors', href: '/blog/best-ankle-brace-stroke-survivor' },
       ],
     },
-    {
-      h2: 'How to choose a balance board - and the buying mistakes I see',
-      paragraphs: [
-        'Most survivors overthink the board and underthink the setup. The board itself needs three things: a non-slip standing surface, a weight capacity well above yours, and a tilt angle that is not too aggressive for a beginner. A board that dumps you the second you step on it is not training you - it is scaring you off.',
-        'The mistakes I see most: buying a hard all-planes wobble board first when a rocker is the right start, chasing a pricey app-connected board you will not use, or grabbing the cheapest thing on the shelf and finding out the surface is slick. Pick simple, stable, and grippy. Fancy comes later, if ever.',
-      ],
-      bullets: [
-        'Non-slip top surface - non-negotiable with reduced foot sensation',
-        'Weight capacity comfortably above your bodyweight',
-        'A moderate tilt angle, not the most aggressive one available',
-        'A platform wide enough to stand with feet hip-width',
-        'Skip app-connected extras until the basics are boring',
-      ],
-      relatedLinks: [
-        { href: '/blog/best-ankle-brace-stroke-survivor', label: 'Best ankle braces for stroke survivors' },
-        { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery' },
-      ],
-    },
-    {
-      h2: 'Budget vs premium, and where the board fits in your week',
-      paragraphs: [
-        'You do not need an expensive board to start. A simple, sturdy rocker in the budget range does everything an early-to-mid survivor needs. The reason to upgrade is not price - it is when the board has become genuinely easy and you have outgrown its range of motion. A combo board that shifts from rocker to full wobble can be the only board you ever buy.',
-        'Fit it into the daily routine as a short, near-support block - a few minutes on the days you are already doing standing and ankle work, not a separate marathon session. Caregiver tip: your job is to set up the safe space and stay within reach, not to hold the survivor up. Being there quietly lets them build the control that actually prevents falls.',
-      ],
-      relatedLinks: [
-        { href: '/programs/daily-routine', label: 'The Daily Routine' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'Do I need a balance board if I already do balance exercises standing on the floor?', a: 'The board adds an unstable surface that floor work can\'t, which forces the ankle and hip control systems to work harder. But it is a progression, not a starting point. Get solid with floor balance first, then add the board with support nearby. Ask your PT whether you are ready for an unstable surface yet.' },
-    { q: 'How do I know when to move from a rocker to a wobble board?', a: 'When the rocker has become genuinely easy - you can hold and shift on it comfortably with your eyes open and barely need the support nearby. If you are still white-knuckling the counter, you are not ready. Rushing to the harder board is how survivors fall. Progress on the board the same way you progress everything: only when the current level is boring.' },
     { q: 'Is a balance board safe for stroke survivors?', a: 'With a safety setup (sturdy chair, counter, or wall within arm\'s reach), yes — for survivors past the acute phase with adequate standing tolerance. Start with bilateral standing on a flat surface before introducing any rocking motion. Never use a balance board without a fall-prevention setup nearby.' },
     { q: 'How long should I stand on a balance board after stroke?', a: 'Start at 1 minute per set, 3 sets per session. Total 5–10 minutes of balance board time per session. This is shorter than healthy-population balance training — post-stroke fatigue and concentration demands make longer sessions counterproductive early on. Build to 20–30 minutes over 8–12 weeks.' },
     { q: 'Can I use a balance board if I wear an AFO?', a: 'Yes — start with the AFO on the affected foot. The AFO provides ankle stability that makes the board more controllable while still providing the proprioceptive stimulus through the knee and hip. As ankle stability improves, trial brief periods without the AFO on the board in a supervised setting.' },
@@ -3910,7 +2980,7 @@ export const POST_BALANCE_BOARD_GUIDE = makeBlogPost({
 export const POST_BRAIN_BOOKS = makeBlogPost({
   slug: 'best-brain-games-books-stroke-cognitive-recovery',
   title: 'Best Brain Games & Books for Stroke Cognitive Recovery (2026)',
-  description: 'Memory, processing speed, attention, word-finding — cognitive deficits after stroke are real and addressable. The books and games that actually challenge you.',
+  description: 'Memory, processing speed, attention, word-finding — cognitive deficits after stroke are real and addressable. The books and games that actually challenge recovery.',
   h1: 'Best brain games and books for stroke cognitive recovery',
   keyword: 'brain games stroke cognitive recovery',
   subhead: 'Cognitive recovery after stroke follows the same principle as physical recovery: the brain rewires based on what you practice. The games and books below are the tools I use. Here is why they work.',
@@ -3986,34 +3056,8 @@ export const POST_BRAIN_BOOKS = makeBlogPost({
         { label: 'Cognitive rehabilitation after stroke — American Stroke Association', href: 'https://www.stroke.org/en/about-stroke/effects-of-stroke/cognitive-and-communication' },
       ],
     },
-    {
-      h2: 'The mistakes that make brain games useless',
-      paragraphs: [
-        'The biggest mistake is comfort. If you only do puzzles you can breeze through, you are entertaining yourself, not rehabbing. The point is a little bit of struggle - the puzzle that makes you work is the one earning its keep. The flip side is grinding the exact same puzzle type every day and wondering why nothing else improves.',
-        'The other trap is mistaking normal difficulty for failure and quitting. Cognitive work after a stroke is supposed to feel hard, and hard is uncomfortable. I had to separate \'this is challenging me\' from \'I am broken.\' If a session leaves you fried, that is a sign to shorten it, not to stop. Push into the discomfort, but keep the sessions short.',
-      ],
-      bullets: [
-        'Only doing puzzles you can finish easily',
-        'Grinding one puzzle type and skipping the rest',
-        'Quitting the second it feels hard - hard is the point',
-        'Marathon sessions that end in a fatigue crash',
-      ],
-      relatedLinks: [
-        { href: '/blog/memory-problems-after-stroke', label: 'Memory problems after stroke' },
-        { href: '/blog/fatigue-after-stroke', label: 'Fatigue after stroke' },
-      ],
-    },
-    {
-      h2: 'Free apps, paid subscriptions, and when to level up',
-      paragraphs: [
-        'You do not need to spend much. A cheap large-print workbook and a free puzzle app cover most of what an early survivor needs. Paid brain-training subscriptions add adaptive difficulty and tracking, which some people find worth it, but do not confuse a monthly charge with better outcomes. Start cheap and only pay up if the free tools stop challenging you.',
-        'Level up when the current material has gone stale - faster times, fewer errors, no real struggle. That is your cue to raise difficulty or switch domains, not a reason to coast. And remember tools are not therapy: if language or memory problems are affecting daily life, a speech-language pathologist or OT does things a workbook cannot. Caregiver tip: doing a puzzle alongside the survivor makes it social and takes the sting out of a hard session.',
-      ],
-    },
   ],
   faqs: [
-    { q: 'How much time per day should I spend on brain games?', a: 'In my experience short and consistent beats long and occasional. A couple of focused 15-to-20-minute sessions is plenty, and stopping before you crash matters more than total minutes. Cognitive fatigue after a stroke is real. If you are wiped for the rest of the day, you did too much. Ask your OT or SLP what dose fits your recovery stage.' },
-    { q: 'Will brain games help my walking or arm function too?', a: 'Not directly - cognitive practice mostly improves the thing you practice, so a crossword builds language, not gait. What it does do is support the attention and focus you need to get through physical rehab. Treat brain work as one lane and physical work as another, and do both. Your care team can help you balance the two.' },
     { q: 'Do brain games actually help stroke recovery?', a: 'For cognitive deficits specifically — yes, with the right tools and dosage. Targeted cognitive training (adaptive difficulty, multi-domain, consistent practice) produces measurable improvements in memory, attention, and processing speed in the research literature. Non-targeted easy games produce engagement, not rehabilitation. The two are not the same.' },
     { q: 'How long does cognitive recovery take after stroke?', a: 'Highly variable. The fastest cognitive gains occur in the first 3–6 months, similar to physical recovery. Significant improvement continues in years 2–5 with active practice. Processing speed tends to recover slower than memory. Language (aphasia) has its own trajectory and benefits specifically from SLP work alongside book exercises.' },
     { q: 'Should I do brain games if I have aphasia?', a: 'Yes — but choose the right type. Word-based games (crossword, word search) directly target the language pathways involved in aphasia and are useful with appropriate difficulty. Sudoku and logic puzzles do not require language and work well alongside SLP therapy for aphasic survivors.' },
@@ -4049,8 +3093,8 @@ export const POST_BRAIN_BOOKS = makeBlogPost({
 
 export const POST_ELLIPTICAL = makeBlogPost({
   slug: 'best-elliptical-machine-stroke-recovery',
-  title: 'Best Elliptical Machines for Stroke Recovery',
-  description: 'Ellipticals are one of the best low-impact cardio tools for stroke survivors: reciprocal arm-leg motion, zero joint impact. What to buy and what to avoid.',
+  title: 'Best Elliptical Machines for Stroke Recovery: Low-Impact Cardio That Works',
+  description: 'Ellipticals are one of the best low-impact cardio tools for stroke survivors — reciprocal arm-leg motion, zero impact on joints, and real neuroplasticity stimulus. Here\'s what to buy and what to avoid.',
   h1: 'Best Elliptical Machines for Stroke Recovery',
   keyword: 'best elliptical machine stroke recovery',
   subhead: 'Reciprocal motion. Zero impact. Real cardio. The elliptical is underrated for hemiparetic survivors who need to rebuild endurance without wrecking joints.',
@@ -4062,7 +3106,7 @@ export const POST_ELLIPTICAL = makeBlogPost({
       heading: 'Why the elliptical is worth considering',
       body: `<p>Seven years post-stroke, the elliptical is still in my weekly rotation. Here's why it made the list over a treadmill for many survivors: the reciprocal arm-leg cross-body motion forces the brain to coordinate both sides simultaneously — exactly the bilateral integration that neuroplasticity research says matters. Zero impact on the knee and ankle means compensated gait patterns don't get reinforced the way they can on a treadmill. And the moving handlebars give a hemiparetic arm something to do that isn't just hanging there.</p>
 <p>Caveat upfront: if you have significant balance deficits or can't weight-shift laterally without losing balance, a recumbent bike is the safer starting point. The elliptical requires standing balance. Come back to it once that's more stable.</p>`,
-      image: '/images/blog/fig-04-open-hand.png',
+      image: '/images/blog/fig-04.jpg',
     },
     {
       heading: 'What to look for in a stroke-recovery elliptical',
@@ -4126,8 +3170,8 @@ export const POST_ELLIPTICAL = makeBlogPost({
 
 export const POST_STATIONARY_BIKE = makeBlogPost({
   slug: 'best-stationary-bike-stroke-recovery',
-  title: 'Best Stationary Bikes for Stroke Recovery',
-  description: 'Stationary bikes are the safest cardio starting point for most stroke survivors: back support, no balance demand, bilateral leg training. What actually works.',
+  title: 'Best Stationary Bikes for Stroke Recovery: Recumbent vs. Upright, and When Each Makes Sense',
+  description: 'Stationary bikes are the safest cardio starting point for most stroke survivors. Back support, no balance demand, bilateral leg training. Here\'s what actually works.',
   h1: 'Best Stationary Bikes for Stroke Recovery',
   keyword: 'best stationary bike stroke recovery',
   subhead: 'Seated. Supported. Safe. The recumbent bike is how most stroke survivors should start building cardiovascular fitness — and the evidence agrees.',
@@ -4140,7 +3184,7 @@ export const POST_STATIONARY_BIKE = makeBlogPost({
       body: `<p>I started on a recumbent bike three weeks post-discharge. Couldn't stand for more than a minute without significant fatigue, balance was unreliable, affected leg wasn't doing much. The recumbent didn't care. Back supported, pedals out in front, nothing to fall off of. Fifteen minutes at almost zero resistance. That was enough to start.</p>
 <p>The recumbent vs. upright decision isn't about fitness preference — it's a clinical one. If you have: significant trunk weakness, balance deficits that require concentration to maintain, or fatigue that limits standing tolerance, start recumbent. Move to upright when your PT clears you for seated-balance work without back support.</p>
 <p>The upright bike gets added value for core engagement and posture — but that value is zero if you're gripping the handlebars to stay upright rather than pedaling effectively.</p>`,
-      image: '/images/blog/fig-05-sit-to-stand.png',
+      image: '/images/blog/fig-05.jpg',
     },
     {
       heading: 'Marcy ME-709 — the recumbent for most stroke survivors',
@@ -4168,35 +3212,8 @@ export const POST_STATIONARY_BIKE = makeBlogPost({
         { label: 'Cycling training in post-stroke hemiplegia — NeuroRehabilitation', url: 'https://content.iospress.com/articles/neurorehabilitation/nre190537' },
       ],
     },
-    {
-      h2: 'Setting up your bike so you\'ll actually use it',
-      paragraphs: [
-        'The best bike is the one you get on. Placement decides that. Put it somewhere you already spend time — in front of the TV, near a window — not in a spare room you have to think about entering. Out of sight really is out of use. I made mine impossible to walk past.',
-        'Dial in the fit before you push resistance. The seat distance should let your affected knee keep a slight bend at full extension, never locking out. Use the pedal straps so the weak foot cannot slip. Keep a sturdy chair or the wall within reach for getting on and off. Get all of this right and the workout takes care of itself; get it wrong and you invent excuses.',
-      ],
-      bullets: [
-        'Place the bike where you already sit each day',
-        'Set seat distance for a slight knee bend, no lock-out',
-        'Always use the pedal straps on the affected side',
-        'Keep a stable support nearby for mounting and dismounting',
-        'Clear the floor around it so transfers are safe',
-      ],
-    },
-    {
-      h2: 'Tracking progress and a caregiver tip',
-      paragraphs: [
-        'Cardio gains are invisible unless you measure them. I logged three things: minutes, resistance level, and how I felt the next day. Over weeks the trend tells the truth even when a single session feels flat. If the same ride keeps getting easier, that is your cue to nudge the resistance or the time up a notch.',
-        'Caregiver tip: early on, just be present for transfers and keep water in reach. You do not need to coach the pedal stroke — that is the survivor\'s work. Watch for warning signs instead: chest pain, unusual shortness of breath, or dizziness means stop and, if it does not pass, call the doctor. When in doubt, clear the exercise plan with the PT first.',
-      ],
-      relatedLinks: [
-        { href: '/blog/best-pedal-exerciser-stroke-recovery', label: 'Best pedal exercisers for stroke recovery' },
-        { href: '/blog/fatigue-after-stroke', label: 'Fatigue after stroke' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'Is a pedal exerciser a good alternative to a full stationary bike?', a: 'For some survivors, yes — especially early on or when space and budget are tight. A pedal exerciser sits in front of any chair, costs far less, and lets you train the legs while seated safely. The trade-off is less resistance range, less stability, and no back support built in. If you can transfer safely and want more cardio load, a recumbent bike is the better long-term tool. Ask your PT which fits your current ability.' },
-    { q: 'Should I buy a used stationary bike to save money?', a: 'It can be a smart move if the frame is solid, the resistance mechanism works smoothly, and the pedal straps are intact — those straps matter for a weak foot. Test that the seat adjusts and locks securely, since a shifting seat is a fall risk. Avoid anything wobbly or missing safety features. A cheap bike that is stable and gets used beats an expensive one you never touch.' },
     { q: 'When can I start using a stationary bike after stroke?', a: 'With medical clearance, many survivors start recumbent cycling 2–4 weeks post-discharge. The key clearances: cardiovascular stability, no DVT contraindication, no uncontrolled hypertension with exercise. Get explicit clearance from your neurologist or physiatrist before starting.' },
     { q: 'Can I use a stationary bike if I have foot drop?', a: 'Yes — a recumbent bike with adjustable pedal straps works well for mild-to-moderate foot drop. The strap keeps the foot in position through the full pedal rotation. For severe drop foot with ankle instability, consult your PT about whether your AFO is appropriate for cycling use.' },
     { q: 'How long should I bike each session during stroke recovery?', a: 'Start at 10–15 minutes. Add 5 minutes per session if you feel good the next day. Work toward 30–45 minutes at moderate intensity. More isn\'t always better — post-stroke fatigue can delay recovery if you push past your current capacity consistently.' },
@@ -4224,8 +3241,8 @@ export const POST_STATIONARY_BIKE = makeBlogPost({
 
 export const POST_TREADMILL = makeBlogPost({
   slug: 'best-treadmill-stroke-recovery',
-  title: 'Best Treadmills for Stroke Recovery: PT Picks',
-  description: 'A home treadmill can extend gait retraining beyond clinic hours — but only the right machine, used the right way. Here\'s what matters for stroke survivors.',
+  title: 'Best Treadmills for Stroke Recovery: What PTs Recommend and What to Know Before You Buy',
+  description: 'A treadmill at home can extend gait retraining beyond clinic hours — but only if it\'s the right machine, used the right way. Here\'s what matters for stroke survivors.',
   h1: 'Best Treadmills for Stroke Recovery',
   keyword: 'best treadmill stroke recovery',
   subhead: 'Gait retraining doesn\'t stop when your PT appointment ends. The right home treadmill closes that gap — if you buy correctly and use it correctly.',
@@ -4237,7 +3254,7 @@ export const POST_TREADMILL = makeBlogPost({
       heading: 'Treadmill vs. overground walking — what the research says',
       body: `<p>There\'s legitimate debate in the rehab literature about treadmill gait training vs. overground. The short version: body-weight-supported treadmill training (BWSTT) in clinical settings has solid evidence for gait improvement. Home treadmill use without support has less evidence but is widely recommended by PTs as a way to accumulate walking volume — and walking volume is the variable that predicts long-term mobility outcomes.</p>
 <p>The key word is supervised. A treadmill at home is not a replacement for clinical gait training — it\'s a supplement for accumulating steps in a controlled environment. Set the speed low. Use the handrails when you need them. Have someone present until your PT gives you the solo green light.</p>`,
-      image: '/images/blog/fig-06-walking-gait.png',
+      image: '/images/blog/fig-06.jpg',
     },
     {
       heading: 'What to look for in a stroke-recovery treadmill',
@@ -4300,8 +3317,8 @@ export const POST_TREADMILL = makeBlogPost({
 
 export const POST_GRIP_STRENGTHENER = makeBlogPost({
   slug: 'best-grip-strengthener-stroke-recovery',
-  title: 'Best Grip Strengtheners for Stroke Recovery',
-  description: 'Grip strength after stroke doesn\'t rebuild itself. The right tools, used correctly, speed it up. What works — and what to avoid if spasticity is still present.',
+  title: 'Best Grip Strengtheners for Stroke Recovery: Rebuilding Hand Strength That Actually Transfers',
+  description: 'Grip strength after stroke doesn\'t rebuild itself. The right tools, used correctly, accelerate the process. Here\'s what works — and what to avoid if spasticity is still present.',
   h1: 'Best Grip Strengtheners for Stroke Recovery',
   keyword: 'best grip strengthener stroke recovery',
   subhead: 'Grip strength is a reliable predictor of upper extremity function outcomes after stroke. Here\'s how to train it at home without making spasticity worse.',
@@ -4352,35 +3369,8 @@ export const POST_GRIP_STRENGTHENER = makeBlogPost({
         { label: 'Progressive resistance training for stroke — Cochrane Review', url: 'https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD010368.pub2/full' },
       ],
     },
-    {
-      h2: 'Matching the grip tool to your recovery stage',
-      paragraphs: [
-        'The right grip tool depends entirely on where your hand is right now. Buy for the stage you are in, not the one you are chasing. Early on, when opening the hand is the hard part, a stiff gripper is useless and even counterproductive — you need low-resistance, full-range work first. Later, once you have voluntary opening and some control, adjustable-resistance tools earn their place.',
-        'The mistake that costs money and progress is buying a heavy fixed-resistance gripper because it looks serious. Fixed tools give you one setting; your hand needs a dial you can turn down. Prioritize adjustability and tools that train finger extension, not just crushing force. When you genuinely close the current tool with clean form for a couple of sets, that is when you step up — not before.',
-      ],
-      bullets: [
-        'No real opening yet: putty and passive range work, not grippers',
-        'Partial opening: adjustable, low-resistance finger tools',
-        'Building strength: step up resistance only after clean reps',
-        'Favor tools that train extension, not just squeezing',
-        'Skip fixed-heavy grippers until late recovery',
-      ],
-    },
-    {
-      h2: 'Grip-training mistakes that stall progress',
-      paragraphs: [
-        'The two errors I see most: going too heavy, and letting the strong hand quietly do the job. Too much resistance recruits the wrong muscles and can feed spasticity. And if you unconsciously assist with the good hand, you rob the affected one of the exact reps it needs. Slow down, keep the resistance honest, and watch what your hand is actually doing.',
-        'Caregiver tip: your role is to watch form, not to add reps. Look for a clenched jaw, a hiked shoulder, or the wrist bending to fake a squeeze — those are signs the resistance is too high or fatigue has set in. Call the session there. Quality reps rebuild the hand; grinding out sloppy ones just reinforces bad patterns. Check the program with the OT if progress stalls.',
-      ],
-      relatedLinks: [
-        { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools for stroke recovery' },
-        { href: '/blog/spasticity-after-stroke', label: 'Spasticity after stroke' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'Adjustable or fixed-resistance grip trainer — which should I buy?', a: 'For most stroke survivors, adjustable wins. Your hand strength changes week to week, and an adjustable tool lets you start light enough to move with control and dial up as you improve — all with one purchase. Fixed-resistance grippers lock you into a single load that is usually too heavy early on and encourages compensating. Save fixed grippers for late recovery when you are genuinely building strength. If unsure which resistance to start at, ask your OT.' },
-    { q: 'How do I keep my strong hand from doing all the work during grip training?', a: 'First, just be aware of it — many survivors assist without realizing. Train the affected hand on its own reps rather than using both hands on the same tool, and go slow enough to feel that the weak hand is actually driving the movement. Watch for the shoulder hiking or the body leaning to help. If you cannot isolate the affected hand yet, that is a sign to drop to an easier tool like putty. Your OT can give you cues to keep the work honest.' },
     { q: 'Can grip strengtheners make spasticity worse?', a: 'Yes, if used in the wrong phase. Loaded grip work on a hand dominated by flexor spasticity reinforces the pattern. Wait until you have voluntary finger extension against gravity before introducing resistance tools. If in doubt, ask your OT.' },
     { q: 'How often should I do grip exercises after stroke?', a: 'Three times per week. The hand is small but the tendon load is real. Daily grip work with resistance tools risks overuse injury in a hand that may have reduced sensation and won\'t give you normal pain warning signals. Rest days are not optional.' },
     { q: 'What if I can\'t even hold the grip tool?', a: 'Start with theraputty (see our hand therapy tools post). Putty allows very low resistance, full ROM work, and individual finger isolation. It\'s the step before grip tools for most stroke survivors with minimal hand return.' },
@@ -4408,8 +3398,8 @@ export const POST_GRIP_STRENGTHENER = makeBlogPost({
 
 export const POST_TENS_UNIT = makeBlogPost({
   slug: 'best-tens-unit-stroke-recovery',
-  title: 'Best TENS Units for Stroke Recovery: NMES Guide',
-  description: 'TENS and NMES units are among the most clinically relevant tools for post-stroke shoulder pain and spasticity. What the evidence supports and which to buy.',
+  title: 'Best TENS Units for Stroke Recovery: Shoulder Pain, Spasticity, and NMES Explained',
+  description: 'TENS and NMES devices are some of the most clinically relevant tools for post-stroke shoulder pain and spasticity management. Here\'s what the evidence supports and which devices to buy.',
   h1: 'Best TENS Units for Stroke Recovery',
   keyword: 'best TENS unit stroke recovery',
   subhead: 'Hemiplegic shoulder pain affects up to 84% of stroke survivors. Electrical stimulation is one of the most evidence-backed interventions. Here\'s what to buy and how to use it safely.',
@@ -4489,8 +3479,8 @@ export const POST_TENS_UNIT = makeBlogPost({
 
 export const POST_MASSAGE_GUN = makeBlogPost({
   slug: 'best-massage-gun-stroke-spasticity',
-  title: 'Best Massage Guns for Stroke Spasticity',
-  description: 'Percussion therapy can reduce spasticity tone before exercise and improve range of motion after stroke — if you use the right device. Here\'s the honest guide.',
+  title: 'Best Massage Guns for Stroke Spasticity: What Works, What to Avoid, and How to Use One Safely',
+  description: 'Percussion therapy can reduce spasticity tone before exercise and improve range of motion post-stroke — if you use the right device in the right areas. Here\'s the honest guide.',
   h1: 'Best Massage Guns for Stroke Spasticity and Muscle Recovery',
   keyword: 'best massage gun stroke spasticity',
   subhead: 'Percussion massage before your PT session can reduce tone enough to get meaningful work done. After exercise it accelerates recovery. But there are areas you must avoid — and a technique that makes the difference.',
@@ -4502,7 +3492,7 @@ export const POST_MASSAGE_GUN = makeBlogPost({
       heading: 'Why percussion therapy for stroke survivors',
       body: `<p>Vibration and percussion stimulate Golgi tendon organs — mechanoreceptors that signal muscle lengthening and trigger inhibitory reflexes that reduce muscle tone. That\'s the mechanism behind the anecdotal experience of using a massage gun on a spastic calf and having the foot easier to dorsiflex for the next 20–30 minutes. The effect is temporary, but temporary is enough to get therapeutic range of motion work done.</p>
 <p>The research on percussion specifically (vs. vibration) for post-stroke spasticity is thin but growing. The anecdotal evidence from stroke survivor communities is consistent: pre-exercise percussive massage to the affected arm or leg reduces tone enough to make subsequent exercises more effective. It\'s a warm-up tool, not a cure.</p>`,
-      image: '/images/blog/fig-09-cimt.png',
+      image: '/images/blog/fig-09.jpg',
     },
     {
       heading: 'Where not to use a massage gun — non-negotiable',
@@ -4534,35 +3524,8 @@ export const POST_MASSAGE_GUN = makeBlogPost({
         { label: 'Mechanical vibration for post-stroke spasticity — Cochrane', url: 'https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD003316.pub2/full' },
       ],
     },
-    {
-      h2: 'How to choose a massage gun that fits your hand',
-      paragraphs: [
-        'The spec sheets bury the thing that matters most for survivors: can you actually hold and steer it with one functional hand? A heavy, top-of-the-line unit does nothing if you cannot reach your own calf with it. Weight, handle shape, and reach beat raw power for most self-treatment.',
-        'Beyond that, look for adjustable speed so you can start at the gentlest setting, a couple of soft attachments for muscle bellies, and a battery that lasts more than a session. Noise matters more than you would think if you are sensitive to it post-stroke. Common mistake: chasing the highest stall force. You do not need clinic-grade thump to ease tone before stretching. Buy for control and comfort, and upgrade only if you genuinely outgrow it.',
-      ],
-      bullets: [
-        'Light enough to control with one working hand',
-        'Adjustable speed so you can start at the lowest setting',
-        'Soft ball or dampener attachments for muscle bellies',
-        'Battery life that clears a full session',
-        'Lower noise if you are sound or vibration sensitive',
-      ],
-    },
-    {
-      h2: 'A simple pre-therapy routine (and a caregiver tip)',
-      paragraphs: [
-        'Here is how I actually use it: gentle percussion on the tight muscle belly to take the edge off tone, then straight into stretching or exercise while that window is open. The device warms up the work; it does not replace it. Keep sessions short on each muscle group and stay off bone, the neck, and any numb areas — if you cannot feel it, you cannot judge if you are overdoing it.',
-        'Caregiver tip: if you are running the gun on the survivor\'s affected side, watch the skin, not just the muscle. Reduced sensation means they may not feel pressure building or the skin reddening. Keep the amplitude low, check in constantly, and stop at the first sign of irritation. Have the PT or OT show you correct placement before you make it a habit.',
-      ],
-      relatedLinks: [
-        { href: '/blog/spasticity-after-stroke', label: 'Spasticity after stroke' },
-        { href: '/blog/best-tens-unit-stroke-recovery', label: 'Best TENS units for stroke recovery' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'Can a caregiver safely use a massage gun on my affected side?', a: 'Yes, and often it is easier than reaching yourself — but with rules. The caregiver should stay on muscle bellies only, avoid bone, the spine, the neck, and any area of reduced sensation, and start at the lowest speed. The key risk is that you may not feel pressure or irritation on the affected side, so they need to watch the skin closely and keep each spot short. Have your PT or OT demonstrate safe placement before the caregiver goes solo.' },
-    { q: 'How do I keep a massage gun from making my spasticity worse?', a: 'Go gentle and short. Too much intensity or time on an already-irritable muscle can backfire and spike tone instead of easing it. Use the lowest effective speed, stay on the muscle belly, and stop if the muscle tightens up rather than loosens. Pair it with slow stretching, not aggressive work. If percussion consistently increases your tone or causes pain, stop and talk to your PT — it may not be the right tool for your presentation.' },
     { q: 'Will a massage gun reduce my spasticity permanently?', a: 'No. The tone reduction is temporary — typically 20–45 minutes. The value is using that window for effective range-of-motion work, stretching, or exercise that would be harder to do at baseline tone. Stack it before therapy, not instead of therapy.' },
     { q: 'Can I use a massage gun on my spastic hand?', a: 'With caution and low amplitude only. The hand has very little muscle belly to work with and many bony prominences to avoid. Use the soft ball attachment at the lowest speed on the forearm flexors (the muscle belly in the forearm, not the hand itself) to reduce distal tone. Direct percussion on the hand is generally not recommended.' },
     { q: 'Is it safe to use a massage gun near my stroke-affected areas?', a: 'Avoid the cranium and neck. Everything else — with the bony landmark exclusions listed above — is generally safe on muscle bellies. The key safety factor for stroke survivors is sensation impairment: if you can\'t feel the device on the affected side, have someone monitor the skin for redness or pressure marks and keep sessions to 60–90 seconds per muscle group.' },
@@ -4590,8 +3553,8 @@ export const POST_MASSAGE_GUN = makeBlogPost({
 
 export const POST_SMART_HOME = makeBlogPost({
   slug: 'best-smart-home-devices-stroke-survivors',
-  title: 'Best Smart Home Devices for Stroke Survivors',
-  description: 'For survivors with aphasia, hemiplegia, or fatigue, smart home tech can restore independence that seemed gone. What actually works and what\'s worth the money.',
+  title: 'Best Smart Home Devices for Stroke Survivors: Independence Through Voice and Automation',
+  description: 'For stroke survivors with aphasia, hemiplegia, or fatigue, smart home technology can restore independence that seemed gone. Here\'s what actually works and what\'s worth the money.',
   h1: 'Best Smart Home Devices for Stroke Survivors',
   keyword: 'smart home devices stroke survivors independence',
   subhead: 'Controlling your home without two working hands, clear speech, or unlimited energy isn\'t a luxury — it\'s a functional independence goal. Here\'s the technology that closes the gap.',
@@ -4602,7 +3565,7 @@ export const POST_SMART_HOME = makeBlogPost({
       heading: 'Why smart home tech matters for stroke recovery',
       body: `<p>Six months post-stroke I couldn\'t reliably operate my thermostat, unlock my front door for a home health aide, or turn off a light across the room without a full trip across unstable ground. These aren\'t trivial inconveniences — they\'re independence losses that compound fatigue, create safety risks, and grind on dignity in ways that don\'t show up on a Fugl-Meyer assessment.</p>
 <p>Smart home technology addresses the asymmetry between cognitive ability and physical execution. Most stroke survivors have intact intelligence, partially intact speech, and severely limited bilateral motor function. Voice control and automation bypass the motor bottleneck entirely. This is assistive technology that doesn\'t look like assistive technology — and that matters for motivation.</p>`,
-      image: '/images/blog/fig-10-single-leg-balance.png',
+      image: '/images/blog/fig-10.jpg',
     },
     {
       heading: 'Amazon Echo Show 8 — the control center that works',
@@ -4659,7 +3622,7 @@ export const POST_SMART_HOME = makeBlogPost({
 export const POST_RED_LIGHT = makeBlogPost({
   slug: 'red-light-therapy-stroke-recovery',
   title: 'Red Light Therapy After Stroke: What the Evidence Actually Says',
-  description: 'Red light therapy (photobiomodulation) has emerging evidence for neurological recovery and solid evidence for muscle and inflammation. An honest take.',
+  description: 'Red light therapy (photobiomodulation) has emerging evidence for neurological recovery and strong evidence for muscle soreness and inflammation. Here\'s an honest assessment for stroke survivors.',
   h1: 'Red Light Therapy for Stroke Recovery: Evidence, Limits, and What I Actually Use',
   keyword: 'red light therapy stroke recovery',
   subhead: 'Photobiomodulation is not a cure. It is not fringe science either. For post-stroke inflammation, muscle recovery, and the mitochondrial support that underlies everything else, it\'s worth understanding.',
@@ -4671,7 +3634,7 @@ export const POST_RED_LIGHT = makeBlogPost({
       heading: 'What photobiomodulation actually does',
       body: `<p>Red and near-infrared light in the 630–850 nm range is absorbed by cytochrome c oxidase — a mitochondrial enzyme involved in the final step of cellular energy production. Stimulating this pathway increases ATP production, reduces oxidative stress, and modulates inflammatory cytokines. This isn\'t speculative — the cellular mechanisms are well-characterized. The clinical question is whether those cellular effects are large enough to matter at the systemic level for stroke recovery outcomes.</p>
 <p>The honest answer: the neurological evidence is promising but not definitive. Multiple animal models show neuroprotection and improved recovery post-stroke. Human clinical trials for acute stroke neurological recovery exist but are small. For the musculoskeletal effects — reducing DOMS, improving muscle function after exercise, joint inflammation — the evidence base is substantially stronger and more mature.</p>`,
-      image: '/images/blog/fig-11-theraband-row.png',
+      image: '/images/blog/fig-11.jpg',
     },
     {
       heading: 'The practical case for stroke survivors',
@@ -4731,8 +3694,8 @@ export const POST_RED_LIGHT = makeBlogPost({
 
 export const POST_ADJUSTABLE_BED = makeBlogPost({
   slug: 'best-adjustable-bed-wedge-pillow-stroke-recovery',
-  title: 'Best Adjustable Beds & Wedge Pillows for Stroke',
-  description: 'Bed positioning after stroke affects spasticity, shoulder subluxation, aspiration risk, and sleep. Here\'s exactly what to buy and how to set it up right.',
+  title: 'Best Adjustable Beds and Wedge Pillows for Stroke Recovery: Sleep, Positioning, and Spasticity',
+  description: 'Bed positioning after stroke directly affects spasticity, shoulder subluxation, aspiration risk, and sleep quality. Here\'s what to buy and how to set it up correctly.',
   h1: 'Best Adjustable Beds and Wedge Pillows for Stroke Recovery',
   keyword: 'best adjustable bed wedge pillow stroke recovery',
   subhead: 'How you sleep is part of your rehabilitation. Positioning affects spasticity tone, shoulder integrity, and whether you wake up ready to work or already behind.',
@@ -4744,7 +3707,7 @@ export const POST_ADJUSTABLE_BED = makeBlogPost({
       heading: 'Why positioning matters more than most survivors realize',
       body: `<p>In the acute and subacute phases, my affected arm position overnight made a measurable difference in morning tone. A shoulder left to fall into internal rotation and adduction through eight hours of sleep showed up as tighter, more resistant, and more painful in morning PT. A shoulder properly supported in slight abduction and external rotation showed up ready to work.</p>
 <p>The neurological mechanism: prolonged positioning in a shortened muscle length maintains hypertonicity. The inverse — positioning in a lengthened state — has a genuine, if modest, tone-reducing effect over time. This is why occupational therapists give detailed positioning instructions at discharge. Most survivors follow them for two weeks and then revert to whatever's comfortable. Comfortable is often the wrong position for recovery.</p>`,
-      image: '/images/blog/fig-12-recovery-position.png',
+      image: '/images/blog/fig-12.jpg',
     },
     {
       heading: 'InteVision Foam Wedge Pillow — the essential base',
@@ -4800,8 +3763,8 @@ export const POST_ADJUSTABLE_BED = makeBlogPost({
 
 export const POST_COMPRESSION = makeBlogPost({
   slug: 'compression-garments-stroke-recovery-edema',
-  title: 'Compression Socks & Sleeves for Stroke Edema',
-  description: 'Post-stroke edema in the affected limb is nearly universal, and compression garments are one of the best-evidenced fixes. What to buy and how to use them.',
+  title: 'Compression Socks and Sleeves for Stroke Recovery: Managing Edema, DVT Risk, and Circulation',
+  description: 'Post-stroke edema in the affected limb is nearly universal. Compression garments are one of the most evidence-backed interventions. Here\'s what to buy, how to put them on one-handed, and when to call your doctor.',
   h1: 'Compression Garments for Stroke Recovery: Socks, Sleeves, and Edema Management',
   keyword: 'compression socks stroke recovery edema',
   subhead: 'A swollen affected leg isn\'t just uncomfortable — it limits movement, increases DVT risk, and compounds the fatigue that already makes everything harder. Compression is the answer most survivors underuse.',
@@ -4813,7 +3776,7 @@ export const POST_COMPRESSION = makeBlogPost({
       heading: 'Why stroke survivors need compression',
       body: `<p>Paralysis or significant weakness in the affected limb impairs the muscle pump — the mechanism by which skeletal muscle contraction pushes blood and lymph back toward the heart. No pump, fluid pools. Edema in the affected hand, ankle, and lower leg is nearly universal in the first weeks post-stroke, and many survivors deal with it for months or years.</p>
 <p>The consequences go beyond appearance. Edematous tissue is stiffer and more resistant to the range-of-motion work you need to do. Swollen fingers are harder to rehabilitate. Ankle edema in an already-compromised gait pattern adds instability and fatigue cost. DVT risk is elevated in the first 3–6 months post-stroke — immobility, hemiplegia, and hospital-acquired deconditioning are all independent risk factors. Compression addresses all of these.</p>`,
-      image: '/images/blog/fig-13-nmes-placement.png',
+      image: '/images/blog/fig-13.jpg',
     },
     {
       heading: 'Compression levels — what the numbers mean',
@@ -4877,8 +3840,8 @@ export const POST_COMPRESSION = makeBlogPost({
 
 export const POST_STANDING_DESK = makeBlogPost({
   slug: 'best-standing-desk-stroke-recovery-return-to-work',
-  title: 'Best Standing Desks for Stroke Survivors',
-  description: 'Returning to a desk job after stroke takes more than willpower — it takes a workstation built for hemiplegia, fatigue, and posture asymmetry. Here\'s the setup.',
+  title: 'Best Standing Desks for Stroke Survivors: Return to Work, Posture, and Active Recovery',
+  description: 'Returning to a desk job after stroke requires more than willpower — it requires a workstation built for hemiplegia, fatigue, and the posture asymmetries that make prolonged sitting a recovery setback.',
   h1: 'Best Standing Desks for Stroke Survivors and Return to Work',
   keyword: 'best standing desk stroke recovery return to work',
   subhead: 'Sitting eight hours a day with hemiplegia reinforces every asymmetry you\'re trying to correct in PT. A height-adjustable desk isn\'t a luxury — it\'s a functional tool for recovering while working.',
@@ -4890,7 +3853,7 @@ export const POST_STANDING_DESK = makeBlogPost({
       heading: 'Why a regular desk works against stroke recovery',
       body: `<p>I went back to part-time desk work at eight months post-stroke. Standard fixed-height desk, standard chair. Within two weeks my affected shoulder was worse, my trunk was listing right, and my PT was asking what changed. What changed was six hours per day of asymmetric loading in a fixed position — the affected arm resting at an angle that maintained internal rotation, the trunk habitually shifting to the stronger side, the affected leg hanging in less-than-ideal position because the seat height was wrong for my gait mechanics.</p>
 <p>Height-adjustable desks address this by giving you options. Alternate between sitting and standing. Set the height for your affected arm to rest at desk level rather than hanging. Stand during video calls to get bilateral weight-bearing. None of this replaces PT — but all of it stops compounding the asymmetries that PT is trying to reduce.</p>`,
-      image: '/images/blog/fig-14-foam-roller.png',
+      image: '/images/blog/fig-14.jpg',
     },
     {
       heading: 'FlexiSpot E7 — the best value electric sit-stand desk',
@@ -4948,8 +3911,8 @@ export const POST_STANDING_DESK = makeBlogPost({
 
 export const POST_WEIGHTED_VEST = makeBlogPost({
   slug: 'best-weighted-vest-stroke-balance-training',
-  title: 'Best Weighted Vests for Stroke Balance Training',
-  description: 'Weighted vests add load to gait and balance training in a way that challenges the nervous system after stroke. Here\'s the evidence and which vests to buy.',
+  title: 'Best Weighted Vests for Stroke Recovery: Balance Training, Proprioception, and Gait',
+  description: 'Weighted vests add load to gait and balance training in a way that challenges the nervous system without requiring additional equipment. Here\'s the evidence and what to buy.',
   h1: 'Best Weighted Vests for Stroke Balance Training and Gait Rehab',
   keyword: 'best weighted vest stroke recovery balance training',
   subhead: 'Adding body weight through a vest changes the proprioceptive input during walking and balance work — a different neuroplasticity stimulus that complements standard exercise without requiring different equipment.',
@@ -4961,7 +3924,7 @@ export const POST_WEIGHTED_VEST = makeBlogPost({
       heading: 'Why weighted vests for stroke recovery',
       body: `<p>The research on weighted vests for post-stroke gait comes primarily from studies using trunk weighting — adding load at the trunk or affected shoulder to improve trunk symmetry and gait pattern. The mechanism: increased proprioceptive input through the trunk and lower extremities during weight-bearing enhances sensory feedback that post-stroke hemiplegia has disrupted. More feedback means more material for the nervous system to use in recalibrating motor patterns.</p>
 <p>Weighted vests are also used for general strength conditioning during recovery-phase walking — adding load to gait without requiring separate equipment or a gym. As walking capacity improves and the same distance feels too easy, a vest is the lowest-friction way to increase the training stimulus.</p>`,
-      image: '/images/blog/fig-15-parallel-bars.png',
+      image: '/images/blog/fig-15.jpg',
     },
     {
       heading: 'ZFOsports Weighted Vest — best adjustable option',
@@ -4988,35 +3951,8 @@ export const POST_WEIGHTED_VEST = makeBlogPost({
         { label: 'Proprioceptive loading and neuroplasticity — Neurorehabilitation', url: 'https://pubmed.ncbi.nlm.nih.gov/28869474/' },
       ],
     },
-    {
-      h2: 'What to look for in a vest after stroke',
-      paragraphs: [
-        'Fit is everything with a weighted vest, and it is the thing most people ignore. A vest that shifts as you walk turns a balance tool into a balance hazard. You want it snug against the trunk, with weight sitting close to your center of mass, not sagging low or swinging. If it moves independently of you, it is fighting the exact thing you are trying to train.',
-        'The biggest mistake I see is buying too heavy \'to save money later.\' You will not use the top end for a long time, and starting heavy wrecks your gait. Look for small weight increments so you can progress in tiny steps, and closures you can actually work with one functional hand. Cheaper adjustable vests are fine to start; upgrade only when you have outgrown the load or the comfort.',
-      ],
-      bullets: [
-        'Snug trunk fit with weight near your center of mass',
-        'Small, addable increments so you progress gradually',
-        'Closures you can fasten with one working hand',
-        'Even, symmetric load unless your PT prescribes otherwise',
-        'Comfortable straps that will not dig in during longer wear',
-      ],
-    },
-    {
-      h2: 'Fitting vest work into your week (and a caregiver tip)',
-      paragraphs: [
-        'A vest is a stimulus, not a daily uniform. I used mine on specific training walks and balance sessions, not for lounging around the house. Add it only after your unweighted walking and standing are already stable, and treat any drop in gait quality as a signal the weight is too high. Progress belongs in the routine — small, planned bumps, not spur-of-the-moment loading.',
-        'Caregiver tip: guard, do not grab. Stay at the survivor\'s affected side within arm\'s reach the first few sessions in case balance falters, but let them do the work. Watch the gait — if you see more lean, more circling of the leg, or the foot dragging, the load is too much. When in doubt, have the PT set the starting weight and progression.',
-      ],
-      relatedLinks: [
-        { href: '/blog/best-balance-board-stroke-recovery', label: 'Best balance boards for stroke recovery' },
-        { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home after stroke' },
-      ],
-    },
   ],
   faqs: [
-    { q: 'How do I put on a weighted vest with one working hand?', a: 'Look for a vest with a single front zipper or large loop-style straps rather than many small buckles. A common trick is to lay the vest open on a bed or table, load the weights while it is flat, then work your affected arm in first and shrug it on like a jacket before fastening the front with your strong hand. If getting it on and off is a daily struggle, ask your OT for a technique tailored to your abilities.' },
-    { q: 'Should I use a weighted vest or ankle and wrist weights instead?', a: 'They do different jobs. A vest loads the trunk and center of mass, which is generally safer and more relevant for balance and gait after stroke. Ankle and wrist weights load a single limb and can distort your movement pattern or strain a joint if used carelessly, so many therapists are cautious with them post-stroke. Do not guess — ask your PT which tool fits your goals and current stability.' },
     { q: 'Is a weighted vest safe for stroke survivors?', a: 'With appropriate weight selection and stable baseline balance: yes. The contraindications: significant active balance deficits that make falls a real risk, cardiovascular instability, or cervical/thoracic spine issues where added trunk load is contraindicated. Get PT clearance before adding a weighted vest to your training if you\'re in the first 12 months post-stroke.' },
     { q: 'How much weight should I put in my vest for stroke recovery?', a: '2–4% of body weight is the research-supported range for gait improvement and proprioceptive training. For a 160 lb survivor: 3.2–6.4 lbs. Start at the lower end and progress slowly. The vest should add challenge without disrupting the gait quality you\'ve worked to develop.' },
     { q: 'Can weighted vests help with balance after stroke?', a: 'The evidence for trunk weighting specifically improving balance and gait symmetry post-stroke is positive, particularly for asymmetric trunk lean patterns. Multiple RCTs show improved Fugl-Meyer balance subscores, Berg Balance Scale scores, and gait symmetry with trunk-targeted weighting. The effect is modest but consistent.' },
@@ -5044,8 +3980,8 @@ export const POST_WEIGHTED_VEST = makeBlogPost({
 
 export const POST_SPEECH_THERAPY = makeBlogPost({
   slug: 'best-speech-therapy-apps-tools-aphasia-stroke',
-  title: 'Best Speech Therapy Apps for Aphasia After Stroke',
-  description: 'Aphasia and dysarthria affect a third of stroke survivors. Between clinic visits, daily practice prevents plateau. The apps and tools that make it work at home.',
+  title: 'Best Speech Therapy Apps and Tools for Aphasia After Stroke: What Actually Works at Home',
+  description: 'Aphasia and dysarthria affect over a third of stroke survivors. Between clinic visits, daily practice is the difference between plateauing and continuing to improve. Here are the tools that make it possible.',
   h1: 'Best Speech Therapy Apps and Tools for Aphasia After Stroke',
   keyword: 'best speech therapy app aphasia stroke recovery',
   subhead: 'Your SLP sees you once or twice a week. The other 22+ hours belong to you. The right tools turn that time into meaningful practice instead of missed recovery.',
@@ -5057,7 +3993,7 @@ export const POST_SPEECH_THERAPY = makeBlogPost({
       heading: 'The home practice gap — why it matters more than your SLP can say',
       body: `<p>The research on aphasia recovery is unambiguous on one point: intensity matters. The number of hours of practice per week is the strongest predictor of language recovery, more than the specific therapy approach used. Clinical SLP visits are typically 1–3 hours per week. The survivors who make the most progress practice daily — often 45–90 minutes per day — using apps and structured exercises between sessions.</p>
 <p>Most SLPs want their patients practicing at home and will often provide specific targets. The problem is follow-through: the exercises feel hard, progress is slow, and without external structure it\'s easy to skip days. The best tools listed here address the motivation and structure problem, not just the content problem.</p>`,
-      image: '/images/blog/fig-16-chin-tuck-swallow.png',
+      image: '/images/blog/fig-16.jpg',
     },
     {
       heading: 'Constant Therapy — the most clinically validated app',
@@ -5122,8 +4058,8 @@ export const POST_SPEECH_THERAPY = makeBlogPost({
 
 export const POST_THRESHOLD_RAMP = makeBlogPost({
   slug: 'threshold-ramps-grab-bars-stroke-home-accessibility',
-  title: 'Home Accessibility After Stroke: Ramps & Grab Bars',
-  description: 'Most falls after stroke happen at thresholds, in bathrooms, and on stairs. Here\'s how to spend $50-$500 on the home modifications that actually prevent them.',
+  title: 'Threshold Ramps, Grab Bars, and Home Accessibility Upgrades for Stroke Survivors',
+  description: 'Falls kill stroke recovery momentum — and most falls happen at thresholds, in bathrooms, and on stairs. Here\'s how to spend $50–$500 on the modifications that actually prevent them.',
   h1: 'Threshold Ramps and Home Accessibility for Stroke Survivors: What to Buy and Where to Put It',
   keyword: 'threshold ramp grab bar stroke survivor home accessibility',
   subhead: 'A threshold is a two-inch ledge. After stroke it\'s a fall risk. A $30 rubber ramp eliminates it. Most survivors don\'t buy it until after they fall. Don\'t be that survivor.',
@@ -5135,7 +4071,7 @@ export const POST_THRESHOLD_RAMP = makeBlogPost({
       heading: 'The fall risk reality of post-stroke home environments',
       body: `<p>Falls are the most common serious adverse event in stroke recovery — in both inpatient and outpatient settings. Up to 73% of stroke survivors fall in the first six months post-discharge. More than half of those falls happen in the home. The majority happen during transitions: transferring from sitting to standing, crossing thresholds, bathroom activities, and stair navigation.</p>
 <p>Home modification is the highest-leverage fall prevention intervention available. It\'s not as visible as PT progress or as exciting as adaptive equipment. But a grab bar that prevents one fall in year one is worth more to your recovery than six months of resistance training — because a fall-related injury resets the entire timeline.</p>`,
-      image: '/images/blog/fig-17-brushing-teeth.png',
+      image: '/images/blog/fig-17.jpg',
     },
     {
       heading: 'EZ-ACCESS TRANSITIONS threshold ramp — the essential first purchase',
@@ -5206,7 +4142,7 @@ export const POST_THRESHOLD_RAMP = makeBlogPost({
 export const POST_HOME_GYM_STATIONS = makeBlogPost({
   slug: 'best-home-gym-stroke-recovery',
   title: 'Best Home Gym Stations for Stroke Recovery: From $500 to $5,000',
-  description: 'The home gym stations that actually work for stroke survivors — one-sided weakness, seated exercise, full-body rebuilding. Real equipment, real prices.',
+  description: 'The home gym stations that actually work for stroke survivors — one-sided weakness, seated exercise, and full-body rebuilding. Real equipment, real prices, real recommendations.',
   h1: 'Best home gym stations for stroke recovery',
   keyword: 'best home gym stroke recovery',
   extraKeywords: ['home gym for stroke survivors', 'stroke recovery exercise equipment', 'seated exercise machine', 'one-sided workout', 'resistance training after stroke', 'stroke survivor fitness', 'home rehab equipment', 'affiliate'],
@@ -5364,6 +4300,13 @@ export const POST_HOME_GYM_STATIONS = makeBlogPost({
     link: '/book',
     label: 'Get the book',
   },
+  video: {
+    name: 'Best Home Gym Stations for Stroke Recovery',
+    description: 'From $500 to $5,000 — the home gym stations that actually work for stroke survivors with one-sided weakness, seated exercise, and full-body rebuilding.',
+    thumbnailUrl: '/images/blog/home-gym-stroke-recovery.png',
+    uploadDate: '2026-06-07',
+    duration: 'PT9M15S',
+  },
 });
 
 // =============================================================================
@@ -5371,8 +4314,8 @@ export const POST_HOME_GYM_STATIONS = makeBlogPost({
 // =============================================================================
 export const POST_STAIR_LIFT = makeBlogPost({
   slug: 'stair-lift-stroke-survivor',
-  title: 'Stair Lifts for Stroke Survivors: When to Buy',
-  description: 'The stair lift decision after stroke — when to buy, what to pay, and why a stair lift is independence, not surrender. Real prices, brands, and recommendations.',
+  title: 'Stair Lifts for Stroke Survivors: When One Floor Stops Being a Recovery Plan',
+  description: 'The stair lift decision after stroke — when to buy, what to pay, and why the stair lift is independence, not surrender. Real prices, real brands, real recommendations.',
   h1: 'Stair lifts for stroke survivors',
   keyword: 'stair lift stroke survivor',
   extraKeywords: ['stair lift for disabled', 'home accessibility after stroke', 'stair chair lift', 'stair lift cost', 'stair lift installation', 'mobility equipment', 'aging in place', 'affiliate'],
@@ -5493,6 +4436,13 @@ export const POST_STAIR_LIFT = makeBlogPost({
     link: '/book',
     label: 'Get the book',
   },
+  video: {
+    name: 'Stair Lifts for Stroke Survivors: Installation and Safety',
+    description: 'The $1,499 decision that buys independence. How to choose, install, and safely use a stair lift after stroke.',
+    thumbnailUrl: '/images/blog/stair-lift-stroke-survivor.png',
+    uploadDate: '2026-06-07',
+    duration: 'PT6M20S',
+  },
 });
 
 // =============================================================================
@@ -5500,7 +4450,7 @@ export const POST_STAIR_LIFT = makeBlogPost({
 // =============================================================================
 export const POST_PARALLEL_BARS = makeBlogPost({
   slug: 'parallel-bars-stroke-recovery',
-  title: 'Parallel Bars for Stroke Recovery at Home',
+  title: 'Parallel Bars for Stroke Recovery at Home: Clinical Equipment in Your Garage',
   description: 'The parallel bars that bridge the gap between clinic gait training and real-world walking. Real prices, real brands, and the setup that actually works at home.',
   h1: 'Parallel bars for stroke recovery at home',
   keyword: 'parallel bars stroke recovery',
@@ -5621,6 +4571,13 @@ export const POST_PARALLEL_BARS = makeBlogPost({
     link: '/book',
     label: 'Get the book',
   },
+  video: {
+    name: 'Parallel Bars for Stroke Recovery at Home',
+    description: 'Portable, adjustable-height parallel bars that assemble in 15 minutes. The bridge from clinic gait training to walking in the real world.',
+    thumbnailUrl: '/images/blog/parallel-bars-stroke-recovery.png',
+    uploadDate: '2026-06-07',
+    duration: 'PT7M45S',
+  },
 });
 
 // =============================================================================
@@ -5628,8 +4585,8 @@ export const POST_PARALLEL_BARS = makeBlogPost({
 // =============================================================================
 export const POST_HYDROTHERAPY = makeBlogPost({
   slug: 'hot-tub-hydrotherapy-stroke-recovery',
-  title: 'Hot Tub Hydrotherapy for Stroke Recovery',
-  description: 'Hydrotherapy for stroke recovery — how hot tubs reduce spasticity, improve circulation, and rebuild proprioception. Real brands, prices, and setup that works.',
+  title: 'Hot Tub Hydrotherapy for Stroke Recovery: Why I Spent $5,000 and Don\'t Regret It',
+  description: 'Hydrotherapy for stroke recovery — how hot tubs reduce spasticity, improve circulation, and rebuild proprioception. Real brands, real prices, and the setup that actually works.',
   h1: 'Hot tub hydrotherapy for stroke recovery',
   keyword: 'hot tub hydrotherapy stroke recovery',
   extraKeywords: ['hydrotherapy for stroke', 'hot tub for spasticity', 'warm water therapy', 'aquatic therapy at home', 'stroke muscle relaxation', 'spa therapy for stroke', 'home hydrotherapy', 'affiliate'],
@@ -5750,6 +4707,13 @@ export const POST_HYDROTHERAPY = makeBlogPost({
     link: '/book',
     label: 'Get the book',
   },
+  video: {
+    name: 'Hot Tub Hydrotherapy for Stroke Recovery',
+    description: 'Warm water therapy that reduces spasticity, improves sleep, and rebuilds the nervous system. The $2,500 investment that changed my recovery.',
+    thumbnailUrl: '/images/blog/hydrotherapy-stroke-recovery.png',
+    uploadDate: '2026-06-07',
+    duration: 'PT8M10S',
+  },
 });
 
 // =============================================================================
@@ -5757,7 +4721,7 @@ export const POST_HYDROTHERAPY = makeBlogPost({
 // =============================================================================
 export const POST_SUPPLEMENTS = makeBlogPost({
   slug: 'supplements-stroke-recovery',
-  title: 'Supplements for Stroke Recovery: What I Took',
+  title: '5 Supplements I Took During Stroke Recovery — And the One I Wish I Started Earlier',
   description: 'The supplement stack that actually moved the needle for stroke recovery. Omega-3, vitamin D, B-complex, CoQ10, and magnesium — with the evidence and the dosage.',
   h1: 'Supplements for stroke recovery',
   keyword: 'supplements stroke recovery',
@@ -5915,6 +4879,13 @@ export const POST_SUPPLEMENTS = makeBlogPost({
     link: '/book',
     label: 'Get the book',
   },
+  video: {
+    name: '5 Supplements for Stroke Recovery — And the One I Wish I Started Earlier',
+    description: 'The exact supplement stack, dosage, and timing that moved the needle. Omega-3, vitamin D, B-complex, CoQ10, and magnesium — with the evidence.',
+    thumbnailUrl: '/images/blog/supplements-stroke-recovery.png',
+    uploadDate: '2026-06-07',
+    duration: 'PT11M05S',
+  },
 });
 
 // =============================================================================
@@ -5922,8 +4893,8 @@ export const POST_SUPPLEMENTS = makeBlogPost({
 // =============================================================================
 export const POST_SAEBO = makeBlogPost({
   slug: 'saebo-stroke-recovery-devices',
-  title: 'Saebo Devices for Stroke Recovery: Honest Review',
-  description: 'Saebo stroke recovery devices — the Flex, the ReJoyce, and the Glove. Real reviews, real results, and the daily protocol that actually makes them work for you.',
+  title: 'Saebo Stroke Recovery Devices: The Hand Therapy System I Wish I Found Sooner',
+  description: 'Saebo stroke recovery devices — the Flex, the ReJoyce, and the Glove. Real reviews, real results, and the protocol that makes them work.',
   h1: 'Saebo stroke recovery devices',
   keyword: 'saebo stroke recovery',
   extraKeywords: ['Saebo Flex review', 'hand therapy after stroke', 'finger recovery stroke', 'stroke hand rehabilitation', 'active assistive therapy', 'Saebo ReJoyce', 'stroke glove therapy', 'affiliate'],
@@ -6042,6 +5013,13 @@ export const POST_SAEBO = makeBlogPost({
     link: '/book',
     label: 'Get the book',
   },
+  video: {
+    name: 'Saebo Stroke Recovery Devices: Flex, ReJoyce, and Glove Review',
+    description: 'The hand therapy system I wish I found at month one. The Flex, ReJoyce, and Glove — real reviews, real protocol, and the results that made the difference.',
+    thumbnailUrl: '/images/blog/saebo-stroke-recovery-devices.png',
+    uploadDate: '2026-06-07',
+    duration: 'PT10M30S',
+  },
 });
 
 // =============================================================================
@@ -6049,8 +5027,8 @@ export const POST_SAEBO = makeBlogPost({
 // =============================================================================
 export const POST_GSC_INDEXING = makeBlogPost({
   slug: 'google-search-console-indexing-website',
-  title: 'Get Google Search Console to Index Your Site',
-  description: 'Getting Google Search Console to index your site isn\'t a mystery, it\'s a checklist. Here\'s the exact process that got 48 blog posts indexed in 90 days.',
+  title: 'How to Get Google Search Console to Index Your Website: The No-Fluff Guide',
+  description: 'Getting Google Search Console to index your website is not a mystery. It is a checklist. Here is the exact process that got 48 stroke recovery blog posts indexed in 90 days.',
   h1: 'How to get Google Search Console to index your website',
   keyword: 'google search console indexing website',
   image: '/images/blog/therapy-exercises-dark.png',
@@ -6167,6 +5145,13 @@ export const POST_GSC_INDEXING = makeBlogPost({
     link: '/book',
     label: 'Get the book',
   },
+  video: {
+    name: 'How to Get Google Search Console to Index Your Website',
+    description: 'The exact checklist that got 48 stroke recovery blog posts indexed in 90 days. No fluff. No SEO guru secrets. Just the steps that work.',
+    thumbnailUrl: '/images/blog/gsc-indexing-thumb.png',
+    uploadDate: '2026-06-07',
+    duration: 'PT12M30S',
+  },
 });
 
 // =============================================================================
@@ -6175,7 +5160,7 @@ export const POST_GSC_INDEXING = makeBlogPost({
 export const POST_ONLINE_COACH = makeBlogPost({
   slug: 'online-stroke-recovery-coach',
   title: 'Online Stroke Recovery Coach: Real Story, Real Results',
-  description: 'Nick Kremers, a 7-year stroke survivor, built a top stroke recovery resource from a wheelchair. Real protocols, real accountability, and the story behind it.',
+  description: 'Nick Kremers, a 7-year stroke survivor, built the top-ranked stroke recovery resource from a wheelchair. Real protocols, real accountability, and the story behind the results.',
   h1: 'Online stroke recovery coach',
   keyword: 'online stroke recovery coach',
   extraKeywords: ['stroke recovery coach', 'stroke survivor coaching', 'virtual stroke coach', 'stroke recovery mentor', 'stroke recovery accountability', 'personal stroke coach', 'stroke coaching program', 'online coach for stroke survivors'],
@@ -6291,6 +5276,13 @@ export const POST_ONLINE_COACH = makeBlogPost({
     description: '30 chapters, 50,000+ words, the daily routine, the protocols, the mindset, and the story that built the #1-ranked stroke recovery resource online. Digital PDF $19. Print paperback $29. The book every survivor wishes they had in the hospital.',
     link: '/book/buy',
     label: 'Get the book — $19 PDF / $29 paperback',
+  },
+  video: {
+    name: 'Online Stroke Recovery Coach: The Real Story Behind the Rankings',
+    description: 'From a wheelchair in Lavaca, Arkansas to coaching 15,000 survivors a day. The story, the protocol, and the proof that recovery is a refusal — not a diagnosis.',
+    thumbnailUrl: '/images/blog/nick-2018-2026.png',
+    uploadDate: '2026-06-07',
+    duration: 'PT14M00S',
   },
 });
 
@@ -6437,947 +5429,20 @@ export const POST_BROOKS_SURVIVOR_REVIEW = makeBlogPost({
     label: 'View on Amazon',
     note: 'Affiliate link. Costs you nothing extra. I wear this shoe. I recommend it because it works.',
   },
-});
-
-// =============================================================================
-// 70. Stroke Recovery Coaching Program — what works, what doesn't
-// =============================================================================
-export const POST_COACHING_PROGRAM = makeBlogPost({
-  slug: 'stroke-recovery-coaching-program',
-  title: 'Stroke Recovery Coaching Program: What Works and What Doesn\'t',
-  description: 'Nick Kremers tried every stroke recovery coaching program on the market. This is what 7 years of trial found — real protocols, no marketing spin.',
-  h1: 'Stroke recovery coaching program',
-  keyword: 'stroke recovery coaching program',
-  extraKeywords: ['online stroke recovery coaching', 'stroke recovery program coach', 'stroke rehab coaching', 'stroke survivor coaching program', 'stroke recovery accountability program'],
-  subhead: 'Seven years in, I have tried every coaching model the stroke recovery world offers. Here is what works, what does not, and the program I built when I could not find one that met the standard.',
-  ctaPrimary: { href: '/recovery/sasquatch-coach', label: 'Try the Coach — free' },
-  ctaSecondary: { href: '/blog/online-stroke-recovery-coach', label: 'Read the full story' },
-  publishedDate: '2026-07-02',
-  sections: [
-    {
-      h2: 'The gap every stroke coaching program has to fill',
-      paragraphs: [
-        'The hospital stays average four days for ischemic stroke, eight for hemorrhagic. Inpatient rehab, if you qualify, runs twenty-one days. Outpatient physical therapy, if insurance approves it, covers twelve sessions before the door closes. That is roughly ninety days of structured support for a recovery arc that runs three to five years. The math does not work. A stroke recovery coaching program exists to survive the gap.',
-        'A coaching program is not a replacement for clinical care. It is the structure that keeps daily reps happening between sessions, between discharges, between years two and five when no one is watching and the recovery either compounds or stalls. The program I built is built specifically for that gap — the one the hospital creates when it sends you home.',
-      ],
-    },
-    {
-      h2: 'What the bad programs get wrong',
-      paragraphs: [
-        'Most stroke recovery coaching programs fail on one of three mistakes. The first is content without accountability — a library of videos, exercises, and worksheets with no human or AI holding you to any of it. Access without accountability is not a program. It is a subscription you eventually cancel.',
-        'The second mistake is clinical language without lived experience. A program designed by people who have studied stroke but never had one produces protocols that look correct on paper and feel tone-deaf in practice. It does not know what the depression at month eight feels like. It does not know what it costs to do the exercises when the fatigue is neurological, not motivational.',
-        'The third mistake is intensity without progression. A program that assigns the same protocol to a month-one survivor and a year-five survivor is not a coaching program — it is a workout video. Real recovery progression is non-linear, deficit-specific, and calibrated to where the brain actually is — not where the textbook says it should be.',
-      ],
-    },
-    {
-      h2: 'What the Sasquatch coaching program does differently',
-      paragraphs: [
-        'The Sasquatch Method coaching program is built on four commitments. First, accountability over content. The AI coach checks in, tracks the streak, calls out the drift. The curriculum is the back half of the program — the coach is the front half.',
-        'Second, lived experience as the primary credential. Every protocol in the program was field-tested on my own body during the worst years of my recovery. The supplements, the exercises, the electric stimulation, the hydrotherapy, the parallel bars in my garage — I tried everything and documented what moved the needle. The program only contains what moved the needle.',
-        'Third, deficit-specific progression. The intake asks four questions. The coach uses the answers to calibrate the daily protocol — not to the average survivor but to you. Brainstem vs cortical. Ischemic vs hemorrhagic. Month one vs year five. The protocol adapts.',
-        'Fourth, community as the force multiplier. The accountability pod structure — five to eight survivors checking in daily — creates social accountability the AI alone cannot replicate. The pod does not let you miss twice. The coach does not let the pod forget.',
-      ],
-      bullets: [
-        'Daily AI check-in — the streak, the protocol, the drift catch',
-        'Deficit-specific intake — four questions, calibrated protocol',
-        'Accountability pod — five to eight survivors, daily check-in',
-        '66-day arc — the habit formation research, applied to stroke rehab',
-        'Lived-experience library — only protocols field-tested on the founder\'s body',
-        'Crisis gate — routes mental health emergencies to 988 before continuing',
-      ],
-    },
-    {
-      h2: 'The 66-day arc: why the program uses this number',
-      paragraphs: [
-        'The European Journal of Social Psychology research on habit formation (Lally et al., 2010) found that the median time for a behavior to become automatic was sixty-six days. Not twenty-one. Not thirty. Sixty-six, on average — with a range from eighteen to two hundred and fifty-four days depending on the complexity of the behavior.',
-        'Stroke recovery is not a simple behavior. It is a complex daily system — exercises, sleep, nutrition, medication, mental hygiene, social accountability. The sixty-six day arc is the minimum credible commitment to the habit formation arc. The challenge starts at day one and does not ask for perfection. It asks for the same refusal to quit that got you out of the hospital.',
-      ],
-    },
-    {
-      h2: 'How to pick the right stroke recovery coaching program',
-      paragraphs: [
-        'Ask four questions before you commit. First: is it built by someone who has had a stroke, or someone who has studied stroke? Both can produce useful content. Only one produces a program that understands the 3 a.m. spasticity and the identity grief that comes six months after the stroke when the adrenaline of crisis wears off.',
-        'Second: does it hold you accountable, or does it give you access to resources? A library is not a program. A program has a check-in, a streak, a human or AI that notices when you go dark.',
-        'Third: is the protocol deficit-specific, or is it one-size-fits-all? Drop foot recovery is not the same protocol as aphasia recovery. A program that does not ask which deficits you are working on is not a coaching program — it is general fitness content rebranded.',
-        'Fourth: what is the community model? Stroke recovery is social. The science on social accountability for behavior change is unambiguous. A program with no community is fighting neuroplasticity with one hand tied behind its back.',
-      ],
-    },
-    {
-      h2: 'The free entry: three messages, no card',
-      paragraphs: [
-        'The Sasquatch coaching program starts free. Three messages with the online stroke recovery coach, no credit card, no appointment, no insurance code. Ask about the protocol. Ask about the plateau. Ask about the thing your PT cannot answer. See if the voice is right for you before you commit to anything.',
-        'The full program — daily AI coach, 66-day challenge, accountability pod, full doctrine library, survivor community — is nineteen dollars a month. The first week is free. If it is not the right fit, cancel on day six and pay nothing.',
-      ],
-    },
-  ],
-  faqs: [
-    { q: 'What is a stroke recovery coaching program?', a: 'A stroke recovery coaching program is a structured system of daily accountability, deficit-specific protocols, and community support designed to keep a survivor\'s recovery progressing after the clinical system discharges them. A good program includes a check-in mechanism (AI or human), a calibrated protocol, a progression arc, and community accountability. It is not a replacement for physical or speech therapy — it is the structure that makes sure the daily reps happen between sessions.' },
-    { q: 'How long should a stroke recovery coaching program last?', a: 'At minimum, sixty-six days — the median time for a new behavior to become automatic (Lally et al., 2010). Most survivors benefit from twelve to twenty-four months of structured coaching before the daily routine becomes self-sustaining. The plateau most survivors hit in year two is a stimulus plateau, not a brain plateau. A good coaching program knows the difference and changes the protocol when the gains stop.' },
-    { q: 'Is an online stroke recovery coaching program as good as in-person?', a: 'For accountability, community, and protocol education — yes, online matches or beats in-person, especially for survivors with transportation barriers, fatigue, or scheduling constraints. For hands-on gait correction, manual therapy, or electrical stimulation — in-person clinical care is irreplaceable. The best model uses both: in-person for the clinical work, online for the daily accountability.' },
-    { q: 'How much does the Sasquatch stroke recovery coaching program cost?', a: 'Three messages free, no card. Free account with daily limits after that. Full program — AI coach, 66-day challenge, accountability pod, full library, survivor community — is nineteen dollars a month with a seven-day free trial. No contracts. Cancel any day.' },
-  ],
-  related: [
-    { href: '/online-stroke-recovery-coach', label: 'Online stroke recovery coach', blurb: 'The AI coach at the center of the program — free to start.' },
-    { href: '/blog/online-stroke-recovery-coach', label: 'Online stroke recovery coach — the full story', blurb: 'Nick\'s seven-year rebuild and the Academy it produced.' },
-    { href: '/programs/66-day-challenge', label: '66-Day Challenge', blurb: 'The accountability arc at the heart of the program.' },
-    { href: '/programs/sasquatch-method', label: 'The Sasquatch Method', blurb: 'The full doctrine — T.L.E.C.A. and the four layers.' },
-    { href: '/for/stroke-survivors', label: 'For stroke survivors', blurb: 'Where to start when you are the one in recovery.' },
-    { href: '/blog', label: 'The Stroke Recovery Blog', blurb: 'Every question survivors ask — answered from lived experience.' },
-  ],
-});
-
-// =============================================================================
-// 71. Virtual Stroke Rehabilitation Coach
-// =============================================================================
-export const POST_VIRTUAL_REHAB_COACH = makeBlogPost({
-  slug: 'virtual-stroke-rehabilitation-coach',
-  title: 'Virtual Stroke Rehabilitation Coach: Better Than In-Person?',
-  description: 'A 7-year stroke survivor\'s honest take on virtual vs in-person stroke rehab coaching. When online wins, when it doesn\'t, and the free tool to start now.',
-  h1: 'Virtual stroke rehabilitation coach',
-  keyword: 'virtual stroke rehabilitation coach',
-  extraKeywords: ['virtual stroke recovery', 'online stroke rehab coach', 'remote stroke rehabilitation', 'telehealth stroke recovery coach', 'stroke rehab online'],
-  subhead: 'The PT session is forty-five minutes twice a week. Recovery is every waking hour. A virtual stroke rehabilitation coach is what lives in the other twenty-three hours — and after seven years I can tell you exactly what it gets right and where it falls short.',
-  ctaPrimary: { href: '/recovery/sasquatch-coach', label: 'Try the virtual coach — free' },
-  ctaSecondary: { href: '/blog/stroke-recovery-coaching-program', label: 'See the full coaching program' },
-  publishedDate: '2026-07-02',
-  sections: [
-    {
-      h2: 'The honest case for virtual stroke rehabilitation',
-      paragraphs: [
-        'The case for virtual stroke rehabilitation coaching is not that it is better than in-person therapy. It is that in-person therapy ends — and virtual coaching does not have to. Insurance covers twelve outpatient PT sessions. The research says stroke recovery takes three to five years of consistent daily work. A virtual stroke rehabilitation coach bridges the years the clinical system cannot afford to cover.',
-        'Availability is the first and biggest advantage. A virtual coach is available at 6 a.m. when the spasticity is worst and your PT does not open until nine. It is available on weekends, on holidays, during the insurance gap between one plan and the next. Stroke recovery does not take weekends off. The coach should not either.',
-      ],
-    },
-    {
-      h2: 'What virtual coaching gets right that in-person misses',
-      paragraphs: [
-        'Three things. First, consistency. A virtual coach creates the daily check-in habit that in-person sessions, at two per week, cannot replicate. The research on neuroplasticity is unambiguous: repetition is the mechanism. More daily reps, compounded over years, produces more recovery. A twice-weekly session cannot compete with a daily AI check-in for sheer volume of accountability touchpoints.',
-        'Second, access. Roughly forty percent of stroke survivors live in rural areas or small towns with no specialized stroke rehabilitation center within thirty miles. For these survivors, virtual coaching is not a second choice — it is the only consistent option between discharge and the rare specialist visit.',
-        'Third, the record. A virtual coach that tracks every day produces a recoverable log — the plateau detection, the bad-week pattern, the progress proof that in-person notes rarely capture in a form the survivor can access. The log is the evidence that recovery is happening even when it does not feel like it.',
-      ],
-    },
-    {
-      h2: 'Where virtual coaching falls short',
-      paragraphs: [
-        'Hands-on work. A virtual coach cannot watch your gait from behind and correct the hip hike that is silently building a knee injury. It cannot apply manual therapy to the spastic shoulder. It cannot administer the NIRS electrode in the right position for motor cortex stimulation. For anything that requires physical touch, physical observation at clinical proximity, or licensed clinical judgment — in-person wins. There is no argument.',
-        'The honest answer is that virtual coaching and in-person therapy are not competitors. They are complements. The clinical team provides the hands-on work that virtual cannot. The virtual coach provides the daily accountability that the clinical schedule cannot. The survivors who use both recover furthest.',
-      ],
-    },
-    {
-      h2: 'The Sasquatch virtual coaching model: how it works',
-      paragraphs: [
-        'Sasquatch is a virtual stroke rehabilitation coach trained on seven years of lived recovery experience — Nick Kremers, hemorrhagic stroke at thirty-six, left-side paralysis, ninety percent recovered. The model is AI-driven, available twenty-four hours a day, and built on the same protocols in the book and the curriculum.',
-        'The intake is four questions: stroke type, deficits, time since stroke, daily time budget. The coach uses the answers to calibrate the daily protocol. It tracks the streak, calls out the drift, answers the 2 a.m. questions, and routes crisis language to 988 before continuing the conversation. The voice feature allows aphasia survivors to speak questions and hear answers. The first three conversations are free, no card required.',
-      ],
-      bullets: [
-        '24/7 availability — no appointment, no insurance code, no waiting list',
-        'Four-question intake — deficit-specific, stage-calibrated protocol',
-        'Daily streak tracking — the record a PT session cannot produce',
-        'Voice-enabled — push-to-talk for aphasia or limited hand function',
-        'Crisis gate — 988 routing before any mental health conversation continues',
-        'Rural-accessible — works from any device, any location, any time zone',
-      ],
-    },
-    {
-      h2: 'Telehealth vs AI coaching: which is right for you',
-      paragraphs: [
-        'Telehealth stroke rehabilitation — a licensed PT or SLP on a video call — is the closest virtual approximation to in-person clinical care. It can deliver gait observation, exercise prescription, and clinical judgment. Insurance often covers it. The limitation is schedule: two to three sessions per week, usually fifty minutes each.',
-        'AI coaching is not a replacement for telehealth therapy. It is the layer between telehealth sessions — the daily check-in, the streak tracker, the 2 a.m. question answer. The best virtual stroke rehabilitation model stacks them: telehealth for the clinical sessions, AI coaching for the daily accountability, and a survivor community for the social force multiplication that neither therapist nor AI can replicate alone.',
-        'If cost is the constraint: the Sasquatch Coach starts free. If clinical need is the priority: start with telehealth and add the AI coach for the daily work. If access is the barrier: the AI coach works from any device, any location, no insurance required.',
-      ],
-    },
-    {
-      h2: 'Three questions to ask before you start virtual coaching',
-      paragraphs: [
-        'First: is the coach built from lived experience or clinical literature alone? Both matter. Only one knows what day forty of left-side paralysis actually feels like at 6 a.m. before the coffee.',
-        'Second: does the program hold you accountable, or does it give you access to content? A content library is not coaching. Coaching has a check-in, a streak, a mechanism that notices when you disappear.',
-        'Third: what happens in a mental health crisis? Any virtual stroke rehabilitation coach that does not have an explicit crisis routing protocol — 988, Veterans Crisis Line, 911 — is not safe for this population. Post-stroke depression, anxiety, and suicidal ideation are clinical realities in stroke recovery. The coach must know what to do when the conversation goes there.',
-      ],
-    },
-  ],
-  faqs: [
-    { q: 'Is virtual stroke rehabilitation as effective as in-person?', a: 'For accountability, consistency, and protocol education — virtual rehabilitation coaching matches or exceeds in-person for most survivors, especially those with transportation barriers or limited session coverage. For hands-on clinical work (manual therapy, gait correction at proximity, clinical assessment) — in-person is irreplaceable. The best outcomes combine both: in-person for clinical sessions, virtual coaching for daily accountability.' },
-    { q: 'Does insurance cover virtual stroke rehabilitation coaching?', a: 'Licensed telehealth therapy (PT, SLP, OT via video) is often covered by insurance the same as in-person. AI coaching programs like Sasquatch are not covered by insurance — they operate outside the clinical billing system. At nineteen dollars a month with a free trial, the out-of-pocket cost is designed to be accessible without insurance.' },
-    { q: 'Can a virtual coach help with aphasia recovery?', a: 'Yes, with limitations. A virtual coach with a voice interface (Sasquatch has push-to-talk) can support aphasia survivors in asking questions and hearing answers. For actual speech therapy — articulation drills, language processing exercises, dysarthria treatment — a licensed speech-language pathologist (in-person or via telehealth) is required. The virtual coach supports the accountability and mindset layer; the SLP handles the clinical work.' },
-    { q: 'How do I start virtual stroke rehabilitation coaching?', a: 'The Sasquatch Coach starts with three free messages — no account, no credit card, no appointment. Navigate to the coach page, type or speak your question, and see if the voice fits. After three messages, create a free account to continue with daily limits. Full unlimited access is nineteen dollars a month with a seven-day free trial.' },
-    { q: 'What if I have a mental health crisis during virtual coaching?', a: 'The Sasquatch Coach detects crisis language before it continues any conversation and routes to the 988 Suicide and Crisis Lifeline, Veterans Crisis Line, and local 911. It does not try to handle clinical mental health emergencies — it routes, then stops until the user confirms they are safe. For immediate danger, call 911.' },
-  ],
-  related: [
-    { href: '/online-stroke-recovery-coach', label: 'Online stroke recovery coach', blurb: 'The full product page — start free, no card.' },
-    { href: '/blog/stroke-recovery-coaching-program', label: 'Stroke recovery coaching program', blurb: 'What makes a program worth committing to — and what doesn\'t.' },
-    { href: '/blog/online-stroke-recovery-coach', label: 'Online stroke recovery coach — the full story', blurb: 'Nick\'s seven-year rebuild and the Academy it produced.' },
-    { href: '/learn/neuroplasticity-after-stroke', label: 'Neuroplasticity after stroke', blurb: 'Why the daily reps the virtual coach assigns actually rewire the brain.' },
-    { href: '/programs/sasquatch-method', label: 'The Sasquatch Method', blurb: 'The doctrine behind the virtual coaching model.' },
-    { href: '/for/stroke-survivors', label: 'For stroke survivors', blurb: 'The full playbook — from discharge to year five.' },
-  ],
+  video: {
+    name: 'Nick Kremers — Stroke Survivor Testimonial',
+    description: 'Nick Kremers, 7-year stroke survivor who went from complete paralysis to 90% recovery, talks about the Brooks Cascadia trail shoe and what actually works after stroke. Real review, no marketing.',
+    thumbnailUrl: '/images/blog/nick-author-bio.jpg',
+    uploadDate: '2026-06-07',
+    duration: 'PT2M34S',
+    contentUrl: '/videos/nick-testimonial.mp4',
+  },
 });
 
 // =============================================================================
 // Aggregator
 // =============================================================================
-// =============================================================================
-// PILLAR GUIDE: The first 90 days after a stroke
-// =============================================================================
-export const POST_FIRST_90_DAYS = makeBlogPost({
-  "slug": "first-90-days-after-stroke",
-  "title": "The First 90 Days After a Stroke: A Survivor's Field Guide",
-  "description": "What to actually do in the first 90 days after a stroke, from hospital to home. Written by a 7-year survivor who started at total left-side paralysis.",
-  "h1": "The first 90 days after a stroke",
-  "keyword": "first 90 days after stroke",
-  "extraKeywords": [
-    "stroke recovery first 90 days",
-    "what to do after a stroke",
-    "early stroke recovery plan"
-  ],
-  "image": "/images/blog/therapy-exercises-dark.png",
-  "subhead": "The hospital hands you a folder and a follow-up date. Nobody hands you a plan. Here is the one I wish I had — the first 90 days, step by step.",
-  "ctaPrimary": {
-    "href": "/programs/daily-routine",
-    "label": "See the daily routine"
-  },
-  "ctaSecondary": {
-    "href": "/blog/how-long-does-stroke-rehab-take",
-    "label": "How long does rehab take?"
-  },
-  "sections": [
-    {
-      "h2": "Start here — what this guide is (and isn't)",
-      "paragraphs": [
-        "I had my stroke at 36. Complete left-side paralysis. Seven years later I'm back to about 90 percent. This guide is what I wish someone had put in my hands on day one — a plain map of the first 90 days, written by a survivor, not a brochure.",
-        "It is not medical advice. I am not your doctor, your neurologist, or your therapist. Everything here is lived experience and general information. For anything clinical — new symptoms, medication, your therapy plan — call your care team, and when in doubt defer to them.",
-        "One rule before we start: if you see new stroke signs — face drooping, arm weakness, slurred speech — call 911 immediately. Recovery can wait. A second stroke cannot."
-      ]
-    },
-    {
-      "h2": "Days 1 to 7: survive, stabilize, sleep",
-      "paragraphs": [
-        "The first week is not about progress. It is about survival and rest. Your brain just took the worst hit of your life, and the single most useful thing you can do is sleep. Sleep is when the brain consolidates and starts to heal. Guard it.",
-        "Therapy in the hospital is short and exhausting. Do what they ask, then rest. Ask questions and write down the answers — brain fog is real and you will not remember. Keep a notebook, or have a family member keep one for you.",
-        "Ask the boring, critical questions before you leave: What type of stroke was this? What are my medications and why? What is my blood pressure target? When is my follow-up, and who do I call with questions?"
-      ],
-      "bullets": [
-        "Sleep is the priority — protect it fiercely",
-        "Keep a notebook: meds, questions, answers",
-        "Do the therapy they give you, then rest",
-        "Know your stroke type and BP target before discharge"
-      ],
-      "relatedLinks": [
-        {
-          "href": "/blog/ischemic-vs-hemorrhagic-stroke",
-          "label": "Ischemic vs hemorrhagic stroke"
-        },
-        {
-          "href": "/blog/signs-of-a-second-stroke",
-          "label": "Signs of a second stroke"
-        }
-      ]
-    },
-    {
-      "h2": "Weeks 2 to 6: the steepest climb",
-      "paragraphs": [
-        "This is the window everyone talks about — the fastest part of the curve. Inpatient or outpatient, your job is simple and brutal: show up, do the reps, do the homework. The exercises they send home matter as much as the sessions themselves.",
-        "You will meet three therapists and they are your whole world now. Physical therapy (PT) for gait and big movements. Occupational therapy (OT) for the hand and daily tasks. Speech therapy (SLP) for talking, swallowing, and thinking. Learn their names and do everything they ask.",
-        "Do not measure a good day by how you feel. Measure it by whether you did the reps. Feelings lie after a stroke. Reps don't."
-      ],
-      "relatedLinks": [
-        {
-          "href": "/blog/how-long-does-stroke-rehab-take",
-          "label": "How long does stroke rehab take?"
-        },
-        {
-          "href": "/blog/gait-training-home-stroke-recovery",
-          "label": "Gait training at home"
-        }
-      ]
-    },
-    {
-      "h2": "Set up the house before you get hurt",
-      "paragraphs": [
-        "The most dangerous room is the bathroom. I fell twice in the shower before I finally set it up right. Do it before the fall, not after. A shower chair, a professionally installed grab bar, and a non-slip mat are cheap insurance.",
-        "Clear the floor. Rugs, cords, clutter — gone. Add a lit path from the bed to the toilet for night trips. If there are steps you cannot manage yet, a threshold ramp or grab bars buy you independence without a fall.",
-        "Ask your OT for a home walkthrough. They see the hazards you have stopped noticing. This is exactly what they are trained for."
-      ],
-      "bullets": [
-        "Bathroom: shower chair, grab bar, non-slip mat",
-        "Floors: no rugs, no cords, no clutter",
-        "A lit path from bed to bathroom for night trips",
-        "Have your OT flag hazards you can't see anymore"
-      ],
-      "relatedLinks": [
-        {
-          "href": "/blog/shower-safety-stroke-survivor",
-          "label": "Shower safety for survivors"
-        },
-        {
-          "href": "/blog/complete-stroke-recovery-home-kit",
-          "label": "The complete home kit"
-        },
-        {
-          "href": "/blog/threshold-ramps-grab-bars-stroke-home-accessibility",
-          "label": "Ramps and grab bars"
-        }
-      ]
-    },
-    {
-      "h2": "Build the daily habit now — never zero",
-      "paragraphs": [
-        "The habit you build in the first 90 days is the one that carries you for years. My whole method comes down to two words: never zero. Every single day you do something for the weak side. On a bad day it might be five reps. Five beats zero every time.",
-        "Do not wait for motivation. Motivation is a tourist. Build a routine you can hit even when you feel like garbage, then protect it like a job — same time, same place, low bar to start.",
-        "Start with what your therapists cleared you for. Resistance bands are safer than weights early on. Seated work before standing work. Small, safe, daily. Boring wins."
-      ],
-      "relatedLinks": [
-        {
-          "href": "/programs/daily-routine",
-          "label": "The daily routine"
-        },
-        {
-          "href": "/blog/best-resistance-bands-stroke-recovery",
-          "label": "Best resistance bands"
-        },
-        {
-          "href": "/blog/best-hand-therapy-tools-stroke-recovery",
-          "label": "Best hand therapy tools"
-        }
-      ]
-    },
-    {
-      "h2": "The stuff nobody warns you about",
-      "paragraphs": [
-        "Fatigue after stroke is not normal tiredness. It is a wall that drops on you mid-afternoon with no warning. It is real, it is neurological, and it eases slowly. Plan your hardest work for when you have the most gas in the tank.",
-        "You may cry or laugh at the wrong times and not know why. That can be emotional lability — a wiring issue, not a character flaw. It usually settles. But if your mood stays dark, tell your doctor; depression after stroke is common and treatable.",
-        "Memory and word-finding get foggy. Lists, alarms, and one-task-at-a-time are your friends. This is not the end of your mind. It is a brain rerouting traffic."
-      ],
-      "relatedLinks": [
-        {
-          "href": "/blog/fatigue-after-stroke",
-          "label": "Fatigue after stroke"
-        },
-        {
-          "href": "/blog/why-do-stroke-survivors-cry-easily",
-          "label": "Why survivors cry easily"
-        },
-        {
-          "href": "/blog/memory-problems-after-stroke",
-          "label": "Memory problems after stroke"
-        }
-      ]
-    },
-    {
-      "h2": "Protect against a second stroke",
-      "paragraphs": [
-        "Nothing sets recovery back like a second stroke. The most important work of the first 90 days is not a bicep curl — it is taking your medications exactly as prescribed and hitting your blood pressure target. Do not skip doses because you feel fine.",
-        "Get a home blood pressure monitor and actually use it. Write the numbers down and bring them to your follow-up. Learn your warning signs cold, and show up to every appointment."
-      ],
-      "bullets": [
-        "Take every medication exactly as prescribed",
-        "Track blood pressure at home; bring the log to appointments",
-        "Learn the warning signs of a second stroke",
-        "Never skip a follow-up"
-      ],
-      "relatedLinks": [
-        {
-          "href": "/blog/how-to-prevent-a-second-stroke",
-          "label": "How to prevent a second stroke"
-        },
-        {
-          "href": "/blog/best-blood-pressure-monitor-stroke-survivor",
-          "label": "Best home BP monitors"
-        }
-      ]
-    },
-    {
-      "h2": "What to ask your care team",
-      "paragraphs": [
-        "You get a few minutes with busy people. Come with the questions written down so brain fog does not steal them. Here is my short list."
-      ],
-      "bullets": [
-        "What kind of stroke did I have, and what caused it?",
-        "What is my target blood pressure, and what are my meds for?",
-        "How many therapy visits do I have, and what do I do between them?",
-        "What activity is safe right now, and what should I avoid?",
-        "What warning signs mean I call you — and what means I call 911?"
-      ]
-    }
-  ],
-  "faqs": [
-    {
-      "q": "What should I do in the very first days after a stroke?",
-      "a": "Rest and sleep as much as you can, do the therapy your team gives you, and keep a notebook of your medications and questions. Before discharge, make sure you know your stroke type, your blood pressure target, and who to call. This is general experience, not medical advice — follow your care team."
-    },
-    {
-      "q": "How much recovery happens in the first 90 days?",
-      "a": "The first few months are usually the fastest stretch of recovery, which is why the reps and homework matter so much now. But everyone's stroke is different, and recovery continues well past 90 days. Don't treat this window as your only shot."
-    },
-    {
-      "q": "Should I push hard or rest in the first month?",
-      "a": "Both, in the right order. Rest and sleep are how the brain heals, so protect them. Then do the exact exercises your PT, OT, and SLP prescribe. Push into effort, not into pain. If something hurts sharply or feels wrong, stop and ask your team."
-    },
-    {
-      "q": "What equipment do I actually need at home first?",
-      "a": "Safety gear before gadgets. A shower chair, a properly installed grab bar, and a non-slip mat prevent the falls that set people back. After that, a home blood pressure monitor and whatever your OT recommends for daily tasks. Add training gear as you get cleared."
-    },
-    {
-      "q": "Is the 90-day window really a hard cutoff?",
-      "a": "No. You may hear that recovery stops at six months. That's a half-truth — the rate slows, but gains keep coming for years if you keep training. I made real progress in years three, five, and seven. The window is a head start, not a deadline."
-    }
-  ],
-  "related": [
-    {
-      "href": "/blog/sasquatch-method-stroke-recovery-guide",
-      "label": "The Sasquatch Method",
-      "blurb": "The long-game method the first 90 days sets up."
-    },
-    {
-      "href": "/blog/stroke-recovery-equipment-guide",
-      "label": "Stroke recovery equipment guide",
-      "blurb": "Every category of gear, and what to buy first."
-    },
-    {
-      "href": "/blog/how-long-does-stroke-rehab-take",
-      "label": "How long does rehab take?",
-      "blurb": "The honest timeline, phase by phase."
-    },
-    {
-      "href": "/blog/complete-stroke-recovery-home-kit",
-      "label": "The complete home kit",
-      "blurb": "The starter gear that keeps you safe."
-    },
-    {
-      "href": "/blog/how-to-prevent-a-second-stroke",
-      "label": "Prevent a second stroke",
-      "blurb": "The work that matters most early on."
-    },
-    {
-      "href": "/blog/fatigue-after-stroke",
-      "label": "Fatigue after stroke",
-      "blurb": "The wall nobody warned you about."
-    }
-  ],
-  "publishedDate": "2026-07-03",
-  "bookPromo": {
-    "title": "Want the full recovery blueprint?",
-    "description": "THE ULTIMATE STROKE RECOVERY REVOLUTION — 30 chapters, the daily routine, the gear, the protocols, and the mindset. The book every survivor wishes they had in the hospital.",
-    "link": "/book",
-    "label": "Get the book"
-  }
-});
-
-// =============================================================================
-// PILLAR GUIDE: Stroke recovery equipment: the complete guide
-// =============================================================================
-export const POST_EQUIPMENT_GUIDE = makeBlogPost({
-  "slug": "stroke-recovery-equipment-guide",
-  "title": "Stroke Recovery Equipment: The Complete Survivor's Guide",
-  "description": "A survivor's complete guide to stroke recovery equipment: the safety, mobility, and training gear that earns its place, and what to buy first.",
-  "h1": "Stroke recovery equipment: the complete guide",
-  "keyword": "stroke recovery equipment",
-  "extraKeywords": [
-    "stroke recovery equipment list",
-    "stroke rehab equipment",
-    "best stroke recovery gear"
-  ],
-  "image": "/images/blog/resistance-bands-therapy.jpg",
-  "subhead": "There are hundreds of gadgets sold to survivors. Most you don't need. Here is the gear that actually earns its place, sorted by what it does — and what to buy first.",
-  "ctaPrimary": {
-    "href": "/blog/complete-stroke-recovery-home-kit",
-    "label": "See the starter kit"
-  },
-  "ctaSecondary": {
-    "href": "/programs/daily-routine",
-    "label": "The daily routine"
-  },
-  "productCard": {
-    "title": "Stroke Recovery Equipment on Amazon",
-    "description": "Browse the categories of gear covered in this guide — safety, mobility, and training equipment for stroke survivors.",
-    "link": "https://www.amazon.com/s?k=stroke+recovery+equipment",
-    "label": "Browse gear on Amazon",
-    "note": "Affiliate link — I earn a small commission at no extra cost to you."
-  },
-  "sections": [
-    {
-      "h2": "How to think about gear before you spend a dollar",
-      "paragraphs": [
-        "The stroke recovery aisle is a goldmine for companies and a minefield for survivors. You do not need most of it. You need a few things that keep you safe and a few things that let you do more reps. Everything else is optional.",
-        "Two rules save you money. First, ask your OT or PT before you buy — they will tell you what fits your body and your stage, and some of it a loan closet or your insurance may cover. Second, borrow or rent the big-ticket items before you own them. Needs change fast in the first year.",
-        "Buy safety first, training second, convenience last. That order will never steer you wrong."
-      ],
-      "bullets": [
-        "Ask your OT/PT before buying anything big",
-        "Borrow or rent before you own",
-        "Safety gear first, training gear second, convenience last"
-      ]
-    },
-    {
-      "h2": "Safety: the gear that prevents the setbacks",
-      "paragraphs": [
-        "Falls are the thing that undoes months of work in one second, and the bathroom is the hot zone. A shower chair, a professionally installed grab bar, and a non-slip mat are the cheapest, highest-return purchases you will make.",
-        "Beyond the bathroom, think about thresholds and stairs. A small ramp over a threshold or grab bars at key spots keep you independent. If stairs are a wall you cannot climb yet, a stair lift is worth pricing out. Smart-home plugs and voice controls let you run lights and locks without crossing a dark room."
-      ],
-      "relatedLinks": [
-        {
-          "href": "/blog/shower-safety-stroke-survivor",
-          "label": "Shower safety"
-        },
-        {
-          "href": "/blog/threshold-ramps-grab-bars-stroke-home-accessibility",
-          "label": "Ramps and grab bars"
-        },
-        {
-          "href": "/blog/stair-lift-stroke-survivor",
-          "label": "Stair lifts"
-        },
-        {
-          "href": "/blog/best-smart-home-devices-stroke-survivors",
-          "label": "Smart-home devices"
-        }
-      ]
-    },
-    {
-      "h2": "Mobility: getting around the world again",
-      "paragraphs": [
-        "Getting around is confidence. Start with what keeps you upright and progress toward what challenges you. Walking aids — a cane, a quad cane, a rollator — bridge the gap between the wheelchair and free walking. Get fitted; the wrong height causes new problems.",
-        "For longer distances or bad-fatigue days, a wheelchair or a mobility scooter is not giving up — it is protecting your energy for the work that matters. And do not underestimate shoes: the right pair with a firm heel and good grip changes your gait more than most gadgets."
-      ],
-      "relatedLinks": [
-        {
-          "href": "/blog/best-walking-aids-stroke-survivors",
-          "label": "Best walking aids"
-        },
-        {
-          "href": "/blog/best-wheelchair-stroke-survivor",
-          "label": "Best wheelchairs"
-        },
-        {
-          "href": "/blog/best-mobility-scooter-stroke-survivor",
-          "label": "Best mobility scooters"
-        },
-        {
-          "href": "/blog/best-shoes-stroke-survivors",
-          "label": "Best shoes for survivors"
-        }
-      ]
-    },
-    {
-      "h2": "Legs, feet, and gait",
-      "paragraphs": [
-        "Foot drop is one of the most common leftovers of a stroke, and there is a lot of gear for it. An ankle-foot orthosis (AFO) or a lighter ankle brace holds the foot so you stop catching your toe. Some survivors use electrical stimulation trainers — talk to your PT about what fits you.",
-        "For rebuilding the engine, seated cardio comes before standing cardio. A pedal exerciser lets you train legs from a chair. A stationary bike, a treadmill with a rail, or an elliptical come later. Parallel bars and home gait drills tie it together. Progress in that order and you fall less."
-      ],
-      "bullets": [
-        "Foot drop: AFO or ankle brace, per your PT",
-        "Seated first: pedal exerciser, then bike/treadmill/elliptical",
-        "Gait: parallel bars and home drills once you're cleared"
-      ],
-      "relatedLinks": [
-        {
-          "href": "/blog/best-afo-brace-drop-foot",
-          "label": "Best AFO braces"
-        },
-        {
-          "href": "/blog/afo-vs-electric-ankle-trainer",
-          "label": "AFO vs electric trainer"
-        },
-        {
-          "href": "/blog/best-pedal-exerciser-stroke-recovery",
-          "label": "Best pedal exercisers"
-        },
-        {
-          "href": "/blog/gait-training-home-stroke-recovery",
-          "label": "Gait training at home"
-        }
-      ]
-    },
-    {
-      "h2": "Arm and hand",
-      "paragraphs": [
-        "The hand is the hardest and the slowest, and it is where cheap gear shines. Resistance bands rebuild the whole arm safely before you touch a weight. Hand therapy tools, putty, and grip strengtheners give you reps you can do on the couch while the TV is on.",
-        "For a stubborn hand, some survivors add a robotic glove or a Saebo-style device. These are bigger investments — try before you buy and ask your OT whether your hand is at the stage to benefit. Reps still matter more than any gadget."
-      ],
-      "relatedLinks": [
-        {
-          "href": "/blog/best-resistance-bands-stroke-recovery",
-          "label": "Best resistance bands"
-        },
-        {
-          "href": "/blog/best-hand-therapy-tools-stroke-recovery",
-          "label": "Best hand therapy tools"
-        },
-        {
-          "href": "/blog/best-grip-strengthener-stroke-recovery",
-          "label": "Best grip strengtheners"
-        },
-        {
-          "href": "/blog/best-robotic-glove-stroke-recovery",
-          "label": "Robotic gloves"
-        }
-      ]
-    },
-    {
-      "h2": "Spasticity, recovery, and sleep",
-      "paragraphs": [
-        "Tight, spastic muscles are the tax you pay for a stroke. Gear does not cure spasticity — your medical plan does — but some tools help you manage it between appointments. A massage gun and gentle stretching can loosen things; a TENS unit is something to discuss with your PT.",
-        "Recovery happens when you sleep, so the bedroom is training equipment too. A wedge pillow or an adjustable bed can help with breathing and reflux. If you snore or wake up gasping, get screened for sleep apnea — untreated apnea is a stroke risk you can actually fix."
-      ],
-      "relatedLinks": [
-        {
-          "href": "/blog/best-massage-gun-stroke-spasticity",
-          "label": "Massage guns for spasticity"
-        },
-        {
-          "href": "/blog/best-tens-unit-stroke-recovery",
-          "label": "TENS units"
-        },
-        {
-          "href": "/blog/best-adjustable-bed-wedge-pillow-stroke-recovery",
-          "label": "Adjustable beds and wedge pillows"
-        },
-        {
-          "href": "/blog/cpap-machine-stroke-survivor",
-          "label": "CPAP and sleep apnea"
-        }
-      ]
-    },
-    {
-      "h2": "Cognition, speech, and daily living",
-      "paragraphs": [
-        "Recovery is not just muscles. Brain-game books and speech-therapy apps give your mind daily reps, especially for memory and word-finding. Use them like the gym: a little every day beats a marathon once a week.",
-        "Daily living is where independence actually lives. Adaptive utensils, dressing aids, and one-handed tools hand you back the ordinary tasks a stroke stole. If you are heading back to work, a standing desk and the right setup make the day survivable."
-      ],
-      "relatedLinks": [
-        {
-          "href": "/blog/best-brain-games-books-stroke-cognitive-recovery",
-          "label": "Brain-game books"
-        },
-        {
-          "href": "/blog/best-speech-therapy-apps-tools-aphasia-stroke",
-          "label": "Speech therapy apps"
-        },
-        {
-          "href": "/blog/adaptive-eating-utensils-stroke",
-          "label": "Adaptive eating utensils"
-        },
-        {
-          "href": "/blog/best-standing-desk-stroke-recovery-return-to-work",
-          "label": "Standing desks for return to work"
-        }
-      ]
-    },
-    {
-      "h2": "What I'd buy first on a tight budget",
-      "paragraphs": [
-        "If money is tight — and it usually is after a stroke — spend in this order. Safety first: shower chair, grab bar, non-slip mat. Then a home blood pressure monitor, because preventing the second stroke beats everything. Then one training tool you will actually use every day; for most people that is a set of resistance bands.",
-        "Everything else can wait until you know what your body needs. Do not buy the shiny gadget in month one. Buy the boring stuff that keeps you upright and alive, then add training gear as you earn it."
-      ],
-      "bullets": [
-        "1. Shower chair, grab bar, non-slip mat",
-        "2. Home blood pressure monitor",
-        "3. Resistance bands (or the one tool you'll use daily)",
-        "4. Everything else — only once you know you need it"
-      ],
-      "relatedLinks": [
-        {
-          "href": "/blog/complete-stroke-recovery-home-kit",
-          "label": "The complete home kit"
-        },
-        {
-          "href": "/blog/stroke-recovery-gift-guide",
-          "label": "Gift guide for survivors"
-        }
-      ]
-    }
-  ],
-  "faqs": [
-    {
-      "q": "What equipment do I need after a stroke?",
-      "a": "Fewer things than you'd think. Safety gear for the bathroom (shower chair, grab bar, non-slip mat), a home blood pressure monitor, and one or two training tools your therapists clear you for — resistance bands and hand tools are the usual starting point. Add mobility and specialty gear as your needs become clear."
-    },
-    {
-      "q": "What should I buy first if money is tight?",
-      "a": "Safety before everything. A shower chair, a grab bar, and a non-slip mat prevent the falls that cost months. Then a blood pressure monitor to help prevent a second stroke. Then one daily training tool. That order protects both your body and your wallet."
-    },
-    {
-      "q": "Do I have to buy all of this at once?",
-      "a": "No — please don't. Your needs change fast in the first year. Borrow or rent big items, buy safety gear now, and add training equipment as you get cleared for it. Buying everything on day one wastes money on gear you may outgrow in weeks."
-    },
-    {
-      "q": "Will insurance cover any stroke recovery equipment?",
-      "a": "Sometimes. Durable medical equipment like braces, wheelchairs, and some bathroom safety gear may be covered with a prescription, and local loan closets lend equipment for free. I can't tell you what your plan covers — ask your provider and your OT, who deal with this constantly."
-    },
-    {
-      "q": "Are the cheap versions good enough?",
-      "a": "For a lot of things, yes. Resistance bands, grip tools, and non-slip mats work fine at the low end. For anything that bears your weight or holds a joint — grab bars, AFOs, wheelchairs — buy quality and get it fitted. That is not the place to save ten dollars."
-    }
-  ],
-  "related": [
-    {
-      "href": "/blog/complete-stroke-recovery-home-kit",
-      "label": "The complete home kit",
-      "blurb": "The single-box starter setup."
-    },
-    {
-      "href": "/blog/first-90-days-after-stroke",
-      "label": "The first 90 days after a stroke",
-      "blurb": "When and why to buy each thing."
-    },
-    {
-      "href": "/blog/best-resistance-bands-stroke-recovery",
-      "label": "Best resistance bands",
-      "blurb": "The $20 starting point for training."
-    },
-    {
-      "href": "/blog/shower-safety-stroke-survivor",
-      "label": "Shower safety",
-      "blurb": "The gear that prevents the worst falls."
-    },
-    {
-      "href": "/blog/best-walking-aids-stroke-survivors",
-      "label": "Best walking aids",
-      "blurb": "Cane, quad cane, or rollator."
-    },
-    {
-      "href": "/blog/sasquatch-method-stroke-recovery-guide",
-      "label": "The Sasquatch Method",
-      "blurb": "How the gear fits the long game."
-    }
-  ],
-  "publishedDate": "2026-07-03",
-  "bookPromo": {
-    "title": "Want the full recovery blueprint?",
-    "description": "THE ULTIMATE STROKE RECOVERY REVOLUTION — 30 chapters, the daily routine, the gear, the protocols, and the mindset. The book every survivor wishes they had in the hospital.",
-    "link": "/book",
-    "label": "Get the book"
-  }
-});
-
-// =============================================================================
-// PILLAR GUIDE: The Sasquatch Method: long-game stroke recovery
-// =============================================================================
-export const POST_SASQUATCH_METHOD = makeBlogPost({
-  "slug": "sasquatch-method-stroke-recovery-guide",
-  "title": "The Sasquatch Method: A Guide to Long-Game Stroke Recovery",
-  "description": "The Sasquatch Method for long-game stroke recovery: never zero, daily reps, and the mindset that took a survivor from paralysis to about 90 percent.",
-  "h1": "The Sasquatch Method: long-game stroke recovery",
-  "keyword": "sasquatch method stroke recovery",
-  "extraKeywords": [
-    "long-term stroke recovery",
-    "stroke recovery mindset",
-    "neuroplasticity stroke recovery"
-  ],
-  "image": "/images/blog/therapy-exercises-dark.png",
-  "subhead": "Seven years, one rule that never changed: never zero. This is the whole method — the mindset, the daily reps, and the long game that took me from paralyzed to about 90 percent.",
-  "ctaPrimary": {
-    "href": "/book",
-    "label": "Get the book"
-  },
-  "ctaSecondary": {
-    "href": "/programs/daily-routine",
-    "label": "The daily routine"
-  },
-  "sections": [
-    {
-      "h2": "What the Sasquatch Method actually is",
-      "paragraphs": [
-        "The Sasquatch Method is not a clinic, a cure, or a shortcut. It is a way of living that keeps your brain rewiring long after the hospital stops calling. I built it out of seven years of daily work after a stroke at 36 left my whole left side dead. I got back to about 90 percent. The method is how.",
-        "It is an add-on to your medical care, not a replacement for it. Your doctors, PT, OT, and SLP run the clinical side. This is the part they cannot do for you — the daily, stubborn, unglamorous work between appointments. That work is where the long game is won or lost.",
-        "Everything below is lived experience, not medical advice. Take it to your care team and let them tell you what fits your body."
-      ]
-    },
-    {
-      "h2": "The six-month myth",
-      "paragraphs": [
-        "Somebody probably told you that you have six months and then recovery stops. That is a half-truth that has crushed more survivors than any symptom. It is true that the rate of recovery slows after the early months. It is not true that recovery stops.",
-        "The brain keeps rewiring for years when you give it a reason to. I made real, measurable gains in year three, year five, and year seven — long after the official window closed. Stop training and the rewiring stalls. Keep training and it keeps going. That is the whole game."
-      ],
-      "relatedLinks": [
-        {
-          "href": "/blog/how-long-does-stroke-rehab-take",
-          "label": "How long does rehab take?"
-        },
-        {
-          "href": "/blog/can-you-fully-recover-from-a-stroke",
-          "label": "Can you fully recover?"
-        }
-      ]
-    },
-    {
-      "h2": "Rule one: never zero",
-      "paragraphs": [
-        "If you remember one thing, remember this. Never zero. Every single day, you do something for the recovery. Not most days. Every day. On a good day it is a full routine. On a garbage day it is five reps and a stretch. Five beats zero. Zero is the only real failure.",
-        "Streaks build brains. The point of never zero is not the five reps — it is that you never let the habit die. A missed day becomes a missed week becomes a lost year. I have watched it happen to good people. Protect the streak like it is your life, because your recovery is."
-      ]
-    },
-    {
-      "h2": "Rule two: reps over intensity",
-      "paragraphs": [
-        "Recovery is not built in heroic sessions. It is built in boring repetition, day after day. The brain learns a movement by doing it correctly, many times, over a long stretch. Frequency beats ferocity. A little every day beats everything-at-once once a week.",
-        "Start with what your therapists cleared you for and keep it simple enough that you will actually do it. Resistance bands before weights. Seated before standing. Hand reps on the couch. The bar to start should be so low you cannot talk yourself out of it."
-      ],
-      "relatedLinks": [
-        {
-          "href": "/programs/daily-routine",
-          "label": "The daily routine"
-        },
-        {
-          "href": "/blog/best-resistance-bands-stroke-recovery",
-          "label": "Best resistance bands"
-        },
-        {
-          "href": "/blog/best-hand-therapy-tools-stroke-recovery",
-          "label": "Hand therapy tools"
-        }
-      ]
-    },
-    {
-      "h2": "Rule three: train the weak side on purpose",
-      "paragraphs": [
-        "Your brain is lazy and efficient — it will let the strong side do everything and leave the weak side to rot. You have to force the issue. Use the weak hand for the task even when the strong hand is faster. Fight the shortcut every day.",
-        "There are formal versions of this idea that therapists use to push the weak limb. Ask your PT or OT whether that approach fits you and how to do it safely. Do not improvise around pain or a fall risk — get it prescribed, then attack it."
-      ],
-      "relatedLinks": [
-        {
-          "href": "/learn/hemiparesis-recovery",
-          "label": "Hemiparesis recovery"
-        },
-        {
-          "href": "/blog/foot-drop-rehab-equipment-review",
-          "label": "Foot drop rehab"
-        }
-      ]
-    },
-    {
-      "h2": "The boring basics: fuel, sleep, blood pressure",
-      "paragraphs": [
-        "You cannot rewire a brain you are starving of sleep and running on junk. Sleep is not lazy — it is when the brain consolidates the work you did all day. Guard it. Eat like it matters, because it does. And take your blood pressure seriously; nothing erases progress like a second stroke.",
-        "Take your medications exactly as prescribed, even when you feel fine. Track your blood pressure at home and bring the numbers to your appointments. This is the least glamorous part of the method and the most important."
-      ],
-      "relatedLinks": [
-        {
-          "href": "/blog/best-foods-for-stroke-recovery",
-          "label": "Best foods for recovery"
-        },
-        {
-          "href": "/blog/how-to-prevent-a-second-stroke",
-          "label": "Prevent a second stroke"
-        },
-        {
-          "href": "/blog/best-blood-pressure-monitor-stroke-survivor",
-          "label": "Home BP monitors"
-        }
-      ]
-    },
-    {
-      "h2": "Mind and mood are part of the work",
-      "paragraphs": [
-        "The method is not just muscles. The fatigue that drops on you at 2 p.m. is real and neurological — plan your hardest reps for when you have gas in the tank. The crying or laughing at the wrong times can be a wiring issue that usually eases. The brain fog lifts slowly.",
-        "If your mood stays dark, that is not weakness and it is not the method failing — depression after stroke is common and treatable. Tell your doctor. A survivor who gets their head right recovers faster than one who white-knuckles it alone."
-      ],
-      "relatedLinks": [
-        {
-          "href": "/blog/fatigue-after-stroke",
-          "label": "Fatigue after stroke"
-        },
-        {
-          "href": "/blog/why-do-stroke-survivors-cry-easily",
-          "label": "Why survivors cry easily"
-        },
-        {
-          "href": "/blog/memory-problems-after-stroke",
-          "label": "Memory problems"
-        }
-      ]
-    },
-    {
-      "h2": "Get a squad",
-      "paragraphs": [
-        "Recovery alone is brutal. The survivors who go the distance almost always have somebody in their corner — a spouse, a friend, a group, a coach. Accountability turns never zero from a slogan into a habit. Tell someone your streak. Let them ask about it.",
-        "Find your people. That might be a support group, an online community, or a program that keeps you honest. The isolation after a stroke is its own injury, and fighting it is part of the method."
-      ],
-      "relatedLinks": [
-        {
-          "href": "/recovery",
-          "label": "The recovery community"
-        },
-        {
-          "href": "/blog/stroke-recovery-coaching-program",
-          "label": "Coaching program"
-        }
-      ]
-    },
-    {
-      "h2": "The long game",
-      "paragraphs": [
-        "Here is the truth nobody in the hospital tells you: the best version of your recovery might be years away, not months. My year-seven self would be unrecognizable to my week-one self, and week-one me could not have imagined it. That is not fake hope. It is what happens when never zero runs for years.",
-        "You will have bad weeks. Plateaus that feel permanent. Days you want to quit. The method does not ask you to feel good. It asks you to not stop. Do that, and the brain keeps doing its quiet work. Heart's still thumpin'. Keep going."
-      ]
-    }
-  ],
-  "faqs": [
-    {
-      "q": "What is the Sasquatch Method?",
-      "a": "It is my approach to long-term stroke recovery, built over seven years: daily reps, never zero, train the weak side on purpose, and protect the boring basics of sleep, food, and blood pressure. It is an add-on to your medical care, not a replacement — take it to your care team."
-    },
-    {
-      "q": "Does recovery really continue after six months?",
-      "a": "In my experience, yes. The rate slows, but the brain keeps rewiring for years when you keep training. I made real gains in years three, five, and seven. Everyone is different, so talk to your team — but don't treat six months as a finish line."
-    },
-    {
-      "q": "What does 'never zero' mean in practice?",
-      "a": "It means you do something for your recovery every single day, no exceptions. Full routine on good days, five reps and a stretch on bad ones. The goal is to never break the habit, because a missed day too easily becomes a missed month."
-    },
-    {
-      "q": "Is this a replacement for physical therapy?",
-      "a": "No. Your PT, OT, SLP, and doctors run the clinical side, and you should do everything they prescribe. The method is the daily work between appointments — the part no therapist can do for you. Run anything new past your team first."
-    },
-    {
-      "q": "I'm years out from my stroke. Is it too late to start?",
-      "a": "I don't believe so. The brain responds to consistent training long after the early window. Starting late is still starting. Check with your care team, then pick one small thing and do it every day. Never zero works whenever you begin."
-    }
-  ],
-  "related": [
-    {
-      "href": "/blog/first-90-days-after-stroke",
-      "label": "The first 90 days after a stroke",
-      "blurb": "Where the method begins."
-    },
-    {
-      "href": "/blog/stroke-recovery-equipment-guide",
-      "label": "Stroke recovery equipment guide",
-      "blurb": "The gear that supports the reps."
-    },
-    {
-      "href": "/blog/how-long-does-stroke-rehab-take",
-      "label": "How long does rehab take?",
-      "blurb": "The honest timeline."
-    },
-    {
-      "href": "/blog/can-you-fully-recover-from-a-stroke",
-      "label": "Can you fully recover?",
-      "blurb": "What full recovery really means."
-    },
-    {
-      "href": "/blog/best-resistance-bands-stroke-recovery",
-      "label": "Best resistance bands",
-      "blurb": "The safest way to start strength work."
-    },
-    {
-      "href": "/blog/stroke-recovery-coaching-program",
-      "label": "Coaching program",
-      "blurb": "Accountability for the long game."
-    }
-  ],
-  "publishedDate": "2026-07-03",
-  "bookPromo": {
-    "title": "Want the full recovery blueprint?",
-    "description": "THE ULTIMATE STROKE RECOVERY REVOLUTION — 30 chapters, the daily routine, the gear, the protocols, and the mindset. The book every survivor wishes they had in the hospital.",
-    "link": "/book",
-    "label": "Get the book"
-  }
-});
-
 export const ALL_BLOG_POSTS: SsrPageConfig[] = [
-  POST_FIRST_90_DAYS,
-  POST_EQUIPMENT_GUIDE,
-  POST_SASQUATCH_METHOD,
   POST_REHAB_DURATION,
   POST_FULL_RECOVERY,
   POST_SECOND_STROKE_SIGNS,
@@ -7435,8 +5500,6 @@ export const ALL_BLOG_POSTS: SsrPageConfig[] = [
   POST_GSC_INDEXING,
   POST_ONLINE_COACH,
   POST_BROOKS_SURVIVOR_REVIEW,
-  POST_COACHING_PROGRAM,
-  POST_VIRTUAL_REHAB_COACH,
 ];
 
 // /blog hub page — lists all posts as internal-link cluster
@@ -7447,7 +5510,7 @@ export const BLOG_HUB: SsrPageConfig = {
   h1: 'The Stroke Recovery Blog',
   hero: {
     eyebrow: 'Blog',
-    subhead: 'Honest, in-the-trenches answers to the questions stroke survivors actually ask — written by Nick Kremers, a 7-year survivor. Lived experience, not medical advice.',
+    subhead: 'Honest, in-the-trenches answers to the questions stroke survivors actually ask. Written by Nick Kremers and the SRA team.',
     ctaPrimary: { href: '/api/login', label: 'Open the full library' },
     ctaSecondary: { href: '/recovery/university', label: 'Go to Recovery University' },
   },
@@ -7460,9 +5523,9 @@ export const BLOG_HUB: SsrPageConfig = {
     },
   ],
   faqs: [
-    { q: 'Who writes these posts?', a: 'Nick Kremers — founder and a 7-year stroke survivor. I went from complete left-side paralysis to about 90% function. This is survivor-to-survivor writing: lived experience and general information, not clinical advice.' },
-    { q: 'Is this medical advice?', a: 'No. Everything here is lived experience and general information, not medical advice. For anything clinical — new symptoms, medication, therapy plans — talk to your doctor, physical therapist, or occupational therapist. See our medical disclaimer.' },
+    { q: 'Who writes these posts?', a: 'Nick Kremers (founder, 7-year stroke survivor) and the Stroke Recovery Academy clinical advisory team. All medical content is reviewed for accuracy.' },
     { q: 'How often are new posts added?', a: 'New posts are added regularly based on the questions survivors send us. If there is a topic you want covered, tell us.' },
+    { q: 'Is the medical information reviewed?', a: 'Yes. All content is reviewed against current stroke recovery research and against clinical practice. We cite where the evidence comes from.' },
     { q: 'Can I share these posts?', a: 'Please do. Every share helps another survivor find the playbook nobody handed them in the hospital.' },
   ],
   related: ALL_BLOG_POSTS.map(p => ({

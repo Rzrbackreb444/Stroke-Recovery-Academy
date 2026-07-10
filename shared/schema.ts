@@ -1162,9 +1162,6 @@ export const dailyCheckins = pgTable("daily_checkins", {
   winsToday: text("wins_today"),
   challengesToday: text("challenges_today"),
   gratitude: text("gratitude"),
-  exercisesLogged: jsonb("exercises_logged").$type<Array<{ name: string; reps?: number; minutes?: number }>>(),
-  habitsCompleted: jsonb("habits_completed").$type<string[]>(),
-  sosState: text("sos_state"), // Doctrine S.O.S. daily state: 'survive' | 'organize' | 'strive'
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -1252,28 +1249,20 @@ export const recoveryBlogPosts = pgTable("recovery_blog_posts", {
   slug: text("slug").notNull().unique(),
   title: text("title").notNull(),
   excerpt: text("excerpt"),
-  seoTitle: text("seo_title"), // optional SERP <title> override (<=60 chars); falls back to title
-  metaDescription: text("meta_description"), // optional SERP meta description (140-160 chars); falls back to excerpt
   content: text("content").notNull(),
-  category: text("category").notNull().default("philosophy"), // philosophy, therapy, science, exercises, caregivers, work-career
+  category: text("category").notNull().default("philosophy"), // philosophy, therapy, science, exercises, caregivers, income
   tags: text("tags").array().default([]),
   heroImageUrl: text("hero_image_url"),
   authorName: text("author_name").notNull().default("Nick Kremers"),
   authorBio: text("author_bio"),
-  status: text("status").notNull().default("published"), // published, draft, scheduled
+  status: text("status").notNull().default("published"), // published, draft
   featured: boolean("featured").notNull().default(false),
   viewCount: integer("view_count").notNull().default(0),
   likeCount: integer("like_count").notNull().default(0),
   commentCount: integer("comment_count").notNull().default(0),
   readTime: integer("read_time").notNull().default(5),
-  estimatedReadMinutes: integer("estimated_read_minutes"),
-  scheduledFor: timestamp("scheduled_for"), // when a status='scheduled' post should auto-publish
-  newsletterBroadcastAt: timestamp("newsletter_broadcast_at"), // set once the auto-publish broadcast fired (idempotency)
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-  pillarSlug: text("pillar_slug"),
-  pillarTitle: text("pillar_title"),
-  pillarOrder: integer("pillar_order").notNull().default(0),
 });
 
 export const insertRecoveryBlogPostSchema = createInsertSchema(recoveryBlogPosts).omit({ id: true, createdAt: true, updatedAt: true });
@@ -1865,41 +1854,8 @@ export const buddyActiveMembers = pgTable("buddy_active_members", {
   userId: varchar("user_id").primaryKey().references(() => users.id, { onDelete: "cascade" }),
   pairId: integer("pair_id").notNull().references(() => buddyPairs.id, { onDelete: "cascade" }),
 });
-// Mutual-accept buddy requests: requester proposes, recipient accepts/declines.
-// One active pending request per direction (partial unique index).
-export const buddyRequests = pgTable("buddy_requests", {
-  id: serial("id").primaryKey(),
-  requesterId: varchar("requester_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  recipientId: varchar("recipient_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  note: text("note"),
-  score: integer("score"),
-  reasons: text("reasons").array(),
-  status: text("status").notNull().default("pending"), // pending, accepted, declined, cancelled
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  respondedAt: timestamp("responded_at"),
-}, (t) => ({
-  uniqPending: uniqueIndex("buddy_requests_pending_unique")
-    .on(t.requesterId, t.recipientId)
-    .where(sql`status = 'pending'`),
-}));
-
 export type BuddyProfile = typeof buddyProfiles.$inferSelect;
 export type BuddyPair = typeof buddyPairs.$inferSelect;
-export type BuddyRequest = typeof buddyRequests.$inferSelect;
-
-// Block list: a survivor blocking a peer who makes them uncomfortable/unsafe.
-// Directional (blocker → blocked). Either direction present hides DMs both ways
-// and prevents re-pairing. One row per (blocker, blocked) pair.
-export const buddyBlocks = pgTable("buddy_blocks", {
-  id: serial("id").primaryKey(),
-  blockerId: varchar("blocker_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  blockedId: varchar("blocked_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  reason: text("reason"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-}, (t) => ({
-  uniqBlock: uniqueIndex("buddy_blocks_unique").on(t.blockerId, t.blockedId),
-}));
-export type BuddyBlock = typeof buddyBlocks.$inferSelect;
 
 // Recovery Creator Profiles (extended user profile for stroke survivors)
 export const recoveryCreatorProfiles = pgTable("recovery_creator_profiles", {
@@ -2320,8 +2276,6 @@ export const neverZeroAudits = pgTable("never_zero_audits", {
   verdict: text("verdict"),
   tomorrow: text("tomorrow"),
   rawMessage: text("raw_message"), // full assembled text (fallback for legacy clients)
-  morningBrief: text("morning_brief"),           // AI morning synthesis, generated before reps
-  morningFocusItems: jsonb("morning_focus_items").$type<string[]>(), // 3 AI focus items for the day
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [
   // Hot path: getNeverZeroAuditByDate(userId, today) — runs on every Coach
@@ -2347,7 +2301,6 @@ export const recoveryJournals = pgTable("recovery_journals", {
   tomorrowsIntention: text("tomorrows_intention"),
   tags: text("tags").array(),
   isPrivate: boolean("is_private").notNull().default(true),
-  isStoryMoment: boolean("is_story_moment").notNull().default(false), // survivor explicitly flags this entry as a chapter for their book
   // Reflections v2 fields
   entryType: text("entry_type"), // free, haiku, photo, voice
   entrySubType: text("entry_sub_type"), // triumph, pitfall
@@ -4348,7 +4301,7 @@ export const bookPublishingProjects = pgTable("book_publishing_projects", {
   // ISBN & Publishing Details
   isbn: text("isbn"),
   isbnBarcode: boolean("isbn_barcode").default(true),
-  publisherName: text("publisher_name").default("Stroke Recovery Academy Publishing"),
+  publisherName: text("publisher_name").default("Stroke Lyfe Publishing"),
   copyrightYear: integer("copyright_year"),
   edition: text("edition"),
   
@@ -6456,22 +6409,6 @@ export const insertRecoveryAnchorSchema = createInsertSchema(recoveryAnchors).om
 export type RecoveryAnchor = typeof recoveryAnchors.$inferSelect;
 export type InsertRecoveryAnchor = z.infer<typeof insertRecoveryAnchorSchema>;
 
-// Shareable Recovery Report — consent-gated public share of outcome trends.
-// Private by default (no row until the survivor mints one). Revoking sets
-// isShared=false and nulls shareId so the public link 404s immediately.
-// One row per user; the shareId is a stable slug the survivor can revoke/re-mint.
-export const recoveryReportShares = pgTable("recovery_report_shares", {
-  id: serial("id").primaryKey(),
-  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }).unique(),
-  isShared: boolean("is_shared").notNull().default(false),
-  shareId: text("share_id"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-}, (t) => ({
-  byShareId: uniqueIndex("recovery_report_shares_share_id").on(t.shareId),
-}));
-export type RecoveryReportShare = typeof recoveryReportShares.$inferSelect;
-
 // One row per user. Daily-habit loop state.
 export const anchorStreaks = pgTable("anchor_streaks", {
   userId: varchar("user_id").primaryKey().references(() => users.id, { onDelete: "cascade" }),
@@ -7293,406 +7230,4 @@ export const insertFreeVideoAnalysisSchema = createInsertSchema(freeVideoAnalyse
   ipAddress: true,
   userAgent: true,
 });
-
-// ============================================================================
-// PROGRESS ANALYTICS — encouragements + notification preferences
-// ============================================================================
-
-export const encouragements = pgTable("encouragements", {
-  id: serial("id").primaryKey(),
-  fromUserId: varchar("from_user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  toUserId: varchar("to_user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  loopDate: text("loop_date").notNull(), // YYYY-MM-DD
-  type: text("type").notNull().default("flame"), // flame | cheer | message
-  message: text("message"), // max 280 chars — optional
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-}, (t) => [
-  index("encouragements_to_date_idx").on(t.toUserId, t.loopDate),
-  index("encouragements_from_idx").on(t.fromUserId, t.createdAt),
-]);
-export type Encouragement = typeof encouragements.$inferSelect;
-export const insertEncouragementSchema = createInsertSchema(encouragements).omit({ id: true, createdAt: true });
-
-export const notificationPreferences = pgTable("notification_preferences", {
-  id: serial("id").primaryKey(),
-  userId: varchar("user_id").notNull().unique().references(() => users.id, { onDelete: "cascade" }),
-  checkinReminderHour: integer("checkin_reminder_hour").default(9), // 0-23
-  streakBreakEmail: boolean("streak_break_email").notNull().default(true),
-  weeklyRepGoal: integer("weekly_rep_goal").default(21), // default 3/day × 7
-  weeklyDigestEnabled: boolean("weekly_digest_enabled").notNull().default(true),
-  caregiverShareEnabled: boolean("caregiver_share_enabled").notNull().default(false),
-  // Unified messaging engine — per-user channel routing + delivery guardrails.
-  emailEnabled: boolean("email_enabled").notNull().default(true),
-  pushEnabled: boolean("push_enabled").notNull().default(true),
-  smsEnabled: boolean("sms_enabled").notNull().default(false), // opt-in; A2P 10DLC gated
-  smsPhone: text("sms_phone"),
-  smsConsentAt: timestamp("sms_consent_at"),
-  quietHoursStart: integer("quiet_hours_start"), // local hour 0-23, nullable = no quiet window (push/sms only)
-  quietHoursEnd: integer("quiet_hours_end"),     // local hour 0-23, nullable
-  timezone: text("timezone").notNull().default("America/New_York"), // platform assumes EST
-  unsubscribedAll: boolean("unsubscribed_all").notNull().default(false), // global opt-out of non-transactional
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
-export type NotificationPreference = typeof notificationPreferences.$inferSelect;
-export const insertNotificationPreferenceSchema = createInsertSchema(notificationPreferences).omit({ id: true, updatedAt: true });
 export type InsertFreeVideoAnalysis = z.infer<typeof insertFreeVideoAnalysisSchema>;
-
-// Unified delivery log for the lifecycle messaging engine. One row per
-// (step, channel, user) attempt. UNIQUE(dedupe_key) makes sends idempotent:
-// the scheduler recomputes eligibility every hour, and the claim-before-send
-// insert blocks any repeat. Mirrors the journal_nudge_log dedupe pattern but
-// generalized across email/push/sms and every lifecycle journey.
-export const messageDeliveries = pgTable("message_deliveries", {
-  id: serial("id").primaryKey(),
-  userId: varchar("user_id"),                 // nullable — email-only newsletter sends have no user
-  email: text("email"),                       // recipient email when known (for audit/debug)
-  channel: text("channel").notNull(),         // email | push | sms
-  category: text("category").notNull(),       // e.g. onboarding-d1, winback-d14, trial-ending-d3
-  dedupeKey: text("dedupe_key").notNull().unique(),
-  status: text("status").notNull().default("sent"), // sent | failed | skipped
-  providerId: text("provider_id"),            // Resend/Twilio message id when available
-  error: text("error"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-}, (table) => [
-  index("idx_message_deliveries_user").on(table.userId, table.createdAt),
-  index("idx_message_deliveries_category").on(table.category),
-]);
-export type MessageDelivery = typeof messageDeliveries.$inferSelect;
-export const insertMessageDeliverySchema = createInsertSchema(messageDeliveries).omit({ id: true, createdAt: true });
-export type InsertMessageDelivery = z.infer<typeof insertMessageDeliverySchema>;
-
-// ============================================================================
-// DURABLE JOB SCHEDULER
-// ============================================================================
-// Restart-safe, single-fire-across-instances recurring job engine. Recurring
-// DB-backed work (journal nudges, newsletter drip, accountability pings,
-// stale-analysis reaper) is claimed atomically here instead of running on a
-// per-process setInterval. See server/scheduler/.
-
-export const scheduledJobs = pgTable("scheduled_jobs", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull().unique(),
-  description: text("description"),
-  intervalSeconds: integer("interval_seconds"),
-  cron: text("cron"),
-  enabled: boolean("enabled").notNull().default(true),
-  status: text("status").notNull().default("idle"),   // idle | running | success | failed
-  nextRunAt: timestamp("next_run_at", { withTimezone: true }).notNull().defaultNow(),
-  lastRunAt: timestamp("last_run_at", { withTimezone: true }),
-  lastStatus: text("last_status"),                     // success | failed
-  lastError: text("last_error"),
-  lastDurationMs: integer("last_duration_ms"),
-  runCount: integer("run_count").notNull().default(0),
-  failureCount: integer("failure_count").notNull().default(0),
-  lockedAt: timestamp("locked_at", { withTimezone: true }),
-  lockedBy: text("locked_by"),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
-});
-
-export const scheduledJobRuns = pgTable("scheduled_job_runs", {
-  id: serial("id").primaryKey(),
-  jobId: integer("job_id").notNull().references(() => scheduledJobs.id, { onDelete: "cascade" }),
-  jobName: text("job_name").notNull(),
-  status: text("status").notNull(),                    // success | failed
-  startedAt: timestamp("started_at", { withTimezone: true }).notNull(),
-  finishedAt: timestamp("finished_at", { withTimezone: true }).notNull(),
-  durationMs: integer("duration_ms").notNull(),
-  error: text("error"),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-}, (t) => ({
-  jobIdx: index("sjr_job_idx").on(t.jobId, t.createdAt),
-}));
-
-export type ScheduledJob = typeof scheduledJobs.$inferSelect;
-export type ScheduledJobRun = typeof scheduledJobRuns.$inferSelect;
-export const insertScheduledJobSchema = createInsertSchema(scheduledJobs).omit({
-  id: true, createdAt: true, updatedAt: true, status: true, lastRunAt: true,
-  lastStatus: true, lastError: true, lastDurationMs: true, runCount: true,
-  failureCount: true, lockedAt: true, lockedBy: true,
-});
-export type InsertScheduledJob = z.infer<typeof insertScheduledJobSchema>;
-
-// ============================================================================
-// COMMUNITY VIDEOS
-// ============================================================================
-
-export const communityVideos = pgTable("community_videos", {
-  id: serial("id").primaryKey(),
-  uploaderId: text("uploader_id").references(() => users.id, { onDelete: "set null" }),
-  title: text("title").notNull(),
-  description: text("description"),
-  tags: text("tags").array().notNull().default([]),
-  deficitTags: text("deficit_tags").array().notNull().default([]),
-  videoUrl: text("video_url").notNull(),
-  thumbnailUrl: text("thumbnail_url"),
-  durationSeconds: integer("duration_seconds"),
-  fileSizeBytes: integer("file_size_bytes"),
-  viewCount: integer("view_count").notNull().default(0),
-  likeCount: integer("like_count").notNull().default(0),
-  commentCount: integer("comment_count").notNull().default(0),
-  isPublic: boolean("is_public").notNull().default(true),
-  isFeatured: boolean("is_featured").notNull().default(false),
-  isPinned: boolean("is_pinned").notNull().default(false),
-  isPremium: boolean("is_premium").notNull().default(false),
-  source: text("source").notNull().default("upload"),
-  repostCount: integer("repost_count").notNull().default(0),
-  saveCount: integer("save_count").notNull().default(0),
-  shareCount: integer("share_count").notNull().default(0),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-}, (table) => [
-  index("idx_community_videos_uploader").on(table.uploaderId),
-  index("idx_community_videos_created").on(table.createdAt),
-  index("idx_community_videos_public").on(table.isPublic, table.createdAt),
-]);
-
-export type CommunityVideo = typeof communityVideos.$inferSelect;
-export const insertCommunityVideoSchema = createInsertSchema(communityVideos).omit({
-  id: true, createdAt: true, viewCount: true, likeCount: true, commentCount: true,
-  repostCount: true, saveCount: true, shareCount: true,
-});
-export type InsertCommunityVideo = z.infer<typeof insertCommunityVideoSchema>;
-
-export const videoLikes = pgTable("video_likes", {
-  id: serial("id").primaryKey(),
-  videoId: integer("video_id").notNull().references(() => communityVideos.id, { onDelete: "cascade" }),
-  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-}, (table) => [
-  uniqueIndex("idx_video_likes_unique").on(table.videoId, table.userId),
-]);
-
-export type VideoLike = typeof videoLikes.$inferSelect;
-
-export const videoComments = pgTable("video_comments", {
-  id: serial("id").primaryKey(),
-  videoId: integer("video_id").notNull().references(() => communityVideos.id, { onDelete: "cascade" }),
-  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  body: text("body").notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-}, (table) => [
-  index("idx_video_comments_video").on(table.videoId, table.createdAt),
-]);
-
-export type VideoComment = typeof videoComments.$inferSelect;
-export const insertVideoCommentSchema = createInsertSchema(videoComments).omit({ id: true, createdAt: true });
-export type InsertVideoComment = z.infer<typeof insertVideoCommentSchema>;
-
-export const videoReposts = pgTable("video_reposts", {
-  id: serial("id").primaryKey(),
-  videoId: integer("video_id").notNull().references(() => communityVideos.id, { onDelete: "cascade" }),
-  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-}, (table) => [
-  uniqueIndex("idx_video_reposts_unique").on(table.videoId, table.userId),
-]);
-export type VideoRepost = typeof videoReposts.$inferSelect;
-
-export const videoSaves = pgTable("video_saves", {
-  id: serial("id").primaryKey(),
-  videoId: integer("video_id").notNull().references(() => communityVideos.id, { onDelete: "cascade" }),
-  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-}, (table) => [
-  uniqueIndex("idx_video_saves_unique").on(table.videoId, table.userId),
-]);
-export type VideoSave = typeof videoSaves.$inferSelect;
-
-export const sparksFollows = pgTable("sparks_follows", {
-  id: serial("id").primaryKey(),
-  followerId: text("follower_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  followingId: text("following_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-}, (table) => [
-  uniqueIndex("idx_sparks_follows_unique").on(table.followerId, table.followingId),
-]);
-export type SparksFollow = typeof sparksFollows.$inferSelect;
-
-// ── Squad waitlist ────────────────────────────────────────────────────────────
-export const squadWaitlist = pgTable("squad_waitlist", {
-  id: serial("id").primaryKey(),
-  email: text("email").notNull().unique(),
-  name: text("name"),
-  userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-});
-export type SquadWaitlistEntry = typeof squadWaitlist.$inferSelect;
-
-// ── Recovery Goals ────────────────────────────────────────────────────────────
-// Long-term goals survivors set for themselves, broken into micro-goals.
-export const recoveryGoals = pgTable("recovery_goals", {
-  id: serial("id").primaryKey(),
-  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  title: text("title").notNull(),
-  why: text("why"),                         // why this goal matters to them
-  targetDate: text("target_date"),          // optional free text: "by December", "in 6 months"
-  status: text("status").notNull().default("active"), // active | completed | abandoned
-  completedAt: timestamp("completed_at"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-}, (t) => ({
-  userIdx: index("recovery_goals_user_idx").on(t.userId),
-}));
-export type RecoveryGoal = typeof recoveryGoals.$inferSelect;
-
-// Micro-goals: 3–5 steps that break down a long-term goal.
-export const recoveryMicroGoals = pgTable("recovery_micro_goals", {
-  id: serial("id").primaryKey(),
-  goalId: integer("goal_id").notNull().references(() => recoveryGoals.id, { onDelete: "cascade" }),
-  userId: varchar("user_id").notNull(),
-  title: text("title").notNull(),
-  targetWeek: text("target_week"),          // optional: "Week 1", "Month 2"
-  status: text("status").notNull().default("pending"), // pending | completed | skipped
-  sortOrder: integer("sort_order").notNull().default(0),
-  completedAt: timestamp("completed_at"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-}, (t) => ({
-  goalIdx: index("micro_goals_goal_idx").on(t.goalId),
-}));
-export type RecoveryMicroGoal = typeof recoveryMicroGoals.$inferSelect;
-
-// ── Survivor Badges ───────────────────────────────────────────────────────────
-// Each badge is earned once (UNIQUE user_id + badge_key).
-// Automated badges: system detects from real behavior.
-// Nominated badges: Nick or community awards manually.
-export const survivorBadges = pgTable("survivor_badges", {
-  id: serial("id").primaryKey(),
-  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  badgeKey: text("badge_key").notNull(),    // streak_7 | streak_30 | streak_66 | streak_365 | first_log | first_spark | goal_complete | consistent_4 | forge | lighthouse | teacher | pioneer | legend
-  badgeName: text("badge_name").notNull(),
-  reason: text("reason"),                   // human-readable; required for nominated badges
-  category: text("category").notNull().default("automated"), // automated | nominated
-  awardedByUserId: varchar("awarded_by_user_id"), // null = system; set = admin who awarded
-  awardedAt: timestamp("awarded_at").notNull().defaultNow(),
-}, (t) => ({
-  userBadgeUnique: uniqueIndex("survivor_badges_user_key_idx").on(t.userId, t.badgeKey),
-  userIdx: index("survivor_badges_user_idx").on(t.userId),
-}));
-export type SurvivorBadge = typeof survivorBadges.$inferSelect;
-
-// ── Survivor Tiers ────────────────────────────────────────────────────────────
-// One row per user. Tier is computed from badge count/types + recomputed on
-// every badge award and daily by the scheduler. Decays one tier per idle quarter.
-export const survivorTiers = pgTable("survivor_tiers", {
-  id: serial("id").primaryKey(),
-  userId: varchar("user_id").notNull().unique().references(() => users.id, { onDelete: "cascade" }),
-  tier: text("tier").notNull().default("ember"), // ember | bonfire | forge | legend
-  quarterKey: text("quarter_key").notNull(),      // YYYY-Q1/Q2/Q3/Q4
-  lastActiveAt: timestamp("last_active_at"),
-  isLegendAwarded: boolean("is_legend_awarded").notNull().default(false), // Nick manually awarded
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
-export type SurvivorTier = typeof survivorTiers.$inferSelect;
-
-// ── Spotlight nominations ─────────────────────────────────────────────────────
-// Survivors apply for or nominate others for the monthly spotlight.
-// Nick reviews, picks the winner, writes the article.
-export const spotlightNominations = pgTable("spotlight_nominations", {
-  id: serial("id").primaryKey(),
-  submitterUserId: varchar("submitter_user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  type: text("type").notNull().default("self"), // 'self' | 'other'
-  nomineeName: text("nominee_name").notNull(),
-  nomineeEmail: text("nominee_email"),
-  nomineeLocation: text("nominee_location"),
-  strokeDate: text("stroke_date"),      // free text — "June 2019"
-  relationship: text("relationship"),   // if nominating another: "My husband", "A friend", etc.
-  description: text("description").notNull(), // why they deserve the spotlight
-  mediaUrls: text("media_urls").array().notNull().default([]),
-  status: text("status").notNull().default("pending"), // pending | reviewed | selected | declined
-  adminNotes: text("admin_notes"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-});
-export type SpotlightNomination = typeof spotlightNominations.$inferSelect;
-
-// ── Partner inquiries ─────────────────────────────────────────────────────────
-export const partnerInquiries = pgTable("partner_inquiries", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  facility: text("facility").notNull(),
-  email: text("email").notNull(),
-  role: text("role"),
-  partnershipType: text("partnership_type"),
-  message: text("message"),
-  status: text("status").notNull().default("new"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-});
-export type PartnerInquiry = typeof partnerInquiries.$inferSelect;
-
-// ════════════════════════════════════════════════════════════════════════════
-// INSTITUTIONAL / CLINICAL PARTNERSHIP PLATFORM (B2B channel) — Task #59
-// ════════════════════════════════════════════════════════════════════════════
-// Organizations (rehab centers, hospitals, discharge programs) provision
-// premium access for their survivors via purchased seats, billed at the org
-// level. Survivors control what the org sees through a revocable consent layer
-// that DEFAULTS to de-identified/aggregate. Clinicians see cohort engagement +
-// consented aggregate outcome trends only — never unconsented PHI. Non-clinical.
-
-// ── Organizations ─────────────────────────────────────────────────────────────
-export const organizations = pgTable("organizations", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  slug: text("slug").notNull().unique(),           // stable id for join links
-  orgType: text("org_type").notNull().default("rehab_center"), // rehab_center|hospital|clinic|discharge_program|research|other
-  contactName: text("contact_name"),
-  contactEmail: text("contact_email"),
-  seatLimit: integer("seat_limit").notNull().default(0), // purchased survivor seats
-  status: text("status").notNull().default("trial"),     // trial|active|suspended
-  // Org-level billing (seat-based). Stripe references only — never raw cards.
-  stripeCustomerId: text("stripe_customer_id"),
-  stripeSubscriptionId: text("stripe_subscription_id"),
-  billingStatus: text("billing_status").notNull().default("none"), // none|active|past_due|canceled
-  notes: text("notes"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
-export const insertOrganizationSchema = createInsertSchema(organizations).omit({
-  id: true, createdAt: true, updatedAt: true,
-});
-export type InsertOrganization = z.infer<typeof insertOrganizationSchema>;
-export type Organization = typeof organizations.$inferSelect;
-
-// ── Organization members (seats + staff) ───────────────────────────────────────
-// role: owner|clinician (staff who see the dashboard) | survivor (a seat).
-// status: invited (link minted, not yet accepted) | active | removed.
-// A survivor seat is consumed by invited + active rows (removed frees the seat).
-export const organizationMembers = pgTable("organization_members", {
-  id: serial("id").primaryKey(),
-  orgId: integer("org_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
-  userId: varchar("user_id").references(() => users.id, { onDelete: "set null" }), // null until accepted
-  role: text("role").notNull().default("survivor"), // owner|clinician|survivor
-  status: text("status").notNull().default("invited"), // invited|active|removed
-  invitedEmail: text("invited_email"),
-  inviteToken: text("invite_token").unique(),
-  invitedAt: timestamp("invited_at").notNull().defaultNow(),
-  joinedAt: timestamp("joined_at"),
-  removedAt: timestamp("removed_at"),
-}, (t) => ({
-  orgUserIdx: index("org_members_org_user_idx").on(t.orgId, t.userId),
-}));
-export const insertOrganizationMemberSchema = createInsertSchema(organizationMembers).omit({
-  id: true, invitedAt: true, joinedAt: true, removedAt: true,
-});
-export type InsertOrganizationMember = z.infer<typeof insertOrganizationMemberSchema>;
-export type OrganizationMember = typeof organizationMembers.$inferSelect;
-
-// ── Organization consents (revocable, per survivor+org) ─────────────────────────
-// shareLevel governs what the org can see about this survivor:
-//   none       — excluded from ALL org views (full opt-out).
-//   aggregate  — DEFAULT. Contributes to de-identified cohort stats only. No PII,
-//                no identified row ever leaves.
-//   identified — care team may additionally see this survivor's name + engagement
-//                summary. Raw journal/medical/flicker text is NEVER exposed here.
-export const organizationConsents = pgTable("organization_consents", {
-  id: serial("id").primaryKey(),
-  orgId: integer("org_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
-  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  shareLevel: text("share_level").notNull().default("aggregate"), // none|aggregate|identified
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-}, (t) => ({
-  orgUserUnique: uniqueIndex("org_consents_org_user_unique").on(t.orgId, t.userId),
-}));
-export const insertOrganizationConsentSchema = createInsertSchema(organizationConsents).omit({
-  id: true, updatedAt: true,
-});
-export type InsertOrganizationConsent = z.infer<typeof insertOrganizationConsentSchema>;
-export type OrganizationConsent = typeof organizationConsents.$inferSelect;

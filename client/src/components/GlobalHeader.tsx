@@ -7,7 +7,7 @@ import { Link as WouterLink } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import sraLogo from "@assets/global-logo-opt.webp";
+import sraLogo from "@assets/Untitled_design_1776803832326.png";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -314,9 +314,9 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full p-0 transition-all duration-300 hover:scale-110" data-testid="user-menu">
                     <Avatar className="h-9 w-9 border-2 border-gold/30 transition-all duration-300">
-                      <AvatarImage src={(user as any).avatarUrl || user.profileImageUrl || undefined} />
+                      <AvatarImage src={user.profileImageUrl || undefined} />
                       <AvatarFallback className="bg-gold text-white font-bold text-sm">
-                        {((user as any).displayName || user.firstName)?.[0] || user.email?.[0]?.toUpperCase() || "U"}
+                        {user.firstName?.[0] || user.email?.[0]?.toUpperCase() || "U"}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
@@ -324,11 +324,8 @@ export default function GlobalHeader({ variant = "default" }: GlobalHeaderProps)
                 <DropdownMenuContent align="end" className="w-56 p-2 bg-[#FAF8F3] dark:bg-[#1a1a1a] border-gold/20 animate-scale-in">
                   <div className="px-3 py-2 mb-2">
                     <p className="font-semibold text-gray-900 dark:text-white">
-                      {(user as any).displayName || user.firstName || "Creator"}
+                      {user.firstName || "Creator"}
                     </p>
-                    {(user as any).username && (
-                      <p className="text-xs text-gold/70">@{(user as any).username}</p>
-                    )}
                     <p className="text-xs text-gray-500 truncate">
                       {user.email}
                     </p>

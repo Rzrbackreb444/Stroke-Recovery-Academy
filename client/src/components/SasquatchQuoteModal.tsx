@@ -1,7 +1,6 @@
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Flame, Coins, Share2, Sparkles } from "lucide-react";
-import { Link } from "wouter";
+import { Flame, Coins, Share2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Props {
@@ -47,23 +46,6 @@ export default function SasquatchQuoteModal({ open, onClose, quote, creditsEarne
 
           {typeof streak === "number" && streak > 1 && (
             <div className="text-xs text-gray-400" data-testid="text-streak-count">{streak}-day streak and counting.</div>
-          )}
-
-          {/* Streak milestone upgrade nudge — shown at 7, 14, 21, 30 day milestones */}
-          {typeof streak === "number" && [7, 14, 21, 30, 66].includes(streak) && (
-            <Link href="/recovery/premium" onClick={onClose} className="w-full block">
-              <div
-                className="w-full rounded-lg border border-[#E2741B]/30 bg-[#120d04] px-4 py-3 text-center hover-elevate"
-                data-testid="banner-streak-upgrade"
-              >
-                <p className="text-[10px] uppercase tracking-[0.2em] text-[#E2741B] mb-0.5">
-                  <Sparkles className="w-3 h-3 inline mr-1" />{streak}-day milestone
-                </p>
-                <p className="text-xs text-gray-300 font-semibold">
-                  You've built real momentum. Go unlimited — 7-day free trial.
-                </p>
-              </div>
-            </Link>
           )}
 
           <div className="flex gap-2 w-full pt-2">

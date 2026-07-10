@@ -45,9 +45,8 @@ export async function initializeGA() {
     });
 
     isInitialized = true;
-  } catch {
-    // GA is best-effort (blocked by ad blockers / offline / dev). Don't spam the console.
-    if (import.meta.env.DEV) console.warn("Google Analytics unavailable (non-fatal).");
+  } catch (error) {
+    console.error("Failed to initialize Google Analytics:", error);
   }
 }
 

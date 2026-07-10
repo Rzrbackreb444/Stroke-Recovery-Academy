@@ -19,13 +19,7 @@ export type FunnelEventType =
   | "checkout_click"
   | "trial_start"
   | "trial_converted"
-  | "trial_canceled"
-  // Lifecycle (top-of-funnel) milestones — one per user, emitted server-side
-  // (and mirrored to GA client-side) so the funnel has real event provenance
-  // in addition to the source-of-truth computation.
-  | "signup"
-  | "intake_complete"
-  | "activation";
+  | "trial_canceled";
 
 export type FunnelPlan = "monthly" | "annual" | "unknown";
 
@@ -35,9 +29,6 @@ const ALLOWED_EVENTS: FunnelEventType[] = [
   "trial_start",
   "trial_converted",
   "trial_canceled",
-  "signup",
-  "intake_complete",
-  "activation",
 ];
 const ALLOWED_PLANS: FunnelPlan[] = ["monthly", "annual", "unknown"];
 
@@ -96,54 +87,6 @@ export async function recordFunnelEvent(opts: {
   } catch (err: any) {
     // Telemetry must never break the user surface — log + swallow.
     console.warn("[funnel] record failed", err?.message || err);
-  }
-}
-
-// Milestone events that must fire at most once per user (signup, intake_complete,
-// activation). Safe to call on every occurrence (e.g. every login, every
-// check-in) — the NOT EXISTS guard makes it idempotent. Best-effort: never throws.
-export async function recordFunnelEventOnce(opts: {
-  userId: string;
-  eventType: FunnelEventType;
-  metadata?: Record<string, unknown>;
-}): Promise<void> {
-  if (!opts.userId) return;
-  try {
-    await ensureTable();
-    const metaJson = JSON.stringify(opts.metadata ?? {});
-    await db.execute(sql`
-      INSERT INTO subscription_funnel_events (user_id, event_type, plan, metadata)
-      SELECT ${opts.userId}, ${opts.eventType}, 'unknown', ${metaJson}::jsonb
-       WHERE NOT EXISTS (
-         SELECT 1 FROM subscription_funnel_events
-          WHERE user_id = ${opts.userId} AND event_type = ${opts.eventType}
-       )
-    `);
-  } catch (err: any) {
-    console.warn("[funnel] record-once failed", err?.message || err);
-  }
-}
-
-// Activation = intake complete AND ≥1 check-in AND ≥1 coach message. Called
-// fire-and-forget after a check-in or coach turn is saved; emits the activation
-// milestone exactly once, when the three-part condition first holds.
-export async function maybeRecordActivation(userId: string): Promise<void> {
-  if (!userId) return;
-  try {
-    await ensureTable();
-    const r = await db.execute(sql`
-      SELECT 1
-        FROM user_profiles up
-       WHERE up.user_id = ${userId}
-         AND up.intake_completed_at IS NOT NULL
-         AND EXISTS (SELECT 1 FROM daily_checkins dc WHERE dc.user_id = ${userId})
-         AND EXISTS (SELECT 1 FROM sasquatch_chat_messages m WHERE m.user_id = ${userId} AND m.role = 'user')
-       LIMIT 1
-    `);
-    if ((r.rows as any[]).length === 0) return;
-    await recordFunnelEventOnce({ userId, eventType: "activation" });
-  } catch (err: any) {
-    console.warn("[funnel] activation check failed", err?.message || err);
   }
 }
 

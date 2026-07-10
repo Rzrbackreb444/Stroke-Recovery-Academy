@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Clock, Target } from "lucide-react";
 import { Link } from "wouter";
 import { yearsSinceStroke } from "@shared/strokeAnniversary";
-import baseballBatImage from "@assets/baseball-bat-opt.webp";
-import mirrorTherapyImage from "@assets/mirror-therapy-opt.webp";
-import dropFootImage from "@assets/drop-foot-opt.webp";
+import baseballBatImage from "@assets/generated_images/baseball_bat_therapy_equipment.png";
+import mirrorTherapyImage from "@assets/generated_images/mirror_therapy_exercise.png";
+import dropFootImage from "@assets/generated_images/drop_foot_recovery_protocol.png";
 
 const exercises = [
   {

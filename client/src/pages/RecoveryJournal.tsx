@@ -12,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import {
   Lock, PenTool, Feather, Camera, Mic2, Check,
-  HeartHandshake, Shield, Sparkles, BookOpen, BookMarked,
+  HeartHandshake, Shield, Sparkles, BookOpen,
   Music, BookText, EyeOff, Globe2, CloudRain, Sun, Cloud,
   Activity, Heart, LifeBuoy, Loader2, X, Square, Trash2, Download, Printer
 } from "lucide-react";
@@ -358,28 +358,6 @@ export default function RecoveryJournal() {
     },
     onError: (err: any) => {
       toast({ title: "Couldn't start checkout", description: err?.message || "Try again.", variant: "destructive" });
-    },
-  });
-
-  // Toggle is_story_moment on a journal entry.
-  const storyMomentMutation = useMutation({
-    mutationFn: ({ id, isStoryMoment }: { id: number; isStoryMoment: boolean }) =>
-      apiRequest("PATCH", `/api/recovery/journal/${id}/story-moment`, { isStoryMoment }),
-    onMutate: async ({ id, isStoryMoment }) => {
-      const key = ["/api/recovery/journal"];
-      await queryClient.cancelQueries({ queryKey: key });
-      const prev = queryClient.getQueryData<any[]>(key);
-      queryClient.setQueryData<any[]>(key, (old) =>
-        (old || []).map((e) => e.id === id ? { ...e, is_story_moment: isStoryMoment } : e)
-      );
-      return { prev, key };
-    },
-    onError: (_err, _vars, ctx) => {
-      if (ctx?.prev) queryClient.setQueryData(ctx.key, ctx.prev);
-      toast({ title: "Couldn't update that entry. Try again.", variant: "destructive" });
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/recovery/my-story/stats"] });
     },
   });
 
@@ -954,20 +932,6 @@ export default function RecoveryJournal() {
                       ))}
                     </div>
                   )}
-                  <div className="mt-4 pt-3 border-t border-[#2A2621] flex items-center justify-between gap-2">
-                    <button
-                      onClick={() => storyMomentMutation.mutate({ id: entry.id, isStoryMoment: !entry.is_story_moment })}
-                      disabled={storyMomentMutation.isPending}
-                      className={`inline-flex items-center gap-1.5 text-xs font-semibold transition-colors ${entry.is_story_moment ? "text-[#E2741B]" : "text-[#5A5650] hover:text-[#8A867D]"}`}
-                      data-testid={`button-story-moment-${entry.id}`}
-                    >
-                      <BookMarked className="w-3.5 h-3.5" />
-                      {entry.is_story_moment ? "Chapter marked" : "Mark as chapter"}
-                    </button>
-                    {entry.is_story_moment && (
-                      <span className="text-xs text-[#5A5650] italic">In your story</span>
-                    )}
-                  </div>
                 </Card>
               ))}
               {entries.length > 5 && (

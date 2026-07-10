@@ -227,7 +227,7 @@ export const SASQUATCH_METHOD_SCHEMA = {
 interface RecoverySEOProps {
   title: string;
   description: string;
-  canonical?: string;
+  canonical: string;
   keywords?: string[];
   pageType?: "website" | "article" | "course" | "faq" | "medical" | "product";
   image?: string;
@@ -264,11 +264,9 @@ export default function RecoverySEO({
   medicalDisclaimer = true,
 }: RecoverySEOProps) {
   const fullTitle = `${title} | Stroke Recovery Academy`;
-  const canonicalUrl = canonical
-    ? canonical.startsWith("http")
-      ? canonical
-      : `${RECOVERY_BASE_URL}${canonical}`
-    : RECOVERY_BASE_URL;
+  const canonicalUrl = canonical.startsWith("http")
+    ? canonical
+    : `${RECOVERY_BASE_URL}${canonical}`;
   const ogImage = image || `${RECOVERY_BASE_URL}/images/stroke-recovery-og.png`;
 
   const defaultKeywords = [
@@ -388,21 +386,9 @@ export default function RecoverySEO({
       : [additionalSchema]
     : [];
 
-  const nickSchema = {
-    "@context": "https://schema.org",
-    ...NICK_KREMERS_SCHEMA,
-  };
-
-  const strokeConditionSchema = {
-    "@context": "https://schema.org",
-    ...STROKE_CONDITION_SCHEMA,
-  };
-
   const allSchemas = [
     webPageSchema,
     orgSchema,
-    nickSchema,
-    strokeConditionSchema,
     faqSchema,
     breadcrumbSchema,
     speakableSchema,

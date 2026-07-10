@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { useLocation, useSearch } from "wouter";
-import { routeAfterAuth } from "@/lib/postAuthRedirect";
+import { useLocation } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-const sraLogo = "/favicon.png";
+import kreaiteLogo from "@assets/Untitled_design.zip_-_1_1769816069353.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,25 +29,10 @@ import {
 // confusing/cheap-looking.
 type AuthMode = "otp" | "password" | "register" | "magic-link" | "forgot-password";
 
-const AUTH_MODES: AuthMode[] = ["otp", "password", "register", "magic-link", "forgot-password"];
-
 export default function AuthPage() {
   const [, setLocation] = useLocation();
-  const searchStr = useSearch();
-  const searchParams = new URLSearchParams(searchStr);
-  // Canonical entry point honors deep-link intent forwarded from redirected
-  // routes (e.g. /recovery/login?next=…&tab=signup → /auth?next=…&tab=signup).
-  const nextParam = searchParams.get("next");
-  const modeParam = searchParams.get("mode");
-  const tabParam = searchParams.get("tab");
-  const initialMode: AuthMode = modeParam && AUTH_MODES.includes(modeParam as AuthMode)
-    ? (modeParam as AuthMode)
-    : tabParam === "signup"
-      ? "register"
-      : "otp";
-
   const { toast } = useToast();
-  const [mode, setMode] = useState<AuthMode>(initialMode);
+  const [mode, setMode] = useState<AuthMode>("otp");
   const [showPassword, setShowPassword] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -89,13 +73,13 @@ export default function AuthPage() {
       const r = await apiRequest("POST", "/api/auth/otp/verify", { email, otp });
       return r.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       queryClient.invalidateQueries({ queryKey: ["/api/email-auth/me"] });
       toast({ title: "Welcome!", description: "You're signed in" });
-      // Consistent post-auth routing: honor ?next=, else new→onboarding /
-      // returning→dashboard via /api/recovery/me/state.
-      routeAfterAuth(setLocation, nextParam);
+      // New OTP accounts go to /welcome (intake-first); returning users go to
+      // the creator hub. Server flags isNewUser via the OTP verify response.
+      setLocation(data?.isNewUser ? "/welcome" : "/creator-hub");
     },
     onError: (e: any) => {
       toast({ title: "Invalid code", description: e.message || "Check the code and try again", variant: "destructive" });
@@ -104,14 +88,13 @@ export default function AuthPage() {
 
   const loginMutation = useMutation({
     mutationFn: async () => {
-      const r = await apiRequest("POST", "/api/auth/login", { email, password });
+      const r = await apiRequest("POST", "/api/email-auth/login", { email, password });
       return r.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       queryClient.invalidateQueries({ queryKey: ["/api/email-auth/me"] });
       toast({ title: "Welcome back!", description: "You've successfully signed in" });
-      routeAfterAuth(setLocation, nextParam);
+      setLocation("/creator-hub");
     },
     onError: (e: any) => {
       toast({ title: "Login failed", description: e.message || "Invalid credentials", variant: "destructive" });
@@ -120,14 +103,13 @@ export default function AuthPage() {
 
   const registerMutation = useMutation({
     mutationFn: async () => {
-      const r = await apiRequest("POST", "/api/auth/register", { email, password, firstName, lastName });
+      const r = await apiRequest("POST", "/api/email-auth/register", { email, password, firstName, lastName });
       return r.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       queryClient.invalidateQueries({ queryKey: ["/api/email-auth/me"] });
       toast({ title: "Account created!", description: "Welcome to Stroke Recovery Academy" });
-      routeAfterAuth(setLocation, nextParam);
+      setLocation("/welcome");
     },
     onError: (e: any) => {
       toast({ title: "Registration failed", description: e.message, variant: "destructive" });
@@ -136,7 +118,7 @@ export default function AuthPage() {
 
   const magicLinkMutation = useMutation({
     mutationFn: async () => {
-      const r = await apiRequest("POST", "/api/auth/magic-link", { email });
+      const r = await apiRequest("POST", "/api/email-auth/magic-link", { email });
       return r.json();
     },
     onSuccess: () => {
@@ -198,9 +180,9 @@ export default function AuthPage() {
     forgotPasswordMutation.isPending;
 
   const features = [
-    { icon: Crown, text: "Sasquatch Coach — daily accountability" },
-    { icon: Zap, text: "Daily Reps System — 5 levels of recovery" },
-    { icon: Star, text: "Your Squad — 5 survivors rebuilding together" },
+    { icon: Crown, text: "7 Premium AI Studios" },
+    { icon: Zap, text: "10+ AI Models Integrated" },
+    { icon: Star, text: "85/15 Creator Revenue Split" },
   ];
 
   // Title/description derived from mode so we keep one card layout.
@@ -223,7 +205,7 @@ export default function AuthPage() {
   }[mode];
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex flex-col lg:flex-row">
+    <div className="min-h-screen bg-[#0a0a0a] flex">
       {/* Left Panel - Branding */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 via-orange-500/10 to-rose-500/20" />
@@ -233,24 +215,25 @@ export default function AuthPage() {
           <div>
             <div className="flex items-center gap-3 mb-12">
               <img
-                src={sraLogo}
+                src={kreaiteLogo}
                 alt="Stroke Recovery Academy"
-                className="h-12 w-12 object-cover rounded-xl"
+                className="h-12 w-auto object-contain"
               />
             </div>
 
             <h1 className="text-5xl font-bold text-white mb-6 leading-tight">
-              Nobody was watching<br />
+              Rebuild.<br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">
-                the days in between.
-              </span>
+                Rewire.
+              </span><br />
+              Rise.
             </h1>
 
-            <p className="text-lg text-white/60 mb-10 max-w-md">
-              Daily reps, a coach who notices when you go quiet, and a squad that keeps showing up.
+            <p className="text-xl text-white/60 mb-12 max-w-md">
+              The survivor-first stroke recovery platform. Daily routines, AI coach, and a community that gets it.
             </p>
 
-            <div className="space-y-4 mb-12">
+            <div className="space-y-4">
               {features.map((feature, i) => {
                 const Icon = feature.icon;
                 return (
@@ -263,38 +246,24 @@ export default function AuthPage() {
                 );
               })}
             </div>
-
-            <div className="border-l-2 border-[#E2741B]/40 pl-5">
-              <p className="text-white/70 text-sm italic leading-relaxed mb-3">
-                "I went from not being able to lift my arm to playing catch with my son. The daily reps and the Coach kept me honest on the days I wanted to quit."
-              </p>
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-full bg-[#E2741B]/30 flex items-center justify-center text-[#E2741B] text-xs font-bold">D</div>
-                <div>
-                  <div className="text-white/60 text-xs font-semibold">David R.</div>
-                  <div className="text-white/35 text-xs">Left-side stroke — Day 847</div>
-                </div>
-              </div>
-            </div>
           </div>
 
           <div className="text-white/40 text-sm">
-            Built by survivors, for survivors. $19/mo — 7 days free.
+            Built by survivors, for survivors.
           </div>
         </div>
       </div>
 
       {/* Right Panel - Auth Form */}
-      <div className="flex-1 flex items-center justify-center px-4 py-10 sm:p-6">
+      <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-md">
-          {/* Mobile Logo + header strip */}
-          <div className="lg:hidden flex flex-col items-center mb-8 gap-2">
+          {/* Mobile Logo */}
+          <div className="lg:hidden flex items-center justify-center mb-8">
             <img
-              src={sraLogo}
+              src={kreaiteLogo}
               alt="Stroke Recovery Academy"
-              className="h-12 w-12 object-cover rounded-xl"
+              className="h-10 w-auto object-contain"
             />
-            <p className="text-white/50 text-sm">Stroke Recovery Academy</p>
           </div>
 
           <Card className="bg-white/5 border-white/10 backdrop-blur-xl">

@@ -8,7 +8,6 @@ import { users, userPersonas } from '@shared/schema';
 import { getArchetype } from '@shared/personaArchetypes';
 import { eq } from 'drizzle-orm';
 import { generateImageWithImagen, isImagenConfigured } from '../imagenService';
-import { getUserId } from "../lib/authUtils";
 
 // Curated gallery — seeded DiceBear avatars (free, no key). Keys become the
 // displayed option labels and seeds.
@@ -72,7 +71,7 @@ export function registerAvatarRoutes(app: Express, isAuthenticated: any, uploads
   // POST /api/avatar/generate  { extraPrompt? }
   app.post('/api/avatar/generate', isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub || req.user?.id;
       if (!userId) return res.status(401).json({ error: 'Unauthorized' });
       if (!isImagenConfigured()) return res.status(503).json({ error: 'Image generation not configured (missing GOOGLE_SERVICE_ACCOUNT_KEY)' });
 
@@ -103,7 +102,7 @@ export function registerAvatarRoutes(app: Express, isAuthenticated: any, uploads
   // POST /api/avatar/upload  (multipart: file, optional removeBackground=true)
   app.post('/api/avatar/upload', isAuthenticated, upload.single('file'), async (req: any, res: Response) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub || req.user?.id;
       if (!userId) return res.status(401).json({ error: 'Unauthorized' });
       if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
       let url = `/uploads/${req.file.filename}`;
@@ -148,7 +147,7 @@ export function registerAvatarRoutes(app: Express, isAuthenticated: any, uploads
   // POST /api/avatar/gallery  { key }
   app.post('/api/avatar/gallery', isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = getUserId(req);
+      const userId = req.user?.claims?.sub || req.user?.id;
       if (!userId) return res.status(401).json({ error: 'Unauthorized' });
       const key = String(req.body?.key || '');
       const item = GALLERY_SEEDS.find(g => g.key === key);

@@ -14,7 +14,6 @@ import { type Request, type Response, type NextFunction, type Express } from "ex
 import { randomUUID } from "node:crypto";
 import { sql } from "drizzle-orm";
 import { db } from "../db";
-import { getUserId } from "../lib/authUtils";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -45,7 +44,7 @@ export function structuredErrorLogger(
 ) {
   const status = err?.status || err?.statusCode || 500;
   const userId =
-    getUserId(req as any) ??
+    (req as any)?.user?.claims?.sub ??
     (req as any)?.session?.userId ??
     null;
 
@@ -104,30 +103,11 @@ export function registerHealthRoutes(app: Express) {
       );
     }
 
-    // Lightweight scheduler liveness. Proves the durable cron backbone (which
-    // owns circle-reminders + every other recurring job) is still advancing:
-    // `stale` counts enabled jobs whose next_run_at has fallen behind, which is
-    // exactly how a silent post-deploy scheduler failure surfaces. We expose
-    // only counts here (no job names) to avoid leaking internals on this public
-    // endpoint; the admin panel (/api/admin/scheduler/health) has the detail.
-    // Never fails the healthcheck — the DB round-trip is the only hard gate.
-    let scheduler: { ok: boolean; staleCount: number } | null = null;
-    if (dbOk) {
-      try {
-        const { getSchedulerHealth } = await import("../scheduler/scheduler");
-        const h = await getSchedulerHealth();
-        scheduler = { ok: h.ok, staleCount: h.stale.length };
-      } catch {
-        scheduler = null;
-      }
-    }
-
     const status = dbOk ? 200 : 503;
     return res.status(status).json({
       ok: dbOk,
       uptimeSeconds: Math.round(startedAt),
       db: { ok: dbOk, latencyMs: dbLatencyMs },
-      scheduler,
       env: process.env.NODE_ENV || "development",
       ts: new Date().toISOString(),
     });

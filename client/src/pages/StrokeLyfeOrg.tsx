@@ -40,7 +40,7 @@ import {
   Compass,
   Mountain,
 } from "lucide-react";
-const strokeLyfeLogo = "/stroke-lyfe-logo.webp";
+import strokeLyfeLogo from "@assets/Untitled_design_1776789083877.png";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 
 const donationAmounts = [25, 50, 100, 250, 500, 1000];
@@ -304,7 +304,7 @@ export default function StrokeLyfeOrg() {
             <img 
               src={strokeLyfeLogo} 
               alt="Stroke Lyfe" 
-              className="h-32 w-auto"
+              className="h-24 w-auto"
               data-testid="img-strokelyfe-logo"
             />
           </div>

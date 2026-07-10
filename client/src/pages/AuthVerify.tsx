@@ -5,9 +5,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Loader2, CheckCircle, XCircle } from "lucide-react";
-const sraLogo = "/favicon.png";
+import kreaiteLogo from "@assets/Untitled_design.zip_-_1_1769816069353.png";
 import { Button } from "@/components/ui/button";
-import { routeAfterAuth } from "@/lib/postAuthRedirect";
 
 export default function AuthVerify() {
   const [, setLocation] = useLocation();
@@ -21,12 +20,11 @@ export default function AuthVerify() {
       const response = await apiRequest("GET", `/api/email-auth/verify-magic-link?token=${token}`);
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       setStatus("success");
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       queryClient.invalidateQueries({ queryKey: ["/api/email-auth/me"] });
       toast({ title: "Welcome back!", description: "You've been signed in successfully" });
-      setTimeout(() => routeAfterAuth(setLocation), 1500);
+      setTimeout(() => setLocation("/creator-hub"), 2000);
     },
     onError: (error: any) => {
       setStatus("error");
@@ -69,9 +67,9 @@ export default function AuthVerify() {
               <p className="text-white/60 mb-6">Redirecting you to your dashboard...</p>
               <div className="flex items-center justify-center">
                 <img 
-                  src={sraLogo} 
+                  src={kreaiteLogo} 
                   alt="Welcome to Stroke Recovery Academy" 
-                  className="h-8 w-8 object-cover rounded-lg"
+                  className="h-8 w-auto object-contain"
                 />
               </div>
             </>

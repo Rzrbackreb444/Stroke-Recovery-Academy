@@ -12,72 +12,11 @@
 import { db } from "../db";
 import { sql, eq } from "drizzle-orm";
 import { users } from "@shared/schema";
-import { pgTextArray } from "../lib/pgArray";
 import { getUncachableStripeClient } from "../stripeClient";
-
-import { FOUNDER_MONTHLY_CENTS } from "@shared/survivorOffer";
 
 export const SASQUATCH_PREMIUM_PRICE_AMOUNT = 1900;        // $19/mo
 export const SASQUATCH_PREMIUM_ANNUAL_AMOUNT = 19000;      // $190/yr (~17% off)
 export const SASQUATCH_PREMIUM_FEATURE = "sasquatch_premium";
-
-// ── Founder's Circle (high-touch anchor tier) ───────────────────────────────
-// A SEPARATE Stripe product (not another price under the premium product) so
-// the interval-based price mapping in loadExistingPrices() can't collide with
-// the premium monthly price. Founder is a strict SUPERSET of premium: an
-// active Founder subscription grants premium entitlement everywhere via the
-// eligiblePriceIds union in hasActiveSasquatchPremium().
-export const SASQUATCH_FOUNDER_PRICE_AMOUNT = FOUNDER_MONTHLY_CENTS; // $49/mo
-export const SASQUATCH_FOUNDER_FEATURE = "sasquatch_founder";
-
-let cachedFounderPriceId: string | null = null;
-
-async function loadExistingFounderPrice(): Promise<string | null> {
-  const rows = await db.execute(sql`
-    SELECT pr.id as price_id
-      FROM stripe.prices pr
-      JOIN stripe.products p ON p.id = pr.product
-     WHERE p.active = true
-       AND pr.active = true
-       AND pr.recurring->>'interval' = 'month'
-       AND p.metadata->>'feature' = ${SASQUATCH_FOUNDER_FEATURE}
-     LIMIT 1
-  `);
-  const r = (rows.rows as any[])[0];
-  return r ? String(r.price_id) : null;
-}
-
-export async function ensureSasquatchFounderPrice(): Promise<string> {
-  if (cachedFounderPriceId) return cachedFounderPriceId;
-  const existing = await loadExistingFounderPrice();
-  if (existing) {
-    cachedFounderPriceId = existing;
-    return cachedFounderPriceId;
-  }
-  const stripe = await getUncachableStripeClient();
-  const product = await stripe.products.create({
-    name: "Sasquatch Founder's Circle — High-Touch Recovery",
-    description:
-      "Everything in Sasquatch Premium, plus a small Founder's Circle: direct line to Nick, priority in Live-with-Nick fires, and first access to new survivor tools.",
-    metadata: { feature: SASQUATCH_FOUNDER_FEATURE, platform: "stroke-recovery-academy" },
-  });
-  const price = await stripe.prices.create({
-    product: product.id,
-    unit_amount: SASQUATCH_FOUNDER_PRICE_AMOUNT,
-    currency: "usd",
-    recurring: { interval: "month" },
-    metadata: { feature: SASQUATCH_FOUNDER_FEATURE, interval: "month" },
-  });
-  cachedFounderPriceId = price.id;
-  return cachedFounderPriceId;
-}
-
-export async function getSasquatchFounderPriceId(): Promise<string | null> {
-  if (cachedFounderPriceId) return cachedFounderPriceId;
-  const existing = await loadExistingFounderPrice();
-  if (existing) cachedFounderPriceId = existing;
-  return cachedFounderPriceId;
-}
 
 type CachedPrices = { monthlyPriceId: string; annualPriceId: string };
 let cachedPrices: CachedPrices | null = null;
@@ -213,76 +152,11 @@ export async function hasActiveSasquatchPremium(
     const monthlyOnly = await getSasquatchPremiumPriceId();
     if (monthlyOnly) eligiblePriceIds.add(monthlyOnly);
   }
-  // Founder ⊇ Premium — an active Founder subscription grants premium
-  // entitlement. Additive + guarded: a founder-price lookup failure never
-  // removes the premium price ids, so this can only ever widen access.
-  try {
-    const founderId = await getSasquatchFounderPriceId();
-    if (founderId) eligiblePriceIds.add(founderId);
-  } catch {
-    /* founder is optional — never let it break the premium gate */
-  }
   if (eligiblePriceIds.size === 0) return false;
 
   if (!opts.skipCache) {
     const cached = entitlementCache.get(stripeCustomerId);
     if (cached && cached.expiresAt > Date.now()) return cached.value;
-  }
-
-  // ── Durable lifecycle state (Task #3) ──────────────────────────────────
-  // If a `sasquatch_premium_subscriptions` row exists for this customer it is
-  // authoritative — it encodes grace periods on failed payments + explicit
-  // downgrades that the raw `stripe.subscriptions` status can't express. No
-  // row (or the table not yet provisioned) → fall through to the Stripe DB /
-  // API path below (preserves fresh-checkout lag handling + legacy subs).
-  // Entitlement logic is inlined here (rather than importing the lifecycle
-  // service) to avoid a circular import.
-  try {
-    const st = await db.execute(sql`
-      SELECT status, grace_period_end, downgraded_at
-        FROM sasquatch_premium_subscriptions
-       WHERE stripe_customer_id = ${stripeCustomerId}
-       ORDER BY updated_at DESC LIMIT 1
-    `);
-    const row = (st.rows as any[])[0];
-    if (row) {
-      const status = String(row.status);
-      let entitled: boolean;
-      if (status === "active" || status === "trialing") {
-        entitled = true;
-      } else if ((status === "past_due" || status === "unpaid") && !row.downgraded_at) {
-        const grace = row.grace_period_end ? Date.parse(String(row.grace_period_end)) : 0;
-        entitled = grace > Date.now();
-      } else {
-        entitled = false; // canceled / paused / incomplete / downgraded
-      }
-      // Founder override: the lifecycle table is keyed one-row-per-user, so a
-      // stale/denying premium row could still mask a live Founder sub — e.g. a
-      // survivor who upgraded premium→Founder where the premium-cancel webhook
-      // overwrote the row before the founder webhook landed. Founder subs DO
-      // persist their own plan:"founder" row now, but this remains a safety net
-      // for that ordering race. Only runs when the row would deny, so the happy
-      // path stays one DB read.
-      if (!entitled) {
-        try {
-          if (await hasActiveSasquatchFounder(stripeCustomerId)) entitled = true;
-        } catch {
-          /* founder check is additive-only — never break the gate */
-        }
-      }
-      entitlementCache.set(stripeCustomerId, {
-        value: entitled,
-        expiresAt: Date.now() + ENTITLEMENT_CACHE_MS,
-      });
-      return entitled;
-    }
-  } catch (e: any) {
-    // Table may not exist yet, or a transient DB hiccup — fall through to the
-    // Stripe-backed path so the gate degrades safely.
-    console.warn(
-      "[sasquatch-premium] lifecycle state lookup skipped:",
-      e?.message || e,
-    );
   }
 
   // ── Webhook-backed entitlement (Wave I) ────────────────────────────────
@@ -303,7 +177,7 @@ export async function hasActiveSasquatchPremium(
         JOIN stripe.subscription_items si ON si.subscription = s.id
        WHERE s.customer = ${stripeCustomerId}
          AND s.status IN ('active', 'trialing')
-         AND si.price = ANY(${pgTextArray(eligibleArr)})
+         AND si.price = ANY(${eligibleArr}::text[])
        LIMIT 1
     `);
     active = (r.rows?.length ?? 0) > 0;
@@ -349,108 +223,6 @@ export async function hasActiveSasquatchPremium(
   return active;
 }
 
-// Founder-specific active check. Unlike hasActiveSasquatchPremium (which is
-// satisfied by EITHER premium or founder), this only returns true when the
-// customer has an active/trialing subscription on the FOUNDER price. Used by
-// the checkout route to route already-Founder members to the billing portal
-// instead of minting a duplicate Founder subscription (double-charge guard).
-// Degrades to `false` on any missing-price / DB / Stripe failure so it can
-// only ever block a duplicate, never wrongly deny a first-time checkout.
-export async function hasActiveSasquatchFounder(
-  stripeCustomerId: string | null,
-): Promise<boolean> {
-  if (!stripeCustomerId) return false;
-  let founderId: string | null = null;
-  try {
-    founderId = await getSasquatchFounderPriceId();
-  } catch {
-    return false;
-  }
-  if (!founderId) return false;
-
-  // Prefer the locally-mirrored stripe schema (~1ms); fall back to the Stripe
-  // API only when the local lookup denies (handles fresh-checkout sync lag).
-  try {
-    const r = await db.execute(sql`
-      SELECT 1
-        FROM stripe.subscriptions s
-        JOIN stripe.subscription_items si ON si.subscription = s.id
-       WHERE s.customer = ${stripeCustomerId}
-         AND s.status IN ('active', 'trialing')
-         AND si.price = ${founderId}
-       LIMIT 1
-    `);
-    if ((r.rows?.length ?? 0) > 0) return true;
-  } catch (e: any) {
-    console.warn(
-      "[sasquatch-premium] local founder lookup failed, falling back to Stripe:",
-      e?.message || e,
-    );
-  }
-
-  try {
-    const stripe = await getUncachableStripeClient();
-    for (const status of ["active", "trialing"] as const) {
-      const subs = await stripe.subscriptions.list({
-        customer: stripeCustomerId,
-        status,
-        limit: 20,
-      });
-      for (const sub of subs.data) {
-        for (const item of sub.items.data) {
-          if (item.price?.id === founderId) return true;
-        }
-      }
-    }
-  } catch (e: any) {
-    console.error("[sasquatch-premium] founder stripe lookup failed", e?.message || e);
-    return false;
-  }
-  return false;
-}
-
-// Resolve the customer's Founder subscription object from Stripe (live
-// statuses preferred, newest-first fallback). Used by the cancel flow so a
-// Founder-only member can self-serve cancel in-app instead of being told
-// "nothing to cancel". Returns null on any missing-price / Stripe failure.
-export async function resolveFounderStripeSubscription(
-  stripeCustomerId: string | null,
-): Promise<any | null> {
-  if (!stripeCustomerId) return null;
-  let founderId: string | null = null;
-  try {
-    founderId = await getSasquatchFounderPriceId();
-  } catch {
-    return null;
-  }
-  if (!founderId) return null;
-  try {
-    const stripe = await getUncachableStripeClient();
-    const list = await stripe.subscriptions.list({
-      customer: stripeCustomerId,
-      status: "all",
-      limit: 20,
-    });
-    const LIVE = new Set(["active", "trialing", "past_due", "unpaid", "paused"]);
-    let fallback: any | null = null;
-    for (const sub of list.data) {
-      const isFounder = (sub.items?.data ?? []).some(
-        (it: any) => it?.price?.id === founderId,
-      );
-      if (!isFounder) continue;
-      if (LIVE.has(String(sub.status))) return sub;
-      if (!fallback) fallback = sub;
-    }
-    return fallback;
-  } catch (e: any) {
-    console.warn(
-      "[sasquatch-premium] founder sub resolve failed:",
-      e?.message || e,
-    );
-    return null;
-  }
-}
-
 // Convenience: load user → customerId → entitlement check. Used by the
 // Recovery Anchor isPremium() bundle, the Coach daily-cap gate, and the
 // Campfire premium-room gate. Returns false (not throws) on any DB / Stripe
@@ -463,14 +235,7 @@ export async function isSasquatchPremium(userId: string | null | undefined): Pro
       .from(users)
       .where(eq(users.id, userId))
       .limit(1);
-    if (await hasActiveSasquatchPremium(u?.stripeCustomerId || null)) return true;
-    // Institutional entitlement: an active survivor seat in an active/trial org
-    // grants premium (org-level billing replaces the per-survivor sub).
-    try {
-      const { hasActiveSurvivorSeat } = await import("./institutionService");
-      if (await hasActiveSurvivorSeat(userId)) return true;
-    } catch { /* non-fatal — degrade to per-user entitlement */ }
-    return false;
+    return await hasActiveSasquatchPremium(u?.stripeCustomerId || null);
   } catch (e: any) {
     console.warn("[sasquatch-premium] isSasquatchPremium failed:", e?.message || e);
     return false;

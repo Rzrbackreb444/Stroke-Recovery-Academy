@@ -7,12 +7,8 @@ channel = "stable-24_05"
 
 [deployment]
 deploymentTarget = "autoscale"
-build = ["bash", "-c", "rm -rf dist && NODE_OPTIONS='--max-old-space-size=4096' npm run build && test -f dist/public/index.html && test -f dist/index.js"]
+build = ["bash", "-c", "rm -rf dist && NODE_OPTIONS='--max-old-space-size=6144' npm run build && test -f dist/public/index.html && test -f dist/index.js"]
 run = ["bash", "-c", "NODE_ENV=production node dist/index.js"]
-
-[[ports]]
-localPort = 3001
-externalPort = 3002
 
 [[ports]]
 localPort = 5000
@@ -46,9 +42,6 @@ task = "shell.exec"
 args = "npm run dev"
 waitForPort = 5000
 
-[workflows.workflow.metadata]
-outputType = "webview"
-
 [agent]
 integrations = ["javascript_database:1.0.0", "javascript_log_in_with_replit:1.0.0", "stripe:1.0.0", "javascript_openai_ai_integrations:1.0.0", "javascript_gemini_ai_integrations:1.0.0", "resend:1.0.0", "spotify:1.0.0", "google-drive:1.0.0", "hubspot:1.0.0", "notion:1.0.0", "google-docs:1.0.0", "elevenlabs:1.0.0", "javascript_object_storage:2.0.0"]
 
@@ -56,15 +49,10 @@ integrations = ["javascript_database:1.0.0", "javascript_log_in_with_replit:1.0.
 
 [userenv.shared]
 GOOGLE_CLOUD_PROJECT = "gen-lang-client-0671485232"
-VITE_GOOGLE_ANALYTICS_ID = "G-WDWQ3N18D5"
+VITE_GOOGLE_ANALYTICS_ID = "G-93Y51Z5LWX"
 VAPID_PUBLIC_KEY = "BMR9iOKan69Lel5msGAuBipfJoV9GLdFHnxnx9G_JYmkd7QFKWoiCFp0vY4rO8aoDzaI_iq8ayXIsex96bDam6k"
 VAPID_PRIVATE_KEY = "Qj2cvyt9Sk0Wxbv92hVbY7jwSowFCwAnh_VzoG9URb0"
 VAPID_EMAIL = "mailto:nick@strokerecoveryacademy.com"
-SMS_ENABLED = "true"
 
 [objectStorage]
 defaultBucketID = "replit-objstore-6695a99c-acae-4297-ba17-54ca57afa29e"
-
-[postMerge]
-path = "scripts/post-merge.sh"
-timeoutMs = 180000

@@ -6,26 +6,15 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import {
   MessageCircle, Send, Search, Plus, Image, Smile, MoreVertical,
-  Phone, Video, Info, Check, CheckCheck, Loader2, Users, ArrowLeft, X, Ban
+  Phone, Video, Info, Check, CheckCheck, Loader2, Users, ArrowLeft
 } from "lucide-react";
 import TherapistAvailabilityBadge from "@/components/recovery/TherapistAvailabilityBadge";
-
-const REPORT_REASONS = [
-  "Harassment or abuse",
-  "Inappropriate messages",
-  "Spam or scam",
-  "Made me feel unsafe",
-  "Other",
-];
 
 interface Conversation {
   id: number;
@@ -73,9 +62,7 @@ export default function Messages() {
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [newChatOpen, setNewChatOpen] = useState(false);
-  const [userSearch, setUserSearch] = useState("");
   const [mobileShowChat, setMobileShowChat] = useState(false);
-  const [crisis, setCrisis] = useState<{ category: string; message: string; resources: Array<{ label: string; detail: string; action: { type: string; value: string } }> } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { data: conversations, isLoading: conversationsLoading } = useQuery<Conversation[]>({
@@ -100,25 +87,21 @@ export default function Messages() {
   });
 
   const { data: users } = useQuery<any[]>({
-    queryKey: ["/api/users/search", userSearch],
+    queryKey: ["/api/users/search"],
     queryFn: async () => {
-      const res = await fetch(`/api/users/search?q=${encodeURIComponent(userSearch.trim())}`);
+      const res = await fetch("/api/users/search");
       if (!res.ok) return [];
       return res.json();
     },
-    enabled: newChatOpen && userSearch.trim().length > 0,
+    enabled: newChatOpen,
   });
 
   const sendMessageMutation = useMutation({
     mutationFn: async ({ conversationId, content }: { conversationId: number; content: string }) => {
-      const res = await apiRequest("POST", `/api/messages/conversations/${conversationId}/messages`, { content });
-      return res.json();
+      return apiRequest("POST", `/api/messages/conversations/${conversationId}/messages`, { content });
     },
-    onSuccess: (data: any) => {
+    onSuccess: () => {
       setNewMessage("");
-      if (data?.crisis) {
-        setCrisis(data.crisis);
-      }
       refetchMessages();
       queryClient.invalidateQueries({ queryKey: ["/api/messages/conversations"] });
     },
@@ -129,8 +112,7 @@ export default function Messages() {
 
   const createConversationMutation = useMutation({
     mutationFn: async (participantId: string) => {
-      const res = await apiRequest("POST", "/api/messages/conversations", { participantIds: [participantId] });
-      return res.json();
+      return apiRequest("POST", "/api/messages/conversations", { participantIds: [participantId] });
     },
     onSuccess: (data: any) => {
       setNewChatOpen(false);
@@ -138,42 +120,6 @@ export default function Messages() {
       setSelectedConversation(data);
       setMobileShowChat(true);
     },
-  });
-
-  const [blockOpen, setBlockOpen] = useState(false);
-  const [alsoReport, setAlsoReport] = useState(true);
-  const [reportReason, setReportReason] = useState(REPORT_REASONS[0]);
-  const [reportDetails, setReportDetails] = useState("");
-
-  const getOtherParticipantId = (conv: Conversation | null): string | undefined => {
-    if (!conv || conv.type !== "direct") return undefined;
-    return conv.participants?.find((p) => p.userId !== user?.id)?.userId;
-  };
-
-  const blockMutation = useMutation({
-    mutationFn: async (targetUserId: string) => {
-      const res = await apiRequest("POST", "/api/buddy/block", {
-        targetUserId,
-        report: alsoReport,
-        reportReason,
-        reportDetails: reportDetails.trim() || undefined,
-      });
-      return res.json();
-    },
-    onSuccess: (data: any) => {
-      setBlockOpen(false);
-      setReportDetails("");
-      setSelectedConversation(null);
-      setMobileShowChat(false);
-      toast({
-        title: "Survivor blocked",
-        description: data?.reported
-          ? "We hid this conversation and sent the report to our team."
-          : "We hid this conversation both ways.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/messages/conversations"] });
-    },
-    onError: (e: any) => toast({ title: "Couldn't block", description: e.message, variant: "destructive" }),
   });
 
   useEffect(() => {
@@ -247,10 +193,7 @@ export default function Messages() {
               <div className="space-y-4 py-4">
                 <Input
                   placeholder="Search users..."
-                  value={userSearch}
-                  onChange={(e) => setUserSearch(e.target.value)}
                   className="bg-gray-800 border-[#333]"
-                  data-testid="input-user-search"
                 />
                 <ScrollArea className="h-64">
                   <div className="space-y-2">
@@ -409,24 +352,6 @@ export default function Messages() {
                     <Button size="icon" variant="ghost">
                       <Video className="w-5 h-5" />
                     </Button>
-                    {selectedConversation.type === "direct" && getOtherParticipantId(selectedConversation) && (
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button size="icon" variant="ghost" data-testid="button-conversation-menu">
-                            <MoreVertical className="w-5 h-5" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-[#1a1a1a] border-[#333] text-white">
-                          <DropdownMenuItem
-                            onClick={() => setBlockOpen(true)}
-                            className="text-red-300 focus:text-red-200 focus:bg-red-950/40 cursor-pointer"
-                            data-testid="menu-block-user"
-                          >
-                            <Ban className="w-4 h-4 mr-2" /> Block or report
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    )}
                     <Button size="icon" variant="ghost">
                       <Info className="w-5 h-5" />
                     </Button>
@@ -494,43 +419,6 @@ export default function Messages() {
                   )}
                 </ScrollArea>
 
-                {crisis && (
-                  <div
-                    role="alert"
-                    aria-live="assertive"
-                    className="mx-4 mb-2 rounded-md border border-red-500/50 bg-red-950/40 p-4"
-                    data-testid="banner-crisis"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <p className="text-sm text-red-100 flex-1">{crisis.message}</p>
-                      <button
-                        onClick={() => setCrisis(null)}
-                        aria-label="Dismiss crisis resources"
-                        className="p-1 rounded hover:bg-red-900/50"
-                        data-testid="button-dismiss-crisis"
-                      >
-                        <X className="w-4 h-4 text-red-200" />
-                      </button>
-                    </div>
-                    <ul className="mt-3 space-y-2">
-                      {crisis.resources.map((r, i) => (
-                        <li key={i} className="text-sm">
-                          <a
-                            href={r.action.type === "tel" ? `tel:${r.action.value}` : r.action.type === "sms" ? `sms:${r.action.value}` : r.action.value}
-                            target={r.action.type === "url" ? "_blank" : undefined}
-                            rel={r.action.type === "url" ? "noopener noreferrer" : undefined}
-                            className="text-red-200 underline font-medium"
-                            data-testid={`link-crisis-${i}`}
-                          >
-                            {r.label}
-                          </a>
-                          <span className="text-red-100/70"> — {r.detail}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
                 <div className="p-4 border-t border-[#333]">
                   <div className="flex items-center gap-2">
                     <Button size="icon" variant="ghost">
@@ -570,73 +458,6 @@ export default function Messages() {
           </div>
         </div>
       </div>
-
-      {/* Block / report dialog */}
-      <Dialog open={blockOpen} onOpenChange={setBlockOpen}>
-        <DialogContent className="bg-[#1a1a1a] border-[#333] text-white">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Ban className="w-5 h-5 text-red-400" /> Block this survivor
-            </DialogTitle>
-            <DialogDescription className="text-gray-400">
-              This ends any buddy pairing and hides this conversation both ways. They won't be told you blocked them.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4">
-            <label className="flex items-start gap-3 cursor-pointer">
-              <Checkbox checked={alsoReport} onCheckedChange={(v) => setAlsoReport(v === true)}
-                className="mt-0.5" data-testid="checkbox-report" />
-              <span className="text-sm text-gray-300">Also report them to our team for review.</span>
-            </label>
-
-            {alsoReport && (
-              <div className="space-y-3">
-                <div>
-                  <span className="text-xs text-gray-400">Reason</span>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {REPORT_REASONS.map((r) => (
-                      <Badge key={r} role="button" tabIndex={0} aria-pressed={reportReason === r}
-                        onClick={() => setReportReason(r)}
-                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setReportReason(r); } }}
-                        className={`cursor-pointer text-xs ${reportReason === r
-                          ? "bg-[#E2741B] text-black border-0"
-                          : "bg-zinc-800 text-gray-300 border-0 hover:bg-zinc-700"}`}
-                        data-testid={`badge-reason-${r}`}>
-                        {r}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <label htmlFor="report-details" className="text-xs text-gray-400">Anything else? (optional)</label>
-                  <Textarea id="report-details" value={reportDetails} onChange={(e) => setReportDetails(e.target.value)}
-                    placeholder="What happened."
-                    className="bg-[#0D0D0D] border-[#333] resize-none mt-1" rows={3}
-                    data-testid="input-report-details" />
-                </div>
-              </div>
-            )}
-          </div>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setBlockOpen(false)}
-              className="border-[#333] text-gray-300 hover:bg-[#0D0D0D]" data-testid="button-cancel-block">
-              Cancel
-            </Button>
-            <Button
-              onClick={() => {
-                const target = getOtherParticipantId(selectedConversation);
-                if (target) blockMutation.mutate(target);
-              }}
-              disabled={blockMutation.isPending || !getOtherParticipantId(selectedConversation)}
-              className="bg-red-700 text-white hover:bg-red-700/90" data-testid="button-confirm-block">
-              {blockMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Ban className="w-4 h-4 mr-2" />}
-              {alsoReport ? "Block & report" : "Block"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

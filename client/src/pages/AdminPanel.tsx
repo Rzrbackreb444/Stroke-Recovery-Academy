@@ -27,9 +27,6 @@ import {
   Star,
   Check,
   X as XIcon,
-  Building2,
-  Mail,
-  UserPlus,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
@@ -42,7 +39,7 @@ import {
   Tooltip as ChartTooltip,
   CartesianGrid,
 } from "recharts";
-import { Activity, UserPlus, AlertCircle, CheckCircle, X } from "lucide-react";
+import { Activity, UserPlus, AlertCircle } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -546,293 +543,6 @@ function SpotlightAdminPanel() {
   );
 }
 
-const NOM_STATUS_COLORS: Record<string, string> = {
-  pending: "bg-blue-100 text-blue-800",
-  reviewed: "bg-yellow-100 text-yellow-800",
-  selected: "bg-green-100 text-green-800",
-  declined: "bg-gray-100 text-gray-600",
-};
-
-// ── Badges Admin Panel ────────────────────────────────────────────────────────
-const NOMINATED_BADGE_KEYS = [
-  { key: "forge",      label: "The Forge",   desc: "Found a new way through when the old way stopped working." },
-  { key: "lighthouse", label: "Lighthouse",  desc: "Pulled another survivor back from a dark place." },
-  { key: "teacher",    label: "The Teacher", desc: "Taught another survivor something that helped them." },
-  { key: "pioneer",    label: "Pioneer",     desc: "Invented an adaptation the community adopted." },
-  { key: "legend",     label: "Legend",      desc: "Nick's rarest badge — for the truly exceptional." },
-];
-
-function BadgesAdminPanel() {
-  const { toast } = useToast();
-  const qc = useQueryClient();
-  const [search, setSearch] = useState("");
-  const [selectedUser, setSelectedUser] = useState<{ id: string; email: string; first_name?: string } | null>(null);
-  const [badgeKey, setBadgeKey] = useState("forge");
-  const [reason, setReason] = useState("");
-
-  const userSearch = useQuery<any[]>({
-    queryKey: ["/api/admin/badges/users", search],
-    queryFn: async () => {
-      if (search.length < 2) return [];
-      const r = await fetch(`/api/admin/badges/users?q=${encodeURIComponent(search)}`);
-      return r.ok ? r.json() : [];
-    },
-    enabled: search.length >= 2,
-  });
-
-  const recentBadges = useQuery<any[]>({
-    queryKey: ["/api/admin/badges/recent"],
-  });
-
-  const awardMut = useMutation({
-    mutationFn: async () => {
-      const res = await apiRequest("POST", "/api/admin/badges/award", {
-        userId: selectedUser?.id,
-        badgeKey,
-        reason: reason.trim(),
-      });
-      if (!res.ok) throw new Error((await res.json()).message ?? "Failed");
-    },
-    onSuccess: (_data, _vars) => {
-      qc.invalidateQueries({ queryKey: ["/api/admin/badges/recent"] });
-      toast({ title: `Badge awarded to ${selectedUser?.email}` });
-      setSelectedUser(null); setReason(""); setBadgeKey("forge"); setSearch("");
-    },
-    onError: (e: any) => toast({ title: "Error", description: e?.message, variant: "destructive" }),
-  });
-
-  return (
-    <div className="space-y-6">
-      <Card>
-        <CardContent className="p-6 space-y-4">
-          <h3 className="font-bold text-lg">Award a Nominated Badge</h3>
-          <p className="text-sm text-gray-500">
-            Nominated badges are awarded by Nick for real contributions — not automatically. Each one
-            is permanent and public on the survivor's profile.
-          </p>
-
-          {/* User search */}
-          <div className="space-y-1">
-            <label className="text-xs uppercase tracking-wider text-gray-500">Survivor (search by email or name)</label>
-            <Input
-              value={selectedUser ? `${selectedUser.first_name ?? ""} ${selectedUser.email}`.trim() : search}
-              onChange={e => { setSearch(e.target.value); setSelectedUser(null); }}
-              placeholder="Search survivors…"
-              className="bg-background"
-              data-testid="input-badge-user-search"
-            />
-            {search.length >= 2 && !selectedUser && (userSearch.data ?? []).length > 0 && (
-              <div className="border rounded-md divide-y mt-1 max-h-40 overflow-y-auto">
-                {(userSearch.data ?? []).map((u: any) => (
-                  <button
-                    key={u.id}
-                    className="w-full text-left px-3 py-2 text-sm hover-elevate"
-                    onClick={() => { setSelectedUser(u); setSearch(""); }}
-                    data-testid={`user-result-${u.id}`}
-                  >
-                    <span className="font-medium">{u.first_name} {u.last_name}</span>
-                    <span className="ml-2 text-gray-500 text-xs">{u.email}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-            {selectedUser && (
-              <div className="flex items-center gap-2 mt-1 px-3 py-2 rounded-md bg-green-50 dark:bg-green-900/20 text-sm">
-                <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
-                <span>{selectedUser.first_name} — {selectedUser.email}</span>
-                <button onClick={() => setSelectedUser(null)} className="ml-auto text-gray-400">
-                  <X className="w-3 h-3" />
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Badge selector */}
-          <div className="space-y-1">
-            <label className="text-xs uppercase tracking-wider text-gray-500">Badge</label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {NOMINATED_BADGE_KEYS.map(b => (
-                <button
-                  key={b.key}
-                  onClick={() => setBadgeKey(b.key)}
-                  className={`text-left rounded-md border p-3 text-sm transition-colors ${badgeKey === b.key ? "border-orange-500 bg-orange-50 dark:bg-orange-950/30" : "border-border hover-elevate"}`}
-                  data-testid={`badge-option-${b.key}`}
-                >
-                  <p className="font-bold">{b.label}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{b.desc}</p>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Reason */}
-          <div className="space-y-1">
-            <label className="text-xs uppercase tracking-wider text-gray-500">Reason (required — shown on their profile)</label>
-            <Textarea
-              value={reason}
-              onChange={e => setReason(e.target.value)}
-              placeholder="What did they do that earned this? Be specific — they'll read this."
-              className="min-h-[80px]"
-              maxLength={1000}
-              data-testid="textarea-badge-reason"
-            />
-          </div>
-
-          <Button
-            onClick={() => awardMut.mutate()}
-            disabled={!selectedUser || !reason.trim() || awardMut.isPending}
-            className="w-full font-bold"
-            data-testid="button-award-badge"
-          >
-            {awardMut.isPending ? "Awarding…" : `Award "${NOMINATED_BADGE_KEYS.find(b => b.key === badgeKey)?.label}" to ${selectedUser?.email ?? "…"}`}
-          </Button>
-        </CardContent>
-      </Card>
-
-      {/* Recent awards */}
-      <Card>
-        <CardContent className="p-6 space-y-3">
-          <h3 className="font-bold text-lg">Recent Badge Awards</h3>
-          {recentBadges.isLoading ? (
-            <p className="text-sm text-gray-500">Loading…</p>
-          ) : (recentBadges.data ?? []).length === 0 ? (
-            <p className="text-sm text-gray-500">No badges awarded yet.</p>
-          ) : (
-            <div className="space-y-2">
-              {(recentBadges.data ?? []).slice(0, 50).map((row: any) => (
-                <div key={row.id} className="flex items-start gap-3 py-2 border-b border-border last:border-0">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-medium text-sm">{row.first_name ?? ""} {row.last_name ?? ""}</span>
-                      <span className="text-xs text-gray-500">{row.email}</span>
-                      <Badge variant={row.category === "nominated" ? "default" : "secondary"} className="text-[10px]">
-                        {row.badge_name}
-                      </Badge>
-                    </div>
-                    {row.reason && <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">"{row.reason}"</p>}
-                  </div>
-                  <span className="text-[10px] text-gray-500 shrink-0">
-                    {new Date(row.awarded_at).toLocaleDateString()}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
-function SpotlightNominationsPanel() {
-  const { toast } = useToast();
-  const qc = useQueryClient();
-  const { data: nominations, isLoading } = useQuery<any[]>({
-    queryKey: ["/api/admin/spotlight/nominations"],
-  });
-  const [notes, setNotes] = useState<Record<number, string>>({});
-
-  const statusMut = useMutation({
-    mutationFn: async ({ id, status }: { id: number; status: string }) => {
-      const res = await apiRequest("PATCH", `/api/admin/spotlight/nominations/${id}/status`, {
-        status,
-        adminNotes: notes[id] ?? undefined,
-      });
-      if (!res.ok) throw new Error("Failed");
-    },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["/api/admin/spotlight/nominations"] });
-      toast({ title: "Status updated" });
-    },
-    onError: () => toast({ title: "Failed to update", variant: "destructive" }),
-  });
-
-  return (
-    <Card className="mt-6">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Star className="h-5 w-5 text-[#E2741B]" />
-          Spotlight Applications & Nominations
-          <Badge variant="secondary" className="ml-auto">{nominations?.length ?? 0}</Badge>
-        </CardTitle>
-        <p className="text-sm text-gray-400">Submissions from survivors applying or nominating others for the monthly feature.</p>
-      </CardHeader>
-      <CardContent>
-        {isLoading ? (
-          <div className="flex items-center justify-center h-20"><Loader2 className="w-5 h-5 animate-spin text-muted-foreground" /></div>
-        ) : !nominations?.length ? (
-          <p className="text-sm text-gray-400 py-4 text-center">No submissions yet.</p>
-        ) : (
-          <div className="space-y-4">
-            {nominations.map((nom: any) => (
-              <div key={nom.id} className="rounded-lg border border-[#222] bg-[#0D0D0D] p-4 space-y-3"
-                data-testid={`nom-row-${nom.id}`}>
-                <div className="flex flex-wrap items-start justify-between gap-2">
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <Badge variant="outline" className="text-[10px]">
-                        {nom.type === "other" ? "Nomination" : "Self-application"}
-                      </Badge>
-                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${NOM_STATUS_COLORS[nom.status] ?? NOM_STATUS_COLORS.pending}`}>
-                        {nom.status}
-                      </span>
-                    </div>
-                    <p className="font-bold text-white mt-1">{nom.nominee_name}</p>
-                    <p className="text-xs text-gray-500">
-                      {nom.nominee_email && <>{nom.nominee_email} · </>}
-                      {nom.nominee_location && <>{nom.nominee_location} · </>}
-                      {nom.stroke_date && <>Stroke: {nom.stroke_date} · </>}
-                      {nom.type === "other" && nom.relationship && <>Nominated by: {nom.submitter_first} ({nom.relationship})</>}
-                      {nom.type === "self" && <>Submitted by: {nom.submitter_first} ({nom.submitter_email})</>}
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {["pending","reviewed","selected","declined"].map((s) => (
-                      <button key={s}
-                        onClick={() => statusMut.mutate({ id: nom.id, status: s })}
-                        disabled={nom.status === s || statusMut.isPending}
-                        className={`text-[10px] px-2 py-0.5 rounded border transition-colors ${nom.status === s ? "bg-muted text-muted-foreground border-transparent" : "hover:bg-muted border-[#333] text-gray-300"}`}
-                        data-testid={`btn-nom-status-${nom.id}-${s}`}
-                      >{s}</button>
-                    ))}
-                  </div>
-                </div>
-                <p className="text-sm text-gray-300 leading-relaxed border-t border-[#1a1a1a] pt-3 whitespace-pre-line">
-                  {nom.description}
-                </p>
-                {Array.isArray(nom.media_urls) && nom.media_urls.length > 0 && (
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    {nom.media_urls.map((url: string, i: number) => (
-                      <a key={i} href={`/objects/${url}`} target="_blank" rel="noopener noreferrer"
-                        className="text-xs text-[#E2741B] underline" data-testid={`link-media-${nom.id}-${i}`}>
-                        Media {i + 1}
-                      </a>
-                    ))}
-                  </div>
-                )}
-                <div className="flex gap-2 items-end pt-1">
-                  <div className="flex-1">
-                    <input
-                      placeholder="Admin notes (optional)"
-                      value={notes[nom.id] ?? nom.admin_notes ?? ""}
-                      onChange={(e) => setNotes((prev) => ({ ...prev, [nom.id]: e.target.value }))}
-                      className="w-full text-xs bg-[#1a1a1a] border border-[#333] rounded px-2 py-1 text-white placeholder:text-gray-600"
-                      data-testid={`input-admin-notes-${nom.id}`}
-                    />
-                  </div>
-                  <p className="text-[10px] text-gray-600 shrink-0">
-                    {new Date(nom.created_at).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
-
 interface AnalyticsData {
   rangeDays: number;
   signupsByDay: { day: string; count: number }[];
@@ -1062,106 +772,6 @@ function AnalyticsTab() {
   );
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  new: "bg-blue-100 text-blue-800",
-  contacted: "bg-yellow-100 text-yellow-800",
-  active: "bg-green-100 text-green-800",
-  closed: "bg-gray-100 text-gray-600",
-};
-
-function LeadsTab() {
-  const { toast } = useToast();
-  const partnerQuery = useQuery<any[]>({ queryKey: ["/api/admin/partners/inquiries"] });
-  const waitlistQuery = useQuery<any[]>({ queryKey: ["/api/admin/squad-waitlist"] });
-
-  const statusMut = useMutation({
-    mutationFn: async ({ id, status }: { id: number; status: string }) => {
-      const res = await apiRequest("PATCH", `/api/admin/partners/inquiries/${id}/status`, { status });
-      if (!res.ok) throw new Error("Failed");
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/admin/partners/inquiries"] }),
-    onError: () => toast({ title: "Failed to update status", variant: "destructive" }),
-  });
-
-  return (
-    <div className="space-y-8">
-      {/* Partner Inquiries */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Building2 className="w-5 h-5" /> Partner Inquiries
-            <Badge variant="secondary" className="ml-auto">{partnerQuery.data?.length ?? 0}</Badge>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {partnerQuery.isLoading ? (
-            <div className="flex items-center justify-center h-24"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>
-          ) : !partnerQuery.data?.length ? (
-            <p className="text-sm text-muted-foreground text-center py-8">No partner inquiries yet.</p>
-          ) : (
-            <div className="space-y-3">
-              {partnerQuery.data.map((row: any) => (
-                <div key={row.id} className="border rounded-lg p-4 space-y-2">
-                  <div className="flex flex-wrap items-start justify-between gap-2">
-                    <div>
-                      <p className="font-semibold text-sm">{row.name} — {row.facility}</p>
-                      <p className="text-xs text-muted-foreground">{row.email} {row.role ? `· ${row.role}` : ""}</p>
-                    </div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {row.partnership_type && <Badge variant="outline" className="text-xs">{row.partnership_type}</Badge>}
-                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${STATUS_COLORS[row.status] ?? STATUS_COLORS.new}`}>{row.status}</span>
-                      {["new","contacted","active","closed"].map((s) => (
-                        <button
-                          key={s}
-                          onClick={() => statusMut.mutate({ id: row.id, status: s })}
-                          disabled={row.status === s || statusMut.isPending}
-                          className={`text-[10px] px-2 py-0.5 rounded border transition-colors ${row.status === s ? "bg-muted text-muted-foreground border-transparent" : "hover:bg-muted border-border"}`}
-                          data-testid={`button-status-${row.id}-${s}`}
-                        >{s}</button>
-                      ))}
-                    </div>
-                  </div>
-                  {row.message && <p className="text-xs text-muted-foreground leading-relaxed border-t pt-2 mt-2">{row.message}</p>}
-                  <p className="text-[10px] text-muted-foreground">{new Date(row.created_at).toLocaleString()}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Squad Waitlist */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <UserPlus className="w-5 h-5" /> Squad Waitlist
-            <Badge variant="secondary" className="ml-auto">{waitlistQuery.data?.length ?? 0}</Badge>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {waitlistQuery.isLoading ? (
-            <div className="flex items-center justify-center h-24"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>
-          ) : !waitlistQuery.data?.length ? (
-            <p className="text-sm text-muted-foreground text-center py-8">No waitlist signups yet.</p>
-          ) : (
-            <div className="divide-y">
-              {waitlistQuery.data.map((row: any) => (
-                <div key={row.id} className="py-3 flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-medium">{row.name || <span className="text-muted-foreground italic">unnamed</span>}</p>
-                    <p className="text-xs text-muted-foreground flex items-center gap-1"><Mail className="w-3 h-3" /> {row.email}</p>
-                  </div>
-                  <p className="text-xs text-muted-foreground shrink-0">{new Date(row.created_at).toLocaleDateString()}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
 export default function AdminPanel() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
@@ -1221,15 +831,13 @@ export default function AdminPanel() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-8 mb-6">
+          <TabsList className="grid w-full grid-cols-6 mb-6">
             <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
             <TabsTrigger value="analytics" data-testid="tab-analytics">Analytics</TabsTrigger>
             <TabsTrigger value="revenue" data-testid="tab-revenue">Revenue</TabsTrigger>
             <TabsTrigger value="credits" data-testid="tab-credits">Credits</TabsTrigger>
             <TabsTrigger value="users" data-testid="tab-users">Users</TabsTrigger>
             <TabsTrigger value="spotlight" data-testid="tab-spotlight">Spotlight</TabsTrigger>
-            <TabsTrigger value="badges" data-testid="tab-badges">Badges</TabsTrigger>
-            <TabsTrigger value="leads" data-testid="tab-leads">Leads</TabsTrigger>
           </TabsList>
 
           <TabsContent value="analytics" className="space-y-6">
@@ -1238,15 +846,6 @@ export default function AdminPanel() {
 
           <TabsContent value="spotlight" className="space-y-6">
             <SpotlightAdminPanel />
-            <SpotlightNominationsPanel />
-          </TabsContent>
-
-          <TabsContent value="badges" className="space-y-6">
-            <BadgesAdminPanel />
-          </TabsContent>
-
-          <TabsContent value="leads" className="space-y-6">
-            <LeadsTab />
           </TabsContent>
 
           <TabsContent value="overview" className="space-y-6">

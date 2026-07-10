@@ -170,7 +170,7 @@ function Step1BasicInfo({ formData, setFormData }: { formData: FormData; setForm
             type="date"
             value={formData.strokeDate}
             onChange={(e) => setFormData({ ...formData, strokeDate: e.target.value })}
-            className="w-full sm:max-w-xs"
+            className="max-w-xs"
             data-testid="input-stroke-date"
           />
           <p className="text-xs text-gray-400">This helps us understand your recovery timeline</p>
@@ -632,8 +632,8 @@ function ResultsSection({ formData, enrollmentData }: { formData: FormData; enro
 
       <RecoveryCoachTip quote="Your personalized recovery plan is ready. Remember: small, consistent steps lead to meaningful progress." />
 
-      <div className="grid md:grid-cols-3 gap-6">
-        <Card className="md:col-span-2">
+      <div className="grid lg:grid-cols-3 gap-6">
+        <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Dumbbell className="h-5 w-5 text-[#E2741B]" aria-hidden="true" />
