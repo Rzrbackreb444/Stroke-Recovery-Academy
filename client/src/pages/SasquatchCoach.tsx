@@ -448,7 +448,7 @@ export default function SasquatchCoach() {
                       <p className="text-xs leading-relaxed mb-4" style={{ color: "rgba(255,255,255,0.35)" }}>
                         Tomorrow you get {msg.cappedLimit} more — or go unlimited right now.
                       </p>
-                      <div className="grid grid-cols-2 gap-2 mb-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 mb-4">
                         {["Unlimited Coach messages", "Daily AI report from Sasquatch", "Survivor Voice Cloning", "Premium Campfire circles"].map((f) => (
                           <div key={f} className="flex items-center gap-1.5 text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
                             <Check className="h-3 w-3 text-[#C06B3E] shrink-0" />

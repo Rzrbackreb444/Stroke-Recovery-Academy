@@ -111,12 +111,12 @@ function AdminSignupWidget() {
         className="w-full flex items-center gap-4 px-4 py-3 text-left hover-elevate"
         aria-expanded={expanded}
       >
-        <div className="flex items-center gap-3 flex-1 min-w-0">
+        <div className="flex items-center flex-wrap gap-x-3 gap-y-1 flex-1 min-w-0">
           <span className="text-2xl font-display font-bold text-[#C06B3E]">{data.total}</span>
           <span className="text-sm font-medium text-[#2A2421]">survivors</span>
-          <span className="h-4 w-px bg-[#E2C2A4]" />
+          <span className="hidden sm:inline h-4 w-px bg-[#E2C2A4]" />
           <span className="text-sm text-[#78716C]">+{data.today} today</span>
-          <span className="text-sm text-[#78716C]">· +{data.week} this week</span>
+          <span className="hidden sm:inline text-sm text-[#78716C]">· +{data.week} this week</span>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <Badge className="text-sm bg-[#C06B3E]/15 text-[#C06B3E] border-[#C06B3E]/30 no-default-hover-elevate no-default-active-elevate">
@@ -971,7 +971,7 @@ export default function RecoveryDashboard() {
                 const isActive = totalDays >= start - 1 && totalDays < end;
                 const isComplete = totalDays >= end;
                 return (
-                  <div key={name} className={`flex items-center gap-2 text-sm flex-1 min-w-fit ${isActive ? "opacity-100" : isComplete ? "opacity-60" : "opacity-30"}`} data-testid={`phase-status-${name.toLowerCase().split(" ")[0]}`}>
+                  <div key={name} className={`flex items-center gap-2 text-sm flex-1 min-w-[120px] ${isActive ? "opacity-100" : isComplete ? "opacity-60" : "opacity-30"}`} data-testid={`phase-status-${name.toLowerCase().split(" ")[0]}`}>
                     <div className={`w-7 h-7 rounded-full flex items-center justify-center`} style={{ background: isComplete ? color : isActive ? `${color}33` : "#E2C2A430", border: `1px solid ${color}50` }}>
                       {isComplete ? <CheckCircle2 className="h-3.5 w-3.5" style={{ color }} /> : <Icon className="h-3 w-3" style={{ color }} />}
                     </div>
@@ -1060,13 +1060,13 @@ export default function RecoveryDashboard() {
                       {MOOD_OPTIONS.find(o => o.value === checkinForm.moodScore)?.label}
                     </span>
                   </div>
-                  <div className="grid grid-cols-5 gap-1.5" data-testid="mood-buttons">
+                  <div className="grid grid-cols-5 gap-1" data-testid="mood-buttons">
                     {MOOD_OPTIONS.map(opt => (
                       <button
                         key={opt.value}
                         type="button"
                         onClick={() => setCheckinForm({ ...checkinForm, moodScore: opt.value })}
-                        className={`py-3 rounded-lg text-base font-bold border transition-colors ${
+                        className={`py-2.5 rounded-lg text-[11px] sm:text-sm font-bold border transition-colors ${
                           checkinForm.moodScore === opt.value
                             ? "bg-[#C06B3E] text-black border-[#C06B3E]"
                             : "bg-[#FDFBF7] text-[#78716C] border-[#E2C2A4]/30 hover:border-[#C06B3E]/50"
@@ -1087,13 +1087,13 @@ export default function RecoveryDashboard() {
                       {ENERGY_OPTIONS.find(o => o.value === checkinForm.energyScore)?.label}
                     </span>
                   </div>
-                  <div className="grid grid-cols-5 gap-1.5" data-testid="energy-buttons">
+                  <div className="grid grid-cols-5 gap-1" data-testid="energy-buttons">
                     {ENERGY_OPTIONS.map(opt => (
                       <button
                         key={opt.value}
                         type="button"
                         onClick={() => setCheckinForm({ ...checkinForm, energyScore: opt.value })}
-                        className={`py-3 rounded-lg text-base font-bold border transition-colors ${
+                        className={`py-2.5 rounded-lg text-[11px] sm:text-sm font-bold border transition-colors ${
                           checkinForm.energyScore === opt.value
                             ? "bg-[#C06B3E] text-black border-[#C06B3E]"
                             : "bg-[#FDFBF7] text-[#78716C] border-[#E2C2A4]/30 hover:border-[#C06B3E]/50"
@@ -1116,13 +1116,13 @@ export default function RecoveryDashboard() {
                       {PAIN_OPTIONS.find(o => o.value === checkinForm.painScore)?.label}
                     </span>
                   </div>
-                  <div className="grid grid-cols-5 gap-1.5" data-testid="pain-buttons">
+                  <div className="grid grid-cols-5 gap-1" data-testid="pain-buttons">
                     {PAIN_OPTIONS.map(opt => (
                       <button
                         key={opt.value}
                         type="button"
                         onClick={() => setCheckinForm({ ...checkinForm, painScore: opt.value })}
-                        className={`py-3 rounded-lg text-base font-bold border transition-colors ${
+                        className={`py-2.5 rounded-lg text-[11px] sm:text-sm font-bold border transition-colors ${
                           checkinForm.painScore === opt.value
                             ? opt.value >= 8 ? "bg-red-500 text-[#1C1917] border-red-500"
                               : opt.value >= 6 ? "bg-orange-500 text-[#1C1917] border-orange-500"
