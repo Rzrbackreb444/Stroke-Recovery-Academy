@@ -100,6 +100,9 @@ async function getPriceFor(tier: StudioTier, period: BillingPeriod): Promise<str
   return pricesCache[tier][period];
 }
 
+// Exported so the admin seed endpoint can pre-warm the live Stripe account.
+export { getOrCreateAllStudioPrices };
+
 // Resolve tier+period from the Stripe priceId stored on the subscription row.
 // Falls back to a Stripe lookup_keys search if not in the in-process cache
 // (e.g. process restarted after webhook fired with a price we hadn't created
