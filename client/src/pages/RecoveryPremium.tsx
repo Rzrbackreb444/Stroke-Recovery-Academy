@@ -1139,25 +1139,25 @@ export default function RecoveryPremium() {
             Free vs <span style={{ color: "#C06B3E" }}>Premium.</span>
           </h2>
           <Card className="bg-white border-[#E2C2A4]/30 overflow-hidden">
-            <div className="grid grid-cols-3 text-sm">
-              <div className="px-4 py-3 font-bold text-[#78716C] border-b border-[#E2C2A4]/30">Feature</div>
-              <div className="px-4 py-3 font-bold text-[#78716C] border-b border-[#E2C2A4]/30 text-center">Free</div>
-              <div className="px-4 py-3 font-bold text-[#C06B3E] border-b border-[#E2C2A4]/30 text-center">
+            <div className="grid grid-cols-3 text-xs sm:text-sm">
+              <div className="px-2 sm:px-4 py-2.5 font-bold text-[#78716C] border-b border-[#E2C2A4]/30">Feature</div>
+              <div className="px-2 sm:px-4 py-2.5 font-bold text-[#78716C] border-b border-[#E2C2A4]/30 text-center">Free</div>
+              <div className="px-2 sm:px-4 py-2.5 font-bold text-[#C06B3E] border-b border-[#E2C2A4]/30 text-center">
                 Premium
               </div>
               {COMPARISON.map((row, idx) => (
                 <div key={row.feature} className="contents" data-testid={`row-compare-${idx}`}>
-                  <div className="px-4 py-3 text-[#1C1917] border-b border-[#E2C2A4]/30/60">
+                  <div className="px-2 sm:px-4 py-2.5 text-[#1C1917] border-b border-[#E2C2A4]/30/60 leading-snug">
                     {row.feature}
                   </div>
-                  <div className="px-4 py-3 text-[#78716C] text-center border-b border-[#E2C2A4]/30/60">
-                    {row.free === "—" ? <X className="w-4 h-4 inline text-stone-600" /> : row.free}
+                  <div className="px-2 sm:px-4 py-2.5 text-[#78716C] text-center border-b border-[#E2C2A4]/30/60">
+                    {row.free === "—" ? <X className="w-3.5 h-3.5 inline text-stone-600" /> : row.free}
                   </div>
-                  <div className="px-4 py-3 text-[#C06B3E] text-center font-semibold border-b border-[#E2C2A4]/30/60 bg-[#C06B3E]/5">
+                  <div className="px-2 sm:px-4 py-2.5 text-[#C06B3E] text-center font-semibold border-b border-[#E2C2A4]/30/60 bg-[#C06B3E]/5">
                     {row.premium === "Included" || row.premium === "Unlimited" ? (
-                      <span className="inline-flex items-center gap-1">
-                        <Check className="w-4 h-4 text-green-400" />
-                        {row.premium}
+                      <span className="inline-flex items-center gap-1 flex-wrap justify-center">
+                        <Check className="w-3.5 h-3.5 text-green-400 shrink-0" />
+                        <span>{row.premium}</span>
                       </span>
                     ) : (
                       row.premium
@@ -1240,7 +1240,7 @@ export default function RecoveryPremium() {
           )}
 
           <Card
-            className={`relative p-8 md:p-10 bg-white mb-3 shadow-[0_1px_3px_rgba(0,0,0,0.04)] ${
+            className={`relative p-5 sm:p-8 md:p-10 bg-white mb-3 shadow-[0_1px_3px_rgba(0,0,0,0.04)] ${
               plan === "annual" ? "border-[#C06B3E]/40 shadow-[0_4px_16px_rgba(192,107,62,0.08)]" : "border-[#E2C2A4]/30"
             }`}
           >
@@ -1345,7 +1345,7 @@ export default function RecoveryPremium() {
 
           {/* ── Founder tier ──────────────────────────────────────────────── */}
           <Card
-            className="relative mt-6 p-8 md:p-10 bg-[#2A2421] border-[#C06B3E]/40 shadow-[0_4px_16px_rgba(192,107,62,0.12)]"
+            className="relative mt-6 p-5 sm:p-8 md:p-10 bg-[#2A2421] border-[#C06B3E]/40 shadow-[0_4px_16px_rgba(192,107,62,0.12)]"
             data-testid="card-founder-tier"
           >
             <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-4 mb-4">
@@ -1508,7 +1508,7 @@ export default function RecoveryPremium() {
         </section>
 
         {/* ── Final CTA ─────────────────────────────────────────────────── */}
-        <Card className="p-8 md:p-10 bg-gradient-to-br from-[#C06B3E]/10 to-white border-[#C06B3E]/30 text-center mb-6">
+        <Card className="p-5 sm:p-8 md:p-10 bg-gradient-to-br from-[#C06B3E]/10 to-white border-[#C06B3E]/30 text-center mb-6">
           <Star className="w-8 h-8 mx-auto mb-3 text-[#C06B3E]" />
           <h2 className="text-2xl md:text-3xl font-black mb-3">
             Try it free for {trialDays} days.
