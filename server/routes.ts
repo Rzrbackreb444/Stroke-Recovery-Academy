@@ -14206,6 +14206,35 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
+  // POST /api/admin/stripe/seed-products
+  // Pre-warms all auto-created products in whichever Stripe account is active
+  // (test in dev, live in production). Safe to call multiple times — all
+  // creation calls are idempotent (lookup_keys + metadata search).
+  app.post('/api/admin/stripe/seed-products', isAuthenticated, requireAdmin, async (req: any, res) => {
+    try {
+      const { getOrCreateAllStudioPrices } = await import('./routes/sasquatchStudioRoutes');
+      const { ensureSasquatchPremiumPrices } = await import('./services/sasquatchPremiumService');
+
+      const [studioPrices, premiumPrices] = await Promise.all([
+        getOrCreateAllStudioPrices(),
+        ensureSasquatchPremiumPrices(),
+      ]);
+
+      const isLive = process.env.REPLIT_DEPLOYMENT === '1';
+      res.json({
+        success: true,
+        environment: isLive ? 'live' : 'test',
+        products: {
+          sasquatchStudio: studioPrices,
+          sasquatchPremium: premiumPrices,
+        },
+      });
+    } catch (error: any) {
+      console.error('[admin] seed-products failed:', error);
+      res.status(500).json({ message: 'Failed to seed products', error: error.message });
+    }
+  });
+
   // ============================================================================
   // SUBSCRIPTION TIERS & FEATURE GATING
   // ============================================================================
