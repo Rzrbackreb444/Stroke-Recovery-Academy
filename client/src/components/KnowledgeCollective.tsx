@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Quote, MessageSquare, ArrowUpRight, Search, Users, Zap, TrendingUp, BookOpen, DollarSign, Film, Crown, Star, Clock } from "lucide-react";
+import { Quote, MessageSquare, ArrowUpRight, Search, Users, TrendingUp, BookOpen, DollarSign, Film, Crown, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface CollectiveCategory {
@@ -12,13 +12,6 @@ interface CollectiveCategory {
   lastActive: string;
   growth: string;
   icon: typeof Quote;
-}
-
-interface TopStrategist {
-  name: string;
-  earnings: string;
-  rank: number;
-  specialty: string;
 }
 
 interface KnowledgeCollectiveProps {
@@ -60,14 +53,6 @@ export default function KnowledgeCollective({ onCategorySelect, className }: Kno
       growth: "+22%",
       icon: Crown
     }
-  ];
-
-  const topStrategists: TopStrategist[] = [
-    { name: "Sarah M.", earnings: "$142K", rank: 1, specialty: "Doctrine" },
-    { name: "Dr. Lisa K.", earnings: "$89K", rank: 2, specialty: "Courses" },
-    { name: "Marcus J.", earnings: "$112K", rank: 3, specialty: "Music" },
-    { name: "Emily R.", earnings: "$78K", rank: 4, specialty: "Books" },
-    { name: "David L.", earnings: "$65K", rank: 5, specialty: "Video" }
   ];
 
   const trendingTopics = [
@@ -180,53 +165,6 @@ export default function KnowledgeCollective({ onCategorySelect, className }: Kno
         </div>
 
         <div className="col-span-12 lg:col-span-4 space-y-6">
-          <Card className="bg-[#1A1A1A] text-white border-none rounded-none shadow-2xl p-6 md:p-8 relative overflow-hidden">
-            <Zap className="absolute -right-8 -bottom-8 w-32 h-32 md:w-40 md:h-40 opacity-10 text-[#E2741B]" />
-            <div className="flex items-center justify-between mb-6">
-              <h4 className="text-[12px] uppercase tracking-[0.4em] font-black text-[#E2741B]">Top Strategists</h4>
-              <Crown className="w-5 h-5 text-[#E2741B]" />
-            </div>
-            <div className="space-y-4 relative z-10">
-              {topStrategists.map((user) => (
-                <div 
-                  key={user.name} 
-                  className="flex items-center justify-between group cursor-pointer p-2 -mx-2 hover:bg-white/5 transition-all"
-                  data-testid={`strategist-${user.name.toLowerCase().replace(/\s+/g, '-')}`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="relative">
-                      <div className="w-10 h-10 bg-white/10 flex items-center justify-center font-black text-xs group-hover:bg-[#E2741B] transition-all">
-                        {user.name[0]}
-                      </div>
-                      {user.rank <= 3 && (
-                        <div className={cn(
-                          "absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-black",
-                          user.rank === 1 ? "bg-[#E2741B] text-white" : 
-                          user.rank === 2 ? "bg-gray-400 text-white" : 
-                          "bg-amber-700 text-white"
-                        )}>
-                          {user.rank}
-                        </div>
-                      )}
-                    </div>
-                    <div>
-                      <span className="text-[11px] font-black uppercase opacity-70 group-hover:opacity-100 block">{user.name}</span>
-                      <span className="text-[9px] opacity-40 uppercase tracking-wider">{user.specialty}</span>
-                    </div>
-                  </div>
-                  <span className="text-[#E2741B] font-mono text-[11px] font-bold">{user.earnings}</span>
-                </div>
-              ))}
-            </div>
-            <Button 
-              className="w-full mt-6 bg-[#E2741B] hover:bg-[#E2741B]/80 text-white rounded-none text-[10px] uppercase tracking-widest font-black"
-              data-testid="button-view-leaderboard"
-            >
-              <Star className="w-3.5 h-3.5 mr-2" />
-              Full Leaderboard
-            </Button>
-          </Card>
-
           <Card className="bg-gradient-to-br from-[#E2741B]/10 to-[#E2741B]/5 border-2 border-[#E2741B]/20 rounded-none p-6">
             <div className="text-center space-y-4">
               <div className="w-16 h-16 mx-auto bg-[#E2741B] text-white flex items-center justify-center">
@@ -245,24 +183,6 @@ export default function KnowledgeCollective({ onCategorySelect, className }: Kno
             </div>
           </Card>
 
-          <div className="p-4 border-2 border-dashed border-[#E2741B]/20 bg-[#FAF8F3]">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-8 h-8 bg-[#E2741B]/20 flex items-center justify-center">
-                <TrendingUp className="w-4 h-4 text-[#E2741B]" />
-              </div>
-              <span className="text-[10px] font-black uppercase tracking-wider opacity-60">This Week's Stats</span>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center">
-                <div className="text-2xl font-black text-[#E2741B]">2,847</div>
-                <div className="text-[9px] uppercase tracking-widest opacity-40">New Posts</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-black text-[#1A1A1A]">156</div>
-                <div className="text-[9px] uppercase tracking-widest opacity-40">Active Authors</div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

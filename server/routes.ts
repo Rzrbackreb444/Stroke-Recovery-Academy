@@ -20152,59 +20152,6 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // Get success stories for marketplace
-  app.get('/api/success-stories', async (req, res) => {
-    try {
-      // Return featured success stories
-      const stories = [
-        {
-          id: 1,
-          creatorName: "Sarah Chen",
-          creatorImage: null,
-          title: "From Blog to Bestseller",
-          description: "Used Blog-to-Book tool to transform my travel blog into a published book. Made $12,000 in first month!",
-          earnings: 12000,
-          studio: "book",
-          featured: true,
-        },
-        {
-          id: 2,
-          creatorName: "Marcus Williams",
-          creatorImage: null,
-          title: "AI Music Producer",
-          description: "Created 50+ royalty-free tracks for my YouTube channel. Now selling them on Marketplace!",
-          earnings: 8500,
-          studio: "music",
-          featured: true,
-        },
-        {
-          id: 3,
-          creatorName: "Elena Rodriguez",
-          creatorImage: null,
-          title: "Course Empire",
-          description: "Turned my expertise into 5 courses using Instant Course. Passive income dream achieved.",
-          earnings: 25000,
-          studio: "course",
-          featured: true,
-        },
-        {
-          id: 4,
-          creatorName: "David Park",
-          creatorImage: null,
-          title: "AI Consultant Launch",
-          description: "Trained an AI on my business knowledge. Now earning $500/mo from AI chat subscriptions.",
-          earnings: 3000,
-          studio: "doctrine",
-          featured: false,
-        },
-      ];
-      
-      res.json(stories);
-    } catch (error: any) {
-      console.error("Error fetching success stories:", error);
-      res.status(500).json({ message: "Failed to fetch success stories" });
-    }
-  });
 
   // Apply watermark to content
   app.post('/api/watermark', isAuthenticated, async (req: any, res) => {
@@ -20274,24 +20221,6 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // Creator leaderboard
-  app.get('/api/leaderboard', async (req, res) => {
-    try {
-      // Get top creators (mock data for now)
-      const leaderboard = [
-        { rank: 1, name: "Sarah Chen", sales: 156, earnings: 12450, badge: "Gold Creator" },
-        { rank: 2, name: "Marcus Williams", sales: 89, earnings: 8520, badge: "Silver Creator" },
-        { rank: 3, name: "Elena Rodriguez", sales: 234, earnings: 25800, badge: "Platinum Creator" },
-        { rank: 4, name: "David Park", sales: 45, earnings: 3200, badge: "Rising Star" },
-        { rank: 5, name: "Jennifer Lee", sales: 67, earnings: 5430, badge: "Silver Creator" },
-      ];
-      
-      res.json(leaderboard);
-    } catch (error: any) {
-      console.error("Error fetching leaderboard:", error);
-      res.status(500).json({ message: "Failed to fetch leaderboard" });
-    }
-  });
 
   // ============================================================================
   // CREDIT SYSTEM - Wallets, Transactions, Balance
