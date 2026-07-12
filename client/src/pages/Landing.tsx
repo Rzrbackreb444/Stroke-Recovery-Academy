@@ -18,6 +18,8 @@ import heroWarrior from "@assets/hero-warrior-training.png";
 import nickPortrait from "@assets/Untitled_design_1781030529179.png";
 import manifestoStairs from "@assets/manifesto-stairs.png";
 import cleanUi from "@assets/home-clean-ui.png";
+import sasquatchCanonical from "@assets/book_v2/images/sasquatch-canonical.png";
+import sasquatchSeal from "@assets/book_v2/images/sasquatch-seal.png";
 
 const goToOnboarding = () => {
   window.location.href = "/recovery/onboarding";
@@ -125,31 +127,123 @@ function StatsStrip() {
 }
 
 function Method() {
-  const cards = [
-    { icon: Activity, t: "Track everything", d: "Data drives recovery. Log your reps, mood, and the small wins that add up." },
-    { icon: ShieldCheck, t: "Gentle accountability", d: "The system checks in. Miss a day and we notice — and so does your squad." },
-    { icon: BrainCircuit, t: "Force adaptation", d: "Specific, targeted protocols designed to help your brain rewire itself." },
+  const systems = [
+    {
+      code: "S.A.S.C.H.",
+      label: "The Daily Formula",
+      color: "bg-gold",
+      textColor: "text-black",
+      borderColor: "border-gold/30",
+      tagBg: "bg-gold/10 text-gold-ink",
+      letters: [
+        { l: "S", w: "Seize", d: "Claim the day before it claims you." },
+        { l: "A", w: "Absorb", d: "Take in what your brain needs to wire." },
+        { l: "S", w: "Swing", d: "Put in the physical reps — move something." },
+        { l: "C", w: "Combine", d: "Stack movement with mental rehearsal." },
+        { l: "H", w: "Hammer", d: "Finish strong. One last rep. Never zero." },
+      ],
+    },
+    {
+      code: "S.O.S.",
+      label: "The Panic Reset",
+      color: "bg-red-600",
+      textColor: "text-white",
+      borderColor: "border-red-500/30",
+      tagBg: "bg-red-500/10 text-red-400",
+      letters: [
+        { l: "S", w: "Survive", d: "Today doesn't have to be good. It just has to be." },
+        { l: "O", w: "Organize", d: "One thing. Pick one thing you can do right now." },
+        { l: "S", w: "Strive", d: "Do it. That's the whole protocol on the dark days." },
+      ],
+    },
+    {
+      code: "C.O.M.P.A.S.S.",
+      label: "The Navigation System",
+      color: "bg-neutral-900",
+      textColor: "text-white",
+      borderColor: "border-white/10",
+      tagBg: "bg-white/10 text-white/70",
+      letters: [
+        { l: "C", w: "Control", d: "Control what you can. Let go of the rest." },
+        { l: "O", w: "Own Your Pace", d: "This is your recovery. Not a race." },
+        { l: "M", w: "Mutate", d: "Adapt. What stopped working is a signal." },
+        { l: "P", w: "Patience", d: "You cannot rush neuroplasticity. Feed it." },
+        { l: "A", w: "Anger is Fuel", d: "Channel every 'never' into a rep." },
+        { l: "S", w: "Small Wins", d: "A twitch is data. Log it. Build on it." },
+        { l: "S", w: "Stack Failures", d: "Every failed attempt is foundation." },
+      ],
+    },
   ];
+
   return (
-    <section id="method" className="bg-[#FAF9F6] py-28">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <p className="text-sm font-bold tracking-widest uppercase text-gold-ink mb-5">The Sasquatch Method</p>
-        <h2 className="font-display text-neutral-900 text-4xl md:text-6xl mb-8 leading-[0.95]">
-          No fake hope.<br />Just the work — together.
-        </h2>
-        <p className="text-xl text-neutral-600 leading-relaxed mb-14 max-w-3xl mx-auto">
-          The hospital sends you home when you're "stable." We pick it up from there. Recovery is thousands of daily repetitions — so we give you the structure, the routines, and the steady accountability to keep going when nobody else is watching.
-        </p>
-        <div className="grid sm:grid-cols-3 gap-6 text-left">
-          {cards.map((c, i) => (
-            <div key={i} className="p-7 rounded-xl bg-white border border-neutral-200">
-              <div className="w-12 h-12 rounded-lg bg-gold/10 text-gold flex items-center justify-center mb-5">
-                <c.icon className="w-6 h-6" />
+    <section id="method" className="bg-[#0D0D0D] py-28">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-3xl mx-auto mb-20">
+          <p className="text-sm font-bold tracking-widest uppercase text-gold mb-5">The Sasquatch Method</p>
+          <h2 className="font-display text-white text-4xl md:text-6xl mb-6 leading-[0.95]">
+            Three systems.<br />One relentless outcome.
+          </h2>
+          <p className="text-lg text-white/60 leading-relaxed">
+            The hospital sends you home when you're "stable." The Method picks it up from there — a daily formula, a panic reset for the dark days, and a 7-pillar compass for the long game.
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-6">
+          {systems.map((sys) => (
+            <div key={sys.code} className={`rounded-2xl border ${sys.borderColor} bg-white/5 overflow-hidden`}>
+              <div className={`${sys.color} ${sys.textColor} px-7 py-5`}>
+                <div className="font-display text-3xl tracking-wider mb-1">{sys.code}</div>
+                <div className={`text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded inline-block ${sys.tagBg}`}>{sys.label}</div>
               </div>
-              <h3 className="font-bold text-lg mb-2 text-neutral-900">{c.t}</h3>
-              <p className="text-neutral-600 text-sm leading-relaxed">{c.d}</p>
+              <div className="px-7 py-6 space-y-4">
+                {sys.letters.map((item, i) => (
+                  <div key={i} className="flex gap-4">
+                    <div className="shrink-0 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center font-display text-white text-sm font-bold">{item.l}</div>
+                    <div>
+                      <div className="font-bold text-white text-sm">{item.w}</div>
+                      <div className="text-white/50 text-xs leading-relaxed mt-0.5">{item.d}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SasquatchArt() {
+  return (
+    <section className="bg-black py-0 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-0 items-stretch">
+          <div className="flex items-center justify-center py-16 lg:py-24 order-2 lg:order-1">
+            <div className="max-w-lg">
+              <img src={sasquatchSeal} alt="" aria-hidden="true" className="w-20 h-20 opacity-60 mb-8" />
+              <h2 className="font-display text-white text-4xl md:text-5xl lg:text-6xl mb-6 leading-[0.95]">
+                "As long as that meat in your chest is still thumpin' — your life is still pumpin'."
+              </h2>
+              <p className="text-white/50 text-lg leading-relaxed mb-10">
+                Nick Kremers. December 3, 2018. They said he'd never walk again. He's 90% and still climbing. That's what the Method is for — the ones who refuse to accept a ceiling.
+              </p>
+              <button
+                onClick={goToOnboarding}
+                className="inline-flex items-center gap-2 text-gold font-bold text-base hover:text-gold/80 transition-colors"
+                data-testid="button-sasquatch-cta"
+              >
+                Start the Method <ArrowRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+          <div className="relative order-1 lg:order-2 flex items-end justify-center bg-gradient-to-b from-black via-black/50 to-black lg:bg-none min-h-[400px] lg:min-h-0">
+            <img
+              src={sasquatchCanonical}
+              alt="The Sasquatch — Nick Kremers' recovery identity"
+              className="w-full max-w-md lg:max-w-full h-full object-contain object-bottom mix-blend-lighten opacity-90"
+            />
+          </div>
         </div>
       </div>
     </section>
@@ -391,6 +485,7 @@ export default function Landing() {
         <Hero />
         <StatsStrip />
         <Method />
+        <SasquatchArt />
         <Proof />
         <Features />
         <Caregiver />
